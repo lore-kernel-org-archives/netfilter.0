@@ -1,14 +1,11 @@
-From: Dataforce <Dataforce@Home.dataforce.org.uk>
-Subject: Re: Possible Simple Configuration gone wrong
-Date: Mon, 04 Oct 2004 16:21:37 +0100
+From: "Deepak Seshadri" <dseshadri@broadbandmaritime.com>
+Subject: DMZ Question
+Date: Mon, 4 Oct 2004 13:41:10 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <41616A81.7070202@Home.dataforce.org.uk>
-References: <41607945.8040802@Home.dataforce.org.uk>
-	<Pine.GSU.4.58.0410041013010.18968@adore.lightlink.com>
+Message-ID: <200410041736.i94Haduj073687@jkcpub.iserver.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.GSU.4.58.0410041013010.18968@adore.lightlink.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,124 +15,60 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: 'Imran Bashir' <ibashir@broadbandmaritime.com>, 'Veena Rao' <vrao@broadbandmaritime.com>, 'Syed Amjad Ali' <sali@broadbandmaritime.com>, 'Zia Ullah' <szia@broadbandmaritime.com>
 
-The server runs 2 applications, both designed to be either run on the 
-same machine or different machines. They each know the IP Address that 
-the other 1 is reachable via (82.133.x.x) and when one has finished with 
-the client, it redirects the client to the IP address taht it knows the 
-other to be on, regardless of the IP the client comes in on.
+Hello everybody,
 
-only 1 ip can be specified, and the client will try to use that ip.
+ 
 
-With my current setup it allows internal and external clients to connect 
-(a must), but all clients appear to come from the gateway (which is 
-useable, but not good as it screws up the logging)
+ 
 
-I used to have a setup which passed the correct external IPs to the 
-client (no header mangling) but this ofcourse screwed up internall 
-connections, as the server tried to dirrecdtly communicate with the 
-client, whereas the client wanted a responce from the gateway.
+                             --------------------------
 
-Hense I need a "half-nat" (as you put it) so that it all works well 
-(internal logging all showing to come from the gateway doesn't matter)
+                             |                               |     WAN
+(x.x.x.58/28, default gateway - x.x.x.49)
 
--DF
+                             |       FC2           e0
+|-------------------------- ISP
 
-Nick Taylor wrote:
+             LAN         |                               |
 
-> On Sun, 3 Oct 2004, Dataforce wrote:
-> 
->>To: netfilter@lists.netfilter.org
->>Subject: Possible Simple Configuration gone wrong
->>
->>the iptables machine has the ip 82.133.x.x on eth1, and 192.168.0.5 on eth0
->>
->>(82.133.x.x) [Internet]----[iptables]----[Machine 1] (192.168.0.6)
->>                                 |--------[Machine 2] (192.168.0.2)
->>                                 `--------[Other Machines]
->>
->>I setup a port forward as follows:
->>iptables -A PREROUTING -t nat -i eth0 -p tcp --dst 82.133.x.x --dport
->>3389 -j DNAT --to 192.168.0.6:3389
->>
->>iptables -A PREROUTING -t nat -i eth1 -p tcp --dport 3389 -j DNAT --to
->>192.168.0.6:3389
->>
->>iptables -t nat -A POSTROUTING --dst 192.168.0.6 -p tcp --dport 3389 -j
->>SNAT --to-source 82.133.x.x
->>
->>iptables -A POSTROUTING -t nat -j MASQUERADE
->>
->>now, this allows machine2 AND internet clients to connect to port 3389
->>on 82.133.x.x and get to machine1
->>
->>however, according to machine1, all clients appear to have come from
->>192.168.0.5
->>
->>I would like it setup so that lan clients appear to come from
->>192.168.0.5 (so that packets get routed correctly
->>[machine1]--[iptables]--[machine2] not [machine1]--[machine2]) where as
->>packets from the internet appear to come from the correct ip.
->>
->>i have tried replacing
->>iptables -A POSTROUTING -t nat -j MASQUERADE
->>
->>with
->>
->>iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j SNAT --to-source
->>82.133.x.x
->>
->>iptables -t nat -A POSTROUTING -s ! 192.168.0.0/16 -j MASQUERADE
->>
->>(suggested by a friend)
->>
->>and vice versa (swapping the !) however it either prevents external
->>connections compeltey or gives the same effect as before.
->>
->>is what i would like possible with iptables? or will i jsut have to live
->>with all clients appearing as 192.168.0.5
->>
->>thanks
->>
->>-DF
->>
-> 
-> IMHO, this is a bit of a kludge.  I am reading between the lines here a
-> little, but...  I assume that the connection from machine2 isn't made
-> directly to machine1, since they're in the same subnet, they would direct
-> deliver if they were allowed to.  Ie, in your client software on machine2,
-> if you enter the address 192.168.0.2, rather than 82.133.x.x, you'll see
-> 192.168.0.6.  However, if you enter 82.133.x.x, you're doomed forever to
-> see 192.168.0.5.  A little reflection should show you why this is a limit
-> of TCP/IP, and not netfilter per se.
-> 
-> 192.168.0.6 innitiates a connection to 82.133.x.x, which generates a SYN
-> packet like this:
-> 192.168.0.6 -> 82.133.x.x
-> This packet is transmitted to the default gateway, at 192.168.0.5.
-> The gateway mangles the headers so that now it looks like
-> 192.168.0.5 -> 192.168.0.2
-> and retransmits it.
-> 
-> Now, 192.168.0.2 sees a connection from 192.168.0.5, responds
-> appropriately, and 192.168.0.5 uses connection tracking to remember that
-> *this* connection should get sent back to 192.168.0.6, so it rewrites the
-> headers and retransmits.
-> 
-> If instead, the *gateway* transmitted a packet to 192.168.0.2 with
-> 192.168.0.6 in the header, the reply packet would be sent directly to
-> 192.168.0.6, without hitting the gateway again, which would NOT satisfy
-> TCP, since 192.168.0.6 *thinks* it's talking to 82.133.x.x, it wouldn't
-> recognize a return packet with the address 192.168.0.2.
-> 
-> To make a long story short, you either use the gateway for nat, or you
-> don't.  There's no logical meaning to half-natting, it would only break
-> things.  If you NAT the address, then the server will always think it's
-> talking to the gateway, otherwise, you can use the native IP of the
-> server, as long as routability is satisfied (for example being directly
-> connected to the same ehternet and on the same subnet should work fine)
-> 
-> 
+-----------------------|  e1                         |     DMZ
+
+    10.0.1.x            |                        e2
+|--------------------------
+
+                             |                               |
+
+                             |-------------------------|
+
+I have 3 computers that need to have public addresses and their IP addresses
+are:
+
+A - x.x.x.50/28, DG - x.x.x.49
+
+B - x.x.x.51/28, DG - x.x.x.49
+
+C - x.x.x.55/28, DG - x.x.x.49
+
+Now the problem is I do not understand how I will give access to these PCs
+from public without putting these PCs on a different subnet. Some firewalls
+such as sonicwall do not require an IP for the DMZ port. You can add any
+number of IPs behind the DMZ and it works. How is that done? Is it possible
+with Linux?
+
+If I connect them on the DMZ interface, should they all be put in a
+different subnet, probably with /29 bit mask? If I do it this way, should I
+use iptables & DNAT or should/can I use just the "routing" in linux?
+
+If you have a better way to do it, please let me know. Any help will be
+greatly appreciated.
+
+Thank you,
+
+Deepak Seshadri
+
+ 
 
