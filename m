@@ -1,10 +1,9 @@
-From: Del Winiecki <delw@wildapache.net>
-Subject: Reverse SNAT routes out wrong interface
-Date: 20 Feb 2003 13:34:46 -0700
+From: "Dodson, Matthew" <mdodson@coremetrics.com>
+Subject: Strange ICMP packets
+Date: Thu, 20 Feb 2003 16:48:29 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045773286.2306.77.camel@thizzy>
+Message-ID: <85063BBE668FD411944400D0B744267A0232671D@ausmail.core.coremetrics.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,33 +15,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Cc: "Dodson, Matthew" <mdodson@coremetrics.com>
 
-Ok, another challenge.
+Sorry if this question has been asked before but I am having a hard time
+following this iptables log. I would appreciate any help. I am getting about
+2000 of these in my logs a day. The only thing that changes in the request
+are the external IP's
 
-SNAT works fine, but I need the outside WAN address to look as if it
-came from an address on the eth1 network, not the Upstream WAN network.
-My linux router ports:
 
-eth4 192.168.1.0/24 ------------ (local offices, admin net)
+Here is my setup.
 
-eth1 209.x.x.x/24 -------- (downstream WAN)
+RedHat 7.1
+iptables-1.2.5-3
+kernel-2.4.10 (I also run 2.4.20)
+DROP all ICMP 
+server Internal IP 10.4.1.30
 
-WAN1 64.x.x.x/30 ---------  (upstream provider)
+Is used as an  apache webserver that gets load balanced through a css. This
+server is also behind a PIX firewall. 
 
-all traffic from 192.168.1.0/24 must look like its from 209.x.x.13
 
-traffic flowing into WAN1 with a destination address of 209.x.x.13
-somehow needs to get routed out the eth4 interface and "un-natted"
-instead of routing out eth1.
+IPTABLES-ICMP-IN:IN=eth1 OUT= MAC=00:20:94:12:14:0f:00:d0:b7:82:24:9c:08:00
+SRC=200.35.93.2
+DST=10.4.1.30 LEN=56 TOS=0x00 PREC=0x00 TTL=238 ID=56298 PROTO=ICMP TYPE=3
+CODE=13 [SRC=10.4.1.30 DST=200.75.116.55 LEN=48 TOS=0x00 PREC=0x00 TTL=45
+ID=0 DF PROTO=TCP INCOMPLETE [8 bytes] ]
 
-I have:
-iptables -t nat -A POSTROUTING -o WAN1 -j SNAT --to 209.x.x.13
+IPTABLES-ICMP-IN:IN=eth1 OUT= MAC=00:20:94:12:14:0f:00:d0:b7:82:24:9c:08:00
+SRC=199.70.10.33 DST=10.4.1.30 LEN=56 TOS=0x00 PREC=0x00 TTL=244 ID=41725
+PROTO=ICMP TYPE=11 CODE=0 [SRC=10.4.1.30 DST=12.88.181.78 LEN=40 TOS=0x00
+PREC=0x00 TTL=1 ID=34208 DF PROTO=TCP INCOMPLETE [8 bytes] ]
 
-Is there some way to use DNAT to fool the kernel routing into properly
-routing this?
-
-Thanks,
-Del W.
 
 
