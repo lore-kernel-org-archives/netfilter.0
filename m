@@ -1,13 +1,12 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: Not quite understanding DNAT
-Date: Fri, 25 Jul 2003 10:14:28 +1000
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: ssl forward / proxy question
+Date: Fri, 25 Jul 2003 10:44:54 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F207664.1000109@snapgear.com>
-References: <3F1F9900.4080401@snapgear.com> <3F1FA56E.28480.E59161E@localhost>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BFC4@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F1FA56E.28480.E59161E@localhost>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +16,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Coutts, Ashe (Testing Account)" <ATest@sbsdk12.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: jen@saturn5.com, netfilter@lists.netfilter.org
 
-Coutts, Ashe (Testing Account) wrote:
-> It is working almost as I expected except for the following. The DNAT 
-> connections come into the system fine but are seen as originating from the 
-> eth0 interface rather than their eth0:x interface. So, when attaching to a linux 
-> cpu with ssh I am needing to place the ip# for the eth0 interface in the 
-> hosts.allow file rather than the much more restrictive eth0:x ip#. Can it be set 
-> up so the connection is between the external eth0:x ip# and its linked internal 
-> ip#?
+You cannot do this as SSL by default will connect, negotiate a =
+certificate and the DISCONNECT AND RECONNECT using the encryption.. =
+which by then it's too late to know the virtual site it's for..
 
-If all you are doing is DNATing, then the source address should be
-the real external source address, not eth0 *or* eth0:x.
+on the first connection it's fine but second connection is impossible to =
+determine which virtual host it's for..
 
-> ## Setup NAT from entire WAN to the outside world
-> /sbin/iptables --table nat  --append POSTROUTING --source 0.0.0.0/0          \
->                --jump SNAT --to 204.48.178.2
+My only solution was to use different ports for SSL ie. 443 is not used, =
+444-500 for each site.. or setup a common domain for all sites to use.. =
+ie. www.paysafe.com/domain1 www.paysafe.com/domain2 etc.etc...
 
-But here we see that you are SNATing everything.  This is probably
-not what you want.  I expect you only want to SNAT outgoing traffic:
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
-## Setup NAT from entire WAN to the outside world
-/sbin/iptables --table nat  --append POSTROUTING --out-interface eth0          \
-                  --jump SNAT --to 204.48.178.2
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
 
-With this rule, you should now place the real external hosts in
-your hosts.allow, rather than any IP address that belongs to the
-firewall.
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
 
--- 
-Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
-SnapGear - Custom Embedded Solutions and Security Appliances
+-----Original Message-----
+From: jen@saturn5.com [mailto:jen@saturn5.com]
+Sent: None
+To: netfilter@lists.netfilter.org
+Subject: ssl forward / proxy question
+
+
+
+hi,=20
+
+i have a NAT set up via an iptables firewall on RHAS. i have various =
+webservers=20
+behind it (and other stuff), but now i'm required by marketing (sigh) to =
+set=20
+up loads of SSL certificates. since apache/apache2 still requires one ip =
+
+address per SSL certificate, and they mean to do lots of these, i'm =
+wondering
+how to set it up in such a way that all DNS points to one external IP =
+address
+such as 234.56.78.90. when the packet hits the firewall, something =
+proxies it=20
+so that it will see the *name* address, and forward it on to a virtual =
+IP. for
+example:
+
+there are 3 domains all belonging to the same "real" IP address.=20
+
+234.56.78.90 -> www.guinness.com
+234.56.78.90 -> www.kicks.com
+234.56.78.90 -> www.butt.com
+
+so a user wants to go to www.guinness.com, the IP takes the packet to =
+the fire
+wall/proxy/whatever, notices that it's "www.guinness.com" and and will =
+forward t
+he packet on to the internal address of 10.31.1.44
+
+user goes to www.kicks.com, and the packet goes to 10.31.1.45
+
+www.butt.com will get forwarded to 10.31.1.46
+
+is there something like this that is possible?=20
+
+thanks!!
+
+-\jen
 
 
