@@ -1,11 +1,15 @@
-From: Gladson George <georgc@FARMINGDALE.EDU>
-Subject: RE: block kazaa using iptables
-Date: Fri, 25 Apr 2003 10:19:13 -0400
+From: Dmitry Labutcky <avl@strace.net>
+Subject: Re: Match DF ( =?iso-8859-1?q?Don=B4t?= Fragment) bit
+Date: Fri, 25 Apr 2003 12:43:40 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2CE951F1A7DC0644A33B9F763D2029C0012A2867@mail.it.farmingdale.edu>
+Message-ID: <200304251243.40088.avl@strace.net>
+References: <OF0AE04567.652B900B-ONC1256D11.0042E920@guardianit.se> <Pine.LNX.4.51.0304251108380.9600@dns.toxicfilms.tv>
+Reply-To: avl@strace.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.51.0304251108380.9600@dns.toxicfilms.tv>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,24 +19,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-=0D=0ADoes anyone have a list of IP addresses for the kazaa servers? =
-=0D=0A=0D=0A-----Original Message-----=0D=0AFrom: Wijaya, J. [mailto:=
-wijayaj@gmx.net] =0D=0ASent: Friday, April 25, 2003 7:12 AM=0D=0ATo: =
-wjdeypalan@ictuscomm.net; netfilter@lists.netfilter.org=0D=0ASubject:=
- Re: block kazaa using iptables=0D=0A=0D=0ATry not to block the port =
-number, instead of blocking the access to the=0D=0Aserver ip address,=
- this will be a bit difficult, we have to find out all=0D=0Athe kazaa=
- server addreses.=0D=0A=0D=0AI have done this task to block yahoo mes=
-senger, because yahoo msg will use=0D=0Aany available port, so it is =
-useless to block 5050 (yahoo port number), so=0D=0Ai just block all t=
-he ip addresses for the yahoo msg servers.=0D=0A=0D=0Ajw.=0D=0A=0D=
-=0A*********** REPLY SEPARATOR  ***********=0D=0A=0D=0AOn 24/04/2003 =
-at 19:28 PM Wesley Jay Deypalan wrote:=0D=0A=0D=0A>Hi,=0D=0A>=0D=0A>I=
-s there a way to block kazaa using iptables?Already tried blocking po=
-rt=0D=0A>1214 but to no avail, I heard that kazaa change ports if it =
-cannot connect=0D=0A>using 1214.=0D=0A>TIA,=0D=0A>=0D=0A>wesley=0D=
-=0A=0D=0A=0D=0A=0D=0A=0D=0A=
+Hi!
+
+> On Wed, 23 Apr 2003, Mathias Sundman wrote:
+> > If a mashine on LocalNet1 sends full size packets (1500b)
+> > to a mashine on LocalNet2, it will exceed 1500 bytes
+> > when it=B4s encrypted and sent over the internet. These packets
+> > will then be fragmented. This is fine as long as the fragments
+> > gets through...
+>
+> How about using -j TCPMSS --clamp-mss-to-pmtu
+> or setting mtu to a lower value to avoid fragmentation ?
+
+But if one or more routers in tracepath does not support pmtu?
+Setting mtu to lower is solution, but this not always good idea.
+Another solution may be in clear DF flag on forwaders packets.
+
+
+--=20
+/bye
+----------------------------------------------------------------------
+Dmitry U.Labutcky                  System administrator of Swift Trace
+mail to: avl@strace.net            Simferopol, Crimea, Ukraine
+phone:   +380-652-516546           Yaltinskaya 20, office 502
+
 
