@@ -1,13 +1,16 @@
-From: Matthew Schumacher <matt.s@aptalaska.net>
-Subject: Re: ip_conntrack table is full with razor requests. Something isn't
- timing out.
-Date: Tue, 01 Mar 2005 14:47:16 -0900
-Message-ID: <4224FF04.90205@aptalaska.net>
-References: <4224A715.8030907@aptalaska.net>
-	<Pine.LNX.4.62.0503012324020.3992@L01.THNET>
+From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
+Subject: Re: attempting to transparently proxy with this script to no avail
+	(nfcan: addressed to exclusive sender for this address)
+Date: Tue, 1 Mar 2005 20:07:23 -0500
+Message-ID: <20050302010723.GI14303@salty>
+References: <BAY17-F386CBFC183CD40C68DFE19DC590@phx.gbl>
+Reply-To: nfcan.x.jimlaur@dfgh.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.62.0503012324020.3992@L01.THNET>
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <BAY17-F386CBFC183CD40C68DFE19DC590@phx.gbl> (from
+	+nfcan+jimlaur+f8d0e213b6.securadd#hotmail.com@spamgourmet.com
+	on Tue, Mar 01, 2005 at 17:03:12 -0500)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +21,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Michael Tautschnig <michael.tautschnig@zt-consulting.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Michael Tautschnig wrote:
-> Hello!
-> 
->>
->> Since upgrading to 2.6.10 I have been having problems with my 
->> ip_conntrack table filling up.  It appears it is full of razor 
->> (http://razor.sf.net) requests from my internal mail server.
->>
-> So I'm not the only one with these problems - I can confirm this 
-> completely. It's razor and kernel 2.6.10 here too.
-> 
-> [...]
-> 
-> It would be great, if somebody could help us - or tell us, what 
-> information one should supply...
-> 
-> Thanks in advance,
-> Michael
+On 2005.03.01 17:03, joe z - securadd@hotmail.com wrote:
+> this script runs everything fine just the redirect doesn't. the proxy works  
+> fine when browser pointed at it.
+>
 
-Michael,
+...
 
-Thanks for your note on this... looks like a netfilter bug to me.  Did 
-you have any problems running 2.6.9?  I am looking at the diffs and it 
-looks like there are a number of changes to the ip_conntrack code in 
-2.6.10.  When reading though the changelog for 2.6.11-rc5 it doesn't 
-appear that any of these issues are resolved, so I may have to go back 
-to 2.6.9 if it is known to work.
+> iptables -t nat -A PREROUTING -m tcp -p tcp --dport 80 -j REDIRECT --to-port  
+> 8080
 
-schu
+Try this instead:
+
+iptables -t nat -A PREROUTING -m tcp -p tcp --dport 80 -j DNAT --to-port 8080
+
+-- 
+Jim Laurino
+nfcan.x.jimlaur@dfgh.net
+Please reply to the list.
+Only mail from the listserver reaches this address.
 
