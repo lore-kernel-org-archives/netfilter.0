@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: TWO ROUTING
-Date: Thu, 20 Nov 2003 22:34:30 +0000
+From: mpdykeman@micron.com
+Subject: Connection table management
+Date: Thu, 20 Nov 2003 16:46:14 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311202234.hAKMYY723743@onyx.rockstone.co.uk>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A28AD45@wardrive.citadelcomputer.com.au>
+Message-ID: <040405FAA8D7CD41BCA471B1A3451EE305AA76@ntxboimbx08.micron.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3AFC0.7C201816"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A28AD45@wardrive.citadelcomputer.com.au>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +17,90 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 20 November 2003 9:44 pm, George Vieira wrote:
+This is a multi-part message in MIME format.
 
-> He is asking what has been asked alot lately which is how to make a machine
-> respond to both internet links via it's appropriate IP addresses.
->
-> So when a client accesses the machine via ww.xx.yy.zz, the firewall
-> responds back via that IP/ether, if a different client accesses it via the
-> aa.bb.cc.dd address, it responds back via that address/ether.
->
-> There was talk before about using CONNTRACK and marking packets on the list
-> before.. I think this is the solution but I didn't see a successful
-> response..
+------_=_NextPart_001_01C3AFC0.7C201816
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-You can MARK packets on their way through netfilter, and do various 
-interesting and possibly useful things to the packet on the basis of the mark 
-which was assigned, however I do not think there is any way of identifying 
-the packets which come in later as replies to these, and thereby doing 
-anything based on the mark which was assigned to the first packet on its way 
-through.
+Two questions,
 
-Antony.
+1) I've seen tools like cutter that jump though hoops to kill
+connections using RSTs with invalid sequence numbers... However, is
+there any way to force iptables to delete a connection entry from the
+connection table so that further packets arriving for that connection
+can simply be DROPed/REJECTed because there is no ASSURED/ESTABLISHED
+matching state?
 
--- 
+2) Short of setting up logging rules for RST/FIN packets, is there a way
+to get iptables to log connection teardowns and the cause for the
+teardown (especially since RST/FIN is not the only way that a connection
+can be dropped from the table--i.e, when the kernal drops the connection
+from the table because of inactivity)?
 
-This email was created using 100% recycled electrons.
+In general, while I am impressed with the
+performance/stability/manageability of an iptables firewall, either I'm
+not looking in the right place for documentation, or direct manipulation
+of the connection table is not available without resorting to kernel
+level programming.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Thanx.
+
+--Markley Dykeman
+
+
+
+------_=_NextPart_001_01C3AFC0.7C201816
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.6487.1">
+<TITLE>Connection table management</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">Two questions,</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">1) I've seen tools like cutter that =
+jump though hoops to kill connections using RSTs with invalid sequence =
+numbers... However, is there any way to force iptables to delete a =
+connection entry from the connection table so that further packets =
+arriving for that connection can simply be DROPed/REJECTed because there =
+is no ASSURED/ESTABLISHED matching state?</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">2) Short of setting up logging rules =
+for RST/FIN packets, is there a way to get iptables to log connection =
+teardowns and the cause for the teardown (especially since RST/FIN is =
+not the only way that a connection can be dropped from the table--i.e, =
+when the kernal drops the connection from the table because of =
+inactivity)?</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">In general, while I am impressed with =
+the performance/stability/manageability of an iptables firewall, either =
+I'm not looking in the right place for documentation, or direct =
+manipulation of the connection table is not available without resorting =
+to kernel level programming.</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">Thanx.</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">--Markley Dykeman</FONT>
+</P>
+<BR>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C3AFC0.7C201816--
 
