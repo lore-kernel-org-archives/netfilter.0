@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: detect original chain after jump?
-Date: Sat, 27 Mar 2004 13:51:32 +0000
+From: Frank Gruellich <frank@home.manuelm.org>
+Subject: Re: Securing a Firewall
+Date: Sat, 27 Mar 2004 14:55:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403271351.32300.Antony@Soft-Solutions.co.uk>
-References: <20040327133801.GA5251@fake>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040327135542.GL10272@home.manuelm.org>
+References: <4064E987.8090907@imperium-noctem.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040327133801.GA5251@fake>
+Content-Disposition: inline
+In-Reply-To: <4064E987.8090907@imperium-noctem.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,55 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Saturday 27 March 2004 1:38 pm, Richard Hector wrote:
+* Ronny Fauth <jadefalkner@imperium-noctem.de> 27. Mar 04:
+> How can i secure my iptables?
 
-> This means that early on, I have something like:
->
-> iptables -A INPUT -j protocol
-> iptables -A FORWARD -j protocol
->
-> iptables -A protocol -p tcp --dport 22 -j ssh
->
-> But then I get a bit stuck. I need to then do different things depending
-> on the source and destination - which includes whether this packet is
-> arriving locally or being forwarded. Therefore it would be useful to
-> know whether this packet started out in the INPUT or FORWARD chain - but
-> that info seems to have been lost with the jump.
->
-> Is there any way to regain that?
+RTFM.  What do you want to protect from what?
 
-Surely the destination address is all you need for this?
+> I want to stealth all my ports and i want that no ping is awnsered.
 
-If it's an address local to the machine, the packet is addressed to the 
-machine, therefore it came through the INPUT chain.
+Why do you intend to break common internet standards?  'Stealth' is
+useless, 'stealth' is not security, 'stealth' is marketing.  Simply
+don't do it (without good reasons).
 
-If the destination address is not local, the packet isn't addressed to the 
-machine, therefore it's going somewhere else, therefore it came through the 
-FORWARD chain.
+> If a port is stealthed can i access that port?
 
-Are you sure that combining INPUT and FORWARD rules like this is really what 
-you want to do?
-
-I would have thought the two were sufficiently different (what traffic you 
-allow in to your firewall, compared to what traffic you allow through it to 
-elsewhere) that it would be worth writing separate rulesets for the two.
-
-However, YMMV as they say....
-
-Regards,
-
-Antony.
-
+No,
+ regards, Frank.
 -- 
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Sigmentation fault
 
