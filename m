@@ -1,13 +1,13 @@
-From: "Anderson, Ray" <rsa@prideindustries.com>
-Subject: RE: block msn
-Date: Wed, 16 Jul 2003 08:54:37 -0700
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: block msn
+Date: 16 Jul 2003 18:01:05 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9FEBBE3B5C27D311B0B90050041E59B003CFF054@ziggy.prideindustries.com>
+Message-ID: <1058371265.6618.51.camel@raylinux.internal>
+References: <3F1538A4.9000702@sat.com.py>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="Boundary_(ID_yp6DmSsqecO18TDUorQ/fg)"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ip5L2PctFA2dGD5E1Iyb"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-return: allowed
+In-Reply-To: <3F1538A4.9000702@sat.com.py>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,103 +17,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: juanca <juanca@sat.com.py>, netfilter@lists.netfilter.org
-
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
---Boundary_(ID_yp6DmSsqecO18TDUorQ/fg)
-Content-type: text/plain
-
-Well, it looks like to me that the source should be 0.0.0.0, or nothing at
-all to block all msn on all machines.
-
--=Ray
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
------Original Message-----
-From: juanca [mailto:juanca@sat.com.py] 
-Sent: Wednesday, July 16, 2003 4:36 AM
-To: netfilter@lists.netfilter.org
-Subject: block msn
+--=-ip5L2PctFA2dGD5E1Iyb
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
+The msn clients with winblows xp also 'tunnel' via your proxy if they
+can't get out via the normal methods. You need to block the msn mime
+types.
 
-I`ve got this rulset but It doesn`t work what else do I need to add?
-All the windows machine work msn, just on linux doesn`t
-Any suggetions ?
-Thanks in advance
+With ip tables I think you could probably use a string match for
+'x-msn-messenger' (if that's the mime type).
 
-iptables -A FORWARD -s 192.168.0.10 -p TCP --dport 1443:1467 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.33 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.38 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1513:1525 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -d 66.35.229.204 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -d 65.54.194.118 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.34 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -d 208.45.129.195 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP
-iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.11 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP
-iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1601:1603 -d 0/0 -j DROP
-iptables -A FORWARD -s 192.168.0.10 -d 64.4.13.0/24 -j REJECT
-iptables -A FORWARD -s 192.168.0.10 -d 64.4.0.0/24 -j REJECT
-iptables -A INPUT -p tcp -s 192.168.0.10 -d messenger.microsoft.com -j DROP
+Ray
 
+On Wed, 2003-07-16 at 13:36, juanca wrote:
+> I`ve got this rulset but It doesn`t work what else do I need to add?
+> All the windows machine work msn, just on linux doesn`t
+> Any suggetions ?
+> Thanks in advance
+>=20
+> iptables -A FORWARD -s 192.168.0.10 -p TCP --dport 1443:1467 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.33 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.38 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1513:1525 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -d 66.35.229.204 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -d 65.54.194.118 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.34 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -d 208.45.129.195 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP
+> iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.11 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP
+> iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1601:1603 -d 0/0 -j DR=
+OP
+> iptables -A FORWARD -s 192.168.0.10 -d 64.4.13.0/24 -j REJECT
+> iptables -A FORWARD -s 192.168.0.10 -d 64.4.0.0/24 -j REJECT
+> iptables -A INPUT -p tcp -s 192.168.0.10 -d messenger.microsoft.com -j DR=
+OP
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
---Boundary_(ID_yp6DmSsqecO18TDUorQ/fg)
-Content-type: text/html
+--=-ip5L2PctFA2dGD5E1Iyb
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
-<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2654.45">
-<TITLE>RE: block msn</TITLE>
-</HEAD>
-<BODY>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
 
-<P><FONT SIZE=2>Well, it looks like to me that the source should be 0.0.0.0, or nothing at all to block all msn on all machines.</FONT>
-</P>
+iD8DBQA/FXbBh1fuR/Bv+ygRAs1SAJ9Re0O9xMGFPHtVqVX5ghr0wgjVJACdE28D
+C2rLvIFRRmr2UaFoSpOnTYk=
+=qaYv
+-----END PGP SIGNATURE-----
 
-<P><FONT SIZE=2>-=Ray</FONT>
-</P>
-<BR>
+--=-ip5L2PctFA2dGD5E1Iyb--
 
-<P><FONT SIZE=2>-----Original Message-----</FONT>
-<BR><FONT SIZE=2>From: juanca [<A HREF="mailto:juanca@sat.com.py">mailto:juanca@sat.com.py</A>] </FONT>
-<BR><FONT SIZE=2>Sent: Wednesday, July 16, 2003 4:36 AM</FONT>
-<BR><FONT SIZE=2>To: netfilter@lists.netfilter.org</FONT>
-<BR><FONT SIZE=2>Subject: block msn</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=2>I`ve got this rulset but It doesn`t work what else do I need to add?</FONT>
-<BR><FONT SIZE=2>All the windows machine work msn, just on linux doesn`t</FONT>
-<BR><FONT SIZE=2>Any suggetions ?</FONT>
-<BR><FONT SIZE=2>Thanks in advance</FONT>
-</P>
-
-<P><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -p TCP --dport 1443:1467 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.33 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.38 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1513:1525 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -d 66.35.229.204 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -d 65.54.194.118 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.34 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -d 208.45.129.195 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.11 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1601:1603 -d 0/0 -j DROP</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -d 64.4.13.0/24 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A FORWARD -s 192.168.0.10 -d 64.4.0.0/24 -j REJECT</FONT>
-<BR><FONT SIZE=2>iptables -A INPUT -p tcp -s 192.168.0.10 -d messenger.microsoft.com -j DROP</FONT>
-</P>
-
-</BODY>
-</HTML>
-
---Boundary_(ID_yp6DmSsqecO18TDUorQ/fg)--
 
