@@ -1,13 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Possible to block ports by user group?
-Date: Sun, 04 Jul 2004 16:59:04 +0200
+From: Vladimir Mosgalin <mosgalin@VM10124.spb.edu>
+Subject: Dynamic change of iptables (building Wi-Fi hotspot)
+Date: Sun, 4 Jul 2004 20:33:42 +0400 (MSD)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088953144.11637.57.camel@anduril.intranet.cartel-securite.net>
-References: <opsal65hoe4evsfm@smtp.pacific.net.th>
+Message-ID: <Pine.LNX.4.58.0407042011460.3513@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <opsal65hoe4evsfm@smtp.pacific.net.th>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +14,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Michael Frank <mhf@linuxmail.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Le dim 04/07/2004 =E0 15:16, Michael Frank a =E9crit :
-> Would like to block ports depending on the group in use
+Hello everybody.
 
-See owner match :
+I want to build a Wi-Fi hotspot. The linux box with wireless AP
+connected to it which provides internet access to people with Wi-Fi
+cards.
 
-cbr@anduril:~$ iptables -m owner --help
-iptables v1.2.11
-[...]
-OWNER match v1.2.11 options:
-[!] --uid-owner userid     Match local uid
-[!] --gid-owner groupid    Match local gid
-[!] --pid-owner processid  Match local pid
-[!] --sid-owner sessionid  Match local sid
-[!] --cmd-owner name       Match local command name
+When people pay for time or traffic some unique username and password is
+given to each. When they try to access any http website, for the first
+time each of them gets a login message. After entering name & password,
+they continue to work normally.
 
---gid-owner seems to satisfy your needs.
+I see two ways of doing it.
+1) Iptables get changed by some script each time when someone registers
+or his time runs out. There is a rule
+iptables -A FORWARD -p tcp --dport 80 -j DNAT --to-destination 127.0.0.1:80
+
+Thus, everyone gets forwarded to localhost.
+On localhost, apache has 404 error handler which redirects each to login
+page. When they sucessfully enter username and password, script adds
+line like this
+iptables -I FORWARD 1 -s $ip -j ACCEPT
+and now client can do whatever he wants.
+
+When unregistering, another script removes this line.
+
+I see two problems in this approach - I'm not sure whether changing
+iptables constantly is good, and I feel a bit anxious about the fact
+that several different scripts are running and doing something.
+
+2) All traffic is redirected to tun interface, and some C program
+analyzies each packed and decides whether to pass them or block them
+and serve as a simple http server, offering login page. The problem is
+that I need to write this program in this case, and it can be
+complicated a bit, and I'm not very confident because all traffic
+will have to pass through this program and it must be written really
+good if I don't want to have problems.
 
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Maybe there are other solutions (like very clever netfilter module which
+can be controlled from userspace)? Or there is nothing bad in changing
+iptables often?
+
+-- 
+
+Vladimir
 
