@@ -1,12 +1,12 @@
-From: "louie miranda" <lmiranda@chikka.com>
-Subject: managing another network route, can't connect to it! Pls see!
-Date: Wed, 26 Feb 2003 19:14:06 +0800
+From: "CN LIOU" <cnliou@graffiti.net>
+Subject: How To Enable A Server Waiting For Connections From Internet
+Date: Wed, 26 Feb 2003 19:37:32 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <030f01c2dd88$2f277140$0b00000a@nocpc3>
+Message-ID: <20030226113732.29044.qmail@graffiti.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_030C_01C2DDCB.3B325890"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,126 +16,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi!
 
-------=_NextPart_000_030C_01C2DDCB.3B325890
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+The Linux box running netfilter/iptables is connected to Internet by ADSL via PPPoE. It dynamically obtains one IP address from ISP. Let's call this Linux box as "router".
 
-i.e.
+I have a Win98 server program listening on port 6000. This program is expecting connections from any host on Internet. Once the connection is established, there will be data transfer between this server program and the hosts on Internet.
 
-Consider the following network: (kindly view the attached txt file for a
-nicer one)
+There will be a web server in private network 192.168.0, too.
 
-                              inet
-                                |
-                                |
-                                |203.190.72.108
-                      *-----------------*
-              10.0.0.1|       eth0      |none
-                 /----|eth1         eth2|------\               new network
-block pipe
-                 |    |     LINUX GW    |   line cut         *--------*
-192.168.129.x/24 (network)
-                 |    *-----------------*                    |        |
-10.0.0.2, gw for 192.168.129.x/24 block under LINUX GW
-                 |                                           | 192.x  |
-                 |                                           |        |
-               *HUB*-----------------------------------------*--------*
-                 |                                              cisco 2600
-router ip of this router is: 10.0.0.2
-                 |
-                 |
-           *--* *--* *--*
-           |  | |  | |  |
-           |  | |  | |  |
-           *--* *--* *--*
-            workstations
-          10.0.0.0/16 block
+The IP's are:
+
+eth0 of router=192.168.0.1 assigned by rc.inet1
+eth0:1 of router=192.168.0.9 assigned by PPPoE
+Win98=192.168.0.4
+eth0 of web server=192.168.0.5
 
 
-    interface:
-     - eth0 = 203.190.72.108, default gw.
-     - eth1 = 10.0.0.0/16, local area network.
-     - eth2 = none
+I copied rc.firewall from
+http://www.tldp.org/HOWTO/IP-Masquerade-HOWTO/firewall-examples.html#RC.FIREWALL-2.4.X
+and modified it for my case as follows. Could any guru correct it for me so that I can use it as my beginner's tutorial?
 
+Thank you in advance!
 
+CN
+------------------------
+EXTIF="ppp0"
+INTIF="eth0"
+WIN98IF="192.168.0.4"
+echo "1" > /proc/sys/net/ipv4/ip_forward
+echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -t nat -F
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state ESTABLISHED,NEW,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -j LOG
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+$IPTABLES -A FORWARD -p tcp --dport 6000 -j ACCEPT
+$IPTABLES -t nat -A PREROUTING -p tcp --dport 6000 -i $INIF -j DNAT --to $WIN98IF:6000
+-- 
+_______________________________________________
+Get your free email from http://www.graffiti.net
 
-===========
-
-Right now im inside 10.0.0.0/16 block, my ip is 10.0.0.11 and my default gw
-is via 203.190.72.108.
-My LAN is on a masq LinuxBOX. On my diagram i have added a network cable
-that is on a different
-subnet connect to a cisco router via 10.0.0.2 which is connected to another
-network (diff story).
-My kernel route diagram is below..
-
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use
-Iface
-203.190.72.104  0.0.0.0         255.255.255.248 U     0      0        0 eth0
-192.168.129.0   10.0.0.2        255.255.255.0   UG    0      0        0 eth1
-<--- new route via 10.0.0.2
-10.0.0.0        0.0.0.0         255.255.0.0     U     0      0        0 eth1
-0.0.0.0         203.190.72.110  0.0.0.0         UG    0      0        0 eth0
-
-I can access ip block 192.168.129.x on my LINUX GW perfectly. But when im on
-my workstations on
-10.0.0.11 block i cannot even ping 192.168.129.x block. Which could be
-possibly be wrong?
-
-
-
----
-thanks,
-louie
-
-------=_NextPart_000_030C_01C2DDCB.3B325890
-Content-Type: text/plain;
-	name="networkdiag.txt"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="networkdiag.txt"
-
-Consider the following network:=20
-
-                              inet
-                                |              =20
-                                |                          =20
-                                |203.190.72.108
-                      *-----------------*                 =20
-              10.0.0.1|       eth0      |none
-                 /----|eth1         eth2|------\               new =
-network block pipe
-                 |    |     LINUX GW    |   line cut         *--------*  =
-192.168.129.x/24 (network)
-                 |    *-----------------*                    |        |  =
-10.0.0.2, gw for 192.168.129.x/24 block under LINUX GW
-                 |                                           | 192.x  |
-                 |                                           |        |
-               *HUB*-----------------------------------------*--------*
-                 |                                              cisco =
-2600 router ip of this router is: 10.0.0.2
-                 |                            =20
-                 |
-           *--* *--* *--*
-           |  | |  | |  |
-           |  | |  | |  |
-           *--* *--* *--*
-            workstations
-          10.0.0.0/16 block
-
-
-    interface:
-     - eth0 =3D 203.190.72.108, default gw.
-     - eth1 =3D 10.0.0.0/16, local area network.
-     - eth2 =3D none
-
-
-------=_NextPart_000_030C_01C2DDCB.3B325890--
-
+Powered by Outblaze
 
