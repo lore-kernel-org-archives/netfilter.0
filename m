@@ -1,7 +1,7 @@
-From: Kevin Van Workum <vanw@usna.edu>
-Subject: bad tcp packets?
-Date: Mon, 31 Jan 2005 08:29:56 -0500
-Message-ID: <41FE32D4.4000103@usna.edu>
+From: Moritz Gartenmeister <moritz@uplink-verein.ch>
+Subject: ARP Proxy
+Date: Mon, 31 Jan 2005 15:01:21 +0100
+Message-ID: <41FE3A31.4080708@uplink-verein.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,27 +18,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I'm learning about iptables and am working through the example scripts 
-in Oskar Andreasson's Iptables Tutorial 1.1.19. So I have the following 
-rules:
+hi
 
-iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG 
---log-prefix "New not syn:"
-iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
+i'm not sure, if am right here, so if i am wrong, pleas point me to a source ;-)
 
-My understanding of this rule is that all NEW tcp packets should by SYN 
-also. So if they are not NEW and SYN, then we should log them and drop 
-them. I guess Andreasson wants to log them because they may indicate a 
-problem of some sort. So in my log file, I get this:
+how can i reduce arp-broadcasts without routing?
 
-Jan 30 20:09:27 server kernel: New not syn:IN= OUT=lo SRC=10.0.0.100 
-DST=10.0.0.100 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=7678 DF PROTO=TCP 
-SPT=34928 DPT=143 WINDOW=32767 RES=0x00 ACK PSH FIN URGP=0
+i have physically 2 subnets (500 and 300 clients), logically this is one subnet. my premature/naive 
+idea is, to install a linux-bridge and put arp-proxy on it. as long as the proxy has the correct 
+entry, broadcasts are not propagated. this will reduce arp-broadcasts.
 
-So what's the problem with these packets? It looks like some client is 
-contacting the imapd (which is running on my firewall) with some bad tcp 
-packets?
+i know, i have to bend alot of principles, but will it work?
 
--- 
-Kevin
+cheers
+moritz
 
