@@ -1,8 +1,8 @@
 From: Chris Brenton <cbrenton@chrisbrenton.org>
 Subject: Re: Blocking Netranges Based on IP-to-Country CSV
-Date: Mon, 20 Sep 2004 08:16:40 -0400
+Date: Mon, 20 Sep 2004 08:26:11 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095682599.1779.106.camel@grendel>
+Message-ID: <1095683170.1779.116.camel@grendel>
 References: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
 	<20040917114613.GP452@metastasis.org.uk>
 	<1403218a0409190209416c12b9@mail.gmail.com>
@@ -10,10 +10,11 @@ References: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil
 	<1403218a04091904173de016ea@mail.gmail.com>
 	<3063e504091904456844d5cf@mail.gmail.com>
 	<20040920115357.GE3786@metastasis.org.uk>
+	<414EC7B2.5000904@bewegungsmelder.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040920115357.GE3786@metastasis.org.uk>
+In-Reply-To: <414EC7B2.5000904@bewegungsmelder.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,39 +24,47 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Nick Drage <nickd@metastasis.org.uk>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Thomas =?ISO-8859-1?Q?Lu=DFnig?= <tlussnig@bewegungsmelder.de>
 Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Mon, 2004-09-20 at 07:53, Nick Drage wrote:
+On Mon, 2004-09-20 at 08:06, Thomas Lu=DFnig wrote:
 >
-> > So, whats the reason is banning some countryes?
-> 
-> Imagine
-> I'm going travelling, and I know I'm only going to South America, so I
-> want to open up my ssh daemon to more addresses.  However I don't want
-> to permit the entire Internet to have a go at the daemon, but I'm
-> willing to open it up to South America to increase the risk slightly
-> in return for permitting myself SSH access wherever I am.
+> - Extereme overload for IP-tables since it need extreme large table of=20
+> ip lists
 
-Well said. I find it kind of strange that people are cool with blocking
-ranges of ports, but as soon as you get into blocking ranges of IP
-addresses they get squeamish and may even label you a bigot.
+I beg to disagree. Most range blocking is done more on a region basis
+rather than by individual country (i.e. permit countries in Europe but
+maybe block Asia-Pacific). Given that IP ranges are delegated in large
+blocks (class A and B being the norm), it actually takes very few rules.
+For example I've had iptables firewalls pushing 400 Mb with region based
+filtering in place. Worked like a champ.
 
-Its simply a matter of risk Vs. business need. My business model
-requires an SMTP server so I accept the risk of exposing that port to
-Internet access. My business model *does not* require NetBIOS/IP, so
-those ports are obviously blocked. Why accept the risk involved if there
-is no business argument for it?
+> - Is extreme faulty since IP's are not original assinged to country but=
+=20
+> locations like Europe.
 
-Blocking IP ranges is exactly the same thing. If I do business in
-Canada, the UK, etc., then obviously I have to accept the risk of
-exposing my services to those IP blocks. If I don't do business in China
-and know I never will, what's the point in accepting the risk of attack
-from that country?
+Agreed, so if you are trying to target a specific country, you may run
+into problems in areas like Europe. Blocking by region is less of an
+issue but you can still run into problems (like class A blocks in Asia
+that are also used in Australia, etc.).
 
-Cheers,
+> - How you wan't to do the next step someone say i not wan't to select=20
+> based on country bot wan't different web server
+>  for region's with different main language. ASIA -> UTF8/Chinese Europe=
+=20
+> Latin1/Frensh,German,English America =3D> Spain/english
+
+Actually, I'm pretty sure you could do this today with Squid. ;-)
+
+Obviously a portion of this is "intent". If its to reduce risk, its one
+thing. Banning based on color or creed is another. For example there are
+Spanish people all over the world so banning based on the language
+sounds like its more about discrimination rather than lowering risk.
+
+HTH,
 Chris
+
 
 
 
