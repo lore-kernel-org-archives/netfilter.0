@@ -1,10 +1,12 @@
-From: Andrei Ivanov <andrei.ivanov@ines.ro>
-Subject: tos 0x62
-Date: Mon, 16 Sep 2002 18:25:39 +0300 (EEST)
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: why can't I telnet
+Date: Mon, 16 Sep 2002 17:58:44 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0209161807480.6328-100000@webdev.ines.ro>
+Message-ID: <Pine.LNX.4.44.0209161757460.2230-100000@dns.toxicfilms.tv>
+References: <200209161511.g8GFBBv15493@vulcan.rissington.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200209161511.g8GFBBv15493@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,23 +18,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
+> routed through this one, then I can't see the reason why it's not working; I
+> suggest you add a LOGging rule after each of these rules to show you what
+> packets are trying to get in or out of the machine and being blocked.
+And it is good to learn to use tcpdump and use it with every problem you
+encounter. Just to see the traffic.
 
-Hello,
-I'm trying to filter packets which have a TOS value of 0x62, and it seems
-I cannot.
-I tried the tos module, but it only knows valid tos values.
-I look for the ftos module from patch-o-matic, but it seems it has been
-obsoleted by DSCP and ECN module.
-
-If I try iptables -I acc_IN -i eth1 -m dscp --dscp 0x62 it spits out:
-
-iptables v1.2.7a: DSCP `98` out of range
-
-How can I do this ?
-(I coudln't search the mail archives for this problem because this mailing
-list manager doesn't offer such a facility)
+Regards,
+Maciej Soltysiak
 
 
 
