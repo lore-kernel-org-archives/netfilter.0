@@ -1,15 +1,14 @@
-From: Tony Earnshaw <tonni@billy.demon.nl>
-Subject: Re: Requestion for help with GRE tunnel
-Date: 18 Jun 2002 23:03:02 +0200
+From: Stewart Thompson <stewart.thompson@shaw.ca>
+Subject: RE: invert problem with multiport
+Date: Tue, 18 Jun 2002 15:18:22 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1024434182.1918.146.camel@billy.demon.nl>
-References: <20020618063945.A2662@inxservices.com> 
-	<1024433743.2763.141.camel@billy.demon.nl>
+Message-ID: <FLEKIPPLAEDMJMOOBBDPMEDKCGAA.stewart.thompson@shaw.ca>
+References: <3D0F56B9.5952D779@conterra.de>
+Reply-To: stewart.thompson@shaw.ca
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-WG3sIH4wvVq6BPzLIa9C"
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <1024433743.2763.141.camel@billy.demon.nl>
+In-Reply-To: <3D0F56B9.5952D779@conterra.de>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,49 +18,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: Christoph Gossen <gosen@conterra.de>, netfilter@lists.samba.org
+
+Hi Christoph:
+
+	I am still running iptables 1.24. However, in that version I
+don't think it supported the ! negation on multiport. Later versions
+may have added that capability. Perhaps one of the members of
+the list has a more definitive answer.
+
+Stu...............
+
+
+
+-----Original Message-----
+From: netfilter-admin@lists.samba.org
+[mailto:netfilter-admin@lists.samba.org]On Behalf Of Christoph Gossen
+Sent: June 18, 2002 8:50 AM
 To: netfilter@lists.samba.org
+Subject: invert problem with multiport
 
+Hello,
 
---=-WG3sIH4wvVq6BPzLIa9C
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I think there's a bug in the behaviour of the multiport module - for
+example, a line like
 
-tir, 2002-06-18 kl. 22:55 skrev Tony Earnshaw:
+        iptables -p tcp -A OUTPUT -m multiport ! --dport 25 -j DROP
 
-> [Off list, because off topic]
+causes the same behaviour as
 
-Sorry list, I pressed the wrong button ...
+        iptables -p tcp -A OUTPUT -m multiport --dport 25 -j DROP
 
-Tony
+or
 
---=20
+        iptables -p tcp -A OUTPUT --dport 25 -j DROP
 
-Tony Earnshaw
+and NOT (as one would expect) that one caused by
 
-e-post:		tonni@billy.demon.nl
-www:		http://www.billy.demon.nl
-gpg public key:	http://www.billy.demon.nl/tonni.armor
+        iptables -p tcp -A OUTPUT ! --dport 25 -j DROP
 
-Telefoon:	(+31) (0)172 530428
-Mobiel:		(+31) (0)6 51153356
+Inverting the (set of) port(s) due to the "!" sign in the first line
+above is just ignored
+(no syntax error occures)!
 
-GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
-3BE7B981
+Any comments?
 
+Thanks,
 
+Christoph
 
---=-WG3sIH4wvVq6BPzLIa9C
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Dette er en digitalt signert meldingsdel
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA9D6AG99dgUTvnuYERAkdiAKCpQEWyaxH3fOroAfqdmwObUvnAuwCcCocR
-9guB8jd/zvPTmwLDAKjVox0=
-=wuDR
------END PGP SIGNATURE-----
-
---=-WG3sIH4wvVq6BPzLIa9C--
 
 
