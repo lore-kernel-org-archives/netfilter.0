@@ -1,14 +1,13 @@
-From: Les Mikesell <les@futuresource.com>
-Subject: Re: VPN over netfilter NAT
-Date: Thu, 16 Sep 2004 12:11:18 -0500
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: set up my DMZ
+Date: Thu, 16 Sep 2004 13:39:51 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095354677.21739.6.camel@moola.futuresource.com>
-References: <200409161436.26695.apapadop@alumni.carnegiemellon.edu>
-	<4149A4D5.2010209@pbl.ca>
+Message-ID: <1095356390.2489.70.camel@wolfpack.ljm.dom>
+References: <web-3246067@infinito.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4149A4D5.2010209@pbl.ca>
+In-Reply-To: <web-3246067@infinito.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +18,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 2004-09-16 at 09:36, Aleksandar Milivojevic wrote:
-> > 
-> > Is this just an over-simplifying statement that really means "if you're 
-> > reading this, then don't even try setting up a NAT-traversing VPN"?
+On Thu, 2004-09-16 at 10:44, hamals@infinito.it wrote:
+> I've a DMZ with two server, I would like to acces them 
+> through my iptables firewall.
 > 
-> Yes and no.  Depends on what you mean by VPN.  VPN can be implemented in 
-> many different ways.  With IPSec implementation you may run into 
-> problems (some solvable, some not).  With user space daemon 
-> implementations such as OpenVPN or VTun, you shouldn't have any 
-> problems.  Basically it is good idea not to have VPN endpoints behind 
-> NAT (if possible, of course).
+> IP_serve1_DMZ =192.168.2.2
+> IP_serve2_DMZ =192.168.2.3
+> 
+> IP_server1_public = x.x.x.52
+> IP_server2_public = x.x.x.53   (x is for privacy..)
+> 
+> 
+> My firewall has
+> 
+> eth1 internet interface = x.x.x.50
+> eth0 dmz interface = 192.168.2.1
+> 
+> I need to have my server access with their pubbic IP, but 
+> I've only eth1 as inteface to internet.
+> 
+> I read that I can't use alias in iptables rules (like 
+> eth1:1 etc) , then what kind of rules have I to write to 
+> solve my problem?
 
-CIPE (http://sites.inka.de/sites/bigred/devel/cipe.html) works over
-NAT anywhere you can get UDP packets back and forth.  It was included
-in RH9 and fedora core 1 as a fill-in-the-form option in the network
-setup GUI but was dropped in fedora core 2 because it didn't work
-with the 2.6 Linux kernel.  CIPE 1.6 claims to work with the 2.6
-kernel now, but there still seems to be a problem making it work
-with FC2.  
----
-  Les Mikesell
-   les@futuresource.com
+  ip address add x.x.x.52 dev eth1
+  ip address add x.x.x.53 dev eth1
 
+  iptables -t nat -A PREROUTING -i eth1 -d x.x.x.52 \
+    -j DNAT --to-destination 192.168.2.2
+
+  iptables -t nat -A PREROUTING -i eth1 -d x.x.x.53 \
+    -j DNAT --to-destination 192.168.2.3
+
+filter rules as necessary (remember to use the 192.168.2.x address in
+your filter rules)...
+
+HTH...
+
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
 
 
