@@ -1,14 +1,11 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: connection tracking without iptables?
-Date: Mon, 25 Oct 2004 15:48:44 -0500
+From: "Deepak Seshadri" <dseshadri@broadbandmaritime.com>
+Subject: iptables script file
+Date: Mon, 25 Oct 2004 17:26:23 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <417D66AC.1070600@pbl.ca>
-References: <7C9884991ADAE0479C14F10C858BCDF591E37C@alderaan.smgtec.com>	<561dc326040930160476d839c7@mail.gmail.com>	<1096587270.22962.24.camel@wolfpack.ljm.dom>
-	<561dc326041014113163a6a9eb@mail.gmail.com>
+Message-ID: <200410252121.i9PLLSJx072272@jkcpub.iserver.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <561dc326041014113163a6a9eb@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +15,40 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Netfilter Group' <netfilter@lists.netfilter.org>
 
-Jiann-Ming Su wrote:
-> On Thu, 30 Sep 2004 19:34:30 -0400, Jason Opperisano <opie@817west.com> wrote:
-> 
->>  egrep 'ESTABLISHED|ASSURED' /proc/net/ip_conntrack | wc -l
->>
-> 
-> 
-> We're finding that any read operation on /proc/net/ip_conntrack really
-> locks the system until that operation is completed.  That is, it's
-> almost as if the read prevents any writes, so the firewall locks up
-> momentarily until the read is done.  Is there a less system intensive
-> way to read ip_conntrack?  Or, is my observation completely wrong?
+Hello everybody,
 
- From linux kernel 2.6.9 changelog:
+So far I have been writing all the iptables commands in a file & ran it in a
+terminal (bash filename). Then I do the "service iptables save" to save &
+load the configuration during boot-up. Pretty soon the configuration file is
+going to have around 800 commands & this file is modified quite often. So
+for the changes to reflect in run-time I do a "bash <script-file>".
+Somewhere I read that loading that many commands using "bash <script-file>"
+is not recommended (Is this true?). So I started searching in Google for
+other alternatives. I came across the following:
 
-[NETFILTER]: add sysctl to read out the number of current connections
-	
-Apparently a lot of scripts use a construct like
-    cat /proc/net/ip_conntrack | wc -l
-which has a negative impact on system performance due to all the locking
-required.
+- Use rc.firewall (I don't know if its in /etc or /etc/init.d or what)
+- Use /etc/firewall.conf
+- Use /etc/init.d/firewall
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Could someone tell me which file to use? In Fedora core 2 I found only
+/etc/rc.d/init.d/iptables.
+Which way would be easy to load a huge script that would be modified quite
+often?
+
+OS specs:
+Fedora Core 2
+Kernel 2.6.8.1
+Iptables 1.2.11
+
+Hardware:
+2.8Ghz P4
+1 GB RAM
+
+Thank you,
+
+Deepak Seshadri
+
 
