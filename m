@@ -1,13 +1,10 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Netfilter vs commercial
-Date: Wed, 11 Aug 2004 16:46:30 -0500
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: MSN access with a webcam
+Date: Wed, 11 Aug 2004 15:00:30 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <411A93B6.2000305@pbl.ca>
-References: <20040809093022.5842e85e@mgalepc.utilitran.com> <1092067371.18395.89.camel@localhost>
+Message-ID: <7EACCDBB65D37443912D80713CC1245D02382A9E@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1092067371.18395.89.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,18 +14,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'linux@openware'" <linux@openware.nl>, netfilter <netfilter@lists.netfilter.org>
 
-John A. Sullivan III wrote:
-> For example, this is one of the
-> chief advantages of the ISCS interface for netfilter
-> (http://iscs.sourceforge.net).
+i'd venture a guess that port 80 is being used among others based on the way
+the cam is implemented.
 
-BTW, any dates when to expect first public release?
+~piranha
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of linux@openware
+Sent: Wednesday, August 11, 2004 1:21 PM
+To: netfilter
+Subject: MSN access with a webcam
+
+
+Hello listmembers,
+
+I build myself a firewall on a gateway Suse 9.1 server
+
+eth0 = DSL(WAN)
+eth1 = LAN
+net-lan = 192.168.0.1/24
+
+On the LAN 3 Windowsclients are talking to Internet via a switch.
+
+I can use Microsoft's MSN(chat) but using a webcam wont work.
+
+Here's a part listings of my firewall MSN rules:
+
+echo "MSN Messenger..."
+iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 1863 -s
+$net_lan -j ACCEPT
+iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 1863 -m state
+--state ESTABLISHED,RELATED -j ACCEPT
+iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 443 -s $net_lan
+-j ACCEPT
+iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 443 -m state
+--state ESTABLISHED,RELATED -d $net_lan -j ACCEPT
+
+Is a webcam using another TCP port?
+
+
 
 -- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+regards,
+
+Jan Rozema
+Kortenhoef-Holland
+linux@openware.nl
+
+
 
