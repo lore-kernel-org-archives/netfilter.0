@@ -1,8 +1,8 @@
-From: Richard Williams <richard_williams@stratexnet.com>
-Subject: H323 conntrack not working
-Date: Mon, 24 Mar 2003 08:46:48 +1200
+From: Miguel Manso <mmanso@yahoo.com>
+Subject: Accessing problems from the inside network
+Date: Sun, 23 Mar 2003 18:05:49 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <8D7C5F56B409554D9D46AC22195807F3156E6F@exchwenz01.dmcwave.co.nz>
+Message-ID: <20030324020549.53630.qmail@web11505.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,38 +16,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hi people,
 
-I have gnugk on my linux 2.4.20 firewall running iptables 1.2.7a with
-conntrack_h323 installed.
+I've a ppp0 device wich receives connections to 4 staric ips:
 
-From within the LAN, netmeeting can register with gnugk and make calls to
-other registered endpoints (on LAN or Internet).
-From the Intenet, netmeeting can register with gnugk but cannot make a call
-to endpoints in the LAN.
+1) 123.123.123.101
+2) 123.123.123.102
+3) 123.123.123.103
+4) 123.123.123.104
 
-I have been using ethereal to try and see what is happening. 
-In both cases H.225 packets are exchanged between gnugk port 1719 <->
-netmeeting port x and all looks fine.
+Now, I've this rule:
 
-It seems that during call setup, the Internet netmeeting attempts to open a
-TCP connection to port 3000x on gnugk (the firewall) but contrack_h323
-doesn't allow it.
+iptables -t nat -A PREROUTING -i ppp0 -d 123.123.123.101 -j DNAT --to
+192.168.1.10
 
-Anyone have any ideas whats wrong? or suggestions on how to debug my
-problem?
+which redirects all the traffic from the 123.123.123.101 IP to the internal
+192.168.1.10 ip.
 
-One curious thing is that lsmod shows ip_net_h323 unused. Is this ok?
-ip_nat_h323             3392   0  (unused)
-ip_conntrack_h323       3136   1
-ipt_MASQUERADE          2080   1
-ipt_LOG                 4192   3
-iptable_nat            19988   2  [ip_nat_h323 ipt_MASQUERADE]
-ip_tables              13216   8  [ipt_limit ipt_state iptable_filter
-ipt_MASQUERADE ipt_LOG iptable_nat]
+I've masquerade activated and I thought everything was doing fine... I can
+access my internal machine from outside and today, I've found i've a problem.
 
-Regards,
-Richard
+When I'm on the 192.168.1.10 machine and I try, let's say, a 'ssh
+123.123.123.101' I can't access it. I mean, I can access ouside machines, I can
+access my internal machine from the outside but from my internal network I
+can't access my own machine if I refer to it using it public IP.
+
+Any suggestion?
+
+Thanks in advance.
+
+=====
+Miguel Manso
+mmanso@yahoo.com
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Platinum - Watch CBS' NCAA March Madness, live on your desktop!
+http://platinum.yahoo.com
 
