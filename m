@@ -1,14 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Passive FTP through IPTables DNAT
-Date: 07 Mar 2003 09:17:56 +0100
+From: Sabrina Lautier <slautier@lavache.com>
+Subject: error Invalid kernel header inluded in user space
+Date: Fri, 07 Mar 2003 11:58:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1047025075.2819.0.camel@elendil.intranet.cartel-securite.net>
-References: <4D613EBFB75BD6118A5B00508BEEC62C0111CB53@JESS>
-	 <001001c403b3$79629670$0b00a8c0@runner>
+Message-ID: <1047034725.3e687b653bce1@lavache.alinto.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001001c403b3$79629670$0b00a8c0@runner>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +15,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Rune <runner@mail.tele.dk>
-Cc: Jonathan Humphrey <jhumphrey@codemasters.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter mailing list <netfilter@lists.netfilter.org>
 
-Le sam 06/03/2004 =E0 20:44, Rune a =E9crit :
-> All  you need is having a forward rule for the ftp-data connection whic=
-h
-> uses the
-> port below the ftp port e.g:
->     ftp at port 21
->     ftp-data at port 20
+Hi all !
 
-Nope. This is true for _active_ FTP, but passive ftp-data connection
-uses non privilieged ports on both ends.
+I'm following the "Linux IP Masqueade HowTo" to set up a linux
+router-firewall.
+I'm having trouble compiling iptables and I don't know how to solve my
+problem...
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+I'm running linux redhat 7.3 with a 2.4.18-3 kernel but I've
+downloaded the latest kernel version (2.4.20) in order to compile it
+with iptables-1.2.7a and patch-o-matic kernel patches.
+
+When I try to compile here is the error I get:
+**********************************************************************
+$ make KERNEL_DIR=/usr/src/kernel/linux
+Extentions found:
+cc -02 ...
+In file included from /usr/src/kernel/linux/include/linux/config.h:4,
+from /usr/src/kernel/linux/include/linux/netfilter_ipv4.h:8,
+from /usr/src/kernel/linux/include/linux/netfilter_ipv4/iptables.h:25,
+from include/libiptc.h:6,
+from include/iptables.h:5,
+from extentions/libipt_ah.c:8,
+/usr/include/linux/autoconf.h:1:2: #error Invalid kernel header
+inluded in user space
+make: ** [extentions/libipt_ah_sh.o] Error 1
+**********************************************************************
+
+For information, I'm using gcc-2.96-110. I've tried to upgrade to
+gcc-3.2-7 but cannot find glibc-devel-2.2.90-12 required for this
+version of gcc (can someone tell me where to find it ?).
+
+Any idea of how to solve my issue ?
+Any help would be greatly appreciated.
+
+Regards,
+Sabrina
+
+---------------------------------------------
+Powered by Alinto (http://www.alinto.net)
+        for lavache.com (http://www.lavacheautomatique.com)
 
