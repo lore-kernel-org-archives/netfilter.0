@@ -1,9 +1,8 @@
-From: "Garcia Ruiz" <gar_ruiz@teleline.es>
-Subject: Re: ssl forward / proxy question
-Date: Fri, 25 Jul 2003 20:38:14 +0200
+From: Wolfgang Pichler <wpichler@dialog-telekom.at>
+Subject: backroute problem
+Date: 23 Jul 2003 20:00:49 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006701c352db$e891a380$05001aac@breton1>
-References: <20030725001249.9399.qmail@saturn5.com>
+Message-ID: <1058990449.1963.60.camel@defiant.dialog>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,66 +16,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: jen@saturn5.com, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Have a look at Squid proxy. The last releases admit SSL reverse proxying. If
-it would be capable of handling different servers your problem would be
-solved. You could have it inside of the firewall (but be careful with
-security issues).
+hi all,
 
-Regards.
+we have got new ip addresses - the old one's still exists so that i can
+migrate them to the new ones.
 
-BGR
+the old ip's are directly assigned to the web/mail server (i know that
+this isn't good - but i havn't had a fireall at this time) - now i have
+a seperate firewall which has the new ip's assigned to it.
+
+Now i'd like to change the dns entries so that the traffic goes over the
+new ip's (a 4 MBit line ;-) ) - the problem i have is:
+
+when a packet on the new ip comes then it gets prerouted by the firewall
+to the webserver - the webserver gets the packet with the original
+source address - now to webserver wants to answer to the packet - but
+becuase of the old ip's the webserver have a default route with the old
+ip and try's to route the packet over the old gateway - and not back to
+the firewall... You know - that can't work.
+
+I am now searching for a solution for this problem. Can netfilter help
+me with this problem - or do i have to use iproute (i havn't ever done
+something with iproute) help me ?
+
+Can i mark the packet's so the the webserver can send them back in the
+right direction ?
+
+mfG
+Wolfi
 
 
------ Original Message ----- 
-From: <jen@saturn5.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, July 25, 2003 2:17 AM
-Subject: ssl forward / proxy question
-
-
->
-> hi,
->
-> i have a NAT set up via an iptables firewall on RHAS. i have various
-webservers
-> behind it (and other stuff), but now i'm required by marketing (sigh) to
-set
-> up loads of SSL certificates. since apache/apache2 still requires one ip
-> address per SSL certificate, and they mean to do lots of these, i'm
-wondering
-> how to set it up in such a way that all DNS points to one external IP
-address
-> such as 234.56.78.90. when the packet hits the firewall, something proxies
-it
-> so that it will see the *name* address, and forward it on to a virtual IP.
-for
-> example:
->
-> there are 3 domains all belonging to the same "real" IP address.
->
-> 234.56.78.90 -> www.guinness.com
-> 234.56.78.90 -> www.kicks.com
-> 234.56.78.90 -> www.butt.com
->
-> so a user wants to go to www.guinness.com, the IP takes the packet to the
-fire
-> wall/proxy/whatever, notices that it's "www.guinness.com" and and will
-forward t
-> he packet on to the internal address of 10.31.1.44
->
-> user goes to www.kicks.com, and the packet goes to 10.31.1.45
->
-> www.butt.com will get forwarded to 10.31.1.46
->
-> is there something like this that is possible?
->
-> thanks!!
->
-> -\jen
->
->
 
 
 
