@@ -1,14 +1,10 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: netfilter/iptables LOG not logging MAC addresses
-Date: Sat, 1 Feb 2003 20:34:24 -0500
+From: Khanh Tran <khanh@slc.edu>
+Subject: RE: netfilter/iptables LOG not logging MAC addresses
+Date: Sat, 1 Feb 2003 23:05:35 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302012034.24812.netfilter@newkirk.us>
-References: <01CEA3A5B8B2D511890F0002A5870AEC5FB575@EXCHANGE>
-Reply-To: netfilter@newkirk.us
+Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB576@EXCHANGE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <01CEA3A5B8B2D511890F0002A5870AEC5FB575@EXCHANGE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,7 +15,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Khanh Tran <khanh@slc.edu>, "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@newkirk.us, "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+
+Thanks for all your help.  I merged a few of your ideas together into:
+
+/sbin/iptables -t nat -I PREROUTING 1 -m state --state NEW -j LOG
+--log-tcp-options --log-ip-options
+
+I've got my syslog logging kernel.warning level stuff into
+/var/log/warn.log.  I found a perl script package on SourceForge that should
+do the trick of analyzing the log file and appropriately putting the
+elements into a mySQL database for later retrieval.  Hopefully the scripts
+will do all that I need, but at this point at least I'm logging what I need
+to log.  
+
+Thanks for all your help.  Now if we can only figure out what the :08:00
+means a the end of every MAC address.  Maybe some Hex value for the subnet
+mask or broadcast?  I'm stumped, but happy for now.
+
+Khanh Tran
+Network Operations
+Sarah Lawrence College
+
+
+-----Original Message-----
+From: Joel Newkirk [mailto:netfilter@newkirk.us]
+Sent: Saturday, February 01, 2003 8:34 PM
+To: Khanh Tran; 'netfilter@lists.samba.org'
+Subject: Re: netfilter/iptables LOG not logging MAC addresses
+
 
 On Saturday 01 February 2003 07:21 pm, Khanh Tran wrote:
 > OK, so I tried to do:
@@ -34,36 +59,33 @@ On Saturday 01 February 2003 07:21 pm, Khanh Tran wrote:
 > essentially all I am trying to do.  If anyone has a better solution,
 > I'm up for suggestions.
 
-The nat and mangle tables each have a POSTROUTING chain, but the filter=20
-table does not.  If you don't specify a table, iptables uses "-t filter"=20
-as the default.  In any case, you won't see MAC information in the=20
-POSTROUTING logs. (If you want to try my dirty fix, you should be able=20
-to get it in POSTROUTING, with "-t nat" before "-A" in your rule above) =20
-In your situation you will only find it in logs from a PREROUTING chain. =
-=20
+The nat and mangle tables each have a POSTROUTING chain, but the filter 
+table does not.  If you don't specify a table, iptables uses "-t filter" 
+as the default.  In any case, you won't see MAC information in the 
+POSTROUTING logs. (If you want to try my dirty fix, you should be able 
+to get it in POSTROUTING, with "-t nat" before "-A" in your rule above)  
+In your situation you will only find it in logs from a PREROUTING chain.  
 Try:
 
 iptables -t nat -I PREROUTING 1 -j LOG --log-tcp-options --log-ip-options
 
-And you should see the "MAC=3D" field in each log entry.  You will likely=
-=20
-want to add some matches, however, like "-s 10.10.0.0/16" or "-p tcp=20
---dport 80" or such to keep it from logging unneeded info.  I'd also=20
-suggest you consider "-m state --state NEW" in the log rule, if this is=20
-compatible with your needs, so that you only log the first packet of=20
-each connection.  You'll accurately log the activity but not the volume=20
+And you should see the "MAC=" field in each log entry.  You will likely 
+want to add some matches, however, like "-s 10.10.0.0/16" or "-p tcp 
+--dport 80" or such to keep it from logging unneeded info.  I'd also 
+suggest you consider "-m state --state NEW" in the log rule, if this is 
+compatible with your needs, so that you only log the first packet of 
+each connection.  You'll accurately log the activity but not the volume 
 that way.
 
-BTW, If you are going to use this for everyday purposes, you will want to=
-=20
-redirect the logs to their own logfile, if you aren't already (IE with=20
-'kern.=3Ddebug  /var/log/firewall" in /etc/syslog.conf, and append=20
-"--log-level 7" to logging rules).  Also, you really might want to look=20
-into some of the ULOG-based accounting packages available, that will=20
-track a variety of packet information and store it - often without=20
-consuming the immense storage required to log ALL traffic through a=20
-gateway system using the LOG target.  You will probably also gain the=20
-ability to easily create a report listing any machines conducting=20
+BTW, If you are going to use this for everyday purposes, you will want to 
+redirect the logs to their own logfile, if you aren't already (IE with 
+'kern.=debug  /var/log/firewall" in /etc/syslog.conf, and append 
+"--log-level 7" to logging rules).  Also, you really might want to look 
+into some of the ULOG-based accounting packages available, that will 
+track a variety of packet information and store it - often without 
+consuming the immense storage required to log ALL traffic through a 
+gateway system using the LOG target.  You will probably also gain the 
+ability to easily create a report listing any machines conducting 
 unusual communications, exceeding given parameters, etc.
 
 j
@@ -71,6 +93,7 @@ j
 > Khanh Tran
 > Network Operations
 > Sarah Lawrence College
+
 
 
 
