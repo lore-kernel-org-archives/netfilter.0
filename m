@@ -1,15 +1,13 @@
-From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: PPTP
-Date: Mon, 7 Apr 2003 23:08:37 +0200
+From: Kim Jensen <kimj@dawn.dk>
+Subject: Re: clearing basics: semi-OT
+Date: Thu, 10 Apr 2003 17:21:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030407210837.GE14333@naboo.towersoft.de>
-References: <000901c2fd21$3475f910$0205a8c0@maxima>
+Message-ID: <200304101721.36861.kimj@dawn.dk>
+References: <20030410080650.GA1720@linux.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tMbDGjvJuJijemkf"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000901c2fd21$3475f910$0205a8c0@maxima>
+In-Reply-To: <20030410080650.GA1720@linux.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,55 +17,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Benny Butler <benny.butler@nexusitg.com>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Payal Rathod <linux@rpayal.cjb.net>, netfilter@lists.netfilter.org
 
+On Thursday 10 April 2003 10:06, Payal Rathod wrote:
+> Hi,
+> I am trying to clear some of my basics. I am reading IP-Masquerading HO=
+WTO.
+> In it these things were mentioned,
+>
+> UNIVERSE=3D"0.0.0.0/0"
+> $IPTABLES -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
+>
+> What exactly does 0.0.0.0/0 mean? And why should we be concerned with
+> it? And what is the use of rule given after it?
+>
+0.0.0.0/0 means everybody!
 
---tMbDGjvJuJijemkf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The rule is saying that everything from and to the localhost should be=20
+accepted - in general a very good thing, unless you know what you are doi=
+ng!
 
-On Mon, Apr 07, 2003 at 11:17:36AM -0500, Benny Butler wrote:
-> Harald,
->=20
->     Please forgive me for  my lack of knowledge, I'm not much of an
-> iptables person.  I have a client that I had to set up an iptables
-> firewall.  They have a PPTP server on their internal network that I can
-> get to, but only one client at a time can hook to it.  I see your patch
-> listed at :
-> http://netfilter.kfki.hu/documentation/pomlist/pom-extra.html#pptp-connt
-> rack-nat and am wondering if this would allow multiple connections to
-> the server? Is that it's intended function?
+> INTNET=3D"192.168.1.0/24"
+> INTIP=3D"192.168.1.1/24"
+>
+> The first one means the entire network of 192.168.1.x? What exactly is
+> the second one. Does it just means 192.168.1.1 then why "/24"?
+> And lastly,
+>
+The 192.168.1.0/24 means: everything from 192.168.1.0 to 192.168.1.255. T=
+he=20
+/24 is part of the mask, read=20
+http://www.netfilter.org/documentation/HOWTO//networking-concepts-HOWTO.t=
+xt.
 
-yes, exactly.  Please use the patch-o-matic system to apply this patch
-and then load the modules 'ip_conntrack_proto_gre, ip_conntrack_pptp,
-ip_nat_proto_gre and ip_nat_pptp'.  Please refer to the netfilter
-mailinglist(s) for further assistance.
+> $IPTABLES -N drop-and-log-it
+> $IPTABLES -A drop-and-log-it -j DROP
+>
+> Why was this rule made? And why was it "dropped"? What is the logic
+> behind this? Shouldn't it be,
+> $IPTABLES -P drop-and-log-it DROP
+>
+There is no default chain called drop-and-log-it, which is why you make a=
+=20
+custom chain. A better version would be:
+$IPTABLES -N drop-and-log-it
+$IPTABLES -F drop-and-log-it
+$IPTABLES -A drop-and-log-it -j LOG
+$IPTABLES -A drop-and-log-it -j DROP
 
-> Thanks, Benny
+The first line creates a new chain (-N) with the name drop-and-log-it. Th=
+e=20
+second line (-F) flushes the new chain in case you already have this chai=
+n=20
+running. The third lines appends a rule which logs everything and finally=
+ the=20
+fourth line drops the packets.
 
---=20
-- Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-Programming is like sex: One mistake and you have to support it your lifeti=
-me
+/Kim
 
---tMbDGjvJuJijemkf
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE+kejVXaXGVTD0i/8RAgSMAKCIWvYAOxD8wPpVm/ypVtQQaS8A4gCbBadq
-b3HCCL+fgA4qYe0MrQJXHS0=
-=n3pi
------END PGP SIGNATURE-----
-
---tMbDGjvJuJijemkf--
 
