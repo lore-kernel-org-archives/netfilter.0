@@ -1,12 +1,13 @@
-From: TN <tnuro@yahoo.com.au>
-Subject: accessing a internal port fowarded email server from the internal
- network
-Date: Mon, 08 Dec 2003 12:39:42 +1100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: accessing a internal port fowarded email server from the internal network
+Date: Mon, 8 Dec 2003 01:57:56 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FD3D65E.7000405@yahoo.com.au>
+Message-ID: <200312080157.57000.Antony@Soft-Solutions.co.uk>
+References: <3FD3D65E.7000405@yahoo.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3FD3D65E.7000405@yahoo.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,56 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+On Monday 08 December 2003 1:39 am, TN wrote:
 
-I have a problem which I thought I'd seen the solution so somewhere, but 
-I just can't find the posting anymore.
+> Hi all,
+>
+> I have a problem which I thought I'd seen the solution so somewhere, but
+> I just can't find the posting anymore.
+>
+> I have an iptables firewall, and I port forward to an internal email
+> server on a 192.168.10.0/24 LAN network.
+> This all works fine, external email comes & goes OK. My problem is that
+> I want to allow internal network users to address the email server using
+> the external IP address of the firewall.
+>
+> Currently, laptop users internal to the network need to then become
+> external when they work external to the LAN, and they have to either
+> setup 2 different email accounts (one using the internal email server IP
+> address, and one using the external IP address), or they have to
+> remember to change their server settings each time they move from
+> internal to external and vice-versa. Both of these are a pain for them.
 
-I have an iptables firewall, and I port forward to an internal email 
-server on a 192.168.10.0/24 LAN network.
-This all works fine, external email comes & goes OK. My problem is that 
-I want to allow internal network users to address the email server using 
-the external IP address of the firewall.
+Configure the machines to connect by hostname instead of IP address, and use 
+split DNS to give the internal address to internal enquiries, and the 
+external address to external enquiries.
 
-Currently, laptop users internal to the network need to then become 
-external when they work external to the LAN, and they have to either 
-setup 2 different email accounts (one using the internal email server IP 
-address, and one using the external IP address), or they have to 
-remember to change their server settings each time they move from 
-internal to external and vice-versa. Both of these are a pain for them.
+Alternatively put the mail server on a perimeter network instead of the 
+internal LAN, then both internal and external clients can connect using the 
+external IP address.
 
-I have attempted to allow this to work by using the following prerouting 
-rules & forward rules (default policies are DROP, DROP, ACCEPT)
+The reason your existing setup doesn't work is that internal clients connect 
+to the extenal address, which gets translated to the internal address, which 
+then replies direct to the client (ie not back through the reverse nat on the 
+firewall), therefore the client connects to address A and gets a reply from 
+address B, confusing it and making it unhappy.
 
-iptables -t nat -A PREROUTING -p tcp --dport 25 -j DNAT --to 
-192.168.10.12:25
-iptables -t nat -A PREROUTING -p tcp --dport 110 -d -j DNAT --to 
-192.168.10.12:110
-iptables -t nat -A PREROUTING -p tcp --dport 143 -d -j DNAT --to 
-192.168.10.12:143
+Antony.
 
-iptables -A FORWARD -p tcp -s 0/0 -d 192.168.10.12/32 --destination-port 
-25 --syn -j ACCEPT
-iptables -A FORWARD -p tcp -s 0/0 -d 192.168.10.12/32 --destination-port 
-110 --syn -j ACCEPT
-iptables -A FORWARD -p tcp -s 0/0 -d 192.168.10.12/32 --destination-port 
-143 --syn -j ACCEPT
+-- 
+Perfection in design is achieved not when there is nothing left to add, but 
+rather when there is nothing left to take away.
 
-These are just more generalised rules that people commonly use for doing 
-port forwarding - I have just made them less strict by taking about the 
-input & output constraints in an attempt to allow external & internal 
-clients to access the email server via the external ip.
+ - Antoine de Saint-Exupery
 
-It doesn't work, the email client just times out, as if I'm still 
-blocking some part of the data stream.
-What am I doing wrong ?
-
-thanks.
--Tim
-
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
