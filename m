@@ -1,12 +1,14 @@
-From: Andrew Baumann <andrewb@cse.unsw.edu.au>
-Subject: masquerading before ipsec (2.6)
-Date: Wed, 9 Jun 2004 16:53:57 -0400
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: RESEND: ip_conntrack_ftp and port forwarding
+Date: Wed, 9 Jun 2004 20:01:09 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406091653.57763.andrewb@cse.unsw.edu.au>
+Message-ID: <200406100301.i5A31CN5027848@server5.bandwidthco.com>
+References: <FLECICIIDHIEIENHHOOLAEFCCBAA.esanz@minorplanetusa.com>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <FLECICIIDHIEIENHHOOLAEFCCBAA.esanz@minorplanetusa.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +19,106 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: 'Erick Sanz' <esanz@minorplanetusa.com>, netfilter@lists.netfilter.org
+
+ 
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Erick Sanz
+Sent: Tuesday, June 08, 2004 11:08 AM
 To: netfilter@lists.netfilter.org
+Subject: RESEND: ip_conntrack_ftp and port forwarding
 
-Hi,
 
-I have a gateway box with a VPN tunnel to a secure network. This box is also 
-connected to a local LAN with private IPs. I would like the gateway to 
-masquerade traffic from the local LAN destined for the secure network across 
-the VPN tunnel.
+	All,
 
-The way the VPN setup seems to work in 2.6 is that there is only one external 
-interface (ppp0 in this case), but that interface has two IPs, one on the 
-internet and one on the secure network (which is tunneled). The routes and 
-VPN on the gateway box work correctly, and I've done a basic masquerading 
-setup:
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-however, the machines on the LAN can only access the internet, not the VPN 
-tunnel. Watching the log, packets destined for the secure network get sent 
-out on the external interface with the internet IP. I tried adding a rule to 
-use SNAT to force them to the secure IP, but this doesn't work (I guess 
-whatever changes the IP encrypts the packet).
+	I sent the bellow message yesterday, but got no answers.
 
-Observing test packets from the gateway traverse the chains, I see that 
-traffic destined for the secure network always has the source IP address of 
-the tunnel, and traffic destined for the internet always has the internet 
-source IP.
+	I am sure it did not get there; if it did, sorry for the repost.
 
-Somewhere there must be a routing decision that says to encrypt traffic 
-destined for the secure network, and use the different source IP, but it 
-seems that this happens before the packet hits iptables. I think I need a way 
-to take a masqueraded packet from the POSTROUTING chain and feed it into the 
-VPN.
+	The question is, can I have an internal FTP server? the firewall
+would have to FORWARD the connections to port 21, and then ip_conntrack_ftp
+would have to allow the rest of the communication in...  Does this work?
 
-Can anyone tell me if what I'm trying to do is even possible? And if so what 
-I'm doing wrong?
+	For more information, please read bellow message...
 
-thanks in advance,
-Andrew
+	is there anybody using it?
+
+Best regards,
+Erick
+
+
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Erick Sanz
+> Sent: Monday, June 07, 2004 12:30 PM
+> To: netfilter@lists.netfilter.org
+> Subject: ip_conntrack_ftp and port forwarding
+> 
+> 
+>  
+> 	All,
+> 
+> 	I have a firewall at home protecting a web server (personal stuff);
+I 
+> would like to add ftp capabilities in order to upload files from work, 
+> so I can work home.
+> 
+> 	ASCII diagram:
+> 
+> 
+> 	DSL -- Firewall -- Web server / FTP server
+> 
+> 
+> 	My current rules to allow http are (no other rules included):
+> 
+> 
+> iptables -t nat -A PREROUTING -p tcp -d 172.16.1.34 --dport 80 -j DNAT \ 
+> 	--to 192.168.0.20
+> iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
+> 
+> iptables -A FORWARD -i eth0 -p tcp -d 192.168.0.20 --dport 80 -m state \
+> 	--state NEW,ESTABLISHED,RELATED -j ACCEPT iptables -A FORWARD -i
+eth1 
+> -p tcp -s 192.168.0.20 --source-port 80 -j \
+> 	ACCEPT
+> 
+> 	I know I need to use ip_conntrack_ftp; however I am not sure if it 
+> allows port forwarding...
+> 
+> 	Really basic question, but I was wondering what everybody is
+doing...
+> 
+> Best regards,
+> Erick
+> 
+> 
+> This email message has been scanned for viruses.
+> 
+> 
+> 
+> 
+> This email message has been scanned for viruses.
+> 
+
+You seem to have most of this correct, but don't make it more difficult than
+it really is. You basically only need to do three things:
+1. DNAT the packets to your FTP server
+2. Accept the DNATted packets in the FORWARD chain
+3. Let connection tracking handle the rest
+
+By the way: what's with the port 80?
+
+
+
+########################################################
+This message has been scanned for viruses and dangerous 
+content by MailScanner, and is believed to be clean.
+
+postmaster@bandwidthco.com
+MailScanner at bandwidthco.com is for your absolute protection.
+########################################################
+
 
