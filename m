@@ -1,13 +1,10 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: RE: Poll on large sites that deploy Iptables.
-Date: Fri, 4 Jun 2004 13:49:33 -0300
+From: mclinden@informed.net
+Subject: Forwarding of packets to an FTP gateway (2nd request)
+Date: Fri, 4 Jun 2004 16:12:56 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1BWHw7-00035m-0m@vishnu.netfilter.org>
-References: <7C9884991ADAE0479C14F10C858BCDF591E32F@alderaan.smgtec.com>
+Message-ID: <OF07AC67BA.37C01A4F-ON85256EA9.006B611B-85256EA9.0070FB29@informed.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E32F@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +15,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Daniel Chemko' <dchemko@smgtec.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Yes, its true but you must isolate 2 concepts here.
+Well, I've played with this for a week, and I can't be sure that it isn't 
+the routers/switches in between, but the configuration (using Linux 2.6 
+and iptables 1.2.9) is:
 
-PIX doesnt run IOS, it uses a software called pix software (yes, cisco has a
-lot of art naming devices). All pixes mid to high range(515E, 525 and 535)
-are intel pentium based and in standard configuration they do the encryption
-in the main cpu.
+MS Windows Client                                           Linux 
+"Forwarder"
+172.16.16.39/22 172.16.16.8/22
+Default Route: 172.16.16.8   ------>            Default Route: 
+172.16.16.20 
+            ^                  ^
+             |                    |
+             |                    |
+             ___________________________________
+                                                    |
+                                                    |
+                                 CISCO Catalyst
+                                  172.16.16.200
+                                                    |
+                                       ASN1 Router
+                                                    |
+                                       ASN1 Router
+                                                    |
+                                 CISCO Catalyst
+                                  172.16.8.200
+                                                    |
+                                                    |
+              ________________
+             |
+             |
+             v
+Linux FTP Proxy (incoming port 2370)
+Internal Interface: 172.16.11.237/22
+External Interface: Internet
 
-Now they made (cisco) a new VAC (VPN accelerator card) that the routers /
-switches+routers (like 6500's) and pixes uses to do the encryption via
-hardware (those chips are not intel based).
+I've changed the MS Windows Client to use the Linux Forwarder as the 
+default route (subnet 16). I've added a rule to the Linux FTP Proxy to 
+autoforward packets to the FTP Proxy listening on port 2370 via:
 
-So, PIX uses main x86 proccessors to do the encryption job if there isnt any
-VAC installed, in this case all the encryption proccess are passed to the
-VAC. It works in the same way in some routers not all.
+iptables -t nat -A PREROUTING -p tcp -s 172.16.0.0/16 --dport 21 -j DNAT 
+--to 172.16.11.237:2370
 
-I hope it helps.
+If I FTP from 172.16.16.8 to 172.16.11.237 I am redirected to the 2370 on 
+237. If I FTP from 172.16.16.36 to any outside host, the incoming packets 
+are detected by tcpdump. But none of the rulesets I've tried on 
+172.16.16.8 or 172.16.11.237 seem to allow me to redirect FTP traffic 
+though 172.16.16.8 and 172.16.11.237.
 
- 
+Do I need to make 172.16.11.237 the default route  or can I do this with 
+iptables, alone?
 
------Mensaje original-----
-De: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] En nombre de Daniel Chemko
-Enviado el: Viernes, 04 de Junio de 2004 13:40
-Para: Aldo Lagana; Brett Simpson; netfilter@lists.netfilter.org
-Asunto: RE: Poll on large sites that deploy Iptables.
+Thanks in advance.
 
-Aldo Lagana wrote:
-> First off - like AOL, IBM, etc - all use high-end probably cisco 
-> routers which do their firewalling - one cannot get the packet per 
-> second throughput they need without dedicated ASIC-based 
-> router/firewalls...
+Sean McLinden
+Allegheny County Health Department
 
-Correct me if I'm wrong, but aren't (at least mid-sized) CISCO firewalls
-based on X86's down to the PCI bus and Pentium derived processors? Even
-Mid-grade routers are supplying VPN accelerator chips, but I think the
-firewall code itself is stored in flash, executed like any other programs. I
-doubt IOS uses a lot of hardware acceleration beyond the CPU. Although I
-really don't know much since I haven't done much work on them.
-
-An example:
-(http://www.cisco.com/en/US/products/hw/vpndevc/ps2030/products_qanda_it
-em09186a0080091b17.shtml)
-Even the 535's only use PIII 1ghz
 
 
 
