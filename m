@@ -1,12 +1,13 @@
-From: Ozgur AKAN <akan@aiqa.com>
-Subject: VPN and iptables rules
-Date: Tue, 04 Nov 2003 16:58:37 +0200
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: Iptables logging only output packets
+Date: Tue, 04 Nov 2003 10:09:22 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FA7BE9D.1000202@aiqa.com>
+Message-ID: <3FA7C122.2000908@Loudoun-Fairfax.com>
+References: <20031104142344.43912.qmail@web41408.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------080809030401010706020406"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031104142344.43912.qmail@web41408.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,77 +17,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------080809030401010706020406
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+James Martin wrote:
 
-Hi,
-I have a installed pptpd, mppe to my RedHat 9.0.
+>Hi. My problem with Iptables is that it logs only
+>outgoing packet, and not incoming ones.
+>
+>It is set up in a very simple way, more to do packet
+>logging/capturing than to do do real firewalling. Its
+>main purpose is a didactic one. 
+>etho is connected to the Internet, and eth2 goes to
+>the LAN (for some strange reasons the additional
+>pcmcia ethernet card on the Toshiba laptop is
+>recognized as eth1 and not as eth1, but this is fine).
+>
+>Following is the Iptables script:
+>
+>clear
+>echo "1" > /proc/sys/net/ipv4/ip_forward
+>/sbin/iptables -F
+>/sbin/iptables --delete-chain 
+>/sbin/iptables -t nat --delete-chain
+>/sbin/iptables -t mangle --delete-chain
+>  
+>
 
-real ip`s
+You're not actually flushing the nat and mangle tables, you're only 
+deleting user defined chains. This is better:
 
-212.2.212.1 --------------- 195.111.111.1
+iptables="/sbin/iptables"
 
-vpn ip`s
+# Clear all previous chains.
+$iptables -t filter -F
+$iptables -t nat -F
+$iptables -t mangle -F
+$iptables -X
 
-192.168.77.11 ------------ 192.168.77.1
+>/sbin/iptables -N entrata
+>/sbin/iptables -N uscita
+>/sbin/iptables -P INPUT  ACCEPT
+>/sbin/iptables -P OUTPUT ACCEPT
+>/sbin/iptables -P FORWARD ACCEPT
+>/sbin/iptables -t nat -A POSTROUTING -o eth0 -j
+>MASQUERADE
+>/sbin/iptables -A FORWARD -i etho -o eth2 -j entrata 
+>/sbin/iptables -A FORWARD -i eth2 -o eth0 -j uscita 
+>/sbin/iptables -A entrata -j LOG --log-prefix
+>"Firewall Entr: " --log-level "DEBUG" 
+>/sbin/iptables -A uscita -j LOG --log-prefix "Firewall
+>Usc: " --log-level "DEBUG" 
+>
+>What I get is log entries only with prefix "Firewall
+>Usc: ", that is outgoing, and not even one packet with
+>"Firewall Entr: " prefix.
+>
+>Any idea of what I am doing wrong ?
+>
+>Thanks,
+>
+>James
+>
+>
+>  
+>
 
-I open protocol gre, and tcp port 1721 at my firewall to establish a 
-connection between client and linux firewall. Client is a windows xp.
+Not having a valid eth1 interface seems odd. What does ifconfig give you?
 
-After dialing my isp my winxp connects to internet and gets 212.2.212.1. 
-I establish the vpn connection to linux firewall. Everything is ok until 
-this point.
-
-My problem is I can not ping the server from client or vice versa.
-
-What shall i do?
-
-thanks,
-Ozgur AKAN
-
---------------080809030401010706020406
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-9">
-  <title></title>
-</head>
-<body text="#000000" bgcolor="#ffffff">
-<font face="microsoft-verdana-iso10646-1">Hi,<br>
-I have a installed pptpd, mppe to my RedHat 9.0. <br>
-<br>
-real ip`s<br>
-<br>
-212.2.212.1 --------------- 195.111.111.1<br>
-<br>
-vpn ip`s<br>
-<br>
-192.168.77.11 ------------ 192.168.77.1<br>
-<br>
-I open protocol gre, and tcp port 1721 at my firewall to establish a
-connection between client and linux firewall. Client is a windows xp.<br>
-<br>
-After dialing my isp my winxp connects to internet and gets
-212.2.212.1. I establish the vpn connection to linux firewall.
-Everything is ok until this point.<br>
-<br>
-My problem is I can not ping the server from client or vice versa.<br>
-<br>
-What shall i do?<br>
-<br>
-thanks,<br>
-Ozgur AKAN<br>
-</font>
-</body>
-</html>
-
---------------080809030401010706020406--
+Jeff
 
 
