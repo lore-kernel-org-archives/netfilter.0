@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I have no idea why this doesn't work...(further details)
-Date: Sat, 24 Apr 2004 15:05:40 +0100
+From: "Steve Arentz" <arentz@ameritech.net>
+Subject: icmp type error message
+Date: Sat, 24 Apr 2004 11:52:20 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404241505.40385.Antony@Soft-Solutions.co.uk>
-References: <8118CC0EE4FDF94AA1C785BD746EF2A69DB2B5@eshetb>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <KHEPIJJDEJGPDCBOMGKAKEJBCDAA.arentz@ameritech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <8118CC0EE4FDF94AA1C785BD746EF2A69DB2B5@eshetb>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +15,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.netfilter.org
 
-On Saturday 24 April 2004 3:47 pm, Micha Silver wrote:
+I upgraded my Redhat based linux firewall (netfilter) system from
+iptables v1.2.8, kernel v2.4.23 to iptables v1.2.9, kernel v2.4.25.
+(Trustix v2.0 to Trustix v2.1 just in case its important.)
 
-> > > > > is there any good reason why you are not using ssh?
-> > > >
-> > > > Didn't know about it.  I just downloaded PuTTY.
-> > >
-> > >Does that, um, gulp, imply that you're using Windows !?
-> >
-> > Yeah, 'fraid so.
->
-> You DO know that Putty is a full featured ssh client, don't you??
+Using the same rule set, all my icmp rules now get the following error -
+iptables v1.2.9: Unknown arg =91--icmp-type=92
 
-I think that's why he downloaded Putty in the first place - because I 
-recommended he use SSH instead of Telnet.
+A simple command line rule entry like the following gets the same error -
+iptables -A INPUT -p ICMP -s 0/0 --icmp-type 8 -j ACCEPT
 
-I don't think anyone would download Putty just to use it as a Telnet client, 
-because Windows can already do that on its own.
+Any ideas?  Is there a module that is not being loaded in this new versio=
+n?
 
-Regards,
-
-Antony.
-
--- 
-I don't know, maybe if we all waited then cosmic rays would write all our 
-software for us. Of course it might take a while.
-
- - Ron Minnich, Los Alamos National Laboratory
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Thanks in adanvce for your help,
+Steve
 
 
