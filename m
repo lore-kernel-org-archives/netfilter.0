@@ -1,8 +1,8 @@
-From: "Simpson, Doug" <dsimpson@friedmancorp.com>
-Subject: RE: recommended GUI frontends for iptables?
-Date: Mon, 17 Feb 2003 10:48:17 -0600
+From: Khanh Tran <khanh@slc.edu>
+Subject: RE: problem with DNAT ..
+Date: Mon, 17 Feb 2003 11:17:59 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20ED00AA0BC135449469D6EF0AE79C97203ED7@ozlan.fcdomain.net>
+Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5F2@EXCHANGE>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,21 +16,70 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'Robert P. J. Day'" <rpjday@mindspring.com>, netfilter mailing list <netfilter@lists.netfilter.org>
+To: Henti Smith <bain@tcsn.co.za>, netfilter@lists.netfilter.org
 
-I have used fwbuilder.
+Try:
+
+$IPTABLES -A FORWARD -i $ETH -d $MAIL_SERVER --protocol tcp --dport 80 -j
+ACCEPT
+$IPTABLES -A PREROUTING -t nat -p tcp -d $WEBMAIL_IP --dport 80 -j DNAT --to
+$MAIL_SERVER:80
+
+Khanh Tran
+Network Operations
+Sarah Lawrence College
+
 
 -----Original Message-----
-From: Robert P. J. Day [mailto:rpjday@mindspring.com]
-Sent: Monday, February 17, 2003 5:24 AM
-To: netfilter mailing list
-Subject: recommended GUI frontends for iptables?
+From: Henti Smith [mailto:bain@tcsn.co.za]
+Sent: Monday, February 17, 2003 11:06 AM
+To: netfilter@lists.netfilter.org
+Subject: problem with DNAT ..
 
 
+hi all 
 
-  which of the many GUI frontends have folks found mesh
-nicely with the latest iptables?  is there a FAQ for this?
+I have some DNAT rules which seems not to be working and I don't understand
+why not here is the rules : 
 
-rday
+I have aliased the IP's on the firewall in front of the servers to control
+access and such (this cannot be changed)
+
+$IPTABLES -t nat -I PREROUTING -d $WEBMAIL_IP 		-p tcp --dport 80
+-j DNAT --to-dest $MAIL_SERVER:80
+$IPTABLES -t nat -I PREROUTING -d $WEBMAIL_IP 		-p tcp --dport 443
+-j DNAT --to-dest $MAIL_SERVER:443
+$IPTABLES -t nat -I PREROUTING -d $LIVE_IP  		-p tcp --dport 110
+-j DNAT --to-dest $MAIL_SERVER:110
+$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP1 	-p tcp --dport
+0:65535 	-j DNAT --to-dest $IMSI_INT_IP1
+$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP2 	-p tcp --dport
+0:65535 	-j DNAT --to-dest $IMSI_INT_IP2
+$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP1 	-p udp --dport
+0:65535 	-j DNAT --to-dest $IMSI_INT_IP1
+$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP2 	-p udp --dport
+0:65535 	-j DNAT --to-dest $IMSI_INT_IP2
+
+in the output of iptables -t nat -L I get all the rules as they should be : 
+
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+DNAT       udp  --  anywhere             external      udp to:internal
+DNAT       udp  --  anywhere             external      udp to:internal
+DNAT       tcp  --  anywhere             external      tcp to:internal
+DNAT       tcp  --  anywhere             external      tcp to:internal
+DNAT       tcp  --  anywhere             external      tcp dpt:pop-3
+to:internal:110
+DNAT       tcp  --  anywhere             external      tcp dpt:https
+to:internal:443
+DNAT       tcp  --  anywhere             external      tcp dpt:www
+to:internal:80
+
+But when I telnet to port 110 on external I don't get to the internal port
+110 nor with any of the other stuff.
+Can anybody suggest places to look at why not ? 
+
+Henti 
+
 
 
