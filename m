@@ -1,15 +1,13 @@
-From: "Alexander W. Janssen" <alexander.janssen@gmx.de>
-Subject: Re: How to let people see my webcam using Windows Media Encoder
-Date: Sun, 2 Feb 2003 18:00:12 +0100
+From: "Paul McDonald" <paul@emessaging.cw.com>
+Subject: Highly dynamic NAT source mapping
+Date: Fri, 31 Jan 2003 11:22:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030202180012.E1937@ynfonatic.de>
-References: <000601c2caa5$0a3c1700$0601a8c0@jasper>
+Message-ID: <006501c2c944$e8bffad0$2a2b8792@surecom.com>
+Reply-To: <paul@emessaging.cw.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CGDBiGfvSTbxKZlW"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0066_01C2C91A.FFE9F2D0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000601c2caa5$0a3c1700$0601a8c0@jasper>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,77 +17,108 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Jasper Lingers <jasperlingers@zonnet.nl>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0066_01C2C91A.FFE9F2D0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+We have an application where thousands of outbound TCP connections are
+generated from multiple servers.  We are interested in mapping some, but not
+all of those connections to specific source addresses.
+
+The idea is to run netfilter on a box between these servers & the internet
+with a  'userland' server process that would be able to add/delete
+address/port mappings for SNAT.  This user process would be contacted by the
+software running on the servers generating the traffic after they bind to a
+local address/port but before attempting to connect.  They would then
+contact this process running on the netfilter box and request a specific
+SNAT for their address/port to a specified address.  When the server closes
+the connection, it would contact the process running on the netfilter box
+and remove the mapping.
+
+As you can see there would be a *large* number of updates to the SNAT
+mapping tables on the netfilter box.  My question is:
+
+- Is this really doable?  Will the large number (possibly hundreds per
+second)  of table adds/deletes cause havoc on the linux box running
+netfilter, bringing performance to a standstill.
+
+thanks
+
+Paul
 
 
---CGDBiGfvSTbxKZlW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+------=_NextPart_000_0066_01C2C91A.FFE9F2D0
+Content-Type: text/html;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Jasper,
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
 
-On Sun, Feb 02, 2003 at 11:22:45AM +0100, Jasper Lingers wrote:
-> Also when installed my IP is 192.168.1.6 but now is the thing how people
-> can see my webcam from outside. I have no idea where the IPtables config
-> file is also cause im using WebMin at the moment so if people could
-> explain it me in steps, I would appreciate that.
 
-first you have to know on which port your webcam-program listens.
-I would guess it's a small webserver listening on port 80?
+<META content=3D"MSHTML 5.50.4207.2601" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial size=3D2>We =
+have an=20
+application where thousands of outbound TCP connections are generated =
+from=20
+multiple servers.&nbsp; We are interested in mapping some, but not all =
+of those=20
+connections to specific source addresses.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial size=3D2>The =
+idea is to run=20
+netfilter on a box between these servers &amp; the internet with a&nbsp; =
 
-Then you just have to do:
+'userland' server process that would be able to add/delete address/port =
+mappings=20
+for SNAT.&nbsp; This user process would be contacted by the software =
+running on=20
+the servers generating the traffic after they bind to a local =
+address/port but=20
+before attempting to connect.&nbsp; They would then contact this process =
+running=20
+on the netfilter box and request a specific SNAT for their address/port =
+to a=20
+specified address.&nbsp; When the server closes the connection, it would =
+contact=20
+the process running on the netfilter box and remove the=20
+mapping.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial size=3D2>As you =
+can see there=20
+would be a *large* number of updates to the SNAT mapping tables on the =
+netfilter=20
+box.&nbsp; My question is:</FONT></SPAN></DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial size=3D2>- Is =
+this really=20
+doable?&nbsp; Will the large number (possibly hundreds per second)&nbsp; =
+of=20
+table adds/deletes cause havoc on the linux box running netfilter, =
+bringing=20
+performance to a standstill.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
+size=3D2>thanks</FONT></SPAN></DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
+size=3D2>Paul</FONT></SPAN></DIV>
+<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV></BODY></HTML>
 
-iptables -t nat -I PREROUTING -p tcp --dport 80 -j DNAT --to-destination 19=
-2.168.1.6:80
+------=_NextPart_000_0066_01C2C91A.FFE9F2D0--
 
-This redirects all incoming traffic destined for port 80 on your firewall to
-port 80 on your internal windows-box. If you allready use port 80 on your
-firewall for some sort of webserver, you can assign another port. For examp=
-le,
-you might want to redirect port 8888 to port 80 on you internal machine. Th=
-en
-just do:
-
-iptables -t nat -I PREROUTING -p tcp --dport 8888 -j DNAT --to-destination =
-192.168.1.6:80
-
-If your webcam-server doesn't listen to port 80, adapt the 192.168.1.6:n pa=
-rt
-accordingly.
-
-> I a totally n00b with compiling kernels and stuff, but if it is possible
-> to run a program or edit IPtables or so, please help me out, I need it
-> get to work for my parents :S
-
-If you are using a recent distribution you don't have to compile any kernel
-any more as long as you don't want bleeding-edge features.
-
-> Power2All
-> Holland
-
-Umh? :-)=20
-
-Hope that helps, Alex.
-
---=20
-"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
-l."
-Instructions for use of this post: Insert tounge in cheek. Read as normal.
-
---CGDBiGfvSTbxKZlW
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: Weitere Infos: siehe http://www.gnupg.org
-
-iEYEARECAAYFAj49TpsACgkQEMMZKORQoYI39wCfS+h9XEdYzDucJ9t5Mc4TJhhj
-Pp4Ani3GUJv703CNWNwludMBad/gon2j
-=otPT
------END PGP SIGNATURE-----
-
---CGDBiGfvSTbxKZlW--
 
