@@ -1,13 +1,13 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: (no subject)
-Date: Fri, 8 Nov 2002 20:27:59 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: firewall machine eating lot of memory
+Date: Fri, 8 Nov 2002 17:12:39 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <032d01c28737$3ae2fa60$13fcc5cb@nextto>
-References: <20021108145227.GA20828@myrealbox.com>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <200211081712.gA8HCke23994@vulcan.rissington.net>
+References: <1100D69203AAD2118E3C00508B8B9E8A67F13C@mailhost.intech.unu.edu> <200211051832.gA5IWhe19780@vulcan.rissington.net> <008e01c28732$dd9884f0$8c01a8c0@sundaram>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <008e01c28732$dd9884f0$8c01a8c0@sundaram>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Manikandan.P" <linuxmani@myrealbox.com>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-hi
+On Friday 08 November 2002 2:26 pm, Sundaram Ramasamy wrote:
 
-can you just type 
-iptables -nL -t nat
-and paste here, or
-just do iptable -F and check and u able to ping ?
+> Hi,
+>
+> Ia m using  Rdhat 7.3  kernel 2.4.18-3custom for my firewall, suddenly its
+> taking lot of memory, after that its not releasing. I ran the following
+> script to monitor the memory usage.
+>
+> Morning 3 to 4  its taking all the memory.
 
-hare
------ Original Message ----- 
-From: "Manikandan.P" <linuxmani@myrealbox.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, November 08, 2002 8:22 PM
-Subject: (no subject)
+This is nothing to worry about.
 
+All your uptime outputs show no swap being used, therefore you are not 
+running out of memory.
 
-> Hi all,
-> 
->  In my n/w iam using iptables firewall in my gateway and now the problem
-> is iam able to use that machine as a default gateway for all the
-> windows machines in my network but i cannot even ping the
-> gateway/firewall from linux machine.
->  the strange thing is if i ping a client linux machine from the firewall
-> it pings and from then onwards i can ping/use the gateway to browse the
-> net even from a linux machine.
->  every time if i want to use that g/w from a linux  machine i had to
-> ping the client machine from the firewall to enable it.
->  iam using iptables 1.2.5/Redhat Linux 7.3
->  
-> 
->  can any body help me out to resolve this strange problem
-> 
-> Manikandan P.
->  
-> -- 
->  # get Subject header, but remove initial "Subject: " portion
->  sed '/^Subject: */!d; s///;q'
-> 
-> 
+The fact that yoou see almost all your memory "used" instead of "free" simply 
+means that the memory has been allocated to some processand has not 
+subsequently been deallocated, because nothing else needs it.
 
+This is simply the way Linux allocates memory.
+
+Antony.
+
+-- 
+
+Windows: just another pane in the glass.
 
