@@ -1,14 +1,13 @@
-From: Cody Harris <hchs@ns.sympatico.ca>
-Subject: Re: Hostname Routing
-Date: Sat, 6 Sep 2003 22:31:52 -0300
+From: ads nat <adsnat@yahoo.com>
+Subject: Re: Unwanted Uploading.
+Date: Sat, 6 Sep 2003 21:16:53 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309062231.52710.hchs@ns.sympatico.ca>
-References: <200309062053.43929.hchs@ns.sympatico.ca> <200309062216.09798.hchs@ns.sympatico.ca> <200309062129.58513.Alistair@nerdnet.ca>
+Message-ID: <20030907041653.11017.qmail@web20706.mail.yahoo.com>
+References: <3F5A0DAD.7020901@chrisbrenton.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-684464782-1062908213=:10967"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200309062129.58513.Alistair@nerdnet.ca>
-Content-Disposition: inline
+In-Reply-To: <3F5A0DAD.7020901@chrisbrenton.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +17,83 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Alistair@nerdnet.ca, netfilter@lists.netfilter.org
+To: Chris Brenton <cbrenton@chrisbrenton.org>
+Cc: netfilter@lists.netfilter.org
 
-Ok, that's apache, how about my webmin, Postfix, CUCIPOP, MySQL and proftpd?
+--0-684464782-1062908213=:10967
+Content-Type: text/plain; charset=us-ascii
 
-On Saturday 06 September 2003 10:29 pm, you wrote:
-> Apache reverse proxy
->
-> From Apache's website .....:
-> A reverse proxy, by contrast, appears to the client just like an ordinary
-> web server. No special configuration on the client is necessary. The client
-> makes ordinary requests for content in the name-space of the reverse proxy.
-> The reverse proxy then decides where to send those requests, and returns
-> the content as if it was itself the origin.
->
-> A typical usage of a reverse proxy is to provide Internet users access to a
-> server that is behind a firewall. Reverse proxies can also be used to
-> balance load among several back-end servers, or to provide caching for a
-> slower back-end server. In addition, reverse proxies can be used simply to
-> bring several servers into the same URL space.
->
-> A reverse proxy is activated using the ProxyPass directive or the [P] flag
-> to the RewriteRule directive. It is not necessary to turn ProxyRequests on
-> in order to configure a reverse proxy.
->
-> On September 6, 2003 09:16 pm, Cody Harris wrote:
-> > It's 2 different computers. How will that work?
-> >
-> > On Saturday 06 September 2003 10:13 pm, you wrote:
-> > > Not in IPTABLES.
-> > > 	  Use apache.
-> > >
-> > > On September 6, 2003 07:53 pm, Cody Harris wrote:
-> > > > Hello. I have researched your database on this subject (hostname
-> > > > routing), but found nothing much. What i want is to take domain.com:*
-> > > > and deliver that to the local machine (127.0.0.1), but i want
-> > > > alt.domain.com:* to go to 192.0.0.2. How is this done?
-> > > >
-> > > > -Cody
+Hi,
+By giving command "tcpdump -v -nn icmp"
+I get follwoing :
+*****
+09:31:38.307409 202.63.164.12 > 202.183.69.130: icmp: echo request (DF) (ttl 58,
+ id 0, len 84)
+09:31:39.308771 202.63.164.12 > 202.183.69.130: icmp: echo request (DF) (ttl 58,
+ id 0, len 84)
+09:31:40.310974 202.63.164.12 > 202.183.69.130: icmp: echo request (DF) (ttl 58,
+ id 0, len 84)
+09:31:41.312619 202.63.164.12 > 202.183.69.130: icmp: echo request (DF) (ttl 58,
+ id 0, len 84)
+09:31:42.314766 202.63.164.12 > 202.183.69.130: icmp: echo request (DF) (ttl 58,
+ id 0, len 84)
+09:36:38.961942 202.63.164.12 > 202.183.69.130: icmp: echo request (DF) (ttl 58,
+ id 0, len 84)
+09:36:39.964662 202.63.164.12 > 202.183.69.130: icmp: echo request (DF) (ttl 58,
+ id 0, len 84)
+09:36:40.967854 202.63.164.12 > 202.183.69.130: icmp: echo request (DF) (ttl 58,
+ id 0, len 84)
+09:36:41.969910 202.63.164.12 > 202.183.69.130: icmp: echo request (DF) (ttl 58,
+ id 0, len 84)
+09:36:42.978050 202.63.164.12 > 202.183.69.130: icmp: echo request (DF) (ttl 58,
+ id 0, len 84)
+******
+ 
+My Server ethrenet external ID is 202.183.69.130
+How to go ahead.
+Thanks
 
+Chris Brenton <cbrenton@chrisbrenton.org> wrote:
+ads nat wrote:
+>
+> When talked with users user says their is no extar ordinary 
+> increase in uploading or downloading. My ISP say there must be some
+> virus/worm in the network.
+
+Sounds like you are one of the sites flooding people with icmp :(
+
+Try this:
+tcpdump -v -nn icmp
+
+Look at the source IP's of the echo-request packets and fix your systems.
+
+If that does not help, try a tool like ntop or iptraf which will tell 
+you who is generating all the traffic.
+
+HTH,
+C
+
+
+
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+--0-684464782-1062908213=:10967
+Content-Type: text/html; charset=us-ascii
+
+<DIV>Hi,</DIV>
+<DIV>By giving command "tcpdump -v -nn icmp"</DIV>
+<DIV>I get follwoing :</DIV>
+<DIV>*****</DIV>
+<DIV>09:31:38.307409 202.63.164.12 &gt; 202.183.69.130: icmp: echo request (DF) (ttl 58,<BR>&nbsp;id 0, len 84)<BR>09:31:39.308771 202.63.164.12 &gt; 202.183.69.130: icmp: echo request (DF) (ttl 58,<BR>&nbsp;id 0, len 84)<BR>09:31:40.310974 202.63.164.12 &gt; 202.183.69.130: icmp: echo request (DF) (ttl 58,<BR>&nbsp;id 0, len 84)<BR>09:31:41.312619 202.63.164.12 &gt; 202.183.69.130: icmp: echo request (DF) (ttl 58,<BR>&nbsp;id 0, len 84)<BR>09:31:42.314766 202.63.164.12 &gt; 202.183.69.130: icmp: echo request (DF) (ttl 58,<BR>&nbsp;id 0, len 84)<BR>09:36:38.961942 202.63.164.12 &gt; 202.183.69.130: icmp: echo request (DF) (ttl 58,<BR>&nbsp;id 0, len 84)<BR>09:36:39.964662 202.63.164.12 &gt; 202.183.69.130: icmp: echo request (DF) (ttl 58,<BR>&nbsp;id 0, len 84)<BR>09:36:40.967854 202.63.164.12 &gt; 202.183.69.130: icmp: echo request (DF) (ttl 58,<BR>&nbsp;id 0, len 84)<BR>09:36:41.969910 202.63.164.12 &gt; 202.183.69.130: icmp: echo request (DF) (ttl 58,<BR>&nbsp;id 0, len
+ 84)<BR>09:36:42.978050 202.63.164.12 &gt; 202.183.69.130: icmp: echo request (DF) (ttl 58,<BR>&nbsp;id 0, len 84)<BR>******</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>My Server ethrenet external ID is 202.183.69.130</DIV>
+<DIV>How to go ahead.</DIV>
+<DIV>Thanks<BR><BR><B><I>Chris Brenton &lt;cbrenton@chrisbrenton.org&gt;</I></B> wrote:</DIV>
+<BLOCKQUOTE class=replbq style="BORDER-LEFT: #1010ff 2px solid; MARGIN-LEFT: 5px; PADDING-LEFT: 5px">ads nat wrote:<BR>&gt;<BR>&gt; When talked with users user says their is no extar ordinary <BR>&gt; increase in uploading or downloading. My ISP say there must be some<BR>&gt; virus/worm in the network.<BR><BR>Sounds like you are one of the sites flooding people with icmp :(<BR><BR>Try this:<BR>tcpdump -v -nn icmp<BR><BR>Look at the source IP's of the echo-request packets and fix your systems.<BR><BR>If that does not help, try a tool like ntop or iptraf which will tell <BR>you who is generating all the traffic.<BR><BR>HTH,<BR>C<BR><BR><BR></BLOCKQUOTE><p><hr SIZE=1>
+Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
+--0-684464782-1062908213=:10967--
 
