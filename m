@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: what filtering to do on the OUTPUT chain?
-Date: Wed, 23 Oct 2002 10:43:37 +0100
+From: "Gavin" <gavin@raha.com>
+Subject: Re: nmap
+Date: Wed, 23 Oct 2002 12:06:49 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210230943.g9N9hiL02304@vulcan.rissington.net>
-References: <Pine.LNX.4.44.0210221605170.15445-100000@localhost.localdomain> <1035328874.10494.38.camel@elendil>
+Message-ID: <014801c27a73$856bfdf0$583a29c4@ghome>
+References: <1035264046.15391.85.camel@hyperno><20021022174245.13d2766b.fonetica@tiscali.it><plopm31y6icovs.fsf@drizzt.dyndns.org><20021022211221.3d91e4fb.fonetica@tiscali.it><plopm3vg3ub2vw.fsf@drizzt.dyndns.org><20021023003527.50af26db.fonetica@tiscali.it> <plopm3d6q1sj3a.fsf@drizzt.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1035328874.10494.38.camel@elendil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wednesday 23 October 2002 12:21 am, Cedric Blancher wrote:
+> But... what do you want to do by filtering OUTPUT ? Sure, you can drop
+INVALID
+> packets, filter floods, stop packets coming from root and so on, but if
+you
+> want to allow normal internet activity from the box, you have to allow NEW
+> connections on OUTPUT to any host/port...
 
-> During a pentest, we broke into a box through vulnerable PHP scripts
-> (one to upload files, and another one to include them and have commands
-> executed). At this point, we are able to execute commands and upload
-> binaries, but we do not have a remote shell. So, we launched a netcat
-> piped to a shell to connect on, because input flows were not filtered
-> properly. Imagine they were, but output policy was to be accept
-> anything. We could just get our shell in having our "piped shell" netcat
-> connect to the attacking box. So, output stuff would have allowed our
-> remote shell just like if there were not much filtering.
->
-> This means, that with proper output filtering, we couldn't have achieve
-> this this easy, and must have find something else to gain our remote
-> shell. That would have make the intrusion far more difficult.
+There's always a (good) chance that someone will comprimise the machine and
+use it to DDOS, scan, spam etc - filtering output to allow only what you
+need for normal usage (dns, web, ping etc) makes it less useful as a hacked
+box.
 
-The OUTPUT rules are always going to allow traffic to or from expected ports. 
-53 is a good one to guess is going to be made accessible, so you simply set 
-up netcat to contact your external system on port 53, and you can still do 
-what you've outlined above even with pretty good OUTPUT filters in place.
+Gavin
 
-The trouble is, netfilter only knows about IP addresses and TCP/UDP port 
-numbers - it doesn't understand anything about the content of packets being 
-sent on those ports, so it can't check that port 53 is being used only for 
-DNS queries, port 80 is being used only for HTTP transfers etc.
 
-My point is that if you can break into a machine, you can break out of it 
-again, so OUTPUT filters are generally either not much use, or they get in 
-the way of your normal applications.
-
-Re the comment "--cmd-owner is your friend", I agree that this is worth 
-adding to any OUTPUT rules you do choose to specify, but bear in mind that a 
-compromised application or trojan is still going to be running under an 
-expected user on the target machine, therefore --cmd-owner isn't necessarily 
-going to see anything strange...
-
-If you're concerned about this level of security (which you should be) then 
-you need to deal with Operating System security and things like Host 
-Intrustion Detection - netfilter is not going to do the job effectively for 
-you.
-
-Antony.
-
--- 
-
-Documentation is like sex:
-when it's good, it's very very good;
-when it's bad, it's still better than nothing.
 
