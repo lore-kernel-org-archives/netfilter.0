@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: traceroute
-Date: Wed, 30 Jun 2004 22:52:10 +0100
+Subject: Re: String
+Date: Wed, 30 Jun 2004 22:57:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406302252.10870.Antony@Soft-Solutions.co.uk>
-References: <00df01c45ea2$f5dc1290$49caa8c0@caris.priv> <200406301429.14248.Antony@Soft-Solutions.co.uk> <40E334EC.1080606@web.de>
+Message-ID: <200406302257.48060.Antony@Soft-Solutions.co.uk>
+References: <1088624701.19430.17.camel@localhost>
 Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40E334EC.1080606@web.de>
+In-Reply-To: <1088624701.19430.17.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,47 +21,37 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 30 June 2004 10:47 pm, Florian Boelstler wrote:
+On Wednesday 30 June 2004 8:45 pm, David Cary Hart wrote:
 
-> Hi,
->
-> I have a similar problem.
->
-> My traceroute says:
->
-> traceroute to www.google.akadns.net (66.102.11.99), 30 hops max, 38 byte
-> packets
-> traceroute: sendto: Operation not permitted
->  1 traceroute: wrote www.google.akadns.net 38 chars, ret=-1
-> [ ... ]
->
-> My setup is rather simple. I have "black-boxed" router connected to the
-> internet, that is able to forward traceroutes. My client is equipped
-> with netfilter.
-> When I disable my local netfilter on the client, traceroute works fine.
->
-> I use
->
-> $IPTABLES -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> at the beginning of my firewall script.
->
-> Nevertheless traceroute does not work.
->
-> Do I miss something?
+> The string module seems like a great idea to filter some of the httpd
+> attacks.
 
-Tell us how you handle NEW packets leaving the machine.
+It may seem like a great idea, but it has limitations which (IMHO) mean it's 
+just not worth using (for this sort of task).
+
+The two major limitations are:
+
+1. It will only match on a string which is completely contained within one 
+packet - therefore a string "GET /index.html" which has the "GET " at the end 
+of one packet, and the "/index.html" at the start of the next will not be 
+matched.
+
+2. The string match works on literal text characters, and therefore will not 
+match anything at all for a gzip-compressed HTTP stream (quite commonly 
+encountered with modern servers).
+
+> In the alternative is there something else that might do similar filtering?
+
+Yes, Squid, Dan's Guardian - something which truly understands HTTP, rather 
+than just TCP/IP.
 
 Regards,
 
 Antony.
 
 -- 
-"The problem with television is that the people must sit and keep their eyes 
-glued on a screen; the average American family hasn't time for it."
-
- - New York Times, following a demonstration at the 1939 World's Fair.
+The difference between theory and practice is that in theory there is no 
+difference, whereas in practice there is.
 
                                                      Please reply to the list;
                                                            please don't CC me.
