@@ -1,8 +1,11 @@
-From: aforster@br.ibm.com
-Subject: Antonio Paulo Salgado Forster is out of the office.
-Date: Mon, 7 Feb 2005 23:30:02 -0200
-Message-ID: <OF5EAC3117.0CBC8C49-ON83256FA2.00083E73-83256FA2.00083E75@br.ibm.com>
+From: varun_saa@vsnl.net
+Subject: net2phone rules
+Date: Tue, 08 Feb 2005 11:01:01 +0500
+Message-ID: <55503955141a.55141a555039@vsnl.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-language: en
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,13 +17,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I will be out of the office starting  25/01/2005 and will not return until
-14/02/2005.
+Hello,
+      I want my firewall to allow Net2phone.
 
-I'm on vacation until Feb 14th. Please contact Simone Gouvea
-(simone@br.ibm.com) in case you need urgent help.
+A visit to http://web.net2phone.com/consumer/commcenter/helpfirewall.asp
+states that you need to open up at least three ports:
+tcp 80 - tcp 6800 - udp 6801.
+
+One should use INPUT or FORWARD rule ?
+
+Thanks
+
+Varun
 
 
