@@ -1,14 +1,10 @@
-From: Peteris Krumins <newsgroups@lf.lv>
-Subject: Re[2]: Possible huge iptables memory leakage
-Date: Thu, 31 Jul 2003 23:37:08 +0300
+From: Daniel Camacho <dcamacho@saipan.com>
+Subject: IPTables & Squid
+Date: Fri, 01 Aug 2003 09:51:19 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <10268906076.20030731233708@lf.lv>
-References: <7C9884991ADAE0479C14F10C858BCDF5122E14@alderaan.smgtec.com>
-Reply-To: Peteris Krumins <newsgroups@lf.lv>
+Message-ID: <5.1.0.14.2.20030801094250.02f127f0@mail.saipan.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122E14@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +14,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Thursday, July 31, 2003, 11:14:51 PM, you wrote:
 
-DC> I am not sure what everyone else's environments are like, but I am
-DC> definitely getting memory infinitely swallowed into Netfilter somewhere.
-DC> I have userspace programs, but put together they take less than 5% of
-DC> the system memory.
+Hi all,
 
-I am getting only on this particular 2.4.22-pre6 and ipt1.2.8
-w/patch-o-matic-20030714
+I'm new to this list and to IPtables. I recently installed a transparent 
+proxy using Squid and IPtables. On one computer, I installed IPtables and 
+forward all port 80 requests to the Squid server, which is running on a 
+separate server. On that same computer I want to be able to filter certain 
+connections from using the Squid. I know I can do this with Squid, but I 
+want to know how to do it with IPtables. Does anyone know how may I go 
+about doing this? Thanks.
 
-As Aldo S. Lagana noted it might be conntracking but it does not seem
-logical - conntracking entries shrinking, ram usage growing.
-I hope it hold the peak hours tomorrow.
+Daniel
 
-DC> I forced myself to reboot once the ACTIVE memory takes 95% of the CPU,
-DC> which was every 3 weeks with 196mb of RAM. This server averaged 200 -
-DC> 250 connection tracks during office hours. The ramping active memory
-DC> usage went up in a very linear pattern until it took all the system, at
-DC> which point I would have to reboot due to performance degradation.
+Here's the script I use:
 
-I hope i dont have to reboot tomorrow..
+192.168.0.1 = Squid server
+192.168.0.25 = Netfilter Server
 
-DC> The last reboot, I decided to play with the machine's settings and add
-DC> some memory totaling 256MB. I also disabled my SWAP partition because I
-DC> have a few database servers that perform fantastically when kswapd isn't
-DC> used much. 
+# start up filter rules for traffic redirection to Squid
+iptables -t nat -A PREROUTING -i eth0 -s ! 192.168.0.1 -p tcp --dport 80 -j 
+DNAT --to 192.168.0.1:3128
 
-I am not swapping at all, since the machine loads everything from 16MB
-ide flash.
-
-DC> The result: Active memory 'seems' to have stabilized around 75MB at
-DC> least for the few days that it has been stable. I cannot tell if this
-DC> was totally kswap's fault, or even if the problem has been fixed at all.
-DC> It does look promising though.
-
-We'll see, thanks.
-
-
-P.Krumins
+# Add for 0 subnet
+iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/24 -d 192.168.0.1 -j 
+SNAT --to 192.168.0.25
+iptables -A FORWARD -s 192.168.0.0/24 -d 192.168.0.1 -i eth0 -o eth0 -p tcp 
+--dport 3128 -j ACCEPT
+#
+# Add for 2 subnet
+iptables -t nat -A POSTROUTING -o eth0 -s 192.168.2.0/24 -d 192.168.0.1 -j 
+SNAT --to 192.168.0.25
+iptables -A FORWARD -s 192.168.2.0/24 -d 192.168.0.1 -i eth0 -o eth0 -p tcp 
+--dport 3128 -j ACCEPT
+#
+# Add for 3 subnet
+iptables -t nat -A POSTROUTING -o eth0 -s 192.168.3.0/24 -d 192.168.0.1 -j 
+SNAT --to 192.168.0.25
+iptables -A FORWARD -s 192.168.3.0/24 -d 192.168.0.1 -i eth0 -o eth0 -p tcp 
+--dport 3128 -j ACCEPT
 
 
