@@ -1,11 +1,10 @@
-From: "Eric Constantineau" <mekanik@nerim.net>
-Subject: Re: ip_conntrack vs netstat
-Date: Tue, 2 Sep 2003 22:04:53 +0200
+From: shiva vafadar <sh_vafadar@yahoo.com>
+Subject: A problem in configuring a firewall system
+Date: Tue, 2 Sep 2003 04:51:59 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007b01c3718d$795c37c0$0901a8c0@metacortex>
-References: <Pine.LNX.4.53.0308301423020.30825@apollo.rsn.bth.se>
+Message-ID: <20030902115159.79965.qmail@web10701.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-1701452095-1062503519=:79691"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,39 +15,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Jonas Lindborg <jools@apollo.nu>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I want to unsubscribe !
-thanks
+--0-1701452095-1062503519=:79691
+Content-Type: text/plain; charset=us-ascii
 
------ Original Message -----
-From: "Jonas Lindborg" <jools@apollo.nu>
-To: <netfilter@lists.netfilter.org>
-Sent: Saturday, August 30, 2003 2:37 PM
-Subject: ip_conntrack vs netstat
+Dear all
+ 
+I have a problem in configuring my firewall system.
+My Linux system has two Net cards and there are two interfaces in it. eth0 and eth1.
+I want to forward a incoming request ( from 192.168.1.1) to another destination(132.20.48.5). I have added a rule in firewall iptables using Nat and prerouting. As a consequence of this rule a recorde is added to the log file after requesting, with following informaiton:
+IN=eth0, OUT= eth1, Source=192.168.1.11 and Destination=132.20.48.5.
+I think this is exactly what I want. 
+I used tcp dump and I see that there is a request from 192.168.1.11 to firewall system on eth0 but there is no request from eth1 to the 132.20.48.5.
+I conclude that there is somthing wrong in connection between lan cards and interfaces, Is it all right? And what should I do to bridge this gap?
+ 
+I approciate your consideration in advance.
+ 
+Shiva Vafadar
+ 
+ 
 
 
-> Hello,
->
-> When comparing the output of /proc/net/ip_conntrack with the "netstat"
-> command, I'm seeing a few established connections in ip_conntrack that are
-> not presented by netstat.
->
-> These are familiar connections (ssh, imap) to known hosts that could very
-> well have been done by me but not in the last 24 hrs so they should have
-> timed out a long time ago.
->
-> "ps" shows no such processes running so this immediately raises the
-> suspicion that the machine could be compromised and connections are hidden
-> from netstat and ps.
-> But if this was the case there should be some connections to unknown hosts
-> showing in ip_conntrack as well so I should be able to rule out that
-> possibility (?).
->
-> Now for my question:
-> Can anyone confirm that ip_conntrack can show "ghost" connections like
-> these?
->
+---------------------------------
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+--0-1701452095-1062503519=:79691
+Content-Type: text/html; charset=us-ascii
 
+<DIV>Dear all</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I have a problem in configuring my firewall system.</DIV>
+<DIV>My Linux system has two Net cards and there are two interfaces in it. eth0 and eth1.</DIV>
+<DIV>I want to forward a incoming request ( from 192.168.1.1)&nbsp;to another destination(132.20.48.5). I have added a rule in firewall iptables using Nat and prerouting. As a consequence of this rule&nbsp;a recorde is added to the log file after requesting, with following informaiton:</DIV>
+<DIV>IN=eth0, OUT= eth1, Source=192.168.1.11 and Destination=132.20.48.5.</DIV>
+<DIV>I think this is exactly what I want. </DIV>
+<DIV>I used tcp dump and I see that there is a request from 192.168.1.11 to firewall system on eth0 but there is no request from eth1 to the 132.20.48.5.</DIV>
+<DIV>I conclude that there is somthing wrong in connection between lan cards and interfaces, Is it all right? And what should I do to bridge this gap?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I approciate your consideration in advance.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Shiva Vafadar</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV><p><hr SIZE=1>
+Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
+--0-1701452095-1062503519=:79691--
 
