@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: pop3 and dns
-Date: Wed, 5 May 2004 11:24:17 +0100
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: ICMP logging question
+Date: Wed, 05 May 2004 06:35:31 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405051124.17019.Antony@Soft-Solutions.co.uk>
-References: <F22386C3FEB012449238672E38ED61E706C2D6@overlord.overturemedia.com>
-Reply-To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
+Message-ID: <1083753331.2129.450.camel@grendel>
+References: <1083632597.2068.194.camel@grendel>
+	 <40985AD6.8070101@snapgear.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F22386C3FEB012449238672E38ED61E706C2D6@overlord.overturemedia.com>
+In-Reply-To: <40985AD6.8070101@snapgear.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,63 +19,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
+To: Philip Craig <philipc@snapgear.com>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 05 May 2004 5:58 am, Fritz Mesedilla wrote:
-
-> > These look fine as they are, however you will need a rule to
-> > allow the reply packets, and perhaps one to SNAT your Internet-bound
-> > packets if you are using private addresses on your network.
+On Tue, 2004-05-04 at 23:09, Philip Craig wrote:
 >
-> Oh... How do I do that? Can you give me a sample rule?
+> Given that there's only 56 bytes in the ICMP packet, and 40 bytes in the
+> original TCP packet, all of which are headers, that packet by itself
+> would be a very low bandwidth covert channel.  What makes you think it is?
 
-Well, your ruleset already contains a rule to allow the reply packets through 
-the FORWARD chain (although it is somewhat confusingly listed under the NAT 
-section of your rules), so I assume you're asking about SNAT.   Here's an 
-example rule to allow clients to access remote POP3 services:
+Going off topic just a little here...
+The pattern is nearly identical to what we documented here:
+http://archives.neohapsis.com/archives/incidents/2000-01/0005.html
 
-iptables -A POSTROUTING -t nat -p tcp --dport 110 -j SNAT --to w.x.y.z
+The major difference is these packets target an actual IP address rather
+than x.x.x.0. This tells me it may be a variation off the original tool
+adapted for a different OS (original zombie ran on SunOS). Just trying
+to ID the tool.
 
-where w.x.y.z is the external address of the firewall which you would like the 
-packets to have when they leave the machine.
+> No, the feature is still there, but it only prints out the ports when
+> it has a full TCP header.  While it would be possible to print the
+> ports from just the first 8 bytes of the TCP header, iptables never
+> has AFAIK. 
 
-By the way, what made you decide to use 192.167.220.x addresses for your 
-clients?   That is not a reserved address range, and is part of a block 
-registered to the University of Ferrara in Italy.
+Think I figured it out. Check out the following:
 
-> > Suggestions:
-> > 1. Describe your network setup to us.
-> > 2. Show us all your netfilter rules.
->
-> We have public ips on the outside while we have private ips on the inside
-> doing nat through iptables and not through the router as we do not have
-> control of the router.
+Oct 30 22:36:53 gw2 kernel:  DROP  IN=eth0 OUT=eth0 SRC=207.88.240.101
+DST=12.33.247.252 LEN=56 TOS=0x00 PREC=0x00 TTL=243 ID=0 PROTO=ICMP
+TYPE=3 CODE=1 [SRC=12.33.247.252 DST=194.102.91.1 LEN=40 TOS=0x00
+PREC=0x00 TTL=24 ID=41546 PROTO=TCP SPT=31632 DPT=4160 WINDOW=63498
+RES=0x09 ACK RST SYN FIN URGP=0]
 
-Other information which would be useful if we need to answer any more 
-questions are: what interface names on the firewall connect to the inside and 
-outside, and how have you interconnected the two different network ranges you 
-appear to be using 192.168.247.x and 192.167.220.x ?
+Port numbers decoded off a 56 byte packet but it has the "let's pretend
+the sequence number field is the flag field" bug. I'm guessing when the
+bug was fixed, the change was made so port numbers were no longer
+translated when only 8 bytes of the TCP header are present.
 
-> For web browsing I have squid proxy. So normally, clients do not have to
-> resolve domain names as squid proxy does it for them. Now I need to allow
-> clients to resolve domain names to be able to retrieve pop3 from their
-> other mail servers.
+Kind of a bummer to lose the additional info. May be able to fix this
+with ulog.
 
-Where is the DNS server which the clients are expected to access for this?   
-Are you running one on your network (good idea) or are they supposed to 
-access one run by your ISP (works, but will be slower and uses a bit more 
-bandwidth)?
+Thanks for the re!
+Chris
 
-Regards,
-
-Antony.
-
--- 
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
