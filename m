@@ -1,13 +1,16 @@
-From: "Warren P" <warrenp@websurfer.co.za>
+From: Security <security@ezsm.net >
 Subject: Re: HELP!!! (ip_conntrack: table full)
-Date: Mon, 27 Oct 2003 22:46:36 +0200
+Date: Mon, 27 Oct 2003 16:53:31 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <web-171348616@mail01.infosat.net>
-References: <200310271509.16011.nighthawk@easyservermanagement.com>
+Message-ID: <200310271553.32637.security@ezsm.net>
+References: <web-171348616@mail01.infosat.net>
+Reply-To: security@ezsm.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200310271509.16011.nighthawk@easyservermanagement.com>
+In-Reply-To: <web-171348616@mail01.infosat.net>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,76 +20,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: nighthawk@ezsm.net, Warren P <warrenp@websurfer.co.za>, netfilter@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: Warren P <warrenp@websurfer.co.za>, netfilter@lists.netfilter.org
 
-Hi
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Thanks ...
+Easy way to find out...try to remove the module..if it has no rules using=20
+it...it won't complain..and will just remove.  But if that is really your=20
+only iptables rule..then I don't see any need for that module.
 
-But tell me ... do i really need ip_conntrack? What would
-happen if i remove it permanently ... how will this affect
-my IP Table rule ...
-I've only got one rule:
-e.g: iptables -t nat -A PREROUTING -p tcp --dport 80 -j
-DNAT --to 192.168.22.33:3128
-
-------------------------------------------------------------
-
-
-On Mon, 27 Oct 2003 16:09:14 -0400
- NightHawk <nighthawk@easyservermanagement.com> wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
-> 
-> Warren,
->    I would only raise the value in /proc/net/ip_conntrack
-> a little bit at a 
-> time till you find the lowest number that works for your
-> situation.  Once you 
-> have everything under control, the number shouldn't have
-> to be too high, at 
-> least this has been my experience.  I only raise the
-> number when having a 
-> "situation", and then lower it back down once things are
-> calmed down.
-> 
-> And yes, I did mean to rmmod ip_conntack, when I
-> mentioned dropping 
-> ip_conntrack.  Although, this tends to require dropping a
-> few other modules 
-> as well, and also tends to require stopping iptables
-> while you do so. (due to 
-> some of the modules that you have to remove.)  Which is
-> why it is not the 
-> best solution for all situations....
-> 
-> NH
-> 
-> On Monday 27 October 2003 2:52 pm, Warren P wrote:
-> > hi
-> >
-> > WRT echo ## > /proc/net/ip_conntrack
-> >
-> > Considering i've got 1gig of RAM ... what is a safe
-> value i
-> > can set ip_conntrack_max to? The current value is 65528
-> >
-> > Also when you refer to dropping ip_conntrack ... do
-> mean
-> > like rmmod ip_conntrack.o?
-> >
-> > Regards,
-> > Warren P
-> >
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.2.1 (GNU/Linux)
-> 
+NH
+On Monday 27 October 2003 3:46 pm, Warren P wrote:
+> Hi
 >
-iD8DBQE/nXtqb58ZIoF+byQRAgbWAKCOgeguwsDsDnvsH/8MHx5BTwKuSQCffJ+t
-> fcgUdKA6Npi/VyhejhJegOE=
-> =Th5c
-> -----END PGP SIGNATURE-----
-> 
+> Thanks ...
+>
+> But tell me ... do i really need ip_conntrack? What would
+> happen if i remove it permanently ... how will this affect
+> my IP Table rule ...
+> I've only got one rule:
+> e.g: iptables -t nat -A PREROUTING -p tcp --dport 80 -j
+> DNAT --to 192.168.22.33:3128
+>
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE/nYXLPEfiOMhBaIMRAtULAJ43uhg79Vc8SqAxtkaqb+oQrfWSxwCeJL6E
+YXSKRgYWg4tisifll8ed1ac=3D
+=3DIVGt
+=2D----END PGP SIGNATURE-----
 
 
