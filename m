@@ -1,13 +1,14 @@
-From: Kim Jensen <kimj@dawn.dk>
-Subject: Re: How filter IP address if it *changes* often?? (think dhcp)
-Date: Fri, 28 Mar 2003 10:31:28 +0100
+From: Vincent Lim <vincent.lim@nestac.com>
+Subject: Re: ip_conntrack_ftp problem
+Date: 28 Mar 2003 18:19:07 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303281031.29018.kimj@dawn.dk>
-References: <20030327200056.A18916@spawar.navy.mil> <Pine.LNX.4.53.0303272314530.4873@gypsy> <20030327222617.A19911@spawar.navy.mil>
+Message-ID: <1048846747.1476.57.camel@vincentlim>
+References: <3E83FC78.7080801@ms.sapientia.ro>
+	 <1048840079.1236.45.camel@vincentlim>  <3E841938.3050708@ms.sapientia.ro>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030327222617.A19911@spawar.navy.mil>
+In-Reply-To: <3E841938.3050708@ms.sapientia.ro>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +19,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: seberino@spawar.navy.mil, Steve Mickeler <steve@warning.ca>
-Cc: netfilter@lists.netfilter.org
+To: Budai Laszlo <lbudai@ms.sapientia.ro>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Friday 28 March 2003 07:26, seberino@spawar.navy.mil wrote:
-> Steve
->
-> Thanks for the email.  Let me rerephrase my question.
-> Perhaps I wasn't clear....
->
-> How can you have a rule on your INPUT chain that
-> only allows your local box's IP address if "local box IP address" can
-> change without notice due to your DSL ISP's decision?
->
-> Chris
->
-Hi Chris,
+On Fri, 2003-03-28 at 17:43, Budai Laszlo wrote:
+> Thanks, this solved  my problem. However, if you check my first post you 
+> can see thet in the FORWARD chain I had :
+> 
+> ACCEPT     all  --  anywhere             anywhere           state RELATED
+> 
+> but seems it was not enough ... :(  and I don't  understand. isn't your 
+> rule more restrictiv (state RELATED, ESTABILISHED) than my old rule 
+> (just related)?
 
-If you are having one interface for all incoming traffic and one for outg=
-oing=20
-traffic, then you can simply filter it by looking at the interface like:
+RELATED is for the ftp-data connection that is established after initial
+connection attempt.
+ESTABLISHED is for the original replies, which I think the server would
+first used until a second/other connection is negotiated.
 
-iptables -A INPUT -i LOCAL_IF -j ACCEPT
+My $0.02
 
-You can also set up your rule so it allows traffic from the IP range you =
-have=20
-internally:
-
-iptables -A INPUT -s LOCAL_NET -j ACCEPT
-
-The rules are a little primitive, but I hope you get the idea.
-
-/Kim
+-- 
+Vincent Lim <vincent.lim@nestac.com>
+NESTAC Solution Sdn Bhd
 
 
