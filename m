@@ -1,11 +1,12 @@
-From: =?ISO-8859-1?Q?Fl=E1vio?= Brito <flavio@gral.com.br>
-Subject: Newbie Question -forcing to pass in squid
-Date: 14 Oct 2002 00:03:08 -0200
+From: Nuitari <nuitari@balthasar.nuitari.net>
+Subject: Re: FTP/auth problems (slooow links)
+Date: Mon, 14 Oct 2002 05:52:26 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1034560988.10075.15.camel@pegasus.gral.com.br>
+Message-ID: <Pine.LNX.4.44.0210140550590.18466-100000@balthasar.nuitari.net>
+References: <3DA9D952.3030709@solidas.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3DA9D952.3030709@solidas.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,61 +16,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+On Sun, 13 Oct 2002, Svein E. Seldal wrote:
+> So, I'm rephrasing the question: "What can be the reason that the router 
+> is having such long initial delays on connections?"
 
-Dear Friends
-
-I have two machines, and I trying to force all port 80 traffic to pass
-in SQUID 3128. But when people unset proxy in browser, they bypass SQUID
-to the Internet . I cannot put transparent proxy, because SQUID is
-authenticating.
-
-Suggestions?
-
-Thanks=20
-
-Fl=E1vio =20
-----------------------------------------------------------------------
-
-FW
-|-------------------------------|
-|	eth0 - 200.1.2.3	|----------------------> [INTERNET]
-|	eth1 - 192.168.1.1	|
-|-------------------------------|
-		|
-		|
-		SQUID
-		|
-|-------------------------------|
-|	eth0 - 192.168.1.33	|
-|-------------------------------|
-		|
-		|
-	INTERNAL_LAN
-		|
-|-------------------------------|
-|	192.168.1.0/24		|
-|-------------------------------|
-
-
-My Example
-
-
-iptables -F
-iptables -A INPUT -i lo -p all -j ACCEPT                    #   - Allow
-self access by loopback interface
-iptables -A OUTPUT -o lo -p all -j ACCEPT
-iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-#- Accept established connections
-iptables -A FORWARD -o eth0 -j ACCEPT
-iptables -t nat -A POSTROUTING -s $INTERNAL_NET -o $EXT -j MASQUERADE
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j ACCEPT  -d
-192.168.1.33
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT
---to-port 3128
-
-
+Did you check that all the ip that are used to connect have some kind of 
+entry in /etc/hosts or can be resolved quickly with a DNS server. 
+I noticed some ftp daemons are doing a reverse resolving of the ip and if 
+the domain name server is innaccessible or slow it can take a long time 
+for the time outs.
 
 
