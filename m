@@ -1,14 +1,15 @@
-From: Andy Furniss <andy.furniss@dsl.pipex.com>
-Subject: Re: IMQ Replacement
-Date: Mon, 26 Jan 2004 15:50:47 +0000
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: ip_conntrack_pptp
+Date: Mon, 26 Jan 2004 17:19:51 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40153757.2010108@dsl.pipex.com>
-References: <1068652569.27810.450.camel@cumulus> <Pine.LNX.4.58.0311131244400.13900@fhynpb.envafyvqr.arg> <1074352525.4761.1389.camel@peterlaptop> <400BDCB6.2000208@pobox.com> <400D0B7F.90104@o2.pl> <400E9246.3020601@pobox.com> <40150537.4040501@pobox.com> <20040126144206.GA11104@zion.homelinux.com>
-Reply-To: andy.furniss@dsl.pipex.com
+Message-ID: <20040126161951.GD19250@sunbeam.de.gnumonks.org>
+References: <20040122175345.GN1810@obroa-skai.de.gnumonks.org> <000d01c3e3ed$9875b0f0$2d64a8c0@pcjka>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2hMgfIw2X+zgXrFs"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040126144206.GA11104@zion.homelinux.com>
+Content-Disposition: inline
+In-Reply-To: <000d01c3e3ed$9875b0f0$2d64a8c0@pcjka>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +19,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
-
-Sven Schuster wrote:
-> Hi Andre,
-> 
-> maybe interessting for you: Marcel Sebek recently started a thread
-> on netdev about this topic. He has ported the IMQ device to 2.6
-> and asked if this might be accepted. Davem contacted Patrick
-> McHardy, the original author, who said that the IMQ device was
-> buggy.
-> This thread still continues, take a look at netdev ml archives for
-> more information.
-
-There is also discussion on the LARTC list at the moment - someone 
-called roy has rewritten IMQ but still sees crashes. He thinks they are 
-related to locally generated traffic, so IMQ for ingress should be OK.
-
-Personally I have used IMQ for locally generated traffic (> a gig/day up 
-with bittorrent running on a P200 gateway) without problems, but I only 
-have 256kbit/s up and shutdown everything at night.
-
-Andy.
+To: Jan Kaastrup <jka@protego.dk>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
-> 
-> HTH
-> 
-> Sven
-> 
-> On Mon, Jan 26, 2004 at 10:16:55AM -0200, Andre Correa told us:
-> 
->>Hi guys, Andy F. pointed out that Alexander Clouter and other guys 
->>ported IMQ to 2.6. The URL to their port is:
->>
->>http://www.digriz.org.uk/jdg-qos-script/#qos-2.6
->>
->>I had no time or resources to test it so far...
->>
->>I've got no answer from the last IMQ maintainer so I'll start a list for 
->>us to discuss what we'll gonna do about it. I'll let you know later today.
->>
->>I'm sorry if this thread is disturbing somebody in this list. I'll just 
->>post 1 or 2 e-mails about it and we'll be out...
->>
->>Meanwhile, anybody interrested in joining us to work with IMQ please 
->>contact me privately.
->>
->>tks...
->>
->>Andre
-> 
-> 
+--2hMgfIw2X+zgXrFs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 26, 2004 at 10:20:10AM +0100, Jan Kaastrup wrote:
+> Hi Harald
+>=20
+> I have read the README file for POM - and I cannot find anything that
+> could tell what is wrong:(
 
+The README doesn't tell you anywhere to apply that patchc manually.  It
+tells you to run the './runme' script.
+
+However, you are telling me, that you are manually applying the patch.
+Witch will only give you about 90% of the required changes, not all of
+them.
+
+> >I do something like this for patching my kernel (2.4.21):
+> >patch -p1 < ./path-o-mat.../ip_conntrack_pptp.patch, and everything
+> >seems allright.
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--2hMgfIw2X+zgXrFs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQFAFT4nXaXGVTD0i/8RApJxAJ9zfhMx+IQXPKlilDMo4o/7/Q+y3ACfWjBE
+1HNjHX8m005ZUofhVoVpg/M=
+=TrXD
+-----END PGP SIGNATURE-----
+
+--2hMgfIw2X+zgXrFs--
 
