@@ -1,12 +1,12 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Using IPTABLES, cannot go to External Interface
-Date: Mon, 16 Jun 2003 22:46:27 +1000
+From: Internet Protocol version Six <inet6@mail.be>
+Subject: IPv6 and NAT/connection tracking
+Date: Mon, 16 Jun 2003 14:38:29 +0200 (GMT+02:00)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019284@wardrive.citadelcomputer.com.au>
+Message-ID: <2082069631.1055767109953.JavaMail.Administrator@pumbaa>
+Reply-To: Internet Protocol version Six <inet6@mail.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,60 +16,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-WW91IGRvbid0IG5lZWQgdG8gcHV0IHRoZSBFeHRlcm5hbCBJUHMgb24gdGhlIGV0aDAgZGV2aWNl
-IGZvciB0aGUgaW50ZXJuYWwgbWFjaGluZXMgdG8gYmUgRE5BVGVkLiBXaGF0J3MgdGhlIHJlYXNv
-biB5b3UgaGF2ZSBldGgwOjAgMDoxIGFuZCAwOjI/DQoNCgktLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLSANCglGcm9tOiBEZXNod2FsIENoYW5kIFttYWlsdG86Q0REQGthbXBzYXguY28uaW5dIA0K
-CVNlbnQ6IE1vbiAxNi1KdW4tMDMgODo1MSBQTSANCglUbzogJ0NlZHJpYyBCbGFuY2hlcicgDQoJ
-Q2M6IE5ldGZpbHRlciAoRS1tYWlsKSANCglTdWJqZWN0OiBSRTogVXNpbmcgSVBUQUJMRVMsIGNh
-bm5vdCBnbyB0byBFeHRlcm5hbCBJbnRlcmZhY2UNCgkNCgkNCg0KCUhJIA0KDQoNCglUaGUgc2V0
-dXAgaXMgbGlrZSB0aGlzIA0KDQoJSSBoYXZlIGEgUmVkSGF0IGxpbnV4IHdpdGggdGhyZWUgTEFO
-IGNhcmRzIGludG8gaXQuIA0KDQoJZXRoMCA9IFB1YmxpYyBJUCANCglldGgwOjAgPSBQdWJsaWMg
-SVAgDQoJZXRoMDowIC0gZXRoMDozID0gUHVibGljIElQcyANCg0KCWV0aDEgPSBQcml2YXRlIElQ
-IChJbnRlcm5hbCBOZXQpIA0KCWV0aDIgPSBETVogSVBzIChQcml2YXRlIG9uZXMpKEhlcmUgSSBo
-YXZlIDQgbWFjaGluZXMgd2l0aCBETVogSVBzKSANCg0KCUROQVQgICAgLSBBbnl0aGluZyBlbnRl
-cmluZyB0byBlaHQwIChFeHRlcm5hbCBJbnRlcmZhY2UpIGxvb2tpbmcgZm9yIGV0aDA6MCAtIGV0
-aDA6MyBzaG91bGQgYmUgRE5BVHRlZCB0byBETVogSXBzLiANCgkgICAgICAgIC0gQW55dGhpbmcg
-ZW50ZXJpbmcgdG8gZXRoMSAoSW50ZXJuYWwgSW50ZXJmYWNlKSBsb29raW5nIGZvciBldGgwOjAg
-LSBldGgwOjMgc2hvdWxkIGJlIEROQVR0ZWQgdG8gRE1aIElwcyANCgkgICAgICAgIC0gQW55dGhp
-bmcgZW50ZXJpbmcgdG8gZXRoMiAoRE1aIEludGVyZmFjZSkgbG9va2luZyBmb3IgZXRoMDowIC0g
-ZXRoMDozIHNob3VsZCBiZSBETkFUdGVkIHRvIERNWiBJcHMgDQoNCglTTkFUIC0gQW55dGhpbmcg
-Z29pbmcgb3V0IGZyb20gKFNvdXJjZSBldGgxIChJbnRlcm5hbCBOZXQpIGFuZCAoRE1aIE5FVCkg
-RGVzdGluYXRpb24gMC4wLjAuMC8wIGFuZCBldGgyKSBzaG91bGQgYmUgDQoNCgkgICAgIC0gQW55
-dGhpbmcgZnJvbSBETVogdG8gSW50ZXJuYWwgc2hvdWxkIGJlIFNOQVR0ZWQgdG8gRE1aX0lGIA0K
-CSAgICAgICAgDQoNCglTTkFUdGVkIC0tdG8tc291cmNlIGV0aDAgDQoNCglBbGwgdGhlIHRyYWZm
-aWNlIGZyb20gRXh0ZXJuYWwgV29ybGQgaXMgYWJsZSB0byByZWFjaCB0byBteSBzZXJ2ZXJzIGlu
-IHRoZSBETVouIEkgbWVhbiwgaWYgc29tZW9uZSBoYXMgdG8gbG9nIG9uIHRvIHRoZSB3ZWIgc2Vy
-dmVyIGF0IGV0aDA6MCBwb3J0IDgwLCBoZS9zaGUgaXMgYWJsZSB0byBkbyBzby4NCg0KCUJ1dCwg
-Tm8gb25lIGZyb20gSU5URVJOQUwgTkVUIGlzIGFibGUgdG8gcmVhY2ggdG8gdGhlIHNlcnZlcnMu
-IElmIEkgaGF2ZSBhIG1jaGluZSB3aXRoIEludGVybmFsIElQIEFkZHJlc3MgYW5kIHdhbnQgdG8g
-bG9nIG9udG8gdGhlIHdlYiBzZXJ2ZXIgZnJvbSB3aXRoaW4gbXkgbmV0d29yaywgSSBjYW5ub3Qg
-ZG8gc28uDQoNCglJZiBJIGFjY2VzcyBZYWhvby5jb20gb3IgYW55b3RoZXIgc2l0ZSwgSSBjYW4g
-ZG8gc28gZnJvbSB3aXRoaW5nIG15IG5ldHdvcmsgdXNpbmcgSW50ZXJuYWwgSVAgQWRkcmVzcy4g
-DQoNCglIb3BlIHRoaXMgZXhwbGFpbnMuIA0KDQoNCg0KDQoNCg0KCS0tLS0tT3JpZ2luYWwgTWVz
-c2FnZS0tLS0tIA0KCUZyb206IENlZHJpYyBCbGFuY2hlciBbbWFpbHRvOmJsYW5jaGVyQGNhcnRl
-bC1zZWN1cml0ZS5mcl0gDQoJU2VudDogTW9uZGF5LCBKdW5lIDE2LCAyMDAzIDM6NDYgUE0gDQoJ
-VG86IERlc2h3YWwgQ2hhbmQgDQoJQ2M6IE5ldGZpbHRlciAoRS1tYWlsKSANCglTdWJqZWN0OiBS
-ZTogVXNpbmcgSVBUQUJMRVMsIGNhbm5vdCBnbyB0byBFeHRlcm5hbCBJbnRlcmZhY2UgDQoNCg0K
-CUxlIGx1biAxNi8wNi8yMDAzIMOgIDA5OjUxLCBEZXNod2FsIENoYW5kIGEgw6ljcml0IDogDQoJ
-PiBJIGFtIHJ1bm5pbmcgYSBzY3JpcHQgZm9yIElQVEFCTEVTLiANCgk+IEkgaGF2ZSBhc3NpZ25l
-ZCAzIG1vcmUgSVAgYWRkcmVzc2VzIHRvIG15IGV4dGVybmFsIGludGVyZmFjZS4gDQoJPiBldGgw
-IC0geC55LnouMSANCgk+IGV0aDA6MCAtIHgueS56LjIgDQoJPiBldGgwOjEgLSB4Lnkuei4zIA0K
-CT4gZXRoMDoyIC0geC55LnouNCANCgk+IEkgaGF2ZSBTTkFUZWQgbXkgaW50ZXJuYWwgbmV0d29y
-ayB0byBldGgwLiBJIGNhbiBkbyBhbGwgdGhlIHRoaW5ncy4gDQoJPiBCdXQsIEkgY2Fubm90IHJl
-YWNoIHRvIGFueSBvZiBJUCBhZGRyZXNzZXMgeC55LnouMSAtIDMuIA0KDQoJUmVhY2ggdGhlbSBm
-cm9tIHdoZXJlID8gU05BVCBpcyBoYW5kbGVkIHRocm91Z2ggRk9SV0FSRC4gTG9jYWwgdHJhZmlj
-IGlzIA0KCWhhbmRsZWQgdGhvdWdoIElOUFVUIGFuZCBPVVRQVVQuIE1heWJlIHRoZXJlJ3Mgc29t
-ZXRoaW5nIHRvIGxvb2sgYXQgDQoJdGhlcmUuIA0KDQoJPiBUaG91Z2gsIEkgY2FuIGdvIHRvIGFu
-eSBob3N0IGluIHRoZSB3b3JsZCwgYnV0IGNhbm5vdCBnbyBkaXJlY3RseSB0byANCgk+IGV0aDAu
-IA0KDQoJQ2FuIHlvdSBiZSBhIGxpdHRsZSBtb3JlIGV4cGxpY2l0IGluIHlvdXIgc2V0dXAgYW5k
-IHdoYXQgeW91IGV4YWN0bHkgDQoJd2FudCB0byBkbyA/IA0KCSAgICAgIA0KCS0tIA0KCUPDqWRy
-aWMgQmxhbmNoZXIgIDxibGFuY2hlckBjYXJ0ZWwtc2VjdXJpdGUuZnI+IA0KCUNvbnN1bHRhbnQg
-ZW4gc8OpY3VyaXTDqSBkZXMgc3lzdMOobWVzIGV0IHLDqXNlYXV4IC0gQ2FydGVsIFPDqWN1cml0
-w6kgDQoJVMOpbDogKzMzICgwKTEgNDQgMDYgOTcgODcgLSBGYXg6ICszMyAoMCkxIDQ0IDA2IDk3
-IDk5IA0KCVBHUCBLZXlJRDoxNTdFOThFRSAgRmluZ2VyUHJpbnQ6RkE2MjIyNkRBOUU3MkZBOEFF
-Q0FBMjQwMDA4QjQ4MEUxNTdFOThFRSANCg0K
+Hello all, I have a box that's configured as a firewall and router for IPv6, which is doing it's job fine, well, fine.., IPv6 connections keep timing out, they work for a second or 30 and then it timesout -> connections, ping6, traceroutes, ... from the Internet to the IPv6 address behind the router don't work anymore. Also if I do a ping6 or make a connection to a remote IPv6 host on the Internet it doesn't work, however if I ping6 the router from the network, everything works again...for about 30 seconds again, and then the problem begins again...
+
+I was told that this is caused by NAT/connection tracking. Is there *any* solution to this? This is really annoying as I *need* NAT, but also want to give IPv6 connectivity to other machines on the LAN.
+
+With kind regards,
+-----------------------------------------------------
+Mail.be, WebMail and Virtual Office
+http://www.mail.be
+
 
