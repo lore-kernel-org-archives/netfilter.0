@@ -1,14 +1,14 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: udp port 1025
-Date: Mon, 20 Sep 2004 11:37:45 +0300
+From: George Alexandru Dragoi <waruiinu@gmail.com>
+Subject: Re: another quick question
+Date: Mon, 20 Sep 2004 11:48:04 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1403218a04092001376308ea4a@mail.gmail.com>
-References: <a0f69e5040920004411e0eeb6@mail.gmail.com>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Message-ID: <3063e5040920014819196810@mail.gmail.com>
+References: <a0f69e50409200102455b0172@mail.gmail.com>
+Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a0f69e5040920004411e0eeb6@mail.gmail.com>
+In-Reply-To: <a0f69e50409200102455b0172@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,46 +19,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Search in google, and feel lucky
+It is strongly related to the other question, same RPC/DCOM problems.
 
-http://www.linklogger.com/TCP1025.htm
 
-On Mon, 20 Sep 2004 13:44:18 +0600, Askar <askarali@gmail.com> wrote:
-> hi all
+On Mon, 20 Sep 2004 14:02:57 +0600, Askar <askarali@gmail.com> wrote:
+> hi again
+> My second question of the day is pls first check these few rules from
+> our firewall scirpt
 > 
-> Im taking care of a fw machine that is configured by my predecsssor,
-> firewall being configure by default policies to ACCEPT for all chain
-> (coz he thinks its difficult of an ISP to run firewall as default set
-> to DROP)
-> however for the time being this is not my concern but here are few
-> lines from script that confusing for me
+> iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
+> iptables -A INPUT -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
+> iptables -A FORWARD -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
+> iptables -A FORWARD -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
+> iptables -t nat -A PREROUTING -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
+> iptables -t nat -A PREROUTING -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
 > 
-> iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
-> iptables -A FORWARD -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
-> iptables -A OUTPUT -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
+> aren't there are unnecessary repitions ? port that is Dropped in
+> FOWARD chain is again Dropped in PREROUTING chain, and also why he (my
+> predecssor) droping such port in INPUT table ? aren't it unnecessary,
+> coz it a linux box no port 135:140 are open on our fw machine.
 > 
-> when I do "tail -f /var/log/messages", I found lot of below messages
-> 
-> Sep 20 12:26:35 guru named[12308]: client xxx.xx.xxx.xx#1025: error
-> sending response: host unreachable
-> Sep 20 12:26:37 guru named[12308]: client xxx.xx.xxx.xxx#1025: error
-> sending response: host unreachable
-> Sep 20 12:26:37 guru named[12308]: client xxx.xx.xxx.xx#1025: error
-> sending response: host unreachable
-> Sep 20 12:26:37 guru named[12308]: client xxx.xx.xxx.xx#1025: error
-> sending response: host unreachable
-> Sep 20 12:26:38 guru named[12308]: client xxx.xx.xxx.xx#1025: error
-> sending response: host unreachable
-> Sep 20 12:26:39 guru named[12308]: client xxx.xx.xxx.xxx#1025: error
-> sending response: host unreachable
-> 
-> what mean by all this, can someone care to explain/clear things to me? :)
-> may I remove the above iptables rules?
+> Today I just deletes are PREROUTING rules and now im getting counts
+> for packets drops on FOWARD table.
 > 
 > regards
-> Askar
+> askar
+> 
 > --
 > (after bouncing head on desk for days trying to get mine working, I'll make
 > yer life a little easier)
@@ -68,7 +56,5 @@ On Mon, 20 Sep 2004 13:44:18 +0600, Askar <askarali@gmail.com> wrote:
 
 
 -- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+Bla bla
 
