@@ -1,12 +1,13 @@
-From: Tomasz Wrona <twr@wp.pl>
-Subject: ipt_limit overflow with HZ=1000
-Date: Thu, 4 Sep 2003 14:28:17 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Server can't send :-/
+Date: Thu, 04 Sep 2003 13:52:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <15615709178.20030904142817@wp.pl>
-Reply-To: Tomasz Wrona <twr@wp.pl>
+Message-ID: <1062676358.7531.21.camel@elendil.intranet.cartel-securite.net>
+References: <001801c371ee$abce1230$0000fea9@kessler.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001801c371ee$abce1230$0000fea9@kessler.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "yomega.info - Stephan Kessler" <sk@yomega.info>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Le mer 03/09/2003 =E0 09:40, yomega.info - Stephan Kessler a =E9crit :
+> I got that Configuration of my Firewall:
+> http://warpy.yomeganet.biz/fw.txt
+> It seemed to be nice, everything worked but then i tried to initiate
+> outbound Traffic from my Server via SSH. The result: I can't establish
+> any connection from my to an another, except DNS (via UDP?). What did i
+> wrong?
 
-I patched 2.4.21 with "Variable HZ" patch from
-http://members.optusnet.com.au/ckolivas/kernel/
-and set up config to HZ=1000
+Returning packets will get dropped by last rule, for they are not
+destined to any of accepted ports. You have to add a rule to accept them
+explicitly, such as one using ESTABLISHED and RELATED states.
 
-When launched previous working iptables setup strange behaviour
-appeared...
+By the way, I don't understand why your chains policy are all set to
+ACCEPT... In particular, OUTPUT rules are useless for they only ACCEPT
+in an ACCEPT policy chain ! Moreover, in INPUT chain, you implicitly
+allow any layer 4 protocol that is not TCP or ICMP (remember that trojan
+catched by Honeynet project that used IP protocol 11 for
+communications...).
 
-ie. following rule:
-iptables -t nat -A info -s $i -p tcp --dport 80 -m limit --limit-burst 2 --limit 1/day -j CONNMARK --set-mark 80
+What I would do is :
 
-give me: "invalid argument"
+	1. set all chains policy to DROP :
+		iptables -P INPUT DROP
+		iptables -P OUTPUT DROP
+		iptables -P FORWARD DROP
 
-when changed --limit-burst to 1 it worked
-iptables -t nat -A info -s $i -p tcp --dport 80 -m limit --limit-burst 1 --limit 1/day -j CONNMARK --set-mark 80
+	2. get rid of 2 last DROP rules (DROP handled by policy) and
+	   optionnaly add a specific rule for each protocol you really
+	   need to allow (UDP, GRE, ESP, etc.).
 
-I also tried change --limit-burst and --limit values to have
-ocasionaly succes or fail.
+	3. insert an ESTABLISHED, RELATED state ACCEPT at the top of
+	   INPUT rule :
+		iptables -I INPUT -m state --state ESTABLISHED,RELATED \
+			-j ACCEPT
 
-Messages from syslog when tried --limit-burst params:
-[2,4,5,7,8 didnt work, 3,6 worked !]
+	4. invert OUTPUT rules order for optimization (far more valid
+	   packets are likely to match second rule than first one) :
+		iptables -D OUTPUT 2
+		iptables -I OUTPUT -m state --state \
+			ESTABLISHED,RELATED -j ACCEPT
 
-Sep  4 13:48:03 kojot kernel: Call rusty: overflow in ipt_limit: 864000000/2
-Sep  4 13:51:59 kojot kernel: Call rusty: overflow in ipt_limit: 864000000/4
-Sep  4 13:52:05 kojot kernel: Call rusty: overflow in ipt_limit: 864000000/5
-Sep  4 13:52:32 kojot kernel: Call rusty: overflow in ipt_limit: 864000000/2
-Sep  4 13:52:55 kojot kernel: Call rusty: overflow in ipt_limit: 864000000/7
-Sep  4 13:53:17 kojot kernel: Call rusty: overflow in ipt_limit: 216000000/8
+	5. add a NEW state match to all ACCEPT rules for services
 
+My 0.02=A4
 
-Regards
-tw
---
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
