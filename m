@@ -1,12 +1,12 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: Kazaa Ports
-Date: Mon, 8 Sep 2003 20:53:35 -0700 (PDT)
+From: "Pradeep Bhomia" <pradeepbhomia@ahm.cmc.net.in>
+Subject: Firewall performance querry
+Date: Tue, 9 Sep 2003 11:21:32 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030909035335.32534.qmail@web40205.mail.yahoo.com>
-References: <3F5D06F6.20408@Loudoun-Fairfax.com>
+Message-ID: <20030909053404.M44692@ahm.cmc.net.in>
+References: <20030905062950.M87452@ahm.cmc.net.in>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F5D06F6.20408@Loudoun-Fairfax.com>
+In-Reply-To: <20030905062950.M87452@ahm.cmc.net.in>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,85 +18,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Hello Friends,
 
---- Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote:
-> Thanks for answering
-> 
-> >Assuming that you are running the Kazza on a Internal windows machine the
-> >POSTROUTING should handle all of the out going of the Kazza Client...
-> >  
-> >
-> 
-> hmmm . . . I revised my rule set recently using the iptables tutorial  
-> by Oskar Andreasson as a guide, and he recommends again doing any 
-> filtering in the nat tables.
-> 
-You would not be doing any filtering in the nat table. You are simply passing
-the packets destined for a Kazza client onto another machine and ports.
-PRE/POST  ROUTING always supercede INPUT and OUTPUT filters.
->
-http://iptables-tutorial.frozentux.net/chunkyhtml/traversingoftables.html#TRAVERSINGGENERAL
-> 
-> 
-> >what is probably not making it through is the returning connection attempts
-> of
-> >the Kazza servers? In which case... you shouldn't be using FORWARD lines at
-> all
-> >sinnce these are supposedly destined for the local machine(as in the Linux
-> box
-> >itself and not anything in your lan).
-> >
-> 
-> If you look further down in the link I posted, there is a diagram that 
-> shows INPUT going to the localhost and the FORWARD being used for 
-> packets destined for other hosts.  Hmmm again . . .  :-)
+I have recently setup an iptables based firewall and put a Sendmail server 
+behind firewall (although after facing some problems and with help from 
+friends in this mailling list). Now I want to put a proxy server behind this 
+same firewall. Right now the proxy server is connected directly to the 
+internet. Before moving ahead I want to know what will be the load on the 
+firewall. The configuration of firewall box is P4, ~1.8GHz, 256MB RAM, 
+Mandrake Linux 9.1, IPTables 1.2.7 and Shorewall 1.3.14. I will be having 
+aroung 300-400 concurrent users. I plan to setup NATting. Can anybody help me 
+in this regard. Whether NATting will be sufficient to take care about this 
+load or some other method can be used ( Total load on firewall will be some 
+1000 email accounts on sendmail server and around 400 clients for web 
+browsing). If anybody can direct me to some websites having some sort of 
+statistics for iptables.
 
-Again I don't think FORWARD is your answer here... best bet is nat (imho that
-is)
-> 
-> > What I think is needed here is the
-> >PREROUTING of a range or specific ports. I think this will solve your
-> problem
-> >for Kazza but it offers very little as in the way of security for those
-> ports.
-> >
-> >An example of this is when I used to run my Half-Life Deadicated Server on
-> my
-> >internal Windows Machine I used a PREROUTING line such as...
-> >
-> >iptables -t nat -A PREROUTING -p udp --dport 27015 -i eth0 -j DNAT
-> >--to-destination 192.168.1.25:27015
-> >
-> >While my scenerio was alot simpler than yours it's similar I think. Your
-> >problem will be of course finding the range of ports. I would also say take
-> >note of the use of limiting it to one protocol(if you can). Better to have a
-> >straw open to the world than a big ol sewer pipe!
-> >
-> >  
-> >
-> Absolutely! That's what makes this an issue for me. I can't nail down 
-> the ports Kazaa needs and the more I open up the less protection I have. 
-> I need to find a better strategy and I'm open to suggestions.
-> 
-Ok I might can help with this... You may need something like ethereal or
-ettercap fired up on your internal device (eth1 I'm guessing?) As the requests
-go out you should be able to view source and destination ips/ports. An even
-simpler method that might work is fire up Kazza and do a netstat -a from a
-DOS/CMD window. mayb a netstat -al too.
+Thanks a lot,
 
-> Jeff
-> 
-> 
-
-
-=====
-"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+Pradeep Bhomia
 
