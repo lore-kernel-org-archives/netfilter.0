@@ -1,8 +1,8 @@
-From: =?ISO-8859-1?Q?Jo=E3o?= <joao.cassio@via-rs.net>
-Subject: iptables prerouting
-Date: Tue, 11 Nov 2003 11:07:39 -0300
+From: "Justin Albstmeijer" <justin@VLAMea.nl>
+Subject: iptable marking and iproute2
+Date: Tue, 11 Nov 2003 14:15:19 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB0ED2B.5070406@via-rs.net>
+Message-ID: <33396.62.58.0.190.1068556519.squirrel@wmail.websystems.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,53 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter list <netfilter@lists.netfilter.org>
-
-Dear All,
-
-I like know how enable all my lan inside for conections pcAnywhere. Actua=
-ly connection pcAnywhere is realization by a computer in my lan inside (1=
-92.168.1.100) with success. :)
-
-              ----------------------------------
-             | server conection ADSL Red Hat 9.0|
-              ----------------------------------
-                            |
-                            |
-      -----------------------------------------------
-      |                     |                      |
-192.168.1.100       192.168.1.102           192.168.1.103
-Windows 2000         Windows 98              Windows 2000
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
-iptables -A INPUT -p tcp --dport 5631 -j LOG --log-prefix "Servico TCP=20
-PCAny"
-iptables -A INPUT -p udp --dport 5632 -j LOG --log-prefix "Servico UDP
-PCAny"
+Hi,
 
-iptables -t nat -A PREROUTING -i ppp0 -p tcp --dport 5631 -j DNAT
---to-destination 192.168.1.100
-iptables -t nat -A PREROUTING -i ppp0 -p udp --dport 5632 -j DNAT
---to-destination 192.168.1.100
+I have a question on iptable marking and iproute2.
+For testing I created the following script.
+What I expect is when removing the default route on my client (route del
+default gw 192.168.4.1), http request would still work using the gateway
+defined at the routing table TEST.
 
-iptables -t filter -A FORWARD -i ppp0 -o eth1 -p tcp -m state --dport
-5631 --syn --state NEW -j ACCEPT
-iptables -t filter -A FORWARD -i ppp0 -o eth1 -p udp --dport 5632 -j ACCE=
-PT
-iptables -t filter -A FORWARD -m state --state ESTABLISHED,RELATED -j ACC=
-EPT
+This is not working.
+I only get debug messages before I remove the default gateway.
+After removing the default gateway it is not possible to access http
+servers and no debug messages are added to the messages file.
 
+What am I missing here?
 
-Thanks,
-Jo=E3o
+-----------------------------------------------------------------
+CHAIN=3DPREROUTING
 
+iptables -A $CHAIN -t mangle -p tcp --dport 80  -j MARK --set-mark 1
 
+iptables -t mangle -A $CHAIN -m mark --mark 1 -j LOG --log-level DEBUG
+--log-prefix "fwmark 1:"
 
-
-
-Esta precisand
-
-
-
+ip rule add fwmark 1 table TEST
+ip route add default via 192.168.4.1 table TEST
+--------------------------------------------------------------------
 
