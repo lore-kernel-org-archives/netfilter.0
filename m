@@ -1,52 +1,35 @@
-From: Oskar Andreasson <blueflux@koffein.net>
-Subject: [almost OT] ipsysctl-tutorial pre-beta version
-Date: Mon, 7 Oct 2002 19:43:40 +0200 (CEST)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210071935500.1772-100000@laptop1.agatha>
+From: Bishop <bishop@pacbell.net>
+Subject: Iptables tutorial
+Date: Mon, 07 Oct 2002 12:22:01 -0700
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <001101c26e36$d017b860$b6a97942@pacbell>
+References: <001201c26e28$be880e50$3dd6a483@CBOOK>
+ <20021007191229.HKAQ28874.mta06-svc.ntlworld.com@there>
+Reply-To: Bishop <bishop@pacbell.net>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7BIT
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-Hi All,
+Hello all,
 
-Just wanted to let everyone know that the ipsysctl-tutorial is released 
-in a kind of super-pre-beta version or so. It's far far from complete, it 
-probably contain 500 errors per word that it consists of, but.... I'd just 
-like to see if some people would like to read through parts of it and see 
-what they think of it? This is the URL to the current version:
+        I'm a newbie to the linux world. I download red hat 8.. I notice to
+setup a firewall you have to use iptables. Does anyone know a good site or
+url that I may take a look at. I need something simple that I could
+understand, since I'm a newbie , something like "firewall for dums" ....
 
-http://ipsysctl-tutorial.frozentux.net
+Thank you all for your help.
 
-Is this document worth the effort? Is this anything along the lines what 
-you have wished for? Is there anything missing (yes, tons that I know 
-of=))? Find any bugs or errors on my part? 
 
-I will be totally honest, this document probably took me several hundreds 
-of hours getting this far, since I had to pretty much read up on every 
-single variable in the source code. Considering that I am a fairly bad 
-coder, this took some considerable part of the time:). I am pretty damn 
-certain that this has led to hundreds of errors, and people will probably 
-want to kill me for some of them.
-
-Thanks for any kind of feedback!
-
--- 
-----
-Oskar Andreasson
-http://www.frozentux.net
-http://iptables-tutorial.frozentux.net
-http://ipsysctl-tutorial.frozentux.net
-mailto:blueflux@koffein.net
 
 
