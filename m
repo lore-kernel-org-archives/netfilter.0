@@ -1,13 +1,12 @@
-From: "Darrell Dieringer" <netfilter@darrelldieringer.com>
-Subject: RE: DNAT possible Bug?
-Date: Mon, 27 Jan 2003 11:48:31 -0600
+From: "Mike" <mikeeo@msn.com>
+Subject: Re: 1:1 NAT/Not working
+Date: Mon, 27 Jan 2003 13:38:51 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IMEDICLPAGAOCBLCCKLPKEKIEMAA.netfilter@darrelldieringer.com>
-References: <3E35689E.4070604@gmx.de>
+Message-ID: <001701c2c633$569a74f0$1e01a8c0@win2k.com>
+References: <001301c2c166$2c7671a0$1e01a8c0@win2k.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E35689E.4070604@gmx.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jochen Radmacher <jradmacher@gmx.de>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+I tried the examples that were shown and I cannot contact the servers. do I
+need to alias the IPs on a ethernet card? i.e eth0:1?
+
+from outside to inside:
+
+iptables -t nat -A PREROUTING -d 208.15.232.12 -j DNAT --to 192.168.1.167
+
+the other way around:
+
+iptables -t nat -A POSTROUTING -s 192.168.1.167 -j SNAT --to 208.15.131.12
+
+----- Original Message -----
+From: "Mike" <mikeeo@msn.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, January 21, 2003 11:00 AM
+Subject: 1:1 NAT
 
 
-Do a quick google for...
-"same network" +DNAT +netfilter
-
-I know there was talk of adding this topic to the netfilter FAQ some
-time ago, since it is something a number of people have trouble with
-initially, but I don't know if it's in the faq.
-
-Enjoy,
-
-Darrell Dieringer - Madison, WI
-
-
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Jochen
-> Radmacher
-> Sent: Monday, January 27, 2003 11:13 AM
-> To: netfilter@lists.netfilter.org
-> Subject: DNAT possible Bug?
+> Can anyone point me to some docs on setting up 1:1 NAT on netfilter?
 >
+> What I am trying to do is like how its done on cisco PIX i.e
+> "static (inside,outside) 208.15.232.12 192.168.1.167 netmask
+255.255.255.255
+> 0 0"
 >
-> I'm using a DNAT- Rule to Forward a Port from my Router to
-> my Server:
+> That way I don't have to do IP alias on my ethernet card.
 >
-> iptables -t nat -A PREROUTING -d <outsideip> -p tcp --dport 4000 \
-> -j DNAT --to 192.168.0.44:80
+> Thanks,
 >
-> This works fine when I'm connecting from the outside. But If i try:
-> jr@192.168.0.42# lynx <outsideip>:4000
-> this does not work. Her is the Output from /proc/net/ip_conntrack:
->
-> tcp      6 84 SYN_SENT src=192.168.0.44 dst=<outsideip> sport=33474
-> dport=4000 [UNREPLIED] src=192.168.0.44 dst=192.168.0.44 sport=80
-> dport=33474 use=1
->
->
-> Jochen
->
+> Mike
 >
 >
 >
