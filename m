@@ -1,13 +1,14 @@
-From: "Joan Soler \(CODINE\)" <joan@codine.es>
-Subject: to know smtp traffic
-Date: Tue, 23 Sep 2003 14:21:42 +0200
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Loose source routed IP packets.
+Date: Tue, 23 Sep 2003 14:31:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <016401c381cd$3f713b50$0304a8c0@joanker>
-Reply-To: "Joan Soler \(CODINE\)" <joan@codine.es>
+Message-ID: <1064320275.31340.104.camel@raylinux.internal>
+References: <200309231347.57709.carles@unlimitedmail.org>
+	 <Pine.LNX.4.51.0309231409290.14794@dns.toxicfilms.tv>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0161_01C381DE.02E17A40"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Q91mMsOpYKEFQ2q5jXsc"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.51.0309231409290.14794@dns.toxicfilms.tv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,57 +18,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0161_01C381DE.02E17A40
-Content-Type: text/plain;
-	charset="iso-8859-1"
+--=-Q91mMsOpYKEFQ2q5jXsc
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-Hello, I'm trying to know the size of my traffic in smtp port (25), I =
-write:
+On Tue, 2003-09-23 at 14:12, Maciej Soltysiak wrote:
+> > Hi,
+> > Is it possible to drop ICMP loose source routed IP packets ?
+> > How ?
+> Try Fabrice Marie's ipv4options match from patch-o-matic, you would then
+> do a:
+> # iptables -A INPUT -p icmp -m ipv4options --lsrr -j DROP
+>=20
+> Regards,
+> Maciej
+How about :
+### don't accept source routed packets
+/bin/echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route
 
-iptables -A INPUT -p tcp --dport 25 -j traf_in
+Ray
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
-But it doesn't works, anyone knows what can I do. I use Suse 8.0.
+--=-Q91mMsOpYKEFQ2q5jXsc
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Thanks a lot!!!.
-Joan S.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
 
+iD8DBQA/cD0Th1fuR/Bv+ygRAhj8AJ96dD6vQNji2hemJMINAWUhvaX8GgCgmT9N
+Io5GJRd5YRz1s+rfUkFPqnM=
+=fRc+
+-----END PGP SIGNATURE-----
 
-
-------=_NextPart_000_0161_01C381DE.02E17A40
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hello, I'm trying to know the size of =
-my traffic in=20
-smtp port (25), I write:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -A INPUT -p tcp --dport 25 -j=20
-traf_in</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>But it doesn't works, anyone knows what =
-can I do. I=20
-use Suse 8.0.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks a lot!!!.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Joan S.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;</DIV>
-<DIV><BR></DIV></FONT></BODY></HTML>
-
-------=_NextPart_000_0161_01C381DE.02E17A40--
-
+--=-Q91mMsOpYKEFQ2q5jXsc--
 
 
