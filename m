@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
 Subject: Re: Port 25
-Date: Tue, 08 Feb 2005 08:15:55 -0500
-Message-ID: <1107868554.4399.4.camel@hubcap.ljm.dom>
+Date: 08 Feb 2005 14:52:28 +0100
+Message-ID: <1107870748.13418.17.camel@nostromo.bgsecm.com>
 References: <Pine.LNX.4.05.10502071325260.15692-100000@darkstar.sysinfo.com>
 	<1107854056.17398.1.camel@nostromo.bgsecm.com>
+	<1107868554.4399.4.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1107854056.17398.1.camel@nostromo.bgsecm.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1107868554.4399.4.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Tue, 2005-02-08 at 04:32, Jose Maria Lopez wrote:
-> I don't have the documentation handy, but it said making just a
-> DROP could lead you to being DOS attacked. Have anybody heard
-> something about this?
+El mar, 08 de 02 de 2005 a las 14:15, Jason Opperisano escribi=C3=B3:
+> i propose that the exact opposite is true.  why should i make my
+> firewall undertake the effort of generating a RST packet for every yaho=
+o
+> on the Internet that wants to scan my IP range for TCP 139, 445, etc.
+>=20
+> DROP-ing a packet doesn't take any real effort on the firewall's part;
+> whereas generating a RST packet adds at least some overhead--which in
+> the extreme case could be significant.
+>=20
+> -j
 
-i propose that the exact opposite is true.  why should i make my
-firewall undertake the effort of generating a RST packet for every yahoo
-on the Internet that wants to scan my IP range for TCP 139, 445, etc.
+I see your point, but just googling a bit:
 
-DROP-ing a packet doesn't take any real effort on the firewall's part;
-whereas generating a RST packet adds at least some overhead--which in
-the extreme case could be significant.
+http://www.chiark.greenend.org.uk/~peterb/network/drop-vs-reject
 
--j
+so things are maybe somewhat more complex.
 
---
-"Here are your messages: 'You have thirty minutes to move your
- car.' 'You have ten minutes to move your car.' 'Your car has been
- impounded.' 'Your car has been crushed into a cube.' 'You have thirty
- minutes to move your cube.'"
-	--The Simpsons
+Regards.
+
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
 
