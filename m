@@ -1,11 +1,14 @@
-From: David Collodel <dave@crawlspaceradio.com>
-Subject: [Fwd: Re: DMZ trouble!]
-Date: 09 Jan 2003 10:34:28 -0500
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: patching iptables - how?
+Date: Thu, 9 Jan 2003 17:22:31 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042126468.1331.10.camel@jimmy>
+Message-ID: <20030109172231.772c94a5.arnt@c2i.net>
+References: <200301091034.56326.fabrice@netfilter.org>
+	<20030109034250.51982.qmail@web12706.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030109034250.51982.qmail@web12706.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,68 +21,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I wasn't sure how much of it would affect what would cause the problems,
-so I included the whole thing minus some stuff like the module loading. 
+On Thu, 9 Jan 2003 03:42:50 +0000 (GMT), 
+Mladen Meduric <mladen_meduric@yahoo.com> wrote in message 
+<20030109034250.51982.qmail@web12706.mail.yahoo.com>:
 
-I built this script based on a couple others I found through Google.
-I've not yet figured out enough of IPTables to lock down the servers as
-tightly as I'd like without breaking everything. I'm still relying on
-local ipchains on each server to keep them safe until I get my head
-around IPTables well enough.
+> Whoa!!!
+> 
+> What a list! Thank you all very much!
+> I thought on just installing 1.2.7a from scratch, but didn't know what
+> effect would it have on old (1.2.5) version. Do I need to uninstall
+> that one first? If yes, is it best to use Sytem->Package->uninstall or
+> rpm -u
 
-Anyway, I'll definitely take all your advice under consideration. At
-least now I've got an idea of what I need to do. I don't fully get how
-the DNAT and SNAT work, but at least I've got a direction to be looking.
+..'rpm -e iptables' will do nicely.  ;-)
 
-Thanks a lot for your help. :)
-
-On Thu, 2003-01-09 at 02:58, Joel Newkirk wrote:
-> On Thursday 09 January 2003 12:34 am, David Collodel wrote:
-> 
-> {Very heavily snipped}
-> 
-
-<snipped most>
-
-> > # 3.2 PREROUTING chain
-> 
-> > # 3.2.3 DMZ DNAT
-> > #
-> >
-> > $IPTABLES -t nat -A PREROUTING -p TCP -i $EXT_IFACE -d $HTTP_IP
-> > --dport 80 -j DNAT --to-destination $DMZ_HTTP_IP
-> > $IPTABLES -t nat -A PREROUTING -p TCP -i $EXT_IFACE -d $HTTP_IP
-> > --dport 22 -j DNAT --to-destination $DMZ_HTTP_IP
-> > $IPTABLES -t nat -A PREROUTING -p TCP -i $EXT_IFACE -d $HTTP_IP
-> > --dport 443 -j DNAT --to-destination $DMZ_HTTP_IP
-> > $IPTABLES -t nat -A PREROUTING -p TCP -i $EXT_IFACE -d $HTTP_IP
-> > --dport 8000 -j DNAT --to-destination $DMZ_HTTP_IP
-> > $IPTABLES -t nat -A PREROUTING -p TCP -i $EXT_IFACE -d $HTTP_IP
-> > --dport 8001 -j DNAT --to-destination $DMZ_HTTP_IP
-> >
-> > $IPTABLES -t nat -A PREROUTING -p TCP -i $EXT_IFACE -d $DNS_IP --dport
-> > 53 -j DNAT --to-destination $DMZ_DNS_IP
-> > $IPTABLES -t nat -A PREROUTING -p UDP -i $EXT_IFACE -d $DNS_IP --dport
-> > 53 -j DNAT --to-destination $DMZ_DNS_IP
-> > $IPTABLES -t nat -A PREROUTING -p TCP -i $EXT_IFACE -d $DNS_IP --dport
-> > 443 -j DNAT --to-destination $DMZ_DNS_IP
-> > $IPTABLES -t nat -A PREROUTING -p TCP -i $EXT_IFACE -d $DNS_IP --dport
-> > 22 -j DNAT --to-destination $DMZ_DNS_IP
-> > $IPTABLES -t nat -A PREROUTING -p TCP -i $EXT_IFACE -d $DNS_IP --dport
-> > 25 -j DNAT --to-destination $DMZ_DNS_IP
-> > $IPTABLES -t nat -A PREROUTING -p TCP -i $EXT_IFACE -d $DNS_IP --dport
-> > 995 -j DNAT --to-destination $DMZ_DNS_IP
-> 
-> Hmmm.  Well, this is the answer to your 'real' question.  I don't see ANY 
-> rules in PREROUTING to DNAT connections from the LAN. Those would be 
-> addressed -d $DNS_IP, but would be -i $LAN_IFACE.
-> 
-> You should seriously reconsider what communications the firewall box 
-> itself requires, and what traffic the LAN is allowed to conduct.
-> 
-> j
 
 -- 
-David Collodel <dave@crawlspaceradio.com>
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
 
 
