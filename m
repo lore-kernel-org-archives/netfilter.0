@@ -1,13 +1,13 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: TTL patch buggy?
-Date: Thu, 8 Jan 2004 15:56:51 -0500
+From: Peter Schobel <pschobel@porchlight.ca>
+Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
+Date: Thu, 8 Jan 2004 15:05:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040108205651.GD22229@cannon.eng.us.uu.net>
-References: <20040107221614.GE20346@cannon.eng.us.uu.net> <Pine.LNX.4.44.0401080812490.13863-100000@filer.marasystems.com>
-Mime-Version: 1.0
+Message-ID: <FE0E2967-4215-11D8-AFEE-000393677A36@porchlight.ca>
+References: <200401081851.59512.Antony@Soft-Solutions.co.uk>
+Mime-Version: 1.0 (Apple Message framework v553)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0401080812490.13863-100000@filer.marasystems.com>
+In-Reply-To: <200401081851.59512.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,36 +17,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Henrik Nordstrom <hno@marasystems.com>
-Cc: Harald Welte <laforge@netfilter.org>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, Jan 08, 2004 at 08:14:14AM +0100, Henrik Nordstrom wrote:
 
-> On Wed, 7 Jan 2004, Ramin Dousti wrote:
-> 
-> > Absolutely. For a sec I forgot all about the dense mode. Thanks, Henrik.
-> > However, I still don't see any "danger" about this.
-> 
-> The danger is in if you forget about this and set the TTL on multicast as 
-> if it was normal traffic. You then allow this multicast traffic to be 
-> distributed widely outside your network even if the originator had taken 
-> care to make sure distribution is not allowed far beyond the local 
-> networks.
+ok, I downloaded the source ball for iptables 1.2.9, and compiled using
 
-OK, agreed. But in general when multicasting private data, meant only
-for the local nets, one must not rely on the TTL (set by the originator)
-to limit the distribution. And I'm sure a well-guarded corporation
-doesn't do that.
+make KERNEL_DIR=/usr/src/linux-2.6.0-1.107
 
-Now I'm going to shut up and learn from you, gods of the linux tcp/ip
-security subsystem.
+i got an error from config.h telling me to use the glibc version so i 
+symlinked /usr/src/linux-2.6.0-1.107 to /usr/include/linux/config.h
 
-Thanks again for sharing the knowledge.
+then i compiled successfully and installed using
 
-Ramin
+make install KERNEL_DIR=/usr/src/linux-2.6.0-1.107
 
-> Regards
-> Henrik
+without incident
+
+i checked the timestamp on the iptables binary to make sure that it had 
+been overwritten
+
+I rmmod'd all the iptables modules and then reloaded my iptables rule
+
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
+--to-port 3128
+
+lsmod gives me
+
+Module                  Size  Used by
+ipt_REDIRECT            2048  1
+iptable_nat            20140  2 ipt_REDIRECT
+ip_tables              15104  2 ipt_REDIRECT,iptable_nat
+ip_conntrack           28464  2 ipt_REDIRECT,iptable_nat
+
+iptables -t nat -L gives me
+
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+REDIRECT   tcp  --  anywhere             anywhere            tcp 
+dpt:http redir ports 3128
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+testing it reveals that it is still not working - did i do anything 
+wrong in the above steps? what further steps would you recommend to 
+troubleshoot this problem?
+
+Peter Schobel
+~
+
 
