@@ -1,11 +1,13 @@
-From: Bobo <boboaq@163.com>
-Subject: How to load modules needed by iptables?
-Date: Mon, 17 Mar 2003 20:9:42 +0800
+From: nbastin@mac.com
+Subject: Re: Unassigned Networks List
+Date: Sun, 16 Mar 2003 12:37:58 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030317120947.67E3F1CBAA261__29022.3980359317$1047907290@sm204.163.com>
-Mime-Version: 1.0
+Message-ID: <07676BC4-57D6-11D7-A9BF-0003938052F8@mac.com>
+References: <NGBBIFPIJNDPMFBPKBPGOEJIDKAA.NetFilter-Users@Compucenter.org>
+Mime-Version: 1.0 (Apple Message framework v551)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <NGBBIFPIJNDPMFBPKBPGOEJIDKAA.NetFilter-Users@Compucenter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,70 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-devel@lists.samba.org, netfilter-devel@lists.samba.org
-Cc: netfilter@lists.samba.org, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
 
-        
- How to load modules needed by iptables?
-   
-    While setup iptables firewall,I met a strange question.
-    I learned the following scripts frome the famous Iptables tutorail
-    wirtten by Oscar Andreasson.
-    If I input the following scripts ,and run it in a bash file.
-  ****************************
-     
- /sbin/modprobe ip_tables
-/sbin/modprobe ip_conntrack
-/sbin/modprobe iptable_filter
-/sbin/modprobe iptable_mangle
-/sbin/modprobe iptable_nat
-/sbin/modprobe ipt_LOG
-/sbin/modprobe ipt_limit
-/sbin/modprobe ipt_state
-***************************
-and the message on the screen is :
+On Saturday, March 8, 2003, at 12:51 AM, George J. Jahchan, Eng. wrote:
 
+> Pavan,
+> I am trying to block RFC1918 networks, in addition to unassigned ones 
+> (IANA
+> reserved or not assigned) from getting in or out on the public 
+> interface.
+> Any traffic coming in (or leaving) from such networks on the public
+> interface undoubtedly has a spoofed source IP and should be dropped.
+> As mentioned before, classes A & D networks are fairly well documented 
+> on
+> IANA's site <http://www.iana.org/assignments/ipv4-address-space>, but 
+> B and
+> C are listed as "various registries" and in bulk, which is of no help.
+> I need a list of 128~191 and 192~223 netblocks which are either 
+> reserved or
+> not assigned.
 
-  modprobe: Can't locate module ip_tables
-modprobe: Can't locate module ip_conntrack
-modprobe: Can't locate module iptable_filter
-modprobe: Can't locate module iptable_mangle
-modprobe: Can't locate module iptable_nat
-modprobe: Can't locate module ipt_LOG
-modprobe: Can't locate module ipt_limit
+Those blocks are assigned, not reserved, and are in use, so why do you 
+care that it might be assigned to various registries?  It's marked as 
+various registries because the blocks were handed out before the 
+current allocation policy was in place, and various pieces of those 
+blocks were given to disparate registries and users.
 
-If I input it by hand under command line mode each time a line,I
-would not get the error message.
- Why?
- What is  the difference between modprobe and insmod?
- 
- If I run lsmod ,I could get the following messages:    
-      
-        Module                  Size  Used by
-ip_nat_irc              4416   0  (unused)
-ip_nat_ftp              3488   0  (unused)
-ip_conntrack_irc        2928   0  (unused)
-ip_conntrack_ftp        3824   0  (unused)
-ipt_MASQUERADE          1664   0  (unused)
-ipt_REJECT              3392   0  (unused)
-ipt_owner               1552   0  (unused)
-ipt_state               1024   0 
-ipt_limit               1360   0  (unused)
-iptable_nat            16528   2  [ip_nat_irc ip_nat_ftp ipt_MASQUERADE]
-iptable_mangle          2160   0  (unused)
-ip_conntrack           15824   4  [ip_nat_irc ip_nat_ftp ip_conntrack_irc ip_conntrack_ftp ipt_MASQUERADE ipt_state iptable_nat]
-ipt_LOG                 3856   0  (autoclean)
-iptable_filter          2128   0  (autoclean) (unused)
-ip_tables              10944  11  [ipt_MASQUERADE ipt_REJECT ipt_owner ipt_state ipt_limit iptable_nat iptable
+In any event, the IANA recently reclaimed a lot of that space and the 
+new list on their web site has about 20 /8's marked as reserved, 
+instead of 'various registries'.
 
-It means there are already these modules needed by Iptables.
-Why the operation system displays "modprobe: Can't locate module ip_conntrack"?
-My operation system is REDHAT 7.2 and it was installed by default configuration.
-
-Thanks
-
-    
+--
+Nick
 
 
