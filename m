@@ -1,13 +1,10 @@
-From: "Ranjeet Shetye" <ranjeet.shetye@zultys.com>
-Subject: RE: natting specific ports
-Date: Fri, 13 Dec 2002 12:14:25 -0800
+From: "Huw Dixon" <huwdixon@hotmail.com>
+Subject: Time Patch on 1.2.6a
+Date: Fri, 13 Dec 2002 23:09:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c2a2e4$3bc22e60$0100a8c0@zultys.com>
-References: <CAFAAEC91CC8D511952000062938C6F12ECDC6@ozlan.fcdomain.net>
+Message-ID: <F81QkQiHR9dIzQZt9KA0000ca21@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <CAFAAEC91CC8D511952000062938C6F12ECDC6@ozlan.fcdomain.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,141 +14,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
 
-Aargh! My apologies.
+Hi - I'm trying to get the TIME extension patched in to my iptables. I"m 
+running 1.2.6a. on RH 7.3. I've went thru the patch-o-matic via the 1.2.6a 
+download and via the POM extensions howto documentation but I cant quite 
+seem to get things going. At one point I did get to the TIME patch in one of 
+my POM attempts. The option shows when I run make menuconfig. I've 
+recompiled but when I use the time match in my rules i get the message 
+regarding /usr/local/lib/iptables/libipt_time.so file not found. Can someone 
+provide me with some ideas on what I may be missing in getting this patch 
+applied?
 
-You are right, you need to SNAT the packet, not DNAT. And therefore you
-will have to use POSTROUTING.
+TIA
 
-Also, you still need to use "-p tcp --dport 23" for Telnet or "-p tcp
---dport 25" for mail servers (that are using SMTP).
+Huw
 
-Sorry about the confusion there. :D
-
-Ranjeet Shetye
-Senior Software Engineer
-Zultys Technologies
-771 Vaqueros Avenue
-Sunnyvale  CA  94085
-USA
-Ranjeet.Shetye@Zultys.com
-http://www.zultys.com/
-
- 
-
-
-> -----Original Message-----
-> From: Simpson, Doug [mailto:DSimpson@friedmancorp.com] 
-> Sent: Friday, December 13, 2002 11:50 AM
-> To: 'Ranjeet Shetye'
-> Subject: RE: natting specific ports
-> 
-> 
-> Do I still use POSTROUTING or PRE . . .
-> 
-> -----Original Message-----
-> From: Ranjeet Shetye [mailto:ranjeet.shetye@zultys.com]
-> Sent: Friday, December 13, 2002 1:34 PM
-> To: netfilter@lists.netfilter.org
-> Subject: RE: natting specific ports
-> 
-> 
-> 
-> Yes,
-> 
-> You need to DNAT the destination ports and therefore you need 
-> to look for them using the --dport flag extension of the -p 
-> tcp/udp flag.
-> 
-> i.e. for telnet you'll have "-p tcp --dport 23".
-> 
-> Ranjeet Shetye
-> Senior Software Engineer
-> Zultys Technologies
-> 771 Vaqueros Avenue
-> Sunnyvale  CA  94085
-> USA
-> Ranjeet.Shetye@Zultys.com
-> http://www.zultys.com/
-> 
->  
-> 
-> 
-> > -----Original Message-----
-> > From: Simpson, Doug [mailto:DSimpson@friedmancorp.com]
-> > Sent: Friday, December 13, 2002 11:19 AM
-> > To: 'Ranjeet Shetye'
-> > Subject: RE: natting specific ports
-> > 
-> > 
-> > I want this for traffic going out.  So that my internal
-> > clients can send mail and telnet to servers out on the Public 
-> > Net. I need to use -dport instead of -sport? Thanks, Doug
-> > 
-> > -----Original Message-----
-> > From: Ranjeet Shetye [mailto:ranjeet.shetye@zultys.com]
-> > Sent: Friday, December 13, 2002 11:58 AM
-> > To: netfilter@lists.netfilter.org
-> > Subject: RE: natting specific ports
-> > 
-> > 
-> > 
-> > Hi Doug,
-> > 
-> > Do you want to NAT for traffic coming in or for traffic going out ?
-> > 
-> > If you want your internal network to be able to reach
-> > external telnet and smtp servers, then your destination port 
-> > will be 23 or 25, not your source port.
-> > 
-> > If you want to host telnet and smtp servers behind a firewall
-> > and allow only NATted access to these servers, then you 
-> > should be using DNAT, not SNAT.
-> > 
-> > Hope this helps,
-> > 
-> > Ranjeet Shetye
-> > Senior Software Engineer
-> > Zultys Technologies
-> > 771 Vaqueros Avenue
-> > Sunnyvale  CA  94085
-> > USA
-> > Ranjeet.Shetye@Zultys.com
-> > http://www.zultys.com/
-> > 
-> >  
-> > 
-> > 
-> > > -----Original Message-----
-> > > From: netfilter-admin@lists.netfilter.org
-> > > [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of
-> > > Simpson, Doug
-> > > Sent: Friday, December 13, 2002 9:49 AM
-> > > To: 'netfilter@lists.netfilter.org'
-> > > Subject: natting specific ports
-> > > 
-> > > 
-> > > I want to "NAT" just specific ports to my Public IP.  Do the 
-> > > commands below make sense?  I want my internal network to 
-> be able to 
-> > > telnet and send email. (eth0 is my External NIC - it is 
-> exposed to 
-> > > the internet) iptables -t nat -A POSTROUTING -p tcp --sport 25 -o 
-> > > eth0 -s $INTERNAL_IP -j SNAT --to $EXTERNAL_IP iptables -t nat -A
-> > > POSTROUTING -p tcp --sport 23 -o eth0 -s $INTERNAL_IP -j SNAT 
-> > > --to $EXTERNAL_IP
-> > > 
-> > > Thank you,
-> > > Doug
-> > > 
-> > 
-> > 
-> 
-> 
-> 
-
+_________________________________________________________________
+Help STOP SPAM with the new MSN 8 and get 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
 
 
