@@ -1,14 +1,11 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: How to make a computer invisible
-Date: Sun, 30 Nov 2003 13:53:34 -0500
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: problem with trying the example
+Date: Mon, 1 Dec 2003 01:47:03 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070218413.2884.12.camel@grendel>
-References: <20031130181240.GD6930@zeus.tpfm.de>
-	 <006301c3b778$b22259a0$8b00000a@casa>
+Message-ID: <00a201c3b7ad$06b73100$cb0210ac@jz105>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <006301c3b778$b22259a0$8b00000a@casa>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,23 +15,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Leonardo Rodrigues =?ISO-8859-1?Q?Magalh=E3es?= <leolistas@solutti.com.br>
-Cc: netfilter-user Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sun, 2003-11-30 at 14:32, Leonardo Rodrigues Magalh=E3es wrote:
->     AFAIK, iptables can use some 'layer 2' information such as MAC Addr=
-ess
-> for doing some filtering in some tables, but it CANT be used for filter=
-ing
-> those 'layer 2' packets. That means iptables CANNOT modify ARP/RARP
-> behavior.
-
-You can choose to ignore them, by initializing the interface with a
-'ifconfig -arp', but this will disable all ARP functionality forcing you
-to use manual entries. That's sort of like filtering. ;-)
-
-C
-
+SGkgYWxsLA0KDQpJIGFtIG5ldyB0byBuZXRmaWx0ZXIgYW5kIGV2ZW4gbGludXguIEkganVzdCB3
+aXNoIHRvIHRyeSB0aGUgZXhhbXBsZSBjb2RlIGluIHRoZSBtYW4gcGFnZSBvZiBsaWJpcHEgKEkg
+c2F2ZWQgaXQgYXMgdGVzdC5jIGFuZCBoYXZlIGNvbXBpbGVkIGl0IHRvIHRlc3QubykuIEJ1dCB3
+aGVuIEkgbWFrZSBpdDogI2NjIHRlc3QubyAtbyB0ZXN0LCB0aGUgZm9sbG93aW5nIGVycm9ycyBz
+aG93ZWQgdXA6DQoNCltyb290QGtpdGUxIG5ldGZpbHRlcl0jIGNjIHRlc3QubyAtbyB0ZXN0DQp0
+ZXN0Lm8oLnRleHQrMHhmKTogSW4gZnVuY3Rpb24gYGRpZSc6DQo6IHVuZGVmaW5lZCByZWZlcmVu
+Y2UgdG8gYGlwcV9wZXJyb3InDQp0ZXN0Lm8oLnRleHQrMHgxZCk6IEluIGZ1bmN0aW9uIGBkaWUn
+Og0KOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBpcHFfZGVzdHJveV9oYW5kbGUnDQp0ZXN0Lm8o
+LnRleHQrMHg0OSk6IEluIGZ1bmN0aW9uIGBtYWluJzoNCjogdW5kZWZpbmVkIHJlZmVyZW5jZSB0
+byBgaXBxX2NyZWF0ZV9oYW5kbGUnDQp0ZXN0Lm8oLnRleHQrMHg4MSk6IEluIGZ1bmN0aW9uIGBt
+YWluJzoNCjogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgaXBxX3NldF9tb2RlJw0KdGVzdC5vKC50
+ZXh0KzB4YjgpOiBJbiBmdW5jdGlvbiBgbWFpbic6DQo6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8g
+YGlwcV9yZWFkJw0KdGVzdC5vKC50ZXh0KzB4ZTQpOiBJbiBmdW5jdGlvbiBgbWFpbic6DQo6IHVu
+ZGVmaW5lZCByZWZlcmVuY2UgdG8gYGlwcV9tZXNzYWdlX3R5cGUnDQp0ZXN0Lm8oLnRleHQrMHgx
+MTYpOiBJbiBmdW5jdGlvbiBgbWFpbic6DQo6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYGlwcV9n
+ZXRfbXNnZXJyJw0KdGVzdC5vKC50ZXh0KzB4MTQxKTogSW4gZnVuY3Rpb24gYG1haW4nOg0KOiB1
+bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBpcHFfZ2V0X3BhY2tldCcNCnRlc3QubygudGV4dCsweDE4
+Yyk6IEluIGZ1bmN0aW9uIGBtYWluJzoNCjogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgaXBxX3Nl
+dF92ZXJkaWN0Jw0KdGVzdC5vKC50ZXh0KzB4MWNlKTogSW4gZnVuY3Rpb24gYG1haW4nOg0KOiB1
+bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBpcHFfc2V0X3ZlcmRpY3QnDQpjb2xsZWN0MjogbGQgcmV0
+dXJuZWQgMSBleGl0IHN0YXR1cw0KDQpJIGhhdmUgaW5zdGFsbGVkIGlwdGFibGVzLTEuMi45IGZv
+bGxvd2luZyB0aGUgaW5zdHJ1Y3Rpb25zLiBEb2VzIGl0IG1lYW4gSSBoYXZlIHRvIGxpbmsgJ3Rl
+c3Qubycgd2l0aCBhbm90aGVyIGZpbGUgKD8/Py5vIG9yID8/Py5zbyk/IFRoYW5rIHlvdSBpbiBh
+ZHZhbmNlIQ0KDQpKZWUNCg==
 
 
