@@ -1,10 +1,10 @@
-From: Tim Dionne <tim@ruffrecordings.com>
-Subject: no route to host on port 80
-Date: Sun, 04 May 2003 19:56:01 -0700
+From: =?ISO-8859-1?B?Sm/jbyBD6XNhciBNYQ==?=rigonda <joao@webnow.com.br>
+Subject: Active FTP with client behind NAT
+Date: Sat, 10 May 2003 00:17:01 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EB5D2C1.5080001@ruffrecordings.com>
+Message-ID: <1052536621.3ebc6f2def41b@webmail.webnow.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,20 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi --
+Hello all, excuse me...
 
-I'm trying to allow outside access to my linux box on port 80.  However,
-   when I try to connect (using a web browser, or telnet) the connection
-is not created.  When I use telnet and specify port 80 I get a "no route
-to host" error.  I've experimented with my firewall by completely
-removing all rules from all chains, but the connection can still not be
-made.  I can establish connections on all other ports except 80!  Can
-anyone help me?
+I have found lots of explanations about ip_conntrack_ftp but no one could help 
+me to solve the following problem:
+ 
+My FTP server is behind a firewall (ports >1023 blocked), so FTP should be 
+always done in ACTIVE MODE and so, the client needs to send PORT command to 
+server and server will open the data connection...
+But the client is behind a NAT and the data connection from the FTP server is 
+rejected by the NAT. This makes the client timeout because it will never get 
+the SYN packet from server...
 
-Thanks.
-
+Question: How to configure NAT to track this incoming FTP data connection from 
+any server behind a firewall to any clients in the LAN ????
+ 
+Thanks very much!
+ 
+ 
+Joao
 
 
