@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: urgent question!
-Date: 10 Jan 2003 13:39:37 +0100
+From: "Amit Kumar Gupta" <amitkumar.gupta@wipro.com>
+Subject: RE: Reg iptables Connection tracking
+Date: Fri, 10 Jan 2003 19:55:16 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042202377.10157.17.camel@elendil.intranet.cartel-securite.net>
-References: <000801c2b7e2$52bcec00$f7ef6c50@dom.local>
+Message-ID: <4223A04BF7D1B941A25246ADD0462FF56478ED@blr-m3-msg.wipro.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;
+	boundary="----=_NextPartTM-000-a6e440da-041c-4cae-9806-0e82fcf6b34f"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000801c2b7e2$52bcec00$f7ef6c50@dom.local>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +17,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: Athan <netfilter@miggy.org>
+Cc: netfilter@lists.netfilter.org
 
-Le jeu 09/01/2003 =E0 14:23, Max ZAUNER a =E9crit :
-> i am rookie in linux. anyway, during my firewall setup everything
-> installed properly. after starting my firewall a message pops up
-> saying:=20
-> cannot load module: libipt_-j.so
 
-I think you've let a lonely -m switch, meaning without module reference.
+This is a multi-part message in MIME format.
 
-cbr@elendil:~$ sudo iptables -A INPUT -m -j
-iptables v1.2.7a: Couldn't load match
-`-j':/usr/local/lib/iptables/libipt_-j.so: cannot open shared object
-file: No such file or directory
+------=_NextPartTM-000-a6e440da-041c-4cae-9806-0e82fcf6b34f
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
+
+But As I have told previously, (in my previous mails), I don't have
+/proc file system. So it is taking the default value of 1016.
+Even I changed the kernel code also by hardcoding this value in
+init_conntrack function to 4096 but it didn't has any effect.
+
+Still it keeps dumping kernel messages.
+
+Regards,
+Amit
+
+-----Original Message-----
+From: Athan [mailto:netfilter@miggy.org]=20
+Sent: Friday, January 10, 2003 7:33 PM
+To: Amit Kumar Gupta
+Cc: netfilter@lists.netfilter.org
+Subject: Re: Reg iptables Connection tracking
+
+On Fri, Jan 10, 2003 at 10:33:48AM +0530, Amit Kumar Gupta wrote:
+> As soon as somebody pings to my m/c , that fellow doesn't get the
+reply
+> and on my m/c , kernel keeps dumping certain messages which are like
+> this :-
+>=20
+> Ip_contrack: maximum limit of 1016 entries exceeded.
+
+   echo 32760 > /proc/sys/net/ipv4/ip_conntrack_max
+
+Works to increase the size of the table.  I had a problem with a default
+of ~4092 for this when I was copying LOTS of files between machines
+using "get -R directory" in ncftp.  The above cured it.
+
+HTH,
+
+-Ath
 --=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+
+------=_NextPartTM-000-a6e440da-041c-4cae-9806-0e82fcf6b34f
+Content-Type: text/plain;
+	name="Wipro_Disclaimer.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="Wipro_Disclaimer.txt"
+
+**************************Disclaimer************************************************
+
+Information contained in this E-MAIL being proprietary to Wipro Limited is 
+'privileged' and 'confidential' and intended for use only by the individual
+ or entity to which it is addressed. You are notified that any use, copying 
+or dissemination of the information contained in the E-MAIL in any manner 
+whatsoever is strictly prohibited.
+
+***************************************************************************************
+
+------=_NextPartTM-000-a6e440da-041c-4cae-9806-0e82fcf6b34f--
 
