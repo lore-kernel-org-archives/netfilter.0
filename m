@@ -1,13 +1,14 @@
-From: Emilio Casbas <ecasbas@unav.es>
-Subject: Re: [semi-OT]: Transparent proxy: SQUID & IPTABLES
-Date: Thu, 23 Sep 2004 12:11:15 +0200
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: nat and dns
+Date: Thu, 23 Sep 2004 11:34:28 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4152A143.7070803@unav.es>
-References: <200409230802.KAA09921@mail.nexusat.it> <41529FFD.3050304@unav.es>
+Message-ID: <20040923103428.GK27327@metastasis.org.uk>
+References: <415290B1.5030401@imag.fr>
+Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41529FFD.3050304@unav.es>
+Content-Disposition: inline
+In-Reply-To: <415290B1.5030401@imag.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,79 +18,41 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: Giovanni Costagliola <giovanni.costagliola@nexusat.it>
 
-Emilio Casbas wrote:
+On Thu, Sep 23, 2004 at 11:00:33AM +0200, Raphael Jacquot wrote:
+> hi,
+> I have a setup that looks like :
+>  _____                                ____
+> [     ] 192.168.0.100                [    ]
+> [ DNS ]------------------------------[ FW ]----
+> [_____]                192.168.0.254 [____] (isp)
+> 
+> and I want the DNS to answer to queries from the outside
+> what's the proper way of doing this ?
 
-> Giovanni Costagliola wrote:
->
->> Hello all,
->>
->>            I'm attempting to configure a transparent proxy on my lan.
->>
->>
->>
->> Default gateway and proxy reside on the same machine.
->>
->>
->>
->> I issued the following iptables command:
->>
->>
->>
->> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
->> --to-ports 8080
->>
->>
->>
->> where interface eth0 is the one that gateways internal clients.
->>
->>
->>
->> I receive a stupid message by squid caused by incorrect URL syntax.
->>
->>
->>
->> It seems that getting an URL such as:
->>
->>
->>
->> http://www.google.it/search?sourceid=navclient
->> <http://www.google.it/search?sourceid=navclient&hl=it&ie=UTF-8&q=foobar>
->> &hl=it&ie=UTF-8&q=foobar
->>
->>
->>
->> reach Squid layer as
->>
->>
->>
->> /search?sourceid=navclient&hl=it&ie=UTF-8&q=foobar
->>
->>
->>
->> Missing of the protocol and host part!
->>
->>
->>
->> How is it possible?
->>
->>
->>
->>  
->>
-Sorry.
-This is a tipical web request
+I'm presuming that you want to answer queries from everywhere, rather
+than just from specific hosts, in which case:
 
-> You have to configure squid to accept HTTP requests
-> with partial URIs.
->
-> see http://www.squid-cache.org/Doc/FAQ/FAQ-17.html
+iptables -t nat -A PREROUTING --destination $EXTERNAL_IP -p udp --dport
+53 -j DNAT --to-destination 192.168.0.100
 
+iptables -t nat -A PREROUTING --destination $EXTERNAL_IP -p tcp --dport
+53 -j DNAT --to-destination 192.168.0.100
 
-Thanks
-Emilio C.
+iptables -A FORWARD --destination 192.168.0.100 -p udp --dport 53 -j
+ACCEPT
 
+iptables -A FORWARD --destination 192.168.0.100 -p tcp --dport 53 -j
+ACCEPT
+
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+I'd be interested to hear how you get on by the way, I'm not quite sure
+that my iptables rulebases are keeping state on DNS requests correctly.
+
+-- 
+mors omnia vincit
 
