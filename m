@@ -1,13 +1,13 @@
-From: Markus Schaber <markus.schaber@student.uni-ulm.de>
-Subject: Re: About h323
-Date: Thu, 4 Jul 2002 09:28:02 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: How to ACCEPT or DENY or DROP and also LOG in the same rule ?
+Date: Thu, 4 Jul 2002 08:50:45 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020704092802.298a9257.markus.schaber@student.uni-ulm.de>
-References: <200207040422.22583.davidgr@interlap.com.ar>
+Message-ID: <20020704075047.EBOJ16050.mta01-svc.ntlworld.com@there>
+References: <F30rd6vbwbQdgr1KHCE00006f06@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200207040422.22583.davidgr@interlap.com.ar>
+In-Reply-To: <F30rd6vbwbQdgr1KHCE00006f06@hotmail.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,12 +17,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="macroman"
-To: davidgr@interlap.com.ar, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-SGksCgpEYXZpZCBHYXN0b24gUm9kcmlndWV6IDxkYXZpZGdyQGludGVybGFwLmNvbS5hcj4gc2No
-cnViOgoKPiBJZiBub3QsIHdoYXQgYW5vdGhlciBzb2x1dGlvbiBjb3VsZCBpbXBsZW1lbnQgdG8g
-ZG8gdGhpcz8KClRoZXJlIGV4aXN0cyBILjMyMyBHYXRld2F5L1Byb3h5IHNvZnR3YXJlLgoKQWxz
-bywgaXQgbWF5IGJlIHRoYXQgeW91ciBILjMyMyBTb2Z0d2FyZSBjYW4gZGVhbCB3aXRoIFNvY2tz
-LCB0aGVuIHlvdQpjb3VsZCBpbnN0YWxsIGEgU29ja3MgUHJveHkgb24gdGhlIEZpcmV3YWxsLgoK
-R3J13ywKTWFya3VzCgo=
+On Thursday 04 July 2002 5:31 am, Orca J. wrote:
+
+> Hi
+>   I want to both DENY and LOG in the same rule ? or ACCEPT and LOG , or
+> DENY and LOG
+
+You can't put them both in the same rule, butyou can create a user-defined 
+chain and jump to that:
+
+iptables -N LOGDROP
+iptables -A LOGDROP -j LOG --log-options........
+iptables -A LOGDROP -j DROP
+
+Then use that single target in your rules:
+
+iptables -A INPUT -i eth0 -j LOGDROP
+
+ 
+
+Antony/.
+
