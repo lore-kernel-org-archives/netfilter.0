@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: firewall problem continued
-Date: Tue, 10 Aug 2004 19:45:46 +0100
+Subject: Re: owner module
+Date: Tue, 10 Aug 2004 19:41:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408101945.46837.Antony@Soft-Solutions.co.uk>
-References: <20040809081216.GA12643@tranquility.scriptkitchen.com> <200408101014.22969.Antony@Soft-Solutions.co.uk> <20040810114645.GA27182@tranquility.scriptkitchen.com>
-Reply-To: Netfilter ML <netfilter@lists.netfilter.org>
+Message-ID: <200408101941.33072.Antony@Soft-Solutions.co.uk>
+References: <20742.1092159513@www45.gmx.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040810114645.GA27182@tranquility.scriptkitchen.com>
+In-Reply-To: <20742.1092159513@www45.gmx.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,36 +19,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tuesday 10 August 2004 12:46 pm, Payal Rathod wrote:
+On Tuesday 10 August 2004 6:38 pm, Daniel Boy wrote:
 
-> On Tue, Aug 10, 2004 at 10:14:22AM +0100, Antony Stone wrote:
-> > > No idea. I thought that is recommended. I mean every machine should
-> > > be able to access itself using all its IPs.
-> >
-> > That would mean "all IPs on all interfaces of the machine".   It doesn't
-> > include arbitrary IPs which some other machine may choose to translate to
-> > an IP on this machine's interface.
+> Hello,
 >
-> Let me rephrase it. A mail server needs to connect to any IP in the world
-> so why cannot it connect to an IP which is in its subnet.
+> The ethereal-log shows that the CLIENT is possible
+> to send the FIN,ACK. The SERVER responds with a
+> FIN,ACK and then waits for the leading ACK from the
+> CLIENT. But the "--cmd-owner" statement has gone
+> false before the last ACK could be send.
+>
+> If I take out the "--cmd-owner" the last ACK is send.
 
-Because the public IP is not in its own subnet.
+That seems like a good solution to me.   Use the owner match for the NEW 
+packets, and then just accept all ESTABLISHED packets (independent of owner) 
+after that.
 
-Your mail server's real address is 10.10.10.2, with a /8 netmask.
-
-Its public IP (as far as the firewall is concerned) is 1.2.3.4.
-
-Those are different subnets.
+No process other than the one you want will be able to send the first packet, 
+so there will be no established connections except from the correct 
+processes.
 
 Regards,
 
 Antony.
 
 -- 
-Never automate fully anything that does not have a manual override capability. 
-Never design anything that cannot work under degraded conditions in emergency.
+"Linux is going to be part of the future. It's going to be like Unix was."
+
+ - Peter Moore, Asia-Pacific general manager, Microsoft
 
                                                      Please reply to the list;
                                                            please don't CC me.
