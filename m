@@ -1,13 +1,12 @@
-From: Feizhou <feizhou@linuxmail.org>
-Subject: Re: Large number of repeated rules with only differing -s ipaddrs/cidrs
-Date: Wed, 21 Apr 2004 08:02:24 +0800
+From: Chris Etzel <cetzel@adantech.com>
+Subject: Passive FTP - rehash
+Date: Tue, 20 Apr 2004 14:32:59 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4085BA10.7030209@linuxmail.org>
-References: <Pine.LNX.4.33.0404201653330.14290-100000@blackhole.kfki.hu>
+Message-ID: <1082496779.4674.3.camel@linux.local>
+Reply-To: cetzel@adantech.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0404201653330.14290-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +16,83 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+I know this is a rehash possibly, but I am a little confused.
+
+I have this script below:
+
+#!/bin/bash
 
 
-> A minor fix is required to "port" both to 2.6.
-> 
-> 
->>Lovely. Does ippool/ipset take ips only or will they also take cidrs?
-> 
-> 
-> ippool accepts IP addresses. In ipset, you can store CIDR netblock as
-> well.
+#-------------------------------
+# updated RC.FIREWALL script 
+# with supposed FTP support? HELP!
+#-------------------------------
 
-I see. Thanks.
-> 
-> 
->>BTW...mail.so-net.com.hk is an ISP smarthost...could you block
->>so-net.com.hk not coming from 203.99.142.22 instead of a domain rule
->>block on rdns and sender addy?
->>
->>And maybe all emails from 203.99.142.22 if sender addy not in
->>so-net.com.hk...
-> 
-> 
-> netfilter was not designed to filter E-mail.
 
-:) I guess I won't need to send anything private then. The list shall 
-suffice.
+# enable ip_forwarding
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+# added for Passive FTP Compatibility
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_nat_ftp
+
+
+# Flush tables
+
+iptables -F
+iptables -t nat -F
+
+
+# Set Default policies
+
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+
+
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+
+BLOCKT="1:1024 5900 5900 2301 2381 3372 5000 1433 1801 2103:2105 3146"
+BLOCKU="1:1024 2301 2381 3372 1900 1434 3145 3527"
+
+iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 443 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 53 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 20:22 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 308 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 90 -j ACCEPT
+
+
+# BLOCK BAD TCP
+for BT in $BLOCKT; do
+	iptables -A INPUT -i eth0 -p tcp --dport $BT -j DROP;
+done
+
+# BLOCK BAD UDP
+for BU in $BLOCKU; do
+	iptables -A INPUT -i eth0 -p tcp --dport $BU -j DROP;
+done
+
+# END OF SCRIPT
+
+It's pretty basic, and I know its not really too secure, but I am trying
+to narrow down this FTP passive problem.
+
+I can login to passive FTP servers, but it hangs at 'ls'. 
+
+Is there something else in my script that I need to add to get ftp-data
+to respond correctly ?
+
+
+Thanks in advance,
+
+Chris
+
 
