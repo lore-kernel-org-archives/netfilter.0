@@ -1,14 +1,13 @@
-From: =?utf-8?q?Fr=C3=A9d=C3=A9ric=20Gonzatti?= <fred99@qualiflow.com>
-Subject: Firewall IP change
-Date: Fri, 23 Jul 2004 14:57:30 +0200
+From: Derrik Pates <dpates@dsdk12.net>
+Subject: Re: [Iptperl-general] Is IPTables::IPv4 Perl module trustable?
+Date: Fri, 23 Jul 2004 20:35:45 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407231457.30104.fred99@qualiflow.com>
-References: <40FEE340.8090907@ctwa.com> <200407212302.53814.Antony@Soft-Solutions.co.uk> <1090450600.2112.3.camel@localhost>
+Message-ID: <4101AEE1.3050107@dsdk12.net>
+References: <01d101c4710d$8c3c4490$5100a8c0@egp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1090450600.2112.3.camel@localhost>
-Content-Disposition: inline
+In-Reply-To: <01d101c4710d$8c3c4490$5100a8c0@egp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,141 +17,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?Bruno_Negr=E3o?= <vpopmail@engepel.com.br>
+Cc: netfilter@lists.netfilter.org, iptperl-general@lists.sourceforge.net
 
-Hi all,
+Bruno Negr=E3o wrote:
+> My question is exactly the one in the e-mail subject: Is IPTables::IPv4
+> Perl module trustable?
+>=20
+> This module is a perl interface to the 'libiptc' library, written by,
+> Derrik Pates. I'd like to use it in an application.
+> But I read in netfilter's FAQ the following:
+>=20
+> "4.5 Is there an C/C++ API for adding/removing rules?
+> The answer unfortunately is: No.
+> Now you might think 'but what about libiptc?'. As has been pointed out
+> numerous times on the mailinglist(s), libiptc was _NEVER_ meant to be used
+> as a public interface. We don't guarantee a stable interface, and it is
+> planned to remove it in the next incarnation of linux packet filtering.
+> libiptc is way too low-layer to be used reasonably anyway.
+> We are well aware that there is a fundamental lack for such an API, and we
+> are working on improving that situation. Until then, it is recommended to
+> either use system() or open a pipe into stdin of iptables-restore. The
+> latter will give you a way better performance."
 
-I've got a big problem with my firewall which have three ethernet cards.
-eth0 : 172.16.2.1/255.255.255.0 ---->LAN
-eth1: 192.168.2.1/255.255.255.0----->DMZ
-eth2: 192.168.3.1/255.255.255.0-----> WAN
+The ways they suggest will work, but not very well, and they're really=20
+quite ugly. Yes, a whole new userspace tool for managing netfilter rules=20
+will eventually be written - but that's still a ways off, and until the=20
+kernel side interface changes, the libiptc code which I'm using from the=20
+iptables codebase will continue to work just fine, thank you.
 
-This firewall is connect to a router which have Wan IP 192.168.3.254 and a 
-public IP for WAN : 62.160.X.X/255.255.255.255
-This configurations is working !!!
+> Does someone else already tested it before? Does someone else there knows
+> its internals?
 
-I have tried to replace the Wan IP of my firewall by a public IP : 62.160.X.Y
-# ifconfig eth2 62.160.X.Y netmask 255.255.255.248
-# route add default gw 62.160.X.Z (which is new Ip of the router (WAN and LAN 
-interfaces of the router are the same)
+I don't really know what you're saying here. But really, you can test it=20
+any way you need to, or have whoever you want test it for you - the=20
+source is there for your (or anybody's) perusal. It incorporates a fair=20
+amount of code on top of libiptc so that you don't have to know the raw=20
+data structures, and generally makes things a good bit nicer than=20
+calling libiptc directly, and way cleaner than assembling command lines=20
+and using system() to call out to iptables (I've tried that before, long=20
+ago, and it caused me great pain. Or maybe that was just lunch one=20
+day... I forget now.)
 
-I can access to the internet from my firewall but unfortunately not from my 
-LAN.
-So now I come back to my old configuration until I ask why it was not working.
-Have you got any idea please ?
-
-My iptables script is :
-
-iptables -t filter -F
-iptables -t nat -F
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-iptables -t filter -P INPUT DROP
-iptables -t filter -P FORWARD DROP
-iptables -t filter -P OUTPUT DROP
-
-iptables -t filter -A INPUT -i lo -j ACCEPT
-iptables -t filter -A OUTPUT -o lo -j ACCEPT
-
-
-
-###########
-# FORWARD #
-###########
-
-			##############
-			# LAN -->DMZ #
-			##############
-
-
-iptables -t nat -A PREROUTING -d 172.16.2.1 -p tcp --dport 110 -j DNAT 
---to-destination 192.168.2.150:110
-iptables -t filter -A FORWARD -i eth0 -o eth1 -s 172.16.0.0/16 -d 
-192.168.2.150/32 -p tcp --dport 110 -m state --state NEW,ESTABLISHED -j 
-ACCEPT
-iptables -t filter -A FORWARD -i eth1 -o eth0 -s 192.168.2.150/32 -d 
-172.16.0.0/16 -p tcp --sport 110 -m state --state ESTABLISHED -j ACCEPT
-
-
-
-
-			###############
-			# LAN --> WAN #
-			###############
-
-
-
-
-####################################
-# PROTOCOLE IDENT : TCP et UDP 113 #
-####################################
-iptables -t filter -A FORWARD -p tcp --dport 113 -j ACCEPT
-iptables -t filter -A FORWARD -p tcp --sport 113 -j ACCEPT
-iptables -t filter -A FORWARD -p udp --dport 113 -j ACCEPT
-iptables -t filter -A FORWARD -p udp --sport 113 -j ACCEPT
-
-
-
-###################################
-# HTTP, HTTPS : TCP 80 et TCP 443 #
-###################################
-iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p tcp 
---dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p tcp 
---sport 80 -m state --state ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p tcp 
---dport 443 -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p tcp 
---sport 443 -j ACCEPT
-iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p udp 
---dport 443 -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p udp 
---sport 443 -j ACCEPT
-
-##################
-# Protocole POP3 #
-##################
-
-iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p tcp 
---dport 110 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p tcp 
---sport 110 -m state --state ESTABLISHED -j ACCEPT
-
-#################
-# Protocole FTP #
-#################
-
-
-modprobe ip_conntrack_ftp
-modprobe ip_nat_ftp
-
-iptables -t filter -A FORWARD -s 172.16.0.0/16 -d 0/0 -p tcp --dport 21 -m 
-state --state NEW,ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -s 0/0 -d 172.16.0.0/16 -p tcp --sport 21 -m 
-state --state ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -s 172.16.0.0/16 -d 0/0 -p tcp --dport 20 -m 
-state --state ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -s 0/0 -d 172.16.0.0/16 -p tcp --sport 20 -m 
-state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -t filter -A FORWARD -s 172.16.0.0/16 -d 0/0 -p tcp --dport 
-1024:65535 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -t filter -A FORWARD -s 0/0 -d 172.16.0.0/16 -p tcp --sport 
-1024:65535 -m state --state ESTABLISHED -j ACCEPT
-
-
-
-
-
-			
-iptables -t filter -A INPUT -j DROP
-iptables -t filter -A OUTPUT -j DROP
-iptables -t filter -A FORWARD -j DROP
-
-
-Thanks
-
-Fred99
-
+--=20
+Derrik Pates
+dpates@dsdk12.net
 
