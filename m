@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: difference between proxy server and NAT???
-Date: Mon, 20 Oct 2003 11:59:26 +0100
+From: kenr@redergaard-it.no
+Subject: Loosing bytes in package
+Date: Mon, 20 Oct 2003 21:55:27 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310201059.h9KAxX728289@onyx.rockstone.co.uk>
-References: <83055D4B014C9E478D2F04624B9E82CF39E829@noveldc.novelgmt.mu>
+Message-ID: <61426.80.202.215.52.1066679727.squirrel@nymedia.no>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <83055D4B014C9E478D2F04624B9E82CF39E829@noveldc.novelgmt.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Monday 20 October 2003 11:45 am, Gilles Yue wrote:
+Hi,
 
-> Dear all,
->
->                         What's the difference between somebody using a
-> proxy server such a squid to share the internet and someone using NAT/IP
-> Masquerade?
+I'm having problems with packages that are larger than 80 some bytes.
 
-Packets don't get routed through a proxy server - the request is handled by 
-the proxy, and a new request to the true destination machine is generated.   
-There are two independent network connections involved - client to proxy, and 
-proxy to server.
+The packages come from a IPSec tunnel on the ipsec0 interface and are
+routed to a host in the DMZ. The problem is that the package is
+"truncated" at the end. When using ulogd and adding a rule in the FORWARD
+chain to send the package to netlink I can see the complete pacakge,
+nothing missing. But when running tcpdump at both the host in the DMZ and
+eth1(DMZ) on the "router" the package is 40 bytes short.
 
-NAT is simply a router which fiddles around with the source (and perhaps 
-destination) address in the IP header.   Packets go through the machine, so 
-there's only a single network connection involved - client to server (through 
-the NAT machine).
+Any suggestions on what might be happening?
 
-Antony.
+With regards,
+Ken A. Rederg=E5rd
 
--- 
 
-If builders built buildings the way programmers write programs,
-then the first woodpecker that came along would destroy civilisation.
 
