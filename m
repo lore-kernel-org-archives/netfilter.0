@@ -1,13 +1,13 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: ACK lost after SYN,SYN/ACK when DNATting to do transparent Squid proxy
-Date: Wed, 19 Jun 2002 09:31:45 -0400
+From: "Jurrie Overgoor" <jurrie@pcamobile.com>
+Subject: Invalid parameter parm_ports
+Date: Wed, 19 Jun 2002 15:35:59 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020619133145.GG26150@cannon.eng.us.uu.net>
-References: <20020619115823.F26409@cscoms.net>
+Message-ID: <002e01c21796$3f896f60$720aa8c0@PCA>
+Reply-To: "Jurrie Overgoor" <jurrie@pcamobile.com>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_002B_01C217A7.02E785E0"
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020619115823.F26409@cscoms.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,40 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Alain Fauconnet <alain@cscoms.net>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-On Wed, Jun 19, 2002 at 11:58:24AM +0700, Alain Fauconnet wrote:
+This is a multi-part message in MIME format.
 
-> Hello -
-> 
-> I have a strange problem that has been bugging me for a long time.
-> I do transparent redirection to a separate Squid  box  from  a  2.4.18
-> kernel box using Netfilter, over a private LAN (10.254.254.0/24).
-> Something like:
-> 
-> iptables -t nat -A PREROUTING -i ppp+ -p  tcp -s 172.16.1.0/24 \
->  --dport 80 -j DNAT --to 10.254.254.2:3128
-> 
-> Sometimes several times per hour, I observe that  ALL  connections  to
-> 10.254.254.2:3128 just hang for 30s to 3min,  even  when  I  originate
-> them  from  the  Netfilter  box  itself  using telnet. Everything then
-> resumes normally. This is a major annoyance to the people behind these
-> boxes. Protocol analysis revealed the following:
-> 
-> Netfilter box      Squid box
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> ----------- SYN --------->
-> <-------- SYN/ACK -------
-> . . . . . . ACK . . . . .> MISSING!
+------=_NextPart_000_002B_01C217A7.02E785E0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-What is the complete ruleset?
+Hey,
 
-Ramin
+I'm using iptables 1.2.6a on a RedHat 7.1 machine. When I do a 'modprobe =
+ip_nat_ftp ports=3D21,23' I get an error: 'Invalid paramter parm_ports'. =
+Does anybody know what causes this? The ftp-multi.patch is already =
+applied in 1.2.6a, or am I wrong?
 
-> 
-> So  the problem is on the Netfilter box side, it never sends the final
-> ACK to the 3-way handshake.
+        Greetz -- Jurrie
+        jurrie@pcamobile.com
+
+------=_NextPart_000_002B_01C217A7.02E785E0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hey,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I'm using iptables 1.2.6a on a RedHat =
+7.1 machine.=20
+When I do a 'modprobe ip_nat_ftp ports=3D21,23' I get an error: 'Invalid =
+paramter=20
+parm_ports'. Does anybody know what causes this? The ftp-multi.patch is =
+already=20
+applied in 1.2.6a, or am I wrong?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
+Greetz --=20
+Jurrie</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
+<A=20
+href=3D"mailto:jurrie@pcamobile.com">jurrie@pcamobile.com</A></FONT></DIV=
+></BODY></HTML>
+
+------=_NextPart_000_002B_01C217A7.02E785E0--
+
 
