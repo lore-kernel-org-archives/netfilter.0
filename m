@@ -1,12 +1,13 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Re: RST packets
-Date: Thu, 12 Aug 2004 13:58:01 -0300
+From: Alejandro Flores <alejandro.flores@triforsec.com.br>
+Subject: Re: MSN access with a webcam
+Date: Thu, 12 Aug 2004 08:54:33 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0c0701c4808d$8757d180$49caa8c0@caris.priv>
-References: <024c01c47fe6$40e03e60$49caa8c0@caris.priv>
+Message-ID: <1092311672.29929.5.camel@aflores>
+References: <1811517141.20040811222046@openware.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1811517141.20040811222046@openware.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
+To: "linux@openware" <linux@openware.nl>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-I have been looking on the web about this now all day .. still nothing .. is
-there anyone out there who has experienced this problem ????  Any help would
-be greatly appreciated.
+	Hello there,
 
-Thanks again,
-Peter Marshall
+	Webcam and Voice connections trough MSN doesn't use a fixed port. These
+negotiations are done in the payload, so iptables doesn't know about
+this new connection to treat is as related or established.
+	You'll have to use an UPNP implementation for Linux.
+	http://sourceforge.net/projects/linux-igd/
+	It will set up new iptables rules for each connection of voice or
+webcam.
 
------ Original Message ----- 
-From: "Peter Marshall" <peter.marshall@caris.com>
-To: "netfilter" <netfilter@lists.netfilter.org>
-Sent: Wednesday, August 11, 2004 6:00 PM
-Subject: RST packets
+Regards,
+Alejandro Flores
 
-
-I am having a problem now where I am getting RST packets being blocked from
-my internal network heading out to the external network.  It looks like RST
-packets are used to stop a TCP connection when there is a problem.
-
-The setup is like this:
-I have a web box in my dmz that people connect to.  A mod-jk connection is
-made through my firewall, and the responses are allowed back with the
-standard ESTABLISHED,RELATED allow on the Forward chain.
-
-I guess I was wondering why I was getting a bunch of RST packets and also,
-why the firewall was blocking them.  Would they not be part of the
-ESTABLISED-RELATED chain ?
-
-Here are the relevant rules.
-$IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-$IPT -A FORWARD -s $WEB_BOX_IP -I eth1 -j web-int
-$IPT -A web-int -d 192.168.202.168 -p tcp --dport 8009:8020 -j ACCEPT
-
-I do have a chain for int-web ... which is used to connect to a webserver
-running on it ..(and it rejects everything else).  This is the chain that
-the RST packet is making it too and is then getting rejected.  However, I
-did not think that the packet should reach this chain as it is related (or
-establised) to the web-int connection ...
-
-Any suggestions would be greatly appreciated.  My network set up is a DMZ
-between two firewalls.  The web box is in the DMZ.  The "int" in my chains
-is my internal network.  the internal network is separated form the DMZ by a
-firewall.
-
-Peter Marshall
-
-
+> Hello listmembers,
+> 
+> I build myself a firewall on a gateway Suse 9.1 server
+> 
+> eth0 = DSL(WAN)
+> eth1 = LAN
+> net-lan = 192.168.0.1/24
+> 
+> On the LAN 3 Windowsclients are talking to Internet via a switch.
+> 
+> I can use Microsoft's MSN(chat) but using a webcam wont work.
+> 
+> Here's a part listings of my firewall MSN rules:
+> 
+> echo "MSN Messenger..."
+> iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 1863 -s $net_lan -j ACCEPT
+> iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 1863 -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 443 -s $net_lan -j ACCEPT
+> iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 443 -m state --state ESTABLISHED,RELATED -d $net_lan -j ACCEPT
+> 
+> Is a webcam using another TCP port?
+> 
+> 
 
