@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IP Spoofing
-Date: Fri, 7 Nov 2003 13:56:11 +0000
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: [netfilter-core] Re: [ANNOUNCE] Release of iptables-1.2.9
+Date: Fri, 7 Nov 2003 14:55:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311071356.hA7DuFj14742@agate.rockstone.co.uk>
-References: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br> <1068208010.29753.10.camel@tarkus> <1068212092.1438.8.camel@main.tqmcube.com>
+Message-ID: <20031107135520.GM5741@sunbeam.de.gnumonks.org>
+References: <20031102171611.GF1536@sunbeam.de.gnumonks.org> <20031107073518.GA1215@alpha.home.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BZziOT8Kz25R/m/E"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1068212092.1438.8.camel@main.tqmcube.com>
+Content-Disposition: inline
+In-Reply-To: <20031107073518.GA1215@alpha.home.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +19,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: IPTables Mailing List <netfilter@lists.netfilter.org>
+To: Willy Tarreau <willy@w.ods.org>
+Cc: Netfilter Core Team <coreteam@netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-On Friday 07 November 2003 1:34 pm, David C. Hart wrote:
 
-> On Fri, 2003-11-07 at 07:26, Ted Kaczmarek wrote:
-> > I would add an input established on that as well, makes it easier to do
-> > upgrades.
-> >
-> > iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> Hi Ted:
->
-> If you have a moment, could you please explain (for the comparative IPT
-> nitwits - including me) what that does?
+--BZziOT8Kz25R/m/E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Any packet which arrives at the machine running netfilter (because this rule 
-is in the INPUT chain - if it were in the FORWARD chain then it would apply 
-to any packet being routed through the machine running netfilter) which is 
-part of an ESTABLISHED connection, or which is RELATED to and ESTABLISHED 
-connection, is ACCEPTed.
+On Fri, Nov 07, 2003 at 08:35:18AM +0100, Willy Tarreau wrote:
+> Hi Harald,
+>=20
+> > 	http://www.netfilter.org/files/iptables-1.2.9.tar.bz2
+> > 	ftp://ftp.netfilter.org/pub/iptables/iptables-1.2.9.tar.bz2
+>=20
+> I was wondering why this file was nearly 50kB bigger than rc1. In fact, t=
+he
+> archive contains some old files, totalizing about 160 kB :
+>=20
+>   extensions/.#libipt_ECN.c.1.7
+>   extensions/.#libipt_recent.c.1.6
+>   .#iptables.c.1.54
+>   .#iptables.c.1.55
+>   libiptc2/.libiptc.c.1.40
 
-What defines a connection as ESTABLISHED?
+oh, I wonder how they get there... .# looks like emacs, but I never use
+emacs...
 
-Basically, "is there an entry for it in the connection tracking table?"   
-Entries get placed in this table when the first packet of a connection gets 
-seen (this will only happen if you have an OUTPUT rule, or a FORWARD rule, 
-allowing that first packet to be ACCEPTed).   After that, the reply and all 
-other packets which are part of the same connection (which is defined by the 
-source & destination IP plus the source & destination port numbers) will get 
-matched by the rule above, no matter which other rule matched the first 
-packet.
+thanks for pointing this out, I'll try to avoid that for the next
+release.
 
-What defines a packet as RELATED?
+> That's harmless however. I will probably upgrade today some hosts on which
+> I installed rc1 a few days ago and which didn't have any problem with it.
 
-Either, is it known to a connection tracking helper for a specific protocol 
-which uses multiple connections (such as FTP), or, is it an ICMP packet in 
-response to another packet, indicating a problem somewhere.
+That's great, thanks!
 
-HTH
+> Cheers,
+> Willy
 
-Antony.
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
--- 
+--BZziOT8Kz25R/m/E
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-If books were designed by Microsoft, the Anarchist's Cookbook would explode 
-when you read it.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
- - Mark W Schumann
-                                                     Please reply to the list;
-                                                           please don't CC me.
+iD8DBQE/q6RHXaXGVTD0i/8RAh0CAKCrYD3oDEjvIMqaMV7UEpnac6Mt/ACfR8nG
+mrt5u5pKtunFLaiAmCSBzw4=
+=LMhJ
+-----END PGP SIGNATURE-----
+
+--BZziOT8Kz25R/m/E--
 
