@@ -1,14 +1,13 @@
-From: "RL..." <betolourenco@ig.com.br>
-Subject: RES: Linux router/gw box.
-Date: Thu, 6 Nov 2003 16:10:03 -0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: UDP for HTTP forwarding??? Prerouting, postrouting, output
+Date: Thu, 6 Nov 2003 18:53:48 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ADECIDDLDNKKNFCPIDADIEEKCFAA.betolourenco@ig.com.br>
-References: <200311061735.hA6HZwj14113@agate.rockstone.co.uk>
-Reply-To: <betolourenco@ig.com.br>
+Message-ID: <200311061853.hA6Irqj14157@agate.rockstone.co.uk>
+References: <BEA73FB6B8F62545A5B2818724D0DF2902E70868@u.library.Arizona.EDU>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311061735.hA6HZwj14113@agate.rockstone.co.uk>
+In-Reply-To: <BEA73FB6B8F62545A5B2818724D0DF2902E70868@u.library.Arizona.EDU>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,93 +17,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Thursday 06 November 2003 5:54 pm, Han, Yan wrote:
 
-You can set one or two nic=B4s with vlan (802.1q)
-
-And the switch will be very necessary.
-
-...
------Mensagem original-----
-De: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]Em nome de Antony Stone
-Enviada em: quinta-feira, 6 de novembro de 2003 15:36
-Para: netfilter@lists.netfilter.org
-Assunto: Re: Linux router/gw box.
-
-On Thursday 06 November 2003 5:10 pm, Stephan Viljoen wrote:
-
-> Hi there,
+> I am confused with the IPTables. Please see attachment for the script.
+> Some input will be greatly appreciated for one of these questions. (I know
+> these are long questions!)
 >
-> I've build a router for my wireless users which is about 50 customers.
+> Basically, we want to forward packets from [$Fido] to [$AtlasDev], the
+> script works, but my questions remain:
 >
-> Now each user has it's own subnet
+> 1. Why do we need UDP for forwarding the HTTP packets?  (I tried to disable
+> Udp lines, but then the script will not work!)
 
-Why?
+I find this very hard to believe.   The lines you refer to specifically 
+relate to port 80, and HTTP simply does not use UDP port 80.
 
-> which I all added onto one network card.
+The only thing I can think which you might need UDP for is DNS, but that 
+works on port 53.
 
-Okay, you can do that if you want to (but it can cause puzzles, and strange
-things to happen if you're not careful).
+I can't believe you need the UDP port 80 rules for HTTP to work.
 
-> How good idea is it to do something like this and is there a
-> better way off doing this.
+Same thing applies for your SSH rules - it does not use UDP, so you only need 
+the TCP rules on port 22 for this to work.
 
-For 50 networks I can't think of another way to do it unless you use a
-switch
-with VLAN capability, which I guess would be a bit expensive.   Certainly
-building a netfilter box with 50 network connections is (a) difficult
-(finding the right hardware), and (b) expensive (because you need things
-like
-PCI backplanes and 4-port network cards).
+> 2. What the purpose of PREROUTING, POSTROUTING and OUTPUT?
 
-It's not impossible, but you'd have to really want to do it to try.
+PREROUTING allows you to perform Destination NAT on packets coming in to the 
+machine, before it has been decided whether they are going to the machine 
+with the netfilter rules on, or being routed to somewhere else.
 
-> I'm somewhat new to this whole netfiler / ip routing thing.
+POSTROUTING allows you to perform Source NAT on packets leaving the machine, 
+after they have been routed from some other source.
 
-I think the important question (at least for this mailing list) is:
+OUTPUT is both a normal filtering chain, which allows you to control what 
+packets are allowed out of your machine (originating from the machine itself, 
+not being routed through it from somewhere else), and also a nat chain for 
+doing some special Destination NAT if you don't want to tell local 
+applications the real IP address they should connect to.
 
- - what protection are you trying to provide by using netfilter?
+> (We need all of
+> them in the script to make the HTTP work, but ssh only needs PREROUTING and
+> POSTROUTING. We guess that HTTP need to send packets back to the client,
+> while SSH builds up a channel so no need for OUTPUT. Is this guessing
+> correct? )
 
-As far as your routing table is concerned, I don't see why you can't replace
-the whole thing with:
+No.   Both HTTP and SSH are TCP-based protocols, so work in fundamentally the 
+same way - a client connects to a server, and the server replies.   If you 
+are DNATting packets between client and server, netfilter will automagically 
+do the corresponding SNAT for you on the reply packets.   You do not need 
+explicit rules to perform this (and indeed if you look at the packet counters 
+with "iptables -L -n -v" and "iptables -L -n -v -t nat" you will see that the 
+reply packets do not actually pass through your rules anyway - they are 
+handled transparently in the background).
 
-10.0.0.0   255.255.255.0   eth1
-10.0.1.0   255.255.255.0   eth1
-10.0.2.0   255.255.255.0   eth1
-10.0.5.0   255.255.255.0   eth1
-10.1.0.0   255.255.255.0   eth1
-10.2.0.0.  255.255.0.0   eth1
-169.254.0.0   255.255.0.0   eth2
-127.0.0.0   255.0.0.0   lo
-0.0.0.0   0.0.0.0   217.10.176.149   eth0
-
-or even:
-
-10.0.0.0   255.0.0.0   eth1
-169.254.0.0   255.255.0.0   eth2
-127.0.0.0   255.0.0.0   lo
-0.0.0.0   0.0.0.0   217.10.176.149   eth0
-
-(By the way, there must be an entry missing from what you posted earlier,
-since there's no subnet 217.10.176.x listed for eth0, but I'm sure you must
-have it on your machine (unless perhaps eth0 uses a point-to-point link?).
+I think the rules you have listed are more than you need - try setting the 
+counters to zero, send & receive some HTTP / SSH packets, then look at the 
+counters.   Any which are still zero tells you the rule did nothing.
 
 Regards,
 
 Antony.
 
---
+-- 
 
-When do you expect the official release of the 2.6.0 kernel?
+Software development can be quick, high-quality, or low-cost.
 
-Rusty Russell: From previous releases, a pattern has emerged: exactly 6
-months before it's ready.
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
+The customer gets to pick any two out of three.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
