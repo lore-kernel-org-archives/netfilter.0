@@ -1,13 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: martians and portforwarding to 127.0.0.1
-Date: Tue, 20 Apr 2004 19:20:59 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: more about martians
+Date: Tue, 20 Apr 2004 18:18:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1082481659.1838.9.camel@anduril.intranet.cartel-securite.net>
-References: <20040420163326.32095.qmail@web40706.mail.yahoo.com>
+Message-ID: <200404201818.16648.Antony@Soft-Solutions.co.uk>
+References: <20040420170544.87914.qmail@web40702.mail.yahoo.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040420163326.32095.qmail@web40706.mail.yahoo.com>
+In-Reply-To: <20040420170544.87914.qmail@web40702.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +18,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: udo <udovdh@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le mar 20/04/2004 =E0 18:33, udo a =E9crit :
-> $path_iptables -t nat -A PREROUTING -p tcp -i $ext_if
-> -s 0/0 -d $ext_ip --dport 222 -j DNAT --to
-> 127.0.0.1:22
+On Tuesday 20 April 2004 6:05 pm, udo wrote:
 
-Something is quite wierd here. You say you want to run an unprivilieged
-SSHd, so it won't be able to bind port 22... So, please rephrase if I'm
-wrong, but I guess you want to redirect connections to port 22 to
-127.0.0.1, port 2222. You seems very confused about what you want to
-achieve, and the way you're trying to do it.
+> Hello,
+>
+> As a follow up on my post about portforwarding to 127.0.0.1 and the 'martian
+> destination 127.0.0.1' message I can tell I found the probable cause in
+> /usr/src/linux/net/ipv4/route.c.
+> A patch here could filter out the martian messages if a packet is related to
+> sshd (in my case).
+>
+> Does anyone know if such a patch/solution exist already?
+> Maybe there's a better way?
 
-BTW, do not DNAT to 127.0.0.1.
-Use REDIRECT that is designed for this very need :
+I think so, yes - connect to a real IP address, not the loopback address, when 
+you're connecting from another machine?
 
-	iptables -t nat -A PREROUTING -p tcp -i $ext_if \
-		-d $ext_ip --dport 22 -j REDIRECT --to-ports 2222
+Regards,
 
-Please correct me if I'm wrong. For other mistakes, see Antony's answer.
+Antony
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+-- 
+Never write it in Perl if you can do it in Awk.
+Never do it in Awk if sed can handle it.
+Never use sed when tr can do the job.
+Never invoke tr when cat is sufficient.
+Avoid using cat whenever possible.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
