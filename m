@@ -1,9 +1,9 @@
 From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: A Proper Syntax For iptables?
-Date: Sun, 22 Sep 2002 20:02:55 +0200
+Subject: Re: Can everyone reach both of these sites ?...http://www.fo0bar.org/...http://ipv6.fo0bar.org/
+Date: Sun, 22 Sep 2002 19:59:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D8E05CF.8040504@fugmann.dhs.org>
-References: <OF999C1019.C1FE4849-ON88256C3C.004F0D1E-88256C3C.0051EED6@deepwoods.com> <0cc601c2624c$ad4b8780$c6b22543@repligate>
+Message-ID: <3D8E050B.7040106@fugmann.dhs.org>
+References: <0cfe01c26256$eca040b0$c6b22543@repligate>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,16 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Jim Fleming <JimFleming@ameritech.net>
-Cc: netfilter@lists.netfilter.org
+Cc: NetFilter List <NetFilter@lists.netfilter.org>
 
 Jim Fleming wrote:
-> ----- Original Message ----- 
-> From: caogdin@deepwoods.com 
-> Like many other novices in this list, I've struggled with understanding iptables for several months.
-Not everyone brags about how dum they are, but you just got off the scale.
+> Can everyone reach both of these sites ?
+> 
+> http://www.fo0bar.org/
+Yes.
+> http://ipv6.fo0bar.org/
+No. Not in my DNS.
+> 
+> Is IPv6 for everyone ?
+Yes - It will be implemented in year 2005.
+(and I guess that you were trying to say that because ipv6.fo0bar.org is 
+not in the DNS, then noone can use it?!? I laugh.)
+
+> 2002:[IPv4]:000X:03DB:...IPv8 is closer than you think...IPv16 is even closer...
+Who cares - really?
+IPv8 is not mentioned in one single RFC. IPv6 is mentioned in 96 RFC's.
+
+Please do not advocate you own protocol - It might be better, but I do 
+not care about it because I will never use it.
+
+So stop spamming the list, and welcome to my killfile.
 
 /Anders Fugmann
-
 
 
 
