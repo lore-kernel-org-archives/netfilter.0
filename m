@@ -1,14 +1,11 @@
-From: Z_God <zeldario@wanadoo.nl>
-Subject: Re: Unkown arg: '--reject-with' error with ip6tables
-Date: Fri, 4 Jul 2003 16:31:40 +0200
+From: "Guilherme Viebig" <guilherme@plannercorretora.com.br>
+Subject: Forwarding HTTP question
+Date: Fri, 4 Jul 2003 10:41:17 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307041631.40359.zeldario@wanadoo.nl>
-References: <E6D65A6EE5AAD6119DE800B0D03DA0C528970B@MS_LEU1>
+Message-ID: <004f01c34231$f1d429f0$6800817d@TESTE>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E6D65A6EE5AAD6119DE800B0D03DA0C528970B@MS_LEU1>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,15 +16,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: *netfilter <netfilter@lists.netfilter.org>
 
-Op vrijdag 4 juli 2003 09:56, schreef u:
-> Do you have REJECT support for ipv6 ?
-Oops, I seem to miss the IPv6 reject module. Is there any way I can get that 
-module without installing a complete development environment on my server?
-Thanks in advance.
+My Firewall has two interfaces
 
--- 
-ICQ: 51854780
+eth0 200.123.234.111
+eth1 192.168.0.1
+
+I have an internal webserver on 192.168.0.33
+
+How can I setup iptables to forward incoming traffic by eth0 to port 80 go
+to 192.168.0.33:80 ?
+
+Thanks
+
+
+Guilherme B. Viebig
+
+
 
 
