@@ -1,11 +1,10 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: simple method to set tos
-Date: Thu, 31 Mar 2005 17:25:02 +0300
-Message-ID: <3063e5050331062544143a2d@mail.gmail.com>
+From: =?iso-8859-1?Q?Rub=E9n_Cardenal?= <rubenc@arrakis.es>
+Subject: Multiple gateways problem
+Date: Thu, 31 Mar 2005 18:37:50 +0200
+Message-ID: <13036.1135969453$1112287155@news.gmane.org>
 References: <20050331133823.6562.qmail@flock1.newmail.ru>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <20050331133823.6562.qmail@flock1.newmail.ru>
 List-Id: <netfilter.vger.kernel.org>
@@ -18,38 +17,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="koi8-r"
-To: =?KOI8-R?B?8M/Qz9cg6cfP0tgg7snLz8zBxdfJ3g==?= <igorpopov@newmail.ru>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Try using DSCP or TOS target with netfilter, like:
+ 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-iptables -t mangle -A POSTROUTING -d <ip address> -j TOS --set-tos <tos>
-or
-iptables -t mangle -A POSTROUTING -d <ip address> -j DSCP --set-dscp <dscp>
+Hi,
 
-DSCP is a combination of unused tos bits and some other unused bits
-from ip header, looking for that on google should show exactly wich.
+  I have a quite simple setup in ony of my servers but I can't make
+the conditional routing using iptables to work.
 
+  The server has:
 
-On Thu, 31 Mar 2005 17:38:23 +0400, =F0=CF=D0=CF=D7 =E9=C7=CF=D2=D8 =EE=C9=
-=CB=CF=CC=C1=C5=D7=C9=DE
-<igorpopov@newmail.ru> wrote:
->   Hi, all!
-> I'm interesting is there a simple method to set tos on ip packets, that
-> destinated to specific ip address?
-> --
-> Arbitrary systems, pl.n.:
-> =A0=A0=A0=A0=A0=A0=A0=A0Systems about which nothing general can be said, =
-save "nothing
-> general can be said."
-> __________
-> www.newmail.ru -- =C2=C5=D3=D0=CC=C1=D4=CE=C1=D1 =D0=CF=DE=D4=C1, =C2=C5=
-=D3=D0=CC=C1=D4=CE=D9=CA =C8=CF=D3=D4=C9=CE=C7.
->=20
->=20
+  eth0: 192.168.2.0/23
+  eth1/eth2: reserved for future use
+  eth3: 10.10.100.0/24
 
+  The eth3 is connected to a separate switch where 30 AP's are
+connected to and a dhcp server running on the server gives IP's to
+clients connected to the wireless lan. In the same way, eth0 is
+connected to another set of switchs (isolated from the switch where
+eth3 is connected to) where all LAN clients (192.168.2.0/23) are
+connected to.
 
---=20
-Bla bla
+  I can use two gateways, both of them are accessed via eth0:
+192.168.3.250 and 192.16.3.254. The default gateway for all the LAN
+clients (192.168.2.0/23) is (and must be) 192.168.3.254 and just a
+few people is allowed to use the other gateway.
+
+  The desired configuration is that I want to be able to route
+certain clients from eth3 (10.10.100.0/24) via 192.168.3.250 instead
+of the default gw of the server (192.168.3.254).
+
+  All the configurations I've tried, doesn't work or make LAN clients
+loose connectivity with the server. How should I setup routes/rules?
+
+  Regards,
+
+- - Ruben.
+
+-----BEGIN PGP SIGNATURE-----
+Version: PGP 8.1
+
+iQA/AwUBQkwnXQcpyqBKAkY5EQLdOwCg/rIS18MM5mKYfXjEhvSiCPgOV1QAmwZ7
+TG3o6vj9sH7NQXoVkgUsBcvS
+=BTkL
+-----END PGP SIGNATURE-----
+
 
