@@ -1,53 +1,38 @@
-From: "Andrew Hall" <temp02@bluereef.com.au>
-Subject: Re: [PATCH] iptables cannot be compiled with 2.6.7
-Date: Wed, 23 Jun 2004 12:24:33 +1000
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <08dc01c458c9$38c19ce0$2601010a@bluereef.local>
-References: <Pine.LNX.4.33.0406182142010.25898-100000@blackhole.kfki.hu>
+From: Ian Holsman <kryton@gmail.com>
+Subject: Bandwidth Shaping requests coming from a web server
+Date: Wed, 23 Jun 2004 13:06:12 +1000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <2a627cd2040622200675aed3eb@mail.gmail.com>
+Reply-To: ian@holsman.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Jozsef,
+Hi.
 
-This patch was already there. It is the 07_linux patch that seems to be
-missing.. Please confirm.
+I would like to write a apache module which limits the speed we send
+out the response based on some internal algorithm (like a cookie, or a
+line in the request header, or some random number ;-)).
 
-Thanks,
+Ideally I would like a method to tell the kernel 
+use queue 'XYZ' for this socket I just opened, and then just use the
+normal sendfile/write requests to send it out
 
-Andrew.
------ Original Message -----
-From: "Jozsef Kadlecsik" <kadlec@blackhole.kfki.hu>
-To: <netfilter-devel@lists.netfilter.org>; <netfilter@lists.netfilter.org>
-Sent: Saturday, June 19, 2004 5:44 AM
-Subject: [PATCH] iptables cannot be compiled with 2.6.7
+Is this possible?
 
+also .. any tips on how to this on a BSD box?
 
-> Hello,
->
-> The 08_linux-2.6.7-user_attr.patch has been added to patch-o-matic-ng,
-> which fixes the compile-problem of iptables using 2.6.7 source tree.
->
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
->
->
->
-
+Thanks in advance
+Ian Holsman
 
