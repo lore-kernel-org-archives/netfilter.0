@@ -1,13 +1,13 @@
-From: "David F. Strauch" <dstrauch@cyberlink.com>
-Subject: Re: open ports 25/tcp and 110/tcp
-Date: Wed, 3 Dec 2003 17:34:23 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Hello -- kind of of topic -- but still related
+Date: Wed, 3 Dec 2003 23:36:14 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002901c3b9f5$fc81d8c0$0201a8c0@OurPC>
-References: <002101c3b9ef$53e5d780$0201a8c0@OurPC> <200312032301.11900.Antony@Soft-Solutions.co.uk>
-Reply-To: "David F. Strauch" <dstrauch@cyberlink.com>
+Message-ID: <200312032336.14650.Antony@Soft-Solutions.co.uk>
+References: <20031203151030.31eaeacd.mgale@utilitran.com> <200312032234.22291.Antony@Soft-Solutions.co.uk> <20031203162710.540a1fc9.mgale@utilitran.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031203162710.540a1fc9.mgale@utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,72 +20,35 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Antony,
+On Wednesday 03 December 2003 11:27 pm, Michael Gale wrote:
 
-I tried telnet from my WinXP machine to both open ports without any
-responce.  I'm hosting neither services on this machine.  It will be a
-gateway machine with a very minimal hardened installation.
+> Hello,
+>
+> 	Thanks for the response -- it starting logging all outbound traffic and
+> found that the FTP server is sending out ident request to the Cisco router.
+> Which is odd because there is NO ident server on the FTP box and the FTP
+> config specifies no Ident lookups.
 
-Dave
+Ident requests are generally caused by the use of tcpwrappers (see your 
+inetd.conf file to confirm this).   You do not need to be running an ident 
+server for your machine to send out ident requests (those mean that it is 
+acting as a client, asking for responses from some other server).
 
------ Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, December 03, 2003 5:01 PM
-Subject: Re: open ports 25/tcp and 110/tcp
+> The packet leaves from port X to the Cisco on port 113 but then the Cisco
+> returns a ACK RST from port number < 10 to port X.
 
+That is not the way TCP is supposed to work.  All responses should be from the 
+source port which the original request packet went to as destination port.
 
-> On Wednesday 03 December 2003 10:46 pm, David F. Strauch wrote:
->
-> > Hello All,
-> >
-> > I've been working with giptables firewall and have run into a big issue.
-> > Although my script seems to be correct namp is finding ports 25/tcp and
-> > 110/tcp open.  To start troubleshooting this problem I've commented
-> > everything out and stripped down the ruleset to just the default DROP
-> > policy.  Yet nmap -sT -F -P0 -0 xx.xx.xx.xx still returns 25/tcp and
-> > 110/tcp as open!
-> >
-> > Now I'm starting to think that iptables is broken. I've built iptables
-with
-> > grsecurity-1.9.12 and iptables1.2.8 with a plain vanilla kernel 2.4.22
-Is
-> > anyone aware of any issues?
->
-> Where are you testing from?
->
-> Is there any chance (particularly with port 25) that the requests are
-being
-> redirected to some other server, and this is what is being reported as
-open?
->
-> Try doing "telnet xx.xx.xx.xx 25" and see what login banner you get for
-the
-> SMTP service - does this correspond to the machine you're testing, or any
-> other machine you know about?
->
-> Try the same thing on port 110 and see if that login banner reveals a clue
-> either.
->
-> Antony.
->
-> -- 
-> The idea that Bill Gates appeared like a knight in shining armour to lead
-all
-> customers out of a mire of technological chaos neatly ignores the fact
-that
-> it was he who, by peddling second-rate technology, led them into it in the
-> first place.
->
->  - Douglas Adams in The Guardian, 25th August 1995
->
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
->
->
->
+If you send a packet to port 113, you should get a reply (whether it's a goood 
+one saying "hello" or a bad one saying "no service here") from port 113.
 
+Antony.
+
+-- 
+Most people have more than the average number of legs.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
