@@ -1,16 +1,10 @@
-From: Josh Nerius <jnerius@gmail.com>
-Subject: Re: Fwd: Linux as router (Gateway Server)
-Date: Sat, 12 Feb 2005 20:33:52 -0600
-Message-ID: <4f3930a70502121833627af1bd@mail.gmail.com>
-References: <1dceb012050211233357e23dd4@mail.gmail.com>
-	<1dceb01205021123483860fb86@mail.gmail.com>
-	<1108216901.4462.27.camel@hubcap.ljm.dom>
-	<4f3930a705021214026db11902@mail.gmail.com>
-	<420EB7C3.7040303@hotpop.com>
-Reply-To: Josh Nerius <jnerius@gmail.com>
+From: Mikhail Zotov <e-boogie@yandex.ru>
+Subject: Dropping network "noise"
+Date: Sun, 13 Feb 2005 09:28:41 +0300
+Message-ID: <200502130928.41225.e-boogie@yandex.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <420EB7C3.7040303@hotpop.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,56 +18,36 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> hello josh.
-> 
-> I stand 100% with Jason O.'s opinion ..
-> netfilter/iptables has nothing to do with squid binding to some/any port.
-> whoever had to do his homework ... i beleive has done it.
-> Accessing that port is something different (-i lo -j ACCEPT), but i
-> beleive that's not the case.
-> 
-> regards,
-> Georgi Alexandrov
+Hello everybody,
 
-Hello George,
+I have a Linux machine (with a static routable IP address)
+connected to a windoops LAN.  As is known, there is certain
+"noise" in windoops networks, which can be silently dropped
+by a rule like this:
 
-From experience...not speculation, I still stand by what I said.
+iptables -A INPUT -p udp --dport 135:139 -j DROP
 
-Squid can be a strange animal. In many configurations, the
-communication between child processes relies on being able to
-communicate via the loopback interface of the machine.  Iptables can,
-and and in configurations I've worked with, has caused the same
-symptoms described. Basically, the daemon never gets a chance to bind
-to a port as the initial communication between these child processes
-is broken causing the entire startup procedure to fail. This makes the
-illusion that the problem is related to binding the port when in fact
-the program can't start for other reasons.
+I have found that this "noise" can also be effectively blocked
+by the following rule:
 
-This problem *can* be caused by firewall rules in place that prevent
-this communication from happening. If you examine the rulesets posted,
-it looks like he is using policy DROP on the INPUT chain which may
-certainly cause problems with squid if proper rules to allow the
-necessary traffic are not in place.
+iptables -A INPUT -d ! $IP.ADDRESS.OF.MY_BOX -j DROP
 
-Another thing to note here, and the reason that I'm of the opinion
-that this could be a netfilter/iptables problem is the fact that the
-original poster seems to have indicated that squid works when iptables
-is flushed.
+I haven't noticed anything going wrong yet, still I'd like to
+know: Does this rule have a (potential) drawback?  Can it break
+anything in case I have NFS or obtain IP address via DHCP or
+in any other situation?
 
-The last point mentioned above, coupled with the fact that I've dealt
-with this problem during the development of a transparent redirection
-appliance for the company I work for, is why I maintain the opinion
-that I do.
+A similar question goes for the case of a Linux router/gateway
+protecting a LAN (with machines with routable IP addresses).
+Can the following rules do any harm?
 
-As mentioned before, Jason has a good knowledge of netfilter, but
-apparently not Squid, thus my homework comment.
+iptables -A FORWARD -i $EXTERIOR_INTERFACE -d $LAN.BROADCAST -j DROP
+iptables -A FORWARD -i $EXTERIOR_INTERFACE -d ! $LAN.IP.ADDRESSES.RANGE -j DROP
 
-Thanks, and hopefully this information helps to clarify the
-information I posted. :-)
+Thanks in advance!
 
-Josh Nerius
+--
+Mikhail
 
 
--- 
-Math problems? Call 1-800-[(10x)(13i)^2]-[sin(xy)/2.362x]
 
