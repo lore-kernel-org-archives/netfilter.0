@@ -1,7 +1,7 @@
 From: "mdpeters" <michael.peters@lazarusalliance.com>
 Subject: Re: transparent bridge troubles?
-Date: Fri, 7 Jan 2005 16:16:49 -0500
-Message-ID: <003b01c4f4fe$3388f260$3e0010ac@esonet18>
+Date: Fri, 7 Jan 2005 16:35:13 -0500
+Message-ID: <004601c4f500$c583f0a0$3e0010ac@esonet18>
 References: <7C9884991ADAE0479C14F10C858BCDF5679643@alderaan.smgtec.com><20050107204433.GA1112@bender.817west.com><002e01c4f4fb$4a24f080$3e0010ac@esonet18>
 	<20050107210103.GA1193@bender.817west.com>
 Mime-Version: 1.0
@@ -20,19 +20,11 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-Du'oh!
+I only get the two entries and that is it? Should I not see many many lines 
+showing everything I try to put through the bridge?
 
-I changed it and this is what I see so far. I'm running a Nessus scan on one 
-side of the bridge and the target system is at the other side of the bridge.
-
-PRE QUEUEIN=safetynet0 OUT=safetynet0 PHYSIN=eth2 PHYSOUT=eth1 
-SRC=68.16.185.132 DST=68.16.185.130 LEN=41 TOS=0x00 PREC=0x00 TTL=64 ID=3072 
-PROTO=TCP SPT=3133 DPT=45495 WINDOW=2048 RES=0x00 ACK URGP=0
-
-POST QUEUEIN=safetynet0 OUT=safetynet0 PHYSIN=eth2 PHYSOUT=eth1 
-SRC=68.16.185.132 DST=68.16.185.130 LEN=41 TOS=0x00 PREC=0x00 TTL=64 ID=3072 
-PROTO=TCP SPT=3133 DPT=45495 WINDOW=2048 RES=0x00 ACK URGP=0
-
+Does this indicate that the Snort-inline is broken in that QUEUE userspace 
+or could this be something wrong with another component of this whole thing?
 
 ----- Original Message ----- 
 From: "Jason Opperisano" <opie@817west.com>
