@@ -1,11 +1,12 @@
-From: "Steffen Trenkler" <trenkler@syn-con.de>
-Subject: iptables problems with SuSE 8.0
-Date: Thu, 13 Mar 2003 11:21:40 +0100
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: Iptables problem
+Date: Thu, 13 Mar 2003 11:16:23 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FFEKLFAFFPMEICKNCBGAMEFKCDAA.trenkler@syn-con.de>
+Message-ID: <Pine.LNX.4.51.0303131110400.30819@dns.toxicfilms.tv>
+References: <009401c2e946$eb346fe0$0700a8c0@dale>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <009401c2e946$eb346fe0$0700a8c0@dale>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,46 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "(iptables) English Mailing-List Netfilter" <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: De Jager Laubscher <dejager@think.co.za>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+> Can anyonne please tell me how to open port 1500 to 1511 on my NAT box
+> using iptable on slackeware ??
+You have not written what do you want precisely, so i will give a few
+examples. But PLEASE READ THE HOWTO, it is very informative. It is vital
+to know how it all works.
+I will assume TCP.
+If you want to open these ports _to_ the NAT box use:
+# iptables -A INPUT -p tcp --dport 1500:1511 -j ACCEPT
 
-I'm new here in this list.
+If you want to NAT these ports do:
+# iptables -t nat -A PREROUTING -i $EXT -p tcp --dport 1500 -j DNAT \
+	--to x.y.z.a
 
-My English is not so very well, but I try to explain my problem with
-iptables:
+Remember that if doing 1:1 NAT requiers a similar rule for SNAT on
+POSTROUTING.
 
-I got a system with SuSE 8.0. It works as a router with an iptables script
-between 2 static LANs. The Script does it very well, but sometimes it
-happens that all connections from one LAN to the other are blocked suddenly.
+If you want to NAT and change the ports do:
+# iptables -t nat -A PREROUTING -i $EXT -p tcp --dport 1500 -j DNAT \
+	--to x.y.z.a:other_port
 
-/var/log/messages and /var/log/firewall shows the following:
+of course read also:
+# iptables -j DNAT --help
+# iptables -j SNAT --help
+# iptables -p tcp --help
 
-fw  kernel: eth0: Transmit timed out, status 00, resetting...
-fw kernel:      Rx ring c071a000: 00000000 00000000 00000000 00000000 ...
-fw kernel:      Tx ring c071b000: 80008001 80008005 80008009 8000800d
-80008011 ...
-
-and then:
-
-fw kernel: PACKET DROPPED: .....
-fw kernel: PACKET DROPPED: .....
-fw kernel: PACKET DROPPED: .....
-...
-
-The error-message repeats periodically for a few seconds.
-
-There are 2 same NICs in that system: D-Link DFE-550TX.
-
-After rebooting the system, the firewall works fine again, 'cause the script
-is loaded at booting the system.
-
-Thx 4 help
-
-Steffen Trenkler
-
-Note: Is there any german-language iptables list?
-
+Regards,
+Maciej Soltysiak
 
 
