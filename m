@@ -1,14 +1,13 @@
-From: Alexis <alexis@attla.net.ar>
-Subject: Re: Running iptables behind router
-Date: Tue, 17 Feb 2004 09:39:07 -0300
+From: "Jan Kaastrup" <jka@protego.dk>
+Subject: RE: Iptables and SNAT
+Date: Tue, 17 Feb 2004 15:39:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <632269680.20040217093907@attla.net.ar>
-References: <20040216235513.GA1219@room101>
-Reply-To: Alexis <alexis@attla.net.ar>
+Message-ID: <000001c3f563$de6ba5b0$2d64a8c0@pcjka>
+References: <200402171428.52966.mark@vevers.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040216235513.GA1219@room101>
+In-Reply-To: <200402171428.52966.mark@vevers.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,75 +18,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Kean Pedersen <netfilter@zakarun.dk>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: mark@vevers.net
+Cc: netfilter@lists.netfilter.org
 
-yes, do this
-
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-iptables -p FORWARD DROP
-
-iptables -A FORWARD -s 192.168.2.0/24 -j ACCEPT
-
-then, you have 2 options
-
-1 to use 1 ip of 192.168.1 to nat all the .2 network, or use a pool,
-its your choice
-
-1st case
-iptables -t nat -A POSTROUTING -s 192.168.2.0/24 -j SNAT --to
-192.168.1.254
-
-or
-
-iptables -t nat -A POSTROUTING -s 192.168.2.0/24 -j MASQUERADE
+Hi
+Thanks for the answer.
+I found out that recompiling the iptables with
+KERNEL_DIR=<my-kernel-source> did the trick!
 
 
-2nd case
-
-iptables  -t nat -A POSTROUTING -s 192.168.2.0/24 -j SNAT --to
-192.168.1.50-192.168.1.60
-
-
-
-
-Hello Kean,
-
-Monday, February 16, 2004, 8:55:14 PM, you wrote:
-
-KP> Hi, I have some problems setting up iptables on a linux box, acting as a
-KP> router between two networks. I have an internet connection through a
-KP> hardware router, which I have no access to. This router uses NAT, and
-KP> has an interface on 192.168.1.1. So far I've had my LAN on
-KP> 192.168.1.0/24, with no problems, but would like to split it into two
-KP> LANs, one on 192.168.1.0/24, having the hardware router and some hosts,
-KP> and another one on 192.168.2.0/24, acting as an "internal" LAN.
-
-KP> I'd then like to connect these two LANs with a linux box running
-KP> iptables, so the both LANs have access to the internet through the
-KP> hardware router.
-
-KP> I sat up the iptables machine (which have two NICs) to the IPs
-KP> 192.168.1.100 and 192.168.2.100, one on each interface. How should I set
-KP> up iptables, so the 192.168.2.0/24 range have access through iptables,
-KP> and further through the hardware router onto the internet? Only outbound
-KP> connections will be made. (Inbound connections are mapped in the
-KP> hardware router to 192.168.1.x to specific hosts, no problem there).
-
-KP> The computers on the 192.168.2.0/24 range should be able to make
-KP> connections to the 192.168.1.0/24 range, but not the other way around.
-
-KP> Any help is appreciated.
-
-KP> --
-KP> Kean Pedersen
+-----Original Message-----
+From: Mark Vevers [mailto:mark@vevers.net] 
+Sent: 17. februar 2004 15:29
+To: Jan Kaastrup
+Subject: Re: Iptables and SNAT
 
 
--- 
-Best regards,
- Alexis                            mailto:alexis@attla.net.ar
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+On Tuesday 17 Feb 2004 11:03 am, you wrote:
+> Hi
+> I have iptable module loaded
+Ok - are you using RedHat's IP tables?  Or have you compiled
+your own and your own patch-o-matic additions?  - I've seen
+problems before where people have mixed & matched. On RH
+if using patch-o-matic patches and upgrading iptables to match
+I uninstall the iptables rpm, compile from a vanilla kernel and
+then add the patch-o-matic patches and then recompile the 
+userspace apps from scratch.
+
+BTW You need to be careful using vanilla kernels with 
+multi-threaded apps on Fedora as it appears there are 
+problems with fedora and a kernel which doesn't have 
+NPTL support.  RH.9 seems not to mind even though the 
+vanilla kernel doesn't support NPTL.
+
+Cheers
+Mark
+- -- 
+Mark Vevers.    mark@ifl.net / mark@vevers.net
+Principal Internet Engineer, Internet for Learning,
+Research Machines Plc. (AS5503)
+- --
+GPG Key: http://pgp.mit.edu:11371/pks/lookup?op=get&search=0xB08F3CA3
+Fingerprint: 85BA 30C4 9EC8 1792 4C8C   C31E 58B5 3D1C B08F 3CA3
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQFAMiUjWLU9HLCPPKMRAi0wAJ9/8W/vNs6+jP70KGtvMc8mQkOongCcCp5Y
+DQnQ4zyWomkhPaW0gj26rJk=
+=C7Qg
+-----END PGP SIGNATURE-----
 
 
 
