@@ -1,8 +1,8 @@
-From: Frederik Bijlsma <frederik@killesberg.org>
-Subject: DCC Nat Trouble
-Date: 18 Jun 2002 13:56:22 +0200
+From: "Filip Sneppe (Cronos)" <filip.sneppe@cronos.be>
+Subject: benchmark tool for netfilter - any recommendations ?
+Date: 18 Jun 2002 14:11:22 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1024401382.3010.7.camel@force>
+Message-ID: <1024402282.591.20.camel@xbox>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -18,30 +18,52 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Dear list,
+Hi,
 
-I've got trouble setting up DCC Transfers using netfilter modules. 
-ip_nat_irc ip_conntrack_irc are both loaded and assigned to the right
-ports.
+I am looking for a traffic generator type aplication that can
+generate a realistic workload to test a netfilter firewall.
 
-I can send DCC CHATs and DCC SENDs, but cannot receive anything. My
-question: is it possible to receive these events over a netfilter gate?
+There are some cool tools out there for throughput measurements,
+like netpipe, etc. but they are not ideal to test connection
+tracking performance. The way I see it, you either have tools
+that:
 
-incoming dcc send produces:
-Jun 18 13:44:36 freedom kernel: IN=eth0 OUT=ppp0 SRC=192.168.7.77
-DST=213.207.72.57 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=59596 DF PROTO=TCP
-SPT=33991 DPT=4127 WINDOW=5840 RES=0x00 SYN URGP=0 
+- flood the network with traffic over just one TCP connection
+  or UDP stream. Not a lot of use in testing connection tracking
+  performance as it's just one ESTABLISHED connection.
 
-SRC host is my local workstation and DST is the remote DCC-Server.
+or
 
-any help appreciated.
-regards, Frederik
--- 
-linuxeria.de     | Birkenwaldstr. 113  | 70191 Stuttgart 
-Frederik Bijlsma | Sternstr. 7         | 39104 Magdeburg 
---------------------------------------------------------
-phone: +49 (0)391 5446857 facsimile: +49 (0)391 53539518 
-public key: http://killesberg.org/gpg_public_key.txt
-email: frederik@killesberg.org
+- flood the network with more or less random crap as far as IP
+  addresses/ports is concerned. Not a very realistic workload
+  either.
+
+IMHO a realistic workload for testing connection tracking 
+performance is a workload that has a limited number of IP
+addresses on one side of the firewall (a DMZ with 64 hosts,
+or a LAN with 100-500 hosts) and a wide range of IP addresses
+at the other side (the Internet). The tool should be able
+to mimic normal network behavior like short connections (http)
+vs. longer lived connection (ftp download), etc.
+
+It would be nice to have a client/server tool that you could be
+used in this type of setup:
+
+client ------ FW ------ server
+
+and where either client and/or server could generate traffic 
+from various IP addresses/ports in a controlled way.
+
+I am currently looking at Web-Polygraph (www.web-polygraph.org)
+from the Squid developers, but upon installation, I realized
+the license doesn't allow the publishing of the results.
+
+Are there any tools worth looking at ? Is there anything else a
+decent netfilter (firewall ?) performance benchmarking tool
+should be able to do ?
+
+Regards,
+Filip
+
 
 
