@@ -1,12 +1,13 @@
-From: "Emre CELEB&#304;" <emre22@europe.com>
-Subject: secure remote management
-Date: Sat, 24 Jan 2004 15:22:19 +0200
+From: "L.Malinov" <lucho@galix.com>
+Subject: RE: IPTABLES + IPROUTE2
+Date: Sat, 24 Jan 2004 14:05:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040124132219.14068.qmail@mail.com>
+Message-ID: <EHENIKBEJAMHPLPJOJBPMEDMDIAA.lucho@galix.com>
+References: <20040124010457.GA8126@cannon.eng.us.uu.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20040124010457.GA8126@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,20 +18,51 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
-im in responsible for managing 6 iptables firewalls with all in different locations, normally i use ssh and scripting to manage those boxes -and very happy at the moment -.but unfortunetly my firewall rules are going to be too long and compilcated and also -cause of customers checkpoint habits - im requied to documantate the rules regularly in an object oriented shame like in fwbuilder - which i know have no remote access.
-What i want is to securely manage my iptables remotely and need a tool for this (with a web interface, or a java interface cause clever customers also want to see them in an interface not with vi or not with ssh login and  a X-forwarding.)
-Im trying to decide whether i use Webmin iptables module or bifrost tool but hesitating about their security issues.
-wondering if there are any other netfilter users who manage their boxes remotely with an interface and want to hear their opions and security experiences.
-thanks in advance.
+Hi there,
 
-Emre CELEBI
+I did try to remove "-o eth0" already but the result is still the same. Any
+other possible suggestions?
+
+-----Original Message-----
+From: Ramin Dousti [mailto:ramin@cannon.eng.us.uu.net]
+Sent: 24 January 2004 03:05
+To: L.Malinov
+Cc: netfilter@lists.netfilter.org
+Subject: Re: IPTABLES + IPROUTE2
 
 
--- 
-_______________________________________________
-Get your free email from http://www.mail.com
+On Fri, Jan 23, 2004 at 01:44:38PM +0200, L.Malinov wrote:
+
+> Hi there,
+>
+> I have the following configuration: Local Net with Linux RedHat 9.0 Squid
+> proxy server (with one net card) and 2 gateways - router1 and router2. The
+> default gateway for everyone including the proxy is router1. I'd like, the
+> http request from the local net sent to the proxy to be forwarded to the
+> Internet via router2. I'm trying the following configuration:
+>
+> iptables -A OUTPUT -o eth0 -t mangle -p tcp --dport 80 -j MARK --set-mark
+2
+
+A suggestion: remove "-o eth0" from the above.
+
+> echo 202 www.out >> /etc/iproute2/rt_tables
+> ip rule add fwmark 2 table www.out
+> ip route add default via router2 dev eth0 table www.out
+>
+> It looks like the packets go through the right chain under iptables and
+get
+> marked, however after that they still don't get forwarded via router2 but
+> router1. What could be wrong in this config and is this possible to
+achieve
+> at all with the above configuration?
+>
+> Regards
+>
+> L.Malinov
+>
 
 
