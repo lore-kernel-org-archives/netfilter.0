@@ -1,13 +1,12 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: DNAT hiding routers behind it
-Date: Wed, 11 Aug 2004 15:29:12 -0500
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: MSN access with a webcam
+Date: Wed, 11 Aug 2004 16:37:07 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <411A8198.2030409@pbl.ca>
-References: <4113BEF9.5090706@parknet.dk> <200408062356.16206.Antony@Soft-Solutions.co.uk> <411443B8.8090202@parknet.dk> <200408070837.38949.Antony@Soft-Solutions.co.uk> <4114EB94.8050004@parknet.dk>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051273@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4114EB94.8050004@parknet.dk>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +16,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Simon Lodal <simonl@parknet.dk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Simon Lodal wrote:
-> I would like to set up a stealth sniffer between firewall and next-hop 
-> router, but I do not know how, wish I still had a hub.
+> I can use Microsoft's MSN(chat) but using a webcam wont work.
+>
+> Here's a part listings of my firewall MSN rules:
+>
+> echo "MSN Messenger..."
+> iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 1863 -s =
+$net_lan -j ACCEPT
+> iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 1863 -m =
+state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 443 -s =
+$net_lan -j ACCEPT
+> iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 443 -m =
+state --state ESTABLISHED,RELATED -d $net_lan -j ACCEPT
+>
+> Is a webcam using another TCP port?
 
-You said your router is actually an ethernet switch (that have some 
-routing capabilities)?  On most switches, you can assign one or more 
-ports to be monitoring ports.  They will receive copy of all traffic 
-going through the switch.  Check if your switch supports that. 
-Configure one port to be monitoring port, connect PC to it.  Do not set 
-up IP address or anything on that interface, just bring it up with 
-ifconfig.  Run tcpdump or such on that interface.  And you have your 
-stealth sniffer.
+as far as i know, it uses UPnP.  take a look at:  =
+http://sourceforge.net/projects/linux-igd/
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+i have no idea if IGD actually works or not...
+
+-j
 
