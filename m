@@ -1,13 +1,14 @@
-From: Feizhou <feizhou@linuxmail.org>
-Subject: Re: Large number of repeated rules with only differing -s ipaddrs/cidrs
-Date: Tue, 20 Apr 2004 22:36:39 +0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Rules for Blocking Proxies...
+Date: Tue, 20 Apr 2004 15:37:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40853577.5080803@linuxmail.org>
-References: <Pine.LNX.4.33.0404201608280.14290-100000@blackhole.kfki.hu>
+Message-ID: <200404201537.12472.Antony@Soft-Solutions.co.uk>
+References: <000b01c426f6$cc216f10$36b4fea9@SABNANIS> <200404201453.14678.Antony@Soft-Solutions.co.uk> <00ba01c426e3$a4d0de40$0c00a8c0@pepelui>
+Reply-To: "Netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0404201608280.14290-100000@blackhole.kfki.hu>
+In-Reply-To: <00ba01c426e3$a4d0de40$0c00a8c0@pepelui>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +18,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Jozsef Kadlecsik wrote:
-> On Mon, 19 Apr 2004, Feizhou wrote:
-> 
-> 
->>when will ipset be available in 2.6?
-> 
-> 
-> It needs more, exhaustive testing. ippool was tested more widely than
-> ipset.
+On Tuesday 20 April 2004 3:27 pm, Alexis wrote:
 
-Oh...those that mean both can actually be compiled in 2.6?
-> 
-> 
->>I presume ippool is going to become obsolete?
-> 
-> 
-> Originally ipset was planned to be released as a new version of ippool.
-> Unfortunately backward compatibility could not be preserved, so a new name
-> had to be found. It extends ippool, yes, but that does not mean ippool is
-> obsolete.
-> 
+> beside this.
+> You could remove privileges from the clients, even with an active directory
+> implementation (ajjjj) or i think i saw cybercafe software that block any
+> settings change on the client box.
 
-Lovely. Does ippool/ipset take ips only or will they also take cidrs?
+That is making some very big assumptions about what Operating System/s are 
+running on the clients....
 
-BTW...mail.so-net.com.hk is an ISP smarthost...could you block 
-so-net.com.hk not coming from 203.99.142.22 instead of a domain rule 
-block on rdns and sender addy?
+Regards,
 
-And maybe all emails from 203.99.142.22 if sender addy not in 
-so-net.com.hk...
+Antony.
+
+-- 
+The truth is rarely pure, and never simple.
+
+ - Oscar Wilde
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
