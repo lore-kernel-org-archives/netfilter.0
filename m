@@ -1,13 +1,12 @@
-From: "Josh Berry" <josh.berry@linknet-solutions.com>
-Subject: Re: Is Linux IPTABLES firewall comparable with license Firewall
-Date: Sat, 18 Oct 2003 16:40:02 -0500 (CDT)
+From: "Venkatesh. K" <venkatesh@cbayscribe.com>
+Subject: Re: transparent squid with iptables masq
+Date: Sun, 19 Oct 2003 07:11:29 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1263.192.168.111.123.1066513202.squirrel@mail.linknet-solutions.com>
-References: <20031018091807.26000.qmail@web20711.mail.yahoo.com>
+Message-ID: <015201c395e2$2495f220$2800a8c0@karu>
+References: <20031018051051.49925.qmail@web14309.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031018091807.26000.qmail@web20711.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +17,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: ads nat <adsnat@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+Cc: Subramanian Thenralmani <sthenral@yahoo.com>
 
-I don't know if anyone has read the latest Information Security magazine,
-but they do a comparison between IPTables and Checkpoint.  To sum up the
-article, IPTables has the same functionality and can potentially perform
-better if properly setup, however Checkpoint is (obviously) much easier to
-manage.  So if you have the technical knowledge to maintain the firewall,
-I would go with IPTables.  With IPTables you can also take advantage of
-many other add-on's that would cost thousands of dollars to implement
-otherwise such as QoS control with tc, full-featured routing with iproute2
-and IPS functionality with Snort-Inline.
+----- Original Message ----- 
+From: "Subramanian Thenralmani" <sthenral@yahoo.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Saturday, October 18, 2003 10:40 AM
+Subject: transparent squid with iptables masq
 
 
 > Hi,
-> I don't know whether this is right list for my
-> question.
 >
-> I am facing basic problem while convincing to users. I
-> have implemented IPTABLES firewall on my Linux 8.0
-> server. I am frequently asked by users which
-> firewall/security measures are taken for my network.
-> My competitors use Checkpoint Firewall.
-> Can somebody guide me how to convince my users that
-> Linux IPTABLES Firewall is technically at par with
-> commercial Firewall such as checkpoint.
+> I have configured transparent squid on my Linux
+> firewall and masqueraded only ftp ports (20 and 21).
+> My problem is i wanted to block yahoo messenger
+> through squid but after squid rejects yahoo messanger
+> is masquerading with ftp ports and going out and
+> without masquerading anything yahoo messanger is not
+> working. How can I block yahoo messanger with the
+> above situation.
+
+Consider using ftp proxy like frox (http://frox.sourceforge.net).
+Frox allows you to transparently proxy/cache ftp and it can even use squid
+for anonymous ftp requests. This will allow you transparently proxy/cache
+ftp. Once you have a proxy for ftp, you can simply remove the masquerading.
+
+Unfortunately, the above solutions works for you only for ftp. Consider
+using L7 classifier for application level firewalling.
+
+Venkatesh K
+KAEVEE Consulting Services
+Banglaore
+
 >
-> Also if same security policies are adopted for
-> IPTABLES and checkpoint, Is IPTABLES technically at
-> par with commercial FIREWALLs?
 >
-> Thanks
+> Thanx & Regards
+> Mani
 >
->
->
+> =====
+> Subramanian ThenralMani
+> Manager - Technical
+> Yukthi Systems Pvt. Ltd.
+> #178, 5th Main, J.P.Nagar 3rd Phase,
+> Bangalore-560 074
+> Phone #:6582923
+> Reach me at:9845211913
 >
 > __________________________________
 > Do you Yahoo!?
@@ -60,12 +70,5 @@ and IPS functionality with Snort-Inline.
 > http://shopping.yahoo.com
 >
 >
-
-
-Thanks,
-Josh Berry, CTO
-LinkNet-Solutions
-469-831-8543
-josh.berry@linknet-solutions.com
 
 
