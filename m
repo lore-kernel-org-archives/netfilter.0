@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: Strange Proc Entries
-Date: Wed, 25 Jun 2003 11:03:53 -0700
+From: "David Busby" <busby@pnts.com>
+Subject: Re: MSN and Yahoo Block through IPTABLES
+Date: Wed, 25 Jun 2003 11:49:49 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122DE3@alderaan.smgtec.com>
+Message-ID: <004901c33b4a$963ee9b0$1100000a@busbydev>
+References: <010a01c33b03$d78da1f0$5505a8c0@asimejaz>
+Reply-To: "David Busby" <busby@pnts.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,19 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Asim Ejaz Butt <asim.butt@streaming-networks.com>, netfilter@lists.netfilter.org
 
-I have a firewall acting as an internet choke point, and I am seeing
-strange readings while trying to track bandwidth usage.
+Can you set policy to DROP then only allow what you need?
 
-I am using iptables extensively, and it seems that whenever iptables
-rules have been applied to an interface, the 'transmitted bytes' field
-does not increment in /proc/net/dev; the 'transmitted packets' field
-does increment though.
+/B
 
-I am using a Redhat 9 base of 2.4.20 and p-o-m on top of it. I have 3
-4-port D-Link cards with the "sundance" driver installed.
 
-Any help would be appreciated, as my lame bandwidth graph is pretty
-hurting with just half the info!
+----- Original Message ----- 
+From: "Asim Ejaz Butt" <asim.butt@streaming-networks.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, June 25, 2003 03:23
+Subject: MSN and Yahoo Block through IPTABLES
+
+
+> Hello Gurus,
+>
+> I am trying to block MSN and Yahoo Instant Messengers with my LAN using
+> IPTABLES. Following commands are used to block them but unsuccessful.
+>
+>  /sbin/iptables -A FORWARD -p tcp -s 192.168.5.85 --dport 1863 -j REJECT
+>  /sbin/iptables -A FORWARD -p tcp -s 192.168.5.85 -d 64.4.0.0/18 -j REJECT
+>
+>  /sbin/iptables -A FORWARD -d cs.yahoo.com -j REJECT
+>  /sbin/iptables -A FORWARD -d scsa.yahoo.com -j REJECT
+>
+> Anyone help in blocking them through IPTABLES.
+>
+> Asim Ejaz Butt
+> asim.butt@streaming-networks.com
+>
+
 
