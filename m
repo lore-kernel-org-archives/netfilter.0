@@ -1,12 +1,15 @@
 From: "Rio Martin" <rio@martin.mu>
 Subject: Re: Blocking Streaming Media (Was: Re: (no subject)..)
-Date: Tue, 1 Jun 2004 22:59:51 +0700 (WIT)
+Date: Tue, 1 Jun 2004 22:59:02 +0700 (WIT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4077.202.154.30.27.1086105591.squirrel@webmail.itenas.ac.id>
+Message-ID: <3798.202.154.30.27.1086105542.squirrel@webmail.itenas.ac.id>
+References: <200406010943.02317.rio@martin.mu><20040601053750.50670.qmail@web61008.mail.yahoo.com>
+    <20040601085000.3dcaae24@mgalepc.utilitran.com>
 Reply-To: rio@martin.mu
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040601085000.3dcaae24@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
