@@ -1,10 +1,10 @@
-From: "Kevin L. Collins" <kcollins@qx.net>
-Subject: Trying to get a Subnet NATted
-Date: Sun, 8 Dec 2002 13:06:57 -0500
+From: Bryan Hundven <bryanhundven@yahoo.com>
+Subject: [OT]netfilter documents font...
+Date: Tue, 10 Dec 2002 05:12:59 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000d01c29ee4$9bbecca0$6401a8c0@athlon>
+Message-ID: <20021210131259.85166.qmail@web20810.mail.yahoo.com>
+Reply-To: bhundven@users.sourceforge.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,19 +16,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-I've got a strange situation where I receive data from my WAN links
-across the same Interface as my External Interface.
+I was trying to convert the a4-ps documents to pdf, and I was wondering
+what font you guys used.
 
-Let me try to explain it with ACSII art....
-+--------------+
-|     WAN      |
-|10.200.9.x/24 |
-|10.200.10.x/24|
-+------+-------+
-       |
-       |
+thanks,
 
+bryan
+bhundven at users sourceforge net
 
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
 
