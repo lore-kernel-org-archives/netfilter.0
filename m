@@ -1,8 +1,11 @@
-From: "Stijn Derudder" <nopel@gmx.net>
-Subject: Remote Desktop between two NATted computers
-Date: 4 Oct 2002 09:57:56 -0000
+From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
+Subject: FW: Yahoo Messenger
+Date: Mon, 7 Oct 2002 09:19:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021004095756.10588.qmail@wunjo.lan>
+Message-ID: <FD8F124A387AD6119F7900A0D218B3210198DC@hslex01.hsl-brabantzuid.nl>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C26DD1.E37519D0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -13,61 +16,111 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "'harvey@hnu.edu.ph'" <harvey@hnu.edu.ph>
+Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-I've searched through the archives, but don't think this question has
-been asked before.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-I'm trying to connect from work to my home computer through Windows XP
-Remote Desktop. Both my work computer and home computer are natted. From
-my work, I can only send outgoing packets through tcp ports 80 and 443,
-so I'm using both port-redirecting and port-forwarding on my home
-firewall like so:
+------_=_NextPart_001_01C26DD1.E37519D0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-iptables -t nat -A PREROUTING -i ppp0 -p tcp --sport 1024: --dport 443 -j DNAT --to 192.168.0.101:3389 
+Also take a look here :
 
-So my setup looks like this:
+http://www.tek-tips.com/gviewthread.cfm/lev2/3/lev3/22/pid/43/qid/12602
 
- ----------------     -----------------
- | work comp    |     | work firewall |
- | 10.160.5.22  |-----| (public ip)   |
- | (private ip) |     |               |
- ----------------     -----------------
-                              |
-                           internet
-                              |                  -----------------
-                      ----------------------     | home comp     |
-                      | netfilter firewall |-----| 192.168.0.101 |
-                      | (public ip)        |     | (private ip)  |
-                      ----------------------     -----------------
 
-I drop (and log) by default, and accept related and established
-connections. This setup works fine. When I use Remote Desktop to
-connect to my firewall at port 443, I can take over my home desktop.
+-----Original Message-----
+From: Rob Sterenborg 
+Sent: maandag 7 oktober 2002 09:09
+To: 'harvey@hnu.edu.ph'
+Cc: 'netfilter@lists.netfilter.org'
+Subject: RE: Yahoo Messenger
 
-But whenever I do so, my firewall logs fill up. Apparently my home
-comp is sending back UDP packets TO THE PRIVATE IP of my work computer,
-which get logged and dropped at my firewall. This doesn't seem to affect
-the connection, though.
 
-An example log entry:
-Oct  4 11:00:54 uruz kernel: IN=eth0 OUT=ppp0 SRC=192.168.0.101 DST=10.160.5.22 LEN=1052 TOS=0x00 PREC=0x00 TTL=127 ID=60438 PROTO=UDP SPT=3017 DPT=1237 LEN=1032
+> Ive already tried this about a month ago and but theres an 
+> error saying that "host/network 'cs1.yahoo.com' not found" 
+> ... this is also treu with cs2 and cs3 ...hmmm am i the only 
+> one getting this kind of error? Pls tell me
 
-The source port is always udp/3017, the destination port varies.
+Right. I should have checked that.
 
-Apparently Remote Desktop is sending it's original private IP along
-in the data stream, but I don't understand why everything seems to
-work fine.
+Aren't there any servers mentioned in the messenger setup (I don't use it
+myself) ?
 
-Does anyone have any idea how I could handle these packets. I don't like
-to code in specific exceptions in my ruleset, so simply 'not logging'
-packets that go to 10.160.5.22 or that have a source port of udp/3017
-isn't acceptable.
+I just checked on cs.yahoo.com and that one exists but everytime I ping that
+server I'm redirected to cs41.msg.sc5.yahoo.com (216.136.233.128).
+I don't know if that's the same one for you ?
 
-Thank you for your time.
-Stijn Derudder
-nopel@gmx.net
+
+Rob
+
+------_=_NextPart_001_01C26DD1.E37519D0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>FW: Yahoo Messenger</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>Also take a look here :</FONT>
+</P>
+
+<P><FONT SIZE=3D2><A =
+HREF=3D"http://www.tek-tips.com/gviewthread.cfm/lev2/3/lev3/22/pid/43/qi=
+d/12602" =
+TARGET=3D"_blank">http://www.tek-tips.com/gviewthread.cfm/lev2/3/lev3/22=
+/pid/43/qid/12602</A></FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2>-----Original Message-----</FONT>
+<BR><FONT SIZE=3D2>From: Rob Sterenborg </FONT>
+<BR><FONT SIZE=3D2>Sent: maandag 7 oktober 2002 09:09</FONT>
+<BR><FONT SIZE=3D2>To: 'harvey@hnu.edu.ph'</FONT>
+<BR><FONT SIZE=3D2>Cc: 'netfilter@lists.netfilter.org'</FONT>
+<BR><FONT SIZE=3D2>Subject: RE: Yahoo Messenger</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2>&gt; Ive already tried this about a month ago and but =
+theres an </FONT>
+<BR><FONT SIZE=3D2>&gt; error saying that &quot;host/network =
+'cs1.yahoo.com' not found&quot; </FONT>
+<BR><FONT SIZE=3D2>&gt; ... this is also treu with cs2 and cs3 ...hmmm =
+am i the only </FONT>
+<BR><FONT SIZE=3D2>&gt; one getting this kind of error? Pls tell =
+me</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Right. I should have checked that.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Aren't there any servers mentioned in the messenger =
+setup (I don't use it myself) ?</FONT>
+</P>
+
+<P><FONT SIZE=3D2>I just checked on cs.yahoo.com and that one exists =
+but everytime I ping that server I'm redirected to =
+cs41.msg.sc5.yahoo.com (216.136.233.128).</FONT></P>
+
+<P><FONT SIZE=3D2>I don't know if that's the same one for you ?</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2>Rob</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C26DD1.E37519D0--
 
