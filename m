@@ -1,14 +1,14 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: DCC ...
-Date: 10 Jun 2002 10:48:08 +0200
+From: Tony Earnshaw <tonni@billy.demon.nl>
+Subject: Re: Help!! Is this true??
+Date: 10 Jun 2002 11:02:19 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023698888.19824.75.camel@tux>
-References: <3D0373FE.9060205@twcny.rr.com> <1023637180.19838.70.camel@tux>
-	 <3D0402AA.4020208@twcny.rr.com>
+Message-ID: <1023699740.9979.19.camel@billy.demon.nl>
+References: <3D043D33.41AED997@isp-systems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-SfGHvvHMYCweA7CmAzwA"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3D0402AA.4020208@twcny.rr.com>
+In-Reply-To: <3D043D33.41AED997@isp-systems.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,36 +18,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Fred Richards <Toril@twcny.rr.com>
-Cc: Netfilter <netfilter@lists.samba.org>
-
-On Mon, 2002-06-10 at 03:36, Fred Richards wrote:
-> 	I haven't tried the patch yet, but I have tried upgrading my kernel to 
-> the latest 2.4 kernel (2.4.19-pre10).  Still doesn't appear to work, 
-> although I have tried putting in my actual ip address (172.16.0.5).  I 
-> also cannot find the irc-natip.patch anywhere... doesn't seem to be in 
-> the iptables 1.2.6a source tree.  Another curiosity ... I see the 
-> default port for irc (and how netfilter sees related connections) is 
-> port 6667... having my wife do most of the testing from her machine ... 
-> most of the time she's connecting to port    6668 ... hmmm ...
-
-I attached the patch and you actually quoted it in your reply.
-
-the irc extension to the conntracking only listens to port 6667 by
-default and can only be changed by either changeing the source or having
-it as a module and using the ports= parameter.
-
-If you did set the ip to 172.16.0.5 _and_ connected to port 6667 and it
-still didn't work then my next question would be if you have the
-neccessary rules to allow RELATED connections from outside into your
-network? ie. iptables -A FORWARD -i eth0 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
+To: OTR Comm <otrcomm@isp-systems.com>
+Cc: iptables <netfilter@lists.samba.org>
 
 
--- 
-/Martin
+--=-SfGHvvHMYCweA7CmAzwA
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Never argue with an idiot. They drag you down to their level, then beat
-you with experience.
+man, 2002-06-10 kl. 07:46 skrev OTR Comm:
+
+> Is it true that iptables does not support virtual interfaces for virtual
+> domains?
+
+> That is, I have many virtual domains setup on virtual interfaces to eth0
+> (e.g. eth0:1 xyz.xyz.xyz.xyz) currently running on a system with
+> ipchains.  I am thinking about converting to a new kernel with iptables,
+> but I can not get iptables to work with the virtual interfaces on eth0.=20
+> I setup a test server to verify that iptables would work, but I can not
+> access any of my test domains (i.e., web sites through Apache) when I
+> have the IP for the domain tied to a virtual interface.  If I shutdown
+> my iptables firewall, I can access the web sites fine.
+
+> What's up here, anybody got any ideas and solutions?
+
+Instead of using aliases, if you have iproute2 installed and can use the
+'ip' utility, give your eth0 (and perhaps other devices) actual
+addresses.
+
+The ip command is poorly - or rather too comprehensively - documented
+and 'ip help' needs some fathoming, but here's a useful reference:
+
+http://leaf.sourceforge.net/devel/ericw/ip-syntax.php
+
+Best,
+
+Tony
+
+--=20
+
+Tony Earnshaw
+
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
+
+
+
+--=-SfGHvvHMYCweA7CmAzwA
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9BGsb99dgUTvnuYERAr8hAJ9bSJlJ3b1b2DFLKCt8URLphl/ctACfQQ6b
+EAUtAeNK93Jv/6Hmrxz3P40=
+=hGwl
+-----END PGP SIGNATURE-----
+
+--=-SfGHvvHMYCweA7CmAzwA--
+
 
