@@ -1,11 +1,13 @@
-From: Budai Laszlo <lbudai@ms.sapientia.ro>
-Subject: ip_conntrack_ftp problem
-Date: Fri, 28 Mar 2003 09:40:40 +0200
+From: "Michael K" <micke@klintan.se>
+Subject: RE: How filter IP address if it *changes* often?? (think dhcp)
+Date: Fri, 28 Mar 2003 09:15:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E83FC78.7080801@ms.sapientia.ro>
+Message-ID: <000401c2f502$2fe6a6a0$0200a8c0@klintan.local>
+References: <20030327222617.A19911@spawar.navy.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030327222617.A19911@spawar.navy.mil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,83 +17,147 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I'm using this in my script. The script runs _after_ the network script
+
+EXTERNAL_IP=`ifconfig $EXTERNAL_INTERFACE | awk '/inet/ { print $2 }' |
+awk -F "
+But if your ip changes even when your computer is up, then this wont
+work. Perhaps you could use the MAC-address match instead.
+
+Here is the full config.
+
+INTERNAL_INTERFACE='eth0'
+EXTERNAL_INTERFACE='eth1'
+
+INTERNAL_IP=`ifconfig $INTERNAL_INTERFACE | awk '/inet/ { print $2 }' |
+awk -F "
+INTERNAL_BROADCAST=`ifconfig $INTERNAL_INTERFACE | awk '/inet/ { print
+$3 }' | a
+INTERNAL_MASK=`ifconfig $INTERNAL_INTERFACE | awk '/inet/ { print $4 }'
+| awk -F
+INTERNAL_NETWORKID=`ipcalc -n $INTERNAL_IP $INTERNAL_MASK|awk -F "="
+'{print $2}
+INTERNAL_PREFIX=`ipcalc -p $INTERNAL_IP $INTERNAL_MASK |awk -F "="
+'{print $2}'`
+INTERNAL_NETWORK=$INTERNAL_IP/$INTERNAL_PREFIX
+
+EXTERNAL_IP=`ifconfig $EXTERNAL_INTERFACE | awk '/inet/ { print $2 }' |
+awk -F "
+EXTERNAL_BROADCAST=`ifconfig $EXTERNAL_INTERFACE | awk '/inet/ { print
+$3 }' | a
+EXTERNAL_MASK=`ifconfig $EXTERNAL_INTERFACE | awk '/inet/ { print $4 }'
+| awk -F
+EXTERNAL_NETWORKID=`ipcalc -n $EXTERNAL_IP $EXTERNAL_MASK|awk -F "="
+'{print $2}
+EXTERNAL_PREFIX=`ipcalc -p $EXTERNAL_IP $EXTERNAL_MASK |awk -F "="
+'{print $2}'`
+EXTERNAL_NETWORK=$EXTERNAL_IP/$EXTERNAL_PREFIX
+EXTERNAL_DNS=`grep nameserver /etc/resolv.conf|tail -n1|awk '{print
+$2}'`
+
+echo "    I N T E R N A L  C O N F I G"
+echo "Internal Interface:   $INTERNAL_INTERFACE"
+echo "Internal IP-address:  $INTERNAL_IP"
+echo "Internal Networkmask: $INTERNAL_MASK"
+echo "Internal Broadcast:   $INTERNAL_BROADCAST"
+echo "Internal NetworkID:   $INTERNAL_NETWORKID"
+echo "Internal Network:     $INTERNAL_NETWORK"
+
+echo -e "\n"
+echo "    E X T E R N A L  C O N F I G"
+echo "External Interface:   $EXTERNAL_INTERFACE"
+echo "External IP-address:  $EXTERNAL_IP"
+echo "External Networkmask: $EXTERNAL_MASK"
+echo "External Broadcast:   $EXTERNAL_BROADCAST"
+echo "External NetworkID:   $EXTERNAL_NETWORKID"
+echo "External Network:     $EXTERNAL_NETWORK"
+echo "External NameServer:  $EXTERNAL_DNS"
+
+/Klintan
 
 
-we use Redhat Linux 8 to connect our lan to the internet. Internally we 
-are using private addresses which are SNAT-ed (MASQUERADE) by the linux box.
-
-We set up a firewall which in the forward chain looks like:
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere           state RELATED
-ACCEPT     tcp  --  192.168.101.25       anywhere           tcp dpt:telnet
-ACCEPT     tcp  --  192.168.101.24       anywhere           tcp dpt:telnet
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:ldap
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:imap
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:rtsp
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:cvspserver
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:cvspserver
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:5190
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:squid
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:https
-ACCEPT     udp  --  192.168.101.0/24     anywhere           udp dpt:domain
-ACCEPT     udp  --  192.168.101.0/24     anywhere           udp dpt:7070
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:7070
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:https
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:5050
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:pop3
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:http
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:domain
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:smtp
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:ssh
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:ftp
-ACCEPT     tcp  --  192.168.101.0/24     anywhere           tcp dpt:ftp-data
-DROP       tcp  --  192.168.101.0/24     anywhere
-
-
-so we try to limit the access just to a few accepted services. We are 
-loading the ip_conntrack_ftp and ip_nat_ftp modules:
-
-# lsmod
-Module                  Size  Used by    Not tainted
-ipt_state               1080   1  (autoclean)
-cls_u32                 6332   2  (autoclean)
-sch_cbq                14912   2  (autoclean)
-ip_nat_ftp              4240   0  (unused)
-ip_conntrack_ftp        5088   0  (unused)
-eepro100               22264   1
-8139too                17736   1
-mii                     2156   0  [8139too]
-iptable_mangle          2776   1  (autoclean)
-ipt_MASQUERADE          2200   0  (autoclean)
-ipt_REDIRECT            1368   3  (autoclean)
-iptable_nat            19960   2  (autoclean) [ip_nat_ftp ipt_MASQUERADE ipt_REDIRECT]
-ip_conntrack           21244   3  (autoclean) [ipt_state ip_nat_ftp ip_conntrack_ftp ipt_MASQUERADE ipt_REDIRECT iptable_nat]
-iptable_filter          2412   1  (autoclean)
-ip_tables              15224   8  [ipt_state iptable_mangle ipt_MASQUERADE ipt_REDIRECT iptable_nat iptable_filter]
-mousedev                5524   0  (unused)
-keybdev                 2976   0  (unused)
-hid                    22244   0  (unused)
-input                   5920   0  [mousedev keybdev hid]
-usb-uhci               26188   0  (unused)
-usbcore                77024   1  [hid usb-uhci]
-ext3                   70336   3
-jbd                    52212   3  [ext3]
-sym53c8xx              68240   4
-sd_mod                 13552   8
-scsi_mod              107176   2  [sym53c8xx sd_mod]
-
-
-but ftp trough the firewall still does not work. :(
-what is wrong?
-
-Thanks,
-Laszlo
-
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org 
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
+> seberino@spawar.navy.mil
+> Sent: Friday, March 28, 2003 7:26 AM
+> To: Steve Mickeler
+> Cc: netfilter@lists.netfilter.org
+> Subject: Re: How filter IP address if it *changes* often?? 
+> (think dhcp)
+> 
+> 
+> Steve
+> 
+> Thanks for the email.  Let me rerephrase my question.
+> Perhaps I wasn't clear....
+> 
+> How can you have a rule on your INPUT chain that
+> only allows your local box's IP address if "local box IP 
+> address" can change without notice due to your DSL ISP's decision?
+> 
+> Chris
+> 
+> 
+> On Thu, Mar 27, 2003 at 11:16:55PM -0500, Steve Mickeler wrote:
+> > 
+> > Thats what the INPUT and OUTPUT chains are for.
+> > 
+> > They are for packets destined to and orignated from the local box 
+> > running iptables.
+> > 
+> > 
+> > 
+> > 
+> > On Thu, 27 Mar 2003 seberino@spawar.navy.mil wrote:
+> > 
+> > > My iptables script filters incoming packets.
+> > >
+> > > One filter is whether the destination address is
+> > > MY machine.
+> > >
+> > > How do this if IP address changes uncontrollably
+> > > like with DHCP??
+> > >
+> > > Thanks,
+> > >
+> > > Chris
+> > >
+> > > --
+> > > _______________________________________
+> > >
+> > > Dr. Christian Seberino
+> > > SPAWAR Systems Center San Diego
+> > > Code 2872
+> > > 49258 Mills Street, Room 158
+> > > San Diego, CA 92152-5385
+> > > U.S.A.
+> > >
+> > > Phone: (619) 553-9973
+> > > Fax:   (619) 553-6521
+> > > Email: seberino@spawar.navy.mil 
+> > > _______________________________________
+> > >
+> 
+> -- 
+> _______________________________________
+> 
+> Dr. Christian Seberino
+> SPAWAR Systems Center San Diego
+> Code 2872
+> 49258 Mills Street, Room 158
+> San Diego, CA 92152-5385
+> U.S.A.
+> 
+> Phone: (619) 553-9973
+> Fax:   (619) 553-6521
+> Email: seberino@spawar.navy.mil 
+> _______________________________________
+> 
+> 
 
 
 
