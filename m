@@ -1,12 +1,13 @@
-From: Doug Monroe <doug@planetconnect.com>
+From: Patrick Schaaf <bof@bof.de>
 Subject: Re: Dynamicly Updating Rules
-Date: Thu, 27 Jun 2002 14:26:31 -0400
+Date: Thu, 27 Jun 2002 20:35:35 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D1B58D7.EABEFCB2@planetconnect.com>
+Message-ID: <20020627203535.C2890@oknodo.bof.de>
 References: <200206271331.09893.lee@ricis.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <200206271331.09893.lee@ricis.com>; from lee@ricis.com on Thu, Jun 27, 2002 at 01:31:09PM -0500
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,21 +18,27 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: lee@ricis.com
+Content-Transfer-Encoding: 7bit
+To: Lee Leahu <lee@ricis.com>
 Cc: netfilter@lists.samba.org
 
-Lee Leahu wrote:
-> 
-> Is there a way to dynamically add and remove rules to an iptables live configuration?
-> 
-> For example:
-> 
-> I have a server and a workstion.  the workstation is locked down tightly.  I would like for
-> when i ssh to a remote server, that iptables automatically opens the ident port on the workstation
-> to that remote server, and after a connection is made, to automatically close it back up again.
-> 
+> I would like for when i ssh to a remote server, that iptables automatically
+> opens the ident port on the workstation to that remote server, and after a
+> connection is made, to automatically close it back up again.
 > Is this possible???
 
-I suppose you could write a "wrapper" around the workstation ssh client that
-does -I (insert), -A (append), -D (delete) as needed.
+That is exactly what the "conntracking and NAT helpers" are doing for
+protocols like FTP, where they permit a data connection when they see
+a PORT command within the control connection.
+
+You have to program this yourself, as an in-kernel module. You can take
+existing helpers for reference. If you want to go that way, and you have
+specific questions, best subscribe to the netfilter-devel mailing list.
+
+best regards
+  Patrick
+
+(btw, I reformatted your lines to be under 80 characters long. Please do that
+yourself in the future)
+
 
