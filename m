@@ -1,13 +1,13 @@
-From: Krishna <Krishna_shekhar@vsnl.net>
-Subject: Re: How to block Yahoo Messenger through IP Tables
-Date: 05 Oct 2002 05:00:31 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Yahoo Messenger
+Date: Sun, 6 Oct 2002 10:11:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1033808433.2973.4.camel@localhost.localdomain>
-References: <20021005155955.65569.qmail@web40205.mail.yahoo.com>
+Message-ID: <20021006091131.LDNX459.mta02-svc.ntlworld.com@there>
+References: <20021006085222.69643.qmail@web40011.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021005155955.65569.qmail@web40205.mail.yahoo.com>
+In-Reply-To: <20021006085222.69643.qmail@web40011.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +18,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
+On Sunday 06 October 2002 9:52 am, Hanz F. wrote:
 
-    But why do you want to do that? If you want to block a particular
-port then either disable it in inetd or xinetd. Or make rules 
-for that destination port to DROP packets.
+> Hi,
+> blocking yahoo messenger on iptables is not enough,
+> becoze users will still be able to connect through a
+> proxy, u have to block it on the proxy as well.
+>
+> Concerning my email of 10/01/02 it was not very
+> accurate, but unfortunately nobody warned me, I had to
+> discover the error by myself: there's a missing line ,
+> when I added it, yahoo messenger and ICQ worked (as
+> well as IRC after loading related modules)
+> this line is:
+> iptables -A FORWARD -i eth0 -o eth1 -m state --state
+> ESTABLISHED, RELATED -j ACCEPT
+>
+> If u don't insert this line yahoo messenger will not
+> work but also most applications.
 
+I really don't see what this rule has to do with Yahoo Messenger specifically.
 
-regards
-Krishna
+It simply says "allow packets through this firewall from eth0 to eth1 which 
+are part of an existing connection, or related to one".
 
-Krishna Shekhar
-Network Administrator
-Wiplash Wireless
+It is completely non-specific about any protocol (from OSI layer 3 up to 
+layer 7) and cannot possibly be used to block or allow access to something 
+specific such as Yahoo Messenger without affecting virtually everything else 
+going through the firewall as well.
 
-On Sat, 2002-10-05 at 11:59, Alok Shukla wrote:
-> Hi ,
-> 
-> Sorry for asking this newbie question first.
-> 
-> I am running a network with a Linux Server as a
-> gateway. I am using IPtables as to masquerade internal
-> IPs for Internet usage. I want to block the uses of my
-> intranet for using yahoo messenger. I needed help for
-> this. In general i wanted to know how to block a
-> particular port.
-> 
-> Thanks in Advance
-> 
-> Alok Shukla
-> 
-> __________________________________________________
-> Do you Yahoo!?
-> Faith Hill - Exclusive Performances, Videos & More
-> http://faith.yahoo.com
-> 
+Unfortunately I know nothing about quite how Yahoo Messenger does work, and 
+therefore I can't propose any sensible ways of blocking access to it, but 
+it's surely going to be something less generalised than this.
 
+Antony.
 
+-- 
 
+Normal people think "if it ain't broke, don't fix it".
+Engineers think "if it ain't broke, it doesn't have enough features yet".
 
