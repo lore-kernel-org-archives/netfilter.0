@@ -1,12 +1,13 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: IPtable Server hanging
-Date: Thu, 4 Dec 2003 18:30:26 +0530
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: IPtable Server hanging
+Date: Thu, 04 Dec 2003 09:01:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003401c3ba66$9645e760$c2bf09ca@huecal>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <1070546465.3552.261.camel@grendel>
+References: <003401c3ba66$9645e760$c2bf09ca@huecal>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <003401c3ba66$9645e760$c2bf09ca@huecal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all
+On Thu, 2003-12-04 at 08:00, hare ram wrote:
+>
+> after i connected the Links to eth1 and eth2
+> the CPU load goes to 100% both
+> 
+> when i drop the ICMP in INPUT and FORWARD
+> the CPU load go to 5%
+> 
+> what could the problem,
+
+Too much ICMP traffic? ;-)
+
+>  how can i resolve this problem
+> what is the problem is this ICMP flood or Syn attack or DoS attack
+
+Sounds like an ICMP flood, possibly due to Nachi or some variant.
+
+Start logging traffic. That will tell you which IP is originating the
+flood. If its internal systems, cleaning and patching is in order.
+
+HTH,
+C
 
 
-iam running iptable 1.2.8 on RH - pIII dual CPU 550mhz, 512MB RAM
-i have connected to internet eth0
-eth1 and eth2 connected to my clients
-
-after i connected the Links to eth1 and eth2
-the CPU load goes to 100% both
-
-when i drop the ICMP in INPUT and FORWARD
-the CPU load go to 5%
-
-what could the problem, how can i resolve this problem
-what is the problem is this ICMP flood or Syn attack or DoS attack
-
-can any one suggest good tools and script to over come this problem
-
-hare
 
