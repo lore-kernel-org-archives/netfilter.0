@@ -1,13 +1,12 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: efficient source address filtering and logging?
-Date: 28 Oct 2003 11:26:10 -0500
+From: Ralf Braga <ralf@4linux.com.br>
+Subject: PPTP
+Date: Tue, 28 Oct 2003 14:36:49 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067358369.1700.11.camel@valhalla>
-References: <Pine.LNX.4.44.0310280949080.22878-100000@localhost.localdomain>
+Message-ID: <3F9E9B21.9020801@4linux.com.br>
+Reply-To: ralf@4linux.com.br
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0310280949080.22878-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +16,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Tue, 2003-10-28 at 09:59, Robert P. J. Day wrote:
->   i'd like to find a short, efficient way to filter incoming packets with
-> bogus source addresses, but i don't see an elegant way of doing it.
+Hi Friends,
 
-Here is what I do in my script to specify my rules:
+A have a Gateway Gnu/Linux, Debian 3.0 rc1  with kernel 2.4.22, iptables=20
+1.2.8-8 and freeswan 2.02 in S=E3o Paulo and i have another Linux in=20
+Rio-de-Janeiro with Red-Hat 6.2, ipchains and the path-pptp. Clients in=20
+S=E3o Paulo have to conect in Rio-de-Janeiro throught PPTP and the problem =
 
-while read SPOOFED ; do
-iptables -A FORWARD -s $SPOOFED -j LOG --log-prefix " SPOOFING "
-iptables -A FORWARD -s $SPOOFED -j DROP
-done < spoofed_ips.txt
+its that the Server in Rio accepts only one connection.
 
-Now you just create a text file called 'spoofed_ips.txt' and add all the
-IPs you want to filter, one per line. Use CIDR format to specify
-subnets. So your file may look like this:
+In my Firewall here in S=E3o Paulo i'm put only one rule just to do the tes=
+ts:
 
-10.0.0.0/8
-192.168.0.0/16
-127.0.0.0/8
+iptables -t nat -A POSTROUTING -j MASQUERADE
 
-The only thing you can't specify this way is your internal address space
-because the above rules does not tie things to a specific interface
-(like external). The reason I do that is so I can catch internal
-spoofing as well. Just do a separate spoofing rule for your internal
-address space and life will be cool.
+The chains in my FIREWALL are ACCEPT
 
-This also works well for blocking spammers, known hostile IPs,
-countries, etc.
+Have I enable any rule or patch in kernel ?
 
-HTH,
-C
+I would like to know whats going on, cause the server in RIO just ACCEPT=20
+one connection. There is something that should i do? ... rules... path=20
+in my kernel.....
+
+
+
+Thank you very much
+
 
 
 
