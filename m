@@ -1,16 +1,39 @@
-From: Vicky Shrestha <mail@vickysh.wlink.com.np>
-Subject: kernel: Unable to handle kernel NULL pointer
-Date: Wed, 2 Oct 2002 18:08:24 +0545
+From: Awais Ahmad <awais@eurobell.net>
+Subject: RE: [isp-linux] kernel: Unable to handle kernel NULL pointer
+Date: Wed, 2 Oct 2002 13:26:21 +0100
 Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <200210021808.24014.mail@vickysh.wlink.com.np>
-Reply-To: mail@vickysh.wlink.com.np
+Message-ID: <0165EC14EDB3D511970D00805FEF801417AC70@maggie.noc.eurobell.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: isp-tech@isp-tech.com, isp-linux@isp-linux.com
+Content-Transfer-Encoding: 7bit
+To: "'isp-linux@isp-linux.com'" <isp-linux@isp-linux.com>
 Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
+
+BTW...what kernel is this?
+
+
+
+
+Cheers
+Awais Ahmad
+Systems Engineer
+Telewest Broadband Eurobell
+------------------------------------------
+Live Life in Broadband
+www.telewest.co.uk
+
+
+
+
+-----Original Message-----
+From: Vicky Shrestha [mailto:mail@vickysh.wlink.com.np]
+Sent: 02 October 2002 13:23
+To: isp-linux@isp-linux.com
+Cc: linux-kernel@vger.kernel.org; netfilter@lists.netfilter.org
+Subject: [isp-linux] kernel: Unable to handle kernel NULL pointer
+
 
 Dear all,
 
@@ -36,7 +59,8 @@ edx: c2023bdc
 Oct  1 12:58:02 proxy3 kernel: esi: 00000000   edi: c2023008   ebp: 00000000
 esp: d65cbf50
 Oct  1 12:58:02 proxy3 kernel: ds: 0018   es: 0018   ss: 0018
-Oct  1 12:58:02 proxy3 kernel: Process squid (pid: 14192, stackpage=d65cb000)
+Oct  1 12:58:02 proxy3 kernel: Process squid (pid: 14192,
+stackpage=d65cb000)
 Oct  1 12:58:02 proxy3 kernel: Stack: c02c477c 00000203 ffffffff 00000420
 c2023bd8 c2023000 c2023008 00000518
 Oct  1 12:58:02 proxy3 kernel:        c0146bf5 d65cbfa8 c3ca1e00 c3ca1e00
@@ -61,3 +85,9 @@ Vicky Shrestha
 System Administrator
 WorldLink Communications Pvt.Ltd
 Jawalakhel, Kathmandu, Nepal.
+
+
+_____________  The ISP-LINUX Discussion List  _____________
+To Join: mailto:join-isp-linux@isp-linux.com
+To Remove: mailto:remove-isp-linux@isp-linux.com
+Archives: http://isp-lists.isp-planet.com/isp-linux/archives/
