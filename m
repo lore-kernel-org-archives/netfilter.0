@@ -1,11 +1,11 @@
-From: a.ledvinka@promon.cz
-Subject: Re: Iptables Problems
-Date: Thu, 2 Dec 2004 09:30:19 +0100
-Message-ID: <OFA53C47CF.3AB952B6-ONC1256F5E.002C2238-C1256F5E.002EB88E@promon.cz>
-References: <008201c4d835$eff08480$0200a8c0@etpi>
+From: BusyBoy <busyboy@gmail.com>
+Subject: restriction for some hosts.
+Date: Thu, 2 Dec 2004 03:20:10 -0800
+Message-ID: <d594c764041202032049654f4b@mail.gmail.com>
+Reply-To: BusyBoy <busyboy@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <008201c4d835$eff08480$0200a8c0@etpi>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: testmail <testmail@peterpaul.com.ph>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-as i read through i noticed you miss one realy important thing.
-the chain traversal of incoming and outgoing packets.
-http://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO-6.html
-that will teach you where you should add your rules.
+Hello,
 
-don't use MASQUERADE but SNAT if your ip is static.
+I need some help in iptables  and I want to allow   some  hosts
+to ping to my box and rest of the network or internet blocked.
 
-try to start your forward chain with following rules:
-iptables -t filter -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS 
---clamp-mss-to-pmtu
-iptables -t filter -A FORWARD -p icmp -m state --state RELATED,ESTABLISHED 
--j ACCEPT
-### next rule drops icmp source quench which is not too god idea
-### comsider adding rule like 
-### iptables -t filter -A FORWARD -p icmp --icmp-type source-quench -j 
-ACCEPT
-### before next rule and also consider not to do it
-iptables -t filter -A FORWARD -m state --state INVALID -j LOGDROP
+like I have linux box 192.168.0.1 (Gateway) and 192.168.0.2 to
+192.168.0.100 are clients.
 
-and try to start your input chain with (same for output in case of drop 
-policy):
-iptables -t filter -A INPUT -p icmp -m state --state ESTABLISHED,RELATED 
--j ACCEPT
+I want only
 
-(don't forget to enable ip packets forwarding after you have set up your 
-firewall. add line like:
-net/ipv4/ip_forward = 1
-into /etc/sysctl.conf and run "sysctl -p" 
-)
+192.168.0.5
+192.168.0.10
+192.168.0.55
 
+to be allowed to ping my linux box 192.168.0.1 and internet hosts  but
+rest of the machines should be  blocked.( not being able  to ping and
+traceroute )
+
+any help in this reagrd will be highly appriciated.
+
+
+-- 
+Nasir Mahmood
+Systems + Network Admin.
+Asia Net.
 
