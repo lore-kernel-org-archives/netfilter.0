@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Dead loop on netdevice ipsec0, fix it urgently!
-Date: Fri, 9 Jul 2004 12:27:46 +0100
+From: "Wilfried BARNAVON RPi" <w.barnavon@cpro.fr>
+Subject: Hey ! A really bugged official release ?
+Date: Fri, 9 Jul 2004 10:20:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407091227.46746.Antony@Soft-Solutions.co.uk>
-References: <40EE7E15.70204@epost.de>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <003501c4658d$99d6c5c0$f301a8c0@groupecpro.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0032_01C4659E.5D21A260"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40EE7E15.70204@epost.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +16,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Friday 09 July 2004 12:14 pm, Nicole H=E4hnel wrote:
+This is a multi-part message in MIME format.
 
-> Hi,
->
-> I get this error on my firewall-vpn-server
->
-> Dead loop on netdevice ipsec0, fix it urgently!
+------=_NextPart_000_0032_01C4659E.5D21A260
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-What is your ruleset (specifically, any nat rules, and any rules applying=
- to=20
-interface ipsec0)?
+Hi !
 
-> Any ideas where this come from?
+I've downloaded iptables-1.2.11, kernel 2.6.7 and pom-ng-20040621
 
-http://www2.frell.ambush.de/archives/freeswan-users/4677.html
+kernel and pom-ng seem OK however, even without any patch, iptables =
+won't compile !
 
-Regards,
+I'm on Fedora Core 2.
 
-Antony.
+It says that there is no rule to build the target =
+"extensions/libipt_!!!.c" needed by "extensions/libipt_!!!.d". Stopped !
 
---=20
-Most people have more than the average number of legs.
+The return code of make is 2.
 
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+any idea ?
+
+
+
+
+Wilfried 
+------=_NextPart_000_0032_01C4659E.5D21A260
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3D"Lucida Console">Hi !</FONT></DIV>
+<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console">I've downloaded iptables-1.2.11, =
+kernel 2.6.7=20
+and pom-ng-20040621</FONT></DIV>
+<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console">kernel and pom-ng seem OK however, =
+even without=20
+any patch, iptables won't compile !</FONT></DIV>
+<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console">I'm on Fedora Core 2.</FONT></DIV>
+<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console">It says that there is no rule to =
+build the=20
+target "extensions/libipt_!!!.c" needed by "extensions/libipt_!!!.d". =
+Stopped=20
+!</FONT></DIV>
+<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console">The return code of make is =
+2.</FONT></DIV>
+<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console">any idea ?</FONT></DIV>
+<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console">Wilfried </FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0032_01C4659E.5D21A260--
 
 
