@@ -1,9 +1,11 @@
 From: "Ian! D. Allen" <idallen@idallen.ca>
-Subject: CONNMARK save-mark and restore-mark not working ?
-Date: Fri, 18 Feb 2005 03:40:44 -0500
-Message-ID: <20050218084044.GA31190@elm.home.idallen.ca>
+Subject: Re: CONNMARK, OUTPUT, sid-owner and marking closed connections
+Date: Fri, 18 Feb 2005 04:51:25 -0500
+Message-ID: <20050218095123.GB31190@elm.home.idallen.ca>
+References: <20050218034429.GA14099@elm.home.idallen.ca>
 Mime-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <20050218034429.GA14099@elm.home.idallen.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +20,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I think this pair (marking connections with "9"):
+Ian! D. Allen wrote:
+> How do I arrange that *all* the packets get marked, even the "FIN" ones?
 
-    iptables -t mangle -A OUTPUT -j MARK --set-mark 9
-    iptables -t mangle -A OUTPUT -j CONNMARK --set-mark 9
+I couldn't get CONNMARK working (save-mark and restore-mark don't
+appear to work for me); but, the kludge rule set below did get the final
+post-connection FIN packets marked and routed correctly:
 
-should be equivalent to this pair:
+# This rule and table sends marked packets out eth1 instead of eth0:
+#
+ip rule from all fwmark 5 lookup 2
 
-    iptables -t mangle -A OUTPUT -j MARK --set-mark 9
-    iptables -t mangle -A OUTPUT -j CONNMARK --save-mark
+# Mark anything that tries to go out eth0 owned by session ID $PID:
+#
+iptables -t mangle -A OUTPUT -o $IF0 -m owner --sid-owner $PID \
+        -j MARK --set-mark 5
 
-The first pair works - I get mark=9 entries in /proc/net/ip_conntrack .
-The second pair does not - I get no marks at all in ip_conntrack.
+# Find the real source address of eth1 and SNAT all marked packets to it:
+#
+inet1=$( ifconfig $IF1 | grep 'inet addr:' | tr ':' ' ' | awk '{print $3}' )
+iptables -t nat -A POSTROUTING -m mark --mark 5 \
+        -j SNAT --to-source $inet1
 
-I think this pair should set packet marks from the ip_conntrack marks:
+# All SNATd packets destined for eth0 must also be marked:
+#
+iptables -t mangle -A OUTPUT -o $IF0 -m conntrack --ctstate SNAT \
+        -j MARK --set-mark 5
 
-    iptables -t mangle -A OUTPUT -j CONNMARK --set-mark 9
-    iptables -t mangle -A OUTPUT -j CONNMARK --restore-mark
-
-It does not - the packets aren't marked:
-
-Chain OUTPUT (policy ACCEPT 2989 packets, 395K bytes)
- pkts bytes target     prot opt in     out     source               destination         
- 1695  178K CONNMARK   all  --  *      *       0.0.0.0/0            0.0.0.0/0           CONNMARK set 0x9 
- 1695  178K CONNMARK   all  --  *      *       0.0.0.0/0            0.0.0.0/0           CONNMARK restore 
-    0     0 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0           MARK match 0x9 LOG flags 1 level 7 prefix `IDAMARK ' 
- 1695  178K            all  --  *      *       0.0.0.0/0            0.0.0.0/0           MARK match 0x0
-
-What am I missing?
-
-Linux elm 2.6.10-1mdk #2 Sat Jan 29 13:10:11 EST
-2005 i686 AMD Athlon(tm) XP 3200+ unknown GNU/Linux
+That last conntrack entry is the kludge that sets the mark for anything
+that uses SNAT.  The SNAT is started by anything in the given $PID
+session ID.  When the connection closes, the session ID stops marking
+packets; but, the SNAT keeps going and keeps marking the FIN packets
+properly.  Ugly.
 
 -- 
 -IAN!  Ian! D. Allen   Ottawa, Ontario, Canada
