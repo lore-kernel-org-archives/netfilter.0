@@ -1,10 +1,10 @@
-From: "David C. Hart" <DCH@TQMcube.com>
-Subject: Newbie
-Date: Wed, 29 Oct 2003 14:19:55 -0500
+From: =?ISO-8859-15?Q?J=F6rg_Sch=FCtter?= <netfilter@schuetter.org>
+Subject: "-m state -state NEW" or "--tcp-flags ALL SYN" for tcp?
+Date: Wed, 29 Oct 2003 20:39:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067455194.4723.139.camel@main.tqmcube.com>
+Message-ID: <20031029203922.3d8f47cf.netfilter@schuetter.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-w4OL1cKFmQkVmrE7SrwZ"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,58 +15,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
+Hello
 
---=-w4OL1cKFmQkVmrE7SrwZ
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Is it better to use "-m state -state NEW" or to use "--tcp-flags ALL
+SYN" for tcp packets. There are also the lines
+iptables -A INPUT/FORWARD -m state --state INVALID -j DROP
+iptables -A INPUT/FORWARD/OUTPUT -m state --state ESTABLISHED,RELATED -j AC=
+CEPT
+in the firewall script.
 
-I'm a bit of a nitwit and could use some pointers from more experienced
-hands.
+A tcp packet without a SYN flag can never be in state NEW (according to
+my tests). Instead iptables discovers this packet as garbage and flags
+it with INVALID.
 
-We changed routers recently and with it the processes. The objectives
-remain the same:
-1. To protect the server (running Apache, Postfix and Vftp).
-2. To provide DShield reporting.
-3. To get reliable data so that, from time to time, we can contact ISPs
-when things get out of hand.
-
-The setup is simple and does not use the router's NAT.=20
-
-I am using only the NAT IPtable. HTTP, SMTP, FTP and Pop3 get port
-forwarded. Anything that doesn't get port forwarded is presumed to be
-intrusive and gets logged and dropped. So far so good.
-
-Questions:
-
-1. Does this approach make sense?=20
-
-2. I'm getting the LAN address in the logs rather than the intended
-destination IP. Is there some way to preserve the original data?
-
-3. Is anyone aware of a decent log analyzer that will also provide host
-resolution?
-
-4. I would rather use the FILTER table for the refused connections to
-reject rather than drop. I'm sure that it's simple but I just don't get
-it. This would depend upon the filter table rules following the NAT
-table rules. Where is this order established?
-
-Thanks.
-
---=-w4OL1cKFmQkVmrE7SrwZ
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQA/oBLaol4OE0cpGaIRAs7nAKCvuhbEv5nFcvmGFQLj34SQJHfUJACfT49G
-0hKSZJQYw0TGP7KxRzgHAjc=
-=gfTn
------END PGP SIGNATURE-----
-
---=-w4OL1cKFmQkVmrE7SrwZ--
+--=20
+J=F6rg Sch=FCtter           http://www.lug-untermain.de/
+joerg@schuetter.org     http://www.schuetter.org/joerg/
+ICQ: 298982789          http://mypenguin.bei.t-online.de/
 
 
