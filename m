@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: seeking heavy weaponry !!
-Date: Sun, 7 Jul 2002 21:43:09 +0100
+From: "Dennis Cardinale" <dennis@core-enterprises.com>
+Subject: hosts.deny
+Date: Sun, 7 Jul 2002 18:54:05 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020707204311.KLDF23840.mta03-svc.ntlworld.com@there>
-References: <002201c2260e$b9fd7b70$28d33cd0@nebuchadnezza>
+Message-ID: <EPEHIDPIPEBFNAHLCHPGAEMPCEAA.dennis@core-enterprises.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <002201c2260e$b9fd7b70$28d33cd0@nebuchadnezza>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,47 +16,13 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: iptables <netfilter@lists.samba.org>
+To: Netfilter Mailing List <netfilter@lists.samba.org>
 
-On Monday 08 July 2002 12:32 am, Tim wrote:
+When running a netfilter firewall, is there any reason to continue using the
+hosts.deny and hosts.allow files, or is this just superfluous?
 
-> Hey ppl,
->
-> echo "[--Setting Policies--]"
-> iptables -P INPUT DROP
-> iptables -P OUTPUT DROP
-> iptables -P FORWARD ACCEPT
+Thanks,
 
-Please set this one to DROP as well :-)
+Dennis
 
-> #
-> #
-> ## Allow inside traffic to get to the DMZ and back
-> iptables -A FORWARD -i $INTERNAL_NET -o $DMZ_NET -j ACCEPT
-> iptables -A FORWARD -i $DMZ_NET -o $INTERNAL_NET -j ACCEPT
-> iptables -A INPUT -i $INTERNAL_NET -s 192.168.1.0/24 -d 172.16.1.0/24
-> -p icmp -j ACCEPT
-> iptables -A OUTPUT -o $DMZ_NET -s 172.16.1.0/24 -d 192.168.1.0/24 -p icmp
-> -j ACCEPT
-> iptables -A INPUT -i $DMZ_NET -s 192.168.1.0/24 -d 172.16.1.0/24 -p icmp
-> -j ACCEPT
-> iptables -A OUTPUT -o $INTERNAL_NET -s 192.168.1.0/24 -d 172.16.1.0/24
-> -p icmp -j ACCEPT #
-
-You seem to have a big misunderstanding of how packets go through the chains 
-in iptables (hint: it's very different from ipchains...)
-
-The INPUT chain is *only* for packets addressed to the firewall itself.
-
-The FORWARD chain is *only* for packets going through the firewall from a 
-machine on one side to another machine on the other.
-
-The OUTPUT chain is *only* for packets originated on the firewall itself.
-
-No packet will ever go through both INPUT and FORWARD, or through both 
-FORWARD and OUTPUT.
-
- 
-
-Antony.
 
