@@ -1,13 +1,13 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Help about ipfw
-Date: Wed, 15 Sep 2004 12:19:05 -0500
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: FTP +SLL + PortForwarding
+Date: Wed, 15 Sep 2004 13:57:18 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <41487989.7000701@pbl.ca>
-References: <58812.192.168.0.100.1095265274.squirrel@192.168.0.100>
+Message-ID: <1095271038.3718.80.camel@wolfpack.ljm.dom>
+References: <20040915164437.83457.qmail@web20928.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <58812.192.168.0.100.1095265274.squirrel@192.168.0.100>
+In-Reply-To: <20040915164437.83457.qmail@web20928.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +17,69 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Nicolas Montauban wrote:
-> I want information about ipfw : link
-> Usually i use iptables, but i must use ipfw for this night!!!
+On Wed, 2004-09-15 at 12:44, yann Conan wrote:
+> Hi all,
 > 
-> Please don't say me "google"
+> I'm trying to configure a iptables firewall in a
+> structure in double bastion mode.
+> 
+> this is the configuration:
+> 	internet
+> 	   :
+> 	   :
+> 	   :
+> 	FW (RH/iptables)
+> 	   :
+> 	   :
+> 	   :
+> 	DMZ/w2k/FTPS server
+> 	   :
+> 	   :
+> 	   :
+> 	FW(w2k/Isa server)
+> 	   :
+> 	   :
+> 	   :
+> 	  LAN
+> 	  
+> the tranfer of the data from the FTP server must be
+> protected with SSL (no SSH)
+> 
+> for the FTP transfer I make a portForwarding with
+> ip_conntrack_ftp and it works.
+> 
+> but now I would like to know how I have to do to
+> PortForward ftp data with SSL.
+> There is a problem because iptables must find during
+> the FTP connect the random client port in active  FTP
+> or the random server port in passive FTP. And if it's
+> encrypted with SSL it's impossible for iptables to
+> find the right ports.
 
-IP Filter and Netfilter/iptables are two completely different and 
-unrelated things (apart that they are both firewall applications).
+correct.
 
-Type "ipfilter" into Google and click "I'm Feeling Lucky" button.  It 
-will take you directly to this page:
+> Then I would like to know if it is possible for
+> iptables to read SSL or if there is a possibility to
+> unencrypt in input, read the FTP connect with
+> ip_conntrack_ftp and re-encrypt in output.
 
-    http://coombs.anu.edu.au/~avalon/
+no.  connection tracking an SSL-encrypted FTP session is impossible for
+the exact reasons you describe.  i once came across an FTP over SSL
+client/server that used something called "Clear Control Channel" that
+after the user was authenticated, switched the control channel from SSL
+to clear text to allow firewalls to read the responses to PASV
+requests.  it was proprietary and closed, though.
 
-At the top of the page is the info on how to subscribe to IP Filter 
-mailing list.  So, you see, using Google is not that bad thing after all ;-)
+setup the FTP to respond with a fixed range of ports for passive mode
+requests and allow all those ports through to the FTP server--it's your
+only option.
+
+-j
 
 -- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Jason Opperisano <opie@817west.com>
+
 
