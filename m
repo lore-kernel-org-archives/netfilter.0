@@ -1,10 +1,13 @@
-From: ads nat <adsnat@yahoo.com>
-Subject: Problem of Setting dafault polocies to 'DROP'
-Date: Wed, 24 Dec 2003 03:03:24 -0800 (PST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Problem of Setting dafault polocies to 'DROP'
+Date: Wed, 24 Dec 2003 11:12:00 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031224110324.15253.qmail@web60404.mail.yahoo.com>
+Message-ID: <200312241112.00560.Antony@Soft-Solutions.co.uk>
+References: <20031224110324.15253.qmail@web60404.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031224110324.15253.qmail@web60404.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,47 +18,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
-I have created IPTABLES rules from command prompt.
-Save and Restore them with iptables-save and
-iptables-restore command.
-Hi,
-As advised in some of the tutorials, I tried to set
-IPTABLES rules first 'FLUSH' and then tried to set
-default policies of INPUT, OUTPUT and FORWARD to DROP
-as follows :
+On Wednesday 24 December 2003 11:03 am, ads nat wrote:
 
-###############
+> The moment I set "iptables -P INPUT DROP"
+> System hangs.
 
-iptables -F INPUT
-iptables -F OUTPUT
-iptables -F FORWARD
+Are you working on a local keyboard + screen, or via a remote ssh session?
 
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
+If you are on a network connection, then of course an empty ruleset + default 
+DROP policy will block your connection.
 
-################
+Antony.
 
-from command prompt.
+-- 
+Abandon hope, all ye who enter here.
+You'll feel much better about things once you do.
 
-The moment I set "iptables -P INPUT DROP"
-System hangs.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-Tutorial says, first set all default policies to DROP
-and then setup rules to ACCEPT.
-
-Please tell me How it can be achieved.
-Thanks for support.
-
-
-
-
-__________________________________
-Do you Yahoo!?
-Protect your identity with Yahoo! Mail AddressGuard
-http://antispam.yahoo.com/whatsnewfree
 
