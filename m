@@ -1,13 +1,11 @@
-From: Felix Bauer <felixathome@gmx.net>
-Subject: Re: firewall startup script
-Date: Fri, 01 Aug 2003 14:24:41 +0200
+From: pejman moghadam <pmoghadam@yahoo.com>
+Subject: Yahoo messenger confusion
+Date: Fri, 1 Aug 2003 06:56:00 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F2A5C09.7040602@gmx.net>
-References: <3F2A46F4.9070001@gmx.net> <1059738996.8263.4.camel@linux.local>
+Message-ID: <20030801135600.12725.qmail@web14511.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-875713272-1059746160=:11726"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1059738996.8263.4.camel@linux.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,74 +15,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: rhelms@mayn.de
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-There is a internetconnection of course and ppp0 uses that ip-adress.
+--0-875713272-1059746160=:11726
+Content-Type: text/plain; charset=us-ascii
 
-cheers
-fe
+hi gurus
+I have a linux box in my LAN with :
+ 
+RH 9 , iptables-1.2.6a-2 , kernel 2.4.18.-14 , iproute-2.4.7-5 , squid-2.5.STABLE1
+valid IPs : 1.2.3.140 -- 1.2.3.143
+invalid IPs : 192.168.0.128 -- 192.168.0.191
 
-Ruprecht Helms wrote:
+ifconfig eth0 192.168.0.135 netmask 255.255.255.192 broadcast 192.168.0.191
+ifconfig eth0:0 1.2.3.142 netmask 255.255.255.252 broadcast 1.2.3.143
+route add default gw 1.2.3.141
+iptables -t nat -A POSTROUTING -s 192.168.0.128/26 -o eth0 -j SNAT --to 1.2.3.142
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to 3128
 
->On Fri, 2003-08-01 at 12:54, Felix Bauer wrote:
->  
->
->>Hi,
->>
->>if got a question about my script for my router-configuration. It should 
->>enable ip4warding, masquerade my local hosts,
->>allow my local hosts everything and open some ports which should be 
->>external available but if I run this script
->>it kinda stops after masquerading (I can read the output on the console 
->>but then everything is freezed since the local
->>ports aren't open anymore and not reopend by the script). Is there any 
->>logical error I missed?
->>    
->>
->
->
->  
->
->>...
->>    
->>
->
->  
->
->>     #** setup Masquerading
->>      echo "Creating rule for Masquerading"
->>      $iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
->>    
->>
->
->  
->
->>...
->>    
->>
->
->You have to open a internetconnection and than pick up the ip-adress for
->ppp0 from ifconfig and use it for ppp0. After this act you can start
->your firewall.
->
->Regards,
->Ruprecht
->
->
->-----------------------------------------------
->Ruprecht Helms IT-Service & Softwareentwicklung
->
->Tel./Fax  +49[0]7621 16 99 16
->Homepage: http://www.rheyn.de
->email:    info@rheyn.de
->------------------------------------------------
->
->
->
->  
->
+this box is my gateway; everything is good : my users can ping the internet, use http and ftp and . . . 
+but there is a problem : 
+when they want to login with yahoo messenger sometimes they can , and sometimes they can't :(
+ 
+any idea?
+ 
+thanks in advance
+Pejman
 
 
+---------------------------------
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+--0-875713272-1059746160=:11726
+Content-Type: text/html; charset=us-ascii
+
+<DIV>hi gurus<BR>I have a linux box in my LAN with :</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>RH 9 , iptables-1.2.6a-2 , kernel 2.4.18.-14 , iproute-2.4.7-5 , squid-2.5.STABLE1</DIV>
+<DIV>valid IPs : 1.2.3.140 -- 1.2.3.143<BR>invalid IPs : 192.168.0.128 -- 192.168.0.191</DIV>
+<DIV><BR>ifconfig eth0 192.168.0.135 netmask 255.255.255.192 broadcast 192.168.0.191<BR>ifconfig eth0:0 1.2.3.142 netmask 255.255.255.252 broadcast 1.2.3.143</DIV>
+<DIV>route add default gw 1.2.3.141</DIV>
+<DIV>iptables -t nat -A POSTROUTING -s 192.168.0.128/26 -o eth0 -j SNAT --to 1.2.3.142<BR>iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to 3128</DIV>
+<DIV><BR>this box is my gateway; everything is good : my users can ping the internet, use http and ftp and . . . <BR>but there is a problem : <BR>when they want to login with yahoo messenger sometimes they can , and sometimes they can't :(</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>any idea?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>thanks in advance<BR>Pejman</DIV><p><hr SIZE=1>
+Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
+--0-875713272-1059746160=:11726--
 
