@@ -1,12 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: strange about netmeeting via iptables?
-Date: Tue, 17 Sep 2002 23:54:27 +0200 (CEST)
+From: Chris Born <ragable@attbi.com>
+Subject: Telnet not being let through
+Date: Tue, 17 Sep 2002 20:15:01 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0209172350230.16587-100000@blackhole.kfki.hu>
-References: <3D876911.FF34E7EB@linux.taiwan.hp.com>
+Message-ID: <5.1.1.6.0.20020917182240.00b2f008@mail.attbi.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3D876911.FF34E7EB@linux.taiwan.hp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +14,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Bird Chen <bird@linux.taiwan.hp.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 18 Sep 2002, Bird Chen wrote:
+I'm trying to allow telnet sessions through from the outside. Here are the 
+rules I have for the input chain:
 
->   I am new to this list. But I have been searching for solution on this
-> issue over and over. I have a linux running iptables between my intranet
-> and ISP through ADSL link. And my client which is running win2k try to
-> netmeeting the internet people. But when the connection was established,
-> peer can hear what I am saying but I can't hear the peer's voice.
+$IPTABLES = /sbin/iptables
+$UNIVERSE = "0.0.0.0/0"
 
-The possible problems are: either party enabled H.245 tunneling (or 'fast
-start') or use RAS/gatekeeper.
+$EXTIP = "`$IFCONFIG $EXTIF | /bin/grep 'inet addr'  | /bin/awk '{print 2}' 
+| /bin/sed -e 's/.*://'`"
 
-The current H.323 helper works for the most simple setups only being a
-crude hack.
+$EXTIF = "eth1"
+$INTIF = "eth0"
 
-Regards,
+$INTNET = "192.168.0.0/24"
 
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+$IPTABLES -P INPUT DROP
+$IPTABLES -F INPUT
+
+$IPTABLES -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
+$IPTABLES -A INPUT -i $INTIF -s $INTNET -d $UNIVERSE -j ACCEPT
+$IPTABLES -A INPUT -i $EXTIF -s $INTNET -d $UNIVERSE -j drop-and-log-it
+$IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -m state --state 
+ESTABLISEHED,RELATED
+$IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -p TCP --dport 23 -j ACCEPT
+$IPTABLES -A INPUT -s $UNIVERSE -d $UNIVERSE -j drop-and-log-it
+
+Telnetting from and inside machine works just fine, but every time someone 
+tries to connect from the outside the connection is refused. Wondering what 
+I'm doing wrong here.
+
+-Chris Born
+
 
 
