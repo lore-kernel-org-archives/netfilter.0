@@ -1,8 +1,8 @@
 From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: moving on to tcp flags filtering, more ambiguity
-Date: Wed, 9 Oct 2002 07:48:40 -0400 (EDT)
+Subject: curious about address specification and port specification
+Date: Wed, 9 Oct 2002 07:14:03 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210090738460.13873-100000@localhost.localdomain>
+Message-ID: <Pine.LNX.4.44.0210090709200.13728-100000@localhost.localdomain>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -19,37 +19,21 @@ Content-Transfer-Encoding: 7bit
 To: netfilter mailing list <netfilter@lists.netfilter.org>
 
 
-first, given the flags SYN,ACK,FIN,RST,URG,PSH, and the shortcuts
-ALL and NONE, the flags filtering clause has the form
+  more annoying questions, before i head out for the day:
 
-  --tcp-flags [!] comp mask
+1) is there anything meaningful about some sample address filter
+   clauses i've seen that read "-s 0/0" or "-d 0/0"?  doesn't 
+   this just mean no filtering on either source or destination?
+   is there any value to these matches other than making it 
+   explicitly clear that no address filtering is being done?
 
-as an example, 
+2) in all of the docs i've read, the claim is that port matching is
+   an implicit match within either UDP or TCP matching and that you 
+   *must* specify a protocol before you're allowed to specify ports.
 
-  --tcp-flags SYN,RST,ACK SYN
-
-means specifically to compare those three flags, and of those three,
-*only* SYN can be set.  so far, so good.
-
-  we can also incorporate ALL and NONE, for example:
-
-  --tcp-flags ALL SYN		(only SYN can be set among all flags)
-  --tcp-flags ALL NONE		(all flags must be unset -- a bit silly)
-
-so "ALL", in these cases, is short for all six flags.  but what if we
-have
-
-  --tcp-flags SYN,RST,ACK ALL
-
-as a mask, i'm assuming that "ALL" really now means just all of
-the flags that were listed in the comp list, since it wouldn't make
-much sense to mean all six flags anymore.  is this reasonable?
-and i'm also assuming this would mean the same as
-
-  --tcp-flags ! SYN,RST,ACK NONE
-
-even though that's a really hideous way of expressing it.
-
+   however, i've certainly seen and used rules that refer to a port
+   or ports without first specifying a protocol.  is the documentation
+   just misleading here?
 
 rday
 
