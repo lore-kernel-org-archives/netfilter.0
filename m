@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: MAC Block for the DHCP via iptables
-Date: Mon, 17 Nov 2003 17:57:26 +0000
+From: trainier@kalsec.com
+Subject: Re: irc
+Date: Mon, 17 Nov 2003 12:58:03 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311171757.hAHHvTj22359@agate.rockstone.co.uk>
-References: <008801c3ad28$da9e4b50$0d1ea8c0@win2000adv> <200311171702.hAHH2pj22305@agate.rockstone.co.uk> <3FB90889.9040804@Loudoun-Fairfax.com>
+Message-ID: <OFBA12423C.095A4879-ON85256DE1.00629F88-85256DE1.0062B1C9@kal.kalsec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FB90889.9040804@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +15,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Monday 17 November 2003 5:42 pm, Jeffrey Laramie wrote:
+Well.  heh
+It's certainly more complicated than just a couple of netfilter/NAT rules.
+I'm not sure if I need to run an irc proxy or not.
 
-> Antony Stone wrote:
-> >
-> >iptables -P INPUT DROP
-> >iptables -P FORWARD DROP
-> >iptables -P OUTPUT DROP
-> >
-> >iptables -F INPUT
-> >iptables -F FORWARD
-> >iptables -F OUTPUT
-> >
-> >then no IP traffic will be allowed into, out of, or through, the machine.
+Tim
+
+
+
+
+Antony Stone <Antony@Soft-Solutions.co.uk>
+Sent by: netfilter-admin@lists.netfilter.org
+11/17/2003 12:33 PM
+
+ 
+        To:     netfilter@lists.netfilter.org
+        cc: 
+        Subject:        Re: irc
+
+
+On Monday 17 November 2003 4:35 pm, Jeffrey Laramie wrote:
+
+> Just out of curiosity, what exactly is the difference between an IRC
+> server and an IRC proxy?
 >
-> Chandana, Antony is making a theoretical point here. Your loopback
-> interface uses the OUTPUT chain and dropping every OUTPUT packet could
-> cause some unexpected problems. I wouldn't recommend doing this. If you
-> ever really wanted to block *all* traffic just unplug the network card(s).
+> Client connects to server
+> Client connects to proxy
+>
+> Server relays
+> Proxy relays
+>
+> Hmmm.
 
-Very well said, Jeffrey :)
+In that case I simply don't know enough about the IRC protocol (which is 
+true).
 
-Netfilter rules should never be implemented without understanding what they 
-do, and "blocking all traffic" is an unlikely condition for a working 
-machine.   Apart from anything else, what use is a machine that can't talk or 
-listen :) ?
+It sounds like SMTP to me - there's no such thing as an SMTP proxy, 
+because 
+that is what an SMTP server is.   Perhaps this is the ideal answer to the 
+original question :) ?
 
 Antony.
 
 -- 
 
-Because it completely breaks the way people normally read things.
-Why is top-posting bad?
-It means writing your reply above whatever you're replying to.
-What does top-post mean?
-Please don't top-post in email replies.
+It's vital to remember who you really are.   It's very important.   It 
+isn't 
+a good idea to rely on other people or things to do it for, you see. They 
+always get it wrong.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+ - Terry Pratchett, Sourcery
+                                                     Please reply to the 
+list;
+                                                           please don't CC 
+me.
+
+
+
+
 
