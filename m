@@ -1,12 +1,12 @@
-From: "Garske, Tom" <Tom.Garske@Rbcdain.com>
-Subject: Host Header Redirection
-Date: Mon, 10 Feb 2003 15:23:21 -0600
+From: Tomasz Wrona <tw@eter.tym.pl>
+Subject: Re: Fwd: IPTables stops logging after long uptime
+Date: Tue, 11 Feb 2003 00:20:58 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <63E932E46E27594EA06BB4505F87E4634B59DC@MAILMP2.corp.isib.net>
+Message-ID: <Pine.LNX.4.30.0302110014290.25887-100000@king.klan.gda.pl>
+References: <200302092247.20930.fabrice@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200302092247.20930.fabrice@netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,20 +16,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Fabrice MARIE <fabrice@netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-Do you know if IPTABLES will allow you to port forward/redirect name =
-based virtual hosting based upon the host header request?  If so, how?
+On Sun, 9 Feb 2003, Fabrice MARIE wrote:
 
-example:
+> Anybody had this problem ?
+>
+> [I don't have this problem since my
+> uptime is never that long..]
 
-Client Request
-www.test1.com  -----> Firewall              ----------> Internal Web =
-Server hosting test1.com           =20
-10.0.0.1                    eth1 10.0.0.1	          192.168.1.10
-www.test2.com ----->  eth0 192.168.1.1 ----------> Internal Web Server =
-hosting test2.com
-10.0.0.1		                                              192.168.1.11
-					     	=09
+
+I have the same behaviour...
+I looked at logs after I read this mail. Uptime of my system is 84 days
+and I do not see any syslog firewall entries in my oldest rotated logs...
+so it happened a lot time ago.. [Also I have simmilar problem with crontab
+which pauses logging after few days..]
+
+2.4.19-grsec; iptables v1.2.7a
+
+
+Regards
+tw
+-- 
+
+----------------
+ ck.eter.tym.pl
+
+"Never let shooling disturb Your education"
+
 
