@@ -1,12 +1,10 @@
-From: =?iso-8859-1?Q?Omar_Casta=F1eda_Acosta?= <omar@idea.com.mx>
-Subject: Subnetting
-Date: Fri, 17 Jan 2003 11:39:57 -0700
+From: =?iso-8859-1?B?SOlsaW8gRHViZXV4?= <hdubeux@hotmail.com>
+Subject: Redirect my internat web server
+Date: Fri, 17 Jan 2003 16:06:51 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3450D7F41847FE489C49F2568F0DE27601F328@neptuno.idea.com.mx>
+Message-ID: <F60TcZJ8R6BDH5oJTE10000304c@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,75 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-Hello List:
+I have a machine with squid + nat with an valid ip (1.1.1.1) and a false ip=
+=20
+(2.2.2.2) and running apache on port 80, i want to publish another apache=20
+server on port 8000 in a machine with ip (3.3.3.3). how can i do this=20
+redirect? I=B4ve already used:
 
-I'm trying to change my current setup from what I'm doing now:
+iptables -A PREROUTING -t nat -p tcp -d 1.1.1.1 --dport 8000 -j DNAT -to=20
+3.3.3.3:8000
 
-INET < --- > ROUTER < --- > FIREWALL < --- > LAN
-                A              NAT
-                |           FILTERING
-                V             PROXY
-            VoIP BOX
+My clients type on their browser http://1.1.1.1:8000 and i wanto to show th=
+e=20
+content of 3.3.3.3:8000
 
-
-To:
-
-INET < --- > ROUTER < --- > HUB < --- > FIREWALL < --- > SWITCHES < --- =
-> LAN
-               NAT           |          FILTERING =20
-                             |           PROXY
-                             |
-                             \- > VoIP BOX
-
-This is because the NAT on my new router support H323 perfectly. Plus =
-ISP won't
-provide extra IP addresses (Just one for the whole setup).
+Anyone can plz help me?
 
 
-*******************
-I know how to configure iptables to perform what I want to do. I just =
-want some
-advice in what would be the best way to subnet my network.
-*******************
+----------------------
+H=E9lio Dubeux Neto
 
 
 
-Right now (to make it work, I didn't have to modify my firewall scripts) =
-the
-sub-netting is as follows:
 
-(Router) has the ISP provided valid Internet IP address on the WAN =
-interface.
-(Router) has a 172.16.0/24 address on the Ethernet interface.
-(Firewall) has a 172.16.0/24 address on the EXTERNAL interface.
-(Firewall) has a 192.168.0/24 address on the INTERNAL interface. =
-(Everyone's gateway)
-(VoIP box) has a 172.16.0/24 address on the EXTERNAL interface.
-
-Right now the firewall runs proxies for SMTP, WEB and FTP. A VPN (PPTP =
-and IPSEC)
-service. And a permanent VPN tunnel with another location (configured as =
-this one).
-DNS services and SSH for administration. It filters outgoing and =
-incoming traffic
-according to usage and abuse policies (filter everything but legitimate =
-incoming
-traffic and valid hosts to use http, ftp, etc).
-
-I'd appreciate any suggestions.
-
-Thanks,
-Omar Casta=F1eda Acosta
-Systems Administrator
-iDEA S.A. de C.V.
-Voice: +52 (614) 414-2808 x 109
-Mobile: +52 (614) 406-5241
-VoIP: voip.idea.com.mx x 109
-omar@idea.com.mx
-
-
+_________________________________________________________________
+MSN Hotmail, o maior webmail do Brasil. http://www.hotmail.com
 
 
