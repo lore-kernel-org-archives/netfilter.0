@@ -1,13 +1,10 @@
-From: xchris <lyra@fastwebnet.it>
-Subject: Re: redirection
-Date: Wed, 9 Apr 2003 11:13:48 +0200
+From: "prem nath" <premnath21@hotmail.com>
+Subject: help
+Date: Wed, 09 Apr 2003 09:40:38 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304091113.48665.lyra@fastwebnet.it>
-References: <7497DCA1C240C042B28F6657ADFD8E09268773@i2km11-ukbr.domain1.systemhost.net>
+Message-ID: <F78hTGBe932VXI2PGBP00006e03@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7497DCA1C240C042B28F6657ADFD8E09268773@i2km11-ukbr.domain1.systemhost.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +14,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: dhiraj.2.bhuyan@bt.com, netfilter@lists.netfilter.org
-
-On Wednesday 09 April 2003 10:40 am, you wrote:
-> You do infact need DNAT and not SNAT
->
-> iptables -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j DNAT
-> --to-destination x.y.z.2:80
->
-> this should work.
+Content-Type: text/plain; format=flowed; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
 
-I tried but all connections go in timeout.
-I first flushed every chain,set default policy everywhere,and then added =
-DNAT=20
-rule...
 
-no result...
+Hi ,
+I have problem in configuring firewall using Iptables .I h...
+8.0. I am using webmin to configure the firewall.
+The existing IP is
 
-The strange thing is :
-if i DNAT on another interface everything is ok.
-if i DNAT through the incoming connection interface... it fails.
 
-strange...
-I think i miss something..
-Thank you
-Chris
+2 static Ips are there from ISp eg:61.11.56.42,61.11.56.115
+Webserver and DNS server is hosted on 61.11.56.42
+I have an Internal network 192.168.1.x
+The linux box has 2 Interfaces ETH0 61.11.56.115
+eth1 is 192.168.1.19
+ETH0 is connected to external and internal to switch is connected to
+192.168.1.19.
+They have a mail server where smtp and pop3 has to be forwarded .
+Please let me know how to NAT 192.168.1.19 with 61.11.56.115.
+At the same time squid proxy should work .
+I need to allow ports 80,8080,22,21,23,25,110,1494,1328.
+All the queries should reach the DNS server & Webserver(61.11.56.42)
+eg:80,80801494,1328
+Please do give me a plan so that I can forward all these to both servers
+.(mail server * Webserver )
+I have an idea of putting DNS server in linux firewall box but cant  forward
+the queries to webserver.
+
+
+Please do help me out with natting and forwarding .Getting really confused.
+Awaiting reply .
+Advance thanks
+Regards
+Prem
+
+
+
+
+_________________________________________________________________
+Vrroooom=85=85 Fasten your seatbelts.=20
+http://server1.msn.co.in/msnSpecials/formula2003/index.asp Get set for F1=20
+2003
+
 
