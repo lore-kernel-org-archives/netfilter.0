@@ -1,12 +1,12 @@
-From: Daniel VRABIOIU <danyvip@pattco.ro>
-Subject: Re: ip + mac authentication
-Date: Wed, 19 Jan 2005 17:53:53 +0200
-Message-ID: <41EE8291.20505@pattco.ro>
-References: <20050119114804.13549.qmail@web30806.mail.mud.yahoo.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: why am I getting this syn packet
+Date: Wed, 19 Jan 2005 12:12:36 -0500
+Message-ID: <20050119171236.GA12213@bender.817west.com>
+References: <JKENKBGIPCFNFMNFENJPCEMICJAA.peter.marshall@caris.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050119114804.13549.qmail@web30806.mail.mud.yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <JKENKBGIPCFNFMNFENJPCEMICJAA.peter.marshall@caris.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-arp -f only force for an ip a static mac. so you cant specify 2 mac 
-addresses or 2 ips in ethers. you can do that using iptables instead.
-also, if you dont know the mac associated with an ip then you can ping 
-it then use arp to see it. if an ip isnt listed in ethers then it can be 
-used with any mac address.
+On Wed, Jan 19, 2005 at 10:59:18AM -0400, Peter Marshall wrote:
+> 
+> I have a stand alone proxy server in my dmz.  It has an internal IP (that
+> internal users connect to), and an external IP.
+> I am seeing the following on my internal firewall logs.  I am not sure why
+> the proxy would be trying to send a syn packet to the internal.
+> 
+> 
+> Jan 19 10:56:40 radium kernel: DROP: prxy-int IN=eth1 OUT=eth0
+> SRC=192.168.1.254 DST=192.168.201.109 LEN=60 TOS=0x00 PREC=0x00 TTL=63
+> ID=57253 DF PROTO=TCP SPT=60145 DPT=113 WINDOW=5840 RES=0x00 SYN URGP=0
 
+your proxy server is sending an ident request to the client.  i don't
+believe that squid does ident lookups by default--so you must have
+something in your squid.conf that's making it do it.
 
-Linux Query wrote:
+-j
 
->Thank you! I didnt know about the /etc/ethers file. Is
->it possible to assign two ips for a single mac in that
->file and a single ip for two macs ?
->
->e.g.   ip1   <mac1>
->       ip2   <mac1> 
->
->and
->       ip3   <mac2>
->       ip3   <mac3>  
->      
->Besides, if i leave out some of the clients from the
->/etc/ethers file (I dont know all mac addresses right
->now) , will it create problems for those who are not
->included ?
->
->Thanks and regards,
->jim
->  
->
-
+--
+"'Wet Cement' - is there any sweeter sign?  Maybe 'High Voltage.'"
+        --The Simpsons
 
