@@ -1,9 +1,8 @@
-From: "Jim Robinson" <jim@linux-sp.com>
-Subject: RE: Deny all but certain Websites
-Date: Wed, 26 Feb 2003 23:57:19 -0500
+From: Hampus Soderstrom <hampus.soderstrom@aptilo.com>
+Subject: PPTP, newnat and masquerading not working
+Date: Fri, 28 Feb 2003 17:17:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <CAEGIDAMMMOCIHNIEGCJKECJEGAA.jim@linux-sp.com>
-Reply-To: <jim@linux-sp.com>
+Message-ID: <3E5F8B8D.50705@aptilo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,80 +15,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-To everyone that replied to my initial post (see below) -
-thank you!
+Hi,
 
-Using bits from a number of replies I was able to find the
-answer to denying IP addresses to the Internet as a whole
-but allowing said internal nodes to specific places on the
-web.
-The final syntax I used was:
+I want to use PPTP behind a masquerading router but I have problems 
+getting it to work.
 
-iptables -A PREROUTING -t nat -s 192.168.1.100/24 -d
-a.pub.lic.ip -p tcp --dport 80 -j ACCEPT
-iptables -A PREROUTING -t nat -s 192.168.1.100/24 -d 0/0 -p
-tcp --dport 80 -j DROP
+This is how I install masquerading PPTP:
 
-I think a number of the other posts were also correct but my
-firewall was somewhat customized :)
-I especially liked the one about using Squid instead - glad
-to see people can think outside the "list"!
-
-Appreciate the help.
-
-Regards,
-
-Jim
+1. I upack a vanilla kernel-2.4.20
+2. I patch with newnat
+(http://roeder.goe.net/~koepi/newnat/helpers-2.4.20.patch.gz)
+3. I do a make menuconfig and add PPTP and GRE Proto support
+4. I install iptables v1.2.7a
+5. I do the rest of the kernel building (make dep && make modules && 
+make modules_install && make bzImage).
+6. I fix my lilo and reboot with the new kernel.
+7. I add masquerading with iptables:
+iptables -I POSTROUTING -t nat --jump MASQUERADE
+8. I add portforwarding (/proc/sys/net/ipv4/ip_forward)
+9. I modprobe ip_nat_pptp and verify that ip_nat_pptp and 
+ip_nat_proto_gre is loaded with lsmod.
 
 
-----------------------------------
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of
-Jim Robinson
-> Sent: Wednesday, February 26, 2003 3:55 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Deny all but certain Websites
->
->
-> Hi,
->
-> I am trying to write a rule to allow certain IP addresses
-on
-> the inside of my firewall (NAT) to only connect to 1 or 2
-IP
-> ranges on the internet.  I have tried without success to
-find
-> some examples online and have played with some rules but
-> without much success.
->
-> Does anyone have any ideas on this?  Your help very much
-appreciated.
->
->
-> Allowed Website Only
-> |
-> |
-> |
-> (Internet)
-> |
-> |
-> ETH0: Public IP
-> ----
-> FIREWALL (NAT)
-> ----
-> ETH1: 192.168.1.1
-> |
-> |
-> Client IP: 192.168.1.100
->
->
->
->
-> Jim
->
->
+Now I have a setup that looks like this:
+
+PPTP Client1 ===> Masquerading Router ===> PoPToP Server
+PPTP Client2 ===>
+
+8. I start upp pptp in a win2k machine (Client1) I get:
+error: 619 The specified port is not connected and error 651.
+
+I have verified that masquerading works for http and that pptp works if 
+I bypass the Masquerading router.
+
+What have I overlooked in getting it to work?
+
+
+/Hampus
+
 
 
