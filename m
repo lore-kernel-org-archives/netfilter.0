@@ -1,42 +1,81 @@
-From: Esteban Ribicic <eribicic@UolSinectis.com>
-Subject: kazaaa is making me crazy!
-Date: 10 Jun 2003 21:35:39 -0300
-Sender: lartc-admin@mailman.ds9a.nl
-Message-ID: <1055291739.829.16.camel@dejawu>
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: string is not working, any help?
+Date: Wed, 11 Jun 2003 10:35:00 +1000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6E2F@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <lartc-admin@mailman.ds9a.nl>
-Errors-To: lartc-admin@mailman.ds9a.nl
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Subscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, LARTC <lartc@mailman.ds9a.nl>
+To: Esteban <eribicic@sinectis.com>, netfilter@lists.netfilter.org
 Cc: winfield@freegates.be
 
-im trying to debug how cpu consuming could be the string match.
-is it a lineal function? i mean..
-
-1 Mbit -> 1024/8 Kbytes
-
-supossaing mtu payload is 1500 bytes, i have in 1 megabit
-[(1024/8)*1000]*1500 = 1920000000 packets
-
-anorther thing..this rule just filter the initial download request..that
-would be okay if oyu want filter completely, but if you want to slwo
-down (i mean using tc/htb/fwmarks) you wouldnt be matching the hole
-download, only the request...
-
-iptables -t mangle -A PREROUTING -p tcp -m --string "Kazaa" -j DROP
+Incorrect syntax
 
 
-any comment, any idea?
+-m string --string "search for this"
 
-_______________________________________________
-LARTC mailing list / LARTC@mailman.ds9a.nl
-http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
+-----Original Message-----
+From: Esteban [mailto:eribicic@sinectis.com]
+Sent: Wednesday, June 11, 2003 9:59 AM
+To: netfilter@lists.netfilter.org
+Cc: winfield@freegates.be
+Subject: string is not working, any help?
+
+
+root@dejawu:/lib/modules/2.4.20/kernel/net/ipv4/netfilter# lsmod=20
+Module                  Size  Used by    Tainted: P =20
+ipt_unclean             6712   0  (unused)
+ipt_string              1688   0  (unused)
+iptable_nat            18872   0  (autoclean) (unused)
+ip_conntrack           24224   1  (autoclean) [iptable_nat]
+ip_tables              12952   5  [ipt_unclean ipt_string iptable_nat]
+i810_audio             20680   0=20
+ac97_codec              9992   0  [i810_audio]
+8139too                16424   1=20
+mii                     2272   0  [8139too]
+root@dejawu:/lib/modules/2.4.20/kernel/net/ipv4/netfilter#=20
+root@dejawu:/lib/modules/2.4.20/kernel/net/ipv4/netfilter#=20
+root@dejawu:/lib/modules/2.4.20/kernel/net/ipv4/netfilter# cd=20
+root@dejawu:~#=20
+root@dejawu:~#=20
+root@dejawu:~# iptables -t mangle -A PREROUTING -p tcp -m --string
+"pepee" -j DROP
+iptables v1.2.7a: Couldn't load match
+`--string':/lib/iptables/libipt_--string.so: cannot open shared object
+file: No such file or directory
+
+Try `iptables -h' or 'iptables --help' for more information.
+
+why is not working --string match??
+im using pom version patch-o-matic-20030107 under 2.4.20 kernel.
+
+
+
+
+
+
+
