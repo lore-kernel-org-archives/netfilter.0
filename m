@@ -1,14 +1,10 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
-Date: Sun, 11 Jan 2004 09:00:48 -0800
+From: =?iso-8859-1?B?SOVrYW4gRW5nYmxvbQ==?= <cynic_0@hotmail.com>
+Subject: Re: source-mac filtering
+Date: Sun, 11 Jan 2004 18:36:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401111700.i0BH0oHu031652@server5.bandwidthco.com>
-References: <F41C404D-4311-11D8-AFEE-000393677A36@porchlight.ca>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <Sea1-F70KoMFYsDSzhx00053a6c@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F41C404D-4311-11D8-AFEE-000393677A36@porchlight.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,137 +14,84 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Peter Schobel' <pschobel@porchlight.ca>, netfilter@lists.netfilter.org
-
-I haven't been following all of this Peter, but it would seem you now need
-to add a rule allow the packets to get through the FORWARD chain now that
-they have been successfully REDIRECTED.  Try something like: 
-
-$IPT -t filter -A FORWARD -i eth0 -p tcp --dport 3128 -j ACCEPT
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Peter Schobel
-Sent: Friday, January 09, 2004 6:09 PM
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
-Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6
-kernel
 
-ok, I removed the error line and the cat autoconf line from the config.h and
-got iptables 1.2.9 to compile against my kernel source and headers and
-reinstalled
+Hi,
 
-if i turn on ip_forward and try to access external sites, i get forwarded
-through to the external page without problem
+Tried this (REDIRECT to another non-dhcp-standard udp-port) as well now, an=
+d=20
+the test indicates the same thing as before.
+Started the dhcp deamon at udp/54356 and redirected everything coming in to=
+=20
+the machine on upd/67 (normal dhcp) to port 54356.
+What happaned was that the dhcp-server did not respond. When using strace=20
+one could see that there in nothing coming in on the socket.
 
-if i enable the iptables rule
+The redirect-rule seems to work fine, pkts increasing every time something =
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
---to-port 3128
+is received on port 67 :
+# iptables -L -v -n -t nat
+Chain PREROUTING (policy ACCEPT 11 packets, 756 bytes)
+pkts bytes target     prot opt in     out     source              =20
+destination
+   27  8856 REDIRECT   udp  --  *      *       0.0.0.0/0           =20
+0.0.0.0/0          udp dpt:67 MAC 00:B0:D0:BF:27:E8 redir ports 54356
 
-my pages just time out when i try to access external sites
 
-but if i try to access the proxyhost directly using http, it redirects me to
-the proxy site without problem
+However, when starting the dhcpd on port 67 again (still with the=20
+redirect-rule in the nat-table) the dhcp server responds, indicating (as fa=
+r=20
+as I can see, I'm a tester not a designer) tha the dhcpd is somehow=20
+"listening on a lower level" than the iptables are working.
 
-i get exactly the same results using this rule
+I'll try with another dhcpd.
 
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination
-$LOCALHOST:3128
+br H=E5kan E.
 
-does anyone have any idea why traffic destined for external sites will not
-transparently redirect to squid for me?
 
-does anyone have any idea as to what further steps I can take to
-troubleshoot this problem?
 
-Thx in advance,
-
-Peter Schobel
-
-On Thursday, January 8, 2004, at 09:33  PM, Alistair Tonner wrote:
-
-> On January 8, 2004 03:05 pm, Peter Schobel wrote:
->> ok, I downloaded the source ball for iptables 1.2.9, and compiled 
->> using
->>
->> make KERNEL_DIR=/usr/src/linux-2.6.0-1.107
->>
->> i got an error from config.h telling me to use the glibc version so i 
->> symlinked /usr/src/linux-2.6.0-1.107 to /usr/include/linux/config.h
->>
->> then i compiled successfully and installed using
->>
->> make install KERNEL_DIR=/usr/src/linux-2.6.0-1.107
->>
->> without incident
->>
->> i checked the timestamp on the iptables binary to make sure that it 
->> had been overwritten
->>
->> I rmmod'd all the iptables modules and then reloaded my iptables rule
->>
->> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
->> --to-port 3128
->>
+>From: Alistair Tonner <>
+>To: H=E5kan Engblom <cynic_0@hotmail.com>,  netfilter@lists.netfilter.org
+>Subject: Re: source-mac filtering
+>Date: Sun, 11 Jan 2004 00:55:44 -0500
 >
-> 	Ummm ... I don't understand where the error came from.... I'm using
-a 
-> slackware based box with many upgrades
-> 	(gcc glibc binutils and modutils....) my switch from 2.4.23 to 2.6.0
+>On January 10, 2004 06:20 pm, H=E5kan Engblom wrote:
+> > Hi,
+> >
+> > I've run in to a strange problem. I have a dhcp-server on a 2.4.22=20
+>kernel
+> > with a 1.2.8 iptables. The dhcp-server is configured only to offer
+> > IP-addresses to one single mac-address (it is a single host on a private
+> > network)
+> >
+> >
+> > Does anyone have a clue ?
+> >
+> > br H=E5kan Engblom
+> >
+> > Some "logs" :
+>
+>	<relevant info snipped, since it has been through the list several times>
+>
+>	Can I think out loud for a moment???
+>
+>	have dhcpd listen on a *different* port than normal
+>	have iptables grab relevant mac address broadcasts and redirect to=20
+>appropriate port?
+>
+>	drop anything not in relevant mac address range?
+>
+>	Perhaps this might work???
+>	anyone care to try?? --my personal net is static ... thankgod its only 5 =
 
-> required a binutils and modutils
-> 	upgrade FIRST -- I would hope that RPM dependencies are in place to 
-> enforce this as it will likely
-> 	apply to your situation ... when I rebuilt iptables source it went 
-> painlessly --- no error from config.h.
+>boxen
 >
-> 	I *DONT* like the relink .. I've a feeling this will break some 
-> inportant defines....
-> 	
-> 	what do you get for modprobe --version and ld -v ?
-> 	I suspect your modutils is incorrect for 2.6.0
+>	Alistair Tonner
 >
->> lsmod gives me
->>
->> Module                  Size  Used by
->> ipt_REDIRECT            2048  1
->> iptable_nat            20140  2 ipt_REDIRECT
->> ip_tables              15104  2 ipt_REDIRECT,iptable_nat
->> ip_conntrack           28464  2 ipt_REDIRECT,iptable_nat
->>
->> iptables -t nat -L gives me
->>
->> Chain PREROUTING (policy ACCEPT)
->> target     prot opt source               destination
->> REDIRECT   tcp  --  anywhere             anywhere            tcp
->> dpt:http redir ports 3128
->>
->> Chain POSTROUTING (policy ACCEPT)
->> target     prot opt source               destination
->>
->> Chain OUTPUT (policy ACCEPT)
->> target     prot opt source               destination
->>
->> testing it reveals that it is still not working - did i do anything 
->> wrong in the above steps? what further steps would you recommend to 
->> troubleshoot this problem?
->>
->> Peter Schobel
->> ~
->
->
-*****************************
-Peter Schobel
-Network Administrator
-Porchlight.ca
-Unlimited Internet
-*****************************
-In a world without walls or fences
-We will have no need for gates or windows
-*****************************
 
-
+_________________________________________________________________
+Hitta r=E4tt p=E5 n=E4tet med MSN S=F6k http://search.msn.se/
 
 
