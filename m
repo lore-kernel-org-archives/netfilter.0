@@ -1,13 +1,11 @@
-From: Bob McLaren <BobMcLaren@fssi-ca.com>
-Subject: Re: Can't compile 1.2.11 because of dstlimit?
-Date: Fri, 09 Jul 2004 12:03:59 -0700
+From: FB <register@flintz.de>
+Subject: layer 7 netfilter not working
+Date: Fri, 09 Jul 2004 22:56:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40EEEC1F.7090201@fssi-ca.com>
-References: <40EB1C80.4050108@fssi-ca.com>
+Message-ID: <40EF0666.9010902@flintz.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40EB1C80.4050108@fssi-ca.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,26 +18,54 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Bob McLaren wrote:
+Hello there!
 
-> ...
-> I have successfully recompiled my kernel.  But now, when I attempt to 
-> compile iptables, I get an error regarding "dstlimit".
-> ...
->
-Well, I'm closer to figuring it out...
+I am trying to get traffic shaping working on my Linux router (debian 
+woody 3r02) and for some things I wanted to use the layer 7 packet 
+classifier, but I can't get it to work.
+Here is what I did:
 
-I noticed that the ipt_dstlimit.h in my iptables source tree did not 
-match the ipt_dstlimit.h in my kernel source tree.
-The one in my kernel source tree does not define a "cfg" struct.  Which 
-would explain the error I'm getting, but I still don't understand what I 
-need to do to resolve this.
+-downloaded the patches from http://l7-filter.sourceforge.net
+-downloaded the kernel 2.6.7 source
+-downloaded the iptables 1.2.11 source
+-patched kernel (layer7 patch and some patch to get iptables 1.2.11 
+working with kernel 2.6.7)
+-patched iptables
+-compiled iptables
+-activated layer 7 support in kernel-config (and a lot of other packet 
+classifing options)
+-compiled and installed kernel
 
-Why would both source trees have ipt_dstlimit.h files?
-Why would my 2.4.20 kernel source tree have an outdated ipt_dstlimit.h file?
-Can I just move my RedHat 7.3 box from 2.4.20 -> 2.6.7 without worry of 
-bugs/issues?  I don't know how stable that new kernel is.
+Now I tried to mark some packets with layer 7 so that I can shape them 
+with tc afterwards. But nothing changed, outgoing connection still 
+didn't changed. So I changed the line in the iptables-script to this:
 
+  $IPTABLES -t filter -A OUTPUT -m layer7 --l7dir /etc/l7-protocols 
+--l7proto ftp -j DROP
 
+before it was:
 
+$IPTABLES -t mangle -A POSTROUTING -m layer7 --l7proto ftp -j MARK 
+--set-mark 322
+
+but nothing of them worked (I could still connect over ftp). The 
+/proc/net/layer7_numpackets is 08 (don't know which 8 packets got 
+identified there, but the number is not going any higher).
+
+(BTW: when I use the setting from the NETFILTER HOWTO page:
+
+iptables -t mangle -A POSTROUTING -m layer7 --l7proto http -j MARK 
+--set-mark 1
+
+and change it (as written in the howto under "blocking") to:
+iptables -t mangle -A POSTROUTING -m layer7 --l7proto http -j REJECT
+
+I get an "iptables: Invalid Argument", same with DROP instead of REJECT, 
+when executing the script, how that? (I must admit that I am not that 
+iptable expert, so excuse some lack of knowledge of all the chains and 
+structures ;) )
+
+Any help is really appreciated!
+
+-FB
 
