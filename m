@@ -1,12 +1,12 @@
-From: "Greg Dickinson" <gdickinson@logistasolutions.com>
-Subject: Re: Static NATting
-Date: Tue, 18 Mar 2003 13:25:33 -0600
+From: Miguel Manso <mmanso@yahoo.com>
+Subject: Re: Linux routing scenario - is this possible?
+Date: Tue, 18 Mar 2003 11:18:43 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <se771e54.002@logistasolutions.com>
+Message-ID: <20030318191843.83900.qmail@web11504.mail.yahoo.com>
+References: <200303170134.47476.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <200303170134.47476.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,65 +17,109 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: steve@warning.ca
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@newkirk.us, netfilter@lists.netfilter.org
 
-Ok, turns out I wasn't an idiot after all :-)
+Hi there,
 
-The ISP's Cisco router was not expiring the ARP cache correctly.  Since I =
-had moved these public addresses from a BorderManager server to this Linux =
-box, I had the help desk clear the ARP cache manually and all is well :-)
+It's all working now... the problem was that the modem was doing PPPoE auth
+and, because that, doing some kind of NAT.
 
-Thanks for the quick reply, though.  It is appreciated.
+I've changed it to work in "Bridging" mode, used pppoe autentication on the
+linux box and all the iptables rules started working like a charm.
 
->>> Steve Mickeler <steve@warning.ca> 03/18/03 12:59PM >>>
-
-
-On Tue, 18 Mar 2003, Greg Dickinson wrote:
-
-> Hello all,
->
-> This question will undoubtedly get me branded as a n00b :-) but I am =
-about to go insane trying to figure this out.  Am I doing something wrong?
->
-> Here's the scenario:
->
-> I have a RedHat 8 (Kernel 2.4-18) firewall that I am going to run squid =
-on, as well as do some static NATting for some of the administrative PC's =
-here.  I have configured the Cisco router to direct all the traffic from =
-the affected /24 subnet to the linux box, and I am trying to do a 1-to-1 =
-NAT so we can do things like Terminal Services, etc. across the internet.  =
-I am using the following commands (the addresses are for my PC)
->
-> iptables -t nat -A POSTROUTING -s 10.227.101.4 -j SNAT --to 207.157.9.<so=
-mething>
-> iptables -t nat -A PREROUTING -s 207.157.9.<something> -j DNAT --to =
-10.227.101.4
-
-Change the -s to -d on the PREROUTING rule.
-
-iptables -t nat -A PREROUTING -d 207.157.9.X -j DNAT --to 10.227.101.4
-iptables -t nat -A POSTROUTING -s 10.227.101.4 -j SNAT --to 207.157.9.X
-
->
-> And all the traffic summarily dies at the firewall :-)
->
-> I have aliased the 207.157.9.<something> address to the eth1 interface =
-of the firewall.  What simple, obvious thing have I missed?
->
-> TIA,
->
-> --Greg
->
->
->
-> Gregory B. Dickinson, CNE CCNA
-> Systems Engineer
-> Logista Solutions
-> (205) 231-5602
-> (tQ =3D 2b|!2b)
->
->
+Thanks for all the help. The rules you've told me were a great help.
 
 
+
+--- Joel Newkirk <netfilter@newkirk.us> wrote:
+> On Sunday 16 March 2003 07:29 pm, Miguel Manso wrote:
+> > Hi there,
+> >
+> > First of all, thanks for the answer.
+> 
+> :^)
+> 
+> > The private IP I must assign to eth0 and eth2 (I was thinking about
+> > 192.168.1.254 and 192.168.2.254) will be used like gateways in both
+> > comapnies, no? If so, how do I say on the linux machine (router) that
+> > connections from 192.168.1.254 should leave with IP 123.123.123.100
+> > and connections from 192.168.2.254 with IP 123.123.123.101?
+> 
+> iptables -t nat -A POSTROUTING -o eth1 -s 192.168.1.0/24  \
+> -j SNAT --to 123.123.123.100
+> iptables -t nat -A POSTROUTING -o eth1 -s 192.168.2.0/24  \
+> -j SNAT --to 123.123.123.101
+> 
+> OR
+> 
+> iptables -t nat -A POSTROUTING -i eth0 -j SNAT --to 123.123.123.100
+> iptables -t nat -A POSTROUTING -i eth2 -j SNAT --to 123.123.123.101
+> 
+> > Don't know if I'm expressing myself correctly.
+> 
+> You seem clear to me. 
+> 
+> Your first priority needs to be determining if you can use the two IPs 
+> and distinguish between them on your box.  If the NAT from local IPs to 
+> public and back is all handled by the modem then netfilter on a machine 
+> connected to that modem probably can't do a thing.  If this is what is 
+> happening, you need to see if you can reconfigure the modem to pass 
+> things through unchanged.
+> 
+> I'm not sure what your DSL setup is like.  For me, I use a Westell White 
+> modem, and even though it connects via ethernet to my gateway, it works 
+> like a 'normal' modem, where the gateway itself has the IPs via PPPoE, 
+> not the modem.  The modem itself is transparent - for all intents and 
+> purposes my gateway connects 'directly' to the upstream gateway at my 
+> ISP. 
+> 
+> 
+> > Well, the modem IP is 192.168.0.1 (can be configured on the modem via
+> > a http interface) and I've just assigned on the linux box (acting as a
+> > router) the 192.168.0.5 IP to the ethernet where I connect the modem
+> > to. On this machine I've defined the modem IP 192.168.0.1 as being the
+> > gateway.
+> 
+> OK, but when the incoming traffic reaches your netfilter box, what is its 
+> destination IP?  If it no longer has the 123.123.123.100 and 
+> 123.123.123.101 IPs at that point, then you can't DNAT on the iptables 
+> box.  (well, of course you CAN, but telling the two streams of traffic 
+> apart is the problem)  If you don't know, try setting a LOG rule:
+> 
+> iptables -t nat -I PREROUTING 1 -i eth1 -p icmp -j LOG --log-prefix 
+> "ICMP:"
+> 
+> for instance.  With this rule in place, have someone at a machine outside 
+> your network ping your public IPs through the internet, and see what the 
+> log shows for DestinationIP of the incoming Pings.  After they try the 
+> ping (even if it doesn't get through) try "cat /var/log/messages | grep 
+> ICMP".  (BTW, the "-I ... 1" means insert as rule #1 in the chain)
+> 
+> > > Also, be aware that if you redirect all incoming 123.123.123.100 to
+> > > one company, and all 123.123.123.101 to the other, that leaves
+> > > nothing incoming to you.  
+> 
+> > Yes, but that's not a problem since one of the companies is my own.
+> > We've one 1024 kbits DSL line and we're trying to "split" the costs
+> > between our and other companies.
+> 
+> OK.
+> 
+> > Any information about the subject will be appreciated. I'm a newbie on
+> > the subject needing some direction points.
+> 
+> First resource oughtta be http://iptables-tutorial.frozentux.net
+> 
+> j
+
+
+=====
+Miguel Manso
+mmanso@yahoo.com
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Platinum - Watch CBS' NCAA March Madness, live on your desktop!
+http://platinum.yahoo.com
 
