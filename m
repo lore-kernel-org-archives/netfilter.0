@@ -1,8 +1,8 @@
-From: "Daniel L. Miller" <dmiller@amfes.com>
-Subject: Exposing an internal server through an iptables firewall
-Date: Thu, 14 Aug 2003 13:49:46 -0700
+From: <Josh.Berry@compucom.com>
+Subject: RE: Exposing an internal server through an iptables firewall
+Date: Thu, 14 Aug 2003 16:21:44 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DB7AEF327F702A4FA4D6E130C51BE756245A48@mainserver.amfeslan.local>
+Message-ID: <0C7C6E1720E8D74FB52EBEF93649730A0116BEE4@2k099exm01.compucom.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,7 +17,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Users <netfilter@lists.netfilter.org>
+To: dmiller@amfes.com
+Cc: netfilter@lists.netfilter.org
+
+Use this command:
+
+iptables -A PREROUTING -p tcp -m tcp -d <INTERNET_IP> --dport 25 -j DNAT
+--to-destination <POSTFIX_IP:25>
+
+-----Original Message-----
+From: Daniel L. Miller [mailto:dmiller@amfes.com]=20
+Sent: Thursday, August 14, 2003 3:50 PM
+To: Netfilter Users
+Subject: Exposing an internal server through an iptables firewall
 
 Hi!
 
@@ -222,4 +234,5 @@ be different.
 Thanx for your help,
 
 Daniel
+
 
