@@ -1,13 +1,11 @@
-From: "Mark Weaver" <mark@npsl.co.uk>
-Subject: RE: icmp: 10.1.4.50 unreachable - need to frag (mtu 500) [tos 0xc0]
-Date: Wed, 14 Jan 2004 18:11:18 -0000
+From: Dobersberger Dieter <dieter@dobersberger.at>
+Subject: kernel 2.6 IPsec and netfilter
+Date: Wed, 14 Jan 2004 19:51:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GFEPJIHHFOJDOFDMNAJDIEHKEPAA.mark@npsl.co.uk>
-References: <1074011912.2048.5.camel@grendel>
+Message-ID: <912065890.20040114195124@redbox.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1074011912.2048.5.camel@grendel>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,17 +18,51 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Do a:
-> iptables -V
->
-> I'm guessing you are running an older version that is not patched for
-> this problem (1.2.6a or prior). Here is the original advisory:
-> http://www.linuxsecurity.com/advisories/other_advisory-2063.html
->
-That's not enough: you need a patched (or later) kernel as well as the bug
-actually existed in the netfilter module.  I can't remember OTOMH which
-kernel release this went into, although it was much later than the mentioned
-version because the kernel team rejected the original fix (for some good
-reasons).  I know 2.4.23+ don't have this problem.
+Hi All !
+
+I have set up an in-kernel IPsec Tunnel with Linux 2.6.0 and want to
+filter traffic going through this tunnel.
+
+Before I upgraded to 2.6 I used FreeS/WAN on Linux 2.4 which provided
+a virtual interface called ipsec0 which I could use to apply rules
+after the IPsec packet has been decrypted. Now with kernel 2.6 ipsec0
+is gone and the incoming interface is the same as the physical (eth0).
+So the machine on the other end of the IPsec tunnel has unlimted
+access to my server.
+
+I used these rules for FreeS/WAN:
+
+# $WWW .. ip address of the webserver
+# $DB ... ip address of the database server
+# both are linked with an IPsec tunnel
+
+# allow IKE and IPsec (AH and ESP)
+iptables -A INPUT -s $WWW -d $DB -p udp --dport 500 -j ACCEPT
+iptables -A INPUT -s $WWW -d $DB -p 50 -j ACCEPT
+iptables -A INPUT -s $WWW -d $DB -p 51 -j ACCEPT
+
+# allow mysql via IPsec
+iptables -A INPUT -i ipsec0 -p tcp -s $WWW -d $DB \
+   --dport 3306 -j ACCEPT
+
+# drop everything else
+iptables -A INPUT -j DROP
+
+The above rules don't work for in-kernel IPsec. The www server has
+unlimited access to the db server because the decrypted packets are
+not processed by iptables.
+
+All I found on the net is a link to an older thread discussing the
+same problem but they didn't find a solution:
+http://www.spinics.net/lists/netfilter/msg18030.html
+
+Anyone got an idea how to limit the traffic coming in via IPsec to
+certain ports and block all other traffic ? Can someone please post
+iptables rules that do the same filtering for in-kernel IPsec as mine
+did in FreeS/WAN ?
+
+Thanks for reading this far.
+best regards,
+Dieter
 
 
