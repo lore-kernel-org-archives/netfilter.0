@@ -1,12 +1,15 @@
-From: "Ringer, Torleiv" <tringer@mpr.org>
-Subject: Isolate a legacy machine
-Date: Thu, 16 Oct 2003 17:02:05 -0500
+From: Herman <Herman@AerospaceSoftware.com>
+Subject: Re: Block Kazaa from the internal network
+Date: Thu, 16 Oct 2003 20:51:51 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B4B08E56FC7A304EB88DC4B97043921816EFBE@hqmail03.mpr.org>
+Message-ID: <200310162051.51440.Herman@AerospaceSoftware.com>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAHvCSmpkyA0+lP5YKpr7djsKAAAAQAAAA5ydvLCDFokyTKr8TUdasbQEAAAAA@petzetakis-africa.co.za> <007a01c393cb$e4156f40$0900a8c0@lowth.com> <30513.204.214.145.6.1066311236.squirrel@mail.linknet-solutions.com>
+Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <30513.204.214.145.6.1066311236.squirrel@mail.linknet-solutions.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,33 +22,72 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi there,
+Here is something from a previous post:
 
-I am not exactly sure how this needs to be done...
+On Sun, 2003-10-12 at 11:35, Piotr P. wrote:
+>
+> Does any body know how to
+> block traffic with this word using iptables?
 
-I have a legacy machine that I need to isolate from our LAN. Network =
-access to this machine will be limited to port forwarding of telnet, and =
-a limited FTP access that will only be initiated locally on a proxy =
-machine (which will also run the iptables).
+iptables -A FORWARD -p udp -d 0/0 --dport 1024:65535 -m string --string
+"KaZaA" -j DROP
 
-Let's say that the legacy machine currently has address 10.2.1.100, and =
-I would like my proxy/firewall to have the same address. I will be =
-unplugging the legacy machine from the LAN, then assigning the =
-proxy/firewall the same IP.
+should do the trick.
 
-Can I isolate the 100 machine from the LAN, and keep the same IP? I need =
-to do this for failover, so that if the proxy box goes down, I can just =
-unplug the 100 machine from the proxy/firewall, and plug it back into =
-the LAN. I would also be unplugging the proxy/firewall from the LAN at =
-this point.
+HTH,
+C
 
-Can I port forward telnet from the LAN (eth0) side to the legacy (eth1) =
-side where both the proxy machine and the legacy machine have the same =
-IP but are isolated from each other? Is this impossible?
+Cheers,
 
-Torleiv Ringer
-IT Support
-Minnesota Public Radio
-http://www.mpr.org
+Herman
 
+
+On Thursday 16 October 2003 7:33 am, Josh Berry wrote:
+   You could use a combination of Snort-Inline:
+   http://sourceforge.net/projects/snort-inline/
+
+   and the rules that Snort has for Kazaa and other P2P stuff.
+
+   And you could also use P2Pwall which is a P2P blocking module for
+   IPTables: http://www.lowth.com/p2pwall/
+
+   > Messagehttp://p2pwall.sourceforge.net
+   >   ----- Original Message -----
+   >   From: Lohan Spies
+   >   To: netfilter@lists.netfilter.org
+   >   Sent: Thursday, October 16, 2003 10:42 AM
+   >   Subject: Block Kazaa from the internal network
+   >
+   >
+   >   Hi All,
+   >
+   >   How can i block ALL Kazaa connections from inside my network?
+   >
+   >   Thanks,
+   >
+   >   Lohan Spies
+   >   Systems Administrator CSA / DBA / MCP
+   >   IQ Business Group
+   >   Tel: +27 12 521 7309
+   >   Fax: +27 12 541 3441
+   >   Cell: +27 83 258 2698
+   >   l.spies@petzetakis-africa.co.za
+   >
+   >
+   >
+   >
+   >
+   >   CONFIDENTIALITY CAUTION: If you have received this communication in
+   > error, please note that it is intended for the addressee only, is
+   > private and confidential and dissemination or copying prohibited. Please
+   > notify us immediately by e-mail and return the original message. We
+   > cannot assure that the integrity of this communication has been
+   > maintained nor that it is free of errors, virus, interception or
+   > interference. Thank you
+
+   Thanks,
+   Josh Berry, CTO
+   LinkNet-Solutions
+   469-831-8543
+   josh.berry@linknet-solutions.com
 
