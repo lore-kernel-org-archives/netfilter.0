@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Can reach some websites, can't reach others
-Date: Sat, 22 May 2004 14:52:41 +0100
+From: "azeem ahmad" <azeem484@hotmail.com>
+Subject: ftp again
+Date: Sat, 22 May 2004 15:29:56 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405221452.41022.Antony@Soft-Solutions.co.uk>
-References: <20040522115927.GA18767@localnet> <200405221328.33189.Antony@Soft-Solutions.co.uk> <1085232725.15548.1.camel@localhost>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <BAY15-F4dP1h5lOX3Af000a1ed3@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1085232725.15548.1.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +14,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Saturday 22 May 2004 2:32 pm, John A. Sullivan III wrote:
+hi all
+when i run this script on my box the natting of ftp stops. neither clients 
+browse in non-paasive mode nor in passive mode
+what is the problem
 
-> On Sat, 2004-05-22 at 08:28, Antony Stone wrote:
-> > On Saturday 22 May 2004 12:59 pm, Sven Riedel wrote:
-> > > Hi,
-> > > I'm using a Linux 2.6.6 box as a masquerading firewall via dialup for a
-> > > local network. From the internal network I can reach some websites
-> > > (e.g. www.debian.org) but can't reach others (e.g. www.freshmeat.net).
-> > > The unreachable sites _can_ be reached from the firewall-box itself
-> > > though.
-> >
-> > This sounds like an MSS / MTU mismatch poblem.   Try doing a Google
-> > search for "clamp MSS to MTU" - that should give you some pointers.
-> >
-> > Can't offer specific advice myself since I've never experienced the
-> > problem, but I've seen it here from others several times before.
->
-> Antony's diagnosis is the more likely problem but,  if there is an old
-> proxy somewhere in the path, it can produce similar results.  If the
-> page uses some call that the proxy does not understand, some pages may
-> be blocked.
+---------------------------------------------------------------------------------------------------------------------------------------
+iptables -F
+iptables -t nat -F
+iptables -P INPUT DROP
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 8080 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 137  -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 138  -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
 
-I agree that this is a possible cause of some web pages being inaccessible, 
-however I don't think it would manifest itself as described, for clients 
-forwarded through the firewall, but not when the firewall itself is the 
-client, (any intermediate proxy would be present in both cases) nor do I 
-think (hope) that such a thing is likely with a high-traffic site such as 
-freshmeat - either the site or the proxy would have been changed some time 
-ago...
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+iptables -t nat -A PREROUTING -p udp --dport 80 -j REDIRECT --to-port 8080
 
-Regards,
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 20        -j ACCEPT
+iptables -A FORWARD -i eth0 -p udp --dport 20        -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 21        -j ACCEPT
+iptables -A FORWARD -i eth0 -p udp --dport 21        -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 443       -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 5000      -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 5001      -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 5005      -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 5050      -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 6660:6670 -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 7000      -j ACCEPT
+#iptables -A FORWARD -i eth0 -p tcp --dport 28805     -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 51215     -j ACCEPT
 
-Antony.
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+------------------------------------------------------------------------------------------------------------------------------------------
 
--- 
-There's no such thing as bad weather - only the wrong clothes.
+Regards
+Azeem
 
- - Billy Connolly
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+_________________________________________________________________
+Add photos to your messages with MSN 8. Get 2 months FREE*. 
+http://join.msn.com/?page=features/featuredemail
 
 
