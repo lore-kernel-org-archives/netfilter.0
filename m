@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Flag SYN not necessarily state NEW?
-Date: Sun, 16 Jun 2002 19:30:43 +0100
+Subject: Re: Re[2]: netmeeting ?
+Date: Sun, 16 Jun 2002 19:49:52 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206161830.g5GIUlA30385@Networker.rockstone.co.uk>
-References: <000501c21415$544d0e40$7b0010ac@dynamicaccess.lan> <1024250696.6468.3.camel@geggo>
+Message-ID: <200206161849.g5GIntA31463@Networker.rockstone.co.uk>
+References: <17729088316.20020616195415@gmx.de> <200206161807.g5GI7DA29086@Networker.rockstone.co.uk> <17730668368.20020616202035@gmx.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <1024250696.6468.3.camel@geggo>
+In-Reply-To: <17730668368.20020616202035@gmx.de>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,25 +18,48 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter Mailinglist <netfilter@lists.samba.org>
+To: IP-Tables Maillingliste <netfilter@lists.samba.org>
 
-On Sunday 16 June 2002 7:04 pm, Geog Hofstetter wrote:
+On Sunday 16 June 2002 7:20 pm, Corin Langosch wrote:
 
-> hmm is it possible that (if u use target LOG) your syslog just shows up
-> 'blah: SYN packet received'
-> 'last message repeatet 2 times'
+> Hi !
+>
+> thanks for the fast reply...i'm going to look for these messages.
+> but i don't really understand the problem. even if netmeeting uses
+> different ports, it must work i assume, when i forward the traffic
+> of *all* ports from the caller's ip to my pc behind the fireall.
 
-I would hope not - both the Source Port and the TCP ID number should be 
-different for the two connections, and since these are both included in the 
-LOG output from netfilter, the messages would not be identical...
+If that is all you were doing, then you are correct, netmeeting would 'just 
+work'.
+
+However, you are also doing Address Translation, and that makes things a 
+whole lot more complicated.....
+
+> or does netmeeting use other protocols than tcp or udp which i
+> also have to forward ??
+
+No, as far as I know netmeeting is purely TCP based, but imagine the 
+following:
+
+MachineA on real IP 192.168.1.2 contacts MachineB on routable IP 11.22.33.44 
+via a NATting firewall.   Unknown to A, MachineB is also behind a NATting 
+firewall, and its real address is 192.168.99.4
+
+Part of the message which A sends to B says "My IP address is 192.168.1.2, 
+and I've opened up TCP port 12345 for you to talk to me.   Please send your 
+next packets to that IP/port and we can set upa communication."
+
+Now if the firewall doesn't have a helper for this protocol which understands 
+the format of a message such as this, and can change the addresses 
+accordingly, it will simply go to MachineB as it is, and MachineB will do as 
+it's told - try to contact 192.168.1.2 port 12345, which is unroutable; 
+therefore the communication fails.
+
+I don't know the details of netmeeting or h323, but the above gives you an 
+idea of why some protocols are more complicated to send through a NATting 
+firewall than others.
+
+ 
 
 Antony.
-
->     >>On Wed, 8 May 2002, Ing. Christian Ogris wrote:
->     >> I connect from Box A via SSH to Box B, where the firewall runs, and
->     >> i get the state "NEW" on the first packet.
->     >> Then - the first connection is still established - i connect AGAIN
->     >> from Box A to Box B and do NOT get the state "NEW" anymore. (So
->     >> obviously it's already accepted by the ESTABLISHED,RELATED -j ACCEPT
->     >> rule). Is this behavior correct?
 
