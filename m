@@ -1,13 +1,14 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: incoming interface confusion question
-Date: Mon, 21 Jun 2004 16:18:59 -0400
+From: "Shaun T. Erickson" <ste@smxy.org>
+Subject: Re: incoming interface confusion question [LONG]
+Date: Mon, 21 Jun 2004 17:13:04 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087849139.17067.25.camel@localhost>
-References: <40D71EC4.7090900@smxy.org>  <40D736F6.50405@smxy.org>
+Message-ID: <40D74F60.6030105@smxy.org>
+References: <40D71EC4.7090900@smxy.org>  <40D736F6.50405@smxy.org> <1087849139.17067.25.camel@localhost>
+Reply-To: ste@smxy.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40D736F6.50405@smxy.org>
+In-Reply-To: <1087849139.17067.25.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +18,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: ste@smxy.org
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Mon, 2004-06-21 at 15:28, Shaun T. Erickson wrote:
-> Shaun T. Erickson wrote:
-> 
-> > Are there any cases where iptables can be confused about what interface 
-> > a packet came in on? Can a packet arriving on interface A ever be 
-> > reported as arriving on interface B?
-> > 
-> > I had an incident this weekend, and am trying to be certain that the 
-> > packets came in the interface my system said it did. It's a Red Hat 9 
-> > system, running their stock 2.4.20-8 kernel.
-> 
-> Please, can anyone answer this for me? I'm trying to prove or disprove a 
-> theory that would explain an apparent intrusion incident over the 
-> weekend. It's very important that I know the definitive answer to this. 
-> Thanks.
-> 
-> 	-ste
-I have never experienced it but I'm sure there are others more
-experienced than I on this list - John
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+Ok, here's some more detail on what happened.
 
+I have a SonicWall firewall as my external firewall. Its external 
+address and the address of the systems in the DMZ hanging off of it, are 
+in a pool of 16 real IPs we got from the ISP.
+
+The LAN port of the SonicWall is connected to a hub. The only other 
+thing connected to the hub is eth0 of my internal iptables 
+router/firewall. I have an internal lan hanging off eth1 of the iptable 
+system, and a second internal lan hanging off eth2 of the iptables 
+system. The SonicWall has two static routes pointing traffic for my 
+internal lans to eth0 on the iptables system. Both of my lans use 
+non-routable private ip address space.
+
+What happened is that the iptables system dropped what appear to be 
+quite methodical scans of system on one of my lans by sites out on the 
+internet. It saw the packets coming in eth0 and destined to head out 
+eth1 and, based on my rulesets, logged and dropped them.
+
+The problem is, the iptables system should have never seen them in the 
+first place. The source addresses are from multiple internet sites, 
+coming from either port 80 or port 443, and were destined for the 
+private address space of one of my internal lans. The initial 
+destination port seemed randomly chosen, but then incremented by 1. Most 
+often, 92 bytes was sent to each port, but not always. The ruleset of 
+the SonicWall should not allow such traffic through it. They looked over 
+my ruleset and could find nothing that would allow such traffic to pass 
+their device. Moreover, traffic destined for private non-routable 
+address space can't be routed over the internet, as routers along the 
+way would drop it, so it would seem the traffic couldn't have come in 
+the wan port of the SonicWall. Now, maybe they broke into a system on my 
+DMZ. Well, I did an nmap scan of my internal lan from the DMZ and the 
+sonicwall screamed in it's logs that a port scan was happening and it 
+dropped the packets. The iptables system never saw the scan. So that 
+suggests that it didn't come from my DMZ, either.
+
+How else could the traffic have arrived? Well, outside the sonicwall, 
+there is a switch between it and my external router. Plugged into that 
+switch is a wireless access point. If someone was on that, the packets 
+would still have to come through the sonicwall to be seen by the 
+iptables system. Sonicwall says the packets could not have come through 
+their device.
+
+Ok. Next theory: some system on the inside is compromised and spoofing 
+the source address of the packets it sends out. So maybe something on 
+lan2 tried to scan something on lan1. The problem with that is that on 
+the iptables system, I have a rule that says if a packet comes in eth2 
+with a source address other than one from the network attached to that 
+interface, the system is to drop the packet. I have a similar rule for 
+packets coming in eth1 from the other lan. So, that suggests that the 
+packets couldn't have come from the inside, either.
+
+We have a separate, smaller sonicwall that acts as our vpn concentrator. 
+Only vpn traffic passes through that device. If someone broke in via our 
+vpn, they'd either get a dhcp address on that lan or they could pretend 
+to be something else. If they spoofed packet source from there, again 
+the rule saying drop packets with a source other than that net would 
+kick in.
+
+So, The ruleset on the sonicwall says it couldn't have come from the 
+outside, and the rulset on the iptables system says it couldn't have 
+come from the inside.
+
+Now what?
+
+	-ste
 
