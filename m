@@ -1,8 +1,8 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
+From: "Andrew Brink" <abrink@netstandard.net>
 Subject: RE: Traffic Reflecting / Redirecting
-Date: Thu, 3 Apr 2003 14:48:09 -0800
+Date: Thu, 3 Apr 2003 19:31:07 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122DB0@alderaan.smgtec.com>
+Message-ID: <B45570C481D7904FA8C47E19444BF6CD030B21@nsimail1.netstandard.inc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,7 +17,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew Brink <abrink@netstandard.net>, netfilter@lists.netfilter.org
+To: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org
+
+I tried this, but for some reason it did not work, I was unable to ssh
+in...
+
+-----Original Message-----
+From: Daniel Chemko [mailto:dchemko@smgtec.com]=20
+Sent: Thursday, April 03, 2003 4:48 PM
+To: Andrew Brink; netfilter@lists.netfilter.org
+Subject: RE: Traffic Reflecting / Redirecting
+
 
 If you have a single entry point and a single IP address, this is a
 non-issue.=20
