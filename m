@@ -1,13 +1,14 @@
 From: Andrea Rossato <mailing_list@istitutocolli.org>
-Subject: Re: Best vpn w/ iptables.
-Date: Sat, 21 Dec 2002 10:58:03 +0100
+Subject: Re: Update httpd.conf file:  Apache virtualhost not working behin
+ d firewall.
+Date: Sat, 21 Dec 2002 11:12:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E043B2B.70306@istitutocolli.org>
-References: <001201c2a84c$7ec0a350$6601a8c0@s3ac>
+Message-ID: <3E043E98.2050509@istitutocolli.org>
+References: <3019863CF306D211BA4500A0CC30812DB4C250@exchange.cyberwolf.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001201c2a84c$7ec0a350$6601a8c0@s3ac>
+In-Reply-To: <3019863CF306D211BA4500A0CC30812DB4C250@exchange.cyberwolf.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,40 +21,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Starting from kernel 2.5.49 IPSec went into the tree: if you need 
-encryption and authentication that could be a solution (probably better 
-than freeswan, since the later was not considered for inclusion into the 
-kernel). I don't need them, so I'm sticking with plain gre tunnels and 
-linux-2.4.20
+Chip Upsal wrote:
+> I doubt it is strictly an apache problem as if we remove the firewall and
+> assign the external ip address to the server it all works well.
 
-for more information on tunnels and vpn you may have a look at 
-http://lartc.org (linux advanced routing and traffic control) and ask in 
-their meailing list.
-The howto explains in details how to setup a secure vpn using the kernel 
-support.
-hope this can help.
+if you solved the iptables problem and you are properly forwarding 
+traffic to the internal box, that's probably an apache issue: as far as 
+i understand you are creating a name based virtul host: apache should 
+look in the _http_headers_ to respond with the correct web server name. 
+(http headers are indeed in packet payloads and iptables will not touch 
+them when S/DNATting).
 
+so:
+
+NameVirtualHost 192.168.0.2
+<VirtualHost 192.168.0.2>
+    ServerName site4.company.com
+    ServerAlias site4*
+    ServerAdmin admin@company.com
+    DocumentRoot D:/web_root/foo4
+    ErrorLog logs/site4.cyberwolf.com-error_log
+    CustomLog logs/site4.cyberwolf.com-access_log common
+</VirtualHost>
+
+hope that this is going to work (is working for me, though).
 andrea
-
-Rowan Reid wrote:
-> 
-> I'm gonna be implimenting a VPN between two offices. Both gateways being
-> the Firewall also. Which uses Netfilter I'm looking for secure straight
-> forward routable setup and 100% compatability with netfilter ie not
-> pptp. It also has to be open source. I know this isn't a vpn group but I
-> figured you would have valuable input. Thanks Right now I'm looking at
-> freeswan
-> 
-> 
->  
-> Rowan Reid
-> Job Captain, 
-> Systems Administrator
-> STUDIO 3 ARCHITECTS
-> 909  982  1717
-> 
-> 
-> 
-> 
 
 
