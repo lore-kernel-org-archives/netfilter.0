@@ -1,12 +1,14 @@
-From: "Thomas Stian Bergheim" <bjartebe@eunet.no>
-Subject: Clients joining a host on a private LAN behind a NAT
-Date: Fri, 26 Sep 2003 05:04:47 +0200
+From: Daniel Chemko <dchemko@smgtec.com>
+Subject: Re: Clients joining a host on a private LAN behind a NAT
+Date: Thu, 25 Sep 2003 20:26:57 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c383da$f2ba2320$0200a8c0@knighthawk>
+Message-ID: <3F73B201.1020600@smgtec.com>
+References: <000001c383da$f2ba2320$0200a8c0@knighthawk>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C383EB.B642F320"
+ boundary="------------010409010901060605030303"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000001c383da$f2ba2320$0200a8c0@knighthawk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,52 +18,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: Thomas Stian Bergheim <bjartebe@eunet.no>
+Cc: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
-
-------=_NextPart_000_0001_01C383EB.B642F320
-Content-Type: text/plain;
-	charset="us-ascii"
+--------------010409010901060605030303
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi,
- 
-I've asked this question before and got a few replies, nothing that made
-it work, though.
- 
-I am behind a nat-firewall, and I want to be able to host a warcraft3
-game (this works), and have other clients on my internal network join my
-game. Right now they will see the game, but can't join it (which is
-understandable).
- 
-I've tried a few starcraft-scripts, without much luck..
- 
-I'm using iptables. Any ideas?
- 
-Thanks,
- 
- - Thomas
- 
+Not sure about WarIII, but some games need online auth before they can 
+connect to the game. Is the game started in Internet or LAN mode?
 
-------=_NextPart_000_0001_01C383EB.B642F320
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+When you say you can host the game, does that mean people from the 
+internet can join, or does it mean that you can start the server program?
 
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
+Thomas Stian Bergheim wrote:
 
+> Hi,
+>
+>  
+>
+> I've asked this question before and got a few replies, nothing that 
+> made it work, though.
+>
+>  
+>
+> I am behind a nat-firewall, and I want to be able to host a warcraft3 
+> game (this works), and have other clients on my internal network join 
+> my game. Right now they will see the game, but can't join it (which is 
+> understandable).
+>
+>  
+>
+> I've tried a few starcraft-scripts, without much luck..
+>
+>  
+>
+> I'm using iptables. Any ideas?
+>
+>  
+>
+> Thanks,
+>
+>  
+>
+>  - Thomas
+>
+>  
+>
+
+--------------010409010901060605030303
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
 <head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-
-
-<meta name=3DProgId content=3DWord.Document>
-<meta name=3DGenerator content=3D"Microsoft Word 10">
-<meta name=3DOriginator content=3D"Microsoft Word 10">
-<link rel=3DFile-List href=3D"cid:filelist.xml@01C383EB.B5143720">
+  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
+  <title></title>
+</head>
+<body>
+Not sure about WarIII, but some games need online auth before they can
+connect to the game. Is the game started in Internet or LAN mode?<br>
+<br>
+When you say you can host the game, does that mean people from the
+internet can join, or does it mean that you can start the server
+program?<br>
+<br>
+Thomas Stian Bergheim wrote:<br>
+<blockquote type="cite"
+ cite="mid000001c383da$f2ba2320$0200a8c0@knighthawk">
+  <meta content="text/html; " http-equiv="Content-Type">
+  <meta content="Word.Document" name="ProgId">
+  <meta content="Microsoft Word 10" name="Generator">
+  <meta content="Microsoft Word 10" name="Originator">
+  <link href="cid:filelist.xml@01C383EB.B5143720" rel="File-List">
 <!--[if gte mso 9]><xml>
  <o:OfficeDocumentSettings>
   <o:DoNotRelyOnCSS/>
@@ -82,7 +113,7 @@ charset=3Dus-ascii">
   <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
  </w:WordDocument>
 </xml><![endif]-->
-<style>
+  <style>
 <!--
  /* Style Definitions */
  p.MsoNormal, li.MsoNormal, div.MsoNormal
@@ -126,10 +157,9 @@ span.GramE
 div.Section1
 	{page:Section1;}
 -->
-</style>
-<!--[if gte mso 10]>
+  </style><!--[if gte mso 10]>
 <style>
- /* Style Definitions */=20
+ /* Style Definitions */ 
  table.MsoNormalTable
 	{mso-style-name:"Vanlig tabell";
 	mso-tstyle-rowband-size:0;
@@ -144,98 +174,52 @@ div.Section1
 	font-family:"Times New Roman";}
 </style>
 <![endif]-->
-</head>
-
-<body lang=3DNO-BOK link=3Dblue vlink=3Dpurple =
-style=3D'tab-interval:35.4pt'>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hi,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB'>I&#8217;ve asked this
-question before and got a few replies, nothing that made it work, =
+  <div class="Section1">
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;">Hi,<o:p></o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;"><o:p>&nbsp;</o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB">I&#8217;ve asked
+this
+question before and got a few replies, nothing that made it work,
 though.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></span=
-></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB'>I am behind a <span
-class=3DSpellE>nat</span>-firewall, and I want to be able to host a =
-warcraft3
-game (this works), and have other clients on my internal network join my =
-game. Right
-now they will see the game, but can&#8217;t join it (which is =
-understandable).<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></span=
-></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB'>I&#8217;ve tried a few =
-<span
-class=3DSpellE>starcraft</span>-scripts, without much luck<span =
-class=3DGramE>..</span><o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></span=
-></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB'>I&#8217;m using <span
-class=3DSpellE>iptables</span>. <span class=3DGramE>Any =
-ideas?</span><o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></span=
-></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB'>Thanks,<o:p></o:p></spa=
-n></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></span=
-></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial;mso-ansi-language:EN-GB;mso-no-proof:yes'><span
-style=3D'mso-spacerun:yes'>&nbsp;</span>- =
-Thomas<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-lang=3DEN-GB
-style=3D'font-size:12.0pt;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></spa=
-n></font></p>
-
-</div>
-
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB">I am behind
+a <span class="SpellE">nat</span>-firewall, and I want to be able to
+host a warcraft3
+game (this works), and have other clients on my internal network join
+my game. Right
+now they will see the game, but can&#8217;t join it (which is understandable).<o:p></o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB">I&#8217;ve tried a
+few <span class="SpellE">starcraft</span>-scripts, without much luck<span
+ class="GramE">..</span><o:p></o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB">I&#8217;m using <span
+ class="SpellE">iptables</span>. <span class="GramE">Any ideas?</span><o:p></o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB">Thanks,<o:p></o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
+  <p class="MsoNormal"><font face="Arial" size="2"><span
+ style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><span
+ style="">&nbsp;</span>- Thomas<o:p></o:p></span></font></p>
+  <p class="MsoNormal"><font face="Times New Roman" size="3"><span
+ style="font-size: 12pt;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
+  </div>
+</blockquote>
 </body>
-
 </html>
 
-------=_NextPart_000_0001_01C383EB.B642F320--
-
+--------------010409010901060605030303--
 
 
