@@ -1,66 +1,135 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Usage of CONNMARK
-Date: Sun, 6 Feb 2005 01:51:38 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0502060136540.22104@filer.marasystems.com>
-References: <42032EC5.4090303@multitech.co.in>
-	<Pine.LNX.4.61.0502041515360.10050@filer.marasystems.com>
-	<42047777.3030102@multitech.co.in>
+From: varun_saa@vsnl.net
+Subject: Re: myrules comment
+Date: Sun, 06 Feb 2005 08:42:17 +0500
+Message-ID: <3c5ed43c67b9.3c67b93c5ed4@vsnl.net>
 Mime-Version: 1.0
-In-Reply-To: <42047777.3030102@multitech.co.in>
+Content-Transfer-Encoding: 7BIT
+Content-language: en
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Vinod Chandran <vinod_chandran@multitech.co.in>
-Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
-
-On Sat, 5 Feb 2005, Vinod Chandran wrote:
-
-> Currently, from the FTP helper if DROP is given, the packets are not getting 
-> dropped since the conntrack entry exists and also since from where the helper 
-> routine is called, there is no check for return value of NF_DROP. Hence when 
-> NF_DROP is returned, inside ip_conntrack_in, I set the conntrack value
->      ct->mark = 1
-> However this CONNMARK value is getting applicable only from the next packet 
-> ownwards.
-
-I do not follow. Conntract helpers can return NF_DROP to drop the packets, 
-and this will cause the packet to be dropped. This is actively used today 
-by the FTP helper when an partial request is received.
-
-From ip_conntrack_in:
-
-         if (ret != NF_DROP && ct->helper) {
-                 ret = ct->helper->help(*pskb, ct, ctinfo);
- 	[...]
-
- 	return ret;
-}
-
-> If on the other hand, say I try to change the mark value, (*pskb)->nfmark ( I 
-> assume it contains the MARK indicator), and put a rule in the 
-> KEEP_STATE_FORWARD chain to drop packets with the specific mark value, the 
-> kernel is panicing , with a BUG in sched.c. I also get panic if I call 
-> nf_conntrack_put.
-
-Setting the nfmark like this (MARK) should work, and should not panic your 
-system.
-
-In addition, setting the connection mark from helpers called in 
-ip_conntrack_in should be available in all iptables chains.
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jason Opperisano <opie@817west.com>
+Cc: netfilter@lists.netfilter.org
 
 
-All three of your problems makes no sense to me. All should work (return 
-NF_DROP from helpers, setting the connection mark, setting the nfmark).
 
-Regards
-Henrik
+----- Original Message -----
+From: Jason Opperisano <opie@817west.com>
+Date: Thursday, February 3, 2005 7:48 pm
+Subject: Re: myrules comment
+
+> On Wed, 2005-02-02 at 23:58, varun_saa@vsnl.net wrote:
+> > Hello,
+> >      My server is Mandrake 10.1
+> > eth0 is WAN with static IP connected to 512k DSL
+> > eth1 is LAN.
+> > 
+> > Basically I want clients to able to :
+> > 
+> > 1. send and recieve mails
+> 
+> internal users sending mail:
+> 
+>  iptables -A FORWARD -i eth1 -o eth0 -p tcp --syn \
+>    --sport 1024: --dport 25 -j ACCEPT
+> 
+> internal users receiving mail via pop3:
+> 
+>  iptables -A FORWARD -i eth1 -o eth0 -p tcp --syn \
+>    --sport 1024: --dport 110 -j ACCEPT
+> 
+> > 2. browse the net through squid
+> 
+> internal users connecting to squid:
+> 
+>  iptables -A INPUT -i eth1 -p tcp --syn \
+>    --sport 1024: --dport 3128 -j ACCEPT
+> 
+> squid proxy fetching content from the internet:
+> 
+>  iptables -A OUTPUT -p udp \
+>    --sport 1024: --dport 53 -j ACCEPT
+> 
+>  iptables -A OUTPUT -o eth0 -p tcp --syn \
+>    -m owner --uid-owner squid \
+>    --sport 1024: --dport 80 -j ACCEPT
+> 
+> > 3. Use MSN or Yahoo
+> 
+> msn:
+> 
+>  iptables -A FORWARD -i eth1 -o eth0 -p tcp --syn \
+>    --sport 1024: --dport 1863 -j ACCEPT
+> 
+> yahoo:
+> 
+>  iptables -A FORWARD -i eth1 -o eth0 -p tcp --syn \
+>    --sport 1024: --dport 5050 -j ACCEPT
+> 
+> > My iptables config is as follows :
+> > 
+> > # Generated by iptables-save v1.2.9 on Thu Oct 21 05:32:36 2004
+> > *nat
+> > :OUTPUT ACCEPT [0:0]
+> > :PREROUTING ACCEPT [0:0]
+> > :POSTROUTING ACCEPT [0:0]
+> > -A POSTROUTING -o eth0 -j MASQUERADE
+> > COMMIT
+> > # Completed on Thu Oct 21 05:32:36 2004
+> > # Generated by iptables-save v1.2.9 on Thu Oct 21 05:32:36 2004
+> > *mangle
+> > :PREROUTING ACCEPT [32056:3889577]
+> > :INPUT ACCEPT [32010:3885659]
+> > :FORWARD ACCEPT [0:0]
+> > :OUTPUT ACCEPT [31637:4617585]
+> > :POSTROUTING ACCEPT [31639:4618071]
+> > COMMIT
+> > # Completed on Thu Oct 21 05:32:36 2004
+> > # Generated by iptables-save v1.2.9 on Thu Oct 21 05:32:36 2004
+> > *filter
+> > :FORWARD DROP [0:0]
+> > :INPUT DROP [0:0]
+> > :OUTPUT ACCEPT [0:0]
+> > -A INPUT -j ACCEPT
+> 
+> every INPUT rule after this is ignored, as you have just accepted all
+> packets,
+> 
+> > -A INPUT -s 127.0.0.1 -j ACCEPT
+> > -A INPUT -p tcp -m tcp -i eth1 --dport 3128 -j ACCEPT
+> > -A INPUT -p udp -m udp -i eth1 --dport 3128 --sport 80 -j ACCEPT
+> > -A INPUT -s 62.0.0.0/255.0.0.0 -i eth0 -j REJECT
+> > -A INPUT -p tcp -m tcp -s 217.81.0.0/255.255.0.0 -i eth0 -j REJECT
+> > -A INPUT -i eth0 -j DROP
+> > -A INPUT -p tcp -m tcp -i eth1 --sport 80 -j DROP
+> > -A INPUT -m state -i eth1 --state ESTABLISHED,RELATED -j ACCEPT
+> > -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> 
+> excellent.
+> 
+> > -A FORWARD -i eth1 -o eth0 -p tcp --syn --sport 1024 --dport 25 -
+> j ACCEPT
+> > -A FORWARD -i eth1 -o eth0 -p tcp --syn --sport 1024 --dport 110 -
+> j ACCEPT 
+> 
+> those rules will only match packets that have a source port of exactly
+> 1024--which won't be many packets.  i think you mean "1024:"
+>   
+> -j
+> 
+>Yes that was a typo error.
+Thanks a lot for your inputs.
+I trying to understand.
+
+Varun
+
 
