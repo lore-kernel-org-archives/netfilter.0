@@ -1,13 +1,13 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: vpn under linux
-Date: Sat, 10 Apr 2004 08:30:11 -0400
+From: Luke Deryckx <luke@westaironline.com>
+Subject: Re: Multiple PPTP clients behind iptables.
+Date: Sat, 10 Apr 2004 10:40:48 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081600210.491.12.camel@localhost>
-References: <4077B7EF.5070805@tin.it>
+Message-ID: <BC9D7FB0.6FB9%luke@westaironline.com>
+References: <GHEILNONPACCGBGKBEKKOEBKCFAA.mani@manikandan.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4077B7EF.5070805@tin.it>
+In-Reply-To: <GHEILNONPACCGBGKBEKKOEBKCFAA.mani@manikandan.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,56 +18,106 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Gianni Pucciani <gp.puccio@tin.it>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: manikandan@manikandan.org, Manikandan <mani@manikandan.org>, Netfilter list <netfilter@lists.netfilter.org>
 
-On Sat, 2004-04-10 at 05:01, Gianni Pucciani wrote:
-> Hi all,
-> some of you can give me some input about the best way to set up a vpn 
-> under two Linux RH9 systems?
-> I heared there are different solution (PPP and SSH, PPTP...) and I'd 
-> like to know your opinion about that.
-> Thanks
+It looks like your trying to patch the out of the box Redhat 9 kernel
+correct? You'll need to upgrade to a newer kernel to apply this patch. I
+have successfully applied it to both 2.4.22 and 2.4.25 kernels.
+
+
+Luke
+
+
+On 4/9/04 10:18 PM, "Manikandan" <mani@manikandan.org> wrote:
+
+> When I try to apply the patch, using netfilter CVS I am getting an error
+> like
 > 
-> Gianni
-
-Like Antony, we prefer and utilize IPSec for network to network
-connections.  In fact, our entire business model of global delivery of
-IT services from centralized GNOCs is built around it and have used it
-for very complex and very large site to site configurations (hundreds of
-gateways and thousands of users and planned for thousands of gateways
-and tens of thousands of users).  We are in the process of transitioning
-from an extraordinarily powerful but obscure proprietary product to an
-open source solution.
-
-The closest solution we could find to rival the commercial offerings on
-such a large scale is netfilter + freeS/WAN + iproute2 + ISC DHCP +
-StrongSec DHCP Relay + OpenCA.  There are reasonable alternatives to
-OpenCA.
-
-The FreeS/WAN code is alive and healthy.  Two major cooperative forks
-are available.  One is at www.openswan.org and the other is at
-www.strongswan.org.  Both are well supported and helpful.
-
-There a fairly complete although slightly dated slide shows on tying all
-these technologies together (other than OpenCA) in the training section
-of http://iscs.sourceforge.net.
-
-The only major missing piece right now to make this combination a
-full-fledged competitor to the largest and most expensive commercial
-players is a sophisticated management front end such as those offered by
-Solsoft, SmartPipes, NetScreen, Checkpoint, etc.  That is the hole I am
-trying to fill with the ISCS project.  It is the last piece that we need
-before we can do with open source tools what we have previously only
-been able to do with commercial tools to achieve the scale and
-complexity we need. If anyone wants to help, it is a huge project and I
-can use all the help I can get!
-
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
+> Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
+> Testing patch submitted/03_2.4.21.patch...
+> Failed to patch copy of /usr/src/linux-2.4.20-8/
+> TEST FAILED: patch NOT applied.
+> 
+> [Press enter to continue]
+> What could be wrong?
+> Regards,
+> Manikandan
+> -----Original Message-----
+> From:    Luke Deryckx [mailto:luke@westaironline.com]
+> Sent:    Friday, April 09, 2004 9:38 PM
+> To:    manikandan@manikandan.org
+> Cc:    Netfilter list
+> Subject:    Re: Multiple PPTP clients behind iptables.
+> 
+> This patch worked very nicely for me as well. Keep in mind you also need to
+> recompile iptables after you've patched your kernel.
+> Cheers
+> 
+> 
+> 
+> On 4/9/04 8:55 AM, "Alexis" <alexis@tpys.com.ar> wrote:
+>> yes, you need the pptp patch
+>> 
+>> ive been in the same situation, and applying the patch made it work just
+>> fine.-
+>> 
+>> see
+>> 
+> http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-5.h
+> tm
+>> l#ss5.6
+>> 
+>> ----- Original Message -----
+>> From:    "Manikandan" <mani@manikandan.org>
+>> To:    "Netfilter" <netfilter@lists.netfilter.org>
+>> Sent:    Friday, April 09, 2004 12:08 PM
+>> Subject:    Multiple PPTP clients behind iptables.
+>> 
+>> 
+>>> Dear friends,
+>>> 
+>>> As I am getting more confused about VPN masq., request your help on
+>>> this.
+>>> 
+>>> My local LAN is 10.35.0.0/24
+>>> My Linux box running red hat linux 9.0 with kernel 2.4.20-8. acting as
+> the
+>>> gateway for my LAN to Internet.
+>>> 
+>>> I need to allow my LAN clients to access Microsoft windows VPN (Windows
+>> 2000
+>>> Adv. Server) using PPTP over Internet.
+>>> I am not able to make more than one connection to the VPN server as my
+> LAN
+>>> outgoing traffic to Internet is getting SNAT to single public IP.
+>>> 
+>>> 
+>>> I read few guides and howtos to configure my firewall to allow multiple
+>> PPTP
+>>> sessions. But still I couldn't get through.
+>>> 
+>>> Do I need to patch my kernel? What support do I need to enable this
+>> multiple
+>>> PPTP traffic.
+>>> 
+>>> Request your views and help on this.
+>>> 
+>>> 
+>>> Have a nice day
+>>> 
+>>> Regards,
+>>> Manikandan.
+>>> 
+>>> 
+>>> 
+>>> 
+>>> 
+>>> 
+>>> 
+>>> 
+>> 
+> 
+> 
+> 
 
 
