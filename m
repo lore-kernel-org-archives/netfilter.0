@@ -1,12 +1,15 @@
-From: <bmcdowell@coxhealthplans.com>
-Subject: RE: How to NAT inside a LAN over a single Interface
-Date: Fri, 19 Dec 2003 12:06:12 -0600
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: question about pptp connection tracking
+Date: Fri, 19 Dec 2003 09:22:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D731012C667B@coxhpexg.coxhp.com>
+Message-ID: <20031219082252.GB2794@obroa-skai.de.gnumonks.org>
+References: <3FE235CA.5050306@design-pt.com> <3FE24EB8.4080604@design-pt.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="MfFXiAuoTsnnDAfZ"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <3FE24EB8.4080604@design-pt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,78 +19,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Matthew Schumacher <schu@design-pt.com>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
-I don't know if anyone else has pointed this out yet, but you can
-probably use their network wires to do this.  Unless the switches are
-locked down, you can run your NAT network over a different IP scheme on
-the same wires.  So, you might try:
+--MfFXiAuoTsnnDAfZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-1)  Add a NIC to a machine that's allowed to access the internet.
-2)  Set it up to do NAT.  Use say 10.10.10.x/24 for the 'internal' IP
-scheme.
-3)  Pipe that new NIC via a hub right back into their network.
-4)  Supply any restricted clients with a second IP on the 10.x scheme.
-5)  Tweak the routing on those clients so that the 10.x NAT box is the
-gateway to the internet.
+On Thu, Dec 18, 2003 at 04:04:56PM -0900, Matthew Schumacher wrote:
+> Confirmed, compiling the pptp-conntrack-nat patch as modules and not=20
+> loading them causes my pptpd server to work again, loading them causes=20
+> it to break.  Since iptables doesn't seem to be dropping packets I'm=20
+> assuming that either (1) I have not configured iptables correctly, (2) I=
+=20
+> have found a bug, or (3) this module isn't supposed to work that way.
 
-I once did something very similar to bypass a little bureaucracy.  It
-took them four months to discover it.  When they did, I had a strong
-case for physically separating our networks...  Oh, the memories...
+*sigh*.  How often do I have to state this on the mailinglist:
 
+a) which exact kernel version are you running? Plain source from
+kernel.org, vendor sources?
+b) which patches [apart from pptp] from what version_ of patch-o-matic
+did you apply?
 
-Bob
+Do you have any idea how much changes there are in pom and the kernel
+over time?  How can I guess whcih particular combination you are
+running, and which potential bugs have been solved since then?
 
+> >I'm using pptp-conntrack-nat from pom 20030912.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Jeffrey Laramie
-Sent: Friday, December 19, 2003 11:26 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: How to NAT inside a LAN over a single Interface
-
-
-Dietmar Hofer wrote:
-
-I haven't found anythink clearing my problem doing some research in this
-list, nevertheless I'm sorry if you find my question annoying 'cos I'm
-quite new to this issue.=20
-
-I'm in a class B LAN and would make a Machine work as Gateway for
-another, both in the same network. This because the Internet Gateway
-accepts only requests of registered Interfaces (MAC-based).=20
-The Machine which I want to let do this has only one eth-Interface. what
-in theory should be enough.=20
-I set up NAT with "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
-and changed the route on the source machine to use the other as gateway.
-
-When pinging from the source machine, "/var/log/syslog" on the gateway
-shows me this requests:=20
-
-Dec 18 22:42:44 hogwart kernel: IN=3Deth0 OUT=3Deth0 SRC=3D192.168.2.201
-DST=3D192.168.2.150 LEN=3D8=20
-4 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D0 DF PROTO=3DICMP TYPE=3D8 =
-CODE=3D0 ID=3D7294
-SEQ=3D1=20
-
-But I don't get an answer on the source machine, (while naturally i can
-ping the given IP from the gateway itself).=20
-In a HOWTO I found the hint that doing NAT with only 1 Interface for
-input and output may not work with this config 'cos since kernel 2.4
-some sort of ICMP redirections doesn't work or so...=20
-
-What I want to know is just what I've to do to use this machine as
-gateway with only one interface.=20
-Hope you can help=20
+that's most likely the problem.   please try using a more recent version
+(latest cvs snapshot or even CVS).
 
 
-I'm afraid I've never heard of a configuration where you use the same
-NIC for both input and output. I doubt this would work for numerous
-reasons, but even if it did, why bother? A NIC is $19.95 and a patch
-cable is a few bucks. Wouldn't it be much easier to install another NIC
-and avoid all the routing headaches?
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-Jeff
+--MfFXiAuoTsnnDAfZ
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/4rVbXaXGVTD0i/8RAkcqAKCMQDN3Bbj1Br4tY9ILaz9ZsTPx9QCcDEeG
+uN+0mPQR+Tzo5sEiPS5pQr4=
+=j51Y
+-----END PGP SIGNATURE-----
+
+--MfFXiAuoTsnnDAfZ--
 
