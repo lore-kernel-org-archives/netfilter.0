@@ -1,13 +1,14 @@
-From: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
-Subject: Re: Trouble with PPTP
-Date: Wed, 22 Oct 2003 16:16:36 -0700
+From: Joel Newkirk <firewalldude@newkirk.us>
+Subject: Re: Time changes
+Date: Wed, 22 Oct 2003 20:35:02 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066850242.3919.32.camel@ranjeet-pc2.zultys.com>
-References: <002501c398ba$fcf59dc0$01d2a8c0@adm.ae.wroc.pl>
+Message-ID: <1066869302.2946.353.camel@alpha.newkirk.us>
+References: <NEBBICCJKLGJHMMNBPIKAENKFLAA.sbisgaard@xtrasource.com>
+Reply-To: firewalldude@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002501c398ba$fcf59dc0$01d2a8c0@adm.ae.wroc.pl>
+In-Reply-To: <NEBBICCJKLGJHMMNBPIKAENKFLAA.sbisgaard@xtrasource.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,74 +19,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrzej Kozak <kozak@manager.ae.wroc.pl>
-Cc: kernel@linuxace.com, netfilter@lists.netfilter.org
+To: sbisgaard@xtrasource.com
+Cc: netfilter@lists.netfilter.org
 
-On Wed, 2003-10-22 at 09:38, Andrzej Kozak wrote:
-> Thanks Phil,
-> Is better but not excellent.
-> After when I :
-> Patched kernel (pptp-conntrack-nat from p-o-m)
-> Recompiled iptables v 1.2.8
-> Recompiled kernel
-> i get the same message: iptables: Invalid argument
-> but only if firewall script is automated executing from
-> /etc/rc.boot/firewallscript (DEBIAN 3.0 distribution) when linux is
-> booting or rebooting.
-> If I log into system and executing this script manually is everything
-> OK !
-> What is wrong ? 
+On Wed, 2003-10-22 at 15:44, Steffen Bisgaard - Xtrasource wrote:
+> Hallo list,
 >  
-> best regards
-> Andrew Kozak
+> A quick question: Is it possible to block access to and from a PC (say
+> 10.2.0.3) at a specific time, for example 21:00, and re-enable it at
+> 08:00 the next day using iptables - and if so how?? Yes this is the
+> kids PC...
+> It used to be real simple with ipfw - I can't remember the syntax but
+> something along the lines of ipfw -add (or -remove) deny (or allow)
+> 10.2.0.3 all
 >  
->  
-> > Rebuild iptables userspace using the patched kernel for the headers.
-> >
-> > Phil Oester
-> >
-> > On Wed, Oct 15, 2003 at 03:46:49PM +0200, Andrzej Kozak wrote:
-> > > Hello!
-> > > When I patched my 2.4.22 kernel with pptp-conntrack-nat -DNAT and
-> -SNAT
-> is broken if I use iptables with -t nat
-> > > I get message: iptables: Invalid argument
-> > > Iptables v. 1.2.8
-> > > I need establish connect from my security network to outside VPN
-> server.
-> > >
-> > > best regards
-> > >
-> > > Andrew Kozak
+> Any ideas? Or do I need two separate iptables scripts?
 
-1. make sure your /usr/src/linux link points to the correct linux kernel
-source. I dont think this is the problem, just verify this.
+Not full scripts.  Try creating two cron jobs - one running at 21:00 the
+other at 08:00.  One is just:
+iptables -I FORWARD 1 -s 10.2.0.3 -j REJECT
+the other
+iptables -D FORWARD -s 10.2.0.3 -j REJECT
 
-2. it sounds like you've got iptables installed in 2 seperate locations.
-the older version (compiled against old kernel) is hardcoded or picked
-up by the init scripts but when you log in, your $PATH picks up the
-newer one (compiled against correct kernel).
-
-I think this is what your problem is.
-
-"locate iptables | grep bin" should identify this problem very quickly.
-If not, then you need to dig into the /etc/init.d script that is used on
-botup and see where its picking up its iptables from. "which iptables"
-should tell you where your login copy is coming from.
-
-HTH,
-
--- 
-
-Ranjeet Shetye
-Senior Software Engineer
-Zultys Technologies
-Ranjeet dot Shetye2 at Zultys dot com
-http://www.zultys.com/
- 
-The views, opinions, and judgements expressed in this message are solely
-those of the author. The message contents have not been reviewed or
-approved by Zultys.
+j
 
 
 
