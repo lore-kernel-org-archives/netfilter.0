@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: (no subject)
-Date: Wed, 26 Nov 2003 22:50:58 +0000
+Date: Wed, 26 Nov 2003 22:53:23 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311262250.58417.Antony@Soft-Solutions.co.uk>
-References: <1069853846.3fc4ac966be15@paris-hme1> <200311262048.49827.Antony@Soft-Solutions.co.uk> <1069886478.3fc52c0e61202@paris-hme1>
+Message-ID: <200311262253.23816.Antony@Soft-Solutions.co.uk>
+References: <1069853846.3fc4ac966be15@paris-hme1> <200311262048.49827.Antony@Soft-Solutions.co.uk> <1069886704.23423.187.camel@alpha.newkirk.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1069886478.3fc52c0e61202@paris-hme1>
+In-Reply-To: <1069886704.23423.187.camel@alpha.newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,40 +20,38 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 26 November 2003 10:41 pm, zynkx wrote:
+On Wednesday 26 November 2003 10:45 pm, Joel Newkirk wrote:
 
-> antony:
+> On Wed, 2003-11-26 at 15:48, Antony Stone wrote:
+> >
+> > I'm not quite sure why you want to accept email only from Hotmail and
+> > Yahoo, and from nowhere else (a lot of people I know do the exact
+> > opposite!), however I still think an easier solution to your erquirement
+> > is to accept all email through your firewall, and then accept only mail
+> > from Hotmail / Yahoo on your mail server - because that can select based
+> > on the sender's address, without needing to know the IPs of their mail
+> > servers (which may change one day without you knowing).
 >
-> the only reason why i am doing this is because i am
-> blocking all incoming connectios to my box except
-> portuguese connections. i manage to get all the
-> portuguese ip ranges, put the forward chain to drop
-> and a accepted all the sources i want to get
-> connections from. this way i will only be accepting
-> connetions from portugal, since that the ammount of
-> users i administrate is not enough for that machine to
-> be opened to the whole world.
+> Ah, but the point is that while lots of spam claims to be from
+> *@yahoo.com, if it comes to us from a known yahoo IP then we at least
+> know it's a legitimate source address.  The problem regarding yahoo and
+> spam is NOT that yahoo is the source of so much spam, but that so much
+> spam forges a yahoo.com source.  The 'ideal' filter would reject any
+> email claiming a yahoo sender that doesn't come from a yahoo mailserver.
 
-Explain to me why you only want to allow connections from Portuguese IPs?
+I agree with this completely, however I didn't get the impression from the 
+original posting that this was the reason for wanting to do it in this case?
 
-What is the problem with "that machine being opened to the world"?
-
-1. What services are you providing anyway?
-
-2. What is the limiting factor in not wanting just anyone from anywhere to be 
-able to connect?   Is the machine severely under-powered, so it couldn't cope 
-with the load, or do you have a very slow Internet link, and you don't want 
-it saturated...?
-
-Maybe you know what you're doing and blocking by country IP range is the right 
-solution to your problem, but where email is concerned I would never choose 
-that way of doing it.
+Even if this was the overall goal, I would still recommend filtering email on 
+the MTA (qmail in this case) rather than with netfilter.
 
 Antony.
 
 -- 
-If builders made buildings the way programmers write programs, then the first 
-woodpecker to come along would destroy civilisation.
+It is also possible that putting the birds in a laboratory setting 
+inadvertently renders them relatively incompetent.
+
+ - Daniel C Dennet
 
                                                      Please reply to the list;
                                                            please don't CC me.
