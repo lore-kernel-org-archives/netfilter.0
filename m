@@ -1,14 +1,12 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: RE: Telnet not being let through
-Date: Tue, 17 Sep 2002 19:24:57 -0700
+From: Naleendra@dms.lanka.net
+Subject: problems with ftp
+Date: Tue, 17 Sep 2002 20:17:54 +0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPCEPDCOAA.stewart.thompson@shaw.ca>
-References: <5.1.1.6.0.20020917182240.00b2f008@mail.attbi.com>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <6029A399F5BFD6118BB200104B0DF37302764E@mailgate.dms.lanka.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C25E55.03954320"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <5.1.1.6.0.20020917182240.00b2f008@mail.attbi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,58 +16,96 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Chris Born <ragable@attbi.com>, netfilter@lists.netfilter.org
-
-Chris:
-
-	The order of the rules is important. You are jumping to the
-drop-and-log it chain I assume you also have defined. Remove the middle
-reference to it. Also define your Interfaces before you reference them in
-the script.
-
-Stu.........
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Chris Born
-Sent: September 17, 2002 7:15 PM
 To: netfilter@lists.netfilter.org
-Subject: Telnet not being let through
 
-I'm trying to allow telnet sessions through from the outside. Here are the
-rules I have for the input chain:
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-$IPTABLES = /sbin/iptables
-$UNIVERSE = "0.0.0.0/0"
+------_=_NextPart_001_01C25E55.03954320
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-$EXTIP = "`$IFCONFIG $EXTIF | /bin/grep 'inet addr'  | /bin/awk '{print 2}'
-| /bin/sed -e 's/.*://'`"
+Hi,
 
-$EXTIF = "eth1"
-$INTIF = "eth0"
+	First & foremost thanks anthony, telnet works smoothly. 
 
-$INTNET = "192.168.0.0/24"
+	You see I am checking the services that I'll be needing one by one
+before by plug in the IPTABLES box in to a running network. Next on line is
+FTP. Now I've heard that FTP tends to be a bit bothersome . Listed below is
+my FTP ruleset. My connections are refused both ways. Your help is greatly
+appreciated.
 
-$IPTABLES -P INPUT DROP
-$IPTABLES -F INPUT
+   #Allow FTP outbound.
+iptables -A INPUT -i $PPPIF -p tcp --sport 21 -m state --state ESTABLISHED
+-j ACCEPT
+iptables -A OUTPUT -o $PPPIF -p tcp --dport 21 -m state --state
+NEW,ESTABLISHED -j ACCEPT   
+iptables -A INPUT -i $PPPIF -p tcp --sport 20 --dport $UP_PORTS  -m state
+--state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -o $PPPIF -p tcp --sport $UP_PORTS --dport 20  -m state
+--state ESTABLISHED -j ACCEPT
+ iptables -A INPUT -i $PPPIF -p tcp --sport $UP_PORTS --dport $UP_PORTS  -m
+state --state ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o $PPPIF -p tcp --sport $UP_PORTS --dport $UP_PORTS  -m
+state --state ESTABLISHED,RELATED -j ACCEPT 
 
-$IPTABLES -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
-$IPTABLES -A INPUT -i $INTIF -s $INTNET -d $UNIVERSE -j ACCEPT
-$IPTABLES -A INPUT -i $EXTIF -s $INTNET -d $UNIVERSE -j drop-and-log-it
-$IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -m state --state
-ESTABLISEHED,RELATED
-$IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -p TCP --dport 23 -j
-ACCEPT
-$IPTABLES -A INPUT -s $UNIVERSE -d $UNIVERSE -j drop-and-log-it
+-nal
 
-Telnetting from and inside machine works just fine, but every time someone
-tries to connect from the outside the connection is refused. Wondering what
-I'm doing wrong here.
+------_=_NextPart_001_01C25E55.03954320
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
--Chris Born
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>problems with ftp</TITLE>
+</HEAD>
+<BODY>
 
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hi,</FONT>
+</P>
 
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">First &amp; foremost thanks anthony, telnet works =
+smoothly. </FONT>
+</P>
 
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">You see I am checking the services that I'll be needing =
+one by one before by plug in the IPTABLES box in to a running network. =
+Next on line is FTP. Now I've heard that FTP tends to be a bit =
+bothersome . Listed below is my FTP ruleset. My connections are refused =
+both ways. Your help is greatly appreciated.</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp; #Allow FTP =
+outbound.</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">iptables -A INPUT -i $PPPIF -p tcp =
+--sport 21 -m state --state ESTABLISHED -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">iptables -A OUTPUT -o $PPPIF -p tcp =
+--dport 21 -m state --state NEW,ESTABLISHED -j ACCEPT&nbsp;&nbsp; =
+</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">iptables -A INPUT -i $PPPIF -p tcp =
+--sport 20 --dport $UP_PORTS&nbsp; -m state --state ESTABLISHED,RELATED =
+-j ACCEPT</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">iptables -A OUTPUT -o $PPPIF -p tcp =
+--sport $UP_PORTS --dport 20&nbsp; -m state --state ESTABLISHED -j =
+ACCEPT</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;iptables -A INPUT -i $PPPIF -p =
+tcp --sport $UP_PORTS --dport $UP_PORTS&nbsp; -m state --state =
+ESTABLISHED -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">iptables -A OUTPUT -o $PPPIF -p tcp =
+--sport $UP_PORTS --dport $UP_PORTS&nbsp; -m state --state =
+ESTABLISHED,RELATED -j ACCEPT </FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">-nal</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C25E55.03954320--
 
