@@ -1,9 +1,11 @@
-From: Daniel Camacho <dcamacho@saipan.com>
-Subject: IPTables & Squid
-Date: Fri, 01 Aug 2003 09:51:19 +1000
+From: "sarky" <sarky@raycon.net>
+Subject: Email Extractor.
+Date: Fri, 1 Aug 2003 00:49:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.0.14.2.20030801094250.02f127f0@mail.saipan.com>
+Message-ID: <002701c357be$6ea6e520$c9cb7ad5@AlienW>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0024_01C357C6.CF369DB0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,48 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
-Hi all,
+------=_NextPart_000_0024_01C357C6.CF369DB0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I'm new to this list and to IPtables. I recently installed a transparent 
-proxy using Squid and IPtables. On one computer, I installed IPtables and 
-forward all port 80 requests to the Squid server, which is running on a 
-separate server. On that same computer I want to be able to filter certain 
-connections from using the Squid. I know I can do this with Squid, but I 
-want to know how to do it with IPtables. Does anyone know how may I go 
-about doing this? Thanks.
+Lo all=20
+Just wondering i was looking on the net and i heard there are users =
+buying time to run email extractors to spam is there any chance to BLOCK =
+them?
 
-Daniel
+Just a thought.
 
-Here's the script I use:
+Sarky
+------=_NextPart_000_0024_01C357C6.CF369DB0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-192.168.0.1 = Squid server
-192.168.0.25 = Netfilter Server
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Lo all </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Just wondering i was looking on the net =
+and i heard=20
+there are users buying time to run email extractors to spam is there any =
+chance=20
+to BLOCK them?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Just a thought.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Sarky</FONT></DIV></BODY></HTML>
 
-# start up filter rules for traffic redirection to Squid
-iptables -t nat -A PREROUTING -i eth0 -s ! 192.168.0.1 -p tcp --dport 80 -j 
-DNAT --to 192.168.0.1:3128
-
-# Add for 0 subnet
-iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/24 -d 192.168.0.1 -j 
-SNAT --to 192.168.0.25
-iptables -A FORWARD -s 192.168.0.0/24 -d 192.168.0.1 -i eth0 -o eth0 -p tcp 
---dport 3128 -j ACCEPT
-#
-# Add for 2 subnet
-iptables -t nat -A POSTROUTING -o eth0 -s 192.168.2.0/24 -d 192.168.0.1 -j 
-SNAT --to 192.168.0.25
-iptables -A FORWARD -s 192.168.2.0/24 -d 192.168.0.1 -i eth0 -o eth0 -p tcp 
---dport 3128 -j ACCEPT
-#
-# Add for 3 subnet
-iptables -t nat -A POSTROUTING -o eth0 -s 192.168.3.0/24 -d 192.168.0.1 -j 
-SNAT --to 192.168.0.25
-iptables -A FORWARD -s 192.168.3.0/24 -d 192.168.0.1 -i eth0 -o eth0 -p tcp 
---dport 3128 -j ACCEPT
+------=_NextPart_000_0024_01C357C6.CF369DB0--
 
 
