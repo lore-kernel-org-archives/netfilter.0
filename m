@@ -1,14 +1,11 @@
-From: Arkadiusz Miskiewicz <arekm@pld-linux.org>
-Subject: Re: -m string  and RELATED
-Date: 04 Nov 2002 13:25:37 +0100
+From: Guillaume Marcais <guillaume.marcais@free.fr>
+Subject: Child proofing...
+Date: Thu, 7 Nov 2002 14:53:14 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <873cqhttby.fsf@arm.t19.ds.pwr.wroc.pl>
-References: <87znsptzey.fsf@arm.t19.ds.pwr.wroc.pl>
-	<1036406552.8844.47.camel@elendil>
+Message-ID: <B0000532307@smtp.rapiddsl.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1036406552.8844.47.camel@elendil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,42 +15,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
---=-=-=
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+We have remote routers that we access with ssh. Sometime, I am 
+not careful enough and I enter stupid routing information that not only 
+leaves our clients connectionless but also prevents me from accessing the 
+router. Then truck roll, long downtimes and angry customers... I am really a 
+child sometimes :)
 
-Cedric Blancher <blancher@cartel-securite.fr> writes:
+The idea was to be able to have access to ssh (almost) no matter what I do to 
+the main routing table. Even something like: ip route del default. I thought 
+of doing it with policy routing with something like the following:
 
-> I do not see your problem. You want to log packets that :
-> 	. contains string "xyztest"
-> 	AND
-> 	. are NEW, ESTABLISHED or RELATED
->=20
-> The first packet logued matches, but not the second as it does not
-> contains string "xyztest".
->=20
-> So, WTF ? :)))
-I was thinking about other packets as related to this one with ,,xyztest''
-in it because they all come from the same connection.
+(Let's assume the router has eth0 with 192.168.0.2/24 as its main gateway 
+interface).
 
-> If you want to log the whole session that follows a packet containing
-> string "xyztest", then it will be a little more tricky. You have to use
-> the patch-o-matic CONNMARK patch (extra section) which provides a target
-> to set per connection mark, and a connmark match to match against it.
-Nice, thanks. That should do it.
+ip rule add fwmark 1 table sshtable
+ip route add 192.168.0.0/24 dev eth0 table sshtable
+ip route add default via 192.168.0.1 dev eth0 table sshtable
+iptables -I PREROUTING -t mangle -p tcp -d 192.168.0.2 --destination-port ssh 
+-j MARK --set-mark 1
+iptables -I OUTPUT -t mangle -p tcp -s 192.168.0.2 --source-port ssh -j MARK 
+--set-mark 1
 
-> C=E9dric Blancher  <blancher@cartel-securite.fr>
+Basically, the traffic to/from the ssh daemon uses a separate routing table, 
+which I won't tamper with on a regurlar basis.
 
---=-=-=
-Content-Type: text/plain; charset=iso-8859-2
-Content-Transfer-Encoding: quoted-printable
+Alas, it doesn't work. If I do the following: 
 
+ip route del 192.168.0.0/24 dev eth0
 
---=20
-Arkadiusz Mi=B6kiewicz    CS at FoE, Wroclaw University of Technology
-arekm@sse.pl   AM2-6BONE, 1024/3DB19BBD, arekm(at)ircnet, PLD/Linux
+I cannot access ssh anymore. The netfilter Hacking howto tells us that: "The 
+NF_IP_LOCAL_OUT [5] hook is called for packets that are created locally. Here 
+you can see that routing occurs after this hook is called: in fact, the 
+routing code is called first [...]". So the routing is called first, which 
+fails with the main table and the packet is drop before being marked by 
+netfilter and routed according to the sshtable...
 
---=-=-=--
+Anybody has any idea on how to work aroung this?
+
+Guillaume.
+
+PS: in all fairness, the howto suggest to " alter the `skb->dst' field 
+yourself, as is done in the NAT code". But I would like to avoid to write a 
+kernel module if possible.
 
