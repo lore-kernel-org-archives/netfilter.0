@@ -1,14 +1,12 @@
-From: netfilter_user <netfilter_user@o2.pl>
-Subject: Re[2]: SNMP and IPTABLES
-Date: Sun, 3 Aug 2003 23:55:14 +0200
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: forwarding based on hostname
+Date: Mon, 4 Aug 2003 08:07:52 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1417368385.20030803235514@o2.pl>
-References: <Pine.LNX.4.44.0308021426450.16350-100000@localhost>
-Reply-To: netfilter_user <netfilter_user@o2.pl>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C022@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0308021426450.16350-100000@localhost>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +17,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Chris Wilson <chris@netservers.co.uk>
+To: Ian McBeth <imcbeth@telus.net>
 Cc: netfilter@lists.netfilter.org
 
-Hello Chris,
+Are you allowing DNS? Are you clients able to make DNS requests from =
+behind the firewall?
 
-Saturday, August 2, 2003, 3:28:14 PM, you wrote:
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
-CW> Hello netfilter_user,
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+=20
 
->> BUT: the problem is when MRTG try to receive SNMP information from this
->> same machine that is installed ( MRTG is installed on Linux machine -
->> gateway). I dont know why because i set: iptables -A INPUT -i eth1 -p tcp -m multiport --dport 21,80,161,3128 -j ACCEPT
->>                                          iptables -A INPUT -i eth1 -p udp -m multiport --dport 80,67,161 -j ACCEPT
->>                               ...and it should resolve problem...but
->>                               it wont
->> 
->> !!!!!THIS IS IMPORTANT!!!!
->> when I set all INPUT ACCETP then it works. So there is no problem with
->> snmp and MRTG but with my iptables config :/
+-----Original Message-----
+From: Ian McBeth [mailto:imcbeth@telus.net]
+Sent: Monday, August 04, 2003 6:44 AM
+To: 'Daniel Chemko'
+Cc: netfilter@lists.netfilter.org
+Subject: RE: forwarding based on hostname
 
-CW> The kernel will route packets for the local machine over the "lo" device, 
-CW> not any ethernet interface. You haven't allowed packets in from the "lo" 
-CW> device, which is why SNMP (and probably other things such as pinging 
-CW> yourself) won't work.
 
-CW>   iptables -I INPUT -i lo -j ACCEPT
+Hey=20
 
-CW> Cheers, Chris.
+I am not using the domain name to connect to the mail server that is
+hidden behind the Nat firewall box as I can not connect to it with the
+domain name but I can connect to it via the IP address.  What am I doing
+wrong?
 
-Wise advice... ofcourse it helped. Thanks alot.
-
--- 
-Best regards,
-mailto:netfilter_user@o2.pl
+Thanks
 
 
