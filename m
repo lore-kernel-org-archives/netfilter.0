@@ -1,12 +1,12 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Oulook express not working on client machine
-Date: Thu, 29 Jul 2004 10:54:23 -0400
+From: David Cary Hart <DCH@TQMcube.com>
+Subject: Rule Set Size vs Performance Follow-up
+Date: Thu, 29 Jul 2004 11:08:11 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051206@asimail2.alphanumeric.com>
+Message-ID: <1091113691.9879.9.camel@dchws.tqmcube.com>
+Reply-To: NetFilter List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +17,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-> eth0: 192.168.1.97 (My Public IP)
-> eth1: 192.168.5.1 (My Lan IP)
->
-> I have declared 25 and 110 as the safe ports also but still :((
+The issue was a large number of dpt 80 rules that are added by a script
+from Snort exploits.
 
-are you trying to proxy SMTP and POP-3 through squid?
-from http://www.squid-cache.org/Doc/FAQ/FAQ-1.html#ss1.1
+The suggested solution was to move these to a new chain so that only
+packets destined for httpd would have to traverse several hundred
+(hopefully temporary) rules.
 
-	"Squid is a high-performance proxy caching server for web clients, =
-supporting FTP, gopher, and HTTP..."
+Not only does this make logical sense but I notice a definite
+improvement in DNS (which is the most apparent performance issue).
 
-i.e, not SMTP, not POP-3...
+Thanks.
 
->
-> Based on therad i saw at linux solve, I tried to do
->
-> /sbin/iptables -t nat -A POSTROUTING -o eth1 -s 192.168.0.0/24 -j =
-MASQUERADE
-
-if you're are trying to MASQUERADE your internal clients behind the =
-external IP of your firewall--you have that reversed (and the source =
-network doesn't match up)--it should be:
-
-	/sbin/iptables -t nat -A POSTROUTING -o eth0 -s 192.168.5.0/24 -j =
-MASQUERADE
-
-also--i'm assuming you are sanitizing your IP addresses here; as =
-MASQUERADING behind 192.168.1.97 won't do you much good if your traffic =
-is destined for the internet.
-
-it seems to me that you're missing some of the basics here--maybe a =
-review of http://iptables-tutorial.frozentux.net/iptables-tutorial.html =
-would help you out?
-
--j
 
