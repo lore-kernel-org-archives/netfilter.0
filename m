@@ -1,14 +1,11 @@
-From: "Ed Street" <blacknet@simplyaquatics.com>
-Subject: RE: I need help , please
-Date: Fri, 5 Jul 2002 13:02:11 -0400
+From: alexander.swann@synetics.fr
+Subject: LOG flags 0
+Date: Fri, 5 Jul 2002 19:37:31 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <003801c22445$b4022ce0$0a01a8c0@ed>
-References: <019301c2240f$e8e004e0$8703000a@aid.inf.cu>
-Reply-To: <blacknet@simplyaquatics.com>
+Message-ID: <OF66699DD4.943C2F61-ONC1256BED.0060744D-C1256BED.00610743@synetics.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <019301c2240f$e8e004e0$8703000a@aid.inf.cu>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,113 +15,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'david' <david@aid.inf.cu>, 'Antony Stone' <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.samba.org
-
-Try INPUT
-;)
-
-Ed
-
------Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org] On Behalf Of david
-Sent: Friday, July 05, 2002 6:37 AM
-To: Antony Stone
-Cc: netfilter@lists.samba.org
-Subject: Re: I need help , please
-
-Antony;
-
-#iptables -P INPUD DROP
-iptables:Bad built in chain name
-
-if I turn to:
-#iptables -P inpud DROP
-iptables:Bad built in chain name
-
-if I try:
-#iptables -p inpud DROP
-iptables v1.2.3: unknown protocol `inpud` specified
-
-thanks again tony
-
-david
-
------ Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.samba.org>
-Sent: Friday, July 05, 2002 6:35 PM
-Subject: Re: I need help , please
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.samba.org
 
 
-> On Friday 05 July 2002 11:18 am, david wrote:
->
-> > iptables:Bad built-in change name
->
-> What *exactly* did you type (punctuation as well) and what *exactly*
-is
-the
-> response ?
->
-> The command I want you to try is
->
-> iptables -P INPUT DROP
->
-> That is:
-> "iptables" in lower case
-> a space
-> a hyphen or minus sign
-> a capital P
-> a space
-> "INPUT" in capitals
-> a space
-> "DROP" in capitals
-> <enter>.
->
-> If you really do get an error in response to this, your system is very
-sick.
->
->
->
-> Antony.
->
-> >  ----- Original Message -----
-> > From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-> > To: <netfilter@lists.samba.org>
-> > Sent: Friday, July 05, 2002 6:00 PM
-> > Subject: Re: I need help , please
-> >
-> > > On Friday 05 July 2002 10:25 am, david wrote:
-> > > > OK , I agree.In fact I  am just trying.
-> > > > I heve tested a simpler script :
-> > > >
-> > > > # Standard default policies
-> > > > iptables -P INPUT DROP
-> > > > iptables -P FORWARD DROP
-> > > > iptables -P OUTPUT DROP
-> > > >
-> > > > am here you have the output.
-> > > > /etc/rc.d/init.d/iptables : command not found
-> > > > iptables: bad police name
-> > > > iptables: bad police name
-> > > > iptables: bad police name
-> > > > /etc/rc.d/init.d/iptables : command not found
-> > >
-> > > Do you have . in your path ???   It looks to me as though you're
-in
-> > > /etc/rc.d/init.d when you type this, and it's trying to run the
-iptables
-> > > script in the local directory instead of the iptables binary in
-/sbin
-> > >
-> > > What happens if you cd to /root and type
-> > > iptables -P INPUT DROP
-> > >
-> > >
-> > >
-> > > Antony.
+Hello,
+
+the rule :
+$PATH -A FORWARD -d 192.168.252.0/22 -p all -s 10.1.1.0/24 -j LOG
+--log-level DEBUG --log-prefix "FWlogDMZLAN : "
+
+When I do a
+# iptables -L -v -n
+
+I get this result
+610 29280 LOG        all  --  *      *       10.1.1.0/24
+192.168.252.0/22   LOG flags 0 level 7 prefix `FWlogDMZLAN : '
+
+My question is :
+What meens the "flags 0" in "LOG flags 0 level 7 prefix `FWlogDMZLAN : =
+' "
+
+Thx
+
+Alexander SWANN
+Administrateur Syst=E8mes et R=E9seaux
+SYNETICS Groupe Soft-Computing=
 
 
 
