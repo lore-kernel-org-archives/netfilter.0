@@ -1,10 +1,13 @@
-From: "Javier Govea" <jgovea@magma.ca>
-Subject: Re: Round Robin Load Balancing
-Date: Mon, 28 Jul 2003 17:14:48 -0400 (EDT)
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Chains policy and rules
+Date: Mon, 28 Jul 2003 23:31:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307282114.h6SLEmbF011519@webmail1.magma.ca>
+Message-ID: <20030728233159.4ff89f5d.arnt@c2i.net>
+References: <87969271865366.03228@send3.inner-21cn.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <87969271865366.03228@send3.inner-21cn.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,58 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Chris Wilson <chris@netservers.co.uk>, Javier Govea <jgovea@magma.ca>
-Cc: Daniel Chemko <dchemko@smgtec.com>, George Vieira <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org, Ramin Dousti <ramin@cannon.eng.us.uu.net>, netfilter@lists.netfilter.org
+To: LiMeiYong <jobsli@21cn.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi guys,
-
-Thanx for all your suggestions, but i have bad news. The rules you guys are suggesting 
-make a lot of sense to me but they don't work. My hosts still cannot surf the net. 
-
-This rule:
-
-iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ip-of-ppp0>
-
-is another form for the masquerade rule:
-
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-
-Using either of these two rules my hosts can access internet, but i still have the 
-problem of the load balancing. Some ppp links are used more than others in situations 
-such as loading the same web page in four different browsers.
-
-As soon as i add the "nth" rules to the mangle table my browsers stop working, they just 
-can contact the web servers and eventually they time out. I'm not sure if by adding any 
-rule to my mangle table the browsers stop, but at least they stop when i add your 
-suggestions to the mangle table.
-
-Any other ideas, suggestions, tips?? all are very welcome...
-Thanx to all, i really appreacite all your time and interest....
-Xavier
-
+On Mon, 28 Jul 2003 13:47:25 +0800, 
+"LiMeiYong" <jobsli@21cn.com> wrote in message 
+<87969271865366.03228@send3.inner-21cn.com>:
 
 > 
-> Try something like this:
-> 
-> iptables -t mangle -A POSTROUTING -m nth --every 4 --packet 0 \
-> 	-j ROUTE --oif ppp0
-> iptables -t mangle -A POSTROUTING -m nth --every 4 --packet 1 \
->         -j ROUTE --oif ppp1
-> ...
-> 
-> iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ip-of-ppp0>
-> iptables -t nat -A POSTROUTING -o ppp1 -j SNAT --to-source <ip-of-ppp1>
-> ...
-> 
-> Cheers, Chris.
-> -- 
->    ___ __     _
->  / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-> / (_ / ,\/ _/ /_ \ | NetServers.co.uk <a 
-href='http://www.netservers.co.uk'>http://www.netservers.co.uk</a> |
-> \ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
-> 
-> 
-> 
+>  I use a PC with 3 NICs. 
+>  Their configurations are:
+>  eth0: 152.201.3.179 mask 255.255.0.0
+>  eth1: 152.20.3.181 mask 255.255.0.0
+
+..you route traffic for, uh...:
+ipcalc -bnmp 152.201.3.179/16
+NETMASK=255.255.0.0
+PREFIX=16
+BROADCAST=152.201.255.255
+NETWORK=152.201.0.0
+
+...around 130 thousand boxes on one pc???  Not at all bad!  ;-)
+
+..or, are these netmasks too wide?  Searching 130 000 takes 
+a _while_, even if everything else works ok.  Depending on 
+your network layout, reconsider your sub net strategy, 
+chances are _fat_ a few thousand subnets with an handful 
+of hosts in each, will prove faster.  Good Luck.  ;-)
+
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
 
