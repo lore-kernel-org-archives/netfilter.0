@@ -1,11 +1,13 @@
-From: "Udo Rader" <spamtrash2@vibe.ac>
-Subject: Re: iptables -m time does not work
-Date: Sat, 02 Nov 2002 21:06:00 +0100
+From: "Rob" <mrboboo@yahoo.com>
+Subject: RE: AW: default policy
+Date: Sat, 2 Nov 2002 18:08:24 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <aq1b78$lc5$1@hermes.vibe.ac>
-References: <E187c2V-0001ft-00@kashyyyk.netfilter.org>
+Message-ID: <NEENJAPFEAIEMGMNIGFLEEAMCEAA.mrboboo@yahoo.com>
+References: <20021102110903.MEF292.mta03-svc.ntlworld.com@there>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021102110903.MEF292.mta03-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-hi,
 
-I bet you have the same problem that I had with the string-module.
 
-look at your /var/log/syslog and check if there are complains about
-a missing ipt_time module.
+>>> > You should never set any default policy other than ACCEPT on
+>>> > a nat or mangle table.
+>>> >
+>>> > I sometimes think it was a bad idea even to make it possible.
+>>>
+>>> No, I don't think so. It's hard for beginners, yes. But once
+>>you understand
+>>> what iptables is capable of (compared to other commercial products) you
+>>> actually are glad that there is a product giving you control over
+>>> everything.
+>>> Defining the policies for every chain is such a freedom.
+>>
+>>Can you think of a situation where it would be a good idea to set
+>>a default
+>>policy other than ACCEPT for a nat or mangle table ?
+>>
+>>Antony.
+>>
+>>--
+>>
+>>90% of network problems are routing problems.
+>>9 of the remaining 10% are routing problems in the other direction.
+>>The remaining 1% might be something else, but check the routing anyway.
 
-If so, the solution is simple: Your kernel is very probably not patched
-for the time module.
 
-udo
+When someone is learning how to network program and they screw up the code
+and they dont want packets to get out of the local lan....hint i am learning
+to network program.
 
-On Fri, 01 Nov 2002 14:20:15 +0000, Torsten Puls wrote:
-
-> Hello	
-> 
-> My Problem
-> After input of dis order I get the following error message:
-> 
-> iptables -A INPUT -m time --timestart 08:00 --timestop 16:00 --days Mon -j ACCEPT
-> iptables: No chain/target/match by that name
-> 
-> Why? 
-> 
-> Regards
+Robert W.
 
 
