@@ -1,41 +1,34 @@
-From: "Jonathan" <infomail@nobarrier.co.za>
-Subject: `Microsoft VPN and iptables
-Date: Sat, 9 Nov 2002 08:21:39 +0200 (SAST)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1653.10.254.2.5.1036822899.squirrel@www.nobarrier.co.za>
-Reply-To: infomail@nobarrier.co.za
+From: Min Li <li9@expert.ics.purdue.edu>
+Subject: xdmcp
+Date: Mon, 4 Nov 2002 05:39:22 -0500 (EST)
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <Pine.GSO.4.44.0211040539070.4935-100000@expert.ics.purdue.edu>
+References: <20021104101704.GF3894@oknodo.bof.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <20021104101704.GF3894@oknodo.bof.de>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Hi all
+Dear all,
+I am trying to make xdmcp work on red-hat 7.3. What I did was turn on the
+flag in /etc/kde/kdm/kdmrc, make "enable = true", since I'm using kde.
+However, my exceed on the windows still cannot see the broadcast from the
+linux machine. Please advise. Thanks a lot. I also checked the firewall
+rules in /etc/sysconfig/iptables, and make sure port 177 is not blocked.
 
-Could some help me with this or point me in the right direction.
-
-I have a few microsoft machine in side my linux firewall and I need to use
-microsoft VPN to connect to a microsoft machine on the internet
-when I double click on the icon is says " Connecting to ???.???.???.???"
-and then says "Verifing Usernamd & Password" and then times out. If I dial
-into the net and bypass the firewall I can connect.
-Thank you
-Jonathan X Peers
-
-jonathan@nobarrer.co.za
+Min
 
 
 
-______________________________________
-Mail has been scanned and protected by No Barrier Communications
-www.nobarrier.co.za
 
