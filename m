@@ -1,63 +1,208 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: icq
-Date: Wed, 16 Jun 2004 22:26:29 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406162226.30006.Alistair@nerdnet.ca>
-References: <7EACCDBB65D37443912D80713CC1245D47285E@fsnsab20.losangeles.af.mil>
+From: Netfilter Core Team <coreteam@netfilter.org>
+Subject: [ANNOUNCE] Release of iptables-1.2.10
+Date: Wed, 16 Jun 2004 21:38:19 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20040616193819.GP12494@sunbeam.de.gnumonks.org>
+Reply-To: coreteam@netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7EACCDBB65D37443912D80713CC1245D47285E@fsnsab20.losangeles.af.mil>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3Y2Mr1SP1gWKl0+e"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
 Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-On June 16, 2004 05:03 pm, Hudson Delbert J Contr 61 CS/SCBN wrote:
-> the rpc like tendencies of icq make it not worth the trouble to manage
-> access to/from it.
->
-> ~piranha
-
-	? rpc like ? 
-
-> Not sure about recent versions, but with old versions you could only do
-> simple things like messaging when using NAT only.
-> If you wanted to do things like chat and/or filetransfer, you needed a
-> socks server. I guess this still holds.
-> NEC had a free socks5 server for *nix once, but stopped providing it.
-> It's now Permeo's (www.permeo.com) but AFAIK not free any more. If you
-> need it ; there's a source version on rpmfind.net.
->
-	
-	Although there are already some answers here, the extended attributes
-	for icq can be managed in a small home lan situation by properly configuring
-	the clients (set the ports on which connections can be recieved to a 
-	different specific range per client) and then forward the appropriate range
-	of  ports per client from the firewall.  In my case at home, I have three
-	internal clients that are permanently forwarded.  You can't filter on source
-	address as icq -> icq transfers are client to client.  For standard chatting 
-	however, nothing need be done save the initial connection out to 
-	login.icq.com and an established related rule.  Some folks might find that
-	they have to send the initial message through the servers (window clients 
-	auto fallback to this state, licq has to be told to do it) but after the 
-	first message out from behind the firewall, if the ESTABLISHED,RELATED rule
-	is in place, chat messages work just fine.
-
-	Alistair Tonner.
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: lwn@lwn.net
 
 
+--3Y2Mr1SP1gWKl0+e
+Content-Type: multipart/mixed; boundary="j9XQ5cF5hebrmXqw"
+Content-Disposition: inline
 
->
->
-> Gr,
-> Rob
+
+--j9XQ5cF5hebrmXqw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+The netfilter coreteam proudly presents:
+
+	iptables version 1.2.10
+
+1.2.10 is (like most other 1.2.x releases) a maintainance release,
+containing lots of bugfixes that have accumulated over time.
+
+The ChangeLog is attached to this mail.
+
+Version 1.2.10 can be obtained from:
+
+	http://www.netfilter.org/files/iptables-1.2.10.tar.bz2
+	ftp://ftp.netfilter.org/pub/iptables/iptables-1.2.10.tar.bz2
+
+Please note that since iptables-1.2.7, patch-o-matic is no longer part of
+iptables, but distributed as a seperate package.  You can obtain the
+latest release and daily CVS snapshots from:
+
+	ftp://ftp.netfilter.org/pub/patch-o-matic/
+
+Please also note: Since Kernel 2.6.x is out, we now use
+patch-o-matic-ng for both 2.4.x and 2.6.x. Distributed as seperate
+package:=20
+	ftp://ftp.netfilter.org/pub/patch-o-matic-ng
+=09
+More information can be found at the netfilter/iptables project homepage,
+available at:
+
+	http://www.netfilter.org/
+	http://www.iptables.org/
+
+Happy firewalling,
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--j9XQ5cF5hebrmXqw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-iptables-1.2.10.txt"
+Content-Transfer-Encoding: quoted-printable
+
+iptables v1.2.10 Changelog
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+This version requires kernel >=3D 2.4.4
+This version recommends kernel >=3D 2.4.18
+
+Bugs Fixed from 1.2.9:
+
+- physdev match: fix new structure layout for kernel > 2.6.0-test8
+	[ Bart De Schuymer ]
+
+- Better 64bit / 32bit split architecture detection
+- IPv6 LOG target: Fix compiler warnings on 64bit
+- LOG target: Fix compiler warnings on 64bit
+- IPv6 MARK target: Use full 64bit mark on 64bit archs
+- MARK target: Use full 64bit mark on 64bit archs
+- SAME target: Fix 64bit/32bit splitarch problems
+- ULOG target: Fix 64bit/32bit splitarch problems
+- conntrack match: Fix 64bit/32bit splitarch problem
+- IPv6 limit match: Fix 64bit/32bit splitarch problem
+- limit match: Fix 64bit/32bit splitarch problem
+- IPv6 mark match: Use full 64bit mark on 64bit archs
+- mark match: Use full 64bit mark on 64bit archs
+- owner match: Fix compiler warnings on 64bit
+	[ Martin Jofsefsson ]
+
+- connbytes match: Fix signedness / unsigned issue
+	[ Martin Josefsson ]
+
+- connlimit match: Fix '/0' netmask
+	[ David Ahern ]
+
+- ipv6 owner match: fix possibly not zero terminated string
+- helper match: fix possibly not zero terminated string
+- recent match: fix possibly not zero terminated string
+	[ Karsten Desler ]
+
+- ICMP match: fix '--icmp-type any' case
+	[ Harald Welte ]
+
+- CONNMARK target: major update (add mark/mask matching)
+	[ Henrik Nordstrom ]
+
+- DSCP target: Fix cosmetic help message problem=20
+	[ Maciej Soltysiak ]
+
+- string match: Fix iptables-save/restore for ascii strings with spaces
+	[ Michael Rash ]
+
+- ip(6)tables-restore: Make sure matches are used in the same order
+	[ Martin Josefsson ]
+
+- ip(6)tables-restore: Fix '--verbose' option
+- ip(6)tables-restore: Add '--test' option
+- ip(6)tables-restore: Complain about missing 'COMMIT'
+	[ Martin Josefsson ]
+
+- ip(6)tables-restore: Allow embedding of quote character in quoted strings
+	[ Michael Rash ]
+=09
+- libipq: Protect against spoofed queue messages (check if sender is kernel)
+	[ Harald Welte ]
+
+
+Changes from 1.2.9:
+
+- time match: add 'datestart' and 'datestop' parameters
+	[ Fabrice Marie ]
+
+- modular manpage build, depending on actually compiled-in features
+	[ Henrik Nordstrom ]
+
+- additional documentation in manpage snippets formerly missing
+	[ Harald Welte ]
+
+- support new CLUSTERIP Target
+	[ Harald Welte ]
+
+- support new account match
+	[ Piotr Gasid'o ]
+
+- support new connrate match
+	[ Nuuti Kotivuori ]
+
+- support new dstlimit match
+	[ Harald Welte ]
+
+- support new 'set' match / 'SET' target
+	[ Jozsef Kadlecsik ]
+
+- osf match: add support for netlink reporting
+	[ Evgeniy Polyakov ]
+
+- new SCTP protocol match
+	[ Kiran Kumar ]
+
+
+Please note: Since version 1.2.7a, patch-o-matic is now no longer part of
+iptables but rather distributed as a seperate package
+(ftp://ftp.netfilter.org/pub/patch-o-matic/)
+
+Please also note: Since Kernel 2.6.x is out, we now use patch-o-matic-ng, d=
+istributed as seperate package:
+(ftp://ftp.netfilter.org/pub/patch-o-matic-ng)
+
+
+--j9XQ5cF5hebrmXqw--
+
+--3Y2Mr1SP1gWKl0+e
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFA0KGrXaXGVTD0i/8RAsavAKCBx2BStvh52EKdKBktdkaviId3xwCgmD0b
+6gHcB39EpYbfsM7f2DUX01g=
+=ciLh
+-----END PGP SIGNATURE-----
+
+--3Y2Mr1SP1gWKl0+e--
 
