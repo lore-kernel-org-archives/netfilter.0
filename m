@@ -1,13 +1,14 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: Translating between local and global IP address
-Date: Wed, 22 Jan 2003 09:28:04 +0100
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Interesting request. block x.x.0.0
+Date: 22 Jan 2003 09:43:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019AF6@hslex01.hslbz.local>
-References: <FD8F124A387AD6119F7900A0D218B321562093@hslex01.hslbz.local>
+Message-ID: <1043221436.1541.112.camel@rayw.knowledgefactory.co.za>
+References: <200301220116.18451.danielf@supportteam.net>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-osAVK/Uv9lXzy24+0iFS"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FD8F124A387AD6119F7900A0D218B321562093@hslex01.hslbz.local>
+In-Reply-To: <200301220116.18451.danielf@supportteam.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,60 +18,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
->                     internet
->                        |
->                       eth0
->                   GATEWAY (Linux)
->                       eth1
->                        |
->                  COMPUTER (Windows)
-> 
-> COMPUTER has a local IP address ($IN), but I'd like to mangle 
-> packets going through GATEWAY so COMPUTER appears to have 
-> another IP address
-> ($OUT) on the internet.  It seems I've had some success with this:
-> 
->   iptables -t nat -A POSTROUTING -o eth0 -s $IN  -j SNAT 
-> --to-source $OUT
->   iptables -t nat -A PREROUTING  -i eth0 -d $OUT -j DNAT 
-> --to-destination $IN
-> 
-> And to fool GATEWAY into accepting packets for $OUT, I've done this:
-> 
->   ifconfig eth0:1 $OUT
-> 
-> However, it doesn't seem to work when trying to play a 
-> network game on COMPUTER.  It times out trying to connect to 
-> another machine on the internet.  It probably uses UDP packets.
-
-You are not specifying any protocol, so protocol is any, not just tcp.
-You should probably do this :
-
-# Close your gateway.
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-
-# Accept forwarding and related.
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth0 -s $IN -j ACCEPT
-iptables -t nat -A POSTROUTING -o eth0 -s $IN -j SNAT --to-source $OUT
-
-And maybe you need a helper for your network game. You didn't mention
-"the name of the game".
-Btw, mangling is something else. You are NAT-ing.
-
-I don't know what you are trying to achieve with "ifconfig eth0:1 $OUT"
-? You can't match eth0:1, but you can match eth0. Let's say you don't do
-this and eth0 has $OUT.
-When SNAT-ing, the packets will appear to be coming from eth0 on the
-gateway with IP address $OUT which is your internet IP address. $OUT
-must be your internet IP address otherwise the reply packet will not be
-sent back to you.
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-Rob
+--=-osAVK/Uv9lXzy24+0iFS
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+What about :
+iptable -A FORWARD -s x.x.0.0/0.0.255.255 -j DROP
+
+On Wed, 2003-01-22 at 09:16, Daniel F. Chief Security Engineer - wrote:
+> Anybody know of a way to block this traffic. Notice it's comming from jus=
+t the=20
+> 0.0 addresses obviously spoofed. But can you block x.x.0.0 with out block=
+ing=20
+> every thing else in the range with out a rule per IP.=20
+>=20
+> This is s snippit of a dDoS we seen recently.=20
+>=20
+> 01:19:57.644845 45.208.0.0.1669 > x.x.x.x.53: S 1685323776:1685323776(0)=20
+> 01:19:57.651441 45.210.0.0.1434 > x.x.x.x.53: S 1296957440:1296957440(0)
+> 01:19:57.659812 46.79.0.0.1738 > x.x.x.x.53: S 1536360448:1536360448(0)
+> 01:19:57.668782 46.82.0.0.1099 > x.x.x.x.53: S 867631104:867631104(0)
+> 01:19:57.693367 46.216.0.0.1627 > x.x.x.x.53: S 1775828992:1775828992(0)=20
+> 01:19:57.699377 47.86.0.0.1712 > x.x.x.x.53: S 543227904:543227904(0)=20
+> 01:19:57.717765 47.222.0.0.1109 > x.x.x.x.53: S 1708457984:1708457984(0)=20
+> 01:19:57.733676 48.93.0.0.1669 > x.x.x.x.53: S 169934848:169934848(0)=20
+>=20
+> I ended up just blocking tcp tp port 53 and allowed UDP through which all=
+owed=20
+> our name servers to work fine. TCP is rarely used on the IPs that were be=
+ing=20
+> attacked.=20
+>=20
+> Thanks
+>=20
+> --
+> Daniel Fairchild - Chief Security Engineer | danielf@supportteam.net
+--=20
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(  Raymond Leach                       )
+ ) Knowledge Factory                  (
+(                                      )
+ ) Tel: +27 11 445 8100               (
+(  Fax: +27 11 445 8101                )
+ )                                    (
+(  http://www.knowledgefactory.co.za/  )
+ ) http://www.saptg.co.za/            (
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   o                                o
+    o                              o
+        .--.                  .--.
+       | o_o|                |o_o |
+       | \_:|                |:_/ |
+      / /   \\              //   \ \
+     ( |     |)            (|     | )
+     /`\_   _/'\          /'\_   _/`\
+     \___)=3D(___/          \___)=3D(___/
+
+--=-osAVK/Uv9lXzy24+0iFS
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA+Lku8h1fuR/Bv+ygRAnB+AJ9vWI2+uv05vmAQ5hn9rXossGzqigCePEeM
+qRtV1kZ9peftj5T6+/cfJNM=
+=tmD5
+-----END PGP SIGNATURE-----
+
+--=-osAVK/Uv9lXzy24+0iFS--
 
 
