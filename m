@@ -1,8 +1,8 @@
 From: "louie miranda" <lmiranda@chikka.com>
-Subject: redirecting specific ip on another route(gw)
-Date: Wed, 26 Feb 2003 16:52:49 +0800
+Subject: can't connect to another network on my masq lan
+Date: Wed, 26 Feb 2003 17:30:49 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <026001c2dd74$7274fe90$0b00000a@nocpc3>
+Message-ID: <027301c2dd79$c4b988b0$0b00000a@nocpc3>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,13 +18,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-I have setup another gw. 10.0.0.2 (Cisco)
-Now i want all my local ip, all 10.0.0.x when they access 203.190.77.x they
-will go out using gw 10.0.0.2 is this possible? Even 10.0.0.2 is not on my
-interface?
+-- my route
+panic:/# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use
+Iface
+203.190.72.104  0.0.0.0         255.255.255.248 U     0      0        0 eth0
+192.168.129.0   10.0.0.2        255.255.255.0   UG    0      0        0 eth1
+10.0.0.0        0.0.0.0         255.255.0.0     U     0      0        0 eth1
+0.0.0.0         203.190.72.110  0.0.0.0         UG    0      0        0 eth0
+
+-- my masq
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+
+I can connect to 192.168.129.x but, on my workstation inside my masq lan
+I cannot, whats wrong?
+
+
 
 --
 thanks,
-louie
+louie miranda
+
 
 
