@@ -1,14 +1,12 @@
-From: Nick Drage <nickd@funkyjesus.org>
+From: Corin Langosch <corinl@gmx.de>
 Subject: Re: dns server
-Date: Sat, 8 Jun 2002 10:58:57 +0100
+Date: Sat, 8 Jun 2002 12:21:21 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020608105857.I2090@funkyjesus.org>
-References: <1420507267.20020606152231@gmx.de> <1023372279.8475.27.camel@billy.demon.nl>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <1095277849.20020608122121@gmx.de>
+Reply-To: Corin Langosch <corinl@gmx.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <1023372279.8475.27.camel@billy.demon.nl>; from tonni@billy.demon.nl on Thu, Jun 06, 2002 at 04:04:38PM +0200
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,31 +17,18 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: I <netfilter@lists.samba.org>
+To: IP-Tables Maillingliste <netfilter@lists.samba.org>
 
-On Thu, Jun 06, 2002 at 04:04:38PM +0200, Tony Earnshaw wrote:
-> tor, 2002-06-06 kl. 15:22 skrev Corin Langosch:
+Hi,
 
-<snip>
+thanks for your fast responses. well i have running bind9 on my web-server.
+it should act as a primary and secondary nameserver for say about 10 domains or
+so.. (may be more in the future).
+i opened port 53 tcp,udp and it seems to work. for some strange reason
+for some people the domains are correctly resolved some people get an error.
+or has it to do that i registered these domains also some hours ago ?
 
-> It depends what you want to do with it. And what DNS software you're
-> running. I.e., if it's BIND, you can do more with BIND 9 than you can
-> with BIND 8, more with BIND 8 than with BIND4.
-> 
-> Many security people might say that if you're running BIND 4 or 8, then
-> you shouldn't be. Some of them again might say that you should be
-> running BIND 9.2.
-
-I believe that the latest BIND 8.something is still OK, and version 8 is
-being maintained as far as security patches go.
-
-As for the rest of the thread, you're best restricting that kind of access
-using named.conf as the problem is at layer 7 - the BIND application, not
-layer 3 - where netfilter mostly lives.
-
-
--- 
-FunkyJesus System Administration Team
+thanks again,
+corin
 
 
