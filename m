@@ -1,11 +1,13 @@
-From: Michael <mutk@ozemail.com.au>
-Subject: Re: IP Traffic Accounting
-Date: Mon, 24 Jun 2002 22:27:32 +1000
+From: "Michael R. Schwarzbach" <spg@fs.tum.de>
+Subject: Re: Netfilter and Linux bridge
+Date: Mon, 24 Jun 2002 14:14:30 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D171034.501@ozemail.com.au>
-References: <NFBBLDBMIDIOFPBNLEAJCEIOCHAA.yomega@wahooo.net> <20020623225040.A26831@tiger.csl.uiuc.edu> <3D16B131.4090202@ozemail.com.au> <200206241033.LAA14840@slate.rockstone.co.uk>
+Message-ID: <3D170D26.70308@fs.tum.de>
+References: <OF1937A5BF.D92E37F1-ONC1256BD7.003E8CC7@diamond.philips.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig4662A4D06490C1BD126CC243"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,62 +18,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: IPtables Users <netfilter@lists.samba.org>
-Cc: Antony Stone <Antony@Soft-Solutions.co.uk>
+To: fabrizio.gennari@philips.com
+Cc: netfilter@lists.samba.org
 
-Antony Stone wrote:
+The following is an OpenPGP/MIME signed message
+created by Enigmail/Mozilla, following RFC 2440 and RFC 2015
+--------------enig4662A4D06490C1BD126CC243
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
->On Monday 24 June 2002 6:42 am, Michael wrote
->
->I have had experience with similar programs, for example ipmeter
->
->>(http://www.ipmeter.org).
->>
->
->Hi Michael.
->
->Could you check and confirm that URL please ?
->
->Doesn't work from where I am.....
->
-Oops, it's a dot com, not dot org. Much appologies.
-Do a dig on www.ipmeter.com....it was up once upon a time!!
 
-In any case the web page must have been pulled down or is offline for 
-some reason. Here's a link to a mirror that carries it.
+Hi,
 
-http://www.mirrors.wiretapped.net/security/network-monitoring/ipmeter/
+there is a sourceforge project called bridge, that might interrest you. 
+It has a development branch called bridge-nf working on iptables-support 
+for bridges. Have a look at: http://bridge.sourceforge.net/devel/bridge-nf/
 
-In a nutshell, the thing is designed from ground up to run on FreeBSD, 
-and it's not really a program, but a collection of scripts to use 
-NetraMet. Two ways to get it going, download the install cdrom image, 
-and burn CD, or download the source and run some scripts to set it up on 
-a fresh FreeBSD installation.
-
-The Install CDrom is easiest, but uses an old BSD version. I found the 
-old FreeBSD version very flakey on the hardware we had, with it running 
-out of system resorces. I managed to get it all going on a later FreeBSD 
-4.4, with a bit of tweaking and it has been rock solid. Due to the way 
-it's been implemented, it won't run anylater than PostgresSQL 7.0.2 
-without some big changes (It has some custom SQL functions that clash 
-with new ones in later versions).
-
-Ours is actually still running now, 73 days uptime. Last downtime due to 
-power supply failure...
-
-If you are really curious about how it looks, I can make the admin front 
-end available for you to browse. It's in service right now, monitoring 
-about 70 users, but sometime in the near future it will be de-comissioned.
-
-Some free advice, avoid it !!! It's BSD, it is slightly clunky, very 
-resource hungry etc. It's good for monitoring servers, not so much users 
-accessing Internet. Some excellent ideas there though, so for some 
-inspiration, it's worth a look.
-
-Cheers,
+Regards
 Michael
 
+fabrizio.gennari@philips.com wrote:
+> I was wondering whether Netfilter can filter away packets handled by Linux 
+> bridge. If the bridge forwards the packet to another port, the packet 
+> never goes through IP routing, so Netfilter should handle it inside the 
+> bridge.
+> 
+> Also, is it possible to apply rules to packets according to the protocol 
+> type in Ethernet header (h_proto in struct ethhdr)? The man page says it 
+> is possible to apply rules according to source MAC, but says nothing about 
+> Ethernet protocol type.
+> 
+> Fabrizio Gennari
+> Philips Research Monza
+> via G.Casati 23, 20052 Monza (MI), Italy
+> tel. +39 039 2037816, fax +39 039 2037800
+> 
 
+
+
+--------------enig4662A4D06490C1BD126CC243
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7a-cvs (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQE9Fw0qBSpWS08ZgdgRArV0AKDWv5ThgzOTiPwLaWTuS6OUXp2ZewCgjJVN
+O4F/JqpdVp59VqUWaiHiNio=
+=ewbS
+-----END PGP SIGNATURE-----
+
+--------------enig4662A4D06490C1BD126CC243--
 
 
