@@ -1,12 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: block uid range in 1 rule with match owner ?
-Date: Thu, 20 Jan 2005 16:55:46 -0500
-Message-ID: <1106258145.5024.28.camel@hubcap.ljm.dom>
-References: <02df01c4ff35$40031570$0a01a8c0@cc8273a>
+From: seberino@spawar.navy.mil
+Subject: Need diagram on *order* IP packet traverses iptables 'tables'
+Date: Thu, 20 Jan 2005 16:04:39 -0800
+Message-ID: <20050121000439.GA1626@spawar.navy.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02df01c4ff35$40031570$0a01a8c0@cc8273a>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +16,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, 2005-01-20 at 16:16, abcabc@home.nl wrote:
-> How can I block a range of uid's in 1 rule ?
-> 
-> I tried this, but that gave an error.
-> iptables -A OUTPUT -p tcp --match owner --uid-owner 1000:2000 -j DROP
-> 
-> Is it at all possible?
+I am looking for a diagram to remind me of path
+a NAT'ed IP packet takes thru all the iptables tables
+when it goes from Internet to a private firewalled PC and vice versa.
 
-that's not how the owner match works.  it only matches a single uid. 
-dunno how hard it would be to hack the source to support the range
-operator, as i know zip about C/C++.
+e.g. What order does packet traverse INCOMING, FORWARD, PREROUTING,
+POSTROUTING guys?
 
--j
-
---
-"Facts are meaningless. You could use facts to prove anything that's
- even remotely true!"
-	--The Simpsons
-
+Chris
 
