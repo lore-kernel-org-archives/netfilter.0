@@ -1,12 +1,10 @@
-From: "Bob Hockney" <zeus@ix.netcom.com>
-Subject: [Announcement] Webfwlog 0.84 Relased
-Date: Mon, 12 Jan 2004 19:37:38 -0800
+From: "Technical" <technical@sojourn.dyndns.org>
+Subject: how can i force an up2date on the kernel package and
+Date: Mon, 12 Jan 2004 22:58:16 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4002F782.25041.16E01BE3@localhost>
+Message-ID: <4426.66.65.50.122.1073966296.squirrel@sojourn.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,17 +15,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, ulogd@lists.gnumonks.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+where is this preference saved?
 
-Webfwlog is a flexible web-based analysis and reporting tool for firewall logs 
-saved in a database using the ULOGD target of the linux netfilter project.  It 
-supports both postgresql and mysql databases.
+Fetching Obsoletes list for channel: fedora-core-1...
 
-Many new features have been added since the first release.  For more info 
-and a demo you can visit:
+Fetching Obsoletes list for channel: updates-released...
 
-http://webfwlog.sourceforge.net
+Fetching rpm headers...
 
--Bob
+Name                                    Version        Rel
+----------------------------------------------------------
+
+The following Packages were marked to be skipped by your configuration:
+
+Name                                    Version        Rel  Reason
+-------------------------------------------------------------------------------
+kernel                                  2.4.22         1.2140.nptlPkg
+name/pattern
+
+All packages are currently up to date
+
 
