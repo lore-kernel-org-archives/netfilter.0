@@ -1,12 +1,14 @@
-From: "Wayne de Nobrega" <wdenobre@techconcepts.co.za>
-Subject: IPTABLES vs Checkpoint
-Date: Tue, 26 Nov 2002 21:28:09 +0200
+From: "George J. Jahchan, Eng." <George_Jahchan@Compucenter.org>
+Subject: RE: blocking kazaa
+Date: Tue, 26 Nov 2002 03:33:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F5BAB933C75004690195047C4040A6D0535D4@tc-pdc.jhbA.techconcepts.co.za>
+Message-ID: <NGBBIFPIGGIJNGPBIAPHGEIFCBAA.George_Jahchan@Compucenter.org>
+References: <200211191503.gAJF37aL014830@plutao.siteplanet.com.br>
+Reply-To: <George_Jahchan@Compucenter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200211191503.gAJF37aL014830@plutao.siteplanet.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +19,10 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hello,
 
-I have a customer who is part of an international group which has a
-policy of using the Nokia Checkpoint firewall.  Due to the signifcant
-cost differences, and our preference, the local branch and ourselves
-would like to install an IPTABLES based firewall.  I need some help in
-motivating this to head office and am looking for information comparing
-the two solutions.  I need to focus on the technical issues of the two
-products and ultimately the inherent security realised from the two
-products.
 
-Can anyone offer some input or point me to a source of information.
+You need a PacketShaper, check it out at: http://www.packeteer.com/
 
-Many thanks
-
-Wayne
 
