@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: nmap
-Date: Tue, 22 Oct 2002 19:31:42 +0100
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: what filtering to do on the OUTPUT chain?
+Date: Tue, 22 Oct 2002 14:57:24 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021022183147.PITY17202.mta01-svc.ntlworld.com@there>
-References: <1035264046.15391.85.camel@hyperno> <20021022174245.13d2766b.fonetica@tiscali.it>
+Message-ID: <Pine.LNX.4.44.0210221455120.15018-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021022174245.13d2766b.fonetica@tiscali.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +14,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-On Tuesday 22 October 2002 4:42 pm, antonio wrote:
 
-> Hi Everyone,
->
-> Just a question:
-> I want to set up a firewall box with iptables in which I can use nmap.
-> Which ports/protocols can I set to ACCEPT and which to DROP?
+  i've had a number of people tell me that, while they put a
+good deal of thought into their INPUT filtering, they simply
+ACCEPT all outgoing traffic since, if their input filtering
+is working properly, there's no reason to stop outgoing
+packets.
 
-Do you mean you want to run nmap on a box also running netfilter, to scan 
-other machines ?
+  comments?  is there a FAQ that deals with what one should
+filter on its way out?  i'm restricting this to the simple case
+of firewalling a single host -- no routers, NAT, etc.
 
-If so, set your OUTPUT policy to ACCEPT, set your INPUT policy to DROP with a 
-single rule:
+rday
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-and you'll be able to scan other machines and get the replies back, but 
-anything new coming in to your machine will be blocked.
-
-If I didn't understand correctly what you wanted to do please give more 
-details.
-
-Antony.
-
--- 
-
-Which part of 'apt-get dist-upgrade' do you not understand ???
 
