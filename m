@@ -1,14 +1,14 @@
 From: Peteris Krumins <newsgroups@lf.lv>
 Subject: Re[2]: Possible huge iptables memory leakage
-Date: Thu, 31 Jul 2003 23:33:44 +0300
+Date: Thu, 31 Jul 2003 23:37:08 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <190268702674.20030731233344@lf.lv>
-References: <200307311943.h6VJhjjX018060@discmail.com>
+Message-ID: <10268906076.20030731233708@lf.lv>
+References: <7C9884991ADAE0479C14F10C858BCDF5122E14@alderaan.smgtec.com>
 Reply-To: Peteris Krumins <newsgroups@lf.lv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307311943.h6VJhjjX018060@discmail.com>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122E14@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,39 +21,42 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello Aldo,
+Thursday, July 31, 2003, 11:14:51 PM, you wrote:
 
-Thursday, July 31, 2003, 10:42:12 PM, you wrote:
+DC> I am not sure what everyone else's environments are like, but I am
+DC> definitely getting memory infinitely swallowed into Netfilter somewhere.
+DC> I have userspace programs, but put together they take less than 5% of
+DC> the system memory.
 
-ASL> I run many different Linux systems ranging in physical memory from 128M to
-ASL> 5Gig (that's RAM!) both with and without iptables:
+I am getting only on this particular 2.4.22-pre6 and ipt1.2.8
+w/patch-o-matic-20030714
 
-Yes, i have running lots of systems, but the most interesting part is
-that i have a traffic accounting, shaping and real netfilter box.
-w/ 2.4.20 base, iptables 1.2.7a - it eats only 190 of 512 not ever
-more.
+As Aldo S. Lagana noted it might be conntracking but it does not seem
+logical - conntracking entries shrinking, ram usage growing.
+I hope it hold the peak hours tomorrow.
 
-ASL> The funny thing about Linux is - if you give it RAM - it will use it....I am
-ASL> sure someone more in tune with mem management will set me straight, but it
-ASL> seems that Linux will always grab up 90% of all physical memory after it has
-ASL> been running for a while...
+DC> I forced myself to reboot once the ACTIVE memory takes 95% of the CPU,
+DC> which was every 3 weeks with 196mb of RAM. This server averaged 200 -
+DC> 250 connection tracks during office hours. The ramping active memory
+DC> usage went up in a very linear pattern until it took all the system, at
+DC> which point I would have to reboot due to performance degradation.
 
-Only if some interactive (not necessary user interacive) applications are running.
+I hope i dont have to reboot tomorrow..
 
-ASL> To make a short story long - unless you are tracking all connections (and
-ASL> there are many dynamic connections) I would not be too quick to blame
-ASL> iptables - I mean the amount of ram you are using in 30Meg - is this the
-ASL> 80's???
+DC> The last reboot, I decided to play with the machine's settings and add
+DC> some memory totaling 256MB. I also disabled my SWAP partition because I
+DC> have a few database servers that perform fantastically when kswapd isn't
+DC> used much. 
 
-Not 80's, but i have to get my project running w/ less than 59MB ram.
+I am not swapping at all, since the machine loads everything from 16MB
+ide flash.
 
-Yes, i am tracking connections - but its now night (23:30/11:30 pm),
-the computer w/ connection tracking has 600 conntrack entries (its
-1200 less than it was 5 hours ago) but it uses 10 more megabytes of
-ram than then (5h ago) and still growing.
+DC> The result: Active memory 'seems' to have stabilized around 75MB at
+DC> least for the few days that it has been stable. I cannot tell if this
+DC> was totally kswap's fault, or even if the problem has been fixed at all.
+DC> It does look promising though.
 
-I hope it's just Linux - eating as much ram as possible and then
-using. And it's not a memory leak..
+We'll see, thanks.
 
 
 P.Krumins
