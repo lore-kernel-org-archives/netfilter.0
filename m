@@ -1,13 +1,13 @@
-From: Jorge Davila <isaac@nicaraguarealestate.com>
-Subject: Re: Problem with nat table in iptables
-Date: Fri, 28 May 2004 14:50:39 -0600
+From: michael@floog.net
+Subject: RE: Iptables/Iproute2/Load-Balancing 2 Broadband Connections
+Date: Fri, 28 May 2004 13:33:36 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40B7A61F.8@nicaraguarealestate.com>
-References: <40B6322E.6050205@nicaraguarealestate.com>
+Message-ID: <1085776416.40b7a2205a3d1@webmail.floog.net>
+References: <7C9884991ADAE0479C14F10C858BCDF591E318@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40B6322E.6050205@nicaraguarealestate.com>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E318@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Jorge Davila wrote:
+Blammo, you dropped the book on me.  :-)
+Thanks for the link; it looks chock full of ip goodness.
 
-> Hi!
->
-> When I insert a new rule in the chain INPUT and save/restart iptables=20
-> my firewall lost the nat table.
->
-> Someone have an idea about how recover the nat table?
->
-> Thanks,
->
-> Jorge D=E1vila.
->
+Have a great weekend.
 
-The problem has been resolved... the nat was "eliminated" when I try to=20
-see the firewall configuration simultaneously with webmin and command=20
-line after insert the rule. :)
+Mike
+
+Quoting Daniel Chemko <dchemko@smgtec.com>:
+
+> 
+> > Any/all guidance is greatly appreciated.
+> 
+> There's always:
+> 
+> http://linux-ip.net/html/linux-ip.html - Large HOWTO on how to
+> configure
+> IP networks. 
+> 	10.4. Multiple Connections to the Internet ...
+> 
+> www.lartc.org - Really good at QOS configurations
+> 
+> 
+
+
+
 
 
 
