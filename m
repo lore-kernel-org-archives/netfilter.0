@@ -1,11 +1,11 @@
-From: "Zhang Junbiao (Princeton)" <junbiao.zhang@thomson.net>
-Subject: delay in deleting a rule?
-Date: Tue, 18 Feb 2003 12:29:31 -0500
+From: =?iso-8859-1?Q?Gabriel_G=FCeto?= <gabriel.gueto@rhodasol.turimar.es>
+Subject: Problem with iptables -A FORWARD -j DROP
+Date: Wed, 19 Feb 2003 14:16:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0BCAE6FBFB16D511922A0002A507DACE030D86A0@INDYEXCH24>
+Message-ID: <002d01c2d819$2746d250$04000059@INFORMATICA>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2D773.4BE5FDD0"
+	boundary="----=_NextPart_000_002A_01C2D821.8874EDC0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,132 +16,85 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C2D773.4BE5FDD0
+------=_NextPart_000_002A_01C2D821.8874EDC0
 Content-Type: text/plain;
 	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Hello, I'm installing a bridge-firewall an all is OK, but whe I deny all =
+the 'FORWARD' traffic this rule deny all the traffic included the =
+'ACCEPT' rules. Mi Kernel is 2.4.18
+and i installed itables 1.2.5-3. My script is:
 
-	I'm observing some strange behavior with using iptables. In
-particular, when I used iptables to remove a rule in the nat table, it took
-quite a while before it actually took effect. I didn't have such problem
-when inserting the rule. More specifically, when I ran
+iptables -F FORWARD
+iptables -F INPUT
+iptables -F OUTPUT
 
-iptables -t nat -I PREROUTING 1 -m mac --mac-source $mac -j RETURN
+iptables -A FORWARD -p icmp -s 89.0.0.0/24 -d 89.0.0.55/32 -j ACCEPT
 
-	it took effect immediately, the device with the $mac address didn't
-pass through the rest of the rules in the PREROUTING chain. However, when I
-ran
+iptables -A FORWARD -j DROP
 
-iptables -t nat -D PREROUTING -m mac --mac-source $mac -j RETURN
 
-	iptables -t nat -L shows that the rule has been removed, but the
-device with the $mac address was still treated the same way as if the rule
-was still in place. It sometimes took more than 1 minute before the rule was
-no longer in effect. 
 
-	Are there some type of caching in netfilter or iptables? Or is this
-a bug? I'm using Linux Kernel 2.4.17, I tried both iptables v.1.2.2 and
-iptables v.1.2.3, both with the same problem.
+If I quit the las line it's all OK, if I deny 'ping' it's OK, but if I =
+put the last line all ping are deny.
 
-	Thanks. 
+Can somebody help me. I'm sorry for mu poor English.
 
-Regards,
-
-J.B.
-
------------------------------------------------------------ 
-As of February 12, 2003 Thomson unified its email addresses on a worldwide
-basis.  Please note my new email address: junbiao.zhang@thomson.net 
-
-Thomson is the leader in solutions and technologies for the entertainment
-and media industries and serves its customers under its four strategic
-brands: Technicolor, Grass Valley, RCA and THOMSON. 
-More about Thomson: http://www.thomson.net/videochain 
-
-------_=_NextPart_001_01C2D773.4BE5FDD0
+Gabriel.
+------=_NextPart_000_002A_01C2D821.8874EDC0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>delay in deleting a rule?</TITLE>
+<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
+<STYLE></STYLE>
 </HEAD>
-<BODY>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello, I'm installing a bridge-firewall =
+an all is=20
+OK, but whe I deny all the 'FORWARD' traffic this rule deny all the =
+traffic=20
+included the 'ACCEPT' rules. Mi Kernel is 2.4.18</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>and i installed itables&nbsp;1.2.5-3. =
+My script=20
+is:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -F FORWARD</FONT></DIV>
+<DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -F INPUT</FONT></DIV>
+<DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -F OUTPUT</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -A FORWARD -p icmp -s =
+89.0.0.0/24 -d=20
+89.0.0.55/32 -j ACCEPT</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -A FORWARD -j =
+DROP</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>If I quit the las line it's all OK, if =
+I deny=20
+'ping' it's OK, but if I put the last line all ping are =
+deny.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Can somebody help me. I'm sorry for mu =
+poor=20
+English.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial =
+size=3D2>Gabriel.</FONT></DIV></DIV></DIV></BODY></HTML>
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hi all,</FONT>
-</P>
+------=_NextPart_000_002A_01C2D821.8874EDC0--
 
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">I'm observing some strange behavior with using iptables. =
-In particular, when I used iptables to remove a rule in the nat table, =
-it took quite a while before it actually took effect. I didn't have =
-such problem when inserting the rule. More specifically, when I =
-ran</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">iptables -t nat -I PREROUTING 1 -m mac =
---mac-source $mac -j RETURN</FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">it took effect immediately, the device with the $mac =
-address didn't pass through the rest of the rules in the PREROUTING =
-chain. However, when I ran</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">iptables -t nat -D PREROUTING -m mac =
---mac-source $mac -j RETURN</FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">iptables -t nat -L shows that the rule has been removed, =
-but the device with the $mac address was still treated the same way as =
-if the rule was still in place. It sometimes took more than 1 minute =
-before the rule was no longer in effect. </FONT></P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">Are there some type of caching in netfilter or iptables? =
-Or is this a bug? I'm using Linux Kernel 2.4.17, I tried both iptables =
-v.1.2.2 and iptables v.1.2.3, both with the same problem.</FONT></P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">Thanks. </FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Regards,</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">J.B.</FONT>
-</P>
-
-<P><FONT SIZE=3D2 =
-FACE=3D"Arial">---------------------------------------------------------=
--- </FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">As of February 12, 2003 Thomson =
-unified its email addresses on a worldwide basis.&nbsp; Please note my =
-new email address: junbiao.zhang@thomson.net </FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Thomson is the leader in solutions and =
-technologies for the entertainment and media industries and serves its =
-customers under its four strategic brands: Technicolor, Grass Valley, =
-RCA and THOMSON. </FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">More about Thomson: <A =
-HREF=3D"http://www.thomson.net/videochain" =
-TARGET=3D"_blank">http://www.thomson.net/videochain</A> </FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C2D773.4BE5FDD0--
 
