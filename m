@@ -1,12 +1,14 @@
-From: "Manikandan" <mani@manikandan.org>
-Subject: tcpdump shows lots of UDP traffic and ifconfig reports error on interface.
-Date: Mon, 21 Jun 2004 11:58:49 +0530
+From: "Shaun T. Erickson" <ste@smxy.org>
+Subject: Re: incoming interface confusion question
+Date: Mon, 21 Jun 2004 19:07:43 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GHEILNONPACCGBGKBEKKEEOFCGAA.mani@manikandan.org>
-Reply-To: <manikandan@manikandan.org>
+Message-ID: <40D76A3F.90503@smxy.org>
+References: <40D71EC4.7090900@smxy.org> <1087849139.17067.25.camel@localhost> <40D74F60.6030105@smxy.org> <200406212328.19329.Antony@Soft-Solutions.co.uk>
+Reply-To: ste@smxy.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200406212328.19329.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,116 +18,109 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi friends,
+Antony Stone wrote:
 
-        I am running RedHat linux 9 with iptables 1.2.7a. This box acts as a
-gateway/firewall for my network. I am seeing lots of packets getting dropped
-as well as ifconfig reports error.
+> Since you use non-routable addresses on your internal LANs, and you say that 
+> the SonicWall has static routes pointing to those network ranges, I assume 
+> you are doing the NAT (which is necessary for clients to be able to access 
+> the Internet) on the SonicWall, not on the netfilter machine.
 
-[root@javagreen RPMS]# tail /var/log/messages/
+Correct. (Btw, if I come accross as niaeve, I apologize. I've never had 
+to deal with a potential incident before, so I'll admit to being a bit 
+spooked at the moment. I just replaced the previous admin and am still 
+coming up to speed. Please forgive me.)
 
-Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
-MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=64.0.96.12
-DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=45 ID=17638 PROTO=ICMP
-TYPE=8 CODE=0 ID=20225 SEQ=61833
-Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
-MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=64.0.96.12
-DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=45 ID=17638 PROTO=ICMP
-TYPE=8 CODE=0 ID=20225 SEQ=61833
-Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
-MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=210.224.186.4
-DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=42 ID=0 DF PROTO=ICMP
-TYPE=8 CODE=0 ID=52234 SEQ=19095
-Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
-MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=210.224.186.4
-DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=42 ID=0 DF PROTO=ICMP
-TYPE=8 CODE=0 ID=52234 SEQ=19095
-Jun 21 11:50:54 javagreen named[3251]: client 10.35.57.153#1366: query:
-www.usagreetings.com IN A
-Jun 21 11:50:54 javagreen named[3251]: client 10.35.57.153#1366: query:
-www.usagreetings.com IN A
-Jun 21 11:51:00 javagreen kernel: IN=eth0 OUT=
-MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=210.224.186.4
-DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=42 ID=0 DF PROTO=ICMP
-TYPE=8 CODE=0 ID=52234 SEQ=57756
-Jun 21 11:51:00 javagreen kernel: IN=eth0 OUT=
-MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=210.224.186.4
-DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=42 ID=0 DF PROTO=ICMP
-TYPE=8 CODE=0 ID=52234 SEQ=57756
-Jun 21 11:51:00 javagreen kernel: IN=eth0 OUT=
-MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=64.0.96.12
-DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=45 ID=24066 PROTO=ICMP
-TYPE=8 CODE=0 ID=20225 SEQ=33935
-Jun 21 11:51:00 javagreen kernel: IN=eth0 OUT=
-MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=64.0.96.12
-DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=45 ID=24066 PROTO=ICMP
-TYPE=8 CODE=0 ID=20225 SEQ=33935
+> Unless you have any DNAT rules on your SonicWall redirecting some public 
+> address/es to your private address space, I think you can rule out someone on 
+> the Internet having sent the packets in to your internal address space, 
+> because they simply wouldn't be able to get the packets through to private 
+> addresses.
 
-[root@javagreen RPMS]# ifconfig -a
-eth0      Link encap:Ethernet  HWaddr 00:09:6B:19:B4:24
-          inet addr:202.138.202.218  Bcast:202.138.202.223
-Mask:255.255.255.248
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          RX packets:436956 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:347529 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:100
-          RX bytes:293873940 (280.2 Mb)  TX bytes:41608963 (39.6 Mb)
-          Interrupt:9 Base address:0x2000 Memory:c0100000-c0100038
+There are no rules on the sonicwall that allow traffic initiated on the 
+wan to go to the lan. There is one rule that allows one specific system 
+in the dmz to connect to one specific system on an internal lan, on it's 
+MySQL port.
 
-eth1      Link encap:Ethernet  HWaddr 00:90:27:99:0E:3C
-          inet addr:10.35.57.6  Bcast:10.35.57.255  Mask:255.255.255.0
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          RX packets:475459 errors:3300 dropped:0 overruns:0 frame:3300
-          TX packets:518784 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:100
-          RX bytes:53916734 (51.4 Mb)  TX bytes:311614338 (297.1 Mb)
-          Interrupt:11 Base address:0x2040 Memory:c0101000-c0101038
+>>The source addresses are from multiple internet sites,
+>>coming from either port 80 or port 443, and were destined for the
+>>private address space of one of my internal lans. The initial
+>>destination port seemed randomly chosen, but then incremented by 1. Most
+>>often, 92 bytes was sent to each port, but not always.
+> 
+> 
+> What sort of packets were they?   You've said they were from source ports 80 
+> and 443, so I assume we're talking TCP, not UDP.   What flags were set?   
+> SYN? ACK? FIN? RST? (URG & PSH aren't very interesting really)
 
-lo        Link encap:Local Loopback
-          inet addr:127.0.0.1  Mask:255.0.0.0
-          UP LOOPBACK RUNNING  MTU:16436  Metric:1
-          RX packets:4990 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:4990 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:0
-          RX bytes:415424 (405.6 Kb)  TX bytes:415424 (405.6 Kb)
+They are all TCP packets. The breakdown of flags was:
 
-Also, tcpdump shows lots of UDP traffic consistently in eth1 interface
-between one of my LAN host to random internet IPs as shown,
+     140 ACK FIN URGP=0
+     202 ACK PSH FIN URGP=0
+     510 ACK PSH URGP=0
+       2 ACK RST URGP=0
+     350 ACK SYN URGP=0
+   14719 ACK URGP=0
+       3 RST URGP=0
 
-[root@javagreen RPMS]# tcpdump -i eth1 host 10.35.57.21
-tcpdump: listening on eth1
-11:55:50.805682 10.35.57.21.1038 > 224.2.208.147.21732: udp 5499 (frag
-44897:1480@0+)
-11:55:50.805684 10.35.57.21 > 224.2.208.147: udp (frag 44897:1480@1480+)
-11:55:50.806887 10.35.57.21 > 224.2.208.147: udp (frag 44897:1480@2960+)
-11:55:50.806890 10.35.57.21 > 224.2.208.147: udp (frag 44897:1067@4440)
-11:55:50.837221 10.35.57.21.1042 > 224.2.155.34.17866: udp 5499 (frag
-44913:1480@0+)
-11:55:50.837223 10.35.57.21 > 224.2.155.34: udp (frag 44913:1480@1480+)
-11:55:50.837560 10.35.57.21 > 224.2.155.34: udp (frag 44913:1480@2960+)
-11:55:50.837562 10.35.57.21 > 224.2.155.34: udp (frag 44913:1067@4440)
-11:55:50.837564 10.35.57.21.1041 > 224.2.234.118.32168: udp 5499 (frag
-44914:1480@0+)
-11:55:50.838024 10.35.57.21 > 224.2.234.118: udp (frag 44914:1480@1480+)
-11:55:50.838026 10.35.57.21 > 224.2.234.118: udp (frag 44914:1480@2960+)
-11:55:50.838028 10.35.57.21 > 224.2.234.118: udp (frag 44914:1067@4440)
-11:55:50.838030 10.35.57.21.1039 > 224.2.241.172.26116: udp 5499 (frag
-44915:1480@0+)
-11:55:50.838785 10.35.57.21 > 224.2.241.172: udp (frag 44915:1480@1480+)
-11:55:50.838787 10.35.57.21 > 224.2.241.172: udp (frag 44915:1480@2960+)
-11:55:50.838789 10.35.57.21 > 224.2.241.172: udp (frag 44915:1067@4440)
+> Packets from source ports 80 and 443 are to be expected - as replies from a 
+> web server - so I wonder whether you should be investigating some machine on 
+> your internal network (rather than puzzling over your firewall), to see 
+> whether it was sending *out* packets, which you have simply seen the replies 
+> to?
 
+Perhaps.
 
+> A Windows client which makes repeated connections to a web server will very 
+> likely choose successively higher source port numbers (which are the 
+> destination port numbers in the reply packets) for each connection attempt, 
+> therefore several things about what you've said suggest to me that you're 
+> seeing reply packets, not an externally-initiated port scan.
 
-Any help friends,
-I had already spent lots of time on this without any success.
+I don't fully understand this. If a Windows client on my lan makes 
+repeated attempts to connect to web sites on the internet, it sends each 
+request from a successively higher port number each time, rather than 
+from the same port each time? And the port that it requests from then 
+becomes the destination port for the return packet?
 
-Advance thanks.
---Manikandan.
+> The fact that the packets you've seen are to multiple addresses within your 
+> own LAN in fact makes me wonder whether someone inside your network has 
+> (deliberately or unwittingly) performed a TCP port 80 scan of several 
+> external addresses, using source address spoofing to disguise the address of 
+> the machine doing the scan?
+> 
+> It's not unreasonable to think that a worm or trojan infection of an internal 
+> system could cause this.
 
+Ok. I'm willing to buy that, except for one thing. Eth2 of the netfilter 
+box creates the 192.168.32.0/24 net. Eth1 of the netfilter box creates 
+the 192.168.40.0/24 net. My firewall contains (among others) these rules:
 
+$IPTABLES -A INPUT   -i $DB_IFACE -s ! $DB_ADDRESSES -j DROP
+$IPTABLES -A FORWARD -i $DB_IFACE -s ! $DB_ADDRESSES -j DROP
+$IPTABLES -A INPUT   -i $DEV_IFACE -s ! $DEV_ADDRESSES -j DROP
+$IPTABLES -A FORWARD -i $DEV_IFACE -s ! $DEV_ADDRESSES -j DROP
 
+where:
+
+DB_IFACE=eth1
+DEV_IFACE=eth2
+DB_ADDRESSES=192.168.40.0/24
+DEV_ADDRESSES=192.168.32.0/24
+
+Wouldn't those rules cause any packets coming from my internal lans, 
+with spoofed source addresses, to be dropped? If so, then they couldn't 
+have contacted internet websites for me to then see reply packets from, 
+right?
+
+> Maybe it would be worth adding an outbound logging rule (perhaps just for port 
+> 443 to keep the signal:noise ratio higher than it would be on port 80) to see 
+> if something similar happens again, and see whether you had outbound packets 
+> preceding the inbound ones?
+
+I shall consider it.
+
+	-ste
 
