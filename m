@@ -1,10 +1,12 @@
-From: MOUDARIR Mohamed <moudarir@Richbond.ma>
-Subject: MSN throught Linux
-Date: Fri, 26 Sep 2003 18:48:34 -0000
+From: <bmcdowell@coxhealthplans.com>
+Subject: TARPIT target
+Date: Fri, 26 Sep 2003 15:45:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <14C5057BC852D611BAC400E0299AA10F02042D@MAILSERV>
+Message-ID: <7A3B4AA360FDEF448F3390421FC8D731F41374@coxhpexg.coxhp.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,14 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi
-Can we use MSN voice conversation behind a Linux firwall ( redhat ) 
-I suppose all iptables rules are in ACCEPT mode
-the only the rule that exist is : iptables  -t nat -A POSTROUTING -o
-$INET_IFACE -j SNAT --to-source $EXT_IP
-This rule is to nat the private Lan
+
+I apologize in advance if this has already been addressed, but I can't =
+seem to find the answer anywhere.  Yes, I looked in the docs and yes, I =
+looked in the mailing list archive.  The latter was a tad difficult to =
+search, though, as I had to try and parse that 84 MB file...  At any =
+rate, here's my question:
+
+How do I use the TARPIT target?
+
+I have iptables 1.2.8 installed and working otherwise.  I'm running =
+RedHat 9.
+
+When I try and use
+	'iptables -A FORWARD -j TARPIT'
+I get
+	'iptables: No chain/target/match by that name'
+
+I have rebuilt the kernel, but I do not see an option for 'TARPIT' =
+anywhere in the netfilter stuff.  Yes, I do have 'experimental' turned =
+on.  I have also deleted iptables completely and used only the source to =
+install it.
+
+Any ideas?
+
+
+Thanks,
+
+Bob McDowell
+IS Specialist
+Cox HealthPlans, LLC
+417.269.2848
+
+Confidentiality Notice: This e-mail message (including any attachments) =
+may contain confidential and privileged information, and is for the sole =
+use of the intended recipient(s). Any unauthorized review, use, =
+disclosure or distribution is strictly prohibited. If you are not the =
+intended recipient, please notify the sender by replying to this e-mail =
+message, permanently deleting the original message and destroying any =
+hard copies of the original message that may have been created.
 
 
