@@ -1,9 +1,11 @@
-From: "Andrew Hakman" <hakmana@hotmail.com>
-Subject: Netfilter UDP/H323
-Date: Fri, 03 Oct 2003 18:15:31 -0500
+From: "Venkatesh. K" <venkatesh@cbayscribe.com>
+Subject: Re: Generate a unified patch for source RPM
+Date: Sat, 4 Oct 2003 06:01:47 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY2-F11zadTMVwVn2000006c02@hotmail.com>
+Message-ID: <01b601c38a0e$eb0d79d0$2800a8c0@karu>
+References: <003a01c3837f$e482d2d0$2800a8c0@karu> <20031003105021.GE5758@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,49 +16,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Netfilter@Lists.Netfilter.Org" <netfilter@lists.netfilter.org>
 
-Hi
+Thanks a lot.
 
-I'm having a weird problem with iptables. I've got it running on a debian 
-(unstable) box with kernel 2.4.22 (from www.kernel.org, not a debian kernel 
-source or image package), and regular NAT is working fine. I've tried 
-multiple ways to get h323 working, including applying the ip_conntrack_h323 
-and ip_nat_h323 patches and compiling them into the kernel, and modconf'ing 
-them into the post-patch-recompiled kernel, and prior to that just by 
-manually forwarding the tcp port (1720) and UDP ports (5000:5999) to the 
-correct internal machine. The problem is that I never get any UDP traffic 
-coming back from the remote machine. Running a packet sniffer on that 
-machine, it shows that iptables seems to not be changing the source address 
-of the UDP traffic to the public address of the debian router, but instead 
-is leaving the source address as 192.168.2.1 (the private address of the 
-debian box). As I mentioned above, regular nat on everything else seems to 
-work fine.
+I had tried the same command line except the full path to the patch :(
 
-The IP tables version is what you get when you follow the instructions to 
-use Patch-O-Matic, and as mentioned, the kernel is 2.4.22. The private nic 
-in the debian box is eth0 192.168.2.1/255.255.255.0 and the public one is 
-eth1 66.222.177.x/255.255.248.0.
+Venkatesh K
 
-The IP tables command i'm using to start nat is:
-iptables -t nat -A POSTROUTING -s 192.168.2.0/255.255.255.0 -o eth1 -j SNAT 
---to-source 66.222.177.x
+----- Original Message ----- 
+From: "Harald Welte" <laforge@netfilter.org>
+To: "Venkatesh. K" <venkatesh@cbayscribe.com>
+Cc: <>
+Sent: Friday, October 03, 2003 4:20 PM
+Subject: Re: Generate a unified patch for source RPM
 
-and to forward tcp port 1720
-iptables -t nat -A PREROUTING -p tcp --dport 1720 -j DNAT --to 192.168.2.2
-and when I was trying to manually forward udp 5000:5999
-iptables -t nat -A PREROUTING -p udp --dport 5000:5999 -j DNAT --to 
-192.168.2.2
+On Thu, Sep 25, 2003 at 09:42:48PM +0530, Venkatesh. K wrote:
+> Hi,
+>
+> I want to patch the RedHat Kernel RPM.
+>
+> How do I generate a single patch file from patch-o-matic which can be
+> applied to an src.rpm ?
 
-Anyone have any ideas/pointers?
+# pom2patch - create a normal unified diff (patch) from patch-o-matic
 
-Thanks
-Andrew Hakman
+included in the patch-o-matic directory
 
-_________________________________________________________________
-The new MSN 8: advanced junk mail protection and 2 months FREE*  
-http://join.msn.com/?page=features/junkmail
+syntax is:
+
+pom2patch my_kernel_source_dir submitted/00_foo.patch
+
+(you have to run it seperately for every patch-o-matic patch)
+
+> Venkatesh K
+-- 
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+============================================================================
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
 
