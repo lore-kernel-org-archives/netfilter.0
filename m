@@ -1,13 +1,15 @@
-From: Kim Jensen <kimj@dawn.dk>
+From: =?iso-8859-1?q?Steve=20Quartly?= <stevequartly@yahoo.com>
 Subject: Re: Urgent Help needed.... please.
-Date: Sat, 29 Mar 2003 09:59:37 +0100
+Date: Sat, 29 Mar 2003 23:30:08 +1100 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303290959.37528.kimj@dawn.dk>
-References: <20030329080954.19290.qmail@web10808.mail.yahoo.com>
+Message-ID: <20030329123008.83426.qmail@web10805.mail.yahoo.com>
+References: <200303290959.37528.kimj@dawn.dk>
+Reply-To: steve@quartly.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="0-922270020-1048941008=:83345"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030329080954.19290.qmail@web10808.mail.yahoo.com>
+In-Reply-To: <200303290959.37528.kimj@dawn.dk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,73 +19,126 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: steve@quartly.net, Steve Quartly <stevequartly@yahoo.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Steve,
+--0-922270020-1048941008=:83345
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Content-Id: 
+Content-Disposition: inline
 
-If you have been hacked, then at least you have taken the necessary first=
- step=20
-by shutting down, but it doesn't appear like you have cleaned your system=
- or=20
-reinstalled it. I would do that before anything else, to ensure that I ha=
-ve=20
-_no_ bad dudes left on my machine. Then secondly, I would patch the serve=
-r=20
-with all relevant patches.
+Hi Kim,
 
-Secondly your script is very IP centric, all destinations for everything =
-is=20
-based on IP's, why don't you try to simply fy your script, so it only mee=
-ts=20
-your explicit demands. First of all, you could disallow packets from the=20
-Internet to the INPUT chain and only accept FORWARD packets which are=20
-related/established from inside.
+Firstly thanks for your offer to help.... it is
+greatly appreciated.
 
-Finally, if you have an immediate problem, try to make a script that rest=
-arts=20
-your Internet connection and put the firewall script into this, so your=20
-firewall is being restarted as well.
+> If you have been hacked, then at least you have
+> taken the necessary first step 
+> by shutting down, but it doesn't appear like you
+> have cleaned your system or 
+> reinstalled it. I would do that before anything
+> else, to ensure that I have 
+> _no_ bad dudes left on my machine. Then secondly, I
+> would patch the server 
+> with all relevant patches.
 
-Nomatter what, please give some ideas about your network setup - it will =
-help=20
-with understanding how we can help you.
+Yes, cleaning the system was my next priority, however
+I thought it necessary to secure the machine first as
+I didn't want to go through all this again, in case it
+happened again before I had a working firewall.
 
-/Kim
+> Secondly your script is very IP centric, all
+> destinations for everything is 
+> based on IP's, why don't you try to simply fy your
+> script, so it only meets 
+> your explicit demands. First of all, you could
+> disallow packets from the 
+> Internet to the INPUT chain and only accept FORWARD
+> packets which are 
+> related/established from inside.
 
-On Saturday 29 March 2003 09:09, Steve Quartly wrote:
-> Hi,
->
-> A week ago I put a dedicated server on the internet. 2
-> days ago a hacker got into my system and caused many
-> problems through a security flaw in the version of SSH
-> I am running. Last night he tried again, however I
-> locked the machine down so even I couldn't get into
-> it, and he had no success.
->
-> I have now changed over to giptables (which is great)
-> but I have a few problems.
->
-> If I connect to my server, run the firewall,
-> everything is ok. I can look at webpages, SSH, etc
-> from my home system. If I shutdown my home system, and
-> re-dial to the net, the firewall blocks eveything! I
-> can't even ping my server. My parents computer can't
-> access my server either. This is very frustrating, can
-> anybody please help me here. I suspect that DNS is
-> being blocked?
->
-> I have attached my firewall script.
->
-> If anyone could give me some guidance I'd be very
-> grateful.
->
-> Thanks,
->
-> Steve Q.
->
-> http://mobile.yahoo.com.au - Yahoo! Mobile
-> - Check & compose your email via SMS on your Telstra or Vodafone mobile=
-=2E
+If it is not too much too ask, would you be able to
+provide me with an example to use as the basis of a
+new firewall? I did have another firewall (attached)
+which I used from within Webmin. This was much
+simpler, but I still had the same problem! Once the
+firewall was up and I was connected, everything was
+working fine. Then if I disconnected and reconnected
+to the server, nothing would work??? It's really got
+me stumped! Actually I don't think it is the firewall,
+I think it is more than that. Perhaps something not
+compiled into the kernel that should be?
 
+> Finally, if you have an immediate problem, try to
+> make a script that restarts 
+> your Internet connection and put the firewall script
+> into this, so your 
+> firewall is being restarted as well.
+> 
+> Nomatter what, please give some ideas about your
+> network setup - it will help 
+> with understanding how we can help you.
+
+My server has a static IP address and is basically
+plugged straight into the Internet via an ISP. The box
+is co-located at the ISP and I remotely administer it.
+I have 1 ethernet card connecting the computer to the
+outside world and this is allocated the static IP
+address. Our server will (eventually) be used to host
+domains/email/webpages etc.
+
+Any ideas?
+
+Thanks again
+
+Steve Q.
+
+http://mobile.yahoo.com.au - Yahoo! Mobile
+- Check & compose your email via SMS on your Telstra or Vodafone mobile.
+--0-922270020-1048941008=:83345
+Content-Type: text/plain; name=iptables
+Content-Description: iptables
+Content-Disposition: inline; filename=iptables
+
+# Generated by iptables-save v1.2.5 on Mon Mar 10 15:39:57 2003
+*nat
+:PREROUTING ACCEPT [3:341]
+:POSTROUTING ACCEPT [19:1587]
+:OUTPUT ACCEPT [19:1587]
+COMMIT
+# Completed on Mon Mar 10 15:39:57 2003
+# Generated by iptables-save v1.2.5 on Mon Mar 10 15:39:57 2003
+*mangle
+:PREROUTING ACCEPT [274:38223]
+:INPUT ACCEPT [274:38223]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [247:25738]
+:POSTROUTING ACCEPT [247:25738]
+COMMIT
+# Completed on Mon Mar 10 15:39:57 2003
+# Generated by iptables-save v1.2.5 on Mon Mar 10 15:39:57 2003
+*filter
+:OUTPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:INPUT DROP [0:0]
+-A INPUT ! -i eth0 -j ACCEPT
+-A INPUT -p tcp -m tcp --tcp-flags ACK ACK -j ACCEPT
+-A INPUT -m state --state ESTABLISHED -j ACCEPT
+-A INPUT -m state --state RELATED -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+-A INPUT -p udp -m udp --dport 1024:65535 --sport 53 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type destination-unreachable -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type source-quench -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type time-exceeded -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type parameter-problem -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 10000 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 20000 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 110 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+COMMIT
+# Completed on Mon Mar 10 15:39:57 2003
+
+--0-922270020-1048941008=:83345--
 
