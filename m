@@ -1,9 +1,11 @@
-From: funny guy <asteriskmail@yahoo.com>
-Subject: Multiple PPTP clients behind NAT
-Date: Mon, 20 Sep 2004 00:01:54 -0700 (PDT)
+From: "Serguei I. Ivantsov" <manowar@gsc-game.kiev.ua>
+Subject: NAT support for peer-to-peer games
+Date: Tue, 21 Sep 2004 11:04:20 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040920070154.68500.qmail@web52503.mail.yahoo.com>
+Message-ID: <00cf01c49fb1$da5492e0$e310f43e@manowar>
+Reply-To: "Serguei I. Ivantsov" <manowar@gsc-game.kiev.ua>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,162 +17,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Dear Rob,
+Hello!
 
-Thanks for your advice. However, I still cannot make
-it work. I am a very new in PPTP and iptables. Could
-you please give me more help.... thanks a lot in
-advance. Thanks a lot a lot for your help.
+I just interesting - whether something changes in Netfilter to support
+peer-to-peer games.
+How to implement the scheme described below using netfilter?
 
-I patched kernel 2.4.26 with
-patch-o-matic-ng-20040919.tar.bz2 which is the
-up-to-date snapshot. 
+<from the article>
+...
+Here's how the hosts know where to send the packets:
 
-I only applied the base options (./runme base) 
-and then I applied extra (./runme extra) with the
-PPTP, RTSP conntrack and transparent proxy patches.
-They seem to apply without problem.
+1) There is a well-known server with a well-known port, not
+behind any NAT or firewall. Its only purpose is to relay
+the public and local addresses of all participants in a session
+to each other. (A host's public address is the address/ UDP port pair
+seen by the outside world; its local address is the pair it
+thinks it has.)
 
-I successfully compiled the kernel, after reboot, I
-have the required modules loaded:
+2) To join the session, a new host sends its local address
+to the well-known server. The server then stores the new
+host's public address (from the UDP header) together with its
+local address (embedded in the packet).
+The list of all participants' public and local addresses are
+then sent down to the new host. The new host notes its own public
+address in the reply from the server.
 
-ipt_REDIRECT
-ipt_MASQUERADE
-iptable_filter
-ip_tables
-iptable_nat
-ip_nat_pptp
-ip_nat_proto_gre
-ip_conntrack_pptp
-ip_conntrack_proto_gre
-ip_conntrack
+3) The server sends the public and local address of the
+new host to all existing participants.
 
-my machines configuration is as follows:
+4) The new host then sends a hello packet to both the public and
+local addresses of each participant; likewise, the existing
+participants all send hello packets to both the public and
+local addresses of the new host. The packet contains
+the sending host's public and local addresses.
+These are analogous to TCP's SYN packet, and are retransmitted
+periodically if no response is received (see below).
 
-192.168.10.0/24
-PPTP     |
-client1->|
-         |                                129.94.133.1
-PPTP     |
-client2->|                                   |->PPTP
-         |                                   |  Server
-         |->eth1->NAT->eth0->...Internet...->|
-... ...->|                                   |->...
-         |                                   |
-PPTP     |
-client n->|
+5) The act of sending a packet to the other participants
+signals the firewall that a reply will be coming back along
+the reverse path. It opens up a return path which just
+reverses the source and destination address/ UDP port pairs.
+This seems to be a common feature of many firewalls and
+SOHO routers (e.g. the Cisco PIX). I don't know how
+widespread it is. Is there any data on what firewalls
+support this behavior?
 
-configuration parameters:
-A. eth1 IP = 192.168.10.1
-B. eth0 IP = 129.94.60.128
-C. IPs in PPTP Server: 129.94.182.130, 129.94.182.131
-(These IPs cannot be accessed without VPN)
-E. All clients in private LAN are windows or Mac
-machines. After the VPN is setup, they will be
-assigned with IP addresses of 129.94.165.3 and
-129.94.165.4
-F. The PPTP Server is not firewalled
-
-I only applied two NAT rules for the above settings:
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-iptables -A FORWARD -i eth1 -j ACCEPT
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-However, I cannot establish multiple connections. The
-problem is exactly as before (I mean the problem in my
-previous emails). The scenario is as following:
-I. I setup one connection from client 1 to the PPTP
-server, then I tried to test the connection by ping
-either 129.94.182.130 or 129.94.182.131. It is
-working.
-II. I setup the other connection from client 2 to the
-same PPTP server. Then two cases will happen:
-   a) if the client 1 (a Mac machine) keep pinging,
-the
-connection for client 2 will fail;
-   b) if client 1 stop pinging, the connection can be
-established.
-III. After the second connection is setup. Client 2
-cannot ping if client 1 keeps pinging, but the status
-shows that the connection is still there.
-
-I donot know whether it is a problem of the kernel
-patch or I did not set the firewall rules correctly.
-
-I tried to learn the firewall rules that you
-suggested, but since my limited knowledge of iptables,
-I donot know which ip address and network interfaces
-should be applied to those rules as too many ip
-addresses in my configurations. Could you please tell
-me the exact rules according to my figure?
-
-If the proble is the kernel patch, the following is my
-.config file, could you please tell me which option I
-did not apply correctly?
-
-[.config]
-# Networking options
-#
-CONFIG_PACKET=y
-CONFIG_NETFILTER=y
-CONFIG_FILTER=y
-CONFIG_UNIX=y
-CONFIG_INET=y
-CONFIG_IP_MULTICAST=y
-CONFIG_IP_ADVANCED_ROUTER=y
-CONFIG_IP_MULTIPLE_TABLES=y
-CONFIG_IP_ROUTE_FWMARK=y
-CONFIG_IP_ROUTE_NAT=y
-CONFIG_IP_ROUTE_TOS=y
-CONFIG_NET_IPIP=m
-
-#   IP: Netfilter Configuration
-#
-CONFIG_IP_NF_CONNTRACK=m
-CONFIG_IP_NF_FTP=m
-CONFIG_IP_NF_CT_PROTO_GRE=m
-CONFIG_IP_NF_PPTP=m
-CONFIG_IP_NF_PPTP_DEBUG=y
-CONFIG_IP_NF_H323=m
-CONFIG_IP_NF_TFTP=m
-CONFIG_IP_NF_IRC=m
-CONFIG_IP_NF_MMS=m
-CONFIG_IP_NF_IPTABLES=m
-CONFIG_IP_NF_MATCH_MAC=m
-CONFIG_IP_NF_MATCH_PKTTYPE=m
-CONFIG_IP_NF_MATCH_MARK=m
-CONFIG_IP_NF_MATCH_MULTIPORT=m
-CONFIG_IP_NF_MATCH_TOS=m
-CONFIG_IP_NF_MATCH_RECENT=m
-CONFIG_IP_NF_MATCH_DSCP=m
-CONFIG_IP_NF_MATCH_AH_ESP=m
-CONFIG_IP_NF_MATCH_STATE=m
-CONFIG_IP_NF_MATCH_CONNTRACK=m
-CONFIG_IP_NF_FILTER=m
-CONFIG_IP_NF_NAT=m
-CONFIG_IP_NF_NAT_NEEDED=y
-CONFIG_IP_NF_TARGET_MASQUERADE=m
-CONFIG_IP_NF_TARGET_REDIRECT=m
-CONFIG_IP_NF_NAT_H323=m
-CONFIG_IP_NF_NAT_LOCAL=y
-CONFIG_IP_NF_NAT_PPTP=m
-CONFIG_IP_NF_NAT_PROTO_GRE=m
-CONFIG_IP_NF_NAT_IRC=m
-CONFIG_IP_NF_NAT_MMS=m
-CONFIG_IP_NF_NAT_FTP=m
-CONFIG_IP_NF_NAT_TFTP=m
-CONFIG_IP_NF_MANGLE=m
-CONFIG_IP_NF_TARGET_TOS=m
-CONFIG_IP_NF_TARGET_ECN=m
-CONFIG_IP_NF_TARGET_DSCP=m
-CONFIG_IP_NF_TARGET_MARK=m
+6) For participants behind different firewalls / NATs / masquerading
+hosts, one packet (the one sent to the peer's public address)
+will make it through. For participants behind the same firewall / NAT /
+masquerading host, the other packet (the one sent to the peer's
+local address) will make it through.
+For participants with two IP interfaces, one or the other packet
+will make it through; it doesn't matter which.
 
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+The entire Dan Kegel article can be found here:
+
+http://www.hasenstein.com/HyperNews/get/linux-ip-nat/97.html
+
+--
+ Serguei I. Ivantsov
+
 
