@@ -1,16 +1,14 @@
-From: "Jonathan Villa" <jvilla@e37.net>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: allow range syntax - perplexed
-Date: Tue, 15 Jun 2004 14:30:05 -0500 (CDT)
+Date: Tue, 15 Jun 2004 20:55:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1932.64.2.245.108.1087327805.squirrel@64.2.245.108>
-References: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108> 
-    <1087322336.2054.12.camel@localhost> 
-    <1846.64.2.245.108.1087324894.squirrel@64.2.245.108>
-    <1087326912.2055.26.camel@localhost>
+Message-ID: <200406152055.30204.Antony@Soft-Solutions.co.uk>
+References: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108> <200406151952.48641.Antony@Soft-Solutions.co.uk> <1921.64.2.245.108.1087327479.squirrel@64.2.245.108>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1087326912.2055.26.camel@localhost>
+In-Reply-To: <1921.64.2.245.108.1087327479.squirrel@64.2.245.108>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,53 +19,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
+On Tuesday 15 June 2004 8:24 pm, Jonathan Villa wrote:
 
-> Hmmm . . . that is very confusing.  It should work which makes me think
-> something else is going on.  I would suggest it is time to do a little
-> tracing to find out where the problem really is.
+> > The output from "iptables -L -nvx" would be useful, as it shows us the
+> > rules
+> > in the correct order, which interfaces they apply to, and the packet /
+> > byte
+> > counts so we can see how many times particular rules have been matched.
 >
-> I would suggest that the first order of business be ensure that the
-> packets are making it to the MySQL server.  One could enable all traffi=
-c
-> and see if you are still denied (if so, a good sign that the packets
-> never make it there in the first place) or, if that is impractical or
-> you really want to be sure, put a protocol analyzer on the line (e.g.,
-> http://www.ethereal.com).  If the server is on a switch, you can either
-> insert a hub, use port mirroring or use ettercap
-> (http://ettercap.sourceforge.net) to insert yourself into the packet
-> stream.  If you do not see the packets arriving, we know the problem is
-> somewhere else in the network.
->
-> If the packets arrive at the MySQL server, then I would start placing
-> log rules at various points in the iptables rules set to see where the
-> packets are dropped.  If they are not dropped before the ACCEPT rule,
-> then see if they are still in the chain after the ACCEPT rule (in which
-> case something is wrong with the match portion of the rule).  If not,
-> they have been ACCEPTED and are either being DROPped or mangled in
-> another POSTROUTING chain or, more likely, there is an application laye=
-r
-> problem.
->
-> Regarding interface versus subnet, it depends on which you fear most!
-> The interface allows you to add new subnets and they will all be allowe=
-d
-> based upon port regardless of IP.  If that kind of free access scares
-> you, then restrict it to specific addresses and subnets (which seems
-> like it is what you want to do anyway).  The downside there is that you
-> must change the rules for any subnets or addresses you later add.  If
-> that kind of maintenance scares you, go back to allowing everything fro=
-m
-> the allowed ports on the interface.
+> here is the output for iptables -L -nvx. I've also attached a txt file in
+> case you want to see a cleaner output
 
-Packets are making it to the server just fine for ip addresses not on the
-same network.  For example, I am 3 hours away and can access the machine
-via port 80, 3306, and 22.  When I create the rules for ips on the same
-network, they can't even access port 80 for phpMyAdmin.  But once I remov=
-e
-the ip check and allow access for the whole world, they are fine.
+Nice.   The .txt file was much easier to read :)
 
+The first thing I notice about the ruleset you have posted is that none of the 
+rules which included your network range matched any packets at all.
 
+Therefore that doesn't tell us much about what source address/es the packets 
+you are having problems with are coming from.
+
+Maybe the timing was just unfortunate, but I can't see any TCP port 3306 
+packets at all.   Therefore I think a LOG rule would be a good idea, to try 
+and track down where the packets are coming from, which your 
+carefully-crafted -s xxx.xxx.xx.0/24 rules aren't apparently matching.
+
+Try something like the following:
+
+iptables -A INPUT -p tcp --dport 3306 -j LOG
+
+The -A will ensure that the rule comes after all your other rules (which are 
+supposed to ACCEPT the packets one way or another).   However, I notice you 
+have a default ACCEPT policy (ugh) and a final rule which DROPs all 
+non-loopback packets.   I suggest you change this to a default DROP policy 
+and a final rule which ACCEPTs all the loopback packets.   Then the rule 
+above will become the final rule in your chain, guaranteeing that you LOG any 
+packets destined for MySQL just before they get (unfortunately) DROPped.
+
+Regards,
+
+Antony.
+
+-- 
+There are two possible outcomes:
+
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
