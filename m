@@ -1,9 +1,11 @@
-From: "Paul E R J" <perj8@hotmail.com>
-Subject: Re: ipt_recent 0.2.3/0.2.7 --rttl doesn't work
-Date: Wed, 05 Feb 2003 15:01:33 +0000
+From: ASC - Ronald Roeleveld <r.roeleveld@ascinternational.nl>
+Subject: Blocking downloads
+Date: Wed, 5 Feb 2003 16:37:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F184XtTGjI0q2xR3Bz60000d354@hotmail.com>
+Message-ID: <D007132BBC42D5118FD20002A52844414BCF55@ASC01>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2CD2C.8671B850"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,136 +16,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-I'm using kernel 2.4.20.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Also my iptables is more complicated.  Notice that the name of the 
-recentDropBox chain in iptables is the same name as --name recentDropBox for 
--m recent.  It goes like this (to be more exact):
+------_=_NextPart_001_01C2CD2C.8671B850
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-Pkt Rule (recentDropBox chain, filter table)
-3 iptables -j LOG --log-prefix recentDropBox -m limit
-3 iptables -j DROP -m recent --set --name recentDropBox
+Hey everyone,
+ 
+Since I want to spare my download speed, and dont want clients to download
+freaking warez, would it be possible to block downloads with iptables for
+certain clients???
+And if it's possible which ports need to closed?
+ 
+Thanks in advance,
+Ronald Roeleveld 
+System Administrator 
 
-Pkt Rule (dropBox chain, filter table)
-3 iptables -j recentDropBox -p tcp -m multiport --dports ...,137,...
+ASCINTERNATIONAL 
+Vlietweg 17c, 2266 KA, Leidschendam, The Netherlands 
+Tel. +31 (0)70 3178400, Fax +31 (0)70 3204760
+E-mail: r.roeleveld@ascinternational.nl
+<mailto:r.roeleveld@ascinternational.nl> , Website:
+http://www.ascinternational.nl <http://www.ascinternational.nl/>  
 
-Pkt Rule (INPUT chain, filter table)
-0 iptables -j ACCEPT -m state --state ESTABLISHED,RELATED
-0 iptables -j DROP -i ppp0 -m recent --update --rttl --name recentDropBox
-3 iptables -j dropBox -i ppp0
-0 iptables -j recentDropBox -i ppp0
+ 
 
-I simplified my iptables in my first post.
+------_=_NextPart_001_01C2CD2C.8671B850
+Content-Type: text/html;
+	charset="iso-8859-1"
 
-####################
-IMPORTANT!  I found out --update --rttl in the setup above does NOT behave 
-the same as the following setup...
-
-Pkt Rule (INPUT chain)
-0 iptables -j ACCEPT -m state --state ESTABLISHED,RELATED
-2 iptables -j DROP -i ppp0 -m recent --update --rttl --name recentDropBox
-1 iptables -j LOG -i ppp0 --log-prefix recentDropBox -m limit
-1 iptables -j DROP -i ppp0 -m recent --set --name recentDropBox
-
---update --rttl works here, but doesn't work in the more complicated setup I 
-have.  Why?
-#####################
-
-I tried --set and --rttl and it matches ALL packets that hit the rule even 
-when it is not in the recentDropBox list.
-
-# grep 24.238 /proc/net/ipt_recent/recentDropBox
-src=24.238.110.135 ttl: 122 last_seen: 7623667 oldest_pkt: 3 last_pkts: 
-7622677, 7622972, 7623667
-src=24.238.110.103 ttl: 122 last_seen: 7685346 oldest_pkt: 3 last_pkts: 
-7684441, 7684736, 7685346
-
-Pkt Rule (recentDropBox chain, filter table)
-0 iptables -j LOG --log-prefix recentDropBox -m limit
-0 iptables -j DROP -m recent --set --name recentDropBox
-
-Pkt Rule (dropBox chain, filter table)
-0 iptables -j recentDropBox -p tcp -m multiport --dports ...,137,...
-
-Pkt Rule (INPUT chain, filter table)
-0 iptables -j ACCEPT -m state --state ESTABLISHED,RELATED
--->6 iptables -j DROP -i ppp0 -m recent --set --rttl --name recentDropBox
-0 iptables -j dropBox -i ppp0
-0 iptables -j recentDropBox -i ppp0
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 
-You mean use --set --rttl in the last rule?
+<META content="MSHTML 6.00.2800.1106" name=GENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=750163315-05022003><FONT face=Arial size=2>Hey 
+everyone,</FONT></SPAN></DIV>
+<DIV><SPAN class=750163315-05022003><FONT face=Arial 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=750163315-05022003><FONT face=Arial size=2>Since I want to 
+spare my download speed, and dont want clients to download freaking warez, would 
+it be possible to block downloads with iptables for certain 
+clients???</FONT></SPAN></DIV>
+<DIV><SPAN class=750163315-05022003><FONT face=Arial size=2>And if it's possible 
+which ports need to closed?</FONT></SPAN></DIV>
+<DIV><SPAN class=750163315-05022003></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=750163315-05022003><FONT face=Arial size=2>Thanks in 
+advance,</FONT></SPAN></DIV><B><FONT face=Arial size=2>
+<P>Ronald Roeleveld&nbsp;<BR><FONT size=1>System Administrator</FONT>&nbsp;</P>
+<P><B><FONT face=Arial color=#000080 size=2>ASC</FONT><FONT face=Arial 
+color=#808080 size=2>INTERNATIONAL</FONT></B> <BR><FONT face=Arial color=#808080 
+size=1>Vlietweg 17c, 2266 KA, Leidschendam, The Netherlands</FONT> <BR><FONT 
+face=Arial color=#808080 size=1>Tel. +31 (0)70 3178400, Fax +31 (0)70 
+3204760<BR></FONT><FONT face=Arial color=#808080 size=1>E-mail: <A 
+href="mailto:r.roeleveld@ascinternational.nl">r.roeleveld@ascinternational.nl</A>, 
+Website: </FONT><U><B><FONT face=Arial color=#0000ff size=1><A 
+href="http://www.ascinternational.nl/" 
+target=_blank>http://www.ascinternational.nl</A></FONT></B></U><B></B> 
+</P></FONT></B>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV></BODY></HTML>
 
-I got DUPLICATE entries!!!
-# grep 24.238 /proc/net/ipt_recent/recentDropBox
-src=24.238.110.36 ttl: 122 last_seen: 7760513 oldest_pkt: 1 last_pkts: 
-7760513
-src=24.238.110.36 ttl: 122 last_seen: 7760804 oldest_pkt: 1 last_pkts: 
-7760804
-src=24.238.110.36 ttl: 122 last_seen: 7761405 oldest_pkt: 1 last_pkts: 
-7761405
-
-/var/log/messages
-Feb  5 09:03:09 router kernel: recentDropBoxIN=ppp0 OUT= MAC= 
-SRC=24.238.110.36
-DST=24.239.135.221 LEN=48 TOS=0x00 PREC=0x00 TTL=122 ID=320 DF PROTO=TCP 
-SPT=306
-9 DPT=137 WINDOW=8760 RES=0x00 SYN URGP=0
-Feb  5 09:03:12 router kernel: recentDropBoxIN=ppp0 OUT= MAC= 
-SRC=24.238.110.36
-DST=24.239.135.221 LEN=48 TOS=0x00 PREC=0x00 TTL=122 ID=321 DF PROTO=TCP 
-SPT=306
-9 DPT=137 WINDOW=8760 RES=0x00 SYN URGP=0
-Feb  5 09:03:18 router kernel: recentDropBoxIN=ppp0 OUT= MAC= 
-SRC=24.238.110.36
-DST=24.239.135.221 LEN=48 TOS=0x00 PREC=0x00 TTL=122 ID=322 DF PROTO=TCP 
-SPT=306
-9 DPT=137 WINDOW=8760 RES=0x00 SYN URGP=0
-
-Pkt Rule (recentDropBox chain, filter table)
-3 iptables -j LOG --log-prefix recentDropBox -m limit
--->3 iptables -j DROP -m recent --set --rttl --name recentDropBox
-
-Pkt Rule (dropBox chain, filter table)
-3 iptables -j recentDropBox -p tcp -m multiport --dports ...,137,...
-
-Pkt Rule (INPUT chain, filter table)
-0 iptables -j ACCEPT -m state --state ESTABLISHED,RELATED
-0 iptables -j DROP -i ppp0 -m recent --update --rttl --name recentDropBox
-3 iptables -j dropBox -i ppp0
-0 iptables -j recentDropBox -i ppp0
-
-
------------------------------------------------------------------
-> > I'm using vanilla kernel 2.0.43 with patches from patch-o-matic CVS
-> > (Jan24,2003), openmosix, super-freeS/WAN, ipt_recent 0.2.7
-> > (ipt_recent-0.2.6.tar.gz).  And netfilter stuff all built as modules.
->
->   You're using 2.0.43?  iptables was introduced in 2.4...
->
-> > Here are the rules in my iptables 1.2.7a:
-> > INPUT chain (default DROP):
-> > -j ACCEPT -i ppp0 --state ESTABLISHED,RELATED
-> > -j DROP -i ppp0 -m recent --update --rttl --name recentDropBox
-> > -j LOG -i ppp0 --log-prefix recentDropBox -m limit
-> > -j DROP -i ppp0 -m recent --set --name recentDropBox
->
->   First you might try adding --rttl to the --set line.  I'll also go
->   back and check my code in that area...  Using the latest ipt_recent,
->   can you paste what you see in /proc/net/ipt_recent/recentDropBox?
->
->   There could certainly be a problem in that area as the TTL match has
->   been tested less...
->
->   	Stephen
-
-
-_________________________________________________________________
-STOP MORE SPAM with the new MSN 8 and get 2 months FREE*  
-http://join.msn.com/?page=features/junkmail
-
+------_=_NextPart_001_01C2CD2C.8671B850--
 
