@@ -1,11 +1,11 @@
-From: "Vladimir Getselevich" <vladg@techunix.technion.ac.il>
-Subject: flushtimeout in ipt_ULOG question
-Date: Sat, 17 May 2003 12:55:19 +0200
+From: "Michael Albrecht" <michael@crypta.net>
+Subject: Performance losings with iptables
+Date: Tue, 13 May 2003 17:40:32 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004001c31c62$cebb4ce0$0200c80a@vladcomp>
+Message-ID: <007d01c31965$fe099ce0$3a51a8c0@memmingen>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_003D_01C31C73.92252330"
+	boundary="----=_NextPart_000_007A_01C31976.C0A8A920"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,37 +20,23 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_003D_01C31C73.92252330
+------=_NextPart_000_007A_01C31976.C0A8A920
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-If I set flushtimeout=3D0 in ipt_ULOG module how much milliseconds will =
-pass after a message was
-arrived to a linux host, that is guaranteed to me that the message will =
-be moved to the userspace?
-I run linux on Intel box and I saw the comments in ipt_ULOG.c code that: =
+Hello,
+i use iptables with Debian-Linux (2.4.20).
+Wenn i install 150 Input-Chains like this:
+iptables -A input -s 192.168.81.xxx
+i will lose a lot of perfomance (for example: apache take a lot of time, =
+ssh ...)
+Wenn i show the perfomance with vmstat - vmstat says that 99 % is =
+idel...
+Wer is the Problem ???
 
-
-"*   Specify, after how many clock ticks (intel: 100 per second) the =
-queue
- * should be flushed even if it is not full yet.
-
-Does it mean that with flushtimeout=3D0 it will be moved to userspace =
-somewhere in interval between=20
-0 and 10 ms? If it so can I somehow accelerate it?
-and what means HZ variable in:   "static unsigned int flushtimeout =3D =
-10 * HZ; "
-
-Also is it a right syntax to run module with flushtimeout=3D0?
-'insmod ipt_ULOG set flushtimeout=3D0"=20
-
-Please respond on my email (too):  vladg@tx.technion.ac.il
-
-Thank you,
-  Vladimir
-
-------=_NextPart_000_003D_01C31C73.92252330
+Thanks for helping ... Michael
+------=_NextPart_000_007A_01C31976.C0A8A920
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -59,52 +45,28 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2723.2500" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>If I set flushtimeout=3D0 in ipt_ULOG =
-module&nbsp;how=20
-much milliseconds will pass after&nbsp;a message was</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>arrived to a linux host,&nbsp;that is =
-guaranteed to=20
-me that the message&nbsp;will be moved to the userspace?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I run linux on Intel box and I =
-saw&nbsp;the=20
-comments in ipt_ULOG.c code that: </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>i use iptables with Debian-Linux=20
+(2.4.20).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Wenn i install 150 Input-Chains like=20
+this:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -A input -s =
+192.168.81.xxx</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>i will lose a lot of perfomance (for =
+example:=20
+apache take a lot of time, ssh ...)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Wenn i show the perfomance with vmstat =
+- vmstat=20
+says that 99 % is idel...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Wer is the Problem ???</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>"*&nbsp;&nbsp; Specify, after how many =
-clock ticks=20
-(intel: 100 per second) the queue<BR>&nbsp;* should be flushed even if =
-it is not=20
-full yet.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Does it mean that with flushtimeout=3D0 =
-it will be=20
-moved to userspace somewhere in interval between </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>0 and 10 ms? If it so can I somehow =
-accelerate=20
-it?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>and what means HZ&nbsp;variable =
-in:&nbsp;&nbsp;=20
-"static unsigned int flushtimeout =3D 10 * HZ;&nbsp;"</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Also is it a right syntax <FONT =
-face=3DArial=20
-size=3D2>to run module with flushtimeout=3D0?</FONT></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>'insmod ipt_ULOG set flushtimeout=3D0" =
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Please respond on my email (too):&nbsp; =
-<A=20
-href=3D"mailto:vladg@tx.technion.ac.il">vladg@tx.technion.ac.il</A></FONT=
-></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thank you,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;=20
-Vladimir</FONT></DIV></FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Thanks for helping ...=20
+Michael</FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_003D_01C31C73.92252330--
+------=_NextPart_000_007A_01C31976.C0A8A920--
 
 
