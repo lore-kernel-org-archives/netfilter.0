@@ -1,7 +1,7 @@
 From: Askar <askarali@gmail.com>
 Subject: Re: web server behind firewall
-Date: Thu, 23 Dec 2004 09:53:36 +0500
-Message-ID: <a0f69e50412222053396179b5@mail.gmail.com>
+Date: Thu, 23 Dec 2004 09:54:06 +0500
+Message-ID: <a0f69e5041222205434ab79db@mail.gmail.com>
 References: <1103737938.17922.55.camel@localhost.localdomain>
 	<1103743586.6473.0.camel@hubcap.ljm.dom>
 Reply-To: Askar <askarali@gmail.com>
@@ -20,8 +20,7 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
 And don't forget to peek into www.apache.org for web server stuff ;)
 
