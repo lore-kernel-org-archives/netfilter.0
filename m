@@ -1,8 +1,8 @@
 From: "Jim Fleming" <JimFleming@ameritech.net>
-Subject: Can everyone reach both of these sites ?...http://www.fo0bar.org/...http://ipv6.fo0bar.org/
-Date: Sun, 22 Sep 2002 11:41:39 -0500
+Subject: Regarding List BOTs...
+Date: Sun, 22 Sep 2002 11:54:20 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0cfe01c26256$eca040b0$c6b22543@repligate>
+Message-ID: <0d2401c26258$b2723b30$c6b22543@repligate>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,28 +18,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Can everyone reach both of these sites ?
+http://www.alicebot.org
+http://alice.sunlitsurf.com/
 
-http://www.fo0bar.org/
-http://ipv6.fo0bar.org/
+The NetFilter list BOTs appear to be somewhat advanced but lack personality.
+The "UK Novice BOT" and the "German Thug BOT" are common now in many
+of the mainstream media. If you visit Mars, you will see many more advanced
+BOTs with more diversity. Some can even think and learn.
 
-Is IPv6 for everyone ?
+Mars 128n 128e
+http://www.ActiveWorlds.com
+...on the Next Generation Internet...of course...
+C@t
 
 
-Jim Fleming
-2002:[IPv4]:000X:03DB:...IPv8 is closer than you think...IPv16 is even closer...
-http://www.netfilter.org/
-http://www.analogx.com/contents/dnsdig.htm
-http://ipv8.dyndns.tv
-http://ipv8.yi.org
-http://ipv8.dyns.cx
-http://ipv8.no-ip.com
-http://ipv8.no-ip.org
-http://ipv8.no-ip.biz
-http://ipv8.no-ip.info
-http://ipv8.myip.us
-http://ipv8.dyn.ee
-http://ipv8.community.net.au
-http://ipv8.ods.org
+
+
 
 
