@@ -1,13 +1,13 @@
-From: Michael Barry <mbarry@cs.umass.edu>
-Subject: Static Internal IP to Public IP's mapping, and ARP problems
-Date: Mon, 20 Sep 2004 11:32:40 +0000
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+Subject: Re: Cannot use iptable extensions
+Date: Mon, 20 Sep 2004 11:28:49 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095679961.4247.0.camel@jabbera-laptop>
+Message-ID: <61475.216.239.93.106.1095694129.squirrel@216.239.93.106>
+References: <20040920082059.57559.qmail@web805.mail.yahoo.co.jp>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-1ZsBzSdM/Jteoxfe1rNH"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20040920082059.57559.qmail@web805.mail.yahoo.co.jp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +17,72 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: d l <popgojp@yahoo.co.jp>
+Cc: netfilter@lists.netfilter.org
+
+On Mon, September 20, 2004 4:20 am, d l said:
+> Hi,
+> I am using vanilla Fedora Core 2, without configuring
+> firewall in anaconda during initial install.
+>
+
+Custom compiled kernel ?
 
 
---=-1ZsBzSdM/Jteoxfe1rNH
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> Simple rules seems to works with built in modules. e.g.
+> iptables -A INPUT -p ICMP -j DROP
+>
+> However when I tried to use extension modules like
+> <connlimit> and <owner>, iptables always gives me error.
+>
+> For <owner>:
+> iptables -m owner --help
+> .......
+> OWNER match v1.2.9 options:
+> [!] --uid-owner userid     Match local uid
+> [!] --gid-owner groupid    Match local gid
+> [!] --pid-owner processid  Match local pid
+> [!] --sid-owner sessionid  Match local sid
+> [!] --cmd-owner name       Match local command name
+>
 
+When you get the help displayed, the dynamic library is properly installe=
+d.
 
---=20
----------------------------------------
-Michael Barry <mbarry@cs.umass.edu>
+> # iptables -A INPUT -m owner --cmd-owner mlnet -j test
+> iptables: Invalid argument
 
+That means the dynamic library is using a structure different from the on=
+e
+used by the module.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+If no module was present, you would get the
+"No match/chain/target by that name" error.
 
-mQGiBD+g+0URBADCYQfUXqlCotTnSbprbyOResgLUTYxERMj50z3+16SeELpKOFT
-IlfUhWrKcBoQlIyt8jBL/raN8sc8uVAklIDXmcmBzwhTlZu8mwb63GfTstqDSeBO
-mdPQlWd4RlKUABinHymFL16XFjGBWdqDsimP0sLVtxygljtOrrTLDLMdPwCg5Sho
-AmvLz/9XrgH4Og2BI2w4GO0D/20S3/oTZoAe0Uu9H7qUmsphg1Rk5cqn2zg5Fd7h
-2KaNZjtntgd/2nK9eb1zlwcYEI++TxWJiEFMqSa0+Vr8zj8yDINhRLzIFTkNGkI9
-0aJNVmZ9Vm6hEeDTTZ91d+pnzRLwbGPyu7xvddlSsn9uILI8KrIp/7gPKqfo5c8z
-rXCJBACu/SkTyrXxlEz5L0BmvMyiKwPZGsfqvPp3ZRhKfSZvx7TFa2UvlGN5jQJD
-qIDP1DH0foOQV1oX/tngBLwLFaIsTfO7brYcKX+uT0k/Q1vT2aBmHAQA4xduG2dg
-eXJyBLwYtM1sKTNQj5fnmKZtHE1Vij2uAGUowmKOSuiEOf6/D7QjTWljaGFlbCBC
-YXJyeSA8bWJhcnJ5QGNzLnVtYXNzLmVkdT6IXgQTEQIAHgUCP6D7RQIbAwYLCQgH
-AwIDFQIDAxYCAQIeAQIXgAAKCRDZGaOeesLyC/F+AKClFpol8BoIm8yDxBiMmCWd
-K/pZawCfQb8oetmw5lIyHMVelC7ir+wasb+5AQ0EP6D7RxAEAKuLODeCFV+aVi7z
-2qdE1oYNrH+AitdiB36W/SkLEb8YlXZ/cGFBl4gPspdA93mLyjrlLg5xp+kXVeAU
-DbaYLl9pz4wtmz3GqnyqQdgAPW3XjEv5Dkau+RzKAmlze87x2mw8Zn0ffvcalRFm
-+fAEDOvaZquVVljYxgkktI2G6MIPAAQNBACQ4LvuAH+LKbn5NYis+ifEHA4QYPBH
-jtPe2Rb4keAp4azr6Qy1iJTuF/6+G8qCyraoqjk5wlMC7c8gjxCNkXA2VEX0+bXt
-pb85nrQlL0udf8V2ffukxlXOmFo43j85jljzLLk535P/lCXrbiDnW4W5/+8Qpn/z
-aDpqDeLSAX/+a4hJBBgRAgAJBQI/oPtHAhsMAAoJENkZo556wvILN3gAn3/x2PNm
-O1mycJQtyUpCFRXEp8EWAKDPxWTPlx5Ii9DaWadahV4b9LRe4A=3D=3D
-=3Dqjmb
------END PGP PUBLIC KEY BLOCK-----
+So your module is there but at the time of loading the rule, it compares
+the size of structure it uses against the one your dynamic library uses.
 
---=-1ZsBzSdM/Jteoxfe1rNH
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+When there`s something wrong in the checkentry function, iptables simply
+says "iptables: Invalid arguments"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+Most of the time, you have a newer library than your module is.
+Patch applied with pom-ng should take care of fixing your problem
+if you do recompile the iptables userspace as well as the kernel
+netfilter's module.
 
-iD8DBQBBTr/Y2RmjnnrC8gsRAvbjAJ44bFLut0noFqrCPzDiqozd8BVcDQCcCsXz
-pmY76SqSb/PAY+ctIKGpf24=
-=8hnT
------END PGP SIGNATURE-----
+>
+> Any help is appreciated.
+>
 
---=-1ZsBzSdM/Jteoxfe1rNH--
+HTH,
+
+Samuel Jean
+CookingLinux.org
+
+> Regards,
+> Dil Lee
+>
+
 
 
