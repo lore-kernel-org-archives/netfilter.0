@@ -1,12 +1,9 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: efficient source address filtering and logging?
-Date: Tue, 28 Oct 2003 10:33:15 -0500 (EST)
+From: "Knight, Steve" <Steve.Knight@bskyb.com>
+Subject: RE: new iptables user - default options
+Date: Tue, 28 Oct 2003 16:08:15 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0310281033000.23027-100000@localhost.localdomain>
-References: <200310281030.19103.Alistair@nerdnet.ca>
-Mime-Version: 1.0
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA578CF@OST_EXCH_USR5>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200310281030.19103.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +13,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Alistair Tonner <Alistair@nerdnet.ca>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tue, 28 Oct 2003, Alistair Tonner wrote:
+I get the picture - so you can have "external-SSHD-access" chain, and
+"external-SMTP-access" chain, rather than a huge pile of rules which you
+could risk blamming, in a rushed moment.
 
-> On October 28, 2003 09:59 am, Robert P. J. Day wrote:
-> >   i'd like to find a short, efficient way to filter incoming packets with
-> > bogus source addresses, but i don't see an elegant way of doing it.
-> >
-> >   as we all know, there are a number of clearly bogus source addresses on
-> > incoming packets:
-> >
-> >   - broadcast
-> >   - your own IP address
-> >   - any of the private class A, B or C addresses
-> >   - class D addresses
-> >
-> > and on and on.  so it's natural to want to discard them and, just for fun,
-> > log them as well.
-> >
-> >   for elegance, i can create a user-defined chain called, say,
-> > "reject_bad_source_addresses" to which i jump with every incoming packet.
-> > this user-defined chain will test for all of the bad source addresses, one
-> > at a time, and DROP/REJECT each one.  however, if i want to log all of
-> > these rejections, i'd have to double the number of rules in this chain,
-> > so that each test would first LOG that packet, then be followed by a
-> > second rule to DROP it.  kind of a pain.
+I have mr Ziegler's esteemed tome [it seemed to be v highly regarded after a
+snoop around googly groups] and it's damn fine, it's what I'm working from
+to configure my fw.  Its so rigorous though that I can get easily lost in
+there!
+
+Sorry for the ultra-lamer question now...
+
+is it the case that for each rule on the INPUT chain you must have the
+corresponding OUTPUT rule also?  i.e. if I say
+
+<pseudocode>
+Accept from ANYWHERE spt:1024...65535 LOCALHOST dpt:22
+</pseudocode>
+
+Do I also have to put a corresponding response rule in --- 
+
+Accept from LOCALHOST spt:22 ANYWHERE dpt:1024...65535
+
+In order to allow the response through?
+OR does the fact I've put an "accept from anywhere to SSHD" rule, imply that
+I want to allow the service to respond.
+
+Again, sorry for what seems like an ultra stupid question, but it's not 100%
+clearly stated in ziegler, at least after two reads of the relevant chapter.
+
+Thanks :D
+
+steve
+
+
+
+
+-----Original Message-----
+From: Robert P. J. Day [mailto:rpjday@mindspring.com] 
+Sent: 28 October 2003 1.14
+To: Knight, Steve
+Cc: netfilter@lists.netfilter.org
+Subject: RE: new iptables user - default options
+
+
+On Tue, 28 Oct 2003, Knight, Steve wrote:
+
+> Thanks Robert - I appreciate your response.
 > 
-> 	Why don't you have the first user chain test for bad addresses, send them to 
-> a second chain, which the logs all traffic going through it, and then drops 
-> all traffic going through it?
+> I have to say I'd agree - it seems to be more of a belt and braces
+approach
+> to use your suggestion, and more in the spirit of what we were told in
+> checkpoint kindergarten ["deny everything unless explicitly asked" - also
+> sounds a bit like being married].
+> 
+> Are the rules in each chain processed top down?
 
-oooh, yeah, that'll work.  thanks.
+yup, which is why many folks recommend setting up some user-defined
+chains to break the processing down into more efficient and bite-sized
+pieces (unless you have a very small set of rules, then it's not
+really worth it).
+
+so far, the more comprehensive treatment of iptables i've seen is
+ziegler's new riders book, particularly the lengthy examples of 
+rulesets he supplies.
 
 rday
+
+
+
+.
+
+
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is 
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce, 
+distribute, store, retransmit, use or disclose its contents to anyone.
+ 
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
 
 
