@@ -1,11 +1,14 @@
-From: Marcel Hauser <marcel_hauser@gmx.ch>
-Subject: ip_conntrack_ftp and ip_nat_ftp modules unused
-Date: Sat,  7 Sep 2002 02:35:07 +0200
+From: Stewart Thompson <stewart.thompson@shaw.ca>
+Subject: RE: Can't forward Win2k VPN through NAT
+Date: Fri, 06 Sep 2002 14:46:04 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1031358907.3d7949bb350b0@webmail3.webfluxation.com>
+Message-ID: <FLEKIPPLAEDMJMOOBBDPCENGCNAA.stewart.thompson@shaw.ca>
+References: <20020906212224.ZHIL13709.mta07-svc.ntlworld.com@there>
+Reply-To: stewart.thompson@shaw.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20020906212224.ZHIL13709.mta07-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +19,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Antony Stone <antony@soft-solutions.co.uk>, Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-Hi 
+HI Antony:
 
-I'am just wondering:
+	I have seen the same posts, and judging by the replies,
+or lack thereof. It is generally been a dismal failure. I don't have
+a pressing need for VPN right now, but I can see the possibility
+in the future, so I have been following the discussion. Thanks.
 
-#lsmod
- 
-Module                  Size  Used by
-ipt_REJECT              3200   1  (autoclean)
-ipt_multiport            928   3  (autoclean)
-ipt_LOG                 3696   3  (autoclean)
-ipt_state                832  12  (autoclean)
-ip_nat_irc              2752   0  (autoclean) (unused)
-ip_conntrack_irc        2928   0  (autoclean) (unused)
-ip_nat_ftp              3296   0  (autoclean) (unused)
-iptable_nat            16112   3  (autoclean) [ip_nat_irc ip_nat_ftp]
-ip_conntrack_ftp        3632   0  (autoclean) (unused)
-ip_conntrack           15568   4  (autoclean) [ipt_state ip_nat_irc 
-ip_conntrack_irc ip_nat_ftp iptable_nat ip_conntrack_ftp]
-iptable_filter          1936   1  (autoclean)
-ip_tables              11584   8  [ipt_REJECT ipt_multiport ipt_LOG ipt_state 
-iptable_nat iptable_filter]
+Stu..........
 
-is it normal that ip_conntrack_ftp and ip_nat_ftp are unused ??
 
-Thanks
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
+Sent: September 6, 2002 2:22 PM
+To: Netfilter mailinglist
+Subject: Re: Can't forward Win2k VPN through NAT
 
-Marcel
+On Friday 06 September 2002 10:13 pm, Stewart Thompson wrote:
+
+> Hi Antony:
+>
+>       Off the top of your head, do you know what the first
+> Version of iptables that pptp_conntrack_nat was implemented?
+
+No idea - sorry.
+
+All I can say is that I've seen many postings on this list over the weeks
+and
+months about people trying to get PPTP working effectively (especially
+through iptables and NAT), so you should be able to find plenty of
+information in the archives at
+http://lists.netfilter.org/pipermail/netfilter
+
+Antony.
+
+--
+
+This is not a rehearsal.
+This is Real Life.
 
 
