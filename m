@@ -1,13 +1,14 @@
-From: ro0ot <ro0ot@phreaker.net>
-Subject: Re: opening connection for Tomcat
-Date: Fri, 09 Apr 2004 00:01:28 +0800
+From: Anupam <anupamg@iitk.ac.in>
+Subject: Re: Packet sniffing... sort of
+Date: Sun, 11 Apr 2004 07:14:16 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40757758.8060707@phreaker.net>
-References: <40756C19.3010606@tin.it>
+Message-ID: <4078A2F0.20900@iitk.ac.in>
+References: <200404110154.39209.Antony@Soft-Solutions.co.uk>
+Reply-To: anupam.gupta@unix.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40756C19.3010606@tin.it>
+In-Reply-To: <200404110154.39209.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +19,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Gianni Pucciani <gp.puccio@tin.it>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-You should only have this below: -
-
-iptables -A INPUT -p tcp -d <myprivateip> --dport 8080 -m state --state 
-NEW -j ACCEPT
-
-or
-
-iptables -A INPUT -p tcp -s 0.0.0.0/0 --sport 1024: -d <myprivateip> 
---dport 8080 -m state --state NEW -j ACCEPT
-
-Regards,
-ro0ot
-
-Gianni Pucciani wrote:
-
-> Hi all,
-> I was in trouble opening a port for services with tomcat:
-> Is this rule right? I'm behind an adsl router that forward every 
-> connection on port 8080 to <myprivateip>.
->
-> iptables -P INPUT DROP
-> iptables -P OUTPUT ACCEPT
-> iptables -P FORWARD DROP
->
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A INPUT -p tcp -d <myprivateip> --dport 8080 -s 0.0.0.0 -m 
-> state --state NEW -j ACCEPT
->
->
->
->
+Antony Stone wrote:
+> Hi people.
+> 
+> This is not strictly a netfilter question, but I'm wondering if maybe someone 
+> can help or make a suggestion?
+> 
+> I want to pick up a packet stream, but for an HTTPS connection, and using a 
+> standard packet sniffer like ethereal just gives me the encrypted SSLv3 
+> stuff, not the plaintext data which I need to see.
 
 
+
+Antony,
+
+Congratulations, you got it right in first guess. This, certainly, is 
+not netfilter related question.
+
+Now, a simple string like, "SSL man in the middle attack" on Google will 
+give you what you desire.
+
+All the best,
+Anupam
 
 
