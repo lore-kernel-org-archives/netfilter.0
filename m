@@ -1,14 +1,11 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: SO HOW! iptables: invalid argument
-Date: Sat, 25 Oct 2003 11:16:56 -0400
+From: Duncan Hill <dhill+netfilter@cricalix.net>
+Subject: Memory allocation problem on a VPS (iptables)
+Date: Sat, 25 Oct 2003 17:37:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310251116.56917.Alistair@nerdnet.ca>
-References: <7C9884991ADAE0479C14F10C858BCDF52E375B@alderaan.smgtec.com> <200310250955.11841.Alistair@nerdnet.ca> <020b01c39b02$227d9040$63000a0a@pooh>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <200310251737.15841.dhill+netfilter@cricalix.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <020b01c39b02$227d9040$63000a0a@pooh>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,114 +17,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: John Paul <john@pinoylinux.sytes.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On October 25, 2003 10:13 am, John Paul wrote:
-> > Ummm.
-> >
-> >    I would personally apply POM before building iptables code
->
-> I actually did the other way around but still have same problem "invalid
-> argument"
->
-> i have two versions of iptables running.
->
-> iptables (from rpm /sbin/iptables) = works okay
-> iptables (from source /usr/local/sbin/iptables) = invalid argument
-	
-1) iptables core code does depend on the code in the kernel to ensure 
-consistency. POM to kernel before building the iptables code.
+Good day.
 
-2) having two copies of an application is ... difficult.
-    I would remove the rpm myself for ease of use.  It can be worked around, 
-but it annoying at the least.
+My hosting company use the Virtuozzo virtual private server software, and I'm 
+having major trouble getting iptables to behave properly (well, to behave at 
+all).
 
-3) ensure that /etc/ld.so.conf does include  a reference to /usr/local/lib/
-	this is where the libraries for the new version of iptables are.  ... or
-        review *(uuuuhhmmm I think its) LD_PRELOAD variable when you are 
-	running the iptables command. (if you want to try running with two 
-	installed packages)
+rpm -q iptables
+iptables-1.2.5-3
 
+strace iptables -A INPUT -d 208.186.168.139/32 -p tcp --dport 8079 -j ACCEPT
+execve("/sbin/iptables", ["iptables", "-A", "INPUT", "-d", 
+"208.186.168.139/32", "-p", "tcp", "--dport", "8079", "-j", "ACCEPT"], [/* 18 
+vars */]) = 0
+...
+socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
+getsockopt(3, SOL_IP, 0x40 /* IP_??? */, [1953261926], [84]) = 0
+brk(0x8059000)                          = 0x8059000
+getsockopt(3, SOL_IP, 0x41 /* IP_??? */, [1953261926], [848]) = 0
+setsockopt(3, SOL_IP, 0x40 /* IP_??? */, [1953261926], 1096) = -1 ENOMEM 
+(Cannot allocate memory)
+write(2, "iptables: Memory allocation prob"..., 36iptables: Memory allocation 
+problem
+) = 36
+_exit(1)
 
->
-> my Q is... why did the iptables from source didnt work. any helpful hint?
->
-	Code inconsistencies between the RPM and the built versions.
+I can get exactly -one- iptables command to work before the ENOMEM error shows 
+up on all subsequent calls.  If I make enough calls (a la shorewall start), 
+the entire virtual server just goes away and has to be rebooted by the 
+hosting company.
 
->
-> ----- Original Message -----
-> From: "Alistair Tonner" <Alistair@nerdnet.ca>
-> To: "John Paul" <john@pinoylinux.sytes.net>;
-> <netfilter@lists.netfilter.org> Sent: Saturday, October 25, 2003 9:55 PM
-> Subject: Re: SO HOW! iptables: invalid argument
->
-> > On October 25, 2003 09:40 am, John Paul wrote:
-> > > Hello Folks,
-> > >
-> > > Just want to find the real answer with this. sorry but ans to google is
->
-> not
->
-> > > clear for me. I did upgrade my iptables to iptables-1.2.9rc1.tar. steps
-> > > done;
-> > >
-> > > --> installed new iptables source (iptables-1.2.9rc1.tar)
-> > >         - make KERNEL_DIR=/usr/local/linux
-> > >         - make install KERNEL_DIR=/usr/local/linux
-> > >
-> > > --> applied POM (patch-o-matic-20030912.tar) to my latest kernel
-> > > (linux-2.4.22.tar)
-> > >
-> > > --> recompile the kernel
-> > >         - make dep; make clean; make bzImage; make modules; make
-> > > modules_install
-> > >         - all went fine
-> > >
-> > > --> reboot the machine
-> > >
-> > > all went fine but when NAT/MASQUERADE is used, i got this "iptables:
-> > > invalid argument"
-> > >
-> > > anything i missed?
-> > >
-> > > Thanks.
-> > > -JP
-> >
-> > Ummm.
-> >
-> >    I would personally apply POM before building iptables code....
-> >
-> > if you do find  / -name iptables ... how many results do you get?
-> >
-> > I've found followup installs don't tend to sit on top of original
->
-> installs,
->
-> > thus you likely have two copies of iptables stuff on your system now...
->
-> you
->
-> > need todetermine which to remove.
-> >
-> >
-> > --
-> >
-> > Alistair Tonner
-> > nerdnet.ca
-> > Senior Systems Analyst - RSS
-> >
-> >      Any sufficiently advanced technology will have the appearance of
->
-> magic.
->
-> > Lets get magical!
+I've searched google several times for this issue, and the only mentions that 
+stick out were some posts to the aurora-linux list, but no sign of a 
+solution.
 
--- 
+I've filed a ticket with my hosting company, but I'm trying to find out what I 
+can that may be able to resolve (or help with resolving) the problem.  I 
+cannot upgrade the kernel on this system - there is, in fact, no kernel rpm - 
+the kernel is provided by the VPS software.  I don't want to revert to 
+ipchains if I can help it.
 
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
+Can anyone provide me with some insight into this issue?  Is it a case of 
+'Sorry man, it just isn't going to work'?
+
 
