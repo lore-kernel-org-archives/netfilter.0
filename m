@@ -1,13 +1,11 @@
-From: Nguyen Dinh Nam <64vn@cardvn.net>
-Subject: Re: http://www.netfilter.org/patch-o-matic/index.html almost empty
-Date: Thu, 27 Jan 2005 02:41:24 +0700
-Message-ID: <41F7F264.3030406@cardvn.net>
-References: <20050126172931.GA24879@melina11.ds11.agh.edu.pl>
-	<20050126185734.GS28331@sunbeam.de.gnumonks.org>
+From: mohammad Mahbubur rahman <mahbub71@yahoo.com>
+Subject: Re: Kernel AODV and libipq library
+Date: Wed, 26 Jan 2005 11:45:58 -0800 (PST)
+Message-ID: <20050126194559.26552.qmail@web52302.mail.yahoo.com>
+References: <876ef97a0501260826514b150d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050126185734.GS28331@sunbeam.de.gnumonks.org>
+In-Reply-To: <876ef97a0501260826514b150d@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +16,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Tobias DiPasquale <codeslinger@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
-http://www.netfilter.org/events.html is very old, I suggest you to 
-install slashcode (slashdot's software) to cover all news pages, many 
-people will submit "stories", and admins only have to click "approve", 
-it'll reduce the work for webmasters and make the website better place 
-to communicate.
-BTW, POM base (http://www.netfilter.org/patch-o-matic/pom-base.html) and 
-POM extra page (http://www.netfilter.org/patch-o-matic/pom-extra.html) 
-have their links broken, the <a name="xxxxx"> are lost so the links at 
-top of the page link to nowhere.
-Nam
+thanks for your reply. i use the kernel aodv
+implementation of the nist (means the following one).
 
-Harald Welte wrote:
+http://w3.antd.nist.gov/wctg/aodv_kernel/
 
->no, but that's where my time was over while writing those web pages :(
->Suggestions / patches welcome.
->
+When the aodv is running and i try to load the
+ip_queue module by modprobe ip_queue, it gives the
+message that device or resource is busy, insmod
+ip_queue failed.
+
+But when i stop the aodv and load the ip_queue module,
+it dont give any message. After that i give one rule
+to queue udp packet going through 6002 port (just for
+testing). When any packet go through this port, both
+the machine hangs. I dont know why this is happened.
+
+Do u know any alternative by which i can modify any
+ongoing or upcoming packets in adhoc network.
+
+mahbub
+
+--- Tobias DiPasquale <codeslinger@gmail.com> wrote:
+
+> On Wed, 26 Jan 2005 07:58:23 -0800 (PST), mohammad
+> Mahbubur rahman
+> <mahbub71@yahoo.com> wrote:
+> > Hi,
+> > I am working on an Adhoc network running kernel
+> AODV
+> > version 2.1 (on Redhat linux kernel 2.4.20). The
+> AODV
+> > is running fine. Now I am trying to queue some
+> packets
+> > onto the user space for modification using libipq
+> > library. But incase of running the libipq example
+> > program, i have to load the ip_queue module by
+> > modprobe ip_queue first. When i load this module
+> and
+> > running the example program, the machines are
+> hanged.
+> > Can anyone please tell me why??
+> > 
+> > Can anyone pls suggest me how i can get some
+> packets
+> > onto the user space for modification incase of ad
+> hoc
+> > network???
+> 
+> AFAIK, the current Linux implementation of AODV uses
+> ip_queue.
+> Therefore, due to the limitations of ip_queue, you
+> can't then use
+> anything else that would use ip_queue while you're
+> running that. Where
+> did you get your implementation? Is it this one:
+> 
+> http://user.it.uu.se/~henrikl/aodv/
+> 
+> or this one?:
+> 
+> http://w3.antd.nist.gov/wctg/aodv_kernel/
+> 
+> If its the latter, disregard all of the above.
+> 
+> -- 
+> [ Tobias DiPasquale ]
+> 0x636f6465736c696e67657240676d61696c2e636f6d
+> 
+
+
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Mail - now with 250MB free storage. Learn more.
+http://info.mail.yahoo.com/mail_250
 
