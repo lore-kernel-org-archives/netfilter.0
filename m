@@ -1,13 +1,13 @@
-From: William Stearns <wstearns@pobox.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Packet dumping or mirroring
-Date: Wed, 18 Feb 2004 16:20:56 -0500 (EST)
+Date: Wed, 18 Feb 2004 21:53:40 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0402181619310.3252-100000@sparrow>
-References: <Pine.LNX.4.44.0402181605270.3252-100000@sparrow>
-Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <200402182153.40283.Antony@Soft-Solutions.co.uk>
+References: <20040218135436.309837c7@mgalepc.utilitran.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0402181605270.3252-100000@sparrow>
+In-Reply-To: <20040218135436.309837c7@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,51 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Michael Gale <michael.gale@utilitran.com>
-Cc: ML-netfilter <netfilter@lists.netfilter.org>, William Stearns <wstearns@pobox.com>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Good afternoon, Michael,
+On Wednesday 18 February 2004 8:54 pm, Michael Gale wrote:
 
-On Wed, 18 Feb 2004, William Stearns wrote:
+> with traffic that is faster then 100MB HD.
+>
+> So anything 10MB FD and slower is ok, but anything over that limit ntop can
 
-> On Wed, 18 Feb 2004, Michael Gale wrote:
-> 
-> > First you create a "tmpfs" .. for example in your NTOP home directory call it
-> > tmp (/home/ntop/tmp). Now make this directory a RAM drive that gets mount
-> > everytime we boot up, about 50MB (maybe).
-> > 
-> > Now we create a module for iptables to send a copy of every packet on every
-> > interface to the RAM drive or dummy device.
-> > 
-> > What do you think ... I do not believe there is a way to do this now :(
-> 
-> 	You seem to be describing ulogd:
-> http://www.stearns.org/doc/iptables-ulog.current.html
-> 	(with pointers to other relevant sites).  You'd instruct ulogd to 
-> save its files to a ramdisk as opposed to a physical disk.
+> Solution 1:
+> First you create a "tmpfs" .. for example in your NTOP home directory call
+> it tmp (/home/ntop/tmp). Now make this directory a RAM drive that gets
+> mount everytime we boot up, about 50MB (maybe).
 
-	BTW, ntop will gladly read from pcap files (the "-f" parameter;  
-see http://www.stearns.org/doc/pcap-apps.html ).
-	Cheers,
-	- Bill
+If your problem is not being able to keep up with >10Mbps FD or 100Mbps HD, 
+then 50Mbytes is going to fill up pretty quickly...
 
----------------------------------------------------------------------------
-        Santa Clara, CA (Reuters): Sources close to the spiritual leader
-of the Linux movement report that Linus Torvalds has entered his 23rd
-day of fasting.  The move is apparently not for religious reasons. 
-"I've spent so much time looking at vomit-producing code, that Tove
-refuses to feed me any more, and gives me Karate chops whenever I even
-threaten to blow chunks.  Our carpet cleaning bill exceeds our mortgage. 
-Hell, the ISDN subsystem alone turned our favourite Persian rug into a
-monstrosity that college students won't even pick up off the street
-corner.  With Jeff Dike's memory management code coming up, I thought
-I'd best be prepared."
-        -- WLS
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+1. If you capture full packets, assume network is running at 50Mbps on 
+average; that's 6.25Mbytes per second - your ramdisk fills up in 8 seconds.
+
+2. If you just capture headers, assume network is again running at 50Mbps, 
+with 1500 byte packets one way and empty packets (headers only) the other, 
+also assume headers are 48 bytes.   50Mbps / (1548 x 8) = 4038 packets / sec.   
+4038 x 48 = 190kbytes / sec.   Your ramdisk now lasts for 258 seconds (or a 
+bit more than 4 minutes).
+
+Of course, if your network traffic is not running at 50Mbps then your ramdisk 
+will last longer, but then ntop would have been able to keep up on its own 
+anyway....
+
+Regards,
+
+Antony.
+
+-- 
+If builders made buildings the way programmers write programs, then the first 
+woodpecker to come along would destroy civilisation.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
