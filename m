@@ -1,10 +1,13 @@
-From: Rene Cunningham <rene@dclabs.com.au>
-Subject: pptp-conntrack-nat and 2.6
-Date: Fri, 14 Jan 2005 11:50:46 +1100
-Message-ID: <20050114005046.GP18935@eden.office.dclabs.com.au>
+From: Samuel Jean <sj-netfilter@cookinglinux.org>
+Subject: Re: Limit module accept negation?
+Date: Thu, 13 Jan 2005 20:20:48 -0500
+Message-ID: <41E71E70.4080703@cookinglinux.org>
+References: <41E2E0CB.18071.252B3E2C@localhost>
+	<41E6C745.7555.2118F01@localhost>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------060706090108030407060109"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <41E6C745.7555.2118F01@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,41 +18,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+To: jagrelo@novadevices.com
+Cc: netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+--------------060706090108030407060109
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
 
-Gday,
+Jorge Agrelo wrote:
 
-Ive been tackling pptp-conntrack-nat with kernel 2.6 for the past couple of
-days and im not getting far.
+> Yes, I want to limit (drop) as soon as we receive more than 1/s packet
+> regardless of the source address?, Is there any other way to do that without using
+> limit match with negation?
 
-It appears that pptp-conntrack-nat for 2.6 is very experimental and is
-not working in its current state. It worked well in 2.4.
+AFAIK, there isn't.
 
-Ive come up with a quick hack, though it isnt very stable and is only
-limited to a single internal machine. It uses the MARK target to mark
-gre packets which allows netfilter to track the packets easily.
+> 
+> Regards
+>  
 
-external interface = ppp0
-internal pptp client = 192.168.1.50
-mark value = 1
+The patch below is against ipt_limit.c from 2.6.10. It's *untested* but 
+reflects what I told you. It's just an exemple of how you can make
+this module behaving the other way arround.
 
-iptables -t mangle -A PREROUTING -i ppp0 -p gre -j MARK --set-mark 1
-iptables -t nat -A PREROUTING -i ppp0 -p gre -m mark --mark 1 -j DNAT
---to 192.168.1.50
-iptables -A FORWARD -i ppp0 -p gre -m mark --mark 1 -j ACCEPT
+(NOTE: ipt_limit.c was written to avoid flooding -j LOG)
 
-Are there any other solutions to getting internal workstations connected
-to external PPTP servers with connection tracking in 2.6? Assigning external
-routable addresses to internal machines really isnt an option at the
-moment.
+HTH,
 
-Cheers!
+Samuel
 
--- 
+--------------060706090108030407060109
+Content-Type: text/x-patch;
+ name="ipt_limit.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ipt_limit.patch"
 
-Rene Cunningham
-DCLabs Pty Ltd
-http://www.dclabs.com.au
+--- ipt_limit.c	2005-01-13 20:14:10.000000000 -0500
++++ ipt_limit.c.orig	2005-01-13 20:13:19.000000000 -0500
+@@ -82,11 +82,11 @@
+ 		/* We're not limited. */
+ 		r->credit -= r->cost;
+ 		spin_unlock_bh(&limit_lock);
+-		return 0;
++		return 1;
+ 	}
+ 
+        	spin_unlock_bh(&limit_lock);
+-	return 1;
++	return 0;
+ }
+ 
+ /* Precision saver. */
+
+--------------060706090108030407060109--
 
