@@ -1,9 +1,9 @@
-From: "Robert Botha" <flash@flash.za.org>
-Subject: Re: opening a port..
-Date: Wed, 8 Jan 2003 15:02:28 +0200
+From: "Linux" <linuxrobotsstayaway@usermail.com>
+Subject: Re: portforwarding-HOWTO
+Date: Tue, 7 Jan 2003 15:06:34 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b001c2b716$3415e990$53153b0a@nednet.co.za>
-References: <1042027958.606.7.camel@nirvana> <1042029237.4335.2.camel@india>
+Message-ID: <024e01c2b699$0b9b64e0$d318b2a1@IBMCMDCTR004>
+References: <2132.192.168.0.1.1041835837.squirrel@mail.intermediacorp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,72 +17,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mdew <mdew@mdew.dyndns.org>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: oarojo@intermediacorp.com, netfilter@lists.netfilter.org
 
-Check if the service is listening..and if it's listening on *:4662 or on a
-specific interface.
-netstat -tupln|grep ":4662"
+Did you turn on Masquerading?
 
+Linux303
 ----- Original Message -----
-From: "Dharmendra.T" <dharmu@nsecure.net>
-To: "mdew" <mdew@mdew.dyndns.org>
-Cc: "netfilter" <netfilter@lists.netfilter.org>
-Sent: Wednesday, January 08, 2003 2:33 PM
-Subject: Re: opening a port..
+From: <oarojo@intermediacorp.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Sunday, January 05, 2003 11:50 PM
+Subject: portforwarding-HOWTO
 
 
+> Hello people!!!
+>
+> I have set-up a linux box firewall with two ethernet cards; eth0 facing
+the
+> internet and eth1 facing the internal network. Inside my network is my
+mail
+> server with an IP of 192.168.0.5. Now since my ISP had only given me one
+> valid IP address for my network, I wish to do port-forwarding for ports 25
+> and 110. I did something like:
+>
+> # iptables -t nat -A PREROUTING -p tcp -i eth0 -d xxx.xxx.xxx.xxx --dport
+25
+> -j DNAT --to 192.168.0.5:25
+>
+> # iptables -t nat -A PREROUTING -p tcp -i eth0 -d xxx.xxx.xxx.xxx --dport
+> 110 -j DNAT --to 192.168.0.5:110
+>
+> # iptables -A FORWARD -p tcp -i eth0 -d 192.168.0.5 --dport 25 -j ACCEPT
+> # iptables -A FORWARD -p tcp -i eth0 -d 192.168.0.5 --dport 110 -j ACCEPT
+>
+> # iptables-save > /etc/sysconfig/iptables
 >
 >
-> On Wed, 2003-01-08 at 17:42, mdew wrote:
-> >
-> > Hi,
-> > Just *testing* this out..
-> >
-> > iptables -A INPUT -i eth0 -p tcp --dport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth0 -p udp --dport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth1 -p udp --dport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth1 -p tcp --dport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth1 -p tcp --sport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth1 -p udp --sport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth0 -p udp --sport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth0 -p tcp --sport 4662 -j ACCEPT
-> >
-> > iptables -A FORWARD -o eth0 -p tcp --dport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth1 -p tcp --dport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth1 -p udp --dport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth0 -p udp --dport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth0 -p udp --sport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth1 -p udp --sport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth1 -p tcp --sport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth0 -p tcp --sport 4662 -j ACCEPT
-> >
-> > yet, when i try to telnet to it,
-> >
-> > mdew:~# telnet 127.0.0.1 4662
-> > Trying 127.0.0.1...
-> > telnet: Unable to connect to remote host: Connection refused
-> >
-> > Yeah I know I have lots of unnessary rules, but im only testing 'em...it
-> > just seems a little strange that i cant see 4662 (Edonkey port) on the
-> > router.
-> >
-> > -mdew
-> >
-> >
-> Note:
-> telnet 127.0.0.1 port
+> When i used nmap to determine if ports 25 and 110 are open, it says:
 >
->  This will not go through any of the interfaces(eth*). You should allow
-> this through -i lo.
+> 25/tcp     filtered    smtp
+> 110/tcp    filtered    pop-3
 >
-> Here some how you are getting connected and you are getting the response
-> connection refused. Probably you are not running the service on the
-> router!.
+> and when i try telnetting its valid ip
 >
-> --
-> Dharmendra.T
-> Linux Enthu
+> #telnet xxx.xxx.xxx.xxx 25
+>
+>
+> it says "trying...." and can't connect at all...
+>
+> How's this? Did I missed something here? Please Help!!!
+>
+>
+> Oliver
 >
 >
 >
