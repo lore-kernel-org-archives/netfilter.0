@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Child proofing...
-Date: Sat, 9 Nov 2002 14:37:45 +0000
+From: Simon Kowallik <sub@offlineprovider.de>
+Subject: Re: Question on PREROUTING and INPUT chains
+Date: Sat, 09 Nov 2002 15:55:56 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021109143748.JCMK21275.mta07-svc.ntlworld.com@there>
-References: <B0000532307@smtp.rapiddsl.net>
+Message-ID: <3DCD21FC.6010402@offlineprovider.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+ boundary="------------090207030800080602020301"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <B0000532307@smtp.rapiddsl.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +16,126 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Thursday 07 November 2002 7:53 pm, Guillaume Marcais wrote:
 
-> We have remote routers that we access with ssh. Sometime, I am
-> not careful enough and I enter stupid routing information that not only
-> leaves our clients connectionless but also prevents me from accessing the
-> router. Then truck roll, long downtimes and angry customers... I am really
-> a child sometimes :)
+--------------090207030800080602020301
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 
-I recommend you set up an auto-answer modem connected to the serial port of=
-=20
-the router.   If the router is a Linux box, installing an internal modem ma=
-y=20
-be cheaper or more convenient.
+  Antony Stone wrote:
+
+>On Monday 04 November 2002 8:46 pm, Carlos Fa=C4=BFanha wrote:
+>
+> =20
+>
+>>I have a Linux box used as NAT server and firewall. All
+>>requests on its port 80 are forwarded to a local webserver
+>>inside my network. I want to block access to all services
+>>including http from a specific external host.
+>>
+>>I'm using the following rule to block the host
+>>
+>>iptables -A INPUT -i $extint -s $hostip -j DROP
+>>
+>>and this one to do the NAT
+>>
+>>iptables -t nat -A PREROUTING -p tcp --dport 80 -d $extip -j
+>>DNAT --to $webserverip:80
+>>
+>>The problem is that the host is blocked from accessing all
+>>services but http. I've already checked if there are any
+>>rules before that ACCEPT the request. It seems that prerouted
+>>packets are bypassing the INPUT chain.
+>>
+>>Is it correct? If not, what am I doing wrong?
+>>   =20
+>>
+>
+>It is correct that routed packets bypass the INPUT chain.   Only packets=20
+>destined for the firewall machien go through INPUT - packets which are goi=
+ng=20
+>somewhere else go through FORWARD.
+>
+>Therefore put your blocking rule in the FORWARD chain instead and it shoul=
+d=20
+>do what you want.
+>
+>Antony.
+>
+> =20
+>
+Perhaps this helps to better understand the "flow":
+http://offlineprovider.de/site/netfilter/netfilter.php
+
+Regards,
+Simon
+
+
+--------------090207030800080602020301
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title></title>
+  
+</head>
+<body>
+ Antony Stone wrote:<br>
+<blockquote type="cite"
+ cite="mid20021109130720.HYMA20191.mta03-svc.ntlworld.com@there">  
+  <pre wrap="">On Monday 04 November 2002 8:46 pm, Carlos Fa&Auml;&iquest;anha wrote:
+
+  </pre>
+  
+  <blockquote type="cite">    
+    <pre wrap="">I have a Linux box used as NAT server and firewall. All
+requests on its port 80 are forwarded to a local webserver
+inside my network. I want to block access to all services
+including http from a specific external host.
+
+I'm using the following rule to block the host
+
+iptables -A INPUT -i $extint -s $hostip -j DROP
+
+and this one to do the NAT
+
+iptables -t nat -A PREROUTING -p tcp --dport 80 -d $extip -j
+DNAT --to $webserverip:80
+
+The problem is that the host is blocked from accessing all
+services but http. I've already checked if there are any
+rules before that ACCEPT the request. It seems that prerouted
+packets are bypassing the INPUT chain.
+
+Is it correct? If not, what am I doing wrong?
+    </pre>
+  </blockquote>
+  
+  <pre wrap=""><!---->
+It is correct that routed packets bypass the INPUT chain.   Only packets 
+destined for the firewall machien go through INPUT - packets which are going 
+somewhere else go through FORWARD.
+
+Therefore put your blocking rule in the FORWARD chain instead and it should 
+do what you want.
 
 Antony.
 
---=20
+  </pre>
+</blockquote>
+Perhaps this helps to better understand the "flow":<br>
+<a class="moz-txt-link-freetext"
+ href="http://offlineprovider.de/site/netfilter/netfilter.php">http://offlineprovider.de/site/netfilter/netfilter.php</a><br>
+<br>
+Regards,<br>
+Simon<br>
+<br>
+</body>
+</html>
 
-This email is intended for the use of the individual addressee(s) named abo=
-ve=20
-and may contain information that is confidential, privileged or unsuitable =
+--------------090207030800080602020301--
 
-for overly sensitive persons with low self-esteem, no sense of humour, or=20
-irrational religious beliefs.
-
-If you have received this email in error, you are required to shred it=20
-immediately, add some nutmeg, three egg whites and a dessertspoonful of=20
-caster sugar. =A0 Whisk until soft peaks form, then place in a warm oven fo=
-r 40=20
-minutes. =A0 Remove promptly and let stand for 2 hours before adding some=20
-decorative kiwi fruit and cream. =A0 Then notify me immediately by return e=
-mail=20
-and eat the original message.
 
