@@ -1,11 +1,12 @@
-From: "Josh Berry" <josh.berry@linknet-solutions.com>
-Subject: Re: connlimit / iplimit patch
-Date: Fri, 3 Oct 2003 14:35:09 -0500 (CDT)
+From: Duncan Sands <duncan.sands@math.u-psud.fr>
+Subject: masquerade_check: size 24 != 20
+Date: Fri, 3 Oct 2003 14:46:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <54325.204.214.145.6.1065209709.squirrel@mail.linknet-solutions.com>
+Message-ID: <200310031446.18321.duncan.sands@math.u-psud.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,19 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: brett.Mueller@csepp.net
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+Cc: Tom Eastep <teastep@shorewall.net>
 
-I figured out the issue after a lot of trial and error.  I had to edit the
-Makefile under the extensions directory for the iptables source.  I also
-had to go to the CVS and download the libipt_connlimit.c code and stick it
-in the extensions directory.  In the Makefile, edit the PF_EXT_SLIB: line
-(about the 8th down), where you see a list of the other extensions (ah
-conntrack dscp ecn esp helper etc...).  Somewhere in there add connlimit.
+With 2.4.23-pre and 2.5/6 kernels my firewall setup fails at this line:
 
-At this point you should be able to compile iptables and use the connlimit
-match as long as you have already patched the kernel and compiled it
-properly.
+iptables -t nat -A atm0_masq -s 192.168.58.0/24 -d 0.0.0.0/0 -j MASQUERADE
 
-Hope this Helps
+(the kernel returns -EINVAL).  On the other hand it works with 2.4.20+gentoo patches
+with the same .config.
+
+The command gets as far as the checkentry call into ipt_MASQUERADE.c
+(i.e. masquerade_check), at which point it bails out because the size of
+the ip_nat_multi_range type (20) differs from the target_size (24) passed
+to it:
+
+translate_table: size 1112
+Finished chain 0
+Finished chain 3
+Finished chain 4
+find_inlist: loading `ipt_MASQUERADE'.
+masquerade_check: size 24 != 20.
+ip_tables: check failed for `MASQUERADE'.
+
+The check in question is:
+
+        if (targinfosize != IPT_ALIGN(sizeof(*mr))) {
+                DEBUGP("masquerade_check: size %u != %u.\n",
+                       targinfosize, sizeof(*mr));
+                return 0;
+        }
+
+All this suggests to me that the size of some kernel structure has
+changed.  Now Tom Eastep tried with the same kernel and didn't
+get this, which is kind of informative: it suggests a different compiler
+version padding things differently (my gcc version is 3.2.3), or some
+config setting I have quietly changing the size of some object.  Before
+rummaging around further, I thought I'd ask here if anyone has any
+ideas.
+
+Thanks for any help,
+
+Duncan.
 
