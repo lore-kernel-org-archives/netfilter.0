@@ -1,13 +1,13 @@
 From: "Mark Weaver" <mark@npsl.co.uk>
-Subject: RE: Bridging firewall setup
-Date: Tue, 16 Dec 2003 19:31:46 -0000
+Subject: RE: Firewalling non-IPsec connections
+Date: Tue, 16 Dec 2003 19:46:33 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GFEPJIHHFOJDOFDMNAJDAEAGEKAA.mark@npsl.co.uk>
-References: <3FDF465A.2020103@wavetex.com>
+Message-ID: <GFEPJIHHFOJDOFDMNAJDIEAGEKAA.mark@npsl.co.uk>
+References: <200312161512.24688.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FDF465A.2020103@wavetex.com>
+In-Reply-To: <200312161512.24688.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,21 +20,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter List <netfilter@lists.netfilter.org>
 
+> I'm intrigued by this.   If the packets are encrypted with ESP as they go
+> through PREROUTING, but you need to MARK them in order to recognise which
+> ones they are by the time they hit the INPUT chain, at what point
+> does the
+> decryption occur?   Does it mysteriously happen somewhere between the
+> PREROUTING and INPUT chains?   (If it does, I can see an awful lot more
+> puzzled newbies asking questions here once 2.6 takes off....)
 >
-> This is a production machine so leaving logging on for extended periods 
-> isn't an option since it would quickly fill up the logs. However I 
-> turned in on briefly and even though using tcpdump I see constant 
-> traffic through the bridge the logs only show traffic going in and out 
-> to the bridge's IP that I have setup for maintenence, mostly my SSH 
-> session. Any ideas how I can get it to see the traffic going through?
-> 
-You can filter tcpdump, e.g.:
+I have to guess so.  I've no idea TBH where the packets actually go, but
+this definitely works for me.  I'm more of a cook than a chef when it comes
+to netfilter.  I've tried looking around the source, but I'm pretty
+clueless, and the native ipsec doesn't seem to be documented at all.  It's
+not even got a maintainer listed, and virtually nothing in
+linux/Documentation.  (If anyone could point me in the right direction that
+would be great!).
 
-tcpdump port not ssh
+It kind of makes sense, because without this we'd have no possibility of
+handling packets that came in via an IPSC tunnel separately.
 
-tcpdump -i eth0 port 135 and host a.b.c.d
+Mark
 
-tcpdump -p tcp -i any net a.b.c.d/e
-
-Also man tcpdump, for more detail than you probably ever wanted.
 
