@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Ipv6 array ORDER
-Date: Mon, 19 Jul 2004 15:39:15 +0100
+From: Matthias Hopf <Matthias.Hopf@informatik.uni-stuttgart.de>
+Subject: QoS traffic shaping behaves strangely with addressed based filtering
+Date: Mon, 19 Jul 2004 16:47:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407191539.15333.Antony@Soft-Solutions.co.uk>
-References: <20040719142833.GA26461@darkalpt>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040719144759.GA11352@vismail.informatik.uni-stuttgart.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040719142833.GA26461@darkalpt>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,36 +16,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Monday 19 July 2004 3:28 pm, Alpt wrote:
+Hi all!
 
-> Hi there,
-> What's the ipv6 array ORDER in the in6_addr struct?
-> In other words what's the word order of  "__u32           u6_addr32[4];" ?
-> Is it "most significant word first" or "least significant first"?
->
-> And each word is in network byte order right?
+I found a rather esotheric bug / misconfiguration, and now I'm lost.
+Maybe somebody else has a clue what is going on here.
 
-This sort of question is probably better suited to the netfilter developers' 
-mailing list rather than the netfilter users' list.   Somebody here might 
-know, but I wouldn't bet on it.   Somebody on the developers' list really 
-should know.
+I am connected to the internet via a typical DSL router with integrated
+4-port switch. One of my computers should be able to serve local
+machines at full speed, but internet bandwith usage should be limited.
+Just for the record, it is running 2.4.27-pre3, but I have checked
+several kernel versions (not the 2.6 series, though).  Additionally, a
+set of firewall rules is active. The system is rather slow with C3
+@533MHz, but has 512MB RAM.
 
-Regards,
+Now what happens is the following: With the QoS rules enabled, the
+system behaves as anticipated (fast local traffic, limited internet
+traffic), but suddenly for a couple of seconds it won't talk to local
+computers any longer. ssh connections freeze, no ping, nothing.
+Strangely enough, remote connections are still alive.  Other systems can
+talk with each other and are routed to the internet as well, so I
+conclude that this has nothing to do with the router.  This mostly
+happens when a lot of upstream traffic is going on, that is, the
+internet limit is hit. The time of traffic breakdown varies from event
+to event and can be as large as a minute. Needless to say that the
+system itself is almost idle during that time and that it won't happen
+with QoS disabled.
 
-Antony.
+I narrowed down the strange behaviour and can sort of reproduce it with
+the following subset of my QoS rules - the exact bandwidth limits do not
+really matter, I got this with 50kbit uplink and 400kbit local traffic
+and different quantum values as well:
+
+
+DEV=eth0
+LOCAL=192.168.2.0/24
+
+tc qdisc add dev $DEV root handle 1: htb default 2
+# Class 1:1 local traffic
+tc class add dev $DEV parent 1: classid 1:1 htb prio 1 \
+   rate 80mbit quantum 32768
+# Class 1:2 remote traffic
+tc class add dev $DEV parent 1: classid 1:2 htb prio 2 \
+   rate 80kbit ceil 80kbit burst 2k quantum 1500
+
+# Local traffic goes unconditionally to 1:1
+tc filter add dev $DEV parent 1: protocol ip prio 1 \
+   u32 match ip dst $LOCAL \
+   flowid 1:1
+
+
+Any ideas?
+
+Thanks
+
+Matthias
 
 -- 
-"When you talk about Linux versus Windows, you're talking about which 
-operating system is the best value for money and fit for purpose. That's a 
-very basic decision customers can make if they have the information available 
-to them. Quite frankly if we lose to Linux because our customers say it's 
-better value for money, tough luck for us."
-
- - Steve Vamos, MD of Microsoft Australia
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Matthias Hopf - Visualization and Interactive Systems Group    \  |  |  /--
+                  University of Stuttgart,                      \ |  |   \
+       Universitaetsstr. 38, 70569 Stuttgart, Germany            \|  |  --/
+Phone +49-711-7816-404    Fax -340          mat@mshopf.de     www.mshopf.de
 
