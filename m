@@ -1,9 +1,10 @@
-From: atic@poczta.fm
-Subject: Fuck You all !
-Date: 14 Nov 2002 23:30:41 +0100
+From: "Gabor Csuri" <csucsu@dunasor.hu>
+Subject: mark connections based a quote
+Date: Thu, 14 Nov 2002 23:01:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021114223041.C67ED1EC762@front.interia.pl>
+Message-ID: <NGBBLBOMOLDNJFMPIGKLGEBACFAA.csucsu@dunasor.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,11 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Gabor Csuri <csucsu@dunasor.hu>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-yeah hihihihi 
+Hi All,
 
-i`m your master slut ! 
+ I need to restrict some connections into a bandwidth on my local network.
+The long downloads (and uploads) are very bad for our 800k/128k bandwidth.
+I thougth I would restrict the long downloads into a lower bandwidth, but I
+don't know how can I mark the long downloads.
+Can I mark the packets which are a part of a long connection maybe like
+this:
+iptables -m cquote --cquote 2000000 -j MARK --set-mark 1
+means it marks packet within a connection which are over 2MB.
+
+How can I do this?
+
+Thanks in advice, Gabor Csuri.
+
 
