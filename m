@@ -1,14 +1,9 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: Help!! How to steal UDP traffic?
-Date: Tue, 25 Jan 2005 12:29:31 +0200
-Message-ID: <3063e505012502291406261e@mail.gmail.com>
-References: <Pine.LNX.4.61.0501221918080.6027@quasar.las.ic.unicamp.br>
-	<Pine.LNX.4.61.0501242211240.6917@quasar.las.ic.unicamp.br>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+From: Funieru Bogdan <fbsoft01@yahoo.com>
+Subject: Routing problem with 3 interfaces
+Date: Tue, 25 Jan 2005 03:03:51 -0800 (PST)
+Message-ID: <20050125110351.89351.qmail@web53705.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0501242211240.6917@quasar.las.ic.unicamp.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,54 +15,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Guilherme Cesar Soares Ruppert <ruppert@las.ic.unicamp.br>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Why not MARK-ing it with iptables and send it to the tunnel with iproute ? 
+Hello all
+I'm having a little problem routing my 2 internet
+connections to my LAN, here is the schem of my network
 
-
-On Mon, 24 Jan 2005 22:12:04 -0200 (BRST), Guilherme Cesar Soares
-Ruppert <ruppert@las.ic.unicamp.br> wrote:
-> 
-> 
->   Hi everyone, please I need some help!!
-> 
->   I'm developing a program that needs to intercept an UDP traffic generated
->   locally by another application. It's like a tunnel. My program will steal the
->   outgoing packets from the application (in the same machine) and will send to
->   a tcp tunnel.
-> 
->   I am using Libipq to do that, but I have a BIG problem. After send the UDP
->   packets to my tunnel, I need to DROP the packets because I don't want them to
->   be sent over the network. So I am doing:
->   ipq_set_verdict(handle, m->packet_id, NF_DROP, 0, NULL);
-> 
->   But the problem is that when I drop the packet, the application that
->   generated the packet remains blocked in sendto() until the packet is
->   accepted. When I change to NF_ACCEPT, the application doesn't block but the
->   packets are sent to the network and I don't want it.
-> 
->   How could I drop a packet silently, without blocking the application? Is
->   there any way to intercept outgoing packets locally without let the
->   applications notice that their packet were stolen?
-> 
->   Here is the same example using netcat:
->   $ iptables -A OUTPUT -p udp -j QUEUE
->   $ echo "Test" | nc -n -u 10.1.1.23 800
->   And this last remains blocked, not returning to shell.
-> 
->   I tested will ping (icmp echo) also and the same happened, but ping didn't
->   block. Instead, it said "operation not permitted".
-> 
->   Please give me some hope!!! :-)
-> 
->   Thanks
-> 
->   Guilherme Ruppert
-> 
-> 
+		  ISP1				  ISP2
+		   |				   |
+	IP:193.230.183.11		IP:193.19.192.108
+	GTW:193.230.183.4		GTW 193.19.192.65
+		   |				   |
+		   |				   |
+		SERVER1	<---routable ip---------SERVER2 -> eth0 to
+ISP2
+to server2 via	eth1<-					-> eth1 to other comp ip add
+83.175.128.96
+ip 83.175.128.123					-> eth2 to server1 ip
+83.175.128.123
+to LAN via 	eth2<-
+ip 192.168.1.1
+to ISP1		eth0<-
 
 
--- 
-Bla bla
+i hope that the schematic is a little bit
+understandful now the big problem is that i wan't to
+give acces to my LAN on both connections, but on
+different ip's
+Now i want everything that comes from ip 141.85.0.0/16
+to go to server2 and everything else to go through
+server1
+
+i've done a little bit of researching but all i ended
+up was trash, because when i try to link to the ip
+141.85.0.0/16 i get through tracert that the packets
+go ok until they stop at the gateway of server2 , ip
+193.19.192.65,and from here it freazes,it doesn't go
+anywhere at all.
+
+i have the following rule add 
+route add default gw 193.230.183.4 
+#i tryed with
+ip route add default via 83.175.128.123 table
+net_retea1
+ip rule add dev eth1 table net_retea1
+ip rule add from 192.168.1.2 to 141.85.0.0/16 table
+net_retea1
+ip rule add 83.175.128.124 table net_retea1
+iptable -t nat -A PREROUTING -i eth1 -s 192.168.1.2 -d
+141.85.0.0/16 --to 83.1751.28.124
+
+and i've marked the pachets as well thought it'll work
+, but it didn't ... how do i make it work ?
+thx in advance 
+nothing but the best Bogdan
+
+=====
+-------------------
+Funieru Bogdan
+Admin MosilorNET
+
+Contact Info:
+Mob:
+0742158956
+0726592752
+0744301506(very rare)
+-------------------
+
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Read only the mail you want - Yahoo! Mail SpamGuard. 
+http://promotions.yahoo.com/new_mail 
 
