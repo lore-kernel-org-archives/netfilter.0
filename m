@@ -1,12 +1,13 @@
-From: LuisMi <luismi@adpsoft.com>
-Subject: Re: what traffic is this?
-Date: Wed, 26 Jun 2002 16:58:22 +0200 (CEST)
+From: "Joe Patterson" <jpatterson@asgardgroup.com>
+Subject: RE: Rule question
+Date: Wed, 26 Jun 2002 10:57:35 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.44.0206261658130.26555-100000@ns2.adpsoft.com>
-References: <fd.19d60313.2a4b1ace@aol.com>
+Message-ID: <NJEFLNJDIFFNMHDEBKMJGEIJDOAA.jpatterson@asgardgroup.com>
+References: <20020622074627.KCNY19225.mta07-svc.ntlworld.com@there>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <fd.19d60313.2a4b1ace@aol.com>
+In-Reply-To: <20020622074627.KCNY19225.mta07-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,58 +17,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: JHoskins98@aol.com
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+just as a note, in my experience, netfilter/iptables does exactly what *I*
+think it should do, and treats these two variables as exactly the same.
+Bits that are set in the masked-off portion of a network definition are
+completely ignored.
 
-Thanks for the info. :)
+So, yes, I'd a agree that this is a *very bad* choice of variables.
 
-- -- 
-Luis Miguel Cruz.  
+-Joe
 
-PGP KEY: 0x3AC52657   |   [ADPSOFT] http://www.adpsoft.com
-		      |      "Connecting your business"
-
-On Wed, 26 Jun 2002 JHoskins98@aol.com wrote:
-
-> The traffic is CDP - Cisco Discovery Protocol.  It is a heartbeat to detect 
-> changes i.e. newly attached or detacted cisco equipment.  
-> 
-> You can turn it off with "no cdp run" command at the enable prompt or "no cdp 
-> enable" at the interface.  
-> jhh
-> 
-> In a message dated 6/26/2002 7:37:06 AM Eastern Standard Time, 
-> netfilter-request@lists.samba.org writes:
-> 
-> 
-> > This traffic comes from a cisco router.
-> > what type of traffic is ?
-> > 
-> > [root@cuelebre root]# tcpdump -i eth2
-> > tcpdump: listening on eth2
-> > 
-> > 13:19:12.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
-> >                          0000 0100 0000 0000 0000 0000 0000 0000
-> >                          0000 0000 0000 0000 0000 0000 0000 0000
-> >                          0000 0000 0000 0000 0000 0000 0000
-> > 13:19:22.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
-> >                          0000 0100 0000 0000 0000 0000 0000 0000
-> >                          0000 0000 0000 0000 0000 0000 0000 0000
-> >                          0000 0000 0000 0000 0000 0000 0000
-> 
-> 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj0Z1pEACgkQvQHLTzrFJle/hgCgjnU7W3LIc2i+l+RJ77VS0qDC
-dNcAoJrZuGnYCdnMYGQK8+yY4NJWKgLu
-=3K1e
------END PGP SIGNATURE-----
+> -----Original Message-----
+> From: netfilter-admin@lists.samba.org
+> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Antony Stone
+> Sent: Saturday, June 22, 2002 3:46 AM
+> To: netfilter@lists.samba.org
+> Subject: Re: Rule question
+>
+>
+> On Saturday 22 June 2002 8:35 am, Patrick Petermair wrote:
+>
+> > Hi!
+> >
+> > I've read the following example script for a linux box with masquerading
+> > and some firewall rules:
+> >http://www.ecst.csuchico.edu/~dranch/LINUX/ipmasq/examples/rc.fir
+> ewall-2.4-stronger
+>
+> I've just had a look at this script, and I don't like a couple of the
+> variables he's set:
+>
+> INTNET="192.168.1.0/24"
+> INTIP="192.168.1.1/24"
+>
+> That INTNET is all very well, but the INTIP is a single address, and
+> therefore should end in /32, not /24.
+>
+> Given this little error, it might be worth checking the rest of
+> this guy's
+> script to see if any other little inaccuracies have crept in...
+>
+>
+>
+> Antony.
+>
+>
+>
 
 
