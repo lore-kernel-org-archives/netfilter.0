@@ -1,8 +1,8 @@
 From: "George J. Jahchan, Eng." <NetFilter-Users@Compucenter.org>
-Subject: IPtables in learning bridge mode?
-Date: Tue, 25 Feb 2003 05:29:00 +0200
+Subject: Set traffic limit.
+Date: Tue, 25 Feb 2003 05:29:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NGBBIFPIJNDPMFBPKBPGMENNDHAA.NetFilter-Users@Compucenter.org>
+Message-ID: <NGBBIFPIJNDPMFBPKBPGOENNDHAA.NetFilter-Users@Compucenter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,10 +18,13 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter <netfilter@lists.netfilter.org>
 
-Can NetFilter / IPtables be configured as a layer-2 learning (transparent)
-bridge?
+Is it possible to limit total traffic from/to an SNATed IP address in the
+internal network to a certain value within a given period of time?
 
-If yes, can you provide links to HowTo docs?
+Ideally, Radius is what is needed, however NetFilter does not seem to
+integrate at all with Radius Auth.
+
+Any ideas?
 
 TIA
 
