@@ -1,13 +1,10 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Difficulties in stopping mass advertisement IP directed broadcast popup windows
-Date: Fri, 5 Sep 2003 15:04:25 +1000
+From: "Pradeep Bhomia" <pradeepbhomia@ahm.cmc.net.in>
+Subject: Problem with sendmail server behind firewall...
+Date: Fri, 5 Sep 2003 12:10:08 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C25D@wardrive.citadelcomputer.com.au>
+Message-ID: <20030905062950.M87452@ahm.cmc.net.in>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3736B.2D879AE4"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,76 +14,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Deshwal Chand <CDD@kampsax.co.in>, "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+We are facing problem with the sendmail server when it is put behind the 
+iptables firewall.
+The setup is:
+Sendmail 8.12.9
+IPTables 1.2.7
+Shorewall 1.3.14
 
-------_=_NextPart_001_01C3736B.2D879AE4
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Earlier Sendmail server was connected directly to the Internet with a valid 
+Internet IP. At that time the number of sendmail processes never exceeded 10 
+at any given poing of time. (Checked with ps -ef | grep sendmail)
+Now we have implemented the Mandrake Linux 9.1 based firewall using IPTables 
+and Shorewall. NATting was configured on the firewall. After doing this, we 
+have observed that the number of sendmail process keeps on increasing and 
+goes upto nearly 170 processes. It seems that the problem is with the 
+incoming message requests. It process remains open for nearly 2 hours. This 
+is observed for random connections or some particular sites.
+As such sendmail server is receiving and sending mails without any problem to 
+the users.
+After I remove the firewall and put the server directly on the internet the 
+sendmail processes remain at less than 10.
 
-Stop the messenger service... isn't that easier?
+I have been working on this problem for last two days without success. I 
+cannot understand whether the problem is with the implementation of firewall 
+(NATting) or with sendmail server. I have checked the firewall with only 
+NATting (removed all the rules)
 
------Original Message-----
-From: Deshwal Chand [mailto:CDD@kampsax.co.in]
-Sent: Friday, September 05, 2003 2:47 PM
-To: Netfilter (E-mail)
-Subject: Difficulties in stopping mass advertisement IP directed =
-broadcast popup windows
+Kindly help.
 
-
-
-Hi=20
-
-We used to receive ip directed popup windows mass messages. I blocked =
-135,137-39, 445 ports and they stopped. Now they have started to come =
-again.
-
-Any comments!=20
-
-
-BR=20
-Chand=20
-
-
-------_=_NextPart_001_01C3736B.2D879AE4
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<TITLE>Difficulties in stopping mass advertisement IP directed broadcast =
-popup windows</TITLE>
-
-<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D644120405-05092003><FONT face=3DArial color=3D#0000ff =
-size=3D2>Stop=20
-the messenger service... isn't that easier?</FONT></SPAN></DIV>
-<BLOCKQUOTE dir=3Dltr style=3D"MARGIN-RIGHT: 0px">
-  <DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
-face=3DTahoma=20
-  size=3D2>-----Original Message-----<BR><B>From:</B> Deshwal Chand=20
-  [mailto:CDD@kampsax.co.in]<BR><B>Sent:</B> Friday, September 05, 2003 =
-2:47=20
-  PM<BR><B>To:</B> Netfilter (E-mail)<BR><B>Subject:</B> Difficulties in =
-
-  stopping mass advertisement IP directed broadcast popup=20
-  windows<BR><BR></FONT></DIV>
-  <P><FONT face=3DArial size=3D2>Hi</FONT> </P>
-  <P><FONT face=3DArial size=3D2>We used to receive ip directed popup =
-windows mass=20
-  messages. I blocked 135,137-39, 445 ports and they stopped. Now they =
-have=20
-  started to come again.</FONT></P>
-  <P><FONT face=3DArial size=3D2>Any comments!</FONT> </P><BR>
-  <P><FONT face=3DArial size=3D2>BR</FONT> <BR><FONT face=3DArial =
-size=3D2>Chand</FONT>=20
-  </P></BLOCKQUOTE></BODY></HTML>
-
-------_=_NextPart_001_01C3736B.2D879AE4--
+Thanks and regards, 
+ 
+Pradeep Bhomia 
 
