@@ -1,8 +1,8 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Yet another FTP connection problem
-Date: Thu, 6 Jun 2002 16:55:23 +0100
+Date: Thu, 6 Jun 2002 17:06:20 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206061555.g56FtUA31837@vulcan.rissington.net>
+Message-ID: <200206061606.g56G6SA31895@vulcan.rissington.net>
 References: <373560121.1023385312@[192.168.13.4]>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -22,19 +22,25 @@ To: netfilter@lists.samba.org
 
 On Thursday 06 June 2002 4:41 pm, Erik Pagel wrote:
 
-> Hi,
->
-> there seems to be a problem within my FTP rules. I'm not able to make any
-> ftp connection.
-> I'm able to send but not to recevie any package.
+> iptables -N ftp
+> iptables -A ftp -p tcp --dport 20:21 -o $I_EXTERN -j ACCEPT
+> iptables -A ftp -p tcp --sport 20:21 -i $I_EXTERN -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
+> iptables -A ftp -p tcp --dport 20:21 -i $I_EXTERN -m state --state
+> NEW,INVALID -j LOG --log-level warning --log-prefix "DROP:FTP Incomming"
+> iptables -A ftp -p tcp --dport 20:21 -i $I_EXTERN -m state --state
+> NEW,INVALID -j DROP
 
-Please be more specific.   If you are "unable to make any ftp connection" 
-then how are you able to send files ?
+> iptables -A INPUT   -j ftp
+> iptables -A OUTPUT  -j ftp
+> iptables -A FORWARD -j ftp
 
-You say you can send but not receive - do you mean that the PUT command works 
-and the GET command doesn't ?
+That is a very strange set of rules to try applying to all three of INPUT, 
+FORWARD and OUTPUT chains !
 
-If that is what you mean, then it's not a netfilter problem.....
+Please can you tell us whether you are trying to ftp from this machine with 
+the netfilter rules on, or is the netfilter machine acting as a router 
+between the ftp client and server ?
 
 
 Antony.
