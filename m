@@ -1,86 +1,66 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: NAT and VPN
-Date: Thu, 03 Jun 2004 14:00:37 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1086285637.4564.3.camel@localhost>
-References: <CBBC84AC3E18304C98492272A68D61117C5917@thor.envisagenow.com>
+From: aksingh@hss.hns.com
+Subject: netif_rx
+Date: Thu, 3 Jun 2004 21:21:01 +0530
+Sender: kernelnewbies-bounce@nl.linux.org
+Message-ID: <OF9203F752.5E1A1A50-ON65256EA8.0055D8F6@hss.hns.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <CBBC84AC3E18304C98492272A68D61117C5917@thor.envisagenow.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <kernelnewbies-bounce@nl.linux.org>
+Errors-to: kernelnewbies-bounce@nl.linux.org
+List-help: <mailto:ecartis@nl.linux.org?Subject=help>
+List-unsubscribe: <mailto:kernelnewbies-request@nl.linux.org?Subject=unsubscribe>
+List-software: Ecartis version 1.0.0
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-To: Derek Storvik <dstorvik@consultech.net>
-Cc: netfilter@lists.netfilter.org
+List-subscribe: <mailto:kernelnewbies-request@nl.linux.org?Subject=subscribe>
+List-owner: <mailto:riel@nl.linux.org>
+List-post: <mailto:kernelnewbies@nl.linux.org>
+List-archive: <http://mail.nl.linux.org/kernelnewbies/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+Cc: kernelnewbies@nl.linux.org
 
-On Thu, 2004-06-03 at 12:53, Derek Storvik wrote:
-> I=E2=80=99m having trouble with NAT and VPN  =20
->=20
-> =20
->=20
-> I have a linux server running Fedora core 1   that is a
-> NAT/FIREWALL/VLAN/DHCP server for a large client network.
->=20
-> =20
->=20
-> Internet
->=20
->   |
->=20
->   |
->=20
-> Linux
->=20
->   |
->=20
->   |
->=20
-> Large network with many vlans and 1000 nodes or so.
->=20
-> =20
->=20
-> =20
->=20
->  The internal network is natted to the 10.0.0.0 network and my clients
-> can not VPN out to the internet.   Specifically they get back an error
-> 619
->=20
-> What has to be done to allow VPN to traverse through the firewall and
-> NAT?   at the moment the firewall rules are wide open to make sure
-> that isn=E2=80=99t my issue.=20
-<snip>
-A few questions . . .=20
-What type of VPN are they attempting to access?
 
-I assume they are using some kind of VPN client and you are not talking
-about a site to site connection.  What client are they using?
 
-If you are using an IPSec client, one either needs to give each a
-dedicated one-to-one mapped public address or use NAT Traversal (must be
-enabled on both sides of the connection).
 
-Are you sure that the client is comfortable allowing people on the
-inside to VPN to some connection on the outside? There is a real
-possibility that whatever is on the other side will now be able to
-access your client's internal network through the same VPN connection.
-> =20
---=20
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net=20
 
+Hi,
+
+ I am trying to spoof a packet, I have written a kernel module, once it
+gets a modified TCP packet(source and dest interchanged, ack seq
+interchanged) it calls netif_rx (skb) to inject this into the routing path.
+but I am unable to make this packet reach the correct socket. Any clues on
+this, can I check some kernel stats to know where and why the packet is
+being dropped.
+The various reasons cld be :
+
+1. incorrect tcp or ip check sums, i calculate both myself
+2. in the skb->dev field i set the value to the value of skb->dev field of
+any incoming valid packet :
+ when i get the first packet on netfilter pre routing hook -- i do a
+memcpy(&my_net_dev, skb->dev, sizeof(struct net_device));
+ then for the modified TCP packet i set skb->dev=&my_net_dev. So maybe it
+gets dropped cos of some problem here(or is there any obvious problem here
+?)
+
+so how do i isolate the problem ? any clues ??
+
+thanks
+Amit
+
+"DISCLAIMER: This message is proprietary to Hughes Software Systems Limited
+(HSS) and is intended solely for the use of the individual to whom it is
+addressed. It may contain  privileged or confidential information and
+should not be circulated or used for any purpose other than for what it is
+intended. If you have received this message in error, please notify the
+originator immediately. If you are not the intended recipient, you are
+notified that you are strictly prohibited from using, copying, altering, or
+disclosing the contents of this message. HSS accepts no responsibility for
+loss or damage arising from the use of the information transmitted by this
+email including damage from virus."
+
+
+--
+Kernelnewbies: Help each other learn about the Linux kernel.
+Archive:       http://mail.nl.linux.org/kernelnewbies/
+FAQ:           http://kernelnewbies.org/faq/
 
