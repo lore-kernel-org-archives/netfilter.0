@@ -1,14 +1,13 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: NFS and iptables.
-Date: Sat, 24 Apr 2004 21:47:20 -0400
+From: "Steve Arentz" <arentz@ameritech.net>
+Subject: RE: icmp type error message
+Date: Sat, 24 Apr 2004 22:37:30 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404242147.20871.Alistair@nerdnet.ca>
-References: <1082844037.10067.20.camel@james> <1082848320.11802.12.camel@anduril.intranet.cartel-securite.net> <1082853174.24647.8.camel@james>
+Message-ID: <KHEPIJJDEJGPDCBOMGKAGEJDCDAA.arentz@ameritech.net>
+References: <200404241831.01573.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1082853174.24647.8.camel@james>
-Content-Disposition: inline
+In-Reply-To: <200404241831.01573.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +17,95 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.netfilter.org
 
-On April 24, 2004 08:32 pm, Krunk wrote:
-> sunrpc is port 111 as defined in /etc/services.
->
-> I'll try to explicitly set port 111.
->
-> No same result, same type of logs being show. Thanks for the suggestion
-> though.
->
-> On Sat, 2004-04-24 at 18:12, Cedric Blancher wrote:
-> > Le dim 25/04/2004 =E0 00:00, Krunk a =E9crit :
-> > > I've bound my NFS ports (moountd, statd, lockd, quotad) and freed up
-> > > the ports they are bound to, but the client still hangs when I try to
-> > > mount the remote share.
-> >
-> > [...]
-> >
-> > > command that opens ports:
-> > >  NFS=3D"2049 32764 32765 32766 32767 32768 32772 sunrpc"
-> >
-> > [...]
-> >
-> > > Apr 24 16:53:35 tuxmac DROPl:IN=3Deth1 OUT=3D MAC=3D<mac here>
-> > > SRC=3D192.168.xxx.xxx DST=3D192.168.xxx.xxx LEN=3D60 TOS=3D0x00 PREC=
-=3D0x00
-> > > TTL=3D64 ID=3D41035 DF PROTO=3DTCP SPT=3D896 DPT=3D111 WINDOW=3D5840 =
-RES=3D0x00 SYN
-> > > URGP=3D0
-> >
-> > As far as I can see, your client is trying to connect to portmapper in
-> > order to get NFS service port back. But there's nothing in your script
-> > excerpt that opens TCP/111.
-> >
-> > PS : maybe you should consider use the RPC helper available in
-> > patch'o'matic extra section.
 
+On Saturday 24 April 2004 11:52 am, Steve Arentz wrote:
 
-	Silly question ... you are opening ports for state NEW ... I don't see an=
-=20
-explicit rule for ESTABLISHED RELATED any where ... but I'm assuming that=20
-rule exists somewhere ...... else.
+> I upgraded my Redhat based linux firewall (netfilter) system from
+> iptables v1.2.8, kernel v2.4.23 to iptables v1.2.9, kernel v2.4.25.
+> (Trustix v2.0 to Trustix v2.1 just in case its important.)
+>
+> Using the same rule set, all my icmp rules now get the following error =
+-
+> iptables v1.2.9: Unknown arg =91--icmp-type=92
+>
+> A simple command line rule entry like the following gets the same error=
+ -
+> iptables -A INPUT -p ICMP -s 0/0 --icmp-type 8 -j ACCEPT
 
-	Alistair Tonner=20
-=09
-	(sometimes the simplest answers.....)
+On Saturday 24 April 2004 5:52 pm, Antony Stone wrote:
+
+> What do you get in response to "iptables -p icmp -h"?   Does it tell yo=
+u
+what
+> type names are supported?
+
+Output of "iptables -p icmp -h" from iptables v1.2.8 lists many valid ICM=
+P
+types.
+Output from iptables v1.2.9 doesn't list any valid ICMP types.
+
+> Do you get the same error if you specify the ICMP type by name instead =
+of
+> number (ie: 'echo-request' instead of '8')?
+
+Get the same error message.
+
+Here's a listing of the iptables v1.2.8 modules
+(/etc/sysconfig/iptables-modules-ipv4)  loaded by the startup script
+(/etc/init.d/iptables).
+arp_tables
+arptable_filter
+ip_conntrack
+ip_conntrack_ftp
+ip_conntrack_irc
+ip_conntrack_pptp
+ip_conntrack_proto_gre
+ip_nat_ftp
+ip_nat_irc
+ip_nat_pptp
+ip_nat_proto_gre
+ip_nat_snmp_basic
+ip_queue
+ip_tables
+ipt_DSCP
+ipt_ECN
+ipt_LOG
+ipt_MARK
+ipt_MASQUERADE
+ipt_MIRROR
+ipt_REDIRECT
+ipt_REJECT
+ipt_TCPMSS
+ipt_TOS
+ipt_ULOG
+ipt_ah
+ipt_conntrack
+ipt_dscp
+ipt_ecn
+ipt_esp
+ipt_helper
+ipt_length
+ipt_limit
+ipt_mac
+ipt_mark
+ipt_multiport
+ipt_owner
+ipt_pkttype
+ipt_state
+ipt_tcpmss
+ipt_tos
+ipt_ttl
+ipt_unclean
+iptable_filter
+iptable_mangle
+iptable_nat
+
+The iptables v1.2.9 module listing is the same.
+
+Thanks again for your help,
+Steve
+
 
