@@ -1,14 +1,12 @@
-From: "Ivan E. Moore II" <rkrusty@tdyc.com>
-Subject: RE: IPTABLES vs Checkpoint
-Date: Tue, 26 Nov 2002 16:19:36 -0700
+From: Michael <mutk@iprimus.com.au>
+Subject: Re: Samba blocked?
+Date: Wed, 27 Nov 2002 11:14:23 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c295a2$4a9cb620$0100a8c0@covert.tdyc.com>
-References: <1038349954.22977.34.camel@tux.go-nix.ca>
-Reply-To: <rkrusty@tdyc.com>
+Message-ID: <3DE41C6F.2050704@iprimus.com.au>
+References: <000d01c2958f$d3fadbd0$1e00a8c0@yamatto>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1038349954.22977.34.camel@tux.go-nix.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,20 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "'Nix N. Nix'" <nix@go-nix.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Dan Egli <dan@shortcircuit.dyndns.org>, netfilter@lists.netfilter.org
 
->AFAIK Checkpoint is not a firewall at all, but a proxy server.  This
-clearly means that it 
->acts like a Web/FTP/whatever server that connects people in your
-company to the outside world >by requesting Web pages over HTTP and
-initiating FTP connections on their behalf.
+Dan Egli wrote:
 
-This is incorrect information.  Checkpoint offers proxy capabilities
-however by default it is a stateful firewall.
+>Ok. I'm a fair bit confused here. I'm trying to setup a IPtables filter set
+>that will block certain ports and allow others. It seems to work perfectly
+>for anything other than Samba. If I try:
+>
+>smbclient //myserver/shared1, it fails to connect. But using the IP in place
+>of it:
+>smbclient //192.168.0.2/shared1 works just fine. I am specifically allowing
+>NetBIOS-ns, NetBIOS-ssn, and NetBIOS-dgm. Still no go. What's wrong?
+>
+>  
+>
 
-Ivan
+
+Probably nothing wrong with the iptables rules. Might be something wrong 
+with the name lookups for smbclient though.
+Have a look at man pages for smbclient, in particular the name resolve 
+order (-R) command switch. Also have a look at man page for smb.conf, 
+ as the method for name look ups is defined there (The order too)
+
+The default order is lmhosts, host, wins, bcast for name look ups.  
+I beleive that for bcast name lookups to work you need to allow bcast 
+traffic too. ie you need to allow 192.168.0.255 port 137.
+
+If you don't want that, a quick fix is to try adding the 'myserver'  
+name and IP to /etc/hosts ..
+
+Cheers,
+Michael
+
 
 
 
