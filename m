@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: netfilter hangups
-Date: Wed, 12 Mar 2003 09:12:00 +0100
+From: Esteban <esteban@alstec.fr>
+Subject: polip
+Date: Wed, 12 Mar 2003 10:54:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019C39@hslex01.hslbz.local>
-References: <3019863CF306D211BA4500A0CC30812DC67914@exchange.cyberwolf.com>
+Message-ID: <20030312105435.1eac4fcf.esteban@alstec.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3019863CF306D211BA4500A0CC30812DC67914@exchange.cyberwolf.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,24 +18,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Could the way i am restarting it cause it to refuse to honor 
-> new rules w/o rebooting?
+Hi there,
+while I was writing a QoS configuration script, I heard about polip,
+which seem to be what a was trying to do by myself.
 
-<snip>
+here a part of the web site :
+"Pol-IP is a complete traffic control system for a Linux NAT box with
+multiplataform clients.  It has a user-friendly wizard to config the
+system in which you can add, delete or chage, clients or groups
+bandwith, in a hierarchical structure. The clients get clean statistics
+about their actual speed and assigned bandwith."
 
-> > [root@iptables1 root]# /etc/sysconfig/iptables condrestart
-> > iptables: Chain already exists
-> > iptables: Chain already exists
-> > iptables: Chain already exists
-> > iptables: Chain already exists
-> > iptables: Chain already exists
+So I would like to know if someone has already tried this script, and if
+it is a good way to configure QoS.
+It don't seem to be based on iproute2, so i really don't know if it is a
+godd idea to use it. 
+Anybody heard about it ?
 
-Yes.
+Thanks a lot
 
-If the script doesn't delete the user-defined chains first and then
-tries to create new ones with the same name you get this error.
-
-
-Rob
-
+-- 
+Stephane DESMET
+Alstec Informatique
+17, rue du Colisee
+75008 Paris
 
