@@ -1,18 +1,13 @@
-From: "David C. Hart" <DCH@TQMcube.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: IP Spoofing
-Date: Fri, 07 Nov 2003 08:34:52 -0500
+Date: Fri, 7 Nov 2003 13:56:11 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068212092.1438.8.camel@main.tqmcube.com>
-References: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br>
-	 <200311051951.hA5Jpdr13332@agate.rockstone.co.uk>
-	 <60250.200.180.160.130.1068063541.squirrel@www.alcidesmaya.com.br>
-	 <200311052039.hA5KdYr13351@agate.rockstone.co.uk>
-	 <1068208010.29753.10.camel@tarkus>
-Reply-To: IPTables Mailing List <netfilter@lists.netfilter.org>
+Message-ID: <200311071356.hA7DuFj14742@agate.rockstone.co.uk>
+References: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br> <1068208010.29753.10.camel@tarkus> <1068212092.1438.8.camel@main.tqmcube.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-E/FcyOhxXCiI1TrsKgw9"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1068208010.29753.10.camel@tarkus>
+In-Reply-To: <1068212092.1438.8.camel@main.tqmcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,94 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: tedkaz@optonline.net
-Cc: Iptables Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: IPTables Mailing List <netfilter@lists.netfilter.org>
 
+On Friday 07 November 2003 1:34 pm, David C. Hart wrote:
 
---=-E/FcyOhxXCiI1TrsKgw9
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> On Fri, 2003-11-07 at 07:26, Ted Kaczmarek wrote:
+> > I would add an input established on that as well, makes it easier to do
+> > upgrades.
+> >
+> > iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+>
+> Hi Ted:
+>
+> If you have a moment, could you please explain (for the comparative IPT
+> nitwits - including me) what that does?
 
-On Fri, 2003-11-07 at 07:26, Ted Kaczmarek wrote:
-> I would add an input established on that as well, makes it easier to do
-> upgrades.
->=20
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+Any packet which arrives at the machine running netfilter (because this rule 
+is in the INPUT chain - if it were in the FORWARD chain then it would apply 
+to any packet being routed through the machine running netfilter) which is 
+part of an ESTABLISHED connection, or which is RELATED to and ESTABLISHED 
+connection, is ACCEPTed.
 
-Hi Ted:
+What defines a connection as ESTABLISHED?
 
-If you have a moment, could you please explain (for the comparative IPT
-nitwits - including me) what that does?
->=20
-> I wish everyone did implicit DROP's, it would make the web a safer
-> place.
+Basically, "is there an entry for it in the connection tracking table?"   
+Entries get placed in this table when the first packet of a connection gets 
+seen (this will only happen if you have an OUTPUT rule, or a FORWARD rule, 
+allowing that first packet to be ACCEPTed).   After that, the reply and all 
+other packets which are part of the same connection (which is defined by the 
+source & destination IP plus the source & destination port numbers) will get 
+matched by the rule above, no matter which other rule matched the first 
+packet.
 
-IBID
+What defines a packet as RELATED?
 
-Thanks
->=20
-> :-)
->=20
->=20
->=20
-> Ted
->=20
->=20
-> On Wed, 2003-11-05 at 15:39, Antony Stone wrote:
-> > On Wednesday 05 November 2003 8:19 pm, Leandro Takashi Hirano wrote:
-> >=20
-> > > Thanks Antony...
-> > >
-> > > Do you have a script or something where I can find protection rules?
-> >=20
-> > You tell us what protection you want and we can suggest some rules to d=
-o it.
-> >=20
-> > There's no single "magic ruleset" for netfilter / iptables which "prote=
-cts=20
-> > your network", otherwise every distribution would include it as standar=
-d.
-> >=20
-> > It depends what you want to do.
-> >=20
-> > A good starting point is:
-> >=20
-> > iptables -P INPUT DROP
-> > iptables -P OUTPUT DROP
-> > iptables -P FORWARD DROP
-> > iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> > iptables -A FORWARD -i $intIF -o $extIF -j ACCEPT
-> >=20
-> > That will allow nothing in or out of the firewall machine itself, and w=
-ill=20
-> > allow all access from your internal network to the Internet, blocking=20
-> > everything except reply packets from the Internet to your network.
-> >=20
-> > I do not recommend that you simply implement the above rules before you=
-=20
-> > understand what they are designed to do.
-> >=20
-> > Check Oskar Andreasson's excellent tutorial for more information about =
-this=20
-> > sort of configuration, or any of the other documentation at=20
-> > http://www.netfilter.org
-> >=20
-> > Antony.
->=20
->=20
+Either, is it known to a connection tracking helper for a specific protocol 
+which uses multiple connections (such as FTP), or, is it an ICMP packet in 
+response to another packet, indicating a problem somewhere.
 
---=-E/FcyOhxXCiI1TrsKgw9
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+HTH
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Antony.
 
-iD8DBQA/q598ol4OE0cpGaIRAiILAJ9Vp8oD+HRtRsRjUe25jEZUhsvCjwCfafsb
-+3m2IsBNbtCp5Y5tMbL4Cig=
-=UNHq
------END PGP SIGNATURE-----
+-- 
 
---=-E/FcyOhxXCiI1TrsKgw9--
+If books were designed by Microsoft, the Anarchist's Cookbook would explode 
+when you read it.
 
+ - Mark W Schumann
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
