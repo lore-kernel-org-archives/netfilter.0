@@ -1,14 +1,14 @@
-From: Rob Sterenborg <rob@sterenborg.info>
-Subject: Re: opening connection for Tomcat
-Date: Thu, 08 Apr 2004 19:50:00 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Logging default drop
+Date: Thu, 8 Apr 2004 18:50:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081446600.2453.63.camel@katala.sterenborg.info>
-References: <40756C19.3010606@tin.it>
-	 <006f01c41d86$c82d6d60$51a2fea9@heretic>
+Message-ID: <200404081850.23836.Antony@Soft-Solutions.co.uk>
+References: <000501c41d90$8cea2db0$0464a8c0@stu>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <006f01c41d86$c82d6d60$51a2fea9@heretic>
+In-Reply-To: <000501c41d90$8cea2db0$0464a8c0@stu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,40 +19,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Thu, 2004-04-08 at 18:30, Alexis wrote:
-> you must change to OUTPUT the first rule at least. you're filtering all
-> outgoing packets.
-> 
+On Thursday 08 April 2004 6:40 pm, Stuart Lamble wrote:
 
-In these rules I only see policy ACCEPT for the OUTPUT chain, so IMHO
-there's no filtering there.
+> I was not aware that I was doing that. Is it to do with this damn
+> outlook Cr@P that I am using?
 
-> > Hi all,
-> > I was in trouble opening a port for services with tomcat:
-> > Is this rule right? I'm behind an adsl router that forward every
-> > connection on port 8080 to <myprivateip>.
-> >
-> > iptables -P INPUT DROP
-> > iptables -P OUTPUT ACCEPT
-> > iptables -P FORWARD DROP
-> >
-> > iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> > iptables -A INPUT -p tcp -d <myprivateip> --dport 8080 -s 0.0.0.0 -m
-> > state --state NEW -j ACCEPT
+Yes - you've just done it again :)
 
-Is your Tomcat listening on 8080/tcp ? (netstat -an|grep 8080)
-Are you sure that your router is forwarding all connections ?
+The idea is that you should write your response underneath the bit which I 
+wrote, which you're responding to, so that it makes sense as a conversation.
 
-Check with a logging rule between the -m state and the -p tcp rules to
-see what's going on (if there is) :
+If you post your comment at the top of an email, people have to read my bit 
+underneath first, to find out what it's about, then go back up to the top to 
+find out what you said afterwards....
 
-iptables -A INPUT -j LOG --log-prefix "_ipt:check"
+Regards,
 
+Antony.
 
-Gr,
-Rob
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
+> Sent: Thursday, April 08, 2004 7:31 PM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: Logging default drop
+>
+> On Thursday 08 April 2004 6:24 pm, Stuart Lamble wrote:
+> > Ok, so what does "toppost" mean?
+>
+> Regards,
+>
+> Antony.
 
+-- 
+These clients are often infected by viruses or other malware and need to be 
+fixed.  If not, the user at that client needs to be fixed...
+
+ - Henrik Nordstrom, on Squid users' mailing list
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
