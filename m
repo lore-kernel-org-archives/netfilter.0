@@ -1,12 +1,11 @@
-From: Bob Hillegas <bobhillegas@houston.rr.com>
-Subject: Re: Placement of Iptable Scripts
-Date: Sun, 7 Jul 2002 20:10:11 -0500 (CDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Spam: How to find a firewall  project example?
+Date: Mon, 8 Jul 2002 02:23:08 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.44.0207071954020.1431-100000@east.rosestar.lan>
-References: <20020705040808.A0EDC4455@lists.samba.org>
+Message-ID: <20020708012310.JPVA2755.mta05-svc.ntlworld.com@there>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020705040808.A0EDC4455@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,50 +15,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.samba.org>
 
-The best place I have found to place such script is immediately after bringing 
-up the interface. Especially on interfaces that get their ip address changes by 
-the ISP.
+Hi.
 
-Redhat looks for (in /etc/sysconfig/network-scripts/ifup) and executes if found, 
-/sbin/ifup-local. Define it and put into it a reference to the script that 
-builds your rules. If you face the dhcp problem, pass the interface name to the 
-script as an argument and parse the ip address from an invocation of 
-/sbin/inconfig.
+Has anyone else subscribed to this list just received one or more emails such 
+as this ?
 
-If your interface ip is non-changing, run the script, execute 
-/etc/rc.d/init.d/iptables save
+It looks like spam mail to me, and I recommend that nobody replies to it 
+(either to the From address, or the R=reply address given in the message) as 
+you'll probably just end up on some spammer's confirmed-email-address list.
 
-You will get those same rules back every time your system does an 
-/etc/rc.d/init.d/iptables start
+It came from IP address 202.102.242.178
 
-One note: an iptables start only invokes the actual iptables rules. Other 
-commands commonly embedded in such "define scripts", such as, echo 1 > 
-/proc/../../etc/etc, don't get issued.
+Antony.
 
--- 
-----------------------------------
-Bob Hillegas
-bobhillegas@houston.rr.com
+----------  Forwarded Message  ----------
 
-On Thu, 4 Jul 2002 Mark_Vuong@Dell.com wrote:
+Subject: How to find a firewall  project example?
+Date: Mon, 8 Jul 2002 9:10:48 +0800
+From: GriefUseWeb=0 <grief@371.net>
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
 
-  > 
-  > From: Mark_Vuong@Dell.com
-  > To: netfilter@lists.samba.org
-  > Subject: Placement of Iptable Scripts
-  > Date: Thu, 4 Jul 2002 21:57:16 -0500
-  > 
-  > I'm relatively new to iptables and have the following question.
-  > 
-  > where is the best place to place my iptable bash script so that it loads my
-  > iptable chains and rules when my server reboots?
-  > 
-  > Thanks!
-  > 
-  > Mark
+How to find a firewall  project example?
 
+  Hello,all:
+
+  Now I am beginning to preparing for my  graduation paper,and I
+
+am concerned about firewall topic.
+
+   Are there some firewall examples  under linux?It has server,client and
+
+  communication,could control policy and account traffic.
+
+    Thanks in advance.
+
+   My address:  yangbobo@163.com
+
+-------------------------------------------------------
 
