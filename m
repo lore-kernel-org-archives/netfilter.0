@@ -1,13 +1,13 @@
-From: xchris <lyra@fastwebnet.it>
-Subject: Re: vpn help from tanzania.
-Date: Wed, 7 May 2003 12:06:20 +0200
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: conntrack-tcp-nopickup | newnat
+Date: 07 May 2003 11:53:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200305071206.20160.lyra@fastwebnet.it>
-References: <006c01c31357$a1565ce0$6400a8c0@homes> <200305070937.29059.lyra@fastwebnet.it> <000801c3147b$58d14af0$0223a8c0@satconet.com>
+Message-ID: <1052301203.24215.7.camel@tux.rsn.bth.se>
+References: <7497DCA1C240C042B28F6657ADFD8E090303194E@i2km11-ukbr.domain1.systemhost.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000801c3147b$58d14af0$0223a8c0@satconet.com>
+In-Reply-To: <7497DCA1C240C042B28F6657ADFD8E090303194E@i2km11-ukbr.domain1.systemhost.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +18,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: Muffadal Essaji <muffadal.essaji@intafrica.com>
+To: dhiraj.2.bhuyan@bt.com
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 07 May 2003 11:30, Muffadal Essaji wrote:
-> Hi ..
-> Please can you help me to configure the vpn in linux i m very new and i
-> don't  anything .
-> i using redhat linux 9.0 if u need any kernal patch up.
-> yours
-> muffadal.
+On Wed, 2003-05-07 at 10:47, dhiraj.2.bhuyan@bt.com wrote:
+> Hi List,
+> 
+> Is "conntrack-tcp-nopickup" available for the new NAT framework?
+> Also, does anyone have pointer to the difference between oldnat and newnat?
 
+You can find a patch here:
+http://www.netfilter.org/~gandalf/patches/conntrack-tcp-nopickup.patch
 
-we cannot tell you every step do do!
-follow one of the several howto and post if you have problem.
+This version includes /proc/sys/net/ipv4/ip_conntrack_pickup which
+defaults to 1 (enabled) which allows you to change the behaviour during
+operation.
 
-This is not a netfilter related problem.
-bye
-
+-- 
+/Martin
 
