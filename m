@@ -1,12 +1,12 @@
-From: Guanglei Cui <cuigl@morita.chem.sunysb.edu>
-Subject: msn voice chat
-Date: Thu, 26 Dec 2002 12:48:12 -0500
+From: Kevin McConnell <kevymac@yahoo.com>
+Subject: Re: Doing Bridge with firewalling
+Date: Tue, 31 Dec 2002 08:08:53 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212261248.12614.cuigl@morita.chem.sunysb.edu>
-Reply-To: cuigl@ilion.bio.sunysb.edu
+Message-ID: <20021231160853.7071.qmail@web40303.mail.yahoo.com>
+References: <F154kB47qXLFfJNwPmx00000ffb@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <F154kB47qXLFfJNwPmx00000ffb@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +17,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+Cc: Afshin Lamei <linux_st@hotmail.com>
 
-Dear all,=20
-    I've set up IP NAT in my redhat 8.0 (kernel-2.4.18.19.8.0,=20
-iptables-1.2.6a-a). The following modules are loaded,=20
-ip_nat_irc
-ip_nat_ftp
-iptable_nat
-ip_conntrack_irc
-ip_conntrack_ftp
-ip_conntrack
-ip_tables
 
-It seems almost everything works just fine in my local network, except MS=
-N=20
-voice chat (instant message works fine). Do I need other modules to make =
-it=20
-work, something like ip_nat_h323? Thanks in advance.=20
+--- Afshin Lamei <linux_st@hotmail.com> wrote:
 
-cuigl
+> 1- Is it necessary to disable ip address of both
+> eth0 and eth1? if yes, how 
+> to do that?
+
+how could you do NAT'ing if you removed the IP
+addresses?
+
+> 2- When I try to add eth0 as an interface to the
+> bridge (using brctl addif), 
+> It says : "eth0:Setting promiscuous mode." what does
+> it mean?
+> thanks,
+
+It means that the interface will take all frames that
+are traversing the network it's attached to, even if
+they aren't supposed to be destined for the device.
+
+
+=====
+Kevin C. McConnell --RHCE-- <Red Hat Certified Engineer>
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
 
