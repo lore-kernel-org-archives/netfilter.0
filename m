@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Sascha Reissner" <sascha.reissner@toxicnet.de>
 Subject: Re: Question
-Date: Sat, 22 Jun 2002 00:26:46 +0100
+Date: Sat, 22 Jun 2002 02:26:26 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020621232648.KUCK4626.mta02-svc.ntlworld.com@there>
-References: <001c01c21979$b6b61a40$8147370a@washingtghv9lt>
+Message-ID: <001201c21983$724d3d70$11c810ac@honor>
+References: <004001c21949$b966bc20$0201a8c0@power>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <001c01c21979$b6b61a40$8147370a@washingtghv9lt>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,26 +17,27 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Krish Ahya <Krish@houston.rr.com>, netfilter@lists.samba.org
 
-On Saturday 22 June 2002 12:16 am, James Mello wrote:
+From: Krish Ahya
 
-> > > No, but there are experimental modules that will allow you to enforce
-> > > your own rules. I've heard of some IDS or attack detection
-> > > capabilities being done through IP tables.
-> >
-> > What sort of modules ?   I *hope* you don't mean the 'string' match ?
->
-> Yeah, I actually do mean the 'string' match :) I've got some friends who
-> used this to do some filtering on content on their own internet exposed
-> boxes to prevent stupid Nimda worm and other attacks from being
-> perpetrated.
+> I was just wondering, is Netfilter as good as Cisco's PIX and Checkpoint's
+Firewall-1, if not better?
 
-Hmmm.   Okay, I'll agree you can do a certain amount of string matching, with 
-a certain degree of reliability, wiht this module, but I think for an IDS I'd 
-rather go for snort / hogwash.
+its hard to compare apples with pears.. one is a firewalling system..
+netfilter is more or less a packet filter....
 
- 
+> Also I'm wondering say if I have a dmz and allow people to come into a
+server on port 80, will netfilter inspect the packet on all
+> 7 layers of the OSI model and make sure that it is actually a http packet
+and following the rules and protocol specifications of
+> http? Sorta like checkpoints INSPECT module.
 
-Antony.
+as netfilter is "only" a packet filter (with some additional modules to
+provide more functions) you will stick with stuff like string match and all
+modules you would like to provide the netfilter community (if you code them
+yourself)
+
+
+
 
