@@ -1,13 +1,9 @@
-From: "Ing. Rogelio Sevilla Fernandez" <sevilla@col.gob.mx>
-Subject: Re: Problems With MASQ/ Kernel 2.4.29
-Date: Fri, 11 Mar 2005 18:25:39 -0600
-Message-ID: <20050311182539.1qvnqcekngg40kkk@mail.col.gob.mx>
-References: <20050311180127.rcp5r70mjo0c4c4c@mail.col.gob.mx>
-	<42323616.7010900@triple-it.nl>
+From: "John Hill" <jhill@noach.com>
+Subject: Iptables 2.4.x kernels
+Date: Fri, 11 Mar 2005 23:48:26 -0500
+Message-ID: <SIMEONMjFEFuopJLW1100000001@mail.noach.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <42323616.7010900@triple-it.nl>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +14,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Geert van der Ploeg <geert@triple-it.nl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Sorry, its correct.. i got the problem on POSTROUTING rule.
+El vie, 11-03-2005 a las 12:36 -0500, John Hill escribi=F3:
+> Should I consider iptables to be dropping 2.4.x kernel support?
+>=20
+> I have yet to compile iptables successfully since 2.4.26 and 1.2.11. I =
+get
+a
+> MUTEX error. This was addressed by a patch (sent to me in email) but a
+> permanent fix has failed to make the kernel and the iptables code. The =
+new
+> 2.4.29 and 1.3.1 still does it. I also had segmentation errors with
+> shorewall after applying the patch to 2.4.28 and 1.3.0. I gave up =
+without
+> looking into the problem further hoping the new kernel and iptables =
+would
+> fix it. It has not.
 
+Are you applying the patch-o-matic patches to the kernels and userspace
+tools? You must do it to compile the code.
 
+> Thanks
+>=20
+> --john
 
-Quoting Geert van der Ploeg <geert@triple-it.nl>:
-
-> Ing. Rogelio Sevilla Fernandez wrote:
->> I recently compiled kernel 2.4.29 with all netfilter options as modules.
->>
->> All start ok, but when i set the MASQUERADE jump target on POSTROUTING
->> i got:
->> iptables -t nat -I PREROUTING -o eth0 -j MASQUERADE
->> iptables: target problems.
->
-> when using PREROUTING rules, you should specify the incoming 
-> interface, not the outgoing.
-> Or, said the other way around: when using an outgoing interface, you 
-> should specify POSTROUTING rules.
->
-> So, because you try to masquerade, what you really want is:
-> iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE
->
-> See section 5 in the NAT-howto for iptables.
->
->
-> Hope this helps.
->
->
-> Regards,
->
-> Geert van der Ploeg
->
+Regards.
 
 
+Yes I patched it with the latest ng.
 
------------------------------------------------------
-"2005, A=D1O DE LA FEDERACION DE ESTUDIANTES COLIMENSES"
+--john
 
 
