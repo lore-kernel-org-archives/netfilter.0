@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: detection of the third tcp packet in a tcp connection setup
-Date: Thu, 27 Jun 2002 21:36:27 +0100
+From: Karl Fischer <karl.fischer@quantum.com>
+Subject: Re: DNAT in OUTPUT chain
+Date: Thu, 27 Jun 2002 22:37:04 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020627203629.XEXV19225.mta07-svc.ntlworld.com@there>
-References: <NJEFLNJDIFFNMHDEBKMJCEJADOAA.jpatterson@asgardgroup.com> <20020627200655.VZLE19225.mta07-svc.ntlworld.com@there> <20020627203130.GC31466@cannon.eng.us.uu.net>
+Message-ID: <3D1B7770.78F1647@quantum.com>
+References: <FIEPIOLBGHKEOJANBEKMKELHCCAA.dk@webcluster.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020627203130.GC31466@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,29 +17,26 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: dk@webcluster.at
+Cc: Netfilter mailing list <netfilter@lists.samba.org>
 
-On Thursday 27 June 2002 9:31 pm, Ramin Alidousti wrote:
-
-> On Thu, Jun 27, 2002 at 09:06:54PM +0100, Antony Stone wrote:
-
-> > On Thursday 27 June 2002 8:57 pm, Ramin Alidousti wrote:
-> > > If I'm not wrong you can always send data even in SYN and SYN/ACK.
-> > > Like Patrick said the default options in the socket interface might
-> > > not do it but I thought I saw some tweaking in one of Richard Steven's
-> > > (god bless his soul) books to push traffic in SYN packets.
-> >
-> > Is that an interesting way to get round packet filtering firewalls ?
+Daniel Khan wrote:
+> 
+> Hello List,
+> 
+> I have a Problem with NAT on RedHat 7.3/iptables v1.2.5.
 >
-> Why? The fw would either block the SYN (in case of DENY) or let the
-> SYN and any subsequent packet through...
+> So I use exactly the syntax from the HOWTO's:
+> 
+> iptables -A OUTPUT -t nat -p tcp --dport 3306 -j DNAT --to 10.1.0.212:3306
 
-Okay.   I'm having a bad evening.   That's the second stupid thing I've said 
-in this thread.   I think my brain's gone awol.....
+I just copied and pasted this line to my machine and it works fine here.
+However, according to the man-page, I would try the following:
 
-I hope it's back on-line tomorrow.
+iptables -A OUTPUT -t nat -p tcp -m tcp --dport 3306 \
+  -j DNAT --to-destination 10.1.0.212:3306
 
- 
+HTH
 
-Antony.
+- Karl
 
