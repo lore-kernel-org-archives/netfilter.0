@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: About loadable kernel modules
-Date: Mon, 7 Oct 2002 21:06:51 -0400
+From: Martijn Klingens <mklingens@ism.nl>
+Subject: Re: measure traffic
+Date: Tue, 8 Oct 2002 09:39:30 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210072106.51708.netfilter@newkirk.us>
-References: <001001c26a3e$1900bab0$c5327d9e@alex>
-Reply-To: netfilter@newkirk.us
+Message-ID: <200210080939.31003.mklingens@ism.nl>
+References: <200210080025.26576@.>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001001c26a3e$1900bab0$c5327d9e@alex>
+In-Reply-To: <200210080025.26576@.>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,28 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Alexandros Fragkiadakis <A.Fragiadakis@lboro.ac.uk>, netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 02 October 2002 02:04 pm, Alexandros Fragkiadakis wrote:
-> Hi all,
->
-> Well, i have written a (netfilter) loadable kernel module for filtering
-> various packets. I pass these packets from kernel space to user space u=
-sing
-> libipq. I also have a user process thas loads and unloads this loadable
-> kernel module using the commands: system("insmod kernel_module.o")
-> system("rmmod kernel_module") respectively.
->
->  I'd like to pass parameters to the loadable module, hence having a mor=
-e
-> flexible user process. So, instead of using the command system("insmod
-> kernel_module.o"), i'd like to use: system("insmod kernel_module.o <par=
-am1>
-> <param2>...<param n>") , hence passing command line parameters to my
-> loadable module.
+On Monday 07 October 2002 20:58, PayalR wrote:
+> I have a small urgent problem. As I told you all before, I have my single 
+> Linux box at a server farm where I have to pay per Mb of data transmitted.
+> I have a doubt that those guys there are cheating me. They are taking more 
+> money than actual data transmitted. Can I use iptables to log all incoming 
+> and outgoing data and see total incoming/outgoing data in a day/week/month?
+> What do i have to do? Is there any specific package available for it?
 
-Probably execl(*command,*arg1,*arg2,*arg3...,null) will do what you want.
+Use ipac-ng (http://sourceforge.net/projects/ipac-ng/).
 
-j
+-- 
+Martijn
 
 
