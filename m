@@ -1,13 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Martin Tomasek <mtd@mk.cvut.cz>
 Subject: Re: hosts.deny
-Date: Mon, 8 Jul 2002 01:11:55 +0100
+Date: Mon, 8 Jul 2002 02:14:10 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708001157.EOH9709.mta02-svc.ntlworld.com@there>
-References: <000001c22612$91fcb600$0a01a8c0@ed>
+Message-ID: <20020708001410.GA27192@mt.mk.cvut.cz>
+References: <007301c22610$e152fe00$0a01a8c0@ed> <20020707235549.ONWM23840.mta03-svc.ntlworld.com@there>
+Reply-To: mtd@mk.cvut.cz
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <000001c22612$91fcb600$0a01a8c0@ed>
+Content-Disposition: inline
+In-Reply-To: <20020707235549.ONWM23840.mta03-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,54 +20,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
 
-On Monday 08 July 2002 1:01 am, Ed Street wrote:
 
-> Hello,
->
-> Dns lookups.
+--KsGdsel6WgEHnImy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment
+Content-Transfer-Encoding: quoted-printable
 
-Well, yes, obviously the way to resolve hostnames to IP addresses is by DNS 
-lookups :-)
+> I most commonly see it in port scans, and probes for http / sql holes.
 
-What I meant was, how does your script cope when you want to block something 
-like, say, www.microsoft.com, and the DNS lookup returns 6 different IP 
-addresses, from two different class C ranges (which is what I just got by 
-doing a dig on the name) ?
+You cannot use random spoofed ip adresses with stateful protocol such as
+tcp. In tcp is possible to do only SYN floods with random ips -- which
+could be solved for example by syncookies.
 
-> Note some cases the /netmask is somewhat overkill.  I felt
-> better safe than sorry, incase they have a block of ip's.
+What you see in portscans or probes are real ips (excluding some
+portscan types, which uses "proxy" host).
 
-I'd have thought it unlikely that a hostname would resolve to multiple 
-contiguous IPs.   If a company has enough load that they're running multiple 
-servers, they're probably doing it on multiple feeds as well, which will have 
-widely differing IP addresses.....
+--=20
+Martin Tomasek, mtd@email.cz
+BOFH excuse #293:
+You must've hit the wrong anykey.
 
- 
+--KsGdsel6WgEHnImy
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Antony.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
 
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org] On Behalf Of Antony Stone
-> Sent: Sunday, July 07, 2002 7:57 PM
-> To: netfilter@lists.samba.org
-> Subject: Re: hosts.deny
->
-> On Monday 08 July 2002 12:48 am, Ed Street wrote:
-> > Hello,
-> >
-> > Sure attached is the hosts.trashcan file I am currenly testing.
->
-> Interesting.   How does your script handle resolving machine names to IP
->
-> addresses (as shown in several examples in your trashcan file) when one
-> name
-> corresponds to several IPs ?
->
->
->
-> Antony.
+iD8DBQE9KNlSzWKqGie3rqoRAp8hAJ0cxvQklFsdo9k6yf9I1zn0bK+udgCfbgY4
+ObfhSaXPjR/EjR0FpIu1FX4=
+=lONB
+-----END PGP SIGNATURE-----
+
+--KsGdsel6WgEHnImy--
 
