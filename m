@@ -1,10 +1,14 @@
-From: "Han, Yan" <hany@u.library.arizona.edu>
-Subject: Help! NAT unable to routing
-Date: Thu, 30 Oct 2003 17:12:47 -0700
+From: "Edmund Turner" <eturner@monash.edu.my>
+Subject: RE: Changing the amount of tokens in the conntrack
+Date: Fri, 31 Oct 2003 16:43:52 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BEA73FB6B8F62545A5B2818724D0DF2902E70843@u.library.Arizona.EDU>
+Message-ID: <01b701c39f8b$1cc21da0$de0018ac@admin.monash.edu.my>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAAdMZbo8ar0EerVxNjQLkOigEAAAAA@perezoso.net>
+Reply-To: <eturner@monash.edu.my>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAAdMZbo8ar0EerVxNjQLkOigEAAAAA@perezoso.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,26 +19,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
+This was answered by a previous thread not to long ago.
+
+>>Security <security@ezsm.net> wrote: 
+
+Your max setting on the conntrack table can be seen at:
+> cat /proc/sys/net/ipv4/ip_conntrack_max
+> 
+> Your current number of entries in the conntrack table can
+> be found like this:
+> cat /proc/net/ip_conntrack | wc -l
+> 
+> Now, you have 2 choices on how to sort this out...
+> 
+> 1) raise the limit in /proc/net/ip_conntrack
+> To raise that limit:
+> echo ## > /proc/net/ip_conntrack 
+> (where ## is the new max you wish to set).
 
 
-Hi! 
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of GoMi
+Sent: Tuesday, October 28, 2003 7:22 PM
+To: netfilter@lists.netfilter.org
+Subject: RV: Changing the amount of tokens in the conntrack
 
-I am using IPTables to do some re-routing tests. Basically I try to re-route
-the traffic from one box to another box. But it failed (not forwarding, but
-timeout). Can anyone point to what errors about my script.
-p.s. I did open forward (net.ipv4.ip_forward = 1) in Linux.
 
 
-#set the dafault policies; 
-iptables -P INPUT DROP
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
+-----Mensaje original-----
+De: GoMi [mailto:gomi@arrakis.es] 
+Enviado el: martes, 28 de octubre de 2003 12:21
+Para: 'netfilter@lists.netfilter.org'
+Asunto: Changing the amount of tokens in the conntrack
 
-# what is wrong ??
-iptables -t nat -A PREROUTING -i eth0 -p tcp -d 150.135.44.245 --dport 80 -j
-DNAT --to 150.135.45.96
+
+Hi there, its my first email to the list, so i will explan a little bit
+my setup:
+
+I have a linux box with 1GB RAM Athlon 1.8GHz and 3 eth cards.
+
+
+                        ______
+                 eth2  |      |eth0
+LAN (300 users) <----->|      |<--->ADSL 2Mbit
+                       |      |<--->ADSL 2MBit
+                       |______|eth1
+
+I am doing load balancing at the moment, but thats nothing to worry
+about since it works great. I am also using a QoS setup based on HTB and
+SFQ queues, and due to the load balancing i have a stateful firewall. 
+
+Some aplications my users use quite often, like msn messenger, kazaa or
+other p2p automatically disconnects themselves. I have comed to the
+conclusion thats because of the amount of simultaneous connections the
+box can handle. So i want to change the amount of tokens the conntrack
+is using.
+
+I have the conntrack module built-in the kernel, hence i am driving
+myself mad to find a way to increase this value. Does anybody knows how
+to change that?
+
+Thank you very much,in advanced. If any of you knows anything i could
+change as well to improve my setup, i am welcome to suggestions
 
 
 
