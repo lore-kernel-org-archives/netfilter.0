@@ -1,11 +1,12 @@
-From: "cox" <cox@ieee.org>
-Subject: Squid + iptables (different networks)
-Date: Wed, 17 Nov 2004 13:07:11 -0200
-Message-ID: <MCEJJKCAIMHFOKODABEICEDHMFAA.cox@ieee.org>
-Reply-To: cox@ieee.org
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Unicast packets to multiple destinations  -only-
+Date: Thu, 18 Nov 2004 08:32:11 -0500
+Message-ID: <1100784731.3848.10.camel@hubcap.ljm.dom>
+References: <419C6FF3.9070908@lucomp.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <419C6FF3.9070908@lucomp.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,24 +20,52 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Thu, 2004-11-18 at 04:48, Luigi Corsello wrote:
+> Hi all,
+> 
+> I got 3 IPs in one interface (ip addr add, not aliasing), and wanted to 
+> only allow unicast packets to any of them (and/or their subnet in one 
+> case, to allow broadcasts for the local net).
+> Aim: no broadcasts, no multicast, spoofing prevention?.
+> 
+> You can't have multiple -d in rules. My quick solution was 3 tables
+> (this is a sample):
+> 
+> iptables -N ta
+> iptables -N tb
+> iptables -N tc
+> 
+> iptables -A tc -d ! $ip3 -j DROP
+> iptables -A tb -d ! $ip2 -j tc
+> iptables -A ta -d ! $ip1 -j tb
+> 
+> iptables -A INPUT -j ta
+> 
+> It works, much junk stays out.  All services work.
+>  From the list point of view, is this insane(a) stupid(b) or clever(c)? 
+> and why?
 
-I've got my internal network (192.168.7.0/24, gw=192.168.7.1) and my
-squid-cache server runs on my DMZ.
+if it works, then it's neither insane nor stupid.  just to add a
+viewpoint, if you asked me how to accomplish the same, i would have
+probably answered:
 
-On my gateway I have:
+  iptables -N scrub_interface_0
+  iptables -A scrub_interface_0 -d ${ip1} -j RETURN
+  iptables -A scrub_interface_0 -d ${ip2} -j RETURN
+  iptables -A scrub_interface_0 -d ${ip3} -j RETURN
+  iptables -A scrub_interface_0 -j DROP
 
-iptables -t nat -A PREROUTING -s 192.168.7.0/24 -p tcp --dport 80  -j
-DNAT --to <real-ip>:3128
+  iptables -A INPUT -i ${int0} -j scrub_interface_0
 
-And my squid-server was compiled with --linux-netfilter, etc.
+from my perspective--i can figure out what the above is doing much more
+quickly than i can looking at your method.  but it's really just
+that--personal preference.
 
-It's working, but the log file (access.log) shows me that all connections
-came from my gateway, and it's correct. I'd like to know if someone have a
-way to change that, and in the logfile, and squid acl management I can
-use/see my internal network ips. They are in different subnets.
+-j
 
-regards, cox
-
+--
+"When will I learn? The answer to life's problems aren't at the bottom
+ of a bottle, they're on TV!"
+	--The Simpsons
 
 
