@@ -1,13 +1,11 @@
-From: "William Olbrys" <william_olbrys@student.uml.edu>
-Subject: netfilter and Active Directory
-Date: Tue, 18 Feb 2003 20:59:39 -0500
+From: Alexander Maus <amaus@gmx.de>
+Subject: Patch-o-matic failed... Why?
+Date: Wed, 19 Feb 2003 04:12:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4f51249b6c.49b6c4f512@student.uml.edu>
+Message-ID: <3E52F62D.587D4657@gmx.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Language: en
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,32 +18,56 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Currently I have all my iptables rules turn on by default and MASQUERADE
-shut off. I'm trying to let a win2k domain controller keep it's ip
-address while changing the gateway to a linux box running iptables. the
-controller's gateway is the IP of an inbound nic. The inbound's gateway
-is the nic of a second nic on the linux box, which connects to my
-network.  All of the ips have the same first three octets and the mask
-is 255.255.255.0.
+Hi,
 
-The controller is connected to a hub which connects to the firewall.
-I've put other computers on the hub and can connect and play nicely with
-the controller. But nothing on the hub can ping or use NetBIOS anything
-after the firewall. 
+I'm using kernel 2.4.19 and need the talk-conntrack-patch.
+So I got the latest version of netfilter by CVS.
+Running './runme extra/talk-conntrack-nat.patch' showed:
 
-I thought this was an alias problem but when i set an alias on the
-outbound nic the domain controller complains of duplicate IP addresses. 
+=== cut ===
+Welcome to Rusty's Patch-o-matic!
 
-If I try using internal network addresses and DNAT/SNAT it really screws
-with the WINS/NetBIOS/Domain Controller's Settings.  What can I do?
+Each patch is a new feature: many have minimal impact, some do not.
+Almost every one has bugs, so I don't recommend applying them all!
+-------------------------------------------------------
+Testing... talk-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+The extra/talk-conntrack-nat patch:
+   Author: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+   Status: Alpha
+   
+   This adds CONFIG_IP_NF_TALK: talk support module for netfilter
+   connection tracking and NAT.  This allows both the callee client -
+   caller server and callee client - caller client connections to work
+   through connection tracking and NAT.
+   
+   Default both talk (UDP port 517) and ntalk/ntalk2 (UDP port 518) are
+   supported. talk/ntalk/ntalk2 supports can selectively be enabled/disabled
+   by the module parameters of the ip_conntrack_talk and ip_nat_talk
+   modules:
+   
+   talk=0|1
+   ntalk=0|1
+   ntalk2=0|1
+   
+   where '0' means 'don't support' while '1' means 'do support'
+   the given protocol flavour.
+   
+-----------------------------------------------------------------
+Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] t
+Testing patch extra/talk-conntrack-nat.patch...
+   Placed new Config.in line
+   Placed new Config.in line
+   Placed new Configure.help entry
+   Placed new Makefile line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+-----------------------------------------------------------------
+=== cut ===
 
-thanks
+My question: What's wrong? I couldn't find any hints about this error ("Could
+not find place to...").
 
-will.
-
-
-
- E2-O: The presence of this footer indicates the message has been scanned for viruses by the WebShield e500.
-
-
+Greetings
+   Alexander
 
