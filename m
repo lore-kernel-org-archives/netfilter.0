@@ -1,14 +1,11 @@
 From: Askar Ali Khan <askarali@gmail.com>
-Subject: Re: [OT] Re: TTL target
-Date: Sat, 24 Jul 2004 14:03:02 +0500
+Subject: ftp access problem
+Date: Sat, 24 Jul 2004 15:05:59 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <a0f69e504072402036ffc9168@mail.gmail.com>
-References: <7EACCDBB65D37443912D80713CC1245D02382A6E@fsnsab20.losangeles.af.mil>
-	 <200407231814.41551.JALaramie@Loudoun-Fairfax.com> <1090650852.2228.8.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <a0f69e504072403057b210342@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1090650852.2228.8.camel@anduril.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-<agreed>
-                100 % marks for Antony :D
-</agreed>
+Hi
 
-On Sat, 24 Jul 2004 08:34:12 +0200, Cedric Blancher
-<blancher@cartel-securite.fr> wrote:
-> Le sam 24/07/2004 =E0 00:14, Jeffrey Laramie a =E9crit :
-> > 4) You give a smartass answer to one the brightest and most helpful (no=
-t to
-> > mention tolerant) members of this list.
->=20
-> <Metoo completely out of topic stuff>
-> Agree.
-> It's been a while since I subscribed this list, and I am still amazed by
-> the time Antony takes to answer questions on this list and the constant
-> and fantastic patience he shows everyday. He definitly earns a medal or
-> some distinction ;)
-> </Metoo completely out of topic stuff>
->=20
-> And for the ongoing thread : one should not feed the troll and not even
-> consider jerks' posts.
->=20
-> --
-> http://www.netexit.com/~sid/
-> PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
-> >> Hi! I'm your friendly neighbourhood signature virus.
-> >> Copy me to your signature file and help me spread!
->=20
->
+On my router/firewall which acting i am getting problem while anyone
+tries to connect to ftp server he connected successfully however when
+he types and command for example "ls" ftp server return error "500
+Illegal PORT range rejected"
+Everything else is working fine.
+
+default policies are drop
+
+iptables --policy INPUT DROP     
+iptables --policy FORWARD DROP 
+iptables --policy OUTPUT DROP 
+.
+.
+.
+iptables -t nat -A POSTROUTING -o ppp0 -s 192.168.0.0/24 -d 0/0  -j
+MASQUERADE#iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
+REDIRECT --to-port 3128
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+For FTP access..
+iptables -A FORWARD -o ppp0 -p tcp -m multiport --dport 20,21 -m state
+--state NEW -j ACCEPT
+
+I understand that FTP server will also in return open a port on my
+side and this is what causing problem. However I don't know which
+chain and what rule to make for this to solve this problem. :)
+
+I any quick help in this regard will be greatly appreciated :D
+
+Regards
+Askar
 
