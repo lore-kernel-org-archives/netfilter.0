@@ -1,14 +1,11 @@
-From: Peteris Krumins <newsgroups@lf.lv>
-Subject: Re: IP spoofing
-Date: Fri, 11 Apr 2003 00:10:04 +0300
+From: waltdnes@waltdnes.org
+Subject: T-Pot (TCP HoneyPot) idea
+Date: Thu, 10 Apr 2003 18:07:41 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <144621018116.20030411001004@lf.lv>
-References: <20030410202645.93C433DF6@xmxpita.excite.com>
-Reply-To: Peteris Krumins <newsgroups@lf.lv>
+Message-ID: <20030410220741.GA32442@m1800>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030410202645.93C433DF6@xmxpita.excite.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,28 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Farshad <farshadas@excite.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter list <netfilter@lists.netfilter.org>
 
-Thursday, April 10, 2003, 11:26:45 PM, you wrote:
+  I'm sure every here has seens lots of SYN-packets in their logs,
+trying to connect to various ports they shouldn't be talking to.  I
+don't run any public servers, and I use passive ftp, so I simply block
+all connection attempts.  The general procedure is to drop the packet,
+and ignore it.  What would be the effect of sending back a SYN-ACK
+packet (and anything else necessary?) to fake the setting up of a
+connection... and then dropping the packet and ignoring it ?
 
-F> Just a naive question:
-F> using netfilter, is it possible to grab a packet and change
-F> its IP source address and then reinject it as if it has been
-F> sent from another source?
+  Would an infected machine scanning the net eventually run into
+resource limits and DOS itself ?  I'm sure that professional crackers
+can work around this, but if we can make things a bit more painful for
+skiddies and automatic worms, then let's do it.
 
-Yes it is possible.
-You can use ip_queue - queue the packets to userspace, change whatever
-you want, recalculate checksum yourself and reinject it back.
+  Can such trickery be pulled off with a current bog-standard iptables,
+or does someone need to write a new "target"?
 
-Tho, my tests indicate that if the link is too loaded and your code is
-not fast enough (sometimes even with nop) the netlink socket overflows
-causing packet drops.
-
-I tried tuning the netlink socket increasing the buffer size, but
-after some time it overflowed anyway.
-
-
-P.Krumins
-
+-- 
+Walter Dnes <waltdnes@waltdnes.org>
+An infinite number of monkeys pounding away on keyboards will
+eventually produce a report showing that Windows is more secure,
+and has a lower TCO, than linux.
 
