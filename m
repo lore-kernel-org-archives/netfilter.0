@@ -1,12 +1,13 @@
-From: "..." <betolourenco@ig.com.br>
-Subject: Re: Rule matchup in iptables
-Date: Thu, 6 Mar 2003 18:08:30 -0300
+From: Manuel Samper <manuel@samper.dyndns.org>
+Subject: Re: ICMP: What should be blocked?
+Date: Thu, 6 Mar 2003 22:12:19 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <022101c2e424$8bcf2800$32050a0a@rlourenco>
-References: <20030306124758.GB23703@talika.eii.us.es>
+Message-ID: <20030306211219.GB28937@quark.lan>
+References: <3E65A2C5.3030007@mega-bucks.co.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <3E65A2C5.3030007@mega-bucks.co.jp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,53 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-try:
+Jean-Christian Imbeault, on Wednesday, Mar  5 2003 at 08:09, wrote:
+> I been googling the web trying to find what rules I should set up for 
+> ICMP but I've seen some people say one thing while other say something 
+> completely different.
+> 
+> One question I have not been able to find an answer to though, should I 
+> block ICMP messages of type 11 (TTL exceeded)?
+> 
+> Also if anyone knows of a good resource that explains what ICMP messages 
+> I should block (why and how :) could they let me know? I understand that 
+> it of course depends on my level of paranoia and how friendly I want to 
+> be to the rest of the net, but I get the feeling from my readings that 
+> the are some ICMP messages that just should not be let through a 
+> firewall ....
 
-iptables -L -nv
+Here are a good start point:
+http://www.sns.ias.edu/~jns/security/iptables/iptables_conntrack.html#ICMP
+http://www.sns.ias.edu/~jns/security/iptables/rules.html
 
-and with the return you can view your consume (ammount of packets) and set
-the rules in order to optimize the hits.
+Although it's somewhat paranoid with icmp (e.g. the icmp_echo_ignore_all),
+you can tune it to your needs.
 
+(note also that the REJECT rule of auth port found there needs an output one
+ with an OUTPUT DROP default policy, something like:
+ iptables -A OUTPUT -o $IFACE -p tcp -m state --st REL --sp ident -j ACCEPT)
 
-...
------ Original Message -----
-From: "Javier Miguel Rodr=EDguez" <javier@talika.eii.us.es>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, March 06, 2003 9:47 AM
-Subject: Rule matchup in iptables
-
-
->
-> Hello
->
-> I have a iptables based firewall, with 5 gigabit ethernet
-> adapters and almost 8000 rules (ouch!). This is a "test bed", (still) not
-a
-> production enviroment
->
-> I can see delays in traffic when crosses the firewall
-> (miliseconds). I want to optimize the firewall rules (we use a LOT of
-> VoIP) , so this is my question: Is there any way to know when a packet
-matches a rule?
-> -j LOG is not feasible (thousands of packets per second). I want something
-like this:
->
-> Last two hours:
->
-> Rule 1: 15000 hits, 150 megabytes
-> Rule 2: 3500 hits, 34 megabytes
-> Rule 3: 9675 hits, 2 megabytes
-> ad infinitum...
->
-> Other question? How can I test iptables rules? In ipchains I
-> could try them, but with iptables do I have to generate fake traffic?
->
-> Thank you for your support.
->
->
->
-
+	Manuel
 
