@@ -1,10 +1,10 @@
-From: darcy w.christ <darcy@1000camels.com>
-Subject: strange behaviour with DNAT
-Date: Fri, 24 May 2002 13:22:16 -0400
+From: Alexander Atanasov <alex@ssi.bg>
+Subject: [PATCH] ipchains bugs in 2.2/2.4/2.5 related to netlink calls
+Date: Fri, 24 May 2002 20:43:41 +0300 (EEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <CB2D55EE-6F3A-11D6-A1A0-000502212A00@1000camels.com>
-Mime-Version: 1.0 (Apple Message framework v481)
-Content-Transfer-Encoding: 7bit
+Message-ID: <aeakoo$nph$2@main.gmane.org>
+Mime-Version: 1.0
+Content-Type: MULTIPART/MIXED; BOUNDARY="1607778983-1170993050-1022262221=:208"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,49 +15,78 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.samba.org
+To: rusty@rustcorp.com.au, kuznet@ms2.inr.ac.ru
+Cc: netfilter@lists.samba.org, netdev@oss.sgi.com
 
-hi,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-   i'm still having trouble trying to dnat for udp.  Below is a tcpdump 
-while trying to connect.  i wanted to present this to the list and see 
-if anyone knows why my server machine machine would be trying to 
-communicate directly with the masq'd machine.  To me, that is a problem 
-since 192.168.1.3 is internal to another network and there is no way 
-that H86.C247.tor.velocet.net  can communicate directly with 192.168.1.3
+--1607778983-1170993050-1022262221=:208
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-H86.C247.tor.velocet.net = server
-HSE-Ottawa-ppp158027.sympatico.ca = client gateway (where DNAT rule is)
-192.168.1.3 = internal masq'd ip
+	Hi there!
 
-[root@one root]# tcpdump|grep 3283
-tcpdump: listening on eth0
-13:08:06.727269 H86.C247.tor.velocet.net.3283 > HSE-Ottawa-
-ppp158027.sympatico.ca.3283:  udp 38
-13:08:06.769878 HSE-Ottawa-ppp158027.sympatico.ca.3283 > 
-H86.C247.tor.velocet.net.3283:  udp 8 (DF)
-13:08:06.774276 H86.C247.tor.velocet.net.3283 > HSE-Ottawa-
-ppp158027.sympatico.ca.3283:  udp 6
-13:08:06.816271 HSE-Ottawa-ppp158027.sympatico.ca.3283 > 
-H86.C247.tor.velocet.net.3283:  udp 12 (DF)
-13:08:06.825569 H86.C247.tor.velocet.net.3283 > HSE-Ottawa-
-ppp158027.sympatico.ca.3283:  udp 72
-13:08:06.874428 HSE-Ottawa-ppp158027.sympatico.ca.3283 > 
-H86.C247.tor.velocet.net.3283:  udp 62 (DF)
-13:08:06.891537 H86.C247.tor.velocet.net.3283 > 192.168.1.3.3283:  udp 5
-13:08:08.499730 H86.C247.tor.velocet.net.3283 > 192.168.1.3.3283:  udp 5
-13:08:11.940161 H86.C247.tor.velocet.net.3283 > 192.168.1.3.3283:  udp 5
-13:08:17.115976 H86.C247.tor.velocet.net.3283 > 192.168.1.3.3283:  udp 5
+oom-loop fixes error handling after a netlink failure - it does not do a
+cleanup and it makes every next call to ip_fw_check to detect a
+loop and drop the packet.
+
+nlma fixes a call to netlink_broadcast with GFP_KERNEL ( passed to
+skb_clone ) while we are in_interrupt() ( catched by a BUG() in
+slab.c:1109 ).
 
 
-my rules for the DNAT are:
+2.4 patches apply to 2.5 too , tested on 2.5.15.
 
-/sbin/iptables -I PREROUTING -t nat -p udp --dport 3283 -i ppp0 -j DNAT 
---to 192.168.1.3
-/sbin/iptables -I FORWARD -p udp -d 192.168.1.3 --dport 3283 -j ACCEPT
+-- 
+Best Regards,
+Alexander Atanasov
 
+--1607778983-1170993050-1022262221=:208
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="ipchains_core.c-oom-loop-2.4.18.diff"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.21.0205242043410.208@mars.z.ssi.bg>
+Content-Description: 
+Content-Disposition: attachment; filename="ipchains_core.c-oom-loop-2.4.18.diff"
 
-any thoughts on the problem.
+LS0tIG5ldC9pcHY0L25ldGZpbHRlci9pcGNoYWluc19jb3JlLmMub3JpZwlG
+cmkgTWF5IDI0IDE5OjI3OjAxIDIwMDINCisrKyBuZXQvaXB2NC9uZXRmaWx0
+ZXIvaXBjaGFpbnNfY29yZS5jCUZyaSBNYXkgMjQgMTk6MzE6MjQgMjAwMg0K
+QEAgLTcyMyw2ICs3MjMsNyBAQA0KIAkJCQkJCSAgICAgIHNyY19wb3J0LCBk
+c3RfcG9ydCwNCiAJCQkJCQkgICAgICBjb3VudCwgdGNwc3luKSkgew0KIAkJ
+CQkJcmV0ID0gRldfQkxPQ0s7DQorCQkJCQljbGVhbnVwKGNoYWluLCAwLCBz
+bG90KTsNCiAJCQkJCWdvdG8gb3V0Ow0KIAkJCQl9DQogCQkJCWJyZWFrOw0K
 
+--1607778983-1170993050-1022262221=:208
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="ipchains_core.c-nlma-2.4.18.diff"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.21.0205242043411.208@mars.z.ssi.bg>
+Content-Description: 
+Content-Disposition: attachment; filename="ipchains_core.c-nlma-2.4.18.diff"
+
+LS0tIG5ldC9pcHY0L25ldGZpbHRlci9pcGNoYWluc19jb3JlLmMub3JpZwlG
+cmkgTWF5IDI0IDE5OjI3OjAxIDIwMDINCisrKyBuZXQvaXB2NC9uZXRmaWx0
+ZXIvaXBjaGFpbnNfY29yZS5jCUZyaSBNYXkgMjQgMTk6Mjc6MzQgMjAwMg0K
+QEAgLTU0OSw3ICs1NDksNyBAQA0KIAkJCXN0cmNweShvdXRza2ItPmRhdGEr
+c2l6ZW9mKF9fdTMyKSoyLCByaWYpOw0KIAkJCW1lbWNweShvdXRza2ItPmRh
+dGErc2l6ZW9mKF9fdTMyKSoyK0lGTkFNU0laLCBpcCwNCiAJCQkgICAgICAg
+bGVuLShzaXplb2YoX191MzIpKjIrSUZOQU1TSVopKTsNCi0JCQluZXRsaW5r
+X2Jyb2FkY2FzdChpcGZ3c2ssIG91dHNrYiwgMCwgfjAsIEdGUF9LRVJORUwp
+Ow0KKwkJCW5ldGxpbmtfYnJvYWRjYXN0KGlwZndzaywgb3V0c2tiLCAwLCB+
+MCwgR0ZQX0FUT01JQyk7DQogCQl9DQogCQllbHNlIHsNCiAjZW5kaWYNCg==
+--1607778983-1170993050-1022262221=:208
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="ip_fw.c-oom-loop-2.2.20.diff"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.21.0205242043412.208@mars.z.ssi.bg>
+Content-Description: 
+Content-Disposition: attachment; filename="ip_fw.c-oom-loop-2.2.20.diff"
+
+LS0tIG5ldC9pcHY0L2lwX2Z3LmMub3JpZwlGcmkgTWF5IDI0IDE5OjMzOjUy
+IDIwMDINCisrKyBuZXQvaXB2NC9pcF9mdy5jCUZyaSBNYXkgMjQgMTk6MzQ6
+MTggMjAwMg0KQEAgLTc0Nyw2ICs3NDcsNyBAQA0KIAkJCQkJCSAgICAgIHNy
+Y19wb3J0LCBkc3RfcG9ydCwNCiAJCQkJCQkgICAgICBjb3VudCwgdGNwc3lu
+KSkgew0KIAkJCQkJcmV0ID0gRldfQkxPQ0s7DQorCQkJCQljbGVhbnVwKGNo
+YWluLCAwLCBzbG90KTsNCiAJCQkJCWdvdG8gb3V0Ow0KIAkJCQl9DQogCQkJ
+CWJyZWFrOw0K
+--1607778983-1170993050-1022262221=:208--
 
