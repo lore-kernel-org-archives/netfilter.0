@@ -1,12 +1,10 @@
-From: "gustav gundacker" <gg0815@gmx.net>
-Subject: Re: SMTP Routing Based On Recipient
-Date: Tue, 23 Dec 2003 22:57:18 +0100 (MET)
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: iproute2 nat and bad conntrack entries
+Date: Tue, 23 Dec 2003 18:40:52 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <30807.1072216638@www24.gmx.net>
-References: <1072121282.10935.12.camel@localhost.localdomain>
+Message-ID: <1072222851.2147.30.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,37 +15,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: aellis@saberlogic.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-a solution is smtpd/smtpfwdd from juniper see
-http://www.obtuse.com/smtpd.html
+	I'm noticing bizarre behavior when using fast NAT with iproute2 and
+connection tracking in netfilter.  Although I see the packets traversing
+the chains with the translated address, the entries in the conntrack
+table use the untranslated address and thus do not recognize the reply
+packets.  Has anyone else seen this? What is the fix? Have I
+mis-configured something? 
 
-gunnar
+Here are the details:
 
-> I am running a MS Exchange 5.5 server and am getting hit with the NDR
-> (non-delivery report) Reverse Spam Attack as described here:
-> =20
-> http://www.tek-tips.com/gviewthread.cfm/lev2/3/lev3/15/pid/10/qid/725829
->=20
-> As the thread describes, there is no way to just turn off NDRs in
-> Exchange 5.5 - Microsoft is recommending third party utilities.  What I
-> am wondering is this - would it be possible to redirect SMTP to my Linux
-> server, use iptables to check that the recipient matches a valid user
-> >from a list I'd supply, and, if so, route the message to the Exchange
-> server?  And, if no valid recipient is found, the message is simply
-> dropped.  Is this even a logical way to handle this situation?  Should I
-> be looking at something like snort instead?  I'm all ears!
->=20
-> Thanks,
-> --=20
-> Adam Ellis <aellis@saberlogic.com>
-> SaberLogic
->=20
+	The ISCS project (http://iscs.sourceforge.net) is developing a
+management console for iptables + FreeS/WAN + iproute2 + DHCP, etc - an
+enterprise class secure communications system to rival the Checkpoints
+and Ciscos of the world.  We are working on the NAT modules right now
+and would like to build in a way to handle conflicting address space
+without having to use a separate NAT device.  We thought we had it done
+until we discovered the above mentioned problem.
 
---=20
-+++ GMX - die erste Adresse f=FCr Mail, Message, More +++
-Neu: Preissenkung f=FCr MMS und FreeMMS! http://www.gmx.net
+	We must alter the source address before the routing decision is made
+since, if it is destined for the VPN, the routing decision will send it
+to be placed in an IPSec packet.  If we alter the address after it has
+been authenticated, it will fail authentication on the receiving end. 
+Otherwise we would gladly us the netfilter SNAT and DNAT targets to
+enable connection tracking of the NATted sessions.
 
+	Thus we turned to iproute2 which appears to change both source and
+destination addresses before a routing decision is made.  It all seemed
+to work wonderfully.  We saw the address changed on the local gateway
+and handed off the the IPSec stack.  We saw the packets arrive on the
+remote network without being rejected for failed authentication and the
+replies coming back.  The replies made it back to the local gateway, we
+successfully decrypted but were lost just before being put back onto the
+wire to return to the originating station.
+
+	We spent hours tracking the packets through every step of the journey. 
+Here's what we found:
+
+The "DNAT" rule is properly in the local route table:
+ip route add nat 192.168.140.0/24 via 192.168.111.0
+
+The "SNAT" rule appears properly in place:
+ip rule add from 192.168.111.0/24 nat 192.168.140.0
+
+Through a combination of logging and dropping we saw the outbound
+packets (the first packet coming from the originating computer at
+192.168.111.8) passing through the mangle and nat tables.  It finally
+came to a rule that says:
+iptables -A ACCESS_GROUPS -s 192.168.140.0/24 -j Nex/HD
+Nex/HD has a rule which says:
+iptables -A Nex/HD -j NexDat/NexHDDat
+and NexDat/NexHDDat has a rule which says:
+iptables -A NexDat/NexHDDat -d 10.1.1.0/24 -p 1 --icmp-type 8 -m state
+--state NEW -j ACCEPT
+
+As soon as it is accepted, we see the following in
+/proc/net/ip_conntrack:
+icmp     1 27 src=192.168.111.8 dst=10.1.1.1 type=8 code=0 id=38686
+[UNREPLIED] src=10.1.1.1 dst=192.168.111.8 type=0 code=0 id=38686 use=1
+
+What shocks us is that the LOGs clearly show the source address of the
+packet as 192.168.140.8 when it hits this rule and the entry is not made
+until it hits this rule (we suspected that it must have been made before
+the iproute changed the address but it does not appear so).  How can
+this possibly be????!!!!! How do we fix it?  Thanks all - John
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
 
 
