@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Klemen Kecman" <klemen@sting.si>
 Subject: Re: Logging with INPUT & FORWARD set to DROP
-Date: Tue, 9 Mar 2004 10:59:54 +0000
+Date: Tue, 9 Mar 2004 12:08:51 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403091059.54342.Antony@Soft-Solutions.co.uk>
-References: <000f01c405c4$06559f20$6a02a8c0@klemen>
+Message-ID: <002b01c405c6$e81d6300$6a02a8c0@klemen>
+References: <000f01c405c4$06559f20$6a02a8c0@klemen> <200403091059.54342.Antony@Soft-Solutions.co.uk>
+Reply-To: "Klemen Kecman" <klemen@sting.si>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000f01c405c4$06559f20$6a02a8c0@klemen>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,20 +20,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 09 March 2004 10:48 am, Klemen Kecman wrote:
+Thanks! ;)
 
-> Is there a way to log packets that get dropped due to default policy set to
-> drop.
+----- Original Message -----
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, March 09, 2004 11:59 AM
+Subject: Re: Logging with INPUT & FORWARD set to DROP
 
-Sure.   Place a LOG rule at the end of the chain in question.
 
-Antony.
-
--- 
-If the human brain were so simple that we could understand it,
-we'd be so simple that we couldn't.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> On Tuesday 09 March 2004 10:48 am, Klemen Kecman wrote:
+>
+> > Is there a way to log packets that get dropped due to default policy set
+to
+> > drop.
+>
+> Sure.   Place a LOG rule at the end of the chain in question.
+>
+> Antony.
+>
+> --
+> If the human brain were so simple that we could understand it,
+> we'd be so simple that we couldn't.
+>
+>                                                      Please reply to the
+list;
+>                                                            please don't CC
+me.
+>
+>
 
 
