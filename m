@@ -1,14 +1,14 @@
 From: Fabrice MARIE <fabrice@netfilter.org>
-Subject: Re: can't patch with patch-o-matic
-Date: Fri, 21 Feb 2003 16:38:42 +0800
+Subject: Re: patch-o-matic and userpace
+Date: Fri, 21 Feb 2003 16:58:41 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302211638.43076.fabrice@netfilter.org>
-References: <E131E9F1848D0148813EAF06A846608FD7783B@w2ks-e2k.iconos.be> <1045583134.18515.159.camel@tux.rsn.bth.se> <20030218210113.21d55422.arnt@c2i.net>
+Message-ID: <200302211658.41402.fabrice@netfilter.org>
+References: <5.2.0.9.2.20030220121447.01c5bbb0@172.26.0.8>
 Reply-To: fabrice@netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030218210113.21d55422.arnt@c2i.net>
+In-Reply-To: <5.2.0.9.2.20030220121447.01c5bbb0@172.26.0.8>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,48 +20,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+To: Luis Miguel Cruz Miranda <luismi@b2bi.es>, netfilter@lists.netfilter.org
 
+On Thursday 20 February 2003 19:18, Luis Miguel Cruz Miranda wrote:
+> Hi all again,
+> I am trying to use the patch called
+> 'userspace/ipt_REJECT-fake-source.patch' As I read, if I use that patch I
+> need to recompile iptables user programs.
+> The problems is that I can't use that patch because I don't know have any
+> idea how to patch iptables source code.
+> I have this tree:
+> |-- iptables-1.2.7a
+> |   |-- extensions
+> |   |-- include
+> |   |   |-- libippool
+> |   |   |-- libipq
+> |   |   |-- libiptc
+> |   |   |-- libipulog
+> |   |   `-- linux
+> |   |       |-- netfilter_ipv4
+> |   |       `-- netfilter_ipv6
+> |   |-- ippool
+> |   |-- libipq
+> |   |-- libiptc
+> |   `-- libipulog
+> |-- patch-o-matic -> patch-o-matic-20030218
+> |-- patch-o-matic-20030218
+> |   |-- base
+> |   |-- broken
+> |   |-- extra
+> |   |-- not-accepted
+> |   |-- obsolete
+> |   |-- oldnat
+> |   |-- optimizations
+> |   |-- pending
+> |   |-- submitted
+> |   `-- userspace
+> `-- userspace -> iptables-1.2.7a
+> Is it correct to patch iptables-1.2.7a?
 
-Hello,
+Should be correct. Then you
+# cd patch-o-matic
+# ./runme userspace/ipt_REJECT-fake-source.patch
+if the patch tells you it applied correctly then
+you need to recompile your kernel then
+# cd ../userspace
+# make all install
 
-On Wednesday 19 February 2003 04:01, Arnt Karlsen wrote:
-> > [...]
-> ..we disagree.  Now, note I said "my" etc.  This attitude has the
-> wee problem it makes patch testing a little harder for the newbies,
-> because the newbies never learns how they can report back new
-> failures, which the attitude guys hasn't been been smart enough to
-> prevent.  This again has ramifications on development.  Your call.
-
-Don't get us wrong, but I thought we wrote already _a lot_ of documentation
-that help people go through the installation of patches from patch-o-matic.
-
-For instance, you have a README files distributed with patch-o-matic,
-you have the excelent iptables tutorial written by Oskar Andreasson and contributors,
-you have the netfilter-extensions-HOWTO on netfilter web site in the documentation
-part, there are probably other documents, and of course, you have the source code ! :)
-
-We don't mean to discourage newbies at all. hey, everybody started a newbie. I just
-wish sometimes they would try harder before complaining. As Martin explained, patch-o-matic
-makes it as easy as it can get to apply patches. We can hardly do better.
-Finally (but please don't be discouraged nor offensed, that the way to learn), tcp-window-tracking
-is not really for newbies as half of the patches in extra/,
-you most probably don't need that if you just toy around. Instead, I recommend you to
-work with patches in base/ as they are easier to deal with.
-
-> > [...]
-> > We live in a do it yourself world, you can't rely on other people
-> > building the stuff you want. If you want to see it built you will
-> > probably have to build it yourself.
-> ..agreed.  Meanwhile, the Patch-o-matic readme might be made more
-> useful for newbies after including a pointer to these wee '2>&1 >'
-> tricks in, say, the abs-guide, unless it hurts someone attitude
-> toe or something.  Newbies who use patch-o-matic are smart enough
-> to read and be made useful testing stuff for development.
-
-As I said earlier, I believe there's plenty of docs on p-o-m out there.
-But of course, if any of them if not complete enough, patches to the
-documentation are welcome :)
+reboot with your clean kernel. If the patch doesn't apply for some reason,
+let me know.
 
 Have a nice day,
 
