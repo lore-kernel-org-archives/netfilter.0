@@ -1,13 +1,13 @@
-From: "Luis Fernando C. Talora" <talora-listas@talora.com.br>
-Subject: Citrix Metaframe over iptables-based firewall
-Date: Wed, 15 Jan 2003 15:25:29 -0200
+From: MAB <mabaeyens@eresmas.com>
+Subject: Re: ssh
+Date: Wed, 15 Jan 2003 18:44:09 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030115172529.9627.qmail@hm36.locaweb.com.br>
+Message-ID: <200301151844.10222.mabaeyens@eresmas.com>
+References: <20ED00AA0BC135449469D6EF0AE79C971046@ozlan.fcdomain.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-References: 
-In-Reply-To: 
+In-Reply-To: <20ED00AA0BC135449469D6EF0AE79C971046@ozlan.fcdomain.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: "Simpson, Doug" <dsimpson@friedmancorp.com>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Fellows,
+El Mar 14 Ene 2003 21:28, Simpson, Doug escribi=F3:
+> whoops - forgot this is a dual homed computer and I am opening the eth0=
+ to
+> the outside world for ssh.
+> I did find this -
+> iptables -A INPUT -p tcp --syn --destination-port 22 -j ACCEPT
 
-I have two questions about Citrix Metaframe over the Internet:
+With this rule you mean you accept every incoming packet from the interne=
+t=20
+through the por 22, and specially packets with the SYN,RST,ACK bit sets t=
+o 1=20
+(you accept people should establish a connection to the 22 port)
 
-1. Is it safe to connect to a Citrix Metaframe server over the Internet? (P=
-lease excuse-me if it is a little off-topic...)
+> iptables -A INPUT -p tcp --syn -j DROP
 
-2. On some tests, I coudn=B4t connect more than one client behind the same =
-NAT firewall (iptables-based), at the=20
-same time. Would I need some kind of ICA Connection Tracking or something l=
-ike that to make it work? Does it=20
-exist?
+And, out of that, every incoming TCP packet, DROPs
 
-3. Did someone make something like that before and have any advices or tips=
-?=20
+-Miguel Angel Baeyens
 
-Any comments are welcome, please.
-
-Thank you all so much!
-
-Regards,
-
-Lu=EDs Fernando C. Talora
-
+KeyID: 0x6FB7A511 en rediris.es
 
