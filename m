@@ -1,10 +1,11 @@
 From: richard hauswald <staenker@rhcs.de>
-Subject: dhcp server is working but there are no rules allowing it using a
- drop policy
-Date: Tue, 08 Mar 2005 12:40:46 +0100
-Message-ID: <422D8F3E.9000806@rhcs.de>
+Subject: Re: Adding variables to iptables file
+Date: Tue, 08 Mar 2005 13:09:45 +0100
+Message-ID: <422D9609.9020601@rhcs.de>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQrQTl2OGOEWpZSe7NzzKncKAAAAQAAAAc3JzitFkUE6dTyLL0qVAQQEAAAAA@bigpond.net.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQrQTl2OGOEWpZSe7NzzKncKAAAAQAAAAc3JzitFkUE6dTyLL0qVAQQEAAAAA@bigpond.net.au>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,71 +17,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
-my problem is a verry strange one, so i think i did a configuration 
-failure. But i can't find him.
-i made a listung of my iptables rules using the -L parameter and finaly 
-a tcpdump wich should show you, that dhcp is working - well i couldnt 
-post hte windowsxp bubble wich says that i got a wunderfull wlan 
-connection...
+Hello,
 
--------------------------------------
+i do not know what a syntax the iptables restore programm uses. But i 
+know that you should write a shell script containing your iptables 
+system calls.
+Ok, a verry short example:
 
-Antifreeze:~# date;iptables -L;date;iptables -t nat -L;date;iptables -t mangle -L;date;tcpdump -i eth0 udp
-Mon Mar  7 14:50:57 CET 2005
-Chain INPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:64385 state NEW,ESTABLISHED
+(I use this script for disabling my firewall and enabling routing and Nat.)
+---------------------------------------------------------------------
+#! /bin/bash
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
+ext_int="ppp0"
 
-Chain OUTPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     tcp  --  anywhere             anywhere            tcp spt:64385 state ESTABLISHED
-Mon Mar  7 14:50:57 CET 2005
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
+iptables -F
+iptables -t nat -F
+iptables -t mangle -F
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
+iptables -t nat -A POSTROUTING -o $ext_int -j MASQUERADE
+echo 1 > /proc/sys/net/ipv4/ip_forward
+---------------------------------------------------------------------
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-Mon Mar  7 14:50:57 CET 2005
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
+After you started this script, you can do an iptables-save and the you 
+are able to restore your rules.
+But i would prefer starting this script instead of using iptables-save 
+and iptables-restore.
 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
+If you have a dial in account with dynamic ipadresses an a huge 
+firewallscript i would prefer the use of 3 files:
+static.var
+dynamic.var
+rc.firewall
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
+static.var contains static definitions of your network, for example your 
+internal ip adsress, internal interfacename, .....
+dynamic.var contains dynamicly changing informations like external ip, 
+dns servers, external interfacename, ...
+rc.firewall contains the following 2 lines:
+. /path/to/file/static.var
+. /path/to/file/dynamic.var
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+and your firewall rules.
+if you want i can provide an example how to get the dynamic information.
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-Mon Mar  7 14:50:57 CET 2005
-tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
-listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
-14:51:10.965603 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, Request from 00:0f:cb:ad:75:a8, length: 300
-14:51:10.966600 IP Antifreeze.lan.bootps > 192.168.0.19.bootpc: BOOTP/DHCP, Reply, length: 300
-14:51:10.975221 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, Request from 00:0f:cb:ad:75:a8, length: 322
-14:51:10.978049 IP Antifreeze.lan.bootps > 192.168.0.19.bootpc: BOOTP/DHCP, Reply, length: 300
-
-4 packets captured
-4 packets received by filter
-0 packets dropped by kernel
-------------------------------------------------
-
-
-Ok, i would be verry happy if anyone could help me blocking the dhcp server that i can trust iptables again. 
 regards
 richard hauswald
-
-
 
