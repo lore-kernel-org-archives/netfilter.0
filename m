@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I have no idea why this doesn't work...(further details)
-Date: Thu, 22 Apr 2004 21:57:19 +0100
+From: Christian Riechmann <riechmann@fgan.de>
+Subject: Re: Need some clarification or help
+Date: Thu, 22 Apr 2004 23:32:02 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404222157.19162.Antony@Soft-Solutions.co.uk>
-References: <20040422192403.16425.25260.Mailman@vishnu.netfilter.org> <6.0.0.22.0.20040422095244.03eb5ec0@mail.garisonpiatt.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040422213202.GB2328@rie.rie.priv>
+References: <20040420182205.GA2948@rie.rie.priv> <Pine.LNX.4.44.0404220231510.27078-100000@filer.marasystems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <6.0.0.22.0.20040422095244.03eb5ec0@mail.garisonpiatt.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0404220231510.27078-100000@filer.marasystems.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,119 +18,117 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 22 April 2004 9:10 pm, Garison Piatt wrote:
+Henrik,
 
-> At 09:24 PM 4/22/04 +0200, you wrote:
->
-> >(for example, you have some pretty strange destination port
-> >numbers in there, and I can't begin to guess why).
->
-> Because this was cobbled together from scripts that were said to work in
-> other places, and my assumption was that these were common port numbers.
+thanks for your answer and hint. But for me there remain
+two questions (see below):
 
-I'm reminded of the phrase "a little bit of knowledge can be a dangerous 
-thing".  :)
+On 2004-04-22 02:38:36 +0200, Henrik Nordstrom wrote:
+> On Tue, 20 Apr 2004, Christian Riechmann wrote:
+> 
+> > is it possible to read - via ipq_read/ipq_get_packet - a UDP packetr
+> > and after some changes to accept - via ipq_set_verdict with NF_ACCEPT and
+> > shorter length - it as a TCP packet?
+> 
+> Should be possible.
 
-> >I recommend the following:
-> >1. Describe your network setup to us so that we know what clients &
-> > servers you have on what network segments.
->
-> As far as I know: one server, everything on the same machine, no
-> LAN.  Right now, there is only the IP for the server itself, and another
-> for one web site client; in the future she'll have 8-10 sites (with
-> independent IPs) on the server.
+But why exist these surplus bytes beyond the end of the verdicted
+IP/TCP packet, which seem to be the reason for a possible checksum 
+within the kernel and cause the NOT-delivery of the packet to the
+application. I attach a commeted log of the package flow.
 
-1. I assume the server is not the same machine running netfilter?   (ie: you 
-are trying to set up a routing firewall, not create rules on a machine to 
-protect itself?)
+> 
+> > Here is what I wish to do:
+> > For the transmission of IP packets (UDP, ICMP, TCP) between two hosts
+> > I want to send these packets through a UDP tunnel.
+> 
+> This is best accomplished using a virtual tunnel device for the packet
+> transformations. This way the packet flow gets natural to netfilter with
+> no risk of confusing conntrack, and MTU processing etc gets more
+> natural...  If you want to do the transformations in userspace then use a
+> tun device.
 
-2. "One web site client"?   I don't understand.   Surely the server is 
-accessible to the entire Internet (although maybe not...)?
+I do not know whether this proposal is feasable, because I need a 1-to-n
+tunnel and the tunnel should allow broadcast addressing. Perhaps you
+can help me.
 
-> I say "as far as I know" because all of my information come via my client,
-> who is not exactly computer literate, even though she is in the business of
-> designing web sites.  Support calls are $150 a pop, so she wants me to make
-> as few of those (read: zero) as possible.
+Regards 
 
-Support from whom (where)?   All we're asking is basic network configuration 
-stuff - not technical assistance in getting something working.
-
-The information for the questions I asked should be freely provided by whoever 
-is acting as the service provider here - it's in their interests to do so, 
-otherwise the client will (should) move to an ISP who *will* tell her how the 
-network is set up....
-
-I mean, I can show you ISPs who charge less than $150 a year to host a web 
-server, let alone to give you the information about how it's plugged in....
-
-> >2. Explain what traffic you want to allow and what traffic you want to
-> > block (and what you want to log).
->
-> We want to allow TELNET (just from me and her, if possible), all FTP, and
-> web traffic.
-
-Okay, where are you (in network terms, compared to the firewall and server 
-we're talking about), where is she, and where does the web traffic come from?
-
-Telnet is not a recommended protocol - everything is sent in clear text - is 
-there any good reason why you are not using ssh?
-
-> Okay: I'd like some guidance on how to do what I described in (2), given
-> the situation in (1).
-
-Okay, here's my first attempt.   It's based on a few assumptions about 
-information I've mentioned above:
-
-1. I assume this is a routing firewall, not a machine protecting itself.
-2. I assume you and you client have fixed IP addresses which can be used to 
-selectively allow some traffic from you and not elsewhere.
-3. I assume you want to website to be accessible to the entire Internet.
-
-If any of the above are incorrect, please supply more details.
-
-# Drop everything we don't allow
-iptables -F INPUT
-iptables -F OUTPUT
-iptables -F FORWARD
-
-# Allow reply packets through the firewall
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-# Allow access (from anywhere) to the web server, TCP port 80
-iptables -A FORWARD -p tcp --dport 80 -d a.b.c.d -j ACCEPT
-# Allow access (from anywhere) to the web server for FTP
-iptables -A FORWARD -p tcp --dport 21 -d a.b.c.d -j ACCEPT
-# Allow access from e.f.g.h to the web server by Telnet
-iptables -A FORWARD -p tcp --dport 23 -d a.b.c.d -s e.f.g.h -j ACCEPT
-# Allow access from j.k.l.m to the web server by Telnet
-iptables -A FORWARD -p tcp --dport 23 -d a.b.c.d -s j.k.l.m -j ACCEPT
-
-Substitute in the above:
-a.b.c.d should be the IP address of the web server
-e.f.g.h should be your IP address (for Telnet access)
-j.k.l.m should be your client's IP address (for Telnet access)
-
-Note that the above rules will *not* give you remote access to the firewall 
-itself.   You almost certainly do want this, but I await your answer to my 
-question about why you're not using ssh before I deal with accessing the 
-firewall itself (and anyway, it might turn out to be the same machine as the 
-web server yet).
-
-Regards,
-
-Antony.
-
+Christian
 -- 
-"Reports that say that something hasn't happened are always interesting to me, 
-because as we know, there are known knowns; there are things we know we know. 
-We also know there are known unknowns; that is to say we know there are some 
-things we do not know. But there are also unknown unknowns - the ones we 
-don't know we don't know."
+Christian Riechmann    E-Mail: riechmann@fgan.de
+c/o FGAN/FKIE          Tel: (+49) 228/9435 345,378
+Neuenahrer Strasse 20  Fax: (+49) 228/9435 685
+D-53343 Wachtberg, Germany
 
- - Donald Rumsfeld, US Secretary of Defence
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+------ Commented Log file -------------
+
+This is the IPv4/TCP packet captured at the sender:
+
+process_loop: New packet has arrived.  : [21.04 17:21:50]
+process_loop: 4510003c 66d14000 40069cc9 80071b06
+process_loop: 80071bfd 04120017 6439742f 00000000
+process_loop: a0c216d0 09300000 020405b4 0402080a
+process_loop: 00a612fe 00000000 01030300
+
+This packet will be encapsulated in userspace and transmitted
+via IPv6/UDP-socket as
+
+process_loop: New packet has arrived.  : [21.04 17:21:50]
+process_loop: 45000065 00024000 40110373 80071b06
+process_loop: 80071bff 040d008c 0051f99f 03010000
+process_loop: 00000001 0101003c 4510003c 66d14000
+process_loop: 40069cc9 80071b06 80071bfd 04120017
+process_loop: 6439742f 00000000 a0c216d0 09300000
+process_loop: 020405b4 0402080a 00a612fe 00000000
+process_loop: 01030300 fd
+
+On the receiver exactly this packet is captured and
+given to the userspace program:
+
+process_loop: New packet has arrived.  : [21.04 17:21:50]
+process_loop: 45000065 00024000 40110373 80071b06
+process_loop: 80071bff 040d008c 0051f99f 03010000
+process_loop: 00000001 0101003c 4510003c 66d14000
+process_loop: 40069cc9 80071b06 80071bfd 04120017
+process_loop: 6439742f 00000000 a0c216d0 09300000
+process_loop: 020405b4 0402080a 00a612fe 00000000
+process_loop: 01030300 fd
+
+The userspace program decapsulates the included packet
+from the received one to:
+
+process_WM_DATA: length_of_encap_packet = 60
+process_loop: MODIFIED Packet: ACCEPTED
+process_loop: 4510003c 66d14000 40069cc9 80071b06
+process_loop: 80071bfd 04120017 6439742f 00000000
+process_loop: a0c216d0 09300000 020405b4 0402080a
+process_loop: 00a612fe 00000000 01030300
+
+This packet is injected to the kernel.
+
+A "tcpdump -x -n -s0 ip" running in the receiver host
+shows the modified packet as:
+
+17:21:50.855089 128.7.27.6.1042 > 128.7.27.253.23: SWE 1681486895:1681486895(0) win 5840 <mss 1460,sackOK,timestamp 10883838 0,nop,wscale 0> (DF) [tos 0x10]
+                         4510 003c 66d1 4000 4006 9cc9 8007 1b06 \
+                         8007 1bfd 0412 0017 6439 742f 0000 0000  |
+                         a0c2 16d0 0930 0000 0204 05b4 0402 080a  > Original IPv6/TCP packet
+                         00a6 12fe 0000 0000 0103 0300           /
+                                                       0412 0017 \
+                         6439 742f 0000 0000 a0c2 16d0 0930 0000  >  Surplus bytes (Don't know whether they
+                         0204 05b4 0402 080a 00a6 12fe 0000 0000  >  can result in a checksum error within TCP)
+                         0103 0300 fd                            /
+
+It should be mentioned that, if I use "tcpdump -x -n -s0 ip \\tcp" instead,
+tcpdump does not show the former packet. This may lead to the assumption
+that this oversized packet may be the reason for the error (because of
+checksum error).
+
 
 
