@@ -1,12 +1,13 @@
-From: "Jet" <yenjet.chan@eglobal.com.my>
-Subject: Re: Packets passing trough...
-Date: Thu, 14 Nov 2002 14:22:16 +0800
+From: "Clint M. Sand" <schwack@neotrance.dyndns.org>
+Subject: Re: weird login problem after implementing IPTABLES
+Date: Thu, 14 Nov 2002 01:36:03 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003101c28ba6$2ec9bc00$0bc8c80a@dolphin>
-References: <3DD2A913.9030100@sezampro.yu>
+Message-ID: <20021114073603.GA3023@neotrance.dyndns.org>
+References: <20021111191512.GA13673@neotrance.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20021111191512.GA13673@neotrance.dyndns.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +18,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: strenuus <strenuus@sezampro.yu>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi strenuus,
+Thanks for the thoughts. I will try your sugestions as soon as i can
+schedule some downtime for this box and post the results (and iptables
+-nL as requestion).
 
-It is possible. what if the packets are:
-Packet=1     interface=eth0                src=194.106.188.1
-dst=192.168.0.1
-Packet=2    interface=eth0                src=194.106.188.1
-dst=192.168.1.1
+Thanks.
 
-Packet 1 go into rule 6 and packet 2 go into rule 7.
+Clint
 
-By the way, have you done this?
 
-for interface in /proc/sys/net/ipv4/conf/*/rp_filter; do
-  echo 1 > ${interface}
-done
-
-Maybe you want to try this first first and reset the counter. And see if it
-still happening.
-
-Good luck.
-
-.//Jet
-
-> Output from iptables -L -nvx
->
-> ---
-> Chain FORWARD (policy ACCEPT 161696 packets, 47270419 bytes)
->      pkts      bytes target     prot opt in     out     source
-destination
->     61547  6434012             all  --  *       eth1    192.168.0.0/24
-!192.168.1.0/24
->     59305 36440468             all  --  eth1    *       !192.168.1.0/24
-192.168.0.0/24
->     20358  1239485             all  --  *       eth1    192.168.1.0/24
-!192.168.0.0/24
->     20322  3148918             all  --  eth1    *      !192.168.0.0/24
-192.168.1.0/24
->      3241   561174             all  --  *       *       194.106.188.0/28
-192.168.0.0/24
->        42     5260             all  --  *       *       194.106.188.0/28
-192.168.1.0/24
-> ---
->
-> How is this possible, wouldn't all packets match first 4 rules and never
-get to 6 and 7?
-> Interface eth1 goes to internet (snat is on) and eth0 and eth2 are LAN
-(192.168.0.0 and 192.168.1.0)
->
->
+On Mon, Nov 11, 2002 at 01:15:12PM -0600, Clint M. Sand wrote:
+> 
+> Greetings. 
+> 
+> I have a Redhat 7.1 box that acts as a main router/gateway for several
+> segments on my network. It is currently filtering on each interface
+> using ipchains. I would like to migrate these services to iptables to
+> take advantage of the ftp connection tracking module and other stateful
+> matching features. 
+> 
+> I migrated my ruleset, hacked up the redhat init script to load my
+> script on boot and tried it out on the box. The script loads fine with
+> no errors, and all the clients on each segment work as expected, even
+> active ftp. 
+> 
+> The problem is, once the script is loaded, even though network-wise
+> everything is fine, i can no longer login at the console on any tty!
+> (ctrl+alt+f2 for example) I enter my username, and hit enter and it just
+> goes into nevernever land. If i log out of the tty that i was in to
+> activate iptables, i'm also unable to log back in on that one either. I
+> have to kill the power to the box and boot single user and switch back
+> to ipchains to restore the box back to production.
+> 
+> I have a test box with very similar hardware which is also running rh
+> 7.1 and i'm not able to duplicate the problem on it. Both of these boxes
+> use redhats "up2date" and have all the latest security and bug patches
+> applied.
+> 
+> Anyone have any ideas on what might be causing this? I have posted all
+> my rules, my init script, dmesg and iptables version here:
+> 
+> http://neotrance.dyndns.org/~schwack/iptables/
+> 
+> ANY help would be GREATLY appreciated. 
+> 
+> Thanks,
+> 
+> Clint
+> 
 
 
