@@ -1,14 +1,10 @@
-From: Mark Vevers <mark@ifl.net>
-Subject: Where's the website gone?
-Date: Mon, 20 Jan 2003 10:47:38 +0000
+From: Lars Brinkhoff <lars.spam@nocrew.org>
+Subject: Translating between local and global IP address
+Date: 22 Jan 2003 08:17:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301201047.46660.mark@ifl.net>
-Reply-To: mark@ifl.net
+Message-ID: <85fzrlbqmb.fsf@junk.nocrew.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Description: clearsigned data
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +14,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: Text/Plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hello,
 
-I'm getting an http redirect from www.netfilter.org to lists.netfilter.org =
-=2D=20
-where's the website gone?
+My home network is set up something like this:
 
-Mark
-=2D --=20
-Mark Vevers.    mark@ifl.net / mvevers@rm.com
-Principal Internet Engineer, Internet for Learning,
-Research Machines Plc  AS 5503
-Tel: +44 1235 854314,   Fax: +44 1235 854305
-=2D --
-GPG Key: http://pgp.mit.edu:11371/pks/lookup?op=3Dget&search=3D0xB08F3CA3
-=46ingerprint: 85BA 30C4 9EC8 1792 4C8C   C31E 58B5 3D1C B08F 3CA3
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+                    internet
+                       |
+                      eth0
+                  GATEWAY (Linux)
+                      eth1
+                       |
+                 COMPUTER (Windows)
 
-iD8DBQE+K9PQWLU9HLCPPKMRAkM2AJ0Wm+GNPQuN+QnReM7X1x25tUzlsACeLC35
-nmV8oW3ut5dnFs5XCA1RdJI=3D
-=3DbATB
-=2D----END PGP SIGNATURE-----
+COMPUTER has a local IP address ($IN), but I'd like to mangle packets
+going through GATEWAY so COMPUTER appears to have another IP address
+($OUT) on the internet.  It seems I've had some success with this:
 
+  iptables -t nat -A POSTROUTING -o eth0 -s $IN  -j SNAT --to-source $OUT
+  iptables -t nat -A PREROUTING  -i eth0 -d $OUT -j DNAT --to-destination $IN
+
+And to fool GATEWAY into accepting packets for $OUT, I've done this:
+
+  ifconfig eth0:1 $OUT
+
+However, it doesn't seem to work when trying to play a network game on
+COMPUTER.  It times out trying to connect to another machine on the
+internet.  It probably uses UDP packets.
+
+Any idea what I'm doing wrong?
+
+Thanks.
 
