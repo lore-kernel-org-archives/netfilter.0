@@ -1,14 +1,14 @@
-From: Victor Julien <victor@nk.nl>
-Subject: Re: help with setting up iptables for use with snort_inline (QUEUE target)
-Date: Thu, 1 Jul 2004 17:45:19 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: redirecting
+Date: Thu, 1 Jul 2004 16:46:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407011745.19571.victor@nk.nl>
-References: <200407011656.01529.victor@nk.nl> <200407011609.58553.Antony@Soft-Solutions.co.uk>
+Message-ID: <200407011646.14683.Antony@Soft-Solutions.co.uk>
+References: <a0f69e50407010452713ae264@mail.gmail.com> <200407011305.17055.Antony@Soft-Solutions.co.uk> <a0f69e50407010836467d308a@mail.gmail.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407011609.58553.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
+In-Reply-To: <a0f69e50407010836467d308a@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,46 +19,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 01 July 2004 17:09, Antony Stone wrote:
+On Thursday 01 July 2004 4:36 pm, Askar Ali Khan wrote:
 
-<snip>
-> You might find the new "helper" match does what you need?   I'm not certain
-> because I haven't played with it, but it seems like a likely bet...
+> On Thu, 1 Jul 2004 13:05:17 +0100, Antony Stone
+>
+> > I would *really* recommend that you do this sort of thing with Squid
+> > instead of netfilter, espcially since you have selected www.microsoft.com
+> > as the address to be redirected.
+> >
+> > If you put a redirect rule into Squid, it will use www.microsoft.com
+> > instead of an IP address, and you will get the result you want.
+> >
+> > Also, Squid will help when you want to change things after the first / in
+>
+> Thanks Antony for y0ou fast reply, actaully im practing on my own box
+> not on company cache server "squid"
 
-You seem to be right!
+Doesn't matter - install Squid at home too - there's no reason why not.
 
-I added this rule:
-iptables -t mangle -A OUTPUT -m helper --helper "ftp" -j MARK --set-mark 0x1
-
-and ftp now seems to work!
-
-> By the way, why are you doing all this in the OUTPUT chain?
-
-Just for testing. I'm particularly interested in using snort_inline to protect 
-Internet Explorer. So i'm trying to QUEUE http, ftp etc, to snort_inline and 
-try to visit sites with example exploits and see if snort_inline catches 
-it... (i'm not running ie on my linux machine of course ;-)
-
-> I'm not quite sure that I see the purpose of running snort-inline on a
-> single machine.   A router for a network, yes, but why on a standalone
-> system?
-
-I agree, allthough it does work. The recent troubles with IE show that it cant 
-hurt protecting a client against a webserver. And my system is a lot faster 
-(2.2 ghz) than my firewall (200 mhz), so it makes _some_ sense!
-
-Too bad the helper module is not in the stock Debian Stable kernel. It is in 
-the 2.4.26 kernel at www.backports.org however, so i'm happy.
-
-Thanx Antony!
+If you put it on the same machine as netfilter, you can play with transparent 
+proxying mode as well :)
 
 Regards,
-Victor
 
->
-> Regards,
->
-> Antony.
+Antony.
+
+-- 
+Late in 1972 President Richard Nixon announced that the rate of increase of 
+inflation was decreasing.   This was the first time a sitting president used 
+a third derivative to advance his case for re-election.
+
+ - Hugo Rossi, Notices of the American Mathematical Society
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
