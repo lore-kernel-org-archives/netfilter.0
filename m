@@ -1,12 +1,14 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: Allow active and passive FTP connections
-Date: Thu, 17 Jun 2004 09:06:00 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Allow active and passive FTP connections
+Date: Thu, 17 Jun 2004 14:24:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E894FF3@email1.mitretek.org>
+Message-ID: <200406171424.54797.Antony@Soft-Solutions.co.uk>
+References: <2E314DE03538984BA5634F12115B3A4E894FF3@email1.mitretek.org>
+Reply-To: "netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E894FF3@email1.mitretek.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,77 +21,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-root@p500:~# insmod ip_conntrack_ftp
-insmod: can't read 'ip_conntrack_ftp': No such file or directory
-root@p500:~#
+On Thursday 17 June 2004 2:06 pm, Piszcz, Justin Michael wrote:
 
-- Insmod is when you load the module directly, there it would not work
-unless you were in the _same_ directory as the ip_conntrack_ftp and you
-renamed the ip_conntrack_ftp.{ko,o} ip_conntrack_ftp, then it would
-work.
+> root@p500:~# insmod ip_conntrack_ftp
+> insmod: can't read 'ip_conntrack_ftp': No such file or directory
+> root@p500:~#
+>
+> - Insmod is when you load the module directly, there it would not work
+> unless you were in the _same_ directory as the ip_conntrack_ftp and you
+> renamed the ip_conntrack_ftp.{ko,o} ip_conntrack_ftp, then it would
+> work.
 
-Otherwise, I do not see how you come to that conclusion.
+Fair comment about the absolute path, but I'm not sure why you think you need 
+a rename.   From "insmod --help" on my system (insmod version 2.4.6):
 
+root@onyx:~# insmod --help
+Usage:
+insmod [-fhkLmnpqrsSvVxXyY] [-e persist_name] [-o module_name] [-O blob_name] 
+[-P prefix] module [ symbol=value ... ]
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-Sent: Thursday, June 17, 2004 8:23 AM
-To: netfilter
-Subject: Re: Allow active and passive FTP connections
+  module                Name of a loadable kernel module ('.o' can be omitted)
 
-On Thursday 17 June 2004 1:13 pm, Piszcz, Justin Michael wrote:
-
-> I think he meant, modprobe ip_conntrack_ftp and if you are behind nat
-> there is a module for that as well.
-
-insmod should do the job perfectly well.
-
-NAT is very unlikely when the rules are running on the FTP server itself
-
-(they're in the INPUT & OUTPUT chains).
+However, I'm sure the original poster has worked out how to solve the problem 
+by now, so this is probably getting OT...
 
 Regards,
 
 Antony.
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Chris
-Brenton
-> Sent: Thursday, June 17, 2004 8:08 AM
-> To: Sagara Wijetunga
-> Cc: netfilter
-> Subject: Re: Allow active and passive FTP connections
->
-> On Thu, 2004-06-17 at 07:03, Sagara Wijetunga wrote:
-> > I have following issues relating to above rules:
-> > 1. For active FTP requests by remote clients, it drops
-> > the data connection request to the remote client from
-> > the server on the OUTPUT chain.
-> >
-> > 2. For passive FTP requests by remote clients, it
-> > drops the data connection request to the server from
-> > remote clients on the INPUT chain.
->
-> Try:
-> insmod ip_conntrack_ftp
->
-> HTH,
-> C
+-- 
+"When you talk about Linux versus Windows, you're talking about which 
+operating system is the best value for money and fit for purpose. That's a 
+very basic decision customers can make if they have the information available 
+to them. Quite frankly if we lose to Linux because our customers say it's 
+better value for money, tough luck for us."
 
---=20
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing on usenet and in e-mail?
+ - Steve Vamos, MD of Microsoft Australia
 
-                                                     Please reply to the
-list;
-                                                           please don't
-CC me.
-
-
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
