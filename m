@@ -1,15 +1,15 @@
-From: Michael Gale <mgale@utilitran.com>
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Subject: Re: public ip on LAN
-Date: Fri, 2 Jan 2004 09:47:47 -0700
+Date: Fri, 02 Jan 2004 12:01:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040102094747.145b4409.mgale@utilitran.com>
+Message-ID: <1073062865.2993.31.camel@jasiiitosh.nexusmgmt.com>
 References: <6.0.0.22.0.20040102214805.030494d0@orangeinfoways.com>
-	<20040102092201.55da5104.mgale@utilitran.com>
-	<200401021630.07811.Antony@Soft-Solutions.co.uk>
+	 <1073060652.2993.19.camel@jasiiitosh.nexusmgmt.com>
+	 <6.0.0.22.0.20040102223444.0305cdb0@amitpasari.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200401021630.07811.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <6.0.0.22.0.20040102223444.0305cdb0@amitpasari.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,60 +20,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Amit Pasari <info@amitpasari.com>, netfilter@lists.netfilter.org
 
-On Fri, 2 Jan 2004 16:30:07 +0000
-Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-
-> On Friday 02 January 2004 4:22 pm, Michael Gale wrote:
+On Fri, 2004-01-02 at 12:11, Amit Pasari wrote:
+> Thanks John,
+> Let me explain
+> on My LAN i have ip address - 172.16.1.1
+> subnet - 255.255.0.0
+> on My WAN i have ipaddress - 203.122.51.178
+> subnet - 255.255.255.240
 > 
-> > On Fri, 02 Jan 2004 22:00:16 +0530
-> >
-> > Amit Pasari <info@amitpasari.com> wrote:
-> > > Hello,
-> > > I am using Redhat 8.0 with iptables to provide my client internet
-> > > services . Everything is going well .
-> > > i have been giving private ips of 172.16.0.0 series to my clients .
-> > > But now some of my clients need public ips . i do have many public ips
-> > > with me .so can somebody tell how can i give public ips to my clients .
-> > >
-> > > Thanks & Regards
-> > > Amit
-> > > Orangeinfoways.com
-> >
-> > 	I have never understood this configuration ... why would clients on a
-> > internal LAN need public IP addresses ?
+> Now , my clients want to have public / Live ip instead of private ips which 
+> i am giving as  many of my clients uses webserver , and other applications 
+> which people from outside world needs to access .
+> I can redirect  ports for one clients but how about 10 clients wanting the 
+> same .
+> So i need to give them a public ip so that all the traffic can be 
+> redirected their ip .
 > 
-> Stupid protocols which bury OSI layer 3/4 information inside layer 7 
-> datagrams.
-> 
-> Examples: H.323, FTP, PPTP.
-> 
-> Without a NAT helper which understands what to change inside the packets, so 
-> that it matches the headers, you can't use these protocols across NATted 
-> connections.
-> 
-> Antony.
-> 
-> -- 
-> In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
-> the mechanics are German, the lovers are French, the entertainment is 
-> American, and everything is organised by the Swiss.
-> 
-> In Hell, the police are German, the chefs are British, the beer is American, 
-> the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
-> and everything is organised by the Italians.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
-
-	Yes but usually there are special proxies available for these. But I guess if you have not other choice.
-
+<snip>
+Ah, now I think I understand.  You will want to use the SNAT and DNAT
+targets in iptables.  The documentation in Oskar Andreasson's tutorial
+is quite good.  There are probably some good GUI tools available to make
+this easier such as fwbuilder.  As soon as ISCS is done
+(http://iscs.sourceforge.net), we should be able to make this much
+easier.
+Depending on the application, you may be able to get around the need to
+allocate them public addresses altogether by using an appropriate
+application proxy or one of the iptables helpers.  What applications are
+they using that they think they need public ip addresses?
 
 -- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+
 
