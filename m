@@ -1,9 +1,9 @@
-From: "Michiel Lange" <Michiel_Lange@actuera.com>
-Subject: Destination nat for a local (sendmail) process
-Date: Thu, 18 Nov 2004 18:07:28 +0100
-Message-ID: <OF8AE127F7.13302693-ONC1256F50.005BCE0C@actuera.local>
+From: Richard Strand <richard@telabria.com>
+Subject: Owner match doesn't work when statically compiling iptables
+Date: Thu, 18 Nov 2004 17:39:28 +0000
+Message-ID: <419CDE50.9080400@telabria.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,43 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Dear list,
+Hi,
 
-I am having some troubles getting a good redirection working for the 
-following situation:
+If I statically compile iptables when I try to use the -m owner match I 
+get a segmentation fault. There seem to be no problems if I use a 
+dynamically linked version.
 
-[OUTSIDE WORLD]<--->[IN-BETWEEN NETWORK]<--->[OUR FIREWALL/MTA]<--->[REAL 
-MAILSERVER]
- \---->[OTHER FIREWALL / MAILSERVER]
+for example:
+iptables -A OUTPUT -m owner --uid-owner 4 -j ACCEPT
 
-We can send mail to the outside world fine, but not to the "other" 
-mailserver. Some looking showed that connecting to the 'real internet 
-address' of the 'other' host was not possible at all.
-A small fix was to create a DNAT rule which would redirect traffic to that 
-machine to it's 'internal' IP address. It works fine... if this is done 
-from a machine within the network, but not from the local machine.
+Causes this problem. (Oddly iptables -m owner -h works)
 
-It appears that outgoing packets do not go through the firewall but just 
-go out by themselves. 
+Is this a bug, or am I doing something wrong.
 
-Trying to get locally generated packages go through the firewall and make 
-use of the PREROUTING chain is not working yet... 
+Regards,
 
-These are the rules that work for traffic going from our inside NIC to the 
-outside NIC, but not from local processes:
-$iptables -A PREROUTING -t nat --dest out.side.address1 -j DNAT 
---to-destination 10.0.100.1
-$iptables -A PREROUTING -t nat --dest out.side.address2 -j DNAT 
---to-destination 10.0.100.2
+Richard Strand
 
-putting these rules in the POSTROUTING chain results in errormessages.
-I am using Iptables 1.2.7a on kernel 2.4.20
-
-Anyone any suggestions how I can solve this problem?
-
-Greetings,
-Michiel
 
