@@ -1,14 +1,14 @@
-From: David Cannings <lists@edeca.net>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: iptables and pdc microsoft
-Date: Thu, 1 Apr 2004 19:06:05 +0100
+Date: Thu, 1 Apr 2004 19:09:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404011906.05972.lists@edeca.net>
+Message-ID: <200404011909.49402.Antony@Soft-Solutions.co.uk>
 References: <20040401142233.81442.qmail@web14305.mail.yahoo.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20040401142233.81442.qmail@web14305.mail.yahoo.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,18 +21,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 01 April 2004 15:22, Luca Rossi wrote:
+On Thursday 01 April 2004 3:22 pm, Luca Rossi wrote:
+
 > Hi
 > is true that wins is not supported that Iptables?
 
-RFC1001 [1] WINS, which is what Microsoft implement [2], is an application 
-level protocol that uses TCP or UDP, therefore there is no such notion 
-that netfilter does or doesn't "support" it.  It uses ports the same as 
-any other protocol so can be filtered in exactly the same way.
+It is true that the Wins peer discovery protocol operates by network 
+broadcasts and therefore does not traverse routers.
 
-David
+If you know the IP address of a machine you wish to connect to, however, then 
+you can do this across as many routers as you like.
 
-1 - http://www.faqs.org/rfcs/rfc1001.html
-2 - 
-http://www.microsoft.com/windows2000/en/server/help/default.asp?url=/windows2000/en/server/help/sag_WINS_ovr_WhatIs.htm
+The relevance to netfilter is that netfilter is generally used on a routing 
+Linux machine.
+
+Hope this helps,
+
+Antony.
+
+-- 
+"Reports that say that something hasn't happened are always interesting to me, 
+because as we know, there are known knowns; there are things we know we know. 
+We also know there are known unknowns; that is to say we know there are some 
+things we do not know. But there are also unknown unknowns - the ones we 
+don't know we don't know."
+
+ - Donald Rumsfeld, US Secretary of Defence
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
