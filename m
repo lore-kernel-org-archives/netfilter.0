@@ -1,11 +1,12 @@
-From: morger@dolphins.ch (Philipp Morger)
-Subject: rare but high delays
-Date: Fri, 27 Sep 2002 15:33:32 +0200
+From: =?iso-8859-1?Q?Marc-Andr=E9_Boulais?= <alphaweltall@sympatico.ca>
+Subject: IPtables and DDclient
+Date: Wed, 25 Sep 2002 22:31:49 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020927133331.GA13627@atlantis>
+Message-ID: <000801c26504$df5d3f60$0401a8c0@crazymother>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C264E3.56FB78B0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,30 +16,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi Folks
+This is a multi-part message in MIME format.
 
-I'd like to know, if anybody else encounter the same phanomena as I do
+------=_NextPart_000_0005_01C264E3.56FB78B0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I have a bridged firewall (netfilter, 2.4.19) in use and about every
-300th package gets a delay of 8000ms... (usually it's much less... 80ms
-worst 250ms)
+hi, I am currently looking for a way to let "ddclient" ( IP updater =
+program ) pass through iptables. I was first looking for the ports =
+involved with it but I can't seem to find any info on that.=20
 
-so I wonder why... as soon as I clear the iptables, the hotspots are
-gone... 
+If you know how I could build a rule to let it pass through ( cuz right =
+now, it is blocked ) iptables. Please let me know.
 
-So, any tips & tricks, hints or reports of same situations (solutions?)
-are welcome.
+Appreciate it!
 
-Thanks
-Philipp
+MarK
+------=_NextPart_000_0005_01C264E3.56FB78B0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-                       Endure. In enduring, grow strong
-                         -- Dak'kon
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>hi, I am currently looking for a way to =
+let=20
+"ddclient" (&nbsp;IP updater program ) pass through iptables. I was =
+first=20
+looking for the ports involved with it but I can't seem to find any info =
+on=20
+that. </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>If you know how I could build a rule to =
+let it pass=20
+through ( cuz right now, it is blocked ) iptables. Please let me=20
+know.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Appreciate it!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>MarK</FONT></DIV></BODY></HTML>
 
+------=_NextPart_000_0005_01C264E3.56FB78B0--
 
 
