@@ -1,12 +1,15 @@
-From: <inghau@perkom.co.id>
-Subject: help..... pleeaseeee
-Date: Fri, 31 Jan 2003 13:21:53 +0700
+From: Katriel Traum <katriel@traum.org.il>
+Subject: Re: DNAT/MASQ Precedence
+Date: Fri, 31 Jan 2003 09:58:35 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <010b01c2c8f1$0c023520$210aa8c0@sabirin>
+Message-ID: <200301310958.38656.katriel@traum.org.il>
+References: <200301301931.41645.katriel@traum.org.il> <20030130193408.GR11221@miggy.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0108_01C2C92B.B83939D0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030130193408.GR11221@miggy.org>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,163 +19,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: Text/Plain; charset="windows-1255"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-------=_NextPart_000_0108_01C2C92B.B83939D0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Thursday 30 January 2003 19:34, Athan wrote:
+> On Thu, Jan 30, 2003 at 07:31:38PM +0000, Katriel Traum wrote:
+> > I want to redirect _all_ traffic into the DMZ (is that even possible?)
+> > and in the same time MASQ the LAN. The question is will they collide? If
+> > I use a ruleset such as:
+> > iptables -A PREROUTING -i $INET_IF -j DNAT --to-destination $DMZ_IP
+> > iptables -A POSTROUTING -o $INET_IF -j MASQUERADE
+> > (yes, there's only one computer in the DMZ)
+> >
+> > Will I get return traffic into my lan? won't it be DNATed into the DMZ?
+>
+>   You need at least one public IP that is *NOT* in the DMZ.  Then change
+> the DMZ rule to exclude on this:
+>
+> iptables -A PREROUTING -i $INET_IF -d ! <not-DMZ IP> -j DNAT
+> --to-destination $DMZ_IP
 
-hello everybody
-
-i ''m having problem accessing FTP sites on the net through my linux =
-firewall
-
-here is what happened when i'm connecting using ftp command from win2k =
-prompt
-ftp> open
-To 202.xxx.xx.xxx
-Connected to 202.xxx.xxx.xxx.
-220 flsvr Microsoft FTP Service (Version 5.0).
-User (202.xxx.xx.xxx.:(none)): xxx
-331 Password required for amon.
-Password:
-230-Welcome To FlSvr Perkom FTP Site
-230 User xxx logged in.
-ftp> ls
-500 Invalid PORT Command.
-150 Opening ASCII mode data connection for file list.
-    (then the connection seems to hang out..)
-
-and then when i'm using windows explorer to open the ftp
-the error is :
---FTP Folder Error--
-An error occured opening that folder on the FTP server, make sure you =
-have permission to access that folder
-Details :=20
-200 Type set to A.
-500 Invalid PORT command
-500 "LPRT 6,16,0,0,0,00,0,0,0,0,0,0,0,0,0,0,0,9,4......':command not =
-understood
-
-        BUT  if i'm using WS-FTP here is the log file.=20
-ftp> open
-To 202.169.39.132
-Connected to 202.169.39.132.
-220 flsvr Microsoft FTP Service (Version 5.0).
-User (202.169.39.132:(none)): amon
-331 Password required for amon.
-Password:
-230-Welcome To FlSvr Perkom FTP Site
-230 User amon logged in.
-ftp> ls
-500 Invalid PORT Command.
-150 Opening ASCII mode data connection for file list.
-
-some of my friend told me that because WS-FTP support "passive transfer =
-mode" so the program can connect through the firewall. Which is not =
-supported if i'm using FTP ftom command or windows explorer
-is there any one can tell me what did i miss on my firewall rules ?
-can someone give me a clue ??
-
-thanks
-
-inghau
+Well, the problem is I have 1 public IP via a cable modem.
+So I ask again, if I DNAT everything into the DMZ lan, and try to MASQ my=20
+private lan, will I even get return traffic?
 
 
+>
+> This IP would also be the IP on the outgoing interface of the firewall.
+> So should automatically get used for MASQUERADE.  If it's all static,
+> then just use SNAT instead of MASQUERADE and you can specify the IP to
+> be sure of it:
+>
+> iptables -A POSTROUTING -o $INET_IF -s <LAN network> -j SNAT --to-source
+> <not DMZ IP>
+>
+> Note the '-s' bit on that rule so you only SNAT traffic coming from the
+> LAN, and not that from the DMZ.
+>
+>   I'm sure others will correct me if anything in this is wrong ;).
+>
+> -Ath
 
+=2D --=20
++katriel                                                =EB=FA=F8=E9=E0=EC+
+pgp key: traum.org.il/gpg.asc
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-
-
-------=_NextPart_000_0108_01C2C92B.B83939D0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>hello everybody</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>i ''m having problem accessing FTP =
-sites on the net=20
-through my linux firewall</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>here is what happened when i'm =
-connecting using ftp=20
-command from win2k prompt</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>ftp&gt; open<BR>To =
-202.xxx.xx.xxx<BR>Connected to=20
-202.xxx.xxx.xxx.<BR>220 flsvr Microsoft FTP Service (Version =
-5.0).<BR>User=20
-(202.xxx.xx.xxx.:(none)): xxx<BR>331 Password required for=20
-amon.<BR>Password:<BR>230-Welcome To FlSvr Perkom FTP Site<BR>230 User =
-xxx=20
-logged in.<BR>ftp&gt; ls<BR>500 Invalid PORT Command.<BR>150 Opening =
-ASCII mode=20
-data connection for file list.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; (then the connection =
-seems to=20
-hang out..)</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>and then when i'm using windows =
-explorer to open=20
-the ftp</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>the error is :</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>--FTP Folder Error--</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>An error occured opening that folder on =
-the FTP=20
-server, make sure you have permission to access that folder</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Details : </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>200 Type set to A.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>500 Invalid PORT command</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>500 "LPRT=20
-6,16,0,0,0,00,0,0,0,0,0,0,0,0,0,0,0,9,4......':command not=20
-understood</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-BUT &nbsp;if=20
-i'm using WS-FTP here is the log file. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>ftp&gt; open<BR>To =
-202.169.39.132<BR>Connected to=20
-202.169.39.132.<BR>220 flsvr Microsoft FTP Service (Version =
-5.0).<BR>User=20
-(202.169.39.132:(none)): amon<BR>331 Password required for=20
-amon.<BR>Password:<BR>230-Welcome To FlSvr Perkom FTP Site<BR>230 User =
-amon=20
-logged in.<BR>ftp&gt; ls<BR>500 Invalid PORT Command.<BR>150 Opening =
-ASCII mode=20
-data connection for file list.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>some of my friend told me that because =
-WS-FTP=20
-support "passive transfer mode" so the program can connect through the =
-firewall.=20
-Which is not supported if i'm using FTP ftom command&nbsp;or windows=20
-explorer</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>is there any one can tell me what did i =
-miss on my=20
-firewall rules ?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>can someone give me a clue =
-??</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>thanks</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>inghau</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0108_01C2C92B.B83939D0--
-
+iD8DBQE+OkjODWy+Hv/461sRAvv4AKCFs+zLCmzRs6lgjQtNV9T9IrZGJgCcD5bg
+41rSU533ygx88Bjz40TlwXU=3D
+=3DrV9v
+=2D----END PGP SIGNATURE-----
 
 
