@@ -1,12 +1,14 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: ftp
-Date: Thu, 27 May 2004 15:46:40 -0300
+Date: Thu, 27 May 2004 20:14:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <11c201c4441a$f2b875b0$49caa8c0@caris.priv>
-References: <20040527164327.6B8A1DBD@sterenborg.info> <119801c44414$60dc9500$49caa8c0@caris.priv> <200405271906.54858.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405272014.04877.Antony@Soft-Solutions.co.uk>
+References: <20040527164327.6B8A1DBD@sterenborg.info> <200405271906.54858.Antony@Soft-Solutions.co.uk> <11c201c4441a$f2b875b0$49caa8c0@caris.priv>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <11c201c4441a$f2b875b0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,45 +21,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hmm .. i suppose that is right as well ....
+On Thursday 27 May 2004 7:46 pm, Peter Marshall wrote:
 
-Any thoughts on my last question ?
+> hmm .. i suppose that is right as well ....
+>
+> Any thoughts on my last question ?
 
-Thanks again,
-Peter
-
------ Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, May 27, 2004 3:06 PM
-Subject: Re: ftp
-
-
-On Thursday 27 May 2004 6:59 pm, Peter Marshall wrote:
-
-> I actually don't need the dnat as I have internet routable ip's in my dmz
-> .... Thank you for the info.  My question now is, will your rule take care
-> of both passive and active ftp ?  I would prefer to just use active .. but
-> I know many clients would have their own issues .. grr .. stupid ftp ....
-
-ip_conntrack_ftp does handle both passive and active ftp.
-
-Obviously if you're not doing DNAT then you don't need the ip_nat_ftp module
-either.
+Sorry, what is your last question?   I can't see anything in your previous 
+postings which remains unanswered....
 
 Regards,
 
 Antony.
 
 -- 
-Software development can be quick, high quality, or low cost.
+Bill Gates has personally assured the Spanish Academy that he will never allow 
+the upside-down question mark to disappear from Microsoft word-processing 
+programs, which must be reassuring for millions of Spanish-speaking people, 
+though just a piddling afterthought as far as he's concerned.
 
-The customer gets to pick any two out of three.
+ - Lynne Truss, "Eats, Shoots and Leaves"
 
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
