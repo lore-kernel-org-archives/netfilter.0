@@ -1,12 +1,15 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: DNAT, Is it possible to find the original destination?
-Date: Mon, 1 Nov 2004 11:10:41 -0500
-Message-ID: <20041101161041.GA18269@bender.817west.com>
-References: <1099323026.41865692986d5@email.ixwebhosting.com>
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: Re: limiting connections
+Date: Mon, 1 Nov 2004 11:19:47 -0500
+Message-ID: <20041101161947.GA15423@tranquility.scriptkitchen.com>
+References: <20041101092621.GA6044@tranquility.scriptkitchen.com>
+	<1099316742.3271.12.camel@hubcap.ljm.dom>
+	<20041101145111.GA13130@tranquility.scriptkitchen.com>
+	<20041101150446.GA18016@bender.817west.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1099323026.41865692986d5@email.ixwebhosting.com>
+In-Reply-To: <20041101150446.GA18016@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,35 +22,18 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-On Mon, Nov 01, 2004 at 09:30:26AM -0600, lumberjack@lumberjackvillage.com wrote:
-> iptables 1.2.9 on SuSE 9.1
-> 
-> I am using iptables redirection to send things inbound to port 80 to 
-> localhost:8080:
-> 
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to 8080
-> 
-> Is there any way that my application can look in the table and see the real 
-> destination?  I've seen several things in patch-o-matic that do things with 
-> conntrack but there doesn't seem to be any command, /proc or /dev entry 
-> available to query "i have a connection from host foo, iptables, who was foo 
-> really wanting to speak too?".
+On Mon, Nov 01, 2004 at 10:04:46AM -0500, Jason Opperisano wrote:
+> yeah, in your web server configuration, set the maximum number of
+> simultaneous connections to 10.
 
-well, in the case of you example port (80), if you're talking about an
-HTTP request, the original destination of the request is preserved in the
-"Host: " header.  this is how transparent proxying works.
-
-in the general case, i don't suppose there's anything stopping you from
-performing a lookup against /proc/net/ip_conntrack within your app to
-find the original dst ip (although it's been pointed out here recently
-that lookups against /proc/net/ip_conntrack are a bad idea--check the
-archives).
-
--j
-
---
-"If something is to hard to do, then it's not worth doing."
-        --The Simpsons
+Not all webservers (especially windows based) might support it. Also
+what if the server in question is not a webserver but some simple server with 
+no such capabalities. Hence I was looking at iptables to solve it for me.
+The reason is that I am scared to re-make a core utility such as
+iptables from  a tar ball. I prefer rpm for such cases.
+I have Mandrake 10.0 (official).
+With warm regards,
+-Payal
 
