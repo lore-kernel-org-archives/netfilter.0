@@ -1,14 +1,13 @@
-From: Vincent Blondel <vincent.blondel@chello.be>
-Subject: Re: FTP Connection problems.
-Date: Wed, 25 Aug 2004 13:29:47 +0200
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: [ANNOUNCE] netfilter.org migrated to new server
+Date: Wed, 25 Aug 2004 07:37:40 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093433387.1825.28.camel@lbedlbxl.dev.xtra-net.org>
-References: <OFF5CB5ADF.C30D9246-ONC1256EFB.003B55C5-C1256EFB.003D7ECC@promon.cz>
-Reply-To: vincent.blondel@chello.be
+Message-ID: <1093433860.2032.42.camel@localhost>
+References: <20040825110337.GG5824@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <OFF5CB5ADF.C30D9246-ONC1256EFB.003B55C5-C1256EFB.003D7ECC@promon.cz>
+In-Reply-To: <20040825110337.GG5824@sunbeam.de.gnumonks.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,48 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: coreteam@netfilter.org
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
 
-On Wed, 2004-08-25 at 13:11, a.ledvinka@promon.cz wrote:
-> could be many reasons.
+On Wed, 2004-08-25 at 07:03, Harald Welte wrote:
+> Hi!
 > 
-> either side wants to do ident lookup and timeouts or
-> either side wants to do reverse and forward dns lookup somwhere around 
-> accepting connection before anything happens and timeouts on nonworking 
-> dns or
-> you use some inteligent ftp client that would rever to passive ftp if 
-> active is not working or else.
+> For those of who who didn't notice it yet: 
 > 
-> best to choose command line ftp client and test it with explicit passive 
-> mode on and off to see if it is realy able to open both types of 
-> connections.
-> next check dns from both ends of connection and see how fast (and if it is 
-> correct - not serverfail/nxdomain/... type of response) you get answer 
-> from dns service for both revers and forward lookups for other side.
-> then allow or reject (don't simply drop) traffic for ident service or 
-> modify ftp server setting
+> 	{www,ftp,rsync,cvs,lists,people,bugzilla}.netfilter.org
 > 
-> btw: not directly related to your problem but you might also want to: $fw 
-> -A FORWARD -p icmp -m state --state RELATED -j ACCEPT (and maybe OUTPUT 
-> too)
+> has now been migrated to our new server, a 
+> 
+> 	Apple Dual G5 XServe ClusterNode
+> 
+> <snip>
 
-To test my iptables configuration, I am doing the very basic connection
-tests :
-
-wget --passive 192.168.125.1://pub/test.iso
-
-ftp 192.168.125.1
-<this takes here already 8 seconds>
-anonymous
-password
-cd test
-get test.iso
-
-So this could not be a dns problem. This could also not be a traffic
-congestion problem because I am trying this config with three stations
-(connected directly by a ethernet cable) located on my desk.
-
-Regards
-Vincent
+> The Netfilter Core Team wants to thank the generous donor Gert Hansen
+> for donating the new machine to the netfilter project.
+<snip>
+If that is the Gert Hansen from Astaro, then triple kudos to them.  They
+have also helped sponsor the ISCS project (http://iscs.sourceforge.net)
+and OpenSWAN (http://www.openswan.org) so add my thanks to Astaro for
+once again helping the open source community.
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
 
 
