@@ -1,28 +1,65 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: iptables and ip_conntrack_tuple.h compile fix
-Date: Tue, 01 Feb 2005 14:18:50 +0100
-Message-ID: <41FF81BA.5020208@trash.net>
-References: <Pine.LNX.4.58.0502011255020.24684@cj.onrc.ro>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: NAT with REDIRECT #$%@ up...
+Date: Tue, 01 Feb 2005 08:26:43 -0500
+Message-ID: <1107264403.4330.11.camel@hubcap.ljm.dom>
+References: <41FE2118.8020108@euclolland.dk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.58.0502011255020.24684@cj.onrc.ro>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <41FE2118.8020108@euclolland.dk>
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tompa Septimius Paul <subzero@cj.onrc.ro>
-Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Tompa Septimius Paul wrote:
+On Mon, 2005-01-31 at 07:14, Lennart A. Hansen wrote:
+> Hey ppl..
+> 
+> I have of cause searched before posting, but havent found anything 
+> simmilar..
+> 
+> Short story is that i want to redirect proxy request to host1:9001 to 
+> host2:3128, host2 is a bridge i'm on eth1 and host1 is on eth0
+> 
+> My intenstion is to catch all request to host1:9001 and redirect them to 
+> host2:3128.
+> 
+> iptables command:
+> iptables -t nat -A PREROUTING -i br0 -p tcp --dport 8080 -j REDIRECT 
+> --to-port 3128
+> 
+> This worked at first, but stopped working just like that..
+> 
+> I have sniffed on it, and attached it here.. 12kb Ethercap format
+> 
+> It looks really fucked up, check sum error and so on...
+> 
+> Anyone have any idea why it's fucking up?
 
->Hi,
->
->I try to recompile iptables iptables-1.2.11 with kernel 2.6.11-rc2
->(and mm2) running and I don't succeed. It complains about
->/usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack_tuple.h
->after this small changes iptables is compiling again.
->  
->
-I just added a similar patch from Pablo Neira to my tree.
+according to packet 6 in your capture, your proxy requires
+authentication.  you cannot combine authentication and transparent
+proxying; which will makes perfect sense if you think about it long
+enough.
 
-Regards
-Patrick
+as far as the checksum errors go--do you have an IP bound to br0?
+
+-j
+
+PS - amongst my friends i have a mouth like a sailor, but i don't see
+how it's appropriate to set a subject line as you did, no matter how
+frustrated you may be.
+
+--
+"I've added an extra ingredient just for you.  The merciless peppers
+ of Quetzlzacatenango!  Grown deep in the jungle primeval by the
+ inmates of a Guatemalan insane asylum."
+	--The Simpsons
+
+
