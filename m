@@ -1,14 +1,14 @@
-From: Tony Earnshaw <tonni@billy.demon.nl>
-Subject: Re: (?)Help me... install iptables
-Date: 11 Jun 2002 10:40:04 +0200
+From: Francois Chenais <francois@chenais.net>
+Subject: Re: redirect input SYN before forward to QUEUE
+Date: Tue, 11 Jun 2002 11:20:33 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023784805.2050.6.camel@billy.demon.nl>
-References: <20020611020735.24629.qmail@web21202.mail.yahoo.com>
+Message-ID: <20020611112033.6db3a9b8.francois@chenais.net>
+References: <20020610181923.2a0030a3.francois@chenais.net>
+	<20020610184536.354c2fac.francois@chenais.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-QVS4THp1AKNnIelTRlj6"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020611020735.24629.qmail@web21202.mail.yahoo.com>
+In-Reply-To: <20020610184536.354c2fac.francois@chenais.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,61 +18,126 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: Hai To Thanh <nguyenquocanh01@yahoo.com>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.samba.org
 
+This works fine with another ethernet card !
 
---=-QVS4THp1AKNnIelTRlj6
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+will netfilter support eth0:0 interfaces in the future ?
 
-tir, 2002-06-11 kl. 04:07 skrev Hai To Thanh:
-
->   "make: *** Warning: File "Rule.make" has
-> modification time in the future ( 2001-08-06 01:50:21
-> > 1998-01-01 02:26:21).
-
-It seems that you either installed your whole system or simply the
-kernel without setting the proper date on the machine. make thinks that
-the date is early in the morning on 1 Jan 1998 and you're trying to
-install stuff that is to be made in the future and the security doesn't
-like that. Quite right too.
-
-Reset the date on the machine to today's date, using 'date' ('man date')
-and everything should work.
-
-Best,
-
-Tony
-
---=20
-
-Tony Earnshaw
-
-e-post:		tonni@billy.demon.nl
-www:		http://www.billy.demon.nl
-gpg public key:	http://www.billy.demon.nl/tonni.armor
-
-Telefoon:	(+31) (0)172 530428
-Mobiel:		(+31) (0)6 51153356
-
-GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
-3BE7B981
+	Fran=E7ois
 
 
 
---=-QVS4THp1AKNnIelTRlj6
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Dette er en digitalt signert meldingsdel
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+On Mon, 10 Jun 2002 18:45:36 +0200
+Francois Chenais <francois@chenais.net> wrote:
 
-iD8DBQA9Bbdk99dgUTvnuYERAoDHAJ9OgDlQPvqtO4NxOD/kbdwxlH03rACeKKKZ
-orHxpI8ItawAM8F2A/vkp1g=
-=Yjyj
------END PGP SIGNATURE-----
-
---=-QVS4THp1AKNnIelTRlj6--
+  | Now I have put the good rule
+  |       iptables -A FORWARD -d 192.168.0.0/255.255.255.0 -p tcp --tcp-fla=
+gs SYN SYN -j QUEUE
+  |=20
+  | A is connected on B but with his own ip addr instead of the GW_Netfilte=
+r addr.
+  | the iptables -t nat -A POSTROUTING -j MASQUERADE seems to be ignored.
+  |=20
+  | Just another (important) information
+  |=20
+  | I use GW_netfilter eth0:0 device to go on network 192.168.0.0
+  |            and the eth0:0 device on B so that=20
+  |=20
+  | A, GW and B are all on the 192.168 network but only GW and B are on the=
+ 192.168 one !
+  |=20
+  | =20
+  |          192.168.76
+  |    .______________.___________________________.
+  |    |              |                           |
+  |    |              |                           |
+  |    |             eth0                        eth0=20
+  |    |              |                           |
+  |    A             GW                           B
+  |                   |                           |
+  |               eth0:0------192.168.0----------eth0:0
+  |=20
+  |=20
+  |=20
+  |    is a better schema !
+  |=20
+  |=20
+  | 		Fran=E7ois
+  |=20
+  |=20
+  |     =20
+  |=20
+  |=20
+  |=20
+  | On Mon, 10 Jun 2002 18:19:23 +0200
+  | Francois Chenais <francois@chenais.net> wrote:
+  |=20
+  |   | Hello,=20
+  |   |        =20
+  |   |=20
+  |   |=20
+  |   |              192.168.76.0                   192.168.0.0
+  |   | 	A  -------------->  GW_Netfilter --------------------> B
+  |   |                               \      /
+  |   |                                 QUEUE
+  |   |                                   \
+  |   |                                 user APP
+  |   |=20
+  |   |=20
+  |   |=20
+  |   |   In fact, I would like to redirect all SYN packet comming from A t=
+o B
+  |   |   in target QUEUE for a user space check.
+  |   |=20
+  |   |   Here what I've done but doesn't work !:-|
+  |   |=20
+  |   |   on A=20
+  |   |   -----
+  |   |       route add -net 192.168.0.0 gw GW_Netfilter netmask 255.255.25=
+5.0=20
+  |   |=20
+  |   |=20
+  |   |   on GW_Netfilter
+  |   |   ---------------
+  |   |       echo 1 > /proc/sys/net/ipv4/ip_forward
+  |   |       iptables -t nat -A POSTROUTING -j MASQUERADE
+  |   |       iptables -A FORWARD -d 192.160.0.0/255.255.255.0 -p tcp --tcp=
+-flags SYN SYN -j QUEUE
+  |   |       iptables -A INPUT -d 192.160.0.0/255.255.255.0 -p tcp --tcp-f=
+lags SYN SYN -j QUEUE
+  |   |  =20
+  |   |=20
+  |   |  user APP connected on hook 1 on the ip_queue
+  |   |  ---------------------------------------------
+  |   |=20
+  |   |=20
+  |   | 	What's wrong ?
+  |   |=20
+  |   | 	Thanks a lot
+  |   |=20
+  |   | 		Fran=E7ois
+  |   |=20
+  |   | --=20
+  |   | Woody 3.0
+  |   | Linux tanna 2.4.14 #3 SMP Thu Dec 6 14:04:03 CET 2001 i686 unknown
+  |   |=20
+  |   | PGP fingerprint : 9AFA 15EC 96C9 F607 EBC1  DD41 70C5 F0E0 25A5 105B
+  |   |=20
+  |   |=20
+  |   |=20
+  |   |=20
+  |   |=20
+  |   |=20
+  |   |  =20
+  |   |=20
+  |   | 	=20
+  |   |=20
+  |   |=20
+  |=20
+  |=20
+  |=20
 
 
