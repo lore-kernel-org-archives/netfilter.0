@@ -1,11 +1,13 @@
-From: Florent AIDE <faide@alphacent.com>
-Subject: new ulogd interpreter plugin for localtime
-Date: Fri, 7 Jun 2002 18:04:33 +0200
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: general policy question
+Date: Fri, 7 Jun 2002 12:50:02 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206071804.34315.faide@alphacent.com>
+Message-ID: <20020607165002.GM29214@cannon.eng.us.uu.net>
+References: <B9254FF5.1C46%patrick@wechsler.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <B9254FF5.1C46%patrick@wechsler.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,45 +18,32 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter User List <netfilter@lists.samba.org>
-Cc: Christophe de Vienne <cdevienne@alphacent.com>, Ronan =?iso-8859-1?q?Penla=EB?= <rpenlae@alphacent.com>
+Content-Transfer-Encoding: 7bit
+To: patrick conlin <patrick@wechsler.com>
+Cc: netfilter@lists.samba.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Thu, Jun 06, 2002 at 05:44:21PM -0400, patrick conlin wrote:
 
-Here is the final and working version of ulogd_LOCALTIME.c
+> does one generally set the -P on their mangle table chains to DROP, even if
+> you're not using them for anything?
+> 
+> usual procedure says set -P on all chains to DROP and allow what's
+> necessary,
 
-This plugin permits to log the localtime at the time we see the packet in=
-to=20
-the mysql database. It timestamps any packets which goes through ulogd.
+Apparently they meant the "filter" table and not mangle or nat.
 
-I wrote this because I needed to have an oob_time_sec equivalent for the=20
-outpout packets.
+Ramin
 
-you just need to add the line:
-
-plugin /usr/local/lib/ulogd/ulogd_LOCALTIME.so
-
-in your ulogd.conf
-
-http://www.alphacent.com/opensource/
-
-on the page (in french) is a link for English Language:
-you will find the plugin, the new sql schema, the new Rules.make.in
-
-Any feedback is appreciated.
-
-Florent AIDE
-- - --
-The magic of our first love is our ignorance that it can ever end.
-                -- Benjamin Disraeli
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE9ANmSQe8gCED8yYERAlb1AJ9Sin+NcUd4xreUGLkuMNpCGAtmCwCeNSus
-QRxeE5MIwAoWet8drO/QJG0=3D
-=3DJgmF
------END PGP SIGNATURE-----
-
+> but if you're not using your mangle table chains for anything and
+> you set -P to DROP (on the iptables -t mangle PREROUTING chain, for example)
+> all packets get dropped.
+> 
+> you guessed it, I just did this and got booted from the machine. Now I have
+> to wait until I can go home and reboot my firewall before I can play with it
+> any more.
+> 
+> Just wondering how everyone else handles this.
+> 
+> -=p=-
+> 
 
