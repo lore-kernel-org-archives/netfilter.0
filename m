@@ -1,13 +1,11 @@
-From: "Darrell A. Escola" <darrell@descola.net>
-Subject: Re: log all dropped packets
-Date: Tue, 1 Oct 2002 20:38:36 -0700
+From: Hostmaster <hostmaster@cideweb.com>
+Subject: iptables as gateway
+Date: Tue, 1 Oct 2002 14:08:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021002033836.GA19753@descola.net>
-References: <F44BHkJZbK4DAx0hIEA000051cb@hotmail.com>
+Message-ID: <200210011408.20335.hostmaster@cideweb.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <F44BHkJZbK4DAx0hIEA000051cb@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +16,13 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Oct 02, 2002 at 01:18:59AM +0000, SB CH wrote:
-> Hello, all.
-> 
-> Question1. 
-> I would like to log all Dropped packet.
-> How can I write a log about all dropped packet?
-> 
-> Question2.
-> Surely, my default policy is DROP.
-> and one can't log about related default Policy.
-> How can I log packet information about default policy related? 
-> 
-Just add a -j LOG rule before each DROP rule, or as the last rule in a chain
-with a policy of DROP.
-
--- 
-Darrell A. Escola, CCNA(R)
-Cisco(R) Certified Network Associate
+Hi,
+I am trying to configure my linux box with 2.4.18 as a gateway/firewall for my 
+public network. I don't know what's rules I must use to accept incoming 
+packets for other hosts with publics ips (like a router with filtering). 
+Table nat is for masquerading only, where I configure these rules and how?
+thanks in advance.
+CC me, I am not in netfilter-list
 
