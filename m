@@ -1,12 +1,10 @@
-From: "Lasse Pettersson" <lasse@humandata.se>
-Subject: RE: advantage and disadvantage between iptables and ISAServer?
-Date: Sat, 28 Feb 2004 12:33:07 +0100
+From: Guillermo Chui Lau <memochui@equicomp.com.pe>
+Subject: RE: transparent proxy
+Date: Fri, 27 Feb 2004 14:19:41 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F72D5632F55F1F4E8B78EE3E3DC735360C838D@oden.humandata.se>
+Message-ID: <6B4345976F8D444ABCFEF8B628BAC1A0431565@APPSRV>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,73 +15,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: bmcdowell@coxhealthplans.com, netfilter@lists.netfilter.org
-
-I agree
-
-ISA works very well as a proxy, not that good as a FW
-
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of
-bmcdowell@coxhealthplans.com
-Sent: den 25 februari 2004 22:29
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: RE: advantage and disadvantage between iptables and ISAServer?
+Cc: tomekm@cea.pl
 
+On Fri, 27 Feb 2004 09:48:39 +0100
+"Tomasz Macioszek" <tomekm@cea.pl> wrote:
 
-I don't see them as all that comparable, and in fact I use both.  ISA
-makes a great proxy and uses AD permissions (groups, etc) for access
-control.  I see it as Proxy 2.0 Enhanced, rather than a 'firewall'.
+> Hello!
+> I have a Linux server acting as a gateway between internal network and
+> internet. The iptables rule set have been working  good for long time.
+> I have configured squid on this server. When I have set internal network
+> client to use directly proxy server it has worked properly. But when I
+have
+> set iptable to redirect all http traffic to squid  port (3128) it didn't
+> work (transparent proxy).
+> This is my iptable rule:
+> iptables -t nat -A PREROUTING -p TCP --dport 80 -j REDIRECT --to-port 3128
+> I think that all options in my kernel are set properly.
+> I don't know why it doesn't work
+> I set tcpdump to listen on 3128 port and when client tried to connect to
+web
+> server on port 3128 showed only first IP  package of this connection and
+> connections failed.
+> Could you send me a solution for this problem?
+> Best regards
+> Tomek
+> 
+> 
 
+YOU NEED TO IMPLEMENT THIS RULE
 
-Bob
+iptables  -t nat -A PREROUTING -i $LAN_IFACE -p tcp --dport 80 \
+-j REDIRECT --to-port 3128
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Maciej
-Soltysiak
-Sent: Wednesday, February 25, 2004 10:18 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: advantage and disadvantage between iptables and ISAServer?
+LINUX SERVER HACKS Rob Flickenger
 
+also make squid run in levels 3 ,4 and 5
 
-> I am not to familure with ISA because the M$ admins here tell me it is
+chkconfig --level 345 squid on
 
-> not
-worth
-> the enough to test it out. I would assume it is like any other M$=20
-> product
-though
-> ... you need double or triple the hardware to run it as compared to
-iptables.
-Agree, oh, this is true. Currently w2k3 runs very bad on:
-p4 1,5ghz, 384MB
-with a few of the services setup: AD, WMS, IIS (HTTP+FTP), SUS, SMS.
+if this doesnt work see if the iptables is doing  nat you should have a rule
+like this one
 
+iptables -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP
 
-> You are stuck with the options the M$ provides instead of the endless=20
-> possibilities the a Unix or Linux could offer.
-Well, sort of. iptables is very powerfull, but I think that upcomming
-isa
-2004
-is going to be modular and pluggable too, plus it will certainly address
-popular security issues like: p2p (yes, it is a security issue), worms,
-network attacks that have signatures: slammer, floods, land, dos, etc...
-Like checkpoint's SmartDefense.
+also check if you are loading the modules
 
+/sbin/modprobe ip_tables
+/sbin/modprobe ip_conntrack
+/sbin/modprobe iptable_filter
+/sbin/modprobe iptable_mangle
+/sbin/modprobe iptable_nat
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_limit
+/sbin/modprobe ipt_state
 
-I have not been using isa, but only read and seen a presentation of isa
-2004, It is possible that is going to be a powerfull tool. No
-information about stability, propably it'd depend on which version of
-windows you are running and how stable it is. Performance? No idea.
+you can check the modules using lsmod
 
-Regards,
-Maciej
-
-
-
-
+Guillermo Chui Lau
+Support Enginner
 
