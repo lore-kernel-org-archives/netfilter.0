@@ -1,8 +1,8 @@
 From: "Hard__warE" <hard__ware@hotmail.com>
-Subject: Help!! Is this true??
-Date: Mon, 10 Jun 2002 19:29:31 +1000
+Subject: help!! whole in firewall --
+Date: Mon, 10 Jun 2002 19:38:36 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000501c21061$53acc960$7b0010ac@dynamicaccess.lan>
+Message-ID: <001701c21062$985f0a40$7b0010ac@dynamicaccess.lan>
 Reply-To: "Hard__warE" <hard__ware@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,36 +18,23 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
+Cc: BGrummel@zuendel.de
 
-yes it is True .... but you can still use the New IP Address with IPTables
+try this Script out ..... it works great
 
-just not the Ethertnet Alias's like eth0:1 etc ....
-
-
-This should help you out, i just finnished rewiting a good SNAT / DNAT
-scirpt of mine ..
+just modify Address / Ports to suit .... : D
 
 
-In this Script Multi IP is commented out  with  '#' so you can go through
-the script and un'#'
-all the Multi IP lines (they got comments to help find em).
-
-It is also possible to do more the Two Extenal address, it just means alot
-of Scripting .... lol
-
-hope it helps ya out ... :D
 
 
-File: rc.firewall
 
----------------------------------Start Copy Below This
-Line ---------------------------------------
-
+---------------------------------------Start Copy Below this
+Line -----------------------------------------
 #!/bin/sh
 #
 # rc.firewall Mid-Strong Based Firewall ..BNI..
 
-########  Revision 5.1 ########## With Comments ##############
+########  Revision 5.1 ########## Low Comments ##############
 #############################################################
 EXTIF="eth1"
 INTIF="eth0"
@@ -66,7 +53,8 @@ sed -e 's/.*://'`"
 EXTIP="192.168.0.253"
 
 ########## New Multiple External IP Access #########
-EXTIP2="192.168.0.212"
+#EXTIP2="192.168.0.212"
+
 echo "  External IP: $EXTIP"
 echo "  ---"
 
@@ -388,8 +376,8 @@ $IPTABLES -A OUTPUT -o $EXTIF -s $UNIVERSE -d $INTNET -j drop-and-log-it
 
 ## NEW Multi EXTIP, Add two lines for each new EXTIP* address below
 ##########
-$IPTABLES -A OUTPUT -o $INTIF -s $EXTIP2 -d $INTNET -j ACCEPT
-$IPTABLES -A OUTPUT -o $EXTIF -s $EXTIP2 -d $UNIVERSE -j ACCEPT
+#$IPTABLES -A OUTPUT -o $INTIF -s $EXTIP2 -d $INTNET -j ACCEPT
+#$IPTABLES -A OUTPUT -o $EXTIF -s $EXTIP2 -d $UNIVERSE -j ACCEPT
 
 ## anything else outgoing on remote interface is valid
 #
@@ -440,7 +428,7 @@ ESTABLISHED,RELATED -j ACCEPT
 
 ########## Exisiting Rule (Do Not Delete) #########
 $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state
-ESTABLISHED,RELATED -jACCEPT
+ESTABLISHED,RELATED -j ACCEPT
 
 $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -s $INTNET -j ACCEPT
 $IPTABLES -A FORWARD -j drop-and-log-it
@@ -469,7 +457,7 @@ echo -e "\nDone.\n"
 echo -e "\neXecuting Packet Shaping Dont Forget To /etc/rc.wshaper.\n"
 /etc/rc.wshaper
 
---------------------------End copy Before this
-line -----------------------------------------------------------
+
+
 
 
