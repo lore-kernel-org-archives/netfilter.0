@@ -1,10 +1,9 @@
-From: Mikhail Zotov <e-boogie@yandex.ru>
-Subject: Reasons for INVALID packets ?
-Date: Sun, 27 Feb 2005 14:32:00 +0300
-Message-ID: <200502271432.00952.e-boogie@yandex.ru>
+From: Pierre Ossman <drzeus-list@drzeus.cx>
+Subject: Out of window filter catches too much
+Date: Sat, 26 Feb 2005 01:01:41 +0100
+Message-ID: <421FBC65.40202@drzeus.cx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,41 +14,99 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello everybody,
+I'm having problem with the out of window filter throwing a way packets 
+in otherwise perfectly good connections. The problem appears when doing 
+a rather large rsync between two linux machines on the network here.
 
-My iptables script drops (and logs) INVALID packets in
-INPUT, OUTPUT, and FORWARD chains.  
-Sometimes a router that is running the script generates ICMP
-packets of type 11 that it considers INVALID.   (In other words, it
-generates packets that by itself considers to be INVALID.)  The
-problem is that I cannot figure out what makes the router generate
-invalid packets.
+The rsync server is running 2.6.9, the client 2.6.10 and the router 2.6.10.
 
-Typical records of this kind look this way:
+Since there is only linux machines involved here this must be a kernel 
+bug. Either in the TCP layer or in netfilters detection. Here is a dump 
+from the router when it starts throwing away packets:
 
-IN= OUT=eth0 SRC=ROUTER DST=193.108.155.115 LEN=68 TOS=0x00 PREC=0xC0 TTL=64 
-ID=22467 PROTO=ICMP TYPE=11 CODE=0 [SRC=193.108.155.115 DST=A.LAN.HOST LEN=40 
-TOS=0x00 PREC=0x00 TTL=1 ID=40760 PROTO=ICMP TYPE=8 CODE=0 ID=20244 
-SEQ=45126 ] 
+ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver) 
+IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64 
+ID=10234 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763580423 ACK=299956256 
+WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
+ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver) 
+IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64 
+ID=10236 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763581871 ACK=299956256 
+WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
+ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver) 
+IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64 
+ID=10238 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763583319 ACK=299956256 
+WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
+ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver) 
+IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64 
+ID=10240 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763584767 ACK=299956256 
+WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
+ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver) 
+IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64 
+ID=10242 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763586215 ACK=299956256 
+WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
+ID=23961 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
+WINDOW=0 RES=0x00 ACK URGP=0 OPT (0101080A7E1D58E9C4C2FDE7)
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=432 TOS=0x00 PREC=0x00 TTL=64 
+ID=23963 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
+WINDOW=0 RES=0x00 ACK PSH URGP=0 OPT (0101080A7E1D5927C4C2FDE7)
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
+ID=23965 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956636 ACK=2763580423 
+WINDOW=1718 RES=0x00 ACK URGP=0 OPT (0101080A7E1D5952C4C2FDE7)
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
+ID=23967 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956636 ACK=2763580423 
+WINDOW=3788 RES=0x00 ACK URGP=0 OPT (0101080A7E1D599DC4C2FDE7)
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=64 TOS=0x00 PREC=0x00 TTL=64 
+ID=23969 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956636 ACK=2763580423 
+WINDOW=3788 RES=0x00 ACK URGP=0 OPT 
+(0101080A7E1D59B1C4C2FED70101050AA4B8DE5FA4B8E407)
+printk: 7 messages suppressed.
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=432 TOS=0x00 PREC=0x00 TTL=64 
+ID=23985 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
+WINDOW=5792 RES=0x00 ACK PSH URGP=0 OPT (0101080A7E1D73CBC4C30BF7)
+printk: 1 messages suppressed.
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=432 TOS=0x00 PREC=0x00 TTL=64 
+ID=23989 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
+WINDOW=5792 RES=0x00 ACK PSH URGP=0 OPT (0101080A7E1D8F4BC4C31AF7)
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=64 TOS=0x00 PREC=0x00 TTL=64 
+ID=23991 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956636 ACK=2763580423 
+WINDOW=5792 RES=0x00 ACK URGP=0 OPT 
+(0101080A7E1D93D0C4C338F70101050AA4B8DE5FA4B8E407)
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=432 TOS=0x00 PREC=0x00 TTL=64 
+ID=23993 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
+WINDOW=5792 RES=0x00 ACK PSH URGP=0 OPT (0101080A7E1DC64BC4C338F7)
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=64 TOS=0x00 PREC=0x00 TTL=64 
+ID=23995 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956636 ACK=2763580423 
+WINDOW=5792 RES=0x00 ACK URGP=0 OPT 
+(0101080A7E1DCFCFC4C374F70101050AA4B8DE5FA4B8E407)
+ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
+IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=432 TOS=0x00 PREC=0x00 TTL=64 
+ID=23997 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
+WINDOW=5792 RES=0x00 ACK PSH URGP=0 OPT (0101080A7E1E344BC4C374F7)
+ip_ct_tcp: invalid RST (ignored) IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 
+LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=10258 DF PROTO=TCP SPT=3851 DPT=873 
+SEQ=2763587663 ACK=299956256 WINDOW=724 RES=0x00 ACK RST URGP=0 OPT 
+(0101080AC4C3E8BE7E1D58C1)
 
-or:
+The connection recovered from the first couple of these, but the later 
+ones causes the connection to die.
 
-IN= OUT=eth0 SRC=ROUTER DST=66.150.8.26 LEN=60 TOS=0x00 PREC=0xC0 TTL=64 
-ID=30495 PROTO=ICMP TYPE=11 CODE=0 [SRC=66.150.8.26 DST=A.LAN.HOST LEN=32 
-TOS=0x00 PREC=0x20 TTL=1 ID=1294 PROTO=UDP SPT=12895 DPT=33440 LEN=12 ] 
+This is very annoying so I hope someone has the time to help me fix this 
+  as soon as possible.
 
-It seems that they appear in situations when an exterior host either pings or
-"traceroutes" a host in the LAN.  Both pings and "traceroutes" are normally
-logged and dropped.  In these cases, none of these types of packets were
-registered _before_ invalid packets but a few seconds _later_.  No connection
-breakdowns were logged either.  My question is: what can make a router
-generate INVALID packets and how dangerous can this be in the sense of
-security of the router and the LAN?
-
-
-Thanks in advance,
-Mikhail
+Rgds
+Pierre
 
