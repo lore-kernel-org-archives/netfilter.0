@@ -1,14 +1,14 @@
-From: "Corey Furman" <furmanc@empirekosher.com>
-Subject: Re: Email Server Timeouts
-Date: Thu, 19 Feb 2004 13:49:14 -0500 (EST)
+From: "T. Horsnell (tsh)" <tsh@mrc-lmb.cam.ac.uk>
+Subject: Re: p.o.m-ng+linux-2.6.2+ctnetlink
+Date: Thu, 19 Feb 2004 19:11:02 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3515.192.168.2.103.1077216554.squirrel@mail.empirekosher.com>
-References: <20040218203304.24484.34213.Mailman@netfilter-sponsored-by.noris.net>
-Reply-To: furmanc@empirekosher.com
+Message-ID: <E1AttZe-001HQX-W5@alf1.lmb.internal>
+References: <739652C2AFA4834AAB5986A215F68CEC0165A5@svr1.home.compsup.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040218203304.24484.34213.Mailman@netfilter-sponsored-by.noris.net>
+In-Reply-To: <739652C2AFA4834AAB5986A215F68CEC0165A5@svr1.home.compsup.net> from
+ Carl Farrington at "Feb 19, 2004 05:01:52 pm"
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,59 +19,119 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Thanks, Antony.  Just because I do a thing, doesn't mean I know why I do
-it :P
-
-I (believe it or not) close those ports because I did not think anything
-would use them, and I sort of approach the firewall as:
-    + close everything
-    + poke holes where needed
-
-This may sound like a stupid question, but why aren't the SMTP and POP
-ports sufficient?
-
-For better or for worse, I only know enough to get the linux products I
-use to work, and if something goes wrong, I usually take a week or two to
-figure it out.  The company I work for doesn't have the cash to get me
-trained, so anything I learn is typically self taught on live systems.
-
-So I appreciate it when folks like yourself give me a direction to look
-for answers.  Thanks a lot!
-
-Let me say for the record that if I had my druthers, the firewall would be
-a firewall and nothing else.  I'm simply constrained on resources, and
-frankly I have bigger fish to fry.  I'll get back to it at some point this
-year....
+To: Carl Farrington <carl@compsup.net>
+Cc: netfilter@lists.netfilter.org
 
 
+I'm likewise confused. Maybe I'm jumping the gun a bit. I just
+want to experiment with nfnetlink-ctnetlink-0.13, so perhaps
+I'll revert to a late 2.4 kernel.
 
-> From: Antony Stone <Antony@Soft-Solutions.co.uk>
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Email Server Timeouts
-> Date: Wed, 18 Feb 2004 18:55:31 +0000
+Thanks,
+Terry.
+
+>Well it looks like patch-o-matic-ng doesn't support 2.6 yet. I find it
+>very confusing. The only information I found on kernel 2.6 was a very
+>short "News" from December 2003 which said "expect a patch-o-matic-ng
+>which will support 2.6". Which led me to think NG would work on 2.6 but
+>alas not yet.
 >
-> On Tuesday 17 February 2004 9:20 pm, Corey Furman wrote:
+>> -----Original Message-----
+>> From: T. Horsnell (tsh) [mailto:tsh@mrc-lmb.cam.ac.uk]
+>> Sent: 19 February 2004 15:41
+>> To: netfilter@lists.netfilter.org
+>> Subject: p.o.m-ng+linux-2.6.2+ctnetlink
+>> 
+>> Problem using patch-o-matic-ng-20040217 to patch kernel 2.6.2
+>> and iptables-1.2.9, to include the nfnetlink-ctnetlink-0.13 patch.
+>> 
+>> When I use .runme to test this patch, it reports:
+>> 'Patch nfnetlink-ctnetlink-0.13 applies cleanly'
+>> When I actually install the patch, it reports errors,
+>> but installs it anyway.
+>> 
+>> Re-make of the kernel then fails:
+>> 
+>> [root@dev1 linux-2.6.2]# make bzImage
+>>   HOSTCC  scripts/modpost.o
+>>   HOSTLD  scripts/modpost
+>> make[2]: `scripts/fixdep' is up to date.
+>> scripts/kconfig/conf -s arch/i386/Kconfig
+>> net/ipv4/netfilter/Kconfig:593: syntax error, unexpected T_WORD
+>> net/ipv4/netfilter/Kconfig:595: invalid menu option
+>> make[2]: *** [silentoldconfig] Error 1
+>> make[1]: *** [silentoldconfig] Error 2
+>> make: *** [include/linux/autoconf.h] Error 2
+>> 
+>> Any advice?
+>> 
+>> Cheers,
+>> Terry.
+>> 
+>> 
+>> 
+>> 
+>> 
+>>
+>========================================================================
+>=
+>> Welcome to Patch-o-matic (1.11)!
+>> 
+>> Kernel:         /usr/src/linux-2.6.2
+>> Iptables:       /usr/src/iptables
+>> 
+>> Each patch is a new feature: many have minimal impact, some do not.
+>> Almost every one has bugs, so don't apply what you don't need!
+>> -------------------------------------------------------
+>> Already applied:
+>> 
+>> Testing nfnetlink-ctnetlink-0.13... not applied
+>> The nfnetlink-ctnetlink-0.13 patch:
+>>    Author: Harald Welte <laforge@gnumonks.org>, Jay Schulist
+>> <jschlst@samba.org>,
+>>    Status: Under development, but stabilizing now.
+>> 
+>>         Patrick McHardy <kaber@trash.net>
+>> 
+>>    Add recent work by patrick (notifiers, event messages to userspace.
+>> 
+>> -----------------------------------------------------------------
+>> Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] t
+>> Patch nfnetlink-ctnetlink-0.13 applies cleanly
+>> -----------------------------------------------------------------
+>> Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
+>> ERROR (7 rejects out of 52 hunks)
+>> 
+>> Excellent! Source trees are ready for compilation.
+>>
+>========================================================================
+>=
+>> 
+>> Checking whether the patch was actually installed:
+>> 
+>> 
+>>
+>========================================================================
+>=
+>> Welcome to Patch-o-matic (1.11)!
+>> 
+>> Kernel:         /usr/src/linux-2.6.2
+>> Iptables:       /usr/src/iptables
+>> 
+>> Each patch is a new feature: many have minimal impact, some do not.
+>> Almost every one has bugs, so don't apply what you don't need!
+>> -------------------------------------------------------
+>> Already applied:
+>> 
+>> Testing nfnetlink-ctnetlink-0.13... applied
+>> 
+>> Excellent! Source trees are ready for compilation.
+>>
+>========================================================================
+>=
+>> 
 >
->> When I enabled these rules, but then sendmail (on the same box) started
->> timing out talking to other mail servers.  Does anyone see why?
 >
-> Yes.   Your first INPUT rule blocks all TCP packets coming in to ports in
-> the
-> range  11001 to 65535 (why do you have this rule?).
 >
-> That means on average there's an 85% chance that any connection from this
-> machine will not be able to receive a response, depending on the source
-> port
-> it chooses to communicate from.
->
-> By the way, I'd just like to comment that it's not a good idea to run
-> sendmail
-> (or any other application for that matter) on your firewall.
->
-> Regards,
->
-> Antony.
 
 
