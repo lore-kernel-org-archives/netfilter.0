@@ -1,9 +1,9 @@
-From: "Moti Levy" <moti@flncs.com>
-Subject: Re: top level rules
-Date: Mon, 12 May 2003 09:24:35 -0400
+From: "Jet" <yenjet.chan@eglobal.com.my>
+Subject: Re: How to nat a full subnet ?
+Date: Mon, 12 May 2003 21:44:04 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b701c31889$d6b63f40$0901010a@bvg6>
-References: <ABEKJILKOKKGGDJKHKDFEEAICBAA.patrick@vikus.com> <1052743756.1399.0.camel@xbox>
+Message-ID: <005701c3188c$8dc87ac0$1cc8c80a@dolphin>
+References: <1052642696.17942.14.camel@charlebourg-2-81-57-105-138.fbx.proxad.net> <1052650980.699.4.camel@laurent.luyckx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,38 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter EMAIL <netfilter@lists.netfilter.org>
+To: Laurent Luyckx <lololuy@tiscali.be>, Francois LE BOURDELLES <flebourdelles@free.fr>
+Cc: netfilter@lists.netfilter.org
 
-iptables -L -n --line0numbers will list the rule numbers 
-iptables -I CHAINNAME rulenumber_to_insert REST OF RULE
+Do I've to create any ARP entry for the external IP address range for this
+to work?
 
------ Original Message ----- 
-From: "Filip Sneppe" <filip.sneppe@cronos.be>
-To: "Patrick Ahler" <patrick@vikus.com>
-Cc: "netfilter EMAIL" <netfilter@lists.netfilter.org>
-Sent: Monday, May 12, 2003 8:49 AM
-Subject: Re: top level rules
+- Jet
 
+Laurent Luyckx <lololuy@tiscali.be> wrote:
+> Have look a the NETMAP patch from p-o-m.
+> It creates a static 1:1 mapping of the network address.
+>
+> (http://www.netfilter.org/documentation/pomlist/pom-combined.html#NETMAP)
+>
+> Cheers.
+>
 
-> On Mon, 2003-05-12 at 14:25, Patrick Ahler wrote:
-> > Is there any way to insert a new rule at the top of a table...
-> > 
-> > For instance, I have rules...
-> > 
-> > RULE 1
-> > RULE 2
-> > RULE 3
-> > RULE 4
-> > 
-> > in order... but what if I want to place a rule before rule 1? Is that
-> > possible?
-> 
-> Yes, just use the -I (insert) option of iptablesinstead of -A (append).
-> 
-> Regards,
-> Filip
-> 
-> 
-> 
-> 
 
