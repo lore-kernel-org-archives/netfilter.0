@@ -1,15 +1,12 @@
-From: Fabrice MARIE <fabrice-marie-sec@ifrance.com>
-Subject: Re: Time based rule change.
-Date: Wed, 23 Oct 2002 09:36:39 +0800
+From: "Amy" <amyyang@w-ibeda.com>
+Subject: Re: *****SPAM***** p-o-m for kernel]
+Date: Wed, 23 Oct 2002 10:54:56 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210230936.39643.fabrice-marie-sec@ifrance.com>
-References: <7415BAE16406EA438981D4A98DE0AE357F6CAD@phexch01.silverline.com> <38899.192.168.7.14.1035331090.squirrel@iw.k1k2.com>
-Reply-To: fabrice-marie-sec@ifrance.com
+Message-ID: <005b01c27a3f$91cc2a40$0814a8c0@yy>
+References: <1035330209.3126.71.camel@server.cs-el.sytes.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <38899.192.168.7.14.1035331090.squirrel@iw.k1k2.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,35 +17,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew Smith <nfml@k1k2.com>, netfilter@lists.netfilter.org
+To: Erik Leupold <spam@cs-el.sytes.net>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 23 October 2002 07:58, Andrew Smith wrote:
-> > HI,
-> >     Is there any netfilter extension which allows time based changing
-> >     of iptables rules. This is because sometimes you need to open up
-> >     some ports for a fixed period of time and then you forget to remove
-> >     the rule. A time based rule will automatically delete itself. I
-> >     realise the security implications, but do they exist ?
-> Actually, if such a beast existed I would guess it would work
-> differently.
-> The Rule would always exist with time attributes and two targets ...
-> one for when it is available and one for when it isn't.
-> Anyone want to write one? :-) :-)
+c29ycnkgZm9yIEkgcG9zdCB0aGlzIG9uIHRoZSBsaXN0LkFuZCBzYXkgc29ycnkgdG8gRXJpY2su
+QnV0IEkgZG9uJ3QgdW5kZXJzdGFuZCB1ciBtZWFuaW5nLiBJdCdzIG15IGZpcnN0IHRpbWUgdG8g
+dXNlIHRoaXMgbWFpbGluZyBsaXN0LiBBbmQgSSdtIHdvcnJ5IGFib3V0IG15IHF1ZXN0aW9uLiBB
+cmUgdGhlcmUgc29tZXRoaW5nIHdvcnJ5IGluIG15IHF1ZXN0aW9uPyBPciBJIGNhbid0IGFzayBz
+dWNoIHF1ZXN0aW9uIG9uIHRoZSBsaXN0PyBXb3VsZCB1IHBscyBnaXZlIG1lIGEgcmVhc29uPyBU
+aGFua3MgYSBsb3QuDQoNClJlZ2FyZHMsDQpBbXkNCg0KDQotLS0tLSBPcmlnaW5hbCBNZXNzYWdl
+IC0tLS0tIA0KRnJvbTogIkVyaWsgTGV1cG9sZCIgPHNwYW1AY3MtZWwuc3l0ZXMubmV0Pg0KVG86
+IDxhbXl5YW5nQHctaWJlZGEuY29tPg0KU2VudDogV2VkbmVzZGF5LCBPY3RvYmVyIDIzLCAyMDAy
+IDc6NDMgQU0NClN1YmplY3Q6IFtGd2Q6ICoqKioqU1BBTSoqKioqIHAtby1tIGZvciBrZXJuZWxd
+DQoNCg0KPiB5b3VyIG1haWwgaXMgcmF0ZWQgYXMgc3BhbQ0KPiANCj4gLS0gDQo+IEVyaWsgTGV1
+cG9sZCA8c3BhbUBjcy1lbC5zeXRlcy5uZXQ+DQo+IA0K
 
-Hello,
-
-actually, you can already use the time match from patch-o-matic to do the
-way you explain it. It's just that it's a standard match in the sense that
-you can use only one target with it, but it's enough if you want to do the way you explain:
- - if time match then jump somewhere
- - else jump somewhere else...
-
-Have a nice day,
-
-Fabrice.
---
-Fabrice MARIE
-
-"Silly hacker, root is for administrators"
-       -Unknown
 
