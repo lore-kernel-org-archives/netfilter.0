@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: inconsistency in iptables and ifconfig traffic counters?
-Date: Wed, 5 Jan 2005 12:12:55 -0500
-Message-ID: <20050105171255.GA24858@bender.817west.com>
-References: <000901c4f346$6bc96ec0$3200a8c0@jeroen>
+From: "Spidal, Glen" <spidalg@hsd.k12.or.us>
+Subject: Setting up 1:1 nat for DMZ
+Date: Wed, 5 Jan 2005 10:23:36 -0800
+Message-ID: <FC8AF9F27A8C6E4DAB2072FC162C421CFC2E57@HILLEX.HILLNET.ad.hsd.k12.or.us>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000901c4f346$6bc96ec0$3200a8c0@jeroen>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Jan 05, 2005 at 05:48:43PM +0100, Jeroen van den Hoed wrote:
-> Shouldn't the iptable rules above count ALL the traffic coming in and going
-> out of eth0? And if these rules are correct, then why is this report lower
-> than the report of ifconfig?
+Hello all,
 
-no.  someone else asked this recently:
+=20
 
-  http://marc.theaimsgroup.com/?l=netfilter&m=110291893801688&w=2
+I would like some advice on setting up 1:1 incoming and outgoing NAT for
+a block of 13 public IP addresses.  I looked at the Patch-O-Matic NETMAP
+command, but it appears it is for an entire subnet.  Currently the
+addresses are the same for web and email traffic but that may change in
+the future.
 
--j
+=20
 
---
-"Dear Baby, Welcome to Dumpsville. Population: You"
-        --The Simpsons
+I looked at a sample script and have NATing working for my LAN but not
+my DMZ.  Two of the public IPs would be for DNS servers.  I added eth0:1
+but am unsure how to process that public IP from there on.
+
+=20
+
+Glen Spidal
+
+=20
 
