@@ -1,13 +1,15 @@
 From: Filip Sneppe <filip.sneppe@cronos.be>
-Subject: Re: Reg iptables Connection tracking
-Date: 14 Jan 2003 15:09:18 +0100
+Subject: Re: /proc/net/ip_conntrack filling without ipt_conntrack.o loaded?
+Date: 14 Jan 2003 16:49:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042553358.464.246.camel@xbox>
-References: <4223A04BF7D1B941A25246ADD0462FF5683717@blr-m3-msg.wipro.com>
+Message-ID: <1042559354.464.770.camel@xbox>
+References: <20030114093711.GC9940@westend.com>
+	<20030114121232.GA3362@westend.com> <1042551825.465.143.camel@xbox> 
+	<20030114150641.GB23431@westend.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4223A04BF7D1B941A25246ADD0462FF5683717@blr-m3-msg.wipro.com>
+In-Reply-To: <20030114150641.GB23431@westend.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,67 +20,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Amit Kumar Gupta <amitkumar.gupta@wipro.com>
+To: Christian Hammers <ch@westend.com>
 Cc: netfilter@lists.netfilter.org
 
-Amit,
+On Tue, 2003-01-14 at 16:06, Christian Hammers wrote:
+> 
+> On Tue, Jan 14, 2003 at 02:43:45PM +0100, Filip Sneppe wrote: 
+> > About the high nuber of tracked connections, are you
+> > talking about /proc/net/ip_conntrack ?
+> Yes. As wrote in my previous mail (should have written it here, too),
 
-This looks like a bug, so I guess you had better take this
-report to netfilter-devel with as much info as possible.
+Ah - that mail - I already deleted it from my mailbox.
 
-Could you also cat a full ip_conntrack to a temp file
-and put it somewhere online to accompany your bugreport.
+> this router does asymetric routing, i.e. the packets for a connection
+> come in over it but the answer packets go out via another router. 
+> So it will almost never see a real 3way tcp handshake or the like.
+> 
 
-Reporting this to netfilter-devel doesn't guarantee that
-you will get a quick solution to your problem
-(your setup is quite different from most people's...),
-but at least it could be put in the KNOWN-BUGS section
-so someone could eventually get around to fixing this...
+Wel, connection tracking was not really designed to handle asymetric
+routing setups, so you're basically screwed. No stateful
+packet filtering firewall will handle this decently, I guess.
+
+On thing you can do, is apply the 'raw' patch from patch-o-matic
+(written by Jozsef Kadlecsik), this allows you not to track
+particular traffic. In your case, you will need to specify
+rules for all (asymetric) traffic that should not be tracked by 
+your firewall. If *all* your traffic is essentially asymetric in
+nature, you'de be better off not using ip_conntrack at all...
+
+Hope this helps...
 
 Regards,
 Filip
-
-On Tue, 2003-01-14 at 13:56, Amit Kumar Gupta wrote:
-> 
-> Hi List,
-> 
-> Again Posting the same question ON the list As I have tried many ways
-> and didn't get any clues.
-> 
-> As soon as I ping from inhome to the RG's internal, It just keep filling
-> the ip_conntrack file and it goes beyond ip_conntrack_max entries. I
-> don't know why Internal address is not replying. 
-> 
-> If Any clues, Please Help.
-> 
-> Thanks & Regards,
-> Amit
-> 
-> -----Original Message-----
-> From: Amit Kumar Gupta 
-> Sent: Saturday, January 11, 2003 10:37 AM
-> To: Athan
-> Cc: netfilter@lists.netfilter.org
-> Subject: RE: Reg iptables Connection tracking
-> 
-> Hi,
-> 
-> I am using Embedix platform in which If I enable CONFIG_SYSCTL, the
-> image doesn't come up on the H/w. So I have to disable this.( There has
-> been some changes in the Kernel to suit this which works fine). Now in
-> conntrack module I don't have this option so my conntrack ctl_table will
-> not be registered woth ipv4 table. So I was hardcoding the value of
-> ip_conntrack_max? Whether it will help?
-> 
-> Another issue is I don't have enough memory on the board to have sysctl
-> command.
-> 
-> Can you suggest something which I can do?
-> 
-> Regards,
-> Amit
-> 
-> 
-
 
 
