@@ -1,12 +1,11 @@
-From: Ilguiz Latypov <ilguiz@nit.ca>
-Subject: Re: DSCP support in iptables 1.2.8
-Date: Wed, 16 Apr 2003 16:11:05 -0400 (EDT)
+From: Isabelle Labbe <isabelle.labbe@crc.ca>
+Subject: DSCP support in iptables 1.2.8
+Date: Wed, 16 Apr 2003 15:14:24 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0304161544550.27449-100000@localhost.localdomain>
-References: <3E9DAB90.9FFF600F@crc.ca>
+Message-ID: <3E9DAB90.9FFF600F@crc.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E9DAB90.9FFF600F@crc.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,45 +15,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Isabelle Labbe <isabelle.labbe@crc.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Can anyone confirm that the DSCP target works in iptables 1.2.8 (or
+1.2.7a) ?
 
-On Wed, 16 Apr 2003, Isabelle Labbe wrote:
+I am running Red Hat 8.0.  I have upgraded the kernel to 2.4.20.  I have
+also installed iptables 1.2.8 and when running the command:
 
-> Can anyone confirm that the DSCP target works in iptables 1.2.8 (or
-> 1.2.7a) ?
+iptables -A FORWARD -t mangle -j DSCP --set-dscp 0x1f
 
-Works for me with iptables 1.2.7a from netfilter.org.  I tested the
-command you mentioned and it worked.
+I get the following message:
 
-I am running Debian unstable, but that doesn't matter.  I think the
-iptables capabilities depend on
+iptables: No chain/target/match by that name
 
-  a) The kernel configuration.  Check out the CONFIG_IP_NF_* options in
-     the kernel configuration file and reconfigure/recompile the kernel
-     source code if needed.  A quick look at the content of the kernel
-     netfilter directory may also help:
+According to the docs on the netfilter site, the above command should
+work. Does anyone know why it doesn't?
 
-     ls /lib/modules/KERNEL_VER/kernel/net/ipv4/netfilter/
+thank you
 
-     DSCP match kernel module name: ipt_dscp.o
-     DSCP target kernel module name: ipt_DSCP.o
-
-  b) The availability of iptables shared object modules.  Check out
-
-     ls /usr/{,local/}lib/iptables/
-
-     DSCP match userspace module name: libipt_dscp.so
-     DSCP target userspace module name: libipt_DSCP.so
+Isabelle
 
 --
-Ilguiz Latypov
-Net Integration Technologies, Inc
+Isabelle Labbe
+Communications Research Centre Canada
+3701 Carling Av.
+PO Box 11490, Station H
+Ottawa, On
+K2H 8S2
 
-tel. +1 (514) 281 9191 x 117
+email: isabelle.labbe@crc.ca
+tel:  (613) 998-1410
+fax:  (613) 998-9648
 
 
 
