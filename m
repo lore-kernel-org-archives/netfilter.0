@@ -1,15 +1,10 @@
-From: Tom Marshall <tommy@home.tig-grr.com>
-Subject: Re: mangling a packet
-Date: Tue, 20 Apr 2004 21:35:41 -0700
+From: aksingh@hss.hns.com
+Subject: NF_IP_LOCAL_OUT
+Date: Wed, 21 Apr 2004 10:02:46 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040421043541.GB1312@home.tig-grr.com>
-References: <46653.172.31.1.1.1081403125.squirrel@mail.local>
+Message-ID: <OFF002E97E.E621AC9C-ON65256E7D.001892FA@hss.hns.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IrhDeMKUP4DT/M7F"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <46653.172.31.1.1.1081403125.squirrel@mail.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,47 +14,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: shantanu sharma <ssharma_02@iiita.ac.in>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Jee J.Z." <jz105@york.ac.uk>, Sven Schuster <schuster.sven@gmx.de>
 Cc: netfilter@lists.netfilter.org
 
 
---IrhDeMKUP4DT/M7F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 08, 2004 at 11:15:25AM +0530, shantanu sharma wrote:
-> we are supposed to capture a dns packet at the firewall and mangle  it
-> appropriately
 
-This is a very tricky process.  I've done some work on DNS mangling myself,
-but it is not complete.  I stopped working on it when Verisign stopped their
-SiteFinder.  Would you be interested in comparing implementations and/or
-merging efforts?
 
-> please tell us how do we correct the checksum filed of UDP and IP after
-> the reverse S NAT takes place or do we need to queue the packets using
-> some other chain of someother table
+hi
 
-I think this should be the least of your problems.  :-)  I would start by
-looking near the end of ip_nat_mangle_udp_packet().
+  I had doubt using this "NF_IP_LOCAL_OUT" netfilter hook, do all locally
+generated packets hit this hook first ? .. i.e a packet comes from
+application running on this machine, goes to TCP , then comes to ip... or
+say a normal TCP ack going out from this machine ... so would all such
+"locally generated" packets hit this hook first ? and is the routing
+decision for such packets taken after they traverse this hook ?
 
---=20
-Nothing will dispel enthusiasm like a small admission fee.
-        -- Kim Hubbard
+thanks
+Amit
 
---IrhDeMKUP4DT/M7F
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+"DISCLAIMER: This message is proprietary to Hughes Software Systems Limited
+(HSS) and is intended solely for the use of the individual to whom it is
+addressed. It may contain  privileged or confidential information and
+should not be circulated or used for any purpose other than for what it is
+intended. If you have received this message in error, please notify the
+originator immediately. If you are not the intended recipient, you are
+notified that you are strictly prohibited from using, copying, altering, or
+disclosing the contents of this message. HSS accepts no responsibility for
+loss or damage arising from the use of the information transmitted by this
+email including damage from virus."
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAkCF+h0ACgkQFMm9uvwPXW7nXwCfcLUSRjQUrLRrjgR3v6IRbM7c
-97UAn1LvFx96Pr2CyqZ8ELIVo0MvicPN
-=2JHP
------END PGP SIGNATURE-----
-
---IrhDeMKUP4DT/M7F--
 
