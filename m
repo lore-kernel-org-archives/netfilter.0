@@ -1,13 +1,12 @@
-From: Craig Davison <cd@securityfocus.com>
-Subject: Re: (libiptc) iptc_delete_entry or iptc_delete_num_entry?
-Date: Sun, 2 Feb 2003 13:26:00 -0700
+From: "Al-Juhani" <aljuhani@zajil.net>
+Subject: Re: Looking for Log Analyzer
+Date: Sun, 2 Feb 2003 23:26:30 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030202202600.GA28811@securityfocus.com>
-References: <20030131205737.GB27677@securityfocus.com>
+Message-ID: <E18fQhN-0002oK-00@kashyyyk.netfilter.org>
+Reply-To: aljuhani@zajil.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030131205737.GB27677@securityfocus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,78 +17,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+Cc: susan.sagan@cgi.com, susan.sagan@cgi.com
 
-Hi again,
+Here isnetfilter an online tool at http://logi.cc/linux/NetfilterLogAnalyzer.php3.
 
-The reason I'm asking is that neither the LDP nor the Netfilter Hacking HOWTO have adequate 
-information on these functions. Basically I need help from someone who has used libiptc to 
-add, modify and delete rules, or at least some kind of document on the subject.
+For more links about Iptables check this URL: http://www.linuxguruz.org/iptables/
 
-On Fri, Jan 31, 2003 at 01:57:37PM -0700, Craig Davison wrote:
-> Hi,
-> 
-> Should I be using iptc_delete_num_entry or iptc_delete_entry to delete 
-> rules from a chain? I can't seem to find documentation for the 
-> parameters of iptc_delete_entry (please point me in the right direction if 
-> it exists!), and I'm not 100% sure what to pass for the rulenum parameter 
-> to iptc_delete_num_entry.
-> 
-> The only documentation I have for iptc_delete_num_entry is the 
-> Querying-libiptc-HOWTO from the LDP, and it says that rulenum is a rule 
-> number starting at 1 for the first rule.
-> 
-> So let's say I want to delete every rule one at a time from a chain. Do I 
-> have to manually increase my own rulenum counter for every rule, or is 
-> there some way to get rulenum from an ipt_entry?
-> 
-> Example:
-> 
-> iptc_handle_t htable;
-> const char *chain = "INPUT";
-> struct ipt_entry *entry;
-> int rulenum = 0, is_chain_changed = 0;
-> 
-> if (!(htable = iptc_init ("filter")))
-> {
->   printf ("iptc_init: %s\n", iptc_strerror (errno));
->   exit(0);
-> }
-> 
-> entry = (struct ipt_entry *)iptc_first_rule (chain, &htable);
-> while (entry)
-> {
->   rulenum++;
->   if (!(iptc_delete_num_entry (chain, rulenum, &htable)))
->   {
->     printf ("iptc_delete_num_entry: %s\n", iptc_strerror (errno));
->     break;
->   }
-> 
->   is_chain_changed = 1;
->   entry = (struct ipt_entry *)iptc_next_rule (entry, &htable);
-> }
-> 
-> if (is_chain_changed)
-> {
->   if (!(iptc_commit (&htable)))
->     fprintf (stderr, "iptc_commit: %s\n", iptc_strerror (errno));
-> }
+
+Al-Juhani
+aljuhani@zajil.net
+
+----- Original Message ----- 
+From: "Susan Sagan" <susan.sagan@cgi.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, January 30, 2003 23:48
+Subject: Looking for Log Analyzer
+
+
+> Before writing my own, I was wondering if there were tools available for
+> analyzing the output log file from iptables.  I was in particular looking
+> for tools which created a variety of different reports.  One such example
+> being a report listing the top traffic generators. 
 > 
 > 
-> Plus, is the rulenum going to change for the rest of the rules in a chain 
-> if I delete a rule? If not immediately, how about after I commit?
-> 
-> TIA for any help.
-> 
-> -- 
-> Craig Davison
-> Symantec Corporation
-> +1 (403) 213-3939 ext. 228
-> 
--- 
-Craig Davison
-Symantec Corporation
-+1 (403) 213-3939 ext. 228
+> Susan Sagan
+> Unix Systems Administrator
+> Ottawa Data Center, Unix Services
+> CGI Information Systems and Management
+> Phone: 613-740-5900 ext 5351
+> Fax: 613-749-2201
+> Email: susan.sagan@cgi.com
+
+
 
