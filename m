@@ -1,12 +1,12 @@
-From: Paulo Andre <pandre@darkstar.nom.za>
-Subject: test iptables for PPTP patch
-Date: Thu, 19 Aug 2004 13:28:47 +0200
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: test iptables for PPTP patch
+Date: Thu, 19 Aug 2004 07:39:17 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408191328.47095.pandre@darkstar.nom.za>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512A9@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,9 +19,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have just upgraded to iptables 1.2.11 and run p-o-m ng 20040621, how can I 
-make sure that I have PPTP nat'ing available?
+> I have just upgraded to iptables 1.2.11 and run p-o-m ng 20040621, how =
+can I
+> make sure that I have PPTP nat'ing available?
+>
+> Paulo
 
-Paulo
+if you compiled them as modules:
 
+# modprobe ip_conntrack_pptp
+# modprobe ip_nat_pptp
+# modprobe ip_conntrack_proto_gre
+# modprobe ip_nat_proto_gre
+
+-j
 
