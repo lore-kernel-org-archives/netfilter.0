@@ -1,9 +1,8 @@
-From: Trevor Morrison <trevor@hailix.com>
-Subject: Errors on startup of iptables 1.2.8
-Date: Sat, 10 May 2003 18:09:06 -0600
+From: Francois LE BOURDELLES <flebourdelles@free.fr>
+Subject: How to nat a full subnet ?
+Date: 11 May 2003 10:44:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EBD94A2.D9B53124@hailix.com>
-Reply-To: trevor@hailix.com
+Message-ID: <1052642696.17942.14.camel@charlebourg-2-81-57-105-138.fbx.proxad.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,215 +16,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-  Hi,
+Hello happy netfilter users,
 
-I have a RH box 7.1 with a modular 2.4.20 kernel.  I patched the kernel
-with the latest iptables patch 1.2.8.  When I run the following command
-from
-a cron job: iptables -t mangle -L  I get the following error:
+First i use kernel 2.4.20 patch-o-matic'ed and iptables 2.4.8
+I have to SNAT an DNAT a full subnet (199.1.4.0/0 (internal address
+plan) to 1998.1.4.0/0 (external view))
+so I tried to use the command :
 
-iptables: libiptc/libip4tc.c:384: do_check: Assertion
-`h->info.valid_hooks == (1 << 0 | 1 << 3)' failed.
-/etc/rc.d/init.d/iptables: line 170: 17123 Aborted
-iptables -t mangle --list
+iptables -t nat -A POSTROUTING -s 199.1.4.0/24 --to 199.1.4.0/24 -o
+tunnel0 -j SNAT
+(tunnel0 is a GRE typed tunnel)
 
-When I run that same command from the command line it prints the mangle
-table fine.  I also get this error when the machine reboots and run the
-init script for iptables.  I have included that script below if it will
-help.
+as the NAT Howto page shows (NAT-HOWTO-6.html).
 
-#!/bin/sh
-#
-# Startup script to implement /etc/sysconfig/iptables pre-defined rules.
+The aim is to have per exemple : 199.1.4.13 source changed to 198.1.4.13
 
-#
-# chkconfig: 2345 11 92
-#
-# description: Automates a packet filtering firewall with iptables.
-#
-# by bero@redhat.com, based on the ipchains script:
-# Script Author: Joshua Jensen <joshua@redhat.com>
-#   -- hacked up by gafton with help from notting
-# modified by Anton Altaparmakov <aia21@cam.ac.uk>:
-# modified by Nils Philippsen <nils@redhat.de>
-#
-# config: /etc/sysconfig/iptables
+but this command is rejected :
 
-# Source 'em up
-. /etc/init.d/functions
+As I understand the sources (iptables and kernel) this is because the
+--to only accept single IP address
+or a range of IP-address, the last one for a pool automatic selection
+[And I do not know for what this could be used !).
 
-IPTABLES_CONFIG=/etc/sysconfig/iptables
+DO THE HOW-TO PAGES HAVE TO BE UPDATED (removing of the full subnet SNAT
+and DNAT) ... or the iptables/ipfilter updated ?
 
-if [ ! -x /usr/local/sbin/iptables ]; then
- exit 0
-fi
-
-KERNELMAJ=`uname -r | sed                   -e 's,\..*,,'`
-KERNELMIN=`uname -r | sed -e 's,[^\.]*\.,,' -e 's,\..*,,'`
-
-if [ "$KERNELMAJ" -lt 2 ] ; then
- exit 0
-fi
-if [ "$KERNELMAJ" -eq 2 -a "$KERNELMIN" -lt 3 ] ; then
- exit 0
-fi
-
-
-
-if  /sbin/lsmod 2>/dev/null |grep -q ipchains ; then
- # Don't do both
- exit 0
-fi
-start() {
- # don't do squat if we don't have the config file
- if [ -f $IPTABLES_CONFIG ]; then
-     # If we don't clear these first, we might be adding to
-     #  pre-existing rules.
-     action $"Flushing all current rules and user defined chains:"
-iptables -F
-     action $"Clearing all current rules and user defined chains:"
-iptables -X
-     chains=`cat /proc/net/ip_tables_names 2>/dev/null`
-            for i in $chains; do iptables -t $i -F; done && \
-              success $"Flushing all current rules and user defined
-chains:" || \
-              failure $"Flushing all current rules and user defined
-chains:"
-            for i in $chains; do iptables -t $i -X; done && \
-              success $"Clearing all current rules and user defined
-chains:" || \
-              failure $"Clearing all current rules and user defined
-chains:"
-
-            for i in $chains; do iptables -t $i -Z; done
-
-     echo $"Applying iptables firewall rules: "
-/etc/sysconfig/iptables
-# grep -v "^[[:space:]]*#" $IPTABLES_CONFIG | grep -v '^[[:space:]]*$' |
-/usr/local/sbin/iptables-restore -c && \
-      success $"Applying iptables firewall rules" || \
-      failure $"Applying iptables firewall rules"
-     echo
-     touch /var/lock/subsys/iptables
- fi
-}
-
-stop() {
- chains=`cat /proc/net/ip_tables_names 2>/dev/null`
-        for i in $chains; do iptables -t $i -F; done && \
-                success $"Flushing all chains:" || \
-                failure $"Flushing all chains:"
-        for i in $chains; do iptables -t $i -X; done && \
-                success $"Removing user defined chains:" || \
-                failure $"Removing user defined chains:"
-        echo -n $"Resetting built-in chains to the default ACCEPT
-policy:"
- iptables -P INPUT ACCEPT && \
-    iptables -P OUTPUT ACCEPT && \
-    iptables -P FORWARD ACCEPT && \
-    iptables -t nat -P PREROUTING ACCEPT && \
-    iptables -t nat -P POSTROUTING ACCEPT && \
-    iptables -t nat -P OUTPUT ACCEPT && \
-           iptables -t mangle -P PREROUTING ACCEPT && \
-           iptables -t mangle -P OUTPUT ACCEPT && \
-    success $"Resetting built-in chains to the default ACCEPT policy" ||
-\
-    failure $"Resetting built-in chains to the default ACCEPT policy"
- echo
- rm -f /var/lock/subsys/iptables
-}
-
-case "$1" in
-  start)
- start
- ;;
-
-  stop)
- stop
- ;;
-
-  restart)
- # "restart" is really just "start" as this isn't a daemon,
- #  and "start" clears any pre-defined rules anyway.
- #  This is really only here to make those who expect it happy
- start
- ;;
-condrestart)
- [ -e /var/lock/subsys/iptables ] && start
- ;;
-
-  status)
- echo $"Table: filter"
- iptables --list
- echo $"Table: nat"
- iptables -t nat --list
- echo $"Table: mangle"
- iptables -t mangle --list
- ;;
-
-  panic)
- echo -n $"Changing target policies to DROP: "
- iptables -P INPUT DROP && \
-     iptables -P FORWARD DROP && \
-     iptables -P OUTPUT DROP && \
-     iptables -t nat -P PREROUTING DROP && \
-     iptables -t nat -P POSTROUTING DROP && \
-     iptables -t nat -P OUTPUT DROP && \
-     iptables -t mangle -P PREROUTING DROP && \
-     iptables -t mangle -P OUTPUT DROP && \
-     success $"Changing target policies to DROP" || \
-     failure $"Changing target policies to DROP"
- echo
-        iptables -F INPUT && \
-                iptables -F FORWARD && \
-                iptables -F OUTPUT && \
-                iptables -t nat -F PREROUTING && \
-                iptables -t nat -F POSTROUTING && \
-                iptables -t nat -F OUTPUT && \
-                iptables -t mangle -F PREROUTING && \
-                iptables -t mangle -F OUTPUT && \
-                success $"Flushing all chains:" || \
-                failure $"Flushing all chains:"
-        iptables -X INPUT && \
-                iptables -X FORWARD && \
-                iptables -X OUTPUT && \
-                iptables -t nat -X PREROUTING && \
-                iptables -t nat -X POSTROUTING && \
-                iptables -t nat -X OUTPUT && \
-                iptables -t mangle -X PREROUTING && \
-                iptables -t mangle -X OUTPUT && \
-                success $"Removing user defined chains:" || \
-                failure $"Removing user defined chains:"
-        ;;
-
-  save)
- echo -n $"Saving current rules to $IPTABLES_CONFIG: "
- touch $IPTABLES_CONFIG
- chmod 600 $IPTABLES_CONFIG
- /usr/local/sbin/iptables-save -c > $IPTABLES_CONFIG  2>/dev/null && \
-   success $"Saving current rules to $IPTABLES_CONFIG" || \
-   failure $"Saving current rules to $IPTABLES_CONFIG"
- echo
- ;;
-
-  *)
- echo $"Usage: $0 {start|stop|restart|condrestart|status|panic|save}"
- exit 1
-esac
-
-exit 0
-
-
-TIA.
-
-
---
-Trevor Morrison
-Hailix, LLC
-trevor@hailix.com
-
-
+Regards.
+-- 
+Francois LE BOURDELLES <flebourdelles@free.fr>
 
 
