@@ -1,10 +1,13 @@
-From: Niall Murphy <nmurphy@viking.ie>
-Subject: (no subject)
-Date: Wed, 10 Jul 2002 10:00:11 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: satellite users can't connect to port forwarded services
+Date: Wed, 10 Jul 2002 01:13:30 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <9AB58396B028D411B2110050040C7AD80173CEEB@pc213-104.indigo.ie>
+Message-ID: <20020710001332.QHQO19225.mta07-svc.ntlworld.com@there>
+References: <F2178nzRC1uQdfNPqvW0000bba8@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <F2178nzRC1uQdfNPqvW0000bba8@hotmail.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,16 +18,16 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-hi, 
-i have a question on remote logging im using RH 7.2 and i would like to send
-a copy of the logs to a machine on my lan from the firewall
-can anyone tell me what line of code i need in my  etc/syslog.conf directory
-will
-*.*            @<ip address work>
+On Wednesday 10 July 2002 1:00 am, j davis wrote:
 
-thanx in advance
-niall
+> Starband satallites claim they dont support real-time protocalls
+> like telnet,ssh,ftp and so on.
+
+What protocols qualify as non real-time ?
+
+ 
+
+Antony.
 
