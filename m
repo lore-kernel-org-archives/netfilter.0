@@ -1,14 +1,13 @@
 From: Jose Maria Lopez <jkerouac@eresmas.com>
-Subject: Re: connlimit and LVS
-Date: 25 Aug 2004 21:25:28 +0200
+Subject: RE: Iptables error
+Date: 25 Aug 2004 21:25:22 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093445746.25289.17.camel@nostromo.bgsecm.com>
-References: <f3204f9a04082400405a81100c@mail.gmail.com>
-	<f3204f9a040824153160dbb46f@mail.gmail.com>
+Message-ID: <1093444934.26740.8.camel@nostromo.bgsecm.com>
+References: <D5C9032B2B09C64EA2409D6214E91AC90512D0@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <f3204f9a040824153160dbb46f@mail.gmail.com>
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90512D0@asimail2.alphanumeric.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,26 +20,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mié, 25 de 08 de 2004 a las 00:31, Stuart Clark escribió:
-> Hi there..
+El mié, 25 de 08 de 2004 a las 14:56, Jason Opperisano escribió:
+> > This morning I rebooted one of our firewalls, I have created a new kernel for
+> > it (2.4.20, patched kernel with latest p-o-m ng).
+> > When I run my firewall script, all I get is errors, seems to be a problem with
+> > iptables 'tables' as none of the rules are create but the default policies
+> > are in place, in dmesg I have the following error:
+> >
+> > ip_tables: table screwed up!
+> >
+> > This firewall is a production server and I can only really take it down
+> > tonight to check it, anyone had something like this before?
+> >
+> > Paulo
 > 
-> I have a LVS setup with two directors direct routing to 4 real
-> servers. I have been trying to use the 'connlimit' patch from
-> Netfilter patch-o-matic on the director to restrict the number of
-> concurrent connections coming into the VIP.  I have not been able to
-> get it working with the PREROUTING or FORWARD tables, and was
-> wondering if is due to LVS that connlimit can not seem to track
-> connections?
+> sounds to me like you applied p-o-m, rebuilt your kernel, but did not rebuild your userspace.  anytime you apply a patch from pom that changes structures, or requires additional libraries, you need to recompile your userspace iptables utilities.  since it's unclear to me when the userspace rebuild is required--i do it everytime.  sounds like it was in this case for you...
+> 
+> -j
 > 
 
-Maybe the problem is that you are using direct routing, that it's a
-hack to redirect the traffic directly to the routers without passing
-through the firewall. I don't really know which tables the traffic
-passes through when using direct routing, it should be in the LVS
-documentation.
-
-Maybe you would have more luck using the iproute2 system to limit the
-traffic using advanced routing or QOS.
+I also agree the problem could be that you have not recompiled the
+userspace utils, but it's strage, because I think p-o-m use to ask
+for the iptables sources to be executed. Maybe you have a too old
+version of iptables or maybe the p-o-m ng it's too new for your
+quite old (2.4.20) kernel. Why don't updating the iptables to the
+last version and also the kernel to 2.4.27 so you have to recompile
+both of them?
 
 -- 
 Jose Maria Lopez Hernandez
