@@ -1,10 +1,9 @@
-From: "Amy" <amyyang@w-ibeda.com>
-Subject: patch netlink
-Date: Fri, 25 Oct 2002 13:44:44 +0800
+From: "Kancha ." <kancha2np@yahoo.com>
+Subject: iptables smtp
+Date: Thu, 24 Oct 2002 23:20:47 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004d01c27be9$9ff51270$0814a8c0@yy>
+Message-ID: <20021025062047.69633.qmail@web14906.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,57 +15,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-dGhhbmtzIGFsbCBmb3IgdSBwb2ludCBvdXQgbXkgbWlzdGFrZS4gSSByZXBvc3QgbXkgcXVlc3Rp
-b24uDQogICAgSSB1c2Uga2VybmVsIDIuNC4xOCxwYXRjaC1vLW1hdGljLTIwMDIwODI1LkkgcGF0
-Y2ggdGhlIGtlcm5lbCB3aXRoIG5ldGxpbmsgYW5kIG5mbmV0bGlrLWN0bmV0bGluay0wLjExIHN1
-Y2Nlc3NmdWwuIFRoZW4gSSBpbnN0YWxsIHRoZSBpcHRhYmVsLTEuMi43YSBzdWNjZXNzZnVsLiBX
-aGVuIEkgbWFrZSBhIG5ldyBrZXJuZWwgaW1hZ2U6IG1ha2UgYnpJbWFnZSwgdGhlIGVycm9yIGlz
-IG9jY3VyZWQuIEl0IHNhaWQ6DQogDQpJbiBmaWxlIGluY2x1ZGVkIGZyb20gbmZuZXRsaW5rX2Nv
-bm50cmFjay5jOjQ0Og0KL3Vzci9sb2NhbC9saW51eC10ZXN0L2luY2x1ZGUvbGludXgvbmZuZXRs
-aW5rX2Nvbm50cmFjay5oOjYxOiBmaWVsZCBgcHJvdG8nIGhhcyBpbmNvbXBsZXRlIHR5cGUNCi91
-c3IvbG9jYWwvbGludXgtdGVzdC9pbmNsdWRlL2xpbnV4L25mbmV0bGlua19jb25udHJhY2suaDo2
-ODogZmllbGQgYGhlbHAnIGhhcyBpbmNvbXBsZXRlIHR5cGUNCm5mbmV0bGlua19jb25udHJhY2su
-YzogSW4gZnVuY3Rpb24gYGN0bmV0bGlua19maWxsX2luZm8nOg0KbmZuZXRsaW5rX2Nvbm50cmFj
-ay5jOjEwNjogZGVyZWZlcmVuY2luZyBwb2ludGVyIHRvIGluY29tcGxldGUgdHlwZQ0KbmZuZXRs
-aW5rX2Nvbm50cmFjay5jOjEwNjogZGVyZWZlcmVuY2luZyBwb2ludGVyIHRvIGluY29tcGxldGUg
-dHlwZQ0KbmZuZXRsaW5rX2Nvbm50cmFjay5jOjEwODogZGVyZWZlcmVuY2luZyBwb2ludGVyIHRv
-IGluY29tcGxldGUgdHlwZQ0KbmZuZXRsaW5rX2Nvbm50cmFjay5jOjEwODogZGVyZWZlcmVuY2lu
-ZyBwb2ludGVyIHRvIGluY29tcGxldGUgdHlwZQ0KbmZuZXRsaW5rX2Nvbm50cmFjay5jOjExMDog
-ZGVyZWZlcmVuY2luZyBwb2ludGVyIHRvIGluY29tcGxldGUgdHlwZQ0KbmZuZXRsaW5rX2Nvbm50
-cmFjay5jOiBJbiBmdW5jdGlvbiBgY3RuZXRsaW5rX2dldF9jb25udHJhY2snOg0KbmZuZXRsaW5r
-X2Nvbm50cmFjay5jOjM2OTogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rp
-b24gYGlwX2Nvbm50cmFja19wdXQnDQpuZm5ldGxpbmtfY29ubnRyYWNrLmM6IEluIGZ1bmN0aW9u
-IGBjdG5ldGxpbmtfZXhwX2ZpbGxfaW5mbyc6DQpuZm5ldGxpbmtfY29ubnRyYWNrLmM6NDE2OiBz
-dHJ1Y3R1cmUgaGFzIG5vIG1lbWJlciBuYW1lZCBgc2VxJw0KbmZuZXRsaW5rX2Nvbm50cmFjay5j
-OjQxNzogc2l6ZW9mIGFwcGxpZWQgdG8gYW4gaW5jb21wbGV0ZSB0eXBlDQpuZm5ldGxpbmtfY29u
-bnRyYWNrLmM6NDE3OiBzaXplb2YgYXBwbGllZCB0byBhbiBpbmNvbXBsZXRlIHR5cGUNCm5mbmV0
-bGlua19jb25udHJhY2suYzo0MTc6IHN0cnVjdHVyZSBoYXMgbm8gbWVtYmVyIG5hbWVkIGBoZWxw
-Jw0KbmZuZXRsaW5rX2Nvbm50cmFjay5jOiBJbiBmdW5jdGlvbiBgY3RuZXRsaW5rX2RlbF9leHBl
-Y3QnOg0KbmZuZXRsaW5rX2Nvbm50cmFjay5jOjUwNDogd2FybmluZzogaW1wbGljaXQgZGVjbGFy
-YXRpb24gb2YgZnVuY3Rpb24gYGlwX2Nvbm50cmFja19leHBlY3RfZmluZF9nZXQnDQpuZm5ldGxp
-bmtfY29ubnRyYWNrLmM6NTA0OiB3YXJuaW5nOiBhc3NpZ25tZW50IG1ha2VzIHBvaW50ZXIgZnJv
-bSBpbnRlZ2VyIHdpdGhvdXQgYSBjYXN0DQpuZm5ldGxpbmtfY29ubnRyYWNrLmM6NTA5OiB3YXJu
-aW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiBgaXBfY29ubnRyYWNrX3VuZXhw
-ZWN0X3JlbGF0ZWQnDQpuZm5ldGxpbmtfY29ubnRyYWNrLmM6NTExOiB3YXJuaW5nOiBpbXBsaWNp
-dCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiBgaXBfY29ubnRyYWNrX2V4cGVjdF9wdXQnDQpuZm5l
-dGxpbmtfY29ubnRyYWNrLmM6IEluIGZ1bmN0aW9uIGBjdG5ldGxpbmtfZXhwX2R1bXBfdGFibGUn
-Og0KbmZuZXRsaW5rX2Nvbm50cmFjay5jOjU0MTogYGlwX2Nvbm50cmFja19leHBlY3RfbGlzdCcg
-dW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pDQpuZm5ldGxpbmtfY29ubnRy
-YWNrLmM6NTQxOiAoRWFjaCB1bmRlY2xhcmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0ZWQgb25seSBv
-bmNlIA0KbmZuZXRsaW5rX2Nvbm50cmFjay5jOjU0MTogZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBw
-ZWFycyBpbi4pDQpuZm5ldGxpbmtfY29ubnRyYWNrLmM6IEluIGZ1bmN0aW9uIGBjdG5ldGxpbmtf
-Z2V0X2V4cGVjdCc6DQpuZm5ldGxpbmtfY29ubnRyYWNrLmM6NTk3OiB3YXJuaW5nOiBhc3NpZ25t
-ZW50IG1ha2VzIHBvaW50ZXIgZnJvbSBpbnRlZ2VyIHdpdGhvdXQgYSBjYXN0DQpuZm5ldGxpbmtf
-Y29ubnRyYWNrLmM6IEluIGZ1bmN0aW9uIGBjdG5ldGxpbmtfaW5pdCc6DQpuZm5ldGxpbmtfY29u
-bnRyYWNrLmM6NzA5OiB3YXJuaW5nOiBsYWJlbCBgZXJyX3VucmVnX3N1YnN5cycgZGVmaW5lZCBi
-dXQgbm90IHVzZWQNCm5mbmV0bGlua19jb25udHJhY2suYzogQXQgdG9wIGxldmVsOg0KbmZuZXRs
-aW5rX2Nvbm50cmFjay5jOjE2Nzogd2FybmluZzogYGN0bmV0bGlua19jcmVhdGUnIGRlZmluZWQg
-YnV0IG5vdCB1c2VkDQpuZm5ldGxpbmtfY29ubnRyYWNrLmM6NDU3OiB3YXJuaW5nOiBgY3RuZXRs
-aW5rX2V4cF9jcmVhdGUnIGRlZmluZWQgYnV0IG5vdCB1c2VkDQouLi4uDQoNCndoYXQncyB3cm9u
-Zz8gIERpZCBJIG1pc3MgdG8gcGF0Y2ggc29tZXRoaW5nPyBXb3VsZCB5b3UgcGxlYXNlIGhlbHAg
-bWUgdG8gYW5hbHlzZSB0aGUgZXJyb3I/IFRoYW5rcyBpbiBhZHZhbmNlLg0KIA0KUmVnYXJkcywN
-CkFteQ0KDQoNCg==
+Below is my iptables rules:
 
+# create allowed chain
+/sbin/iptables -N allowed
+/sbin/iptables -A allowed -p TCP --syn -j ACCEPT
+/sbin/iptables -A allowed -p TCP -m state --state
+ESTABLISHED, RELATED -j ACCEPT
+
+
+/sbin/iptables -A FORWARD -p tcp -i $EXT_IF -o $DMZ_IF
+-d $MAILSERVER --dport 25 -j allowed
+
+/sbin/iptables -A FORWARD -p tcp -o $EXT_IF -i $DMZ_IF
+-s $MAILSERVER --dport 25 -j allowed
+
+
+$DMZ_IF and $EXT_IF are interfaces connected DMZ and
+External network respectively. An SMTP connection can
+be established from external network to dmz, but the
+same cannot be done from DMZ to external network.
+What's wrong with my script ?? Isnt' the last iptables
+rule suppose to allow smtp connection from dmz to
+external network ??
+
+kancha.
+
+__________________________________________________
+Do you Yahoo!?
+Y! Web Hosting - Let the expert host your web site
+http://webhosting.yahoo.com/
 
