@@ -1,14 +1,10 @@
-From: Arvanitis Kostas <arvanit@ellemedia.com>
-Subject: Re: please help  me.......
-Date: Fri, 19 Sep 2003 12:45:11 +0300
+From: Carlos Santos <csantos@csantos.net>
+Subject: H323 gateway? HELP
+Date: Fri, 19 Sep 2003 11:16:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309191245.12014.arvanit@ellemedia.com>
-References: <000101c37e8b$b7342e30$1d01a8c0@pdcindscape.com>
+Message-ID: <5.2.0.9.0.20030919105537.00b313d0@mail.network.com.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000101c37e8b$b7342e30$1d01a8c0@pdcindscape.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +14,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Friday 19 September 2003 11:55, Vijay Angelo wrote:
-> hi
->  I m one among the member of this list ,i have a problem with
-> libiptc...please look after if u can do it.
->  I want to insert one rule using the iptc_insert_entry function in
-> libiptc....
->  As i m new to netfilter ,libiptc ..i m struggling  a lot..i hope u
-> can help me .
->
->  Just give me an information about how to fill the target information
-> in the ip_entry structure ...and the  i  target_offset field ...
 
-Well, using the library is complicated. The functions themselves are 
-easy to understand how to call, but the format of a rule is very 
-complicated.
 
-It is something like generic data applicable to all rules, then data for 
-specific match extensions and then data for any target extension.
+Hi,
 
-However is all allocated and used through structs placed inside opaque 
-memory chunks, so it is very difficult to explain in an email.
+I'm using a RedHat Psyche (RedHat 8) box as gateway to access the Internet. 
+As usual, it has 2 netcards, it's running Iptables (masquerading) and I 
+just recompiled/upgraded the kernel to version 2.4.22 (latest stable one 
+according to kernel.org). All the netfilter related modules (including 
+h323) are built into the kernel so no dynamic loading is necessary in the 
+firewall script. Everything is working ok when it comes to all the other 
+Internet services (http, ftp...) but I now need to add support to 
+audio/video so I can use my webcam to connect to people in the Internet. 
+I've been reading and testing everything I could in the past 3 days but I 
+can't get the darn thing to work.
 
-Your best bet is looking through the code for iptables (iptables.c) and 
-the various extensions.
+- Does anyone have / know about a step by step guide I can read to have 
+h323 support in a redhat gateway ? I'd prefer not to have to use h323 
+proxies like GateKeeper. I would like to get this done with 
+Netfilter/Iptables alone if possible.
 
--- 
-A: No. See http://www.netmeister.org/news/learn2quote.html
-Q: Should I include quotations after my reply ?
+- Can anyone tell me how to maje sure the kernel has specific modules built 
+in ? I know I selected them to be built in when I recompiled but I really 
+can't be sure they're there. Is there a command to find out ?
+
+
+Thanks,
+Carlos.
+
+
+
+*****************************************
+Carlos Santos
+csantos@csantos.net
+***************************************** 
 
 
