@@ -1,14 +1,11 @@
-From: "Arif Mahmood" <arif786@rogers.com>
-Subject: RE: Upgrade Iptables...
-Date: Tue, 17 Sep 2002 12:34:56 -0400
+From: Bird Chen <bird@linux.taiwan.hp.com>
+Subject: strange about netmeeting via iptables?
+Date: Wed, 18 Sep 2002 01:40:33 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000601c25e68$286606e0$3a00a8c0@am>
-References: <000e01c25dc3$6d7d0170$d201a8c0@hornet>
-Reply-To: <arif786@rogers.com>
+Message-ID: <3D876911.FF34E7EB@linux.taiwan.hp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000e01c25dc3$6d7d0170$d201a8c0@hornet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,52 +18,92 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Raj/Everyone,
+Hi,
+  I am new to this list. But I have been searching for solution on this
+issue over and over. I have a linux running iptables between my intranet
+and ISP through ADSL link. And my client which is running win2k try to
+netmeeting the internet people. But when the connection was established,
+peer can hear what I am saying but I can't hear the peer's voice.
+  Here is the output of my iptables -L,
 
-You mean  by  KERNEL_DIR, location of the complied kernel or source
-kernel, also I couldn't find the source kernel directory in RH 7.3,
-which I installed with default packages.
+root@srv1:/proc/net# iptables -L
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+DROP       tcp  --  anywhere             anywhere           tcp
+flags:FIN,SYN,RS
+T,PSH,ACK,URG/FIN,SYN,RST,PSH,ACK,URG
+DROP       tcp  --  anywhere             anywhere           tcp
+flags:FIN,SYN,RS
+T,PSH,ACK,URG/NONE
+DROP       tcp  --  anywhere             anywhere           tcp
+dpt:telnet
+ACCEPT     tcp  --  10.1.1.0/24          anywhere           tcp dpt:ssh
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssh
+LOG        tcp  --  anywhere             anywhere           tcp dpt:www
+LOG leve
+l warning prefix `HTTP tried to access.'
+LOG        udp  --  anywhere             anywhere           udp dpt:www
+LOG leve
+l warning prefix `HTTP tried to access.'
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+DROP       tcp  --  anywhere             anywhere           tcp
+flags:FIN,SYN,RS
+T,PSH,ACK,URG/FIN,SYN,RST,PSH,ACK,URG
+DROP       tcp  --  anywhere             anywhere           tcp
+flags:FIN,SYN,RS
+T,PSH,ACK,URG/NONE
+DROP       all  -- !10.1.1.0/24          anywhere
+DROP       all  --  192.168.0.0/16       anywhere
+DROP       all  --  172.16.0.0/12        anywhere
+DROP       all  --  10.0.0.0/8           anywhere
+LOG        tcp  --  anywhere             anywhere           tcp
+spts:netbios-ns:
+netbios-ssn LOG level warning prefix `SMB tried to cross.'
+LOG        udp  --  anywhere             anywhere           udp
+spts:netbios-ns:
+netbios-ssn LOG level warning prefix `SMB tried to cross.'
+DROP       tcp  --  anywhere             anywhere           tcp
+spts:netbios-ns:
+netbios-ssn
+DROP       udp  --  anywhere             anywhere           udp
+spts:netbios-ns:
+netbios-ssn
+DROP       tcp  --  anywhere             anywhere           tcp spt:635
+DROP       udp  --  anywhere             anywhere           udp spt:635
+DROP       tcp  --  anywhere             anywhere           tcp spt:2049
 
-Thanks and Best Regards,
-Arif
- 
+DROP       udp  --  anywhere             anywhere           udp spt:2049
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Raj
-Wurttemberg
-Sent: Monday, September 16, 2002 4:56 PM
-To: netfilter@lists.netfilter.org; arif786@rogers.com
-Subject: RE: Upgrade Iptables...
+DROP       tcp  --  anywhere             anywhere           tcp
+spt:sunrpc
+DROP       udp  --  anywhere             anywhere           udp
+spt:sunrpc
+DROP       udp  --  anywhere             anywhere           udp
+dpt:syslog
+DROP       tcp  --  anywhere             anywhere           tcp
+dpt:printer
+DROP       tcp  --  anywhere             anywhere           tcp
+dpt:shell
+DROP       tcp  --  anywhere             anywhere           tcp dpt:exec
 
+ACCEPT     all  --  10.1.1.0/24          anywhere           state NEW
+ACCEPT     all  -- !10.1.1.0/24          anywhere           state
+RELATED,ESTABL
+ISHED
 
-
-> On Monday 16 September 2002 8:23 pm, Arif Mahmood wrote:
-> > How do I do the  patch-o-matic, I mean if you send me the
-> steps to do
-> > patch-o-matic on RedHat 7.3.  I couldn't find the  patch-o-matic
-> > documentations.
-http://www.netfilter.org/documentation/FAQ/netfilter-faq-1.html#ss1.5
-
-Unfortunately that FAQ is out of date and now completely *incorrect* for
-the new Patch-o-Matic (PoM). And on a RedHat type system even the
-documentation included with the package does not work. :(
-
-The proper procedure would be to set your environment variable for
-KERNEL_DIR first. This is from a posting on 10-Sep-2002 by Fabrice
-(Thank you Fabrice!)
-
-# KERNEL_DIR=/usr/src/linux-2.4 ./runme pending
-or
-# export KERNEL_DIR=/usr/src/linux-2.4; ./runme pending
-
-Of course be sure to set your KERNEL_DIR to the correct directory and
-read the "INSTALL" file that comes with the PoM package to ser the
-appropriate patch options. We should get the package maintainers to
-correct the FAQ and the PoM dox.
-
-/*Raj*/
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
 
+  Any idea? I have compiled the modules for h323 support which I grab
+the source from internet. And my patched kernel now is
+2.4.19-Newnat16-v2.
+  Thanks for help.
 
+Best regards,
+
+--
+Bird Chen
+Personal Key:0BAD AC36 4C98 9495 3A2E  126A 0925 EA4C 702C CEFC
 
