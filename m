@@ -1,8 +1,8 @@
-From: fgentili@ialeware.it
-Subject: Iptables Stateful Failover
-Date: Mon, 11 Nov 2002 09:07:09 +0100
+From: Ankur Gupta <ankur@cs.utexas.edu>
+Subject: Standalone iptables
+Date: Sun, 10 Nov 2002 14:47:33 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFC8C56C9B.170CF0F7-ONC1256C6E.002B3390-C1256C6E.002C99B8@tomware.it>
+Message-ID: <Pine.LNX.4.33.0211101446350.25829-100000@peterson.cs.utexas.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,43 +14,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: coreteam@netfilter.org, mgua@tomware.it
-
-Hi,
-
-I would know if is possible to implement iptables failover using stateful
-inspection capabilities of iptables.
-
-This is simply a proof of concept.
-
-All information of stateful inspection is stored in /proc/net/ip_conntrack
-
-well, so if I write every firewall rules with
---module STATE --state NEW,ESTABLIESHED ..... and so on
-
-every packet will be matched and a connection will be put in that file.
-
-if I send this file to another fw, send alias ip (for natted address &
-routing) and replace /proc/net/ip_conntrack ( if it is writeble. If not, is
-it possible to do ?)
-
-all session will be persistent, isn't it ?
-
-The problem of arp, proxyarp can be bypassed by rewriting mac address of
-the network adapter and using hub connected to the switch.
-
-Let me know if I'll hurt by a meteor !
-
-bye.
 
 
-Gentili Filippo
-mail : fgentili@tomware.it
-http://www.tomware.it
+Hi:
 
+
+Does there exist a standalone iptables implementation that does the packet
+filtering and that does not rely on the iptables sitting in Linux kernel.
+If I am not wrong then the iptables-standalone.c that is available at
+netfilter.org only provides the interface to specify filtering policies. I
+am looking for complete user-level implementation  with minimal help from
+kernel.
+
+Ankur
+
+-- 
+
+-----------------------------------------------------
+Ankur Gupta			 2220 Leon, Apt # 202
+Graduate Student		 Austin, TX 78705
+Computer Science Department	 Ph:(H)+1-512-494-0236
+The University of Texas at Austin   (O)+1-512-232-7492
 
 
 
