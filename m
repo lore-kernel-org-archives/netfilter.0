@@ -1,12 +1,14 @@
-From: "Ian Pollock" <ianp@highsun.com.au>
-Subject: Routing SMTP problem
-Date: Fri, 14 Jun 2002 13:19:24 +1000
+From: Fabrice MARIE <fabrice@celestix.com>
+Subject: Re: Current CVS version doesn't compile
+Date: Fri, 14 Jun 2002 12:12:32 +0800
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1597F9D20963E347AC9E232F0F636DA8047BA2@server.skinners.highsun.com.au>
+Message-ID: <200206141212.32617.fabrice@celestix.com>
+References: <002201c202cc$32e7ef40$f3c4b5cb@k768>
+Reply-To: fabrice@celestix.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-content-class: urn:content-classes:message
+In-Reply-To: <002201c202cc$32e7ef40$f3c4b5cb@k768>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,27 +19,34 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Takuya Satoh <taka0038@yahoo.com>, netfilter@lists.samba.org
 
-Hi,
-Can anyone tell me if this is possible, we upgraded our internet access =
-from isdn (small isp) to broadband (telstra). We had a static ip of =
-eg:210.20.20.20 from our small isp on the isdn, with the new cable =
-connection we get dhcp ip address which makes it hard for mail routing. =
-Ok the big question can I alias the old static ip (small isp) we own of =
-210.20.20.20 to my external etho dhcp (from telstra) device (ip of =
-211.50.50.50) on my cable connection and route my mail through this way. =
-I have included a few rules that I have in mind. Can anyone tell me if I =
-am going down the wrong path with this and if they have any other way of =
-doing it could they let me no (maybe I have to use pop3). Any help with =
-this would be greatly appreciated, I tried to explain as best I could. =
-Ian
 
-iptables -t nat -A POSTROUTING -o eth0 -s my_mail_server -p tcp --dport =
-25 -j SNAT --to OLD_ISP_mail_server_ip:25    ## can this work??
+Hello,
 
-iptables -t nat -A PREROUTING -I eth0 -p tcp --dport 25 -j DNAT --to =
-my_mail_server:25          ## I no this works...
+On Friday 24 May 2002 10:39, Takuya Satoh wrote:
+> iptables-1.2.6a-cvs020520:
+> cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/
+> -DNETFILTER_VERSIO N=\"1.2.7\"  -fPIC -o extensions/libipt_REJECT_sh.o -c
+> extensions/libipt_REJECT.c
+> extensions/libipt_REJECT.c: In function `init':
+> extensions/libipt_REJECT.c:92: structure has no member named
+> `fake_source_address'
 
-ps... any help with "how to alias" would be great too
+Seems like you didn't apply properly the extra/ipt_REJECT-fake-source.patch
+or maybe you have kernel-header package installed, the ipt_REJECT.h from kernel-header
+gets included rather than the /usr/src/linux/include/netfilter_ipv4/ipt_REJECT.h
+It works fine for me.
+
+Have a nice day,
+
+Fabrice.
+--
+Fabrice MARIE
+Senior R&D Engineer
+Celestix Networks
+http://www.celestix.com/
+
+"Silly hacker, root is for administrators"
+       -Unknown
 
