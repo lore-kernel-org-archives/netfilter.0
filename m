@@ -1,12 +1,14 @@
-From: Arindam Haldar <arindamhaldar@inbox.lv>
-Subject: Re: Help NEEDED--sos !!
-Date: Wed, 05 Jun 2002 10:17:09 +0530
+From: Alexey Talikov <alexey_talikov@texlab.com.uz>
+Subject: Re: order of packets passing chains/tables
+Date: Wed, 05 Jun 2002 10:52:27 +0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CFD97CD.7010306@inbox.lv>
-References: <Pine.LNX.4.33.0206041007010.6390-100000@blackhole.kfki.hu>
+Message-ID: <VQJI3ZYS2Y63WSSOICHB71Q6IGXR09.3cfda71b@ALEXEY>
+References: <200206050155.49800.a9806056@unet.univie.ac.at>
+Reply-To: alexey_talikov@texlab.com.uz
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <200206050155.49800.a9806056@unet.univie.ac.at>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,41 +18,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org, Christian Hubinger <a9806056@unet.univie.ac.at>
 
-no this is not htb or imq specific problem !!...  i have tried 
-with/without imq/htb/ vanila iptables... at this point of time thereis 
-no htb or imq ie not complied in kernel or with iptables... but i still 
-get the messages !....:(
-friends do any of u faced this problem or is it the first time ?
-Plsssssssssssssssssssssssssss i NEEEEEEEEEEED help !!!!
+http://people.unix-fu.org/andreasson/iptables-tutorial/images/tables_traverse.jpg
+05.06.2002 4:55:49, Christian Hubinger <a9806056@unet.univie.ac.at> wrote:
 
-Jozsef Kadlecsik wrote:
-> On Tue, 4 Jun 2002, Arindam Haldar wrote:
-> 
->>>yes..:)... sorry for being a little cryptic ;)... but u guessed it right
->>>!..so i will summarize my 2 Question in this listing-->
->>>1)i am getting these messages in my /var/log/messages..
->>>
->>> iptables v1.2.7-20020423 with  kernel 2.4.18 & patched htb3.3-020512 &
->>>imq-2.4.18...
->>>May 30 05:09:58 cab1 kernel: ASSERT: ip_nat_core.c:840
->>>&ip_conntrack_lock not readlocked
- >>>May 30 05:09:58 cab1 kernel: ASSERT: ip_conntrack_core.c:91
- >>>&ip_conntrack_lock_R71150de5 readlocked
->>can someone tell me whats wrong ?..how can i solve this problem??
+>Hi!
+>
+>I'm currently developing an iptables GUI interface (kmyfirewall) and i'm a 
+>litttle bit confused about the different tables used by the iptables.
+>There is p.e. a Chain called OUTPUT in the "filter", "mangle" and in the "nat" 
+>table. 
+>I know that these chains are independent but i couldn't find out the order in 
+>which the packets pass the chains/tables.
+>
+>I would be very thankful if anyone could show me a diagramm (or where to find 
+>one) of the netfilter achitectuer with all it's tables and chains and of 
+>course the order in which the packetes are passing the chains/tables.
+>
+>thanks a lot
+>
+>greetings,
+>		chris 
+>
+>
+>-- 
+>Windows is a 32 bit shell for a 16 bit extension to an 8 bit
+>Operating System designed for a 4 bit microchip by a 2 bit
+>company which can't stand one bit of cometition.
+>
+>
 
-> I'd suggest to start with a new 2.4.18 kernel, without the htb3 and imq
-> patches applied. Check out that it works, without emitting such messages.
-> 
-> If the problem persists, then it might be a netfilter related problem
-> (there still can be bad hardvare...). If the problem disappears then
-> it is related to the two additional extra patches.
-> 
-> Regards,
-> Jozsef
+-----------------------------------
+mailto:alexey_talikov@texlab.com.uz
+BR
+Alexey Talikov
+FORTEK
+-----------------------------------
 
 
 
