@@ -1,15 +1,12 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: DNAT problem /  question (nfcan: addressed to exclusive sender for this address)
-Date: Mon, 21 Jun 2004 00:25:10 -0400
+From: "Manikandan" <manikandan@manikandan.org>
+Subject: FW: tcpdump shows lots of UDP traffic and ifconfig reports error on interface.
+Date: Mon, 21 Jun 2004 12:02:14 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040621042510.GA25073@salty>
-References: <519AD2BA94FC6E4DB5DE078B2E37CB10A76C99@PDBEX01E.pdb.fsc.net>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+Message-ID: <GHEILNONPACCGBGKBEKKKEOFCGAA.manikandan@manikandan.org>
+Reply-To: <manikandan@manikandan.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <519AD2BA94FC6E4DB5DE078B2E37CB10A76C99@PDBEX01E.pdb.fsc.net> (from +nfcan+jimlaur+89aa08404c.Bert.Arnauts#fujitsu-siemens.com@spamgourmet.com on Sun, Jun 20, 2004 at 18:24:16 -0400)
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,142 +16,115 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On 2004.06.20 18:24, Arnauts Bert  - Bert.Arnauts@fujitsu- 
-siemens.com wrote:
-> Hello all,
-> 
-> thx already for the hints, but I am still in a strugle.
-> I changed my destination ip to 207,
-> because 220 could cause problems.
-> Forgive me that I don't understand why.
-> Anyway, these rules give even a more confusing result.
-> I am still not able to access my 11.0.0.16
-> box through the 172.25.239.207 DNAT'ed alias.
-> (not pingable, not nothing)
-> I also can not connect anymore to my netfilter box
-> anymore after executing this script,
-> BUT my active ssh connection stays open ! ?
-> I am still on my machine remotly,
-> but I can not ping it anymore ?? :(
-> 
-> Any more ideas ?
-> ------------------------------------------------------------
-> 
-> echo "Activating firewall script generated
-> Thu Jun 10 15:03:22 2004 CEST by root"
-> 
-> $IPTABLES -t nat -A PREROUTING -d 172.25.239.207/27
-> -j DNAT --to-destination 11.0.0.16
-> 
-> $IPTABLES -A INPUT   -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A OUTPUT  -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A FORWARD -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
-> 
-> $IPTABLES -N RULE_0
-> $IPTABLES -A OUTPUT  -d 11.0.0.16  -m state --state NEW
-> - j RULE_0
-> $IPTABLES -A FORWARD -d 11.0.0.16  -m state --state NEW
-> -j RULE_0
-> $IPTABLES -A RULE_0  -j LOG --log-level info
-> --log-prefix "RULE 0 -- ACCEPT "
-> $IPTABLES -A RULE_0  -j ACCEPT
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> 
-> execution of this script gives me this :
-> (why is there 192 ? in stead of 207 ?)
+Hello friends,
 
-> [root@linuxrouter root]# iptables -t nat -L
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> DNAT       all  --  anywhere              
-> 172.25.239.192/27 to:11.0.0.16
+        I am running RedHat linux 9 with iptables 1.2.7a. This box acts as a
+gateway/firewall for my network. I am seeing lots of packets getting dropped
+as well as ifconfig reports error.
 
-Because the programmers were being kind to you :)
-The 192 is the base address for the range 192-223,
-and is exactly what you need for a .207/27.
-(That is, the low 5 bits need to be zeros.)
+[root@javagreen RPMS]# tail /var/log/messages/
 
-It will be less confusing, later,
-if you change your rule to:
+Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=64.0.96.12
+DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=45 ID=17638 PROTO=ICMP
+TYPE=8 CODE=0 ID=20225 SEQ=61833
+Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=64.0.96.12
+DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=45 ID=17638 PROTO=ICMP
+TYPE=8 CODE=0 ID=20225 SEQ=61833
+Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=210.224.186.4
+DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=42 ID=0 DF PROTO=ICMP
+TYPE=8 CODE=0 ID=52234 SEQ=19095
+Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=210.224.186.4
+DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=42 ID=0 DF PROTO=ICMP
+TYPE=8 CODE=0 ID=52234 SEQ=19095
+Jun 21 11:50:54 javagreen named[3251]: client 10.35.57.153#1366: query:
+www.usagreetings.com IN A
+Jun 21 11:50:54 javagreen named[3251]: client 10.35.57.153#1366: query:
+www.usagreetings.com IN A
+Jun 21 11:51:00 javagreen kernel: IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=210.224.186.4
+DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=42 ID=0 DF PROTO=ICMP
+TYPE=8 CODE=0 ID=52234 SEQ=57756
+Jun 21 11:51:00 javagreen kernel: IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=210.224.186.4
+DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=42 ID=0 DF PROTO=ICMP
+TYPE=8 CODE=0 ID=52234 SEQ=57756
+Jun 21 11:51:00 javagreen kernel: IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=64.0.96.12
+DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=45 ID=24066 PROTO=ICMP
+TYPE=8 CODE=0 ID=20225 SEQ=33935
+Jun 21 11:51:00 javagreen kernel: IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=64.0.96.12
+DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=45 ID=24066 PROTO=ICMP
+TYPE=8 CODE=0 ID=20225 SEQ=33935
 
-$IPTABLES -t nat -A PREROUTING -d 172.25.239.192/27
--j DNAT --to-destination 11.0.0.16
-(but see below, I think you may not mean to do this)
+[root@javagreen RPMS]# ifconfig -a
+eth0      Link encap:Ethernet  HWaddr 00:09:6B:19:B4:24
+          inet addr:202.138.202.218  Bcast:202.138.202.223
+Mask:255.255.255.248
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:436956 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:347529 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:100
+          RX bytes:293873940 (280.2 Mb)  TX bytes:41608963 (39.6 Mb)
+          Interrupt:9 Base address:0x2000 Memory:c0100000-c0100038
 
-If you change the List command from:
+eth1      Link encap:Ethernet  HWaddr 00:90:27:99:0E:3C
+          inet addr:10.35.57.6  Bcast:10.35.57.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:475459 errors:3300 dropped:0 overruns:0 frame:3300
+          TX packets:518784 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:100
+          RX bytes:53916734 (51.4 Mb)  TX bytes:311614338 (297.1 Mb)
+          Interrupt:11 Base address:0x2040 Memory:c0101000-c0101038
 
-iptables -t nat -L
-to
-iptables -t nat -L -nvx
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:4990 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:4990 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:415424 (405.6 Kb)  TX bytes:415424 (405.6 Kb)
 
-The -v (--verbose) and -x (--exact) flags
-will give you (among other things) the
-exact number of packets that have matched
-each rule.
+Also, tcpdump shows lots of UDP traffic consistently in eth1 interface
+between one of my LAN host to random internet IPs as shown,
 
-To look at the main (filter) table do:
-iptables -L -nvx
+[root@javagreen RPMS]# tcpdump -i eth1 host 10.35.57.21
+tcpdump: listening on eth1
+11:55:50.805682 10.35.57.21.1038 > 224.2.208.147.21732: udp 5499 (frag
+44897:1480@0+)
+11:55:50.805684 10.35.57.21 > 224.2.208.147: udp (frag 44897:1480@1480+)
+11:55:50.806887 10.35.57.21 > 224.2.208.147: udp (frag 44897:1480@2960+)
+11:55:50.806890 10.35.57.21 > 224.2.208.147: udp (frag 44897:1067@4440)
+11:55:50.837221 10.35.57.21.1042 > 224.2.155.34.17866: udp 5499 (frag
+44913:1480@0+)
+11:55:50.837223 10.35.57.21 > 224.2.155.34: udp (frag 44913:1480@1480+)
+11:55:50.837560 10.35.57.21 > 224.2.155.34: udp (frag 44913:1480@2960+)
+11:55:50.837562 10.35.57.21 > 224.2.155.34: udp (frag 44913:1067@4440)
+11:55:50.837564 10.35.57.21.1041 > 224.2.234.118.32168: udp 5499 (frag
+44914:1480@0+)
+11:55:50.838024 10.35.57.21 > 224.2.234.118: udp (frag 44914:1480@1480+)
+11:55:50.838026 10.35.57.21 > 224.2.234.118: udp (frag 44914:1480@2960+)
+11:55:50.838028 10.35.57.21 > 224.2.234.118: udp (frag 44914:1067@4440)
+11:55:50.838030 10.35.57.21.1039 > 224.2.241.172.26116: udp 5499 (frag
+44915:1480@0+)
+11:55:50.838785 10.35.57.21 > 224.2.241.172: udp (frag 44915:1480@1480+)
+11:55:50.838787 10.35.57.21 > 224.2.241.172: udp (frag 44915:1480@2960+)
+11:55:50.838789 10.35.57.21 > 224.2.241.172: udp (frag 44915:1067@4440)
 
-I think that you will see that all packets
-here match these first rules:
 
--m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
-Therefore the "Rule 0" test, which comes later,
-will never get a chance to look at them,
-and will have a zero count.
+Any help friends,
+I had already spent lots of time on this without any success.
 
-Change those first rules to:
+Advance thanks.
+--Manikandan.
 
--m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Then the "Rule 0" tests will match NEW packets.
-
-The PREROUTING rule says that any packet
-addressed to 172.25.239.207 will be changed
-to a destination address of 11.0.0.16.
-(In fact any address 172.25.239.192 through
-172.25.239.223 will become 11.0.0.16)
-
-Therefore, when a packet originally addressed
-to 172.25.239.207 (in on eth1) arrives (later)
-at the filter table it will have a
-destination address 11.0.0.16 and will
-traverse the FORWARD chain and leave by eth0.
-Only the host with that address (.16) will receive packets.
-This explains why the netfilter host is inacessible.
-
-Also, you said:
-
-> I have everything in the 172.25.239.0/27 network.
-
-This must be a typo, because this does not
-include 172.25.239.207, which is one of
-the 31 addresses in the 172.25.239.192/27 network.
-
-From other things you have said,
-I think you may be trying to translate a series
-of addresses exactly one to one:
-
-172.25.239.207 <--> 11.0.0.16
-
-I think you can best do this by using an
-explicit PREROUTING rule for each pair.
-That is, get rid of the /27,
-and add a rule for each address pair.
-Then you can keep, say .208, not translated,
-and allow this to be used as the address
-of the netfilter host. Like this:
-
-$IPTABLES -t nat -A PREROUTING -d 172.25.239.207
--j DNAT --to-destination 11.0.0.16
-
-Jim
 
