@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPTABLES + IPROUTE2
-Date: Sat, 24 Jan 2004 14:54:00 +0000
+From: =?iso-2022-jp?B?GyRCJFskKBsoQiAbJEIkaiRzGyhC?= <hoerin@hotmail.com>
+Subject: about fragment packet
+Date: Sun, 25 Jan 2004 00:29:57 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401241454.00973.Antony@Soft-Solutions.co.uk>
-References: <EHENIKBEJAMHPLPJOJBPIEDNDIAA.lucho@galix.com>
+Message-ID: <Law15-F113ngMPiJuh9000222ff@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <EHENIKBEJAMHPLPJOJBPIEDNDIAA.lucho@galix.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Saturday 24 January 2004 12:57 pm, L.Malinov wrote:
+I'm hiro.
 
-> Hi Antony,
->
-> In my situation is not possible to set router1 as a default route because
-> the machine acts as a mail server as well and the mail needs to go through
-> router1.
+There is a question about the filtering method of fragment pachet using 
+ip6tables.
 
-Okay then - in that case I suggest you use iproute2 to route all TCP port 80 
-packets via router2, all TCP port 25 packets via router1, and decide what you 
-want to do with everything else such as DNS.   I don't see that there should 
-be any need to MARK packets - just route based on the destination port 
-number.
+A and B prepare two PCs, the command of ip6tables of the following [ B ] is 
+struck, 
+and 4000 bytes of UDP packet (address port number 1025) is sent from A to 
+B.
 
-see http://lartc.org for more details of iproute2 and what it can do.
+(PC on B) %ip6tables -A INPUT -p udp -m frag --dport 1025 -j DROP
 
-Regards,
+In this environment, since MTU was 1500 bytes, the packet was 
+fragmentation-ized by 
+three, and all the packets reached and carried out to B.
 
-Antony.
+Then, although it is a question, since there is information on a port 
+number in the 
+first fragmentation-ized packet, although it thinks that it is filtered and 
+two of 
+succession pass, why is it?
 
--- 
-Wanted: telepath.   You know where to apply.
+Is it the specification which cannot use the frag option and the port 
+option together?
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+_________________________________________________________________
+友達と24時間ホットライン「MSN メッセンジャー」、今すぐダウンロード！  
+http://messenger.msn.co.jp 
 
 
