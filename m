@@ -1,13 +1,14 @@
-From: Jeffrin <jeffrin@gamebox.net>
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: iptables related
-Date: Tue, 9 Dec 2003 01:14:34 +0530
+Date: Mon, 8 Dec 2003 14:57:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031208194434.GA1780@msservices>
-References: <20031208191947.GA1603@msservices> <200312081928.28282.Antony@Soft-Solutions.co.uk>
+Message-ID: <200312081457.11196.JALaramie@Loudoun-Fairfax.com>
+References: <20031208191947.GA1603@msservices> <200312081435.00136.JALaramie@Loudoun-Fairfax.com> <200312081942.21166.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200312081942.21166.Antony@Soft-Solutions.co.uk>
 Content-Disposition: inline
-In-Reply-To: <200312081928.28282.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,15 +19,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-hello ,
+On Monday 08 December 2003 14:42, Antony Stone wrote:
+> On Monday 08 December 2003 7:35 pm, Jeffrey Laramie wrote:
+> > On Monday 08 December 2003 14:19, Jeffrin wrote:
+> > > hello all,
+> > >
+> > > iptables -A INPUT -sport 80 -j ACCEPT
+> > >
+> > > shows error ...
+> > >
+> > >  msservices:~# iptables -A INPUT --sport 80 -j ACCEPT
+> > > iptables v1.2.9: Unknown arg `--sport'
+> > > Try `iptables -h' or 'iptables --help' for more information.
+> > >
+> > > please help me ...
+> >
+> > There are 2 dashes before sport:  --sport 80
+>
+> 2 dashes and a protocol :)
+>
+> Antony.
 
-iptables -P INPUT DROP
-iptables -A INPUT -p tcp --sport 80 -j ACCEPT
+I always look for the simple mistakes first cause those are the ones I always 
+make!
 
-Iam not able to ping. why ?
+I think we may have set a record for the largest number of different 
+responders to a single post.
 
+Jeff
 
