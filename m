@@ -1,8 +1,8 @@
 From: "Ashley M. Kirchner" <ashley@pcraft.com>
 Subject: Re: Re: iptables help
-Date: Thu, 29 Jul 2004 15:07:02 -0600
+Date: Thu, 29 Jul 2004 15:18:06 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <410966F6.3020206@pcraft.com>
+Message-ID: <4109698E.9010703@pcraft.com>
 References: <Pine.LNX.4.44.0407291026030.2121-100000@ivanhoe.pcraft.com> <200407291928.48974.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -22,26 +22,31 @@ To: netfilter@lists.netfilter.org
 
 Antony Stone wrote:
 
->>>iptables -I FORWARD -s a.b.c.d -d w.x.y.z -p tcp --dport 80 -j REJECT
->>>
+>where w.x.y.z could be 192.168.38.64/29 for example, to block destination 
+>addresses 192.168.32.64 to 192.168.38.72
 >
->"-I" will insert the rule at the top of the FORWARD chain, and therefore 
->guarantees that these packet will be REJECTed, no matter other rules follow 
->in your ruleset.
->
-    Thanks for the explanation.  So I'm testing this out now, and I 
-inserted:
+    Heh, I just realized this won't help a whole helluva lot because 
+www.yahoo.com's round-robin setup isn't contiguous:
 
-iptables -I FORWARD -s 66.218.75.184 -d 192.168.1.253 -p tcp --dport 80 
--j REJECT
+    66.94.230.35
+             .39
+             .41
+             .45
+             .48
+             .49
+             .51
+             .52
 
-    66.218.75.184 == mail.yahoo.com (or login.yahoo.akadns.net, or 
-l1.login.vip.scd.yahoo.com according to iptables -L), however that 
-machine (.253) can still reach that address just fine.  What am I missing?
+    And neither is www.hotmail.com (which redirects to passport.net anyway:
 
-    I don't see a round-robin IP setup for mail.yahoo.com (much like 
-what you'd see if you lookup www.yahoo.com) so I'm not quite sure why 
-it's not blocking it.
+    207.68.171.233
+              .239
+              .245
+
+
+    Do you suppose there are servers on the missing IPs, but they're 
+just not operational at the moment?  (Which wouldn't surprise me to be 
+honest.)
 
 -- 
 W | I haven't lost my mind; it's backed up on tape somewhere.
