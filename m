@@ -1,10 +1,9 @@
-From: Mike Ely <netfilter-listalias@phoenix.k12.or.us>
-Subject: Nmap shows all ports open when -m psd -j TARPIT
-Date: Wed, 16 Apr 2003 16:19:00 -0700
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: CnC General and ipitables woes. Need HELP PLS!
+Date: Wed, 16 Apr 2003 17:58:13 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <CE0D4A64-7061-11D7-A99D-00039354EBD6@phoenix.k12.or.us>
-Mime-Version: 1.0 (Apple Message framework v552)
-Content-Transfer-Encoding: 7bit
+Message-ID: <20030417005813.13243.qmail@web40209.mail.yahoo.com>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,43 +14,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: nf <netfilter@lists.netfilter.org>
 
-This is with kernelversion 2.4.18-27.7.x (redhat updated rpm sources 
-with patches compiled in) and iptables 1.2.8.  I got the patches from 
-patch-o-matic, and everything compiled smoothly.
+Recently a friend and I decided we would like to play EA's Command and
+Conquer's Generals in a "Direct Connect" game. We had a time finding
+information about the ports needed. The Readme file would have you believe you
+need to open alot of ports to make this work... however upon inspection of the
+games pratices... I discovered that it listens on port 8086 for UDP(always)..
+Once a game is started 8088 opens.... So in leaning this(my friend and I)
+thought we could get by with just some standard PREROUTING(see below)
 
-When I do
-iptables -I INPUT -m psd -j DROP
-it works - the psd module handily shuts down portscan connections.  
-Also, when I do
-iptables -I INPUT -p tcp --dport 25 -j TARPIT
-any incoming connection to port 25 gets totally gooey - much fun for me.
+iptables -t nat -A PREROUTING -p udp --dport 8086 -j DNAT --to-destination
+192.168.1.25:8086
+iptables -t nat -A PREROUTING -p udp --dport 8088 -j DNAT --to-destination
+192.168.1.25:8088
 
-However, when I do
-iptables -I INPUT -p tcp -m psd -j TARPIT
-and then run
-nmap -vv -P0 iptables.box
-against the machine, it reports all but about twelve ports as open!  I 
-know that the machine isn't running all those services, but this most 
-certainly isn't the response I want.
+I'm not the only one having this problem as you can see here...
 
-Is this a logic error on my part, or a bug in the code, or what?
+http://www.computing.net/linux/wwwboard/forum/18596.html  
 
-Specs:
-Generic P II box
-RedHat 7.2 with everything up2date and custom patched kernel listed 
-above
-nmap version 3.0
+So my question is... is some sort of con. tracking mod needed? Anyone know
+anything about this problem? Thanks for your time and help anyone
 
-Thanks in advance,
-Mike
+P.S. The friend and I also tried the FirewallPortOveride option and had it
+ignored as well... So we are at a loss after for searching for help...
+I'm turning to you capable guys for help :}}
 
-PS: Posted the above to netfilter bugzilla, but it seems pretty quiet 
-there.
 
----
-[This E-mail scanned for viruses by Declude Virus]
 
+
+
+=====
+"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
+
+__________________________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo
+http://search.yahoo.com
 
