@@ -1,10 +1,9 @@
-From: alan barrow <aaa.coms.sec@btclick.com>
-Subject: a discussion starter i hope.
-Date: 09 May 2002 23:52:29 +0100
+From: YoursForEver <timebandi@yahoo.com>
+Subject: IP TABELS problems!
+Date: Thu, 9 May 2002 17:03:43 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1020984749.22168.19.camel@sarig.internal>
+Message-ID: <20020510000343.37372.qmail@web11606.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,46 +15,29 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-I have been using iptables-netfilter for a while and wish to clarify in
-my mind for once how to do the following. 
+Hi
 
-Scenario: An iptables firewall has 2 interfaces, which are a public and
-a private interface, for simpilicty's sake. Behind the firewall a
-service runs which needs to be visible to the world at large in this
-case let's start with an easy one http, on port 80. 
+I use this script
+http://www.linuxguruz.org/iptables/scripts/rc.firewall_023.txt
+for my box as a firewall/router for my windows
+computer. And i have problems with MIRC/IRC. I tried
+all the options in the local info in the mirc options
+with no results. If o choose Lookup method Normal i
+can DCC CHAT/SEND to people inside my LAN but not with
+those outside! If i choose i can Lookup method Server
+i can DCC CHAT/SEND to people outside the LAN but not
+inside! I tried to add and remove the ip_nat_irc and
+ip_conntrack_irc without no better results! Anyone who
+might be able to help me and tell what's wrong?? I
+have set MIRC to use ports 1400-1500 for DCC.
 
-No problems so far :) 
+Thanks in advance ...
 
-Now behind the firewall are 2 separate servers, each running a web
-service and each running on port 80. 
-
-1) The question is, with only 1 real world address available to you,
-what suggestions do you guy's have as to the configuration required to
-make both web servers available on the Internet ? So that incoming port
-80 request on the firewall public interface go to the correct server. 
-
-2) The same as scenario 1) except you have 2 addresses available but
-only one external NIC. 
-
-3) Same as 2) except you have 2 NIC's. 
-
-The reason for this is the following is that, i wish to understand if
-there is a path to this result. I realise there are probably many way's
-to skin this cat, and i have tried a few of them, some of you may
-already be doing this, but in my experience there seem to be a lot of
-pitfall's and consequently the issues i have faced seem to suggest the
-following: 
-
-Some think it's possible, Some don't, some wish it was possible, many
-just say this way, others suggest that way, many just give up. 
-
-All in all i would like to take this to the logical conclusion of
-getting it working in multiple scenarios securely and effectively. 
-
-yours a.r.b. 
-
-
-
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Shopping - Mother's Day is May 12th!
+http://shopping.yahoo.com
 
