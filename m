@@ -1,10 +1,13 @@
-From: Arona Ann Pearlstein <aronapearl@yahoo.com>
-Subject: Forward udp broadcasts (directed broadcasts - 192.168.2.255)
-Date: Wed, 19 Nov 2003 01:31:50 -0800 (PST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: How to control DF in iptables
+Date: Thu, 20 Nov 2003 21:49:29 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031119093150.42837.qmail@web10108.mail.yahoo.com>
+Message-ID: <200311202149.hAKLnY723645@onyx.rockstone.co.uk>
+References: <3FB95C06.7090606@tigry.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3FB95C06.7090606@tigry.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,60 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello all,
+On Monday 17 November 2003 11:38 pm, Andrey Tverdokhleb wrote:
 
-I need to forward udp broadcasts for a particular project.   I know it's not a
-good thing security-wise, but that's a different discussion! 
+> Hi all!
+>
+> Is there way to enable fragmentation on per-interface or per-IP or
+> per-Whatever basis?
+> I don't want to disable DF globally in ip_no_pmtu_disc, but I want some
+> packets forwarded
+> without DF and fragmented if needed.
 
-Essentially, on network 10.0.2.0/24 there is a special program that generates
-udp broadcast packets for network 192.168.2.0/24 (this program then, is sending
-packets with a destination address 192.168.2.255).  
+The mangle table in postrouting might do what you need (only a guess)?
 
-My Linux 2.4.22 based firewall/router does its job well and normally drops
-these broadcast packets.  I have since found a couple (partial) solutions, but
-I'm curious as to what the Linux 2.4 kernel can do.
+Antony
 
-From the research I've done, it seems that directed broadcasts (that is,
-addresses with the form 192.168.2.255) are not supposed to be routed.
+-- 
 
-An RFC even proposes that routers include the directed broadcast routing
-option, but that this routing option should be turned off by default:
+Programming is a Dark Art, and it will always be. The programmer is fighting 
+against the two most destructive forces in the universe: entropy and human 
+stupidity. They're not things you can always overcome with a "methodology" or 
+on a schedule.
 
-http://www.faqs.org/rfcs/rfc2644.html 
-
-Here's my question:  Is there anything in the Linux 2.4 kernel that allows
-forwarding directed broadcasts?  That is, is there an option that can be
-enabled in the Linux 2.4 kernel to allow forwarding directed broadcasts?
-
-From the tests I've done using DNAT, I can route these packets, but as unicast
-packets only (not as broadcast packets).  This means that only *one* machine on
-the destination network receives these packets (the goal is for *all* the
-machines to receive the udp packets).
-
-I've also found that using a udp proxy type program allows me to forward these
-packets.  
-
-There is, of course, the option of implementing a bridge, but we want to avoid
-bridging the two networks.
-
-For this particular project, we'd like to find a kernel based solution (if at
-all possible).
-
-Any ideas? :-)
-
-Thank you in advance for any information,
-
-Ann
-
-Arona Ann Pearlstein
-aronapearl@yahoo.com
-
-
-__________________________________
-Do you Yahoo!?
-Protect your identity with Yahoo! Mail AddressGuard
-http://antispam.yahoo.com/whatsnewfree
+ - Damian Conway, Perl God
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
