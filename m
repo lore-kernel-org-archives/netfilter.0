@@ -1,10 +1,13 @@
-From: James Marcinek <james_marcinek@yahoo.com>
-Subject: Setting up to allow DHCP addressing from WAN (ISP provider)
-Date: Tue, 25 Feb 2003 09:36:54 -0800 (PST)
+From: "Ian Douglas" <ian@icreditvision.com>
+Subject: RE: Restricting IP addresses from ports
+Date: Tue, 25 Feb 2003 09:51:58 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030225173654.86516.qmail@web40204.mail.yahoo.com>
+Message-ID: <HMEBKOCKLOOEJGIOMFAPKENJFKAA.ian@icreditvision.com>
+References: <Pine.LNX.4.44.0302261012070.23380-100000@ns1.teamraf.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0302261012070.23380-100000@ns1.teamraf.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,27 +18,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Bob <q@teamraf.com>, netfilter@lists.netfilter.org
 
-Hello all,
+>   How do I allow a specific IP address access to a port like SSH?  I want
+> to deny all access to ports on a system that I manage except for specific
+> addresses.
 
-I'm new to this so please forgive my ignorance
+In a general sense, you create a rule to ALLOW a specific IP address (or range),
+and then explicitly REJECT/DROP/TREJECT/etc that port for everyone else.
 
-I'm setting up my firewall with 2 NIC's (one to the
-WAN and one internal). I don't have a static IP
-address on my external so I have to rely on getting a
-DHCP from my provider.
+-id
 
-I set up rules; however I didn't account for my DHCP
-request. Can anyone help?
-
-Thanks,
-
-James 
-
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Tax Center - forms, calculators, tips, more
-http://taxes.yahoo.com/
 
