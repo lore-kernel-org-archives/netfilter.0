@@ -1,15 +1,14 @@
-From: "Frederic de Villamil" <neuro@seclab.jp>
-Subject: Re: examining data portion of packet
-Date: Wed, 24 Mar 2004 09:59:53 +0100 (CET)
+From: "Leopold Aichinger" <leai@utanet.at>
+Subject: Re: cat /proc/ip_conntrack produces kernel panic
+Date: Wed, 24 Mar 2004 10:00:35 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <58774.192.54.193.137.1080118793.squirrel@mail.asocial.org>
-References: <20040324054521.27142.qmail@web60002.mail.yahoo.com>
-    <1080112737.2387.47.camel@raylinux.internal>
-Reply-To: neuro@seclab.jp
+Message-ID: <54447.195.64.26.5.1080118835.bloek@pwebmail.utanet.at>
+References: <405FFBF3.9060005@utanet.at>
+        <40607980.4090301@shorewall.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1080112737.2387.47.camel@raylinux.internal>
+In-Reply-To: <40607980.4090301@shorewall.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,34 +18,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Ray Leach <raymondl@knowledgefactory.co.za>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: teastep@shorewall.net
+Cc: netfilter@lists.netfilter.org
 
 
-> On Wed, 2004-03-24 at 07:45, Sandy C wrote:
->>    I would like to be able to be able to examine the
->> data portion of a network packet after matching it.
->>
->>    I figured there would be some kind of target for
->> this, but there isn't...or at least I couldn't find
->> any.
->>
->>    What is the best way to go about this? Should I be
->> thinking of writing a target extension?
->>
-> You could use something like ntop or tcpdump.
+
+> There have been some reports of similar panics on the Shorewall Users
+> mailing list. These are reported as panics from "shorewall show
+> connections" which is a thin wrapper around "cat
+> /proc/net/ip_conntrack".
 >
->> Thanks!
->> S C
 
-Hi,
-maybe you should try ethereal. It has some very powerfull filtering
-functions that may fit your needs.
+THX very much - I will search the shorewall mailing list
+A google search brought no results.
 
---=20
-Fr=E9d=E9ric de Villamil.
-Pr=E9sident Epitanime
-Amez vos ennemis; ce n'est pas facile, mais ca va les emmerder.
-neuro@seclab.jp                             http://www.seclab.jp
+My aim is to get a test machine where I can reproduce
+this problem for debugging.
+
+
+thx
+
+leo
+
+
+
+
 
