@@ -1,14 +1,12 @@
-From: Payal Rathod <payal-iptables@staticky.com>
-Subject: Re: FORWARD rules
-Date: Tue, 16 Sep 2003 04:28:23 +0000
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: "ip_conntrack_core: Frag of proto 17." error and memory leak?
+Date: Tue, 16 Sep 2003 10:19:08 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030916042823.GC10468@staticky.com>
-References: <20030912100957.GA3360@linux.local> <1063363533.879.52.camel@elendil.intranet.cartel-securite.net> <20030912163656.19b9fb66.arnt@c2i.net> <1063378301.888.66.camel@elendil.intranet.cartel-securite.net> <20030912201425.25ca0ab4.arnt@c2i.net> <20030913022658.GD1667@linux.local> <20030913084256.73dc4a3d.arnt@c2i.net> <1063612582.928.17.camel@elendil.intranet.cartel-securite.net> <20030915183205.2f109f6f.arnt@c2i.net> <1063647262.766.39.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <Pine.LNX.4.51.0309161003230.13452@dns.toxicfilms.tv>
+References: <3F65EC33.2060906@wp.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1063647262.766.39.camel@elendil.intranet.cartel-securite.net>
+In-Reply-To: <3F65EC33.2060906@wp.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: c0g <c0g@wp.pl>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, Sep 15, 2003 at 07:34:22PM +0200, Cedric Blancher wrote:
-> Le lun 15/09/2003 =E0 18:32, Arnt Karlsen a =E9crit :
-> > ..me too, ;-)  I ofcourse meant we "weren't too clear on what=20
-> > we meant to say"...  ;-)
->=20
-> We are now, that's the important point :)
+Hello,
 
-I am still confused. What you really meant and what you really said. Are
-you losing your  brains or am I :)
--Payal
+On Mon, 15 Sep 2003, c0g wrote:
+> I made rule that blocks fragments, but it doesn't stop messages (perhaps
+> because the check is performed before rules are evaluated).
+How about investigating why are you getting fragments ? Maybe you can
+eliminate the problem by avoiding fragmentation.
 
-> --=20
-> http://www.netexit.com/~sid/
-> PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->=20
+Anyway, as I remember the conntrack mechanism assembles fragments for
+connection tracking purposes, thus it's denoted as /* Never happen */
+Maybe you are being flooded, and the conntrack mechanism sees, something
+like new fragmented UDP packets that cannot be assembled. Run iptraf,
+tcpdump, snort or whatever you wish.
 
---=20
-For GNU/Linux Success Stories and Articles visit:
-          http://payal.staticky.com
+This could explain the memleak: conntrack reserves memory for each udp
+fragment and hopes to assemble it, which never happens. I guess that
+this should be free'd at some point, after failing to assemble the data,
+but I am not sure.
+
+If I am correct, we have a problem in the conntrack mechanism.
+And a Netfilter DoS.
+
+> Could it be caused by failed "Frag of proto" assertion?
+If I am correct, or at least close, it might.
+
+> Is there someone who had this problem? And solved it?
+I never heard of such problems.
+
+Regards,
+Maciej
+
 
