@@ -1,13 +1,10 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: block msn
-Date: 16 Jul 2003 18:01:05 +0200
+From: Paul Jakma <paulj@alphyra.ie>
+Subject: ftp nat and non-standard ports
+Date: Wed, 16 Jul 2003 18:29:29 +0100 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058371265.6618.51.camel@raylinux.internal>
-References: <3F1538A4.9000702@sat.com.py>
+Message-ID: <Pine.LNX.4.44.0307161829250.28436-100000@dunlop.admin.ie.alphyra.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ip5L2PctFA2dGD5E1Iyb"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F1538A4.9000702@sat.com.py>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +14,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+hi,
 
---=-ip5L2PctFA2dGD5E1Iyb
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+i'm trying to get NAT working for FTP, where the FTP server is on a
+non-standard port. ie:
 
-The msn clients with winblows xp also 'tunnel' via your proxy if they
-can't get out via the normal methods. You need to block the msn mime
-types.
+    client------Linux-------FTP server
 
-With ip tables I think you could probably use a string match for
-'x-msn-messenger' (if that's the mime type).
+the linux machine is (should) NAT the data connection from the client.
 
-Ray
+The NAT in general is working fine, icmp, client->ftp server command
+channel, etc. What is not working is the ftp data channel. the FTP
+server is on port 6370, and i have the following in modules.conf:
 
-On Wed, 2003-07-16 at 13:36, juanca wrote:
-> I`ve got this rulset but It doesn`t work what else do I need to add?
-> All the windows machine work msn, just on linux doesn`t
-> Any suggetions ?
-> Thanks in advance
->=20
-> iptables -A FORWARD -s 192.168.0.10 -p TCP --dport 1443:1467 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.33 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.38 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1513:1525 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -d 66.35.229.204 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -d 65.54.194.118 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.34 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -d 208.45.129.195 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP
-> iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.11 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP
-> iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1601:1603 -d 0/0 -j DR=
-OP
-> iptables -A FORWARD -s 192.168.0.10 -d 64.4.13.0/24 -j REJECT
-> iptables -A FORWARD -s 192.168.0.10 -d 64.4.0.0/24 -j REJECT
-> iptables -A INPUT -p tcp -s 192.168.0.10 -d messenger.microsoft.com -j DR=
-OP
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+options ip_conntrack_ftp ports=21,6370
+options ip_nat_ftp ports=6370,21
 
---=-ip5L2PctFA2dGD5E1Iyb
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+I have the following rule in the nat table:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+SNAT       all  --  anywhere             10.118.248.161 to:10.118.251.90 
 
-iD8DBQA/FXbBh1fuR/Bv+ygRAs1SAJ9Re0O9xMGFPHtVqVX5ghr0wgjVJACdE28D
-C2rLvIFRRmr2UaFoSpOnTYk=
-=qaYv
------END PGP SIGNATURE-----
+What i see if i tcpdump on the linux box the link to the ftp server is:
 
---=-ip5L2PctFA2dGD5E1Iyb--
+client 				server
+        <normal FTP command channel initiation>
+	<Site features negotiated, CWD sent, etc..>
+
+10.118.251.90:33698
+  PORT a,b,c,d,131,164          
+                                10.118.248.161:6370
+                                  port accepted.           
+
+10.118.251.90:33698
+  LIST
+			        10.118.248.161:6369 -> 10.118.251.90:33700
+                                  SYN
+
+				  SYN
+
+				  <etc>
+
+The data channel does not get NATed back to the client.
+
+What exactly am i doing wrong?
+
+regards,
+-- 
+Paul Jakma	Sys Admin	Alphyra
+	paulj@alphyra.ie
+Warning: /never/ send email to spam@dishone.st or trap@dishone.st
+
 
 
