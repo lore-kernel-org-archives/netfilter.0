@@ -1,12 +1,13 @@
-From: =?gb2312?q?liang=20jian?= <liang_7902@yahoo.com.cn>
-Subject: ip_conntrack and ip_nat ip_state
-Date: Fri, 12 Sep 2003 08:49:13 +0800 (CST)
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: GRE/PPTP
+Date: Fri, 12 Sep 2003 12:04:25 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030912004913.66476.qmail@web15303.mail.bjs.yahoo.com>
+Message-ID: <3F6129A9.6050106@snapgear.com>
+References: <8EC0756327A4994298EFD721CFC7355B01B14C@jfm2.jacobson.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1454692636-1063327753=:64924"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <8EC0756327A4994298EFD721CFC7355B01B14C@jfm2.jacobson.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jamie Vuyk <jvuyk@jacobson.co.uk>
+Cc: netfilter@lists.netfilter.org
 
---0-1454692636-1063327753=:64924
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Jamie Vuyk wrote:
+> 1)       Does the standard kernel (RH 2.4.18) need to be patched in any
+> way in order to PASS THROUGH proto 47 (GRE) to an internal server?  Im
+> running a simply iptables firewall which I want to pass an external VPN
+> connection through to an internal server.  As I understand if I want
+> Linux to terminate the PPTP VPN I need a patch, if I want it to pass
+> through I don't.  However I am having a lot of trouble getting this to
+> work and I would like to know if Im on the right track.  Also note that
+> the firewall is masquerading all connections.
 
-aGksYWxsCiAKd2hlbiBJIHVzZSBpcF9jb25udHJhY2sgaXB0YWJsZV9uYXQsIGlwX3N0YXRlIHRo
-ZSBwcmVmb3JtYW5jZSBzbG93IQogCkkgdXNlIEludGVsIHhlb24gMi40RyAxIEcgUkFNIAogCmhv
-dyBjYW4gSSBvcHRpbWl6ZSB0aGUgaXBfY29ubnRyYWNrIGV0Yy4KIApUaGFua3MuCiAKUmVnYXJk
-cy4KIApMaWFuZyBKaWFuCgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEbyBZ
-b3UgWWFob28hPwrG9NPDtefTytXKusWjrMHsu+HRxbuizahbye3B2cbkvrPBxLXn07BdtcS2r7jQ
-98jBpqOsu7nT0M34wufJ48/xzbcr0cW7os2oytXS9Lv6tcjE48C0xMM=
+If you only ever have one PPTP connection per client/server pair (after
+masquerading), then you can get by without any patches.  You will need to
+forward both port 1723 and protocol 47 to the PPTP server.
 
---0-1454692636-1063327753=:64924
-Content-Type: text/html; charset="gb2312"
-Content-Transfer-Encoding: base64
+If you may have more than one PPTP connection, then you need to apply
+the PPTP conntrack patch from patch-o-matic.  You will need to forward
+port 1723 to the PPTP server, and accept RELATED protocol 47 packets.
+The PPTP conntrack will automatically NAT the protocol 47 packets to
+go to the server.
 
-PERJVj5oaSxhbGw8L0RJVj4KPERJVj4mbmJzcDs8L0RJVj4KPERJVj53aGVuIEkgdXNlIGlwX2Nv
-bm50cmFjayBpcHRhYmxlX25hdCwgaXBfc3RhdGUgdGhlIHByZWZvcm1hbmNlIHNsb3chPC9ESVY+
-CjxESVY+Jm5ic3A7PC9ESVY+CjxESVY+SSB1c2UgSW50ZWwgeGVvbiAyLjRHIDEgRyBSQU0gPC9E
-SVY+CjxESVY+Jm5ic3A7PC9ESVY+CjxESVY+aG93IGNhbiBJIG9wdGltaXplIHRoZSBpcF9jb25u
-dHJhY2sgZXRjLjwvRElWPgo8RElWPiZuYnNwOzwvRElWPgo8RElWPlRoYW5rcy48L0RJVj4KPERJ
-Vj4mbmJzcDs8L0RJVj4KPERJVj5SZWdhcmRzLjwvRElWPgo8RElWPiZuYnNwOzwvRElWPgo8RElW
-PkxpYW5nIEppYW48L0RJVj48cD48YnI+PGhyIHNpemU9MT48Yj5EbyBZb3UgWWFob28hPzwvYj48
-YnI+CjxhIGhyZWY9Imh0dHA6Ly9jbi5yZC55YWhvby5jb20vbWFpbF9jbi90YWcvP2h0dHA6Ly9j
-bi5tZXNzZW5nZXIueWFob28uY29tIiB0YXJnZXQ9Ymxhbms+xvTTw7Xn08rVyrrFo6zB7Lvh0cW7
-os2oW8ntwdnG5L6zwcS159OwXbXEtq+40PfIwaajrLu509DN+MLnyePP8c23K9HFu6LNqMrV0vS7
-+rXIxOPAtMTDPC9hPg==
 
---0-1454692636-1063327753=:64924--
+> 2)       I have setup my firewall to allow and forward the 1723 to my
+> internal server.  This appears to work but the external Win2k box gets
+> stuck on "verifying username and password".  This eventually times out
+> with "disconnected".  A simple test was to Telnet to port 1723.
+> Although there is no response as such from the server (expected) it does
+> connect both internally and externally.  At what point does the 1723
+> data exchange end and the "payload" as such start on the GRE protocol?
+> Is GRE involved in the 'verifying username and password' stage or is
+> that still TCP on 1723?
+
+This is definitely due to the protocol 47 packets not getting through.
+The 'verifying username and password' stage is part of the PPP
+negotiation, which runs over the GRE tunnel.
+
+-- 
+Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
+SnapGear - Custom Embedded Solutions and Security Appliances
+
 
