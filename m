@@ -1,14 +1,12 @@
-From: Patrick Leslie Polzer <leslie.polzer@gmx.net>
-Subject: Re: DNAT problem
-Date: Sat, 29 May 2004 18:03:30 +0200
+From: "Erick Sanz" <esanz@minorplanetusa.com>
+Subject: SuSE Linux and iptables
+Date: Sat, 29 May 2004 13:51:32 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040529180330.6ec3d567.leslie.polzer@gmx.net>
-References: <20040529172536.6df75cca.leslie.polzer@gmx.net>
-	<000701c44592$bb254460$0200000a@heretic>
+Message-ID: <s0b89584.043@webmail.minorplanetusa.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000701c44592$bb254460$0200000a@heretic>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,41 +19,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sat, 29 May 2004 12:36:37 -0300
-"Alexis" <alexis@tpys.com.ar> wrote:
+All,
 
-> i think it could be
-> 
-> - that the isp (if you're connecting to one isp trough ppp0) has a filter for
-> port 80 (it seems strange)
-Hm, possible. I just noticed 81 works, too! What crap is this?
+I just changed from Red Hat Linux 9.0 to SuSE Linux 
+9.1; I had several rules working at home that I would 
+like to use in SuSE; however, SuSE comes with its own 
+version of firewalling (tied with YaST); I don't want to use their
+version (it does not do *exactly* what I
+want)...
 
-> are you mangling some packets? what is the output for iptables -t mangle -L?
-No rules at all, I generally try to stay away from mangling when testing:
+I tried to unistall their SuSEfirewall2 package;
+however, it is linked to yast, which is linkded to
+DHCP and it goes on with the dependencies...
 
+I just want to turn their firewall off and start 
+iptables on my own, with my own rules...
 
-### <snip> ###
+Has anyone done this?
 
-stronghold:~# iptables -t mangle -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination 
-
-### </snip> ###
+Beforehand, thank you for your help!
 
 
-So I guess all facts are pointing at my crappy ISP...
+This email message has been scanned for viruses.
 
-Leslie
 
