@@ -1,15 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: DNAT-Problem
-Date: Thu, 09 Sep 2004 07:38:26 -0400
+From: "Reklitis Georgios" <icsdm02011@icsd.aegean.gr>
+Subject: RE: problem applying dscp.patch(iptables)
+Date: Thu, 9 Sep 2004 14:45:42 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094729906.1897.2.camel@wolfpack.ljm.dom>
-References: <20040909041047.7f8457cf@nixe>
-	<1094696804.1739.7.camel@wolfpack.ljm.dom>
-	<20040909122931.3e8b4903@nixe>
+Message-ID: <D855E501E69F9A4FBA902D10A630482B30836C@hermes2.aegean.gr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040909122931.3e8b4903@nixe>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,46 +16,39 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2004-09-09 at 06:29, Tom Fischer wrote:
-> This is the only rule.
-> 
-> [root@server4 root]# iptables -t nat -vnL
-> Chain PREROUTING (policy ACCEPT 645K packets, 35M bytes)
->  pkts bytes target     prot opt in     out     source              
-> destination             2   120 DNAT       tcp  --  *      *      
-> 0.0.0.0/0            oldmachine       tcp dpt:9000 to:newmachine
-> 
-> Chain POSTROUTING (policy ACCEPT 62473 packets, 3966K bytes)
->  pkts bytes target     prot opt in     out     source              
-> destination         
-> 
-> Chain OUTPUT (policy ACCEPT 62441 packets, 3964K bytes)
->  pkts bytes target     prot opt in     out     source              
-> destination         
-> 
-> >         
-> > another thought--NAT happens first (PREROUTING), then filter rules. 
-> > you will need to edit your filter rule to allow traffic to
-> > "newserver's" actual IP instead of "oldserver's" actual IP.
-> > 
-> 
-> There are no Filterrules installed at the moment.
-> 
-> Tom
-
-what are the IP addresses of $oldmachine and $newmachine (obfuscate the
-first two octets if you must)?
-
-are you trying to DNAT from one machine on the local network to another
-machine on the local network?  what network is the client traffic
-sourcing from?  is it the same network?
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
-
+SSdtIHRyeWluZyB0byBzZXR1cCBhIHBsYXRmb3JtIHdoaWNoIG5lZWRzIHRoYXQgcGFydGlrdWxh
+ciBrZXJuZWwoMi40LjIwLCBjYW4ndCB1cGdyYWRlIGl0KSBhbmQgdGhlIHBhdGNoLW8tbWF0aWMg
+SSdtIHVzaW5nIGNvbWVzIHdpdGggaXB0YWJsZXMgKGh0dHA6Ly9kc21wbHMuYXRsYW50aXMudWdl
+bnQuYmUvZmlsZXMvaXB0YWJsZXMtMS4yLjQtMC4yLWRzY3AudGd6KSAoSSBkb24ndCBrbm93IGlm
+IG5ld2VyIHZlcnNpb25zIG9mIGlwdGFibGVzIGNhbiBiZSB1c2VkIHdpdGggbm8gcHJvYmxlbSku
+VGhhdCdzIHdoeSBJIGNob29zZWQgdGhhdCBvbGQgdmVyc2lvbnMuDQoNCg0KDQoNCi0tLS0tT3Jp
+Z2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItYm91bmNlc0BsaXN0cy5uZXRmaWx0
+ZXIub3JnDQpbbWFpbHRvOm5ldGZpbHRlci1ib3VuY2VzQGxpc3RzLm5ldGZpbHRlci5vcmddT24g
+QmVoYWxmIE9mIEpvc2UgTWFyaWENCkxvcGV6DQpTZW50OiBXZWRuZXNkYXksIFNlcHRlbWJlciAw
+OCwgMjAwNCA4OjM3IFBNDQpUbzogbmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmcNClN1Ympl
+Y3Q6IFJlOiBwcm9ibGVtIGFwcGx5aW5nIGRzY3AucGF0Y2goaXB0YWJsZXMpDQoNCg0KRWwgbWnD
+qSwgMDggZGUgMDkgZGUgMjAwNCBhIGxhcyAxODozMywgUmVrbGl0aXMgR2Vvcmdpb3MgZXNjcmli
+acOzOg0KPiBrZXJuZWwgMi40LjIwDQo+IGlwdGFibGVzLTEtMi00LTAuMi1kc2NwDQo+IA0KDQpX
+aGF0IHBhdGNoLW8tbWF0aWMgYXJlIHlvdSB1c2luZz8gWW91IGFyZSB1c2luZyB2ZXJ5IG9sZCBr
+ZXJuZWwgYW5kDQppcHRhYmxlcyB2ZXJzaW9ucy4gQXQgbGVhc3QgeW91IHNob3VsZCB1cGdyYWRl
+IHlvdXIgaXB0YWJsZXMgYW5kIHVzZQ0KdGhlIGxhcyBwYXRjaC1vLW1hdGljLiBQYXRjaCBib3Ro
+IHRoZSBrZXJuZWwgc291cmNlIGFuZCB0aGUgaXB0YWJsZXMNCnNvdXJjZSBhbmQgY29tcGlsZSB0
+aGVtLiBJdCBzaG91bGQgd29yayB0aGF0IHdheS4NCg0KPiAgSSdtIHRyeWluZyB0byBpbnN0YWxs
+IGlwdGFibGVzLHVzaW5nIGNvbW1hbmQgIm1ha2UgcGF0Y2gtby1tYXRpYyIsIEknbSBiZWluZyBh
+c2tlZCBhYm91dCBzb21lIHBhdGNoZXMgdG8gaW5zdGFsbCwgYnV0IGRzY3AucGF0Y2ggd2hpY2gg
+SSBuZWVkLCBjYW5ub3QgYmUgYXBwbGllZC1JIHJlY2VpdmUgYW4gZXJyb3IgKGZhaWxlZCB0byBw
+YXRjaCBjb3B5IG9mIC91c3Ivc3JjL2xpbnV4LTIuNC4yMCkuIEFsc28gSSdtIG5vdCBiZWluZyBx
+dWVzdGlvbmVkIGFib3V0IGFwcGx5aW5nIG9yIG5vdCBmdG9zLnBhdGNoLg0KPiBXaHkgZGlkIHRo
+YXQgaGFwcGVuZWQ/DQo+IFRoYW5rIHlvdSANCi0tIA0KSm9zZSBNYXJpYSBMb3BleiBIZXJuYW5k
+ZXoNCkRpcmVjdG9yIFRlY25pY28gZGUgYmdTRUMNCmprZXJvdWFjQGJnc2VjLmNvbQ0KYmdTRUMg
+U2VndXJpZGFkIHkgQ29uc3VsdG9yaWEgZGUgU2lzdGVtYXMgSW5mb3JtYXRpY29zDQpodHRwOi8v
+d3d3LmJnc2VjLmNvbQ0KRVNQQcORQQ0KDQpUaGUgb25seSBwZW9wbGUgZm9yIG1lIGFyZSB0aGUg
+bWFkIG9uZXMgLS0gdGhlIG9uZXMgd2hvIGFyZSBtYWQgdG8gbGl2ZSwNCm1hZCB0byB0YWxrLCBt
+YWQgdG8gYmUgc2F2ZWQsIGRlc2lyb3VzIG9mIGV2ZXJ5dGhpbmcgYXQgdGhlIHNhbWUgdGltZSwN
+CnRoZSBvbmVzIHdobyBuZXZlciB5YXduIG9yIHNheSBhIGNvbW1vbnBsYWNlIHRoaW5nLCBidXQg
+YnVybiwgYnVybiwgYnVybg0KbGlrZSBmYWJ1bG91cyB5ZWxsb3cgUm9tYW4gY2FuZGxlcy4NCiAg
+ICAgICAgICAgICAgICAtLSBKYWNrIEtlcm91YWMsICJPbiB0aGUgUm9hZCINCg0KDQo=
 
