@@ -1,11 +1,12 @@
-From: Ron Peterson <rpeterso@mtholyoke.edu>
-Subject: filter on ethernet alias
-Date: Thu, 4 Sep 2003 11:22:50 -0400
+From: Gareth Hastings <Gareth.Hastings@netcall.com>
+Subject: Port forward to public IP's behind firewall
+Date: Thu, 4 Sep 2003 16:30:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030904152250.GA25689@mtholyoke.edu>
+Message-ID: <9AD675D1C5325D4F87D79F3EB7E539F3ABE5@postmanpat.netcall.com>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C372F9.7B222A39"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,36 +16,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter Discussion <netfilter@lists.netfilter.org>
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-I've found several threads on the topic in the list archives, but the
-solutions presented don't quite match my situation.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Putting the aliases issue aside for the moment, here's the application.
-I configure dhcp to set a linux box's ip address to be the default
-gateway for certain hosts.  Then I use iptables rules to DNAT traffic
-destined for ports 80/443 to to a box (could be same box) running apache
-on say ports 8080/8443.  Apache simply redirects traffic to these ports
-to a particular URL.  So for example, unregistered computers get
-directed to a web page that says they have to register their computer
-before they'll get off-campus Internet access.
+------_=_NextPart_001_01C372F9.7B222A39
+Content-Type: text/plain
 
-Now I'd like to direct certain people to one page, and others to a
-different page (e.g. their machine has been identified as being hacked,
-so they get directed to a page telling them what to do).
+I am using proxy arp and ip aliasing with iptables as a firewall for a few
+class C networks. It works with no problems. All our machines behind the
+firewall have public addresses. Now I would like to add a port forward rule
+that sends all incoming mail to another IP address. I am not sure what I'd
+need to do. I didn't think SNAT or DNAT were needed here as no NAT is
+happening. Anyone have any ideas? Do I need to mangle the destination
+address?
 
-So I was thinking I could do this by aliasing multiple IP's to a single
-interface, and filter based on the virtual interface.  Can't do this, I
-guess.  Neither can I filter on destination IP, because the box is a
-gateway, not a destination.  Is there any way to filter a packet based
-on which gateway ip address it was sent to, if both addresses are
-assigned to the same interface?
+Thanks
 
--- 
-Ron Peterson                          -o)
-Network & Systems Manager             /\\
-Mount Holyoke College                _\_v
-http://www.mtholyoke.edu/~rpeterso   ---- 
+Gareth
+
+------_=_NextPart_001_01C372F9.7B222A39
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3DUS-ASCII">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>Port forward to public IP's behind firewall</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>I am using proxy arp and ip aliasing with iptables as =
+a firewall for a few class C networks. It works with no problems. All =
+our machines behind the firewall have public addresses. Now I would =
+like to add a port forward rule that sends all incoming mail to another =
+IP address. I am not sure what I'd need to do. I didn't think SNAT or =
+DNAT were needed here as no NAT is happening. Anyone have any ideas? Do =
+I need to mangle the destination address?</FONT></P>
+
+<P><FONT SIZE=3D2>Thanks</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Gareth</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C372F9.7B222A39--
 
