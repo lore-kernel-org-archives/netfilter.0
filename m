@@ -1,14 +1,16 @@
-From: Roberto Nibali <ratz@drugphish.ch>
-Subject: Re: ip_conntrack module, advanced routing and multiple ISP
-Date: Tue, 16 Sep 2003 13:30:57 +0200
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: STATELESS
+Date: 16 Sep 2003 15:54:08 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F66F471.5070009@drugphish.ch>
-References: <MGEFIJGLOCLFFKBKAFEPGEDIEHAA.mt.netfilter@comelis.fr>
-Reply-To: ratz@tac.ch
+Message-ID: <1063720447.31093.166.camel@raylinux.internal>
+References: <02ba01c37c46$bb7a5f60$798014ac@matthew>
+	 <200309161256.15286.gdh@acentral.co.uk>
+	 <1063716386.31093.160.camel@raylinux.internal>
+	 <20030916131153.GA16559@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-mqnMN/FNkgT2bgDsV98B"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <MGEFIJGLOCLFFKBKAFEPGEDIEHAA.mt.netfilter@comelis.fr>
+In-Reply-To: <20030916131153.GA16559@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,85 +20,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Matthieu Turpault <mt.netfilter@comelis.fr>, netfilter@lists.netfilter.org
+To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Matthieu Turpault wrote:
-> Who can share his opinion on this matter?
-> 
-> Receiving *no answer at all* usually means one of 2 things:
 
-I doubt it in this case.
+--=-mqnMN/FNkgT2bgDsV98B
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> 1) extremely ignorant question, not even worth a lousy RTFM reply :-(
-> 2) brilliant question, nobody ever came up with such a marvelous idea :-)
+On Tue, 2003-09-16 at 15:11, Ramin Dousti wrote:
+> On Tue, Sep 16, 2003 at 02:46:27PM +0200, Ray Leach wrote:
+>=20
+> > >=20
+> > > Don't load the ip_conntrack module, and / or don't use any iptables r=
+ules that=20
+> > > use "-m state"  in the arguments :)
+> > Yeah, connection tracking automagically implies state inspection.
+>=20
+> OK. Thanks for the informative comments but can you lay out the steps to
+> prevent stateful inspection? For example, how to unload "ip_conntrack" an=
+d
+> to prevent it from being reloaded again?
+>=20
+Personally, I would re-compile the kernel without connection tracking
+support.
 
-<OT>
-3) most people don't get paid to do support on MLs, so they choose which
-    reports they want to reply to; yours seems complicated a first sight
-    so most people don't bother reading it through.
-4) the question maybe is not asked in an intelligent way
-5 ...) <add reasons yourself>
-</OT>
+> Thanks again.
+>=20
+> Ramin
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
->>	I have a firewall with 4 NIC:
->>		- 3 interfaces connected to the net (eth2, eth3, eth5) by
->>		    3 ISP;
->>		- 1 interface connected to the internal network.
->>
->>	eth2 is connected to a router (10.0.1.1) which does masquerading.
->>
->>	Outcoming request (from the internal network to the net) are load
->>	 balanced to the 3 ISP (cf my configuration at the end of the mail).
->>
->>	All incoming request from the net to internal network by port
->>	 http, pop3, imap, ftp, smtp, https are correctly routed.
+--=-mqnMN/FNkgT2bgDsV98B
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Ok.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
 
->>	All outcoming request from the internal network to the net by
->>	 port http, pop3, imap are correctly routed.
+iD8DBQA/ZxX/h1fuR/Bv+ygRAvD1AJ4q9W+9LHJ4wByB0iCpoglzaOM+JgCeIslU
+61ojBtDACOvvaAOJtXL4lsg=
+=qxwf
+-----END PGP SIGNATURE-----
 
-Ok
-
->>	The problem is that I can't connect from the internal network to
->>	 a ftp server of the net. In fact, I can connect to a ftp server
->>	 of the net but the "ls" command failed the most of the time (1/3).
->>	 I use passive mode.
-
-I suspect it's a persistency problem due to the nature of how ftp works.
-
->>     If I add the route by the command
->>	  ip route add <@ftpServer> via <@GATEWAY_ISP2>
->>	  it is OK
-
-Yes, this could be a persistency problem. You're doing your load 
-balancing on L3 with the iproute framework. Unfortunately the current 
-routing implementation to date has (AFAIK) no means to provide 
-persistency for connections.
-
->>[root@firewall firewall]# ip route list
->><@NETMASK_ISP2>/30 dev eth5  proto kernel  scope link  src <@ISP2>
->>10.0.3.0/30 dev eth5  scope link
->>10.0.1.0/24 dev eth2  scope link
->>10.1.0.0/24 dev eth0  scope link
->><@NETMASK_ISP3>/24 dev eth3  scope link
->>127.0.0.0/8 dev lo  scope link
->>default
->>        nexthop via 10.0.1.1  dev eth2 weight 1 onlink
->>        nexthop via <@GATEWAY_ISP2>  dev eth5 weight 1 onlink
->>        nexthop via <@GATEWAY_ISP3>  dev eth3 weight 1 onlink
-
-Those lines could be the culprit. When you connect to an ftp server you 
-might go over one line, then for the DATA connection you will go over 
-the other and thus you'll confuse netfilter. But I haven't looked at 
-your whole configuration as I do not have enough time.
-
-A tcpdump session will most probably reveil the real problem to you. If 
-not, add -j LOG statements to your packet filter configuration and 
-figure out where the packets sink through your mesh of rules.
-
-HTH and best regards,
-Roberto Nibali, ratz
+--=-mqnMN/FNkgT2bgDsV98B--
 
 
