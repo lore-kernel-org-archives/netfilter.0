@@ -1,14 +1,13 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: SMTP Routing Based On Recipient
-Date: Tue, 23 Dec 2003 11:20:46 -0800
+From: "gustav gundacker" <gg0815@gmx.net>
+Subject: Re: SMTP Routing Based On Recipient
+Date: Tue, 23 Dec 2003 22:57:18 +0100 (MET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312231921.hBNJKkNC007637@server5.bandwidthco.com>
-References: <200312231314.06746.Antony@Soft-Solutions.co.uk>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <30807.1072216638@www24.gmx.net>
+References: <1072121282.10935.12.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312231314.06746.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: aellis@saberlogic.com
+Cc: netfilter@lists.netfilter.org
 
-One more vote for MailScanner.  To put it simply, it is an "amazing" piece
-of software.  It's easy to install, it requires very little maintenance, it
-is highly effective, and the price is fits my budget perfectly ($0.00).  I
-find it to be the perfect complement to iptables.
+a solution is smtpd/smtpfwdd from juniper see
+http://www.obtuse.com/smtpd.html
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-Sent: Tuesday, December 23, 2003 5:14 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: SMTP Routing Based On Recipient
+gunnar
 
-On Tuesday 23 December 2003 1:00 pm, Adam Ellis wrote:
+> I am running a MS Exchange 5.5 server and am getting hit with the NDR
+> (non-delivery report) Reverse Spam Attack as described here:
+> =20
+> http://www.tek-tips.com/gviewthread.cfm/lev2/3/lev3/15/pid/10/qid/725829
+>=20
+> As the thread describes, there is no way to just turn off NDRs in
+> Exchange 5.5 - Microsoft is recommending third party utilities.  What I
+> am wondering is this - would it be possible to redirect SMTP to my Linux
+> server, use iptables to check that the recipient matches a valid user
+> >from a list I'd supply, and, if so, route the message to the Exchange
+> server?  And, if no valid recipient is found, the message is simply
+> dropped.  Is this even a logical way to handle this situation?  Should I
+> be looking at something like snort instead?  I'm all ears!
+>=20
+> Thanks,
+> --=20
+> Adam Ellis <aellis@saberlogic.com>
+> SaberLogic
+>=20
 
-> On Tue, 2003-12-23 at 06:37, Chris Brenton wrote:
-> >
-> > A couple of other options:
-> > I use a combination of Sendmail, ClamAV, MimeDefang and Spamassassin 
-> > to clean up all inbound e-mail before passing it off to my mail 
-> > server. You can find a great tutorial on setting this up here:
-> > http://www.rudolphtire.com/mimedefang-howto/
->
-> Chris and everyone else in this thread,
->
-> Thanks for the information.  I think you all have me going in the 
-> right direction now!
-
-I recommend http://www.mailscanner.info for a similar setup - it uses
-sendmail or exim, and provides a wonderfully configurable wrapper around any
-of 15 different antivirus engines (including the free ClamAV), and
-SpamAssassin.
-
-Antony.
-
---
-RTFM may be the appropriate reply, but please specify exactly which FM to R.
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
+--=20
++++ GMX - die erste Adresse f=FCr Mail, Message, More +++
+Neu: Preissenkung f=FCr MMS und FreeMMS! http://www.gmx.net
 
 
 
