@@ -1,9 +1,10 @@
-From: "SB CH" <chulmin2@hotmail.com>
-Subject: how to check ip_conntrack number?
-Date: Wed, 19 Mar 2003 10:42:47 +0000
+From: "Steffen Bisgaard" <sbisgaard@xtrasource.com>
+Subject: some help please...
+Date: Wed, 19 Mar 2003 11:58:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F190QR7j1HaKtKufVma00000070@hotmail.com>
+Message-ID: <NEBBICCJKLGJHMMNBPIKIEKLEHAA.sbisgaard@xtrasource.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,16 +15,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-SGVsbG8uCgpJIHdvdWxkIGxpa2UgdG8gY2hlY2sgImlwX2Nvbm50cmFjayIgbnVtYmVyLgpCdXQg
-d2hlbiBJIGNoZWNrIGxpa2UgdGhpcyB0aGUgbG9hZCBpcyBzbyBoaWdoIGFuZCB0aGUgc3lzdGVt
-CndvdWxkIGJlIGZyZWV6ZWQuCgojIGNhdCAvcHJvYy9uZXQvaXBfY29ubnRyYWNrIHx3YyAtbAoK
-SXMgdGhlcmUgYW5vdGhlciBtZXRob2QgdG8gY2hlY2sgY3VycmVudCBjb25udHJhY2sgbnVtYmVy
-PwoKYW5kIHdoYXQgaXMgdGhlIG1heGltdW0gbnVtYmVyIG9mIHRoZSAibmV0LmlwdjQuaXBfY29u
-bnRyYWNrX21heCI/CgoKVGhhbmtzIGluIGFkdmFuY2UuCiAKCgoKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCsH1sccgwaS6
-uCCwocDlILr8uKOw7SDG7cfPsNQguri9xyC89iDA1r3AtM+02S4gTVNOIMH1sccvxfXA2iAgIApo
-dHRwOi8vd3d3Lm1zbi5jby5rci9zdG9jay8gIAoKCg==
+Hallo,
+
+I keep getting the following coming on my screen when iptables is running.
+My guess is that it is a backupexec client trying to reach the 10.2.0.13
+server. Can someone help me allowing this through?
+
+CHAININ= OUT=eth0 SRC=10.2.10.8 DST=10.2.10.3 LEN=60 TOS=0x00 PREC=0x00
+TTL=64 ID=21580 DF PROTO=TCP SPT=8193 DPT=6101 WINDOW=5840 RES=0x00 SYN
+URGP=0
+END OF OUTPUT
+
+Many thanks in advance.
+
+
