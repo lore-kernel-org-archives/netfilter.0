@@ -1,13 +1,18 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: UDP Redirects
-Date: Tue, 16 Sep 2003 10:24:32 -0400
+From: kilobug@freesurf.fr (=?iso-8859-1?q?Ga=EBl_Le_Mignot?=)
+Subject: Re: STATELESS
+Date: Tue, 16 Sep 2003 17:03:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030916142432.GD16559@cannon.eng.us.uu.net>
-References: <20030916000714.GC3213@charizard> <20030916010550.GC1272@charizard.ergotech-usa.com>
+Message-ID: <plopm3isnshj1n.fsf@drizzt.kilobug.org>
+References: <02ba01c37c46$bb7a5f60$798014ac@matthew>
+	<200309161256.15286.gdh@acentral.co.uk>
+	<1063716386.31093.160.camel@raylinux.internal>
+	<20030916131153.GA16559@cannon.eng.us.uu.net>
+	<1063720447.31093.166.camel@raylinux.internal>
+	<20030916141505.GB16559@cannon.eng.us.uu.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030916010550.GC1272@charizard.ergotech-usa.com>
+In-Reply-To: <20030916141505.GB16559@cannon.eng.us.uu.net> (Ramin Dousti's
+ message of "Tue, 16 Sep 2003 10:15:05 -0400")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,43 +24,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jim Redman <jim@ergotech.com>
-Cc: netfilter@lists.netfilter.org
+To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: Ray Leach <raymondl@knowledgefactory.co.za>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Do the packets belong to one UDP session? If not, this number of packets
-might overflow your connection-tracking table.
 
-Ramin
+ >> > > Yeah, connection tracking automagically implies state inspection.
+ >> > 
+ >> > OK. Thanks for the informative comments but can you lay out the
+ >> > steps to prevent stateful inspection? For example, how to unload
+ >> > "ip_conntrack" and to prevent it from being reloaded again?
+ >> > 
+ >> Personally, I would re-compile the kernel without connection tracking
+ >> support.
 
-On Mon, Sep 15, 2003 at 07:05:50PM -0600, Jim Redman wrote:
+ > OK. If you recompile without conntrack, can you do NAT? I'm just wondering?
 
-> [apologies if this is a duplicate - the list manager has ack'd my 
-> request but still bounced the first copy]
-> 
-> I have a system that is sending UDP packets to port 995 at about 100 
-> packets/second.  I want to redirect these to 1995 so that I can listen 
-> on an unpriveledged port.  So I:
-> 
-> iptables -t nat -A PREROUTING -p udp --dport 995 \
->     -j REDIRECT --to-port 1995
-> 
-> This seems to work some of the time, but most of the time not.  It 
-> seems to work better when the connection is across a VPN which limits 
-> that packets to about 5-10/second.  So I assume that I've hit some 
-> limit, however this (and a number of variants) don't seem to help:
-> 
-> iptables -t nat -I PREROUTING -m limit --limit 1000/s \
->     --limit-burst 1000 -j ACCEPT
-> 
-> Am I missing something obvious?  Any suggestions?
-> 
-> Thanks,
-> 
-> Jim
-> 
-> -- 
-> 
-> Jim Redman
-> (505) 662 5156 x85
-> http://www.ergotech.com
+no, Netfilter's NAT relies upon the conntrack.
+
+Can I ask you why do you want  to turn off the conntrack ? If it's for
+speed or memory  reasons, then using NAT will  have a similar overhead
+(maybe  not exactly  the same,  but similar)  anyway. When  you  NAT a
+connection, you're  forced to  keep track of  the connection a  way or
+another, to NAT further packets of the connection the same way.
+
+-- 
+Gael Le Mignot "Kilobug" - kilobug@nerim.net - http://kilobug.free.fr
+GSM         : 06.71.47.18.22 (in France)   ICQ UIN   : 7299959
+Fingerprint : 1F2C 9804 7505 79DF 95E6 7323 B66B F67B 7103 C5DA
+
+Member of HurdFr: http://hurdfr.org - The GNU Hurd: http://hurd.gnu.org
 
