@@ -1,14 +1,9 @@
-From: cc <cc@belfordhk.com>
-Subject: Re: Reaching internal computers through the external ipaddress inside
- private network
-Date: Thu, 22 Apr 2004 12:47:18 +0800
+From: "__ Radien__" <radien@zworg.com>
+Subject: need example on some conntrack patches
+Date: Wed, 21 Apr 2004 23:04:28 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40874E56.80503@belfordhk.com>
-References: <40850EA0.7090206@dev.null.se>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Message-ID: <19109.1082613868@zworg.com>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40850EA0.7090206@dev.null.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +13,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Christopher Abrahamsson sighed and wrote::
+Dear All
 
-> Hi
->
-> I've been trying to solve this problem for quite some time now, but i
-> can't really figure out how...
-> Here's my current setup:
->                               _ my computer (10.0.0.3)
->                              |
-> internet - iptables gateway -|- my server(web, mail etc) (10.0.0.2)
->             (212.181.43.20)  |
->                              |_ a bunch of other computers (10.0.0.x)
->
->
-I believe you firstly need to do a NAT prerouting and then after the
-forward lines, you need a POSTROUTING NAT command.  Here's my
-stab at this, given your situation:
+  Can anyone give an example of using these patches? (a simple
+configuraiton + the correcponding rule set)
 
+   1. record-rpc patch 
+   2. h323-conntrack-nat patch 
+   3. pptp patch 
 
-iptables -t nat -A PREROUTING -i eth1 -p tcp -d 212.181.43.20 \
-               --dport 80 -j DNAT --to 10.0.0.2
+   I'm a little confused about them. It seems I could match connection
+that are RELATED to existing connection that use PPTP, h323 and RPC(I
+guess what MS Uses in windows) using these patches, I mean tracking
+connection on these protocols. But still I need more explaination w/
+simple examples.
 
-#not too sure if the next line is needed.
-iptables -A FORWARD -i eth1 -p tcp --dport 80 -j ACCEPT
-
-iptables -t nat -A POSTROUTING -o eth1 -p tcp --dst 10.0.0.2 \
-           --dport 80 -s 10.0.0.3 -j SNAT --to-source 212.181.43.20
-
-Mind you, I think the last line above, the --to-source should be
-pointing to your gateway's internal IP and not the external one.
-If your gateway's internal IP is 10.0.0.20, then the above should
-be:
-
-iptables -t nat -A POSTROUTING -o eth1 -p tcp --dst 10.0.0.2 \
-           --dport 80 -s 10.0.0.3 -j SNAT --to-source 10.0.0.20
-
-Can someone point out if I got the above correct?
-
-Edmund
-
+TIA
+Regards
+__Radien__
 
