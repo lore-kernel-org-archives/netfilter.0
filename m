@@ -1,13 +1,13 @@
-From: Martijn Klingens <mklingens@ism.nl>
-Subject: Re: Unexpected RSTs?
-Date: Wed, 16 Oct 2002 15:36:52 +0200
+From: Alexandros Papadopoulos <apapadop@cmu.edu>
+Subject: Re: Tightening up outgoing traffic
+Date: Wed, 16 Oct 2002 11:58:17 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210161536.52930.mklingens@ism.nl>
-References: <200210111434.52124.mklingens@ism.nl> <200210111303.g9BD3mL19306@vulcan.rissington.net> <200210111629.26991.mklingens@ism.nl>
+Message-ID: <200210161158.17348.apapadop@cmu.edu>
+References: <1034686034.15446.38.camel@localhost.localdomain> <1034772030.2206.5.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210111629.26991.mklingens@ism.nl>
+In-Reply-To: <1034772030.2206.5.camel@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +18,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Neil Hodge <neh@attbi.com>
+Cc: netfilter@lists.netfilter.org
 
-On Friday 11 October 2002 16:29, Martijn Klingens wrote:
-> On Friday 11 October 2002 15:03, Antony Stone wrote:
-> > Maybe you could try putting a LOG rule to catch *all* RSTs at the
-> > beginning of your rules (before even the ESTABLISHED, RELATED rule) and
-> > see if this shows they are coming along in pairs ?
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+On Wednesday 16 October 2002 08:40, Neil Hodge wrote:
+<snip>
+> Thanks for all of the information.  It worked well.  Although, when I
+> had to reboot (for another reason), X wouldn't start . . .  Alas, that'=
+s
+> a battle for another day.
 >
-> Good idea. I'm not going to modify the firewall so close before the
-> weekend, but will do so next monday. Thanks for the tip and I'll let you
-> know about the results!
+You need to enable all traffic on the loopback interface. X creates local=
+=20
+connections for itself.
 
-Just did some small tests, and unfortunately this idea seems to be incorrect.
+/sbin/iptables -A OUTPUT -s 127.0.0.1 -d 127.0.0.1 -j ACCEPT
 
-Each 'unexpected rst' has exactly *ONE* RST coming in, so it's not a duplicate 
-entry being dropped, it's a unique entry.
+should so the job
 
-Also, the IP addresses causing unexpected RSTs are sending accepted RSTs later 
-on in the firewall log with a slightly higher port number, so it looks like 
-the senders are legitimate and not malicious users.
+- -A
+- --=20
+http://www.andrew.cmu.edu/~apapadop/pub_key.asc
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.0 (GNU/Linux)
 
-Do you have any other ideas why the RSTs are not accepted by the conntrack 
-code as 'related' ?
-
--- 
-Martijn
+iD8DBQE9rYyZgmAMwQt1gmURAtspAJwJCiP8GGA5W6XEnm9d3cI6MgCi5ACeK+9+
+4TmYKgGeik0f+eM5Csh+hB0=3D
+=3DPke4
+-----END PGP SIGNATURE-----
 
 
