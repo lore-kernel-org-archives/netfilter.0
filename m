@@ -1,13 +1,11 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: ftp and ssl
-Date: Thu, 6 Nov 2003 09:12:35 +0100 (CET)
+From: Martin Ferrari - Decidir IT <mferrari@decidir.net>
+Subject: RE: IP-Range and Subnetmask
+Date: Thu, 6 Nov 2003 08:18:35 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0311060911440.21234@dns.toxicfilms.tv>
-References: <33da01c3a34d$84fe6660$2288e7c0@promed.com.au>
- <002701c3a3eb$d31756b0$c800a8c0@klintan.cjb.net>
+Message-ID: <0EF8394892B74144ACF999556D1FD6BB7DE51D@dexter.decidir.net>
+Reply-To: mferrari@decidir.net
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002701c3a3eb$d31756b0$c800a8c0@klintan.cjb.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,18 +15,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Michael Klinteberg <micke@klintan.se>
-Cc: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-> A lot of responses  here :-) Still don't know what to do?
-> I could however set up rules that allow everything from the ftp client (me)
-> to the ftp server and then run tcpdump and see what's going on. Is this a
-> god approach?
-Using tcpdump is always a good approach.
+Use the CIDR notation:
 
-Regards,
-Maciej
+172.16.0.0/12
+
+ex.: iptables -A INPUT -p tcp -s 172.16.0.0/12 -d $INET_IP -i ppp0 -j
+SPOOFED
+
+> From: Bewerbungsadresse@web.de [mailto:bewerbungsadresse@web.de]
+> Sent: Wednesday, November 05, 2003 6:21 PM
+
+> is it possible to prevent spoofing attacks to 
+> 172.16.0.0-172.31.255.255 
+> on the external internet IP in one rule?
+> 
+> something like that
+> 
+> iptables -A INPUT -p tcp -s 172.16.0.0/255.31.0.0 -d $INET_IP 
+> -i ppp0 -j 
+> SPOOFED
+
+This was wrong, as the netmask should have been 255.240.0.0; the former
+netmask was invalid.
 
 
