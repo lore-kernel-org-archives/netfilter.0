@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Strange logs...
-Date: Sun, 11 Jan 2004 14:09:57 +0000
+From: "san" <pudhiyavan@hotmail.com>
+Subject: any documents on Link-Load balancing
+Date: Fri, 9 Jan 2004 12:49:36 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401111409.57475.Antony@Soft-Solutions.co.uk>
-References: <002201c3d837$a6c70e90$1530a8c0@HUSH> <200401111340.27973.Antony@Soft-Solutions.co.uk> <004f01c3d84b$28d3c5a0$1530a8c0@HUSH>
+Message-ID: <BAY1-DAV38fyQgeDKvP000003c0@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_0115_01C3D6AF.095FCCC0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004f01c3d84b$28d3c5a0$1530a8c0@HUSH>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +17,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Sunday 11 January 2004 1:59 pm, Carlos Fernandez Sanz wrote:
+This is a multi-part message in MIME format.
 
-> > Your IRQ/address etc setup looks fine to me, however there is clearly
-> > something weird about the network hardware arrangement for you to get the
-> > above-described ping behaviour.
->
-> Such as the router and the switch being connected for no reason? I was
-> obviously on crack when I set that up.... just found out that was the
-> problem.... strange that everything would work perfectly for hours then
-> stop working for minutes, etc... probably a table filling up in the switch
-> or the router or both :-)
+------=_NextPart_000_0115_01C3D6AF.095FCCC0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0116_01C3D6AF.095FCCC0"
 
-I'd put it down to the arp caches getting (mightily) confused about where to 
-find things.   Never mind the degree to which a security engineer's eyebrow 
-would rise upon realising your switch was connected to both sides of your 
-firewall :)
 
-Regards,
+------=_NextPart_001_0116_01C3D6AF.095FCCC0
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-Antony.
+BlankCan anyone help me to find out the link loadbalancing howto linux=20
 
--- 
-This email is intended for the use of the individual addressee(s) named above 
-and may contain information that is confidential, privileged or unsuitable 
-for overly sensitive persons with low self-esteem, no sense of humour, or 
-irrational religious beliefs.
+thanks in adv
 
-If you have received this email in error, you are required to shred it 
-immediately, add some nutmeg, three egg whites and a dessertspoonful of 
-caster sugar.   Whisk until soft peaks form, then place in a warm oven for 40 
-minutes.   Remove promptly and let stand for 2 hours before adding some 
-decorative kiwi fruit and cream.   Then notify me immediately by return email 
-and eat the original message.
+"Read not to contradict and confute, nor to believe and take for =
+granted, nor to find talk and discourse, but to weigh and consider."
+..found it while reading, "How to Read and Why" - Harold Bloom
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
+------=_NextPart_001_0116_01C3D6AF.095FCCC0
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE id=3DridTitle>Blank</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dwindows-1252"><BASE=20
+href=3D"file://C:\Program Files\Common Files\Microsoft =
+Shared\Stationery\">
+<STYLE>BODY {
+	MARGIN-TOP: 25px; FONT-SIZE: 10pt; MARGIN-LEFT: 25px; COLOR: #000000; =
+FONT-FAMILY: Arial, Helvetica
+}
+P.msoNormal {
+	MARGIN-TOP: 0px; FONT-SIZE: 10pt; MARGIN-LEFT: 0px; COLOR: #ffffcc; =
+FONT-FAMILY: Helvetica, "Times New Roman"
+}
+LI.msoNormal {
+	MARGIN-TOP: 0px; FONT-SIZE: 10pt; MARGIN-LEFT: 0px; COLOR: #ffffcc; =
+FONT-FAMILY: Helvetica, "Times New Roman"
+}
+</STYLE>
+
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR></HEAD>
+<BODY id=3DridBody bgColor=3D#ffffff=20
+background=3Dcid:011401c3d680$efa546d0$04005b0a@san>
+<DIV>Can anyone help me to find out the link loadbalancing=20
+howto&nbsp;linux&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>thanks in adv</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>"Read not to contradict and confute, nor to believe and take for =
+granted,=20
+nor to find talk and discourse, but to weigh and consider."<BR>...found =
+it while=20
+reading, "How to Read and Why" - Harold Bloom</DIV>
+<P>&nbsp;</P></BODY></HTML>
+
+------=_NextPart_001_0116_01C3D6AF.095FCCC0--
+
+------=_NextPart_000_0115_01C3D6AF.095FCCC0
+Content-Type: image/gif;
+	name="Blank Bkgrd.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <011401c3d680$efa546d0$04005b0a@san>
+
+R0lGODlhLQAtAID/AP////f39ywAAAAALQAtAEACcAxup8vtvxKQsFon6d02898pGkgiYoCm6sq2
+7iqWcmzOsmeXeA7uPJd5CYdD2g9oPF58ygqz+XhCG9JpJGmlYrPXGlfr/Yo/VW45e7amp2tou/lW
+xo/zX513z+Vt+1n/tiX2pxP4NUhy2FM4xtjIUQAAOw==
+
+------=_NextPart_000_0115_01C3D6AF.095FCCC0--
 
