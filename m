@@ -1,13 +1,15 @@
-From: "Mayank Kumar" <mayank_kumar@intersolutions.stpn.soft.net>
-Subject: RE: injecting new packets into the netfilter
-Date: Tue, 29 Jun 2004 11:49:10 +0530
+From: Sven Schuster <schuster.sven@gmx.de>
+Subject: Re: libipt_drop.so: cannot open shared object file
+Date: Tue, 29 Jun 2004 09:01:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BNELKLECKCDLOPNOBHFHOEBGJEAA.mayank_kumar@intersolutions.stpn.soft.net>
-References: <OFBEB2E69E.A4B53B89-ON65256EC2.001FE33D@hss.hns.com>
+Message-ID: <20040629070152.GA2037@zion.homelinux.com>
+References: <40E10006.3060805@tigerteam.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="a8Wt8u1KmwUX3Y2C"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OFBEB2E69E.A4B53B89-ON65256EC2.001FE33D@hss.hns.com>
+Content-Disposition: inline
+In-Reply-To: <40E10006.3060805@tigerteam.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,155 +19,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: aksingh@hss.hns.com
+To: Andy Walden <andy@tigerteam.net>
 Cc: netfilter@lists.netfilter.org
 
-Hi Amit
-thanks for ur prompt replies.
-firstly from ur replies it seems
-that
-1: Whatever packets that i will construct using libnet or
-   for that matter using ordinary bsd sockets would pass the
-   relevant hooks in the netfilter based on the dest ip address
-   i set. Is this true?? In this case i am constructing the packet
-   completely on my own.
 
-Now what i want to do is steal(NF_STOLEN) packets at specific hooks
-(generally pre routing)
-within the netfilter and queue them to a user mode process.
-The User mode process does some processing and either sends
-the same packet or completely new and umpteen in number packets
-at the post routing hook in netfilter(from ur answer using libnet).
-From ur answer it seems quite possible very easily. Correct
-me if i am wrong here. Also is there any advantage of using
-libnet over bsd sockets in terms of performance. Is there any
-other performance optmized way of sending and receiving packets from
-user to kernel mode?? Does netlink sockets way offer a more
-optimized way of doing it?? (Sorry for a flurry of questions!!)
+--a8Wt8u1KmwUX3Y2C
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
-Now the second part is what if i want to move it all to kernel mode for
-performance reasons.
-This means steal packet at pre_routing and then queue them all to
-a kernel thread which was created using a kernel module. The kernel
-thread then does some processing on the packets and then sends either
-the captured packet or completely new packets out through the post routing
-hook.
-How can this be achieved??
+Hi Andy,
 
-regds
-Mayank
+On Tue, Jun 29, 2004 at 01:37:10AM -0400, Andy Walden told us:
+>=20
+> # ./iptables -I INPUT -s 217.238.177.2 -j drop
+> iptables v1.2.11: Couldn't load target=20
+> `drop':/usr/local/lib/iptables/libipt_drop.so: cannot open shared object=
+=20
+> file: No such file or directory
 
-
+try DROP instead of drop, then it should work.
 
 
------Original Message-----
-From: aksingh@hss.hns.com [mailto:aksingh@hss.hns.com]
-Sent: Tuesday, June 29, 2004 11:21 AM
-To: Mayank Kumar
-Cc: netfilter@lists.netfilter.org
-Subject: RE: injecting new packets into the netfilter
+Sven
 
+>=20
+> I just started getting this one day. Searches show only three hits for=20
+> that file and there is no sign of it in my distrobution or the source=20
+> package. Any ideas as to what I'm seeing here? Thanks for the time.
+>=20
+> --=20
+> Best Regards,
+> Andy Walden
+>=20
 
+--=20
+Linux zion 2.6.7 #1 Thu Jun 17 10:44:26 CEST 2004 i686 athlon i386 GNU/Linux
+ 09:00:59  up 3 days, 13:51,  4 users,  load average: 2.17, 2.10, 2.02
 
+--a8Wt8u1KmwUX3Y2C
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
+iD8DBQFA4RPgo4FAdB2PneQRArp3AKCA+XUxkxCWdrw8po0GAxfGGYE+0wCfZbvE
+url/F+l6306p5kB9NtgxmCM=
+=i9Ac
+-----END PGP SIGNATURE-----
 
-Hi,
-
- You want to insert packets within the kernel module thta has netfilter
-hooks ?, I dont thinkthat is a very good idea, as the packets u send using
-a libnet application wld be caught at the netfilter hooks, if the
-application resides on the same pc on which yr kernel module that has hook
-funcstions resides, then those packets will traverse, local_out, post
-routing, pre_routing, local_in etc based on their dest ip addresses, any
-packet coming from ethernet wld traverse pre_routing, then local_in or
-ip_forward and post_routing .....
-
-Amit
-
-
-
-
-"Mayank Kumar"
-<mayank_kumar@intersolutions.stpn.soft.net>@lists.netfilter.org on
-06/29/2004 11:15:52 AM
-
-Sent by:    netfilter-admin@lists.netfilter.org
-
-
-To:    Amit Kumar Singh/HSS@HSS
-cc:    <netfilter@lists.netfilter.org>
-
-Subject:    RE: injecting new packets into the netfilter
-
-
-Hi Akash
-i know of this library.
-But i want to inject packets at precise hooks
-in the netfilter. for e.g. i want to inject packets whenever
-the need arises ,at the fwding hook or the post routing hook. Will the
-raw packets i send using the libnet get caught at hooks inserted using
-netfilter at various points.
-
-regds
-Mayank
-
------Original Message-----
-From: aksingh@hss.hns.com [mailto:aksingh@hss.hns.com]
-Sent: Tuesday, June 29, 2004 10:49 AM
-To: Mayank Kumar
-Cc: netfilter@lists.netfilter.org
-Subject: Re: injecting new packets into the netfilter
-
-
-
-
-
-
-Hi,
-
-  Try libnet for injecting new packets, you can use raw packets(u inject
-from userland), libnet provides you with a better interface, but you wld
-need root permission to use raw sockets. you can get libnet library from
-packetfactory.net
-
-HTH
-Amit
-
-
-
-
-"Mayank Kumar"
-<mayank_kumar@intersolutions.stpn.soft.net>@lists.netfilter.org on
-06/29/2004 10:17:16 AM
-
-Sent by:    netfilter-admin@lists.netfilter.org
-
-
-To:    <netfilter@lists.netfilter.org>
-cc:
-
-Subject:    injecting new packets into the netfilter
-
-
-Hi all,
-I want to know how can we inject absolutely new packets at
-various hook points in netfilter. I have already seen
-some questions posted on this earlier too but no replies
-as such. I am very eager to know about this because using
-this we can construct some really cool stuff. Currently we
-are undergoing a project on this and it would be of greate
-help if somebody can find a solution to this.
-
-Thanks in advance for any help on this.
-regds
-Mayank
-
-
-
-
-
-
+--a8Wt8u1KmwUX3Y2C--
 
