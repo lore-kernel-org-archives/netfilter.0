@@ -1,7 +1,7 @@
 From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
 Subject: Re: Saving IPTable rules..oops
-Date: Wed, 29 Dec 2004 13:32:32 -0500
-Message-ID: <1104345151.1976.28.camel@localhost>
+Date: Wed, 29 Dec 2004 13:35:57 -0500
+Message-ID: <1104345356.1973.32.camel@localhost>
 References: <6.1.2.0.0.20041229095858.02518240@corpmail.courtesymortgage.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -57,20 +57,16 @@ On Wed, 2004-12-29 at 13:03, Jason Williams wrote:
 > 
 > 
 > Jason
-The way I've typically seen it work is that the init.d/iptables script
-calls iptables-restore and passes it the /etc/sysconfig/iptables file. 
-This file is written when you do init.d/iptables save.
 
-If you really want to get fancy, you can save separate files in the
-iptables-restore syntax (not particularly well documented) and adapt the
-iptables script.  We do this in the ISCS network security management
-project (http://iscs.sourceforge.net) to first boot the gateway into a
-"safe" mode, i.e., almost nothing but DNS, NTP and SSH allowed.  We then
-do things like set up specialized routing, enable the VPN and then load
-a series of shared and local configuration files using iptables-restore
--n
+Oh, two more things.  We always use the iptables-restore in the ISCS
+project (http://iscs.sourceforge.net) rather than scripts with iptables
+commands because it is enormously faster.  The difference is noticeable
+even on small rule sets but if your rule sets start to number in the
+thousands, you can spend an hour trying to boot your gateway using
+iptables commands.
 
-Hope this makes sense after you get some sleep  :-( )  (big yawn)
+If you use multiple scripts, remember to use iptables-restore -n.  Just
+iptables-restore will overwrite any existing rules.  Take care - John
 -- 
 John A. Sullivan III
 Open Source Development Corporation
