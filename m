@@ -1,11 +1,9 @@
-From: "Dan Egli" <dan@shortcircuit.dyndns.org>
-Subject: Re: Samba blocked?
-Date: Tue, 26 Nov 2002 20:53:32 -0700
+From: "Joel Linuxdude" <linuxlists@hotmail.com>
+Subject: Re: To REDIRECT, DNAT or something else CBAKER
+Date: Wed, 27 Nov 2002 00:40:41 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001001c295c9$3ce1eec0$1e00a8c0@yamatto>
-References: <000d01c2958f$d3fadbd0$1e00a8c0@yamatto> <3DE41C6F.2050704@iprimus.com.au> <002101c295be$881c5c00$1e00a8c0@yamatto> <3DE43A5F.3070909@iprimus.com.au>
+Message-ID: <F14285SoElksSIYkSkw000277a6@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,75 +14,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Michael <mutk@iprimus.com.au>, netfilter@lists.netfilter.org
-
-I didn't realize that. I'll look into that. I can not access the machine at
-current so I'll print this out and use it when I CAN access it. Any other
-ideas so if that fails I can try them?
-
--- Dan
------ Original Message -----
-From: "Michael" <mutk@iprimus.com.au>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, November 26, 2002 8:22 PM
-Subject: Re: Samba blocked?
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: cbaker@bbbscolumbus.org, netfilter@lists.netfilter.org
 
 
-> Dan Egli wrote:
+>I know that this doesn't really answer the question. But the best
+>strategy is to have a firewall all by itself. If you have an old 486
+>around, you could try Coyote Linux <coyotelinux.com>. It boots and
+>runs off a floppy.
+
+That is actually tempting to do. I have other systems but it
+seems like a waste of resources. I want to make sure the latency
+is as low as possible. So, the firewall/Gateway seemed a good
+match. The WWW/FTP daemons truly do not do much. Maybe a coworker
+visits the web page once and a while. But, thats it.
+
+Now, if I run something like an email server or an Counter Strike
+server, I will have it on a differant computer. Heh.
+
+Thanks!!
+
+Joel
+
+
+
+
+
+>On 25 Nov 2002 at 18:43, Joel Linuxdude wrote:
 >
-> >Ok. I found the lookup order as:
-> >wins lmhosts bcast
+> > I just had a small question (maybe dumb, I dont care).
 > >
-> >Which is how a windows client would connect. (except it would read
-lmhosts
-> >first). This needs to work not only for
-> >smbclient but also for any windows machines in the 192.168.0.x network.
-And
-> >adding a lmhosts to each machine is not really an option except as an
-> >absolute last resort.
+> > My firewall PC is also my DNS server (caching), gateway to
+> > the internet via cable modem, web server, ftp server and
+> > later my proxy server.
 > >
-> >I need the system to be able to resolve netbios names via broadcast if at
-> >all possible. I still don't see why a request to 192.168.0.255 would
-fail.
+> > Do I need to REDIRECT packets coming into eth0 (from the
+> > cable modem) to the firewall itself?? I know, the packets
+> > are suppose to go right to INPUT chain but people over
+> > the internet can no longer access my WWW, FTP or TELNET
+> > daemon. I fear A) The cable modem company are blocking
+> > the use of servers or B) I screwed up somewhere in my
+> > firewall script.
 > >
-> >Here's the log fragments when I run smbclient //myserver/shared1 -U
-myuser:
-> >(resolve order = wins lmhosts bcast)
+> > HOW CAN I MAKE SURE ALL TCP/UDP PORT 20,21,22,23,80,443
+> > GO FROM CABLE MODEM ON ETH0 TO MY FIREWALL AND NOT GET
+> > FORWARDED OVER ETH1 TO MY LAN?
 > >
-> >Nov 26 20:33:22 mail last message repeated 2 times
+> > Thank you!
 > >
-> >Nov 26 20:34:03 mail kernel: IN=lo OUT=
-> >MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1
-> >LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=32814 DPT=137
-LEN=58
-> >Nov 26 20:34:07 mail last message repeated 2 times
-> >Nov 26 20:34:09 mail kernel: IN=lo OUT=
-> >MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=192.168.0.2
-> >DST=192.168.0.2 LEN=90 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP
-SPT=137
-> >DPT=32814 LEN=70
-> >Nov 26 20:34:10 mail last message repeated 2 times
-> >Nov 26 20:34:10 mail kernel: IN=lo OUT=
-> >MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=64.122.31.38
-> >DST=64.122.31.38 LEN=90 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP
-SPT=137
-> >DPT=32814 LEN=70
+> > _________________________________________________________________ Add
+> > photos to your messages with MSN 8. Get 2 months FREE*.
+> > http://join.msn.com/?page=features/featuredemail
 > >
-> >Any ideas, anyone?
+> >
 > >
 >
->
-> The logs are IN=lo. You have no rules to match interface lo.  Are you
-> running smbclient from local? You need iptables rules to allow from lo
-> too....
->
-> Sorry I didn't think of this before...
->
-> Cheers,
-> Michael
->
->
->
+>Chris Baker -- technical specialist
+>614-839-2447x108
+>cbaker@bbbscolumbus.org
+>Big Brothers Big Sisters of Central Ohio
+>www.bbbscolumbus.org
+
+
+_________________________________________________________________
+STOP MORE SPAM with the new MSN 8 and get 2 months FREE* 
+http://join.msn.com/?page=features/junkmail
 
 
