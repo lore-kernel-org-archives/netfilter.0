@@ -1,14 +1,12 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: Apache:access_log - 408
-Date: Mon, 26 Jan 2004 21:34:53 -0800
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: virus warning
+Date: Tue, 27 Jan 2004 13:44:53 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401270534.i0R5YsmK022776@server5.bandwidthco.com>
-References: <20040126090010.1242A33DBF@smtp.263.net>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <F22386C3FEB012449238672E38ED61E71642A9@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040126090010.1242A33DBF@smtp.263.net>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,67 +17,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'ccddtt' <ccddtt@263.net>, netfilter@lists.netfilter.org
+To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
-What makes you think you are being attacked?  There is not enough
-information here to make that determination. "408" is a "request Time-out
-error" and does not mean you are being attacked.  This appears to be an ACK
-scan with spoofed IP addresses. Look at the IPID's and TTL values. They tell
-me they are coming from the same machine. If you want to drop these packets,
-create stateful rules for inbound connections to port 80, and they will be
-dropped:
 
-$IPT -t filter -A PORTSCAN_RULES --destination-port 80 -p tcp --tcp-flags
-ALL ACK -m state --state NEW -j LOG --log-level $LOG_LEVEL --log-prefix
-"PORTSCAN: ACK ON NEW: "
+friends,
 
-$IPT -t filter -A PORTSCAN_RULES --destination-port 80 -p tcp --tcp-flags
-ALL ACK -m state --state NEW -j REJECT --reject-with icmp-host-unreachable
+we got a virus in our list.
+clamav warned me about it.
+it's now spreading like fire even on other lists.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of ccddtt
-Sent: Monday, January 26, 2004 1:00 AM
-To: netfilter@lists.netfilter.org
-Subject: Apache:access_log - 408
+thought you might like to be warned.
 
-hi,all
 
-please help me.
-my linux server installed redhat 9 + apache 1.3.29. passing through some
-attack.
-in apache acc_log,like :
-221.233.227.230 - - [17/Jan/2004:17:26:32 +0800] "-" 408 - 221.233.227.230 -
-- [17/Jan/2004:17:26:32 +0800] "-" 408 - 221.233.227.230 - -
-[17/Jan/2004:17:26:32 +0800] "-" 408 - 61.145.188.110 - -
-[17/Jan/2004:17:26:32 +0800] "-" 408 -
-210.38.179.145 - - [17/Jan/2004:17:26:32 +0800] "-" 408 - 221.233.227.230 -
-- [17/Jan/2004:17:26:32 +0800] "-" 408 - but no err_log.
+Cheers,
 
-some packge like :
-Jan 18 19:35:53 linux-sv1 kernel: IN=eth0 OUT=
-MAC=00:07:e9:6c:4c:49:00:02:b3:03:e3:67:08:00 SRC=220.173.8.56
-DST=61.135.xx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=114 ID=42497 DF PROTO=TCP
-SPT=60177 DPT=80 WINDOW=8280 RES=0x00 ACK URGP=0 Jan 18 19:35:53 linux-sv1
-kernel: IN=eth0 OUT= MAC=00:07:e9:6c:4c:49:00:02:b3:03:e3:67:08:00
-SRC=220.173.8.56 DST=61.135.xx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=114 ID=42753
-DF PROTO=TCP SPT=60177 DPT=80 WINDOW=8280 RES=0x00 ACK URGP=0 Jan 18
-19:35:53 linux-sv1 kernel: IN=eth0 OUT=
-MAC=00:07:e9:6c:4c:49:00:02:b3:03:e3:67:08:00 SRC=61.173.25.88
-DST=61.135.xx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=115 ID=53402 DF PROTO=TCP
-SPT=63601 DPT=80 WINDOW=16560 RES=0x00 ACK URGP=0 Jan 18 19:35:53 linux-sv1
-kernel: IN=eth0 OUT= MAC=00:07:e9:6c:4c:49:00:02:b3:03:e3:67:08:00
-SRC=220.173.8.56 DST=61.135.xx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=114 ID=43265
-DF PROTO=TCP SPT=60182 DPT=80 WINDOW=8280 RES=0x00 ACK URGP=0 
-
-how to set this iptables rules?
-
-what's this attack?
-thanks your any help!
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
 
 
 
 
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
 
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Fax: (632) 637-2206
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
 
