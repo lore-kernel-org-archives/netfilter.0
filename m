@@ -1,12 +1,13 @@
-From: "Lennart A. Hansen" <lah@euclolland.dk>
-Subject: Re: NAT with REDIRECT #$%@ up...
-Date: Tue, 01 Feb 2005 16:52:34 +0100
-Message-ID: <41FFA5C2.2070406@euclolland.dk>
-References: <41FE2118.8020108@euclolland.dk>
-	<1107264403.4330.11.camel@hubcap.ljm.dom>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: bad tcp packets?
+Date: 01 Feb 2005 17:28:50 +0100
+Message-ID: <1107263796.8711.2.camel@nostromo.bgsecm.com>
+References: <41FE32D4.4000103@usna.edu>
+	<1107193476.9909.4.camel@nostromo.bgsecm.com>
+	<Pine.CYG.4.58.0502010731340.544@MI340a.chem.mathsci.usna.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1107264403.4330.11.camel@hubcap.ljm.dom>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Pine.CYG.4.58.0502010731340.544@MI340a.chem.mathsci.usna.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +18,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Jason Opperisano wrote:
+El mar, 01 de 02 de 2005 a las 13:33, Kevin Van Workum escribi=C3=B3:
+> On Mon, 31 Jan 2005, Jose Maria Lopez wrote:
+>=20
+> > El lun, 31 de 01 de 2005 a las 14:29, Kevin Van Workum escribi=C3=B3:
+> > > I'm learning about iptables and am working through the example scri=
+pts
+> > > in Oskar Andreasson's Iptables Tutorial 1.1.19. So I have the follo=
+wing
+> > > rules:
+> > >
+> > > iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j =
+LOG
+> > > --log-prefix "New not syn:"
+> > > iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j =
+DROP
+> > >
+> > > My understanding of this rule is that all NEW tcp packets should by=
+ SYN
+> > > also. So if they are not NEW and SYN, then we should log them and d=
+rop
+> > > them. I guess Andreasson wants to log them because they may indicat=
+e a
+> > > problem of some sort. So in my log file, I get this:
+> > >
+> > > Jan 30 20:09:27 server kernel: New not syn:IN=3D OUT=3Dlo SRC=3D10.=
+0.0.100
+> > > DST=3D10.0.0.100 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D7678=
+ DF PROTO=3DTCP
+> > > SPT=3D34928 DPT=3D143 WINDOW=3D32767 RES=3D0x00 ACK PSH FIN URGP=3D=
+0
+> > >
+> > > So what's the problem with these packets? It looks like some client=
+ is
+> > > contacting the imapd (which is running on my firewall) with some ba=
+d tcp
+> > > packets?
+> >
+> > NEW without SYN packets can occur but they are very uncommon, the
+> > rule proposed it's correct in the 99% of the systems, but if you
+> > have a program or daemon that doesn't make the SYN/ACK-SYN/ACK
+> > correctly then you maybe have to allow this packets.
+>=20
+> Is there a way to determine which program or daemon is producing these
+> packets?
 
-> according to packet 6 in your capture, your proxy requires
-> authentication.  you cannot combine authentication and transparent
-> proxying; which will makes perfect sense if you think about it long
-> enough.
->
-> as far as the checksum errors go--do you have an IP bound to br0?
->
+The problematic packets are being sent from your own machine through
+the lo interface, so you can use some -m owner rules to log the packets.
+Just make a -m owner --pid-owner with the pids of the suspecting
+daemons or programs you are running and a different log for each of
+these and then you can see what program it's sending the data.
 
-No its far more stupid then that, in a tired nightly hour I did set 
-netmask 255.255.255.0 on br0 where it should be 255.0.0.0, when my 
-client tryes to reach the proxy
- at port 3128 i HAS to go througt my gateway since it the only way thay 
-can reach each other. Strangely enough thay can.
+Regards.
 
-Natually it will generate errors when the bridge tryed to trick the 
-client posing af the gateway.
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
 
-Thanks anyway.
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
-> PS - amongst my friends i have a mouth like a sailor, but i don't see
-> how it's appropriate to set a subject line as you did, no matter how
-> frustrated you may be.
->
-Sorry about that, no fence meant by it...
-
-I'am very happy with IPTables and respect those how contributed to it. 
-Thanks guys.
-
--Lennart
 
