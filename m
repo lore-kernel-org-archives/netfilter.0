@@ -1,12 +1,13 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Question about REJECT in FORWARD rule
-Date: Wed, 11 Aug 2004 16:24:20 -0400
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: DNAT hiding routers behind it
+Date: Wed, 11 Aug 2004 15:29:12 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051272@asimail2.alphanumeric.com>
+Message-ID: <411A8198.2030409@pbl.ca>
+References: <4113BEF9.5090706@parknet.dk> <200408062356.16206.Antony@Soft-Solutions.co.uk> <411443B8.8090202@parknet.dk> <200408070837.38949.Antony@Soft-Solutions.co.uk> <4114EB94.8050004@parknet.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <4114EB94.8050004@parknet.dk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,47 +17,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Simon Lodal <simonl@parknet.dk>
+Cc: netfilter@lists.netfilter.org
 
-> On Wed, Aug 11, 2004 at 12:30:50PM -0400, Jason Opperisano wrote:
-> > is not narrowing down the interface/source, and is hit before any =
-connection tracking occurs.  i've never used "-j REJECT --reject-with =
-tcp-reset" without also specifying "--syn" as it could have very odd =
-results (and also doesn't make sense from a TCP perspective)...
->
-> Really? I thought "-j REJECT --reject-with tcp-reset" would always do
-> the right thing, even without specifying --syn (of course, it wouldn't
-> be a bad idea to specify it anyway). I have several systems running =
-fine
-> without the --syn option explicitly mentioned. Could any of the "core"
-> guys say if my assumption is wrong?
->
-> Carlos
+Simon Lodal wrote:
+> I would like to set up a stealth sniffer between firewall and next-hop 
+> router, but I do not know how, wish I still had a hub.
 
-i should probably clarify my statement.  i suggested "--syn" to the OP =
-because the desired outcome he had was for the client to receive a =
-"Connection Refused" instead of a timeout--like you would get with no =
-firewall in place and a host not listening on the requested destination =
-port.  that is:
+You said your router is actually an ethernet switch (that have some 
+routing capabilities)?  On most switches, you can assign one or more 
+ports to be monitoring ports.  They will receive copy of all traffic 
+going through the switch.  Check if your switch supports that. 
+Configure one port to be monitoring port, connect PC to it.  Do not set 
+up IP address or anything on that interface, just bring it up with 
+ifconfig.  Run tcpdump or such on that interface.  And you have your 
+stealth sniffer.
 
-Client	Server
- SYN ->
-		<- RST
-
-in the generic case, either side of an established TCP session can =
-choose to reset the connection at any time; so "--syn" in that sense is =
-not required.
-
-i am surely no coder--and would be interested in hearing the answer to =
-this from the gurus myself as well.  perusing =
-/usr/src/linux/net/ipv4/netfilter/ipt_REJECT.c leads me to believe the =
-only TCP-flag-related sanity check is to not send a RST to a RST (~ line =
-98 on the version i have).
-
-i guess i got gunshy back in my IPF days, when if you didn't use "flags =
-S/SA" with a "return-rst" you would end up blowing away connections all =
-over the place...old habits die hard.
-
--j
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
