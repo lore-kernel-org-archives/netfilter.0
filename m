@@ -1,12 +1,13 @@
-From: Adharsh Praveen R <adarsh@multitech.co.in>
-Subject: pptp-conntrack-nat.patch Vs pptp-gre-ct-nat-0.83.patch
-Date: Wed, 09 Oct 2002 16:20:49 +0530
+From: "Michael H. Warfield" <mhw@wittsend.com>
+Subject: Re: some body hacked my system
+Date: Wed, 9 Oct 2002 14:26:05 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DA40A08.55705015@multitech.co.in>
+Message-ID: <20021009182605.GA2974@alcove.wittsend.com>
+References: <Pine.LNX.4.40.0210081711380.14946-100000@klepto.security.algx.lan> <002f01c26f15$16c571b0$8c01a8c0@sundaram>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------3179E683F66811D21A0EFD0C"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <002f01c26f15$16c571b0$8c01a8c0@sundaram>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,96 +17,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
-
---------------3179E683F66811D21A0EFD0C
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Sundaram Ramasamy <sun@percipia.com>
+Cc: netfilter@lists.netfilter.org
 
-hai
+On Tue, Oct 08, 2002 at 05:53:04PM -0400, Sundaram Ramasamy wrote:
+> Thanks for all your mails, other than filling my hard disk he didn't do
+> anything. I am running Redhat 7.1 wu-ftpd, in my firewall I opened only
+> http, smtp, pop3, ftp and cvspserver ports.
 
-I am new to the list and new to iptables. Please forgive me if I sound
-stupid.
+	Hmmm...  Really...  RedHat 7.1 huh...
 
-I would like to know the differences between pptp-conntrack-nat.patch
-and
+	What was that IP address again.  /;->=>
 
-pptp-gre-ct-nat-0.83.patch.
+	Have you kept that very VERY up to date?  7.1 was one of those spins
+with security problems from hell.
 
-I am trying to apply these patches to my 2.4.18 kernel.
+	Just the i386 binary rpm updates for 7.1 are almost 380 Meg worth.
+The entire update directory for 7.1 (including sources and other platforms)
+is over a Gig and a half.
 
-I am using iptables-1.2.6a.
+	ftp	- Yup...  There's an update rpm in there for that.
+	smtp	- Uh huh...  Sendmail too.
+	http	- You betcha...  Apache problems fixed in there too.
+	pop3	- That's in the imap package and that's got an update.
 
-I applied pptp-conntrack-nat.patch first to the kernel.
+	You're at least 4 for 5 in the security hole department unless
+you've updated those four to the latest rpms.  On top of those, since
+you are running http, you can add problems in php and possibly others
+than apache can access.  You didn't mention https, but that's got openssl
+problems that could get you "slapped" (slapper Apache OpenSSL worm running
+loose right now).
 
-Later I tried appling pptp-gre-ct-nat-0.83.patch.
+	Your earlier message didn't indicate a breakin.  But this one
+indicates a potential for future breakins.  If you are not going to
+upgrade that to a more recent distro, you are going to need to be
+doubly sure to keep it up to date.  Running up2date and joining
+RedHat networks (rhn) would probably be a good idea if you haven't
+already.  :-)
 
-when I try to compile the kernel after saying make menuconfig and make
-bzImage,
+> Thanks
+> Sundaram
 
-make install, the compilation fails in make modules.
 
-saying
+> ----- Original Message -----
+> From: "Kevin Dwyer" <Kevin.Dwyer@algx.net>
+> To: "Sundaram Ramasamy" <sun@percipia.com>
+> Cc: <netfilter@lists.netfilter.org>
+> Sent: Tuesday, October 08, 2002 5:12 PM
+> Subject: Re: some body hacked my system
+> 
+> 
+> > On Tue, 8 Oct 2002, Maciej Soltysiak transmitted the following:
+> >
+> > > And download, compile and run: chkrootkit. Which looks for rootkits and
+> > > trojans in you binaries.
+> >
+> > And check the checksums of your binaries with the ones you saved off on
+> > disk when you finished building the machine.  ;)
+> >
+> >
+> > /* Kevin Dwyer                                Allegiance Internet */
+> > /* network security engineer                   Commerce Center II */
+> > /* email: Kevin.Dwyer@algx.net                7601 Ora Glen Drive */
+> > /* phone: 240-616-2075                        Greenbelt, MD 20770 */
+> > /*      >++++++++++[<++++++++++>-]<.+++++.----.[-]++++++++++.     */
+> >
+> >
+> >
+> 
 
-structure has no member named 'master' in ip_conntrack_pptp.c
-
-structure has no member named 'list' in ip_conntrack_pptp.c
-
-(This is for the structure ip_ct_pptp )
-
-when I check the file, the structure has a member called slave.
-
-pptp-conntrack-nat.patch wants a member called master in the structure.
-
-where as pptp-gre-ct-nat-0.83.patch adds a member called slave in the
-structure.
-
-Can I apply these two patches together or any one of them is enough
-
-for PPTP to function with NAT.
-
-Can anyone enlighten me on this?
-
-Thanks in advance.
-
-regards,
-adharsh.
-
---------------3179E683F66811D21A0EFD0C
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-hai
-<p>I am new to the list and new to iptables. Please forgive me if I sound
-stupid.
-<p>I would like to know the differences between pptp-conntrack-nat.patch
-and
-<p>pptp-gre-ct-nat-0.83.patch.
-<p>I am trying to apply these patches to my 2.4.18 kernel.
-<p>I am using iptables-1.2.6a.
-<p>I applied pptp-conntrack-nat.patch first to the kernel.
-<p>Later I tried appling pptp-gre-ct-nat-0.83.patch.
-<p>when I try to compile the kernel after saying make menuconfig and make
-bzImage,
-<p>make install, the compilation fails in make modules.
-<p>saying
-<p><b><u>structure has no member named 'master' in ip_conntrack_pptp.c</u></b><b><u></u></b>
-<p><b><u>structure has no member named 'list' in ip_conntrack_pptp.c</u></b>
-<p>(This is for the structure ip_ct_pptp )
-<p>when I check the file, the structure has a member called slave.
-<p>pptp-conntrack-nat.patch wants a member called master in the structure.
-<p>where as pptp-gre-ct-nat-0.83.patch adds a member called slave in the
-structure.
-<p>Can I apply these two patches together or any one of them is enough
-<p>for PPTP to function with NAT.
-<p>Can anyone enlighten me on this?
-<p>Thanks in advance.
-<p>regards,
-<br>adharsh.</html>
-
---------------3179E683F66811D21A0EFD0C--
-
+-- 
+ Michael H. Warfield    |  (770) 985-6132   |  mhw@WittsEnd.com
+  /\/\|=mhw=|\/\/       |  (678) 463-0932   |  http://www.wittsend.com/mhw/
+  NIC whois:  MHW9      |  An optimist believes we live in the best of all
+ PGP Key: 0xDF1DD471    |  possible worlds.  A pessimist is sure of it!
 
