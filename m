@@ -1,48 +1,44 @@
-From: Michael Thompson <mike@thompsonmike.co.uk>
-Subject: Filtering on MAC Addresses
-Date: Fri, 04 Feb 2005 13:58:21 +0000
-Message-ID: <42037F7D.2070804@thompsonmike.co.uk>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: Usage of CONNMARK
+Date: Fri, 4 Feb 2005 15:17:35 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0502041515360.10050@filer.marasystems.com>
+References: <42032EC5.4090303@multitech.co.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <42032EC5.4090303@multitech.co.in>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Vinod Chandran <vinod_chandran@multitech.co.in>
+Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
 
-I am trying to filter on MAC addresses and have alittle problem.
+On Fri, 4 Feb 2005, Vinod Chandran wrote:
 
-I use a rule like the following
+> I am using the CONNMARK patch.
+> Inside conntrack_core, in case of special conditions, I have modified the 
+> mark value in the conntrack.
 
-/sbin/iptables -A MACALLOW -p ALL -i eth0 -m mac --mac-source 
-'MACADDRESS' -j ACCEPT
+When in conntrack is this modification done?
 
-Where MACADDRESS is replaced by the MAC CODE of the machine.
+> However this CONNMARK value is getting effective only for the next packet and 
+> not for the same packet.
 
-However, the MAC address that the Network card uses is not being used by 
-IPTables. It tries to use a larger MAC Code, which appears to be two mac 
-addresses pinned together.
+The connmark match looks at the connection mark value at the time the 
+connmark match is evaluated.
 
-So if I use the MAC code of 00:10:5a:14:50:db, it gets rejected because 
-IPTables uses the MAC Code of 00:09:5b:1b:52:77:00:10:5a:14:50:db:08:00
-Which does not match obviously. So why is IPTables using this, and how 
-can I get round it to use IPTables MAC Code rules?
+> Is there some way by which, I can make the settings applicable to the same 
+> packet itself?
 
-Many Thanks for any help you can offer
+It is, assuming it's done before you need to evaluate the match.
 
-
-Mike.
-
-
-
-
-
-
+Regards
+Henrik
 
