@@ -1,78 +1,52 @@
-From: Justin Friel <capn_shoe@yahoo.com>
-Subject: Re: DNAT: Unable to Forward Ports, Why?
-Date: Mon, 31 May 2004 10:46:50 -0700 (PDT)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040531174650.78590.qmail@web60006.mail.yahoo.com>
-References: <20040531073952.83957.qmail@web41705.mail.yahoo.com>
+From: "azeem ahmad" <azeem484@hotmail.com>
+Subject: nmblookup
+Date: Mon, 31 May 2004 19:26:49 +0000
+Sender: samba-bounces+gnsg-samba=m.gmane.org@lists.samba.org
+Message-ID: <BAY15-F35VFu2mlWRFQ0002f375@hotmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040531073952.83957.qmail@web41705.mail.yahoo.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <samba-bounces+gnsg-samba=m.gmane.org@lists.samba.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+List-Unsubscribe: <http://lists.samba.org/mailman/listinfo/samba>,
+	<mailto:samba-request@lists.samba.org?subject=unsubscribe>
+List-Archive: <http://lists.samba.org/archive/samba>
+List-Post: <mailto:samba@lists.samba.org>
+List-Help: <mailto:samba-request@lists.samba.org?subject=help>
+List-Subscribe: <http://lists.samba.org/mailman/listinfo/samba>,
+	<mailto:samba-request@lists.samba.org?subject=subscribe>
+Errors-To: samba-bounces+gnsg-samba=m.gmane.org@lists.samba.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, samba@lists.samba.org
 
-Thanks for the reply.
+hi all
+when i start my firewall script it stops doing nmblookup. when this script 
+isnt running and i do
+#nmblookup host
+it resolves the name but whenever i start the script it doesnt. what the 
+problem can be
+i m using the script below
+-------------------------------------------------------------------------------------------------------------------------------------
+iptables -F
+iptables -t nat -F
+iptables -P INPUT DROP
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 137  -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 138  -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
 
+-------------------------------------------------------------------------------------------------------------------------------------
 
---- "Kevin D. White" <web_crawlz@yahoo.com> wrote:
-> 
-> This rule would allow traffic going to the www port
-> (80) to be forwarded on.
-> /sbin/iptables -A FORWARD -p tcp --dport 80 -j
-> ACCEPT 
-> 
+Regards
+Azeem
 
-Originally that is the way I had it in my script, to
-be sure I tried it again with no luck.  I changed it
-to the following hoping that if I was more specific it
-would work.  It didn't.
-  
-$IPT -A FORWARD -d $EXT_IP -p tcp --dport 80 -j ACCEPT
-$IPT -t nat -A PREROUTING -p tcp --dport 80 \
- -d $EXT_IP -j DNAT --to-destination 192.168.1.2:80
- 
-> I think the PREROUTING chain is before the FORWARD
-> chain so your condition for the external IP may
-> never
-> happen because you changed it, but I don't know that
-> for sure.
+_________________________________________________________________
+Protect your PC - get McAfee.com VirusScan Online 
+http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
 
-This is more my worry right now.  I'm wondering if the
-order of the rules in my script is jacked or there is
-some rule in my script that is killing the packet
-before it reaches the PREROUTING or FORWARD chains.
-
-I was reading the recent posts and noticed someone
-who's ISP was blocking port 80.  I don't believe this
-is the case for me, as I was able to run a ftp server
-before using my SpeedStream DSL router.  The problem
-was it couldn't do passive ftp, which is why I tried
-this solution.
-
-I'm getting pretty frustrated.  I have been checking
-the logs for dropped packets from the outside and the
-only ones I have been seeing are random scans of port
-153, probably a virus.
-
-What's going on here?
-
-Thanks,
-Justin
-
-
-	
-		
-__________________________________
-Do you Yahoo!?
-Friends.  Fun.  Try the all-new Yahoo! Messenger.
-http://messenger.yahoo.com/ 
-
+-- 
+To unsubscribe from this list go to the following URL and read the
+instructions:  http://lists.samba.org/mailman/listinfo/samba
