@@ -1,12 +1,12 @@
-From: Tomasz Korycki <engine2@flow.mine.nu>
-Subject: Some go through, some don't...
-Date: Fri, 15 Nov 2002 00:34:05 -0500
+From: Rocco Stanzione <iptables@linuxkungfu.org>
+Subject: A few questions
+Date: Fri, 15 Nov 2002 02:20:58 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.0.14.0.20021115001532.00a071f0@mail.flow.north.net>
-References: <000d01c28c0a$473ff290$057ba8c0@wxcsmtp450>
+Message-ID: <200211150220.58430.iptables@linuxkungfu.org>
+Reply-To: grasshopper@linuxkungfu.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.1.0.14.2.20021114211658.02688eb8@of23sm3>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +16,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Hi,
+I have a few questions about iptables, and about some of the traffic I've=
+ seen=20
+on this list.
 
-I have a four-armed router with netfilter on it. There are two internal 
-networks: let's call them
-A.B.x.y and E.F.G.x.. The inside interfaces will be A.B.129.1 and E.F.G.246.
-The two outside interfaces: let's call them 1.2.3.4 and 5.6.7.8, but they 
-do not matter
+1) I've successfully set up DNAT so that I can, say, request port 81 on t=
+he=20
+firewall/gateway box and hit the webserver on port 80 on a box behind the=
+=20
+gateway.  No problem.  But it doesn't work on the LAN.  I understand why,=
+=20
+after reading some docs, but I've been trying to find a way around it. =20
+Problem is, I don't know what all iptables will auto-reverse for me and w=
+hat=20
+I need to specify.  For example, I suppose I could SNAT local connections=
+=20
+through the gateway --to-source $GATEWAYIP, but would returning packets b=
+e=20
+taken care of, or must I come up with a rule for that?  I've tried both=20
+without success.
 
-On host E.F.G.250 (which I'm on right now) I want to connect to a CVS on 
-A.B.1.65. I can't.
-I could earlier on today. Hm. I dial-up the CVS - everything fine there. I 
-go back to a terminal here,
-try to ping A.B.1.65 - I get answers. But traceroute comes back with 
-E.F.G.246 - !H, host unreachable.
-Interesting. Looks like the router can't reach CVS. I log onto the router 
-and ping CVS - all clear.
-I then traceroute it - fine. I notice that (of course) when I ping, source 
-address if A.B.129.1 - which is right.
-So I try ping -I E.F.G.246, which is "my" side of the router - everything 
-is fine. But then I notice in the logs
-that I get a slew of messages: Neighbour table overflow. That's a routing 
-message, so I figure, I'll try
-to send a "keepalive" while I continue testing, so I do
-ping -i 60 A.B.1.65 and go on my merry way. Then I notice, that ping comes 
-back with a response for
-pings sent from the A.B.129.1, then, a few seconds later, prints
- From <hostname> E.F.G.246: Destination host unreachable.
+2) Quite a few people are using my iptables script, and the most common=20
+complaint I get is dcc failure.  ip_conntrack_irc (and everything else) i=
+s=20
+compiled into my (monolithic) kernel.  Most people don't have this setup.=
+ =20
+Dcc of course works for me.  I have the user modprobe ip_conntrack_irc, a=
+nd=20
+typically it still doesn't work for them.  Logs show it failing at a=20
+catch-all rule, which tells me conntrack isn't working.  However if we ad=
+d=20
+ip_conntrack_irc to /etc/modules and reboot, all is well.  So, 2a) why is=
+=20
+this? and 2b) surely there's something less drastic than a reboot that wi=
+ll=20
+put ip_conntrack_irc to work?
 
-But I did see replies sent from that interface!
+3) I see quite a few messages on the list about people going to a great d=
+eal=20
+of trouble to get a VPN connection to NAT through an iptables firewall.  =
+I=20
+have an always-on PPTP connection to the M$ VPN server at work, and I hav=
+e=20
+never had to do anything special to get it to work.  I have to assume, th=
+en,=20
+that I have some liberal rule or policy that is likely insecure, and I wo=
+nder=20
+what it could be.  I'm afraid I don't have a pasteable rule set, as it's=20
+spread out across config files and such.  If anyone cares to pore over it=
+,=20
+it's at http://www.linuxkungfu.org/ipkungfu-0.2.0.tgz
 
-Well, since there is netfilter on it (and no routed or gated) - can it be 
-responsible for this odd
-behaviour? iptables -L -n shows nothing suspicious, basic ICMP is allowed 
-from anywhere,
-all traffic is allowed from E.F.G.x, A.B.x.y -> E.F.G.x only related and so on.
+Thanks!
 
-I was going to put the -L -n output here, but considering the size I will 
-not, unless asked...
-
-
+Rocco
 
