@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Allow active and passive FTP connections
-Date: Thu, 17 Jun 2004 13:23:25 +0100
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: compile problem with 1.2.10
+Date: Thu, 17 Jun 2004 14:27:29 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406171323.25501.Antony@Soft-Solutions.co.uk>
-References: <2E314DE03538984BA5634F12115B3A4E894F8D@email1.mitretek.org>
-Reply-To: "netfilter" <netfilter@lists.netfilter.org>
+Message-ID: <Pine.LNX.4.33.0406171423130.21411-100000@blackhole.kfki.hu>
+References: <40D18AB4.4070101@nucdc.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2E314DE03538984BA5634F12115B3A4E894F8D@email1.mitretek.org>
+In-Reply-To: <40D18AB4.4070101@nucdc.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +16,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jamie Pratt <jamie@nucdc.org>, =?ISO-8859-2?Q?=5BISO-8859-1=5D_G=FCnter_Zimmermann?= <guenter@guenter-zimmermann.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 17 June 2004 1:13 pm, Piszcz, Justin Michael wrote:
+On Thu, 17 Jun 2004, Jamie Pratt wrote:
 
-> I think he meant, modprobe ip_conntrack_ftp and if you are behind nat
-> there is a module for that as well.
-
-insmod should do the job perfectly well.
-
-NAT is very unlikely when the rules are running on the FTP server itself 
-(they're in the INPUT & OUTPUT chains).
-
-Regards,
-
-Antony.
-
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Chris Brenton
-> Sent: Thursday, June 17, 2004 8:08 AM
-> To: Sagara Wijetunga
-> Cc: netfilter
-> Subject: Re: Allow active and passive FTP connections
+> Hi, I'm trying to compile 1.2.10 on a RH 7.2 box, running kernel 2.4.26.
+> (The prior version is 1.2.9, no POM or anything fancy, just the default
+> stuff..)
 >
-> On Thu, 2004-06-17 at 07:03, Sagara Wijetunga wrote:
-> > I have following issues relating to above rules:
-> > 1. For active FTP requests by remote clients, it drops
-> > the data connection request to the remote client from
-> > the server on the OUTPUT chain.
-> >
-> > 2. For passive FTP requests by remote clients, it
-> > drops the data connection request to the server from
-> > remote clients on the INPUT chain.
+> I get the following error upon running 'make KERNEL_DIR=/usr/src/linux' :
 >
-> Try:
-> insmod ip_conntrack_ftp
->
-> HTH,
-> C
+> cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/
+> -DIPTABLES_VERSION=\"1.2.10\"  -DIPT_LIB_DIR=\"/usr/local/lib/iptables\"
+> -rdynamic -o iptables iptables-standalone.c iptables.o libiptc/libiptc.a
+> -ldl -lnsl
+> /bin/sh: -c: line 1: syntax error near unexpected token `;'
+> /bin/sh: -c: line 1: `if [ -n "" ]; then  for ext in ; do  echo ".SS
+> $ext (not supported, see Patch-O-Matic)" ; cat
+> extensions/libipt_$ext.man ; done ; fi >>extensions/libipt_matches.man'
+> make: *** [extensions/libipt_matches.man] Error 2
+> rm libiptc/libip6tc.o libiptc/libip4tc.o
 
--- 
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing on usenet and in e-mail?
+The bug has been fixed in the iptables cvs. The new iptables release will
+be issued soon.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Thank you for the reporting: iptables-1.2.10 was compiled countless times,
+but the possibility you tripped over never came out for the developers
+:-(.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+
 
 
