@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Firewalling non-IPsec connections
-Date: Tue, 16 Dec 2003 08:53:01 +0000
+From: "Bertrand TACHAGO" <btachago@creolink.net>
+Subject: Iptables and Zebra
+Date: Tue, 16 Dec 2003 10:34:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312160853.01932.Antony@Soft-Solutions.co.uk>
-References: <000c01c3c291$e4e0f3a0$fc00000a@vmwarew2k> <200312152044.46584.Antony@Soft-Solutions.co.uk> <Pine.LNX.4.58.0312160052020.1635@mercury.sdinet.de>
+Message-ID: <006301c3c3b7$e02ef0b0$220aa8c0@BERTRAND>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0060_01C3C3C0.4166D020"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0312160052020.1635@mercury.sdinet.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +16,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 15 December 2003 11:55 pm, Sven-Haegar Koch wrote:
+This is a multi-part message in MIME format.
 
-> On Mon, 15 Dec 2003, Antony Stone wrote:
-> >
-> > I have used IPtables + FreeS/WAN a fair amount, and I created a diagram
-> > some time ago which showed the (surprisingly complex) route packets take
-> > through the system when you have such a combination.
->
-> FreeS/WAN is different than the in-kernel IPsec of 2.6
->
-> The in-kernel ipsec does not have an ipsec0 virtual interface, that is
-> where the problem come from - I don't see a way yet to destinguish
-> decapsulated ipsec traffic from eth0 to eth1 from raw traffic between the
-> two interfaces.
+------=_NextPart_000_0060_01C3C3C0.4166D020
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Ah.   I have yet to play with the features of 2.6 kernels, therefore I didn't 
-realise that this version of IPsec has such a drawback compared to FreeS/WAN.
+Hi to all!
+I'm trying to setup a zebra router on a RH9 machine but right I'm =
+blocked because there's a firewall (iptables) problem. I had entered a =
+POSTROUTING rule (iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE) =
+but the packets are not routed to the external interface. Can somebody =
+help me solve this problem (use zebra routing protocol to route packets =
+from my network to the Internet)?
 
-It may be that the higher efficiency of the in-kernel version means there is 
-less userspace information available about where packets came from or are 
-going to...
+Bertrand TACHAGO
+Computer specialist / Network administrator
+Cellular: (237) 975 55 31
+------=_NextPart_000_0060_01C3C3C0.4166D020
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Please let us know if you find a solution to this - I'm sure many of us will 
-encounter this sort of thing in the future once 2.6 becomes standard.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1276" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi to all!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I'm trying to setup a zebra router on a =
+RH9 machine=20
+but right I'm blocked because there's a firewall (iptables) problem. I =
+had=20
+entered a POSTROUTING rule (iptables -t nat -A POSTROUTING -o eth0 -j=20
+MASQUERADE) but the packets are not routed to the external interface. =
+Can=20
+somebody help me solve this problem (use zebra routing protocol to route =
+packets=20
+from my network to the Internet)?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Bertrand TACHAGO<BR>Computer specialist =
+/ Network=20
+administrator<BR>Cellular: (237) 975 55 31</FONT></DIV></BODY></HTML>
 
-Antony.
-
--- 
-Success is a lousy teacher.  It seduces smart people into thinking they can't 
-lose.
-
- - William H Gates III
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+------=_NextPart_000_0060_01C3C3C0.4166D020--
 
 
