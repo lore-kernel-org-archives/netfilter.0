@@ -1,16 +1,13 @@
-From: Jean-Rene Cormier <jean-rene.cormier@cipanb.ca>
-Subject: Re: Weird problem
-Date: Tue, 14 Oct 2003 13:59:11 -0300
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: VPN question
+Date: 14 Oct 2003 13:45:40 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066150751.17734.60.camel@forbidden.cipanb.ca>
-References: <1066129218.13064.13.camel@forbidden.cipanb.ca>
-	 <3F8BEAEB.1060005@Loudoun-Fairfax.com>
-	 <1066136413.12935.43.camel@forbidden.cipanb.ca>
-	 <3F8C1700.3070902@Loudoun-Fairfax.com>
+Message-ID: <1066153540.1322.11.camel@valhalla>
+References: <BAY4-F42tUqsLKqewA30000cc37@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F8C1700.3070902@Loudoun-Fairfax.com>
+In-Reply-To: <BAY4-F42tUqsLKqewA30000cc37@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,183 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: patrick kuah <patrickkuah@msn.com>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 2003-10-14 at 12:32, Jeffrey Laramie wrote:
-> >Here are the rules I'm using:
-> >
-> >*nat
-> >:PREROUTING ACCEPT [242:28183]
-> >:POSTROUTING ACCEPT [63:13135]
-> >:OUTPUT ACCEPT [9:3439]
-> >-A PREROUTING -d 123.123.123.2 -j DNAT --to-destination 192.168.0.2
-> >-A PREROUTING -d 123.123.123.3 -j DNAT --to-destination 192.168.0.2
-> >-A PREROUTING -d 123.123.123.7 -j DNAT --to-destination 192.168.0.6
-> >-A PREROUTING -d 123.123.123.10 -j DNAT --to-destination 192.168.0.4
-> >-A PREROUTING -d 123.123.123.12 -j DNAT --to-destination 192.168.0.2
-> >-A PREROUTING -d 123.123.123.13 -j DNAT --to-destination 192.168.0.8
-> >-A PREROUTING -d 123.123.123.51 -j DNAT --to-destination 192.168.1.51
-> >-A PREROUTING -d 123.123.123.52 -j DNAT --to-destination 192.168.1.52
-> >-A PREROUTING -d 123.123.123.53 -j DNAT --to-destination 192.168.1.53
-> >-A PREROUTING -d 123.123.123.54 -j DNAT --to-destination 192.168.1.54
-> >-A PREROUTING -d 123.123.123.55 -j DNAT --to-destination 192.168.1.55
-> >-A PREROUTING -d 123.123.123.56 -j DNAT --to-destination 192.168.1.56
-> >-A PREROUTING -d 123.123.123.57 -j DNAT --to-destination 192.168.1.57
-> >-A PREROUTING -d 123.123.123.58 -j DNAT --to-destination 192.168.1.58
-> >-A PREROUTING -d 123.123.123.59 -j DNAT --to-destination 192.168.1.59
-> >-A PREROUTING -d 123.123.123.60 -j DNAT --to-destination 192.168.1.60
-> >
-> Are your internal boxes going to be servers? You generally don't need
-> DNAT unless the outside needs access to the private lan boxes.
+On Tue, 2003-10-14 at 11:25, patrick kuah wrote:
+> Thanks Chris :)
+
+Glad to! :)
+
 > 
+> I'm using ipsec. Currently, my iptables is configured using stateful packet 
+> inspection.
 
-I just use DNAT because that's the only way I got it to work the first
-time I tried it so I used the same setup for the new firewall. Also
-sometimes there are a few people that want to connect to there boxes
-from outside with VNC or FTP.
+You still need to open the correct ports as well create the proper DNAT
+and SNAT rules.
 
-> >-A POSTROUTING -s 192.168.0.2 -o eth0 -j SNAT --to-source 123.123.123.12
-> >-A POSTROUTING -s 192.168.0.6 -o eth0 -j SNAT --to-source 123.123.123.7
-> >-A POSTROUTING -s 192.168.0.8 -o eth0 -j SNAT --to-source 123.123.123.13
-> >-A POSTROUTING -s 192.168.0.4 -o eth0 -j SNAT --to-source 123.123.123.10
-> >-A POSTROUTING -s 192.168.1.51 -o eth0 -j SNAT --to-source
-> >123.123.123.51
-> >-A POSTROUTING -s 192.168.1.52 -o eth0 -j SNAT --to-source
-> >123.123.123.52
-> >-A POSTROUTING -s 192.168.1.53 -o eth0 -j SNAT --to-source
-> >123.123.123.53
-> >-A POSTROUTING -s 192.168.1.54 -o eth0 -j SNAT --to-source
-> >123.123.123.54
-> >-A POSTROUTING -s 192.168.1.55 -o eth0 -j SNAT --to-source
-> >123.123.123.55
-> >-A POSTROUTING -s 192.168.1.56 -o eth0 -j SNAT --to-source
-> >123.123.123.56
-> >-A POSTROUTING -s 192.168.1.57 -o eth0 -j SNAT --to-source
-> >123.123.123.57
-> >-A POSTROUTING -s 192.168.1.58 -o eth0 -j SNAT --to-source
-> >123.123.123.58
-> >-A POSTROUTING -s 192.168.1.59 -o eth0 -j SNAT --to-source
-> >123.123.123.59
-> >-A POSTROUTING -s 192.168.1.60 -o eth0 -j SNAT --to-source
-> >123.123.123.60
-> >COMMIT
-> >
-> >*filter
-> >:INPUT DROP [61:8249]
-> >:FORWARD DROP [72:4535]
-> >:OUTPUT DROP [0:0]
-> >-A INPUT -i lo -j ACCEPT
-> >-A INPUT -d 123.123.123.254 -j ACCEPT
-> >-A INPUT -d 192.168.0.1 -j ACCEPT
-> >-A INPUT -d 192.168.1.1 -j ACCEPT
-> >-A FORWARD -i eth2 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-> >-A FORWARD -o eth2 -m state --state RELATED,ESTABLISHED -j ACCEPT
-> >  
-> >
-> 
-> These should be on the external interface. Your ip addr shows this as a
-> lan interface. I think you've assigned either the rules or the IPs to
-> the wrong interfaces.
+> Do i have to add the rules for port TCP/UDP 50 and TCP 50 ???
+> Thank you :)
 
-Does it make a difference if I put it on eth0 or eth2? The thing is I
-don't want new connections from eth1 to enter eth2 that's why I put the
-stateful stuff on eth2. 
+Here's what you need to open up:
+1) IKE to and from your IPSec gateway. something like:
+iptables -p udp -s 0/0 --sport 500 -d 192.168.1.10 --dport 500 -j ACCEPT
+iptables -p udp -s 192.168.1.10 --sport 500 -d 0/0 --dport 500 -j ACCEPT
 
-> >-A FORWARD -d 192.168.0.6 -i eth0 -p tcp -m tcp --dport 25 -j DROP
-> >-A FORWARD -d 192.168.0.8 -i eth0 -p tcp -m tcp --dport 25 -j DROP
-> >-A FORWARD -i eth0 -o eth1 -j ACCEPT
-> >-A FORWARD -i eth1 -o eth0 -j ACCEPT
-> >  
-> >
-> 
-> Your treating these as local interfaces, but eth0 is your external
-> interface.
+2) Protocol 50 (ESP) to and from the gateway
+iptables -p 50 -d 192.168.1.10 -j ACCEPT
+iptables -p 50 -s 192.168.1.10 -j ACCEPT
 
-What I want here is that packets from eth0 to eth1 is allowed to go
-through and from eth1 to eth0 is allowed to go through also but I don't
-want incoming connections from the internet to port 25 on these 2 boxes.
-So I thought that those lines would block connections coming into eth0
-and since the PREROUTING stuff is passed through before the FORWARD, I
-put the internal IP addresses.
+Again, make sure your clients are not negotiating Authentication Header
+(AH). If you try the above and you log drops to protocol 51, AH is being
+negotiated.
 
-Thanks for your help!
-
-Jean-Rene Cormier
-
-
-> >-A OUTPUT -o lo -j ACCEPT
-> >-A OUTPUT -s 123.123.123.254 -j ACCEPT
-> >-A OUTPUT -s 192.168.0.1 -j ACCEPT
-> >-A OUTPUT -s 192.168.1.1 -j ACCEPT
-> >COMMIT
-> >
-> >The way the network is setup is we have a Cisco router (owned by our
-> >ISP) that goes to the internet with IP 123.123.123.1 and the netfilter
-> >box has IP 123.123.123.254 on the external interface. I'm using
-> >192.168.0.0/24 and 192.168.1.0/24 on the internal interfaces. My
-> >workstation is in the 192.168.1.0/24 subnet and when I was trying to
-> >ping the Cisco router, it wouldn't work but I could ping another
-> >computer on the 123.123.123.0/24 subnet and after that I could ping the
-> >router and everything worked. Also there's a few people who couldn't
-> >connect to the net even after I tried pinging a computer in the
-> >123.123.123.0/24 subnet, when I turned on logging in the FORWARD table
-> >for their IPs it started working and I could remove that rules
-> >afterwards and it would continue to work. I setup the rules pretty basic
-> >for now to make sure everything works before I start locking stuff out.
-> >
-> >Here's the output of ip addr show on the netfilter box:
-> >
-> >1: lo: <LOOPBACK,UP> mtu 16436 qdisc noqueue
-> >    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-> >    inet 127.0.0.1/8 scope host lo
-> >2: eth0: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
-> >    link/ether 00:04:23:5f:8f:f8 brd ff:ff:ff:ff:ff:ff
-> >    inet 123.123.123.254/24 brd 123.123.123.255 scope global eth0
-> >    inet 123.123.123.2/32 scope global eth0
-> >    inet 123.123.123.3/32 scope global eth0
-> >    inet 123.123.123.7/32 scope global eth0
-> >    inet 123.123.123.10/32 scope global eth0
-> >    inet 123.123.123.12/32 scope global eth0
-> >    inet 123.123.123.13/32 scope global eth0
-> >    inet 123.123.123.51/32 scope global eth0
-> >    inet 123.123.123.52/32 scope global eth0
-> >    inet 123.123.123.53/32 scope global eth0
-> >    inet 123.123.123.54/32 scope global eth0
-> >    inet 123.123.123.55/32 scope global eth0
-> >    inet 123.123.123.56/32 scope global eth0
-> >    inet 123.123.123.57/32 scope global eth0
-> >    inet 123.123.123.58/32 scope global eth0
-> >    inet 123.123.123.59/32 scope global eth0
-> >    inet 123.123.123.60/32 scope global eth0
-> >3: eth1: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
-> >    link/ether 00:04:23:5f:8f:f9 brd ff:ff:ff:ff:ff:ff
-> >    inet 192.168.0.1/24 brd 192.168.0.255 scope global eth1
-> >4: eth2: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
-> >    link/ether 00:04:23:5f:77:d2 brd ff:ff:ff:ff:ff:ff
-> >    inet 192.168.1.1/24 brd 192.168.1.255 scope global eth2
-> >
-> >
-> >And here's the output of ip route show:
-> >
-> >192.168.1.0/24 dev eth2  proto kernel  scope link  src 192.168.1.1
-> >192.168.0.0/24 dev eth1  proto kernel  scope link  src 192.168.0.1
-> >123.123.123.0/24 dev eth0  proto kernel  scope link  src 123.123.123.254
-> >default via 123.123.123.1 dev eth0
-> >
-> >
-> >  
-> >
-> >>If your not experienced with iptables this is an excellent tutorial 
-> >>which explains in detail how iptables works: 
-> >>http://iptables-tutorial.frozentux.net/
-> >>
-> >>If you are experienced, you need to insert some logging rules to find 
-> >>out where the packets are going to. Snort can also help with this.
-> >>    
-> >>
-> >
-> >I have some experience with iptables but I don't consider myself an
-> >expert.
+HTH,
+C
 
 
 
