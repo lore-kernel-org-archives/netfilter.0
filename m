@@ -1,12 +1,17 @@
-From: "Alexis" <alexis@tpys.com.ar>
+From: Christer Ekholm <chrekh@bredband.net>
 Subject: Re: route outgoing smtp via a specific interface
-Date: Mon, 3 May 2004 01:07:41 -0300
+Date: Mon, 03 May 2004 08:15:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000b01c430c4$2e79e440$0200000a@heretic>
+Message-ID: <86ad0qt4rn.fsf@poke.localdomain>
 References: <16533.31553.47397.464571@jane.localdomain>
+	<200405030005.33281.Antony@Soft-Solutions.co.uk>
+	<86y8oatnsf.fsf@poke.localdomain>
+	<200405030045.56089.Antony@Soft-Solutions.co.uk>
+	<86u0yytkrb.fsf@poke.localdomain> <20040503021343.GJ4200@samad.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040503021343.GJ4200@samad.com.au> (Alexander Samad's message
+ of "Mon, 3 May 2004 12:13:43 +1000")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +22,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-yes it its.
-you must use iproute2 and iptables with mark or just simple iproute2 (if
-match conditions are enough) to achieve this
-Just send a fast diagram of your network so we can help you with the rules.
+Alexander Samad <alex@samad.com.au> writes:
 
-
-
-
------ Original Message ----- 
-From: "Christer Ekholm" <chrekh@bredband.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Sunday, May 02, 2004 7:50 PM
-Subject: route outgoing smtp via a specific interface
-
-
-> I have two IP-providers. And the faster one of them blocks smtp. I
-> have been trying to route smtp to the slower while still routing
-> everything else to the faster, without success. Is it possible at all?
 >
->
-> -- 
->  Christer
->
->
+> On a different thought can't you tell your mta to bind to a specific
+> interface or use a specific address ( I can with exim)
 
+Thankyou!
+
+The simple logical solution, which i was totally blind for. I just
+need to have my postfix configured with:
+
+smtp_bind_address = 217.215.183.181
+
+I works!
+And I don't have to do anything magical with routing or iptables.
+
+--
+ Christer
 
