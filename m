@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: icmp redirect
-Date: Wed, 10 Jul 2002 18:46:32 +0100
+From: George Georgalis <georgw@galis.org>
+Subject: doh! lost mail...
+Date: Wed, 10 Jul 2002 14:08:14 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020710174901.LOAD23840.mta03-svc.ntlworld.com@there>
-References: <0207101911210A.04513@Lms>
+Message-ID: <20020710140814.A27614@trot>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <0207101911210A.04513@Lms>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,31 +16,44 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Wednesday 10 July 2002 6:11 pm, Jan Humme wrote:
+Well I blew it, never ran into a problem like this before so thought I'd
+share. I have lost mail. BTW - Thanks Lauren for all your help, support
+and escalations on my shell account at http://he.net ...and I thought
+it was your server that was stuck!
 
-> I am developing an application that will eventually run on a PC with two
-> ethernet cards; unfortunately the development PC that I use has only one
-> ethernet card (eth0) and no available slots (except for one that I need for
-> another purpose).
->
-> Doesn't matter, during the development I can have both applications use
-> eth0 instead, if I can only stop the icmp redirect messages that the kernel
-> sends back to the source, whenever it finds out that it is forwarding a
-> packet via the same eth0 interface on which it came in.
->
-> Of course, I can choke the icmp redirect message using iptables, but is
-> there a better (proper) way, to prevent the message from being generated?
+(If you run Linux/Unix) The scenario I suspect is not so uncommon. Here's
+part of my procmailrc.
 
-Does it help if you put two addresses onto eth0 from different subnets (eg 
-192.168.0.1 and 172.16.0.1) so that icmp redirect is no longer appropriate 
-(because this is used only between machines on a single subnet) ?
 
-Then your other machines which are talking to it can pretend that one address 
-is eth0 and the other address is eth1.
+:0 Whc: msgid.lock
+| formail -D 8192 msgid.cache
+:0 a:
+/dev/null
 
- 
+:0 Wc
+| razor-check
+:0 Wa
+razor-caught/
 
-Antony.
+
+In a nutshell, if the razor-check program hangs or is slow to respond,
+fetchmail times out. When it runs again the message is flagged as a
+duplicate per the first recipe and sent to /dev/null
+
+So if you were wondering what happened the the message I never responded
+to... I've been doing this in the background for years. :) Don't know
+how long or frequently the razor-check has been overloaded. But seems
+often in recent times.
+
+// George
+
+
+-- 
+GEORGE GEORGALIS, System Admin/Architect    cell: 347-451-8229 
+Security Services, Web, Mail,            mailto:george@galis.org 
+File, Print, DB and DNS Servers.       http://www.galis.org/george 
+
 
