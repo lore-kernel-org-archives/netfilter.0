@@ -1,14 +1,10 @@
-From: "Dan Crooks" <dcrooks@succeed.net>
-Subject: Dual Internet Connection
-Date: Sun, 30 Jun 2002 16:45:39 -0700
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
+Subject: iptables -L TABLE -n -v -d x.x.x.x --dport x -i ethx
+Date: Mon, 1 Jul 2002 13:49:04 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NEBBKAFNMLLNBNGMMLLLGEJNCJAA.dcrooks@succeed.net>
-References: <20020630232906.72BAF447C@lists.samba.org>
-Reply-To: <dcrooks@succeed.net>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA1BA@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020630232906.72BAF447C@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,15 +15,23 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
 
-I have two internet connections, one DSL and one Cable.  I want to run both
-connections to one machine using seperate NIC's.  Can I apply the same rules
-to both interfaces?  I can't see a problem with incoming connections but not
-sure about the outgoing.
+Hi all,
 
-I want to be able to select what connection each computer on my LAN uses for
-it's internet connection by changing their gateway.  I'm just not sure how
-to implement the firewall.
+First post to the list and forgive me if someone's asked this before (I
+tried the archives)...
+
+Can the above command actually work or is there a way to print just 1 rule
+that matches as I tried something similar to what's shown above and it
+doesn't like it.. go figure.
+
+Am I doing it wrong or does it not support it in iptables? At the moment I
+have to keep greping the rule I need to check.. is there a better way?
+
+thanks,
+George Vieira
+
 
 
