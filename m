@@ -1,12 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Packets that should have been DNATted appearing in INPUT table
-Date: Thu, 6 Jan 2005 10:55:57 -0500
-Message-ID: <20050106155557.GA28339@bender.817west.com>
-References: <000901c4f350$7b3d1370$4206a8c0@loki>
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: broadcasts through firewall
+Date: Thu, 6 Jan 2005 12:13:02 -0400
+Message-ID: <JKENKBGIPCFNFMNFENJPAEHICJAA.peter.marshall@caris.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000901c4f350$7b3d1370$4206a8c0@loki>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-Cc: Marius Mertens <marius.mertens@gmx.de>
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Wed, Jan 05, 2005 at 07:00:40PM +0100, Marius Mertens wrote:
-> first of all, please cc me in your answer as I am not a subscriber of this 
-> list.
+I know this is not advisable .... and I am not intending to do it on my
+network ... (but I need to test it for a client).  Basically, we have a hasp
+key on a server in the DMZ.  This key is a server license key for one of our
+products.  They way it works is every 10 minutes a broadcast is sent from
+the application to find the HASP key, if it does not then the app stops.
+The problem is that broadcasts don't go through firewalls.  Is there a way
+to let a udp broadcast destined for a particular port go through the
+firewall and DNAT it to a particular address .... ?  I tried using a DNAT
+rule, but it did not seem to do anything.
 
-always a great way to start a post...
+$IPT -A PREROUTING -s 192.168.201.8 -p udp --dport 3047 -j
+DNAT --to-destination x.x.x.32
+$IPT -A FORWARD -d x.x.x.32 -p udp --dport 3047 -j ACCEPT
 
-<snip>
 
-does your DNAT work or not?
+Any ideas ?
 
--j
+Thanks
 
---
-"What's the point of going out, we're just going to end up back
- here anyway?"
-        --The Simpsons
 
