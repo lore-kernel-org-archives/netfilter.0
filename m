@@ -1,12 +1,14 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Dropping RST of SYN
-Date: Mon, 08 Sep 2003 07:29:22 -0400
+From: =?koi8-r?Q?=22?=Vladimir Potapov=?koi8-r?Q?=22=20?=<varyag18@mail.ru>
+Subject: Re[2]: Problems with DNS
+Date: Mon, 08 Sep 2003 16:51:59 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F5C6812.2040407@chrisbrenton.org>
-References: <1063000297.827.26.camel@india.nsecure.net> <3F5C539E.8030704@chrisbrenton.org> <20030908204206.C148.ATNAK@chejz.com>
+Message-ID: <E19wLUt-000PXD-00.varyag18-mail-ru@f21.mail.ru>
+References: <1062852576.766.68.camel@elendil.intranet.cartel-securite.net>
+Reply-To: =?koi8-r?Q?=22?=Vladimir Potapov=?koi8-r?Q?=22=20?=<varyag18@mail.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1062852576.766.68.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +18,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Atsushi Nakagawa <atnak@chejz.com>
-Cc: "Dharmendra.T" <dharmu@nsecure.net>, Ralf Spenneberg <lists@spenneberg.org>, Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="koi8-r"
+To: =?koi8-r?Q?=22?=Cedric Blancher=?koi8-r?Q?=22=20?= <blancher@cartel-securite.fr>
+Cc: netfilter@lists.netfilter.org
 
-Atsushi Nakagawa wrote:
-> 
-> Ralf's response was to a question regarding the removal of outgoing RST
-> packets that are generated in reply to incoming SYN packets.  (These
-> RSTs being the kind that causes the "Connection Refused" TCP message)
-
-DOOOOH!
-
-> In this case, there should be no consequences with SYN flood-type
-> attacks.  The only ill-effect, AFAIK, is with abortive disconnects not
-> reaching remote host (and remote host will resend obselete packets
-> little more times).  --A problem enough to deter me from implmementing
-> this.
-
-Guess that's what I get for jumping in mid thread. :(
-
-I think I'm at a loss as to why we are trying to do it this way. In 
-other words, if you want to stop a scanner from getting a reply from all 
-of your closed ports, would it not be easier to only let SYN packets in 
-to legitimate services?
-
-Or is this another "we're a .edu stuck in Dante's fourth circle of hell 
-and are not permitted to filter out services". ;-)
-
-C
-
-
+SSBjYW5ub3QgYWRkIHRoaXMgcnVsZXMgd2l0aCAtLXN5biwgYmVjYXVzZSBpcHRhYmxlcyB0ZWxs
+IG1lIGVycm9yIDogYmFkIGFyZ3VtZW50ICctLXN5bicuCklmIHdyaXRlIHRoaXMgcnVsZXMgd2l0
+aG91dCAtLXN5biBhcmd1bWVudCAsIHRoZSBpcHRhYmxlcyBydWxlcyBhcHBseWluZyBzdWNjZXNz
+LklmIEkgd3JpdGUgcnVsZXMgd2l0aCBjaGFpbiBORVcgYnV0IHdpdGhvdXQgLS1zeW4gYXJndW1l
+bnQgLCBhcmUgdGhlIG15IHBhY2tldCBmaWx0ZXIgd2lsbCBiZSBhY2NlcHQob3IgZm9yd2FyZCkg
+bmV3IHBhY2tldCB3aXRob3V0IC0tc3luID8KCgo+IExlIHNhbSAwNi8wOS8yMDAzID8gMTI6NTMs
+IPfMwcTJzcnSIPDP1MHQz9cgYSA/Y3JpdCA6Cj4gPiBBbmQgd2hpY2ggY2hhaW4gYSBuZWVkIHlv
+IGFkZCB0byBydWxlc2V0Pwo+IAo+IEp1c3QgcmV3cml0ZSB5b3VyIHJ1bGVzZXQgYXMgZm9sbG93
+IDoKPiAKPiAjIG5hdCB0YWJsZQo+IC1BIFBSRVJPVVRJTkcgLXQgbmF0IC1kIDEyMS4xLjEuMSAt
+aSBldGgwIC1wIHRjcCAtaiBETkFUIFwKPiAJCS0tdG8tZGVzdGluYXRpb24gMTkyLjE2OC41LjIK
+PiAtQSBQUkVST1VUSU5HIC10IG5hdCAtZCAxMjEuMS4xLjEgLWkgZXRoMCAtcCB1ZHAgLWogRE5B
+VCBcCj4gCQktLXRvLWRlc3RpbmF0aW9uIDE5Mi4xNjguNS4yCj4gLUEgUE9TVFJPVVRJTkcgLXQg
+bmF0IC1vIGV0aDAgLWogU05BVCAtLXRvLXNvdXJjZSAxMjEuMS4xLjEKPiAKPiAjIGZpbHRlciB0
+YWJsZQo+IC1BIEZPUldBUkQgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1q
+IEFDQ0VQVAo+IC1BIEZPUldBUkQgLWQgMTkyLjE2OC41LjIvMjU1LjI1NS4yNTUuMjU1IC1pIGV0
+aDAgLW8gZXRoMSAtbSBzdGF0ZSBcCj4gCQktLXN0YXRlIE5FVyAtcCB0Y3AgLW0gdGNwIC0tZHBv
+cnQgNTMgLS1zeW4gLWogQUNDRVBUCj4gLUEgRk9SV0FSRCAtZCAxOTIuMTY4LjUuMi8yNTUuMjU1
+LjI1NS4yNTUgLWkgZXRoMCAtbyBldGgxIC1tIHN0YXRlIFwKPiAJCS0tc3RhdGUgTkVXIC1wIHVk
+cCAtbSB1ZHAgLS1kcG9ydCA1MyAtaiBBQ0NFUFQKPiAtQSBGT1JXQVJEIC1zIDE5Mi4xNjguNS4w
+LzI1NS4yNTUuMjU1LjAgLWkgZXRoMSAtbyBldGgwIC1tIHN0YXRlIFwKPiAJCS0tc3RhdGUgTkVX
+IC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCA1MyAtLXN5biAtaiBhbGxvdwo+IC1BIEZPUldBUkQgLXMg
+MTkyLjE2OC41LjAvMjU1LjI1NS4yNTUuMCAtaSBldGgxIC1vIGV0aDAgLW0gc3RhdGUgXAo+IAkJ
+LS1zdGF0ZSBORVcgLXAgdWRwIC1tIHVkcCAtLWRwb3J0IDUzIC1qIEFDQ0VQVAo+IAo+IEl0IHNo
+b3VsZCBwcm92aWRlIHRoZSBzYW1lIGZpbHRlcmluZyBmdW5jdGlvbm5hbGl0aWVzIHlvdSB3YW50
+ZWQsIHBsdXMKPiByZXR1cm5pbmcgcGFja2V0cyBhY2NlcHQgdGhyb3VnaCBFU1RBQkxJU0hFRCxS
+RUxBVEVEIHJ1bGUuIElmIHlvdSByZWFsbHkKPiB3YW50IHRvIHJlc3RyaWN0IGl0IHRvIFRDUCBh
+bmQgVURQIG9ubHksIGp1c3QgcmVwbGFjZSB0aGlzIHJ1bGUgd2l0aCB0d28KPiBtb3JlIHNwZWNp
+ZmljIG9uZXMgOgo+IAo+IC1BIEZPUldBUkQgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxS
+RUxBVEVEIC1wIHVkcCAtaiBBQ0NFUFQKPiAtQSBGT1JXQVJEIC1tIHN0YXRlIC0tc3RhdGUgRVNU
+QUJMSVNIRUQsUkVMQVRFRCAtcCB0Y3AgLWogQUNDRVBUCj4gCj4gSSByZW1vdmVkIHJ1bGVzIHRo
+YXQgc2VlbXMgcmVkdW5kYW50LCBpbiBwYXJ0aWN1bGFyIHlvdXIgVENQIGZsYWdzIGNoZWNrCj4g
+cnVsZSB0aGF0IHdhcyByZXBsYWNlZCB3aXRoIC0tc3luIHN3aXRjaCBhZGRpdGlvbi4gSSBhbHNv
+IHJlc3RyaWN0ZWQKPiBpbmJvdW5kIEROUyBmaWx0ZXJpbmcgdG8gMTkyLjE2OC41LjIgb25seS4K
+PiAKPiBIb3BlIHRoaXMgaGVscHMuCj4gCj4gLS0gCj4gaHR0cDovL3d3dy5uZXRleGl0LmNvbS9+
+c2lkLwo+IFBHUCBLZXlJRDogMTU3RTk4RUUgRmluZ2VyUHJpbnQ6IEZBNjIyMjZEQTlFNzJGQThB
+RUNBQTI0MDAwOEI0ODBFMTU3RTk4RUUKPiAKPiAKCg==
