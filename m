@@ -1,12 +1,13 @@
-From: Pawel Hadam <Pawel.Hadam@imag.fr>
-Subject: Re: ROUTE and source IPv6 routing - how ?
-Date: Tue, 2 Dec 2003 11:50:03 +0100 (MET)
+From: Michael Gale <mgale@utilitran.com>
+Subject: Re: How to make a computer invisible
+Date: Tue, 2 Dec 2003 08:14:27 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSO.4.33.0312021145340.8162-100000@horus.imag.fr>
-References: <1070361769.1954.16.camel@descartes>
+Message-ID: <20031202081427.58d57208.mgale@utilitran.com>
+References: <000501c3b88e$65e35550$6400a8c0@deamon>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1070361769.1954.16.camel@descartes>
+In-Reply-To: <000501c3b88e$65e35550$6400a8c0@deamon>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,66 +17,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Cedric de Launois <delaunois@info.ucl.ac.be>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-> > > > CLIENT: eth0 - ipc0 = 2001:660:5301:26:2c0:9fff:fe1a:caca
-> > > >         eth1 - ipc1 = 2001:688:1fa1:2:204:75ff:fef8:93a4
-> > > > SERVER: eth0 - ips0 = 2001:660:5301:26:210:5aff:febe:bb78
-> > > >         eth1 - ips1 = 2001:688:1fa1:2:204:75ff:fee8:52fd
-> > > >
-> > > You have to add an entry in your routing table saying that destination
-> > > 2001:688:1fa1:2:204:75ff:fee8:52fd is reachable through iface ipc0.
-> > > Otherwise the ROUTE target can't figure out whether the destination
-> > > is on-link or gateway'ed.
-> > > Try with something like this :
-> > >   ip -f inet6 route add 2001:688:1fa1:2:204:75ff:fee8:52fd dev eth0
-> > > Same remark applies for case 3).
+
+Hello,
+
+	You can make a machine almost invisible with iptables. I have a firewall box with multiple IP's on one interface. The one IP address does not have any servers listening on it. So if I do a nmap for all TCP and UDP ports and watch the traffic through a TCP dump the only responses I see are ARP replies.
+
+So besides the response to ARP traffic no packets were sent out .. so if I could disable the ARP reply a nothing would be known.
+
+The nmap scanned could only tell me that all ports a filtered :)
+
+If you have a service on the IP -- like a web server I can not see you being able to hide it.
+
+Also iptables by default is a IP based filter you a rule like:
+iptables -A INPUT -j DROP 
+will not drop layer two stuff.
+
+You could try:
+iptables -I INPUT -m mac -j DROP
+but I am not sure what this would cause and what else it will break :0
+
+Michael.
+
+
+On Tue, 2 Dec 2003 09:40:09 +0500
+"Babar Kazmi" <BabarKazmi@Hotmail.Com> wrote:
+
+> Hello ..
+> 
+> As far as I know  iptables use MAC Address information for filtering.
+> It cant be used for filtering packets, and I assume iptables cannot edit /
+> modify ARP / RARP stuff.
+> 
+> If you find an alternate way, Do Share :)
+> 
+> Regards
+> 
+> Babar Kazmi.
+> 
+> ----- Original Message ----- 
+> From: "Thomas Preissler" <tomjohn@gmx.de>
+> To: "netfilter-user Mailinglist" <netfilter@lists.netfilter.org>
+> Sent: Sunday, November 30, 2003 3:12 PM
+> Subject: How to make a computer invisible
+> 
+> 
+> > Hello folks,
 > >
-> > Hmm... thank you for your proposal, but is does not seem to be the
-> > solution for my problem. Should I add routing entries for ALL IPv6
-> > addresses that I would like to access through ipc0 ??? I would like to
-> > have an access to the whole internet via both ipc0 and ipc1, but
-> > depending on the binding in the client software. So, when I bind my client
-> > to ipc0, I access all the internet via ipc0. When I bind my client to
-> > ipc1, I access all the internet via ipc1.
-> > My example above it was only my local testbed.
-> > Is it possible?
->
-> Then add a default route that goes through 2001:688:1fa1:2:204:75ff:fee8:52fd :
->   ip -f inet6 route add 2001:688:1fa1:2:204:75ff:fee8:52fd dev eth0
->   ip -f inet6 route add default via 2001:688:1fa1:2:204:75ff:fee8:52fd
-> So the ROUTE target knows that when sending through eth0, the next hop
-> is your server and that it is on the ipc0 link.
+> > how do I really make a computer totally invisibly as it would be
+> > when it does not exist?
+> >
+> > It is clear, that the simplest solution is to DROP all incoming
+> > packets, but what's about (R)ARP packets? Can they be blocked anyway?
+> >
+> 
+> 
+> 
+> 
+> 
 
 
-Looks good. But I should use my gateway connected to the ipc0 (and also
-the second one, connected to ipc1). ips0 and ips1 are addresses of one
-normal host in my network, they are not gateway addresses.
-
-
-> So the complete ruleset should be in your case something like that :
->
-> ip -f inet6 route add 2001:688:1fa1:2:204:75ff:fee8:52fd dev eth0
-> ip -f inet6 route add 2001:660:5301:26:210:5aff:febe:bb78 dev eth1
-> ip -f inet6 route add default via 2001:688:1fa1:2:204:75ff:fee8:52fd
-> ip -f inet6 route add default via 2001:660:5301:26:210:5aff:febe:bb78
-
-Yeah, something like this, but with gateways addresses.
-
-> ip6tables -t mangle -A POSTROUTING --source
->    2001:660:5301:26:2c0:9fff:fe1a:caca -j ROUTE --oif eth0 --continue
-> ip6tables -t mangle -A POSTROUTING --source
->    2001:688:1fa1:2:204:75ff:fef8:93a4 -j ROUTE --oif eth1 --continue
->
-> So, the ROUTE target is used for selecting between the two default
-> routes.
-
-I'll try it, thanks.
-
-Regards
-Pawel
-
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
