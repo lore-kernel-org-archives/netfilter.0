@@ -1,12 +1,10 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: Limit on a per host basis?
-Date: Mon, 15 Nov 2004 11:59:04 -0500 (EST)
-Message-ID: <32624.142.169.215.10.1100537944.squirrel@142.169.215.10>
-References: <000501c4c9ae$e37848e0$450aa8c0@hierzo>
+From: Eduardo =?ISO-8859-1?Q?Fern=E1ndez?= <eduardo@cmusanjuan.com>
+Subject: How to debug nfmarking
+Date: Mon, 15 Nov 2004 18:45:26 +0100
+Message-ID: <1100540726.2796.23.camel@laserite>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000501c4c9ae$e37848e0$450aa8c0@hierzo>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Udo van den Heuvel <udovdh@xs4all.nl>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sat, November 13, 2004 1:30 pm, Udo van den Heuvel said:
-> Hello,
->
-> How can I limit traffic (packets coming in) at a per host rate?
+Hi all,
 
-> Your ideas are very welcome!
+i'm trying to debug packet marking like this:
 
-This can be done with ipt_recent.
+iptables -t mangle -A PREROUTING -p icmp -j MARK --set-mark 0x1
+(...)
 
-Try iptables -m recent -h for more informations.
+But I don't know how to check if the packets are really being marked.
+ip_conntrack shows all packets with mark=0, and that's not possible.
+I've tried logging with netfilter but I don't know which option shows
+the nfmark in the log. Any ideas?
 
-> Kind regards,
-> Udo
+Thank you very much in advance.
 
-HTH,
-
-Samuel
-CookingLinux TM
+Eduardo
 
 
