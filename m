@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Running iptables behind router
-Date: Tue, 24 Feb 2004 11:06:41 +0000
+From: Jeroen Vriesman <j.vriesman@prompt.nl>
+Subject: connmark on a bridge
+Date: Tue, 24 Feb 2004 13:04:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402241106.41715.Antony@Soft-Solutions.co.uk>
-References: <20040216235513.GA1219@room101> <632269680.20040217093907@attla.net.ar> <20040224001308.GA10127@zaklinux.zakarun>
+Message-ID: <20040224130416.2184714d.j.vriesman@prompt.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040224001308.GA10127@zaklinux.zakarun>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +16,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tuesday 24 February 2004 12:13 am, Kean Pedersen wrote:
+Dear all,
 
-> My network right now is:
->
-> Hardware router(192.168.1.1), the only access to Internet.
-> Desktop (192.168.1.42)
-> Server/NAT box (eth0:192.168.1.3 and eth1:192.168.2.1)
-> Laptop (192.168.2.101)
->
-> The hardware router, desktop and server:eth0 are on one switch, while
-> laptop and server:eth1 are on another switch.
->
-> I then try a ping from my laptop (192.168.2.101) to my desktop
-> (192.168.1.42), but all packes are lost. The packet count on iptables -L -v
-> goes up for postrouting/masquerade and forward/accept.
+I've installed the connmark patch on a 2.4.24 kernel with ebtables patch, working as a bridging firewall, and I want to mark a tracked connection.
 
-What's the routing table on 192.168.1.42?   Can the reply packets find their 
-way back to 192.168.2.101 again?
+At the moment I've got the following FORWARD in the mangle table:
 
-Antony.
+# iptables -t mangle -L FORWARD -n -x -v
 
--- 
-Success is a lousy teacher.  It seduces smart people into thinking they can't 
-lose.
+Chain FORWARD (policy ACCEPT 9861 packets, 5242217 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+     483    66527 CONNMARK   all  --  *      *       0.0.0.0/0            0.0.0.0/0          CONNMARK restore
+       0        0 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0          MARK match 0xa
+       0        0 MARK       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:20 MARK set 0xa
+      52     2933 MARK       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:21 MARK set 0xa
+       0        0 MARK       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp spt:20 MARK set 0xa
+      40     4404 MARK       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp spt:21 MARK set 0xa
+     473    65999 CONNMARK   all  --  *      *       0.0.0.0/0            0.0.0.0/0          CONNMARK save
 
- - William H Gates III
+I've also tried it in PREROUTING and POSTROUTING
+The packets with sport/dport 21 or 20 do get marked, but as soon as I start a regular frt data transfer, these packets don't get marked.
+As you can see in the ACCEPT mark=0xa line, the CONNMARK restore doesn't seem to mark any packets (this is after a file transfer).
+The example on the connmark website has the same result.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+I wonder, is this a problem with connection tracking on a bridge, or is it the connmark module which has a problem on the bridge, or am I not getting it at all?
 
+Kind regards and thanks in advance,
+Jeroen Vriesman.
 
