@@ -1,13 +1,13 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Problem With NAT to NAT with IPTABLES
-Date: Mon, 28 Oct 2002 12:11:36 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DHCRELAY through IPTABLES Firewall
+Date: Mon, 28 Oct 2002 08:49:05 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ca01c27e4d$0fd20980$13fcc5cb@nextto>
-References: <Pine.LNX.4.44.0210272214080.12317-100000@laptop1.agatha> <200210280048.01995.netfilter@newkirk.us>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <20021028084908.MGPW27595.mta05-svc.ntlworld.com@there>
+References: <001001c27d72$1352c350$8f33e40f@lsmith5953> <20021027080906.OMSF9836.mta01-svc.ntlworld.com@there> <001c01c27d96$fafd0ed0$8f33e40f@lsmith5953>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001c01c27d96$fafd0ed0$8f33e40f@lsmith5953>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,63 +20,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all
+On Sunday 27 October 2002 8:58 am, bigman@monster-solutions.net wrote:
 
-i have DSL 2MB connection with my provider
-he is authenticating and giving me 2MB Bandwidth
-i am using for my internal office purpose
+> I am running DHCRELAY as below
+>
+> dhcrelay -i eth2 192.168.1.70
+>
+> 192.168.1.70    DHCP Server (W2K)
+> LAN1 192.168.1.0
+> LAN2 192.168.2.0
+>
+> Here is my routing tables
+> Destination     Gateway         Genmask         Flags Metric Ref    Use
+> Iface
+> 192.168.2.0     *               255.255.255.0   U     0      0        0
+> eth2 192.168.1.0     *               255.255.255.0   U     0      0       
+> 0 eth1 x.x.x.x (ISP Subnet)     *               255.255.252.0   U     0    
+>  0 0 eth0
+> 127.0.0.0       *               255.0.0.0       U     0      0        0 lo
+> default         x.x.x.x (ISP Assigned IP) 0.0.0.0         UG    0      0
+> 0 eth0
 
-i have zyxel ADSL modem which is is Doing NAT
-since i have lot of corporate users, i want to manage the bandwidth, so i
-added another Redhat Linux box in between user and Zyxel ADSL router with 2
-NIC
-the set up look like below
+Okay, that all looks sensible.   By the way, just thought I'd check - I 
+assume you are running dhcrelay on the firewall machine ?
 
+> Here are my Netfilter settings
 
-Corporate users---NIC1--NIC2--ADSL LAN--ADLS WAN--UPLink/DownLink provider
+Please post the iptables commands used to set up your ruleset.
 
+You sent the ouput of iptables -L which doesn't show all the information we 
+need: even the verbose version iptables -L -v is not as informative as the 
+original commands.   Thanks,
 
-the problem is iam getting very poor response when i use iptables NAT to NAT
-configuration
-the configuration is like this
+Antony.
 
-Internal Users are using  192.168.2.5 to 192.168.2.200 subnet is
-255.255.255.0
-Internal user Gateway is (NIC1) 192.168.2.1
+-- 
 
-NIC2 IP address is 192.168.4.2 with the subnet if 255.255.255.0
-ADSLLAN ip address is 192.168.4.1 with the Subnet if 255.255.255.0
-NIC2 and ADSLLAN is connected with Cross cable
-
-ADSL WAN ip address is Dynamic
-
-This is what my present configuration of LAN
-but iam getting very poor responce of browsing, when iam doing any of the PC
-from corporate users
-
-when i remove the Linux box , iam getting good speed, but its sharing the
-bandwidth that, any one can pull 2MB, iam not able to monitor
-
-in the Redhat Linux 7.3 iam running Squid and Transparent proxy, with
-Iptables prerouting from 80 port to 3128
-its able to serve the request but very slow responce, never gone yet to CBQ.
-
-I have another Setup in another Office
-
-Corporate users---NIC1--NIC2--Cisco LAN-- Cisco WAN--UPLink/DownLink
-provider
-
-here iam getting Cisco LAN is Public IP address, and My NIC2 also Public
-Address
-here my above setup working with any hassels
-
-can any suggest me what is wrong, any recomendation on the above setup
-where NAT to NAT giving problem
-
-thanks in advance
-hare
-
-
-
-
+With thanks to God,
+For all that's come before,
+For all that will come after,
+But most of all, for this bit right here now.
 
