@@ -1,12 +1,11 @@
-From: Erdal Mutlu <emutlu@fonts.de>
-Subject: Re: iptables
-Date: Tue, 21 Jan 2003 12:42:13 +0100 (CET)
+From: "Steffen Bisgaard" <sbisgaard@xtrasource.com>
+Subject: FW: SMTP
+Date: Wed, 22 Jan 2003 13:33:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0301211240380.18746-100000@bhows40003.fonts.de>
-References: <000001c2bfe0$7d8ff0c0$c91662d4@hilarion>
+Message-ID: <NEBBICCJKLGJHMMNBPIKAEJFEDAA.sbisgaard@xtrasource.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c2bfe0$7d8ff0c0$c91662d4@hilarion>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,46 +15,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: VASIF MUSAOGULLARI <babutsa@isnet.net.tr>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sun, 19 Jan 2003, VASIF MUSAOGULLARI wrote:
+Hallo again everybody,
 
->
-> I have a problem with firewall settings - timeout.
-> We installed Suse 7.3 for ppc onto a Logical Partition of an IBM iSeries
-> machine.
->
-> Everything is fine. It is the firewall of the system.
-> But, it disconnects the clients if they are idle for 12 minutes. I guess
-> default timeout is set to 12 minutes.
-> How can I increase the timeout time?
-> What should I add to the iptables definitions ?
-> Or is there any other way to increase this timeout time ?
->
-> I need your urgent response please...
-> Thanks in advance,
-> -vas
+Still struggling with this. Can somebody point out to me where I might find
+a log file of iptables in order to troubleshoot this?
+Many thanks in advance.
 
-Hello,
-
-which version of iptables and kernel are you using?.
-What kind of connections are disconnected?
-
-Best regards.
-Erdal Mutlu
-System Administrator
-
-Du-Pont-Strasse 1
-D-61352 Bad Homburg
-Tel.: +49 6172 484 - 447
-Fax: +49 6172 484 - 5447
-email: emutlu@fonts.de
-http://www.linotypelibrary.com
-http://www.fonts.de
+-----Original Message-----
+From: Steffen Bisgaard [mailto:sbisgaard@xtrasource.com]
+Sent: Tuesday, January 21, 2003 4:25 PM
+To: netfilter@lists.netfilter.org
+Subject: SMTP
 
 
+Hallo all,
+
+Can anybody tell me why the following doesn't allow me to send and receive
+email?
+
+# POP server (110)
+# ----------------
+iptables -A INPUT -i $EXTERNAL_INTERFACE -p tcp \
+--source-port $UNPRIVPORTS \
+-d $IPADDR --destination-port 110 -j ACCEPT
+iptables -A OUTPUT -o $EXTERNAL_INTERFACE -p tcp ! --syn \
+-s $IPADDR --source-port 110 \
+--destination-port $UNPRIVPORTS -j ACCEPT
+# POP client (110)
+# ----------------
+iptables -A INPUT -i $EXTERNAL_INTERFACE -p tcp ! --syn \
+--source-port 110 \
+-d $IPADDR --destination-port $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $EXTERNAL_INTERFACE -p tcp \
+-s $IPADDR --source-port $UNPRIVPORTS \
+--destination-port 110 -j ACCEPT
+
+
+# ------------------------------------------------------------------
+# SMTP server (25)
+# ----------------
+iptables -A INPUT -i $EXTERNAL_INTERFACE -p tcp \
+--source-port $UNPRIVPORTS \
+-d $IPADDR --destination-port 25 -j ACCEPT
+iptables -A OUTPUT -o $EXTERNAL_INTERFACE -p tcp ! --syn \
+-s $IPADDR --source-port 25 \
+--destination-port $UNPRIVPORTS -j ACCEPT
+#
+#
+#
+# ------------------------------------------------------------------
+# SMTP client (25)
+# ----------------
+iptables -A INPUT -i $EXTERNAL_INTERFACE -p tcp ! --syn \
+--source-port 25 \
+-d $IPADDR --destination-port $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $EXTERNAL_INTERFACE -p tcp \
+-s $IPADDR --source-port $UNPRIVPORTS \
+--destination-port 25 -j ACCEPT
 
 
