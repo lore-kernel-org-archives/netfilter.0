@@ -1,8 +1,8 @@
-From: Ian McBeth <imcbeth@telus.net>
-Subject: Re: port forwarding problem
-Date: 28 Jan 2003 17:56:07 -0700
+From: "Alexander Noack" <alex@aiesec.wiwi.uni-rostock.de>
+Subject: ip_nat_pptp  Problem
+Date: Tue, 28 Jan 2003 23:09:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1043801767.3685.47.camel@blackice.telco.ca>
+Message-ID: <NFBBLIMCOLBEDAIPJPDMCELECGAA.alex@aiesec.uni-rostock.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,62 +18,148 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello.....
+Hello everybody,
 
-I think you must have the SNAT in there as well
+I have the following setup:
+Win98 Client -> Linux-2.4.20 Masq-GW -> poptop-1.1.2 (Linux 2.4.20 -
+this is a Masq-GW for another network)
+
+I recently upgraded from 2.2.20 to 2.4.20.
+The same setup with v2.2 worked, while v2.4 Kernel doesn't.
+Everything else, e.g. ip_nat_h323, is working perfect (thanks
+Netfilter-Team!).
+
+I have tried the patch-o-matic as of January 7 and applied the
+subsequent patch by Philip Craig.
+iptables is version 1.2.7a and has been recompiled to suit the
+patch-o-matic version.
 
 
--A PREROUTING -p tcp -m tcp -d (external IP) -i eth1 --dport 25 -j DNAT
---to-destination 192.168.0.2:25
--A POSTROUTING -p tcp -m tcp -s 192.168.0.2 -o eth1 -j SNAT --to-source
-62.194.25.2:25
+When I connect, I'm told that username and password are being checked,
+but then after some time (30sec) I get the MS-Error:650.
+
+cat /proc/net/ip_conntrack gives me the following connections
+
+tcp      6 431979 ESTABLISHED src=192.168.17.6 dst=139.30.XXX.XXX
+sport=2294 dport=1723 src=139.30.XXX.XXX dst=62.226.78.120 sport=1723
+dport=2294 [ASSURED] use=3 mark=0
+gre      47 597 timeout=600, stream_timeout=432000 src=192.168.17.6
+dst=139.30.XXX.XXX version=1 protocol=0x880b srckey=0x0 dstkey=0x0
+[UNREPLIED] src=139.30.XXX.XXX dst=62.226.78.120 version=1
+protocol=0x880b srckey=0x0 dstkey=0x0 use=1 mark=0
+gre      47 599 timeout=600, stream_timeout=432000 src=139.30.XXX.XXX
+dst=62.226.78.120 version=1 protocol=0x880b srckey=0x0 dstkey=0x8f6
+[UNREPLIED] src=192.168.17.6 dst=139.30.XXX.XXX version=1
+protocol=0x880b srckey=0x8f6 dstkey=0x0 use=1 mark=0
 
 
--A FORWARD -p tcp -m tcp -d 192.168.0.2 -i eth1 -o eth0 --dport 25
+if the ip_conntrack_proto_gre is NOT loaded, the output on the server
+side is
+cat /proc/net/ipconntrack
 
-let me know if this helps
+unknown  47 599 src=139.30.XXX.XXX dst=62.226.78.120 src=62.226.78.120
+dst=139.30.XXX.XXX use=1
+tcp      6 431990 ESTABLISHED src=62.226.78.120 dst=139.30.XXX.XXX
+sport=2309 dport=1723 src=139.30.XXX.XXX dst=62.226.78.120 sport=1723
+dport=2309 [ASSURED] use=1
 
-Ian
 
-On Tue, 2003-01-28 at 01:14, oarojo@intermediacorp.com wrote:
-> hello guys!!! Can someone help me on my problem regarding iptables???
-> 
-> This has been my problem a month now.. I'm running a redhat 7.3
-firewall
-> server with two NICs; eth0 facing the internal network (192.168.0.x)
-and
-> eth1 facing the internet (external network). Now I wish to forward all
-> traffic on eth1, port 25 to another to my mail server (say,
-192.168.0.2). I
-> did something like:
-> 
-> iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
-> iptables -A FORWARD -p tcp --dport 25 -d 192.168.0.2 -j ACCEPT
-> iptables -A PREROUTING -t nat -p tcp --dport 25 -d x.x.x.x -j DNAT
->  --to 192.168.0.2
-> 
-> Now when i used to test SMTP connection thru telnetting from another
-> server... say:
-> 
-> #telnet xxx.xxx.xxx.xxx 25
-> 
-> It just stucked in there doesn't continue...
-> 
-> using nmap on my firewall:
-> 
-> #nmap xxx.xxx.xxx.xxx -p 25
-> 
-> it says that port 25 is filtered...
-> 
-> 
-> Is there anything wrong with my iptable rules? I would really
-appreciate if
-> you can send me your help... thanks!
-> 
-> 
-> Oliver
-> 
-> 
-> 
+if the ip_conntrack_proto_gre is loaded, the output on the server side
+is
+cat /proc/net/ipconntrack
+
+gre      47 500 timeout=0, stream_timeout=0 src=139.30.XXX.XXX
+dst=62.226.78.120 version=0 protocol=0x0000 srckey=0x0 dstkey=0x0
+src=62.226.78.120 dst=139.30.XXX.XXX version=0 protocol=0x0000
+srckey=0x0 dstkey=0x0 use=1
+gre      47 431998 timeout=600, stream_timeout=432000
+src=139.30.XXX.XXX dst=62.226.78.120 version=1 protocol=0x880b
+srckey=0x0 dstkey=0x909 src=62.226.78.120 dst=139.30.XXX.XXX version=1
+protocol=0x880b srckey=0x909 dstkey=0x0 [ASSURED] use=1
+tcp      6 431982 ESTABLISHED src=62.226.78.120 dst=139.30.XXX.XXX
+sport=2313 dport=1723 src=139.30.XXX.XXX dst=62.226.78.120 sport=1723
+dport=2313 [ASSURED] use=2
+EXPECTING: - use=1 proto=47 src=62.226.78.120 dst=139.30.XXX.XXX
+version=1 protocol=0x880b srckey=0x909 dstkey=0x0
+
+
+the output on the server side in any cas is
+
+Jan 28 17:29:13 aiesec pptpd[1905]: MGR: Launching /usr/sbin/pptpctrl
+to handle client
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: local address =
+192.168.16.253
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: remote address =
+192.168.16.251
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: pppd speed = 115200
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: pppd options file =
+/etc/ppp/peers/pptpd
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: Client 62.226.78.120 control
+connection started
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: Received PPTP Control Message
+(type: 1)
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: Made a START CTRL CONN RPLY
+packet
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: I wrote 156 bytes to the
+client.
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: Sent packet to client
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: Received PPTP Control Message
+(type: 7)
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: 0 min_bps, 0 max_bps, 32
+window size
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: Made a OUT CALL RPLY packet
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: Starting call (launching
+pppd, opening GRE)
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: pty_fd = 5
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: tty_fd = 6
+Jan 28 17:29:13 aiesec pptpd[1906]: CTRL (PPPD Launcher): Connection
+speed = 115200
+Jan 28 17:29:13 aiesec pptpd[1906]: CTRL (PPPD Launcher): local address
+= 192.168.16.253
+Jan 28 17:29:13 aiesec pptpd[1906]: CTRL (PPPD Launcher): remote
+address = 192.168.16.251
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: I wrote 32 bytes to the
+client.
+Jan 28 17:29:13 aiesec pptpd[1905]: CTRL: Sent packet to client
+Jan 28 17:29:14 aiesec pppd[1906]: pppd 2.4.1 started by root, uid 0
+Jan 28 17:29:14 aiesec pppd[1906]: Using interface ppp0
+Jan 28 17:29:14 aiesec pppd[1906]: Connect: ppp0 <--> /dev/pts/1
+Jan 28 17:29:14 aiesec pptpd[1905]: Buffering out-of-order packet; got
+1 after 4294967295
+Jan 28 17:29:17 aiesec pptpd[1905]: Packet reorder timeout waiting for
+0
+Jan 28 17:29:17 aiesec pptpd[1905]: Buffering out-of-order packet; got
+2 after 0
+Jan 28 17:29:44 aiesec pptpd[1905]: CTRL: Received PPTP Control Message
+(type: 12)
+Jan 28 17:29:44 aiesec pptpd[1905]: CTRL: Made a CALL DISCONNECT RPLY
+packet
+Jan 28 17:29:44 aiesec pptpd[1905]: CTRL: Received CALL CLR request
+(closing call)
+Jan 28 17:29:44 aiesec pptpd[1905]: CTRL: I wrote 148 bytes to the
+client.
+Jan 28 17:29:44 aiesec pptpd[1905]: CTRL: Sent packet to client
+Jan 28 17:29:44 aiesec pppd[1906]: Modem hangup
+Jan 28 17:29:44 aiesec pppd[1906]: Connection terminated.
+Jan 28 17:29:44 aiesec pppd[1906]: Exit.
+Jan 28 17:29:49 aiesec pptpd[1905]: GRE: read error: Bad file
+descriptor
+Jan 28 17:29:49 aiesec pptpd[1905]: CTRL: PTY read or GRE write failed
+(pty,gre)=(-1,-1)
+Jan 28 17:29:49 aiesec pptpd[1905]: CTRL: Client 62.226.78.120 control
+connection finished
+Jan 28 17:29:49 aiesec pptpd[1905]: CTRL: Exiting now
+Jan 28 17:29:49 aiesec pptpd[1768]: MGR: Reaped child 1905
+
+
+
+- Alexander Noack
+- Vitus-Bering-Str. 3
+- 18106 Rostock
+- Germany
+-
+-Tel: +49 (381) 12839893
+-Fax: +49 (381) 12839901
+-Web: www.gaussdivision.de
 
 
