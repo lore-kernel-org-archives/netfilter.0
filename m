@@ -1,12 +1,13 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: ipt_iplimit - IPtables 1.2.7a - Kernel 2.4.18 Issue Resolved
-Date: Sun, 29 Sep 2002 14:22:52 +0200
+Date: Sun, 29 Sep 2002 13:45:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D96F09C.3040101@fugmann.dhs.org>
+Message-ID: <20020929124557.VRSF2092.mta07-svc.ntlworld.com@there>
 References: <OE29obC32qU4Z5flHgS00004b68@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <OE29obC32qU4Z5flHgS00004b68@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,47 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: hard__ware <hard__ware@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-hard__ware wrote:
-> 
-> -------------------------------------------
-> + ~src/linux-2.4/net/ipv4/netfilter/Makefile
-> +++
-> + O_TARGET := netfilter.o
-> -+ M_OPJS := ipt_iplimit.o
-> 
-> #### here is what is used to be ####
-> ---
-> - O_TARGET := netfilter.o
-> -
-> ---------------end of patch---------------
-> 
-> ---------This one goes near of file--------
-> + ~src/linux-2.4/net/ipv4/netfilter/ip_conntrack_standalone.c
-> +++
-> +EXPORT_SYMBOL(ip_conntrack_expected_related);
-> +EXPORT_SYMBOL(ip_conntrack_unexpected_related);
-> -+EXPORT_SYMBOL(ip_conntrack_find_get);
-> +EXPORT_SYMBOL(ip_conntrack_tuple_taken);
-> 
-> ---
-> -EXPORT_SYMBOL(ip_conntrack_expected_related);
-> -EXPORT_SYMBOL(ip_conntrack_unexpected_related);
-> -EXPORT_SYMBOL(ip_conntrack_tuple_taken)
-> --------------------EOP-------------------
+On Sunday 29 September 2002 12:18 pm, hard__ware wrote:
 
-I'm not sure how to read this, but I guess that '-+' has a special meaning.
+> Hello Eveyone .. :D
+>
+> just been doing alot of kernel patching / hacking lately with Netfilter ,
+> (i luv it :-D ).
 
-Could you please send a unified diff instead?. To make a diff between 
-two files, do:
-diff -u <old file> <new file>
+> ### Now here's a real nice one. Sick of two many connetions being tracked
+> by netfilter that are not even ### being used or conntrack's that didnt
+> recive a CLOSE or FIN message, this way you can lower the ### default Time
+> To Tive for TCP connection tracking while using NetFilter / Iptables.  Try
+> setting the
+> ### time value's in this lower,  Expecially the one that Says 5 Bloody Days
+> ###  --- 5 DAYS, /* TCP_CONNTRACK_ESTABLISHED, */
 
-(The '-u' is what makes it readable)
+Please don't refer to the connection timeout values as Time To Live, 
+especially if you put it in comments or documentation for any patches you 
+submit - it'll confuse people.
 
-Regards
-Anders Fugmann
+Time To Live refers to the number of router hops an IP packet is allowed to 
+go through.
 
+TCP timeouts are the number of seconds a machine will wait for a TCP 
+connection to change its status before dropping it from a connection tracking 
+table.
+
+They're very different, and people will get confused if you make them think 
+the "Time" in "Time To Live" is measured in seconds (it was originally 
+intended to be, but is now number of routers).
+
+Antony.
+
+-- 
+
+Software development can be quick, high-quality, or low-cost.
+
+The customer gets to pick any two out of three.
 
