@@ -1,13 +1,13 @@
-From: Ronny Fauth <jadefalkner@imperium-noctem.de>
-Subject: Re: Problems with Portforwarding
-Date: Mon, 15 Mar 2004 23:31:37 +0100
+From: Alexander Samad <alex@samad.com.au>
+Subject: Review of firewall script
+Date: Tue, 16 Mar 2004 10:18:38 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40562EC9.5050604@imperium-noctem.de>
-References: <405624A2.60906@imperium-noctem.de> <200403152159.27405.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040315231838.GB26800@samad.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YpRP0zjcYagsg5gy"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403152159.27405.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,184 +17,202 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
 
-> 1. How are you testing these rules?
->
->  
->
-Well, i'm trying to connect via the Inet to one of these Ports.... how 
-else can i test something like that?
-
-> 2. What does "iptables -L -nvx; iptables -L -t nat -nvx" show for 
-> these rules - do the packet/byte counters show that any packets are 
-> being processed?
->  
->
-yes, the counter gets higher after every refused connection
-
-here's a bigger part of the Firewallscript and the the "iptables -L 
--nvx; iptables -L -t nat -nvx"
-
-#
-#  Rule 0(NAT)
-#
-#
-$IPTABLES -t nat -A POSTROUTING -o ppp0  -s 192.168.0.0/16 -j MASQUERADE
-#
-#
+--YpRP0zjcYagsg5gy
+Content-Type: multipart/mixed; boundary="3gXTOHwNCYOUonZC"
+Content-Disposition: inline
 
 
-$IPTABLES -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+--3gXTOHwNCYOUonZC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-#
-# Rule 0(global)
-#
-# SSH Zugang zur Firewall
-#
-$IPTABLES -A INPUT -p tcp  -d $interface_ppp0  --destination-port 22  -m 
-state --state NEW  -j ACCEPT
-$IPTABLES -A INPUT -p tcp  -d 160.0.0.1  --destination-port 22  -m state 
---state NEW  -j ACCEPT
-$IPTABLES -A INPUT -p tcp  -d 192.168.0.1  --destination-port 22  -m 
-state --state NEW  -j ACCEPT
-#
+Hi
 
-# TEST Zugang zum BOT
-#
-$IPTABLES -A INPUT -p tcp  -d $interface_ppp0  --destination-port 4662  
--m state --state NEW  -j ACCEPT
-$IPTABLES -A INPUT -p tcp  -d 160.0.0.1  --destination-port 4662  -m 
-state --state NEW  -j ACCEPT
-$IPTABLES -A INPUT -p tcp  -d 192.168.0.1  --destination-port 4662  -m 
-state --state NEW  -j ACCEPT
-#
+I have attached my firewall script, basically creates a DB of rules,
+also creates a default set of rules.
 
-# Rule 1(global)
-#
-# 'masquerading' Regel
-#
-$IPTABLES -A INPUT  -s 192.168.0.0/16  -m state --state NEW  -j ACCEPT
-$IPTABLES -A OUTPUT  -s 192.168.0.0/16  -m state --state NEW  -j ACCEPT
-$IPTABLES -A FORWARD  -s 192.168.0.0/16  -m state --state NEW  -j ACCEPT
-#
-# Rule 2(global)
-#
-# 'catch all' Regel
-#
-$IPTABLES -N RULE_2
-$IPTABLES -A OUTPUT  -m state --state NEW  -j RULE_2
-$IPTABLES -A INPUT  -m state --state NEW  -j RULE_2
-$IPTABLES -A FORWARD  -m state --state NEW  -j RULE_2
-#$IPTABLES -A RULE_2  -j LOG  --log-level info --log-prefix "RULE 2 -- 
-ACCEPT "
-$IPTABLES -A RULE_2  -j ACCEPT
-#
-$IPTABLES -t nat -A PREROUTING -j DNAT -p tcp -s 0/0 --dport 4662 -i 
-ppp0 --to-destination 192.168.0.2
-$IPTABLES -A FORWARD -j ACCEPT -m state --state NEW,ESTABLISHED,RELATED 
--p tcp -s 0/0 -d 192.168.0.2
+structure is
 
-$IPTABLES -t nat -A PREROUTING -j DNAT -p tcp -s 0/0 --dport 4711 -i 
-ppp0 --to-destination 192.168.0.2
-$IPTABLES -A FORWARD -j ACCEPT -m state --state NEW,ESTABLISHED,RELATED 
--p tcp -s 0/0 -d 192.168.0.2
+DB base - defaults to /etc/firewall
 
-$IPTABLES -t nat -A PREROUTING -j DNAT -p tcp -s 0/0 --dport 4712 -i 
-ppp0 --to-destination 192.168.0.3
-$IPTABLES -A FORWARD -j ACCEPT -m state --state NEW,ESTABLISHED,RELATED 
--p tcp -s 0/0 -d 192.168.0.3
-
-#
-echo 1 > /proc/sys/net/ipv4/ip_forward
------------------------------------------------------------------------------------------------------------------------------ 
+DB
+	filter
+		INPUT
+		OUTPUT
+		....
+	nat
+		....
+	mangle
+		....
+DB6
+	filter
+	mangle
 
 
+Any comments ?
 
+Alex
 
-[test@Warhawk /]# iptables -L -nvx
+--3gXTOHwNCYOUonZC
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename="makefirewall.gz"
+Content-Transfer-Encoding: base64
 
-Chain INPUT (policy DROP 0 packets, 0 bytes)
-   pkts      bytes target     prot opt in     out     
-source               destination
-    170     9620 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0          state RELATED,ESTABLISHED
-      0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            
-80.135.234.34      tcp dpt:22 state NEW
-      0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            
-160.0.0.1          tcp dpt:22 state NEW
-      0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            
-192.168.0.1        tcp dpt:22 state NEW
-      0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            
-80.135.234.34      tcp dpt:4662 state NEW
-      0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            
-160.0.0.1          tcp dpt:4662 state NEW
-      0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            
-192.168.0.1        tcp dpt:4662 state NEW
-      0        0 ACCEPT     all  --  *      *       192.168.0.0/16       
-0.0.0.0/0          state NEW
-      0        0 RULE_2     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0          state NEW
+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
 
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
-   pkts      bytes target     prot opt in     out     
-source               destination
-    239    87991 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0          state RELATED,ESTABLISHED
-      9      432 ACCEPT     all  --  *      *       192.168.0.0/16       
-0.0.0.0/0          state NEW
-      2       96 RULE_2     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0          state NEW
-      0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            
-192.168.0.2        state NEW,RELATED,ESTABLISHED
-      0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            
-192.168.0.2        state NEW,RELATED,ESTABLISHED
+--3gXTOHwNCYOUonZC--
 
-Chain OUTPUT (policy DROP 0 packets, 0 bytes)
-   pkts      bytes target     prot opt in     out     
-source               destination
-    147    14316 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0          state RELATED,ESTABLISHED
-      0        0 ACCEPT     all  --  *      *       192.168.0.0/16       
-0.0.0.0/0          state NEW
-      0        0 RULE_2     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0          state NEW
+--YpRP0zjcYagsg5gy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Chain RULE_2 (3 references)
-   pkts      bytes target     prot opt in     out     
-source               destination
-      2       96 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
--------------------------------------------------------------------------------------- 
+iD8DBQFAVjnOkZz88chpJ2MRArCsAJ9QBw+ecTX2JH7MTUwKqlI2XJtqTACgmLVQ
+jlSlLpVDG+pkw+cxiwEPsP4=
+=oSN4
+-----END PGP SIGNATURE-----
 
-
-
-[test@Warhawk /]# iptables -L -t nat -nvx
-Chain PREROUTING (policy ACCEPT 54819 packets, 3278426 bytes)
-   pkts      bytes target     prot opt in     out     
-source               destination
-      5      264 DNAT       tcp  --  ppp0   *       0.0.0.0/0            
-0.0.0.0/0          tcp dpt:4662 to:192.168.0.2
-      0        0 DNAT       tcp  --  ppp0   *       0.0.0.0/0            
-0.0.0.0/0          tcp dpt:4711 to:192.168.0.2
-      0        0 DNAT       tcp  --  ppp0   *       0.0.0.0/0            
-0.0.0.0/0          tcp dpt:4712 to:192.168.0.3
-
-Chain POSTROUTING (policy ACCEPT 5561 packets, 306745 bytes)
-   pkts      bytes target     prot opt in     out     
-source               destination
-     63     3024 MASQUERADE  all  --  *      ppp0    
-192.168.0.0/16       0.0.0.0/0
-
-Chain OUTPUT (policy ACCEPT 2162 packets, 135099 bytes)
-   pkts      bytes target     prot opt in     out     
-source               destination
-
-Sorry Antony, don't know why my mailclient sent the first mail only to you
+--YpRP0zjcYagsg5gy--
 
