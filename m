@@ -1,44 +1,42 @@
-From: Xuan Chen <xuanc@isi.edu>
-Subject: change timeout values for connection tracking
-Date: Mon, 14 Apr 2003 08:29:31 -0700 (PDT)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0304140825320.15359-100000@ski.isi.edu>
+From: Michael Friedhoff <michael@profindy.com>
+Subject: Patch-o-matic pptp
+Date: 14 Apr 2003 09:43:53 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1050331434.18572.13.camel@tichael.profindy.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: netfilter-devel@lists.netfilter.org
 
-hi,
+I am trying to run the Patch-o-matic to apply apply the
+pptp patch.  However, it is not working.  POM fails
+when it tries to apply the *.h-3 file, *h-4, etc.  I am not
+able to determine why that is.  I have downloaded
+the latest version from CVS.This is also my first
+attempt at using the POM.  It is likely that I am doing
+something wrong, but am unable to determine what portion
+of the POM that is failing.
 
-could somebody give me some hints on how to change the timeout values in 
-connection tracking functions? Say if I want to timeout a connection state 
-(ESTABLISHED) after 2 mins, what should I do?
+Is it possible to get precompiled modules for this
+functionality?
 
-I found that in iptables tutorial, it says:
-They may change with kernel revisions, and they may also be changed via 
-the proc file-system in the /proc/sys/net/ipv4/netfilter/ip_ct_tcp_* 
-variables. 
+I am running:
+RedHat 8.0
+Kernel 2.4.18
 
-But, it seems that I could not find there varaibles under /proc.
-
-Any suggestions?
+Hopefully I have supplied enough relevant information.
 
 Thanks,
--chen
-
--- 
-Xuan Chen
-USC/ISI
+--Michael Friedhoff
 
 
