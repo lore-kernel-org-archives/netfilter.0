@@ -1,12 +1,12 @@
 From: Kevin McConnell <kevymac@yahoo.com>
-Subject: RE: msn voice chat
-Date: Tue, 31 Dec 2002 14:10:45 -0800 (PST)
+Subject: RE: Doing Bridge with firewalling
+Date: Tue, 31 Dec 2002 14:19:01 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021231221045.6788.qmail@web40311.mail.yahoo.com>
-References: <000801c2b111$0e4aaad0$6c00a8c0@blue>
+Message-ID: <20021231221901.7569.qmail@web40311.mail.yahoo.com>
+References: <001001c2b113$e2181800$0100a8c0@zultys.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000801c2b111$0e4aaad0$6c00a8c0@blue>
+In-Reply-To: <001001c2b113$e2181800$0100a8c0@zultys.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,42 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Glover George <dime@gulfsales.com>, 'Roy Sigurd Karlsbakk' <roy@karlsbakk.net>
-Cc: cuigl@ilion.bio.sunysb.edu, netfilter@lists.netfilter.org
+To: Ranjeet Shetye <ranjeet.shetye@zultys.com>, netfilter@lists.netfilter.org
 
 
---- Glover George <dime@gulfsales.com> wrote:
-> I'd like
-> to look at this
-> patch, although this would only solve the SIP
-> problem right?  Is RTP in
-> there as well?  
+--- Ranjeet Shetye <ranjeet.shetye@zultys.com> wrote:
+> 
+> I think that we need to clearly define the
+> terminology for Kevin.
 
-You would have to take a look at the patch. I'm not
-really a developer. More like just a plain old
-sysadmin. I think that you should bring this
-discussion onto the netfilter-devel list, as I am not
-sure if cronos (Filip Sneppe is his real name I
-believe) reads this list.
- 
-> UPnP is just another solution to the problem, that
-> happens to solve a
-> lot of other problems with clients that are UPnP
-> aware at the same time.
-> (And being a sysadmin myself, I must say a lot
-> easier to set up than
-> recompiling your kernel with these experimental
-> helpers).  But then I'm
-> thinking of the users and myself on that one ;-)
+Yes, thank you! :) I am always up for learning new
+things. So it was just done at layer 2 instead of
+layer 3. I understand now. BUT, back to what the
+original poster said. He said that he wanted to have
+the bridge do firewalling and NAT'ing (If I read his
+post correctly). So according to what is written
+below, he can't do that... right? 
 
-I didn't really run into too much trouble when
-applying patch-o-matic to my kernel for some reason. I
-read all these people having problems, yet all I did
-was to get the vanilla source from kernel.org (like
-the docs said) and then I applied the pom to it and
-enabled all kinds of extra functionality to test a few
-things out. Then I recompiled iptables and voila... it
-just worked.
+> Hence when you downsize your (layer 3) router into a
+> (layer 2) bridge,
+> your neo-bridge becomes a layer 2 entity and
+> disappears from the layer 3
+> i.e. it is no longer visible at layer 3. Therefore
+> no firewalling, no
+> NAT.
 
 
 =====
