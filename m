@@ -1,8 +1,9 @@
-From: Jochen Vogel <jvogel@it-sec.de>
-Subject: state NEW
-Date: Fri, 19 Nov 2004 10:31:46 +0100
-Message-ID: <D3DD55FDB74AD511BA5100500416368053EB16@ORION>
+From: "Michiel Lange" <Michiel_Lange@actuera.com>
+Subject: Destination nat for a local (sendmail) process
+Date: Thu, 18 Nov 2004 18:07:28 +0100
+Message-ID: <OF8AE127F7.13302693-ONC1256F50.005BCE0C@actuera.local>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,36 +15,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi,
+Dear list,
 
-i have the following forwarding rule
+I am having some troubles getting a good redirection working for the 
+following situation:
 
-$IPT -A FORWARD -i $INT -o $EXT -m state --state NEW,ESTABLISHED,RELATED -j
-QUEUE
-$IPT -A FORWARD -i $EXT -o $INT -m state --state ESTABLISHED,RELATED     -j
-ACCEPT
+[OUTSIDE WORLD]<--->[IN-BETWEEN NETWORK]<--->[OUR FIREWALL/MTA]<--->[REAL 
+MAILSERVER]
+ \---->[OTHER FIREWALL / MAILSERVER]
 
-if i send an ACK with hping from INT to EXT it reaches the target system
+We can send mail to the outside world fine, but not to the "other" 
+mailserver. Some looking showed that connecting to the 'real internet 
+address' of the 'other' host was not possible at all.
+A small fix was to create a DNAT rule which would redirect traffic to that 
+machine to it's 'internal' IP address. It works fine... if this is done 
+from a machine within the network, but not from the local machine.
 
-if i do
+It appears that outgoing packets do not go through the firewall but just 
+go out by themselves. 
 
-$IPT -A FORWARD -i $INT -o $EXT -m state --state NEW -j ACCEPTLOG
-$IPT -A FORWARD -i $EXT -o $INT -m state --state ESTABLISHED,RELATED-j
-ACCEPT
+Trying to get locally generated packages go through the firewall and make 
+use of the PREROUTING chain is not working yet... 
 
-i can see the following
+These are the rules that work for traffic going from our inside NIC to the 
+outside NIC, but not from local processes:
+$iptables -A PREROUTING -t nat --dest out.side.address1 -j DNAT 
+--to-destination 10.0.100.1
+$iptables -A PREROUTING -t nat --dest out.side.address2 -j DNAT 
+--to-destination 10.0.100.2
 
-Nov 19 12:05:20 snolin kernel: ACPT IN=eth0 OUT=ppp0 SRC=1.1.1.1 DST=2.2.2.2
-LEN=40 TOS=0x00 PREC=0x00 TTL=63 ID=12368 PROTO=TCP SPT=2618 DPT=63
-WINDOW=512 RES=0x00 ACK URGP=0
+putting these rules in the POSTROUTING chain results in errormessages.
+I am using Iptables 1.2.7a on kernel 2.4.20
 
-did i have a false understanding from NEW or whats wrong
+Anyone any suggestions how I can solve this problem?
 
-thx for help
-jo
-
+Greetings,
+Michiel
 
