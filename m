@@ -1,10 +1,12 @@
-From: "McFall, Gary" <Gary.McFall@dfi.state.wi.us>
-Subject: Blocking Netranges Based on IP-to-Country CSV
-Date: Wed, 15 Sep 2004 07:57:33 -0500
+From: =?iso-8859-1?Q?Svavar_=D6rn_Eysteinsson?= <svavar@prmail.atom01.is>
+Subject: Passive FTP Problem in NAT.
+Date: Wed, 15 Sep 2004 14:51:03 -0000
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <35A63C29D445834BA42FE172EC30EB3C01C54833@dfiemlp1.dfi.state.wi.us>
+Message-ID: <84F19A978A20454D96263C93109EE76937CE@telex.atom01.local>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,36 +17,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Due to a number of issues, my organization is looking at being able to block
-certain country domains at the firewall.  To be proactive, we want to
-automate that process via iptables & the CSV available at
-<http://ip-to-country.webhosting.info <http://ip-to-country.webhosting.info>
->.
+Hi.
 
-We have created a C program (IPCheck) in the /bin directory which, when
-given an IP long number, checks the ip-to-country CSV and returns a value
-for permit or not.  We want to process the packet based on that return.  
+Could someone help me or give me advice regarding NAT on a FTP server =
+located
+in my DMZ.
 
-I'm a relative newbie with iptables & scripts.  Listed below is some very
-crude code, some of which is a verbal description of intent.  Any
-suggestions on how to shore this up so that it will work?  Or should this
-concept be a new module in iptables?
+This is my setup :
 
-#
-#    ***** DROP BAD IPS *****
-#
-/bin/IPCheck `grep -w "SRC =" | cut -d = -f 2`
-if return = "Bad IP"
-$IPT -A INPUT -$ETH0 $RATELIMIT -j INBADIPS
+My Firewall(Linux 2.4.22-1) :
+|
+- eth0 =3D Public Interface (x.x.x.66 / 26 )
+|
+- eth1 =3D DMZ Interface (172.16.100.254 / 24 )
+|
+- eth2 =3D My Internal Network ( 192.168.1.1 / 24 )
 
-      ***** RULES - DROP  BAD IPS *****
-#    ***** REVIEW LOG AT /var/log/iptables.log *****
-#
-$IPT -A  INBADIPS -j LOG --log-level debug --log-prefix "BADIP:  " -j DROP
 
-Thanks in advance for your help.
+I have a FTP server located on my DMZ Network. The server is listening
+on a "non-standard" ftp port. It listens on port : 2121.
 
-Gary McFall
+To generate my firewall config I use FwBuilder. I've tried many =
+configurations
+but, I never get the data port to open( e.g. to list a directory)
+
+In my configuration I've allowed, and NAT'ed the following services
+to my FTP server located on the DMZ  :
+
+FTP 		=3D 	TCP Destination Port : Start : 2121 - End : 2121
+FTP_DATA	=3D	TCP Source Port : Start : 20 - End : 20
+			        Destination : Start : 1024 - End : 65535
+
+I can connect, but cannot list the directories.
+
+p.s. I'm running Proftpd on my FTP server. I have also tried to =
+configure
+the "PassivePorts=3D 60000 65534" to configure a group of the passive =
+ports.
+But it's the same issue with the directory listening.
+
+Any help would be much appreciated.
+
+
+Best regards to all,=20
+
+Svavar O
+Reykjavik - Iceland
+
