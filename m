@@ -1,55 +1,73 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: [OT] Was: ESP does not hit the nat table
-Date: Tue, 3 Aug 2004 08:42:45 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051228@asimail2.alphanumeric.com>
+From: Harald Welte <laforge@netfilter.org>
+Subject: [ADMINISTRATIVE] scheduled downtime for new netfilter.org machine
+Date: Tue, 3 Aug 2004 15:43:11 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20040803134311.GD26969@sunbeam2>
+Reply-To: laforge@gnumonks.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Pk6IbRAofICFmK5e"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: coreteam@netfilter.org
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-> Hi all,
-> Thanks for the reply, I know I messed up the iptables syntax - I did =
-not include the chain...
->
-> My main problem however was that ESP packets do not hit the nat table, =
-but it does traverse mangle/filter table. Is this normal? I am mainly =
-looking at SNAT/MASQUERADING ipsec traffic and I am not able to find any =
-documentation on doing this, especially since there is no point in =
-putting a "iptables -t nat -A PREROUTING -p 50 -j SNAT --to-source =
-<me>". -p 50 means ESP as you can already guess.
-> Am I missing something here? How do I masquerade ipsec traffic? =
-(assuming my ipsec-VPN client/server is fine with it...)
 
-it would be helpful if you
+--Pk6IbRAofICFmK5e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-a) posted your rules (iptables -vxnL && iptables -vxnL -t nat && =
-iptables -vxnL -t mangle)
-b) explained what you're trying to do specifically
-c) describe how you're testing
+Hi!
 
-as far as the generic "can i nat ESP traffic with iptables" the answer =
-is "surely."  i do it on one of my gateways where it's necessary for the =
-LAN behind the gateway to appear differently when it goes through the =
-VPN tunnel.
+As the current netfilter.org server setup of two old UltraSPARC boxes
+(vishnu.netfilter.org, lakshmi.netfilter.org) is running at it's
+performance limit, we're going to replace one of them with a Dual G5
+(PPC64) machine, called durga.netfilter.org.
 
-if i had to take a stab in the dark as to why you're having trouble--i =
-would say that it's related to the fact that the outbound interface of =
-your IPSec traffic needs to be specified as "-o ipsec0" (or whatever =
-number your actual ipsec interface is), not ethX...
+I'll be mounting the machine into the hosting rack next Monday
+(2004-08-09), after which I will gradually migrate individual services=20
+to the new box. =20
 
-you *did* say you were using frees/wan, right?
+First step of migration is to move the mailinglist explosion from
+lakshmi to durga.  Please expect some delays in mail delivery.
 
--j
+If anyone encounters unexpected problems, please send me email to my
+non-netfilter account: laforge@gnumonks.org
+
+Thanks for your patience,
+	Harald
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--Pk6IbRAofICFmK5e
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFBD5ZvXaXGVTD0i/8RAgtQAJ0Z3xJDnPTjnzjpYuN4TdpFO2CnmgCeK8/L
+TxreXAVPW+syX1a/ZqSRtEc=
+=7F8d
+-----END PGP SIGNATURE-----
+
+--Pk6IbRAofICFmK5e--
 
