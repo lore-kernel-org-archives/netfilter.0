@@ -1,14 +1,14 @@
-From: Alex Satrapa <alex@lintelsys.com.au>
-Subject: Re: log
-Date: Tue, 30 Mar 2004 16:44:38 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Not forwarding?
+Date: Tue, 30 Mar 2004 08:48:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40691756.2060304@lintelsys.com.au>
-References: <web-270866148@mail01.infosat.net>
+Message-ID: <200403300848.16537.Antony@Soft-Solutions.co.uk>
+References: <20040328155231.32b07799@darna.vectec.net> <200403292242.16217.Antony@Soft-Solutions.co.uk> <20040329185640.3c8c3da9@darna.vectec.net>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <web-270866148@mail01.infosat.net>
+In-Reply-To: <20040329185640.3c8c3da9@darna.vectec.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,19 +18,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-IT Clown wrote:
-> will it log only for the default time period
+On Monday 29 March 2004 11:56 pm, Cody Harris wrote:
 
-What do you mean by that?  None of the rules that you add into a table will "expire" - you can rate limit using the appropriate rule.
+> On Mon, 29 Mar 2004 22:42:16 +0100, Antony Stone wrote:
+>
+> > You need a PREROUTING nat rule if you want the firewall to change the
+> > destination address where the packets are going to.
+>
+> Oh, i get it. But if i didn't re-route the packet it would just go to this
+> computer like it was? So i needed to preroute the packets to the correct
+> box, right?
+>
+> > You need a FORWARD filter rule to allow the packets through the firewall
+> > (whether it's changed the destination address or not).
+>
+> So the forward rule filters the packets that are forwarded. It's not the
+> part that makes the routing decision, like pre and postrouting are?
 
-> or will it log
-> all packets as they come in and out untill you # it out?
+I think you've got it now.
 
-Every packet that gets to this rule (ie: is not rejected or allowed before this rule) will get logged. Typically, you would rate-limit the log message as follows:
+The only thing I would comment on what you said above is the phrase "routing 
+decision":
 
-iptables -A FORWARD --protocol tcp -o ppp+ --destination-port 2766 -m limit --limit 10/hour --limit-burst 5 -j LOG --log-level warning --log-prefix "Deadhat "
-iptables -A FORWARD --protocol tcp -o ppp+ --destination-port 2766 -j DROP
+Netfilter does not make routing desicions - the Linux kernel does that, even 
+when you're not running netfilter.   Netfilter simply adds the ability to 
+drop some packets *instead* of routing them on (in the filter tables), or to 
+change where they're addressed to (in the nat table), although note in the 
+latter case it's still the kernel routing mechanism which decides how they 
+get to their (new) destination.
+
+I sometimes tell people "a firewall is a router which can say No".
+
+Regards,
+
+Antony.
+
+-- 
+How I want a drink, alcoholic of course, after the heavy chapters involving 
+quantum mechanics.
+
+ - 3.14159265358979
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
