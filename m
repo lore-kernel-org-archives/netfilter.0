@@ -1,13 +1,13 @@
-From: Jean-Rene Cormier <jean-rene.cormier@cipanb.ca>
-Subject: Re: Blocking Kazaa
-Date: 22 Aug 2003 14:32:40 -0300
+From: Shawn <core@enodev.com>
+Subject: Re: OT: iptables-like firewall for windows?
+Date: Fri, 22 Aug 2003 16:06:39 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1061573560.17418.27.camel@forbidden.cipanb.ca>
-References: <20030822172349.57139.qmail@web40203.mail.yahoo.com>
+Message-ID: <1061586399.18527.102.camel@localhost>
+References: <3F461A22.90300@bus.okstate.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030822172349.57139.qmail@web40203.mail.yahoo.com>
+In-Reply-To: <3F461A22.90300@bus.okstate.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: SBlaze <dagent.geo@yahoo.com>
-Cc: netfilter@lists.netfilter.org
-
-I haven't checked the source ports but I doubt after all they did to get
-around firewalls that they would put fixed source ports. Though I'll
-check it out, you never know.
-
-Jean-Rene Cormier
+To: Jason Joines <joines@bus.okstate.edu>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
 
-On Fri, 2003-08-22 at 14:23, SBlaze wrote:
-> I don't know much about Kazzaa I never used it...but you said you checked the
-> connection ports right? What about source ports. Check both the source and the
-> destination port(s) and see if you see any consistencies. Sometimes you don't
-> need to block ALL ports just the ones that initiate a connection.
-> 
-> Hope this helps
-> SBlaze
-> 
-> --- Jean-Rene Cormier <jean-rene.cormier@cipanb.ca> wrote:
-> > Anybody know a way of blocking Kazaa? I've tried the string matching way
-> > but it doesn't seem to work. I tried logging all connections from  my
-> > windows desktop so I could see to which port it connects and it connects
-> > to so many different port that you basically need to block ports 1000 to
-> > 4000 but after that it connects to port 80 which obviously I can't
-> > block. I installed ethereal on the windows desktop to check which string
-> > I could filter but couldn't find anything useful.
-> > 
-> > Anybody have an idea what can be done? I'm thinking another option would
-> > be to block the IP of the servers but there seem to be quite a list...
-> > that's if it doesn't just try some random IPs...
-> > 
-> > Jean-Rene Cormier
-> > 
-> > 
-> 
-> 
-> =====
-> "Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
-> 
-> __________________________________
-> Do you Yahoo!?
-> Yahoo! SiteBuilder - Free, easy-to-use web site design software
-> http://sitebuilder.yahoo.com
+On Fri, 2003-08-22 at 08:26, Jason Joines wrote:
+>   We have a completely Linux back-end environment but unfortunately
+> hundreds of windows desktops.  I'm pretty tired of all the attacks on
+> the unprotected windows boxes but don't have the authority to put up a
+> network firewall.  We protect all of our Linux servers with iptables.
+> Does anyone know of a similar tool for windows, particularly w2k?  The
+> built-in stuff seems to be virtually worthless.
 
+I take issue with that statement. It's /actually/ worthless!
+
+google kerio personal firewall
 
