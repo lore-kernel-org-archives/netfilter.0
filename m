@@ -1,11 +1,15 @@
-From: Tom Smith <tom@openadventures.org>
-Subject: PPP Routing
-Date: Wed, 26 Feb 2003 10:59:38 -0700
+From: Willi Dyck <wdyck@gmx.net>
+Subject: Re: PPP Routing
+Date: Wed, 26 Feb 2003 23:56:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E5D008A.7070804@openadventures.org>
+Message-ID: <20030226225616.GA380@tekilla.homeip.net>
+References: <3E5D008A.7070804@openadventures.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <3E5D008A.7070804@openadventures.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,26 +19,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="macroman"
 To: netfilter@lists.netfilter.org
 
-RedHat 7.3 Kernel 2.4.9-31
-iptables 1.2.5
-
-I have a working Firewall/VPN. Problem is that I need to create a 
-seperate set of rules for each ppp# connection. For example, ppp0's 
-ruleset would be:
-
-$IPTABLES -A INPUT -i ppp0 -s $INTNET -d $INTNET -j ACCEPT
-$IPTABLES -A OUTPUT -o ppp0 -s $INTNET -d $INTNET -j ACCEPT
-$IPTABLES -A FORWARD -i ppp0 -d $INTNET -j ACCEPT
-$IPTABLES -A FORWARD -o ppp0 -d $INTNET -j ACCEPT
-
-Is there a way to dynamically create the ppp# as new connections come 
-and go?
-
-Tom
-tom@openadventures.org
-
-
-
+T24gV2VkLCBGZWIgMjYsIDIwMDMgYXQgMTA6NTk6MzhBTSAtMDcwMCwgVG9tIFNtaXRoIHdyb3Rl
+Ogo+IFJlZEhhdCA3LjMgS2VybmVsIDIuNC45LTMxCj4gaXB0YWJsZXMgMS4yLjUKPiAKPiBJIGhh
+dmUgYSB3b3JraW5nIEZpcmV3YWxsL1ZQTi4gUHJvYmxlbSBpcyB0aGF0IEkgbmVlZCB0byBjcmVh
+dGUgYSAKPiBzZXBlcmF0ZSBzZXQgb2YgcnVsZXMgZm9yIGVhY2ggcHBwIyBjb25uZWN0aW9uLiBG
+b3IgZXhhbXBsZSwgcHBwMCdzIAo+IHJ1bGVzZXQgd291bGQgYmU6Cj4gCj4gJElQVEFCTEVTIC1B
+IElOUFVUIC1pIHBwcDAgLXMgJElOVE5FVCAtZCAkSU5UTkVUIC1qIEFDQ0VQVAo+ICRJUFRBQkxF
+UyAtQSBPVVRQVVQgLW8gcHBwMCAtcyAkSU5UTkVUIC1kICRJTlRORVQgLWogQUNDRVBUCj4gJElQ
+VEFCTEVTIC1BIEZPUldBUkQgLWkgcHBwMCAtZCAkSU5UTkVUIC1qIEFDQ0VQVAo+ICRJUFRBQkxF
+UyAtQSBGT1JXQVJEIC1vIHBwcDAgLWQgJElOVE5FVCAtaiBBQ0NFUFQKPiAKPiBJcyB0aGVyZSBh
+IHdheSB0byBkeW5hbWljYWxseSBjcmVhdGUgdGhlIHBwcCMgYXMgbmV3IGNvbm5lY3Rpb25zIGNv
+bWUgCj4gYW5kIGdvPwoKWW91IG1pZ2h0IHRyeSAncHBwKycgaW5zdGVhZCBvZiAncHBwMCcuIEFs
+dGhvdWdoIGl0IG1pZ2h0IG5vdCBiZSB3aGF0CnlvdSB3YW50LCBzaW5jZSBpdCB3aWxsIG5vdCBi
+ZSBsb2FkZWQgZHluYW1pY2FsbHksIGJ1dCBpdCB3aWxsIG1hdGNoCmR5bmFtaWNhbGx5IGZvciBh
+bGwgcHBwIyBpbnRlcmZhY2VzLiBTZWUgdGhlIG5ldGZpbHRlciBkb2NzIGZvciBmdXJ0aGVyCmlu
+Zm8uIEhvcGUgdGhhdCBoZWxwcy4KCkdydd8vUmVnYXJkcyAtLSBXaWxsaQoKLS0gCkEgTWljcm9z
+b2Z0IENlcnRpZmllZCBTeXN0ZW0gRW5naW5lZXIgaXMgdG8gaW5mb3JtYXRpb24gdGVjaG5vbG9n
+eSBhcyBhCk1jRG9uYWxkcyBDZXJ0aWZpZWQgRm9vZCBTcGVjaWFsaXN0IGlzIHRvIHRoZSBjdWxp
+bmFyeSBhcnRzLgogICAgICAgIE1pY2hhZWwgQmFjYXJlbGxhIGNvbW1lbnRpbmcgb24gdGhlIGxp
+bWl0ZWQgdmFsdWUgb2YgY2VydGlmaWNhdGlvbi4KCg==
