@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: firewall problem continued
-Date: Tue, 10 Aug 2004 09:26:33 +0100
+From: "Brent Clark" <bclark@eccotours.biz>
+Subject: ebtables question
+Date: Tue, 10 Aug 2004 10:43:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408100926.33589.Antony@Soft-Solutions.co.uk>
-References: <20040809081216.GA12643@tranquility.scriptkitchen.com> <200408091231.33128.Antony@Soft-Solutions.co.uk> <20040810081418.GA22730@tranquility.scriptkitchen.com>
-Reply-To: Netfilter ML <netfilter@lists.netfilter.org>
+Message-ID: <HAEOIFPIBBBLGLHOMLLIOEAHCHAA.bclark@eccotours.biz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040810081418.GA22730@tranquility.scriptkitchen.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,45 +16,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter ML <netfilter@lists.netfilter.org>
+To: iptables <netfilter@lists.netfilter.org>
 
-On Tuesday 10 August 2004 9:14 am, Payal Rathod wrote:
+Hi all
 
-> On Mon, Aug 09, 2004 at 12:31:33PM +0100, Antony Stone wrote:
-> > Exactly the same as your extisting PREROUTING rule, but you put it in the
-> > OUTPUT chain instead (still in the nat table):
-> >
-> > iptables -A OUTPUT -t nat -d 1.2.3.4 -p tcp --dport 25 -j DNAT --to
-> > 10.10.10.2
->
-> As I said earlier that now I can access the mail server at 10.10.10.2
-> from the firewall machine using its external IP. But now I need to access
-> the mailserver from the same machine itself using the external IP.
+Im sorry for ask a real dumb to question (tou you guys it may be).
+Whats the difference between iptables and ebtables?
+Wheres it used?
+Why is it used?
+When must it be used?
 
-Why does the mail server need to refer to itself using the public IP?
+Once again, my apologies for asking this here, but I know if I had to ask
+this on another mailing list, I would not get a
+decent answer.
 
-Why can't it know its own private IP?
-
-As an additional comment, you appear to be digging yourself further and 
-further into a situation of "I wouldn't do it like that, but if you really 
-need to...."
-
-You should be cautious about doing too many things one after another which are 
-simply needed as workarounds for a strange network setup, or a non-ideal DNS 
-setup, and sooner or later you need to stop adding workarounds and change the 
-underlying design.
-
-Regards,
-
-Antony.
-
--- 
-It is also possible that putting the birds in a laboratory setting 
-inadvertently renders them relatively incompetent.
-
- - Daniel C Dennett
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Kind Regards
+Brent Clark
 
 
