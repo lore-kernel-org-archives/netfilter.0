@@ -1,10 +1,11 @@
-From: "Filip Sneppe (Cronos)" <filip.sneppe@cronos.be>
-Subject: benchmark tool for netfilter - any recommendations ?
-Date: 18 Jun 2002 14:11:22 +0200
+From: personxx <personxx@ananzi.co.za>
+Subject: DMZ and IPTABLES
+Date: Tue, 18 Jun 2002 14:20:23 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1024402282.591.20.camel@xbox>
+Message-ID: <E17KHkZ-0007fZ-00@mercury.pop.co.za>
+Reply-To: personxx@ananzi.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -18,52 +19,16 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi,
+Hi 
 
-I am looking for a traffic generator type aplication that can
-generate a realistic workload to test a netfilter firewall.
+Does anyone know of any good online articles explaining what a DMZ is and how 
+to implement one using iptables? 
 
-There are some cool tools out there for throughput measurements,
-like netpipe, etc. but they are not ideal to test connection
-tracking performance. The way I see it, you either have tools
-that:
+Any info regarding this subject would be greatly appreciated. 
 
-- flood the network with traffic over just one TCP connection
-  or UDP stream. Not a lot of use in testing connection tracking
-  performance as it's just one ESTABLISHED connection.
+The main reason is I want to run Apache, Sendmail, FTP and other services. 
+But without risking intrusion on my local network.
 
-or
-
-- flood the network with more or less random crap as far as IP
-  addresses/ports is concerned. Not a very realistic workload
-  either.
-
-IMHO a realistic workload for testing connection tracking 
-performance is a workload that has a limited number of IP
-addresses on one side of the firewall (a DMZ with 64 hosts,
-or a LAN with 100-500 hosts) and a wide range of IP addresses
-at the other side (the Internet). The tool should be able
-to mimic normal network behavior like short connections (http)
-vs. longer lived connection (ftp download), etc.
-
-It would be nice to have a client/server tool that you could be
-used in this type of setup:
-
-client ------ FW ------ server
-
-and where either client and/or server could generate traffic 
-from various IP addresses/ports in a controlled way.
-
-I am currently looking at Web-Polygraph (www.web-polygraph.org)
-from the Squid developers, but upon installation, I realized
-the license doesn't allow the publishing of the results.
-
-Are there any tools worth looking at ? Is there anything else a
-decent netfilter (firewall ?) performance benchmarking tool
-should be able to do ?
-
-Regards,
-Filip
-
+TIA Julz.
 
 
