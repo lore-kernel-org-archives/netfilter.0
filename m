@@ -1,10 +1,9 @@
-From: Aleksandr Guidrevitch <pillgrim@tut.by>
-Subject: is this correct ?
-Date: Fri, 06 Feb 2004 14:01:00 +0200
+From: "Ted Erickson" <tederickson7582@hotmail.com>
+Subject: Major NAT Problem
+Date: Thu, 05 Feb 2004 20:54:40 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <402381FC.4000703@tut.by>
+Message-ID: <Sea2-F19kyCKDkb9pPF00000901@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,42 +14,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi All !
+I am somewhat new to IPTables but not to linux.  I have a major problem.  
+Some background first... I have a PPoA SDSL connection with Qwest running at 
+640k/up/down.  I have a static block of 8 addresses.....I have a connection 
+from the DSL modem to eth0 on my Redhat 9.0 box and I have my local network 
+pluged into eth1.  The only thing running on the linux box is IPTables 
+nothing else.  I turned on echo 1 > /proc/sys/net/ipv4/ip_forward and 
+enabled MASQ in several different ways..... no problem.  I can surf the 
+internet just fine on my local network machine but I have ONE BIG PROBLEM!!! 
+  I can't view a handfull of websites.  If I take the linux box out of the 
+picture and throw a cheap Linksys Router on the same DSL connection I can 
+see all the web sites i want.  IPTables is blocking something but I don't 
+know what? I can't find any info on the web with this problem.  I need to 
+fix this ASAP or I will have to go with something else, but I want to stay 
+with linux.
 
-I'm a newbie in iptables.
-I have a linux box with ppp connection to internet (dynamic IP),
-eth0 192.168.0.1 and a Windows box 192.168.0.3 connected to eth0.
-I strive to allow *everything* from my home network,
-and disallow anyone to connect to my home network, eg.
-drop all the incoming connections to my ppp0 interface.
+theo
 
-Can anyone say if my config below is correct (/etc/sysconfig/iptables) ?
-Well, it seems to work as expected, but it is so simple,
-may be I'm missing some important security points ?
-
-
-------
-*nat
--A POSTROUTING -o ppp0 -j MASQUERADE
-COMMIT
-
-*mangle
-COMMIT
-
-*filter
--A INPUT -i ppp0 -p icmp -j ACCEPT
-
-# disabling not established and not related connections
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A INPUT -i ppp0 -j DROP
-
-:INPUT ACCEPT [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-COMMIT
-
+_________________________________________________________________
+Get some great ideas here for your sweetheart on Valentine's Day - and 
+beyond. http://special.msn.com/network/celebrateromance.armx
 
 
