@@ -1,10 +1,10 @@
-From: =?gb2312?q?wain=20wen?= <wain_wen@yahoo.com.cn>
-Subject: Why the http response is so slow with Total Control
-Date: Tue, 4 Jun 2002 10:23:33 +0800 (CST)
+From: "SILES,RAUL (HP-Spain,ex1)" <raul_siles@hp.com>
+Subject: Netfilter high availability module?
+Date: Tue, 4 Jun 2002 16:39:24 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020604022333.86909.qmail@web21403.mail.yahoo.com>
+Message-ID: <6428DE54F23B2E44BAE5EF7D53FF67D10110CF53@gaudi.spain.hp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,63 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+Cc: "SILES,RAUL (HP-Spain,ex1)" <raul_siles@hp.com>
 
-IApIaToKIApCZWxvdyBpcyBteSBuZXR3b3JrIHRvcG9sb2d5ICggbiA9IDYwICk6CiAKCmludGVy
-bmV0IC0tLS0tLS0tLS0tIGxpbnV4IGJveCAtLS0tLS0tLS0gUEMxCiAgICAgICAgIEFEU0woMTAy
-NGspICAgICAgICAgICB8CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8LS0tLS0tLS0g
-UEMyCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8CiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB8LS0tLS0tLS0gUENuCiAKSWYgdGhlIGxpbnV4IGJveCBvbmx5IHNlcnZlcnMg
-YXMgZ2F0ZXdheSwgZXZlcnl0aGluZwppcyBvay5Ib3dldmVyLCBib3NzIHdhbnRzIHRvIGNvbnRy
-b2wgdGhlIGZsb3cgb2YgZXZlcnkKUEMsIG15IGNvbmZpZ3VyYXRpb24gaXMgOgogCiMgdGMgcWRp
-c2MgbGlzdCBkZXYgZXRoMSAgIC8vIGV0aDEgaXMgdGhlIGludGVybmFsCmludGVyZmFjZSBvZiBs
-aW51eCBib3ggd2hpY2ggaXAgaXMgMTkyLjE2OC4wLjEKIAogcWRpc2Mgc2ZxIDgwMTI6IHF1YW50
-dW0gMTUxNGIgcGVydHVyYiAxNXNlYyAKIHFkaXNjIHNmcSA4MDExOiBxdWFudHVtIDE1MTRiIHBl
-cnR1cmIgMTVzZWMgCiBxZGlzYyBzZnEgODAxMDogcXVhbnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2Vj
-IAogcWRpc2Mgc2ZxIDgwMGY6IHF1YW50dW0gMTUxNGIgcGVydHVyYiAxNXNlYyAKIHFkaXNjIHNm
-cSA4MDBlOiBxdWFudHVtIDE1MTRiIHBlcnR1cmIgMTVzZWMgCiBxZGlzYyBzZnEgODAwZDogcXVh
-bnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2VjIAogcWRpc2Mgc2ZxIDgwMGM6IHF1YW50dW0gMTUxNGIg
-cGVydHVyYiAxNXNlYyAKIHFkaXNjIHNmcSA4MDBiOiBxdWFudHVtIDE1MTRiIHBlcnR1cmIgMTVz
-ZWMgCiBxZGlzYyBzZnEgODAwYTogcXVhbnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2VjIAogcWRpc2Mg
-Y2JxIDEwOiByYXRlIDEwME1iaXQgKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8Kbm8tdHJhbnNtaXQK
-IAogI3RjIGNsYXNzIGxpc3QgZGV2IGV0aDEKIAogY2xhc3MgY2JxIDEwOjExIHBhcmVudCAxMDox
-IGxlYWYgODAxMjogcmF0ZSAxME1iaXQKKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNt
-aXQKIGNsYXNzIGNicSAxMDogcm9vdCByYXRlIDEwME1iaXQgKGJvdW5kZWQsaXNvbGF0ZWQpCnBy
-aW8gbm8tdHJhbnNtaXQKIGNsYXNzIGNicSAxMDoyNTYgcGFyZW50IDEwOjEgbGVhZiA4MDBjOiBy
-YXRlIDI1NktiaXQKKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQKIGNsYXNzIGNi
-cSAxMDoxIHBhcmVudCAxMDogcmF0ZSAxMDBNYml0IHByaW8gNQogY2xhc3MgY2JxIDEwOjgxOTIg
-cGFyZW50IDEwOjEgbGVhZiA4MDExOiByYXRlIDhNYml0Cihib3VuZGVkLGlzb2xhdGVkKSBwcmlv
-IG5vLXRyYW5zbWl0CiBjbGFzcyBjYnEgMTA6NjQgcGFyZW50IDEwOjEgbGVhZiA4MDBhOiByYXRl
-IDY0S2JpdAooYm91bmRlZCxpc29sYXRlZCkgcHJpbyBuby10cmFuc21pdAogY2xhc3MgY2JxIDEw
-OjUxMiBwYXJlbnQgMTA6MSBsZWFmIDgwMGQ6IHJhdGUgNTEyS2JpdAooYm91bmRlZCxpc29sYXRl
-ZCkgcHJpbyBuby10cmFuc21pdAogY2xhc3MgY2JxIDEwOjEwMjQgcGFyZW50IDEwOjEgbGVhZiA4
-MDBlOiByYXRlIDFNYml0Cihib3VuZGVkLGlzb2xhdGVkKSBwcmlvIG5vLXRyYW5zbWl0CiBjbGFz
-cyBjYnEgMTA6NDA5NiBwYXJlbnQgMTA6MSBsZWFmIDgwMTA6IHJhdGUgNE1iaXQKKGJvdW5kZWQs
-aXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQKIGNsYXNzIGNicSAxMDoxMjggcGFyZW50IDEwOjEg
-bGVhZiA4MDBiOiByYXRlIDEyOEtiaXQKKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNt
-aXQKIGNsYXNzIGNicSAxMDoyMDQ4IHBhcmVudCAxMDoxIGxlYWYgODAwZjogcmF0ZSAyTWJpdAoo
-Ym91bmRlZCxpc29sYXRlZCkgcHJpbyBuby10cmFuc21pdCAgICAgIAogCiMgdGMgZmlsdGVyIGxp
-c3QgZGV2IGV0aDEKIAogZmlsdGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMy
-IAogZmlsdGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZoIDgwMDogaHQK
-ZGl2aXNvciAxIAogZmlsdGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZo
-CjgwMDo6ODAwIG9yZGVyIDIwNDgga2V5IGh0IDgwMCBia3QgMCBmbG93aWQgMTA6MTI4Cm1hdGNo
-IGMwYTgwMDNmL2ZmZmZmZmZmIGF0IDE2CiBmaWx0ZXIgcGFyZW50IDEwOiBwcm90b2NvbCBpcCBw
-cmVmIDEwMCB1MzIgZmgKODAwOjo4MDEgb3JkZXIgMjA0OSBrZXkgaHQgODAwIGJrdCAwIGZsb3dp
-ZCAxMDoxMjgKbWF0Y2ggYzBhODAwM2UvZmZmZmZmZmYgYXQgMTYKIGZpbHRlciBwYXJlbnQgMTA6
-IHByb3RvY29sIGlwIHByZWYgMTAwIHUzMiBmaAo4MDA6OjgwMiBvcmRlciAyMDUwIGtleSBodCA4
-MDAgYmt0IDAgZmxvd2lkIDEwOjEyOAptYXRjaCBjMGE4MDAwZi9mZmZmZmZmZiBhdCAxNgogZmls
-dGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZoCjgwMDo6ODAzIG9yZGVy
-IDIwNTEga2V5IGh0IDgwMCBia3QgMCBmbG93aWQgMTA6MTI4Cm1hdGNoIGMwYTgwMDExL2ZmZmZm
-ZmZmIGF0IDE2CiAuLi4uICAgIAogCkluIG15IG9waW5pb24sIGV2ZXJ5IElQIHNob3VsZCBoYXZl
-IG9ubHkgMTI4a2JpdHMuSXQKaXMgdHJ1ZSB3aGVuIEkgZG93bmxvYWQgZmlsZXMgd2l0aCBmdHAu
-QnV0IHRoZSBodHRwCnJlc3BvbnNlIGlzIHZlcnkgdmVyeSBzbG93LGV2ZW4gaWYKdGhlcmUgaXMg
-b25seSBvbmUgcGVyc29uIG9ubGluZS4gV2hlbiBQQzEgZG93bmxvYWQKZmlsZXMgLCBvdGhlciBQ
-QyBwaW5nIHRoZSBnYXRld2F5IHNob3VsZCB0YWtlIG1vcmUKdGhhbiAzMDAgbXMgLlNvbWV0aGlu
-ZyBtdXN0IGJlIHdyb25nIHdpdGggbXkKY29uZmlndXJhdGlvbi4gCklzIHRoZSBwZXJmb3JtYW5j
-ZSBwcm9ibGVtID8gSG93ZXZlciwgdGhlIGlkbGUgaXMKYWJvdXQgOTAlLkJ5IHRoZSB3YXkgSSBi
-b3VuZGxlZCB0aGUgSVAgYW5kIHRoZSBNQUMKYWRkcmVzcyB3aXRoIGFycCxhbmQgaXQgd29ya3Mg
-d2VsbC4KIApUaHguCiAgCldhaW4gV2VuCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkRvIFlvdSBZYWhvbyE/IAoyMDAyxOrKwL3nsa3I
-utDb9+nVvSDRxbui1tC5+r7bvbnI1bqrCmh0dHA6Ly9jbi5maWZhd29ybGRjdXAueWFob28uY29t
-LwoK
+Hi all,
+I=B4m trying to find a Linux (kernel 2.4) software module that will =
+allow to
+create a firewall cluster based on netfilter/iptables.
+
+- Is there any software to create a high availability firewall solution
+based on Linux (netfilter)?
+I would like to get something similar to the Nokia Firewall-1 solution =
+(it
+is based on VRRP).
+
+- Does anyone know if the VRRPd module from
+http://w3.arobas.net/~jetienne/vrrpd/FAQ works fine with netfilter?
+
+- Does anyoe know if other High Availability Linux solutions work fine =
+with
+netfilter, for example, the RedHat Piranha software
+(http://www.redhat.com/support/wpapers/piranha/) or perhaps the LVS,
+http://www.linuxvirtualserver.org.
+
+The idea will be to create a 2 node cluster, both systems filtering =
+network
+traffic using netfilter, and the desired features will be:
+- fault tolerance (if one node falut down, the other will take its
+connections, without loosing them).
+- load sharing (both nodes are working and filtering traffic at the =
+same
+time).
+
+I would like to get both, open source and commercial references, if =
+any.
+
+Regards,
+Ra=FAl
+
