@@ -1,14 +1,10 @@
-From: leolistas@solucoesip.net
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
 Subject: RE: Most stable firewall distro
-Date: Wed,  3 Jul 2002 21:56:08 -0300
+Date: Thu, 4 Jul 2002 10:58:30 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1025744168.3d239d282366f@www.solucoesip.net>
-References: <200FAA488DE0D41194F10010B597610D2BA20C@JUPITER>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA213@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200FAA488DE0D41194F10010B597610D2BA20C@JUPITER>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,7 +15,44 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'leolistas@solucoesip.net'" <leolistas@solucoesip.net>
+Cc: netfilter@lists.samba.org
+
+There is a good reason they made the floppy distros..
+
+1. If it's hacked for any reason, they can't write to it and if they do then
+a reboot clears it.
+2. It's redundant to some extend, move the floppy to a new machine and turn
+it on. Bang, new firewall..
+3. There ARE logs, they are in a virtual ram drive..
+4. You can load the IDE drivers on boot and store /var and whatever you like
+there.. but this opens up hackable write problem  and only IF it gets
+compromised...
+
+So it's not all that bad after all.. I've had 2 crashes in the past on my
+firewalls. One being HDD failure and second was CPU over cook and in both
+cases they stuff my data and needed a new rebuild..
+
+Lesson Learnt: floppy drive setup would've been an easy recovery....
+
+This of course probably won't suit many people but alot easier some others
+for their own solutions...
+
+thanks,
+George Vieira
+Systems Manager
+Citadel Computer Systems P/L
+http://www.citadelcomputer.com.au
+
+
+
+-----Original Message-----
+From: leolistas@solucoesip.net [mailto:leolistas@solucoesip.net]
+Sent: Thursday, 04 July 2002 10:56 AM
 To: netfilter@lists.samba.org
+Subject: RE: Most stable firewall distro
+
 
 
 
