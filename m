@@ -1,11 +1,13 @@
-From: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>
-Subject: RE: NAT question
-Date: Thu, 10 Apr 2003 12:30:33 +0200
+From: Kim Jensen <kimj@dawn.dk>
+Subject: Re: What ports need to be open to allow for mail?
+Date: Thu, 10 Apr 2003 13:20:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B5747F3DB39FD411884B00B0D07808CCB6CA09@server10>
+Message-ID: <200304101320.54473.kimj@dawn.dk>
+References: <5.1.0.14.2.20030410122405.02794440@of23sm3.kadnet.dom>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <5.1.0.14.2.20030410122405.02794440@of23sm3.kadnet.dom>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,86 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+>I'm trying to set up my mail server; however I want to
+>make sure that I have the correct port(s) open. I
+>already have TCP port 25 open; however do I also have
+>to have UDP port 25 open as well? Any help would be
+>appreciated.
+>
+Extract from /etc/services:
 
-1) Yesterday everything worked with the SNAT rule and today i moved the
-firewall to it's new location, changed the ip-address and added some =
-routes.
-I test with a NT4 on the side of eth0 that pings to a location on the =
-eth1
-side.
-now, sometimes i can see that it works, via tcpdump i see that the SNAT =
-rule
-works and when i then flush my tables and restart the firewall script, =
-it's
-not working anymore ?????
-and then i can see via tcpdump that the firewall is just trying the
-ip_forwarding ?????
-So this means that the packet is not even coming to the SNAT rule ??? =
-and
-then sometimes it is, how is this possible ??
+SMTP:
+smtp            25/tcp          mail
+smtp            25/udp          mail
+smtps           465/tcp                         # SMTP over SSL (TLS)
 
-2) my ip_forwarding is enabled in the kernel but this should not be a
-problem. yesterday everything worked on my test location.
+POP:
+pop2            109/tcp         pop-2   postoffice      # POP version 2
+pop2            109/udp         pop-2
+pop3            110/tcp         pop-3           # POP version 3
+pop3            110/udp         pop-3
+pop3s           995/tcp                         # POP-3 over SSL
+pop3s           995/udp                         # POP-3 over SSL
 
-3) do i need ip_forwarding for NATing ?
+IMAP:
+imap            143/tcp         imap2           # Interim Mail Access Pro=
+to v2
+imap            143/udp         imap2
+imap3           220/tcp                         # Interactive Mail Access
+imap3           220/udp                         # Protocol v3
+imaps           993/tcp                         # IMAP over SSL
+imaps           993/udp                         # IMAP over SSL
 
-thnx for the help!
+Now, make you picking, standard answer is:
+25 for SMTP
+110 for POP3
+143 for IMAP
 
-regards,
-
-	--tronstr@xsomic--
-
-
-
-
-
-
-
-Le mer 09/04/2003 =E0 11:51, Philippe Dhont (Sea-ro) a =E9crit :
-> I added=20
-> $IPTABLES -t nat -A POSTROUTING -j SNAT --to-source 10.165.165.165=20
-> Now when i ping from 10.51.13.13 on eth0 side to 10.165.1.60 then i =
-can
-see
-> via tcpdump that on eth1 the 10.165.1.60 is seeking the =
-10.165.165.165=20
-> "arp who-has 10.165.165.165 tell 10.165.1.60" is what i get.
-> So i guess that this means that iptables changed the address ?
-
-As far as I understand your configuration, eth0's side is NATed when
-talking to eth1's side.
-
-If so, yes, Netfilter as already changed the address. That's obvious.
-Your echo request has crossed the box, and has been source NATed to
-10.165.165.165. Then 10.165.1.60 receive it and tries to reply. It
-replies to 10.165.165.165. Nothing special in there, everything's
-normal.
-
-But on eth1's side, nobody answers ARP requests for 10.165.165.165. So
-you did not configured your firewall to answer them. That's the issue.
-
-> So the firewall doesn't knows that it converted the ip number before =
-and
-> can't send a reply to the correct ip address where it originally came =
-from
-
-He knows about this. But it is not its job to answer ARP requests. It's
-your job to configure it as such.
-
-> How can i make this work so that if i ping to 10.165.1.60 that i can =
-get a
-> reply ?
-
-	ip addr add 10.165.165.165 dev eth1
-
-So your firewall answers ARP requests for 10.165.165.165.
-
-> AND that the NAT thing did its work ?
-
-It did it well.
+/Kim
 
 
