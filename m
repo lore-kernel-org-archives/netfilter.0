@@ -1,11 +1,12 @@
-From: "David C. Hart" <DCH@TQMcube.com>
-Subject: Couple More Questions
-Date: Thu, 30 Oct 2003 13:57:34 -0500
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: Couple More Questions
+Date: Thu, 30 Oct 2003 14:06:43 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067540253.2895.44.camel@main.tqmcube.com>
+Message-ID: <Pine.LNX.4.44.0310301405390.19227-100000@localhost.localdomain>
+References: <1067540253.2895.44.camel@main.tqmcube.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-oifwbmIGVjr9JsPwWfDz"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1067540253.2895.44.camel@main.tqmcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,35 +16,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: iptables mailing list <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "David C. Hart" <DCH@TQMcube.com>
+Cc: iptables mailing list <netfilter@lists.netfilter.org>
 
+On Thu, 30 Oct 2003, David C. Hart wrote:
 
---=-oifwbmIGVjr9JsPwWfDz
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> I've read the tutorial but a couple of doubts linger.
+> 
+> 1. Since I'm only logging rejected packets, any suggestions on getting
+> name resolution into the log?
 
-I've read the tutorial but a couple of doubts linger.
+you don't need to log only rejected packets.  logging represents a
+"non-terminating" rule.  you can log packets and they will continue
+to be processed by subsequent rules until you decide what you want
+to do with them.
 
-1. Since I'm only logging rejected packets, any suggestions on getting
-name resolution into the log?
-
-2. I'm still a bit confused on the logging of the destination address.
-With our one static IP, there are two possibilities. Either a packet is
-intended for our IP or for another. Yet, the logs will always show the
-destination address as the IP of the LAN interface. Any suggestions?
-
---=-oifwbmIGVjr9JsPwWfDz
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQA/oV8dol4OE0cpGaIRAkN1AJ9HJlFOaBSbYVQUoq3rstLCTZnGJgCfWRy+
-bn0pk9LbEzEObzV2Eah9Wfs=
-=u+/B
------END PGP SIGNATURE-----
-
---=-oifwbmIGVjr9JsPwWfDz--
+rday
 
 
