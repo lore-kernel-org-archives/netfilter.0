@@ -1,16 +1,14 @@
-From: Tom Fischer <tom.fischer@ebuz.de>
-Subject: Re: DNAT-Problem
-Date: Thu, 9 Sep 2004 13:58:19 +0200
+From: Abdul-Wahid Paterson <abdulwahid@gmail.com>
+Subject: Re: How to log redirected packets
+Date: Thu, 9 Sep 2004 13:04:26 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040909135819.27094960@nixe>
-References: <20040909041047.7f8457cf@nixe>
-	<1094696804.1739.7.camel@wolfpack.ljm.dom>
-	<20040909122931.3e8b4903@nixe>
-	<1094729906.1897.2.camel@wolfpack.ljm.dom>
+Message-ID: <995fcdb004090905044dfe3bf8@mail.gmail.com>
+References: <AD3C7008DB448D42ABA9346FE715E8340D335D@megisto-e2k.megisto.com>
+Reply-To: Abdul-Wahid Paterson <abdulwahid@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1094729906.1897.2.camel@wolfpack.ljm.dom>
+In-Reply-To: <AD3C7008DB448D42ABA9346FE715E8340D335D@megisto-e2k.megisto.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,25 +19,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Khoa Nguyen <knguyen@megisto.com>, Netfilter List <netfilter@lists.netfilter.org>
 
-On Thu, 09 Sep 2004 07:38:26 -0400
-Jason Opperisano <opie@817west.com> wrote:
+You need to add in the same matches as your redirect statements...So
+one for each with the first one being:
 
-> what are the IP addresses of $oldmachine and $newmachine (obfuscate
-> the first two octets if you must)?
+iptables -t nat -A INSERT 1 -p tcp --dport 80 -j LOG --log-level debug
 
-$oldmachine=81.16.97
-$newmachine=80.190.140
+I have put this as an INSERT as it has to go above the redirect line.
+Following this example you can make a LOG line for each of your
+redirects.
 
-There are a few IP-Adresse which i have to transfer to the newmachine.
 
-> are you trying to DNAT from one machine on the local network to
-> another machine on the local network?  what network is the client
-> traffic sourcing from?  is it the same network?
+Abdul-Wahid
 
-No, they are on different locations. The old one is in Innsbruck,
-Austria and the new one in Munich, Germany.
 
-Tom
+On Wed, 8 Sep 2004 18:42:47 -0400, Khoa Nguyen <knguyen@megisto.com> wrote:
+> Hi,
+> 
+> I have the following in the nat table:
+> 
+> [root@jungle log]# iptables -t nat -L -v
+> Chain PREROUTING (policy ACCEPT 6 packets, 547 bytes)
+>  pkts bytes target     prot opt in     out     source
+> destination
+>     2   120 REDIRECT   tcp  --  any    any     anywhere
+> anywhere           tcp dpt:http redir ports 8081
+>     0     0 REDIRECT   tcp  --  any    any     anywhere
+> 172.16.6.5         tcp dpt:rtsp redir ports 8081
+>     0     0 REDIRECT   tcp  --  any    any     172.16.6.5
+> anywhere           tcp spt:rtsp redir ports 8081
+>     0     0 REDIRECT   tcp  --  any    any     anywhere
+> 172.16.6.6         tcp dpt:rtsp redir ports 8081
+>     0     0 REDIRECT   tcp  --  any    any     172.16.6.6
+> anywhere           tcp spt:rtsp redir ports 8081
+> 
+> Now I would like to log all redirected packets to a file. How do I do
+> that? I did try the following but it didn't work:
+> 
+> iptables -t nat -A PREROUTING -j LOG --log-level debug
+> 
+> It only logged message destined to its local interface.
+> 
+> Thanks,
+> 
+> Khoa Nguyen
+> 
+>
 
