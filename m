@@ -1,8 +1,8 @@
 From: "Alejandro Cabrera Obed" <sisdis@tournet.com.ar>
-Subject: Need to upgrade iptables package ???
-Date: Wed, 17 Mar 2004 14:49:23 -0300
+Subject: Patch-o-matic question
+Date: Wed, 17 Mar 2004 15:18:12 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004f01c40c48$2f0a7690$0200a8c0@ale>
+Message-ID: <007801c40c4c$35880150$0200a8c0@ale>
 Reply-To: "Alejandro Cabrera Obed" <sisdis@tournet.com.ar>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -19,24 +19,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-Hi !!!
+Firstly, thnks to Rob Sterenborg for his help.
+I've just visited the patch-o-matic section from the netfilter web site and
+I saw this:
 
-I have Linux Red Hat 9 / Kernel 2.4.20-8 / iptables 1.2.7a
+Author: Emmanuel Roger <winfield@freegates.be>
+Status: Working, not with kernel 2.4.9
+This patch adds CONFIG_IP_NF_MATCH_STRING which allows you to match a string
+in a whole packet.
+THIS PATCH DOES NOT WORK WITH KERNEL 2.4.9 !!!
 
- This iptables version doesn't have the libipt_string module to analyse and
-filter certain packet strings.
+I have Red Hat 9 / Kernel 2.4.20-8 / iptables 1.2.7a...I ask you: can I use
+this patch package in order to use the libipt_string module ??? Or do I have
+to upgrade my kernel at first ???
 
-I ask you: can I download only the libipt_string module and install it on
-/lib/iptables or do I have to download a newer iptables version packet and
-upgrade my 1.2.7a one ???
+Where can I get this patch because I suppose it doesn't come with the whole
+patch-o-matic ???
 
-I'm not an expert so I need the easiest way, and I need to know where I can
-fetch it.
+ I'm not an expert, so I'm sorry to disturb you.
 
-Thanks a lot !!!
+ Greetings,
 
-
- Alejandro.
+ Alejandro from Argentina
 
 
 
