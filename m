@@ -1,10 +1,12 @@
-From: Simon Matthews <simon@paxonet.com>
-Subject: Iptables, SNAT/MASQ,  Multiple gateways (fwd)
-Date: Sun, 29 Sep 2002 16:12:45 -0700 (PDT)
+From: Kevin Dwyer <Kevin.Dwyer@algx.net>
+Subject: Re: inner workings of IP tables
+Date: Sun, 29 Sep 2002 19:37:40 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0209291602330.16046-100000@localhost.localdomain>
+Message-ID: <Pine.LNX.4.40.0209291918280.19073-100000@klepto.security.algx.lan>
+References: <20020929193020.YCUL13996.mta05-svc.ntlworld.com@there>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20020929193020.YCUL13996.mta05-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,46 +18,59 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
+
+Sorry to barge in, but included are some comments I thought must be made.
+
+On Sun, 29 Sep 2002, Antony Stone transmitted the following:
+
+> On Sunday 29 September 2002 8:05 pm, Mitesh P Choksi wrote:
+>
+> [ Comparing netfilter with Checkpoint Firewall-1 ]
+>
+> > What about ease of use? The GUI
+
+http://www.fwbuilder.org
+(which incidentally generates rulesets for iptables, pf, and ipfilter)
+
+Not that a GUI makes a good firewall.  Aren't you pretty much dead in the
+water with checkpoint if you don't have access to their GUI?  I know you
+can fw load policies, and possibly even compile them via CLI, but I
+challenge you to make competent ruleset changes with vi on checkpoint.
+
+> > Multiple firewalls.
+
+http://www.linux-ha.org
+http://w3.arobas.net/~jetienne/vrrpd/
+(and more, peep the linux-ha site for a huge list of resources)
+
+Netfilter doesn't have the code to pass the state table across machines
+(and would be a neat feature) but you can make a firewall pair by either
+using VRRPd or Linux-HA.  You'll drop active connections, but CP did too
+up until recently I think.
+
+> > Management of firewalls.
+
+..is made more difficult with their reliance on a GUI, IMO.
+
+..is made more difficult with their licensing schemes.
+
+..is made more difficult when CP support says: Sorry, the only solution to
+esoteric bug #48129 is to upgrade to the newest version.  Sorry, the only
+solution to esoteric bug #48130 is to downgrade to the previous version.
+(as the clock counts the downtime)
+
+..is made more difficult when you upgrade the GUI and magically things
+like Manual IPSEC (and who knows what else) disappear.
 
 
-I have a dual-homed firewall. It has 2 Internet connections, provided by
-different ISPs (each with an associated IP address). The 2 Internet
-connections are connected to the same physical interface. The 2 Internet
-connections do NOT have equal bandwidth. 
+/* Kevin Dwyer                                Allegiance Internet */
+/* network security engineer                   Commerce Center II */
+/* email: Kevin.Dwyer@algx.net                7601 Ora Glen Drive */
+/* phone: 240-616-2075                        Greenbelt, MD 20770 */
+/*      >++++++++++[<++++++++++>-]<.+++++.----.[-]++++++++++.     */
 
-I am using the iproute2 tools to configure the 2 internet connections, so
-both connections are associated with "eth0" (and not an 'eth0:x' style
-device name). 
-
-The iproute2 tools are used to ensure that:
-1. I have a 5:1 ratio of the gateway usage. 
-2. The outgoing packets have the correct source address for the gateway 
-they will use. 
-
-Now this will work for packets coming from the local host. But packets 
-that are forwarded from the LAN behind the firewall will come in, and 
-during the routing stage, they will be assigned a gateway to use. 
-
-Now, since the gateway is already defined, how do I make MASQ/SNAT work so 
-that it set the appropriate source address for the gateway? 
-
-Please remember that I only have one physical interface on the Internet
-side and the only device name used for this interface is "eth0".
-Hence, I cannot use the "-o" option to select between different
-gateways and then do the SNAT/MASQ appropriately.
-
-Please also remember that I want to be able to control the ratio of 
-gateway usage -- so the option to use 2 source IP addresses in my SNAT 
-command won't work (as this only provides a 1:1 ratio). 
-
-Any suggestions? Is there some other way I can distingush the packets and 
-do the proper SNAT/MASQ? Or will  MASQ just work properly -- setting the 
-source address according to the gateway that the packet will use?
-
-
-Thanks!
-Simon
 
 
 
