@@ -1,8 +1,8 @@
-From: "Brian" <blanda@mnsi.net>
+From: "Brent Deterding" <brent.deterding@techguardsecurity.com>
 Subject: RE: Linksys v. Netfilter
-Date: Sat, 22 Jun 2002 18:18:43 -0400
+Date: Sat, 22 Jun 2002 19:37:14 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <OMELINNHIGOCHFNAFPEKGELGCAAA.blanda@mnsi.net>
+Message-ID: <GEEBIPMLCAMAMAMCECKJCEFECGAA.brent.deterding@techguardsecurity.com>
 References: <FLEKIPPLAEDMJMOOBBDPAEHNCGAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -20,16 +20,20 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: stewart.thompson@shaw.ca, "David B. Bitton" <david@codenoevil.com>, netfilter@lists.samba.org
 
-If you want something like that buy the snapgear lite for about 300.00 US,
-it has a Linux kernel , iptables (Stateful firewall), traffic shapping,
-IPSec, and Mircosoft pptp client and server... and much more..
+Correct me if I'm wrong - but we are talking about LinkSys Cable/Router
+things, right? The same devices that allow anything out?
 
-www.snapgear.com
+Although people tend to forget it - a firewall is there to control traffic
+inbound AND outbound. If it isn't controlling it outbound then what's the
+difference between a netfilter box and a simple NAT-only solution?
+Everything out, nothing in.
+
+-- Brent Deterding
 
 -----Original Message-----
 From: netfilter-admin@lists.samba.org
 [mailto:netfilter-admin@lists.samba.org]On Behalf Of Stewart Thompson
-Sent: Saturday, June 22, 2002 4:57 PM
+Sent: Saturday, June 22, 2002 3:57 PM
 To: David B. Bitton; netfilter@lists.samba.org
 Subject: RE: Linksys v. Netfilter
 
@@ -74,7 +78,6 @@ david@codenoevil.com
 www.codenoevil.com
 
 Code Made Fresh DailyT
-
 
 
 
