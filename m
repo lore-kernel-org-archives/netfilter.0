@@ -1,13 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: tunneling and iptables
-Date: Wed, 10 Mar 2004 08:16:37 +0100
+From: "Mojgan Masroor" <masroor@cc.iut.ac.ir>
+Subject: Howto Make Gateway with iptables?
+Date: Wed, 10 Mar 2004 11:05:17 +0330
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1078902997.2564.18.camel@anduril.intranet.cartel-securite.net>
-References: <5.2.1.1.2.20040309214501.00b47310@postoffice6.mail.cornell.edu>
+Message-ID: <20040310073428.M64644@cc.iut.ac.ir>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.2.1.1.2.20040309214501.00b47310@postoffice6.mail.cornell.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +14,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Hitesh Ballani <hb69@cornell.edu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Le mer 10/03/2004 =E0 03:52, Hitesh Ballani a =E9crit :
-> i was stuck with the interaction of iptables and tunneling ...if i have=
- an=20
-> ip-ip tunnel, are the ip hooks checked for both the outer and the inner=
- ip=20
-> header ?
 
-Most of the time, both of them.
-Usually, on Linux, tunnel usage means logical interface creation (tun0,
-tap0, sit0, ppp0, etc.). Suppose you create a tunnel called tun0 over
-eth0.
+Hi, 
+ I have a linux redhat9.0 - I want to create an gateway between our 
+sections  and central site. 
+It have 4 ethernet cards. 2 cards for internal LANs with 2 invalid sunbet 
+192.168.101.x and 192.168.102.x range. 3th card for intranet use such connect 
+to our web-server or email-server, 4th card for internet connection and when 
+they want go to internet.i want also close all extra ports and close udp + 
+icmp protocols. 
+How i could do this with IPTABLES Rules? Anybody have such this schema? 
+Any help would be appriciated 
 
-You will see tunneling packets on eth0, INPUT chain.
-You will see tunneled packets on tun0, INPUT or FORWARD chain depending
-on the way they're routed.
+thanks a lot, 
+mojgan 
 
-> Also,  the mark extension allows you to mark packets with 16-bits marks=
-=20
-> which is big enough to encode the port number, but if i try to add poli=
-cy=20
-> routing on the fly using the ip rules command then i get screwed becaus=
-e=20
-> the table-id (for specifying which table has the rules to route this=20
-> packet) is only 8-bits and so, I cannot encode the port numbers in ther=
-e=20
-> ... i know this is not a clear description but if you know anything abo=
-ut=20
-> this problem, i would be more than happy to spell the details out...
 
-Do you really need the full 16 bits space ? I mean that you'll need it
-if you have 16^2 different routes (one mark per route) which should not
-the case.
-
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
 
