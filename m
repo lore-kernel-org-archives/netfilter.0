@@ -1,11 +1,11 @@
-From: andre.correa@pobox.com
-Subject: sendto: No buffer space available
-Date: Mon, 2 Dec 2002 11:16:45 -0200
+From: =?iso-8859-1?q?Andreas=20Wright?= <learnvoip@yahoo.co.uk>
+Subject: QoS
+Date: Mon, 2 Dec 2002 14:28:18 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <571705138.20021202111645@pobox.com>
-Reply-To: Andre Docena Correa <andre.docena@pobox.com>
+Message-ID: <20021202142818.70658.qmail@web14501.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-1948721927-1038839298=:70110"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,33 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+--0-1948721927-1038839298=:70110
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-Hi list,
 
-I  have  a  Linux  2.4.19  box  doing NAT, PPPoE, Traffic Shapping and
-Firewalling.  It  is  a  2xPIII  733MHz with 512Mb RAM. Everything was
-working  just  fine  until 5 or 6 days ago we started having some strange
-behavior.
+Hello All,
 
-Under  moderate  traffic,  15  to  20  NAT users, we find that traffic
-suddenly  stops  for 10 or 15 seconds and then comes back. During this
-periods  I've  figured  out  that  if I ping my interfaces or Internet
-addresses I get:
+I would like to know how I can prioritize packets coming from a specific source( a known IP address in the network) during routing by using iptables and iproute2.
 
-sendto: No buffer space available
-ping: sent 64 octets to xxx.xxx.xxx.xxx, ret=-1
+Regards,
 
-I've  made  lots  of  searchs  in  mailling lists, Internet and in the
-kernel  source  but couldn't work on it.
+Andreas
 
-Can you guys help me to solve this problem?
 
-tks in advance for your help and attention.
 
-Andre
-andre.correa@pobox.com
 
+---------------------------------
+With Yahoo! Mail you can get a bigger mailbox -- choose a size that fits your needs
+
+--0-1948721927-1038839298=:70110
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+
+<P>Hello All,</P>
+<P>I would like to know how I can prioritize packets coming from a specific source( a known IP address in the network) during routing by using iptables and iproute2.</P>
+<P>Regards,</P>
+<P>Andreas</P><p><p><br><hr size=1><a href="http://uk.yahoo.com/mail/tagline_xtra/?http://uk.docs.yahoo.com/mail_storage.html"><b><font face="Arial" size="2">With Yahoo! Mail you can get a bigger mailbox -- choose a size that fits your needs</font></b></a><br>
+--0-1948721927-1038839298=:70110--
 
