@@ -1,8 +1,8 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
+From: "Brei, Matt" <mbrei@medclaiminc.com>
 Subject: RE: Multiple IP addresses
-Date: Thu, 22 May 2003 09:53:51 +1000
+Date: Wed, 21 May 2003 21:25:03 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019235@wardrive.citadelcomputer.com.au>
+Message-ID: <091A6DF13847F44395B31658ED61C19C63A437@yellowstone.medclaim.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,36 +17,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Brei, Matt" <mbrei@medclaiminc.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, George Vieira <georgev@citadelcomputer.com.au>
+
+
+
 
 Yes, almost anything is possible.
 
->For instance, there are 3 web servers on the lan say 10.1.1.1 - =
+>For instance, there are 3 web servers on the lan say 10.1.1.1 -
 10.1.1.3 and
 >I want all port 80/443 that comes to the netfilter machine on the
 >inet_address 1.2.3.4 to go to lan_address 10.1.1.1=20
 
-iptables -A PREROUTING -i $EXTDEV -d 1.2.3.4 -p tcp --dport 80 -j DNAT =
+iptables -A PREROUTING -i $EXTDEV -d 1.2.3.4 -p tcp --dport 80 -j DNAT
 10.1.1.1=20
-# If I understand what you said is that "on the inet_address" meanin the =
+# If I understand what you said is that "on the inet_address" meanin the
 -d destintion address..??
 
 
->and all port 80/443 from inet_address 4.3.2.1 to forward to 10.1.1.2 =
+>and all port 80/443 from inet_address 4.3.2.1 to forward to 10.1.1.2
 etc.  Is this possible?
 
-iptables -A PREROUTING -i $EXTDEV -s 4.3.2.1 -p tcp --dport 443 -j DNAT =
+iptables -A PREROUTING -i $EXTDEV -s 4.3.2.1 -p tcp --dport 443 -j DNAT
 10.1.1.1
 # Also you said "from inet_address"..
-
+I'm sorry, what I meant was "TO", I apologize.
 >If so, how about a point in the right direction.
 
 
-So what your doing is making everybody browse 10.1.1.1 but yourself =
-coming from a different source IP outside to view a different =
+So what your doing is making everybody browse 10.1.1.1 but yourself
+coming from a different source IP outside to view a different
 webserver?? right??
 
-Thanks,
+Yes and no.  I actually hadn't thought of it that way.  The idea was to
+be able to split up multiple sites on different servers each using
+Apache's virtual hosts, say 10 or so per server.
+
+Thanks a bunch for the help.
+Matt
 ____________________________________________
 George Vieira
 Systems Manager
