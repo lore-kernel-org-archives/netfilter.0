@@ -1,13 +1,11 @@
-From: "David Boone" <netfilter@wizdom.net>
-Subject: DNAT and multiple public IP addresses; was RE: netfilter and multiple virtual interfaces
-Date: Fri, 3 Jan 2003 19:15:27 -0500
+From: Daniel Fenert <daniel@rotfl.linux.krakow.pl>
+Subject: Limiting number of connections
+Date: Sat, 4 Jan 2003 01:47:51 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7ED10BBB6654124E9AFFF27155322BBBB781@corp03.nc.ehomecare.com>
-References: <Pine.LNX.4.33.0212202004040.13035-100000@wltis.com>
+Message-ID: <20030104004751.GA3308@fenert.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0212202004040.13035-100000@wltis.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,79 +16,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Andy Meader' <ameader@corp.Lcom.net>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-netfilter won't work with virtual interfaces, so I'm left trying to get
-packets to flow between a public and a private network.
+Is there a simple way to limit number of connection coming from particular
+client (ip address or subnet)?
+I've searched through archive, and found only some patch to CVS version
+of netfilter (it was year 2000)...
 
-How would be a good way to assign multiple IP addresses to the same
-interface and then have answers to those IP addresses be forwarded to
-servers on a private network?
+I've got problem with a few clients, they' are able to make 200+
+connections on 128Kbit connection (according to /proc/net/ip_conntrack)
 
-Here's an example:
+I thought about it today for a few minutes, and came with the idea:
+1) Parse /proc/net/ip_conntrack and get clients with more than xxx
+   connections
+2) Setup rule to DROP NEW,RELATED to force them to close some connections
+3) wait a minute, go to 1) checking additionally number of connections
+   for blocked IP's. If number drops below xxx, delete rule DROP NEW,...
+This is ugly, but possibly will work.
 
-Internet
-   |
-eth0 (1.1.1.1/24)
-   |
-netfilter Router 
-   |
-eth1 (192.168.1.1/24)
-          |
-   +------+-----------+-------------+
-   |                  |             |
-Web server 1     Web server 2    Web server 3
-(192.168.1.2)   (192.168.1.3)    (192.168.1.4)
+I hope that  there's better way to do it?
 
-Where:
-web server 1 has public IP 1.1.2.1/24
-web server 2 has public IP 1.1.2.2/24
-web server 3 has public IP 1.1.2.3/24
-
-I've tried setting up static arp entries, but I'm having some
-difficulties with routing, I think, since the web server's public IP's
-are on a separate network than the firewall's Internet IP (1.1.2 instead
-of 1.1.1).
-
-Thanks for any suggestions,
-Dave Boone
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Andy Meader
-Sent: Friday, December 20, 2002 9:05 PM
-To: David Boone
-Cc: netfilter@lists.netfilter.org
-Subject: Re: netfilter and multiple virtual interfaces
-
-
-Hi Dave,
-
-I know that on RH 7.1 that netfilter only sees an interface and its
-multineted (virtual) interfaces as the same interface. Possibly newer
-versions are different.
-
-Good luck.
-
-Andy
-
-On Fri, 20 Dec 2002, David Boone wrote:
-
-> Hi,
->
-> I know you can apply a + (plus sign) to adapters in the form eth+ or
-> ppp+, but I'm setting up a firewall that will have several web servers
-> behind it and I would like to do something like eth0+ and/or eth0:+ in
-> the rules.  Does anyone know if this will work or do I have to enter
-> every single virtual adapter by hand?
->
-> Thanks,
-> Dave Boone
->
->
->
-
-
-
+-- 
+Daniel Fenert                 --==> daniel@fenert.net <==--
+==-P o w e r e d--b y--S l a c k w a r e-=-ICQ #37739641-==
+Is not that the nature of men and women -- that the pleasure is in the learning
+of each other?        -- Natira, the High Priestess of Yonada, stardate 5476.3.
 
