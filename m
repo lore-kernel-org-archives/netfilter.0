@@ -1,11 +1,12 @@
-From: "Eric  Vautier" <eric@richclients.org>
-Subject: [IPTables] Uninitialized bitwise operations
-Date: Tue, 16 Nov 2004 16:47:44 +0100
-Message-ID: <042b01c4cbf3$aafe23d0$b6dc273e@ERICVAUTIER>
-Reply-To: Eric  Vautier <eric@richclients.org>
+From: diadicic@optonline.net
+Subject: port Forwarding
+Date: Tue, 16 Nov 2004 11:44:52 -0500
+Message-ID: <48e60748e206.48e20648e607@optonline.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-language: en
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,49 +17,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.netfilter.org
 
-Hello everyone,
+Can someone help me understand this=3F
 
-I'm positive this issue has been addressed earlier here or elsewhere, but I 
-haven't found a conclusive explanation for why this happens or how to remedy 
-it.  I believe this is the right forum to discuss it.
+  I have a firewall setup up with two nic=27s in it=2E
 
-Logwatch keeps issuing floods of failed bitwise lookup operations in 
-/etc/log.d/scripts/services/kernel:
+               1 eth0 24=2E190=2Ex=2Ex  which is my Internet connection
+               2 eth1 172=2E16=2E12=2E165 which is a local area network=2E=
 
-Use of uninitialized value in bitwise or (|) at 
-/etc/log.d/scripts/services/kernel line 100, <STDIN> line 1516658.
-Use of uninitialized value in left bitshift (<<) at 
-/etc/log.d/scripts/services/kernel line 102, <STDIN> line 1516658.
-Argument "" isn't numeric in left bitshift (<<) at 
-/etc/log.d/scripts/services/kernel line 102, <STDIN> line 1516658.
 
-These started happening after I tried to block break-in attempts from some 
-IPs, using IPTables DROP rules (although I'm unclear as to whether there's a 
-link between the two).  The message appears to indicate that a malformed IP 
-is being sent to the compIP subroutine:
+              I have a web server at 172=2E16=2E12=2E160  =93I hope thats=
+ clear=94
 
-sub compIP {
-....my ($a1,$a2,$a3,$a4,$aval,$bval);
-....
-....# get numeric values for a and b
-....($a1,$a2,$a3,$a4) = split /\./,$a;
-....$aval = ($a1 << 24) | ($a2 << 16) | ($a3 << 8) | $a4; # line 100
-....($a1,$a2,$a3,$a4) = split /\./,$b;
-....$bval = ($a1 << 24) | ($a2 << 16) | ($a3 << 8) | $a4; # line 102
-....
-....return $aval <=> $bval;
-}
+    Now if I port forward this way it will not work=2E
 
-I've reset (flushed) the firewall rules (-F), but still the problem 
-persists.  Is this due to a versioning issue, a configuration issue, a bug, 
-wrong settings?  I'm a newbye who's been wrestling with this for a little 
-while and would appreciate any help.
+             =93iptables -A PREROUTING -i eth0 -t nat -p tcp =96dport 80 =
+-j DNAT =96to =
 
-Thanks,
-Eric Vautier 
+                172=2E16=2E12=2E160=3A80=94
+               =93iptables -A FORWARD -p tcp -d 172=2E16=2E12=2E160 =96dp=
+ort 80 -i eth0 -o eth1 =
 
+                 -j ACCEPT=94
+
+
+But if I do it this way It will work=3A
+
+                 =93iptables -t nat  -A PREROUTING -p tcp =96dport 80 -d =
+24=2E190=2Ex=2Ex -i eth0 -j   =
+
+                   DNAT --to-destination 172=2E16=2E12=2E160  172=2E16=2E=
+12=2E160=94
+
+                   =93iptables -A POSTROUTING -p tcp =96dport 80 -d 172=2E=
+16=2E12=2E160 -j SNAT -o    =
+
+                     eth1 =96to-source 172=2E16=2E12=2E165=94
+
+
+Could anyone please explain why the first way did not work=2C all the dir=
+ections I read claim that is how to port forward=2E
+
+
+Any help is appreciated
+
+
+
+Thanks =
+
+Dominic Iadicicco
 
 
