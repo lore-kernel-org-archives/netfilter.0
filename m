@@ -1,13 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Problem compiling Iptables 1.2.11 on Kernel 2.6.7 <Resolved,
- but other problem>
-Date: Thu, 8 Jul 2004 00:21:23 +0200 (CEST)
+From: "Kumar, Mukesh" <MKumar@telogy.com>
+Subject: Netmeeting and NAT
+Date: Wed, 7 Jul 2004 19:26:33 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0407080018070.13450-100000@blackhole.kfki.hu>
-References: <035101c46432$19e49650$800101df@lvl.digidyne.ca>
+Message-ID: <09DD40ABD88ACF4CB0D3CD84BB95296079773C@tnint11.telogy.design.ti.com>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C46479.D6CAC590"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <035101c46432$19e49650$800101df@lvl.digidyne.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +16,119 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Eric Poulin <epoulin@onepost.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 7 Jul 2004, Eric Poulin wrote:
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-> Hum, I'm getting a new problem thought while compiling iptables as modules
-> inside my new kernel...
->
-> net/ipv4/netfilter/ip_conntrack_standalone.c:222: error: redefinition of
-> `ip_conntrack_defrag'
-> net/ipv4/netfilter/ip_conntrack_standalone.c:202: error:
-> `ip_conntrack_defrag' previously defined here
-> net/ipv4/netfilter/ip_conntrack_standalone.c:303: error: redefinition of
-> `ip_conntrack_defrag_local_out_ops'
-> net/ipv4/netfilter/ip_conntrack_standalone.c:295: error:
-> `ip_conntrack_defrag_local_out_ops' previously defined here
-> net/ipv4/netfilter/ip_conntrack_standalone.c:202: warning:
-> `ip_conntrack_defrag' defined but not used
-> net/ipv4/netfilter/ip_conntrack_standalone.c:295: warning:
-> `ip_conntrack_defrag_local_out_ops' defined but not used
-> {standard input}: Assembler messages:
-> {standard input}:745: Error: symbol `ip_conntrack_defrag_local_out_ops' is
-> already defined
-> make[3]: *** [net/ipv4/netfilter/ip_conntrack_standalone.o] Error 1
-> make[2]: *** [net/ipv4/netfilter] Error 2
-> make[1]: *** [net/ipv4] Error 2
-> make: *** [net] Error 2
+------_=_NextPart_001_01C46479.D6CAC590
+Content-Type: text/plain
 
-I'm unable to reproduce this. Linux 2.6.7 kernel patched with
-08_linux-2.6.7-user_attr.patch (which does not touch
-ip_conntrack_standalone.c at all) from pom-ng cvs compiles cleanly.
+Hi,
 
-What do you *exactly* do?
+   I am seeing some problems with interaction between NAT and netmeeting.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I try to setup a netmeeting session between 2 PCs going over internet
+(voice/video/data)
 
+And sometimes the connection works but at othertimes video/audio start
+streaming but chat and whiteboard
+
+Keeps saying Not In Call.
+
+I am using 2.4.17 kernel and have NAT rules for all the standard Netmeeting
+ports.
+
+ 
+
+Any help is appreciated.
+
+ 
+
+Thanks
+
+
+------_=_NextPart_001_01C46479.D6CAC590
+Content-Type: text/html
+
+<html>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=US-ASCII">
+
+
+<meta name=Generator content="Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:#606420;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink="#606420">
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>Hi,</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp; I am seeing some problems with interaction between NAT
+and netmeeting.</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>I try to setup a netmeeting session between 2 PCs going over
+internet (voice/video/data)</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>And sometimes the connection works but at othertimes
+video/audio start streaming but chat and whiteboard</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>Keeps saying Not In Call.</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>I am using 2.4.17 kernel and have NAT rules for all the
+standard Netmeeting ports.</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>Any help is appreciated.</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>Thanks</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C46479.D6CAC590--
 
