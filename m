@@ -1,18 +1,16 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: Blocking Netranges Based on IP-to-Country CSV
-Date: Sun, 19 Sep 2004 14:45:48 +0300
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Fwd: set up my DMZ
+Date: Sun, 19 Sep 2004 09:40:07 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <3063e504091904456844d5cf@mail.gmail.com>
-References: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
-	<20040917114613.GP452@metastasis.org.uk>
-	<1403218a0409190209416c12b9@mail.gmail.com>
-	<20040919110111.GA706@metastasis.org.uk>
-	<1403218a04091904173de016ea@mail.gmail.com>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+Message-ID: <1095601207.1723.4.camel@wolfpack.ljm.dom>
+References: <web-3246067@infinito.it>
+	<1095356390.2489.70.camel@wolfpack.ljm.dom>
+	<1403218a0409190112632977da@mail.gmail.com>
+	<1403218a040919011254781075@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a04091904173de016ea@mail.gmail.com>
+In-Reply-To: <1403218a040919011254781075@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,55 +21,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Good point, not to mention disliking a country sounds so nazi :D
-So, whats the reason is banning some countryes?
+On Sun, 2004-09-19 at 04:12, Mohamed Eldesoky wrote:
+> >   ip address add x.x.x.52 dev eth1
+> >   ip address add x.x.x.53 dev eth1
+> >
+> 
+> He really needs to do this step ????
+> The firewall is his gateway !!
 
+yes.  he does.  the firewall is his gateway on the inside/dmz.  these IP
+aliases are on the outside, internet-facing interface.
 
-On Sun, 19 Sep 2004 14:17:52 +0300, Mohamed Eldesoky
-<eldesoky.lists@gmail.com> wrote:
-> 
-> 
-> On Sun, 19 Sep 2004 12:01:11 +0100, Nick Drage <nickd@metastasis.org.uk> wrote:
-> > On Sun, Sep 19, 2004 at 12:09:53PM +0300, Mohamed Eldesoky wrote:
-> >
-> > <snip>
-> >
-> > > > Depends how you use the information.  And to be honest considering the
-> > > > reputation of some sources of traffic, such as Korea and South America,
-> > > > which might be unlikely to have legitimate connections to your site, it
-> > > > would be handy to block them all.
-> > >
-> > > I don't like this reason at all, but let me agree with you temporarily.
-> > > What if a client with good reputation "ie, from your country :-)" is
-> > > spending his vacation in South America, and wanted to check something
-> > > in your website ??
-> >
-> > Then don't reject packets according to country :)
-> >
-> 
-> I am against the idea of rejecting based on the country.
-> It reminds me of that domain registration site that rejected all of
-> our credit cards, because they don't like that region. F**k'm, we are
-> dealing with other registrars :-)
-> 
-> 
-> 
-> > --
-> > mors omnia vincit
-> >
-> >
-> 
-> --
-> Mohamed Eldesoky
-> www.eldesoky.net
-> RHCE
-> 
-> 
-
-
+-j
 
 -- 
-Bla bla
+Jason Opperisano <opie@817west.com>
+
 
