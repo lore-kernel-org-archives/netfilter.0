@@ -1,11 +1,12 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: copying conntrack state tables between two machines
-Date: Mon, 7 Feb 2005 16:05:56 -0500 (EST)
-Message-ID: <27280.142.169.215.10.1107810356.squirrel@142.169.215.10>
-References: <4207D072.6040600@telefonica.net>
+From: Ulysses Almeida <ulysses.almeida@gmail.com>
+Subject: Re: Two links and a SMTP sever.
+Date: Mon, 7 Feb 2005 19:53:44 -0300
+Message-ID: <d64535605020714533faf8400@mail.gmail.com>
+References: <d645356050118053928226673@mail.gmail.com>
+Reply-To: Ulysses Almeida <ulysses.almeida@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <4207D072.6040600@telefonica.net>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <d645356050118053928226673@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,45 +18,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: srg <srgqwerty@telefonica.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Mon, February 7, 2005 3:32 pm, srg said:
-> Hello:
->
-> I am thinking about writing a small program in order to "copy" the
-> connections table from one machine to another machine.
-> The final purpose is configure the second machine as a "backup" machine
-> with linux-ha and if the primary fails then the backup will assume the
-> traffic WITHOUT LOOSING CONNECTIONS (the purpose is that from the point
-> of view of the clients and servers before/after the linux machines do
-> NOT need to reestablish the connections they have established before th=
-e
-> failure).
->
-> What do you think that is the best way to do this?
+  Some time ago, I wrote this e-mail below.  A lot of people tried to
+help-me (thanks guys), but I couldn't find the problem. A week ago,
+with help from someone on IRC I solved my problem (simple one). And I
+finished my MiniHowTo.
+http://munky.maluco.com.br/lar_with_smtp.html
+  Maybe it won't tell you something new. But it's shorter do read
+instead the whole LARTC documentation.
+  This miniHowTo shows how to use iproute2 with iptables mark rule. I
+think it's nice. If someone has something to say about it (in
+private), I would thanks.
 
-Well, my first guess is you are looking for ct_sync, that's _the_
-netfilter-ha currently developped by Kristzian KOVACS and Harald Welte.
+  PS: The problem was just Reverse Path Filtering enabled.
 
-Take a look at :
-http://svn.netfilter.org/cgi-bin/viewcvs.cgi/trunk/netfilter-ha/
+On Tue, 18 Jan 2005 10:39:04 -0300, Ulysses Almeida
+<ulysses.almeida@gmail.com> wrote:
+> Hi folks,
+> 
+>   I have an unsolved problem with iptables + iproute2 that I can't
+> figure out how to solve it.
+> 
+>   I explaint it on the attachment (i sent this attachment, because I
+> don't thin it will cause any trouble, since it's text/plain, if does,
+> say and I won't send again). I wrote this as a mini-HowTo, and I
+> pretend to publish this, but I need to solve the problem before doing
+> this ;)
+> 
+>   The strange thing. I have almost the same scenario on other host,
+> What differs is the fact that on the other host I have 4 Internet
+> links, not only two, and everything works as I expected.  I tried the
+> same solution on another two hosts, and on both I had this releated
+> problem.
+> 
+>   If some one can help-me track this problem, I thank in advance.
+> 
+>   Regars.
+> 
+> --
+>  - Ulysses Almeida
+> 
+> 
+> 
 
-Perhaps you'll get interested in giving some help on there.
-(Instead of reinventing the wheel)
 
->
-> In the other hand... It is possible to do the same with IKE SA & IPSEC
-> SA (using pluto + kernel 2.6 built in ipsec) ?
-
-I don't know anything about it.
-
->
-> Thanks and best regards
->
->
-Have a good day!
-
-Samuel
-
+-- 
+ - Ulysses Almeida
 
