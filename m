@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: RTP traffic matching
-Date: Thu, 17 Oct 2002 13:20:30 +0100
+From: Chris Born <ragable@attbi.com>
+Subject: Re: Letting Hotline downloads through
+Date: Thu, 17 Oct 2002 07:57:43 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210171220.g9HCKaL26475@vulcan.rissington.net>
-References: <032f01c275cb$0c7c9fa0$9f24a58b@segi.ulg.ac.be>
+Message-ID: <5.1.1.6.0.20021017075728.00b98cf8@mail.attbi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <032f01c275cb$0c7c9fa0$9f24a58b@segi.ulg.ac.be>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +14,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thursday 17 October 2002 11:50 am, Francois Dessart wrote:
+I'm trying to setup a Hotline server on an internal NATed machine and I'm 
+having problems with getting clients to download. Here's what I have so far:
 
-> Hello,
->
-> Is there an easy way to match RTP/UDP traffic?
+$EXTIF="eth1"
+$INTIF="eth0"
+$IPTABLES=/sbin/iptables
+$EXTIP=12.252.56.159
+$RAGABLE=192.168.0.2
 
-If you mean RDP / UDP, then it's easy:
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 5500:5503 -m state 
+--state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF --dport 5549 -m state --state 
+NEW,ESTABLISHED,RELATED
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 5500:5003 -j DNAT 
+--to $RAGABLE:5500:5503
+$IPTABLES -A PREROUTING -t nat --dport 5549 -j SNAT --to $EXTIP
 
-iptables -A FORWARD -p rdp -s a.b.c.d -d w.x.y.z -j ACCEPT
-iptables -A FORWARD -p udp -s a.b.c.d -d w.x.y.z -j DROP
-etc....
+According to the Hotline server documentation, incoming connection requests 
+come in on ports 5500 - 5503 while outgoing download connections are on 
+port 5549. People are able to connect to the server just fine, but are 
+unable to download so I'm wondering what rules I need to let the downloads 
+through.
 
-If you didn't mean RDP, can you give us a reference to tell us what RTP is ?
+-Chris Born 
 
-Antony.
 
--- 
-
-Normal people think "if it ain't broke, don't fix it".
-Engineers think "if it ain't broke, it doesn't have enough features yet".
 
