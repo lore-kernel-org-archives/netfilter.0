@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: how do you specify an entire domain like *.mydomain.com
-Date: Thu, 22 Jan 2004 11:41:40 +0000
+From: Rakotomandimby Mihamina <mrakotom@free.fr>
+Subject: Re: sendmail : dport 25 , sport 25 or both?
+Date: Thu, 22 Jan 2004 12:50:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401221141.40220.Antony@Soft-Solutions.co.uk>
-References: <34198.66.65.52.125.1074770755.squirrel@sojourn.dyndns.org>
+Message-ID: <200401221250.44784.mrakotom@free.fr>
+References: <200401220850.27734.mrakotom@free.fr> <1074768174.2002.18.camel@tarkus>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <34198.66.65.52.125.1074770755.squirrel@sojourn.dyndns.org>
+In-Reply-To: <1074768174.2002.18.camel@tarkus>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,31 +21,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 22 January 2004 11:25 am, Technical wrote:
+On Thursday 22 January 2004 11:42, Ted Kaczmarek wrote:
+> If the daemon listens on port 25, then the connection will be destined
+> to it on port 25.
 
-> -A RH-Firewall-1-INPUT -s *.*.myvwz.com -m state --state NEW -m tcp -p tcp
-> --dport 110 -j ACCEPT
+yes . 
 
-Netfilter does not operate by hostnames / network domains - it operates by IP 
-addresses and network ranges.
+> So
+> Input chain allows destination port 25
+> Output chain allows source port 25
 
-Therefore if myvwz.com own a Class C range (or some other readily specified 
-subnet), you can specify -s $RANGE/24 etc, but you can't do it by DNS domain.
+OK.
 
-Note that you *can* specify a hostname in an iptables rule, but it will get 
-resolved as soon as the rule is entered, and then the IP address will be what 
-netfilter actually uses internally - it won't get resolved again.
+> Do you have a specific need for blocking all output packets?
 
-Regards,
-
-Antony.
+yes . security reason . i think if someone has succeded intrusion , i could 
+block outgoing traffic , so that it would not be easy for him to manage 
+it ... is it crazzy ? :-) 
 
 -- 
-If you want to be happy for an hour, get drunk.
-If you want to be happy for a year, get married.
-If you want to be happy for a lifetime, get a garden.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Rakotomandimby Mihamina Andrianifaharana
+Tel : +33 2 38 76 43 65
+http://stko.dyndns.info/site_principal/Members/mihamina
 
 
