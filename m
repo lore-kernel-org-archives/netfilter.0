@@ -1,8 +1,8 @@
 From: "Alex Nee" <hard__ware@dynamicaccess.biz>
 Subject: Re: MSN Messenger and Netfilter
-Date: Sat, 28 Jun 2003 15:09:32 +1000
+Date: Sat, 28 Jun 2003 15:15:35 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003101c33d33$75edc8d0$7b7b10ac@hardware>
+Message-ID: <003801c33d34$4e467560$7b7b10ac@hardware>
 References: <20030505222631.22711.2427.Mailman@kashyyyk>
 Reply-To: "Alex Nee" <alex@dynamicaccess.biz>
 Mime-Version: 1.0
@@ -20,9 +20,8 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Testing 123 ,,,  
+Testing Again 
 
-Hopefull i have it working now .... :D
-
-Thanks
+Alex Nee
+Hard__warE
 
