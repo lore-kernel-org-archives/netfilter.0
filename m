@@ -1,11 +1,12 @@
-From: "Tony Thompson" <tony.thompson@stone-ware.com>
-Subject: Re: Do I need to write a module?
-Date: Tue, 24 Jun 2003 10:22:52 -0500
+From: Johnoel Ancheta <johnoel@hawaii.edu>
+Subject: PPTP server behind firewall
+Date: Mon, 23 Jun 2003 14:38:33 -1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <sef8269b.024@mail.stone-ware.com>
+Message-ID: <b5413b5db8.b5db8b5413@hawaii.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-language: en
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,73 +20,58 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thanks for the response.  Maybe I should give a better picture of what I
-am trying to do.  I have a private network that I am trying to route
-through a Linux box.  I want to deny all traffic (from a MAC address)
-until a user authenticates, with their browser, to a Java application on
-the Linux server (when they authenticate, something has to happen to let
-netfilter know that the MAC address is allowed to pass).  There has to
-be some level of coordination at that point between the Java app and
-netfilter so that session timeouts, etc. can be handled.  I would like
-to have all of this happen as close to real time (i.e. not batched) as
-possible.
+hi all,
 
-After writing this out, maybe I don't even need a module but, just a
-way to control netfilter from a Java app.  I am still open to
-suggestions...
+i am having some problems getting the pptp server working 
+behind the firewall.
 
-Thanks.
-Tony
+What i've done so far.
 
->>> Ray Leach <raymondl@knowledgefactory.co.za> 06/24/03 01:57AM >>>
-Hi
+got the linux-2.4.20
+got patch-o-matic-20030107 and patched with pptp
+got iptables-1.8
 
-Why don't you get the Java app to export some kind of text that you
-can
-get netfilter to parse with regular unix utilities (sed, awk, grep).
+compiled the kernel with GRE and PPTP support
+recompiled iptables 1.8
 
-Create a cron job to parse the file every 10 minutes (if that's
-regular
-enough) that parses the text file and reloads your iptables rules as
-per
-the file.
+set these rules: right now i don't care about security
+/etc/iptables -P INPUT ACCEPT
+/etc/iptables -F INPUT
+/etc/iptables -P OUTPUT ACCEPT
+/etc/iptables -F OUTPUT
+/etc/iptables -P FORWARD ACCEPT
+/etc/iptables -F FORWARD
+/etc/iptables -t nat -F
 
-Ray
+#Note eth0 has public ip 
+#          eth1  private network                                       
+                                                                       
+                                         
+/etc/iptables -A FORWARD -i eth0 -o eth1 -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+/etc/iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+                                                                       
+                                                                       
+             
+/etc/iptables -t nat -A PREROUTING --dport 1723 -j LOG
+/etc/iptables -t nat -A PREROUTING -p 47 -j LOG
+/etc/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 1723 -j DNAT
+--to-destination 192.168.0.2:1723
+/etc/iptables -t nat -A PREROUTING -i eth0 -p 47 -j DNAT
+--to-destination 192.168.0.2
+                                                                       
+                                                                       
+             
+/etc/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-On Mon, 2003-06-23 at 20:43, Tony Thompson wrote:
-> I am investigating an option to use netfilter to allow/deny traffic
-from
-> the local subnet based on rules/accounting information that is in
-> another (Java based) system.  I am new to netfilter so, I can
-someone
-> offer some suggestions:
-> 
-> 1. Is netfilter the right place to hook or should I look at a
-firewall
-> that may provide some higher level hooks for authentication and
-> accounting?
-> 
-> 2. If I should hook into netfilter, is it a good idea to call into a
-> JVM from a netfilter module?
-> 
-> 3. I am not sure what kind of control I have when using the
-userspace
-> driver but, should I use that in this situation?  Can I use that
-> directly from Java so I wouldn't have the hassel of calling into a
-JVM
-> from a native process?
-> 
-> If anyone can offer any other suggestions or examples, that would be
-> appreciated.
-> 
-> Thanks.
-> Tony
--- 
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za 
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint = 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+/etc/echo "1" > /proc/sys/net/ipv4/ip_forward
+
+so if i try the connection i get an Error 721 (Windows XP).  i checked
+the vpn server and i doesn't get the request to login from
+the Event log.  i'm sure the vpn server is working okay since
+i can log in from inside the private network.
+
+i think that the rules i used are wrong.
+
+
 
