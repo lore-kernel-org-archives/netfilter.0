@@ -1,13 +1,9 @@
-From: Pablo Allietti <pablo@lacnic.net>
-Subject: Re: dnat problem
-Date: Sat, 22 Jan 2005 21:26:41 -0300
-Message-ID: <20050123002641.GA32546@omega.lacnic.net.uy>
-References: <20050122155935.GA20433@omega.lacnic.net.uy>
-	<1106423137.4779.6.camel@hubcap.ljm.dom>
+From: Kev askme <linuxtoybox@yahoo.com>
+Subject: networking newbie needs help
+Date: Sat, 22 Jan 2005 19:58:46 -0800 (PST)
+Message-ID: <20050123035846.4807.qmail@web90105.mail.scd.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1106423137.4779.6.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,64 +16,48 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sat, Jan 22, 2005 at 02:45:37PM -0500, Jason Opperisano wrote:
-> On Sat, 2005-01-22 at 10:59, Pablo Allietti wrote:
-> > hi all
-> > 
-> > i have a problem with dnat i have this struc.
-> > 
-> > 
-> > 		|
-> > 		|internet
-> > 		|
-> > 		Firewall 200.20.43.2
-> > 		|
-> > 		|
-> > 		|
-> > 		Server 192.168.1.143
-> > 
-> > 
-> > and i have this rule in the firewall.
-> > 
-> > iptables  -t nat -A PREROUTING -i eth0 -p tcp --dport 2244  -j DNAT
-> > --to-destination 192.168.1.143:22
+Hi everyone! :)
 
-thanks that is the solution.! :)    jaja nice signature.! Homer say
-that.. i love homer
+I have a couple of questions regarding netfilter on
+linux and general networking that I'm unsure about.
+Let me describe my current setup and where I'm trying
+to go with it.
+        First and foremost, I have a current netfilter
+firewall set up using the firewall script from
+frozentux.org with a DMZ. Everything works fine. I can
+DNAT public IP's to private addresses inside my DMZ,
+and hosts on my internal LAN can all browse the net
+just fine and do all that other fun stuff. This setup
+currently has one NIC card for each zone off of my
+firewall with eth0 connected directly to the cable
+modem, eth1 is to my internal LAN on one switch and
+eth2 is connected to a different switch in which I put
+hosts on the DMZ. My question is this: currently I
+just have the one public IP address and that seems
+simple enough, but I have a need for expansion and I
+require more addresses from my ISP. Do I need to
+install more NIC cards on my firewall box, one for
+each new IP address and plug the cable modem into the
+switch, along with all the newly installed NIC cards
+instead of directly into my firewall box? Is there a
+way around doing that if possible? What is the best
+way to set it up properly so that I can have multiple
+IP addresses on my DMZ and account traffic for each IP
+and service? Also what is the best way to do this with
+minimal overhead (getting new hardware is not a big
+deal for me as long as it's not too expensive). Any
+help or suggestions please?
 
-
-> > 
-> > i supouse this rule make a dnat to server 192.... to ssh but nothing
-> > happends
-> > 
-> > i do ssh -p2244 200.20.43.2  but nothing respond
-> > 
-> > what i miss ? :(
-> 
-> and you have a FORWARD rule that looks like:
-> 
->   iptables -A FORWARD -i eth0 -p tcp -d 192.168.1.143 --dport 22 \
->     -j ACCEPT
-> 
-> yes?
-> 
-> -j
-> 
-> --
-> "Kids, you tried your best and you failed miserably. The lesson is,
->  never try."
-> 	--The Simpsons
-> 
----end quoted text---
-
--- 
+Thanks for any and all help.
+     -Kevin
 
 
-Pablo Allietti
-LACNIC
---------------
-
+	
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Mail - You care about security. So do we. 
+http://promotions.yahoo.com/new_mail
 
