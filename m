@@ -1,10 +1,10 @@
-From: Fabiano Bonin <fabiano@personalsoft.com.br>
-Subject: Redirecting traffic from a interface to antoher
-Date: Tue, 23 Mar 2004 16:08:19 -0300
+From: "Jorge Garcia" <anarkophobia@latinmail.com>
+Subject: insecure script
+Date: Tue, 23 Mar 2004 14:58:32 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40608B23.2040605@personalsoft.com.br>
+Message-ID: <20040323195832.0ACB83BAD18@smtp.latinmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="latinmail.com_linux1933.dn.net_3458e679e220073d116dab2ca0b9e7bb"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,31 +15,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
 
-I don't know if this is the right place to ask this. If it's not, please 
-point me the right place.
 
-I have a sshd daemon running on a server (called SERVER) in my network 
-(called INSIDENET).
-In another network (called OUTSIDENET) , i have a client which connects 
-to SERVER via ssh protocol, oppening a port (5050) on SERVER that 
-redirects to some host on OUTSIDENET network, all via SSH protocol.
-This way, if a connect to SERVER, port 5050, i will be automatically 
-redirected to an specified host in OUTSIDENET.
+--latinmail.com_linux1933.dn.net_3458e679e220073d116dab2ca0b9e7bb
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This is the output of 'netstat -n -a -p | grep 5050', typed in SERVER:
-tcp        0      0 127.0.0.1:5050          0.0.0.0:*               
-LISTEN      22522/1
+hi, im starting to write a paper about iptables security, and im trying=
+ to focus in the scripts.
+anyone can give some examples of insecure scripts or some tips to find =
+my own insecurities in many scripts on the net.
+how hackers can take advantages in insecurities in the scriipts??
+please send me some examples or links or any other info
+Thanx and sorry if my question is not about using or developing iptable=
+s.
+frederixx
 
-Well, ssh protocol open the port 5050 just on the local interface, so i 
-can't connect from a host of INSIDENET to this port on i.e. ETH0.
+http://www.latinmail.com - La forma m=E1s c=F3moda de enviar y recibir =
+tus e-mails
+--latinmail.com_linux1933.dn.net_3458e679e220073d116dab2ca0b9e7bb--
 
-I'd like to know if there is a way to accept connection in the same port 
-but in anoter interface (i.e. ETH0) and redirect this traffic to the 
-local interface (127.0.0.1)
-
-Thanks.
 
 
