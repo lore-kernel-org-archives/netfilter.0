@@ -1,18 +1,14 @@
-From: Stephen Satchell <list@fluent2.pyramid.net>
-Subject: Re: Dropping RST of SYN
-Date: Mon, 08 Sep 2003 04:53:29 -0700
+From: Doc Nielsen <WebMaster@DocNielsen.dk>
+Subject: Re: ip_tables.o not loading - nf_unregister_sockopt error [FIXED]
+Date: Mon, 8 Sep 2003 14:46:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.1.1.0.20030908044636.01188b18@fluent2.pyramid.net>
-References: <3F5C539E.8030704@chrisbrenton.org>
- <1063000297.827.26.camel@india.nsecure.net>
- <3F5C539E.8030704@chrisbrenton.org>
- <20030908204206.C148.ATNAK@chejz.com>
+Message-ID: <200309081446.36345.WebMaster@DocNielsen.dk>
+References: <000501c37184$d6701fc0$7b01a8c0@Doc> <1063001214.960.33.camel@india.nsecure.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030908204206.C148.ATNAK@chejz.com>
-References: <3F5C539E.8030704@chrisbrenton.org>
- <1063000297.827.26.camel@india.nsecure.net>
- <3F5C539E.8030704@chrisbrenton.org>
+In-Reply-To: <1063001214.960.33.camel@india.nsecure.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,52 +18,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Atsushi Nakagawa <atnak@chejz.com>, Chris Brenton <cbrenton@chrisbrenton.org>
-Cc: "Dharmendra.T" <dharmu@nsecure.net>, Ralf Spenneberg <lists@spenneberg.org>, Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "Dharmendra.T" <dharmu@nsecure.net>
+Cc: netfilter@lists.netfilter.org
 
-At 08:58 PM 9/8/2003 +1000, Atsushi Nakagawa wrote:
->Both Dharmendra and Chris have pointed out perfectly legitimate reasons
->why it is a bad idea to drop RSTs in general.  However, these warnings
->have taken the original proposition slightly out of context. --AFAIS
+On Monday 08 September 2003 08:06, Dharmendra.T wrote:
+> On Wed, 2003-09-03 at 00:33, Doc Nielsen wrote:
+>>
+>>     hey guys
+>>
+>>     Im having some trouble compiling and using iptables/netfilter
+>>     Its enabled in the kernel, and the modules are there, but when I try to
+>> load them I get this:
+>>
+>>     root@server:~# modprobe ip_tables
+>>     /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: unresolved
+>> symbol nf_unregister_sockopt
+>>     /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: unresolved
+>> symbol nf_register_sockopt
+>>     /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: insmod
+>>     /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o failed
+>>     /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: insmod
+>> ip_tables failed
+>>
+>>     What am I doing wrong?
+>>
+>>     Please CC mail directly to me, as Im not subscribed to the list.
+>>     And yes, I have browsed the archives with no luck.
+>>
+>>     - Doc
 >
->Ralf's response was to a question regarding the removal of outgoing RST
->packets that are generated in reply to incoming SYN packets.  (These
->RSTs being the kind that causes the "Connection Refused" TCP message)
->
->Hence, "dropping all RST packets", should implicitly have meant, "all
->outgoing RST packets".  (The -m state ... -j DROP line is ambiguous.)
+>     Could you tell me how you have compiled your kernel?
 
-There is a corner case when communicating with certain older stacks that 
-have, er, unusual takes on the RFCs regarding TCP connections.  The Bay 
-Networks (now Nortel) modem concentrators want to see RSTs in response to 
-an unusual probe done by the stack when closing a connection:  if I 
-remember correctly those things will close the connection (using FIN) and 
-then send out an empty ACK, expecting a RST back from the other end.  I 
-suspect this was some programmer's bright idea to avoid having to implement 
-all the "overhead" of implementing a true TIME_WAIT state for a closed 
-connection.
+It's the debian kernel-source-2.4.20.deb
+make menuconfig && make dep && make bzlilo modules modules_install
 
-I ran into this as the software developer for an analog modem testing 
-package that tests V.90 and V.92 modems, and it caused no end of grief for 
-me as the old 2.0.0 kernels didn't react the way that Bay Networks wanted 
-them to.  This caused the particular modem module to go out of service for 
-45 seconds, so there were several failed connection attempts as the 
-multiplexor did the active timeout thing instead of just moving to a 
-different 6-tuple for IP connections.
+A complete recompile solved the problem, or went around it...
 
-I don't know where else this "idea" might have taken hold.
+cp /usr/src/kernel-source-2.4.20/.config /usr/src/config.txt
+rm -rf /usr/src/kernel-source-2.4.20 
+tar xjf kernel-source-2.4.20.tar.bz2
+cp /usr/src/config.txt /usr/src/kernel-source-2.4.20/.config
+cd /usr/src/kernel-source-2.4.20/
+make menuconfig && make dep && make bzlilo modules modules_install
 
-Stephen Satchell
-Satchell Evaluations
-OTTO:3800 and LOTTO modem testing products
-
-
-
--- 
-Human beings, who are almost unique in having the ability to learn from the 
-experience of others, are also remarkable for their apparent disinclination 
-to do so.  -- Douglas Adams  
+- Doc
 
 
