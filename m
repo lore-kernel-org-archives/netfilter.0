@@ -1,10 +1,11 @@
-From: Marc Perkel <marc@perkel.com>
-Subject: Port Forwarding Help
-Date: Thu, 27 Jan 2005 15:50:37 -0800
-Message-ID: <41F97E4D.2090709@perkel.com>
+From: Alireza Yazdani <yazdani1193@yahoo.com>
+Subject: monitoring
+Date: Thu, 27 Jan 2005 21:21:07 -0800 (PST)
+Message-ID: <20050128052108.64827.qmail@web51906.mail.yahoo.com>
+References: <20050126183331.GA25316@ranjeet-pc2.zultys.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050126183331.GA25316@ranjeet-pc2.zultys.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,40 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I hope this is the right list. I need help.
 
-This is something that should be simple for all you smart people out there.
+Hello all,
 
-I have 2 email servers that I want to communicate with each other. Both 
-have port 25 open. But - they only bind on port 25 to specific IP 
-addresses. So - what I want to do is this:
+some question about report program:
 
-I want to do an ssh tunnel to the other server. SSH doesn't do that 
-gracefully - but I did get it to work listening on port 26 and piping to 
-port 25.
+1) I use of BandwidthD monitoring program. this program is IP based and shows all trafic throgh text&graphic mode but this program hasn't a good performance. I want a program such as it with good performance.
 
-ssh -f -N -C -L 26:localhost:25 destination
+2) I use MRTG prgram on cache-server . this program shows all traffic but I want a program that shows all traffic that the end-user get from internet & cache separately.
 
-So - here's what I want to do. I want to port forward 1 ip address on 
-port 25 on the local machine to port 26 so for example :
+Thanks
 
-127.0.0.2 on port 25 to 127.0.0.2 on port 26 so if I connect to 
-127.0.0.2 on port 25 it goes over the tunnel to the other server.
-
-It can be that hard - but I'm just not very smart.
-
-Thanks in advance for your help.
-
--- 
-Marc Perkel - marc@perkel.com
-
-Spam Filter: http://www.junkemailfilter.com
-    My Blog: http://marc.perkel.com
-My Religion: http://www.churchofreality.org
-~ "If it's real - we believe in it!" ~
-
-
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
