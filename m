@@ -1,9 +1,8 @@
-From: "Fabrice Grelaud" <f.grelaud@free.fr>
-Subject: nth patch
-Date: Mon, 1 Dec 2003 16:57:44 +0100
+From: Michael Gale <mgale@utilitran.com>
+Subject: Hello -- complicated firewal :(
+Date: Mon, 1 Dec 2003 12:47:13 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003701c3b824$646f1200$5618a8c0@imperial.local>
-References: <20031201150917.BEDE11B9BA@smtp.ttp.nl>
+Message-ID: <20031201124713.3fea02c6.mgale@utilitran.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,35 +18,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi everybody,
+Hello,
 
-I have 2 connections adsl on my gateway (eth1, eth2) and one card for the
-LAN (eth0).
-netfilter-extension-HOWTO: "easy and quick method to produce load-balancing"
-I would like to know if it's possible to balance the load of incoming
-packets (eth0) to the two externals interfaces.
-                                          _______
-                                          |             |-eth1
-(66.12.24.36)----------
-------eth0 (192.168.0.254)|    FW   |
-NET
-                                          |    NAT |-eth2
-(66.13.52.36)----------
-                                          _______
+	I have been using iptables for a while but only in simple setups. Now I have been given the task to setup a major enterprise level firewall.
 
-And so use the command:
-#iptables -t nat -A POSTROUTING -o eth1 -m nth --counter 7 --every
-2 --packet 0 -j SNAT --to-source 66.12.24.36
-#iptables -t nat -A POSTROUTING -i eth2 -m nth --counter 7 --every
-2 --packet 1 -j SNAT --to-source 66.13.52.36
+This firewall has 22 external virtual IP addresses plus one primary internal and external IP. Oh it also has 1 virtual IP on the internal as well.
 
-In the howto's example, each time the output card is eth0 ???
+So right now I have two firewalls running a master and slave cluster - which every one is master listens on it's external and internal primary IP's for connections from me only so I can administer it.
 
-what do you think ???
-Or do i have to use the target ROUTE or iproute2 & netfilter ???
+Plus then the master will listen on the 22 virtual IP's for DNAT them to the severs on the DMZ.
 
-Cordially yours
-Fabrice
+The slave will only listen for traffic on the external and internal primary IP's so I can administer it.
 
+For a failover to be transparent the internal NIC of the master will listen on 172.16.0.1 and this is the internal networks gateway. This is NOT the primary IP of either firewall.
 
+OK my question is .. when my master is up on firewall-1 it will listen on 172.16.0.1 (internal network default gateway) and 172.16.0.2 (primary INTERNAL IP used only for administration)
+
+How can I make it so internal users can only use 172.16.0.1 as a internet gateway and NOT 172.16.0.2.  
+
+From my knowledge the FORWARD chain can only filter on source and destination address -- I would think I would have to filter out based on what IP the packet was forwarded to ... but how ?
+
+I hope this is clear -- I tried looking for help on some IRC channels and nobody understood what I was talking about.
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
