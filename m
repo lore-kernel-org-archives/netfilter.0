@@ -1,13 +1,13 @@
-From: "Aldo S. Lagana" <alagana@discmail.com>
-Subject: RE: Examples
-Date: Thu, 27 Jun 2002 16:03:10 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: detection of the third tcp packet in a tcp connection setup
+Date: Thu, 27 Jun 2002 21:06:54 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000701c21e15$a9e0be60$3864a8c0@discmail.com>
-References: <731E36372B5FD248AF790189519A32C19E4F8B@mailhub.cgtime.com>
+Message-ID: <20020627200655.VZLE19225.mta07-svc.ntlworld.com@there>
+References: <NJEFLNJDIFFNMHDEBKMJCEJADOAA.jpatterson@asgardgroup.com> <20020627194405.GLHF295.mta03-svc.ntlworld.com@there> <20020627195742.GA31466@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <731E36372B5FD248AF790189519A32C19E4F8B@mailhub.cgtime.com>
+In-Reply-To: <20020627195742.GA31466@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,50 +18,25 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Daniel Curry' <dcurry@cariocas.com>, "'Netfilter (E-mail)'" <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-Unfortunately like any other firewall solution it all depends - which of
-those services are in front of or behind the firewall, which need
-specific ports or protocols allowed, etc.  A good start is the IPTables
-tutorial by Oskar Andreasson (sp?)
+On Thursday 27 June 2002 8:57 pm, Ramin Alidousti wrote:
 
-Another decent start is the Linux Firewalls book by O'reilly (?)
+> If I'm not wrong you can always send data even in SYN and SYN/ACK.
+> Like Patrick said the default options in the socket interface might
+> not do it but I thought I saw some tweaking in one of Richard Steven's
+> (god bless his soul) books to push traffic in SYN packets.
 
-I have had very good luck with Oskar's tutorial - he has good comments
-and an example script...
+Is that an interesting way to get round packet filtering firewalls ?
 
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org 
-> [mailto:netfilter-admin@lists.samba.org] On Behalf Of Daniel Curry
-> Sent: Thursday, June 27, 2002 3:51 PM
-> To: Netfilter (E-mail)
-> Subject: Examples
-> 
-> 
-> I was just at the netfilter.org web site, looking for some 
-> example IPTables scripts for various solutions.  Does anyone 
-> have any suggestions on where I might find some well 
-> documented examples to satisfy a server with an internal and 
-> external network connection, sendmail, apache, DHCP (internal 
-> only), MySQL, IPSEC/PPTP services (hosted and pass through), 
-> inbound POP/IMAP?
-> 
-> Thanks
-> 
-> Daniel Curry
-> IT Manager
-> Cariocas
-> 625 Second Street 
-> Suite 201
-> San Francisco, CA 94107 
-> ph: 415-348-6516
-> fx: 415-348-6505 
-> cell: 510-579-6680
-> 
-> "If A equals success, then the formula is: A = X + Y + Z, 
-> X is work. Y is play. Z is keep your mouth shut." 
->   - Albert Einstein
-> 
-> 
+Send enough data (eg an http request) in a SYN packet so that the application 
+does the dirty work for you, even if the packet filter isn't going to allow 
+the connection to get ESTABLISHED ?
 
+Or do you have to fiddle with the receiving socket too in order for it to 
+cope with this ?
+
+ 
+
+Antony.
 
