@@ -1,13 +1,13 @@
-From: "Regina Reine" <regina@erg.abdn.ac.uk>
-Subject: Mangling problem
-Date: Wed, 21 May 2003 12:49:54 +0100
+From: "Chris Hoeschen" <chris.hoeschen@primevest.com>
+Subject: RE: Mangling problem
+Date: Wed, 21 May 2003 08:26:44 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c31f8f$1866f1d0$88cc858b@TOSHIBAFIRE>
-References: <20030415222001.8410.94392.Mailman@kashyyyk>
+Message-ID: <06f501c31f9c$9f34e930$7035a8c0@hoeschen>
+References: <000001c31f8f$1866f1d0$88cc858b@TOSHIBAFIRE>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030415222001.8410.94392.Mailman@kashyyyk>
+In-Reply-To: <000001c31f8f$1866f1d0$88cc858b@TOSHIBAFIRE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,7 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: 'Regina Reine' <regina@erg.abdn.ac.uk>
+Cc: netfilter@lists.netfilter.org
+
+I maybe wrong but I don't believe netfilter will process any packets not
+intended for that box.  TCPDump will see it as in a hubbed environment
+all nodes receive all packets but only those that are destined for that
+box will netfilter process.
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+| Chris Hoeschen - Distributed System Analysts        |
+| PrimeVest Financial Services                        |
+| (320) 656-4035 E-Mail: chris.hoeschen@primevest.com |
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+"Only two things are infinite, the universe and human stupidity, and I'm
+not sure about the former." 
+  -- Albert Einstein
+Hippopotomonstrosesquippedaliophobia is the fear of long words
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Regina Reine
+Sent: Wednesday, May 21, 2003 6:50 AM
 To: netfilter@lists.netfilter.org
+Subject: Mangling problem
+
 
 
 Hi,
@@ -43,5 +69,8 @@ for better solution? Thank you
 
 Best regards,
 Regina Reine
+
+
+
 
 
