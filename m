@@ -1,13 +1,13 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: RE: discard TCP SYN
-Date: 07 Aug 2003 07:50:16 +0200
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: HAlinux,ipsec and proxies..
+Date: Thu, 7 Aug 2003 16:48:03 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060235415.1886.2.camel@kermit>
-References: <000001c35c39$ae1be1e0$c800a8c0@klintan.local>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C076@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C35CAF.D9734BF0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c35c39$ae1be1e0$c800a8c0@klintan.local>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,99 +17,193 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Michael K <micke@klintan.se>
-Cc: 'Netfilter' <netfilter@lists.netfilter.org>
+To: "Netfilter Mailling List (E-mail)" <netfilter@lists.netfilter.org>
 
-Am Mit, 2003-08-06 um 18.42 schrieb Michael K:
-> Thank you.
-> =20
-> So iptables that uses connection-tracking is safe. And the old ipchains
-> is not, including the old ipfwadm?
-> Hurray for iptables :-)
-Well, kind of. The old ipchains had a safe syn check.=20
-Manpage extract:
- -y, --syn       Only match TCP packets with the SYN bit set and the
-              	  ACK and FIN bits cleared.
+This is a multi-part message in MIME format.
 
-But when using iptables' connection tracking you are usually safe.
+------_=_NextPart_001_01C35CAF.D9734BF0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
+Hi all,
+=20
+My first question in a very very long time.. ;)
+=20
+I have 2 firewalls which are soon to be running HAlinux. Both external =
+interfaces are eth1 on both machines and running a 10.10.10.1 and =
+10.10.10.2 for each firewall for HAlinux.
+When HAlinux starts up, the scripts add the external IP to the main =
+firewall (FWa) using iproute2 so eth1 will always be the external =
+device/IP...
+=20
+        HA-Linux
+  v-- aa.bb.cc.dd --v
+10.10.10.1   10.10.10.2
+----------   ----------
+|  FWa   |   |   FWb  |
+----------   ----------
+=20
+=20
+The 2 firewalls use the same config files/firewall scripts..etc.etc..so =
+for the iptables script to work, firewallb looks at eth1 using a script =
+and gets the last IP added to the interface as we don't want it to =
+firewall based on the 10.10.10.X addresses assigned for HAlinux...
+=20
+The script below grabs the correct IP of aa.bb.cc.dd from firewalla and =
+firewallb (when fallover occurs). And all rules work with the "-d =
+$EXTIP" being used..
+=20
+getipfromdevice()
+{
+        DEV=3D"$1"
+        DEVIP=3D`ip addr show dev $DEV | grep "inet" |tail -1 |awk =
+{'print $2'} | cut -f1 -d "/"`
+        echo "$DEVIP"
+}
+EXTDEV=3Deth1
+EXTIP=3Dgetipfromdevice $EXTDEV
+=20
+Now my main problem..
+=20
+IPSEC has to be told which interface to use for the VPN.
+I use "interface=3Deth1" and it grabs 10.10.10.X which isn't correct and =
+you can't tell ipsec to use another IP on the interface(AFAIK).
+I found ipsec works with "interface=3Deth1:1" but then the firewall =
+scripts are a muck.. I prefer not to use aliasing if possible...
+=20
+any other ideas or best solution??
+=20
+Thanks,
+=20
+George Vieira.
 
-Ralf
->=20
-> /Klintan
->=20
-> > -----Original Message-----
-> > From: netfilter-admin@lists.netfilter.org=20
-> > [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of=20
-> > Ralf Spenneberg
-> > Sent: Wednesday, August 06, 2003 2:43 PM
-> > To: Michael K
-> > Cc: Netfilter
-> > Subject: Re: discard TCP SYN
-> >=20
-> >=20
-> > Am Mit, 2003-08-06 um 13.32 schrieb Michael K:
-> > > My firewall have default policy to drop (in, out & fwd)
-> > > Some protocols are open for communications, such as tcp/80, ftp/21=20
-> > > from the internet Then I use stateful inspection, accepting=20
-> > > estabished,related. However, the nessus scanner is reporting this:
-> > > -----
-> > > The remote host does not discard TCP SYN packets which
-> > > have the FIN flag set.
-> > >=20
-> > > Depending on the kind of firewall you are using, an
-> > > attacker may use this flaw to bypass its rules.
-> >=20
-> > The better solution would be to only accept SYN Packets which=20
-> > actually are SYN packets. iptables -A FORWARD -p tcp --syn -m=20
-> > state --state NEW -s whatever -j ACCEPT
-> >=20
-> > But ....
-> > This SYN/FIN stuff comes from an old packetfilter=20
-> > implementation which implemented a very simple SYN test: Is=20
-> > only the SYN-Bit set? Yes, then it is a SYN-packet! If you=20
-> > relied on this test to implement the firewall-rules on this=20
-> > non-stateful packetfilter, you would create two rules:
-> >=20
-> > Allow everything from the inside to the outside including=20
-> > SYN. Allow everything from the outside to the inside but SYN.
-> >=20
-> > Now, TCP-connection could only be initiated (meaning a SYN could be
-> > send) from the inside, right? No, you could send a SYN from=20
-> > the outside, once you have figured out that you needed a=20
-> > second flag set.=20
-> > Well, I wonder what happens if you use SYN/FIN? The firewall=20
-> > passes it and most (all?) operating systems ignore the FIN=20
-> > and operate on the SYN. Connection Established!
-> >=20
-> > Remember this is only possible on non-stateful packetfilters=20
-> > (read: These packetfilters do not use connection tracking)
-> >=20
-> > Once you use connection tracking that code decides in which=20
-> > direction the connection is initiated. It is not just a=20
-> > matter of the SYN-packet.
-> >=20
-> > Cheers,
-> >=20
-> > Ralf
-> > --=20
-> > Ralf Spenneberg
-> > RHCE, RHCX
-> >=20
-> > Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.co=
-m
-> > IPsec-Howto				     http://www.ipsec-howto.org
-> > Honeynet Project Mirror:                    =20
-> > http://honeynet.spenneberg.org
-> >=20
-> >=20
---=20
-Ralf Spenneberg
-RHCE, RHCX
+------_=_NextPart_001_01C35CAF.D9734BF0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+
+
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>Hi=20
+all,</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D892322806-07082003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>My =
+first question in=20
+a very very long time.. ;)</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D892322806-07082003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>I have =
+2 firewalls=20
+which are soon to be running HAlinux. Both external interfaces are eth1 =
+on both=20
+machines and running a 10.10.10.1 and 10.10.10.2 for each firewall for=20
+HAlinux.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>When =
+HAlinux starts=20
+up, the scripts add the external IP to the main firewall (FWa) using =
+iproute2 so=20
+eth1 will always be the external device/IP...</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN =
+class=3D892322806-07082003></SPAN></FONT><FONT=20
+face=3DArial size=3D2><SPAN =
+class=3D892322806-07082003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console" size=3D2><SPAN=20
+class=3D892322806-07082003>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+HA-Linux</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Lucida Console" size=3D2><SPAN=20
+class=3D892322806-07082003>&nbsp;&nbsp;v-- aa.bb.cc.dd =
+--v</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Lucida Console" size=3D2><SPAN=20
+class=3D892322806-07082003>10.10.10.1&nbsp;&nbsp; =
+10.10.10.2</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Lucida Console" size=3D2><SPAN=20
+class=3D892322806-07082003>----------&nbsp;&nbsp; =
+----------</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Lucida Console" size=3D2><SPAN =
+class=3D892322806-07082003>|&nbsp;=20
+FWa&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp; FWb&nbsp; =
+|</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Lucida Console" size=3D2><SPAN=20
+class=3D892322806-07082003>----------&nbsp;&nbsp; =
+----------</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Lucida Console" size=3D2><SPAN=20
+class=3D892322806-07082003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Lucida Console" size=3D2><SPAN=20
+class=3D892322806-07082003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>The 2 =
+firewalls use=20
+the same config files/firewall scripts..etc.etc..so for =
+the&nbsp;iptables script=20
+to work,&nbsp;firewallb looks at eth1 using a script and gets the last =
+IP added=20
+to the interface as we don't want it to firewall based on the 10.10.10.X =
+
+addresses assigned for HAlinux...</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D892322806-07082003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>The =
+script below=20
+grabs the correct IP of aa.bb.cc.dd from firewalla and firewallb (when =
+fallover=20
+occurs). And all rules work with the "-d $EXTIP" being=20
+used..</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D892322806-07082003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D892322806-07082003>getipfromdevice()<BR>{<BR>&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;=20
+DEV=3D"$1"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEVIP=3D`ip =
+addr show dev=20
+$DEV | grep "inet" |tail -1 |awk {'print $2'} | cut -f1 -d=20
+"/"`<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo=20
+"$DEVIP"<BR>}</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D892322806-07082003>EXTDEV=3Deth1</DIV></SPAN></FONT>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D892322806-07082003>EXTIP=3Dgetipfromdevice =
+$EXTDEV</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D892322806-07082003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>Now my =
+main=20
+problem..</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D892322806-07082003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>IPSEC =
+has to be told=20
+which interface to use for the VPN.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>I use=20
+"interface=3Deth1" and it&nbsp;grabs 10.10.10.X which isn't correct and =
+you can't=20
+tell ipsec to use another IP on the =
+interface(AFAIK).</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>I =
+found&nbsp;ipsec=20
+works with "interface=3Deth1:1" but then the firewall scripts are a =
+muck.. I=20
+prefer not to use aliasing if possible...</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D892322806-07082003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D892322806-07082003>any =
+other ideas=20
+or&nbsp;best solution??</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D674251008-03092002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D674251008-03092002>Thanks,</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D674251008-03092002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D674251008-03092002><SPAN=20
+class=3D892322806-07082003>George =
+Vieira.</SPAN></SPAN></FONT></DIV></BODY></HTML>
+
+------_=_NextPart_001_01C35CAF.D9734BF0--
 
