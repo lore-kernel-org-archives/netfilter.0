@@ -1,12 +1,12 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: Secuirty sites
-Date: Thu, 05 Dec 2002 19:41:22 +0100
+From: Ilguiz Latypov <ilguiz@nit.ca>
+Subject: Re: HELP PPTP CONNTRACK MULTIPLE CLIENTS
+Date: Thu, 5 Dec 2002 14:58:25 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DEF9DD2.6060000@gmx.de>
-References: <004a01c29c6d$3466b5f0$e6353fc1@nexor.co.uk>
+Message-ID: <Pine.LNX.4.44.0212051454220.11714-100000@localhost.localdomain>
+References: <3DEF504A.F4099ACE@multitech.co.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3DEF504A.F4099ACE@multitech.co.in>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,36 +16,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Adharsh Praveen R <adarsh@multitech.co.in>
+Cc: netfilter@lists.netfilter.org
 
 
-Hello Wasim,
+Adharsh,
 
-If you're looking for something like a online port scanner then have a
-look at
-http://scan.sygate.com/ . Makes TCP-, UDP-Scan and a few more.
+Philip has posted a patch to the netfilter patch-o-matic PPTP patch.  The
+latter seems to apply well against the stock Linux kernel 2.4.20 from
+kernel.org.  All it takes is patching the netfilter patch first, then
+running the POM runme script with the extra parameter.
 
-Regards
-Sven
+The PoPToP server itself may need a modification with regard to call ID
+allocation, see
 
-Wasim Bashir wrote:
+http://sourceforge.net/tracker/index.php?func=detail&aid=648880&group_id=44827&atid=441003
 
- >Hi,
- >
- >Which security sites do you recommend to check the security of a 
-firewall ?
- >
- >Thanks
- >
- >Wasim
- >
- >
- >
- >
- >
+--
+Ilguiz Latypov
+Net Integration Technologies, Inc
+
+tel. +1 (514) 281 9191 x 117
+
+On Thu, 5 Dec 2002, Adharsh Praveen R wrote:
 
 
-
+> I saw a patch in December's list from Philip.
+>
+> I would like to know the steps involved in getting PPTP conntrack work.
+>
+> Which patch I should apply first, is it the one from netfilter.org
+> pptp-conntrack-nat.patch?
 
 
