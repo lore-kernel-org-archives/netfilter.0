@@ -1,13 +1,14 @@
-From: Carlos Carvalho <carlos@fisica.ufpr.br>
-Subject: Re: per-connection byte counts
-Date: Sun, 18 Jan 2004 18:16:24 -0200
+From: <misiu_@gmx.de>
+Subject: AW: [despammed] Netfilter as an application.
+Date: Sun, 18 Jan 2004 21:55:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <16394.59800.443846.342711@fisica.ufpr.br>
-References: <20040118140903.GA3351@glympton.airtime.co.uk>
+Message-ID: <NAENJKNIDEBCFOJEICJKOENACAAA.misiu_@gmx.de>
+References: <200401172131.44177.mrakotom@free.fr>
+Reply-To: <misiu_@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040118140903.GA3351@glympton.airtime.co.uk>
+In-Reply-To: <200401172131.44177.mrakotom@free.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +18,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Adam Rice <adamrice@ntlworld.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Adam Rice (adamrice@ntlworld.com) wrote on 18 January 2004 14:09:
- >I'd like to be able to get per-connection byte-counts from the kernel, so I
- >can create a sort of top program showing what processes and users are
- >currently using the network and how much. Since I want this to be something I
- >can keep running all the time, I don't want to do it by snooping the
- >interface. Is there some way to do this with netfilter? Sadly
- >/proc/net/ip_conntrack doesn't appear to provide this information.
+Hi,
 
-iftop and iptraf give statistics per interface, per machine and per
-traffic type plus other interesting info. That's all that can be
-obtained from a firewall since you cannot retrieve user info from
-another machine. The performance impact is usually negligible.
+you can use fwbuilder and sudo...
+so a normal user can use tables
+or did i miss something?
 
-If you want to run the monitor in a multi-user system where users are
-logged in you can associate the network connections with processes and
-users but I don't know a program that does it. This is a "me too"...
+
+-----Urspr=FCngliche Nachricht-----
+Von: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]Im Auftrag von
+Rakotomandimby Mihamina
+Gesendet: Samstag, 17. Januar 2004 21:32
+An: netfilter@lists.netfilter.org
+Betreff: Re: [despammed] Netfilter as an application.
+
+
+On Friday 16 January 2004 17:55, Andreas Kretschmer wrote:
+> > It would be a standard user program which
+> > a person with normal privelges could compile and run.
+> Very bad. Every can modify the rules. I think, you search 'Zonealarm for
+> Linux'.
+
+Iptables is already simple to use . there is also shorewall that can make
+the
+use easier ( for some )
+
+Just think what would be the weird if any user can add the firewall rule on
+a
+box . Do you really think something will work ?
+
+> > What would it do? It could do the same things that
+> > netfilter does...i.e. filter packets/NAT etc. However
+> Why?
+
+I think you should contribute to netfilter's documentation and give some
+simple and explained rules examples , you'll see that iptables will be
+simple
+ti use ... :-)
+
+> > Does such a thing exist?
+>
+> I hope: no.
+
+the same to me .
+
+
+--
+Rakotomandimby Mihamina Andrianifaharana
+Tel : +33 2 38 76 43 65
+http://stko.dyndns.info/site_principal/Members/mihamina
+
+
 
