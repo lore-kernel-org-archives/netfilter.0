@@ -1,9 +1,10 @@
-From: gfzhang@njnu.edu.cn (gfzhang)
-Subject: ip_conntrack_max table full
-Date: Mon, 28 Apr 2003 21:00:14 +0800
+From: "Thiago Lima " <thiagolima@webforce.com.br>
+Subject: SNAT firewall maybe compromised. Misconfiguration?
+Date: Mon, 28 Apr 2003 11:23:48 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030428130014.M2389@pine.njnu.edu.cn>
+Message-ID: <00a501c30d91$cf0b7740$1800a8c0@medusa>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,40 +16,80 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
 
-i'm using iptables as NAT svr to my UNIV. my system is:
-   2*xeron 2.4GHZ
-   2GB   mem
 
-after some time about a day I found that there is logging 
-messege on my screen like this :
-    Ip_conntrack table full drop pack
-   tones of such messages and all of the LAN user can't get
-access to internet.
+    I'm using iptables v1.2.6a (RPM from redhat) in a firewall that has
+5 external ips and lots of machines in the internal network.
 
-cat  /proc/sys/net/ipv4/ip_conntrack_max 
- 65536
+    iptables should port foward services based on external ip/port to
+some internal machines and port. 
 
-when I cat /proc/net/ip_conntrack I found 
-a lot of dead transformed items the TIMEOUT is about 5days
-obviously nobody is using my box but such items will last 
-for a long time before I reboot my box!
-how can i flush them?
+    Everything is working fine, but I've seen entries in my internal
+servers logs to 192.168.1.254 and my internal network is 192.168.0.254.
+Ping shows that 192.168.1.254 does not exist.  So I'm thinking that
+maybe my firewall script has a hole. And someone discoved it.    
 
-in ip_conntrack_proto.c 
-I found the default timeout is 5DAYS
+    My external interface is eth0 (200.200.200.111~115 eth0:1~eth0:5)
+and the internal is eth1 (192.168.0.254) 
 
-I don't think it's necessary for me to maintain a tranform 
-for so long .
-   maybe I should change the default TIMEOUT TO 1DAY
-   anybody can help me to deal with it?
+	Can someone point me if I'm doind something very wrong here?
 
-   thanks in advance.
+	Thanks alot
+	Thiago Lima.
+
+	
+Here goes my fw script. 
+
+-- fw.sh
+
+echo -n  Starting firewal ..
+# enable packet forwarind
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo -n .
+
+# clear all tables
+/sbin/iptables -t nat -F
+/sbin/iptables -F
+echo -n .
 
 
+# eth0 is the external interface. blocking packages to internal net
+/sbin/iptables  -A INPUT -d 192.168.0.0/24 -i eth0  -j DROP
+echo -n .
 
+# install snat
+/sbin/iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source
+200.200.200.110
+/sbin/iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/24 -j SNAT
+--to 200.200.200.110
+echo -n .
+
+# port forwarding
+
+# http goes to server #1
+/sbin/iptables  -A PREROUTING -t nat -p tcp -d 200.200.200.111 --dport
+80 -j DNAT --to 192.168.0.1:80
+/sbin/iptables  -A PREROUTING -t nat -p tcp -d 200.200.200.111 --dport
+443 -j DNAT --to 192.168.0.1:443
+echo -n .
+
+## pop goes to server #2
+/sbin/iptables  -A PREROUTING -t nat -p tcp -d 200.200.200.112 --dport
+110 -j DNAT --to 192.168.0.4:110
+echo -n .
+
+# DNS goes to server #3
+/sbin/iptables  -A PREROUTING -t nat -p tcp  -d 200.200.200.114 --dport
+53 -j DNAT --to 192.168.0.6
+/sbin/iptables  -A PREROUTING -t nat -p udp  -d 200.200.200.114 --dport
+53 -j DNAT --to 192.168.0.6
+echo -n .
+
+# enables access from internet net to external virtual servers
+/sbin/iptables  -A POSTROUTING -t nat -d 192.168.0.0/24 -s
+192.168.0.0/24 -j SNAT --to 192.168.1.254
+--cut
 
 
