@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: managing LOG files
-Date: Fri, 22 Oct 2004 14:15:38 -0400
+From: "Marco" <marco@noope.de>
+Subject: iptables source net and layer7
+Date: Sat, 23 Oct 2004 14:17:50 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041022181537.GA15333@bender.817west.com>
-References: <20041022164033.12322.qmail@web21523.mail.yahoo.com>
+Message-ID: <200410231218.i9NCI4r9028417@post.webmailer.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20041022164033.12322.qmail@web21523.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +16,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Fri, Oct 22, 2004 at 09:40:33AM -0700, kate wrote:
-> I have a firewall script that only allows
-> pre-determined Ip addresses to attempt logon.
-> Allowable access gets logged in /var/log/secure while
-> TCP rules dump all other traffic, and get LOGGED in
-> /var/log/messages. - This is a Home LAN, and that's a
-> lotta data !
-> 
-> Is there a way of redirecting all this to a separate
-> file? Is there a better way to deal with all this?
-> 
-> my rules include-
-> 
-> # LOG rules go to /var/log/messages
-> iptables -A INPUT -m limit --limit 1/sec --limit-burst
-> 3 -j \
-> 	LOG --log-level 4 --log-prefix "FW DROP INPUT: "
-> 
-> thanks in advance
-> kate
+Hello!
 
-the most complete way to do this is to use syslog-ng as your system
-logger and use its filter capabilities to send all the netfilter
-messages to a dedicated file; i use something along the lines of:
+I want to mark all outgoing traffic depending on its service.
+Example:
 
-source src {
-        internal();
-};
-filter f_iptables {
-	facility(kern) and match("IN=") and match("OUT=");
-};
-destination firewall { file("/var/log/firewall"); };
-log { source(src); filter(f_iptables); destination(firewall); };
+eth0 = 192.168.0.1 (local interface)
+ppp0 = 80.10.10.10 (internet 1)
+ppp1 = 80.10.10.11 (internet 2)
 
-and yes--this is all completely stolen from SuSE's config files...
+http traffic over internet 1 (ppp0) ssh traffic to interface 2 (ppp1).
 
--j
+I tried the following (routing and rules are set):
+iptables -A PREROUTING -t mangle -s 192.168.0.0/24 -p tcp --dport 80 -j MARK
+--set-mark 1
+iptables -A PREROUTING -t mangle -s 192.168.0.0/24 -p tcp --dport 22 -j MARK
+--set-mark 2
 
--- 
-Jason Opperisano <opie@817west.com>
+This works fine, but only for standard ports. Now I would like to use
+layer7:
+
+iptables -t mangle -A PREROUTING -s 192.168.0.0/24 -m layer7 --l7proto http
+-j MARK --set-mark 1
+iptables -t mangle -A PREROUTING -s 192.168.0.0/24 -m layer7 --l7proto ftp
+-j MARK --set-mark 2
+
+Do not work. An iptables -t mange -L -n -v does not show traffic on the MARK
+rules.
+
+But if I do this without the source rule:
+
+iptables -t mangle -A PREROUTING -m layer7 --l7proto http -j MARK --set-mark
+1
+
+The traffic is marked. Sure, I can not open a website because the incoming
+traffic is also marked and will go out to ppp0, but the layer7 works.
+
+
+Now my question:
+
+If I would like to use layer7, is there a way to use a source rule too?
+Is there an other way to mark with layer7 only the http traffic with source
+net 192.168.0.0/24?
+
+
+Kernel 2.4.27 patched with kernel-2.4-layer7-0.9.1.patch
+iptables 1.2.11 patched with iptables-layer7-0.9.1.patch
+
+
+
+
+Thanks,
+
+Marco
+
+
 
