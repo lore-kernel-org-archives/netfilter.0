@@ -1,11 +1,13 @@
-From: Gustav Svensson <gurra16@spray.se>
-Subject: Control outbound access on a per-application level
-Date: Wed, 2 Oct 2002 15:46:01 +0000 (UTC)
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: Firewall Question
+Date: Wed, 02 Oct 2002 08:48:46 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1033569217024171@spray.se>
+Message-ID: <001901c26a2b$322070c0$6601a8c0@s3ac>
+References: <001901c269a7$44401320$b6a97942@pacbell>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=_NextPart_Caramail_0241711033569217_ID"
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <001901c269a7$44401320$b6a97942@pacbell>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,35 +17,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
---=_NextPart_Caramail_0241711033569217_ID
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Is it possible to set "outbound" rules based on what binary application it is that
-wants to access the Internet?
-Just like what I'm used to when I run win32. In every firewall application there, I
-get a message when some program is trying to access the internet. Then I can decide
-whether to procede the action, or block it. On Linux I see nothing like this.
-I'm having a concern with the RealPlayer. I would like to block it to reach any other
-addresses but those to my favourite stations.
-Sure, I could set up a rule for the port that RealPlayer is supposed to use, but what
-guarantee do I have that it isn't capable of using some other port, like 80 for example?
-Assume it does use the port 80. Then it would be imposible to stop without a rule like
-mentioned here. Because I would want Galeon to have access to any address on port 80,
-so I have to leave it wide open. It would be better if I could allow this privilege to
-Galeon only, not to any program that uses port 80. Is this feasible, if so how?
-
-Gustav
-______________________________________________________
-H=E4r b=F6rjar internet! 
-Skaffa gratis e-mail och internet p=E5 Spray http://www.spray.se
+Content-Type: text/plain; charset="us-ascii"
+To: 'Bishop' <bishop@pacbell.net>, stewart.thompson@shaw.ca, 'HareRam' <hareram@sol.net.in>, netfilter@lists.netfilter.org
 
 
---=_NextPart_Caramail_0241711033569217_ID--
+> 
+>         I have  a question for you guys. I will installing a 
+> firewall on my linux box soon. My question is would it be 
+> better for me to download a firewall software off then net , 
+> or should I build my own firewall from scratch. Let me know 
+> what you guys think, and which one would be better.
+
+I'm fairly new to firewall, my last successful attepmed was using
+Iptables, and the Strong Firewall script as a template. After learning
+more about IPTables I definitely say start with a proven script then
+follow It line for line making sure you understand it.
+
+
+http://www.e-infomax.com/ipmasq/howto/c-html/stronger-firewall-examples.
+html#RC.FIREWALL-2.4.X-STRONGER
 
 
