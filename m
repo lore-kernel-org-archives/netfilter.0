@@ -1,13 +1,13 @@
-From: Micha Silver <micha@arava.co.il>
+From: Gavin Hamill <gdh@acentral.co.uk>
 Subject: Re: Redirecting outgoing SMTP from LAN to another LAN server
-Date: Sat, 15 May 2004 14:42:21 +0300
+Date: Sat, 15 May 2004 13:27:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40A6021D.9030201@arava.co.il>
-References: <20040429095949.GB22172@acentral.co.uk> <20040429144757.GA6534@zion.homelinux.com> <200405131346.12621.gdh@acentral.co.uk> <200405131442.24566.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040515122701.GA21149@acentral.co.uk>
+References: <20040429095949.GB22172@acentral.co.uk> <20040429144757.GA6534@zion.homelinux.com> <200405131346.12621.gdh@acentral.co.uk> <200405131442.24566.Antony@Soft-Solutions.co.uk> <40A6021D.9030201@arava.co.il>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405131442.24566.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
+In-Reply-To: <40A6021D.9030201@arava.co.il>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
-> On Thursday 13 May 2004 1:46 pm, Gavin Hamill wrote:
-> 
-> 
->>This is just a final followup to say thanks for the advice, and to report
->>on the final solution.
->>
->>eth0 is the 0utside, and eth1 is the 1nside (that's what I use to stop
->>confusing myself...) and 10.0.0.254 is the firewall and default gateway for
->>all LAN machines
->>
->>$ iptables -t nat -A PREROUTING -p tcp -i eth1 -s ! 10.0.0.253 --dport 25
->>-j DNAT --to 10.0.0.253:25
->>$ iptables -t nat -A POSTROUTING -p tcp -s 10.0.0.0/24 -d 10.0.0.253
->>--dport 25 -j SNAT --to 10.0.0.254
->>
->>This way, LAN users trying to connect directly to an external mail server
->>get sent to the MTA on 10.0.0.253, and 10.0.0.253 itself still has full
->>access to 'real' port 25 in order that it can deliver mails! :)
->>
+On Sat, May 15, 2004 at 02:42:21PM +0300, Micha Silver wrote:
+> Gavin:
+> Why would your LAN users ever need to send SMTP to anywhere other 
+> than your MTA?
 
-Gavin:
-Why would your LAN users ever need to send SMTP to anywhere other 
-than your MTA? With the above rules aren't you allowing an 1nside (I 
-like that 0 1 idea!) computer, infected with a worm to propagate the 
-virus?
-I apologize if I missed something in your original post that 
-explains this.
+Mostly as a convenience. We have dozens of LAN machines with an 
+assortment of SMTP server settings. We also have some notebooks that 
+roam between different sites, and I deemed it more appropriate to 
+force everyone to use the local MTA than to have to manually reconfigure 
+everything.
 
---Micha
+> With the above rules aren't you allowing an 1nside (I 
+> like that 0 1 idea!) computer, infected with a worm to propagate the 
+> virus?
 
->>Cheers,
->>Gavin.
-> 
-> 
-> I'd just like to say that it's very nice to see a posting like this here, 
-> showing the working solution (together with an explanation of why it works, 
-> and exactly what it does), since this sort of thing is very useful to people 
-> searching the archives in future.
-> 
-> Find a working solution which someone has bothered to document is much more 
-> helpful than finding someone with a similar problem, and having to go through 
-> half the same effort of solving it, so thanks Gavin for providing this info.
-> 
-> Regards,
-> 
-> Antony.
-> 
+Yes and no. Yes by allowing people to theoretically connect to any 
+external MTA, the virus can propogate, but this is weighed against the 
+monitoring I have in place so that the number of mails processed and 
+load average on the MTA machine will spike up, and this allows me to 
+quickly identify the offending machine and firewall it out completely 
+whilst the virus is neutralised..
+
+Thinking about it, I could simply firewall things more so that only
+"our" MTAs are permitted... hmm I might do that actually - thanks for 
+the train of thought.
+
+I'm glad you like the 0utside/1nside thing... it even holds (to a lesser 
+extent) when you have eth2 configured as the 'DM2' interface :)
+
+Cheers,
+Gavin.
 
 
