@@ -1,11 +1,9 @@
-From: "PiSiC..." <pisic@service.agress.ro>
-Subject: Re: possibly annoing ...
-Date: Fri, 28 Feb 2003 13:42:44 +0200
+From: =?ISO-8859-1?Q?Martin_K=F6hling?= <mk@lw1.cc-computer.de>
+Subject: REJECTing ident requests (was: FTP problems)
+Date: Fri, 28 Feb 2003 14:06:32 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000f01c2df1e$84c04040$c80da8c0@service.agress.ro>
-References: <000101c2dee0$78f1fa80$fd0aa8c0@winxp>
+Message-ID: <Pine.LNX.4.33.0302281404260.9684-100000@lw2.cc-computer.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,72 +14,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Matt Hellman <mhellman@taxandfinance.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter <netfilter@lists.netfilter.org>
 
- I tried this ... and doesn't seem to work... but i'm afraid my firewall
-script is kinda messy
- I realized that i use MASQUERADE instead of SNAT.
- Can you give me a script or a link where to get one for my case ?
+Hi!
 
-I will show the stuff that i have :
+> Am Don, 2003-02-27 um 21.23 schrieb Del Winiecki:
+> Might be an issue with identd. Many ftp servers do reverse identd lookups on
+> the client. If you drop these on your firewall they have to wait for the timeout.
+> Reject identd on your firewall:
+> iptables -A INPUT -p tcp --dport 113 -j REJECT
 
-          eth0(aaa.bbb.ccc.ddd)
-            |
-           fw
-            |
-           eth1(192.168.13.1)
-            |
-           switch
-            |
-           LAN
- - eth0 has a staticaly assigned IP by my ISP.
- - eth1 has an private IP staticaly assigned by me.
- - on LAN i have a machine (192.168.13.199) which runs a webserver which i
-want to be accesible from the world.
+Better use "--reject-with tcp-reset".
 
-I think that i should use Static NAT for my machines inside LAN.
-I have a firewall script that i just realized that was created for Dynamic
-NAT.
-I'm running Slackware 8.0 with kernel 2.4.5(all the modules for netfilter
-are compiled into kernel(i don't need modprobe)).
+Quite some time ago, I had strange problems with some (broken?) mail
+servers refusing to accept mail when I simply REJECTed ident connects -
+apparently they didn't like the default ICMP error message
+(icmp-port-unreachable, I think)...
 
-I hope i was clear enough.
-
-           Thank you four your efforts,
-
-
-Danila Octavian
------ Original Message -----
-From: Matt Hellman <mhellman@taxandfinance.com>
-To: 'PiSiC...' <pisic@service.agress.ro>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Friday, February 28, 2003 6:18 AM
-Subject: RE: possibly annoing ...
-
-
-> I'll give you an example. It assumes a default drop policy. Also, INTIF =
-> internal interface, HTTP1 = external ip address clients will connect to
-> (www.mydomain.com resolves to this address), and HTTPDMZ1 = internal web
-> server.
->
-> ##### Setup prerouting rules to route Internet traffic internally
-> ## Change the destination of external $HTTP requests to the DMZ HTTP
-server
-> $ipt -t nat -A PREROUTING -i $EXTIF -p tcp -d $HTTP1 --dport 33333 -j DNAT
-> --to $HTTPDMZ1:80
->
-> ## Allow established,related forward traffic
-> $ipt -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> ## Allow new http forward traffic from Internet to servers in the DMZ
-> $ipt -A FORWARD -m state --state NEW -i $EXTIF -p tcp -d $HTTPDMZ1 --dport
-> 80 -j ACCEPT
-> $ipt -A FORWARD -m state --state NEW -i $EXTIF -p tcp -d $SMTPDMZ --dport
-25
-> -j ACCEPT
-
-
+Martin
 
 
