@@ -1,11 +1,13 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: NuFW 1.0-rc1 is available
-Date: Wed, 16 Feb 2005 00:13:08 +0100
-Message-ID: <1108509188.5026.20.camel@porky>
+From: Mikhail Zotov <e-boogie@yandex.ru>
+Subject: Re: Dropping network "noise"
+Date: Wed, 16 Feb 2005 10:34:50 +0300
+Message-ID: <200502161034.50448.e-boogie@yandex.ru>
+References: <200502130928.41225.e-boogie@yandex.ru>
+	<20050215161520.GA19496@bender.817west.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-wk8pIUwx7DrSNYEbR6i9"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050215161520.GA19496@bender.817west.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,54 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
+On Tuesday 15 February 2005 19:15, Jason Opperisano wrote:
+> On Sun, Feb 13, 2005 at 09:28:41AM +0300, Mikhail Zotov wrote:
+> > I have a Linux machine (with a static routable IP address)
+> > connected to a windoops LAN.  As is known, there is certain
+> > "noise" in windoops networks, which can be silently dropped
+> > by a rule like this:
+> > 
+> > iptables -A INPUT -p udp --dport 135:139 -j DROP
+> > 
+> > I have found that this "noise" can also be effectively blocked
+> > by the following rule:
+> > 
+> > iptables -A INPUT -d ! $IP.ADDRESS.OF.MY_BOX -j DROP
+[snip]
+> you can also use the pkttype match to drop broadcast/multicast traffic,
+> without having to calculate the broadcast address for every interface,
+> and having another rule for the all-ones broadcast:
+> 
+>   -m pkttype --pkt-type broadcast -j DROP
+>   -m pkttype --pkt-type multicast -j DROP
+> 
+> -j
 
---=-wk8pIUwx7DrSNYEbR6i9
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Great.  Thanks a lot for the idea.  These rules call another question:
+Are broadcast/multicast messages used in Linux/UNIX or other than
+windoops networks?  If so, will not these rules break anything?
+I haven't seen such rules in any iptables guides/scripts available in
+the Internet.
 
-Hi,
-
-The NuW core team proudly announces the availability of NuFW 1.0-rc1.
-
-NuFW (http://www.nufw.org) is an authenticating firewall for GNU/Linux
-which extends the capabilities of Netfilter.
-
-It brings the notion of user to the level of packet filtering. Policy
-such as :
-- john can connect to serveur imap if he uses evolution on Linux.
-can now be securely achieved by a single Acls and this, even on
-multiuser systems.
-
-This release is the first of a new stable branch, which performs
-encryption of all flows : nufw-nuauth flows as well as client-nuauth
-ones. The cache system is now considered stable and tested, and greatly
-improves performances, compared to the older 0.8.
-
-For an almost detailed list of new features see :
-	http://nufw.org/proto2_and_more.html
-
-For a quick testing of this release please read the following page :
-	http://nufw.org/testing.html
-
-BR,=20
---=20
-Eric Leblond <eric@regit.org>
-NuFW, Now User Filtering Works : http://www.nufw.org
-
---=-wk8pIUwx7DrSNYEbR6i9
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-
-iD8DBQBCEoIDnxA7CdMWjzIRApkZAKCNEYF/vC2t1I35Cx7Rs3CdvWu9OACdHClZ
-IGA1fzm55hFImj6oe4nIv8w=
-=yOi4
------END PGP SIGNATURE-----
-
---=-wk8pIUwx7DrSNYEbR6i9--
-
+Regards,
+Mikhail
 
