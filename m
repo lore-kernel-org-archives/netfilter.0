@@ -1,8 +1,9 @@
 From: "Eric Poulin" <epoulin@onepost.net>
-Subject: Problem compiling Iptables 1.2.11 on Kernel 2.6.7
-Date: Tue, 6 Jul 2004 15:28:53 -0400
+Subject: Re: Problem compiling Iptables 1.2.11 on Kernel 2.6.7
+Date: Tue, 6 Jul 2004 16:39:59 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009001c4638f$7a173170$800101df@lvl.digidyne.ca>
+Message-ID: <015601c46399$68674140$800101df@lvl.digidyne.ca>
+References: <009001c4638f$7a173170$800101df@lvl.digidyne.ca>
 Reply-To: "Eric Poulin" <epoulin@onepost.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -19,43 +20,64 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello Guys,
+Well, it turned out I need to apply the 08_linux-2.6.7-user_attr.patch from
+patch-o-matic, however, it is failing since it needs to  apply
+03_linux-2.6.5.patch, and it failed on the diff test... There is some
+rejects according to the
+output. Can't force it either... :(
 
-Any people succesfully compiled iptables 1.2.11 on 2.6.7?  Oddly, even
-without applying any patch-o-matics packages, I'm getting the following
-error while doing the make:
-
-# make BINDIR=/sbin KERNEL_DIR=/usr/src/linux
-Making dependencies: please wait...
-Extensions found: IPv4:ROUTE IPv4:recent IPv6:ROUTE IPv6:ah IPv6:esp
-IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
-gcc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSIO
-N=\"1.2.11\"  -fPIC -o extensions/libipt_ah_sh.o -c extensions/libipt_ah.c
-In file included from include/libiptc/libiptc.h:6,
-                 from include/iptables.h:5,
-                 from extensions/libipt_ah.c:8:
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: warning: no
-semicolon at end of struct or union
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: error: syntax
-error before '*' token
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:259: error: syntax
-error before '}' token
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: type
-defaults to `int' in declaration of `DECLARE_MUTEX'
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
-parameter names (without types) in function declaration
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
-`DECLARE_MUTEX' declared `static' but never defined
-make: *** [extensions/libipt_ah_sh.o] Error 1
-
-
-I'm getting this with a vanilla source code of the kernel and iptables. I
-was getting those with the patch-o-matic installed, but I wanted to narrow
-it down. Kernel can compile easily those modules that are coming from
-iptables 1.2.9.
-
-Any idea?
+Interesting
 
 Eric
+----- Original Message ----- 
+From: "Eric Poulin" <epoulin@onepost.net>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, July 06, 2004 3:28 PM
+Subject: Problem compiling Iptables 1.2.11 on Kernel 2.6.7
+
+
+> Hello Guys,
+>
+> Any people succesfully compiled iptables 1.2.11 on 2.6.7?  Oddly, even
+> without applying any patch-o-matics packages, I'm getting the following
+> error while doing the make:
+>
+> # make BINDIR=/sbin KERNEL_DIR=/usr/src/linux
+> Making dependencies: please wait...
+> Extensions found: IPv4:ROUTE IPv4:recent IPv6:ROUTE IPv6:ah IPv6:esp
+> IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
+>
+gcc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSIO
+> N=\"1.2.11\"  -fPIC -o extensions/libipt_ah_sh.o -c extensions/libipt_ah.c
+> In file included from include/libiptc/libiptc.h:6,
+>                  from include/iptables.h:5,
+>                  from extensions/libipt_ah.c:8:
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: warning: no
+> semicolon at end of struct or union
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: error: syntax
+> error before '*' token
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:259: error: syntax
+> error before '}' token
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: type
+> defaults to `int' in declaration of `DECLARE_MUTEX'
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
+> parameter names (without types) in function declaration
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
+> `DECLARE_MUTEX' declared `static' but never defined
+> make: *** [extensions/libipt_ah_sh.o] Error 1
+>
+>
+> I'm getting this with a vanilla source code of the kernel and iptables. I
+> was getting those with the patch-o-matic installed, but I wanted to narrow
+> it down. Kernel can compile easily those modules that are coming from
+> iptables 1.2.9.
+>
+> Any idea?
+>
+> Eric
+>
+>
+>
+>
 
 
