@@ -1,13 +1,14 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
+From: Pascal Italiaander <pc-secure@home.nl>
 Subject: Re: lots of ACK/FIN filtering (DPT=80) at web server.
-Date: 29 May 2003 11:30:49 +0200
+Date: Thu, 29 May 2003 12:11:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054200648.11165.26.camel@raylinux.internal>
-References: <Sea1-F228m4ZQJXs7k40003ab30@hotmail.com>
+Message-ID: <200305291211.01431.pc-secure@home.nl>
+References: <Sea1-F98nnh99RhOQmI000379a3@hotmail.com> <1054185938.13730.183.camel@raylinux.internal>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-hsAi5wtOZd4XBkpbyRs3"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Sea1-F228m4ZQJXs7k40003ab30@hotmail.com>
+In-Reply-To: <1054185938.13730.183.camel@raylinux.internal>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,115 +18,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: SB CH <chulmin2@hotmail.com>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@lists.netfilter.org
 
-
---=-hsAi5wtOZd4XBkpbyRs3
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2003-05-29 at 11:17, SB CH wrote:
-> Thanks for your kind reply.
->=20
-> >Those are 'broken' browsers that do not follow the http standard
-> >properly.
-> which browers? Netscape or Opera? mostly use MSIE, right?
->=20
-Just IE I think ...
-
->=20
-> >Stop using non-standards complient browsers. Sometimes changes to
-> >standards are not 'enhancements'.
-> There are so lots of people which use different browser,=20
-> then you mean that there is not any solution to solve this problem at=20
-> iptables level?
->=20
-Sure, just ACCEPT the ACK-FIN packets.
-
-> =20
-> Thanks for your reply.
->=20
->=20
->=20
-> From: Ray Leach <raymondl@knowledgefactory.co.za>
-> To: Netfilter Mailing List <netfilter@lists.netfilter.org>
-> Subject: Re: lots of ACK/FIN filtering (DPT=3D80) at web server.
-> Date: 29 May 2003 07:25:38 +0200
->=20
+Op donderdag 29 mei 2003 07:25, schreef Ray Leach:
 > Hi there
->=20
+>
 > On Wed, 2003-05-28 at 10:46, SB CH wrote:
->  > Hello, all.
->  >
->  > I have operated linux web server and executed iptables 1.2.8.
->  >
->  > and I have found so lots of logs like this ACK,FIN filtering.
->  > Surely, ACK-FIN is a connection closing step, so there is no problem f=
-or
->  > customers but I would like to know why this happens!!
->  > I guess that the timeout of the connection tracking related.
->  >
+> > Hello, all.
+> >
+> > I have operated linux web server and executed iptables 1.2.8.
+> >
+> > and I have found so lots of logs like this ACK,FIN filtering.
+> > Surely, ACK-FIN is a connection closing step, so there is no problem for
+> > customers but I would like to know why this happens!!
+> > I guess that the timeout of the connection tracking related.
+>
 > Those are 'broken' browsers that do not follow the http standard
 > properly.
->  >
->  > May 25 12:33:05 www kernel: IN=3Deth0 OUT=3D SRC=3D210.126.xxx.xx
->  > DST=3D211.10.xx.xx LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D118 ID=3D3376=
- DF PROTO=3DTCP
->  > SPT=3D3608 DPT=3D80 WINDOW=3D63520 RES=3D0x00 ACK FIN URGP=3D0
->  >
->  > Do you have any problems like me?
+>
+> > May 25 12:33:05 www kernel: IN=3Deth0 OUT=3D SRC=3D210.126.xxx.xx
+> > DST=3D211.10.xx.xx LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D118 ID=3D3376 =
+DF PROTO=3DTCP
+> > SPT=3D3608 DPT=3D80 WINDOW=3D63520 RES=3D0x00 ACK FIN URGP=3D0
+> >
+> > Do you have any problems like me?
+>
 > Yes
->=20
->  > and what's the problem and how can I solve this problem?
->  >
+>
+> > and what's the problem and how can I solve this problem?
+>
 > Stop using non-standards complient browsers. Sometimes changes to
 > standards are not 'enhancements'.
->=20
->  >
->  > Thanks in advance for your kind opinios!!
->  >
->  > _________________________________________________________________
->  > ?=95=EC=9D=B8?=98=EC=9E=90. ?=A4=EB=8A=98???=B4=EC=84=B8 =EB=AC=B4=EB=
-=A3=8C ?=AC=EC=A3=BC, =EA=B6=81=ED=95=A9, ?=91=EB=AA=85, ?=84=EC=83=9D =EA=
-=B0=80?=B4=EB=93=9C
->  > http://www.msn.co.kr/fortune/default.asp
-> --
-> --
-> Raymond Leach <raymondl@knowledgefactory.co.za>
-> Network Support Specialist
-> http://www.knowledgefactory.co.za
-> "lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-> Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
-> --
-> << signature.asc >>
->=20
-> _________________________________________________________________
-> =C1=F5=B1=C7 =C1=A4=BA=B8 =B0=A1=C0=E5 =BA=FC=B8=A3=B0=ED =C6=ED=C7=CF=B0=
-=D4 =BA=B8=BD=C7 =BC=F6 =C0=D6=BD=C0=B4=CF=B4=D9. MSN =C1=F5=B1=C7/=C5=F5=
-=C0=DA  =20
-> http://www.msn.co.kr/stock/ =20
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+>
+> > Thanks in advance for your kind opinios!!
+> >
+> > _________________________________________________________________
+> > =ED=99=95=EC=9D=B8=ED=95=98=EC=9E=90. =EC=98=A4=EB=8A=98=EC=9D=98 =EC=
+=9A=B4=EC=84=B8 =EB=AC=B4=EB=A3=8C =EC=82=AC=EC=A3=BC, =EA=B6=81=ED=95=A9, =
+=EC=9E=91=EB=AA=85, =EC=A0=84=EC=83=9D =EA=B0=80=EC=9D=B4=EB=93=9C
+> > http://www.msn.co.kr/fortune/default.asp
 
---=-hsAi5wtOZd4XBkpbyRs3
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+This is correct , mostly this happens when you have the rule like this:
+iptables -A OUTPUT -p tcp ! --syn -m state --state NEW -j DROP
+and you have a workstation inside your network , you browse with.
+The most logging wil be done if you run a Windows-client      :-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+BUT you run a webserver,  and in your log-file says IN=3Deth0 and not OUT=
+=3Deth0.
 
-iD8DBQA+1dNIh1fuR/Bv+ygRAh63AJ4/0eKS/AnjJCW+r7ZagwU4KAersACeNOtv
-ondf8+tcnOLJz0fwVBaMYB8=
-=5R31
------END PGP SIGNATURE-----
+I run a webserver in Holland also , and it may happens sometimes ,that some=
+one=20
+keeps the website open , but does nothing. So a connection_time_out=20
+acurse,and the ACK,FIN will be dropped, when the client closes the browser =
+or=20
+page.
 
---=-hsAi5wtOZd4XBkpbyRs3--
+But NO heavy logging of that may happen.
+
+So  I asume there is something else...
+
+maybe a faulty rule ? like this ?:
+
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+
+send us your ruleset . If you only run a public-webserver (and ftp or ssh )=
+=20
+you don't need a heavy ruleset. ( keep it plain and simple)
+
+Pascal
+
+
+
+
+
+
 
 
