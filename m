@@ -1,13 +1,11 @@
-From: Thomas Lussnig <lussnig@smcc.net>
-Subject: Re: kernel 2.6 IPsec and netfilter
-Date: Mon, 29 Mar 2004 14:33:33 +0200
+From: "Manikandan" <manikandan@manikandan.org>
+Subject: VPN issue
+Date: Mon, 29 Mar 2004 18:59:20 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4068179D.1030509@smcc.net>
-References: <4068040C.AA93F507@india.hp.com>
+Message-ID: <JFEPKPDIGFAKJOGHOICDKECACAAA.manikandan@manikandan.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4068040C.AA93F507@india.hp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,36 +15,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="macroman"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: Devaraj Das <ddas@india.hp.com>
 
-Devaraj Das wrote:
+Dear all,
 
->Hi,
->I wanted to know whether there is a working solution for the issue that
->was discussed sometime back:
->http://www.spinics.net/lists/netfilter/msg22099.html
->In short is there any solution to enable blocking selective ports in a
->machine running Linux 2.6.0 + in-kernel ipsec.
->I would be very helpful if I can get a working solution or some
->information on a possible solution.
->Thanks,
->Devaraj.
-> =20
->
-Hi,
-if you look at ipsec from Linux-2.6.0 you would have noticed that you def=
-ine
-SRC-IP/SRC-PORT -- DST-IP/DST-PORT this mean you question imply the=20
-following setup:
+	A Linux server is acting as gateway/firewall to route traffic from my LAN
+to Internet using one public IP.
 
-1. You allow any port combination to go via the ipsec tunnel
-2. You have ports that should not go via the ipsec tunnel wich you allow=20
-via ipsec
-3. Now this ports should be filtered on iptables layer
-- possible at prerouting/mangle
-+ define the correkt ipsec config
+	The issue is, I am able to make only one connection to the VPN server
+through my firewall. The second connection fails with an error 721.
 
-Gru=DF Thomas Lu=DFnig
+	I mapped another unused public IP to one of my local LAN system. I am able
+to make one more connection to the server as the public IP is different. So
+NATing seems to be the problem.
+
+	Please assist me in configuring my firewall to allow concurrent VPN
+sessions to the server.
+
+I am using 2.4.20-8 kernel and iptables.
+
+
+Advance thanks.
+
+
+Regards,
+Manikandan.
+
+
+
 
