@@ -1,8 +1,8 @@
-From: Tony Earnshaw <tonye@billy.demon.nl>
-Subject: 1.2.9 connlimit POM patch
-Date: Fri, 26 Mar 2004 16:11:36 +0100
+From: Rakotomandimby Mihamina <rktmb.list@wanadoo.fr>
+Subject: POM
+Date: Fri, 26 Mar 2004 16:43:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080313891.6013.50.camel@localhost>
+Message-ID: <40644FAF.8080807@wanadoo.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,24 +15,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-The above (wrongly described and detailed as "iplimit" in the latest
-HOWTO) still "does not work for me", whilst I actually find it very
-important for easy traffic shaping; in my case, client Internet MTAs.
-
-Is anyone on the list familiar with this patch, or have I to contact
-Gerd Knorr directly? (Me, I get poisoned by having list people contact
-me directly, so I'd rather keep it to the list).
-
-Thanks,
-
---Tonni
+Hi ,
+I'm sorry to ask such a dumb question but what is Patch-O-Matic ?
+What is it ? the netfilter website gives me no clear information enough 
+, and i dont know if i should use it or not ...
 
 -- 
-
-mail: billy - at - billy.demon.nl
-http://www.billy.demon.nl
-
+Rakotomandimby Mihamina Andrianifaharana
+Tel : +33 2 38 76 43 65
+http://stko.dyndns.info/site_principal/Members/mihamina
 
