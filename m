@@ -1,12 +1,10 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Iptables do nat with Protocol 47 or GRE
-Date: Fri, 14 May 2004 10:42:08 -0700
+From: "azeem ahmad" <azeem484@hotmail.com>
+Subject: Re: smtp
+Date: Fri, 14 May 2004 18:54:59 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122F52@alderaan.smgtec.com>
+Message-ID: <BAY15-F259LvuKebm4M0005eee3@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +14,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Sezmillenium <sezmillenium@yahoo.es>, netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+hi
+here is the out put even after blocking all smtp
+---------------------------------------------------------------------------------------------------------------------------------
+21:17:31.259275 192.168.0.101.4730 > 207.24.89.66.smtp: S 
+556950735:556950735(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
+21:17:32.064278 192.168.0.101.4732 > 216.240.135.98.smtp: S 
+557195445:557195445(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
+21:17:33.021182 192.168.0.101.4735 > 202.163.96.6.smtp: S 
+557501406:557501406(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
+21:17:33.519967 192.168.0.101.4727 > 216.127.83.228.smtp: S 
+556716191:556716191(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
+21:17:34.224181 192.168.0.101.4730 > 207.24.89.66.smtp: S 
+556950735:556950735(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
+21:17:35.028993 192.168.0.101.4732 > 216.240.135.98.smtp: S 
+557195445:557195445(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
+----------------------------------------------------------------------------------------------------------------------------------
+>From: Gavin Hamill <gdh@acentral.co.uk>
+>To: netfilter@lists.netfilter.org
+>Subject: Re: smtp
+>Date: Fri, 14 May 2004 16:53:13 +0100
+>
+>On Friday 14 May 2004 16:41, azeem ahmad wrote:
+> > hi
+> > sorry for disturbing you a lot
+> > but i dont know how can i capture the screen. should i write it down
+>
+>That's OK there are a couple of easy alternatives. Either 'ssh' into the
+>machine (google for 'putty' - a good SSH client for windows) and copy and
+>paste the output.. or redirect the output from tcpdump to a file, the same
+>way you can with any UNIX command...
+>
+>$ tcpdump -n -i eth1 port 25 >dump.txt
+>
+>Then you can just insert this text file into the body of your email.
+>
+>Cheers,
+>Gavin.
+>
 
+_________________________________________________________________
+The new MSN 8: smart spam protection and 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
 
-Sezmillenium wrote:
-> Hi!
->=20
-> OK. I have this situation
->=20
->=20
-> VPN_CLIENT(w2k box) ---> router ---> FIREWALL (NAT) ---> M$ Server
->=20
->=20
-> I want to configure only the Firewall.
->=20
-> First, I tried to create a connection with pptp. Pptp need protocol
-> GRE and iptables don't support nat with protocol GRE. I must
-> recompile the Kernel... =20
-
-Option #1
-Patch the kernel with POM. This isn't that hard. It should probably be
-done for all the other really-good-things inside the newer netfilter
-system.
-
-Option #2
-You can support One2One NAT as follows:
-
-# This is one to one NAT with an extra field to discriminate which
-client IP address the data is coming from.
-# If you want to have multiple clients connect to the system
-simultaniously, you repeat these rules for every client you have (NOTE
-you need a public Ip for each one)
-# If you want many clients, but only one at a time, you can drop the
-fields with ${CLI_IP1} in it. This will mean that if > 1 person uses the
-VPN at any given time, the VPN will die for one of them, but it means
-you don't need an IP address for each user.
-iptables -A PREROUTING --source ${CLI_IP1} --destination ${PUBLIC_IP1}
--j DNAT --to ${VPNSERVER}
-iptables -A FORWARD --source ${CLI_IP1} --destination ${VPNSERVER} -j
-ACCEPT
-iptables -A FORWARD --source ${VPNSERVER} --destination ${CLI_IP1} -j
-ACCEPT
-iptables -A POSTROUTING --source ${VPNSERVER} --destination ${CLI_IP1}
--j DNAT --to ${PUBLIC_IP1}
-
-Option #3
-You can host PPTP or IPSEC from your machine. This probably also
-involves kernel patching but its by far the best solution. You could
-filter traffic coming and going from the VPN tunnel right from the
-firewall. This prevents road warriors from infecting home office with
-worms, etc.. Well, at least a well defined ruleset does.
-
-PPTP
-Look for poptop and pppd with the radius_plugin. This way, it works like
-your micrsoft PPTP server but you don't need the firewall workaround. In
-order for this to work, you need to spend 10 minutes learning the basics
-of radius and setup "Internet Authentication Server" on a windows
-2000/2003 DC.
-
-IPSec
-If you want Ipsec, you can also look at what used to be freeswan.org and
-is now a lot of smaller projects apparently.
 
