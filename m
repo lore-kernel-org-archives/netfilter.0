@@ -1,12 +1,11 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: Special routing for incoming pop3-requests
-Date: Fri, 5 Sep 2003 21:24:34 +0200 (CEST)
+From: "=?koi8-r?B?98zBxMnNydIg8M/UwdDP1w==?=" <varyag18@mail.ru>
+Subject: FW: Problems with DNS
+Date: Fri, 5 Sep 2003 23:36:03 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.56.0309052121450.4129@space.comunit.de>
-References: <3F58BB42.20306@gmx.de>
+Message-ID: <HMEKJPOHJKKBIDHGBCMDCEGJCAAA.varyag18@mail.ru>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F58BB42.20306@gmx.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +15,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Kirchhoff <kirchy@gmx.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Fri, 5 Sep 2003, Jan Kirchhoff wrote:
 
-> I am new to this List and I'm not really sure if this is really an
-> iptables-issue, but I think iptables is the tool I need for this:
 
-nope, you need policy routing
+I have some problems with DNS and iptables.
 
-> How do I get to work (with iptables-rules on server1?), that all packets
-> from server1 port 110 that have a destination other than the LAN go out
-> on fw2 but all other traffic goes to fw1?
-> I need a special route based on source-ip and source-port. I do not want
-> to rewrite the destination ip (which would not help since its already
-> right) but have influence on the routing to the next gateway.
+  ------------      ETH1 ----------------------------- ETH0    ----------
+ | DNS SERVER|-----------| Packet filter with iptables|--------|Internet|
+  ------------           ------------------------------        ----------
+This is my rules for forwarding dns packets from eth0 to eth1 and from eth1
+to eth0 :
+121.1.1.1 - eth0 routable IP.
+192.168.5.2 - DNS_DMZ IP.
+192.168.5.0/255.255.255.0 -DMZ subnet.
+-A PREROUTING -d 121.1.1.1 -i eth0 -p tcp -j DNAT --to-destination
+192.168.5.2
+-A PREROUTING -d 121.1.1.1 -i eth0 -p udp -j DNAT --to-destination
+192.168.5.2
+-A POSTROUTING -o eth0 -j SNAT --to-source 121.1.1.1
+-A FORWARD -d 192.168.5.0/255.255.255.0 -i eth0 -o eth1 -p tcp -m
+tcp --dport 53 -j allow
+-A FORWARD -s 192.168.5.0/255.255.255.0 -i eth1 -o eth0 -p tcp -m
+state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -d 192.168.5.0/255.255.255.0 -i eth0 -o eth1 -p udp -m
+udp --dport 53 -j ACCEPT
+-A FORWARD -s 192.168.5.0/255.255.255.0 -i eth1 -o eth0 -p tcp -m
+tcp --dport 53 -j allow
+-A FORWARD -s 192.168.5.0/255.255.255.0 -i eth1 -o eth0 -p udp -m
+udp --dport 53 -j ACCEPT
+-A allow -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+-A allow -p tcp -m tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A allow -p tcp -j LOG
+-A allow -p tcp -j DROP
 
-have a look at http://lartc.org/howto/lartc.rpdb.html
+Problem:
+My packet filter couldn't forward dns udp query to the internet and from
+internet to local .What I'm doing wrong ?
 
-c'ya
-sven
+-----
+With best regards,
+    Potapov Vladimir.
 
--- 
-
-The Internet treats censorship as a routing problem, and routes around it.
-(John Gilmore on http://www.cygnus.com/~gnu/)
 
