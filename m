@@ -1,12 +1,11 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: iptables with nat problems
-Date: Thu, 25 Sep 2003 09:34:32 -0700 (PDT)
+From: Blair Vessey <vessey@upei.ca>
+Subject: Looking for ipt_connlimit.so
+Date: Thu, 25 Sep 2003 16:24:57 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0309250927330.1579@simba.math.ucla.edu>
-References: <1064462286.4179.72.camel@rh-possum>
+Message-ID: <3F734109.1020703@upei.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1064462286.4179.72.camel@rh-possum>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,27 +15,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: gb <gillian.bennett@celentia.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, 25 Sep 2003, gb wrote:
-> I am running RH8 firewalls with iptables 1.2.6a. The firewalls work just
-> fine, but on reboot the nat part doesn't start up. It will not let
-> internal traffic out or external traffic in until I do a restart.
+I'm trying to get to the point where I can use the connlimit feature to 
+limit per-host connections.  I must be missing a step (or several) 
+because when I try to add a rule that uses the connlimit match, I see 
+the following message:
 
-Is it possible that some source or destination addresses are alphabetic,
-and not in /etc/hosts?  Or that network names are resolved through NIS (YP)
-and are not in /etc/networks?  (I didn't notice in the man page that
-iptables actually honors networks, but if it did...)  These services start
-after the iptables rules are installed.
+iptables v1.2.8: Couldn't load match 
+`connlimit':/lib/iptables/libipt_connlimit.so: cannot open shared object 
+file: No such file or directory
 
-Fixes: make sure names are in /etc/hosts and /etc/nsswitch.conf is
-configured to fall back to files if DNS or YP is unavailable.  Of course,
-Real Sysadmins hard-code all IP addresses and networks numerically.
+I've scanned source trees and such looking for this file or its source, 
+and have come up empty.  I'm hoping someone could suggest what I need to 
+try next.
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA  90095-1555
-Email: jimc@math.ucla.edu    http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+Here's some background on how I got here:
+  - Debian woody with a sprinkling of sarge
+  - Downloaded kernel-source-2.4.22
+  - Did a make oldconfig, and make dep
+  - Grabbed patch-o-matic from CVS
+  - Use p-o-m to apply base/connlimit.patch
+  - Continued with make modules, make bzImage
+  - Used Debian make-kpkg utility to produce a kernel package
+  - Installed newly minted kernel package on machine in question
+  - Rebooted
+  - modprobe'd ipt_connlimit
+
+I noticed someone else back in August asking the same question (looking 
+for ipt_connlimit.so), but didn't see a response.
+
+Can anyone point me in the right direction?
+
+Thanks for the read,
+Blair
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Blair Vessey                         VESSEY@UPEI.CA
+Systems Manager, University of Prince Edward Island
+Charlottetown, Prince Edward Island, Canada C1A 4P3
+=-=  Voice: (902) 566-0388 Fax: (902) 566-0958  =-=
+"An ounce of perception, a pound of obscure" - Rush
+
+
 
