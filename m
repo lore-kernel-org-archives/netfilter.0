@@ -1,9 +1,8 @@
-From: "Maciej Soltysiak" <solt@dns.toxicfilms.tv>
-Subject: Re: mangle + TCP Flags
-Date: Thu, 11 Dec 2003 21:43:28 +0100
+From: "John E. Leon Guerrero" <jguerrero@live365.com>
+Subject: Logging packet owner
+Date: Thu, 11 Dec 2003 13:34:14 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004401c3c027$721e1ee0$0e25fe0a@southpark.ae.poznan.pl>
-References: <7A3B4AA360FDEF448F3390421FC8D731012C61E7@coxhpexg.coxhp.com>
+Message-ID: <3FD8E2D6.3040803@live365.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,39 +15,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> Now that is a truly interesting question, if a bit off-topic.  What is the
-best way to handle recon?
-Recon is about getting info.
-- If you do nothing, the scanning person gets: X amount of information
-- If you use PSD, the scanning person might get weird results, and might get
-uninterested, unless
-he or she is determined to gather information about you. But noticing PSD
-effects (if the person
-is smart enough) may cause him to stop, because if someone is using PSD, he
-surely is logging it.
-And these logs are very easy to understand and to find.
+Hi folks, I browsed the last 7 months of archives and didn't see this 
+question addressed.
 
-- If you are tarpitting, the scanning person may be able to detect tarpitted
-ports. In this case
-the person gets X amount of information, as you would have done nothing.
+Are there plans to allow logging the packet owner?  For example, I get 
+rogue DNS requests eminating from my workstation and I'd like to know 
+which process is doing this.
+ 
+And for that matter, is there a place on the netfilter.org website that 
+lists the completed and upcoming features?
 
-My point is, that no matter what a scanning person does, my services that
-are supposed to be
-available to the world, and to him also, are supposed to be secure. At this
-point we are talking
-about application security. Like they say: Firewall is not magic. It just
-decides who can see what
-and when.
-
-Network security is about actually differentiating between who can scan
-what.
-If someone is determined, he will finally get the ports you have open, no
-matter what.
-
-Regards,
-Maciej
+Thanks,
+jlg
 
 
