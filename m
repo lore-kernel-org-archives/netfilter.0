@@ -1,14 +1,10 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: ftp connection tracking on multiple ports
-Date: Sun, 31 Oct 2004 09:34:49 +0200
-Message-ID: <1403218a041031003423417908@mail.gmail.com>
-References: <1403218a0410280318a6ed55b@mail.gmail.com>
-	<1098967289.3029.3.camel@hubcap.ljm.dom>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: "Jeppe Frandsen" <jeppe@fralle.dk>
+Subject: IP Masquerading problem with packet socket.
+Date: Sun, 31 Oct 2004 10:31:36 +0100
+Message-ID: <001d01c4bf2c$6d406720$0200a8c0@p9e6p78bjgt6355>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1098967289.3029.3.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,42 +16,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Well, I did that before posting to the list.
-Now I doubt it is a networking problem !!! there are reasons to doubt.
+Hi all,
+
+I have constructed a number of device drivers (dev1 - dev3), which is =
+accessed from=20
+an userspace program via a packet interface. All devices are connected =
+to a bridge=20
+(br0) with a static IP address 192.168.0.1/24 and a running DHCP server. =
+Besides this
+I have an external interface (eth0) assigned with a dynamic IP address.
+
+Now I would like to make access from the 3 devices to the external =
+interface by using=20
+IP Masquerading at the same time. I found an example on the web with a =
+similar setup
+(see figure 7b) where eth1 and eth2 is exchanged with dev1 - dev3:
+
+http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html#section4
+
+I then tried to use the following configuration after the bridge was =
+setup with a running=20
+DHCP server, the device driver interfaces and a IP address, but without =
+any luck:
+
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -d 192.168.0.0/24 -j =
+ACCEPT
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
+
+echo '1' > /proc/sys/net/ipv4/ip_forward
+
+I do not know if the problem is related to IP forwarding because (as I =
+know) this is done
+in the IP stack and hereby does not work with a AF_PACKET socket, since =
+this is a direct=20
+layer 2 connection between the device driver and the userspace program.=20
+
+Thank you in advance for you help!
 
 
-On Thu, 28 Oct 2004 08:41:29 -0400, Jason Opperisano <opie@817west.com> wrote:
-> On Thu, 2004-10-28 at 06:18, Mohamed Eldesoky wrote:
-> 
-> 
-> > Dear all,
-> >
-> > I have a server that runs FTP on two ports, port 21 and port 45 (for
-> > strange reasons)
-> > Now, i want conntrack to track the connections of both ports and their
-> > data ports !!
-> >
-> > I did that in my firewall script
-> > /sbin/modprobe ip_conntrack_ftp ports=21,45
-> > $IPTABLES -A linweb_chain -p tcp -m multiport --destination-port
-> > 80,21,45 -j ACCEPT
-> >
-> > Is that all I need ??
-> 
-> iptables -A linweb_chain -m helper --helper ftp -j ACCEPT
-> 
-> -j
-> 
-> --
-> Jason Opperisano <opie@817west.com>
-> 
-> 
+Best Regards,
 
-
--- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
-
+Jeppe Frandsen,
+Denmark
