@@ -1,8 +1,8 @@
-From: =?ISO-8859-15?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Subject: PPTP server behind NAT
-Date: Tue, 30 Sep 2003 03:35:14 +0200
+From: Carlo Pires <carlo@uga.com.br>
+Subject: path-o-matic-20030929.tar.bz2 doesn't apply ok with k2.4.22
+Date: Tue, 30 Sep 2003 15:31:28 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <blamm8$bvm$1@sea.gmane.org>
+Message-ID: <3F79CC00.3040003@uga.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,30 +16,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-Hi,
+I am compiling kernel 2.4.22 with patch-o-matic-20030929.tar.bz2 and I 
+notice that
+ /usr/src/linux/include/linux/netfilter_ipv4/ipt_osf.h
+after the patch applied don't have a #endif for #define _IPT_OSF_H
+then I added a line with: #endif /* _IPT_OSF_H */ at the end of the file 
+and everything compiled well.
 
-i'm not using the pptp-conntrack patch yet. So i tried to forward port 
-1723 and protocol 47 to the target machine. That's is what should work - 
-but it didn't.
-
-A tcpdump revealed that my Linux box rejected the GRE packets with "icmp 
-protocol 47 unreachable" packets. What did i do wrong?
-
-I turned of my whole firewall and flushed all tables.
-The rules
-
-iptables -t nat -A PREROUTING -p tcp --dp 1723 -j DNAT --to <ip>
-iptables -t nat -A PREROUTING -p 47 -j DNAT --to <ip>
-
-simply didn't work.
-My Linux box keeps sending the icmp packets.
-
-Does anybody know why it does that?
-
-Thx
-   Sven
+[]s
+Carlo
 
 
 
