@@ -1,10 +1,13 @@
-From: "Felix D. Cat" <bigfunkychief@hotmail.com>
-Subject: Help with POP3/SMTP and MASQ
-Date: Mon, 10 Jun 2002 17:12:20 -0400
+From: Ralf Hemmann <ralf@core-dump.de>
+Subject: Re: Too scared....
+Date: Tue, 11 Jun 2002 09:24:20 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <F91a1nJI4PE0ts5O8re000189a0@hotmail.com>
+Message-ID: <aeara9$8k8$2@main.gmane.org>
+References: <E17HVTU-00062d-00@pooh.kjernsmo.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <E17HVTU-00062d-00@pooh.kjernsmo.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -14,87 +17,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-I've had had no luck getting POP3/SMTP going through my RedHat 7.1 2.4=20
-kernel iptables box.  I have been able to setup incoming FTP connections=20
-through my firewall, but no luck on the email.  Here's my script...I've=20
-pretty much added alot of extra stuff hoping that something would work and =
-I=20
-could figure it out from there, but so far nothings worked.  I must be=20
-missing something obvious!  Any help is appreciated, and thanks to everyone=
-=20
-who takes the time to respond!
+
+Hy
+
+> I hope someone can take my paw and help me through the iptables setup,
+> because I'm a bit scared of the possibility of locking myself out of my
+> box...
+
+I know what you mean and be shure - if you do not use a "roll back system"
+you WILL lock you out of your server ;-))
 
 
-#Beginning of script
-#this was from someone's sample script..to load the modules.
-
-/sbin/modprobe ip_tables
-/sbin/modprobe ip_conntrack
-/sbin/modprobe iptable_filter
-/sbin/modprobe iptable_mangle
-/sbin/modprobe iptable_nat
-/sbin/modprobe ipt_LOG
-/sbin/modprobe ipt_limit
-/sbin/modprobe ipt_state
-
-#
-# 2.2 Non-Required modules
-#
-
-#/sbin/modprobe ipt_owner
-#/sbin/modprobe ipt_REJECT
-#/sbin/modprobe ipt_MASQUERADE
-#/sbin/modprobe ip_conntrack_ftp
-#/sbin/modprobe ip_conntrack_irc
+Try to make your Firewall script like this:
 
 
-
-#some basic MASQ stuff so I can hit the internet!
-cp /home/main/ip_forward /proc/sys/net/ipv4
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-#rules for ftp in...working right now
-
-iptables -A FORWARD -p tcp --dport 21 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 20 -j ACCEPT
-
-iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 21 -j DNAT --to=20
-10.0.0.7:21
-iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 20 -j DNAT --to=20
-10.0.0.7:20
-
-iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 10.0.0.7 --dport 21 -j ACCEPT
-iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 10.0.0.7 --dport 20 -j ACCEPT
-
-#rules for FTP out... NOT USED!!!!!!!!!
-#iptables -t nat -A POSTROUTING -p tcp --sport 21 -j ACCEPT
-#iptables -t nat -A POSTROUTING -p tcp --sport 20 -j ACCEPT
-#iptables -A INPUT -p tcp --sport 21 -j ACCEPT
-#iptables -A INPUT -p tcp --sport 20 -j ACCEPT
-
-#iptables -A OUTPUT -p tcp --sport 21 -j ACCEPT
-#iptables -A OUTPUT -p tcp --sport 20 -j ACCEPT
+!/bin/bash
 
 
-#for POP3 and SMTP mail
-iptables -t nat -A POSTROUTING -p tcp -j MASQUERADE --to-ports 25
-iptables -t nat -A POSTROUTING -p tcp -j MASQUERADE --to-ports 110
+#  Deadmans Switch
+# like in german railways.
+# The driver has to press a
+# button when its buzzing.
+# If the driver dont push the button the
+# Train stops
 
-iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 25 -j ACCEPT
-iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 110 -j ACCEPT
 
-iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 110 -j ACCEPT
+case "$1" in
 
-iptables -t nat -A POSTROUTING -p tcp --sport 25 -j ACCEPT
-iptables -t nat -A POSTROUTING -p tcp --sport 110 -j ACCEPT
+start)
 
-_________________________________________________________________
-Join the world=92s largest e-mail service with MSN Hotmail.=20
-http://www.hotmail.com
+
+   # your rules her
+   # iptables -t nat bla
+
+
+# At the verry end of start put something like this:
+
+echo "Are you dead ?
+
+answer with Ctrl C
+
+"
+
+sleep 4
+echo "2 more"
+sleep 4
+echo "1 to go"
+sleep 4
+
+echo "OK open firewall"
+
+iptables -P INPUT ACCPET 
+iptables -P OUTPUT ACCPET
+iptables -P FORWARD ACCPET
+
+iptables -F
+iptables -F -t nat
+
+;;
+
+stop )
+
+# bla bla
+
+;;
+
+
+*)
+
+echo "usage $0 Start | Stop "
+
+esac
 
 
