@@ -1,13 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Routing Question
-Date: 07 May 2003 13:28:45 -0400
+From: xchris <lyra@fastwebnet.it>
+Subject: Re: Blocking Squid Requests
+Date: Wed, 7 May 2003 21:27:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1052328525.25094.202.camel@alpha.newkirk.us>
-References: <005901c314b8$249d6a60$7035a8c0@hoeschen>
+Message-ID: <200305072127.03670.lyra@fastwebnet.it>
+References: <001801c31490$fd031670$7107a8c0@maninho>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005901c314b8$249d6a60$7035a8c0@hoeschen>
+In-Reply-To: <001801c31490$fd031670$7107a8c0@maninho>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Chris Hoeschen <chris.hoeschen@primevest.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+Cc: Walter Priesnitz Filho <walterp@via-rs.net>
 
-On Wed, 2003-05-07 at 12:46, Chris Hoeschen wrote:
-> I am wondering if it is possible to route from one host to another
-> host.  An example would be if I wanted to route all traffic on port 80
-> to another complete different IP address on the internet (like
-> google.com.)
->  
-> My goal is to reroute traffic coming in to one host to a different
-> host without having to give out the IP address of the second host.  If
-> I just change the DNS the IP address would be known to the person
-> accessing the site.
+On Wednesday 07 May 2003 14:05, Walter Priesnitz Filho wrote:
+> Hi,
+> I have this environment, a subnetwork (192.168.0.0) that access another
+> subnetwork (192.168.59.0) and then access the internet. The second lan =
+has
+> a proxy server (squid:3128).
+> I need to block the requests in th first lan to the squid server to som=
+e
+> sites. How can I do this?
+> I've tried this
+> iptables  -A FORWARD -p tcp -m multiport --dport 80,443,3128 -d
+> www.someplace.com -j DROP
+> but doesn't work.
+> Can anybody help-me?
 
-If you, for example, wanted all connections to 10.10.10.1:80 to be
-'rerouted' to actually connect to google.com, you'd use:
+why don't use OUTPUT/INPUT  chain?=20
+you disable output/input from the lan to your firewall (so squid doesn't =
+get=20
+requests)
 
-iptables -t nat -A PREROUTING -d 10.10.10.1 -p tcp --dport 80 -j DNAT
---to 216.239.35.100
+bye
+xchris
 
-This presumes that the connection in question would be allowed through
-FORWARD, and that it is not to another local resource.  If you are using
-DNAT and the new destination has a route back to the client that doesn't
-pass through your firewall box, you need to also add:
-
-iptables -t nat -A POSTROUTING -d 216.239.35.100 -p tcp --dport 80 -j
-SNAT --to a.b.c.d
-
-Where a.b.c.d is the IP of the interface the DNATted traffic passes out
-through.  (IE, ppp0)  This way the reply traffic is forced to come back
-through the DNATting box, which will reverse both the SNAT and the DNAT,
-so that the client sees the reply from the expected 10.10.10.1.
-
-j
- 
-
-> -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-> | Chris Hoeschen - Distributed System Analysts        |
-> | PrimeVest Financial Services                        |
-> | (320) 656-4035 E-Mail: chris.hoeschen@primevest.com |
-> -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-> 
-> "Only two things are infinite, the universe and human stupidity, and I'm not sure about the former." 
->   -- Albert Einstein
-> Hippopotomonstrosesquippedaliophobia is the fear of long words
->  
 
 
