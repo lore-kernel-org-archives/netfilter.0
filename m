@@ -1,12 +1,13 @@
-From: Thomas Lussnig <thomas.lussnig@bewegungsmelder.de>
+From: Filipe Almeida <filipe@rnl.ist.utl.pt>
 Subject: Re: Arbitrary Netmasks
-Date: Wed, 29 May 2002 07:22:12 +0200
+Date: Wed, 29 May 2002 10:57:14 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CF46584.8080204@bewegungsmelder.de>
-References: <Pine.LNX.4.44.0205281532550.12350-100000@dlang.diginsite.com>
+Message-ID: <5.1.1.2.2.20020529105459.00b7a798@ns.rnl.ist.utl.pt>
+References: <5.1.1.2.2.20020528150443.00b9ad58@ns.rnl.ist.utl.pt>
+ <5.1.1.2.2.20020528150443.00b9ad58@ns.rnl.ist.utl.pt>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms000306080108000301060100"
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <200205282045.14015@henrik.marasystems.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,111 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
-
-This is a cryptographically signed message in MIME format.
-
---------------ms000306080108000301060100
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: Thomas Heinz <josef.k@mytomorrow.de>, netfilter-devel@lists.samba.org, netfilter@lists.samba.org
 
+True.
+I attach interface (-i/-o) matches so I will only filter my networks. I 
+wrote those lines of the top of my head so I forgot the -i/-o.
+
+At 20:45 28-05-2002 +0200, Henrik Nordstrom wrote:
+>Which is not generally a valid thing to assume.. the .255 and/or .0
+>address may be in use on larger networks, especially if addresses are
+>assigned dynamically using a large DHCP scope..
 >
 >
->I've always wondered about the concept of useing wierd netmasks on private
->internal networks, just to thourouly confuse anyone who actually breaks
->into them (obsurity isn't security by itself, but any little bit you can
->add on and anything you can do that will break standard tools....)
->
->never had a chance to actually implement it however :-)
->
-I think this "wird" netmask could on bigger firm's have an very simple 
-explanation.
-
-Example:
-Firm with 2 Floors and 4 Subunits each subunit have an router with 
-100MBit and the are numbered
-serial when they was created.
-1 Floor 10.0.0.0/16 10.2.0.0/24
-2 Floor 10.1.0.0/16 10.3.0.0/24
-Now the 100MBit backbone is replaced with fibber optik and one router 
-per floor. And the admin is to lacy
-to renumber 2 whole units. This is an simple example but i think from 
-these direction it come. That it
-is sometimes easyer to use wired netmask insteed of two or more routing 
-entry's and agregation
-wasn't choice because of change time.
-
-Cu Thomas
-
---------------ms000306080108000301060100
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJgDCC
-BLwwggOkoAMCAQICByABEgISUEEwDQYJKoZIhvcNAQEFBQAwgaYxCzAJBgNVBAYTAkRFMRAw
-DgYDVQQIEwdHZXJtYW55MRcwFQYDVQQHEw42NTc2MCBFc2NoYm9ybjESMBAGA1UEChMJc3Vj
-aGUub3JnMR4wHAYDVQQLExVOZXR3b3JrYWRtaW5pc3RyYXRpb24xFzAVBgNVBAMTDlRob21h
-cyBMdXNzbmlnMR8wHQYJKoZIhvcNAQkBFhB0aG9tYXNAc3VjaGUub3JnMB4XDTAyMDQxMTA2
-NTkyOFoXDTAzMDQxMTA2NTkyOFowgY0xCzAJBgNVBAYTAkRFMRAwDgYDVQQIEwdHZXJtYW55
-MREwDwYDVQQKEwhzbWNjLm5ldDEOMAwGA1UECxMFQWRtaW4xFzAVBgNVBAMTDlRob21hcyBM
-dXNzbmlnMTAwLgYJKoZIhvcNAQkBFiF0aG9tYXMubHVzc25pZ0BiZXdlZ3VuZ3NtZWxkZXIu
-ZGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDIXj34QPPtlnonPP7UOQD+L3uw
-fs08IL+e75M/nqVUAzcJYaToNDQTce9PvQwqs0kKP64XUmGZSA4QFQ6WXRarfce/5FMjkNzM
-5grmUZMWurnVZlKc+St0pLdGblQjqZqGnGRZ6ZalvgQRkPXJGSnkx3WaD9NEEey9U2N2TLkJ
-CrY00UiHB/oLYzH+SLK9+qtIA4GH+r+SMDtQcLoYE+l6UwMWmNJMUGmqY98F9MsKv/r/72q5
-F/6vj3LUPM0wkKXivJ3yMkWJjQ4vHzfIUqalzJ7BdjfXA4VzHBLfSJdi+ReDCGHDbuJixQJy
-8jkaSoNg82E9Pk+0bFr4KH2dmaZBAgMBAAGjggEEMIIBADAJBgNVHRMEAjAAMB0GA1UdDgQW
-BBQeKjhtgCNvBbopouRBm1CtfrlGzzCB0wYDVR0jBIHLMIHIgBSnCgPnSwiZ/dHemo0EAjXM
-V+XZo6GBrKSBqTCBpjELMAkGA1UEBhMCREUxEDAOBgNVBAgTB0dlcm1hbnkxFzAVBgNVBAcT
-DjY1NzYwIEVzY2hib3JuMRIwEAYDVQQKEwlzdWNoZS5vcmcxHjAcBgNVBAsTFU5ldHdvcmth
-ZG1pbmlzdHJhdGlvbjEXMBUGA1UEAxMOVGhvbWFzIEx1c3NuaWcxHzAdBgkqhkiG9w0BCQEW
-EHRob21hc0BzdWNoZS5vcmeCAQAwDQYJKoZIhvcNAQEFBQADggEBALj43L+htb8kbLYs/1Ud
-BP1Z7PhB4rDY5z7NM9riwgvgQHKVbRc63AM6RQ1E6vShbSw1tw/M6hEcUTq4m4vfeV2xg4ss
-3utIA1ehOEEF0mnrKLOHGWYDYT1mP1g5gG7YqEiT22O3rBYJ3xmFNysOQ5MG03qdY6T3om0F
-lR21q0IH7ZFWwfX+/C/eRYCYNjqbAfmeTslGGg3O+kmBMMSbefQzGDmQf2O+gtngeWokYGie
-+s7kQr3IGC+OTmZUIOT4UMAAAfSZJNh8A7j2nxXLb4U2UJBun03cfMl6H2imjP949ld30ONV
-2brk6dAECm6hLbFNTTPoVLIKLOJJc6QY5P4wggS8MIIDpKADAgECAgcgARICElBBMA0GCSqG
-SIb3DQEBBQUAMIGmMQswCQYDVQQGEwJERTEQMA4GA1UECBMHR2VybWFueTEXMBUGA1UEBxMO
-NjU3NjAgRXNjaGJvcm4xEjAQBgNVBAoTCXN1Y2hlLm9yZzEeMBwGA1UECxMVTmV0d29ya2Fk
-bWluaXN0cmF0aW9uMRcwFQYDVQQDEw5UaG9tYXMgTHVzc25pZzEfMB0GCSqGSIb3DQEJARYQ
-dGhvbWFzQHN1Y2hlLm9yZzAeFw0wMjA0MTEwNjU5MjhaFw0wMzA0MTEwNjU5MjhaMIGNMQsw
-CQYDVQQGEwJERTEQMA4GA1UECBMHR2VybWFueTERMA8GA1UEChMIc21jYy5uZXQxDjAMBgNV
-BAsTBUFkbWluMRcwFQYDVQQDEw5UaG9tYXMgTHVzc25pZzEwMC4GCSqGSIb3DQEJARYhdGhv
-bWFzLmx1c3NuaWdAYmV3ZWd1bmdzbWVsZGVyLmRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEAyF49+EDz7ZZ6Jzz+1DkA/i97sH7NPCC/nu+TP56lVAM3CWGk6DQ0E3HvT70M
-KrNJCj+uF1JhmUgOEBUOll0Wq33Hv+RTI5DczOYK5lGTFrq51WZSnPkrdKS3Rm5UI6mahpxk
-WemWpb4EEZD1yRkp5Md1mg/TRBHsvVNjdky5CQq2NNFIhwf6C2Mx/kiyvfqrSAOBh/q/kjA7
-UHC6GBPpelMDFpjSTFBpqmPfBfTLCr/6/+9quRf+r49y1DzNMJCl4ryd8jJFiY0OLx83yFKm
-pcyewXY31wOFcxwS30iXYvkXgwhhw27iYsUCcvI5GkqDYPNhPT5PtGxa+Ch9nZmmQQIDAQAB
-o4IBBDCCAQAwCQYDVR0TBAIwADAdBgNVHQ4EFgQUHio4bYAjbwW6KaLkQZtQrX65Rs8wgdMG
-A1UdIwSByzCByIAUpwoD50sImf3R3pqNBAI1zFfl2aOhgaykgakwgaYxCzAJBgNVBAYTAkRF
-MRAwDgYDVQQIEwdHZXJtYW55MRcwFQYDVQQHEw42NTc2MCBFc2NoYm9ybjESMBAGA1UEChMJ
-c3VjaGUub3JnMR4wHAYDVQQLExVOZXR3b3JrYWRtaW5pc3RyYXRpb24xFzAVBgNVBAMTDlRo
-b21hcyBMdXNzbmlnMR8wHQYJKoZIhvcNAQkBFhB0aG9tYXNAc3VjaGUub3JnggEAMA0GCSqG
-SIb3DQEBBQUAA4IBAQC4+Ny/obW/JGy2LP9VHQT9Wez4QeKw2Oc+zTPa4sIL4EBylW0XOtwD
-OkUNROr0oW0sNbcPzOoRHFE6uJuL33ldsYOLLN7rSANXoThBBdJp6yizhxlmA2E9Zj9YOYBu
-2KhIk9tjt6wWCd8ZhTcrDkOTBtN6nWOk96JtBZUdtatCB+2RVsH1/vwv3kWAmDY6mwH5nk7J
-RhoNzvpJgTDEm3n0Mxg5kH9jvoLZ4HlqJGBonvrO5EK9yBgvjk5mVCDk+FDAAAH0mSTYfAO4
-9p8Vy2+FNlCQbp9N3HzJeh9opoz/ePZXd9DjVdm65OnQBApuoS2xTU0z6FSyCiziSXOkGOT+
-MYIDVzCCA1MCAQEwgbIwgaYxCzAJBgNVBAYTAkRFMRAwDgYDVQQIEwdHZXJtYW55MRcwFQYD
-VQQHEw42NTc2MCBFc2NoYm9ybjESMBAGA1UEChMJc3VjaGUub3JnMR4wHAYDVQQLExVOZXR3
-b3JrYWRtaW5pc3RyYXRpb24xFzAVBgNVBAMTDlRob21hcyBMdXNzbmlnMR8wHQYJKoZIhvcN
-AQkBFhB0aG9tYXNAc3VjaGUub3JnAgcgARICElBBMAkGBSsOAwIaBQCgggF5MBgGCSqGSIb3
-DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTAyMDUyOTA1MjIxMlowIwYJKoZI
-hvcNAQkEMRYEFJK22siTN5Jjbf/vShNujruJ2sUhMFIGCSqGSIb3DQEJDzFFMEMwCgYIKoZI
-hvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3
-DQMCAgEoMIHFBgsqhkiG9w0BCRACCzGBtaCBsjCBpjELMAkGA1UEBhMCREUxEDAOBgNVBAgT
-B0dlcm1hbnkxFzAVBgNVBAcTDjY1NzYwIEVzY2hib3JuMRIwEAYDVQQKEwlzdWNoZS5vcmcx
-HjAcBgNVBAsTFU5ldHdvcmthZG1pbmlzdHJhdGlvbjEXMBUGA1UEAxMOVGhvbWFzIEx1c3Nu
-aWcxHzAdBgkqhkiG9w0BCQEWEHRob21hc0BzdWNoZS5vcmcCByABEgISUEEwDQYJKoZIhvcN
-AQEBBQAEggEALrDV2qLAytcVyPThDipAEItL39bsJLRpua9jQY688ja6xHcWgwr+ZwVg1Ut0
-S1XElUi5VH6jWOiUhciZnMOwqXWNQoko12wu6qaDGjOnIvNEUBgwqqjfiNSidtQFhOv/BucS
-U7+MjKDg9hiS6v559XGwCc0rXjgfHlqIsKOjIT+Q8vMFf8hImtNcPVGEFGm2d+w8QXwToAmo
-qpcVkG8D2sLHV7+W+lDra1o0UMZ6/NF9S9c7JNgWLtbFoPEsoJhtWx4uczI0YuCkZNYhpk5c
-wFKyg3N2X7ioPdgrd/wVhGelEVTAr2zd5d6WRjnjp6jUtMtnlXruoaK6n3qSlLgA/QAAAAAA
-AA==
---------------ms000306080108000301060100--
+>On Tuesday 28 May 2002 16:07, Filipe Almeida wrote:
+> > I usually use:
+> >
+> > iptables -A FORWARD -s 0.0.0.255/0.0.0.255 -j DROP
+> > iptables -A FORWARD -d 0.0.0.255/0.0.0.255 -j DROP
+> > iptables -A FORWARD -s 0.0.0.0/0.0.0.255 -j DROP
+> > iptables -A FORWARD -d 0.0.0.0/0.0.0.255 -j DROP
+> >
+> > to stop routing of broadcasted packets. This works assuming you
+> > only have 256 sized classes.
 
 
