@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Alexander Samad <alex@samad.com.au>
 Subject: Re: how to block p2p
-Date: Thu, 11 Mar 2004 09:26:26 +0000
+Date: Thu, 11 Mar 2004 20:38:53 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403110926.26421.Antony@Soft-Solutions.co.uk>
-References: <001201c40744$1f34a190$2a245cc2@cea05> <200403110859.53154.Antony@Soft-Solutions.co.uk> <003301c40749$b68e4280$2a245cc2@cea05>
+Message-ID: <20040311093853.GU1072@samad.com.au>
+References: <001201c40744$1f34a190$2a245cc2@cea05> <1078995674.15566.65.camel@raylinux.internal> <200403110910.19979.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="8gjvNdKnYEg0NgYj"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <003301c40749$b68e4280$2a245cc2@cea05>
+Content-Disposition: inline
+In-Reply-To: <200403110910.19979.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +19,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Thursday 11 March 2004 9:17 am, Tomasz Macioszek wrote:
 
-> > > iptables -P FORWARD DROP
-> > iptables -F FORWARD
+--8gjvNdKnYEg0NgYj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I know but I would like to block only p2p traffic??
-> Is patch which blocks only p2p??
+On Thu, Mar 11, 2004 at 09:10:19AM +0000, Antony Stone wrote:
+> On Thursday 11 March 2004 9:01 am, Ray Leach wrote:
+>=20
+> > On Thu, 2004-03-11 at 10:37, Tomasz Macioszek wrote:
+> > > Hello!!
+> > > I would like to block all known p2p program ( Kazaa, eDonkey, ...). I
+> > > would like to find patch of iptables (p-o-m) which blocks all this
+> > > programs??
+> >
+> > iptables -P FORWARD DROP
+>=20
+> I would perhaps add:
+> iptables -F FORWARD
+> just to make sure they don't sneak through on any existing rules :)
 
-I do not know of a way to block p2p without blocking other protocols.
+sysctl -w net.ipv4.ip_forward =3D 0
 
-However, does not mean there isn't one, just that I don't know about it.
+>=20
+> Antony.
+>=20
+> --=20
+> The truth is rarely pure, and never simple.
+>=20
+>  - Oscar Wilde
+>=20
+>                                                      Please reply to the =
+list;
+>                                                            please don't C=
+C me.
+>=20
+>=20
+>=20
 
-Regards,
+--8gjvNdKnYEg0NgYj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Antony.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
--- 
-There's no such thing as bad weather - only the wrong clothes.
+iD8DBQFAUDOtkZz88chpJ2MRAlZBAKDK21N/qT3S0PKm9r9L+L26ddAXAQCfbeXM
+daDMtGSdGNaAHTnqTzUhA54=
+=HXLv
+-----END PGP SIGNATURE-----
 
- - Billy Connolly
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--8gjvNdKnYEg0NgYj--
 
