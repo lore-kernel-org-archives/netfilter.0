@@ -1,13 +1,12 @@
-From: Eric Leblond <eleblond@init-sys.com>
-Subject: Re: Iptables bandwidth limit
-Date: 20 Sep 2002 14:07:27 +0200
+From: Andrei Ivanov <andrei.ivanov@ines.ro>
+Subject: RE: Iptables bandwidth limit
+Date: Fri, 20 Sep 2002 15:35:55 +0300 (EEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1032523652.25927.16.camel@tech004>
-References: <Pine.LNX.4.33.0209201316530.2343-100000@ns1.tegbrink.com>
+Message-ID: <Pine.LNX.4.44.0209201534250.6328-100000@webdev.ines.ro>
+References: <FD8F124A387AD6119F7900A0D218B32101988F@hslex01.hsl-brabantzuid.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0209201316530.2343-100000@ns1.tegbrink.com>
+In-Reply-To: <FD8F124A387AD6119F7900A0D218B32101988F@hslex01.hsl-brabantzuid.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +16,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, 2002-09-20 at 13:17, Daniel Cohen wrote:
-> Is it possible to set a bandwidth limit with IPTABLES. Lets say for
-> instance that 10.1.204.49/32 should have maximum 100k speed to 10.1.10.30=
-.
->=20
-> Can iptables fix this?
 
-You can almost do this with the limit module, but you should better use
-HTB or CBQ (QOS) which are really done for this.
+What amazes me is that iptables doesn't know to match packets by a tos 
+value other then the ones in ip.h... this really SUCKS.
 
-BR,
---=20
-=C9ric Leblond
-courriel : eleblond@init-sys.com
+On Fri, 20 Sep 2002, Rob Sterenborg wrote:
+
+> > You can almost do this with the limit module, but you should 
+> > better use
+> > HTB or CBQ (QOS) which are really done for this.
+> > 
+> I first accomplished it with CBQ, but later I switched to HTB which is a lot
+> easier to configure.
+> 
+> 
+> Rob
+> 
 
 
