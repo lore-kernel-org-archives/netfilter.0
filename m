@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Iptables ssh outgoing problem
-Date: Fri, 30 Jan 2004 09:19:11 +0100
+From: "L.Malinov" <lucho@galix.com>
+Subject: IPTABLES + IPROUTE2
+Date: Fri, 30 Jan 2004 11:39:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040130081911.A0E181B8D7@smtp.ttp.nl>
-References: <PJEOLDHINDKCFPBDLONJCECKCAAA.chamindar@sad.gov.lk>
+Message-ID: <EHENIKBEJAMHPLPJOJBPMEFKDIAA.lucho@galix.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <PJEOLDHINDKCFPBDLONJCECKCAAA.chamindar@sad.gov.lk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,33 +18,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Fire wall with iptables two Ethernet for LAN and wan. I can 
-> do ssh from the fire wall but from the LAN workstations it is 
-> not possible. I use ssh client software for windows. do I 
-> need to set firewall ip and port at ssh client if so which port.
-> 
-> $IPTABLES -A FORWARD -p tcp  -s 192.168.145.23  -d
-> **.***.***.***  --destination-port 22  -m state --state NEW -j ACCEPT
+Hi Antony,
 
-Is it your intention to let the Windows boxes connect to only 1 IP ?
-This rule only let's the initial connection through. Do you also have a
-rule like this one (which I would place [almost] in top of your other
-rules) :
+According to the iproute2 manual, I can't do routing based on a destination
+port but based on the fwmark. So that's why I think I can achieve that alone
+with iproute2 only and I need iptables to put the mark as well. But in this
+case I'm not sure that this can be achieved on a box with one network card
+only or for traffic generated lacaly from the box. Any suggestions?
 
-$IPTABLES -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+Regards
 
-And have you turned on IP forwarding ?
-
-echo "1" > /proc/sys/net/ipv4/ip_forward
-
-> This is the command. Do I need to put at the beginning of the 
-> forward table?
-
-Unless some other rule is preventing you from reaching this one, no :
-you can but don't *need* to.
+L.Malinov
 
 
-Gr,
-Rob
+On Saturday 24 January 2004 12:57 pm, L.Malinov wrote:
+
+> Hi Antony,
+>
+> In my situation is not possible to set router1 as a default route because
+> the machine acts as a mail server as well and the mail needs to go through
+> router1.
+
+Okay then - in that case I suggest you use iproute2 to route all TCP port 80
+packets via router2, all TCP port 25 packets via router1, and decide what
+you
+want to do with everything else such as DNS.   I don't see that there should
+be any need to MARK packets - just route based on the destination port
+number.
+
+see http://lartc.org for more details of iproute2 and what it can do.
+
+Regards,
+
+Antony.
+
+--
+Wanted: telepath.   You know where to apply.
+
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
+
 
 
