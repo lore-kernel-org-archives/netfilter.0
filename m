@@ -1,9 +1,8 @@
-From: "Jet \(jchan@trusecure.com\)" <yenjet.chan@eglobal.com.my>
-Subject: Purely NAT
-Date: Mon, 28 Oct 2002 13:32:47 +0800
+From: Benoit Peccatte <benoit.peccatte@webmotion.com>
+Subject: Many rules
+Date: 24 Oct 2002 18:01:50 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005401c27e43$73946990$0bc8c80a@dolphin>
-Reply-To: <jchan@trusecure.com>
+Message-ID: <1035496911.26648.78.camel@peck>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,21 +16,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi all,
+Hello,
 
-This is my first post to the list, so please bare with me.
-I have a requirement here. Is there possible to create a purely NAT iptables
-rules for certain IP addresses?
+I am wondering if 1000 rule in an iptable chain really slows it
+down or not. This would be running on a bi P3 450 with 2 100Mbits NICs.
+In fact the rate is mor close to 20Mbits than to 100Mbits.
 
-What I means here is I want to enable stateful filtering for most of the all
-of the users except certain IP address/subnet. Stateful filtering is good
-sometime, bu not all the time, when you really want to do portscaning
-activities from a machine that sit behind the firewall.
+Thank you.
+Benoit Peccatte.
 
-Any idea.
-
-.//Jet
+PS : thank you to CC me since I'm not on the list.
 
 
