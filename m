@@ -1,12 +1,12 @@
-From: "Roksana Boreli" <Roksana.Boreli@nicta.com.au>
-Subject: RE: Multiple IPSEC VPNs through a firewall based on 2.4.2X kernel
-Date: Wed, 25 Aug 2004 17:24:27 +1000
+From: ads nat <adsnat@yahoo.com>
+Subject: RE: Is it possible to Jam windows network neighbour?
+Date: Wed, 25 Aug 2004 01:01:04 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <09D3F703EF3B0A4CBE28449EA9F3D3206F1D7A@nicta-atp-mail.in.nicta.com.au>
+Message-ID: <20040825080104.94531.qmail@web60403.mail.yahoo.com>
+References: <1093372602.3704.71.camel@Sewak.Asr.Lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <1093372602.3704.71.camel@Sewak.Asr.Lan>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +17,98 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: skpobox@hotpop.com, Jason Opperisano <Jopperisano@alphanumeric.com>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Thanks Jason.
+O.K. 
+I am putting a fictitious situation as follows :
 
-> enable IKE over TCP on the clients and UDP encapsulation. =20
-> this is not a problem with netfilter, but with multiple
->  IPSec clients behind *any* NAT =3D device.
+Linux server with iptables firewall acts as Gateway
+for internet configured as DHCP server with only mac
+address setup in DHCP configuration file, having win
+98 clients. 
+Another Linux server acts as File server, having it's
+owm iptables rules to block unwanted mac-addresses
+same win 98 clients also acts as DHCP server.
 
-Perhaps some additional info needs to be added about my configuration.
-I need to use standard Cisco Linux clients, as this is for people
-visiting (with their laptops and standard VPN setup for remote access)
-and wanting to get to their (Cisco) server.  In fact, it could be more
-than one ipsec server at some time in the future.  I definitely need to
-use a Cisco VPN gateway (can't use FreeSwan), I cannot have a single vpn
-client from the Linux router device as the requirement is for multiple
-clients behind this device.  The Cisco gateway and Win 2k client can set
-up a connection through a NAT router, we have tried this with a Netgear
-device.  So I thought the issue was similar to pptp vpn pass-through for
-multiple clients (i.e. a patch for the kernel/iptables was the way to
-go), hence the question. =20
+Now win client setup have Gateway IP as IP of Internet
+Gateway and WIN server IP as IP of file server.
 
-Kind regards, Roksana=20
+DHCP HOWTO asks to add following lines for individual
+clients in DHCP configuration file.
+
+####
+host xyz {
+   hardware ethernet 08:00:2b:4c:59:23;
+   fixed-address 192.168.1.222;
+}
+
+####
+In this case Can i use above setting by eliminating
+line specifying IP address (fixed-address
+192.168.1.222;
+)?
+
+so that IP addrress/subnet of client will not be known
+to anybody.
+
+Now if outside user with Laptop try to connect to this
+network with one of the network switch, with concent
+of any win 98 client user and in absence of
+administator by assigning any IP address of any subnet
+(By trying permutation combination of 192.0.0.0,
+10.0.0.0, 172.0.0.0) then will not get access to any
+win 98 machine by netbour neighbour.
+
+I am not sure whether this will work, I should try but
+in the mean time is it feasible?
+
+Hope i have made requirements clear.
+
+Thanks for support.
+
+--- Sanjay Arora <skpobox@hotpop.com> wrote:
+
+> On Tue, 2004-08-24 at 23:00, Jason Opperisano wrote:
+> 
+> > 
+> > so, essentially, put every machine on its own
+> dedicated subnet and have all traffic routed through
+> the firewall?  that sounds scalable...
+> > 
+> > -j
+> > 
+> Never claimed scalable ;-) 
+> 
+> Sanjay.
+> 
+> 
+> 
+> 
+
+--- Sanjay Arora <skpobox@hotpop.com> wrote:
+
+> On Tue, 2004-08-24 at 23:00, Jason Opperisano wrote:
+> 
+> > 
+> > so, essentially, put every machine on its own
+> dedicated subnet and have all traffic routed through
+> the firewall?  that sounds scalable...
+> > 
+> > -j
+> > 
+> Never claimed scalable ;-) 
+> 
+> Sanjay.
+> 
+> 
+> 
+> 
 
 
-Subject: RE: Multiple IPSEC VPNs through a firewall based on 2.4.2X
-kernel
-Date: Tue, 24 Aug 2004 07:56:33 -0400
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-To: <netfilter@lists.netfilter.org>
-
-Hi,
-
-I am trying to set up multiple ipsec VPN clients working behind a Linux
-router with NAT/PAT, based on a 2.4.20 (can be 2.4.22) kernel. I would=20
-like to be able to connect a number of Windows (2k or XP) machines to=20
-an existing Cisco VPN server.
-
-Kind regards, Roksana
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
