@@ -1,12 +1,11 @@
-From: Samuel Jean <sj-netfilter@cookinglinux.org>
-Subject: Re: Performance isues related to a large number of iptables rules
-Date: Thu, 13 Jan 2005 20:32:46 -0500
-Message-ID: <41E7213E.9080202@cookinglinux.org>
-References: <41E6FA0E.2060707@intellitree.com>
+From: "jqb@markor.net" <jqb@markor.net>
+Subject: howto stop this packet
+Date: Fri, 14 Jan 2005 13:22:9 +0800
+Message-ID: <E1CpJuL-0003XK-00@deer.gmane.org>
+Reply-To: jqb@markor.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41E6FA0E.2060707@intellitree.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,21 +16,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: henry <info@intellitree.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
 
-henry wrote:
-> Does anyone know what the real numbers are, and 
-> what numbers are feasible and what numbers aren't?
-> 
+netfilter=A3=A1
+    howto stop this packet on iptables firewall;
+tcpdump capture packet example:
+10:35:31.881722 IP 218.6.45.6.51755 > 228.71.74.201.7777: S=
+ 1432831257:1432831257(0) win 16384 <mss 1460,nop,nop,sackOK>
 
-Not me. But if blocking large amount of subnets and host addresses is
-your issue here. Only one rule is sufficient. See ipset 2.0
+10:35:36.214120 IP 219.147.192.18.1272 > 228.71.74.201.7777: S=
+ 490321:490321(0) win 6400 <mss 1460,nop,nop,sackOK>
 
-http://people.netfilter.org/kadlec/ipset/
+=A1=A1=A1=A1
 
-Sorry if am out of topic.
+Regards,=09
 
-Samuel
+
+xjjjk
+jqb@markor.net
+2005-01-14
+
+
 
