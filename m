@@ -1,11 +1,9 @@
-From: Martin Forest <martin@heimdalls.co.nz>
-Subject: iptables sync?
-Date: 17 Oct 2002 06:26:22 +1300
+From: alex leeken <leeken_alex@yahoo.com>
+Subject: ipconntract
+Date: Wed, 16 Oct 2002 11:27:28 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1034789188.1115.26.camel@mf.forest.gen.nz>
+Message-ID: <20021016182728.12947.qmail@web14003.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-4jlrRg0GLvqY2v2Jx/cL"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,44 +14,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
-
-
---=-4jlrRg0GLvqY2v2Jx/cL
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-I'm sorry if I'm writing to the wrong media but I think I have looked
-everywhere for my answer.
-I'm the developer behind Bifrost (http://bifrost.heimdalls.com), a gui
-frontend for iptables. I have just released high availability for
-Bifrost/iptables. The problem I have is that I would like to sync the
-two firewalls session/connection tables. I.e. to make it work in a
-similar way as a checkpoint cluster would do.
-
-What I'm looking for is a way to send all new established/terminated
-connections on one firewall to the other and vise versa.
-Is there a way today or is it something I/some one else would have to
-write?
-
-Martin Forest
-Heimdall's Limited
-New Zealand
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
 
 
---=-4jlrRg0GLvqY2v2Jx/cL
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Good day
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+How can i delete all state enteries
+from state table?
 
-iD8DBQA9raE+O+aseNmCTlcRAip/AJ0dHTTfQqC41ffuMHwX89h38AjzwACgmeLs
-Yqidv65dkdxv3RTlw8cKdwU=
-=7Tiq
------END PGP SIGNATURE-----
 
---=-4jlrRg0GLvqY2v2Jx/cL--
+Alex.
 
+__________________________________________________
+Do you Yahoo!?
+Faith Hill - Exclusive Performances, Videos & More
+http://faith.yahoo.com
 
