@@ -1,11 +1,13 @@
-From: "Preston Wade" <Preston_Wade@hilton.com>
-Subject: RE: Checkpoint VPN through Iptables
-Date: Tue, 24 Sep 2002 09:12:19 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Fwd: Re: FreeS/WAN + static NAT + 2 machines
+Date: Tue, 24 Sep 2002 16:48:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0B2759D401C1D211ACA500805FFE2C3F06367692@cmxserv3.hilton.com>
+Message-ID: <200209241548.g8OFmmv26526@vulcan.rissington.net>
+References: <OF97101FEC.E6B99807-ONC1256C3E.005480B2-C1256C3E.0054FC9A@GEHAG-DSK.DE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <OF97101FEC.E6B99807-ONC1256C3E.005480B2-C1256C3E.0054FC9A@GEHAG-DSK.DE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,89 +18,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-VPN's usually use some IP protocols that firewalls don't pass by default.
-You probably want to read through the VPN-Masquerade-HOWTO.
+On Tuesday 24 September 2002 4:28 pm, Walther@gehag-dsk.de wrote:
 
-http://www.linux.org/docs/ldp/howto/VPN-Masquerade-HOWTO-3.html
+> hey Antony,
+>
+> i got this setup work.
 
-Being that your VPN seems to use UDP port 500 indicates that it is probably
-an IPSec VPN in which case your firewall also needs to handle IP protocol
-50.
+Good.   Well done :-)    I'm glad it turned out you weren't using transport 
+mode after all.
 
-Hope this helps.
+> this works fine for me. i can browse the internal http, ping all
+> workstations and server and check mails with Lotus Notes.
+>
+> but i cannot mount any Windows or SAMBA share. do you know something about
+> this???
 
-Thanks,
-Preston
+Windows / NetBeui is a non-routable protocol.   It relies on network 
+broadcasts to do its network browsing, and you cannot do network broadcasts 
+beyond the local network (ie through a router or VPN link).
 
-> -----Original Message-----
-> From:	Netfilter.UPU <netfilter@upu.int>@INTERNET@HHC 
-> Sent:	Tuesday, September 24, 2002 7:37 AM
-> To:	'netfilter@lists.netfilter.org'
-> Subject:	Checkpoint VPN through Iptables
-> 
-> Hi all,
-> 
-> I'm hanged with the following problem.
-> I want to access our enterprise network behind a Nokia checkpoint FW-UPU
-> @a.b.c.d
-> from a Windows 2k Checkpoint NG client @192.168.0.2
-> behind my Linux Redhat 7.2 iptables 1.2.6a FW-HOME with eth0 @DHCP and
-> eth1
-> @192.168.0.1
-> 
-> I have the following script
-> 
-> $IPTABLES -F
-> $IPTABLES -t nat -F
-> $IPTABLES -t mangle -F
-> $IPTABLES -P INPUT ACCEPT
-> $IPTABLES -P FORWARD ACCEPT
-> $IPTABLES -t nat -A POSTROUTING -s 192.168.0/24 -o eth0 -j MASQUERADE
-> 
-> My little understanding of firewall, linux and iptables, makes me believe
-> that :
-> a) I've a quite secureless FW-HOME and my internal LAN is nated
-> b) no matter the protocol, the src/dst ports etc, everything should pass.
-> c) The checkpoint client should be able to access my enterprise VPN
-> Is that right?
-> 
-> My problem is that the client cannot access my enterprise VPN.
-> I added some loging rules and it seems that
-> My client uses UDP, src port 500 dst port 500.
-> The FW-HOME send that to FW-UPU (prot udp, src port 500 dst port 500)
-> (masquerading the IP@)
-> The FW-UPU replies to FW-UPU (prot udp, src port 500 dst port 500)
-> The FW-HOME replies : icmp port udp 500 unreachable
-> 
-> I made another test before incriminating the Client
-> I plugged it directly to my CableModem and it worked immediately.
-> I check that it was configured correctly (IKE + Force UDP encapsulation +
-> IKE over TCP)
-> according to PhoneBoy http://www.phoneboy.com/faq/0141.html
-> and http://www.phoneboy.com/faq/0372.html
-> After this test I concluded that the Client is operational.
-> 
-> Another info:
-> It worked with a Redhat 7.0 + ipchains
-> It didn't worked with ISA
-> 
-> So for me the problem is located somewhere on FW-HOME.
-> Anybody can help, explain, advice!?!?
-> 
-> 
-> 
-> _________________________________________________________
-> Birahim FALL
-> Project Manager (Postal Technologie Centre)
-> Universal Postal Union, PO Box, CH-3000 Bern 15 (Switzerland)
-> Phone	+41 313.503.372
-> Fax	+41 313.503.110
-> Email	mailto:birahim.fall@upu.int
-> 
-> 
-> 
-> 
+However, you *should* be able to mount shared drives, or connect to shared 
+printers etc so long as you know the IP address of the remote machine you 
+want to connect to.
 
+If you are using a recent version of Windows, try using the IP address of the 
+machine which has the shares instead of the machine name - you should find 
+you can connect in the normal way.
+
+As an alternative, or if you're using an older version of Windows, you can 
+put an entry into the c:\windows\lmhosts file giving the hostname and the IP 
+address, and this should allow you to set up the share in the usual way.
+
+You won't be able to browse network resources across the VPN link, however - 
+you must know where they are on the other end.
+
+Antony.
+
+-- 
+
+Most people have more than the average number of legs.
 
