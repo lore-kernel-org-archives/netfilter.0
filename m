@@ -1,14 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: DNAT, Is it possible to find the original destination?
-Date: Tue, 2 Nov 2004 08:39:15 -0500
-Message-ID: <20041102133915.GA22009@bender.817west.com>
-References: <1099323026.41865692986d5@email.ixwebhosting.com>
-	<20041101161041.GA18269@bender.817west.com>
-	<001d01c4c0a2$c61a3de0$2e01a8c0@minka>
+Subject: Re: match ??
+Date: Tue, 2 Nov 2004 08:52:29 -0500
+Message-ID: <20041102135229.GA22024@bender.817west.com>
+References: <41870BBA.4070305@eccotours.biz>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <001d01c4c0a2$c61a3de0$2e01a8c0@minka>
+In-Reply-To: <41870BBA.4070305@eccotours.biz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,33 +21,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Nov 02, 2004 at 01:11:19AM -0500, Lumberjack wrote:
-> Couple follow ups.  I searched back the last two or three months and didn't 
-> find any "no nos" on using /proc/net/ip_conntrack.  All I can figure is 
-> that it could be a hit to read through if very large.  Not sure yet how 
-> /proc fs might lock things either (if that might be an issue).  So any 
-> reason for using this to be a "bad thing" please provide some sort of hint 
-> if possible.
+On Tue, Nov 02, 2004 at 06:23:22AM +0200, Brent Clark wrote:
+> Hi
+> 
+> Could anyone please explain to me the lamens terms for --match -limit.
+> I dont understand whats it for, or where  you use it.
+> 
+> Kind Regards
+> Brent Clark
 
-the thread that it ended up coming out in that i was thinking of:
+the limit match limits the rate at which a rule will match.
 
-  http://marc.theaimsgroup.com/?l=netfilter&m=109649105915501&w=2
+the rule will match the average number events per time period specified
+by "--limit", but may match up to "--limit-burst" number of events
+initially, and for every "--limit" time period that passes without
+a match.
 
-and yes--it has to do with read locking.
-
-> Another.  If I do something to read in the contents of 
-> /proc/net/ip_conntrack and then do something to send some output to stdin 
-> of iptables-restore/iptables does my app need to be GPL based?  Boarders 
-> here seem rather grey.  I am not modifying any GPL code nor extending it so 
-> it doesn't seem to me be something that "modifies" and thus requires to be 
-> released under the GPL.
-
-can't help ya there...
+it is most commonly used in rules to (a) throttle the volume of logging
+that can take place and (b) protect from SYN floods.
 
 -j
 
 --
-"Here we have an ordinary square.
- Whoa! Slow down egghead!"
+"It is better to remain silent and thought a fool, than open your
+ mouth and remove all doubt."
         --The Simpsons
 
