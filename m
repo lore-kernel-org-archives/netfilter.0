@@ -1,12 +1,13 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: test iptables for PPTP patch
-Date: Thu, 19 Aug 2004 07:39:17 -0400
+From: Alejandro Flores <alejandro.flores@triforsec.com.br>
+Subject: Re: Wich authentication is configured on FC2?
+Date: Thu, 19 Aug 2004 09:01:12 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512A9@asimail2.alphanumeric.com>
+Message-ID: <1092916872.2221.3.camel@aflores>
+References: <00ab01c48523$030dc480$1164a8c0@runningcentro.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <00ab01c48523$030dc480$1164a8c0@runningcentro.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,20 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Flavio Borup <borup@running.com.br>
+Cc: netfilter@lists.netfilter.org
 
-> I have just upgraded to iptables 1.2.11 and run p-o-m ng 20040621, how =
-can I
-> make sure that I have PPTP nat'ing available?
->
-> Paulo
+	Hello Flavio,
 
-if you compiled them as modules:
+> 1) It comes with NTLM support compiled, or i have to compile squid ?
 
-# modprobe ip_conntrack_pptp
-# modprobe ip_nat_pptp
-# modprobe ip_conntrack_proto_gre
-# modprobe ip_nat_proto_gre
+	Take a look at /usr/lib/squid
 
--j
+> 2) To use the /etc/passwd-/etc/shadow authentication, i have to use
+> pam_auth?
+
+	Yes.
+
+> 3) I can use NTLM authentication with Non-Domain Controllers machine?
+> (authentication beeing validated on a stand-alone Windows machine, using the
+> local account databased, the SAM)?
+
+	AFAIK, no.
+
+	Flavio, this list is intended for Netfilter/Iptables discussion only.
+
+-- 
+--
+Alejandro Flores
+http://www.triforsec.com.br/
+http://www.defenselayer.com/
+http://www.nabucodonosor.com/
 
