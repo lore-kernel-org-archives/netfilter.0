@@ -1,12 +1,13 @@
-From: Thierry ITTY <thierry.itty@besancon.org>
-Subject: what about IIOP
-Date: Wed, 23 Apr 2003 14:37:02
+From: "Kevin Smith" <ksmith@perfht.com>
+Subject: Hoax..
+Date: Wed, 23 Apr 2003 09:07:28 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3.0.1.16.20030423143702.264f6b20@s-net-04.besancon.org>
+Message-ID: <NGBBLGFEALDADHNDAAFFCEIKDJAA.ksmith@perfht.com>
+References: <20030423021401.26417.52880.Mailman@kashyyyk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030423021401.26417.52880.Mailman@kashyyyk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,22 +17,14 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello
 
-I'll have to let IIOP go throught my netfilter gateway
-I had a look to IIOP, CORBA 2.0 and related doc, and the problem seems to
-be that iiop embeds ip addresses in its paylod, thus it can't be simply
-NATed, some protocol analysis has to occur like for example h323
-Unfortunately I didn't find some netfilter add-on for iiop
+>>UNION TOGOLAISE DE BANQUE LOME TOGO,
+>>LOME-TOGO.
+>>STRICTLY AND CONFIDENTIAL,
+    ^^^^^^^^^^^^^^^^^^^^
+The Hint this this is a hoax..(I mean to a mailing list?)
 
-Did I miss something or is this feature not available for the moment ?
-
-thanks for your answers=20
-			- * - * - * - * - * - * -
-Bien s=FBr que je suis perfectionniste !
-Mais ne pourrais-je pas l'=EAtre mieux ?
-	Thierry ITTY
-eMail : Thierry.Itty@Besancon.org		FRANCE
 
