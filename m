@@ -1,8 +1,8 @@
 From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
 Subject: RE: traceroute
-Date: Wed, 30 Jun 2004 10:34:37 -0400
+Date: Wed, 30 Jun 2004 10:52:52 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E62E806@email1.mitretek.org>
+Message-ID: <2E314DE03538984BA5634F12115B3A4E62E808@email1.mitretek.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,6 +18,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
+
+Hrm, perhaps..
+
+Maybe showing a diagram of your network might help?
+
+It sounds like you have two firewalls then?
+If so, I still believe you would be using INPUT.., have you tried it,
+default POLICY for FORWARD to ACCEPT and enable the INPUT rule?
+
+Traceroute:
+
+[yourbox (iptables firewall)] ---------> [nat+firewall] -------> host?
+
+-----Original Message-----
+From: Peter Marshall [mailto:peter.marshall@caris.com]=20
+Sent: Wednesday, June 30, 2004 10:50 AM
+To: Piszcz, Justin Michael; netfilter
+Subject: Re: traceroute
+
+Why would I use the INPUT chain .. I am doing a trace route from an
+internal
+box to an internet box ... on the other side of my firewall ... I am
+pretty
+sure that is a forwared rule ... is it not ?
+
+Peter
+
+----- Original Message -----=20
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
+<netfilter@lists.netfilter.org>
+Sent: Wednesday, June 30, 2004 11:34 AM
+Subject: RE: traceroute
+
 
 Is there a reason why you are doing stuff with the FORWARD chain?
 Have you tried enabling ACCEPT for the FORWARD chain and seeing if it
@@ -37,7 +71,7 @@ You need the ESTABLISHED,RELATED option for the INPUT chain.
 --state ESTABLISHED,RELATED -j ACCEPT
 
 -----Original Message-----
-From: Peter Marshall [mailto:peter.marshall@caris.com]=20
+From: Peter Marshall [mailto:peter.marshall@caris.com]
 Sent: Wednesday, June 30, 2004 10:25 AM
 To: Piszcz, Justin Michael; netfilter
 Subject: Re: traceroute
@@ -142,6 +176,7 @@ completely hidden by their superficial design flaws."
 list;
                                                            please don't
 CC me.
+
 
 
 
