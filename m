@@ -1,14 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: iptables and TOS 15
-Date: Fri, 12 Nov 2004 11:50:38 -0500
-Message-ID: <20041112165038.GA27216@bender.817west.com>
-References: <419551d1.7be0.0@australia.edu>
-	<1100272993.3377.9.camel@hubcap.ljm.dom>
-	<4194EAB3.5040409@lopsch.com>
+Subject: Re: Problem with nat/OUTPUT/DNAT rule
+Date: Fri, 12 Nov 2004 12:07:38 -0500
+Message-ID: <20041112170738.GA27327@bender.817west.com>
+References: <27594E8BA9D5CA458F5EF87D88B6B48F1B43@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <4194EAB3.5040409@lopsch.com>
+In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F1B43@pxtvjoexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,16 +21,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Nov 12, 2004 at 05:54:11PM +0100, Lopsch wrote:
-> Concerning to 
-> http://www.lartc.org/howto/lartc.qdisc.classless.html#AEN659 the value 
-> 15 is a combination of all possible TOS values. What would be logical 
-> because with a 4bit field you are able to get the max decimal value of 
-> 15. In my opinion marking with 15 or not marking have the same effect. 
-> Also using the TOS values only makes sense when using for example the 
-> pfifo_fast queueing discipline to schedule pakets.
+On Thu, Nov 11, 2004 at 11:34:09PM -0800, Gary W. Smith wrote:
+> I have been trying to upgrade a RH9 firewall box running 1.2.7a to RHEL3.  I applied patch-o-matic pptp-conntrack to the RHEL3 kernel and everything "seemed" fine.  I have an automated script that generates some baseline firewall rules for some clients.  Anyways, It fails only on RHEL3 1.2.7a.  It works on my FC2 and RH9 boxes.
+>  
+> The failure always happens on the nat filter, output chain:
+>  
+> [0:0] -A OUTPUT -d 66.120.18.34 -j DNAT --to-destination 192.198.0.34
+>  
+> Any ideas?
 
-ah...thanks for the clarification.
+you say you applied a patch from POM and recompiled your kernel.  did
+you also rebuild iptables?  IIRC the pptp-conntrack patch changes the
+size of the internal structures, so an unpatched iptables will fail to
+add rules in this way (usually on a NAT rule).
 
 -j
 
