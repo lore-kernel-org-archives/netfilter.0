@@ -1,13 +1,12 @@
-From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
-Subject: RE: How to install connection tracking NAT module for FTP or other application else
-Date: Thu, 28 Nov 2002 14:27:01 +0100
+From: Roberto Nibali <ratz@tac.ch>
+Subject: Re: Neighbour table overflow
+Date: Thu, 28 Nov 2002 17:40:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E131E9F1848D0148813EAF06A846608FD77735@w2ks-e2k.iconos.be>
+Message-ID: <3DE646EC.60503@tac.ch>
+References: <1038321617.13707.28.camel@ben.mis.tnsi.com> <35211.200.60.189.231.1038335981.squirrel@www.netfids.com> <20021126183823.GD31207@telegraafnet.nl>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C296E1.D59C886E"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,84 +16,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Orca J." <orca_cs@hotmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ard van Breemen <ard@telegraafnet.nl>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+> (From this point on I am just guessing and trying to understand
+> the source code:)
+> If I am correct, it will mark entries to be freed, so that they
+> wont be used anymore. So to be able to use a specific destination
+> again, it needs to make a new entry in the neighbour table. So
+> instead of cleaning up the tables, your neighbour (arp) table
+> will be filled fast if you see more new source ip's than that old
+> neighbour entries are discarded by having their usage counts down
+> to 0.
 
-------_=_NextPart_001_01C296E1.D59C886E
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+If you haven't already, please take a look at net/core/neighbour.c:neigh_alloc()
 
->   How to download and install connection tracking NAT module for FTP =
-or=20
->other application else (ip_nat_ftp, ip_nat_irc) ?
->   If any documents will be useful please let me know the URL .
+          unsigned long now = jiffies;
+          if (tbl->entries > tbl->gc_thresh3 ||
+              (tbl->entries > tbl->gc_thresh2 &&
+               now - tbl->last_flush > 5*HZ)) {
+                  if (neigh_forced_gc(tbl) == 0 &&
+                      tbl->entries > tbl->gc_thresh3)
+                          return NULL;
+          }
 
-They are in the kernel, do
+It's pretty straightforward and should give you everything you need.
 
-modprobe ip_nat_ftp
-modprobe ip_nat_irc
+> If somebody else knows the true truth about how it exactly works,
+> please tell me. I will make notes of it for the lartc so it can
+> be a FAQ.
 
-as root from a commandline.
+I might write some documents about this because I recently had
+someone on the LVS project with the same problems. However, if someone
+from the LARTC guys writes it before I do, I won't be disappointed either.
 
-For other connection tracking/NAT modules, check the netfilter site
-and iptables documentation on how to use patch-o-matic to add=20
-stuff to your kernel source tree. You'll have to recompile your
-kernel to get them to work though...
+Cheers,
+Roberto Nibali, ratz
+-- 
+echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq' | dc
 
-Regards,
-Filip
-
-
-
-
-
-------_=_NextPart_001_01C296E1.D59C886E
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3DWindows-1252">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6249.1">
-<TITLE>RE: How to install connection tracking NAT module for FTP or =
-other application else </TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>&gt;&nbsp;&nbsp; How to download and install =
-connection tracking NAT module for FTP or<BR>
-&gt;other application else (ip_nat_ftp, ip_nat_irc) ?<BR>
-&gt;&nbsp;&nbsp; If any documents will be useful please let me know the =
-URL .<BR>
-<BR>
-They are in the kernel, do<BR>
-<BR>
-modprobe ip_nat_ftp<BR>
-modprobe ip_nat_irc<BR>
-<BR>
-as root from a commandline.<BR>
-<BR>
-For other connection tracking/NAT modules, check the netfilter site<BR>
-and iptables documentation on how to use patch-o-matic to add<BR>
-stuff to your kernel source tree. You'll have to recompile your<BR>
-kernel to get them to work though...<BR>
-<BR>
-Regards,<BR>
-Filip<BR>
-<BR>
-<BR>
-<BR>
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C296E1.D59C886E--
 
