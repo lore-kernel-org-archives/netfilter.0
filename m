@@ -1,12 +1,16 @@
-From: Brad Chapman <kakadu_croc@yahoo.com>
-Subject: Re: Where did netfilter.org/iptables.org go?
-Date: Thu, 20 Jun 2002 09:32:14 -0700 (PDT)
+From: Rodrigo Senra <rodsenra@gpr.com.br>
+Subject: Re: Completely NAT an ISP: A practical possibility?
+Date: Thu, 20 Jun 2002 16:37:10 -0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020620163214.5115.qmail@web10908.mail.yahoo.com>
-References: <Mutt.LNX.4.44.0206202307490.1561-100000@blackbird.intercode.com.au>
+Message-ID: <20020620193615.40DDAC87AF@srv9-sao.terra.com.br>
+References: <3D0BBC45.5000807@palaver.net>
+	<20020618202115.32CD7C94DF@srv11-sao.terra.com.br>
+	<20020618225058.GC27054@cannon.eng.us.uu.net>
+	<200206200948.g5K9m7U31874@vulcan.rissington.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Mutt.LNX.4.44.0206202307490.1561-100000@blackbird.intercode.com.au>
+In-Reply-To: <200206200948.g5K9m7U31874@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,42 +21,46 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: James Morris <jmorris@intercode.com.au>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-Mr. Morris,
+|On Thu, 20 Jun 2002 10:48:01 +0100
+|Antony Stone <Antony@Soft-Solutions.co.uk> wrote
+| about Re: Completely NAT an ISP: A practical possibility?:
 
---- James Morris <jmorris@intercode.com.au> wrote:
-> On Thu, 20 Jun 2002, Brad Chapman wrote:
+ >> On Tuesday 18 June 2002 11:50 pm, Ramin Alidousti wrote:
 > 
-> > Everyone,
-> > 
-> >      Does anyone know why www.netfilter.org and www.iptables.org point to
-> > lists.netfilter.org/mailman/listinfo? Fortunately netfilter.samba.org and
-> > netfilter.gnumonks.org are still OK.
-> > 
+> > On Tue, Jun 18, 2002 at 05:22:03PM -0300, Rodrigo Senra wrote:
+> > > > This would break lots of protocols. How would the clients put up with
+> > > > this broken functionality?
+> > >
+> > > Good observation. Yes it breaks some (all not NAT-able), and when this is
+> > > used clients have to live up with the limitations. But as I said, for the
+> > > time being this is used to accomodate a multiple-ISP cenario where
+> > > clients need basically HTTP, FTP, and less percentage of H.323.
+> >
+> > Just a small note. FTP is one of the protocols that would break...
 > 
-> Harald has just moved the server to a new IP, so it's possibly just a 
-> temporary DNS issue.
-
-        ACK. Both domains are functioning again.
-
+> This is, of course, assuming that they only do "simple NAT", rather than 
+> implementing netfilter + associated helper modules inside the ISP....
 > 
-> 
-> - James
-> -- 
 
-Brad
+Thank you Antony.
 
+Indeed we were discussing different things! I believe now that Ramin
+made reference that protocols would break due to a lack of "connection
+conntracking" withou which packets couldn't suffer NAT properly. We have
+implemented a rudimentar NAT+conntrack kernel 2.2 patch, because by the time
+we netfilter/iptables was not available in all its glory ;o).
+What we did was to use a priority queue and hashtables to implement full
+NAT to FTP and H.323 only (our immediate needs by then).
 
-=====
-Brad Chapman
+We've upgraded the solution to use netfilter/iptables last year.
 
-Permanent e-mail: kakadu_croc@yahoo.com
+regards,
+Senra 
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! - Official partner of 2002 FIFA World Cup
-http://fifaworldcup.yahoo.com
+-- 
+Rodrigo Senra         
+MSc Computer Engineer   (GPr Sistemas Ltda)     rodsenra@gpr.com.br 
+http://www.ic.unicamp.br/~921234  (LinUxer 217.243) (ICQ 114477550)
 
