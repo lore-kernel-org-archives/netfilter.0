@@ -1,14 +1,12 @@
-From: Pascal Italiaander <pc-secure@home.nl>
-Subject: Re: Two IP add
-Date: Thu, 5 Jun 2003 19:51:33 +0200
+From: "Cornu Nicolas" <n.cornu@ifrance.com>
+Subject: Re: MSN Voice chat with Iptables
+Date: Thu, 5 Jun 2003 19:38:08 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306051951.33575.pc-secure@home.nl>
-References: <200306051156.45624.pandre@darkstar.nom.za> <1054813152.1206.9.camel@india> <1054819746.13885.39.camel@raylinux.internal>
+Message-ID: <001c01c32b89$3b960ff0$0100a8c0@windows>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DA0@wardrive.citadelcomputer.com.au> <3EDDEDA1.9030801@phreaker.net> <00d301c32ad5$25bb2c10$0100a8c0@windows> <00ac01c32b14$09c128e0$c2bf09ca@Housecall>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1054819746.13885.39.camel@raylinux.internal>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: hare ram <hareram@sol.net.in>, netfilter@lists.samba.org
 
-Op donderdag 5 juni 2003 15:29, schreef Ray Leach:
-> On Thu, 2003-06-05 at 13:38, Dharmendra.T wrote:
-> > On Thu, 2003-06-05 at 15:26, Paulo Andre wrote:
-> >         I would like to do the following:
-> >
-> >         Stop MASQUESRADING to two servers say. 10.10.10.5 and 10.10.10.8,
-> > how would i do this with a rule.
-> >
-> >         iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers ip' -j
-> > MASQUERADE now how would i put in two ip address's ?
+no succes for me
+if i find something i will let u know
 
-Ok , you could do something like this:
+NC
 
-NO_MASK="10.10.10.5 10.10.10.8"
+----- Original Message -----=20
+From: "hare ram" <hareram@sol.net.in>
+To: <netfilter@lists.samba.org>
+Sent: Thursday, June 05, 2003 5:39 AM
+Subject: Re: MSN Voice chat with Iptables
 
-if [ ${NO_MASK} != "" ] ; then
-  for nomask in ${NO_MASK}; do
- 	iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${NO_MASK} -j MASQUERADE
-done;
-fi
 
-this is a bit more flexible, cause , you can ad more ip's the NO_MASK easily 
-without changing the rule itself, or have to write a new line.
+> Hi  all
+> Does any one installed
+>
+> Upnp Successfully in REDHAT
+> i been doing this practice more than 30 days now
+> but no luck, any expert can guide me how can i process
+> even i have posted in to linux-igd group, looks like the news group dead,
+no
+> responce also for the same
+>
+> any help will be great
+>
+> hare
+>
+>
+> _____________________________________________________________________
+> Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN Messenger
+> http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de Fra=
+nce
 
-Pascal
+_____________________________________________________________________
+Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN Messenger
+http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de France
 
 
