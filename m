@@ -1,11 +1,11 @@
-From: "Big Daddy" <bigdaddy@monster-solutions.net>
-Subject: Re: HTTP Port forwarding issues
-Date: Mon, 8 Jul 2002 16:39:16 -0400
+From: Patrick Petermair <captain.nuke@gmx.at>
+Subject: Strange log entries (again)
+Date: Mon, 8 Jul 2002 22:43:35 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001501c226bf$875467e0$6702a8c0@internal.monstersolutions.net>
-References: <FLEKIPPLAEDMJMOOBBDPGEOBCHAA.stewart.thompson@shaw.ca>
+Message-ID: <200207082243.35434.captain.nuke@gmx.at>
+Reply-To: captain.nuke@gmx.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -17,66 +17,46 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: stewart.thompson@shaw.ca, Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-all,
-    I guess my ISP is blocking port 80. I configured the web server to use
-port 8080 and configured my rules the same as before but used port 8080 and
-it worked. thanks for all of the help!
+Hi!
 
------ Original Message -----
-From: "Stewart Thompson" <stewart.thompson@shaw.ca>
-To: "Big Daddy" <bigdaddy@monster-solutions.net>; "Antony Stone"
-<Antony@Soft-Solutions.co.uk>; <netfilter@lists.samba.org>
-Sent: Monday, July 08, 2002 4:11 PM
-Subject: RE: HTTP Port forwarding issues
+I have found the following log entry in my firewall log (I'm running RedH=
+at=20
+7.3 with iptables for firewalling and masquerading):
 
+Jul  8 22:25:11 wormhole kernel: IN=3Dppp0 OUT=3D MAC=3D SRC=3D207.171.16=
+9.16=20
+DST=3D213.225.41.145 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D49 ID=3D21031 =
+DF PROTO=3DTCP=20
+SPT=3D80 DPT=3D42111 WINDOW=3D8760 RES=3D0x00 ACK RST URGP=3D0
 
-> Perhaps you should publish your entire rule set. Trying to help you with
-> piecemeal rules is pretty tough.
-> The order of the rules is important. Logging is also useful as recommended
-> in an earlier post. What does
-> a TCPDUMP show for port 80 on the External and Internal Interfaces. Also,
-> what are you using to test
-> your port 80? Internal machines will act very different than machines
-coming
-> in from the Internet.
->
-> Stu........
->
->
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Big Daddy
-> Sent: July 8, 2002 1:04 PM
-> To: Antony Stone; netfilter@lists.samba.org
-> Subject: Re: HTTP Port forwarding issues
->
-> i have the following rule as well.
->
-> iptables -A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
->
-> ----- Original Message -----
-> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-> To: <netfilter@lists.samba.org>
-> Sent: Monday, July 08, 2002 3:57 PM
-> Subject: Re: HTTP Port forwarding issues
->
->
-> > On Monday 08 July 2002 8:51 pm, Big Daddy wrote:
-> >
-> > > It worked when I was using a Linksys router. However maybe they have
-> > > changed it since then. Do my rules look fine?
-> >
-> > Well, I hope these are not your *only* rules ?   I mean, like Stewart
-> > suggested, what about the ESTABLISHED packets as well as the NEW ones ?
-> >
-> >
-> >
-> > Antony.
-> >
->
->
->
+The thing is that this is an answer from a website (SPT=3D80) I surfed on=
+=20
+(www.amazon.de) - but my forward chain should detect it as an existing=20
+connection and let it through:
 
+#echo "   FWD: Allow all connections OUT and only existing and related on=
+es=20
+IN"
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state ESTABLISHED,REL=
+ATED=20
+-j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -j LOG
+
+I can access this website and everything works fine, I just don't underst=
+and=20
+why a few packets get blocked at my firewall and not routed through! Is t=
+his=20
+a bug in the conntrack module?
+Btw: What do the ACK and RST flags mean? Where can I find some infos abou=
+t the=20
+existing flags?
+
+Thnx so far!
+Patrick
+
+--=20
+http://www.petermair.com
 
