@@ -1,12 +1,13 @@
-From: "Michael J. Tubby B.Sc. \(Hons\) G8TIC" <mike.tubby@thorcom.co.uk>
-Subject: Re: External IP addresses on internal network
-Date: Thu, 28 Aug 2003 16:52:28 +0100
+From: "Len L." <len@euler.com>
+Subject: limit option test with icmp
+Date: Thu, 28 Aug 2003 19:28:40 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008e01c36d7c$6218ca70$6401a8c0@int.thorcom.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15C1B5@wardrive.citadelcomputer.com.au> <3F4C0519.8000109@Loudoun-Fairfax.com> <Pine.LNX.4.53.0308270944480.7868@simba.math.ucla.edu> <3F4CFD8C.5020404@Loudoun-Fairfax.com>
+Message-ID: <12CC60849165134FB7DF8570B621F4D558B081@mailxserver.euler.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C36DC4.7E912E00"
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>, Jim Carter <jimc@math.ucla.edu>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> 
-> A point of interest for list members. Most sample scripts and some 
-> production configurations do little if any filtering of traffic from the 
-> LAN out to the Net. The theory being that the LAN is trusted. IMHO this 
-> is a mistake. Malware can get in from e-mail, laptops, wireless 
-> connections, floppies, etc. and there's no way we can stop all of it. 
-> IDS is great but pretty pricey for SOHO use. I recently found a worm on 
-> a client that had gotten in despite our best efforts. The only way I 
-> knew it was there was by iptables logging (and rejecting) outgoing 
-> traffic on unauthorized ports. I'll never know if the worm was able to 
-> find an open port to reach the net, but internally it was contained to 
-> one box and no harm was done. Just my 2 cents.
-> 
-> Jeff
-> 
+This is a multi-part message in MIME format.
 
-I filter outbound stuff in the OUTPUT table (packets from my firewall
-host to the net) and the FORWARD table.
+------_=_NextPart_001_01C36DC4.7E912E00
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 
-What you should be filtering is packet egress, that is your 192.168 or
-whatever internal LAN leaking 'naked' (un-NATted) to the internet at
-large.
+SGV5IGd1eXMsDQogICAgSSBtdXN0IGJlIG1pc3Npbmcgc29tZXRoaW5nIHdpdGggdGhlIGxpbWl0
+IG9wdGlvbi4gIEkgdGhvdWdodCBJIHdvdWxkIGV4cGFuZCBvbiBteSBmaXJld2FsbCBieSB1dGls
+aXppbmcgbGltaXRzLiAgQXMgYSB0ZXN0IEkgcHV0IGluIHRoZSBmb2xsb3dpbmcgY29tbWFuZDoN
+CiANCmlwdGFibGVzIC1BIElOUFVUIC1tIGxpbWl0IC1wIGljbXAgLS1saW1pdCArMS9oIC0tbGlt
+aXQtYnVyc3QgNQ0KaXB0YWJsZXMgLUEgSU5QVVQgLXMgeHh4Lnh4eC54eHgueHh4IC1wIGljbXAg
+LWogQUNDRVBUDQppcHRhYmxlcyAtQSBJTlBVVCAtcyAwLzAgLXAgaWNtcCAtaiBEUk9QDQogDQpU
+aGUgaW50ZW50IHRoYXQgSSBjb3VsZCBwaW5nIGZyb20geHh4Lnh4eC54eHgueHh4IGFuZCBzZWUg
+b25seSA2IHBpbmdzIGJlIHN1Y2Nlc3NmdWwgKDUgYnVyc3QgYW5kIDEgcGVyIGhvdXIpLg0KIA0K
+SG93ZXZlciB0aGUgcmVtb3RlIHBpbmcganVzdCBrZWVwcyBvbiByb2xsaW5nIGFsb25nIHdpdGhv
+dXQgYSBsaW1pdC4NCklmIEkgY29tbWVudCBvdXQgdGhlIEFDQ0VQVCBvZiB4eHgueHh4Lnh4eC54
+eHggcGluZ2luZyBzdG9wcyBzaW5jZSBpdCBpcyBkcm9wcGVkLg0KIA0KSSBhbSBydW5uaW5nIFJl
+ZEhhdCA5LjAga2VybmVsIDIuNC4yMC0yMC45DQogDQo=
 
-I do this in two places, on the main firewall box between out "inside"
-and "outside" in iptables and then again at the Cisco router facing
-PSInet with an ACL that drop & log any packets from anything other
-than our PSInet Class-C, so there's no way we can "leak" on to the 'net.
+------_=_NextPart_001_01C36DC4.7E912E00
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 
-Doesn't everyone do this?
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj48SFRNTD48SEVBRD48TUVUQSBIVFRQLUVRVUlWPSJDb250ZW50LVR5cGUiIENPTlRFTlQ9
+InRleHQvaHRtbDsgY2hhcnNldD11dGYtOCI+PC9IRUFEPjxCT0RZPjxESVY+SGV5IGd1eXMsPC9E
+SVY+CjxESVY+Jm5ic3A7Jm5ic3A7Jm5ic3A7IEkgbXVzdCBiZSBtaXNzaW5nIHNvbWV0aGluZyB3
+aXRoIHRoZSBsaW1pdCBvcHRpb24uJm5ic3A7IApJIHRob3VnaHQgSSB3b3VsZCBleHBhbmQgb24g
+bXkgZmlyZXdhbGwgYnkgdXRpbGl6aW5nIGxpbWl0cy4mbmJzcDsgQXMgYSB0ZXN0IEkgCnB1dCBp
+biB0aGUgZm9sbG93aW5nIGNvbW1hbmQ6PC9ESVY+CjxESVY+Jm5ic3A7PC9ESVY+CjxESVY+aXB0
+YWJsZXMgLUEgSU5QVVQgLW0gbGltaXQgLXAgaWNtcCAtLWxpbWl0ICsxL2ggLS1saW1pdC1idXJz
+dCA1PC9ESVY+CjxESVY+aXB0YWJsZXMgLUEgSU5QVVQgLXMmbmJzcDt4eHgueHh4Lnh4eC54eHgg
+LXAgaWNtcCAtaiBBQ0NFUFQ8L0RJVj4KPERJVj5pcHRhYmxlcyAtQSBJTlBVVCAtcyAwLzAgLXAg
+aWNtcCAtaiBEUk9QPC9ESVY+CjxESVY+Jm5ic3A7PC9ESVY+CjxESVY+VGhlIGludGVudCB0aGF0
+IEkgY291bGQgcGluZyBmcm9tIHh4eC54eHgueHh4Lnh4eCBhbmQgc2VlIG9ubHkgNiBwaW5ncyBi
+ZSAKc3VjY2Vzc2Z1bCAoNSBidXJzdCBhbmQgMSBwZXIgaG91cikuPC9ESVY+CjxESVY+Jm5ic3A7
+PC9ESVY+CjxESVY+SG93ZXZlciB0aGUgcmVtb3RlIHBpbmcganVzdCBrZWVwcyBvbiByb2xsaW5n
+IGFsb25nIHdpdGhvdXQgYSBsaW1pdC48L0RJVj4KPERJVj5JZiBJIGNvbW1lbnQgb3V0IHRoZSBB
+Q0NFUFQgb2YgeHh4Lnh4eC54eHgueHh4IHBpbmdpbmcgc3RvcHMgc2luY2UgaXQgaXMgCmRyb3Bw
+ZWQuPC9ESVY+CjxESVY+Jm5ic3A7PC9ESVY+CjxESVY+SSBhbSBydW5uaW5nIFJlZEhhdCA5LjAg
+a2VybmVsICAyLjQuMjAtMjAuOTwvRElWPgo8RElWPiZuYnNwOzwvRElWPjwvQk9EWT48L0hUTUw+
 
-Mike
-
+------_=_NextPart_001_01C36DC4.7E912E00--
 
