@@ -1,12 +1,14 @@
-From: Erik =?iso-8859-1?Q?Wikstr=F6m?= <eriwik@itstud.chalmers.se>
-Subject: DHCP and Ident
-Date: Sat, 10 Jul 2004 16:12:20 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DHCP and Ident
+Date: Sat, 10 Jul 2004 15:51:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040710141220.GA22967@itstud.chalmers.se>
+Message-ID: <200407101551.35291.Antony@Soft-Solutions.co.uk>
+References: <20040710141220.GA22967@itstud.chalmers.se>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20040710141220.GA22967@itstud.chalmers.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +21,106 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi
+On Saturday 10 July 2004 3:12 pm, Erik Wikstr=F6m wrote:
 
-I've been thinking for some time now about the rules needed to allow the
-firewallbox to receive its public IP from a DHCP-server but everywhere I
-look it's done in different ways.
+> Hi
+>
+> I've been thinking for some time now about the rules needed to allow th=
+e
+> firewallbox to receive its public IP from a DHCP-server but everywhere =
+I
+> look it's done in different ways.
 
-My first thought was to open up for the DHCP-request in the OUTPUT-chain
-(all policies DROP) and let netfilters connection-tracking abilities
-take care of the rest. Like this:
+> But then I realised that since I don't have a source or destination
+> address netfilter will probably not be able to track the connection.
 
-iptables -t filter -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEP=
-T
-iptables -t filter -A INPUT -i $WAN -p UDP --dport 67 --sport 68 -j ACCEP=
-T
+You'll find it (almost?) impossible to use netfilter to control DHCP requ=
+ests.
 
-But then I realised that since I don't have a source or destination
-address netfilter will probably not be able to track the connection.
+You can do all the usual stuff with follow-up lease renewals and so on, b=
+ut as=20
+you already said, before the first DHCP request, you don't have an IP=20
+address, and you're right - the IP stack and netfilter don't do much unde=
+r=20
+those circumstances.
 
-On the net I found this:
-$IPTABLES -A OUTPUT -o eth1 -p tcp -s 0.0.0.0/32 --sport 67 \
-	-d 255.255.255.255/32 --dport 68 -j ACCEPT
-$IPTABLES -A OUTPUT -o $internal_int -p udp -s $internal_ip --sport 67 \
-	-d 255.255.255.255 --dport 68 -j ACCEPT
+Another way to look at what I'm saying is "you don't have to do anything=20
+special with netfilter to allow your machine to get an address by DHCP", =
+so I=20
+wouldn't worry about it.
 
-$IPTABLES -A INPUT -i $internal_int -p tcp --sport 68 --dport 67 -j ACC\E=
-PT
-$IPTABLES -A INPUT -i $internal_int -p udp --sport 68 --dport 67 -j ACCEP=
-T
+> $IPTABLES  -I INPUT -i $LAN_IFACE -p udp --dport 67:68 --sport \
+> 	67:68 -j ACCEPT
+>
+> But this opens two ports and the only protocol I know of that uses two
+> ports is FTP, so If someone could give me some hints I'd be happy.
 
-Looks a bit much I think. Also found this:
+UDP 67 is used by the DHCP server - this is the port the client sends req=
+uests=20
+to, and it's the port the responses (and, often, informational messages o=
+nce=20
+you have your lease) come from on the server
 
-$IPTABLES  -I INPUT -i $LAN_IFACE -p udp --dport 67:68 --sport \
-	67:68 -j ACCEPT
+UDP 68 is used by the DHCP client - this is the port the client sends req=
+uests=20
+from, and it's the port the response from the server are sent to.
 
-But this opens two ports and the only protocol I know of that uses two
-ports is FTP, so If someone could give me some hints I'd be happy.
+So, if you're running the client end, you only need to allow packets in t=
+o=20
+port 68 (and they'll be coming from the server's port 67)
 
+RFC2131 is the definitive reference.
 
-I was also wondering if about Ident, today I use it only when connecting
-to IRC-servers and have port 113 forwarded to the computer running the
-IRC-client but this solution is not so good if another computer on my
-network should have a need of Ident. So I was wondering: If I install an
-Identd on my firewallbox and let it take care of requests would it work,
-considering that the connection does not origin from the firewallbox?
+Just as a point of information, by the way, I get a DHCP address from my =
+ISP=20
+on a cable modem, and I allow the requests out from my firewall, and the=20
+replies back again, but I block any new connections initiated from the=20
+outside (including the ISP).   My logs show a DHCP packet from ISP port 6=
+7 to=20
+my firewall port 68 about every 20 seconds (the lease time is 86400 secon=
+ds =3D=20
+24 hours).
 
-Thanks for your time.
+> I was also wondering if about Ident, today I use it only when connectin=
+g
+> to IRC-servers and have port 113 forwarded to the computer running the
+> IRC-client but this solution is not so good if another computer on my
+> network should have a need of Ident. So I was wondering: If I install a=
+n
+> Identd on my firewallbox and let it take care of requests would it work=
+,
+> considering that the connection does not origin from the firewallbox?
 
---
-Erik Wikstr=F6m
+My experience of most things which want an ident response is that if they=
+ get=20
+any response at all, they're happy.   It doesn't matter whether it's accu=
+rate=20
+or not - they just want some sort of response.
+
+This may depend on the particular IRC server, however, and as always, YMM=
+V.
+
+For some "fake identd" software, see for example:
+
+http://www.guru-group.fi/~too/sw/identd.readme
+http://hangout.de/fakeidentd
+
+And even a trivial Perl script to do it for you:
+
+http://www.bovine.net/~jlawson/coding/fake-identd/identd.txt
+
+Regards,
+
+Antony.
+
+--=20
+I love deadlines.   I love the whooshing noise they make as they go by.
+
+ - Douglas Noel Adams
+
+                                                     Please reply to the =
+list;
+                                                           please don't C=
+C me.
+
 
