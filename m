@@ -1,9 +1,11 @@
-From: Reuven Kohanim <rkohanim@yahoo.com>
-Subject: Allow station addresses to remain intact during masquerade
-Date: Sun, 6 Apr 2003 03:36:23 -0700 (PDT)
+From: "Rio Martin." <rio@martin.mu>
+Subject: Re: SNAT
+Date: Sun, 6 Apr 2003 17:52:03 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030406103623.40748.qmail@web20713.mail.yahoo.com>
+Message-ID: <00f101c2fc2a$91158d90$6401a8c0@server>
+References: <7C9884991ADAE0479C14F10C858BCDF5122DAF@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,40 +17,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
-I currently work with ipchains to setup NAT from my
-private network to the internet. Before getting to the
-MASQ line I had a few  forward rules for letting a few
-stations to get to a server in my DMZ with their
-original IP address intact (i.e. not NATted). I need
-to do this to allow those stations to work the
-X-protocol with the sever set in my DMZ.
+Okay,
+I add another interface so that make looks like this:
+eth0    = 64.1.1.1
+eth0:1 = 192.168.1.1
+eth1 = 64.1.1.2
 
-I have tried to upgrade to iptables. No matter what I
-have tried those stations go out with the NAT address.
-After having studied the flow charts of how a packet
-traverses the chains it seems to me that I am out of
-luck and no matter what I do the packet will end up in
-the nat table of iptables and therefore its address
-will get masqueraded. Am I wrong? Can anyone tell me
-how to aviod masquorading those few stations when
-working with my server. The SNAT will not do since I
-need to preserve their original address. 
+also add iptables command:
+# /sbin/iptables -t nat -A POSTROUTING -p tcp -s 192.168.1.0/24 --dport
+6667 -j SNAT --to 64.1.1.2
 
-If I am not in the correct place for asking this
-question I would appreciate it if someone would point
-me to the right forum.
+but still doesnt work, all users from 192.168.1.0/24 still irc using
+64.1.1.1
+need help.
 
-Thanks,
-Reuven
+Regards,
+Rio Martin.
 
 
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Tax Center - File online, calculators, forms, and more
-http://tax.yahoo.com
+----- Original Message -----
+From: "Daniel Chemko" <dchemko@smgtec.com>
+To: "Rio Martin." <rio@martin.mu>; <netfilter@lists.netfilter.org>
+Sent: Friday, April 04, 2003 1:34 AM
+Subject: RE: SNAT
+
+
+1. You are using aliases, which IPTables does not use. Please use look
+into IPRoute2 on the net on how to setup proper IPRoute2 bindings.
+
+2. Add an SNAT rule on the postrouting -o <internet_iface> pointing to
+64.1.1.2
+
+-----Original Message-----
+From: Rio Martin. [mailto:rio@martin.mu]
+Sent: Thursday, April 03, 2003 2:29 AM
+To: netfilter@lists.netfilter.org
+Subject: SNAT
+
+Dear folks,
+I need help to modify the source ip for every irc connection coming from
+my
+clients.
+
+Eg:
+
+eth0    = 64.1.1.1
+eth0:1 = 64.1.1.2
+eth0:2 = 192.168.1.1
+
+
+My clients is in 192.168.1.0/24. Right now all connection to irc server
+is
+using ip 64.1.1.1
+I want to modify, so all irc connection is using 64.1.1.2
+
+Thanks for helping me ...
+
+Regards,
+Rio Martin.
+
+
+
+
+
+
 
