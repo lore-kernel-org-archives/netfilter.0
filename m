@@ -1,11 +1,9 @@
-From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
-Subject: Why I can not logon to a DC through my Linux box gateway?
-Date: Thu, 10 Jun 2004 22:58:26 +0800
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Blocking Streaming Media (Was: Re: (no subject)..)
+Date: Thu, 10 Jun 2004 14:37:43 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001101c44efb$6230f530$1d01a8c0@palettemm.com>
-Reply-To: <bassam@palettemm.com>
+Message-ID: <20040610213743.34810.qmail@web61007.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,59 +15,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: nf <netfilter@lists.netfilter.org>
 
-I am sorry for resending the email again, but it seemed that you
-received un-clear graph, so I changed it.
+I guess, blocking ports or defining ports to be allowed to users is not 
+enough. Users are clever and smart from day to day. Once the originial and 
+standard ports blocked by administrator, they use port forwarding sometimes 
+to some kind of hosting server or dedicated server, and they still able to do 
+music streaming.
 
-Dear Fellows,
-   I am developing a Wi-Fi project and I got stuck in my progress when I
-tried to logo on to a domain controller through my Linux gateway box. In
-fact I have the following depicted scenario:
+If you checkout the greatest site, let say www.shoutcast.com, u can see lots 
+of stations use port 80, it means connecting to radio stations would be the 
+same as clients surfing to the web. 
 
-+-----------------+
-|Client		|
-|User name:		|
-|Password:		|
-|Domain		|
-|eth0:192.168.0.3	|
-+-----------------+ 
-|
-| LAN2: 192.168.0/24
-|
-+-----------------------+
-|eth1:192.168.0.1		|
-|Gate Way			|
-|eth0:192.168.1.232	|
-+-----------------------+
-|
-| LAN1: 192.168.1/24
-|
-+-----------------------+
-|eth0:192.168.1.231	|
-|Domain			|
-|Controller			|
-+-----------------------+ 
+I'm still thinking patch-o-matic STRING would be the best solustion for now ..
+
+Regards,
+Rio Martin.
+
+Perhaps you missed the rest of my post? I only pointed out the yahoo support
+page as a starting point. I wouldn't attack this from a port point of view
+becuase that method would be hit and miss. Find where the music comes from and
+block the ranges it comes from. I stated examples of this with the Yahoo
+LaunchCAST streaming protocol. I don't know the structure of your network so it
+is hard for me to say how to find the culprits. I also used a packet sniffer on
+my network to find where the service was originalting. Stopping shoutcast maybe
+a bit more difficult... I'll look into that as well...
+
+=====
+In the absence of order there will be chaos.
 
 
-
-When I try to logon to the DC by using this above scenario I get the
-following message "The system cannot log you on because the domain
-<xxxx> is not available". It seems that the client is not able to see
-the domain controller the my linux gateway.
-Note: I wrote my own firewall by using iptables, and I tried my best to
-overcome this problem but I couldn't.
-
-So any idea or support I can find from your side, your cooperation is
-highly appreciated.
-
-Regards
-Bassam
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.516 / Virus Database: 313 - Release Date: 9/1/2003
- 
-
+	
+		
+__________________________________
+Do you Yahoo!?
+Friends.  Fun.  Try the all-new Yahoo! Messenger.
+http://messenger.yahoo.com/ 
 
