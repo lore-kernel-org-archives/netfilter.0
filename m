@@ -1,10 +1,8 @@
-From: Bernd Strebel <b.strebel@digitec.de>
-Subject: strange behavior of connlimit matching rules
-Date: Tue, 18 May 2004 09:00:52 +0200
+From: "__ Radien__" <radien@zworg.com>
+Subject: PPTP FWD and/or NAT
+Date: Tue, 18 May 2004 00:13:46 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40A9B4A4.2000201@digitec.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Message-ID: <17886.1084864426@zworg.com>
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,70 +13,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Along with the implementation of a simple rule set ( ACCEPT connections 
-if ! --connlimit-above nan LOG connections if --connlimit-above n) we 
-experienced a strange behavior of the connlimit matching module:
+Dear All
 
-Rule #m:   ...-m connlimit   --connlimit-above n -j LOG
-Rule #m+1: ...-m connlimit ! --connlimit-above n -j ACCEPT
+  I just see the pptp_conntrack_nat helper module. I think it should
+track the connection that get NATed for PPTP client access to outside
 
-works fine, while
+#
+                         pptp_call
+                      ----------------->        do NAT               
+---------------->                
+  (a client)
+----------------------------[routing-linux-box]-------------------(a
+vpn server)
+                                                           
+  
+#Figure-1 
 
-Rule #m:   ...-m connlimit ! --connlimit-above n -j ACCEPT
-Rule #m+1: ...-m connlimit   --connlimit-above n -j LOG
+  So I can just use one client to use vpn access to a server at a time.
+  A question here: How about, e.g., using two client to access two
+seperated vpn servers on the outside?
 
-works not (no match on rule #m+1).
+  Let's assume another scenario, If we have some clients with valid_ip
+that don't want to get NATed(I just filter in FWD). So what should I
+accept in FWD if I want to grant their access to outside using PPTP
+protocol, that they will never face any problem? Are there specific
+ports to get open? or we should wait for another conntrack helper
+module to pass pptp traffic?
 
-Many thanks for any explanation.
-Bernd
-
-
-environment: kernel 2.4.26, iptables 1.2.9, pomng-20040302
-============
-
-iptables output (source/dest. stripped, always 0.0.0.0/0)
-===============
-
-Chain OUTPUT (policy DROP 9 packets, 560 bytes): OK
-
-num   pkts bytes target     prot opt in     out
-
-1      131  9331 ACCEPT     all  --  *      lo
-
-2      116 11140 ACCEPT     all  --  *      *
-        state RELATED,ESTABLISHED
-
-3        5   260 LOG        tcp  --  *      eth0
-        mport dports 22 #conn/32 > 2 state NEW
-        LOG flags 0 level 4 prefix CONNLIMIT
-
-4        5   260 ACCEPT     tcp  --  *      eth0
-        mport dports 22 #conn/32 < 2 state NEW
-
-5        9   560 LOG        all  --  *      *
-        LOG flags 0 level 4 prefix DROP-AT-END-OF-CHAIN
-
-
-Chain OUTPUT (policy DROP 10 packets, 612 bytes): CONNLIMIT not logged!
-
-num   pkts bytes target     prot opt in     out
-
-1      138  9950 ACCEPT     all  --  *      lo
-
-2      124 11648 ACCEPT     all  --  *      *
-        state RELATED,ESTABLISHED
-
-3        0     0 ACCEPT     tcp  --  *      eth0
-        mport dports 22 #conn/32 < 2 state NEW
-
-4        0     0 LOG        tcp  --  *      eth0
-        mport dports 22 #conn/32 > 2 state NEW
-        LOG flags 0 level 4 prefix CONNLIMIT
-
-5       10   612 LOG        all  --  *      *
-        LOG flags 0 level 4 prefix DROP-AT-END-OF-CHAIN
 
 
