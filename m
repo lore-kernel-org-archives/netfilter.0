@@ -2,7 +2,7 @@ From: PayalR <rpayal@indiainfo.com>
 Subject: Re: iptables : masq
 Date: Fri, 14 Jun 2002 17:32:03 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <aevlvg$8f2$2@main.gmane.org>
+Message-ID: <aevm0n$8kg$2@main.gmane.org>
 References: <200206131517.01195@.> <200206141017.MAA04989@axpmgr.physik.rwth-aachen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
