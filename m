@@ -1,9 +1,11 @@
-From: "waleed usman" <waleedu@hotmail.com>
-Subject: the packet_id field
-Date: Tue, 04 Jun 2002 23:16:25 +0000
+From: "Michael Hudin" <hudin@zoetrope.com>
+Subject: Re: Outgoing SMTP Mystery
+Date: Tue, 4 Jun 2002 16:28:16 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <F117UsebmspH2q6DqaJ00012036@hotmail.com>
+Message-ID: <000f01c20c1f$81056890$5227a8c0@michael>
+References: <013601c20c15$cba57520$52cfd3cf@michael> <200206042237.g54MbOA10863@Networker.rockstone.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -14,17 +16,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
+Yeah, the internal interface was rather pointless and I've changed it to the
+internal gateway.  It ultimately doesn't matter because the file in qmail
+that I'm using allows anything from the subnet and the external IP to relay.
 
-Does a packet possessing an id == 0 hold any specific meaning??
-For every one icmp packet sent through the localhost (using the 'ping' 
-system call) i receive two packets in my userspace QUEUE. WHy is it so???
+I have tried to telnet in and can get to it fine without being rejected.
+This one has got me stumped.
 
-_________________________________________________________________
-MSN Photos is the easiest way to share and print your photos: 
-http://photos.msn.com/support/worldwide.aspx
+-michael
+
+----- Original Message -----
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.samba.org>
+Sent: Tuesday, June 04, 2002 3:37 PM
+Subject: Re: Outgoing SMTP Mystery
+
+
+> On Tuesday 04 June 2002 11:18 pm, Michael Hudin wrote:
+>
+> >  I can send SMTP out just fine, but no other server can send it in for
+some
+> > reason.
+>
+> > -A POSTROUTING -o eth0 -j SNAT --to-source 10.10.10.254
+> > -A POSTROUTING -o eth1 -j SNAT --to-source 10.10.10.254
+>
+> I really don't like the look of those two rules together.   You're saying
+> that any packet going out of the external interface should bear the source
+> address of the external interface - pretty standard.   But you're also
+saying
+> that any packet going out of the *internal* interface should also have the
+> source address of the external interface - why ???
+>
+> Do you have any access control rules on your SMTP server - is it fussy
+about
+> the IP addresses it accepts connections from ?
+>
+> What happens if you telnet to port 25 on the mail server from your
+firewall ?
+>
+>
+> Antony.
+>
+>
+>
 
 
