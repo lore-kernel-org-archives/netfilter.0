@@ -1,12 +1,17 @@
-From: "..." <betolourenco@ig.com.br>
-Subject: Re: netfilter hangups
-Date: Tue, 11 Mar 2003 19:15:15 -0300
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Unassigned Networks List
+Date: Tue, 11 Mar 2003 23:33:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c2e81b$b33e70d0$32050a0a@rlourenco>
-References: <3019863CF306D211BA4500A0CC30812DC6790D@exchange.cyberwolf.com>
+Message-ID: <20030311233305.6c118b6d.arnt@c2i.net>
+References: <NGBBIFPIJNDPMFBPKBPGOEJIDKAA.NetFilter-Users@Compucenter.org>
+	<000701c2e53d$72cc42b0$026410ac@honor>
+	<1047106127.2050.56.camel@runabout.noc.starken.com>
+	<20030308130350.01e2c6ed.arnt@c2i.net>
+	<20030308140703.GB2652@placemark.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030308140703.GB2652@placemark.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,43 +24,37 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-why are you doing it.
+On Sat, 8 Mar 2003 08:07:03 -0600, 
+Kelly Setzer <Kelly.Setzer@placemark.com> wrote in message 
+<20030308140703.GB2652@placemark.com>:
 
-try
-service iptables restart
+> On Sat, Mar 08, 2003 at 01:03:50PM +0100, Arnt Karlsen wrote:
+> > On 08 Mar 2003 00:48:47 -0600, 
+> > Daniel Wittenberg <daniel-wittenberg@starken.com> wrote in message 
+> > <1047106127.2050.56.camel@runabout.noc.starken.com>:
+> > 
+> > > firewall, so we couldn't ping the provider.  I subsequently got in
+> > > an"discussion" with their CTO about RFC 1918 on how it's probably
+> > > not good to be using private IP's to route public traffic, at
+> > > least IMHO.
+> > 
+> > ..such discussions are better taken in public, so the hotshot can
+> > show off his alledged competence...  ;-)
+> 
+> When @home was just getting off the ground, they used to expose 10/8
+> addresses.  I was talking to a first or second level network engineer,
+> and he *INSISTED* that 10/8 has been assigned to @home.
+> 
+> ha
 
-...
------ Original Message -----
-From: "Chip Upsal" <cupsal@cyberwolf.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, March 11, 2003 7:00 PM
-Subject: netfilter hangups
+..but he is _right_, even I use it here at _my_ home,  
+and, I even have 192.168/16 and 172.16/12.  ;-)
 
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-> I am running nefilter 1.2.7a on a Redhat 7.3 box kernel v. 2.4.18-24.7.x.
->
-> I have experienced the following problems. Sometimes after making many
-> changes and reloading the firewall after each change...the firewall will
-> refuse to reload with the following output:
->
-> [root@iptables1 root]# /etc/sysconfig/iptables condrestart
-> iptables: Chain already exists
-> iptables: Chain already exists
-> iptables: Chain already exists
-> iptables: Chain already exists
-> iptables: Chain already exists
->
-> Or if i get no error the firewall will not recognize any of the changes i
-> have made.
->
-> In either case i am forced to reboot the firewall to get things going
-again.
->
->
->
-> Chip Upsal
-> SysAdmin
->
->
 
 
