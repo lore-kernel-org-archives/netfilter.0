@@ -1,10 +1,11 @@
-From: "GoMi" <gomi@perezoso.net>
-Subject: Changing the amount of tokens in the conntrack
-Date: Mon, 3 Nov 2003 15:11:13 +0100
+From: Rohit Kumar Mehta <rohitm@engr.uconn.edu>
+Subject: Re: simple port forwarding question
+Date: Mon, 03 Nov 2003 09:12:08 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAATXFSrRs2Hk2gYw7BzoALGwEAAAAA@perezoso.net>
+Message-ID: <3FA66238.4070500@engr.uconn.edu>
+References: <20031103140723.2238.qmail@web40206.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,49 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: SBlaze <dagent.geo@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-=20
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Sorry, maybe I tried to distill the problem too much ;-)  The short 
+answer is no they are seperate machines.
 
-Hi there, its my first email to the list, so i will explan a little bit =
-my setup:
+The first machine 192.168.28.2 is a Windows 2000 Active Directory 
+(working as the kerberos 5 KDC),
+and the second machine (which I am running iptables on) is a Debian 
+GNU/Linux system running kernel 2.4.22.
 
-I have a linux box with 1GB RAM Athlon 1.8GHz and 3 eth cards.
+Rohit
 
+SBlaze wrote:
 
-                        ______
-                 eth2  |      |eth0
-LAN (300 users) <----->|      |<--->ADSL 2Mbit
-                       |      |<--->ADSL 2MBit
-                       |______|eth1
+>I think you left out one important bit of information here. Are these two ips
+>on the same box? ( ie .1 on eth0 and .3 eth1 ) If they are I think it would
+>mean all the world of difference for your ruleset. you might be using the NAT
+>table when FOWARD lines in your filter table would sufice...
+>
+>just a guess...
+>
+>SBlaze
+>
+>=====
+>In the absence of order there will be chaos.
+>
+>__________________________________
+>Do you Yahoo!?
+>Exclusive Video Premiere - Britney Spears
+>http://launch.yahoo.com/promos/britneyspears/
+>  
+>
 
-I am doing load balancing at the moment, but thats nothing to worry =
-about since it works great. I am also using a QoS setup based on HTB and =
-SFQ queues, and due to the load balancing i have a stateful firewall.=20
-
-Some aplications my users use quite often, like msn messenger, kazaa or =
-other p2p automatically disconnects themselves. I have comed to the =
-conclusion thats because of the amount of simultaneous connections the =
-box can handle. So i want to change the amount of tokens the conntrack =
-is using.
-
-I have the conntrack module built-in the kernel, hence i am driving =
-myself mad to find a way to increase this value. Does anybody knows how =
-to change that?
-
-Thank you very much,in advanced. If any of you knows anything i could =
-change as well to improve my setup, i am welcome to suggestions
-
------BEGIN PGP SIGNATURE-----
-Version: PGP 8.0
-
-iQA/AwUBP6ZiAH7diNnrrZKsEQIyDACgxXIQFfnhkV+P/tsR7En9MV/SRvcAoKv9
-i5lAQ8zmkBchxO9gDk453AZZ
-=3DhKV4
------END PGP SIGNATURE-----
 
 
 
