@@ -1,11 +1,11 @@
-From: "Sathi" <sathiyan@gmx.net>
-Subject: Re: Completely NAT an ISP: A practical possibility?
-Date: Mon, 17 Jun 2002 09:55:08 +0530
+From: "umar" <vramnarayan@triniti.com>
+Subject: nat problem.
+Date: Mon, 17 Jun 2002 16:28:57 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <030001c215b7$dc4d7f20$870110ac@samsi>
-References: <3D0BBC45.5000807@palaver.net> <200206152233.g5FMXPA27757@Networker.rockstone.co.uk> <20020616001745.N2090@funkyjesus.org>
+Message-ID: <01f701c215ed$fca7c100$9300a8c0@edapter.com>
+References: <3D0BBC45.5000807@palaver.net> <200206152233.g5FMXPA27757@Networker.rockstone.co.uk> <20020616001745.N2090@funkyjesus.org> <030001c215b7$dc4d7f20$870110ac@samsi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -17,46 +17,27 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Nick Drage <nickd@funkyjesus.org>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-Hi,
-I am Sathi from India.
-I have implemented this in my place by providing a connectionn to 100 to 150
-customers.
-
-I provide a Local ip address and all will be terminate in a linux box in my
-office which is then nated to public ip.
-
-Everything looks fine except MSN voice chat , NETMEETING voice and video and
-some other tools used for phone2pc and pc2phone.
-
-Regards,
-Sathi
-
-> On Sat, Jun 15, 2002 at 11:33:23PM +0100, Antony Stone wrote:
-> > On Saturday 15 June 2002 11:14 pm, Brian Capouch wrote:
->
-> > > I wonder if the sages on this list might share advice as to whether or
-> > > not it might be practical to maintain a working ISP where ALL client
-> > > machines use private IP addresses, which are then NAT-ted to public IP
-> > > space as necessary by iptables.
-> > >
-> > > The biggest drawback that has been voiced so far is that many
-> > > peer-to-peer apps would break, but I'm not so sure right now that is
-bad
-> > > thing.
-> >
-> > Some current ISPs already do this, and I guess the popularity with their
-> > customers varies according to what the customers want to do :-)
->
-> Can you name any ISPs that do this?  I haven't seen it in my limited
-> experience.
->
-> <snip>
->
-> --
-> FunkyJesus System Administration Team
->
->
+SGksIA0KIA0KVHJ5aW5nIG91dCAgYSB2ZXJ5IHNpbXBsZSBjb25maWd1cmF0aW9uIG9mIGEgZmly
+ZXdhbGwgaGVyZSwgYnV0IGhhdmluZyBzb21lIHByb2JsZW1zLg0KVGhlIGZpcmV3YWxsICBoYXMg
+dHdvIE5JQydzIGFuZCBoYXZlIGVuYWJsZWQgaXAgZm9yd2FyZGluZy4gDQoNCkkgd2FudCB0aGUg
+aW50ZXJuYWwgbWFjaGluZXMgdG8gY29ubmVjdCB0byB0aGUgaW50ZXJuZXQsICBTbyBoYXZlIGVu
+YWJsZWQgTkFUIDogDQpSdW5pbmcgc3F1aWQgLSB0cmFuc3BhcmVudCBwcm94eSBvbiBwb3J0IDMy
+MzIuIENsaWVudHMgaGF2ZSBiZWVuIG9uZmlndXJlZCB0byBjb25uZWN0IHRvIGludGVybmV0IGRp
+cmVjdGx5LiANCmV0aDAgaXMgbXkgZXh0ZXJuYWwgaW50ZXJmYWNlLg0KIA0KRm9sbG93aW5nIGFy
+ZSB0aGUgbmF0IHJ1bGVzIGNvbmlndXJlZCBvbiB0aGUgZmlyZXdhbGwNCiANCmlwdGFibGVzIC10
+IG5hdCAtQSBQUkVST1VUSU5HIC1pIGV0aDAgIC1wIHRjcCAtLWRwb3J0IDgwIC1qIFJFRElSRUNU
+IC0tdG8tcG9ydCAzMjMyDQogDQppcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRo
+MCAtaiBTTkFUIC0tdG8tc291cmNlIHgueC54LnggKCBwdWJsaWMgSVAgb2YgdGhlIG90aGVyIG5l
+dHdyb2sgY2FyZCApDQoNCkkgY2FuIHBpbmcgdG8gdGhlIGdhdGV3YXkgKCBwcml2YXRlIElQICkg
+YW5kIHRoZSBvdGhlciBuZXR3b3JrIGNhcmQgaGF2bmcgdGhlIHB1YmxpYyBJUCAsIGJ1dCBub3Ro
+aW5nIGJleW9uZCB0aGF0LCBXaHkgPz8gDQpBbmQgbXkgY2xpZW50cyBhcmUgYWxzbyBub3QgYWJs
+ZSB0byBjb25uZWN0IHRvIHRoZSBpbnRlcm5ldCA/PyANCkkgaGF2ZSB0cmllZCByZW1vdmluZyB0
+aGUgZmlyc3QgcnVsZSBhbmQgZGlzYWJsaW5nIHNxdWlkLCBzbyB0aGF0IGNsaWVudHMgY291bGQg
+Y29ubmVjdCB0byB0aGUgaW50ZW5ldCBkaXJlY3RseS4gDQpUaGF0IGFsc28gZmFpbGVkLCBhbmQg
+dGhlIHJlc3VsdCBpcyB0aGUgc2FtZS4gQWxsIHRoZSBkZWZhdWx0IHBvaWxpY2llcyBvZiBhbGwg
+cnVsZXMgYXJlIHNldCB0byBBQ0NFUFQuDQoNClJ1bmluZyByaCA3LjIgd2l0aCAyLjQuNy0xMCBr
+ZXJuZWwuDQoNClBsZWFzZSBoZWxwLiANCg0KV2FybSBSZWdhcmRzLCANCkt1bWFyLiANCg==
 
 
