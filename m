@@ -1,81 +1,70 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Idea: Check session source and destination
-Date: Tue, 27 Apr 2004 15:00:57 +0200 (CEST)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0404271453370.23700-100000@filer.marasystems.com>
-References: <132609FB-9849-11D8-8B47-000A957FD99E@src.no>
+From: <sschlesi@chello.at>
+Subject: Re: how to stop broadcasts using iptables
+Date: Tue, 27 Apr 2004 15:19:00 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20040427131900.JCWU23570.viefep19-int.chello.at@localhost>
+Reply-To: sschlesi@chello.at
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <132609FB-9849-11D8-8B47-000A957FD99E@src.no>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mike Andersen <mike@src.no>
-Cc: Netfilter Developers List <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Tue, 27 Apr 2004, Mike Andersen wrote:
-
-> I reconfigured my test setup and used the FW for filtering instead of 
-> mirroring (physical reconfiguration, all software .  Then the rules 
-> works as intended.
-
-Good.
-
-> So the problem I'm having here, seems to be related to the mirroring.  
-> My gut feeling says that it may be related to the fact that the state 
-> table is being built independently of the netfilter rules.
-
-netfilter conntrack requires traffic to be successfully forwarded to
-operate correctly. If you drop traffic then netfilter assumes that packet 
-was dropped and never forwarded.
-
-If you are mirroring then you must never drop or reject any packets as
-this will disturb the connection tracking, but you can make whatever other
-decisions on the packets you like.
+David Cannings wrote:
 
 
-> Here is some more data. First the rules used in this test case:
-> 
-> iptables -A FORWARD -m conntrack --ctorigdst 10.10.10.199/32 -j LOG 
-> --log-level  DEBUG --log-prefix '>ctorigdst> '
-> iptables -A FORWARD -m conntrack --ctorigdst 10.10.10.199/32 -j ACCEPT
-> iptables -A FORWARD -j LOG --log-level DEBUG --log-prefix '>drop> '
-> iptables -A FORWARD -j DROP
-> 
-> Then I try to connect _from_ 10.10.10.199, and this is what the log 
-> says:
-> 
-> Apr 27 14:22:35 local kernel: >drop> IN=br0 OUT=br0 PHYSIN=eth0 
-> PHYSOUT=eth1 SRC=10.10.10.199 DST=10.10.10.200 LEN=60 TOS=0x00 
-> PREC=0x00 TTL=64 ID=19660 DF PROTO=TCP SPT=51905 DPT=80 WINDOW=65535 
-> RES=0x00 SYN URGP=0
+>>On Tuesday 27 April 2004 13:35, sschlesi@chello.at wrote:
+>>
+>
+>>>>I'm trying to stop broadcasts getting forwarded, but I'm  not sure how
+>>>>to do this. i read that *.255 - which are afaik broadcast addresses -
+>
+>>
+>>
+>>My first question is why are broadcasts getting forwarded anyway?  Neither 
+>>ethernet or IP broadcasts should leave your subnet.  How and where 
+>>exactly are broadcasts being forwarded?
+>>
 
-This will also stop netfilter from setting up the connection tracking of 
-this session.
+my policies are set to -P FORWARD ACCEPT because its just an simple ethernet router, w/o nat and stuff.
+so i thought iptables'll also forward broadcasts from one net to the other.
 
-> Apr 27 14:22:35 local kernel: >ctorigdst> IN=br0 OUT=br0 PHYSIN=eth0 
-> PHYSOUT=eth1 SRC=10.10.10.200 DST=10.10.10.199 LEN=60 TOS=0x00 
-> PREC=0x00 TTL=61 ID=0 DF PROTO=TCP SPT=80 DPT=51905 WINDOW=5792 
-> RES=0x00 ACK SYN URGP=0
 
-This is then counted as the first packet of the session, and connection 
-tracking starts with 10.10.10.199 as the original destination (first 
-packet seen while tracking the session).
+>>
+>>IP addresses ending in .255 are not always broadcast addresses.  Any 
+>>subnet larger than class C (/24) can span more than one "block" of 256 IP 
+>>addresses.
+>>
+>
+>>>>doesnt guarantie that its a broadcast. then i read that its possible by
+>>>>matching the mac address, because broadcast will have ff:ff:ff:ff:ff:ff
+>>>>. but I'm not sure if that's all  nonsense.
+>
+>>
+>>
+>>There is the difference here between an IP broadcast and an ethernet 
+>>broadcast.  IP broadcasts are sent to the ethernet broadcast address [1], 
+>>so you may be able to do a MAC match.
+>>
+>>According to the manual page I have here, the module "mac" only offers a 
+>>--mac-source option but there are more options in PoM I believe, you may 
+>>want to check the mailing list archives.
+>>
+>>David
+>>
+>>1- A ping to the broadcast address on a LAN:
+>>13:44:59.765871 0:10:XX:XX:XX:XX Broadcast ip 98: 192.168.0.100 > 
+>>192.168.0.255: icmp: echo request (DF)
+>>
 
-for TCP you can look for SYN to "work around" this and only accept NEW 
-SYN, not other NEW packets.
-
-UDP is trickier as there is no connection control..
-
-Regards
-Henrik
 
 
