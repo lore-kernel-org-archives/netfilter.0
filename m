@@ -1,10 +1,14 @@
-From: =?iso-8859-15?Q?Mart=EDn?= <martin@familia-fiumara.com.ar>
-Subject: Configuration question...
-Date: Mon, 03 Nov 2003 01:47:55 -0300
+From: "Edmund Turner" <eturner@monash.edu.my>
+Subject: Modules and others
+Date: Mon, 3 Nov 2003 13:20:00 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <oprx1ox5f3pvmot6@192.168.2.1>
+Message-ID: <00b401c3a1ca$215fad50$de0018ac@admin.monash.edu.my>
+References: <oprx1ox5f3pvmot6@192.168.2.1>
+Reply-To: <eturner@monash.edu.my>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <oprx1ox5f3pvmot6@192.168.2.1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,28 +18,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is the situation:
 
-I hace a linux machine, giving internet access to a win98 machine. The 
-win98 machine has a soft wich does not accept NAT, so the soft does not 
-work when has to connect to internet.
-Linux: eth0 (wich is conected to the adsl modem > ppp0 ) 192.168.1.10
-       eth1 (interface conected to the LAN, IP 192.168.2.1)
+Hey everyone, 
+	Hope someone can help me with this. Well, here it goes:
+1.)If I recompile IP tunneling and IP GRE into the kernel as to
+compiling it as a module, how do I check to see if its properly
+installed? If I had compiled it as a module, I would simply do a
+'lsmod'. 
+Any help is appreciated!
 
-Win98: IP 192.168.2.5
+Regards
+edmund 
 
-What I need to do is: make the win98 software believe that it is connecting 
-to a server service in the linux machine to port 10329, and that traffic 
-has to be redirected to an external Ip in internet (the real server with 
-the service in port 10329). And the, the traffic comeing fron that server 
-has to be redirected to the win98 machine but with the source IP changed to 
-192.168.2.1 (the internal IP of the linux)
-
-Can tell me the comands to configure the linux and iptables to do this?
-Thanks
-       
 
