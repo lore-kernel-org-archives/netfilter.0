@@ -1,13 +1,11 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: VPN over netfilter NAT
-Date: Thu, 16 Sep 2004 09:36:05 -0500
+From: Fallucchi Antonio <fallucch@cisbic.com>
+Subject: tcp checkum claculation!!
+Date: Thu, 16 Sep 2004 18:43:32 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4149A4D5.2010209@pbl.ca>
-References: <200409161436.26695.apapadop@alumni.carnegiemellon.edu>
+Message-ID: <4149C2B4.4010409@cisbic.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409161436.26695.apapadop@alumni.carnegiemellon.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,23 +18,42 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Alexandros Papadopoulos wrote:
-> I stumbled across 
-> http://www.linuxhomenetworking.com/linux-adv/vpn-linux.htm today, which 
-> states that "NAT breaks VPNs".
-> 
-> Is this just an over-simplifying statement that really means "if you're 
-> reading this, then don't even try setting up a NAT-traversing VPN"?
+Hi,
 
-Yes and no.  Depends on what you mean by VPN.  VPN can be implemented in 
-many different ways.  With IPSec implementation you may run into 
-problems (some solvable, some not).  With user space daemon 
-implementations such as OpenVPN or VTun, you shouldn't have any 
-problems.  Basically it is good idea not to have VPN endpoints behind 
-NAT (if possible, of course).
+I need a Help for recalculate the checksum of TCP packet. I read the 
+packet from iptables_queue, and sum  16 bit word from and add the 
+pseudoheader   ipsource, ipdest, 6, tcp_len (form the ip packet), and i 
+see the buddy. I all width complement!
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+I have see the site  http://www.netfor2.com/tcpsum.htm
+
+and the my code is:
+
+	for (i=0;i<11;i=i+2)
+	{
+		sum+=*pseudobuff++;
+	}
+
+	nwords=swap(len_tcp)-(len_ip*4);
+	
+	while(nwords>1)
+	{
+		sum+=*buff++;
+		nwords-=2;	
+	}
+	if(nwords==1)
+	{
+		sum+=*(unsigned char *)buff;
+	}
+	
+	sum=(sum>>16)+(sum&0xffff);
+	sum+=(sum>>16);
+	
+	sum = ~sum;
+
+but the result isn't correct...
+
+tancks for the help.
+
+bye bye
 
