@@ -1,11 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: IPSET issue ???
-Date: Wed, 30 Mar 2005 09:57:52 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0503300947090.4659@blackhole.kfki.hu>
-References: <4249A831.26741.68F66E4C@localhost>
+From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
+Subject: Re: Programming without using iptables
+Date: Wed, 30 Mar 2005 10:07:28 +0200
+Message-ID: <1112170048.7456.9.camel@nostromo.bgsecm.com>
+References: <20050330024432.21809.qmail@web41728.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4249A831.26741.68F66E4C@localhost>
+In-Reply-To: <20050330024432.21809.qmail@web41728.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,64 +17,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jorge Agrelo <jagrelo@novadevices.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi,
+El mar, 29-03-2005 a las 18:44 -0800, Suchitra H escribi=C3=B3:
+> Hi Everyone ,
+>                          I am working on a firewall project , where I n=
+eed to replace the iptables part ( which is complicated ) with my own cod=
+e ( hopefully it will be simpler ) , making use of libiptc. The whole ide=
+a is to program as though iptables dosent exist and write my own code whi=
+ch is capable of performing all the commands and output the desired resul=
+ts.  I have been able to do so for listing the chains , policy and counte=
+rs. Now I want to set the policy for a built-in chain.  Is it possible to=
+ do so using libiptc ? Or is there any other altrenative to this???
+>                  Not able to find any suitable resource on the net. Jus=
+t one - Querying libiptc - HOWTO , which has been of great help but is ve=
+ry limited.=20
+>                   Any suggestions , solutions to the above problem woul=
+d be of great help!=20
+> =20
+> Suchitra.
 
-On Tue, 29 Mar 2005, Jorge Agrelo wrote:
+I'd like to advise you that the Querying libiptc HOWTO has a big
+error in it's examples, that makes the programas allocate memory
+and then not free it. So the programs get bigger and bigger in
+memory and you get a DOS.
 
-> I want to block the offensive network list supplied by dshield
-> (http://feeds.dshield.org/block.txt) using IPSET match, anybody tell me if the
-> following stuff is correct.
->
-> ipset -N bogons-nets nethash
-> ipset -A bogons-nets 81.208.28.0/24
-> ipset -A bogons-nets 141.50.163.0/24 ..........
-> iptables -N blocklist
-> iptables -A bogons-nets -m set --set bogons-nets scr,dst -j drop
-> iptables -A INPUT -i ! lo -m state ! --state ESTABLISHED -j blocklist
-> iptables -A FORWARD -m state ! --state ESTABLISHED -j blocklist
-> iptables -A OUTPUT -o ! lo -m state ! --state ESTABLISHED -j blocklist
->
-> I want to block the source and destination traffic from/to this
-> networks, I'm not sure regarding how to use the tokens src and dst and
-> the set type (nethash) in IPSET???
+We discovered this when we wrote the bastion-firewall-stats
+daemon, that uses libiptc to read the iptables counters.
 
-No, assuming you want to block access from and to the networks in the
-set bogons-net:
+We sent an email to the author of the HOWTO but we have not
+received any response and the HOWTO it's still untouched.
 
-iptables -A bogons-nets -m set --set bogons-nets scr -j drop
-iptables -A bogons-nets -m set --set bogons-nets dst -j drop
+The trick it's that you have to free the memory after reading
+the counters, so the code it's something like:
 
-Multiple 'src' and 'dst' tokens can be used when you bind set elements to
-other sets and want to follow the bindings, for example when you want to
-to represent your servers by ipset:
+      if ( !(h =3D iptc_init(tablename)) )  {
+         syslog(LOG_INFO,"bfs error initializing: %s\n", iptc_strerror
+(errno))
+         exit(errno);
+      }
 
-ipset -N servers ipmap ....
-ipset -A servers x.x.x.x
-...
-ipset -N services portmap...
-ipset -A services ssh
-...
-ipset -N clients iphash
-ipset -A clients y.y.y.y
-...
-# Glue the corresponding set elements together with bindings
-ipset -B servers x.x.x.x -b services
-ipset -B services ssh -b clients
+That allocates memory. And then:
 
-# Restrict access to "all" servers on "all" service ports
-# from "all" allowed clients in one iptables rule
-iptables -A FORWARD -m set --set servers dst,dst,src -j ACCEPT
+      iptc_free(&h);
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+To free the memory. This line it's the one not included in the
+HOWTO.
+
+If you want you can download our GPL code at:
+http://www.bgsec.com/downloads.html
+
+Regards.
+
+--=20
+
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
+
 
