@@ -1,11 +1,14 @@
-From: =?iso-8859-1?Q?Rasmus_B=F8g_Hansen?= <moffe@amagerkollegiet.dk>
-Subject: IRC conntrack does not work for outgoing DCC connections
-Date: Fri, 6 Sep 2002 19:47:46 +0200 (CEST)
+From: Zoilo <zoilo@xs4all.nl>
+Subject: Re: Can't forward Win2k VPN through NAT
+Date: Fri, 6 Sep 2002 19:35:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0209061930150.20225-100000@grignard.amagerkollegiet.dk>
+Message-ID: <02090619351607.09470@Lms>
+References: <6BED17A9718E204F812CBBAF3B102E2A01B7B1@babylon.metropolis.minglewood.net>
+Reply-To: zoilo@xs4all.nl
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <6BED17A9718E204F812CBBAF3B102E2A01B7B1@babylon.metropolis.minglewood.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,81 +18,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Don Woodruff <donw@minglewood.net>, netfilter@lists.netfilter.org
 
-Hi
+On Friday 06 September 2002 18:17, Don Woodruff wrote:
+> P.S. My fave taglines (although I don't use them):
+>
+> "If your only tool is a hammer, Every job will look like a nail" AND
+> "People run applications, not operating systems"
+>
+> In my days as an SCO Unix Instructor, I used to tack the first one up on
+> the wall before I started the first day, and as an IT Director, the
+> second was my mantra (to avoid evangelism and keep my guys focused on
+> problem-solving).
+>
+> As a business-owner, my new focus is "whatever provides the greatest
+> profit margin coupled with the most satisfactory experience for the
+> customer".
 
-I have experienced a problem with ip_conntrack_irc. When doing DCC,
-incoming connections are correctly identified as "expected". However
-netfilter does not take notice of outgoing DCC connections. Thus DCC
-will nok work for firewalls having outgoing traffic blocked - not even
-if RELATED traffic is allowed.
+Now I understand what put you in such a nostalgic mood.......!
 
-To demonstrate I connect to an IRC server, 172.16.0.3, from two hosts,
-172.16.0.130 and 172.16.0.122. 172.16.0.3 does not run netfilter.
-172.16.0.122 and 172.16.0.130 are both running 2.4.19 with z-newnat16
-and all submitted and pending patches applied. I allow outgoing IRC, DNS
-and RELATED,ESTABLISHED and drop everything else; I allow nothing
-incoming (on both boxes) except RELATED,ESTABLISHED. No NAT is involved.
-
-What I do:
-
-moffe@172.16.0.130# BitchX m0ffe 172.16.0.3
-
-moffe@172.16.0.122# BitchX moffe 172.16.0.3
-
-root@172.16.0.130# cat /proc/net/ip_conntrack
-[...]
-tcp      6 431994 ESTABLISHED src=3D172.16.0.130 dst=3D172.16.0.3 sport=3D3=
-3670 dport=3D6667 src=3D172.16.0.3 dst=3D172.16.0.130 sport=3D6667 dport=3D=
-33670 [ASSURED] use=3D1
-[...]
-
-root@172.16.0.122# cat /proc/net/ip_conntrack
-[...]
-tcp      6 431926 ESTABLISHED src=3D172.16.0.122 dst=3D172.16.0.3 sport=3D3=
-454 dport=3D6667 src=3D172.16.0.3 dst=3D172.16.0.122 sport=3D6667 dport=3D3=
-454 [ASSURED] use=3D1
-[...]
-
-(in BitchX on 172.16.0.130):
-/chat moffe
-
-root@172.16.0.130# cat /proc/net/ip_conntrack
-[...]
-tcp      6 431977 ESTABLISHED src=3D172.16.0.130 dst=3D172.16.0.3 sport=3D3=
-3670 dport=3D6667 src=3D172.16.0.3 dst=3D172.16.0.130 sport=3D6667 dport=3D=
-33670 [ASSURED] use=3D1
-[...]
-EXPECTING: 277 use=3D1 proto=3D6 src=3D0.0.0.0 dst=3D172.16.0.130 sport=3D0=
- dport=3D33671
-
-root@172.16.0.122# cat /proc/net/ip_conntrack
-[...]
-tcp      6 431951 ESTABLISHED src=3D172.16.0.122 dst=3D172.16.0.3 sport=3D3=
-454 dport=3D6667 src=3D172.16.0.3 dst=3D172.16.0.122 sport=3D6667 dport=3D3=
-454 [ASSURED] use=3D1
-[...]
-
-No EXPECTING line ever shows up on 172.16.0.122. Thus 172.16.0.122 will
-never be allowed to send out the DCC connection as I disallow outgoing
-traffic.
-
-Shouldn't it show up both places?
-
-Regards
-/Rasmus
-
---=20
--- [ Rasmus "M=F8ffe" B=F8g Hansen ] --------------------------------------=
--
-I'm a bastard. I have absolutely no clue why people can ever think
-otherwise. Yet they do. People think I'm a nice guy, and the fact is
-that I'm a scheming, conniving bastard who doesn't care for any hurt
-feelings or lost hours of work if it just results in what I consider
-to be a better system.
-                                                    - Linus Torvalds
-----------------------------------[ moffe at amagerkollegiet dot dk ] --
-
+-- 
+Z (ex business-owner).
+----------------------------------------------------------
+"If all you have is a hammer, everything looks like a nail."
 
