@@ -1,55 +1,27 @@
-From: Fabien LE BLEVEC <fleblevec@nerim.net>
-Subject: Re: How to restrict uploading by using iptables?
-Date: Sat, 03 Jan 2004 17:18:40 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FF6EB60.8090904@nerim.net>
-References: <20040103160545.47544.qmail@web60407.mail.yahoo.com>
-Reply-To: fleblevec@nerim.net
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: Three kernel Oops/panic/BUG ksymoopses (kernel BUG at buffer.c:539)
+Date: Sat, 3 Jan 2004 13:54:27 +0100 (CET)
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <Pine.LNX.4.44.0401031352040.2301-100000@poirot.grange>
+References: <87isjuhqq9.fsf@loki.odinnet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040103160545.47544.qmail@web60407.mail.yahoo.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: <87isjuhqq9.fsf@loki.odinnet>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: ads nat <adsnat@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Erik Bourget <erik@midmaine.com>
+Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
 
+On Fri, 2 Jan 2004, Erik Bourget wrote:
 
-It is better to use "tc" and "wondershapper" for sharing bandwidth.
-See http://www.lartc.org/
+> I had a very bizarre situation where four boxes in the same rack all
+> simultaneously (within 30 minutes) hard-locked with Oops messages.  The boxes
 
-Or you can use quota limit with iptables :
-http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO-3=
-.html#ss3.13
+An obvious idea - after reading an article about a break-in into Debian
+and others' boxes - sure you weren't cracked?
 
-
-Fabien
-
-ads nat a =E9crit :
-
->I have setup LAN with Linix 8.0 server and
->distributing Internet bandwidth to LAN users.
->There is lot of uploading by LAN users. I want
->restrict it with IPTABLES.
->Please guide me how achiev it.
->Thanks for support.
->
->__________________________________
->Do you Yahoo!?
->Protect your identity with Yahoo! Mail AddressGuard
->http://antispam.yahoo.com/whatsnewfree
->
->
-> =20
->
-
-
+Guennadi
+---
+Guennadi Liakhovetski
 
