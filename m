@@ -1,15 +1,16 @@
-From: Herman <Herman@AerospaceSoftware.com>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
 Subject: Re: Port forwarding doesn't work.
-Date: Sun, 12 Oct 2003 18:40:27 -0600
+Date: 12 Oct 2003 20:44:42 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310121840.27031.Herman@AerospaceSoftware.com>
-References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com> <3F89ED5C.3050507@snapgear.com> <200310121820.59977.Herman@AerospaceSoftware.com>
-Reply-To: Herman@AerospaceSoftware.com
+Message-ID: <1066005882.1151.23.camel@valhalla>
+References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com>
+	 <1065994862.3562.10.camel@Marvin>
+	 <200310121604.06545.Herman@AerospaceSoftware.com>
+	 <200310121700.13102.Herman@AerospaceSoftware.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200310121820.59977.Herman@AerospaceSoftware.com>
-Content-Disposition: inline
+In-Reply-To: <200310121700.13102.Herman@AerospaceSoftware.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,56 +21,68 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Herman@AerospaceSoftware.com
+Cc: netfilter@lists.netfilter.org
 
-The real problem that I'm trying to solve is this:
-Several hosts need to acces a gov service that uses Java and a certain port.  
-I do not know which machine/machines will run and I don't know what their IP 
-is going to be, due to DHCP.  I could limit it to one machine with a fixed IP 
-just to get started though.
+On Sun, 2003-10-12 at 19:00, Herman wrote:
+>
+> Here is my problem:
+> I need to forward a port from outside the firewall, to everybody on the 
+> inside. 
 
-To test this, I'm experimenting with Nectarine radio, since that is easier 
-than farting around with a government server.  If I can't get Nectarine to 
-work, then I have no hope of getting the gov thing to work.
+If it was UDP traffic, you might be able to get away with forwarding to
+your internal broadcast address. Since its TCP however, that's not RFC
+and I doubt anyone will respond unless they have a broken stack.
 
+> All examples I have seen forwards to a specific IP on the inside, 
+> which doesn't go well with DHCP. 
 
-   On the FORWARD chain, try iptables -v -L FORWARD -t filter.  That will
-   isolate just your FORWARD rules.  I gather you are not showing ANY active
-   forward rules?  Not even your default policy?
+Maybe you can do something with DDNS or specify a MAC-->IP mapping for
+the host(s) that needs need this service.
 
-iptables -L FORWARD -n
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
+>  The man page says that specifying a range 
+> of IPs will trigger a round robin effect, which I don't think I want to 
+> happen. So, how now brown cow?
 
-nothing...
+Agreed. That will balance to a number of different IPs, not what you are
+looking for. Then again your using TCP so you can't do multiple nodes at
+the same time anyway.
 
-iptables -t nat -v -L
-Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destinat                   
-ion
+> If I display the rules, I can't see any forwarding rules in the list, which 
+> tells me that the forwarding rules that I try to implement are simply ignored 
+> by iptables:
 
-Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destinat                   
-ion
+Try it on the command line and see what errors come back.
 
-Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destinat                   
-ion
+> iptables -v -L
+> Chain INPUT (policy ACCEPT 55251 packets, 13M bytes)
 
-nothing much either...
+<snip>
 
-I suppose some modules are missing, but what?
+> Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
 
-What could be needed to make port forwarding work, that is not already loaded 
-to make masquerade work?  At least something is working but gawddammit, this 
-doesn't make sense to me.
+Hummm. You do realize you are letting through *everything* you are not
+specifically dropping? Looks like you've had quite a bit of traffic
+sneak by. :(
 
-Cheers,
--- 
-Herman Oosthuysen 
-B.Eng(E), MIEEE
-Aerospace Software Ltd.
-Ph: 1.403.241-8773, Cell: 1.403.852-5545, Fx: 1.403.241-8841
-Herman@AerospaceSoftware.com, http://www.AerospaceSoftware.com
+> How can the FORWARD chain be empty, since MASQUERADE is working and my laptop 
+> can surf the web?
+
+Because you are letting everything not specifically denied blow through.
+
+> Why are my new forwarding rules ignored?
+
+Again, try stuff like this from the command line. If iptables is not
+happy, it will let you know about it.
+
+> How can I debug this stuff and see where the packets are going/not going?
+> Can anybody shed light on this?
+
+The counters are a good indication of what is going on. You can also run
+tcpdump to troubleshoot what goes by.
+
+HTH,
+C
+
 
 
