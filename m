@@ -1,13 +1,11 @@
-From: Eduardo =?ISO-8859-1?Q?Fern=E1ndez?= <eduardo@cmusanjuan.com>
-Subject: Re: [OT] Traffic from ff:ff:ff:ff:ff:ff in switched environment
-Date: Tue, 16 Nov 2004 23:37:21 +0100
-Message-ID: <1100644641.1647.25.camel@laserite>
-References: <1100641554.1647.10.camel@laserite>
-	<1100642540.3695.60.camel@hubcap.ljm.dom>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: PPTP through question
+Date: Tue, 16 Nov 2004 20:01:14 -0800
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F0197D9@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1100642540.3695.60.camel@hubcap.ljm.dom>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +16,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El mar, 16-11-2004 a las 17:02 -0500, Jason Opperisano escribi=F3:
-> it's more likely that ff:ff:ff:ff:ff:ff is the destination mac, not the
-> source...
+Hello,
 
-Nope, I was quite surprised too, but that's the src mac.
+We just replace an old solid state firewall with a new RHEL3 firewall
+running iptables 1.2.11.  We compiled config_ip_nf_pptp in the kernel.
+Everything appears to be fine and stable with the exception of a small
+problem with PPTP clients.  With the old firewall the PPTP works fine.
+Addresses are NAT'd into a private 192.168.0.x range.  With the new
+firewall in place several of the clients get dropped after exactly two
+minutes.  These clients are behind multiple different types of
+firewalls.
 
-> arp "who-has" packets are vital to the proper functioning of a local
-> area network--it's how each host finds the MAC address associated with
-> each IP on the network.
+Earlier this week I had a problem with local routing of external IP
+accesses.  I've resolved that.  But I'm not sure if this has anything to
+do with the two minute cutoff or if it's something independent of the
+routing.  (ROUTING INCLUDED BELOW)
 
-I've seen some viruses lately trying to forge their ip/mask, maybe this
-is the cause, since I've never since traffic FROM that mac.
+Also, I have loaded these modules listed below.  It doesn't matter if I
+include ip_conntrack_pptp or not.  We still have the same problem. =20
 
-> the volume of traffic you're seeing is a symptom of the fact that you
-> have a /16 configured as a flat, switched network.
->=20
-> the guy that i learned TCP/IP networking from once told me a good
-> guideline is to never have more than 1024 hosts in a single layer-2
-> broadcast domain, as the broadcast traffic becomes unmanageable.  he
-> knew a whole lot more than i ever will--so i try to stick to that when =
-i
-> (re)design a network.
+/sbin/modprobe iptable_nat
+/sbin/modprobe ipt_MASQUERADE
+/sbin/modprobe ip_conntrack
 
-Mmm, it's a /16 but I don't have more than about 500 computers. Maybe I
-should resize the network to a /22 or so.
+#/sbin/modprobe ip_conntrack_proto_gre
+#/sbin/modprobe ip_conntrack_pptp
+/sbin/modprobe ip_nat_proto_gre
+/sbin/modprobe ip_nat_pptp
+/sbin/modprobe ip_conntrack_irc
+/sbin/modprobe ip_nat_irc
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_nat_ftp
+#/sbin/modprobe ip_conntrack_mms
+#/sbin/modprobe ip_nat_mms
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ip_gre
+/sbin/modprobe ipt_TARPIT
 
-Thank you very much,
-
-Eduardo
-
-
+[0:0] -A PREROUTING -d 206.53.45.51 -j DNAT --to-destination
+192.168.0.51
+[0:0] -A PREROUTING -d 206.53.45.52 -j DNAT --to-destination
+192.168.0.52
+...
+[0:0] -A PREROUTING -d 206.53.45.62 -j DNAT --to-destination
+192.168.0.62
+#Outgoing Maps (2 per IP - 1 local translation 1 remote)
+[0:0] -A POSTROUTING -d 192.168.0.51 -j SNAT --to-source 206.53.45.51
+[0:0] -A POSTROUTING -d 192.168.0.52 -j SNAT --to-source 206.53.45.52
+...
+[0:0] -A POSTROUTING -d 192.168.0.62 -j SNAT --to-source 206.53.45.62
+[0:0] -A POSTROUTING -o eth0 -j SNAT --to-source 206.53.45.50
+#************************************************************
+[0:0] -A OUTPUT -d 192.168.0.51 -j DNAT --to-destination 206.53.45.51
+[0:0] -A OUTPUT -d 192.168.0.52 -j DNAT --to-destination 206.53.45.52
+...
+[0:0] -A OUTPUT -d 192.168.0.62 -j DNAT --to-destination 206.53.45.62
