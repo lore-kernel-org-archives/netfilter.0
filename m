@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: ip_conntrack
-Date: Thu, 22 May 2003 07:53:22 +1000
+Subject: RE: nat no traffic returns
+Date: Thu, 22 May 2003 08:52:49 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019233@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6C81@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,19 +17,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter_user <netfilter_user@o2.pl>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-ip connection tracking is what it says and using rules like
-
-$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-makes the existing connections automatically excepted, like an SSH =
-connection will continue to work after the first SYN is accepted as the =
-connection would be established and ip_conntrack will keep a record of =
-the connection while it's still up.
-
-Without ip_conntrack, the --state module would not work... correct me if =
-I'm wrong guys.. ;)
+>You should add an SNAT rule, so your inside box is able to answer to =
+the=20
+>outside connection from privat IP (10.0.0.112).=20
+This is not neccessary true, this isn't a requirement until the =
+10.0.0.112 machine needs to make the first move and make an outgoing =
+connection (SYN), only then you would need SNAT. DNAT connections should =
+be handled fine with ip_conntrack.
 
 Thanks,
 ____________________________________________
@@ -40,24 +36,47 @@ georgev@citadelcomputer.com.au
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
 
+=20
+
 -----Original Message-----
-From: netfilter_user [mailto:netfilter_user@o2.pl]
-Sent: Thursday, May 22, 2003 6:18 AM
+From: Szabo Nandor [mailto:medve@wenetto.hu]
+Sent: Wednesday, May 21, 2003 7:49 PM
 To: netfilter@lists.netfilter.org
-Subject: ip_conntrack
+Subject: Re: nat no traffic returns
 
 
-Hello everyone,
+B. van Ouwerkerk writes:=20
 
-I have got very simply and basic quastion.
-What ip_cpnntrack and ip_cpnntrack_ftp realy do? Tracking connection
-or something more?
+> This one is really starting to get me.=20
+>=20
+> I have worked with iptables before without connections started from =
+the=20
+> outside. In this case I need to allow connection from the outside to =
+go to=20
+> a box on the inside.=20
+>=20
+> I was under the impression that a rule like:=20
+>=20
+> iptables -t nat -A PREROUTING -i eth0 -p tcp -d public_ip --dport 3389 =
+-j=20
+> DNAT --to 10.0.0.112:3389=20
+>=20
+> would send the incoming packets to the inside box. And that:=20
+>=20
+> iptables -A FORWARD -i eth1 -o eth0 -s 10.0.0.112 -j ACCEPT
+> or
+> iptables -A FORWARD -i eth1 -j ACCEPT=20
+>=20
+> Should send any reply from the inside box to the world.
+> But it isn't happening :(
 
- =20
+You should add an SNAT rule, so your inside box is able to answer to the =
 
---=20
-Best regards,
- mailto:netfilter_user@o2.pl
+outside connection from privat IP (10.0.0.112).=20
 
+#iptables -A POSTROUTING -s 10.0.0.112 -o eth0 -j SNAT --to-source =
+public_ip=20
+
+Nandor Szabo=20
 
 
