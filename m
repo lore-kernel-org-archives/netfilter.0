@@ -1,15 +1,10 @@
 From: John Mathey <jmathey@attbi.com>
 Subject: another port forwarding question
-Date: Wed, 03 Dec 2003 12:25:08 -0600
+Date: Wed, 03 Dec 2003 12:28:03 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6.0.1.1.2.20031203122213.02c31ed8@24.1.40.117>
-References: <200312031725.hB3HPYAm010263@discmail.com>
- <20031203184509.GC28783@cannon.eng.us.uu.net>
+Message-ID: <6.0.1.1.2.20031203122704.02c71e98@mail>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031203184509.GC28783@cannon.eng.us.uu.net>
-References: <200312031725.hB3HPYAm010263@discmail.com>
- <20031203184509.GC28783@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,6 +17,17 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+
+Sorry, I mistyped, the second -p was --dport:
+
+
+$IPT -t nat -A PREROUTING -d $MYEXTIP -p tcp  -s $MYSOURCEIP --dport 
+196  -j DNAT --to 192.168.1.50:80
+
+John
+
+
+
 
    I'm trying to figure a way to forward a packet from a linux box to an 
 internal windows box given a specific port. I'm pretty sure I can specify a 
@@ -50,6 +56,6 @@ it hits this.
 
 
 Thanks in advance
-John
+John 
 
 
