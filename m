@@ -1,12 +1,10 @@
-From: Bosse Klykken <bosse+netfilter@klykken.com>
-Subject: Re: iptables help
-Date: Thu, 4 Nov 2004 23:39:07 +0100
-Message-ID: <20041104223907.GA25863@klykken.com>
-References: <s18a0743.032@dsi.a-star.edu.sg>
+From: Johannes Graumann <graumann@caltech.edu>
+Subject: patch-o-matic-ng questions and remarks from newbie
+Date: Thu, 4 Nov 2004 20:20:34 -0800
+Message-ID: <20041104202034.705cddcb@localhost>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <s18a0743.032@dsi.a-star.edu.sg>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,60 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Nov 04, 2004 at 10:40:51AM +0800, Wei Ming Long wrote:
->                    VNC Server 192.168.1.4
->                           |
->                           | --------> ssh tunnel on port 5800
->                           |
->                 eth1= 192.168.1.2
->                           |
->                 Linux Gateway
->                           |
->                  eth0=192.168.33.167
->                           |
->                           |
->                  WindowsXP 192.168.33.164 
->           
-> 
-> Requirement: To be able to access the VNC Server behind the Linux gateway
-> using the web browser on port 5800 tunneled through ssh.
+Hello,
 
-If the 192.168.33.0/24 network has a valid route for the 192.168.1.0/24
-network through the Linux gateway, then you could SSH directly to the
-VNC server without NAT. On the Windows XP machine you can use plink or
-putty to make the port mappings, and point the XP web browser to
-localhost.
+In order to use my shorewall/2.6 based firewall to route IPSECed
+(openswan) wireless, I need to apply these patches from the
+patch-o-matic-ng (extra):
+1) ipsec-01-output-hooks
+2) ipsec-02-input-hooks
+3) ipsec-03-policy-lookup
+4) ipsec-04-policy-checks
+5) policy
 
-Be advised that VNC port 5800 has java stuff only, while I believe that
-VNC traffic still will transmit on port 5900, so you might need to
-create an additional SSH tunnel, if you can't use a vncviewer on the XP
-machine and do with a SSH port link on port 5900.
+It took me a whole night to figure out that these are only cleanly
+applicable to a 2.6.6 kernel and nothing later - which is ok with me ...
+if I only would have managed to find this information without loading
+down 2.6.9, 2.6.8, 2.6.7 and 2.6.6 source and testing the patch-o-matic
+with every single one of these! Can somebody please help me dummy in
+finding this information? Are these patches expected to get a revamp to
+be capable to cope with 2.6.9?
+On another note: are/when are these features scheduled to go into the
+2.6 series?
 
-> I created a ssh tunnel between the VNC Server(192.168.1.4) & the Linux
-> Gateway(192.168.1.2) for port 5800
+Thanks for any hints,
 
-OK, you can do this if the networks are not routable with each other.
-For troubleshooting I would get a vncviewer on the XP box, instead of
-fiddling around with the java stuff. When you can get an ordinary
-connection with a vncviewer on port 5900, you can try creating another
-SSH tunnel for port 5800, and see if you can access the java client.
+Joh
 
-On the linux box, you can run this:
-ssh -N -L 5800:localhost:5800 192.168.1.4
-ssh -N -L 5900:localhost:5900 192.168.1.4
-
-And then go to http://192.168.33.167:5800 from your XP web browser.
-
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to
-> 192.168.1.2:5800 
-
-I don't really see the need for NAT here.
-
-.../Bosse
--- 
-Bosse Klykken - http://www.klykken.com/~bosse
-Keep staring. I might do a trick.
 
