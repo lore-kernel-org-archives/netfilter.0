@@ -1,11 +1,12 @@
-From: "Thhoep" <thhoep@gmx.de>
-Subject: Problem using fwmarks as routing key: "MASQUERADE: Route sent us somewhere else."
-Date: Wed, 21 Jan 2004 18:25:22 +0100
+From: <bmcdowell@coxhealthplans.com>
+Subject: RE: netfiltering and ethernet bridging doesn't appear to work as advertised, help!
+Date: Wed, 21 Jan 2004 11:27:47 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001c01c3e043$93583cd0$1684188d@Kiste>
+Message-ID: <7A3B4AA360FDEF448F3390421FC8D731014BE7BB@coxhpexg.coxhp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,103 +19,75 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi,
 
-my aim: to divide 100 hosts upon 6 masqueraded adsl connections to the
-internet using a linux router runnig a debian woody.
+From my point of view, you can ignore physical/virtual interfaces with
+respect to INPUT, OUTPUT, and FORWARD.  It's all about where the IP
+address resides, and whether or not that IP is local or remote.  Let me
+whip up a quick example.
 
-the problem: really strange behaviour of the routing/masquerading combo,
-that changes with every tried kernel version. (described below)
+Say we have a bridging firewall with two ethX interfaces and one brX
+interface:
 
-presumption: some version mismatch or a bug in the kernel routing code,
-which needs a bugfix that till now is unknown to me
+eth0-br0-eth1
 
-my config:
+Not that you would normally want to, but lets put IP's on all of these
+interfaces:
 
-masquerading is activated in "/etc/ppp/ip-up.d" using
------------
-iptables -t nat -A POSTROUTING -o $PPP_IFACE -j MASQUERADE
------------
+eth0(10.10.10.1)-br0(10.10.10.2)-eth1(10.10.10.3)
 
-routing policy is defined upon reboot:
------------
-echo 1 > /proc/sys/net/ipv4/ip_forward
+Now lets add a few clients:
 
-ip route flush table main
-ip route add 192.168.1.0/24 dev eth4 table main
+client1(10.10.10.5) -
+[eth0(10.10.10.1)-br0(10.10.10.2)-eth1(10.10.10.3)] -
+client2(10.10.10.6)
 
-# routing policies for adsl
-for (( i=1 ; $i<7; i++ )) ; do
-    ip route flush table dsl$i
-    ip route add 192.168.1.0/24 dev eth4 table dsl$i
-    ip rule add fwmark $i table dsl$i
-done
+With me so far?
 
-# dividing users
-iptables -t mangle -A PREROUTING -i eth4 -s 192.168.1.10 -j MARK --set-mark
-1
-iptables -t mangle -A PREROUTING -i eth4 -s 192.168.1.11 -j MARK --set-mark
-1
-#....
-iptables -t mangle -A PREROUTING -i eth4 -s 192.168.1.17 -j MARK --set-mark
-2
-#....  and so on
------------
+Now let's apply those to filter chains.  Examples:
 
-external default routes are added to the dsl? tables in "/etc/ppp/ip-up.d"
-using
------------
-ip route add $PPP_REMOTE dev $PPP_IFACE src $PPP_LOCAL table $PPP_IPPARAM
-ip route add default via $PPP_REMOTE dev $PPP_IFACE table $PPP_IPPARAM
-ip route flush cache
------------
+	Situation				Chain (from the point of
+view of the bridge)
 
-versions:
-kernels tried: 2.4.20 - 2.6.1
-iptables 1.2.9
-iproute iproute2-ss010824
-pppd version 2.4.1
-patches: none
+Client1 pings Client2			FORWARD
+Client2 pings Client1			FORWARD
+Client1 pings 10.10.10.1		INPUT (and OUTPUT for the reply)
+Client1 pings 10.10.10.2		INPUT (and OUTPUT for the reply)
+Client1 pings 10.10.10.3		INPUT (and OUTPUT for the reply)
+Client2 pings 10.10.10.1		Probably INPUT/OUTPUT - not sure
+here
 
-PROBLEM DESCRIPTION:
+It isn't recommended to have IP's on ethX's.  Really, my bridge should
+look more like this:
 
-if i do a ping from an internal host to an external host i can see with
-tcpdump, that the ping request found its way out of ppp?, a reply is coming
-in, but isn't sent out of the internal interface eth4. if i use pure
-counting netfilter rules for debugging i see, that the replies get lost
-between PREROUTING and FORWARD, so i assume they get lost while routing. a
-"route -C -n" shows a route to the external host, but no route back from the
-external to the internal. in "/var/log/kern.log" are the only
-networking-related messages:
------------
-kernel: request_module: failed /sbin/modprobe -- net-pf-10. error = 256
-kernel: MASQUERADE: Route sent us somewhere else.
------------
-net-pf-10 seems to be an alias for some ipv6 module. i don't use ipv6 and
-therefor don't have this module. so i ignored that error. that maquerading
-message could be related to my problem. formerly with an older but very
-similar configuration (i think just the iptables was linked to an older
-kernel, but version was the same) i got another message:
------------
-kernel: MASQUERADE: No route: Rusty's brain broke!
------------
-i can't interpret any of both.
+eth0(0.0.0.0)-br0(10.10.10.2)-eth1(0.0.0.0)
 
-in addition (this seems to be important): in an older configuration i didnt
-use fwmarks to select the routing tables but the inbuilt "from <ip>"
-directive of the "ip"-tool like this:
------------
-ip rule add from 192.168.1.10 table dsl1
------------
-and in this configuration the router WAS WORKING absolutely nice and exactly
-as expected. my problem only appears when i try to use fwmarks as routing
-key. (the corresponding kernal feature is enabled).
+In this case, only traffic dealing with 10.10.10.2 would be handled by
+the INPUT/OUTPUT chains.  Everything else is FORWARD, because it deals
+with two non-local IPs.
 
-please help me! i tried very hard and very long to solve this problem (over
-weeks) and if i cant solve it i have to try it with openbsd or something
-like that, out of pure desperation..
+Have I confused you yet?
 
-with best regards,
-thomas hoeppler
 
+Bob
+
+-----Original Message-----
+From: Kirk Reiser [mailto:kirk@braille.uwo.ca]
+Sent: Wednesday, January 21, 2004 10:35 AM
+To: Bob McDowell
+Cc: netfilter@lists.netfilter.org
+Subject: Re: netfiltering and ethernet bridging doesn't appear to work
+as advertised, help!
+
+<SNIP>
+I'm having a bit of trouble with this statement because to me it
+doesn't seem to make sense without the notion of the interface cards.
+If eth0 is our interface to the net and eth1 our interface to the lan
+then input to an interface makes sense because input to eth0 means one
+set of rules while input to eth1 means a totally separate set.  When
+you are talking about a virtual interface such as br0 how do input and
+output relate?  Is input meaning packets entering both real interfaces
+eth0 and eth1 or does input mean to the virtual device br0.  If the
+latter what direction is input verses output, the order you add the
+NICs?  I don't see how this can be.
+<SNIP>
 
