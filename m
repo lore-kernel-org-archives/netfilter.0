@@ -1,13 +1,14 @@
-From: "Danila Octavian" <pisic@service.agress.ro>
-Subject: LOG per IP basis
-Date: Thu, 8 Apr 2004 14:04:12 +0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: LOG per IP basis
+Date: Thu, 8 Apr 2004 12:16:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000a01c41d59$3f9bda90$da0da8c0@pisic>
-Reply-To: "Danila Octavian" <pisic@service.agress.ro>
+Message-ID: <200404081216.40625.Antony@Soft-Solutions.co.uk>
+References: <000a01c41d59$3f9bda90$da0da8c0@pisic>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0007_01C41D72.5EC320E0"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000a01c41d59$3f9bda90$da0da8c0@pisic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,86 +18,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Thursday 08 April 2004 12:04 pm, Danila Octavian wrote:
 
-------=_NextPart_000_0007_01C41D72.5EC320E0
-Content-Type: text/plain;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+> Hello,
+>
+> This is my first post to the list after many months, but i'm running out of
+> time with my problem.
+>
+> Anyone can tell me how to log separately trafic to the outside world of my
+> machines that are behind a masquerading firewall ?
+>
+> my setup : internet --- ETXIP fw INTIP --- 192.168.13.0/24.
+>
+> for example i want to be able to measure how much traffic is doing
+> 192.168.13.222 (for example) to the outside world but not to my extip or
+> intip.
 
-Hello,
+Put a rule in a mangle table which matches your packets - no need for a target 
+(the POSTROUTING chain would probably be best - then you only count traffic 
+which left the machine - ie: didn't get filtered out), and use "iptables -L 
+-t mangle -nvx" to get the packet/byte counts.
 
-This is my first post to the list after many months, but i'm running out =
-of time with my problem.
+Regards,
 
-Anyone can tell me how to log separately trafic to the outside world of =
-my machines that are behind a masquerading firewall ?
+Antony.
 
-my setup : internet --- ETXIP fw INTIP --- 192.168.13.0/24.
+-- 
+There are only 10 types of people in the world:
+those who understand binary notation,
+and those who don't.
 
-for example i want to be able to measure how much traffic is doing =
-192.168.13.222 (for example) to the outside world but not to my extip or =
-intip.
-
-Thanks in advance,
-
-      With respect,=20
-      Octavian DANILA=20
-    =20
-
-------=_NextPart_000_0007_01C41D72.5EC320E0
-Content-Type: text/html;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>
-<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>This is my first post to the list after =
-many=20
-months, but i'm running out of time with my problem.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Anyone can tell me how to log =
-separately trafic to=20
-the outside world of my machines that are behind a masquerading firewall =
-
-?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>my setup : internet --- ETXIP fw INTIP =
----=20
-192.168.13.0/24.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>for example i want to be able to =
-measure how much=20
-traffic is doing 192.168.13.222 (for example) to the outside world but =
-not to my=20
-extip or intip.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks in advance,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 width=3D500 align=3Dleft =
-border=3D0>
-  <TBODY>
-  <TR>
-    <TD>With respect,</TD></TR>
-  <TR>
-    <TD><A href=3D"mailto:octavian@service.agress.ro">Octavian =
-DANILA</A></TD></TR>
-  <TR>
-    <TD></TD></TR></TBODY></TABLE></DIV></DIV></BODY></HTML>
-
-------=_NextPart_000_0007_01C41D72.5EC320E0--
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
