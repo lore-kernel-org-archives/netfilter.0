@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Hosts.Deny Question??
-Date: Thu, 12 Sep 2002 14:16:46 +0100
+From: "Travis Crook" <travis@visionsbeyond.com>
+Subject: Email troubles behind iptables firewall
+Date: Thu, 12 Sep 2002 08:30:50 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209121317.g8CDH2v10107@vulcan.rissington.net>
-References: <000201c25a5d$e257d2e0$1be02a0a@infopart.nl>
+Message-ID: <002c01c25a68$fde16160$6902a8c0@visionsbeyond.mindtrip>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000201c25a5d$e257d2e0$1be02a0a@infopart.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,23 +18,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 12 September 2002 2:49 pm, Niall Murphy wrote:
+Hi all,
+    I have an iptables firewall setup to route web, ftp 
+and email traffic to internal servers.  My internal 
+servers have ip addresses in the 192.168.2. range.  
+The problem I am having is that my email server is 
+being used as a spam box (not by me but by someone 
+else on the internet - not with my approval either).
 
-> thats what i mean sorry!! i have a red hat 7.2 firewall in front of a nt
-> email and proxy server etc.
-> but i want to use host.deny in the firewall rules to block certain ip
-> and email addresses
+My question is this:  Qmail is my mail server.  It is 
+supposed to only allow relaying by certain clients.  
+As far as I know it is set up this way.  I think the 
+problem occurs because I allow 192.168.2. ip 
+addresses to relay mail (i.e. everyone behind the 
+firewall).  But every email coming in to the mail 
+server gets a 192.168.2. ip address.  Is this 
+correct?  Is there any way to pass their real ip 
+address through the firewall to the mail server?
 
-You cannot use hosts.deny to control connections *through* a machine - it can 
-only be used to restrict connections *to* the machine, and even then only to 
-applications which use TCPwrappers.
+Any help would be greatly appreciated.  I can 
+post the firewall script, etc. if needed.
 
-As already discussed, use netfilter instead :-)
+Thanks
 
-Antony.
-
--- 
-
-The difference between theory and practice is that
-in theory there is no difference, whereas in practice there is.
+Travis Crook
+Visions Beyond
 
