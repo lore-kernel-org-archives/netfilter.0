@@ -1,13 +1,13 @@
-From: "Francisco Medina Lopez" <paco@segob.gob.mx>
-Subject: Re: Bridging Firewall
-Date: 27 Mar 2003 15:12:12 -0600
+From: Steve M Bibayoff <smb23@csufresno.edu>
+Subject: Re: Microsoft PPTP VPN server behind FIREWALL
+Date: Thu, 27 Mar 2003 12:46:16 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048799532.1325.16.camel@nemesis>
-References: <3E835D19.6000309@corp.lcom.net>
+Message-ID: <4e48f84e6eb8.4e6eb84e48f8@cvip.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E835D19.6000309@corp.lcom.net>
+Content-language: en
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,64 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Andrew J. Meader" <ameader@corp.lcom.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-you forgot one step, the whole procedure is like this:
+Hello,
 
+davidsen@tmr.com (bill davidsen) wrote:
 
-brctl addbr br0
-brctl addif br0 eth0
-brctl addif br0 eth1
-ifconfig eth0 0.0.0.0 promisc
-ifconfig eth1 0.0.0.0 promisc
-ifconfig br0 up             
+> I believe there is a userspace IPsec package,
+reasonably high overhead
+> but runable where a patched kernel is politacally
+incorrect. Does that
+> ring a bell with anyone?
 
-ip link set eth0 up
+I believe your thinking of Cipe.
 
-ip addr add 172.16.41.211/24 brd + dev br0
-ip route add default via 172.16.41.250
+hth
 
+Steve
 
-
-
-On Thu, 2003-03-27 at 14:20, Andrew J. Meader wrote:
-> Hi All,
-> 
-> I am trying to set up a bridging firewall with Red Hat 8.0. I can not 
-> get packets to flow from nic to nic.
-> 
-> Topology:
->        
->              br0
->                 |
->                 |
->         ------
->         |                |
->     eth1          eth2
-> 
-> Here are the steps I have taken to setup the bridge:
-> 
-> ifdown eth1
-> ifdown eth2
-> 
-> ifconfig eth1 0.0.0.0
-> ifconfig eth2 0.0.0.0
-> 
-> brctl addbr br0
-> 
-> brctl addif br0 eth1
-> brctl addif br0 eth2
-> 
-> ifconfig br0 0.0.0.0
-> 
-> When I ifconfig br0 I can see that rx packets are incrementing but tx 
-> packets are not incrementing. Are there any known issues with RH8.0 and 
-> brdiging? Thanks for helping.
-> 
-> Andy
-> 
-> 
-
+ps. please don't Bcc the ml.
 
 
