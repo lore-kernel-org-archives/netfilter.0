@@ -1,14 +1,14 @@
 From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: Redhat linux disconnecting telnet session
-Date: Thu, 14 Nov 2002 10:40:30 +0530
+Subject: Re: Time based rules ...
+Date: Thu, 14 Nov 2002 10:38:36 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211141040.30235.dharmu@nsecure.net>
-References: <000e01c28b5c$29656c40$8c01a8c0@sundaram>
+Message-ID: <200211141038.36884.dharmu@nsecure.net>
+References: <1037199668.4556.30.camel@rayw.knowledgefactory.co.za>
 Reply-To: dharmu@nsecure.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000e01c28b5c$29656c40$8c01a8c0@sundaram>
+In-Reply-To: <1037199668.4556.30.camel@rayw.knowledgefactory.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +19,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sundaram Ramasamy <sun@percipia.com>, netfilter@lists.netfilter.org
+To: Raymond Leach <raymondl@knowledgefactory.co.za>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Could you say it briefly as the information given by you is not sufficient. 
-Like what happen when you enter
-#telnet host
-
-All these information will help us i solving your problem.
-
+What is the default polic you have set for? I guess it is by dropping all the 
+packets froom the forward chain and then you are allowing accordingly.
 Regards,
 Dharmendra.T
 Linux Security Expert
 www.nsecure.net
 dharmu@nsecure.net
-On Thursday 14 November 2002 03:02, Sundaram Ramasamy wrote:
-> HI,
+On Wednesday 13 November 2002 20:31, Raymond Leach wrote:
+> Hi
 >
-> I have redhat Linux 7.1, when ever I do telnet session it disconnecting
-> after some time ( Even When I was doing something).
+> Is there a way to put time restrictions on rules?
+> For eaxmple, something like:
 >
-> How will I fix this?, What should I look for?
+> iptables -A FORWARD -i eth0 -p tcp -sport 1024: -dport 1024: -time
+> 0700:1700 -j DROP
 >
-> Thanks
-> Sundaram
+> It would be nice ...
+>
+> Ray
 
 -- 
 
