@@ -1,74 +1,64 @@
-From: "Tony Thompson" <tony.thompson@stone-ware.com>
-Subject: Re: Do I need to write a module?
-Date: Tue, 24 Jun 2003 11:08:16 -0500
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <sef83134.027@mail.stone-ware.com>
+From: Harald Welte <laforge@netfilter.org>
+Subject: [WARNING] iptables current CVS can be instable
+Date: Tue, 24 Jun 2003 19:48:05 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030624174805.GC15635@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
 Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: ramin@cannon.eng.us.uu.net
-Cc: netfilter@lists.netfilter.org
-
-So, to do the HTTP redirect before authentication, it sounds like I will
-need a module or ????
-
-What is the best way to control netfilter from Java, JNI or ????
-
-This type of project is certain to have tricky little issues lurking
-about but, should be interesting!
-
->>> Ramin Dousti <ramin@cannon.eng.us.uu.net> 06/24/03 10:55AM >>>
-On Tue, Jun 24, 2003 at 10:22:52AM -0500, Tony Thompson wrote:
-
-> Thanks for the response.  Maybe I should give a better picture of
-what I
-> am trying to do.  I have a private network that I am trying to route
-> through a Linux box.  I want to deny all traffic (from a MAC
-address)
-> until a user authenticates, with their browser, to a Java application
-on
-> the Linux server (when they authenticate, something has to happen to
-let
-> netfilter know that the MAC address is allowed to pass).  There has
-to
-> be some level of coordination at that point between the Java app and
-> netfilter so that session timeouts, etc. can be handled.  I would
-like
-> to have all of this happen as close to real time (i.e. not batched)
-as
-> possible.
-> 
-> After writing this out, maybe I don't even need a module but, just a
-> way to control netfilter from a Java app.  I am still open to
-> suggestions...
-
-Yes, what you need is to control netfilter from a Java app.
-
-Before the authentication, redirect his web traffic to your java app.
-
-After the authentication, remove the MAC restriction for the client,
-add the necessary rules for his service.
-
-Also, I'd implement some kind of timer to go off after certain period
-of inactivity and remove the permission of his MAC.
-
-It sounds easy but I'm sure it's gonna be fun implementing it ;-)
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
 
 
-Ramin
+--Md/poaVZ8hnGTzuv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Thanks.
-> Tony
+Hi!
+
+current iptables CVS contains some major changes to the low-layer
+library libiptc.  (libiptc/libipt.c version >=3D 1.40)
+
+The new libiptc.c code has not yet received that much testing.  It might
+cause all sorts of strange bugs in the ruleset, so please use current
+iptables CVS with extreme care.
+
+For those interested in the full story about the optimization effort:
+http://lists.netfilter.org/pipermail/netfilter-devel/2003-June/011790.html
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--Md/poaVZ8hnGTzuv
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE++I7VXaXGVTD0i/8RAoKuAJ9DRFNEzK28EpDpE/Qx6AgS1grCaACgibJk
+oL/i5sTWWaC56YfqUPvTQtI=
+=QNu2
+-----END PGP SIGNATURE-----
+
+--Md/poaVZ8hnGTzuv--
 
