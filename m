@@ -1,12 +1,13 @@
-From: "Arnauts, Bert" <Bert.Arnauts@fujitsu-siemens.com>
-Subject: RE: DNAT problem solved ! thx to all
-Date: Mon, 21 Jun 2004 16:32:02 +0200
+From: "Daniel Wittenberg" <daniel-wittenberg@starken.com>
+Subject: Re: state table not working
+Date: Mon, 21 Jun 2004 09:47:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <519AD2BA94FC6E4DB5DE078B2E37CB10A77438@PDBEX01E.pdb.fsc.net>
+Message-ID: <1087829254.5643.5.camel@hawk.wittenberg.org>
+References: <Pine.LNX.4.33.0406211559370.31871-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <Pine.LNX.4.33.0406211559370.31871-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,158 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@lists.netfilter.org
 
-Hello all,
+> That's strange then: the traffic dump you posted contained the client
+> SYN request but did not show the SYN/ACK reply from the server at all.
+> 
+> What does it mean 'drop iptables/restart firewall'? Delete all rules,
+> remove all modules including ip_conntrack and restart?
+> 
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>           H-1525 Budapest 114, POB. 49, Hungary
 
-the problem was that my ping packets didn't came back. So you also need
-to add a SNAT rule for each dnat'ed host :
+Exactly.  I tried removing every ipt and iptables-related modules, and
+then re-running the iptables script and then everything is good again -
+very odd.
 
-like this :
+I normally use netstat-nat to give a quick human-readable view of what's
+in the conntrack table, is there any other tools that are
+better/easier?  Is there any debug/tracing that I can do at the
+netfilter level to see how these packets are being processed?  I know I
+can use iptables and log it that way, but that doesn't seem to be
+catching what's really going on.
 
-=20
-$IPTABLES -t nat -A PREROUTING -d 172.25.239.220 -j DNAT
---to-destination 11.0.0.16
-$IPTABLES -t nat -A POSTROUTING -d 11.0.0.16 -j SNAT --to-source
-172.25.239.220
+The unfortunately part is this usually takes days for this to start
+manifesting itself again, so hopefully sometime this week I can get for
+trace data.
 
-cheers,
-
-Bert
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Jim Laurino
-Sent: Monday, June 21, 2004 6:25 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: DNAT problem / question (nfcan: addressed to exclusive
-sender for this address)
-
-On 2004.06.20 18:24, Arnauts Bert  - Bert.Arnauts@fujitsu- siemens.com
-wrote:
-> Hello all,
->=20
-> thx already for the hints, but I am still in a strugle.
-> I changed my destination ip to 207,
-> because 220 could cause problems.
-> Forgive me that I don't understand why.
-> Anyway, these rules give even a more confusing result.
-> I am still not able to access my 11.0.0.16 box through the=20
-> 172.25.239.207 DNAT'ed alias.
-> (not pingable, not nothing)
-> I also can not connect anymore to my netfilter box anymore after=20
-> executing this script, BUT my active ssh connection stays open ! ?
-> I am still on my machine remotly,
-> but I can not ping it anymore ?? :(
->=20
-> Any more ideas ?
-> ------------------------------------------------------------
->=20
-> echo "Activating firewall script generated Thu Jun 10 15:03:22 2004=20
-> CEST by root"
->=20
-> $IPTABLES -t nat -A PREROUTING -d 172.25.239.207/27 -j DNAT=20
-> --to-destination 11.0.0.16
->=20
-> $IPTABLES -A INPUT   -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A OUTPUT  -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A FORWARD -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
->=20
-> $IPTABLES -N RULE_0
-> $IPTABLES -A OUTPUT  -d 11.0.0.16  -m state --state NEW
-> - j RULE_0
-> $IPTABLES -A FORWARD -d 11.0.0.16  -m state --state NEW -j RULE_0=20
-> $IPTABLES -A RULE_0  -j LOG --log-level info --log-prefix "RULE 0 --=20
-> ACCEPT "
-> $IPTABLES -A RULE_0  -j ACCEPT
-> echo 1 > /proc/sys/net/ipv4/ip_forward
->=20
-> execution of this script gives me this :
-> (why is there 192 ? in stead of 207 ?)
-
-> [root@linuxrouter root]# iptables -t nat -L Chain PREROUTING (policy=20
-> ACCEPT)
-> target     prot opt source               destination
->=20
-> DNAT       all  --  anywhere             =20
-> 172.25.239.192/27 to:11.0.0.16
-
-Because the programmers were being kind to you :) The 192 is the base
-address for the range 192-223, and is exactly what you need for a
-.207/27.
-(That is, the low 5 bits need to be zeros.)
-
-It will be less confusing, later,
-if you change your rule to:
-
-$IPTABLES -t nat -A PREROUTING -d 172.25.239.192/27 -j DNAT
---to-destination 11.0.0.16 (but see below, I think you may not mean to
-do this)
-
-If you change the List command from:
-
-iptables -t nat -L
-to
-iptables -t nat -L -nvx
-
-The -v (--verbose) and -x (--exact) flags will give you (among other
-things) the exact number of packets that have matched each rule.
-
-To look at the main (filter) table do:
-iptables -L -nvx
-
-I think that you will see that all packets here match these first rules:
-
--m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-
-Therefore the "Rule 0" test, which comes later, will never get a chance
-to look at them, and will have a zero count.
-
-Change those first rules to:
-
--m state --state ESTABLISHED,RELATED -j ACCEPT
-
-Then the "Rule 0" tests will match NEW packets.
-
-The PREROUTING rule says that any packet addressed to 172.25.239.207
-will be changed to a destination address of 11.0.0.16.
-(In fact any address 172.25.239.192 through
-172.25.239.223 will become 11.0.0.16)
-
-Therefore, when a packet originally addressed to 172.25.239.207 (in on
-eth1) arrives (later) at the filter table it will have a destination
-address 11.0.0.16 and will traverse the FORWARD chain and leave by eth0.
-Only the host with that address (.16) will receive packets.
-This explains why the netfilter host is inacessible.
-
-Also, you said:
-
-> I have everything in the 172.25.239.0/27 network.
-
-This must be a typo, because this does not include 172.25.239.207, which
-is one of the 31 addresses in the 172.25.239.192/27 network.
-
-From other things you have said,
-I think you may be trying to translate a series of addresses exactly one
-to one:
-
-172.25.239.207 <--> 11.0.0.16
-
-I think you can best do this by using an explicit PREROUTING rule for
-each pair.
-That is, get rid of the /27,
-and add a rule for each address pair.
-Then you can keep, say .208, not translated, and allow this to be used
-as the address of the netfilter host. Like this:
-
-$IPTABLES -t nat -A PREROUTING -d 172.25.239.207 -j DNAT
---to-destination 11.0.0.16
-
-Jim
-
-
+Thanks again,
+Dan
 
 
