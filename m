@@ -1,13 +1,11 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: difference between SNAT and SAME Patch?
-Date: 17 Sep 2002 11:26:56 +0200
+From: "Bo Jacobsen" <subs@systemhouse.dk>
+Subject: Fw: iptables-save/restore question
+Date: Tue, 17 Sep 2002 12:09:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1032254816.30037.7.camel@tux>
-References: <F11056FtZo1P4lvVL5m00009327@hotmail.com>
+Message-ID: <006b01c25e32$5ede5500$6307a8c0@net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F11056FtZo1P4lvVL5m00009327@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,42 +16,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: SB CH <chulmin2@hotmail.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tue, 2002-09-17 at 10:27, SB CH wrote:
-> Hello, all.
-> 
-> what's the difference of the SNAT and SAME patch?
-> 
->  ex)
-> 1)iptables -t nat -A POSTROUTING -j SNAT --to-source 1.2.3.4-1.2.3.7
-> 2)iptables -t nat -A POSTROUTING -j SAME --to 1.2.3.4-1.2.3.7
+HI,  I have tried the following:
 
-SNAT will use the currently least used ip in the range for the new
-connection. That means that clients can get diffrent ip's for their
-connections, even against the same server and some webservers don't like
-this, ie. hotmail, banking via internet....
+I run some iptables commands then run iptables -L -n > testfile1 to save =
+the setup.
+Then I run iptables-restore testfile1 and than run iptables-save again:
+iptables -L -n > testfile2
 
-SAME on the other hand doesn't care which ip has the least number of
-connections. It will calculate which ip in the range to use for a given
-client, that way a client always gets the same ip on all of it's
-connections. I wrote this target when users complained about banking via
-internet not working via SNAT with multiple ip's.
+When I run diff on the two files (testfile1, testfile2) I can see that =
+they are NOT the same.
+In the following is an example of what diff finds different:
 
-(SAME uses both the clients ipadress and the ip of the server you are
-trying to connect to in the calculation so by default clients will get
-diffrent ip's against diffrent servers but always the same ip against
-the same server. There is an option to force it to only care about the
-clients ip so that they will always get the same ip regardless of which
-server they are trying to connect to, that option is called --nodst,
-this is how I use it here)
+104,105c104,105
+< ACCEPT     tcp  --  192.168.7.0/24       0.0.0.0/0          state =
+NEW,ESTABLISHED tcp spts:1024:65535 dpt:53
+< ACCEPT     tcp  --  0.0.0.0/0            192.168.7.0/24     state =
+ESTABLISHED tcp spt:53 dpts:1024:65535
+---
+> ACCEPT     tcp  --  192.168.7.0/24       0.0.0.0/0          tcp =
+spts:1024:65535 dpt:53 state NEW,ESTABLISHED
+> ACCEPT     tcp  --  0.0.0.0/0            192.168.7.0/24     tcp spt:53 =
+dpts:1024:65535 state ESTABLISHED
 
-I hope that helps.
+The first two lines are after running the iptables commands directly.
+The result of the two command semantics are of course the same, but why =
+is this happening.
 
--- 
-/Martin
+The reason we want to make this test is that we need to be sure that the =
+rules generated directly by
+the iptables commands, are EXATLY the same as what the =
+iptables-save/restore command pair does.
 
-Never argue with an idiot. They drag you down to their level, then beat
-you with experience.
+One thing is to test that the iptable commands works, another is to =
+blindly trust that our 300 iptable rules
+are correctly saved and restored by iptables-save/restore (a firewall =
+with 4 different local lans).
+If there is another way of confirming iptables-save/restore results, I =
+would appreciate some info.
+
+
+Thanks in advance
+Bo Jacobsen
+
+
+
 
