@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: ip_nat_ftp module and freeswan IPSEC module don't work together?
-Date: Tue, 27 Jan 2004 02:41:30 +0100
+Subject: Re: iptables NAT with "policy routing?"
+Date: Tue, 27 Jan 2004 02:47:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040127014130.GN19250@sunbeam.de.gnumonks.org>
-References: <BAY10-F42llTdrrcwv1000519cf@hotmail.com>
+Message-ID: <20040127014701.GO19250@sunbeam.de.gnumonks.org>
+References: <400F7264.1080201@palaver.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sGwo475CiIwWEjLI"
+	protocol="application/pgp-signature"; boundary="Kynn+LdAwU9N+JqL"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <BAY10-F42llTdrrcwv1000519cf@hotmail.com>
+In-Reply-To: <400F7264.1080201@palaver.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,32 +19,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Rodre Ghorashi-Zadeh <rodrico7@hotmail.com>
+To: Brian Capouch <brianc@palaver.net>
 Cc: netfilter@lists.netfilter.org
 
 
---sGwo475CiIwWEjLI
+--Kynn+LdAwU9N+JqL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 23, 2004 at 02:41:46AM +0000, Rodre Ghorashi-Zadeh wrote:
-> Hello,
+On Thu, Jan 22, 2004 at 01:49:08AM -0500, Brian Capouch wrote:
+> I have had to temporarily use a table-based route for one of my networks=
 =20
-> Any help regarding this matter would be greatly appreciated. Thanks in=20
-> advance.
+> for administrative reasons, e.g.
 
-I have no idea how this could be caused.  But it seems to me at the
-first glance, that this is not a netfilter/iptables issue.  It works
-with a stock kernel...  Maybe you should talk to the freeswan guys and
-ask if somebody is able to come up with an explanation.
+this should work just fine.
 
-Also, please submit bug reports via bugzilla.netfilter.org instead of
-posting to the mainlintlist, please.
+> I suspect though, that this mode of routing (as opposed to using the=20
+> "regular" table via "route add default") is somehow hosing my iptables NA=
+T?
+>=20
+> At least sniffing the egress interface now shows the traffic heading out=
+=20
+> with its NATted address of 192.168.1.10.
 
-thanks.
+did you try that with a connection that was established before you
+inserted the new NAT rule (also, if you test with a ping, you need to
+stop it to be recognized as new connection).
 
-> ?odre
+LARTC mailinglist might give you some better feedback.
+
+> Thx.
+> B.
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -56,7 +62,7 @@ thanks.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---sGwo475CiIwWEjLI
+--Kynn+LdAwU9N+JqL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -64,10 +70,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQFAFcHKXaXGVTD0i/8RAnvWAKCXjslcJZFMuqU+T/3XNKUkm9VwgACfU692
-U7IhB2piAWkJdIvWq257prk=
-=yCK9
+iD8DBQFAFcMVXaXGVTD0i/8RAiYcAKClJcJuG01XgYi5yW/Wu25YvqyLEwCeJHDs
+6B5XN2MPjANSSOTJAqzcOu8=
+=3CDh
 -----END PGP SIGNATURE-----
 
---sGwo475CiIwWEjLI--
+--Kynn+LdAwU9N+JqL--
 
