@@ -1,8 +1,9 @@
-From: strenuus <strenuus@sezampro.yu>
-Subject: Packets passing trough...
-Date: Wed, 13 Nov 2002 20:33:39 +0100
+From: Rahul Jadhav <rahul@iatp.org>
+Subject: Re: problems with nat
+Date: Wed, 13 Nov 2002 14:01:15 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DD2A913.9030100@sezampro.yu>
+Message-ID: <3DD2AF8B.7030904@iatp.org>
+References: <3DD29634.8000606@iatp.org> <1037215251.7329.2.camel@ben.mis.tnsi.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,24 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Ben Russo <ben@umialumni.com>
+Cc: netfilter@lists.netfilter.org
 
-Output from iptables -L -nvx
+Ben Russo wrote:
 
----
-Chain FORWARD (policy ACCEPT 161696 packets, 47270419 bytes)
-     pkts      bytes target     prot opt in     out     source               destination
-    61547  6434012             all  --  *       eth1    192.168.0.0/24       !192.168.1.0/24
-    59305 36440468             all  --  eth1    *       !192.168.1.0/24       192.168.0.0/24
-    20358  1239485             all  --  *       eth1    192.168.1.0/24       !192.168.0.0/24
-    20322  3148918             all  --  eth1    *      !192.168.0.0/24        192.168.1.0/24
-     3241   561174             all  --  *       *       194.106.188.0/28      192.168.0.0/24
-       42     5260             all  --  *       *       194.106.188.0/28      192.168.1.0/24
----
-
-How is this possible, wouldn't all packets match first 4 rules and never get to 6 and 7?
-Interface eth1 goes to internet (snat is on) and eth0 and eth2 are LAN (192.168.0.0 and 192.168.1.0)
-
-
+>Since you are working on this anyway....
+>
+>For a slightly more secure setup, you might want to consider:
+>
+>
+>               R              E          I           
+>               T+--------+    X+--------+N          
+> internet |---|R| router |---|T|firewall|T|---| intranet
+>               I+--------+    I+--------+I        
+>               P              P     |     P
+>				    |
+>				    DMZ IP
+>					\
+>					| HTTP, MAIL, SSH
+>
+>This will protect your servers from other intranet users 
+>on the same subnet. (Also if you have 802.11 on your intranet...)
+>
+>Maybe after doing this your problem will disappear simply by 
+>rethinking the ruleset.
+>
+>-Ben.
+>
+>
+>On Wed, 2002-11-13 at 13:13, Rahul Jadhav wrote:
+>  
+>
+>>please check the attachment...
+>>
+>>Thanks
+>>Rahul
+>>    
+>>
+You are right but I am trying to avoid doing that right now as i have 
+invested a lot of time already into this system. Moreover, I am pretty 
+sure there are people who have got iptables working with a setup like mine.
 
 
