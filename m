@@ -1,9 +1,12 @@
-From: u1_amd@dslr.net
-Subject: connlimit is broken since jan?
-Date: Thu, 17 Mar 2005 14:48:29 -0500
-Message-ID: <101685057968.20050317144829@dslr.net>
+From: Paul Dorman <pauld@cwa.co.nz>
+Subject: Re: Seamless communication across VPN link
+Date: Fri, 18 Mar 2005 10:11:23 +1300
+Message-ID: <1111093883.30955.25.camel@localhost.localdomain>
+References: <1110871981.692.68.camel@localhost.localdomain>
+	<4239306D.7030101@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <4239306D.7030101@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,43 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: gtaylor@riverviewtech.net
+Cc: netfilter@lists.netfilter.org
 
-Ok I'm confused...
+Hi Grant,
 
-latest "stable" kernel 2.6 from kernel.org, netfilter 1.3.1, latest
-patch-o-matic distro
+thanks very much for your reply. Really kind of you to take so much time
+to explain things nice and clearly for me.
 
-I applied patches (pending, then selected ones from extra). Note:
-pending says several patches are "not already appplied" but then gives
-errors when you attempt to apply them. huh? Ok, i guess they are already
-in 2.6 mainline but patch-o-matic is broken in not figuring that out.
+I had implemented exactly what you described, along with some SNAT rules
+to make the packets look like they were coming from the VC unit on the
+way back to the provider, but due to complications (H323 & NAT over two
+Linux firewalls are *not* cooperative) we had to abandon the whole idea
+of NATing. Instead we opted to bypass the ipsec connection for the VC
+traffic (which is encrypted anyway) using some policy routing and a
+couple of extra aliases on either side of the connection. I was
+fortunate enough to stumble onto an alternative kernel for the
+Smoothwalls which has the stuff required for source-based policy routing
+using iproute2. This approach was successful, and the implications of
+not using the ipsec for the H323 traffic isn't too severe as the traffic
+is encrypted at any rate, and our wireless is highly directional and
+would be difficult to sniff anyway.
 
-Now build kernel.
+Thanks again for staying up late mulling over my predicament. It's
+always great to find people like yourself who are so generous with their
+time.
 
-  CC [M]  net/ipv4/netfilter/ipt_connlimit.o
-net/ipv4/netfilter/ipt_connlimit.c: In function `count_them':
-net/ipv4/netfilter/ipt_connlimit.c:74: structure has no member named `ctrack'
-net/ipv4/netfilter/ipt_connlimit.c:94: structure has no member named `ctrack'
-net/ipv4/netfilter/ipt_connlimit.c:100: structure has no member named `ctrack'
-net/ipv4/netfilter/ipt_connlimit.c:107: structure has no member named `ctrack'
-make[3]: *** [net/ipv4/netfilter/ipt_connlimit.o] Error 1
-make[2]: *** [net/ipv4/netfilter] Error 2
-
-Now I go off to google and find that ctrack structure field has been
-removed, according to a netfilter patch 9/11 posted to the mailing list
-*in january*.
-
-http://lists.netfilter.org/pipermail/netfilter-devel/2005-January/018147.html
-
-Now I'm really confused. If this is a patch to remove ctrack, does this
-mean connlimit has been borked since then? connlimit is a very useful
-module.
-
-It would be much better if one page listed certain "safe" combinations
-of kernel/netfilter/patch-o-matic releases that, while perhaps out of
-date, were not internally inconsistent and at least compiled?
-
-thanks
+Regards,
+Paul
 
 
