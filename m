@@ -1,10 +1,13 @@
-From: Rasmus Reinholdt Nielsen <rasmus@narani.dk>
-Subject: modprobe: Can't locate module ip_tables
-Date: Sun, 23 Jun 2002 20:55:13 +0200
+From: "Jason R. Martin" <jrmartn1@csl.uiuc.edu>
+Subject: Re: IP Traffic Accounting
+Date: Sun, 23 Jun 2002 22:50:40 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <5.1.0.14.2.20020623204454.029b4580@linda>
+Message-ID: <20020623225040.A26831@tiger.csl.uiuc.edu>
+References: <NFBBLDBMIDIOFPBNLEAJCEIOCHAA.yomega@wahooo.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <NFBBLDBMIDIOFPBNLEAJCEIOCHAA.yomega@wahooo.net>; from yomega@wahooo.net on Sat, Jun 22, 2002 at 04:02:06PM +0200
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -14,33 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: yomega <yomega@wahooo.net>
+Cc: netfilter@lists.samba.org
 
-Hi
+I think most of the other posts answered your questions with respect to
+netfilter.  I just wanted to offer an alternative for IP accounting.  Check
+out ipaudit (http://ipaudit.sourceforge.net).  Assuming you have the pcap
+libraries installed on your system, it will keep track of all connections
+to/from your system in a nice compact format.  Since it keeps track of
+connections instead of individual packets, it will likely tell you all the
+accounting info you want (packet counts, byte counts, host IPs, ports, etc).
+There's even a nifty web interface that you can use to view the data.
 
-I have just rekompiled my kernel and iptables. Now when I try to make 
-iptables -L I just get the following messege.
+Just a thought.
 
-modprobe: Can't locate module ip_tables
-iptables v1.2.7: can't initialize iptables table `filter': Table does not 
-exist (do you need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded.
+Jason
 
-Having looked at the archievs I found that I need to recompile iptables, 
-but when making iptables -L it says iptables v1.2.7, the one that I have 
-just installed. I have kompiled iptables and all modules into the kernel 
-and not as modules.
-
-It's proberbly just me who don't know have to rekompile iptables proberbly, 
-so a hint in that direction would be appriciated. I have run 'make all 
-install' after recompiling and installing the kernel.
-
-Any ideas would be very wellcome.
-
-Thanks
-
-Rasmus
-
+On Sat, Jun 22, 2002 at 04:02:06PM +0200, yomega wrote:
+> Hi List,
+> 
+> i want to set up IP Traffic Accounting. I wanna to measure the Traffic which
+> comes in and goes out on specified Ports.
+> 
+> After reading some IPTABLES Manuals and testing some with my Linux
+> Fileserver, i thought of doing exactly this by that way:
+> I create Rules to Log the specified Ports: iptables ..... -j
+> log --log-prefix [name] <- this one :) Because of my syslog Settings, the
+> Packets are logged into /var/log/firewall
+> Ok now i make a Cron with a little Python or PHP Script that analyses the
+> logged packages, and flushes the Log File empty :). The Cron is executed
+> every 5 minutes.
+> 
+> OK this should work, but i still got a question:
+> 
+> First i start to realize that my log file will become very big with even
+> little outbound traffic. Now the cron is exectued and all the data written
+> on the hd is analysed and written on the hd. I'm afraid that this will
+> injure the health of the HD. Is there any other maybe more "clean"
+> possibility to do that loggin? or have i made some mistakes in my thoughts?
+> 
+> Maybe everthing happens in the RAM (syslog and analysing)? So this would not
+> be a hd health prob?
+> 
+> Thanx 4 all suggestions :)
+> 
+> Greetz,
+> Stephan
 
