@@ -1,11 +1,10 @@
-From: "Mihai Tanasescu" <cloud@sky.kappa.ro>
-Subject: IRC and Conntrack problem
-Date: Sat, 2 Nov 2002 17:42:56 +0200
+From: "Udo Rader" <spamtrash2@vibe.ac>
+Subject: Re: iptables -m time does not work
+Date: Sat, 02 Nov 2002 21:06:00 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00d601c28286$83cf1390$6928a8c0@MIHAI>
+Message-ID: <aq1b78$lc5$1@hermes.vibe.ac>
+References: <E187c2V-0001ft-00@kashyyyk.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00D3_01C28297.473651D0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,42 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+hi,
 
-------=_NextPart_000_00D3_01C28297.473651D0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I bet you have the same problem that I had with the string-module.
 
-I have installed the kernel module for conntracking irc connections. =
-Still I can only receive dcc sends but I can't initiate any dcc send =
-sessions. I get the error message failed to connect or something like =
-that.=20
-What am I doing wrong?
+look at your /var/log/syslog and check if there are complains about
+a missing ipt_time module.
 
-------=_NextPart_000_00D3_01C28297.473651D0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+If so, the solution is simple: Your kernel is very probably not patched
+for the time module.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>I have installed the kernel module for =
-conntracking=20
-irc connections. Still I can only receive dcc sends but I can't initiate =
-any dcc=20
-send sessions. I get the error message failed to connect or something =
-like=20
-that.&nbsp;<BR>What am I doing wrong?</FONT></DIV></BODY></HTML>
+udo
 
-------=_NextPart_000_00D3_01C28297.473651D0--
+On Fri, 01 Nov 2002 14:20:15 +0000, Torsten Puls wrote:
+
+> Hello	
+> 
+> My Problem
+> After input of dis order I get the following error message:
+> 
+> iptables -A INPUT -m time --timestart 08:00 --timestop 16:00 --days Mon -j ACCEPT
+> iptables: No chain/target/match by that name
+> 
+> Why? 
+> 
+> Regards
 
 
