@@ -1,8 +1,8 @@
 From: Geraldo Macedo <glmacedo@quality.com.br>
 Subject: UML and Firewall
-Date: 19 Jun 2002 16:47:28 -0300
+Date: 19 Jun 2002 16:49:54 -0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1024516048.26896.189.camel@ux-glmacedo.intranet.quality.com.br>
+Message-ID: <1024516194.26895.191.camel@ux-glmacedo.intranet.quality.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
