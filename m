@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
 Subject: Re: [netfilter-core] iptables/conntrack in enterprise environment.
-Date: Fri, 30 May 2003 21:42:40 +0200
+Date: Fri, 30 May 2003 21:41:07 +0200
 Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030530194240.GI29312@sunbeam.de.gnumonks.org>
-References: <200305290113.58552.prez@srealm.net.au> <20030529083953.GB2461@sunbeam.de.gnumonks.org> <200305300133.44822.prez@srealm.net.au>
+Message-ID: <20030530194107.GH29312@sunbeam.de.gnumonks.org>
+References: <200305290113.58552.prez@srealm.net.au> <200305290810.16531.prez@srealm.net.au> <20030530080806.GB29312@sunbeam.de.gnumonks.org> <200305301342.16153.prez@srealm.net.au>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rV8arf8D5Dod9UkK"
+	protocol="application/pgp-signature"; boundary="rMWmSaSbD7nr+du9"
 Return-path: <netfilter-devel-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200305300133.44822.prez@srealm.net.au>
+In-Reply-To: <200305301342.16153.prez@srealm.net.au>
 Errors-To: netfilter-devel-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter-devel@lists.netfilter.org>
@@ -23,92 +23,78 @@ To: "Preston A. Elder" <prez@srealm.net.au>
 Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, coreteam@netfilter.org
 
 
---rV8arf8D5Dod9UkK
+--rMWmSaSbD7nr+du9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 30, 2003 at 01:33:22AM -0400, Preston A. Elder wrote:
+On Fri, May 30, 2003 at 01:42:07PM -0400, Preston A. Elder wrote:
 
-> I have my router box, say, 192.168.0.1, and a range of IP's behind it, sa=
-y,=20
-> 10.0.0.0/24, for arguments sake.  I also have an application on the route=
-r=20
-> box listening on 100 ports, say, 5000-5100.  My uplink interface is eth0,=
- and=20
-> the interface with all the 10.0.0.0 addresses is on eth1.
+> OK, just to be sure, I just installed kernel 2.4.21-rc6, with all the=20
+> 'pending' patches applied to it as well, these are the ONLY patches appli=
+ed=20
+> to this kernel.
 
-a perfectly fine setup.
+that one should be just fine.
 
-> Now, I add an iptables rules something like the following:
+> Netstat is showing me the following connection breakdowns:
+> SNATs: 0
+> ESTABLISHED : 1060
+> LAST_ACK    : 4865
+> TIME_WAIT   : 29
+> FIN_WAIT2   : 1
+> FIN_WAIT1   : 39
+> SYN_RECV    : 3277
+> LISTEN      : 100
+> CLOSE_WAIT  : 9261
 >=20
-> iptbales -t nat -A PREROUTING -j REDIRECT -i eth0 -p tcp -d 10.0.0.0/24=
-=20
-> - --destination-port 1025:65535 --to-ports 5000-5100
->=20
-> If I then telnet to 10.0.0.1 on port 5050, the connection is immediate, a=
-nd my=20
-> application receives a new connection on port 5050.  If, however, I telne=
-t to=20
-> 10.0.0.1 on port 5150, there is a small (but noticable) delay between whe=
-n=20
-> the telnet session shows the connection as established, and when the=20
-> application receives the connection (on a random port between 5000 and 51=
-00=20
-> inclusive).
+> /proc/ip_conntrack, however, is showing me the following:
+> CLOSE: 176
+> CLOSE_WAIT: 111
+> ESTABLISHED: 9046
+> FIN_WAIT: 8634
+> SYN_RECV: 134
+> SYN_SENT: 25111
+> TIME_WAIT: 2165
+> (no state): 128
 
-This is _definitely_ not a netfilter issue then.  We are not doing
-transparent proxying but nat.  netfilter/iptables _never_ accept
-connections on their own.  So you open a connection:
+you cannot just compare TCP socket states with connection tracking
+states.   connection tracking tracks all connections (local and
+forwarded ones), and if a connection isn't correctly closed by the
+application (FIN handshake), it will assume that the connection still
+exists - just one example of why this cannot be compared.
 
-1. telnet 10.0.0.1 5150
-2. syn packet is sent by telnet
-3. syn packet is DNAT'ed by netfilter
-4. syn packet arrives at server application
-5. syn/ack packet is sent by server application
-6. syn/ack packet is SNAT'ed by netfilter
-7. syn/ack packet is received by telnet
- [further handshake goes on]
-x. telnet application prints 'Connection established' (connect(2) call
-   returns)
+And why do you think there is a  'SNAT' socket state?
 
-This is a fundamental tcp/ip operation, and it can certainly by no way
-be anything that netfilter does, that would introduce a behaviour like
+> use DNAT, same difference though).  So the above counts seem very wrong t=
+o=20
+> me.  And although the established count is very high, the SYN_SENT count =
+is=20
+> astronomical.
 
-1. telnet 10.0.01 5150
-2. telnet shows 'connection established'
-3. connection 'arrives' at server
+can you capture the packets with tcpdump and actually show me that the
+machine doesn't in fact have=20
 
-[which is what you have been describing, If I understood you correctly].
+> There are also, as you see above, 128 conntrack entries without a
+> state, which by the look of it, are UDP connections.  I'm not even
+> natting anything for UDP.  WTF is going on here?
 
-> - - I'm talking a system than can get thousands of new connections a seco=
-nd=20
-> (the hardware is up to it, we're talking gb's of ram, and SMP machines). =
- As=20
-> with my above small test case, connecting to a port in the 'to-ports' ran=
-ge=20
-> gives me an immediate connection (on the application), but the delay betw=
-een=20
-> telnet showing the connection established, and the application receiving =
-the=20
-> connection (and establishing it) grows dramaticaly, even taking over a mi=
-nute=20
-> for the application to receive the connection.  Hell, even the time for=
-=20
-> telnet to show the connection as established is much greater when connect=
-ing=20
-> to a port outside the 'to-ports' range than when connecting to one within=
-=20
-> this range.
+What do you mean 'without state'? There are no connections without
+state.  Why can't you show me the respective lines from
+/proc/net/ip_conntrack.
 
-Again, no way.  This seems to be some issue with your server
-application. =20
+And why are you under the impression that /proc/net/ip_conntrack shows
+only nat'ed connections?  The name of the file indicates 'conntrack', so
+it shows you all tracked connections - not all NAT'ed.
 
-> - --=20
+As of now, it seems to me that there are some significant
+misunderstandings about the principles of netfilter/iptables. Please
+discuss this at the mailinglist and get back to me if you are really
+sure this is a bug.
+
 > PreZ
 > Systems Administrator
 > Shadow Realm
-
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
@@ -119,17 +105,17 @@ application. =20
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---rV8arf8D5Dod9UkK
+--rMWmSaSbD7nr+du9
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQE+17QwXaXGVTD0i/8RAspiAJ4wDkGr6roV0/BZ78Ej4nE1AlmVkwCeKSa5
-MI1lRCese1EybyGCBwTCKbE=
-=DCJX
+iD8DBQE+17PTXaXGVTD0i/8RAkrNAJ42hl1/3BDpYAyVLu1CUhN9rMn2SgCglv4g
+rFcijH9lOcF8T2S0SEiMNfs=
+=H4oJ
 -----END PGP SIGNATURE-----
 
---rV8arf8D5Dod9UkK--
+--rMWmSaSbD7nr+du9--
 
