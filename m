@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Problem with FTP trought iptables.
-Date: Thu, 21 Nov 2002 21:23:25 -0500
+From: Jihoon Chung <difro@sexycoder.com>
+Subject: Re: IRC DCC between 2 clients on the same net.
+Date: Fri, 22 Nov 2002 13:11:46 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211212123.25464.netfilter@newkirk.us>
-References: <F171brl26XyrAaDJs2L00017900@hotmail.com>
-Reply-To: netfilter@newkirk.us
+Message-ID: <20021122041146.GA19927@sexycoder.com>
+References: <20021118035555.GA5525@sexycoder.com> <3DDD3987.28137.1A389300@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F171brl26XyrAaDJs2L00017900@hotmail.com>
+Content-Disposition: inline
+In-Reply-To: <3DDD3987.28137.1A389300@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?q?H=E9lio=20Dubeux?= <hdubeux@hotmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Bob Hockney <zeus@ix.netcom.com>
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 19 November 2002 01:00 pm, H=E9lio Dubeux wrote:
-> I has a Linux box act as a gateway eith iptables, i had already enabled=
- the
-> ftp and irc conntrack modules, NAT is configured too. I have a windows =
-98
-> connected to this gateway and i have about 5 machines connected by a HU=
-B to
-> this W98 machine sharing the internet connection. I trie to use a progr=
-am
-> called CuteFTP to access remote ftp sites and i can not download or upl=
-oad
-> files. What=B4s wrong? Do i have to enable some other module in my kern=
-el???
-> I set transfer module in DOS to binary and didn=B4t work as well.
+Thanks for the reply.
 
-Make sure you are allowing ESTABLISHED/RELATED state packets through the=20
-filter FORWARD chain, to allow for additional ports (IE data instead of=20
-control) being opened during/by the FTP session.
+On Thu, Nov 21, 2002 at 07:52:39PM -0800, Bob Hockney wrote:
+> > I have 2 clients behind a masquerading gateway.
+> >
+> > When one of them DCC SEND to the outside world, everything's fine.
+> > (Thanks
+> > to ip_conntrack_irc/ip_nat_irc)
+> >
+> > But when I DCC-SEND from one client to the other client on the same
+> > network, it doesn't work.  The sending side fails almost immediately.
+> >
+> > Is this normal?
+> > I'm using kernel 2.4.17.
+>
+> DCC is a passive protocol so sending a file means an inbound tcp connection, why
+> you need the irc modules in the first place.  What is happening is that
+> ip_nat_irc has little choice but to substitute the external ip of your gateway
+> for your LAN ip in the DCC SEND request, thus making the other client think it
+> should connect to your gateway instead of the LAN address of the client machine
+> to get the file -- what you want if the other client is outside your firewall.
+> ip_nat_irc then intercepts this and forwards the connection to the LAN ip making
+> to DCC SEND request.
+>
+> Try unloading the two irc modules and attempting a SEND, which should work if
+> the two LAN computers can connect to each other.  Also, make sure the rules in
 
-Something like:
-/sbin/iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-should do the trick.  You can specify -i or -o if that is useful in your=20
-set-up, but make sure you allow both directions in the end.
+Yes, unloading the two irc modules does work.  But, that means I have to
+manually unload the modules when I'm sending to LAN computer, and load
+it again when I want to send to outside world.  Surely there must be an
+easier way to support both cases.
 
-BTW, is there any particular reason you don't have the gateway right on t=
-he=20
-hub?  It can handle the connection sharing better than Win98, and you're=20
-already performing NAT in it, it seems redundant (at best) to then perfor=
-m=20
-NAT again in the Win98 machine.  This would also eliminate the requiremen=
-t=20
-that the Win98 machine always be up for the other machines to connect.  A=
-lso,=20
-if you already have the above state matches enabled, it is possible that =
-the=20
-double-nat is causing the Win98 connection sharing to bungle the NAT of=20
-RELATED connections.  (if it even handles them correctly to begin with, I=
-=20
-don't know...)
+> the FORWARD chain of the gateway box allow connections to the external ip from
+> you LAN.
 
-j
-
+Why FORWARD? Shouldn't it be the INPUT chain?
+Anyway, I tried it with default policy of INPUT/FORWARD/OUTPUT set to
+"ACCEPT", it didn't work.
 
