@@ -1,12 +1,14 @@
-From: "John A. Novak" <jnovak@blueshiftinc.com>
-Subject: RE: DMZ trouble!
-Date: Wed, 8 Jan 2003 20:22:32 -0800
+From: "Dharmendra.T" <dharmu@nsecure.net>
+Subject: RE: opening a port..
+Date: 09 Jan 2003 10:25:13 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F635E25A78F69C41B85DC6CB18972A9A474721@kepler.blueshiftinc.com>
+Message-ID: <1042088119.810.3.camel@india>
+References: <FD8F124A387AD6119F7900A0D218B321019A9D@hslex01.hslbz.local> 
+	<1042080082.606.21.camel@nirvana>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <1042080082.606.21.camel@nirvana>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +19,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: David Collodel <dave@crawlspaceradio.com>, netfilter@lists.netfilter.org
+To: mdew <mdew@mdew.dyndns.org>
+Cc: Rob Sterenborg <rsterenborg@xs4all.nl>, netfilter <netfilter@lists.netfilter.org>
 
-Do you have rules that allow traffic to be forwarded from the LAN to the =
-DMZ and back ?
+On Thu, 2003-01-09 at 08:11, mdew wrote:
+> On Thu, 2003-01-09 at 03:24, Rob Sterenborg wrote:
+> > > ok, telnet from another machine to the router.
+> > > 
+> > > telnet 10.0.0.6 4662
+> > > Trying 10.0.0.6...
+> > > telnet: Unable to connect to remote host: Connection refused
+> > > 
+> > > what "service" should I be running? I simply want 4662 open both ways.
+> > 
+> > # netstat -an|grep 4662
+> > should tell you if your box is listening at all on port 4662.
+> > 
+> > If you run eDonkey server on the firewall box, open port in the INPUT
+> > chain.
+> > If your eDonkey server is *behind* the firewall, open the port in the
+> > FORWARD chain, and add a DNAT rule in the nat table -> PREROUTING chain.
+> 
+> the edonkey server is behind the firewall
+> 
+> 210.54.175.12--->eth0 (Router) 10.0.0.6(eth1)--->10.0.0.x
+> 
+> iptables -t nat -A PREROUTING -p tcp -i eth0 -d 210.54.175.12 --dport 4662 -j DNAT --to 10.0.0.6:4662
+> 
 
-John Novak
+This should work without the last rule.
 
------Original Message-----
-From: David Collodel [mailto:dave@crawlspaceradio.com]
-Sent: Wednesday, January 08, 2003 7:43 PM
-To: netfilter@lists.netfilter.org
-Subject: DMZ trouble!
-
-
-Hi,
-
-I've recently been working on a firewall using IPtables to create a
-DMZ/LAN setup.
-
-I have a system with 3 NIC's.=20
-
-eth0 has the "real" static IP's from my ISP. I'm using NAT to translate
-from the IP bound on this NIC to the internal DMZ and LAN hosts.
-eth1 is set to 172.16.12.1 and is used as the DMZ interface. Hosts
-connected to this interface are all 172.16.12.x
-eth2 is set to 172.16.11.1 and is used as the LAN interface.Hosts
-connected here are all 172.16.11.x
-
-Most things seem to be working, I can connect from the LAN to the DMZ
-and to the Internet. I can connect from the DMZ to the Internet, but not
-to the LAN, but already established connections work. Only the ports I
-specify are open from the Internet to the DMZ.
-
-The problem I'm having is this:
-
-When I try to connect to a host in the DMZ from the LAN, it does not
-work when I use the "real" IP address.
-
-An example of the error in the logs is this:
------
-IPT INPUT packet died: IN=3Deth1 OUT=3D
-MAC=3D00:10:5a:1b:48:8a:00:10:5a:00:ff:b8:08:00 SRC=3D172.16.11.2
-DST=3D66.92.171.152 LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D3514 =
-DF PROTO=3DTCP
-SPT=3D32949 DPT=3D80 WINDOW=3D5440 RES=3D0x00 SYN URGP=3D0
-----
-
-Does anyone have any idea why this might be happening?
-
-Much thanks.
-
---=20
-David Collodel <dave@crawlspaceradio.com>
-
+iptables -A FORWARD -p tcp -i eth0 -d 10.0.0.6 --dport 4662 -j ACCEPT
+> 
+> like that?
+> 
+> 
+> 
+-- 
+Dharmendra.T
+Linux Enthu
 
 
