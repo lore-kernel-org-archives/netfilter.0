@@ -1,12 +1,10 @@
-From: =?iso-8859-1?Q?Lo=EFc?= Minier <lool+netfilter@via.ecp.fr>
-Subject: Connections with SYN aren't NEW
-Date: Sun, 14 Dec 2003 17:23:15 +0100
+From: Piers Finlayson <pdf@dataconnection.com>
+Subject: RE: logging with iptables
+Date: Sun, 14 Dec 2003 16:28:50 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031214162315.GA897@via.ecp.fr>
+Message-ID: <37701240971DD31193970000F6CCB9F704CB7EFF@duke.datcon.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +14,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'William Stearns' <wstearns@pobox.com>, Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: ML-netfilter <netfilter@lists.netfilter.org>
 
-     Hey list,
+Bill - thanks a lot.  That's exactly what I was after.
 
- I am using a 2.4.22 with the ebtables + br-nf patch of
- ebtables.sourceforge.net. I am currently not DROPping packets, only
- logging for a while as a safety for my new rules on this host.
-
- I face a problem with some TCP connections: I want to accept new
- TCP connections only if they match both --syn and -m state --state
- NEW. This turns out to be a bad practice in some case where I see
- legitimate new TCP connections with correct flags matching --syn but
- which do not match -m state --state NEW.
-   This happens a lot with HTTP clients and with DNS requests, and I
- think this is because of port reuse:
-   - the HTTP client opens a connection from port xyz to port 80
-   - it finishes the session and closes the connection
-   - it reopens another connection with the same port xyz to the same
-     host on port 80
-
- However, grepping the /proc/net/ip_conntrack shows two different
- entries in such cases.
-
- Am I wrong in thinking the connections should match -m state --state
- NEW, even if a connection happened with the same ports/ips a few
- seconds ago? What can I change to fulfill my wishes?
+-----Original Message-----
+From: William Stearns [mailto:wstearns@pobox.com]
+Sent: 13 December 2003 16:38
+To: Antony Stone; Piers Finlayson
+Cc: ML-netfilter; William Stearns
+Subject: Re: logging with iptables
 
 
-   Kind regards,
+Good day, Piers,
 
---=20
-Lo=EFc Minier <lool@dooz.org>
+On Sat, 13 Dec 2003, Antony Stone wrote:
+
+> On Saturday 13 December 2003 9:45 am, Piers Finlayson wrote:
+> 
+> > Is it possible to log a packet's entire contents with iptables, rather
+than
+> > just useful stuff from the packet header?
+> 
+> No.   Netfilter has a single fixed logging format which shows onlt the
+packet 
+> header information, nothing from the body itself.
+> 
+> > I can run tcpdump/tethereal etc to log the packets I'm interested in,
+but
+> > figure it would be much neater if I can just use iptables to do it.
+> 
+> You might want to have a look at http://gnumonks.org/projects/ulogd to see
+if 
+> it will help with what you want, but I suspect tcpdump etc will remain
+your 
+> best bet.
+
+	It will help. http://www.stearns.org/doc/iptables-ulog.current.html
+	Cheers,
+	- Bill
+
+---------------------------------------------------------------------------
+	The thing that I suspect matters most is that Telsa is more 
+important to me than sitting in front of a computer reading email. 
+	- Alan Cox
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+Linux articles at:                         http://www.opensourcedigest.com
+--------------------------------------------------------------------------
 
