@@ -1,8 +1,9 @@
-From: matthieu imbert <mat@ice-dev.com>
-Subject: netfilter newbie questions
-Date: Fri, 16 Apr 2004 10:45:41 +0200
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: (no subject)
+Date: Fri, 16 Apr 2004 15:00:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <407F9D35.6070204@ice-dev.com>
+Message-ID: <002f01c423b2$bff5bbc0$1202a8c0@admin>
+References: <E1BEJWp-0005UN-EQ@ht8b10.server4sale.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,48 +16,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi
-i have three questions about iptables:
+> I was wondering if anybody could tell me how to setup a rule that
+> forwards all packets from a particular IP, regardless of the ports,
+> on to another machine?
 
-1/
+You mean to DNAT connections to a server behind the firewall ?
 
-i read the packet-filtering howto (http://netfilter.org/documentation/HOWTO//packet-filtering-HOWTO.html)
-the first example uses the ip_conntrack module, which allows the state match rule, as in the following rules :
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state RELATED,ESTABLISED -j ACCEPT
+iptables -A FORWARD -d <dest_ip> -j ACCEPT
+iptables -t nat -A PREROUTING -s <src_ip_range> -j DNAT <dest_ip>
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-iptables -A block -m state --state NEW -j REJECT
+For <src_ip_range>, see below.
 
-on the other hand, my red hat 9 was automatically configured by lokkit with something that looks similar but without using ip_conntrack:
+> I was also wondering if it is possible to forward an entire IP range,
+> or the DNS using wildcards? For example forwarding all connections
+> from *.aol.com regardless of the port onto a specific IP? If this is
+> possible, could anybody tell me how I would go about it?
 
-iptables -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --syn -j REJECT
+Using a range is possible :
+- use subnets like /24 or 255.255.255.0
+- use the iprange patch from POM. You will have to patch your kernel for
+that to work.
+See http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-iprange
 
-what are the exact differences between these two ways of doing the same thing ? (Is it related to the way fragments are handled ?)
-
-2/
-
-about fragments (see http://netfilter.org/documentation/HOWTO//packet-filtering-HOWTO-7.html)
-
-in the paragraph "specifying fragments", it says:
-"If you are doing connection tracking or NAT, then all fragments will get merged back together before they reach the packet filtering code, so you need never worry about fragments."
-
-but 5 lines below, it also says that we can only filter the first fragment, because further fragments don't have their tcp header.
-
-so, are fragments merged or not ? Does it mean that by default, fragments are not merged but that as soon as we use nat or ip_conntrack they are merged ? This is what i understand but i just want a confirmation..
-
-3/
-
-i'm new to linux so this one may seem trivial, but let's ask it:
-how are netfilter routing and other kernel routing related ?
-i mean:
-there is a /sbin/route command that lists a routing table, and we can also modify this table.
-but there is also some routing in iptables, as far as i understand.
-also, browsing through some howtos i saw mentions of a iproute2 command
-All of this is very confusing to me, so what is the architecture of all this ? i already read "The journey of a packet through the linux 2.4 network stack" by harald welte but it did not help clarifying the overall scheme
-
-thanks in advance
+You cannot use wildcard domain lookups in iptables rules so you'd have to
+find out which ip ranges you want to match yourself.
 
 
+Gr,
+Rob
 
 
