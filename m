@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Is this firewall good enough?
-Date: Tue, 8 Jun 2004 16:23:15 +0100
+From: "Ricardo C" <racham@hotmail.com>
+Subject: Re: Stealth on emule.... ======(FOR ANTONY STONE)======
+Date: Tue, 8 Jun 2004 13:34:45 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406081623.15400.Antony@Soft-Solutions.co.uk>
-References: <20040608091436.84113.qmail@web14712.mail.yahoo.com> <200406081057.40137.Antony@Soft-Solutions.co.uk> <40C5D53A.9060407@linuxmail.org>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <BAY1-DAV59JopVHlGPK0002ceb3@hotmail.com>
+References: <BAY1-DAV54XsNQptgFr000169b4@hotmail.com> <200406071549.44542.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40C5D53A.9060407@linuxmail.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,57 +19,63 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 08 June 2004 4:03 pm, Feizhou wrote:
+Hello Antony, I responded you yesterday about the order of you of a list
+(iptables -L. . . . ) of rules that I have in my firewall, but the reply was
+outside of the thread. You'll find it among yesterday's messages "Stealth on
+emule..." From "Ricardo A" or "Ricardo C"... Thanks for your help
+Cordially
+Richard
 
-> Antony Stone wrote:
-> > On Tuesday 08 June 2004 10:42 am, Feizhou wrote:
-> >>>2.  /sbin/iptables -A INPUT -p tcp -m state --state
-> >>>ESTABLISHED,RELATED -j ACCEPT
-> >>
-> >>Forget about this. It makes things easier yes but it is too slow if you
-> >>come under attack...but then you put everything on one box seemly so I
-> >>guess you don't get much traffic.
-> >
-> > How do you recommend dealing with reply packets instead?
+----- Original Message ----- 
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Monday, June 07, 2004 11:51 AM
+Subject: Re: Stealth on emule....
+
+
+> On Monday 07 June 2004 3:34 pm, Ricardo C wrote:
 >
-> I would create multiple chains
+> > I have a LAN with Windows XP clients and cablemodem exit to Internet
+thru a
+> > router Debian Woody with iptables. I need that one of the clients
+> > (192.168.111.2) can to download and upload files with eMule. I applied
+in
+> > the router the iptables rules given by Oskar Andreason in their tutorial
+> > and I opened the ports (tcp and udp) 4661, 4662, 4665, 4672, 4711.
+> > BUT the eMule continues giving Low ID to client. With an external
+> > ports-scan on the router I find that these ports continue presenting to
+> > eMule as stealth, in spite of the fact that I opened them. I need to
+know
+> > if what I made to open these ports is well. Please you could revise the
+> > rules that I paste below and tell me if they are OK??? Because if they
+are
+> > OK my ISP is filtering the ports corresponding to the eMule.
 >
-> iptables -N tcp_packets and so on.
+> I see no rule in your ruleset allowing those packets through the FORWARD
+chain
+> on your machine, therefore it won't pass them on to the client?
 >
-> So to avoid loading the connection tracking module, I would put rules to
-> handle return packets in the proper chain.
+> Maybe I'm missing something because of the layout of the rules - if you
+think
+> the appropriate FORWARDing rules are there, please post the output of
+> "iptables -L -nvx; iptables -L -t nat -nvx; iptables -L -t mangle -nvx"
+> because I find this an easier format to understand for such a long
+ruleset.
 >
-> eg: iptables -A tcp_packets -p tcp --sport 1024:65535 --dport 80 -j ACCEPT
-
-That rule allows packets *to* port 80 - I was asking how you deal with *reply* 
-packets - the ones *from* port 80 on the remote server.
-
-> Then i put tcp/udp/icmp packets to the proper chain
+> Hope this helps,
 >
-> eg: iptables -A INPUT -p tcp -j tcp_packets
+> Antony.
 >
-> You could make a catch all for return packets like:
+> -- 
+> If builders made buildings the way programmers write programs, then the
+first
+> woodpecker to come along would destroy civilisation.
 >
-> iptables -A INPUT -p tcp ! --syn -j ACCEPT
-
-You seem to be advocating not using the ESTABLISHED,RELATED match - which 
-would render the firewall stateless (like ipchains) instead of stateful.   
-That seems a backwards step to me - or have I misunderstood something?
-
-Regards,
-
-Antony.
-
--- 
-In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
-the mechanics are German, the lovers are French, the entertainment is 
-American, and everything is organised by the Swiss.
-
-In Hell, the police are German, the chefs are British, the beer is American, 
-the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
-and everything is organised by the Italians.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+>                                                      Please reply to the
+list;
+>                                                            please don't CC
+me.
+>
+>
+>
 
