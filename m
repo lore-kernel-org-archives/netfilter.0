@@ -1,11 +1,12 @@
-From: "Robert Schimansky" <cms_project_hs_zigr@yahoo.de>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Weird routing problem?
-Date: Wed, 1 Dec 2004 14:30:34 +0100
-Message-ID: <002101c4d7a9$f00c4f80$e167aec1@wsidipl05>
+Date: Wed, 01 Dec 2004 08:43:25 -0500
+Message-ID: <1101908605.3251.30.camel@hubcap.ljm.dom>
 References: <200412010418.41288.hancock@anansispaceworks.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200412010418.41288.hancock@anansispaceworks.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,36 +17,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hello,
+On Wed, 2004-12-01 at 05:18, Terry Hancock wrote:
+<snip>
+>    "Fragments"?
 
-when using an ethernet-dsl-modem - and maybe with some other devices too - 
-you have to set the MTU of your NAT-ed computers. see 
-http://www.annoyances.org/exec/show/article04-107
+bingo.
 
-I would appreciate if somebody could tell how I could solve this on the 
-router insteasd of reconfiguring the "clients"
+> Why only from certain web servers?
+>    e.g.:
+>    http://www.tera-byte.com
+>    http://www.poalo.com
+>    http://www.paypal.com
 
-greetings
-Robert
+because the reply packets form those sites break the "need-to-frag"
+threshold.
 
-> Hi,
-> I have set up a Debian Woody system as a dialup gateway
-> system using iptables. This mostly works, but for a fairly
-> large number of internet sites, I get hang-ups when trying
-> to access them from the client machines on my LAN. (Not sure
-> about the statistics, but it's enough that it could be, for
-> example, any site runnning IIS or some other lesser-used HTTP server).
->
-> For example, if I use a simple console web-browser like
-> w3m, I can access:
->
-> w3m http://www.poalo.com
->
-> from the console of my router, BUT the same command from
-> the console of a client machine on the LAN results in no
-> reply! 
+> How can I verify what is and is not being dropped?
+
+tcpdump on your firewall's external interface for ICMP Type 3 Code 4
+packets.
+
+> Some details:
+
+<snip>
+
+one detail that would've been nice would be the output of "ip link show"
+so that we could see the MTU of ppp0...
+
+generically--try this:
+
+  iptables -I FORWARD -p tcp --tcp-flags --syn \
+    -j TCPMSS --clamp-mss-to-pmtu
+
+if that doesn't help:
+
+$MYMSS="$MTU_OF_PPP0 - 40"
+
+  iptables -I FORWARD -p tcp --tcp-flags --syn \
+    -j TCPMSS --set-mss $MYMSS
+
+-j
+
+--
+"Me lose brain? Uh, oh! Ha ha ha! Why I laugh?"
+	--The Simpsons
 
 
