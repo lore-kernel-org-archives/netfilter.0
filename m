@@ -1,12 +1,13 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+From: Stephen Smoogen <smoogen@lanl.gov>
 Subject: RE: ports 137 to 139
-Date: Wed, 21 Jul 2004 10:51:16 -0400
+Date: Wed, 21 Jul 2004 09:34:37 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E62E8E2@email1.mitretek.org>
+Message-ID: <1090424075.8448.1.camel@smoogen3.lanl.gov>
+References: <2E314DE03538984BA5634F12115B3A4E62E8E2@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E62E8E2@email1.mitretek.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +18,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Brent Clark <bclark@eccotours.biz>, iptables <netfilter@lists.netfilter.org>
+To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Cc: Brent Clark <bclark@eccotours.biz>, iptables <netfilter@lists.netfilter.org>
 
-I do not see the need for it either, why would you (or he even suggest
-to) have it open?
+On Wed, 2004-07-21 at 08:51, Piszcz, Justin Michael wrote:
+> I do not see the need for it either, why would you (or he even suggest
+> to) have it open?
+> 
 
+This person is probably not really a friend ;). It is probably best to
+silently drop 135,137:139,445 due to the number of scans that out on the
+internet from viruses, worms, script kidz, and real bad-guys.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Brent Clark
-Sent: Wednesday, July 21, 2004 6:29 AM
-To: iptables
-Subject: ports 137 to 139
-
-Hi all
-
-Stupid question, must ports 137 to 139 (basically netbios)be open a drop
-default policy fw.
-One of my friends is suggesting that I must open it. I cant see the need
-for
-this.
-
-Any advice would be appreciated
-
-Kind Regards
-Brent Clark
-
-I have a adsl connection
-
-MSN: brentgclark@hotmail.com
-eMail: bclark@eccotours.biz
-Cell: +27 82 701 7827
-Work No: +27 21 683 0069
-Fax No: +27 21 683 6137
-
+> 
+-- 
+Stephen John Smoogen		smoogen@lanl.gov
+Los Alamos National Lab  CCN-5 Sched 5/40  PH: 4-0645
+Ta-03 SM-1498 MailStop B255 DP 10S  Los Alamos, NM 87545
+-- "We cannot have a free government without elections; and if the
+-- rebellion could force us to forgo, or postpone, a national election,
+-- it might fairly claim to have already conquered us." Abraham Lincoln
 
 
