@@ -1,12 +1,15 @@
-From: Ciprian Niculescu <ciprian@promo.ro>
-Subject: Re: [Linux Diffserv] ANNOUNCE: tc filter extensions
-Date: Sat, 04 Jan 2003 19:25:45 +0100
+From: Athan <netfilter@miggy.org>
+Subject: Re: ECN target does not behave as expected
+Date: Tue, 7 Jan 2003 22:02:37 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E172729.2070707__33951.8384695568$1041976462@promo.ro>
-References: <20030104125252.J48869@shell.cyberus.ca>
+Message-ID: <20030107220237.GO16581@miggy.org>
+References: <004101c2b62a$37489320$a268c451@Marius> <Pine.LNX.4.44.0301071122270.2806-100000@grignard.amagerkollegiet.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0UhZIN3Sa23/ILEd"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0301071122270.2806-100000@grignard.amagerkollegiet.dk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,55 +19,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: jamal <hadi@cyberus.ca>
-Cc: diffserv-general <diffserv-general@lists.sourceforge.net>, lartc@mailman.ds9a.nl, netfilter@lists.samba.org, netfilter-devel@lists.samba.org
-
-hello,
-
-if someone can develop a feature like -j LOG from iptables, for the tc 
-filter
-
-for ex i have
-
-tc filter ...... match dport 80 0xffff flowid 1:1
-
-i want to write to syslog the headers of the packets that matched this rule.
-
-C
-
-jamal wrote:
-> 
-> I guess holidays means idle time which means idle minds which leads to
-> thumb twiddling which then leads to some work (which is sometimes useful)
-> 
-> Ive updated the traffic control patches i posted about six months ago.
-> Note, the current release does not break anything in tc. It is fully
-> backward compatible so you can choose not to use it and things will work
-> as they do today. Of course, it is very useful so you cant choose to
-> ignore it!
-> 
-> It's now upgraded to better than "use at your own risk" category.
-> tested on both uni and SMP 2.4.18 and 2.4.20.
-> 
-> http://www.cyberus.ca/~hadi/patches/action/
-> 
-> Bug reports and feedback are appreaciated.
-> A lot more goodies coming up, so this is just the tip. First steps are to
-> prove sanity of the idea.
-> 
-> cheers,
-> jamal
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Diffserv-general mailing list
-> Diffserv-general@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/diffserv-general
+To: netfilter@lists.netfilter.org
 
 
+--0UhZIN3Sa23/ILEd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jan 07, 2003 at 11:23:49AM +0100, Rasmus B?g Hansen wrote:
+> Apparently you need the patch below - at least that works for me:
+
+  For what it's worth I've sent this patch to Marcelo Tosatti
+<marcelo@conectiva.com.br>, the guy who maintains and releases the
+current 2.4.x kernels.  Someone may have done so already but I wanted to
+be sure the fix makes it into mainstream ;).
+
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+
+--0UhZIN3Sa23/ILEd
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAj4bTn0ACgkQzbc+I5XfxKelUQCeJEsKweLEYbWiCOcAYNOuEePS
+ui0An2pyKO/E90IOm4wZC5UD8cB2a49H
+=OHRl
+-----END PGP SIGNATURE-----
+
+--0UhZIN3Sa23/ILEd--
 
