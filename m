@@ -1,17 +1,13 @@
-From: Sanjay Arora <skpobox@hotpop.com>
-Subject: Re: Cons?: Directed Pinholes
-Date: 23 Aug 2004 01:08:18 +0530
+From: gadgeteer@elegantinnovations.org
+Subject: Re: FTP-SSL explicit
+Date: Sun, 22 Aug 2004 15:24:26 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1093203497.2592.3.camel@Sewak.Asr.Lan>
-References: <1093194886.16081.84.camel@Sewak.Asr.Lan>
-	 <200408221855.36768.Antony@Soft-Solutions.co.uk>
-	 <1093199079.2283.22.camel@Sewak.Asr.Lan>
-	 <200408222004.59916.Antony@Soft-Solutions.co.uk>
-Reply-To: skpobox@hotpop.com
+Message-ID: <20040822212426.GA3446@hyper>
+References: <810BC538117E9F4E9BB152E0C100DF1F18F5D2@farmer.vikus.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408222004.59916.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
+In-Reply-To: <810BC538117E9F4E9BB152E0C100DF1F18F5D2@farmer.vikus.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,26 +18,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Mon, 2004-08-23 at 00:34, Antony Stone wrote:
+On Mon, Aug 09, 2004 at 04:27:03PM -0400, Patrick Ahler (patrick@vikus.com) wrote:
+> Does anyone know off hand which ports I need to open on my
+> gateway/firewall for ftp over ssl (explicit) besides port 990???
 
-> > since my dmz has private address space 192.168.x.x, IPs from there are
-> > not routable to anyone outside my network,
-> 
-> Huh?   So how do machines on your DMZ reply to external connections?   And if 
-> there aren't any external connections, what are they doing in a DMZ?   I'm 
-> puzzled.   You must have some NAT going on, or it wouldn't be a DMZ...
+ftp_tls explicit?  Is this something new?  In setting up our
+implementation last spring I saw no mention of "explicit" in any of the
+specification documents.
 
-Yes. I have an IPcop box with three network cards, acting as firewall,
-transparent proxy using NAT & gateway. One public IP address, two
-non-routable 192.168.x.x segments. Port forwarding for DNS, SMTP, POP3 &
-HTTP.
+[a bit of googling]
 
-Thank you. You have been very helpful.
+ah... I see.  You will have to consult your software vendor as this
+implicit/explicit distinction falls outside of the ftp_tls
+specification.
 
-Best regards.
-Sanjay.
-
-
+Have fun,
+-- 
+Chief Gadgeteer
+Elegant Innovations
 
