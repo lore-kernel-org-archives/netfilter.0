@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: RE: new tcp connections, without SYN
-Date: 10 Apr 2003 10:48:01 +0200
+From: "zze-Proxy_Corveller ball001 exterieur FTRD" <proxycorveller.ball001@rd.francetelecom.com>
+Subject: RE: Problem of NAT with VLAN
+Date: Thu, 10 Apr 2003 10:58:11 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049964481.790.4.camel@elendil.intranet.cartel-securite.net>
-References: <7497DCA1C240C042B28F6657ADFD8E09268777@i2km11-ukbr.domain1.systemhost.net>
+Message-ID: <8C19E3FBB6467846AFF97E366D34CB600189A4AD@lanmhs20.rd.francetelecom.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7497DCA1C240C042B28F6657ADFD8E09268777@i2km11-ukbr.domain1.systemhost.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +16,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: dhiraj.2.bhuyan@bt.com
-Cc: mklingens@ism.nl, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le mer 09/04/2003 =E0 18:04, dhiraj.2.bhuyan@bt.com a =E9crit :
-> I tried sending an "ACK" packet from behind my Netfilter firewall to a
-> machine on the public side that actually doesn't exist.
-> A look in the /proc/net/ip_conntrack tells me that Netfilter tracked th=
-is
-> connection as "ESTABLISHED" but "UNREPLIED". So Netfilter does infact a=
-llow
-> starting a TCP connection with an ACK packet.
+Yes, indeed it's my commands
 
-Yes it does, unless you apply tcp-nopickup patch that enforces NEW and
-RELATED TCP packets must be SYN ones, flaging others as INVALID.
-
-This behaviour allows one to handle connections for which firewall have
-not seen SYN packet, such as asymetrical routing, failover, reboot and
-stuff.
-
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+> -----Message d'origine-----
+> De : Friedrich Lobenstock [mailto:fl@fl.priv.at]
+> Envoye : mercredi 9 avril 2003 18:20
+> A : netfilter-devel@lists.netfilter.org
+> Objet : Re: Problem of NAT with VLAN
+>=20
+>=20
+> zze-Proxy_Corveller ball001 exterieur FTRD wrote:
+> >=20
+> > I've got n VLANs that arrive on a Linux machine. I'm using=20
+> vconfig to
+> > receive packets from those VLANs.
+> >=20
+> > I want to perform DNAT on packets between my physical=20
+> interface (eth2)=20
+> > and the virtuals devices
+> > created by vconfig (vlan00xx, where xx is the VLAN ID of=20
+> the associated=20
+> > VLAN).
+> > I've place some rules at the PREROUTING chain in the nat table to=20
+> > perform the address
+> > translation.
+> >=20
+> > My problem is that netfilter seems don't see packets=20
+> between eth2 and=20
+> > vlan00xx.
+> >=20
+> > I've tried some rules such as '-A PREROUTING -i eth2' or=20
+> '-A PREROUTING=20
+> > -i vlan0010' but
+> > the packet counters stay equal to 0.
+> >=20
+> > Any idea ?
+> >=20
+>=20
+> Just curious, did you run:
+>    vconfig set_name_type VLAN_PLUS_VID
+>    vconfig add eth2 10
+>=20
+> --=20
+> MfG / Regards
+> Friedrich Lobenstock
+>=20
+>=20
+>=20
 
