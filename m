@@ -1,12 +1,14 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: RE: internal web server
-Date: Mon, 8 Sep 2003 13:48:20 +0800
+From: "Dharmendra.T" <dharmu@nsecure.net>
+Subject: Re: Dropping RST of SYN
+Date: 08 Sep 2003 11:21:28 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E706C220@overlord.overturemedia.com>
+Message-ID: <1063000297.827.26.camel@india.nsecure.net>
+References: <20030904183027.9CC5.ATNAK@chejz.com> 
+	<1062666800.1615.23.camel@kermit>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative; boundary="=-MDiUSsqXAUJTmdeCA4b5"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <1062666800.1615.23.camel@kermit>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,146 +18,120 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Ralf Spenneberg <lists@spenneberg.org>
+Cc: Atsushi Nakagawa <atnak@chejz.com>, Netfilter <netfilter@lists.netfilter.org>
 
 
-Thank you so much for replying!
-I have tried your suggestion as well as Thorten's suggestion but it =
-still does not work!
+--=-MDiUSsqXAUJTmdeCA4b5
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-By the way, there is a router in front of all this. Does this have an =
-effect on the natting?
+On Thu, 2003-09-04 at 14:43, Ralf Spenneberg wrote:
 
-router - firewall - web server
+    Am Don, 2003-09-04 um 10.50 schrieb Atsushi Nakagawa:
+    > What iptables table/rule can I use to drop RST (TCP) packets that're =
+in
+    > reply to SYN?
+    > This is what I want it to do:
+    >=20
+    > -SYN->    [NEW]        -SYN->
+    >           [CLOSED]     <-RST-
+    >             ^
+    >           IF TCP & [NEW]: DROP '<-RST-' & SET [CLOSED]
+    Using the current state implementation, AFAIK this is not possible.
+    The RST is already an established packet. There is no way to
+    differentiate between this RST and a later valid and needed RST packet.
+    You can only drop all RST packets
+    -m state --state ESTABLISHED -p tcp --tcp-flags RST,ACK RST,ACK -j DROP
+   =20
+    Cheers,
+   =20
+    Ralf
+    --=20
+    Ralf Spenneberg
+    RHCE, RHCX
+   =20
+    Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.co=
+m
+    IPsec-Howto				     http://www.ipsec-howto.org
+    Honeynet Project Mirror:                     http://honeynet.spenneberg=
+.org
+   =20
 
-I don't want to use the router to route traffic directly to the web =
-server as I want all traffic to enter the firewall.
-It somehow means there is a double nat that happens.
+Hi,
 
-- router translates 202.138.128.xxx to 192.168.247.3 (firewall internal =
-ip)
-- firewall hopes to translate 192.168.247.3 port 80 traffic to =
-192.168.247.5 (web server internal ip) port 80
+Blocking the RST packets on the firewall is not recommended. If the
+attacker comes to know that the server is dropping RST packets then he
+can flood the servers by initiating lacks of connections, which inturn
+result closewait state.
 
-When I use the old one like:
-iptables -t nat -A PREROUTING -p tcp -d 192.168.247.3 --dport 80 -j DNAT =
---to-destination 192.168.247.5:80
+--=20
+Regards
+Dharmendra.T
+dharmu@nsecure.net
+Linux Security and Admin
 
-I see this:
-[clause@fw firewall]# iptables -nvL -t nat
-Chain PREROUTING (policy ACCEPT 3318K packets, 1243M bytes)
- pkts bytes target     prot opt in     out     source               =
-destination
-   21  1008 DNAT       tcp  --  *      *       0.0.0.0/0            =
-192.168.247.3      tcp dpt:80 to:192.168.247.5:80
+--=-MDiUSsqXAUJTmdeCA4b5
+Content-Type: text/html; charset=utf-8
 
-So I feel that the nat somehow works. I just don't receive any packets =
-on the web server.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
+</HEAD>
+<BODY>
+On Thu, 2003-09-04 at 14:43, Ralf Spenneberg wrote:
+    <BLOCKQUOTE>
+<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Am Don, 2003-09-04 um 10.50 schrieb Atsushi Nakagawa:</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; What iptables table/rule can I use to drop RST (TCP) packets that're in</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; reply to SYN?</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; This is what I want it to do:</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; -SYN-&gt;    [NEW]        -SYN-&gt;</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt;           [CLOSED]     &lt;-RST-</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt;             ^</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt;           IF TCP &amp; [NEW]: DROP '&lt;-RST-' &amp; SET [CLOSED]</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Using the current state implementation, AFAIK this is not possible.</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>The RST is already an established packet. There is no way to</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>differentiate between this RST and a later valid and needed RST packet.</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>You can only drop all RST packets</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>-m state --state ESTABLISHED -p tcp --tcp-flags RST,ACK RST,ACK -j DROP</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Cheers,</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Ralf</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>-- </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Ralf Spenneberg</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>RHCE, RHCX</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Book: Intrusion Detection f&#252;r Linux Server   http://www.spenneberg.com</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>IPsec-Howto				     http://www.ipsec-howto.org</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Honeynet Project Mirror:                     http://honeynet.spenneberg.org</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
+    </BLOCKQUOTE>
+<FONT SIZE="3">Hi,</FONT>
+<BR>
+<FONT SIZE="3"></FONT>
+<BR>
+<FONT SIZE="3">Blocking the RST packets on the firewall is not recommended. If the attacker comes to know that the server is dropping RST packets then he can flood the servers by initiating lacks of connections, which inturn result closewait state.</FONT>
+<BR>
+<FONT SIZE="3"></FONT>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+<PRE>-- 
+Regards
+Dharmendra.T
+dharmu@nsecure.net
+Linux Security and Admin</PRE>
+</TD>
+</TR>
+</TABLE>
 
-I hope you can help me again!
+</BODY>
+</HTML>
 
-Thanks again for helping me.
-
-
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
-
-
-
-> -----Original Message-----
-> From: slack geek [mailto:slack_geek@mail.bulgaria.com]
-> Sent: Friday, September 05, 2003 10:32 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: internal web server
->=20
->=20
-> Hello fritz,
->=20
-> You have only one mistake in your iptables command. Since=20
-> you're making DNAT and you're refering to firewall's=20
-> _external_ ip to connect=20
-> to to the internal web server, it's right to do it like this:
->=20
-> EXT_IFACE =3D your external network interface ( eth0 for example )
-> EXT_IP =3D the ip address attached to your $EXT_IFACE
-> INT_WWW_IP =3D your web server ip address
->=20
-> iptables -t nat -A PREROUTING -p tcp -i $EXT_IFACE -d $EXT_IP=20
-> --dport 80 -j DNAT --to-destination $INT_WWW_IP:80
->=20
->=20
-> Cheers, train.
->=20
-> On Fri, 5 Sep 2003 20:57:51 +0800
-> "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com> wrote:
->=20
-> >=20
-> > Greetings!
-> > I can't seem to make this work...
-> >=20
-> > - external ip of firewall 202.138.128.xxx
-> > - internal ip of firewall 192.168.247.3
-> > - internal web server with ip 192.168.247.5
-> >=20
-> > This was what my code was...
-> > $IPT -t nat -A PREROUTING -p tcp -d 192.168.247.3 --dport=20
-> 80 -j DNAT --to-destination 192.168.247.5:80
-> >=20
-> > It doesn't seem to work. I have set the web server to use=20
-> the gw of 192.168.247.3
-> >=20
-> >=20
-> > Hope you can help me. Thanks.
-> >=20
-> > fritz <www.mesedilla.com>
-> > ---
-> > + Basta Ikaw Lord
-> >=20
-> >=20
-> ----------------------------------------------------------------------
-> > This email and any files transmitted with it are confidential and
-> > intended solely for the use of the individual or entity to whom they
-> > are addressed. If you have received this email in error=20
-> please notify
-> > the sender immediately by e-mail and delete this e-mail from your
-> > system. Please note that any views or opinions presented in this
-> > email are solely those of the author and do not necessarily=20
-> represent
-> > those of the company. Finally, the recipient should check this email
-> > and any attachments for the presence of viruses. The company accepts
-> > no liability for any damage caused by any virus transmitted by this
-> > email.=20
-> >=20
-> > Overture Media, Inc.
-> > Direct Line: (632) 635-4785
-> > Trunkline:   (632) 631-8971 Local 146
-> > Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor.=20
-> Ortigas Ave., Quezon City 1100
-> >=20
-> >=20
->=20
->=20
->=20
->=20
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
+--=-MDiUSsqXAUJTmdeCA4b5--
 
 
