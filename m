@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: "Robert P. J. Day" <rpjday@mindspring.com>
 Subject: Re: what filtering to do on the OUTPUT chain?
-Date: 22 Oct 2002 22:09:04 +0200
+Date: Tue, 22 Oct 2002 16:10:46 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1035317344.8858.14.camel@elendil>
-References: <Pine.LNX.4.44.0210221455120.15018-100000@localhost.localdomain>
+Message-ID: <Pine.LNX.4.44.0210221605170.15445-100000@localhost.localdomain>
+References: <1035317344.8858.14.camel@elendil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210221455120.15018-100000@localhost.localdomain>
+In-Reply-To: <1035317344.8858.14.camel@elendil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-Le mar 22/10/2002 =E0 20:57, Robert P. J. Day a =E9crit :
->   i've had a number of people tell me that, while they put a
-> good deal of thought into their INPUT filtering, they simply
-> ACCEPT all outgoing traffic since, if their input filtering
-> is working properly, there's no reason to stop outgoing
-> packets.
->   comments?
+On 22 Oct 2002, Cedric Blancher wrote:
 
-Once you have accepted the fact that your box can get compromised, you
-easily understand why you should filter outgoing traffic. Moreover,
-maximum security relies on the "lesser privilege rule" which specifies
-that an object must not be allowed to do more than he has to. According
-to this, you have to filter network output.
+> Le mar 22/10/2002 =E0 20:57, Robert P. J. Day a =E9crit :
+> >   i've had a number of people tell me that, while they put a
+> > good deal of thought into their INPUT filtering, they simply
+> > ACCEPT all outgoing traffic since, if their input filtering
+> > is working properly, there's no reason to stop outgoing
+> > packets.
+> >   comments?
+> =
 
-Consider you have a web server which is vulnerable to a 0day private
-flaw. It is exploited, then cracker has a low privilege shell. If your
-output is not filtered, he can just send any packet he wants which can
-be bad for your environment, especialy when INPUT chain accepts all
-ESTABLISHED packets. Well, if he gets root, you're lost unless you
-harden your kernel with access control stuff like LIDS. But, in between,
-it slows down the attacker and make its progression far more difficult.
+> Once you have accepted the fact that your box can get compromised, you
+> easily understand why you should filter outgoing traffic. Moreover,
+> maximum security relies on the "lesser privilege rule" which specifies
+> that an object must not be allowed to do more than he has to. According=
 
-If you plan to filter traffic on the box itself, than you have to do it
-well. Not filtering in OUTPUT chain is just the same as if you set a
-firewall up with no rule for returning packets, something like :
+> to this, you have to filter network output.
 
-	iptables -A FORWARD -s $IN_NET -i $IN_IF -o $OUT_IF -j ACCEPT
+i understand that, for extra security, you should also filter on =
 
-which is, imho, truely bad.
+the OUTPUT chain.  but someone suggested to me that, if i get hacked
+because someone gets through my INPUT filter rules, they have a good
+chance of being able to change my ruleset anyway and remove the
+filtering.  this is why this person suggested that i should concentrate
+my efforts on hardening my INPUT filter, and not worry a whole lot
+about the OUTPUT ruleset.  in other words, if i get hacked, i'm =
 
-You have, on one hand, to protect your box from the outside (that's
-INPUT filtering). But on the other hand, you have to protect the rest of
-your infrastructure (and also others) from this very box (this is OUTPUT
-filtering).
+pretty much toast anyway, and can't trust *anything* about my
+system anymore.
 
-Then it is just a matter of what security level you want to reach ;)
+i realize it sounds like having sloppier security not worrying
+about the OUTPUT ruleset.  i guess it would help me if someone
+could provide *specific* examples of how OUTPUT filtering adds to
+security beyond what would be provided by a well-designed INPUT
+ruleset.  a pointer to an FAQ or some other link would be fine.
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security expert  - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+rday
+
 
