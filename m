@@ -1,13 +1,12 @@
-From: "Sean E. Covel" <seanecovel@comcast.net>
+From: "Daniel Chemko" <dchemko@smgtec.com>
 Subject: RE: FTP/SSL
-Date: Thu, 16 Oct 2003 14:39:19 -0400
+Date: Thu, 16 Oct 2003 11:40:40 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066329559.22220.27.camel@localhost>
-References: <7C9884991ADAE0479C14F10C858BCDF52E373F@alderaan.smgtec.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E6A@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF52E373F@alderaan.smgtec.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Daniel Chemko <dchemko@smgtec.com>
+To: "Sean E. Covel" <seanecovel@comcast.net>
 Cc: NetFilter-List <netfilter@lists.netfilter.org>
 
-So am I correct that the only option is to open a large chunk of ports
-so that the data connection can be established?  This seems like 2 steps
-forward and 1 step back!
+SSL based protocols are designed to be resilient against
+man-in-the-middle attacks. The firewall would be that man in the middle.
 
-On Thu, 2003-10-16 at 14:00, Daniel Chemko wrote:
-> By design, these protocols cannot be conntracked.
-> 
-> -----Original Message-----
-> From: Sean E. Covel [mailto:seanecovel@comcast.net] 
-> Sent: Thursday, October 16, 2003 10:31 AM
-> To: NetFilter-List
-> Subject: FTP/SSL
-> 
-> Is there any way to do connection tracking for incoming connections to
-> an FTP/SSL server?  I'm using a Bering (leaf.sourceforge.net)
-> mini-distro that uses the Shorewall firewall (www.shorewall.net).  
-> 
-> My firewall has both ip_net_ftp and ip_conntack_ftp, but as we all know,
-> these don't work for FTP/SSL.
-> 
-> I am attempting to port-forward the FTP/SSL connection from the firewall
-> machine to a server in a service network.  The "command" connection on
-> port 21 works just great, but when I try to GET, PUT, or LS a file,
-> basically anything that uses the data connection, the firewall blocks
-> the connection.  It appears that FTP/SSL uses a high port -> high port
-> connection for the data connection.
-> 
-> One possible solution (which I don't like!) is to open a large range of
-> high ports in the firewall.  This seems a bit primitive.  There must be
-> a way to associate the initial port 21 connection with the subsequent
-> high-port connection.
-> 
-> Thanks for your help,
-> 
-> Sean
-> 
-> 
-> 
+The only ways to solve your problems that I can see are:
+
+1. Bite the bullet, open the ports
+2. Force users to use Active mode FTP, so they open all those ports
+instead of you
+3. See if your SFTP server has an option to force users to use specific
+ports. This may make opening the interfaces a little easier.
+4. Put the SFTP server on your firewall. This is hardly ideal, but
+better than the alternatives?
+5. Offer regular FTP-through-VPN instead of SFTP
+
+>So am I correct that the only option is to open a large chunk of ports
+>so that the data connection can be established?  This seems like 2
+steps
+>forward and 1 step back!
 
 
