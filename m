@@ -1,18 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: state: INVALID
-Date: Mon, 22 Nov 2004 12:54:40 -0500
-Message-ID: <20041122175440.GA31032@bender.817west.com>
-References: <419E75B1.3030406@uni-paderborn.de>
-	<1100990773.3501.9.camel@hubcap.ljm.dom>
-	<419FD0BD.6000906@uni-paderborn.de>
-	<1101061543.3501.18.camel@hubcap.ljm.dom>
-	<41A11AD5.3080401@uni-paderborn.de>
-	<1101131121.13662.17.camel@hubcap.ljm.dom>
-	<41A2010A.9090601@uni-paderborn.de>
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: bad ftp speeds through nat
+Date: Mon, 22 Nov 2004 14:31:17 -0400
+Message-ID: <0e7301c4d0c1$74ba04b0$49caa8c0@caris.priv>
+References: <0e2d01c4d092$b8c13950$49caa8c0@caris.priv>
+	<20041122150411.GA30543@bender.817west.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <41A2010A.9090601@uni-paderborn.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,33 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-Cc: bj-schmidt@uni-paderborn.de
+To: Jason Opperisano <opie@817west.com>, netfilter <netfilter@lists.netfilter.org>
 
-alright--let's reset here.  this is how i understand the situation:
+I have not tried it with the firewall off ... yet ... however, transfer
+speeds between boxes in the DMZ are fast .... I transefered a 40 MB file in
+3 sec ....
 
-you have two machines:
+Peter
+----- Original Message ----- 
+From: "Jason Opperisano" <opie@817west.com>
+To: "netfilter" <netfilter@lists.netfilter.org>
+Sent: Monday, November 22, 2004 11:04 AM
+Subject: Re: bad ftp speeds through nat
 
-192.168.1.1	(skyron)
-192.168.1.2	(gigabyte)
 
-there's an IPSec tunnel setup between the two machines to encrypt all
-traffic between them.
+On Mon, Nov 22, 2004 at 08:56:44AM -0400, Peter Marshall wrote:
+> I am not sure what is causing this ... I have an ftp server in my DMZ.  I
+am
+> getting horrible ftp speeds ... only 200 - 300 KB/s  ... I have 10/100
+cards
+> on both the firewall and the ftp server and they are connected with one
+100
+> Mb switch. If anyone has any ideas as to why this is happening I would
+> appreciate the wisdom.
 
-you are trying to initiate an SSH connection from 192.168.1.1 to
-192.168.1.2.
-
-192.168.1.2 is running iptables.
-
-with no rules loaded on 192.168.1.2, the SSH connection from 192.168.1.1
-succeeds.
-
-once you load a basic ruleset on 192.168.1.2--the ACK packets from
-192.168.1.2 to 192.168.1.1 get dropped in the OUTPUT chain which allows
-"-m state --state ESTABLISHED" packets.
-
-is *all* of the above precisely correct?  if not--where am i losing it?
+have you base-lined the environment?  does FTP through the firewall with
+no rules loaded and just IP forwarding enabled allow for significantly
+higher throughput?  how about a machine locally in the DMZ directly to
+the FTP server, what's that throughput look like?
 
 -j
+
+--
+"It's not easy to juggle a pregnant wife and a troubled child, but
+ somehow I managed to fit in eight hours of TV a day."
+        --The Simpsons
+
 
