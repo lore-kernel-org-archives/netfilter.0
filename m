@@ -1,9 +1,9 @@
-From: Rasca <rasca-ml@triad.de>
-Subject: Re: port forwarding with one interface to trace traffic?
-Date: Thu, 22 Jan 2004 14:36:34 +0100
+From: "Jan Kaastrup" <jka@protego.dk>
+Subject: PPTP and GRE
+Date: Thu, 22 Jan 2004 14:39:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <400FD1E2.8090604@triad.de>
-References: <400E9EB3.4070309@triad.de> <200401212207.07929.Antony@Soft-Solutions.co.uk> <400FCD45.3050604@Loudoun-Fairfax.com>
+Message-ID: <002b01c3e0ed$23dd4300$2d64a8c0@pcjka>
+References: <400FCD45.3050604@Loudoun-Fairfax.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,39 +17,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hi list
 
-Jeffrey Laramie schrieb:
-> 
->>
->> 3. Connect a hub (not a switch) to the printer's ethernet cable (or to 
->> the Mac's ethernet cable), and plug the Linux machine running ethereal 
->> into the hub, so you can sniff the packets off the wire without any NAT.
->>  
->>
-> 
-> This is dangerously OT, but what's the difference? I always thought that 
-> the difference between a switch and a hub was simply a matter of 
-> internal plumbing that affected how the pipes were connected and had no 
-> effect on the actual tcp/ip connections. I've used them interchangeably 
-> and haven't seen a difference. Maybe someone has a link that could 
-> educate me more better! :-)
+I am running poptop on kernel 2.4.23.
+I need the patch, that makes it possible for GRE to do NAT
 
-A "hub" broadcasts all packets to all port. And yes - that was
-the way I choosed, cause it's more simple to setup (I found an
-old hub..) and it's working.
+I remember i have done it before, but not how :) 
+In my ip_conntrack the gre protocol stands as "UNKNOWN", and remember i
+have seen it says "gre".
 
-thx to Antony.
+Any help will be appriciated
 
-cu
-  rasca
-
--- 
-_______________________________________________________________
-| Triad Berlin Projektgesellschaft mbH | http://www.triad.de/ |
+Thanks a lot.
 
 
