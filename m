@@ -1,15 +1,13 @@
-From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: PPTP NAT
-Date: Sat, 18 Jan 2003 16:41:47 +0100
+From: Andrea Rossato <mailing_list@istitutocolli.org>
+Subject: Re: Redirect my internat web server
+Date: Sat, 18 Jan 2003 17:23:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030118154147.GB5739@sunbeam.de.gnumonks.org>
-References: <1042821169.13896.22.camel@torwood>
+Message-ID: <3E297F65.1040702@istitutocolli.org>
+References: <F60TcZJ8R6BDH5oJTE10000304c@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9zSXsLTf0vkW971A"
+Content-Transfer-Encoding: Quoted-Printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1042821169.13896.22.camel@torwood>
+In-Reply-To: <F60TcZJ8R6BDH5oJTE10000304c@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,58 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Colin Simpson <colin@csl.co.uk>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+iptables -A PREROUTING -t nat -p tcp -d 1.1.1.1 --dport 8000 -j DNAT -to=20
+3.3.3.3
+iptables -t nat -A POSTROUTING -d 3.3.3.3 --dport 8000 -j SNAT=20
+--to-source 1.1.1.1
 
---9zSXsLTf0vkW971A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+that should be enough.
+regards,
+andrea
 
-On Fri, Jan 17, 2003 at 04:32:49PM +0000, Colin Simpson wrote:
-> Sorry to annoy you about this but I'm having real problems with the
-> pptp-conntrack-net netfilter patch. I have tried looking around the web
-> but no one seems to talk much about how to fix this.
+H=E9lio Dubeux wrote:
+> I have a machine with squid + nat with an valid ip (1.1.1.1) and a fals=
+e=20
+> ip (2.2.2.2) and running apache on port 80, i want to publish another=20
+> apache server on port 8000 in a machine with ip (3.3.3.3). how can i do=
+=20
+> this redirect? I=B4ve already used:
 >=20
-> I have patched with patch-o-matic the 2.4.20 kernel. It seems to apply
-> ok and build. But I now get the following when I try to apply any SNAT
-> rule
+> iptables -A PREROUTING -t nat -p tcp -d 1.1.1.1 --dport 8000 -j DNAT -t=
+o=20
+> 3.3.3.3:8000
 >=20
-> iptables -t nat -p tcp -A POSTROUTING -s 192.168.77.0/24 -j SNAT
-> --to-source 80.195.55.115:1024-65535
-> iptables v1.2.7a: Unknown arg `--to-source'
-> Try `iptables -h' or 'iptables --help' for more information.
+> My clients type on their browser http://1.1.1.1:8000 and i wanto to sho=
+w=20
+> the content of 3.3.3.3:8000
 >=20
-> Am I missing something?
+> Anyone can plz help me?
+>=20
+>=20
+> ----------------------
+> H=E9lio Dubeux Neto
+>=20
+>=20
+>=20
+>=20
+> _________________________________________________________________
+> MSN Hotmail, o maior webmail do Brasil. http://www.hotmail.com
+>=20
+>=20
+>=20
+>=20
 
-yes, you need to rebuild the iptables userspace package, since the size
-of some NAT related structures have changed.
-
-> Colin Simpson
-> Network Manager
-
---=20
-- Harald Welte / laforge@gnumonks.org               http://www.gnumonks.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-"If this were a dictatorship, it'd be a heck of a lot easier, just so long
- as I'm the dictator."  --  George W. Bush Dec 18, 2000
-
---9zSXsLTf0vkW971A
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE+KXW7XaXGVTD0i/8RAvxKAKCI6DSYNIfq7Gxf97UvYmXcOSyJzwCggYj+
-isxZoZugbY/k+8Epd4t+ILE=
-=DBhO
------END PGP SIGNATURE-----
-
---9zSXsLTf0vkW971A--
 
