@@ -1,12 +1,13 @@
-From: Andy Loukes <andy@loukes.com>
-Subject: Re: physdev and snat problems
-Date: Fri, 5 Dec 2003 10:16:45 +0000 (GMT)
+From: "Centkowski, Peter (SSFB)" <Peter.Centkowski@schmalz-schoen.de>
+Subject: DNS with iptables
+Date: Fri, 5 Dec 2003 15:31:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.58.0312051012030.10989@picea.navaho>
-References: <Navaho-3.6.11-1070538688.150630000@navaho.co.uk>
+Message-ID: <4D365C260C742A4AABFBF2EE41B7E59F312D8D@itfbsv01.itservices.intern>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3BB3C.766CD382"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Navaho-3.6.11-1070538688.150630000@navaho.co.uk>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +17,116 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Andy Loukes <andy@navaho.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-OK, noone answered this but I figured it out (isn't it always the 
-same!), so I thought I'd reply in case any finds it useful
+This is a multi-part message in MIME format.
 
-It was nothing to do with physdev. I installed the iptables 1.2.9 and 
-appararently it needs to be compiled with the 2.6 kernel for nat to work.
-A bit odd but there you go...
+------_=_NextPart_001_01C3BB3C.766CD382
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Helo=20
+
+=20
+
+Kann ich statt IP-Adresse auch ein Name in Iptables verwenden?
+
+Es geht um Dyndns und damit einem Problem...
+
+=20
+
+Gr=FCsse
+
+Peter
+
+ =20
 
 
-On Thu, 4 Dec 2003, Andy Loukes wrote:
+------_=_NextPart_001_01C3BB3C.766CD382
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> I'm using iptables 1.2.9 and kernel 2.6.0-test11..
-> 
-> I may be doing something really stupid but if I do this:
-> iptables -t nat -A POSTROUTING -m physdev --physdev-out eth1 -j SNAT --to-source x.x.x.x
-> 
-> I get:
-> iptables: Invalid argument
-> 
-> but if I just use ACCEPT as the target it works fine, although doesn't do what I want..
-> 
-> I've got the bridging an physdev options turned on (otherwise I couldn't use the ACCEPT target)..
-> 
-> Is this a bug, or am I misunderstanding something?
-> 
-> 
+<html>
 
--- 
-Andy Loukes 
-http://www.loukes.com/andy
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
 
+
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailFormatvorlage17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 70.85pt 2.0cm 70.85pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DDE link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Helo </span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Kann ich statt IP-Adresse auch ein Name in Iptables
+verwenden?</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Es geht um Dyndns und damit einem =
+Problem&#8230;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Gr&uuml;sse</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Peter</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp;</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+=00
+------_=_NextPart_001_01C3BB3C.766CD382--
 
