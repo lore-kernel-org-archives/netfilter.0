@@ -1,12 +1,13 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: [newbie]DNS on the internet... how to allow connections?
-Date: Mon, 21 Feb 2005 19:08:15 -0500
-Message-ID: <200502211908.15493.Alistair@nerdnet.ca>
-References: <421A7018.4030800@fastwebnet.it>
+From: Yuwen Dai <yuwend@gmail.com>
+Subject: Re: internal host can not access hotmail
+Date: Tue, 22 Feb 2005 09:13:32 +0800
+Message-ID: <f7e5481105022117134ebaa1b8@mail.gmail.com>
+References: <f7e5481105022104583d0d3b19@mail.gmail.com>
+	<004c01c51828$eedd0db0$0700a8c0@sistema2>
+Reply-To: Yuwen Dai <yuwend@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <421A7018.4030800@fastwebnet.it>
-Content-Disposition: inline
+In-Reply-To: <004c01c51828$eedd0db0$0700a8c0@sistema2>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,44 +19,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Luis Nieto <luismnieto@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-	Marco -- yer on the right track -- read in line.... 
+On Mon, 21 Feb 2005 12:20:52 -0300, Luis Nieto <luismnieto@gmail.com> wrote:
+> Try put the DNS servers in the TCP/IP configurations
+ 
+Would you please give me the details?
 
-On February 21, 2005 06:34 pm, Marco Nicoloso wrote:
-> Hi there,
->
-> I solved all of my routing problems which I had before... Now everything
-> works fine, but the name resolution. According to the scheme (Trusted
-> subnet -> Firewall -> Internet), hosts on my trusted subnet can see the
-> DNS properly, they get its address from the DHCP, but they cannot get
-> DNS queries satisfacted.
-
-	DNS queries -- okay - unless the DNS is on the same box as the firewall you 
-want to :
->
-> I tried with different rules, but none works:
-> $IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT
-> $IPTABLES -A INPUT -p udp --dport 53 -j ACCEPT
-	Change INPUT to FORWARD 
-	and try again...
-> or these:
-> $IPTABLES -A FORWARD -p tcp -s $DNS1_IP -j ACCEPT
-> $IPTABLES -A FORWARD -p tcp -s $DNS2_IP -j ACCEPT
-> $IPTABLES -A FORWARD -p udp -s $DNS1_IP -j ACCEPT
-> $IPTABLES -A FORWARD -p udp -s $DNS2_IP -j ACCEPT
->
-	Loose the above and use an ESTABLISHED, RELATED rule to accept the returns.
-
-> Do I have to setup my own named, cache queries and requests new ones if
-> I need? Or it is just my problem, that I am not able to write rules...?
-	
-	Nope -- just let the queries THROUGH the firewall -- not in or out.
-
-
-	Alistair
->
-> Thanks in advance
->
-> Marco Nicoloso
+Best regards,
+Dai Yuwen
 
