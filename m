@@ -1,13 +1,13 @@
 From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: Netfilter vs commercial
-Date: Wed, 11 Aug 2004 16:31:23 -0500
+Date: Wed, 11 Aug 2004 16:31:26 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <411A902B.4090008@pbl.ca>
-References: <BAY4-F16p4k1Cz5WqET0000e7bd@hotmail.com> <200408091803.51995.Antony@Soft-Solutions.co.uk>
+Message-ID: <411A902E.1010404@pbl.ca>
+References: <20040809093022.5842e85e@mgalepc.utilitran.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408091803.51995.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040809093022.5842e85e@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,12 +20,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
-> (or is someone simply living under the illusion that if something 
-> goes wrong with their FW-1 firewall, they can sue Check Point, haha) ?
+Michael Gale wrote:
+> Hello,
+> 
+> 	I know this question has most likely come up a few times and most people ask about performance and through put. But my
+> question seems to me a little different.
+> 
+> I would like to know how people on this list ... which I know might be a biased opinion feel how a Netfilter firewall
+> box .. properly configured would compare in security to a commercial firewall. 
 
-You'd be suprised how many managers live under that illusion.  Many of 
-them being quite intelligent otherwise ;-)
+I'd say that security is at about same level, if you keep the products 
+updated to the latest release, and if you do not have applications 
+running on the firewall itself (like you do, squid is appliaction).
+
+Use product that you feel comfortable with, and that has features you 
+need.  No point in using Netfilter if it lacks a feature from CheckPoint 
+that you need.  Or using CheckPoint if it lacks a feature from Netfilter 
+that you need.
+
+Sadly, at some places that I used to work in the past (luckily not 
+working there anymore), the two main arguments (usually used by higher 
+management) for going commercial was that "if we pay, we will have 
+someboy to blame when things are not working".  And "commercial looks 
+more professional".  Totally stupid and neither of those has anything 
+with common sense.  Hope it will not be the case at your place.
 
 -- 
 Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
