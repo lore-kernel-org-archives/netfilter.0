@@ -1,13 +1,15 @@
-From: Ben Yerushalmi <beny@pd.verio.net>
-Subject: Re: Redirect ports on localhost
-Date: Thu, 25 Mar 2004 00:34:11 -0700
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: -m tcp
+Date: Thu, 25 Mar 2004 09:46:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <CF55D90F-7E2E-11D8-A402-000A957E9214@pd.verio.net>
-References: <406099AD.2070403@verio.net>
+Message-ID: <1080204363.1921.1.camel@anduril.intranet.cartel-securite.net>
+References: <017e01c411cd$c358a170$0300a8c0@max2>
+	 <20040324183937.GB20010@jesus.seclab.jp>
+	 <019301c411cf$94dbc5f0$0300a8c0@max2>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <406099AD.2070403@verio.net>
+In-Reply-To: <019301c411cf$94dbc5f0$0300a8c0@max2>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,15 +19,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "j.travis" <skynet@psinode.com>
+Cc: netfilter@lists.netfilter.org
 
-Looks like changing the OUTPUT chain did actually work in redirecting 
-localhost traffic. On the Linux 2.4 kernel you will need to enable the 
-"NF_NAT_LOCAL" kernel option.
+Le mer 24/03/2004 =E0 19:41, j.travis a =E9crit :
+> -Then why might one be inclined to use the '-m tcp' in a situation like
+> this?  Clarity?
 
-Thanks everyone for their help.
+One does not need it. Once you've specified -p tcp, iptables deduce
+automagically you're working with tcp match and then loads it.
 
-Ben
+> -Under what circumstances might '-m tcp' give added value?
 
+None.
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
