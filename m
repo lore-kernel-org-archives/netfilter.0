@@ -1,13 +1,16 @@
 From: Tony Earnshaw <tonye@billy.demon.nl>
-Subject: RE: Network Diagraming Tool
-Date: Wed, 31 Mar 2004 02:29:15 +0200
+Subject: Re: Adding a flag to a packet
+Date: Wed, 31 Mar 2004 02:21:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080692954.2471.147.camel@localhost>
-References: <7C9884991ADAE0479C14F10C858BCDF567927E@alderaan.smgtec.com>
+Message-ID: <1080692514.2471.140.camel@localhost>
+References: <20040328155231.32b07799@darna.vectec.net>
+	 <20040330163510.4bddd065@darna.vectec.net>
+	 <1080684756.2471.113.camel@localhost>
+	 <200403310046.30116.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF567927E@alderaan.smgtec.com>
+In-Reply-To: <200403310046.30116.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,23 +23,14 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-ons, 31.03.2004 kl. 01.49 skrev Daniel Chemko:
+ons, 31.03.2004 kl. 01.46 skrev Antony Stone:
 
-> Hey, no need to start a flame and all. I personally use Visio as the
-> corporate standard, and it does the job. I'd use a free equiv if it was
-> pretty good and I was allowed to at work, but as it stands, I'm a Linux
-> admin who uses Visio! :-)
-> 
-> Wouldn't it be cool to see a network diagram document record its change
-> history from when the company started to what it stands today? That'd be
-> a nice feature. Hell, I'd play it as my screensaver! Expecially the
-> security-through-obscurity parts...
+> Incidentally, what does uklokt mean?   I tried a Google for it and only got 
+> Norwegian...
 
-Tried dia - http://www.lysator.liu.se/~alla/dia ? I'm a RedHat person,
-can use the 0.91 rpm (suppose it's from Fedora?) but though the 0.92
-source compiles, the compiled stuff won't run on my RHEL3 rig.
+It means "unwise" ... in Norwegian ;)
 
-Anyway, I love it - even though it doesn't have everything Visio does.
+Best
 
 --Tonni
 
