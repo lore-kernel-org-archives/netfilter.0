@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: strange ip-number
-Date: Mon, 23 Sep 2002 15:40:09 +0100
+From: Martin Robb <MartinRobb@ieee.org>
+Subject: no chain/target/match for LOG module even though the shared library
+ exists
+Date: Mon, 23 Sep 2002 10:22:59 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209231440.g8NEeFv24643@vulcan.rissington.net>
-References: <3D8DD395.4070307@aon.at>
+Message-ID: <3D8F23C3.6050009@ieee.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3D8DD395.4070307@aon.at>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,76 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Sunday 22 September 2002 3:28 pm, Johann Klonner wrote:
+Greetings,
 
-> Hallo
-> I got spam mail containing "href=http://f2m.aac.com.tw". I think, this
-> mail connected with this URL. So I block ed this URL in my iptables script:
->
-> "iptables - A OUTPUT - o ippp0 -p tcp -d http://f2m.aac.com.tw -j REJECT"
+I'm running iptables on a 2.4.14 lsm kernel on what was, originally at 
+least, a RHL 7.1 system.  When I try using the LOG feature, e.g.:
+    iptables -A INPUT -j LOG
+I get the error:
+   No chain/target/match by that name.
 
-It is not recommended to use hostnames in netfilter rules.   It will not work 
-if your machine cannot resolve the hostname at the time your ruleset gets 
-loaded, and it will not do what you expect if that hostname actually resolves 
-to multiple IP addresses (which is common with large web server or mail 
-server farms).
+I apologize if this problem has already been dealt with on the list, but 
+I couldn't find it in the FAQ and the list archives don't appear to be 
+searchable.
 
-> I wanted to find out the IP number with "ping", but ping timed out
-> without an answer.
+I've tried the same syntax on a Debian system (2.4.18 kernel) and it 
+accepts it fine, so it doesn't look like a syntax problem.  I have 
+upgraded iptables to 1.2.6a on the 2.4.14 kernel, which is the same 
+iptables version running on the Debian system (BTW, there appear to be 
+some header file discrepencies when I tried to compile 1.2.7a against 
+the 2.4.14 kernel).  I have even tried applying all cleanly patching 
+patch-o-matic patches and still get the problem.
 
-Either the destination machine was turned off, unplugged, blocked by a 
-firewall, or for some other reason wasn't contactable using ICMP at the time 
-you tried this.   It's not unusual.
+The /lib/iptables/libipt_LOG.so library exists (root root 755) and 
+besides, if I give it a bogus module name like:
+    iptables -A INPUT -j foobar
+I get a totally different error:
+    ... /lib/iptables/libipt_foobar.so: cannot open shared object file ...
 
-For example, try pinging www.microsoft.com   It won't answer.   Doesn't mean 
-the webserver's down - just means it's not answering ICMP.
+I'm stumped.  Can anyone tell me what I need to do to get logging 
+working on this system?
 
-> iptables -L -v produced ff output:
->
-> OUTPUT ...
-> "211-23-43-85.HINET-IP.hinet.netreject with icmpport unreachable"
->
-> can somebody tell me the meaning of this output?
+Thanks,
+Martin Robb
+MartinRobb@ieee.org
 
-The hostname you see here is the reverse lookup of the forward lookup of the 
-hostname you put in the original rule.
 
-Again, it's not unusual for these to be different (in fact it's one test 
-sometimes carried out on mail servers to decide whether they appear to be 
-legitimate - see whether the reverse lookup matches the forward lookup).
-
-I'll give you an example from my own network.   I have a block of 32 IP 
-addresses from my ISP.   I have my own domain, and I run my own name server, 
-so I can forward resolve any name I like within that domain to any IP address 
-I like, including ones within my 32 IP range.
-
-However, my ISP runs the reverse DNS for their entire IP range (including the 
-32 addresses they let me use) so reverse resolving one of those addresses 
-bears no resemblance to the hostname I decided to configure the forward 
-resolver from.
-
-> And why did ping time out without any
-> comment such as icmpport unreachable?
-
-There is no such thing as "ICMP port unreachable" for the simple reason that 
-ICMP does not use ports.
-
-ICMP uses type numbers, and code numbers, but there is also a requirement 
-that ICMP packets must not be generated in response to other ICMP packets 
-(except for the obvious exceptions such as echo request -> echo reply).
-
-Therefore if you do not get a positive response to a ping you get nothing at 
-all.
-
-Antony.
-
--- 
-
-How I want a drink, alcoholic of course, after the heavy chapters
-involving quantum mechanics.
-
- - 3.14159265358979
 
