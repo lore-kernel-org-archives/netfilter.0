@@ -1,8 +1,8 @@
 From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Problem configuring masquerading Gateway on RedHat 9.0...
-Date: Fri, 6 Aug 2004 08:31:22 -0400
+Subject: RE: iptables dnat to loopback
+Date: Fri, 6 Aug 2004 08:48:20 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051247@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051248@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,22 +19,41 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> #iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> and
-> #echo 1 > /proc/sys/net/ipv4/ip_forward
+> I have a rather busy server box hosting several web
+> sites in separate independent installation directories,
+> which means several apache, mysql and tomcat installations
+> running simultaneously, with each mysql instance binding
+> a port in the loopback interface.
+>
+> So, while this iptables rule does work for port forwarding
+> to another host:
+>
+> iptables -t nat -A PREROUTING -p tcp -i eth0 -m multiport \
+>         --dports mysql -j DNAT --to some.other.host
+>
+> changing "some.other.host" to 127.0.0.1 doesn't work
+> as expected, and packets seem to be dropped altogether.
+> Using tcpdump i can see packets reaching eth0, but
+> never reaching loopback.
 
-are those the only commands you've issued?  do you have a script that is =
-creating additional rules that you're not including here?  the output of =
-"iptables -vnL; iptables -t nat -vnL; iptables -t mangle -vnL" would be =
-helpful.
+the target used for this is REDIRECT.  from "man iptables"
 
-> The problem is I can ping or telnet a remote host from
-> an internal network but browsers say 'unknown host'
-> when I try to load a remote site.
+   REDIRECT
+       This target is only valid in the nat table, in the PREROUTING and =
+ OUT-
+       PUT  chains,  and  user-defined chains which are only called from =
+those
+       chains.  It alters the destination IP address to send the packet =
+to the
+       machine  itself  (locally-generated packets are mapped to the =
+127.0.0.1
+       address).  It takes one option:
 
-are you pinging/telnetting by IP address, and then trying to load a web =
-page via FQDN?  if so, my guess would be that your problem is DNS =
-resolution.
+       --to-ports port[-port]
+
+
+
+HTH...
 
 -j
 
