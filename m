@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: NATed and direct connection to one server
-Date: Tue, 17 Feb 2004 19:49:02 +0000
+From: "Carl Farrington" <carl@compsup.net>
+Subject: p-o-m NG will not apply to kern 2.6.2
+Date: Tue, 17 Feb 2004 20:16:53 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402171949.02795.Antony@Soft-Solutions.co.uk>
-References: <40326B8E.10303@gmx.net>
+Message-ID: <739652C2AFA4834AAB5986A215F68CEC016595@svr1.home.compsup.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40326B8E.10303@gmx.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,37 +19,19 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 17 February 2004 7:29 pm, Ben Goedeke wrote:
+I have 2.6.2 kernel sources in /usr/src/linux and iptables-1.2.9 in
+/usr/src/iptables, I have built a kernel and now am running "./runme
+extra" to apply the ip_conntrack_pptp patch, but it will not apply.
 
-> To make the move as painless as possible for the users I want to keep
-> the DNAT rules for a while (and point them to the new IP of the mail
-> servers).
->
-> Now for my question: Do I need to add an SNAT rule in POSTROUTING to
+There is no error reported, but when I choose either (t)est or (y)apply
+patch, it just moves onto the next patch in the list.
 
-No.
+I have been back through and it doesn't show the patch as 'already
+applied'.
 
-> handle responses from the mail servers or is it enough to have the DNAT
-> rules in PREROUTING?
+Is it necessary to apply some of the 'base' patches before the 'extra'
+ones can be used?
 
-Yes.
-
-> And if I indeed need an SNAT rule how can I
-> possibly distinguish packets that belong to connections that were DNATed
-> when they came in and those that weren't and had the right destination
-> IP all along?
-
-No problem (see above).
-
-Regards,
-
-Antony.
-
--- 
-What makes you think I know what I'm talking about?
-I just have more O'Reilly books than most people.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Cheers,
+Carl
 
