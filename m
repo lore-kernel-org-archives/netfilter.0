@@ -1,14 +1,14 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: smtp
-Date: Fri, 14 May 2004 13:28:49 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Iptables do nat with Protocol 47 or GRE
+Date: Fri, 14 May 2004 13:27:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405141328.49497.gdh@acentral.co.uk>
-References: <BAY15-F11n0swXX1sPt0005ad74@hotmail.com>
+Message-ID: <200405141327.45242.Antony@Soft-Solutions.co.uk>
+References: <E1BObWp-00044c-Cv@vishnu.netfilter.org>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F11n0swXX1sPt0005ad74@hotmail.com>
-Content-Disposition: inline
+In-Reply-To: <E1BObWp-00044c-Cv@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,27 +21,32 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 14 May 2004 13:07, azeem ahmad wrote:
-> thanks a lot Mr. Gavin Hamill
-> but i have blocked all the port 25 traffic even then the infected ip which
-> is 192.168.0.105 is reciving smtp from many ip addresses from out side
-> the script i run is as follow
+On Friday 14 May 2004 1:11 pm, Sez wrote:
 
-That's fairly comprehensive - I don't think much will be getting through 
-that :)
+> Hi, again...
+>
+> I have other question about it.
+>
+> If i change the ip destination on GRE packets, i don't make nat...  It can
+> work ?
 
-You'll be running iptables on a machine with at least 2 network cards, so you 
-may wish to try tcpdump on both eth0 and eth1 - since you will still likely 
-be seeing the incoming traffic from the outside listed in the 'tcpdump' 
-ouput, but no replies should be happening.
+I don't understand the difference.   What is NAT, if it's not changing the 
+source or destination IP address?
 
-Likewise, when you try on the other interface, you may see the LAN machine 
-trying to send out a lot, but the connections will be failing and there 
-should be nothing to worry about.
+Regards,
 
-Feel free to post a small amount of 'tcpdump' output if it would help clear 
-things up?
+Antony.
 
-Cheers,
-Gavin.
+-- 
+In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
+the mechanics are German, the lovers are French, the entertainment is 
+American, and everything is organised by the Swiss.
+
+In Hell, the police are German, the chefs are British, the beer is American, 
+the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
+and everything is organised by the Italians.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
