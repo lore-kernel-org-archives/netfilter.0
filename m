@@ -1,14 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ntpdate works; ntpd doesn't
-Date: Fri, 02 Apr 2004 22:25:21 +0200
+From: Bill Davidsen <davidsen@tmr.com>
+Subject: Fairly complex multi-ISP firewall/router problem
+Date: Fri, 02 Apr 2004 15:57:03 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080937521.1655.55.camel@anduril.intranet.cartel-securite.net>
-References: <200404021950.i32JoiCO012686@osprey.tkevans.com>
-	 <200404022104.39456.Antony@Soft-Solutions.co.uk>
+Message-ID: <c4kjrg$lqm$1@gatekeeper.tmr.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404022104.39456.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Le ven 02/04/2004 =E0 22:04, Antony Stone a =E9crit :
-> I believe ntpd uses the "time" protocol on port 37, whereas netdate and=
-=20
-> ntpdate uses "ntp" on port 123.
+I am trying to set up a single Linux router, RH9.0, for a non-profit I 
+am supporting with some free consulting. They have two ISP lines, each 
+of which has a three bit CIDR block, and an internal network.
 
-Mine uses UDP/123 :
+Part one:
 
-cbr@feydreiva:~$ netstat -aun
-Connexions Internet actives (serveurs et =E9tablies)
-Proto Recv-Q Send-Q Adresse locale          Adresse distante        Etat
-udp        0      0 172.16.14.17:123        0.0.0.0:*
-udp        0      0 127.0.0.1:123           0.0.0.0:*
-udp        0      0 0.0.0.0:123             0.0.0.0:*
+I want to have an IP for each of the services, mail and http, on each 
+ISP, so that is DSL is down I can use cable, and vice-versa. I will do 
+NAT in the firewall, and forward the packets to the actual server. 
+Eventually the servers will move to a DMZ after the other stuff settles 
+down.
 
-And the related conntrack entry for the synchro after daemon rehash :
+The problem is that a packet can come from any IP outside, and when the 
+reply packet is sent out, it may go out either NIC. And that's the root 
+of the problem, getting the source IP to match the NIC. I've added rules 
+to the mangle table to MARK the packets, that just doesn't seem to work 
+reliably.
 
-udp      17 23 src=3D172.16.14.17 dst=3D172.16.14.1 sport=3D123 dport=3D1=
-23
-src=3D172.16.14.1 dst=3D172.16.14.17 sport=3D123 dport=3D123 use=3D2 mark=
-=3D0
+I want very much to do this without patching the kernel, I have two 
+patches which seem to solve the problem on other systems, but 
+maintaining a patched kernel long term is really undesirable, and makes 
+it hard to turn over the job in the future.
 
+All I want to do is send packets out the interface which matches the 
+source IP, and I don't think there's any reasonable way to get there 
+without patches or BSD.
 
-PS : seems you lost your bet ;)
+Yes, I know about the lartc docs, nano.txt and several other things. The 
+problem is that the marks don't reliably WORK, routing by destination IP 
+is being used in some cases (but not all, which is really odd).
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+-- 
+bill davidsen <davidsen@tmr.com>
+   CTO TMR Associates, Inc
+   Doing interesting things with small computers since 1979
 
