@@ -1,13 +1,11 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Understanding the Forward and Postrouting chain
-Date: 15 Apr 2003 09:23:57 -0400
+From: Bobo <boboaq@163.com>
+Subject: Is this right?
+Date: Tue, 15 Apr 2003 22:39:26 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1050413037.7035.30.camel@alpha.newkirk.us>
-References: <PFEDLCHOEGFHBPOGGFGBGEMCCAAA.Chris@globetechsolutions.com>
+Message-ID: <20030415143422.22F0F1C6AD678@sm205.163.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <PFEDLCHOEGFHBPOGGFGBGEMCCAAA.Chris@globetechsolutions.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,70 +16,69 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Chris@globetechsolutions.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
 
-On Tue, 2003-04-15 at 05:52, Chris Partsenidis wrote:
-> Greetings everyone,
-> 
-> While building a complex set a rules for my firewall I have stumbbled
-> accross a few problems and would like to know if there is anyone to help me
-> clear a few things in my mind.
-> 
-> If I was to set the Forward chain default policy to DROP, what rules would I
-> be required to enter in order to allow e.g my internal network hosts to
-> telnet anywhere on the internet ?
-> 
-> For example take this setup:
-> 
-> LAN -----------------FIREWALL------------------------ Internet
-> 192.168.1.0/24		 public ip: 200.0.0.1
-> 				
-> In this simple setup, my guess is that Im required to create 3 rules for the
-> telnet to work.
-> One for the packets travelling from the Lan to the firewall, one for the
-> oppisite (internet to the firewall) and then one more
-> for the postrouting chain to masquerade the packets. Here is what I've done:
-> 
-> 1) iptables -P FORWARD DROP
-> 2) iptables -A FORWARD -s 192.168.1.0/24 -p tcp -d 0/0 --dport 23 -j ACCEPT
-> 3) iptables -A FORWARD -p tcp -s 0/0 --sport 23 -d  200.0.0.1 -j ACCEPT
-> 4) iptables -A POSTROUTING -t nat -s 192.168.1.0/24 -p tcp -d 0/0 --dport 23
-> -j MASQUERADE
-> 
-> Would this be correct, and if not, can you please explain why. I'm not to
-> sure if loading ip_conntrack would eliminate the need for rule no. 3.
+Hello all:
 
-#3 is your problem.  When the reply packets come back through, they are
-un-SNATted (un-MASQUERADEd in this case) in nat PREROUTING, before they
-enter the FORWARD chain, so you need to match the local IP addresses not
-the public one.
+  Now,i am using Netfilter as gateway of a LAN,and I would like to account the traffic for each IP of LAN.
 
-However, if you use ip_conntrack, you can handle this with:
+   As we know,IPtables  could report the traffic counter of each chain with  "iptables -nvL FORWARD".
 
-iptables -A FORWARD -d 192.168.1.0/24 -m state --state ESTABLISHED -j
-ACCEPT
+  Now,I creat a new chain in filter table for each IP.When a packet traverse the  FORWARD chain ,I let them jump to the chain for each IP firstly, 
+ such as:
 
-which tells netfilter that anything with a state ESTABLISHED (reply or
-ongoing traffic) destined for the specified subnet is ACCEPTed.  The
-more generalized and expanded form, which will greatly reduce the number
-of rules you actually need to explicitly define, is:
 
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -N lltj1
+$IPTABLES -N lltj2
+$IPTABLES -N lltj3
+$IPTABLES -N lltj4
+$IPTABLES -N lltj5
+$IPTABLES -N lltj6
+$IPTABLES -N lltj7
+$IPTABLES -N lltj8
+$IPTABLES -N lltj9
 
-This way anything that is part of an already-established connection, or
-related to one, is accepted.  RELATED state is netfilter magic.  Some
-things like icmp_host_unreachable can be related to an attempted
-connection, and RELATED also encompasses things handled by conntrack
-helpers like FTP data (active or passive) being related to the control
-connection, so all you have to do is ACCEPT tcp port 21 outbound,
-EST/REL out and in, and local machines can then use FTP.
+$IPTABLES -A FORWARD -s 117.1.1.1 -j lltj1
+$IPTABLES -A FORWARD -d 117.1.1.1 -j lltj1
+$IPTABLES -A FORWARD -s 117.1.1.3 -j lltj3
+$IPTABLES -A FORWARD -d 117.1.1.3 -j lltj3
+$IPTABLES -A FORWARD -s 117.1.1.4 -j lltj4
+$IPTABLES -A FORWARD -d 117.1.1.4 -j lltj4
+$IPTABLES -A FORWARD -s 117.1.1.5 -j lltj5
+$IPTABLES -A FORWARD -d 117.1.1.5 -j lltj5
+$IPTABLES -A FORWARD -s 117.1.1.10 -j lltj6
+$IPTABLES -A FORWARD -d 117.1.1.10 -j lltj6
+$IPTABLES -A FORWARD -s 117.1.1.177 -j lltj7
+$IPTABLES -A FORWARD -d 117.1.1.177 -j lltj7
+$IPTABLES -A FORWARD -s 117.1.1.133 -j lltj9
+$IPTABLES -A FORWARD -d 117.1.1.133 -j lltj9
+$IPTABLES -A FORWARD -s 117.1.1.8 -j lltj8
+$IPTABLES -A FORWARD -d 117.1.1.8 -j lltj8
 
-> Regards, 
-> 
-> Chris Partsenidis
+  Each chain for every IP is empty,and the packet just traverse the chain without any action.
+  After executing  the scripts, using: iptables -nvL FORWARD,I get the following messages:
 
-j
+    0     0 lltj3      all  --  any    any     117.1.1.3            anywhere           
+    0     0 lltj3      all  --  any    any     anywhere             117.1.1.3          
+ 4257  268K lltj4      all  --  any    any     117.1.1.4            anywhere           
+ 2217 1059K lltj4      all  --  any    any     anywhere             117.1.1.4          
+20780 1217K lltj5      all  --  any    any     117.1.1.5            anywhere           
+32338   34M lltj5      all  --  any    any     anywhere             117.1.1.5          
+21374  988K lltj6      all  --  any    any     117.1.1.10           anywhere           
+15988 5648K lltj6      all  --  any    any     anywhere             117.1.1.10         
+  852  118K lltj7      all  --  any    any     117.1.1.177          anywhere           
+  937  202K lltj7      all  --  any    any     anywhere             117.1.1.177        
+ 1473  132K lltj9      all  --  any    any     117.1.1.133          anywhere           
+ 1738  476K lltj9      all  --  any    any     anywhere             117.1.1.133        
+ 8907  535K lltj8      all  --  any    any     117.1.1.8            anywhere           
+ 7638 1874K lltj8      all  --  any    any     anywhere             117.1.1.8        
 
+
+ In fact,I could get some data about traffic.
+
+ But now,I would like to know whether these data are right or exact ?
+ if they are reliable, I could do other work on base of these data.
+ 
+ Thanks 
 
 
