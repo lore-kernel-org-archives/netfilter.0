@@ -1,13 +1,12 @@
-From: "Michael K" <micke@klintan.se>
-Subject: RE: How to block a range of IPs?
-Date: Sun, 27 Apr 2003 09:25:01 +0200
+From: Fox <kerberos@intal.uz>
+Subject: port forwarding
+Date: Sun, 27 Apr 2003 14:09:16 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000101c30c8e$1d885870$0200a8c0@klintan.local>
-References: <Law15-F69D7eX6Djee700022e1a@hotmail.com>
+Message-ID: <548356826.20030427140916@intal.uz>
+Reply-To: fox <kerberos@intal.uz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Law15-F69D7eX6Djee700022e1a@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,39 +17,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Afshin Lamei' <linux_st@hotmail.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Hi Everybody.
 
+I want to forward all the packets to port 80 and 443 to 16721 and
+using the following rules:
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Afshin Lamei
-> Sent: Sunday, April 27, 2003 8:12 AM
-> To: netfilter@lists.netfilter.org
-> Subject: How to block a range of IPs?
-> 
-> 
-> Hi,
-> How can I write a rule for a custom range of IPs? for 
-> example, I want to 
-> block every WWW packet incoming from eth1, which source is an 
-> IP between 
-> 192.168.1.10 and 192.168.1.20.
-> please help me writing an example.
-> thank you
-> afshin
-> 
-> 
+# 80->16721->80
+${IPTABLES} -t nat -A PREROUTING -s 0.0.0.0/0 -d 192.168.0.1 -p tcp --dport 80 -j DNAT \
+--to-destination 192.168.0.1:16721
+${IPTABLES} -t nat -A POSTROUTING -s 192.168.0.1 -d 0/0 -p tcp --sport 16721 -j SNAT \
+ --to-source 192.168.0.1:80
 
-You can't, but if you subnet, the closest will be 192.168.1.1 to
-192.168.0.14 using mask 255.255.255.240.
-Or 192.168.1.1 to 192.168.0.30 using mask 255.255.255.224.
+# 443->16721->443
+${IPTABLES} -t nat -A PREROUTING -s 0.0.0.0/0 -d 192.168.0.1 -p tcp --dport 443 -j DNAT \
+--to-destination 192.168.0.1:16721
+${IPTABLES} -t nat -A POSTROUTING -s 192.168.0.1 -d 0/0 -p tcp --sport 16721 -j SNAT \
+ --to-source 192.168.0.1:443
 
-Example:
-iptables -A INPUT -i eth0 -p tcp -s 192.168.1.0/255.255.255.240 --dport
-www -j DROP
+I'm just wondering - won't the source address of packets to 443 be
+changed to 192.168.0.1:80 instead of 192.168.0.1:443 when they're
+replied to the client?
 
-/Klintan
+I don't know what type of connection tracking to use. Your help is
+appreciated.
 
+Thanks in advance.
+
+Fox
 
 
