@@ -1,15 +1,14 @@
-From: Fabrice MARIE <fabrice@netfilter.org>
-Subject: Re: patch-o-matic and userpace
-Date: Fri, 21 Feb 2003 16:58:41 +0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: IPLIMIT Patch UDP
+Date: Fri, 21 Feb 2003 03:22:31 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302211658.41402.fabrice@netfilter.org>
-References: <5.2.0.9.2.20030220121447.01c5bbb0@172.26.0.8>
-Reply-To: fabrice@netfilter.org
+Message-ID: <200302210322.31461.netfilter@newkirk.us>
+References: <HEEHJDADEHEPKKEAOCPPAEPHCCAA.susan.sagan@cgi.com> <20030219162633.GC455@eychenne.org> <1045785009.1014.74.camel@alex.pcprices.com.pe>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.2.0.9.2.20030220121447.01c5bbb0@172.26.0.8>
-Content-Disposition: inline
+In-Reply-To: <1045785009.1014.74.camel@alex.pcprices.com.pe>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,62 +19,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Luis Miguel Cruz Miranda <luismi@b2bi.es>, netfilter@lists.netfilter.org
+To: "Ing. CIP Alejandro Celi  Mariategui" <alex@linux.org.pe>, netfilter@lists.netfilter.org
 
-On Thursday 20 February 2003 19:18, Luis Miguel Cruz Miranda wrote:
-> Hi all again,
-> I am trying to use the patch called
-> 'userspace/ipt_REJECT-fake-source.patch' As I read, if I use that patch I
-> need to recompile iptables user programs.
-> The problems is that I can't use that patch because I don't know have any
-> idea how to patch iptables source code.
-> I have this tree:
-> |-- iptables-1.2.7a
-> |   |-- extensions
-> |   |-- include
-> |   |   |-- libippool
-> |   |   |-- libipq
-> |   |   |-- libiptc
-> |   |   |-- libipulog
-> |   |   `-- linux
-> |   |       |-- netfilter_ipv4
-> |   |       `-- netfilter_ipv6
-> |   |-- ippool
-> |   |-- libipq
-> |   |-- libiptc
-> |   `-- libipulog
-> |-- patch-o-matic -> patch-o-matic-20030218
-> |-- patch-o-matic-20030218
-> |   |-- base
-> |   |-- broken
-> |   |-- extra
-> |   |-- not-accepted
-> |   |-- obsolete
-> |   |-- oldnat
-> |   |-- optimizations
-> |   |-- pending
-> |   |-- submitted
-> |   `-- userspace
-> `-- userspace -> iptables-1.2.7a
-> Is it correct to patch iptables-1.2.7a?
+On Thursday 20 February 2003 06:50 pm, "Ing. CIP Alejandro Celi "=20
+Mariategui wrote:
+> (Sorry, but my english is very bad)
+>
+> Hi,
+>
+> I compile with p-o-m the server kernel with IPLIMIT Patch by Gerd
+> Knorr <kraxel@bytesex.org>
+>
+> It work fine, i can limit ex: max 10 TCP connections on the server,
+> but i want to limit the UDP connections to 10 (max).
+>
+> How I can do it?
+>
+> Alex
 
-Should be correct. Then you
-# cd patch-o-matic
-# ./runme userspace/ipt_REJECT-fake-source.patch
-if the patch tells you it applied correctly then
-you need to recompile your kernel then
-# cd ../userspace
-# make all install
+The IPLIMIT patch is limited to only work with TCP.  You'd likely need to=
+=20
+write your own changes to the kernel.  At a VERY quick glance, this:
 
-reboot with your clean kernel. If the patch doesn't apply for some reason,
-let me know.
++=09/* refuse anything but tcp */
++=09if (ip->proto !=3D IPPROTO_TCP)
++=09=09return 0;
 
-Have a nice day,
+in the IPLIMIT patch (in iplimit.c) MIGHT provide the solution if it=20
+accomodated IPPROTO_UPD as well as, or instead of, IPPROTO_TCP.
 
-Fabrice.
---
-Fabrice MARIE
+j
 
-"Silly hacker, root is for administrators"
-       -Unknown
 
