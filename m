@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Fw: How to remove Established Connection
-Date: Fri, 11 Oct 2002 08:49:17 +0100
+From: "Gavin" <gavin@raha.com>
+Subject: iptables, voip, mac match
+Date: Fri, 11 Oct 2002 11:04:56 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021011074918.SGVP459.mta02-svc.ntlworld.com@there>
-References: <00e301c270e7$09c5a7e0$7cfcc5cb@humanpc>
+Message-ID: <065501c270fc$e3f10c10$583a29c4@ghome>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00e301c270e7$09c5a7e0$7cfcc5cb@humanpc>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +16,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-On Friday 11 October 2002 6:28 am, HareRam wrote:
+hello,
 
-> Seems to be tehre is no answer below mentioned
+just reporting a funny one:
 
-You are correct.   There is no mechanism to do what you want.
+One of our clients was trying to use a VOIP application through a linux
+gateway (iptables-1.2.3). The client had a MAC address of a:b:c:d:e:f and an
+IP address of 1.2.3.4
 
-Antony.
+When I used this rule on the gateway (FORWARD policy DROP):
+iptables -A INPUT -i eth1 -m mac --mac a:b:c:d:e:f -j ACCEPT
+     -     the client could not establish an audio channel to his VOIP
+server
 
-> ----- Original Message -----
-> From: "HareRam" <hareram@sol.net.in>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Wednesday, October 09, 2002 9:43 PM
-> Subject: How to remove Established Connection
->
-> > Hi all Guru
-> >
-> > how can i remove Dynamically ESTABLISHED connection
-> > for the perticular IP address or MAC address, on fly
-> > thanks for the advanced help
-> >
-> > hare
+But when I used this line:
+iptables -A INPUT -i eth1 -s 1.2.3.4 -j ACCEPT
+    -    he could make calls fine.
 
--- 
+Just in case anyone runs over this in future.  It was unexpected, to say the
+least.  As far as I understand it, both lines should have worked.
 
-Anything that improbable is effectively impossible.
+Gavin
 
- - Murray Gell-Mann, Nobel Prizewinner in Physics
+
 
