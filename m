@@ -1,12 +1,9 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: I dont know how to forward port 80
-Date: Sun, 13 Feb 2005 13:28:50 +0100
-Message-ID: <1108297731.10876.28.camel@nostromo.bgsecm.com>
-References: <420B54E3.8040900@google.com>
-	<1108128247.4489.45.camel@hubcap.ljm.dom>
+From: Brent Clark <bclark@eccotours.dyndns.org>
+Subject: trying to tweek FW and / or ruleset
+Date: Sun, 13 Feb 2005 14:39:31 +0200
+Message-ID: <420F4A83.7020504@eccotours.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1108128247.4489.45.camel@hubcap.ljm.dom>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +14,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: iptables <netfilter@lists.netfilter.org>
 
-El vie, 11-02-2005 a las 08:24 -0500, Jason Opperisano escribi=C3=B3:
->   # allow input packets that are part of an established connection
->   iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->=20
->   # allow HTTP requests in
->   iptables -A INPUT -p tcp --syn --dport 80 -j ACCEPT
+Hi all
 
-Sorry, I've seen in some of your answers that you never use
--m state --state NEW. Could you tell me why? I am updating
-my firewall and I'm very confused with this, because you
-seem to know everything about Netfilter and iptables, and
-I am using the NEW state in all my rules. Should I do it
-or should I not? And by the way, should I use the --syn
-flag?
+I have a relatively small LAN.
 
-Thanks and Regards.
+I have been going through my ruleset (trying to tweak things)
 
---=20
+Copied and pasted below are a few things I have been playing with.
 
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+If possible, would anyone over look this and see there is anything I may 
+have missed.
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+======================================================================================
 
+echo 1 > /proc/sys/net/ipv4/ip_dynaddr  #This may help if you have a 
+dynamic IP address \(e.g. slip, ppp, dhcp\)
+echo 1 > /proc/sys/net/ipv4/conf/all/log_martians       #Enable logging 
+for malformed Ip Address
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/conf/all/proxy_arp
+echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter
+echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
+echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
 
+=====================================================================================
+
+KInd Regards and thanks in advance
+
+Brent Clark
 
