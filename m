@@ -1,15 +1,13 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: Scan not Nmap
-Date: Fri, 27 Dec 2002 12:32:57 +0000
+From: "Dharmendra.T" <dharmu@nsecure.net>
+Subject: Re: VPN software behind iptables
+Date: 27 Dec 2002 18:10:45 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021227123257.GG1878@miggy.org>
-References: <006201c2ad8f$4c177710$d654fea9@wrl>
+Message-ID: <1040992851.894.5.camel@india>
+References: <3E0C426B.3010306@bol.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="O8XZ+2Hy8Kj8wLPZ"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <006201c2ad8f$4c177710$d654fea9@wrl>
+In-Reply-To: <3E0C426B.3010306@bol.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,62 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Julio Cesar Ody <julioody@bol.com.br>
+Cc: netfilter@lists.netfilter.org
+
+It could be< just mentioning the trouble shooting :
+
+1) Log all the packets coming from that ip
+2) try to connect from the client
+3) see whether you receive all the packets you receive?
+4) If yes, run sniffer to see actually what happens.
+
+-- 
+Dharmendra.T
+Linux Security Expert
+On Fri, 2002-12-27 at 17:37, Julio Cesar Ody wrote:
+> Hello. I have a software in my store who uses a VPN connection to 
+> exchange data with a server outside my network. The software is able to 
+> make the connection, however, once it's done, nothing else happens, and 
+> I'm not able to do nothing. I'm pretty sure it's not a bug in the 
+> software, because I tried to connect directly to outside using the WiFi 
+> card located in my server (slackware 8.1, kernel 2.4.19, iptables 1.26) 
+> and it worked just fine.
+> Is there anhy issue regarding VPN routing with iptables ? Thanks.
+> 
+> 
+> Julio Cesar Ody
+> 
+> 
 
 
---O8XZ+2Hy8Kj8wLPZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Dec 27, 2002 at 08:04:08AM -0200, William da Rocha Lima wrote:
->    Rules for blocking nmap the scan..
-
-  There's no way to completely block such a scan if you NEED to have
-some ports open, say for email server (smtp, port 25) or web server
-(port 80).
-
-  It looks like you can, at least, block an nmap 'NULL' scan though, by
-using the 'unclean' match support in netfilter.
-
-  Make sure you have CONFIG_IP_NF_MATCH_UNCLEAN set to Y or M in the
-kernel config, and then simply use a couple of rules:
-
-	iptables -A INPUT -i eth1 --match unclean -j LOG --log-level info --log-pr=
-efix "fwd-unclean "
-	iptables -A INPUT -i eth1 --match unclean -j DROP
-
-Be sure to replace eth1 with your external interface.  This fooled nmap
--sN scan into thinking all ports were open, and it failed miserably to
-guess the OS type with -O option.
-  Note that a normal SYN scan (-sS) still works, as I said, if you have
-a few ports open.
-
-  Be aware that the 'unclean' match could possibly match on some valid
-packets and block legitimate traffic.  I've only just started using it
-now and will be keeping an eye on things.
-
-HTH,
-
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
-
---O8XZ+2Hy8Kj8wLPZ
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj4MSHkACgkQzbc+I5XfxKduJgCfTBWpuGSU/uRsebdxy7Kn+oYf
-loAAn3XOH9+wR8wkxqM+CVECVlWbUAvp
-=tF79
------END PGP SIGNATURE-----
-
---O8XZ+2Hy8Kj8wLPZ--
 
