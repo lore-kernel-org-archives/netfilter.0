@@ -1,8 +1,8 @@
 From: aksingh@hss.hns.com
-Subject: POST ROUTING and LOCAL IN
-Date: Mon, 24 May 2004 20:07:05 +0530
+Subject: POST ROUTING and LOCAL OUT
+Date: Mon, 24 May 2004 20:08:19 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF3618AF1F.0C8F7861-ON65256E9E.004EED3B@hss.hns.com>
+Message-ID: <OF2BCAEDE4.37A3CC05-ON65256E9E.00505947@hss.hns.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,6 +18,7 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 Cc: Sven Schuster <schuster.sven@gmx.de>
+
 
 
 
