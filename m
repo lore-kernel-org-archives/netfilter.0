@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: curious about address specification and port specification
-Date: Wed, 9 Oct 2002 22:13:35 +0100
+Subject: Re: how many chains are part of the mangle table?
+Date: Wed, 9 Oct 2002 22:19:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021009211337.KJPF459.mta02-svc.ntlworld.com@there>
-References: <Pine.LNX.4.44.0210090709200.13728-100000@localhost.localdomain>
+Message-ID: <20021009211946.KQXY459.mta02-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0210090542060.13259-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210090709200.13728-100000@localhost.localdomain>
+In-Reply-To: <Pine.LNX.4.44.0210090542060.13259-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +17,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-On Wednesday 09 October 2002 12:14 pm, Robert P. J. Day wrote:
+On Wednesday 09 October 2002 10:49 am, Robert P. J. Day wrote:
 
->   more annoying questions, before i head out for the day:
->
-> 1) is there anything meaningful about some sample address filter
->    clauses i've seen that read "-s 0/0" or "-d 0/0"?
+>   for my own benefit, i'm trying to document the architecture of
+> iptables, and i'm reading oskar andreasson's ubiquitous tutorial.
 
-No, this is not meaningful, and in my opinion should be removed from rules 
-because it only clutters them up and serves to confuse peope about what it 
-might mean.
+Good idea.   Good place to start :-)
 
->    doesn't
->    this just mean no filtering on either source or destination?
->    is there any value to these matches other than making it
->    explicitly clear that no address filtering is being done?
+>   early in that tutorial, he presents some tables showing the
+> possible combinations of tables and chains, as well as a graphic
+> portrayal of how packets traverse iptables.  in all of that,
+> the mangle table is shown as being part of only two chains:
+> PREROUTING and OUTPUT.
 
-No.   -s 0/0 means "any source", and -d 0/0 means "any destination".
+That was true of older versions of netfilter.   Newer versions, as you have=
+=20
+discovered, now have so-called "5-hooked mangle tables", so there are now 5=
+=20
+hooks into the mange table from each of the chains.
 
-> 2) in all of the docs i've read, the claim is that port matching is
->    an implicit match within either UDP or TCP matching and that you
->    *must* specify a protocol before you're allowed to specify ports.
+>   however, "iptables -L -t mangle" shows that the mangle table
+> can incorporate rules in all five chains: INPUT, OUTPUT, FORWARD,
+> PREROUTING and POSTROUTING, but that's not at all obvious from
+> that tutorial.
 
-This is correct.   The --dport or --sport options are invalid without also 
-specifying -p tcp or -p udp
+That is because it was not true for the version of netfilter the version of=
+=20
+the tutorial you are reading was written for :-)
 
->    however, i've certainly seen and used rules that refer to a port
->    or ports without first specifying a protocol.  is the documentation
->    just misleading here?
-
-Can you give an example of a rule which works, and which specified a port but 
-not a protocol ?
+You might want to check the latest version of Oskar's tutorial at=20
+http://iptables-tutorial.frozentux.net and see if he talks about all five=20
+chains having mangle hooks now ?
 
 Antony.
 
--- 
+--=20
 
-Which part of 'apt-get dist-upgrade' do you not understand ???
+This email is intended for the use of the individual addressee(s) named abo=
+ve=20
+and may contain information that is confidential, privileged or unsuitable =
+
+for overly sensitive persons with low self-esteem, no sense of humour, or=20
+irrational religious beliefs.
+
+If you have received this email in error, you are required to shred it=20
+immediately, add some nutmeg, three egg whites and a dessertspoonful of=20
+caster sugar. =A0 Whisk until soft peaks form, then place in a warm oven fo=
+r 40=20
+minutes. =A0 Remove promptly and let stand for 2 hours before adding some=20
+decorative kiwi fruit and cream. =A0 Then notify me immediately by return e=
+mail=20
+and eat the original message.
 
