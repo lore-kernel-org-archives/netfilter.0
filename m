@@ -1,8 +1,8 @@
-From: Subramanian Thenralmani <sthenral@yahoo.com>
-Subject: transparent squid with iptables masq
-Date: Fri, 17 Oct 2003 22:10:51 -0700 (PDT)
+From: ads nat <adsnat@yahoo.com>
+Subject: Is Linux IPTABLES firewall comparable with license Firewall
+Date: Sat, 18 Oct 2003 02:18:07 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031018051051.49925.qmail@web14309.mail.yahoo.com>
+Message-ID: <20031018091807.26000.qmail@web20711.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -19,28 +19,26 @@ Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
 Hi,
+I don't know whether this is right list for my
+question.
 
-I have configured transparent squid on my Linux
-firewall and masqueraded only ftp ports (20 and 21).
-My problem is i wanted to block yahoo messenger
-through squid but after squid rejects yahoo messanger
-is masquerading with ftp ports and going out and
-without masquerading anything yahoo messanger is not
-working. How can I block yahoo messanger with the
-above situation.
+I am facing basic problem while convincing to users. I
+have implemented IPTABLES firewall on my Linux 8.0
+server. I am frequently asked by users which
+firewall/security measures are taken for my network.
+My competitors use Checkpoint Firewall. 
+Can somebody guide me how to convince my users that
+Linux IPTABLES Firewall is technically at par with
+commercial Firewall such as checkpoint.
+
+Also if same security policies are adopted for
+IPTABLES and checkpoint, Is IPTABLES technically at
+par with commercial FIREWALLs?
+
+Thanks
 
 
-Thanx & Regards
-Mani
 
-=====
-Subramanian ThenralMani
-Manager - Technical
-Yukthi Systems Pvt. Ltd.
-#178, 5th Main, J.P.Nagar 3rd Phase,
-Bangalore-560 074
-Phone #:6582923
-Reach me at:9845211913
 
 __________________________________
 Do you Yahoo!?
