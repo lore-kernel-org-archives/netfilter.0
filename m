@@ -1,12 +1,11 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Temporary forwarding proxy?
-Date: Wed, 24 Sep 2003 10:35:04 +0100
+From: "Nauman Malik" <naumanm@khi.wol.net.pk>
+Subject: Connection Limit
+Date: Wed, 24 Sep 2003 15:11:57 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309241035.04343.gdh@acentral.co.uk>
+Message-ID: <200309241511570875.15D98FA9@smtp.khi.wol.net.pk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="=====_10643983176334=_"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,23 +15,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hullo :)
+--=====_10643983176334=_
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Cutting to the chase, I'm moving a machine on IP 1.1.1.1 from our leased line 
-in the office to a data centre at IP 2.2.2.2, and I'd like my firewall box on 
-the 1.1.1.0 network to forward HTTP requests for the now non-existant 1.1.1.1 
-to 2.2.2.2 and act as an HTTP proxy, just for the few hours whilst the DNS 
-updates...
+Hi,
 
-I realise that there will be lots of bandwidth wasted in shuffling duplicate 
-data back and forth, but it really only is for a few hours and numbskill ISPs 
-that ignore small DNS TTLs...
+I have added module for conn-limit through iptables. But when I run this=
+ command, I got error of No Chain/target/match . Is the following command=
+ correct or am I missing something?
 
-Is this possible with iptables / SNAT / DNAT ?
 
-Cheers,
-Gavin.
+
+# /sbin/iptables -A INPUT -p tcp --syn --dport http -m iplimit=
+ --iplimit-above 4 -j REJECT
+iptables: No chain/target/match by that name
+
+
+Thanx.
+
+
+--=====_10643983176334=_
+Content-Type: text/html; charset="us-ascii"
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type>
+<META content="MSHTML 5.00.3700.6699" name=GENERATOR></HEAD>
+<BODY bgColor=#ffffff style="FONT-FAMILY: Arial" text=#000000>
+<DIV><FONT size=2>Hi,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=2>I have added module for conn-limit through iptables. But when 
+I run this command, I got error of No Chain/target/match . Is the following 
+command correct or am I missing something?</FONT></DIV>
+<DIV><FONT size=2></FONT>&nbsp;</DIV>
+<DIV><FONT size=2></FONT>&nbsp;</DIV>
+<DIV><FONT size=2></FONT>&nbsp;</DIV>
+<DIV><FONT size=2># /sbin/iptables -A INPUT -p tcp --syn --dport http -m iplimit 
+--iplimit-above 4 -j REJECT<BR>iptables: No chain/target/match by that 
+name</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanx.</DIV></BODY></HTML>
+
+
+--=====_10643983176334=_--
+
 
