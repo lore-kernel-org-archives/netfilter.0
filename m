@@ -1,13 +1,12 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: SIP connection tracker ?
-Date: Fri, 7 Feb 2003 16:30:44 +0100
+From: "Paul Cousins" <paul@pimper.fsnet.co.uk>
+Subject: Re: Lan traffic Monitoring tools
+Date: Fri, 7 Feb 2003 16:07:47 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302071630.44093.roy@karlsbakk.net>
-References: <059101c27f31$5db6a090$9f24a58b@segi.ulg.ac.be>
+Message-ID: <002b01c2cec3$0e34ef90$0c00a8c0@frodo>
+References: <E88493086664D511A1E4000103330E82027FE05C@mail.maconomy.dk> <832811662.20030207102832@wp.pl> <003501c2ceb7$c3713af0$8c01a8c0@sundaram>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <059101c27f31$5db6a090$9f24a58b@segi.ulg.ac.be>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +17,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Francois Dessart <fd-list@ibelgique.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-does anyone know if this exists?
+Best thing you  can do is install squid and then set it up as a transparent
+proxy and use itpables to route all prot 80 traffic through it. ntop and
+mrtg will not give you the level of detail you are after on there own
+however when used with squid youll be able to get all the info youll ever
+need on what clients are doing what.
 
-On Tuesday 29 October 2002 10:55, Francois Dessart wrote:
-> Hello,
->
-> Is anyone currently developping a SIP (Session Initiation Protocol) NAT
-> connection tracker?
->
-> I would be interested in having such a feature on my iptables NAT
-> firewall.
->
-> If not, I would like to try to develop one. However I have no experienc=
-e
-> at all regarding kernel/netfilter programming.
-> Is it hard?
-> Are there useful document I should read before starting?
->
-> Thanks for your help.
->
-> Francois.
+Unless the clients you wish to minito are SNMP enabled you not going to able
+to get much data form them using mrtg et al also you will not just capture
+net traffic but all lan traffic will also been shown so again this would not
+be close to what you need. defianltey look into squid and transparent
+proxying.
 
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
+______________________________________________
+No trees were harmed in posting this message. However, a large number of
+electrons were terribly inconvenienced.
 
-Computers are like air conditioners.
-They stop working when you open Windows.
+"Sir, we're surrounded."
+"Excellent. We can attack in any direction!"
+
+----- Original Message -----
+From: "Sundaram Ramasamy" <sun@percipia.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Friday, February 07, 2003 2:46 PM
+Subject: Lan traffic Monitoring tools
+
+
+> Hi All,
+>
+> I have firewall based on iptables (Redhat 7.3) Custom build kernel. I want
+> to
+>  monitor the my LAN traffic, basically I need a report
+>  PC IP Address : web site it accessing, date and time
+>
+> I am not using any proxy in my gateway machine.
+>
+>  I checked out ntop, mrtg. I would like to know which is best  tool for
+this
+> propose.
+>
+> -RS
+>
+>
+>
+>
+
 
 
