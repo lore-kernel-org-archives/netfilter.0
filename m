@@ -1,12 +1,10 @@
-From: "Mario Ohnewald" <mario.Ohnewald@gmx.de>
-Subject: Re: /sbin/iptables -vnxL OUTPUT
-Date: Thu, 4 Mar 2004 14:33:17 +0100 (MET)
+From: Carsten Maass <cm@blinkenlichten.de>
+Subject: INET_IFACE: Secure to allow traffic from 192.168.x.0/24?
+Date: Thu, 04 Mar 2004 13:29:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3661.1078407197@www50.gmx.net>
-References: <20040303213113.GG757@home.manuelm.org>
+Message-ID: <40472125.4000608@blinkenlichten.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,37 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Frank Gruellich <frank@home.manuelm.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi,
-> > I call this default policy at the beginning of my script (actually
-> > SuSEFirewalls script):
->=20
-> It doesn't matter, when you call it.  Packets traverse chains from top
-> to bottom.  The 'bottom' is the default policy.  (Well, it's listed on
-> top, but you know what I mean.)
+Dear List,
 
-Oh sorry, totally misunderstood that :/
+recently i connected together two internal networks over an IPSec-tunnel:
 
-> > so why am i "-j ACCEPT" accepting it before that?
->=20
-> In these scrambled outputs I did not wanted to sort again was a
-> match-any-rule with -j ACCEPT in your OUTPUT (it isn't set here).  So
-> never a packet reached the bottom (policy) of your OUTPUT.
->=20
+(Localnet A)---(Gateway A)==IPSec==(Gateway B)---(Localnet B)
 
-So since i ACCEPT the packets before they reach my default policy, i need to
-get my traffic liek this?:
-iptables -xv -L OUTPUT | grep "state NEW,RELATED,ESTABLISHED" | awk '{print
-$2}'
+Now i am unsure which iptables-rules i should apply to the external 
+interfaces of the gateways to match the traffic between the Localnets 
+without opening up a security hole. Is it sufficient to simply apply 
+some general rules like:
 
+$IPTABLES -A FORWARD -i $INET_IFACE -s 192.168.a.0/24 -j ACCEPT
+$IPTABLES -A FORWARD -i $INET_IFACE -s 192.168.b.0/24 -j ACCEPT
 
-Thanks, Mario
+or would this approach be vulnerable to some kind of IP-spoofing attack? 
+What would be your solutions in this situation?
 
---=20
-+++ NEU bei GMX und erstmalig in Deutschland: T=DCV-gepr=FCfter Virenschutz=
- +++
-100% Virenerkennung nach Wildlist. Infos: http://www.gmx.net/virenschutz
+Thanks for your help,
+Carsten.
 
 
