@@ -1,12 +1,14 @@
-From: "Deepak" <msew-bangalore@eth.net>
-Subject: ip tables....
-Date: Tue, 11 Jun 2002 12:44:10 +0530
+From: Tony Earnshaw <tonni@billy.demon.nl>
+Subject: Re: (?)Help me... install iptables
+Date: 11 Jun 2002 10:40:04 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <016401c21118$c8840de0$01cd09c0@blr.vsnl.net.in>
+Message-ID: <1023784805.2050.6.camel@billy.demon.nl>
+References: <20020611020735.24629.qmail@web21202.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPartTM-000-1392a28f-e48f-4302-9899-fe98b4a05c78"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-QVS4THp1AKNnIelTRlj6"
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20020611020735.24629.qmail@web21202.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,61 +18,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
+To: Hai To Thanh <nguyenquocanh01@yahoo.com>
+Cc: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPartTM-000-1392a28f-e48f-4302-9899-fe98b4a05c78
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0161_01C21145.AEF20F30"
-
-------=_NextPart_000_0161_01C21145.AEF20F30
-Content-Type: text/plain;
-	charset="iso-8859-1"
+--=-QVS4THp1AKNnIelTRlj6
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
+tir, 2002-06-11 kl. 04:07 skrev Hai To Thanh:
 
-Hello everyone.....
-    I wanna set some basic ip rules in my Redhat 7.2 Linux box. I've one =
-router ( Zyxel) and I want every user in my LAN surf internet through my =
-Linux server. So anybody tell me what basic rules I've to set in my =
-Linux based server.  I'm using IP tables on this server.....
+>   "make: *** Warning: File "Rule.make" has
+> modification time in the future ( 2001-08-06 01:50:21
+> > 1998-01-01 02:26:21).
 
-Thanks=20
+It seems that you either installed your whole system or simply the
+kernel without setting the proper date on the machine. make thinks that
+the date is early in the morning on 1 Jan 1998 and you're trying to
+install stuff that is to be made in the future and the security doesn't
+like that. Quite right too.
 
-Deepak
+Reset the date on the machine to today's date, using 'date' ('man date')
+and everything should work.
 
-------=_NextPart_000_0161_01C21145.AEF20F30
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Best,
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 5.50.4134.600" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><FONT color=3D#000080>Hello everyone.....</FONT></DIV>
-<DIV><FONT color=3D#000080>&nbsp;&nbsp;&nbsp; I wanna set some basic ip =
-rules in=20
-my Redhat 7.2 Linux box. I've one router ( Zyxel) and I want every user =
-in my=20
-LAN surf internet through my Linux server. So anybody tell me what basic =
-rules=20
-I've to set in my Linux based server.&nbsp; I'm using IP tables on this=20
-server.....</FONT></DIV>
-<DIV><FONT color=3D#000080></FONT>&nbsp;</DIV>
-<DIV><FONT color=3D#000080>Thanks </FONT></DIV>
-<DIV><FONT color=3D#000080></FONT>&nbsp;</DIV>
-<DIV><FONT color=3D#000080>Deepak</FONT></DIV></BODY></HTML>
+Tony
 
-------=_NextPart_000_0161_01C21145.AEF20F30--
+--=20
+
+Tony Earnshaw
+
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
 
 
-------=_NextPartTM-000-1392a28f-e48f-4302-9899-fe98b4a05c78--
+
+--=-QVS4THp1AKNnIelTRlj6
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9Bbdk99dgUTvnuYERAoDHAJ9OgDlQPvqtO4NxOD/kbdwxlH03rACeKKKZ
+orHxpI8ItawAM8F2A/vkp1g=
+=Yjyj
+-----END PGP SIGNATURE-----
+
+--=-QVS4THp1AKNnIelTRlj6--
 
 
