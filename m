@@ -1,8 +1,8 @@
 From: "Joe Clark" <joeclark@iastate.edu>
 Subject: Problems Compiling userspace NF_QUEUE handler
-Date: Sun, 12 Sep 2004 22:01:14 -0500 (CDT)
+Date: Sun, 12 Sep 2004 20:48:52 -0500 (CDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1412212810402551@webmail.iastate.edu>
+Message-ID: <52482012810402551@webmail.iastate.edu>
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,16 +18,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Okay, well I did more research tonight, and I'm thinking now that perhaps I
-shouldn't be trying to do this nf_reinject stuff in userspace, but rather that's
-handled for me by the "libipq" stuff in iptables.  I was attempting to do this
-without iptables (because I thought that would be simpler), but maybe that's not
-wise (or not possible).
+Hi there.  I'm trying to compile a userspace app that will receive and later
+reinject packets from a kernel space module (NF_QUEUE).  The kernel module seems
+to compile okay, but when I try to compile and link the userspace app, I get
+implicit declarations and undefined references.  The kernel source tree (and the
+kernel I'm running) *should* have the netfilter stuff configured
+(CONFIG_NETFILTER=y in .config).
 
-Tangent: Have you folks considered setting up a forum instead of a mailing list?
- Maybe a mailing list is more effective, but I haven't found a way to search
-this list, which makes it hard to know what has been asked 100 times before...
-- Joe
+Here are the errors from make:
+gcc -Wall  -I/root/linux-2.4.22-jec/include delay.c -o jdelay
+delay.c: In function `process_packet':
+delay.c:185: warning: implicit declaration of function `nf_reinject'
+delay.c: In function `main':
+delay.c:250: warning: implicit declaration of function `nf_register_queue_handler'
+/root/tmp/cc2fwl5V.o(.text+0x21f): In function `process_packet':
+: undefined reference to `nf_reinject'
+/root/tmp/cc2fwl5V.o(.text+0x25d): In function `process_packet':
+: undefined reference to `nf_reinject'
+/root/tmp/cc2fwl5V.o(.text+0x3e5): In function `main':
+: undefined reference to `nf_register_queue_handler'
+collect2: ld returned 1 exit status
+make: *** [jdelay] Error 1
+
+I think I need to define __KERNEL__ to get this to work (even though it's not
+really in the kernel...) but then I get a ton of parse errors and identifiers
+redefined between my kernel source and /usr/include/  files.  Is there a "smart"
+way to do this or is it all kinda hacky?
+
+Any ideas on what I'm doing wrong?  Thanks.
+-- Joe Clark
+
 
 
 
