@@ -1,13 +1,11 @@
-From: Patrick Leslie Polzer <leslie.polzer@gmx.net>
-Subject: Re: how to automate ip_forward
-Date: Thu, 8 Jul 2004 14:22:35 +0200
+From: Fallucchi Antonio <fallucch@csr.unibo.it>
+Subject: ip_conntrack_max
+Date: Thu, 08 Jul 2004 11:34:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040708142235.4b2d0aa1.leslie.polzer@gmx.net>
-References: <16ac01c464e3$1af42c20$49caa8c0@caris.priv>
+Message-ID: <40ED151E.4090602@csr.unibo.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <16ac01c464e3$1af42c20$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,15 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thu, 8 Jul 2004 09:00:04 -0300
-"Peter Marshall" <peter.marshall@caris.com> wrote:
+hi
 
-> Hey guys, I know this sounds stupid, but I can not seem to get the value of
-> /proc/sys/net/ipv4/ip_forward to be 1 after boot.
-How do you test?
+i have the problem width "ip_conntrack: table full, dropping packet."
 
-Leslie
+what is the good and max dimension  of the ip_conntrack_max ?
+
+tanks.
+bye
+
+-- 
+
+ ---------------------------------------------------------------
+| |||||||    ||    |  Fallucchi Antonio Giuseppe  mat. 2282     |
+| ||        ||||    |      --> Live free() of die() <--         |
+| ||||     ||  ||    |        OpenSource philisophy             |
+| ||      ||||||||    |  Universita' di Bologna sede di Cesena  |
+| ||     ||      ||    |    Cdl di Scienze dell'Informazione    |
+ ---------------------------------------------------------------
+
+
 
