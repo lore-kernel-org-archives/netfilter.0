@@ -1,10 +1,12 @@
-From: kilho Kim <kilho8667@yahoo.com>
-Subject: Help Netfilter+Bridge+Tokenring
-Date: Mon, 29 Sep 2003 21:34:57 -0700 (PDT)
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Help Netfilter+Bridge+Tokenring
+Date: Tue, 30 Sep 2003 14:49:10 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030930043457.45349.qmail@web11406.mail.yahoo.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C3D6@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,8 +17,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: kilho Kim <kilho8667@yahoo.com>, netfilter@lists.netfilter.org
+
+Simple, those machines (A,B) should drop all packets in their INPUT =
+tables as only passing through packets will traverse the FORWARD =
+chain...
+Unless I misunderstood you but I think that's all you need..
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
+-----Original Message-----
+From: kilho Kim [mailto:kilho8667@yahoo.com]
+Sent: Tuesday, 30 September 2003 2:35 PM
 To: netfilter@lists.netfilter.org
+Subject: Help Netfilter+Bridge+Tokenring
+
 
 I have somewhat wiered setup and need some advices.
 
@@ -52,4 +78,5 @@ __________________________________
 Do you Yahoo!?
 The New Yahoo! Shopping - with improved product search
 http://shopping.yahoo.com
+
 
