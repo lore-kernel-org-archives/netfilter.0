@@ -1,13 +1,14 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: NAT+FORWARD
-Date: Thu, 06 May 2004 12:21:18 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: chains in the same table
+Date: Thu, 6 May 2004 11:47:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1083838878.29496.22.camel@raylinux.internal>
-References: <200405051209.55454.pandre@darkstar.nom.za>
+Message-ID: <200405061147.35201.Antony@Soft-Solutions.co.uk>
+References: <004c01c4334f$3f1329f0$cb0210ac@jz105>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-3avk5I4Atd7/QzNYtTil"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405051209.55454.pandre@darkstar.nom.za>
+In-Reply-To: <004c01c4334f$3f1329f0$cb0210ac@jz105>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +18,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Thursday 06 May 2004 10:48 am, Jee J.Z. wrote:
 
---=-3avk5I4Atd7/QzNYtTil
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> Hi all,
+>
+> I'm asking a basic question that in the same table (for example, the filter
+> table), if a packet hit the INPUT chain while no rules are in the INPUT
+> chain and the default policy is ACCEPT, will the packet be passed on to the
+> FORWARD chain? If accepted again, be passed on to the OUTPUT chain?
 
-On Wed, 2004-05-05 at 12:09, Paulo Andre wrote:
-> I just need some clarification please.
->=20
-> Take for example the following two rules:
->=20
-> iptables -t nat -A PREROUTING -i $ext_card -s $client_IP -d $my_ext_ip -p=
- tcp=20
-> --dport 80 -j DNAT --to $int_web_IP:80
-> iptables -A FORWARD -i $ext_card -d $int_web-IP -p tcp --dport 80 -j ACCE=
-PT
->=20
-> According to my thinking the above rule would be unsafe as the source was=
- not=20
-> specified on the FORWARD rule. As the would allow anyone using the firewa=
-ll=20
-> as a gateway to have access to $int_web_IP on port 80. Is that correct?
->=20
-Assuming their traffic passes the prerouting rules and the $int_web-IP
-is routable for them, yes.
+Any single packet only traverses one of the above chains.
 
-> Paulo
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+If it's addressed *to* the machine, it goes through INPUT only.
 
---=-3avk5I4Atd7/QzNYtTil
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+If it's addressed *from* the machine, it goes through OUTPUT only.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+If it's going *from* somewhere else *to* somewhere else (ie: being routed), it 
+goes through FORWARD only.
 
-iD8DBQBAmhGdh1fuR/Bv+ygRAi6qAKCF54Ge16xZu7nTIcGSA5x/+utXIwCggd3m
-G5zuXT3is+6ieyBTC6LegKU=
-=xnqa
------END PGP SIGNATURE-----
+(I guess there's an exception that loopback packets will go through both 
+OUTPUT and INPUT, but that's unusual.)
 
---=-3avk5I4Atd7/QzNYtTil--
+Regards,
+
+Antony.
+
+-- 
+Ramdisk is not an installation procedure.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
