@@ -1,8 +1,8 @@
 From: "__ Radien__" <radien@zworg.com>
-Subject: (no subject)
-Date: Thu,  8 Apr 2004 02:43:13 -0700
+Subject: RE: Circuit Level Gateway & Filtering!?
+Date: Thu,  8 Apr 2004 02:52:10 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <24002.1081417393@zworg.com>
+Message-ID: <27002.1081417930@zworg.com>
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -60,6 +60,14 @@ on layer 7.
 
 So u mean there's no such matching module or action in Netfilter.
 
+P.S. Below is what I read about Circuit Level (Filtering and Gateway).
+But they are alittle ambiguous!
+
 Regards
 __Radien__
+
+http://www.pc-help.org/www.nwinternet.com/pchelp/lockdown/claims/firewalls.htm
+http://csrc.nist.gov/publications/nistpubs/800-10/node53.html&e=7317
+http://www.pcstats.com/articleview.cfm?articleid=1450&page=5
+http://www.firewall-software.com/firewall_faqs/types_of_firewall.html
 
