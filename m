@@ -1,11 +1,12 @@
-From: "Nicolas Ross" <rossnick-lists@cybercat.ca>
-Subject: Re: Altering a packet's port
-Date: Tue, 22 Mar 2005 13:49:58 -0500
-Message-ID: <041401c52f0f$f2aa2920$bf07a8c0@civicXp>
-References: <002201c52e7e$4fe76950$6500a8c0@DEFIANT><1111490995.4267.18.camel@hubcap.ljm.dom><01a401c52eed$67fd5670$bf07a8c0@civicXp><Pine.LNX.4.60.0503220959020.6816@darkstar.sysinfo.com><Pine.LNX.4.60.0503221011390.6816@darkstar.sysinfo.com><01f501c52ef1$f0400290$bf07a8c0@civicXp><20050322181835.GA5763@ikkoku.ath.cx>
-	<20050322182952.GB5763@ikkoku.ath.cx>
+From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_\=28GWA\=29?=
+	<sa.campos@datasulsp.com.br>
+Subject: Two netwok cards to access the internet.
+Date: Tue, 22 Mar 2005 18:54:26 -0300
+Message-ID: <010801c52f29$bb2cd7d0$280211ac@PIVT>
+Reply-To: "=?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_\\=28GWA\\=29?="
+	<sa.campos@datasulsp.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +17,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Toby <tobia.conforto@linux.it>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-> Nicolas Ross wrote:
->> In my nat table I have:
->>
->> -A PREROUTING -s 192.168.7.0/24 -d e.f.g.h -p tcp --dport 22 \
->> -j DNAT --to-destination e.f.g.h:8022
->
-> Wait, maybe I missed something.
->
-> Are you sure e.f.g.h and e.f.g.h:8022 are the same IP address in the
-> rule above?  Also is e.f.g.h in the 192.168.7.0/24 network?
-> Is e.f.g.h the router itself?
+Hi!
 
-I'll just recap a little, for my own benefit, and your all also...
+I have the following:
 
-I have a local office subnet (192.168.7.x), wich is behind a netfilter linux 
-firewall/router
+A RedHat 9.0 with 3 Network cards: One we use in local network (eth1) =
+and the other (eth0 and eth2)  to access the internet.
 
-192.168.7.x/24 -> iptables/router  SNAT --to-source a.b.c.d  -> internet
+I'd like to separate the traffic. In the eth0 use only with the e-mail =
+server (pop, smtp, 1723, 1701 and protocol 47) and the eht0 with others =
+traffis (http, https, msn....).
 
-e.f.g.h in my quoted example above, isn't related at all with the router 
-(which is a.b.c.d on the internet).
+I tried=20
 
-The goal of all this, is to use regular, port 22, sshd on all my servers 
-(i.e. outside of my local office subnet), and enforce more secure login 
-policies in sshd config. For my "trusted" local office subnet, I have a less 
-secure login policies in my sshd confg on port 8022. But I want users in my 
-local to ssh out on port 22, and transparently redirect them to port 8022...
+iptables -t nat -A POSTROUTING -o eth2 -s 172.17.1.8 -j MASQUERADE   =
+(--this ip addrs is pop and smtp server)
+iptables -t nat -A POSTROUTING -o eth0 -s 172.17.0.0/16 -j MASQUERADE=20
 
-Nicolas 
+But when I did this I could not access the port 1723, 1701 and protocol =
+47 using the eth2.
+
+I tried too use only iptables -t nat -A POSTROUTING -o eth2 -s =
+172.17.0.0/16 -j MASQUERADE
+
+And I got the same prob.
+
+If I use iptables -t nat -A POSTROUTING  -s 172.17.0.0/16 -j MASQUERADE=20
+
+I will get a success access. Only when I use iptables -t nat -A =
+POSTROUTING  -s 172.17.0.0/16 -j MASQUERADE (without -o eth2 or -o =
+eth0).
 
 
+Who could help me?
+
+Thanks
+
+
+Sebasti=E3o Ant=F4nio Campos
+Infojoi Computadores Ltda
+Joinville -SC - R. Iriri=FA, 3587
+Cml. (47) 437-0796 - Cel. (47) 9927-5349
+tiao@infojoi.com.br
+http://www.lupusnet.com.br
