@@ -1,16 +1,13 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Loose source routed IP packets.
-Date: Tue, 23 Sep 2003 15:37:23 +0200
+From: Wim Ceulemans <wim.ceulemans@able.be>
+Subject: Re: New Version (1.13) of PPTP conntrack/nat helper
+Date: Tue, 23 Sep 2003 15:38:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1064324242.25975.111.camel@raylinux.internal>
-References: <200309231347.57709.carles@unlimitedmail.org>
-	 <Pine.LNX.4.51.0309231409290.14794@dns.toxicfilms.tv>
-	 <1064320275.31340.104.camel@raylinux.internal>
-	 <3F704912.6010800@chrisbrenton.org>
+Message-ID: <3F704CC7.7060508@able.be>
+References: <20030922203033.GD31401@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-0aqYFzI3KcwpVYbfd3z9"
+Content-Type: multipart/mixed; boundary="----------=_1064324292-26429-68"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F704912.6010800@chrisbrenton.org>
+In-Reply-To: <20030922203033.GD31401@sunbeam.de.gnumonks.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,70 +17,125 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Chris Brenton <cbrenton@chrisbrenton.org>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Harald Welte <laforge@netfilter.org>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+
+This is a multi-part message in MIME format...
+
+------------=_1064324292-26429-68
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Hi Harald
+
+Thanks for the patch.
+
+I tried patch-o-matic-20030922 with kernel 2.4.22 and connection to the 
+PPTP server seems to work reliable now. Before this patch, connecting 
+from a winxp machine did  succeed one out of 2 times, now it always 
+succeeds.
+
+However, I also tried forwarding port 1723 and gre to a pptp server 
+(win2000) behind the firewall. And there seems to be a problem with 
+forwarding of the gre protocol. The connection to port 1723 behind the 
+firewall succeeeds, but I don't see gre packets pass the firewall. I 
+added these rules:
+
+iptables -t nat -A  PREROUTING -p TCP -d <wanip> --dport 1723 -j DNAT 
+--to <winip>:1723
+iptables -t nat -A  PREROUTING -p GRE -d <wanip> -j DNAT --to <winip>
+iptables -A FORWARD -p TCP -d <winip> --dport 1723 -j ACCEPT
+iptables -A FORWARD -p GRE -d <winip> -j ACCEPT
+
+The following modules are loaded:
+
+ppp_mppe               20152   0  (autoclean)
+ppp_async               6368   0  (autoclean)
+ip_nat_proto_gre        1284   0  (unused)
+ip_nat_pptp             1836   0  (unused)
+ip_nat_irc              2384   0  (unused)
+ip_nat_h323             2604   0  (unused)
+ip_nat_ftp              3024   0  (unused)
+ipsec_aes              31880   0  (unused)
+ipsec                 252608   2  [ipsec_aes]
+ipt_REDIRECT             824   1  (autoclean)
+ipt_MASQUERADE          1240   1  (autoclean)
+ipt_TCPMSS              2424   1  (autoclean)
+ipt_unclean             6776   2  (autoclean)
+ipt_limit                952   2  (autoclean)
+ipt_LOG                 3224   5  (autoclean)
+ipt_state                600   8  (autoclean)
+ipt_multiport            632  11  (autoclean)
+ip_conntrack_pptp       2320   1
+ip_conntrack_proto_gre    2004   0  [ip_nat_pptp ip_conntrack_pptp]
+ip_conntrack_irc        3120   1
+ip_conntrack_h323       2320   1
+ip_conntrack_ftp        3824   1
+iptable_mangle          2192   1
+iptable_nat            14424   6  [ip_nat_proto_gre ip_nat_pptp 
+ip_nat_irc ip_nat_h323 ip_nat_ftp ipt_REDIRECT ipt_MASQUERADE]
+ip_conntrack           16352   7  [ip_nat_pptp ip_nat_irc ip_nat_h323 
+ip_nat_ftp ipt_REDIRECT ipt_MASQUERADE ipt_state ip_conntrack_pptp 
+ip_conntrack_proto_gre ip_conntrack_irc ip_conntrack_h323 
+ip_conntrack_ftp iptable_nat]
+iptable_filter          1700   1
+ip_tables              10968  13  [ipt_REDIRECT ipt_MASQUERADE 
+ipt_TCPMSS ipt_unclean ipt_limit ipt_LOG ipt_state ipt_multiport 
+iptable_mangle iptable_nat iptable_filter]
+ppp_deflate             2936   0
+zlib_inflate           18308   0  [ppp_deflate]
+zlib_deflate           17624   0  [ppp_deflate]
+bsd_comp                4024   0
+ppp_generic            19168   0  [ppp_mppe ppp_async ppp_deflate bsd_comp]
+slhc                    4480   0  [ppp_generic]
+8139too                13448   3
+mii                     2224   0  [8139too]
 
 
---=-0aqYFzI3KcwpVYbfd3z9
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Regards
+Wim
 
-On Tue, 2003-09-23 at 15:22, Chris Brenton wrote:
-> Ray Leach wrote:
-> >=20
-> > How about :
-> > ### don't accept source routed packets
-> > /bin/echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route
->=20
-> I keep meaning to do some testing with this but have not had the=20
-> bandwidth. Just wondering if anyone else actually has.
->=20
-> I would expect the above would work fine with strict source routing, but=20
-> I'm not so sure about loose source routing unless the firewall was one=20
-> of the defined jump points.
->=20
-> For example, let's say I know you "trust" some IP address on the=20
-> Internet and permit a greater level of access from it to one of your=20
-> internal systems. I craft the following packet:
->=20
-> source IP =3D mine
-> Dest IP =3D "trusted" Internet host
-> First byte of IP options =3D 83
-> IP in options field =3D your internal server
->=20
-> In this case none of the IPs are the firewalls so I'm not so sure=20
-> accept_source_route would even be referenced. Does the kernel check the=20
-> size of all IP headers and process the included options even if its not=20
-> the destination IP? I would think it would not for efficiency, but then=20
-> again it might to deal with things like option 7 (record route).
->=20
-> Has anyone tested this either way?
->=20
-I suppose the easy answer is to check the kernel source code.
+Harald Welte wrote:
 
-> Thanks in advance!
-> Chris
---=20
+>Hi!
+>
+>I've just released the long-awaited new version of the PPTP
+>conntrack/NAT helper.  It can be found in the current patch-o-matic CVS,
+>or in the CVS snapshot that is going to be created tonight
+>(patch-o-matic-20030922).
+>
+>It has been working in my test network with four PPTP clients, in mixed
+>DNAT, SNAT and local (i.e. terminated on a PPTPD on the NAT gw itself)
+>connection setup - both with and without CONFIG_IP_NF_NAT_LOCAL.
+>
+>Please feel free to test this new patch and report any bugs/errors back
+>to me.
+>
+>Thanks to everybody who has contibuted to the PPTP helper in the past,
+>and thanks for your patience in waiting for this release.
+>
+>  
+>
+
+
+-- 
+Wim Ceulemans
+R&D Engineer
+
+Secure Internet Communication with aXs Guard
+
+Able NV
+Leuvensesteenweg 282 - B-3190 Boortmeerbeek - Belgium
+Phone: + 32 15 50.44.00 - Fax: + 32 15 50.44.09
+E-mail: wim.ceulemans@able.be
+
+
+
 --
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+Security check on this e-mail has been done by aXs GUARD
+(http://www.axsguard.com)
 
---=-0aqYFzI3KcwpVYbfd3z9
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
-
-iD8DBQA/cEySh1fuR/Bv+ygRAmorAKCKO2Ar9KKebcLmcNrGlY4d3m1cLACfZp50
-XzOtOsK4xvLA1duumfUoTBw=
-=3YiL
------END PGP SIGNATURE-----
-
---=-0aqYFzI3KcwpVYbfd3z9--
-
+------------=_1064324292-26429-68--
 
