@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: open ports 25/tcp and 110/tcp
-Date: Thu, 4 Dec 2003 00:08:36 +0000
+Date: Wed, 3 Dec 2003 19:11:07 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312040008.36161.Antony@Soft-Solutions.co.uk>
+Message-ID: <200312031911.07628.JALaramie@Loudoun-Fairfax.com>
 References: <002101c3b9ef$53e5d780$0201a8c0@OurPC> <200312032339.21755.Antony@Soft-Solutions.co.uk> <003d01c3b9f9$4e074380$0201a8c0@OurPC>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <003d01c3b9f9$4e074380$0201a8c0@OurPC>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,8 +21,7 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 03 December 2003 11:58 pm, David F. Strauch wrote:
-
+On Wednesday 03 December 2003 18:58, David F. Strauch wrote:
 > Yes, Antony this is the case.  I have only one WinXP machine that I am
 > testing with.  I'm testing the external interface eth0 and I have unplugged
 > eth1 from the hub.
@@ -36,22 +36,11 @@ On Wednesday 03 December 2003 11:58 pm, David F. Strauch wrote:
 > 110/tcp    open        pop-3
 >
 > Nmap run completed -- 1 IP address (1 host up) scanned in 1 second
+>
 
-Well, that just makes no sense to me.   If nmap -sT reports a port open, then 
-a telnet to that port from the same machine as the nmap test was done should 
-present a welcome banner (for services which provide one, such as SMTP and 
-POP3).
+Why don't you run a packet sniffer on this interface and run the test again. 
+That should show what it is nmap is seeing, if anything.
 
-Maybe someone else here has a clue what strangeness is going on?
-
-Antony.
-
--- 
-The first fifty percent of an engineering project takes ninety percent of the 
-time, and the remaining fifty percent takes another ninety percent of the 
-time.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Jeff
 
 
