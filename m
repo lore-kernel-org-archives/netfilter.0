@@ -1,8 +1,8 @@
 From: Stewart Thompson <sthompsn@junction.net>
 Subject: WinMX:
-Date: Sat, 01 Jun 2002 14:40:10 -0700
+Date: Sun, 02 Jun 2002 00:16:50 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPOEAFCFAA.sthompsn@junction.net>
+Message-ID: <FLEKIPPLAEDMJMOOBBDPAEALCFAA.sthompsn@junction.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
@@ -20,14 +20,13 @@ To: netfilter@lists.samba.org
 
 Hi All:
 
-	I am having some problems with WinMX through a iptables firewall.
+        I am having some problems with WinMX through a iptables firewall.
 It doesn't seem to like the way WinMX uses UDP packets. Is there a helper
 module for this, or can anyone suggest some rules. WinMX is running on
 multiple machines behind the firewall. So, I just can't forward the specific
 ports to a particular machine. Thanks.
 
 Stu.........
-
 
 
 
