@@ -1,9 +1,12 @@
-From: Pawel Hadam <Pawel.Hadam@imag.fr>
-Subject: ROUTE and source IPv6 routing - how ?
-Date: Mon, 1 Dec 2003 16:22:17 +0100 (MET)
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: Re: problem with trying the example
+Date: Mon, 1 Dec 2003 15:47:17 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSO.4.33.0312011606350.27223-100000@horus.imag.fr>
+Message-ID: <000f01c3b822$66414be0$68892090@grouse>
+References: <00a201c3b7ad$06b73100$cb0210ac@jz105> <1070265652.29823.3.camel@porky>
 Mime-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_000C_01C3B822.6630AA10"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,98 +17,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+To: Eric Leblond <eric@regit.org>
+Cc: netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_000C_01C3B822.6630AA10
+Content-Type: text/plain;
+	charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-Cc: delaunois@info.ucl.ac.be
-
-Hi all
-
-I have two hosts and both have two NICs.
-
-CLIENT: eth0 - ipc0 = 2001:660:5301:26:2c0:9fff:fe1a:caca
-        eth1 - ipc1 = 2001:688:1fa1:2:204:75ff:fef8:93a4
-
-SERVER: eth0 - ips0 = 2001:660:5301:26:210:5aff:febe:bb78
-        eth1 - ips1 = 2001:688:1fa1:2:204:75ff:fee8:52fd
-
-As you can see, both eth0 are connected to the same LAN (so have IPv6
-addresses from the same LAN), and both eth1 are connected to the second
-LAN.
-
-According to the normal IPv6 routing, all packets exit from CLIENT to ips0
-always via eth0, and to ips1 always via eth1.
-
-But when I have a client program bound to ipc0 (src = ipc0) I would like
-to see all packets exiting via eth0, both packets going to ips0 and to
-ips1. The same way, packets from a client bound to ipc1 (src = ipc1)
-should always exit via eth1. Like this:
-
-1) (ipc0 -> ips0) via eth0
-2) (ipc0 -> ips1) via eth0
-3) (ipc1 -> ips0) via eth1
-4) (ipc1 -> ips1) via eth1
 
 
-To obtain this I used kernel 2.4.22 with netfilter and patch-o-matic
-module ROUTE, and configured this way:
+------=_NextPart_000_000C_01C3B822.6630AA10
+Content-Type: text/plain;
+	name="ATT00008.txt"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="ATT00008.txt"
 
+=EF=BB=BFHi Eric,
 
-mykonos:~ # ip6tables -t mangle -A POSTROUTING --source
-2001:660:5301:26:2c0:9fff:fe1a:caca -j ROUTE --oif eth0 --continue
+Thank you very much. I went through the link process, but when I execute =
+the program:
 
-mykonos:~ # ip6tables -t mangle -A POSTROUTING --source
-2001:688:1fa1:2:204:75ff:fef8:93a4 -j ROUTE --oif eth1 --continue
+./test
 
-mykonos:~ # ip6tables -t mangle -nL
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
+The following occurs:
 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
+passer: Failed to send netlink message: Connection refused
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
+Could you point out for me how I can solve it again? Cheers!
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-ROUTE      all      2001:660:5301:26:2c0:9fff:fe1a:caca/128  ::/0
-ROUTE oif:eth0 continue
-ROUTE      all      2001:688:1fa1:2:204:75ff:fef8:93a4/128  ::/0
-ROUTE oif:eth1 continue
-
-
-But it works only in cases 1) and 4). In cases 2) and 3) it gives the
-following messages in /var/log/messages:
-
-
-Dec  1 15:52:29 mykonos kernel: ip6t_ROUTE: no explicit route found via
-interface eth1
-
-Dec  1 15:52:45 mykonos kernel: ip6t_ROUTE: called with:
-DST=2001:0688:1fa1:0002:0204:75ff:fee8:52fd
-GATEWAY=0000:0000:0000:0000:0000:0000:0000
-:0000 OUT=eth0
-
-Dec  1 15:52:45 mykonos kernel: ip6t_ROUTE: no explicit route found via
-interface eth0
-
-Dec  1 15:52:48 mykonos kernel: ip6t_ROUTE: called with:
-DST=2001:0688:1fa1:0002:0204:75ff:fee8:52fd
-GATEWAY=0000:0000:0000:0000:0000:0000:0000
-:0000 OUT=eth0
+Regards,
+Ji
 
 
 
-And I cannot see any packet exiting any interface.
+Le lun 01/12/2003 =C3=A0 02:47, Jee J.Z. a =C3=A9crit :
+> Hi all,
+>=20
+> I am new to netfilter and even linux. I just wish to try the example =
+code in the man page of libipq (I saved it as test.c and have compiled =
+it to test.o). But when I make it: #cc test.o -o test, the following =
+errors showed up:
+>=20
+> [root@kite1 netfilter]# cc test.o -o test
 
-Could anybody help me with this configuration to reach my target, please
-??? Or maybe I should change something in my routing table ???
+you need to link with the libipq library :
+=20
+	cc test.o -o test -lipq
 
-Regards
-Pawel
+
+--=20
+Eric Leblond
+Nufw, Now User Filtering Works (http://www.nufw.org)
+
+------=_NextPart_000_000C_01C3B822.6630AA10--
 
 
