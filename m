@@ -1,11 +1,11 @@
-From: "naren@anubhav.deeproot.co.in" <naren@anubhav.deeproot.co.in>
-Subject: getting IP-address of a packet using libipq ?
-Date: Thu, 12 Dec 2002 04:17:56 -0500
+From: nedco@unacs.bg
+Subject: Inserting rules is extremly slow :((
+Date: Thu, 12 Dec 2002 13:46:30 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <28310-220021241291756243@M2W037.mail2web.com>
-Reply-To: naren@deeproot.co.in
+Message-ID: <3df87716.1a99.0@unacs.bg>
+Reply-To: nedco@unacs.bg
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,37 +19,13 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Greetings everyone,
-
-the libipq library tells about a lot of fields of a queued packet=2E=2E=2E=
- But I
-could not find one which tells what the source and destination IP-address
-of the packet is=2E=2E=2E !!
-
-Is there a way that I can get the IP-address from the libipq directly=2E=2E=
-=2E if
-not is there a way that I can use the packet payload and get the IP-addres=
-s=2E
-
-Forgive if the question is silly=2E
-
-Regards,
-Narendra
 
 
-In the middle of difficulty=2E=2E=2E=2E=2E lies Opportunity=2E (Albert Ein=
-stein)
---------------------------------------------------------------------
-Narendra Prabhu=2E B             Free Software at its product-ive best=2E
-DeepRoot Linux                             http://www=2Edeeproot=2Eco=2Ein=
 
-                ---- Server Appliances ----
-             ---- Linux Support and Services ----
--------------------------------------------------------------------
+Hi,
+ How to insert fast about 20000 rules in iptables.
+ If some document will be help , please let me know  :)
 
---------------------------------------------------------------------
-mail2web - Check your email from the web at
-http://mail2web=2Ecom/ =2E
-
-
+Thanks a lot
+Nedco
 
