@@ -1,15 +1,11 @@
-From: Rodrigo Senra <rodsenra@gpr.com.br>
-Subject: Re: Completely NAT an ISP: A practical possibility?
-Date: Tue, 18 Jun 2002 14:16:32 -0300
+From: Mark Tessier <mt@open2web.com>
+Subject: debugging rc.firewall
+Date: Tue, 18 Jun 2002 13:06:39 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020618171543.919DF681A5@engenho.terra.com.br>
-References: <3D0BBC45.5000807@palaver.net>
-	<200206152233.g5FMXPA27757@Networker.rockstone.co.uk>
-	<20020616001745.N2090@funkyjesus.org>
+Message-ID: <20020618130639.2ec22286.mt@open2web.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020616001745.N2090@funkyjesus.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,44 +16,50 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Netfilter Mailing List <netfilter@lists.samba.org>
 
-|On Sun, 16 Jun 2002 00:17:45 +0100
-|Nick Drage <nickd@funkyjesus.org> wrote
-| about Re: Completely NAT an ISP: A practical possibility?:
+In trying to debug rc.firewall on a gateway/firewall between a LAN subnet and DMZ subnet, I've put in the following
 
->> On Sat, Jun 15, 2002 at 11:33:23PM +0100, Antony Stone wrote:
-> > On Saturday 15 June 2002 11:14 pm, Brian Capouch wrote:
-> 
-> > Some current ISPs already do this, and I guess the popularity with their 
-> > customers varies according to what the customers want to do :-)
-> 
-> Can you name any ISPs that do this?  I haven't seen it in my limited
-> experience.
-> 
+iptables -A INPUT -i eth1 -j LOG
 
- Here in Brazil this is often used, though I'm not at liberty to name actual
- ISPs. We have very little H.323 (read Netmeeting) demand, but it is growing.
- Most ISP clients still have 56Kbps dial-up access, with the number of ADSL
- clients increasing fast. 
+immediately after iptables --policy INPUT DROP
 
- The NAT solution is often used to allow multiple ISP access though the 
- same media provider (probably ADSL). Since there is a law that a 
- "Content Provider" (like aol,etc) cannot be same as the media provider
- (like AT&T, etc), which fosters the adoption solution such as that. 
+This goes the same for the forward policy. I've checked /var/log/messages and nothing is written to it. In this rc.firewall script, the "reset chains and set policies" section is near the beginning, after the "set up enviro variables" section and the "enable kernel monitoring support" section. This is what the 
 
- In fact, it is not the ISP that is "Natted", but a subset of the client address
- space before they reach their target ISP, and while in transit in the media
- provider routers. Naturally, there is some cooking to achieve that. 
+# Reset chains and set policies
 
- I'm not sure if this is the kind of practical appication youe were expecting to hear
- from, but there is no harm to talk about it anyway....
+# Remove any existing rules from all chains
+iptables -t filter --flush
+iptables -t nat --flush
+iptables -t mangle --flush
 
- regards,
- Senra
-   
+# Set traffic on the loopback interface to unlimited
+iptables -A INPUT -i $LOOPBACK_INTERFACE -j ACCEPT
+iptables -A OUTPUT -o $LOOPBACK_INTERFACE -j ACCEPT
+
+# Set the default policy to drop
+iptables --policy INPUT DROP
+iptabes -A INPUT -i $LAN_IPADDR -j LOG 
+iptables --policy OUTPUT DROP
+iptables --policy FORWARD DROP
+iptables -A FORWARD -i $LAN_IPADDR -j LOG
+
+iptables -t nat --policy PREROUTING DROP
+iptables -t nat --policy OUTPUT DROP
+iptables -t nat --policy POSTROUTING DROP
+
+iptables -t mangle --policy PREROUTING DROP
+iptables -t mangle --policy OUTPUT DROP
+
+# Remove any pre-existing user-defined chains
+iptables --delete-chain
+iptables -t nat --delete-chain
+iptables -t mangle --delete-chain
+
+As mentioned my log messages are not registering in /var/log/messages and I'm not sure why. 
+
 -- 
-Rodrigo Senra         
-MSc Computer Engineer   (GPr Sistemas Ltda)     rodsenra@gpr.com.br 
-http://www.ic.unicamp.br/~921234  (LinUxer 217.243) (ICQ 114477550)
+Thanks,
+
+Mark
 
