@@ -1,13 +1,13 @@
-From: Eric Daigneault <scouby@vacv.com>
-Subject: Re: Controlling bandwith rate on port 80
-Date: Tue, 11 Jun 2002 16:35:31 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IP address to MAC address
+Date: Tue, 11 Jun 2002 21:40:53 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <5.1.0.14.0.20020611163420.00a8ad28@pop3.vacv.com>
-References: <000501c21185$c4732c00$7b0010ac@dynamicaccess.lan>
+Message-ID: <200206112040.g5BKetA21075@Networker.rockstone.co.uk>
+References: <001601c2113a$aa85b560$0500a8c0@escritoriomundial.com.br> <200206111253.g5BCrqU10699@vulcan.rissington.net> <1023827880.4177.81.camel@billy.demon.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <000501c21185$c4732c00$7b0010ac@dynamicaccess.lan>
+In-Reply-To: <1023827880.4177.81.camel@billy.demon.nl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,49 +17,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-If you want to make it easy..... take a look at SQUID.... should help a lot=
- !!!
+On Tuesday 11 June 2002 9:38 pm, Tony Earnshaw wrote:
 
---- off topic, I know !!! :-)
+> tir, 2002-06-11 kl. 14:53 skrev Antony Stone:
 
-At 06:22 2002-06-12 +1000, you wrote:
->yes it can be done with IPTables just not alone ..
+> > ping $IP -c1 >/dev/null 2>&1
+> > grep $IP /proc/net/arp | tr -s ' ' | cut -d' ' -f4
+> >
+> > (There's a single space in between each of those pairs of ' ', in case
+> > it's not obvious.)
 >
->you will need to complie your kernel with the IPTABLES MARK / TOS / U32
->classifiers / CBQ  ect  set to M..
->
->now that we have the support we can use
->
->a Token Bucket Filter or CBQ  to limit the packet rate Per interface both=
- in
->up or down
->
->to do this correcty you will need to set a ToS MARK value on all PORT 80
->traffic
->
->leaving the BOX (or however you need it) with IPTABLES the
->
->in your Pcaket Shaping CBQ script you can search for those marked packets
->and stick them in a Low Priorty Que
->
->or a QUE that has a set amount of bandwidth allocation ect ...
->
->If you know nothing of these go Search for Advanced Routing & TOS / MARK as
->well as CBQ & TBF
->
->have Fun cause it can be a pain in the ass ...
->
->If you need more help just send me an Email . .. :D
->
->See yas .. :D
+> Did you say 'arp -a'?
 
-------------------------------------
-Eric Daigneault
-Administrateur Syst=E8me
-Vacances Air Canada
-------------------------------------
+I would have done, if I knew I was root, but the commands I suggested work 
+for an unprivileged user too :-)
 
+ 
+
+Antony
 
