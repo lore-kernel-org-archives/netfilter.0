@@ -1,12 +1,10 @@
-From: Lopsch <lopsch@lopsch.com>
-Subject: Re: iptables version unknown
-Date: Fri, 26 Nov 2004 16:19:48 +0100
-Message-ID: <41A74994.9020101@lopsch.com>
-References: <41A732E0.9000305@mgvd.be>
+From: "it clown" <suse@mailbox.co.za>
+Subject: browser disclosing
+Date: Fri, 26 Nov 2004 20:07:04 +0200
+Message-ID: <web-534570975@mail01.infosat.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41A732E0.9000305@mgvd.be>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Marc Cuypers schrieb:
-> Hi,
-> 
-> I'm new to patch-o-matic.
-> 
-> I downloaded the 2.4.28 kernel from ftp.kernel.org
-> I downloaded iptables 1.2.6a via apt-get source iptables
-> I downloaded path-o-matic-20041125.tar.bz2.
-> 
-> I unpacked all those archives in /usr/src.
-> when running ./runme in patch-o-matic I get the following error:
->     Your iptables version  is unknown for patch-o-matic at ./runme line 214
-> 
-> What can I do about it? which version should I use?
-> 
-The command is KERNEL_DIR=/dir/to/your/kernel/source 
-IPTABLES_DIR=/dir/to/your/iptables/source ./runme <option>
+Hi All,
 
-where <option> is can be one of these: base, pending, extra or the 
-patchname you want to apply for example CONNMARK for the CONNMARK patch.
+i am abit confused with my setup.I have iptables running
+with squid. I went to a site that displays what you're
+browser is disclosing about you're system.When i clicked on
+the link:
 
-Some links:
-the latest stable version is 
-http://www.netfilter.org/files/iptables-1.2.11.tar.bz2
+Content-Type: application/x-www-form-urlencoded
+Via: 1.0 hostname.domain.net:3128 (squid/2.5.STABLE5), 1.0
+netcache2-ctn (NetCache NetApp/5.3.1R2)
 
-the latest snapshot matching the latest pom-ng snapshot is 
-ftp://ftp.netfilter.org/pub/iptables/snapshot/iptables-1.3.0-20041125.tar.bz2
+X-Forwarded-For: 192.168.0.5, x.x.x.x
 
-I hope this will help you :).
+Why is it displaying the ip address 192.168.0.5 that i ran
+the scan off. Should it not hide that pc and only give the
+ipaddress of the pc thats doing the nating ( 192.168.0.1)?
 
+Is this normal that i see or not?If not how do i fix this?
+
+Regards
+_____________________________________________________________________
+For super low premiums, click here http://www.dialdirect.co.za/quote
 
