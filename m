@@ -1,9 +1,8 @@
-From: Upma Gandhi <upma@networkprograms.com>
-Subject: Re: marking all h323 packets with some TOS
-Date: Thu, 09 Jan 2003 17:13:09 +0530
+From: mdew <mdew@mdew.dyndns.org>
+Subject: New Script
+Date: 10 Jan 2003 01:38:56 +1300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E1D604D.18388311@networkprograms.com>
-References: <3E1D2F29.6443D681@networkprograms.com> <1042101858.26554.125.camel@rayw.knowledgefactory.co.za>
+Message-ID: <1042115936.423.58.camel@nirvana>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,71 +16,148 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: raymondl@knowledgefactory.co.za, netfilter <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello Raymond,
-       Thanks for your help.
-Modules are not missing and they are compiled also.
-But one doubt , in ip_conntarck_in function of ip_conntrack_core.c file.
-        When it lokks for ct-helper, it's address is 0, means that helper are
-not register.
-       But I've compiled h323& rtc helper, as I'm very new to
-iptables/netfilter, I don't have any idea what does this means ?
+Ok, after taking a few samples from scripts in the mailing list, Ive
+come up with this...hopefully my edonkey problem has been solved with
+this script. I havent actually tested this yet, Probably tomorrow (its a
+bit late)
 
-Regards
-Upma
+current Router setup.
+(Internet) 210.54.175.12->eth0---Router--->eth1 10.0.0.6 -=> 10.0.0.x
 
-Raymond Leach wrote:
 
-> Sounds like it doesn't understand the -j FTOS. Maybe a missing module or
-> not compiled into the kernel?
->
-> On Thu, 2003-01-09 at 10:13, Upma Gandhi wrote:
-> > Hello All,
-> >          I have a following setup
-> >
-> > Internet <-> Router with netfilter configure <-> LAN(192.9.201.0/24)
-> >
-> > lets supopose eth0 is LAN side Interface and
-> > eth1 is WAN side interface.
-> >
-> > what I want to do is "Mark all h323 packets with some tos value".
-> > for which my iptables  command seems to be like this-
-> >      iptables -t mangle -A FORWARD -o eth0 -d 192.9.201.0/24 -p tcp -m
-> > rtp -j FTOS --set-ftos 0xb8.
-> >
-> > but it's giving an error message -
-> > iptable: No chain/target/match by tha rule.
-> >
-> > Can anybody help me out.
-> >
-> > Thanks & Regards
-> > Upma
-> >
-> --
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> (  Raymond Leach                       )
->  ) Knowledge Factory                  (
-> (                                      )
->  ) Tel: +27 11 445 8100               (
-> (  Fax: +27 11 445 8101                )
->  )                                    (
-> (  http://www.knowledgefactory.co.za/  )
->  ) http://www.saptg.co.za/            (
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    o                                o
->     o                              o
->         .--.                  .--.
->        | o_o|                |o_o |
->        | \_:|                |:_/ |
->       / /   \\              //   \ \
->      ( |     |)            (|     | )
->      /`\_   _/'\          /'\_   _/`\
->      \___)=(___/          \___)=(___/
->
->   ------------------------------------------------------------------------
->                        Name: signature.asc
->    signature.asc       Type: application/pgp-signature
->                 Description: This is a digitally signed message part
+
+#!/bin/bash
+
+IPTABLES="/sbin/iptables"
+PAUL="10.0.0.9"
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+echo "Executing The Firwall..."
+echo ""
+echo -n "Loading Modules..."
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_conntrack_irc
+/sbin/modprobe ip_nat_irc
+/sbin/modprobe ip_nat_ftp
+/sbin/modprobe ipt_state
+/sbin/modprobe ipt_limit
+/sbin/modprobe ipt_LOG
+echo -n "Done"
+
+$IPTABLES -F INPUT
+$IPTABLES -F OUTPUT
+$IPTABLES -F FORWARD
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -P OUTPUT ACCEPT
+
+echo "Allow unlimited traffic on the loopback interface"
+$IPTABLES -A INPUT -i lo -j ACCEPT
+$IPTABLES -A OUTPUT -o lo -j ACCEPT
+
+echo "Refusing spoofed packets pretending to be from your IP address"
+$IPTABLES -A INPUT -s 210.54.175.12 -j DROP
+
+echo "Allow SSH"
+# Is this correct?
+$IPTABLES -A INPUT -i eth0 -p tcp --sport 22 -j ACCEPT
+$IPTABLES -A INPUT -i eth1 -p tcp --sport 22 -j ACCEPT
+$IPTABLES -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
+$IPTABLES -A INPUT -i eth1 -p tcp --dport 22 -j ACCEPT
+
+echo "Allow ftp"
+$IPTABLES -A INPUT -p tcp --sport 21 -m state --state ESTABLISHED -j
+ACCEPT
+$IPTABLES -A OUTPUT -p tcp --dport 21 -m state --state NEW,ESTABLISHED
+-j ACCEPT
+
+echo "Active ftp"
+$IPTABLES -A INPUT -p tcp --sport 20 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A OUTPUT -p tcp --dport 20 -m state --state ESTABLISHED -j
+ACCEPT
+
+echo "Passive ftp"
+$IPTABLES -A INPUT -p tcp --sport 1024:65535 --dport 1024:65535 -m state
+--state ESTABLISHED -j ACCEPT
+$IPTABLES -A OUTPUT -p tcp --sport 1024:65535 --dport 1024:65535 -m
+state --state ESTABLISHED,RELATED -j ACCEPT
+
+echo "Allow DNS"
+$IPTABLES -A INPUT -p tcp --sport 53 -j ACCEPT
+$IPTABLES -A INPUT -p udp --sport 53 -j ACCEPT
+$IPTABLES -A OUTPUT -p tcp --dport 53 -j ACCEPT
+$IPTABLES -A OUTPUT -p udp --dport 53 -j ACCEPT
+
+echo "Allow SFTP"
+$IPTABLES -A OUTPUT -p tcp --dport 115 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --sport 115 -j ACCEPT
+
+echo "Allow HTTP"
+$IPTABLES -A OUTPUT -p tcp --dport 80 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --sport 80 -j ACCEPT
+
+echo "Allow https"
+$IPTABLES -A OUTPUT -p tcp --dport 443 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --sport 443 -j ACCEPT
+
+echo "Rejecting all connections to 135:139"
+$IPTABLES -N NETBIOS
+$IPTABLES -A INPUT -p udp --sport 135:139 -j NETBIOS
+$IPTABLES -A INPUT -p tcp --sport 135:139 -j NETBIOS
+$IPTABLES -A INPUT -p udp --dport 135:139 -j NETBIOS
+$IPTABLES -A INPUT -p tcp --dport 135:139 -j NETBIOS
+$IPTABLES -A NETBIOS -j LOG --log-prefix "IPTABLES NETBIOS: "
+$IPTABLES -A NETBIOS -j DROP
+
+echo "Limit port 4665 traffic to PAUL"
+$IPTABLES -N PAULS_STUFF
+$IPTABLES -A FORWARD -p tcp -s $PAUL --dport 4665 -m limit --limit
+1/hour -j PAULS_STUFF
+$IPTABLES -A FORWARD -p udp -s $PAUL --dport 4665 -m limit --limit
+1/hour -j PAULS_STUFF
+$IPTABLES -A FORWARD -p udp -s $PAUL --sport 4665 -m limit --limit
+1/hour -j PAULS_STUFF
+$IPTABLES -A FORWARD -p tcp -s $PAUL --sport 4665 -m limit --limit
+1/hour -j PAULS_STUFF
+$IPTABLES -A PAULS_STUFF -j LOG --log-prefix "IPTABLES PAUL: "
+$IPTABLES -A PAULS_STUFF -j ACCEPT
+
+echo "Allowing SMTP"
+$IPTABLES -A OUTPUT -p tcp --dport 25 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --sport 25 -j ACCEPT
+
+echo "Allowing POP3"
+$IPTABLES -A OUTPUT -p tcp --dport 110 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --sport 110 -j ACCEPT
+
+echo "Allowing Ident"
+$IPTABLES -A OUTPUT -p tcp --dport 113 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --sport 113 -j ACCEPT
+
+echo "Allowing Netmeeting/MSN"
+$IPTABLES -t nat -A PREROUTING -i eth0 -p tcp --dport 1863 -j \
+        REDIRECT --to-ports 1863
+$IPTABLES -t nat -A PREROUTING -i eth0 -p tcp --dport 389 -j \
+        REDIRECT --to-ports 389
+$IPTABLES -t nat -A PREROUTING -i eth0 -p tcp --dport 522 -j \
+        REDIRECT --to-ports 522
+	
+echo "Allowing EDonkey2k/Emule"
+echo "See: http://www.emule-project.net/faq/ports.htm"
+# should i use any -A FORWARD or PREROUTING here?
+$IPTABLES -A OUTPUT -p tcp --dport 4661 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --sport 4661 -j ACCEPT
+$IPTABLES -A OUTPUT -p tcp --dport 4662 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --sport 4662 -j ACCEPT
+$IPTABLES -A OUTPUT -p udp --dport 4665 -j ACCEPT
+$IPTABLES -A INPUT -p udp --sport 4665 -j ACCEPT
+$IPTABLES -A OUTPUT -p udp --dport 4672 -j ACCEPT
+$IPTABLES -A INPUT -p udp --sport 4672 -j ACCEPT
+
+$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+
 
 
