@@ -1,12 +1,14 @@
-From: Harry <hari76@omantel.net.om>
-Subject: Rules for Blocking Proxies...
-Date: Tue, 20 Apr 2004 09:44:46 -0700
+From: Rio Martin <rio@martin.mu>
+Subject: Re: Rules for Blocking Proxies...
+Date: Tue, 20 Apr 2004 12:50:53 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000b01c426f6$cc216f10$36b4fea9@SABNANIS>
+Message-ID: <200404201250.53090.rio@martin.mu>
+References: <000b01c426f6$cc216f10$36b4fea9@SABNANIS>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="Boundary_(ID_qWQQ0Hd6d18xrMn4qT75Pg)"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000b01c426f6$cc216f10$36b4fea9@SABNANIS>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,62 +18,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Harry <hari76@omantel.net.om>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
-
---Boundary_(ID_qWQQ0Hd6d18xrMn4qT75Pg)
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-
-Hi All,
-I am running Fedora and Redhat 9 on two servers at my Cybercafe, connected on two Hi speed Lines, I have a decent firewall script, but these days I am facing issues about people changing the Proxy settings in order to get thru porn sites, can anybody suggest some rules which I can implement in the script that avoids connection to these servers? Suggestions are welcome.
-
-Regards
-
-Harry
+On Tuesday 20 April 2004 23:44, Harry wrote:
+> Hi All,
+> I am running Fedora and Redhat 9 on two servers at my Cybercafe, connected
+> on two Hi speed Lines, I have a decent firewall script, but these days I am
+> facing issues about people changing the Proxy settings in order to get thru
+> porn sites, can anybody suggest some rules which I can implement in the
+> script that avoids connection to these servers? Suggestions are welcome.
+> Regards
+> Harry
 
 
+Transparent proxy and firewall port blocking would be usefull to reject your 
+users changing the proxy.
 
+- Rio.Martin -
 
-"In all this world, there is only you
-When all else ceases, there is only you"  
--- to my MASTER!
-    Harish
-harish@sabnanis.com 
-harish.sabnani@cyberhutoman.com 
-
---Boundary_(ID_qWQQ0Hd6d18xrMn4qT75Pg)
-Content-type: text/html; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
-<META content="MSHTML 6.00.2800.1106" name=GENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=#ffffff>
-<DIV><FONT face=Verdana size=2>Hi All,</FONT></DIV>
-<DIV><FONT face=Verdana size=2>I am running Fedora and Redhat 9 on two servers 
-at my Cybercafe, connected on two Hi speed Lines, I have a decent firewall 
-script, but these days I am facing issues about people changing the Proxy 
-settings in order to get thru porn sites, can anybody suggest some rules which I 
-can implement in the script that avoids connection to these servers? Suggestions 
-are welcome.</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>Regards</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>Harry</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>"In all this world, there is only you<BR>When all 
-else ceases, there is only you"&nbsp; <BR>-- to my MASTER!<BR>&nbsp;&nbsp;&nbsp; 
-Harish<BR><A href="mailto:harish@sabnanis.com">harish@sabnanis.com</A> <BR><A 
-href="mailto:harish.sabnani@cyberhutoman.com">harish.sabnani@cyberhutoman.com</A> 
-</FONT></DIV></BODY></HTML>
-
---Boundary_(ID_qWQQ0Hd6d18xrMn4qT75Pg)--
 
