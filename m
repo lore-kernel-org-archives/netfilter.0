@@ -1,9 +1,9 @@
-From: "Allan" <lists@kissack.freeserve.co.uk>
-Subject: Re: ..abusive spam, was: The Room
-Date: Wed, 30 Jul 2003 07:28:01 -0000
+From: "Srikant S. K" <sriks82@yahoo.com>
+Subject: neighbour table again
+Date: Wed, 30 Jul 2003 01:31:39 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005301c3566c$40279b20$2c00a8c0@home>
-Reply-To: "Allan" <lists@kissack.freeserve.co.uk>
+Message-ID: <20030730083139.96288.qmail@web41903.mail.yahoo.com>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,42 +14,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
- ----- Original Message -----
- From: "Arnt Karlsen" <arnt@c2i.net>
- To: <netfilter@lists.netfilter.org>
- Cc: <abuse@yahoo.com>; <abuse@msn.com>; <abuse@cox.net>;
- <abuse@lists.netfilter.org>; <abuse@digitalwebzone.com>;
- <abuse@needhosting.net>
- Sent: Tuesday, July 29, 2003 9:13 PM
- Subject: ..abusive spam, was: The Room
+Hi all,
 
+I know that this question has been asked several times
+and I have gone through the archieves before posting
+it here unsuccessfully.
 
- > On Tue, 29 Jul 2003 11:16:24 -0700,
- > "Daniel Chemko" <dchemko@smgtec.com> wrote in message
- > <7C9884991ADAE0479C14F10C858BCDF52E35F3@alderaan.smgtec.com>:
- >
- > > Please post OT when you feel in the mood to share Offtopic articles.
- >
- > ..and whenever you see these spammers, get them _off_ the net.
- >
- > ..org spam message headers:
+I have two NIC's one having public IP and the other
+private IP.
 
-<snip>
+eth0: 202.x.y.z
+eth1: 10.0.0.1
 
- Could it have been an inadvertent selection of the group address, when
-selecting individuals?
+System Environments:
+Linux OS - 2.4.20
+iptables - 1.2.8
 
- --
-Allan
+The problem is that the moment I enable ip_forward,
+the "Neighbour Table Overflow" starts and the same
+stops when I disable ip_forward.
 
- to err is human
+I am also running my mail server on 10.0.0.2. I have
+setup port forwarding on my Linux gatewat and this
+works fine the moment ip_forward is enabled.
 
->
+I have checked my localhost settings as suggested by
+many and is fine.
 
+I have also tried using older kernel (2.4.14) along
+with arpd but the problem still exists.
 
+Any help will be a greate help.
+
+Thanks in advance for any help
+
+Regards,
+
+Srikanth
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
 
