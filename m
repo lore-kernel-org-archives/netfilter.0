@@ -1,14 +1,12 @@
-From: "Aaron P. Martinez" <ml@proficuous.com>
-Subject: RE: PLEASE HELP with DNAT problem
-Date: 31 Oct 2003 10:49:06 -0600
+From: "Kevin Smith" <kevin@perfht.com>
+Subject: Re: Noob Question
+Date: Fri, 31 Oct 2003 12:03:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067618946.12008.15.camel@aaron-rh9-ws.proficuous.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A28ACB0@wardrive.citadelcomputer.com.a u>
-	 <2751.209.134.141.210.1067578491.squirrel@webmail.proficuous.com>
+Message-ID: <NGBBLGFEALDADHNDAAFFGEPJDMAA.kevin@perfht.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0003_01C39FA7.02584540"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2751.209.134.141.210.1067578491.squirrel@webmail.proficuous.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,360 +16,117 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-On Thu, 2003-10-30 at 23:34, ml@proficuous.com wrote:
-> > tcp --dport -d
-> >            ^ - Where's the port number?
-> >
-> > iptables -t nat -A POSTROUTING -s 204.181.247.0/24 -p tcp \
-> >     --dport 8001 -d 172.16.0.18 -j SNAT --to-source $NAT_SVR_IP
-> >
-> > Replace $NAT_SVR_IP with your firewalls IP address being 204.181.247.xxx
-> 
-> ahhh, hence the confusion...if i'm reading this properly...  there is no
-> 204.181.247.xxx address on the internet side of my firewall..the serial0
-> interface on my firewall is 209.134.141.xxx.  those 204. addresses are on
-> my inside lan.  So i should put the 209.134.141.xxx in for $NAT_SVR_IP?
-> 
-As i was thinking about this later, i suspected that perhaps you were
-talking about just the generic SNAT that has to be on the outgoing
-serial0 interface of all traffic coming from the internal lan.  Yes..i
-have always had that set up
+This is a multi-part message in MIME format.
 
-iptables -t nat POSTROUTING -i eth0 -s 204.181.247.0/24 -o serial0 -j
-SNAT --to-source <<serial0_outside_ip>>
+------=_NextPart_000_0003_01C39FA7.02584540
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-> Sorry this is so hard to beat into my skull.
+Ok thanks, I think I had to but wasn't 100%. Now I can eliminate that is a
+possibility (Iptables 1.2.8). 
+I finished it late last night so I wasn't in the mood for Googling anything.
+but tonight I shall. But I would turn away any tips. ;-)
+Thanks
 
-I'm wondering too, if possibly i could avoid this routing issue by
-allowing the packets destined for the 172.16.0.16/28 to go out through
-the serial0 interface instead of DNATing them to 10.1.1.16/28 so they
-would be source natted to the external interface of the firewall, then
-coming back they would be correctly routed because they would get
-un-SNATed?
-> 
-> Thanks,
-> 
-> Aaron
-> 
-> 
-> >
-> > Thanks,
-> > ____________________________________________
-> > George Vieira
-> > Systems Manager
-> > georgev@citadelcomputer.com.au
-> >
-> > Citadel Computer Systems Pty Ltd
-> > http://www.citadelcomputer.com.au
-> >
-> > Phone   : +61 2 9955 2644
-> > HelpDesk: +61 2 9955 2698
-> >
-> >
-> >> -----Original Message-----
-> >> From: ml@proficuous.com [mailto:ml@proficuous.com]
-> >> Sent: Friday, 31 October 2003 4:15 PM
-> >> To: netfilter@lists.netfilter.org
-> >> Cc: George Vieira
-> >> Subject: RE: PLEASE HELP with DNAT problem
-> >>
-> >>
-> >> >> Ok. I'm getting there... I'm drawing on a piece of paper
-> >> and combinging
-> >> >> your emails onto it.. but it still seems you have a SNAT problem..
-> >> >>
-> >> >> 204.181.247.x/24 ----> 172.16.0.18:8001 --->  DNAT to
-> >> 204.181.247.34:80
-> >> >>
-> >> >> When you DNAT the above, the source still says
-> >> 203.181.247.x/24 on it so
-> >> >> the DNAT machine which is 204.181.247.34:80 responds
-> >> directly back to
-> >> >> the
-> >> >> source and bypasses the NAT server which then the client
-> >> (source) is
-> >> >> waiting on 172.16.0.18:8001 to respond but only gets a packets from
-> >> >> 204.181.247.34:80 so it drops it..
-> >> >>
-> >> >> Also, if you can use it.. try using the NETMAP patch..
-> >> it'll say you a
-> >> >> hell of alot of rules ;)
-> >> >>
-> >> >> *looks at original email rule list*
-> >> >>
-> >> >> Looks like you have a split DMZ zone, some ports/ips go
-> >> into 1 network,
-> >> >> some others go to the other network.. he he man this is
-> >> confusing . ha
-> >> >> ha
-> >> >>
-> >> >> I think you really need a SNAT rule like this..
-> >> >>
-> >> >> iptables -A POSTROUTING -t nat -s 203.181.247.0/24 -d
-> >> 172.16.0.18:8001
-> >> >> -j
-> >> >> SNAT --to <NATSERVERIP>
-> >>
-> >> iptables -t nat -A POSTROUTING -s 204.181.247.0/24 -p tcp
-> >> --dport 8001 -d
-> >> 172.16.0.18 -j SNAT --to-source
-> >> AND
-> >> iptables -t nat -A POSTROUTING -s 204.181.247.0/24:8001 -p
-> >> tcp --dport -d
-> >> 172.16.0.18 -j SNAT --to-source
-> >> AND
-> >> iptables -t nat -A POSTROUTING -s 204.181.247.0/24 -d
-> >> 172.16.0.18:8001 -j
-> >> SNAT --to-source
-> >> returns....
-> >>
-> >> iptables-restore v1.2.5: Unknown arg `--dport'
-> >> Try `iptables-restore -h' or 'iptables-restore --help' for
-> >> more information.
-> >>
-> >> are you sure that you can specify destination and source
-> >> ports on the SNAT?
-> >>
-> >> Thanks
-> >> >
-> >> > so essentially i'd be sending the packet back out to the internet?
-> >> > there's no way to just keep it on the lan and in the forward chain?
-> >> >
-> >> > that's a real drag.
-> >> > I'm running RH 2.1 ES and i have downloaded their kernel
-> >> source, did a
-> >> > make menuconfig (without changing one single thing) i exit
-> >> out..save the
-> >> > new image.  make dep works...but make modules ALWAYS
-> >> bombs... so until i
-> >> > can get some time..of which i have none becuause of this, i
-> >> doubt i can
-> >> > get that patch to work.
-> >> >
-> >> > Thanks again,
-> >> >
-> >> > Aaron
-> >> >
-> >> > P.S.  if i misinterpreted your comments on the SNAT, please
-> >> let me know.
-> >> >>
-> >> >> this way the 204.181.247.34:80 server will respons back via
-> >> >> <NATSERVERIP>
-> >> >> which eventually renats to 203.181.247.x/24
-> >> >>
-> >> >> Thanks,
-> >> >> ____________________________________________
-> >> >> George Vieira
-> >> >> Systems Manager
-> >> >> georgev@citadelcomputer.com.au
-> >> >>
-> >> >> Citadel Computer Systems Pty Ltd
-> >> >> http://www.citadelcomputer.com.au
-> >> >>
-> >> >> Phone   : +61 2 9955 2644
-> >> >> HelpDesk: +61 2 9955 2698
-> >> >>
-> >> >>
-> >> >>> -----Original Message-----
-> >> >>> From: ml@proficuous.com [mailto:ml@proficuous.com]
-> >> >>> Sent: Friday, 31 October 2003 3:28 PM
-> >> >>> To: George Vieira
-> >> >>> Cc: ml@proficuous.com
-> >> >>> Subject: RE: PLEASE HELP with DNAT problem
-> >> >>>
-> >> >>>
-> >> >>>
-> >> >>> > AARGH!! ASCI ART.. ;P he he... I have 15 networks in my
-> >> >>> head and I need a
-> >> >>> > 1GB memory upgrade in my brain to fit more.. just 1 GB
-> >> will do ;P
-> >> >>> >
-> >> >>> > I don't understand this part :
-> >> >>>
-> >> >>> I tried the ascii art, i really did..but UGHHHH..
-> >> >>>
-> >> >>> let me try to explain it more clearly, and also, the  "it
-> >> hits another
-> >> >>> one" was just my interpretation...it surely could be wrong.
-> >> >>>
-> >> >>> as i say the traffic from the internet is getting DNATed
-> >> perfectly, so
-> >> >>> i'll concentrate on what's NOT working.
-> >> >>>
-> >> >>> my "protected" lan has the 204.181.247.0/24 addresses this is
-> >> >>> eth1...my
-> >> >>> DMZ has (actual) 10.1.1.16/28 addresses and that is on
-> >> >>> eth0.....now__since
-> >> >>> i have 16 public addresses from my ISP, the 172.16.0.16/28
-> >> >>> addresses from
-> >> >>> the original post...I have to get the traffic from the
-> >> >>> internet there and
-> >> >>> also the traffic from my lan there for servers.
-> >> >>>
-> >> >>> I have rules DNATing one to one the 172.16.0.16/28 address to the
-> >> >>> 10.1.1.16/28 addresses for incoming connections from
-> >> serial0 and eth1.
-> >> >>> i.e.
-> >> >>>
-> >> >>> iptables -t nat -A PREROUTING -i serial0 -d 172.16.0.17 -j DNAT
-> >> >>> --to-destination 10.1.1.17
-> >> >>> and
-> >> >>> iptables -t nat -A PREROUTING -i eth1 -d 172.16.0.17 -j DNAT
-> >> >>> --to-destination 10.1.1.17
-> >> >>>
-> >> >>> both of which seems to work just fine.
-> >> >>>
-> >> >>> now....before i put these rules however, i put more
-> >> >>> "specific" rules with
-> >> >>> port assignments.
-> >> >>>
-> >> >>> i.e.
-> >> >>> iptables -t nat -A PREROUTING -i serial0 -d 172.16.0.17
-> >> -p tcp --dport
-> >> >>> 8021 -j DNAT --to-destination 204.181.247.80:80
-> >> >>> and
-> >> >>> iptables -t nat -A PREROUTING -i eth1 -d 172.16.0.17 -p tcp
-> >> >>> --dport 8021
-> >> >>> -j DNAT --to-destination 204.181.247.80:80
-> >> >>>
-> >> >>> The first one works fine, but the second one which should
-> >> >>> essentially tell
-> >> >>> the backet to just go right back onto it's local network
-> >> to find the
-> >> >>> destination, actually ends up connecting to the 172.16.0.17
-> >> >>> address...which then the routing is messesd up and i never
-> >> >>> see it again.
-> >> >>>
-> >> >>> i try this:
-> >> >>> telnet 172.16.0.18:8001
-> >> >>>
-> >> >>> here is a tcpdump
-> >> >>>  tcpdump -n -i any host 204.181.247.21 and port 8001 -v
-> >> -w telnet-in
-> >> >>> tcpdump -r telnet-in
-> >> >>>
-> >> >>> 22:10:22.073457 204.181.247.21.1602 > 204.181.247.80.http: S
-> >> >>> 1454746041:1454746041(0) win 5840 <mss
-> >> 1460,sackOK,timestamp 4064028
-> >> >>> 0,nop,wscale 0> (DF) [tos
-> >> >>> 0x10]
-> >> >>> 22:10:25.069786 204.181.247.21.1602 > 204.181.247.80.http: S
-> >> >>> 1454746041:1454746041(0) win 5840 <mss
-> >> 1460,sackOK,timestamp 4064328
-> >> >>> 0,nop,wscale 0> (DF) [tos
-> >> >>> 0x10]
-> >> >>> 22:10:31.069457 204.181.247.21.1602 > 204.181.247.80.http: S
-> >> >>> 1454746041:1454746041(0) win 5840 <mss
-> >> 1460,sackOK,timestamp 4064928
-> >> >>> 0,nop,wscale 0> (DF) [tos
-> >> >>> 0x10]
-> >> >>> 22:10:43.068733 204.181.247.21.1602 > 204.181.247.80.http: S
-> >> >>> 1454746041:1454746041(0) win 5840 <mss
-> >> 1460,sackOK,timestamp 4066128
-> >> >>> 0,nop,wscale 0> (DF) [tos
-> >> >>> 0x10]
-> >> >>>
-> >> >>>
-> >> >>> Thanks,
-> >> >>>
-> >> >>> Aaron
-> >> >>>
-> >> >>> >
-> >> >>> >> after the first DNAT
-> >> >>> >> rule that DNATS it back to the lan, it hits "another one" one
-> >> >>> >> that the DNATs it to the DMZ,
-> >> >>> >
-> >> >>> > Once you DNAT, it won't pass any more DNAT rules and exits
-> >> >>> the chain?? Or
-> >> >>> > did I misunderstood it AGAIN.. *reads original mail again* ;)
-> >> >>> >
-> >> >>> > Thanks,
-> >> >>> > ____________________________________________
-> >> >>> > George Vieira
-> >> >>> >
-> >> >>> >
-> >> >>> >> -----Original Message-----
-> >> >>> >> From: ml@proficuous.com [mailto:ml@proficuous.com]
-> >> >>> >> Sent: Friday, 31 October 2003 2:03 PM
-> >> >>> >> To: George Vieira
-> >> >>> >> Cc: ml@proficuous.com; netfilter@lists.netfilter.org
-> >> >>> >> Subject: RE: PLEASE HELP with DNAT problem
-> >> >>> >>
-> >> >>> >>
-> >> >>> >> >> I tried to DNAT the lan back
-> >> >>> >> >> to itself and
-> >> >>> >> >> it just isn't working..
-> >> >>> >> >
-> >> >>> >> > If I think I know what your trying to do, you are doing
-> >> >>> a LAN to LAN
-> >> >>> >> > connection right?
-> >> >>> >> >
-> >> >>> >> > Don't forget that a LAN to LAN DNAT also must have a
-> >> >>> >> POSTROUTING SNAT rule
-> >> >>> >> > so the destination server replies back via the
-> >> >>> firewall/NAT server.
-> >> >>> >> > otherwise it'll reply directly to the client and the client
-> >> >>> >> will drop the
-> >> >>> >> > packet immediately.
-> >> >>> >> Ok..i guess this is what i'm missing.  I'm not sure where
-> >> >>> i should be
-> >> >>> >> source natting to however.
-> >> >>> >>
-> >> >>> >> the packet starts at lan....destined for
-> >> >>> internet...now..it supposedly
-> >> >>> >> should get DNATED back to lan..... now like i say..after the
-> >> >>> >> first DNAT
-> >> >>> >> rule that DNATS it back to the lan, it hits another one one
-> >> >>> >> that the DNATs
-> >> >>> >> it to the DMZ, but this one doesn't have the port specific
-> >> >>> >> information, as
-> >> >>> >> normally i'd want it ending up in the DMZ.
-> >> >>> >>
-> >> >>> >> i just don't see how a SNAT fits in here.  but then that's
-> >> >>> >> why i'm asking
-> >> >>> >> fr help.
-> >> >>> >>
-> >> >>> >> Thanks agagin
-> >> >>> >> Aaron P. Martinez
-> >> >>> >> >
-> >> >>> >> > Have you done any tcpdumping or -j LOGing??
-> >> >>> >> >
-> >> >>> >> > Thanks,
-> >> >>> >> > ____________________________________________
-> >> >>> >> > George Vieira
-> >> >>> >> > Systems Manager
-> >> >>> >> > georgev@citadelcomputer.com.au
-> >> >>> >> >
-> >> >>> >> > Citadel Computer Systems Pty Ltd
-> >> >>> >> > http://www.citadelcomputer.com.au
-> >> >>> >> >
-> >> >>> >> > Phone   : +61 2 9955 2644
-> >> >>> >> > HelpDesk: +61 2 9955 2698
-> >> >>> >> >
-> >> >>> >> >
-> >> >>> >> >> -----Original Message-----
-> >> >>> >> >> From: ml@proficuous.com [mailto:ml@proficuous.com]
-> >> >>> >> >> Sent: Friday, 31 October 2003 1:18 PM
-> >> >>> >> >> To: netfilter@lists.netfilter.org
-> >> >>> >> >> Subject: PLEASE HELP with DNAT problem
-> >> >>> >> >
-> >> >>> >>
-> >> >>> >>
-> >> >>> >
-> >> >>>
-> >> >>>
-> >> >>
-> >> >
-> >> >
-> >> >
-> >>
-> >>
-> >
-> 
-> 
+
+--__--__--
+
+Message: 5
+Subject: Re: Noob Question
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Organization: Knowledge Factory
+Date: Fri, 31 Oct 2003 16:25:39 +0200
+
+
+--=-p9AU5830cWaY0P2ToPWv
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 2003-10-31 at 16:13, Kevin Smith wrote:
+> Does IPtables need to be recompiled every time you roll a new kernel?
+> I just compiled 2.4.22 and when my firewall (Shorewall) started, it
+> spit some "device busy" errors with ip_tables.o.=20
+> Kev
+No. The kernel source includes (at least as far as I recall) the
+iptables kernel space drivers/programs/libraries.
+
+The userspace tools (the iptables executables used to manage rules) are
+separate, and do not get recompiled every time you recompile the kernel.
+
+The exception would be if you have iptables v0.1.0 (for example)
+userspace programs and in your kernel have iptables v1.2.8 source code,
+then there would be a mismatch, and the userspace programs may be
+incompatible with the kernel modules.
+
+Best to keep them all the same.
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
+
+
+------=_NextPart_000_0003_01C39FA7.02584540
+Content-Type: application/ms-tnef;
+	name="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="winmail.dat"
+
+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
+CYAIIAYAAAAAAMAAAAAAAABGAAAAAFSFAAABAAAABAAAADkuMAAeAAqACCAGAAAAAADAAAAAAAAA
+RgAAAAA2hQAAAQAAAAEAAAAAAAAAHgALgAggBgAAAAAAwAAAAAAAAEYAAAAAN4UAAAEAAAABAAAA
+AAAAAB4ADIAIIAYAAAAAAMAAAAAAAABGAAAAADiFAAABAAAAAQAAAAAAAAALAA2ACCAGAAAAAADA
+AAAAAAAARgAAAACChQAAAQAAAAsAOoAIIAYAAAAAAMAAAAAAAABGAAAAAA6FAAAAAAAAAwA8gAgg
+BgAAAAAAwAAAAAAAAEYAAAAAEYUAAAAAAAADAD2ACCAGAAAAAADAAAAAAAAARgAAAAAYhQAAAAAA
+AAsAUoAIIAYAAAAAAMAAAAAAAABGAAAAAAaFAAAAAAAAAwBTgAggBgAAAAAAwAAAAAAAAEYAAAAA
+AYUAAAAAAAACAfgPAQAAABAAAAALkP4K2R7WEbZUAKDJ2dlLAgH6DwEAAAAQAAAAC5D+Ctke1hG2
+VACgydnZSwIB+w8BAAAAggAAAAAAAAA4obsQBeUQGqG7CAArKlbCAABQU1RQUlguRExMAAAAAAAA
+AABOSVRB+b+4AQCqADfZbgAAAEM6XFdJTkRPV1NcTG9jYWwgU2V0dGluZ3NcQXBwbGljYXRpb24g
+RGF0YVxNaWNyb3NvZnRcT3V0bG9va1xvdXRsb29rLnBzdAAAAAMA/g8FAAAAAwANNP03AAACAX8A
+AQAAADAAAAA8TkdCQkxHRkVBTERBREhOREFBRkZHRVBKRE1BQS5rZXZpbkBwZXJmaHQuY29tPgAD
+AAYQb/+RiQMABxApBQAAAwAQEAAAAAADABEQAAAAAB4ACBABAAAAZQAAAE9LVEhBTktTLElUSElO
+S0lIQURUT0JVVFdBU05UMTAwJU5PV0lDQU5FTElNSU5BVEVUSEFUSVNBUE9TU0lCSUxJVFkoSVBU
+QUJMRVMxMjgpSUZJTklTSEVESVRMQVRFTEFTVE4AAAAA73w=
+
+------=_NextPart_000_0003_01C39FA7.02584540--
 
 
