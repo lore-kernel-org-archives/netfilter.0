@@ -1,13 +1,12 @@
-From: purushotham.krishnappa@philips.com
-Subject: Iptables problem help required
-Date: Fri, 7 Feb 2003 14:12:31 +0530
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: Lan traffic Monitoring tools
+Date: Fri, 7 Feb 2003 09:46:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFE3F748F7.DD22C17D-ON65256CC6.002FBE0A-65256CC6.002F75C0@diamond.philips.com>
+Message-ID: <003501c2ceb7$c3713af0$8c01a8c0@sundaram>
+References: <E88493086664D511A1E4000103330E82027FE05C@mail.maconomy.dk> <832811662.20030207102832@wp.pl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; 
-	Boundary="0__=EABBE655DFBC389A8f9e8a93df938690918cEABBE655DFBC389A"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,80 +16,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
---0__=EABBE655DFBC389A8f9e8a93df938690918cEABBE655DFBC389A
-Content-type: text/plain; charset=us-ascii
+Hi All,
 
+I have firewall based on iptables (Redhat 7.3) Custom build kernel. I want
+to
+ monitor the my LAN traffic, basically I need a report
+ PC IP Address : web site it accessing, date and time
 
-Hi
+I am not using any proxy in my gateway machine.
 
+ I checked out ntop, mrtg. I would like to know which is best  tool for this
+propose.
 
-The requirement is like this
-
-
-              WebServer-------------------- - ----Router/Firewall---------------------------------------client
-            10.60.90.7/8            eth1                  eth0                                         192.168.10.15
-                              10.60.90.5/8                 192.168.10.5/24
-
-
-
-Router/Firewall ----->RH linux 8 using iptables
-
-client should be able to access the webserver
-With out firewall rule i am able to access webserver  from client (ip forwarding is working fine)
-
-
-I have already set iptable rule pls see the attached file
-
-
-after FW rule is enable
-
-i am not able to connect to webserver from 192.168.10.5  to 10.60.90.7    BUT i can ping 10.60.90.5
-I need clients to connect from 192.168.10.0/24  to able to connect to only port 80 on 10.161.90.7.8
-
-
-
-(See attached file: firescript.txt)
-
-
-Rgds
-Puru
---0__=EABBE655DFBC389A8f9e8a93df938690918cEABBE655DFBC389A
-Content-type: text/plain; 
-	name="firescript.txt"
-Content-transfer-encoding: base64
-
-IyAoMSkgUG9saWNpZXMgKGRlZmF1bHQpDQppcHRhYmxlcyAtUCBJTlBVVCBEUk9QDQppcHRhYmxl
-cyAtUCBPVVRQVVQgRFJPUA0KaXB0YWJsZXMgLVAgRk9SV0FSRCBEUk9QDQoNCiMgKDIpIFVzZXIt
-ZGVmaW5lZCBjaGFpbiBmb3IgQUNDRVBURUQgVENQIHBhY2tldHMNCmlwdGFibGVzIC1OIG9rYXkN
-CmlwdGFibGVzIC1BIG9rYXkgLXAgVENQIC0tc3luIC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgb2th
-eSAtcCBUQ1AgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0K
-aXB0YWJsZXMgLUEgb2theSAtcCBUQ1AgLWogRFJPUA0KDQojICgzKSBJTlBVVCBjaGFpbiBydWxl
-cw0KIyBSdWxlcyBmb3IgaW5jb21pbmcgcGFja2V0cyBmcm9tIExBTg0KaXB0YWJsZXMgLUEgSU5Q
-VVQgLXAgQUxMIC1pIGV0aDEgLXMgMTAuMC4wLjAvOCAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIElO
-UFVUIC1wIEFMTCAtaSBsbyAtcyAxMjcuMC4wLjEgLWogQUNDRVBUDQppcHRhYmxlcyAtQSBJTlBV
-VCAtcCBBTEwgLWkgbG8gLXMgMTAuNjAuOTAuNSAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIElOUFVU
-IC1wIEFMTCAtaSBsbyAtcyAxOTIuMTY4LjEwLjUgLWogQUNDRVBUDQppcHRhYmxlcyAtQSBJTlBV
-VCAtcCBBTEwgLWkgZXRoMSAtZCAxMC4wLjAuMjU1IC1qIEFDQ0VQVA0KDQojIFJ1bGVzIGZvciBp
-bmNvbWluZyBwYWNrZXRzIGZyb20gdGhlIGludGVybmV0DQoNCiMgUGFja2V0cyBmb3IgZXN0YWJs
-aXNoZWQgY29ubmVjdGlvbnMNCmlwdGFibGVzIC1BIElOUFVUIC1wIEFMTCAtZCAxOTIuMTY4LjEw
-LjUgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0KDQojIFRD
-UCBydWxlcw0KaXB0YWJsZXMgLUEgSU5QVVQgLXAgVENQIC1pIGV0aDAgLXMgMC8wIC0tZGVzdGlu
-YXRpb24tcG9ydCA4MCAtaiBva2F5DQoNCiMgSUNNUCBydWxlcw0KaXB0YWJsZXMgLUEgSU5QVVQg
-LXAgSUNNUCAtaSBldGgwIC1zIDAvMCAtLWljbXAtdHlwZSA4IC1qIEFDQ0VQVA0KaXB0YWJsZXMg
-LUEgSU5QVVQgLXAgSUNNUCAtaSBldGgwIC1zIDAvMCAtLWljbXAtdHlwZSAxMSAtaiBBQ0NFUFQN
-Cg0KIyAoNCkgRk9SV0FSRCBjaGFpbiBydWxlcw0KIyBBY2NlcHQgdGhlIHBhY2tldHMgd2Ugd2Fu
-dCB0byBmb3J3YXJkDQppcHRhYmxlcyAtQSBGT1JXQVJEIC1pIGV0aDEgLWogQUNDRVBUDQppcHRh
-YmxlcyAtQSBGT1JXQVJEIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRFRCAtaiBB
-Q0NFUFQNCg0KIyAoNSkgT1VUUFVUIGNoYWluIHJ1bGVzDQojIE9ObHkgb3V0cHV0IHBhY2tldHMg
-d2l0aCBsb2NhbCBhZGRyZXNzIChubyBzcG9vZmluZykNCmlwdGFibGVzIC1BIE9VVFBVVCAtcCBB
-TEwgLXMgMTI3LjAuMC4xIC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgT1VUUFVUIC1wIEFMTCAtcyAx
-MC42MC45MC41IC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgT1VUUFVUIC1wIEFMTCAtcyAxOTIuMTY4
-LjEwLjUgLWogQUNDRVBUDQoNCiMgKDYpIGR5bmFtaWMgTkFUIHRvIGRvIHBvcnQgZm9yd2FyZGlu
-Zw0KaXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLXAgdGNwIC1kIDE5Mi4xNjguMTAuNSAt
-LWRwb3J0IDgwIC1qIEROQVQgLS10by1kZXN0aW5hdGlvbiAxMC42MC45MC43DQo=
-
---0__=EABBE655DFBC389A8f9e8a93df938690918cEABBE655DFBC389A--
+-RS
 
 
