@@ -1,13 +1,12 @@
-From: Johan Ankarloo <johan.ankarloo@volvo.com>
-Subject: Re: DNAT/SNAT and logging anyone?
-Date: Tue, 20 Jan 2004 08:48:15 +0100
+From: "Remus" <rmocius@auste.elnet.lt>
+Subject: Re: IMQ Replacement
+Date: Tue, 20 Jan 2004 10:28:18 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1074584895.7905.14.camel@ankarloo.got.volvo.net>
-References: <OFEE9F5FE0.01F15485-ON65256E21.00254989@pricol.co.in>
+Message-ID: <002301c3df40$30f4b3b0$6e69690a@RIMAS>
+References: <1068652569.27810.450.camel@cumulus>	 <Pine.LNX.4.58.0311131244400.13900@fhynpb.envafyvqr.arg> <1074352525.4761.1389.camel@peterlaptop> <400BDCB6.2000208@pobox.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OFEE9F5FE0.01F15485-ON65256E21.00254989@pricol.co.in>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,219 +17,113 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Andre Correa <andre.correa@pobox.com>
+Cc: netfilter@lists.netfilter.org
 
-I don't know if you read the hole conversation below? This doesn't work
-since all you get is the source/destination before you do the
-translation. I need to have the translated source/destination included
-as well. If you do a DNAT to a range of adresses, how do you know which
-adress was used?
-
-Regards
-
-Johan
+Hi folks,
 
 
-On Tue, 2004-01-20 at 07:47, hclfm@pricol.co.in wrote:
->  
-> 
->  Hi ,
-> 
->  Use  --log-level debug option with your logging command.
-> 
->  you will get the required IP and port information in logs.
-> 
-> regards,
-> 
-> U.SivaKumar.
-> 
->  HCL Infosystems Limited.
-> 
-> 
-> 
-> 
-> 
-> Johan Ankarloo <johan.ankarloo@volvo.com>
-> Sent by: netfilter-admin@lists.netfilter.org
-> 01/20/2004 07:41 AM CET
-> 
-> To: netfilter@lists.netfilter.org
-> cc:
-> bcc:
-> Subject: Re: DNAT/SNAT and logging anyone?
-> 
-> 
-> Hi all. This is a repost. Thanks to Jeffrey for trying to help me.
-> 
-> I need a way to log SNAT/DNAT packets. In the log i need all the
-> information about what have happend to the packet. Since the log
-> target
-> is above the actually mangle line, the log target won't know how the
-> packet will be mangle. What i need in the log files are:
-> 
-> Original Source
-> Original SourcePort
-> Original Destination
-> Original DestinationPort
-> Translated Source
-> Translated SourcePort
-> Translated Destination
-> Translated DestinationPort
-> 
-> As an example, take a look at the documentaion about nat and look at
-> the
-> examples below taken from
-> http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-6.html
-> 
-> ---- SNIP ----
-> ## Change destination addresses to 5.6.7.8, 5.6.7.9 or 5.6.7.10.
-> # iptables -t nat -A PREROUTING -i eth0 -j DNAT --to 5.6.7.8-5.6.7.10
-> ## Change source addresses to 1.2.3.4, 1.2.3.5 or 1.2.3.6
-> # iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 1.2.3.4-1.2.3.6
-> ---- SNIP ----
-> 
-> Here you can se that you can do DNAT and SNAT to an range of ipadresse
-> so the question may be a bit clearer when i ask the question like
-> this.
-> How is it possible to log to wich ipadress the connection is
-> translated
-> to?
-> 
-> Regards
-> 
-> Johan
-> 
-> On Mon, 2004-01-19 at 20:17, Jeffrey Laramie wrote:
-> > Johan Ankarloo wrote:
+
+I care about it as well.
+
+
+
+IMQ is great and have to be maintained, but myself I'm not strong with
+programming.
+
+But I can help with testing. If somebody can take care about IMQ (or new
+project of it) would be very nice.
+
+I prefer to have everything on one box - traffic shaping (ingress and
+outgress), NAT and firewall.
+
+
+
+So guys can anybody can maintain/update IMQ (specially for 2.6 kernel),
+please?
+
+
+
+
+
+Thanks
+
+
+
+Remus
+
+
+
+
+
+----- Original Message ----- 
+From: "Andre Correa" <andre.correa@pobox.com>
+To: <peter@empoweringsolutions.com>
+Cc: "Netfilter Mailing List" <netfilter@lists.netfilter.org>
+Sent: Monday, January 19, 2004 1:33 PM
+Subject: Re: IMQ Replacement
+
+
+>
+> I've being using IMQ with 2.4.23 here with no probs too. I've already
+> tried to discuss this topic here and in other lists but got no answer.
+> Writting to the last maintainner didn't helped much...
+>
+> Some time ago there was a posting, maybe in LARTC, about a guy that
+> started a parallell IMQ project, but I've never heard about hin anymore...
+>
+> I would like to contribute/coordinate in an effort to put IMQ back on
+> its track. It is an important feature that is being left behind.
+>
+> Peter, maybe we should join, put a new site up with documentation
+> updates, maintain 2.4.x patchs and later think what to do with 2.6. We
+> may find other people interrested in coding and helping...
+>
+> Anybody else care about it?
+>
+> let us know...
+>
+> cheers
+>
+> Andre
+>
+>
+>
+> Peter Frischknecht wrote:
+> > I have been using IMQ with great success for the last few months.  The
+> > particular network where this is used has 400+ nodes, and IMQ performs
+> > flawlessly.
 > >
-> > >On Mon, 2004-01-19 at 17:24, Jeffrey Laramie wrote:
-> > >
-> > >
-> > >>Johan Ankarloo wrote:
-> > >>
-> > >>
-> > >>
-> > >>>On Mon, 2004-01-19 at 16:21, Jeffrey Laramie wrote:
-> > >>>
-> > >>>
-> > >>>
-> > >>>
-> > >>>>Johan Ankarloo wrote:
-> > >>>>
-> > >>>>
-> > >>>>
-> > >>>>
-> > >>>>
-> > >>>>>Hi
-> > >>>>>
-> > >>>>>Does anyone know how to log a DNAT/SNAT connection? When
-> logging a NAT
-> > >>>>>connection you also want to know the origin
-> source/destination/port of
-> > >>>>>that packet. Is that possible?
-> > >>>>>
-> > >>>>>
-> > >>>>>
-> > >>>>>
-> > >>>>>
-> > >>>>>
-> > >>>>>
-> > >>>>Sure. The easiest way to do it is to add a matching log rule
-> just before
-> > >>>>the nat rule:
-> > >>>>
-> > >>>>iptables -t nat -A POSTROUTING -o $Net_Interface -j LOG
-> --log-prefix
-> > >>>>"SNAT: "
-> > >>>>iptables -t nat -A POSTROUTING -o $Net_Interface -j SNAT --to
-> $Net_IP
-> > >>>>
-> > >>>>Jeff
-> > >>>>
-> > >>>>
-> > >>>>
-> > >>>>
-> > >>>The problem is when doing this is that you doesn't get the
-> original
-> > >>>source/destination or the translating adress. If you look at the
-> logs
-> > >>>you can't see all the information that you need to be able to
-> debug any
-> > >>>problem or to be able to track that connection back to the user.
-> > >>>
-> > >>>
-> > >>>
-> > >>>
-> > >>I don't use DNAT so I can't tell you how it logs connections, but
-> > >>logging a SNAT connection works fine. Here's the rules I used:
-> > >>
-> > >># Masquerade everything leaving the lan as the firewall IP.
-> > >>$iptables -t nat -A POSTROUTING -o $Net_Interface -j LOG
-> --log-level
-> > >>debug --log-prefix "SNAT: "
-> > >>$iptables -t nat -A POSTROUTING -o $Net_Interface -j SNAT --to
-> $Net_IP
-> > >>
-> > >>And here's the log entry I got:
-> > >>
-> > >>Jan 19 11:14:21 NS1 kernel: SNAT: IN= OUT=eth1 SRC=192.168.0.4
-> > >>DST=66.95.2.50 LEN=44 TOS=0x08 PREC=0x00 TTL=63 ID=17955 PROTO=TCP
-> > >>SPT=1030 DPT=80 WINDOW=28672 RES=0x00 SYN URGP=0
-> > >>
-> > >>
-> > >>192.168.0.4 is the source host on the local private subnet
-> > >>66.95.2.50 is the IP of the remote host
-> > >>Sending port is 1030
-> > >>Dest port is 80
-> > >>
-> > >>And $Net_IP is IP the outside will see which is the IP of the
-> firewall.
-> > >>The SNATed ports will be the same as the original ones.
-> > >>
-> > >>Isn't this what you're looking for or did I misunderstand you?
-> > >>
-> > >>Jeff
-> > >>
-> > >>
-> > >
-> > >No, i don't see all the information in your example above. Look at
-> the
-> > >following examples taken from the examples at
-> > >http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-6.html
-> > >
-> > >---- SNIP ----
-> > >## Change destination addresses to 5.6.7.8, 5.6.7.9 or 5.6.7.10.
-> > ># iptables -t nat -A PREROUTING -i eth0 -j DNAT --to
-> 5.6.7.8-5.6.7.10
-> > >
-> > >## Change source addresses to 1.2.3.4, 1.2.3.5 or 1.2.3.6
-> > ># iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to
-> 1.2.3.4-1.2.3.6
-> > >---- SNIP ----
-> > >
-> > >Here you can se that you can do DNAT and SNAT to an range of
-> ipadresse
-> > >so the question may be a bit clearer when i ask the question like
-> this.
-> > >How is it possible to log to wich ipadress the connection is
-> translated
-> > >to?
-> > >
-> > >
+> > As anyone who uses IMQ will tell you, the only alternatives are:
+> > 1 - Install another router, just to perform NAT
+> > 2 - Install 2 additional NICs in the Linux gateway with a Xover cable
+> > between them
 > >
-> > Ahh, I see what the issue is. You 'know' the translated IP because
-> you
-> > explicitly set it within the NAT rule, not because it's in the log.
-> In
-> > the case of a target range there is no way for a prior logging rule
-> to
-> > tell which of the range addresses will be assigned by the NAT rule.
-> I
-> > think you'll need to use a tool like snort to get that kind of
-> detail.
-> > Maybe someone else knows another way, sorry I couldn't help you.
+> > Is there another piece of software that performs the job of IMQ?
+> > It is great being able to shape traffic AND masquerade packets in one
+> > box.  How else can it be done?
 > >
-> > Jeff
-
+> > We shape traffic individually for each client.  Generic traffic shapping
+> > rules that regulate the entire pipe would not work for us.
+> >
+> > The fact that IMQ is unmaintained is nerve wrecking.  It is difficult
+> > enough to install the thing with the sources and documentation
+> > available.  It will only become more difficult as the kernel evolves and
+> > we move to 2.6.x.
+> >
+> > I don't think I have the knowledge to mainatin the source code.  But I
+> > believe in the concept so much that I might just take up the code
+> > maintenance.  Hoepefully some other folks will join in.  Maybe we can
+> > convince enough folks to incorporate it into 2.6.x.
+> >
+> > Any help, comments or even flames will be appreciated.  It is time for a
+> > solution to this problem.
+> >
+> > Peter
+> >
+> >
+> >
+>
+>
 
 
