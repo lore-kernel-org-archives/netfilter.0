@@ -1,12 +1,13 @@
-From: Michael Eck <michael.eck@gmail.com>
-Subject: Many Many table rules
-Date: Tue, 14 Sep 2004 13:06:53 -0400
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Port forwarding or NAT?
+Date: Tue, 14 Sep 2004 13:13:56 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <d82fbdb70409141006173a23f2@mail.gmail.com>
-Reply-To: Michael Eck <michael.eck@gmail.com>
+Message-ID: <1095182036.1895.4.camel@wolfpack.ljm.dom>
+References: <01ef01c49a5f$51824900$6300a8c0@93egeater>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <01ef01c49a5f$51824900$6300a8c0@93egeater>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +20,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a bridging traffic shaper that uses htb and sfq.  My iptables
-and kernel are patched with ipp2p and layer-7 filtering to mark p2p
-traffic.  Currently, this unit is at the head end of a broadband
-network.  I'm dividing up my users into htb classes based on their
-location on the network.  This amounts to 5 rules per IP address, 1
-for generic traffic, and 4 for ipp2p and a few layer7 rules.  That
-puts me at about 820 rules for the inside interface portion of my
-iptables.
+On Tue, 2004-09-14 at 09:32, Eric Geater 9/01/04 wrote:
+> I have one crazy machine at our home office that must communicate on
+> port 6847 to an outside company.  This one machine went through our old
+> proxy server until it died last week.  We're using IPTABLES through
+> rc.firewall-2.4 on a Linux proxy, but it doesn't seem to be allowing
+> this communication to occur.
+> 
+> Would this be handled through port forwarding or NAT?  
 
-Is this a problem?  What do I need to look out for or change to
-account for this many rules?  I'm not able to reproduce any actual
-problems but some users have complained of intermittant sluggishness
-and slow speeds.  Some of this can be attributed to a network that is,
-in certain areas, at or beyond reasonable capacity.  I just want to
-find out if I should pay special attention to anything when using this
-many rules.
+it would be handled by the FORWARD chain of the filter table, and by a
+SNAT/MASQ rule in the POSTROUTING chain of the nat table.
 
-Thanks,
-Michael Eck
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
+
 
