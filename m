@@ -1,12 +1,14 @@
-From: Carles Xavier Munyoz =?iso-8859-15?q?Bald=F3?= <carles@unlimitedmail.org>
-Subject: TCP/UDP accounting data.
-Date: Mon, 27 Oct 2003 13:31:12 +0100
+From: Peteris Krumins <newsgroups@lf.lv>
+Subject: Re[3]: how to negate a limit match?
+Date: Sun, 2 Nov 2003 14:55:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310271331.12496.carles@unlimitedmail.org>
+Message-ID: <109602979308.20031102145527@lf.lv>
+References: <Pine.LNX.4.44.0311020630160.10439-100000@localhost.localdomain>
+Reply-To: Peteris Krumins <newsgroups@lf.lv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0311020630160.10439-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,35 +18,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "Robert P. J. Day" <rpjday@mindspring.com>
+Cc: iptables mailing list <netfilter@lists.netfilter.org>
 
-Hi,
-I have created, using the iptables command, a set of chains for accounting=
-=20
-purpouses only.
-=46or example, I have created a chain for account the TCP incomming traffic=
- and=20
-another one for account UDP incomming traffic.
+Sunday, November 2, 2003, 1:32:00 PM, you wrote:
 
-I'm programming a C daemon that periodically takes the amount of bytes=20
-accounted by every chain and stores it in a database.
+RPJD> On Sun, 2 Nov 2003, Peteris Krumins wrote:
 
-At this moment I'm running the command iptables from inside my C program to=
-=20
-store the chain information in a file, and then parse this file to get the=
-=20
-data.
-Is there any iptables C library I can use to get this accounting informatio=
-n=20
-directly, without having to run the iptables command ?
-Is this information stored in a /proc file ?
+>>
+>> Limit cannot be negated...
 
-Greetings.
-=2D--
-Carles Xavier Munyoz Bald=F3
-carles@unlimitedmail.org
-http://www.unlimitedmail.net/
-=2D--
+RPJD> from the iptables man page:
+
+RPJD> limit 
+
+RPJD>   This module matches at a limited rate using a token bucket filter.  A
+RPJD> rule using this extension will match until this limit is reached (unless
+RPJD> the ! flag is used).  It can be used in combination with the LOG target to
+RPJD> give limited logging, for example.
+
+Do you believe in everything said?
+Someone once said that computers will never need more than 640KB of
+ram..
+
+RPJD>   so the man page clearly suggests that the limit match can be negated.
+RPJD> i'm just not sure how one would do it.  what's the syntax?
+
+The syntax is:
+ cd /usr/src/linux/net/ipv4/netfilter
+ grep 'invert' ipt_limit.c
+ if [ $? -gt 0 ]; then
+   echo "'!' is not implemented in this match module"
+ fi
+ cd -
+
+ 
+P.Krumins
 
 
