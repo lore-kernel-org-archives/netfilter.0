@@ -1,11 +1,9 @@
-From: "Roy" <eayman@seed.net.tw>
-Subject: Localtime problem
-Date: Wed, 11 Sep 2002 20:22:00 +0800
+From: Silkk <crystaldrinker@yahoo.com>
+Subject: If i follow this will ihave prblems
+Date: Thu, 12 Sep 2002 20:26:51 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004e01c2598d$e40ca550$0a0aa8c0@roy>
+Message-ID: <20020913032651.34369.qmail@web40607.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0047_01C259D0.E272A8F0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,88 +14,141 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hello,
 
-------=_NextPart_000_0047_01C259D0.E272A8F0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+I was wandering if someone could go  over this and
+tell me if im did soomething wrong in these steps i
+have tryed this many times but keep 
 
-Dear all,             =20
-               Did anyone try this function well ?
-               I put ulogd_LOCALTIME.c into ulogd-x/extensions =
-directory,and replace Rule.make.in in ulogd-xxx/
-               It has complied ulogd_LOCALTIME.so and installed.
-               add the line=20
-                          plugin /usr/local/lib/ulogd/ulogd_LOCALTIME.so
-               in ulogd.conf
-               Mysql info.
-               local_time field value is 1031676302
-               It's seems not work,Is my procedure correct ? Thanks for =
-your comments.
+getting error wandering where im going wrong
 
-Regards / Roy
+Ok installed linux 7.2 it comes with iptables already
+installed iptablesv1.2.3  Now i want to install
+iptables 1.2.7 Soo here is what im 
 
-------=_NextPart_000_0047_01C259D0.E272A8F0
-Content-Type: text/html;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+doing...
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2><FONT face=3DArial color=3D#0000ff>Dear=20
-all,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;</FONT></FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;=20
-Did anyone try this function well ?</FONT></DIV>
-<DIV><FONT size=3D2><FONT face=3DArial=20
-color=3D#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-I put ulogd_LOCALTIME.c into ulogd-x/extensions directory,and replace=20
-Rule.make.in in ulogd-xxx/</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;=20
-&nbsp;It has complied ulogd_LOCALTIME.so and installed.</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; add the line </FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p=
-lugin=20
-/usr/local/lib/ulogd/ulogd_LOCALTIME.so</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;=20
-&nbsp;in ulogd.conf</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;=20
-Mysql info.</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;local_time=20
-field value is 1031676302</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;=20
-It's seems not work,Is my procedure&nbsp;correct ? Thanks for your=20
-comments.</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial color=3D#0000ff size=3D2>Regards /=20
-Roy</FONT></DIV></FONT></BODY></HTML>
+Re-Compile my kernel to 2.4.19 with 
+CONFIG_PACKET 
+CONFIG_NETFILTER 
+CONFIG_CONNTRACK 
+CONFIG_IP_NF_FTP 
+CONFIG_IP_NF_IRC 
+CONFIG_IP_NF_IPTABLES 
+CONFIG_IP_NF_FILTER 
+CONFIG_IP_NF_NAT 
+CONFIG_IP_NF_MATCH_STATE 
+CONFIG_IP_NF_TARGET_LOG 
+CONFIG_IP_NF_MATCH_LIMIT 
+CONFIG_IP_NF_TARGET_MASQUERADE 
+ALL built in the kernel: 
+***************************************************************************************************************************************
+Next i am going to download IPTABLES-1.2.7 and install
+them
+bzip2 -cd iptables-1.2.3.tar.bz2 | tar -xvf 
+make KERNEL_DIR=/usr/src/linux/ 
+make install KERNEL_DIR=/usr/src/linux/ 
+****************************************************************************************************************************************
+Next im going to create a script for my iptables named
+"rc.firewall" in the "/etc/rc.d/" dir. where i create
+my rules:
+then im going to 
+chown root.root /etc/rc.d/rc.firewall
+chmod u=rwx /etc/rc.d/rc.firewall
+sh /etc/rc.d/rc.firewall
+And im going to add the following line "sh
+/etc/rc.d/rc.firewall" to the end of the
+"/etc/ec.d/rc.local" file: all this is soo it will 
 
-------=_NextPart_000_0047_01C259D0.E272A8F0--
+startup everytime compouters starts..
+***************************************************************************************************************************************
+Since i have a dynamic ip address im going to install
+"PUMP" from Linux instal disc 2
+rpm -iv pump-1.1.11
 
+Then im going to create a "PUMP.CONF" file in the
+"/etc" directpory which will look like this
+-------------------------------------------------------------------
+retries 3
+script /etc/rc.d/rc.pump.done
+
+device eth0 {
+     noisdomain
+}
+------------------------------------------------------------
+And then the following shell commands can be placed in
+the firewall script some point after any HARDCODED
+definitions of IPADDRESS
+-------------------------------------------------------------
+if [ -f /etc/rc.d/pump.info ]; then
+     . /etc/rc.d/pump.info
+ else
+
+ echo "rc.firewall: dhcp is not configured."
+ sh /ect/init.d/iptables panic
+ exit 1 
+fi
+------------------------------------------------
+Sooo then in the "/etc/rc.d" i will create this script
+--------------------------------------------------------------------------
+#!/bin/bash
+
+if [ "$1" = "down" ]; then
+    exit 0
+fi
+
+if [ "$1" = "lease" ]; then
+    echo address $3 assigned to network interface $2 >
+/dev/console
+fi
+
+/sbin/pump -i eth0 -s > /var/tmp/pump.out
+
+IPADDR=`fgrep IP: /var/tmp/pump.out | sed -e "s/.*IP:
+//"`
+NETMASK=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*Netmask: //"`
+BROADCAST=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*Broadcast: //"`
+NETWORK=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*Network: //"`
+DHCP_SERVER=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*DHCP_SERVER: //"`
+GATEWAY=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*Gateway: //"`
+DOMAIN=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*Domain: //"`
+
+rm /var/tmp/pump.out
+
+echo IPADDR=$IPADDR . /etc/rc.d/pump.info
+echo NETMASK=$NETMASK >> /etc/rc.d/pump.info
+echo SUBNET_BASE=$NETWORK >> /etc/rc.d/pump.info
+echo SUBNET_BROADCAST=$BROADCAST >>
+/etc/rc.d/pump.info
+echo GATEWAY=$GATEWAY >> /etc/rc.d/pump.info
+echo HOSTNAME=$HOSTNAME >> /etc/rc.d/pump.info
+echo DHCP_SERVER=$DHCP_SERVER>> /etc/rc.d/pump.info
+
+sh /etc/init.d/iptables restart
+
+exit 0
+-----------------------------------------------------------------------------------------
+
+What im asking is if i follow these steps  should i
+have any problems cause this is my 3 rd try with this
+i wannaknow what i am doing wrong 
+
+thanks for the help guys!!!          
+
+
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Finance - Get real-time stock quotes
+http://finance.yahoo.com
 
