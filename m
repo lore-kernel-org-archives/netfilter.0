@@ -1,13 +1,11 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: port forwarding problem
-Date: Wed, 29 Jan 2003 02:21:19 +0100
+From: "Preston Wade" <Preston_Wade@hilton.com>
+Subject: RE: Should i be worried?
+Date: Tue, 28 Jan 2003 17:30:30 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030129022119.7cdcb112.arnt@c2i.net>
-References: <24307.192.168.0.1.1043741649.squirrel@mail.intermediacorp.com>
+Message-ID: <0B2759D401C1D211ACA500805FFE2C3F0860BE22@cmxserv3.hilton.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <24307.192.168.0.1.1043741649.squirrel@mail.intermediacorp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +16,84 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: 'Erik Ahlner' <whyz@home.se>, netfilter@lists.netfilter.org
+
+This rule would allow someone outside your firewall to route to your
+internal boxes.  I wouldn't accept all connection from the external
+interface to the internal interface.
+
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
+
+Also I wouldn't have a default policy of ACCEPT for the INPUT chain either.
+$IPTABLES -P INPUT ACCEPT
+
+
+Anyway.... the log entry below is interesting because it shows that the
+packet came in on eth0 and went out eth0, but given the source and
+destination addresses I would think it would have came in on one interface
+and gone out a different.  The first two look like DNS queries based on the
+DPT, but the source port is that of a NetBIOS service.  The last entry looks
+like potentially a legitimate web request.
+
+Which interface is your outside?
+Can you show us the output of a netstat -nr?
+
+Thanks,
+Preston
+
+
+-----Original Message-----
+From: Erik Ahlner [mailto:whyz@home.se] 
+Sent: Tuesday, January 28, 2003 4:30 PM
 To: netfilter@lists.netfilter.org
+Subject: Should i be worried?
 
-On Tue, 28 Jan 2003 16:14:09 +0800 (PHT), 
-<oarojo@intermediacorp.com> wrote in message 
-<24307.192.168.0.1.1043741649.squirrel@mail.intermediacorp.com>:
+Hello!
 
-> hello guys!!! Can someone help me on my problem regarding iptables???
-> 
-> This has been my problem a month now.. I'm running a redhat 7.3
-> firewall server with two NICs; eth0 facing the internal network
-> (192.168.0.x) and eth1 facing the internet (external network). Now I
-> wish to forward all traffic on eth1, port 25 to another to my mail
-> server (say, 192.168.0.2). I did something like:
-> 
-> iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
-> iptables -A FORWARD -p tcp --dport 25 -d 192.168.0.2 -j ACCEPT
-> iptables -A PREROUTING -t nat -p tcp --dport 25 -d x.x.x.x -j DNAT
->  --to 192.168.0.2
-> 
-> Now when i used to test SMTP connection thru telnetting from another
-> server... say:
-> 
-> #telnet xxx.xxx.xxx.xxx 25
-> 
-> It just stucked in there doesn't continue...
-> 
-> using nmap on my firewall:
-> 
-> #nmap xxx.xxx.xxx.xxx -p 25
-> 
-> it says that port 25 is filtered...
-> 
-> 
-> Is there anything wrong with my iptable rules? I would really
-> appreciate if you can send me your help... thanks!
+I just happened to do a dmesg, and got this output:
 
-..a stab in the dark: 'cat /proc/sys/net/ipv4/ip_forward' says?
+IN=eth0 OUT=eth0 SRC=192.168.0.186 DST=130.236.230.9 LEN=74 TOS=0x00
+PREC=0x00 TTL=127 ID=14459 PROTO=UDP SPT=137 DPT=53 LEN=54
+IN=eth0 OUT=eth0 SRC=192.168.0.186 DST=130.236.230.9 LEN=74 TOS=0x00
+PREC=0x00 TTL=127 ID=14715 PROTO=UDP SPT=137 DPT=53 LEN=54
+IN=eth0 OUT=eth0 SRC=192.168.0.88 DST=217.209.28.135 LEN=48 TOS=0x00
+PREC=0x00 TTL=127 ID=37469 DF PROTO=TCP SPT=2418 DPT=80 WINDOW=16384
+RES=0x00 SYN URGP=0
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+
+As you can see, i get some message about traffic from 192.168.0.186 and .88
+.. these two computers are NOT in my home network, so i guess that someone
+has named his computers like that on the university network, even though the
+university network has 130.236.x.x.
+Is this a problem for me?
+And what does this output actually mean?
+Has someone used my computer as a router?
+If they have, how is that possible?
+This is what my iptable looks like:
+
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -t nat -F
+
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -j LOG
+
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+$IPTABLES -A INPUT -s 192.168.0.0/24 -i eth0 -j DROP
+
+I thought that the last line was to stop this from happening..
+Or am i just stupid? Did dmesg just show me that some packets have been
+dropped?
+
+Many thanks
+
+Erik Ahlner
+
 
 
 
