@@ -1,13 +1,11 @@
 From: "Preston A. Elder" <prez@srealm.net.au>
-Subject: Re: [netfilter-core] iptables/conntrack in enterprise environment.
-Date: Fri, 30 May 2003 13:42:07 -0400
+Subject: iptables/conntrack in enterprise environment.
+Date: Thu, 29 May 2003 01:13:47 -0400
 Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <200305301342.16153.prez@srealm.net.au>
-References: <200305290113.58552.prez@srealm.net.au> <200305290810.16531.prez@srealm.net.au> <20030530080806.GB29312@sunbeam.de.gnumonks.org>
+Message-ID: <200305290113.58552.prez@srealm.net.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <20030530080806.GB29312@sunbeam.de.gnumonks.org>
 Content-Description: clearsigned data
 Content-Disposition: inline
 Errors-To: netfilter-devel-admin@lists.netfilter.org
@@ -20,76 +18,126 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: Text/Plain; charset="us-ascii"
-To: Harald Welte <laforge@netfilter.org>
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, coreteam@netfilter.org
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, coreteam@netfilter.org
 
 =2D----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-On Friday 30 May 2003 04:08 am, Harald Welte wrote:
-> > That was not my point.  My point was, for up to 5 days later, the
-> > system still has entries in the conntrack table (listed as
-> > 'ESTABLISHED'), which have been dead and gone for a long time,
-> > conntrack does not realise that connection is utterly closed, and it
-> > should drop its conntrack entry.  I'm not as worried about the
-> > lower-value timeouts, but as I said, I saw ALOT of established
-> > connections hanging around in the conntrack table (making the
-> > conntrack table about 200,000 entries long, give or take), most of
-> > which were entries for connections already closed.
->
-> This is exactly the behaviour shown by kernels that have not the above bug
-> fix applied.
->
-> Can you please verify that this is indeed a conntrack bug?  Can you do
-> some tcpdump capturing that actually shows that there was a connection
-> teardown (FIN handshake or RST) and after it, conntrack state of the
-> respective connection stays ESTABLISHED?
->
-> I just want to make sure that this is really some problem about a
-> possible conntrack bug - not some application that forgets to fully
-> close TCP connections..
+Hi,
 
-OK, just to be sure, I just installed kernel 2.4.21-rc6, with all the=20
-'pending' patches applied to it as well, these are the ONLY patches applied=
+I am in an enterprise environment and I'm having some problems with conntra=
+ck=20
+specifically.
+
+We have a system that acts as a router, however any new inbound connection =
+for=20
+any machine behind this router is re-directed to a specific port on the loc=
+al=20
+machine, where an application responds as if it were the system behind the=
 =20
-to this kernel.
+router.  These systems experience some very high volumes of traffic=20
+(sustaining over 30mbit of traffic).  Heres a breakdown of TCP socket=20
+connections by status at one particular point in time:
+ESTABLISHED : 1363
+LAST_ACK    : 27
+TIME_WAIT   : 616
+=46IN_WAIT2   : 8
+=46IN_WAIT1   : 140
+SYN_RECV    : 6188
+CLOSE_WAIT  : 365
+LISTEN      : 3
+CLOSING     : 5
 
-Netstat is showing me the following connection breakdowns:
-SNATs: 0
-ESTABLISHED : 1060
-LAST_ACK    : 4865
-TIME_WAIT   : 29
-=46IN_WAIT2   : 1
-=46IN_WAIT1   : 39
-SYN_RECV    : 3277
-LISTEN      : 100
-CLOSE_WAIT  : 9261
-
-/proc/ip_conntrack, however, is showing me the following:
-CLOSE: 176
-CLOSE_WAIT: 111
-ESTABLISHED: 9046
-=46IN_WAIT: 8634
-SYN_RECV: 134
-SYN_SENT: 25111
-TIME_WAIT: 2165
-(no state): 128
-
-Remember, the *ONLY* natting this machine is (or should be) doing is=20
-re-directing any new TCP connection bound for (remote_range) port range=20
-1025-65535, to a local port range of about 100 ports (using REDIR, I used t=
-o=20
-use DNAT, same difference though).  So the above counts seem very wrong to=
+We have multiple systems performing this task (essentially for load balanci=
+ng=20
+and to remove a single point of faulure).  The systems are dual 1ghz pentiu=
+m=20
+3's, with 1-2gb of ram, so they're not shy systems.  They're running 2.4.20=
 =20
-me.  And although the established count is very high, the SYN_SENT count is=
-=20
-astronomical.
+kernels (mostly vanilla) with iptables 1.2.7a.
 
-There are also, as you see above, 128 conntrack entries without a state, wh=
-ich=20
-by the look of it, are UDP connections.  I'm not even natting anything for=
+Here are some system limits I am tweaking (ie. the commands to do the=20
+tweaking):
+echo 1 >/proc/sys/net/ip_forward
+echo 524280 >/proc/sys/fs/file-max
+echo 524280 >/proc/sys/net/ipv4/ip_conntrack_max
+echo 65535 >/proc/sys/net/ipv4/ip_queue_maxlen
+echo 65535 >/proc/sys/net/ipv4/tcp_max_syn_backlog
+#     NONE    EST     SYN_S   SYN_R   FIN_W   TIME_W  CLOSE   CLOSE_W LAST_=
+A =20
+LISTEN
+echo "1800    21600   120     60      30      30      10      30      30   =
+  =20
+120     " > /proc/sys/net/ipv4/ip_conntrack_tcp_timeouts
+ulimit -H -n 524280
+ulimit -S -n 524280
+iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS=20
+=2D --clamp-mss-to-pmt
+
+
+Because every new connection to one of the systems 'behind' these systems n=
+eed=20
+to be re-directed to a local port, which is achieved with the command:
+/sbin/iptables -t nat -A PREROUTING -j DNAT -i eth0 -p tcp -d <ip-range>=20
+=2D --destination-port 1024:65535 --to-destination <local_ip>:<local_port>
+
+Every inbound connection incurs an entry in the connection tracking table. =
+ It=20
+seems, however, that we may be overloading the conntrack system.  I can=20
+telnet to a different port listening on a secondary (internal) interface (b=
+ut=20
+the same application), that bypasses the above rule, and get an immediate=20
+connection, however establishing a connection 'to' a server behind this=20
+router can take a number of seconds, and sometimes may never establish. =20
+Whats more connecting directly to the port everything else is being=20
+re-directed to via. the 'public' interface itself can take some time (thoug=
+h=20
+not as long as connecting 'to' a system behind this box).
+
+The conntrack table itself very quickly grows - but it does not clean itsel=
+f=20
+up when the connection itself dissapears, instead it waits for some=20
+pre-determined timeout value, which means even though, as shown above, the=
 =20
-UDP.  WTF is going on here?
+number of connections in-progress (one way or another) is about 8000=20
+connections, the conntrack table is absolutely huge (hundreds of thousands =
+of=20
+entries), and as time goes on, the larger it gets.  To try to combat this,=
+=20
+I've reduced the biggest timer (how long an established connection stays in=
+=20
+conntrack) from 5 days to 6 hours (all the connections we have are, and=20
+should be, short lived, so that is plenty of time).  This helps a bit,=20
+however I'm still at a loss to try to understand why conntrack does not cle=
+an=20
+itself up when the connection gets closed.
+
+Of course, seeing how big the conntrack table is, itself, impacts the syste=
+m=20
+dramatically.  The 'wc -l /proc/net/ip_conntrack' command takes a long time=
+=20
+to run, and brings the 'active' processing to its knees while doing this.=20
+=2D From all appearances, it appears conntrack is hamstringing us.  It appe=
+ars it=20
+is not able to properly handle large-traffic systems, especially where=20
+essentially every connection going through the system is nat'd.
+
+I'd appreciate ANY help or thoughts on how to remedy this issue, as I have=
+=20
+said, this is in use in an enterprise environment (which of course, means I=
+=20
+cannot divulge the purpose of the application I mentioned earlier (however=
+=20
+all you really need to know is the application does not really know (or car=
+e)=20
+weather the connection to it is nat'd, and just uses it as a standard socke=
+t=20
+connection), however I can give details on the system/kernel/netfilter=20
+configuration as necessary, just let me know what further information you=20
+require).
+
+I thank you in advance, and apologise for mailing all 3 lists, however I=20
+figured someone on ONE of these lists would have an idea or a suggestion.
 
 =2D --=20
 PreZ
@@ -104,9 +152,9 @@ http://www.srealm.net.au
 =2D----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE+15f3KFp14D8AGEQRAhpaAKCVH+L/nPFDd1Q8Z4PxmtYs4LBTygCeOVED
-XIRAa3VHcNSd+Jc3D8nrXLs=3D
-=3D9WvM
+iD8DBQE+1ZcVKFp14D8AGEQRAh4jAJ9mhilrpVsDvakS03re/HsT1jcXcwCcDqFT
+nHqa0y2UPb9s5JgRsGIhP8o=3D
+=3DbmA5
 =2D----END PGP SIGNATURE-----
 
 
