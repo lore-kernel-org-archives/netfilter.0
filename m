@@ -1,13 +1,11 @@
 From: Christian Seberino <seberino@spawar.navy.mil>
-Subject: Re: iptables question - how to securely allow *just* outgoing smtp
-Date: Sat, 22 Jun 2002 10:28:24 -0700
+Subject: how is this stuff getting thru default deny iptables firewall?....
+Date: Sat, 22 Jun 2002 10:30:55 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020622102824.A32585@spawar.navy.mil>
-References: <20020621083228.A21833@spawar.navy.mil> <200206211535.g5LFZbU03196@vulcan.rissington.net>
+Message-ID: <20020622103055.B32585@spawar.navy.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <200206211535.g5LFZbU03196@vulcan.rissington.net>; from Antony@Soft-Solutions.co.uk on Fri, Jun 21, 2002 at 04:35:31PM +0100
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,66 +17,18 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-Antony
+My firewall *only* forwards SSH stuff to private LAN.
 
-Wow, thanks! This answer was like a laser - direct
-and to the point.
+It forwards *everything* _from_ private LAN to Internet however.
 
-Even if I just want to *send* email I still
-need the *INPUT* part right? In other words, I don't suppose
-*just* the following will allow firewall to send email will it??
+How can the private LAN use DNS which it does????
 
-iptables -A OUTPUT -p tcp --dport 25 -d aa.bb.cc.dd -j ACCEPT
-
-
-*If* I do need the INPUT part, can I *just* allow
-the ESTABLISHED and *not* the RELATED???? RELATED
-would only be necessary if smtp needed multiple new ports
-for incoming right???
-
-Thanks again,
+How is DNS server returning the info thru firewall
+if it *only* allows SSH??!?!?!?
 
 Chris
-
-P.S. One more thing if you don't mind....
-
-I *could* define $SSH_PORT and $SMPT_PORT but
-doesn't iptables recognize ssh and smtp /already/
-as 22 and 25?
-
-
-
-
-On Fri, Jun 21, 2002 at 04:35:31PM +0100, Antony Stone wrote:
-> On Friday 21 June 2002 4:32 pm, Christian Seberino wrote:
-> 
-> > My firewall does *not* need or use any
-> > rules on INPUT and OUTPUT chains
-> > since it just *FORWARD*s packets to/from
-> > private LAN.....
-> >
-> > I'd like to install Tripwire on firewall
-> > and have firewall *email* me daily of status.....
-> >
-> > How can I securely *open* up firewall rules
-> > to allow me to just email out without
-> > compromising security???
-> 
-> iptables -P INPUT DROP
-> iptables -P OUTPUT DROP
-> iptables -A OUTPUT -p tcp --dport 25 -d aa.bb.cc.dd -j ACCEPT
-> iptables -A INPUT -p tcp --sport 25 -s aa.bb.cc.dd -m state --state 
-> ESTABLISHED,RELATED -j ACCEPT
-> 
-> where aa.bb.cc.dd is the IP address of your mail server.
-> 
->  
-> 
-> Antony.
-
 -- 
 _______________________________________
 
