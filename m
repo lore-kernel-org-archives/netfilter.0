@@ -1,12 +1,15 @@
-From: "Willem Oldeman" <willem@king-pin.nl>
-Subject: Re: Rejecting udp
-Date: Tue, 4 Mar 2003 01:08:24 +0100
+From: Stephen Frost <sfrost@snowman.net>
+Subject: Re: ipt_recent 0.3.0 --rttl still doesn't work (I made a patch instead, can't wait)
+Date: Mon, 3 Mar 2003 19:49:45 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003f01c2e1e2$2d9bd100$0301a8c0@hotpop3>
-References: <000801c2e1aa$3fc8f660$0200a8c0@klintan.local>
+Message-ID: <20030304004945.GQ2721@ns.snowman.net>
+References: <F1167IjdMZNs8cqeI3F0000bd9c@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3mUD2hqWbnBptYHy"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <F1167IjdMZNs8cqeI3F0000bd9c@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,47 +19,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Michael K <micke@klintan.se>, netfilter@lists.netfilter.org
-
------ Original Message -----
-From: "Michael K" <micke@klintan.se>
-To: <netfilter@lists.netfilter.org>
-Sent: Monday, March 03, 2003 6:28 PM
-Subject: Rejecting udp
+To: per j <perj8@hotmail.com>
+Cc: netfilter@lists.netfilter.org, ipt_recent@snowman.net
 
 
-> I saw this rule someware on the net.
-> $IPTABLES -A FORWARD -o $EXTERNALIF -p udp --dport 137 -j REJECT
->
-> Whats the use to use reject on a UDP packet? Isn't udp connection-less
-> A more correct shouldn't that be "-j DROP"? Or am I thinking wrong here?
->
-> Regards Klintan
->
+--3mUD2hqWbnBptYHy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-First of all: This has little to do with TCP or UDP (or connection-less
-stuff).
+* per j (perj8@hotmail.com) wrote:
+> >apparently.  I believe that *should* read:
+> >while(hash_table[hash_result] !=3D -1 &&=20
+> >!(r_list[hash_table[hash_result]].addr =3D=3D addr &&
+> >	(!r_list[hash_table[hash_result]].ttl ||=20
+> >r_list[hash_table[hash_result]].ttl !=3D ttl))) {
+> >
+> >Instead.  Note that I also had to invert the ttl check, it should be
+> >considered a collision when the ttl doesn't match and matching ttl has
+> >been requested.
+> >
+>=20
+> It's already inverted at '-1 && !(...)', so I'm using the original ttl=20
+> check.
 
-Many firewalls have a policy to drop packets coming from the outside when
-nothing on the inside has started communicating to the internet (outside).
-But, port 137 is part of the SMB (filesharing) protocol. It starts inside
-your network, broadcasting that services are available. The firewall will
-see this as legitimate traffic, since it started on the inside.
-If you wouldn't block port 137, you'd be broadcasting to the internet that
-you have filesharing enabled on your network, thereby opening up port 137 to
-the internet, as the firewall sees no danger.
-The next step for a cracker would be easy, get into your filesharing
-network, steal passwords or worse...
-Simply: Things that "You Don't Want to Happen" (TM).
+Oh, right, good point, thanks.
 
-Short answer: You do want to filter port 137 (and 138/139).
+	Stephen
 
-A good approach is to block all traffic to the firewall/internet from the
-inside, then open op ports (POP, SMTP, HTTP and other services) as needed,
-but no more then what's needed.
+--3mUD2hqWbnBptYHy
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-HTH,
-Willem
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
+iD8DBQE+Y/gprzgMPqB3kigRAna8AKCEN4thPHMsbDdKHdbgRRBtJRNmBQCbBEYZ
+WNbwPMMn++DgNOfGf1gVdWY=
+=sVBk
+-----END PGP SIGNATURE-----
+
+--3mUD2hqWbnBptYHy--
 
