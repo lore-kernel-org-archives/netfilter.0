@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: what do the contents of /proc/net/ip_tables_names mean?
-Date: Fri, 25 Oct 2002 08:45:37 +0100
+From: =?iso-8859-1?Q?Matias_Bj=F8rling?= <mb@ncparty.dk>
+Subject: Debian Error?
+Date: Fri, 25 Oct 2002 11:24:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021025074540.GMFV459.mta02-svc.ntlworld.com@there>
-References: <Pine.LNX.4.44.0210241927030.3938-100000@localhost.localdomain>
+Message-ID: <004601c27c08$4186c890$0200000a@parseerror.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0043_01C27C19.04A935A0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210241927030.3938-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,64 +16,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Friday 25 October 2002 12:30 am, Robert P. J. Day wrote:
+This is a multi-part message in MIME format.
 
-> On Thu, 24 Oct 2002, Antony Stone wrote:
-> > On Thursday 24 October 2002 7:44 pm, Robert P. J. Day wrote:
-> > >   in looking through the system script for iptables under red hat 8.0,
-> > > i notice the occasional reference to the file
-> > > /proc/net/ip_tables_names, which contains, one per line, the names
-> > > of one of more of the possible netfilter tables (filter, nat
-> > > and/or mangle).
-> > >
-> > >   what does it mean for a table to have its name in this file?
-> >
-> > It means that this particular netfilter system supports rules in those
-> > tables.
-> >
-> > If you compile netfilter without mangle table support and then try to add
-> > rules to the mangle table, you will get errors.
-> >
-> > By reading this file you can find out which tables are supported on a
-> > given machine.
->
-> not quite.  as i see it, that a table name is in that file means nothing
-> more than that it's currently being *required* by your rule set.
+------=_NextPart_000_0043_01C27C19.04A935A0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-No - it's nothing really to do with the rule set.   You can have support for 
-the mangle table, with a "mangle" entry in /proc/net/ip_tables_names, and 
-have no mangle table rules at all (and not intend to have any either).
+Hey
 
-What the file indicates is whether your machine is *capable* of accepting 
-rules in particular tables, either becuase you compiled them in, or because 
-you loaded a module.
+Im having some problems with the debian package Woody.=20
 
-> so, if all your table support is modular, it looks like that file
-> will represent just those modules that had to be loaded for your
-> rule set.  if you're not mangling, it won't show mangle since that
-> module never needed to be loaded.
+What module do i need to modconf for the -m string --string option will =
+work, so i can drop specific packets on their data.
 
-If you don't load the mangle module, then no, you won't get a "mangle" entry 
-in /proc/net/ip_tables_names, and you can't add any mangling rules.
+and why are my traffic control utility so noncompatible, it don't even =
+have tbf fair quering, i don't understand it. It all worked well under =
+Mandrake?
 
-If you do load the mangle module, then you will get a "mangle" entry in 
-/proc/net/ip_tables_names, and you can add mangling rules.
+Sorry my bad english.
 
-> what i *don't* know is what that file will show if your table
-> support is compiled directly into the kernel.  and that's what
-> i'm asking here.  anyone know?
+Thanks :o)
 
-Yes.   It will show the tables for which you have compiled in support.
+Regards
 
-Antony.
+  Matias Bj=F8rling
+  Denmark
 
--- 
+------=_NextPart_000_0043_01C27C19.04A935A0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-It is also possible that putting the birds in a laboratory setting
-inadvertently renders them relatively incompetent.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hey</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Im having some problems with the debian =
+package=20
+Woody. </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>What module do i need to modconf for =
+the -m string=20
+--string option will work, so i can drop specific packets on their=20
+data.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>and why are my traffic control utility =
+so=20
+noncompatible, it don't even have tbf fair quering, i don't understand =
+it. It=20
+all worked well under Mandrake?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Sorry my bad english.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks :o)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Regards</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp; Matias Bj=F8rling</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp; =
+Denmark</FONT></DIV></BODY></HTML>
 
- - Daniel C Dennett
+------=_NextPart_000_0043_01C27C19.04A935A0--
+
 
