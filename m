@@ -1,12 +1,13 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: next topic:  --limit and --burst-limit
-Date: Thu, 31 Oct 2002 07:15:12 -0500 (EST)
+Date: 31 Oct 2002 14:51:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210310704480.30108-100000@localhost.localdomain>
-References: <1036052695.21032.21.camel@elendil>
+Message-ID: <1036072265.21852.20.camel@elendil>
+References: <Pine.LNX.4.44.0210310553200.29866-100000@localhost.localdomain>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1036052695.21032.21.camel@elendil>
+In-Reply-To: <Pine.LNX.4.44.0210310553200.29866-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,69 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Robert P. J. Day" <rpjday@mindspring.com>
+Cc: netfilter mailing list <netfilter@lists.netfilter.org>
 
-On 31 Oct 2002, Cedric Blancher wrote:
+Le jeu 31/10/2002 =E0 12:00, Robert P. J. Day a =E9crit :
+> this suggests that, if you add a rule incorporating a limit,
+> a match would imply that you *haven't* exceeded the limit and
+> that you don't necessarily want to take any countermeasures.
 
-> So I'll try to explain it a bit...
-> 
-> Limit is a bucket. This bucket is separated in two parts. The first one
-> is the burst. The second one is the limit. You do not apply the limit
-> until burst is full. This bucket is emptying a limit rate.
-> 
->         |       |
->         |       | <---- limit
->         |-------|
->         |       |
->         |       | <---- burst
->         |_______|
-> 
-> So, in the HOWTO exemple, (limit 1/s, burst 5, 4 packet/s flow), you're
-> filling the burst part of the bucket the first second. The second one,
-> the burst part is filled when receiving the 2nd packet. So, we begin to
-> fill the limit part of the bucket, and the limit of 1/s is beginning to
-> apply. I can accept the sixth packet, but not the following one,
-> arriving at the same second. When the second ends, I can flush the limit
-> part of the bucket, so I can accept more packets on top of the burst
-> part, within the limit.
-> 
-> Later, the flow stops. Each second I do not receive a packet, one packet
-> is taken from the bucket (because it's 1/s limit). For limit part is
-> empty, then we take it from the burst part. And then, if it goes again,
-> the burst part is getting filled again, and once filled, the limit
-> applies. And so on...
+Yes it is. You match packets that are _below_ the limit. When filtering,
+you usually specifiy things that are acceptable.
+=20
+>   from one tutorial, here's the lines that deal with=20
+> syn-flooding protection:
+>=20
+>   iptables -N syn-flood
+>   iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
+>   iptables -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
+>   iptables -A syn-flood -j DROP
+>  =20
+> this seems to match the man page -- in the "syn-flood" user-defined
+> chain, if you match the limit rule, you're still fine and you return.
+> otherwise, you drop the packet that forced you to exceed the limit.
 
-ok, i'm almost certainly going to embarrass myself here, but after looking
-at the graphical explanation of limiting and bursts, this seems so simple,
-i'm at a loss to understand why so many explanations make it seem like
-rocket science (witness the phrase "hysteresis door" -- sheesh).
-so here's what it looks like (in contrast to cedric's explanation,
-i prefer the analogy of *starting* with a bucket of tokens and 
-paying them out as packets come in).
+That's true. If you don't return, then you're over the limit anbd get
+logged.
 
-example:
-	limit: 3/hour
-	burst: 5
+>   so, have i understood this correctly?  thanks for your patience.
 
-what does this mean?  it means that i start with a bucket of 5 tokens
-and, every time a matching packet comes in, i can accept it by paying
-a token.  simple as that.    when i run out of tokens, i can't accept
-any more packets until i get more tokens.
+On these two points, you're right.
 
-and with a limit of 3/hour, every 20 minutes, i get another token dropped
-into my bucket, up to a maximum of my burst value of 5, so that i can 
-accept more packets.  that's it.  is it really that simple?
-
-this explanation seems to match what i read in the packet filtering HOWTO
-at netfilter.org.  it means that, with a full bucket, i can take a burst
-of (in this example) 5 incoming packets, but now have to wait until the
-next 20-minute point for another token so i can accept just one more
-additional packet.  and so on.
-
-have i oversimplified things here?
-
-rday
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
+t=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
