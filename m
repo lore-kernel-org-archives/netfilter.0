@@ -1,9 +1,9 @@
 From: "Jeffrey D. Brower" <jeff@pointhere.net>
 Subject: Re: real-time monitor question
-Date: Tue, 5 Aug 2003 14:10:41 -0400
+Date: Tue, 5 Aug 2003 14:10:45 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <042401c35b7c$e22a4840$0b02a8c0@pointhere.net>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0192DB@wardrive.citadelcomputer.com.au>
+Message-ID: <042501c35b7c$e3e565c0$0b02a8c0@pointhere.net>
+References: <Pine.LNX.4.44.0308051013000.21531-100000@localhost>
 Reply-To: "Jeffrey D. Brower" <jeff@pointhere.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,37 +18,84 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>
+To: Chris Wilson <chris@netservers.co.uk>
 Cc: netfilter@lists.netfilter.org
 
-> Why not put all DROP rules into a -N DROPFILTER chain and then all DROP
-rules
-> created jump to this table.
+> I think that ulogd, and the ULOG target which feeds it, are the best
+> solution in this case.
 
-This is kind of what I had in mind when I was saying the ACCEPT1 - ACCEPTn
-table names (chains) for each interface so I could keep track of the ACCEPT
-and DENY on an interface.
+Based on that statement I got more deeply into the ULOG and it looks good.
+I found an extention in the CVS called ulogd_OPRINT.c which (although I can
+not find the documentation on its use) LOOKS like it is almost exactly what
+I need.  Can it be that my solution could be as simple as replacing the
+_output_print() function with my own function that prints to the circuit
+board?
 
-> Then what you'd have to do is write a simple program which talks to your
-parallel port
 
-No problem there.
+> Why is that? It seems to be the best way to distinguish between packets
+> being dropped in different places.
 
-> and lists the DROPFILTER chain and compares it's values to the previous
-set
-> of values gathered and do something when it sees a change.
+I was really refering to the horrors of a huge syslog as each packet gets
+logged and reading that log file to drive the circuit board and all the
+maintenance nightmares with it.
 
-Ah!  There's the rub!  I have no idea how to do that.
 
-> C++ code is best for this as it's smaller and faster than say running a
-PHP script
+>  If you only want a graph of ALL packets
+> accepted and ALL packets dropped, then just create a couple of chains:
+>
+>   iptables -N my_accept
+>   iptables -A my_accept -j ULOG --ulog-prefix "ACCEPT"
+>   iptables -A my_accept -j ACCEPT
+>
+>   iptables -N my_drop
+>   iptables -A my_drop -j ULOG --ulog-prefix "DROP"
+>   iptables -A my_drop -j DROP
 
-Agreed.
+This confused me until I realized that the ULOG returns the packets for
+further processing.  I had (in error) thought that I would have to deal with
+the packet resolution in userspace.
 
-I also see your idea of using the byte count reather than the packet count.
-Obviously, if the bytes denied are greater than zero, at least one packet
-has been DENYed.  If I use that to drive the LEDs it looks like real time
-and when I look in the actual log I can have it smaller and more usefull (as
-in not every packet logged).
+
+> > It occurs to me that there might be something I can do with the /proc
+files.
+>
+> As far as I know there are no counters of ACCEPTed/DROPped packets in
+/proc
+
+Another suggestion that I got kind of steered me toward lookng at bytes
+rather than packets and I wonder if I can't just read one of the /proc files
+to see the number of bytes accepted and denyed - the assumption being that I
+could log bytes to the board and let the log files watch for connections
+keeping the size of the log file down while still presenting a real-time
+interface for the operator via the circuit board.  As I understand it, I can
+read a /proc file 10 times a second with little impact on the system (as
+bizzare as that sounds to me).
+
+
+> but you could run "iptables -L -n -v" and parse the output to see  the
+number of
+> packets dropped at each rule.
+
+seems like a lot of overhead.
+
+
+> Maybe have a process which fork()s with either end of a pipe(). One
+> process reads from Netfilter and writes to the pipe every so often (with a
+> non-blocking write), while the other process reads from the pipe and
+> writes to the hardware.
+
+Never having done a fork(), nor a pipe() nor reads from Netfilter - this
+sounds like a lot of fun to me (but like a heck of a learning curve).  It
+sounds like what I envisioned, but I wonder if the pipe won't get stuffed
+too fast and halt the input side causing lost packets, etc.  It really seems
+like this exactly what I need to code in the  _output_print() function of
+the ulogd_OPRINT.c program - but again, how do I keep it from over-running
+the pipe?
+
+
+> Hope this helps!
+
+Yes it did.
+
 
 
