@@ -1,13 +1,13 @@
-From: Robert Cole <robert.cole@support4linux.com>
-Subject: iptables module load error
-Date: Mon, 19 May 2003 13:45:32 -0700
+From: John Mathey <jmathey@attbi.com>
+Subject: =?iso-8859-1?Q?Re:_I_don=B4t_want_anyone_can_scan_my_server_?=
+Date: Mon, 19 May 2003 17:49:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200305191345.32430.robert.cole@support4linux.com>
-Reply-To: robert.cole@support4linux.com
+Message-ID: <5.2.1.1.2.20030519174844.01ce8a10@mail.attbi.com>
+References: <20030430210501.9656.40740.Mailman@kashyyyk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <007901c31e4a$158cfb80$0f00a8c0@juancarlitos>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +17,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: juanca <juanca@sat.com.py>, netfilter@lists.netfilter.org
 
-I get this:
+What do you mean by scan, do you mean ping, attempt telnet, , can you be=20
+more specific.
 
-fw root # insmod ip_tables
-Using /lib/modules/2.4.20-hardened-r2/kernel/net/ipv4/netfilter/ip_tables.o
-/lib/modules/2.4.20-hardened-r2/kernel/net/ipv4/netfilter/ip_tables.o: 
-unresolved symbol nf_unregister_sockopt
-/lib/modules/2.4.20-hardened-r2/kernel/net/ipv4/netfilter/ip_tables.o: 
-unresolved symbol nf_register_sockopt
-fw root #
+John
 
-When trying to load the ip_tables.o module and it causes problems on down the 
-line with other modules not loading. 
 
-Anyone have any idea how to fix this? I'm running kernel 2.4.20. I have 
-everything under the netfilter section marked as a module except for realm 
-match support (because the kernel fails to compile with it).
 
-Thanks,
-Robert
+At 02:03 PM 5/19/2003 -0700, juanca wrote:
+>What rulset should implement?
+>I don=B4t want anyone can scan my server?
+>I need that all requests been rejected
+>
+>Thanks in advance
+
 
