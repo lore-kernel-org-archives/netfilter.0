@@ -1,12 +1,15 @@
-From: "De Jager Laubscher" <dejager@think.co.za>
-Subject: Iptables problem
-Date: Thu, 13 Mar 2003 11:57:07 +0200
+From: Fabrice MARIE <fabrice@netfilter.org>
+Subject: Re: RE : netfilter/iptables problems on solaris
+Date: Thu, 13 Mar 2003 16:56:11 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009401c2e946$eb346fe0$0700a8c0@dale>
+Message-ID: <200303131656.11643.fabrice@netfilter.org>
+References: <8C1856C372A7574291A56C3B7000A7AEF58255@eestqnt104>
+Reply-To: fabrice@netfilter.org
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0091_01C2E957.ABBCAA10"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <8C1856C372A7574291A56C3B7000A7AEF58255@eestqnt104>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +19,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Joaquin Henriquez Alzola (REE)" <Joaquin.Henriquez-Alzola@ree.ericsson.se>, 'Franck ZOCCOLO ' <franck@zoccolo.com>, "'netfilter@lists.netfilter.org '" <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0091_01C2E957.ABBCAA10
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Can anyonne please tell me how to open port 1500 to 1511 on my NAT box =
-using iptable on slackeware ??
+On Thursday 13 March 2003 03:43, Joaquin Henriquez Alzola (REE) wrote:
+> Then I am not going to be able to use the turtle firewall. Any other
+> firewalls for Solaris that you would recommend. This is a sit back.
 
-please help very urgent !
+Sun would recommend that you use Sunscreen, but I don't know if it's free
+or if you must pay addon for that.
 
-------=_NextPart_000_0091_01C2E957.ABBCAA10
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Have a nice day,
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Can anyonne please tell me how to open =
-port 1500 to=20
-1511 on my&nbsp;NAT box using iptable on slackeware ??</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>please help very urgent=20
-!</FONT></DIV></BODY></HTML>
+Fabrice.
+--
+Fabrice MARIE
 
-------=_NextPart_000_0091_01C2E957.ABBCAA10--
-
+"Silly hacker, root is for administrators"
+       -Unknown
 
