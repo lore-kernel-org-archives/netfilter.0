@@ -1,8 +1,8 @@
 From: "Ed _" <ed_b_71@hotmail.com>
-Subject: netfilter - Dual NIC configuration
-Date: Wed, 28 May 2003 11:10:44 -0700
+Subject: netfilter - packet extraction and insertion
+Date: Wed, 28 May 2003 11:08:04 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law14-F35SZMhRjX9kH00052c58@hotmail.com>
+Message-ID: <Law14-F90Np3Y16ryHQ000045d1@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,22 +18,20 @@ Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Any one have any pointers as how to configure the system for a firewall - 
-using two NIC cards.
+A question for folks who have been using Netfilter and libipq -
 
-Does the stream of data in the request/outgoing and the incoming/response 
-path get accumulated in the same queue in the kernel and available thru the 
-same interface in user space via libipq ?
-or
-Do the  two separate interfaces => two different queues and having to have 
-two different interfaces in the user space?
+Is it possible to extract packets from the queue and insert them at a later 
+point in time. Want to do this in user space using libipq or something 
+similar. Esssentially want to have the ability to remove packest and then 
+add packets into the queue. Is that possbile? I want to implement my on 
+queueing algorithms and stream manilutaltion in the user space.
 
 thanks,
 
 ed
 
 _________________________________________________________________
-The new MSN 8: smart spam protection and 2 months FREE*  
+Tired of spam? Get advanced junk mail protection with MSN 8. 
 http://join.msn.com/?page=features/junkmail
 
 
