@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Nat
-Date: Mon, 7 Jun 2004 08:38:17 +0100
+From: "Knight, Steve" <Steve.Knight@bskyb.com>
+Subject: quick syntax query
+Date: Mon, 7 Jun 2004 11:53:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406070838.17816.Antony@Soft-Solutions.co.uk>
-References: <MOEOICEDMOAKAHOICANFOEMPEBAA.mafioso1823@contourmediagroup.com>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D51259E6CF@OST_EXCH_USR5>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <MOEOICEDMOAKAHOICANFOEMPEBAA.mafioso1823@contourmediagroup.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +15,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Sunday 06 June 2004 6:36 pm, mafioso1823@contourmediagroup.com wrote:
+Hi there
 
-> I am very new to iptables and i wanted to know how would i do a hide nat
-> and a static nat? Any help is very much appreciated.
+Can one use syntax other than CIDR notation when defining things like
+networks?
 
-http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO.html should explain 
-things, and http://iptables-tutorial.frozentux.net/iptables-tutorial.html 
-will give you more information on NAT, and netfilter in general.
+i.e. it's common to see
 
-Please feel free to come back and ask on the list if you have specific 
-questions regarding a particular setup.
+LAN_RANGE="192.168.0.0/24"
 
-Regards,
+in rule bases, but I would like to use
 
-Antony.
+DODGY_RANGE="192.168.0.1-5"
+GOOD_RANGE="192.168.0.6-30"
+BAD_BAD_RANGE="192.168.31-40"
 
--- 
-The truth is rarely pure, and never simple.
 
- - Oscar Wilde
+a la `nmap` syntax.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Is this something netfilter can handle?
+
+Thanks in advance
+
+
+Steve
+
+
+
+
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is 
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce, 
+distribute, store, retransmit, use or disclose its contents to anyone.
+ 
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
 
 
