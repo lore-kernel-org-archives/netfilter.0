@@ -1,11 +1,10 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: Question about -m string module
-Date: Fri, 4 Feb 2005 10:58:29 -0500 (EST)
-Message-ID: <60578.142.169.215.10.1107532709.squirrel@142.169.215.10>
-References: <18ba01c50acd$8d4af340$b000a8c0@cybergeneration.com>
+From: "Hudson Delbert J Contr 61 CS/SCBN" <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: IDS better than hardcore iptables rules?
+Date: Fri, 4 Feb 2005 08:13:51 -0800
+Message-ID: <186AC876521E0F46BDE77079A6567FD0F0DD9E@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <18ba01c50acd$8d4af340$b000a8c0@cybergeneration.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,77 +15,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Maxime Ducharme <mducharme@cybergeneration.com>
+Content-Type: text/plain; charset="us-ascii"
+To: "R. DuFresne" <dufresne@sysinfo.com>, seberino@spawar.navy.mil
 Cc: netfilter@lists.netfilter.org
 
-On Fri, February 4, 2005 10:23 am, Maxime Ducharme said:
->
-> Hello guys
+ron,
 
-Hiya Maxime!
+i can now die happy as i've finally heard someone echo my sentiments
+as regards to 'shortcuts' to eliminate learning the basics of network
+environments. its the same malady that many programmers suffer from
+as evidenced by the shoddy un checked code that makes its to mkt today.
 
->
-> I have a question about -m string module and
-> I think you iptables geeks can answer me :)
+~go to school
 
-I am no geek nor guru ;)
 
->
-> Suppose I want to drop TCP connections with
-> specific requests.
->
-> Example : a mail which contains the word "sperm",
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of R. DuFresne
+Sent: Thursday, February 03, 2005 4:32 PM
+To: seberino@spawar.navy.mil
+Cc: netfilter@lists.netfilter.org
+Subject: Re: IDS better than hardcore iptables rules?
 
-I don't think iptables is the proper tool for such.
-Consider using a mail proxy able to scan message for virus
-and such instead.
 
->
-> I'd add a rule like
->
-> $IPTABLES -t filter -A FORWARD -p tcp --dport 25 -d OURMAILSERVER \
->     -m string --string "sperm" -j DROP
->
-> What is the reaction in the TCP connection ?
+On Thu, 3 Feb 2005 seberino@spawar.navy.mil wrote:
 
-That packet always gets lost in the black hole.
-The sender will keep sending that packet over and over again.
-However, I *think* TCP has a timeout mechanism.
+> Many people on this list including Jason O. are masters
+> at creating very detailed careful iptables rules that
+> DROP packets that have anything peculiar about them.
+>=20
+> (e.g. FIN without ACK, etc.)
+>=20
+> My iptables script just filters based on port
+> number and protocol.  I was wondering if instead
+> of diving into TCP education to duplicate the
+> fine work Jason and others have done,
+> if an IDS (Intrusion Detection System)
+> like Snort would serve the same purpose???
+>=20
+> I assume Snort **ALSO** knows what TCP flag combos
+> typically signify a port scan and other nasties?
+>=20
 
->
-> The further packets of the same connection get dropped too ?
+And there are many that have delved into combining the two applications =
+to
+work together, but, IDS is a beat unto itself, takes perhaps a bit more
+thought and work just to tune the IDS *behind* the firewall to get the
+proper set of true alarms working such that it's not just another =
+whining
+app that gets ignored pretty much as much as most system logs tend to =
+be.
 
-No
+And TCP education is require as much for IDS setup and design as proper
+firewalling.  There are no shortcuts, one needs to gain the basic
+knowledge levels to tackle more then the basics of network design as in
+any other venture one wishes to put their efforts into.  Afterall, there
+were no real cheap shortcuts to your phd, correct?
 
-> This would mean the email cannot be sent, and stay in the foreign
-> mail server queue for X days ?
+Thanks,
 
-My guess is the TCP algorithm would keep trying to send that particular
-packet as it didn't get any ACK for that sequence number.
+Ron DuFresne
+--=20
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
-> Would it be the same if I use a REJECT rule ?
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
 
-No. I think a tcp-reset would do the trick.
-
->
-> Also, can fragmented TCP packets get through this ?
-
-Yes, but that `sperm' word is quite small. Most of the time,
-this whole word will stand in a framgented packet.
-
->
-> Thanks in advance
->
-> Maxime Ducharme
-> Programmeur / Sp=E9cialiste en s=E9curit=E9 r=E9seau
->
-
-Bonne journ=E9e,
-
-Samuel
-
-NOTE: This email reflects author _thoughts_, not the reality.
-      I may be totally wrong, so just don't trust me :-)
 
 
