@@ -1,11 +1,13 @@
-From: Ben Russo <ben@umialumni.com>
-Subject: snmptraps incomming on udp port 162 REDIRECT to 4162 not working?
-Date: 05 Nov 2002 11:16:29 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: How will I mesure my bandwith
+Date: Tue, 5 Nov 2002 15:50:00 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1036512998.8715.44.camel@ben.mis.tnsi.com>
+Message-ID: <200211051550.gA5Fo8e19394@vulcan.rissington.net>
+References: <Pine.GSO.4.40.0211041029270.5446-100000@amazonas.robotic.dlr.de> <200211051350.gA5DoHe19092@vulcan.rissington.net> <3DC7E34D.96EBAF22@abcbtx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3DC7E34D.96EBAF22@abcbtx.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,36 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Tuesday 05 November 2002 3:27 pm, Detlef Wengorz wrote:
 
-I have a server that performs many functions on a testing/lab network.
-I don't really need a firewall, but I do want to restrict users from
-having root access.
+> On Tuesday 05 November 2002 1:41 pm, Sundaram Ramasamy wrote:
+> > Hi,
+> >
+> > We have 512kbps connection to our office, How will I measure my
+> > bandwidth.
+>
+> try bing
+>
+> bing localhost remotehost
 
-Sometimes users want to be able to bind a process to a low port like say
-an snmptrap receiver to port 162, but the process needs privelages to do
-that.
+bash: bing: command not found
 
-So I had the bright idea of using iptables to redirect the incomming
-packets on the low port to a high port that the users program can bind
-to without problems.
+Google for bing displays lots of stuff about Mr Crosby, plus some links t=
+o=20
+getting the source from ftp://ftp.ibp.fr which doesn't seem to exist...
 
-I tried the following:
+Looks like an intriguing way to measure bandwidth - I'd be interested to =
+test=20
+it and see how reliable the results are - can you suggest where I can get=
+ it=20
+from ?
 
-iptables -t nat -p udp -m udp --dport 162 -j REDIRECT --to-ports 4162
+Antony.
 
-The user started his program that bound to udp port 4162 (I could see it
-while using netstat -nap ).  But his program didn't receive anything?
-tcpdump -n | egrep "snmptrap|162 
-did show incomming snmptraps to port 162, but "icmp unreachable" replies
-were sent back?
+--=20
 
-Any ideas on how to make this work?
+This email is intended for the use of the individual addressee(s) named a=
+bove=20
+and may contain information that is confidential, privileged or unsuitabl=
+e=20
+for overly sensitive persons with low self-esteem, no sense of humour, or=
+=20
+irrational religious beliefs.
 
-Thanks in advance,
--Ben.
-
+If you have received this email in error, you are required to shred it=20
+immediately, add some nutmeg, three egg whites and a dessertspoonful of=20
+caster sugar. =A0 Whisk until soft peaks form, then place in a warm oven =
+for 40=20
+minutes. =A0 Remove promptly and let stand for 2 hours before adding some=
+=20
+decorative kiwi fruit and cream. =A0 Then notify me immediately by return=
+ email=20
+and eat the original message.
 
