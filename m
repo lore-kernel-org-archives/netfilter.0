@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Jee J.Z." <jz105@york.ac.uk>
 Subject: Re: Need some clarification or help
-Date: Tue, 20 Apr 2004 22:07:04 +0100
+Date: Tue, 20 Apr 2004 22:32:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404202207.04668.Antony@Soft-Solutions.co.uk>
+Message-ID: <003c01c4271e$ffbe9a00$68892090@grouse>
 References: <20040420182205.GA2948@rie.rie.priv> <200404201947.39774.Antony@Soft-Solutions.co.uk> <20040420205144.GC2997@rie.rie.priv>
-Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040420205144.GC2997@rie.rie.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,50 +17,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Christian Riechmann <riechmann@fgan.de>
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 20 April 2004 9:51 pm, Christian Riechmann wrote:
+Hi Christian,
 
+
+> Maybe I am a little bit lazy when describing my method as "tunnelling".
+> Therefore I will go a little bit deeper.
 > I know that UDP and TCP protocols are completely different, especially
 > the 3-way handshake. But all its steps are TCP packets. Therefore my idea
 > is to encapsulate on each side each TCP packet into a UDP packet, send
-> this one to the other side, decapsulate the original TCP paket from the UDP
-> packet and inject the TCP packet to the kernel.
-
-Okay - that sounds to me like a UDP tunnel through which you are sending TCP 
-packets - I agree.
-
-> This way the total TCP dialog shall be exchanged as payload of separate UDP
-> packets. UDP is necessary, because only UDP can use broadcast addresses.
+> this one to the other side, decapsulate the original TCP paket from the
+UDP
+> packet and inject the TCP packet to the kernel. This way the total TCP
+> dialog shall be exchanged as payload of separate UDP packets. UDP
+> is necessary, because only UDP can use broadcast addresses.
 > (I use this type of address to emulate LAN-broadcast within a mobile
 > adhoc network. Therefore I doubt that vtun would help me.)
 
-I don't quite understand how this would work.   You say you want to use UDP 
-broadcasts - which suggests to me one sender and many receivers.   TCP cannot 
-work with that, because each receiver is going to want to send 
-acknowledgement packets back to the sender, which will get confused about who 
-is it communicating with.
+This sounds to me like that you need two transport layers to do this at the
+receivers. Otherwise the encapsulated TCP packets will be forwarded as the
+payload of UDP packets to upper layers. The receivers even don't know they
+were actually TCP packets, and upper layers will get confused what these
+payloads mean. Am I missing something obvious?
 
-TCP is basically a one-to-one protocol, and even if you try putting the 
-packets inside UDP packets which can be broadcast to multiple receivers, TCP 
-is still going to want to communicate between one machine at each end.
+Cheers,
+Jee
 
-Ultimately you have to regard the UDP tunnel as just another route to 
-somewhere, and TCP will use all routes in the same way - to find one machine 
-at the other end.
-
-Have I understood correctly what you wanted to do?
-
-Regards,
-
-Antony.
-
--- 
-"Linux is going to be part of the future. It's going to be like Unix was."
-
- - Peter Moore, Asia-Pacific general manager, Microsoft
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> >
+> > > Here is what I wish to do:
+> > > For the transmission of IP packets (UDP, ICMP, TCP) between two hosts
+> > > I want to send these packets through a UDP tunnel.
+> >
+> > Tunnelling is a very different matter from converting UDP packets into
+TCP
+> > packets, and should be eminently feasible.
+>
+> As I tried to explain, I do NOT want to convert UDP to TCP, I only want to
+> transport TCP packets as UDP payload.
+>
+> I would be glad if you can comment the method described above.
+>
+> Regards
+> Christian
+>
+> -- 
+> Christian Riechmann    E-Mail: riechmann@fgan.de
+> c/o FGAN/FKIE          Tel: (+49) 228/9435 345,378
+> Neuenahrer Strasse 20  Fax: (+49) 228/9435 685
+> D-53343 Wachtberg, Germany
+>
+>
 
 
