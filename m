@@ -1,13 +1,12 @@
-From: patrick conlin <patrick@wechsler.com>
+From: "Michael Hudin" <hudin@zoetrope.com>
 Subject: Re: Outgoing SMTP Mystery
-Date: Wed, 05 Jun 2002 13:58:49 -0400
+Date: Wed, 5 Jun 2002 11:21:09 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <B923C999.1B5C%patrick@wechsler.com>
-References: <200206042346.g54NksA14771@Networker.rockstone.co.uk>
+Message-ID: <003a01c20cbd$c3ca9120$5227a8c0@michael>
+References: <3A5DC36EC1506C40825C05BE65E62AEF0E79EC@neptuno.idea.com.mx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206042346.g54NksA14771@Networker.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,17 +17,118 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-Just as a side note, the numbers in the brackets are how
-iptables-save/restore keeps the counter information.
+That would be a good way to test.  Unfortunately I don't have telnet setup
+on any machines that are external to the firewall and have qmail running.
+When I went to port 25 using telnet, it did appear to authenticate me
+through one of the usernames, but I may be mistaken since I'm not very
+knowledgeable about telnet.
 
-[packets:bytes]
+Omar, thanks for the offlist help with the port forwarding by the way.  This
+has to be one of the useful and helpful groups of people out there.
 
-on 6/4/02 19:46, Antony@Soft-Solutions.co.uk wrote:
+-michael
 
->> :PREROUTING ACCEPT [241:88600]
+----- Original Message -----
+From: "Omar Castaneda Acosta" <omar@idea.com.mx>
+To: "Michael Hudin" <hudin@zoetrope.com>
+Sent: Wednesday, June 05, 2002 11:03 AM
+Subject: RE: Outgoing SMTP Mystery
 
--=p=-
+
+Well, if you can connect to port 25 from the someplace on the external
+side of your firewall, then the port forwarding is working ok.
+try manually (using telnet) sending an email thru a connection being
+portfw'ed to your qmail server.
+
+-----Original Message-----
+From: Michael Hudin [mailto:hudin@zoetrope.com]
+Sent: Wednesday, June 05, 2002 11:59 AM
+To: netfilter@lists.samba.org
+Subject: Re: Outgoing SMTP Mystery
+
+Yeah, I was assuming that there were no default drop rules.  I'll make
+sure
+to implement those.
+
+I did realize that my /etc/hosts file was still set to the old subnet.
+I
+corrected that, but it still is having the same problem.  The gateway on
+the
+mail machine is set correctly and remember that I can POP in and out and
+SMTP out.  I just can't get SMTP in for some mind boggling reason.
+
+-michael
+
+----- Original Message -----
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.samba.org>
+Sent: Tuesday, June 04, 2002 4:46 PM
+Subject: Re: Outgoing SMTP Mystery
+
+
+> On Tuesday 04 June 2002 11:18 pm, Michael Hudin wrote:
+>
+> >  I've always assumed that the numbers in the brackets were port
+allowances
+>
+> No, they're not (although I can't say what they are - I don't use
+> iptables-save).   If you look at the numbers, many of them are larger
+than
+> 65535, so they're certainly not port numbers :-)
+>
+> > Here are my tables:
+> >
+> > *nat
+> >
+> > :PREROUTING ACCEPT [241:88600]
+> > :POSTROUTING ACCEPT [0:9862]
+> > :OUTPUT ACCEPT [68:4275]
+> >
+> > *mangle
+> >
+> > :PREROUTING ACCEPT [18365:3221456]
+> > :INPUT ACCEPT [10886:760348]
+> > :FORWARD ACCEPT [7269:2438049]
+> > :OUTPUT ACCEPT [8009:752540]
+> > :POSTROUTING ACCEPT [15177:3182145]
+> >
+> > *filter
+> >
+> > :INPUT ACCEPT [0:229546]
+> > :FORWARD ACCEPT [363:1553786]
+> > :OUTPUT ACCEPT [2:619341]
+>
+> I find this interesting - you have a default ACCEPT policy on all your
+chains
+> - specifically on FORWARD, and I cannot see any rules you have
+included
+which
+> DROP or REJECT packets..... so is there really any filtering going on
+in
+your
+> firewall, or is it in fact just an open router doing some network
+address
+> translation !?
+>
+> I know this doesn't exactly solve your problem, but I wonder if it
+means
+the
+> problem isn't on your firewall ?
+>
+> Perhaps you could check the routing table on your SMTP server - what
+does
+it
+> have for a default gateway address ?
+>
+>
+> Antony.
+>
+>
+>
+
+
+
 
 
