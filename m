@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPSec Transport Mode
-Date: Wed, 7 Jul 2004 21:54:52 +0100
+From: Nick Taylor <nickt@lightlink.com>
+Subject: Re: Different routes for different src addresses
+Date: Wed, 7 Jul 2004 17:02:27 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407072154.52923.Antony@Soft-Solutions.co.uk>
-References: <1089207305.788.14.camel@PCA-ARNSTR.ee-consultants.de> <200407071453.49223.Antony@Soft-Solutions.co.uk> <1089210110.788.27.camel@PCA-ARNSTR.ee-consultants.de>
-Reply-To: NetFilter Mailling List <netfilter@lists.netfilter.org>
+Message-ID: <Pine.GSU.4.58.0407071653430.21043@adore.lightlink.com>
+References: <20040707120502.GA23120@nihil> <200407071410.02752.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1089210110.788.27.camel@PCA-ARNSTR.ee-consultants.de>
+In-Reply-To: <200407071410.02752.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,73 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: NetFilter Mailling List <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Wednesday 07 July 2004 3:21 pm, Arnst, Rainer wrote:
-
-> Hello,
+> > is it possible to create a route for a single src address?
+> > I mean _routing_, not natting. If I nat the pkts their destination will
+> > change and I need to keep it intact.
 >
-> thank you Antony for your quick and very helpful answer!!
+> As you say, you mean _routing_, therefore this a routing question, not a
+> netfilter question.
 >
-> On Mi, 2004-07-07 at 15:53, Antony Stone wrote:
-> > > With this Setup, is there anything that can be done with IPTables to
-> > > make the transport mode work w/o NAT-T?
-> >
-> > I can think of two ways:
-> > 1. Put a genuine public IP address on the destination Security Gateway
-> > machine, routed through the firewall without nat.
+> You need iproute2 (see http://lartc.org)
 >
-> This sounds really good. How do I tell iptables not to perform NAT for
-> IPSec?
->
-> Currently the firewall is a Test-Setup with IPCop. Since the
-> IpCop-Interface does not support ESP I added these iptables rules to the
-> zillions of rules put in place by ipcop to make it work, probably a bit
-> to open anyway :-) :
->
-> iptables -A INPUT -p 50 -j ACCEPT
-> iptables -A OUTPUT -p 50 -j ACCEPT
-> iptables -A FORWARD -p 50 -j ACCEPT
->
-> How would I modify these to pass on the packets without NAT?
+This is true, but misleading.  Netfilter does provide a nice interface to
+iproute2 with the fwmark feature.  You can use a:
 
-My first observation on seeing this is: why are you talking about ESP all of a 
-sudden?
+iptables -A FORWARD -s 192.168.1.7 -d 192.168.2.0/24 -j MARK --set-mark X
 
-ESP is for tunnel mode, and works fine through NAT.
+to put a particular firewall mark on a particular packet, then you can use
 
-Transport mode uses AH (protocol 51), and that's the one which breaks through 
-NAT.
+ip rule add fwmark X lookup Y
 
-Anyway, you don't need to FORWARD the IPsec packets - they only come into and 
-out of the security gateway machine - it's the unencrypted packets which get 
-FORWARDed.
+which tells the kernel to use routing table Y to lookup the route, and
+then you must maintain a seperate routing table for each firewall mark,
+like:
 
-And, to answer your question about how to avoid NATting certain types of 
-packets, the answer is to put an ACCEPT rule in your PREROUTING or 
-POSTROUTING chain, before the SNAT or DNAT rule which would otherwise nat 
-them.
+ip route add 192.168.1.0/24 via 10.0.0.3 table Y
+ip route add 192.168.1.0/24 via 10.0.0.4 table Z
 
-For example:
-
-iptables -A PREROUTING -t nat -p 50 -j ACCEPT
-iptables -A PREROUTING -t nat -d a.b.c.d -j DNAT --to w.x.y.z
-
-These rules will DNAT all packets originally addressed to a.b.c.d and send 
-them to w.x.y.z instead, *unless* they are protocol 50, in which case they 
-won't get NATted.
-
-Hope that helps,
-
-Antony.
-
--- 
-The first fifty percent of an engineering project takes ninety percent of the 
-time, and the remaining fifty percent takes another ninety percent of the 
-time.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Of course, X Y and Z represent integers.
 
