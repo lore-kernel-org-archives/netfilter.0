@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: netfilter machine in between 2 servers
-Date: Sun, 14 Mar 2004 19:57:51 +0000
+From: "Bo Jacobsen" <subs@systemhouse.dk>
+Subject: Problem seperating FTP & ms-streaming traffic
+Date: Sun, 14 Mar 2004 22:49:41 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403141957.51946.Antony@Soft-Solutions.co.uk>
-References: <20040314194725.94092.qmail@web60002.mail.yahoo.com>
+Message-ID: <000d01c40a0e$450f0a50$de0aa8c0@comp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040314194725.94092.qmail@web60002.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,42 +18,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 14 March 2004 7:47 pm, Sandy C wrote:
+I have a problem allowing forwarding of passive internal ftp traffic =
+and, at the
+same time disallowing ms-streaming (port 1755).
 
-> --- Antony Stone wrote:
->
-> > Besides, why do you want netfilter to do your logging, if you can run
-> > ethereal?   You get a lot more information out of ethereal, and it can
-> > show you the protocols in a much more meaningful manner.
->
-> I really need something that can do a little bit of
-> both.  I need to be able to sniff the packets (ala
-> ethereal), and if they are of a certain type, I need
-> to take some action on them (ala netfilter) I'd prefer
-> not to do any routing.
->
-> Now you've spelled it out though, its not clear to me
-> if its possible.
+Whenever I allow the passive ftp, it also allows ms-streaming going =
+through.
 
-Think of the setup like this:
+My rules are:
 
-One machine (client or server) sends a packet to the other, and that packet 
-also gets picked up by the sniffer.
+iptables -A FORWARD -m state --state NEW,ESTABLISHED -s local_lan =
+--sport highports --dport ftp -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -s local_lan =
+--sport highports --dport highports -j ACCEPT
 
-It's too late then to think about doing any filtering, or other action to 
-change the packet, because by the time the sniffer has seen it, so has the 
-machine it was addressed to (server or client).
+ms-streaming is a highport (1024:) but as there are no NEW in the second =
+rule, it should
+not apply to new ms-streaming connections.
 
-I hope this explains why you cannot possibly do what you wanted.
 
-Regards,
+Any idears=20
 
-Antony.
+Bo Jacobsen
 
--- 
-People who use Microsoft software should be certified.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
