@@ -1,15 +1,15 @@
-From: "Alexander W. Janssen" <alexander.janssen@gmx.de>
-Subject: Re: iptables UDP problem
-Date: Sun, 2 Feb 2003 16:57:55 +0100
+From: "Alexander W. Janssen" <yalla@ynfonatic.de>
+Subject: Re: How to let people see my webcam using Windows Media Encoder
+Date: Sun, 2 Feb 2003 18:08:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030202165755.C1937@ynfonatic.de>
-References: <20030202001150.26421.qmail@web41303.mail.yahoo.com>
+Message-ID: <20030202180813.A2604@ynfonatic.de>
+References: <000601c2caa5$0a3c1700$0601a8c0@jasper>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="z4+8/lEcDcG5Ke9S"
+	protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20030202001150.26421.qmail@web41303.mail.yahoo.com>
+In-Reply-To: <000601c2caa5$0a3c1700$0601a8c0@jasper>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,60 +22,63 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
 
---z4+8/lEcDcG5Ke9S
+--pf9I7BMVVzbSWLtt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 01, 2003 at 04:11:50PM -0800, k n wrote:
-> Hi,
->=20
-> I'm using iptables on RedHat 8 with the rules listed
-> below. When scanned from outside the TCP port appear
-> as filtered; however, the UDP port is still open.
->=20
-> $ip0  is my external IP address.
->=20
-> Am I doing something wrong?
+Hi Jasper,
 
-that the TCP-port shows up as filtered is normal since you just DROP the
-SYN-packets. If you wouldn't have a firewall and there would not be daemon
-running the machine would send a tcp-reset packet and send it back to nmap.
-This is interpreted as "connection refused", meaning that there is not a
-server running on the tcp-port.
+On Sun, Feb 02, 2003 at 11:22:45AM +0100, Jasper Lingers wrote:
+> Also when installed my IP is 192.168.1.6 but now is the thing how people
+> can see my webcam from outside. I have no idea where the IPtables config
+> file is also cause im using WebMin at the moment so if people could
+> explain it me in steps, I would appreciate that.
 
-That UDP stuff surprises me a bit; if you send a packet to a UDP port and no
-server is running the machine would generate an ICMP port-unreachable messa=
-ge
-which should have been interpreted by nmap. But since you drop all packets =
-to
-53/udp a ICMP-message was never generated and nmap couldn't have received o=
-ne.
+first you have to know on which port your webcam-program listens.
+I would guess it's a small webserver listening on port 80?
 
-I just tested on my machine (locally with loopback and nmap 2.54BETA22):
+Then you just have to do:
 
-Nonfiltered udp-ports show up as "closed"
-DROPed udp-ports show up as "open"
+iptables -t nat -I PREROUTING -p tcp --dport 80 -j DNAT --to-destination 19=
+2.168.1.6:80
 
-Maybe nmap interprets it like that "as long as i don't get any errors i thr=
-eat
-it like it would be open." And this sort of correct as well, since you don't
-have a "real connection" like in TCP - the application has to do everything=
- on
-it's own. So that UDP-stuff doesn't surprise me anymore ;-)
+This redirects all incoming traffic destined for port 80 on your firewall to
+port 80 on your internal windows-box. If you allready use port 80 on your
+firewall for some sort of webserver, you can assign another port. For examp=
+le,
+you might want to redirect port 8888 to port 80 on you internal machine. Th=
+en
+just do:
 
-Don't DROP. Send real tcp-resets for unwanted TCP-connections and send real
-ICMP port-unreachable messages for unwanted UDP-connections and everything
-else. Just my 2c.
+iptables -t nat -I PREROUTING -p tcp --dport 8888 -j DNAT --to-destination =
+192.168.1.6:80
 
-HTH, Alex.
+If your webcam-server doesn't listen to port 80, adapt the 192.168.1.6:n pa=
+rt
+accordingly.
+
+> I a totally n00b with compiling kernels and stuff, but if it is possible
+> to run a program or edit IPtables or so, please help me out, I need it
+> get to work for my parents :S
+
+If you are using a recent distribution you don't have to compile any kernel
+any more as long as you don't want bleeding-edge features.
+
+> Power2All
+> Holland
+
+Umh? :-)
+
+Hope that helps, Alex.
+
 
 --=20
 "Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
 l."
 Instructions for use of this post: Insert tounge in cheek. Read as normal.
 
---z4+8/lEcDcG5Ke9S
+--pf9I7BMVVzbSWLtt
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
@@ -83,10 +86,10 @@ Content-Disposition: inline
 Version: GnuPG v1.0.6 (GNU/Linux)
 Comment: Weitere Infos: siehe http://www.gnupg.org
 
-iEYEARECAAYFAj49QAEACgkQEMMZKORQoYL+LwCeIiH8+Ct7NL/R0BOSZGHkI5gg
-HuIAn1xRDO8Yb4/+b9oVWeioccRBM0t9
-=Z93X
+iEYEARECAAYFAj49UHwACgkQEMMZKORQoYKQ8QCfbbhagZorS+PH14IbweOplKAo
+xbkAnjtZlfew2NwQZ426jnW+FuWVI1m2
+=Cgof
 -----END PGP SIGNATURE-----
 
---z4+8/lEcDcG5Ke9S--
+--pf9I7BMVVzbSWLtt--
 
