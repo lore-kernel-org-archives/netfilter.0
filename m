@@ -1,11 +1,11 @@
-From: "Jeffrey D. Brower" <jeff@pointhere.net>
-Subject: real-time monitor question
-Date: Mon, 4 Aug 2003 13:31:20 -0400
+From: flaq <flaq@konto.pl>
+Subject: Re: Where libipt_MASQ.so (???)
+Date: Mon, 04 Aug 2003 19:38:47 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <030101c35aae$37e83500$0b02a8c0@pointhere.net>
-Reply-To: "Jeffrey D. Brower" <jeff@pointhere.net>
+Message-ID: <3F2E9A27.4080307@konto.pl>
+References: <1211419607.20030804184812@sevein.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,50 +16,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Greetings All,
+Try -j MASQUERADE
 
-I need to get something that I think is probably quite simple from the
-firewall - but I don't have a clue how to exactly accomplish this.  If you
-can help, please do!
+Jes=FAs Garc=EDa Crespo (aka Sevein) wrote:
 
-I have a circuit board (hooked up to a box running netfilter/iptables) which
-counts and displays the data sent to it via the parallel port.  The object
-is to display, in real-time, the packets on each interface that are accepted
-and denied on a packet by packet basis.
+>Hi! Im tired because I have tryed to run iptables on my system too
+>times. The problem is that I dont have the dynamic library
+>/lib/iptables/libipt_MASQ.so, but anybody have it!
+>
+>I use Gentoo Linux on kernel 2.4.20. I have compiled all netfilter
+>options as modules althoun I tried also installing it into the kernel
+>system.
+>
+>I only want, by now, this rules for the iptables tool:
+>
+> iptables -P INPUT ACCEPT
+> iptables -F INPUT
+> iptables -P OUTPUT ACCEPT
+> iptables -F OUTPUT
+> iptables -P FORWARD DROP
+> iptables -F FORWARD
+> iptables -A FORWARD --match mac --mac-source 00:c0:49:c9:d3:f1 -j MASQ
+> iptables -A FORWARD --match mac --mac-source 00:c0:49:bc:9f:08 -j MASQ
+> iptables -A FORWARD --match mac --mac-source 00:02:8a:3a:77:b7 -j MASQ
+> iptables -A FORWARD --match mac --mac-source 00:90:d1:08:19:8d -j MASQ
+>
+>But the problem is when iptables execute '-j MASQ', telling me that
+>libipt_MASQ.so doesn't exist. What should I do? I can't find an
+>explication.
+>
+>Sorry, but I am from Spain and my English could be poor for you. Try
+>to understand me, :).
+>
+>--
+>Jes=FAs Garc=EDa Crespo (aka Sevein)
+>http://www.sevein.com
+>correo@sevein.com
+>
+>
+>
+>--
+>----
+>Serwery wirtualne, konta e-mail. Oferta nie do odrzucenia.
+>AlphaNet, http://www.cennik.alpha.pl
+>----
+>
+> =20
+>
 
-I trust netfilter and I don't want to interfere with its operation in any
-way and try to duplicate it's logic anywhere and it looks like the userspace
-options might force me to do this to get what I need, but I don't really
-know if it will or even if this is an option.  I am not eager to actually
-queue packets myself - since I am sure to not be nearly as efficient.
-
-I found a gnumonks.org project called ulogd that seems like it _could_ be a
-solution for me but I know nothing about it, including if I can get ACCEPT
-and DENY, by interface, by packet, buffered from it.
-
-It seemed to me that I can jump to tables for ACCEPT1 - ACCEPTn and the same
-for DENY1 - DENYn for each of the interfaces and use the log function in
-some way - but using the log for each packet seems nightmarish to me.
-
-It occurs to me that there might be something I can do with the /proc files.
-
-It also seems to me that any program I write that gets the info from the
-firewall might have to do a sleep to await the logic in the board to process
-and so I might have to buffer the information from the firewall to avoid
-slowing it down or do some kind of round-robin sort of stack as long as the
-stack is larger than the potential input flood.  It may be that I do not
-need to actually keep track of every single solitary ACCEPT but I surely
-need every DENY.
-
-I learn best by example, and I can not find any examples of this anywhere -
-but I know people do monitoring.  I have been in the Docs and I have looked
-in the archives of this list (but they are not searchable).  If you can help
-me understand what I need to do - please help!
 
 
-     Jeff
+--
+----
+Serwery wirtualne, konta e-mail. Oferta nie do odrzucenia.
+AlphaNet, http://www.cennik.alpha.pl
+----
 
 
