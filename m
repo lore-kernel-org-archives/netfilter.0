@@ -1,49 +1,56 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: Re: Making a Bridging firewall
-Date: Mon, 12 Apr 2004 13:47:04 -0400
-Sender: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
-Message-ID: <MPG.1ae4a01fed9fd6ad9896aa@localhost>
-References: <407AD23A.3030905@leaplab.com>
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: pptp_conntrack_nat - patch-o-matic-ng-20040409 - kernel 2.4.25
+Date: Tue, 13 Apr 2004 12:25:09 +1000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <407B4F85.70109@snapgear.com>
+References: <3340.217.83.169.111.1081644254.squirrel@217.83.169.111>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
-Errors-To: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
-List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmI2yCS0tKOigE@public.gmane.org>
-List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3340.217.83.169.111.1081644254.squirrel@217.83.169.111>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIRj+87qQpzpCql8G6E966Ow@public.gmane.org>
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIFcjs2lY4wUfKtGCp0j7rLg@public.gmane.org>
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Philipp Stader <me@ph1l.de>
+Cc: netfilter@lists.netfilter.org
 
-> Hello.. I've been wanting to rewrite my firewall for a little bit but 
-> i'm not that familiar with iptables..  Up until now i've had a shorewall 
-> based firewall that also did bridging between my gateway and a VPN 
-> gateway over the internet (to link our houses.)  I used the bridge-nf 
-> patch on the 2.4 kernel to be able to manage the bridge traffic and 
-> block certain broadcast packets (like DHCP)  I've now upgraded to the 
-> 2.6 kernel because i heard it may fix some other issues i was having but 
-> now my bridge (DHCP blocking) rules no longer work... I'd like to get 
-> rid of shorewall and write my own IPTables in the hopes that i could get 
-> my ability to control the bridge back.  Can anyone make any suggestions, 
-> or point to a guide that does this with the 2.6 kernel?
+Philipp Stader wrote:
+> i downloaded linux 2.4.25 from kernel.org, patch-o-matic-ng-20040409 and
+> iptables 1.2.9. Unpacked all in /usr/src/ created links linux and iptables
+> then applied the pptp_conntrack_nat patch which applied without errors.
+> When  i try to compile the kernel i get the following errors.
+> 
+> net/network.o: In function `pptp_expectfn':
+> net/network.o(.text+0x3e899): undefined reference to
+> `ip_ct_gre_keymap_destroy'
+> net/network.o: In function `pptp_timeout_related':
+> net/network.o(.text+0x3e8cc): undefined reference to
+> `ip_ct_gre_keymap_destroy'
+> net/network.o: In function `conntrack_pptp_help':
+> net/network.o(.text+0x3ed09): undefined reference to `ip_ct_gre_keymap_add'
+> net/network.o(.text+0x3ed2e): undefined reference to `ip_ct_gre_keymap_add'
+> net/network.o(.text+0x3ed96): undefined reference to `ip_ct_gre_keymap_add'
+> net/network.o(.text+0x3edaa): undefined reference to `ip_ct_gre_keymap_add'
+> net/network.o(.text+0x3edc8): undefined reference to
+> `ip_ct_gre_keymap_destroy'
+> net/network.o: In function `tcp_help':
+> net/network.o(.text+0x3fd66): undefined reference to
+> `ip_ct_gre_keymap_change'
+> net/network.o(.text+0x3fd73): undefined reference to
+> `ip_ct_gre_keymap_change'
 
-I found "Linux Firewalls", 2nd ed., by Robert Ziegler, to be an 
-excellent, complete guide to packet filter firewalls in general, and 
-iptables in particular.  None of it is specific to kernel 2.4, as far as 
-I'm aware.  After reading it I built my firewall with kernel 2.4, and it 
-continues to work just fine in kernel 2.6.
+This patch should fix that:
 
-I'm not familiar with the bridge-nf patch, but you might be able to 
-implement your bridge using just the FORWARD table.
-
-Good luck,
-Andrew. 
+http://lists.netfilter.org/pipermail/netfilter-devel/2004-March/014618.html
 
 -- 
-To reply by email, replace "deadspam.com" by "alumni.utexas.net"
+Philip Craig - SnapGear, A CyberGuard Company - http://www.SnapGear.com
 
 
