@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: DNAT - TCP_MISS/503
-Date: Thu, 7 Nov 2002 14:03:55 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Mailing list problem?
+Date: Thu, 7 Nov 2002 12:34:34 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019974@hslex01.hsl-brabantzuid.nl>
-References: <NGBBJHGGHKMOJBIADANIAEKGEFAA.eugenio@imidianet.com.br>
+Message-ID: <20021107123436.WTVG27595.mta05-svc.ntlworld.com@there>
+References: <36272.217.42.120.194.1036668439.squirrel@www.bennee.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NGBBJHGGHKMOJBIADANIAEKGEFAA.eugenio@imidianet.com.br>
+In-Reply-To: <36272.217.42.120.194.1036668439.squirrel@www.bennee.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,29 +20,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Sorry! I think this is a netfilter problem, because I'd
-> stoped my squid
-> and the problem not stoped.
->
-> (If you test localhost IP my web server [123.0.0.18] it's okay!! but
-> if you test the name of the local domain
-> (wwww.mywebserver.com.br) it's not
-> okay,
-> the netscape report this error.)
->
-> The access from INTERNET IP or domain name it's Okay, I don't
-> undestant why.
->
-> It's probably something with my Iptables CHAIS, what do you think?
+On Thursday 07 November 2002 11:27 am, Alex Bennee wrote:
 
-What webserver did you test ; http://localhost or http://123.0.0.18 ?
+> Should posters be getting bounces from mailing list postings that can't
+> be delivered to subscribers?
 
-We don't know anything about your setup so it's quite difficult if not
-impossible to answer your question.
-Could you post your iptables rules so that we might be able help you (and
-please, not the output of : iptables -L, but the actual commands) ?
+I get these, and I wish we didn't...
 
+> Does the reply-to field not get set to the list?
 
-Rob
+No, it never has been, and I wish it was, not only for the problem above, but 
+so that people can use 'reply' in their mailer to reply to the list...
 
+Antony.
+
+-- 
+
+This email was created using 100% recycled electrons.
 
