@@ -1,12 +1,12 @@
-From: "Deepak Seshadri" <dseshadri@broadbandmaritime.com>
-Subject: Re: FTP Forwarding
-Date: Fri, 14 Jan 2005 06:38:31 -0500
-Message-ID: <008c01c4fa2d$92edd930$051ea8c0@floydian>
-References: <20041228171949.35308.qmail@web53109.mail.yahoo.com><1104255053.7318.28.camel@hubcap.ljm.dom>
-	<001301c4fa17$03de2b20$0200a8c0@etpi>
+From: Eric Ellis <eellis@mail.co.gilchrist.fl.us>
+Subject: Re: howto stop this packet
+Date: Fri, 14 Jan 2005 08:47:32 -0500
+Message-ID: <41E7CD74.6030509@mail.co.gilchrist.fl.us>
+References: <20050114061836.B1E5E2BBE8@tharbad>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050114061836.B1E5E2BBE8@tharbad>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,116 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Test Mail <testmail@peterpaul.com.ph>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: jqb@markor.net, netfilter@lists.netfilter.org
 
-iptables -t nat -A PREROUTING -i $EXT_IF -p tcp -s $PublicIPAdd -d 
-202.147.167.99 \
-   --dport 21 -j DNAT --to-destination 192.168.0.5
+jqb@markor.net wrote:
+> netfilter=A3=A1
+>     howto stop this packet on iptables firewall;
+> tcpdump capture packet example:
+> 10:35:31.881722 IP 218.6.45.6.51755 > 228.71.74.201.7777: S 1432831257:=
+1432831257(0) win 16384 <mss 1460,nop,nop,sackOK>
+>=20
+> 10:35:36.214120 IP 219.147.192.18.1272 > 228.71.74.201.7777: S 490321:4=
+90321(0) win 6400 <mss 1460,nop,nop,sackOK>
+>=20
+> =A1=A1=A1=A1
+>=20
+> Regards,=09
+>=20
+>=20
+> xjjjk
+> jqb@markor.net
+> 2005-01-14
+>=20
+iptables -A FORWARD -p tcp --dport 7777 -j DROP
 
+or
 
-Deepak Seshadri
+iptables -A FORWARD -p tcp --destination 228.71.74.201 -j DROP
 
+depends on if you don't want to connect to that machine, or you just
+don't want that machine connecting to that port.
 
+On a side note, you should have your default policies set to DROP anyway
+on the default tables for best practice security.
 
------ Original Message ----- 
-From: "Test Mail" <testmail@peterpaul.com.ph>
-To: "Netfilter Mailing List" <netfilter@lists.netfilter.org>
-Sent: Friday, January 14, 2005 3:57 AM
-Subject: Re: FTP Forwarding
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
 
-
-> Hi!Can i have a follow up question regarding FTP server inside internal 
-> LAN
-> which can be seen in the internet.....
-> now what if the scenario is i want to restrict a specific Public IP 
-> Address
-> in using my FTP what will be the rules that i should  apply?
->
-> I was thinking of setting up a rule that will filter incomming Public IP
-> Address request for ftp before it forwards it into my internal FTP Server.
->
-> Below are the sample entry in my iptables:
-> iptables -t filter -A INPUT -p tcp -s $PublicIPAdd --dport 20:21 -j ACCEPT
-> <--- is this correct?
-> iptables -t filter -A INPUT -j DROP
->
-> Below are the previous solution that you gave.
->
-> modprobe ip_conntrack_ftp
-> modprobe ip_nat_ftp
->
-> iptables -t nat -A PREROUTING -i $EXT_IF -p tcp -d 202.147.167.99 \
->   --dport 21 -j DNAT --to-destination 192.168.0.5
->
-> iptables -A FORWARD -i $EXT_IF -o $INT_IF -p tcp --syn -d 192.168.0.5 \
->   --dport 21 -j ACCEPT
->
-> the above assumes you have a rule in FORWARD that accepts established
-> packets, such as:
->
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> hth...
->
-> -j
->
-> Thanks in advance!
-> Milo
->
-> ----- Original Message -----
-> From: "Jason Opperisano" <opie@817west.com>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Wednesday, December 29, 2004 01:30 AM
-> Subject: Re: FTP Forwarding
->
->
->> On Tue, 2004-12-28 at 12:19, umar draz wrote:
->> > Hi Dear Members!
->> >
->> >   i have linux machine which configured as a router
->> >
->> >   my linux router has 2 NIC one with Public ip 202.147.167.99 and other
-> is local ip 192.168.0.1
->> >   i have a another linux machine which configured as a FTP server and
-> that machine ip is 192.168.0.5. Now i want my this ftp server can be 
-> access
-> all world. so what kind of iptables rules will be add on linux router that
-> if some one want to access ftp 202.147.167.99 its automaticaly forward or
-> redirect my local machine 192.168.0.5.
->> >
->> >  Please help me in this regard
->> >
->> > Thanks
->> >
->> > Umar
->>
->> modprobe ip_conntrack_ftp
->> modprobe ip_nat_ftp
->>
->> iptables -t nat -A PREROUTING -i $EXT_IF -p tcp -d 202.147.167.99 \
->>   --dport 21 -j DNAT --to-destination 192.168.0.5
->>
->> iptables -A FORWARD -i $EXT_IF -o $INT_IF -p tcp --syn -d 192.168.0.5 \
->>   --dport 21 -j ACCEPT
->>
->> the above assumes you have a rule in FORWARD that accepts established
->> packets, such as:
->>
->> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->>
->> hth...
->>
->> -j
->>
->> --
->> "Well, I'm tired of being a wannabe league bowler. I wanna be a
->>  league bowler!"
->> --The Simpsons
->>
->>
->
->
-> 
-
+and then just accept the data that you want to.  This is all covered in
+the iptables tutortial @
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
