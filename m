@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Iptables ACCEPT and DROP
-Date: Fri, 16 Apr 2004 19:08:26 +0100
+From: Matt Robineau <vexer@onlink.net>
+Subject: need help
+Date: Fri, 16 Apr 2004 14:28:23 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404161908.26028.Antony@Soft-Solutions.co.uk>
-References: <000401c423dc$1e471a10$8101a8c0@TELECOMME9F58X>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <408025C7.2030202@onlink.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000401c423dc$1e471a10$8101a8c0@TELECOMME9F58X>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Friday 16 April 2004 6:56 pm, Ravi Verma wrote:
+I need help getting my rules working, I get an error: iptables: No 
+chain/target/match by that name
 
-> The following command will allows the machine to connect to
-> 216.155.193.168.
->
-> iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
-> ACCEPT
->
-> Now when I issue
-> iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
-> DROP
->
-> And
->
-> iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport
-> 5050 -j REJECT
->
-> Still, it allows connection to 216.155.193.168 on port 5050.
->
-> How does this work? It seems -j DROP is not opposite of -j ACCEPT. How
-> can stop this?
-
-"-A" means append - in other words, "add on to the end of my ruleset".
-
-You have not said that you have flushed the OUTPUT chain (with "iptables -F 
-OUTPUT") between adding the ACCEPT rule and applying more rules after it, so 
-I think you still have the ACCEPT rule in your chain, and that is the first 
-one the packets see.
-
-Try "iptables -L OUTPUT -nvx" and see what rules you have, and in what order.
-
-Regards,
-
-Antony.
+But it should work. I read how to do it in an online tutorial and it 
+wont work for me, it keeps giving me this error.
 
 -- 
-"Black holes are where God divided by zero."
+Public key for 0xD0EFD89C8CFD173F
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
- - Steven Wright
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+mQGiBEA24CARBACxU0e78VOHXihesMeLogGq06Te13S2CGNubw9pndutegtauxm2
+y76Wxal4tUh37sp1n9Nkr0arG1hZ7FDhxibAJ75b0zxHag9N2EYKAesE0iq7VIa3
+FuGgpnmyEKogJ0PRJrzAMFcFFffdQliGtqSX5aVNSCHEyjfyVcyPAtFhhwCg8Pc7
+z+yEWEV3DEuveMzqVYaKjs8D/1GSpmY8zC5jQ9/CM3RMrJyGlJWbcGA6XEoSUFui
+oppM5OvkFrt1FYapHWiE3O6Jk3nKHiEHMRx3lCyilWilCLqsuOEMHVDmD63Rk2v9
+rawSdZqzdIbFz4KoTV+BZkXT/IRkaByo37aDkHkMD0+rdPtL3Cof7ZsWEbqLi3sl
+uflyA/wMCgG8N8AnZr6yDuIlraI+G2TsY8r2x4nAwMNYD3aBxgNq923uAWzLIa/S
+CskTTxvqXBFj0dVdCSmsUzBUXkS+l4uT9WD1fiYeKUB10pZMppDfNIu2c/v1wbaA
+7WMXvzEugoEbtFj0vNpZHZbjFadKtTfXwV+4A7P1Nj2qsXAScLRlTWF0dCBSb2Jp
+bmVhdSAoQ3Jvc3MgdGhlIHJpdmVyIGFuZCBkZXN0cm95IHRoZSBicmlkZ2UuIFZp
+Y3RvcnkgbGllcyBpbiBkZWNlcHRpb24uKSA8dmV4ZXJAb25saW5rLm5ldD6IXgQT
+EQIAHgUCQDbgIAIbAwYLCQgHAwIDFQIDAxYCAQIeAQIXgAAKCRDQ79icjP0XPxon
+AKC3OhTMT+P6/BGlk/lhllOhq3emQQCgshhdRcosDD2YZVAxnoDCQTEpy965AQ0E
+QDbgIRAEALq7W395qkQs7yAK18DGAqH1PHvMlBWxw8o1JvcAfrO5nQZbtnteDAmG
+8BWsxP9IXYIeSuVbNG9VCSlhWZfQtjoTzQH5s8UqUpjara9pBkjDoiTN/RNfNwVp
+DriQ1VQjvPv9gH8c29mepHepg+VZV7GuZ0rlF7mjxc5gZSMpgsJ3AAMFA/9OKBL8
+hWkDFEyDqgJf9vpHX7ROQfWTS8jxI0+c3rXped3zo8C/keso2g2G28zViqewePHs
+acenD72g8CCjUghtlthaFc5pKP8ohUt7f6QWAHcPKi8SrQCxtmRf0xdgg1tzAeGh
+EZ5ebB7RsE1J4HYuWodOAwSbPnwGj4xKSNFlAYhJBBgRAgAJBQJANuAhAhsMAAoJ
+ENDv2JyM/Rc/SxAAoNiZTWuCDqhshd4O5C0YzKkZdvIVAKDoliGHP3UaPPOumkh9
+51V2n66yQg==
+=/Mfp
+-----END PGP PUBLIC KEY BLOCK-----
 
 
