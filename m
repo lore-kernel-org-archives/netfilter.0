@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: DNAT udp 192.163.1.2:514 -> 127.0.0.1:1514 -- from local box
-Date: Thu, 17 Jul 2003 07:43:29 +1000
+Subject: RE: block msn
+Date: Thu, 17 Jul 2003 07:45:57 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BF29@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BF2B@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,10 +17,9 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Graham Swallow <Information-Cascade@ntlworld.com>, LIST-netfilter <netfilter@lists.netfilter.org>
+To: juanca <juanca@sat.com.py>, netfilter@lists.netfilter.org
 
-Update your iptables firstly, and secondly use the p-o-m patch to fix =
-the OUTPUT NAT problem.
+Another one... Use TCPDUMP and see where there're coming from.
 
 Thanks,
 ____________________________________________
@@ -31,43 +30,40 @@ georgev@citadelcomputer.com.au
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
 
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
 -----Original Message-----
-From: Graham Swallow [mailto:Information-Cascade@ntlworld.com]
-Sent: Thursday, July 17, 2003 5:59 AM
-To: LIST-netfilter
-Subject: DNAT udp 192.163.1.2:514 -> 127.0.0.1:1514 -- from local box
+From: juanca [mailto:juanca@sat.com.py]
+Sent: Wednesday, July 16, 2003 9:36 PM
+To: netfilter@lists.netfilter.org
+Subject: block msn=20
 
 
+I`ve got this rulset but It doesn`t work what else do I need to add?
+All the windows machine work msn, just on linux doesn`t
+Any suggetions ?
+Thanks in advance
 
-VERSION: uptables-1.2.1.a
+iptables -A FORWARD -s 192.168.0.10 -p TCP --dport 1443:1467 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.33 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.38 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1513:1525 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 66.35.229.204 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 65.54.194.118 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.34 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 208.45.129.195 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP
+iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.11 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP
+iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1601:1603 -d 0/0 -j =
+DROP
+iptables -A FORWARD -s 192.168.0.10 -d 64.4.13.0/24 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 64.4.0.0/24 -j REJECT
+iptables -A INPUT -p tcp -s 192.168.0.10 -d messenger.microsoft.com -j =
+DROP
 
-I Type:
-	iptables
-		-t nat -A OUTPUT
-		-p udp -d 192.168.1.2 --dport 514
-		-j DNAT --to 127.0.0.1:1514
-It replies:
-	iptables: Invalid argument
-
-
-The traffic is to ORIGINATE from a local process (this is 192.168.1.46),
-heading out to a ficticious 192.168.1.2, and DNAT'd to localport 1514
-
-syslogd reuses to log to a port other than 514, but using DNAT as a
-kludge should work. I've tried a range of options, and got REDIRECT
-to almost work, but after the first packet it gave connection refused.
-NAT-HOWTO.txt 6.3.7 says must be OUTPUT and 127 =20
-
-I am using socat  http://www.dest-unreach.org/socat/  to test
-
-	socat UDP4-LISTEN:1514 -	# server
-
-	socat -  UDP4:127.0.0.1:1514	# client
-
-
-   regards
---
-   Graham
-   Information-Cascade -at- ntlworld.com
 
 
