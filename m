@@ -1,10 +1,10 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: ipchains question
-Date: Mon, 26 Apr 2004 15:13:13 -0300
+From: Beau Sapach <beau.sapach@ualberta.ca>
+Subject: mac-source matching
+Date: Mon, 26 Apr 2004 12:15:21 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <055f01c42bba$23cbb280$49caa8c0@caris.priv>
+Message-ID: <1083003321.408d51b9cea5e@webmail.bme.med.ualberta.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,17 +18,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I know this is mostly iptables ... but I have a small question for ipchains
-(and yes, I know iptables are better and I use them in most places, I just
-have not had time to upgrade one of my servers and I need a rule in place).
+Hello everyone,
 
-Is there a way to do DNAT type functions with ipchains ?  When a connection
-hit my firewall from the outside from a specified IP and port, I want to
-change its destination and port and allow it in.
+I have a system running redhat with kernel 2.4.26 and iptables 1.2.1a that is a 
+routing firewall.  If I use the mac-source extension to match packets from the 
+internal network (a workstation for which this system is the gateway) it works 
+fine, but it won't match packets originating from the outside world.  The rule 
+I use is this:
 
-Please let me know if this is possible.  Thank you for the help.
-Peter
+iptables -A FORWARD -m mac --mac-source 00:00:00:00:00:00 -j ACCEPT
 
+It could be me, I may be completely misunderstanding how this is supposed to 
+work.  I am by no means a guru.... any help would be appreciated, thanks!
 
-
+Beau
 
