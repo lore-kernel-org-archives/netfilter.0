@@ -1,14 +1,11 @@
-From: Sven Riedel <sr@gimp.org>
-Subject: Re: nfs
-Date: Tue, 5 Aug 2003 10:17:23 +0200
+From: Edmund <cc@belfordhk.com>
+Subject: pktstat and netfilter
+Date: Tue, 05 Aug 2003 15:52:21 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030805081723.GD11849@localnet>
-References: <1060065419.3395.1.camel@rincewind>
-Reply-To: sr@gimp.org
+Message-ID: <3F2F6235.5080100@belfordhk.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1060065419.3395.1.camel@rincewind>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rob Verduijn <rverduij@dds.nl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Tue, Aug 05, 2003 at 08:36:59AM +0200, Rob Verduijn wrote:
-> What would be the rule setting I need to mount a remote nfs share when I
-> am using connection tracking and a default DROP policy?
+Hi,
 
-First, since NFS uses RPCs you need to know what ports rpc.mountd,
-rpc.statd and maybe rpc.lockd are running on. If you have influence over
-the server, try setting the ports explictly (invoke the daemons with the
--p flag. Works with statd and mountd, lockd is a bit more tricky). 
+I'm running iptables (latest version) on a 2.4.21
+Linux machine.  I use pktstat to view the general
+packet movement.  Setup as follows:
 
-Otherwise the ports are
-allocated dynamically and the client has to ask the remote portmapper
-where the daemons are listening. Any rules in this case are only valid
-as long as the rpc-services on the nfs-server aren't restarted.
+Internet -> eth0 (<- iptables ->) eth1 -> LAN
 
-You'll have to allow the following ports:
-udp/2049: nfs 
-tcp/2049: nfs, if you're using nfs over tcp, nfs v3 and up
-udp/111: portmap/sunrpc
-tcp/111: portmap/sunrpc
-udp/<rpc.statd>
-tcp/<rpc.statd>
-udp/<rpc.mountd>
-tcp/<rpc.mountd>
-and maybe:
-udp/<rpc.lockd>
-tcp/<rpc.lockd>
+I'm not sure where pktstat comes into play in
+the above chart.
 
-Regs,
-Sven
+Anyway, today I was majorly surprised to see
+a Local IP sending a packet to a remote LAN
+on port 80.
+
+    tcp  192.168.10.3:2041 <-> x.x.x.x:80
 
 
--- 
-Sven Riedel                      sr@gimp.org
-Liebigstr. 38 
-30163 Hannover                  "Python is merely Perl for those who
-                                 prefer Pascal to C" (anon)
+Is this supposed to happen?  Assuming that
+pktstat listens to the resulting packet
+after NAT'd, shouldn't the 192.168.10.3
+be my actual Internet IP?
+
+Any help appreciated.
+
+
+
 
