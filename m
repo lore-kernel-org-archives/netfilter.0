@@ -1,13 +1,11 @@
-From: "Alexander W. Janssen" <yalla@ynfonatic.de>
-Subject: questions regarding fragmentation
-Date: Sat, 4 Oct 2003 15:40:05 +0200
+From: Nathan Whittacre <nwhit@whittrio.com>
+Subject: Connection Tracking
+Date: Mon, 06 Oct 2003 10:42:51 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031004134005.GC978@hackers-r-us.org>
+Message-ID: <3F81A99B.4000102@whittrio.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tqI+Z3u+9OQ7kwn0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,66 +15,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+I have the following situation:
 
---tqI+Z3u+9OQ7kwn0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A server for what is called directed host sits behind a NAT'd firewall 
+with a local IP.  I have port 1066 forwarded to that server(10.2.0.1). 
+The way this protocol works is that the remote computer connects to it 
+on port 1066, exchanges some data over the existing connection and then 
+the server initiates a connection back to the client on the client's 
+port 1066.  This is fine as long as the client has a static, un-NAT'd 
+internet IP, but the connection is dropped by the server if it does not 
+get a reply from port 1066.  I have a few client machines on a NAT'd 
+network that need to connect to this remote server, but with only one 
+gateway internet IP.  They do not necessarily need to connect at the 
+same time.  Is there any way to write a connection tracking script that 
+senses the outbound connection to port 1066 on the remote side and then 
+DNATs the inbound 1066 to the local IP once the connection is established?
 
-Hi all,
+I have a tcpdump of the connection avaiable if that would be of any help.
 
-the filtering howto states:
+Thank you,
+Nathan Whittacre
 
-  "If you are doing connection tracking or NAT, then all fragments will get
-  merged back together before they reach the packet filtering code, so you
-  need never worry about fragments."
-
-This fits to my observation regarding NAT: i send out fragmented ICMP packa=
-ges
-with sing and they were reassembled before they left the outbound wire.
-
-But it also says:
-
-  "Usually it is regarded as safe to let second and further fragments throu=
-gh,
-  since filtering will effect the first fragment, and thus prevent reassemb=
-ly
-  on the target host; however, bugs have been known to allow crashing of
-  machines simply by sending fragments. Your call."
-  (talking about the -f flag)
-
-Does that mean that fragments allways will be reassembled before they get
-forwarded when you use connection tracking a/o NAT?
-
-It's looks like that for me - never had problems with fragments, though. I'm
-just asking because i'm just creating a big testcase-scenario for a accepta=
-nce
-of a new firewall i just build for a customer.
-I'm just curious. Haven't thought about it for a long time since the
-filtering-code became stateful...
-
-Thanks,
-Alex.
-
---=20
-"Obviously Linux owes its heritage to UNIX, but not its code.
-We would not, nor will not, make such a claim."
-                            -- Darl McBride, August 28th 2002      =20
-
-
---tqI+Z3u+9OQ7kwn0
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/fs21EMMZKORQoYIRAjadAKCFdW53LoLRcsLHCJ3tawdxOgLv8QCfYT7c
-To5L5k8hhrC7ry8UPUhMOw4=
-=rbJA
------END PGP SIGNATURE-----
-
---tqI+Z3u+9OQ7kwn0--
 
