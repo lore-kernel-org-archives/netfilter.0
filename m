@@ -1,12 +1,13 @@
-From: Mike McLean <libolt@libolt.net>
-Subject: Re: Tribes 2 server behind NAT
-Date: Thu, 20 Nov 2003 17:42:44 -0700
+From: "Josh Berry" <josh.berry@linknet-solutions.com>
+Subject: Re: Iptables not working with RH9
+Date: Thu, 20 Nov 2003 19:47:02 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311201742.44728.libolt@libolt.net>
+Message-ID: <3882.192.168.111.202.1069379222.squirrel@mail.linknet-solutions.com>
+References: <sfbca583.011@pf.ueo.ohio-state.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <sfbca583.011@pf.ueo.ohio-state.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,70 +18,96 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Derek Storvik <dstorvik@pf.ueo.ohio-state.edu>
+Cc: netfilter@lists.netfilter.org, scottmackay@yahoo.com
 
-Hi,
+The bridge-nf code does not come enabled by default with rh7.3.  I don't
+think that it comes enabled by default on any kernels.
 
-Yeah I am masquerading with the following line:
-
-iptables -t nat -A POSTROUTING -o eth0 -d \! 192.168.4.0/24 -j MASQUERADE
-
-I've got it setup this way because I have a VPN setup between several 
-locations.
-
-I do not have logging turned on.  I suppose I should enable it.
-
-Mike
-
-On Thursday 20 November 2003 05:21 pm, you wrote:
-> Are you masquerading that server to the internet? It'll need it..
+> I have not custom compiled the kernel. I was first using rh7.3 and it
+> works straight out of the box.   I assumed that they would not have taken
+> that code back out of the precompiled kernel but i suppose they could have
 >
-> also, you logging any dropped packets?
+> Derek
 >
-> Thanks,
-> ____________________________________________
-> George Vieira
-> Systems Manager
-> georgev@citadelcomputer.com.au
+>>>> Scott MacKay <scottmackay@yahoo.com> 11/20/03 11:17AM >>>
+> Did you add on the iptables hook for bridging and
+> activate all the proper configuration settings?
+> I has a similar problem with 2.4.22 (under RH9)
+> because I forgot to  menuconfig and add in the proper
+> settings.
 >
-> Citadel Computer Systems Pty Ltd
-> http://www.citadelcomputer.com.au
+> --- Derek Storvik <dstorvik@pf.ueo.ohio-state.edu>
+> wrote:
+>> Hello all
+>>   Hopefully someone can see my error.
+>> I have been running RH7.3 with it's standard kernal
+>> version 2.4.18-3 for several months configured as a
+>> transparent bridging firewall. We recently purchased
+>> a new machine and wanted to install RH9 with its
+>> standard kernal 2.4.20( i think)I followed the same
+>> steps installed with iptables and bridging utils and
+>> used my same script file to setup the bridge with
+>> two nics and fill in all my rules. This didn't seem
+>> to work right and on further testing realized
+>> NOTHING was being filtered. I then rebooted and
+>> manualy set up the bridge and cleared all the tables
+>> and set the default policy to drop. SO at this point
+>> nothing should get through. Well it bridges
+>> everything, and the counters in iptables do not
+>> increment. The system acts as if it is not there
+>> what so ever.
+>>
+>> here is the setup after the basic minimal install
+>> brctl addbr br0
+>> brctl addif br0 eth0
+>> brctl addif br0 eth1
+>> ifconfig eth1 0.0.0.0 promisc
+>> ifconfig eth0 0.0.0.0 promisc
+>> #bring up bridge with either of the next two
+>> commands
+>> ifconfig br0 up
+>> ip link set br0 up
+>> #both do the same thing  namely nothing
+>> iptables -X
+>> iptables -F
+>> iptables -P FORWARD DROP
+>> iptables -P INPUT DROP
+>> iptables -P OUTPUT DROP
+>>
+>> This setup happily bridges packets right on through
+>> with no updates to the iptables counters.
+>>
+>> I have been experimenting with devil linux as well
+>> recently and it exhibits the same problem.
+>>
+>> ip_forwarding is set to   as it has been on my
+>> working rh7.3 machine I tried setting it to 1 but
+>> that didn't help the problems. Im not 100% sure what
+>> exactl the ip_forwarding property corresponds to
+>> anyway.
+>>
+>> any help would be greatly appreciated!
+>>    Thanks
+>>          Derek
+>>
+>>
 >
-> Phone   : +61 2 9955 2644
-> HelpDesk: +61 2 9955 2698
 >
-> > -----Original Message-----
-> > From: Mike McLean [mailto:libolt@libolt.net]
-> > Sent: Friday, 21 November 2003 11:13 AM
-> > To: netfilter@lists.netfilter.org
-> > Subject: Tribes 2 server behind NAT
-> >
-> >
-> > Hi,
-> >
-> > I've got a tribes 2 linux server running behind a NAT gateway
-> > using iptables.
-> > I've forwarded both TCP and UDP on port 28000 to my server as follows:
-> >
-> > iptables -t nat -A PREROUTING -i eth0 -p udp --dport 28000 -j
-> > DNAT --to 192.168.4.7:28000
-> > iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 28000 -j
-> > DNAT --to 192.168.4.7:28000
-> >
-> > When I launch the game on another box on my local network.  I
-> > see it in the
-> > server list with the private ip address 192.168.4.7.
-> > However, I have someone
-> > outside the network trying to conenct, but my game doesn't
-> > show up in the
-> > server list for them.  So they are unable to connect.
-> >
-> > I run tribes to with the following command:
-> >
-> > tribesd2 -dedicated
-> >
-> > Any help is appreciated,
-> >
-> > Mike
+> __________________________________
+> Do you Yahoo!?
+> Free Pop-Up Blocker - Get it now
+> http://companion.yahoo.com/
+>
+>
+>
+>
+
+
+Thanks,
+Josh Berry, CTO
+LinkNet-Solutions
+469-831-8543
+josh.berry@linknet-solutions.com
 
 
