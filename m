@@ -1,12 +1,14 @@
-From: Faheem Mitha <faheem@email.unc.edu>
+From: Luis legar Garcia <legar1@dnrpa.gov.ar>
 Subject: Re: comments about lokkit default script (Faheem Mitha)
-Date: Sat, 13 Sep 2003 13:51:51 -0400 (EDT)
+Date: Sat, 13 Sep 2003 17:48:01 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0309131350300.1054-100000@Chrestomanci>
+Message-ID: <20030913174801.453a8db0.legar1@dnrpa.gov.ar>
 References: <20030913100149.1ee765e9.legar1@dnrpa.gov.ar>
+	<Pine.LNX.4.44.0309131350300.1054-100000@Chrestomanci>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030913100149.1ee765e9.legar1@dnrpa.gov.ar>
+In-Reply-To: <Pine.LNX.4.44.0309131350300.1054-100000@Chrestomanci>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,35 +18,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Luis legar Garcia <legar1@dnrpa.gov.ar>
+Content-Type: text/plain; charset="us-ascii"
+To: Faheem Mitha <faheem@email.unc.edu>
 Cc: netfilter@lists.netfilter.org
 
+Dear Faheem,
 
+I missunderstood the --syn flag, so your script is ok. Other way you could not receive any return packets. 
 
-On Sat, 13 Sep 2003, Luis legar Garcia wrote:
+I confused with using  -m state ! --state INVALID that means what I wrote before (all connections except invalid)
 
-> Dear Faheem,
->
-> As longh as I understand the rule:
->
-> iptables -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --syn -j REJECT
->
-> it will reject ALL except INVALID, even 'Established' and 'Related' connections,
-> which you should allways allow.
-> To avoid this I'd put just before it something like
->
-> iptables -A RH-Lokkit-0-50-INPUT -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
->
-> and maybe the same rule but for UDP packets.
-> bye,
-> legar, from Argentina
+legar
 
-What kinds of problems could I expect to see if these 'Established'
-and 'Related' connections are not allowed? I have been using the rules
-I posted for some days now, and have seen no problems yet.
+On Sat, 13 Sep 2003 13:51:51 -0400 (EDT)
+Faheem Mitha <faheem@email.unc.edu> wrote:
 
-                                                                       Faheem.
-
+> 
+> 
+> On Sat, 13 Sep 2003, Luis legar Garcia wrote:
+> 
+> > Dear Faheem,
+> >
+> > As longh as I understand the rule:
+> >
+> > iptables -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --syn -j REJECT
+> >
+> > it will reject ALL except INVALID, even 'Established' and 'Related' connections,
+> > which you should allways allow.
+> > To avoid this I'd put just before it something like
+> >
+> > iptables -A RH-Lokkit-0-50-INPUT -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+> >
+> > and maybe the same rule but for UDP packets.
+> > bye,
+> > legar, from Argentina
+> 
+> What kinds of problems could I expect to see if these 'Established'
+> and 'Related' connections are not allowed? I have been using the rules
+> I posted for some days now, and have seen no problems yet.
+> 
+>                                                                        Faheem.
+> 
 
