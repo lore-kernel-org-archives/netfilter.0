@@ -1,11 +1,14 @@
-From: Djalma Fadel Junior <fadel@ferasoft.com.br>
-Subject: spoof attack
-Date: Tue, 17 Feb 2004 19:46:49 -0300
+From: Matthew Strait <quadong@users.sourceforge.net>
+Subject: Re: [L7-filter-developers] Re: I found what I was looking for
+ l7-filter.sf.net.
+Date: Tue, 17 Feb 2004 13:44:23 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040217194649.25aae312.fadel@ferasoft.com.br>
+Message-ID: <Pine.LNX.4.60.0402171156160.3450@dsl093-017-216.msp1.dsl.speakeasy.net>
+References: <20040209224943.27665.qmail@web11906.mail.yahoo.com>
+ <20040215155502.GN15567@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040215155502.GN15567@sunbeam.de.gnumonks.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,49 +18,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "lists.netfilter.org netfilter" <netfilter@lists.netfilter.org>, l7-filter-developers@lists.sourceforge.net
 
-hi there,
+> - I can't see any locking in your code, and I don't think it's SMP safe
 
-I got the following log in my /var/messages:
+A question on this.  I've just read through Rusty's Unreliable Guide To
+Locking:
 
-----
-zeus kernel: sp00f attempt: IN=eth0 OUT= MAC=00:04:75:a0:c8:51:00:c0:df:ee:1d:dd:08:00 SRC=192.168.0.189 DST=XXX.XXX.XXX.XXX LEN=1500 TOS=0x00 PREC=0x00 TTL=43 ID=17351 DF PROTO=TCP SPT=80 DPT=41971 WINDOW=57920 RES=0x00 ACK URGP=0
-----
+http://www.kernel.org/pub/linux/kernel/people/rusty/kernel-locking/
 
-where:
-       XXX.XXX.XXX.XXX is my public IP.
-       eth0 is my EXTERNAL_DEVICE
-       eth1 is my INTERNAL_DEVICE
-       192.168.0.0/24 is my network
+I mostly understand, but I'm not quite sure what kind of code the match()
+function is.  I think it's a softirq, which means (by the "Softirq A vs.
+Softirq A" entry in the table in 5.1) that the appropriate spinlock to use
+is spin_lock(), right?  But the only type of spin lock currently used in
+net/ipv4/netfilter/*.c currently is spin_lock_bh(), so I'm not at all sure
+what to do.
 
-the attack duration was about 10 minutes. It happens 2 times in the last 3 months.
-
-
-my firewall rules to prevent this are as below:
-
-----
-$iptables -A PREROUTING -t nat -i ${EXTERNAL_DEVICE} -s ${INTER_IPADDR} -j LOG --log-level ${LOGLEVEL} --log-prefix "sp00f attempt: "
-
-$iptables -A PREROUTING -t nat -i ${EXTERNAL_DEVICE} -s ${INTER_IPADDR} -j DROP
-----
-
-My questions:
-
-1) How to understand the MAC logged by iptables since MAC has 6 bytes long?
-   00:04:75:a0:c8:51:00:c0:df:ee:1d:dd:08:00
-
-2) Is there some way to get the real IP where its come from?
-
-3) Are my rules enough to avoid spoof?
-
-
-
-thanks in advance,
-
-D. Fadel Jr.
-Computing Science Student
-
-
+-matthew
 
