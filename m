@@ -1,8 +1,9 @@
-From: Subba Rao <subba3@cablespeed.com>
-Subject: Help with Masquerading
-Date: Sun, 05 Jan 2003 10:19:48 -0500
+From: "Mike Olivere" <mikeeo@msn.com>
+Subject: netfilter under heavy load.
+Date: Sun, 5 Jan 2003 10:40:15 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E184D14.10102@cablespeed.com>
+Message-ID: <007101c2b4d0$be992520$0100a8c0@win98>
+Reply-To: "Mike Olivere" <mikeeo@msn.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,66 +16,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
+Hello, I don't know if this has been brought up before but I am going to be
+running netfilter under load on a fractional T-3 (12Mbps). The box will have
+3 interfaces eth0 going to the Cisco 7200, eth1 (routable IPs) going to the
+webfarm for DMZ zone, and then eth2 will be NATed with a private LAN IP
+(192.168.1.x). I will be NATing over 200 clients and I know in the past this
+could be a problem with IPCHAINS because it would either run out of memory
+or start dropping connections. The webservers get about 7,000 hits a day and
+they won't be NATed but will be filtered with a mix of statefule and packet
+filtering rules. We have a Cisco PIX 525(which is just a Intel P600/512MB
+RAM) in place right now but I would like to move to Netfilter as it will be
+running on a dual P1ghz and a gig of memory. Is this possible? can Nefilter
+scale to this and beyond? and is there any tweaks I should know about?
 
-My system is running kernel 2.4.20 with iptables compiled into the 
-kernel. The system has 2 interfaces. ETH0 is connected to the Internet 
-(via cablemodem) and ETH1 is connected to my home LAN which has only one 
-W2K laptop.  
+Thanks in advance.
 
-My W2K is configured with the Linux system as the gateway. Both systems 
-can ping each other.
-However my laptop is not able to go out to the Internet.
-
-I am desperately trying to make my W2K laptop connect to the Internet.
-
-Please let me know how to make this work.
-
-Thank you in advance.
-
-Subba Rao
-subba3@cablespeed.com
-
-#!/bin/sh
-
-echo "Starting Firewall....."
-
-INTERNAL_NET="10.0.0.0/24"
-
-INTERNET=`ifconfig eth0 | grep inet | cut -d : -f 2 | cut -d \  -f 1`
-
-# Flush the tables
-/usr/sbin/iptables -F INPUT
-/usr/sbin/iptables -F OUTPUT
-/usr/sbin/iptables -F FORWARD
-/usr/sbin/iptables -t nat -F
-
-# Set default policies for packet entering this box
-
-iptables -P INPUT DROP
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
-
-# Allow some packets in but accept all those on the internal interface
-/usr/sbin/iptables -A INPUT -i lo -j ACCEPT
-/usr/sbin/iptables -A INPUT -i eth0 -j ACCEPT
-/usr/sbin/iptables -A INPUT -i eth1 -j ACCEPT
-
-# Masquerade internal system with the public IP address
-
-iptables -t nat -A POSTROUTING -d $INTERNAL_NET -o $INTERNET -j ACCEPT
-iptables -t nat -A POSTROUTING -o $INTERNET -s $INTERNAL_NET -j MASQUERADE
-
-# Block inbound connections
-
-/usr/sbin/iptables -A INPUT -i eth0 -p tcp --syn -j DROP
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-echo 1 > /proc/sys/net/ipv4/tcp_syncookies
-
-
+Mike
 
 
