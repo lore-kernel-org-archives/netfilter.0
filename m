@@ -1,14 +1,10 @@
-From: Sanjay Arora <skpobox@hotpop.com>
-Subject: RE: Is it possible to Jam windows network neighbour?
-Date: 25 Aug 2004 00:06:43 +0530
+From: hclfm@pricol.co.in
+Subject: HCLFM/IS/PRICOL/91 is out of the office.
+Date: Wed, 25 Aug 2004 01:00:30 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1093372602.3704.71.camel@Sewak.Asr.Lan>
-References: <D5C9032B2B09C64EA2409D6214E91AC90512C5@asimail2.alphanumeric.com>
-Reply-To: skpobox@hotpop.com
+Message-ID: <OF585A8B86.FC670F8E-ON65256EFA.006B29D8@pricol.co.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90512C5@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,19 +15,12 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <Jopperisano@alphanumeric.com>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Tue, 2004-08-24 at 23:00, Jason Opperisano wrote:
+I will be out of the office starting  08/24/2004 and will not return until
+08/27/2004.
 
-> 
-> so, essentially, put every machine on its own dedicated subnet and have all traffic routed through the firewall?  that sounds scalable...
-> 
-> -j
-> 
-Never claimed scalable ;-) 
-
-Sanjay.
-
+I will respond to your message when I return.
 
 
