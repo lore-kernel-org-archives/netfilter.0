@@ -1,13 +1,13 @@
-From: Andrea Rossato <mailing_list@istitutocolli.org>
-Subject: Re: Modifying Source Ip on input/prerouting
-Date: Wed, 11 Dec 2002 16:02:07 +0100
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: Re: PPTP+NAT+MASQ anyone?
+Date: Wed, 11 Dec 2002 15:31:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DF7536F.9050002@istitutocolli.org>
-References: <20021211135812.GA8394@nath.rubis.org>
+Message-ID: <200212111531.27260.roy@karlsbakk.net>
+References: <200212091226.23888.roy@karlsbakk.net> <200212111514.55539.roy@karlsbakk.net> <1039616794.20561.83.camel@tux>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021211135812.GA8394@nath.rubis.org>
+In-Reply-To: <1039616794.20561.83.camel@tux>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Martin Josefsson <gandalf@wlug.westbo.se>
+Cc: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-Stephane Jourdois wrote:
-> I would need to be able to modify the source ip on input GRE paquets.
-> This is because I'm trying to setup a pptp tunnel, via a router that
-> doesn't NAT correctly the GRE.
-> The client receives GRE, but replies with it's own local ip, then my
-> server cannot receive the answers... If I could just change the source
-> ip on those paquets, that would be perfect...
+On Wednesday 11 December 2002 15:26, Martin Josefsson wrote:
+> On Wed, 2002-12-11 at 15:14, Roy Sigurd Karlsbakk wrote:
+> > Then what am I doing wrong???
+> >
+> > cd /usr/src
+> > tar xzf packed/linux-2.4.19.tar.gz
+> > ln -s linux-2.4.19 linux
+> > cd netfilter/patch-o-matic
+> > ./runme pending
+> > ./runme extra
+>
+> I have no idea, you say you use p-o-m from cvs and that you apply all
+> pending patches... after doing that the pptp patch works fine here.
 
-i don't know if I've got your problem correctly, also because I don't 
-know pptp too much (so, shut up, you'll say...;)
+it does not here. see previous message for error message
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
 
-if you want to match gre packets and change their source address (not 
-the source addr. of encapsulated packets) you should be able with
-iptables -A POSTROUTING -t nat -p gre -j SNAT --to-source 
-new-grepacket-source-addr
-this will match all outgoing (from the client) traffic using gre protocol.
-
-but is this what you need?
-where are the tunnel end points? the router has two tunnels connecting 
-the server and the client? the tunnel is between the router and the server?
-
-Instead, if you want to change source address of encasplulated packets, 
-that would be interesting...
-
+Computers are like air conditioners.
+They stop working when you open Windows.
 
 
