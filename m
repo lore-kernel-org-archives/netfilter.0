@@ -1,13 +1,12 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: block kazaa
-Date: Tue, 25 Mar 2003 16:57:00 +0100 (CET)
+From: Ilguiz Latypov <ilguiz@nit.ca>
+Subject: Re: Microsoft PPTP VPN server behind FIREWALL
+Date: Tue, 25 Mar 2003 10:22:41 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0303251655060.11657@dns.toxicfilms.tv>
-References: <20030325144636.21700.qmail@web80403.mail.yahoo.com>
- <20030326012710.2c9f4e37.scott@radsy.com>
+Message-ID: <Pine.LNX.4.44.0303251020440.25007-100000@localhost.localdomain>
+References: <083201c2f2cf$a4fc85c0$6e69690a@rimas>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030326012710.2c9f4e37.scott@radsy.com>
+In-Reply-To: <083201c2f2cf$a4fc85c0$6e69690a@rimas>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,18 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Scott Radvan <scott@radsy.com>
+To: Remus <rmocius@auste.elnet.lt>
 Cc: netfilter@lists.netfilter.org
 
-> I am unaware of any specific netfilter technique to simply block the
-> newer versions of kazaa. Wish I could help you further. Good Luck.
-I have heard of people using the string match to reject packets with
-"X-Kazaa-User" or some other string.
 
-Also, you could try to block access to the network pool of dns.kazaa.com.
-I think this way if the clients have not been ever using kazaa, will not
-get addresses of other kazaa nodes. But it is a wild guess.
+On Tue, 25 Mar 2003, Remus wrote:
 
-Regards,
-Maciej Soltysiak
+> I tried to use this command to make a forward to itenal IP address:
+> iptables -t nat -A PREROUTING -d $EXTERNALIP -p tcp --dport 1723 -j
+> DNAT --to 192.168.1.150:1723
+> But it doesn't work, I mean I cannot connect to my VPN server from outside.
+
+
+The FAQ on PPTP NAT suggests to forward all IP packets of protocol 47
+(GRE) in addition to the TCP port 1723 packets.
+
+--
+Ilguiz Latypov
+Net Integration Technologies, Inc
+
+tel. +1 (514) 281 9191 x 117
+
+
 
