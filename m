@@ -1,12 +1,12 @@
-From: "Steve Wakelin" <steve@wcsl.net>
-Subject: RE: Blocking programs with IPtables
-Date: Fri, 30 Jul 2004 16:04:03 +0100
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Firewall for network without NAT
+Date: Fri, 30 Jul 2004 11:05:43 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <267354A234DF4D46AA6AE56E1240BEF004A3C4@wcsls03.wcslnet.net>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051212@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,61 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Easiest way is to setup your IMAP server on a different port other than =
-143 and then configure Thunderbird to use that port.  Disable access to =
-143.
+> Hello all,
+>
+> I am in the process of learning iptables.  Progress is slow but
+> steady, however there is one thing that continues to vex me and it may
+> simply be a problem of terminology with regards to finding help.
+>
+> I'm looking to eventually replace a couple of firewall machines with
+> Linux boxes running iptables.  For one of the firewalls, the network
+> it protects consists of machines that all have real-world IP
+> addresses.  Given the nature of the network and its usage, I am cannot
+> institute NAT on the network.
+>
+> Unfortunately, the difficulty I'm running into is that every tutorial
+> I can find has focused on using NAT.
+>
+> Can someone guide me to the specific rules I need, whether by posting
+> them here or pointing me to a tutorial, in order to provide firewall
+> services for a network consisting purely of publicly addressable IP's?
+>
+> Regards,
+> Robert Kropiewnicki
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org =
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-Sent: 30 July 2004 15:48
-To: netfilter@lists.netfilter.org
-Subject: Re: Blocking programs with IPtables
+the recommended read is:
 
-On Friday 30 July 2004 3:38 pm, Leonardo Teves wrote:
+  http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
-> Hi,
-> I=B4m new in this forum, and i have a little question.
-> Is there a way to block some programs with Iptables?
-> I want to block Microsoft Outlook recovering mail from Imap server.
-> I want to force all users to use Thunderbird as mail client without
-> deinstalling Outlook from every workstation.
-> Is my question clear?
-> Any ideas?
+if you are not interested in NAT, ignore any rules/examples that start =
+with "iptables -t nat ..."
 
-Your question is clear.
-
-This cannot be done with netfilter (because all imap connections look =
-the same=20
-to netfilter, no matter what client or server software is being used)
-
-I cannot think of another way to do it either, because I would be =
-surprised if=20
-Outlook sent anything in its connect message to identify itself as =
-Outlook=20
-(the server end of a connection often does, but the client end usually=20
-doesn't, except for web browsers).
-
-Sorry - but perhaps someone else here can prove me wrong?
-
-Regards,
-
-Antony.
-
---=20
-Microsoft may sell more software than any other company, but McDonald's =
-sell=20
-more burgers than any other company, and I think the other similarities =
-are=20
-obvious...
-
-                                                     Please reply to the =
-list;
-                                                           please don't =
-CC me.
-
-
+-j
 
