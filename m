@@ -1,14 +1,15 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: strange problem.
-Date: Fri, 17 Jan 2003 20:45:02 -0500
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: PPTP NAT
+Date: Sat, 18 Jan 2003 16:41:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301172045.02921.Alistair@nerdnet.ca>
-References: <D98357A0-2A49-11D7-A5F4-0003934AB744@mail.arc.nasa.gov>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <20030118154147.GB5739@sunbeam.de.gnumonks.org>
+References: <1042821169.13896.22.camel@torwood>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="9zSXsLTf0vkW971A"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D98357A0-2A49-11D7-A5F4-0003934AB744@mail.arc.nasa.gov>
+Content-Disposition: inline
+In-Reply-To: <1042821169.13896.22.camel@torwood>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +19,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Michael P. Ryan" <mryan@mail.arc.nasa.gov>, netfilter@lists.netfilter.org
+To: Colin Simpson <colin@csl.co.uk>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
+--9zSXsLTf0vkW971A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-=09Why would it show as open in netstat? .. .there is no *service*
-=09listening on that port.   The prerouting will simply mangle the
-=09packet so that it gets routed to the destination ... You are not openi=
-ng
-=09a port on the firewall, you are telling the firewall to take packets t=
-hat=20
-=09show up at that port and ip and punt them around the corner ....
+On Fri, Jan 17, 2003 at 04:32:49PM +0000, Colin Simpson wrote:
+> Sorry to annoy you about this but I'm having real problems with the
+> pptp-conntrack-net netfilter patch. I have tried looking around the web
+> but no one seems to talk much about how to fix this.
+>=20
+> I have patched with patch-o-matic the 2.4.20 kernel. It seems to apply
+> ok and build. But I now get the following when I try to apply any SNAT
+> rule
+>=20
+> iptables -t nat -p tcp -A POSTROUTING -s 192.168.77.0/24 -j SNAT
+> --to-source 80.195.55.115:1024-65535
+> iptables v1.2.7a: Unknown arg `--to-source'
+> Try `iptables -h' or 'iptables --help' for more information.
+>=20
+> Am I missing something?
 
-=09Alistair
+yes, you need to rebuild the iptables userspace package, since the size
+of some NAT related structures have changed.
 
+> Colin Simpson
+> Network Manager
 
-On January 17, 2003 01:31 pm, Michael P. Ryan wrote:
-> Hi,
->
->   On redhat 7.3 iptables 1.2.5, all needed modules appear to be loaded
-> correctly.
->
-> I have the box setup to nat and that works like a charm, but run into
-> problems when I try to port forward to the internal network. Here is
-> what I run, all pretty text book from what I can tell:
->
-> $IPTABLES -P INPUT ACCEPT
-> $IPTABLES -F INPUT
-> $IPTABLES -P OUTPUT ACCEPT
-> $IPTABLES -F OUTPUT
-> $IPTABLES -P FORWARD DROP
-> $IPTABLES -F FORWARD
-> $IPTABLES -t nat -F
->
-> # Portfw section
-> $IPTABLES -A FORWARD -i eth0 -o eth1 -p tcp --dport 23 -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A PREROUTING -t  nat -p tcp -d my.external.ip --dport 23 -j
-> DNAT --to 192.168.0.6:23
-> #
->
->
-> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state
-> ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-> $IPTABLES -A FORWARD -j LOG
-> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+--=20
+- Harald Welte / laforge@gnumonks.org               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+"If this were a dictatorship, it'd be a heck of a lot easier, just so long
+ as I'm the dictator."  --  George W. Bush Dec 18, 2000
+
+--9zSXsLTf0vkW971A
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE+KXW7XaXGVTD0i/8RAvxKAKCI6DSYNIfq7Gxf97UvYmXcOSyJzwCggYj+
+isxZoZugbY/k+8Epd4t+ILE=
+=DBhO
+-----END PGP SIGNATURE-----
+
+--9zSXsLTf0vkW971A--
 
