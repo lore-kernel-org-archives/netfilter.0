@@ -1,13 +1,11 @@
-From: Louie <bishop@pacbell.net>
-Subject: RE: Firewall help
-Date: Wed, 11 Dec 2002 13:36:34 -0800
+From: Damon Brinkley <damon@betcoinc.com>
+Subject: Filter by IP address problems
+Date: 11 Dec 2002 16:40:59 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NGBBJIEMADMKCHCLFBLKMEIECCAA.bishop@pacbell.net>
-References: <000301c2a14e$7733f510$0114a8c0@CyberDawn.Net>
+Message-ID: <1039642859.4340.14.camel@damon.betcolan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <000301c2a14e$7733f510$0114a8c0@CyberDawn.Net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +16,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: dewet@cyberdawn.co.za, netfilter@lists.netfilter.org
-
-Hello all, I also need help on firewall.
-I just installed red hat 8 too. I would
-like to learn how to set up my linux box
-with a firewall that I could edit threw
-the command line.
-
-
-
-
------Original Message-----
-From:
-netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.
-org]On Behalf Of DeWet van Rooyen
-Sent: Wednesday, December 11, 2002 11:50
-AM
 To: netfilter@lists.netfilter.org
-Subject: Firewall help
 
-I installed a machine with Redhat 8 and
-are trying to set up a iptables
-firewall with 2 internal segments (DMZ
-and internal network).
-My machine have 3 Network cards.
+Hey everyone!  I'm getting extremely frustrated at iptables right now
+because it doesn't seem to follow the rules as ipchains did.  Basically
+I'm just trying to replace my ipchains server with a new computer that
+uses 2.4 and iptables.  This is a NAT/gateway machine and we filter our
+users by IP addresses.  The different ip blocks have certain access to
+certain services.  I've copied over my old script that's running right
+now and changed everything to work with iptables but it doesn't seem to
+deny anyone.
 
- Is this possible ?
+Here's the basic rules I have right now for testing.  
 
- I can seem to get all the segments to
-see each other. Can you give me an
- idea on how to do this. Is it just a
-question of routes / Nat and Arp
- entries ?
+###################################
 
-DMZ - 192.168.1.0 / 255.255.255.0
-Internal Network / 192.168.2.0 /
-255.255.255.0
-For the external interface, I have 64 ip
-addresses - 255.255.255.192
+# disable ip forwarding while rules are applied
+echo 0 > /proc/sys/net/ipv4/ip_forward
+
+/sbin/modprobe iptable_nat
+/sbin/modprobe ip_conntrack
+
+/sbin/iptables -F
+/sbin/iptables -t nat -F
+/sbin/iptables -X
+/sbin/iptables -t nat -X
+
+/sbin/iptables -P INPUT DROP
+/sbin/iptables -P OUTPUT DROP
+/sbin/iptables -P FORWARD DROP
+
+# no access
+/sbin/iptables -A INPUT -s 172.17.0.0/20 -j DROP
+
+# NAT
+/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+/sbin/iptables -A FORWARD -j ACCEPT
+
+# turn on ip forwarding
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+####################
+
+If I change my laptop IP to 172.17.0.244 then I'm able to ping
+www.yahoo.com when the no access rule should deny then from doing
+anything.  This is all working on a machine that uses ipchains...what am
+I doing wrong?
+
+Thanks
+Damon Brinkley
 
 
