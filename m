@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Range of IP's with Exclusions
-Date: Wed, 12 Nov 2003 23:11:42 +0000
+From: px <px5150@yahoo.com>
+Subject: maximum number of iptables rules?
+Date: Wed, 12 Nov 2003 15:18:12 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311122311.hACNBjj18873@agate.rockstone.co.uk>
-References: <7A3B4AA360FDEF448F3390421FC8D731011316BC@coxhpexg.coxhp.com>
+Message-ID: <3FB2BFB4.2000105@yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7A3B4AA360FDEF448F3390421FC8D731011316BC@coxhpexg.coxhp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,69 +15,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
+Cc: dom@fea.net
 
-On Wednesday 12 November 2003 11:05 pm, bmcdowell@coxhealthplans.com wrote:
+Hi, me and a buddy of mine are working on a perl script to automate 
+blocking of about 3000 IP addresses.
+The script works fine on his box, x86.  But on my box, sparc, I seem to 
+have a limitation of 854 rules before I start to get errors and am 
+unable to add anymore rules.
+Is there a maximum number of rules per chain? or overall?
+ 
 
-> Is there no reason to be wary of the 'ACCEPT' statement?  I did read this
-> in the tutorial (I think), but isn't ACCEPT a terminating action?
+Here is the information on my Sparc box.
 
-Yes, in the sense that a packet matching this rule will not pass through any 
-further rules, but what's the problem with that?
+> null:~# iptables -t filter -I INPUT 1 -s 66.28.224.0/19 -p all -j blockme
+> iptables: Memory allocation problem
 
-The only thing the PREROUTING nat table can do is DNAT.
 
-So, either you want to DNAT a packet from 10.22.1.1, or you don't.
+> null:~# iptables -t filter -I INPUT 1 -s 1.2.3.4/19 -p all -j blockme
+> iptables: Memory allocation problem
+> null:~# uname -a
+> Linux null 2.4.21 #1 Thu Aug 7 20:30:12 EDT 2003 sparc64 GNU/Linux
+> null:~#
 
-If you do want to DNAT it, put that as the target of the first rule.
-If you don't want to DNAT it, use ACCEPT as the target of the first rule.
+> null:~# iptables -L blockme
+> Chain blockme(854 references)
+> target     prot opt source               destination
+> DROP       all  --  anywhere             anywhere
 
-Nothing else is possible.
 
-Antony.
+Here is the info about my buddy's. x86 box
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-> Sent: Wednesday, November 12, 2003 4:47 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Range of IP's with Exclusions
->
-> On Wednesday 12 November 2003 10:31 pm, bmcdowell@coxhealthplans.com wrote:
-> > iptables -t NAT -A PREROUTING -d 10.22.1.3 -j DNAT --to 10.22.2.2
-> > iptables -t NAT -A PREROUTING -d 10.22.1.4 -j DNAT --to 10.22.2.2
-> > iptables -t NAT -A PREROUTING -d 10.22.1.5 -j DNAT --to 10.22.2.2
-> > iptables -t NAT -A PREROUTING -d 10.22.1.6 -j DNAT --to 10.22.2.2
-> > (etc.)
-> >
-> > ...but that is a bit of a pain.
-> >
-> > I keep trying to type in something like:
-> >
-> > iptables -t NAT -A PREROUTING -d 10.22.1.0/24,! 10.22.1.1 -j DNAT
-> > --to 10.22.2.2
-> >
-> > ...but iptables complains.
->
-> Try these two rules, in this order:
->
-> iptables -t NAT -A PREROUTING -d 10.22.1.1 -j ACCEPT
-> iptables -t NAT -A PREROUTING -d 10.22.1.0/24 -j DNAT --to 10.22.2.2
->
-> The first will match the address you don't want to DNAT, and only other
-> addresses will match the second rule.
->
-> Antony.
+>  root@darkside:/etc/rc.d# uname -a; iptables -L blockme; iptables 
+> --version
+>  Linux darkside 2.5.50-ac1 #3 SMP Sun Feb 9 10:21:53 PST 2003 i686 
+> unknown
+>  Chain blockme(3966 references)
+>  target     prot opt source               destination          
+>  DROP       all  --  anywhere             anywhere            
+>  iptables v1.2.7a
 
--- 
 
-The idea that Bill Gates appeared like a knight in shining armour
-to lead all customers out of a mire of technological chaos
-neatly ignores the fact that it was he who, by peddling
-second-rate technology, led them into it in the first place.
 
- - Douglas Adams in The Guardian, August 25, 1995
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Any help is greatly appreciated.
+-r0b
+
+
 
