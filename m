@@ -1,12 +1,13 @@
-From: gvt_lnx@gmx.net
-Subject: Nat OUTPUT chain
-Date: Sun, 2 Jun 2002 15:42:52 +0200 (MEST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Nat OUTPUT chain
+Date: Sun, 2 Jun 2002 15:05:39 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20747.1023025372@www58.gmx.net>
+Message-ID: <200206021405.g52E5jA14125@Networker.rockstone.co.uk>
+References: <20747.1023025372@www58.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20747.1023025372@www58.gmx.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,20 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@lists.samba.org" <netfilter@lists.samba.org>
 
-Hi friends, I'am reading some howto and I found that OUTPUT chain in NAT
-table is broken...? that's true?
+On Sunday 02 June 2002 2:42 pm, gvt_lnx@gmx.net wrote:
 
-Could I write a rule like this:
+> Hi friends, I'am reading some howto and I found that OUTPUT chain in NAT
+> table is broken...? that's true?
 
-iptables -t nat -A OUTPUT -d x.x.x.x -j DNAT --to-destination y.y.y.y
+I'm not sure about this one - I know it used to be broken; I don't know if it 
+still is...
 
-Thanks in advance.
-Geffrey
+Why not just try it for yourself ?   A simple test will tell you if your 
+version of netfilter can do it or not.
 
--- 
-GMX - Die Kommunikationsplattform im Internet.
-http://www.gmx.net
+> Could I write a rule like this:
+>
+> iptables -t nat -A OUTPUT -d x.x.x.x -j DNAT --to-destination y.y.y.y
 
+Looks okay according to the syntax in the iptables man page - try it and see. 
+Put a rule like this on your machine, then telnet (or whatever) to x.x.x.x 
+and see if you end up connecting to x.x.x.x or y.y.y.y
+
+
+Antony.
 
