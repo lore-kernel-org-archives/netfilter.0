@@ -1,8 +1,8 @@
 From: Joel Solanki <zealous@bonbon.net>
 Subject: Re: Ip accounting Help--> Urgent
-Date: Sat, 26 Jun 2004 15:53:58 +0530
+Date: Sat, 26 Jun 2004 15:25:30 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088245438.2121.22.camel@joel.d2visp.com>
+Message-ID: <1088243730.2121.3.camel@joel.d2visp.com>
 References: <1087962571.2041.10.camel@joel.d2visp.com>
 	 <200406260922.14221.Antony@Soft-Solutions.co.uk>
 	 <1088241658.2283.35.camel@joel.d2visp.com>
@@ -23,44 +23,20 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Helloo..Antone and all. 
+I am working on what you have suggested...in 7 mins.I will be back with
+an email.
+Some clarification.
 
+192.168.0.2 is windows 98 machine
+From win98 machine i upload a file on my other ftp server which has a
+public ip address.
+I am only using win98 machine as client. i am downloading squid.tar.gz
+from my ftp server and that file i m again uploading to my ftp server.
+So this is the right things ........
+On my linux server i m doing nothing except the iptables rule. 
 
-[root@joel root]# iptables -L FORWARD -t mangle -nvx
-
-Chain FORWARD (policy ACCEPT 6375 packets, 1886840 bytes)
-pkts	bytes	target	prot	opt	in	out	source		destination
-3200	1742989		all	--	eth1	*	192.168.0.2	0.0.0.0/0
-3175	143851		all	--	eth0	*	0.0.0.0/0	192.168.0.2
-
-
-This is the result when i uploaded to remote ftp server which is in our
-network . File Uploaded php.pdf size=1:53 MB
-
-------------------------------------
-
-[root@joel root]# iptables -L FORWARD -t mangle -nvx
-
-Chain FORWARD (policy ACCEPT 8923 packets, 3794033 bytes)
-pkts	bytes	target	prot	opt	in	out	source		destination
-4308	1803901		all	--	eth1	*	192.168.0.2	0.0.0.0/0
-4615	1990132		all	--	eth0	*	0.0.0.0/0	192.168.0.2
-
-This is the result when i download squid.tar.gz from ftp server which is
-in my network. file size is 1.25MB
--------------------------------------
-
-This is according to your suggestion but i have used the ftp server
-which is in my network. I havent used ftp server of my linux server on
-which iptables and nat is done.
-
-So here also when uploading the file bytes are filled in the first
-iptables chain with source 192.168.0.2 and destination 0.0.0.0/0 on eth1
-Some Ideas.........:)
+I will be back in 7 mins.:)
 Regards,
-
-
-
 
 
 On Sat, 2004-06-26 at 14:59, Antony Stone wrote:
