@@ -1,12 +1,12 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: My ack is more important than anything else!
-Date: Wed, 5 Nov 2003 23:10:05 +0100 (CET)
+From: "Michael Klinteberg" <micke@klintan.se>
+Subject: Re: ftp and ssl
+Date: Wed, 5 Nov 2003 23:26:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.58.0311052309060.18724@mercury.sdinet.de>
-References: <20031105205036.42186.qmail@web40204.mail.yahoo.com>
+Message-ID: <002701c3a3eb$d31756b0$c800a8c0@klintan.cjb.net>
+References: <33da01c3a34d$84fe6660$2288e7c0@promed.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031105205036.42186.qmail@web40204.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +16,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: SBlaze <dagent.geo@yahoo.com>
-Cc: Elver Loho <kernelpenguin@hot.ee>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Wed, 5 Nov 2003, SBlaze wrote:
 
-> This too interests me... I have seen this done on OpenBSD but the same tools
-> they use are not for Linux.. anyone out there know this?
+----- Original Message ----- 
+From: "Stuart J. Browne" <stuart@promed.com.au>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, November 05, 2003 4:33 AM
+Subject: RE: ftp and ssl
 
-have a look into the docs on www.lartc.org
 
-> --- Elver Loho <kernelpenguin@hot.ee> wrote:
-> > Prioritization of outgoing acknowledgement packets. How?
+>
+>
+> >-----Original Message-----
+> >From: netfilter-admin@lists.netfilter.org
+> >[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Ted Kaczmarek
+> >Sent: Wednesday, 5 November 2003 13:03
+> >To: Michael Klinteberg
+> >Cc: netfilter@lists.netfilter.org
+> >Subject: Re: ftp and ssl
+> >
+> >
+> >Allow tcp port 443 :-)
+> >
+> >Ted
+> >On Tue, 2003-11-04 at 09:36, Michael Klinteberg wrote:
+> >> I need to setup ftp that use ssl. I don't know if
+> >ip_conntrack_ftp supports
+> >> ssl. What are my options here?
+> >> What do I need to know to setup the iptables rules/modules?
+> >>
+> >> Regards
+> >> Michael
+>
+> Isn't 443 SSL over HTTP? :)
+>
+> By default, it looks as if netfilter only watch port 21, but you can
+> pass it an option (called 'ports') of the ports you want to treat as FTP
+> as well.
+>
+> How are you doing SSL FTP's?
 
-c'ya
-sven
+WS_FTP Server.
 
--- 
+>
+> Using ssh's sftp? This just uses standard ssh ports.
+>
+> SSL FTP client (does anybody use this?) I beleive has the
+> services entry of 'sftp' and is port 115.  I've not seen a production
+> implementation of this though
+>
+> If using 'sftp' from the OpenSSH packages, there is no need for any
+> conntrack helpers, as it all uses the same port.
+>
+> If using the later however, given that the channel will be encrypted, I
+> don't see how this conntrack would work at all.
+>
+> just my thoughts..
+>
 
-The Internet treats censorship as a routing problem, and routes around it.
-(John Gilmore on http://www.cygnus.com/~gnu/)
+
+A lot of responses  here :-) Still don't know what to do?
+I could however set up rules that allow everything from the ftp client (me)
+to the ftp server and then run tcpdump and see what's going on. Is this a
+god approach?
+
+/Michael K
+
 
