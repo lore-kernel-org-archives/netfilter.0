@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Patching only one patch from pom-ng
-Date: Tue, 26 Oct 2004 00:02:31 -0400
+From: cc <cc@belfordhk.com>
+Subject: compile errors
+Date: Tue, 26 Oct 2004 14:16:37 +0800
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1098763351.5877.26.camel@hubcap.ljm.dom>
-References: <20041026034059.GA5563@legolas.on.net.mk>
+Message-ID: <417DEBC5.3000006@belfordhk.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041026034059.GA5563@legolas.on.net.mk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +16,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Group <netfilter@lists.netfilter.org>
 
-On Mon, 2004-10-25 at 23:40, Damjan wrote:
-> Hi all,
-> I'm using the qnet patch for the Linux kernel, but I need to add the
-> "ipt_random" support from pom-ng to it.
-> 
-> So my question is, how do I add the "ipt_random" patch to the 2.6.9-qnet
-> tree?
+Hi,
 
-the generic answer to the question, "how do i apply just the random
-patch from POM" is:
+System:  2.4.27 Kernel.
+Iptables:  1.2.11  (trying to compile)
 
-export KERNEL_DIR="/path/to/kernel_src"
-export IPTABLES_DIR="/path/to/iptables_src"
-./runme pending
-./runme base/random
-cd $KERNEL_DIR && make menuconfig [...]
-cd $IPTABLES_DIR && make && make install
+I don't recall having so much trouble with 1.2.8 (the last
+version I compiled following the README instructions),
+basically:
 
-you should always apply the pending patches from POM to avoid any
-unforeseen weirdness...  to apply a single patch, use the "./runme
-suite/patch-dir" syntax, where the suite may be ascertained from the
-patch-dir/info file.
+make KERNEL_DIR=/usr/src/linux
 
-now for the part that you don't want to hear--as far as i know, the
-random patch is 2.4-only...it certainly is in patch-o-matic-ng-20040621,
-and appears to remain that way in CVS from a quick perusal of:
+But I get all sorts of warnings.   Mind you, the 2.4.27
+kernel was patched from a 2.4.21 one, so I d/led the
+2.4.27 full kernel and uncompressed it to /usr/src/linux.
 
-http://cvs.netfilter.org/cgi-bin/viewcvs.cgi/trunk/patch-o-matic-ng/random/
+Then I ran 'make KERNEL_DIR=/usr/src/linux'.
 
-i.e. there is no "linux-2.6" directory in there.
+Now, it gives:
 
--j
+Making dependencies: please wait...
+Something wrong... deleting dependencies.
+make: *** [/usr/src/linux/include/asm/errno.h] Error 1
 
--- 
-Jason Opperisano <opie@817west.com>
+I don't know if this is considered an improvement
+or not.
 
+This is a stock kernel.  Unpatched from the POMs.
+Even with patched, I still get the above error.
+
+Can someone please tell me what I'm doing wrong?
+
+Does 1.2.11 work with 2.4.27 anyway?
+
+Thanks
+
+Edmund
 
