@@ -1,15 +1,14 @@
 From: Jose Maria Lopez <jkerouac@eresmas.com>
-Subject: Re: learning firewall
-Date: 03 Sep 2004 19:20:18 +0200
+Subject: Re: tcpdump and Iptables
+Date: 03 Sep 2004 19:20:25 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094222078.25616.17.camel@nostromo.bgsecm.com>
-References: <20040902191645.GA28800@omega.lacnic.net.uy>
-	<20040903102543.GI3755@metastasis.org.uk>
-	<1094215486.3029.4.camel@Quark>
+Message-ID: <1094222205.4370.20.camel@nostromo.bgsecm.com>
+References: <41375ED1.5090400@kdtc.net>
+	<20040902180705.GG3755@metastasis.org.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1094215486.3029.4.camel@Quark>
+In-Reply-To: <20040902180705.GG3755@metastasis.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,27 +21,17 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El vie, 03 de 09 de 2004 a las 14:44, Miguel Angel Amador L escribió:
-> Hi All,
->  I have a questions, what module i must be install for the P2P
-> conections ? (sorry for my english, is very slow)
->  Thnx a lot 
+El jue, 02 de 09 de 2004 a las 20:07, Nick Drage escribió:
+> On Fri, Sep 03, 2004 at 01:56:33AM +0800, CC wrote:
 > 
-> Regards
->  Miguel Amador L.
+> > If I have iptables running and I do a tcpdump -i eth0,   at what point
+> > is tcpdump listening to the connection?
 > 
+> tcpdump will see the packets before IPTables does anything to them.
 
-The port I use to block P2P (or to allow them if you want) are:
-
-KAZAA 1214/tcp
-NAPSTER 8888/tcp 7777/tcp 8875/tcp
-EDONKEY/EMULE 4662/tcp 4663/tcp
-WINMX 6699/tcp
-
-But have in mind that some of this programs can use SOCKS proxies or
-even standard ports like port 80/tcp to send or receive traffic. It
-can be a little tricky to stop them (easier to allow them, just open
-this ports and they will run).
+If that's true (I don't doubt it) then I have a question:
+Where in the routing process does tcpdump see the traffic?
+It can be very important to know it for some studies.
 
 
 -- 
