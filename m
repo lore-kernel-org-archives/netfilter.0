@@ -1,13 +1,13 @@
 From: "Victor Wren" <vwren@timension.com>
-Subject: Re: OT: Logs on console
-Date: Fri, 16 Jul 2004 12:28:25 -0800
+Subject: Re: AW: a NAT question
+Date: Fri, 16 Jul 2004 12:39:13 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40F7C9E9.30435.74F90D@localhost>
-References: <40F7BB44.24155.3BC614@localhost>
+Message-ID: <40F7CC71.20447.7EDE11@localhost>
+References: <7C9884991ADAE0479C14F10C858BCDF591E342@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200407161942.32228.Antony@Soft-Solutions.co.uk>
+In-reply-to: <20040716185022.GA20595@tranquility.scriptkitchen.com>
 Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,54 +19,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-
-
-> On Friday 16 July 2004 8:25 pm, Victor Wren wrote:
+> On Fri, Jul 16, 2004 at 11:43:05AM -0700, Daniel Chemko wrote:
 > 
-> > This is off-topic, but IPTABLES is the only place I have this problem. 
-> >
-> > I've got all my log entries set to --log-level
-> > info, and they're getting properly logged to an iptables logfile, but they
-> > are still showing up on the screen
+> > The setup of a Script-only setup isn't too hard. You have to abandon the
+> > concept of ip aliases since netfilter dropped support for the concept.
+> > You only deal with the root interface and ip addresses.
 > 
-> Show us the contents of your /etc/syslog.conf
+> You mean the something like eth0:1 isn't supported? Do I have to
+> learn the ip thing instead of ifconfig?
+> For a while I would prefer ifconfig.
 
-auth,authpriv.* -/var/log/auth
-*.*;auth,authpriv.none -/var/log/messages
-kern.none /dev/console
-daemon.* -/var/log/daemon
-kern.* -/var/log/kern
-kern.=info -/var/log/iptables
-mail.* -/var/log/mail
-user.* -/var/log/user
-cron.* -/var/log/cron
-*.emerg *
-local7.* /var/log/boot.log
+It's not as bad as all that, and it's really sound policy, If you think about 
+it.  It's matching packets that come into a particular physical interface.  
+It doesn't care what the ip address of that port is, or whether it has one 
+address or twenty, so when you say "-i eth0" (or -o) just remember that 
+you're also catching "eth0:56, eth0:fred, eth0:arf" etc.
 
-I think I may have found a clue.  kernel message logging is handled by klogd. 
- the manfile for klogd says that it defaults to putting all messages of 
-priority higher than 7 (debug) to the screen (info is 6) unless launched with 
-"-c [level]"  I see no mention of any use of a configuration file in klogd, 
-and it appears to hand kernel messages to syslogd after prioritizing, but has 
-the ability to send messages to the screen (or files) itself.
-
-Ha.  Changing it to klogd -c 3" seems to have cured it.  Now to fix it on my 
-home network!
-
-Victor
-
+I like this way of doing it.  Having the filter match aliases just mudies the 
+water (and frankly, they'll all arp to the same ethernet mac address, so 
+what's the point?)  If you really want to match on a particular address (or 
+subnet), you can still do that with the "-d " switch.
 
 Victor Wren
-Designer,
-Timension Inc.
-1350 C Pear Ave
-Mountain View CA 94043
-(650) 564-9397
-Fax: (650) 564-9398
-Opinions stated in this letter are not necessarily
-those of Timension Inc. or the management.  All
-Rights Reserved.  No spitting.
 
 
