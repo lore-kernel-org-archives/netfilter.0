@@ -1,10 +1,11 @@
-From: Stewart Thompson <sthompsn@junction.net>
-Subject: WinMX:
-Date: Sun, 02 Jun 2002 00:16:50 -0700
+From: "Luigi Cartuccia" <luigigocart@tiscalinet.it>
+Subject: sk_buff
+Date: Sun, 2 Jun 2002 16:10:51 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPAEALCFAA.sthompsn@junction.net>
+Message-ID: <004601c20a3f$4df7d460$8e130b3e@luigicart>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0043_01C20A50.10E1F360"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,20 +16,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi All:
+This is a multi-part message in MIME format.
 
-        I am having some problems with WinMX through a iptables firewall.
-It doesn't seem to like the way WinMX uses UDP packets. Is there a helper
-module for this, or can anyone suggest some rules. WinMX is running on
-multiple machines behind the firewall. So, I just can't forward the specific
-ports to a particular machine. Thanks.
+------=_NextPart_000_0043_01C20A50.10E1F360
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Stu.........
+Hi I'm Luigi.Where I can find material on sk_buff? =20
+Thank you
 
 
+------=_NextPart_000_0043_01C20A50.10E1F360
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>Hi I'm Luigi.</FONT><FONT face=3DArial =
+size=3D2>Where I=20
+can find material on sk_buff?&nbsp; </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Thank=20
+you<BR></DIV></FONT></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0043_01C20A50.10E1F360--
 
 
