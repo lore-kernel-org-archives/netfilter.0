@@ -1,16 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: 2 NICs on same subnet
-Date: Fri, 5 Nov 2004 10:25:55 -0500
-Message-ID: <20041105152555.GA1158@bender.817west.com>
-References: <20041105123843.GB11016@zion.homelinux.com>
-	<20041105124107.GE9379@torres.ka0.zugschlus.de>
-	<20041105125421.GA12058@zion.homelinux.com>
-	<20041105130424.GF9379@torres.ka0.zugschlus.de>
-	<20041105142219.GB12563@zion.homelinux.com>
+From: Vijay Kumar <vijay@calsoftinc.com>
+Subject: iptables configuration help
+Date: Fri, 05 Nov 2004 21:11:24 +0530
+Message-ID: <1099669284.891.131.camel@dhanush.intranet.calsoft.com>
+Reply-To: vijay@calsoftinc.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20041105142219.GB12563@zion.homelinux.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,41 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Nov 05, 2004 at 03:22:19PM +0100, Sven Schuster wrote:
-> 
-> Hi Marc,
-> 
-> On Fri, Nov 05, 2004 at 02:04:24PM +0100, Marc Haber told us:
-> > What you intend to do does not make sense.
-> >
-> > This surely is meant to be a solution to some unmentioned problem. By
-> > asking about the problem, I am just trying to give a solution.
-> 
-> well, I know that it doesn't make much sense. This setup was made to
-> "balance" the traffic coming in to the machine. I know that there's
-> not much  difference between one NIC running at, say 400 Mbps, or
-> two NICs running at 200 Mbps each which will also be 400 Mbps, because
-> the machine can't handle more traffic (data (backups) is received via
-> network from other machines and written to disks)...but as I've already
-> written, this wasn't my decision...
+Hello,
 
-see--telling us what the actual goal is will help people make
-suggestions that work that will meet that goal, rather than trying to
-pigeon-hole us into trying implement your thought for the "only" way to
-solve this.
+I have a firewall with three nic ( external ip, DMZ ip, LAN ip ) 
+I have added a subinterface on the external interface ( public ip with a public ip address ) 
 
-have you looked into the bonding driver?  two ethernet connections, link
-aggregation (802.3ad), high availability, one IP address:
+There is 1 machine on the internal LAN and I want it to go out using the IP of the sub interface,
+i.e access the internet using the exteral sub interface IP which I have added. 
 
-  http://linux-ip.net/html/ether-bonding.html
+I have done the following : 
 
--j
+iptables -t nat -I POSTROUTING -s 172.16.0.119 -o eth1:0 -j SNAT --to-source <external_ip> 
 
---
-"Son, when you participate in sporting events, it's not whether you
- win or lose: it's how drunk you get."
-        --The Simpsons
+After adding this I also added the below mentioned rules : 
 
+iptables -A INPUT -s 172.16.0.119 -d 0.0.0.0/0.0.0.0 -j ACCEPT 
+iptables -I FORWARD -s 172.16.0.119 -j ACCEPT 
+
+When I addded the rules iptables gave me an Warning stating :" Weird character in interface eth0:0, no ! : "
+
+Where am I going wrong ? Are sub interface allowed in iptables ? 
+
+What iptables rule should  add so that the LAN machine uses the subinterface to reach the internet ? 
+
+What i need is something like static nat ?
+
+Kindly help.
+
+Vijay. 
