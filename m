@@ -1,12 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipv6 and state matching
-Date: Tue, 25 Mar 2003 09:33:26 +0100 (CET)
+From: =?iso-8859-1?Q?Markus_G=FCrtler?= <guertler@ecircle-ag.com>
+Subject: H/A Linux Firewall Cluster
+Date: Tue, 25 Mar 2003 14:07:07 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0303250926560.7010-100000@blackhole.kfki.hu>
-References: <1048536519.1040.5.camel@aurora.localdomain>
+Message-ID: <28EFFBE34FE29A49821CE3BD0D4382FC0374DD@goldmine>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1048536519.1040.5.camel@aurora.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +14,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Trever L. Adams" <tadams-lists@myrealbox.com>
-Cc: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On 24 Mar 2003, Trever L. Adams wrote:
+Hello,
 
-> I am unable to find any questions about this.  I really love state
-> matching in ipv4.  I find that w/ RedHat 8.0 and Phoebe (8.1.99 or
-> something like that), that I cannot do this.  This does indeed seem to
-> be an accurate state.
+we plan to use Netfilter/IPTables to build a firewall for our heavy loaded
+eCommerce-Plattform. Basically this should be two Linux-Firewalls, running
+in a High-Availability mode. Each firewall will have four Gigabit network
+interfaces (Internet, DMZ, Trusted Network, H/A-Link). In total, the
+firewalls have to handle about 400 Mbps of IP traffic and around 60.000 -
+70.000 simultaneously connections. Our ruleset will have around 40 - 80
+rules, and the Connection-Tracking (stateful inspection) should be enabled.
 
-Brad Chapman had an attempt to port IPv4 conntrack to IPv6 but his code
-was never accepted.
+Does anybody have experiences with iptables firewalls of this size? Is the
+Netfilter code able to handle this amount of traffic on current
+i386-plattform machines? Which hardware and how much RAM do I need?
 
-Last year I worked on the prototype of an unified conntrack code, but it
-was never released. Unfortunately just conntrack doesn't seem to be enough
-- one is tempted to implement NAPT etc. as well.
+It would be nice, if somebody could give me some hints.
 
-> Are there plans on doing state support?  Is it all that much more
-> difficult?
+Thanks,
 
-A straight porting is not so difficult, but that direction cannot be
-followed because it would result in a severe code-duplication.
-Unification takes a lot of time.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
-
+Markus
 
