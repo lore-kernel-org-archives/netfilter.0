@@ -1,14 +1,10 @@
-From: Tech <tech@wildcash.com>
-Subject: Re: Bandwidth Monitor
-Date: Sun, 09 May 2004 17:23:28 +1000
+From: udo <udovdh@yahoo.com>
+Subject: benchmarking iptables/netfilter code?
+Date: Sun, 9 May 2004 05:00:32 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <409DDC70.7080206@wildcash.com>
-References: <006001c434da$7c6400e0$36b4fea9@SABNANIS> <200405081153.19812.Antony@Soft-Solutions.co.uk>
-Reply-To: tech@wildcash.com
+Message-ID: <20040509120032.15947.qmail@web40701.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405081153.19812.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,17 +14,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hello,
 
-Another option for bandwidth monitoring is BandwithD.
+Is there an (easy) way to do a speed benchmark on the
+firewall code?
+I.e.: How do I determine how much CPU time on a given
+system a certain stream of data (X mbit/s) takes to
+process?
+Also if there is data available on certain (low-end)
+configurations with their firewall performance that
+info would be welcome as well.
+If you have any ideas, please post.
 
-You can find it at:
+Kind regards,
+Udo
 
-http://bandwidthd.sourceforge.net/
 
-Cheers
-Rudi.
+	
+		
+__________________________________
+Do you Yahoo!?
+Win a $20,000 Career Makeover at Yahoo! HotJobs  
+http://hotjobs.sweepstakes.yahoo.com/careermakeover 
 
