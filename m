@@ -1,15 +1,13 @@
 From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: Maximum chain name length
-Date: Mon, 08 Dec 2003 06:31:32 -0500
+Subject: Re: Question on document to setup Iptables
+Date: Mon, 08 Dec 2003 06:46:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070883092.1932.2.camel@jasiiitosh.nexusmgmt.com>
-References: <1070674657.3314.9.camel@jasiiitosh.nexusmgmt.com>
-	 <1070780614.4839.25.camel@jasiiitosh.nexusmgmt.com>
-	 <20031208094253.GA16045@orthanc.gambrl01.md.comcast.net>
+Message-ID: <1070884003.1932.10.camel@jasiiitosh.nexusmgmt.com>
+References: <1070815729.3438.2.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031208094253.GA16045@orthanc.gambrl01.md.comcast.net>
+In-Reply-To: <1070815729.3438.2.camel@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,43 +18,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Michael Rash <mbr@cipherdyne.org>
+To: Stephen Liu <satimis@icare.com.hk>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, 2003-12-08 at 04:42, Michael Rash wrote:
-> On Dec 07, 2003, John A. Sullivan III wrote:
+On Sun, 2003-12-07 at 11:48, Stephen Liu wrote:
+> Hi all folks,
 > 
-> <snip>
+> Just join this list.
 > 
-> > AppliedTechnologies/Engineering/NewProducts/SanFranciscoLabs/ProjectB
-> > 
-> > is not out of the ordinary.  This runs us up against the 30 character
-> > limit of chain names very quickly.  Working around this by substituting
-> > numbers for names or some other such workaround will greatly complicate
-> > the project and reduce ease of troubleshooting in the field.
-> > 
-> > 	Is there any way to extend the maximum allowed chain name length in
-> > iptables? Thanks - John
 > 
-> (Re-posting this since my original post did not seem to make it through).
+> RH 9.0
+> ========
 > 
-> On way to extend the chain name length would be to modify
-> IPT_FUNCTION_MAXNAMELEN in both the userspace and kernel versions of
-> the ip_tables.h header file (or create a new #define just for the chain
-> length since several things depend on IPT_FUNCTION_MAXNAMELEN).  You
-> might try posting to the netfilter-devel list, but this is not exactly
-> a trivial modification (how to maintain backward compatibility with
-> older kernels, etc.).
+> I am prepared to config/setup iptables which has already been installed
+> and running.  
 > 
-> --Mike
+> From
 > 
-> Michael Rash
-> http://www.cipherdyne.org
-> Key fingerprint = 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
+> [url]http://www.netfilter.org/documentation/[/url]
+> 
+> I found following tutorials;
+> 
+> iptables tutorial by Oskar Andreasson.
+> Taming the wild Netfilter by linuxjournal.
+> Comparison of iptables automation tools by Anton Chuvakin.
+> Set up an gateway for home or office by YoLinux.
+> Iptables basics by Prince Kenshi(linuxnewbies).
+> Filtering packets with iptables by Joe Brockmeier.
+> Using iptables by Joe Brockmeier
+> Iptables connection tracking by James C. Stephens.
+> Iptables - what is it by James C. Stephens.
+> Netfilter Log Format by Unknown.
+> How to use iptables by KrnlPanic
+> Securing Linux Tutorial by weazyB.
+> Netfilter tutorial by crhalpin.
+> Mastering iptables by David Coulson.
+> Part 1 of an introductory iptables tutorial by David Coulson.
+> Part 2 of an introductory iptables tutorial by David Coulson.
+> 
+> Kindly advise which of them is most relevant and simple in setup
+> iptables including masq
+> 
+> Thanks in advance.
+> 
+> B.R.
+> satimis
 
-Thanks for the suggestion to post to the development list.  I'm always
-hesitant to do that but I'll go ahead.  What are the kernel issues with
-using longer chain names?
+I've only look at a few of the others but I found Oskar Andreasson's
+very helpful.  There is also a someone less expert slide show in the
+training section on http://iscs.sourceforge.net
 -- 
 John A. Sullivan III
 Chief Technology Officer
