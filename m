@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: migration to iptables
-Date: Mon, 10 Jun 2002 15:31:44 +0100
+From: Skull <skull@skullkrusher.net>
+Subject: Re: tftp conntrack
+Date: Mon, 10 Jun 2002 16:33:25 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206101431.g5AEVpU08614@vulcan.rissington.net>
-References: <200206101942.43007@.>
+Message-ID: <3D04B8B5.8040608@skullkrusher.net>
+References: <E131E9F1848D0148813EAF06A846608F615DA7@w2ks-e2k.iconos.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206101942.43007@.>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,34 +16,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Sneppe Filip <Filip.Sneppe@cronos.be>, netfilter@lists.samba.org
 
-On Monday 10 June 2002 3:18 pm, Payal wrote:
+Sneppe Filip wrote:
 
-> Hi all,
-> I used to use ipchains like
-> ipchains -A forward -j MASQ
-> to share internet connection. Now on Linux kernel 2.4.18 on Mdk 8.2 I want
-> to try iptables for a while.
-> I just substitued ipchains in the above command with iptables
-> iptables -A forward -j MASQ
-> iptables v1.2.5: Couldn't load target `MASQ':/lib/iptables/libipt_MASQ.so:
-> cannot open shared object file: No such file or directory
+ > the tftp conntracker, like all conntrackers nowadays requires that
+ > the kernel is patched for newnat support.
+ >
+ > Did you apply the necessary patch(es) for newnat before applying the
+ > tftp connectrack helper ?
 
-You need the appropriate FORWARD rules to allow the traffic through the box 
-in the first place, but this is how you masquerade the source address behind 
-your Internet link address:
+Yes... To avoid any kind of misunderstanding during the configuration, 
+this is what I did:
+- I downloaded a 2.4.18-vanilla tarball
+- I've checked out thru CVS the entire netfilter/userspace repository 
+directory
+- I launched the make patch-o-matic
 
-iptables -A POSTROUTING -o $EXT_IF -j MASQUERADE
+It obviously made a lot of questions for each patch to install, and it 
+didn't find anything wrong during the whole process.
+The only problem happens when it tries to install the tftp-conntrack 
+helper (that was what I really needed from all this thing... damn...): 
+it comes out with:
 
-You might want to read:
+Testing patch extra/tftp-conntrack-nat.patch...
+    Placed new Config.in line
+    Placed new Config.in line
+    Placed new Configure.help entry
+    Placed new Makefile line
+Could not find place to slot in Makefile line
+TEST FAILED: patch NOT applied.
 
-http://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO.html
+[Press enter to continue]
 
-http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO.html
+And this is not such a verbose comment if I need to understand where the 
+problem is :-)
 
- 
+Thanx 4 all...
 
-Antony.
+
+
+-- 
+Emanuele "SKULL" Balla
+----------------------------------------------------------------------
+"How should I know if it works?  That's what beta testers are for. I
+only coded it." (Attributed to Linus Torvalds, somewhere in a posting)
+
 
