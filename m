@@ -1,33 +1,64 @@
-From: Bobo <boboaq@163.com>
-Subject: How to log all the packets through netfilter?
-Date: Wed, 12 Mar 2003 18:34:8 +0800
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030312103355.9C1FF1C9C2DCC@sm206.163.com>
+From: "hare ram" <hareram@sol.net.in>
+Subject: Problem with bridge+iptables+ulog
+Date: Wed, 12 Mar 2003 15:55:34 +0530
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <078601c2e886$039a49e0$13fcc5cb@Housecall>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
-Cc: netfilter-devel@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+To: netfilter@lists.samba.org
 
- Hello:
+Hi all
 
-        While using IPtables,I am now trying to log all the packets the firewall receives.
+some one can help i have the following setup
 
-     Now,I could log such packets that match the set rules.If receive some packet which does 
-not meet any rules in a chain,how to log it?
-   I have set the default polity of a chain  "drop" action.
+x.x.x.1/24            x.x.x.2/24
+   +------+                               +------+
+  | Router A |------+ +---------| PC B |
+   +------+              | |              +------+
+                              | |
+                        eth0| | eth1
+                          +-----+
+                            | qos | (br0 =3D x.x.x.3/24)
+                          +-----+
 
-     Thanks.
+
+
+Router A is connected to internet
+QOS box running with bridge
+PC B is my LAPTOP
+
+iam try to make the ULOG usig the following command
+
+
+$IPTABLES -I INPUT -i eth1 -j ULOG --ulog-nlgroup 1 --ulog-cprange
+   --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
+
+iam not able to see any LOG here in my LOG file
+
+when i do this with out  interfce
+
+$IPTABLES -I INPUT  -j ULOG --ulog-nlgroup 1 --ulog-cprange
+   --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
+
+iam able to see some logs using BR0
+
+how can i get the logs from eth0 and eth1
+
+any suggestion will be great
+
+hare
 
 
 
