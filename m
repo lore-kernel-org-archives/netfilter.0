@@ -1,13 +1,10 @@
-From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
-Subject: Re: Allow particular website/port
-Date: Fri, 11 Feb 2005 08:09:02 +0100
-Message-ID: <200502110809.02681.marcin.giedz@eulerhermes.pl>
-References: <1108064090.420bb75ac0009@mail.gnvfc.net>
+From: "Omar Garcia" <omar.garcia@fractalia.biz>
+Subject: Differences between -j MARK and -j CONNMARK
+Date: Fri, 11 Feb 2005 10:52:23 +0100
+Message-ID: <009f01c5101f$6302ddd0$910010ac@coco>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1108064090.420bb75ac0009@mail.gnvfc.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +15,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dnia czwartek, 10 lutego 2005 20:34, spdesai@gnvfc.net napisa=B3:
-> Hi
->
-> I have one linux machine with two NIC cards. One is connected to internet
-> and one is private PC. Below is my IP configuration
->
-> I have enable ip_forward to 1 in linux machine as well as donw masqared in
-> linux.
->
-> I can browse the internet as well from window machine.
->
-> Now I want to allow/restricted my window machine to access/deny particular
-> site/block/messanger ...
->
-> i have tried with FORWARD chain but..it restricted all HTTP traffic which=
- i
-> dont want.
->
-> So pl.  give me the solution.
+Hi list,
 
-Iptables is not a solution, check squid
+What`s the differences between these two groups of rules.?????
+In the first i use MARK --set-mark to mark packets and in the other i =
+use CONNMARK --set-mark
 
-Marcin
+1.
+    # iptables -I POSTROUTING -t mangle -j CONNMARK --restore-mark
+    # iptables -I POSTROUTING -t mangle -m mark ! --mark 0 -j ACCEPT
+    # iptables -I POSTROUTING -t mangle -m ipp2p --ipp2p -j MARK =
+--set-mark 30
+    # iptables -I POSTROUTING -t mangle -m ipp2p --bit -j MARK =
+--set-mark 30
+    # iptables -I POSTROUTING -t mangle -j CONNMARK --save-mark
 
->
-> Thanks in advance
->
-> Suhag
->
-> -------------------------------------------------
-> This mail sent through IMP: http://horde.org/imp/
+2.
+    # iptables -I POSTROUTING -t mangle -j CONNMARK --restore-mark
+    # iptables -I POSTROUTING -t mangle -m mark ! --mark 0 -j ACCEPT
+    # iptables -I POSTROUTING -t mangle -m ipp2p --ipp2p -j CONNMARK =
+--set-mark 30
+    # iptables -I POSTROUTING -t mangle -m ipp2p --bit -j CONNMARK =
+--set-mark 30
+    # iptables -I POSTROUTING -t mangle -j CONNMARK --save-mark
 
+
+Regards.
+Thanks
