@@ -1,46 +1,37 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: limiting connections
-Date: Mon, 01 Nov 2004 08:45:42 -0500
-Message-ID: <1099316742.3271.12.camel@hubcap.ljm.dom>
-References: <20041101092621.GA6044@tranquility.scriptkitchen.com>
+From: Nilesh <niluforalways@yahoo.com>
+Subject: Giving trouble when blocking MSN messenger
+Date: Mon, 1 Nov 2004 06:21:01 -0800 (PST)
+Message-ID: <20041101142101.25476.qmail@web50505.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041101092621.GA6044@tranquility.scriptkitchen.com>
+Return-path: <squid-users-return-49588-gcwsg-squid-users=m.gmane.org@squid-cache.org>
+List-Post: <mailto:squid-users@squid-cache.org>
+List-Help: <mailto:squid-users-help@squid-cache.org>
+List-Unsubscribe: <mailto:squid-users-unsubscribe@squid-cache.org>
+List-Subscribe: <mailto:squid-users-subscribe@squid-cache.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Squid <squid-users@squid-cache.org>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, 2004-11-01 at 04:26, Payal Rathod wrote:
-> Hi,
-> As I mentioned in my previous mails, I use something like below to
-> redirect connections from outside to my internal machine.
-> # iptables -t nat -I PREROUTING -d <my_ext_ip> -p tcp --dport \
-> 8081 -j DNAT --to-destination 192.168.0.16:80
-> 
-> But I want only say 3 connections allowed at a time from outside. How do I 
-> do it in iptables?  I am not getting the exact syntax.
-> 
-> Thanks a lot in advance.
-> With warm regards,
-> -Payal
+Hello All,
 
-have a look at the connlimit patch from POM.
+I am not able to block MSN Messenger when I put this
+rule in rc.firewall script 
+This rule is required for to connect VPN sever at
+client side.
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j SNAT --to
+$EXTIP
+Could any one tell me what needs to be change in
+Squid.conf for blocking MSN messenger or tell me the
+way to block it.
 
--j
-
---
-"Man, you go through life, you try to be nice to people, you struggle
-to resist the urge to punch 'em in the face, and for what?"
-	--The Simpsons
+Thanks and Regards 
+Nilesh,
 
 
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
