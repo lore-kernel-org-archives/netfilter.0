@@ -1,12 +1,13 @@
-From: Martin Ferrari - Decidir IT <mferrari@decidir.net>
-Subject: urgent - netfilter rejecting 60% of DNS requests!
-Date: Wed, 1 Oct 2003 15:32:33 -0300
+From: Axel Christiansen <axel@zedx.org>
+Subject: Re: sugestion needed for session marking from different default	routres
+Date: Wed, 01 Oct 2003 20:35:28 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0EF8394892B74144ACF999556D1FD6BB7DE397@dexter.decidir.net>
-Reply-To: mferrari@decidir.net
+Message-ID: <3F7B1E70.1090800@zedx.org>
+References: <34887.212.202.127.214.1065004876.squirrel@knex.zedx.net> <1065006675.879.62.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1065006675.879.62.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,44 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "'Netfilter list (E-mail)'" <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: netfilter@lists.netfilter.org
 
-Hi, I don't know what's happening, but I discovered that my firewall is
-currently rejecting with port unreachable about 60% of the DNS queries =
-I
-receive, but this is not happening with the other kind of traffic I =
-manage
-(http and smtp).
+Cedric Blancher schrieb:
 
-I use connection tracking and ip_conntrack_max is set to 32k. Dmesg =
-doesn't
-report anything!
+> Le mer 01/10/2003 =E0 12:41, Axel Christiansen a =E9crit :
+>=20
+>>Now, ssh from inet on the DSL line works fine. The
+>>Pakets get back the right way by the active default
+>>route. I also want to ssh in over the other interface,
+>>and want the packets back in that line.
+>=20
+>=20
+> Well, something I missed. Your two interfaces must have different IP ?
+> So you can set source based routing, as described as example for
+> advanced routing in LARTC[1].
 
-Please, ANY help would be greatly welcomed!
+Thats the tning i use now. Can one use "source based routing" also by
+protocol and port. I did not had a deeper look in the "ip route"
+stuff jet. And i only want selectet sessions, like smtp or ssh
+take the alternative route.
 
----
+G. Axel
 
-Martin Ferrari
-Administrador UNIX
-Decidir
-________________________________________
-mailto:mferrari@decidir.net
-Vis=EDtenos en http://www.decidir.com
-Decidir.com International Ltd.
-
-******************* Confidencialidad en Internet Email =
-********************
-Este mensaje puede contener informaci=F3n confidencial. Si usted no es =
-el
-destinatario de este mail, o la persona encargada de recibir los
-mensajes para dicha persona, por favor no copie ni reenv=EDe este =
-mensaje.
-De ser as=ED, por favor destruya este mensaje y de ser tan amable
-notifique al remitente con un Email. En caso de no querer recibir esta
-clase de informaci=F3n via Internet por favor av=EDsenos cuanto antes.
-Conclusiones, opiniones y cualquier otro tipo de informaci=F3n que
-contenga este mensaje y que no este directamente relacionado con el
-rubro oficial de esta Empresa, no debe ser tomado en cuenta.
 
 
