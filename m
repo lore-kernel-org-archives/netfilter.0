@@ -1,14 +1,11 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Masquerade/SNAT with RH 8.0
-Date: Mon, 11 Nov 2002 03:35:11 -0500
+From: "Jet" <yenjet.chan@eglobal.com.my>
+Subject: NAT only - No connection tracking
+Date: Mon, 11 Nov 2002 18:56:51 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211110335.11299.netfilter@newkirk.us>
-References: <200211102258.AA5768406@yellowbugcomputers.com>
-Reply-To: netfilter@newkirk.us
+Message-ID: <00ff01c28971$0a0429f0$0bc8c80a@dolphin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200211102258.AA5768406@yellowbugcomputers.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,154 +16,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Bob@yellowbugcomputers.com, netfilter@lists.netfilter.org
+To: "netfilter@lists" <netfilter@lists.netfilter.org>
 
-On Monday 11 November 2002 01:58 am, Bob wrote:
-{Well, actually everything he wrote is down at the bottom... :^}
+Hi all,
 
-Make sure you have both the ip_conntrack and iptable_nat modules loaded t=
-o the=20
-kernel.  (insmod or modprobe)  In your FORWARD chain (filter FORWARD, mor=
-e=20
-precisely) try just matching -i etho or -i eth1, and be very sure these a=
-re=20
-the devices you need.  (IE, on my machine eth1 is addressless, with ppp0=20
-connecting over it with DSL, so my rules use ppp0)
+How can I make my iptable to do just NAT, no connection tracking?
 
-Put the ip_forward activation after you have set up forwarding rules, or =
-at=20
-least after you have set the default policy for that chain to DROP.
+No matter how hard I tried to configure netfilter to load only iptable_nat,
+it will load ip_conntrack too.
 
-Read through Oscar's tutorial at http://iptables-tutorial.frozentux.net f=
-or=20
-lots of info, and some example scripts.  As soon as you get the forwardin=
-g=20
-working, I'd suggest locking things down, like a default DROP policy on=20
-INPUT, which would then allow only explicitly allowed connections to be m=
-ade=20
-to your machine, and an ESTABLISHED/RELATED rule for input (no interface =
-or=20
-address match needed)  Depending on the usage, etc, you might accept only=
-=20
-port 80, 53, etc forwarding from the LAN, and let other odd stuff drop (o=
-r=20
-log'n'drop) to block most worms, virii, phone-home programs, spyware, etc=
-=2E
+Basically, I want to make my iptable to become a NAT device without stateful
+inspection.
+It this possible?
 
-What happens here is a packet to be forwarded hits the first rule, and ge=
-ts=20
-passed to the nat POSTROUTING chain if it's inbound from the internet (et=
-h0)=20
-and part of or related to a connection initiated from inside (beyond eth1=
-). =20
-If not it hits the second rule, which it gets passed if it's outbound fro=
-m an=20
-internal machine.  The third rule logs what remains (which may be quite a=
-=20
-bit, or very little, YRMV) and the log by default is /var/log/messages wh=
-ich=20
-you can read a variety of ways.  Simplest from a shell is usually "tail -=
-n 25=20
-/var/log/messages" which will list the last 25 log entries.  (NOT just fr=
-om=20
-IPTables!!)  You can also "cat /var/log/messages | grep SRC=3D" to list o=
-nly=20
-IPTables logs, as nothing else I've come across yet logs with those four=20
-characters in every single entry.  (Or get real fancy and "cat=20
-/var/log/messages | grep SRC=3D | tail -n 50" for the last 50 iptables...=
-)
+.//Jet
 
-j
-
-> I hope this hasn't been covered a million times. I'm trying to share th=
-e
-> internet connection in my house. I'm very new to IPTABLES, and I can't =
-get
-> the sharing to work. Here is the setup. Please let me know if you need =
-more
-> information. Any help would be greatly appreciated!!!
-
-
-> The server is RH 8.0 with IPTABLES, and a DHCP server running. The Clie=
-nts
-> are a Mac and a PC (9.2 and Win98). Network Connectivity is good. All T=
-hree
-> machines can ping each other, via private IPs: 192.168.0.30
-> 192.168.0.22
-> 192.168.0.1 (Internal NIC, Eth1)
->
-> The two clients have never been able to ping the public Eth0 card.
->
-> I have set forwarding to one, and that is set to be that way when the
-> computer first boots, with this line:
->
-> echo 1 > /proc/sys/net/ipv4/ip_forward
->
-> That line seems to be working okay.
->
-> Here is the very simple ruleset that I've found on the net, and that se=
-ems
-> to make sense:
->
-> $IPTABLES -P INPUT ACCEPT
-> $IPTABLES -F INPUT
-> $IPTABLES -P OUTPUT ACCEPT
-> $IPTABLES -F OUTPUT
-> $IPTABLES -P FORWARD DROP
-> $IPTABLES -F FORWARD
->
-> $IPTABLES -A FORWARD -i eth0 -o eth1 -m state --state ESTABLISHED,RELAT=
-ED \
-> -j ACCEPT=20
-> $IPTABLES -A FORWARD -i eth1 -o eth0 -j ACCEPT
-> $IPTABLES -A FORWARD -j LOG
->
-> $IPTABLES -t nat -A POSTROUTING -o eth0 -j SNAT --to 208.141.xxx.xxx
->
-> Here is what the resulting script looks like:
->
->
-> *mangle
->
-> :PREROUTING ACCEPT [4:256]
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> :POSTROUTING ACCEPT [0:0]
->
-> COMMIT
-> # Completed on Mon Nov 11 00:29:53 2002
-> # Generated by iptables-save v1.2.6a on Mon Nov 11 00:29:53 2002
-> *nat
->
-> :PREROUTING ACCEPT [370:28696]
-> :POSTROUTING ACCEPT [396:23845]
-> :OUTPUT ACCEPT [406:24455]
->
-> -A POSTROUTING -o eth0 -j SNAT --to-source 208.141.xxx.xxx #(my public =
-IP)
-> COMMIT
-> # Completed on Mon Nov 11 00:29:53 2002
-> # Generated by iptables-save v1.2.6a on Mon Nov 11 00:29:53 2002
-> *filter
->
-> :INPUT ACCEPT [140:118403]
->
-> I am just not sure what I am doing wrong. I don't know where to look to=
- see
-> what kind of error messages might be popping up.
->
-> Does anyone have any ideas why I cant get packets forwarded from the
-> internal interface to the external interface and out to the internet?
->
-> Any advice would be greatly appreciated. I've been trying to figure thi=
-s
-> out for a couple of weeks now. Thanks so much in advance!
->
-> Bob
->
-> ps. Where does IPTABLES log to? I notice in the above script it tells t=
-he
-> kernel to log all forwarded packets. (at least that is how I read it, I
-> could be wrong). Thanks again.
 
