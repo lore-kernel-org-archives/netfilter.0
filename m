@@ -1,13 +1,13 @@
 From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: rules suggestion
-Date: Thu, 22 Jul 2004 12:04:52 +0200
+Subject: Re: iptables -A OUTPUT --set-mark , routing
+Date: Thu, 22 Jul 2004 12:09:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3063e5040722030422db32de@mail.gmail.com>
-References: <a0f69e50407212243efa02aa@mail.gmail.com> <40FF5BA8.2040900@polbox.com>
+Message-ID: <3063e504072203097839f9b1@mail.gmail.com>
+References: <40FE316C.50109@belkam.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40FF5BA8.2040900@polbox.com>
+In-Reply-To: <40FE316C.50109@belkam.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +18,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-This one should also help:
+First, for marks, use hexa numbers, like --set-mark 0x80 and .. fwmark 0x80
 
-iptables -I FORWARD -p icmp --icmp-type echo-request -m length
---length 92:92 -j DROP
+I don;t know what proto static nexthop is, i dont use them :)
+Make sure you did an ip route flush cache
 
-Maybe you also want to log some of those icmps
-
-On Thu, 22 Jul 2004 08:16:08 +0200, adderek <adderek@polbox.com> wrote:
-> Askar Ali Khan wrote:
+On Wed, 21 Jul 2004 14:03:40 +0500, Dmitry Melekhov <dm@belkam.com> wrote:
+> Hello!
 > 
-> > Here are few rules from overs firewall, please let me know is this is
-> > the proper way to deal with windowz ports :)
-> >
-> > iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> > iptables -A INPUT -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> > iptables -A FORWARD -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> > iptables -A FORWARD -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> > iptables -t nat -A PREROUTING -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> > iptables -t nat -A PREROUTING -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
+> I need to route traffic to specific port from localhost to specific gateway.
 > 
+> I'm testing this on icmp.
 > 
-> $ipt -t filter -A OUTPUT -o $extif_name -p udp -d 192.168.1.255 --dport
-> 137:139 -j DROP  #NETBIOS
+> I wrote rules:
 > 
-> $ipt -t filter -A INPUT -i $extif_name -p udp -d 192.168.1.255 --dport
-> 137:139 -j DROP  #NETBIOS
+> iptables -t mangle -A OUTPUT -p icmp -j MARK --set-mark 80
+> ip rule add prio 221 table 221 fwmark 80
+> ip route add default table 221 proto static  nexthop via 192.168.22.221
+> dev eth0
 > 
-> $ipt -t filter -A FORWARD -i $extif_name -p udp -d 192.168.1.255 --dport
-> 137:139 -j DROP  #NETBIOS
+> Then I try to ping something from different subnet:
 > 
-> $ipt -t filter -A FORWARD -o $extif_name -p udp -d 192.168.1.255 --dport
-> 137:139 -j DROP  #NETBIOS
+> ping 10.1.1.1
+> connect: Network is unreachable
 > 
-> This will do (at least it works on my PC :)
+> If I add rule
+> iptables -t mangle -A PREROUTING -p icmp -j MARK --set-mark 80
 > 
-> I have 192.168.1.x subnet.
+> Then I can successefully ping 10.1.1.1 from another host (my host is
+> default gw for it, it's address is 192.168.22.229).
 > 
-> # NETBIOS is my comment (first two lines are taken from my bash's script
-> and lines 3 and 4 are not tested and I've created them by hand a while
-> ago). However I've disabled multicast forwarding on my router/firewall
-> so only first two lines are really needed (on my PC).
+> Hmmm.
 > 
-> However if you like to enable SMB then some more ports will be needed
-> (ie. 32768 or someting like that, and this one port is undocumented)
+> How can I route marked packets from localhost?
+> 
+> ping 10.1.1.1
+> PING 10.1.1.1 (10.1.1.1) from 192.168.22.254 : 56(84) bytes of data.
+>  From 192.168.22.229: icmp_seq=1 Redirect Host(New nexthop: 192.168.22.221)
 > 
 >
 
