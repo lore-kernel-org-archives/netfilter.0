@@ -1,10 +1,13 @@
-From: Justin Kay <jkay@nwrecc.org>
-Subject: Timeouts?
-Date: Tue, 11 Mar 2003 08:29:20 -0700
+From: "Jesper Lund" <jesper@ballbreaker.dk>
+Subject: Re: Redirection question.
+Date: Tue, 11 Mar 2003 16:20:30 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <11FE00AA8C43D311ABE3000629B0CB483CADFD@DBSISERVER>
+Message-ID: <3155.212.242.51.102.1047396030.squirrel@www.ballbreaker.dk>
+References: <001e01c2e7df$7bfd3430$0db600c8@ANTARES1>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001e01c2e7df$7bfd3430$0db600c8@ANTARES1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,19 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: hernan@mdp.edu.ar
+Cc: netfilter@lists.netfilter.org
 
-Does anyone know how to run a jabber IM server behind netfilter using NAT?
-I have it set up and can connect to the jabber server from outside the
-firewall, but it disconnects me after about a minute.  The client then
-reconnects and is disconnected again.  And around and around we go.  Any
-ideas on this?
+> Hi, i have doing transparent proxy with squid and this port redirect
+> rule:
+>
+> iptables -t nat -A PREROUTING -i eth1 -p TCP --dport 80 -j REDIRECT
+> --to-port 8080
+>
+> and works fine. Now, i want dont't redirect some request to destination
+> dirs like 192.168.0.0/24 and 192.168.1.0/24 (for example). How i can do
+> this?
 
-Justin B. Kay
-Systems Administrator
-Northwest Real Estate Capital Corporation
-208.947.7040
-http://www.nwrecc.org
+You could make som ACCEPT'ing rules before you REDIRECT:
+
+iptables -t nat -A PREROUTING -i eth1 -p TCP --dport 80 -d 192.168.0.0/24
+-j ACCEPT
+iptables -t nat -A PREROUTING -i eth1 -p TCP --dport 80 -d 192.168.1.0/24
+-j ACCEPT
+
+Regards, Jesper
+
 
 
