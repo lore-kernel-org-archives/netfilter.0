@@ -1,10 +1,11 @@
-From: "Samuel Jean" <sjean@cookinglinux.org>
-Subject: Re: best way of knowning what matches and targets are available
-Date: Thu, 29 Jul 2004 08:31:55 -0400 (EDT)
+From: "david" <david@suarapembaruan.co.id>
+Subject: Re: Blocking IP
+Date: Thu, 29 Jul 2004 19:48:10 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3197.216.239.71.162.1091104315.squirrel@216.239.71.162>
+Message-ID: <005d01c4756a$4dd22f60$858310ac@suarapembaruan.com>
+References: <5.1.0.14.2.20040602145807.00b74bf8@pop3.netcologne.de> <001601c47565$8e0ba110$858310ac@suarapembaruan.com> <1091104096.9267.4.camel@les-home.futuresource.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,29 +19,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Victor.
+Dear all,
 
- Victor wrote:
->I have found /proc/net/ip_tables_matches and /proc/net/targets. Is readi=
-ng
->those 'files' the way to go? Can i be sure that if a match is listed
->in /proc/net/ip_tables_matches i can really use it?
+Thank's for your information, now all trafic from that ip already drop.
 
-Sure you can, except for 'ERROR' (which is spaced from other targets).
-All targets/tables/matches register against iptables at load time and,
-built-in or modules, those are listed in
-/proc/net/ip_tables_{matches,targets,names}
+Thank you.
+:)
+David Kandou
 
-As far as I know, this is the best way to do it.
 
->Regards,
->Victor
 
-Cheers,
+----- Original Message ----- 
+From: "Les Mikesell" <les@futuresource.com>
+To: "david" <david@suarapembaruan.co.id>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Thursday, July 29, 2004 7:28 PM
+Subject: Re: Blocking IP
 
---=20
-Samuel Jean
-SysAdmin & NetAdmin
-at cookinglinux.org
+
+> On Thu, 2004-07-29 at 07:14, david wrote:
+> > Dear all,
+> >
+> > My mail server received so many virus mails from ip 202.145.10.147 and
+after
+> > i look at gateway (linux) and i using iptraf i see so many traffic from
+> > 202.145.10.147.
+> > After that i try to block all traffic from 202.145.10.147 with command :
+> > #iptables -A INPUT -s 202.145.10.146 -j DROP
+> >
+> > but i still receiveall traffic from 202.145.10.146......
+>
+> It might be as easy to block traffic with route as iptables:
+> route add -host 202.145.10.146 reject
+> should stop it (actually it stops your ability to respond
+> but for tcp that's enough).
+>
+> ---
+>   Les Mikesell
+>    les@futuresource.com
+>
+>
 
 
