@@ -1,11 +1,14 @@
-From: 123plaza Malls <ignaciob@123plaza.com>
-Subject: ip_tables_names not showing any results.. please help
-Date: Sun, 2 May 2004 12:58:03 -0400 (EDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DNAT-PROBLEM
+Date: Sun, 2 May 2004 18:19:46 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1402.216.22.86.180.1083517083.squirrel@www.123plaza.com>
+Message-ID: <200405021819.46139.Antony@Soft-Solutions.co.uk>
+References: <20040502102004.98939.qmail@web61308.mail.yahoo.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040502102004.98939.qmail@web61308.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +21,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi All,
+On Sunday 02 May 2004 11:20 am, persaie persaie wrote:
 
-Please forgive my ignorance, but being an inexperienced linux user I
-managed to break something with my iptables, mainly that now the command
-"cat /proc/net/ip_tables_names" does NOT returns any tables (i.e. nat,
-mangle, and filter). Is there any way to fix this?
+> MY NETWORK SETUP IS ......
+>
+>
+> 192.168.1.0/24 -->>--
+> 192.168.1.64-(eth1)-----router------(eth0)-192.168.5.55---((--192.168.5.0/24
 
-Notes: I am using redhat 9 and firewall rules set by lokkit are working
-ok. Also I reinstalled rpms for lokkit and iptables.
+What is the routing table on the web server at 192.168.5.50?
 
-Thanks in Advance
+Does it know how to send packets back to 192.168.1.252?
 
--Ignacio
+Antony.
 
+-- 
+"The problem with television is that the people must sit and keep their eyes 
+glued on a screen; the average American family hasn't time for it."
 
+ - New York Times, following a demonstration at the 1939 World's Fair.
 
-
-
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
