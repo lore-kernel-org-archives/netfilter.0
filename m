@@ -1,13 +1,15 @@
-From: Matthias Hopf <Matthias.Hopf@informatik.uni-stuttgart.de>
-Subject: Re: QoS traffic shaping behaves strangely with addressed based filtering
-Date: Mon, 19 Jul 2004 17:14:18 +0200
+From: Alpt <alpt@freaknet.org>
+Subject: Re: Ipv6 array ORDER
+Date: Mon, 19 Jul 2004 17:20:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040719151418.GA12068@vismail.informatik.uni-stuttgart.de>
-References: <20040719144759.GA11352@vismail.informatik.uni-stuttgart.de> <3063e504071907582d03bf3f@mail.gmail.com>
+Message-ID: <20040719152017.GA27631@darkalpt>
+References: <20040719142833.GA26461@darkalpt> <200407191539.15333.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <3063e504071907582d03bf3f@mail.gmail.com>
+In-Reply-To: <200407191539.15333.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +19,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Jul 19, 04 16:58:56 +0200, George Alexandru Dragoi wrote:
-> I had same problem with that kernel, I'm not sure if it is QoS or
-> realtek driver fault, i think i had this problem before applying QoS
 
-Oh, yes, I *have* a realtek card...
-Never thought about hardware driver issues.
-It might be that I have problems without QoS, but it is definitvely much
-worse with traffic shapeing (never noticed before).
+--zYM0uCDKw75PZbzx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> on the realtek iface. On that machine there was an realtek and
-> pcnet32, and i could stay connected throught ssh via pcnet32, but not
-> realtek. Somebody found a quickfix (till I switched to 2.6.7) and made
-> the machine ping hisself all the time so his connections never freeze,
-> unless he stoped the ping.
+On Mon, Jul 19, 2004 at 03:39:15PM +0100, Antony Stone after a spiritual ca=
+ll wrote  :
+~> This sort of question is probably better suited to the netfilter develop=
+ers'=20
+~> mailing list rather than the netfilter users' list.   Somebody here migh=
+t=20
+~> know, but I wouldn't bet on it.   Somebody on the developers' list reall=
+y=20
+~> should know.
 
-Ok, then I'll try two things
-a) ping myself on eth0
-b) finally switch to 2.6
+I'm very sorry. I made a mistake while pasting the email. I wanted to
+send it to linux-net.
 
-I'll check this out.
+Sorry again.
+--=20
+:wq!
+"I don't know nothing" The One Who reached the Thinking Matter   '.'
 
-Thanks!
+[ Alpt --- Freaknet Medialab ]
+[ GPG Key ID 441CF0EE ]
+[ Key fingerprint =3D 8B02 26E8 831A 7BB9 81A9  5277 BFF8 037E 441C F0EE ]
 
-CU
+--zYM0uCDKw75PZbzx
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Matthias
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
--- 
-Matthias Hopf - Visualization and Interactive Systems Group    \  |  |  /--
-                  University of Stuttgart,                      \ |  |   \
-       Universitaetsstr. 38, 70569 Stuttgart, Germany            \|  |  --/
-Phone +49-711-7816-404    Fax -340          mat@mshopf.de     www.mshopf.de
+iD8DBQFA++axv/gDfkQc8O4RAmGOAJ91d/u+bnkxQlblOKSo7lED2YnJJQCfaPKU
+BSFxMomUflKisxwTqpr1Jm0=
+=Po9S
+-----END PGP SIGNATURE-----
+
+--zYM0uCDKw75PZbzx--
 
