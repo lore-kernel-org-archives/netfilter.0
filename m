@@ -1,17 +1,11 @@
-From: Tobias DiPasquale <codeslinger@gmail.com>
-Subject: Re: kernel-2.6: ipsec without devices
-Date: Thu, 5 Aug 2004 12:35:41 -0400
+From: =?ISO-8859-1?Q?S=F6ren_Lorenz?= <soeren.lorenz@web.de>
+Subject: How to start external script when ipfilter rule matches
+Date: Thu, 05 Aug 2004 22:39:51 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <876ef97a040805093570c8d2c@mail.gmail.com>
-References: <20040805113320.5a1ade04.netfilter@lucassen.org>
-	 <200408051109.34290.Antony@Soft-Solutions.co.uk>
-	 <20040805122501.7bd24f63.netfilter@lucassen.org>
-	 <1091709309.28776.9.camel@les-home.futuresource.com>
-	 <876ef97a04080506051db8a52f@mail.gmail.com> <1091720922.14493.16.camel@moola.futuresource.com>
+Message-ID: <41129B17.5060805@web.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1091720922.14493.16.camel@moola.futuresource.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,44 +15,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, 05 Aug 2004 10:48:43 -0500, Les Mikesell <les@futuresource.com> wrote:
-> But it still makes as much sense to require open() to pass the
-> access control restrictions as it does for every other device.
+I'd like to start Squid when packets arrive on port 3128 on my router.=20
+When the router disconnects from my ISP, Squid is shutdown again.=20
+Ideally the packets would be kept on hold until Squid is running and=20
+then delivered to the daemon. Another question is to shutdown squid=20
+after a certain time of inactivity on port 3128. Is there a way to=20
+achive this with ipfilter?
 
-It ceases to make sense once you realize that you are not opening the
-"device", per se, but simply a socket that is bourne by said device.
-Character and block devices use open() to open the device itself. A
-network device is "always on", so to speak, and you use socket() to
-create a communications channel through that device.
+Thanks in advance.
 
-> I was very surprised when I first saw that Linux
-> omitted such a basic basic security concept of unix (all the
-> magic happens in open()).  As far as the network goes, it is
-> the same thing as Lindows/Linspire defaulting to letting everyone
-> run as root.
+Regards,
 
-I see your point. But this interface was designed over 20 years ago by
-the BSD team and it certainly made sense from their perspective to
-create a new set of system calls because this type of device did not
-neatly fit into the "everything is a file" paradigm that UNIX uses.
-But, clearly, it would be a great benefit if you could set your eth0
-to 0600 root:root and prevent regular users from abusing the network
-card.
-
-The question is, though, what would doing that actually mean? I
-believe the impediment to this solution is that the card signals the
-kernel of incoming packets with no warning, and thus checking the user
-permissions is not possible since the handling of network devices
-happens all in interrupt context (i.e. not on behalf of a particular
-user). As well, the datalink, network and transport layers have no
-concept of user permissions or ownership and you couldn't tack one on
-without implementing a global authentication scheme that everyone
-involved adheres to.
-
--- 
-[ Tobias DiPasquale ]
-0x636f6465736c696e67657240676d61696c2e636f6d
+S=F6ren Lorenz
 
