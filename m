@@ -1,13 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: IP Spoofing
-Date: Wed, 05 Nov 2003 15:26:52 -0500
+Date: Wed, 5 Nov 2003 20:39:29 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FA95D0C.5080306@Loudoun-Fairfax.com>
-References: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br>	 <200311051951.hA5Jpdr13332@agate.rockstone.co.uk> <1068062902.1494.25.camel@main.tqmcube.com>
+Message-ID: <200311052039.hA5KdYr13351@agate.rockstone.co.uk>
+References: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br> <200311051951.hA5Jpdr13332@agate.rockstone.co.uk> <60250.200.180.160.130.1068063541.squirrel@www.alcidesmaya.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1068062902.1494.25.camel@main.tqmcube.com>
+In-Reply-To: <60250.200.180.160.130.1068063541.squirrel@www.alcidesmaya.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: IPTables Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Lista de Mail netfilter <netfilter@lists.netfilter.org>
 
-David C. Hart wrote:
+On Wednesday 05 November 2003 8:19 pm, Leandro Takashi Hirano wrote:
 
->On Wed, 2003-11-05 at 14:51, Antony Stone wrote:
->  
+> Thanks Antony...
 >
->>On Wednesday 05 November 2003 7:31 pm, Leandro Takashi Hirano wrote:
->>
->>    
->>
->>>Now I would like to know about the IP Spoofing rule, how does it works?
->>>
->>>-	iptables -A INPUT -s 192.168.1.0/24 -i ! eth0 -j DROP
->>>      
->>>
->>Any packet with a source address in the Class C range 192.168.1.x which does 
->>not come from eth0 will be DROPped.
->>    
->>
->
->Funny I was similarly confused. What happens to packets from the LAN
->given that they don't originate from eth0?
->  
->
+> Do you have a script or something where I can find protection rules?
 
-In this setup the packets from the LAN have to enter from eth0 as Antony 
-indicates. Eth1 would have to be the external interface. Keep in mind 
-that these rules only affect traffic to and from the firewall host 
-itself. Traffic between the LAN and the internet is handled on the 
-FORWARD chain.
+You tell us what protection you want and we can suggest some rules to do it.
 
-Jeff
+There's no single "magic ruleset" for netfilter / iptables which "protects 
+your network", otherwise every distribution would include it as standard.
 
+It depends what you want to do.
 
+A good starting point is:
+
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i $intIF -o $extIF -j ACCEPT
+
+That will allow nothing in or out of the firewall machine itself, and will 
+allow all access from your internal network to the Internet, blocking 
+everything except reply packets from the Internet to your network.
+
+I do not recommend that you simply implement the above rules before you 
+understand what they are designed to do.
+
+Check Oskar Andreasson's excellent tutorial for more information about this 
+sort of configuration, or any of the other documentation at 
+http://www.netfilter.org
+
+Antony.
+
+-- 
+
+What I don't know far exceeds what I know, but unfortunately, it is far 
+easier to write about what I know than about what I don't know.
+
+ - Kevin Kelly, Out of Control
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
