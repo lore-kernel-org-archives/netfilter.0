@@ -1,11 +1,15 @@
-From: Payal Rathod <payal-iptables@staticky.com>
-Subject: can someone check this simple firewall?
-Date: Thu, 14 Aug 2003 23:58:10 +0530
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: can someone check this simple firewall?
+Date: Wed, 13 Aug 2003 19:58:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030814182810.GA2123@linux.local>
+Message-ID: <20030813185827.GA11666@acentral.co.uk>
+References: <20030814182810.GA2123@linux.local>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Resent-Message-ID: <20030813185847.12149.qmail@eddie.acentral.co.uk>
 Content-Disposition: inline
+In-Reply-To: <20030814182810.GA2123@linux.local>
+Resent-To: netfilter@lists.netfilter.org
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +21,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@acentral.co.uk
 
-Hi,
-I have designed a simple firewall ruleset. Can someone please check
-them? 
-It is kept at http://payal.staticky.com/firewall-1.txt
+On Thu, Aug 14, 2003 at 11:58:10PM +0530, Payal Rathod wrote:
+> Hi,
+> I have designed a simple firewall ruleset. Can someone please check
+> them? 
+> It is kept at http://payal.staticky.com/firewall-1.txt
 
-[Thanks Ralf, I will reply to your mail a bit later when someone
-cross-checks this too.]
+Just a couple of points...
 
-The objective is as follows,
+You might want to include the interfaces in your rules... e.g.
 
-		eth0=1.2.3.4	
-  +----------+      +----------+        +--------------+
-  | INTERNET +------+ LINUX    +--------+ WINDOWS      |
-  |          |      | FIREWALL |        |   CLIENTS    |
-  +----------+      +----------+        +--------------+
-		 eth1=192.168.10.100	192.168.10.0/25
+$IPTABLES -A INPUT -p tcp -i eth0 --dport 21 -j ACCEPT
 
-Linux box is connected to net thru a permanent ip (1.2.3.4)
+Also, -s 0/0 is the default, and does not need to be specified...
 
-LAN users can go anywhere on net as well as Linux box.
-So can the Linux box.
-But from outside people can connect only to port 21, 22, 80 and can ping
-the Linux box (to check whether it is alive or not). Rest everything is
-blocked.
+Finally, the udp INPUT rules serve no purpose for FTP, SSH or HTTP :)
 
-Can someone please check my ruleset and tell me whether it will achieve
-my obective. I can test that box for very less time so have to do all
-the work from a different machine and then copy that file to that Linux
-box. Hence any help in finding problems will be appreciated.
+Cheers,
+Gavin.
 
-Thanks and bye.
-With warm regards,
--Payal
-
--- 
-"Visit GNU/Linux Success Stories"
-http://payal.staticky.com
-Guest-Book Section Updated.
 
