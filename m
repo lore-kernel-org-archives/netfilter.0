@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: MAC address and iptables
-Date: Sun, 29 Feb 2004 16:16:53 +0000
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: how do i forward ftp from my firewall to an internal server?
+Date: Sun, 29 Feb 2004 08:36:41 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402291616.53538.Antony@Soft-Solutions.co.uk>
-References: <4041ED0A.9070001@stupar.homelinux.net> <200402291555.02977.Antony@Soft-Solutions.co.uk> <40420D1E.7090400@stupar.homelinux.net>
+Message-ID: <200402291636.i1TGaYBJ018559@server5.bandwidthco.com>
+References: <404050F8.8040902@karlskrona.net>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40420D1E.7090400@stupar.homelinux.net>
+In-Reply-To: <404050F8.8040902@karlskrona.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +19,82 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter-List <netfilter@lists.netfilter.org>
+To: 'Gustav Petersson' <gustav.petersson@karlskrona.net>, netfilter@lists.netfilter.org
 
-On Sunday 29 February 2004 4:02 pm, Sasa Stupar wrote:
+The FTP protocol works completely differently than http, particularly in the
+way connections are negotiated and accepted.  You must also account for both
+active and passive modes. I'm assuming the rules you have here are for new
+connections to your FTP server?  What are your FTP rules for the FORWARD
+chain?
 
-> What I want is to accept connections only from those listed in the rules
-> and drop others. But with the current config it accepts connectins also
-> from others which are not in the rules.
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Gustav Petersson
+Sent: Saturday, February 28, 2004 12:28 AM
+To: netfilter@lists.netfilter.org
+Subject: how do i forward ftp from my firewall to an internal server?
 
-In that case, either:
+Like the subject line says.. how do I do it?
 
-a) add the -s a.b.c.d -m mac --mac aa:bb:cc:dd:ee:ff to each rule which you 
-only want to match a specific machine
+I have port http traffic forwarded to the same server but when i use the
+same rule with only the port(s) changed for ftp traffic my ftp server opens
+the connection but immediately closes it again. I have tried running both
+the standard in.ftpd and proftpd. Any help would be greatly appreciated.
 
-or
+Gustav Petersson
 
-b) put all your rules into a user-defined chain, and then jump to that chain 
-only for packets which match the required IP/MAC combination:
+I am running debian 3.0 with kernel 2.4.24 and I have the following modules
+loaded:
 
-iptables -N myrules
-iptables -A myrules -p tcp --dport 21 -j ACCEPT
-iptables -A myrules -p tcp --dport 23 -j ACCEPT
-etc
-iptables -A INPUT -s a.b.c.d -m mac --mac aa:bb:cc:dd:ee:ff -j myrules
+ipt_LOG
+ipt_state
+iptable_filter
+ip_nat_ftp
+ip_conntrack_ftp
+iptable_nat
+ip_conntrack
+ip_tables
 
-With this design you can also easily allow more than one machine to connect if 
-you wish, by adding another INPUT rule:
+Here is my firewall config:
+#!/bin/sh
+ 
+EXT_IP=1.2.3.4
+INT_IP=192.168.x.x
 
-iptables -A INPUT -s w.x.y.z -m mac --mac uu:vv:ww:xx:yy:zz -j myrules
+modprobe iptable_nat
+modprobe ip_conntrack_ftp
+modprobe ip_nat_ftp
+ 
+echo "1" > /proc/sys/net/ipv4/ip_forward
+ 
+iptables -P INPUT ACCEPT
+iptables -F INPUT
+iptables -P OUTPUT ACCEPT
+iptables -F OUTPUT
+iptables -P FORWARD ACCEPT
+iptables -F FORWARD
+iptables -t nat -F
 
-Regards,
+# NAT
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 213.88.181.68
+ 
+ 
 
-Antony.
 
--- 
-Programming is a Dark Art, and it will always be. The programmer is
-fighting against the two most destructive forces in the universe:
-entropy and human stupidity. They're not things you can always
-overcome with a "methodology" or on a schedule.
+# Forward port 80 to internal server
+iptables -A PREROUTING -t nat -p tcp -d $EXT_IP --dport 80 \
+        -j DNAT --to $INT_IP:80
 
- - Damian Conway, Perl God
+# Forward ports 20 and 21 to internal server iptables -A PREROUTING -t nat
+-p tcp -d $EXT_IP --dport 20 \
+        -j DNAT --to $INT_IP:20
+ 
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
+iptables -A PREROUTING -t nat -p tcp -d $EXT_IP --dport 21 \
+        -j DNAT --to $INT_IP:21
+
+
+
 
 
