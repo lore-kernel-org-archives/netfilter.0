@@ -1,12 +1,14 @@
-From: richard lucassen <netfilter@lucassen.org>
-Subject: kernel-2.6: ipsec without devices
-Date: Thu, 5 Aug 2004 11:33:20 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: kernel-2.6: ipsec without devices
+Date: Thu, 5 Aug 2004 11:09:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040805113320.5a1ade04.netfilter@lucassen.org>
-Reply-To: reply3@lucassen.org
+Message-ID: <200408051109.34290.Antony@Soft-Solutions.co.uk>
+References: <20040805113320.5a1ade04.netfilter@lucassen.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040805113320.5a1ade04.netfilter@lucassen.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +21,35 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello list,
+On Thursday 05 August 2004 10:33 am, richard lucassen wrote:
 
-Anyone an explanation (or a link to an explanation) why the IPSEC
-implementation in kernel-2.6 doesn't use devices like "ipsec0"? I
-searched google, but I can't find anything on this subject. For tunnels
-between Linux-boxes I can use OpenVPN of course, but for all other
-connections I only can use the kernel-IPSEC. And I prefer not to use
-FreeSWAN.
+> Hello list,
+>
+> Anyone an explanation (or a link to an explanation) why the IPSEC
+> implementation in kernel-2.6 doesn't use devices like "ipsec0"?
 
-I really miss these devices. E.g.: I can't do a tcpdump on the tunnel to
-see what's happening there, nor can I do some shaping *in* the tunnel.
+My understanding of this is that the kernel developers simply didn't like the 
+concept of "virtual" interfaces for no (essential) reason.   When FreeS/WAN 
+was a patch to the 2.4 kernel, it was necessary to create these interfaces to 
+get things working, but now that the code is integrated inside the kernel 
+itself, the pseudo-devices are no longer needed, so they've been removed.
 
-Or have I missed something crucial?
+I tend to agree with you that they were a useful way to keep track of which 
+packets were going where, and I think from a firewalling point of view the 
+new 2.6 implementation of IPsec is not as easy to work with.
 
-Richard.
+Regards,
+
+Antony.
 
 -- 
-___________________________________________________________________
-Recursion: see recursion
+Late in 1972 President Richard Nixon announced that the rate of increase of 
+inflation was decreasing.   This was the first time a sitting president used 
+a third derivative to advance his case for re-election.
 
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
+ - Hugo Rossi, Notices of the American Mathematical Society
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
