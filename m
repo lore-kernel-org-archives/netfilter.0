@@ -1,10 +1,9 @@
-From: not4u2know <crazyhacker@sympatico.ca>
-Subject: leased pppoe external ip for each internal network
-Date: Sat, 29 Mar 2003 14:15:43 -0500
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: what are the possible chain policies?
+Date: Sat, 29 Mar 2003 14:29:35 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E85F0DF.4040300@sympatico.ca>
+Message-ID: <Pine.LNX.4.44.0303291426440.7401-100000@dell>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,37 +14,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-hi, my isp issues ip addresses via pppoe. i have the capability to lease 
-multiple ips at once, as i can pass through the pap authentication 
-simultaneously.  i also have a dial up modem to serial line for standard 
-ppp.  i was wondering if anyone had any idea as to how i can do 
-something like this with my nat/packet filter machine....
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: iptables mailing list <netfilter@lists.netfilter.org>
 
 
-dsl pppoe modem--->eth0--->ppp0--->eth1--->10.0.0.0/16
-                                          \
-                                            \--->ppp1-->eth2--->10.0.0.0/24
-                                             \
-                                              
-\--->ppp2-->eth3-->192.18.0.1/24
+  i was just summarizing the behavior of iptables and i'm puzzled
+by a contardiction between the man page and oskar's tutorial.
 
-the dsl line on rj11 connector connects to the dsl modem, the dsl modem 
-connects to eth0.  when i lease my first external ip, my dialer creates 
-ppp0.  i do snat to allow the network connected to eth1 appear as if its 
-all coming from ppp0.  now, what i want to do is know how i can make the 
-second and third leased ip addresses used by the otherr internal 
-networks. so basically what i want to do is have separate external ip 
-addresses for each of my internal networks.  i tried doing this with 
-snat, but it did not work and i feel i would have to do something with 
-the routing tables.  does anyone know precisely what user space tools to 
-work with? somoene once mentioned to me iproute2, is this the tool i 
-should use?  anyone recommend reading material for doing such things as 
-described further up?
+  regarding possible chain policies, oskar lists DROP, ACCEPT
+and REJECT.
 
-thanks.
+  the man page, however, suggests all of ACCEPT, DROP, QUEUE
+or RETURN, which seems a bit odd.
 
+  since i've only used DROP or ACCEPT until now, i'm not sure
+what the right answer is.
+
+  anyone?
+
+rday
 
 
