@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: port scan identification
-Date: Wed, 9 Jun 2004 18:04:01 +0100
+From: "Samuel Jean" <sjean@cookinglinux.org>
+Subject: RE: Is it possible to
+Date: Wed, 9 Jun 2004 14:29:19 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406091804.01068.Antony@Soft-Solutions.co.uk>
-References: <40C6D987.9050805@wanadoo.fr> <40C73CCA.4070804@wanadoo.fr> <1086799860.14435.49.camel@localhost>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <33325.207.236.167.50.1086805759.squirrel@207.236.167.50>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1086799860.14435.49.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,51 +18,75 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 09 June 2004 5:51 pm, John A. Sullivan III wrote:
 
-> Hmmm . . . I assume what you are trying to do is pick up all packets
-> with the RST flag on that are not part of a current session, such as
-> those used to probe a site.
->
-> I'm a little rusty on when RSTs are sent.  If they are part of the
-> packet stream, then I would think conntrack will pick it up and the
-> legitimate RSTs would never hit your rule.  I assume you are using
-> conntrack.  However, are RSTs sent when a stream is broken and thus sent
-> as a separate data stream? I'd have to pull out an IP book to review the
-> RST flag and why it would not be matched in conntrack.  Does anyone else
-> know off the top of their head?
+<adsnat@yahoo.com> wrote:
+>Hi,
+>I have a Linux 9.0 server with iptables firewall.
 
-A RST packet *is* part of a data stream, in the sense that it contains a 
-correct acknowledgement number in response to a previously-seen sequence 
-number (otherwise anybody could send a RST with a spoofed source address and 
-cut off your connections).
+Where did you get it?! I'm running that 'old' Linux 2.6.6 :-)
 
-RST packets can be sent by either end of the connection (or for that matter by 
-any router in between, which has access to the sequence numbers) at any time, 
-and are intended to cut off the data flow abruptly, without going through the 
-"FIN/ACK - ACK - FIN/ACK - ACK" which is defined for the normal end of a TCP 
-connection.
+>It ditributes Internet bandwidth to 5 clients. I can
+>monitor all 5 clients with the Firewall properly.  one
+>of the clients becomes server for another network and
+>start distributing Internet bandwidth further to that
+>network.
 
-Netfilter understands RST packets and will remove an entry from the connection 
-tracking table as soon as it sees one, therefore any further packets which 
-are seen between that client and server will no longer be regarded as part of 
-an ESTABLISHED connection.
+Is it NAT'ing or just forwarding other subnet's packets ?
 
-The reason it is common to see RST packets in logfile output from port scan 
-detectors etc (or anything else which logs packets not part of established 
-connections) is because many systems send three RST packets in a row, just to 
-make sure at least one gets through to the other end.   The first one seen by 
-netfilter will remove the conntrack table entry, so either of the other two, 
-if seen, will be recorded as invalid packets.
+>I want to stop that client to distribute bandwidth
+>further. With Iptables OR any other technology is it
+>possible to do so?
+>Thanks for support.
 
-Regards,
+Well, sure it is possible with iptables.
 
-Antony.
+In the case where the second server is only forwarding packets (like
+a router does), you could setup a rule like that:
 
--- 
-The lottery is a tax for people who can't do maths.
+$rejected_subnet is the subnet you don't want to provide bandwith to.
+(ex: rejected_subnet=3D192.168.1.0/24)
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+iptables -I FORWARD -s $rejected_subnet -j DROP
+
+Then, all traffic coming from that subnet will be dropped.
+
+Case 2) That server is masquerading (NAT) outbound traffic.
+
+Then, in my knowledge, it's impossible to distinguish effectivily
+NAT'ed packet from a real source one. (Sorry, if i'm wrong.)
+
+A not reliable work-around consist of analyzing the Time To Live (TTL)
+of packets coming from the $rejected_subnet. Once you find a difference
+between 'bad ones' and 'good ones', setup a rule with the TTL extension.
+
+For analyzing, you could start with:
+
+iptables -I FORWARD -s $second_server_ip -j LOG --log-prefix "Analyzing
+TTL:  "
+
+After a few days, look in syslog.
+
+$ cat /var/log/syslog | grep "Analyzing TTL: "
+
+Look for the lowest TTL...
+
+Then, do as follow.
+
+ex: Good TTL -> 255
+    Bad TTL -> 254
+    Second server IP -> 192.168.0.10
+
+iptables -I FORWARD -s 192.168.0.10 -m ttl --ttl-eq 254 -j DROP
+
+But as you may expect, yes, there is a way to change the TTL before the
+packet goes out. So, that setup isn't good anymore if that server changed
+it. Possibly done by -j TTL available in the mangle table.
+
+Good luck,
+
+--=20
+Samuel Jean
+SysAdmin & NetAdmin
+at cookinglinux.org
 
 
