@@ -1,9 +1,10 @@
-From: "Vosburgh, Brian P, CTR, WHS-BB" <bvosburgh@whs.mil>
-Subject: ip_conntrack question
-Date: Mon, 8 Jul 2002 11:31:41 -0400
+From: "=?iso-8859-1?Q?jean-michel.caricand?=" <jean-michel.caricand@laposte.net>
+Subject: =?iso-8859-1?Q?Fw:Problems_with_netmask?=
+Date: Mon,  8 Jul 2002 17:31:23 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <86E43FEDC7E2D411B9610002A50900EB8819AF@ddsmttayz076.ref.whs.mil>
+Message-ID: <GYXSGB$C3A8D4997AFEF803EEFEFC5E54C16CFF@laposte.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -14,31 +15,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.samba.org
 
-What are the session timeout controls with ip_conntrack?  I'm load balancing
-two netfilter (2.4.18 kernel, 1.2.5  ipt) boxes infront of a web server farm
-and I'm seeing an avg of 362 connections (GET's) per second, slabinfo
-reports 26k on one and 34k on the other.  What is ip_conntrack's definition
-and criteria for a "connection"?  How do they expire?  How can I expire
-them? etc.
+---------- Debut du message initial -----------
 
-I have the same sorta issue with my BigIP's, the connection table is full of
-dead crap and there is no way (@ least F5 can't tell me) how to kill dead
-connections.  It's not as big of a deal with these netfilter boxes, however
-I'm trying to get an accurate count of how many customers are hitting the
-servers.
+De     : "jean-michel.caricand" <jean-
+michel.caricand@laposte.net>
+A      : netfilter-request@lists.samba.org
+Copies : 
+Date   : Mon,  8 Jul 2002 15:53:28 +0200
+Objet  : Problems with netmask
 
-tia/
+Hello,
 
-Brian Vosburgh
-WHS Network Engineering
-Work: 703-614-4888
-Cell: 703-867-2317
+I have a local network with 255.255.254.0 netmask. My firewall 
+have IP 10.0.2.130. 
 
-"Life isn't about success.  It's about significance."
-- Michael Slaughter
+I configure my firewall for drop the ping from a station with 
+IP 10.0.2.2 with only one line :
+
+iptables -A INPUT -i eth0 -s 10.0.02.2 -p icmp -j DROP 
+
+My station receive an response from the serveur when i use the 
+command ping 10.0.2.130 !!!!
+
+When i use :
+
+iptables -A OUPUT -o eth0 -d 10.0.02.2 -p icmp -j DROP 
+
+Its work fine. I never receive an pong
+
+Why ?
+
+Acc=E9dez au courrier =E9lectronique de La Poste : 
+www.laposte.net ; 3615 LAPOSTENET (0,13 =80/mn) ; t=E9l : 08 92 68 
+13 50 (0,34=80/mn)"
+
+
+
+
+Acc=E9dez au courrier =E9lectronique de La Poste : www.laposte.net ; 3615 LAPOSTENET (0,13 =80/mn) ; t=E9l : 08 92 68 13 50 (0,34=80/mn)"
+
+
 
 
