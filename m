@@ -1,11 +1,10 @@
-From: Simone Sestini <simone.sestini@plugit.net>
-Subject: NAT and logging options
-Date: Fri, 06 Dec 2002 17:29:15 +0100
+From: Saulius Menkevicius <razzmatazz@mail.lt>
+Subject: how to forward packets to another gateway, if i'm one
+Date: Fri, 6 Dec 2002 19:28:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.0.20021206172731.05585a90@imap4.plugit.net>
+Message-ID: <ISPFE7vXn10A5fpk965000657df@mail.takas.lt>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="=====================_1402998244==.ALT"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,80 +15,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
---=====================_1402998244==.ALT
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Hi,
+  I've spend some time searching Google on the topic, however 
+eventually gave up. So..
 
-Hi folks..
+  Is there any way of forwarding packets to another gateway,=
+ which, 
+besides, is on the same network. Say, I'm on IP 10.0.0.2, and I=
+ act 
+as a gateway (ADSL, really) for a number of machines on the same=
+ LAN. 
+And there's another such gateway, hooked to another ADSL, which 
+handles connections for another bunch of machines. Essentially=
+ the 
+hosts 10.0.0.1 and 10.0.0.2 are identic and perform the same 
+function.
 
-I have a NAT gateway box that have to NAT billions of connection from 
-private ips to public world.
+  Now, I want to make some traffic that comes from some client=
+ and 
+that should go through gateway 10.0.0.1 to be forwarded to=
+ 10.0.0.2 
+(without any changes). The need is to make the forwarding=
+ transparent 
+to both 10.0.0.2 and the client.
 
-I have thousand of strings like that
+  So it's the way I suppose it should be done:
+=09a) No changes to be made 10.0.0.2's firewalling rules (in fact,=
+ it 
+runs FreeBSD);
+=09b) Make 10.0.0.1 to forward them to 10.0.0.2 transparently. 
 
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.10.0.0/23 -o eth0 -j 
-SNAT --to PUBLIC_IP
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.10.2.0/23 -o eth0 -j 
-SNAT --to PUBLIC_IP
+_This_is_the_culprit_. I don't know how to make them (packets) go=
+ 
+that way. DNAT/SNAT doesn't suit, neither does REDIRECT, as they=
+ 
+modify packets they filter.
 
-Now i want to be able to log all that traffic to a specific file ?
-Anyonw know how to do this ?
+=09In FreeBSD, there's ipfw rule fwd, e.g. if 10.0.0.1 ran bsd, i'd=
+ 
+type "ipfw add fwd 10.0.0.2 ip from some_client to any". I'm=
+ looking 
+for the a way on how to make the same effect on Linux/iptables.
+=09Wrote to much of blurb. Guess I didn't mess it up too much :)
 
+=09Thanks. 
+-- 
+Saulius Menkevicius, razzmatazz@mail.lt on 12.06.2002
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-Simone Sestini [ SS971-RIPE ]
-
-Plug IT s.p.a. - Technical Office
-Via Galileo Ferraris 216
-52100 Arezzo
-
-Titles:
-System and Network Administrator
-Data Transmission Manager
-
-Fax             +39 199 440088
-E-mail          simone.sestini@plugit.net
-Web             http://www.plugit.it
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
---=====================_1402998244==.ALT
-Content-Type: text/html; charset="us-ascii"
-
-<html>
-<body>
-Hi folks..<br><br>
-I have a NAT gateway box that have to NAT billions of connection from
-private ips to public world.<br><br>
-I have thousand of strings like that<br><br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.10.0.0/23 -o eth0 -j
-SNAT --to PUBLIC_IP<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.10.2.0/23 -o eth0 -j
-SNAT --to PUBLIC_IP<br><br>
-Now i want to be able to log all that traffic to a specific file ?<br>
-Anyonw know how to do this ?<br><br>
-<x-sigsep><p></x-sigsep>
-<font face="Verdana">::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::<br><br>
-</font><font face="Verdana" color="#FF0000"><b>Simone Sestini
-</font><font face="Verdana" size=2 color="#FF0000">[ SS971-RIPE
-]<br><br>
-</b></font>Plug IT s.p.a. - Technical Office<br>
-Via Galileo Ferraris 216<br>
-52100 Arezzo<br><br>
-<tt><font face="Courier New, Courier" color="#0000FF">Titles:<br>
-System and Network Administrator<br>
-Data Transmission Manager<br><br>
-</font></tt><font color="#0000FF">Fax<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>+39
-199 440088<br>
-E-mail<x-tab>&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>simone.sestini@plugit.net<br>
-Web<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><a href="http://www.plugit.it/" eudora="autourl">http://www.plugit.it</a><br><br>
-</font><font face="Verdana"><u>::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-<br>
-</font></u></body>
-</html>
-
---=====================_1402998244==.ALT--
 
 
