@@ -1,12 +1,10 @@
-From: Tobias DiPasquale <codeslinger@gmail.com>
-Subject: Re: Filter question
-Date: Fri, 11 Feb 2005 15:17:09 -0500
-Message-ID: <876ef97a0502111217791ca9f4@mail.gmail.com>
-References: <000801c51075$86cc9660$dd00a8c0@cpq>
-Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
+From: Joris <joriske@gmail.com>
+Subject: clampmss only partially working on 2.6 kernelmode pppoe?
+Date: Sat, 12 Feb 2005 07:41:40 +0100
+Message-ID: <afcf620205021122413dd5dd6d@mail.gmail.com>
+Reply-To: Joris <joriske@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <000801c51075$86cc9660$dd00a8c0@cpq>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,32 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Charles Lewis <cjkjlewis@comcast.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, 11 Feb 2005 13:08:59 -0700, Charles Lewis <cjkjlewis@comcast.net> wrote:
-> Hi all,
-> 
-> Have found tons of info on blocking a single ip address using iptables.
-> 
-> Can anyone suggest a place to find how-to ALLOW from single ip address (or
-> block).
-> 
-> Using BusyBox & iptables 2.4.  Wanting to allow port 25 traffic from 2
-> blocks & 1 explicit ONLY.
+Hi,
 
-Set the policy on the chain to DROP and then add ACCEPT rules for the
-IPs you want to allow. Example:
 
-iptables -P INPUT DROP
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A INPUT -s 1.1.1.1 -p tcp -m tcp --dport 25 -j ACCEPT
-iptables -A INPUT -s 1.1.1.2 -p tcp -m tcp --dport 25 -j ACCEPT
-...
+I have linux 2.6.11-rc2 masquerading a pppoe connection (mtu: 1492)
+trough the kernel mode pppoe implementation.
 
-You get the idea.
+I loaded the ipt_tcpmss and ipt_TCPMSS (what's the difference?) kernel
+modules, and have the following iptables rule running:
+iptables -I FORWARD -o ppp0 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS 
+--clamp-mss-to-pmtu
 
--- 
-[ Tobias DiPasquale ]
-0x636f6465736c696e67657240676d61696c2e636f6d
+Most internet hosts seem to be ok, but (don't laugh, it's for a family
+member's fade-out only!) hotmail still is a pita. (to be specific:
+after logging in, the inbox page served by
+by18fd.bay18.hotmail.msn.com never gets trough). Some hotmail submit
+
+
+Has someone experienced something similar?
+
+Is there a more precise test method (eg, sending a packet of a certain
+size to a certain host or something, or is there something specific I
+could look for in a network dump?)
+
+Any suggestions on how this could work?
 
