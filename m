@@ -1,10 +1,9 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: IDS better than hardcore iptables rules?
-Date: Thu, 3 Feb 2005 19:32:29 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10502031928130.26558-100000@darkstar.sysinfo.com>
-References: <20050203230355.GA31433@spawar.navy.mil>
+From: Stephen Shirley <diamond+netfilter@skynet.ie>
+Subject: conntrack broken with multiple gateways?
+Date: Fri, 04 Feb 2005 04:30:39 +0000
+Message-ID: <4202FA6F.5080500@skynet.ie>
 Mime-Version: 1.0
-In-Reply-To: <20050203230355.GA31433@spawar.navy.mil>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,56 +14,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: seberino@spawar.navy.mil
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, 3 Feb 2005 seberino@spawar.navy.mil wrote:
+Hi,
+     I have a linux box acting as a router (running debian unstable,
+kernel 2.6.10, 686 dual proc) with 2 broadband connections to the net.
+In my iptables, i have:
 
-> Many people on this list including Jason O. are masters
-> at creating very detailed careful iptables rules that
-> DROP packets that have anything peculiar about them.
-> 
-> (e.g. FIN without ACK, etc.)
-> 
-> My iptables script just filters based on port
-> number and protocol.  I was wondering if instead
-> of diving into TCP education to duplicate the
-> fine work Jason and others have done,
-> if an IDS (Intrusion Detection System)
-> like Snort would serve the same purpose???
-> 
-> I assume Snort **ALSO** knows what TCP flag combos
-> typically signify a port scan and other nasties?
-> 
+root@fluff:/proc(0)# iptables -t mangle -nvL PREROUTING
+Chain PREROUTING (policy ACCEPT 44M packets, 33G bytes)
+  pkts bytes target     prot opt in     out     source               destination
+    26  2184 MARK       icmp --  *      *       10.85.0.147          0.0.0.0/0           MARK set 0x1
+     9   444 MARK       tcp  --  *      *       10.85.0.147          0.0.0.0/0           tcp dpt:80 MARK set 0x1
+root@fluff:/proc(0)# iptables -t nat -nvL POSTROUTING
+Chain POSTROUTING (policy ACCEPT 16 packets, 952 bytes)
+  pkts bytes target     prot opt in     out     source               destination
+  326K   23M MASQUERADE  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 
-And there are many that have delved into combining the two applications to
-work together, but, IDS is a beat unto itself, takes perhaps a bit more
-thought and work just to tune the IDS *behind* the firewall to get the
-proper set of true alarms working such that it's not just another whining
-app that gets ignored pretty much as much as most system logs tend to be.
+I have the following set with iproute:
 
-And TCP education is require as much for IDS setup and design as proper
-firewalling.  There are no shortcuts, one needs to gain the basic
-knowledge levels to tackle more then the basics of network design as in
-any other venture one wishes to put their efforts into.  Afterall, there
-were no real cheap shortcuts to your phd, correct?
+root@fluff:/proc(0)# ip rule | grep fwmark
+32765:  from all fwmark 0x1 lookup 1
+root@fluff:/proc(0)# ip route ls table 1 | grep default
+default via 192.168.1.1 dev eth1
 
-Thanks,
+So, this should do masqerading on all outbound traffic, normally via
+dev ppp0 (the default route on the main ip route table), and via dev
+eth1 for the above special cases (which are just test cases to
+demonstrate the problem). However, it doesn't work. Using tcpdump on
+eth1 and eth0, i can see pings going out eth1, to the correct address,
+i can see replies coming back, to the correct address, but they never
+appear on the local net. The output below is just after i attempted to
+ping and telnet to port 80 on an external ip (136.201.105.1):
 
-Ron DuFresne
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
+root@fluff:/proc(0)# cat net/ip_conntrack | grep 136.201.105.1
+tcp      6 57 SYN_RECV src=10.85.0.147 dst=136.201.105.1 sport=50337
+dport=80 packets=1 bytes=60 src=136.201.105.1 dst=192.168.1.107 sport=80
+dport=50337 packets=4 bytes=240 mark=0 use=1
+icmp     1 7 src=10.85.0.147 dst=136.201.105.1 type=8 code=0 id=4789
+packets=6 bytes=504 [UNREPLIED] src=136.201.105.1 dst=192.168.1.107
+type=0 code=0 id=4789 packets=0 bytes=0 mark=0 use=1
 
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
+Note: eth1's address is 192.168.1.107.
 
+So, have i just screwed up the conf, or is there actually a problem with
+multi-gateway conntrack? I've tried this with at lesat 2.6.8 and 2.6.10
+and gotten the exact same results.
+
+Steve
 
