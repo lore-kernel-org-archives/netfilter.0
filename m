@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: How to ACCEPT or DENY or DROP and also LOG in the same rule ?
-Date: Thu, 4 Jul 2002 08:50:45 +0100
+From: "Manish K Arya" <manish_arya@lycos.com>
+Subject: Routing Tables ? Help
+Date: Thu, 04 Jul 2002 14:41:37 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020704075047.EBOJ16050.mta01-svc.ntlworld.com@there>
-References: <F30rd6vbwbQdgr1KHCE00006f06@hotmail.com>
+Message-ID: <NDHEKLKHBBIHMDAA@mailcity.com>
+Reply-To: manish_arya@lycos.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <F30rd6vbwbQdgr1KHCE00006f06@hotmail.com>
+Content-Language: en
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,26 +18,20 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: iptables <netfilter@lists.samba.org>, linux programmers <linux-india-programmers@lists.sourceforge.net>, IT Security <itsecurity@yahoogroups.com>, stunnel <stunnel-users@mirt.net>
 
-On Thursday 04 July 2002 5:31 am, Orca J. wrote:
+Hi all
+I need some help regarding routing tables. 
+I want to ascertain whther my routing tables have been tampered by some user having the admisnistrative rights and i want to restore the default values and which are the routing files?
 
-> Hi
->   I want to both DENY and LOG in the same rule ? or ACCEPT and LOG , or
-> DENY and LOG
+please do help
 
-You can't put them both in the same rule, butyou can create a user-defined 
-chain and jump to that:
+---
+Manish Kumar Arya
 
-iptables -N LOGDROP
-iptables -A LOGDROP -j LOG --log-options........
-iptables -A LOGDROP -j DROP
 
-Then use that single target in your rules:
-
-iptables -A INPUT -i eth0 -j LOGDROP
-
- 
-
-Antony/.
+_____________________________________________________
+Supercharge your e-mail with a 25MB Inbox, POP3 Access, No Ads
+and NoTaglines --> LYCOS MAIL PLUS.
+http://www.mail.lycos.com/brandPage.shtml?pageId=plus 
 
