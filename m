@@ -1,11 +1,14 @@
-From: Frank <oldcurmudgeon@gmail.com>
-Subject: Converting iptables firewall from 2.4 .to 2.6 kernel
-Date: Wed, 30 Mar 2005 15:42:44 -0600
-Message-ID: <803aaa1105033013425a3c2bc9@mail.gmail.com>
-Reply-To: Frank <oldcurmudgeon@gmail.com>
+From: "Jorge Agrelo" <jagrelo@novadevices.com>
+Subject: Re: IPSET issue ???
+Date: Wed, 30 Mar 2005 17:09:58 -0500
+Message-ID: <424ADD66.23629.6DAE69D5@localhost>
+References: <4249A831.26741.68F66E4C@localhost>
+Reply-To: jagrelo@novadevices.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-reply-to: <Pine.LNX.4.58.0503300947090.4659@blackhole.kfki.hu>
+Content-description: Mail message body
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +20,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@lists.netfilter.org
 
-I tried upgrading a Debian stable firewall to sarge.  That part went
-fine, but when I
-tried upgrading the locally-built 2.4.19 kernel to 2.6.11.5 the
-results were not as
-expected.
-   The first (and easily fixed) problem was that eth0 and eth1 were
-reversed.  At
-least I verified that my anti-spoofing rules worked. After swaping the
-cables, the
-firewall could conect to internal and external machines, internal hosts could
-connect to the firewall, external hosts could connect to the firewall,
-internal hosts
-could send packets to exernal hosts, but packets from outside hosts to inside
-hosts never crossed to the inside.
-   Running tcpdump on both interfaces shows packets from outside hosts to
-inside hosts hit the external interface but never appear on the
-internal interface,
-whether it is an initial connection from outside or a reply packet to a packet
-initiated on the inside.
-   I'm using the same scripts to set routes, ip_forward, rp_filter,
-and proxy_arp.
-The only rthing changing is the kernel (and both have iptables support built in,
-not as modules).
-    Did the locations of things in proc change in 2.6, or any other ideas on how
-to debug this? Iptables version is now 1.2.4, it was 1.2 before.
-Booting back into
-the 2.4. kernel (and swapping the cables) makes it work properly, so the only
-variable now is the kernel version (i.e., it all works fine with the
-2.4 kernel and
-all the new sarge utilities/libraries, etc.).
+Hi Jozsef
 
-Thanks,
-Frank
+Thanks for your reply, last question regarding IPSET..
+
+Can I define the protocol in portmap set type, I means, Can I do 
+that?
+
+ipset -N ports portmap
+ipset -A ports tcp/53
+ipset -A ports udp/53
+ipset -A ports tcp/25
+ipset -A ports tcp/110
+......
+If no, there is any way to do that?
+
+Thanks in advanced.
+
+
+
+On 30 Mar 2005 at 9:57, Jozsef Kadlecsik wrote:
+
+> Hi,
+> 
+> On Tue, 29 Mar 2005, Jorge Agrelo wrote:
+> 
+> > I want to block the offensive network list supplied by dshield
+> > (http://feeds.dshield.org/block.txt) using IPSET match, anybody tell me if the
+> > following stuff is correct.
+> >
+> > ipset -N bogons-nets nethash
+> > ipset -A bogons-nets 81.208.28.0/24
+> > ipset -A bogons-nets 141.50.163.0/24 ..........
+> > iptables -N blocklist
+> > iptables -A bogons-nets -m set --set bogons-nets scr,dst -j drop
+> > iptables -A INPUT -i ! lo -m state ! --state ESTABLISHED -j blocklist
+> > iptables -A FORWARD -m state ! --state ESTABLISHED -j blocklist
+> > iptables -A OUTPUT -o ! lo -m state ! --state ESTABLISHED -j blocklist
+> >
+> > I want to block the source and destination traffic from/to this
+> > networks, I'm not sure regarding how to use the tokens src and dst and
+> > the set type (nethash) in IPSET???
+> 
+> No, assuming you want to block access from and to the networks in the
+> set bogons-net:
+> 
+> iptables -A bogons-nets -m set --set bogons-nets scr -j drop
+> iptables -A bogons-nets -m set --set bogons-nets dst -j drop
+> 
+> Multiple 'src' and 'dst' tokens can be used when you bind set elements to
+> other sets and want to follow the bindings, for example when you want to
+> to represent your servers by ipset:
+> 
+> ipset -N servers ipmap ....
+> ipset -A servers x.x.x.x
+> ...
+> ipset -N services portmap...
+> ipset -A services ssh
+> ...
+> ipset -N clients iphash
+> ipset -A clients y.y.y.y
+> ...
+> # Glue the corresponding set elements together with bindings
+> ipset -B servers x.x.x.x -b services
+> ipset -B services ssh -b clients
+> 
+> # Restrict access to "all" servers on "all" service ports
+> # from "all" allowed clients in one iptables rule
+> iptables -A FORWARD -m set --set servers dst,dst,src -j ACCEPT
+> 
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>           H-1525 Budapest 114, POB. 49, Hungary
+
+
 
