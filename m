@@ -1,15 +1,14 @@
-From: Tom Marshall <tommy@home.tig-grr.com>
-Subject: Re: Forwarding DNS
-Date: Thu, 5 Feb 2004 21:12:51 -0800
+From: "Olexandr O. Galay" <root@e-mail.te.ua>
+Subject: Re: Need urgent help on NAT/load sharing
+Date: Fri, 6 Feb 2004 09:51:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040206051251.GA2721@home.tig-grr.com>
-References: <40228B0E.3080906@amfes.com>
+Message-ID: <111148915000.20040206095131@e-mail.te.ua>
+References: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
+Reply-To: "Olexandr O. Galay" <root@e-mail.te.ua>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <40228B0E.3080906@amfes.com>
+In-Reply-To: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,50 +18,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Daniel Miller <dmiller@amfes.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Hello, Saeed!
+
+Replying to your letter:
+
+S> Hi all,
+S>    I am new to list and have a basic nat question on Redhat Linux 9. I
+S> have to translate my local IP ( 192.168.1.0/24 ) to two different public
+S> IP given by two different ISP ( IPE1 & IPE2 ) at a specified rate. For
+S> example for every 4 received packet, one have to translate to IPE1 and
+S> other three to IPE2. I need this for load balacing the internet traffic
+S> between two isp. At the end, it is excellent if there is an option that
+S> If one the ISP gateway is dead, all packets have to translate to other
+S> public IP. Please help me. 
+S> Thanks, 
+S> Saeed Zamani, 
+S> Technical Manager, 
+S> Concept FZ LLC. 
+I think, you can balance when you are connecting to another ports
+So, if you are connecting to port 80, you can NAT packets to IPE1, and
+another packets to IPE2
+
+iptables -t nat -A POSTROUTING -p tcp --dport 80 -j SNAT
+--to-destination ipe1.ip.address
+iptables -t nat -A POSTROUTING -j SNAT --to-destination
+ipe2.ip.address
 
 
---5vNYLRcllDrimb99
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-It's not silly to implement your own DNS cache.  Why not try dnsmasq?
+-- 
+Best Regards, Saeed!
 
-  http://www.thekelleys.org.uk/dnsmasq/doc.html
+Friday, February 6, 2004, 9:49
 
-On Thu, Feb 05, 2004 at 10:27:26AM -0800, Daniel Miller wrote:
-> Can I setup a DNS forward for my LAN to point to my ISP's DNS servers=20
-> for internet name resolution?  As I'm on a high-speed connection, and my=
-=20
-> provider has already implemented their own caching DNS servers, it seems=
-=20
-> (at least on the surface) silly for me to implement my own caching-only=
-=20
-> server.  This way, I can choose to implement direct forwarding to my=20
-> ISP's servers, or use an internal caching-only server, and have it=20
-> transparent to the LAN.
->=20
-> Daniel
+Olexandr O. Galay
+mailto:root@e-mail.te.ua
+http://www.macros.org.ua
+ICQ: 29292281
 
---=20
-The nice thing about standards is that there are so many of them to choose =
-from.
-        -- Andrew Tanenbaum
-
---5vNYLRcllDrimb99
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAkAjIlMACgkQFMm9uvwPXW4V2QCfRytH7N4uW4brVfJbn9Xx91Ug
-zHEAniu4cD+O34+JH5swW6vEOXHFbwia
-=CZar
------END PGP SIGNATURE-----
-
---5vNYLRcllDrimb99--
 
