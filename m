@@ -1,10 +1,10 @@
-From: <mlody@elpec.com>
-Subject: ip_connlimit problem
-Date: Wed, 16 Jun 2004 14:34:00 +0200 (CEST)
+From: Simone Sestini <simone.sestini@eutelia.it>
+Subject: NAT Box
+Date: Wed, 16 Jun 2004 15:07:04 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2151.80.51.249.26.1087389240.squirrel@www.elpec.com>
+Message-ID: <40D045F8.9070101@eutelia.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,52 +15,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello
-I've problem with ip_connlimit module during compilation. Kernel 2.4.26 and 
-patch-o-matic-20040614
+Hi all..
 
-It looks like follows
-<------------------
-ipt_connlimit.c: In function `init':
-ipt_connlimit.c:219: `ip_conntrack_module' undeclared (first use in this 
-function)
-ipt_connlimit.c:219: (Each undeclared identifier is reported only once
-ipt_connlimit.c:219: for each function it appears in.)
-ipt_connlimit.c:220: warning: value computed is not used
-ipt_connlimit.c: In function `fini':
-ipt_connlimit.c:227: `ip_conntrack_module' undeclared (first use in this 
-function)
-ipt_connlimit.c:228: warning: value computed is not used
-<-------------------
+I'm developing a nat box for some special Internet Value Added Services.
+I have a lot of NAS boxes that receives calls and then the default 
+router for all is the nat box.
+The box has 2 ethernet interfaces, one public for internet acces and one 
+over my intranet lan.
+I have just done a lot of special configuration but right now i'm in 
+front of a problem..
+Normaly a /23 subnet is always natted with a public ip address.
+Now.. i need to resolve a problem..
 
-I've read the post by Mark Vevers from february 2004 archive and I've 
-realized that my ipt_connlimit.c looks like follows
-<-------------------
-static int __init init(void)
-{
-        /* NULL if ip_conntrack not a module */
-        if (ip_conntrack_module)
-                __MOD_INC_USE_COUNT(ip_conntrack_module);
-        return ipt_register_match(&connlimit_match);
-}
-
-static void __exit fini(void)
-{
-        ipt_unregister_match(&connlimit_match);
-        if (ip_conntrack_module)
-                __MOD_DEC_USE_COUNT(ip_conntrack_module);
-}
-<---------------------
-
-Anyone could help me?
+A special /23 need to browse only on some specific destination.. but if 
+one client with the ip into the /23 try to
+browse out of the range of the ip permitted i need to redirect the 
+request automatically to 1 or more specific
+ip address.
 
 
-Best regards
+This is the example that is working correct without the automatically 
+redirection.
+The 10.30.14.0 /23 can browse some public ip addresses but if it try to 
+go out of the range the REJECT rules
+block the packet and the final client will not browse..
 
-Robert
-mlody@elpec.com
+/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.30.14.0/23 -o eth0 
+-j SNAT --to PUBLIC_IP_FOR_NAT
 
+/usr/local/sbin/iptables -N PERSONAL_RULES
+/usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
+First_Public_IP
+/usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
+Second_Public_IP
+/usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
+Third_Public_IP
+/usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
+Other_Public_IP
+/usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
+Other_Public_IP
+/usr/local/sbin/iptables -A PERSONAL_RULES -j REJECT -s 10.30.14.0/23 -d 0/0
+
+/usr/local/sbin/iptables -A FORWARD -s 10.30.14.0/23 -p tcp --dport 80 
+-j PERSONAL_RULES
+
+Now i have to do something that permit me to add a new feature..
+I have to remove the REJECT rules and have to find the way to redirect 
+the request to a specific ip.. maybe with a DNAT ??
+
+Any idea ? all is appreciated..
+
+Best Regards.
 
