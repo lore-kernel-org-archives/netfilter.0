@@ -1,13 +1,12 @@
-From: "Nigel Clarke" <nigel@forever-networks.com>
-Subject: RE: IPTABLES vs Checkpoint
-Date: Tue, 26 Nov 2002 21:17:02 -0500
+From: Michael <mutk@iprimus.com.au>
+Subject: Re: Samba blocked?
+Date: Wed, 27 Nov 2002 13:12:52 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <MKEJJFIGIGKMFKMKEEDBAEILCAAA.nigel@forever-networks.com>
-References: <20021127011338.D14289@funkyjesus.org>
+Message-ID: <3DE43834.5090603@iprimus.com.au>
+References: <000d01c2958f$d3fadbd0$1e00a8c0@yamatto> <3DE41C6F.2050704@iprimus.com.au> <001701c295bd$2967c7e0$1e00a8c0@yamatto>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021127011338.D14289@funkyjesus.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Nick Drage <nickd@funkyjesus.org>, netfilter@lists.netfilter.org
-
-I guess redundancy is not important? 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Nick Drage
-Sent: Tuesday, November 26, 2002 8:14 PM
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Subject: Re: IPTABLES vs Checkpoint
 
+Dan Egli wrote:
 
-On Tue, Nov 26, 2002 at 05:32:34PM -0500, Nix N. Nix wrote:
-> On Tue, 2002-11-26 at 14:28, Wayne de Nobrega wrote:
+>Traffic to 192.168.0.255? I don't recall seeing anythign that would block
+>that. Here's what the table list shows:
+><snip>
+>
 
-<snip>
+Yes, ok. That's why I said "Probably nothing wrong with the iptables 
+rules". I went on to elaborate that you do need to allow bcast for bcast 
+name lookups to work...
 
-> Nonetheless:  Checkpoint and iptables are not necessarily mutually
-> exclusive.  Consider the following setup:
->     ________      __________      ________      ________________
->    /        \    /          \    /        \    /                \
->   | Internet +--+ Checkpoint +--+ iptables +--+ Internal Network |
->    \________/    \__________/    \________/    \________________/
+Like I said, have a look at the name lookups setup in smb.conf.
 
-As stated elsewhere, Checkpoint isn't just a proxy server.
+What message does smbclient give you ??
 
-But anyway, if it was a mere proxy, wouldn't you want it on the clean side
-of the iptables box, rather than the dirty side?
+Here's a good bcast namelookup:
 
--- 
-FunkyJesus System Administration Team
+smbclient //mandingo/mandingo -U mandingo
+added interface ip=192.168.0.241 bcast=192.168.0.255 nmask=255.255.255.0
+Got a positive name query response from 192.168.0.250 ( 192.168.0.250 )
+Password:
+Domain=[WORKGROUP] OS=[Unix] Server=[Samba 2.0.6]
+smb: \> exit
+
+This is without /etc/hosts  entry for mandingo host.
+
+What say ?:
+
+nmblookup -B 192.168.0.255 shared1
+
+Cheers, Michael
 
 
 
