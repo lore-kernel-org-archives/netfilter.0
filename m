@@ -1,14 +1,13 @@
-From: "Doug Yeager" <doug@aircomwireless.net>
-Subject: RE: denying local traffic
-Date: Tue, 11 Feb 2003 15:20:19 -0500
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: PPTP through iptables firewall
+Date: Tue, 11 Feb 2003 20:35:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000601c2d20b$035c2980$bb00a8c0@DOUG1>
-References: <20030211202837.1225ac17.arnt@c2i.net>
-Reply-To: <doug@aircomwireless.net>
+Message-ID: <20030211203509.417fa42d.arnt@c2i.net>
+References: <E88493086664D511A1E4000103330E82027FE067@mail.maconomy.dk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030211202837.1225ac17.arnt@c2i.net>
+In-Reply-To: <E88493086664D511A1E4000103330E82027FE067@mail.maconomy.dk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,307 +20,184 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Cool,
+On Tue, 11 Feb 2003 11:54:08 +0100, 
+Niels Bach <NB@maconomy.dk> wrote in message 
+<E88493086664D511A1E4000103330E82027FE067@mail.maconomy.dk>:
 
-This is my first ascii art attempt:
-
-/--------------------\
-|  INTERNET          |
-\--------------------/
-       |
-       |
-/----linux server---------------------\
-|  no cat gateway on eth0             |
-|  iptables                           |
-|  dhcp  192.168.19.0/255.255.255.0   |
-|  hostap on wlan0 192.168.19.1       |
-\-------------------------------------/
-   |             |            |
-   |             |            |
-/-------\       /-------\     /-----------\
-|client1|       |client2|     |client3    |
-\-------/       \-------/     \-----------/
-
-clients are of all flavors of OS.  And the users are not to smart
-either.
-It is in a coffee shop and users frequently leave shared drives open.
-
-I want to be able to shut down all communications between clients so
-they get to surf the net but not each other.  
-
-Here is the firewall rules that set NOCAT up.   I just need the iptables
-commands to shut down client to client traffic to add to these:
-
-Localnet is 192.168.19.0/255.255.255.0  on wlan0
-External device is eth0
-
-
-
-
-#!/bin/sh
-##
-#
-# initialize.fw: setup the default firewall rules
-#
-# *** NOTE ***
-#
-# If you want to have local firewall rules in addition to what NoCat
-# provides, add them at the bottom of this file.  They will be recreated
-# each time gateway is restarted.
-#
-##
-
-# The current service classes by fwmark are:
-#
-#  1: Owner
-#  2: Co-op
-#  3: Public
-#  4: Free
-
-PATH=/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin
-export PATH
-
-# Enable IP forwarding and rp_filter (to kill IP spoof attempts).
-#
-echo "1" > /proc/sys/net/ipv4/ip_forward
-echo "1" > /proc/sys/net/ipv4/conf/all/rp_filter
-
-# Load alllll the kernel modules we need.
-#
-rmmod ipchains > /dev/null 2>&1 # for RH 7.1 users.
-
-for module in ip_tables ipt_REDIRECT ipt_MASQUERADE ipt_MARK ipt_REJECT
-\
-    ipt_TOS ipt_LOG iptable_mangle iptable_filter iptable_nat ip_nat_ftp
-\
-    ip_conntrack ipt_mac ipt_state ipt_mark; do
-
-    modprobe $module
-done
-
-# Flush all user-defined chains
-#
-iptables -t filter -N NoCat 2>/dev/null
-iptables -t filter -F NoCat
-iptables -t filter -D FORWARD -j NoCat 2>/dev/null
-iptables -t filter -A FORWARD -j NoCat
-
-iptables -t filter -N NoCat_Ports 2>/dev/null
-iptables -t filter -F NoCat_Ports
-iptables -t filter -D NoCat -j NoCat_Ports 2>/dev/null
-iptables -t filter -A NoCat -j NoCat_Ports
-
-iptables -t filter -N NoCat_Inbound 2>/dev/null
-iptables -t filter -F NoCat_Inbound
-iptables -t filter -D NoCat -j NoCat_Inbound 2>/dev/null
-iptables -t filter -A NoCat -j NoCat_Inbound
-
-iptables -t nat -N NoCat_Capture 2>/dev/null
-iptables -t nat -F NoCat_Capture
-iptables -t nat -D PREROUTING -j NoCat_Capture 2>/dev/null
-iptables -t nat -A PREROUTING -j NoCat_Capture
-
-iptables -t nat -N NoCat_NAT 2>/dev/null
-iptables -t nat -F NoCat_NAT
-
-#
-# Only nat if we're not routing
-#
-iptables -t nat -D POSTROUTING -j NoCat_NAT 2>/dev/null
-[ "$RouteOnly" ] || iptables -t nat -A POSTROUTING -j NoCat_NAT
-
-iptables -t mangle -N NoCat 2>/dev/null
-iptables -t mangle -F NoCat
-iptables -t mangle -D PREROUTING -j NoCat 2>/dev/null
-iptables -t mangle -A PREROUTING -j NoCat
-
-
-fwd="iptables       -t filter -A NoCat"
-ports="iptables     -t filter -A NoCat_Ports"
-nat="iptables       -t nat    -A NoCat_NAT"
-redirect="iptables  -t nat    -A NoCat_Capture"
-mangle="iptables    -t mangle -A NoCat"
-
-if [ "$MembersOnly" ]; then
-  classes="1 2"
-else
-  classes="1 2 3"
-fi
-
-# Handle tagged traffic.
-#
-for iface in $InternalDevice; do
-    for net in $LocalNetwork; do
-        for fwmark in $classes; do
-            # Only forward tagged traffic per class
-            $fwd -i $iface -s $net -m mark --mark $fwmark -j ACCEPT
-#           $fwd -o $iface -d $net -m mark --mark $fwmark -j ACCEPT
-
-            # Masquerade permitted connections.
-            $nat -o $ExternalDevice -s $net -m mark --mark $fwmark -j
-MASQUERADE
-        done
-
-        # Allow web traffic to the specified hosts, and don't capture
-        # connections intended for them.
-        #
-        if [ "$AuthServiceAddr" -o "$AllowedWebHosts" ]; then
-            for host in $AuthServiceAddr $AllowedWebHosts; do
-                for port in 80 443; do
-                    $nat      -s $net -d $host -p tcp --dport $port -j
-MASQUERAD
-E
-                    $redirect -s $net -d $host -p tcp --dport $port -j
-RETURN
-                    $fwd -s $net -d $host -p tcp --dport $port -j ACCEPT
-                    $fwd -d $net -s $host -p tcp --sport $port -j ACCEPT
-                done
-            done
-        fi
-
-        # Accept forward and back traffic to/from DNSAddr
-        if [ "$DNSAddr" ]; then
-            $fwd -i $iface -s $net -d $DNSAddr -p tcp --dport 53 -j
-ACCEPT
-            $fwd -i $iface -s $net -d $DNSAddr -p udp --dport 53 -j
-ACCEPT
-            $fwd -o $iface -d $net -s $DNSAddr -j ACCEPT
-
-            $nat -p tcp -o $ExternalDevice -s $net -d $DNSAddr --dport
-53 -j MAS
-QUERADE
-            $nat -p udp -o $ExternalDevice -s $net -d $DNSAddr --dport
-53 -j MAS
-QUERADE
-        fi
-    done
-
-    # Set packets from internal devices to fw mark 4, or 'denied', by
-default.
-    $mangle -i $iface -j MARK --set-mark 4
-done
-
-# Redirect outbound non-auth web traffic to the local gateway process
-#
-# If MembersOnly is active, then redirect public class as well
-#
-for port in 80 443; do
-    $redirect -m mark --mark 4 -p tcp --dport $port  -j REDIRECT
---to-port $Gate
-wayPort
-    if [ "$MembersOnly" ]; then
-        $redirect -m mark --mark 3 -p tcp --dport $port  -j REDIRECT
---to-port $
-GatewayPort
-    fi
-done
-
-
-
-# Lock down more ports for public users, if specified. Port restrictions
-# are not applied to co-op and owner class users.
-#
-# There are two philosophies in restricting access:  That Which Is Not
-# Specifically Permitted Is Denied, and That Which Is Not Specifically
-# Denied Is Permitted.
-#
-# If "IncludePorts" is defined, the default policy will be to deny all
-# traffic, and only allow the ports mentioned.
-#
-# If "ExcludePorts" is defined, the default policy will be to allow all
-# traffic, except to the ports mentioned.
-#
-# If both are defined, ExcludePorts will be ignored, and the default
-policy
-# will be to deny all traffic, allowing everything in IncludePorts, and
-# issue a warning.
-#
-if [ "$IncludePorts" ]; then
-  if [ "$ExcludePorts" ]; then
-    echo "Warning: ExcludePorts and IncludePorts are both defined."
-    echo "Ignoring 'ExcludePorts'.  Please check your nocat.conf."
-  fi
-
-  # Enable all ports in IncludePorts
-  for iface in $InternalDevice; do
-    for port in $IncludePorts; do
-      $ports -p tcp -i $iface --dport $port -m mark --mark 3 -j ACCEPT
-      $ports -p udp -i $iface --dport $port -m mark --mark 3 -j ACCEPT
-    done
-
-    # Always permit access to the GatewayPort (or we can't logout)
-    $ports -p tcp -i $iface --dport $GatewayPort -j ACCEPT
-    $ports -p udp -i $iface --dport $GatewayPort -j ACCEPT
-
-    # ...and disable access to the rest.
-    $ports -p tcp -i $iface -m mark --mark 3 -j DROP
-    $ports -p udp -i $iface -m mark --mark 3 -j DROP
-  done
-
-elif [ "$ExcludePorts" ]; then
-  # If ExcludePorts has entries, simply deny access to them.
-  for iface in $InternalDevice; do
-    for port in $ExcludePorts; do
-        $ports -p tcp -i $iface --dport $port -m mark --mark 3 -j DROP
-        $ports -p udp -i $iface --dport $port -m mark --mark 3 -j DROP
-    done
-  done
-fi
-
-#
-# Disable access on the external to GatewayPort from anything but the
-AuthServic
-eAddr
-#
-if [ "$AuthServiceAddr" ]; then
-    $fwd -i $ExternalDevice -s ! $AuthServiceAddr -p tcp --dport
-$GatewayPort -j
- DROP
-fi
-
-# Filter policy.
-$fwd -j DROP
-
-
-
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Arnt Karlsen
-Sent: Tuesday, February 11, 2003 2:29 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: denying local traffic
-
-On Tue, 11 Feb 2003 10:06:40 -0500, 
-"Doug Yeager" <doug@aircomwireless.net> wrote in message 
-<000101c2d1df$3166fb60$bb00a8c0@DOUG1>:
-
-> I'm using nocat as a wireless gateway w/ the hostap driver. This is 
-> Great because I should be able to use iptables firewall rules to 
-> Administer things. I've had some success w/ these rules as I'm new to 
-> iptables.
+> Setup: 
+> LAN A, LAN B, LAN C and LAN D all separate LAN's behind four different
+> firewalls. 
 >  
-> What I can't figure out is how to block local traffic between clients 
-> on the LAN. Basically, I want them to be invisible to each other but 
-> be able to get to the internet through the gateway.
-> Right now they can get to the internet but can see each other's shares
-> and so forth.
-  
-> What should be the iptables commands for doing this.
+> The only connection between the LAN's is NAT through their respective
+> firewalls. 
 >  
-> My lan is 192.168.19.0/255.255.255.0
+> LAN D contains a PPTP server which I would like all the clients on all
+> four LAN's to be able to access. LAN D is protected with a firewall
+> (iptables/debian
+> 3.0/kernel-2.4.20/patch-o-matic-20030107/iptables-1.2.7a).
+>  
+> Problem:
+> LAN A (working)
+> LAN B (working)
+> LAN C (broken -- only one connection at a time)
+> LAN D (containing the PPTP server)
 
-..ascii art figure?  We use vpn (poptop) tunnels, but your net 
-is likely different from ours.  
+..lan d is a dmz?
+
+> Details:
+> hmm it actually works from the 2 LAN's (A and B) but the last one is
+> problematic. From the two working ones (LAN A and LAN B) you can
+> connect with no problem to the PPTP server behind the firewall
+> protecting LAN D.
+>  
+> From the broken LAN (LAN C) the problem is as follow:
+> you can connect one person at a time. When this one person from LAN C
+> has finished and logged off there is a 10 minute/600 seconds timeout
+> before it is possible for another client to connect to the PPTP server
+> from LAN C (and we are still talking about the PPTP server on LAN D).
+>  
+> So what I'm wondering about is what the difference is between
+> connections from LAN A and LAN B and connections from LAN C ???
+
+..some other type of tunnel running too?  PPTP is a monopolizer,
+it wants the entire box for itself, but you _can_ use the box as 
+a gateway for freeswan while it runs the poptop PPTP.
+
+> The only debugging information I found was in /proc/net/ip_conntrack
+> which looks like this:
+> --------------------------------------------------------
+> gre      47 428648 timeout=600, stream_timeout=432000 src=x.x.x.x
+> dst=x.x.x.x version=1 protocol=0x880b srckey=0x0 dstkey=0xc3e7
+> src=192.168.0.200 dst=x.x.x.x version=1 protocol=0x880b srckey=0xc3e7
+> dstkey=0x47d[ASSURED] use=1
+> 
+> tcp      6 424347 ESTABLISHED src=x.x.x.x dst=x.x.x.x sport=1149
+> dport=1723 src=192.168.0.200 dst=x.x.x.x sport=1723 dport=1149 [ASSURE
+> D] use=2
+>  
+> ........
+> 
+> ----------------------------------------------------------
+> where x.x.x.x represents the IP numbers for the server and the client.
+>  
+> The thing that is wondering me is that connections from the broken LAN
+> C hangs in the /proc/net/ip_conntrack file, this connection which is
+> still recorded was terminated more than one hour ago. Other
+> connections from LAN A and LAN B have been made since, but they leave
+> no trace ?
+>  
+> Niels
+>  
+> 
+> -----Original Message-----
+> From: Diego Sarasua [mailto:debian@sarasuasys.com.ar]
+> Sent: 10. februar 2003 17:37
+> To: Niels Bach
+> Subject: Re: PPTP through iptables firewall
+> 
+> 
+> ok  then U have to make pptp support kernel compilation  in your
+> firewalls and it will work for your clients
+> loading the properly iptables modules
+>  
+> please reply to : dsarasua@sarasuasys.com.ar
+> <mailto:dsarasua@sarasuasys.com.ar>  
+>  
+> <mailto:asadopower@hotmail.com> 
+>  
+> anything U need to serv U 
+> bye 
+> Diego
+> 
+> ----- Original Message ----- 
+> From: Niels Bach <mailto:NB@maconomy.dk>  
+> To: 'Diego Sarasua' <mailto:debian@sarasuasys.com.ar>  
+> Sent: Monday, February 10, 2003 1:17 PM
+> Subject: RE: PPTP through iptables firewall
+> 
+> 3 LAN behind 3 different firewalls. 
+>  
+> On one LAN a PPTP server is placed and I want to access it from the
+> clients placed on the different LANs. 
+>  
+> Niels
+>  
+> 
+> -----Original Message-----
+> From: Diego Sarasua [mailto:debian@sarasuasys.com.ar]
+> Sent: 7. februar 2003 17:52
+> To: Niels Bach
+> Subject: Re: PPTP through iptables firewall
+> 
+> 
+> Please givme some more info 
+> Are U talking of this ?
+>  
+> USER\
+> USER -------->   Firewall    !! PPTP Server!!
+> USER/
+>  
+> Thanks
+> Diego
+> i have "patch-o-mated" my server with kernel  2.4.20 and it doesnt
+> work , try with lower version of kernel  i have workig around 5
+> servers one with 2.4.20 and 4 with 2.4..17
+> thanks
+> bye 
+> Diego
+>  
+> ----- Original Message ----- 
+> 
+> From: Niels Bach <mailto:NB@maconomy.dk>  
+> To: 'netfilter@lists.netfilter.org'
+> <mailto:'netfilter@lists.netfilter.org'>
+> 
+> Sent: Friday, February 07, 2003 5:43 AM
+> Subject: PPTP through iptables firewall
+> 
+> 
+> 
+> I have an MS PPTP server (win2k) behind a linux firewall (kernel
+> 2.4.20 / iptables 1.2.7a) this does not work very well. You can only
+> connect from one source at a time. Then there is a 10 minute (600
+> seconds) timeout before the next connection from a different source
+> can be made. If you come from a LAN that is NAT'ed to one IP address
+> (the firewalls) then all these clients can connect simultaneously. So
+> it is either one client with a public ip address or several clients
+> sharing a public IP address. But once their is a connection (either
+> type) everybody else is blocked out.
+> 
+> I have tried to patch the kernel (patch-o-matic-20030107) with the
+> pptp-conntrack-nat.patch. With this patch the firewall is able to
+> recognize the GRE protocol. This can be seen in /proc/net/ip_conntrack
+> where the connections involving GRE has changed from UNKNOWN to GRE.
+> But with this patch it is not possible to connect, now the windows
+> client only reach"verifying username and password" and then times out.
+> 
+> 
+> Without the patch it is possible to connect to the server one at a
+> time and wait 10 minutes before the next connection from a different
+> location
+> 
+> With the patch it is not possible to connect at all. 
+> 
+> I run Debian 3.0 (woody) Kernel 2.4.20 and iptables 1.2.7a with the
+> patched version and 1.2.6a with the unpatched version of the kernel.
+> 
+> I have seen more people talking about this issue on the web, but no
+> one seems to have at solution. 
+> 
+> regards Niels 
+> 
+> 
+> 
+
 
 -- 
 ..med vennlig hilsen = with Kind Regards from Arnt... ;-)
 ...with a number of polar bear hunters in his ancestry...
   Scenarios always come in sets of three: 
   best case, worst case, and just in case.
-
-
 
 
 
