@@ -1,11 +1,15 @@
-From: Patrick Dung <patrick_dkt@yahoo.com.hk>
-Subject: How to use netfilter to do static IP mapping?
-Date: Fri, 24 Sep 2004 11:24:02 +0800 (CST)
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: nat and dns
+Date: Fri, 24 Sep 2004 02:51:57 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040924032402.415.qmail@web51803.mail.yahoo.com>
+Message-ID: <1096008716.9581.62.camel@wolfpack.ljm.dom>
+References: <415290B1.5030401@imag.fr> <4152DADF.4090802@pbl.ca>
+	<1095976931.5171.12.camel@mistified.sf.bgservice.lab>
+	<1095990977.41537ec1b14b5@webmail2>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1095990977.41537ec1b14b5@webmail2>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,21 +19,45 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="big5"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-RGVhciBBbGwKClRoaXMgaXMgd2hhdCBJIHdhbnQ6CgpldGgwIGFzIGludGVybmV0ICgxLjEuMS4x
-KQpldGgxIGFzIGRteiAoMTAuMS4xLjEpCgpkbXogaGFzIGEgd2ViICgxMC4xLjEuMikgYW5kIGRu
-cyAoMTAuMS4xLjMpIHNlcnZlcgp3aXRoIHByaXZhdGUgSVAuClRoZSBuZXRmaWx0ZXIgZncgd2ls
-bCBkbyB0aGUgc3RhdGljIElQIChwdWJsaWMgdG8KcHJpdmF0ZSkgSVAgbWFwcGluZy4KQXZhbGlh
-YmxlIHB1YmxpYyBJUCAoZXhhbXBsZSk6CjEuMS4xLjEgKGV0aDApLCAxLjEuMS4yIChmb3Igd2Vi
-KSwgMS4xLjEuMyAoZm9yIGRucykKCk5vdyBJIGhhdmUgdGhlc2UgcnVsZXM6CgppcHRhYmxlcyAt
-dCBuYXQgLUEgUFJFUk9VVElORyAtaSBldGgwIC1kIDEuMS4xLjIgLXAKdGNwIC0tZHBvcnQgODAg
-LWogRE5BVCAtLXRvIDEwLjEuMS4yOjgwCmlwdGFibGVzIC10IG5hdCAtQSBQUkVST1VUSU5HIC1p
-IGV0aDAgLWQgMS4xLjEuMyAtcAp1ZHAgLS1kcG9ydCA1MyAtaiBETkFUIC0tdG8gMTAuMS4xLjM6
-NTMKClRoZSBwcm9ibGVtIGlzIHRoYXQgdGhlcmUgaXMgbm8gcmVzcG9uc2UgZnJvbSAxLjEuMS4y
-CmFuZCAxLjEuMS4zLgpEbyBJIG5lZWQgb3RoZXIgc3BlY2lhbCBzZXR0aW5nIChwcm94eSBhcnA/
-KQoKUmVnYXJkcwpQYXRyaWNrCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KpbKx/qfeoUK2vLpxoUKkcKxQrFAuLi4Krva6qblhwW4gILGh
-pN+zc8O0Cmh0dHA6Ly91cy5yZC55YWhvby5jb20vZXZ0PTIyMjgxLypodHRwOi8vcmluZ3RvbmUu
-eWFob28uY29tLmhrLwoK
+On Thu, 2004-09-23 at 21:56, Aleksandar Milivojevic wrote:
+> Quoting Dimitar Katerinski <train@bofh.bg>
+> Date: Fri, 24 Sep 2004 01:02:11
+> 
+> > Sorry, a little bit off topic, but I allways go red about such kind of crappy
+> > rules:
+> > 
+> > > Use DNAT target.  In short what you need to do is:
+> > > 
+> > >    iptables -A FORWARD -m state --state NEW -j ACCEPT
+> > 
+> > Do you know what you just did? You've just allowed any kind of
+> > connections, protocols to any port and from/to any destionation. Cute,
+> > isn't it?
+> 
+> The above was an obvious typo that I made.  It should have read ESTABLISHED, not
+> NEW, of course.  It kinda suprised me that it took so long before anybody noticed.
+
+i regret not pointing out in my response that it was obvious to me that
+this was a typo, and not any reflection on the poster in any way, shape,
+or form.
+
+> Maybe yes, maybe no.  The bottom line is that probability of somebody getting
+> burned by not using tcp-flags (or simply syn) option is quite low.  But if
+> that's going to make you so much happier person, I can start typing mile long
+> examples instead of giving hints. 
+
+precisely.  the rules that get posted here are to illustrate the point,
+not our recommendations of what makes a perfect firewall.
+
+i know as well as anyone that the easiest path is to lurk and wait for
+typo to pounce upon.
+
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
+
+
