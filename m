@@ -1,8 +1,8 @@
-From: "Nix N. Nix" <nix@go-nix.ca>
+From: Ben Russo <ben@umialumni.com>
 Subject: Re: IPTABLES vs Checkpoint
-Date: 26 Nov 2002 17:32:34 -0500
+Date: 26 Nov 2002 17:32:50 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1038349954.22977.34.camel@tux.go-nix.ca>
+Message-ID: <1038349969.16931.16.camel@ben.mis.tnsi.com>
 References: <3F5BAB933C75004690195047C4040A6D0535D4@tc-pdc.jhbA.techconcepts.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -21,6 +21,49 @@ Content-Type: text/plain; charset="us-ascii"
 To: Wayne de Nobrega <wdenobre@techconcepts.co.za>
 Cc: netfilter@lists.netfilter.org
 
+For a company with many offices a Nokia CheckPoint solution is a good
+choice *IF* the money spent on the management of the firewall is
+reasonably proportional to the cost of the firewall software and
+updates.
+
+I used to run many Linux based iptables firewalls for data centers in 
+many different cities and offices in many cities.  It was a management 
+nightmare that led our company to decide to use Checkpoint.  Not because
+it was technically superior to iptables when simply looking at
+firewalls.  (although there are many viewpoints to that argument)
+but because in terms of time and energy spent managing the firewalls
+checkpoint's TCO was much lower.
+
+I love Linux ( I am an RHCE and manage scores of Linux servers)
+iptables makes a great SOHO firewall for the technically saavy
+or a host based firewall with a distributions GUI tools for even 
+newbies.  And if you are in a small organization with only a handfull
+of firewalls you can even do *VERY* complex things with it.
+
+However for an enterprise solution you need management tools and
+you may need integration with VPN's, DNS, Authentication, IP-GRE
+Accounting, performance management 
+and other third party applications.  
+CheckPoint has modules and tools that can do all of that.
+
+You could probably glue together many great Open Source packages
+to meet your needs, but it is a constant uphill battle to keep them
+all updated with patches and integrated and scalability and management
+becomes a big issue.  Also, when you start doing that then there is
+the risk to the company of losing the employees who "know-how-it-works"
+
+When sticking to a Commercial Off The Shelf system like CheckPoint
+and using Commercial integration modules the costs may seem dramatic.
+However you can hire Certified Consultants when your Sr. SysAdmin
+quits who know CISCO, NOKIA, CheckPoint, MSCP, RHCE, etc. etc..
+There is a value in that too.
+
+What it comes down to (IMHO) is the variables in your TCO 
+equation.  You need someone who both knows your business and what
+its goals and growth are likely to be, and also has  experience
+with enterprise WAN management to evaluate that TCO equation.
+
+
 On Tue, 2002-11-26 at 14:28, Wayne de Nobrega wrote:
 > Hello,
 > 
@@ -34,37 +77,9 @@ On Tue, 2002-11-26 at 14:28, Wayne de Nobrega wrote:
 > products.
 > 
 > Can anyone offer some input or point me to a source of information.
-
-AFAIK Checkpoint is not a firewall at all, but a proxy server.  This
-clearly means that it acts like a Web/FTP/whatever server that connects
-people in your company to the outside world by requesting Web pages over
-HTTP and initiating FTP connections on their behalf.
-
-OTOH iptables works below the application layer.  It allows manipulation
-of individual TCP connections, UDP packets and ICMP traffic irrespective
-of the application layer service they provide.
-
-Nonetheless:  Checkpoint and iptables are not necessarily mutually
-exclusive.  Consider the following setup:
-    ________      __________      ________      ________________
-   /        \    /          \    /        \    /                \
-  | Internet +--+ Checkpoint +--+ iptables +--+ Internal Network |
-   \________/    \__________/    \________/    \________________/
-
-The Checkpoint box would basically allow all traffic through.  It
-wouldn't be just an inert box though !  You could forward all outgoing
-HTTP traffic from the iptables computer to the Checkpoint Web proxy to
-do authentication, content filtering, etc.  The Checkpoint box would be
-mostly closed off, and you would rely on iptables to selectively block
-ports and do all the fancy things a Linux router can do for you.
-
-This way, you can comply with corporate policy and use iptables as well.
-
 > 
 > Many thanks
 > 
 > Wayne
-
-Good luck !
 
 
