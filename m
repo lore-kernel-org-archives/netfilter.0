@@ -1,14 +1,14 @@
-From: Thierry ITTY <thierry.itty@besancon.org>
-Subject: [SOLVED] linux router announces bad ip/mac
-Date: Thu, 07 Nov 2002 08:53:10
+From: "Alex Bennee" <alex@bennee.com>
+Subject: Re: Problem with masqurading 'long' connections.
+Date: Thu, 7 Nov 2002 09:38:51 -0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3.0.1.16.20021107085310.22a77234@s-net-04.besancon.org>
-References: <3.0.1.16.20021106084719.230ff560@s-net-04.besancon.org>
+Message-ID: <35709.217.42.120.194.1036661931.squirrel@www.bennee.com>
+References: <1036655738.2727.49.camel@trent.nin>
+Reply-To: alex@bennee.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3.0.1.16.20021106084719.230ff560@s-net-04.besancon.org>
+In-Reply-To: <1036655738.2727.49.camel@trent.nin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,108 +18,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: ben@umialumni.com, mgm@paktronix.com
 
-Thanks to Ben and Matthew this problem is solved
+alex said:
+> On Wed, 2002-11-06 at 22:22, alex wrote:
+>> <snip>
+>> Background
+>>
+>> I'm running the firewall on a dedicated linux PC (2.4.19, Mandrake
+>> 9.0, iptables 1.2.6a) which is doing normal masqurading for outgoin
+>> LAN traffic as well as port forwarding several ports to various
+>> internal machines. The webserver is apache running on Debian 3.0
+>> (2.2.20 kernel)
+>
+> This seems to of been the probelm. I upgraded the kernel on the server
+> to 2.4.19 and everything works fine. Anyone want to offer a theory as
+> to why?
+>
 
-As told by Matthew, RFC1122 defines two models in the "3.3.4.2  Multihoming
-Requirements" paragraph, Linux implements the "weak host" one, in which the
-normal behaviour is to answer to any incoming request on any interface if
-the IP destination of the request matches ANY of the IP addresses of the
-host, whether OR NOT it is the receiving interface that has the requested
-destination IP. As a consequence, the host responds to arp requests for any
-of its IPs on any of its nics.
-
-the problem in my case was that my router box (in router mode, see
-hereunder) needed to "spoof" the "true" router ip, only on the class room
-side, and that this behaviour made it spoof it on both sides.
-
-the solution is to deactivate arp_proxy and activate rp_filter in
-/proc/sys/net/ipv4/conf/all. the first one avoids proxying of arp requests
-and the second one activates source validation.
-
-an ethereal trace on the backbone interface (nic A) shows clearly that this
-stops the box answering arp requests for 192.168.1.1 on nic A, which was
-the origin of my problem
-
-thanks again
+Scratch that, must of been cached on the remote machine I was testing with.
+I'm still confused.
 
 
+Alex
+www.bennee.com/~alex/
 
-A 08:47 06/11/2002, vous avez =E9crit :
->Hello
->
->I have a linux box (rh 73 out of the box on a P200mmx and 2 accton nics)
->with iptables (1.2.3-1)
->
->there's a script which configures it either :
-> - as a simple host (only NIC A is activated with ip 1.1.1.10)
-> - as a transparent bridge (both NICs are activated, bridge device gets ip
->1.1.1.10)
-> - as a filtering router (both NICs are activated, A with ip 1.1.1.10 and B
->with 192.168.1.1)
->
->the reason of this is because I have a distant class room with several
->windoz PCs, and, depending of the teacher/attenders, I want them to either
->have absolutely no access to our network, or full access, or limited
->access. In the case of full access I could have set up a non-filtering
->router, this would have been much easier, but as I needed to allow NetBEUI
->to work in this case I choosed to use a transparent bridge configuration.=
-=20
->
->Configuration changes must be done remotely. NIC A is connected on our
->network (so whatever configuration is active, the box is always reachable
->at 1.1.1.10), NIC B is connected to the class room lan.=20
->
->On the A side there are 2 IP networks on the same ethernet wire : 1.1.1.0
->and 192.168.1.0. there are a lot of workstation on that side ine the
->192.168.1.0 subnet. On the B side (only the classroom) there are a few
->workstations in the (only) 192.168.1.0 subnet. All the 192.168.1.0 machines
->have a default gateway set to 192.168.1.1.
->
->On the A side there are 2 routers, one with IP 192.168.1.1 and one with
->1.1.1.1=20
->
->so when the box is configured as a transparent bridge, NetBEUI is forwarded
->through it, and IP too, so class room PCs "talk" to the "true" router at
->192.168.1.1.
->
->when the box is configured as a filtering router, NetBEUI is no more
->forwarded, and class room PCs can't talk to 192.168.1.1. instead, they talk
->to the linux box, which MASQUERADEs (on 1.1.1.10) and forwards only to
->selected ip destinations. whatever configuration it is in, the linux box
->always has 1.1.1.1 as a default gateway. Of course, other PCs on the A side
->go on talking to the "true" 192.168.1.1 router.
->
->thought it's a bit complex, this allows me to handle the NetBEUI case and
->avoids any configuration change on the class room PCs.
->
->OK, now here's the problem I get :
->when the box is in router mode, it answers to ARP requests asking for
->192.168.1.1 coming on NIC B (sent all from the B side PCs in their normal
->network operation process) with NIC B's mac address. this is fine
->BUT, it also answers to ARP requests asking for 192.168.1.1 coming on NIC A
->(sent all from the A side PCs) with NIC A's mac address. and this is of
->course wrong, because A side PCs then send their routed traffic to the
->linux box (which obviously doesn't handle it) instead of sending it to the
->true router.
->
->what causes this behaviour (responding on the A side to arp requests which
->it should not answer to) and how can I cure it ?
->
->tia
->			- * - * - * - * - * - * -
->Bien s=FBr que je suis perfectionniste !
->Mais ne pourrais-je pas l'=EAtre mieux ?
->	Thierry ITTY
->eMail : Thierry.Itty@Besancon.org		FRANCE
->
->
->
-			- * - * - * - * - * - * -
-Bien s=FBr que je suis perfectionniste !
-Mais ne pourrais-je pas l'=EAtre mieux ?
-	Thierry ITTY
-eMail : Thierry.Itty@Besancon.org		FRANCE
+
 
