@@ -1,9 +1,8 @@
-From: "Paul Cousins" <paul@pimper.fsnet.co.uk>
-Subject: Re: Lan traffic Monitoring tools
-Date: Fri, 7 Feb 2003 16:07:47 -0000
+From: "Erik Ahlner" <whyz@home.se>
+Subject: Network bandwidth usage monitor
+Date: Fri, 7 Feb 2003 17:34:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002b01c2cec3$0e34ef90$0c00a8c0@frodo>
-References: <E88493086664D511A1E4000103330E82027FE05C@mail.maconomy.dk> <832811662.20030207102832@wp.pl> <003501c2ceb7$c3713af0$8c01a8c0@sundaram>
+Message-ID: <001001c2cec6$d6310b20$0200a8c0@whyzpc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,50 +18,17 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Best thing you  can do is install squid and then set it up as a transparent
-proxy and use itpables to route all prot 80 traffic through it. ntop and
-mrtg will not give you the level of detail you are after on there own
-however when used with squid youll be able to get all the info youll ever
-need on what clients are doing what.
+Hi!
 
-Unless the clients you wish to minito are SNMP enabled you not going to able
-to get much data form them using mrtg et al also you will not just capture
-net traffic but all lan traffic will also been shown so again this would not
-be close to what you need. defianltey look into squid and transparent
-proxying.
+I have used IPtraf for measuring how much of my network is beeing used for a
+while now, but since I got 100mbit connection it doesn't fulfill my
+needs..when downloading thing in 5 megabytes/second, Iptraf says
+300kb/second.. not very accurate huh?
 
-______________________________________________
-No trees were harmed in posting this message. However, a large number of
-electrons were terribly inconvenienced.
+Is there some other tool which can measure the ethernet traffic speed?
 
-"Sir, we're surrounded."
-"Excellent. We can attack in any direction!"
+Byebye!
 
------ Original Message -----
-From: "Sundaram Ramasamy" <sun@percipia.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, February 07, 2003 2:46 PM
-Subject: Lan traffic Monitoring tools
-
-
-> Hi All,
->
-> I have firewall based on iptables (Redhat 7.3) Custom build kernel. I want
-> to
->  monitor the my LAN traffic, basically I need a report
->  PC IP Address : web site it accessing, date and time
->
-> I am not using any proxy in my gateway machine.
->
->  I checked out ntop, mrtg. I would like to know which is best  tool for
-this
-> propose.
->
-> -RS
->
->
->
->
-
+Erik
 
 
