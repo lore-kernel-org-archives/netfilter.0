@@ -1,12 +1,13 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: Looking for an editable script
-Date: Thu, 29 Jan 2004 18:49:02 -0800 (Pacific Standard Time)
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Classifying W32/MyDoom.A
+Date: Fri, 30 Jan 2004 07:46:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.WNT.4.55.0401291848351.3112@TIPPER.shorewall.net>
-References: <40193C8B.1030900@alteeve.com>
+Message-ID: <1075441566.1999.114.camel@raylinux.internal>
+References: <3383379105910242B6F8878D41FA834201A7B5@glsql.greatlakes.net>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Kjl9QkM9OU7NUl30sy4P"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40193C8B.1030900@alteeve.com>
+In-Reply-To: <3383379105910242B6F8878D41FA834201A7B5@glsql.greatlakes.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +17,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Madison Kelly <linux@alteeve.com>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Thu, 29 Jan 2004, Madison Kelly wrote:
 
-> Hi all,
->
->    I am trying to build a script to serve my office network. To date I
-> have used Monmotha's Firewall script but I need more than it provides. I
-> have been trying to hack his excellent script to fit my needs but a
-> programmer I am not! :)
->
->    I need something I can work into doing the following;
->
-> - Allow limited TCP/UDP ports into the firewall/router (easy enough)
-> - Allow limited TCP/UDP ports into LAN clients (common list for all LAN
-> clients)
-> - NAT clients that will be public and for each client allow a specific
-> list of inbound TCP/UDP ports and where the clients will, internally,
-> have their own subnet seperate from the LAN clients.
->
->    I am not asking anyone to do my work, but a head start would be
-> greatly appreciated! In the meantime, back to trying to bang Monmotha's
-> script to suite (please save me!) ;)
->
+--=-Kjl9QkM9OU7NUl30sy4P
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Consider checking out Shorewall -- http://www.shorewall.net
+On Thu, 2004-01-29 at 20:06, Eliot, GLI wireless tech support wrote:
+> Has anyone come up with a ruleset for classifying a random TCP or
+> specific SMTP connection as being the W32/MyDoom.A virus?
 
--Tom
+<<snip>>
+
+> Anyone have any ideas how to do this without too many false positives?
+> (IE a document on the web that describes the characteristics of
+> MyDoom.A).=20
+
+Since it spreads via SMTP from clients and not servers, why not just
+block all smtp traffic outbound to the internet from your client
+machines, and only allow your mail server to send smtp mail?
+
+Of course you would need a decent anti-virus program on the mail server.
+
+The other way you could possibly do this is by using a string match to
+look inside any smtp packets for matches of the attachment names(?).
+
+--=20
 --
-Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
-Shoreline,     \ http://shorewall.net
-Washington USA  \ teastep@shorewall.net
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
+
+--=-Kjl9QkM9OU7NUl30sy4P
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQBAGe+eh1fuR/Bv+ygRAvByAJ4li5gzqdVfZPE1vAGa/GUYJgsmzwCcDk4m
+SGE2H+E4S6l2XBqZZOtB8iE=
+=OfrI
+-----END PGP SIGNATURE-----
+
+--=-Kjl9QkM9OU7NUl30sy4P--
+
 
