@@ -1,16 +1,13 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: attempting to transparently proxy with this script to no avail
-	(nfcan: addressed to exclusive sender for this address)
-Date: Tue, 1 Mar 2005 20:07:23 -0500
-Message-ID: <20050302010723.GI14303@salty>
-References: <BAY17-F386CBFC183CD40C68DFE19DC590@phx.gbl>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: "Daniel J. Brennan" <djbrennan@comcast.net>
+Subject: Re: Network number getting mangled
+Date: Tue, 1 Mar 2005 20:21:37 -0500 (EST)
+Message-ID: <Pine.LNX.4.58.0503012016300.11531@spm.home.djb.net>
+References: <Pine.LNX.4.58.0503011618080.11531@spm.home.djb.net>
+	<20050301220459.GA31857@bender.817west.com>
+	<Pine.LNX.4.58.0503011711120.11531@spm.home.djb.net>
+	<20050301222355.GA31991@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
-In-Reply-To: <BAY17-F386CBFC183CD40C68DFE19DC590@phx.gbl> (from
-	+nfcan+jimlaur+f8d0e213b6.securadd#hotmail.com@spamgourmet.com
-	on Tue, Mar 01, 2005 at 17:03:12 -0500)
+In-Reply-To: <20050301222355.GA31991@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,26 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jason Opperisano <opie@817west.com>
+Cc: netfilter@lists.netfilter.org
 
-On 2005.03.01 17:03, joe z - securadd@hotmail.com wrote:
-> this script runs everything fine just the redirect doesn't. the proxy works  
-> fine when browser pointed at it.
->
+Ah yes, I did the math on the way home. I hastily typed my last post before
+catching my train and put a 2 where I meant 8. I realize my mistake and
+am rather embarrassed for posting before thinking. I am sorry to waste
+your time, but I appreciative of all your help. I'll be more careful in
+the future.
 
-...
+Thanks,
+Dan
 
-> iptables -t nat -A PREROUTING -m tcp -p tcp --dport 80 -j REDIRECT --to-port  
-> 8080
-
-Try this instead:
-
-iptables -t nat -A PREROUTING -m tcp -p tcp --dport 80 -j DNAT --to-port 8080
-
--- 
-Jim Laurino
-nfcan.x.jimlaur@dfgh.net
-Please reply to the list.
-Only mail from the listserver reaches this address.
+> 
+> which would be:  x.x.168.0/21
+> 
+> > of 255.255.242.
+> 
+> ahh...no...  255.255.248.0 maybe?
+> 
+> > As I said the private space mirrors this IP space.
+> > This is a legitimate public IP subnet. How do I define it to iptables,
+> > since the public IP space is not as I would expect in iptables either.
+> 
+> as a /21...
+> 
+> this message on IP Subnetting has been brought to you by the letter 'S.'
+> 
+> -j
+> 
+> --
+> "Weaseling out of things is important to learn. It's what separates
+>  us from the animals...except the weasel."
+>         --The Simpsons
+> 
 
