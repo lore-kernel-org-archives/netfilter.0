@@ -1,12 +1,12 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: return
-Date: Fri, 4 Jun 2004 10:14:07 -0400
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: return
+Date: Fri, 4 Jun 2004 11:27:54 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5D3C2276FD64424297729EB733ED1F760639A918@email1.mitretek.org>
+Message-ID: <017d01c44a40$20102d70$49caa8c0@caris.priv>
+References: <5D3C2276FD64424297729EB733ED1F760639A918@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,7 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
+To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>, netfilter <netfilter@lists.netfilter.org>
+
+Oh, I see ....
+But would that not just return you to the parent chain of syn-flood ????
+
+Thank you for the reply
+Peter
+
+----- Original Message ----- 
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
+<netfilter@lists.netfilter.org>
+Sent: Friday, June 04, 2004 11:14 AM
+Subject: RE: return
+
 
 The first time I used RETURN was today.
 
@@ -28,7 +42,7 @@ which you need to limit packets per second.
 
 
 -----Original Message-----
-From: Peter Marshall [mailto:peter.marshall@caris.com]=20
+From: Peter Marshall [mailto:peter.marshall@caris.com]
 Sent: Friday, June 04, 2004 10:02 AM
 To: Piszcz, Justin Michael; netfilter
 Subject: Re: return
@@ -40,7 +54,7 @@ question .. at all ...
 
 Peter
 
------ Original Message -----=20
+----- Original Message ----- 
 From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
 To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
 <netfilter@lists.netfilter.org>
@@ -94,7 +108,7 @@ ruleset that works well to ameliorate syn-flooding, please let me know.
 
 Thanks kindly,
 
---=20
+-- 
 
  -- Jeff --   <http://www.wellnow.com>
 
@@ -139,6 +153,7 @@ Peter Marshall, BCS
 Network Administrator, CARIS
 115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
 Phone:  (506) 458-8533 (Reception)
+
 
 
 
