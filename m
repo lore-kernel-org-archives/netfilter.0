@@ -1,11 +1,11 @@
-From: Simone Sestini <simone.sestini@plugit.net>
-Subject: NAT and log traffic
-Date: Wed, 15 Jan 2003 12:36:16 +0100
+From: "Zander" <zander@subatomic.org.uk>
+Subject: Re: ssh
+Date: Wed, 15 Jan 2003 12:09:55 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.0.20030115122833.08dbb520@imap4.plugit.net>
+Message-ID: <012101c2bc8f$04264f80$96ae6f83@classics.cam.ac.uk>
+References: <20ED00AA0BC135449469D6EF0AE79C971046@ozlan.fcdomain.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="=====================_517442923==.ALT"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,155 +16,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
---=====================_517442923==.ALT
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-
-Hi folks..
-
-I have made two NAT box for a special dialup server.
-I have create an iptables stratup script like that..
-
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.2.0/23 -o eth0 -j 
-SNAT --to PUBLIC-IP1
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.4.0/23 -o eth0 -j 
-SNAT --to PUBLIC-IP2
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.6.0/23 -o eth0 -j 
-SNAT --to PUBLIC-IP3
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.8.0/23 -o eth0 -j 
-SNAT --to PUBLIC-IP4
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.10.0/23 -o eth0 -j 
-SNAT --to PUBLIC-IP5
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.12.0/23 -o eth0 -j 
-SNAT --to PUBLIC-IP6
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.14.0/23 -o eth0 -j 
-SNAT --to PUBLIC-IP7
-
-and so on..
+Content-Type: text/plain; charset="us-ascii"
+To: "Simpson, Doug" <dsimpson@friedmancorp.com>, netfilter@lists.netfilter.org
 
 
-Now.. i need to LOG all the traffic that transit over the rules..
-I need to log at least PUBLIC-IPX and DESTINATION-IP.
+> whoops - forgot this is a dual homed computer and I am opening the eth0 to
+> the outside world for ssh.
+> I did find this -
+> iptables -A INPUT -p tcp --syn --destination-port 22 -j ACCEPT
+> iptables -A INPUT -p tcp --syn -j DROP
+> this confuses me because of the "DROP" and the "--syn"
+> Thanks,
+> Doug
+>
+> -----Original Message-----
+> From: Simpson, Doug
+> Sent: Tuesday, January 14, 2003 1:59 PM
+> To: 'netfilter@lists.netfilter.org'
+> Subject: ssh
+>
+>
+> I have acomputer I want to ssh to from the internet.  What is the IPTABLES
+> command to open this port?
+> Thanks,
+> Doug
+>
 
-A friend of that mailing list wrote me back and told..
+if you're opening ssh to the machine itself then:
 
-change your string like that
+/sbin/iptables -A INPUT -p tcp -i eth0 -d <eth0 IP address> --dport 22 -j
+ACCEPT
+/sbin/iptables -A OUTPUT -p all -o eth0 -m state --state
+RELATED,ESTABLISHED -j ACCEPT
 
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.0.0/23 -o eth0 -j 
-LOG --log-level debug --log-prefix "POSTRT: "
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.0.0/23 -o eth0 -j 
-SNAT --to PUBLIC-IP1
+if for a host behind the firewall:
 
-I did that and added that over syslog.conf
-# For NAT
-*.*                                             /var/log/nat.log
+/sbin/iptables -A FORWARD -p tcp -i eth0 -o ethx -d <ssh server
+ipaddress> --dport 22 -j ACCEPT
+/sbin/iptables -A FORWARD -p all -m state --state RELATED,ESTABLISHED -j
+ACCEPT
 
-but i don't see any datas logged over that file..
+some of those interface settings aren't compulsary like in the forward chain
+but I like to put them in. I would suggest them though for the INPUT and
+OUTPUT chains as you have more than one interface. Oh and maybe set the
+default policy of all to DROP.
 
-See that..
+HTH
 
-    75  3727 
-LOG        all  --  *      eth0    10.20.0.0/23         0.0.0.0/0 
-LOG flags 0 level 7 prefix `POSTRT: '
-    75  3727 
-SNAT       all  --  *      eth0    10.20.0.0/23         0.0.0.0/0 
-to:xxx.x.xx.x
-
-I generated the traffic over that rule but nothing appear over the log file.
-
-Any idea ?
-
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-Simone Sestini [ SS971-RIPE ]
-
-Plug IT s.p.a. - Technical Office
-Via Galileo Ferraris 216
-52100 Arezzo
-
-Titles:
-System and Network Administrator
-Data Transmission Manager
-
-Fax             +39 199 440088
-E-mail  simone.sestini@plugit.net
-Web             http://www.plugit.it
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
---=====================_517442923==.ALT
-Content-Type: text/html; charset="us-ascii"
-
-<html>
-<body>
-Hi folks..<br><br>
-I have made two NAT box for a special dialup server.<br>
-I have create an iptables stratup script like that..<br><br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.2.0/23 -o eth0 -j
-SNAT --to PUBLIC-IP1<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.4.0/23 -o eth0 -j
-SNAT --to PUBLIC-IP2<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.6.0/23 -o eth0 -j
-SNAT --to PUBLIC-IP3<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.8.0/23 -o eth0 -j
-SNAT --to PUBLIC-IP4<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.10.0/23 -o eth0
--j SNAT --to PUBLIC-IP5<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.12.0/23 -o eth0
--j SNAT --to PUBLIC-IP6<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.14.0/23 -o eth0
--j SNAT --to PUBLIC-IP7<br><br>
-and so on..<br><br>
-<br>
-Now.. i need to LOG all the traffic that transit over the rules..<br>
-I need to log at least PUBLIC-IPX and DESTINATION-IP.<br><br>
-A friend of that mailing list wrote me back and told..<br><br>
-change your string like that <br><br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.0.0/23 -o eth0 -j
-LOG --log-level debug --log-prefix &quot;POSTRT: &quot;<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.0.0/23 -o eth0 -j
-SNAT --to PUBLIC-IP1<br><br>
-I did that and added that over syslog.conf<br>
-# For NAT<br>
-*.*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-/var/log/nat.log<br><br>
-but i don't see any datas logged over that file..<br><br>
-See that..<br><br>
-&nbsp;&nbsp; 75&nbsp; 3727 LOG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-all&nbsp; --&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eth0&nbsp;&nbsp;&nbsp;
-10.20.0.0/23&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LOG flags
-0 level 7 prefix `POSTRT: ' <br>
-&nbsp;&nbsp; 75&nbsp; 3727 SNAT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-all&nbsp; --&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eth0&nbsp;&nbsp;&nbsp;
-10.20.0.0/23&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-to:xxx.x.xx.x<br><br>
-I generated the traffic over that rule but nothing appear over the log
-file.<br><br>
-Any idea ?<br><br>
-<x-sigsep><p></x-sigsep>
-<font face="Verdana">::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::<br><br>
-</font><font face="Verdana" color="#FF0000"><b>Simone Sestini
-</font><font face="Verdana" size=2 color="#FF0000">[ SS971-RIPE
-]<br><br>
-</b></font>Plug IT s.p.a. - Technical Office<br>
-Via Galileo Ferraris 216<br>
-52100 Arezzo<br><br>
-<tt><font face="Courier New, Courier" color="#0000FF">Titles:<br>
-System and Network Administrator<br>
-Data Transmission Manager<br><br>
-Fax<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>+39
-199 440088<br>
-E-mail<x-tab>&nbsp;&nbsp;</x-tab>simone.sestini@plugit.net<br>
-Web<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><a href="http://www.plugit.it/" eudora="autourl">http://www.plugit.it</a><br><br>
-</font></tt><font face="Verdana"><u>::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-<br>
-</font></u></body>
-</html>
-
---=====================_517442923==.ALT--
+Zz
 
 
