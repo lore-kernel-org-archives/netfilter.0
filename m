@@ -1,8 +1,8 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: I need help , please
-Date: Fri, 5 Jul 2002 21:58:49 +0100
+Date: Fri, 5 Jul 2002 23:18:58 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020705205851.OAGX19225.mta07-svc.ntlworld.com@there>
+Message-ID: <20020705221900.HPWC23840.mta03-svc.ntlworld.com@there>
 References: <NJEFLNJDIFFNMHDEBKMJAEKADOAA.jpatterson@asgardgroup.com> <20020705201118.DFBE4626.mta02-svc.ntlworld.com@there> <024901c22432$8885a5a0$8703000a@aid.inf.cu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -22,13 +22,8 @@ To: netfilter@lists.samba.org
 
 On Friday 05 July 2002 3:44 pm, david wrote:
 
-> Tony:
->
 > When I write these rules in the command line all is OK and  the rules works
 > fine.
-
-Good.   This is progress.
-
 > But if I put the same rules in a script :
 >
 > #!/bin/bash
@@ -42,12 +37,15 @@ Good.   This is progress.
 > iptables :Bad police name
 > iptables :Bad police name
 > iptables :Bad police name
->
-> Then what?
 
-What is the output of this command ?
+What name did you call the script ?
 
-find  /  -name  iptables
+Where did you put the script ?
+
+How did you run the script ?
+
+Does the same thing happen if you change all occurences of 'iptables' inside 
+the script for '/sbin/iptables' instead ?
 
  
 
