@@ -1,11 +1,11 @@
-From: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Subject: semi OT: default route
-Date: Wed, 20 Oct 2004 09:25:51 -0400
+From: bruce <bruce@gajshield.com>
+Subject: CBQ Log message  mean??
+Date: Wed, 20 Oct 2004 19:07:42 +0530
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041020132551.GA1720@tranquility.scriptkitchen.com>
+Message-ID: <200410201341.i9KDf2R12817@securegate.mailserver.gajshield.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,22 +16,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
 
 Hi,
-I have a question which has haunted me for many months. If I have 2 ISP
-connections with me, with default gw 1.2.3.4 and 4.5.6.7 and if I add 
-both as default routes on my Linux gateway as,
-route add -net default gw 1.2.3.4
-route add -net default gw 4.5.6.7
-and if I send a packet from a windows client to internet, which ISP will it
-go through?
 
-Thanks a lot for the answer in advance and waiting eagerly for any
-replies.
+whenever i enable bandwidth  to interfaces, a flooding of 
+"CBQ: class 00010001 has bad quantum==0, repaired"  message.
+What is it actually mean???
+Any troubles for the interface bandwidth???
+It is telling that "repaired".....
 
-With warm regards,
--Payal
+
+Thanks in advance for your reply
+
+
+
+
+
 
 
