@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Help Netfilter+Bridge+Tokenring
-Date: Tue, 30 Sep 2003 14:49:10 +1000
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Problems with prerouting
+Date: Tue, 30 Sep 2003 07:06:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C3D6@wardrive.citadelcomputer.com.au>
+Message-ID: <1064898376.16779.57.camel@raylinux.internal>
+References: <20030929155529.E451617C80@delta.anup.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Dyu/9pNv3UxMLTUlM7JV"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20030929155529.E451617C80@delta.anup.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +17,89 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: kilho Kim <kilho8667@yahoo.com>, netfilter@lists.netfilter.org
-
-Simple, those machines (A,B) should drop all packets in their INPUT =
-tables as only passing through packets will traverse the FORWARD =
-chain...
-Unless I misunderstood you but I think that's all you need..
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-=20
-
------Original Message-----
-From: kilho Kim [mailto:kilho8667@yahoo.com]
-Sent: Tuesday, 30 September 2003 2:35 PM
-To: netfilter@lists.netfilter.org
-Subject: Help Netfilter+Bridge+Tokenring
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-I have somewhat wiered setup and need some advices.
+--=-Dyu/9pNv3UxMLTUlM7JV
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-One machine(A) has 3 Ethernet adapters and 1 token
-ring adapter installed. Three clients will be attached
-to 3 Ethernet adapter, and the tokenring adapter is
-connected to the another linux box (B) acting as a
-router. The box (B) will be connected to the internet.
+On Mon, 2003-09-29 at 17:55, Andreas Meyer wrote:
+> Hi!
+>=20
+> I could need some help with setting up a prerouting for a webserver
+> on my gateway.
+>=20
+>=20
+>     static-Internet-IP on eth1
+>                 |
+>         +----------------+
+>         |                |
+>         | 192.168.20.210 |
+>         |    on eth0     |
+>         +----------------+
+>                 |
+>             +-----------+
+>             |           |
+>        +---------+ +----------+
+>        |         | |          |
+>    192.168.20.60 | | 192.168.20.61
+>       Squid      | |    Webserver
+>        |         | |          |
+>    192.168.1.75  | |          |
+>        +---------+ +----------+
+>            |
+>=20
+>        +--------+
+>    192.168.1.3  |
+>       WKS       |
+>        +--------+
+>=20
+> I addes a rule before all other forwarding and input and output
+> rules:
+>=20
+> iptables -A FORWARD -p TCP -d 192.168.20.61 --dport 8080 -j ACCEPT
+> iptables -t nat -A PREROUTING -p TCP -d 192.168.20.210 --sport 1024: \
+>                           --dport 80 -j DNAT --to 192.168.20.61:8080
+>=20
+> When I contact the proxy on 192.168.20.60 from 192.168.1.3 or from within=
+ the
+> the DMZ at 192.168.20.60 to call 192.168.20.210, nothing happens,
+> nothing in the logs.
+>=20
+> What kind of problem do I have here? Is it possible at all to test such
+> a prerouting-rule from within the DMZ or the local network?
+>=20
+You also need a FORWARD rule to forward the return traffic from the
+webserver.
 
-I setup the bridge on box (A). (basically I followed
-Ethernet-Bridge-Howto).
-The bridge (br0) includes eth0, eth1, and eth3. Then
-there is a tokenring interface to box (B).
+You can use something like ethereal or tcpdump to trace your traffic,
+then you will see where the problem is.
 
-I'm trying to see if I can use iptables to forward any
-packets incoming from the client machines attached to
-br0 to tokenring adapter and eventually end up at box
-(B).
+Also, try usimg iptables LOG rules.
 
-Well the other requirement I have is those clients
-attached to Box (A) shouldn't be able to access the
-Box (A) and Box (B) other then sending packets through
-them.
+> Thank you for listening!
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
-I'm a very novice iptables user so if you're kind
-enough to show me some of the iptables command and
-configuration strings, it would help me a lot.
+--=-Dyu/9pNv3UxMLTUlM7JV
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Thanks much.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
 
+iD8DBQA/eQ9Ih1fuR/Bv+ygRAl3GAJ9xEUHP6ed+qxnlgc6E1lOyCBZSGACgolPd
+gB32K6ThGgG1Sw+Zqu19vFY=
+=P79+
+-----END PGP SIGNATURE-----
 
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Shopping - with improved product search
-http://shopping.yahoo.com
+--=-Dyu/9pNv3UxMLTUlM7JV--
 
 
