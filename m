@@ -1,14 +1,12 @@
-From: Shawn Duffy <pakkit@codepiranha.org>
-Subject: Re: Doubt regarding Linuxconf
-Date: Sun, 02 Mar 2003 06:11:45 -0500
+From: "Jim Robinson" <jim@linux-sp.com>
+Subject: RE: Deny all but certain Websites
+Date: Wed, 26 Feb 2003 23:57:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1046603505.3087.93.camel@pitbull>
-References: <20030227213747.81254.qmail@web8201.mail.in.yahoo.com>
+Message-ID: <CAEGIDAMMMOCIHNIEGCJKECJEGAA.jim@linux-sp.com>
+Reply-To: <jim@linux-sp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="=-ifOH4iiLf1aJOlNZ+/Ga";
- protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20030227213747.81254.qmail@web8201.mail.in.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +16,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: honey grp <honeypict@yahoo.co.in>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
+
+To everyone that replied to my initial post (see below) -
+thank you!
+
+Using bits from a number of replies I was able to find the
+answer to denying IP addresses to the Internet as a whole
+but allowing said internal nodes to specific places on the
+web.
+The final syntax I used was:
+
+iptables -A PREROUTING -t nat -s 192.168.1.100/24 -d
+a.pub.lic.ip -p tcp --dport 80 -j ACCEPT
+iptables -A PREROUTING -t nat -s 192.168.1.100/24 -d 0/0 -p
+tcp --dport 80 -j DROP
+
+I think a number of the other posts were also correct but my
+firewall was somewhat customized :)
+I especially liked the one about using Squid instead - glad
+to see people can think outside the "list"!
+
+Appreciate the help.
+
+Regards,
+
+Jim
 
 
---=-ifOH4iiLf1aJOlNZ+/Ga
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2003-02-27 at 16:37, honey grp wrote:
-> "/etc/init.d/network  restart" then above entries are again shown.=20
->=20
-> Can any1 plz let me know from where these entries come?
->=20
-
-Take a look through some of the files and subdirectories in
-/etc/sysconfig
-
-Thanks,
-Shawn
---=20
-email: pakkit at codepiranha dot org
-web: http://codepiranha.org/~pakkit
-gpg key: http://codepiranha.org/~pakkit/pakkit.asc
-gpg fpr: 8988 6FB6 3CFE FE6D 548E  98FB CCE9 6CA9 98FC 665A
-having problems reading email from me?
-http://codepiranha.org/~pakkit/pgp-trouble.html
-
---=-ifOH4iiLf1aJOlNZ+/Ga
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA+YebwzOlsqZj8ZloRAgx0AJ4w172pKX8E0MJOEAc6FgVlj8FKEQCcDUN2
-SOcZh49GnatMoJj51UWGWtk=
-=Xmtv
------END PGP SIGNATURE-----
-
---=-ifOH4iiLf1aJOlNZ+/Ga--
+----------------------------------
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of
+Jim Robinson
+> Sent: Wednesday, February 26, 2003 3:55 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Deny all but certain Websites
+>
+>
+> Hi,
+>
+> I am trying to write a rule to allow certain IP addresses
+on
+> the inside of my firewall (NAT) to only connect to 1 or 2
+IP
+> ranges on the internet.  I have tried without success to
+find
+> some examples online and have played with some rules but
+> without much success.
+>
+> Does anyone have any ideas on this?  Your help very much
+appreciated.
+>
+>
+> Allowed Website Only
+> |
+> |
+> |
+> (Internet)
+> |
+> |
+> ETH0: Public IP
+> ----
+> FIREWALL (NAT)
+> ----
+> ETH1: 192.168.1.1
+> |
+> |
+> Client IP: 192.168.1.100
+>
+>
+>
+>
+> Jim
+>
+>
 
 
