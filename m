@@ -1,13 +1,11 @@
-From: John Holman <jaholman@eastax.com>
-Subject: Re: Accuracy of packet counting?
-Date: Sun, 26 May 2002 08:16:55 +1000
+From: George Georgalis <george@galis.org>
+Subject: router on a floppy or cdrom...
+Date: Mon, 27 May 2002 11:24:33 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CF00D57.F2399EBE@eastax.com>
-References: <3CE4352B.36C46B79@john.holman.name> <20020525120020.O30908@sunbeam.de.gnumonks.org>
-Reply-To: mail@john.holman.name
+Message-ID: <20020527112433.A12094@trot.haven.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,36 +16,22 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Harald Welte <laforge@gnumonks.org>
-Cc: John Holman <mail@john.holman.name>, netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
+I'm getting ready to put together a distro on a floppy (or cdrom)...
 
+After poking around on the net I think this is the best place to start
+http://leaf.sourceforge.net/devel/jnilo/
 
-Harald Welte wrote:
-> 
-> On Fri, May 17, 2002 at 08:39:39AM +1000, John Holman wrote:
-> > My question:
-> >
-> > Is there ANY reason to suppose that the ACCOUNTING total is not an
-> > accurate count of all IP traffic into and out of eth0?
-> 
-> yes, since you only count locally-generated and locally-targeted traffic,
-> not the traffic forwarded by your machine.
-> 
-> use your accounting rules in the mangle table (PREROUTING and POSTROUTING)
-> to cover all traffic.
-> 
+Anybody have comments or recommendations?
 
+// George
 
-Thank you for that, Harald, it was a RTFM problem :(
-
-[I eventually managed to work out the reason for the discrepancies
-byself, by checking against a detailed traffic report supplied by my
-ISP.]
 
 -- 
-Best regards,
-John Holman
-Eastax WWW
-Melbourne, Australia
+GEORGE GEORGALIS, System Admin/Architect    cell: 347-451-8229 
+Security Services, Web, Mail,            mailto:george@galis.org 
+File, Print, DB and DNS Servers.       http://www.galis.org/george 
+
 
