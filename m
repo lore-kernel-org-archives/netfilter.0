@@ -1,12 +1,13 @@
-From: "Leonardo Rodrigues ( listas )" <leolistas@solucoesip.net>
-Subject: Re: question on recent module
-Date: Sat, 25 Jan 2003 18:43:52 -0300
+From: Francois van Doorneveld <francois@vandoorneveld.org>
+Subject: Re: Having a problem loading NETMAP extension.
+Date: Sat, 25 Jan 2003 22:00:46 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000f01c2c4ba$da76b8d0$3201a8c0@leonardo>
-References: <001901c2c3b3$5adfe4a0$3201a8c0@leonardo> <20030125013327.GO484@ns.snowman.net> <005201c2c4a9$f9e7f280$3201a8c0@leonardo> <20030125192149.GP484@ns.snowman.net>
+Message-ID: <3E32FAFE.3050509@vandoorneveld.org>
+References: <3E32C282.9040508@vandoorneveld.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3E32C282.9040508@vandoorneveld.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,60 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter ML <netfilter@lists.samba.org>, sfrost@snowman.net
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: #LIST-netfilter <netfilter@lists.netfilter.org>
 
+OK, just found out I need to create a new kernel as well. Going to try 
+that now.
 
-    tried: iptables -A OUTPUT -m recent --seconds 60 --name
-bullshit --rdest -j DROP
-iptables v1.2.7a: recent: you must specify one of `--set', `--check'
-`--update' or `--remove'
+Francois.
 
-    tried adding --check according to error I received, because I want just
-checking and not including/updating/excluding:
-iptables -A OUTPUT -m recent --seconds 60 --name bullshit --rdest --check -j
-DROP
-iptables v1.2.7a: Unknown arg `--check'
+Francois van Doorneveld wrote:
 
-    OK, seems recent module doesnt have the --check option despite the 1st
-rule error message :) Watching 'iptables -m recent --help' i think I should
-be using --rcheck .... let's try ....
-
-iptables -A OUTPUT -m recent --seconds 60 --name
-bullshit --rdest --rcheck -j DROP
-
-    And it works !! :))
-
-    Stephen, thanks very much for your help and, just in case, please
-correct the error message ( --check to --rcheck stuff ).
-
-    Sincerily,
-    Leonardo Rodrigues
-
------ Original Message -----
-From: "Stephen Frost" <sfrost@snowman.net>
-To: "Leonardo Rodrigues ( listas )" <leolistas@solucoesip.net>
-Cc: "netfilter ML" <netfilter@lists.samba.org>
-Sent: Saturday, January 25, 2003 4:21 PM
-Subject: Re: question on recent module
-
-
-> * Leonardo Rodrigues ( listas ) (leolistas@solucoesip.net) wrote:
-> >
-> >     It's really not clear for me :) Could you give an example rule of
-how an
-> > destination address could be checked with recent module in an OUTPUT
-rule
-> > for example ? This is my situation ..... i want ALL packets whose
-> > destination was matched for the last 60 seconds in a recent list called
-> > 'bullshit'.
-> >
-> > iptables -A OUTPUT -m recent --seconds 60 --name bullshit
-??????????????? -j
-> > DROP
+> Howdy all,
 >
-> --rdest for the rule above, that's it.  Note that something else needs
-> to actually populate that table, but I think you've got that figured out
-> already...
+> I've searched and searched, but I can't seem to get this to work.
+>
+> I installed the tarball for iptables 1.2.7a. In the tarball there is 
+> also the .c file for the NETMAP extension.
+>
+> I added the NETMAP extension in the Makefile for the extensions. It 
+> copies the .so to the directory where the extensions are located, but 
+> the following happens:
+>
+> # iptables -m NETMAP -h
+> iptables v1.2.7a: Couldn't load match `NETMAP'
+>
+> Try `iptables -h' or 'iptables --help' for more information.
+>
+> Any help on this would be very appreciated, as this is getting 
+> frustrating.
+>
+> Best regards,
+>
+> Francois
+>
+>
+
 
 
