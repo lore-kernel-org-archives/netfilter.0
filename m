@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: user defined chains
-Date: Mon, 12 Jul 2004 21:02:09 +0100
+From: "Spiro Azkoul" <spiro@snacorp.net>
+Subject: raw ICMP ports
+Date: Tue, 13 Jul 2004 01:31:44 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407122102.09381.Antony@Soft-Solutions.co.uk>
-References: <f51b72bc040712114970f47399@mail.gmail.com> <40F2EBB2.7040709@nexusmgmt.com>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <200407130831.i6D8Vg1m012187@ylpvm01.prodigy.net>
+References: <3700.211.24.230.5.1089591173.squirrel@somerset.sytes.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40F2EBB2.7040709@nexusmgmt.com>
+In-reply-to: <3700.211.24.230.5.1089591173.squirrel@somerset.sytes.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +18,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Monday 12 July 2004 8:51 pm, John A. Sullivan III wrote:
+I shutdown a bunch of startup services and only have specific ports open,
+and IPTABLES on top. 
 
-> Payal Rathod wrote:
-> > Hi,
-> > If I want to design a firewall for a network on a high end machine
-> > with lot of RAM and swap, is there any real use of user defined
-> > chains? I find them difficult so I would like to use only the built-in
-> > chains. Is that ok?
->
-> It may be OK but you will severely limit what you can do.  If your
-> security environment is simple, that will be fine.  If it is not, user
-> defined chains are a real blessing.
->
-> Unless your environment is very simple, it is probably well worth
-> your time to become very familiar with user defined chains.
+Out of no where, the following lines appeared on my netstat as of 3 days ago
 
-Despite my somewhat simplistic previous answer, I agree with this also.
+raw   125024      0 *:icmp                  *:*                     7
 
-I guess earlier I should have said "yes, so long as you can do what you need 
-to".
+raw   126688      0 *:icmp                  *:*                     7
 
-Regards,
+raw   126688      0 *:icmp                  *:*                     7  
 
-Antony.
+I can't exactly figure out what this is. 
+Any feedback?
+Thanks
 
--- 
-"I estimate there's a world market for about five computers."
-
- - Thomas J Watson, Chairman of IBM
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
