@@ -1,12 +1,12 @@
-From: John Mathey <jmathey@attbi.com>
-Subject: Re: Can iptables manager source mac address?
-Date: Fri, 18 Apr 2003 12:29:33 -0500
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: Filtering PPP traffic
+Date: Fri, 18 Apr 2003 12:30:58 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.2.20030418122555.00b09310@mail.attbi.com>
-References: <1050747660.10928.6.camel@ntc9.local>
+Message-ID: <20030418193058.17530.qmail@web40202.mail.yahoo.com>
+References: <3EA018CF.2010702@numlog.fr>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1050747660.10928.6.camel@ntc9.local>
+In-Reply-To: <3EA018CF.2010702@numlog.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +16,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: NetSnake <netsnake@963.net>, netfilter@lists.netfilter.org
-
-Yes, you can use iptables to validate the mac address, try this:
-
-iptables -A INPUT -m mac --mac-source 00:05:69:00:04:BA  -j ACCEPT
-
-or
-
-iptables -A INPUT -m mac --mac-source ! 00:05:69:00:04:BA -j DROP
-
-you get the idea
-Hope this helps
-John
+To: Francis GASCHET <fg@numlog.fr>
+Cc: netfilter@lists.netfilter.org
 
 
-At 06:21 PM 4/19/2003 +0800, NetSnake wrote:
->   I use iptables to nat to internet, but I found some user use a proxy
->on intranet, like, 192.168.0.5 can access to internet, 192.168.0.10 can
->not access to internet, now 10 access a proxy on 192.168.0.5, then he
->can access now, I thought in package from 192.168.0.5 must contant some
->information about proxy, like source mac address, this can help me to
->identified users, can iptables do this?
->
->   Thanks.
+Have you tried filtering on the nas0 device?
 
+--- Francis GASCHET <fg@numlog.fr> wrote:
+> 
+> Hello,
+> 
+> The bridge we use is the kernel patch provided by 
+> http://bridge.sourceforge.net
+> On the card side, we use Ethernet over ATM bridging (RFC 1483/2684 
+> kernel module). It emulates an "Ethernet like" device : nas0.
+> The pppOE daemon sits in the VM where it reads and writes ppp frames on 
+> a virtual eth device created with TAP (http://Vtun.sourceforge.net).
+> The official address is carried by this virtual eth device.
+> The bridge forwards pppOE packets between the nas0 and the tap0 devices.
+> The goal is to use a bridged firewall. That means : a FireWall which is 
+> not visible from the external network.
+> 
+> The problem is to be able to filter the pppOE packets that flow across 
+> the bridge.
+> 
+> -- 
+> Francis GASCHET / NUMLOG
+> http://www.numlog.fr
+> Tel.: +33 (0) 130 791 616
+> Fax.: +33 (0) 130 819 286
+> 
+> 
+> 
+> 
+> Thanks for any help.
+> 
+> SBlaze wrote:
+> 
+> >You should be able to filter at the "eth0" level of your diagram...
+> >
+> >I kinda need more information on your "BRIDGE" before I could suggest
+> something
+> >else.. If by bridge you mean it bridges the DSL modem and the LAN...then
+> your
+> >eth0 is in the same machine you are calling a bridge?
+> >
+> >In that case you should theoretically filter the eth0 device
+> >
+> >
+> >--- Francis GASCHET <fg@numlog.fr> wrote:
+> >  
+> >
+> >>Hi list,
+> >>
+> >>Is there somebody who knows a possibility to apply netfilter rules to 
+> >>ppp packets ?
+> >>
+> >>Configuration :
+> >>
+> >>DSL - PCI modem card - BRIDGE - eth0 (in a virtual machine)
+> >>
+> >>I would like to filter the traffic which flows across the bridge, but at 
+> >>this level, the IP traffic is encapsulated...
+> >>
+> >>Any clue ?
+> >>
+> >>Ciao.
+> >>
+> >>    
+> >>
+> 
+> 
+> 
+> 
+
+
+=====
+"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
+
+__________________________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo
+http://search.yahoo.com
 
