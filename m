@@ -1,10 +1,10 @@
-From: Matthias Ziegler <MatthiasZiegler@siemens.com>
-Subject: iptables / DSCP
-Date: Mon, 17 Mar 2003 16:21:33 +0100
+From: dlm4444 <dlm4444@bigzoo.net>
+Subject: automating iptable scripts
+Date: Thu, 20 Mar 2003 11:51:54 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E75E7FD.4A78EB97@siemens.com>
+Message-ID: <200303201151.54490.dlm4444@bigzoo.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,23 +18,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi netfilter gurus,
+hello all,=20
 
-On a SuSE 8.1 system I get an error when trying to set a DiffServ
-codepoint (DSCP):
+I tried using cron to start up iptable scripts , even thought the script =
+run=20
+with out errors at the command line.=20
+It enables routing. for example,
 
-# iptables -t mangle -A OUTPUT -j DSCP --set-dscp 0x30
-iptables: No chain/target/match by that name
+the script is execuable! chmod +x routeup.sh
+#!/bin/bash
 
-The same happens when I try to match a DSCP:
 
-# iptables -t mangle -A INPUT -m dscp --dscp 16 -j DROP
-iptables: No chain/target/match by that name
+echo 1 > /Proc/sys/net/ipv4/ip_forwarding
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERED
 
-(iptables does work e.g. for changing or matching TOS values.)
+I even tried iptables scripts to let me ping my maching at certint times =
+of=20
+the day. but all fails in cron.
 
-Does anyone know what this message means?
+OS
 
-Thanks in advance,
-	Matthias
+ RedHat 8.0
+Linux Mandrake 9.0
+
+thanks for any help=20
+
+David
 
