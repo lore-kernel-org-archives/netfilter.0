@@ -1,11 +1,13 @@
-From: "Raghavan, Srihari" <srihari.raghavan@viasat.com>
-Subject: iptables v1.2.1a - packets not reaching tun(0) from eth0 interfac
-	e
-Date: Mon, 21 Oct 2002 15:37:03 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Logging
+Date: Mon, 21 Oct 2002 22:39:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B370C63B487FD51196760002557CEABA3CD962@courier.vmd.viasat.com>
+Message-ID: <20021021213938.CKCL28004.mta07-svc.ntlworld.com@there>
+References: <20021021210421.79305.qmail@web40702.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021021210421.79305.qmail@web40702.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,99 +18,92 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all,
+On Monday 21 October 2002 10:04 pm, Tasha Smith wrote:
 
-I have a linux machine that needs to catch TCP packets (not meant for
-itself) that come on its eth0 interface and pass it on to tun0 interface
-(through the TUN/TAP driver). I am using Linux 2.4.12 kernel.
+> I was wandering if you can help me with my logging rules. Ill give you my
+> rules exactly what they look like now (without typos) :)  And i scanned it
+> with nmap from a machine NOT ROUTED by the firewall machine! And i get no
+> LOG file.
 
-1. I use the following iptables/ip rules commands after opening the tun
-device:
+No typos, heh :-) ?
 
-system("ip addr add 172.17.27.18 peer 10.99.99.99 dev tun0");
-system("ip link set dev tun0 up");
-system("iptables -t mangle -A PREROUTING -d 172.17.27.0/24 -j ACCEPT");
-system("iptables -t mangle -A OUTPUT -d 172.17.27.0/24 -j ACCEPT");
-system("iptables --verbose -t mangle -A PREROUTING -i eth0 -p tcp \
-        -d 0.0.0.0/0 -j MARK --set-mark 1");
-system("iptables -t mangle -A OUTPUT -p tcp -d 0.0.0.0/0 -j MARK \
-        --set-mark 1");
-system("ip rule add fwmark 1 table 200");
-system("ip route add default dev tun0 table 200");
+Anyway, can you explain those last two comments - where are you scanning from 
+(I don't understand your routing comment) - and "you get no log file" - do 
+you mean you never get any logs at all, or you get log entries on the screen 
+but not in a file, or you get logs sometimes, but not when you're doing a 
+particular type of scan ?
 
-2. IFCONFIG output
+> I even added this to my syslog.conf file......
+>
+>  kern.warn                            /var/log/fwlog
 
-$ ifconfig -a
-eth0      Link encap:Ethernet  HWaddr 00:02:B3:3D:81:B3
-          inet addr:172.17.27.18  Bcast:172.17.27.255  Mask:255.255.255.0
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          RX packets:20280520 errors:9 dropped:0 overruns:7 frame:0
-          TX packets:4162258 errors:0 dropped:0 overruns:0 carrier:3691
-          collisions:298147 txqueuelen:100
-          Interrupt:10
-...
+Does this successfully log anything at all ?  I mean, if you insert a rule 
+right at the start of your INPUT chain:
+iptables -I INPUT -j LOG --log-prefix "fwlog: "
 
-tun0      Link encap:Point-to-Point Protocol
-          inet addr:172.17.27.18  P-t-P:10.99.99.99  Mask:255.255.255.255
-          UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1500  Metric:1
-          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:10
+Does anything go into /var/log/fwlog ?
 
-3. IPRULE list
-$ ip rule list
-0:      from all lookup local
-32765:  from all fwmark        1 lookup 200
-32766:  from all lookup main
+(I would expect you to have to add the option "--log-level=warn" to match the 
+entry in your syslog.conf file.)
 
-4. IP ROUTE output
-$ ip route show table 200
-default dev tun0  scope link
+>  How can i get this machine to log STEALTH port scans and stuff???
 
-$ ip route show table local
-broadcast 172.17.27.255 dev eth0  proto kernel  scope link  src 172.17.27.18
-broadcast 127.255.255.255 dev lo  proto kernel  scope link  src 127.0.0.1
-broadcast 192.168.20.255 dev eth1  proto kernel  scope link  src
-192.168.20.82
-broadcast 172.17.27.0 dev eth0  proto kernel  scope link  src 172.17.27.18
-local 172.17.27.18 dev eth0  proto kernel  scope host  src 172.17.27.18
-broadcast 192.168.20.0 dev eth1  proto kernel  scope link  src 192.168.20.82
-local 192.168.20.82 dev eth1  proto kernel  scope host  src 192.168.20.82
-broadcast 127.0.0.0 dev lo  proto kernel  scope link  src 127.0.0.1
-local 127.0.0.1 dev lo  proto kernel  scope host  src 127.0.0.1
-local 127.0.0.0/8 dev lo  proto kernel  scope host  src 127.0.0.1
+Explain what you mean by a Stealth port scan ?   If yu;re using nmap, what 
+options are you using ?
 
+> iptables           --flush
+> iptables -t -nat   --flush
+> iptables -t mangle --flush
+>
+> iptables -A INPUT  -i lo -j ACCEPT
+> iptables -A OUTPUT -o lo -j ACCEPT
+>
+> iptables --policy INPUT DROP
+> iptables --policy FORWARD DROP
+> iptables --policy OUTPUT ACCEPT
+>
+> iptables -A INPUT      -p tcp --tcp-flags ALL NONE -j DROP
+> iptables -A FORWARD    -p tcp --tcp-flags ALL NONE -j DROP
 
-$ ip route show table main
-192.168.20.0/24 dev eth1  proto kernel  scope link  src 192.168.20.82
-172.17.27.0/24 dev eth0  proto kernel  scope link  src 172.17.27.18
-127.0.0.0/8 dev lo  scope link
-default via 172.17.27.1 dev eth0
+Do you get the same result from your port scan (and your logs) if you remove 
+these two rules ?
 
+> iptables -A INPUT    -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A OUTPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FOWWARD  -m state --state ESTABLISHED,RELATED -j ACCEPT
+>
+> iptables -A INPUT -i eth0 -p udp \
+>          -s ISP.DHCP  --sport 67 \
+>          --dport 68 -j ACCEPT
+> iptables -A OUTPUT -o eth0 -p udp \
+>          -s eth0 --sport 68 \
+>          -d ISP.DHCP --dport 67 -j ACCEPT
+>
+> iptables -A FORWARD -i eth1 -o eth0 -s 192.168.0.0/24 -j ACCEPT
+>
+> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+>
+> iptables -A INPUT -i eth0 -p tcp \
+>          --dport 22,25,111,1024,1025 -j LOG --log-prefix "Log-test: "
 
-5. I try to send the machine some TCP telnet packets from 172.17.27.77 m/c
-TCPDUMP output:
+Okay, so this LOGging rule is last in your INPUT chain, just before the 
+default DROP policy.
 
-$ tcpdump -i eth0 dst host 134.133.33.22 and src host 172.17.27.77
-Kernel filter, protocol ALL, datagram packet socket
-tcpdump: listening on eth0
+I assume you are scanning the Firewall address itself ?
 
-17:39:27.658294 < 172.17.27.77.2996 > 134.133.33.22.telnet: 
-S 3023850874:3023850874(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-17:39:30.913925 < 172.17.27.77.2996 > 134.133.33.22.telnet: 
-S 3023850874:3023850874(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-17:39:37.476235 < 172.17.27.77.2996 > 134.133.33.22.telnet: 
-S 3023850874:3023850874(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
+By the way, what result do you get from the scan ?   Does it suggest you have 
+closed ports, open ones, nothing accessible, what ?
 
+What happens if you simply ssh to the Firewall, or telnet to port 25 ?   Do 
+you see a log entry then ?
 
-The ifconfig -a output at the end, still shows no packets got at tun0
-interface even though eth0 gets packets as shown above.
+Antony.
 
-Any clues?
+-- 
 
-Thank you for your time
-Srihari
+Having been asked to provide a reference for this man,
+I can confidently state that you will be very lucky indeed
+if you can get him to work for you.
 
