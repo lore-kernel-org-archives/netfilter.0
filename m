@@ -1,12 +1,14 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: More H.323 questions
-Date: Thu, 4 Sep 2003 11:50:55 +1000
+From: cc <cc@kdtc.net>
+Subject: Re: =?ISO-8859-1?Q?CAN=B4T_DO_PING_TO_MY_ROUTER_WITH?=
+ =?ISO-8859-1?Q?_MY_NETWORK_CLIENTS?=
+Date: Thu, 04 Sep 2003 11:27:13 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019314@wardrive.citadelcomputer.com.au>
+Message-ID: <3F56B111.4040603@kdtc.net>
+References: <006201c370a8$b91ae4f0$0221a0c0@DANIEL>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <006201c370a8$b91ae4f0$0221a0c0@DANIEL>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +18,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Ramin, chill out. It was off the top of my head and I remembered there =
-were 2 modules that needed loading.
-The user only needs to check his docs for this and confirm he has 2 =
-modules loaded if they were compiled as modules.
+Daniel Arjona wrote:
 
-I've answered this exactly the same way once before and even then a user =
-replied to me personally and said "I only had one loaded" whether or not =
-the spelling of the module name was correct or not.. the point was more =
-that there needs to be 2 modules for it to work..
+One word of possible advice.  The amount of
+assistance/help you get is indirectly proportional
+to the amount of caps in the subject matter.
+(Of course, this only applies to the typical,
+desperate posts, and not to the actual verbiage
+that depends on caps, ie. DNAT, SNAT, POSTROUTING..
+etc.)
 
-Hence, I've connected home to my H323 machine just to confirm my finding =
-and I was right...
+Also, don't include your original message to
+your current message.  It confuses the reader
+as to what your real problem is.
 
-        /sbin/insmod ip_conntrack_h323 >/dev/null 2>&1
-        /sbin/insmod ip_nat_h323 >/dev/null 2>&1
+> I tried to do ping to my router and also i do the same to the ip address of
+> my dns servers and the both fails.  But the server (with iptables, mail,
+> squis, and others) doit everytihng.
 
-And for the archives, I've added my rules.. Now lets see how many vague =
-questions we're going to get asking the exact same problem/request to =
-get working...
+Perhaps if you could actually show us what your network
+layout is like, someone here might be able to help.  As it
+stands, I'm a little confused as to which IP is which.
+Basic information I suppose would help would be your
+router's Internal IP, your dns server ip and whatever
+IP you believe is pertinant to this issue.
 
-       $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 389    =
--j DNAT --to 192.168.1.1        # H323
-       $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 522    =
--j DNAT --to 192.168.1.1        # H323
-       $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1503   =
--j DNAT --to 192.168.1.1        # H323
-       $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1720   =
--j DNAT --to 192.168.1.1        # H323
-       $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1731   =
--j DNAT --to 192.168.1.1        # H323
-       $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 8080   =
--j DNAT --to 192.168.1.1        # H323
-       $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1469   =
--j DNAT --to 192.168.1.1        # H323audio?
-
------Original Message-----
-From: Ramin Dousti [mailto:ramin@cannon.eng.us.uu.net]
-Sent: Thursday, September 04, 2003 11:13 AM
-To: George Vieira
-Cc: Mark Goldberg; netfilter@lists.netfilter.org
-Subject: Re: More H.323 questions
+Furthermore, have you set up your workstations to use
+the server as the gateway(assuming of course, that _is_
+your original intention).
 
 
-On Thu, Sep 04, 2003 at 08:44:29AM +1000, George Vieira wrote:
 
-> You need:
->=20
-> insmod ip_conntrack_h323
-> insmod ip_nat_h323
->=20
-> or something like that... I have it and it works..
-
-If you have it and it works then we expect to not hear "or something =
-like that"
-but a more specific answer...
-
-Ramin
-
->=20
-> Thanks,
 
