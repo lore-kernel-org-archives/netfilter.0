@@ -1,10 +1,9 @@
-From: "Dan Jones" <Dan@AngelFireResort.com>
-Subject: Errors with forwarding rules
-Date: Thu, 10 Mar 2005 15:27:57 -0700
-Message-ID: <DFAC9E7BBDE9424DB1B1D0754F644BC70921C0@HERMES.Inside.angelfireresort.com>
+From: =?big5?B?R3JhY2UgQ2h1bmcgwemvwKz8?= <gracec@waveplus.com.tw>
+Subject: Virtual services cannot been reached from the LAN side
+Date: Fri, 11 Mar 2005 17:34:48 +0800
+Message-ID: <000c01c5261d$92448bc0$3ca8a8c0@gracec>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +17,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am trying to add a rule to forward traffic.
-i.e.  -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+Hi everyone,
 
-I get this error message when trying to load the rule
+I have a FTP server on LAN side (192.168. 1.210), and a local host PC =
+A(192.168.1.2).
+My gateway has two interface,  eth0 (10.1.1.1) and eth1 (192.168.1.1).
 
-ERROR: Command "/sbin/iptables -A FORWARD -m state --state
-ESTABLISHED,RELATED -j ACCEPT" Failed
+I configure NAT as:
+    iptables -t nat -A POSTROUTING -o  eth0 -j MASQUERADE
+    iptables -t nat -A PREROUTING -p tcp -d 10.1.1.1 --dport 21 -j DNAT =
+--to-destination 192.168.1.210
+    iptabled -t nat -A POSTROUTING -p tcp --dport 21 -j SNAT --to_source =
+192.168.1.1
 
-I also cant use webmin to configure firewall rules for forwarding
-related and established connections.
-I can block traffic fine but when it comes to adding any forwarding
-rules all I cant add the related and established rule.
-The machine is a new install of debian 3.0, iptables 1.3.1. I have a
-redhat 8 machine that these rules work great on.
-Any help would be great.
+PC A try to connect to FTP server using : ftp 10.1.1.1
+I monitor the traffic on the LAN=20
+    192.168.1.2     ->10.1.1.1             TCP SYN
+    10.1.1.1            ->192.168.1.210     TCP SYN
+    192.168.1.210    ->10.1.1.1         TCP SYN ACK
+    192.168.1.1        ->192.168.1.2     TCP SYN ACK    <- should =
+10.1.1.1 ->192.168.1.2
+    192.168.1.2        ->192.168.1.1    TCP RST
 
+What rules do I apply it? Does anyone can help me? Thanks!
 
+Grace
 
-Dan Jones
-
-Angel Fire Resort
-Angel Fire, NM 87710
-505-377-4340
-Dan@angelfireresort.com
 
