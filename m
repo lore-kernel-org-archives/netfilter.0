@@ -1,9 +1,10 @@
-From: kate <kate7234@yahoo.com>
-Subject: static IP to dynamic IP
-Date: Fri, 15 Oct 2004 10:44:56 -0700 (PDT)
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: ipsec troubles
+Date: Fri, 15 Oct 2004 15:00:03 -0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041015174456.20376.qmail@web21523.mail.yahoo.com>
+Message-ID: <0f2001c4b2e0$cbd8fbb0$49caa8c0@caris.priv>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,93 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi, I am trying to modify a fw script that would work
-for my small lan, except I need to change references
-of static IP and SNAT. to eth0 and MASQUERADE, - but
-when I run the script it gives me Bad argument `eth0'
+Hi everyone.  I have two firewalls, internal and external.  I have a vpn
+server in the middle on a routeable internet IP address.  The remote vpn
+server is a rh9 linux box.  When I make the local one a rh9 box, everything
+is great, however when the local one is an openbsd box, I get the following
+error in my firewall logs on my internal firewall.  Does anyone know what it
+means.
 
-The script is below, with my notes on changes I've
-made so far. Any help greatly appreciated.
+Note: E.F.G.33 is a routeable internet IP address
 
-#(1) Policies (default) - modified with notation
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
-
-# (2) User defined chain for ACCEPTed TCP packets
-iptables -N okay
-iptables -A okay -p TCP --syn -j ACCEPT
-iptables -A okay -p TCP -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-iptables -A okay -p TCP -j DROP
-
-# (3) INPUT chain rules
-
-# Rules for incoming packets from LAN
-iptables -A INPUT -p ALL -i eth1 -s 192.168.0.0/16 -j
-ACCEPT
-iptables -A INPUT -p ALL -i lo -s 127.0.0.1 -j ACCEPT
-iptables -A INPUT -p ALL -i lo -s 192.168.1.1 -j
-ACCEPT
-iptables -A INPUT -p ALL -i lo -s -i eth0 -j ACCEPT
-## WAS -> ... 123.45.67.89 -j ACCEPT
-iptables -A INPUT -p ALL -i eth1 -d 192.168.0.255 -j
-ACCEPT
-
-# Rules for incoming packets from Internet
-# Packets for established connections
-iptables -A INPUT -p ALL -d -i eth0 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-## WAS - > ... -d 123.45.67.89 -m...
-
-# TCP Rules (edit as services needed)
-iptables -A INPUT -p TCP -i eth0 -s 0/0
---destination-port 21 -j okay
-iptables -A INPUT -p TCP -i eth0 -s 0/0
---destination-port 22 -j okay
-iptables -A INPUT -p TCP -i eth0 -s 0/0
---destination-port 80 -j okay
-iptables -A INPUT -p TCP -i eth0 -s 0/0
---destination-port 443 -j okay
-
-# UDP Rules
-# iptables -A INPUT -p UDP -i eth0 -s 0/0
---destination-port 53 -j okay
-# iptables -A INPUT -p UDP -i eth0 -s 0/0
---destination-port 2074 -j okay
-
-# ICMP rules
-iptables -A INPUT -p ICMP -i eth0 -s 0/0 --icmp-type 8
--j ACCEPT
-iptables -A INPUT -p ICMP -i eth0 -s 0/0 --icmp-type
-11 -j ACCEPT
-
-# (4) FORWARD chain rules
-# Accept the packets we want to forward
-iptables -A FORWARD -i eth1 -j ACCEPT
-iptables -A FORWARD -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-
-# (5) OUTPUT chain rules
-# Only output packets with local addresses (no
-spoofing)
-iptables -A OUTPUT -p ALL -s 127.0.0.1 -j ACCEPT
-iptables -A OUTPUT -p ALL -s 192.168.1.1 -j ACCEPT
-iptables -A OUTPUT -p ALL -s -i eth0 -j ACCEPT
-## WAS -> ... 123.45.67.89 -j ACCEPT
-
-# (6) POSTROUTING chain rules
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-## was -> ... -j SNAT --to-source 123.45.67.89
+Oct 15 14:53:43 radium kernel: FORWARD REJECT IN=eth1 OUT=eth0
+SRC=E.F.G.33 DST=192.168.201.22 LEN=56 TOS=0x00 PREC=0x00 TTL=254
+ID=25774 PROTO=ICMP TYPE=3 CODE=4 [SRC=192.168.201.22 DST=10.0.0.2 LEN=1500
+TOS=0x00 PREC=0x00 TTL=126 ID=18062 DF PROTO=TCP INCOMPLETE [8 bytes] ]
+MTU=1444
 
 
+Thanks,
+Peter
 
-		
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail Address AutoComplete - You start. We finish.
-http://promotions.yahoo.com/new_mail 
 
