@@ -1,13 +1,12 @@
-From: "Rob" <rwideman@austin.rr.com>
-Subject: RE: ftp server issue, trying to DL 1.2.7a
-Date: Thu, 5 Sep 2002 13:30:56 -0500
+From: "John Fergusson" <john@fcol.com>
+Subject: RE: What is ment by only in kernel and how do I fix this
+Date: Thu, 5 Sep 2002 16:31:01 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NEENJAPFEAIEMGMNIGFLGEKNCCAA.rwideman@austin.rr.com>
-References: <NEENJAPFEAIEMGMNIGFLMEKLCCAA.rwideman@austin.rr.com>
+Message-ID: <002201c2551b$294f8370$3200a8c0@fcol.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0023_01C254F9.A23DE370"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NEENJAPFEAIEMGMNIGFLMEKLCCAA.rwideman@austin.rr.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +16,195 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I got passed it....DLed on win2k and burned to cdr.
-After extracting patch-o-matic/2.4.19/1.2.7a...i am running the
-patch-o-matic script and:
+This is a multi-part message in MIME format.
 
-# ./runme pending KERNEL_DIR=/usr/src/linux
-ERROR: Invalid option KERNEL_DIR=/usr/src/linux
+------=_NextPart_000_0023_01C254F9.A23DE370
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-The kernel is extracted to /usr/src/linux, i changed the name from
-linux-2.4.19 to linux for ease of remembering.  I am SSH'ing into my box and
-i copied the line directly from the README to the commandline via Putty so i
-know i am not making a typing mistake, also i am using tab to get the
-directory of the kenel on the line so that isnt a mistake of a path either.
-Any thoughts?
+It story appears to be an issue with patch-o-matic and I got around it
+by using the latest snapshot 20020904and using the make all option for
+iptables.
+ 
+The steps were 
+ 
+Make all
+Make
+Make install
+ 
+ 
+Thanks for your help 
+ 
+John
+ 
+
+------=_NextPart_000_0023_01C254F9.A23DE370
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
 
 
-Rob
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C254F9.9EB3AB40">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DocumentKind>DocumentEmail</w:DocumentKind>
+  <w:EnvelopeVis/>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	mso-style-noshow:yes;
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:windowtext;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */=20
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:.5in'>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>It story appears to be an issue =
+with
+patch-o-<span class=3DSpellE>matic</span> and I got around it by using =
+the latest
+snapshot 20020904and using the make all option for =
+iptables.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>The steps were =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Make =
+all<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Make<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Make =
+install<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Thanks for your help =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>John<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0023_01C254F9.A23DE370--
 
 
