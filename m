@@ -1,8 +1,8 @@
-From: Art Reisman <astormchaser2002@yahoo.com>
-Subject: Bridging, Netfilter
-Date: Thu, 27 Mar 2003 15:49:16 -0800 (PST)
+From: "Bryan Schmidt" <absolut_bryan@hotmail.com>
+Subject: (no subject)
+Date: Thu, 27 Mar 2003 18:31:28 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030327234916.2862.qmail@web10404.mail.yahoo.com>
+Message-ID: <BAY1-F203e7sjbmDoP60000558c@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,27 +14,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello netfilter list...
+I am getting the following message when trying to use iptable (iptable -L)
+"iptables v1.2.6a: can't initialize iptables table `filter': iptables who? 
+(do yo
+u need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded."
 
-I just released a version of the Linux Bandiwidth
-Arbitrator (www.apconnections.net) that should
-hopefully be compatible with netfilter.  Since this
-tool is built on top of the Linux Bridge, I updated my
-code with the patches for
-Bridging to support  Netfilter.
+It seems that I can't access any of the tables (filter,nat, or mangle).  
+Does the kernel need to be modified?  How do I go about this? I am running 
+Debain 3.0r1 on an UtraII.
 
-Are there  any gotcha's I need to be aware of
-currently with Bridging and Netfilter? Are you running
-a bridge and netfilter with problems? Problem Free?
+Thanks,
 
-Please let me know
+Bryan Schmidt, MCSE, MCP + Internet
+Area101, Inc.
+MIS Director
 
-Thanks
 
-Art Reisman
+
+
+
+_________________________________________________________________
+Add photos to your messages with MSN 8. Get 2 months FREE*.  
+http://join.msn.com/?page=features/featuredemail
 
 
