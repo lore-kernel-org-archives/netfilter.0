@@ -1,13 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Deleting iptable-extended rule
-Date: Fri, 6 Dec 2002 00:42:18 +0100
+From: "Administrador de Red" <admin@gecyt.cu>
+Subject: error with the Outlook Express and iptables with the nat and
+ packet filtering
+Date: Thu, 05 Dec 2002 18:13:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021206004218.3bc66707.arnt@c2i.net>
-References: <20021204225754.87915.qmail@web41308.mail.yahoo.com>
+Message-ID: <web-160111@gecyt.cu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021204225754.87915.qmail@web41308.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wed, 4 Dec 2002 14:57:54 -0800 (PST), 
-lists brk <brk_lists@yahoo.com> wrote in message 
-<20021204225754.87915.qmail@web41308.mail.yahoo.com>:
+Hi friends, i has a big problem with the iptables and you 
+rules, i want to doing a nat with the packet filtering but 
+when i try access to my mail with the Outlokk Express I 
+can't send  and recived, the OE ask me a login and 
+password, and show the following error
 
-> Hi!
-> 
-> I am using iptables-1.2.7a. I have extended iptables
-> to do a coustom matching operation. The extension
-> works fine when I use it while adding new rules,
-> something like
-> iptables -A INPUT -m coustom --ip-id -j DROP. 
-> 
-> I am able to delete the rule using the rule number,
-> but I am not able to remove it using the rule specifed
-> above but with -D option, something like
-> iptables -D INPUT -m coustom --ip-id -j DROP
-> 
-> The error I get is:
-> iptables: Bad rule (does a matching rule exist in that
-> chain?)
-> 
-> I tried to debug it and found that iptables fails at
-> 
-> mptr = matchmask + sizeof(STRUCT_ENTRY);
-> 	if (IPT_MATCH_ITERATE(a, match_different, a->elems,
-> b->elems, &mptr))
-> 	  return 0;
-> 
-> in is_same() found in file libiptc/libip4tc.c
-> 
-> Any ideas why this might be happening??
-
-..custom spelling of "coustom" in your rule set?  ;-)
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+There was a problem logging onto your mail server. Your 
+Password was rejected. Account: 'mail.gecyt.cu', Server: 
+'mail.gecyt.cu', Protocol: POP3, Server Response: '-ERR 
+your network does not have access to this account', Port: 
+110, Secure(SSL): No, Server Error: 0x800CCC90, Error 
+Number: 0x800CCC92
 
 
+waht it is the problem someone can i help.
+thanks very mouch.
+Estamos en Calle 20 Numero 4110 % 41 y 47,
+Miramar, Playa, Ciudad Habana, Cuba.
+Telf:537(203-01-60) y (202-79-20)
+Fax: 537(204-96-64)
+Visitenos en: http://www.gecyt.cu
 
