@@ -1,13 +1,13 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: How to block MSN messenger?
-Date: Wed, 19 May 2004 17:37:06 -0600
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: Can not apply ip_conntrack_pptp to 2.4.26 kernel
+Date: Thu, 20 May 2004 09:49:28 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040519173706.2be5532a@mgalepc.utilitran.com>
-References: <1084999531.2868.109.camel@kenneth.intracol.net>
+Message-ID: <40ABF288.7000809@snapgear.com>
+References: <web-73360234@tut.by>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1084999531.2868.109.camel@kenneth.intracol.net>
+In-Reply-To: <web-73360234@tut.by>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +17,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Alexander Dudko <octo@tut.by>
+Cc: netfilter@lists.netfilter.org
 
+Alexander Dudko wrote:
+> After reboot, MASQUERADE and NAT targets do not work.
+> What should I do?
 
-Make the wbe only accessible through squid and use a access rule that blocks
-gateway.dll request.
-
-Michael.
-
-
-On Wed, 19 May 2004 15:45:32 -0500
-Kenneth Andresen <kenneth@cancun.net> wrote:
-
-> Hello all,
-> 
-> I need to block MSN instant messenger, but so far without any luck.
-> 
-> Anyone having a good iptable rule to stop MSN Instant Messenger to be
-> allowed through our server?
-> 
-> Best regards,
-> 
-> Kenneth
-> 
-> 
-> 
-> 
-> 
-> 
-
+This typically happens if you don't rebuild iptables.
+Are you sure your path is set to use the iptables you just built?
 
 -- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
+Philip Craig - SnapGear, A CyberGuard Company - http://www.SnapGear.com
+
 
