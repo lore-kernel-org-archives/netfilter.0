@@ -1,15 +1,12 @@
-From: Andreas Czerniak <cognac@czerny.toppoint.de>
-Subject: Re: iptables -t nat -A OUTPUT -d 1.2.3.4 -j DNAT --to 127.0.0.1 not
- working
-Date: Wed, 05 Mar 2003 10:45:25 +0100
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: ICMP: What should be blocked?
+Date: Wed, 5 Mar 2003 11:20:12 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <275840000.1046857525@[192.168.42.42]>
-References: <3E65BFBB.3070008@imos.net>
+Message-ID: <Pine.LNX.4.51.0303051106580.15761@dns.toxicfilms.tv>
+References: <3E65A2C5.3030007@mega-bucks.co.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E65BFBB.3070008@imos.net>
-Content-Disposition: inline
+In-Reply-To: <3E65A2C5.3030007@mega-bucks.co.jp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,161 +16,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ulrich Weber <uw@imos.net>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
 Cc: netfilter@lists.netfilter.org
 
-Create you this rule to DNat local traffic or forwading traffic ?
+Hi,
 
-For local generated traffic, you must enable the module:
-  "NAT of local connections" in the kernel
-otherwise
- use PREROUTING instead of OUTPUT
+in my opinion icmp is the easiest to set up for.
 
-Andreas.
+1) Allow all ICMP that is related to connections issued by the protected net
+2) Allow echo requests if you wish.
+3) Block all other by default.
 
--- On 05.03.2003 10:13:31 +0100 Ulrich Weber <uw@imos.net> wrote:
+-p icmp -m state --state RELATED -j ACCEPT
 
-Re: iptables -t nat -A OUTPUT -d 1.2.3.4 -j DNAT --to 127.0.0.1 not working
-
-> Hello all,
->
-> could anyone tell me why this and any other Destination Redirection not
-> works? I'm using iptables v1.2.7a and 2.4.20-ac2 as Kernel.
->
-> On any other Installations it works perfekt (maybe i tuned my system to
-> much ;)
->
-> Here an strace of my notworking system and another working system.
->
-> Bye
->   Ulrich
->
-> ---not working---
-> root@serv1:~/.ssh# strace iptables -t nat -A OUTPUT -d 1.2.3.4 -j DNAT
-> --to 127.0.0.1
-> execve("/usr/local/sbin/iptables", ["iptables", "-t", "nat", "-A",
-> "OUTPUT", "-d", "1.2.3.4", "-j", "DNAT", "--to", "127.0.0.1"], [/* 26
-> vars */]) = 0
-> brk(0)                                  = 0x80537a0
-> open("/etc/ld.so.preload", O_RDONLY)    = -1 ENOENT (No such file or
-> directory)
-> open("/etc/ld.so.cache", O_RDONLY)      = 3
-> fstat64(3, {st_mode=S_IFREG|0644, st_size=32305, ...}) = 0
-> old_mmap(NULL, 32305, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40015000
-> close(3)                                = 0
-> open("/lib/libdl.so.2", O_RDONLY)       = 3
-> read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0P\27\0\000"...,
-> 1024) = 1024
-> fstat64(3, {st_mode=S_IFREG|0755, st_size=61247, ...}) = 0
-> old_mmap(NULL, 10988, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x4001d000
-> mprotect(0x4001f000, 2796, PROT_NONE)   = 0
-> old_mmap(0x4001f000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
-> 3, 0x1000) = 0x4001f000
-> close(3)                                = 0
-> open("/lib/libc.so.6", O_RDONLY)        = 3
-> read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0h\222\1"...,
-> 1024) = 1024
-> fstat64(3, {st_mode=S_IFREG|0755, st_size=5029105, ...}) = 0
-> old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
-> -1, 0) = 0x40020000
-> old_mmap(NULL, 1191168, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40021000
-> mprotect(0x4013a000, 40192, PROT_NONE)  = 0
-> old_mmap(0x4013a000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
-> 3, 0x119000) = 0x4013a000
-> old_mmap(0x40140000, 15616, PROT_READ|PROT_WRITE,
-> MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x40140000
-> close(3)                                = 0
-> munmap(0x40015000, 32305)               = 0
-> brk(0)                                  = 0x80537a0
-> brk(0x80537d8)                          = 0x80537d8
-> brk(0x8054000)                          = 0x8054000
-> open("/usr/lib/iptables/libipt_DNAT.so", O_RDONLY) = 3
-> read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0`\5\0\000"...,
-> 1024) = 1024
-> fstat64(3, {st_mode=S_IFREG|0755, st_size=5433, ...}) = 0
-> old_mmap(NULL, 7692, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40015000
-> mprotect(0x40016000, 3596, PROT_NONE)   = 0
-> old_mmap(0x40016000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
-> 3, 0) = 0x40016000
-> close(3)                                = 0
-> socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
-> getsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], [84]) = 0
-> brk(0x8055000)                          = 0x8055000
-> getsockopt(3, SOL_IP, 0x41 /* IP_??? */, [7627118], [1652]) = 0
-> setsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], 1872) = -1 EINVAL
-> (Invalid argument)
-> write(2, "iptables: Invalid argument\n", 27iptables: Invalid argument
-> ) = 27
-> _exit(1)                                = ?
->
->
->
-> ---working---
-> root@serv2:~# strace iptables -t nat -A OUTPUT -d 1.2.3.4 -j DNAT --to
-> 127.0.0.1
-> execve("/usr/sbin/iptables", ["iptables", "-t", "nat", "-A", "OUTPUT",
-> "-d", "1.2.3.4", "-j", "DNAT", "--to", "127.0.0.1"], [/* 25 vars */]) = 0
-> brk(0)                                  = 0x8056a7c
-> open("/etc/ld.so.preload", O_RDONLY)    = -1 ENOENT (No such file or
-> directory)
-> open("/etc/ld.so.cache", O_RDONLY)      = 3
-> fstat64(3, {st_mode=S_IFREG|0644, st_size=14628, ...}) = 0
-> old_mmap(NULL, 14628, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40015000
-> close(3)                                = 0
-> open("/lib/libdl.so.2", O_RDONLY)       = 3
-> read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0000\31\0"...,
-> 1024) = 1024
-> fstat64(3, {st_mode=S_IFREG|0755, st_size=11788, ...}) = 0
-> old_mmap(NULL, 11476, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40019000
-> mprotect(0x4001b000, 3284, PROT_NONE)   = 0
-> old_mmap(0x4001b000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
-> 3, 0x1000) = 0x4001b000
-> close(3)                                = 0
-> open("/lib/libc.so.6", O_RDONLY)        = 3
-> read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0p\\\1\000"...,
-> 1024) = 1024
-> fstat64(3, {st_mode=S_IFREG|0755, st_size=1433605, ...}) = 0
-> old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
-> -1, 0) = 0x4001c000
-> old_mmap(NULL, 1256740, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x4001d000
-> mprotect(0x40147000, 36132, PROT_NONE)  = 0
-> old_mmap(0x40147000, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
-> 3, 0x12a000) = 0x40147000
-> old_mmap(0x4014c000, 15652, PROT_READ|PROT_WRITE,
-> MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x4014c000
-> close(3)                                = 0
-> munmap(0x40015000, 14628)               = 0
-> brk(0)                                  = 0x8056a7c
-> brk(0x8057a7c)                          = 0x8057a7c
-> brk(0x8058000)                          = 0x8058000
-> open("/usr/lib/iptables/libipt_DNAT.so", O_RDONLY) = 3
-> read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0@\5\0\000"...,
-> 1024) = 1024
-> fstat64(3, {st_mode=S_IFREG|0755, st_size=4336, ...}) = 0
-> old_mmap(NULL, 7628, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40015000
-> mprotect(0x40016000, 3532, PROT_NONE)   = 0
-> old_mmap(0x40016000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
-> 3, 0) = 0x40016000
-> close(3)                                = 0
-> socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
-> getsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], [84]) = 0
-> getsockopt(3, SOL_IP, 0x41 /* IP_??? */, [7627118], [656]) = 0
-> setsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], 876) = 0
-> setsockopt(3, SOL_IP, 0x41 /* IP_??? */, [7627118], 116) = 0
-> _exit(0)                                = ?
->
->
->
+> One question I have not been able to find an answer to though, should I
+> block ICMP messages of type 11 (TTL exceeded)?
+Only if they are really responses to packets sent by the router or your
+protected hosts. Otherwise they may be inverse mapping attempts and should
+be blocked. Of course it is only possible to filter with the -m state.
 
 
+> Also if anyone knows of a good resource that explains what ICMP messages
+> I should block (why and how :) could they let me know?
+www.sys-security.com/archive/papers/ICMP_Scanning_v3.0.pdf
+And other articles by Ofir Arkin about ICMP.
 
---
-"Ich denke, man hat kein Recht, andere zu kontrollieren oder Ihnen etwas
-aufzuzwingen, den eigenen Glauben oder die eigene Art zu leben."
-- Dalai Lama "Begegnungen".
--------------------------------------------------------------------
-Andreas Czerniak <cognac@toppoint.de>  -  Kiel  -  FRG  -  Fax:+49-431-2000447
-PGPkey: http://wwwkeys.nl.pgp.net:11371/pks/lookup?op=get&search=0xEDB224EC
+> I understand that it of course depends on my level of paranoia
+> and how friendly I want to be to the rest of the net, but I get the
+> feeling from my readings that the are some ICMP messages that just
+> should not be let through a firewall ....
+Paranoia? No, just be statefull. Allow what is required by the undergoing
+connections, disallow what is not.
+
+That is the easiest way to protect yourself from inverse mapping, stealing
+routes with icmp redirects, OS fingerprinting. This way you do not need
+explicit rules for eg. timestamp requests, etc. (which are recommended to
+be blocked), they will just not pass through the stateful mechanism of
+iptables.
+
+The statefulness of iptables is _very_ often not used by users, especially
+by ipchains users. It makes everything go smoother, make rulesets simpler,
+and chain parsing faster.
+
+Regards,
+Maciej Soltysiak
 
 
