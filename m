@@ -1,13 +1,14 @@
-From: "Andreas Sachs" <andilist@gmx.de>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: Passed chains from local process to local ip
-Date: Mon, 26 Jul 2004 09:54:19 +0200 (MEST)
+Date: Mon, 26 Jul 2004 10:41:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9196.1090828459@www51.gmx.net>
+Message-ID: <1090831301.2059.20.camel@anduril.intranet.cartel-securite.net>
 References: <1090825381.2463.59.camel@anduril.intranet.cartel-securite.net>
+	 <9196.1090828459@www51.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <9196.1090828459@www51.gmx.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +18,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Cedric Blancher <blancher@cartel-securite.fr>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Andreas Sachs <andilist@gmx.de>
 Cc: netfilter@lists.netfilter.org
 
-Hello,
-Thanks, for your answer.
+Le lun 26/07/2004 =E0 09:54, Andreas Sachs a =E9crit :
+> i can bind mysql to one or to all ip-addresses. so it's not possible to=
+ bind
+> mysql 3 to all ip-addresses without ip-b.=20
 
-> Anyway, I must admit I have some difficulties to understand your context
-> and the particular reason why A cannot listen on ip-a, ip-c, ip-d and
-> ip-e. The fact is locally generated packets NAT works. I use it all the
-> time for SSH redirections, but I never tried it on locally destined
-> traffic. The more I can say is try and see for yourself, but I guess it
-> will work (don't forget local traffic is bound to lo interface, whatever
-> local addresses it uses as source or destination).
-> 
+Why don't you bind MySQL to 127.0.0.1, using a dedicated port for each
+MySQL version (127.0.0.1:A for MySQL 3 and 127.0.0.1:B for MySQL 4) and
+then use REDIRECT target to send packets to proper port :
 
-My Context:
-ip-a: mysql 3
-ip-c: mysql 3
-ip-d: mysql 3
-ip-e: mysql 3
+	iptables -t nat -A PREROUTING --tcp -d $IPA --dport $MYSQL \
+		-j REDIRECT --to-ports $PORT_A
+	iptables -t nat -A PREROUTING --tcp -d $IPB --dport $MYSQL \
+		-j REDIRECT --to-ports $PORT_B
+	[etc.]
 
-new ip: ip-b: mysql 4.0
+By the way, I tested it for you. I binded my SSHd to 127.0.0.1 only and
+then issued :
 
-i can bind mysql to one or to all ip-addresses. so it's not possible to bind
-mysql 3 to all ip-addresses without ip-b. 
+	 iptables -t nat -A OUTPUT -p tcp -d $EXT_IP --dport 22 \
+		-j REDIRECT
 
-my idea:
-bind mysql3 to ip-a and "redirect" ip-c, -d, -e to ip-a.
-
-Greetings
-Andreas
+Then doing a ssh my external IP from the box itself works like a charm.
 
 
-
-
-
--- 
-250 MB Mailbox, 100 FreeSMS/Monat, 1000 MB Online-Festplatte
-Jetzt GMX TopMail kostenlos testen http://www.gmx.net/de/go/topmail
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
