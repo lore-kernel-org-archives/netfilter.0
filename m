@@ -1,13 +1,10 @@
-From: James Sneeringer <james+netfilter@vincentsystems.com>
-Subject: Re: ip_conntrack_max
-Date: Thu, 8 Jul 2004 10:28:40 -0500
+From: aksingh@hss.hns.com
+Subject: nf_register_hook
+Date: Thu, 8 Jul 2004 21:38:59 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040708152840.GB28733@valjean.si.ocslink.com>
-References: <40ED161F.5070804@cisbic.com> <200407081056.14826.Antony@Soft-Solutions.co.uk> <40ED226E.8070808@cisbic.com> <200407081152.42618.Antony@Soft-Solutions.co.uk> <40ED4865.7020208@cisbic.com>
+Message-ID: <OF367BFF4A.E1D3E5FD-ON65256ECB.00588946@hss.hns.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <40ED4865.7020208@cisbic.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,15 +18,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Jul 08, 2004 at 03:13:09PM +0200, Fallucchi Antonio wrote:
-> Another questions: how I can limit the number of connection for every 
-> computer?
 
-POM has a "connlimit" module that does this for TCP connections.  I have
-not used it, so I don't know how well (or how poorly) it works.
 
-http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-connlimit
 
--James
+
+
+Hi,
+
+  It seems nf_register_hook can return a -ve value too, I looked at the
+function source that wlays returns 0,  but in some cases(i dont know what
+they are) -ve value is also returned, when does this happen ?? At a lot of
+places in the kernel the return value for nf_register_hook is checked to
+see if it is less than zero ??
+
+thanks
+Amit
 
 
