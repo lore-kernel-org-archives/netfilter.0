@@ -1,14 +1,13 @@
-From: Gadgeteer <gadgeteer@elegantinnovations.org>
+From: "David Busby" <busby@pnts.com>
 Subject: Re: How to stop imesh with iptables
-Date: Wed, 11 Jun 2003 16:36:30 -0600
+Date: Wed, 11 Jun 2003 14:30:31 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306111636.30206.gadgeteer@elegantinnovations.org>
-References: <20030611200517.2278.qmail@web40306.mail.yahoo.com> <02e701c33060$b7439880$1100000a@busbydev>
+Message-ID: <02e701c33060$b7439880$1100000a@busbydev>
+References: <20030611200517.2278.qmail@web40306.mail.yahoo.com>
+Reply-To: "David Busby" <busby@pnts.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <02e701c33060$b7439880$1100000a@busbydev>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,24 +18,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Kevin McConnell <kevymac@yahoo.com>, netfilter@lists.netfilter.org
 
-> From: "Kevin McConnell" <kevymac@yahoo.com>
-> > am I
-> > the only person that denies everything by default and
-> > only allows the protocols through the firewall that I
-> > feel people need to use? 
+As always:
+    Depends on the requirements of the firewall.
 
-<rearranged nasty top post>
+/B
 
-On Wednesday 11 June 2003 15:30, David Busby wrote:
-> As always:
->     Depends on the requirements of the firewall.
+----- Original Message ----- 
+From: "Kevin McConnell" <kevymac@yahoo.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, June 11, 2003 13:05
+Subject: RE: How to stop imesh with iptables
 
-I have yet to see a case made for other than default deny that was not full of 
-holes     ....just like their firewalls 8-)
 
--- 
-cheers,
-Gadgeteer
+> 
+> --- George Vieira <georgev@citadelcomputer.com.au>
+> wrote:
+> > Argh these P2P software... What ports does it use?
+> > Did you research it's protocol so you can block it's
+> > commands to the server/users?
+> 
+> On a slightly OT note, just out of curiousity, am I
+> the only person that denies everything by default and
+> only allows the protocols through the firewall that I
+> feel people need to use? This keeps the average joe
+> from abusing bandwidth, but there will always be other
+> people who figure out how to pierce the FW using other
+> holes.
+> 
+> 
+> 
+> =====
+> Kevin C. McConnell --RHCE-- <Red Hat Certified Engineer>
+> 
+> __________________________________
+> Do you Yahoo!?
+> Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
+> http://calendar.yahoo.com
 
