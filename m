@@ -1,14 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DMZ to DMT through ROUTER problem !
-Date: Fri, 21 May 2004 11:19:14 +0100
+From: Tomas Edwardsson <tommi@tommi.org>
+Subject: Re: Netfilter and Vonage.
+Date: Fri, 21 May 2004 11:53:33 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405211119.14458.Antony@Soft-Solutions.co.uk>
-References: <200405201318.34706.liste@zerozone.it> <200405201844.49709.Antony@Soft-Solutions.co.uk> <200405211130.21108.liste@zerozone.it>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <40ADEDBD.40209@tommi.org>
+References: <20040519233740.A27043@redfish.gatech.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigDE63AB96B785E6A9086DA669"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405211130.21108.liste@zerozone.it>
+In-Reply-To: <20040519233740.A27043@redfish.gatech.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +19,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jason Price <jprice@cyberbuzz.gatech.edu>
+Cc: netfilter@lists.netfilter.org
 
-On Friday 21 May 2004 10:30 am, O-Zone wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigDE63AB96B785E6A9086DA669
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> On Thursday 20 May 2004 19:44, Antony Stone wrote:
-> > The same applies to your FORWARDing rules as well, by the way, so these
-> > will need changing before the packets can get through your firewall to
-> > their destination.
+Jason Price wrote:
+
+>Running Gentoo, kernel version 2.4.24 on a Sparc Ultra 10
 >
-> OK ! Thanks a lot...now all works perfeclty. But i still have a problem
-> with UDP. My DNS server inside DMZ, 192.168.0.2 ($DMZ_SIENA_IP), is mapped
-> to two public ip:
+>I have recently purchased Vonage Voice over IP.  In their 'how to make this
+>work with a linksys device', they say (basically):
 >
-> 151.8.47.A ($SIENA_IP)
-> 81.113.95.B ($SIENA2_IP)
+>Forward udp ports 53, 69, 5060, 5061, and 10000-20000 to the device.
+>
+>I interpret this to mean:
+>
+>iptables -t nat -A PREROUTING -i eth0 -p udp -d $EXTERNAL_IP \
+>		--dport 53 -j DNAT --to 192.168.0.5:53
+>
+>etc for each port.
+>
+>Unfortunatly, I don't seem to be able to specify a range of ports in the
+>iptables syntax.  So, when I get to that large, 10,000 wide range of ports,
+>it dies.  After much tinkering, I find that I can do:
+>
+>for port in {10000..10597}; do
+>   iptables -t nat -A PREROUTING -i eth0 -p udp -d $EXTERNAL_IP \
+>		--dport $port -j DNAT --to 192.168.0.5:${port}
+>done
+>
+>and it will work.  If I do just 1 port more, iptables fails, and all the
+>tables get magically flushed (which isn't a good idea by the by, but we'll
+>get there later).
+>
+>Idealy, I'd like to:
+>
+>iptables -t nat -A PREROUTING -i eth0 -p udp -d $EXTERNAL_IP \
+>		--dport 10000-20000 -j DNAT --to 192.168.0.5:10000-20000
+>  
+>
 
-How do you route reply packets from those two public IPs back to the sender?
+I suggest applying the mport patch to netfilter.
+http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-mport
 
-Netfilter will correctly apply reverse nat rules to reply packets which are in 
-response to original packets matching nat rules in your ruleset - therefore 
-if you map both the above public IPs to a single DMZ private IP, reply 
-packets will be correctly reverse natted to have the appropriate public 
-source IP.   However, you may need to make sure that packets with one source 
-IP go via one ISP and those with the other source IP go via the other ISP 
-(I'm assuming here that you have two entirely different public IPs because 
-you have Internet connections from two ISPs?), as both ISPs may drop packets 
-which have source addresses outside the range they have allocated to you (or 
-which have been allocated to the ISP).
+iptables -t nat -A PREROUTING -i eth0 -p udp -D $EXTERNAL_IP \
+    --dports 53,69,5060,10000:20000 -j DNAT --to 192.168.0.5
 
-If you haven't already looked into iproute2 at http://lartc.org now would be a 
-good time to find out about it.
+>Thanks;
+>--Jason
+>  
+>
+====
+Tomas Edwardsson
+HP-UX Certified System Administrator
+Red Hat Certified Engineer.
 
-Regards,
 
-Antony.
+--------------enigDE63AB96B785E6A9086DA669
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
--- 
-Late in 1972 President Richard Nixon announced that the rate of increase of 
-inflation was decreasing.   This was the first time a sitting president used 
-a third derivative to advance his case for re-election.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
- - Hugo Rossi, Notices of the American Mathematical Society
+iD8DBQFAre3ChF2Ydg6Ynz0RAvkDAJ0dp6cYuubtg2cHDC3kE4MFKPwpAgCdET3u
+9wpxh/LQXTPhka+YtohkXPc=
+=ozRt
+-----END PGP SIGNATURE-----
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--------------enigDE63AB96B785E6A9086DA669--
 
