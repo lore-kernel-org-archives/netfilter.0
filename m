@@ -1,14 +1,13 @@
-From: Victor Julien <victor@nk.nl>
-Subject: Re: Gate rules, is this OK
-Date: Tue, 6 Jul 2004 12:29:39 +0200
+From: "Brent Clark" <bclark@eccotours.biz>
+Subject: RE: Gate rules, is this OK
+Date: Tue, 6 Jul 2004 16:58:51 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407061229.39196.victor@nk.nl>
-References: <HAEOIFPIBBBLGLHOMLLIOEMKCCAA.bclark@eccotours.biz>
+Message-ID: <HAEOIFPIBBBLGLHOMLLIMENCCCAA.bclark@eccotours.biz>
+References: <200407061229.39196.victor@nk.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <HAEOIFPIBBBLGLHOMLLIOEMKCCAA.bclark@eccotours.biz>
-Content-Disposition: inline
+In-Reply-To: <200407061229.39196.victor@nk.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,8 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Victor Julien <victor@nk.nl>, netfilter@lists.netfilter.org
+
+Hi all
+
+After some appreciated feedback from Victor, I started doing some browsing
+of the net (even more lost than I was yesterday)
+I came across this link
+http://www.linuxhomenetworking.com/linux-hn/iptables-intro.htm.
+
+Does can anyone be so kind as to give me some feedback, more pointers, what
+you think etc.
+
+Anything would be appeciated
+
+Kind Regards
+Brent Clark
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Victor Julien
+Sent: Tuesday, July 06, 2004 12:30 PM
 To: netfilter@lists.netfilter.org
-Cc: Brent Clark <bclark@eccotours.biz>
+Cc: Brent Clark
+Subject: Re: Gate rules, is this OK
+
 
 On Tuesday 06 July 2004 12:12, Brent Clark wrote:
 > Hi all
@@ -29,7 +51,8 @@ On Tuesday 06 July 2004 12:12, Brent Clark wrote:
 > kill, therefore I can learn with iptables options). But I have a linux box
 > that does a simple dial up connection.
 >
-> Would someone please have a look at mine and see where I can tweak it a bit
+> Would someone please have a look at mine and see where I can tweak it a
+bit
 > more.
 >
 > Also, I see that on my FW i cant resolve DNS queries.
@@ -42,7 +65,8 @@ On Tuesday 06 July 2004 12:12, Brent Clark wrote:
 > Kind Regards
 > Brent Clark
 >
-> ===========================================================================
+>
+===========================================================================
 >= ========
 > #!/bin/sh
 >
@@ -88,10 +112,12 @@ You accept all connections from your lan? Is that what you intend?
 > #Using Connection tracking for DNS
 > /sbin/iptables -A INPUT -p udp --dport 53 -m state --state NEW -j ACCEPT
 >
-don't forget tcp for dns, you will need it sometimes if the dns-reply doesn't 
+don't forget tcp for dns, you will need it sometimes if the dns-reply
+doesn't
 fit in one udp packet.
 
-BTW: shouldn't this rule be in the OUTPUT chain? I think i would solve the dns 
+BTW: shouldn't this rule be in the OUTPUT chain? I think i would solve the
+dns
 problem described above...
 
 > #Allowing me to ping from here
@@ -113,7 +139,8 @@ udp for ssh?
 > ESTABLISHED,RELATED -j ACCEPT
 > /sbin/iptables -A FORWARD -i eth0 -o ppp0 -j ACCEPT
 
-you forward all traffic from lan to internet? I would try to limit it to http, 
+you forward all traffic from lan to internet? I would try to limit it to
+http,
 ftp, pop3, whatever you need...
 
 > /sbin/iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
@@ -146,15 +173,18 @@ what are you trying to do here?
 > Printer Port
 > /sbin/iptables -A INPUT -p UDP -s 0/0 -d 0/0 --dport 515 -j DROP	#BlOCK
 > Printer Port
-> /sbin/iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 111 -j DROP	#BLOCK Sun
+> /sbin/iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 111 -j DROP	#BLOCK
+Sun
 > rpc/NFS
-> /sbin/iptables -A INPUT -p UDP -s 0/0 -d 0/0 --dport 111 -j DROP	#BLOCK Sun
+> /sbin/iptables -A INPUT -p UDP -s 0/0 -d 0/0 --dport 111 -j DROP	#BLOCK
+Sun
 > rpc/NFS
 
-these are all blocked by the default policy drop... so why drop them 
+these are all blocked by the default policy drop... so why drop them
 specificly if you dont log them...
 
-on the lan-side they will never be reached because you accept all connections 
+on the lan-side they will never be reached because you accept all
+connections
 from in an above rule.
 
 >
@@ -163,7 +193,7 @@ from in an above rule.
 > /sbin/iptables -P FORWARD DROP
 > /sbin/iptables -P OUTPUT DROP
 
-i would put these first, that will make sure the box is closed while loading 
+i would put these first, that will make sure the box is closed while loading
 the rules.
 
 >
@@ -187,4 +217,6 @@ personally i log all that is dropped by the default policies...
 
 Hope this helps,
 Victor
+
+
 
