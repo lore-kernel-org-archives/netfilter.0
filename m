@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: REDIRECT after SNAT?
-Date: Sat, 24 May 2003 11:37:45 +1000
+Subject: RE: transparent tcp proxy
+Date: Sat, 24 May 2003 12:05:23 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CC8@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019241@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,63 +17,85 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Paul Clark <paul@xmill.com>, netfilter@lists.netfilter.org
+To: ml-netfilter@adtech.be, netfilter@lists.netfilter.org
 
-I know what your trying to do.. there is no way really as even large =
-ISPs who use TProxies don't do this and when you browse some sites they =
-say "Hey, your from <insert IP here>" and it's not yours...
+Hmm. I don't think bridging copies the packets MAC address over. it just =
+copies the packet data with it's source and destination IPs.
 
-The reason it won't work is that once REDIRECT runs it enters Squid =
-immediately and squid then takes over and you can't change the address.
-If you SNAT it first, then it just goes out and the REDIRECT won't =
-activate..
-
-You'd basically have to write your own netfilter module which does this =
-and maybe it could work..
-
-eg.
-
-iptables -A PREROUTING -t nat -i $INTDEV -p tcp --dport 80 -m =
-SNEAKYMODULE --use_orig_source -j REDIRECT --to-port 3128
-
-that would be nice.. ;)
-
-Some websites are now smarter and they ignore HTTP_REMOTE server =
-variables because they also see a X_HTTP_FORWARDER variable which the =
-proxy adds to the header as showing the REAL source of the request.. =
-this is usually the client not the proxy IP.. but it's up to the website =
-to know this..
+Can I ask what the mac address is used for, or needed for? Is it for =
+some authenticity reasons?
 
 -----Original Message-----
-From: Paul Clark [mailto:paul@xmill.com]
-Sent: Saturday, May 24, 2003 3:07 AM
+From: Michael Stilmant [mailto:ml-netfilter@adtech.be]
+Sent: Saturday, May 24, 2003 1:07 AM
 To: netfilter@lists.netfilter.org
-Subject: REDIRECT after SNAT?
+Subject: transparent tcp proxy
 
 
-Hi,
+Hello,
 
-Is there any way to force a REDIRECT to (e.g.) a local Web server =
-_after_
-SNAT has been done?  I have a Truly Evil Scheme to map VLANs to SNAT =
-address
-ranges, and I want it to work with a transparent proxy -on the same =
-device-
-(I'm pretty sure it would work fine split across two devices).
+First of all, an hello from a new user on this mailing list.
 
-The problem is that the SNAT has to happen in nat:POSTROUTING, and =
-REDIRECTs
-have to happen in nat:PREROUTING - so by the time my Evil SNAT Hackery =
-has
-happened, it's too late to force it to the local machine.
+and finally my actual problem.
 
-Is there such a thing as a 'retry this packet from the beginning' =
-target?
+I'm need to make a transparent proxy for an billing application. To to
+that I need to put myself in the middle point of a protocol exchange not
+thinked to be easy done with a proxy.
 
-Thanks in advance
+So to do that I've done this installation:
 
-Paul
+I've have a computer where I place transparent proxy via ebtables this
+is B. (no special rules : just ones to activate a transparent proxy:
+                brctl addbr mybridge
+                brctl addif mybridge eth0
+                brctl addif mybridge eth1
+                ifconfig eth0 0.0.0.0
+                ifconfig eth1 0.0.0.0
+                ifconfig mybridge up
+                ifconfig mybridge 10.0.0.225
+                route add default gw 10.0.0.254 )
 
+A and C communicate with all normal exchange
+
+                     10.0.0.225
+                     +--------+
+                     |   B    |
+   +-----+           |        |          +-----+
+   |  A  +-----------[ebtables]----------|  C  |
+   +-----+           +--------+          +-----+
+   10.0.0.3                             10.0.0.32        =20
+
+I've place this Iptables rules
+
+iptables -t nat -A PREROUTING -i eth1 -d 10.0.0.3 -p tcp --dport 3435 -j
+DNAT --to-destination 10.0.0.225:3625
+
+iptables -t nat -A POSTROUTING -o eth0 -d 10.0.0.3 -p tcp --dport 3435
+-j SNAT --to-source 10.0.0.32
+
+so with that when C want to connect the A:3435 service all traffic is
+oriented to B and when B send traffic to A: A see C ip address. -> full
+transparent.
+
+But there are a big problem:
+
+Address Mac used from B to A is not the MAC address. Not a problem since
+i don't want really be transparent but other traffic form C go to A
+directly with the good MAC and traffic from B to A have an other MAC. so
+switch or other router in the A side see 10.0.0.32 sometime with C Mac
+and other time with B MAC .. gloupspss ?? .. :-D
+
+I need to find a way to read mac address from a connection from C and
+set this MAC when I start a connection to A from B=20
+
+have you some clues ? (allready send the same question on the ebtables
+ailin list .. perhaps with a function from there there are a solution
+... )
+
+thanks
+
+
+Michael Stilmant
 
 
 
