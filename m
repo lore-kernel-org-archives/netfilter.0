@@ -1,12 +1,14 @@
-From: "Santiago Gutierrez" <santiagog@wi-net.net>
-Subject: I cannot apply newnat/h323 patch
-Date: Sun, 2 Jun 2002 14:24:06 -0500
+From: "Shazad Malik" <smalik@vistawiz.com>
+Subject: ip_conntrack: table full, dropping packet. - Anyone????? Frustrating!
+Date: Sun, 2 Jun 2002 15:03:13 -0400 (EDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000401c20a6b$10c639c0$cc07a8c0@winet.net>
-Reply-To: <santiagog@wi-net.net>
+Message-ID: <1456.24.168.132.35.1023044593.squirrel@mail.vistawiz.com>
+References: <3CF8DD34.6F5A0B40@attbi.com>
+Reply-To: smalik@vistawiz.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <3CF8DD34.6F5A0B40@attbi.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,26 +21,23 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi, I am following the steps of the patch-o-matic to install iptables-1.2.6a
-but I can not apply the  newnat/h323 patch.
-That I need to do?
-I have kernel 2.4.18-4 installed.
+Hello everyone -
 
-This it is the message that appears to me when I make the test.
-Thanks,
+I have thoroughly searched the internet for this error message which keeps
+getting prompted in my logs and drops packets.  I just cant figure out why
+this problem is occuring.  Initially, I thought it was my IPSEC connections
+which were the culprit but that is not true.
 
-Santiago
+I have seen other explanations such as incresing your tcp max number as
+your physical mem. increase.  Check you /proc/net/ip_conntrack file for the
+current connections.  But none of these factors have anything to do with
+this error.  I have only 2 connections, doing regular HTTP gets and its
+filling my log file:
 
-Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] t
-Testing patch newnat/h323-conntrack-nat.patch...
-   Placed new Config.in line
-   Placed new Config.in line
-   Placed new Configure.help entry
-   Placed new Makefile line
-Could not find place to slot in ip_conntrack.h line
-Could not find place to slot in ip_conntrack.h line
-Could not find place to slot in ip_conntrack.h line
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?]
+
+Jun  2 09:50:39 new kernel: ip_conntrack: table full, dropping packet.
+Jun  2 09:53:29 new kernel: ip_conntrack: table full, dropping packet.
+Jun  2 09:57:14 new kernel: ip_conntrack: table full, dropping packet.
+
 
 
