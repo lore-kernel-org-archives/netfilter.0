@@ -1,13 +1,16 @@
-From: Magnus Solvang <magnus@solvang.net>
-Subject: Re: lan users surfing on lan webserver
-Date: Thu, 27 Feb 2003 13:35:31 +0100
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: managing another network route, can't connect to it! Pls see!
+Date: Thu, 27 Feb 2003 13:23:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030227123531.GA26259@first.knowledge.no>
-References: <20030225215326.GA30804@first.knowledge.no>
+Message-ID: <20030227132347.03d3dc58.arnt@c2i.net>
+References: <030f01c2dd88$2f277140$0b00000a@nocpc3>
+	<20030226150447.435f450b.arnt@c2i.net>
+	<002a01c2ddfe$67e0e9a0$0b00000a@nocpc3>
+	<01ce01c2de30$be8a3400$0b00000a@nocpc3>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030225215326.GA30804@first.knowledge.no>
+In-Reply-To: <01ce01c2de30$be8a3400$0b00000a@nocpc3>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +21,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: louie miranda <lmiranda@chikka.com>
+Cc: netfilter@lists.netfilter.org
 
-Quoting Magnus Solvang (magnus@solvang.net):
-| I'm configuring a firewall on a network where we have put
-| the webserver on the inside of the firewall and given it
-| a reserved ip-address.
-| I have done the appropriate forwarding so that the webserver
-| can be reached from the internett. Trouble is, users on the
-| LAN have to use its internal ip-address to reach the web-
-| pages.
+On Thu, 27 Feb 2003 15:20:44 +0800, 
+"louie miranda" <lmiranda@chikka.com> top posted, _and_ mailed, 
+in message <01ce01c2de30$be8a3400$0b00000a@nocpc3>:
 
-I've been reading the docs, but still haven't figured this
-one out.
+> ----- Original Message -----
+> From: "louie miranda" <lmiranda@Chikka.com>
+> To: "Arnt Karlsen" <arnt@c2i.net>; <netfilter@lists.netfilter.org>
+> Sent: Thursday, February 27, 2003 9:20 AM
+> Subject: Re: managing another network route, can't connect to it! Pls
+> see!
+> 
+> > ----- Original Message -----
+> > From: "Arnt Karlsen" <arnt@c2i.net>
+> > To: <netfilter@lists.netfilter.org>
+> > Sent: Wednesday, February 26, 2003 10:04 PM
+> > Subject: Re: managing another network route, can't connect to it!
+> > Pls see!
+> >
+> >
+> > >
+> > > ..'info ifconfig', you wanna do 'ifconfig eth1:0 192.168.129.254
+> > > up' or somesuch, on your gw.  The new boxes on that net needs to
+> > > know where to go, too.
+> > 
+> > Arnt,
+> >
+> > Hi..
+> >
+> > I already add another ip over my gw w/c is 192.168.129.50 and point
+> > the route to 10.0.0.2. On my WS there's still no response when i go
+> > to 192.168.129.x block. But i can ping 192.168.129.50 ip.
+> >
+> > What else could be possibly be missing?
+> >
 
-According to NAT-HOWTO-10.html, I've set up these rules:
+..Louie, what _was_ missing?  (I like to know whether I missed 
+something in advicing you, etc, also toss in "Solved" in the 
+subject of the thank-you message when you explain _how_ it was 
+fixed, etc, more people might need this info.)
 
-$IPTABLES -t nat -A PREROUTING -i $EXTIF -d $EXTWEBSERVER1 -p tcp \
-  --dport 80 -j DNAT --to $INTWEBSERVER1
-$IPTABLES -t nat -A POSTROUTING -d $INTWEBSERVER1 -s $INTNET -p tcp \
-  --dport 80 -j SNAT --to 192.168.1.20
 
-192.168.1.20 is the internal ip-address on the firewall.
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-The first line is working fine (I can reach the server from the
-internet).
-But, the second line isn't doing what I hoped it would - the users
-on the LAN cannot use the outside URL to get to the internal webserver.
-tcpdump shows traffic going from the internal client -> external
-webserver-address and back, but nothing reaches the interal webserver.
-
-I noticed that the OUTPUT chain logged dropped packages from the
-internal client to the webserver, and this rule cleared that up:
-
-$IPTABLES -A OUTPUT -p tcp -o $INTIF -s $EXTWEBSERVER1 \
-  --sport 80 -d $INTNET -j ACCEPT
-
-But now, no packets are logged, and it's still not working.
-I'm guessing the POSTROUTING line need an appropriate FORWARD-rule...
-If so, what would it look like?
-
-- M
 
