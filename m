@@ -1,13 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Problem with SNAT
-Date: Thu, 02 Sep 2004 16:17:51 -0400
+From: Jose Maria Lopez <jkerouac@eresmas.com>
+Subject: Re: tcpdump and Iptables
+Date: 02 Sep 2004 22:25:56 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094156271.1994.25.camel@wolfpack.ljm.dom>
-References: <41376D0E.3070208@bgs.hu>
+Message-ID: <1094155695.16865.7.camel@nostromo.bgsecm.com>
+References: <41375ED1.5090400@kdtc.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41376D0E.3070208@bgs.hu>
+In-Reply-To: <41375ED1.5090400@kdtc.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +17,68 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Thu, 2004-09-02 at 14:57, Bgs wrote:
->   Greetings,
+El jue, 02 de 09 de 2004 a las 19:56, CC escribió:
+> Hi,
 > 
-> I have problems with the following setup:
+> I think I've asked this before here, but I
+> don't remember what the answer was.
 > 
-> A linux with two NICs. One with IP of 10.0.2.2 and one with 10.0.3.57.
-> I have DNAT-ed traffic coming in on the 10.0.2.2 that was originally 
-> sent to 10.0.2.1. (Another node doing the DNAT). I have problems on the 
-> route back so I decided to SNAT the backward udp traffic to  soource 
-> 10.0.2.1 and send the SNATed packets back on another route.
+> If I have iptables running and I do a
+> tcpdump -i eth0,   at what point is
+> tcpdump listening to the connection?
 > 
-> I added the line to nat postrouting (-d target_net -s 10.0.2.2 -p udp -j 
-> SNAT --to-source 10.0.2.1) but the packages don't even seem to hit the 
-> nat postrouting chain. Let alone my SNAT rule.
+> I'm trying to troubleshoot my firewall,
+> but am not seeing the right behaviour
+> as the packets that I'm trying to block
+> by the following command:
 > 
-> Any ideas what could be wrong ?
+> $IPTABLES -A FORWARD -i eth1 -p tcp \
+>               -d 192.168.7.1 -j DROP
+> 
+> But I still get tcp packets going to
+> 192.168.7.1.
+
+Wouldn't it work if you use -o eth1 instead of
+-i eth1. Where it's situated 192.168.7.1? If
+the routes says it has to go through eth1 to
+get to 192.168.7.1 then you need -o.
+
+Or maybe you have packets routed through other
+interfaces, not eth1. Or maybe the packets
+are being originated in the same firewall, so
+the FORWARD rule does not apply.
+
+> 
+> And wouldn't :
+> 
+> $IPTABLES -A FORWARD -i eth1 -p tcp \
+>              -s 192.168.7.1 -j DROP
+> 
+> in effect disables all access to the
+> internet for machine IP 192.168.7.1?
+> 
+> But my main query is about the
+> relationship between the packets that
+> TCPDUMP sees and where the packets
+> are within the packet filtering
+> process.
 > 
 > Thanks
-> Bgs
-
-since i have to guess (hint:  post your rules [1] if you want us to find
-the problem for you)...
-
-i would say that your filter rules drop the packet before they ever get
-to the POSTROUTING chain of the nat table.
-
--j
-
-[1] - iptables -vnL && iptables -t nat -vnL && iptables -t mangle -vnL
-
 -- 
-Jason Opperisano <opie@817west.com>
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPAÑA
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
 
