@@ -1,13 +1,13 @@
-From: Norman Zhang <norman.zhang@rd.arkonnetworks.com>
-Subject: Re: Iptables and Kernel
-Date: Mon, 19 Apr 2004 07:58:04 -0700
+From: "Rodrigo Haces" <rhaces_chistes@yahoo.com.mx>
+Subject: RE: IP Alias with iptables
+Date: Mon, 19 Apr 2004 10:07:15 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4083E8FC.8070008@rd.arkonnetworks.com>
-References: <407A27B2.4000101@rd.arkonnetworks.com> <36070.9628942006$1081802745@news.gmane.org> <408356CA.4030604@rd.arkonnetworks.com> <200404190848.14662.Alistair@nerdnet.ca>
+Message-ID: <EMEKLOMJOPNJPAFKHEDJGECHCDAA.rhaces_chistes@yahoo.com.mx>
+References: <200404191553.50340.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404190848.14662.Alistair@nerdnet.ca>
+In-Reply-To: <200404191553.50340.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +17,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
->>>I'm running 2.6.3. with iptables 1.2.9 and p-o-m-ng h323 patch -- they
->>>work for me -- but I'm referring to a home lan ond only one netmeeting
->>>seesioon from the LAN  -- we haven't tried multiple sessions from inside
->>>the lan ... either to the same netmeeting sessioon or to different ones.
->>
->>Sorry it is me again. I tried to compile pomng using
->>
->># KERNEL_DIR=/usr/src/linux ./runme pending
->># KERNEL_DIR=/usr/src/linux ./runme base
->># KERNEL_DIR=/usr/src/linux ./runme extend
->>
->>but couldn't find h323-conntrack-nat patch being offered. I did see
->>owner-socketlookup mention something about H.323. May I ask how do I
->>applied h323-conntrack-nat patch to iptables and kernel-2.6.5 alone? I
->>can see the subfolder h323-conntrack-nat under pomng.
-> 
-> 	Okay -- I'm a twit --- I'd assumed since my loadup script was completed 
-> without errors that things had worked all the way through ... looking again 
-> it seems that the h323 stuff only applies against 2.4.x kernels -- Joseph K.
-> hasn't ported it -- likely because its slightly hackish .. And Lord KNOWS why
-> netmeeting is working through my firewall ... other than the fact of a good 
-> old ESTABLISHED RELATED rule ... I do know that it only works outbound, if 
-> someone wants to call into the LAN they have to call on a specific port and I 
-> have that port forwarded to the destination host.
 
-I'm now using kernel 2.4.26. Now when I run
 
-# KERNEL_DIR=/usr/src/linux ./runme extra
+> Enviado el: Lunes, 19 de Abril de 2004 08:54 a.m.
+>
+> On Monday 19 April 2004 4:41 pm, Rodrigo Haces wrote:
+>
+> > Hi:
+> >
+> > I have only one network adapter in my Server, but i need to have 2
+> > different networks, 192.168.1.0 to the MAC addresses i know and
+> 192.168.0.0
+> > to the MAC addresses i don't know
+>
+> This sounds strange - what is your network layout, giving rise to
+> machines
+> with "MAC addresses you don't know", which need you to be on a different
+> subnet?
 
-I do see h323-conntrack-nat patch. When I do a 'make xconfig' for the 
-kernel source, under Networking/Netfilter... I can't find the H.323 
-option. But other options like ECN, ..., etc. are available. Is this 
-correct?
+Ok, this is what i want, i have a Restaurant, and have an administrative
+network (192.168.1.0) and i am giving wireless access to my clients, but i
+cant let them get into my administrative network, so i set them 192.168.0.0.
 
-Regards,
-Norman
+>
+> > i have managed this by makin mi eth0 to
+> > 192.168.1.1 and an alias eth0:0 to 192.168.0.1, everythings ok, but i'm
+> > also sharing internet, but when i start the rule to the eth0:0
+> it sends me
+> > an error. Is there a way to use IP Aliasing with iptables?
+>
+> Yes - just remember that there's only one physical interface, and
+> it's called
+> eth0.   Don't try to use :0 or :1 in your netfilter rules.   You
+> can always
+> use -s or -d to specify source & destination IP addresses if you want the
+> rule/s to apply only to certain packets.
 
+ok, this are my rules, were and how do i use the -d and -s??
+
+echo "   FWD: Allow all connections OUT and only existing and related ones
+IN"
+iptables -A FORWARD -i ppp0 -o eth0 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+iptables -A FORWARD -i eth0 -o ppp0 -j ACCEPT
+echo "   Enabling SNAT (MASQUERADE) functionality on ppp0"
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+
+>
+> > if not, is there a way to create an eth0 and eth1 witn the same adapter?
+>
+> No.   It's a simple (and cheap) job to add another ethernet card, though.
+
+No PCI slots available... :(
+
+Thanks in advanced
+Rodrigo
 
 
