@@ -1,12 +1,10 @@
-From: ads nat <adsnat@yahoo.com>
-Subject: Re: iptables-restore help
-Date: Sun, 28 Sep 2003 07:20:53 -0700 (PDT)
+From: "gold gold" <mr_gold55@hotmail.com>
+Subject: P-O-M
+Date: Sun, 28 Sep 2003 14:44:33 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030928142053.94035.qmail@web20710.mail.yahoo.com>
-References: <20030928091802.5218.qmail@web20705.mail.yahoo.com>
+Message-ID: <BAY1-F117iDd9D9DQVX0001c9b6@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030928091802.5218.qmail@web20705.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,73 +14,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: ads nat <adsnat@yahoo.com>, Daniel Chemko <dchemko@smgtec.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I got it.
-command to save iptables rule to
-/etc/sysconfig/iptables for Redhat 8.0 is
-"/sbin/service iptables save"
-
-Thanks
-
---- ads nat <adsnat@yahoo.com> wrote:
-> Please guide me how to do this otherwise.
-> Thanks.
-> 
-> Daniel Chemko <dchemko@smgtec.com> wrote:
-> iptables doesn't inherently save state data. Redhat
-> 8.0 might do something along those lines, but if you
-> are really trying to play with the iptables rules,
-> it is probably best to disable the redhat stuff and
-> build your own startup / shutdown scripts so that
-> you really know what is going on under the hood.
-> 
-> ads nat wrote:
-> Hi,
-> I am learning to use iptables.
-> I have gone through FAQ and tutorials but have two
-> problems :
->  
-> 1) I can create rules, delete rules, save rules with
-> "iptables-save" command. But can not use
-> "iptables-restore" properly. my iptables file is in
-> at /etc/sysconfig/iptables
-> I am using Redhat Linux 8.0, iptables 1.2.6a
-> version.
->  
-> Whatever rule I have saved goes off when i reboot
-> system. As I have understood after using
-> "iptables-restore" command, it should save rules in
-> /etc/sysconfig/iptables file. So that when system
-> reboots automatically it will be implimented.
->  
-> 2) I have set rule "iptables -A INPUT -i eth0 -m
-> state --state NEW -m limit --limit 1 -j LOG" so that
-> i can go through logs of NEW users tryong to connect
-> to server. These are saved in which file? 
-> Help appreciated.
->  
-> Thanks 
-> 
->  
->  
-> 
-> ---------------------------------
-> Do you Yahoo!?
-> The New Yahoo! Shopping - with improved product
-> search 
-> 
-> ---------------------------------
-> Do you Yahoo!?
-> The New Yahoo! Shopping - with improved product
-search
+Hello,
 
 
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Shopping - with improved product search
-http://shopping.yahoo.com
+     I've applied those patches to my kernel so I can use the Audio stuff 
+(H323) but `make menuconfig` didn't show any "H323" option, so I thought it 
+applies that stuff to regular settings (CONFIG_IP_NF_blah ...) and proceeded 
+with the compilation of my kernel. Now although I'm using the new (patched) 
+kernel, I still can't use MSN Audio on my Masquaraded boxes. Are there any 
+extra steps I need to do other than applying the patches to the kernel?
+
+
+Thanks.
+
+_________________________________________________________________
+MSN 8 with e-mail virus protection service: 2 months FREE* 
+http://join.msn.com/?page=features/virus
+
 
