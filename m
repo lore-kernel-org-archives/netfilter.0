@@ -1,11 +1,12 @@
-From: =?iso-8859-1?q?Christof=20Nyffenegger?= <cnyf@yahoo.de>
-Subject: unexpected behaviour...?
-Date: Mon, 8 Sep 2003 23:24:36 +0200 (CEST)
+From: Jim Carter <jimc@math.ucla.edu>
+Subject: Re: DNAT
+Date: Mon, 8 Sep 2003 15:20:01 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030908212436.48066.qmail@web21402.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.53.0309081513060.2853@xena.cft.ca.us>
+References: <19331451164.20030908164015@guest.arnes.si>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <19331451164.20030908164015@guest.arnes.si>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,56 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Nejc Skoberne <nejc.skoberne@guest.arnes.si>
+Cc: netfilter@lists.netfilter.org
 
---- Ralf Spenneberg <lists@spenneberg.org> schrieb:
-
-> No bits in the header. It is simply matching the IP addresses, protocol
-> and ports. If you add the TCP-Window-Tracking patch it does more.
-> At the moment TCP is handled just like  UDP, ICMP, and generic
-> protocols.
+On Mon, 8 Sep 2003, Nejc Skoberne wrote:
+> I have a problem with DNAT. I want to set up portforwarding. In local
+> network I have two servers and workstations. One (main) server is listening
+> at some port, let's say 4444. The other one also acts like a gateway
+> to internet and I set up a portforwarding like this:
 >
-> If the client behind the firewall sends an ACK the connection is
-> automatically picked up by iptables.
+> iptables -A PREROUTING -p tcp --dport 4444 -j DNAT --to 192.168.1.1:4444
+>
+> where 192.168.1.1 is the IP of the main server which runs the service.
+> If I try to connect from outside, everything works fine. If I try to
+> connect from one of workstations to the gateway machine to port 4444,
+> nothing happens. tcpdumps shows just requests but no answers. Why
+> doesnt DNAT work also for local IP addresses?
 
-OK, i see (after *reading* some netfilter documentation as
-well....RTFM...sorry). I thought that netfilter is doing *real* tcp state
-tracking which is not true. to quote Joszef Kadlecsik (from "connection
-tracking" by James C. Stephens):
+I'm assuming that the internal client has an address like 192.168.1.x.
+Generally if a packet goes out the same interface it came in, that
+indicates that something nasty is going on, but in your case "that's not a
+bug, that's a feature".  I seem to remember a specific prohibition against
+mirror-style routing (maybe for a different OS), but I looked in
+/usr/src/linux/Documentation/filesystems/proc.txt and failed to find where
+it could be enabled and disabled.
 
----- snip ----
+Can someone comment on whether this prohibition is present in Linux, and
+how to configure it?
 
-"When a packet with the SYN+ACK flags set arrives in response to a packet w=
-ith
-SYN set the connection tracking thinks: "I have been just seeing a packet w=
-ith
-SYN+ACK which answers a SYN I had previously seen, so this is an ESTABLISHED
-connection."
-
-The important point here is that the conntrack states are not equivalent to=
- tcp
-states. We have already seen that a connection doesn't achieve the tcp
-connection status of ESTABLISHED until the ACK after the SYN+ACK has been
-received.
-
-The representation of the tcp connection states in the state table is purely
-for timeouts. You can prove this to yourself by sending an ACK packet throu=
-gh
-your firewall to a non-existent machine (so that you don't get the RST back=
-).
-It will create a state table entry no problem because it it is the first pa=
-cket
-of a connection and so is treated as NEW (the entry will not be marked as
-ASSURED though).
-
----- snip ----
-
-Well, that explains it. thank you very much!
-
-
-__________________________________________________________________
-
-Gesendet von Yahoo! Mail - http://mail.yahoo.de
-Logos und Klingelt=F6ne f=FCrs Handy bei http://sms.yahoo.de
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
+Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
