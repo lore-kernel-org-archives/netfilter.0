@@ -1,13 +1,15 @@
-From: Pedro Salazar <pedro-b-salazar@ptinovacao.pt>
-Subject: RE: load-balancing with netfilter: round robin or what??
-Date: 07 Oct 2003 10:58:20 +0100
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: MSN throught Linux
+Date: Tue, 7 Oct 2003 11:47:04 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065520700.18401.29.camel@vitoria.intra.cet.pt>
-References: <2967754783C6E34C94243EAC0D161368BB0393@med-ex1.bham.ac.uk>
+Message-ID: <20031007094704.GI18246@sunbeam.de.gnumonks.org>
+References: <14C5057BC852D611BAC400E0299AA10F02043F@MAILSERV> <5.2.0.9.0.20031006133543.00b32178@mail.network.com.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="so9zsI5B81VjUb/o"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2967754783C6E34C94243EAC0D161368BB0393@med-ex1.bham.ac.uk>
+Content-Disposition: inline
+In-Reply-To: <5.2.0.9.0.20031006133543.00b32178@mail.network.com.pt>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +19,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Khan, Arshad" <a.m.khan@bham.ac.uk>
-Cc: netfilter@lists.netfilter.org
+To: Carlos Santos <csantos@csantos.net>
+Cc: netfilter@lists.netfilter.org, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-On Tue, 2003-10-07 at 10:41, Khan, Arshad wrote:
-> how does this compare with the Linux Virtual Server project?
-> 
-> Arshad
-> 
 
-I'm not an expert of Linux Virtual Server (on contrary, my experience
-with LVS is too limited to readings), but I know that LVS could do the
-same thing -- and in a more powerful way, what netfilter does by itself.
+--so9zsI5B81VjUb/o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In another words, LVS may also uses the netfilter technology below and
-more. For instance, there is a section in LVS docs about LVS-NAT
-(section 13). The great thing of LVS is that I will have a solution with
-high-availability on the layer of service which is higher than NAT (only
-routing) or VRRP (only check IP).
+On Mon, Oct 06, 2003 at 01:46:27PM +0100, Carlos Santos wrote:
+>=20
+>=20
+> Hi,
+>=20
+> I've been trying (on and off, on my spare time) to get my firewall (RedHa=
+t=20
+> 9 Shrike) to allow MSN, Netmeeting and Yahoo webcam conversations to take=
+=20
+> place. I've been keeping up with some of the threads that have been start=
+ed=20
+> lately about this subject and what I would like to know before going any=
+=20
+> further is: is UPNP a security risk ?=20
 
-Pedro Salazar.
--- 
-PS
-pedro-b-salazar@ptinovacao.pt
-PGP:0E129E31D803BC61
+yes, obviously it is.  Have you ever looked at the specification?
 
+Also read Section 5 of
+http://linux-igd.sourceforge.net/documentation.php
+
+the problem is, that any email worm or whatever malicious current
+windows virus might be active on one of the computers inside your
+network can open _any_ port to _any_ machine via uPNP calls to your upnp
+igd.
+
+This is most likely my last message on this totally rediculous
+mechanism.
+
+> Thanks,
+> Carlos.
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--so9zsI5B81VjUb/o
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/gouYXaXGVTD0i/8RAmcZAJ92t2j7byaeXJyu2yzuQ9fm1wWCJgCfcEXy
+urwVzqW6D4o64iVyejl1kS8=
+=IH3/
+-----END PGP SIGNATURE-----
+
+--so9zsI5B81VjUb/o--
 
