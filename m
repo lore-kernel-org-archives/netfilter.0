@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: udp port 135
-Date: Thu, 14 Aug 2003 07:35:33 +0200
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: Matching misc TCP header fields
+Date: Thu, 14 Aug 2003 09:08:29 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001201c36225$e166d270$0401000a@sterenborg.info>
-References: <3F3B0EF9.5040002@belfordhk.com>
+Message-ID: <Pine.LNX.4.51.0308140907040.11099@dns.toxicfilms.tv>
+References: <20030814182810.GA2123@linux.local> <200308140827.11478.kernelpenguin@hot.ee>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F3B0EF9.5040002@belfordhk.com>
+In-Reply-To: <200308140827.11478.kernelpenguin@hot.ee>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +16,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Netfilter Group' <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Elver Loho <kernelpenguin@hot.ee>
+Cc: netfilter@lists.netfilter.org
 
-> iptables -A INPUT -i $EXT_DEV -p tcp -d $EXT_DEV --dport 135 -j DROP
-> iptables -A INPUT -i $EXT_DEV -p udp -d $EXT_DEV --dport 135 -j DROP
-                                       ^^^^^^^^^^^
+> Any quick hints on how to match misc TCP header fields such as the window
+> size? This new "worm" out there that sends portscans from spoofed IP
+> addresses setting window size to 55808 is pretty interesting.
+Funny that you mention it, out of the blue and curiosity I once made a
+tcp window match, but never told anyone as that kind of match seemed
+useless.
 
-I guess the above and below is are typos ? It should be -d $EXT_IP.
+> some interesting traffic with that window size using tcpdump. How to do the
+> same using netfilter? Quick search on the manpage didn't reveal anything
+> related. Same result with a quick google query.
+If you are interested I will look for it on my hdd.
 
-> iptables -A OUTPUT -o $EXT_DEV -p tcp -d $EXT_DEV --dport 135 -j DROP
-> iptables -A OUTPUT -o $EXT_DEV -p udp -d $EXT_DEV --dport 135 -j DROP
-
--d $EXT_IP --dport 135 should be -s $EXT_IP --sport 135.
-
-> But with :
-> 
-> nmap -sU -P0 -p 135 <ext ip>,
-> 
-> I get a (135/udp open).
-
-I have the same results.
-
-> Can someone explain to me what I'm doing wrong or what
-> information I have forgotten?    Does it even matter
-> if the udp 135 port is open?  I'm currently in
-> the process of closing all unneccessary ports
-> (be it tcp or udp).
-
-No. I am interested too in why udp shows "open" from a foreign host,
-while tcp shows filtered.
-How can I check if an udp port is really closed/filtered or opened ?
-
-
-Gr,
-Rob
+Regards,
+Maciej
 
 
