@@ -1,9 +1,8 @@
-From: "Maciej Soltysiak" <solt@dns.toxicfilms.tv>
-Subject: Re: mangle + TCP Flags
-Date: Wed, 10 Dec 2003 20:25:32 +0100
+From: "Vernon A. Fort" <vfort@provident-solutions.com>
+Subject: Access to Internal server via public address
+Date: 10 Dec 2003 13:33:17 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002701c3bf53$62b81d90$0e25fe0a@southpark.ae.poznan.pl>
-References: <20031210151934.65780e26.jm.nfilter@laposte.net>
+Message-ID: <1071084797.6081.35.camel@cosby>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,23 +16,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jean-Marie <jm.nfilter@laposte.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-[Oops, sorry there for incomplete mail :)]
-Hi,
+Anyone,
 
-> I think to something like that:
-> iptables -t mangle -A INPUT -j TCPFLAG --set-flags FIN,URG
-There is no such module. It would be possible to do that.
-If a module like this existed it would be a great way to violate the
-protocol
-and cause antisocial behaviour of your tcp stack.
+  The Problem:  I have an alias public address DNAT'ed to and internal
+address - normal and working
 
-Anyway such a module is not difficult to write. So it is possible, but
-nor the iptables package and the kernel, nor patch-o-matic
-do not contain such a module.
+  What i need is to access this server using the PUBLIC address from an
+internal workstation.  What I have:
 
-Regards,
-Maciej
+	INTNIC = eth1
+	EXTNIC = eth0
+
+	INTERNALNET = 192.168.20.0/24
+
+	FIREALLIP = 1.2.3.4
+	DNATADDR = 1.2.3.5
+
+  /sbin/iptables -I FORWARD -p tcp -i eth0 -o eth1 -d 192.168.20.0/24
+--dport 22 -j ACCEPT
+  /sbin/iptables -t nat -A PREROUTING -p tcp -d 1.2.3.5 -s !
+192.168.20.0/24 --dport 22 -j DNAT 192.168.20.22:22
+
+  I also have a SNAT for masquerading everyting going out
+
+	/sbin/iptables -t nat -A POSTROUTING -s 192.168.20.0/24 -o eth0 -j SNAT
+--to-source 1.2.3.4
+
+  I have searched for a solutions longer than I care to admit.  Can
+anyone give me an example on how to allow an internal ip address access
+to another internal address via the DNAT'ed public address.
+
+Vernon Fort
+
 
 
