@@ -1,12 +1,10 @@
-From: unor <unorlist@yahoo.com>
-Subject: Re: Build Issue with 2.6.3
-Date: Tue, 2 Mar 2004 20:46:22 -0800 (PST)
+From: Xinwen Fu <xinwenfu@cs.tamu.edu>
+Subject: missed packets
+Date: Tue, 2 Mar 2004 23:26:53 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040303044622.66011.qmail@web21411.mail.yahoo.com>
-References: <0cc501c4009a$2de236e0$d100a8c0@W2RZ8L4S02>
+Message-ID: <Pine.GSO.4.58.0403022326400.27317@unix.cs.tamu.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <0cc501c4009a$2de236e0$d100a8c0@W2RZ8L4S02>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,50 +14,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Jim,
+Hi,
+	I have three machines in the same subnet (i.e., 192.168.0.1,
+192.168.0.2 and 192.168.0.3). The three machines are collected by a hub.
+So they can communicate with each other directly.
 
-Running RH 9 here... compiled fine.  Have you tried
-updating your kernel headers?
+	Now 192.168.0.1 wants to send a packet to 192.168.0.3. I use
+"iptables -t mangle -A OUTPUT -j QUEUE"
+to forward the packet to the user space, where a program changes the
+destination of this packet to 192.168.0.2. Of course, I change checksum
+accordingly here and in later steps.
 
-cd /usr/include
-mv linux linux-old
-ln -s /<PATH>/linux-2.6.3/include/linux linux
+	When 192.168.0.2 receives the packet, I use
+iptables -t mangle -A PREROUTING -j QUEUE
+to forward the packet to the user space, where the
+destination of the packet is changed to 192.168.0.3.
 
+	But I could not see any packet sent out by 192.168.0.2 and
+192.168.0.2 does receive the packet from 192.168.0.1.
 
-Earl Sammons
+	What is the possible problem?
 
---- Jim Gifford <maillist@jg555.com> wrote:
-> Error is listed below. Any suggestions.
-> 
-> /usr/include/linux/err_kernel_only.h:1:2: #error
-> Kernel only header included
-> in userspace
-> extensions/libipt_ah.c: In function `parse_ah_spi':
-> extensions/libipt_ah.c:39: error: `ERANGE'
-> undeclared (first use in this
-> function)
-> extensions/libipt_ah.c:39: error: (Each undeclared
-> identifier is reported
-> only once
-> extensions/libipt_ah.c:39: error: for each function
-> it appears in.)
-> make: *** [extensions/libipt_ah_sh.o] Error 1
->                 -----Error at Build has occured-----
-> 
-> ----
-> Jim Gifford
-> maillist@jg555.com
-> 
-> 
+	Thanks!
 
-
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free web site building tool. Try it!
-http://webhosting.yahoo.com/ps/sb/
+Xinwen Fu
 
