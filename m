@@ -1,75 +1,78 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: Newbie - Where is my kernel? Can't run POM
-Date: Wed, 8 Jan 2003 18:18:10 +0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030108181810.GD21359@miggy.org>
-References: <002301c2b73e$e0f36ca0$3f00a8c0@tharryman>
+From: "Randall J. Parr" <RParr@TemporalArts.COM>
+Subject: problem configuring for NFS between RH8 and RH6
+Date: Wed, 08 Jan 2003 11:48:31 -0800
+Sender: psyche-list-admin@redhat.com
+Message-ID: <3E1C808F.9030202@TemporalArts.com>
+Reply-To: psyche-list@redhat.com
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FFoLq8A0u+X9iRU8"
-Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <002301c2b73e$e0f36ca0$3f00a8c0@tharryman>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <psyche-list-admin@redhat.com>
+Errors-To: psyche-list-admin@redhat.com
+List-Help: <mailto:psyche-list-request@redhat.com?subject=help>
+List-Post: <mailto:psyche-list@redhat.com>
+List-Subscribe: <https://listman.redhat.com/mailman/listinfo/psyche-list>,
+	<mailto:psyche-list-request@redhat.com?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Timothy Harryman <timothy@woodlandscenics.com>
-Cc: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://listman.redhat.com/mailman/listinfo/psyche-list>,
+	<mailto:psyche-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://listman.redhat.com/pipermail/psyche-list/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Guarddog-user@lists.sourceforge.net, netfilter@lists.netfilter.org, psyche-list@redhat.com
+
+I have several RedHat 8, RedHat 7 and RedHat 6 servers.
+I am using iptables on the RedHat 7 and 8 servers which I configure 
+using GuardDog.
+
+I have been successful configured the firewall for and using NFS RH8 <-> 
+RH8 and RH8 <-> RH7.
+
+In the GuardDog, under Protocol,  File Transfer, enabling NFS was 
+sufficient to allow RH8 <-> RH8 NFS.
+
+However, when I try to use NFS RH8 <-> RH6 the firewall not allowing the 
+NFS transactions.
+
+At first the log messages indicated RH8 -> RH6 port 111 was being 
+dropped. In GuardDog, enabling Protocol, Interactive, Sun RPC got past 
+this block.
+
+But then the log messages indicated RH8 -> RH6 port 887 was being 
+dropped. Note that the dynamic port (in this example 887) changes every 
+time I restarted RH6 NFS.
+
+I believe the problem is that RH6 NFS is using dynamic ports below 1024 
+and my RH8 kernel settings (sysctl.conf) and GuardDog settings limit the 
+dynamic port range to 1024 thru 65000.
+
+I tried to change the dynamic port range via GuardDog but it does not 
+allow a value below 1024.
+
+Note: if I disable the firewall temporarily (via GuardDog) NFS RH8 <-> 
+RH6 works just fine.
+
+I'm not sure how best (and most safely) to fix this.
+
+QUES 1) Is it possible/safe to change the dynamic port range to 
+something below 1024? If it is, how do I do that in GuardDog?
+
+QUES 2) Is it possible to configure the RH6 NFS to only use dynamic 
+ports above 1024? And if so, how? (I know how on RH7/8 but RH6 is, uh, 
+less "advanced").
+
+QUES 3) Am I off base and this is not the problem at all?
+
+Thanks
+
+R.Parr
+Temporal Arts
 
 
---FFoLq8A0u+X9iRU8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 08, 2003 at 11:53:38AM -0600, Timothy Harryman wrote:
-> It certainly is not in /usr/src/linux (nautilus & terminal show that
-> /usr/src is empty - yes, I am showing all hidden/system files), nor
-> anywhere else I have looked.
->=20
-> I have a default installation of RH 8.0, and through rhupdate, it has
-> updated the kernel to 2.4.18-19.8.0
->=20
-> I am trying to install patch-o-matic 20030107, and the script prompts me
-> for the KERNEL_DIR.
 
-  RH is almost certainly using seperate runtime and source packages for
-the kernel.  Looking at http://www.rpmfind.net/ I see things like:
 
-	kernel-2.4.20-2.6.i686.rpm
-	kernel-2.4.20-2.6.src.rpm
 
-The first being the compiled kernel and modules, the latter the source
-for it.  So go find kernel-2.4.18-19.8.0.src.rpm, or even better upgrade
-packages to a 2.4.20 kernel the current latest stable release.
 
-HTH,
-
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
-
---FFoLq8A0u+X9iRU8
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj4ca2IACgkQzbc+I5XfxKe6ogCgolSfwZ98IXf4q08smspsJKbF
-RXMAoJgMd+o8dTA+SrtT4V24qvqaskMF
-=rOEx
------END PGP SIGNATURE-----
-
---FFoLq8A0u+X9iRU8--
-
+-- 
+Psyche-list mailing list
+Psyche-list@redhat.com
+https://listman.redhat.com/mailman/listinfo/psyche-list
