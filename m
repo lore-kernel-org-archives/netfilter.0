@@ -1,10 +1,17 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: curious about /etc/init.d/iptables script in RH 8.0
-Date: Thu, 24 Oct 2002 15:15:24 -0400 (EDT)
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: poptop connection problem
+Date: 24 Oct 2002 21:17:57 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210241501210.2123-100000@localhost.localdomain>
+Message-ID: <1035487077.15747.0.camel@elendil>
+References: <200210231602.00745.roy@karlsbakk.net>
+	<200210231518.g9NFI4L02942@vulcan.rissington.net>
+	<200210241245.52685.roy@karlsbakk.net>
+	<200210241155.g9OBtEe04312@vulcan.rissington.net> 
+	<005101c27b89$90256120$8c01a8c0@sundaram>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <005101c27b89$90256120$8c01a8c0@sundaram>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,82 +21,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Sundaram Ramasamy <sun@percipia.com>
+Cc: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
+Le jeu 24/10/2002 =E0 20:17, Sundaram Ramasamy a =E9crit :
+> tcpdump -i eth0 proto 47 or port 1723
+> the above command not showing any  information.=20
+> my iptables command:
+> iptables -A INPUT -i eth0 -p tcp --dport 1763 -j ACCEPT
+> iptables -A INPUT -i eth0 -p 47 -j ACCEPT
 
-  ... and here's why i was asking about the meaning of the contents
-of /proc/net/ip_tables_names.
+There's a typo here !
 
-  the RH 8.0 iptables admin script has the following excerpt for
-completely clearing the rule set before reloading from the file
-/etc/sysconfig/iptables:
+iptables -A INPUT -i eth0 -p tcp --dport 1723 -j ACCEPT
+					 ^^^^
 
-
-start() {
-	# don't do squat if we don't have the config file
-	if [ -f $IPTABLES_CONFIG ]; then
-	    # If we don't clear these first, we might be adding to
-	    #  pre-existing rules.
---- curious stuff starts here ---
-	    chains=`cat /proc/net/ip_tables_names 2>/dev/null`
-	    echo -n $"Flushing all current rules and user defined chains:"
-	    let ret=0
-            for i in $chains; do iptables -t $i -F; let ret+=$?; done
-	    iptables -F
-            let ret+=$?
-            if [ $ret -eq 0 ]; then
-              success
-            else
-              failure
-            fi
-            echo
-            echo -n $"Clearing all current rules and user defined chains:"
-            let ret=0
-            for i in $chains; do iptables -t $i -X; let ret+=$?; done
-            iptables -X
---- and ends here ---
-
-
-  the obvious purpose of this code is to clean the tables and chains
-totally before reloading, but it does this in a curious way.
-
-  first, the script grabs the list of currently-used tables from
-the file /proc/net/ip_tables_names, which is why i asked about this
-file earlier -- the implication is that, given the possible tables
-filter, nat and mangle, only those that are listed in that file
-can possibly be in use at the moment.  fair enough.  but it
-would make more sense to assign this list to a variable like
-"tables", not "chains", wouldn't you think? :-)  just being
-pedantic.
-
-  the next loop:
-            
-    for i in $chains; do iptables -t $i -F; let ret+=$?; done
-            
-clearly flushes all of the active/loaded tables, which will
-just as clearly flush all chains, both built-in and user-defined.
-again, fair enough, but what's the purpose of the immediately
-subsequent
-
-    iptables -F
-
-by default, this will flush the filter table, but isn't that
-already empty from the previous statement?  not a mistake, just
-redundant, no?
-
-  the same redundancy seems to exist in the next loop that deletes
-the user-defined chains:  the loop really gets rid of all user-defined
-chains in each table one at a time, and follows that up with
-
-    iptables -X
-
-apparently just to give the "filter" table one last good kick
-while it's down or something.  is there something more to this
-than meets the eye?
-
-
-rday
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
+t=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
