@@ -1,8 +1,8 @@
-From: "Sundaram Ramasamy" <sun@percipia.com>
-Subject: URGENT : Probem with Redhat 7.1 incomfing  network services request
-Date: Wed, 22 Jan 2003 10:17:35 -0500
+From: Magnus Sundberg <Magnus.Sundberg@dican.se>
+Subject: Non host resident proxies
+Date: Fri, 17 Jan 2003 18:50:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000d01c2c229$65002070$8c01a8c0@sundaram>
+Message-ID: <3E284279.9030202@dican.se>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,73 +15,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Dear sirs,
+I have a standard firewall, almost minimal linux 
+installation+netfilter+3 interfaces (internal, external and perimeter)
 
+I want to redirect all POP3 requests back to my main server. POP3 
+requests from the main server is forwarded to the internet.
+Something like this.
 
+------------          -------------------
+!          !          !                 !
+! Client   !--------->! router/firewall !
+!          !      ----!                 !
+------------      ! ->! - - - - - - - - ! ---->(Internet)
+                   ! ! !                 !
+                   ! ! -------------------
+-------------     ! !
+!           !<----- !
+! Server    !--------
+!           !
+-------------
 
+I can scan all pop3 traffic for viruses by this method.
+I believe this setup would be correct for proxying other protocols to.
+I would preferably be interested in also being able to redirect the 
+protocol port too.
+Is it possible to do this with the current netfilter release?
+I am aware that there is good chance of unwanted loops with this setup
 
-Hi,
+regards,
 
-
-
-We have installed Red hat 7.1 Linux one of our customer location. It used
-work all network service (ftp, telnet, ssh) etc.  Because of power failure
-file system got crashed, then we did fsck manually. Now system is booting
-without any problem, it was able send outgoing request (telnet, ftp, ping).
-
-
-
-From other machine only ping request work, all other network services are
-not working. While booting the machine about 30 sec, It allows us to login
-that after the it's terminating the telnet connection.
-
-
-
-I did some google search, got the following message.
-
-
-
-http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&oe=UTF-8&th=5f887abf1be0e
-4ca&rnum=14
-
-
-
-We turned off the firewall, still its not working.
-
-
-
-
-
-We did the following.
-
-
-
-1
-
-
-
-Ipchains -F
-
-
-
-Tried telnet,ssh not working,
-
-
-
-2
-
-
-
-Chkconfig -level 12345 ipchains and rebooted the machine, then tried
-telnet,ssh its not working.
-
-
-
-
-
-Any Idea why it's not working? How will I fix this? Any help.
+Magnus Sundberg
 
 
 
