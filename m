@@ -1,14 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: per user IP adresses
-Date: Mon, 5 May 2003 14:09:54 +0200
+From: "David Gaudine" <david@annette.concordia.ca>
+Subject: Re: RELATED is not recognized
+Date: Mon, 5 May 2003 09:13:34 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030505140954.1b2a2d0f.arnt@c2i.net>
-References: <01CEA3A5B8B2D511890F0002A5870AEC0128AD85@EXCHANGE>
-	<000401c312e0$8bf85d70$0200a8c0@WKSJOHN>
+Message-ID: <002801c31308$22e365a0$0432cd84@sleepy>
+References: <001101c31278$94dc0ad0$0432cd84@sleepy> <200305050616580441.028BA0E6@smtp.nikonbw.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000401c312e0$8bf85d70$0200a8c0@WKSJOHN>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,34 +19,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 5 May 2003 10:30:06 +0200, 
-"John Guntenaar" <john@guntenaar.nl> wrote in message 
-<000401c312e0$8bf85d70$0200a8c0@WKSJOHN>:
+> may be the problem is you don't try to use -i option, since you are using
+> INPUT chain right,
+> try to use it with that option
 
-> That won't work either because the IP's are aliased, so the all have
-> the same MAC address.
+Thanks, but it didn't work.  However, I withdraw the question, because
+(continued below)
 
-..you have everybody on the _same_ box???  'iptables -nL OUTPUT' ?
+> >CONFIG_IP_NF_CONNTRACK=y
+> >CONFIG_IP_NF_FTP=y
+> >CONFIG_IP_NF_IPTABLES=y
+> >CONFIG_IP_NF_FILTER=y
+[snip]
+> >is unrecognized.  Why is this?  Is there another kernel options that I
+> >should have included?
 
-..on your lan firewall; check 'iptables -nl FORWARD' for _outbound_
-rules, too, add port matches as needed.
-
-> I just want that userid 1234 can't use IP 1.2.3.4 BUT userid 1235 CAN
-> use that IP to bind for things like IRC sessions (for like a vhost or
-> something).
-
-..ok, hook up your userid to an ip alias and match that, _then_ drop
-irc traffic for your bad(?) buddies.  Rule _sequence_ rules.  ;-)
-You can set your irc sw to "talk" with just that one ip? 
-
-..no, I'm old school and too lazy to type at irc speed, so I have 
-_no_ idea.  ;-)
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
+Actually I missed at least two necessary kernel options.  I don't know how I
+missed them.  I'm having disk problems and can't compile right now, but
+let's assume the problem is solved.  Because of the disk problems my
+incoming mail is also down, so thanks to anyone else who sent solutions that
+didn't get through yet.
+David
 
 
