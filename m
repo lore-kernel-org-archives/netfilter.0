@@ -1,13 +1,11 @@
 From: Cody Harris <hchs@ns.sympatico.ca>
 Subject: Re: Hostname Routing
-Date: Sun, 7 Sep 2003 15:39:51 -0300
+Date: Sun, 7 Sep 2003 15:41:02 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309071539.51550.hchs@ns.sympatico.ca>
-References: <200309062053.43929.hchs@ns.sympatico.ca> <1062925865.1617.1.camel@kermit>
+Message-ID: <200309071541.02247.hchs@ns.sympatico.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1062925865.1617.1.camel@kermit>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,6 +17,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, netfilter-request@lists.netfilter.org
+
+Oops, forgot to add my message.
+
+This DOES not work (adding the line to /etc/hosts)
+
+----------  Forwarded Message  ----------
+
+Subject: Re: Hostname Routing
+Date: Sunday 07 September 2003 3:39 pm
+From: Cody Harris <hchs@ns.sympatico.ca>
 To: netfilter@lists.netfilter.org
 
 On Sunday 07 September 2003 6:11 am, Ralf Spenneberg wrote:
@@ -38,5 +47,7 @@ On Sunday 07 September 2003 6:11 am, Ralf Spenneberg wrote:
 > Cheers,
 >
 > Ralf
+
+-------------------------------------------------------
 
 
