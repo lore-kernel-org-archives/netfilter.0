@@ -1,13 +1,13 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: masquerading
-Date: Mon, 24 Feb 2003 15:51:06 +0530
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Forwarding problem, :( port redirection!
+Date: Mon, 24 Feb 2003 11:21:31 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004e01c2dbee$71539e40$13fcc5cb@Housecall>
-References: <1046076608.12098.24.camel@debian>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019BD5@hslex01.hslbz.local>
+References: <04a401c2dbdf$61d69d00$0b00000a@nocpc3>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <04a401c2dbdf$61d69d00$0b00000a@nocpc3>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +18,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Esteban <eribicic@sinectis.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-Hi
+> panic:/# iptables -t nat -A PREROUTING -i eth0 -p tcp -d
+> 203.190.72.108 --dport 21 -j DNAT --to 10.0.0.11:21
+> panic:/# iptables -A FORWARD -i eth0 -o eth1 -p tcp -d
+> 203.190.72.108 --dport 21 -j ACCEPT
+> panic:/# telnet 203.190.72.108 21
+> Trying 203.190.72.108...
+> telnet: Unable to connect to remote host: Connection refused
+> panic:/# telnet 10.0.0.11 21
+> Trying 10.0.0.11...
+> Connected to 10.0.0.11.
+> Escape character is '^]'.
+> 220 Dynu FTP Server (Version 1.13)
+> ^]
+> telnet> q
+> Connection closed.
+> panic:/# telnet 203.190.72.108 21
+> Trying 203.190.72.108...
+> telnet: Unable to connect to remote host: Connection refused
+> panic:/#
 
-AFAIK
-
-set another rule with ppp0 instead of eth2
-i think it should work
-
-hare
------ Original Message ----- 
-From: "Esteban" <eribicic@sinectis.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Monday, February 24, 2003 2:20 PM
-Subject: masquerading
+Did you load ip_conntrack_ftp and ip_nat_ftp ?
+And do you use :
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 
-> hello,
-> im masquerading my local network like this by now:
-> iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
-> everything works fine.
-> but, now i added another internet gw (ppp0) wich is balanced (iproute2)
-> with eth2.
-> how do i set the masquerading to balance both gws? (eth2 and ppp0) ?
-> thanks in advance
-> Steve
-> 
-> 
-> 
-> 
+Gr,
+Rob
 
 
