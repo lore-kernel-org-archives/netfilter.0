@@ -1,76 +1,75 @@
-From: "Michael K" <micke@klintan.se>
-Subject: RE: Mailserver
-Date: Sun, 30 Mar 2003 13:38:40 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000b01c2f6b0$e93273f0$0200a8c0@klintan.local>
-References: <NEBBICCJKLGJHMMNBPIKMEACEJAA.sbisgaard@xtrasource.com>
+From: Harald Welte <laforge@netfilter.org>
+Subject: [ANNOUNCE] iptables-1.2.8 feature freeze
+Date: Sun, 30 Mar 2003 22:23:22 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030330202322.GA7718@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <NEBBICCJKLGJHMMNBPIKMEACEJAA.sbisgaard@xtrasource.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qD80nKKiJWXm4UaL"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
-> Steffen Bisgaard
-> Sent: Monday, March 31, 2003 10:19 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Mailserver
-> 
-> 
-> Hallo list,
-> 
-> hopefully someone can help me here. I keep getting the below error (or
-> similar) on my mailserver.
-> 
-> CHAININ= OUT=eth0 SRC=m.y.i.p DST=66.162.207.18 LEN=52 
-> TOS=0x00 PREC=0x00
-> TTL=64 ID=32008 DF PROTO=TCP SPT=25 DPT=41018 WINDOW=11584 
-> RES=0x00 ACK FIN
-> URGP=0
-> END OF OUTPUT
-> CHAININ= OUT=eth0 SRC=m.y.i.p DST=66.162.207.18 LEN=52 
-> TOS=0x00 PREC=0x00
-> TTL=64 ID=32008 DF PROTO=TCP SPT=25 DPT=41018 WINDOW=11584 
-> RES=0x00 ACK FIN
-> URGP=0
-> END OF INPUT
-> CHAININ=eth0 OUT= MAC=00:06:5b:ed:67:6a:00:90:7f:1f:8d:e9:08:00
-> SRC=66.162.207.18 DST=m.y.i.p LEN=52 TOS=0x00 PREC=0x00 
-> TTL=44 ID=65006 DF
-> PROTO=TCP SPT=41018 DPT=25 WINDOW=6432 RES=0x00 ACK FIN URGP=0
-> END OF INPUT
-> CHAININ=eth0 OUT= MAC=00:06:5b:ed:67:6a:00:90:7f:1f:8d:e9:08:00
-> SRC=66.162.207.18 DST=m.y.i.p LEN=52 TOS=0x00 PREC=0x00 
-> TTL=44 ID=65006 DF
-> PROTO=TCP SPT=41018 DPT=25 WINDOW=6432 RES=0x00 ACK FIN URGP=0
-> END OF OUTPUT
-> 
-> How would I allow that through? Sorry for a simple question 
-> but as you can
-> guess I am very new to iptables.
-> 
-> Kind Regards
-> 
-> 
-
-Iptables -A INPUT -p TCP -d m.y.i.p --dport 25 -s 0/0 --sport 1024: -j
-ACCEPT
-Iptables -A OUTPUT -p TCP -s m.y.i.p --sport 25 -d 0/0 --dport 1024: -m
-state ESTABLISHED -j ACCEPT
-
-/Klintan
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
+--qD80nKKiJWXm4UaL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi my fellow netfilter users ;)
+
+iptbles-1.2.8 has been overdue for at least a couple of months now.  I'm
+starting to get lots of bug reports for stuff that is fixed in CVS for
+half a year.
+
+I'm now officially announcing a feature freeze for the 1.2.8 iptables
+release. =20
+
+Please test the CVS snapshot of today (will be published in 2 hours,
+just before midnight german time). The snapshot will be available at
+ftp://ftp.netfilter.org/pub/iptables/snapshot/iptables-1.2.7a-20030330.tar.=
+bz2
+
+Report any bugs you encounter to http://bugzilla.netfilter.org/.
+
+Apart from that, I will refuse to include any new features (for iptables
+userspace) for 7 days; expect iptables-1.2.8 to come up at April 6,
+2003.
+
+Thanks for your patience,
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--qD80nKKiJWXm4UaL
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE+h1I6XaXGVTD0i/8RAkwZAJ92ATcDMjZaw0XMr1E+zjOGAl2LsQCeI5f+
+B9UTrebeKllMwhcF3f9//lQ=
+=Y91H
+-----END PGP SIGNATURE-----
+
+--qD80nKKiJWXm4UaL--
 
