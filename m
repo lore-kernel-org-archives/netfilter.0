@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: port 25 & 110 forward
-Date: Tue, 15 Jul 2003 10:17:46 +0200
+From: "Osgaldo Suanzes" <osgaldo@tiscali.es>
+Subject: Quota Patch (samj@samj.net)
+Date: Tue, 15 Jul 2003 11:32:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E6D65A6EE5AAD6119DE800B0D03DA0C528973C@MS_LEU1>
-References: <091A6DF13847F44395B31658ED61C19C63A449@yellowstone.medclaim.local>
+Message-ID: <004a01c34ab4$0e712290$040a0ac0@bajoran5qxlt73>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <091A6DF13847F44395B31658ED61C19C63A449@yellowstone.medclaim.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,31 +18,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> I'm trying to forward smtp and pop3 from my router to my mail 
-> server at 10.13.110.1.  I've tried both of the following 
-> iptables commands, neither has worked.
-> 
-> $IPTABLES -t nat -A PREROUTING -i eth1 -p tcp --dport 25 -j 
-> DNAT --to 10.13.110.1 $IPTABLES -t nat -A PREROUTING -i eth1 
-> -p tcp --dport 110 -j DNAT --to 10.13.110.1 $IPTABLES -A 
-> FORWARD -p tcp -d 10.13.110.1 --dport 25 -j ACCEPT $IPTABLES 
-> -A FORWARD -p tcp -d 10.13.110.1 --dport 110 -j ACCEPT
-> 
-> 
-> $IPTABLES -t nat -A PREROUTING -d <public_ip> -p tcp --dport 
-> 25 -j DNAT --to 10.13.110.1:25 $IPTABLES -A FORWARD -p tcp 
-> --dport 25 -j ACCEPT $IPTABLES -t nat -A PREROUTING -d 
-> <public_ip> -p tcp --dport 110 -j DNAT --to 10.13.110.1:110 
-> $IPTABLES -A FORWARD -p tcp --dport 110 -j ACCEPT
+Hi.
+Can someone explain me if I can use this Patch, If I want to
+   assign a download quota( 20Mb) to my Server 192.168.0.2
 
-Do you also have the rule :
+Im not sure if this patch only allow to assign quotas by traffic type (icmp,
+http...)
+Can I assign quotas to an Ip Address? how must the rule look like?
 
-$IPTABLES -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+    example?:  is this ok?
 
-It might help.
+    # iptables -A INPUT -s 192.168.0.2  -m quota --quota 20000000 -j Accept
+    # iptables -A INPUT -s 192.168.0.2  -j DROP
 
 
-Gr,
-Rob
+
+   I have heard there is another modified Quota Patch out there, but Im not
+sure if
+    it fits my needs.
+http://www.ussg.iu.edu/hypermail/linux/net/0304.1/0002.html
+
+    Any comments are very appreciate,.
+
+    Thanks.
+                    Osgaldo
 
 
