@@ -1,8 +1,8 @@
-From: Carlo Pires <carlo@uga.com.br>
-Subject: iptables-1.2.8-20030929 does not compile connmark match lib module
-Date: Tue, 30 Sep 2003 16:22:54 -0300
+From: Edmund <kdtc@netfront.net>
+Subject: icmp echo requests
+Date: Mon, 29 Sep 2003 12:32:06 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F79D80E.2010903@uga.com.br>
+Message-ID: <3F77B5C6.1090007@netfront.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,24 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Group <netfilter@lists.netfilter.org>
 
-Well, after compile k2.4.22 with patch-o-matic-20030929 from snapshot I 
-had some problems to compile iptables-1.2.8-20030929. The match lib 
-module libipt_connmark didn't compile.
+Hi,
 
-iptables-1.2.8-20030929 seens to lack some .xxx-test file in extensions 
-after I check this I found missing the following files:
+I've been monitoring the NAT router with pktstat and am a little
+perturbed to see quite a lot of icmp echo requests.  Now I've
+setup my Linux firewall to reject icmp echo requests.
 
-.NETLINK.test
-.connmark-test
+Is this the right(?)/correct/valid/appropriate thing to do?
 
-Then I just put these files from iptables-1.2.8.tar.bz2 package to 
-extensions dir of iptables-1.2.8-20030929 package and everything 
-compiled well.
+Furthermore (just for clarification) using tcpdump, I get incoming
+icmp echo requests, but no response from my firewall(good thing
+right?.  This means the firewall is dropping/rejecting the
+echo requests?
 
-[]s
-Carlo
+
+Here is the line from the firewall script:
+
+
+iptables -A INPUT -i eth0 -p icmp --icmp-type 8 \
+        -j REJECT --reject-with icmp-host-unreachable
+
+
+
+Btw, I'm quite bothered about the pings.  It doesn't
+look right.
+
+-- 
+
+
+
 
 
