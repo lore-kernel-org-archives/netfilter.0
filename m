@@ -1,11 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: smtp / pop rules
-Date: Tue, 1 Feb 2005 10:47:19 -0500
-Message-ID: <20050201154719.GA29121@bender.817west.com>
-References: <246c3a2246c5ff.246c5ff246c3a2@vsnl.net>
+From: "Lennart A. Hansen" <lah@euclolland.dk>
+Subject: Re: NAT with REDIRECT #$%@ up...
+Date: Tue, 01 Feb 2005 16:52:34 +0100
+Message-ID: <41FFA5C2.2070406@euclolland.dk>
+References: <41FE2118.8020108@euclolland.dk>
+	<1107264403.4330.11.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <246c3a2246c5ff.246c5ff246c3a2@vsnl.net>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1107264403.4330.11.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,48 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter@lists.netfilter.org
 
-On Tue, Feb 01, 2005 at 08:02:58PM +0500, varun_saa@vsnl.net wrote:
-> Hello,
->       My server is Mandrake 10.1
-> eth0 is WAN with static IP connected to 512k DSL
-> eth1 is LAN
-> 
-> I have already configured NAT, etc..
-> 
-> I want my firewall to allow users to send
-> and recieve mails. 
-> 
-> I want add the following lines to my iptables :
-> 
-> -A INPUT -p tcp -m tcp --sport 110 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 110 -j ACCEPT
-> -A INPUT -p tcp -m tcp --sport 25 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
+Jason Opperisano wrote:
 
-is your firewall also your mail server?  if not--you need to be adding
-your rules to FORWARD, not INPUT.  and the source port of pop3/smtp
-traffic should be unprivileged; i.e.,
+> according to packet 6 in your capture, your proxy requires
+> authentication.  you cannot combine authentication and transparent
+> proxying; which will makes perfect sense if you think about it long
+> enough.
+>
+> as far as the checksum errors go--do you have an IP bound to br0?
+>
 
-  # allow packets part of an established connection
-  iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+No its far more stupid then that, in a tired nightly hour I did set 
+netmask 255.255.255.0 on br0 where it should be 255.0.0.0, when my 
+client tryes to reach the proxy
+ at port 3128 i HAS to go througt my gateway since it the only way thay 
+can reach each other. Strangely enough thay can.
 
-  # allow SMTP connections from LAN -> Internet
-  iptables -A FORWARD -i eth1 -o eth0 -p tcp --syn --sport 1024: \
-    --dport 25 -j ACCEPT
+Natually it will generate errors when the bridge tryed to trick the 
+client posing af the gateway.
 
-  # allow POP3 connections from LAN -> Internet
-  iptables -A FORWARD -i eth1 -o eth0 -p tcp --syn --sport 1024: \
-    --dport 110 -j ACCEPT
+Thanks anyway.
 
-HTH...
+> PS - amongst my friends i have a mouth like a sailor, but i don't see
+> how it's appropriate to set a subject line as you did, no matter how
+> frustrated you may be.
+>
+Sorry about that, no fence meant by it...
 
--j
+I'am very happy with IPTables and respect those how contributed to it. 
+Thanks guys.
 
---
-"I'll be deep in the cold, cold ground before I recognize Missoura!"
-        --The Simpsons
+-Lennart
 
