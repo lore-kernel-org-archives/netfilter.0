@@ -1,12 +1,11 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: loadbalancing for firewall
-Date: Tue, 12 Aug 2003 08:58:27 -0700
+From: Payal Rathod <payal-iptables@staticky.com>
+Subject: please advise on this rule
+Date: Wed, 13 Aug 2003 23:54:44 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E3634@alderaan.smgtec.com>
+Message-ID: <20030813182443.GA1468@linux.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,44 +15,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?J=E9r=F4me_GAUTHIER?= <JGAUTHIER@sqli.com>, netfilter@lists.netfilter.org
-
-Have you looked at the Linux Virtual Server?
-
-http://www.linuxvirtualserver.org/
-
-
------Original Message-----
-From: J=E9r=F4me GAUTHIER [mailto:JGAUTHIER@sqli.com]=20
-Sent: Tuesday, August 12, 2003 3:35 AM
-To: 'netfilter@lists.netfilter.org'
-Subject: loadbalancing for firewall
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 Hi,
+Does this FORWARD chain look ok in a simple NAT network where the Linux
+box is connected to the net.
 
-first sorry for my english !!
-
-I want to make a loadbalancing cluster of 2 firewall on redhat 8.0.
-
-each firewall have 5 interface.
-    -Lan interface
-    -DMZ interface=20
-    -External interface
-    -RAS
-    -semi-private
-
-I use keepalived for manage vrrp.
-
-Does keepalived can do loadbalancing ?? ( there is no realserver )
-if yes, where find some sample configuration
-if not, what product can i use ?
-
-Thanks a lot !
+Chain FORWARD (policy DROP)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          state
+RELATED,ESTABLISHED
+REJECT     tcp  --  192.168.10.1         0.0.0.0/0          tcp dpt:80
+reject-with icmp-port-unreachable
 
 
-Best Regards
+Is source 0/0 OK? Should be be 192.168.10.0/24 ?
+Will the third rule block outgoing connection from 192.168.10.1 to any
+server at port 80?
 
-jerome=20
+Thanks a lot and eagerly waiting for the reply.
+With warm regards,
+-Payal
 
+-- 
+"Visit GNU/Linux Success Stories"
+http://payal.staticky.com
+Guest-Book Section Updated.
 
