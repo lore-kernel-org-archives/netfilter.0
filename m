@@ -1,8 +1,8 @@
 From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
 Subject: RE: anti-dos
-Date: Thu, 29 Jan 2004 11:30:51 +0800
+Date: Thu, 29 Jan 2004 11:34:39 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E71642B5@overlord.overturemedia.com>
+Message-ID: <F22386C3FEB012449238672E38ED61E71642B6@overlord.overturemedia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -20,11 +20,12 @@ Content-Type: text/plain; charset="us-ascii"
 To: Ray Leach <raymondl@knowledgefactory.co.za>, "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
 
-Ray,
-Thank you for the rules.
-I'll be testing it out now.
+I forgot to ask.
+I am putting this before the rest of my rules, right? Will this allow =
+legit transaction to get through?
 
-Thanks again.
+Thanks.
+
 
 Cheers,
 
