@@ -1,15 +1,12 @@
-From: Brett Simpson <simpsonb@hillsboroughcounty.org>
-Subject: Re: Send local traffic to a different server.
-Date: Wed, 23 Jun 2004 12:53:52 -0400
+From: "IZEM Farid" <Farid.IZEM@abxlogistics.fr>
+Subject: Strange Behaviour with ICMP in SNAT
+Date: Wed, 23 Jun 2004 20:18:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088009632.4009.92.camel@simpsonb.hillsboroughcounty.org>
-References: <s0d956ae.099@GroupWise>
-	 <1088005171.2406.5.camel@wslinux-fractal.penson.com>
-Reply-To: simpsonb@hillsboroughcounty.org
+Message-ID: <B732FD42D68974438C1451C73C1D030FAEE9F7@FR92EX02.eu.abxlogistics.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1088005171.2406.5.camel@wslinux-fractal.penson.com>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,20 +17,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "B. McAninch" <bmcaninch@penson.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 2004-06-23 at 11:39, B. McAninch wrote:
-> Check that you have Netfilter kernel support for 'NAT of local
-> connections' (this may or may not help).
+Hi all,
 
-The source shows it's enabled. But since the binary Redhat kernel RPM
-doesn't always match what's in /usr/src/linux-2.4 do you know of another
-way I can check if it's enabled?
+We are currently testing NetFilter on Linux Slackware 9.0.
+We have configured our netfilter to make SNAT and DNAT.
+Some issues have been observed while configuring SNAT to allow ICMP.
+When implemented this rule, it takes some time before icmp being able to
+work.
+When rebooting the NetFilter box, the same strange behaviour is
+occurring.
+Howewer all other SNAT/DNAT rules implemented are working immediately,=20
+It' takes about 5 minutes until ICMP is working again.
 
-[*]     NAT of local connections (READ HELP)  
+It's a very strange behaviour, isn't it?
 
-Thanks,
-Brett
+Please find the rule for ICMP:=20
+
+Iptables -A POSTROUTING -p icmp -s 192.168.1.42 -d
+172.19.92.0/255.255.255.0 -j SNAT --to-source 172.19.93.200
+
+Any help would be appreciated.
+
+Best regards,
+
+Farid
+Email : farid.izem@abxlogistics.fr
 
 
