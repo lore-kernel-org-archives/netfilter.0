@@ -1,14 +1,12 @@
-From: Marc Lucke <marc@marcsnet.com>
-Subject: Re: netfilter digest, Vol 1 #1292 - 10 msgs
-Date: 11 Nov 2003 19:37:58 +1100
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: iprange
+Date: Tue, 11 Nov 2003 09:43:34 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068539878.14304.10.camel@hohum.marcsnet.com>
-References: <20031110120106.4132.41732.Mailman@netfilter-sponsored-by.noris.net>
-	 <1068503133.26846.12.camel@hohum.blue.net.au>
+Message-ID: <Pine.LNX.4.33.0311110937110.24817-100000@blackhole.kfki.hu>
+References: <Pine.LNX.4.58.0311101220310.488@fhynpb.envafyvqr.arg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1068503133.26846.12.camel@hohum.blue.net.au>
+In-Reply-To: <Pine.LNX.4.58.0311101220310.488@fhynpb.envafyvqr.arg>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,55 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Vigil <nvnwdfuq02@sneakemail.com>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Thanks Simon, and again, Antony,
+On Mon, 10 Nov 2003, Vigil wrote:
 
-Simon - I have investigated the server's local traffic in full and yes,
-the -i eth0 -o eth1 takes care of all of that.  Good thinking, though
-:-)
+> I take it nobody else uses iprange or any other new built plugins (connlimit,
+> realm, classify, connmark, netmap) with 1.2.9?
 
-It looks like you guys agree with me and my paradigm and that somehow my
-ISP is actually wrong.  The fact that my ISP is apparently undercharging
-me (go figure!) is a strangely unsettling thought and it is really
-difficult for me to believe that iptables OR my ISP are wrong.
+I have just checked and it works fine (2.4.22 kernel + 1.2.9 iptables
+release).
 
-I might have a hunt around - maybe slashdot - for someone that could
-shed some light on this situation.
+> On Fri, 7 Nov 2003, Vigil nvnwdfuq02-at-sneakemail.com |Netfilter Mailing List| wrote:
+>
+> >1.2.8 (from Slackware 9, without pom and iprange) was installed when I compiled
+> >1.2.9. I uninstalled it before installing 1.2.9. I then uninstalled 1.2.9,
+> >unpacked it and compiled and installed it again, just in case anything from
+> >1.2.8 was interfering. I then recompiled the kernel (2.4.22) and rebooted with
+> >the new 1.2.9, then uninstalled it and compiled and installed it again(!)
 
+I still suspect you have got two iptables binaries on your system and you
+start the previous one instead what you installed from source.
 
-good day to you all
-Marc
+iptables installed from source goes into /usr/local/sbin/iptables. Call
+the binary with full path to be sure.
 
-On Tue, 2003-11-11 at 12:21, Antony Stone wrote:
-> On Monday 10 November 2003 10:25 pm, Marc Lucke wrote:
-> 
-> > Antony - my thanks to you.  I rather suspected your answer would be
-> > true.  My problem is that I am getting very large differences in the
-> > usage I track using iptables and the usage that my ISP reports.
-> > iptables reports much more traffic - up to 12% in fact.  I have
-checked
-> > with the ISP who say they too only count layer 3 IP.
-> 
-> 12% is a lot, and the fact that you think you have 12% more traffic
-than your 
-> ISP does is more strange than if it were the other way around.
+Please don't try to guess the syntax: it works as it is documented in the
+manpage: iprange is an extension, so you must invoke it as
+'iptables .... -m iprange <iprange-options>' ...
 
-What about traffic from your host back to itself?
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
-For example, GNOME heavily uses the ORBIT corba server, which uses
-TCP/IP to communicate between interacting applications.
-
-Maybe you could add a separate rule for traffic from 127.0.0.1 and to
-your local host address back to the local machine, to measure that?
-
-NB: I'm no networking guru, so this may be a red herring...
-And I didn't see the original posting for this, so don't know if the
-server you are measuring traffic on is running anything else...
-
-
-Regards,
-
-Simon
 
