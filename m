@@ -1,10 +1,11 @@
-From: Rommy Taslim <rommyt@transportservices.com.au>
-Subject: RE: Multiple VPN Masquerading Works !! Thanks Everyone !
-Date: 10 Sep 2002 08:33:17 +1000
+From: "Michael" <michael@insulin-pumpers.org>
+Subject: one to one NAT
+Date: Mon, 9 Sep 2002 17:10:22 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1031610804.3572.4.camel@hyperno>
+Message-ID: <200209100010.g8A0AAr9027286@ns2.is.bizsystems.com>
+Reply-To: michael@insulin-pumpers.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,18 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: r.sterenborg@hsl-brabantzuid.nl, roy@karlsbakk.net
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> > But ehm.. You tried 2 pptp patches : from pom and from impsec.org
-> > Which one have you got working ?
+I've been messing around all day trying to get one to one NAT working 
+for my site. This is (I think) a typical DMZ application.
 
-> and - what kernel version did you use?
+INTERNET <==> linux/iptables <==> localnet
 
-I got it working with the one from pom 020825 with iptables 1.2.7a and
-kernel 2.4.19. I haven't try the one from impsec.org though.. Maybe I'll
-try that in the future... maybe.. :)
+linux ip 1.2.3.4 on eth1
+local net 192.168.1.0
 
-Rommy
+local net ip box 192.168.1.19
 
+I want to map 1.2.3.5 to a single address behind the linux box
+1.2.3.5 is mapped to eth1:0
+
+I can't determine if I should be using 'mangle' or a combination of 
+SNAT DNAT.
+
+A pointer to a good howto that has some details would be appreciated.
+
+Michael
+Michael@Insulin-Pumpers.org
 
