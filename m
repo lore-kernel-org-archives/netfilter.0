@@ -1,12 +1,14 @@
-From: "Erick Sanz" <ESanz@minorplanetusa.com>
-Subject: Strange behavior on IPtables
-Date: Wed, 01 Oct 2003 17:24:44 -0500
+From: Stephen Satchell <list@fluent2.pyramid.net>
+Subject: RE: urgent - netfilter rejecting 60% of DNS requests!
+Date: Thu, 02 Oct 2003 05:44:57 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <sf7b0de8.020@at-nw-gwweb.at-track.com>
+Message-ID: <5.2.1.1.0.20031002054252.01123ec8@fluent2.pyramid.net>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A15C406@wardrive.citadelcom
+ puter.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15C406@wardrive.citadelcom
+ puter.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +18,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: George Vieira <georgev@citadelcomputer.com.au>, mferrari@decidir.net, "Netfilter list (E-mail)" <netfilter@lists.samba.org>
+
+At 09:31 AM 10/2/2003 +1000, George Vieira wrote:
+>Are you sure this isn't a BIND problem and not iptables? If it's iptables 
+>then you should log all droped/rejected packets and find out which ones 
+>are dropping and why.
+>
+>Do you have some funky rules like dropping fragmented packets or anything 
+>else?
+>
+>Some BIND servers use TCP instead of UDP to transfer zone info but this 
+>may(not) be your problem.. LOG, LOG, LOG and if it doesn't catch it then 
+>it's probably a BIND issue..
+
+Another possibility is that the DNS request-response cycle is taking longer 
+than conntrack allows.  I have not found a way to tune this.  If you 
+suspect this is a problem, consider dropping stateful inspection for DNS 
+packets and use pure packet filtering rules to see if that fixes the problem.
+
+Some of the DNS lookups from dig are taking upwards of 30 seconds with some 
+DNS servers.
+
+Satch
 
 
-All,
 
-I have RedHat Linux AS with IPtables 1.2.4-2, and I am trying to rsh
-to two different systems:
+-- 
+"The beautiful part of writing is that you don't have to get it right the 
+first time, unlike, say, a brain surgeon." --Robert Cormier  
 
-128.2.2.1 and 128.1.2.1
-
-With the same permissions (see end of E-mail), the rsh to 128.1.2.1
-succeeds, when the rsh to 128.2.2.1 fails (from Ethereal sniffing,
-it seems as if the ACK tag to the second three way handshake when
-IPTABLES is running has a wrong sequence number).
-
-Once this ACK with wrong sequence number arrives, the system 
-waits until the client sends a FIN ACK and then finally sends the RST;
-but no data is ever sent.
-
-If I turn IPTABLES off, the rsh succeeds without any problems.
-
-Since the same ports are used for the authentication, it seems to
-me that they are not blocked.
-
-If you need the saved ethereal files, please let me know.
-
-Please help!
-
-iptables -A INPUT -s 128.1.2.1 -j ACCEPT
-iptables -A OUTPUT -d 128.1.2.1 -j ACCEPT
-iptables -A INPUT -s 128.2.2.1 -j ACCEPT
-iptables -A OUTPUT -d 128.2.2.1 -j ACCEPT
-
-Best regards,
-Erick Sanz
 
