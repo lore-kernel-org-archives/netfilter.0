@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Continuous attempt to connect to UDP port 2002
-Date: Mon, 16 Sep 2002 20:15:37 +0100
+Subject: Re: NAT Forwarding Problem
+Date: Mon, 16 Sep 2002 20:27:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020916191539.UFQI14766.mta05-svc.ntlworld.com@there>
-References: <C10C67C29E56FE48A787648B25C5A8CD9BFB@hercules.idea.com.mx>
+Message-ID: <20020916192726.EKDW287.mta02-svc.ntlworld.com@there>
+References: <001201c25dae$0d31dee0$6501a8c0@JCC>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <C10C67C29E56FE48A787648B25C5A8CD9BFB@hercules.idea.com.mx>
+In-Reply-To: <001201c25dae$0d31dee0$6501a8c0@JCC>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,37 +20,93 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 16 September 2002 5:33 pm, Omar Castaneda Acosta wrote:
+On Monday 16 September 2002 7:22 pm, Chen Ding wrote:
 
-> Has anyone experienced this?
+> Hi All,
 >
-> Sep 16 11:09:41 myhost kernel: Bad: IN=eth2 OUT=
-> MAC=00:e0:81:10:85:85:00:60:5c:f3:eb:f7:08:00 SRC=148.247.40.15
-> DST=148.223.7.178 LEN=69 TOS=0x00 PREC=0x00 TTL=52 ID=0 DF PROTO=UDP
-> SPT=2002 DPT=2002 LEN=49
+> I have four machines in the setting:
+>     Machine A:             192.168.1.81                 RedHat 7.3
+>     Machine B:             192.168.1.17                 RedHat 7.3
+>     Machine C:             192.168.1.101               Microsoft XP
+>     Machine D:             An public IP address      RedHat 7.3
+>
+> On Machine A, I have just one Rule:
+>
+>     iptables -t nat -A PREROUTING -d 192.168.1.81 -j DNAT --to-destination
+> 192.168.1.17
+>
+>---- pings:
+>     1. Machine C to ping 192.168.1.81:         OK (should actually ping
+> 192.168.1.17)
+>     2. Machine C to ping 192.168.1.17:         OK
+>     3. Machine A to pring 192.168.1.17:        OK
 
-I haven't experienced it myself, but it looks like it's either a Trojan Horse 
-called TransScout, or a worm called Slapper:
+You should be aware that ping does not care whether it gets replies from the 
+same address as it sent requests to.   What is actually happening here is 
+that you are sending an echo-request from machines A and C to addresses 81 
+and 17, but in both cases you are getting replies from 17.
 
-http://www.by-users.co.uk/faqs/security/whchport
-http://www.securezone.it/trojan/th10.htm
-http://www.simplelogic.org/oddports.html
+ICMP is happy doing this.   So is UDP.   TCP is not.
 
-http://www.glocksoft.com/trojan_list/TransScout.htm
+>     telnet:
 
-http://www.sophos.co.uk/virusinfo/analyses/linuxslappera.html
-http://securityresponse.symantec.com/avcenter/security/Content/2002.09.13.html
+Telnet is a TCP protocol.
 
-Looks like you're not the only one seeing it, either:
+>     1. Machine C to telnet 192.168.1.17:       OK
+>     2. Machine A to telnet 192.168.1.17:       OK
+>     3. Machine C to telnet 192.168.1.81:       No response
 
-http://isc.incidents.org/port_details.html?port=2002
+This is what I would expect to happen.
+
+> According to the rule, when Machine C telneting Machine A, Machine A should
+> forward packets to Machine B, resulting in telneting Machine B. If use
+> netstat, it did tell us that Machine A forwarded several packets.
+
+Yes, but what happens to the replies from B ???
+
+> However, if I change the rule on Machine A to forward all packets to
+> Machine D, everything works just fine. Machine C can telnet Machine A,
+> which ends up telneting Machine D.
+
+Correct, because A is a *router* between C and D.   A is not a router between 
+C and B - they are both on the same subnet.
+
+> My questions are:
+>     1. Is there anything wrong in my understanding of iptables?
+
+No, but you haven't fully thought through the routing inthis situation.
+
+Here's a clue:
+
+C sends TCP packet to port 23 (telnet) on machine A.   A DNATs this packet 
+and sends it on to B.   B receives it and replies to the source address, 
+which is C.
+
+Therefore C has sent a packet to A, and got a reply from B.   TCP doesn't 
+work like this, therefore C is confused and unhappy.
+
+If you want this situation to work (is there really any good reason why C has 
+to telnet A instead of B directly ?) you must make sure that the *reply* 
+packets from B go back through A in order to get to C, so that they get 
+reverse NATted on their way back through A.
+
+The two easiest ways to do this are:
+
+1. Set up a route on B telling it to route packets via A.
+
+2. Source NAT the packets at A as well as destination NATting them, so thet 
+when they reach B, they have a source of A, B replies to A, A reverse SNATs 
+and reverse DNATs the packets, and they return to C.
+
+You may want to consult the documentation on this:
+
+http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
 
 Antony.
 
 -- 
 
-Behind the counter a boy with a shaven head stared vacantly into space,
-a dozen spikes of microsoft protruding from the socket behind his ear.
+Anyone that's normal doesn't really achieve much.
 
- - William Gibson, Neuromancer
+ - Mark Blair, Australian rocket engineer
 
