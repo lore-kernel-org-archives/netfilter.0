@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: flushing
-Date: Fri, 28 Nov 2003 17:34:17 +0100
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: iptables basic concepts
+Date: Fri, 28 Nov 2003 17:39:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070037256.826.47.camel@elendil.intranet.cartel-securite.net>
-References: <1070035903.1086.6.camel@webmail.aeropostal.com.ve>
+Message-ID: <20031128163917.F1E3F7888@sterenborg.info>
+References: <000701c3b5ba$b42935d0$0200a8c0@ale>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1070035903.1086.6.camel@webmail.aeropostal.com.ve>
+In-Reply-To: <000701c3b5ba$b42935d0$0200a8c0@ale>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +17,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Juan Hernandez <alucard@kanux.com>
-Cc: Lista de netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Alejandro Cabrera Obed' <sisdis@tournet.com.ar>, "'Netfilter lista (iptables)'" <netfilter@lists.netfilter.org>
 
-Le ven 28/11/2003 =E0 17:11, Juan Hernandez a =E9crit :
-> is there any better way to delete everything in memory than iptables
-> -F?? it's just that it doesn't seem to delete everything sometimes
+> 1) What option is the best: at first I set the default 
+> policies in the chains and later I flush all the existing 
+> firewall rules or viceversa ???
+> 
+> 2) Is it a good practice to start the iptables firewalling 
+> rules from the rc.local script or is it better from the 
+> /etc/init.d/iptables script ??? (I use RH 9 and I start 
+> iptables from rc.local)
 
-iptables -F just flush all filter table rules. If your really want to
-flush _everything_, you have to :
+I'd :
+- stop kernel forwarding,
+- set the default policy (to DROP),
+- flush the chains (even if you think they're empty ; it won't hurt),
+- create the rules I need,
+- if needed, start kernel forwarding,
+- let the script start from /etc/init.d/iptables, or whatever the script is
+called.
 
-	flush rules (-F)
-	flush user chains (-X)
+The reason for the last step is that you want the iptables script started as
+quick as possible, so that there is (virtually) no time to hack the machine
+before the rules are loaded. Best would be to start the script first and
+then start the network so that the network isn't up before the rules are
+loaded.
+If you start it from /etc/rc.d/rc.local the script is started at the very
+end of the startup sequence and then the network is already started for some
+time.
 
-For all three tables :
 
-	iptables -t mangle -F
-	iptables -t mangle -X
-	iptables -t nat -F
-	iptables -t nat -X
-	iptables -F
-	iptables -X
+Gr,
+Rob
 
-And you're done ;) You'll maybe have to set default policy back also
-using -P.
-
-Note this won't flush conntrack table. To achieve this, you have to
-unload ip_conntrack module. This means that some existing NAT sessions
-will go on because state is still their.
-
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!=20
 
