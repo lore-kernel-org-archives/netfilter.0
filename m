@@ -1,13 +1,12 @@
-From: "Julius Wijaya" <wijayaj@gmx.net>
-Subject: Re: need help
-Date: Tue, 29 Apr 2003 14:35:08 +0700
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: How to block a range of IPs?
+Date: Tue, 29 Apr 2003 09:55:22 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304291435080189.013CC15F@smtp.nikonbw.com>
-References: <3EAE5239.3080605@naturesoft.net>
-Reply-To: wijayaj@gmx.net
-Content-Type: text/plain; charset="us-ascii"
+Message-ID: <Pine.LNX.4.33.0304290953500.32263-100000@blackhole.kfki.hu>
+References: <1051546485.1427.7.camel@jasiiitosh.nexusmgmt.com>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EAE5239.3080605@naturesoft.net>
+In-Reply-To: <1051546485.1427.7.camel@jasiiitosh.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: karthikeyan-rc@naturesoft.net, netfilter@lists.netfilter.org
+To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Cc: netfilter@lists.netfilter.org
 
-You can use MAC match option
+On 28 Apr 2003, John A. Sullivan III wrote:
 
-example:
+> You can  use the tool at http://subnetcreator.sourceforge.net/ to easily
+> determine which subnets are contained in your IP address range.  The
+> same logic is being built into the iptables+ management tool being
+> developed in http://iscs.sourceforge.net/ .  However,even better,it
+> appears there is a patch available in patch-o-matic that allows one to
+> enter a range directly in iptables.  I haven't tried it yet but hope to
+> do so soon to replace that logic in ISCS.  Good luck - John
 
-IPTABLES -A INPUT -m mac --mac-source 00:00:00:00:01:11
+As Martin pointed out, there is an iprange match in patch-o-matic by which
+one can specify IP address ranges.
 
-regards.
-JW
-
-*********** REPLY SEPARATOR  ***********
-
-On 29/04/2003 at 10:21 AM Karthik RC wrote:
-
->Hello ,
->   can we do IP/MAC filering through iptables..
->regards
->from karthik
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
