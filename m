@@ -1,11 +1,12 @@
-From: Ryan Anderson <ryan@michonline.com>
-Subject: Doing MASQ for Asheron's Call
-Date: Fri, 10 Oct 2003 19:45:27 -0400
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Doing MASQ for Asheron's Call
+Date: Fri, 10 Oct 2003 17:19:40 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031010234527.GR27657@michonline.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E68@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,77 +17,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Ryan Anderson <ryan@michonline.com>, netfilter@lists.netfilter.org
 
-In the 2.2 days, this game (Asheron's Call) would work with
-ip_masq_loose_udp turned on. (I think that's the right name.)
+Warning Hack alert!!!
 
-In 2.4, this functionality appears to be gone, at least with that name.
-From my reading of Netfilter/Conntrack howtos, it would seem that a
-NAT/CONNTRACK helper pair would do the job, but a confirmation would be
-appreciated.
+Ok, here is one way to bend the rules in the most inflexible hard coded
+hack that I could think of without recompiling.
 
-The game works, for a single machine, with a simple port-forwarding
-mechanism - the trick is that making it work for multiple machines
-becomes a significant amount of maintenace.
+Conntrack cannot fix this problem because the AC protocol is broken.
+There, I said it. Two machines behind cannot connect to the same server
+with the same source and destination ports. That is one reason why
+turbine made it worse and allowed you to change the port ranges used to
+connect. At that point it became nearly impossible to write a proper
+iptables module.=20
 
-The protocol is fairly simple - the client begins sending from UDP:9000
-to UDP:9000 on the server, then to UDP:9001 on the server.
+If you want to write it properly, you need to statefully inspect every
+packet that uses UDP. One better would be to have command line arguments
+into the kernel module which filters the IP addresses searched for the
+one coming from the Microsoft servers. You cannot use port filtering
+since the originating port from the client can and must be a
+self-defined port number.
 
-The server replies using the same ports - and eventually hands the
-client off to another server, which then uses the same port and replies
-back to the client.
+1. In order to get multiple AC's to work behind a firewall, you must set
+the port ranges on each client machine differently. Machine 1 =3D=3D =
+9000
+Machine2=3D 9100, etc.. This can be done in the AC configuration screen =
+if
+you run the ac binary directly. The following script doesn't use the
+conntrack, so it must be hard coded for every user. It is probably
+simpler to do it this way unless you have a lot of dynamically people
+playing AC.
 
-i.e (some duplicate lines remove for succinctness.):
-08:15:35.019186 c.c.c.c.9000 > s.s.s.47.9000: udp 20
-08:15:35.019354 c.c.c.c.9000 > s.s.s.47.9001: udp 20
-08:15:35.022703 c.c.c.c.9000 > s.s.s.47.9000: udp 292
-08:15:35.150427 s.s.s.47.9000 > c.c.c.c.9000: udp 36
-08:15:35.019186 c.c.c.c.9000 > s.s.s.47.9000: udp 20
-08:15:35.019354 c.c.c.c.9000 > s.s.s.47.9001: udp 20
-08:15:35.022703 c.c.c.c.9000 > s.s.s.47.9000: udp 292
+I am writing this from memory so there are probably simple errors
+within. This is also assuming a basic restrictive firewall is already
+configured.
 
-08:15:35.280787 s.s.s.48.9000 > c.c.c.c.9000: udp 122
+#!/bin/bash
 
-Note the new server IP.  There has not been a packet from the client to
-this IP.
+NET_AC=3D666.666.666.0
 
-Later on, another wrinkle appears:
+CLIENT1_IP=3D1.1.1.1
+CLIENT2_IP=3D2.2.2.2
+CLIENT1_PORTS=3D9000:9010
+CLIENT2_PORTS=3D9100:9110
 
-08:15:36.309581 s.s.s.48.9001 > c.c.c.c.9000: udp 28
+iptables -A FORWARD --destination ${NET_AC}/24 -p udp -m mport --dports
+${CLIENT1_PORTS},${CLIENT2_PORTS} -j ACCEPT
 
-Same (new) server, a new port.
+iptables -t nat -A PREROUTING --source ${NET_AC}/24 -p udp -m mport
+--dports ${CLIENT1_PORTS} -j DNAT --to ${CLIENT1_IP}
 
-Eventually, more wrinkles:
-8:15:46.830392 s.s.s.48.9000 > c.c.c.c.9000: udp 36
-08:15:46.884290 s.s.s.56.9004 > c.c.c.c.9000: udp 90
-08:15:46.884655 s.s.s.56.9004 > c.c.c.c.9000: udp 28
-08:15:47.104630 s.s.s.56.9005 > c.c.c.c.9000: udp 484
-08:15:47.104752 s.s.s.56.9005 > c.c.c.c.9000: udp 484
+iptables -t nat -A PREROUTING --source ${NET_AC}/24 -p udp -m mport
+--dports ${CLIENT2_PORTS} -j DNAT --to ${CLIENT2_IP}
 
-Another new server, 2 new ports.
 
-The only sane thing is that the following rules appear to be true:
-	The servers are fairly close to each other, IP-address wise -
-	i.e, a blatant assumption of "within the same /24 block" should
-	be safe.
-
-	The *client* only ever uses a single port to communicate to the
-	servers.
-
-Is this supportable with conntrack?  I took a stab at writing a module 9
-months ago, and got lost trying to figure out if I could support the /24
-idea sanely.
-
-I can provide a full tcpdump log of the game starting up until fully
-functional, if that would help, but I believe I have an accurate summary
-of the protocol above.
-
-Thanks in advance to anyone willing to help with this,
-
--- 
-
-Ryan Anderson
-  sometimes Pug Majere
 
