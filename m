@@ -1,14 +1,13 @@
-From: "pheusion@snet.net" <pheusion@snet.net>
-Subject: Re: Argh!  I'm kicking myself
-Date: Fri, 19 Dec 2003 16:39:34 -0500
+From: Eric Leblond <eric@regit.org>
+Subject: Re: iptables, uids, ssh and port forwarding.
+Date: Fri, 19 Dec 2003 23:24:11 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071869974.3634.7.camel@GenMicroSys>
-References: <015b01c3c670$99b77600$3dc2a70a@melita.com>
-Reply-To: pheusion@snet.net
+Message-ID: <1071872650.2120.12.camel@porky>
+References: <23FE389FE273D211BBB000A0C9ADF7E3B28CF7@MAIL1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-IUo0FMZVDDl0iopD2Ivq"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <015b01c3c670$99b77600$3dc2a70a@melita.com>
+In-Reply-To: <23FE389FE273D211BBB000A0C9ADF7E3B28CF7@MAIL1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +17,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Ian Hunter <ihunter@hunterweb.net>
+To: Keith Ealanta <kealanta@golfpartners.com.au>
 Cc: netfilter@lists.netfilter.org
 
-Wait, I think I understand the question now.
-(Correct me if I am wrong)
 
-If you have the match modules enabled, then that would be what 
-allows you to include AH/ESP match support,
-there was a patch for this, but might be included with distro's 
+--=-IUo0FMZVDDl0iopD2Ivq
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2003-12-19 at 15:42, Ian Hunter wrote:
-> For days now I've been trying to figure out how to recompile my Redhat
-> 2.4.20-24.9 kernel to allow masquerading IPSec ESP traffic.  I ran the
-> much-vaunted "grep -i masq /proc/ksyms" and to my chagrin got nothing back,
-> but on a lark decided I'd try "iptables -A FORWARD -t nat -i ppp0 -p esp -j
-> ACCEPT" just to see if it would fly and it did.  Of course.  And now you're
-> all laughing at me.
-> 
-> Where is this documented, that gre, esp, ah, and the like are acceptable
-> protocols?  The docs mention icmp, tcp, and udp only.
-> 
-> Is there such a document, or have I discovered a particular cover of the
-> netfilter doc-hole?
-> 
-> Ian
-> 
-> 
+Le jeu 18/12/2003 =C3=A0 05:19, Keith Ealanta a =C3=A9crit :
+> I've gathered that packets forwarded from elsewhere can't be restricted b=
+y
+> uid.
 
+You can't with standard mean but you can use nufw:
+	http://www.nufw.org
+to do so.
+
+> Is it different if the user is using ssh port-forwarding?
+> What I find myself needing to do is to allow a couple of external
+> contractors to have access to different points in our network.
+> While adequately trusted (i.e. I'm willing to let them ssh in) I'd like t=
+o
+> restrict where else they can connect to.
+> My thought was that, because the connection is coming through SSH, there =
+is
+> a local user associated with the connection.
+> Can anyone confirm this?
+
+sshd switch to if of user connected. So it has to be a user associated
+to if.
+
+> If not, and allowing that the contractors are not on fixed ip addresses, =
+how
+> would you recommend I allow (an unknown number of) people each to have
+> access to a different specific list of address/port pairs in my local
+> network?
+
+If it is not the case, you can :
+	- or use ipsec with provided keys
+	- or use nufw
+	- or use both : do tunnel and authenticate people in the tunnel
+
+NR,
+--=20
+Eric Leblond
+Nufw, Now User Filtering Works (http://www.nufw.org)
+
+--=-IUo0FMZVDDl0iopD2Ivq
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQA/43qKnxA7CdMWjzIRAnttAJ9VM3f7XgEJk0tWWzJPuwmgt41GXgCffuZd
+fyk+Qs6P93HkDxBlBG3EDeQ=
+=v8XL
+-----END PGP SIGNATURE-----
+
+--=-IUo0FMZVDDl0iopD2Ivq--
 
