@@ -1,13 +1,12 @@
-From: Jiann-Ming Su <sujiannming@gmail.com>
-Subject: Re: UDP atack
-Date: Wed, 29 Dec 2004 21:20:07 -0500
-Message-ID: <561dc326041229182018890329@mail.gmail.com>
-References: <1139dfe2041229172142fefdd@mail.gmail.com>
-Reply-To: Jiann-Ming Su <sujiannming@gmail.com>
+From: "David Whipp" <Whipp@sou.edu>
+Subject: Packet loss when IP precedence bit set by upstream Cisco
+	router
+Date: Thu, 30 Dec 2004 08:44:57 -0800
+Message-ID: <s1d3c014.088@gwdom.sou.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1139dfe2041229172142fefdd@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,22 +20,15 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 29 Dec 2004 23:21:19 -0200, Bruno Wallace
-<bruno.wallace@gmail.com> wrote:
-> Hello
-> did you saw this type of attack?
-> 
-> tcpdump
-> 22:42:00.565519 83.102.166.7 > 200.123.456.789: udp (frag 53995:25@512)
-> 22:42:20.174143 83.102.166.7 > 200.123.456.789: udp (frag 34877:25@512)
-> 22:44:45.756888 83.102.166.7 > 200.123.456.789: udp (frag 46589:25@512)
-> 22:46:40.741492 83.102.166.7 > 200.123.456.789 udp (frag 4052:25@512)
-> 22:47:02.074045 83.102.166.7 > 200.123.456.789: udp (frag 17141:25@512
+Upstream ISP uses IP precedence bit to classify and rate limit Internet
+traffic. We see a 10 - 20% packet loss at our linux firewall when
+traffic is high (6-8Mbps traffic with precedence bit set). Testing with
+iperf, traffic is not dropped when IP precedence is not set. No TOS or
+tc/qdisc has been configured (latest 2.4 kernel and 1.2.11 netfilter).
 
-Are you sure it's not gaming traffic?
+Tried
+iptables -A PREROUTING -t mangle -j TOS --set-tos Normal-Service
+Still had packet loss.
 
--- 
-Jiann-Ming Su
-"I have to decide between two equally frightening options. 
- If I wanted to do that, I'd vote." --Duckman
+Has anyone seen this? Suggestions for fix? 
 
