@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Network Diagramming Tool
-Date: Wed, 31 Mar 2004 00:32:56 +0100
+Subject: Re: Adding a flag to a packet
+Date: Wed, 31 Mar 2004 00:46:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403310032.56623.Antony@Soft-Solutions.co.uk>
-References: <20040330182010.55db9dce@darna.vectec.net>
+Message-ID: <200403310046.30116.Antony@Soft-Solutions.co.uk>
+References: <20040328155231.32b07799@darna.vectec.net> <20040330163510.4bddd065@darna.vectec.net> <1080684756.2471.113.camel@localhost>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040330182010.55db9dce@darna.vectec.net>
+In-Reply-To: <1080684756.2471.113.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,22 +21,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 30 March 2004 11:20 pm, Cody Harris wrote:
+On Tuesday 30 March 2004 11:12 pm, Tony Earnshaw wrote:
 
-> You know all those nice little pictures of networks people make? You know,
-> with the clouds and stuff. What program can i get to do that?
+> Hmmm ... to my mind you've just made an "unfriend" (uvenn) of one of the
+> gentlemen on this mailing list. On each mailing list there are one or
+> two gentlemen. These are those whom it is unwise (uklokt) to tangle
+> with. Even when one has had one or two.
 
-You could try Open Office.   http://www.openoffice.org
+Thanks for the compliment, Tony, but I took Cody's words at face value and 
+simply tried to understand what he was attempting with his network.
+
+Incidentally, what does uklokt mean?   I tried a Google for it and only got 
+Norwegian...
 
 Regards,
 
-Antony
+Antony.
 
 -- 
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing on usenet and in e-mail?
+There's no such thing as bad weather - only the wrong clothes.
+
+ - Billy Connolly
 
                                                      Please reply to the list;
                                                            please don't CC me.
