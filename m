@@ -1,13 +1,11 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Noob Question
-Date: Fri, 31 Oct 2003 16:25:39 +0200
+From: "David C. Hart" <DCH@TQMcube.com>
+Subject: Kernel, IPTables or Router Anomaly? Maybe me?
+Date: Fri, 31 Oct 2003 09:49:37 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067610339.16920.33.camel@raylinux.internal>
-References: <NGBBLGFEALDADHNDAAFFOEPIDMAA.kevin@perfht.com>
+Message-ID: <1067611776.1427.47.camel@main.tqmcube.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-p9AU5830cWaY0P2ToPWv"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Amj6Q6IM5r6MvWxSe4Ed"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NGBBLGFEALDADHNDAAFFOEPIDMAA.kevin@perfht.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,51 +15,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: iptables mailing list <netfilter@lists.netfilter.org>
 
 
---=-p9AU5830cWaY0P2ToPWv
+--=-Amj6Q6IM5r6MvWxSe4Ed
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2003-10-31 at 16:13, Kevin Smith wrote:
-> Does IPtables need to be recompiled every time you roll a new kernel?
-> I just compiled 2.4.22 and when my firewall (Shorewall) started, it
-> spit some "device busy" errors with ip_tables.o.=20
-> Kev
-No. The kernel source includes (at least as far as I recall) the
-iptables kernel space drivers/programs/libraries.
+I can't figure this out.
 
-The userspace tools (the iptables executables used to manage rules) are
-separate, and do not get recompiled every time you recompile the kernel.
+Our server has three internal IP addresses on two interfaces. So we have
+eth0, eth0:1 and eth1.
 
-The exception would be if you have iptables v0.1.0 (for example)
-userspace programs and in your kernel have iptables v1.2.8 source code,
-then there would be a mismatch, and the userspace programs may be
-incompatible with the kernel modules.
+"Oct 31 09:24:47 mail2 kernel: FIREWALLED: IN=3Deth1 OUT=3D
+MAC=3D00:09:5b:22:29:d1:00:06:25:e4:ed:a3:08:00 SRC=3D217.97.25.71 DST=3D19=
+2.
+168.0.5 LEN=3D404 TOS=3D0x00 PREC=3D0x00 TTL=3D111 ID=3D40607 PROTO=3DUDP S=
+PT=3D6022
+DPT=3D1434 LEN=3D384"
 
-Best to keep them all the same.
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+In this case, destination 192.168.0.5 is on eth0:1. Yet it shows as eth1
+with the eth1 MAC. This connections was NATed through the router so it
+never hit the eth1 interface. Here's part of the ifconfig.
 
---=-p9AU5830cWaY0P2ToPWv
+eth0      Link encap:Ethernet  HWaddr 00:50:04:65:E3:1B
+          inet addr:192.168.0.31  Bcast:192.168.0.255=20
+Mask:255.255.255.0
+
+eth0:1    Link encap:Ethernet  HWaddr 00:50:04:65:E3:1B
+          inet addr:192.168.0.5  Bcast:192.168.0.255  Mask:255.255.255.0
+
+eth1      Link encap:Ethernet  HWaddr 00:09:5B:22:29:D1
+          inet addr:192.168.0.32  Bcast:192.168.0.255=20
+Mask:255.255.255.0
+
+
+--=-Amj6Q6IM5r6MvWxSe4Ed
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQA/onDjh1fuR/Bv+ygRAhW1AKC0sTbff+onIAhOma/+/4qTjVBSywCfSts8
-fh3AlL74FRb6GOa6NsfrkVQ=
-=9zu/
+iD8DBQA/onaAol4OE0cpGaIRAtDiAKCs1TxWqf2Czj4S/+9OKi2VVDPgHQCeKL4J
+f2iVq9Fznx4q3jMY7V6w00U=
+=feWw
 -----END PGP SIGNATURE-----
 
---=-p9AU5830cWaY0P2ToPWv--
+--=-Amj6Q6IM5r6MvWxSe4Ed--
 
 
