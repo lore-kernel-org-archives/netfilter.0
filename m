@@ -1,10 +1,12 @@
-From: Ramoni <ramoni@databras.com.br>
-Subject: new connections
-Date: Sun, 6 Feb 2005 05:20:25 -0200
-Message-ID: <200502060520.25538.ramoni@databras.com.br>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: IDS better than hardcore iptables rules?
+Date: 06 Feb 2005 14:03:30 +0100
+Message-ID: <1107695009.20774.1.camel@nostromo.bgsecm.com>
+References: <186AC876521E0F46BDE77079A6567FD0F0DD9E@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
+	<20050206062935.GA9580@spawar.navy.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20050206062935.GA9580@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,25 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-People...
-What do you all think about make rules for new connections only ?
-Make all rules for new connections (--syn) and let the -m state --state 
-ESTABLISHED care about connectuions you have allowed ?
+El dom, 06 de 02 de 2005 a las 07:29, seberino@spawar.navy.mil escribi=C3=
+=B3:
+> Hudson & Ron
+>=20
+> I'm not sure there even exists documentation to explain
+> some of the DROP rules I see in firewall scripts.
+>=20
+> Have you seen guys like these?...
+>=20
+>  -p tcp --tcp-flags ACK,FIN FIN -j DROP
+>  -p tcp --tcp-flags ACK,PSH PSH -j DROP
+>  -p tcp --tcp-flags ACK,URG URG -j DROP
+>=20
+> What TCP/IP book tells you that FIN, PSH and URG packets
+> usually have ACK set?  **These** are the rules I don't
+> know how to understand.
+>=20
+> Chris
 
-I' ll aplly a poatch on my firewall to support the raw table, to use the 
-NOTRACK targe for cionnections that I does not need to track (and ensure a 
-connection response) for example:
-A connection from outside to my webserver, will always come from random port 
-to port 80 of my server, and the response will be from port80 to any port 
-outsdie.
+They *don't* have the ACK set, that's because they are
+dropped, because it's anormal traffic, probably portscans.
 
-Whats the really need to track this ? I can make rules allowing these and just 
-make connectinio tracking for connections from inside to outside that I wont 
-make rules expecting the response.
+Regards.
 
-Sorry for the bad english, as usually.
-Ramoni
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
 
