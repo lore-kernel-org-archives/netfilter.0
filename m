@@ -1,8 +1,9 @@
-From: "Lawrence G. Hunsicker" <lhunsicker@mchsi.com>
-Subject: Re:  Forwarding and masquerading got broken
-Date: Wed, 03 Dec 2003 23:43:38 -0600
+From: "Remus" <rmocius@auste.elnet.lt>
+Subject: Port Forwarding
+Date: Wed, 3 Dec 2003 08:26:43 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FCEC98A.8000703@mchsi.com>
+Message-ID: <039a01c3b977$41188a80$6e69690a@RIMAS>
+References: <3FCEC98A.8000703@mchsi.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,43 +16,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Michael Gale said:
+Hi folks,
 
-Hello,
+I have a PREROUTING rule:
+iptables -t nat -A PREROUTING -d $EXTERNALIP_1 -s some_external_IP -p 47 -j
+DNAT --to 192.168.0.19
 
-	Look the section"
---snip--
-# --------( Sysctl Tuning - Recommended Parameters )--------
-
-# Turn off IP forwarding by default
-# (this will be enabled if you require masquerading)
-
-if [ -e /proc/sys/net/ipv4/ip_forward ]; then
-   echo 0 > /proc/sys/net/ipv4/ip_forward
-fi
---snip--
-
-The "echo 0" in the "/proc/sys/net/ipv4/ip_forward" is disabling 
-ip_forwarding -- which is need to forward packets.
-
-Change the "echo 0" to "echo 1"
-
-Mike:
-
-Thanks for the suggestion.  Note, though, that further down in the file 
-there is a parallel section cating 1 to the same address to turn on 
-kernel forwarding.  I have checked the actual setting after boot up by 
-lessing the address, and it is indeed already set to one.  I'll check 
-changing this line, but I suspect that this is not where my problem is.
-
-Any other suggestions?
+How to add more source addresses which will be able to connect?
 
 
--- 
-Lawrence G. Hunsicker
-lhunsicker@mchsi.com
+Thanks in advance
+
+Remus
 
 
