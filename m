@@ -1,12 +1,13 @@
-From: Ted Gervais <ve1drg@av.eastlink.ca>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Port 25
-Date: Sun, 06 Feb 2005 15:54:30 -0400 (AST)
-Message-ID: <Pine.LNX.4.58.0502061551540.1318@linux>
+Date: Sun, 06 Feb 2005 15:04:38 -0500
+Message-ID: <1107720278.4679.40.camel@hubcap.ljm.dom>
 References: <Pine.LNX.4.58.0502061446150.1174@linux>
 	<1107718151.4679.28.camel@hubcap.ljm.dom>
+	<Pine.LNX.4.58.0502061551540.1318@linux>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-In-reply-to: <1107718151.4679.28.camel@hubcap.ljm.dom>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.LNX.4.58.0502061551540.1318@linux>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,94 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sun, 6 Feb 2005, Jason Opperisano wrote:
-
-
-> On Sun, 2005-02-06 at 13:51, Ted Gervais wrote:
-> > I have a problem getting mail packets to go out with my present firewall
-> > setup.
->
-> is the mail server on a machine behind the firewall, or running on the
-> firewall itself?
-
-On the firewall.
-
->
-> > What I have is a firewall that blocks/drops everything at the start and
-> > then it goes on to allow access through specific ports. For Port 25 or
-> > smtp to work, I have the following line which I was hoping to have mail
-> > coming and going with this statement. However, outgoing mail can go, but
-> > incoming has a problem:
+On Sun, 2005-02-06 at 14:54, Ted Gervais wrote:
+> On Sun, 6 Feb 2005, Jason Opperisano wrote:
+> 
+> 
+> > On Sun, 2005-02-06 at 13:51, Ted Gervais wrote:
+> > > I have a problem getting mail packets to go out with my present firewall
+> > > setup.
 > >
-> > /usr/sbin/iptables -A INPUT -p tcp --destination-port 25 -j ACCEPT
->
-> this allows TCP port 25 connections to the firewall itself.
+> > is the mail server on a machine behind the firewall, or running on the
+> > firewall itself?
+> 
+> On the firewall.
 
-.
->
-> > I also tried the following two lines to see if things would work but to no
-> > avail..:
-> >
-> > iptables -A OUTPUT -o $INTERNET -p tcp -s $IPADDR --sport $UNPRIVPORTS \
-> > --dport 25 -j ACCEPT
->
-> that allows the firewall itself to send TCP packets out interface
-> $INTERNET with if the source IP is $IPADDR, source port is $UNPRIVPORTS
-> and the destination port is 25.
+k--here's the basic idea:
 
-.
->
-> > iptables -A INPUT -i $INTERNET -p tcp ! --syn --sport 25 -d $IPADDR \
-> > --dport $UNPRIVPORTS -j ACCEPT
->
-> allows TCP packets destined for the firewall itself inbound on interface
-> $INTERNET with flag SYN unset out of SYN, ACK, and RST, a source port of
-> 25, destination IP $IPADDR and a destination port of $UNPRIVPORTS
->
-> > So, if I take the firewall down, mail comes and goes just great..
-> > What am I not seeing here??
->
-> first off--let me introduce you to a rule that (IMHO) should be at the
-> top of all your built-in filter chains (INPUT, OUTPUT, FORWARD):
->
->   iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+  # allow established packets in
+  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+  
+  # allow mail in
+  iptables -A INPUT -p tcp --syn --dport 25 -j ACCEPT
 
-Alright.  I just added it to my script.
+  # allow established packets out
+  iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
->
-> which will eliminate things like mr. "iptables -A INPUT -i $INTERNET -p
-> tcp ! --syn --sport 25 -d $IPADDR --dport $UNPRIVPORTS -j ACCEPT"
-> above...
->
-> second--if the mail server is running on a machine other than the
-> firewall itself--you need to be added rules to the FORWARD chain of the
-> filter table, not INPUT/OUTPUT.
+  # allow mail out
+  iptables -A OUTPUT -p tcp --syn --dport 25 -j ACCEPT
 
-Nope. Same machine
+  # allow dns lookups out
+  iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
 
->
-> all this (and much more) knowledge can dropped on a brother at:
->
->   http://iptables-tutorial.frozentux.net/iptables-tutorial.html
->
-> -j
->
-> --
-> "I bent my wookie."
-> 	--The Simpsons
->
->
+-j
 
----
-The big cities of America are becoming Third World countries.
-                -- Nora Ephron
+--
+"Well, I'm not calling you a liar, but... I can't think of a way to
+ finish that sentence."
+	--The Simpsons
 
-
-Ted Gervais
-Coldbrook Nova Scotia
-Canada B4R1A7
 
