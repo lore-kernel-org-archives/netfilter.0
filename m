@@ -1,10 +1,13 @@
-From: "James R. Hay" <jrhay@HayA.QC.CA>
-Subject: Filtering out spoofed network addresses
-Date: Mon, 30 Jun 2003 10:42:13 -0400 (EDT)
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: netfilter resets TCP conversation that was DNATed from the local machine to another
+Date: Mon, 30 Jun 2003 10:52:29 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0306301039060.23945-100000@hay.haya.qc.ca>
+Message-ID: <20030630145229.GB29083@cannon.eng.us.uu.net>
+References: <3EFD10A2.6020807@adsl-209-204-165-151.sonic.net> <20030630020152.GA27602@cannon.eng.us.uu.net> <3EFF9ED5.9070808@adsl-209-204-165-151.sonic.net> <20030630142908.GA29083@cannon.eng.us.uu.net> <1056984240.1473.18.camel@raylinux.internal>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <1056984240.1473.18.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,31 +17,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
+On Mon, Jun 30, 2003 at 04:44:00PM +0200, Ray Leach wrote:
 
-Hi folks,
+> This is an IE browser problem.
+> Normal browsers don't send RST after the connection has ended.
 
-Somewhere I must be missing something.  Fairly regularly we see SYN Flood
-attacks which come from addresses of the form x.x.0.0.  Since the address
-on each incoming packet changes rate limiting doesn't help with this and
-it isn't practical to include 65,000+ rules to drop each address ending in
-.0.0.
+He hasn't said anything about a browser running on his squid machine (yet).
+And besides I don't think you have IE for linux, do you?
+My whole point is the RST from a different port is annoying/weird but
+harmless to that particular connection.
 
-My question is, is there an easy way to get iptables to drop these
-addresses so that they don't get forwarded to the network?
+My feeling is that he's providing just part of the facts...
 
-As I say I may have missed something so any assistance will be
-appreciated.
-
-Jim.
-
-James R. Hay				jrhay@haya.qc.ca
-Hay-Net Networks
-P.O. Box 46051
-Pointe Claire, QC
-H9R 5R4
-
+Ramin
 
