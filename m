@@ -1,14 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: patch-o-matic and kernel-2.6.5?
-Date: Wed, 16 Jun 2004 20:58:42 +0200
+From: =?iso-8859-1?q?Luis=20GUSTAVO?= <lgpcf@yahoo.com.br>
+Subject: VPN PPTP
+Date: Wed, 16 Jun 2004 16:12:46 -0300 (ART)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087412321.1901.1.camel@anduril.intranet.cartel-securite.net>
-References: <20040615063616.13078.qmail@web61307.mail.yahoo.com>
-	 <Pine.LNX.4.56.0406160936120.6394@pali.cps.cmich.edu>
+Message-ID: <20040616191246.81028.qmail@web50204.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.56.0406160936120.6394@pali.cps.cmich.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +15,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Ishwar Rattan <ishwar@pali.cps.cmich.edu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le mer 16/06/2004 =E0 15:37, Ishwar Rattan a =E9crit :
-> Is the patch available for 2.6.x kernels?
-
-Yes, it is called patch-o-matic-ng. See :
-
-	http://www.netfilter.org/downloads.html#pomng-20040302
+hi people,
 
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+I make nat with my linux, and i have other machine
+windo 2000 server installed and configured vpn with
+pptp.
+
+
+and i want forward:
+
+port 1723 and the protocol GRE.
+
+
+how can i make this.
+
+
+
+=====
+
+Luis GUSTAVO         lgpcf(arroba)yahoo(ponto)com(ponto)br
++55 (21) 9891-3560    
+---------------------------------------------------------------------------------
+ 
+
+
+
+
+
+
+
+
+
+
+______________________________________________________________________
+
+Yahoo! Messenger - Fale com seus amigos online. Instale agora! 
+http://br.download.yahoo.com/messenger/
 
