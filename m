@@ -1,10 +1,9 @@
-From: Eric Marchionni <mailing-lists@gmx.ch>
-Subject: Re: a sort of n00b question here but I'ld like to know.
-Date: Tue, 21 Oct 2003 01:37:13 +0200
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: curious about interface rule
+Date: Mon, 20 Oct 2003 19:59:00 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F9471A9.7060902@gmx.ch>
+Message-ID: <Pine.LNX.4.44.0310201956210.2100-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,19 +14,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-SBlaze wrote:
-
->As I said this is probably a n00bish question but i'm curious. Since iptables
->is hooked into the kernel; would it show up as usage in the top or uptime statistics?
->
-i'd like to know that as well ;-D
-
-cheers,
-eric
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: iptables mailing list <netfilter@lists.netfilter.org>
 
 
+  a question i just saw posted on another list -- when you select
+an interface in a rule, like "eth0", does that include all of its
+aliases like eth0:0, eth0:1, and so on?
+
+  i would have initially thought yes, but if each of these aliases
+can have a different IP address associated with it, what happens
+when you add a destination IP address selector such as
+"-d 10.1.2.3", which is associated to only one of those aliases?
+
+  or am i making any sense?
+
+rday
 
 
