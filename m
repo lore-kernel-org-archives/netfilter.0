@@ -1,13 +1,13 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Strange traffic from a user ...
-Date: Tue, 10 Feb 2004 11:30:20 +0200
+From: "Marc Fargas" <telenieko@telenieko.com>
+Subject: RE: Need urgent help on NAT/load sharing
+Date: Fri, 6 Feb 2004 11:29:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1076405419.2266.0.camel@raylinux.internal>
-References: <1075970665.5355.5.camel@raylinux.internal>
+Message-ID: <42F50AA0D75@fargas.com>
+References: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-gtTngjqOKPNnQZF48zCl"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1075970665.5355.5.camel@raylinux.internal>
+In-Reply-To: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+The Linux Advanced Routing Howto makes a point on it, take a look at
+www.lartc.org specifically:
+http://lartc.org/howto/lartc.rpdb.multiple-links.html
+You'll only have to change the weight on the lines. Also note that you can
+onlky balance outgoing connections that way, not inbound ones.
+
+Hope this helps you ;)
 
 
---=-gtTngjqOKPNnQZF48zCl
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2004-02-05 at 10:44, Ray Leach wrote:
-> Hi all
->=20
-> Can someone tell me what this is?
->=20
-<snip>
-> The destinations appear to be dialup ip addresses. Maybe a worm or
-> spyware?
->=20
-Or Kazaa ....
+-----Mensaje original-----
+De: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] En nombre de Saeed Zamani
+Enviado el: jueves, 05 de febrero de 2004 18:25
+Para: netfilter@lists.netfilter.org
+Asunto: Need urgent help on NAT/load sharing
 
-> Regards
->=20
-> Ray
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+Hi all,
+   I am new to list and have a basic nat question on Redhat Linux 9. I
+have to translate my local IP ( 192.168.1.0/24 ) to two different public
+IP given by two different ISP ( IPE1 & IPE2 ) at a specified rate. For
+example for every 4 received packet, one have to translate to IPE1 and
+other three to IPE2. I need this for load balacing the internet traffic
+between two isp. At the end, it is excellent if there is an option that
+If one the ISP gateway is dead, all packets have to translate to other
+public IP. Please help me. 
+Thanks, 
+Saeed Zamani, 
+Technical Manager, 
+Concept FZ LLC. 
 
---=-gtTngjqOKPNnQZF48zCl
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQBAKKSrh1fuR/Bv+ygRAj77AKCZBN2N8v04Kzfn7Qm6SNzJlR2ptQCfb2BX
-AtTRMrxQcfn+YY5vEVyCj9M=
-=mxKA
------END PGP SIGNATURE-----
 
---=-gtTngjqOKPNnQZF48zCl--
+
+
 
 
