@@ -1,11 +1,12 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Help debugging iptables firewall....
-Date: Tue, 25 Jan 2005 14:11:30 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F019924@pxtvjoexd01.pxt.primeexalia.com>
+From: Gavin Carr <gavin@openfusion.com.au>
+Subject: Re: Connection failing to SNAT
+Date: Wed, 26 Jan 2005 10:29:43 +1100
+Message-ID: <20050125232943.GA22043@openfusion.com.au>
+References: <20050125111802.GA19384@openfusion.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <20050125111802.GA19384@openfusion.com.au>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,45 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Greg Cope <gregcope@gmail.com>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Greg,=20
+On Tue, Jan 25, 2005 at 10:18:02PM +1100, Gavin Carr wrote:
+> Added some logging like so:
+> 
+>   # Log mangle POSTROUTING
+>   $IPT -t mangle -A POSTROUTING -o $EXT -j LOG --log-prefix 'MANGLE POST: '
+> 
+>   # Turn on SNAT
+>   $IPT -t nat -A POSTROUTING -o $EXT -j LOG --log-prefix 'POSTROUTING1: '
+>   $IPT -t nat -A POSTROUTING -o $EXT -j SNAT --to-source 203.213.47.14
+>   $IPT -t nat -A POSTROUTING -o $EXT -j LOG --log-prefix 'POSTROUTING2: '
+> 
+> and all I see in the logs for the bad connection is the 'MANGLE POST'
+> packets - no 'POSTROUTING1' shows up at all. So it looks like the packets
+> are just skipping the nat table altogether somehow?
 
-This might be real dump but do you have IP forwarding enabled?  If you
-do then NAT's isn't necessary between the LANs. =20
+This does seem to be the core problem - packets are being logged in the 
+mangle POSTROUTING table, but then not showing up in the nat POSTROUTING 
+table. Not all packets, though - just these problem ones. Anyone have
+any idea how this can happen? All the diagrams I've seen seem to indicate
+that mangle and nat postrouting are strictly sequential?
 
-Gary=20
+All suggestions gratefully received.
 
+Cheers,
+Gavin
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
-> bounces@lists.netfilter.org] On Behalf Of Greg Cope
-> Sent: Tuesday, January 25, 2005 2:07 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Help debugging iptables firewall....
->=20
-> Bingo.
->=20
-> Seemed to have solved it.  I noticed that without the firewall running
-> the following rule was in the stop section:
->=20
-> iptables -t nat -A POSTROUTING -s 192.168.0.0/24  -j MASQUERADE
->=20
-> Looking at the tcp dumps when it "worked" without the firewall the db
-> server thought it was talking to the firewall.
->=20
-> When the firewall was on the db server was failing to talk to the
-> webserver, and the conection packet got through, but there never
-> seemed to be an ack packet backout.
->=20
-> I am a bit confused, but it seems to work now - which is good until
-> tomorrow morning.
->=20
-> Thanks for your help.
->=20
-> Not sure what the right way to do it is.  I suppose the LAN should be
-> masqueraded to the DMZ hosts, as the DMZ hosts should not have
-> detailed knowledge of the LAN side.
->=20
-> Greg
 
