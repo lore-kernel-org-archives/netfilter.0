@@ -1,10 +1,9 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Port 25
-Date: Sun, 6 Feb 2005 15:44:56 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10502061541590.352-100000@darkstar.sysinfo.com>
-References: <Pine.LNX.4.58.0502061446150.1174@linux>
+From: Ron Peterson <rpeterso@mtholyoke.edu>
+Subject: blocking dhcp on bridge
+Date: Sun, 6 Feb 2005 16:01:54 -0500
+Message-ID: <20050206210154.GA20344@mtholyoke.edu>
 Mime-Version: 1.0
-In-Reply-To: <Pine.LNX.4.58.0502061446150.1174@linux>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,57 +14,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ted Gervais <ve1drg@av.eastlink.ca>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sun, 6 Feb 2005, Ted Gervais wrote:
+I am running a dhcp server on a bridging firewall.  The dhcp server runs
+on br0.  I have eth0 connected to my 'private' network, and eth1
+connected to my 'public' network.
 
-> 
-> I have a problem getting mail packets to go out with my present firewall
-> setup.
-> 
-> What I have is a firewall that blocks/drops everything at the start and
-> then it goes on to allow access through specific ports. For Port 25 or
-> smtp to work, I have the following line which I was hoping to have mail
-> coming and going with this statement. However, outgoing mail can go, but
-> incoming has a problem:
-> 
-> /usr/sbin/iptables -A INPUT -p tcp --destination-port 25 -j ACCEPT
-> 
-> I also tried the following two lines to see if things would work but to no
-> avail..:
-> 
-> iptables -A OUTPUT -o $INTERNET -p tcp -s $IPADDR --sport $UNPRIVPORTS \
-> --dport 25 -j ACCEPT
-> iptables -A INPUT -i $INTERNET -p tcp ! --syn --sport 25 -d $IPADDR \
-> --dport $UNPRIVPORTS -j ACCEPT
-> 
-> So, if I take the firewall down, mail comes and goes just great..
-> What am I not seeing here??
-> 
+I only want this dhcp server to service dhcp requests from the private
+network.  Any dhcp requests entering via eth1, or any dhcp replies being
+sent via eth1 should be dropped.
 
-It's very likely the other systems sending in e-mail are hanging waiting
-on ident, port 113, try either allowing ident to pass or setting a REJECT
-on attempts to that port and see if that helps, and you might well get
-hung with DNS lookups with newer sendmails. Make sure the sendmail server
-can reach out and touch the DNS tree.
+(On the alternative solutions front... NAT'ing isn't really an option; I
+have administrative staff on the private side of the bridge who need
+access to an exchange server (ack, not mine!).  Stupid exchange mail
+server needs to be able to initiate contact to the clients sometimes.
+The whole setup is basically predicated on the need to treat
+unregistered computers on the private side of the bridge differently
+than unregistered computers on the public side.  I'd really rather not
+add yet more hardware to this setup if possible..)
 
-Thanks,
+I have tried various combinations of physdev prerouting postrouting
+input output etc. rules, but have yet to successfully prevent this box
+from recieving and responding to dhcp requests from the public network.
+In the set of rules I'm trying below, for example, you can see that I'm
+dropping at least some packets with a bootpc source port (but not all,
+see tcpdump output below).  None of the other rules are catching any
+packets at all.
 
-Ron DuFresne
+382# iptables -L -v -t nat
+Chain PREROUTING (policy ACCEPT 4882K packets, 2316M bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DROP       udp  --  eth1   any     anywhere             anywhere            udp dpt:bootps
+    0     0 DROP       udp  --  eth1   any     anywhere             anywhere            udp spt:bootpc
+   64 21106 DROP       udp  --  any    any     anywhere             anywhere            PHYSDEV match --physdev-in eth1 udp spt:bootpc
+    0     0 DROP       udp  --  any    any     anywhere             anywhere            PHYSDEV match --physdev-is-in --physdev-in eth1 udp dpt:bootps
+
+Chain POSTROUTING (policy ACCEPT 1348K packets, 227M bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DROP       udp  --  any    eth1    anywhere             anywhere            udp spt:bootps
+    0     0 DROP       udp  --  any    eth1    anywhere             anywhere            udp dpt:bootpc
+    0     0 DROP       udp  --  any    any     anywhere             anywhere            PHYSDEV match --physdev-is-out --physdev-out eth1 --physdev-is-bridged udp spt:bootps
+    0     0 DROP       udp  --  any    any     anywhere             anywhere            PHYSDEV match --physdev-is-out --physdev-out eth1 udp spt:bootps
+    0     0 DROP       udp  --  any    any     anywhere             anywhere            PHYSDEV match --physdev-is-out --physdev-out eth1 udp dpt:bootpc
+
+You can see in the tcpdump output that follows that dhcp requests are
+still being recieved and responded to (I can tell you from the mac
+addresses involved that these requests are on the 'public' network.)
+(fil49a is the dual-homed box I'm talking about).
+
+15:50:23.264842 IP fil49a.mtholyoke.edu.bootps > n227-35.mtholyoke.edu.bootpc: BOOTP/DHCP, Reply, length: 300
+15:50:23.265473 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, Request from 00:04:5a:58:24:5b, length: 300
+15:50:28.463293 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, Request from 00:02:2d:7e:1a:5c, length: 300
+15:50:28.463699 IP fil49a.mtholyoke.edu.bootps > n229-76.mtholyoke.edu.bootpc: BOOTP/DHCP, Reply, length: 300
+15:50:33.269991 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, Request from 00:04:5a:58:24:5b, length: 300
+
+I'm using iptables 1.2.9 on Ubuntu linux 2.6.8.1-4-686.
+
+?
+
 -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
-
+Ron Peterson
+Network & Systems Manager
+Mount Holyoke College
+http://www.mtholyoke.edu/~rpeterso
 
