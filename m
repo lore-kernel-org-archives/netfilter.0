@@ -1,11 +1,13 @@
-From: Yvonne & Paul Keser <kesers@earthlink.net>
-Subject: Re: setting up NAT to a internal network. {Scanned}
-Date: Tue, 22 Jul 2003 13:12:03 -0700 (GMT)
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: ssl forward / proxy question
+Date: Fri, 25 Jul 2003 15:33:03 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1629345.1058904747863.JavaMail.nobody@bert.psp.pas.earthlink.net>
+Message-ID: <20030725193303.GB30070@cannon.eng.us.uu.net>
+References: <20030725001249.9399.qmail@saturn5.com> <006701c352db$e891a380$05001aac@breton1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <006701c352db$e891a380$05001aac@breton1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,70 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Support <support@computer-medic.us>, iptables <netfilter@lists.netfilter.org>
-Cc: paul@keser.com
+Content-Transfer-Encoding: 7bit
+To: Garcia Ruiz <gar_ruiz@teleline.es>
+Cc: jen@saturn5.com, netfilter@lists.netfilter.org
 
-You need to add a more specific route for 192.168.0.0/20 pointing to 192.168.48.1
+You mean squid is going to handle the "get" requests for https??????
+Meaning it's terminating SSL, sending the right cert, negotiating a
+session key with the client, getting the request and fetching the
+contents based on the "get" request from the right web server on the
+LAN????
 
-The easy way would be to put this on the smoothwall.  I have no experience with
-smoothwall but you should be able to add additional static routes
-unless the have gutted the routing functionality of the original OS.
-Normally a router will look for the best match so if the more specific route matches
-it will use it, if not it will go to the default.  If smoothwall won't allow this you
-still have 2 options, add another interface to the smoothwall (if possible)
-and hang 192.168.0.0/20 off that interface or configure all the hosts 
-on 192.168.48.0/20 with the static route for 192.168.0.0/20 to point to 
-192.168.48.1.
+Can you confirm all the above? If so, squid is a big security hole,
+but I'm sure it's not:
 
-I hope this helps...I have a little iptables experience but a lot of routing experience.
+http://www.squid-cache.org/Doc/FAQ/FAQ-1.html#ss1.12
 
-Sorry if the formatting of this email is funky.  I am using earthlink's webmail.  It will probably bounce for the mailing list since it won't be coming from my domain address.
+Ramin
 
--PaulK
--------Original Message-------
-From: Support <support@computer-medic.us>
-Sent: 07/22/03 09:12 AM
-To: iptables <netfilter@lists.netfilter.org>
-Subject: setting up NAT to a internal network. {Scanned}
+On Fri, Jul 25, 2003 at 08:38:14PM +0200, Garcia Ruiz wrote:
 
+> Have a look at Squid proxy. The last releases admit SSL reverse proxying. If
+> it would be capable of handling different servers your problem would be
+> solved. You could have it inside of the firewall (but be careful with
+> security issues).
 > 
-> Hello All, I'm new to iptables so go easy on me.
-I'm using Smoothwall OS as my router / firewall. I have two internal
-networks. I need the first network to have access to the second network
-that is NATed to the first network. The first network has default route
-to the Smoothwall router. Is there anyway to tell iptables that if the
-destination is the second network to NAT or direct the packet the
-internal router (192.168.48.1)?
-
-
-ISP
-|
-XXX.XXX.XXX.XXX DHCP eth1
-Smoothwall Router / Firewall
-192.168.48.98/20 eth0
-|
-|
-_______________________________________
-|First Network            	   	|Second Network
-|                         	   	|
-192.168.48.0/20   	   	   	192.168.48.1/20
-Workstations   	   	   	Internal Router
-GW 192.168.48.98   	   	192.168.0.0/20
-
-
-PS I also posted this on Smoothwalls list and was told they can't help.
-
-Please help!!
-
-Thanks, David
-
-
--- 
-This message has been scanned for viruses and
-dangerous content by www.Computer-Medic.us, and is
-believed to be clean.
-support@computer-medic.us
-
-
+> Regards.
 > 
+> BGR
 
