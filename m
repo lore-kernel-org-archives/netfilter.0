@@ -1,9 +1,12 @@
-From: "Aaron S. Joyner" <aaron@joyner.ws>
-Subject: Multiple subnets of the same IP space, different VLANs, same box...
-Date: Tue, 15 Feb 2005 12:17:05 -0500
-Message-ID: <42122E91.2000707@joyner.ws>
+From: "Kevin P. Fleming" <kpfleming@starnetworks.us>
+Subject: Re: [VLAN] 	Multiple subnets of the same IP space, different VLANs, 
+ same box...
+Date: Tue, 15 Feb 2005 11:13:30 -0700
+Message-ID: <42123BCA.1080306@starnetworks.us>
+References: <42122E91.2000707@joyner.ws>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <42122E91.2000707@joyner.ws>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,53 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org, vlan@lanforge.com
+To: "Linux 802.1Q VLAN" <vlan@candelatech.com>
+Cc: netfilter@lists.netfilter.org, vlan@lanforge.com
 
-Okay, first let me admit that what I'm trying to do is a bit on the 
-weird side, and stems from some historical requirements that I can not 
-easily change.  Having said that, here's the scoop.
+Aaron S. Joyner wrote:
 
-I have numerous subnets, which are all identical.  Each has devices in 
-the 10.1.1.0/24 range that need to talk to a server at 10.1.1.1.  All 
-subnets for the sake of argument will be Class C ranges.  (1)  They are 
-all connected through Cisco switches, via 802.1q VLANs, back to a single 
-Linux box.  Each subnet comes in on a virtual interface (courtesy of 
-vconfig), such as eth1.10, eth1.11, etc.  I need to be able to respond 
-to each of those interfaces as 10.1.1.1, with (so far) only ICMP and UDP 
-traffic.
+> Any input anyone can offer about possible solutions, or even providing 
+> further insight into the problem, would be most appreciated.  :)
 
-At first, I'd hoped to be able to simply assign that same IP, 10.1.1.1, 
-over and over to each of the VLAN interfaces, and everything would work 
-itself out.  Unfortunately, that doesn't work.  It works fine for the 
-first box, but not for the second.  The second IP, on the second VLAN, 
-is unable to correctly ARP with the second client.  I can beat the ARP 
-problem temporarily by forcing a ping out the VLAN interface (ping -I 
-eth1.11 10.1.1.2, for example), or by adding a static ARP entry, but 
-even after ARP is handled, traffic simply doesn't flow up the IP stack 
-(or more realistically I think it's not flowing back *down* the IP stack 
-correctly).
+I don't see how you can make this work without SNAT'ing all the incoming 
+traffic on each VLAN interface into a unique IP address range. In 
+addition, as you already mentioned, you'll have to mess with the routing 
+tables as well; you can apply a "mark" to the connections in the 
+connection table for each VLAN interface, then use that to select an 
+outbound routing table.
 
-In discussing this problem with a friend, he suggests that the problem 
-is that when Linux attempts to take a packet from the responding service 
-(ICMP from the kernel, or tftp from tftpd, for example), it starts fresh 
-to determine how to send out that packet, attempts to look up the 
-destination in the ARP cache, regardless of the interface it came in on, 
-and sends to the first entry it finds.  I currently believe that this is 
-why the simple / ideal solution I describe above is failing.
+It's pretty complex; realistically, you might actually be better off 
+creating virtual machines to NAT the traffic onto the "internal" network 
+in the box, then hide it all from the services on that box.
 
-I've considered that some magic with iptables DNAT, SNAT, or REDIRECT 
-targets, perhaps combined with the mangle table's ROUTE target, may 
-allow this to be possible, but I can't wrap my head around how to get 
-the packets properly mangled, and I'm still not 100% convinced that will 
-bypass the ARP problem.  Another possible (very ugly) solution would be 
-to run virtual machines attached to each of those VLAN interfaces, which 
-would separate out the problem of one "box" having lots of identical IP 
-addresses and ARP entries, but it seems like an amazing waste of resources.
+Alternatively, you could buy a whole boatload of cheap NAT routers, and 
+attach each one of them to a non-tagged VLAN port on your switch (one 
+for each VLAN), then connect the "upstream" side of them to a 
+non-VLAN-enabled switch with your Linux box on it.
 
-Any input anyone can offer about possible solutions, or even providing 
-further insight into the problem, would be most appreciated.  :)
+Third alternative would be to do the VLAN switching with a device that 
+is actually a Layer 3 router as well, that can do the NAT for you.
 
-Aaron S. Joyner
-
-(1) IP addresses have, of course, been changed to protect the innocent.
+All of these solutions, though, involve NAT, which will bring along 
+other problems if you are running applications/protocols that are not 
+NAT friendly.
 
