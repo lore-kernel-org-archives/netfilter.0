@@ -1,14 +1,15 @@
-From: Rakotomandimby Mihamina <mrakotom@free.fr>
-Subject: Re: [despammed] Netfilter as an application.
-Date: Sat, 17 Jan 2004 21:31:44 +0100
+From: Tom Marshall <tommy@home.tig-grr.com>
+Subject: Re: rtsp-conntrack help needed...
+Date: Sat, 17 Jan 2004 13:46:06 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401172131.44177.mrakotom@free.fr>
-References: <20040116163906.40844.qmail@web40307.mail.yahoo.com> <20040116165548.GA5166@kaufbach.delug.de>
+Message-ID: <20040117214606.GA30925@home.tig-grr.com>
+References: <200401171208.57545.Antony@Soft-Solutions.co.uk> <20040117150943.38AE2A400195@mwinf0202.wanadoo.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040116165548.GA5166@kaufbach.delug.de>
 Content-Disposition: inline
+In-Reply-To: <20040117150943.38AE2A400195@mwinf0202.wanadoo.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,39 +19,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-On Friday 16 January 2004 17:55, Andreas Kretschmer wrote:
-> > It would be a standard user program which
-> > a person with normal privelges could compile and run.
-> Very bad. Every can modify the rules. I think, you search 'Zonealarm for
-> Linux'.
-
-Iptables is already simple to use . there is also shorewall that can make the 
-use easier ( for some )
-
-Just think what would be the weird if any user can add the firewall rule on a 
-box . Do you really think something will work ?
-
-> > What would it do? It could do the same things that
-> > netfilter does...i.e. filter packets/NAT etc. However
-> Why?
-
-I think you should contribute to netfilter's documentation and give some 
-simple and explained rules examples , you'll see that iptables will be simple 
-ti use ... :-)
-
-> > Does such a thing exist?
->
-> I hope: no.
-
-the same to me .
+To: Nicolas <nmeillet@wanadoo.Fr>
+Cc: netfilter@lists.netfilter.org
 
 
--- 
-Rakotomandimby Mihamina Andrianifaharana
-Tel : +33 2 38 76 43 65
-http://stko.dyndns.info/site_principal/Members/mihamina
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+> # Masquerading rules
+>=20
+> iptables -t nat -A POSTROUTING -s 10.254.254.0/12 -o eth1 -j MASQUERADE
+> iptables -t nat -A POSTROUTING -s 10.150.33.0/24 -o eth1 -j MASQUERADE
+
+It appears you are using NAT.  This would prevent RTP/RTCP from functioning=
+.=20
+Please try the RTSP conntrack/nat modules and let me know if they work for
+you.  I believe they are available in the current p-o-m, or you can get them
+from here:
+
+  http://home.tig-grr.com/rtsp/index.html
+
+--=20
+Any task can be completed in only one-third more time than is currently
+estimated.
+        -- Norman Augustine
+
+--YiEDa0DAkWCtVeE4
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAkAJrR4ACgkQFMm9uvwPXW5U5wCffxlnBFHxTsmoHDEqYfdmBEmf
+8jkAniSAP493FDNSGg1fnPBbZckF1Ysa
+=VUnW
+-----END PGP SIGNATURE-----
+
+--YiEDa0DAkWCtVeE4--
 
