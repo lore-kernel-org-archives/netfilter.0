@@ -1,16 +1,11 @@
-From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: PPTP/GRE NAT patch for 2.4.20 kernel
-Date: Thu, 13 Feb 2003 10:25:22 +0100
+From: Esteban <esteban@alstec.fr>
+Subject: prio qdisc problem
+Date: Thu, 13 Feb 2003 14:14:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030213092522.GE28593@sunbeam.de.gnumonks.org>
-References: <Pine.LNX.4.44.0302130334350.17214-100000@lucy.troja.mff.cuni.cz>
-Reply-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Message-ID: <20030213141428.375696bc.esteban@alstec.fr>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="H+4ONPRPur6+Ovig"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0302130334350.17214-100000@lucy.troja.mff.cuni.cz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,55 +15,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Petr Vagera <pvg@lucy.troja.mff.cuni.cz>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Hello there,
+I wan't to manage my bandwidth using both cbq and prio qdisc.
+When I use cbq qdisc alone, everything's OK.
+But when I create a prio qdisc on a branch of cbq qdisc, stange things
+happens. All the traffic which should be in my prio qdisc do not seem to
+be limited and then take all the bandwidth (all the interface bandwidth
+ (100mbit)).
+
+I would appriciate if anyone could advice me.
+Here is the script I use:
 
 
---H+4ONPRPur6+Ovig
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+#!/bin/sh -vx
 
-On Thu, Feb 13, 2003 at 03:50:31AM +0100, Petr Vagera wrote:
->=20
-> Hi Harald,
->=20
-> I'm trying to get working PPTP/GRE NAT under Linux with 2.4.20 kernel.
->=20
-> What is the status of PPTP/GRE NAT and is there any patch available for=
-=20
-> recent kernels ?
+OPTIONS="bandwidth 10mbit allot 1514 maxburst 20 prio 3 avpkt 1000"
+IPTABLES="/usr/local/bin/iptables.static"
+INTERNAL=eth0
+EXTERNAL=eth1
 
-It seems to be working for most people in most cases, though there are
-still some problems with big-endian and 64bit systems.
+tc qdisc del dev eth0 root 2>/dev/null
+tc qdisc add dev eth0 root handle 10: cbq bandwidth 10mbit avpkt 1000
 
-Please use the patch from the 'extra' repository of patch-o-matic from
-cvs.
+tc class add dev eth0 parent 10: classid  10:1 cbq rate 1024kbit bounded $OPTIONS 
+tc class add dev eth0 parent 10:1 classid 10:11 cbq rate 512kbit $OPTIONS bounded
+tc class add dev eth0 parent 10:1 classid 10:12 cbq rate 512kbit $OPTIONS
 
-> Regards
-> Petr Vagera
+tc qdisc add dev eth0 parent 10:12 handle 100: prio
 
---=20
-- Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-"If this were a dictatorship, it'd be a heck of a lot easier, just so long
- as I'm the dictator."  --  George W. Bush Dec 18, 2000
 
---H+4ONPRPur6+Ovig
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
 
-iD8DBQE+S2SCXaXGVTD0i/8RAuKAAKCO90fKPh4550SQwnstjJs7c2ZrBACgsD4g
-YXhvyZwVQ+aV3CAqs6DVeCM=
-=8JHS
------END PGP SIGNATURE-----
+tc filter add dev eth0 parent 10: protocol ip prio 100 u32 \
+match ip dport 111 0xffff \
+flowid 10:11
 
---H+4ONPRPur6+Ovig--
+tc filter add dev eth0 parent 10: protocol ip prio 100 u32 \
+match ip src 0.0.0.0/32 \
+flowid 10:12
+
+tc filter add dev eth0 parent 100: protocol ip prio 100 u32 \
+match ip protocol 0x01 0xff \
+flowid 100:1
+tc filter add dev eth0 parent 100: protocol ip prio 100 u32 \
+match ip dport 222 0xffff \
+flowid 100:2
+tc filter add dev eth0 parent 100: protocol ip prio 100 u32 \
+match ip src 0.0.0.0/0 \
+flowid 100:3       # this one match the rest of the traffic
+
+
+
+THX
+
+-- 
+Esteban
+Stephane DESMET
+esteban@epita.fr
+
 
