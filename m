@@ -1,20 +1,11 @@
-From: Josh Nerius <jnerius@gmail.com>
-Subject: Re: Fwd: Linux as router (Gateway Server)
-Date: Mon, 14 Feb 2005 20:32:38 -0600
-Message-ID: <4f3930a70502141832715b4043@mail.gmail.com>
-References: <1dceb012050211233357e23dd4@mail.gmail.com>
-	<1dceb01205021123483860fb86@mail.gmail.com>
-	<1108216901.4462.27.camel@hubcap.ljm.dom>
-	<4f3930a705021214026db11902@mail.gmail.com>
-	<420EB7C3.7040303@hotpop.com>
-	<4f3930a70502121833627af1bd@mail.gmail.com>
-	<420F4010.7050609@hotpop.com>
-	<4f3930a705021313382ed454fe@mail.gmail.com>
-	<1108419310.4338.4.camel@hubcap.ljm.dom>
-Reply-To: Josh Nerius <jnerius@gmail.com>
+From: "Alex Samad" <Alex@Samad.com.au>
+Subject: RE: Is this possible?
+Date: Tue, 15 Feb 2005 15:25:38 +1100
+Message-ID: <778233409EC.AAA7324@weasel.optus.com.au>
+References: <MPG.1c7aa1bb6cf712669896c1@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108419310.4338.4.camel@hubcap.ljm.dom>
+In-Reply-To: <MPG.1c7aa1bb6cf712669896c1@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,19 +17,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+To: 'Andrew Schulman' <andrex@alumni.utexas.net>, netfilter@lists.netfilter.org
+
+If your firewall is using a proxy to allow this access, most default to
+allow 563 nntps as well, run your ssh server on that port
+
+Alex
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Andrew Schulman
+Sent: Tuesday, 15 February 2005 3:54 AM
 To: netfilter@lists.netfilter.org
+Subject: Re: Is this possible?
 
-> didn't someone in this thread already point out that his rules don't
-> include:
+> I have a issue where I cannot connect to my server because the 
+firewall 
+> only allows ports 80 and 443 out.
 > 
->   iptables -A INPUT -i lo -j ACCEPT
->   iptables -A OUTPUT -o lo -j ACCEPT
+> I previously ran SSH on port 443 to overcome this, but I have had to 
+> implement a HTTPS solution for users who wanted secure access, so that 
+> is now gone.
 > 
-> -j
+> This system has DNS records for ssh.server.co.uk and www.server.co.uk, 
+> so can I use IPTables or similar to recognise if it is being connected 
+> to via ssh.server.co.uk on port 443 and forward the traffic to port 22? 
+> If www.server.co.uk:443 is used apache gets the traffic? Or is this (As 
+> I suspect) Impossible?
 
-Yes, I believe I said something to that effect in my original reply. 
+I don't think that's possible, because the address resolution happens on 
+the client side.  Both names are resolved to your one IP address before 
+you ever see any packets.
+
+One option would be to get a second IP address.  Another would be to get 
+the client admins to open an outgoing port in their firewall, as Jose 
+suggests.
+
+A third possibility would be to direct both sets of traffic to port 443, 
+and use application-level filtering to distinguish them.  See for 
+example 
+http://l7-filter.sourceforge.net/.  I see that they have a pattern for 
+recognizing SSH, that's supposed to work well.  They don't have one for 
+HTTPS, but you could either assume that as the default for non-SSH 
+traffic, or maybe write your own pattern.
+
+Good luck,
+Andrew.
 
 
--- 
-Math problems? Call 1-800-[(10x)(13i)^2]-[sin(xy)/2.362x]
+
+
 
