@@ -1,89 +1,69 @@
-From: Nico Schottelius <nico-linux-net@schottelius.org>
-Subject: Re: IPSec - IPTables issues
-Date: Tue, 4 May 2004 23:15:58 +0200
-Sender: linux-net-owner@vger.kernel.org
-Message-ID: <20040504211557.GA236@schottelius.org>
-References: <20040502155538.GD515@schottelius.org> <4096317F.8020609@eurodev.net>
+From: Ed Thomson <ethomson@ravecomm.com>
+Subject: iptables DNAT question with pppoe
+Date: Tue, 4 May 2004 16:31:53 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20040504213152.GA681@mail.ravecomm.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
-Return-path: <linux-net-owner@vger.kernel.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <4096317F.8020609@eurodev.net>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-To: Pablo Neira <pablo@eurodev.net>, netfilter@lists.netfilter.org
-Cc: gregor-net@paasch.name, linux-net@vger.kernel.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+Hi-
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A little background first: I'm currently using iptables (linux kernel 2.4.25)
+on my router with 5 ethernet segments.   eth0 is inbound from my ISP, eth1
+and eth2 are routable IP space assigned by my provider, eth3 and eth4 are
+private-numbered NATs.
 
-Hello Pablo,
-(netfilter guys, please read=20
-http://www.uwsg.iu.edu/hypermail/linux/net/0405.0/0002.html before)
+I just got a DSL from my telco and I'm using PPPoE to connect it (eth5 on the
+router) so that I can put a machine in for backup DNS and MX and manage it out
+of this machine room.  We have 5 static IPs from our DSL provider, which if
+it makes a difference, appears to really be a /29 by watching tcpdump on the
+ppp interface.
 
-Pablo Neira [Mon, May 03, 2004 at 01:48:15PM +0200]:
-> Hi Nico,
->=20
-> since this stuff is netfilter-related and netfilter/iptables geeks are=20
-> mostly in netfilter's maillist, I think you could redirect this request=
-=20
-> there, someone could help you out.
+The PPP is working, and the routes are correct so that the DSL IP addresses
+are routed out properly from the DSL.  (ie, I can ping the DSL IP and ssh
+to it.)
 
-Thank you for the hint. I first thought this is a netfilter problem, but
-currently I don't think so.
+I have inbound port forwarding setup with DNAT rules on my primary provider's
+interface, which work fine.  However, I'm trying to setup DNAT rules for my
+DSL address and failing.
 
-The problem is IMHO the design of the Linux IPSec implementation.
+Here's what I'm trying to do:
 
-I'll compare what freeswan did with what Linux 2.6 does now:
+iptables -A INPUT -i ppp0 --protocol tcp --destination-port 587 -j ACCEPT
+iptables -A FORWARD -i ppp0 --protocol tcp --destination-port 587 -j ACCEPT
+iptables -t nat -A PREROUTING --protocol tcp -i ppp0 --destination <dslip> --destination-port 587 -j DNAT --to <mailserver>:587
 
-Freeswan has virtual devices (ipsec*), through which the unencrypted
-packets come into the system. So you can add these firewall lines:
+<dslip> is the IP address assigned to my DSL by the remote server
+<mailserver> is the IP address of my mail server which is on eth1
 
-- allow AH, ESP, UDP/500, deny rest on eth0
-- allow IPs/networks, etc. on ipsec0
+Then, from a random machine not on my network, I can ping <dslip>, but when I
+telnet to <dslip> port 587, the connection times out.  If I run tcpdump on ppp0,
+I do see the inbound packet to port 587 from the remote machine.  If I run
+tcpdump on eth1, I never see any packets to port 587.
 
-With Linux 2.6 I don't have virtual devices. This means that my IPSec
-packets enter the physical device twice:
+I don't know if the input and forward ACCEPT rules are required, but I've
+tried with and without.  The default rule for OUTPUT on the router is
+ACCEPT.
 
-1. esp encrypted packet enters
-2. Linux decrypts it
-3. Linux sends the unencrypted packets through the same device again
+I'm stumped, because this syntax works perfectly on the ethernet interface
+from my primary provider.  This may be a routing problem, but I don't see it.
+Is there any better diagnostics I can be doing to try to clear this up?
 
-The problem with that is, that
+Thanks for any input.
 
-- allow AH, ESP, UDP/500, deny rest on eth0
+Sincerely,
+Ed Thomson <ethomson@ravecomm.com>
 
-will deny the _content_ of my encrypted packages (step three is broken).
-
-Wouldn't this work fine, if we have the virtual device like freeswan had
-or is netfilter broken with this?
-
-I mean I cannot practicly setup an IPSec only access point with the current
-netfilter and ipsec in Linux 2.6, or am I deadly wrong?
-
-Greetings,
-
-Nico
-
-
---=20
-Keep it simple & stupid, use what's available.
-pgp: 8D0E E27A          | Nico Schottelius
-http://nerd-hosting.net | http://linux.schottelius.org
-
---17pEHd4RhPHOinZp
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFAmAgNzGnTqo0OJ6QRAv6bAJkBf41CF+BzyyMrrgjUgxXvziOMsACfZUJY
-GUlb/eMwcYgxahI+Y8iAbu8=
-=UE3t
------END PGP SIGNATURE-----
-
---17pEHd4RhPHOinZp--
