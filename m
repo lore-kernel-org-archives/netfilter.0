@@ -1,10 +1,13 @@
-From: "zhang ping" <dqzhangp@hotmail.com>
-Subject: iptables-1.2.9, kernel-2.6.0, pppd-2.4.2
-Date: Wed, 31 Dec 2003 15:37:56 +0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables-1.2.9, kernel-2.6.0, pppd-2.4.2
+Date: Wed, 31 Dec 2003 12:03:31 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY2-F33Hh2wLCVYl4m0003f0bf@hotmail.com>
+Message-ID: <200312311203.32092.Antony@Soft-Solutions.co.uk>
+References: <BAY2-F33Hh2wLCVYl4m0003f0bf@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <BAY2-F33Hh2wLCVYl4m0003f0bf@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,15 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Ci0tLS1hZHNsLS0tLWxpbnV4Ym94LS0tLWxhbgoKcHBwZC0yLjQuMiAodXNlIGtlcm5lbCBtb2Rl
-IHBwcG9lKQppcHRhYmxlcy0xLjIuOQprZXJuZWwtMi42LjAKCndoZW4gSSB2aXNpdCB3d3cuemFv
-YmFvLmNvbSBhdCBsYW4sIGl0IGlzIG9rLCBidXQgSSBjYW50IHZpc2l0IAp3d3cua2VybmVsLm9y
-Zywgc28gcWkgZ3VhaS4KCndoZW4gaSBzZXQgbXR1IGFzIDEzMDAgYXQgbGFuLCBldmVydGhpbnMg
-aXMgb2ssIGkgY2FuIHZpc2l0IGFsbCBzaXRlcy4KCndoYXQgaXMgdGhlIG1hdHRlciwgYW55Ym9k
-eSBoZWxwIG1lPwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18Kz+3Tw8rAvefJz9futPO1xLXn19PTyrz+z7XNs6GqIE1TTiBI
-b3RtYWlsoaMgIGh0dHA6Ly93d3cuaG90bWFpbC5jb20gIAoKCg==
+On Wednesday 31 December 2003 7:37 am, zhang ping wrote:
+
+> ----adsl----linuxbox----lan
+>
+> pppd-2.4.2 (use kernel mode pppoe)
+> iptables-1.2.9
+> kernel-2.6.0
+>
+> when I visit www.zaobao.com at lan, it is ok, but I cant visit
+> www.kernel.org, so qi guai.
+>
+> when i set mtu as 1300 at lan, everthins is ok, i can visit all sites.
+>
+> what is the matter, anybody help me?
+
+This problem has been known for a long time.   You need to clamp the MTU on 
+your interface to the Maximum Segment Size supported by your ADSL link.
+
+http://lists.netfilter.org/pipermail/netfilter/2003-November/048409.html
+
+Antony.
+
+-- 
+Anyone that's normal doesn't really achieve much.
+
+ - Mark Blair, Australian rocket engineer
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
+
