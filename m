@@ -1,13 +1,11 @@
-From: Ramoni <ramoni@databras.com.br>
-Subject: Re: Question about -m string module
-Date: Fri, 4 Feb 2005 14:27:56 -0200
-Message-ID: <200502041427.56273.ramoni@databras.com.br>
-References: <18ba01c50acd$8d4af340$b000a8c0@cybergeneration.com>
-	<60578.142.169.215.10.1107532709.squirrel@142.169.215.10>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: remove old conntrack entries
+Date: 04 Feb 2005 21:12:06 +0100
+Message-ID: <1107547924.24666.8.camel@nostromo.bgsecm.com>
+References: <0140CEDD3075ED428813B1F2A659081212C7FE@p001ex02.porta.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <60578.142.169.215.10.1107532709.squirrel@142.169.215.10>
-Content-Disposition: inline
+Content-Type: multipart/mixed; boundary="=-cKXIWev+NghC8z4B32cY"
+In-Reply-To: <0140CEDD3075ED428813B1F2A659081212C7FE@p001ex02.porta.local>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,102 +16,162 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
-
-If you want to DROP some mail using string on iptables, you will DoS you=20
-server.
-
-Why ?
-Ok that smtp is a plain protocol, and you may drop a smtp connection if you=
-=20
-find a string in it.
-
-But you are dropping the emal, you are dropping a connection.
-Pay attention that the string you are searching in the drop rule, wont be i=
-n=20
-the first packet of the connection, so the connection to your mail server=20
-will start. After that, you will drop the rest of the packets if you find t=
-he=20
-string, and then, your mail server will be in a close wait state until the=
-=20
-timeout.
-
-It will reach the point that all smtp processes are used and your server wo=
-nt=20
-accept any new connections.
+To: "Baake, Matthias" <m.baake@porta.de>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
 
-Sorry about the english, but I'm sure that what I say will happen.
-(I've done it... lol)
+--=-cKXIWev+NghC8z4B32cY
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+El vie, 04 de 02 de 2005 a las 09:30, Baake, Matthias escribi=C3=B3:
+> Hi,
+>=20
+> i'm having problems with my conntrack table. A few days ago i scanned a=
+ subnet, thru the problem iptable box, which is not existing. Now about 4=
+ days after that scan these connections are still in the connection track=
+ing. how do i remove them,=20
+> or where is the mistake with the configuration at all?
+>=20
+> Sorry for the poor english.
+>=20
+> Best regards
+
+Included in our GPL bastion-firewall firewall it's the script
+I attach to this message. It does just what you want.
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
+--=-cKXIWev+NghC8z4B32cY
+Content-Disposition: attachment; filename=bsf_clearconntrack
+Content-Type: text/x-sh; name=bsf_clearconntrack; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+#!/bin/bash
 
 
-On Friday 04 February 2005 13:58, Samuel Jean wrote:
-> On Fri, February 4, 2005 10:23 am, Maxime Ducharme said:
-> > Hello guys
->
-> Hiya Maxime!
->
-> > I have a question about -m string module and
-> > I think you iptables geeks can answer me :)
->
-> I am no geek nor guru ;)
->
-> > Suppose I want to drop TCP connections with
-> > specific requests.
-> >
-> > Example : a mail which contains the word "sperm",
->
-> I don't think iptables is the proper tool for such.
-> Consider using a mail proxy able to scan message for virus
-> and such instead.
->
-> > I'd add a rule like
-> >
-> > $IPTABLES -t filter -A FORWARD -p tcp --dport 25 -d OURMAILSERVER \
-> >     -m string --string "sperm" -j DROP
-> >
-> > What is the reaction in the TCP connection ?
->
-> That packet always gets lost in the black hole.
-> The sender will keep sending that packet over and over again.
-> However, I *think* TCP has a timeout mechanism.
->
-> > The further packets of the same connection get dropped too ?
->
-> No
->
-> > This would mean the email cannot be sent, and stay in the foreign
-> > mail server queue for X days ?
->
-> My guess is the TCP algorithm would keep trying to send that particular
-> packet as it didn't get any ACK for that sequence number.
->
-> > Would it be the same if I use a REJECT rule ?
->
-> No. I think a tcp-reset would do the trick.
->
-> > Also, can fragmented TCP packets get through this ?
->
-> Yes, but that `sperm' word is quite small. Most of the time,
-> this whole word will stand in a framgented packet.
->
-> > Thanks in advance
-> >
-> > Maxime Ducharme
-> > Programmeur / Sp=E9cialiste en s=E9curit=E9 r=E9seau
->
-> Bonne journ=E9e,
->
-> Samuel
->
-> NOTE: This email reflects author _thoughts_, not the reality.
->       I may be totally wrong, so just don't trust me :-)
+#########################################################################
+## bastion-firewall GPL (www.bgsec.com)                                 #
+#########################################################################
+## Este archivo es parte de la version GPL de bastion-firewall, un      #
+## firewall completo basado en Netfilter e iptables y desarrollado por  #
+## bgSEC (www.bgsec.com). La licencia de bastion-firewall se            #
+## encuentra en el archivo: /etc/bastion-firewall/LICENCIA.txt          #
+##                                                                      #
+## bastion-firewall es copyright de Jose Maria Lopez Hernandez          #
+## (jkerouac@bgsec.com) y bgSEC (www.bgsec.com)                         #
+#########################################################################
 
-=2D-=20
-Andr=E9 "Ramoni" (Cabelo)
-Redes / Linux
-Databras Informatica      =20
-Tel: (21) 2518-2363
-=46ax: (21) 2263-6830             =20
+
+# Quitar todas las conexiones de la tabla de conntrack para una
+# determinada IP o borrar la tabla completamente.
+
+# Forma de usarlo: bsf_clearconntrack [-a] [IP]
+
+# Comprobamos que se ha tecleado bien el comando
+if [ "$#" != "1" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo 
+    echo " Ayuda de bsf_clearconntrack:"
+    echo "   bsf_clearconntrack direccionip (xxx.xxx.xxx.xxx)"
+    echo "   bsf_clearconntrack -a : Borra todas las entradas de la tabla" 
+    echo "   bsf_clearconntrack [-h] [--help]: Muestra esta ayuda" 
+    echo " Borrar todas la conexiones TCP de la tabla de conntrack para una"
+    echo " direccion IP o borrar la tabla completamente. Se cortan las"
+    echo " sesiones mandando un RST."
+    echo " ES TOTALMENTE NORMAL QUE APAREZCAN ERRORES INDICANDO QUE SE HA"
+    echo " TERMINADO hping2. SE LO EJECUTA Y LUEGO SE LO MATA PARA NO TENER"
+    echo " QUE ESPERAR LAS RESPUESTAS A LOS RESET."
+    echo " SOLO SIRVE PARA TCP."
+    echo
+    echo " Licencia de bastion-firewall en /etc/bastion-firewall/LICENCIA.txt"
+    echo 
+    exit 1
+fi
+
+if [ "$MYTAIL" = "" ]; then
+   source /etc/bastion-firewall/firewall.conf
+   source /usr/lib/bastion-firewall/bsf/functions.bsf
+fi
+
+
+
+# Puede cambiar la ubicacion de estos
+CONNTRACKFILE=/proc/net/ip_conntrack
+HPING2=$(which hping2 2>/dev/null)
+
+
+if [ "$HPING2" = "" ]; then
+    echo 
+    echo " Error: Este programa necesita hping2 para funcionar"
+    echo
+fi
+
+RESETIP=$1
+DIDIT=0
+
+if [ "$RESETIP" = "-a" ]; then
+  $MYCAT $CONNTRACKFILE|$MYGREP -E "^tcp .{10,25}ESTABLISHED"| \
+   while read TMPCONN ; do
+     echo $TMPCONN
+  
+     # Sacamos los datos de cada conexion
+     SRCIP=$(echo $TMPCONN|$MYCUT -d '=' -f 2|$MYCUT -d ' ' -f 1)
+     DSTIP=$(echo $TMPCONN|$MYCUT -d '=' -f 3|$MYCUT -d ' ' -f 1)
+     SRCPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 4|$MYCUT -d ' ' -f 1)
+     DSTPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 5|$MYCUT -d ' ' -f 1)
+
+     # Mandamos el reset a la IP de destino y al puerto de destino, como si
+     # fueramos la conexion verdadera
+     echo hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n
+     hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n &
+     usleep 100000
+     killall -9 hping2
+
+     # Mandamos tambien el reset al lado contrario
+     echo hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n
+     hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n &
+     usleep 100000
+     killall -9 hping2
+  done
+else
+  $MYCAT $CONNTRACKFILE|$MYGREP -E "^tcp .{10,25}ESTABLISHED src=$RESETIP"| \
+   while read TMPCONN ; do
+     echo $TMPCONN
+  
+     # Sacamos los datos de cada conexion
+     SRCIP=$(echo $TMPCONN|$MYCUT -d '=' -f 2|$MYCUT -d ' ' -f 1)
+     DSTIP=$(echo $TMPCONN|$MYCUT -d '=' -f 3|$MYCUT -d ' ' -f 1)
+     SRCPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 4|$MYCUT -d ' ' -f 1)
+     DSTPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 5|$MYCUT -d ' ' -f 1)
+
+     # Mandamos el reset a la IP de destino y al puerto de destino, como si
+     # fueramos la conexion verdadera
+     echo hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n
+     hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n &
+     usleep 100000
+     killall -9 hping2
+
+     # Mandamos tambien el reset al lado contrario
+     echo hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n
+     hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n &
+     usleep 100000
+     killall -9 hping2
+  done
+fi
+
+# bsf_clearconntrack end
+
+--=-cKXIWev+NghC8z4B32cY--
+
 
