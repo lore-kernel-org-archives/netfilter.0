@@ -1,15 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: port translation
-Date: Sun, 11 Jan 2004 14:32:44 +0100
+From: =?gb2312?B?Qm9yYSDeYWhpbg==?= <borasahin@netone.com.tr>
+Subject: Re[2]: Could someone tell me the rules of port translation in SNAT ?
+Date: Sun, 11 Jan 2004 15:38:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1073827964.769.16.camel@elendil.intranet.cartel-securite.net>
-References: <4001239D.7010904@yahoo.fr>
-	 <1073825033.761.1.camel@elendil.intranet.cartel-securite.net>
-	 <40014750.5000300@yahoo.fr>
+Message-ID: <306391720.20040111153825@netone.com.tr>
+References: <BAY10-F966xG0eYfJcy0003d929@hotmail.com>
+Reply-To: =?gb2312?B?Qm9yYSDeYWhpbg==?= <borasahin@netone.com.tr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40014750.5000300@yahoo.fr>
+In-Reply-To: <BAY10-F966xG0eYfJcy0003d929@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,54 +18,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Romain Moyne <aero_climb@yahoo.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le dim 11/01/2004 =E0 13:53, Romain Moyne a =E9crit :
-> Ok. I begin to understand... Now I have corrected my rules :
-> iptables -t nat -A POSTROUTING -j SNAT -o ppp0 --to-source My_ip_on_int=
-ernet
+Hi ding,
 
-OK, fine. Now it should work ;)
+Thursday, January 8, 2004, 3:55:56 AM, you wrote:
 
-> But now I have a new problem : My router, my http server and my=20
-> workstation are connected with a hub.
-[Snip ASCII art]
-> I can't access to my webserver with my workstation and it very painful.=
+dd> I'm reading some source code for more details, bu i stopped at
+
+dd>       return NF_HOOK(PF_INET, NF_IP_POST_ROUTING, skb, NULL, 
+dd> dev,ip_finish_output2);
+
+dd> in    ip_output.c::ip_finish_output()
+
+dd> cause i don't know what part of code does POST_ROUTING work and SNAT 
+dd> implementation.
+
+I think you are wrong place both in the point of list and code. NF_HOOK is macro which is defined in
+include/linux/netfilter.h like this:
+
+#define NF_HOOK(pf, hook, skb, indev, outdev, okfn)                     \
+(list_empty(&nf_hooks[(pf)][(hook)])                                    \
+ ? (okfn)(skb)                                                          \
+ : nf_hook_slow((pf), (hook), (skb), (indev), (outdev), (okfn)))
+
+Simply, It calls all registered functions in NF_IP_POST_ROUTING per protocol, in this case IPv4, and
+then gives control to ip_finish_output2(). So If you are interested in SNAT, you should take a look
+at net/ipv4/netfilter/ip_nat_standalone.c:
+
+/* After packet filtering, change source */
+static struct nf_hook_ops ip_nat_out_ops
+= { { NULL, NULL }, ip_nat_out, PF_INET, NF_IP_POST_ROUTING, NF_IP_PRI_NAT_SRC};
 ...
-> Can you still help me ? :-D
+nf_register_hook(&ip_nat_out_ops);
+...
 
-To complete Antony's answer, trying to reach your webserver from your
-LAN with its public IP is a common issue that constitue a FAQ.
+then above in the same file:
+static unsigned int ip_nat_out()
+{
+    ...
+    return ip_nat_fn(hooknum, pskb, in, out, okfn);
+}
 
-We will describe what happens when your workstation (WS) tries to
-connect to your Webserver (WB) via your router (R) public IP (PPP0).
+That is, you should track down this path...
+-- 
+Bora Sahin
+borasahin.port5.com
 
-	WS sends a SYN to R, port 80
-		SYN : WS -> PPP0
-
-	R receive the SYN and DNAT it to WB, port 80
-		SYN : WS -> WB
-
-	WB receive the SYN and answers.
-		SYN,ACK : WB -> WS
-
-But, as WB and WS are on the same network, WB answers directly to WS,
-without using R as gateway. So, WS receive a SYN,ACK from WB, but was
-waiting for a SYN,ACK from PPP0. That's why the connection fails.
-
-To address this issue, you have to SNAT this kind of connection on the
-router so WB answers through R :
-
-	iptables -t nat -A POSTROUTING -s $LAN -d $WB -j SNAT --to $ETH0
-
-I completly agree Antony's advice on DMZ use. From security point of
-vue, redirecting a service within LAN is a major architectural flaw.
-
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!=20
 
