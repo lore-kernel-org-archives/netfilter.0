@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Simple Blackberry Enterprise configuration
-Date: Wed, 17 Nov 2004 14:17:05 -0500
-Message-ID: <20041117191705.GA11797@bender.817west.com>
-References: <29F6FAF7F2C0D41190980002A513591E0E93BA73@FSNSAB30>
-	<OF7FC3DD38.EC276557-ON85256F4F.00658DF0-85256F4F.00689762@informed.net>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: 4 NIC cards
+Date: 17 Nov 2004 20:14:37 +0100
+Message-ID: <1100714973.24948.22.camel@nostromo.bgsecm.com>
+References: <20041117100208.92063.qmail@web60402.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <OF7FC3DD38.EC276557-ON85256F4F.00658DF0-85256F4F.00689762@informed.net>
+In-Reply-To: <20041117100208.92063.qmail@web60402.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,48 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Wed, Nov 17, 2004 at 01:30:03PM -0500, mclinden@informed.net wrote:
-> The external interfaces on the Linux box is managed by TCPWRAPPERS but I'd 
-> like to have the service restricted even more so that only the Blackberry 
-> Enterprise Server can FORWARD through the firewall and ONLY to the 
-> Blackberry site:
-> 
-> The internal server Blackbery  IP is:   172.16.8.39
-> The internal firewall (eth1) is:                172.16.11.242
-> The external firewall (eth0) is:                aaa.bbb.ccc.ddd
-> 
-> My configuration is:
-> 
-> -A FORWARD -i eth1 -p tcp -m tcp --sport 3101 --dport 3101 -j ACCEPT 
-> -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 3101 --dport 3101 -m 
-> state --state RELATED,ESTABLISHED -j ACCEPT 
-> -A FORWARD -j REJECT --reject-with icmp-port-unreachable 
+El mi=C3=A9, 17 de 11 de 2004 a las 11:02, ads nat escribi=C3=B3:
+> Hi,
+> I have setup a Redhat 9.0 Linux server with 5 NIC=20
+> (Intel Motherboard) router.
+>=20
+> I will be getting bandwidth (256 kbps) from 4 dialup
+> supplies all are through dialer installed by ISP. Each
+> dialer is assigened to each NIC.
+>=20
+> I would like to get bandwidth from all 4
+> simulteneously so that totally it will make
+> (256x4=3D1024 kbps) and want to distribute it to my LAN
+> through Ethernet card no. 5.
+>=20
+> Is it possible to achieve this? and if so please guide
+> me to URL OR howto to achieve this.
+>=20
+> Thanks for support.
 
-i *highly* doubt that the source port of the traffic is 3101.  try:
+Yes, it's possible. Just look at the nexthop option of
+the iproute2 "ip" command. It's explained in the lartc
+howto (lartc.org).
 
-  -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-  -A FORWARD -p tcp --sport 1024:65535 --dport 3101 -j ACCEPT
 
-as your "open, testing" policy.  source/destination IP restrictions can
-be added later as you get more comfortable with the configuration.
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
 
-> (I started out with a relatively open configuration so as not to introduce 
-> too many problems). 
-> 
-> This doesn't seem to be doing it.
-> 
-> Thanks for all your help.
-> 
-> Sean
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
--j
-
---
-"I bet Einstein turned himself all sorts of colors before he invented
- the light bulb."
-        --The Simpsons
 
