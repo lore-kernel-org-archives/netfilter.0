@@ -1,15 +1,14 @@
-From: Joshua N Pritikin <jpritikin@pobox.com>
-Subject: Re: FAQ 3.13, but on the same box
-Date: Mon, 19 Jul 2004 07:30:59 +0530
+From: "Victor Wren" <vwren@timension.com>
+Subject: Re: OT: Logs on console
+Date: Fri, 16 Jul 2004 12:28:25 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040719020059.GC679@always.joy.eth.net>
-References: <20040718173200.GC718@always.joy.eth.net> <200407181844.22744.Antony@Soft-Solutions.co.uk>
+Message-ID: <40F7C9E9.30435.74F90D@localhost>
+References: <40F7BB44.24155.3BC614@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7DO5AaGCk89r4vaK"
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200407181844.22744.Antony@Soft-Solutions.co.uk>
+In-reply-to: <200407161942.32228.Antony@Soft-Solutions.co.uk>
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +18,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
 
---7DO5AaGCk89r4vaK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jul 18, 2004 at 06:44:22PM +0100, Antony Stone wrote:
-> On Sunday 18 July 2004 6:32 pm, Joshua N Pritikin wrote:
-> > I understand how to set up a transparent proxy.  However, it is
-> > possible to run a transparent proxy and web browser on the same box?
->=20
-> Yes.
->=20
-> > What if I put the proxy on a loopback interface and REDIRECT port 80
-> > to port 3128 the loopback?  Would that work?
->=20
-> Sounds good to me.
->=20
-> http://www.squid-cache.org/Doc/FAQ/FAQ-17.html#ss17.4
+> On Friday 16 July 2004 8:25 pm, Victor Wren wrote:
+> 
+> > This is off-topic, but IPTABLES is the only place I have this problem. 
+> >
+> > I've got all my log entries set to --log-level
+> > info, and they're getting properly logged to an iptables logfile, but they
+> > are still showing up on the screen
+> 
+> Show us the contents of your /etc/syslog.conf
 
-This FAQ doesn't address my question.  I also looked at "Transparent
-Proxy with Linux and Squid mini-HOWTO" by Daniel Kiracofe.
+auth,authpriv.* -/var/log/auth
+*.*;auth,authpriv.none -/var/log/messages
+kern.none /dev/console
+daemon.* -/var/log/daemon
+kern.* -/var/log/kern
+kern.=info -/var/log/iptables
+mail.* -/var/log/mail
+user.* -/var/log/user
+cron.* -/var/log/cron
+*.emerg *
+local7.* /var/log/boot.log
 
-So far, all docs assume that the squid-box and the browser box are
-different machines.
+I think I may have found a clue.  kernel message logging is handled by klogd. 
+ the manfile for klogd says that it defaults to putting all messages of 
+priority higher than 7 (debug) to the screen (info is 6) unless launched with 
+"-c [level]"  I see no mention of any use of a configuration file in klogd, 
+and it appears to hand kernel messages to syslogd after prioritizing, but has 
+the ability to send messages to the screen (or files) itself.
 
-Hrm, I think I need to add an OUTPUT rule that matches on the owner.
-If --uid-owner=3Dproxy then the packet should not REDIRECT back to port
-3128.  Something like that?
+Ha.  Changing it to klogd -c 3" seems to have cured it.  Now to fix it on my 
+home network!
 
---=20
-A new cognitive theory of emotion, http://openheartlogic.org
+Victor
 
---7DO5AaGCk89r4vaK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+Victor Wren
+Designer,
+Timension Inc.
+1350 C Pear Ave
+Mountain View CA 94043
+(650) 564-9397
+Fax: (650) 564-9398
+Opinions stated in this letter are not necessarily
+those of Timension Inc. or the management.  All
+Rights Reserved.  No spitting.
 
-iD8DBQFA+ytbqcqnlKSmC70RAs70AKDFu/IkNyeSNxhkSQgzb71M+PuKUwCeJbIr
-+eQO0AI31v08SCKf9gcO9ww=
-=9KYS
------END PGP SIGNATURE-----
-
---7DO5AaGCk89r4vaK--
 
