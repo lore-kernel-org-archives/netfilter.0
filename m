@@ -1,11 +1,9 @@
-From: "David Busby" <busby@pnts.com>
-Subject: SNAT
-Date: Mon, 7 Jul 2003 17:21:31 -0700
+From: <fred_sos@swing.be>
+Subject: unresolved symbol nf_unregister_sockopt
+Date: Mon, 7 Jul 2003 20:46:43 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007901c344e6$e98aa410$1100000a@busbydev>
-Reply-To: "David Busby" <busby@pnts.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Message-ID: <001301c344b8$1c681400$3200a8c0@fred>
+Reply-To: <fred_sos@swing.be>
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,24 +14,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Dudes,
-    I setup my SNAT like this:
+Hello the list,
 
-iptables -t nat -I POSTROUTING 1 -s 10.0.0.0/24 -d 0/0 \
-  -p tcp -m tcp --dport 80 \
-  -j SNAT --to 1.2.3.66-1.2.3.126
+I have just compiled a new kernel on my debian box, but I got this messages
+when I try to load iptables:
 
-So my lan outbound HTTP traffic gets shared over those 60 ip addresses.
-Seems sweet, but I notice that netfilter doesn't always rotate the
-addresses. And sometimes only switches a client between two addresses. Where
-in the docs does it show me how to make this thing rotate addresses more
-regularly, or if not in doc how would I do that?
 
-David Busby
-Systems Engineer
-busby@pnts.com
+/lib/modules/2.4.20-9custom/kernel/net/ipv4/netfilter/ip_tables.o:
+unresolved symbol nf_unregister_sockopt
+/lib/modules/2.4.20-9custom/kernel/net/ipv4/netfilter/ip_tables.o:
+unresolved symbol nf_register_sockopt
+/lib/modules/2.4.20-9custom/kernel/net/ipv4/netfilter/ip_tables.o:
+insmod /lib/modules/2.4.20-9custom/kernel/net/ipv4/netfilter/ip_tables.o
+failed
+/lib/modules/2.4.20-9custom/kernel/net/ipv4/netfilter/ip_tables.o: insmod
+ip_tables failed
+iptables v1.2.8: can't initialize iptables table `filter': iptables who? (do
+you need to insmod?)
+
+Perhaps iptables or your kernel needs to be upgraded.
+
+
+
+Any idea?
+
+
+Regrads
+
+Fred
+
 
 
