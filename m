@@ -1,11 +1,13 @@
-From: Jani Averbach <jaa@cc.jyu.fi>
-Subject: Using iptables with x86_64 static kernel (module problems)?
-Date: Wed, 1 Oct 2003 19:11:36 +0300
+From: Axel Christiansen <axel@zedx.org>
+Subject: Re: sugestion needed for session marking from different default	routres
+Date: Wed, 01 Oct 2003 20:30:38 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031001161136.GA13226@cc.jyu.fi>
+Message-ID: <3F7B1D4E.4090101@zedx.org>
+References: <34887.212.202.127.214.1065004876.squirrel@knex.zedx.net> <1065006374.870.59.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1065006374.870.59.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,30 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: netfilter@lists.netfilter.org
 
+Cedric Blancher schrieb:
 
-Hello!
+> Le mer 01/10/2003 =E0 12:41, Axel Christiansen a =E9crit :
+> [...]
+>=20
+>>Now, ssh from inet on the DSL line works fine. The
+>>Pakets get back the right way by the active default
+>>route. I also want to ssh in over the other interface,
+>>and want the packets back in that line.
+>>I am thinking about marking the incoming packets and
+>>then finding out about the returning packets some how.
+>>If this would work, the routing then can by done by
+>>ip rule (routing).
+>=20
+>=20
+> You must have a look to CONNMARK target and connmark match that stands
+> in pom extra section :
 
-I am trying to use netfilter (iptables) with static (no module
-support) x86_64 kernel (2.4.23-pre5-x86_64-1). However, iptables won't
-work with that kernel because it try to do various modules related
-task. If I compile a static i386 2.4.23-pre5 kernel that will work
-like expected. 
+Great, that will work.
 
-It seems that the problem is that I don't have 64bit modutils at the
-hand, and I don't like to have. So is there any way to tell iptables
-"don't touch modutils stuff, they won't work"?
+thx, Axel
 
-If this is a nontrivial problem, I could provide more detailed
-information.
-
-Thanks,
-Jani
- 
--- 
-Jani Averbach
 
 
