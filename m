@@ -1,12 +1,14 @@
-From: "Alok Bhatt" <netfilter@momentum-tech.com>
-Subject: Transferring packets to/from different network
-Date: Thu, 13 Nov 2003 10:58:21 +0530
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: This rule doesn't work!...
+Date: Wed, 12 Nov 2003 22:23:18 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003f01c3a9a6$f3ca1bc0$5601a8c0@alokb>
+Message-ID: <200311130623.hAD6N9oL003132@server5.bandwidthco.com>
+References: <200311111945.01103.b.caruso@laposte.net>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_003C_01C3A9D5.0D2829D0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200311111945.01103.b.caruso@laposte.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,74 +18,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: 'caruso bruno' <b.caruso@laposte.net>, netfilter@lists.netfilter.org
+
+I guess my question would be why are you using rate limiting on a spoofed
+source IP address?  Why not take them all out.  I would set that rule up
+first and get it working.  Then if you wanted to play around with limiting
+(for what ever reason), then do that.  The LIMIT target can sometimes be
+difficult to get it to do what you want it to do, or think it should do.  
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of caruso bruno
+Sent: Tuesday, November 11, 2003 10:45 AM
 To: netfilter@lists.netfilter.org
+Subject: This rule doesn't work!...
 
-This is a multi-part message in MIME format.
+Hi
 
-------=_NextPart_000_003C_01C3A9D5.0D2829D0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have seen recently that I had many attempt connection from source address
+127.0.0.1, source port 80. 
 
-Hi All,
+I had theses rules in my list:
+iptables -A INPUT -i ppp0 -s "127.0.0.0/8" -m limit --limit 30/m -j LOG
+--log-prefix "iptable NO_ROUTABLE_ADDR "
+iptables -A INPUT -i ppp0 -s "127.0.0.0/8" -j DROP
 
-I am new to the world of packet filtering, so please need your help for =
-the same.
+I haven't any log in syslog just for this rule otherwise everything goes
+well. 
+I don't understand why theses rules doesn't work.
 
-    We have two networks here 192.168.1.x and 192.168.2.x  A single =
-linux machine acts as a gateway with two interfaces eth0 (192.168.1.x) =
-and eth1 (192.168.2.x). We need machines from one network to be able to =
-fully access machines from other network. The gateway machine has Red =
-Hat Linux 9.0 (kernel 2.4.20-8) and uses iptables 1.2.7a
+Best regards
 
-    Thanks a lot in advance for the help. Can you please mail me =
-direclty, as I am not on the mailing lists.
+Bruno
 
-Thanks and Rgds
-Alok
 
-------=_NextPart_000_003C_01C3A9D5.0D2829D0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>Hi All,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am new to the world of packet =
-filtering, so=20
-please need your help for the same.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; We have two networks =
-here=20
-192.168.1.x and 192.168.2.x&nbsp;&nbsp;A single linux machine acts as a =
-gateway=20
-with two interfaces eth0 (192.168.1.x) and eth1 (192.168.2.x). We need =
-machines=20
-from one network to be able to&nbsp;fully access machines from other =
-network.=20
-The gateway machine has Red Hat Linux 9.0 (kernel 2.4.20-8) and uses =
-iptables=20
-1.2.7a</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Thanks a lot in =
-advance for the=20
-help. Can you please mail me direclty, as I am not on the mailing=20
-lists.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks and Rgds</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Alok</FONT></DIV><A=20
-href=3D"mailto:netfilter@lists.netfilter.org"></A></FONT></DIV></BODY></H=
-TML>
-
-------=_NextPart_000_003C_01C3A9D5.0D2829D0--
 
 
