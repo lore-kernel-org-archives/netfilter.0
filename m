@@ -1,13 +1,12 @@
-From: Bob Tellefson <bob@zooid.com>
-Subject: Re: networking newbie needs help
-Date: Sun, 23 Jan 2005 20:28:53 +0000
-Message-ID: <200501232028.53215.bob@zooid.com>
-References: <15505515.1106460382543.JavaMail.rct@kale>
+From: Rudi Starcevic <tech@wildcash.com>
+Subject: Re: limit speed of file transfer
+Date: Mon, 24 Jan 2005 09:38:07 -0800
+Message-ID: <41F5327F.3070803@wildcash.com>
+References: <001001c5001e$d80df760$0201a8c0@micah>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <15505515.1106460382543.JavaMail.rct@kale>
-Content-Disposition: inline
+In-Reply-To: <001001c5001e$d80df760$0201a8c0@micah>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,50 +17,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
 
-On Sunday 23 January 2005 06:05, Kev askme wrote:
+Hi,
 
+An option may be to use SSH with RSYNC instead of SCP.
+The Rsync command has a bandwidth limit option.
+
+I use it like this:
+
+rsync -avz --bwlimit 10 -e ssh remoteuser@remotehost:/remote/dir /this/dir/
+
+Check the 'man' pages for more info on the 'bwlimit' option.
+
+HTH
+Regards
+Rudi.
+
+Micah Wedemeyer wrote:
+
+>Hi,
 >
-> Thanks for the "dummified" explanation. That is very
-> clear and concise. :) So I just need my ISP to
-> statically assign the public IP addresses to me and
-> then add the addresses to my external interface using
-> the ip command and then the external interface will
-> answer for all ip addresses on the external interface?
-> Or do I need to add aliases for each address, or is
-> that essentially what the ip command is actually
-> doing?
+>My system consistently locks up on file transfers across the LAN.  When
+>transferring a file to it using scp, it dies after less than 5 seconds.
+>However, if I use it to download a file from the Internet (using wget),
+>it does just fine.
+>
+>I have heard that my motherboard (a Via Epia MII) has DMA problems and
+>that high Ethernet traffic is known to lock them up.  My theory is that
+>the Internet connection is slow enough to not hit whatever magic
+>threshold causes the crash.  So, I was hoping to find a way to limit the
+>speed of transfers with scp and ftp so that they also don't lock up the
+>machine.
+>
+>I asked on a few message boards, and they all mentioned iptables.  I've
+>never used it before, and am a total noob when it comes to networking
+>stuff.  So, I was hoping that the people on this list could point me in
+>the right direction of where to start.
+>
+>To sum up:  I need a way to limit the speed of incoming file transfers
+>using ftp or scp.
+>
+>Any help would be greatly appreciated,
+>Micah
 >
 >
+>
+>
+>  
+>
 
-It is generally more useful to have a subnet assigned and routed to you by 
-your isp.  The advantage here is that you may use these ip's on your dmz 
-without the need for DNAT.  In this case, your firewall/router isp interface 
-acts as a gateway that you isp routes your subnet ip's through.  ARP is not 
-involved other than to discover this gateway interface.  You can route/filter 
-the subnet ip's as you see fit.
-
-DNAT comes with side effects that you should consider before proceding.  Have 
-a look at DNAT in in iptables faq 
-( http://www.faqs.org/docs/iptables/targets.html ) for an example of what 
-happens when you DNAT clients from the outside world versus how machines 
-within the DMZ (including the firewall) access the same services.  This can 
-be a serious issue depending on what services reside on your DMZ and how they 
-interact.
-
-If you don't get a routed subnet from you isp, consider using proxy arp rather 
-than DNAT.  This effectively gives you the benefits of a routed subnet.  See 
-http://www.tldp.org/HOWTO/Proxy-ARP-Subnet/
-
-DNAT has it's place, but it is a kludge (IMHO).  I avoid it where possible.
-
-
-
--- 
-
-Bob Tellefson
-Java network application development & hosting
 
