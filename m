@@ -1,14 +1,15 @@
-From: Tom Eastep <teastep@shorewall.net>
+From: Alexis <alexis@attla.net.ar>
 Subject: Re: kernel2.6.2-3 + iptables/shorewall
-Date: Thu, 19 Feb 2004 07:07:10 -0800
+Date: Thu, 19 Feb 2004 12:21:34 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402190707.10094.teastep@shorewall.net>
+Message-ID: <1077204094.1573.20.camel@pepelui.baicom>
 References: <1077202137.4302.12.camel@gb7tf.org.uk>
+	 <1077202860.1578.13.camel@pepelui.baicom>
+	 <1077203446.4311.28.camel@gb7tf.org.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1077202137.4302.12.camel@gb7tf.org.uk>
-Content-Disposition: inline
+In-Reply-To: <1077203446.4311.28.camel@gb7tf.org.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,48 +20,76 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Richard Bown <richard.bown@blueyonder.co.uk>, 'netfilter' <netfilter@lists.netfilter.org>
+To: Richard Bown <richard.bown@blueyonder.co.uk>
+Cc: 'netfilter' <netfilter@lists.netfilter.org>
 
-On Thursday 19 February 2004 06:48 am, Richard Bown wrote:
-> Hi
-> having a real headach with this
-> Running kernel-2.6.2-3mdk patched for win4lin
-> iptables 1.2.9-5mdk
-> shorewall 1.4.8-3mdk
-> modules loaded are :-
-> ipt_TOS 2240 0 - Live 0xe197f000
-> ipt_REJECT 6464 0 - Live 0xe198e000
-> ipt_LOG 5312 0 - Live 0xe198b000
-> ipt_state 1728 2 - Live 0xe1985000
-> ipt_multiport 1856 0 - Live 0xe1983000
-> ipt_conntrack 2304 0 - Live 0xe1981000
-> iptable_filter 2624 1 - Live 0xe1932000
-> iptable_mangle 2624 0 - Live 0xe18d2000
-> iptable_nat 23116 1 ipt_MASQUERADE, Live 0xe18c3000
-> ip_conntrack 31120 4 ipt_MASQUERADE,ipt_state,ipt_conntrack,iptable_nat,
-> Live 0xe1963000
-> ip_tables 16704 10
-> ipt_MASQUERADE,ipt_TOS,ipt_REJECT,ipt_LOG,ipt_state,ipt_multiport,ipt_connt
->rack,iptable_filter,iptable_mangle,iptable_nat, Live 0xe1952000
->
->
-> now in the 2.4 series kernels if I remember right you could turn /off
-> IPV4 forwarding, I hav'nt found this at all in the config file on a
-> 2.6.2 kernel.
-> So as you guys are more at the iptables end, is anyone successfully
-> getting MASQ,& DNAT functional with a 2.6.2 kernel, and maybe on a
-> mandrake system :)
+On Thu, 2004-02-19 at 12:10, Richard Bown wrote:
+> Thanks Alexis
+> 
+> 
+> On Thu, 2004-02-19 at 15:01, Alexis wrote:
+> > Yes, i have at least 4 firewalls running SNAT and DNAT with 2.6.2 and
+> > iptables 1.2.9 without any problem. (using redhat 8,9 or debian)
+> Are you masquerading as well ?
 
-As I announced the other day, I am able to run 2.6.2 with a fairly complex 
-setup (http://www.shorewall.net/myfiles2.htm) without problems. That is under 
-Debian Sarge (although the first 2.6.2 kernel that I successfully tested was 
-built on a Mandrake 9.0 box).
+No, i dont because all are fixed ip pools that the provideres give me
+ 
+> I'm getting suspicious this could be a mandrake thing, as the lib
+> iptables is split in to two sections , vanilla and mandrake depending on
+> whether a 2.4 or 2.6 kernel is used a sym link points at the libs.
 
--Tom
+I dont know mandrake ive never used, my choice is always the same,
+debian.
+But some customers asks for redhat so "the customer is always right" :)
+
+
+
+
+> > IP forwarding could be enabled and disabled at
+> > 
+> > /proc/sys/net/ipv4/ip_forward if this is your question
+> 
+> this is set to 1, so enabled
+
+yes it is, wich is the policy for the FORWARD chain?
+
+
+
+> Richard
+> > 
+> > 
+> > On Thu, 2004-02-19 at 11:48, Richard Bown wrote:
+> > > Hi
+> > > having a real headach with this
+> > > Running kernel-2.6.2-3mdk patched for win4lin
+> > > iptables 1.2.9-5mdk
+> > > shorewall 1.4.8-3mdk
+> > > modules loaded are :-
+> > > ipt_TOS 2240 0 - Live 0xe197f000
+> > > ipt_REJECT 6464 0 - Live 0xe198e000
+> > > ipt_LOG 5312 0 - Live 0xe198b000
+> > > ipt_state 1728 2 - Live 0xe1985000
+> > > ipt_multiport 1856 0 - Live 0xe1983000
+> > > ipt_conntrack 2304 0 - Live 0xe1981000
+> > > iptable_filter 2624 1 - Live 0xe1932000
+> > > iptable_mangle 2624 0 - Live 0xe18d2000
+> > > iptable_nat 23116 1 ipt_MASQUERADE, Live 0xe18c3000
+> > > ip_conntrack 31120 4 ipt_MASQUERADE,ipt_state,ipt_conntrack,iptable_nat,
+> > > Live 0xe1963000
+> > > ip_tables 16704 10
+> > > ipt_MASQUERADE,ipt_TOS,ipt_REJECT,ipt_LOG,ipt_state,ipt_multiport,ipt_conntrack,iptable_filter,iptable_mangle,iptable_nat, Live 0xe1952000
+> > > 
+> > > 
+> > > now in the 2.4 series kernels if I remember right you could turn /off
+> > > IPV4 forwarding, I hav'nt found this at all in the config file on a
+> > > 2.6.2 kernel.
+> > > So as you guys are more at the iptables end, is anyone successfully
+> > > getting MASQ,& DNAT functional with a 2.6.2 kernel, and maybe on a
+> > > mandrake system :)
+> > > 
+> > > Thanks
+> > > Richard
 -- 
-Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
-Shoreline,     \ http://shorewall.net
-Washington USA  \ teastep@shorewall.net
-
+Alexis <alexis@attla.net.ar>
 
 
