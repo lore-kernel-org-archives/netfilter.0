@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Multiple firewalls
-Date: Wed, 11 Sep 2002 16:17:49 +0100
+Subject: Re: If eth0 goes down after a reboot, rules for it will be applied to eth1.
+Date: Wed, 11 Sep 2002 18:44:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209111517.g8BFHuv08855@vulcan.rissington.net>
-References: <1031749586.345.26.camel@bigblue> <200209111407.g8BE7av08714@vulcan.rissington.net> <1031757171.345.31.camel@bigblue>
+Message-ID: <20020911174425.URMD287.mta02-svc.ntlworld.com@there>
+References: <87ofb44i7l.fsf@prium.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1031757171.345.31.camel@bigblue>
+In-Reply-To: <87ofb44i7l.fsf@prium.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,44 +20,46 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 11 September 2002 4:12 pm, darkstar wrote:
+On Wednesday 11 September 2002 5:14 pm, Erik Enge wrote:
 
-> On Wed, 2002-09-11 at 16:07, Antony Stone wrote:
-> > On Wednesday 11 September 2002 2:06 pm, darkstar wrote:
-> > > I have two seperate iptables firewalls for two lines for our
-> > > company.Both machines have two network cards.
-> > > Would it be advisable to combine the two into one machine with three
-> > > cards..???
-> >
-> > What are you trying to do with the two external links ?
-> >
-> > How have you got your internal network set up ?
-> >
-> > Is there any sort of redundancy / load balancing / failover going on here
-> > ?
-> No just two simple firewalls going into a internal network, no fail over
-> and no load balancing
+> Before death of NIC 1:
+>
+>   NIC 1, eth0, 192.168.1.1
+>   NIC 2, eth1, 192.168.1.2
+>   NIC 3, eth2, 192.168.1.3
+>   and so on...
 
-In that case I agree with Roy.
+Ugh !!!   What sort of networking setup have you got here ???
 
-1 interface for ext1
-1 interface for ext2
-1 interface for int LAN
-1 interface for DMZ
+You're *supposed* to put addresses from different subnets onto each 
+interface...
 
-It'll give a good opportunity to play with iproute2 as well :-)
+What netmasks are you using on these interfaces ?
 
-How are your internal clients set up to route to the Internet at present ?   
-What determines whether they go via ext1 or ext2 ?
+> > It is almost inconceivable that the interface connecting you to the
+> > outside world will deign to communicate with your router (or whatever
+> > else is the next hop upstream of you) because the IP address, network
+> > address, default gateway, netmask etc don't match.
+>
+> I don't follow you.  Let's suppose that the external interface now has
+> very laid-back rules and still has the same IP address, network address,
+> default gateway and netmask (because the 'ifconfig' statement wouldn't
+> have changed).  Why is it inconceivable that that interface wolud
+> communicate with my router?  I can't see why it wouldn't.
+
+Based on the addresses you've given above, I agree with you, but that looks 
+like a very weird way to set up a firewall.   I don't understand how you 
+expect your routing tables to work.
+
+Give us more information about your overall network setup, and we'll probably 
+either tell you that you've been very lucky with your routing table setup, or 
+that you've got more to worry about than one of your NICs dying :-)
 
 Antony.
 
 -- 
 
-There are two possible outcomes.
-
-If the result confirms the hypothesis, then you've made a measurement.
-If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
+If you want to be happy for an hour, get drunk.
+If you want to be happy for a year, get married.
+If you want to be happy for a lifetime, get a garden.
 
