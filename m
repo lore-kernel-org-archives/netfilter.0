@@ -1,12 +1,10 @@
-From: Juan Hernandez <alucard@kanux.com>
-Subject: [Fwd: [SA11980] Linux Kernel Netfilter TCP Option Matching Denial
- of Service Vulnerability]
-Date: Thu, 01 Jul 2004 12:54:13 -0400
+From: Sam Loy <sampaw@mac.com>
+Subject: Please - Still not working...
+Date: Thu, 1 Jul 2004 12:33:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40E441B5.9000809@kanux.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020503010707080202090506"
+Message-ID: <B66AB7DA-CB84-11D8-B251-000A95AD0230@mac.com>
+Mime-Version: 1.0 (Apple Message framework v618)
+Content-Type: multipart/mixed; boundary=Apple-Mail-1-874320403
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,114 +17,78 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------020503010707080202090506
-Content-Type: text/plain; charset=us-ascii; format=flowed
+
+--Apple-Mail-1-874320403
 Content-Transfer-Encoding: 7bit
+Content-Type: application/octet-stream;
+	x-unix-mode=0755;
+	name="new-fwscript"
+Content-Disposition: attachment;
+	filename=new-fwscript
 
-I thought you guys would be interested in this since I haven't read 
-anything today in this mailing list
 
-Juan
 
---------------020503010707080202090506
-Content-Type: message/rfc822;
- name="[SA11980] Linux Kernel Netfilter TCP Option Matching Denial of Service Vulnerability"
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+# NOTES:
+# 1) Assumes that eth0 is external interface, and eth1 is internal.  Adjust
+#    to taste.
+
+# Get current details:
+EXT_IF=ppp0
+INT_IF=eth0
+EXTERNAL_IP=`ifconfig $EXT_IF | grep "inet addr:" | awk '{print $2}' | \
+		cut -f 2 -d :`
+
+# Clean out tables
+iptables --flush
+iptables --table nat --flush
+iptables --delete-chain
+iptables --table nat --delete-chain
+
+# Set up source nat
+iptables --table nat --append POSTROUTING --out-interface $EXT_IF \
+		-j MASQUERADE
+
+
+# Allow loopback traffic
+iptables -A INPUT -i lo -p all -j ACCEPT
+iptables -A INPUT -i eth0 -p all -j ACCEPT
+iptables -A INPUT -i ppp0 -p all -j ACCEPT
+
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+
+# DEBUG ONLY!
+#iptables -A INPUT -j LOG --log-prefix "INPUT_DROP: "
+#iptables -A OUTPUT -j LOG --log-prefix "OUTPUT_DROP: "
+########################################################################
+
+
+--Apple-Mail-1-874320403
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="[SA11980] Linux Kernel Netfilter TCP Option Matching Denial of Service Vulnerability"
-
-Return-Path: <nobody@secunia.com>
-Delivered-To: hvjuan@kanux.com
-Received: (qmail 10594 invoked from network); 1 Jul 2004 13:34:31 -0000
-Received: from mail.secunia.com (213.150.41.240)
-  by 192.168.74.2 with SMTP; 1 Jul 2004 13:34:31 -0000
-Received: (qmail 4145 invoked from network); 1 Jul 2004 13:13:41 -0000
-Received: from unknown (HELO secunia.com) (192.168.100.228)
-  by mail.secunia.com with SMTP; 1 Jul 2004 13:13:41 -0000
-Received: (from nobody@localhost)
-	by secunia.com (8.12.10/8.12.10/Submit) id i61DHRf1020304;
-	Thu, 1 Jul 2004 15:17:27 +0200
-Date: Thu, 1 Jul 2004 15:17:27 +0200
-Message-Id: <200407011317.i61DHRf1020304@secunia.com>
-To: hvjuan@kanux.com
-Subject: [SA11980] Linux Kernel Netfilter TCP Option Matching Denial of Service Vulnerability
-From: Secunia Security Advisories <sec-adv@secunia.com>
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=US-ASCII;
+	format=flowed
 
 
-TITLE:
-Linux Kernel Netfilter TCP Option Matching Denial of Service
-Vulnerability
 
-SECUNIA ADVISORY ID:
-SA11980
+All of you who have helped, thank you, You have been very helpful and I 
+have learned a lot.
 
-VERIFY ADVISORY:
-http://secunia.com/advisories/11980/
+In fact, the enclosed script works. However, correct me if I am wrong, 
+but there is absolutely zero protection. I am letting all traffic come 
+in and out.
 
-CRITICAL:
-Moderately critical
+Please help me with the next step...I want to allow ALL traffic 
+originating from me and me only into my internal network from the 
+internet. No restrictions....except it must have originated from me.
 
-IMPACT:
-DoS
+Thank you,
 
-WHERE:
-From remote
-
-OPERATING SYSTEM:
-Linux Kernel 2.6.x
-http://secunia.com/product/2719/
-
-DESCRIPTION:
-Adam Osuchowski and Tomasz Dubinski have reported a vulnerability in
-the Linux kernel, which can be exploited by malicious people to cause
-a DoS (Denial of Service).
-
-The vulnerability is caused due to the use of an incorrect variable
-type within the "tcp_find_option()" function of the netfilter
-subsystem. This can be exploited by sending a specially crafted TCP
-packet, which causes the kernel to enter an infinite loop and consume
-all available CPU resources.
-
-Successful exploitation requires that iptables is used with rules
-matching TCP options ("--tcp-option").
-
-SOLUTION:
-Don't use any rules matching TCP options.
-
-PROVIDED AND/OR DISCOVERED BY:
-Adam Osuchowski and Tomasz Dubinski
-
-----------------------------------------------------------------------
-
-About:
-This Advisory was delivered by Secunia as a free service to help
-everybody keeping their systems up to date against the latest
-vulnerabilities.
-
-Subscribe:
-http://secunia.com/secunia_security_advisories/
-
-Definitions: (Criticality, Where etc.)
-http://secunia.com/about_secunia_advisories/
-
-
-Please Note:
-Secunia recommends that you verify all advisories you receive by
-clicking the link.
-Secunia NEVER sends attached files with advisories.
-Secunia does not advise people to install third party patches, only
-use those supplied by the vendor.
-
-----------------------------------------------------------------------
-
-Unsubscribe: Secunia Security Advisories
-http://secunia.com/sec_adv_unsubscribe/?email=hvjuan@kanux.com
-
-----------------------------------------------------------------------
-
---------------020503010707080202090506--
+Sam
+--Apple-Mail-1-874320403--
 
 
