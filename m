@@ -1,17 +1,12 @@
-From: Rick Kennell <kennell@ecn.purdue.edu>
-Subject: Re: port-based filtering of IPsec packets?
-Date: 24 Jul 2003 15:50:26 -0500
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: port-based filtering of IPsec packets?
+Date: Fri, 25 Jul 2003 07:37:24 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059079825.6129.187.camel@innominate.rcs.purdue.edu>
-References: <1058988918.6068.29.camel@insomnia.ecn.purdue.edu>
-	 <20030723204240.GE23652@cannon.eng.us.uu.net>
-	 <000e01c3515e$f8320830$05001aac@breton1>
-	 <1058995435.6068.73.camel@insomnia.ecn.purdue.edu>
-	 <20030724010857.GB25253@cannon.eng.us.uu.net>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0192CB@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030724010857.GB25253@cannon.eng.us.uu.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,47 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+To: Rick Kennell <kennell@ecn.purdue.edu>, Ramin Dousti <ramin@cannon.eng.us.uu.net>
 Cc: netfilter@lists.netfilter.org
 
-On Wed, 2003-07-23 at 20:08, Ramin Dousti wrote:
-> On Wed, Jul 23, 2003 at 04:23:55PM -0500, Rick Kennell wrote:
-> 
-> > > Once the IPsec traffic has been terminated (decapsulated) you can
-> > > filter it based on the services (tcp or udp ports) prior to that
-> > > you only can filter based on the outer IP header...
-> > 
-> > OK.  Is there a way to decapsulate an ESP packet in iptables?
-> 
-> No, if the IPsec tunnel terminates on your firewall then you'll see the
-> decapsulated packet while it's being forwarded to its internal destination.
-> If it does not terminate on your firewall then you're out of luck and must
-> only rely on the outer IP header to filter...
-> 
-> Ramin
+>Surely there must be some way of doing port-based filtering of ESP
+>packets that are known to be bound for the local host.
+If the packet isn't intended for the firewall/ipsec server, then it's =
+forwarded unencrypted to the internal hosts.... I'm sure by then the =
+data in decrypted right? Because it can't pass an encrypted packet to a =
+host who isn't using IPSEC.
 
-I'm not using a tunnel.  I'll describe what (I believe) is happening:
+Can you put -j LOG rules in the FORWARD chain to filter on it? Mine =
+appear to pickup port 23 telnet sessions... sorry if what you want isn't =
+this..
 
-I have two systems that are set up with an IPsec policy that requires
-all packets sent between them to have an AH header and the payload
-encapsulated in an ESP section.  Interaction with other hosts is normal.
 
-When the packet comes in, netfilter sees it as an ESP packet.  Even the
-INPUT chains in the mangle and filter tables see the packet as an ESP
-packet.  I don't see a reason why the INPUT chains wouldn't want to see
-a decrypted (or, as you put, decapsulated) packet.  Instead, it appears
-that the packet is decapsulated after it's out of the filter table's
-INPUT chain.  i.e. it gets decapsulated between netfilter and the
-application.
+[root@firewall root]# iptables -I FORWARD -i ipsec0 -o eth0 -p tcp =
+--dport 23
+[root@firewall root]# iptables -L FORWARD -n -v -x
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out     source            =
+   destination
+       2      104            tcp  --  ipsec0 eth0    0.0.0.0/0           =
+ 0.0.0.0/0          tcp dpt:23
 
-Maybe the implementation should be changed to decapsulate the packet
-just after the routing decision but before the INPUT chains?
 
-Surely there must be some way of doing port-based filtering of ESP
-packets that are known to be bound for the local host.
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
--- 
-Rick Kennell <kennell@ecn.purdue.edu>
-Purdue University Department of Electrical and Computer Engineering
-
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+=20
 
