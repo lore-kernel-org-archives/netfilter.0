@@ -1,12 +1,12 @@
-From: Oumer Teyeb <oumer@kom.auc.dk>
-Subject: Re: about ipq_set_verdict()
-Date: Wed, 21 Apr 2004 08:56:02 +0200
+From: "Manikandan" <mani@manikandan.org>
+Subject: PPTP conntrack patch.
+Date: Wed, 21 Apr 2004 13:00:40 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40861B02.3080601@kom.auc.dk>
-References: <036e01c4227f$1611e900$68892090@grouse> <40853764.2090504@kom.auc.dk> <015d01c426ed$b9047c00$68892090@grouse>
+Message-ID: <GHEILNONPACCGBGKBEKKMEFFCFAA.mani@manikandan.org>
+Reply-To: <manikandan@manikandan.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------010801090701020905060202"
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_001C_01C427A0.A5E6E640"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,260 +17,137 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
+This is a multi-part message in MIME format.
 
---------------010801090701020905060202
-Content-Type: text/plain; charset=GB2312
+------=_NextPart_000_001C_01C427A0.A5E6E640
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 
-Hi Jee,
 
-I think you have mistaken packet +1 to be the next data byte. Since
-packet is a pointer to the struct ipq_packet_msg by pointer arthimetic
-packet +1 will give you the pointer to the data byte after n bytes,
-where n is the amount of bytes in a ipq_packet_msg struct.
+Hello folks,
 
+	I am trying to configure my gateway/firewall RH 9 linux-2.4.20-30.9,
+to allow multiple LAN pptp client sessions. I applied pptp conntrack patch
+which I downloaded from iptables.org.
 
-so what we have is something like
+	When I apply the patch on my kernel linux-2.4.20-30.9, I am getting
+a message 
 
-packet -------points to---------> start of ipq_packet_msg
+Testing patch extra/pptp-conntrack-nat.patch...
+   Placed new Config.in line
+   Placed new Configure.help entry
+   Placed new Makefile line
+   Placed new Makefile line
+   Placed new ip_conntrack.h line
+   Placed new ip_conntrack.h line
+   Placed new ip_conntrack.h line
+   Placed new ip_conntrack.h line
+   Placed new ip_conntrack.h line
+   Placed new ip_conntrack.h line
+   Placed new ip_conntrack.h line
+   Placed new ip_conntrack.h line
+Failed to patch copy of /usr/src/linux-2.4.20-30.9
 
-packet +1---------points to --------> data byte just after the
-ipq_packet_msg struct
+But I am able to see files like , 
 
-so if I set unsigned char * packet_all =(unsigned char*)(packet +1);
-this gives me the pointer to the packet data (header + payload)
+ip_conntrack_pptp.c
+ip_conntrack_proto_gre.c
 
-but if I say
+but there are no files ending with .o for ip_conntrack_pptp.c
+ip_conntrack_proto_gre.c .
 
-unsigned char * packet_all =((unsigned char * )(packet)) + 1, then sure
-this points to the packet id
+I went ahead and recompiled and installed my new  kernel. 
 
-hope this makes it clear
+Still I am not able to find any modules for gre or pptp inside
+/lib/modules/'uname-r'/net/ipv4/netfilter directory. 
 
-As to become sure, the code snippets I gave you are from actual working
-code, and you can try it out.
+What could be the problem. Please assist me. I have already spent few weeks
+on this.
+
 
 Regards,
-Oumer
-
-Jee J.Z. wrote:
-
->Hi Oumer,
->
->Thank you for your explanations. They are quite helpful. Please see inline:
->
->
->>In the man pages it says that if you get a negative value then it is a
->>failure , otherwise it is a sucess.
->>
->
->Right. I've figured out the return value of ipq_set_verdict(), which is 28 +
->data_len (one of the input parameters of ipq_st_verdict specified by users).
->
->>The reason that you may get the packets dropped may be because you
->>modified them in such a way that they are not valid anymore (you change
->>thing to an invalid ip address or something like that)
->>
->
->Right. But I think I made some changes on the overhead of libipq itself
->rather than on packets, which caused the kernel confused and couldn't figure
->out what the infomation means returned by ipq_set_verdict.
->
->>On how to get the packet info
->>
->>Once you get the packet = ipq_get_packet(buffer)
->>
->>you can access the packet data (including header and payload) from
->>memory location packet +1,
->>
->
->As far as I can see, there are some overheads (info) used by
->ip_queue/netfilter to identify the packet (such as packet_id) and to provide
->some useful info (such as timestamp) to userspace. Therefore, 'packet+1'
->seems not the location of putting the pure packet data (header and payload).
->Instead, from the man page of ipq_get_packet (see the structure of
->ipq_packet_msg), packet+1 should be packet_id. no?
->
->>for example
->>
->>you can use something like
->>
->>usigned char *packet_all = (unsigned char *) (packet+1);
->>
->>then for example to access the ip_header length, which is located from
->>bits 4-7 in the ip header you can use something like
->>
->>ip_header_len = (*packet_all & 0xF) * 4; // the 4 is since the header
->>length is specified as a multiple of 32bits,ie 4 bytes
->>
->>or you can get the total length, which is the third and fourth bytes of
->>the header as
->>
->>total_len = htons(*(unsigned short *) (packet_all + 2)))
->>
->>and so on,
->>
->>and based on the value of this ip header length and the data offset in
->>the tcp header,
->>
->>
->>(to find the data offset in the tcp header you can use something like
->>
->>tcp_header_len = ((*(packet_all + ip_header_len + 12 ) & 0xF0) >> 4 )*
->>4; // the 12 is because we have 2 bytes for source port + 2 bytes for
->>destination port, 4 bytes for sequence number and 4 bytes for ack number
->>in the tcp header before we reach the data offset
->>
->>
->>so the data payload is from unsinged char *start = (packet_all +
->>ip_header_len+ tcp_header_len) till unsinged char *end = start + total_len
->>
->>
->>and I think you can just set the values of the packet, whether header or
->>payload, once you got a pointer to it
->>
->
->Thank you very much for these excellent examples. They make sense. I am just
->a bit confused whether packet+1 is the start point of a packet including its
->header.
->
->Cheers,
->Jee
->
->>
->>
->>Jee J.Z. wrote:
->>
->>>Hi all,
->>>
->>>I am using the libipq library to do userspace programming on netfilter. I
->>>
->am
->
->>>having some problems understanding the return values of the function
->>>ipq_set_verdict():
->>>
->>>When I set verdict (either NF_ACCEPT or NF_DROP) without modifying the
->>>packet, the return value of ipq_set_verdict is 28 and everything works
->>>
->well;
->
->>>however, when I set verdict trying to modify the packet, ipq_set_verdict
->>>returns 88, and the packet seems always to be dropped even when I set
->>>NF_ACCEPT.
->>>
->>>Does anybody know what these return values mean? Moreover, could anybody
->>>tell me how I can successfully modify a packet using libipq? Thank you
->>>
->very
->
->>>much in advance!!
->>>
->>>Regards,
->>>Jee
->>>
->>>
->>>
->>
->>
->>
->
->
+Manikandan.
 
 
---------------010801090701020905060202
-Content-Type: text/html; charset=GB2312
-Content-Transfer-Encoding: 7bit
 
-<html>
-<head>
-</head>
-<body>
-Hi Jee,<br>
-<br>
-I think you have mistaken packet +1 to be the next data byte. Since packet
-is a pointer to the struct ipq_packet_msg by pointer arthimetic packet +1
-will give you the pointer to the data byte after n bytes, where n is the
-amount of bytes in a ipq_packet_msg struct.<br>
-<br>
-<br>
-so what we have is something like <br>
-<br>
-packet -------points to---------&gt; start of ipq_packet_msg<br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>
-packet +1---------points to --------&gt; data byte just after the ipq_packet_msg
-struct<br>
-<br>
-so &nbsp;if I set unsigned char * packet_all =(unsigned char*)(packet +1);<br>
-this gives me the pointer to the packet data (header + payload)<br>
-<br>
-but if I say<br>
-<br>
-unsigned char * packet_all =((unsigned char * )(packet)) + 1, then sure this
-points to the packet id<br>
-<br>
-hope this makes it clear<br>
-<br>
-As to become sure, the code snippets I gave you are from actual working code,
-and you can try it out.<br>
-<br>
-Regards,<br>
-Oumer<br>
-<br>
-Jee J.Z. wrote:<br>
-<blockquote type="cite" cite="mid:015d01c426ed$b9047c00$68892090@grouse">
-  <pre wrap="">Hi Oumer,<br><br>Thank you for your explanations. They are quite helpful. Please see inline:<br><br><br></pre>
-  <blockquote type="cite">
-    <pre wrap="">In the man pages it says that if you get a negative value then it is a<br>failure , otherwise it is a sucess.<br></pre>
-    </blockquote>
-    <pre wrap=""><!----><br>Right. I've figured out the return value of ipq_set_verdict(), which is 28 +<br>data_len (one of the input parameters of ipq_st_verdict specified by users).<br><br></pre>
-    <blockquote type="cite">
-      <pre wrap="">The reason that you may get the packets dropped may be because you<br>modified them in such a way that they are not valid anymore (you change<br>thing to an invalid ip address or something like that)<br></pre>
-      </blockquote>
-      <pre wrap=""><!----><br>Right. But I think I made some changes on the overhead of libipq itself<br>rather than on packets, which caused the kernel confused and couldn't figure<br>out what the infomation means returned by ipq_set_verdict.<br><br></pre>
-      <blockquote type="cite">
-        <pre wrap="">On how to get the packet info<br><br>Once you get the packet = ipq_get_packet(buffer)<br><br>you can access the packet data (including header and payload) from<br>memory location packet +1,<br></pre>
-        </blockquote>
-        <pre wrap=""><!----><br>As far as I can see, there are some overheads (info) used by<br>ip_queue/netfilter to identify the packet (such as packet_id) and to provide<br>some useful info (such as timestamp) to userspace. Therefore, 'packet+1'<br>seems not the location of putting the pure packet data (header and payload).<br>Instead, from the man page of ipq_get_packet (see the structure of<br>ipq_packet_msg), packet+1 should be packet_id. no?<br><br></pre>
-        <blockquote type="cite">
-          <pre wrap="">for example<br><br>you can use something like<br><br>usigned char *packet_all = (unsigned char *) (packet+1);<br><br>then for example to access the ip_header length, which is located from<br>bits 4-7 in the ip header you can use something like<br><br>ip_header_len = (*packet_all &amp; 0xF) * 4; // the 4 is since the header<br>length is specified as a multiple of 32bits,ie 4 bytes<br><br>or you can get the total length, which is the third and fourth bytes of<br>the header as<br><br>total_len = htons(*(unsigned short *) (packet_all + 2)))<br><br>and so on,<br><br>and based on the value of this ip header length and the data offset in<br>the tcp header,<br><br><br>(to find the data offset in the tcp header you can use something like<br><br>tcp_header_len = ((*(packet_all + ip_header_len + 12 ) &amp; 0xF0) &gt;&gt; 4 )*<br>4; // the 12 is because we have 2 bytes for sou
- rce port + 2 bytes for<br>destination port, 4 bytes for sequence number and 4 bytes for a
-ck number<br>in the tcp header before we reach the data offset<br><br><br>so the data payload is from unsinged char *start = (packet_all +<br>ip_header_len+ tcp_header_len) till unsinged char *end = start + total_len<br><br><br>and I think you can just set the values of the packet, whether header or<br>payload, once you got a pointer to it<br></pre>
-          </blockquote>
-          <pre wrap=""><!----><br>Thank you very much for these excellent examples. They make sense. I am just<br>a bit confused whether packet+1 is the start point of a packet including its<br>header.<br><br>Cheers,<br>Jee<br><br></pre>
-          <blockquote type="cite">
-            <pre wrap=""><br><br>Jee J.Z. wrote:<br><br></pre>
-            <blockquote type="cite">
-              <pre wrap="">Hi all,<br><br>I am using the libipq library to do userspace programming on netfilter. I<br></pre>
-              </blockquote>
-              </blockquote>
-              <pre wrap=""><!---->am<br></pre>
-              <blockquote type="cite">
-                <blockquote type="cite">
-                  <pre wrap="">having some problems understanding the return values of the function<br>ipq_set_verdict():<br><br>When I set verdict (either NF_ACCEPT or NF_DROP) without modifying the<br>packet, the return value of ipq_set_verdict is 28 and everything works<br></pre>
-                  </blockquote>
-                  </blockquote>
-                  <pre wrap=""><!---->well;<br></pre>
-                  <blockquote type="cite">
-                    <blockquote type="cite">
-                      <pre wrap="">however, when I set verdict trying to modify the packet, ipq_set_verdict<br>returns 88, and the packet seems always to be dropped even when I set<br>NF_ACCEPT.<br><br>Does anybody know what these return values mean? Moreover, could anybody<br>tell me how I can successfully modify a packet using libipq? Thank you<br></pre>
-                      </blockquote>
-                      </blockquote>
-                      <pre wrap=""><!---->very<br></pre>
-                      <blockquote type="cite">
-                        <blockquote type="cite">
-                          <pre wrap="">much in advance!!<br><br>Regards,<br>Jee<br><br><br><br></pre>
-                          </blockquote>
-                          <pre wrap=""><br><br><br></pre>
-                          </blockquote>
-                          <pre wrap=""><!----><br><br></pre>
-                          </blockquote>
-                          <br>
-                          </body>
-                          </html>
 
---------------010801090701020905060202--
+
+
+------=_NextPart_000_001C_01C427A0.A5E6E640
+Content-Type: application/ms-tnef;
+	name="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="winmail.dat"
+
+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
+IBuAU9An8RvSUoCx0f/VgMEQU5ATgLOhsFGRoBgg/W2AZQ/AI4Ii8H9wIC8pH7+VsBOg0LAP17CA
+AoBrzZF/zZCCX4Nvho+Hnw6JBOAAAYsgAAsAAIAIIAYAAAAAAMAAAAAAAABGAAAAAAOFAAAAAAAA
+AwACgAggBgAAAAAAwAAAAAAAAEYAAAAAEIUAAAAAAAADAAyACCAGAAAAAADAAAAAAAAARgAAAABS
+hQAAJ2oBAB4ADYAIIAYAAAAAAMAAAAAAAABGAAAAAFSFAAABAAAABAAAADkuMAALAA6ACCAGAAAA
+AADAAAAAAAAARgAAAAAGhQAAAAAAAAMAD4AIIAYAAAAAAMAAAAAAAABGAAAAAAGFAAAAAAAACwAY
+gAggBgAAAAAAwAAAAAAAAEYAAAAADoUAAAAAAAADABmACCAGAAAAAADAAAAAAAAARgAAAAARhQAA
+AAAAAAMAG4AIIAYAAAAAAMAAAAAAAABGAAAAABiFAAAAAAAAHgAqgAggBgAAAAAAwAAAAAAAAEYA
+AAAANoUAAAEAAAABAAAAAAAAAB4AK4AIIAYAAAAAAMAAAAAAAABGAAAAADeFAAABAAAAAQAAAAAA
+AAAeACyACCAGAAAAAADAAAAAAAAARgAAAAA4hQAAAQAAAAEAAAAAAAAACwA0gAggBgAAAAAAwAAA
+AAAAAEYAAAAAgoUAAAEAAAACAfgPAQAAABAAAAB023W7Ho1nSL3thPkU0QonAgH6DwEAAAAQAAAA
+dNt1ux6NZ0i97YT5FNEKJwIB+w8BAAAASQAAAAAAAAA4obsQBeUQGqG7CAArKlbCAABQU1RQUlgu
+RExMAAAAAAAAAABOSVRB+b+4AQCqADfZbgAAAEQ6XE1haWxccGVyLnBzdAAAAAADAP4PBQAAAAMA
+DTT9NwAAAgF/AAEAAAAzAAAAPEdIRUlMTk9OUEFDQ0dCR0tCRUtLTUVGRkNGQUEubWFuaUBtYW5p
+a2FuZGFuLm9yZz4AAAMABhDFcMGOAwAHELYDAAADABAQAAAAAAMAERABAAAAHgAIEAEAAABlAAAA
+SEVMTE9GT0xLUyxJQU1UUllJTkdUT0NPTkZJR1VSRU1ZR0FURVdBWS9GSVJFV0FMTFJIOUxJTlVY
+LTI0MjAtMzA5LFRPQUxMT1dNVUxUSVBMRUxBTlBQVFBDTElFTlRTRVNTSQAAAAB7nw==
+
+------=_NextPart_000_001C_01C427A0.A5E6E640--
 
 
