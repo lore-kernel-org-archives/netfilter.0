@@ -1,12 +1,13 @@
-From: Patrick Petermair <captain.nuke@gmx.at>
-Subject: Strange log entries (again)
-Date: Mon, 8 Jul 2002 22:43:35 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: HTTP Port forwarding issues
+Date: Mon, 8 Jul 2002 21:42:46 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207082243.35434.captain.nuke@gmx.at>
-Reply-To: captain.nuke@gmx.at
+Message-ID: <20020708204248.DTQF4119.mta06-svc.ntlworld.com@there>
+References: <FLEKIPPLAEDMJMOOBBDPGEOBCHAA.stewart.thompson@shaw.ca> <001501c226bf$875467e0$6702a8c0@internal.monstersolutions.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <001501c226bf$875467e0$6702a8c0@internal.monstersolutions.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,44 +20,16 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi!
+On Monday 08 July 2002 9:39 pm, Big Daddy wrote:
 
-I have found the following log entry in my firewall log (I'm running RedH=
-at=20
-7.3 with iptables for firewalling and masquerading):
+> all,
+>     I guess my ISP is blocking port 80. I configured the web server to use
+> port 8080 and configured my rules the same as before but used port 8080 and
+> it worked. thanks for all of the help!
 
-Jul  8 22:25:11 wormhole kernel: IN=3Dppp0 OUT=3D MAC=3D SRC=3D207.171.16=
-9.16=20
-DST=3D213.225.41.145 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D49 ID=3D21031 =
-DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D42111 WINDOW=3D8760 RES=3D0x00 ACK RST URGP=3D0
+Round of applause to Tom Eastep, I think :-)
 
-The thing is that this is an answer from a website (SPT=3D80) I surfed on=
-=20
-(www.amazon.de) - but my forward chain should detect it as an existing=20
-connection and let it through:
+ 
 
-#echo "   FWD: Allow all connections OUT and only existing and related on=
-es=20
-IN"
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state ESTABLISHED,REL=
-ATED=20
--j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-$IPTABLES -A FORWARD -j LOG
-
-I can access this website and everything works fine, I just don't underst=
-and=20
-why a few packets get blocked at my firewall and not routed through! Is t=
-his=20
-a bug in the conntrack module?
-Btw: What do the ACK and RST flags mean? Where can I find some infos abou=
-t the=20
-existing flags?
-
-Thnx so far!
-Patrick
-
---=20
-http://www.petermair.com
+Antony.
 
