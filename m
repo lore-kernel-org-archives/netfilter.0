@@ -2,12 +2,12 @@ From: Tony Earnshaw <tonni@billy.demon.nl>
 Subject: Re: Error when using iptables 1.2.6a (or another version)
 Date: 04 Jun 2002 23:06:39 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023224800.8262.19.camel@billy.demon.nl>
+Message-ID: <1023224799.8187.18.camel@billy.demon.nl>
 References: <B5747F3DB39FD411884B00B0D07808CCB6C1FC@server10> 
 	<1023223261.8261.2.camel@billy.demon.nl>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-0csXySk8pRzzz7NqjjJs"
+	boundary="=-+BSeolK2JUXTo+8p18vx"
 Return-path: <netfilter-admin@lists.samba.org>
 In-Reply-To: <1023223261.8261.2.camel@billy.demon.nl>
 Errors-To: netfilter-admin@lists.samba.org
@@ -23,7 +23,7 @@ To: Tony Earnshaw <tonni@billy.demon.nl>
 Cc: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>, "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
 
 
---=-0csXySk8pRzzz7NqjjJs
+--=-+BSeolK2JUXTo+8p18vx
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
@@ -57,18 +57,18 @@ GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
 
 
 
---=-0csXySk8pRzzz7NqjjJs
+--=-+BSeolK2JUXTo+8p18vx
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: Dette er en digitalt signert meldingsdel
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.0.7 (GNU/Linux)
 
-iD8DBQA8/Svf99dgUTvnuYERAq36AJ9WsNd60tV9jjgvR8BYAKniZXkLSACgm2Ka
-6b1KCAx3l8OzIyYx/Bri2ac=
-=+KRG
+iD8DBQA8/Svf99dgUTvnuYERAq36AJ9yCqpMZHGau96DI/D2eIUaCKe2EACfX647
+pyCHemXm4AgZC+j5HFt7Ykk=
+=v50e
 -----END PGP SIGNATURE-----
 
---=-0csXySk8pRzzz7NqjjJs--
+--=-+BSeolK2JUXTo+8p18vx--
 
 
