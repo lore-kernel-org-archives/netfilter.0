@@ -1,15 +1,14 @@
-From: Filip Sneppe <filip.sneppe@cronos.be>
+From: Christian Hammers <ch@westend.com>
 Subject: Re: /proc/net/ip_conntrack filling without ipt_conntrack.o loaded?
-Date: 14 Jan 2003 16:49:14 +0100
+Date: Tue, 14 Jan 2003 17:01:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042559354.464.770.camel@xbox>
-References: <20030114093711.GC9940@westend.com>
-	<20030114121232.GA3362@westend.com> <1042551825.465.143.camel@xbox> 
-	<20030114150641.GB23431@westend.com>
+Message-ID: <20030114160134.GC6664@westend.com>
+References: <20030114093711.GC9940@westend.com> <20030114121232.GA3362@westend.com> <1042551825.465.143.camel@xbox> <20030114150641.GB23431@westend.com> <1042559354.464.770.camel@xbox>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030114150641.GB23431@westend.com>
+Content-Disposition: inline
+In-Reply-To: <1042559354.464.770.camel@xbox>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,38 +18,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Christian Hammers <ch@westend.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Filip Sneppe <filip.sneppe@cronos.be>
 Cc: netfilter@lists.netfilter.org
 
-On Tue, 2003-01-14 at 16:06, Christian Hammers wrote:
-> 
-> On Tue, Jan 14, 2003 at 02:43:45PM +0100, Filip Sneppe wrote: 
-> > About the high nuber of tracked connections, are you
-> > talking about /proc/net/ip_conntrack ?
-> Yes. As wrote in my previous mail (should have written it here, too),
+On Tue, Jan 14, 2003 at 04:49:14PM +0100, Filip Sneppe wrote:
+> If *all* your traffic is essentially asymetric in
+> nature, you'de be better off not using ip_conntrack at all...
 
-Ah - that mail - I already deleted it from my mailbox.
+Yes, thought so, too. - The question that I was trying to ask in this
+thread was, why the /proc/net/ip_conntrack is filled by the kernel
+although I *already did* remove the module!
 
-> this router does asymetric routing, i.e. the packets for a connection
-> come in over it but the answer packets go out via another router. 
-> So it will almost never see a real 3way tcp handshake or the like.
-> 
+I would have guessed that just after I removed the ipt_conntrack module
+and all the sub modules (ipt_conntrack_ftp, nat etc) the
+/proc/net/ip_conntrack would either vanish or at least return nothing
+because the code at the other end of the virtual device has gone.
 
-Wel, connection tracking was not really designed to handle asymetric
-routing setups, so you're basically screwed. No stateful
-packet filtering firewall will handle this decently, I guess.
+But apparently it did not go away so I suspected a kernel function that=20
+was fogotten to free or similar...
 
-On thing you can do, is apply the 'raw' patch from patch-o-matic
-(written by Jozsef Kadlecsik), this allows you not to track
-particular traffic. In your case, you will need to specify
-rules for all (asymetric) traffic that should not be tracked by 
-your firewall. If *all* your traffic is essentially asymetric in
-nature, you'de be better off not using ip_conntrack at all...
+bye,
 
-Hope this helps...
+-christian-
 
-Regards,
-Filip
+
+--=20
+Christian Hammers             WESTEND GmbH  |  Internet-Business-Provider
+Technik                       CISCO Systems Partner - Authorized Reseller
+                              L=FCtticher Strasse 10     Tel 0241/701333-11
+ch@westend.com                D-52064 Aachen              Fax 0241/911879
 
 
