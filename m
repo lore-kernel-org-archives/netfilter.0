@@ -1,13 +1,13 @@
-From: Florian Boelstler <euphoria@web.de>
-Subject: Re: icq
-Date: Wed, 16 Jun 2004 20:25:13 +0200
+From: Primero <primero@fastwebnet.it>
+Subject: Re: problem with VPN and iptables redirect
+Date: Wed, 16 Jun 2004 20:22:40 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40D09089.7010704@web.de>
-References: <17e501c453c9$a9b83490$49caa8c0@caris.priv>
+Message-ID: <20040616202240.6e3d6912@Zapata.homenetwork>
+References: <1087373437.1085.1.camel@akasha.fib.upc.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <17e501c453c9$a9b83490$49caa8c0@caris.priv>
+In-Reply-To: <1087373437.1085.1.camel@akasha.fib.upc.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,61 +18,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Wed, 16 Jun 2004 10:10:37 +0200
+sandra hernandez <sandra@fib.upc.es> wrote:
 
-Hi,
+> 
+> The problem is when I execute this command with iptables in linux box:
+>   iptables -t nat -I PREROUTING 1 -d x.x.x.x -j REDIRECT --to-port 80
+>    (and all the policies are to ALLOW)
+> The redirection fails...
+> If I deactivate VPN, the redirection works ok.
+Hi Sandra.
 
-Peter Marshall wrote:
-> what do I need to do to allow ICQ to work through my firewall
+I'm not so experted but if you would give us more info everything would be simple :)
 
-For plain ICQ messages I use the following rules in my iptables setup
-script:
+What about your IPsec Configuration?
+What About the rest of iptables script?
 
-$IPTABLES=`which iptables`
-ICQ="205.188.0.0/16 64.12.0.0/16"	# subnets for ICQ servers
+Think about that if you want to redirect the connection when unecripted and you're using "transport Mode", or tunnel mode without change of address beetween clear and unecrypted connection you could have problems ... like you have :)
 
-[...]
+Why don't you try something like this? 
 
-# if you use iptables on your desktop
-for icq in $ICQ
-do
-        $IPTABLES -A OUTPUT -o <YOUR EXTERNAL IF> -m state NEW \
-	-p TCP --sport 1024:65535 --dport 5190 -d $icq -j ACCEPT
-done
+First Mark all packets that arrives Encrypted.
 
+iptables -t mangle -I PREROUTING 1 -p 50 (or 51 if you use ah) -d X.X.X.X -j MARK --set-mark 10
 
-# if you use iptables on your gateway
-for icq in $ICQ
-do
-        $IPTABLES -A FORWARD -i <YOUR INTERNAL IF> \
-	-o <YOUR EXTERNAL IF> -m state --state NEW -p TCP \
-	--sport 1024:65535 --dport 5190 -d $icq -j ACCEPT
-done
+This way all Encrypted packets are marked with a number that will remain also when they'll get Unencrypted and your IPSEC will think about authentication. After that the packets are unecrypted they will start a new "walk" in netfilter Chains, so you can redirect all marked packets
 
-[...]
-
-Of course you'll need default rules(ESTABLISHED,RELATED) for all
-subsequent packets and the way back to your clients or desktop.
+iptables -t nat -I PREROUTING 2 -m mark 10 -j REDIRECT --to-port 80
 
 
-  Florian
+Don't know, but it could work. 
+
+Bye
 
 
-
-
-- --
-Public PGP key is available on common key servers.
-
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Debian - http://enigmail.mozdev.org
-
-iD8DBQFA0JCJwT2gPfZm6tURAlJgAKCGIhQP0bHpyIazISLz8Oamk3QUBwCguDbL
-Op02A+6Cu5uy7yUUvGLg4e0=
-=7naS
------END PGP SIGNATURE-----
 
