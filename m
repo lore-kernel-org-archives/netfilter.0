@@ -1,11 +1,9 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Question about POM
-Date: Sun, 13 Feb 2005 20:25:22 +0100
-Message-ID: <1108322722.17214.1.camel@nostromo.bgsecm.com>
-References: <cuo6t4$q0h$1@sea.gmane.org>
+From: Wolfgang Meyerle <procrash@neusob.de>
+Subject: Qos Problem
+Date: Sun, 13 Feb 2005 20:55:25 +0100
+Message-ID: <420FB0AD.9050008@neusob.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <cuo6t4$q0h$1@sea.gmane.org>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,42 +14,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-El dom, 13-02-2005 a las 18:41 +0000, Simon Turvey escribi=C3=B3:
-> Hi all,
->=20
-> Are the POM patches only supposed to apply to a particular 2.4.x or=20
-> 2.6.x?  The reason I ask is that the ipsec* patches don't seem to apply=
-=20
-> cleanly to my 2.6.10 tree.
+Hi, has anybody of you ever tried Qos with iptables?
+===============================
 
-They are supposed to be for both 2.4 and 2.6, but in my own
-experience it works better on newer kernels. Now that Netfilter
-doesn't gives you an official pom you can check their snapshots
-from the CVS. The last one should be prepared for 2.6.10.
+My Problem is that when I set up htb to classify my packets every 
+traffic should go to one of three classes.
 
-> Thanks,
->=20
-> Simon
+-The first class is the priorisized one (thought for myself to put in 
+http packets)
+-the second one is for peer2peer traffic which should be unpriorisized.
+-And third is for the rest of the packets.
 
-Regards.
+Now classifying works very good, but when I want to surf the www the htb 
+qdisc doesn't seem to give my http packets fast sending.
+My Browser reacts ver slow and surfing seems quite impossible.
+I thought the problem could be in the pfifo fast queues that the every 
+leaf is assigned by htb.
+For this I introduced and bfifo with limit for every leaf.
+I gave it simply a limit of 1500bytes no exactly knowing what I'm doing.
+Now I can browse perfectly but the throughput of my peer2peer program is 
+slow as hell.
 
---=20
+To differentiate the Peer2Peer Traffic I uses ipp2p filter with iptables.
 
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+What's wrong in my thoughts? Can anybody of you tell me?
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
-
+Cheers
+Wolfgang Meyerle
 
 
