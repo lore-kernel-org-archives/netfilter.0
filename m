@@ -1,14 +1,13 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: [OT] Hello?
-Date: Wed, 26 May 2004 19:50:05 -0700
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: need for stateful packet inspection
+Date: Thu, 27 May 2004 04:04:05 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405270249.i4R2ntou029825@server5.bandwidthco.com>
-References: <200405242218.46212.Antony@Soft-Solutions.co.uk>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <1085645044.10045.3.camel@localhost>
+References: <40B126AA.3050106@qwest.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405242218.46212.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <40B126AA.3050106@qwest.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,45 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: Randolph Jones <jonesrf1@qwest.net>
+Cc: netfilter@lists.netfilter.org
 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-Sent: Monday, May 24, 2004 2:19 PM
-To: netfilter@lists.netfilter.org
-Subject: [OT] Hello?
-
-Hi.
-
-Just checking the list - seems to be unusually quiet for a couple of
-days....?
-
-Antony.
-
---
-Behind the counter a boy with a shaven head stared vacantly into space, a
-dozen spikes of microsoft protruding from the socket behind his ear.
-
- - William Gibson, Neuromancer (1984)
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
-
-I noticed the same thing myself. In fact yesterday I went as far to make
-sure I hadn't inadvertently been removed from the list. But Nope - all is OK
-- just quiet. 
-
-
-
+On Sun, 2004-05-23 at 18:33, Randolph Jones wrote:
+> I am ignorant re iptables.
+> 
+> I am considering buying a linksys router. It seems to have statefull 
+> packet inspection that blocks nonmatching incoming packets.
+> 
+> If I do not have a server exposed to the internet, do I need any
+> packet inspection other than checking that all incoming packets match an 
+> earlier outgoing request?
+> 
+> TIA
+> rfjones
+In short, no.  If your needs are minimal and you do not need to managed
+multiple devices a linksys may be fine for you.  I cannot speak to the
+quality of Linksys; I have not used them.  However, not all stateful
+inspection engines are created equal.  Consider what functionality you
+may need in the future.  Consider how important reliability is, i.e., 
+if the device occasionally fails and needs to be reset, is that a
+problem. However, for very simple needs, a Linksys will probably be
+fine.
+Does anyone else have any thoughts, comments or insults?
 -- 
-This message has been scanned for viruses and dangerous 
-content by MailScanner, and is believed to be clean.
-postmaster@bandwidthco.com
-MailScanner at bandwidthco.com is for your absolute protection.
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
