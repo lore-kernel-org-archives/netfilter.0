@@ -1,13 +1,12 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: are the four packet "states" all-encompassing?
-Date: Thu, 24 Oct 2002 09:58:51 -0400 (EDT)
+From: "Yan Li" <netfilterlist@hotmail.com>
+Subject: About libipq
+Date: Thu, 24 Oct 2002 17:26:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210240958110.32289-100000@localhost.localdomain>
-References: <1035467865.16954.27.camel@elendil>
+Message-ID: <OE23n4DVvm24TzmKYTg00006f8e@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0009_01C27B82.6CAFA310"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1035467865.16954.27.camel@elendil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +16,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On 24 Oct 2002, Cedric Blancher wrote:
+This is a multi-part message in MIME format.
 
-> Le jeu 24/10/2002 =E0 15:29, Robert P. J. Day a =E9crit :
-> > On 24 Oct 2002, Cedric Blancher wrote:
-> > > One very packet can have one state, and one. =
+------=_NextPart_000_0009_01C27B82.6CAFA310
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-> > so every syntactically correct ("well-formed"??) packet is one
-> > of NEW, ESTABLISHED or RELATED, while all others are just
-> > INVALID?  ok, i can accept that, thanks.
-> =
+SGkgYWxsLA0KDQpJIHdyb3RlIGEgc21hbGwgcHJvZ3JhbSB3aGljaCBjb3B5IHRoZSBpbnB1dCBw
+YWNrZXRzIGZyb20gdGhlIGtlcm5lbCB0byB0aGUgdXNlcnNwYWNlIHVzaW5nIGxpYmlwcS4gQW5k
+IHRoZSBwYWNrZXRzIGFyZSBzdG9yZWQgaW4gYSBidWZmZXIgaW4gdXNlcnNwYWNlIHdoaWNoIGlz
+IGFjdHVyYWxseSBhbiBhcnJheSwgc2F5IGJ1Zi4gIA0KDQpVc2luZzogDQppcHFfcGFja2V0X21z
+Z190ICogbSA9IGlwcV9nZXRfcGFja2V0KGJ1Zik7DQoNCkkgY2FuIGFjY2VzcyBzb21lIHBhcmFt
+ZXRlcnMgb2YgdGhlIHBhY2tldHMgbGlrZSB0aGUgcGFja2V0IElELCBwYWNrZXQgbGVuZ3RoIHdo
+aWNoIGFyZSBkZWZpbmVkIGluIHRoZSBzdHJ1Y3QgaXBxX3BhY2tldF9tc2dfdC4gRm9yIGV4YW1w
+bGUsIG0tPnBhY2tldF9pZCBwb2ludHMgdG8gdGhlIHBhY2tldCBJRC4gQnV0IGhvdyBjYW4gSSBn
+ZXQgb3RoZXIgaW5mb3JtYXRpb24gb2YgdGhlIHBhY2tldHMsIGxpa2UgdGhlIHNvdXJjZSBhbmQg
+ZGVzdGluYXRpb24gYWRkcmVzcywgdGhlIHByb3RvY29sLCBldGMuIElzIHRoZXJlIGFueSBmdW5j
+dGlvbiBvciBzaG91bGQgSSByZWFkIGRpZmZlcmVudCB1bml0IG9mIHRoZSBhcnJheSwgYnVmLCB0
+byBkbyB0aGF0PyANCg0KSSBhbSBvbmx5IGEgYmVnaW5uZXIuIE1hbnkgdGhhbmtzIGZvciB5b3Vy
+IGtpbmQgcmVwbHkuDQoNCllhbg==
 
-> Yes and no, it is a bit more complicated...
-> =
+------=_NextPart_000_0009_01C27B82.6CAFA310
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-> INVALID applies to all packets for which ip_conntrack is not able to
-> give a state. As common examples :
-> =
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
+dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
+MC4yODAwLjExMDYiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
+Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+
+SGkgYWxsLDwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT0iVGltZXMgTmV3IFJvbWFuIj48
+L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+SSB3
+cm90ZSBhIHNtYWxsIHByb2dyYW0gd2hpY2gmbmJzcDtjb3B5IHRoZSANCmlucHV0IHBhY2tldHMg
+ZnJvbSB0aGUga2VybmVsIHRvIHRoZSB1c2Vyc3BhY2UgdXNpbmcgbGliaXBxLiBBbmQgdGhlIHBh
+Y2tldHMgYXJlIA0Kc3RvcmVkIGluIGEgYnVmZmVyIGluIHVzZXJzcGFjZSB3aGljaCBpcyBhY3R1
+cmFsbHkmbmJzcDthbiBhcnJheSwgc2F5IDxFTT48Rk9OVCANCmZhY2U9IkNvdXJpZXIgTmV3IiBz
+aXplPTI+YnVmPC9GT05UPjwvRU0+LjxFTT4mbmJzcDsgPC9FTT48L0ZPTlQ+PC9ESVY+DQo8RElW
+PjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48
+Rk9OVCBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPlVzaW5nOiA8L0ZPTlQ+PC9ESVY+DQo8RElWPjxG
+T05UIGZhY2U9IkNvdXJpZXIgTmV3IiBzaXplPTI+aXBxX3BhY2tldF9tc2dfdCAqIG0gDQo9Jm5i
+c3A7aXBxX2dldF9wYWNrZXQoYnVmKTs8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9IlRp
+bWVzIE5ldyBSb21hbiI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBmYWNlPSJUaW1l
+cyBOZXcgUm9tYW4iPkkgY2FuIGFjY2VzcyBzb21lIHBhcmFtZXRlcnMgb2YgdGhlIHBhY2tldHMg
+DQpsaWtlIHRoZSBwYWNrZXQgSUQsIHBhY2tldCBsZW5ndGggd2hpY2ggYXJlIGRlZmluZWQgaW4g
+dGhlIDxGT05UIA0KZmFjZT0iQ291cmllciBOZXciIHNpemU9Mj5zdHJ1Y3QgaXBxX3BhY2tldF9t
+c2dfdDwvRk9OVD4uIEZvciBleGFtcGxlLCA8Rk9OVCANCmZhY2U9IkNvdXJpZXIgTmV3IiBzaXpl
+PTI+bS0mZ3Q7cGFja2V0X2lkPC9GT05UPiBwb2ludHMgdG8gdGhlJm5ic3A7cGFja2V0IA0KSUQu
+Jm5ic3A7QnV0IGhvdyBjYW4gSSBnZXQgb3RoZXIgaW5mb3JtYXRpb24gb2YgdGhlIHBhY2tldHMs
+IGxpa2UgdGhlIHNvdXJjZSBhbmQgDQpkZXN0aW5hdGlvbiBhZGRyZXNzLCB0aGUgcHJvdG9jb2ws
+IGV0Yy4gSXMgdGhlcmUgYW55IGZ1bmN0aW9uIG9yIHNob3VsZCBJIHJlYWQgDQpkaWZmZXJlbnQg
+dW5pdCBvZiB0aGUgYXJyYXksPEVNPiZuYnNwOzxGT05UIGZhY2U9IkNvdXJpZXIgTmV3IiANCnNp
+emU9Mj5idWYsPC9GT05UPiZuYnNwOzwvRU0+dG8gZG8gdGhhdD8mbmJzcDs8L0ZPTlQ+PC9ESVY+
+DQo8RElWPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+PC9GT05UPiZuYnNwOzwvRElWPg0K
+PERJVj48Rk9OVCBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPkkgYW0gb25seSBhIGJlZ2lubmVyLiBN
+YW55IHRoYW5rcyBmb3IgeW91ciANCmtpbmQgcmVwbHkuPC9GT05UPjwvRElWPg0KPERJVj48Rk9O
+VCBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQg
+ZmFjZT0iVGltZXMgTmV3IFJvbWFuIj5ZYW48L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRNTD4NCg==
 
-> 	. TCP packets that does not complies to RFC 793
-> 	. ICMP errors non related to existing flows
-> 	. lack of memory or conntrack table full
-> =
-
-> So, well formed packets can sometimes fall into INVALID state, but it i=
-s
-> safe to DROP them.
-
-ok, gotcha.  but none of that changes the assertion that each and
-every packet will fall into one, and only one, of these four
-states.  thanks.
-
-rday
-
+------=_NextPart_000_0009_01C27B82.6CAFA310--
 
