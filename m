@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Network config review
-Date: Thu, 29 Jul 2004 22:55:57 +0100
+From: "Ashley M. Kirchner" <ashley@pcraft.com>
+Subject: Re: Re: iptables help
+Date: Thu, 29 Jul 2004 15:59:11 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407292255.57750.Antony@Soft-Solutions.co.uk>
-References: <810BC538117E9F4E9BB152E0C100DF1F18F4A6@farmer.vikus.net>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <4109732F.10008@pcraft.com>
+References: <D5C9032B2B09C64EA2409D6214E91AC905120E@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <810BC538117E9F4E9BB152E0C100DF1F18F4A6@farmer.vikus.net>
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC905120E@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thursday 29 July 2004 10:25 pm, Patrick Ahler wrote:
+Jason Opperisano wrote:
 
-> I have a few questions about my current setup; if anyone would be so
-> kind to take a look and let me know if there are any issues with the
-> configuration. Thanks!
+>someone already mentioned this--but this is *not* the "best" way to do this.  a transparent redirect to a squid server with a "dstdomain .yahoo.com" will block access to anything.yahoo.com regardless of IP address.
+>  
+>
+    This I understand, however this was the fastest solution I could 
+implement considering the time constraints I'm working with.  I will 
+most certainly look into installing/setting up squid in the future.
 
-Instead of the output from "iptables -L", please post either your iptables 
-rules (the script you use to set up the ruleset) or else the output from 
-"iptables -L -nvx; iptables -L -t nat -nvx", since that tells us much more 
-information, which is helpful.
-
-More importantly, however, please tell us what you want your firewall to do 
-(what to allow, what to block, that sort of thing) - then we can suggest 
-opinions on whether your ruleset is a good way of achieving it.
-
-Regards,
-
-Antony.
+    Hey Jason?  Thanks for all your help.  Really appreciate it.  The 
+same goes to the list in general as well.
 
 -- 
-It is also possible that putting the birds in a laboratory setting 
-inadvertently renders them relatively incompetent.
+W | I haven't lost my mind; it's backed up on tape somewhere.
+  +--------------------------------------------------------------------
+  Ashley M. Kirchner <mailto:ashley@pcraft.com>   .   303.442.6410 x130
+  IT Director / SysAdmin / WebSmith             .     800.441.3873 x130
+  Photo Craft Laboratories, Inc.            .     3550 Arapahoe Ave. #6
+  http://www.pcraft.com ..... .  .    .       Boulder, CO 80303, U.S.A.
 
- - Daniel C Dennett
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
