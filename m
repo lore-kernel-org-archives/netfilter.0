@@ -1,10 +1,10 @@
-From: =?ISO-8859-15?B?SmVz+nMgR2FyY+1hIENyZXNwbyAoYWthIFNldmVpbik=?= <correo@sevein.com>
-Subject: Where libipt_MASQ.so (???)
-Date: Mon, 4 Aug 2003 18:48:12 +0200
+From: "Heiko" <electropunk@web.de>
+Subject: Problem reading an URL with Java through IPTables/Squid proxy
+Date: Mon, 4 Aug 2003 18:53:38 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1211419607.20030804184812@sevein.com>
+Message-ID: <000301c35aa8$f77129a0$0200a8c0@hf.home.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,41 +15,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi all,
 
-Hi! Im tired because I have tryed to run iptables on my system too
-times. The problem is that I dont have the dynamic library
-/lib/iptables/libipt_MASQ.so, but anybody have it!
+I've been using an IPTables (1.2.6a-5) / Squid (2.4.6-2) combo on my gateway
+box (Debian Woody, Kernel 2.4.20, latest updates) for quite some time
+without any problems.
+Lately I've been starting to develop Java applications and now encounter the
+problem that any attempt to read the contents of an Internet URL through
 
-I use Gentoo Linux on kernel 2.4.20. I have compiled all netfilter
-options as modules althoun I tried also installing it into the kernel
-system.
+java.net.URLConnection.getInputStream()   - or -
+java.net.URL.openStream()
 
-I only want, by now, this rules for the iptables tool:
+methods from a client situated in my local intranet results in a 'The
+requested URL could not be retrieved' reply from Squid.
+Checking Squid's access.log, I've found that any URL requested by my Java
+code seems to be truncated when (or before?) being received by Squid, eg a
+request for the URL
 
- iptables -P INPUT ACCEPT
- iptables -F INPUT
- iptables -P OUTPUT ACCEPT
- iptables -F OUTPUT
- iptables -P FORWARD DROP
- iptables -F FORWARD
- iptables -A FORWARD --match mac --mac-source 00:c0:49:c9:d3:f1 -j MASQ
- iptables -A FORWARD --match mac --mac-source 00:c0:49:bc:9f:08 -j MASQ
- iptables -A FORWARD --match mac --mac-source 00:02:8a:3a:77:b7 -j MASQ
- iptables -A FORWARD --match mac --mac-source 00:90:d1:08:19:8d -j MASQ
+http://www.google.de/intl/de/about.html
 
-But the problem is when iptables execute '-j MASQ', telling me that
-libipt_MASQ.so doesn't exist. What should I do? I can't find an
-explication.
+results in a log message similar to
 
-Sorry, but I am from Spain and my English could be poor for you. Try
-to understand me, :).
+w.x.y.z - - [04/Aug/2003:18:17:32 +0200] "GET /intl/de/about.html HTTP/0.0"
+400 1244 NONE:NONE
 
---
-Jes=FAs Garc=EDa Crespo (aka Sevein)
-http://www.sevein.com
-correo@sevein.com
+Obviously, any such request will fail.
+
+The problem can't be in my code because it works ok if I switch to Win2k
+(got a dual boot configuration on my gateway box).
+
+Squid is not set up as a transparent proxy, and the IPTables rules
+concerning Squid look like this:
+
+$IPTABLES -A PREROUTING -t nat -i $inner_nic -p tcp -d ! $inner_nw --dport
+80 -s $inner_nw -j REDIRECT --to-port 3128
+
+$IPTABLES -A INPUT -i $inner_nic -p tcp -s $inner_nw -d $inner_ip --dport
+3128 -j ACCEPT
+$IPTABLES -A OUTPUT -o $inner_nic -p tcp -d $inner_nw -s $inner_ip --sport
+3128 -j ACCEPT
+$IPTABLES -A INPUT -i $inner_nic -p tcp -d $inner_nw -s $inner_ip --sport
+3128 -j ACCEPT
+$IPTABLES -A OUTPUT -o $inner_nic -p tcp -s $inner_nw -d $inner_ip --dport
+3128 -j ACCEPT
+
+where
+
+inner_nic = eth0
+inner_nw = intranet (192.168.0.0/24)
+inner_ip = IP bound to eth0 (gateway's IP, 192.168.0.x)
+
+Again, this setup works 100% when accessing HTTP/FTP URLs through any means
+but the aforementioned Java code.
+
+Can anyone shed some light on this?
+
+TIA!
 
 
