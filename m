@@ -1,8 +1,8 @@
-From: root <root@alexis.macam.ac.il>
-Subject: How to use apache redirect with iptables
-Date: Wed, 15 May 2002 16:24:06 +0300
+From: root <root@mail.mofet.macam.ac.il>
+Subject: How to use apache redirect with Iptables
+Date: Wed, 15 May 2002 17:45:05 +0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200205151324.g4FDO6L16851@alexis.macam.ac.il>
+Message-ID: <200205151445.g4FEj5l05943@mail.mofet.macam.ac.il>
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
