@@ -1,12 +1,10 @@
-From: Kevin Dwyer <Kevin.Dwyer@algx.net>
-Subject: Re: making services invisible
-Date: Thu, 10 Oct 2002 10:24:20 -0400 (EDT)
+From: netfilter.org@neo-neural.net
+Subject: NAT, conntrack, FTP, multihomed host
+Date: Thu, 10 Oct 2002 10:20:48 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.40.0210101023100.18839-100000@klepto.security.algx.lan>
-References: <3DA57D10.8040904@bol.com.br>
+Message-ID: <Pine.LNX.4.44.0210101002330.11967-100000@ward.neo-neural.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DA57D10.8040904@bol.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +16,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Julio Cesar Ody <julioody@bol.com.br>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 10 Oct 2002, Julio Cesar Ody transmitted the following:
+I've got a Slackware box running the 2.4.19 kernel with all the required
+modules for FTP connection tracking (ip_nat_ftp, ip_conntrack_ftp, etc.)
+compiled into the kernel. (Did it this way instead of modules as I'd
+already tried loading them as modules under 2.4.18; lsmod showed
+ip_nat_ftp as "unused" and active FTP failed to work... when connecting
+to a MS-based ftp server and performing an 'ls' via active mode, the
+connections cease after "150 Opening ASCII mode data connection for
+/bin/ls". Basically the same thing happens on any other type of FTP
+server.)
 
-> Hello. I'm using Slackware 8.1, kernel 2.4.18 and iptables v1.2.7a. I
-> blocked external acess to some services using the following rule:
->
-> iptables -A INPUT -i ! eth0 -p tcp -m multiport --destination-port
-> <port1>,<port2>,<blablabla> -j REJECT
->
-> However, when I perform a stealth scan using nmap on my host, I still
-> can see them running, but instead of "opened" I get them as "filtered".
-> Is there a way to block these results, making the services literally
-> invisible ? Appreciate any help, and also any technical information
-> (links, docs) regarding the answer.
+The "router" is currently using the gShield 2.8 iptables script, although
+I've tried many, many simple and/or insecure scripts or hand-entered rules
+with exactly the same result; active FTP will not work. (Passive works,
+and yes, I try to use it all the time... but active should work, darn it!)
+I've googled until my eyes are red and blurry, and yes, I've read the
+tutorial and the HOWTOs... when I follow the directions to the letter,
+nothing works. Essentially, it appears that the NAT module doesn't know
+what to do with the incoming server connection: I can see it arrive via
+tcpdump, but it is never forwarded to the workstation in question when
+the "proper" iptables rules are in place.
 
-You need to reply with an RST.
+The only way I can get active FTP and a few other "stupid"
+applications/protocols to work properly is to add a prerouting entry to
+forward everything not already re-directed to the server over to the
+workstation, which completely defeats the security benefits of NAT for
+that workstation. This also won't allow two NAT'ed hosts to use a "stupid"
+protocol on the network to a remote location at the same time.
 
-Something like: --reject-with tcp-reset
+kernel 2.4.19
+iptables 1.2.7a
+Intel CPU
+96MB ram
+multihomed: 100Mb ethernet to lan, and 10Mb ethernet to DSL router
 
-
-/* Kevin Dwyer                                Allegiance Internet */
-/* network security engineer                   Commerce Center II */
-/* email: Kevin.Dwyer@algx.net                7601 Ora Glen Drive */
-/* phone: 240-616-2075                        Greenbelt, MD 20770 */
-/*      >++++++++++[<++++++++++>-]<.+++++.----.[-]++++++++++.     */
+Please, please, let me know what additional info is needed - I'll gladly
+share it.
 
 
 
