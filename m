@@ -1,14 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: patching iptables - how?
-Date: Thu, 9 Jan 2003 17:22:31 +0100
+From: "Darrell Dieringer" <netfilter@darrelldieringer.com>
+Subject: RE: Kaaza 2 jammer.
+Date: Thu, 9 Jan 2003 12:58:38 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030109172231.772c94a5.arnt@c2i.net>
-References: <200301091034.56326.fabrice@netfilter.org>
-	<20030109034250.51982.qmail@web12706.mail.yahoo.com>
+Message-ID: <IMEDICLPAGAOCBLCCKLPGENAEKAA.netfilter@darrelldieringer.com>
+References: <565759501.20030109180351@wp.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030109034250.51982.qmail@web12706.mail.yahoo.com>
+In-Reply-To: <565759501.20030109180351@wp.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,28 +18,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-On Thu, 9 Jan 2003 03:42:50 +0000 (GMT), 
-Mladen Meduric <mladen_meduric@yahoo.com> wrote in message 
-<20030109034250.51982.qmail@web12706.mail.yahoo.com>:
+I've always wondered something about the string matching, but never
+having used it, I haven't researched it enough to know...
 
-> Whoa!!!
-> 
-> What a list! Thank you all very much!
-> I thought on just installing 1.2.7a from scratch, but didn't know what
-> effect would it have on old (1.2.5) version. Do I need to uninstall
-> that one first? If yes, is it best to use Sytem->Package->uninstall or
-> rpm -u
+Wouldn't netfilter also see the string "KazzaClient" in this email
+message?  I can imagine how that might cause problems if the string
+matching rules aren't well crafted.
 
-..'rpm -e iptables' will do nicely.  ;-)
+I see in the example posted by Tomasz Wrona that it only applies to
+tcp packets forwared from the internal interface, narrowing the focus
+qiute a bit.  But wouldn't that also block an email message having
+that string if sent from an internal machine?
 
+Of course, the sender of that message may have indeed sent it from a
+client on his internal network, and since I'm reading it, it must have
+worked as intended.
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+I imagine placing a string matching rule, like the example, _after_
+rules which accept other legitimate traffic (like smtp) would work
+completely fine.
 
+Looking for eduction on the topic.
+
+Darrell Dieringer - Madison, WI
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of
+> Tomasz Wrona
+> Sent: Thursday, January 09, 2003 11:04 AM
+> To: netfilter@lists.samba.org
+> Cc: lartc@mailman.ds9a.nl
+> Subject: Kaaza 2 jammer.
+>
+>
+> Hello,
+>
+> Some people asked about matching [blocking] Kaaza 2 sessions.
+> So try this simple rule:
+>
+> iptables -I FORWARD -i $internal_interface -p tcp -m string
+> --string "KazaaClient" -j REJECT --reject-with tcp-reset
+> [Or maybe worth to try -j TARPIT]
+>
+> In above rule I don't specify separate ports due to dynamic
+> port allocation.
+> This rule works fine, catches and reset completly Kaaza 1 and 2
+> versions.
+>
+>
+> Regards,
+> tw
 
 
