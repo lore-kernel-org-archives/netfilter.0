@@ -1,13 +1,10 @@
-From: PayalR <payal@hotpop.com>
-Subject: Re: are these enough now?
-Date: Fri, 4 Oct 2002 20:52:31 +0530
+From: Tim Cronin <tim@13-colonies.com>
+Subject: RE: iptables and linuxVirtualServer
+Date: Fri, 4 Oct 2002 10:52:03 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <33980.3728311837$1033745267@news.gmane.org>
-References: <200210041218.26636@.> <200210041648.00792@.> <200210041309.g94D9ML10904@vulcan.rissington.net>
+Message-ID: <71FD63241A2DD511AFED00010236A4B33224CB@LIVAUDAIS>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210041309.g94D9ML10904@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,83 +15,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: 'Roberto Nibali' <ratz@tac.ch>, "'lvs-users@LinuxVirtualServer.org'" <lvs-users@LinuxVirtualServer.org>
+Cc: "'Walther@gehag-dsk.de'" <Walther@gehag-dsk.de>, netfilter@lists.netfilter.org
 
-Hello all,
-Thanks a lot for the time and patience. I have written the script and am
-posting it here. If such kind of posting is not allowed please tell, so
-next time I will post it on a webpage and paste the link. But since ppl.
-might be reluctant to launch there browsers for this thing, I took the
-liberty of pasting it here.
-I have a single PC with all servers on the same machine.
-I am not forwading anything.
+>Yes, you're right and I was wrong redirecting you to the netfilter
+mailinglist. 
+>We will solve it on the LVS mailinglist and if there are problems with
+netfilter 
+>we will come back, ok?
 
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -P OUTPUT DROP
+Hey no problem, I must say that this is the most cordial and helpful
+mailing list I've been on. Thanks to everyone for your help. LVS has all
+ready
+saved me much time and money.
 
-[Is this OUTPUT rule OK?]
+>Yes, it is clearly the NF_STOLEN interaction of LVS in the NAT part of the
+code.
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 21 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 23 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 25 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 53 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 161 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 162 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 3306 -j ACCEPT
+this sounds like I might have opened a can of worms. :^D 
 
-iptables -A INPUT -i eth0 -p udp --dport 53 -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 161 -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 162 -j ACCEPT
+should/can lvs and iptables both track state, what would be the impact of
+that?
 
-[udp for these are sufficent I guess]
 
-iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-----Original Message-----
+From: Roberto Nibali [mailto:ratz@tac.ch]
+Sent: Friday, October 04, 2002 4:18 AM
+To: Tim Cronin
+Cc: 'Walther@gehag-dsk.de'; netfilter@lists.netfilter.org
+Subject: Re: iptables and linuxVirtualServer
 
-[please see if the state rule looks OK?]
 
-iptables -A OUTPUT -i eth0 -p tcp --sport 21 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p tcp --sport 22 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p tcp --sport 23 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p tcp --sport 25 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p tcp --sport 53 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p tcp --sport 80 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p tcp --sport 110 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p tcp --sport 143 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p tcp --sport 161 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p tcp --sport 162 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p tcp --sport 3306 -j ACCEPT
+Hi,
 
-[is the tag --sport appropriate here? or do I have to use --dport? I alwa=
-ys=20
-get confused between the usage of these two :)]
+Tim Cronin wrote:
+> yup, I've checked the packet exchange for a single page request.
+> 
+> the problem is that since lvs is handling the NAT for http
+> iptables doesn't look like it's tracking state.
 
-iptables -A OUTPUT -i eth0 -p udp --sport 53 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p udp --sport 161 -j ACCEPT
-iptables -A OUTPUT -i eth0 -p udp --sport 162 -j ACCEPT
+Yes, you're right and I was wrong redirecting you to the netfilter
+mailinglist. 
+We will solve it on the LVS mailinglist and if there are problems with
+netfilter 
+we will come back, ok?
 
-[udp here also seems enough]
+> if I let iptables handle nat to the web server the line below
+> works.
 
-Shall I block ICMP? I intend to have some logging for SMTP, HTTP and POP3=
-=2E
-I have yet to formulate the rules for them. I will do it in day or two an=
-d let
-ask here for opinion.
+Yes, it is clearly the NF_STOLEN interaction of LVS in the NAT part of the
+code.
 
-Also, as Anthony said I am looking forward for pointers on slapper. Or yo=
-u=20
-might just tell how do I know where the service is which is accessing por=
-t=20
-2002, plain UNIX :)
-
-Thanks a lot in advance and eagerly waiting for your comments.
-Bye.
--Payal
-
-p.s I will drop the telnet also in a day or two :)
+Sorry for the confusion I created,
+Roberto Nibali, ratz
+-- 
+echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq' |
+dc
 
