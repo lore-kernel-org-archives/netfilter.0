@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: how to delete a group of rules
-Date: Sat, 27 Nov 2004 13:00:18 -0500
-Message-ID: <1101578417.10064.17.camel@hubcap.ljm.dom>
-References: <20041127171409.31CE4591@mail.817west.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: [pptp-devel] iptables and pptp [slight OT]
+Date: Sat, 27 Nov 2004 10:09:58 -0800
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F0197FF@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041127171409.31CE4591@mail.817west.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,78 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: alexis@tpys.com.ar
+To: "Gary W. Smith" <gary@primeexalia.com>
+Cc: pptpclient-devel@lists.sourceforge.net, poptop-server@lists.sourceforge.net, netfilter@lists.netfilter.org
 
-On Sat, 2004-11-27 at 12:17, Alexis wrote:
-> Hi all, im coding a frontend for iptables based on php and mysql.
->  
-> But i have an issue when i try to delete a group of rules, it cant be done. 
->  
-> suppose this
->  
-> a chain called "x1"
->  
-> delete the chain implies 
->  
-> - empty the chain
-> - delete all  rules that reference the chain
->  
-> the first line is easy to do  with iptables -F x1 , but if (as an example)
-> in filter::INPUT i have 2 or more references to this chain, executing
-> iptables -D INPUT -j x1 will delete only the first one and not all rules
-> that references x1.
->  
-> Does exist any way to do this from command line using iptables, or code a
-> script to do this is the solution?
+Please note this is a cross post...  It seems to have impact to all
+three lists.
 
-make it a part of your script.  an example in perl (which should be
-straight-forward to port to PHP):
+=20
 
----BEGIN PERL SCRIPT EXAMPLE---
-#!/usr/bin/perl
+I have found the source of my problem and hope that others will not have
+it.  Here is the scenario:
 
-use strict;
+=20
 
-my $iptablescmd = "/usr/local/sbin/iptables";
-my $savecmd = "/usr/local/sbin/iptables-save";
-my $chain = "mychain";
-my $savefile = "/var/tmp/ref.test";
-my @references;
-my $reference;
+At two locations I have two firewall boxes running POPTOP and
+PPTP-CLIENT.  They work great when any XP box connects to them.  When
+server "A" tries to connect to server "B" it will do so fine for the
+first connection.  Subsequent connections fail until I restart POPTOP on
+the server.
 
-system ("$savecmd > $savefile");
+=20
 
-open (RULES, "$savefile");
+I have found that it is related to the ip_nat_pptp module being loaded.
+In our case we do not NAT the PPTP server but for some reason we loaded
+the module anyways on the client.  I assume the module works fine for
+NAT's PPTP servers but we don't use the functionality.  If you do load
+the module on the firewall you can accept PPTP connections just fine but
+you cannot make reliable outgoing FTP connections from the firewall.
+Client behind the firewall have no problem. =20
 
-while (<RULES>) {
-  if ( /\ \-j\ $chain\ / ) {
-    s/\-A\ /-D\ /;
-    push (@references, $_);
-  }
-}
+=20
 
-close (RULES);
+I'm not sure if this is designed functionality, limitation or a bug.
 
-foreach $reference (@references) {
-  print "Executing:  $iptablescmd $reference";
-  system ("$iptablescmd $reference");
-}
+=20
 
-print "Executing:  $iptablescmd -F $chain\n";
-system ("$iptablescmd -F $chain");
+Anyways, unloading this module from the server initiating the PPTP
+connection has fixed my dreaded problem.
 
-print "Executing:  $iptablescmd -X $chain\n";
-system ("$iptablescmd -X $chain");
+=20
 
-system ("rm -f $savefile");
---- END PERL SCRIPT EXAMPLE ---
+=20
 
--j
-
---
-"Facts are meaningless. You could use facts to prove anything that's
- even remotely true!"
-	--The Simpsons
-
+Gary Smith
 
