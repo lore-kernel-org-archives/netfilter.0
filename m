@@ -1,11 +1,10 @@
-From: "Matthew Donofrio" <mdonof2@pride.hofstra.edu>
-Subject: How exactly does RELATED work in Connection Tracking?
-Date: Mon, 21 Oct 2002 22:48:31 -0700
+From: fetchnob@nobarrier.co.za
+Subject: traffic shaping and netfilters
+Date: Thu, 17 Oct 2002 16:06:33 +0200 (SAST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c2798e$a7dcfd70$09c809c0@PENT4>
+Message-ID: <2296.196.35.22.18.1034863593.squirrel@www.nobarrier.co.za>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C27953.FAFDD1E0"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,58 +15,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
+Hi there all
 
-------=_NextPart_000_0005_01C27953.FAFDD1E0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+can some help me with the correct syntax to shape traffic.
 
-Hi everyone.  Before I ask my question, I just want to alert everyone =
-that I am newbie to Linux and the netfilter architecture.  OK, that =
-being said, here's my question.  I'm trying to determine how exactly an =
-incoming packet is determined to be RELATED to an existing connection in =
-Connection Tracking.  For instance, how exactly does a TCP connection =
-know that the packet is starting a new connection and this should be =
-deemed RELATED?  What fields (for lack of a better word) are compared to =
-come to this conclusion?  Thanks in advance.
+I have a machine with 4 network cards
 
--Matt
+eth0 = internet
+eth1 = my network
+eth2 = dmz
+eth3 = some clients
 
-------=_NextPart_000_0005_01C27953.FAFDD1E0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I would like to know 2 things
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi everyone.&nbsp; Before I ask my =
-question, I just=20
-want to alert everyone that I am&nbsp;newbie&nbsp;to Linux and the =
-netfilter=20
-architecture.&nbsp; OK, that being said, here's my question.&nbsp; I'm =
-trying to=20
-determine how exactly an incoming packet is determined to be RELATED to =
-an=20
-existing connection in Connection Tracking.&nbsp;&nbsp;For instance, how =
-exactly=20
-does a TCP connection know that the packet&nbsp;is&nbsp;starting a=20
-new&nbsp;connection and this should be deemed RELATED?&nbsp; What fields =
-(for=20
-lack of a better word) are compared to come to this conclusion?&nbsp; =
-Thanks in=20
-advance.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>-Matt</FONT></DIV></BODY></HTML>
+1 the syntax to shape all traffic to the internet for the following
+      http = 60% burstable 100%
+      mail = 20% burstable 100%
+      other = 20% burstable 100%
+2 the syntax to do shape a ipaddress to the internet to a percent of the line
+       10.1.1.1 = 50% burstable 100%
+       10.1.1.2 = 50% burstable 100%
 
-------=_NextPart_000_0005_01C27953.FAFDD1E0--
 
+
+______________________________________
+Mail has been scanned and protected by No Barrier Communications
+www.nobarrier.co.za
 
