@@ -1,11 +1,14 @@
-From: David Nillesen <dave@absoluteevil.com>
-Subject: Crashes under load on on Alpha running linux 2.6.7 + pppoe + pppd
-Date: Sat, 07 Aug 2004 14:37:42 +1000
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: iptables dnat to loopback
+Date: Sun, 8 Aug 2004 13:50:11 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1091853462.3474.48.camel@hecate>
+Message-ID: <200408081350.12149.Alistair@nerdnet.ca>
+References: <D5C9032B2B09C64EA2409D6214E91AC905124D@asimail2.alphanumeric.com> <1091945878.12669.0.camel@localhost> <200408080941.38256.lists@edeca.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200408080941.38256.lists@edeca.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +21,46 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-There is a lot of links in the chain here that could be going wrong, but
-I thought I'd start with the netfilter lists.
+On August 8, 2004 04:41 am, David Cannings wrote:
+> On Sunday 08 August 2004 07:17, Damian atabria wrote:
+> > :o( no luck.
+> >
+> > I even tried -F ing INPUT, FORWARD, OUTPUT, PREROUTING and POSTROUTING
+> > before adding the rule, (all policies set to ACCEPT) and still no luck!
+> > Forwarding is enabled,
+> > net.ipv4.conf.all.forwarding = 1
+> > net.ipv4.ip_forward = 1
+> > and still the packets are going nowhere... however giving
+> > the loopback an alias with an ip address of, say, 200.136.136.136
+> > works... so why can't I route to 127.0.0.x? Is there anything
+> > else I should check/add?
+>
+> You can't send packets from non 127/8 addresses to 127/8.  The kernel
+> filters them out and drops them as it considers them "martians".
+>
+> David
 
-The problem is most evident when I start up a bittorrent session. After
-running for an hour or so the Alpha gateway box reboots itself. I have
-never been able to catch it happening, so I'm not sure what errors I
-get. The kernel just reboots and the server attempts to restart itself.
+	Okay --- 
+	   If I'm following this thread correctly then, 
+	
+	we need two rules to manage this ... both Destination and Source Natting 
+these packets ... 
+	My question is ..... 
+	As I understand things DNAT is done in PREROUTING and SNAT is done in 
+POSTROUTING .. 
 
-I have a 512/512 kbit link and am usually able to get a combined
-throughput of 60-70kbytes per second. Under those circumstances I
-usually get an hour or two before the system crashes.
+	I can setup 
+	
+	iptables -I PREROUTING -t nat -p TCP -s 192.168.0.2 -d 10.1.105.45 --dport \ 
+3306 -j DNAT --to 127.0.0.1
+and (since nat postrouting FOLLOWS nat prerouting) 
+	iptables -I POSTROUTING -t nat -p TCP -s 192.168.0.2 -d 127.0.0.1 --dport \ 
+3306 -j SNAT --to 127.0.0.1
 
-Under lighter loading it does appear to take longer before it crashes.
+	But I don't belive that this will solve the above problem of the /drop 
+martians/ behaviour.
 
-I am masquerading/SNATing a LAN behind the firewall. The problem occurs
-if I use SNAT or MASQ.
+	Any comments folks?
 
-I can also run a bittorrent client on the Alpha or on the LAN host.
-Again the problem still occurs, regardless of where the client is. I
-have tried multiple bittorrent clients.
-
-I can download entire Debian archives without too many problems however,
-so I thought it might have something to do with the sheer number of
-incoming and outgoing connections that need to be maintained to keep a
-bittorrent session running.
-
-My friends have the same config on an Intel box and it performs
-flawlessly.
-
-I have tried running dnetc as an articial CPU load, but it makes no
-difference. The box appears to be stable normally so long as it has no
-pppoe/ppp load so I dont think its hardware.
-
-I run Debian testing Linux on Alpha gateway for my network.
-
-iptables 1.2.9-10
-kernel 2.6.7 (same problem existed on 2.6.6)
-pppoe 3.5-3
-
-I am running a Netcomm wireless DSL router setup to work as an ADSL
-modem via pppoe.
-
-I have a statefull firewall setup, nothing hugely complex mainly a lot
-of sanity checks then a few accepts with a default deny at the end.
-
-I am using ip_nat_ftp and ip_conntrack_ftp in addition to the standard
-connection tracking modules.
-
-
-If there are any suggestions, known problems or things you could think
-of I should check, it would be much appreciated.
-
-Regards,
-Dave
-
+	Alistair Tonner
 
