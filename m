@@ -1,14 +1,13 @@
-From: Alex Satrapa <alex@lintelsys.com.au>
-Subject: Re: IMQ Replacement
-Date: Wed, 21 Jan 2004 09:04:26 +1100
+From: Adam Rice <adamrice@ntlworld.com>
+Subject: Re: per-connection byte counts
+Date: Tue, 20 Jan 2004 22:12:59 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <400DA5EA.5080404@lintelsys.com.au>
-References: <1068652569.27810.450.camel@cumulus>	 <Pine.LNX.4.58.0311131244400.13900@fhynpb.envafyvqr.arg> <1074352525.4761.1389.camel@peterlaptop> <400BDCB6.2000208@pobox.com> <002301c3df40$30f4b3b0$6e69690a@RIMAS>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040120221259.GA4354@glympton.airtime.co.uk>
+References: <20040118140903.GA3351@glympton.airtime.co.uk> <1074522469.27665.7.camel@xeon.office.eurotux.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002301c3df40$30f4b3b0$6e69690a@RIMAS>
+Content-Disposition: inline
+In-Reply-To: <1074522469.27665.7.camel@xeon.office.eurotux.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,16 +17,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Remus wrote:
-> IMQ is great and have to be maintained, but myself I'm not strong with
-> programming.
+Quoting Nuno Miguel Pais Fernandes (npf@eurotux.com):
+> Try http://luxik.cdi.cz/~devik/connbytes/
 > 
-> But I can help with testing. If somebody can take care about IMQ (or new
-> project of it) would be very nice.
+> It works very well....
 
-Add me to the list of people happy to be testers!
+Thanks, that's exactly what I wanted! Pity it seems to be unmaintained. Still,
+it's simple enough that that shouldn't matter for the time being.
 
+Adam
+
+-- 
+Adam Rice -- adamrice@ntlworld.com -- Blackburn, Lancashire, England
 
