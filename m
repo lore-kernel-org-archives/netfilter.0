@@ -1,7 +1,7 @@
-From: Pierre Ossman <drzeus-list@drzeus.cx>
-Subject: Out of window filter catches too much
-Date: Sat, 26 Feb 2005 01:01:41 +0100
-Message-ID: <421FBC65.40202@drzeus.cx>
+From: Vinicius <cviniciusm@terra.com.br>
+Subject: Doubt about ulog and postgresql?
+Date: Mon, 28 Feb 2005 14:14:04 +0000 (UTC)
+Message-ID: <loom.20050228T150628-44@post.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
@@ -14,99 +14,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm having problem with the out of window filter throwing a way packets 
-in otherwise perfectly good connections. The problem appears when doing 
-a rather large rsync between two linux machines on the network here.
+Hello,
 
-The rsync server is running 2.6.9, the client 2.6.10 and the router 2.6.10.
+I did put the followed rule in the iptables "iptables -I RH-Firewall-1-INPUT 8 -
+p tcp -j ULOG --ulog-prefix "Firewall: "", just before the last rule (rulenum 
+8) that rejects all packets.
 
-Since there is only linux machines involved here this must be a kernel 
-bug. Either in the TCP layer or in netfilters detection. Here is a dump 
-from the router when it starts throwing away packets:
+I did set up the file /etc/ulogd.conf to use a postgresql table such as the 
+example at /usr/share/doc/ulogd-1.21/, and I have created the database ulogd 
+and the table ulog as suggested there, with the same user and password than the 
+ones on ulogd.conf.
 
-ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver) 
-IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64 
-ID=10234 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763580423 ACK=299956256 
-WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
-ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver) 
-IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64 
-ID=10236 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763581871 ACK=299956256 
-WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
-ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver) 
-IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64 
-ID=10238 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763583319 ACK=299956256 
-WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
-ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver) 
-IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64 
-ID=10240 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763584767 ACK=299956256 
-WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
-ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver) 
-IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64 
-ID=10242 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763586215 ACK=299956256 
-WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
-ID=23961 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
-WINDOW=0 RES=0x00 ACK URGP=0 OPT (0101080A7E1D58E9C4C2FDE7)
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=432 TOS=0x00 PREC=0x00 TTL=64 
-ID=23963 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
-WINDOW=0 RES=0x00 ACK PSH URGP=0 OPT (0101080A7E1D5927C4C2FDE7)
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
-ID=23965 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956636 ACK=2763580423 
-WINDOW=1718 RES=0x00 ACK URGP=0 OPT (0101080A7E1D5952C4C2FDE7)
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
-ID=23967 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956636 ACK=2763580423 
-WINDOW=3788 RES=0x00 ACK URGP=0 OPT (0101080A7E1D599DC4C2FDE7)
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=64 TOS=0x00 PREC=0x00 TTL=64 
-ID=23969 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956636 ACK=2763580423 
-WINDOW=3788 RES=0x00 ACK URGP=0 OPT 
-(0101080A7E1D59B1C4C2FED70101050AA4B8DE5FA4B8E407)
-printk: 7 messages suppressed.
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=432 TOS=0x00 PREC=0x00 TTL=64 
-ID=23985 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
-WINDOW=5792 RES=0x00 ACK PSH URGP=0 OPT (0101080A7E1D73CBC4C30BF7)
-printk: 1 messages suppressed.
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=432 TOS=0x00 PREC=0x00 TTL=64 
-ID=23989 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
-WINDOW=5792 RES=0x00 ACK PSH URGP=0 OPT (0101080A7E1D8F4BC4C31AF7)
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=64 TOS=0x00 PREC=0x00 TTL=64 
-ID=23991 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956636 ACK=2763580423 
-WINDOW=5792 RES=0x00 ACK URGP=0 OPT 
-(0101080A7E1D93D0C4C338F70101050AA4B8DE5FA4B8E407)
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=432 TOS=0x00 PREC=0x00 TTL=64 
-ID=23993 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
-WINDOW=5792 RES=0x00 ACK PSH URGP=0 OPT (0101080A7E1DC64BC4C338F7)
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=64 TOS=0x00 PREC=0x00 TTL=64 
-ID=23995 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956636 ACK=2763580423 
-WINDOW=5792 RES=0x00 ACK URGP=0 OPT 
-(0101080A7E1DCFCFC4C374F70101050AA4B8DE5FA4B8E407)
-ip_ct_tcp: ACK is over the upper bound (ACKed data has never seen yet) 
-IN= OUT= SRC=10.8.5.10 DST=10.8.0.24 LEN=432 TOS=0x00 PREC=0x00 TTL=64 
-ID=23997 DF PROTO=TCP SPT=873 DPT=3851 SEQ=299956256 ACK=2763580423 
-WINDOW=5792 RES=0x00 ACK PSH URGP=0 OPT (0101080A7E1E344BC4C374F7)
-ip_ct_tcp: invalid RST (ignored) IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 
-LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=10258 DF PROTO=TCP SPT=3851 DPT=873 
-SEQ=2763587663 ACK=299956256 WINDOW=724 RES=0x00 ACK RST URGP=0 OPT 
-(0101080AC4C3E8BE7E1D58C1)
+So, when I did do "/etc/init.d/ulogd restart" the system entered an endeless 
+loop.
 
-The connection recovered from the first couple of these, but the later 
-ones causes the connection to die.
+What's I'm doing wrong, please?
+It's a piece of cake to use ulogd with MySQL.
 
-This is very annoying so I hope someone has the time to help me fix this 
-  as soon as possible.
+The relevants info:
+kernel-2.6.10-1.766_FC3
+kernel-utils-2.4-13.1.49_FC3
+iptables-1.2.11-3.1.FC3
+ulogd-1.21-1
+ulogd-mysql-1.21-1
+ulogd-pgsql-1.21-1
+postgresql-7.4.7-3.FC3.1
+postgresql-libs-7.4.7-3.FC3.1
+postgresql-server-7.4.7-3.FC3.1
 
-Rgds
-Pierre
+TIA,
+Vinicius.
+
+P.S.: excuse me whether this list is not the best place to put my doubt.
+
 
