@@ -1,15 +1,13 @@
-From: Etienne Ledoux <etienne@unix.za.org>
-Subject: Re: 3 iptables accounting questions
-Date: Tue, 6 Jul 2004 11:07:25 +0200
+From: "Brent Clark" <bclark@eccotours.biz>
+Subject: Gate rules, is this OK
+Date: Tue, 6 Jul 2004 12:12:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407061107.25731.etienne@unix.za.org>
-References: <200407061017.43252.etienne@unix.za.org> <200407060945.51110.Antony@Soft-Solutions.co.uk>
-Reply-To: etienne@unix.za.org
+Message-ID: <HAEOIFPIBBBLGLHOMLLIOEMKCCAA.bclark@eccotours.biz>
+References: <HAEOIFPIBBBLGLHOMLLICEMKCCAA.bclark@eccotours.biz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407060945.51110.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
+In-Reply-To: <HAEOIFPIBBBLGLHOMLLICEMKCCAA.bclark@eccotours.biz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,74 +18,122 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: iptables <netfilter@lists.netfilter.org>
 
-super answer! tx!
+Hi all
 
-1)
-Should I change the 10.168.0.2/32 to 0.0.0.0/0 ? Would that catch everything 
-on eth0 ? My internal lan is 192.168.0.0/24. But mail is delivered directly 
-to the fw which wont pass to the internal network but is also part of the 
-internet traffic. So I guess I have to types of internet traffic. 
-192.168.0.0/24 which is the internal network doing the usual stuff on the 
-internet like browsing etc. and mail which is going to/from 10.168.0.2 which 
-is the external ethernet of the firewall.
+I dont know if this is an over kill, or something (Rather have an over kill,
+therefore I can learn with iptables options). But I have a linux box that
+does a simple dial up connection.
 
-2) iptables-save -c ACCT
-Unknown arguments found on commandline
+Would someone please have a look at mine and see where I can tweak it a bit
+more.
 
-I guess I'm doing something stupid here. What would the right syntax be ?
+Also, I see that on my FW i cant resolve DNS queries.
+If I do a simple apt-get update (debian box). I get all this resolving
+error.
+Weird thing is though, my other linux workstation (also debian ), browses
+the net, updates perfectly.
 
-e.
+Thanks in advance.
+Kind Regards
+Brent Clark
 
-On Tuesday 06 July 2004 10:45, Antony Stone wrote:
-> On Tuesday 06 July 2004 9:17 am, Etienne Ledoux wrote:
-> > Greetings,
-> >
-> > 1) I have a firewall and would like to count all the traffic
-> > entering/leaving the external interface (I want to count only internet
-> > traffic, which is the traffic entering/leaving the external if). Is this
-> > rule right ?
-> >
-> > iptables -N ACCT
-> > iptables -I FORWARD -j ACCT
-> > iptables -I INPUT -j ACCT
-> > iptables -I OUTPUT -j ACCT
-> > iptables -A ACCT -s 10.168.0.2/32 -d 0.0.0.0/0 -o eth0
-> > iptables -A ACCT -s 0.0.0.0/0 -d 10.168.0.2/32 -i eth0
-> >
-> > 10.168.0.2 is my external interface ip and is also the ip which my
-> > internal network is natted behind.
->
-> You want to count traffic addressed *to this machine* from the Internet,
-> and traffic addressed *from this machine* to the Internet, yes?   In that
-> case these rules will work, but there is no point in jumping to the ACCT
-> chain from the FORWARD chain.
->
-> Remember that FORWARD is *only* for traffic going through the machine, and
-> INPUT and OUTPUT are *only* for traffic to/from the machine (ie: *never*
-> for traffic going through it).
->
-> If you want to count traffic addressed *to any machine on your internal
-> network* from the Internet, and traffic addressed *from any machine on your
-> network* to the Internet, then you should use your subnet address in the -s
-> and -d options, not the address of your firewall.
->
-> At a guess this subnet is going to be 10.168.0.0/24, but I don't know what
-> netmask you're using.
->
-> > 2) I would like to save/restore only this accounting rule. I thought
-> > 'iptables-save -c -t ACCT' would work but it doesn't.
->
-> No, ACCT is not a table (like filter, nat and mangle are) - it is a chain
-> (like FORWARD, INPUT and OUTPUT are).   Don't use -t
->
-> > 3) How do I flush the accounting stats.
->
-> iptables -Z ACCT, or iptables -L -Z ACCT -nvx if you want to see the
-> counters immediately before zeroing them.
->
-> Regards,
->
-> Antony.
+============================================================================
+========
+#!/bin/sh
+
+# Rules for gateway
+
+#Clear \ Flush all the rules from the different chains and tables
+
+/sbin/iptables -F
+/sbin/iptables -t nat -F
+/sbin/iptables -t mangle -F
+/sbin/iptables -X
+/sbin/iptables -F INPUT
+/sbin/iptables -F OUTPUT
+/sbin/iptables -F FORWARD
+
+#Accepting traffic for and to internal interface
+/sbin/iptables -A INPUT -p all -i lo -j ACCEPT
+/sbin/iptables -A OUTPUT -p all -o lo -j ACCEPT
+
+#Denying access from invalid sources
+/sbin/iptables -A INPUT -i ppp0 -s 10.0.0.0/8 -j DROP
+/sbin/iptables -A INPUT -i ppp0 -s 172.16.0.0/12 -j DROP
+#/sbin/iptables -A INPUT -i ppp0 -s 192.168.0.0/16 -j DROP
+
+#Creating the rules
+/sbin/iptables -A INPUT -i ppp0 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+/sbin/iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+/sbin/iptables -A INPUT -m state --state NEW -i ! ppp0 -j ACCEPT
+
+#Using Connection tracking for DNS
+/sbin/iptables -A INPUT -p udp --dport 53 -m state --state NEW -j ACCEPT
+
+#Allowing me to ping from here
+/sbin/iptables -A OUTPUT -p icmp --icmp-type ping -m state --state NEW -j
+ACCEPT
+
+#Allow access to port 22
+/sbin/iptables -A INPUT -p tcp -i eth0 --dport 22 -j ACCEPT
+/sbin/iptables -A INPUT -p udp -i eth0 --dport 22 -j ACCEPT
+
+#Deny access to port 80(http) and 443(https)
+#/sbin/iptables -A INPUT -p tcp --dport 443 -j DROP
+#/sbin/iptables -A INPUT -p tcp --dport 80 -j DROP
+
+/sbin/iptables -A FORWARD -i ppp0 -o eth0 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+/sbin/iptables -A FORWARD -i eth0 -o ppp0 -j ACCEPT
+/sbin/iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+/sbin/iptables -A FORWARD -i ppp0 -o ppp0 -j REJECT
+
+#Drop all netbios connections etc
+/sbin/iptables -A FORWARD -p UDP --dport 135 -j DROP
+/sbin/iptables -A FORWARD -p TCP --dport 135 -j DROP
+/sbin/iptables -A FORWARD -p UDP --dport 137 -j DROP
+/sbin/iptables -A FORWARD -p TCP --dport 137 -j DROP
+/sbin/iptables -A FORWARD -p UDP --dport 138 -j DROP
+/sbin/iptables -A FORWARD -p TCP --dport 138 -j DROP
+/sbin/iptables -A FORWARD -p UDP --dport 139 -j DROP
+/sbin/iptables -A FORWARD -p TCP --dport 139 -j DROP
+
+#Block NFS, X-windows, Printer Port, Sun rpc/NFS
+/sbin/iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 2049 -j DROP	#BLOCK NFS
+/sbin/iptables -A INPUT -p UDP -s 0/0 -d 0/0 --dport 2049 -j DROP	#BLOCK NFS
+/sbin/iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 6000:6009 -j DROP
+#BLOCK X-Windows
+/sbin/iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 7100 -j DROP	#BLOCK
+X-Windows Font Server
+/sbin/iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 515 -j DROP	#BLOCK
+Printer Port
+/sbin/iptables -A INPUT -p UDP -s 0/0 -d 0/0 --dport 515 -j DROP	#BlOCK
+Printer Port
+/sbin/iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 111 -j DROP	#BLOCK Sun
+rpc/NFS
+/sbin/iptables -A INPUT -p UDP -s 0/0 -d 0/0 --dport 111 -j DROP	#BLOCK Sun
+rpc/NFS
+
+#Setting the default Policies for the chains
+/sbin/iptables -P INPUT DROP
+/sbin/iptables -P FORWARD DROP
+/sbin/iptables -P OUTPUT DROP
+
+#Create some logging
+/sbin/iptables -A INPUT -p igmp -j DROP
+#/sbin/iptables -A INPUT -i ppp0  -j LOG --log-prefix "\iptables "
+/sbin/iptables -A INPUT -j LOG --log-prefix "INPUT_DROP: "
+/sbin/iptables -A OUTPUT -j LOG --log-prefix "OUTPUT_DROP: "
+
+echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+echo "1" > /proc/sys/net/ipv4/ip_forward
+echo "2" > /proc/sys/net/ipv4/conf/all/rp_filter
+echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route
+echo "0" > /proc/sys/net/ipv4/conf/all/accept_redirects
+echo "32768 61000" > /proc/sys/net/ipv4/ip_local_port_range
+
 
