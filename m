@@ -1,12 +1,12 @@
-From: Jason <jason@jasonandjessi.com>
-Subject: Re: Primordial tool missing
-Date: Thu, 12 Aug 2004 10:47:54 -0500 (CDT)
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: RST packets
+Date: Thu, 12 Aug 2004 13:58:01 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.58.0408121047300.29216@shinobi.jasonandjessi.com>
-References: <200408120947.40823.nadim@khemir.net>
+Message-ID: <0c0701c4808d$8757d180$49caa8c0@caris.priv>
+References: <024c01c47fe6$40e03e60$49caa8c0@caris.priv>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408120947.40823.nadim@khemir.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +16,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: nadim <nadim@khemir.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
 
-Their is a trace target in POM that does something akin to what you are
-looking for.
+I have been looking on the web about this now all day .. still nothing .. is
+there anyone out there who has experienced this problem ????  Any help would
+be greatly appreciated.
 
--- 
-       Jason
-www.jasonandjessi.com
-It gimme the jibblies
+Thanks again,
+Peter Marshall
 
-On Thu, 12 Aug 2004, nadim wrote:
+----- Original Message ----- 
+From: "Peter Marshall" <peter.marshall@caris.com>
+To: "netfilter" <netfilter@lists.netfilter.org>
+Sent: Wednesday, August 11, 2004 6:00 PM
+Subject: RST packets
 
-> Hi,
->
-> For you gurus this might be superfluous but for the lambda user a tool which
-> given an input packet (xxx.xxx.xxx.xxx:tcp:25) and a set of rules, show how
-> the packet goes from one rule to the other and finally make it to it's
-> destination , gets tansformed or dropped.
->
-> This would help enormously in understanding how this stuff works (no it's not
-> that obvious) and I also think it would be a great help when adding rules.
->
-> Does such a utility exist?
->
-> Cheers, Nadim.
->
+
+I am having a problem now where I am getting RST packets being blocked from
+my internal network heading out to the external network.  It looks like RST
+packets are used to stop a TCP connection when there is a problem.
+
+The setup is like this:
+I have a web box in my dmz that people connect to.  A mod-jk connection is
+made through my firewall, and the responses are allowed back with the
+standard ESTABLISHED,RELATED allow on the Forward chain.
+
+I guess I was wondering why I was getting a bunch of RST packets and also,
+why the firewall was blocking them.  Would they not be part of the
+ESTABLISED-RELATED chain ?
+
+Here are the relevant rules.
+$IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+$IPT -A FORWARD -s $WEB_BOX_IP -I eth1 -j web-int
+$IPT -A web-int -d 192.168.202.168 -p tcp --dport 8009:8020 -j ACCEPT
+
+I do have a chain for int-web ... which is used to connect to a webserver
+running on it ..(and it rejects everything else).  This is the chain that
+the RST packet is making it too and is then getting rejected.  However, I
+did not think that the packet should reach this chain as it is related (or
+establised) to the web-int connection ...
+
+Any suggestions would be greatly appreciated.  My network set up is a DMZ
+between two firewalls.  The web box is in the DMZ.  The "int" in my chains
+is my internal network.  the internal network is separated form the DMZ by a
+firewall.
+
+Peter Marshall
+
+
 
