@@ -1,12 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: state: INVALID
-Date: Tue, 23 Nov 2004 10:37:00 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411231035250.13889@blackhole.kfki.hu>
-References: <419E75B1.3030406@uni-paderborn.de>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: how to remove rules
+Date: Tue, 23 Nov 2004 04:39:36 -0500
+Message-ID: <1101202776.3503.12.camel@hubcap.ljm.dom>
+References: <a0f69e5041123012925d5cfaf@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <419E75B1.3030406@uni-paderborn.de>
+In-Reply-To: <a0f69e5041123012925d5cfaf@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?ISO-8859-15?Q?Bj=F6rn_Schmidt?= <bj-schmidt@uni-paderborn.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Fri, 19 Nov 2004, [ISO-8859-15] Bj=F6rn Schmidt wrote:
+On Tue, 2004-11-23 at 04:29, Askar wrote:
+> hi 
+> I have trying to remove the extra rules from my routing tables,
+> however with no luck
+> Also I want to know these duplicate entries have an effect on packets
+> going routed?
+> I have this overwhelming rules lists from my predessor who added the
+> "ip rule add fwmark" entries in firewall script, and on each run of
+> firewall script its creates an extra entry in routing table.
+> Now I want to get rid of  an extras "from all fwmark 0x2 lookup
+> squid.out" leaving only one that what's I needs.
+> 
+> 
+> here is the output of "ip rule ls"
 
-> the ulogd logfile of my server shows many "INVALID state" packets. What c=
-ould
-> be the reason for that?
->
-> The server has one cardbus nic (eth0), one dsl-interface (ppp0) and, of c=
-ourse
-> lo. The client has only eth0 and lo. The kernel version of both computers=
- is
-> 2.6.10-rc2
+the proper place for your question would be the lartc mailing list: 
+http://lartc.org/#mailinglist
 
-Enable the logging of out-of-window packets and check whether the packets
-in question are marked as INVALID by the TCP window tracking code.
+-j
+ 
+--
+"I'll leave the world the same way I came into it - dirty, screaming
+ and torn away from the woman I love."
+	--The Simpsons
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
 
