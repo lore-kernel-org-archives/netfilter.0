@@ -1,8 +1,13 @@
-From: Dean Anderson <dean@av8.net>
-Subject: (no subject)
-Date: Sun, 6 Feb 2005 22:37:00 -0500 (EST)
-Message-ID: <Pine.LNX.4.44.0502062232200.13062-100000@localhost.localdomain>
+From: Vinod Chandran <vinod_chandran@multitech.co.in>
+Subject: Re: Usage of CONNMARK
+Date: Mon, 07 Feb 2005 09:46:53 +0530
+Message-ID: <4206EBB5.5090001@multitech.co.in>
+References: <42032EC5.4090303@multitech.co.in>
+	<Pine.LNX.4.61.0502041515360.10050@filer.marasystems.com>
+	<42047777.3030102@multitech.co.in>
+	<Pine.LNX.4.61.0502060136540.22104@filer.marasystems.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,138 +18,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
 
-I'm trying to build openWRT (www.openwrt.org) using a new kernel from 
-linksys.  The kernel claims that it is 2.4.20, but it seems to have some 
-modifications, preventing netfilter from applying patches.
+Hi Henrik,
 
-I want to run iptables 1.2.11, and need (of course) the matching kernel
-modules.  Is there is "complete file" (ie non-patch) distribution of the
-netfilter kernel modules?  I couldn't find one on the ftp.netfilter.org 
-site, nor on the website.
+In case of partail request, too I found the packets where not dropping. 
+I had checked it by using nf-drill.pl, given in the FTP advisory. Modify 
+the script to give a partial PORT command. The packet goes across the 
+firewall and reaches the FTP server. I have connected my FTP server to 
+DMZ and running the script from the LAN side.
+Setting connection mark does work, but for the next packet and not the 
+current one.
 
-Thanks
+Thanks and Regards,
+Vinod C
 
-		--Dean
+Henrik Nordstrom wrote:
 
-#ignore whitespace in patches
-/mnt1/openWRT.20050205/buildroot/build_mipsel/staging_dir/bin/sed -i -e 
-"s,\-p1,\-l \-p1," 
-/mnt1/openWRT.20050205/buildroot/build_mipsel/patch-o-matic-ng-20050206/runme
-touch 
-/mnt1/openWRT.20050205/buildroot/build_mipsel/patch-o-matic-ng-20050206/.unpacked
-/mnt1/openWRT.20050205/buildroot/sources/patch-kernel.sh 
-/mnt1/openWRT.20050205/buildroot/build_mipsel/WRT54G_3_01_3_0922/release/src/linux/linux 
-/mnt1/openWRT.20050205/buildroot/sources/openwrt/kernel/netfilter/patches
+> On Sat, 5 Feb 2005, Vinod Chandran wrote:
+>
+>> Currently, from the FTP helper if DROP is given, the packets are not 
+>> getting dropped since the conntrack entry exists and also since from 
+>> where the helper routine is called, there is no check for return 
+>> value of NF_DROP. Hence when NF_DROP is returned, inside 
+>> ip_conntrack_in, I set the conntrack value
+>>      ct->mark = 1
+>> However this CONNMARK value is getting applicable only from the next 
+>> packet ownwards.
+>
+>
+> I do not follow. Conntract helpers can return NF_DROP to drop the 
+> packets, and this will cause the packet to be dropped. This is 
+> actively used today by the FTP helper when an partial request is 
+> received.
+>
+>> From ip_conntrack_in:
+>
+>
+>         if (ret != NF_DROP && ct->helper) {
+>                 ret = ct->helper->help(*pskb, ct, ctinfo);
+>     [...]
+>
+>     return ret;
+> }
+>
+>> If on the other hand, say I try to change the mark value, 
+>> (*pskb)->nfmark ( I assume it contains the MARK indicator), and put a 
+>> rule in the KEEP_STATE_FORWARD chain to drop packets with the 
+>> specific mark value, the kernel is panicing , with a BUG in sched.c. 
+>> I also get panic if I call nf_conntrack_put.
+>
+>
+> Setting the nfmark like this (MARK) should work, and should not panic 
+> your system.
+>
+> In addition, setting the connection mark from helpers called in 
+> ip_conntrack_in should be available in all iptables chains.
+>
+>
+> All three of your problems makes no sense to me. All should work 
+> (return NF_DROP from helpers, setting the connection mark, setting the 
+> nfmark).
+>
+> Regards
+> Henrik
+>
 
-Applying 
-/mnt1/openWRT.20050205/buildroot/sources/openwrt/kernel/netfilter/patches/100-revert_netfilter.patch 
-using plaintext: 
-patching file include/linux/netfilter_ipv4/ip_conntrack.h
-Hunk #1 FAILED at 45.
-Hunk #2 FAILED at 77.
-Hunk #3 succeeded at 261 (offset 3 lines).
-2 out of 3 hunks FAILED -- saving rejects to file 
-include/linux/netfilter_ipv4/ip_conntrack.h.rej
-patching file include/linux/netfilter_ipv4/ip_conntrack_h323.h
-patching file include/linux/netfilter_ipv4/ip_conntrack_mms.h
-patching file include/linux/netfilter_ipv4/ip_conntrack_pptp.h
-patching file include/linux/netfilter_ipv4/ip_conntrack_proto_gre.h
-Reversed (or previously applied) patch detected!  Assume -R? [n] 
-Apply anyway? [n] 
-Skipping patch.
-1 out of 1 hunk ignored -- saving rejects to file 
-include/linux/netfilter_ipv4/ip_conntrack_proto_gre.h.rej
-patching file include/linux/netfilter_ipv4/ip_conntrack_tftp.h
-patching file include/linux/netfilter_ipv4/ip_conntrack_tuple.h
-patching file include/linux/netfilter_ipv4/ip_nat_pptp.h
-patching file include/linux/netfilter_ipv4/ip_pool.h
-patching file include/linux/netfilter_ipv4/ipt_pool.h
-patching file net/ipv4/netfilter/Config.in
-Hunk #1 FAILED at 7.
-Hunk #2 succeeded at 18 (offset 1 line).
-Hunk #4 FAILED at 56.
-Hunk #5 succeeded at 75 (offset 8 lines).
-2 out of 6 hunks FAILED -- saving rejects to file 
-net/ipv4/netfilter/Config.in.rej
-patching file net/ipv4/netfilter/Makefile
-Hunk #1 FAILED at 31.
-Hunk #2 succeeded at 63 (offset 5 lines).
-Hunk #4 succeeded at 94 (offset 5 lines).
-1 out of 4 hunks FAILED -- saving rejects to file 
-net/ipv4/netfilter/Makefile.rej
-patching file net/ipv4/netfilter/ip_conntrack_core.c
-patching file net/ipv4/netfilter/ip_conntrack_ftp.c
-patching file net/ipv4/netfilter/ip_conntrack_h323.c
-patching file net/ipv4/netfilter/ip_conntrack_mms.c
-patching file net/ipv4/netfilter/ip_conntrack_pptp.c
-Reversed (or previously applied) patch detected!  Assume -R? [n] 
-Apply anyway? [n] 
-Skipping patch.
-1 out of 1 hunk ignored -- saving rejects to file 
-net/ipv4/netfilter/ip_conntrack_pptp.c.rej
-patching file net/ipv4/netfilter/ip_conntrack_pptp_priv.h
-patching file net/ipv4/netfilter/ip_conntrack_proto_gre.c
-Reversed (or previously applied) patch detected!  Assume -R? [n] 
-Apply anyway? [n] 
-Skipping patch.
-1 out of 1 hunk ignored -- saving rejects to file 
-net/ipv4/netfilter/ip_conntrack_proto_gre.c.rej
-patching file net/ipv4/netfilter/ip_conntrack_proto_tcp.c
-Hunk #3 FAILED at 186.
-Hunk #4 succeeded at 210 (offset 7 lines).
-1 out of 4 hunks FAILED -- saving rejects to file 
-net/ipv4/netfilter/ip_conntrack_proto_tcp.c.rej
-patching file net/ipv4/netfilter/ip_conntrack_proto_udp.c
-patching file net/ipv4/netfilter/ip_conntrack_standalone.c
-patching file net/ipv4/netfilter/ip_conntrack_tftp.c
-patching file net/ipv4/netfilter/ip_nat_core.c
-patching file net/ipv4/netfilter/ip_nat_h323.c
-patching file net/ipv4/netfilter/ip_nat_helper.c
-Hunk #8 FAILED at 208.
-1 out of 8 hunks FAILED -- saving rejects to file 
-net/ipv4/netfilter/ip_nat_helper.c.rej
-patching file net/ipv4/netfilter/ip_nat_mms.c
-patching file net/ipv4/netfilter/ip_nat_pptp.c
-Reversed (or previously applied) patch detected!  Assume -R? [n] 
-Apply anyway? [n] 
-Skipping patch.
-1 out of 1 hunk ignored -- saving rejects to file 
-net/ipv4/netfilter/ip_nat_pptp.c.rej
-patching file net/ipv4/netfilter/ip_nat_proto_gre.c
-Reversed (or previously applied) patch detected!  Assume -R? [n] 
-Apply anyway? [n] 
-Skipping patch.
-1 out of 1 hunk ignored -- saving rejects to file 
-net/ipv4/netfilter/ip_nat_proto_gre.c.rej
-patching file net/ipv4/netfilter/ip_nat_standalone.c
-patching file net/ipv4/netfilter/ip_nat_tftp.c
-patching file net/ipv4/netfilter/ip_pool.c
-patching file net/ipv4/netfilter/ip_tables.c
-patching file net/ipv4/netfilter/ipchains_core.c
-patching file net/ipv4/netfilter/ipfwadm_core.c
-patching file net/ipv4/netfilter/ipt_ECN.c
-patching file net/ipv4/netfilter/ipt_LOG.c
-patching file net/ipv4/netfilter/ipt_REJECT.c
-patching file net/ipv4/netfilter/ipt_ULOG.c
-patching file net/ipv4/netfilter/ipt_multiport.c
-patching file net/ipv4/netfilter/ipt_pool.c
-patching file net/ipv6/mcast.c
-patching file include/linux/ppp-comp.h
-Patch failed!  Please fix 
-/mnt1/openWRT.20050205/buildroot/sources/openwrt/kernel/netfilter/patches/100-revert_netfilter.patch!
-make: *** 
-[/mnt1/openWRT.20050205/buildroot/build_mipsel/WRT54G_3_01_3_0922/release/src/linux/linux/.nf-patched] 
-Error 1
-
-
--- 
-Av8 Internet   Prepared to pay a premium for better service?
-www.av8.net         faster, more reliable, better service
-617 344 9000   
 
 
 
