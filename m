@@ -1,14 +1,12 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Rules for Blocking Proxies...
-Date: Tue, 20 Apr 2004 15:47:46 +0200
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: Re: ipq_set_verdict
+Date: Tue, 20 Apr 2004 14:49:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1082468866.9098.45.camel@raylinux.internal>
-References: <000b01c426f6$cc216f10$36b4fea9@SABNANIS>
-	 <006f01c426dc$572c2cf0$0c00a8c0@pepelui>
+Message-ID: <00ce01c426de$43499ef0$68892090@grouse>
+References: <OF99855CB4.5A120950-ON65256E7C.00357431@hss.hns.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-M/Ka/l6yHkLCep11twSe"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <006f01c426dc$572c2cf0$0c00a8c0@pepelui>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,56 +16,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: aksingh@hss.hns.com
+Cc: Sven Schuster <schuster.sven@gmx.de>, netfilter@lists.netfilter.org
+
+Hi again,
 
 
---=-M/Ka/l6yHkLCep11twSe
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> hi
+>
+>   I thought of a way of reinjecting absolutely new packets into the kernel
+> .... suppose i call ip_set_verdict (this in turn calls nf_reinject) to
+> inject packets into the kernel)for the new packets that a user space
+> process generates. nf_reinject has a parameter nf_info which probably
+tells
 
-On Tue, 2004-04-20 at 15:35, Alexis wrote:
-> set up your own proxy server and only permit connections to this box
-> :)
-> =20
-> =20
->         ----- Original Message -----=20
->         From: Harry
->         To: netfilter@lists.netfilter.org
->         Sent: Tuesday, April 20, 2004 1:44 PM
->         Subject: Rules for Blocking Proxies...
->        =20
->         Hi All,
->         I am running Fedora and Redhat 9 on two servers at my
->         Cybercafe, connected on two Hi speed Lines, I have a decent
->         firewall script, but these days I am facing issues about
->         people changing the Proxy settings in order to get thru porn
->         sites, can anybody suggest some rules which I can implement in
->         the script that avoids connection to these servers?
->         Suggestions are welcome.
-<snip>
-Or use a ban list to DROP packets destined for the public proxies ...
+When you call ipq_set_verdict, there must be a packet waiting for userspace
+processing in the kernel. You can reinject any packet content as you wish by
+setting NF_ACCEPT, however, you have to use the packet id of the packet
+currently waiting in the kernel.
 
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+> the kernel from which hook was this packet captured and hence from where
+to
+> continue when this is reinjected(from the next hook onwards). Now, suppose
+> I have a PRE_ROUTING hook that captures the packets and sends it to my
+user
+> space process. This process might  return some packets to be reinjected
+and
+> might generate some of its own that it wants injected into the kernel
+(from
+> pre_routing stage but bypassing the netfilter PRE_ROUTING hook) .. for
+> these newly generated packets I can use the same nf_info param i used for
+> the packets that i captured from the kernel and that will make the kernel
+> think that they were captured by the PRE_ROUTING hook and so after
+> reinjection continue from after the PRE_ROUTING hook....so for these
+> packets routing decision would be taken after injection and hence these
+> newly packets cld either be outbound(going to the wore) or inbound (the
+> ones that need to travel up the stack from ip).
 
---=-M/Ka/l6yHkLCep11twSe
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Good idea. But keep in mind that one original packet only allow you to
+generate and inject one new packet using libipq, IMO. However, if you use
+libnet, I believe you can generate as many new packets as you wish and
+inject them.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Not sure I get what you mean rightly. Let me know if I miss something.
 
-iD8DBQBAhSoCh1fuR/Bv+ygRAp1cAJ9aAzsSJ4sbdiPitR3bfzmkGpAWRQCgjasu
-fp6vh8GmGL8wSX11qP4SG7A=
-=FZli
------END PGP SIGNATURE-----
+Jee
 
---=-M/Ka/l6yHkLCep11twSe--
+> This sounds good to me but can this be done or am i thinking on wrong
+lines
+> here. Please suggest if im wrong.
+>
+> thanks
+> Amit
+>
+> "DISCLAIMER: This message is proprietary to Hughes Software Systems
+Limited
+> (HSS) and is intended solely for the use of the individual to whom it is
+> addressed. It may contain  privileged or confidential information and
+> should not be circulated or used for any purpose other than for what it is
+> intended. If you have received this message in error, please notify the
+> originator immediately. If you are not the intended recipient, you are
+> notified that you are strictly prohibited from using, copying, altering,
+or
+> disclosing the contents of this message. HSS accepts no responsibility for
+> loss or damage arising from the use of the information transmitted by this
+> email including damage from virus."
+>
+>
+>
 
 
