@@ -1,13 +1,13 @@
-From: "GoMi" <gomi@perezoso.net>
-Subject: IPP2P module not capturing p2p traffic at all,  but it seems to be working!!
-Date: Fri, 30 Jan 2004 18:42:10 +0100
+From: jo@neolabs.be
+Subject: ssh gets cut off
+Date: Fri, 30 Jan 2004 19:32:32 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAAOspcUu9lN0KBjn1nIUpeJgEAAAAA@perezoso.net>
-References: <200401301523.31643.Antony@Soft-Solutions.co.uk>
+Message-ID: <200401301832.i0UIWWu16787@neo1.neolabs.be>
+Reply-To: jo@neolabs.be
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: binary
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200401301523.31643.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,70 +20,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi there folks :) I installed the ipp2p module v0.5a (i had 0.4 as well)
-to classify p2p traffic.
+Hi, does anyone recognize the following problem :
 
-I have it loaded and working:
+people here lose their ssh connections to a remote server over the
+internet if they leave their ssh open but inactive for like 30 minutes.
+This has happened since I replaced our gateway firewall ipfilter
+(solaris) by a netfilter(linux) exactly two days ago. So I am pretty sure 
+it must be some setting in netfilter.
 
-Module                  Size  Used by    Not tainted
-ipt_ipp2p               2656   2
+I have become so desperate that I have cleared out the whole filter
+table, leaving only the SNAT in the nat table and some kernel tunings,
+but the problem persists. So it cannot be the --syn thing.
 
-And i have the CONNMARK module to mark traffic:
+The default timeouts make no sense either, I see correct values in
+/proc/net/ip_conntrack...
 
-  iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
-     iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j ACCEPT
-     iptables -t mangle -A PREROUTING -p tcp -m ipp2p --ipp2p -j MARK
---set-mark 2
-     iptables -t mangle -A PREROUTING -p tcp -m ipp2p --ipp2p-data -j
-MARK --set-mark 2
+/usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c :
 
-	OTHER MARKING DONE FOR INTERACTIVE TRAFFIC
+static unsigned long tcp_timeouts[]
+= { 30 MINS,    /*      TCP_CONNTRACK_NONE,     */
+    5 DAYS,     /*      TCP_CONNTRACK_ESTABLISHED,      */
+    2 MINS,     /*      TCP_CONNTRACK_SYN_SENT, */
+    60 SECS,    /*      TCP_CONNTRACK_SYN_RECV, */
+    2 MINS,     /*      TCP_CONNTRACK_FIN_WAIT, */
+    2 MINS,     /*      TCP_CONNTRACK_TIME_WAIT,        */
+    10 SECS,    /*      TCP_CONNTRACK_CLOSE,    */
+    60 SECS,    /*      TCP_CONNTRACK_CLOSE_WAIT,       */
+    30 SECS,    /*      TCP_CONNTRACK_LAST_ACK, */
+    2 MINS,     /*      TCP_CONNTRACK_LISTEN,   */ 
 
-     iptables -t mangle -A PREROUTING -m mark --mark 0 -j MARK
---set-mark 2
-  iptables -t mangle -A PREROUTING -j CONNMARK --save-mark
+The only time frame that comes close to the drop out time reported
+by the users is the NONE (???), since they are cut off appr. after
+30 minutes of inactivity.
 
-I have the qdiscs attached with HTB (working fine) and filters to
-classify marks (also working)
+The only 'special' thing is that I SNAT two different internal networks
+(10.xx.xx.xx and 172.17.xx.xx - on two internal nic's off
+course) to a fixed external ip with the following rule :
 
-But the outcome of a iptables -t mangle -L -n -v -x shows this for
-ipp2p:
+iptables -t nat -A POSTROUTING -o $EXTIF -j SNAT --to $EXTIP
 
-    pkts      bytes target     prot opt in     out     source
-destination
-   14097  4339998 CONNMARK   all  --  *      *       0.0.0.0/0
-0.0.0.0/0          CONNMARK restore
-   10067  4144428 ACCEPT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0          MARK match !0x0
-       6      504 MARK       icmp --  *      *       0.0.0.0/0
-0.0.0.0/0          MARK set 0x4
-       0        0 MARK       tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          ipp2p v0.5a --ipp2p MARK set 0x2
-       0        0 MARK       tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          ipp2p v0.5a --ipp2p-data MARK set 0x2
-      14      912 MARK       udp  --  *      *       0.0.0.0/0
-0.0.0.0/0          udp dpt:53 MARK set 0x1
-     434    20812 MARK       tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:80 MARK set 0x1
-       0        0 MARK       tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:25 MARK set 0x2
-    3522   169036 MARK       tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpts:0:1024 MARK set 0x1
-      10     2198 MARK       udp  --  *      *       0.0.0.0/0
-0.0.0.0/0          udp dpt:!53 MARK set 0x2
-       5      240 MARK       tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:1863 MARK set 0x1
-       0        0 MARK       tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:1214 MARK set 0x2
-       2       80 MARK       tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp spt:80 MARK set 0x5
-     471    22600 MARK       all  --  *      *       0.0.0.0/0
-0.0.0.0/0          MARK match 0x0 MARK set 0x2
-    4030   195570 CONNMARK   all  --  *      *       0.0.0.0/0
-0.0.0.0/0          CONNMARK save
+Any ideas? Must have already happened ;-)
 
-Any one with an idea why the hell is not recognizing traffic at all??
-Thank you!!
+Thanks for any ideas or hints on how I can trace this. By the way I am
+running the Red Hat 9 kernel without any updates.
+
+Jo
 
 
+
+NEOlabs - http://www.neolabs.be - mailto:info@neolabs.be
 
