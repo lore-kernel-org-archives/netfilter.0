@@ -1,10 +1,9 @@
-From: Julio Cesar Ody <julioody@bol.com.br>
-Subject: sendmail redirect
-Date: Tue, 29 Oct 2002 09:47:05 -0200
+From: =?iso-8859-1?B?SOlsaW8gRHViZXV4?= <hdubeux@hotmail.com>
+Subject: Ping With Iptables.
+Date: Tue, 29 Oct 2002 11:51:38 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DBE7539.9020002@bol.com.br>
+Message-ID: <F136m4qBbs8ltIzn9rZ00010163@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,23 +14,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-Hello. I need to redirect all mail trafic that enters a gateway to an 
-email server inside the same LAN. Here's the scenario:
+Hi, everybody. This is my first message here and i hope you can help me.
+I have a Linux Box as a Gateway of my network. And i want do allow internal=
+=20
+machines to ping the Internet but i also want to block external machines to=
+=20
+ping my Gateway. Is this is possible plz send me something... Thanx.
+
+----------------------
+H=E9lio Dubeux Neto
 
 
-                 |----------------|          |----------------------|
-internet <--->  | gate(10.0.0.1) |  ------  | mailserver(10.0.0.2) |
-                 |----------------|          |----------------------|
-
-"gate" is the only machine with a real ip, so, from outside this LAN, 
-people will refer to it in order to fetch their email. So my question 
-is: What rules do I need to use in order to make "gate" pass the mail 
-tasks to "mailserver" (receive smtp/pop requests) ?  Thanks in advance.
 
 
-Julio Cesar Ody
+_________________________________________________________________
+MSN Hotmail, o maior webmail do Brasil. http://www.hotmail.com
 
 
