@@ -1,14 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: denying local traffic
-Date: Tue, 11 Feb 2003 22:26:04 +0100
+From: uniplex <uniplex@maximum-linux.net>
+Subject: Re: Spoofed ip's
+Date: Tue, 11 Feb 2003 15:56:32 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030211222604.12c74c82.arnt@c2i.net>
-References: <20030211202837.1225ac17.arnt@c2i.net>
-	<000601c2d20b$035c2980$bb00a8c0@DOUG1>
+Message-ID: <3E491D30.1000909@maximum-linux.net>
+References: <1044948351.23287.11.camel@filth.sadomain.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000601c2d20b$035c2980$bb00a8c0@DOUG1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,342 +16,158 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: deff <deff@sadomain.co.za>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 11 Feb 2003 15:20:19 -0500, 
-"Doug Yeager" <doug@aircomwireless.net> top-posted in message 
-<000601c2d20b$035c2980$bb00a8c0@DOUG1>:
+deff wrote:
+> Hello everyone.=20
+>=20
+> I set up a firewall that filters out, logs, and drops packets
+> originating from spoofed ip addresses.=20
+>=20
+> The definition here of a spoofed ip is :
+> a) A non-routable ip=20
+> b) A ip thats not destined for us ( shouldn't get past router anyway ) =
 
-> Cool,
-> 
-> This is my first ascii art attempt:
-> 
-> /--------------------\
-> |  INTERNET          |
-> \--------------------/
->        |
->        |
-> /----linux server---------------------\
-> |  no cat gateway on eth0             |
-> |  iptables                           |
-> |  dhcp  192.168.19.0/255.255.255.0   |
-> |  hostap on wlan0 192.168.19.1       |
-> \-------------------------------------/
->    |             |            |
->    |             |            |
-> /-------\       /-------\     /-----------\
-> |client1|       |client2|     |client3    |
-> \-------/       \-------/     \-----------/
+> c) A local ip=20
+> d) the loop back ip=20
+>=20
+> Originally the firewall only filtered 172.16.0.0/12, 192.168.0.0/16,=20
+> 10.0.0.0/8 and 127.0.0.1 addresses.=20
+>=20
+> Then i took a look at Firestarter's iptables script and saw that it als=
+o
+> filters out other addresses.=20
+>=20
+> Could anyone please check the rules below and tell me if the the source=
+=20
+> ip'ss are valid. I'm seeing an incredible amount of these ip's
+> attempting to get through .=20
+>=20
+> To me it looks like i'm blocking out the whole internet, but that makes=
 
-..not at all bad.  :-)
+> me wonder why firestarter does it .=20
+>=20
+> thanks ,
+> Cilli=C3=A9
+>=20
 
-> clients are of all flavors of OS.  And the users are not to smart
-> either.
-> It is in a coffee shop and users frequently leave shared drives open.
-> 
-> I want to be able to shut down all communications between clients so
-> they get to surf the net but not each other.  
+Would something like this look a little better for you?
 
-..first, _plug_ all wintendo ports, 137 tru 139.  _Plug_ goes anywhere 
-between the humanistic "reject" thru "drop" to less so "mirror", "same",
-and "tarpit".  On the other hand, if these coffee shop boxes are to
-generate profits for the coffee shop, junk the wintendos and install 
-Mandrake-9.0 or later, and set up game servers.  
+RESERVED_NET=3D"0.0.0.0/8 1.0.0.0/8 2.0.0.0/8 5.0.0.0/8 7.0.0.0/8=20
+10.0.0.0/8 23.0.0.0/8 27.0.0.0/8 31.0.0.0/8 36.0.0.0/8 37.0.0.0/8=20
+39.0.0.0/8 41.0.0.0/8 42.0.0.0/8 58.0.0.0/8 59.0.0.0/8 60.0.0.0/8=20
+69.0.0.0/8 70.0.0.0/8 71.0.0.0/8 72.0.0.0/8 73.0.0.0/8 74.0.0.0/8=20
+75.0.0.0/8 76.0.0.0/8 77.0.0.0/8 78.0.0.0/8 79.0.0.0/8 81.0.0.0/8=20
+82.0.0.0/8 83.0.0.0/8 84.0.0.0/8 85.0.0.0/8 86.0.0.0/8 87.0.0.0/8=20
+88.0.0.0/8 89.0.0.0/8 90.0.0.0/8 91.0.0.0/8 92.0.0.0/8 93.0.0.0/8=20
+94.0.0.0/8 95.0.0.0/8 96.0.0.0/8 97.0.0.0/8 98.0.0.0/8 99.0.0.0/8=20
+100.0.0.0/8 101.0.0.0/8 102.0.0.0/8 103.0.0.0/8 104.0.0.0/8 105.0.0.0/8=20
+106.0.0.0/8 107.0.0.0/8 108.0.0.0/8 109.0.0.0/8 110.0.0.0/8 111.0.0.0/8=20
+112.0.0.0/8 113.0.0.0/8 114.0.0.0/8 115.0.0.0/8 116.0.0.0/8 117.0.0.0/8=20
+118.0.0.0/8 119.0.0.0/8 120.0.0.0/8 121.0.0.0/8 122.0.0.0/8 123.0.0.0/8=20
+124.0.0.0/8 125.0.0.0/8 126.0.0.0/8 127.0.0.0/8 172.16.0.0/12=20
+192.168.0.0/16 197.0.0.0/8 201.0.0.0/8 219.0.0.0/8 220.0.0.0/8=20
+220.0.0.0/8 221.0.0.0/8 222.0.0.0/8 223.0.0.0/8 224.0.0.0/4 240.0.0.0/8=20
+240.0.0.0/5 241.0.0.0/8 242.0.0.0/8 243.0.0.0/8 244.0.0.0/8 245.0.0.0/8=20
+246.0.0.0/8 247.0.0.0/8 248.0.0.0/8 249.0.0.0/8 250.0.0.0/8 251.0.0.0/8=20
+252.0.0.0/8 253.0.0.0/8 254.0.0.0/8 255.0.0.0/8"
 
-..if people bring their own boxes, and you have a 802.11 service,
-_plug_ the wintendo ports and wrap _all_ wifi traffic in throttled 
-vpn tunnels, or you will have someone yanking _all_ the bandwidth 
-to copy someone elses stolen music or whatever.  
-
-..a wifi ap is essentially "an hub", and you want "a switch", 
-so wrap and trottle.  
-
-..to economize on the link out, consider a proxy server.  An easy 
-one to use, is ipcop-1.2 over at ipcop.org, it's really a firewall
-distro, with dhcp and proxy.  1.3 and 1.4 etc (still alpha) will 
-use 2.4 and iptables, the previous ones uses 2.2 and ipchains. 
-Can be put outside your current firewall.
-
-> Here is the firewall rules that set NOCAT up.   I just need the
-> iptables commands to shut down client to client traffic to add to
-> these:
-> 
-> Localnet is 192.168.19.0/255.255.255.0  on wlan0
-> External device is eth0
-> 
-> 
-> 
-> 
-> #!/bin/sh
-> ##
-> #
-> # initialize.fw: setup the default firewall rules
-> #
-> # *** NOTE ***
-> #
-> # If you want to have local firewall rules in addition to what NoCat
-> # provides, add them at the bottom of this file.  They will be
-> # recreated each time gateway is restarted.
-> #
-> ##
-> 
-> # The current service classes by fwmark are:
-> #
-> #  1: Owner
-> #  2: Co-op
-> #  3: Public
-> #  4: Free
-> 
-> PATH=/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin
-> export PATH
-> 
-> # Enable IP forwarding and rp_filter (to kill IP spoof attempts).
-> #
-> echo "1" > /proc/sys/net/ipv4/ip_forward
-> echo "1" > /proc/sys/net/ipv4/conf/all/rp_filter
-> 
-> # Load alllll the kernel modules we need.
-> #
-> rmmod ipchains > /dev/null 2>&1 # for RH 7.1 users.
-
-...and 'rpm -e ipchains'... ;-)
-
-> 
-> for module in ip_tables ipt_REDIRECT ipt_MASQUERADE ipt_MARK
-> ipt_REJECT\
->     ipt_TOS ipt_LOG iptable_mangle iptable_filter iptable_nat
->     ip_nat_ftp
-> \
->     ip_conntrack ipt_mac ipt_state ipt_mark; do
-> 
->     modprobe $module
-> done
-> 
-> # Flush all user-defined chains
-> #
-> iptables -t filter -N NoCat 2>/dev/null
-> iptables -t filter -F NoCat
-> iptables -t filter -D FORWARD -j NoCat 2>/dev/null
-> iptables -t filter -A FORWARD -j NoCat
-> 
-> iptables -t filter -N NoCat_Ports 2>/dev/null
-> iptables -t filter -F NoCat_Ports
-> iptables -t filter -D NoCat -j NoCat_Ports 2>/dev/null
-> iptables -t filter -A NoCat -j NoCat_Ports
-> 
-> iptables -t filter -N NoCat_Inbound 2>/dev/null
-> iptables -t filter -F NoCat_Inbound
-> iptables -t filter -D NoCat -j NoCat_Inbound 2>/dev/null
-> iptables -t filter -A NoCat -j NoCat_Inbound
-> 
-> iptables -t nat -N NoCat_Capture 2>/dev/null
-> iptables -t nat -F NoCat_Capture
-> iptables -t nat -D PREROUTING -j NoCat_Capture 2>/dev/null
-> iptables -t nat -A PREROUTING -j NoCat_Capture
-> 
-> iptables -t nat -N NoCat_NAT 2>/dev/null
-> iptables -t nat -F NoCat_NAT
-> 
-> #
-> # Only nat if we're not routing
-> #
-> iptables -t nat -D POSTROUTING -j NoCat_NAT 2>/dev/null
-> [ "$RouteOnly" ] || iptables -t nat -A POSTROUTING -j NoCat_NAT
-> 
-> iptables -t mangle -N NoCat 2>/dev/null
-> iptables -t mangle -F NoCat
-> iptables -t mangle -D PREROUTING -j NoCat 2>/dev/null
-> iptables -t mangle -A PREROUTING -j NoCat
-> 
-> 
-> fwd="iptables       -t filter -A NoCat"
-> ports="iptables     -t filter -A NoCat_Ports"
-> nat="iptables       -t nat    -A NoCat_NAT"
-> redirect="iptables  -t nat    -A NoCat_Capture"
-> mangle="iptables    -t mangle -A NoCat"
-> 
-> if [ "$MembersOnly" ]; then
->   classes="1 2"
-> else
->   classes="1 2 3"
-> fi
-> 
-> # Handle tagged traffic.
-> #
-> for iface in $InternalDevice; do
->     for net in $LocalNetwork; do
->         for fwmark in $classes; do
->             # Only forward tagged traffic per class
->             $fwd -i $iface -s $net -m mark --mark $fwmark -j ACCEPT
-> #           $fwd -o $iface -d $net -m mark --mark $fwmark -j ACCEPT
-> 
->             # Masquerade permitted connections.
->             $nat -o $ExternalDevice -s $net -m mark --mark $fwmark -j
-> MASQUERADE
->         done
-> 
->         # Allow web traffic to the specified hosts, and don't capture
->         # connections intended for them.
->         #
->         if [ "$AuthServiceAddr" -o "$AllowedWebHosts" ]; then
->             for host in $AuthServiceAddr $AllowedWebHosts; do
->                 for port in 80 443; do
->                     $nat      -s $net -d $host -p tcp --dport $port -j
-> MASQUERAD
-> E
->                     $redirect -s $net -d $host -p tcp --dport $port -j
-> RETURN
->                     $fwd -s $net -d $host -p tcp --dport $port -j
->                     ACCEPT$fwd -d $net -s $host -p tcp --sport $port
->                     -j ACCEPT
->                 done
->             done
->         fi
-> 
->         # Accept forward and back traffic to/from DNSAddr
->         if [ "$DNSAddr" ]; then
->             $fwd -i $iface -s $net -d $DNSAddr -p tcp --dport 53 -j
-> ACCEPT
->             $fwd -i $iface -s $net -d $DNSAddr -p udp --dport 53 -j
-> ACCEPT
->             $fwd -o $iface -d $net -s $DNSAddr -j ACCEPT
-> 
->             $nat -p tcp -o $ExternalDevice -s $net -d $DNSAddr --dport
-> 53 -j MAS
-> QUERADE
->             $nat -p udp -o $ExternalDevice -s $net -d $DNSAddr --dport
-> 53 -j MAS
-> QUERADE
->         fi
->     done
-> 
->     # Set packets from internal devices to fw mark 4, or 'denied', by
-> default.
->     $mangle -i $iface -j MARK --set-mark 4
-> done
-> 
-> # Redirect outbound non-auth web traffic to the local gateway process
-> #
-> # If MembersOnly is active, then redirect public class as well
-> #
-> for port in 80 443; do
->     $redirect -m mark --mark 4 -p tcp --dport $port  -j REDIRECT
-> --to-port $Gate
-> wayPort
->     if [ "$MembersOnly" ]; then
->         $redirect -m mark --mark 3 -p tcp --dport $port  -j REDIRECT
-> --to-port $
-> GatewayPort
->     fi
-> done
-> 
-> 
-> 
-> # Lock down more ports for public users, if specified. Port
-> # restrictions are not applied to co-op and owner class users.
-> #
-> # There are two philosophies in restricting access:  That Which Is Not
-> # Specifically Permitted Is Denied, and That Which Is Not Specifically
-> # Denied Is Permitted.
-> #
-> # If "IncludePorts" is defined, the default policy will be to deny all
-> # traffic, and only allow the ports mentioned.
-> #
-> # If "ExcludePorts" is defined, the default policy will be to allow
-> # all traffic, except to the ports mentioned.
-> #
-> # If both are defined, ExcludePorts will be ignored, and the default
-> policy
-> # will be to deny all traffic, allowing everything in IncludePorts,
-> # and issue a warning.
-> #
-> if [ "$IncludePorts" ]; then
->   if [ "$ExcludePorts" ]; then
->     echo "Warning: ExcludePorts and IncludePorts are both defined."
->     echo "Ignoring 'ExcludePorts'.  Please check your nocat.conf."
->   fi
-> 
->   # Enable all ports in IncludePorts
->   for iface in $InternalDevice; do
->     for port in $IncludePorts; do
->       $ports -p tcp -i $iface --dport $port -m mark --mark 3 -j ACCEPT
->       $ports -p udp -i $iface --dport $port -m mark --mark 3 -j ACCEPT
->     done
-> 
->     # Always permit access to the GatewayPort (or we can't logout)
->     $ports -p tcp -i $iface --dport $GatewayPort -j ACCEPT
->     $ports -p udp -i $iface --dport $GatewayPort -j ACCEPT
-> 
->     # ...and disable access to the rest.
->     $ports -p tcp -i $iface -m mark --mark 3 -j DROP
->     $ports -p udp -i $iface -m mark --mark 3 -j DROP
->   done
-> 
-> elif [ "$ExcludePorts" ]; then
->   # If ExcludePorts has entries, simply deny access to them.
->   for iface in $InternalDevice; do
->     for port in $ExcludePorts; do
->         $ports -p tcp -i $iface --dport $port -m mark --mark 3 -j DROP
->         $ports -p udp -i $iface --dport $port -m mark --mark 3 -j DROP
->     done
->   done
-> fi
-> 
-> #
-> # Disable access on the external to GatewayPort from anything but the
-> AuthServic
-> eAddr
-> #
-> if [ "$AuthServiceAddr" ]; then
->     $fwd -i $ExternalDevice -s ! $AuthServiceAddr -p tcp --dport
-> $GatewayPort -j
->  DROP
-> fi
-> 
-> # Filter policy.
-> $fwd -j DROP
-> 
-> 
-> 
-> 
-> 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Arnt Karlsen
-> Sent: Tuesday, February 11, 2003 2:29 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: denying local traffic
-> 
-> On Tue, 11 Feb 2003 10:06:40 -0500, 
-> "Doug Yeager" <doug@aircomwireless.net> wrote in message 
-> <000101c2d1df$3166fb60$bb00a8c0@DOUG1>:
-> 
-> > I'm using nocat as a wireless gateway w/ the hostap driver. This is 
-> > Great because I should be able to use iptables firewall rules to 
-> > Administer things. I've had some success w/ these rules as I'm new
-> > to iptables.
-> >  
-> > What I can't figure out is how to block local traffic between
-> > clients on the LAN. Basically, I want them to be invisible to each
-> > other but be able to get to the internet through the gateway.
-> > Right now they can get to the internet but can see each other's
-> > shares and so forth.
->   
-> > What should be the iptables commands for doing this.
-> >  
-> > My lan is 192.168.19.0/255.255.255.0
-> 
-> ..ascii art figure?  We use vpn (poptop) tunnels, but your net 
-> is likely different from ours.  
-> 
+for NET in $RESERVED_NET, do
+	iptables --append spoofed_ip --source $NET -jump spoof_log
+done
 
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+> ______________________CUT____________________________
+>=20
+>=20
+> iptables --append spoofed_ip --source 1.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 2.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 5.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 7.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 23.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 27.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 31.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 36.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 37.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 39.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 41.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 42.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 58.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 59.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 60.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 69.0.0.0/8 --jump spoof_log =20
+> iptables --append spoofed_ip --source 70.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 72.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 73.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 74.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 75.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 76.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 77.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 78.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 79.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 82.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 83.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 84.0.0.0/8 --jump spoof_log
+> iptables --append spoofed_ip --source 85.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 86.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 87.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 89.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 90.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 91.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 92.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 93.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 94.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 95.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 96.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 97.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 98.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 99.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 100.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 101.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 102.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 103.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 104.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 105.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 106.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 107.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 108.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 109.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 110.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 111.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 112.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 113.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 114.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 115.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 116.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 117.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 118.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 119.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 120.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 121.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 122.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 123.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 124.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 125.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 126.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 128.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 128.66.0.0/16 --jump spoof_log=20
+> iptables --append spoofed_ip --source 192.168.0.0/16 --jump spoof_log=20
+> iptables --append spoofed_ip --source 172.16.0.0/12 --jump spoof_log=20
+> iptables --append spoofed_ip --source 221.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 197.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 222.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 223.0.0.0/8 --jump spoof_log=20
+> iptables --append spoofed_ip --source 240.0.0.0/4 --jump spoof_log=20
+>=20
+> ______________________CUT___________________________
+>=20
+>=20
+>=20
+>=20
+>=20
+>=20
 
 
 
