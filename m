@@ -1,7 +1,7 @@
-From: mdpeters <michael.peters@lazarusalliance.com>
-Subject: insmod: can't read 'ip_queue
-Date: Sat, 15 Jan 2005 10:37:52 -0500
-Message-ID: <41E938D0.9070803@lazarusalliance.com>
+From: ro0ot <ro0ot@phreaker.net>
+Subject: test netfilter max throughput
+Date: Sun, 16 Jan 2005 03:37:55 +0800
+Message-ID: <41E97113.6060101@phreaker.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,19 +18,13 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I am running Fedora Core 2, kernel 2.6.10-1.9_FC2smp.
+Hi,
 
-I am getting the following message: "insmod: can't read 'ip_queue': No 
-such file or directory" Does anyone who what might be causing this?
+How can I test my netfilter's max throughput?
 
-Also:
+Regards,
+ro0ot
 
-If I have built iptables-1.2.11, do I need to run the POM?
 
--- 
-
-Best regards,
-
-Michael
 
 
