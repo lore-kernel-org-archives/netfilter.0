@@ -1,40 +1,58 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: port blocking
-Date: Fri, 25 Mar 2005 10:00:30 -0500
-Message-ID: <1111762830.4745.3.camel@hubcap.ljm.dom>
-References: <20050325120012.38609.qmail@web51910.mail.yahoo.com>
+From: Javier Kohen <jkohen@users.sourceforge.net>
+Subject: Cannot apply h323-conntrack-nat
+Date: Thu, 24 Mar 2005 15:22:33 -0500
+Message-ID: <1111695753.32351.34.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050325120012.38609.qmail@web51910.mail.yahoo.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-oMvVNtegn7CQl2av2eWS"
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-On Fri, 2005-03-25 at 07:00, Manish wrote:
-> Hi,
->  
-> I am having 5 network inteface card on my server,  2 connected to ethernet and 3 connected to wireless. i am also running webserver on port 10000 in the same machine. I only wanted the users from eth1 to be able to connect to my web server. users from other interface i.e eth0, eth2.eth3 and eth4 will not be able to connect to my web server. What iptables rule should i use.
 
-run a default drop policy, and then allow what you want:
+--=-oMvVNtegn7CQl2av2eWS
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-  iptables -P INPUT DROP
-  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-  iptables -A INPUT -i eth1 -p tcp --syn --dport 10000 -j ACCEPT
+I'm trying to apply the h323-conntrack-nat patch to kernel 2.6.11-ck2
+using pom-ng revision 3805, but it keeps saying: =C2=ABunable to find ladd
+slot in src /tmp/pom-29949/include/linux/netfilter_ipv4/ip_conntrack.h.=C2=
+=BB
+Note that the -ck2 patchset does not modify file ip_conntrack.h.
 
--j
- 
---
-"Man, you go through life, you try to be nice to people, you struggle
- to resist the urge to punch 'em in the face, and for what?"
-	--The Simpsons
+The patch is trivial, so I'll add it manually for now, but it would be
+nice to be able to apply/update it through this interface in the future.
 
+Please add me to the cc, as I'm not subscribed to the list. Sorry for
+the cross-post, but I wasn't sure about which list covers pom-ng/extra.
+
+Thanks,
+--=20
+Javier Kohen <jkohen@users.sourceforge.net>
+ICQ: blashyrkh #2361802
+Jabber: jkohen@jabber.org
+
+--=-oMvVNtegn7CQl2av2eWS
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Esta parte del mensaje =?ISO-8859-1?Q?est=E1?= firmada
+	digitalmente
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+
+iD8DBQBCQyGJ823633cP2P8RAg23AJ9Q/Be6Ypzlxg5DmdHizgDU1jHLmQCeKb9F
+FTrHaLXv0X7gh0iFH+YaoNE=
+=/abR
+-----END PGP SIGNATURE-----
+
+--=-oMvVNtegn7CQl2av2eWS--
 
