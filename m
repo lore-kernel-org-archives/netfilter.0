@@ -1,28 +1,54 @@
-From: =?gb2312?q?Dig=20Harry?= <digharry@yahoo.com.cn>
-Subject: NAT(SNAT and DNAT) and Filter module that I developed can hook at PRE_ROUTING ?
-Date: Thu, 3 Apr 2003 09:49:40 +0800 (CST)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030403014940.74367.qmail@web15309.mail.bjs.yahoo.com>
+From: Stephen Frost <sfrost@snowman.net>
+Subject: Re: Count/limit feature
+Date: Wed, 2 Apr 2003 22:36:53 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20030403033653.GH18434@ns.snowman.net>
+References: <20030402141644.60c03834.arnt@c2i.net> <000401c2f95d$6b2a8a60$1001a8c0@s3ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mGogChkTWDyM7+rg"
+Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <000401c2f95d$6b2a8a60$1001a8c0@s3ac>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="gb2312"
-To: netfilter-devel@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: Rowan Reid <rreid@studio3arc.com>
 Cc: netfilter@lists.netfilter.org
 
-SSB3YW50IHRvIGRldmVsb3AgYSBmaXJld2FsbCBhdCBvdGhlciBwbGF0Zm9ybSwgYW5kIGRvCk5B
-VChTTkFUIGFuZCBETkFUKSBhbmQgRmlsdGVyIGF0IFBSRV9ST1VUSU5HKGZvcgpleGFtcGxlOiBp
-cF9yY3YoKSkuCklzIGl0IE9LPwpJZiB5ZXMsIEkgbmVlZCBub3RlIHdoaWNoIHByb2JsZW1zPwoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkRvIFlvdSBZYWhvbyE/IArRxbuizajN+MLnS1RWLCDL5sqxy+a12MPit9G/qMCtT0t+fgpodHRw
-Oi8vcmQueWFob28uY29tL21haWxfY24vdGFnLz9odHRwOi8vY24ubWVzc2VuZ2VyLnlhaG9vLmNv
-bS8vY2hhdC9pbmRleC5odG1sCgo=
+
+--mGogChkTWDyM7+rg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+* Rowan Reid (rreid@studio3arc.com) wrote:
+> I was talking to someone of BSD persuasion and they noted that the ipfw
+> feature had a count parameter which can be used to limit icmp attacks.
+> Ie more then n number of pings and you begin to ignore the client or
+> address range.  Is there something similar for netfilter
+
+You can do this with ipt_recent to ignore the address it's coming from.
+I'm thinking about adding an ability to do address ranges to it.
+
+	Stephen
+
+--mGogChkTWDyM7+rg
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE+i6xVrzgMPqB3kigRAiP9AJ9RF9902U5hEAMVwwsHdRpX6btEogCgkIpo
+EG7YZOltJO3Ff732h3cL4NI=
+=Ckrt
+-----END PGP SIGNATURE-----
+
+--mGogChkTWDyM7+rg--
+
