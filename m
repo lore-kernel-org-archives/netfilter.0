@@ -1,15 +1,13 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: Access control script for Public Library
-Date: Thu, 31 Mar 2005 18:17:31 -0500
-Message-ID: <1112311051.5192.51.camel@jasiiitosh.nexusmgmt.com>
-References: <89629fe005033110422a630231@mail.gmail.com>
-	<1112301463.424c5f9711c7d@ehle.homelinux.org>
-	<1112302882.5192.40.camel@jasiiitosh.nexusmgmt.com>
-	<1112309645.424c7f8d8559c@ehle.homelinux.org>
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: Multiple gateways problem
+Date: Fri, 1 Apr 2005 09:52:11 +1000
+Message-ID: <20050331235211.GE8639@samad.com.au>
+References: <20050331133823.6562.qmail@flock1.newmail.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="19uQFt6ulqmgNgg1"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1112309645.424c7f8d8559c@ehle.homelinux.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,369 +18,115 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: mark@ehle.homelinux.org
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I did not take the time to really digest your post or rules (my
-apologies - just very busy) but that is the first thing that came to
-mind.  I've not used DansGuardian but I do know that my transparent
-proxies failed until I realized I had not allowed internal traffic
-passing on interface lo.  I suppose if you do a simple ifconfig or ip
-link ls you'll see if your system uses lo or lo0.  Good luck - John
 
-On Thu, 2005-03-31 at 17:54 -0500, mark@ehle.homelinux.org wrote:
-> John - 
-> 
-> Thanks for your reply - most definately not silly, or off the cuff. I am a
-> complete iptables nubie, so I will listen to anything. 
-> 
-> Actually, that is a part that I didn't change from the script that I am, well,
-> borrowing. Might that be the reason that dansguardian hangs when I start it up?
-> It did seem to me that it was not able to 'listen to itself', so to speak. 
-> 
-> Thanks again!
-> 
-> Mark Ehle
-> Computer Support Librarian
-> Willard Public Library 
-> Battle Creek, Michigan 
-> 
-> Quoting "John A. Sullivan III" <jsullivan@opensourcedevel.com>:
-> > This may be a silly, off the cuff reply, but, in your rules allowing
-> > traffic within the gateway, do you want interface lo0 as you have
-> > written or lo?
-> > -- 
-> > John A. Sullivan III
-> > Open Source Development Corporation
-> > +1 207-985-7880
-> > jsullivan@opensourcedevel.com
-> > 
-> > If you would like to participate in the development of an open source
-> > enterprise class network security management system, please visit
-> > http://iscs.sourceforge.net
-> > 
-> > 
-> 
-> > On Thu, 2005-03-31 at 15:37 -0500, mark@ehle.homelinux.org wrote:
-> > > Hello - 
-> > > 
-> > > I am a complete iptables newbie who is trying to re-write a wireless
-> > hotspot
-> > > script that I found on the net to control internet access for our library
-> > patrons. 
-> > > 
-> > > I found the script at: 
-> > > 
-> > > http://www.feedface.com/folkert/study/hotspot/src/firewall.sh.txt
-> > > 
-> > > I am trying to re-write it so that I can use squid and dansguardian to
-> > proxy and
-> > > filter the web. I need it to transparently proxy. I have a system set up
-> > now
-> > > that uses squid to grant or deny access, but it can only block web access;
-> > I my
-> > > need is for a firewall that can block all network access so that a given
-> > PC
-> > > can't chat or play online games as well as surf the net after time has run
-> > out.
-> > > 
-> > > The script, as far as I have gotten, works well. When I fire it up, my test
-> > PC
-> > > can't go anywhere except the sign up page (which it is redirected to no
-> > matter
-> > > what), and when I add the PC to the access list (by typing firewall.sh add
-> > <ip>
-> > > <mac>), that PC is able to surf. 
-> > > 
-> > > My problem comes in when I try to do the transparent proxy part. when I try
-> > to
-> > > add the rule: 
-> > > iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports
-> > 8080
-> > > 
-> > > To the script, it does not work, and dansguardian will not even start. I
-> > have
-> > > played around with various permutations of this rule, and have gotten
-> > nowhere. 
-> > > 
-> > > Can anybody help? 
-> > > 
-> > > Thanks - 
-> > > 
-> > > Mark Ehle
-> > > =======
-> > > Following is the script (firewall.sh) as far as I have it:
-> > > 
-> > > #!/bin/bash
-> > > 
-> > >
-> > ###############################################################################
-> > > #   name: firewall.sh
-> > > # author: Mark Ehle
-> > > #   date: 03-30-05
-> > > # with much thanks given to Folkert Saathoff at
-> > http://www.feedface.com/folkert
-> > >
-> > ###############################################################################
-> > > 
-> > > #===========================
-> > > # variables
-> > > #===========================
-> > > 
-> > > # command-line arguments
-> > > COMMAND=$0
-> > > ACTION=$1
-> > > IP=$2
-> > > MAC=$3
-> > > 
-> > > # program locations
-> > > IPTABLES=/sbin/iptables
-> > > MODPROBE=/sbin/modprobe
-> > > DEPMOD=/sbin/depmod
-> > > 
-> > > # Local Network variables
-> > > LAN_GW="10.0.0.1"
-> > > LAN_NET="10.0.0.0/8"
-> > > LAN_INT="eth1"
-> > > 
-> > > # External network variables
-> > > EXT_INT_IP="<insert external interface ip here>"
-> > > EXT_INT="eth0"
-> > > 
-> > > #Name Server IP
-> > > NS="insert Name server ip here"
-> > > 
-> > > #===========================
-> > > # subroutines
-> > > #===========================
-> > > load_modules() {
-> > >     $DEPMOD -a
-> > >     for module in "ip_conntrack ip_tables iptable_filter iptable_mangle
-> > > iptable_nat ipt_LOG ipt_limit ipt_MASQUERADE"; do
-> > >         $MODPROBE $module 
-> > >     done
-> > >     return
-> > > }
-> > > 
-> > > start_ip_forwarding() {
-> > >     echo 1 > /proc/sys/net/ipv4/ip_forward
-> > >     return
-> > > }
-> > > 
-> > > show_usage()
-> > > {
-> > >     echo "usage:"
-> > >     echo "$COMMAND reset"
-> > >     echo "$COMMAND add IP MAC"
-> > >     echo "$COMMAND del IP MAC"
-> > >     exit 1;
-> > > }
-> > > 
-> > > fferror()
-> > > {
-> > >     echo "^_^'"
-> > >     echo "error setting netfilter: $ACTION"
-> > >     exit 1
-> > > }
-> > > 
-> > > flush_tables() {
-> > >     for TABLE in filter nat mangle; do
-> > >         for SWITCH in F X Z; do
-> > >             $IPTABLES -t $TABLE -$SWITCH
-> > >         done
-> > >     done
-> > >     return
-> > > }
-> > > 
-> > > create_new_chains() {
-> > >     #filter chain for accepting authenticated clients 
-> > >     $IPTABLES -t filter -N fclient
-> > >     #filter chain for not rerouting authenticated clients 
-> > >     $IPTABLES -t nat -N dclient
-> > >     #filter chain for routing from authenticated clients 
-> > >     $IPTABLES -t nat -N sclient
-> > >     
-> > >     #default filter policy is DROP
-> > >     $IPTABLES -t filter -P INPUT DROP
-> > >     $IPTABLES -t filter -P OUTPUT DROP
-> > >     $IPTABLES -t filter -P FORWARD DROP
-> > > 
-> > >     return
-> > > }
-> > > 
-> > > reset_firewall() {
-> > > 
-> > >     load_modules
-> > >     start_ip_forwarding
-> > >     flush_tables
-> > >     create_new_chains
-> > > 
-> > >     #allow all local traffic
-> > >     $IPTABLES -t filter -A  INPUT -i lo0 -j ACCEPT
-> > >     $IPTABLES -t filter -A OUTPUT -o lo0 -j ACCEPT
-> > > 
-> > >     #allow all icmp traffic self<->lan
-> > >     $IPTABLES -t filter -A  INPUT -i $LAN_INT -s $LAN_NET -d $LAN_GW -p
-> > icmp -j
-> > > ACCEPT
-> > >     $IPTABLES -t filter -A OUTPUT -o $LAN_INT -s $LAN_GW -d $LAN_NET -p
-> > icmp -j
-> > > ACCEPT
-> > > 
-> > >     #allow all icmp traffic self<->inet
-> > >     $IPTABLES -t filter -A  INPUT -i $EXT_INT -d $EXT_INT_IP -p icmp -j
-> > ACCEPT
-> > >     $IPTABLES -t filter -A OUTPUT -o $EXT_INT -s $EXT_INT_IP -p icmp -j
-> > ACCEPT
-> > > 
-> > >     #allow dhcp traffic self<->lan
-> > >     $IPTABLES -t filter -A  INPUT -i $LAN_INT -s 0.0.0.0/0 -d
-> > 255.255.255.255 -p
-> > > udp --dport 67:68 -j ACCEPT 
-> > >     $IPTABLES -t filter -A OUTPUT -o $LAN_INT -s $LAN_GW -d $LAN_NET -p
-> > udp
-> > > --sport 67:68 -j ACCEPT
-> > > 
-> > >     #allow all web traffic self<->lan
-> > >     for PORT in 80 443; do
-> > >         $IPTABLES -t filter -A  INPUT -i $LAN_INT -s $LAN_NET -d $LAN_GW -p
-> > tcp
-> > > --dport $PORT -j ACCEPT
-> > >         $IPTABLES -t filter -A OUTPUT -o $LAN_INT -s $LAN_GW -d $LAN_NET -p
-> > tcp
-> > > --sport $PORT -j ACCEPT
-> > >     done
-> > > 
-> > >     #allow all ssh and smb traffic to/from self
-> > >     for PORT in 22 139; do
-> > >         $IPTABLES -t filter -A  INPUT -p tcp --dport $PORT -j ACCEPT
-> > >         $IPTABLES -t filter -A OUTPUT -p tcp --sport $PORT -j ACCEPT
-> > >     done
-> > > 
-> > >     # allow dns
-> > >     $IPTABLES -t filter -A OUTPUT  -o $EXT_INT -s $EXT_INT_IP -d $NS -p
-> > udp
-> > > --dport 53 -j ACCEPT
-> > >     $IPTABLES -t filter -A  INPUT  -i $EXT_INT -s $NS -d $EXT_INT_IP -p
-> > udp
-> > > --sport 53 -j ACCEPT
-> > >     $IPTABLES -t filter -A FORWARD -i $LAN_INT -o $EXT_INT -s $LAN_NET -d
-> > $NS -p
-> > > udp --dport 53 -j ACCEPT 
-> > >     $IPTABLES -t filter -A FORWARD -i $EXT_INT -o $LAN_INT -s $NS -d
-> > $LAN_NET -p
-> > > udp --sport 53 -j ACCEPT 
-> > > 
-> > >     #enable source network address translation for dns
-> > >     $IPTABLES -t nat -A POSTROUTING  -s $LAN_NET -p udp --dport 53 -d $NS
-> > -o
-> > > $EXT_INT -j SNAT --to $EXT_INT_IP
-> > > 
-> > >     #check for allowed clients -> inet
-> > >     $IPTABLES -t filter -A FORWARD -i $LAN_INT -o $EXT_INT -s $LAN_NET -j
-> > fclient
-> > >     #reject all other clients
-> > >     $IPTABLES -t filter -A FORWARD -i $LAN_INT -o $EXT_INT -s $LAN_NET -j
-> > REJECT
-> > > --reject-with icmp-net-prohibited
-> > > 
-> > >     #allow established connections lan<->inet
-> > >     $IPTABLES -t filter -A FORWARD -i $EXT_INT -o $LAN_INT -d $LAN_NET -m
-> > state
-> > > --state ESTABLISHED -j ACCEPT
-> > > 
-> > >     #snat traffic from authenticated clients
-> > >     $IPTABLES -t nat -A POSTROUTING -s $LAN_NET -d ! $LAN_NET -j sclient   
-> > 
-> > > 
-> > >     #do not dnat traffic from authenticated clients
-> > >     $IPTABLES -t nat -A PREROUTING -i $LAN_INT -d ! $LAN_GW -j dclient
-> > > 
-> > >     #enable dnat to self for all web traffic
-> > >     for PORT in 80 443; do
-> > >         $IPTABLES -t nat -A PREROUTING -i $LAN_INT -d ! $LAN_GW -p tcp
-> > --dport
-> > > $PORT -j DNAT --to $LAN_GW
-> > >     done
-> > > 
-> > >     #add default REJECT rule (just more polite than DROP)
-> > >     for CHAIN in INPUT OUTPUT FORWARD; do
-> > >         $IPTABLES -t filter -A $CHAIN -j REJECT;
-> > >     done
-> > >     return
-> > > 
-> > > }
-> > > 
-> > > add_usage() {
-> > >     echo "usage:"
-> > >     echo "$COMMAND add IP MAC"
-> > >     exit 1;
-> > > }
-> > > 
-> > > run_add() {
-> > >     [ "ff"$IP != "ff" ] || show_addclient_usage; [ "ff"$MAC != "ff" ] ||
-> > add_usage
-> > >     #add client
-> > >     
-> > >     $IPTABLES -t filter -A fclient -s $IP -m mac --mac-source $MAC -j
-> > ACCEPT   
-> > >         || fferror $?
-> > >     $IPTABLES -t nat    -A dclient -s $IP -m mac --mac-source $MAC -j
-> > ACCEPT   
-> > >         || fferror $?
-> > >     $IPTABLES -t nat    -A sclient -s $IP -d ! $LAN_NET -j SNAT --to
-> > $EXT_INT_IP
-> > >        || fferror $?
-> > >     echo "added Client: IP $IP MAC $MAC";
-> > >     return
-> > > }
-> > > 
-> > > del_usage() {
-> > >     echo "usage:"
-> > >     echo "$COMMAND del IP MAC"
-> > >     exit 1;
-> > > }
-> > > 
-> > > run_del() {
-> > >     [ "ff"$IP != "ff" ] || show_delClient_usage; [ "ff"$MAC != "ff" ] ||
-> > del_usage
-> > >     #delete client
-> > >     $IPTABLES -t filter -D fclient -s $IP -m mac --mac-source $MAC -j
-> > ACCEPT ||
-> > > fferror $?
-> > >     $IPTABLES -t nat -D dclient -s $IP -m mac --mac-source $MAC -j ACCEPT
-> > ||
-> > > fferror $?
-> > >     $IPTABLES -t nat -D sclient -s $IP -d ! $LAN_NET -j SNAT --to
-> > $EXT_INT_IP ||
-> > > fferror $?
-> > >     echo "removed Client: IP $IP MAC $MAC";
-> > >     return
-> > > }
-> > > 
-> > > #===========================
-> > > # Main 
-> > > #=========================== 
-> > > 
-> > > case "$ACTION" in
-> > >     reset ) reset_firewall;;
-> > >     add   ) run_add;;
-> > >     del   ) run_del;;
-> > >     *     ) show_usage;;
-> > > esac
-> > > 
-> > > exit
-> > > 
-> 
-> 
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+--19uQFt6ulqmgNgg1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
+On Thu, Mar 31, 2005 at 06:37:50PM +0200, Rub?n Cardenal wrote:
+> =20
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+>=20
+> Hi,
+>=20
+>   I have a quite simple setup in ony of my servers but I can't make
+> the conditional routing using iptables to work.
+>=20
+>   The server has:
+>=20
+>   eth0: 192.168.2.0/23
+>   eth1/eth2: reserved for future use
+>   eth3: 10.10.100.0/24
+>=20
+>   The eth3 is connected to a separate switch where 30 AP's are
+> connected to and a dhcp server running on the server gives IP's to
+> clients connected to the wireless lan. In the same way, eth0 is
+> connected to another set of switchs (isolated from the switch where
+> eth3 is connected to) where all LAN clients (192.168.2.0/23) are
+> connected to.
+>=20
+>   I can use two gateways, both of them are accessed via eth0:
+> 192.168.3.250 and 192.16.3.254. The default gateway for all the LAN
+> clients (192.168.2.0/23) is (and must be) 192.168.3.254 and just a
+> few people is allowed to use the other gateway.
+>=20
+>   The desired configuration is that I want to be able to route
+> certain clients from eth3 (10.10.100.0/24) via 192.168.3.250 instead
+> of the default gw of the server (192.168.3.254).
+>=20
+>   All the configurations I've tried, doesn't work or make LAN clients
+> loose connectivity with the server. How should I setup routes/rules?
+if you can group your users to specific networks then you can use
 
+ip ru for something like this
+
+0:      from all lookup local=20
+200:    from 10.10.100.0/24 lookup wireless=20
+201:    from 192.168.2.0/24 lookup plana=20
+201:    from 192.168.3.0/24 lookup planb=20
+32766:  from all lookup main=20
+32767:  from all lookup default=20
+
+or in using iptables -t mangle and PREROUTING you can mark your packets
+with -m mark --set-mark 0x01
+
+iptables -t mangle -I PREROUTING -s 10.100.100.0/24 -m mark --set-mark
+0x01
+iptables -t mangle -I PREROUTING -s 192.168.2.0/24 -m mark --set-mark
+0x02
+iptables -t mangle -I PREROUTING -s 192.168.3.0/24 -m mark --set-mark
+0x03
+
+and then use ip ru sort of like
+
+0:      from all lookup local=20
+200:    fwmark 0x01 lookup wireless=20
+200:    fwmark 0x02 lookup plana
+200:    fwmark 0x03 lookup planb=20
+32766:  from all lookup main=20
+32767:  from all lookup default=20
+
+
+
+and then fill the tables with the appropiate routing rules
+
+note - I split your 192.168.2.0/23 back into 2 /24 just for example, you
+might need to check the syntax of the -m mark target as well.
+
+Alex
+
+>=20
+>   Regards,
+>=20
+> - - Ruben.
+>=20
+> -----BEGIN PGP SIGNATURE-----
+> Version: PGP 8.1
+>=20
+> iQA/AwUBQkwnXQcpyqBKAkY5EQLdOwCg/rIS18MM5mKYfXjEhvSiCPgOV1QAmwZ7
+> TG3o6vj9sH7NQXoVkgUsBcvS
+> =3DBTkL
+> -----END PGP SIGNATURE-----
+>=20
+>=20
+>=20
+
+--19uQFt6ulqmgNgg1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFCTI0rkZz88chpJ2MRAqjfAJsFhUHCdVMmk1uDMIgs0Xf6AIMrXQCdG2l4
+nW4RnqPS3MgTacfZGaYpJ/0=
+=fUV5
+-----END PGP SIGNATURE-----
+
+--19uQFt6ulqmgNgg1--
 
