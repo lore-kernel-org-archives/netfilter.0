@@ -1,13 +1,16 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: broken SNAT with fixed external MTU
-Date: Thu, 14 Oct 2004 14:17:47 -0400
+From: Jiann-Ming Su <sujiannming@gmail.com>
+Subject: Re: connection tracking without iptables?
+Date: Thu, 14 Oct 2004 14:31:11 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041014181747.GA3929@bender.817west.com>
-References: <416EA61A.9030600@lucomp.net>
+Message-ID: <561dc326041014113163a6a9eb@mail.gmail.com>
+References: <7C9884991ADAE0479C14F10C858BCDF591E37C@alderaan.smgtec.com>
+	<561dc326040930160476d839c7@mail.gmail.com>
+	<1096587270.22962.24.camel@wolfpack.ljm.dom>
+Reply-To: Jiann-Ming Su <sujiannming@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <416EA61A.9030600@lucomp.net>
+In-Reply-To: <1096587270.22962.24.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +21,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Oct 14, 2004 at 06:15:22PM +0200, Mailing List Reader wrote:
-> Hello everybody,
+On Thu, 30 Sep 2004 19:34:30 -0400, Jason Opperisano <opie@817west.com> wrote:
 > 
-> My DSL router (very bad firmwares) wants me to force the MTU
-> (buggy MTU auto-setting). The firewall has a public IP and mtu 1500:
+>   egrep 'ESTABLISHED|ASSURED' /proc/net/ip_conntrack | wc -l
 > 
-> ---snip
-> #route to the router net
-> ip route add 192.168.1.0/24 dev eth1 mtu 1440
-> # default to the router (mtu not needed here)
-> ip route add default via 192.168.1.1 mtu 1440
-> --snip
-> 
-> the firewall itself NATs one client back-to-back connected
-> (cable checked!):
-> 
-> ---snip
-> #mss clamping 1)
-> iptables -A FORWARD -d $net1 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS 
-> --set-mss 1440
-> iptables -A FORWARD -s $net1 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS 
-> --set-mss 1440
 
-try not to confuse MTU with MSS, as they are not the same.  if you're
-going for an MTU of 1440--you should be setting MSS to 1400 (MSS = MTU -
-40).
-
--j
-
+We're finding that any read operation on /proc/net/ip_conntrack really
+locks the system until that operation is completed.  That is, it's
+almost as if the read prevents any writes, so the firewall locks up
+momentarily until the read is done.  Is there a less system intensive
+way to read ip_conntrack?  Or, is my observation completely wrong?
 -- 
-Jason Opperisano <opie@817west.com>
+Jiann-Ming Su
+"I have to decide between two equally frightening options.  
+                                            If I wanted to do that,
+I'd vote." --Duckman
 
