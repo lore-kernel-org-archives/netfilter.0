@@ -1,10 +1,11 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Two NICS with same IP and same client IP
-Date: Wed, 2 Feb 2005 08:47:00 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F019948@pxtvjoexd01.pxt.primeexalia.com>
+From: Tom Eastep <teastep@shorewall.net>
+Subject: Re: Two NICS with same IP and same client IP
+Date: Wed, 02 Feb 2005 08:49:42 -0800
+Message-ID: <420104A6.6080308@shorewall.net>
+References: <186AC876521E0F46BDE77079A6567FD06F5FBA@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-class: urn:content-classes:message
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <186AC876521E0F46BDE77079A6567FD06F5FBA@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,40 +16,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?B?SGVyduk=?= <herve@lucidia.net>, netfilter  <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Cc: netfilter@lists.netfilter.org
 
-But if you giving eth0 IP addresses on two different subnets then you =
-could just plug everything that's on eth1 onto the same network as eth0.
+Hudson Delbert J Contr 61 CS/SCBN wrote:
+> tom,
+> 
+> why ?
+> 
+> to what end, this topology ?
+> 
+> please enlightenment as to the value added ?
+> 
 
-Just because it's Linux doesn't mean you can redefine IP routing and =
-expect it to work.
+See http://shorewall.net/myfiles.htm for a description of my
+firewall/router's environment. In general, I prefer to use Proxy ARP for
+a DMZ rather than NAT because it allows DMZ servers to have the same IP
+address whether accessed from local or external clients.
 
+The DMZ interface (eth0 in my case) needs an IP address -- what address
+to give it? There seem to be two choices:
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Herv=E9
-Sent: Wednesday, February 02, 2005 8:41 AM
-To: netfilter=20
-Subject: Re: Two NICS with same IP and same client IP
+	a) Select an RFC 1918 address in some currently unused network.
+	b) Use the firewall's external IP address.
 
-> Herv=E9 wrote:
->>
->> In my case, the point is to help the routing by modifying the source
->> address. For example, you give eth0 two addresses: 192.168.100.1 and
->> 192.168.101.1, and eth1: 192.168.100.1 (yes, the same) and
->> 192.168.102.1.
->
-> what's the point ???
->
-I have two identical test benches, in which one box has a fixed IP
-address, hence I can't change the subnets.
-What is more, this box always accesses the same IP address for the =
-server.
+By using b), the existing PTR record can serve both interfaces so that
+traffic from the firewall to the server appears to come from the correct
+host (gateway.shorewall.net).
 
-Yeah, not so easy, but hey, it's Linux, so it's possible!
+In general, consider this:
 
-Cheers,
-Herv=E9.
+   <upstream router -- address A.B.C.x>
+                  |
+                  |
+    <gateway router -- address A.B.C.y>
+                  |
+     ---------------------------
+     |   |   |    |    |   |   |
+
+         Network A.B.C.0/24
+
+Assume that the upstream router routes A.B.C.0/24 via the gateway router
+A.B.C.y.
+
+The gateway router can be configured as follows:
+
+	External interface A.B.C.y/32
+	Host route to A.B.C.x on external interface (no gateway)
+	Default route via A.B.C.x
+	Internal interface   A.B.C.y/24
+	Net router to A.B.C.254/24 on Internal interface (no gateway)
+
+So the gateway router only requires one IP address rather than two yet
+it is addressable from both sides.
+
+-Tom	
+-- 
+Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
+Shoreline,     \ http://shorewall.net
+Washington USA  \ teastep@shorewall.net
+PGP Public Key   \ https://lists.shorewall.net/teastep.pgp.key
 
 
