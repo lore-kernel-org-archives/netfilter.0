@@ -1,12 +1,10 @@
-From: Jay Schulist <jschulist@bivio.net>
-Subject: Re: [PATCH] associate user defined name with rule match
-Date: Thu, 19 Sep 2002 07:41:40 -0700 (PDT)
+From: "Random Person" <randomperson83@hotmail.com>
+Subject: Forwarding in a NAT..
+Date: Thu, 19 Sep 2002 23:03:03 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0209190738360.5702-100000@beavis.networkrobots.com>
-References: <20020919074625.007828aa.adam@vbfx.com>
+Message-ID: <F185dlqHukzpaPE3vX7000158cf@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020919074625.007828aa.adam@vbfx.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +14,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Adam Young <adam@vbfx.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 19 Sep 2002, Adam Young wrote:
+Ok, this is a question that has probably been answered before, but I'm going 
+to ask anyway because I can't find the answer.
 
-> 	Isn't this already available via --log-prefix ?  I've been using that for the
-> longest time, and if I want to see all hits on port 1433, I just say "grep MSSQL
-> /var/log/messages", for example, and it brings all of those up.
-> 
+I have 2 eth interfaces (eth0/eth1) and I use my linux box as a 
+firewall/gateway NAT... What I want to do is take any packet that comes to 
+eth0 (internet) that has destination port X and is trying to start a 
+connection is forwarded to eth1 (internal network)... but not to a specific 
+computer (i.e.. not mangled in any way but with the packet still having same 
+source/dest address).
 
-Actually this match is simpiler than that, it only displays a user defined
-string for a rule on an iptables -L or iptables-save.
+Ok, did that make any sense?
 
-It does this for the benefit of parsing through rules. This is used by
-some people to allow automated generation/regeneration of rulesets.
+Any help someone could give would be appreciated!:-)
 
-jay-s.
+Here's my iptable script:
 
-> > Hello Harald,
-> > Here is a new match which allows the user to associate a name with a rule.
-> > It is a very simple match, but it is useful if the user needs an easy way
-> > to track a rule by name.
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.0.7 (GNU/Linux)
-> 
-> iD8DBQE9ibkRUanLvazj+VgRAjTHAJ9Wk6JZa11FTKyXB/BF095x1hBunQCfXH/S
-> jfF1zT8Gn7cbstJNVSUN6uI=
-> =MN++
-> -----END PGP SIGNATURE-----
-> 
+iptables=/usr/local/sbin/iptables
+
+$iptables -t nat -F
+$iptables -t mangle -F
+$iptables -F
+
+$iptables -X
+$iptables -N from_outside
+$iptables -N from_inside
+
+$iptables -P INPUT DROP
+$iptables -P OUTPUT ACCEPT
+
+
+$iptables -A INPUT -i eth0 -j from_outside
+$iptables -A INPUT -i eth1 -j from_inside
+$iptables -A INPUT -i lo -j from_inside
+
+$iptables -A from_outside -p tcp --syn --dport 80 -j ACCEPT
+$iptables -A from_outside -m state --state NEW,INVALID -j DROP
+$iptables -A from_outside -p all -m state --state ESTABLISHED,RELATED -j 
+ACCEPT
+$iptables -A from_outside -p tcp --syn -j DROP
+
+
+$iptables -A from_inside -p all -j ACCEPT
+
+$iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+
+
+Visit my useless website at http://randomperson.cjb.net
+
+-Your perception is reality until you control it...
+
+
+_________________________________________________________________
+Chat with friends online, try MSN Messenger: http://messenger.msn.com
 
 
