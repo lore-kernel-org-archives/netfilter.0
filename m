@@ -1,10 +1,9 @@
-From: Optimus Prime <optimusprime@o2.pl>
-Subject: routing by tos
-Date: Sat, 26 Apr 2003 00:00:24 +0200
+From: "Hard warE" <hard__ware@hotmail.com>
+Subject: IPTables Firewall Newbie Script Help
+Date: Sat, 26 Apr 2003 03:45:43 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EA9AFF8.5000302@o2.pl>
+Message-ID: <Law9-F123tTUqp2T0ap000099b2@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,29 +14,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi
 
-I have to routers and with two Internet connections on them and I wanted 
-to set up routing by TOS.
+Heres a website that i plan to update in the near future
+thats has help for newbies getting into IPTables trying to do
+Hosting using Port Forwding.
 
-I tryed diffrent configurations of IPtables tos marking and iproute tos 
-routing and everything failed.
+Also some of the scripts also allow for a DHCP Server (DHCPD)
+to be running on the firewall so the local lan can be easily configured.
 
-Can you give me a working example or help?
+Also has help on Squid in Transparent mode, Bind DNS Server, Bridges ,
+Bridges that Forward & Filter at the same time, Multiple External IP NAT or 
+1:1 NAT (can be called SNAT /w IP-Pools)
 
-this is what I did on the box with is a default router:
+Also USB ADSL Help for linux and QoS using TC & Mark Operations via IPTables 
+/ Netfilter.
 
-   iptables -t mangle -I PREROUTING -i eth0 -s 192.168.0.10 -j TOS 
---set-tos Minimize-Cost
+IPTables / Linux Script Help Page
 
-   ip route add tos 2 via 192.168.0.2
+http://dynamicaccess.biz/download/LinuxFireDown.htm
 
-eth0 is the internat netword interface
-192.168.0.2 is the internal network router_2 address
+& heres a quick-link for a Firewall Script that can do Web Hosting
+aswell as have DHCPD on the gateway itself for the internal lan ...
 
-Optek
+http://dynamicaccess.biz/download/dhcp.firewall.txt
+
+
+Have Fun...
+
+Alex Nee
+
+|Hard__warE|
+|Tha - Void|
+
+
+_________________________________________________________________
+Hotmail now available on Australian mobile phones. Go to  
+http://ninemsn.com.au/mobilecentral/hotmail_mobile.asp
 
 
