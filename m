@@ -1,13 +1,13 @@
-From: Stephen J Smoogen <smoogen@lanl.gov>
-Subject: Re: ip_conntrack_max vs ip_conntrack
-Date: Fri, 24 Sep 2004 16:49:26 -0600
+From: Patrick Dung <patrick_dkt@yahoo.com.hk>
+Subject: Re: How to use netfilter to do static IP mapping?
+Date: Sat, 25 Sep 2004 09:40:43 +0800 (CST)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4154A476.8030405@lanl.gov>
-References: <4154A112.20308@suse.cz>
+Message-ID: <20040925014043.62520.qmail@web51807.mail.yahoo.com>
+References: <1096009057.9581.68.camel@wolfpack.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4154A112.20308@suse.cz>
+In-Reply-To: <1096009057.9581.68.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +17,31 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Michal Ludvig <mludvig@suse.cz>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="big5"
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-Michal Ludvig wrote:
-> Hi all,
-> 
-> could someone please explain me what is the relation between the number
-> in /proc/sys/net/ipv4/ip_conntrack_max and number of lines in
-> /proc/net/ip_conntrack?
-> 
-> On one of our very loaded firewalls (with 1GB RAM) we are still getting
-> "ip_conntrack: table full, dropping packet." message. We tried to tweak
-> all different parameters, e.g. hashsize to up to 1048576,
-> ip_conntrack_max, ip_conntrack_tcp_timeout_established, etc.
-> Unfortunately sooner or later the kernel always starts dropping packets.
-> At the same time however there are at most a few thousands of lines in
-> /proc/net/ip_conntrack.
-> 
-> I instrumented the kernel to dump the same output via printk() once
-> ip_conntrack_count reaches ip_conntrack_max. When I set _max=128 and run
-> nmap through the firewall it of course very soon prints the "dropping
-> packets" message, but along with only 6 (=six!) lines of connections.
-> Where was the rest, 122 connections, lost? What does the
-> ip_conntrack_count actually count?
-> 
-
-Ok one thing you might want to do is check to see if you dont have a bug 
-in your kernel somewhere.. I found the one I talked about earlier by 
-doing the following:
-
-cat /proc/slabinfo |grep ip_conntrack
-cat /proc/net/ip_conntrack | wc -l
-
-Not the best and very racy.. but the 2 did NOT match up in any shape or 
-form. I then played around with various conntrack modules until I figure 
-d it out to being something with conntrack_irc and conntrack_ftp in the 
-kernel I was running. Removing those allowed for the 2 to match up 
-closely when doing  HTTP crashloads on the firewall. Adding either one 
-of them caused what looked like a resource leak.
-
-As far as I can tell.. a POM-only patched 2.4.26 did not exhibit this 
-problem.
-
-
-
--- 
-Stephen John Smoogen	        | CCN-5 Security Team
-LANL SIRT Team Leader           | SMTP:  smoogen@lanl.gov
-Los Alamos National Laboratory  | Voice: 505.664.0645
-Ta-03 SM-1498 MS: B255 DP 10S   | FAX:   505.665.7793
-Los Alamos, NM 87545            |
-
+QnkgdGhlIHdheSwgZm9yIG15IGNhc2UsIGRvIEkgYWxzbyBuZWVkIHRvIGFkZCB0aGlzCnJ1bGU6
+CgppcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRoMCAtcyAxMC4xLjEuMiAtLWoK
+U05BVCAtLXRvIDEuMS4xLjIKLi5ldGMuLgoKUmVnYXJkcwpQYXRyaWNrCgogLS0tIEphc29uIE9w
+cGVyaXNhbm8gPG9waWVAODE3d2VzdC5jb20+IKS6rmWhRwo+IE9uIFRodSwgMjAwNC0wOS0yMyBh
+dCAyMzoyNCwgUGF0cmljayBEdW5nIHdyb3RlOgo+ID4gRGVhciBBbGwKPiA+IAo+ID4gVGhpcyBp
+cyB3aGF0IEkgd2FudDoKPiA+IAo+ID4gZXRoMCBhcyBpbnRlcm5ldCAoMS4xLjEuMSkKPiA+IGV0
+aDEgYXMgZG16ICgxMC4xLjEuMSkKPiA+IAo+ID4gZG16IGhhcyBhIHdlYiAoMTAuMS4xLjIpIGFu
+ZCBkbnMgKDEwLjEuMS4zKSBzZXJ2ZXIKPiA+IHdpdGggcHJpdmF0ZSBJUC4KPiA+IFRoZSBuZXRm
+aWx0ZXIgZncgd2lsbCBkbyB0aGUgc3RhdGljIElQIChwdWJsaWMgdG8KPiA+IHByaXZhdGUpIElQ
+IG1hcHBpbmcuCj4gPiBBdmFsaWFibGUgcHVibGljIElQIChleGFtcGxlKToKPiA+IDEuMS4xLjEg
+KGV0aDApLCAxLjEuMS4yIChmb3Igd2ViKSwgMS4xLjEuMyAoZm9yCj4gZG5zKQo+ID4gCj4gPiBO
+b3cgSSBoYXZlIHRoZXNlIHJ1bGVzOgo+ID4gCj4gPiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9V
+VElORyAtaSBldGgwIC1kIDEuMS4xLjIKPiAtcAo+ID4gdGNwIC0tZHBvcnQgODAgLWogRE5BVCAt
+LXRvIDEwLjEuMS4yOjgwCj4gPiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSBldGgw
+IC1kIDEuMS4xLjMKPiAtcAo+ID4gdWRwIC0tZHBvcnQgNTMgLWogRE5BVCAtLXRvIDEwLjEuMS4z
+OjUzCj4gPiAKPiA+IFRoZSBwcm9ibGVtIGlzIHRoYXQgdGhlcmUgaXMgbm8gcmVzcG9uc2UgZnJv
+bQo+IDEuMS4xLjIKPiA+IGFuZCAxLjEuMS4zLgo+ID4gRG8gSSBuZWVkIG90aGVyIHNwZWNpYWwg
+c2V0dGluZyAocHJveHkgYXJwPykKPiAKPiB5dXAuICBvbiBuZXRmaWx0ZXIgbWFjaGluZToKPiAK
+PiAgIGlwIGFkZHJlc3MgYWRkIDEuMS4xLjIgZGV2IGV0aDAKPiAgIGlwIGFkZHJlc3MgYWRkIDEu
+MS4xLjMgZGV2IGV0aDAKPiAKPiAgcmVtZW1iZXIgdG8gdXNlIDEwLjEuMS5bMjNdIGluIHlvdXIg
+ZmlsdGVyIHJ1bGVzCj4gYW5kIG5vdCAxLjEuMS5bMjNdLgo+IAo+IC1qCj4gCj4gLS0gCj4gSmFz
+b24gT3BwZXJpc2FubyA8b3BpZUA4MTd3ZXN0LmNvbT4KPiAKPiAKPiAgCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KpbKx/qfeoUK2vLpx
+oUKkcKxQrFAuLi4Krva6qblhwW4gILGhpN+zc8O0Cmh0dHA6Ly91cy5yZC55YWhvby5jb20vZXZ0
+PTIyMjgxLypodHRwOi8vcmluZ3RvbmUueWFob28uY29tLmhrLwoK
