@@ -1,12 +1,15 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE:  /sbin/iptables -vnxL OUTPUT
-Date: Tue, 2 Mar 2004 09:54:16 -0800
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: dstlimit patch
+Date: Tue, 2 Mar 2004 19:32:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122F01@alderaan.smgtec.com>
+Message-ID: <20040302183209.GQ4637@sunbeam.de.gnumonks.org>
+References: <20040301165142.GA1156@lca.one.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hEarWVD7htqb1VxP"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <20040301165142.GA1156@lca.one.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,91 +19,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Mario Ohnewald <mario.Ohnewald@gmx.de>, netfilter@lists.netfilter.org
-
-The best way to get accurate interface stats IMHO:
-
-iptables -t mangle -A PREROUTING  -i ${IF_WHATEVER}
-iptables -t mangle -A POSTROUTING  -o ${IF_WHATEVER}
-
-They get executed and get executed before anything else (I am assuming
-you don't have the raw table). They don't have a jump rule so you can
-still place mangle rules in pre/post without having a jump before
-getting to them.
+To: root@lca.one.pl
+Cc: netfilter@lists.netfilter.org
 
 
-Null jumps are giving me "iptables: Too many levels of symbolic links"
-for some reason, so I just used IPV4OPTSTRIP instead. I should really be
-using no jump, but I never got around to investigating.
+--hEarWVD7htqb1VxP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-#iptables -t mangle -nvxL
-Chain PREROUTING (policy ACCEPT 3766257820 packets, 3341214673464 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination        =20
-       0        0 IPV4OPTSSTRIP  all  --  eth0   *       0.0.0.0/0
-0.0.0.0/0          =20
-  714986 677460576 IPV4OPTSSTRIP  all  --  eth1   *       0.0.0.0/0
-0.0.0.0/0          =20
-  784926 141884330 IPV4OPTSSTRIP  all  --  eth2   *       0.0.0.0/0
-0.0.0.0/0          =20
-    6536  1035116 IPV4OPTSSTRIP  all  --  eth3   *       0.0.0.0/0
-0.0.0.0/0          =20
-  662036 177634497 IPV4OPTSSTRIP  all  --  eth4   *       0.0.0.0/0
-0.0.0.0/0          =20
-   87013 21842334 IPV4OPTSSTRIP  all  --  eth5   *       0.0.0.0/0
-0.0.0.0/0          =20
-    6633   529006 IPV4OPTSSTRIP  all  --  eth6   *       0.0.0.0/0
-0.0.0.0/0          =20
-       0        0 IPV4OPTSSTRIP  all  --  eth7   *       0.0.0.0/0
-0.0.0.0/0          =20
-       0        0 IPV4OPTSSTRIP  all  --  eth8   *       0.0.0.0/0
-0.0.0.0/0          =20
-     262    26042 IPV4OPTSSTRIP  all  --  lo     *       0.0.0.0/0
-0.0.0.0/0=20
-<snip...>
-Chain POSTROUTING (policy ACCEPT 3694111642 packets, 3354474129645
-bytes)
-    pkts      bytes target     prot opt in     out     source
-destination        =20
-       0        0 IPV4OPTSSTRIP  all  --  *      eth0    0.0.0.0/0
-0.0.0.0/0          =20
-  595104 72600985 IPV4OPTSSTRIP  all  --  *      eth1    0.0.0.0/0
-0.0.0.0/0          =20
-  867817 486577519 IPV4OPTSSTRIP  all  --  *      eth2    0.0.0.0/0
-0.0.0.0/0          =20
-    7101  1269216 IPV4OPTSSTRIP  all  --  *      eth3    0.0.0.0/0
-0.0.0.0/0          =20
-  770445 450764605 IPV4OPTSSTRIP  all  --  *      eth4    0.0.0.0/0
-0.0.0.0/0          =20
-    7304  5864346 IPV4OPTSSTRIP  all  --  *      eth5    0.0.0.0/0
-0.0.0.0/0          =20
-   10036   781826 IPV4OPTSSTRIP  all  --  *      eth6    0.0.0.0/0
-0.0.0.0/0          =20
-       0        0 IPV4OPTSSTRIP  all  --  *      eth7    0.0.0.0/0
-0.0.0.0/0          =20
-       0        0 IPV4OPTSSTRIP  all  --  *      eth7    0.0.0.0/0
-0.0.0.0/0          =20
-     262    26042 IPV4OPTSSTRIP  all  --  *      lo      0.0.0.0/0
-0.0.0.0/0
-<snip...>
+On Mon, Mar 01, 2004 at 05:51:42PM +0100, root@lca.one.pl wrote:
+> Hi
+> Can u send me some examples of using this patch ? i need to stop
+> ddosing my ssh port.  sth like this : if there is more than x packets
+> from x.x.x.x to localhost:22 DROP :)
 
-Then to scrape them, you would:
+Sorry, I'm too overloaded at the moment.  I can hardly manage to only
+complete the most important new incoming TODO items every day :(
 
-# Inbound interface ${ifname}
-/sbin/iptables -nxvL -t mangle | grep  "\*\ *${ifname}" | awk '{ print
-$2 }'
-# Outbound interface ${ifname}
-/sbin/iptables -nxvL -t mangle | grep  "${ifname}\ *\*" | awk '{ print
-$2 }'
+documenting dstlimit is on my TODO list, though I don't know when I'll
+have the time.
 
-If you have a lot more fine grained rules, I would use regex throughout
-the entire thing. It might be tricky, so try spicing up the input, like
-"-m mark ! --mark 0x10000" and search on !0x10000 since I doubt it would
-be used elsewhere. Just remember through, if you have a large enough
-ruleset, this can eventually impact your bandwidth utilization if the
-bandwith kills your CPU trying to match these rules :-)
+> Greatings=20
+> Jacek Kaczmarczyk
 
-> How come it wont count up the Accepted packaged and Bytes?
-> If you need any more infos, please tell me!
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--hEarWVD7htqb1VxP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFARNMpXaXGVTD0i/8RAlWqAJ47jN6ExgQgAVYQHw+OIc+WwOVLCwCggzFt
+dokIuuv31ST2xrDqG4JjYXs=
+=/6dx
+-----END PGP SIGNATURE-----
+
+--hEarWVD7htqb1VxP--
 
