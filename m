@@ -1,12 +1,14 @@
-From: Ilya Kostin <adm@samnipineft.ru>
-Subject: patch-o-matic
-Date: Tue, 30 Mar 2004 13:39:01 +0500
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: patch-o-matic
+Date: Tue, 30 Mar 2004 09:42:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1342533804.20040330133901@samnipineft.ru>
-Reply-To: Ilya Kostin <adm@samnipineft.ru>
+Message-ID: <200403300942.18073.gdh@acentral.co.uk>
+References: <1342533804.20040330133901@samnipineft.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1342533804.20040330133901@samnipineft.ru>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,12 +21,14 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello netfilter,
+On Tuesday 30 March 2004 09:39, Ilya Kostin wrote:
+> Hello netfilter,
+>
+>   patch-o-matic or iptables-1.2.9 ???
 
-  patch-o-matic or iptables-1.2.9 ???
+Yes.
 
--- 
-Best regards,
- Ilya                          mailto:adm@samnipineft.ru
-
+Cheers,
+Gavin.
+P.S. If you send an obtuse question, you will get an obtuse answer.
 
