@@ -1,14 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Linux as router (Gateway Server) [Revisited]
-Date: Mon, 31 Jan 2005 11:37:55 -0500
-Message-ID: <20050131163755.GA25101@bender.817west.com>
-References: <00a601c4fe34$5e74bd80$eaab9385@gagan>
-	<1106851960.14748.6.camel@localhost.localdomain>
-	<005701c507a8$f84e5330$eaab9385@gagan>
+Subject: Re: FTP rules
+Date: Mon, 31 Jan 2005 11:41:38 -0500
+Message-ID: <20050131164138.GA25132@bender.817west.com>
+References: <web-42708298@infinito.it>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <005701c507a8$f84e5330$eaab9385@gagan>
+In-Reply-To: <web-42708298@infinito.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,20 +21,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Mon, Jan 31, 2005 at 08:54:10PM +0530, Navneet wrote:
-> Below is my working tables rules.But i can't able to successfully establish
-> external ftp sites/servers.
+On Mon, Jan 31, 2005 at 05:40:24PM +0100, hamals@infinito.it wrote:
 > 
-> i even loaded ip_conntrack_ftp
+>  my PCs behind my firewall didn't get ftp connection to 
+> any external ftp server. Why?
+> 
+> /sbin/modprobe ip_contrack
+> /sbin/modprobe ip_contrack_ftp
 
-but you didn't load ip_nat_ftp.
+how about this as well:
+
+  /sbin/modprobe ip_nat_ftp
+
+> # LAN -> INTERNET
+> iptables -A FORWARD -i $LAN -o $INET -p tcp --dport 21 -j 
+> ACCEPT
+> iptables -A FORWARD -i $LAN -o $INET -p tcp --dport 20 -j 
+> ACCEPT
+
+second rule is unnecessary.
+
+> # INTERNET ->LAN
+> iptables - A FORWARD -i $INET -o $LAN -p tcp -m state 
+> --state ESTABLISHED, RELATED -j ACCEPT
+
+you need to allow ESTABLISHED,RELATED packets from LAN -> INTERNET as
+well, try using:
+
+  iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+instead of your rule above.
+
+> # NAT
+> iptables -t nat -A POSTROUTING -s $IPs_LAN -o $INET -j 
+> SNAT  --to-source $INET_IP
 
 -j
 
 --
-"Here are your messages: 'You have thirty minutes to move your
- car.' 'You have ten minutes to move your car.' 'Your car has been
- impounded.' 'Your car has been crushed into a cube.' 'You have thirty
- minutes to move your cube.'"
+"My cat's breath smells like cat food."
         --The Simpsons
 
