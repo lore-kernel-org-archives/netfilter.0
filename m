@@ -1,11 +1,13 @@
-From: Mike Machado <mike@innercite.com>
-Subject: pptp-conntrack-nat
-Date: 11 Jun 2003 17:04:09 -0700
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: How to stop imesh with iptables
+Date: Wed, 11 Jun 2003 20:45:15 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1055376249.20254.16.camel@rocket.innercite.com>
+Message-ID: <20030612004515.GA7881@cannon.eng.us.uu.net>
+References: <20030611200517.2278.qmail@web40306.mail.yahoo.com> <02e701c33060$b7439880$1100000a@busbydev> <200306111636.30206.gadgeteer@elegantinnovations.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200306111636.30206.gadgeteer@elegantinnovations.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,24 +18,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Gadgeteer <gadgeteer@elegantinnovations.org>
+Cc: netfilter@lists.netfilter.org
 
-I used CVS/POM and patched my vanilla 2.4.20 kernel to include support
-for ip_conntrack_pptp and ip_nat_pptp, but after I do this, the
-MASQUERADE target no longer works. lsmod shows both modules load
-successfully as well as the ipt_MASQUERADE, but when I run my nat rule:
+> > > am I the only person that denies everything by default and
+> > > only allows the protocols through the firewall that I
+> > > feel people need to use? 
+> >
+> > As always:
+> >     Depends on the requirements of the firewall.
+> 
+> I have yet to see a case made for other than default deny that was not full
+> of holes     ....just like their firewalls 8-)
 
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth0 -j MASQUERADE
+There is no doubt that the default "deny" and just opening the services that
+are "required" to be accepted is _the_ requirement of any sane firewall.
 
-it just says Invalid Argument. I have two identical kernels, one with
-the pptp patch applied, one without, and the one without allows the
-MASQUERADE target just fine. Is there a known bug with the latest CVS
-pptp-conntrack-nat patch interfearing with masquerading? Thanks.
-
--- 
-Mike Machado
-mike@innercite.com
-InnerCite Inc.
-Engineering Director / CTO
-
+Ramin
 
