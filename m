@@ -1,12 +1,12 @@
-From: =?ISO-8859-1?Q?Jos=E9_Irigon?= <irigon@gmail.com>
-Subject: Bridge + iptables + REJECT
-Date: Fri, 27 Aug 2004 20:38:01 -0300
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: bind 9 and iptables
+Date: Fri, 27 Aug 2004 19:34:26 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <2cbad29704082716383a7d33d4@mail.gmail.com>
-Reply-To: =?ISO-8859-1?Q?Jos=E9_Irigon?= <irigon@gmail.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC906420E@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,31 +16,49 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, I read all messages sent to list about topics like this, but none
-of them solved my doubt.
-I want to do a stealth firewall, a firewall in a bridge which an
-mallicious client can=B4t find it.
+> Hi Again,
+>
+> Damn it still not working why i said it was working was was
+> because of cached ip's as soon as i tried to access a site
+> that hasn't been cached it would give me a unknown host
+> error.
+>
+> iptables -P INPUT DROP
+> iptables -P OUTPUT DROP
+> iptables -P FORWARD DROP
+>
+> iptables -A INPUT -p udp -i eth0 -s 192.168.0/24 -d
+> 192.168.0.1 --dport 53 -j ACCEPT
+> iptables -A INPUT -p tcp -i eth0 -s 192.168.0/24 -d
+> 192.168.0.1 --dport 53 -j ACCEPT
+> iptables -I OUTPUT -m state --state ESTABLISHED,RELATED -j
+> ACCEPT
+>
+> iptables -I INPUT -i lo -j ACCEPT
+> iptables -I OUTPUT -o lo -j ACCEPT
+>
+> iptables -A FORWARD -i eth0 -o ppp0 -p tcp -j ACCEPT
+> iptables -A FORWARD -i eth0 -o ppp0 -p udp -j ACCEPT
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j
+> ACCEPT
+>
+> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+>
+> Thats my rules im trying to get dns to work atm.
+>
+> When i comment these out everything works fine:
+>
+> #iptables -P INPUT DROP
+> #iptables -P OUTPUT DROP
 
-This is the idea:
-When a packet arrive at the bridge (from de outside) if the rules of
-iptables/ebtables permit it continue, ok. If not, the bridge should
-reply with packages with the client=B4s ip and rejecting these packages.
-The problem is I tried use "-j REJECT --reject-with tcp-reset" for
-example, but the bridge seems to can not reply that packages.
-At begining I thought it was cause haven=B4t the bridge ip, it couldn=B4t
-send packages back, but I read in
-http://sourceforge.net/mailarchive/forum.php?thread_id=3D4073001&forum_id=
-=3D8573
-that it is possible.
-I recompile kernel and tried anything I believe could be the erlevant,
-but nothing.
-Can anyone tell me what could be!?
+somewhere along the line, you lost:
 
-I=B4m using Slackware 9.1 with kernel 2.6.8.1, but I tried with 2.4.22
-and didn=B4t work either...
+  iptables -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-[]=B4s!
+-j
 
+ps - in the future, it's easier to help if you provide the output of:
+     iptables -vnL && iptables -t nat -vnL && iptables -t mangle -vnL
