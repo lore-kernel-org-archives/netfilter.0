@@ -1,14 +1,12 @@
-From: David Cannings <lists@edeca.net>
-Subject: Re: OUTPUT chain in nat table.
-Date: Tue, 27 Apr 2004 13:15:21 +0100
+From: <sschlesi@chello.at>
+Subject: how to stop broadcasts using iptables
+Date: Tue, 27 Apr 2004 14:35:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404271315.21173.lists@edeca.net>
-References: <GHEILNONPACCGBGKBEKKOEHFCFAA.mani@manikandan.org>
+Message-ID: <20040427123529.HVYI23570.viefep19-int.chello.at@localhost>
+Reply-To: sschlesi@chello.at
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <GHEILNONPACCGBGKBEKKOEHFCFAA.mani@manikandan.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,14 +19,16 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 27 April 2004 13:07, Manikandan wrote:
-> 	There is no issue with PREROUTING and POSTROUTING chains in nat
-> table now. But my OUTPUT DNAT is not working and it keeps giving me an
-> error " Invalid argument ".
-> iptables -t nat -A OUTPUT -d 10.35.47.120 -j DNAT -to 10.35.47.3
+hi, 
 
-According to the manual page "--to-destination" is what you require 
-instead of "-to".
+I'm trying to stop broadcasts getting forwarded, but I'm  not sure how to do 
+this. i read that *.255 - which are afaik broadcast addresses - doesnt 
+guarantie that its a broadcast. then i read that its possible by matching the 
+mac address, because broadcast will have ff:ff:ff:ff:ff:ff . but I'm not sure 
+if that's all  nonsense.
 
-David
+maybe someone here could help me.
+
+~sts
+
 
