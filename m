@@ -1,13 +1,13 @@
-From: rruegner <robowarp@gmx.de>
-Subject: Re: Conntrack helpers for ICQ and MSN Messenger
-Date: Sat, 11 Sep 2004 02:19:26 +0200
+From: "Joel n.solanki" <zealous@bonbon.net>
+Subject: Re: allowing connection
+Date: 11 Sep 2004 09:37:44 +0530
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4142448E.3070609@gmx.de>
-References: <20040910210728.7056.qmail@web50206.mail.yahoo.com>
+Message-ID: <1094875664.1436.21.camel@joel.d2visp.com>
+References: <20040910181819.GA31430@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040910210728.7056.qmail@web50206.mail.yahoo.com>
+In-Reply-To: <20040910181819.GA31430@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,65 +17,51 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Giancarlo Boaron <gboaron@yahoo.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-Hi,
-you dont need helpers for icq it works out of the box
-if you want file transfer use somethin like this
-#message icq
-/usr/sbin/iptables -A INPUT -p udp --dport 4000 -j ACCEPT
-#this for  icq file transfer tradittional version
-#first user configure icq to use ports 24500:24505 for file transfer
-/usr/sbin/iptables -t nat -A PREROUTING -p tcp -i ppp0 --dport=20
-24500:24505 -j DNAT --to 10.10.100.50
-/usr/sbin/iptables -t nat -A PREROUTING -p tcp -i ppp0 --dport=20
-24510:24515 -j DNAT --to 10.10.100.52
+If you have 2 lan cards.
+eth0 --connected to internet
+eth1 --connected to lan
 
-configure your icq client using ie tcp 24510:24515 for file transfer
+then ..
+Make the default policy of FORWARD to DROP
+Just FORWARD the client's ip so that it can get internet access.
+All other machines will communicated with each other but not with the
+internet.
+
+Without mac binding.
+iptables -A FORWARD -i eth1 -s 192.168.1.x -j ACCEPT
+iptables -A FORWARD -i eth0 -d 192.168.1.x -j ACCEPT
+
+With mac binding.
+iptables -A FORWARD -i eth1 -s 192.168.1.x -m mac --mac-source
+00:00:00:00:00:00 -j ACCEPT
+iptables -A FORWARD -i eth0 -d 192.168.1.x -m mac --mac-source
+00:00:00:00:00:00 -j ACCEPT
 
 
-#msn
-/usr/sbin/iptables -A INPUT -p tcp --dport 1863 -j ACCEPT
+Regards,
+On Fri, 2004-09-10 at 23:48, Payal Rathod wrote:
+> Hi,
+> Right now I am allowing only my client's LAN access one of my 
+> design's machine from the internet. Their LAN is a simple network,
+> with a single IP and other machines are masqueraded. Now I want to allow
+> only one of their machine to access my machine. Can I do it? I mean 
+> the machine is on 192.168.1.x series of IP, but can I restrict it
+> on mac address basis? If yes, how do I do it?
+> 
+> With warm regards,
+> -Payal
+-- 
+Joel N.Solanki
+Network Administrator
+Phone No: 0265-550001/2/3/4/5 Ext: 211/212
+Digtial 2 Virtual Internet Service Provider.
+http://www.packetraptor.com/
+http://www.d2visp.com/
+Gujarat (India)
 
-http://reaim.sourceforge.net/
-may help you too with msn file transfer
 
-Regards
 
-Giancarlo Boaron schrieb:
-
-> Hello.=20
-> I have some clients in my LAN that need to access ICQ
-> and MSN Messenger.
-> Reading some iptables tutorials, I discovered that ICQ
-> and MSN Messenger protocols are some kind of "complex
-> protocols" because they send some information about
-> openning new connections back inside the payload of
-> the packets.
-> So, iptables needs some CONNTRACK and/or NAT helpers
-> to let this protocols work properly.
-> I looked for it on NETFILTER home page but I didn't
-> find it. So, I need some help about it!
-> Where can I get an how to apply it on my iptables?
-> (Do I have to use patch-o-matic?)
-> Besides, I want to use the FORWARD chain instead of
-> sending this protocols via SQUID or another proxy.
->=20
-> Some solution?
->=20
-> Regards
-> Giancarlo
->=20
->=20
->=20
-> =09
-> =09
-> 	=09
-> _______________________________________________________
-> Yahoo! Messenger 6.0 - jogos, emoticons sonoros e muita divers=E3o. Insta=
-le agora!
-> http://br.download.yahoo.com/messenger/
->=20
 
