@@ -1,14 +1,13 @@
 From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: having more then 1 external interfaces ?
-Date: Mon, 18 Oct 2004 10:39:09 -0500
+Subject: Re: Differentiating direct, and redirected access?
+Date: Mon, 18 Oct 2004 10:50:03 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4173E39D.5000306@pbl.ca>
-References: <20041007164628.GN13901@sunbeam.de.gnumonks.org><Pine.LNX.4.61.0410180124290.11959@filer.marasystems.com>	<20041017233937.GB21927@sunbeam.de.gnumonks.org>
-	<000201c4b4ae$e065e5a0$0300000a@serverxxx>
+Message-ID: <4173E62B.6010708@pbl.ca>
+References: <20041018021948.48396.qmail@web50902.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000201c4b4ae$e065e5a0$0300000a@serverxxx>
+In-Reply-To: <20041018021948.48396.qmail@web50902.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,26 +18,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Faisal <faisal@clickonlinenetworks.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Faisal wrote:
-> is it possible in iptables to have more then 1 external interfaces ?
+J Kim wrote:
+> Hello all,
+> 
+> I'm running a squid at port 3128 as a transparent proxy.
+> 
+> There are requests coming directly to 3128 port and 
+> those coming to 80 port and then redirected to 3128 by 
+> following rule:
+> 
+> -t nat -A PREROUTING -i eth0 -p tcp -m tcp \
+>    --dport 80 -j REDIRECT --to-ports 3128
+> 
+> What I want is block direct requests to 3128, allowing
+> redirected access (transparent proxy) only. How do I do it?
+> 
+> If I just set up a rule in filter chain like:
+> 
+> -t filter -A INPUT -i eth0 -p tcp -m tcp \\ 
+>    --dport 3128 -j DROP 
+> 
+> Those requests redirected from port 80 to 3128 are also
+> blocked by this rule. It seems that the redirected packets
+> come in to this chain once again with the new port number.
 
-Short answer.  Yes.
+This is because PREROUTING chain is done before INPUT chain, so dst port 
+of packets was already modified to 3128.  You need to drop packets in 
+PREROUTING chain, before REDIRECT rule:
 
-Longer answer.  Netfilter do not have notition of external or internal 
-interface.  They are all the same.  You build firewall rules according 
-to which interfaces you consider as internal, external, and what kind of 
-traffic are you going to allow on them.  If you want, you might be just 
-as restrictive on internal interfaces as on external.
+   -t nat -A PREROUTING ..... --dport 3128 -j DROP
+   -t nat -A PREROUTING ..... --dport 80 -j REDIRECT ....
 
-If you are using some software that generates firewall rules for you, 
-than that software might have limitation of allowing you to tag only one 
-interface as external.  Again, this is not limitation imposed by 
-Netfilter.  For Netfilter, there's no such thing as internal or external 
-interface.  Netfilter knows only about "interfaces", it doesn't know 
-what you consider them to be.
+BTW, question for smarter than me, if there are rules in both nat and 
+mangle PREROUTING chains, which are traversed first?  If mangle is done 
+before nat, than one solution could also be:
+
+   -t mangle -A PREROUTING .....  --dport 3128 -j MARK --set-mark 1
+   -t nat -A PREROUTING ..... --dport 80 -j REDIRECT .....
+   -t filter -A INPUT .... -m mark --mark 1 -j DROP
+
+Suboptimal (more work), but should work if for whatever reason somebody 
+wants to keep all filtering to filter table (if mangle table is done 
+before nat table, of course).
+
+It would be ideal (and most optimal) if the match was possible in filter 
+table based on original value of dst port.  Kind of vaugly remember 
+reading about such an extension, but I might be wrong (it might not exist).
 
 -- 
 Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
