@@ -1,11 +1,12 @@
-From: Bird Chen <bird_chen@hp.com>
-Subject: strange about netmeeting via iptables?
-Date: Wed, 18 Sep 2002 01:37:21 +0800
+From: "Kevin Saenz" <ksaenz@citistreet.com.au>
+Subject: RE: Telnet not being let through
+Date: Wed, 18 Sep 2002 14:07:32 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D876851.FD4EEB10@hp.com>
+Message-ID: <771DD65729F96D41B132C6189EE644552FE7BA@sydexch1.cs_au.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,96 +17,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Chris Born <ragable@attbi.com>, netfilter@lists.netfilter.org
+
+I think your problem is that you drop-and-log-it
+before accepting anything substantial. IPTables works
+top down unless your forward to other rules.
+Basically what happens is if the rules don't apply to
+the rules before drop-and-log-it then they are getting logged.
+Usually your very last rule should be drop and log.
+
+Have you tired the Iptables tutorial by Oskar Andersen?
+His examples are very good.
+
+-----Original Message-----
+From: Chris Born [mailto:ragable@attbi.com]
+Sent: Wednesday, September 18, 2002 12:15 PM
 To: netfilter@lists.netfilter.org
-
-Hi,
-  I am new to this list. But I have been searching for solution on this
-issue over and over. I have a linux running iptables between my intranet
-and ISP through ADSL link. And my client which is running win2k try to
-netmeeting the internet people. But when the connection was established,
-peer can hear what I am saying but I can't hear the peer's voice.
-  Here is the output of my iptables -L,
-
-root@srv1:/proc/net# iptables -L
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-DROP       tcp  --  anywhere             anywhere           tcp
-flags:FIN,SYN,RS
-T,PSH,ACK,URG/FIN,SYN,RST,PSH,ACK,URG
-DROP       tcp  --  anywhere             anywhere           tcp
-flags:FIN,SYN,RS
-T,PSH,ACK,URG/NONE
-DROP       tcp  --  anywhere             anywhere           tcp
-dpt:telnet
-ACCEPT     tcp  --  10.1.1.0/24          anywhere           tcp dpt:ssh
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssh
-LOG        tcp  --  anywhere             anywhere           tcp dpt:www
-LOG leve
-l warning prefix `HTTP tried to access.'
-LOG        udp  --  anywhere             anywhere           udp dpt:www
-LOG leve
-l warning prefix `HTTP tried to access.'
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-DROP       tcp  --  anywhere             anywhere           tcp
-flags:FIN,SYN,RS
-T,PSH,ACK,URG/FIN,SYN,RST,PSH,ACK,URG
-DROP       tcp  --  anywhere             anywhere           tcp
-flags:FIN,SYN,RS
-T,PSH,ACK,URG/NONE
-DROP       all  -- !10.1.1.0/24          anywhere
-DROP       all  --  192.168.0.0/16       anywhere
-DROP       all  --  172.16.0.0/12        anywhere
-DROP       all  --  10.0.0.0/8           anywhere
-LOG        tcp  --  anywhere             anywhere           tcp
-spts:netbios-ns:
-netbios-ssn LOG level warning prefix `SMB tried to cross.'
-LOG        udp  --  anywhere             anywhere           udp
-spts:netbios-ns:
-netbios-ssn LOG level warning prefix `SMB tried to cross.'
-DROP       tcp  --  anywhere             anywhere           tcp
-spts:netbios-ns:
-netbios-ssn
-DROP       udp  --  anywhere             anywhere           udp
-spts:netbios-ns:
-netbios-ssn
-DROP       tcp  --  anywhere             anywhere           tcp spt:635
-DROP       udp  --  anywhere             anywhere           udp spt:635
-DROP       tcp  --  anywhere             anywhere           tcp spt:2049
-
-DROP       udp  --  anywhere             anywhere           udp spt:2049
-
-DROP       tcp  --  anywhere             anywhere           tcp
-spt:sunrpc
-DROP       udp  --  anywhere             anywhere           udp
-spt:sunrpc
-DROP       udp  --  anywhere             anywhere           udp
-dpt:syslog
-DROP       tcp  --  anywhere             anywhere           tcp
-dpt:printer
-DROP       tcp  --  anywhere             anywhere           tcp
-dpt:shell
-DROP       tcp  --  anywhere             anywhere           tcp dpt:exec
-
-ACCEPT     all  --  10.1.1.0/24          anywhere           state NEW
-ACCEPT     all  -- !10.1.1.0/24          anywhere           state
-RELATED,ESTABL
-ISHED
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+Subject: Telnet not being let through
 
 
-  Any idea? I have compiled the modules for h323 support which I grab
-the source from internet. And my patched kernel now is
-2.4.19-Newnat16-v2.
-  Thanks for help.
+I'm trying to allow telnet sessions through from the outside. Here are =
+the=20
+rules I have for the input chain:
 
-Best regards,
+$IPTABLES =3D /sbin/iptables
+$UNIVERSE =3D "0.0.0.0/0"
 
---
-Bird Chen
-Personal Key:0BAD AC36 4C98 9495 3A2E  126A 0925 EA4C 702C CEFC
+$EXTIP =3D "`$IFCONFIG $EXTIF | /bin/grep 'inet addr'  | /bin/awk =
+'{print 2}'=20
+| /bin/sed -e 's/.*://'`"
+
+$EXTIF =3D "eth1"
+$INTIF =3D "eth0"
+
+$INTNET =3D "192.168.0.0/24"
+
+$IPTABLES -P INPUT DROP
+$IPTABLES -F INPUT
+
+$IPTABLES -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
+$IPTABLES -A INPUT -i $INTIF -s $INTNET -d $UNIVERSE -j ACCEPT
+$IPTABLES -A INPUT -i $EXTIF -s $INTNET -d $UNIVERSE -j drop-and-log-it
+$IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -m state --state=20
+ESTABLISEHED,RELATED
+$IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -p TCP --dport 23 -j =
+ACCEPT
+$IPTABLES -A INPUT -s $UNIVERSE -d $UNIVERSE -j drop-and-log-it
+
+Telnetting from and inside machine works just fine, but every time =
+someone=20
+tries to connect from the outside the connection is refused. Wondering =
+what=20
+I'm doing wrong here.
+
+-Chris Born
+
 
 
 
