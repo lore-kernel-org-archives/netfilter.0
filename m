@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: TCP delay, solved
-Date: Fri, 14 Jun 2002 08:55:56 +0100
+From: "Volkov, Mike" <mike@kem.ru>
+Subject: blocking mechanism
+Date: Fri, 14 Jun 2002 15:31:40 +0800
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206140755.g5E7tuA26840@Networker.rockstone.co.uk>
-References: <01b801c21373$340fe960$638317d2@pacific.net.au>
+Message-ID: <3D099BDC.5000709@kem.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <01b801c21373$340fe960$638317d2@pacific.net.au>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,24 +15,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.samba.org
 
-On Friday 14 June 2002 8:15 am, David Luyer wrote:
+    I have written portmapper patch for execute external script, when 
+one of RPC-service set or unset. And write Perl-script for it, which 
+insert or delete rule for accepting specified RPC-service port from 
+specified source-IP. External script starts in fork() (child), and when 
+some RPC-services must be opened (on portmapper restart), some scripts, 
+which execute `iptables' or `ipchains', try to add rules in one time. So 
+have added only part of them.
+    I must do external blocking mechanism for it? or exists any blocking 
+mechanism in netfilter?
 
-> [ ident lookups causing tcpd to be slow ]
->
-> > There's no satisfactory answer to this problem at present, I think.
->
-> So it's a compile option on tcpd.  Recompile with it disabled.
-
-Yes, but that would need to be done by everyone out on the Internet whose 
-systems my clients try to contact, otherwise we're still going to get those 
-long delays (or a hole in my firewall).
-
-Not what I consider a "satisfactory solution" :-)
-
- 
-
-Antony.
 
