@@ -1,14 +1,13 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: HELP!!! (ip_conntrack: table full)
-Date: Fri, 19 Sep 2003 18:06:29 +0200
+Subject: Re: NAT, ICMP and MTU issues
+Date: Fri, 19 Sep 2003 18:19:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063987589.5022.56.camel@elendil.intranet.cartel-securite.net>
-References: <20030919144311.55129.qmail@web13310.mail.yahoo.com>
-	 <1063984503.782.564.camel@shaolin.gridlocksecurity.com>
+Message-ID: <1063988356.5012.69.camel@elendil.intranet.cartel-securite.net>
+References: <1063986116.28941.41.camel@angua.localnet>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1063984503.782.564.camel@shaolin.gridlocksecurity.com>
+In-Reply-To: <1063986116.28941.41.camel@angua.localnet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,20 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Nox <pheusion@snet.net>
-Cc: Alpha Technologies <alphaside@yahoo.com>, netfilter@lists.netfilter.org
+To: Nigel Metheringham <Nigel.Metheringham@dev.InTechnology.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-Le ven 19/09/2003 =E0 17:15, Nox a =E9crit :
-> You can flush conntrack entries for masqueraded connections
-> by doing either a down/up or ip addr add/del on the associated
-> interface.  This probably won't help you in this case though
-> because the problem conntrack is not masqueraded.  I don't
-> know of any other ways of flushing conntracks.
+Le ven 19/09/2003 =E0 17:41, Nigel Metheringham a =E9crit :
+> What appears to be happening is that everything works while packets are
+> short, however when long packets come in they bounce off the lower MTU
+> interface, and the returned ICMP packet is not getting back to the
+> originator in a sane form.   So the connection freezes.
+> Having looked closer at this I find there is an ICMP dest unreach packe=
+t
+> emitted from my box back to the originator.  However inside the packet
+> the SNAT has been undone, but the DNAT is still in place.
 
-Afaik, if you use SNAT, then IP address removal won't change anything,
-as you can SNAT on IP that does not belong to the box.
-For MASQUERADE, you may have to bring the interface down to flush
-associated conntrack entries.
+
+Just a 0.02e quick thought...
+You're facing a situation a bit like routing LANs through a PPPoE link.
+Solution is to clamp TCPMSS down to correct value when routing them.
+
+iptables -t mangle -A FORWARD -p tcp --syn -j TCPMSS --clamp-mss-to-pmtu
+
+This sets TCPMSS to MTU-40, so 1410 for your IPSEC link.
 
 --=20
 http://www.netexit.com/~sid/
