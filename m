@@ -1,9 +1,10 @@
-From: "Sundaram Ramasamy" <sun@percipia.com>
-Subject: Re: Is this firewall issue
-Date: Tue, 5 Nov 2002 17:50:04 -0500
+From: "hare ram" <hareram@sol.net.in>
+Subject: Re: iptables -m time does not work
+Date: Wed, 6 Nov 2002 10:11:02 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006a01c2851d$ae5691d0$8c01a8c0@sundaram>
-References: <Pine.GSO.4.40.0211041029270.5446-100000@amazonas.robotic.dlr.de> <004e01c284d1$97409aa0$8c01a8c0@sundaram> <200211051422.gA5EMOe19170@vulcan.rissington.net>
+Message-ID: <006001c2854e$b630f400$43723fca@nextto>
+References: <E187c2V-0001ft-00@kashyyyk.netfilter.org> <aq1b78$lc5$1@hermes.vibe.ac>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,83 +18,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: Udo Rader <spamtrash2@vibe.ac>
+Cc: netfilter@lists.samba.org
 
+Hi
 
-This is what I have in the mail header. He send it Oct 31st but we received
-November 3rd.
+even i too have same problem
+iam able to see .o file and .so file
+and when i say make manuconfig, it show the the limit and time in netfilter
 
-Thanks for your help
--Sundaram
+but when i give this option iam not able to
+but iam using redhat 7.3
 
-content-class: urn:content-classes:message
-
-MIME-Version: 1.0
-
-Content-Type: text/plain;
-
-charset="iso-8859-1"
-
-Subject: RE: Upgrade Requirements
-
-Date: Thu, 31 Oct 2002 17:22:35 -0500
-
-Message-ID:
-
-<F39DC9ED31373244ACA87544CF8E746E019BE3D7@ACCLUST01EVS1.ugd.att.com>
-
-X-MS-Has-Attach:
-
-X-MS-TNEF-Correlator:
-
-Thread-Topic: Upgrade Requirements
-
-Thread-Index: AcKBIdduSxf/BqVbTYioGqTNVZYVxgACbTzw
-
-From: "Roy, Partha, CSCIO" <partharoy@att.com>
-
-To: "Balkee Balakrishnan" <balkee@percipia.com>
-
-Content-Transfer-Encoding: 8bit
-
-X-MIME-Autoconverted: from quoted-printable to 8bit by mail.percipia.com id
-
-gA3Gvk4O028334
-
-X-UIDL: /'c"!WYh!!@VJ!!DK1!!
-
-
-
-
-
+hare
 ----- Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+From: "Udo Rader" <spamtrash2@vibe.ac>
+Newsgroups: netfilter.users
 To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, November 05, 2002 9:22 AM
-Subject: Re: Is this firewall issue
+Sent: Sunday, November 03, 2002 1:36 AM
+Subject: Re: iptables -m time does not work
 
 
-> On Tuesday 05 November 2002 1:45 pm, Sundaram Ramasamy wrote:
+> hi,
 >
-> > Hi,
+> I bet you have the same problem that I had with the string-module.
+>
+> look at your /var/log/syslog and check if there are complains about
+> a missing ipt_time module.
+>
+> If so, the solution is simple: Your kernel is very probably not patched
+> for the time module.
+>
+> udo
+>
+> On Fri, 01 Nov 2002 14:20:15 +0000, Torsten Puls wrote:
+>
+> > Hello
 > >
-> > I have NATed mail server in my office, sometime users are getting  six,
-> > seven days old mail, some mails they getting towice, is this because of
-> > firewall or some other issue?.
+> > My Problem
+> > After input of dis order I get the following error message:
+> >
+> > iptables -A INPUT -m time --timestart 08:00 --timestop 16:00 --days
+Mon -j ACCEPT
+> > iptables: No chain/target/match by that name
+> >
+> > Why?
+> >
+> > Regards
 >
-> This is very unlikely to be a firewall problem.
 >
-> What do the headers of the emails say ?   Where is the excessive delay
-> occurring ?
->
-> Antony.
->
-> --
->
-> It is also possible that putting the birds in a laboratory setting
-> inadvertently renders them relatively incompetent.
->
->  - Daniel C Dennett
 >
 
 
