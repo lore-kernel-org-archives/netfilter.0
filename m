@@ -1,12 +1,15 @@
-From: "Narendra Prabhu. B" <naren@deeproot.co.in>
-Subject: Re: Iptables Queuing Problem
-Date: Fri, 31 Jan 2003 15:10:29 +0530 (IST)
+From: Athan <netfilter@miggy.org>
+Subject: Re: DNAT/MASQ Precedence
+Date: Fri, 31 Jan 2003 10:14:20 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.43.0301311503330.287-100000@abodh.pesit.deeproot.co.in>
-References: <20030130071453.54533.qmail@web8206.mail.in.yahoo.com>
+Message-ID: <20030131101420.GU11221@miggy.org>
+References: <200301301931.41645.katriel@traum.org.il> <20030130193408.GR11221@miggy.org> <200301310958.38656.katriel@traum.org.il>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yPSgZSQ6mfPWgZ9n"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030130071453.54533.qmail@web8206.mail.in.yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <200301310958.38656.katriel@traum.org.il>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,46 +19,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: =?iso-8859-1?q?pooja?= <pooja2909@yahoo.co.in>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Katriel Traum <katriel@traum.org.il>
+Cc: netfilter@lists.netfilter.org
 
 
-Hello ...
+--yPSgZSQ6mfPWgZ9n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Are you using the QUEUE target? If so, where are you using it?
-This list could help you better, if you could post the code.
+On Fri, Jan 31, 2003 at 09:58:35AM +0000, Katriel Traum wrote:
+> On Thursday 30 January 2003 19:34, Athan wrote:
+> > On Thu, Jan 30, 2003 at 07:31:38PM +0000, Katriel Traum wrote:
+> > > I want to redirect _all_ traffic into the DMZ (is that even possible?)
+> > > and in the same time MASQ the LAN. The question is will they collide?=
+ If
+> > > I use a ruleset such as:
+> > > iptables -A PREROUTING -i $INET_IF -j DNAT --to-destination $DMZ_IP
+> > > iptables -A POSTROUTING -o $INET_IF -j MASQUERADE
+> > > (yes, there's only one computer in the DMZ)
+> > >
+> > > Will I get return traffic into my lan? won't it be DNATed into the DM=
+Z?
+> >
+> >   You need at least one public IP that is *NOT* in the DMZ.  Then change
+> > the DMZ rule to exclude on this:
+> >
+> > iptables -A PREROUTING -i $INET_IF -d ! <not-DMZ IP> -j DNAT
+> > --to-destination $DMZ_IP
+>=20
+> Well, the problem is I have 1 public IP via a cable modem.
+> So I ask again, if I DNAT everything into the DMZ lan, and try to MASQ my=
+=20
+> private lan, will I even get return traffic?
 
-Are you using libipq?
+  That would be a problem yes, as the PREROUTING gets done before the
+POSTROUTING and will change the packets prior to the routing decision.
+You may be able to get away with reserving a range of ports to be used
+with SNAT though as the --to-source argument can take a range of port
+numbers.
 
-Regards,
-Narendra.
+	iptables -A PREROUTING -i $INET_IF -p tcp --dport ! port1:port2 -j DNAT --=
+to-destination $IP=20
 
--------------------------
-Narendra Prabhu. B
-DeepRoot Linux
-http://www.deeproot.co.in
+	iptables -A POSTROUTING -o $INET_IF -s <LAN network> -j SNAT --to-source $=
+IP:port1-port2
 
-On Thu, 30 Jan 2003, [iso-8859-1] pooja wrote:
-> Hi!!
->
-> I am using iptables queuing concept to get the packets
-> for my application.The applicaction is just doing
-> simple dynamic nat if reqd..I change the dest ip in
-> prerouting hook if reqd and the src ip i postrouting
-> hook...This is working fine for first few pkts after i
-> start my application..But after that i am getting
-> segmentation fault...What is happening is one pkt
-> after passing through and accepted by prerouting hook
-> disappears..it gets lost..neither it enters FORWARD
-> hook nor postrouting hook..and the next pkt gives me
-> the SEGMENTATION FAULT ERROR ..
->
-> CAn somebody tell me why is this happening????
->
-> Thanx in advance,
-> Pooja
+Note that the DNAT rule DOES now mention protocol explicitly, it has to
+for --dport to be valid.  Duplicate the line with "-p udp" if you also
+need UDP to be working.
+  For non UDP/TCP (i.e. ICMP) to work correctly you have to hope a few
+rules with the appropriate -m state will do the right thing.  AIUI they
+should as how they treat things should be based on the connection
+tracking table.
 
+HTH,
 
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+
+--yPSgZSQ6mfPWgZ9n
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAj46THwACgkQzbc+I5XfxKe4wACgnQaV/ceVZZpNN2wXzTtLSQwp
+oTkAn2sovM78eUXxtbliAN1Pt9I5i2BV
+=f9iF
+-----END PGP SIGNATURE-----
+
+--yPSgZSQ6mfPWgZ9n--
 
