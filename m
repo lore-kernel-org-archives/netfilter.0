@@ -1,12 +1,12 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: I'm having difficulty making port redirection work
-Date: Tue, 1 Jul 2003 08:59:19 +1000
+From: "Tim" <twrodriguez@earthlink.net>
+Subject: DNAT & Host Headers
+Date: Mon, 30 Jun 2003 21:33:48 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BE9E@wardrive.citadelcomputer.com.au>
+Message-ID: <002201c33f70$d1e33000$0101a8c0@techinitiatives.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001F_01C33F4F.4A83BE20"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,77 +16,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Michael Martinez <mmartinez@csrees.usda.gov>
-Cc: "Netfilter Mailling List (E-mail)" <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+This is a multi-part message in MIME format.
 
-Read that tutorial very carefully and you'll pickup the differences of =
-iptables to ipchains.
+------=_NextPart_000_001F_01C33F4F.4A83BE20
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-just remember that INPUT/OUTPUT are for packets going to and from the =
-firewall ONLY, not forwarded or NATed packets unlike ipchains.. check =
-the graphs and you'll see what I mean..
+First here is the rules within their respective chains:=20
 
-What your looking for is part of PREROUTING chain not INPUT and you =
-forgot the -t nat switch.
+iptables -t nat -A PREROUTING -p tcp --dport 80 -d $INTERNET -j DNAT =
+--to $NEMESIS
 
-iptables -A PREROUTING -i $INTDEV -t nat -p tcp --dport 80 -j REDIRECT =
---to-port 8888
+iptables -A FORWARD -p tcp --dport 80 -d $NEMESIS -j ACCEPT
 
-try that.. and if all else fails.... LOG EVERYTHING!
+I'm running this particular web-site with a host header, when I type in =
+the www.mydomain.com address on the browser and the packets hit the =
+prerouting chain then the forward chain how will the communication still =
+know that it is meant for www.mydomain.com
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+Will this work or do I need to modify the rules in order for my web =
+server to recognize that the information is intended for =
+www.mydomain.com. As it is there are several web-sites within my =
+web-server utilizing the same ip address, including the default =
+web-site.
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-=20
+Any insight will be gratefully appreciated.
 
------Original Message-----
-From: Michael Martinez [mailto:mmartinez@csrees.usda.gov]
-Sent: Tuesday, July 01, 2003 5:37 AM
-To: netfilter@lists.netfilter.org
-Subject: I'm having difficulty making port redirection work
+Thanks in advance
+Tim--Mia/Fla.
 
+------=_NextPart_000_001F_01C33F4F.4A83BE20
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Hi all -
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>
+<DIV><FONT face=3DArial size=3D2>First here is the rules within their =
+respective=20
+chains: </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -t nat -A PREROUTING -p tcp =
+--dport 80 -d=20
+$INTERNET -j DNAT --to $NEMESIS</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -A FORWARD -p tcp --dport 80 =
+-d $NEMESIS=20
+-j ACCEPT</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I'm running this particular web-site =
+with a host=20
+header, when I type in the www.mydomain.com address on the browser and =
+the=20
+packets hit the prerouting chain then the forward chain how will the=20
+communication still know that it is meant for =
+www.mydomain.com</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Will this work or do I need to modify =
+the rules in=20
+order for my web server to recognize that the information is intended =
+for=20
+www.mydomain.com. As it is there are several&nbsp;web-sites within my =
+web-server=20
+utilizing the same ip address, including the default =
+web-site.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Any insight will be gratefully=20
+appreciated.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks in advance</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Tim--Mia/Fla.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></DIV></BODY></HTML>
 
-I've used ipchains before, but I'm brand new to iptables, and I'm having
-difficulty getting port redirection to work.
-
-Here's what I want to do: I've got a Redhat 8.0 box running iptables
-1.2.6a2. I've got a web application listening on port 8888 (on the eth0
-interface) and  I'd like any web traffic coming in on port 80, to be
-redirected to port 8888.
-
-In ipchains, this is handled with the following line in
-/etc/sysconfig/ipchains:
-
--A input -d 192.73.224.127 80 -p tcp -j REDIRECT 8888
-
-I am using the following lines at the beginning of
-/etc/sysconfig/iptables, but it does not work. I'm getting no messages
-in /var/log/messages, and I don't know of any place where iptables is
-logging anything:
-
-*nat
--A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8888
-COMMIT
-
-How do I troubleshoot and fix this?
-
-thank you -
-
---=20
-Michael Martinez
-Linux System Administrator
-Marlaw Systems Technology Inc.
-CSREES/ISTM/USDA
-mmartinez@csrees.usda.gov
+------=_NextPart_000_001F_01C33F4F.4A83BE20--
 
 
