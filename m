@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: LAN accessing DMZ
-Date: Sun, 18 Jul 2004 20:12:13 +0100
+From: Mail Lists <lists@sapience.com>
+Subject: subnet problem
+Date: Sun, 18 Jul 2004 16:50:07 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407182012.13539.Antony@Soft-Solutions.co.uk>
-References: <f51b72bc040718062373640612@mail.gmail.com> <200407181859.47417.Antony@Soft-Solutions.co.uk> <20040718185129.GA679@tranquility.scriptkitchen.com>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <20040718205007.GA7576@sapience.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040718185129.GA679@tranquility.scriptkitchen.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,31 +16,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Sunday 18 July 2004 7:51 pm, Payal Rathod wrote:
 
-> On Sun, Jul 18, 2004 at 06:59:47PM +0100, Antony Stone wrote:
-> >
-> > I do not understand how you can connect through this ruleset to TCP port
-> > 10000
->
-> I have squid on this machine. Is it because of that?
-> Is it passing thru' squid cos' I enter in my browser
-> https://10.10.10.2:10000
+  I'd appreciate help here.
 
-Yes.   A web proxy running on the same machine means that the INPUT and OUTPUT 
-rules apply, not the FORWARD rules.
+  I disallow iana reserved and some rfc 1918 from my firewall.
 
-Antony.
+  The line in question is this:
 
--- 
-"There is no reason for any individual to have a computer in their home."
+  cRES_LDROP  all  --  172.16.0.0/12        0.0.0.0/0
 
- - Ken Olsen, President of Digital Equipment Corporation (DEC, later consumed 
-by Compaq, later merged with HP)
+  which I would expect to block 172.16 to 172.31. 
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+  However I get these in my log files:
+
+  Jul 18 16:21:47 fw kernel:  [FW Drop-Res] IN=eth1 OUT= MAC=<xx> SRC=172.139.140.122 DST=<myip> LEN=48 TOS=0x00 PREC=0x00 TTL=109 ID=30189 DF PROTO=TCP SPT=3477 DPT=1025 WINDOW=16384 RES=0x00 SYN URGP=0
+
+   I'm stumped - why did 172.139 get dropped here? Not that the packet 
+ wouldn't have gotten dropped later anyway but this rule should not
+ have matched?
+
+ Suggestions?
+
+  gene/
+
+
+
+
+
 
 
