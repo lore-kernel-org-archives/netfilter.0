@@ -1,13 +1,14 @@
-From: sm@rhythm.cx
-Subject: Re: port redirection *without* NAT
-Date: Tue, 7 Jan 2003 17:36:30 -0500
+From: Thorsten Scherf <tscherf@web.de>
+Subject: Re: 2.4.20 - ntfilter (owner) problems
+Date: Wed, 8 Jan 2003 00:19:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030107173630.A15231@infinity.rhythm.cx>
-References: <20030106141242.C12830@infinity.rhythm.cx> <20030107220800.GP16581@miggy.org>
+Message-ID: <200301071852.00836.tscherf@web.de>
+References: <006301c2b61f$9f88cfa0$0200a8c0@void>
+Reply-To: tscherf@web.de
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030107220800.GP16581@miggy.org>; from netfilter@miggy.org on Tue, Jan 07, 2003 at 10:08:00PM +0000
+In-Reply-To: <006301c2b61f$9f88cfa0$0200a8c0@void>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +19,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Athan <netfilter@miggy.org>
-Cc: netfilter@lists.netfilter.org
+To: blkcore <netfilter@blackcore.net>, netfilter@lists.netfilter.org
 
-On Tue, Jan 07, 2003 at 10:08:00PM +0000, Athan wrote:
+> I recently compiled 2.4.20 with netfilter support, with the owner modul=
+e
+> (-m owner), and after several attempts of trying to use it (worked for
+> 2.4.18), it gives an error.
 >
->    Didn't you already ask this and myself and someone else replied with
-> "yes you want DNAT".
-> 
+> [root@scsi1 slinksi]# iptables -I OUTPUT -m owner --uid-owner root=20
+> iptables: Target problem
 
-Yes. This was a duplicate message, sorry. I sent it to the list from the
-wrong address by mistake, and was informed it got put into a queue for the
-moderator to look at. I asked for it to be disregarded and then I posted
-again from the correct address, but I guess the original got passed to the
-list anyway. (oops, there goes my spam-free address into the archives :/).
-
-I understand now that was I am describing is in fact NAT, it just didn't hit
-me at the time (duh). Sorry for the dupe, thanks for the help (Joel Newkirk
-too). Issue resolved.
+Where is your target?! Is see no one!
 
 
