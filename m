@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: RDP and iptables ruleset
-Date: Wed, 08 Dec 2004 18:05:04 -0500
-Message-ID: <1102547104.3472.24.camel@hubcap.ljm.dom>
-References: <17F5DA2FB6F18744BA13C2197738727CD19AC1@alchmail.alch-la-dc.alchemy.net>
+Subject: Re: PPTP connection tracking on Mandrake 10.0 with Kernel 2.6
+Date: Wed, 08 Dec 2004 18:15:47 -0500
+Message-ID: <1102547747.3472.31.camel@hubcap.ljm.dom>
+References: <41B754EC.5000900@gmx.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <17F5DA2FB6F18744BA13C2197738727CD19AC1@alchmail.alch-la-dc.alchemy.net>
+In-Reply-To: <41B754EC.5000900@gmx.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,106 +20,69 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-12-08 at 13:06, James Bowling wrote:
-> I seem to be having some issues with iptables 1.2.11 and getting RDP to
-> be allowed through.  My windows box is NAT'd behind my Gentoo 2004.3
-> box.  Here is my NAT Tables:
+On Wed, 2004-12-08 at 14:24, Ausi wrote:
+> Hi,
+> I need PPTP connection tracking on my Mandrake 10.0 NAT router.
+> Because there are more private VPN Clients accessing the same public VPN 
+> Server.
 > 
-> # iptables -t nat -L
-
-ugh--post your rules with "-v" as well so we can see interfaces and
-other options (iptables -t nat -vnxL)...
-
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination         
-> DNAT       tcp  --  anywhere             anywhere            tcp
-> dpt:3389 to:10.0.1.2:3389 
+> What I did:
+> With "urpmi kernel-source" I got the Mandrake 2.6.3-19 kernel sources 
+> RPM installed. Already patched for PPTP conntrack.
 > 
-> Chain POSTROUTING (policy ACCEPT)
-> target     prot opt source               destination         
-> SNAT       tcp  --  anywhere             anywhere            tcp
-> dpt:3389 to:10.0.1.2:3389 
-
-get rid of that rule.
-
-> MASQUERADE  all  --  anywhere             anywhere            
+> I configured it including GRE and PPTP support. After compiling and 
+> restarting I can modprobe "ip_conntrack_pptp" and it's getting properly 
+> loaded including the module "ip_conntrack_proto_gre".
 > 
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination   
-> 
-> 
-> Here is my iptables rules:
-> 
-> # iptables -L
+> But when a VPN Client now tries to connect to the VPN Server through my 
+> NAT router, the router freezes immediatly.
 
-ditto:  iptables -vnxL
+uh--that sounds pretty drastic...not saying this will fix it, but did
+you also:
 
-> Chain INPUT (policy ACCEPT)
-> target     prot opt source               destination         
-> ACCEPT     all  --  anywhere             anywhere 
+  modprobe ip_nat_pptp
+  modprobe ip_nat_proto_gre
 
-all rules after that do nothing, and no other rules will be matched
-(unless there's some magic interface specified there; but we don't know,
-now do we?)
-           
-> REJECT     udp  --  anywhere             anywhere            udp
-> dpt:bootps reject-with icmp-port-unreachable 
-> REJECT     udp  --  anywhere             anywhere            udp
-> dpt:domain reject-with icmp-port-unreachable 
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:ssh
-> 
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:ftp
-> 
-> ACCEPT     tcp  --  anywhere             anywhere            tcp
-> dpt:ftp-data 
-> ACCEPT     tcp  --  anywhere             anywhere            tcp
-> dpt:8245 
-> DROP       tcp  --  anywhere             anywhere            tcp
-> dpts:0:1023 
-> DROP       udp  --  anywhere             anywhere            udp
-> dpts:0:1023 
-> 
-> Chain FORWARD (policy ACCEPT)
-> target     prot opt source               destination         
-> DROP       all  --  anywhere             10.0.1.0/24 
+> So I thought, maybe I have to recompile iptables and downloaded version 
+> 1.2.11 from netfilter.org.
+> But when I do a make in the iptables folder I end up with this:
 
-something tells me that could be the problem...unless there's an
-interface specified there that we can't see...
-        
-> ACCEPT     all  --  10.0.1.0/24          anywhere            
-> ACCEPT     all  --  anywhere             10.0.1.0/24         
-> ACCEPT     all  --  anywhere             anywhere            state
-> RELATED,ESTABLISHED 
-> ACCEPT     all  --  anywhere             anywhere            
-> 
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination         
-> 
-> This is just a very basic rule set as you can see.  
+i think this may not be the best first step...
 
-it appears to be a completely useless ruleset, actually.  flush all that
-stuff [*] out and start fresh with:
+<snip>
 
-  iptables -t nat -A PREROUTING -i $EXT_IF -p tcp --dport 3389 -j DNAT \
-    --to-destination 10.0.1.2
+> Here's my iptables configuration, too:
+> (eth0 is the public interface to the server, eth1 is the private nic)
+> > # Generated by iptables-save v1.2.9 on Wed Dec  8 21:10:06 2004
+> > *filter
+> > :INPUT ACCEPT [11277:2168399]
+> > :FORWARD DROP [696:122385]
+> > :OUTPUT ACCEPT [4197:782834]
+> > [0:0] -A INPUT -i eth1 -p udp -m udp --dport 67 -j ACCEPT 
+> > [3:234] -A INPUT -i eth1 -j DROP 
+> > [6024:3135556] -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 
+> > [56:3568] -A FORWARD -d vpn-server -i eth1 -o eth0 -p tcp -m tcp --dport 1723 -j ACCEPT 
 
-  iptables -t nat -A POSTROUTING -o $EXT_IF -j MASQUERADE
+how come there's no:
 
-and see what happens.
+  -A FORWARD -d vpn-server -i eth1 -o eth0 -p 47 -j ACCEPT
+
+> > COMMIT
+> > # Completed on Wed Dec  8 21:10:06 2004
+> > # Generated by iptables-save v1.2.9 on Wed Dec  8 21:10:06 2004
+> > *nat
+> > :PREROUTING ACCEPT [3345:534190]
+> > :POSTROUTING ACCEPT [29:6416]
+> > :OUTPUT ACCEPT [737:180585]
+> > [711:174322] -A POSTROUTING -o eth0 -j MASQUERADE 
+> > COMMIT
+> > # Completed on Wed Dec  8 21:10:06 2004
 
 -j
 
-[*] for t in mangle nat filter; do
-      iptables -t $t -F
-      iptables -t $t -X
-      iptables -t $t -Z
-    done
-    for c in INPUT FORWARD OUTPUT; do
-      iptables -P $c ACCEPT
-    done
-
 --
-"It takes two to lie. One to lie and one to listen."
+"When will I learn? The answer to life's problems aren't at the bottom
+ of a bottle, they're on TV!"
 	--The Simpsons
 
 
