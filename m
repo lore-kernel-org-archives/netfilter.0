@@ -1,10 +1,12 @@
-From: Gianni Pucciani <gp.puccio@tin.it>
-Subject: rules don't work!
-Date: Tue, 06 Apr 2004 03:53:30 +0200
+From: "George Gao" <ggao@nortelnetworks.com>
+Subject: How to differentiate packets generated locally or received from t
+	he network using the NF_IP_PRE_ROUTING filter
+Date: Mon, 5 Apr 2004 15:02:03 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40720D9A.6030001@tin.it>
+Message-ID: <2F1FC1DEA077D5119FAD00508BCFD6D20BBB0110@zsc3c030.us.nortel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C41B59.A0951C64"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,120 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hi all,
-I'm new to the use of iptable. I set this script for my home 
-workstation, but when I apply these rules anything stop functioning.
-Can anyone give me some help?
-Thanks
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-PS Comment are italian, but hope rules be quite clear...
+------_=_NextPart_001_01C41B59.A0951C64
+Content-Type: text/plain
 
+Hi there,
+     I'm working on the sample Netfilter driver to put something together
+for a prototype. I ran into a problem which I wish you can help me out. When
+I set my input filter hook number to NF_IP_PRE_ROUTING, I saw local
+generated IP multicast/Broadcast packets and inbound packets from network.
+Is there any way to differentiate a local IP Multicast or IP brocast from an
+inbound mal-formed packet with the exact same content? Thanks much in
+advance!
+Cheers!
+George 
 
-#!/bin/sh
-#G.P
-#last update 050404
-#Script di inizializzazione per settare un insieme di regole
-#di packet filtering tramite iptables.
+------_=_NextPart_001_01C41B59.A0951C64
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
 
-#definire le policy (comportamento di default)per le catene di default
-/sbin/iptables -P INPUT DROP #ogni pacchetto in ingresso scartato
-/sbin/iptables -P OUTPUT DROP #ogni pacchetto in uscita accettato
-/sbin/iptables -P FORWARD DROP #ogni pacchetto di passaggio scartato
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2656.31">
+<TITLE>How to differentiate packets generated locally or received from =
+the network using the NF_IP_PRE_ROUTING filter</TITLE>
+</HEAD>
+<BODY>
 
-#flush di tutte le catene
-/sbin/iptables --flush
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hi there,</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp; I'm working =
+on the sample Netfilter driver to put something together for a =
+prototype. I ran into a problem which I wish you can help me out. When =
+I set my input filter hook number to NF_IP_PRE_ROUTING, I saw local =
+generated IP multicast/Broadcast packets and inbound packets from =
+network. Is there any way to differentiate a local IP Multicast or IP =
+brocast from an inbound mal-formed packet with the exact same content? =
+Thanks much in advance!</FONT></P>
 
-#elimina le catene
-/sbin/iptables -X miacatenain
-/sbin/iptables -X miacatenaout
+<P><FONT SIZE=3D2 FACE=3D"Arial">Cheers!</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">George </FONT>
+</P>
 
-
-#creare una nuova catena
-/sbin/iptables -N miacatenain
-/sbin/iptables -N miacatenaout
-
-#aggiungere una regola a INPUT e OUTPUT per passare
-#dalle regole appena definite. Ogni pacchetto fa match e passa
-#alla catena 'miacatena' corrispondente
-/sbin/iptables -A INPUT -j miacatenain
-/sbin/iptables -A OUTPUT -j miacatenaout
-
-#######aggiungere le regole alla catena di ingresso#########
-
-#ICMP
-#Consentire traffico icmp
-/sbin/iptables -A miacatenain -p icmp -j ACCEPT
-
-#CUPS
-#Consentire traffico cups in ingresso
-/sbin/iptables -A miacatenain -p tcp --dport 632 -j ACCEPT
-/sbin/iptables -A miacatenain -p udp --dport 632 -j ACCEPT
-
-
-##EDONKEY
-#Consentire traffico tcp alla porta 4663
-/sbin/iptables -A miacatenain -p tcp --dport 4663 -j ACCEPT
-/sbin/iptables -A miacatenain -p udp --dport 4663 -j ACCEPT
-
-#SSH
-#Consentire traffico ssh in ingresso
-
-/sbin/iptables -A miacatenain -p tcp --dport 22 -j ACCEPT
-/sbin/iptables -A miacatenain -p udp --dport 22 -j ACCEPT
-
-#TOMCAT
-#Consentire traffico web in ingresso x Tomcat da ufficio
-/sbin/iptables -A miacatenain -p tcp --dport 8080 -d 192.168.1.2 -s 
-131.114.136.26 -j ACCEPT
-
-#Consentire traffico web in ingresso x Tomcat da rete locale
-/sbin/iptables -A miacatenain -p tcp --dport 8080 -d 192.168.1.2 -s 
-192.168.1.0/255.255.255.0 -j ACCEPT
-
-#LOOPBACK
-#Consentire tutto il traffico tramite l'interfaccia di loopback
-#/sbin/iptables -A miacatenain -i lo -j ACCEPT
-
-#######aggiungere le regole alla catena di uscita#######
-
-#Consentire connessioni ftp in ingresso
-#/sbin/iptables -A miacatena -p tcp --dport 2020 e 21 in uscita
-#/sbin/iptables -A miacatena -p tcp --dport
-
-##EDONKEY
-#Consentire traffico tcp alla porta 4663
-/sbin/iptables -A miacatenaout -p tcp --dport 4663 -j ACCEPT
-/sbin/iptables -A miacatenaout -p udp --dport 4663 -j ACCEPT
-
-#DNS
-#Consentire traffico dns in uscita
-/sbin/iptables -A miacatenaout -p tcp --dport 53 -j ACCEPT
-/sbin/iptables -A miacatenaout -p udp --dport 53 -j ACCEPT
-
-#SMTP POP3
-#Consentire traffico smtp
-/sbin/iptables -A miacatenaout -p tcp --dport 25 -j ACCEPT
-/sbin/iptables -A miacatenaout -p tcp --dport 110 -j ACCEPT
-
-#SSH
-#Consentire traffico SSH in uscita
-/sbin/iptables -A miacatenaout -p tcp --dport 22 -j ACCEPT
-/sbin/iptables -A miacatenaout -p udp --dport 22 -j ACCEPT
-
-#WEB
-#Consentire traffico web in uscita
-/sbin/iptables -A miacatenaout -p tcp --dport 80 -j ACCEPT
-
-#LOOPBACK
-#Consentire tutto il traffico tramite l'interfaccia di loopback
-#/sbin/iptables -A miacatenain -i lo -j ACCEPT
-
-
-#########applica le modifiche#########
-/sbin/service iptables save
-
-/sbin/service iptables restart
+</BODY>
+</HTML>
+------_=_NextPart_001_01C41B59.A0951C64--
 
