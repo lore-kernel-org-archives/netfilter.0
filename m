@@ -1,13 +1,13 @@
-From: "Jurrie Overgoor" <jurrie@pcamobile.com>
-Subject: Invalid parameter parm_ports
-Date: Wed, 19 Jun 2002 15:35:59 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Multiple source question
+Date: Wed, 19 Jun 2002 14:41:51 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <002e01c21796$3f896f60$720aa8c0@PCA>
-Reply-To: "Jurrie Overgoor" <jurrie@pcamobile.com>
+Message-ID: <200206191342.g5JDg1U30168@vulcan.rissington.net>
+References: <000101c21795$aff6d3b0$0205a8c0@maxima>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_002B_01C217A7.02E785E0"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <000101c21795$aff6d3b0$0205a8c0@maxima>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,56 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
+On Wednesday 19 June 2002 2:31 pm, Benny Butler wrote:
 
-------=_NextPart_000_002B_01C217A7.02E785E0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> Ok, after much hacking together the rule below I finally get the machine
+> at 192.168.2.70 to access 10.46.210.5.  Great, but if I run the same
+> rule on any more internal IP addresses, still only 2.70 works.
+>
+> sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -s 192.168.2.70 -d /
+> 10.46.210.5 -p tcp --dport 80 -j MASQUERADE
 
-Hey,
+1. Why do you need to use Source NAT at all in order to access the machine on 
+10.46.210.5 ?   What is there in the routing tables which prevents 
+192.168.2.70 from accessing 10.46.210.5 and the replies going back again 
+without any NAT involved ?
 
-I'm using iptables 1.2.6a on a RedHat 7.1 machine. When I do a 'modprobe =
-ip_nat_ftp ports=3D21,23' I get an error: 'Invalid paramter parm_ports'. =
-Does anybody know what causes this? The ftp-multi.patch is already =
-applied in 1.2.6a, or am I wrong?
+2. I think you should be using -j SNAT --to a.b.c.d instead of -j MASQUERADE.
 
-        Greetz -- Jurrie
-        jurrie@pcamobile.com
+You must surely have a fixed address on eth0 (ie it's not DHCP) therefore 
+SNAT is the way to do it - it's much clearer what the rule is doing, and it's 
+(marginally) more efficient in operation.
 
-------=_NextPart_000_002B_01C217A7.02E785E0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+3. Maybe I've missed something earlier that you've posted (?) but please can 
+you explain your network setup what you're trying to do / what doesn't work ?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hey,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I'm using iptables 1.2.6a on a RedHat =
-7.1 machine.=20
-When I do a 'modprobe ip_nat_ftp ports=3D21,23' I get an error: 'Invalid =
-paramter=20
-parm_ports'. Does anybody know what causes this? The ftp-multi.patch is =
-already=20
-applied in 1.2.6a, or am I wrong?</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-Greetz --=20
-Jurrie</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-<A=20
-href=3D"mailto:jurrie@pcamobile.com">jurrie@pcamobile.com</A></FONT></DIV=
-></BODY></HTML>
+ 
 
-------=_NextPart_000_002B_01C217A7.02E785E0--
-
+Antony.
 
