@@ -1,10 +1,9 @@
-From: Daniel Dorau <daniel.dorau@alumni.tu-berlin.de>
-Subject: QUEUE target question
-Date: Sat, 17 Apr 2004 16:04:36 +0200
+From: udo <udovdh@yahoo.com>
+Subject: TARpit question
+Date: Sun, 18 Apr 2004 06:29:12 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1082210643.10961.6.camel@haktar>
+Message-ID: <20040418132912.99066.qmail@web40707.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,31 +14,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-Hello list,
+Hello,
 
-I played around with the QUEUE target but am not sure if it fits my
-needs. What I would like to do is to process certain packets in user
-space but then processing the next rules on the list as if the QUEUE
-target rule wouldn't have matched. For me it looks as if there are only
-NF_ACCEPT and NF_DROP foreseen as QUEUE result (at least that's what the
-man page reads) but I would like to have something like
-NF_PROCEED_WITH_NEXT_RULE.
-I have seen there are other NF_ values like NF_QUEUE, NF_STOLEN and
-NF_REPEAT, but I didn't understand what they actually do.
-Did I miss something or how can I resume rule processing after
-processing my QUEUE rule?
+I am trying to use the TARPIT feature as much as
+possible.
+People can use the services I offer on the public IP I
+have; other ports are not their business.
 
-Thank you,
-Daniel Dorau
+For priviliged ports that are not in use things are
+easy. Make the port UNTRACKED and make TARPIT the
+target.
 
-P.S. Please CC me as I'm not on the list.
+For ports that are in use things are more difficult
+for me as a netfilter/iptables amateur.
 
--- 
-Daniel Dorau
-daniel.dorau@alumni.tu-berlin.de
+Does anybody know about examples available on the net?
+Or does anyone have some tips, examples?
+
+Please post!
+
+Kind regards,
+Udo
 
 
+
+=09
+	=09
+__________________________________
+Do you Yahoo!?
+Yahoo! Photos: High-quality 4x6 digital prints for 25=A2
+http://photos.yahoo.com/ph/print_splash
 
