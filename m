@@ -1,13 +1,14 @@
-From: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Subject: Re: firewall problem continued
-Date: Tue, 10 Aug 2004 04:14:18 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Ruleset
+Date: Tue, 10 Aug 2004 09:27:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040810081418.GA22730@tranquility.scriptkitchen.com>
-References: <20040809081216.GA12643@tranquility.scriptkitchen.com> <200408091155.10375.Antony@Soft-Solutions.co.uk> <20040809111959.GA16482@tranquility.scriptkitchen.com> <200408091231.33128.Antony@Soft-Solutions.co.uk>
+Message-ID: <200408100927.22281.Antony@Soft-Solutions.co.uk>
+References: <HAEOIFPIBBBLGLHOMLLIIEPPCGAA.bclark@eccotours.biz>
+Reply-To: "iptables" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200408091231.33128.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <HAEOIFPIBBBLGLHOMLLIIEPPCGAA.bclark@eccotours.biz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +19,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter ML <netfilter@lists.netfilter.org>
+To: iptables <netfilter@lists.netfilter.org>
 
-On Mon, Aug 09, 2004 at 12:31:33PM +0100, Antony Stone wrote:
-> Exactly the same as your extisting PREROUTING rule, but you put it in the 
-> OUTPUT chain instead (still in the nat table):
-> 
-> iptables -A OUTPUT -t nat -d 1.2.3.4 -p tcp --dport 25 -j DNAT --to 10.10.10.2 
+On Tuesday 10 August 2004 8:22 am, Brent Clark wrote:
 
-As I said earlier that now I can access the mail server at 10.10.10.2
-from the firewall machine using its external IP. But now I need to access the 
-mailserver from the same machine itself using the external IP.
-How do I do it?
+> Hi all
+>
+> If possible would someone be so kind as to have a look at my ruleset and if
+> possible, share some pointers.  I have another linux box (Ip address
+> 192.168.3.3, connected to eth1 on the FW)  I have a lan (192.168.2.0/24)
+> connected to eth0 For my internet handling I have a ppp connection.  Im also
+> currently toying with dyndns (ez-ipupdate).
 
-Thanks a lot for the help in advance.
-With warm regards,
--Payal
+1. For efficiency I would put the ESTABLISHED,RELATED rule first in your INPUT 
+chain.
+
+2. I do not entirely approve of running a DNS server on the firewall.   Since 
+you have another box availabel on 192.168.3.3 I would suggest running DNS on 
+that and redirecting requests (or configuring clients to know what's where to 
+find it).
+
+3. I do not think you will see any packets addressed to 192.168.2.255 in the 
+FORWARD chain - they would appear in the INPUT chain.   I also think they 
+should be logged as "BROADCAST", not as "INVALID".
+
+4. Do you *really* want to allow *all* NEW packets from the Internet to the 
+DMZ, no matter what protocol they are?   You might as well simply stick your 
+192.168.3.3 machine on a public IP address with no firewall....
+
+5. For efficiency I would put the ESTABLISHED,RELATED rule first in your 
+OUTPUT chain.
+
+6. The default DROP policy on OUTPUT is rather misleading (and may give you a 
+false sense of security), since the ruleset allows all NEW, ESTABLISHED, and 
+RELATED packets.   That means everything which can be part of a connection.
+
+Regards,
+
+Antony.
+
+-- 
+The idea that Bill Gates appeared like a knight in shining armour to lead all 
+customers out of a mire of technological chaos neatly ignores the fact that 
+it was he who, by peddling second-rate technology, led them into it in the 
+first place.
+
+ - Douglas Adams in The Guardian, 25th August 1995
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
