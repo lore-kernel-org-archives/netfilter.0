@@ -1,61 +1,49 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: WAP11 host behind Netfilter Router
-Date: Wed, 18 Sep 2002 22:20:03 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020918212006.JMSB14766.mta05-svc.ntlworld.com@there>
-References: <0cee01c25f54$397d4dc0$64dc0a0a@dataarc>
+From: Patrick Schaaf <bof@bof.de>
+Subject: Re: [PATCH] multiple devices with ranges match support
+Date: Thu, 19 Sep 2002 00:02:57 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20020918220257.GF10465@oknodo.bof.de>
+References: <Pine.LNX.4.44L.0209172347190.10390-102000@hunger.screamingdaemon.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <0cee01c25f54$397d4dc0$64dc0a0a@dataarc>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44L.0209172347190.10390-102000@hunger.screamingdaemon.com>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Jay Schulist <jschlst@linux-sna.org>
+Cc: Harald Welte <laforge@gnumonks.org>, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-On Wednesday 18 September 2002 9:44 pm, Ryan Beisner wrote:
+On Tue, Sep 17, 2002 at 11:47:42PM -0700, Jay Schulist wrote:
+> Hello Harald,
+> Here is a new match which allows the user to match by using multiple comma
+> seperated devices each with range support.
+> 
+> Iptables userspace patch is against a clean iptables-1.2.7a
+> Kernel patch is against a clean linux-2.4.19
+> 
+> mdev v1.2.7a options:
+>  --i dev[,dev:dev,dev...]       match inbound device(s)
+>  --o dev[,dev:dev,dev...]       match outbound device(s)
 
-> Hi All!
->
-> I have a Linksys WAP11 behind a high speed connection.
->
-> Here's the scenario:
->
->     INT (eth0) IP Range ( 192.168.168.1 class C )
->     EXT (eth1) IP Range also private ( 10.20.0.3 class B )
->     EXT (eth1:1) Virtual IP is 10.20.0.4
->
-> I want to map everything from Virt IP (Eth1:1) 10.20.0.4 (all ports) to
-> internal 192.168.168.178 (the Linksys WAP 11).  FYI this is for remote
-> management of my access point.
->
-> Here was my first attempt, which did not work.  I explicitly allow all
-> traffic in/out/fwd for 10.20.0.4 to make sure I wasn't kicking myself here.
->  Still no go.  Suggestions?
->
->     ""iptables -A PREROUTING -t nat -d 10.20.0.4 -j DNAT --to
-> 192.168.168.178""
+Wishlist item:
 
-The PREROUTING rule looks good.
+In the future, I wish the indev/outdev were gone from the generic
+iptables rule, replaced with exactly such a match as Jay is presenting.
+Maybe it could be more "built in", and the old plain "-i" and "-o"
+would work without saying "-m mdev", but nevertheless do exactly that
+internally. That way we'd have full backward compatibility, and all
+those rulesets out there without device matches, would certainly
+operate two cache lines (P-III, i.e. 64 byte total) per rule faster.
 
-However, remember that by the time packets reach the FORWARD chain, the 
-PREROUTING rule has already NATted them, so you need to allow packets for 
-192.168.168.178 through netfilter, not packets for 10.20.0.4.....
-
-Also, you say you want to do this for "remote management of the access 
-point", so why do you want to map *all* ports ?   Surely there's only a very 
-few ways of managing the AP: telnet, snmp, http - any others ?
-
-Antony.
-
--- 
-
-If at first you don't succeed, destroy all the evidence that you tried.
+best regards
+  Patrick
 
