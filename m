@@ -1,14 +1,11 @@
-From: justin <cmbb@dslr.net>
-Subject: DOS/Crikey attacks, and ip_conntrack (retry)
-Date: Mon, 20 Jan 2003 10:18:25 -0500
+From: - = k o l i s k o = - <kolisko@penguin.cz>
+Subject: iptables question - NAT/Masq
+Date: 20 Jan 2003 17:15:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <311608578750.20030120101825@dslr.net>
-References: <61535048953.20030119135255@dslr.net>
-Reply-To: justin <cmbb@dslr.net>
+Message-ID: <1043079320.14910.73.camel@kolisko>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <61535048953.20030119135255@dslr.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,64 +15,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Did nobody have ANY clue on this or what? I hate to re-send
-but I think this is an important issue ... or should I be
-sending this to the developers list instead?
+Hi all,
 
----------------------------------------------------------
-
-this
- http://www.qorbit.net/documents/maximizing-firewall-availability.htm
-
-is a very interesting paper on the limitations of commercial
-firewalls when their state tables are filled by DOS attacks.
-It shows that even with a capability for two MILLION tracked
-connections, a DOS attack using spoofed IPs, of 21mbit, will
-fill this table up.. and the DOS succeeds.
-
-The paper does not talk about netfilter/iptables, except to
-point out that syncookies are a linux/bsd feature, that
-mitigate SYN flood attack.
-
-My question is this, ip_conntrack can be filled up fairly
-easily with UNREPLIED entries. There seems to be some confusion
-in the archives of this list as to whether behavior at the
-limit is good or not:
-
-1. With a hashsize of 16384, on a machine with 2gb of memory
-or more, will the table fill up before
-kernel memory is exhausted instead, and bad things happen?
-is there any protection/tests built in that stop conntrack
-filling kernel memory before it fills its set max table size?
-
-2. When the ip_conntrack table is full, are old UNREPLIED
-connections dropped to make room for new entries? (this,
-the DOS attack will not succeed), or, are random UNREPLIED
-entries removed, or, are packets just dropped?
-
-3. Do kernel SYNcookies stop additional ip_conntract table
-entries, when the kernel decides to start issuing them?
-
-4. Using the patch for NOTRACK, that provides a path that
-does not add an entry to the session table, does this mean
-the only thing that will break is any ESTABLISHED tests
-elsewhere in the rules? or does it break NAT completely
-and thus can only be used for packets coming in for services
-on the local box, not any hidden NAT'd services?
-
-Ie: NOTRACK can be used for tcp/80 path only, correct?
--->port 80-->firewall+webserver---nat+portfwding--->other services
-
-or is this also ok
---->port 27015 udp-->firewall---->nat+portfwding--->game servers
-where the udp path is marked NOTRACK?
+i have the following situation:
 
 
-thanks, any answers would be very helpful.
+nntp clients -- [internet] --+-- server1:119
+                             |
+                             +-> server2:119
 
--Justin
+we manage the server1. It is a server with more services (web, ftp,
+pop3, ...). The new service will be nntp(119) but we dont want to
+install there a news SW. We only need forward all nntp/news traffic to
+another server - server2.
+
+server2 is not our server, but this server accept all the traffic from
+source IP address of server1. There is not possible to accept directly
+the traffic from all clients becouse they dont have the same address
+like server1 of course.
+
+What we need is to configure a server1 to accept all connections from
+clients to port 119(news) and forward it to destination server2 but with
+source address of server1.
+
+Note that server1 have only one NIC interface.
+
+I have this on the server1 and it dont work:
+
+/sbin/iptables -t nat -A PREROUTING -i eth0+ --protocol tcp
+--destination-port 119 -j DNAT --to-destination server2:119
+
+iptables -L -n -v -t nat
+
+Chain PREROUTING (policy ACCEPT 118K packets, 6236K bytes)
+ pkts bytes target     prot opt in     out     source             =20
+destination
+   10   600 DNAT       tcp  --  eth0+  *       0.0.0.0/0          =20
+0.0.0.0/0          tcp dpt:119 to:server2:119
+
+Chain POSTROUTING (policy ACCEPT 46411 packets, 3197K bytes)
+ pkts bytes target     prot opt in     out     source             =20
+destination
+
+Chain OUTPUT (policy ACCEPT 46411 packets, 3197K bytes)
+ pkts bytes target     prot opt in     out     source             =20
+destination
+
+
+thank you for help
+kolisko
+
+
+
+
+--=20
+
+---
+Michal Koles=E1r
+kolisko@penguin.cz
+http://kolisko.penguin.cz
++420.777.225.297
+
+
+Don't send me any attachment in Micro$oft (.DOC, .PPT) format please
+Read http://www.fsf.org/philosophy/no-word-attachments.html
+Preferable attachments: .PDF, .HTML, .TXT
+Thanx for adding this text to Your signature
 
 
