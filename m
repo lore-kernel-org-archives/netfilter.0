@@ -1,14 +1,11 @@
-From: "Rio Martin." <rio@martin.mu>
-Subject: Re: Universal Address Translation
-Date: Sat, 24 Jul 2004 20:55:51 +0700
+From: Julien <dyna@tri-oxyde.org>
+Subject: routing mail on a different gateway
+Date: Fri, 23 Jul 2004 10:15:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407242055.51714.rio@martin.mu>
-References: <200407242032.35573.rio@martin.mu> <1090676859.2228.62.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <4100C905.1040001@tri-oxyde.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1090676859.2228.62.camel@anduril.intranet.cartel-securite.net>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +15,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On 24 July 2004 pm 20:47, Cedric Blancher wrote:
-> Le sam 24/07/2004 =E0 15:32, Rio Martin. a =E9crit :
-> > I am so curious to find out more how to use Universal Address Translati=
-on
-> > with iptables.
-> What is "Universal Address Translation" please ?
+Good Morning,
 
-I did googling first before i posted to this list:
-http://www.google.com/search?hl=3Den&ie=3DUTF-8&q=3D%22Universal+Address+Tr=
-anslation%22&btnG=3DGoogle+Search
+I have a linux box with two dsl modems on it (connection is done via=20
+pppoe), I'm trying to route default traffic on the primary connection=20
+(ppp0) and mail traffic on another one (ppp1).
 
-and found interesting link:
+This traffic should be able to come from the localhost or the lan via NAT=
+.
 
-[isp-wireless] RE: How do Hotels, Starbucks, Hot Spots do this? ...
-=2E.. Better yet most of the vendors below support Universal Address=20
-Translation,
-which allows a user to connect no matter what the ip or static vs. dhcp. ...
-isp-lists.isp-planet.com/ isp-wireless/0404/msg01168.html - 21k - Cached -=
-=20
-Similar pages
+I run Slackware 9.1 (Kernel 2.4.22), recompiled with necessary options=20
+for using iproute2.
+
+According to the advanced routing howto, I did the following :
+
+iptables =E2=88=92A PREROUTING =E2=88=92i eth0 =E2=88=92t mangle =E2=88=92=
+p tcp =E2=88=92=E2=88=92dport 25 =E2=88=92j MARK=20
+=E2=88=92=E2=88=92set=E2=88=92mark 1
+iptables =E2=88=92A PREROUTING =E2=88=92i lo =E2=88=92t mangle =E2=88=92p=
+ tcp =E2=88=92=E2=88=92dport 25 =E2=88=92j MARK=20
+=E2=88=92=E2=88=92set=E2=88=92mark 1
+
+I'm not sure whether "lo" is needed.
+
+echo 201 mail.out >> /etc/iproute2/rt_tables
+ip rule add fwmark 1 table mail.out
+
+/sbin/ip route add default via [Second's ISP Gateway] dev ppp1 table=20
+mail.out
+
+I get no error message, and ip rule ls and ip route show params where=20
+recorded.
+
+But if I do telnet somemail.server.com 25, I get a timeout and no data=20
+is sent via ppp1 (seen using ifconfig ppp1 or tcpdump -i ppp1).
+
+I can't figure what can be wrong nor where I should start looking for.
+I also looked in the ip-cref doc and found nothing that could help me.
+
+Feel free to ask me on any point I would have forgotten.
+
+Do you have an idea in order to solve this problem ?
+
+Thanks, in advance !
+
+Julien.
 
 
 
-Actually the idea is the same as link above. UAT (Universal Address=20
-Translation) works to handle Address Translation for Hotspot Client Access,=
-=20
-which clients no need to change anything for their PCs or Notebooks to acce=
-ss=20
-to Internet. Eventhough they put wrong TCP/IP Configuration, they still abl=
-e=20
-to surf to Internet.
-
-Thats what i got for the definition and meaning of Universal Address=20
-Translation.=20
-Perhaps anyone would like to correct or add some information more regarding=
-=20
-this ? Please..
-
-Regards,
-Rio Martin.
 
