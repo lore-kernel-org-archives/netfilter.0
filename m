@@ -1,9 +1,12 @@
-From: aksingh@hss.hns.com
-Subject: NF_IP_LOCAL_OUT
-Date: Wed, 21 Apr 2004 13:08:24 +0530
+From: "Manikandan" <mani@manikandan.org>
+Subject: PPTP conntrack patch
+Date: Wed, 21 Apr 2004 14:47:25 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF1BAADCEB.024C8E89-ON65256E7D.0029A15D@hss.hns.com>
+Message-ID: <GHEILNONPACCGBGKBEKKEEFGCFAA.mani@manikandan.org>
+Reply-To: <manikandan@manikandan.org>
 Mime-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_001F_01C427AF.8F9B82B0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,36 +17,108 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_001F_01C427AF.8F9B82B0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-Cc: "Jee J.Z." <jz105@york.ac.uk>, Sven Schuster <schuster.sven@gmx.de>
 
+Dear friends,
 
+	Sorry about keep asking things about pptp conntrack patch. I tried
+apply the patch pptp conntrack on 3 different kernel versions. None of them
+worked for me. I tried on 2.4.20-9 2.4.26 and 2.6.5 (Redhat Linux 9). The
+patch is not getting applied cleanly on any of these.
 
+	Could anyone please tell me with which kernel version this patch
+works.
 
+	I have had already spent more than 2 weeks time on just enabling my
+LAN clients to access one VPN server using pptp server. With my current
+default kernel support, it allows only one connection to the VPN server. My
+PPTP clients are running windows XP/2000.
 
-Hi
+	VPN server is Windows 2000 Advanced server.
 
-  I had a doubt in NF_IP_LOCAL_OUT hook ... suppose we use raw sockets or
-packet sockets or libnet apis(like libnet_write .. when context is raw) to
-send data from user space to kernel ip ... here when the packet reaches the
-ip, what would be the first netfilter hook it hits, the NF_IP_LOCAL_OUT
-hook or the NF_IP_PRE_ROUTING hook. I feel it should hit NF_IP_LOCAL_OUT
-but I am not sure, can somebody confirm ?
+Any hints and suggestion on this will be of great help.
 
-thanks
-Amit
+Thanks in advance.
 
-"DISCLAIMER: This message is proprietary to Hughes Software Systems Limited
-(HSS) and is intended solely for the use of the individual to whom it is
-addressed. It may contain  privileged or confidential information and
-should not be circulated or used for any purpose other than for what it is
-intended. If you have received this message in error, please notify the
-originator immediately. If you are not the intended recipient, you are
-notified that you are strictly prohibited from using, copying, altering, or
-disclosing the contents of this message. HSS accepts no responsibility for
-loss or damage arising from the use of the information transmitted by this
-email including damage from virus."
+Regards,
+Manikandan.
+
+------=_NextPart_000_001F_01C427AF.8F9B82B0
+Content-Type: application/ms-tnef;
+	name="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="winmail.dat"
+
+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
+AAABAAAABAAAADkuMAALAA6ACCAGAAAAAADAAAAAAAAARgAAAAAGhQAAAAAAAAMAD4AIIAYAAAAA
+AMAAAAAAAABGAAAAAAGFAAAAAAAACwAYgAggBgAAAAAAwAAAAAAAAEYAAAAADoUAAAAAAAADABmA
+CCAGAAAAAADAAAAAAAAARgAAAAARhQAAAAAAAAMAG4AIIAYAAAAAAMAAAAAAAABGAAAAABiFAAAA
+AAAAHgAqgAggBgAAAAAAwAAAAAAAAEYAAAAANoUAAAEAAAABAAAAAAAAAB4AK4AIIAYAAAAAAMAA
+AAAAAABGAAAAADeFAAABAAAAAQAAAAAAAAAeACyACCAGAAAAAADAAAAAAAAARgAAAAA4hQAAAQAA
+AAEAAAAAAAAACwA0gAggBgAAAAAAwAAAAAAAAEYAAAAAgoUAAAEAAAACAfgPAQAAABAAAAB023W7
+Ho1nSL3thPkU0QonAgH6DwEAAAAQAAAAdNt1ux6NZ0i97YT5FNEKJwIB+w8BAAAASQAAAAAAAAA4
+obsQBeUQGqG7CAArKlbCAABQU1RQUlguRExMAAAAAAAAAABOSVRB+b+4AQCqADfZbgAAAEQ6XE1h
+aWxccGVyLnBzdAAAAAADAP4PBQAAAAMADTT9NwAAAgF/AAEAAAAzAAAAPEdIRUlMTk9OUEFDQ0dC
+R0tCRUtLRUVGR0NGQUEubWFuaUBtYW5pa2FuZGFuLm9yZz4AAAMABhAikcYEAwAHEF0CAAADABAQ
+AAAAAAMAERABAAAAHgAIEAEAAABlAAAAREVBUkZSSUVORFMsU09SUllBQk9VVEtFRVBBU0tJTkdU
+SElOR1NBQk9VVFBQVFBDT05OVFJBQ0tQQVRDSElUUklFREFQUExZVEhFUEFUQ0hQUFRQQ09OTlRS
+QUNLT04zRElGRgAAAAAqLg==
+
+------=_NextPart_000_001F_01C427AF.8F9B82B0--
 
 
