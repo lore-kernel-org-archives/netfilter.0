@@ -1,11 +1,13 @@
-From: =?ISO-8859-1?Q?Fl=E1vio?= Brito <flavio@gral.com.br>
-Subject: Newbie Question - Redirect traffic to internal Web server
-Date: 17 Oct 2002 17:24:16 -0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Newbie Question - Redirect traffic to internal Web server
+Date: Thu, 17 Oct 2002 22:27:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1034882656.2076.31.camel@pegasus.gral.com.br>
+Message-ID: <20021017212717.VXCL292.mta03-svc.ntlworld.com@there>
+References: <000401c27622$cb705ee0$3864a8c0@discmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000401c27622$cb705ee0$3864a8c0@discmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,53 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear List
+On Thursday 17 October 2002 10:18 pm, Aldo S. Lagana wrote:
 
-I have two servers in my net,one with a valid IP. I want to redirect all
-the HTTP Traffic(external -> internal) to my internal Web server I'm
-trying to learn iptables, but when I test my rules, sometimes when I try
-to erase them it appears not do what I want.
+> Antony, I am not very familiar with the use of SNAT for incoming web
+> connections; I use DNAT for my web servers.  Is there any difference?
 
-Questions
-1)
-I use it to erase my rules. But sometimes without sucess. Bug?=20
-#erasing rules=20
-iptables -F
-iptables -F -t nat
-iptables -X
-iptables -X -t nat
-iptables -Z=20
-iptables -Z  -t nat
+They are totally different, and I made a mistake in my suggested rule.
 
-2)To redirect the traffic to my internal server I must have a DNS in my
-FW server?  or only redirect?
+SNAT means Source Network Address Translation.
 
+DNAT means Destination Network Address Translation.
 
-      	[FW]-eth0-> [200.179.213.245]------> Internet
-	|
-	|
-	|eth1 ->[192.168.1.1]
-	| ---------------> [Web Server ] 192.168.1.33
-	|----------------> [LAN Hosts] [192.168.1.2 to 192.168.1.100]
+SNAT changes the Source IP Address of packets; DNAT changes the Destination 
+IP Address.
 
-eth0-> 200.179.213.245
-eth1-> 192.168.1.1
+You need to use the correct one depending on whether you want to change the 
+source address (ie where the reply is going to come back to) or the 
+destination address (ie where this packet itself is going).
 
-Can someone help me with this rules?
+If I understood your original question correctly, you want to change packets 
+coming in from the Internet to the external IP address of your firewall and 
+send them instead to your internal web server ?
 
-iptables -t nat -A POSTROUTING -s 192.168.1.10/24 -d any/0 -j MASQUERADE
-iptables -A INPUT -p tcp -s 192.168.1.33 -d 0/0 --dport www -j ACCEPT
-iptables -A OUTPUT -p tcp -s 192.168.1.33 -d 0/0 --dport www -j ACCEPT
-iptables -A PREROUTING -t nat -p tcp -d 0/0 --dport www -j REDIRECT
---to-port 80
+If that is correct, you need to change the destination address of the 
+incoming packets so that instead of stopping on your firewall, they get 
+passed on to your internal web server, hence you need to use a DNAT rule.   
+Simply change the S for a D in the rule I posted earlier and it will be 
+correct :-)
 
-Thanks=20
+Antony.
 
-Fl=E1vio=20
+-- 
 
+Behind the counter a boy with a shaven head stared vacantly into space,
+a dozen spikes of microsoft protruding from the socket behind his ear.
 
-
+ - William Gibson, Neuromancer (1984)
 
