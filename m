@@ -1,12 +1,10 @@
-From: Kurt Yoder <ktynetfilter@richard-group.com>
-Subject: Re: iptables returns "module is wrong version"
-Date: Fri, 28 Jan 2005 10:24:52 -0500
-Message-ID: <r02010100-1037-C21332F2714011D998C6000A95DF6F1E@[192.168.1.112]>
-References: <1106769471.25216.1.camel@nostromo.bgsecm.com>
+From: Vinod Chandran <vinod_chandran@multitech.co.in>
+Subject: FTP Bounce Attack
+Date: Fri, 28 Jan 2005 21:08:48 +0530
+Message-ID: <41FA5C88.7040403@multitech.co.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1106769471.25216.1.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: Jose Maria Lopez <jkerouac@bgsec.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-> El mi=C3=A9, 26 de 01 de 2005 a las 18:53, Kurt Yoder escribi=C3=B3:
-> > Hi list
-> >=20
-> > I'm getting an error when running iptables:
-> >=20
-> > root@ns2:~# iptables -L -v
-> > iptables v1.2.11: can't initialize iptables table `filter': Module
-is
-> > wrong version
-> > Perhaps iptables or your kernel needs to be upgraded.
-> >=20
-> >=20
+Hi,
 
-<snipped>
+I am currently using iptables 1.2.11 with the patch-o-matic patch applied.
+Its documented that netfilter is patched to  protect against FTP bounce 
+attacks, when an invalid IP is given in the FTP PORT command.
+I can detect the PORT command reaching the FTP server through the 
+router( containing netfilter), even when I give an ivalid IP.
+I would like to know whether the patch is not working or whether the 
+patch is meant to not allow the resulting bounce attack, even with 
+allowing the PORT command to pass through.
 
-> > I'm running kernel 2.6.8 and iptables 1.2.11. I'm using Debian
-packages
-> > for the kernel and iptables. Anyone encountered this before and been
-> > able to get around it?
->=20
-> You probably don't have your kernel modules and iptables synced.
-> They both have to be compiled with the same patches of
-> patch-o-matic or it won't work.
->=20
-> Regards.
->=20
+Thanks and Regards,
+Vinod C
 
-How do I figure out which patches were applied to the iptables module?
 
-I installed iptables from source with no patches but am still getting
-the same error message.
 
