@@ -1,12 +1,11 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: protocol 50 unreachable
-Date: Fri, 03 Dec 2004 16:35:59 +1000
-Message-ID: <41B0094F.2010602@snapgear.com>
-References: <Pine.LNX.4.44.0412021120210.25230-100000@gollum.grajagan.net>
+From: "testmail" <testmail@peterpaul.com.ph>
+Subject: Re: Iptables Problems
+Date: Fri, 3 Dec 2004 14:38:34 +0800
+Message-ID: <002801c4d902$b6ad7700$0200a8c0@etpi>
+References: <OF60ADB785.65F94CAE-ONC1256F5E.002BF2C6-C1256F5E.002C019B@promon.cz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0412021120210.25230-100000@gollum.grajagan.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Helge Weissig <helgew@grajagan.org>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: a.ledvinka@promon.cz
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Helge Weissig wrote:
-> I mean with "incomplete" that the tcpdump traffic I see does not show up 
-> in the logs. I used your rules at the end of your reply and see the same 
-> thing: ESP from VPN_SERVER hits $EXTIF, triggers the "protocol 50 
-> unreachable" icmp response and no log entry ever shows up in the kernel 
-> log from the iptables log rule. I am suspecting that your option 3) is 
-> indeed the problem.
-> 
-> h.
+What does -P represent from your iptable command  >>>>> iptables -t
+filter -P INPUT DROP ?
+And thank you for the docu.link
+http://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO-6.html
 
-It is possible that a conntrack already exists, or the packet can't be
-conntracked, so the packet doesn't pass through nat PREROUTING.
+I will try to understand first all the suggestion that you posted.
 
-Try putting the log rule in the mangle PREROUTING chain.
-If they do match a log rule here, check if they are invalid
-with -m conntrack --ctstate INVALID.
+Thanks,
+Milo
+----- Original Message -----
+From: <a.ledvinka@promon.cz>
+To: "testmail" <testmail@peterpaul.com.ph>
+Cc: "Netfilter" <netfilter@lists.netfilter.org>
+Sent: Thursday, December 02, 2004 04:00 PM
+Subject: Re: Iptables Problems
 
-Also check if there are any esp conntracks in /proc/net/ip_conntrack
 
--- 
-Philip Craig - SnapGear, A CyberGuard Company - http://www.SnapGear.com
+> > # Set the default policy
+> > iptables -t filter -A INPUT  -j DROP
+> iptables -t filter -P INPUT DROP
+
+
 
