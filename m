@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: SMTP filter
-Date: Fri, 5 Mar 2004 12:50:13 +0000
+From: Delian Krustev <krustev@krustev.net>
+Subject: MASQUERADE: Route sent us somewhere else
+Date: Thu, 4 Mar 2004 22:11:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403051250.13257.Antony@Soft-Solutions.co.uk>
-References: <OFB3C042D3.9AD4475C-ONC1256E4E.00442B5D@atd.es>
+Message-ID: <200403042211.21740.krustev@krustev.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OFB3C042D3.9AD4475C-ONC1256E4E.00442B5D@atd.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,37 +18,67 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 05 March 2004 12:27 pm, david@atd.es wrote:
+Hi,
 
-> Hello World
+I've red the postings about similar messages in the syslog posted in the
+mailing list. However my problem is quite different. Here's the setup:
 
-Hello David
+                                 eth1
+              eth0  +---------+ static ip=20
+   *LAN* -----------|         |-------- \
+                    |linux-box|           *INTERNET*
+                    |         |-------- /
+                    +---------+  eth2
+                              dhcp configured
 
-> I want to accept only all the SMTP trafic, port 25, from the source ip my
-> ISP ?
 
-Assuming default DROP policy (of course):
+*mangle
+-A FORWARD -j MARK --set-mark 0x1
 
-iptables -A INPUT -p tcp --dport 25 -s isp.smtp.ser.ver -j ACCEPT
+*nat
+-A POSTROUTING -o eth1 -j SNAT --to-source <eth1 ip>
+-A POSTROUTING -o eth2 -j MASQUERADE
 
-(change INPUT to FORWARD if this is a routing firewall - the above rule would 
-work on the mail server itself).
+/sbin/ip ru add fwmark 0x1 lookup FW prio 40
 
-> Is that correct to block the SPAM ?
+The main table routes internet traffic via eth2 by default. I'me referenc=
+ing
+the FW table for forwarded traffic, which routes inet traffic via eth1.
 
-No - unless your ISP provides good spam-filtering for you.
+However, the SNAT rule in the nat table is ignored(eth1 is not
+correctly selected) and the MASQUERADE rule takes place. The packets
+are not sent trough eth2 either, and here comes the syslog msg:
 
-Spam is an OSI layer 7 problem; netfilter operates at layers 3/4.   
-Investigate SpamAssassin, MailScanner, etc.
+MASQUERADE: Route sent us somewhere else
 
-Antony.
+I'm using similar setup for localy generated packets(
 
--- 
-I want to build a machine that will be proud of me.
+*mangle
+-A OUTPUT -o eth2 -m owner --uid-owner dev -j MARK --set-mark 0x1
 
- - Danny Hillis, creator of The Connection Machine
+), which works just fine.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Currenly I'm able to workaround the problem by adding the following rule =
+:
 
+/sbin/ip ru add iif eth0 lookup FW prio 45   # [1]
+
+I think there should be two routing decigions(RD) for forwarded packets:
+
+-->PREROUTING-->RD1-->FORWARD-->RD2-->POSTROUTING
+
+, right ?
+At least it's that way for the OUTPUT chain. My additional rule [1],
+makes both the RDs refer to the same table - FW. Without it the main
+table is refered by RD1 and FW by RD2, which breaks the things down.
+
+I'm running kernel 2.4.24 with all the submitted/pending patches from=20
+p-o-m 20030912 applied.
+
+Any ideas ?
+
+Cheers,
+Delian
+
+p.s. please CC me when replying since I'm not subscribed to the list.
 
