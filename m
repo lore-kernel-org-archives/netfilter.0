@@ -1,12 +1,13 @@
-From: Czezz <czezz@o2.pl>
-Subject: UnhandledForward
-Date: Thu, 16 Oct 2003 20:41:11 +0200
+From: "Sean E. Covel" <seanecovel@comcast.net>
+Subject: RE: FTP/SSL
+Date: Thu, 16 Oct 2003 14:39:19 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4010444067.20031016204111@o2.pl>
-Reply-To: Czezz <czezz@o2.pl>
+Message-ID: <1066329559.22220.27.camel@localhost>
+References: <7C9884991ADAE0479C14F10C858BCDF52E373F@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF52E373F@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Daniel Chemko <dchemko@smgtec.com>
+Cc: NetFilter-List <netfilter@lists.netfilter.org>
 
-Hello everyone,
+So am I correct that the only option is to open a large chunk of ports
+so that the data connection can be established?  This seems like 2 steps
+forward and 1 step back!
 
-here is my question:
-I added this  line to my rc.firewall
-
-   iptables -A FORWARD -i eth1 -j LOG --log-prefix "IPT:UnhandledForward:"
-
-to check why I cant connect to some server...and in syslog it received
-me this:
-   Oct 16 19:05:59 slack kernel: IPT:UnhandledForward:IN=eth1 OUT=ppp0 SRC=192.168.1.251 DST=62.111.129.3 LEN=36 TOS=0x00 PREC=0x00 TTL=127 ID=17885 PROTO=UDP SPT=23083 DPT=13073 LEN=16
-   Oct 16 19:07:44 slack kernel: IPT:UnhandledForward:IN=eth1 OUT=ppp0 SRC=192.168.1.251 DST=62.111.129.3 LEN=36 TOS=0x00 PREC=0x00 TTL=127 ID=18107 PROTO=UDP SPT=23083 DPT=13073 LEN=16
-   Oct 16 19:10:27 slack kernel: IPT:UnhandledForward:IN=eth1 OUT=ppp0 SRC=192.168.1.251 DST=62.111.129.3 LEN=36 TOS=0x00 PREC=0x00 TTL=127 ID=18888 PROTO=UDP SPT=23083 DPT=13073 LEN=16
-   Oct 16 19:11:08 slack kernel: IPT:UnhandledForward:IN=eth1 OUT=ppp0 SRC=192.168.1.251 DST=62.111.129.3 LEN=36 TOS=0x00 PREC=0x00 TTL=127 ID=19078 PROTO=UDP SPT=23083 DPT=13073 LEN=16
-
-Does anyone can help my to analize this lines above and maybe give my
-some hint?
-   
- --
-Best regards,
+On Thu, 2003-10-16 at 14:00, Daniel Chemko wrote:
+> By design, these protocols cannot be conntracked.
+> 
+> -----Original Message-----
+> From: Sean E. Covel [mailto:seanecovel@comcast.net] 
+> Sent: Thursday, October 16, 2003 10:31 AM
+> To: NetFilter-List
+> Subject: FTP/SSL
+> 
+> Is there any way to do connection tracking for incoming connections to
+> an FTP/SSL server?  I'm using a Bering (leaf.sourceforge.net)
+> mini-distro that uses the Shorewall firewall (www.shorewall.net).  
+> 
+> My firewall has both ip_net_ftp and ip_conntack_ftp, but as we all know,
+> these don't work for FTP/SSL.
+> 
+> I am attempting to port-forward the FTP/SSL connection from the firewall
+> machine to a server in a service network.  The "command" connection on
+> port 21 works just great, but when I try to GET, PUT, or LS a file,
+> basically anything that uses the data connection, the firewall blocks
+> the connection.  It appears that FTP/SSL uses a high port -> high port
+> connection for the data connection.
+> 
+> One possible solution (which I don't like!) is to open a large range of
+> high ports in the firewall.  This seems a bit primitive.  There must be
+> a way to associate the initial port 21 connection with the subsequent
+> high-port connection.
+> 
+> Thanks for your help,
+> 
+> Sean
+> 
+> 
+> 
 
 
