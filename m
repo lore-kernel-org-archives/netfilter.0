@@ -1,13 +1,12 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: state --string
-Date: Tue, 29 Jul 2003 11:22:47 +0200 (CEST)
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: Are IP ALIASES supported by iptables?
+Date: Tue, 29 Jul 2003 11:39:18 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0307291121390.23491@dns.toxicfilms.tv>
-References: <3F2598BD.6050302@sat.com.py> <1059429064.6146.11.camel@localhost>
- <3F25C294.1090506@4linux.com.br>
+Message-ID: <Pine.LNX.4.56.0307291137010.23286@space.comunit.de>
+References: <008301c3558f$22b075e0$080a0a0a@medannic>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F25C294.1090506@4linux.com.br>
+In-Reply-To: <008301c3558f$22b075e0$080a0a0a@medannic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,16 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ralf Braga <ralf@4linux.com.br>
-Cc: Shawn <core@enodev.com>, juanca <juanca@sat.com.py>, "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: HTB <kerasakti@nusa.net.id>
+Cc: netfilter@lists.netfilter.org
 
-> iptables -A FORWARD -p tcp -m state --state NEW -m string --string
+On Tue, 29 Jul 2003, HTB wrote:
+
+> When i want to active nat using iptable on eth0:0 (aliasing) "error appear"
+> # /sbin/iptables -A POSTROUTING -j MASQUERADE -t nat -s 192.168.0.0/24 -o eth0:0
+> Warning: wierd character in interface `eth0:0' (No aliases, :, ! or *).
 >
-> Have you what compile the module string ?
-Take a look at patch-o-matic, patch your kernel, compile the module,
-compile iptables sources to get the userspace module. Use the rules.
+> Are IP ALIASES supported by iptables?
 
-Regards,
-Maciej
+Ip Aliases practically don't exist anymore, they are just one other ip
+address on eth0 marked with a compatibility flag for the old ifconfig.
+(Use ip/iproute2 and you see what I mean).
 
+So don't use MASQUERADE and eth0:0, but instead use SNAT and the second ip
+of eth0 (aka the one on your eth0:0)
+
+c'ya
+sven
+
+-- 
+
+The Internet treats censorship as a routing problem, and routes around it.
+(John Gilmore on http://www.cygnus.com/~gnu/)
 
