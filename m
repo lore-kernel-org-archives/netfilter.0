@@ -1,14 +1,15 @@
-From: raido <raido@elin.ttu.ee>
-Subject: Re: DNAT forwarding problems
-Date: Thu, 5 Aug 2004 15:32:47 +0300
+From: Les Mikesell <les@futuresource.com>
+Subject: Re: kernel-2.6: ipsec without devices
+Date: Thu, 05 Aug 2004 07:35:09 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408051525.38235.raido@elin.ttu.ee>
-References: <411166D5.30105@galacticasoftware.com>
+Message-ID: <1091709309.28776.9.camel@les-home.futuresource.com>
+References: <20040805113320.5a1ade04.netfilter@lucassen.org>
+	 <200408051109.34290.Antony@Soft-Solutions.co.uk>
+	 <20040805122501.7bd24f63.netfilter@lucassen.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <411166D5.30105@galacticasoftware.com>
-Content-Disposition: inline
+In-Reply-To: <20040805122501.7bd24f63.netfilter@lucassen.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,27 +20,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: Adam Majer <adamm@galacticasoftware.com>
+To: reply3@lucassen.org
+Cc: netfilter@lists.netfilter.org
 
-Hi!
-> external IP addresses: [A], [B]
-> internal IP address: [C] - not the NAT box
->
-> I want all udp port 53 traffic from [A]->[C] and from [B]->[C]. So I set
-> up the following rules
->
-> When the packet comes over interface[B], it also gets to the PREROUTING
-> chain, but it never gets to the FORWARD chain and thus never even gets
-> to [C]. It just dissapears into thin air. My routing seems correct..
+On Thu, 2004-08-05 at 05:25, richard lucassen wrote:
+> > I tend to agree with you that they were a useful way to keep track of
+> > which packets were going where, and I think from a firewalling point
+> > of view the new 2.6 implementation of IPsec is not as easy to work
+> > with.
 
-> PS. kernel 2.6.7, iptables 1.2.9
-I wrote few days ago about my problem which seems to be alike, in this list. I 
-have same configuration and I need to DNAT all traffic from [A] to [C] and 
-packets also disapear in PREROUTING chain. I have also 2.6.7 kernel and  
-iptables 1.2.9. Next I plan to upgrade to iptables 1.2.10. If this does not 
-help, maybe it is time to make a bug report?
+A more fundamental question: does anyone know why Linux uses
+pseudo devices for networking instead of having real names
+in /dev with associated permissions and inodes connected
+to drivers by major/minor numbers?  It seems odd not to
+be able to control access to /dev/tcp by group permisions
+like you can every other device.
+
+---
+  Les Mikesell
+    les@futuresource.com
 
 
-Raido
 
