@@ -1,15 +1,14 @@
-From: Shawn <core@enodev.com>
+From: Pascal Italiaander <pc-secure@home.nl>
 Subject: Re: Two IP add
-Date: 05 Jun 2003 12:50:44 -0500
+Date: Thu, 5 Jun 2003 19:51:33 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054835444.8856.2.camel@localhost>
-References: <200306051156.45624.pandre@darkstar.nom.za>
-	 <1054813152.1206.9.camel@india>
-	 <1054819746.13885.39.camel@raylinux.internal>
+Message-ID: <200306051951.33575.pc-secure@home.nl>
+References: <200306051156.45624.pandre@darkstar.nom.za> <1054813152.1206.9.camel@india> <1054819746.13885.39.camel@raylinux.internal>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <1054819746.13885.39.camel@raylinux.internal>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,34 +19,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ray Leach <raymondl@knowledgefactory.co.za>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Thu, 2003-06-05 at 08:29, Ray Leach wrote:
+Op donderdag 5 juni 2003 15:29, schreef Ray Leach:
 > On Thu, 2003-06-05 at 13:38, Dharmendra.T wrote:
-> > On Thu, 2003-06-05 at 15:26, Paulo Andre wrote: 
+> > On Thu, 2003-06-05 at 15:26, Paulo Andre wrote:
 > >         I would like to do the following:
-> >         iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers ip' -j MASQUERADE 
-> >         now how would i put in two ip address's ?
-> > iptables -t nat -A POSTROUTING -s 10.10.10.5 -d 'sever ip' -j DROP 
-> > iptables -t nat -A POSTROUTING -s 10.10.10.8 -d 'sever ip' -j DROP 
-> > Should work 
-> No, that will drop the packets and they won't traverse any more
-> tables/chains.
-> 
-> the -j return tells iptables to leave the POSTROUTING chain and
-> continue, so no more POSTROUTING rules will be checked for that packet.
-> 
-> the nat table has these chains:
-> 
-> PREROUTING
-> POSTROUTING
-> OUTPUT
-> 
-> A target of -j return means leave this chain and continue to the next.
+> >
+> >         Stop MASQUESRADING to two servers say. 10.10.10.5 and 10.10.10.8,
+> > how would i do this with a rule.
+> >
+> >         iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers ip' -j
+> > MASQUERADE now how would i put in two ip address's ?
 
-So what happens with
-iptables -t nat -A POSTROUTING -s 10.x.x.5 -s 'server ip' -j POSTROUTING
+Ok , you could do something like this:
 
-;]
+NO_MASK="10.10.10.5 10.10.10.8"
+
+if [ ${NO_MASK} != "" ] ; then
+  for nomask in ${NO_MASK}; do
+ 	iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${NO_MASK} -j MASQUERADE
+done;
+fi
+
+this is a bit more flexible, cause , you can ad more ip's the NO_MASK easily 
+without changing the rule itself, or have to write a new line.
+
+Pascal
+
 
