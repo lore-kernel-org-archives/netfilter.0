@@ -1,16 +1,15 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: iptables jump to userdefined chain and ESTABLISHED,RELATED
-	rules
-Date: Sun, 12 Oct 2003 17:15:36 +0200
+From: Herman <Herman@AerospaceSoftware.com>
+Subject: Re: Invalid friggen argument
+Date: Sun, 12 Oct 2003 09:46:33 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065971736.4917.33.camel@elendil.intranet.cartel-securite.net>
-References: <20031010132641.2591d3b5.netfilter@lucassen.org>
-	 <1065889564.1268.11.camel@elendil.intranet.cartel-securite.net>
-	 <1065971435.1278.108.camel@alpha.newkirk.us>
+Message-ID: <200310120946.33459.Herman@AerospaceSoftware.com>
+References: <200310120141.15894.Herman@AerospaceSoftware.com> <20031012110847.GA571@pcw.home.local>
+Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1065971435.1278.108.camel@alpha.newkirk.us>
+In-Reply-To: <20031012110847.GA571@pcw.home.local>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,25 +19,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: firewalldude@newkirk.us
-Cc: netfilter@lucassen.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le dim 12/10/2003 =E0 17:10, Joel Newkirk a =E9crit :
-> > PS : there's no RELATED packets in HTTP ;)
-> Not precisely true - there are ICMP messages that may arrive in respons=
-e
-> to HTTP requests that are RELATED.
+On Sunday 12 October 2003 5:08 am, Willy TARREAU wrote:
+   Hi !
 
-Absolutely true. Should have been more precise.
+   On Sun, Oct 12, 2003 at 01:41:15AM -0600, Herman wrote:
+   > Now, I get this result with iptables 1.2.7a-2mdk and with 1.2.9rc1:
+   >
+   > # iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 6390 \
+   >  -j DNAT --to 192.168.10.245
+   > iptables: Invalid argument
 
-I was meaning no RELATED on TCP/80 using HTTP, so first case WWW_CH
-chain would never see a RELATED packet :
+   your kernel might be too old and incompatible with these more recent
+ versions. I got the same when upgrading from iptables-1.2.4 to 1.2.5, IIRC.
 
-${IPT} -A INPUT -p tcp --dport 80 -j CH_WWW
-${IPT} -A CH_WWW -m state --state ESTABLISHED,RELATED -j ACCEPT
+   Willy
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+Hmm, this is Mandrake 9.1 distro and it did work in the past, but kind of 
+unreliably.  So I should try an older version of netfilter - any 
+recommendations for a version to try?
+
+The funny thing is that the Masquerade line in my firewall setup gives the 
+same Invalid Argument error but it actually works.  It is only Port 
+Forwarding that doesn't work.
+
+Cheers,
+-- 
+Herman
 
