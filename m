@@ -1,12 +1,10 @@
-From: "Manikandan" <mani@manikandan.org>
-Subject: Requesting help.
-Date: Thu, 19 Feb 2004 16:49:12 +0530
+From: Simon Pelckmans <simon.pelckmans@siemens.com>
+Subject: iptables together with kernel version 2.4.17
+Date: Thu, 19 Feb 2004 17:16:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GHEILNONPACCGBGKBEKKGEMECBAA.mani@manikandan.org>
-Reply-To: <mani@manikandan.org>
+Message-ID: <4034E14E.8050204@siemens.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0000_01C3F708.4D989470"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,109 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi,
 
-------=_NextPart_000_0000_01C3F708.4D989470
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+I'm trying to upgrade my iptables code in the kernel (version 2.4.17) 
+but this fails, I tries multiple iptables versions. and also the latest 
+  patch-o-matic code.
 
-Hello all,
+Is this a know issue with the 2.4.17 kernel?
 
-	I have got a Redhat linux 9.0 box running as gateway and serving my
-LAN of 80 odd windows/unix work stations. It has got 2 NICs, one is hooked
-to LAN switch and the other one is connected to my DSL Router. I have got a
-pool of /29 public IP addresses . 
-One IP address is already assigned to my Router and the other one to my
-linux gateway. Now I am left with few more public IP's. 
-I would like to forward one of my public IP to my local LAN system. So that
-all requests coming to that particular IP address will be answered by my
-system in LAN.
+I want to bring my iptables code on the same level as the latest code.
 
-How can I achieve that? . Do I need to create IP alias in my gateway? I read
-through so many documents which only left me wondering where I am now. Could
-someone help me?
+Is there a specific patch for the 2.4.17 kernel, on the website I see 
+only 2.4.18 kernel references.
 
+thanks.
 
-Regards,
-Manikandan
-
-
-------=_NextPart_000_0000_01C3F708.4D989470
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
-
-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
-9P9FwIYAHHFlEkowWNFJsVpBv1kFe8BWMGeyYDHakHVNQP9ZsGIBEbAAwAehsCN3EXsg/1/RhDAA
-sWxzsDBcEUbBTYG/WLCA0CGxbBQF4VzwQ2+Dv/CwsDBeQhRQSwCBwT9VDP9VBd2gWQDhoF4QVQWw
-gBWw/msRsRGwVQVS5gdxU7lVBQVJAACKUAAAAAsAAIAIIAYAAAAAAMAAAAAAAABGAAAAAAOFAAAA
-AAAAAwACgAggBgAAAAAAwAAAAAAAAEYAAAAAEIUAAAAAAAADAAyACCAGAAAAAADAAAAAAAAARgAA
-AABShQAAJ2oBAB4ADYAIIAYAAAAAAMAAAAAAAABGAAAAAFSFAAABAAAABAAAADkuMAALAA6ACCAG
-AAAAAADAAAAAAAAARgAAAAAGhQAAAAAAAAMAD4AIIAYAAAAAAMAAAAAAAABGAAAAAAGFAAAAAAAA
-CwAYgAggBgAAAAAAwAAAAAAAAEYAAAAADoUAAAAAAAADABmACCAGAAAAAADAAAAAAAAARgAAAAAR
-hQAAAAAAAAMAG4AIIAYAAAAAAMAAAAAAAABGAAAAABiFAAAAAAAAHgAqgAggBgAAAAAAwAAAAAAA
-AEYAAAAANoUAAAEAAAABAAAAAAAAAB4AK4AIIAYAAAAAAMAAAAAAAABGAAAAADeFAAABAAAAAQAA
-AAAAAAAeACyACCAGAAAAAADAAAAAAAAARgAAAAA4hQAAAQAAAAEAAAAAAAAACwA0gAggBgAAAAAA
-wAAAAAAAAEYAAAAAgoUAAAEAAAACAfgPAQAAABAAAAB023W7Ho1nSL3thPkU0QonAgH6DwEAAAAQ
-AAAAdNt1ux6NZ0i97YT5FNEKJwIB+w8BAAAARAAAAAAAAAA4obsQBeUQGqG7CAArKlbCAABQU1RQ
-UlguRExMAAAAAAAAAABOSVRB+b+4AQCqADfZbgAAAEQ6XHBlci5wc3QAAwD+DwUAAAADAA00/TcA
-AAIBfwABAAAAMwAAADxHSEVJTE5PTlBBQ0NHQkdLQkVLS0dFTUVDQkFBLm1hbmlAbWFuaWthbmRh
-bi5vcmc+AAADAAYQQg5NZAMABxBJAgAAAwAQEAAAAAADABEQAAAAAB4ACBABAAAAZQAAAEhFTExP
-QUxMLElIQVZFR09UQVJFREhBVExJTlVYOTBCT1hSVU5OSU5HQVNHQVRFV0FZQU5EU0VSVklOR01Z
-TEFOT0Y4ME9ERFdJTkRPV1MvVU5JWFdPUktTVEFUSU9OU0lUSEEAAAAA778=
-
-------=_NextPart_000_0000_01C3F708.4D989470--
+Simon
 
 
