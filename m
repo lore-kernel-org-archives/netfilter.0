@@ -1,12 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Oscar Arranz <oarranz@riafinancial.com>
 Subject: Re: Log files for iptables
-Date: Thu, 13 May 2004 10:45:26 +0100
+Date: Thu, 13 May 2004 12:02:44 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405131045.26096.Antony@Soft-Solutions.co.uk>
+Message-ID: <40A347C4.3030802@riafinancial.com>
 References: <20040513092802.71510.qmail@web8302.mail.in.yahoo.com>
-Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20040513092802.71510.qmail@web8302.mail.in.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,37 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thursday 13 May 2004 10:28 am, Sameer Gurung wrote:
+Look into /var/log/kernel .
 
-> Hi,
->   Can anybody tell me where are the log files for
-> iptables ....cant seem to find them on /var/log. Do I
-> have to configure / change /tweak somthing to enable
-> loging???
+Sameer Gurung wrote:
 
-The output of any rules specifying the LOG target is handled by your syslog 
-daemon (for which the config file is probably /etc/syslog.conf).
+>Hi,
+>  Can anybody tell me where are the log files for
+>iptables ....cant seem to find them on /var/log. Do I
+>have to configure / change /tweak somthing to enable
+>loging???
+>
+>Sameer
+>
+>=====
+>
+>
+>________________________________________________________________________
+>Yahoo! India Matrimony: Find your partner online. http://yahoo.shaadi.com/india-matrimony/
+>
+>
+>
+>  
+>
 
-You can specify the logging level in the netfilter rule (with the --log-level 
-option to the LOG target) but you cannot change the facility number without 
-fiddling around with the source code.
-
-If you don't specify anything particular in your LOG rules, you will probably 
-end up with log output sent to the console.
-
-Regards,
-
-Antony.
-
--- 
-The truth is rarely pure, and never simple.
-
- - Oscar Wilde
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
