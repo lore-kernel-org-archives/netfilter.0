@@ -1,10 +1,13 @@
-From: "andre achternaam" <andreiscmeel@hotmail.com>
-Subject: Why UDP packet loss in the stack
-Date: Thu, 28 Nov 2002 06:24:12 +0000
+From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
+Subject: RE: Does NAT modify sequence number in packet ?
+Date: Thu, 28 Nov 2002 08:50:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F88l4JWaskCcBONAARb00005315@hotmail.com>
+Message-ID: <E131E9F1848D0148813EAF06A846608FD77734@w2ks-e2k.iconos.be>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C296B2.DDBFA8D9"
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,88 +17,78 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
+To: "Orca J." <orca_cs@hotmail.com>, netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C296B2.DDBFA8D9
+Content-Type: text/plain;
+	charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
 
+Hi,
+>
+>Does NAT change Sequence number in packet ? or only change IPAddress =
+and/or=20
+>Port
+>
 
-We encounter UDP packet loss. We are aware of the unreliable nature of UDP =
+Under normal circumstances only the IP address(es) and sometimes port
+numbers are changed. But if a connection tracking NAT module (eg.=20
+ip_nat_ftp, ip_nat_irc) changes the data payload to make it correspond
+to the IP addresses in the IP header, then it's is possible that
+the original packet's length changes and then sequence numbers are
+adjusted accordingly by the NAT code.
 
-but the way we loss packets is rather strange.  Assume 2 PCs linked with a =
-
-cross Ethernet cable. One PC having an UDP testserver and the other an UDP
-client.
-
-Besides the UDP client we have also a tcpdump -nn -x -i eth0 > dumpfile
-running. Looking at the packets (every packet has a increasing number) in=20
-the UDP client we encounter sometimes (appears to be random=85) packet loss=
-.=20
-Sometimes +/-50 successive packets. Even seen losses of more than 150=20
-packets in a row. Actually we never found a loss of one packet in a row, up=
-=20
-till now.
-
-When searching the dumpfile will learn that the packets do arrive at the pc=
-!=20
-Oke so they are lost somewhere in the stack. Why?
-
-Some context of our UDP testserver:
-The UDP server streams as fast as possible (although send socket call is=20
-synchronize) e.g. 50 Mega bit of data and will sleep the rest of the second=
-=20
-before it send the next chunk of packets (50 Mbit in total). The packet siz=
-e=20
-is 1500 minus UDP /IP header lengths. Both PCs have a NIC that is 100 Mbit.
-Every packet has a tracking number in the payload that is increased for
-every packet.
-
-Does anybody know where/why they are lost? Is there a max of the outstandin=
-g=20
-packets in the kernel? If yes how do I tweak this max. How do I detect if=20
-the stack desides to throw away some of the UDP packets (statistics).
-
-At the moment the server side is not the problem but this is not proven yet.
-
-Examining the dumpfile we found the also packet loss but not the
-packetnumbers we found in the UDP client. So this implies that the udpdump =
-
-is not recording every packet. Is this right?
-
-Current settings in proc/sys/net/core
-
-hot_list_length =3D 128
-Lo_cong =3D 100
-Message_burst =3D 50
-Message_cost  =3D  5
-Mod_cong  =3D 290
-Netdev_max_backlog =3D 300
-No_cong =3D 20
-No_cong_tresh  =3D 20
-Opt_memmax =3D 10240
-[r/w]mem_[default/max] =3D 65535
-
-Grep from the web
-hot_list_length, maximum number of skb-heads to be cached, default 128 What=
-=20
-does this mean?
-optmem_max, maximum amount of option memory buffers.  What does this mean?
-net.core.rmem_max, maximum receive socket buffer size, default 65535  What =
-
-does this mean? Do I suffer from it while sending /receiving packets with=20
-the size of 1500bytes
-
-
-
-All related information is appreciated
-
-Thanx in advance Andre
+Regards,
+Filip
 
 
 
 
 
-_________________________________________________________________
-STOP MORE SPAM with the new MSN 8 and get 2 months FREE*=20
-http://join.msn.com/?page=3Dfeatures/junkmail
+------_=_NextPart_001_01C296B2.DDBFA8D9
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3DWindows-1252">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.6249.1">
+<TITLE>RE: Does NAT modify sequence number in packet ?</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
+
+<P><FONT SIZE=3D2>Hi,<BR>
+&gt;<BR>
+&gt;Does NAT change Sequence number in packet ? or only change IPAddress =
+and/or<BR>
+&gt;Port<BR>
+&gt;<BR>
+<BR>
+Under normal circumstances only the IP address(es) and sometimes =
+port<BR>
+numbers are changed. But if a connection tracking NAT module (eg.<BR>
+ip_nat_ftp, ip_nat_irc) changes the data payload to make it =
+correspond<BR>
+to the IP addresses in the IP header, then it's is possible that<BR>
+the original packet's length changes and then sequence numbers are<BR>
+adjusted accordingly by the NAT code.<BR>
+<BR>
+Regards,<BR>
+Filip<BR>
+<BR>
+<BR>
+<BR>
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C296B2.DDBFA8D9--
 
