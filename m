@@ -1,9 +1,9 @@
-From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: OS Fingerprint
-Date: Mon, 29 Nov 2004 14:27:00 -0800
-Message-ID: <29F6FAF7F2C0D41190980002A513591E0E93BAB2@FSNSAB30>
+From: "John Black" <black@arbbs.net>
+Subject: (No subject header)
+Date: Mon, 29 Nov 2004 17:00:05 -0600
+Message-ID: <41aba9f5.308.7f37.1299399369@arbbs.net>
+Reply-To: black@arbbs.net
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_000_01C4D661.DE08213F"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,55 +15,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: 'Daniel Chemko' <dchemko@smgtec.com>, Vlado Had <vlado_had@yahoo.com>, netfilter@lists.netfilter.org
-
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_000_01C4D661.DE08213F
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
-daniel,
+ 
+I'm trying to setup a connection to port 3389 on a windows
+2003 server.
 
-wow....the actual laundry list of activities and techniques required to
-harden
-any specific system from telling the world what os and apps are running is
-REALLY
-beyond the scope of the list.
+my server 80.1.1.1
 
-or look at dsniff@monkey.org (that dug song's a pretty smart guy)
+public ip address for windows server110.20.30.15
 
-Vlad,
-
-	you have a LOT of reading and research to do....
-
-~piranha
+private ip address for windows server 192.168.0.15
 
 
+is this right:
+iptbles -t nat -A PREROUTING -d 80.1.1.1 -p tcp \
+--dport 3389   -j DNAT --to 110.20.30.15:2289
+iptbles -t nat -A PREROUTING -d 110.20.30.15 -p tcp\
+--dport 3389   -j DNAT --to 192.168.0.15:2289
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Daniel Chemko
-Sent: Monday, November 29, 2004 2:12 PM
-To: Vlado Had; netfilter@lists.netfilter.org
-Subject: RE: OS Fingerprint
+ 
 
-
-Vlado Had wrote:
-> hi, could somebody help me, how can i change
-> osfingerprint in packets?
-> thanks
-
-Do some homework. Basically a scanner uses inherent flaws in a packet
-response to determine the destination machine, but it could also use the
-fingerprint of the services running on the PC. Ex. if I implement 100%
-faking on the networking part of my stealthing, but leave apache open,
-the apache could say Redhat Linux blahblahblah and give it all away to
-the hacker. It isn't just 'change TOS to random', or MSS to y, or block
-all n packets to port q. Those are some OS fingerprint examples, but the
-technique is a lot more detailed. If in doubt, tear open the nmap code!
-
-------_=_NextPart_000_01C4D661.DE08213F--
 
