@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Rules for Blocking Proxies...
-Date: Tue, 20 Apr 2004 14:53:14 +0100
+From: aksingh@hss.hns.com
+Subject: Re: ipq_set_verdict
+Date: Tue, 20 Apr 2004 19:32:10 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404201453.14678.Antony@Soft-Solutions.co.uk>
-References: <000b01c426f6$cc216f10$36b4fea9@SABNANIS> <006f01c426dc$572c2cf0$0c00a8c0@pepelui>
-Reply-To: "Netfilter" <netfilter@lists.netfilter.org>
+Message-ID: <OFD3EC3B35.6B678258-ON65256E7C.004CBA78@hss.hns.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <006f01c426dc$572c2cf0$0c00a8c0@pepelui>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,49 +15,114 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: "Jee J.Z." <jz105@york.ac.uk>
+Cc: Sven Schuster <schuster.sven@gmx.de>, netfilter@lists.netfilter.org
 
-On Tuesday 20 April 2004 2:35 pm, Alexis wrote:
 
-> set up your own proxy server and only permit connections to this box :)
 
-I must admit I had assumed, when answering this previously, that Harry was 
-already running his own proxy, but wanted to stop clients reconfiguring their 
-browsers to go direct instead.
 
-If the proxy server is instead on the outside of the network, then the answer 
-to the question "how do I stop people changing the browser settings to bypass 
-the proxy?" is to allow connections on TCP port 80 to the proxy server only, 
-and block all other destination addresses for that port.
 
-Remember of course that you can always do a DNAT rule to send people to the 
-proxy address anyway, even if they did decide to go direct - then instead of 
-getting a "connection timeout" message they find themselves using the proxy 
-even after reconfiguring their browser settings :)
+hey  Jee and Sven
 
-iptables -A PREROUTING -t nat -p tcp --dport 80 -j DNAT --to IP.of.pro.xy
+thanks both of u for that, yes i guess you are right that wont work,i
+looked into the kernel source for the same, i can reinject just one packet
+for the one i took from the kernel...and the id has to be the same, so i
+cant use this.
+can u give me some good libnet links.
 
-Regards,
+thanks
+Amit
 
-Antony.
 
->   Hi All,
->   I am running Fedora and Redhat 9 on two servers at my Cybercafe,
-> connected on two Hi speed Lines, I have a decent firewall script, but these
-> days I am facing issues about people changing the Proxy settings in order
-> to get thru porn sites, can anybody suggest some rules which I can
-> implement in the script that avoids connection to these servers?
-> Suggestions are welcome.
+
+
+
+"Jee J.Z." <jz105@york.ac.uk>@lists.netfilter.org on 04/20/2004 07:19:12 PM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    Amit Kumar Singh/HSS@HSS
+cc:    "Sven Schuster" <schuster.sven@gmx.de>,
+       <netfilter@lists.netfilter.org>
+
+Subject:    Re: ipq_set_verdict
+
+
+Hi again,
+
+
+> hi
 >
->   Regards
+>   I thought of a way of reinjecting absolutely new packets into the
+kernel
+> .... suppose i call ip_set_verdict (this in turn calls nf_reinject) to
+> inject packets into the kernel)for the new packets that a user space
+> process generates. nf_reinject has a parameter nf_info which probably
+tells
+
+When you call ipq_set_verdict, there must be a packet waiting for userspace
+processing in the kernel. You can reinject any packet content as you wish
+by
+setting NF_ACCEPT, however, you have to use the packet id of the packet
+currently waiting in the kernel.
+
+> the kernel from which hook was this packet captured and hence from where
+to
+> continue when this is reinjected(from the next hook onwards). Now,
+suppose
+> I have a PRE_ROUTING hook that captures the packets and sends it to my
+user
+> space process. This process might  return some packets to be reinjected
+and
+> might generate some of its own that it wants injected into the kernel
+(from
+> pre_routing stage but bypassing the netfilter PRE_ROUTING hook) .. for
+> these newly generated packets I can use the same nf_info param i used for
+> the packets that i captured from the kernel and that will make the kernel
+> think that they were captured by the PRE_ROUTING hook and so after
+> reinjection continue from after the PRE_ROUTING hook....so for these
+> packets routing decision would be taken after injection and hence these
+> newly packets cld either be outbound(going to the wore) or inbound (the
+> ones that need to travel up the stack from ip).
+
+Good idea. But keep in mind that one original packet only allow you to
+generate and inject one new packet using libipq, IMO. However, if you use
+libnet, I believe you can generate as many new packets as you wish and
+inject them.
+
+Not sure I get what you mean rightly. Let me know if I miss something.
+
+Jee
+
+> This sounds good to me but can this be done or am i thinking on wrong
+lines
+> here. Please suggest if im wrong.
 >
->   Harry
+> thanks
+> Amit
+>
+> "DISCLAIMER: This message is proprietary to Hughes Software Systems
+Limited
+> (HSS) and is intended solely for the use of the individual to whom it is
+> addressed. It may contain  privileged or confidential information and
+> should not be circulated or used for any purpose other than for what it
+is
+> intended. If you have received this message in error, please notify the
+> originator immediately. If you are not the intended recipient, you are
+> notified that you are strictly prohibited from using, copying, altering,
+or
+> disclosing the contents of this message. HSS accepts no responsibility
+for
+> loss or damage arising from the use of the information transmitted by
+this
+> email including damage from virus."
+>
+>
+>
 
--- 
-The difference between theory and practice is that in theory there is no 
-difference, whereas in practice there is.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
 
 
