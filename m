@@ -1,13 +1,12 @@
-From: "Regalado, Ron" <Ron.Regalado@mci.com>
-Subject: TARPIT Documentation?
-Date: Wed, 05 Nov 2003 20:39:36 +0000
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: My ack is more important than anything else!
+Date: Wed, 5 Nov 2003 13:02:16 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E26ABBCB14D369428125D23DF8BE94E503310E85@DGEXCH06.mcilink.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E37BD@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="Boundary_(ID_fEn5EHOvLDiBvRSkUlJCOA)"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-return: allowed
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +16,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: Elver Loho <kernelpenguin@hot.ee>, netfilter@lists.netfilter.org
+
+http://lartc.net
+
+-----Original Message-----
+From: Elver Loho [mailto:kernelpenguin@hot.ee]=20
+Sent: Wednesday, November 05, 2003 11:15 AM
 To: netfilter@lists.netfilter.org
+Subject: My ack is more important than anything else!
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
---Boundary_(ID_fEn5EHOvLDiBvRSkUlJCOA)
-Content-type: text/plain; CHARSET=us-ascii
-
-Are there step by step instructions anywhere on setting up the TARPIT module
-for iptables?  I have tried recompiling the kernel and the iptables source..
-No luck..
- 
-
-Thanks,
-
-Ron
+Prioritization of outgoing acknowledgement packets. How?
 
 
-
- 
-
- 
-
---Boundary_(ID_fEn5EHOvLDiBvRSkUlJCOA)
-Content-type: text/html; CHARSET=us-ascii
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+Elver Loho
 
 
-<META content="MSHTML 6.00.2800.1264" name=GENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=Arial><FONT size=2>A<SPAN class=781503620-05112003>re there step 
-by step instructions anywhere on setting up the TARPIT module for 
-iptables?&nbsp; I have tried recompiling the kernel and the iptables 
-source..&nbsp; No luck..</SPAN></FONT></FONT></DIV>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-<P><SPAN class=781503620-05112003></SPAN><FONT face=Arial size=2><SPAN 
-class=781503620-05112003>Thanks,</SPAN></FONT></P>
-<P><FONT size=2>R<SPAN class=781503620-05112003>on</SPAN></FONT><BR><BR></P>
-<P>&nbsp;</P>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
---Boundary_(ID_fEn5EHOvLDiBvRSkUlJCOA)--
 
