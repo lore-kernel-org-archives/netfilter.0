@@ -1,8 +1,8 @@
 From: Christian Seberino <seberino@spawar.navy.mil>
-Subject: iptables question - how to securely allow *just* outgoing smtp
-Date: Fri, 21 Jun 2002 08:32:28 -0700
+Subject: please explain "--state RELATED/ESTABLISHED" rules in iptables
+Date: Fri, 21 Jun 2002 08:33:07 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020621083228.A21833@spawar.navy.mil>
+Message-ID: <20020621083307.B21833@spawar.navy.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
@@ -19,19 +19,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-My firewall does *not* need or use any
-rules on INPUT and OUTPUT chains
-since it just *FORWARD*s packets to/from
-private LAN.....
+My firewall iptables script has rules
+to drop lots of packets and only forward
+certain packets.....
 
-I'd like to install Tripwire on firewall
-and have firewall *email* me daily of status.....
+I've seen lots of iptables scripts that
+have rules with "--state RELATED"
+and "--state ESTABLISHED".
 
-How can I securely *open* up firewall rules
-to allow me to just email out without
-compromising security???
+I know these have to do with TCP packets
+related to an existing TCP connection and such.
 
-Thanks,
+*What* are these rules good for?  I didn't
+use them and couldn't see a need for them.
 
 Chris
 
@@ -49,5 +49,4 @@ Phone: (619) 553-7940
 Fax:   (619) 553-2836
 Email: seberino@spawar.navy.mil
 _______________________________________
-
 
