@@ -1,13 +1,10 @@
-From: Javier Marcet <jmarcet@pobox.com>
-Subject: [newbie] owner module & --id-owner problem
-Date: Wed, 20 Nov 2002 07:47:54 +0100
+From: Palmer Sample <lsample@massconfusion.com>
+Subject: Help: iptables INPUT/OUTPUT packet statistics (no INPUT packets?)
+Date: Mon, 18 Nov 2002 21:01:07 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021120064754.GB14786@jerry.marcet.dyndns.org>
+Message-ID: <Pine.LNX.4.44.0211182050510.2228-100000@www.massconfusion.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,68 +14,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
 
---FL5UXtIhxfXey3p5
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
+I'm running iptables 1.2.5 on a RedHat 7.2 box, and am trying to use MRTG 
+to graph some statistics about the firewall.  My original thought was to 
+record the INPUT and OUTPUT packets and go from there.
 
-Hi folks,
-I'm a newbie with iptables. I've reading a few docs, and also the
-mailing list archive.
-After all is much more straightforward than I thought before I began to
-use netfilter.
+My problem is that I don't seem to have any INPUT packets!  I recently 
+zeroed out the statistics, and see plenty of OUTPUT packets accumulating 
+but nothing on the INPUT side.
 
-I need to block certain user(s) access to the net, so that he/she thinks
-the internet is down.
-I can do this globally without problem, yet with the 'owner' module it
-should be pretty easy to achieve what I want since the user will be
-using the same machine the iptables rule will be running on (a single
-desktop PC). Later on I probably add the time on POM, but at the moment
-I only need to block completely the access.
+This is a single box with one interface (eth0), not connected to a 
+network behind it (I'm using iptables to prevent access to pretty much 
+anything but ssh on eth0)
 
-What I was trying to use is:
+iptables -A INPUT -p tcp -s localhost -j ACCEPT
+iptables -A INPUT -p udp -s localhost -j ACCEPT
+iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp -j REJECT
+iptables -A INPUT -p udp -j REJECT
+iptables -A INPUT -j ACCEPT
 
-iptables -A OUTPUT -m owner --uid-owner 1002 -p tcp -j DROP
+Display of stats since I zeroed them:
 
-=66rom what I get
+# iptables -nvxL | grep Chain
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+Chain OUTPUT (policy ACCEPT 8574 packets, 1796431 bytes)
 
-iptables: Invalid argument
+Any ideas / questions / suggestions?
 
-If I run it with verbose output, I get:
+Also - on a side note (i know this isn't the MRTG mailing list, but I 
+think this applies to either/or):  Is there any way I could gather 
+statistics for a certain port (e.g. 22 for ssh, 80 for www if I open up 
+web services) - without bloating my already suffering syslog with packet 
+debug info?  I like the idea of the chain packet list - that's easy enough 
+to grok out)
 
-DROP  tcp opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  OWNER UID match 1002
-iptables: Invalid argument
+Please reply to this email address; I have not yet subscribed to the 
+netfilter list.
 
-What makes me think that it really understood what I told it, though for
-some reason it failed.
-The modules have been loaded correctly, ATM I have 'ipt_REJECT, ipt_owner,
-iptable_filter, ip_tables' in memory.
+Thanks!
+-Palmer Sample
 
-It probably is something silly, but I cannot find how to make it work.
-Any help would be very much appreciated.
-Please send a CC to my e-mail address since although I subscribed I have
-not received answer from mailman yet (lists.netfilter.org seems somewhat
-busy right now).
+-- 
+"A man is but the product of his thoughts; what he thinks, he becomes."
+ - Mohandas Gandhi 
 
+"I'm on the Zoloft to keep from killing y'all."
+ -Mike Tyson
+--
 
---=20
-Javier Marcet <jmarcet@pobox.com>
+Palmer Sample
+[e] lsample@massconfusion.com
 
---FL5UXtIhxfXey3p5
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iEYEARECAAYFAj3bMBoACgkQx/ptJkB7frxp9QCeMIYhanZwfca5uElAFB4lrPC4
-PxUAnjpcTQCWcLvQUYWj+vfosCGbMTKx
-=CzOb
------END PGP SIGNATURE-----
-
---FL5UXtIhxfXey3p5--
 
