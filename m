@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: 2 NICs on same subnet
-Date: Fri, 05 Nov 2004 09:12:16 -0500
-Message-ID: <1099663936.3229.7.camel@hubcap.ljm.dom>
-References: <20041105123843.GB11016@zion.homelinux.com>
+Subject: Re: tftp clients not working on ip masquerading
+Date: Fri, 05 Nov 2004 09:14:37 -0500
+Message-ID: <1099664077.3229.10.camel@hubcap.ljm.dom>
+References: <58373.202.138.166.130.1099649776.squirrel@202.138.166.130>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041105123843.GB11016@zion.homelinux.com>
+In-Reply-To: <58373.202.138.166.130.1099649776.squirrel@202.138.166.130>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,61 +20,33 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2004-11-05 at 07:38, Sven Schuster wrote:
-> Hi everybody,
+On Fri, 2004-11-05 at 05:16, Wesley Jay Deypalan wrote:
+> hi,
 > 
-> I have a problem which I'm quite sure can be resolved easily,
-
-wrong.
-
->  but
-> at the moment I'm lacking the "how" :-)
-> I have a machine (RH ES 3) with two Intel e1000 cards attached to
-> a gigabit switch, each interface is assigned an IP address on the
-> same subnet (say 1.2.3.4 on eth0 and 1.2.3.5 on eth1).
-
-no. no. no. no.
-
-> What's happening is that if a connection to either of these addresses
-> is made, it's always received via the same interface (eth1 most of the
-> time), and the replies go out via this interface, too. But what I'd
-> like is that packets to 1.2.3.4 come in via eth0 and packets to 1.2.3.5
-> come in via eth1 and that replies from 1.2.3.4 leave via eth0, from
-> 1.2.3.5 via eth1.
-> I've already tried to resolve this issue with arptables, doing
+> I have installed TFTP server and working good. Later I found out that it
+> work only on public ip address what I mean is the TFTP Server has a public
+> ip address and the client also has a public ip address. But when the
+> client is being ip masquerading it will not connect with the server the
+> error message in the server is WRQ from x.x.x.x filename 43434.doc
+>                          tftpd: read: Connection refused
+> the client is being masqueraded from a linux os.The masquerading used is
+> from tldp.org - rc.firewall-2.4-stronger. What is wrong with my setup?
 > 
-> arptables -N eth0
-> arptables -A eth0 -d 1.2.3.4 -j ACCEPT
-> arptables -A eth0 -j DROP
-> arptables -N eth1
-> arptables -A eth1 -d 1.2.3.5 -j ACCEPT
-> arptables -A eth1 -j DROP
-> arptables -A IN -i eth0 -j eth0
-> arptables -A IN -i eth1 -j eth1
+> TIA,
 > 
-> and additionally limiting traffic in the same way by iptables, but
-> that doesn't work unfortunately.
-> Has anybody done this?? Is a solution to this problem known??
+> 
+> Wesley
 
-yeah--don't assign two interface on the same box IP's in the same
-subnet.
+have you:
 
-that being said--i've seen this done successfully *once*.  the
-"solution" was that every host in the network had to run OSPF.  it was
-the only way to get packets to go in and out the same interface for each
-IP.
+  modprobe ip_conntrack_tftp
+  modprobe ip_nat_tftp
 
-saying "it _has to be_ this way, not my decision" is a cop out.  it will
-result in answers like:
-
-well, it can't be done, so too bad.
--or-
-if it's not your decision, the it shouldn't be your problem.
-
--j 
+-j
 
 --
-"When I grow up, I'm going to Bovine University!"
+"Well, I'm not calling you a liar, but... I can't think of a way to
+ finish that sentence."
 	--The Simpsons
 
 
