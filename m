@@ -1,10 +1,12 @@
-From: Tasha Smith <natasha3641@yahoo.com>
-Subject: Why would these rules cause errors only sometimes?
-Date: Wed, 23 Oct 2002 21:46:38 -0700 (PDT)
+From: harish.k@lntinfotech.com
+Subject: RE: IPTables Query
+Date: Thu, 24 Oct 2002 09:41:13 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021024044638.87841.qmail@web40707.mail.yahoo.com>
+Message-ID: <OFA54EDF60.900EBEC3-ON65256C5C.0016C998-65256C5C.0017016A@lntinfotech.com>
+References: <FLEKIPPLAEDMJMOOBBDPCECJDEAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <FLEKIPPLAEDMJMOOBBDPCECJDEAA.stewart.thompson@shaw.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,53 +18,98 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: stewart.thompson@shaw.ca
+Cc: netfilter@lists.netfilter.org, netfilter-admin@lists.netfilter.org
 
-Hiii,
+Hi Stewart,
 
-Can someone tell me why these rules will only casue errors "sometimes"? I ran my
-script before and it worked fine. But then i added a few more log polocies
-and drop rules and then i get errors. I know its these rules casue when i #
-commented them out the script it ran properly again and it happened before but
-it fixed itself somehow. Here are the rules that are casue the error:
+I'm sorry if I've not been clear. The Checkpoint Firewall NATs all 
+requests from the
+172.16-31 range to a valid 203.199.x.x IP Add and sends them out to the 
+internet.
 
-iptables -A OUPUT -o eth0 -p tcp \
-         -s eth0 --sport 1024:65535 \
-         --dport 80 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp \
-         --sport 80 \
-         -d eth0 --dport 1024:65535 -j ACCEPT
+Rgds
+Harish
 
 
-iptables -A INPUT -i eth0 -p udp \
-         -s 122.xx.xxx.xx  --sport 67 \
-         --dport 68 -j ACCEPT
-iptables -A OUTPUT -o eth0 -p udp \
-         -s eth0 --sport 68 \
-         -d 122.xx.xxx.xx --dport 67 -j ACCEPT
 
 
-Here the error i get:
-iptables v1.2.7a: host/network  `eth0' not found
-Try iptables `iptables -h' or `iptables --help for more infomation'
-iptables v1.2.7a: host/network  `eth0' not found
-Try iptables `iptables -h' or `iptables --help for more infomation'
-iptables v1.2.7a: host/network  `eth0' not found
-Try iptables `iptables -h' or `iptables --help for more infomation'
 
-Here are the rules i added and they work fine when i comment out the above
-rules!
-iptables -t nat --policy PREROUTING -j DROP
-iptables -t nat --policy OUPUT -j DROP
-iptables -t nat --policy POSTROUTING -j DROP
+Stewart Thompson <stewart.thompson@shaw.ca>
+Sent by: netfilter-admin@lists.netfilter.org
+10/23/2002 11:56 PM
+Please respond to stewart.thompson
+ 
+        To:     harish.k@lntinfotech.com
+        cc:     netfilter@lists.netfilter.org
+        Subject:        RE: IPTables Query
 
 
-how can i fix this? thanks guys! i have a dynamic ip address and i cant get pump
-to work thats why i using eth0 instaead of an IP adress! 
+HI Harish:
+
+                 Perhaps I should have asked for more facts. I assumed,
+perhaps incorrectly, that you wanted to forward the DNS request
+across the Internet It is my understanding that your IP fell within
+the private Class B IP range of  172.16.0.0  -  172.31.255.255.
+It is also my understanding that routers on the Internet drop IP's
+that fall into established private IP ranges. If I am wrong on this
+point, someone please correct me.
+
+Stu..........
 
 
-__________________________________________________
-Do you Yahoo!?
-Y! Web Hosting - Let the expert host your web site
-http://webhosting.yahoo.com/
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of
+harish.k@lntinfotech.com
+Sent: October 23, 2002 1:08 AM
+To: stewart.thompson@shaw.ca
+Cc: netfilter@lists.netfilter.org
+Subject: RE: IPTables Query
+
+Hi Stewart,
+
+I have a Checkpoint firewall sitting in front of me. It's IP Add is
+172.25.8.1. This machine does the NAT and filter functions.
+It is in turn connected to a router thru another interface and to the
+Internet.
+The IP Add 172.25.8.125 *has* permission to pass thru, but the IP
+172.25.8.130 does not. So locally generated packets destined for
+DNS servers need to have the source IP of 172.25.8.125.
+
+Rgds
+--
+---------------------------------------------------------------
+Harish K                             <harish.k@lntinfotech.com>
+Systems Engineer                            Tel - 91-22-6948065
+Don't drink and drive. You might hit a bump and spill your beer
+---------------------------------------------------------------
+
+
+
+
+Stewart Thompson <stewart.thompson@shaw.ca>
+10/23/2002 01:30 PM
+Please respond to stewart.thompson
+
+        To:     harish.k@lntinfotech.com, netfilter@lists.netfilter.org
+        cc:
+        Subject:        RE: IPTables Query
+
+
+Hi:
+
+                 This isn't really practical. Most routers will drop
+packets
+from private ranges. So your request won't make it to it's destination
+Anyway. Netfilter will make sure the request gets back to the right
+Machine. Why do you need this?
+
+
+Stu..........
+
+
+
+
+
 
