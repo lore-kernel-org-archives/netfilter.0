@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Limiting connections per time
-Date: Tue, 27 May 2003 21:05:23 +1000
+Subject: RE: H/A
+Date: Tue, 27 May 2003 21:34:17 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D09@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019249@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,44 +17,77 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Alexandre Hautequest <hquest@linuxbr.com.br>, netfilter@lists.netfilter.org
+To: kluivert@tm.net.my, netfilter@lists.netfilter.org
 
-Yes using patch-o-matic. there are a number of nice patches that do what =
-you want..
+I have 2 LANS on different NICs behind the firewall. both are connected =
+to both firewalls. I have only 1 internet link that they both share.
+
+State info is hard.. not without special hardware or software. netfilter =
+doesn't do any of this that I know of.
+
+I hate to see it done with software as a very busy site with huge =
+traffic (ie. we run 20+ websites) and the amount of /proc/net/ipt_* =
+stuff that would need to be transferred continously would be a =
+nightmare.. not to mention the VPN stuff..
+
+company to company isn't hard, even if the link drops between fallover, =
+the sessions aren't lost.. unless the fallover takes too long to =
+shutdown FW1 and startup FW2 and bring the VPN up..
+
+Yes, more info would be needed but I doubt there would be 100% state =
+transfer...
 
 -----Original Message-----
-From: Alexandre Hautequest [mailto:hquest@linuxbr.com.br]
-Sent: Tuesday, May 27, 2003 6:38 AM
+From: Julian Gomez [mailto:kluivert@tm.net.my]
+Sent: Tuesday, May 27, 2003 8:09 PM
 To: netfilter@lists.netfilter.org
-Subject: Limiting connections per time
+Subject: Re: H/A
 
 
-Hello all.
+On Tue, May 27, 2003 at 07:47:31AM +1000, George Vieira spoke thusly:
+>LIVE IP=3D203.x.x.x
+>FW1=3D10.1.1.1    FW2=3D10.1.1.1
+>
+>using iproute2 I add the live IP to FW1 which is the Master FW.
+>
+>ip add addr 203.x.x.x/28 dev eth0
+>
+>Then my firewall scripts find the dev IP using "ip addr show $EXTDEV" =
+add
+>then "tail -1" for so it grabs the last line of the list otherwise it
+>finds 2 IP bounded to the 1 network card and the scripts go nuts.. See
+>snippet of my iptables script below.
 
-First sorry if this had already replied before, but i found nothing in
-ml archives. Second, sorry about my poor english.
+George,
 
-Can i use netfilter to limit a number of connections allowed in a
-per-time basis? Lets take this as an example:
+You have not stated, exactly what failover scenarios does your setup =
+work
+for ? Ie,
 
-I have a UDP shoutcast server. A want to limit its external access to
-only one connection per IP for 30 minutes. Then i set up some rule (this
-rule is what i want to know if is possible and if so, how can i do this,
-what mods i need, and so on). Clients start to connect in (opens one
-*session*). Another people is opening a 2nd connection (maybe behind a
-NAT gw) and tries to connect in. It should block him. At the end of
-time, the first *session* should be automaticaly blocked again (maybe
-using my default DROP policy). A new connection can be accepted at this
-time, but not as its continuation -- i mean, start another *session*.
+[ internet link #1 ] +- [ firewall #1 ] -- +-------+
+                     |                     | LAN1  |
+	             |                     | LAN2  |=20
+[ internet link #2 ] +- [ firewall #2 ] -- +-------+
 
-This is what i have in mind, not actually for a shoutcast server, but is
-almost this situation i have.=20
+I was addressing something like the above. If firewall #1 goes down,
+firewall #2 can take over, but it still requires that all state =
+information
+from firewall #1; be propogated to firewall #2. I am not taking into
+account any load balancing requirements, pure failover. State info for =
+both
+iptables + their VPN setup. [*]
 
-Im not subscribed, so please cc me.
+I don't understand how your unique IP addressing method will solve the
+above, though your setup itself isn't very clear to me.
 
-Again sorry for my poor english, and thanks in advance for your time.
+That said, the original poster didn't exactly state (IIRC) what sort of =
+VPN
+setup he is using (office <-> office), what exactly does he want
+fail-over'ed, does he have dual Internet links and many many other bits =
+of
+information.
 
---
-Alexandre Hautequest
+Take note, that even my ascii diagran above only caters for certain
+failover scenarios.
 
 
