@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: How to redirect requests
-Date: Fri, 21 Nov 2003 08:56:51 +1100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: http acces
+Date: Thu, 20 Nov 2003 22:54:50 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A28AD47@wardrive.citadelcomputer.com.au>
+Message-ID: <200311202254.hAKMss723777@onyx.rockstone.co.uk>
+References: <1069364822.3fbd3656723b4@roma-hme1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <1069364822.3fbd3656723b4@roma-hme1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,42 +18,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: magu@afesta.net, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-If you are DNATing an internal client to an internal server, don't =
-forget to masquerade/snat the clients address otherwise the server will =
-respond directly to the client which the client would then drop the =
-packets as it has no connection to the real outside ip for =
-www.smartlaunch.net .
-Do this as if the server was outside and had to be SNATed...
+On Thursday 20 November 2003 9:47 pm, skydive wrote:
 
-Thanks,
-____________________________________________
-George Vieira
-=20
+> hi all
+>
+> i have been experienced a problem since i'm trying to
+> access my web server from my lan through my internet ip.
+>
+> i have no problems doing DNAT, from those who access my
+> web page form the outside:
+>
+> iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80
+> -j DNAT --to 192.168.0.1:80
+>
+> this is solving the problem
+>
+> let's say my web page has the following address
+> www.example.org, and that it is host  [like it is ;)) ]
+> in one machine on my lan with the following IP:
+>
+> 192.168.0.1
+>
+> when i write www.example.org on my web browser, it just
+>  hits eth1 on my gateway/firewall and stucks there.
+> maybe i'm missing something on my prerouting rules, or
+> maybe my small brain just can't reach it :)
 
-> -----Original Message-----
-> From: magu@afesta.net [mailto:magu@afesta.net]
-> Sent: Wednesday, 19 November 2003 8:12 AM
-> To: netfilter@lists.netfilter.org
-> Subject: How to redirect requests
->=20
->=20
-> Hello all.
->=20
-> I'm trying to redirect all requests coming from my internal=20
-> machines, that
-> contain www.smartlaunch.net to an internal machine. I've already
-> succesfully redirected all requests of the IP address, but=20
-> haven't managed
-> to redirect the domain requests. Maybe it's not at all a job=20
-> for iptables,
-> but I wanted some light on this, since I don't know where to start.
->=20
-> any help is appreciated
-> magu
-> magu@afesta.net
->=20
->=20
->=20
+See if http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-10.html 
+answers your question.
+
+Antony.
+
+-- 
+
+Having been asked to provide a reference for this man,
+I can confidently state that you will be very lucky indeed
+if you can get him to work for you.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
