@@ -1,13 +1,14 @@
-From: Filip Sneppe <filip.sneppe@uptime.be>
-Subject: Re: mms and rtsp patches = make modules fail
-Date: 29 Jan 2004 10:28:19 +0100
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Destination NAT
+Date: Thu, 29 Jan 2004 11:47:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1075368500.18100.7.camel@exile>
-References: <4017BB98.7090203@dsl.pipex.com>
+Message-ID: <1075369661.1999.94.camel@raylinux.internal>
+References: <147E1D375819F44680C3E5BFB6424C52DFC450@bcexc01.bue299.comafi.com.ar>
+	 <200401290913.54045.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-8UcBMsMCf96WvqbBgLZt"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4017BB98.7090203@dsl.pipex.com>
+In-Reply-To: <200401290913.54045.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,42 +18,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Andy Furniss <andy.furniss@dsl.pipex.com>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Wed, 2004-01-28 at 14:39, Andy Furniss wrote:
-> I don't really need them but I pressed Y :-) looks like some headers are 
-> missing from POM cvs of a couple of days old. mms and rtsp, unless my 
-> gcc 2.95.3 is being over pedantic. Vanilla 2.4.24 apart from 2IMQ IMQ 
-> nat and ESFQ patches.
-> 
-> In file included from ip_conntrack_standalone.c:28:
-> /home/andy/Sources/kernels/2.4.24/linux-2.4.24/include/linux/netfilter_ipv4/ip_conntrack.h:74: 
-> field `ct_rtsp_info' has incomplete type
-> /home/andy/Sources/kernels/2.4.24/linux-2.4.24/include/linux/netfilter_ipv4/ip_conntrack.h:89: 
-> field `ct_mms_info' has incomplete type
-> make[2]: *** [ip_conntrack_standalone.o] Error 1
-> make[2]: Leaving directory 
-> `/home/andy/Sources/kernels/2.4.24/linux-2.4.24/net/ipv4/netfilter'
-> make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
-> make[1]: Leaving directory 
-> `/home/andy/Sources/kernels/2.4.24/linux-2.4.24/net
-> 
 
-Hi Andy,
+--=-8UcBMsMCf96WvqbBgLZt
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I can't reproduce this with 2.4.24, some pending netfilter patches and
-those two conntrackers. Where can I find those other two patches ?
+On Thu, 2004-01-29 at 11:13, Antony Stone wrote:
+> On Wednesday 28 January 2004 2:21 pm, Alejandro Zaidel wrote:
+>=20
+> > Can I address a packet to more than one IP address at the same time ??
+> >
+> > I have   iptables -t nat -A PREROUTING -i eth1 -j DNAT --to
+> > 5.6.7.8-5.6.7.10  as an example, but I want to send the packets to both=
+ 7.8
+> > and also 7.10
+> >
+> > Is it possible to do ???
+>=20
+> No.   You cannot use netfilter to create duplicates of packets.   Netfilt=
+er=20
+> will perform various operations on the packets which exit, but it won't m=
+ake=20
+> multiple versions of what was originally one packet.
+>=20
+With the exception of the MIRROR patch ...
 
-Do other connection tracking/nat helpers from patch-o-matic compile
-correctly, or did you just apply those two ?
+> Regards,
+>=20
+> Antony.
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
-If you want, you can send me a diff of your modified 2.4.24 against a
-clean 2.4.24 and a description of what you've done/patched. I'll try
-to see what goes wrong.
+--=-8UcBMsMCf96WvqbBgLZt
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Regards,
-Filip
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQBAGNa9h1fuR/Bv+ygRAkZMAJ9aHNZOu+vKKOp0YnyxH68K9Ko8vACghEEr
+zUz2D1DnPbKRxEDL9G5X/rs=
+=R58X
+-----END PGP SIGNATURE-----
+
+--=-8UcBMsMCf96WvqbBgLZt--
 
 
