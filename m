@@ -1,93 +1,78 @@
-From: Awais Ahmad <awais@eurobell.net>
-Subject: RE: [isp-linux] kernel: Unable to handle kernel NULL pointer
-Date: Wed, 2 Oct 2002 13:26:21 +0100
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <0165EC14EDB3D511970D00805FEF801417AC70@maggie.noc.eurobell.net>
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: PPTP conntrack w/out DEBUG is broken ???
+Date: Wed, 2 Oct 2002 15:30:13 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20021002153013.A13233@sunbeam.de.gnumonks.org>
+References: <87d6r9jaa4.fsf@sensi.yemanja.net> <1032690651.9594.13.camel@tux> <200209251648.42936.marian@ti.com>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200209251648.42936.marian@ti.com>; from marian@ti.com on Wed, Sep 25, 2002 at 04:48:42PM -0400
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'isp-linux@isp-linux.com'" <isp-linux@isp-linux.com>
-Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
-
-BTW...what kernel is this?
-
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Marian Stagarescu <marian@ti.com>
+Cc: Martin Josefsson <gandalf@wlug.westbo.se>, =?iso-8859-1?Q?C=E9dric_Rivard_=3Ccedric=40yemanja=2Enet=3E?=@sunbeam.gnumonks.org, Netfilter-devel <netfilter-devel@lists.netfilter.org>, Netfilter <netfilter@lists.netfilter.org>
 
 
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers
-Awais Ahmad
-Systems Engineer
-Telewest Broadband Eurobell
-------------------------------------------
-Live Life in Broadband
-www.telewest.co.uk
+On Wed, Sep 25, 2002 at 04:48:42PM -0400, Marian Stagarescu wrote:
+> i run into one problem with PPTP conntrack:
+>=20
+> run it with debug on: works
+> run it w/out debug on: does not.
 
+what do you call 'debug' ?  Does this mean the DEBUG #defines in the
+respective sourcecode .c files, or are you talking about CONFIG_NETFILTER_D=
+EBUG?
 
+> this debug issue was tracked down to a single printk statement in=20
+> ip_conntrack_pptp.c: line 244,245:
+>=20
+> DEBUGP("%s, CID=3D%X, PCID=3D%X\n", strMName[msg]                 =20
+>                      ntohs(*cid), ntohs(*pcid));
+>=20
 
+What happens?  Does the kernel oops at this statement?
 
------Original Message-----
-From: Vicky Shrestha [mailto:mail@vickysh.wlink.com.np]
-Sent: 02 October 2002 13:23
-To: isp-linux@isp-linux.com
-Cc: linux-kernel@vger.kernel.org; netfilter@lists.netfilter.org
-Subject: [isp-linux] kernel: Unable to handle kernel NULL pointer
+> thanks for any input,
+> marian
 
+--=20
+Live long and prosper
+- Harald Welte / laforge@gnumonks.org               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+"If this were a dictatorship, it'd be a heck of a lot easier, just so long =
+as
+ I'm the dictator."  --  George W. Bush Dec 18, 2000
 
-Dear all,
+--RnlQjJ0d97Da+TV1
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-I am having the a problem with my squid2.4STABLE7 Machine and squid crashed
-once a day. I get the following error in /var/log/kern.log:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-Sep 29 12:58:37 proxy3 kernel: sending pkt_too_big to self
-Oct  1 12:58:02 proxy3 kernel: Unable to handle kernel NULL pointer
-dereference at virtual address 00000008
-Oct  1 12:58:02 proxy3 kernel:  printing eip:
-Oct  1 12:58:02 proxy3 kernel: c0139a3f
-Oct  1 12:58:02 proxy3 kernel: *pde = 00000000
-Oct  1 12:58:02 proxy3 kernel: Oops: 0000
-Oct  1 12:58:02 proxy3 kernel: ipt_LOG ipt_REDIRECT iptable_nat ip_conntrack
-iptable_filter ip_tables 3c59x u
-Oct  1 12:58:02 proxy3 kernel: CPU:    0
-Oct  1 12:58:02 proxy3 kernel: EIP:    0010:[<c0139a3f>]    Not tainted
-Oct  1 12:58:02 proxy3 kernel: EFLAGS: 00010286
-Oct  1 12:58:02 proxy3 kernel:
-Oct  1 12:58:02 proxy3 kernel: EIP is at fput [kernel] 0xf (2.4.18-3)
-Oct  1 12:58:02 proxy3 kernel: eax: d6933240   ebx: d6933240   ecx: cb9547e4
-edx: c2023bdc
-Oct  1 12:58:02 proxy3 kernel: esi: 00000000   edi: c2023008   ebp: 00000000
-esp: d65cbf50
-Oct  1 12:58:02 proxy3 kernel: ds: 0018   es: 0018   ss: 0018
-Oct  1 12:58:02 proxy3 kernel: Process squid (pid: 14192,
-stackpage=d65cb000)
-Oct  1 12:58:02 proxy3 kernel: Stack: c02c477c 00000203 ffffffff 00000420
-c2023bd8 c2023000 c2023008 00000518
-Oct  1 12:58:02 proxy3 kernel:        c0146bf5 d65cbfa8 c3ca1e00 c3ca1e00
-c014795d d65cbfa8 d65cbfa8 d65ca000
-Oct  1 12:58:02 proxy3 kernel:        00000118 00000002 d65cbfa8 c3ca1e00
-00000002 00000002 00000000 ce5b7000
-Oct  1 12:58:02 proxy3 kernel: Call Trace: [<c0146bf5>] poll_freewait
- [kernel] 0x35
-Oct  1 12:58:02 proxy3 kernel: [<c014795d>] sys_poll [kernel] 0x36d
-Oct  1 12:58:02 proxy3 kernel: [<c0108923>] system_call [kernel] 0x33
-Oct  1 12:58:02 proxy3 kernel:
-Oct  1 12:58:02 proxy3 kernel:
-Oct  1 12:58:02 proxy3 kernel: Code: 8b 7d 08 ff 4b 14 0f 94 c0 84 c0 0f 84
- a5 00 00 00 53 e8 7a
-Oct  1 12:58:02 proxy3 kernel:  <7>sending pkt_too_big to self
+iD8DBQE9mvTkXaXGVTD0i/8RApiFAKCMN6CH7uFv8Um+5vUhVdvfJ7GjhgCdG99w
+il3dtSoAgs87jxS4qVxDedU=
+=hj9p
+-----END PGP SIGNATURE-----
 
--- 
-Best regards,
+--RnlQjJ0d97Da+TV1--
 
-
-Vicky Shrestha
-System Administrator
-WorldLink Communications Pvt.Ltd
-Jawalakhel, Kathmandu, Nepal.
-
-
-_____________  The ISP-LINUX Discussion List  _____________
-To Join: mailto:join-isp-linux@isp-linux.com
-To Remove: mailto:remove-isp-linux@isp-linux.com
-Archives: http://isp-lists.isp-planet.com/isp-linux/archives/
