@@ -1,12 +1,13 @@
-From: Rakotomandimby Mihamina <mrakotom@free.fr>
-Subject: Iptables LOG
-Date: Thu, 25 Dec 2003 12:25:12 +0100
+From: Damjan <gdamjan@mail.net.mk>
+Subject: Re: Sharing ip_conntrack ?
+Date: Tue, 23 Dec 2003 15:01:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312251225.12203.mrakotom@free.fr>
+Message-ID: <20031223140129.GB31178@legolas.on.net.mk>
+References: <20031222211914.313f10b8.michael@bluesuperman.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <20031222211914.313f10b8.michael@bluesuperman.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +18,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi every one :-)
+> What I want to know if anyone has any idea how to keep the state on the
+> second box so NO connections will be lost if a fail over occurs.
 
-I'm using :
-kernel 2.4.23 
-iptables 1.2.8
-a ppp connection . 
-into my kernel conf , i have enabled iptables LOG 
-( 
-CONFIG_IP_NF_TARGET_LOG=y
-CONFIG_IP_NF_TARGET_ULOG=y
- )
+There's a patch in pom, that will enable ip_conntrack to pick up already
+established connections.
 
-I try to have iptables logs into a file .
 
-I search and i found this to make it works :
-http://lists.netfilter.org/pipermail/netfilter/2003-September/046667.html
-
-What i made is :
-
-#1 give this iptables rule 
-iptables -A INPUT -j LOG --log-level debug --log-prefix "iptables_rktmb : "
-
-#2 modifying /etc/syslog.conf 
-
-[...]
-*.info;*.!warn;kern.!=debug;\
-	authpriv.none;cron.none;mail.none;news.none	-/var/log/messages
-
-[...]
-*.=debug                                                /var/log/debug
-
-#3 killall -HUP syslogd
-
-But IT DOES NOT want to work ... i have nothing into /var/log/debug execpt my 
-pppd logs ...
-
-How should i manage it ? what did i miss please ? Help me . :-)
---
-Rakotomandimby Mihamina Andrianifaharana
-Tel : +33 2 38 76 43 65
-http://stko.dyndns.info/site_principal/Members/mihamina
-
+-- 
+Damjan Georgievski
+jabberID: damjan@bagra.net.mk
 
