@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables local port forwarding
-Date: Sun, 4 Apr 2004 00:09:11 +0100
+From: Oguz Yilmaz <oguz@idealteknoloji.com>
+Subject: duplicating packets target
+Date: Sun, 04 Apr 2004 12:31:47 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404040009.12330.Antony@Soft-Solutions.co.uk>
-References: <20040403095005.GA4511@scholars.home> <200404031127.02648.Antony@Soft-Solutions.co.uk> <c4ms44$qhg$1@gatekeeper.tmr.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <406FD603.6090802@idealteknoloji.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed;
+ boundary="------------060201020106060909050206"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <c4ms44$qhg$1@gatekeeper.tmr.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 03 April 2004 6:30 pm, Bill Davidsen wrote:
+This is a multi-part message in MIME format.
+--------------060201020106060909050206
+Content-Type: text/plain; charset=ISO-8859-9; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Antony Stone wrote:
-> > On Saturday 03 April 2004 10:50 am, Mark Ord wrote:
-> >>I have iptables setup, firewalling eth0 (the internet) extensively, and
-> >>doing NAT for my lan, and some custom port forwards.
-> >>
-> >>One is forwarding port 81 -> 80 - due to my provider firewalling port
-> >>80:
-> >>     iptables -t nat -I PREROUTING -p tcp --dport 81 -j REDIRECT --to 80
-> >>
-> >>This works for connections coming in on both eth0, and eth1. However, I
-> >>can't connect to port 81 on the iptables machine (no matter what
-> >>iptables rules I try).
-> >
-> > That rule looks fine to me, and you must obviously have an appropriate
-> > INPUT rule allowing the connection to port 80 after the REDIRECT has
-> > completed, otherwise you wouldn't be able to connect directly to port 80
-> > which you say works fine.
-> >
-> > The only thing I can think to ask is whether "iptables -L -t nat -nvx"
-> > shows the packet/byte counters for this rule incrementing when you do try
-> > to access port 81?
-> >
-> > Perhaps a few judicious LOGging rules (before and after the REDIRECT in
-> > the nat table, before and after the ACCEPT in the INPUT chain) will tell
-> > you something useful?
->
-> Actually, you need to allow port 81 in, it doesn't become 80 until after
-> the rewrite.
+Hi,
 
-No, PREROUTING happens before INPUT, therefore the INPUT rule needs to allow 
-the translated packet, not the original one.
+Are there any way of duplicating packets(in netfilter base, patchomatic 
+or any third party patch?) targeted to one host to several hosts using 
+targets? (like dup-to keywords of openbsd).  If not, I think a way of 
+this is to send packets to user level queue and then duplicate and 
+resend. Are there any software for this?
 
-Regards,
+Thanks,
 
-Antony.
+-oguz
 
--- 
-The lottery is a tax for people who can't do maths.
+--------------060201020106060909050206
+Content-Type: text/x-vcard; charset=utf8;
+ name="oguz.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="oguz.vcf"
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+begin:vcard
+fn:Oguz Yilmaz
+n:Yilmaz;Oguz
+org;quoted-printable:=C4=B0deal Teknoloji A.=C5=9E.;ARGE
+email;internet:oguz@idealteknoloji.com
+title;quoted-printable:ARGE ve Projeler Teknik M=C3=BCd=C3=BCr=C3=BC
+tel;work:+903122101490
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
 
+
+--------------060201020106060909050206--
 
