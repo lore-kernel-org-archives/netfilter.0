@@ -1,18 +1,13 @@
-From: alucard@kanux.com
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: forwarding on the same NIC
-Date: Tue, 11 May 2004 11:38:14 -0400 (VET)
+Date: Tue, 11 May 2004 11:26:47 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2022.200.44.170.105.1084289894.squirrel@200.44.170.105>
-References: <3401.200.44.170.105.1084217773.squirrel@200.44.170.105> 
-    <200405102115.14089.Antony@Soft-Solutions.co.uk> 
-    <1292.192.168.74.154.1084226963.squirrel@192.168.74.154> 
-    <1084227992.14224.5.camel@localhost> 
-    <1166.200.44.170.105.1084283379.squirrel@200.44.170.105>
-    <1084288178.15768.10.camel@localhost>
+Message-ID: <40A0FEC7.7020201@pbl.ca>
+References: <3401.200.44.170.105.1084217773.squirrel@200.44.170.105>     <200405102115.14089.Antony@Soft-Solutions.co.uk>     <1292.192.168.74.154.1084226963.squirrel@192.168.74.154>     <1084227992.14224.5.camel@localhost>     <1166.200.44.170.105.1084283379.squirrel@200.44.170.105>    <1084288178.15768.10.camel@localhost> <2022.200.44.170.105.1084289894.squirrel@200.44.170.105>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1084288178.15768.10.camel@localhost>
+In-Reply-To: <2022.200.44.170.105.1084289894.squirrel@200.44.170.105>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,64 +17,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: alucard@kanux.com
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: alucard@kanux.com
+Cc: netfilter@lists.netfilter.org
 
-Hi again... let me answer each section...
+alucard@kanux.com wrote:
+> Anyone could help? the thing is that, this second webserver is using and
+> aplication that we use internally and, what I'm trying to do here is,
+> access the web configuration service from the outside using our existing
+> server, which is the only one nat'ed', so our other offices can access it.
+> Since the second server is a production server, there's no way we can
+> change it's IP and use a subnet.
 
-> Let me see if I understand this correctly.  The ISP router connects you
-> to the Internet but it know you as the RFC 1918 (private) address
-> 10.73.219.156.  The router, Linux box and 2nd WebServer are all
-> connected on the same subnet through a hub or switch.  You want the
-> Linux box to change the packet addressed to it on 8080/tcp to 80/tcp
-> with a source address of 10.73.219.77 and then forward the packet to the
-> 2nd WebServer?
+I wasn't following this discussion too closely.  However after reading 
+what John wrote, I'd guess that your first box is also generating ICMP 
+redirect packets back to the router.  Reasoning why I believe that it is 
+generating them is that the packet has arrived on the same physical 
+interface where it is supposed to be routed out.  This is exactly the 
+situation where routers (by default) generate ICMP redirects.  So even 
+if you get your box to start routing, you might need to turn off 
+generation of ICMP redirects on first Linux box (send_recirects, or 
+something like that).
 
-Yes, exactly... ;)
+I guess that router is actually at your end (not ISP end), and it is one 
+of those small cheap boxes where you connect ADSL or cable, so it has 
+public IP address on one end, and is doing NAT for the internal network 
+(and your Linux box is assigned to do firewalling).  If this is the 
+case, you can solve it a simple way by putting second NIC in your first 
+Linux box and assign it different network.  So you would end up with 
+something like this:
 
-> I've never tried this but I'll take a few guesses on what happens and
-> why it is probably much safer to use a second NIC.  I would guess that
-> the packet 10.73.219.156:8080 arrives at the Linux box (can be verified
-> with Ethereal (www.ethereal.com)), is properly DNAT'd to 10.73.219.77:80
-> and then passed to the routing subsystem.  The routing subsystem looks
-> at the packet and sees that it lives on the same network as itself
-> (10.73.219.x) and thus does not forward the packet (can be verified by
-> putting a log rule at the beginning of both the INPUT and FORWARD chains
-> - my guess is it never arrives at the FORWARD chain).  Unless the Linux
-> box and the 2nd WebServer live on separate networks, routing will not
-> forward a packet from one to the other.
+                   +-------------+
+                   |     ISP     |
+                   +-------------+
+                          |
+                          |
+                          | ISP assigned public IP
+                   +-------------+
+                   |   router    |
+                   +-------------+
+                          | 192.168.1.1
+                          |
+                          | 192.168.1.2
+                   +-------------+
+                   |  Linux box  |
+                   +-------------+
+                          | 10.73.219.156
+                          |
+                          | 10.73.219.77
+                   +-------------+
+                   | 2nd Web srv |
+                   +-------------+
 
-That's correct, exactly what I though. There's no forwarding because we
-are using the same subnet
+Router will have default route pointing to ISP, Linux box will have 
+default route pointing to router, and 2nd web server to your Linux box. 
+  You will be doing NAT twice, once in the router, and again in the 
+Linux box.  You can get away with only one NAT if you want, of course. 
+The 192.168.0.0/16 will become your future DMZ network, and your 
+internal network (10.0.0.0/8) will be deep inside.  I've used 192.168 
+for DMZ to avoid guessing what you already used from 10.
 
-> In other words, you are bridging rather than routing and thus need to
-> make a layer two decision rather than a layer three decision.  I
-> understand there is bridging functionality available in Linux but I have
-> never used it and do not know where to find it.
+To enhance security, you might start making plans to move 2nd Web server 
+into the DMZ (change of IP address) as some future project, but you 
+don't have to do it right away.
 
-Anyone could help? the thing is that, this second webserver is using and
-aplication that we use internally and, what I'm trying to do here is,
-access the web configuration service from the outside using our existing
-server, which is the only one nat'ed', so our other offices can access it.
-Since the second server is a production server, there's no way we can
-change it's IP and use a subnet.
+Anyhow, you've got the idea, you only need to adjust it for your 
+environment.
 
-> However, I would suggest a separate NIC and a true DMZ.  I assume that
-> if someone within the ISP cloud attempted to attack 10.73.219.77 by
-> addressing it directly, there would be nothing to stop them.
-> Thepackets would be forwarded from the ISP router to the 2nd WebServer. 
- > I would always set it up behind the firewall even though it uses an
-RFC
-> 1918 address unless you have the utmost trust in both the ISP and all
-> users attached to their cloud.  Hope this helps - John
-
-Well, that's a risk we are willing to take, and our application has the
-latest patches and all that stuff to make it as secure as we can...
-
-Any other suggestions from anyone??
-John, Thanx a lot for your help and your time, I really apreciate it.
-
-Juan
-
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
