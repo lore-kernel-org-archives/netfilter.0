@@ -1,10 +1,11 @@
-From: "Spam Me Not" <stopspam@welho.com>
-Subject: 2.4.18 -> 2.4.23 breaks IPMASQ.
-Date: Wed, 3 Dec 2003 07:59:59 +0200
+From: Emmanuel Guiton <emmanuel@netlab.hut.fi>
+Subject: How do I use ip_conntrack_destroyed?
+Date: Wed, 03 Dec 2003 12:17:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000701c3b962$af9c5e60$6049a8c0@tmp.dyndns.org>
+Message-ID: <3FCDB83F.3010703@netlab.hut.fi>
+Reply-To: emmanuel@netlab.hut.fi
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,21 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-I'm using Debian Woody with ipchains compatibility enabled in kernel.
-Eth0 is connected to a cable modem; Eth1 is a small internal network.
-With 2.4.23 sending any packets from internal network to internet causes at
-least eth1 to die, not immediately but in a minute or so.
-I don't know if the entire machine freezes, or if it's eth1 only; the
-machine is headless.
-There doesn't seem to be any entries in syslog that are relevant to this
-problem.
 
-I'd appreciate if someone could CC me any good ideas.  If not, well, 2.4.18
-has had zero problems this far.
+Hei!
 
--Teemu Pitk=E4nen
+I am writing a new target module which needs to be aware about the 
+number of conntracks that are currently known for a particular 
+destination. Thus, to make my counter I wish to detect when a conntrack 
+is destroyed. I have noticed the following in ip_conntrack.h :
+
+/* Call me when a conntrack is destroyed. */
+extern void (*ip_conntrack_destroyed)(struct ip_conntrack *conntrack);
+
+So I guess it particularly fits with my needs. But what about using it?
+
+Is it that I have to write something like:
+ip_conntrack_destroyed = &my_counter_function
+in my ipt_xxxx_target function and then do my stuff in my_counter_funtcion?
+
+Does it work like this?
+
+              Emmanuel
 
 
