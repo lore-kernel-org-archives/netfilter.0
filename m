@@ -1,10 +1,12 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Upgrading patch-o-matic
-Date: Mon, 05 Jan 2004 08:21:10 -0500
+From: "Steffen Bisgaard - Xtrasource" <sbisgaard@xtrasource.com>
+Subject: Traffic Shaper
+Date: Mon, 5 Jan 2004 14:39:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1073308870.15280.3.camel@jasiiitosh.nexusmgmt.com>
+Message-ID: <NEBBICCJKLGJHMMNBPIKMEHOGJAA.sbisgaard@xtrasource.com>
+Reply-To: <sbisgaard@xtrasource.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0345_01C3D399.AF7D3020"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,27 +17,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am using a very old patch-o-matic (April) and would like to use the
-latest December release.  How does one upgrade an existing patch-o-matic
-installation? Does one:
+This is a multi-part message in MIME format.
 
-1) start with a fresh kernel
-2) uninstall all the old patches and reinstall but with the new
-patch-o-matic
-3) install the same patches over the old ones
-4) copy in the new patch-o-matic files, wave one's hands and say
-"prest-o, change-o, patch-o upgrade be done!"
+------=_NextPart_000_0345_01C3D399.AF7D3020
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-Thanks - John
+Hallo list,
 
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
+I don't actually know whether this is iptables related, but can someone
+recommend a good place to start to configure a traffic shaper?
+
+Stef
+
+
+
+
+
+------=_NextPart_000_0345_01C3D399.AF7D3020
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1276" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D274003813-05012004><FONT face=3DArial size=3D2>Hallo=20
+list,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D274003813-05012004><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D274003813-05012004><FONT face=3DArial size=3D2>I =
+don't actually=20
+know whether this is iptables related, but can someone recommend a good =
+place to=20
+start to configure a traffic shaper?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D274003813-05012004><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D274003813-05012004><FONT face=3DArial=20
+size=3D2>Stef</FONT></SPAN></DIV>
+<DIV class=3DSection1>
+<P class=3DMsoNormal><SPAN style=3D"FONT-FAMILY: =
+Arial">&nbsp;<?xml:namespace prefix=20
+=3D o ns =3D "urn:schemas-microsoft-com:office:office" =
+/><o:p></o:p></SPAN></P>
+<P class=3DMsoNormal><SPAN=20
+style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial; mso-bidi-font-size: =
+12.0pt">&nbsp;<o:p></o:p></SPAN></P></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0345_01C3D399.AF7D3020--
 
 
