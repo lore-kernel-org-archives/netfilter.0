@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: INET_IFACE: Secure to allow traffic from 192.168.x.0/24?
-Date: Fri, 5 Mar 2004 01:29:54 +0000
+Subject: Re: help me with firewall+drop by default
+Date: Fri, 5 Mar 2004 01:37:26 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403050129.54915.Antony@Soft-Solutions.co.uk>
-References: <40472125.4000608@blinkenlichten.de>
+Message-ID: <200403050137.26207.Antony@Soft-Solutions.co.uk>
+References: <BAY7-F58zId5qPkIv4d00040d1e@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40472125.4000608@blinkenlichten.de>
+In-Reply-To: <BAY7-F58zId5qPkIv4d00040d1e@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,45 +20,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 04 March 2004 12:29 pm, Carsten Maass wrote:
+On Friday 05 March 2004 1:24 am, verito verito wrote:
 
-> Dear List,
->
-> recently i connected together two internal networks over an IPSec-tunnel:
->
-> (Localnet A)---(Gateway A)==IPSec==(Gateway B)---(Localnet B)
+> Firewall was  denied , Just for default I'm sending,  the (setting up) 
+> that is  able to  access into the web , but  I can't access into the mail
+> server (POP), and some web pages that requiered the  Ports
+> (443,21,23,25,110), I hope. I will clear , if there is any question just
+> replying me , Thanks
 
-How did you set up IPsec?   Using FreeS/WAN and Linux kernel 2.4.x?   Using 
-the new built-in IPsec in kernel 2.6.x?   Some other method?   It makes a big 
-difference to what you can filter, and how netfilter sees the packets.
+Where are you tryuing to access the POP3 server from and to?
 
-Also, do you have one machine at each end of the link which is both running 
-netfilter and acting as the IPsec gateway, or do you have two different 
-machines, one doing netfilter, and one doing IPsec?
+In other words, where is your client (compared to eth0 adn eth1 in your 
+rules), and is the server running on the machine with these rules, or on some 
+other server being routed through this one?
 
-> Now i am unsure which iptables-rules i should apply to the external
-> interfaces of the gateways to match the traffic between the Localnets
-> without opening up a security hole. Is it sufficient to simply apply
-> some general rules like:
->
-> $IPTABLES -A FORWARD -i $INET_IFACE -s 192.168.a.0/24 -j ACCEPT
-> $IPTABLES -A FORWARD -i $INET_IFACE -s 192.168.b.0/24 -j ACCEPT
->
-> or would this approach be vulnerable to some kind of IP-spoofing attack?
-
-If you are using FreeS/WAN and Linux 2.4.x you can filter real packets going 
-to & from the "ipsecN" interfaces, and you can filter ESP packets going in 
-and out of the "ethN" interfaces.   Tell us the details and I'll suggest 
-something more specific if I can.
-
-Regards,
+> iptables -P INPUT DROP
+> iptables -P OUTPUT DROP
+> iptables -P FORWARD DROP
+> iptables -t nat -A PREROUTING -t tcp --dport 80 -j REDIRECT --to-port 8080
+> iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+> iptables -A INPUT -i eth0 -s 0/0 -d 0/0 -j ACCEPT
+> iptables -A -i lo -s 0/0 -d 0/0 -j ACCEPT
+> iptables -A FORWARD -i eth1 -o eth0 -m state --state ESTABLISHED,RELATED -j
+> ACCEPT
+> iptables -A INPUT -i eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
+> iptables -A OUTPUT -j ACCEPT
 
 Antony.
 
 -- 
-Having been asked for a reference for this man,
-I can confirm that you will be very lucky indeed if you can get him to work 
-for you.
+90% of networking problems are routing problems.
+9 of the remaining 10% are routing problems in the other direction.
+The remaining 1% might be something else, but check the routing anyway.
 
                                                      Please reply to the list;
                                                            please don't CC me.
