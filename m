@@ -1,12 +1,12 @@
-From: "Kevin Saenz" <ksaenz@citistreet.com.au>
-Subject: RE: Telnet not being let through
-Date: Wed, 18 Sep 2002 14:50:11 +1000
+From: Tomasz Wrona <tmp@eter.tym.pl>
+Subject: iptables or kernel bug report.
+Date: Wed, 18 Sep 2002 14:21:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <771DD65729F96D41B132C6189EE644552FE7D0@sydexch1.cs_au.com.au>
+Message-ID: <15519114755.20020918142146@wp.pl>
+Reply-To: Tomasz Wrona <tmp@eter.tym.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +17,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Chris Born <ragable@attbi.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Sorry about this to stop spoofing to have to echo '1' > rp_filter
-
-
------Original Message-----
-From: Chris Born [mailto:ragable@attbi.com]
-Sent: Wednesday, September 18, 2002 2:27 PM
-To: Kevin Saenz; netfilter@lists.netfilter.org
-Subject: RE: Telnet not being let through
+Hello,
 
 
-Thanks, that fixed the problem. I assumed that the rule would only block =
-IP=20
-spoofing, as the place I got the rule from indicated so. Seemed logical =
-to=20
-me and not quite sure how a TCP telnet packet would get matched up to =
-that one.
+I would like to report some bug...
+Today I launched kernel 2.4.20-pre7 patched with path-o-matic 2020916 and
+iptables 1.2.7a.
+First reboot with new kernel was successfull but next hanged system during
+startup process.
+On terminal I had some info telling about some "kernel BUG at
+slab.c:1128!" "invalid operand: 0000" and "iptables process". I put complete screenshot [sorry for
+photo] on location "http://eter.tym.pl/bug.gif" [27KB].
 
-/sbin/iptables -A INPUT -i eth1 -s 192.168.0.0/24 -d 0.0.0.0/0 -j=20
-drop-and-log-it
+System hanged during firewall startup in the moment when special user
+defined chain was created. This chain summons two modules
+"PSD" and "Recent".  When I removed this chain, system didn't hang up.
+Previous setup with kernel 2.4.18 + iptables 1.2.6a worked fine.
 
--Chris Born
 
-At 02:07 PM 9/18/2002 +1000, you wrote:
->I think your problem is that you drop-and-log-it
->before accepting anything substantial. IPTables works
->top down unless your forward to other rules.
->Basically what happens is if the rules don't apply to
->the rules before drop-and-log-it then they are getting logged.
->Usually your very last rule should be drop and log.
->
->Have you tired the Iptables tutorial by Oskar Andersen?
->His examples are very good.
+Regards.
+tw
+--
 
+----------------
+ ck.eter.tym.pl
 
 
