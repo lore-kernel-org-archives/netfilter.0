@@ -1,17 +1,18 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+From: alucard@kanux.com
 Subject: Re: forwarding
-Date: Tue, 18 May 2004 11:53:08 -0400
+Date: Tue, 18 May 2004 12:38:23 -0400 (VET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084895498.7289.7.camel@localhost>
-References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105>
-	 <1084891180.6410.18.camel@localhost>
-	 <34012.200.44.170.105.1084892235.squirrel@200.44.170.105>
-	 <1084892325.6417.40.camel@localhost>
-	 <34103.200.44.170.105.1084893176.squirrel@200.44.170.105>
+Message-ID: <34404.200.44.170.105.1084898303.squirrel@200.44.170.105>
+References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105> 
+    <1084891180.6410.18.camel@localhost> 
+    <34012.200.44.170.105.1084892235.squirrel@200.44.170.105> 
+    <1084892325.6417.40.camel@localhost> 
+    <34103.200.44.170.105.1084893176.squirrel@200.44.170.105>
+    <1084895498.7289.7.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <34103.200.44.170.105.1084893176.squirrel@200.44.170.105>
+In-Reply-To: <1084895498.7289.7.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,58 +23,73 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: alucard@kanux.com
-Cc: netfilter@lists.netfilter.org
+To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Cc: alucard@kanux.com, netfilter@lists.netfilter.org
 
-On Tue, 2004-05-18 at 11:12, alucard@kanux.com wrote:
-> > Although it probably did, are you sure nmap scanned port 8080? How about
-> > nmap -sT -p 8080 10.73.219.156
-> >
-> > I would then trace both the wire and the iptables rules to find out
-> > where it is breaking - John
-> 
-> Yes, it filters now but now it seems that the problem is in the 2nd server
-> because I try to telnet to server 1's 8080 port and I get no response. Is
-> it any missconfiguration on the router? take a look at this:
-> ----
-> root@mail:~# nmap -sT -p 8080 10.73.219.156
-> 
-> Starting nmap 3.48 ( http://www.insecure.org/nmap/ ) at 2004-05-18 11:06 VET
-> Interesting ports on mail.aeropostal.com.ve (10.73.219.156):
-> PORT     STATE    SERVICE
-> 8080/tcp filtered http-proxy
-> ----
-> 
-> the webserver in server 2 is working perfectly but im not able to reach it
-> from server one, look at this in server 2, maybe im doing something wrong
-> 
-> [root@linserv root]# route
-> Kernel IP routing table
-> Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-> 192.168.0.0     *               255.255.255.0   U     0      0        0 eth1
-> 10.73.216.0     *               255.255.252.0   U     0      0        0 eth0
-> 169.254.0.0     *               255.255.0.0     U     0      0        0 eth0
-> 127.0.0.0       *               255.0.0.0       U     0      0        0 lo
-> default         192.168.0.1     0.0.0.0         UG    0      0        0 eth1
-<snip>
-At first glance, the routing looks correct but I hope you are not trying
-to access the web server from the Linux box.  You will have more
-accurate results if you try to access through it.
-If you try to telnet from the Linux box, you may find it uses a source
-address of 10.73.219.156. The web server will then try to respond out
-interface eth0.  I believe there is an option to override the source
-port of telnet - -b I think.  You will also need to ensure that nothing
-is interfering in the INPUT and OUTPUT chains.  I would suggest testing
-through the Linux Box rather than from it - John
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+All right, let me explain my current setup because is not working after
+all your great help, let me put here step by step everything that is
+currently going on here.
 
+-Server 1 has this /etc/rc.d/rc.firewall script:
+
+#-----<script>
+echo "Borrando posibles reglas anteriores..."
+iptables -F
+iptables -X
+
+echo "Habilitando politicas de negacion total de paquetes"
+
+iptables -P FORWARD DROP
+iptables -P INPUT DROP
+
+echo "Reglas para paquetes de entrada y salida"
+
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+#iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+#iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+
+##internas
+iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -i lo -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
+
+#para el forward
+echo 0 > /proc/sys/net/ipv4/ip_forward
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 80 -j ACCEPT
+iptables -t nat -A PREROUTING -d 10.73.219.156 -p tcp --dport 8080 \
+    -j DNAT --to-destination 192.168.0.2:80
+echo 1 > /proc/sys/net/ipv4/ip_forward
+#-----</script>
+
+-in order to avoid any eth0/eth1 packets confussion, I have only one NIC
+in server2, the one that has the second webserver. This is the server2's
+route output:
+
+-----route script
+[root@linserv root]# route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+192.168.0.0     *               255.255.255.0   U     0      0        0 eth0
+127.0.0.0       *               255.0.0.0       U     0      0        0 lo
+default         192.168.0.1     0.0.0.0         UG    0      0        0 eth0
+-----route script
+
+It seems to be ok, from server2 I can access server1 thru 192,168 network
+but, what concerns me is that, it takes too long to show the default
+router, it gets stuck in lo about a minute. About accessing it from
+server1 using telnet, i have a remote server trying to access ip:8080 and
+it stills get no answer, even though the nmap record shows that port 8080
+in server one is filtered
+
+Thanx a lot for this great help, I really apreciated it
+
+Peace
+Juan
+Programmin' Python is like sugar... Sweet! ;)
 
