@@ -1,11 +1,10 @@
-From: "umberto" <umberto.sousa@comdominio.com.br>
-Subject: Whats options of the GUI
-Date: Wed, 26 Mar 2003 15:27:54 -0300
+From: mjc22 <mjc22@drexel.edu>
+Subject: libipq bug?
+Date: Wed, 26 Mar 2003 20:11:54 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ad01c2f3c5$6a97b7f0$ecc0000a@comdominio.com.br>
+Message-ID: <3E8531D7@webmail.drexel.edu>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00AA_01C2F3AC.453CC450"
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,35 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi guys,
 
-------=_NextPart_000_00AA_01C2F3AC.453CC450
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Currently I have 2 rules:
 
-Whats options of GUI are available to management of the iptables ?
+iptables -A INPUT -j QUEUE
+iptables -A OUTPUT -j QUEUE
 
-------=_NextPart_000_00AA_01C2F3AC.453CC450
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I also have a libipq program....
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Whats options of GUI are =
-available&nbsp;to=20
-management of the iptables ?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+I get the packets fine with the program, except the IP id is messed up.  The 
+IP header ID always seems to be the ID of the previous packet... not the 
+current one.  Everything else looks ok, except the IP header ID...
 
-------=_NextPart_000_00AA_01C2F3AC.453CC450--
+Any ideas?
 
 
