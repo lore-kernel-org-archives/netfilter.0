@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ip_conntrack_lock not readlocked? anyone?
-Date: Wed, 16 Oct 2002 21:27:57 +0100
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: Log rules
+Date: Wed, 16 Oct 2002 17:23:19 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021016202804.CXMH17202.mta01-svc.ntlworld.com@there>
-References: <F2421sZV4CllPF6p0V700001255@hotmail.com>
+Message-ID: <003d01c2755a$3f9067d0$8c01a8c0@sundaram>
+References: <B9D38D9C.45F%george@mattandgeorge.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F2421sZV4CllPF6p0V700001255@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +17,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: George Agnelli <george@mattandgeorge.com>, netfilter@lists.netfilter.org
 
-On Wednesday 16 October 2002 9:18 pm, hallian hallian wrote:
+Hi,
 
-> <html><div style='background-color:'><DIV>
-> <DIV><FONT face=Arial size=2>hello -</FONT></DIV>
-> <DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+I have following rules in my firewall script. It's dumping lot of error
+message. I want to capture all incoming outgoing packet on the external
+interface. How will I change this rules.
 
-Please do not post html to this mailing list.
+# Log the packet
+for chain in INPUT OUTPUT FORWARD PREROUTING POSTROUTING
+do
+  for table in filter mangle nat
+  do
+    $IPT -I $chain -t $table -j LOG --log-prefix="$chain $table "
+  done
+done
 
-Antony.
+Is there any log analyzing tools for iptables log.
+Thanks
+SR
 
--- 
-
-What is this talk of software 'release' ?
-Our software evolves and matures until it becomes capable of escape,
-leaving a bloody trail of designers and quality assurance people in its wake.
 
