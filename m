@@ -1,13 +1,11 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: RE: SNAT hangs system in SMP mode (kernel 2.4.21)
-Date: 22 Jul 2003 20:29:48 +0200
+From: Xemul <epv_xemul@mail.ru>
+Subject: Traffic limitation with iptables
+Date: Tue, 22 Jul 2003 20:08:58 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058898587.8366.316.camel@tux.rsn.bth.se>
-References: <IIEKKHFJALFLMOPAIGGIOEIICAAA.psycoman@pop.com.br>
+Message-ID: <20030722200858.74374455.epv_xemul@mail.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <IIEKKHFJALFLMOPAIGGIOEIICAAA.psycoman@pop.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +16,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Waldecir Loureiro dos Santos Filho <psycoman@pop.com.br>
-Cc: Diederick van Dijk <diedvdyk@jedi.van-dijk.net>, Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Mon, 2003-07-21 at 14:38, Waldecir Loureiro dos Santos Filho wrote:
-> I get this problem too, with Kernel-2.4.21, now I back to orignal kernel of
-> RH and no more problems
-> 
-> Some budy know if 2.4.21 have a problem with iptables ? ? ?
+Hi.
+I wanna solve such a problem:
+When I see that byte counter on some chain reaches or exceedes any fixed
+value - then IMMEDIATELY insert into that cahin new first rule (e.g. -j
+DROP) or delete some rules from any other chain. Or more abstract - how
+can can discover that byte counter is higher than smth without
+"polling" chains?
 
-I havn't seen this problem. Can you reproduce it at will?
-If so, could you guys please try the nmi watchdog?
-
-Add nmi_watchdog=1 to the kernel commandline in the bootloader.
-
-Boot with that and wait a few seconds after the hang and see if it
-prints out anything. Write that down (using a serial console is
-recommended) and run it through ksymoops and post the output to the
-netfilter-devel list.
-
--- 
-/Martin
+Sorry for sending such a mail into announce, developers and user
+maillists but I need help as soon as possible. :)
 
