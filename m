@@ -1,11 +1,10 @@
-From: "Voltaire G." <voltaire@pinoylinux.sytes.net>
-Subject: Re: FTP Redirect IP:Port (solved)
-Date: Thu, 8 Jan 2004 17:01:40 +0800
+From: Peter Schobel <pschobel@porchlight.ca>
+Subject: Problem with Transparent Proxy, Squid and 2.6 kernel
+Date: Wed, 7 Jan 2004 12:44:26 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01dc01c3d5c6$148ad6b0$63000a0a@pooh>
-References: <01a101c3d5b5$d35fe5a0$63000a0a@pooh> <1073549109.767.19.camel@elendil.intranet.cartel-securite.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <2307E2C1-4139-11D8-AFEE-000393677A36@porchlight.ca>
+Mime-Version: 1.0 (Apple Message framework v553)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,49 +15,120 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-YES,  It worked! :-)
-it was typo error indeed! zzzzzzzzzz....
+I have a server that was running a transparent redirection proxy - i 
+was using 2.4.20 kernel on this system and i recently upgraded to 
+2.6.0.107 kernel package for redhat 9
 
-iptables -t nat -A PREROUTING -p tcp -d 202.x.x.x --dport 21 -j DNAT --to
-192.168.0.10:21
+Ever since i did the kernel upgrade the proxy does not work correctly.
 
-Thanks.
+As far as I know, the kernel is configured properly
 
------ Original Message -----
-From: "Cedric Blancher" <blancher@cartel-securite.fr>
-To: "John Paul" <john@pinoylinux.sytes.net>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Thursday, January 08, 2004 4:05 PM
-Subject: Re: FTP Redirect IP:Port
+lsmod shows these iptables modules
 
+Module                  Size  Used by
+ipt_REDIRECT            2048  0
+iptable_nat            20140  1 ipt_REDIRECT
+ip_conntrack           28464  2 ipt_REDIRECT,iptable_nat
+iptable_filter          2688  0
+ip_tables              15104  3 ipt_REDIRECT,iptable_nat,iptable_filter
 
-Le jeu 08/01/2004 =E0 08:05, John Paul a =E9crit :
-> I want to redirect FTP access from my BOX to other machine. How can i
-> make this possible?
-> external IP ---> 202.x.x.x port 21 (redirect) ---> 192.168.0.10 port21
-> I have tried:
-> iptables -A PREROUTING -p tcp -d 202.x.x.x --dport 21 -j DNAT --to
-> 192.168.0.10:21
-> this seems to be not working. what could it be?
+my INPUT, FORWARD and OUTPUT policies are all set to accept
 
-There's a typo here : you did not specify you're working on nat table.
+iptables -L
 
-iptables -t nat -A PREROUTING -p tcp -d 202.x.x.x --dport 21 \
--j DNAT --to 192.168.0.10:21
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
 
-Then you have to check IP forwarding is OK and FORWARD filtering rules
-are letting this trafic go through. Finally, for FTP needs a helper, you
-have to check that ip_nat_ftp module is loaded.
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
 
---
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
+I am using this iptables rule
+
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
+--to-port 3128
+
+my nat table looks like this
+
+iptables -t nat --list
+
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+REDIRECT   tcp  --  anywhere             anywhere           tcp 
+dpt:http redir ports 3128
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+ip forwarding is enabled
+
+cat /proc/sys/net/ipv4/ip_forward
+1
+
+squid is running on 3128 - the squid config looks like this
+
+acl all src 0/0
+
+visible_hostname proxyhost.porchlight.ca
+
+http_port 3128
+
+no_cache deny all
+
+redirect_program /usr/local/bin/redirector.pl
+redirect_children 5
+redirect_rewrites_host_header on
+redirector_access allow all
+
+http_access allow all
+http_reply_access allow all
+
+httpd_accel_port 80
+httpd_accel_host virtual
+httpd_accel_with_proxy on
+httpd_accel_uses_host_header on
+
+This configuration has not changed since before the kernel upgrade 
+except that there were a couple of rules preventing proxy access to the 
+outside world which I removed in order to make things as simple as 
+possible for debugging purposes
+
+I can see by running snort that the packets destined for the remote 
+host are arriving on the interface
+
+I can see using "iptables -t nat --list -v -n" that the number of 
+packets on the REDIRECT rule gets incremented by 1 each time I try to 
+access a remote site - but the browser just times out waiting for a 
+reply and the squid access.log does not record the access
+
+If i type http://proxyhost.porchlight.ca into the address bar of the 
+browser, the port redirect works perfectly and squid redirects the 
+traffic to the proxied site without problem - it is only when I attempt 
+to access remote sites that the redirection does not work.  As I 
+mentioned before - this was all working and tested previous to the 
+kernel upgrade.
+
+I've been struggling with this for a couple days now.  Does anyone have 
+any idea why this configuration is not working?
+
+Thx in advance,
+
+*****************************
+Peter Schobel
+Network Administrator
+Porchlight.ca
+Unlimited Internet
+*****************************
+In a world without walls or fences
+We will have no need for gates or windows
+*****************************
 
 
