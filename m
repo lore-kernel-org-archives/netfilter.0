@@ -1,8 +1,8 @@
-From: Joe <joeja@mindspring.com>
-Subject: question on the nat table and iptables && REDIRECT
-Date: Sun, 22 Sep 2002 22:38:55 -0700
+From: Johann Klonner <jt.klonner@aon.at>
+Subject: strange ip-number
+Date: Sun, 22 Sep 2002 16:28:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D8EA8EF.60909@mindspring.com>
+Message-ID: <3D8DD395.4070307@aon.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,48 +18,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
-    I am trying to get the redirect to work for use with squid. I know 
-that squid is working, but it seems that nothing from the local machine 
-is going through the nat PREROUTING table.  
+Hallo
+I got spam mail containing "href=http://f2m.aac.com.tw". I think, this 
+mail connected with this URL. So I block ed this URL in my iptables script:
+ 
+"iptables - A OUTPUT - o ippp0 -p tcp -d http://f2m.aac.com.tw -j REJECT"
 
-    1) how do the tables interact with each other?  i.e. if a rule in 
-the FILTER table is processed is that the end of it or does it make its 
-way through the NAT and MANGLE tables as well?
+I wanted to find out the IP number with "ping", but ping timed out 
+without an answer.
+iptables -L -v produced ff output:
 
-    2) is there some reason that the POSTROUTING filter of the NAT  
-shows data going through it but the  PREROUTING does not?  How does the 
-PRE, POST and OUTPUT relate to each other?  According to what I read the 
-packets should all go through the PRE, but this does not seem to be the 
-case.
+OUTPUT ...
+"211-23-43-85.HINET-IP.hinet.netreject with icmpport unreachable"
 
-output of iptables -L -v -t nat
-#######################################
- Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               
-destination        
-    0     0 ACCEPT     all  --  ppp0   any     anywhere             
-anywhere           state RELATED,ESTABLISHED
-    1    48 ACCEPT     all  --  !ppp0  any     anywhere             
-anywhere          
-    0     0 LOG        all  --  any    any     anywhere             
-anywhere           limit: avg 3/hour burst 5 LOG level warning prefix 
-`nat: PREROUTED -> unknown: '
+can somebody tell me the meaning of this output? Is it an odd IP-number 
+or an alias of the URL above?? And why did ping time out without any 
+comment such as icmpport unreachable?
 
-Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               
-destination        
-    3   136 MASQUERADE  all  --  any    ppp0    anywhere             
-anywhere          
-    0     0 ACCEPT     all  --  any    !ppp0   anywhere             
-anywhere          
-    0     0 LOG        all  --  any    any     anywhere             
-anywhere           limit: avg 3/hour burst 5 LOG level warning prefix 
-`nat: POSTROUTED unknown: '
-
-Chain OUTPUT (policy ACCEPT 2 packets, 88 bytes)
-#######################################
-
+Any hint would beappreciated,
+Hans
 
 
 
