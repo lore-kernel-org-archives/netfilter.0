@@ -1,12 +1,11 @@
 From: "Matt Walkowiak" <matt@inetdvd.com>
-Subject: (no subject)
-Date: Wed, 5 Jun 2002 23:24:25 -0500
+Subject: HostWatch-like program for Netfilter ???
+Date: Wed, 5 Jun 2002 23:32:17 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <00d301c20d12$0abbfde0$8201a8c0@adserver.local>
-References: <001401c20d05$a0103710$bb4110ac@ee>
+Message-ID: <00ed01c20d13$2402faf0$8201a8c0@adserver.local>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00D0_01C20CE8.216BBCD0"
+	boundary="----=_NextPart_000_00EA_01C20CE9.3AB74DC0"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -21,7 +20,7 @@ To: netfilter@lists.samba.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_00D0_01C20CE8.216BBCD0
+------=_NextPart_000_00EA_01C20CE9.3AB74DC0
 Content-Type: text/plain;
 	charset="big5"
 Content-Transfer-Encoding: quoted-printable
@@ -51,7 +50,7 @@ Anyway, thanks in advance for your responces!
 
 Matt Walkowiak
 
-------=_NextPart_000_00D0_01C20CE8.216BBCD0
+------=_NextPart_000_00EA_01C20CE9.3AB74DC0
 Content-Type: text/html;
 	charset="big5"
 Content-Transfer-Encoding: quoted-printable
@@ -104,6 +103,6 @@ responces!</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>Matt =
 Walkowiak</FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_00D0_01C20CE8.216BBCD0--
+------=_NextPart_000_00EA_01C20CE9.3AB74DC0--
 
 
