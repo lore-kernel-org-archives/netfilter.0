@@ -1,13 +1,15 @@
 From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: POP/SMTP traffic graphics.
-Date: Tue, 8 Apr 2003 13:25:16 +0200
+Subject: Re: more questions about kernel config options for iptables
+Date: Tue, 8 Apr 2003 13:17:44 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030408132516.6dae6b83.arnt@c2i.net>
-References: <200304081053.15957.carles@descom.es>
+Message-ID: <20030408131744.7239947b.arnt@c2i.net>
+References: <Pine.LNX.4.44.0304071706510.20955-100000@dell>
+	<200304080304.25765.netfilter@newkirk.us>
+	<200304080344.24650.netfilter@newkirk.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304081053.15957.carles@descom.es>
+In-Reply-To: <200304080344.24650.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,29 +22,19 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, 8 Apr 2003 10:53:10 +0200, 
-<200304081053.15957.carles@descom.es>:
+On Tue, 8 Apr 2003 03:44:24 -0400, 
+Joel Newkirk <netfilter@newkirk.us> wrote in message 
+<200304080344.24650.netfilter@newkirk.us>:
 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
+> On Tuesday 08 April 2003 03:04 am, Joel Newkirk wrote:
 > 
-> Hello,
-> I'm using MRTG to monitor muy Internet link traffic.
-> My bulk traffic is POP and SMTP.
+> > Perhaps some day there will be a "make easyconfig" option that will
 > 
-> Is there any way using NetFilter to get the bandwidth usage of this
-> kind of traffic data to build the corresponding MRTG traffic graphics
-> ?
-> 
-> I would like to have one MRTG traffic graph for POP traffic and
-> another for SMTP traffic.
-> Is it possible with the NetFilter help ?
-> Any other solution for it ?
+> Doh!  Just read your previous post.  Please disregard my stupidity...
+> ;^)
 
-..yep, yep, chk the Netfilter Mailing List
-<netfilter@lists.netfilter.org>,  Message-Id:
-<1049733245.4867.13.camel@raylinux.internal> for the _how_ 
-to "Create an accounting chain:".  ;-)
+..to rub in more salt; check out the make options in the latest 
+2.5.6x.  ;-)
 
 -- 
 ..med vennlig hilsen = with Kind Regards from Arnt... ;-)
