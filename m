@@ -1,12 +1,14 @@
-From: Thomas Lussnig <lussnig@smcc.net>
-Subject: Re: secure ftp with SSL
-Date: Fri, 13 Sep 2002 12:20:54 +0200
+From: Alistair Tonner <Alistair@alistairt.ath.cx>
+Subject: Re: Iptables --owner-uid
+Date: Sat, 14 Sep 2002 10:14:19 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D81BC06.80107@smcc.net>
-References: <754E53EEA7D3D31194E50050DAB99F6E70543C@thor.id.magnus.com>
+Message-ID: <20020914141419.GC24368@Ajftl1.ajfthome.on.ca>
+References: <39778BFB9C25BA429794B15B50AEC781045424@server-dcms>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <39778BFB9C25BA429794B15B50AEC781045424@server-dcms>; from DidierH@frci.net on Sat, Sep 14, 2002 at 07:53:29 -0400
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +18,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Rendy V <RendyV@atd.magnus.co.id>
-Cc: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
-
-Rendy V wrote:
-
-> Hi All,
-> I have a strange problem, the problem is like this :
-> I have an application that use secure ftp and for that reason I have 
-> opened up the command port (990) with state NEW and allowed data port 
-> (20000:20049) with state ESTABLISHED, RELATED on the firewall. It 
-> fails when it try to use data port, for authentication it working just 
-> fine. Please see the log on the below.
->
-> If I open data port 2000:20049 with state NEW it working normally but 
-> I don't want to make a big hole on my firewall. I suspect that the 
-> iptables connection tracking cannot track the relation between command 
-> port and data port because it is encrypted using SSL. Is it true or is 
-> there something I miss here?? What should I do now??
->
-The problem you have is that on SSL crypted connection the RELATED could 
-not work right. Because for FTP there is an extra module that analyse the
-control traffic and can so evalute what ports are related. But this is 
-not posible then the traffic is unreadable for the module.
-
-Cu Thomas
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: Didier Hung Wan Luk <DidierH@frci.net>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
+	What I'm reading is that the process generating the packets
+	(for owner match to work) has to be a process running on the
+	box on which iptables firewall is running.  If the packets are
+	coming through the forward chain (i.e. from downstream pc's)
+	there is no way of matching UID (owner) as there is no owning
+	process generating the packet.  You might be better off matching
+	MAC addresses in this case ...
+
+
+
+On 2002.09.14 07:53 Didier Hung Wan Luk wrote:
+> I may be wrong but I am in confusion here..
+> If I am using Samba as a PDC and all my win clients are members of the
+> samba domain... are they not using the uid given by Samba? Which is
+> itself mapped to a unix user (id) then if this is the case it should
+> work is it not..??
+> 
+> 
+> 
+> Regards,
+> 
+> Didier Hung Wan Luk
+> FRCI, Sibotie House
+> L'Anse Courtois
+> Pailles
+> Tel: 230-2869636
+> Fax: 230-2869629
+> 
+> 
+> -----Original Message-----
+> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
+> Sent: Saturday, September 14, 2002 3:22 PM
+> To: Netfilter Mailing List
+> Subject: Re: Iptables --owner-uid
+> 
+> On Saturday 14 September 2002 11:36 am, Didier Hung Wan Luk wrote:
+> 
+> > Hello All,
+> >
+> > I have a question about iptables with the --owner-uid option..
+> >
+> > Is it possible to create rules with iptables based on users?
+> >
+> > i.e can I say that user marry(uid=513) can telnet out but user
+> > John(uid=601) cannot?
+> 
+> Only if those users are telnetting out from your firewall machine
+> (which
+> implies they have accounts on it, and are logged in to it, which is
+> not a
+> recommended arrangement for a firewall).
+> 
+> > In the iptables man it is said that --owner-? (owner module) can
+> match
+> > characteristics of locally-generated packets only.. if this is the
+> case
+> > then I cannot use it in an environment where all my clients are
+> windows
+> > clients and the server is a Samba PDC with iptables. Am I right? Or
+> is
+> > there another way to do this?
+> 
+> You are correct.   --owner-uid only knows about the locally-owning
+> process,
+> therefore there is no meaningful owner match for forwarded packets.
+> 
+> There may be some way you can get Samba to link user ID to IP address,
+> and
+> then from there generate some netfilter rules to restrict what each
+> user can
+> do ?
+> 
+> Antony.
+> 
+> --
+> 
+> The first ninety percent of an engineering project takes ninety
+> percent
+> of the time, and the last ten percent takes the remaining ninety
+> percent.
+> 
+> 
+> 
 
 
