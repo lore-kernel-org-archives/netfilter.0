@@ -1,12 +1,11 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: redundancy with linux and two NIC
-Date: Fri, 13 Jun 2003 10:44:23 -0700
+From: =?iso-8859-1?q?Ivan=20Rodriguez?= <ivanoch79@yahoo.com.mx>
+Subject: redundancy with linux and two NIC
+Date: Fri, 13 Jun 2003 12:16:52 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E34D6@alderaan.smgtec.com>
+Message-ID: <20030613171652.82258.qmail@web13206.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +16,7 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Ivan Rodriguez <ivanoch79@yahoo.com.mx>, netfilter@lists.netfilter.org
-
-
-I want that too!
-
-The only immediate way I can imagine that happening is writing a =
-monitoring script that keeps checking the availability of each channel, =
-and then when it fails, call a script to modify your iptables and =
-routing configuration to point to the new configuration. I sorta have =
-this setup, but I haven't implemented the poller, so I need to manually =
-switch over when there is a failure...
-
-If anyone knows a more elegant approach, I am all ears.
-
------Original Message-----
-From: Ivan Rodriguez [mailto:ivanoch79@yahoo.com.mx]=20
-Sent: Friday, June 13, 2003 10:17 AM
 To: netfilter@lists.netfilter.org
-Subject: redundancy with linux and two NIC
 
 Hi=20
 i have the next situation
@@ -114,7 +95,6 @@ ppp0
 
 _________________________________________________________
 Do You Yahoo!?
-La mejor conexi=F3n a internet y 25MB extra a tu correo por $100 al mes. =
-http://net.yahoo.com.mx
-
+La mejor conexi=F3n a internet y 25MB extra a tu correo por $100 al mes. ht=
+tp://net.yahoo.com.mx
 
