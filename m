@@ -1,13 +1,13 @@
-From: Iva "Cabric" Cabric <ivac@gnjilux.srk.fer.hr>
-Subject: Re: ULOG with -m state
-Date: Mon, 25 Nov 2002 09:16:29 +0100
+From: "Nigel Clarke" <nigel@forever-networks.com>
+Subject: RE: IPTABLES vs Checkpoint
+Date: Tue, 26 Nov 2002 15:53:30 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021125081629.GA12186@gnjilux.srk.fer.hr>
-References: <20021122155352.GA5665@gnjilux.srk.fer.hr> <200211241945.38762.netfilter@newkirk.us>
+Message-ID: <MKEJJFIGIGKMFKMKEEDBOEIACAAA.nigel@forever-networks.com>
+References: <3F5BAB933C75004690195047C4040A6D0535D4@tc-pdc.jhbA.techconcepts.co.za>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200211241945.38762.netfilter@newkirk.us>
+In-Reply-To: <3F5BAB933C75004690195047C4040A6D0535D4@tc-pdc.jhbA.techconcepts.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Joel Newkirk <netfilter@newkirk.us>
-Cc: netfilter@lists.netfilter.org
+To: Wayne de Nobrega <wdenobre@techconcepts.co.za>, netfilter@lists.netfilter.org
 
-On Sun, Nov 24, 2002 at 07:45:38PM -0500, Joel Newkirk wrote:
-> > $ iptables -A ssh -j ULOG -p tcp -m state --state NEW
-> >
-> > reports:
-> >
-> > iptables v1.2.6a: You must specify `--state'
-> > Try `iptables -h' or 'iptables --help' for more information.
-> >
-> > but using DROP works fine:
-> >
-> > $ iptables -A ssh -j DROP -p tcp -m state --state NEW
-> 
-> Does the ULOG target work in other uses, IE "iptables -A FORWARD -j ULOG" ?
+Wayne,
 
-Nope, it gives same error:
+How are the firewalls installed? In a cluster configuration or stand alone?
 
-$ iptables -A FORWARD -j ULOG -p tcp -m state --state NEW
-iptables v1.2.6a: You must specify `--state'
+In a stand alone you can go with either. If you're looking for scalability
+and use of
+things like VPNs, I'd go with Checkpoint. If you're looking for a stable
+stateful firewall, you'd be
+better off with iptables/netfilter.
 
-with INPUT and OUTPUT, also same thing. I'm not doing anything special
-(like NAT, conntrack, ftp, ...), just plain INPUT filtering.
+The Nokia IPSO is not that bad. It is a stripped down version of BSD. So,
+you're going to end up
+with a stateful / Unix firewall no matter how you look at it.
 
--- 
-@
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Wayne de
+Nobrega
+Sent: Tuesday, November 26, 2002 2:28 PM
+To: netfilter@lists.netfilter.org
+Subject: IPTABLES vs Checkpoint
+
+
+Hello,
+
+I have a customer who is part of an international group which has a
+policy of using the Nokia Checkpoint firewall.  Due to the signifcant
+cost differences, and our preference, the local branch and ourselves
+would like to install an IPTABLES based firewall.  I need some help in
+motivating this to head office and am looking for information comparing
+the two solutions.  I need to focus on the technical issues of the two
+products and ultimately the inherent security realised from the two
+products.
+
+Can anyone offer some input or point me to a source of information.
+
+Many thanks
+
+Wayne
+
 
