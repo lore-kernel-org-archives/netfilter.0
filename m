@@ -1,12 +1,15 @@
-From: Chris Etzel <cetzel@adantech.com>
-Subject: Passive FTP - rehash
-Date: Tue, 20 Apr 2004 14:32:59 -0700
+From: Tom Marshall <tommy@home.tig-grr.com>
+Subject: Re: Stream audio
+Date: Tue, 20 Apr 2004 21:30:01 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1082496779.4674.3.camel@linux.local>
-Reply-To: cetzel@adantech.com
+Message-ID: <20040421043001.GA1312@home.tig-grr.com>
+References: <20040408022533.92206.qmail@web40512.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20040408022533.92206.qmail@web40512.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,83 +19,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-I know this is a rehash possibly, but I am a little confused.
-
-I have this script below:
-
-#!/bin/bash
+To: Luis GUSTAVO <lgpcf@yahoo.com.br>
+Cc: netfilter@lists.netfilter.org
 
 
-#-------------------------------
-# updated RC.FIREWALL script 
-# with supposed FTP support? HELP!
-#-------------------------------
+--SLDf9lqlvOQaIe6s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+> How can i block in my lan ms windows media, and stream audio.
 
-# enable ip_forwarding
-echo "1" > /proc/sys/net/ipv4/ip_forward
+MMS protocol is port 1755.  RTSP protocol is port 554.  However, all major
+implementations of streaming software have HTTP based "cloaking" to "make
+streaming easier".
 
-# added for Passive FTP Compatibility
-/sbin/modprobe ip_conntrack_ftp
-/sbin/modprobe ip_nat_ftp
+--=20
+Research is what I'm doing when I don't know what I'm doing.
+        -- Wernher von Braun
 
+--SLDf9lqlvOQaIe6s
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-# Flush tables
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-iptables -F
-iptables -t nat -F
+iEYEARECAAYFAkCF+MkACgkQFMm9uvwPXW5grwCgk01jVF+OeQ1VxxA3yG7wdrxr
++OMAnj/6h+GV+wo1nwl3SsGnf0b+0qtF
+=sjF7
+-----END PGP SIGNATURE-----
 
-
-# Set Default policies
-
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
-
-
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
-
-BLOCKT="1:1024 5900 5900 2301 2381 3372 5000 1433 1801 2103:2105 3146"
-BLOCKU="1:1024 2301 2381 3372 1900 1434 3145 3527"
-
-iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 25 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 443 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 53 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 20:22 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 308 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 90 -j ACCEPT
-
-
-# BLOCK BAD TCP
-for BT in $BLOCKT; do
-	iptables -A INPUT -i eth0 -p tcp --dport $BT -j DROP;
-done
-
-# BLOCK BAD UDP
-for BU in $BLOCKU; do
-	iptables -A INPUT -i eth0 -p tcp --dport $BU -j DROP;
-done
-
-# END OF SCRIPT
-
-It's pretty basic, and I know its not really too secure, but I am trying
-to narrow down this FTP passive problem.
-
-I can login to passive FTP servers, but it hangs at 'ls'. 
-
-Is there something else in my script that I need to add to get ftp-data
-to respond correctly ?
-
-
-Thanks in advance,
-
-Chris
-
+--SLDf9lqlvOQaIe6s--
 
