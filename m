@@ -1,48 +1,39 @@
-From: "Justin Albstmeijer" <justin@VLAMea.nl>
-Subject: iptable marking and iproute2
-Date: Tue, 11 Nov 2003 14:15:19 +0100 (CET)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <33396.62.58.0.190.1068556519.squirrel@wmail.websystems.nl>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: RE: Memory leaks in ip_conntrack?
+Date: Tue, 11 Nov 2003 14:24:50 +0100 (CET)
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0311111424150.16497-100000@filer.marasystems.com>
+References: <7C9884991ADAE0479C14F10C858BCDF52E37C7@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF52E37C7@alderaan.smgtec.com>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Daniel Chemko <dchemko@smgtec.com>
+Cc: Alistair@nerdnet.ca, Kishore Dharmavaram <kishored@servgate.com>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
 
-Hi,
+On Mon, 10 Nov 2003, Daniel Chemko wrote:
 
-I have a question on iptable marking and iproute2.
-For testing I created the following script.
-What I expect is when removing the default route on my client (route del
-default gw 192.168.4.1), http request would still work using the gateway
-defined at the routing table TEST.
+> Ack! (slaps head)
+> 
+> I was a victim of this! I finally have a reason for all those annoying
+> TCP window error messages! Who knows, I may actually have 'traffic'
+> through my gateway at this rate.
 
-This is not working.
-I only get debug messages before I remove the default gateway.
-After removing the default gateway it is not possible to access http
-servers and no debug messages are added to the messages file.
+tcp_wmem should not be related to forwarded traffic at all, only for local 
+TCP sockets..
 
-What am I missing here?
+Regards
+Henrik
 
------------------------------------------------------------------
-CHAIN=3DPREROUTING
-
-iptables -A $CHAIN -t mangle -p tcp --dport 80  -j MARK --set-mark 1
-
-iptables -t mangle -A $CHAIN -m mark --mark 1 -j LOG --log-level DEBUG
---log-prefix "fwmark 1:"
-
-ip rule add fwmark 1 table TEST
-ip route add default via 192.168.4.1 table TEST
---------------------------------------------------------------------
 
