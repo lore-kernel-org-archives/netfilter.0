@@ -1,15 +1,14 @@
 From: Chris Barnes <runtimeerror@bigpond.com>
-Subject: Re: newbie problem
-Date: 17 Feb 2003 21:31:02 +1100
+Subject: RE: newbie problem
+Date: 17 Feb 2003 21:48:24 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045477862.21055.7.camel@billybob.back2front.homelinux.org>
-References: <1045467799.20801.22.camel@billybob.back2front.homelinux.org> 
-	<200302170309.16516.netfilter@newkirk.us>
+Message-ID: <1045478904.21055.17.camel@billybob.back2front.homelinux.org>
+References: <B848917C9D07D71199C5005004D778B8017B59@TELECOMS04>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-P5SD/Sbyc0/RZ6orvQoW"
+	boundary="=-A1FJQl9kcht1zmOwOGfq"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200302170309.16516.netfilter@newkirk.us>
+In-Reply-To: <B848917C9D07D71199C5005004D778B8017B59@TELECOMS04>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,49 +21,49 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: Netfilter <netfilter@lists.netfilter.org>
 
 
---=-P5SD/Sbyc0/RZ6orvQoW
+--=-A1FJQl9kcht1zmOwOGfq
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2003-02-17 at 19:09, Joel Newkirk wrote:
+On Mon, 2003-02-17 at 19:49, Eugene Joubert wrote:
+> Is your webserver on your firewall?
 >=20
-> You have to accept connections TO port 80, not FROM port 80...
->=20
-> Try these:
->=20
-> iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->=20
-> They will allow clients to connect and retrieve http documents, as well=20
-> as allowing the very useful ICMP controls like source_quench=20
-> fragmentation control and such that really make web browsing work=20
-> properly, but no other communication in OR out is allowed by these=20
-> rules.  (assuming DROP policy on OUTPUT)  Add appropriate ACCEPT rules=20
-> to OUTPUT if the server needs to initiate connections for some reason.
->=20
+> Also I would suggest moving your webserver to another server behind your
+> firewall.
+> Just my 5 cents.
 
-source_quench (sounds like a fruit juice drink :p ) and all that is
-really important? hmm, i had no idea such things existed (excuse my
-ignorance..newbie here).
-
-I'll make sure i add those rules...
-
-thanks heaps.
+The firewall is on the web server yes. Future plans dictate that we will
+be purchasing new machines for a dedicated firewall and web server, etc
+but right now we have to make do with 1 machine.
 
 
---=-P5SD/Sbyc0/RZ6orvQoW
+>=20
+> PS:
+> You could also set your OUTPUT Policy to default ACCEPT, but if your real=
+ly
+> paranoid then just make it DROP
+>=20
+
+Its is set to DROP because i am paranoid :) I'm so paranoid i was hoping
+to get away with just the 2 rules in the table, one for web in and one
+for web out but as Joel Newkirk pointed out i need to allow some other
+"related" packets to traverse as well.
+
+thanks for your help :)
+
+
+--=-A1FJQl9kcht1zmOwOGfq
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.0.7 (GNU/Linux)
 
-iD8DBQA+ULnlMutcjt77K+ARAp4GAJ94cV9bjN4JbgDry9M/5QlEZdjIYACgiNGW
-dzktnHGsEWyjRh26EcN60ug=
-=VI8u
+iD8DBQA+UL33Mutcjt77K+ARAiIpAKCeyDJgSx/Z5/dLEo0xU4SNP8bcWgCffEd1
+8yiHxKhk45xizvS/dBVb/Wc=
+=t4c7
 -----END PGP SIGNATURE-----
 
---=-P5SD/Sbyc0/RZ6orvQoW--
+--=-A1FJQl9kcht1zmOwOGfq--
 
 
