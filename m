@@ -1,13 +1,14 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: doubts(plz help)
-Date: 20 May 2003 09:51:19 +0200
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: Strange MAC address
+Date: Tue, 20 May 2003 11:34:57 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053417079.2024.89.camel@kermit.spenneberg.de>
-References: <20030513065756.79253.qmail@web14702.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.51.0305201132580.17800@dns.toxicfilms.tv>
+References: <Pine.OSF.3.91.1030518215213.1714B-100000@delta.ntu.ac.sg> 
+ <Pine.LNX.4.51.0305192026090.897@dns.toxicfilms.tv>
+ <1053411035.2024.14.camel@kermit.spenneberg.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030513065756.79253.qmail@web14702.mail.yahoo.com>
+In-Reply-To: <1053411035.2024.14.camel@kermit.spenneberg.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +18,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: nasrajan mp <nasrajanmp@yahoo.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ralf Spenneberg <lists@spenneberg.org>
 Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Am Die, 2003-05-13 um 08.57 schrieb nasrajan mp:
->=20
->=20
-> we are developing a firewall using C.
->=20
-> we capture packets using packet sockets(at datalink layer).
->=20
-> is netfilter compatible with this packet sockets?
-What do you mean by compatible? What are you trying to do?
+> > > MAC=00:a0:cc:28:56:c4:00:09:b6:13:9a:7c:08:00
+> > There are 12 octets here, so it is:
+> > Source MAC: 00:a0:cc:28:56:c4:00
+> > Dest   MAC: 09:b6:13:9a:7c:08:00
+> Unfortunately this is not fully correct. The first 12 octetts are the
+> MAC addresses. The last two specify the protocol. All in all it is the
+> *whole* ethernet header:
+> Source MAC 00:a0:cc:28:56:c4
+> Dest MAC   00:09:b6:13:9a:7c
+> Protocol   08:00  (see RFC894)
+Thanks, i knew there was something wrong about these MACs.
 
-Cheers,
+Regards,
+Maciej
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
-
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                   =20
-http://honeynet.spenneberg.org
 
