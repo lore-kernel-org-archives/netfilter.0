@@ -1,12 +1,12 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: Iptables forwarding
-Date: Tue, 22 Mar 2005 10:47:39 +0000
-Message-ID: <200503221047.39552.gdh@acentral.co.uk>
-References: <BAY21-F1133FDC9FA14439DDF527AA14E0@phx.gbl>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: syslogging firewall data to an external file
+Date: Tue, 22 Mar 2005 06:27:40 -0500
+Message-ID: <1111490859.4267.16.camel@hubcap.ljm.dom>
+References: <20050320210235.0CBD0F9D7EF@mx2.hotpop.com>
+	<423DEDC3.1000902@hotpop.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <BAY21-F1133FDC9FA14439DDF527AA14E0@phx.gbl>
-Content-Disposition: inline
+In-Reply-To: <423DEDC3.1000902@hotpop.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,24 +20,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 22 March 2005 10:33, N Gal wrote:
-> Hallo,
->
-> I'm  trying to set up a 'statistics box' that should simply IP forward
-> everything from one ethernet card to the other (Transparent Firewall?) in
-> the same subnet. The problem is that it will not do this. Any suggestions
-> welcome...
+On Sun, 2005-03-20 at 16:40, Georgi Alexandrov wrote:
+> Use the ULOG (userspace logging) target and the ulogd deamon. That way 
+> you may specify logging to a particular file (supports sql logging too).
+> More at: http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
-You want this : http://ebtables.sf.net
+in addition to the ULOG target/ulogd solution (which is the easier way
+to go), you could also use syslog-ng as your syslog daemon and use its
+filtering capabilities to say, dump all logs entries with the string
+"FIREWALL" into /var/log/firewall.
 
-Short version - use a 2.6 kernel and when you configure Linux Bridging 
-(interface br0 spanning eth0 and eth1, for example), you will be able to 
-apply rules, or simply count the number of packets matching rules / 
-interfaces...
+-j
 
-If you use a 2.4 kernel, you will need to patch it (see URL above)
-
-Cheers,
-Gavin.
+--
+"Asleep at the switch?  I wasn't asleep, I was drunk!"
+	--The Simpsons
 
 
