@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: insecure script
-Date: Tue, 23 Mar 2004 20:17:17 +0000
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: forwarding Ports via VPN ??
+Date: Wed, 24 Mar 2004 07:44:21 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403232017.17094.Antony@Soft-Solutions.co.uk>
-References: <20040323195832.0ACB83BAD18@smtp.latinmail.com>
+Message-ID: <20040323204421.GB3387@samad.com.au>
+References: <1080067446.2018.12.camel@ErrorL>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cmJC7u66zC7hs+87"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040323195832.0ACB83BAD18@smtp.latinmail.com>
+Content-Disposition: inline
+In-Reply-To: <1080067446.2018.12.camel@ErrorL>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,42 +19,90 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Tuesday 23 March 2004 7:58 pm, Jorge Garcia wrote:
 
-> hi, im starting to write a paper about iptables security, and im trying to
-> focus in the scripts. anyone can give some examples of insecure scripts or
-> some tips to find my own insecurities in many scripts on the net. how
-> hackers can take advantages in insecurities in the scriipts??
+--cmJC7u66zC7hs+87
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Here's a few ideas:
+On Tue, Mar 23, 2004 at 07:44:07PM +0100, Cestonaro Thilo wrote:
+> Hey,
+>=20
+> i have a vpn established and working via a Linux (Debian) Box and a
+> Windows with openvpn.=20
+> The tap devices have the following ips:
+> linux 192.168.200.201
+> windows 192.168.200.202
+>=20
+> My intern network address at linux net is=20
+> 192.168.1.0/24
+> and under windows it's
+> 192.168.0.0/24
+>=20
+> now my question:
+> I want to forward the ports 2005 2006 7064 from the Linux net into the
+> Windows net ( enough when the packets appear at the vpn endpoint in
+> Windows net)
+> I get at the Linux VPN box the packets via eth0=20
+> these packets are send to 255.255.255.255:2005 for example.
 
-1. Don't use a default ACCEPT policy on INPUT or FORWARD chains.
+I think you will find that broadcast packets can't be NAT in this
+fashion, there are a few app's (daemon) out there that re route these in
+the fashion that you want, but you need the deamon at both ends of the
+tunnel.
 
-2. Don't try to "block the bad stuff and allow the rest" - always "allow what 
-you know you want, and block the rest"
 
-3. Use stateful matching - don't just allow packets in to high port numbers on 
-the basis that "they must be replies"
+> Now I want them to go into the tap0 dev and appear at the windows box.
+>=20
+> I tried following rules for iptable at the linux box:
+>=20
+> iptables -A INPUT -i tap0 -j ACCEPT
+> iptables -A OUTPUT -o tap0 -j ACCEPT
+>=20
+> iptables -t nat -A PREROUTING -p udp -i eth0 --dport 2005 -j DNAT --to
+> 192.168.200.202:2005
+> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 2005 -j DNAT --to
+> 192.168.200.202:2005
+> iptables -t nat -A PREROUTING -p udp -i eth0 --dport 2006 -j DNAT --to
+> 192.168.200.202:2006
+> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 2006 -j DNAT --to
+> 192.168.200.202:2006
+> iptables -t nat -A PREROUTING -p udp -i eth0 --dport 7064 -j DNAT --to
+> 192.168.200.202:7064
+> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 7064 -j DNAT --to
+> 192.168.200.202:7064
+>=20
+> iptables -A FORWARD -p udp -i eth0 --dport 2005 -j ACCEPT
+> iptables -A FORWARD -p tcp -i eth0 --dport 2005 -j ACCEPT
+> iptables -A FORWARD -p udp -i eth0 --dport 2006 -j ACCEPT
+> iptables -A FORWARD -p tcp -i eth0 --dport 2006 -j ACCEPT
+> iptables -A FORWARD -p udp -i eth0 --dport 7064 -j ACCEPT
+> iptables -A FORWARD -p tcp -i eth0 --dport 7064 -j ACCEPT
+>=20
+>=20
+> Could anyone say why this is not working?
+> I looked at the tap0 dev for outgoing packets with "iptraf -i tap0 -u".
+> But there are nor outgoing neither incoming packets :(
+>=20
+> Ciao Thilo
+>=20
+>=20
+>=20
 
-4. Don't assume that all packets from source port 53 are DNS.
+--cmJC7u66zC7hs+87
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-5. Be careful about allowing all connections from internal clients to the 
-Internet - somebudy might bring a compomised laptop into your network, or 
-somebody inside the organisation might not be trustworthy.   Check for 
-suspicious outgoing traffic as well as incoming.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-Regards,
+iD8DBQFAYKGlkZz88chpJ2MRAuX6AJoCU030h2vJS7kpsw69Q+838+ssQwCeLQWw
+NL90xAY2LJ/TTc6VTrNY+wc=
+=ojvJ
+-----END PGP SIGNATURE-----
 
-Antony.
-
--- 
-If you can't find an Open Source solution for it, then it isn't a real 
-problem.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--cmJC7u66zC7hs+87--
 
