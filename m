@@ -1,8 +1,8 @@
 From: "Alexis" <alexis@tpys.com.ar>
 Subject: Re: Rules for Blocking Proxies...
-Date: Tue, 20 Apr 2004 11:27:40 -0300
+Date: Tue, 20 Apr 2004 11:23:48 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ba01c426e3$a4d0de40$0c00a8c0@pepelui>
+Message-ID: <00b901c426e3$a189f0a0$0c00a8c0@pepelui>
 References: <000b01c426f6$cc216f10$36b4fea9@SABNANIS> <006f01c426dc$572c2cf0$0c00a8c0@pepelui> <200404201453.14678.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
