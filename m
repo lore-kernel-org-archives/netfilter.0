@@ -1,8 +1,9 @@
-From: "Dan Searle" <dan@intrago.co.uk>
-Subject: Optimize large iptables by hashing on MAC address help
-Date: Fri, 11 Oct 2002 10:30:55 +0100
+From: Rickard Eriksson <riceri@home.se>
+Subject: Re: PPTP
+Date: Fri, 11 Oct 2002 11:27:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002801c27108$e75d6590$0800000a@wormhole>
+Message-ID: <3DA6999B.80609@home.se>
+References: <E131E9F1848D0148813EAF06A846608F615F73@w2ks-e2k.iconos.be>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,76 +16,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Sneppe Filip <Filip.Sneppe@cronos.be>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Sneppe Filip wrote:
 
-I am trying to optimise a very large set of iptables rules that match
-packets based on MAC address. The tables contain thousands of rules matching
-packets using the --mac-source matching rule, e.g...
+> Rickard Eriksson [mailto:riceri@home.se] wrote:
+> >
+> >
+> >Do i need newest iptables to get the modules to work?
+> >
+>
+> Hi,
+>
+> No, not with these types of modules (conntrack/nat helpers).
+> We're only talking kernel code here. You need to run the
+> correct iptables if you are adding match and target extensions.
+>
+> Regards,
+> Filip
+>
+>
+>
+>
+When i try to restart and load the modules i get a error, i didn't copy 
+it but it was something about "unresolved ... helper"
+And i can't find any setting in "make config" so that it shall make the 
+helper in any way.
 
-...etc...
-ACCEPT     tcp  --  anywhere             anywhere           MAC
-00:02:E3:16:73:BB tcp dpt:webcache
-ACCEPT     udp  --  anywhere             anywhere           MAC
-00:02:E3:16:73:BB udp dpt:webcache
-ACCEPT     tcp  --  anywhere             anywhere           MAC
-00:C1:26:01:DA:92 tcp dpt:webcache
-ACCEPT     udp  --  anywhere             anywhere           MAC
-00:C1:26:01:DA:92 udp dpt:webcache
-...etc...
+Do you know what i am talking  about :)
 
-The problem is that the system seems to be spending a lot of time matching
-these rules, as the firewall handles up to 10Mbits of traffic at high load.
-To optimise the process I want to create 16 (or perhaps more) sub-tables
-based on the Nth least significant bits of the source MAC address (a sort of
-hashing), i.e.
+/Rickard
 
-* The INPUT chain would contain 16 sub-table jump rules matching the 4 least
-sig. bits of the MAC source like this....
-
-INPUT_0   all  --  anywhere             anywhere     PART-MAC
-xx:xx:xx:xx:xx:x0
-INPUT_1   all  --  anywhere             anywhere     PART-MAC
-xx:xx:xx:xx:xx:x1
-INPUT_2   all  --  anywhere             anywhere     PART-MAC
-xx:xx:xx:xx:xx:x2
-INPUT_3   all  --  anywhere             anywhere     PART-MAC
-xx:xx:xx:xx:xx:x3
-...etc...
-INPUT_E   all  --  anywhere             anywhere     PART-MAC
-xx:xx:xx:xx:xx:xE
-INPUT_F   all  --  anywhere             anywhere     PART-MAC
-xx:xx:xx:xx:xx:xF
-
-* Each of the rules will then be dumped into the relevant custom sub-chains,
-i.e...
-The INPUT_2 chain will contain all the MAC address rules ending in :x2
-e.g...
-
-ACCEPT     tcp  --  anywhere             anywhere           MAC
-00:C1:26:01:DA:92 tcp dpt:webcache
-ACCEPT     udp  --  anywhere             anywhere           MAC
-00:C1:26:01:DA:92 udp dpt:webcache
-ACCEPT     tcp  --  anywhere             anywhere           MAC
-00:B5:23:21:FF:72 tcp dpt:webcache
-ACCEPT     udp  --  anywhere             anywhere           MAC
-00:B5:23:21:FF:72 udp dpt:webcache
-...etc....
-
-Using this hashing method, instead of each packet potentially being compared
-against say 1024 rules, only approx. 64 (1024/16) rules would need to be
-considered, dramatically increasing the speed at which packets are filtered.
-
-So my question is, is there a "PART-MAC" matching rule, or some other low
-level matching rule which could be used to achieve the same effect?
-
-Cheers, Dan...
-
-P.S.
-Sorry about such a large post, but I don't know how I could explain it in a
-more consise manner.
 
 
 
