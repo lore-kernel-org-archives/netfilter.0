@@ -1,14 +1,12 @@
-From: "Paul Gibson" <paul.gibson@subspace.net.au>
-Subject: n00b question.....   How to get details on active connections
-Date: Sat, 20 Sep 2003 19:15:03 +1000
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: Additional Security
+Date: Sat, 20 Sep 2003 08:09:27 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <021a01c37f57$adb6b360$0501a8c0@gndn.subspace.net.au>
-References: <1063985328.28941.37.camel@angua.localnet>
-Reply-To: <paul.gibson@subspace.net.au>
+Message-ID: <3F6C4377.3070605@chrisbrenton.org>
+References: <3F6B3989.6010708@Loudoun-Fairfax.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1063985328.28941.37.camel@angua.localnet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,16 +16,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Jeffrey Laramie wrote:
+> 
+> Do you think it's worthwhile to install and configure tripwire on an 
+> iptables firewall box?
 
-	I know this is a n00b question but how can I get details of active
-connections, eg what inside address/pc is connected to what outside address
-???
+I myself prefer to use Aide, but some kind of file integrity checking on 
+your firewall is an excellent idea (I also regularly audit running 
+processes, listening ports, etc.). If someone whacks the box, you 
+certainly want to know about it ASAP. The more checks you do the better.
 
-
-TIA
+HTH,
+C
 
 
