@@ -1,14 +1,13 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: can't surf windows 2k and XP
-Date: 23 Jan 2003 10:32:30 +0200
+From: "hare ram" <hareram@sol.net.in>
+Subject: How to Stop scanings
+Date: Thu, 23 Jan 2003 17:22:38 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1043310750.24680.12.camel@rayw.knowledgefactory.co.za>
-References: <5.1.0.14.0.20030123160248.00a884c8@mailsrv.teamlbc.com.ph>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <033e01c2c2d5$ef4b3060$13fcc5cb@Housecall>
+References: <1043301815.2968.5.camel@runabout.noc.starken.com> <030501c2c2b6$ae7c18c0$13fcc5cb@Housecall>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-CNw0emTTOuB69pC1Zu0R"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.1.0.14.0.20030123160248.00a884c8@mailsrv.teamlbc.com.ph>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,78 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+hi all
 
---=-CNw0emTTOuB69pC1Zu0R
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+i have some home LAN, when some body run some network scanners
+or some kind of scripts ( iam not sure)
+iam getting this kind of arp -n report
 
-Sounds like 'Register with DNS' issues ....
+first of all, i thought of its cable problem, then i downloaded scanner and
+try to retrive the
+ips iam able to see this report
 
-On Thu, 2003-01-23 at 10:05, Ador Dauz wrote:
-> Hello to all,
->=20
-> I have 2 router, I will call router A and router B. The router A is facin=
-g=20
-> to Internet and
-> the router B is the one cater our Intranet. So I configure a linux firewa=
-ll=20
-> using IPTABLES
-> and I put it in between of router A and B to filter the packets. My=20
-> firewall have 2 Lan Card and
-> I'm not using NAT. I have also dialup server which inside our Intranet. N=
-ow=20
-> this is my problem,
-> If I'm using windows 98 and connect using dialup I don't have any problem=
-=20
-> to access Internet but
-> If I'm using windows 2K or XP and connect using dialup, i cannot surf to=20
-> any website except
-> www.microsoft.com only. but I can chat using MSN or Yahoo messenger. But =
-if=20
-> my windows 2k or XP
-> is connected to Lan i can surf and do anything I want. Need help please..=
-.
->=20
->=20
-> Thanks in advance...
-> --ador
->=20
->=20
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
+( the MAC addresses are changed, because  for confidential information)
 
---=-CNw0emTTOuB69pC1Zu0R
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+how do i stop scans in my network
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+192.168.20.106                   (incomplete)
+eth1
+192.168.20.100                   (incomplete)
+eth1
+192.168.20.45                    (incomplete)
+eth1
+192.168.20.101                   (incomplete)
+eth1
+192.168.20.102                   (incomplete)
+eth1
+192.168.20.47                    (incomplete)
+eth1
+192.168.20.103                   (incomplete)
+eth1
+192.168.20.46                    (incomplete)
+eth1
+192.168.20.96                    (incomplete)
+eth1
+192.168.20.41                    (incomplete)
+eth1
+192.168.20.97                    (incomplete)
+eth1
+192.168.20.40                    (incomplete)
+eth1
+202.63.106.17            ether   00:X0:A5:21:L0:A4   C
+eth0
+192.168.20.43                    (incomplete)
+eth1
+192.168.20.15            ether   10:F0:8L:10:12:21   C
+eth1
+192.168.20.42                    (incomplete)
+eth1
+[root@cache root]#
 
-iD8DBQA+L6ieh1fuR/Bv+ygRAvwQAKC4S/fNg7VIgSdNnBEGl1weC9PZvwCeIMYZ
-ggX5+ppw7LigDcv5yGObn/M=
-=X8O+
------END PGP SIGNATURE-----
-
---=-CNw0emTTOuB69pC1Zu0R--
 
 
