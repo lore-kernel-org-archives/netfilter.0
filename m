@@ -1,12 +1,13 @@
-From: Tom Diehl <tdiehl@rogueind.com>
-Subject: Re: curious about fwbuilder and iptables
-Date: Fri, 28 Mar 2003 20:35:38 -0500 (EST)
+From: Y Makki <bugzilla@sympatico.ca>
+Subject: RE: Windows file sharing over different subnets
+Date: 29 Mar 2003 02:31:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0303282032570.28617-100000@tigger.rogueind.com>
-References: <Pine.LNX.4.44.0303281344460.17152-100000@dell>
+Message-ID: <1048923066.8358.36.camel@psyche>
+References: <7C9884991ADAE0479C14F10C858BCDF5122DA7@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0303281344460.17152-100000@dell>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122DA7@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,45 +17,174 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "Mailing List: Netfilter" <netfilter@lists.netfilter.org>
 
-On Fri, 28 Mar 2003, Robert P. J. Day wrote:
+Hello,
 
+Just thought I'd post to let you guys know how I got it to work.
+
+On the Linux side, 2 simple things: enable IP forwarding and make sure
+it's -P FORWARD ACCEPT or add 135:139 + whatever relevant traffic.
+
+On the Windows side I removed netbios/netbeui from all 9x clients, and
+checked 'client for microsoft networks' in bindings under tcp properties
+for the ethernet adapter.
+
+With this you can browse computers even over different subnets using
+\\IP, or maybe add netbios names to lmhosts on each machine (which I
+didn't bother trying). I took the other alternative which is install
+Samba on the router and have it run as a WINS server; everything works
+like a charm.
+
+Thanks for the suggestions/help everyone
+
+Cheers.
+
+
+On Thu, 2003-03-27 at 16:24, Daniel Chemko wrote:
+> I would really suggest WINS even if you only have 1 server, etc.. It is
+> ment for interLAN communication like the one you describe.
 > 
->   i'm taking a crack at configuring my iptables rules
-> with the latest version of fwbuilder -- i finally got
-> it installed after having to track down a couple of
-> essential libs.
+> Oh, another thing would be to broadcast to each other's networks. I am
+> not sure if NetBIOS likes this, but here goes.
 > 
->   as i read the docs, once i install the base fwbuilder
-> program, i have to also install a policy compiler based
-> on the actual firewall software i'm using -- iptables,
-> ipfwadm, etc.  otherwise, the docs suggest, when i start
-> fwbuilder, i should get an error.
+> iptables -t nat -A PREROUTING --destination 192.168.1.255 -j DNAT
+> --to-destination 192.168.2.255
 > 
->   well, i haven't installed any policy compiler yet, but
-> i can certainly invoke fwbuilder just fine.    (haven't done
-> anything yet, but it does start properly.)
+> iptables -t nat -A PREROUTING --destination 192.168.2.255 -j DNAT
+> --to-destination 192.168.1.255
 > 
->   can anyone who's done this already clarify what i should
-> need to do here, while i dig deeper into the docs?
+> This effectively merges the subnets together on the broadcast range. Any
+> broadcasts to one would go to the other.
+> 
+> If my hypothesis is correct, a request for 192.168.2.2 would be detected
+> since 192.168.2.2 would service the request for itself.
+> 
+> Any SMB guru's can throw their 2 cents in any time :-)
+> 
+> 
+> -----Original Message-----
+> From: Y Makki [mailto:bugzilla@sympatico.ca] 
+> Sent: Thursday, March 27, 2003 11:41 AM
+> To: Andrew J. Meader
+> Cc: netfilter@lists.netfilter.org
+> Subject: Re: Windows file sharing over different subnets
+> 
+> Hi,
+> 
+> I don't really need a wins server on the eth1 segment since there are no
+> windows machines here except the file server, the eth2 segment has no
+> servers at all.
+> 
+> For testing I have set the FORWARD default policy to ACCEPT, and allow
+> all incoming traffic from both eth1 and eth2.
+> I also tried earlier to DNAT any 135:139 traffic coming from eth2 to the
+> fileserver, which did not help. Ping works from segment to segment.
+> 
+> Maybe there is a client or relay agent of some sort I could install on
+> the linux gateway, I don't know.
+> 
+> 
+> 
+> On Thu, 2003-03-27 at 14:17, Andrew J. Meader wrote:
+> > Hi,
+> > 
+> > Netbios is not routable (without help.) Make sure iptables is allowing
+> 
+> > port 139 and make sure both network segments share a common wins
+> server. 
+> > This is painfully obvious, but, can you ping from one segment to the 
+> > other segment?
+> > 
+> > Have fun.
+> > 
+> > Andy
+> > 
+> > Y Makki wrote:
+> > 
+> > >Hello,
+> > >
+> > >I'm faced with a problem on my network, I'll start by describing the
+> > >structure. The router is a redhat box, with 3 network cards:
+> > >eth0 goes to the dsl modem, ppp0
+> > >eth1 goes to the 192.168.1.0 network which contains a Windows 2000
+> file
+> > >server (192.168.1.3)
+> > >eth2 goes to 192.168.2.0 which contains windows clients, mostly Win98
+> > >
+> > >Is it possible to allow clients to see/use the file server? what I
+> have
+> > >done so far is add "option netbios-name-servers 192.168.1.3;" to
+> > >dhcpd.conf and issue the following on the gateway:
+> > >
+> > >ip route add 224.0.0.0/4 dev eth1
+> > >route add -net 255.255.255.255 netmask 255.255.255.255 eth1
+> > >
+> > >tcpdump shows some activity when trying to browse network
+> neighborhood
+> > >from the fileserver:
+> > >
+> > >a client (192.168.2.2)
+> > >----------------------
+> > >02:40:58.548757 arp reply 192.168.2.2 is-at 0:40:5:72:f6:6a
+> > >02:40:58.549485 192.168.2.2.microsoft-ds > 192.168.1.3.1214: R [tcp
+> sum
+> > >ok] 0:0(0) ack 673608238 win 0 (ttl 128, id 3584, len 40)
+> > >02:40:58.549552 192.168.2.2.netbios-ssn > 192.168.1.3.1215: S [tcp
+> sum
+> > >ok] 197681:197681(0) ack 673643567 win 8760 <mss 1460,nop,nop,sackOK>
+> > >(DF) (ttl 128, id 3840, len 48)
+> > >
+> > >the fileserver (192.168.1.3)
+> > >----------------------------
+> > >02:41:01.476626 192.168.1.3.1215 > 192.168.2.2.netbios-ssn: S [tcp
+> sum
+> > >ok] 673643566:673643566(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
+> (ttl
+> > >128, id 13498, len 48)
+> > >02:41:01.476736 192.168.1.3.1214 > 192.168.2.2.microsoft-ds: S [tcp
+> sum
+> > >ok] 673608237:673608237(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
+> (ttl
+> > >128, id 13499, len 48)
+> > >02:41:02.242490 192.168.1.3.1220 > 192.168.1.1.domain:  [udp sum ok]
+> 49+
+> > >A? 192.gateway.localdomain. [|domain] (ttl 128, id 13500, len 69)
+> > >02:41:02.243234 192.168.1.3.netbios-ns > 192.168.1.255.netbios-ns:
+> [udp
+> > >sum ok]
+> > >  
+> > >
+> > >>>>NBT UDP PACKET(137): QUERY; REQUEST; BROADCAST
+> > >>>>        
+> > >>>>
+> > >TrnID=0x823B
+> > >OpCode=0
+> > >NmFlags=0x11
+> > >Rcode=0
+> > >QueryCount=1
+> > >AnswerCount=0
+> > >AuthorityCount=0
+> > >AddressRecCount=0
+> > >QuestionRecords:
+> > >Name=192             NameType=0x20 (Server)
+> > >QuestionType=0x20
+> > >QuestionClass=0x1
+> > >
+> > >This goes on for a while, after which win2k says "192.168.2.2" cannot
+> be
+> > >found. Browsing from the client 192.168.2.2 yields no results.
+> > >
+> > >Any ideas/hints greatly appreciated.
+> > >
+> > 
+> > 
+> 
+> 
+> 
 
-IIRC you can run fwbuilder just fine without the pol compiler.
-The problem is all you get is an xml file. In order to use it
-you need the complier to generate the actual iptables or whatever
-rules. Basically you generate the xml file and then run the pol
-compiler to generate a script that has the iptables rules in it.
 
-HTH,
 
--- 
-.............Tom	"Nothing would please me more than being able to 
-tdiehl@rogueind.com	hire ten programmers and deluge the hobby market 
-			with good software." -- Bill Gates 1976
-
-   			We are still waiting ....
 
 
