@@ -1,12 +1,12 @@
-From: "Pavel V. Yanchenko" <balrog@msmu.eu.org>
-Subject: Caching of rules in PRE(POST)ROUTING chains?
-Date: Sat, 15 Nov 2003 11:07:35 +0300
+From: Rohit <bikrant_ml@wlink.com.np>
+Subject: System Load
+Date: Fri, 14 Nov 2003 15:19:11 +0545
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1072098477.20031115110735@msmu.eu.org>
-Reply-To: balrog@msmu.eu.org
+Message-ID: <200311141519.11902.bikrant_ml@wlink.com.np>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,20 +18,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: lartc@mailman.ds9a.nl
 
-Hello.
+Hi,
+	Is it possible to know how much system resources (cpu/memory load) that the 
+netfilter module(s) is using? We are using HTB to shape our client traffic 
+and there are 4 iptables rule for each client in the mangle table. I think it 
+will be helpful to gather such data and graph it using mrtg.
 
-As far as I understand, rules in PRE- and POSTROUTING chains are
-cached? Because when I delete a rule with SNAT target for ip
-192.168.10.10 this address's packets are still SNATed for several
-minutes. The same thing happens for rules in PREROUTING chains.
-Is it possible to disable this feature? Maybe there is some file in
-/proc where cached rules are listed?
+I'm really sorry if someone has already asked about it.
+Thanks a lot.
 
-Thanks in advance.
-
--- 
-Best regards,
- Pavel                          mailto:balrog@msmu.eu.org
-
+with regards,
+Rohit Nepali
 
