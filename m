@@ -1,8 +1,8 @@
-From: Hans Scheffers <hans@jiffie.nl>
-Subject: Loggin using fwlogwatch
-Date: 03 Jun 2002 17:12:57 +0200
+From: "Neil Aggarwal" <neil@JAMMConsulting.com>
+Subject: NAT machines cant do 'dir' after connecting to FTP
+Date: Mon, 3 Jun 2002 10:30:34 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023117177.2206.27.camel@taz.jiffie.nl>
+Message-ID: <ENEBKGGOKDOEALIKAJMBAEEMCHAA.neil@JAMMConsulting.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -16,41 +16,59 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.samba.org" <netfilter@lists.samba.org>
+To: netfilter <netfilter@lists.samba.org>
 
-Hi
-I have the following rules in my iptables conf:
-iptables -N bad_tcp_packets
-iptables -A bad_tcp_packets -p TCP ! --syn -m state --state  NEW -m
-limit --limit 3/minute -j LOG --log-prefix "New not syn: "
+Hello:
 
-When I look in the logging using fwlogwatch I see: 
-new not syn: eth0 x packets from xxx.xxx.xxx.xxx to 192.168.xxx.xxx port
-y ---r--
+I have this setup:
+	Internet --- Linux Server --- Switch --- Internal Machines
 
-This last part can also be:
-sa----
--a-r--
--af---
--a--p-
+The Linux server has a set of public IP addresses, lets
+say 11.22.33.44 thru 11.22.33.99.  These are mapped
+using NAT to the internal machines running static IP
+addresses of 192.168.1.44 thru 192.168.1.99.
 
-I thought this was meant to be the header options of TCP packets,
-meaning:
-1 = URG
-2 = ACK
-3 = PSH
-4 = RST
-5 = SYN
-6 = FIN
+I can ftp from an internal machine and connect to an
+external server.  I can give it a user name and password
+and login successfully, but when I try to type dir or
+ls, the ftp client sits for a long time
+and then I get a message:
+ 425 Not able to open data connection.
 
-Am I wrong in this, and what do the s,a,f,r,p,? mean if I am (and also
-when I am right ;)
+Here are the commands that I used:
+	# Load the conntrack ftp module
+      /sbin/modprobe ip_conntrack_ftp
 
-This packages also exist between 2 of ou own servers, on ports that are
-closed for the outside world, in the private range of the servers
-Anyone any ideas?
+      # Flush any existing rules
+      /sbin/iptables -F
+      /sbin/iptables -t nat -F
 
--- 
-mailto: hans@jiffie.nl
-http://www.jiffie.nl/stamboom
+	# Set the default policies to ACCEPT all packets
+      /sbin/iptables -P INPUT ACCEPT
+      /sbin/iptables -P OUTPUT ACCEPT
+      /sbin/iptables -P FORWARD ACCEPT
+      /sbin/iptables -t nat -P PREROUTING ACCEPT
+      /sbin/iptables -t nat -P POSTROUTING ACCEPT
+
+      # Turn on forwarding
+      echo "1" > /proc/sys/net/ipv4/ip_forward
+
+	# Set-up routing to allow NAT of the internal machines (I did these
+	# three commands foe each of the internal machines)
+      /sbin/ifconfig eth0:n 11.22.33.n netmask $NETMASK broadcast $BCAST
+      /sbin/iptables -t nat -A PREROUTING -d 11.22.33.n -j DNAT --to
+192.168.1.n
+      /sbin/iptables -t nat -A POSTROUTING -s 192.168.1.n -j SNAT --to
+11.22.33.n
+
+Any ideas??
+
+Thanks,
+	Neil.
+
+--
+Neil Aggarwal
+JAMM Consulting, Inc.    (972) 612-6056, http://www.JAMMConsulting.com
+Custom Internet Development    Websites, Ecommerce, Java, databases
+
 
