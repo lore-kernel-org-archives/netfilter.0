@@ -1,14 +1,12 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: Help with port forwarding
-Date: Thu, 23 Oct 2003 23:03:33 -0700
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: securing windows farm  using iptables
+Date: Fri, 24 Oct 2003 14:45:58 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <LFEHKEBEBHAFGJBMNKAOAEHJCDAA.markee@bandwidthco.com>
-References: <FDAFEC98D318F74CA26B5A26F2B4965227C545@exchange.jfctechnologies.com>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <F22386C3FEB012449238672E38ED61E706C257@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FDAFEC98D318F74CA26B5A26F2B4965227C545@exchange.jfctechnologies.com>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,48 +17,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Kleiner, Peter" <kleinerp@smbmicro.com>, netfilter@lists.netfilter.org
-
-Peter - I don't see anything obvious in the script that could be
-problematic.  What do you mean by "port forwarding not working"? Are you
-getting any error messages?  Is translation being performed but the packets
-are not routed?  I might be able to generate some ideas here if you can be
-more specific.  By the way, I believe you are meaning to block the Auth
-protocol (port 113):  that being the case, you need to specify TCP and not
-UDP.
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Kleiner, Peter
-Sent: Wednesday, October 22, 2003 9:41 AM
-To: 'netfilter@lists.netfilter.org'
-Subject: Help with port forwarding
+To: netfilter@lists.netfilter.org
 
 
-Greetings,
+As our network is part of a large network, we cannot rely on our mother =
+company to protect us sub companies.
 
-I have two PCs that, software-wise are reasonably identical.  Both are
-RH9.0 with iptables 1.2.7a.
+I have been helped by a lot of our list members about subnets and proper =
+iptables usage.=20
+I thank you for the assistance you have given me.=20
+This time, I have a bigger problem.
 
-I have a script to set the rules for masquerading and port forwarding.
-The script is identical, except that the internal address range is
-different.
+How can I protect a windows exchange server and domain controller?
+windows farm --- linux iptables -- internet
 
-My problem is that port forwarding works on one PC and not the other.  I've
-spent many hours trying to figure out what is wrong to no avail.  I was
-wondering what other factors will affect iptables.
+Again, I cannot change the windows exchange to linux postfix.=20
+Although it is within my authority to move to linux, hundreds of people =
+using the windows farm won't be glad for a drastic change. I am slowly =
+moving some people to linux though. :D
 
-Anyway, here is the info on the the two PCs, which I'll call PC1 and PC2.
-PC1 is the working one and PC2 is the non-working one.  Both PCs have
-eth0 as internal and eth1 as external interfaces.
+For the exchange server, what ports do I need to open? Do I need some =
+port forwarding? I want to create some sort of routing through iptables =
+so I can secure the windows server as well.
 
-I've put the info that I thought was relevant here:
-http://www.smbmicro.com/~kleinerp/iptables.txt
+For the domain controller, people said I need to make sure dns is open. =
+What else do I need to open up? Again, can I just do some routing for =
+the dns?
 
-Please let me know if you require anything else.
+Thank you so much for the help!
 
-Thanks in advance!!!
-Pete
 
+
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
+
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
+
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Fax: (632) 637-2206
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
 
