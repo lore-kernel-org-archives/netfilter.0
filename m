@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: chains in the same table
-Date: Fri, 7 May 2004 00:07:45 +0100
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: RE: pop3 and dns
+Date: Fri, 7 May 2004 13:21:50 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405070007.45572.Antony@Soft-Solutions.co.uk>
-References: <004c01c4334f$3f1329f0$cb0210ac@jz105> <200405061147.35201.Antony@Soft-Solutions.co.uk> <006001c433bd$3b278de0$68892090@grouse>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <F22386C3FEB012449238672E38ED61E716445C@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <006001c433bd$3b278de0$68892090@grouse>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,87 +17,90 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
-On Thursday 06 May 2004 11:55 pm, Jee J.Z. wrote:
+> By the way, what made you decide to use 192.167.220.x=20
+> addresses for your=20
+> clients?   That is not a reserved address range, and is part=20
+> of a block=20
+> registered to the University of Ferrara in Italy.
 
-> Hi Antony, Amit, Frank, and Klemen,
->
-> Thank you all for your replies. Your answer actually is what I was
-> expected. However, I did an experiment which seems to show it is not the
-> case, and therefore I got confused.
->
-> My network structure is as follows:
->
->  PC1
->  (eth0:global_ip_1)
->   |
->  (eth0:global_ip_2)
->  PC2
->  (eth1:192.168.0.1)
->   |
->  (eth1:192.168.0.2)
->  PC3
->
-> I put the following rules on the PC2:
->
-> iptables -F
-> iptables -F -t nat
-> iptables -I FORWARD -j QUEUE
-> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to global_ip_2
-> iptables -t nat -A PREROUTING -i eth0 -j DNAT --to 192.168.0.2
->
-> echo '1' >/proc/sys/net/ipv4/ip_forward
->
-> Since I didn't put in the rules like "iptables -P INPUT DROP" and
-> "iptables -P OUTPUT DROP", I expect traffics that addressed to PC2 will not
-> be passed on to the FORWARD chain
+- It was assigned to me by our mother company.
 
-The three chains are totally independent of each other.
 
-The default policy on INPUT has no bearing whatsoever on how packets will get 
-processed by FORWARD (and vice versa, etc...)
+> Other information which would be useful if we need to answer any more=20
+> questions are: what interface names on the firewall connect=20
+> to the inside and=20
+> outside, and how have you interconnected the two different=20
+> network ranges you=20
+> appear to be using 192.168.247.x and 192.167.220.x ?
 
->, and therefore they will not be queued to
-> userspace. However, it seems not the case. When I ftp or ping from PC1 to
-> PC2 (addressed to PC2), all the packets are queued to userspace and if
-> accepted from userspace are then DNATed to PC3. Could you explain this to
-> me?
+eth0=20
+ - for the external ip addresses
+ - used by the internet to receive postfix mail that is relayed inside =
+to an exchange server
 
-PREROUTING happens (as you might guess from the name) before the routing 
-decision, and it is the routing decison which determines whether a packet is 
-destined for:
-a) the local machine, or
-b) somewhere else.
+eth1
+ - used by internal clients
 
-If the answer is (a), then the packet goes through the INPUT chain, and does 
-not go through the FORWARD chain.
 
-If the answer is (b), then the packet goes through the FORWARD chain, and does 
-not go through the INPUT chain.
+diagram:
 
-The thing which determines whether a particular packet goes through INPUT or 
-FORWARD is its destination address at the point where it hits the routing 
-decision (which is the standard routing mechanism in the Linux kernel, not 
-really anything to do with netfilter).   The only way in which netfilter can 
-affect this is by changing the destination address in the PREROUTING chain.
+    internet
+       |
+       |
+eth0 (192.168.247.xxx)
+       |
+ firewall server
+       |
+eth1 (192.167.220.xxx)
+       |
+       |
+internal clients
 
-Hope this helps?
 
-Regards,
 
-Antony.
 
--- 
-"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
-Blaster].   However, these products are no longer supported.   Users of these
-products are strongly encouraged to upgrade to later versions."
 
-(which *are* affected by MS Blaster...)
 
-http://www.microsoft.com/security/security_bulletins/ms03-026.asp
+> Where is the DNS server which the clients are expected to=20
+> access for this?  =20
+> Are you running one on your network (good idea) or are they=20
+> supposed to=20
+> access one run by your ISP (works, but will be slower and=20
+> uses a bit more=20
+> bandwidth)?
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+- we are using our isp's dns. we do not run our own dns.
+
+Thanks again!
+
+
+Cheers,
+
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
+
+
+
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
+
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Fax: (632) 637-2206
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
 
