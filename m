@@ -1,14 +1,12 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: How to differentiate packets generated locally or received from
- t	he network using the NF_IP_PRE_ROUTING filter
-Date: Tue, 06 Apr 2004 10:11:43 +1000
+From: Kiran Kumar <immidi_kiran@yahoo.com>
+Subject: Re: Connections and connlimit problem,
+Date: Mon, 5 Apr 2004 20:10:59 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4071F5BF.50806@snapgear.com>
-References: <2F1FC1DEA077D5119FAD00508BCFD6D20BBB0110@zsc3c030.us.nortel.com>
+Message-ID: <20040406031059.31775.qmail@web14007.mail.yahoo.com>
+References: <1278290250.20040405114706@fnet.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2F1FC1DEA077D5119FAD00508BCFD6D20BBB0110@zsc3c030.us.nortel.com>
+In-Reply-To: <1278290250.20040405114706@fnet.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,18 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: George Gao <ggao@nortelnetworks.com>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: nexor@fnet.pl, netfilter@lists.netfilter.org
 
-George Gao wrote:
-> Is there any way to differentiate a local IP Multicast or IP brocast from an
-> inbound mal-formed packet with the exact same content? Thanks much in
-> advance!
+--- nexor@fnet.pl wrote:
+> cat
+>
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established
+> 
+> returns value:
+>  432000
+> 
+> Isn't that too much ?
 
-Use '-m pkttype --pkt-type multicast' and '-m pkttype --pkt-type broadcast'.
+  Too much or too less really depends upon your
+specific scenario. For this purpose you are provided
+with sysctls to alter the various timeouts.
+Specifically
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_established
 
--- 
-Philip Craig - SnapGear, A CyberGuard Company - http://www.SnapGear.com
 
+=====
+Regards,
+Kiran Kumar Immidi
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Small Business $15K Web Design Giveaway 
+http://promotions.yahoo.com/design_giveaway/
 
