@@ -1,11 +1,11 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: DNAT, Is it possible to find the original destination?
-Date: Mon, 8 Nov 2004 15:14:17 -0800
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF56795AA@alderaan.smgtec.com>
+From: Josh Nerius <jnerius@gmail.com>
+Subject: Redirection using DNAT on transparent bridge.
+Date: Mon, 8 Nov 2004 21:23:51 -0600
+Message-ID: <4f3930a704110819232a7f8a76@mail.gmail.com>
+Reply-To: Josh Nerius <jnerius@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Lunz <lunz@falooley.org>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
--m conntrack is the key here:
+Hello,
 
-conntrack match v1.2.9 options:
- [!] --ctstate
-[INVALID|ESTABLISHED|NEW|RELATED|UNTRACKED|SNAT|DNAT][,...]
-                                State(s) to match
- [!] --ctproto  proto           Protocol to match; by number or name,
-eg. `tcp'
-     --ctorigsrc  [!] address[/mask]
-                                Original source specification
-     --ctorigdst  [!] address[/mask]
-                                Original destination specification
-     --ctreplsrc  [!] address[/mask]
-                                Reply source specification
-     --ctrepldst  [!] address[/mask]
-                                Reply destination specification
- [!] --ctstatus [NONE|EXPECTED|SEEN_REPLY|ASSURED|CONFIRMED][,...]
-                                Status(es) to match
- [!] --ctexpire time[:time]     Match remaining lifetime in seconds
-against
-                                value or range of values (inclusive)
+I am trying to redirect specific traffic, (for example, web traffic on
+port 80) as it passes through a transparent bridge. Currently, I have
+tried commands like this: (eth1 is external interface, eth0
+internal...ths is sitting behind a linux nat router)
 
+iptables -t nat -A PREROUTING -m physdev --physdev-in eth0 -s
+192.168.150.222 -p tcp --dport 80 -j DNAT --to
+destination.ip.address.here
+
+The trouble I am running into seems to be related to routing I
+think...I have an ip address set on the bridge virtual interface and
+this communicates with the net just fine. I have been unable to find
+documentation on this and would like to know if this is even possible?
+
+Oh yes, I should also mention that if I change the DNAT to a host on
+the other side of the bridge that is in the local lan (i.e. the router
+or other test boxes I've put on a switch for experimentation) the
+redirection seems to work.
+
+Any info is greatly appreciated,
+
+Josh Nerius
+
+-- 
+Math problems? Call 1-800-[(10x)(13i)^2]-[sin(xy)/2.362x]
 
