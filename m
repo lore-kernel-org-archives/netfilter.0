@@ -1,14 +1,12 @@
-From: Alistair Tonner <Alistair@alistairt.ath.cx>
-Subject: Re: secure ftp with SSL
-Date: Tue, 17 Sep 2002 12:44:51 -0400
+From: Alok Shukla <alokshukla@yahoo.com>
+Subject: HELP : How to group IP addresses by refering to them as a single name ?
+Date: Thu, 19 Sep 2002 00:45:55 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020917164451.GE9482@Ajftl1.ajfthome.on.ca>
-References: <754E53EEA7D3D31194E50050DAB99F6E705442@thor.id.magnus.com>
+Message-ID: <20020919074555.18679.qmail@web40202.mail.yahoo.com>
+References: <200209041320.g84DKjv31137@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <754E53EEA7D3D31194E50050DAB99F6E705442@thor.id.magnus.com>; from RendyV@atd.magnus.co.id on Mon, Sep 16, 2002 at 00:21:18 -0400
+In-Reply-To: <200209041320.g84DKjv31137@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,74 +16,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
-To: Rendy V <RendyV@atd.magnus.co.id>
-Cc: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>, 'Roy Sigurd Karlsbakk' <roy@karlsbakk.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+Cc: Antony Stone <Antony@Soft-Solutions.co.uk>
 
+HI,
 
-	Did you load thusly:
+I run a College Laboratory with two rooms for the
+whole labaratory
+I have given a static IP for each of the computers
+from 192.168.0.1 to 192.168.0.254.
 
-	modprobe -dv ip_conntrack_ftp ports=21,900
-	modprobe -dv ip_nat_ftp ports=21,900
+1. My Lab 1 has IP from 192.198.0.11 to 192.168.0.50
+and Lab 2 has IP from 192.168.0.51 to 192.168.0.90
 
-	... As I read what you are saying here the secure ftp is done on
-	port 900 + (random non-priviledged UDP ports)
-	-- would this be FastCopy???
-	-- You will need to pass the port number for the control 
-connection to the
-	conntrack module *for sure* and the NAT module to get it 
-working from a
-	box *other* than the firewall ...
-	 
-	FYI -- if it is FastCopy -- I've resources I can ask questions 
-of for you
-	if need be who are *very* familiar with getting FastCopy 
-through a firewall
-	*chuckles*...
+2. I run a Redhat Linux 7.3 Server that acts as a
+masquerading server, DNS Server and a Web Server.Its
+IP is 192.168.0.1
 
-	Alistair
+3. I also have Windows NT Server for running a domain
+over the whole network.Its IP is 192.168.0.2
 
-On 2002.09.16 00:21 Rendy V wrote:
-> roy,
-> yes, i have loaded ip_conntrack_ftp.
-> Is there any better idea because if i change it i have to change all
-> my
-> application..
-> 
-> regards,
-> rendy
-> 
-> 
-> On Friday 13 September 2002 05:09, Rendy V wrote:
-> > Hi All,
-> > I have a strange problem, the problem is like this :
-> > I have an application that use secure ftp and for that reason I have
-> opened
-> > up the command port (990) with state NEW and allowed data port
-> > (20000:20049) with state ESTABLISHED, RELATED on the firewall. It
-> fails
-> > when it try to use data port, for authentication it working just
-> fine.
-> > Please see the log on the below.
-> > If I open data port 2000:20049 with state NEW it working normally
-> but I
-> > don't want to make a big hole on my firewall. I suspect that the
-> iptables
-> > connection tracking cannot track the relation between command port
-> and
-> data
-> > port because it is encrypted using SSL. Is it true or is there
-> something I
-> > miss here?? What should I do now??
-> 
-> first - have you loaded ip_conntrack_ftp?
-> 
-> second - I'm not sure the ip_conntrack_ftp module can understand
-> encrypted
-> traffic. Try using sftp from openssh instead. That only uses 22/tcp.
-> 
-> roy
-> 
-> 
+4. My each of the client machine has Windows XP
+Professional running which acts as a CLient for WIN NT
+Domain.Each computer has gateway setting as for Red
+Hat Linux 7.3 machine.
 
+5. My Iptables scripts allows everbody to access the
+net through following command:-
+
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -d
+any/0 -j MASQUERADE
+
+Now my problem :-
+
+I want to have a set of rules so that i can group Lab
+1 computers in one group and Lab 2 computers in
+another group. In this I want to able to shutdown the
+Internet facility by stopping its masquerading as a
+whole by refering as a single name.
+
+Like something like :-
+
+iptables -t nat -D POSTROUTING -s "LAB1" -d any/0 -J
+MASQUERADE
+
+or rather
+
+iptables -t nat -D POSTROUTING -s 192.168.0.11-50  -d
+any/0 -J MASQUERADE
+
+Is short i want to create groups and i want to
+administer network access by refering to group of
+computers rather than their respective IP addresses..
+SOmething like name addressing or rather multicasting 
+etc...or whatever
+
+Alok Shukla
+
+__________________________________________________
+Do you Yahoo!?
+New DSL Internet Access from SBC & Yahoo!
+http://sbc.yahoo.com
 
