@@ -1,12 +1,10 @@
-From: Sven Riedel <sr@gimp.org>
-Subject: trouble setting up ftp server
-Date: Mon, 21 Jul 2003 10:18:59 +0200
+From: Diederick van Dijk <diedvdyk@jedi.van-dijk.net>
+Subject: SNAT hangs system in SMP mode (kernel 2.4.21)
+Date: Mon, 21 Jul 2003 10:19:09 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030721081859.GA29576@localnet>
-Reply-To: sr@gimp.org
+Message-ID: <Pine.LNX.4.44.0307211003330.5246-100000@jedi.van-dijk.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +14,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
 Hi,
-I'm having trouble setting up an ftp server, wrt passive mode and the
-data channel.
 
-My relevant ruleset looks like this (from iptables -v -L <chain>):
-INPUT (Policy: DROP):
+Yesterday I upgraded my system from one Pentium III 450Mhz processor to 
+two Pentium III 450 processors. This system is my gateway to the internet.
+After upgrading I recompiled the kernel (2.4.21) into SMP mode.
+Unfortunately this wasn't a success. After a few minutes my system hung. 
+After some searching I'm realy sure that my SNAT rules are the problem. If 
+I get my email on an other PC with no other IP activity on my network my 
+gateway immediately hung. Retrieving email uses a SNAT rule.
+So I recompiled my kernel uni-processor and the problem was over.
+Is this a known problem ? How do I fix this (MASQ rules are not the 
+solution) ? If someone needs additional information please ask.
 
-70896   72M ACCEPT     all  --  any    any     anywhere anywhere
-	 state RELATED,ESTABLISHED 
-    0     0 ACCEPT     tcp  --  any    any     anywhere anywhere 
-	 tcp spts:1024:65535 dpts:1024:65535 state ESTABLISHED 
-    3   170 ACCEPT     tcp  --  any    any     anywhere anywhere  
-	 tcp dpt:ftp state NEW 
-    0     0 ACCEPT     tcp  --  any    any     anywhere anywhere
-	 tcp dpt:ftp-data state NEW 
+System specs :
 
-OUTPUT (Policy: DROP):
-74312   69M ACCEPT     all  --  any    any     anywhere  anywhere
-	 state RELATED,ESTABLISHED 
-    0     0 ACCEPT     tcp  --  any    any     anywhere  anywhere
-	 tcp spts:1024:65535 dpts:1024:65535 state RELATED,ESTABLISHED 
-    0     0 ACCEPT     tcp  --  any    any     anywhere  anywhere 
-	 tcp spt:ftp-data 
-    0     0 ACCEPT     tcp  --  any    any     anywhere  anywhere
-	 tcp spt:ftp 
+- 2 x Pentium 450 Mhz
+- 256 MB SDRAM
+- kernel 2.4.21 (not the stock Mandrake kernel)
+- iptables 1.2.7a
+- Mandrake 9.1
+- 9x SNAT rules
 
-The data connections get filtered out in the Input chain, log entries
-look like this:
+Thanks in advance,
 
-Jul 21 09:52:59 turing kernel: Dropped from input IN=ppp0 OUT= MAC=
-   SRC=128.32.112.247 DST=82.82.155.165 LEN=60 TOS=0x00 PREC=0x00 TTL=48 
-   ID=59818 DF PROTO=TCP SPT=2577 DPT=34510 WINDOW=32767 RES=0x00 SYN URGP=0  
+Diederick   
 
-Linux kernel 2.4.21, ip-conntrack-ftp module is loaded, 
-iptables version 1.2.8.
-
-I didn't find anything new or useful in online recepies, nor do I see
-anything obviously wrong (to me that is, I do get stricken by selective
-blindness from time to time though ;) ). Anyone have any ideas?
-
-Regs,
-Sven
-
-
--- 
-Sven Riedel                      sr@gimp.org
-Liebigstr. 38 
-30163 Hannover                  "Python is merely Perl for those who
-                                 prefer Pascal to C" (anon)
 
