@@ -1,13 +1,14 @@
-From: "Tim Evans" <tkevans@tkevans.com>
-Subject: RE: Maximum Number of Chains
-Date: Wed, 3 Sep 2003 08:03:02 -0400
+From: Sven Riedel <sr@gimp.org>
+Subject: Re: ipt_string problems and FAQ
+Date: Wed, 3 Sep 2003 10:43:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030903120302.M95330@tkevans.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15C21A@wardrive.citadelcomputer.com.au>
-Reply-To: tkevans@tkevans.com
+Message-ID: <20030903084352.GB5028@localnet>
+References: <200308271319.29439.tabris@tabris.net> <Pine.LNX.4.51.0309011300560.32229@dns.toxicfilms.tv>
+Reply-To: sr@gimp.org
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15C21A@wardrive.citadelcomputer.com.au>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.51.0309011300560.32229@dns.toxicfilms.tv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,21 +20,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: George Vieira <georgev@citadelcomputer.com.au>, Paul Caritj <pcaritj@freespace-networks.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 3 Sep 2003 09:25:51 +1000, George Vieira wrote
-> How much memory do you have???
-> 
-> I've added at once stage around 500+ rules in once chain alone, if 
-> that helps you in anyway..
+On Mon, Sep 01, 2003 at 01:03:48PM +0200, Maciej Soltysiak wrote:
+> Hi,
+> > ask where this FAQ entry is...
+> http://www.netfilter.org/documentation/FAQ/netfilter-faq-3.html#ss3.14
 
-Seems to me if you have to ask about the maximum number of rules, you already
-have too many. There are ways to create general rules that apply to many
-cases--i.e., address ranges, port ranges, etc.
---
-Tim Evans                       |    5 Chestnut Court
-tkevans@tkevans.com             |    Owings Mills, MD 21117
-http://www.tkevans.com/         |    443-394-3864
-http://www.come-here.com/News/  |    
+Ok, slightly off topic to this thread, but I still need to know from
+that faq entry:
+QUOTE
+Please do not use the string match from patch-o-matic instead of
+application proxy filtering. It would be defeated anytime by fragmented
+packets (i.e. an HTTP request split on two TCP packets), 
+ENDQUOTE
 
+I thought iptables collects all fragments and reassembles the packet
+before applying any rules? Or am I dead wrong here? 
+
+Regs,
+Sven
+-- 
+Sven Riedel                      sr@gimp.org
+Liebigstr. 38 
+30163 Hannover                  "Python is merely Perl for those who
+                                 prefer Pascal to C" (anon)
 
