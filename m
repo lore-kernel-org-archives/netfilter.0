@@ -1,14 +1,14 @@
 From: Herman <Herman@AerospaceSoftware.com>
-Subject: Re: Port forwarding doesn't work.
-Date: Sun, 12 Oct 2003 19:17:08 -0600
+Subject: Re: Invalid friggen argument
+Date: Sun, 12 Oct 2003 19:22:01 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310121917.08663.Herman@AerospaceSoftware.com>
-References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com> <200310121700.13102.Herman@AerospaceSoftware.com> <1066005882.1151.23.camel@valhalla>
+Message-ID: <200310121922.01492.Herman@AerospaceSoftware.com>
+References: <LFEHKEBEBHAFGJBMNKAOIELHCCAA.markee@bandwidthco.com>
 Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1066005882.1151.23.camel@valhalla>
+In-Reply-To: <LFEHKEBEBHAFGJBMNKAOIELHCCAA.markee@bandwidthco.com>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,72 +20,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Chris Brenton <cbrenton@chrisbrenton.org>, netfilter@lists.netfilter.org
+To: markee@bandwidthco.com, netfilter@lists.netfilter.org
 
-On Sunday 12 October 2003 6:44 pm, Chris Brenton wrote:
+On Sunday 12 October 2003 7:01 pm, Herman@aerospacesoftware.com wrote:
+   I understand now.  The machines that you are DNATTING to are dynamic, and
+   may or may not be on-line and listening.  The service port is Java based
+   (sounds like Sun Microsystems Netlet protocol) but I gather it will always
+   be the same listening port, it is just the IP that changes.  This is the
+   deal:  you have an extra layer of complexity here that IPTables by nature
+ is not designed to handle.  That's not to say it cannot be done.  You are
+ going to need to build some dynamic variables into your script that run some
+ test for active IP's upon match of the port forwarding rule.  Based on the
+ test results, you can tell IPTables what where to forward.  For example,
+ when the rule is encountered, you could send a Ping to all the potential
+ hosts, then grab the IP of the host that responds, and then set iptables to
+ DNAT to that IP.  That is just one way to accomplish this.  So, it is
+ possible, but it is going to take some extra work.
 
-   > Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
-
-   Hummm. You do realize you are letting through *everything* you are not
-   specifically dropping? Looks like you've had quite a bit of traffic
-   sneak by. :(
-
-Yep, I opened it up in an effort to figure out what is going on - or rather 
-not going on, the really bad stuff is blocked in the INPUT chain and the 
-INPUT chain is letting the packets through, since I can play xmms on the 
-firewall itself, so the packets get in, but not out the other side.
-
-   > How can the FORWARD chain be empty, since MASQUERADE is working and my
-   > laptop can surf the web?
-
-   Because you are letting everything not specifically denied blow through.
-OK - it seems that port forwarding uses the nat table - eventually I'll 
-understand this I hope...
-
-I I understand it, masquerading also uses the nat table and that is working, 
-so why doesn't port forwarding work for port 8002?
-
-Here is the rule:
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 8002 -j ACCEPT
-$IPTABLES -t nat -A PREROUTING -i $EXTIF -p tcp --dport 8002 -j DNAT --to 
-192.168.10.245:8002
-
-on the command line it looks like this:
-iptables -A FORWARD -i eth1 -o eth0 -p tcp --dport 8002 -j ACCEPT
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 8002 -j DNAT --to 
-192.168.10.245:8002
-
-and it does diddly squat...
+Yikes - I think I'll settle for a fixed IP on one machine for starters.  That 
+is proving to be enough of a headache.
 
 
-   > Why are my new forwarding rules ignored?
+   As for your modules, masquerade works off it's own specific module so it
+   working is no indication of NAT working.
 
-   Again, try stuff like this from the command line. If iptables is not
-   happy, it will let you know about it.
+OK, that is beginning to make sense.  So I have to try and figure out what 
+module is used for nat and see whether it is loaded.
 
-Tried it with various versions of iptables.  1.2.7a and1.2.9rc1 give either 
-Invalid Argument or Target Problem as explained in previous posts.  Iptables 
-1.2.5 doesn't give any error messages - I downgraded, since upgrading didn't 
-make any diff, so now it doesn't tell me anything although the problem is 
-still the same.
-
-It is as if the rules are simply ignored even when I copy and paste examples 
-from the howtos or other posts.
-
-
-
-   > How can I debug this stuff and see where the packets are going/not
-   > going? Can anybody shed light on this?
-
-   The counters are a good indication of what is going on. You can also run
-   tcpdump to troubleshoot what goes by.
-
-Trying that now - very trying...
-
-I guess that eventually, I'll understand iptables, but it is going to take a 
-while to get there.
-
-Oh, well, what the hell - Catch 22.
+Thanks!
 -- 
 Herman Oosthuysen 
 B.Eng(E), MIEEE
