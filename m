@@ -1,12 +1,12 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Couple More Questions
-Date: Thu, 30 Oct 2003 13:04:36 -0800
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: How can I test my rule set?
+Date: Thu, 30 Oct 2003 14:56:39 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E93@alderaan.smgtec.com>
+Message-ID: <20031030225639.93875.qmail@web40204.mail.yahoo.com>
+References: <1067515509.27238.5.camel@tarkus>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <1067515509.27238.5.camel@tarkus>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +17,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "David C. Hart" <DCH@TQMcube.com>, iptables mailing list <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: tedkaz@optonline.net, "Jin Gu, Kim" <lilia21@postech.ac.kr>
+Cc: netfilter@lists.netfilter.org
 
 
-2. I'm still a bit confused on the logging of the destination address.
-With our one static IP, there are two possibilities. Either a packet is
-intended for our IP or for another. Yet, the logs will always show the
-destination address as the IP of the LAN interface. Any suggestions?
+--- Ted Kaczmarek <tedkaz@optonline.net> wrote:
+> hping2 is your friend.
+> 
+> Ted
+> On Wed, 2003-10-29 at 19:43, Jin Gu, Kim wrote:
+> > Hi all.
+> >  
+> > I made my own rule set, but i don't know how to test it.
+> >  
+> > Should I launch some applications and attempt to log in my trusted
+> > network one by one?
+> >  
+> > I guess there will be other methods...
+> >  
+> >  
+> >  
+> > "Netfilter Hacking HOWTO" seems to introduce some useful tools e.g.,
+> > gen_ip, rcv_ip..
+> >  
+> > But I can't understand how to use them.
+> >  
+> > If you know how to handle them or test, would you show me the way?
+> >  
+> 
+> 
 
-I imagine you are talking about the fact that the only packets getting
-logged are those destined for the firewall machine itself. The reason
-for this is that before you reach the (PREROUTING?) INPUT or FORWARD
-chains, the IP layer analyses the packet to see if the packet is
-destined for this machine or not. If it isn't, then the packet is
-silently thrown away before reaching Netfilter.
+Just jumping in here... but if the address you wish to test is available to the
+world.. ie the internet... then dslreports.com has a nice Port Scan you can run
+against your world address and it will give you a nice report as well as grade
+you on your security measures.
 
-If you DO want to receive packets in a IP layer promiscuous manner, then
-you will have to set /proc/sys/net/ipv4/conf/*/rp_filter to 0. This
-disables the destination IP filtering.
+Hope this helps
+SBlaze
 
+=====
+In the absence of order there will be chaos.
+
+__________________________________
+Do you Yahoo!?
+Exclusive Video Premiere - Britney Spears
+http://launch.yahoo.com/promos/britneyspears/
 
