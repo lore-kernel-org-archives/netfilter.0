@@ -1,13 +1,13 @@
-From: Jim Cliver <jclive@mtaonline.net>
-Subject: Re: bridge logging
-Date: Thu, 18 Mar 2004 11:00:05 -0900
+From: "Gerry Weaver" <gerryw@objectivedomain.com>
+Subject: RE: iptables bridge filter question
+Date: Thu, 18 Mar 2004 14:12:53 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4059FFC5.5040008@mtaonline.net>
-References: <AD8D39C727CBD411BB2C0090273A727408F9F09C@mortimer.law.uconn.edu>
+Message-ID: <ILECICAFAJIIMPBBLMEAKELJCPAA.gerryw@objectivedomain.com>
+References: <ILECICAFAJIIMPBBLMEAAELECPAA.gerryw@objectivedomain.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <AD8D39C727CBD411BB2C0090273A727408F9F09C@mortimer.law.uconn.edu>
+In-Reply-To: <ILECICAFAJIIMPBBLMEAAELECPAA.gerryw@objectivedomain.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +17,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Hurley, Michael" <MHurley@law.uconn.edu>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hurley, Michael wrote:
+Hi,
 
-> I've run into an odd snag. 
-> Set up a bridge to protect a box that can't protect itself. Kernel 2.6.0,
-> iptables 1.2.9. I'm trying to log some client-server interaction, so I
-> created this rule:
-> 
-> iptables -A FORWARD -s $client -LOG --log-level 7 --log-prefix "IPT CLIENT:
-> "
-> iptables -A FORWARD -d $client -LOG --log-level 7 --log-prefix "IPT CLIENT:
-> "
-> 
-> FORWARD policy is ACCEPT. There are *no* other rules or chains.
-> 
-> I redirect kern.7 messages into its own log. But no info is getting captured
-> in there at all. tcpdump sees packets w/ client ip. 
-> 
-> What am I doing wrong and how can I log info going over the bridge to/from a
-> particular ip?
-> 
-Hello Michael,
+Firstly, thanks for the suggestions. Please let me explain further. I want
+to setup an anti-spoofing rule that will block packets coming in on the
+external interface, which have a source address of my internal net. The
+problem is that I have a router that sits in the external side of the
+bridge. I need to stop spoofed packets while still allowing my router.
+Shouldn't the following allow my router by mac address and then drop
+everything else that's coming in with a source address of my internal net?
 
-If you are attempting to perform this logging on a layer two (bridging) 
-device then your logging rules will need to be based upon layer two 
-addresses and not layer three (IP).  A bridge ordinarily does not see 
-layer three addresses.
+EXTERNAL_IFACE="eth0"
+INTERNAL_NET="10.10.10.0/24"
+ROUTER_MAC="00:00:00:00:00:00"
 
-Regards,
-jim
+iptables -N tcp_packets
+iptables -N udp_packets
+
+iptables -A INPUT -p tcp -i $EXTERNAL_IFACE -j tcp_packets
+iptables -A INPUT -p udp -i $EXTERNAL_IFACE -j udp_packets
 
 
-> 
-> 
-> /***************************************     .-"""-.
-> Michael Hurley                              '       \ 
-> Webmaster/SysAdmin                         |,.  ,-.  |
-> University of Connecticut School of Law    |()L( ()| |
-> mhurley@law.uconn.edu                      |,'  `".| |
-> (860) 570-5233                             |.___.',| `
-> ***************************************/  .j `--"' `  `.
->                                          / '        '   \
->                                         / /          `   `.
->                                        / /            `    .
->                                       / /              l   |
->                                      . ,               |   |
->                                      ,"`.             .|   |
->                                   _.'   ``.          | `..-'l
->                                  |       `.`,        |      `.
->                                  |         `.    __.j         )
->                                  |__        |--""___|      ,-'
->                                     `"--...,+""""   `._,.-' mh
-> 
-> 
+iptables -A tcp_packets -i eth0 -m mac --mac-source $ROUTER_MAC -j ACCEPT
+iptables -A tcp_packets -p tcp -j DROP -s $INTERNAL_NET -j DROP
 
+
+iptables -A udp_packets -i eth0 -m mac --mac-source $ROUTER_MAC -j ACCEPT
+iptables -A udp_packets -p udp -j DROP -s $INTERNAL_NET -j DROP
+
+Thanks,
+Gerry
+
+
+
+
+
+
+
+[Gerry Weaver]  -----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Gerry Weaver
+Sent: Thursday, March 18, 2004 2:28 AM
+To: netfilter@lists.netfilter.org
+Subject: iptables bridge filter question
+
+
+Hello All,
+
+I have setup a bridging firewall. I want to drop packets on the external
+interface, which have source addresses on my internal network. However, the
+firewall/bridge sits between my T1 router and the rest of my LAN. Is there a
+way to drop the packets mentioned previously, but allow the router? I guess
+a rule could be created that uses the routers mac address as a match. I've
+been playing around with this, but I'm not getting the result I want. I
+could sure use some advice on this.
+
+[ LAN xx.xx.xx.0/24 ]<==>[ bridge/firewall ]<==>[ router xx.xx.xx.254/24 ]
+
+
+Thanks in advance,
+Gerry
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.576 / Virus Database: 365 - Release Date: 1/30/2004
 
 
