@@ -1,13 +1,11 @@
-From: "Dharmendra T." <dharmu@nsecure.net>
-Subject: Re: Ip accounting Help
-Date: 23 Jun 2004 14:46:28 +0530
+From: Sudhakar Chandra <thaths@openscroll.org>
+Subject: Routing between two firewalls
+Date: Wed, 23 Jun 2004 14:49:57 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087982216.7624.46.camel@dharmu.nsecure.net>
-References: <1087962571.2041.10.camel@joel.d2visp.com>
+Message-ID: <40D94B3D.8050308@openscroll.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1087962571.2041.10.camel@joel.d2visp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +15,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Joel <zealous@bonbon.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-hi Joel,
+Hi,
 
- There are lot of packages available on the net for ip accounting. Just
-choose for yours.
+I am having some trouble routing some packets between two dual-homed 
+machines both running iptables.
 
-Regards,
+I have a setup that I assume should be pretty common.  I have a LAN 
+(192.168.100.0/24) which has two gateways / firewalls on it.  Both the 
+gateways are dual-homed.
 
-Dharmendra T.
-Linux Security and Admin,
-www.nsecure.net
+My setup is something like so:
 
-This message is intended for the addressee only. It may contain privileged or confidential information. If you have received
- this message in error, please notify the sender and destroy the message immediately. Unauthorised use or reproduction of 
-this message is strictly prohibited.
+LAN ---> (192.168.100.1) Gateway 1 (isp1.global.ip) --->
+LAN ---> (192.168.100.2) Gateway 2 (isp2.global.ip) --->
 
-On Wed, 2004-06-23 at 09:19, Joel wrote:
-> Hi all,
-> 
-> Currently I am working on Ip accounting in linux.
-> My system is Redhat 9.0 with iptables v1.2.7a
-> This redhat is doing Squid-Caching/ Nat/ Bandwidth management with tc/
-> Real ip forwarding.
-> 
-> I want to do Ip accounting of upload and download. I want to know how
-> much per ip bandwidth consumption is ? 
-> 
-> As i m doing source nat and Real ip forwarding, FORWARD chain will have
-> bytes counters. So FORWARD chain will give the correct figure of how
-> much the ip has used the bandwidth ???
-> 
-> I dont want to create new chain, I want to collect the data from
-> INPUT/OUTPUT/FORWARD chains if that are accurate.
-> 
-> Awaiting for help..
-> Excuse me for my English.
-> 
-> Joel n.solanki
-> Systems Administrator
-> D2V ISP PVT LTD.
-> (M) 91-9825500258
-> 
-> 
-> 
+Gateway 1 routes through ISP1 and Gateway 2 through ISP2.  Some machines 
+in my LAN have .1 set as the gateway and some have .2 as the gateway.
 
+I have my mail server connected to one of the global IPs that ISP2 has 
+given me.  Or in other words, mail server is on the same subnet as the 
+external interface of Gateway 2.
+
+As things are today, packets originating on machines having Gateway 1 as 
+their default gateway traverse out through ISP1, the global internet, 
+back through ISP2 into my global ISP2 subnet.  This is a waste of 
+bandwidth as well as slow.
+
+I want to set up a rule on Gateway 1 such that all packets destined to 
+my mail server (actually, my entire ISP2 subnet) should be sent to 
+Gateway 2 for routing.
+
+I tried adding a static route on Gateway 1 to route all packets destined 
+to the mail server to Gateway 2 like so:
+
+route add -host mail.server.ip gw 192.168.100.2
+
+After I set this up, I am able to traceroute to mail server (packets 
+flow through Gateway 2).  But when I try connecting to port 25, nothing 
+happens.
+
+1. What is the fastest and easiest way to do what I want?
+2. Should I be doing DNAT?
+3. Should I be doing something using iptables AND routing?
+
+Your help would be much appreciated.
+
+Thaths
 -- 
-
-
+   "Trying is the first step towards failure." -- Homer J. Simpson
+Slacker Without Borders                        http://openscroll.org/
+Key fingerprint = 8A 84 2E 67 10 9A 64 03  24 38 B6 AB 1B 6E 8C E4
 
