@@ -1,13 +1,11 @@
-From: hewa0000@student.mh.se
-Subject: Rule matching question [iptables code structure]
-Date: Tue, 06 May 2003 14:56:45 +0200
+From: "Tech" <tech@ctv.com.au>
+Subject: Iptables and Oneway Satellite
+Date: Fri, 9 May 2003 19:43:17 +1000 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <df0d10589.10589df0d@student.mh.se>
+Message-ID: <55001.203.53.253.20.1052473397.squirrel@ctv.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-language: sv
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,48 +18,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-[Please mail us personally (oan@itm.mh.se) as well
-as mailing the list since we are not members of this
-mail-list]
 
-We have a quite difficult question for all you elite
-people.... =)
- 
-When we add a rule to iptables that filter on
-MAC-address (or IP address and port for that
-matter). Does iptables ONLY check for the
-MAC-address option (alas in that case we filter on
-MAC-address)?.
+Hi,
 
-Based on a the report "Performance analysis of the
-Linux firewall on a host" by James Harris and
-Americo J. Melara. It is stated that for each check
-if the MAC-address in the rule match the given
-MAC-address, the Iptables-algorithm ALWAYS checks
-all possibilities (MAC-address, IP, Port, Protocol,
-Interface..). 
-Does anyone know this to be the truth?
+Am having a problem with the setup of a oneway satellite which I hope
+someone can help
 
-We are currently working on a big project where we
-use big lists of rules that are based on MAC and
-IP-addresses. And we are trying to understand why
-these lists of rules crave so much computation power
-to execute.
+I am currently running a onewaysatellite with a modem back channel.  I
+also have an internal network.
 
-If Iptables always run a check for every possible
-way to match our packet with a single rule
-(ip,mac,protocol,interface...) it consumes alot more
-(actually we belive it to be around 6 times as much
-according to the nature of the algorithm) as necessary. 
+I need to force the out going traffic by satellite and all incoming via
+the modem. The internal lan is unable to currently surf the net without
+going through a proxy.
 
-Optimally the algorithm would ONLY check for a
-MAC-Address match if that is what we are filtering
-on. We truly hope this also is the case. But please,
-someone who knows this :-) :
-Answer us!
+Anyhelp will be greatly appreciated
 
-Sincerly,
-Open Access Networks Project MidSweden University.
-oan@itm.mh.se
+Michael
+
+-- 
+Did you know that if you play a Windows 2000 cd backwards, you will hear
+the voice of Satan?
+
+
 
 
