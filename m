@@ -1,13 +1,12 @@
-From: Evgeni Vachkov <evgeni.vachkov@investis.com>
-Subject: Re: ip_conntrack_tcp Errors
-Date: 28 Jun 2004 15:40:15 +0100
+From: Folkert van Heusden <folkert@vanheusden.com>
+Subject: Re: transparent proxying NTP
+Date: Mon, 28 Jun 2004 16:45:26 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088433615.13925.206.camel@spudgun.dhcp.internal>
-References: <Pine.LNX.4.33.0406281449260.20141-100000@blackhole.kfki.hu>
+Message-ID: <Pine.LNX.4.33.0406281644370.12956-100000@muur.intranet.vanheusden.com>
+References: <00e301c45c87$e6e2cc60$8b00000a@casa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0406281449260.20141-100000@blackhole.kfki.hu>
+In-Reply-To: <00e301c45c87$e6e2cc60$8b00000a@casa>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,62 +16,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
+Cc: netfilter@lists.netfilter.org
 
-Jozsef,
+Ah, ok. Well: my gateway is 192.168.64.1 and also runs the timeserver so I'm
+doing only DNAT here then?
 
-I understand the need to identify the problem and I am more than willing
-to help. It would be appreciated if you could adise me on the tcpdump
-command switches to run, since I dont want to scan through thousands of
-packets to identify the missing one. Also I am not an expert in tcpdump,
-so I will need your help.  
-
-Note that this problem occurs only when ip_conntrack table reaches
-arround 25000 connections. The software I am running is using ab (a
-shell script incorporatring ab).
-
-Regards,
-Evgeni Vachkov
-
-      
-
-
-On Mon, 2004-06-28 at 13:55, Jozsef Kadlecsik wrote:
-> On Mon, 28 Jun 2004, Dimitar Katerinski wrote:
-> 
-> > > Is that a problem with conntrack and its tunning or I am missing some
-> > > patch? ...Or perhaps it is some other problem with other parts of the
-> > > kernel?
-> > It seems to me that you have applied the tcp window tracking patch from pom-ng.
-> > The problem is that the client and the server have done the first step of the
-> > three way handshake, and are in sync, but the firewall for some reason is not.
-> 
-> Sorry, but I have to contradict: there must be a connection in conntrack
-> which overlaps with the SYN/ACK packet detected. But why the connection
-> initiating SYN was not detected the same way? That is the question which
-> should be answered somehow.
-> 
-> > So it drops the SYN/ACK, and thus forcing the client to retransmit its SYN and
-> > initiate a new session (as descibed in the source code of the patch)
-> 
-> No, it does not drop the packet but ignores it as the log says. Look at
-> the lines in the source code a few lines below.
-> 
-> > My advice is if you have applied this patch, to remove it, and test the load on the
-> > firewall again.
-> 
-> Yep, that's a solution. And there won't be an answer explaining the case
-> then.
-> 
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
+>     If the DNATted machine is NOT the linux router that is doing the DNAT,
+> you WILL need the SNAT rule too. If you dont use, DNATted machine will try
+> to answer directly to the machine that requested the update. And that
+> machine is not expecting anything from that IP. So, SNATting to linux router
+> IP is needed if DNATting to a machine in the network.
+> ----- Original Message -----
+> From: "Dimitar Katerinski" <train@bofh.bg>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Sunday, June 27, 2004 5:17 PM
+> Subject: Re: transparent proxying NTP
+> > Well if you think how transparent www proxy works, you may figure out how
+> to do transparent ntp proxying.
+> > The following rule should do the job:
+> > iptables -t nat -A PREROUTING -i eth1 -s $LAN_SUBNET -p udp --dport 123 -j
+> REDIRECT --to-ports 123
+> > also I think
+> > iptables -t nat -A PREROUTING -i eth1 -s $LAN_SUBNET -p udp --dport 123 -j
+> DNAT --to-destination 192.168.64.1:124
+> > might work, as I test it. You dont need the SNAT rule though. Test these
+> and give feedback.
+> >
+>
+>
 
 
+
+Folkert van Heusden
+
++--------------------------------------------------------------------------+
+| UNIX sysop? Then give MultiTail ( http://www.vanheusden.com/multitail/ ) |
+| a try, it brings monitoring logfiles to a different level! See:          |
+| http://www.vanheusden.com/multitail/features.html for a feature list.    |
++---------------------------------------------------= www.vanheusden.com =-+
 
 
