@@ -1,11 +1,9 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: Is DIVERT w/o forwarding feasible?
-Date: Wed, 11 Sep 2002 16:08:04 +0200
+From: Erik Enge <eenge@prium.net>
+Subject: If eth0 goes down after a reboot, rules for it will be applied to eth1.
+Date: 11 Sep 2002 09:42:15 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D7F4E44.70905@fugmann.dhs.org>
-References: <Pine.LNX.4.33.0209111953130.19450-100000@panda.center-f1.ru>
+Message-ID: <87sn0g4p8o.fsf@prium.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,29 +14,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Yury Bokhoncovich <byg@center-f1.ru>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Yury Bokhoncovich wrote:
->>Err, please explain why you do not want forwarding enabled. If this is
-> Because rule #1: "People makes mistakes". Disabled forwarding gives more
-> strict and reliable control under possible traffic. There are a few books
-> where this topic discussed (including O'Reilly's).
-Rephrase - You make mistakes. Thats ok, but the system was designed to 
-forward packets. If you dont want it, then live without it. And please 
-dont refer to opinions stated in books. If you really want a "good ol'e 
-classic", then Bjarne Stroustrup once said that one should never put a 
-computer on the net - Not a vailable solution is it?
+Hi all.
 
-Compared to cars - You are saying that its dangerous to drive, and the 
-only way to control this is to ban them - Don't go to the carmakers 
-(this list) to ask for other solutions, when you already stated that you 
-do not trust the cars.
+I have a question about how ethernet cards work.  I send it here because
+I'm thinking that this community probably has dealt with it before, as
+it seems to me to be an obvious problem (with no apparent solution to
+me; hence this email).
 
--- 
-Neo: 'Can you fly that thing?'
-Trinity: 'Not yet'.
-$ apt-get install pilot-prg-v212helicopter.
+Let's assume I have a firewall with three NICs.  As we know, the
+ethernet cards under Unix (I'm running Linux 2.4) are assigned eth0/1/2
+and so on based on the bus number the BIOS gives them.  My setup is as
+follows:
 
+  NIC 1, eth0, DMZ interface [somewhat laid-back firewall rules]
+  NIC 2, eth1, LAN interface [very strict firewall rules]
+  NIC 3, eth2, router interface [basically FORWARDs everything]
+  NIC 4, eth3, external interface [basically FORWARDs everything]
+
+Now, say we take down the firewall for some reason, and upon it coming
+back up eth0 dies.  The bus assigning will then be a bit different, and
+so will eth0/1/2 and so on (which is what the firewall rules are set
+against).
+
+This means that I could end up in a situation where my laid-back DMZ
+rules were applied to my LAN interface and my external interface would
+still work, because it would take the eth2 which is pretty laid-back.
+The only thing that wouldn't work (which would trigger me that something
+was wrong) is that I can't access the DMZ and my router interface.
+However, if I'm unlucky, some cracker might have enough time to intrude
+into my, now completely open, LAN interface and its associated network.
+
+So, my question then, is how do you guys deal with this?  Is there a way
+to ensure that the card in slot such-and-such is assigned eth1 every
+single time, even if the card assigned to eth0 dies?  Or is there
+another and perhaps better solution to all this?
+
+Thanks for any replies,
+
+Erik Enge.
 
