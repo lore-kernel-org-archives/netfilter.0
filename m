@@ -1,9 +1,8 @@
-From: "John Hill" <jhill@noach.com>
-Subject: Iptables 2.4.x kernels
-Date: Fri, 11 Mar 2005 23:48:26 -0500
-Message-ID: <SIMEONMjFEFuopJLW1100000001@mail.noach.com>
+From: pop liviu <liviup76@yahoo.com>
+Subject: Blocking NAT-ed packets
+Date: Fri, 11 Mar 2005 23:49:21 -0800 (PST)
+Message-ID: <20050312074921.91658.qmail@web53307.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,37 +13,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-El vie, 11-03-2005 a las 12:36 -0500, John Hill escribi=F3:
-> Should I consider iptables to be dropping 2.4.x kernel support?
->=20
-> I have yet to compile iptables successfully since 2.4.26 and 1.2.11. I =
-get
-a
-> MUTEX error. This was addressed by a patch (sent to me in email) but a
-> permanent fix has failed to make the kernel and the iptables code. The =
-new
-> 2.4.29 and 1.3.1 still does it. I also had segmentation errors with
-> shorewall after applying the patch to 2.4.28 and 1.3.0. I gave up =
-without
-> looking into the problem further hoping the new kernel and iptables =
-would
-> fix it. It has not.
+Hi,
+My name is Liviu Pop and i am from Bucharest, Romania.
 
-Are you applying the patch-o-matic patches to the kernels and userspace
-tools? You must do it to compile the code.
+I have 2 big questions, and i didn't find any answer
+about this:
 
-> Thanks
->=20
-> --john
+1.How can i block NAT-ed packets from a router behind
+my firewall/router?
 
-Regards.
+2.How can i pass a firewall that block NAT-ed packets?
+
+Best Regards,
+Liviu Pop
+system engineer
 
 
-Yes I patched it with the latest ng.
-
---john
-
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Small Business - Try our new resources site!
+http://smallbusiness.yahoo.com/resources/ 
 
