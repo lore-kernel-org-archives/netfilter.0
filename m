@@ -1,13 +1,14 @@
-From: Paulo Andre <pandre@darkstar.nom.za>
-Subject: RE: connection problem
-Date: 05 Dec 2002 15:35:34 +0200
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: FIN without SYN - was (no subject)
+Date: Thu, 5 Dec 2002 08:51:54 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1039095334.308.3.camel@bigblue>
-References: <BDEFKJOAPEBPJCGDAGMFOEICCAAA.nigel@forever-networks.com>
+Message-ID: <200212050851.54266.netfilter@newkirk.us>
+References: <31347F3CE518D6118ACB00A0246AD0560B2527@mx.seaan.net>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BDEFKJOAPEBPJCGDAGMFOEICCAAA.nigel@forever-networks.com>
+In-Reply-To: <31347F3CE518D6118ACB00A0246AD0560B2527@mx.seaan.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,64 +19,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Nigel Clarke <nigel@forever-networks.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: mailinglists@belfin.ch, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Thu, 2002-12-05 at 16:56, Nigel Clarke wrote:
-> Paulo,
-> 
-> >I have a problem where a router reboots every evening. I do not have
-> >control of this router.
-> 
-> For this, you might want to see if the janitors unplug the router to use the
-> outlet in the evening.
-> Seriously.
-> 
-> As far as the issue with IPTABLES....this might be an issue with the ARP
-> cache on the firewall. What kind of
-> network card are you using? What kernel version?
-> 
-> I've had problem like this on some 2.2 kernel implementations with old
-> network cards. I'd have to "ifconfig eth* down/up"
-> for the interface to work.
+On Thursday 05 December 2002 04:38 am, Philipp (mailinglists@belfin.ch)=20
+wrote:
+> Hi
+>
+> I have a rule saying this:
+>
+> iptables -A INPUT -p 6 ! --syn -m state --state NEW -j LOG --log-level
+> warn --log-prefix "### NOT-SYN ### "
+> iptables -A INPUT -p 6 ! --syn -m state --state NEW -j DROP
+>
+> and I've got Logs that look like that:
+>
+> Dec  4 17:28:07 rproxy2 kernel: ### NOT-SYN ### IN=3Deth1 OUT=3D
+> MAC=3D00:a0:24:6a:d0:56:00:10:db:1e:20:70:08:00 SRC=3D194.112.179.45
+> DST=3D192.168.1.6
+> LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D53 ID=3D2979 DF PROTO=3DTCP SPT=3D=
+60351 DPT=3D80
+> WINDOW=3D5840 RES=3D0x00 ACK FIN URGP=3D0
+>
+> Also I've got a snort box running in my ISPs subnet. Snort would have
+> picked it up if this was a scan.
+> Does iptables 1.2.5 have a problem with FIN-ACK packets?
 
-I will look at that , the old network card, but the funny thing is that
-I have to change the IP address on the card to another and then back to
-the original for it to work.
+No, but if they are the first traffic it recognizes in a connection (IE,=20
+state=3DNEW) and they are NOT SYN your rule will log them.  This does not=
+=20
+always mean that no connection was previously made, it can occur if the=20
+connection has timed-out, or if the connection is refused.
 
-> 
-> ;-)
-> 
-> --
-> Nigel Clarke                 Forever Networks
-> Network Security Engineer    www.forever-networks.com
-> 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Paulo Andre
-> Sent: Wednesday, December 04, 2002 10:56 PM
-> To: netfilter
-> Subject: connection problem
-> 
-> 
-> I have a problem where a router reboots every evening. I do not have
-> control of this router.
-> The problem is with iptables, as soons as the router reboots I lose the
-> connection even when the router has come up afterwards.
-> I then have to take the interface down, reload the firewall script, then
-> reconfigure the interface and reapply the firewall script again so that
-> I can see the router again.
-> 
-> Can anyone tell me why this happens, the interface is a aliased
-> interface, if that makes a difference.
-> 
-> Thanks
-> 
-> Paulo
-> 
-> 
-> 
-> 
-
+j
 
 
