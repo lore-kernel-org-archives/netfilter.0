@@ -1,14 +1,11 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: [OT] - Please reply off list - What Distro?
-Date: Wed, 24 Dec 2003 02:49:42 +0100
+From: Vilmos Branyik <vbranyik@piopc.com>
+Subject: RE: Call for testing: patch-o-matic-ng
+Date: Tue, 23 Dec 2003 19:30:26 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031224024942.75fbeeb3.arnt@c2i.net>
-References: <7A3B4AA360FDEF448F3390421FC8D731012C67DE@coxhpexg.coxhp.com>
-Reply-To: <bmcdowell@coxhealthplans.com>
+Message-ID: <30E7B49F378ED711AC0F00E02917CD8B10E657@POLLY>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7A3B4AA360FDEF448F3390421FC8D731012C67DE@coxhpexg.coxhp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +15,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: bmcdowell@coxhealthplans.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Vilmos Branyik <vbranyik@piopc.com>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Tue, 23 Dec 2003 10:32:54 -0600, 
-<bmcdowell@coxhealthplans.com> wrote in message 
-<7A3B4AA360FDEF448F3390421FC8D731012C67DE@coxhpexg.coxhp.com>:
+Alistair
 
-> 
-> Disclaimer:  I do not wish to start a dreaded 'distro-war', but I am
-> at a bit of a loss.  Please reply to me off-list, so as not to incite
-> a riot...
-> 
-> I'm unhappy with my current distro, and would like to find another
-> one.  Does anyone have any recommendations?
-> 
-> I'm using bridging firewalls with iptables.  The boxes also run snort.
->  They're PII's and PIII's, no frills.  That's about it...
-> 
-> I'm currently on RedHat and am disappointed with their move/change to
-> 'Fedora'.  Nothing is future-proof, but I'd be more comfortable on
-> something that isn't 'sunsetting'.  I also have concerns with Fedora's
-> quality going forward.  It seems to me to be very much RedHat's
-> step-child, if you get my meaning.  I don't like the concept of being
-> lured with a 'stripped-down' version, and later being 'pushed' into
-> paying for an upgrade.  I'm not saying that RedHat is doing this
-> today, but it seems to me that they will be in a better place to do
-> this in the future.
-> 
-> Any thoughts?
-> 
+Why are you using my name and email address for your posting?
 
-..1: Next time you or someone else wants private responses, set
-Reply-To: appropriately.  (Done for you in this message.)
+Vilmos
 
-..2: Debian.  I made the switch in June, and rammed it down 
-the throats of _all_ my clients, and _enjoys_ updates that go 
-"apt-get update ;apt-get upgrade".  ;-)
+> -----Original Message-----
+> From: Vilmos Branyik=20
+> Sent: Tuesday, December 23, 2003 5:52 PM
+> To: kilobug@freesurf.fr; Harald Welte
+> Cc: Netfilter Development Mailinglist; Netfilter Mailinglist
+> Subject: Re: Call for testing: patch-o-matic-ng
+>=20
+>=20
+> On December 23, 2003 07:26 pm, Ga=EBl Le Mignot wrote:
+> > Hello Harald, hello netfiler list ;)
+> >
+> > I did  some tests on which  patch from the patch-o-matic =20
+> works on 2.6
+> > and which ones don't compile. Here is the complete result=20
+> of my tests.
+> >
+> > I just try compiling them (after applying patches on a=20
+> vanilla 2.6.0),
+> > I didn't try to load or use them.
+> >
+> > I've noticed too that when  a patch doesn't apply, pom-ng=20
+> doesn't seem
+> > to display it - or do it so fast that I don't notice it.
+> >
+> >
+> 	Agreed -- same here -- offlist to Harald as well since=20
+> I think my perl is weirding out on us.
+>=20
+> 	Alistair
+>=20
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+Matt Branyik
+www.piopc.net
+(719) 784-6955=20
 
+> -----Original Message-----
+> From: Vilmos Branyik=20
+> Sent: Tuesday, December 23, 2003 5:52 PM
+> To: kilobug@freesurf.fr; Harald Welte
+> Cc: Netfilter Development Mailinglist; Netfilter Mailinglist
+> Subject: Re: Call for testing: patch-o-matic-ng
+>=20
+>=20
+> On December 23, 2003 07:26 pm, Ga=EBl Le Mignot wrote:
+> > Hello Harald, hello netfiler list ;)
+> >
+> > I did  some tests on which  patch from the patch-o-matic =20
+> works on 2.6
+> > and which ones don't compile. Here is the complete result=20
+> of my tests.
+> >
+> > I just try compiling them (after applying patches on a=20
+> vanilla 2.6.0),
+> > I didn't try to load or use them.
+> >
+> > I've noticed too that when  a patch doesn't apply, pom-ng=20
+> doesn't seem
+> > to display it - or do it so fast that I don't notice it.
+> >
+> >
+> 	Agreed -- same here -- offlist to Harald as well since=20
+> I think my perl is weirding out on us.
+>=20
+> 	Alistair
+>=20
 
