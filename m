@@ -1,11 +1,13 @@
-From: "tirexx" <tirexx@mail.ru>
-Subject: -m state ESTABLISHED, NEW etc...
-Date: Thu, 30 May 2002 17:27:34 +0300
+From: Antony Stone <Antony.Stone@RHUL.ac.uk>
+Subject: Re: sendto: Operation not permitted
+Date: Thu, 30 May 2002 20:13:52 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <004401c207e6$249c22c0$3401000a@ryanchenko>
+Message-ID: <200205301913.g4UJDrA14775@Networker.rockstone.co.uk>
+References: <Pine.LNX.4.44.0205300945340.31451-100000@paix.pilosoft.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <Pine.LNX.4.44.0205300945340.31451-100000@paix.pilosoft.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,43 +20,18 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi all
+On Thursday 30 May 2002 2:46 pm, alex@pilosoft.com wrote:
 
-TCP connection flow by this scenario
-Can someone explain me where pass borders of state ESTABLISHED, NEW.
+> Antony, ever heard of TCP MTU Discovery?
 
-1-> SYN
-2<- SYN ACK
-3-> ACK
-connected
-....
-4-> ACK
-5<- ACK
-....
-6-> FIN
-7<- ACK
-8<- FIN
-9-> ACK
-closed
+Er, yes, it's a mechanism whereby machines communicating by TCP find out the 
+maximum size of packets which can be transmitted between them, across 
+whatever underlying protocol connects them.
 
-I think so:
-1,2,3 NEW
-2,3,4,5,6,7,8,9 ESTABLISHED
-2,3,4,5,6,7,8,9 RELATED
+> Please read up on it and try again.
 
-i`m wrong?
+What is the point you are trying to make ?
 
 
-with this rules outgoing connect work
-incomming connect not work
-this demonstrate 2,3,4,5,6,7,8,9 = ESTABLISHED
-
-iptables -A FORWARD -o eth_external -i eth_internal -p tcp -d
-x.x.x.x --dport x -j ACCEPT
-iptables -A FORWARD -i eth_external -o eth_internal -p tcp -s
-x.x.x.x --sport x -m state --state ESTABLISHED -j ACCEPT
-
-
-
-
+Antony.
 
