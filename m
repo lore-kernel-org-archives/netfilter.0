@@ -1,12 +1,13 @@
-From: "Aldo Lagana" <alagana@discmail.com>
-Subject: Filtering in the nat table - opinions wanted
-Date: Mon, 24 Mar 2003 13:20:55 -0500
+From: Kim Jensen <kimj@dawn.dk>
+Subject: Re: Unusual routing problem
+Date: Mon, 24 Mar 2003 20:28:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003501c2f232$1c0a5140$6d64a8c0@discmail.com>
+Message-ID: <200303242028.09150.kimj@dawn.dk>
+References: <04d501c2f232$c0dbebc0$93a22ad1@blueone.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0032_01C2F208.331A3190"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <04d501c2f232$c0dbebc0$93a22ad1@blueone.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,75 +17,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Benjamin Tompkins <netfilter@dahanga.org>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi Benjamin,
 
-------=_NextPart_000_0032_01C2F208.331A3190
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have recently been playing with the same thing, and have a still unansw=
+ered=20
+question regarding the possibility to combine MASQUERADING with NAT!
 
-by default I set the nat chains (PREROUTING POSTROUTING, etc) to ACCEPT. =
- first off is this bad?
+Anyway, if you keep things down to a simple level, then all you have to d=
+o is=20
+create a second routing table (copy), and then add a fwmark rule to to te=
+ll=20
+the routing system, that the second table should be used when the mark is=
+=20
+matched.
 
-For my web & mail servers using DNAT, I need to add rules - and I do.  =
-Same w/ SNAT rules...
+In your iptables, you mark all packets which are bound for your secondary=
+=20
+route. While the default set up will ensure that you have all packets run=
+ning=20
+through normally.
 
-The problem has come up with our mail server - we were getting spam from =
-one IP address - since my DNAT rule was ACCEPT and forward, the mail =
-server kept getting these spam messages.  I stopped the SPAM by adding a =
-rule to the beginning of PREROUTING to DROP packets from that address.
+Ip routing rule:
+$ ip rule add fwmark xxx table yyy
 
-This made me start thinking - am I doing it right by having all the nat =
-chains default ACCEPT?
+in iptables:
+$ iptables -t mangle -A PREROUTING [conditions] -j MARK --set-mark xxx
 
-aldo
+Hopes this helps. However, if you manage to set up your system with worki=
+ng=20
+masquerading & natting, please give me a hint - I'm completely stuck and =
+are=20
+currently resolving to using aliasing!
 
+/Kim
 
-
-
-------=_NextPart_000_0032_01C2F208.331A3190
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>by default I set the nat chains =
-(PREROUTING=20
-POSTROUTING, etc) to ACCEPT.&nbsp; first off is this bad?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>For my web &amp; mail servers using =
-DNAT, I need to=20
-add rules - and I do.&nbsp; Same w/ SNAT rules...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>The problem has come up with our mail =
-server - we=20
-were getting spam from one IP address - since my DNAT rule was ACCEPT =
-and=20
-forward, the mail server kept getting these spam messages.&nbsp; I =
-stopped the=20
-SPAM by adding a rule to the beginning of PREROUTING to DROP packets =
-from that=20
-address.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>This made me start thinking - am I =
-doing it right=20
-by having all the nat chains default ACCEPT?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>aldo</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0032_01C2F208.331A3190--
+On Monday 24 March 2003 19:25, Benjamin Tompkins wrote:
+> I am attempting to route myself an ip block from my office to my home v=
+ia a
+> tunnel. Simple enough. The catch is, I only want the tunnel to be used =
+for
+> lan destined traffic and incoming connections to my IP block. The lan
+> destined traffic is easy, the trick apparently is getting the block to =
+be
+> accessible via the internet, without forcing all traffic to use the tun=
+nel.
+> A diagram.
+>
+> eth0  (DHCP) cable modem            eth1  (x.x.x.1/28) LAN
+>                                               \   /
+>                                       Linux Machine
+>
+>                                  ppp0 (x.x.x.2/30)
+>
+> Ok, so what I have so far is as follows.
+>
+> This takes care of access to the office network.
+> route add -net x.x.x.1 netmask 255.255.255.240 dev eth1
+> route add -net x.x.x.0 netmask 255.255.254.0 dev ppp0
+> route add -host x.x.x.1 dev eth0
+>
+> Now to use the cable for everything else.
+> iptables -A POSTROUTING -s x.x.x.1/28 -o eth0 -j MASQUERADE
+>
+> So now I can access my office lan and vice versa, and everything else g=
+ets
+> masqed out the cable. But I'm having a heck of a time letting the box t=
+o
+> know that stuff requested via ppp0, needs to go out ppp0. I have looked=
+ at
+> using the mangle table making rules for input and forward, but am just
+> missing something along the way. Any help anyone can offer would be gre=
+atly
+> appreciated. Thanks.
 
 
