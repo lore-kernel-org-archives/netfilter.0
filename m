@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPTables Query
-Date: Wed, 23 Oct 2002 10:57:43 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: what filtering to do on the OUTPUT chain?
+Date: 23 Oct 2002 12:24:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210230957.g9N9vnL02345@vulcan.rissington.net>
-References: <OF61962908.A658CCF9-ON65256C5B.0023060F-65256C5B.00245CCC@lntinfotech.com>
+Message-ID: <1035368650.8853.33.camel@elendil>
+References: <Pine.LNX.4.44.0210221605170.15445-100000@localhost.localdomain>
+	<1035328874.10494.38.camel@elendil> 
+	<200210230943.g9N9hiL02304@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OF61962908.A658CCF9-ON65256C5B.0023060F-65256C5B.00245CCC@lntinfotech.com>
+In-Reply-To: <200210230943.g9N9hiL02304@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +19,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter mailing list <netfilter@lists.netfilter.org>
 
-On Wednesday 23 October 2002 7:37 am, harish.k@lntinfotech.com wrote:
+Le mer 23/10/2002 =E0 11:43, Antony Stone a =E9crit :
+> The OUTPUT rules are always going to allow traffic to or from expected
+> ports. 53 is a good one to guess is going to be made accessible, so
+> you simply set up netcat to contact your external system on port 53,
+> and you can still do what you've outlined above even with pretty good
+> OUTPUT filters in place.
 
-> Hello List,
->
-> I have a Red Hat Linux 7.3 box running iptables-1.2.5-3.
-> I am using iptables primarily for Source NAT.
-> The machine has two IP Addresses
->
-> eth0      : 172.25.8.130
-> eth0:0    : 172.25.8.125
->
-> I am terribly confused with the OUTPUT chain. I have read from
-> the documentation that the OUTPUT chain is used for locally
-> generated packets.
+Yes you can. Even if you're facing a rule like=20
 
-That is correct.   iptables is very different from ipchains (if you have used 
-that before ?) in terms of which chains are traversed by packets into, out 
-of, or through the machine.
+	iptables -A OUTPUT -p udp -d $IN_DNS --dport 53 -j ACCEPT
 
-> The machine always uses the IP Add of eth0
-> for any locally generated packets. How do I configure the OUTPUT
-> chain such that the machine uses the IP Add 172.25.8.125 when it
-> requests for specific ports or protocols.
+You can use DNS tunnel stuff. But it makes things more difficult. And it
+is just the point of security tools.
 
-Remember that all packets leaving your machine, whether they originated from 
-the local machine (ie they came through the OUTPUT chain) or came from 
-another machine and got routed through the netfilter box (ie they came 
-through the FORWARD) chain, will pass through the POSTROUTING chain just 
-before they exit the interface.
+> If you're concerned about this level of security (which you should be) =
+then=20
+> you need to deal with Operating System security and things like Host=20
+> Intrustion Detection - netfilter is not going to do the job effectively=
+ for=20
+> you.
 
-Therefore you can put a SNAT rule into your POSTROUTING chain to change the 
-source address of packets for specific protocols.
+Yeah sure, but it's an active part of the overall stuff, and, as such,
+must be completly configured.
 
-Antony.
+If I begin to admit the fact that because one tool does not all the job
+for me, I can let it unconfigured, well, I do not see the point of
+filtering INPUT with Netfilter ? My closed ports are closed, and open
+ones can be wrapped, so what's the point adding packet filtering for
+local applications that can provide address based access control through
+tcpd or internal wrappers ? No tool can provide full security alone.
+Each one is one brick of the wall. If bricks are missing, you wall is
+shacky.
 
--- 
+My point of vue is that you should use every security mecanism available
+to enforce your security policy. You can say that it is too much work,
+too much time or too much money to do ; I understand this kind of
+reason. But doing nothing because what you can implement can be evaded
+is not a valuable reason, imho. If you extend this, you would not set
+security at all, as every security tool can be evaded.
 
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security expert  - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
