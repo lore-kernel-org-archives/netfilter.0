@@ -1,15 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: iptables1.2.7 + pptp + rh9
-Date: Wed, 22 Oct 2003 21:55:49 +0200
+From: <netfilter@drbroyles.com>
+Subject: Re: Time changes
+Date: Wed, 22 Oct 2003 16:13:02 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031022215549.4b028338.arnt@c2i.net>
-References: <7C9884991ADAE0479C14F10C858BCDF52E375B@alderaan.smgtec.com>
-	<6.0.0.22.0.20031021210350.01b66818@pop3.uol.com.br>
-	<009501c39837$e1883850$2800a8c0@karu>
+Message-ID: <000a01c398d8$e5b13660$73593a42@drbroyles.com>
+References: <NEBBICCJKLGJHMMNBPIKAENKFLAA.sbisgaard@xtrasource.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <009501c39837$e1883850$2800a8c0@karu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,44 +17,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: sbisgaard@xtrasource.com
+Cc: "[netfilter] Mailing List" <netfilter@lists.netfilter.org>
 
-On Wed, 22 Oct 2003 06:30:13 +0530, 
-"Venkatesh. K" <venkatesh@cbayscribe.com> wrote in message 
-<009501c39837$e1883850$2800a8c0@karu>:
+Yes, you would need to utilize the time patch.  Go to the following Howto to
+read up about it.
+http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-3.h
+tml#ss3.19
 
-> ----- Original Message ----- 
-> From: "Fernando Barrocal" <fbarrocal@uol.com.br>
-> To: "Daniel Chemko" <dchemko@smgtec.com>;
-> <netfilter@lists.netfilter.org> Sent: Wednesday, October 22, 2003 4:35
-> AM Subject: RE: iptables1.2.7 + pptp + rh9
-> 
-> 
-> >
-> > Let me ask another question ... a newbie one ...
-> >
-> > Is that order correct ?
-> >
-> > - apply pptp patch
-> > - compile iptables
-> > - compile kernel (config, dep, clean, image, modules)
-> >
-> 
-> Apply patch
-> Compile Kernel
+Brandon Broyles
+  ----- Original Message -----
+  From: Steffen Bisgaard - Xtrasource
+  To: netfilter@lists.netfilter.org
+  Sent: Wednesday, October 22, 2003 3:44 PM
+  Subject: Time changes
 
-..ahem; compile kernel (config, dep, clean,  modules, image)
 
-> Compile IPtables
+  Hallo list,
 
-..was also possible possible to apply the pptp patch woih the 
-"kernelmod" package from poptop.sf.net, last time I checked.
+  A quick question: Is it possible to block access to and from a PC (say
+10.2.0.3) at a specific time, for example 21:00, and re-enable it at 08:00
+the next day using iptables - and if so how?? Yes this is the kids PC...
+  It used to be real simple with ipfw - I can't remember the syntax but
+something along the lines of ipfw -add (or -remove) deny (or allow) 10.2.0.3
+all
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
+  Any ideas? Or do I need two separate iptables scripts?
 
 
