@@ -1,10 +1,9 @@
-From: "Paul" <andnicky@myrealbox.com>
-Subject: Re: RE: Can iptables create alias IP for another box?
-Date: Sun, 22 Dec 2002 23:24:51 -0500
+From: Silkk <crystaldrinker@yahoo.com>
+Subject: iptables does not support chkconfig!
+Date: Sun, 22 Dec 2002 20:39:39 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040617491.c2706ec0andnicky@myrealbox.com>
+Message-ID: <20021223043939.54762.qmail@web40612.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,60 +15,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: rsterenborg@xs4all.nl
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Thank you, Rob.  I'll try this tomorrow at the office. =20
+Hello,
 
-Then may try to see whether it can work for most (or all?) IP traffic.  Som=
-etimes I've wanted to give a server a "virtual alias" IP without having t=
-o touch the server itself.
+I installed iptables 1.2.7a with kernel 2.4.20. I tryed to get them to start when i boot
+my pc but they are not starting. I created a firewall script named "firewall" in:
+"/etc/init.d" 
+---I ran:
+chown root.root /etc/init.d/firewall
+chmod u=rwx /etc/init.d/firewall
+chmod 775 /etc/init.d/firewall
+---And added this line to my "/etc/rc.d/rc.local" file
+sh /etc/init.d/firewall
 
-> Port 80 : webserver ?
-> Port 8080 : web-proxy ?
+But that still dont get them started up. If i run 
+sh /etc/init.d/firewall manually then my rules properly.
 
-Don't need 8080 if iptables on B can do:
+I tryed using 
+"chkconfig levels 23456 iptables on" but get this 
+service iptables does not support chkconfig
 
-  client(tcp/80)--> boxB--> boxA--> boxB--> client
+And i get an error when i re-boot my computer on start up after redhat network dameon
+starts something about iptables i check my logs but cant see it in there! 
+Any help how i can get my rules to start when my PC starts up???
 
-A & B have one interface each, on different subnets routed to each other.
-
-> I was trying to do something like this on box B (from=20
-> error-prone memory, with B's address 10.5.6.7):
->=20
-> > iptables -t nat -A PREROUTING -d 10.5.6.7 -p tcp --dport=20
-> 8080 -j DNAT --to 1.2.3.4:80
->=20
-> > iptables -t nat -A POSTROUTING -d 1.2.3.4 -p tcp --dport=20
-> 80 -j SNAT --to 10.5.6.7
-
-
-Do you have a default FORWARD policy of DROP ?
-If so, you also need a FORWARD ACCEPT rule.
-
-**** I didn't know it, but probably did have a default FORWARD policy of DR=
-OP.  Had only followed the NAT part of Rusty's docs.******
-
-
-I'd try :
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -d 1.2.3.4 -p tcp --dport 80 -j ACCEPT
-iptables -t nat -A PREROUTING -d 10.5.6.7 -p tcp --dport 8080 -j DNAT --to-=
-destination 1.2.3.4:80
-
-I don't know what you are trying to do with your second rule.
-If it's meant as a reverse rule of the first,****YES**** then you maybe bet=
-ter use RELATED,ESTABLISHED.
-
-But if you want to SNAT 1.2.3.4 to (public ?) 10.5.6.7 :
-iptables -A FORWARD -s 1.2.3.4 -j ACCEPT
-iptables -t nat -A POSTROUTING -s 1.2.3.4 -j SNAT --to-source 10.5.6.7
-
-
-Rob
-
-
-
-
-
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
 
