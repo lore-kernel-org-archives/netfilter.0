@@ -1,14 +1,10 @@
-From: Tony Earnshaw <tonni@billy.demon.nl>
-Subject: RE: Strange misunderstandings
-Date: 01 Jun 2002 00:52:26 +0200
+From: "j davis" <davis_compz@hotmail.com>
+Subject: Re: IP Aliasing
+Date: Fri, 31 May 2002 23:32:13 +0000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1022885546.9726.25.camel@billy.demon.nl>
-References: <001c01c208e8$68205720$6301a8c0@JJONES1>
+Message-ID: <F251aQLJJuJhMw5hdUK00010f63@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-b1ExctY33oGJ4zO+dsOG"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <001c01c208e8$68205720$6301a8c0@JJONES1>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,73 +14,85 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: jjones@merlintechnologies.com
-Cc: 'Iptables' <netfilter@lists.samba.org>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
 
---=-b1ExctY33oGJ4zO+dsOG
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+this does work, this is proablly a weekley question trailing the ever 
+popular
+Q   what ports for my game? This question has been asked 2 or three times 
+just in the last few days...view the Virtual Host emails this week,
 
-fre, 2002-05-31 kl. 23:16 skrev John Jones:
+>From: George Georgalis <georgw@galis.org>
+>To: Michael Montero <mmontero@mail.communityconnect.com>
+>CC: netfilter@lists.samba.org
+>Subject: Re: IP Aliasing
+>Date: Fri, 31 May 2002 13:18:49 -0400
+>MIME-Version: 1.0
+>Received: from hotmail.com ([65.54.236.29]) by hotmail.com with Microsoft 
+>SMTPSVC(5.0.2195.4905); Fri, 31 May 2002 10:29:25 -0700
+>Received: from lists.samba.org ([198.186.203.85]) by hotmail.com with 
+>Microsoft SMTPSVC(5.0.2195.4905); Fri, 31 May 2002 10:19:23 -0700
+>Received: from va.samba.org (localhost [127.0.0.1])by lists.samba.org 
+>(Postfix) with ESMTPid E5C4045C7; Fri, 31 May 2002 10:22:21 -0700 (PDT)
+>Received: from trot.galis.org (ool-43530772.dyn.optonline.net 
+>[67.83.7.114])by lists.samba.org (Postfix) with ESMTP id 4AD554109for 
+><netfilter@lists.samba.org>; Fri, 31 May 2002 10:20:14 -0700 (PDT)
+>Received: (from gx@localhost)by trot.galis.org (8.11.6/8.11.6) id 
+>g4VHInI19140;Fri, 31 May 2002 13:18:49 -0400
+>Delivered-To: netfilter@lists.samba.org
+>Message-ID: <20020531131849.C17865@trot.haven.dom>
+>References: <Pine.LNX.4.04.10205311254170.5797-100000@lysa>
+>User-Agent: Mutt/1.2.5.1i
+>In-Reply-To: <Pine.LNX.4.04.10205311254170.5797-100000@lysa>; from 
+>mmontero@mail.communityconnect.com on Fri, May 31, 2002 at 12:55:57PM -0400
+>Sender: netfilter-admin@lists.samba.org
+>Errors-To: netfilter-admin@lists.samba.org
+>X-BeenThere: netfilter@lists.samba.org
+>X-Mailman-Version: 2.0.8
+>Precedence: bulk
+>List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
+>List-Post: <mailto:netfilter@lists.samba.org>
+>List-Subscribe: 
+><http://lists.samba.org/listinfo/netfilter>,<mailto:netfilter-request@lists.samba.org?subject=subscribe>
+>List-Id: netfilter user discussion list <netfilter.lists.samba.org>
+>List-Unsubscribe: 
+><http://lists.samba.org/listinfo/netfilter>,<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
+>List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+>Return-Path: netfilter-admin@lists.samba.org
+>X-OriginalArrivalTime: 31 May 2002 17:19:25.0848 (UTC) 
+>FILETIME=[504C3180:01C208C7]
+>
+>On Fri, May 31, 2002 at 12:55:57PM -0400, Michael Montero wrote:
+> >I'm trying to set up 2 IP aliases on my firewall box.  It's Redhat 7.2.  
+>I
+> >believe I have the 2 alias (eth0:0 and eth0:1) set up properly.  Is there
+> >anything in particular I need to do with iptables to activate these 2
+> >interfaces?  I've attempted to execute rules with the interface specified
+> >as eth0:0 and iptables does not seem to like that.  Anyone have any docs 
+>I
+> >can read about proper IP aliasing under Redhat and what I need to do for
+> >iptables?
+> >
+>
+>I would try '-i eth0' for all you aliases and use '-i/-o address[/mask]'
+>if you refer to a particular subnet. Reasoning: the interface is being
+>aliased and iptables sees them all as eth0.
+>
+>Let me know if this works ;^) I'll be trying it shortly.
+>
+>// George
+>
+>--
+>GEORGE GEORGALIS, System Admin/Architect    cell: 347-451-8229
+>Security Services, Web, Mail,            mailto:george@galis.org
+>File, Print, DB and DNS Servers.       http://www.galis.org/george
 
-> [gemini:~] iptables -C
-> iptables v1.2.6a: Unknown arg `-C'
-> Try `iptables -h' or 'iptables --help' for more information.
-
-I don't know whether you noticed, but you finally got your answer from
-Sascha. The funny thing is, is that all the answers were time-shuffeled,
-like a pack of cards. Sascha is using a dial-in WinXP mail client to a
-webmail Sendmail server, and is based in Germany. John's (your) mail
-server is Sendmail and is based in North America. Adam's is a Postfix
-server in the U.K.
-
-The shuffeling has no doubt to do with a preference for European Union
-vis a vis British origins by Samba.org, and quite right too. Maybe the
-position of the sun at the time had something to do with it, as well. Or
-Gemini in ascendence.
-
-Had you done "man iptables", you'd never have had to ask the question,
-but Sascha's analysis was witty and droll, so worth waiting for,
-perhaps.
-
-No-one gave you the answer to your second question. The latter is, that
-you've established a path to the internal name server with PREROUTING
-and DNAT, but none back again. So no packets get returned. Do that with
-POSTROUTING and SNAT. Also, you haven't specified any interfaces, but
-try that later if things don't work.
-
-Tony
-
-
---=20
-
-Tony Earnshaw
-
-e-post:		tonni@billy.demon.nl
-www:		http://www.billy.demon.nl
-gpg public key:	http://www.billy.demon.nl/tonni.armor
-
-Telefoon:	(+31) (0)172 530428
-Mobiel:		(+31) (0)6 51153356
-
-GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
-3BE7B981
 
 
 
---=-b1ExctY33oGJ4zO+dsOG
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Dette er en digitalt signert meldingsdel
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA89/6q99dgUTvnuYERAusbAJwJr9/cayqhPQC/8Ld/EZ6AQgkaWACbBYyY
-vQAYm5wsGqowvy0GnJo7qzo=
-=+TpH
------END PGP SIGNATURE-----
-
---=-b1ExctY33oGJ4zO+dsOG--
+_________________________________________________________________
+Chat with friends online, try MSN Messenger: http://messenger.msn.com
 
 
