@@ -1,12 +1,12 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: incoming interface confusion question
-Date: Tue, 22 Jun 2004 08:37:22 +0200 (CEST)
+Subject: RE: Allow active and passive FTP connections
+Date: Tue, 22 Jun 2004 10:16:52 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0406220836150.2508-100000@blackhole.kfki.hu>
-References: <40D736F6.50405@smxy.org>
+Message-ID: <Pine.LNX.4.33.0406221011350.2546-100000@blackhole.kfki.hu>
+References: <20040622031015.82208.qmail@web14712.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40D736F6.50405@smxy.org>
+In-Reply-To: <20040622031015.82208.qmail@web14712.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Shaun T. Erickson" <ste@smxy.org>
+To: Sagara Wijetunga <sagaralists@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, 21 Jun 2004, Shaun T. Erickson wrote:
+On Mon, 21 Jun 2004, Sagara Wijetunga wrote:
 
-> Shaun T. Erickson wrote:
->
-> > Are there any cases where iptables can be confused about what interface
-> > a packet came in on? Can a packet arriving on interface A ever be
-> > reported as arriving on interface B?
+> --- "Piszcz, Justin Michael"
+> <justin.piszcz@mitretek.org> wrote:
+> > If you find one (that works with TLS/SSL), please
+> > let me know :)
+> > Sorry I have not seen one as of yet.
 > >
-> > I had an incident this weekend, and am trying to be certain that the
-> > packets came in the interface my system said it did. It's a Red Hat 9
-> > system, running their stock 2.4.20-8 kernel.
->
-> Please, can anyone answer this for me? I'm trying to prove or disprove a
-> theory that would explain an apparent intrusion incident over the
-> weekend. It's very important that I know the definitive answer to this.
+> I wonder is it an issue with the conntrack module or
+> the FTP server. May be Jozsef Kadlecsik could shed
+> some light on this.
 
-It can't happen. I'd investigate further assuming IP address forgery.
+The FTP server encrypts the command channel, so the kernel cannot figure
+out on which port will the server (passive) or client (active) listen for
+the data channel.
+
+> If the FTP server side has to be fixed, I could take
+> it up with the FTP server folks.
+
+Currently there is no solution. When nfnetlink-ctnetlink is completed,
+the FTP server could be patched to notify the kernel on the data ports it
+wants to open or connect to, which would solve the problem.
+
+As an alternative, you could use sftp instead.
 
 Best regards,
 Jozsef
