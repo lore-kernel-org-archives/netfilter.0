@@ -1,15 +1,11 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: Abot libipq
-Date: Wed, 20 Oct 2004 13:34:36 +0200
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: semi OT: default route
+Date: Wed, 20 Oct 2004 09:25:51 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1098272076.8628.13.camel@porky>
-References: <200410191856493.SM01604@FERRARI>
+Message-ID: <20041020132551.GA1720@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-jD/O3R1Fvgh+Vw3aFvJb"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200410191856493.SM01604@FERRARI>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,43 +15,23 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Danyel Leon Toledo <danyel@tesla.cujae.edu.cu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
+Hi,
+I have a question which has haunted me for many months. If I have 2 ISP
+connections with me, with default gw 1.2.3.4 and 4.5.6.7 and if I add 
+both as default routes on my Linux gateway as,
+route add -net default gw 1.2.3.4
+route add -net default gw 4.5.6.7
+and if I send a packet from a windows client to internet, which ISP will it
+go through?
 
---=-jD/O3R1Fvgh+Vw3aFvJb
-Content-Type: text/plain; charset=windows-1251
-Content-Transfer-Encoding: quoted-printable
+Thanks a lot for the answer in advance and waiting eagerly for any
+replies.
 
-On Tue, 2004-10-19 at 18:56 -0400, Danyel Leon Toledo wrote:
-> I need write one aplication for look into pakets I recive in my linux
-> router. I found that libipq can help me. But, ?can any body tell me where=
- I
-> find documentation about it? Really is hard to find it=85
-
-NuFW (http://www.nufw.org) use libipq (but don't deal with payload
-inspection as it only works on headers).
-You can have a look at the source code in directory=20
-	src/nufw/
-for usage example.
-
-BR,
---=20
-Eric Leblond <eric@regit.org>
-NuFW, Now User Filtering Works : http://www.nufw.org
-
---=-jD/O3R1Fvgh+Vw3aFvJb
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQBBdk1LnxA7CdMWjzIRAj/gAJ93Pdwt1fP3MKFPC5+miSQTtVX+zQCdEppn
-mn1WNDUgvrpwcv3CzKiEeTc=
-=fZ+q
------END PGP SIGNATURE-----
-
---=-jD/O3R1Fvgh+Vw3aFvJb--
+With warm regards,
+-Payal
 
 
