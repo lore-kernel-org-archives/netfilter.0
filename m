@@ -1,13 +1,13 @@
-From: Bernd Strebel <b.strebel@digitec.de>
-Subject: Re: strange behavior of connlimit matching rules
-Date: Wed, 19 May 2004 12:18:40 +0200
+From: aksingh@hss.hns.com
+Subject: ipq_read timeout
+Date: Wed, 19 May 2004 16:49:22 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40AB3480.6030405@digitec.de>
-References: <40A9B4A4.2000201@digitec.de> <20040518074343.GA5990@nic.fr>
+Message-ID: <OF0887896F.AC63B2A0-ON65256E99.003DE252@hss.hns.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; 
+	Boundary="0__=EABBE40ADFAE64C28f9e8a93df938690918cEABBE40ADFAE64C2"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040518074343.GA5990@nic.fr>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,60 +17,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-Cc: Stephane Bortzmeyer <bortzmeyer@nic.fr>
+To: Sven Schuster <schuster.sven@gmx.de>
+Cc: "Jee J.Z." <jz105@york.ac.uk>, netfilter@lists.netfilter.org
 
-Thanks for your reply. I've re-arranged the rules to something like
+--0__=EABBE40ADFAE64C28f9e8a93df938690918cEABBE40ADFAE64C2
+Content-type: text/plain; charset=US-ASCII
 
--P DROP
 
---state RELATED,ESTABLISHED -j ACCEPT
---connlimit-above n -j LOG
---state NEW --syn ! --connlimit-above n -j ACCEPT
---state NEW --syn ... -j ACCEPT
-... many ... -j ACCEPT
 
-... many ... -j LOG to log packages which aren't accepted
 
-and now it is working.
 
-But, with this solution every SYN packet first has to be checked against 
-the connlimit rule before entering the ACCEPT block. I would prefer to 
-do the logging of unwanted packages after all accepting rules and this 
-works fine with all the other matching modules (e.g. time, owner).
+Hi Sven,
 
-And,  I am still worried about the fact, that a package no longer 
-matches against a connlimit rule after it was checked against a 
-!connlimit rule ...
+   Which version of iptables/libipq do you use. As u said we can define a
+negative timeout value for ipq_read so that it returns immediately. I have
+iptables-1.2.1a-1.on a system. A man ipq_read there shows me that the
+timeout parameter for ipq_read has not yet been implemented.
 
-Stephane Bortzmeyer wrote:
-> On Tue, May 18, 2004 at 09:00:52AM +0200,
->  Bernd Strebel <b.strebel@digitec.de> wrote 
->  a message of 63 lines which said:
-> 
-> 
->>Along with the implementation of a simple rule set ( ACCEPT connections 
->>if ! --connlimit-above n and LOG connections if --connlimit-above n) we 
->>experienced a strange behavior of the connlimit matching module:
->>
->>Rule #m:   ...-m connlimit   --connlimit-above n -j LOG
->>Rule #m+1: ...-m connlimit ! --connlimit-above n -j ACCEPT
->>
->>works fine, while
->>
->>Rule #m:   ...-m connlimit ! --connlimit-above n -j ACCEPT
->>Rule #m+1: ...-m connlimit   --connlimit-above n -j LOG
->>
->>works not (no match on rule #m+1).
-> 
-> 
-> No idea but what I do (and it works) is:
-> 
-> Rule #m:   ...-m connlimit   --connlimit-above n -j LOG
-> Rule #m+1: ...-m connlimit   --connlimit-above n -j REJECT
-> ... Other rules, which may accept
-> 
-> 
+thanks
+Amit
+
+
+
+
+Sven Schuster <schuster.sven@gmx.de>@lists.netfilter.org on 04/20/2004
+02:16:26 PM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    "Jee J.Z." <jz105@york.ac.uk>
+cc:    netfilter@lists.netfilter.org
+
+Subject:    Re: whether there are any packets in the ip_queue
+
+
+On Tue, Apr 20, 2004 at 01:16:17AM +0100, Jee J.Z. told us:
+> Hi all,
+>
+> I am using libipq for userspace programming on netfilter. I am having
+> problems to determine whether there are any packets in the ip_queue
+before I
+> call the function ipq_read(). I just don't wish to call ipq_read() when
+> there is no packet in the ip_queue, because I need my program to do other
+> things rather than waiting for a packet arriving (after calling
+ipq_read(),
+> the program will stop and wait for some time or until a packet coming
+from
+> the kernel). Are there anybody on the list who has any idea about this?
+
+Why don't you just call ipq_read with a negative timeout value?? When
+there's no packet available it will return immediately with a return
+code of 0. (see "man ipq_read")
+
+
+HTH
+
+Sven
+
+>
+> BTW, may I ask whether this is the proper list to ask about
+netfilter/libipq
+> programming, since it seems few people on the list talking about this
+kind
+> of questions?
+>
+
+--
+Linux zion 2.6.6-rc1 #1 Sat Apr 17 11:50:12 CEST 2004 i686 athlon i386
+GNU/Linux
+  10:44:31  up 2 days, 17:42,  1 user,  load average: 0.00, 0.01, 0.00
+
+--0__=EABBE40ADFAE64C28f9e8a93df938690918cEABBE40ADFAE64C2
+Content-type: application/octet-stream; 
+	name="C.DTF"
+Content-Disposition: attachment; filename="C.DTF"
+Content-transfer-encoding: base64
+
+LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0NClZlcnNpb246IEdudVBHIHYxLjIuMSAoR05V
+L0xpbnV4KQ0KDQppRDhEQlFGQWhPTmlvNEZBZEIyUG5lUVJBdHlPQUo0N1VCaFVOUjRldk05T0l2
+dzBrQ3NOOUxYNldBQ2VOSEZiDQplNHZIZHFuRTFkUHBCZ0laRGtPUEhLTT0NCj1LVEVJDQotLS0t
+LUVORCBQR1AgU0lHTkFUVVJFLS0tLS0NCg0K
+
+--0__=EABBE40ADFAE64C28f9e8a93df938690918cEABBE40ADFAE64C2--
 
 
