@@ -1,13 +1,14 @@
-From: Drag0n <dragon@atlantacon.org>
-Subject: Re: ipt_TTL
-Date: Fri, 20 Feb 2004 19:46:10 -0500
+From: Alexis <alexis@attla.net.ar>
+Subject: Re: vpn and pptp
+Date: Fri, 20 Feb 2004 21:47:46 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1077324370.4252.3.camel@drag0n.the-weyr.local>
-References: <200402210014.46664.lazcorp@mail.bg>
+Message-ID: <304347110.20040220214746@attla.net.ar>
+References: <Pine.LNX.4.58.0402201702020.23080@most.gfos.hr>
+Reply-To: Alexis <alexis@attla.net.ar>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200402210014.46664.lazcorp@mail.bg>
+In-Reply-To: <Pine.LNX.4.58.0402201702020.23080@most.gfos.hr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +19,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Dino Dragovic <dragovic@gfos.hr>
+Cc: netfilter@lists.netfilter.org
 
-	On Slackware 9.0 and 9.1 you need to make sure you are booting from the
-newly compiled kernel. As of 9.0 Patrick moved the default kernel
-location to /boot/vmlinuz, but the standard make bzlilo comand still
-moves the new kernel to /vmlinuz. I normally get around that by removing
-the /boot in lilo.conf. 
-	
+this is because ip gre tunnel (ip protocol 47) could not be
+established.
+You neet to apply pptp patch to iptables source and then use it.
 
-Drag0n
-dragon#atlantacon.org 
+please read
 
-On Fri, 2004-02-20 at 19:14, LazCorp wrote:
-> Hi,
-> i'm using slackware 9.1
-> I'ts have sommting different betwen slackware 9.1 and other Unix/Linux  
-> operation systems?
-> I try to install patch-o-matick with new kernel (2.4.22 - original of slack9.1 
-> CD's) 
-> patch-o-matic-20031219.tar.bz2
-> ./runme --batch base/TTL
-> everything across fine..
-> after that i compile the kernel..reboot END..
-> $iptables -t mangle -A PREROUTING -i eth0 -j TTL --ttl-set 64
-> iptables: No chain/target/match by that name
-> :(
-> 
-> $locate TTL
-> /usr/lib/iptables/libipt_TTL.so
-> /usr/src/linux-2.4.22/net/ipv4/netfilter/ipt_TTL.c
-> /usr/src/linux-2.4.22/net/ipv4/netfilter/ipt_TTL.o
-> /usr/src/linux-2.4.22/net/ipv4/netfilter/.ipt_TTL.o.flags
-> /usr/src/linux-2.4.22/include/linux/netfilter_ipv4/ipt_TTL.h
-> /usr/local/lib/iptables/libipt_TTL.so
-> 
-> any idea?
-> and sorry for my bad english..
-> 
-> 
-> 
-> 
+http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO.html
+
+
+
+Hello Dino,
+
+Friday, February 20, 2004, 1:17:37 PM, you wrote:
+
+DD> Hi,
+
+DD> I have linux Debian (2.4.24 kernel) firewall with nat and iptables.On my
+DD> private network there is MS w2000 pptp server. I can connect to it using pptp
+DD> from Internet (PPTP) but from only one client at the time.Is it
+DD> possible and how to connect through firewall several clients
+DD> simultaneously to vpn server? Iptables verison is 1.2.6a-5
+DD> When I try to connect while there is already one connection I get
+DD> "Verifying username and password" until connection times out.
+
+DD> tx
+
+
+
+
+-- 
+Best regards,
+ Alexis                            mailto:alexis@attla.net.ar
 
 
