@@ -1,11 +1,11 @@
-From: Eric Leblond <eric@regit.org>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Filter out broadcast messages
-Date: Wed, 07 Jan 2004 23:02:23 +0100
+Date: Wed, 7 Jan 2004 22:05:29 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1073512943.17533.1.camel@porky>
+Message-ID: <200401072205.29859.Antony@Soft-Solutions.co.uk>
 References: <BAY10-F77TIFprhMOgR0003cd8a@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-fE/jf5Oi2K1yxggCYvfz"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <BAY10-F77TIFprhMOgR0003cd8a@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,38 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Gabby James <lizard0000092@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Wednesday 07 January 2004 9:44 pm, Gabby James wrote:
 
---=-fE/jf5Oi2K1yxggCYvfz
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+> Hi,
+>
+> I would like to filter out all broadcast messages.  The packets could come
+> from 255.255.255.255 or multiple other addresses of the form 10.*.*.255.
+> What kind of syntax do I use to DROP these packets?  The line below will
+> filter out packets from 255.255.255.255 but I'm not sure what syntax to use
+> to DROP the other adresses.
 
-Le mer 07/01/2004 =C3=A0 22:44, Gabby James a =C3=A9crit :
+Second idea:
 
-> iptables -A INPUT -d 255.255.255.255 -p udp -j DROP
+If you mean what you say, and the other broadcasts fit the pattern 10.*.*.255, 
+you could always use the little-known but perfectly valid netmaslk 
+255.0.0.255 in a rule such as:
 
-You can use the addrtype module to filter it :
-	http://www.netfilter.org/documentation/pomlist/pom-extra.html#addrtype
+iptables -I INPUT -s 10.0.0.255/255.0.0.255 -j DROP
 
-BR,
---=20
-Eric Leblond
-Nufw, Now User Filtering Works (http://www.nufw.org)
+This will do exactly what you asked - match packets where the source IP's 
+first byte=10 and the last byte=255, with the middle two bytes being 
+anything, and drop them.
 
---=-fE/jf5Oi2K1yxggCYvfz
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
+Antony.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+-- 
+Perfection in design is achieved not when there is nothing left to add, but 
+rather when there is nothing left to take away.
 
-iD8DBQA//IHunxA7CdMWjzIRAsnMAKCQvs6hyQlqeXpJ6VkAX1ZM8PDR0ACeJ1+3
-+eQ45AXqlUCJoNSCp5bY2mQ=
-=uA/9
------END PGP SIGNATURE-----
+ - Antoine de Saint-Exupery
 
---=-fE/jf5Oi2K1yxggCYvfz--
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
