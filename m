@@ -1,15 +1,15 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Help in IPTABLES
-Date: Sun, 12 Jan 2003 09:01:22 +0100
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: Bug in manpage or ECN target
+Date: Sat, 11 Jan 2003 21:00:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030112090122.3e9a3bc8.arnt@c2i.net>
-References: <20030111054656.20063.qmail@web40711.mail.yahoo.com>
-	<20030111085730.43b83107.arnt@c2i.net>
-	<200301112132.00991.netfilter@newkirk.us>
+Message-ID: <20030111200030.GI24488@naboo.de.gnumonks.org>
+References: <200212310028.56152@zmi.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="smOfPzt+Qjm5bNGJ"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200301112132.00991.netfilter@newkirk.us>
+Content-Disposition: inline
+In-Reply-To: <200212310028.56152@zmi.at>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,62 +19,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Michael Zieger <m.zieger@zmi.at>
+Cc: rv@wallfire.org, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Sat, 11 Jan 2003 21:32:00 -0500, 
-Joel Newkirk <netfilter@newkirk.us> wrote in message 
-<200301112132.00991.netfilter@newkirk.us>:
 
-> On Saturday 11 January 2003 02:57 am, Arnt Karlsen wrote:
-> > On Fri, 10 Jan 2003 21:46:56 -0800 (PST),
-> > Mohammad Shakir <shakirz1@yahoo.com> wrote in message
-> >
-> > <20030111054656.20063.qmail@web40711.mail.yahoo.com>:
-> > > Dear Friends,
-> 
-> [snipped]
-> 
-> > > Please help my what script I make for this.
-> > >
-> > > I hope you will help me in this regard.
-> > >
-> > > Thanks
-> > >
-> > > MOHAMMAD SHAKIR
-> >
-> > ..unless you can afford to hire my firm, learn from
-> > http://tldp.org/HOWTO/HOWTO-INDEX/networking.html .
-> 
-> I think that's pretty unnecessary.  Referring to a useful reference is
-> great.  Doing so with an attitude isn't.  This IS the neftilter user 
-> list.  People come here with questions, often with minimal experience 
+--smOfPzt+Qjm5bNGJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-..seeing what came here, I agree.  Mohammad, I apologize.  
+On Tue, Dec 31, 2002 at 12:28:56AM +0100, Michael Zieger wrote:
+> Hi,
+>=20
+> I just found in the man page the "ECN" target, which should allow to=20
+> drop ECN flags. I tried this simple rule:
+>=20
+> iptables -A OUTPUT -o eth0 -p tcp -j ECN --ecn-tcp-remove
+>=20
+> But the error is: "iptables: Invalid argument"
+>=20
+> What is wrong there? Or is it a bug in the ECN target? I use the latest=
+=20
+> iptables v1.2.7a.
 
-> and background.  In fact Mr Shakir's post included a script (which
+You cannot use the ECN target from the filter table.  You have to use it=20
+from the 'mangle' table.  Packet filtering is done in 'filter', packet
+modification in 'mangle'.
 
-..yes, people often get into working close to the borders on our
-competence and need help, and can pay for it, at other times we 
-cannot pay for help, and need advice to know how to do it ourselves.
+> BTW, there is also a typo bug in libipt_ECN.c line 112, it should be:
+> "ECN target: Parameter --ecn-tcp-remove is required");
+> but you wrote "--ecn-remove"...
 
-..the wee point I was trying to make, is an iptables firewall is
-vulnerable while it is being set up, so echo "0" first to stop
-forwarding, set up the firewall, and echo "1" at the end of the 
-script to start forwarding again, a wee nit into your helpful 
-responses to him.
+Thanks, I will correct this before the iptables-1.2.8 release.
 
-> needs some work, which I noted in my reply) and then asked for advice
-> on a second similar situation.  If all you have to offer is a link and
-> a kick in the ass, why bother?
+> regards, zmi
 
-..I believe gentle kicks into the right direction are warranted. 
-Like your kick here.  ;-)
+--=20
+Live long and prosper
+- Harald Welte / laforge@gnumonks.org               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+GCS/E/IT d- s-: a-- C+++ UL++++$ P+++ L++++$ E--- W- N++ o? K- w--- O- M-=
+=20
+V-- PS+ PE-- Y+ PGP++ t++ 5-- !X !R tv-- b+++ DI? !D G+ e* h+ r% y+(*)
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+--smOfPzt+Qjm5bNGJ
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE+IHfeXaXGVTD0i/8RAvcKAJwLHyAHLetIF8j3F1gVRQ0S+uB74QCgqXNA
+UkVeiWyTXsmUgMHcYyf1Q6M=
+=LhQY
+-----END PGP SIGNATURE-----
+
+--smOfPzt+Qjm5bNGJ--
 
