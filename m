@@ -1,13 +1,11 @@
-From: Myles Uyema <mlists@uyema.net>
-Subject: Re: NAT help
-Date: Tue, 13 May 2003 18:14:14 -0700 (PDT)
+From: Mike McLean <libolt@libolt.net>
+Subject: NAT slowdown
+Date: 13 May 2003 18:15:30 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0305131810121.13227-100000@marx.gruntwerk.net>
-References: <96ABC82F42C0F447897813D482A82E8140D1FB@boga101a>
+Message-ID: <1052874930.2090.6.camel@tbird>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="=-DZ34v1+CSIvUdB5QjPGH"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <96ABC82F42C0F447897813D482A82E8140D1FB@boga101a>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +15,145 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?iso-8859-1?Q?Jairo=2ECasta=F1eda?= <Jairo.Castaneda@siemens.com>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
-
-"It's not working" does not give us helpful error information.
-What is your FORWARD policy?  Those two forward rules you do have will le=
-t=20
-packets go out to the internet, but I don't see any reverse rules to allo=
-w=20
-packets to return.  Where in your chains do you think the packets are=20
-getting blocked?
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-iptables -A FORWARD -p tcp --source-port 110 -i eth1 -m state --state EST=
-ABLISHED -j ACCEPT
-iptables -A FORWARD -p tcp --source-port 25 -i eth1 -m state --state ESTA=
-BLISHED -j ACCEPT
+To: netfilter@lists.samba.org
 
 
-On Tue, 13 May 2003, Jairo.Casta=F1eda wrote:
+--=-DZ34v1+CSIvUdB5QjPGH
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
 Hi,
 
-I just started working with IPTables but I think I chose a difficult task=
- to
-acomplish, let me explain:
+I'm using iptables for NAT on 5 networks at different locations.  I'm
+using almost exactly the same rules at each location.  The only
+difference being the ports that are opened.  4 of the 5 locations have
+no problems and are functioning properly.
 
-INTERNET <-------------> ETH1[LINUX BOX RH9]  ETH0 <-----------> LAN=20
+However, at the 5th location I'm seeing a slowdown when traffic passes
+through the NATed box vs direct connection.  Each location is on a
+fractional T1 line that the NATed box connects directly to.
 
-The users in the LAN need to be able to read their email which is stored =
-in
-a POP3/SMTP mail server located in INTERNET so I did the following:
+All systems run Debian Woody with the default iptables package:
+1.2.6a-5.  I am wondering if there is something I am doing wrong.  I
+have tried totally replacing the NATed system, ethernet cards and,
+ethernet cables and even the switch that connects all the systems.
 
-1. I defined as my users=B4 default gateway the Linux box
-2. In the linux box, I created the following rules
+Here's my iptables script,
 
-IPTABLES -A FORWARD -p tcp --destination-port 110 -i eth0 -j ACCEPT
-IPTABLES -A FORWARD -p tcp --destination-port 25 -i eth0 -j ACCEPT
-IPTABLES -t nat -A POSTROUTING -p tcp -i eth0 -o eth1 -j MASQUERADE
+Any help is appreciated,
 
-Well I read the FAQ and I think this configuration should be enough, but
-it=B4s not working. Am I missing something here?
-
-Thanks for your help.
+Mike
 
 
-Jairo Casta=F1eda
+IPTABLES script:
 
+
+
+--=-DZ34v1+CSIvUdB5QjPGH
+Content-Disposition: attachment; filename=firewall
+Content-Type: text/plain; name=firewall; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 7bit
+
+echo "Loading IPTABLES modules"
+echo -en "ip_tables, "
+/sbin/insmod ip_tables
+
+echo -en "ip_conntrack, "
+/sbin/insmod ip_conntrack
+
+echo -en "ip_conntrack_ftp, "
+/sbin/insmod ip_conntrack_ftp
+
+echo -en "ip_conntrack_irc, "
+/sbin/insmod ip_conntrack_irc
+
+echo -en "iptable_nat, "
+/sbin/insmod iptable_nat
+
+echo -en "ip_nat_ftp, "
+/sbin/insmod ip_nat_ftp
+
+# Flush iptables
+iptables -F
+iptables -F INPUT
+iptables -F OUTPUT
+iptables -F FORWARD
+iptables -F -t mangle
+iptables -F -t nat
+iptables -X
+
+#Policies
+
+#iptables -P INPUT DROP
+#iptables -P OUTPUT ACCEPT
+#iptables -P FORWARD ACCEPT
+
+# Blocking
+iptables -N block
+iptables -A block -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A block -m state --state NEW -i ! eth0 -j ACCEPT
+iptables -A block -j DROP
+iptables -A INPUT -f -i eth0 -j DROP
+
+# Port Blocking
+iptables -A OUTPUT -o eth0 -p tcp --dport 31337 -j DROP 
+iptables -A OUTPUT -o eth0 -p tcp --dport 31335 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 27444 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 27665 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 20034 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 9704 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 137:139 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 1433 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 2049 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 5432 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 5999 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 6063 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 5900:5910 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 9 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 13 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 25 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 37 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 113 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 515 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 1024 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 863 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --dport 111 -j DROP
+
+iptables -A OUTPUT -o eth0 -p tcp --sport 31337 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 31335 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 27444 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 27665 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 20034 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 9704 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 137:139 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 1433 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 2049 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 5432 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 5999 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 6063 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 5900:5910 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 9 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 13 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 25 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 37 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 113 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 515 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 1024 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 111 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp --sport 863 -j DROP
+#iptabls
+# Ports Opened
+iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
+# NAT
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+# set ip forwarding policy
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# setup SYN cookie protection
+
+#echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+
+--=-DZ34v1+CSIvUdB5QjPGH--
 
 
