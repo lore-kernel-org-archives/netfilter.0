@@ -1,13 +1,13 @@
-From: "Klemen Kecman" <klemen@sting.si>
-Subject: Re: Logging with INPUT & FORWARD set to DROP
-Date: Tue, 9 Mar 2004 12:08:51 +0100
+From: "Tarek W." <mailinglists1@hotpop.com>
+Subject: Re: Being selective about traffic and interfaces
+Date: Tue, 09 Mar 2004 13:46:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002b01c405c6$e81d6300$6a02a8c0@klemen>
-References: <000f01c405c4$06559f20$6a02a8c0@klemen> <200403091059.54342.Antony@Soft-Solutions.co.uk>
-Reply-To: "Klemen Kecman" <klemen@sting.si>
+Message-ID: <1078832443.3802.31.camel@carve.personal.localdomain>
+References: <20040308150758.GB16848@virgin.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <20040308150758.GB16848@virgin.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,34 +20,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thanks! ;)
+On Mon, 2004-03-08 at 17:07, Richard Bellamy wrote:
+> Hi
+> 
+> I have just set up an ecrypted connection (with OpenVPN) between my laptop and router currently all traffic goes down the vpn. I would like to allow ssh traffic to bypass the vpn.
+> 
+> The situation is this:
+> 
+> Router:							Laptop:
+> 192.168.0.1 - tun0					192.168.0.2 - tun0
+> 	|							|
+> 10.44.10.1 - eth0					10.44.10.2 - eth0
+> 	|							|
+> 	---------------------------------------------------------
+> 
+> The default route on the laptop is set to 192.168.0.1 so all traffic is automatically sent encrypted. I need to be able to send everything but ssh down the vpn(with the possibility for https later on). I beleive that this would have to happen before routing took place. OpenVPN is on udp/5000.
 
------ Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, March 09, 2004 11:59 AM
-Subject: Re: Logging with INPUT & FORWARD set to DROP
+on the laptop:
 
+edit /etc/iproute2/rt_tables (or wherever rt_tables is at) and add the
+following:
 
-> On Tuesday 09 March 2004 10:48 am, Klemen Kecman wrote:
->
-> > Is there a way to log packets that get dropped due to default policy set
-to
-> > drop.
->
-> Sure.   Place a LOG rule at the end of the chain in question.
->
-> Antony.
->
-> --
-> If the human brain were so simple that we could understand it,
-> we'd be so simple that we couldn't.
->
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
->
->
+<snip>
+50	unencrypted
+</snip>
+
+without <snip> and </snip>
+
+then issue the following commands:
+
+<snip>
+ip route add dev eth0
+ip rule add pref 50 fwmark 2 table unencrypted
+</snip>
+
+now iptables comes in to play and glues everything up:
+
+<snip>
+iptables -t mangle -I OUTPUT -p tcp --dport 22 -j MARK --set-mark 0x02
+iptables -t nat -I POSTROUTING -o dev eth0 -j SNAT --to 192.168.0.2
+</snip>
 
 
