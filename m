@@ -1,8 +1,8 @@
 From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: RE: VPN software
-Date: Tue, 2 Jul 2002 07:56:46 +1000
+Subject: RE: PPTP through iptables FW...
+Date: Tue, 2 Jul 2002 07:59:49 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA1C1@JUPITER>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA1C2@JUPITER>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
@@ -16,10 +16,16 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: 'Sundaram Ramasamy' <sun@percipia.com>, netfilter@lists.samba.org
+To: "'Aldo S. Lagana'" <alagana@discmail.com>, netfilter@lists.samba.org
 
-I suggest IPSEC as it's pretty good security, but PPTP is supported by most
-Windows versions but is susceptible to decryption..
+Do what I do.. create a tunnel between the two networks instead of using the
+client to make the connection...
+
+
+client----firewall-------/ internet /-----firewall-----servers
+          PPTP------------------------------PPTPD
+
+then you can iptables the client through.. also proxy them in..
 
 thanks,
 George Vieira
@@ -30,17 +36,20 @@ http://www.citadelcomputer.com.au
 
 
 -----Original Message-----
-From: Sundaram Ramasamy [mailto:sun@percipia.com]
-Sent: Monday, 01 July 2002 11:00 PM
+From: Aldo S. Lagana [mailto:alagana@discmail.com]
+Sent: Monday, 01 July 2002 11:59 PM
 To: netfilter@lists.samba.org
-Subject: VPN software
+Subject: PPTP through iptables FW...
 
 
-Hi,
+I haven't looked into this, but is there a method to connect to a pptp
+server from behind an iptables firewall?  I have seen glimpses of
+persons using something called ip_conntrack_pptp (sp?) and that seems it
+will fit the bill...not sure..here is ASCII art:
 
-I wanted to setup the linux based VPN server for my office. which software
-is good for ppt protocal.
+Client-----IPTABLES Firewall------INTERNET--------Remote PPTP
+server------Server
 
-Thanks
+I am currently using IPTables 1.2.5
 
 
