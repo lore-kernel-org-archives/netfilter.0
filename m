@@ -1,80 +1,73 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: physdev match
-Date: Mon, 27 Sep 2004 10:52:32 +0300
-Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1403218a04092700525703ea50@mail.gmail.com>
-References: <1403218a040923070324faf49f@mail.gmail.com>
-	<4152DBF7.9060402@pbl.ca> <1403218a0409230747732d8ff8@mail.gmail.com>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: "Piotr =?iso-8859-2?Q?Gasid=B3o?="
+	<quaker@pandora.barbara.ds.polsl.gliwice.pl>
+Subject: Re: [ANNOUNCE] Proceedings of Netfilter Developer Workshop 2004
+Date: Mon, 27 Sep 2004 16:31:16 +0200
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Message-ID: <20040927143116.GB18298@barbara.eu.org>
+References: <20040925213322.GJ3236@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a0409230747732d8ff8@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=_pandora.barbara.ds.polsl.gliwice.pl-22823-1096295476-0001-2"
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20040925213322.GJ3236@sunbeam.de.gnumonks.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: netfilter-devel@lists.netfilter.org
+Cc: Harald Welte <laforge@netfilter.org>, lwn@lwn.net, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
 
-Still the problem, doing
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-iptables -A INPUT -m physdev --physdev-in eth1 -j LOG
+--=_pandora.barbara.ds.polsl.gliwice.pl-22823-1096295476-0001-2
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Gives me
+On Sat, 25/09, 11:33:22PM, Harald Welte wrote:
+> |---------------------------+----------------------------------------+---=
+-----|
+> |IPMARK                     |why is tc not enough to do this? Too    |No =
+     |
+> |                           |obscure                                 |   =
+     |
+> |---------------------------+----------------------------------------+---=
+-----|
 
-iptables: Invalid argument
+Target is useful when using MASQUERADE or SNAT. Using tc we are *unable*
+to put outgoing trafic from single IP (behind masquerade) into queue
+created on outgoing interface. With this target we can mark packets from
+each internal IP and then, using tc filter fw put it into queues. This
+target replaces many MARK rules, which can be really CPU hog.
 
+--=20
+Piotr 'QuakeR' Gasid=B3o, BOFH @ pandora.barbara.eu.org
+############## sending lusers to /dev/null since 1998
+##### Waiting for tomorrow, for a little ray of light
+### Waiting for tomorrow just to see your smile again
 
-Any ideas !!!
+--=_pandora.barbara.ds.polsl.gliwice.pl-22823-1096295476-0001-2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Transfer-Encoding: 7bit
+Content-Description: Digital signature
+Content-Disposition: inline
 
-On Thu, 23 Sep 2004 17:47:28 +0300, Mohamed Eldesoky
-<eldesoky.lists@gmail.com> wrote:
-> 
-> 
-> I have this in that path.
-> libipt_physdev.so
-> 
-> However, I will try again.
-> 
-> On Thu, 23 Sep 2004 09:21:43 -0500, Aleksandar Milivojevic
-> <amilivojevic@pbl.ca> wrote:
-> > Mohamed Eldesoky wrote:
-> > > Ok, I got a stock kernel 2.4.27 patched with ebtables-bnrf, and
-> > > noticed that it has added physdev match.
-> > > But whenever I try to test a rule with -m physdev --physdev-in <int>
-> > > it gives me
-> > >
-> > > iptables: Invalid argument
-> > >
-> > > Any special requirements to use it ??
-> >
-> > Have you patched both userspace (iptables utility) and kernel?  This
-> > sounds like iptables utility wasn't patched.  Look into /lib/iptables
-> > directory and see what modules you have.
-> >
-> > --
-> > Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-> > Systems Administrator                           1499 Buffalo Place
-> > Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
-> >
-> >
-> 
-> --
-> Mohamed Eldesoky
-> www.eldesoky.net
-> RHCE
-> 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
+iD8DBQFBWCQ0gEmu6PNADqoRAkf7AJ9LQqyywkTHjEM1ucK1IGQXu/oBtACdG2Mm
+8UPAzglIIfiBm541A7WbuHQ=
+=4rea
+-----END PGP SIGNATURE-----
 
-
--- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+--=_pandora.barbara.ds.polsl.gliwice.pl-22823-1096295476-0001-2--
 
