@@ -1,13 +1,14 @@
-From: Robin Lynn Frank <rlfrank@paradigm-omega.com>
-Subject: Dumb question
-Date: Thu, 26 Aug 2004 17:48:30 -0700
+From: David Cary Hart <DCH@TQMcube.com>
+Subject: Re: Dumb question
+Date: Thu, 26 Aug 2004 20:52:24 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093567709.3959.15.camel@omega.paradigm-omega.net>
+Message-ID: <1093567944.21197.2.camel@dchws.tqmcube.com>
+References: <1093567709.3959.15.camel@omega.paradigm-omega.net>
+Reply-To: NetFilter List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-kIaLlMHvae4HFZK+2gSc"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1093567709.3959.15.camel@omega.paradigm-omega.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,41 +18,27 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Netfilter Mail List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
+On Thu, 2004-08-26 at 20:48, Robin Lynn Frank wrote:
+> Apologies if this is a dumb question but I am new to manipulating
+> iptables directly.  There is a pest that has been routinely probing us. 
+> While we simply drop them, I'd like to make it "uncomfortable" for them
+> to continue.  When I attempt the following, I get the response
+> indicated.  We are running Mandrake Linus 10.0 Official with a 2.6
+> kernel.
 
---=-kIaLlMHvae4HFZK+2gSc
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I Frank.
+> 
+I use TARPIT. It is available in the latest POM which you can download.
+You need the IPTables source code and the source for your kernel which
+well then have to be recompiled. Make CERTAIN that you are not running
+conntrack with TARPIT. 
 
-Apologies if this is a dumb question but I am new to manipulating
-iptables directly.  There is a pest that has been routinely probing us.=20
-While we simply drop them, I'd like to make it "uncomfortable" for them
-to continue.  When I attempt the following, I get the response
-indicated.  We are running Mandrake Linus 10.0 Official with a 2.6
-kernel.
+> # /sbin/iptables -A INPUT -s ###.###.#.### -j TARPIT
+> iptables: No chain/target/match by that name
+> 
+> Any help is appreciated.
 
-# /sbin/iptables -A INPUT -s ###.###.#.### -j TARPIT
-iptables: No chain/target/match by that name
-
-Any help is appreciated.
---=20
-Robin Lynn Frank
-Director of Operations
-Paradigm-Omega, LLC
-
---=-kIaLlMHvae4HFZK+2gSc
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Sed quis custodiet ipsos custodes?
-
-iD8DBQBBLoTco0pgX8xyW4YRArusAJwLczWjRzzFtfVB3X36nRg/tVs4IgCePPls
-KF5zH5LZ7mvK9Bg6Zywim60=
-=Tcpp
------END PGP SIGNATURE-----
-
---=-kIaLlMHvae4HFZK+2gSc--
 
