@@ -1,14 +1,14 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: NAT Helper or UPnP?
-Date: Mon, 5 Jul 2004 10:56:54 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: NAT Helper or UPnP?
+Date: Mon, 5 Jul 2004 19:18:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <SERVER7T2NqFJ3sl3xb000000a7@server7.bandwidthco.com>
-References: <200407050848.23707.gdh@acentral.co.uk>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <200407051918.34681.Antony@Soft-Solutions.co.uk>
+References: <SERVER7T2NqFJ3sl3xb000000a7@server7.bandwidthco.com>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407050848.23707.gdh@acentral.co.uk>
+In-Reply-To: <SERVER7T2NqFJ3sl3xb000000a7@server7.bandwidthco.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,48 +19,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Gavin Hamill' <gdh@acentral.co.uk>, netfilter@lists.netfilter.org
-
- 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Gavin Hamill
-Sent: Monday, July 05, 2004 12:48 AM
 To: netfilter@lists.netfilter.org
-Subject: Re: NAT Helper or UPnP?
 
-On Monday 05 July 2004 08:29, Antony Stone wrote:
+On Monday 05 July 2004 6:56 pm, Mark E. Donaldson wrote:
 
-> I know this is by no means a detailed reply, but I would say it comes 
-> down to one word - "security".
+> > On Monday 05 July 2004 08:29, Antony Stone wrote:
+> > > I know this is by no means a detailed reply, but I would say it comes
+> > > down to one word - "security".
+> >
+> > I'll second that.
+>
+> How about a third. Permitting Microsoft's UPnP through your firewall is
+> equivalent to taking all the curtains down in your house and letting the
+> entire world look inside. But alas, they may not be content with just
+> viewing as they may see some things they might like and will eventually
+> break in at night and take them.
 
-I'll second that.
+Actually, I'd say the analogy above is more like running IIS (or some similar 
+service where a quick scan will reveal the version of vulnerabilities you're 
+running, and the attacker can then come back with the right tool when they 
+want to exploit it).
 
-Microsoft released a long article extolling the virtues of UPnP where it
-pitches the system as a replacement for X.10 home automation, (e.g. 
-everything including your alarm clock is UPnP enabled, and gets synchronised
-/ alarms set by a central server), with only a small mention of the hideous
-firewall 'features'
+uPnP would let the burglars look through your windows in the afternoon, say 
+"that looks nice", and take it there and then.
 
-UPnP moves policy and security decisions from the firewall ruleset where
-they properly belong to a userspace app running on Windows - forgive me, but
-the designer of this system seems like a candidate for the Darwin Awards of
-the most dangerous and stupid network idea ever - just think the next
-version of Sasser / Fizzer would open ports on your $50 UPnP-enabled
-firewall and make you be an even bigger zombie host.
+The whole point of uPnP is to advertise the availability of services, so 
+allowing it through a firewall is simply inviting people to partake of those 
+services as they wish.
 
-And all in the name of 'ease of use' - bah. Let's hope a huge lawsuit
-against Netgear / Belkin / other low-end router manufr. puts an end to this
-disease.
+Regards,
 
-gdh
+Antony.
 
-How about a third. Permitting Microsoft's UPnP through you firewall is
-equivalent to taking all the curtains down in your house and letting the
-entire world look inside. But alas, they may not be content with just
-viewing as they may see some things they might like and will eventually
-break in at night and take them.
+-- 
+If you can't find an Open Source solution for it, then it isn't a real 
+problem.
 
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
