@@ -1,11 +1,13 @@
-From: Askar <askarali@gmail.com>
-Subject: patch not applied
-Date: Mon, 8 Nov 2004 12:45:38 +0500
-Message-ID: <a0f69e504110723453eb7117c@mail.gmail.com>
-Reply-To: Askar <askarali@gmail.com>
+From: "Wesley Jay Deypalan" <wjdeypalan@ictuscomm.net>
+Subject: Re: tftp clients not working on ip masquerading
+Date: Mon, 8 Nov 2004 16:40:21 +0800 (PHT)
+Message-ID: <49569.202.138.166.130.1099903221.squirrel@202.138.166.130>
+References: <58373.202.138.166.130.1099649776.squirrel@202.138.166.130>
+Reply-To: wjdeypalan@ictuscomm.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <58373.202.138.166.130.1099649776.squirrel@202.138.166.130>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +19,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-hi 
-I am trying to apply pom to my kernel 2.6.9 but I don't know why I
-only getting "TEST FAILED: patch NOT applied." for every patch.
+>>On Fri, 2004-11-05 at 05:16, Wesley Jay Deypalan wrote:
+>> hi,
+>>
+>> I have installed TFTP server and working good. Later I found out that it
+>> work only on public ip address what I mean is the TFTP Server has a public
+>> ip address and the client also has a public ip address. But when the
+>> client is being ip masquerading it will not connect with the server the
+>> error message in the server is WRQ from x.x.x.x filename 43434.doc
+>>                          tftpd: read: Connection refused
+>> the client is being masqueraded from a linux os.The masquerading used is
+>> from tldp.org - rc.firewall-2.4-stronger. What is wrong with my setup?
+>>
+>> TIA,
+>>
+>>
+>> Wesley
+>
+>ave you:
+>
+>  modprobe ip_conntrack_tftp
+>  modprobe ip_nat_tftp
+>
+>-j
+>
+>--
+>"Well, I'm not calling you a liar, but... I can't think of a way to
+> finish that sentence."
+>	--The Simpsons
+>
+hi,
 
-here what I follow
-1) download pom via cvs
-2) export KERNEL_DIR=/home/askar/linux-2.6.9
+i tried modprobe ip_conntrack_tftp
+ but it says:
 
-then cd ~/netfilter/patch-o-matic and finally
-./rume extra 
-I also tried ./runme base , but with no success
+  - Verifying that all kernel modules are ok
+    Loading kernel modules: ip_tables, ip_conntrack, ip_conntrack_ftp,
+                             ip_conntrack_irc, ip_conntrack_tftp,
+modprobe: Can't locate module ip_conntrack_tftp
+iptable_nat, ip_nat_ftp
+ip_nat_irc
 
-here is the single interaction with pom bitch...
+ It seems that it cant locate the module. Is there anything that i missed?
 
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
-Testing patch extra/condition.patch...
-Warning - no help text file could be found in either
-/home/askar/linux-2.6.9/net/ipv4/netfilter/Config.help
-or /home/askar/linux-2.6.9/Documentation/Configure.help
-fgrep: /home/askar/linux-2.6.9/net/ipv4/netfilter/Config.in: No such
-file or directory
-Could not find place to slot in Config.in line
-TEST FAILED: patch NOT applied.
+TIA
 
-I am getting the same message for every patch
+Wesley
 
-regards
-askar
-
--- 
-(after bouncing head on desk for days trying to get mine working, I'll make
-your life a little easier)
 
