@@ -1,13 +1,13 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Arbitrary Netmasks
-Date: Tue, 28 May 2002 20:45:13 +0200
+From: Marcus Sundberg <marcus@ingate.com>
+Subject: Re: Can't block DHCP with iptables?
+Date: 28 May 2002 22:29:45 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200205282045.14015@henrik.marasystems.com>
-References: <5.1.1.2.2.20020528150443.00b9ad58@ns.rnl.ist.utl.pt>
+Message-ID: <veheks3tja.fsf@inigo.ingate.se>
+References: <Pine.LNX.4.21.0205280845400.11566-100000@colargol.tihlde.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <5.1.1.2.2.20020528150443.00b9ad58@ns.rnl.ist.utl.pt>
+In-Reply-To: <Pine.LNX.4.21.0205280845400.11566-100000@colargol.tihlde.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,24 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Filipe Almeida <filipe@rnl.ist.utl.pt>, Thomas Heinz <josef.k@mytomorrow.de>
-Cc: netfilter-devel@lists.samba.org, netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: roarbr@tihlde.org
+Cc: netfilter@lists.samba.org
 
-Which is not generally a valid thing to assume.. the .255 and/or .0 
-address may be in use on larger networks, especially if addresses are 
-assigned dynamically using a large DHCP scope..
+Roar Bj=F8rgum Rotvik <roarbr@tihlde.org> writes:
 
+> In this scenario, the policy DROP exists before DHCP client starts up, but
+> still the DHCP client manages to assign a new IP-address.
+>=20
+> ifconfig shows shows that eth0 has been assigned new IP-address. ping or
+> any network traffic after that does not work, as expected.
+>=20
+> What I want to accomplish is to block all network traffic in/out up until
+> a certain point, and that includes DHCP.
 
-On Tuesday 28 May 2002 16:07, Filipe Almeida wrote:
-> I usually use:
->
-> iptables -A FORWARD -s 0.0.0.255/0.0.0.255 -j DROP
-> iptables -A FORWARD -d 0.0.0.255/0.0.0.255 -j DROP
-> iptables -A FORWARD -s 0.0.0.0/0.0.0.255 -j DROP
-> iptables -A FORWARD -d 0.0.0.0/0.0.0.255 -j DROP
->
-> to stop routing of broadcasted packets. This works assuming you
-> only have 256 sized classes.
+Iptables only deals with IP packets. DHCP-clients don't use the
+IP-stack, but uses raw sockets to talk directly to the network
+interface. Very simplified, what you have is this:
 
+eth0 ----+------- iptables ----- IP-stack
+         |        filtering
+     Raw socket
+         |
+     DHCP-client
+
+/Marcus
+--=20
+---------------------------------------+--------------------------
+  Marcus Sundberg <marcus@ingate.com>  | Firewalls with SIP & NAT
+ Firewall Developer, Ingate Systems AB |  http://www.ingate.com/
 
