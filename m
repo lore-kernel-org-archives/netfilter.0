@@ -1,14 +1,10 @@
-From: Filip Sneppe <filip.sneppe@cronos.be>
-Subject: Re: Nat problem with GRE
-Date: 04 Jun 2003 10:17:47 +0200
+From: Jochen Vogel <jvogel@it-sec.de>
+Subject: netfilter and VoIP
+Date: Wed, 4 Jun 2003 11:10:24 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054714668.454.3.camel@xbox>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D9F@wardrive.citadelcomputer.com.au> 
-	<005901c32a2d$c661d0e0$fd00a8c0@homes>
+Message-ID: <D3DD55FDB74AD511BA5100500416368053E5B1@orion.ibh.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005901c32a2d$c661d0e0$fd00a8c0@homes>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,22 +15,14 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: John Paul <john@pinoylinux.sytes.net>
-Cc: George Vieira <georgev@citadelcomputer.com.au>, Esteban <esteban@alstec.fr>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Wed, 2003-06-04 at 02:10, John Paul wrote:
-> George, et al.
-> 
-> I actually have the same problem. I successfully patched my kernel(2.4.20)
-> with ip_pptp_conntrack (P-O-M) but after recompiling my kernel, iptables
-> doesnt recognize  NAT  anymore. How could this happen?
-> 
-Hi,
+hi,
 
-Recompile your iptables userspace program against those
-patched kernel sources & reinstall it.
+is it possible to use VoIP over an routed and/or masquerading iptables
+gateway?
 
-Regards,
-Filip
-
+thx for help
+jo
 
