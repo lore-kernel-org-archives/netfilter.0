@@ -1,13 +1,11 @@
-From: Luke Deryckx <luke@westaironline.com>
-Subject: Re: PPTP and NAT
-Date: Wed, 28 Apr 2004 10:33:52 -0700
+From: Jon Colverson <netfilter@vcxz.co.uk>
+Subject: Problem with two subnets NATed onto a third subnet on one box.
+Date: Thu, 29 Apr 2004 03:00:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BCB53910.7D8C%luke@westaironline.com>
-References: <20040428162242.44965.qmail@web80505.mail.yahoo.com>
+Message-ID: <409061D9.6040000@vcxz.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040428162242.44965.qmail@web80505.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,124 +15,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Boingo <b0ing0@yahoo.com>, Netfilter list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-You'll also need to recompile iptables to work properly with your newly
-patched kernel. I couldn't tell from your message if you had done that or
-not. 
+Hello. Apologies in advance for the length of this mail.
 
-When I went through this process I had my kernel source (2.4.25) sym linked
-to /usr/src/linux and my iptables source (1.2.7a) symlinked to
-/usr/src/iptables when I ran the patch-o-matic. I never was sure if the
-patch-o-matic actually changed the iptables source at all or not but that's
-how I had it. After building and booting your new kernel, just go into
-/usr/src/iptables and run a super easy make & make install.
+I'm attempting to set up an environment which I can use to test some 
+NAT-traversal software on one machine. I'm using Linux 2.6.5 and 
+iptables 1.2.9.
 
-Note though that on my Redhat 9 machine I needed to modify the Makefile and
-change the install location(s) so that the newly patched iptables would
-overwrite the old one, and the system could find it.
+I start by adding four addresses to an Ethernet device:
 
-Luke
+  ip addr add 10.0.1.1/24 dev eth0
+  ip addr add 10.0.2.1/24 dev eth0
+  ip addr add 10.0.3.1/24 dev eth0
+  ip addr add 10.0.3.2/24 dev eth0
 
+10.0.1.0/24 and 10.0.2.0/24 are the pretend private networks. 
+10.0.3.0/24 is the pretend public Internet and 10.0.3.1 and 10.0.3.2 are 
+the addresses of the NATs for 10.0.1.0 and 10.0.2.0 respectively.
 
+I then set up the NAT as follows:
 
-On 4/28/04 9:22 AM, "Boingo" <b0ing0@yahoo.com> wrote:
+  iptables -t nat -A POSTROUTING -s 10.0.1.0/24 -d 10.0.1.0/24 -j ACCEPT
+  iptables -t nat -A POSTROUTING -s 10.0.1.0/24 -j SNAT --to 10.0.3.1
 
-> Hi there,
->   I had RH9 (default out of box) installed.  I could
-> do everything I needed to on iptables except get
-> outside connections to our internal Win2k PPTP server
-> to work.  So I went and got the kernel source (2.4.26)
-> from kernel.org and patched it with CVS patch-o-matic
-> (CVS date: April 27, 2004).  I only added patches
-> related to PPTP (ipv4 only).  Recompiled and booted
-> into the new kernel.
-> 
->   Now even my old port forwards to internal nat'ed
-> servers wont work.  When restarting iptables I get an
-> "iptables-restore: line X failed" (with X being the
-> actual line number).  If I take out that line, then it
-> errors on a different line.  It continues like this,
-> until all the line with PREROUTING or POSTROUTING are
-> removed.  These lines (minus the PPTP ones) all worked
-> fined before the patch/recompile.  I have included my
-> iptables file below, external ip is 1.2.3.4 (real ip
-> changed to protect the innocent).  All the entries in
-> the nat table worked before the patch.  Can anyone
-> shed light on this issue?  Thanks in advance for any
-> help you can provide.
-> 
-> 
-> 
-> *nat
-> :OUTPUT ACCEPT [0:0]
-> :PREROUTING ACCEPT [0:0]
-> :POSTROUTING ACCEPT [0:0]
-> -A POSTROUTING -o eth0 -s 192.168.10.0/24 -d 0/0 -j
-> MASQUERADE
-> -A POSTROUTING -d 192.168.10.1 -j SNAT --to
-> 192.168.10.3
-> -A POSTROUTING -d 192.168.10.2 -j SNAT --to
-> 192.168.10.3
-> -A PREROUTING -p tcp -m tcp -d 1.2.3.4 --dport 25 -j
-> DNAT --to-destination 192.168.10.2:25
-> -A PREROUTING -p udp -m udp -d 1.2.3.4 --dport 47 -j
-> DNAT --to-destination 192.168.10.1:47
-> -A PREROUTING -p tcp -m tcp -d 1.2.3.4 --dport 80 -j
-> DNAT --to-destination 192.168.10.2:80
-> -A PREROUTING -p tcp -m tcp -d 1.2.3.4 --dport 99 -j
-> DNAT --to-destination 192.168.10.2:99
-> -A PREROUTING -p tcp -m tcp -d 1.2.3.4 --dport 110 -j
-> DNAT --to-destination 192.168.10.2:110
-> -A PREROUTING -p tcp -m tcp -d 1.2.3.4 --dport 1723 -j
-> DNAT --to-destination 192.168.10.1:1723
-> -A PREROUTING -p tcp -m tcp -d 1.2.3.4 --dport 1974 -j
-> DNAT --to-destination 192.168.10.2:1974
-> -A PREROUTING -p tcp -m tcp -d 1.2.3.4 --dport 1975 -j
-> DNAT --to-destination 192.168.10.2:1975
-> -A PREROUTING -p tcp -m tcp -d 1.2.3.4 --dport 3389 -j
-> DNAT --to-destination 192.168.10.1:3389
-> COMMIT
-> *mangle
-> :PREROUTING ACCEPT [92:7225]
-> :INPUT ACCEPT [92:7225]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [92:7225]
-> :POSTROUTING ACCEPT [92:7225]
-> COMMIT
-> *filter
-> :FORWARD DROP [0:0]
-> :INPUT ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> -A INPUT -i eth1 -j ACCEPT
-> -A INPUT -i lo -j ACCEPT
-> -A INPUT -s 1.2.3.4 -j ACCEPT
-> -A FORWARD -p tcp -m tcp -d 192.168.10.2 -i eth0
-> --dport 25 -j ACCEPT
-> -A FORWARD -p udp -m udp -d 192.168.10.1 -i eth0
-> --dport 47 -j ACCEPT
-> -A FORWARD -p tcp -m tcp -d 192.168.10.2 -i eth0
-> --dport 80 -j ACCEPT
-> -A FORWARD -p tcp -m tcp -d 192.168.10.2 -i eth0
-> --dport 99 -j ACCEPT
-> -A FORWARD -p tcp -m tcp -d 192.168.10.2 -i eth0
-> --dport 110 -j ACCEPT
-> -A FORWARD -p tcp -m tcp -d 192.168.10.1 -i eth0
-> --dport 1723 -j ACCEPT
-> -A FORWARD -p tcp -m tcp -d 192.168.10.2 -i eth0
-> --dport 1974 -j ACCEPT
-> -A FORWARD -p tcp -m tcp -d 192.168.10.2 -i eth0
-> --dport 1975 -j ACCEPT
-> -A FORWARD -p tcp -m tcp -d 192.168.10.1 -i eth0
-> --dport 3389 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 10000 -j ACCEPT
-> -A FORWARD -i eth1 -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
-> -A FORWARD -i eth0 -m state --state
-> ESTABLISHED,RELATED     -j ACCEPT
-> -A FORWARD -p tcp -d 192.168.10.1 --dport 1723 -m
-> state --state NEW -j ACCEPT
-> COMMIT
+  iptables -t nat -A POSTROUTING -s 10.0.2.0/24 -d 10.0.2.0/24 -j ACCEPT
+  iptables -t nat -A POSTROUTING -s 10.0.2.0/24 -j SNAT --to 10.0.3.2
+
+This seems to work as expected. I can run a server with:
+
+  ip addr add 10.0.3.5/24 dev eth0
+  nc -u -l -s 10.0.3.5 -p 2345
+
+and connect to it with:
+
+  nc -u -s 10.0.1.1 10.0.3.5 2345
+
+and the packets are NATed through 10.0.3.1. Now, what I'm really trying 
+to do is to establish UDP communications between the hosts 10.0.1.1 and 
+10.0.2.1 using the "UDP hole punching" technique that's described in 
+section 3.3 of the following Internet Draft:
+
+  http://midcom-p2p.sourceforge.net/draft-ford-midcom-p2p-01.txt
+
+I use the following to try to send the packets between the two:
+
+  echo | nc -u -s 10.0.1.1 -p 2345 10.0.3.2 2345
+  echo | nc -u -s 10.0.2.1 -p 2345 10.0.3.1 2345
+
+This produces the following entries in /proc/net/ip_conntrack (Sometimes 
+the source ports are translated, but on this occasion they were not):
+
+  udp      17 2 src=10.0.1.1 dst=10.0.3.2 sport=2345 dport=2345 
+[UNREPLIED] src=10.0.3.2 dst=10.0.3.1 sport=2345 dport=2345 use=1
+  udp      17 1 src=10.0.2.1 dst=10.0.3.1 sport=2345 dport=2345 
+[UNREPLIED] src=10.0.3.1 dst=10.0.3.2 sport=2345 dport=2345 use=1
+
+and the following traffic is observed by tcpdump -i lo:
+
+  20:29:16.588121 10.0.3.2.2345 > 10.0.3.1.2345: udp 1 (DF)
+  20:29:16.588169 10.0.3.1 > 10.0.3.2: icmp: 10.0.3.1 udp port 2345 
+unreachable [tos 0xc0]
+  20:29:18.484435 10.0.3.1.2345 > 10.0.3.2.2345: udp 1 (DF)
+  20:29:18.484482 10.0.3.2 > 10.0.3.1: icmp: 10.0.3.2 udp port 2345 
+unreachable [tos 0xc0]
+
+The first UDP packet creates the second entry in the connection-tracking 
+table. The second UDP packet seems to match the expectations of the 
+connection but it remains UNREPLIED. The second UDP packet doesn't make 
+it to its intended destination (as you can tell by the second icmp port 
+unreachable packet).
+
+Thanks for any help.
+
+-- 
+Jon
 
 
