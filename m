@@ -1,12 +1,13 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: Just before I proceed
-Date: Thu, 12 Sep 2002 11:52:18 +0200 (CEST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: binding nntp to one interface
+Date: Thu, 12 Sep 2002 11:22:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0209121150420.25433-100000@dns.toxicfilms.tv>
-References: <3D7F28CD.DBF9D2C9@sympatico.ca>
+Message-ID: <200209121022.g8CAMTv09831@vulcan.rissington.net>
+References: <5.1.0.14.2.20020912090056.012e6d48@linda>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3D7F28CD.DBF9D2C9@sympatico.ca>
+In-Reply-To: <5.1.0.14.2.20020912090056.012e6d48@linda>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jimmy James <jamesstickland@sympatico.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-> 1. Download 2.4.19 tape of source to /usr/src
-> 2. tar -vxf *2.4.19*.tar .
-> 3. Go do the directory of rusty's p-o-m
-> 4. Begin patching the kernel
-> 5. Decompress, compile, install latest iptables
-> 6.  Make a new kernel suitable for router
+On Thursday 12 September 2002 8:05 am, Rasmus Reinholdt Nielsen wrote:
+
+> Hi
 >
-> I am quite sure this is what i must do, but i do not wish for any screw
-> ups.  Thanks.
-Precisely. Compile all netfilter options as modules, so you can add
-options to them like
-# modprobe ip_nat_ftp ports=21,2121
-or simply to load/reload/unload them.
+> I have two different internet connections, to two different ISP's, set up
+> as load balancing.
+>
+> My problem is that both my isp's have ip restricted their newsservers, so I
+> need to bind all outgoing trafic on port 119 to a specific interface or ip.
+> Anybody knows how to do this?
 
-Regards,
-Maciej Soltysiak
+I'm not sure I understand the problem.
 
+You have an nntp server set up to connect to your ISP's nntp server (either 
+one, or both, of your ISPs).
+
+Because your ISPs systems are very close (in network hops) to your external 
+interface, surely your routing makes sure that requests to ISP A's nntp 
+server go through the connection to ISP A, and requests to ISP B's nntp 
+server go through the connection to ISP B ?
+
+Then you just need to decide whether your nntp server is going to connect 
+only to one, or to both, of your ISPs.
+
+Alternatively, if your routing doesn't automatically determine which way to 
+get to either of your ISPs servers, a few iproute2 commands should fix this.
+
+I don't think you need to do anything with netfilter (in fact I don't think 
+you can) because this sounds like a routing issue, not a filtering problem.
+
+Antony.
+
+-- 
+
+Anyone that's normal doesn't really achieve much.
+
+ - Mark Blair, Australian rocket engineer
 
