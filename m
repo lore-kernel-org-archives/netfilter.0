@@ -1,11 +1,10 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: help regarding DNAT
-Date: Wed, 4 Jun 2003 08:20:10 +1000
+Subject: RE: MSN Voice chat with Iptables
+Date: Wed, 4 Jun 2003 08:14:21 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DA1@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DA0@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C32A1E.4BDDCE1E"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,214 +16,249 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: subramanya <angeeras@satyam.net.in>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Cornu Nicolas <n.cornu@ifrance.com>, hare ram <hareram@sol.net.in>, netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
+No, MSN uses Proxy but Netmeeting still uses H323 protocol..
 
-------_=_NextPart_001_01C32A1E.4BDDCE1E
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-You may need a bridge patch to make iptables work on a bridge... not =
-100% sure but that might be it.
-=20
-A bridge links 2 network cards together basically, so it listens and =
-learns ARP addresses on each side and basically proxys the ARP so link =
-the 2 sides of the machine together making it almost 100% transparent... =
-I've been told years ago that it bypasses the packets filtering because =
-of this..
-=20
-But that was years ago and I've been told since that there are patches =
-to enable the filtering but I don't know much more than that..
-=20
-hope that's some info for you..
-=20
+Read it up. there's like 5-7 ports needing opening on the firewall and =
+forwarding.. and even then it breaks unless you use the H323 patch.
 
 Thanks,
-
-=20
 ____________________________________________
 George Vieira
-Citadel Computer Systems Pty Ltd Systems Manager georgev AT =
-citadelcomputer DOT com DOT au=20
+Systems Manager
+georgev@citadelcomputer.com.au
+
 Citadel Computer Systems Pty Ltd
-Phone : +61 2 9955 2644 HelpDesk: +61 2 9955 2698  =
-<http://www.citadelcomputer.com.au/> http://www.citadelcomputer.com.au
+http://www.citadelcomputer.com.au
 =20
-=20
+
 -----Original Message-----
-From: subramanya [mailto:angeeras@satyam.net.in]
-Sent: Tuesday, June 03, 2003 2:25 PM
-To: netfilter@lists.netfilter.org
-Subject: help regarding DNAT
+From: Cornu Nicolas [mailto:n.cornu@ifrance.com]
+Sent: Tuesday, June 03, 2003 9:29 PM
+To: George Vieira; hare ram; netfilter@lists.samba.org
+Subject: Re: MSN Voice chat with Iptables
 
 
-i am a student doing my final year engineering project work.
-=20
-i am faced with a problem:i want to DNAT all the packets and ia m using =
-the following command:
-=20
-iptables -t nat -I PREROUTING -p ALL -j DNAT -s xx.xx.xx.xx -d =
-yy.yy.yy.yy --to-destination zz.zz.zz.zz
-=20
-this works fine on a router. but this doesnot work on a machine that =
-acts as a bridge. the packets that are entering the PREROUTING chain are =
-lost in that chain.
-=20
-what could the problem be? plz help
-=20
-=20
-=20
+MSN support proxy , don't that help ?
+I prefer to install a proxy than recompile the kernel
 
-------_=_NextPart_001_01C32A1E.4BDDCE1E
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+NC
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
+----- Original Message -----=20
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+To: "hare ram" <hareram@sol.net.in>; "Cornu Nicolas" =
+<n.cornu@ifrance.com>;
+<netfilter@lists.samba.org>
+Sent: Tuesday, June 03, 2003 8:39 AM
+Subject: RE: MSN Voice chat with Iptables
 
 
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><SPAN class=3D588331722-03062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>You=20
-may need a bridge patch to make iptables work on a bridge... not 100% =
-sure but=20
-that might be it.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D588331722-03062003><FONT face=3DArial color=3D#0000ff =
+I think they can make outgoing calls but it's the incomming that's the
+problem.. i'm mena think about it.. the poor firewall gets a incomming =
+call,
+it doesn't know who to put it through the poort damn blonde =
+receiptionist...
+;)
 
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D588331722-03062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>A=20
-bridge links 2 network cards together basically, so it listens and =
-learns ARP=20
-addresses on each side and basically proxys the ARP so link the 2 sides =
-of the=20
-machine together making it almost 100% transparent... I've been told =
-years ago=20
-that it bypasses the packets filtering because of =
-this..</FONT></SPAN></DIV>
-<DIV><SPAN class=3D588331722-03062003><FONT face=3DArial color=3D#0000ff =
+If someone wrote some sort of H323 version of the old ICQ module for
+ipchains that would be great because it could track MSN user logins and =
+know
+where they are, possibly some sort of connection tracking RELATED
+connections and redirect to te right user.... yeah admin heaven I'm in =
+at
+the mo'... ;P he he
 
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D588331722-03062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>But=20
-that was years ago and I've been told since that there are patches to =
-enable the=20
-filtering but I don't know much more than that..</FONT></SPAN></DIV>
-<DIV><SPAN class=3D588331722-03062003><FONT face=3DArial color=3D#0000ff =
+it's too complicated for incoming calls...
 
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D588331722-03062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>hope=20
-that's some info for you..</FONT></SPAN></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>
-<P><FONT face=3DArial size=3D2><SPAN=20
-class=3D674251008-03092002>Thanks,</SPAN></FONT></P></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D674251008-03092002></SPAN></FONT>&nbsp;</DIV>
-<DIV style=3D"WIDTH: 305px; HEIGHT: 232px">
-<MARQUEE id=3DMarquee1 style=3D"WIDTH: 220px; HEIGHT: 57px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D20 direction=3Ddown behavior=3Dslide loop=3D1 =
-border=3D"2"><FONT=20
-size=3D1>____________________________________________</FONT></MARQUEE><BR=
-><B><FONT=20
-color=3D#000066 size=3D2></FONT><FONT face=3DVerdana color=3D#000066 =
-size=3D2>George=20
-Vieira<BR></FONT></B>
-<MARQUEE id=3DMarquee2 style=3D"WIDTH: 240px; HEIGHT: 17px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D3 behavior=3Dslide loop=3D1 border=3D"0"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3Dblack =
-size=3D1><B>Citadel=20
-Computer Systems Pty Ltd</B></FONT></MARQUEE>
-<MARQUEE id=3DMarquee2 style=3D"WIDTH: 240px; HEIGHT: 17px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D3 behavior=3Dslide loop=3D1 border=3D"0"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3Dblack =
-size=3D1><B>Systems=20
-Manager</B></FONT></MARQUEE><FONT face=3DVerdana>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 255px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D2 scrollDelay=3D5 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-width=3D300 height=3D16 border=3D"0"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3D#000099 =
-size=3D1>georgev AT=20
-citadelcomputer DOT com DOT au</FONT></MARQUEE>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1=20
-border=3D"0"></MARQUEE></FONT>
-<DIV><FONT face=3D"Verdana, Verdana, Helvetica, sans-serif" =
-color=3Dblack=20
-size=3D1>Citadel Computer Systems Pty Ltd</FONT><FONT =
-face=3DVerdana></DIV>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-border=3D"0"><FONT color=3Dblack size=3D1>Phone : +61 2 9955=20
-2644</FONT></MARQUEE></FONT><FONT face=3DVerdana>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-border=3D"0"><FONT color=3Dblack size=3D1>HelpDesk: +61 2 9955=20
-2698</FONT></MARQUEE></FONT>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D4 scrollDelay=3D5 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-border=3D"0"><A href=3D"http://www.citadelcomputer.com.au/"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3D#000099 =
-size=3D1><A=20
-href=3D"http://www.citadelcomputer.com.au/">http://www.citadelcomputer.co=
-m.au</FONT></A></MARQUEE></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
-face=3DTahoma=20
-size=3D2>-----Original Message-----<BR><B>From:</B> subramanya=20
-[mailto:angeeras@satyam.net.in]<BR><B>Sent:</B> Tuesday, June 03, 2003 =
-2:25=20
-PM<BR><B>To:</B> netfilter@lists.netfilter.org<BR><B>Subject:</B> help =
-regarding=20
-DNAT<BR><BR></FONT></DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2>i am a student doing my =
-final year=20
-engineering project work.</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2>i am faced with a =
-problem:i want to=20
-DNAT all the packets and ia m using the following command:</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2>iptables -t nat -I =
-PREROUTING -p ALL=20
--j DNAT -s xx.xx.xx.xx -d yy.yy.yy.yy --to-destination =
-zz.zz.zz.zz</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2>this works fine on a =
-router. but this=20
-doesnot work on a machine that acts as a bridge. the packets that are =
-entering=20
-the PREROUTING chain are lost in that chain.</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2>what could the problem =
-be? plz=20
-help</FONT></DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial color=3D#000000 =
-size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
-------_=_NextPart_001_01C32A1E.4BDDCE1E--
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+
+-----Original Message-----
+From: hare ram [mailto:hareram@sol.net.in]
+Sent: Tuesday, June 03, 2003 4:37 PM
+To: George Vieira; Cornu Nicolas; netfilter@lists.samba.org
+Subject: Re: MSN Voice chat with Iptables
+
+
+Hi
+
+If only one client can only use Voice chat in whole network
+then there is no use, if only one customer uses, like every one want to
+voice chat
+
+how are this setup going to achive,
+one public IP with lot of private Clients
+all want MSN Voice chat
+
+hare
+----- Original Message -----
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+To: "Cornu Nicolas" <n.cornu@ifrance.com>; <netfilter@lists.samba.org>
+Sent: Tuesday, June 03, 2003 8:34 AM
+Subject: RE: MSN Voice chat with Iptables
+
+
+Not really.. the only few things I can suggest it to grab all
+sources(kernel,iptables,etc) and to backup your original source if any =
+found
+in /usr/src/linux. Then copy the .config found in that directory and =
+copy to
+the new kernel source and use 'make oldconfig' which will help heaps.
+
+if .config doesn't exist then you'll have to configure your kernel =
+yourself
+and it'll probably take a few goes before you get it working. he he
+
+Also in /boot/ directory, don't replace any entries but make new ones..
+
+here's my one as an example below (/etc/lilo.conf). So if the kernel =
+fails,
+you can go back to an earlier one.. ;)
+
+boot=3D/dev/md0
+map=3D/boot/map
+install=3D/boot/boot.b
+prompt
+timeout=3D50
+message=3D/boot/message
+linear
+default=3DSG1-2.4.19
+#default=3DSG2-2.4.18-new
+
+image=3D/boot/vmlinuz-2.4.19
+        label=3DSG1-2.4.19
+        read-only
+        root=3D/dev/md5
+
+image=3D/boot/vmlinuz-2.4.19-at
+        label=3DSG2-2.4.19-at
+        read-only
+        root=3D/dev/md5
+
+image=3D/boot/vmlinuz-2.4.18-3
+        label=3DSG2-2.4.18-new
+        read-only
+        root=3D/dev/md5
+
+image=3D/boot/vmlinuz-2.4.18-2
+        label=3DSG3-2.4.18
+        read-only
+        root=3D/dev/md5
+
+image=3D/boot/vmlinuz-2.4.2-2
+        label=3DSG4-2.4.2
+        initrd=3D/boot/initrd-2.4.2-2.img
+        read-only
+        root=3D/dev/md5
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+
+
+-----Original Message-----
+From: Cornu Nicolas [mailto:n.cornu@ifrance.com]
+Sent: Tuesday, June 03, 2003 12:48 PM
+To: netfilter@lists.samba.org
+Subject: Re: MSN Voice chat with Iptables
+
+
+That mean i need to compile patch o matic and recompile the kernel with
+patch ?
+Do u have some tips, i am new to linux and like Hare Ram i want to use =
+MSN
+voice chat
+
+NC
+
+----- Original Message -----
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+To: "hare ram" <hareram@sol.net.in>; <netfilter@lists.samba.org>
+Sent: Tuesday, June 03, 2003 12:37 AM
+Subject: RE: MSN Voice chat with Iptables
+
+
+If I'm not wrong, I think MSN uses Net Meeting for chatting and if this =
+is
+correct, you need the patch-o-matic patch for H323 to allow incoming =
+H323
+calls.
+The bad side to this is that it only supports 1 machine behind the =
+firewall
+because you have to DNAT to a specified machine to receive any outside
+calls.. AFAIK, this is what I had to do for Net Meeting..
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+
+
+-----Original Message-----
+From: hare ram [mailto:hareram@sol.net.in]
+Sent: Tuesday, June 03, 2003 12:49 AM
+To: netfilter@lists.samba.org
+Subject: MSN Voice chat with Iptables
+
+
+Hi all
+
+Does any one have Good URL to work
+MSN Voice chat with IPTABLES+NAT
+
+thanks
+hare
+
+
+
+_____________________________________________________________________
+Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN =
+Messenger
+http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de =
+France
+
+_____________________________________________________________________
+Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN =
+Messenger
+http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de =
+France
+
+
+
+
+
+_____________________________________________________________________
+Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN =
+Messenger
+http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de =
+France
+
+_____________________________________________________________________
+Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN =
+Messenger
+http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de =
+France
+
 
