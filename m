@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Simple newbie's question
-Date: Tue, 17 Feb 2004 08:49:22 +0000
+Date: Tue, 17 Feb 2004 10:15:41 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402170849.22453.Antony@Soft-Solutions.co.uk>
-References: <001701c3f4b2$648798f0$a704a8c0@mpro4167> <200402170026.41874.Antony@Soft-Solutions.co.uk> <000401c3f52f$bd85b3b0$a704a8c0@mpro4167>
+Message-ID: <200402171015.41636.Antony@Soft-Solutions.co.uk>
+References: <004c01c3f53e$845bebe0$2d64a8c0@pcjka>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000401c3f52f$bd85b3b0$a704a8c0@mpro4167>
+In-Reply-To: <004c01c3f53e$845bebe0$2d64a8c0@pcjka>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,119 +17,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Tuesday 17 February 2004 8:26 am, Oriol Magran=E9 wrote:
+On Tuesday 17 February 2004 10:12 am, Jan Kaastrup wrote:
 
->     I'm telnetting from the machine with the netfilter rules on it (so =
-you
-> say that it won't work).
->     But why it won't work?
+> Hi list
+> After a reboot of my RedHat mashine, the NAT part of Iptables stop
+> working.
+>
+> I get: "iptables: Invalid argument" when using snat.
+>
+> My snat rule look like this:
+> $IPTABLES -t nat -A POSTROUTING -o $EXT_INT -j SNAT --to-source $EXT_IP
 
-Because the PREROUTING rule applies to packets coming in to the machine f=
-rom=20
-the network, before they get routed, either locally or remotely.
+Are you sure that $EXT_INT and $EXT_IP are defined?
 
-Packets which start on the machine itself do not go through PREROUTING.
+> I have made all netfilter stuff as modules.
 
->     Is there any other way to achieve it?
+I don't use modules, so I'm not the best person to look at this list and say 
+if it appears to be sufficient for what you are doing - can anyone else help 
+here?
 
-Sure - run the telnet command from a machine inside your LAN, or else con=
-nect=20
-to the correct address & port from the firewall.
-
-The first (telnet from a LAN machine) would be the best choice, because t=
-his=20
-is more representative of how you want the system to work in practice=20
-(because surely you don't have any applications generating packets runnin=
-g on=20
-your firewall itself, do you :) ?)
-
-You might be able to get the DNAT target in the OUTPUT chain working (alt=
-hough=20
-I have seen reports that people find this problematic, and I've never nee=
-ded=20
-to use it).   The OUTPUT chain is the correct place for you to do this,=20
-because that and POSTROUTING are the only two chains your locally-generat=
-ed=20
-packets will go through.
+> #lsmod
+> ip_conntrack_irc        4336   1  (autoclean)
+> ip_nat_irc              3440   0  (unused)
+> ip_conntrack_ftp        5520   1  (autoclean)
+> ip_nat_ftp              4240   0  (unused)
+> ipt_ah                  1080   0  (unused)
+> ipt_esp                 1112   0  (unused)
+> iptable_nat            22040   2  [ip_nat_irc ip_nat_ftp]
+> ppp_mppe               24088   0  (autoclean)
+> bsd_comp                5464   0  (autoclean)
+> ppp_async               9440   0  (autoclean)
+> ppp_generic            24508   0  (autoclean) [ppp_mppe bsd_comp
+> ppp_async]
+> slhc                    6740   0  (autoclean) [ppp_generic]
+> ipt_LOG                 4152   1  (autoclean)
+> ipt_REJECT              4024   1  (autoclean)
+> ipt_state               1048   5  (autoclean)
+> iptable_mangle          2776   0  (autoclean) (unused)
+> ip_conntrack           28296   4  (autoclean) [ip_conntrack_irc
+> ip_nat_irc ip_conntrack_ftp ip_nat_ftp iptable_nat ipt_state]
+> iptable_filter          2412   1  (autoclean)
+> ip_tables              14872  10  [ipt_ah ipt_esp iptable_nat ipt_LOG
+> ipt_REJECT ipt_state iptable_mangle iptable_filter]
+>
+> Any hints???
+>
+> I have tried to recompile iptables - but nothing seems to work - I know
+> it did before the reboot.
+> Only thing that has been changed is a static route being enabled, but
+> this shouldn't make iptables complain:(
 
 Regards,
 
 Antony.
 
-> ----- Original Message -----
-> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Tuesday, February 17, 2004 1:26 AM
-> Subject: Re: Simple newbie's question
->
-> On Monday 16 February 2004 5:29 pm, Oriol Magran=E9 wrote:
-> >     Hello!!
-> >     I have a linux box (with ip 192.168.4.172) connected to the Inter=
-net
-> > through an ADSL router (with ip 192.168.4.10). Now I'd like to do som=
-e
->
-> port
->
-> > forwarding on the box itself, so that outgoing connections to port 80=
- of
-> > host 212.59.199.45 goes to port 110 of host 212.59.199.75.
-> >
-> >     So I do:
-> >
-> >         iptables -t nat -A PREROUTING -p tcp -d 212.59.199.45 --dport
->
-> 80 -j
->
-> > DNAT --to 212.59.199.75:110
-> >
-> >     Which it seems the logical thing to do.
-> >     But when I telnet 212.59.199.45 80 the kernel continues to send
->
-> packets
->
-> > to port 80 of 212.59.199.45 ignoring my wishes and commands. What am =
-I
-> > doing wrong?
->
-> 1. Where are you testing the telnet from?   The machine with the netfil=
-ter
-> rules on it (won't work) or a machine on your LAN which is routed throu=
-gh
-> the
-> netfilter machine (should work)?
->
-> 2. Do you have a suitable FORWARD rule to allow the packets to get to
-> 212.59.199.45 TCP port 110?
->
-> Regards,
->
-> Antony.
+-- 
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
 
---=20
-This email is intended for the use of the individual addressee(s) named a=
-bove=20
-and may contain information that is confidential, privileged or unsuitabl=
-e=20
-for overly sensitive persons with low self-esteem, no sense of humour, or=
-=20
-irrational religious beliefs.
+ - Frank Skinner
 
-If you have received this email in error, you are required to shred it=20
-immediately, add some nutmeg, three egg whites and a dessertspoonful of=20
-caster sugar.   Whisk until soft peaks form, then place in a warm oven fo=
-r 40=20
-minutes.   Remove promptly and let stand for 2 hours before adding some=20
-decorative kiwi fruit and cream.   Then notify me immediately by return e=
-mail=20
-and eat the original message.
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
