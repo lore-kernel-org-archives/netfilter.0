@@ -1,11 +1,13 @@
-From: Eric Constantineau <mekanik@nerim.net>
-Subject: passive mode ftp
-Date: Fri, 23 May 2003 10:56:35 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: passive mode ftp
+Date: 23 May 2003 11:12:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3ECDE243.3133BBAA@nerim.net>
+Message-ID: <1053681137.673.14.camel@elendil.intranet.cartel-securite.net>
+References: <3ECDE243.3133BBAA@nerim.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3ECDE243.3133BBAA@nerim.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,34 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Eric Constantineau <mekanik@nerim.net>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi !
+Le ven 23/05/2003 =E0 10:56, Eric Constantineau a =E9crit :
+> I want to be able to use passive ftp under my firewall...
 
-I want to be able to use passive ftp under my firewall...
+Use Netfilter conntrack functionnalities :
 
-Right now passive mode does not function because I allow only packets
-WITH port 21 as a destination OR source.  When in normal mode, packets
-from the ftp server have 21 for the source port and the packets from the
-client have 21 for the destination port so it works.  But, entering
-passive mode, the destination and source ports are not 21, so my
-firewall blocks.
+# modprobe ip_conntrack_ftp
 
-Using a ftp client such as leechftp, cuteftp, wsftp is okay, but using
-the browser (iexplore) does not because it use passive mode.
+[...]
+> Is there a specific range of ports that all passive ftp use ?
 
-I don't want to open too much my ports, it would mean that someone could
-use those ports to get access to inside networks...  But I want to be
-able to use passive mode, some users do not want to use ftp client
-software, or are not even able to install them...
+Using FTP conntrack helper, you can spot data connections with RELATED
+state. A setup setup could be :
 
-Is there a specific range of ports that all passive ftp use ?
+	iptables -A FORWARD -m state --state ESTABLISHED,RELATED \
+		-j ACCEPT
+	iptables -A FORWARD -m state --state NEW -p tcp -s $LAN \
+		--dport 21 -o $EXTIF -j ACCEPT
 
-Thanks for helping me
+Once a FTP connection is up, further packets are handled by ESTABLISHED
+state rule, and connection data initiating is handled by RELATED state.
 
-Eric
+If you're using NAT, then you will need to modprobe ip_nat_ftp module.
 
-
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
