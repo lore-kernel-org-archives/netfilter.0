@@ -1,9 +1,10 @@
-From: "J and T" <j_and_t@hotmail.com>
-Subject: Stopping greedy http clients!
-Date: Mon, 23 Sep 2002 17:52:50 -0700
+From: "Matt Parlane" <matt@zevi.net>
+Subject: Forwarding packets within local network
+Date: Tue, 24 Sep 2002 14:03:18 +1200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F76qUlyunxtkVO4alvo00004b24@hotmail.com>
+Message-ID: <0d3d01c2636e$8d112a60$0200a8c0@bart>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,57 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Is there a way to set a "speed limit" on tcp port 80 requests? Here's my=20
-problem:
+Hi all...
 
-I have a very popular site with hundreds of pages updated dynamically every=
-=20
-4 hours. Since high-speed internet access has become more popular, I have=20
-found more and more visitors using robots to download all pages in one quic=
-k=20
-multi-threaded connection. When you have a 1,000 people downloading 100=20
-pages all at once you end up with a problem. I can't just block them by=20
-their IP because their IPs are dynamic.
+I am trying to set up iptables to forward all packets on port 80 to an
+internal machine - the only difference to the normal DNAT setup is that the
+web server is on another internal machine.  Let me explain...
 
-I've tried mod_throttle (by Apache), but because my site is very popular I =
+The gateway is at 192.168.0.1.
 
-have to keep a huge IP list in memory so this is super memory consuming. No=
-t=20
-only that, but because the list is so huge response time on the server is=20
-slowed considerably.
+The webserver is at 192.168.0.2, and is DNATed, so it can be seen from the
+outside, and the inside - as per the chapter entitled 'Destination NAT Onto
+the Same Network' in the unreliable guides.
 
-My wish is to have a speed limit. So if a user is detected of downloading x=
-=20
-number of documents in x amount of time, they are DROPed. Then after a "wai=
-t=20
-period" they are given permission again. Experimenting a little with this=20
-has caused problems. The problem is that a Web page could easily have 30=20
-small images so one http requeset for page a could result in 31 requests.
+I go to www.google.com from my workstation which is 192.168.0.3, and I am
+forwarded by iptables through to the internal webserver, and it serves my
+request.  One caveat is that I want to be able to specify which IP addresses
+are allowed straight out as per normal, and which ones are forwarded to the
+internal webserver.
 
-I don't want to set a bandwidth limit because that will only reject users=20
-who have a legit reason to be on the site. I'm only interested in=20
-temporarily blocking greedy clients consuming all my resources. Right now=20
-I'm on a multiple T-1 so it's not bandwidth that is the problem. The proble=
-m=20
-is greedy clients hitting me so hard that requests are slowed down for all =
+Is this possible?  And if it's not possible using iptables, does anyone know
+any other way of doing this?
 
-visitors.
+Regards,
 
-I know yahoo, ebay, cnn and usatoday have all experienced this problem, but=
-=20
-I don't know how they solved it.
-
-Anyone have a suggestion on how to go about doing this?
-
-Thanks
-
-
-_________________________________________________________________
-Join the world=92s largest e-mail service with MSN Hotmail.=20
-http://www.hotmail.com
+Matt Parlane
+Zevi Interactive
+matt@zevi.net
 
 
