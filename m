@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Firewall Setup on RH 9
-Date: 05 Jul 2003 01:35:24 -0400
+From: Michal Kepien <lordpopcorn@poczta.onet.pl>
+Subject: Re: Firewall setup at boot - trouble with setting up the LOG target
+Date: Sat, 05 Jul 2003 09:30:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1057383324.2821.34.camel@alpha.newkirk.us>
-References: <016201c33fa7$5c755eb0$660210ac@christo>
-	 <n6tbgvkvn94tuq3f8m01d5rah2n97tgnol@4ax.com>
+Message-ID: <n7vcgvs39brkp00l6atko40tdbbdld4sro@4ax.com>
+References: <7C9884991ADAE0479C14F10C858BCDF52E3554@alderaan.smgtec.com> <200307041112.58290.Alistair@nerdnet.ca> <sgubgvg6n5ckac25g8qs1d678vgrl0ro24@4ax.com> <200307042233.46558.Alistair@nerdnet.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <n6tbgvkvn94tuq3f8m01d5rah2n97tgnol@4ax.com>
+In-Reply-To: <200307042233.46558.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,57 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Michal Kepien <lordpopcorn@poczta.onet.pl>
-Cc: Christo Bezuidenhout <christo@it4africa.co.za>, netfilter@lists.netfilter.org
+To: Alistair@nerdnet.ca
+Cc: netfilter@lists.netfilter.org
 
-On Fri, 2003-07-04 at 17:54, Michal Kepien wrote:
-> >2. Both NIC1 and NIC3 Should be able to Connect VIA NIC2 to Internet. 
-> >NIC1 Should be able to connect to NIC3 but NIC3 must not be ABLE to
-> >Connect to NIC1 's network
-> 
-> NIC1 ---> eth0
-> NIC2 ---> eth1
-> NIC3 ---> eth2
-> 
-> NIC1's NETWORK: 192.168.0.0
-> NIC3's NETWORK: 192.168.1.0
+>	KERNEL_DIR=3D/xxx/xxxx/xxx ./configure --prefix=3D/
+>	                        ^^^^^^^^^^^^ being wherever your kernel source =
+code=20
+>hides.=09
 
-> # First, deny packets from NIC3 to NIC1
-> iptables -A INPUT -i eth2 -s 192.168.1.0/24 -d 192.168.0.0/24 -j DROP
+You mean the source code dir (e.g. /usr/src/linux-2.4.19) or the
+config file (e.g. /usr/src/linux-2.4.19/.config)?
 
-This needs to be FORWARD chain, not INPUT.  Since the traffic isn't
-destined for the firewall box itself, it goes to the FORWARD chain.
+>	personally I have all my networking delayed until after I'm multiuser
+>	-- and then only the inside stuff gets started...=20
+>	*after* the box is up and stable I start the internet cruft and=20
+>	the firewall...=20
 
+You mean you start the firewall manually (i.e. it is not started
+automatically at boot time)?
 
-> # Then, enable all other packets (needed for Internet access)
-> iptables -A INPUT -i eth0 -s 192.168.0.0/24 -d 0.0.0.0/0 -j ACCEPT
-> iptables -A INPUT -i eth2 -s 192.168.1.0/24 -d 0.0.0.0/0 -j ACCEPT
+>	Simple expedience says that you should turn off forwarding
+>	very early in your startup scripts and then turn it on at the *end*
+>	of the firewall script.
 
-Same here.  All these rules do is allow those two subnets to access the
-box itself, not the internet.
+OK, I did it but what does it change? :)
 
-
-> ######## OUTPUT rules ########
-> # We don't need to deny the packets from NIC3 to NIC1 once more as
-> # every packet goes through the INPUT chain _first_
-> 
-> # Accept re-masqueraded packets for both networks
-> iptables -A OUTPUT -o eth0 -s 0.0.0.0/0 -d 192.168.0.0/24 -j ACCEPT
-> iptables -A OUTPUT -o eth2 -s 0.0.0.0/0 -d 192.168.1.0/24 -j ACCEPT
-
-As above, this affects only traffic from the box itself, NOT forwarded
-traffic.
-
-
-> BTW - why is there no packet tester in iptables (like the 'ipchains
-> -C' command)? This little thing was _so_ useful...
-
-As I suspected from your misconception about forwarded traffic, you're 
-an ipchains veteran... ;^)  With iptables FORWARD traffic never touches
-the INPUT or OUTPUT chains, those are explicitly for INPUT and OUTPUT
-to and from the box itself.
-
-j
-
-
+Michal Kepien
 
