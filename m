@@ -1,11 +1,14 @@
-From: Pavel G <pavel_g@evrocom.tv>
-Subject: linux 2.6 + ROUTE
-Date: Sat, 24 Apr 2004 03:28:10 +0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: I have no idea why this doesn't work...(further details)
+Date: Sat, 24 Apr 2004 15:05:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040424032810.1eee017e.pavel_g@evrocom.tv>
+Message-ID: <200404241505.40385.Antony@Soft-Solutions.co.uk>
+References: <8118CC0EE4FDF94AA1C785BD746EF2A69DB2B5@eshetb>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <8118CC0EE4FDF94AA1C785BD746EF2A69DB2B5@eshetb>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,7 +21,35 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-How to use -j ROUTE with linux 2.6?
-I`ve tried patching with pomng-20040302`s extra repository but it does not ask me if I`d like to patch with ROUTE
-is there an alternative?
+On Saturday 24 April 2004 3:47 pm, Micha Silver wrote:
+
+> > > > > is there any good reason why you are not using ssh?
+> > > >
+> > > > Didn't know about it.  I just downloaded PuTTY.
+> > >
+> > >Does that, um, gulp, imply that you're using Windows !?
+> >
+> > Yeah, 'fraid so.
+>
+> You DO know that Putty is a full featured ssh client, don't you??
+
+I think that's why he downloaded Putty in the first place - because I 
+recommended he use SSH instead of Telnet.
+
+I don't think anyone would download Putty just to use it as a Telnet client, 
+because Windows can already do that on its own.
+
+Regards,
+
+Antony.
+
+-- 
+I don't know, maybe if we all waited then cosmic rays would write all our 
+software for us. Of course it might take a while.
+
+ - Ron Minnich, Los Alamos National Laboratory
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
