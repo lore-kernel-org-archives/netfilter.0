@@ -1,12 +1,15 @@
-From: "Hard__warE" <hard__ware@hotmail.com>
-Subject: Controlling bandwith rate on port 80
-Date: Wed, 12 Jun 2002 06:22:54 +1000
+From: Tony Earnshaw <tonni@billy.demon.nl>
+Subject: Re: Help with POP3/SMTP and MASQ
+Date: 11 Jun 2002 22:26:16 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000501c21185$c4732c00$7b0010ac@dynamicaccess.lan>
-Reply-To: "Hard__warE" <hard__ware@hotmail.com>
+Message-ID: <1023827177.4179.76.camel@billy.demon.nl>
+References: <F21XZZTHfyQgeDKvPEk0000a6ad@hotmail.com> 
+	<200206111923.23006@.>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-Cbli8DlOZ67fVIsccvxH"
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <200206111923.23006@.>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,36 +19,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Payal <rpayal@indiainfo.com>
+Cc: netfilter@lists.samba.org
 
-yes it can be done with IPTables just not alone ..
 
-you will need to complie your kernel with the IPTABLES MARK / TOS / U32
-classifiers / CBQ  ect  set to M..
+--=-Cbli8DlOZ67fVIsccvxH
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-now that we have the support we can use
+tir, 2002-06-11 kl. 15:54 skrev Payal:
 
-a Token Bucket Filter or CBQ  to limit the packet rate Per interface both in
-up or down
+> I am very very new to iptables. But I think smtp and pop should be left t=
+o=20
+> mail server + tcpd [i.e hosts.allow and hosts.deny].
 
-to do this correcty you will need to set a ToS MARK value on all PORT 80
-traffic
+You obviously haven't heard about "the nasties" yet.
 
-leaving the BOX (or however you need it) with IPTABLES the
+They're the ones who get you anyway.
 
-in your Pcaket Shaping CBQ script you can search for those marked packets
-and stick them in a Low Priorty Que
+You'll learn :-)
 
-or a QUE that has a set amount of bandwidth allocation ect ...
+Tony
 
-If you know nothing of these go Search for Advanced Routing & TOS / MARK as
-well as CBQ & TBF
+Paranoid
 
-have Fun cause it can be a pain in the ass ...
+--=20
 
-If you need more help just send me an Email . .. :D
+Tony Earnshaw
 
-See yas .. :D
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
+
+
+
+--=-Cbli8DlOZ67fVIsccvxH
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9Blzo99dgUTvnuYERAoasAJ0cxsp7NeOgh0ZBUfKOgAwRCjXXKQCeNok8
+TECWa9Wn1RXiU/ZWofH2EmE=
+=j3HR
+-----END PGP SIGNATURE-----
+
+--=-Cbli8DlOZ67fVIsccvxH--
 
 
