@@ -1,9 +1,9 @@
-From: Isabelle Labbe <isabelle.labbe@crc.ca>
-Subject: DSCP support in iptables 1.2.8
-Date: Wed, 16 Apr 2003 15:14:24 -0400
+From: Mike Ely <netfilter-listalias@phoenix.k12.or.us>
+Subject: Nmap shows all ports open when -m psd -j TARPIT
+Date: Wed, 16 Apr 2003 16:19:00 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E9DAB90.9FFF600F@crc.ca>
-Mime-Version: 1.0
+Message-ID: <CE0D4A64-7061-11D7-A99D-00039354EBD6@phoenix.k12.or.us>
+Mime-Version: 1.0 (Apple Message framework v552)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -15,39 +15,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Can anyone confirm that the DSCP target works in iptables 1.2.8 (or
-1.2.7a) ?
+This is with kernelversion 2.4.18-27.7.x (redhat updated rpm sources 
+with patches compiled in) and iptables 1.2.8.  I got the patches from 
+patch-o-matic, and everything compiled smoothly.
 
-I am running Red Hat 8.0.  I have upgraded the kernel to 2.4.20.  I have
-also installed iptables 1.2.8 and when running the command:
+When I do
+iptables -I INPUT -m psd -j DROP
+it works - the psd module handily shuts down portscan connections.  
+Also, when I do
+iptables -I INPUT -p tcp --dport 25 -j TARPIT
+any incoming connection to port 25 gets totally gooey - much fun for me.
 
-iptables -A FORWARD -t mangle -j DSCP --set-dscp 0x1f
+However, when I do
+iptables -I INPUT -p tcp -m psd -j TARPIT
+and then run
+nmap -vv -P0 iptables.box
+against the machine, it reports all but about twelve ports as open!  I 
+know that the machine isn't running all those services, but this most 
+certainly isn't the response I want.
 
-I get the following message:
+Is this a logic error on my part, or a bug in the code, or what?
 
-iptables: No chain/target/match by that name
+Specs:
+Generic P II box
+RedHat 7.2 with everything up2date and custom patched kernel listed 
+above
+nmap version 3.0
 
-According to the docs on the netfilter site, the above command should
-work. Does anyone know why it doesn't?
+Thanks in advance,
+Mike
 
-thank you
+PS: Posted the above to netfilter bugzilla, but it seems pretty quiet 
+there.
 
-Isabelle
-
---
-Isabelle Labbe
-Communications Research Centre Canada
-3701 Carling Av.
-PO Box 11490, Station H
-Ottawa, On
-K2H 8S2
-
-email: isabelle.labbe@crc.ca
-tel:  (613) 998-1410
-fax:  (613) 998-9648
-
+---
+[This E-mail scanned for viruses by Declude Virus]
 
 
