@@ -1,10 +1,10 @@
-From: "Peter" <chenlf@cibn.com>
-Subject: how to use ipt_limit.o?
-Date: Mon, 9 Dec 2002 09:55:28 +0800
+From: "Luis Fernando C. Talora" <talora-listas@talora.com.br>
+Subject: iptables logging exhibites lines on current virtual console
+Date: 08 Dec 2002 23:42:33 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000d01c29f26$0c4f9170$9801010a@winxp>
+Message-ID: <1039380153.1095.13.camel@osbourn.intranet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,11 +18,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-aSBhbSB1c2luZyByZWRoYXQ3MyBrZXJuZWwgMi40LjE4LTE4LjcgDQppIHdhbnQgdG8gbGltaXQg
-bnVtYmVyIG9mIGh0dHBkIGFjY2VzcyBwZXIvY2xpZW50IA0KaSB1c2UgDQojIGluc21vZCAgaXB0
-X2xpbWl0Lm8NCiMgaXB0YWJsZXMgLUEgSU5QVVQgLXAgdGNwIC0tc3luIC0tZHBvcnQgaHR0cCAt
-bSBpcGxpbWl0IC0taXBsaW1pdC1hYm92ZSA0IC1qIFJFSkVDVA0KdGhlbiBpIGdldCBlcnJvcjoN
-CmlwdGFibGVzOiBObyBjaGFpbi90YXJnZXQvbWF0Y2ggYnkgdGhhdCBuYW1lDQp3aG8gY2FuIGhl
-bHAgbWUg
+Hi there!
+
+I having some trouble with iptables' logging functionality and would
+like some help. I've enabled logging for every dropped packet, using LOG
+target. On /etc/syslog.conf, I'm using the following:
+
+kern.*                                                 /dev/tty10
+kern.*                                                 /var/log/kernel
+
+(I want syslogd to generate a log of dropped packets both on console 10
+and /var/log/kernel file.)
+
+Here's the problem: I've realized that many of the log lines generated
+are exhibited on current console: tty1, tty2, etc. Do anybody know the
+reason of that behavior? Is there a way to change that?
+
+Thank you all!
+
+[]'s
+
+Luis Fernando C. Talora
+
+
+
 
 
