@@ -1,14 +1,11 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
-Subject: Re: 2 NICs on same subnet
-Date: Fri, 5 Nov 2004 14:04:24 +0100
-Message-ID: <20041105130424.GF9379@torres.ka0.zugschlus.de>
-References: <20041105123843.GB11016@zion.homelinux.com>
-	<20041105124107.GE9379@torres.ka0.zugschlus.de>
-	<20041105125421.GA12058@zion.homelinux.com>
+From: "Wesley Jay Deypalan" <wjdeypalan@ictuscomm.net>
+Subject: tftp clients not working on ip masquerading
+Date: Fri, 5 Nov 2004 18:16:16 +0800 (PHT)
+Message-ID: <58373.202.138.166.130.1099649776.squirrel@202.138.166.130>
+Reply-To: wjdeypalan@ictuscomm.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20041105125421.GA12058@zion.homelinux.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,26 +17,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Nov 05, 2004 at 01:54:21PM +0100, Sven Schuster wrote:
-> On Fri, Nov 05, 2004 at 01:41:07PM +0100, Marc Haber told us:
-> > Why did you do that?
-> 
-> please don't ask, it _has to be_ this way, not my decision :-/
+hi,
 
-What you intend to do does not make sense.
+I have installed TFTP server and working good. Later I found out that it
+work only on public ip address what I mean is the TFTP Server has a public
+ip address and the client also has a public ip address. But when the
+client is being ip masquerading it will not connect with the server the
+error message in the server is WRQ from x.x.x.x filename 43434.doc
+                         tftpd: read: Connection refused
+the client is being masqueraded from a linux os.The masquerading used is
+from tldp.org - rc.firewall-2.4-stronger. What is wrong with my setup?
 
-This surely is meant to be a solution to some unmentioned problem. By
-asking about the problem, I am just trying to give a solution.
+TIA,
 
-Greetings
-Marc
 
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 621 72739835
+Wesley
+
 
