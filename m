@@ -1,16 +1,12 @@
-From: Dhananjoy Chowdhury <dhananjoy@nucleussoftware.com>
-Subject: Re: block port 137
-Date: Tue, 03 Aug 2004 13:03:25 +0530
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Maxium concurrent connections with IPTables
+Date: Tue, 3 Aug 2004 09:46:15 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1091518405.4693.15.camel@dc.nucleussoftware.com>
-References: <267354A234DF4D46AA6AE56E1240BEF004A3BF@tv.wcslnet.net><"002401c
-	 4 7917$d0a6fd70$858310ac"@suarapembaruan.com><200408030717.59289.Antony@So
-	ft-Solutions.co.uk>
-Reply-To: dhananjoy@nucleussoftware.com
+Message-ID: <Pine.LNX.4.33.0408030909320.10603-100000@blackhole.kfki.hu>
+References: <564DE4477544D411AD2C00508BDF0B6A22073275@usahm018.exmi01.exch.eds.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408030717.59289.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <564DE4477544D411AD2C00508BDF0B6A22073275@usahm018.exmi01.exch.eds.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,60 +16,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Small, Jim" <jim.small@eds.com>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 2004-08-03 at 11:47, Antony Stone wrote:
-> On Tuesday 03 August 2004 7:04 am, Dhananjoy Chowdhury wrote:
-> 
-> > try dropping packets both with dport 137 and also with sport 137.
-> 
-> I disagree.
-> 
-> Try ACCEPTing the packets you *want* to go through the firewall, and DROP 
-> everything else.
-> 
-> Don't create individual rules to DROP the traffic you think you don't want 
-> (you will always forget something, or there will be a new problem next week 
-> which requires a new rule, etc).
-> 
-> Instead create individual rules to ACCEPT the traffic you need, and DROP 
-> anything which doesn't fit that description.
-> 
-> Regards,
-> 
-> Antony.
+Hi,
 
-Your terminology is very much true but David has already applied  the
-rule
-#iptables -A FORWARD -p udp -s 0/0 --dport 137 -j DROP
-but then also he isn't able to stop output traffic through port 137.
-So in this scenario he should appply the above rule for both --sport 
-and --dport.
-#iptables -I FORWARD -p udp -s 0/0 --dport 137 -j DROP
-#iptables -I FORWARD -p udp -s 0/0 --sport 137 -j DROP
+On Mon, 2 Aug 2004, Small, Jim wrote:
 
-Regards,
-Dhananjoy
+> I'm curious, what is the maximum number of concurrent connections possible
+> with IPTables using connection tracking for udp and for tcp?  (using latest
+> 2.4 kernel and 2.6 kernel)
+>
+> I'd also be curious if this changes with the TCP window patch.
 
+In January-February we tested conntrack where the setup was the
+following:
 
+- firewall: dual Xeon CPU, Serverworks chipset, 2GB RAM, Intel copper GE
+  cards with the e1000 driver
+- two 3Com switches with GB uplink
+- 20 "client" and 10 "server" machines. There was a minimal boa httpd
+  on the server and two httperf instances started on each client machines
 
+One test series consisted of trying to issue 5000, 10000, 15000, ... 40000
+parallel new http sessions trough the firewall per second. The tested
+kernels were 2.4.25, 2.4.25+SMP, 2.4.25+SMP+NAPI, 2.6.3(+SMP+NAPI),
+2.6.3 conntrack locking patch, 2.6.3 + conntrack locking + nonat patch,
+2.6.3 + conntrack locking + nonat patch + TCP window tracking patch.
 
-> 
-> > On Tue, 2004-08-03 at 10:37, david wrote:
-> > > Dear all,
-> > > How to block outgoing traffic over network that using port 137 udp,
-> > > because my isp tell me that my network broadcast virus using port 137
-> > > udp, i want to make all traffic (port 137) do go outside my network,
-> > > so i plan to blocking that traffic from my gateway.
-> > >
-> > > I already try to do this rules, but not working :
-> > > #iptables -A FORWARD -p udp -s 0/0 --dport 137 -j DROP
-> > >
-> > >
-> > >
-> > >
-> > > Regards,
-> > > David Kandou
+Overall, 2.6 was better than 2.4, SMP+NAPI and conntrack patches
+helped to improve performance. The TCP window tracking patch resulted
+practically no loss in performance.
+
+Maximally we could reach ~200,000pps troughput (indifferent from packet
+size), ~20,000 new connection/s and ~2,000,000 parallel connection with
+this test firewall, in this environment. Delay, jitter, etc was not
+measured. There was no iptables rule at all, we loaded in just the
+ip_conntrack module.
+
+> I'm currently taking a Cisco firewall class and they're claiming that PIX
+> which supports 500,000 concurrent connections with the appliance version and
+> 1,000,000 with the blade version vastly exceeds the capabilities of all
+> general purpose O/S'.
+
+The number of maximal concurrent connection is mostly limited by the RAM
+of the hardware. It'd be interesting to know wether how many new
+connection can be opened up trough a PIX per second.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
