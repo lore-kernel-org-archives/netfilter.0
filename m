@@ -1,8 +1,11 @@
-From: mohammad Mahbubur rahman <mahbub71@yahoo.com>
-Subject: (no subject)
-Date: Wed, 26 Jan 2005 07:58:23 -0800 (PST)
-Message-ID: <20050126155823.97452.qmail@web52304.mail.yahoo.com>
+From: "Omar Garcia" <omar.garcia@fractalia.biz>
+Subject: Re: Connlimit problem
+Date: Wed, 26 Jan 2005 16:59:02 +0100
+Message-ID: <008801c503bf$f49109f0$910010ac@coco>
+References: <001801c503b3$115416c0$910010ac@coco>
+	<25214.142.169.215.10.1106754134.squirrel@142.169.215.10>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,31 +17,79 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi,
-I am working on an Adhoc network running kernel AODV
-version 2.1 (on Redhat linux kernel 2.4.20). The AODV
-is running fine. Now I am trying to queue some packets
-onto the user space for modification using libipq
-library. But incase of running the libipq example
-program, i have to load the ip_queue module by
-modprobe ip_queue first. When i load this module and
-running the example program, the machines are hanged.
-Can anyone please tell me why??
+Hi all!!
 
-Can anyone pls suggest me how i can get some packets
-onto the user space for modification incase of ad hoc
-network???
+Thanks.!!
+Now I know that the module isn=B4t compiled. (cat /proc/net/......)
+I had patched kernel source with POMng but for any reason the connlimit
+patch didn=B4t apply. I am recompiling a new kernel and patched it from zer=
+o.
 
-Mahbub
+Thanks, I`ll post my advances.
+Regards.
 
 
+----- Original Message -----=20
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+To: "Omar Garcia" <omar.garcia@fractalia.biz>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Wednesday, January 26, 2005 4:42 PM
+Subject: Re: Connlimit problem
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+
+> On Wed, January 26, 2005 9:26 am, Omar Garcia said:
+> > Hi list,
+>
+> Hi Omar!
+>
+> > [...]
+> > If i tried in two steps, i confirm that the module connlimit is
+installed:
+> >
+> > BridgeWall:/home/omar# iptables -A PREROUTING -t mangle -m connlimit
+> >     iptables v1.2.11: You must specify `--connlimit-above'
+> >     Try `iptables -h' or 'iptables --help' for more information.
+>
+> This doesn't confirm that it is. This only tests the iptables 'module'
+> which I will call, an extension library.
+>
+> >
+> >
+> >  BridgeWall:/home/omar# iptables -A PREROUTING -t mangle -m connlimit
+> > --connlimit-above 12 -j DROP
+> >      iptables: No chain/target/match by that name
+>
+> This means the kernel module (called ipt_connlimit) is not loadable or
+> compiled at all.
+>
+> > Any idea????
+>
+> Yes, patch your kernel or enable this module.
+>
+> If unsure:
+>
+> lsmod | grep ipt_connlimit
+>
+> No result? Then 'modprobe ipt_connlimit'
+>
+> It works ? Then make sure it properly registered against netfilter:
+>
+> cat /proc/net/ip_tables_matches | grep connlimit
+>
+> >
+> > Thanks in advange.
+> >
+> > Regards
+> >
+>
+> HTH,
+>
+> Samuel
+>
+>
+
+
 
