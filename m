@@ -1,12 +1,13 @@
-From: "Hard__warE" <hard__ware@hotmail.com>
-Subject: Nat OUTPUT chain
-Date: Sun, 16 Jun 2002 12:30:46 +1000
+From: Patrick Schaaf <bof@bof.de>
+Subject: Re: Nat OUTPUT chain
+Date: Sun, 16 Jun 2002 09:43:39 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000501c214dd$d27b0240$7b0010ac@dynamicaccess.lan>
-Reply-To: "Hard__warE" <hard__ware@hotmail.com>
+Message-ID: <20020616094339.A32016@oknodo.bof.de>
+References: <OE35qimrMh0R1hY55Zo00015235@hotmail.com> <200206152359.g5FNxwA32623@Networker.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <200206152359.g5FNxwA32623@Networker.rockstone.co.uk>; from Antony@Soft-Solutions.co.uk on Sun, Jun 16, 2002 at 12:59:56AM +0100
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,39 +18,38 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
->Why do you DROP in the nat table instead of the filter table ?
->
->
->Antony.
+Hi all,
 
-Good Question ...
+> Why do you DROP in the nat table instead of the filter table ?
 
-1. im very Young and i luv nat and seeing what it can do.. :-D , would also
-eventually like to gain work in Internet Sercurity / Iptbales / Zebra /
-Bridged / Gated / iproute2 / ipchains (yay) / TC  TBF , CBQ , ect ect .
+Note that there are situations where this is advisable, and other
+approaches result in more complex rulesets.
 
-.2 actually i have every single one Policy's set to DROP for all of the
-filter & nat chains.. :-D
-is there something wrong with that, ?  Yer but you have to check the logs
-alot from the Drop & Log end of chain
-per chain Rules i have (they all have a different prefix applies ie "Nat
-Ouput")
-so you can add more rules ...  {:?/]
+Imagine a situation where you want to REDIRECT certain incoming
+connections, e.g.  everything to --dport 80, with the local service
+running on port 3128. However, you DON'T want to have those redirected
+clients access 3128 DIRECTLY. Using REDIRECT, both the direct and
+redirected connections arrive in the filter table's INPUT chain,
+and cannot be easily distinguished there, because the filter table
+sees the rewritten destination IP and port.
 
-P.s. and about the MIRROR converstation
+My first solution involved the mangle table, tagging the different
+incoming packets with an fwmark, and using that fwmark in both the
+NAT and filter tables.
 
-i need to set a way so all data on a Given Proto / IP gets MIRRORed but some
-how Dnat it
-so it goes to a Honney Pot for Logging and decide to take Action or not ..
-:-D
+My current solution does the desired REDIRECTs in the NAT table,
+and DROPs everything unwanted right there; the filter table just
+permits the redirected port 3128 traffic. So that's where I found
+good use for DROP in the NAT table.
 
-(this is nearlly all working except the fact that the Packet / Traffic
-accounting is not being properly matched ?? )
+An alternative, not doable with stock iptables (there's something
+in p-o-m, I think), would be a filter table target which is capable
+of matching the ORIGINAL_DESTINATION of the REDIRECTed connections.
 
-
-
-
-
+best regards
+  Patrick
 
