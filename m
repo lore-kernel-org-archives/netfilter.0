@@ -1,12 +1,16 @@
-From: Jim Burnett <jburnett@e-masi.com>
-Subject: destinations interface must be eth0?
-Date: Mon, 15 Sep 2003 09:47:39 -0500
+From: NightHawk <nighthawk@easyservermanagement.com>
+Subject: Re: ip_conntrack
+Date: Mon, 15 Sep 2003 16:43:09 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063637259.2318.3.camel@dod-secure.e-masi.com>
-Reply-To: jburnett@e-masi.com
+Message-ID: <200309151643.12573.nighthawk@easyservermanagement.com>
+References: <000801c378a1$f6c24360$243902c4@weatherman>
+Reply-To: nighthawk@ezsm.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000801c378a1$f6c24360$243902c4@weatherman>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +20,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: Text/Plain; charset="us-ascii"
+To: Warren P <weatherman@webmail.co.za>, netfilter@lists.netfilter.org
 
-I have found that my destination IP in my rules MUST be bound on eth0
-what is this? I thought I could use any working IP on my internal
-network as the --to-destination IP...??
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Example:
-internal machine:
-eth0:192.168.1.55
-eth1:192.168.1.56
+Just simply remove the mod ip_conntrac and any dependices and re-apply it.
 
+**Warning** this will require you to drop iptables while you do it...which =
+may=20
+not be a good option depening on your network configuration. **/Warning**
 
-#1
-iptables -v -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNA
-T--to                  192.168.1.55:80
-This will work because the destination IP is on eth0
+NH
 
-#2
-iptables -v -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNA
-T--to                  192.168.1.56:80
-This wont work because the destination IP is on eth1
+On Thursday 11 September 2003 4:19 pm, Warren P wrote:
+> hi
+>
+> does anyone know how to clear/flush the ip_conntrack table. Every 4 to 6
+> months i need to reboot my server because it drops packets and complains
+> that the table is full ...
+>
+> Regards,
+> Warren P
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-I didnt see this in the documentation and it took my 5 days to figure it
-out....
-
-Tested on 6 machines, redhat 9, slackware 9, Latest gentoo build from
-stage 1. Various brand nic cards. Various compiled kernels. 2.4.18 -
-2.4.22
-
--Jim
-
-
-
+iD8DBQE/ZiRdb58ZIoF+byQRAnS1AKCNFSkbxzO1C6HwHA6TdnOnzVfuYQCfZeDw
+WdVpLPTGBcmroVejcs4QJYs=3D
+=3D2odx
+=2D----END PGP SIGNATURE-----
 
