@@ -1,8 +1,8 @@
-From: "shantanu sharma" <ssharma_02@iiita.ac.in>
-Subject: mangling a packet
-Date: Thu, 8 Apr 2004 11:15:25 +0530 (IST)
+From: "raman mittal" <rmittal_02@iiita.ac.in>
+Subject: Problems regarding IPtables
+Date: Thu, 8 Apr 2004 13:36:36 +0530 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <46653.172.31.1.1.1081403125.squirrel@mail.local>
+Message-ID: <53720.172.31.1.1.1081411596.squirrel@mail.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,26 +18,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-we are supposed to capture a dns packet at the firewall and mangle  it
-appropriately
-as the querry packet passes through the firewall DNAT'ing(destination nat)
-takes place  now when the rply packet comes back we QUEUE it using the
-forward chain of the filter table before the reverse SNAT automatically
-takes place ,after mangling the packet using the IPQ library in checksum
-of UDP and IP gets disturbed .We recalculated the checksum but due to
-reverse S NATing  it again gets disturbed and the packets get disturbed at
-the recieving end
-please tell us how do we correct the checksum filed of UDP and IP after
-the reverse S NAT takes place or do we need to queue the packets using
-some other chain of someother table
-
-regards,
-shantanu sharma
 
 
--- 
-Shantanu Sharma
-B Tech student,
-Indian Institute Of Information Technology,Allahabad
-ALTERNATIVE MAIL:sharma_shantanu@rediffmail.com
+I am student graduating in Indian Institute of Technology, India.
+I have a small  problem regarding IP tables.I am capturing DNS reply
+packets (which are later to be forwarded to a client)at the firewall and
+QUEUEing them using IPQ library for altering the DNS answer section in the
+user space using the forward chain of filter table.
+i have changed the answer section of the dns reply, which results in
+change of checksum fields in IP and UDP header.I have also corrected the
+checksum of both the headers but the problem is that after doing
+this,reverse SNAT takes place automatically (because Of DNAT done
+earlier)which again changes the checksum and the packets get dropped at
+the client side.How should i approach so that the packet goes out of the
+firewall with correct checksum field in it's IP and UDP headers.
+Do i have to change the table in which i am capturing the DNS replies and
+transferring  them to the user space.
+should i QUEUE the packets from the forward chain of mangle table.
+Can't the checksum fields(IP and UDP headers ) of the modified DNS packets
+be computed by the kernel.
+What should i do.
+
+Thanking You
+
+regards
+raman mittal
+Indian Institute of Information Technology
+
 
