@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: TARpit question
-Date: Sun, 18 Apr 2004 16:36:59 +0200
+From: Norman Zhang <norman.zhang@rd.arkonnetworks.com>
+Subject: Re: Iptables and Kernel
+Date: Sun, 18 Apr 2004 08:53:09 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040418143658.DD88A474C@sterenborg.info>
-References: <20040418132912.99066.qmail@web40707.mail.yahoo.com>
+Message-ID: <4082A465.9080700@rd.arkonnetworks.com>
+References: <407A27B2.4000101@rd.arkonnetworks.com> <200404121822.03874.Antony@Soft-Solutions.co.uk> <407AE8E8.7000102@rd.arkonnetworks.com> <36070.9628942006$1081802745@news.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040418132912.99066.qmail@web40707.mail.yahoo.com>
+In-Reply-To: <36070.9628942006$1081802745@news.gmane.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> I am trying to use the TARPIT feature as much as possible.
-> People can use the services I offer on the public IP I have; 
-> other ports are not their business.
-> 
-> For priviliged ports that are not in use things are easy. 
-> Make the port UNTRACKED and make TARPIT the target.
-> 
-> For ports that are in use things are more difficult for me as 
-> a netfilter/iptables amateur.
-> 
-> Does anybody know about examples available on the net?
-> Or does anyone have some tips, examples?
+>>>>I just downloaded 2.6.5, may I ask where should I check to see if h323
+>>>>modules are included? On www.netfilter.org, I see pom-20031219 and
+>>>>pomng-20040302. Is it safe to assume, that pomng includes pom?
+>>>
+>>>You might find the following postings from the archives relevant here:
+>>>
+>>>http://lists.netfilter.org/pipermail/netfilter/2003-December/049362.html
+>>>
+>>>http://lists.netfilter.org/pipermail/netfilter/2003-December/049310.html
+>>
+>>Thank you so much. From the postings, it looks like 2.6.x is still
+>>lacking some features that are available in 2.4.x. I'm setting up a
+>>firewall with NAT and hoping to able to do Netmeeting and MSN Instant
+>>Messenger. Would 2.4.x's netfilter patches sufficient to protect my LAN?
+> 	
+>I'm running 2.6.3. with iptables 1.2.9 and p-o-m-ng h323 patch -- they work
+>for me -- but I'm referring to a home lan ond only one netmeeting seesioon 
+>from the LAN  -- we haven't tried multiple sessions from inside the lan ... 
+>either to the same netmeeting sessioon or to different ones.
 
-I've never used TARPIT because of this :
-http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-TARPIT
+I'm trying to compile p-o-m-ng with 2.6.5 now. It asks for iptables 
+sources. I thought p-o-m-ng patches applies to the kernel only. Do I 
+need to recompile iptables too? There are many patches in p-o-m-ng. I 
+only need the h323 patch for Netmeeting to work correctly? The README 
+from p-o-m-ng recommends the following command to patch the kernel,
 
-At the bottom it states :
-You probably don't want the conntrack module loaded while you are using
-TARPIT, or you will be using resources per connection.
+# KERNEL_DIR=/usr/src/linux ./runme -pending
 
-If you've loaded the conntrack module, you're conntracking. AFAIK you can't
-untrack a single port or a range of ports.
+Do I need to worry about rejects and offsets?
 
-There is an example in the link above and it looks quite straight forward to
-me.
-If you're sure that you want to use TARPIT, maybe the following works for
-you :
-
-iptables -A INPUT -m state --state RELATED,ESTABLISED -j ACCEPT
-iptables -A INPUT -i <if_in> -p <protocol> --dport <any_service> \
-  -j ACCEPT
-<More rules>
-iptables -A INPUT -j TARPIT
-
-It shouldn't matter what the policy for the chain is : the last rule matches
-all packets that didn't match in earlier rules and these will be sent to the
-TARPIT. So these packets will never reach the policy setting of the chain
-(ACCEPT or DROP).
-
-
-Gr,
-Rob
-
+Regards,
+Norman
 
