@@ -1,13 +1,13 @@
-From: Marcello Scacchetti <marcello.scacchetti@nextrem.it>
-Subject: Re: (no subject)
-Date: 23 Dec 2002 17:20:41 +0100
+From: Craig Davison <cd@securityfocus.com>
+Subject: Re: Link time problems with libipq example code
+Date: Mon, 23 Dec 2002 11:07:51 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040660441.8287.2.camel@nxitmirms1>
-References: <F72E9GQvnbEG10Gai4o000000e5@hotmail.com>
+Message-ID: <20021223180751.GA16194@securityfocus.com>
+References: <20021220224405.GB28191@securityfocus.com> <Pine.LNX.4.43.0212211048490.286-100000@abodh.pesit.deeproot.co.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F72E9GQvnbEG10Gai4o000000e5@hotmail.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.43.0212211048490.286-100000@abodh.pesit.deeproot.co.in>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,90 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Durgaprasada Kalluraya <dkalluraya@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "Narendra Prabhu. B" <naren@deeproot.co.in>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi,
-try to load following kernel modules:
-ip_conntrack.o
-ip_conntrack_ftp.o
-ip_nat_ftp.o
-This should solve your problems.
+That did it - thanks!
 
-Marcello
+-- 
+Craig Davison
+Symantec Corporation
++1 (403) 213-3939 ext. 228
 
-Il gio, 2002-12-19 alle 08:33, Durgaprasada Kalluraya ha scritto:
+On Sat, Dec 21, 2002 at 10:59:43AM +0530, Narendra Prabhu. B wrote:
 > Hi,
 > 
-> I have configured our firewall using IPtables. The configuration of the 
-> firewall is as follows...
-> Firewall host has 3 interfaces one for DMZ, one for LAN and one for external 
-> world(internet). All of our servers have a
-> static IP address. Our FTP server is wu-ftpd
+> Yes, even I have come across such problems.... I just complied it using
+> the following command.
 > 
-> Now there is no problem in accessing our DNS, WEB, SMTP and IMAP servers 
-> from outside. But the FTP server is
-> showing some strange problem. When our client tries to do a 'ls' in FTP 
-> session it is shows the following error message.
+> $gcc -I/usr/local/include -L/usr/local/lib -o ipqtst ipqtst.c -lipq
 > 
-> ftp> ls
-> 200 PORT command successful.
-> 425 Can't build data connection: Connection timed out.
-> ftp> bye
-> 
-> But if I try the same thing from outside using a dialup connection all works 
-> fine for me!!!!
-> 
-> when some one tries do a 'ls' from internal LAN on our FTP server then the 
-> following message is displayed.
-> ftp> ls
-> 500 Illegal PORT Command
-> 425 Can't build data connection: Connection timed out.
-> ftp>
-> 
-> Our rules related to FTP server are...
-> 
-> $IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
-> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> 
-> $IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
-> $IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
-> $IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
-> $IPTABLES -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-> 
-> 
-> $IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -m state --state 
-> ESTABLISHED,RELATED -j
-> ACCEPT
-> $IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_FTP_IP 
-> --dport ftp -j allowed
-> $IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_FTP_IP 
-> --dport ftp-data -j
-> allowed
-> $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $FTP_IP --dport ftp 
-> -j DNAT --to-destination
-> $DMZ_FTP_IP
-> $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $FTP_IP --dport 
-> ftp-data -j DNAT
-> --to-destination $DMZ_FTP_IP
-> $IPTABLES -t nat -A POSTROUTING -p TCP -s $LAN_IP_RANGE -j SNAT --to-source 
-> $DMZ_NAT
-> 
-> where
-> DMZ_FTP_IP is IP address of ftp server in DMZ
-> DMZ_IP is global IP address of ftp server.
-> INET_IFACE is Internet interface on firewall
-> DMZ_IFACE is DMZ interface on firewall.
-> LAN_IP_RANGE is Lan ip range.
-> 
-> Can anyone help me?
-> 
-> Thanks and Regards
-> Durgaprasada
-> 
-> _________________________________________________________________
-> Protect your PC - get McAfee.com VirusScan Online 
-> http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
--- 
-Marcello Scacchetti <marcello.scacchetti@nextrem.it>
+> Just notice that I have put "-lipq" in the end... Well, I have not been
+> able to reason, why it works this way. Its probably the gcc issue.
+
 
