@@ -1,13 +1,13 @@
 From: "Vladimir Potapov" <mailarchives@mail.ru>
 Subject: RE: Gigabit
-Date: Wed, 10 Mar 2004 00:32:52 +0300
+Date: Wed, 10 Mar 2004 00:40:53 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FOELKOFDAANJCBHBJNEBKEOECCAA.mailarchives@mail.ru>
-References: <200403092045.24365.Antony@Soft-Solutions.co.uk>
+Message-ID: <FOELKOFDAANJCBHBJNEBCEOGCCAA.mailarchives@mail.ru>
+References: <D8FBABA1EF6F2E4DBCC88903F60691F302856A8F@houxchsvr.ucscorp.ucs.pvt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200403092045.24365.Antony@Soft-Solutions.co.uk>
+In-reply-to: <D8FBABA1EF6F2E4DBCC88903F60691F302856A8F@houxchsvr.ucscorp.ucs.pvt>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +18,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
+To: BrianHildebrand@universalcomputersys.com
 Cc: netfilter@lists.netfilter.org
 
+In my initial testing with netfilter, I found it started dropping packets
+eventually. But it tries really hard to keep up before that. At around 50%
+utilization on a 100meg pipe I started seeing packet loss with random syn
+packets (basically just sending syn requests using random source/destination
+ports at a firewall with no ruleset). CPU utilization at that point was
+maxed out.
 
-1. What does PF do?   To me, PF means Packet Filter, in which case, what's
-the
-difference between that and "Firewall"?
-
-PF filtering traffic and each subnet invisible for each other.And subnets
-need access to VPN-server.Firewall will have IDS and not need to route
-traffic of 8 subnets.
-
-2. Is there any NAT involved (this is the biggest reason why you might need
-explicit PPTP support in the boxes shown above)?
-
-NAT will involve only on cisco(3650).
-
-3. You have shown where the PPTP server is (one endpoint of the VPN/s), but
-where are the clients (the other end/s)?   If they are on the Internet, then
-no VPN (presumably PPTP) traffic is going through PF and Firewall, therefore
-they don't need to bother about it.   If the clients are on the subnets-1/2,
-then maybe PF and Firewall do need to bother about the VPN traffic.
-
-VPN client's will be in local subnets-1/2, but not in the internet.
-
-
-What are the bandwidths of the connections for each subnet, and the Internet
-link?
-
-For all internet link 2Mbit . For big subnet(>150 users) gigabit local link
-to the PF and other 100Mbit.
-
-That depends on things like: the hardware of the firewall machine (CPU
-speed,
-memory size), and very much on the number of rules you have in your ruleset.
-
-Can you give me recommendation for hardware of the firewall?
-
+Thank's.It's interesting.Can I give more exactly infomation about harware,
+kernel options, more thorough statictics of using by linux CPU, memory , I/O
+, irq and other ?
 
 
