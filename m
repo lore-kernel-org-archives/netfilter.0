@@ -1,12 +1,10 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Forwarding GnomeMeeting to internal network
-Date: Wed, 12 Nov 2003 12:56:56 -0800
+From: bmcdowell@coxhealthplans.com
+Subject: Range of IP's with Exclusions
+Date: Wed, 12 Nov 2003 17:31:13 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122EA2@alderaan.smgtec.com>
+Message-ID: <63340-2200311312223113559@coxhealthplans.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,54 +15,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Julien Didron <admin@tripnotik.dyndns.org>, Netfilter Mailing List <netfilter@lists.netfilter.org>
-
-If you are using a newish version of Netfilter, you can execute
-something like the following:
-
-echo "1000" >
-/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close_wait
-
-This would set TCP CLOSE_WAIT timeouts to 1000 seconds. The default
-number is 3 days, so within that time, any traffic that does not close
-the connection properly will linger inside the conntrack systems.
-
-I don't have the option to fix the bad system. I do Nagios probes for
-Windows 2000 RDP uptimes using tcp socket probing (I know I could use
-RPC, blah blah), but the RDP connections are never fully closed by the
-windows machine, so within a couple days of probing various servers, I
-have quite a large conntrack table.=20
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
------Original Message-----
-From: Julien Didron [mailto:admin@tripnotik.dyndns.org]=20
-Sent: Wednesday, November 12, 2003 5:11 AM
-To: Netfilter Mailing List
-Subject: Re: Forwarding GnomeMeeting to internal network
+Google is not my friend today...
 
-Hi again,
+I'd like to do NAT for all but certain IP's on certain ports.  As it
+stands now, my rules work but outside of my test environment they
+could get quite hard to read.  I'd like to know if it is possible to
+ammend a catch-all rule with exclusions to the IP match it uses.
 
+For example this rule almost works:
 
-Thanks for the answer Antony.
-I'll then grant this box a fixed IP using DHCP declaration with the MAC=20
-adress.
+iptables -t NAT -A PREROUTING -d 10.22.1.0/24 -j DNAT --to 10.22.2.2
 
-Concerning the ip_conntrack table, I indeed have a sort of worm on my
-network=20
-called "MLdonkey" ;o) (it's on some other box on the network), process
-that I=20
-kill everytime the problem occurs, but with no success : i still get the
-very=20
-same error line in syslog.
-after increasing the value of ip_conntrack_max, I monitored the traffic
-on=20
-the outgoing interface, that was very little : say from 150B/s to 500B/s
-up=20
-and down.
-For information my local network (this is home) is composed of 4
-machines=20
-ranging from mail server (smtp and pop) to DDNS, DHCP and web server ...
-But=20
-I really don't think it to be a "large" network :o)
+Except, of course that it also DNAT's the router's response (as it
+matches - being from 10.22.1.1).  The alternative that I've found
+that does work is:
+
+iptables -t NAT -A PREROUTING -d 10.22.1.3 -j DNAT --to 10.22.2.2
+iptables -t NAT -A PREROUTING -d 10.22.1.4 -j DNAT --to 10.22.2.2
+iptables -t NAT -A PREROUTING -d 10.22.1.5 -j DNAT --to 10.22.2.2
+iptables -t NAT -A PREROUTING -d 10.22.1.6 -j DNAT --to 10.22.2.2
+(etc.)
+
+...but that is a bit of a pain.
+
+I keep trying to type in something like:
+
+iptables -t NAT -A PREROUTING -d 10.22.1.0/24,! 10.22.1.1 -j DNAT
+--to 10.22.2.2
+
+...but iptables complains.
+
+Please help, this is shaping up to make for a really ugly ruleset...
+
 
 
