@@ -1,11 +1,9 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Re: bad ftp speeds through nat
-Date: Mon, 22 Nov 2004 15:08:21 -0400
-Message-ID: <0e8e01c4d0c6$a2725380$49caa8c0@caris.priv>
-References: <0e7301c4d0c1$74ba04b0$49caa8c0@caris.priv><0e7801c4d0c2$9dc80220$49caa8c0@caris.priv>
-	<20041122184124.GA31191@bender.817west.com>
+From: James <newsjn@dpmg.com>
+Subject: DNATed packet not hitting FORWARD chain
+Date: Mon, 22 Nov 2004 14:06:48 -0600
+Message-ID: <9FB9C39FACF4034BB4AC7F89F2AEB0AB0159373A@win2k.aries.dpmg.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,57 +16,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-here is the output from the netstat -ni ...
+Hi,
 
-[root@radium root]# netstat -ni
-Kernel Interface table
-Iface     MTU Met   RX-OK RX-ERR RX-DRP RX-OVR   TX-OK TX-ERR TX-DRP TX-OVR
-Flg
-eth0       1500   064374866      0      0      169244643      0      0
-0 BMRU
-eth0:1     1500   0  698461      0      0      0  674916      0           0
-BMRU
-eth1       1500   067829304      0      0    26760844194      0      0
-0 BMRU
-eth1:1     1500   0  698461      0      0      0  674916      0      0
-0 BMRU
-eth2       1500   0  698461      0      0      0  674916      0      0
-0 BMRU
-lo        16436   0      54      0      0      0      54      0      0
-0 LRU
+I'm having some trouble getting DNAT to work properly.  I have a gateway
+machine that has two different connections to the Internet, on eth1 and
+eth2.  I'm trying to allow inbound port 1723 to be forwarded to an internal
+PPTP server through both interfaces.  It works on eth2, but not eth1.
+Here's what I've got:
 
-and no my firewall is not a P-75  ... :)  it is a PIII 850 with 512 MB RAM.
+Chain PREROUTING (policy ACCEPT 217K packets, 15M bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+   15   744 DNAT       tcp  --  eth2   *       0.0.0.0/0            $DSL_IP
+tcp dpt:1723 to:192.168.0.167:1723
+  127  7152 DNAT       tcp  --  eth1   *       0.0.0.0/0
+$CABLE_IP   tcp dpt:1723 to:192.168.0.165:1723
 
+Chain FORWARD (policy DROP 6 packets, 360 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+    0     0 LOG        all  --  *      *       0.0.0.0/0
+192.168.0.165      LOG flags 0 level 4
+ 508K  306M ACCEPT     all  --  *      *       0.0.0.0/0
+0.0.0.0/0          state RELATED,ESTABLISHED
+    0     0 ACCEPT     47   --  eth1   eth0    0.0.0.0/0
+192.168.0.165      state NEW
+    1    60 ACCEPT     tcp  --  eth2   eth0    0.0.0.0/0
+192.168.0.167      tcp dpt:1723 state NEW
 
+As you can see from the counters, the packets coming in from both interfaces
+are hitting the DNAT rules, and so they should be rewritten correctly.
+Then, it would seem that the packets rewritten for 192.168.0.165 get lost in
+space - I added the LOG target as the first rule of the FORWARD chain just
+to be sure, and no packets ever hit that rule.  Packets rewritten for
+192.168.0.167 work fine, they hit the FORWARD chain and are accepted.
 
-Peter
+I though it might be the routing, so I checked:
 
+gw:/home/james# ip ro get 192.168.0.165
+192.168.0.165 dev eth0  src 192.168.0.1
+    cache  mtu 1500 advmss 1460
 
------ Original Message ----- 
-From: "Jason Opperisano" <opie@817west.com>
-To: "netfilter" <netfilter@lists.netfilter.org>
-Sent: Monday, November 22, 2004 2:41 PM
-Subject: Re: bad ftp speeds through nat
+Packets for 192.168.0.165 should be routed out eth0, which is different than
+the eth1 they came in on, so they should hit the FORWARD chain, right?  Any
+ideas on where the packets are going, since they aren't making it to the
+FORWARD chain?  Where else can I look?
 
+(This is only a part of my iptables ruleset, but I don't think the other
+rules matter, at least until the packets are being logged by the first rule
+in the FORWARD chain.  Let me know if you think differently and want to see
+the whole ruleset.)
 
-On Mon, Nov 22, 2004 at 02:39:36PM -0400, Peter Marshall wrote:
-> It looks like it is slow with any type of file transfer through the
-firewall
-> .. not just ftp ...
+Thanks,
 
-does "netstat -ni" on the firewall show any interface errors?  any
-possibility of a speed/duplex mismatch between the firewall's interfaces
-and the switches it's connected to (mii-tool/ethtool can help here)?
-
-is your firewall a P-75 that might not be capable of filtering more than
-300 Kbps (semi joking...)?
-
--j
-
---
-"This has purple stuff inside - purple is a fruit."
-        --The Simpsons
+James
 
 
