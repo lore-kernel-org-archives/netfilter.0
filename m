@@ -1,64 +1,54 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Packets missing state ?
-Date: Tue, 23 Dec 2003 13:08:50 +0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312231308.50481.Antony@Soft-Solutions.co.uk>
-References: <200312231828.59518.rajiv@theargoncompany.com>
+From: kilobug@freesurf.fr (=?iso-8859-1?q?Ga=EBl_Le_Mignot?=)
+Subject: Re: Call for testing: patch-o-matic-ng
+Date: Tue, 23 Dec 2003 14:13:15 +0100
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <plopm3zndjoexg.fsf@drizzt.kilobug.org>
+References: <20031221122445.GC5058@obroa-skai.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312231828.59518.rajiv@theargoncompany.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <20031221122445.GC5058@obroa-skai.de.gnumonks.org> (Harald
+ Welte's message of "Sun, 21 Dec 2003 13:24:45 +0100")
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Harald Welte <laforge@netfilter.org>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Tuesday 23 December 2003 12:58 pm, Rajiv Shah wrote:
 
-> Hi,
-> 	I can see the following lines in my /var/log/messages
->
-> IN=eth1 OUT= MAC=00:03:47:6a:5c:6b:00:c0:49:25:d1:a3:08:00 SRC=69.6.16.110
-> DST=xxx.xxx.xxx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=61 ID=15968 PROTO=TCP
-> SPT=80 DPT=1821 WINDOW=65535 RES=0x00 ACK URGP=0
->
-> IN=eth1 OUT= MAC=00:03:47:6a:5c:6b:00:c0:49:25:d1:a3:08:00 SRC=69.6.16.110
-> DST=xxx.xxx.xxx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=61 ID=15968 PROTO=TCP
-> SPT=110 DPT=4553 WINDOW=65535 RES=0x00 ACK URGP=0
->
-> where xxx.xxx.xxx.xx is my IP. This seems to be one of the return packets
-> which is being logged. I can access the site without any problems. The
-> mails come thru, can do a ssh login. But looking at the logs I feel there
-> is some problem somewhere.
+Hello,
 
-You say you can access the site without any problems.
+I've tested pom-ng on 2.6.0  with USAGI patch, the patch-o-matic seems
+to work, but the kernel doesn't compile (I put nearly all patches, and
+select M in the kernel config wherever it was possible):
 
-I would expect the above log entries to happen when you close down the browser 
-(or view a different site), but the remote server still continues to send a 
-few packets.   They are no longer part of an established connection as far as 
-netfilter is concerned, so they get logged.
+  CC      net/core/netfilter.o
+net/core/netfilter.c: In function `nf_log_register':
+net/core/netfilter.c:760: warning: implicit declaration of function `br_write_lock_bh'
+net/core/netfilter.c:760: error: `BR_NETPROTO_LOCK' undeclared (first use in this function)
+net/core/netfilter.c:760: error: (Each undeclared identifier is reported only once
+net/core/netfilter.c:760: error: for each function it appears in.)
+net/core/netfilter.c:765: warning: implicit declaration of function `br_write_unlock_bh'
+net/core/netfilter.c: In function `nf_log_unregister':
+net/core/netfilter.c:770: error: `BR_NETPROTO_LOCK' undeclared (first use in this function)
+make[3]: *** [net/core/netfilter.o] Error 1
 
-Try checking the timestamps, or view the logfile in real time as you do your 
-browsing - I'd expect these log entries to occur soon after you leave the 
-site at the SRC address.
 
-Nothing to worry about.
-
-Antony.
+I think maybe some patches doesn't work with 2.6, would it possible to
+add a way to select patch that works with 2.6 ? like ./runme extra-2.6
+or such ?
 
 -- 
-What is this talk of "software release"?
-Our software evolves and matures until it is capable of escape, leaving a 
-bloody trail of designers and quality assurance people in its wake.
+Gael Le Mignot "Kilobug" - kilobug@nerim.net - http://kilobug.free.fr
+GSM         : 06.71.47.18.22 (in France)   ICQ UIN   : 7299959
+Fingerprint : 1F2C 9804 7505 79DF 95E6 7323 B66B F67B 7103 C5DA
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Member of HurdFr: http://hurdfr.org - The GNU Hurd: http://hurd.gnu.org
 
