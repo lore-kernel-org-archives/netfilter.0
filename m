@@ -1,14 +1,11 @@
-From: Eddie <lists@neteconomist.com>
-Subject: RE: IPTABLES for dual homed machine and public IP addresses
-Date: 19 Aug 2004 15:50:22 -0400
+From: "Scorched" <scorched1@btinternet.com>
+Subject: Multiple Port Forwarding
+Date: Thu, 19 Aug 2004 22:27:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1092945022.5955.43.camel@thunder.neteconomist.com>
-References: <D5C9032B2B09C64EA2409D6214E91AC9051271@asimail2.alphanumeric.com>
-Reply-To: lists@neteconomist.com
+Message-ID: <001401c48633$600ec010$0400a8c0@icbmwxph>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC9051271@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,84 +15,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-I have chosen to go with the subnet solution and reserved 65.x.x.0/25
-for my  production servers. I have also reserved 65.x.x.254/30 for
-router internal interface, 65.x.x.253/30 for firewall external interface
-and 65.x.x.1/25 for firewall internal interface.
+I found this group on google looking for how to do multiple port forwarding
+(I'm trying to setup so me and a friend can play Starcraft together on the
+same connection [with different CD keys though, got two copies of the game..
+is all legit])
 
-Most of the services allowed will be similar across servers and I was
-planning to set up as follows.
+I have exactly the same problem as this guy, so here's a copy of the thread
+I found, that no one ever replied to to help with (I checked) :/
 
-DNS_SERVERS= '65.x.x.2 65.x.x.3'
-WEB_SERVERS= '65.x.x.4 65.x.x.5'
-MAIL_SERVERS= '65.x.x.6 65.x.x.7'
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+http://lists.netfilter.org/pipermail/netfilter/2003-July/045290.html
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+hi guys
 
+sorry for this possibly "bad title"
 
-There are some servers that I want to be accessed directly only from the
-internal network which is masqueraded as 65.x.x.99.
+but i=B4ve got a question regarding port forwarding and iptables
+(i hope this question hasn=B4t been asked so much *gg)
 
-Below is mostly pseudo code.
-#take care of generic services
-modprobe modules
+is it possible to forward one port on the firewall to different clients?
 
-delete existing chains
+e.g.
 
-set default policies
+Internet -> Request to Firewall Port 4162
 
-take care of ip forwarding, rpfilter, proxyarp 
+Rule: Forward all traffic on port to host:
 
-create new chains.
+a) 192.168.0.1:4162
+b) 192.168.0.2:4162
+c) 192.168.0.3:4162
 
-drop all new on external with rfc1918 addresses or internal IP
-addresses.
+???????
 
-Allow new on external interface for specified services like below.
+background: P2P for example should be possible on _all_ clients
+it=B4s really just for information, cause i hate P2P ;)
 
-for a in DNS_SERVERS 
- iptables allow udp tcp 57 new 
- drop all except from 65.x.x.99
+it would be very kind, if you could help me or give any hints, where i
+can find more information (google is not very helpful in this way)
 
+thx
+micha
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-I have a basic and general understanding of iptables. What I need is a
-really basic script that will do basic protection and I will later
-strengthen it. In other words can somebody help me with something to
-build on?
+Please can anyone help me? If anyone knows how to do this, it'd be great
+I am using a Netgear DG824M router, I have looked in all the settings but I
+can't find an option for it, the only thing I am able to do is port forward
+and make DMZ.
 
-iptables v1.2.9
-Kernel 2.6.5 (redhat)
+This is good, but does not let me make Starcraft work for two computers on
+the same network, as the DMZ only works for one computer, and so does the
+port forwarding. I can't have two DMZ, and if I make a DMZ and a port
+forward the port forward takes priority and the DMZ receives no data
 
+Looking forward to any replies..
 
-Thanks in advance
-
-
-
-
-if i understand you correctly; you currently have:
-
- INTERNET
-    |
-    |
-a.b.c.d
-	ROUTER
-65.x.x.1
-    |
-    |
-40 Servers with 65.x.x.x IP addresses and 65.x.x.1 as their default gateway.
-
-your desire is to insert a firewall in between the 40 servers and the router without having to re-address all the servers, right?  if not--disregard the rest of this...
-
-you have two options:  a layer 2 approach to solve the problem, and a layer 3 approach to solve the problem.
-
-layer 2 would involve configuring a netfilter machine as a bridge between the servers and the router where all the IP addresses would stay the same.  the project handling this sort of thing is:  http://ebtables.sourceforge.net/
-
-layer 3 solution would depend on what IP's were in use currently.  we know that 65.x.x.1 is used and is configured as the default gateway for all those servers--so that IP has to go on the internal interface of the new firewall.  which leaves us to re-address the outside of the new firewall and the inside of the existing router.  in the simplest case, 65.x.x.252 - .255 aren't in use.  we take 65.x.x.252/30 and assign .253 to the outside of the new firewall, and .254 to the inside of the existing router and set that as the default gateway of the new firewall.  put a static route for 65.x.x.0/24 via 65.x.x.253 on the router so all your traffic continues to get to your servers.  short of some arp-cache timeouts on the 40 servers to pick up the new MAC for 65.x.x.1, we're done.
-
-sound plausible?
-
--j
-
+-Scorched
 
 
