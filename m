@@ -1,12 +1,13 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: iptables and device aliases
-Date: Wed, 18 Aug 2004 09:25:56 -0400
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: REDIRECT to localhost
+Date: Wed, 18 Aug 2004 15:41:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512A1@asimail2.alphanumeric.com>
+Message-ID: <1092836519.4025.38.camel@anduril.intranet.cartel-securite.net>
+References: <D5C9032B2B09C64EA2409D6214E91AC905129F@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC905129F@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jason Opperisano <Jopperisano@alphanumeric.com>
+Cc: netfilter@lists.netfilter.org
 
-> Hello:
->          I am new to the list.  I am currently using iptables to
-> redirect traffic on eth0 for ports 80 and 443,  to ports 8080 and =
-8443,
-> respectively.  I have request to set up another DNS name for this =
-server
-> and to redirect entries coming to port 443 for this new DNS name to =
-port
-> 8444.  I think that one way of doing this would be to define a device
-> alias, say eth0:1, assign it a new IP address and associate the new =
-DNS
-> name with that new IP.  I could then use iptables to redirect traffic =
-on
-> eth0:1, port 443 to port 8444.  I was just wondering if iptables
-> recognizes/supports device aliases or if there is a better way of
-> accomplishing the same thing.
+Le mer 18/08/2004 =E0 14:37, Jason Opperisano a =E9crit :
+> hmmm...i'm not so sure i agree with that.  my belief is that REDIRECT
+> redirects to the IP address of the receiving interface of the
+> netfilter machine on the specified port.
 
-iptables does not recognise the "eth0:1" syntax.  use ip aliases:
+Have to check. You may be right.
 
-	ip address add x.x.x.x dev eth0
+> i actually just recently learned here that packets arriving on lo that
+> don't have a source and dest of 127.0.0.1 get dropped by the linux
+> kernel's "martian" code (thanks for pointing that out to me)--so i
+> don't see how a redirect of this nature could work.
 
-and then filter on "-i eth0" and ip address "x.x.x.x"
+Try to ping your local IP. You'll traffic from your local IP to your
+local IP (both different from 127.0.0.1) on lo interface.
 
--j
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
