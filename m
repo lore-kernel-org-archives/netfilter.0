@@ -1,8 +1,9 @@
-From: Moritz Gartenmeister <moritz@uplink-verein.ch>
-Subject: l7 -> drop & ip_conntrack entries
-Date: Sat, 11 Sep 2004 14:02:16 +0200
+From: "Steve Melo" <smelo@communitytrust.ca>
+Subject: Re: ULOGD and invalid timestamps
+Date: Fri, 10 Sep 2004 10:48:58 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4142E948.8080300@uplink-verein.ch>
+Message-ID: <002801c49745$4df0f0b0$3c01a8c0@tftpd>
+References: <2E314DE03538984BA5634F12115B3A4E62EB33@email1.mitretek.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,64 +16,117 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>, netfilter@lists.netfilter.org
+
+Piszcz,
+
+Thank you for taking the time to look into my problem..  My system's time
+works, the output of the date command shows: "Fri Sep 10 10:43:35 EDT 2004".
+You mentioned that you have been using ULOG since version 1.0 with no
+problems in the timestamp feature, but i did see something in the changelog
+about a timestamp fix for version 1.02:
+
+===changelog======================================
+ulogd (1.02-1) unstable; urgency=low
+
+  * New upstream release.
+    - fixed timestamp printing in LOGEMU (closes: Bug#208506)
+  * debian/patches/ulogd-version.patch:
+    - this is really ulogd 1.02
+===end changelog===================================
+
+Unlike yourself tho i installed from binary.  I wonder also if this could be
+because im running a 2.6.7 kernel.. what kernel do you use?
+
+
+-thanx
+steve
+
+----- Original Message ----- 
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+To: "Steve Melo" <smelo@communitytrust.ca>; <netfilter@lists.netfilter.org>
+Sent: Friday, September 10, 2004 9:41 AM
+Subject: RE: ULOGD and invalid timestamps
+
+
+I have never had a problem with the timestamp in any version of ulogd
+since 1.00, 1.01 or 1.02.
+
+What does the following show:
+
+% date
+
+
+Where did you obtain/how did you install ulogd?
+
+I used the source in all three versions.
+
+
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Steve Melo
+Sent: Thursday, September 09, 2004 12:31 PM
 To: netfilter@lists.netfilter.org
+Subject: ULOGD and invalid timestamps
 
-hi
+Greetings list,
 
-i finally get my firewall running. everything looks fine except some
-entries in /proc/net/ip_conntrack.
+I'm using the ulogd to log information and everything works great except
+that everything that gets logged has a timestamp of "Dec 31 19:00:00".
+I
+would like to have the correct timestamp.
 
-i drop traffic with the layer7-module, this really works (as good as the
-patterns are), but i would like to have a explanation for the following
-entries:
+Here is my setup:
+Debian Linux w/2.6.7-1-686 kernel (binary install)
+ulogd Version 1.02
+iptables v1.2.9
 
-tcp      6 360854 ESTABLISHED src=172.17.1.228 dst=172.190.199.166
-sport=3286 dport=6883 src=172.190.199.166 dst=172.17.1.228 sport=6883
-dport=3286 [ASSURED] use=1 l7proto=bittorrent
-tcp      6 360929 ESTABLISHED src=172.17.4.145 dst=80.57.81.246
-sport=3394 dport=9349 src=80.57.81.246 dst=172.17.4.145 sport=9349
-dport=3394 [ASSURED] use=1 l7proto=bittorrent
-tcp      6 452 ESTABLISHED src=172.17.1.86 dst=82.209.161.244 sport=1031
-dport=6881 src=82.209.161.244 dst=172.17.1.86 sport=6881 dport=1031
-[ASSURED] use=1 l7proto=bittorrent
-tcp      6 83 ESTABLISHED src=172.17.1.248 dst=209.89.224.41 sport=1098
-dport=6881 src=209.89.224.41 dst=172.17.1.248 sport=6881 dport=1098
-[ASSURED] use=1 l7proto=bittorrent
-tcp      6 154 ESTABLISHED src=172.17.1.86 dst=80.172.12.253 sport=4588
-dport=6881 src=80.172.12.253 dst=172.17.1.86 sport=6881 dport=4588
-[ASSURED] use=1 l7proto=bittorrent
-udp      17 32 src=172.17.0.4 dst=172.17.1.4 sport=3524 dport=161
-src=172.17.1.4 dst=172.17.0.4 sport=161 dport=3524 [ASSURED] use=1
-tcp      6 112 SYN_SENT src=172.17.4.145 dst=61.10.249.13 sport=1697
-dport=6881 [UNREPLIED] src=61.10.249.13 dst=172.17.4.145 sport=6881
-dport=1697 use=1
-tcp      6 561 ESTABLISHED src=172.17.9.135 dst=68.144.176.36 sport=4945
-dport=3610 src=68.144.176.36 dst=172.17.9.135 sport=3610 dport=4945
-[ASSURED] use=1
-tcp      6 360 ESTABLISHED src=172.17.4.145 dst=218.186.116.106
-sport=1419 dport=6884 src=218.186.116.106 dst=172.17.4.145 sport=6884
-dport=1419 [ASSURED] use=1 l7proto=bittorrent
-tcp      6 106 SYN_SENT src=172.17.1.121 dst=172.188.203.238 sport=3024
-dport=2020 [UNREPLIED] src=172.188.203.238 dst=172.17.1.121 sport=2020
-dport=3024 use=1
-tcp      6 583 ESTABLISHED src=172.17.4.145 dst=84.97.64.38 sport=1620
-dport=6882 src=84.97.64.38 dst=172.17.4.145 sport=6882 dport=1620
-[ASSURED] use=1 l7proto=bittorrent
-tcp      6 4 CLOSE_WAIT src=172.17.1.86 dst=63.227.245.174 sport=1082
-dport=6881 src=63.227.245.174 dst=172.17.1.86 sport=6881 dport=1082
-[ASSURED] use=1 l7proto=bittorrent
+Here is my /etc/ulogd.conf:
+# netlink multicast group (the same as the iptables --ulog-nlgroup
+param)
+nlgroup 1
 
-Why are there still connections tracked, although i drop the packets
-with iptables in prerouting mangle?
-iptables recognizes this connections as bittorrent, why are they not
-droped? Why do they get a ASSURED and ESTABLISHED connection?
-And BTW: does this mean, that there is actually bittorrent traffic?
-And i rebooted my system, checked the /proc/net/ip_conntrack (didn't
-exist), set up the bridge, set up iptables, pluged in the ethernetcables.
+# logfile for status messages
+logfile /var/log/ulog/ulogd.log
 
-thanks for some light...
-moritz
+# loglevel: debug(1), info(3), notice(5), error(7) or fatal(8)
+loglevel 5
+
+# socket receive buffer size (should be at least the size of the
+# in-kernel buffer (ipt_ULOG.o 'nlbufsiz' parameter)
+rmem 131071
+
+# libipulog/ulogd receive buffer size, should be > rmem
+bufsize 150000
+
+# ulogd_BASE.so - interpreter plugin for basic IPv4 header fields
+#                 you will always need this
+plugin /usr/lib/ulogd/ulogd_BASE.so
+plugin /usr/lib/ulogd/ulogd_LOCAL.so
+
+
+#
+# ulogd_LOGEMU.so - simple syslog emulation target
+#
+# where to write to
+syslogfile /var/log/ulog/syslogemu.log
+# do we want to fflush() the file after each write?
+syslogsync 1
+# load the plugin
+plugin /usr/lib/ulogd/ulogd_LOGEMU.so
+
+
+#
+# ulogd_OPRINT.so: file for packet dumping
+#
+# where to write the log
+dumpfile /var/log/ulog/pktlog.log
+# load the plugin (remove the '#'if you want to enable it
+plugin /usr/lib/ulogd/ulogd_OPRINT.so
+
 
 
 
