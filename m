@@ -1,18 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: deny cgi scanner
-Date: Wed, 2 Apr 2003 21:32:23 +0200
+From: "Mike" <mikeeo@msn.com>
+Subject: Re: sub interface filtering
+Date: Wed, 2 Apr 2003 15:34:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030402213223.22195ff5.arnt@c2i.net>
-References: <3E89CD8A.5020007@gmx.ch>
-	<1049219263.4784.14.camel@elendil.intranet.cartel-securite.net>
-	<3E89EBE5.5090804@gmx.ch>
-	<20030401200652.GY18434@ns.snowman.net>
-	<20030402012310.180c7aac.arnt@c2i.net>
-	<20030402125401.GC18434@ns.snowman.net>
+Message-ID: <000b01c2f957$388bc430$8b01a8c0@win2k.com>
+References: <7C9884991ADAE0479C14F10C858BCDF50C6FEE@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030402125401.GC18434@ns.snowman.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,33 +17,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Stephen Frost <sfrost@snowman.net>
-Cc: netfilter@lists.netfilter.org
+To: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org
 
-On Wed, 2 Apr 2003 07:54:01 -0500, 
-Stephen Frost <sfrost@snowman.net> wrote in message 
-<20030402125401.GC18434@ns.snowman.net>:
+I hate to ask but do you have and example of using iproute2 for IP address
+aliases?
 
-> * Arnt Karlsen (arnt@c2i.net) wrote:
-> > On Tue, 1 Apr 2003 15:06:52 -0500, 
-> > Stephen Frost <sfrost@snowman.net> wrote in message 
-> > <20030401200652.GY18434@ns.snowman.net>:
-> > > # Bad guy detected!  Add his IP to the badguy list!
-> > > iptables -A BADCHAIN -m recent --set --name badguy -j DROP # Add
-> > > IP to list
-> > 
-> > ..this also shoots down the good guys with servers on dynamic dns, 
-> > using an old recycled-by-the-isp bad guy's ip.
-> 
-> That's why there's a time limit to it.  
+Thanks,
+Mike
+----- Original Message -----
+From: "Daniel Chemko" <dchemko@smgtec.com>
+To: "Rob Sterenborg" <rob@sterenborg.info>; <netfilter@lists.netfilter.org>
+Sent: Wednesday, April 02, 2003 2:53 PM
+Subject: RE: sub interface filtering
 
-..ah, "-m recent", missed that one.  ;-)
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+Correct. Aliases are obsolete from what I can see. IProute2 adds IP
+addresses directly to interfaces, so eth0 could have 10 IP addresses
+instead of the awkward eth0:0 eth0:1, etc. mechanism. In this system,
+you filter based on IP address instead of interface alias.
+
+-----Original Message-----
+From: Rob Sterenborg [mailto:rob@sterenborg.info]
+Sent: Wednesday, April 02, 2003 11:39 AM
+To: netfilter@lists.netfilter.org
+Subject: RE: sub interface filtering
+
+> Hi guys I have the following setup and rules. And I cant seem to get
+the filtering to work.
+> eth2:0
+>
+> <routeable internetIP/28>
+>
+> eth2:1
+>
+> <routeable internetIP/28>
+
+AFAIK it is because you cannot filter eth<x>:y (but you can filter the
+IP address of course).
+
+
+Rob
+
+
 
 
 
