@@ -1,13 +1,15 @@
-From: "it clown" <suse@mailbox.co.za>
-Subject: Re: bind 9 and iptables
-Date: Sat, 28 Aug 2004 02:00:43 +0200
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: failure when using --string
+Date: Sat, 28 Aug 2004 01:29:17 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <web-420609378@mail01.infosat.net>
-References: <D5C9032B2B09C64EA2409D6214E91AC906420E@asimail2.alphanumeric.com>
+Message-ID: <20040828002917.GZ22322@metastasis.org.uk>
+References: <D5C9032B2B09C64EA2409D6214E91AC906420B@asimail2.alphanumeric.com>
+	<20040827091446.GH22322@metastasis.org.uk>
+	<200408271021.48984.gdh@acentral.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC906420E@asimail2.alphanumeric.com>
+Content-Disposition: inline
+In-Reply-To: <200408271021.48984.gdh@acentral.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,75 +20,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi
+On Fri, Aug 27, 2004 at 10:21:48AM +0100, Gavin Hamill wrote:
+> On Friday 27 August 2004 10:14, Nick Drage wrote:
 
-It seems i got it working.
-
-iptables -A OUTPUT -p tcp -o ppp0 --dport 53 -j ACCEPT
-iptables -A OUTPUT -p udp -o ppp0 --dport 53 -j ACCEPT
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-
-Thanks for all the help and not fading away.
-
-Regards
-
-
-On Fri, 27 Aug 2004 19:34:26 -0400
- "Jason Opperisano" <Jopperisano@alphanumeric.com> wrote:
-> > Hi Again,
-> >
-> > Damn it still not working why i said it was working was
-> was
-> > because of cached ip's as soon as i tried to access a
-> site
-> > that hasn't been cached it would give me a unknown host
-> > error.
-> >
-> > iptables -P INPUT DROP
-> > iptables -P OUTPUT DROP
-> > iptables -P FORWARD DROP
-> >
-> > iptables -A INPUT -p udp -i eth0 -s 192.168.0/24 -d
-> > 192.168.0.1 --dport 53 -j ACCEPT
-> > iptables -A INPUT -p tcp -i eth0 -s 192.168.0/24 -d
-> > 192.168.0.1 --dport 53 -j ACCEPT
-> > iptables -I OUTPUT -m state --state ESTABLISHED,RELATED
-> -j
-> > ACCEPT
-> >
-> > iptables -I INPUT -i lo -j ACCEPT
-> > iptables -I OUTPUT -o lo -j ACCEPT
-> >
-> > iptables -A FORWARD -i eth0 -o ppp0 -p tcp -j ACCEPT
-> > iptables -A FORWARD -i eth0 -o ppp0 -p udp -j ACCEPT
-> > iptables -A FORWARD -m state --state
-> ESTABLISHED,RELATED -j
-> > ACCEPT
-> >
-> > iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> >
-> > Thats my rules im trying to get dns to work atm.
-> >
-> > When i comment these out everything works fine:
-> >
-> > #iptables -P INPUT DROP
-> > #iptables -P OUTPUT DROP
+> > I'm not sure about upgrading netfilter on a distribution like Debian,
+> > apt-get trundles along nicely, I'm kind of loathe to play.  Is anyone
+> > else here using a more recent version of netfilter on Debian?
 > 
-> somewhere along the line, you lost:
+> Yep, works just fine.. 
 > 
->   iptables -I INPUT -m state --state ESTABLISHED,RELATED
-> -j ACCEPT
+> http://backports.hands.com/debian/dists/stable/iptables/binary-i386/
 > 
-> -j
-> 
-> ps - in the future, it's easier to help if you provide
-> the output of:
->      iptables -vnL && iptables -t nat -vnL && iptables -t
-> mangle -vnL
+> OK it's not cutting edge 1.2.11, but it's at least progress from that shipped 
+> with woody :)
 
-_____________________________________________________________________
-For super low premiums ,click here http://www.dialdirect.co.za/quote
+Shame, 1.2.11 is what I'm after I believe.  I need to read up on the
+release notes but some of the extra functions, like string matching and
+the tarpit, are what I'd like to play with.
+
+-- 
+mors omnia vincit
 
