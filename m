@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: AW: snat dnat question
-Date: Sun, 7 Jul 2002 13:03:43 +0100
+From: Remo Mattei <remo@remo.ws>
+Subject: Re: hi guys passive firewall
+Date: Sun, 07 Jul 2002 09:26:35 -0600
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020707120346.YAJW23840.mta03-svc.ntlworld.com@there>
-References: <8C14C590A51EB74285ADCA3DAD1A9DD705C11E@hilgert-srv1.internal.hilgert.de>
+Message-ID: <3D285DAB.9010908@remo.ws>
+References: <3D27B365.2050705@remo.ws> <20020707080609.TFPL23840.mta03-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+ boundary="------------050308070701020209090201"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <8C14C590A51EB74285ADCA3DAD1A9DD705C11E@hilgert-srv1.internal.hilgert.de>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,42 +17,94 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter <netfilter@lists.samba.org>
 
-On Sunday 07 July 2002 12:51 pm, Thomas Hilgert wrote:
 
-> Here is a small picture and the iptables commands
+--------------050308070701020209090201
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+
+Antony Stone wrote:
+
+>On Sunday 07 July 2002 4:20 am, Remo Mattei wrote:
 >
-> #  ETH1: External
-> #  ETH2: DMZ 10.2.0.1
-> #  ETH0: LAN 10.1.0.1
+>>I have an office with 64 ips which are all valid. I have some server
+>>that do not need any security enable.
+>>
 
-> # SNAT all outgoing traffic
-> #
-> iptables -t nat -A POSTROUTING -o  eth1 -j MASQUERADE
-> #
-> # DNAT all incoming traffic to out DMZ WEB and MAIL Server (10.2.0.2)
-> #
-> iptables -t nat -A PREROUTING -i eth1 -j DNAT --to 10.2.0.2
+>
+>Oh yeah ?   What kind of servers are those, then ?   How come they're not 
+>vulnerable to anything and therefore don't need any security :-) ?
+>
+I guess I should say that the server itself have a firewall not that do 
+not need any security on them!!!
 
-I suggest you change that last rule so that it is specific to the services 
-you actually want to be accessed:
+>
+>>But I do have other that I will
+>>have to firewall down any suggestions? Will all rules come in into the
+>>input chains and then forward all other packages work.
+>>
+>
+>Depends whether you're talking about putting netfilter onto the server itself 
+>(in which case you filter the INPUT chain), or whether netfilter is on a 
+>router between the servers and the Internet (in which case you filter the 
+>FORWARD chain).
+>
+So I guess since the anwser is above I just will use the forward and let 
+everything pass in the input.
 
-1. It might solve your problem
-2. It's an *awful* lot more secure - at present you're making the whole 
-machine 10.2.0.2 accessible to the Internet with no filtering
+Thanks anthony
 
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 25 -j DNAT --to 10.2.0.2
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to 10.2.0.2
+> 
+>
+>Antony.
+>
 
-Add more rules with appropriate port numbers if you want to make your ftp, 
-ssh, dns, https and http-proxy servers accessible to the outside as well.
 
-By the way, whilst you're at it, you might like to tidy up your name server 
-configuration - it seems to have an awful lot of redundant entries in it....
+--------------050308070701020209090201
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
- 
+<html>
+<head>
+</head>
+<body>
+<br>
+<br>
+Antony Stone wrote:<br>
+<blockquote type="cite" cite="mid:20020707080609.TFPL23840.mta03-svc.ntlworld.com@there">
+  <pre wrap="">On Sunday 07 July 2002 4:20 am, Remo Mattei wrote:<br><br></pre>
+  <blockquote type="cite">
+    <pre wrap="">I have an office with 64 ips which are all valid. I have some server<br>that do not need any security enable.<br></pre>
+    </blockquote>
+    </blockquote>
+    <br>
+    <blockquote type="cite" cite="mid:20020707080609.TFPL23840.mta03-svc.ntlworld.com@there">
+      <pre wrap=""><br>Oh yeah ?   What kind of servers are those, then ?   How come they're not <br>vulnerable to anything and therefore don't need any security :-) ?<br></pre>
+      </blockquote>
+I guess I should say that the server itself have a firewall not that do not
+need any security on them!!!<br>
+      <blockquote type="cite" cite="mid:20020707080609.TFPL23840.mta03-svc.ntlworld.com@there">
+        <pre wrap=""><br></pre>
+        <blockquote type="cite">
+          <pre wrap="">But I do have other that I will<br>have to firewall down any suggestions? Will all rules come in into the<br>input chains and then forward all other packages work.<br></pre>
+          </blockquote>
+          <pre wrap=""><!----><br>Depends whether you're talking about putting netfilter onto the server itself <br>(in which case you filter the INPUT chain), or whether netfilter is on a <br>router between the servers and the Internet (in which case you filter the <br>FORWARD chain).<br><br></pre>
+          </blockquote>
+So I guess since the anwser is above I just will use the forward and let
+everything pass in the input.<br>
+          <br>
+Thanks anthony<br>
+          <br>
+          <blockquote type="cite" cite="mid:20020707080609.TFPL23840.mta03-svc.ntlworld.com@there">
+            <pre wrap=""> <br><br>Antony.<br><br></pre>
+            </blockquote>
+            <br>
+            </body>
+            </html>
 
-Antony.
+--------------050308070701020209090201--
+
 
