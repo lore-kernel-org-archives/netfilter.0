@@ -1,7 +1,7 @@
-From: "Stoycho Sleptsov" <stoycho@cds-bg.com>
-Subject: eth1 answers SYN/ACK to SYNs dedicated for eth0. Why?
-Date: Thu, 16 Dec 2004 01:07:09 +0200
-Message-ID: <006401c4e2fa$cdd164d0$3001a8c0@cpcss>
+From: "Burton" <burton@thevine.net>
+Subject: IPTABLES HELP
+Date: Wed, 15 Dec 2004 15:09:08 -0800
+Message-ID: <20041215231734.20439410C37@mailroute.thevine.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,61 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi.
-
-I am new to iptables , so excuse me in advance for any strange
-terminologies.
-
-I have the following configuration:
-an external IP assigned to eth0.
-192.168.0.1 assigned to eth1.
-ip_forward set to 1.
-sshd waiting on 22.
-
-iptables:
-
-*filter
-:INPUT DROP
-:FORWARD DROP
-:OUTPUT ACCEPT
-
--A INPUT -i eth1 -j ACCEPT
--A FORWARD -i eth1 -j ACCEPT
--A INPUT -i lo ACCEPT
--A FORWARD -i lo ACCEPT
-
--A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-COMMIT
-
-*nat
-
--A POSTROUTING -s 192.168.0.0/24 -o eth0 -j SNAT --to ext.ern.ip
-
-COMMIT
-
-... and suddenly external people are receiving the ssh login (sometimes, not
-always).
-after several loggings I saw that SYN on 22 to ext.ern.ip is accepted and
-answered by eth1.
-and after is translated and accepted as ESTABLISHED by eth0 in the filter
-part of iptables.
-
-is this normal?
-
-For now I found some workaround in the nat:
--A PREROUTING -d ext.ern.ip -s ! 192.168.0.0/24 -i eth1 -m state --state
-NEW -j DROP
-
-but maybe I have to do something completely different to even not receive
-this strange effect?
-
-Thanks alot,
-Stoycho
-
-
-
+Ok I have had some great help with people on this board I just have not
+found an answer to my problem.
+ 
+This is what I need to happen
+ 
+[Client]--->T1(12.22.81.1) -->[Linux 12.22.81.8 10025]-->[Windows Mail
+Server 204.250.113.2 25] 
+ 
+Then I would like it to also send the data back though T1 (12.22.81.1)
+ 
+Current clients get to our SMTP server IE:
+[Client]--->T1(204.250.113.1) -->[Windows Mail Server 204.250.113.2 25]
+ 
+ 
+The point of this is my boss wants us to divert some traffic though t1
+(12.22.81.1) but keep the our mail server on its current network
+ 
+This is what I have tried
+ 
+iptables -F
+service iptables stop
+ 
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 -j DNAT --to
+204.250.113.2:25
+ 
+iptables -t filter -A FORWARD -i eth0 -d 204.250.113.2 - o eth1 -p tcp
+--dport 25 -j ACCEPT
+ 
+service iptables save
+ 
+service iptables start
+ 
+telnet 12.22.81.8 10025
+ 
+I have no other scripts running in my IPTABLES that is why I do the flush
+and Ipfowarding is set to 1
+ 
+Any Ideas?
