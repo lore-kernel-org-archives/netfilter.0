@@ -1,35 +1,38 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: read conntrack table
-Date: Wed, 30 Jun 2004 13:04:17 +0200 (CEST)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0406301303370.6445-100000@filer.marasystems.com>
-References: <40E29A2A.9000707@cisbic.com>
+From: Ruprecht Helms <rhelms@mayn.de>
+Subject: Re: Kernel 2.6.5 - iptables 1.2.9 problems
+Date: Wed, 30 Jun 2004 14:11:20 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <40E2ADE8.4020401@mayn.de>
+References: <1088179390.2701.14.camel@despair.kent-music.com>	 <40DC4F0E.5040609@kanux.com> <1088590006.667.7.camel@despair.kent-music.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <40E29A2A.9000707@cisbic.com>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Fallucchi Antonio <fallucch@cisbic.com>
-Cc: netfilter@lists.netfilter.org, netfilter-devel <netfilter-devel@lists.netfilter.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1088590006.667.7.camel@despair.kent-music.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Karl Lattimer <karl@kms-lan.co.uk>
+Cc: Juan Hernandez <alucard@kanux.com>, netfilter@lists.netfilter.org
 
-On Wed, 30 Jun 2004, Fallucchi Antonio wrote:
+Karl Lattimer wrote:
 
-> there is a function/code for read/parse the ip_conntrack table?
+>Hi IP-Tables isn't outputting any error messages at all. Heres my
+>script. Or there abouts.
+>
+>The problems i am getting are the port forwards for 4662 and 4672 arn't
+>working correctly. I'm getting port forwards adding themselves in for
+>ports 5800,5900,3372,6502,1025,1026,42 and 366. 
+>
+please be so kind and post your ruleset into the list. So it`s better to 
+say what you have to change.
 
-In user or kernelland?
-
-For a reasonable userland api see ctnetlink (pom-ng).
-
-Regards
-Henrik
-
+Regards,
+Ruprecht
 
