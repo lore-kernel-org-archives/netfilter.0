@@ -1,13 +1,13 @@
-From: Patrick Schaaf <bof@bof.de>
-Subject: Re: detection of the third tcp packet in a tcp connection setup
-Date: Thu, 27 Jun 2002 22:11:41 +0200
+From: "Aldo S. Lagana" <alagana@discmail.com>
+Subject: RE: Examples
+Date: Thu, 27 Jun 2002 16:03:10 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020627221141.G2890@oknodo.bof.de>
-References: <20020627193043.UMUP19225.mta07-svc.ntlworld.com@there> <NJEFLNJDIFFNMHDEBKMJEEJBDOAA.jpatterson@asgardgroup.com>
+Message-ID: <000701c21e15$a9e0be60$3864a8c0@discmail.com>
+References: <731E36372B5FD248AF790189519A32C19E4F8B@mailhub.cgtime.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <NJEFLNJDIFFNMHDEBKMJEEJBDOAA.jpatterson@asgardgroup.com>; from jpatterson@asgardgroup.com on Thu, Jun 27, 2002 at 03:50:49PM -0400
+In-Reply-To: <731E36372B5FD248AF790189519A32C19E4F8B@mailhub.cgtime.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,29 +18,50 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Joe Patterson <jpatterson@asgardgroup.com>
-Cc: netfilter@lists.samba.org
+To: 'Daniel Curry' <dcurry@cariocas.com>, "'Netfilter (E-mail)'" <netfilter@lists.samba.org>
 
-> Other than order I don't see any way to distinguish the first ack from
-> the 100th.
+Unfortunately like any other firewall solution it all depends - which of
+those services are in front of or behind the firewall, which need
+specific ports or protocols allowed, etc.  A good start is the IPTables
+tutorial by Oskar Andreasson (sp?)
 
-If perfect recognition is neccessary, a suitable in-kernel module would
-be able to remember there are sequence numbers from the SYNs (conntrack
-already does that), and pinpoint that ACK by looking at its sequence
-numbers, seeing that they are next to the one from the SYNs.
+Another decent start is the Linux Firewalls book by O'reilly (?)
 
-> Now, you could say that if the tcp data length is greater than zero, then
-> the packet is either *not* valid, or is *not* the third packet (although
-> there was at one point a proposed tcp-like protocol that had data in the
-> third packet, to keep down latency on short duration sessions, but I believe
-> it's still considered evil in tcp-land).
+I have had very good luck with Oskar's tutorial - he has good comments
+and an example script...
 
-That was called T/TCP, there were some problems hindering wide deploying,
-if I remember correctly - and it would have permitted sending data already
-along with the SYN packets, the third ACK having also a FIN, and thus
-a full request/response connection in three packets.
+> -----Original Message-----
+> From: netfilter-admin@lists.samba.org 
+> [mailto:netfilter-admin@lists.samba.org] On Behalf Of Daniel Curry
+> Sent: Thursday, June 27, 2002 3:51 PM
+> To: Netfilter (E-mail)
+> Subject: Examples
+> 
+> 
+> I was just at the netfilter.org web site, looking for some 
+> example IPTables scripts for various solutions.  Does anyone 
+> have any suggestions on where I might find some well 
+> documented examples to satisfy a server with an internal and 
+> external network connection, sendmail, apache, DHCP (internal 
+> only), MySQL, IPSEC/PPTP services (hosted and pass through), 
+> inbound POP/IMAP?
+> 
+> Thanks
+> 
+> Daniel Curry
+> IT Manager
+> Cariocas
+> 625 Second Street 
+> Suite 201
+> San Francisco, CA 94107 
+> ph: 415-348-6516
+> fx: 415-348-6505 
+> cell: 510-579-6680
+> 
+> "If A equals success, then the formula is: A = X + Y + Z, 
+> X is work. Y is play. Z is keep your mouth shut." 
+>   - Albert Einstein
+> 
+> 
 
-best regards
-  Patrick
 
