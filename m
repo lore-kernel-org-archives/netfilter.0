@@ -1,13 +1,12 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Source-based routing and DNAT
-Date: Fri, 14 Jun 2002 21:53:19 -0400
+From: "Hard__warE" <hard__ware@hotmail.com>
+Subject: Flag SYN not necessarily state NEW?
+Date: Sat, 15 Jun 2002 12:35:35 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020615015319.GB7958@cannon.eng.us.uu.net>
-References: <3D0A7CD7.2000204@go2guys.com>
+Message-ID: <000501c21415$544d0e40$7b0010ac@dynamicaccess.lan>
+Reply-To: "Hard__warE" <hard__ware@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <3D0A7CD7.2000204@go2guys.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,54 +17,70 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: David Graves <dgraves@go2guys.com>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-On Fri, Jun 14, 2002 at 04:31:35PM -0700, David Graves wrote:
 
-> I have a firewall with two internet connections. I use source-based 
-> routing as described in the section 4.2.1 of the Advanced Routing & 
-> Traffic Control HOWTO to ensure that the correct next-hop is chosen for 
-> outgoing packets. This much works well.
-> 
-> The problem arises when I use a DNAT'ed connection to an internal 
-> webserver. Using tcpdump I see that the syn+ack packet from the 
-> webserver is un-NAT'ed correctly, but sent to the wrong next hop. 
-> Something happens that prevents my "ip rule" from triggering.
-> 
-> Please do not reply and tell me that I can simply use a different 
-> internal IP address to correspond to the different external IP address. 
-> This is the "common workaround" and it is not acceptable for my purposes.
-> 
-> Does anyone have the right answer to this? Does "PREROUTING" not mean 
-> pre-routing?
 
-PREROUTING means pre-routing, yes, but the direction is very important.
-At your external interface in pre-routing the DNAT rule will be applied.
-This is when the SYN comes in. Then when your server replies (the src
-is still not de-DNATted) the routing decision is made. Right before
-the packet is being sent out through an interface the src will be de-DNATted.
+>>On Wed, 8 May 2002, Ing. Christian Ogris wrote:
+>> I connect from Box A via SSH to Box B, where the firewall runs, and i
+>>get the state "NEW" on the first packet.
+>> Then - the first connection is still established - i connect AGAIN from
+>>Box A to Box B and do NOT get the state "NEW" anymore. (So obviously
+>> it's already accepted by the ESTABLISHED,RELATED -j ACCEPT rule).
+>> Is this behavior correct?
 
-So, if your question was whether the DNAT and de-DNAT are both done in
-pre-routing, the answer is no. DNAT is done in pre-routing and de-DNAT
-is done in post-routing.
+>No. But so far nobody has reported such an ill-behaviour. I assume
+>something is wrong in your setup/logging.
+>
+>Regards,
+>Jozsef
 
-So, if you have an ip rule which selects a next hop based on the src, then
-you cannot rely on the fact that the replies will go through that ip rule
-with the correct src (as your gateway would send out).
 
-Ramin
 
-> Or is the ip rule that selects a route table run before 
-> PREROUTING?
-> 
-> Even if the answer is, "it can't be done", can anyone definitively say 
-> so and why?
-> 
-> Thanks for your great work guys!
-> -David Graves
-> 
-> 
-> 
+I have tested this as im running SSH ans as you can see hear in the print
+out of my packets that
+i dont even need a Established Related Rule for SSH from the Internet or
+Internaly , this is handled
+by IP_conntrack moddule and so on .. :-) .
+
+
+(Notice My SSH Box has its own IP on the Firewall (yet i have still
+restricted access to the box as only SSH)
+
+Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+
+51 38424 ACCEPT     all  --  *      eth0    172.16.0.22
+172.16.0.0/16
+
+/> netstat -C
+
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 yes-dave.dynamicacc:ssh 172.16.0.123:2867
+ESTABLISHED
+Active UNIX domain sockets (w/o servers)
+
+&
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 yes-dave.dynamicacc:ssh 172.16.0.123:2872
+ESTABLISHED
+tcp        0      0 yes-dave.dynamicacc:ssh 172.16.0.123:2871
+ESTABLISHED
+tcp        0      0 yes-dave.dynamicacc:ssh 172.16.0.123:2867
+ESTABLISHED
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node Path
+
+
+
+when i connect the first time (have not logged on yet) my SSH server says
+the connecttion is already
+ESTABLISHED and not NEW , and thats the same for evey connection after this
+. The reason behind this is
+SSH needs to establish a ESTABLISHED connection to the server before any
+data is correctly Encrypted .. :D
+
+
 
