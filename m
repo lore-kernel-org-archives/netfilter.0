@@ -1,10 +1,9 @@
-From: Daniel Rycaj <daniel.rycaj@fuchs.pl>
-Subject: splitting one network physically using linux box.
-Date: Tue, 7 May 2002 11:07:03 +0200
+From: "Williamson, Fionn" <FWilliamson@fnb.co.za>
+Subject: iptables, stateful checking using tcp sequence numbers
+Date: Tue, 7 May 2002 11:58:54 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020507110703.2ef33390.daniel.rycaj@fuchs.pl>
+Message-ID: <67024BB66045D511A9380000F6B2EF85F20C1F@RBGMSG02>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,41 +15,51 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
 
-hi,
+Hi All,
 
-I have a *very* standard situation:
+I hope somebody can assist me in finding information about this...
 
-network: 10.1.1.97/27
+Please consider the following argument:
 
-	   small router			10 PCs
-	---[ 10.1.1.97 / 27 ] --------- [ 10.1.1.98-108 ]
+"Although the TCP sequence numbers may get sent to the log file (if
+logging is turned on for a rule), if it not present in the "state table"
+(/proc/net/ip_conntrack), then it is not used to maintain state.
+However, I cannot verify that Firewall-1 does this as well (although any
+good firewall should), and tests conducted on older versions of
+Firewall-1 indicate that it did not used to use sequence numbers as part
+of state verification (and may still not use them). "
 
-Now I want to create a firewall between the "small router" and "10 PCs".
-The only problem is: nobody should change configuration of PC. 
-So the default gw still should be set to 10.1.1.97 on each PC.
+Can anybody PLEASE tell me:
 
-I did such configuration:
+1. if the sequence numbers are actually used in iptables to MAINTAIN the
+state of a connection, or if it is merely used to ESTABLISH connections,
+and thereafter ignored.
 
-	
-	--[ 10.1.1.97 / 27 ] ----- eth0 [ linux box ] eth1 ------ [ 10.1.1.98-108 ]
+2. point me towards documentation confirming or denying this.
 
-eth1 must have assigned IP: 10.1.1.97 because I don`t want to change configuration of PCs.
-eth0 can be set to one of unused addresses from 10.1.1.96 network (in my example 10.1.1.110)
+Thank you very much
 
-I have to set up the default gw for my linux box to 10.1.1.97.
-How to tell linux that he has to route packet through the external 10.1.1.97 rather the local one ? :)
+Jacques Botha
 
-I tried to do it by several ways:
+jacquesb@fnb.co.za
+South Africa
+  
 
-1) ip ro add 10.1.1.97/32 dev eth0	- doesn`t work because 10.1.1.97 exists in table local
+___________________________________________________________________________________________________
 
-2) ip ro del 10.1.1.97/32 table local	- works fine for 1-2 minutes. After this short time
-the local table contains .97 again !
 
-Any ideas how to solve this ?
+The views expressed in this email are, unless otherwise stated, those of the author and not those
+of the FirstRand Banking Group or its management.  The information in this e-mail is confidential
+and is intended solely for the addressee. Access to this e-mail by anyone else is unauthorised. 
+If you are not the intended recipient, any disclosure, copying, distribution or any action taken or 
+omitted in reliance on this, is prohibited and may be unlawful.
+Whilst all reasonable steps are taken to ensure the accuracy and integrity of information and data 
+transmitted electronically and to preserve the confidentiality thereof, no liability or 
+responsibility whatsoever is accepted if information or data is, for whatever reason, corrupted 
+or does not reach its intended destination.
 
-regards,
-Daniel Rycaj
+                               ________________________________
 
