@@ -1,12 +1,12 @@
-From: root <vlady@cyber2000.qc.ca>
-Subject: Too long delay
-Date: Tue, 22 Jul 2003 12:33:06 -0400
+From: "Andrew Greenburg (Intelenet)" <agreenbu@in-span.net>
+Subject: Re: Too long delay
+Date: Tue, 22 Jul 2003 11:42:21 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307221233.06581.vlady@cyber2000.qc.ca>
+Message-ID: <Pine.GSO.4.20.0307221141030.20422-100000@jefferson.indtn.net>
+References: <200307221233.06581.vlady@cyber2000.qc.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <200307221233.06581.vlady@cyber2000.qc.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,112 +16,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello, 
-I need some hints for the following problem I have.
+On Tue, 22 Jul 2003, root wrote:
 
-I have seted up rules for SMTP and FTP server on a firewall and they work 
-exept that I should whait 10 and more seconds before to get a responce from 
-the server.
-I tryed to log all droped packates to see if there are some packtes which are  
-related to smtp (or ftp) connection but there any.
- 
-I have default policy DROP by default for the main chains: iptables -P INPUT 
-DROP (OUTPUT,FORWARD)
+> I have seted up rules for SMTP and FTP server on a firewall and they work 
+> exept that I should whait 10 and more seconds before to get a responce from 
+> the server.
+> I tryed to log all droped packates to see if there are some packtes which are  
+> related to smtp (or ftp) connection but there any.
 
-The rules in question are:
-###################
-### SMTP Server ###
-###################
+This is probably an identd issue. If you create a rule to REJECT identd
+packets instead of dropping them, this should help.
 
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
---dport 25 -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
---dport 25 -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
---dport 25 -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
---dport 25 -j ACCEPT
-
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_1 --sport 25 
---dport $UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_2 --sport 25 
---dport $UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_3 --sport 25 
---dport $UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_4 --sport 25 
---dport $UNPRIVPORTS -j ACCEPT
-
-and 
-###################
-### FTP Server ####
-###################
-
-#ftp
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
---dport 21 -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_2 
---dport 21 -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_3 
---dport 21 -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_4 
---dport 21 -j ACCEPT
-
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_1 --sport 21   
---dport $UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_2 --sport 21 
---dport $UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_3 --sport 21 
---dport $UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_4 --sport 21 
---dport $UNPRIVPORTS -j ACCEPT
-
-#port mode
-iptables -A OUTPUT -o $INTERFACE -p tcp -s $LOCAL_IP_1 --sport 20 --dport 
-$UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp -s $LOCAL_IP_2 --sport 20 --dport 
-$UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp -s $LOCAL_IP_3 --sport 20 --dport 
-$UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp -s $LOCAL_IP_4 --sport 20 --dport 
-$UNPRIVPORTS -j ACCEPT
-
-iptables -A INPUT -i $INTERFACE -p tcp ! --syn --sport $UNPRIVPORTS -d 
-$LOCAL_IP_1 --dport 20 -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp ! --syn --sport $UNPRIVPORTS -d 
-$LOCAL_IP_2 --dport 20 -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp ! --syn --sport $UNPRIVPORTS -d 
-$LOCAL_IP_3 --dport 20 -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp ! --syn --sport $UNPRIVPORTS -d 
-$LOCAL_IP_4 --dport 20 -j ACCEPT
-
-#passive mode
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
---dport $UNPRIVPORTS -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_2 
---dport $UNPRIVPORTS -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_3 
---dport $UNPRIVPORTS -j ACCEPT
-iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_4 
---dport $UNPRIVPORTS -j ACCEPT
-
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_1 --sport 
-$UNPRIVPORTS --dport $UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_2 --sport 
-$UNPRIVPORTS --dport $UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_3 --sport 
-$UNPRIVPORTS --dport $UNPRIVPORTS -j ACCEPT
-iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_4 --sport 
-$UNPRIVPORTS --dport $UNPRIVPORTS -j ACCEPT
-
-
-Thanks
-Vlady 
-
-
-
-
+-- 
+ Andrew M. Greenburg                   |   agreenbu   @  in-span   .   net
+ Systems Engineer                      |   (317)234-1001     (317)234-1328
+ Indiana Web Academy                   |   Phone             Fax
 
 
