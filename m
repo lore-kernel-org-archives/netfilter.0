@@ -1,11 +1,13 @@
-From: Kurt Tragant <k.tragant@firemail.de>
-Subject: Re: strange log entries concerning mail server
-Date: Mon, 17 Feb 2003 12:20:11 +0100
+From: Anoop S <anoop@it-om.com>
+Subject: RE: Protocol wise graphs
+Date: 17 Feb 2003 15:48:44 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045480811000076@lycos-europe.com>
+Message-ID: <1045477125.15042.4.camel@brahmos>
+References: <01CEA3A5B8B2D511890F0002A5870AEC5FB5C7@EXCHANGE>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=_NextPart_Lycos_0000761045480811_ID"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <01CEA3A5B8B2D511890F0002A5870AEC5FB5C7@EXCHANGE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,40 +17,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
---=_NextPart_Lycos_0000761045480811_ID
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-Hi Willi,
+On Thu, 2003-02-13 at 19:09, Khanh Tran wrote: 
+> ntop is supposed to do this well, but it was always a bit unstable for me...
+> 
+Thanx for that 
+but i have tried ntop and fortunately :-) it has worked very well on my
+system. however it doesnt give what i want (maybe i din look at it
+fully). 
 
-thanks for your answer.
+i ll give an idea as to what i m looking to. 
 
-> Look at
->
-http://www.iptables.org/documentation/tutorials/blueflux/iptables-tutorial.html#NEWNOTSYN
-> (The paragraph with "..bad Microsoft TCP/IP implementations.." )
-> This *could* be the problem as long as your machine makes outgoing 
-> sessions to these ports 
+---> statistics as to what ports and services are being used by a
+particular user of my LAN with amount of traffic (inbound/outbound)
+generated.
+---> auto protocol discover
 
-The mail server doesn't make outgoing connections to these ports (I think, I
-should have noticed it, because I have a DROP policy).Additionally, as I
-understand in your cited part of the  netfilter manual, only microsoft products
-have these problems. My mail server is a qmail on linux 2.4.20. Maybe there are
-any other ideas? I would be thankful...
-
-Regards
-Kurt Tragant
-
-__________________________________________________________________
-Arcor-DSL Flatrate - jetzt kostenlos einsteigen und bis zu 76,18 Euro sparen!
-Arcor-DSL gibt es jetzt auch mit bis zu 1500 Mbit/s Downstream! http://www.angebot.arcor.net/cgi-bin/angebot.cgi?key=b13e92247022
-
-
---=_NextPart_Lycos_0000761045480811_ID--
+sori for the language if it aint clear.
+thanx
 
 
