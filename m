@@ -1,13 +1,13 @@
 From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Subject: Re: Requesting help.
-Date: Thu, 19 Feb 2004 13:52:44 -0500
+Subject: Re: Overruns ?
+Date: Thu, 19 Feb 2004 13:43:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1077216764.2139.55.camel@ca.gts.nexusmgmt.com>
-References: <GHEILNONPACCGBGKBEKKGEMECBAA.mani@manikandan.org>
+Message-ID: <1077216213.1984.48.camel@ca.gts.nexusmgmt.com>
+References: <20040219083222.7e4dc5a3@mgalepc.utilitran.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <GHEILNONPACCGBGKBEKKGEMECBAA.mani@manikandan.org>
+In-Reply-To: <20040219083222.7e4dc5a3@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mani@manikandan.org
+To: Michael Gale <michael.gale@utilitran.com>
 Cc: netfilter@lists.netfilter.org
 
-On Thu, 2004-02-19 at 06:19, Manikandan wrote:
-> Hello all,
+On Thu, 2004-02-19 at 10:32, Michael Gale wrote:
+> Hello,
 > 
->         I have got a Redhat linux 9.0 box running as gateway and
-> serving my LAN of 80 odd windows/unix work stations. It has got 2
-> NICs, one is hooked to LAN switch and the other one is connected to my
-> DSL Router. I have got a pool of /29 public IP addresses . 
+> 	Not sure if this is the place to ask but when I do a ifconfig I see some
+> overruns. I have tried google and man ifconfig but can not find what a "overrun"
+> is.
 > 
-> One IP address is already assigned to my Router and the other one to
-> my linux gateway. Now I am left with few more public IP's. 
-> 
-> I would like to forward one of my public IP to my local LAN system. So
-> that all requests coming to that particular IP address will be
-> answered by my system in LAN.
-> 
-> How can I achieve that? . Do I need to create IP alias in my gateway?
-> I read through so many documents which only left me wondering where I
-> am now. Could someone help me?
-> 
-> 
-> Regards,
-> 
-> Manikandan
+> eth0      Link encap:Ethernet  HWaddr 00:E0:81:25:A6:92  
+>           inet addr:10.10.10.173  Bcast:10.10.10.255  Mask:255.255.255.0
+>           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+>           RX packets:9639161 errors:0 dropped:0 overruns:0 frame:0
+>           TX packets:9598780 errors:0 dropped:0 overruns:21 carrier:0
+>           collisions:0 txqueuelen:100 
+>           RX bytes:2726609687 (2600.2 Mb)  TX bytes:1986194437 (1894.1 Mb)
+>           Interrupt:10 Base address:0xb000 
+Perhaps someone else can answer more authoritatively than I but I have
+always assumed that it means the physical interface picked up a packet
+addressed to it but had no buffer into which it could put the packet. 
+In other words, the system ran out of memory dedicated to packet
+buffering.
 
-If I understand you correctly, you are really doing a very
-straightforward NAT of an internal device to the external world.
+One can either increase the number of buffers allocated to buffering
+packets or identify the source of the bottleneck.  On a standalone
+system, it might be the processor. In the case of a packet passing
+device, increase the bandwidth on the egress.
 
-First, I would strongly suggest that you add a third NIC to the gateway
-and create a separate protected DMZ.  If someone happens to crack the
-public exposed device through some application layer exploit and the
-device resides on your local LAN, you could open up your entire internal
-network to the cracker.
-
-The rules are pretty simple.  If all you have is one device always
-mapping to one network, create a SNAT rule for it in -t nat POSTROUTING
-so that it always sends traffic to the Internet using the public address
-and a DNAT rule for it in -t nat PREROUTING so that all packets
-addressed to the public address are changed to the devices private
-address.  I suppose that, in theory, you may even be able to dispense
-with the SNAT rule.
-
-You can find a slide show on how to do this in the training section on
-http://iscs.sourceforge.net or you could look at Oskar Andreasson's
-excellent tutorial on
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+I do not know where one configures the number of cache buffers in Linux
+but that would be a handy trick to know.  I'm sure someone does know it
+off the top of their head.  Next person . . . 
 -- 
 Open Source Development Corporation
 Financially Sustainable open source development
