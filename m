@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Is this firewall good enough?
-Date: Tue, 8 Jun 2004 10:57:40 +0100
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: Updating multple iptables on servers
+Date: Tue, 08 Jun 2004 07:02:37 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406081057.40137.Antony@Soft-Solutions.co.uk>
-References: <20040608091436.84113.qmail@web14712.mail.yahoo.com> <40C58A06.8020509@linuxmail.org>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1086692556.23800.3.camel@localhost>
+References: <E1BXbgJ-00083y-0x@vishnu.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40C58A06.8020509@linuxmail.org>
+In-Reply-To: <E1BXbgJ-00083y-0x@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: hyper@ubn.dk
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 08 June 2004 10:42 am, Feizhou wrote:
-
-> >2.  /sbin/iptables -A INPUT -p tcp -m state --state
-> >ESTABLISHED,RELATED -j ACCEPT
->
-> Forget about this. It makes things easier yes but it is too slow if you
-> come under attack...but then you put everything on one box seemly so I
-> guess you don't get much traffic.
-
-How do you recommend dealing with reply packets instead?
-
-Regards,
-
-Antony.
-
+On Tue, 2004-06-08 at 04:09, hyper@ubn.dk wrote:
+> Is it possible to update iptables from a central server. I got 25 servers
+> using the same firewall and i need something to update them all from a
+> central server. 
+>  
+> Any ideas?
+>  
+> Hilsen Thomas Kristensen
+Although it is still a few months away from release, ISCS
+(http://iscs.sourceforge.net) will help you do this.  It will also
+manage any VPN and router configurations and, eventually, even the layer
+two configuration.  It will do this just as easily if every firewall is
+different - the work is the same - describe the environment and ISCS
+automatically creates and distributes the list of rules to create that
+environment.  I wish I could tell you it's here and ready for use but
+it's still in very active development.  We're working on the last of the
+iptables modules as I write - John
 -- 
-"The future is already here.   It's just not evenly distributed yet."
-
- - William Gibson
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Open Source Development Corporation
+Financially sustainable open source development
+http://www.opensourcedevelopmentcorp.com
 
 
