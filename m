@@ -1,13 +1,13 @@
-From: Juan Hernandez <alucard@kanux.com>
-Subject: Re: Kernel 2.6.5 - iptables 1.2.9 problems
-Date: Fri, 25 Jun 2004 12:13:02 -0400
+From: "Daniel Wittenberg" <daniel-wittenberg@starken.com>
+Subject: Re: SUN RPC portmap
+Date: Fri, 25 Jun 2004 11:22:17 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40DC4F0E.5040609@kanux.com>
-References: <1088179390.2701.14.camel@despair.kent-music.com>
+Message-ID: <1088180537.40dc5139d37a8@securemail.starken.com>
+References: <200406251600.i5PG0vD4005549@ylpvm29.prodigy.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1088179390.2701.14.camel@despair.kent-music.com>
+In-Reply-To: <200406251600.i5PG0vD4005549@ylpvm29.prodigy.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +17,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Karl Lattimer <karl@kms-lan.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+To: Spiro Azkoul <spiro@snacorp.net>
 Cc: netfilter@lists.netfilter.org
 
-Could you copy and pase some logging?
+If you don't need need, why not un-install it?  On systems I have to have it 
+on I block it in iptables and hosts.allow.
 
-Juan
-Karl Lattimer wrote:
+Dan
 
->Hi, I've got a firewall script I've which i've been using for 2 years
->now on redhat 7.3 and redhat 9, after upgrading to fedora core 2 the
->script is misbehaving slightly. Some of my port forwards don't work
->correctly and some of my port blocking/opening doesn't work correctly.
->
->Any ideas what may be causing this?
->
->Thanks
->
->Karl
->
->
->  
->
 
+Quoting Spiro Azkoul <spiro@snacorp.net>:
+
+> Can anyone think of a reason to simple block SUN RPC via iptables rather
+> than simply stopping the service if it is a mail/pop/imap/web server?
+> Thanks
+> 
+> 
+> 
 
