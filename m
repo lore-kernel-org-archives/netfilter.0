@@ -1,8 +1,8 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Blocking Netranges Based on IP-to-Country CSV
-Date: Mon, 20 Sep 2004 10:09:12 -0400
+From: "Alexis" <alexis@tpys.com.ar>
+Subject: RE: Blocking Netranges Based on IP-to-Country CSV
+Date: Mon, 20 Sep 2004 11:10:01 -0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095689352.1898.30.camel@wolfpack.ljm.dom>
+Message-ID: <E1C9Orn-0006PT-00@deer.gmane.org>
 References: <200409201357.i8KDvZNg022820@outbound3.mail.tds.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,28 +18,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: nutbrownhares@tds.net, netfilter@lists.netfilter.org
 
-On Mon, 2004-09-20 at 09:57, nutbrownhares@tds.net wrote:
-> With all due respect, I initially asked a technical question: given a data file, how does one block ranges from that file.  I didn't ask if people agreed or disagreed with why we want to do this.   The "why" isn't relevant to the discussion.  I'm also not interested in whether it is or is not 100% effective; I know it isn't.  It will still eliminate 95% of the traffic I want to stop.  So far I've seen a lot of political opinions.  Does anyone have a technical answer?
-> 
+Ok, now, from south america WHERE WE THE INDIANS LIVE, and with this
+question understood from the first moment and before all the short minded
+discussion.
 
-true that.
+The approach for this technical issue ill do is a script to insert those
+rules. Off course there could be a lot of other approaches but.
 
-FILE="/path/to/file"
+If my csv is something like this
 
-for ADDR in `cat $FILE`; do
-  iptables -A mychain -s $ADDR -j DROP
-done
+CountryA,a.b.c.d/16
+countryA,z.x.d.e/12
 
-the above assumes that $FILE contains a list of IP addresses or
-IP/PREFIX values, one per line.  it also assumes that "mychain" exists,
-and that you want to block the addresses in $FILE by source.  adjust as
-needed for your exact situation.
+Ill do something like
 
--j
+---cut here
 
--- 
-Jason Opperisano <opie@817west.com>
+
+#!/usr/bin/perl -w
+
+open FILE,"<file.csv";
+
+while(<FILE>)
+{
+@a=split(",",$_);
+System("iptables -A CHAIN -s $a[0] -j DROP");
+}
+Close FILE;
+
+---cut here
+
+But, i think that you can choose the method based on these directive
+
+"if theres more banned addresses of permited" < set policy to drop and add
+the allowed ones with a script like the posted one.
+"if theres more allowed addresses of banned" < to set policy to accept is
+not a good idea, at least you may add a drop at the bottom of the chain and
+use the script provided.
+
+Off course there could be other approaches, but i hope it helps.
+
+Regards
+
+
+ 
+
+-----Mensaje original-----
+De: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] En nombre de
+nutbrownhares@tds.net
+Enviado el: Lunes, 20 de Septiembre de 2004 10:58
+Para: netfilter@lists.netfilter.org
+Asunto: Blocking Netranges Based on IP-to-Country CSV
+
+With all due respect, I initially asked a technical question: given a data
+file, how does one block ranges from that file.  I didn't ask if people
+agreed or disagreed with why we want to do this.   The "why" isn't relevant
+to the discussion.  I'm also not interested in whether it is or is not 100%
+effective; I know it isn't.  It will still eliminate 95% of the traffic I
+want to stop.  So far I've seen a lot of political opinions.  Does anyone
+have a technical answer?
+
+
+
+
 
 
