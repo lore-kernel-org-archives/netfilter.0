@@ -1,12 +1,12 @@
-From: Fabio Bastiglia Oliva <fboliva@safenetworks.com>
-Subject: snat/dnat problem?
-Date: Sat, 26 Jul 2003 04:50:42 -0300
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: backroute problem
+Date: Thu, 24 Jul 2003 07:58:43 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <536552435.20030726045042@safenetworks.com>
-Reply-To: Fabio Bastiglia Oliva <fboliva@safenetworks.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BF94@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,85 +17,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Wolfgang Pichler <madmin@dialog-telekom.at>, netfilter@lists.netfilter.org
+
+You have to use iproute2 to route by source IP and not destination =
+(default gateway).
+
+There is an iptables patch in p-o-m which does some funky iproute stuff =
+too but not sure the name.. have a look
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+-----Original Message-----
+From: Wolfgang Pichler [mailto:madmin@dialog-telekom.at]
+Sent: Thursday, July 24, 2003 6:03 AM
 To: netfilter@lists.netfilter.org
-
-Hi all,
-
-I have used all my aspirin supply trying to understand/solve
-the problem I'll describe below... Please Help! :)
-
-The enviroment:
-===============
-
- +-------------+
- |  Network A  |
- +------+------+
-        |
- +------+YA----+
- | Firewall A  |
- +------+XA----+
-        |
-        |
-        |
- +------+XB----+
- | Firewall B  |
- +------+YB----+
-        |
- +------+------+
- |  Network B  |
- +-------------+
-
-XA = eth0 (intrernet)
-
-YA = eth1 (intranet)
-
-XB = eth0 (intrernet)
- \_ 1 IP address plus 2 more IP addresses using the same NIC
-    (eth0, eth0:0, eth0:1)
-
-YB = eth1 (intranet)
-
-Both Firewalls configuration:
-    - Slackware 9.0
-    - Kernel 2.4.21-ac4
-    - iptables 1.2.8
+Subject: backroute problem
 
 
-The Problem
-===========
+hi all,
 
-Ping  the Firewall B interface eth0 from Firewall A... No problem, the
-round-trip is OK... 17 ms avg.
- 
-Ping  the  Firewall B interface eth0 from Network A... No problem, the
-round-trip is OK... 17 ms avg.
+we have got new ip addresses - the old one's still exists so that i can
+migrate them to the new ones.
 
-Ping  the  Firewall  B  aliased interface eth0:0 from Network A... the
-round-trip increases a lot... 150-300 ms avg.
+the old ip's are directly assigned to the web/mail server (i know that
+this isn't good - but i havn't had a fireall at this time) - now i have
+a seperate firewall which has the new ip's assigned to it.
 
-Ping  the  Firewall  B aliased interface eth0:0 from Firewall A... the
-round-trip is OK again... 17 ms avg.
- 
-I  think  the  problem is at the SNAT/DNAT configuration, but I wasn't
-able to find it yet.
+Now i'd like to change the dns entries so that the traffic goes over the
+new ip's (a 4 MBit line ;-) ) - the problem i have is:
 
-Iptables DNAT/SNAT configuration (eth0:0 eth0:1)
-================================================
+when a packet on the new ip comes then it gets prerouted by the firewall
+to the webserver - the webserver gets the packet with the original
+source address - now to webserver wants to answer to the packet - but
+becuase of the old ip's the webserver have a default route with the old
+ip and try's to route the packet over the old gateway - and not back to
+the firewall... You know - that can't work.
 
-iptables -t nat -A PREROUTING -d 1.1.1.1 -j DNAT --to 10.0.0.1
-iptables -t nat -A POSTROUTING -s 10.0.0.1 -j SNAT --to 1.1.1.1
-iptables -A FORWARD -i eth0 -mstate --state ESTABLISHED,RELATED -j ACCEPT
+I am now searching for a solution for this problem. Can netfilter help
+me with this problem - or do i have to use iproute (i havn't ever done
+something with iproute) help me ?
 
-1.1.1.1 = eth0:0 aliased IP address
-10.0.0.1 = network B intranet IP address
+Can i mark the packet's so the the webserver can send them back in the
+right direction ?
 
-
-Thanks in advance.
+mfG
+Wolfi
 
 
-Best regards
-________________________
-Fabio Bastiglia Oliva
-fboliva@safenetworks.com
+
+
 
 
