@@ -1,9 +1,9 @@
 From: Michael <mutk@iprimus.com.au>
 Subject: Re: Samba blocked?
-Date: Wed, 27 Nov 2002 13:12:52 +1000
+Date: Wed, 27 Nov 2002 13:22:07 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DE43834.5090603@iprimus.com.au>
-References: <000d01c2958f$d3fadbd0$1e00a8c0@yamatto> <3DE41C6F.2050704@iprimus.com.au> <001701c295bd$2967c7e0$1e00a8c0@yamatto>
+Message-ID: <3DE43A5F.3070909@iprimus.com.au>
+References: <000d01c2958f$d3fadbd0$1e00a8c0@yamatto> <3DE41C6F.2050704@iprimus.com.au> <002101c295be$881c5c00$1e00a8c0@yamatto>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -21,35 +21,48 @@ To: netfilter@lists.netfilter.org
 
 Dan Egli wrote:
 
->Traffic to 192.168.0.255? I don't recall seeing anythign that would block
->that. Here's what the table list shows:
-><snip>
+>Ok. I found the lookup order as:
+>wins lmhosts bcast
+>
+>Which is how a windows client would connect. (except it would read lmhosts
+>first). This needs to work not only for
+>smbclient but also for any windows machines in the 192.168.0.x network. And
+>adding a lmhosts to each machine is not really an option except as an
+>absolute last resort.
+>
+>I need the system to be able to resolve netbios names via broadcast if at
+>all possible. I still don't see why a request to 192.168.0.255 would fail.
+>
+>Here's the log fragments when I run smbclient //myserver/shared1 -U myuser:
+>(resolve order = wins lmhosts bcast)
+>
+>Nov 26 20:33:22 mail last message repeated 2 times
+>
+>Nov 26 20:34:03 mail kernel: IN=lo OUT=
+>MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1
+>LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=32814 DPT=137 LEN=58
+>Nov 26 20:34:07 mail last message repeated 2 times
+>Nov 26 20:34:09 mail kernel: IN=lo OUT=
+>MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=192.168.0.2
+>DST=192.168.0.2 LEN=90 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137
+>DPT=32814 LEN=70
+>Nov 26 20:34:10 mail last message repeated 2 times
+>Nov 26 20:34:10 mail kernel: IN=lo OUT=
+>MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=64.122.31.38
+>DST=64.122.31.38 LEN=90 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137
+>DPT=32814 LEN=70
+>
+>Any ideas, anyone?
 >
 
-Yes, ok. That's why I said "Probably nothing wrong with the iptables 
-rules". I went on to elaborate that you do need to allow bcast for bcast 
-name lookups to work...
 
-Like I said, have a look at the name lookups setup in smb.conf.
+The logs are IN=lo. You have no rules to match interface lo.  Are you 
+running smbclient from local? You need iptables rules to allow from lo 
+too....
 
-What message does smbclient give you ??
+Sorry I didn't think of this before...
 
-Here's a good bcast namelookup:
-
-smbclient //mandingo/mandingo -U mandingo
-added interface ip=192.168.0.241 bcast=192.168.0.255 nmask=255.255.255.0
-Got a positive name query response from 192.168.0.250 ( 192.168.0.250 )
-Password:
-Domain=[WORKGROUP] OS=[Unix] Server=[Samba 2.0.6]
-smb: \> exit
-
-This is without /etc/hosts  entry for mandingo host.
-
-What say ?:
-
-nmblookup -B 192.168.0.255 shared1
-
-Cheers, Michael
-
+Cheers,
+Michael
 
 
