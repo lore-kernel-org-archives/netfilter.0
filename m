@@ -1,14 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: O-Zone <liste@zerozone.it>
 Subject: Re: DMZ to DMT through ROUTER problem !
-Date: Thu, 20 May 2004 13:30:31 +0100
+Date: Thu, 20 May 2004 14:54:43 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405201330.31625.Antony@Soft-Solutions.co.uk>
-References: <200405201318.34706.liste@zerozone.it>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200405201454.50355.liste@zerozone.it>
+References: <200405201318.34706.liste@zerozone.it> <200405201330.31625.Antony@Soft-Solutions.co.uk>
+Reply-To: liste@zerozone.it
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405201318.34706.liste@zerozone.it>
+In-Reply-To: <200405201330.31625.Antony@Soft-Solutions.co.uk>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +20,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 20 May 2004 12:18 pm, O-Zone wrote:
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> i've a big problem. Here's a little diagram:
+Thanks for reply,
+
+On Thursday 20 May 2004 14:30, Antony Stone wrote:
+[ SNIP ]
+[INTRANET 10.0.0.0/24]-------------+
+                                                      +--[ROUTER]--(NET)
+[DMZ SERVER A - 192.168.0.2]----+
+[DMZ SERVER B - 192.168.0.3]----+
+
+Each DMZ server is mapped to it's PUBLIC IP. For example:
+
+151.8.47.A ----> 192.168.0.2
+151.8.47.B ----> 192.168.0.3
+[...]
+> It's the reply packets which are the problem.
 >
-> [INTRANET 10.0.0.0/24]-------------+
->                                                       +--[ROUTER]--(NET)
-> [DMZ SERVER A - 192.168.0.2]----+
-> [DMZ SERVER B - 192.168.0.3]----+
->
-> Each DMZ server is mapped to it's PUBLIC IP. For example:
->
-> 151.8.47.A ----> 192.168.0.2
-> 151.8.47.B ----> 192.168.0.3
->
-> and all work perfectly !!!
->
-> The problem is when, from 192.168.0.2, i try to connect to 151.08.47.B
-> (trat's mapped to 192.168.0.3): packets die on ROUTER.
+> http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
 
-It's the reply packets which are the problem.
+i've read that manual but i't not so clear. It say to do a:
 
-Think about a TCP connection:
+# iptables -t nat -A POSTROUTING -d 192.168.1.1 -s 192.168.1.0/24 \
+        -p tcp --dport 80 -j SNAT --to 192.168.1.250
 
-1. SYN packet from 192.168.0.2 to 151.8.47.B goes to the firewall.
-2. Firewall DNATs 151.8.47.B to 192.168.0.3
-3. SYN packet goes from firewall to 192.168.0.3
-4. 192.168.0.3 sends SYN-ACK to 192.168.0.2 on local net (not via firewall)
-5. 192.168.0.2 wonders why it got a SYN-ACK from 192.168.0.3 when it sent the 
-SYN to 151.8.47.B
+but  can't understand what it say for 192.168.1.250. As in my config, i've=
+=20
+write down that rule:
 
-http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
+$IPTABLES -t nat -A POSTROUTING -d 151.8.47.B -s 192.168.0.0/24 -p tcp -j S=
+NAT=20
+=2D --to 192.168.0.1
 
-Regards,
+=2E..where 192.168.0.1 is the DMZ interface of ROUTER. It don't work. Where=
+'s=20
+the error ?
 
-Antony.
+Thanks. Oz
 
--- 
-"The problem with television is that the people must sit and keep their eyes 
-glued on a screen; the average American family hasn't time for it."
 
- - New York Times, following a demonstration at the 1939 World's Fair.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+=2D --=20
+Children are natural mimics who act like their parents despite every
+effort to teach them good manners.
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFArKqVYuBSFbgkEysRAr5UAJ9BYkyVJ7UP659V1E46GhbWcADehwCgsKj4
+2NJvOiTcojDX9CPzQPSG0Nc=3D
+=3DJx70
+=2D----END PGP SIGNATURE-----
 
 
