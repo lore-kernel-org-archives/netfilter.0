@@ -1,11 +1,12 @@
-From: "Jeff 'Gum-y' East" <an972@ncf.ca>
-Subject: masquerading works for Xterminal, but not Mac 0S/X
-Date: Sun, 30 Mar 2003 15:04:35 -0500
+From: Peteris Krumins <newsgroups@lf.lv>
+Subject: IP Fragmentation
+Date: Mon, 31 Mar 2003 00:06:15 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030330200435.GD2280@localhost>
+Message-ID: <127503161447.20030331000615@lf.lv>
+Reply-To: Peteris Krumins <newsgroups@lf.lv>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +17,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-	I have reduced my rules for testing purposes to:
+Hi,
 
-iptables --table nat -A POSTROUTING --out-interface ppp0 -j MASQUERADE
-echo 1 > /proc/sys/net/ipv4/ip_forward
+ How often does IP Fragmentation occur?
+ Is it safe to restrict any fragmented packets to 'come' into my
+ network?
 
-	Now my Xterminal's telnet client (only thing I can test with) and
-dns lookups go through my forwarding just fine.  But when I connected my
-friend's Powerbook (Graphite edition?) with OS/X up to it, I saw NO traffice
-with iptstate.
 
-- The Mac DID get an IP address (but not nameserver entries) from my dhcpd
-successfully.
+P.Krumins
 
-- even failed lookups (bad iptables rules) from my Xterminal showed up on
-iptstate
-
-	Could the OS/X implementation of TCP/IP have something odd with it?
-___________________________________________________________________________
-         Say NO to HTML emails:     http://expita.com/nomime.html
 
