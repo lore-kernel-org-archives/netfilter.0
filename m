@@ -1,42 +1,39 @@
-From: Nils Juergens <ju@isf.rwth-aachen.de>
-Subject: Re: what is the relationship between Netfilter & iptables.
-Date: Wed, 20 Aug 2003 15:35:50 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030820133550.GA1149@koala7>
-References: <001001c36635$4e476ef0$da836bd2@kylee>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <001001c36635$4e476ef0$da836bd2@kylee>
-Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+From: Rusty Russell <rusty@rustcorp.com.au>
+Subject: Re: [netfilter-core] Re: [ANNOUNCE] netfilter.org systems downtime
+Date: Sat, 23 Aug 2003 02:32:42 +1000
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030822163353.E468E2C0A8@lists.samba.org>
+References: <3F4633AE.8010801@trama.com>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-reply-to: Your message of "Fri, 22 Aug 2003 12:15:58 -0300."
+             <3F4633AE.8010801@trama.com> 
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "Herbert G. Fischer" <herbert@trama.com>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-On Tue, 19.08.03, Kyoungyong Lee <leeky@icu.ac.kr> wrote:
+In message <3F4633AE.8010801@trama.com> you write:
+> I also never heard of a workshop that worked 24 hours during some 
+> days... Maybe some SMS cellphone warnings could monitor some systems...
 
-> 
-> I'd like to know the relationship between Netfilter and iptables.
+Well, Harald wanted to stay back at the hotel on the last day of the
+workshop while the rest of us went sightseeing, and we dragged him
+away.  There are plenty of other sources for the software, and he
+deserved the break.  If he hadn't we would have all had to stay
+behind, and I wanted to sightsee 8)
 
-If i'm not mistaken, netfilter is the linux kernel module itself, while
-iptables is "just" the programm to control netfilter.
-
-So you use iptables to modify netfilter rules.
-
-hope that helps,
-
-Nils
--- 
-Nils Juergens  | ju@isf.rwth-aachen.de
-Having problems sending big files over the net?
-Try out Efisto (http://efisto.rnbhq.org).
-
+Hope that clarifies,
+Rusty.
+--
+  Anyone who quotes me in their sig is an idiot. -- Rusty Russell.
 
