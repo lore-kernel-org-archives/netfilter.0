@@ -1,12 +1,13 @@
-From: Adharsh Praveen R <adarsh@multitech.co.in>
-Subject: pptp-conntrack-nat.patch Vs pptp-gre-ct-nat-0.83.patch]
-Date: Fri, 11 Oct 2002 10:06:11 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Fw: How to remove Established Connection
+Date: Fri, 11 Oct 2002 08:49:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DA6553B.FFA4A75D@multitech.co.in>
+Message-ID: <20021011074918.SGVP459.mta02-svc.ntlworld.com@there>
+References: <00e301c270e7$09c5a7e0$7cfcc5cb@humanpc>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------608C435323C01B0D82132848"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <00e301c270e7$09c5a7e0$7cfcc5cb@humanpc>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,123 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
---------------608C435323C01B0D82132848
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+On Friday 11 October 2002 6:28 am, HareRam wrote:
 
+> Seems to be tehre is no answer below mentioned
 
+You are correct.   There is no mechanism to do what you want.
 
---------------608C435323C01B0D82132848
-Content-Type: message/rfc822
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Antony.
 
-X-Mozilla-Status2: 00000000
-Message-ID: <3DA40A08.55705015@multitech.co.in>
-Date: Wed, 09 Oct 2002 16:20:49 +0530
-From: Adharsh Praveen R <adarsh@multitech.co.in>
-X-Mailer: Mozilla 4.76 [en] (X11; U; Linux 2.4.18 i686)
-X-Accept-Language: en
-MIME-Version: 1.0
-To: netfilter@lists.netfilter.org
-Subject: pptp-conntrack-nat.patch Vs pptp-gre-ct-nat-0.83.patch
-Content-Type: multipart/alternative;
- boundary="------------3179E683F66811D21A0EFD0C"
+> ----- Original Message -----
+> From: "HareRam" <hareram@sol.net.in>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Wednesday, October 09, 2002 9:43 PM
+> Subject: How to remove Established Connection
+>
+> > Hi all Guru
+> >
+> > how can i remove Dynamically ESTABLISHED connection
+> > for the perticular IP address or MAC address, on fly
+> > thanks for the advanced help
+> >
+> > hare
 
+-- 
 
---------------3179E683F66811D21A0EFD0C
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Anything that improbable is effectively impossible.
 
-hai
-
-I am new to the list and new to iptables. Please forgive me if I sound
-stupid.
-
-I would like to know the differences between pptp-conntrack-nat.patch
-and
-
-pptp-gre-ct-nat-0.83.patch.
-
-I am trying to apply these patches to my 2.4.18 kernel.
-
-I am using iptables-1.2.6a.
-
-I applied pptp-conntrack-nat.patch first to the kernel.
-
-Later I tried appling pptp-gre-ct-nat-0.83.patch.
-
-when I try to compile the kernel after saying make menuconfig and make
-bzImage,
-
-make install, the compilation fails in make modules.
-
-saying
-
-structure has no member named 'master' in ip_conntrack_pptp.c
-
-structure has no member named 'list' in ip_conntrack_pptp.c
-
-(This is for the structure ip_ct_pptp )
-
-when I check the file, the structure has a member called slave.
-
-pptp-conntrack-nat.patch wants a member called master in the structure.
-
-where as pptp-gre-ct-nat-0.83.patch adds a member called slave in the
-structure.
-
-Can I apply these two patches together or any one of them is enough
-
-for PPTP to function with NAT.
-
-Can anyone enlighten me on this?
-
-Thanks in advance.
-
-regards,
-adharsh.
-
---------------3179E683F66811D21A0EFD0C
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-hai
-<p>I am new to the list and new to iptables. Please forgive me if I sound
-stupid.
-<p>I would like to know the differences between pptp-conntrack-nat.patch
-and
-<p>pptp-gre-ct-nat-0.83.patch.
-<p>I am trying to apply these patches to my 2.4.18 kernel.
-<p>I am using iptables-1.2.6a.
-<p>I applied pptp-conntrack-nat.patch first to the kernel.
-<p>Later I tried appling pptp-gre-ct-nat-0.83.patch.
-<p>when I try to compile the kernel after saying make menuconfig and make
-bzImage,
-<p>make install, the compilation fails in make modules.
-<p>saying
-<p><b><u>structure has no member named 'master' in ip_conntrack_pptp.c</u></b><b><u></u></b>
-<p><b><u>structure has no member named 'list' in ip_conntrack_pptp.c</u></b>
-<p>(This is for the structure ip_ct_pptp )
-<p>when I check the file, the structure has a member called slave.
-<p>pptp-conntrack-nat.patch wants a member called master in the structure.
-<p>where as pptp-gre-ct-nat-0.83.patch adds a member called slave in the
-structure.
-<p>Can I apply these two patches together or any one of them is enough
-<p>for PPTP to function with NAT.
-<p>Can anyone enlighten me on this?
-<p>Thanks in advance.
-<p>regards,
-<br>adharsh.</html>
-
---------------3179E683F66811D21A0EFD0C--
-
-
---------------608C435323C01B0D82132848--
-
+ - Murray Gell-Mann, Nobel Prizewinner in Physics
 
