@@ -1,11 +1,11 @@
-From: William Stearns <wstearns@pobox.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: iptables: troubling identifying  devices
-Date: Thu, 12 Feb 2004 12:49:39 -0500 (EST)
+Date: Thu, 12 Feb 2004 18:51:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0402121244110.14623-100000@sparrow>
+Message-ID: <1076608270.1329.148.camel@elendil.intranet.cartel-securite.net>
 References: <BFEIJHPOPCCMOPEKHHMOOEDOCNAA.giovanni.costagliola@nexusat.it>
-Reply-To: William Stearns <wstearns@pobox.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <BFEIJHPOPCCMOPEKHHMOOEDOCNAA.giovanni.costagliola@nexusat.it>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,55 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: giovanni costagliola <giovanni.costagliola@nexusat.it>
-Cc: ML-netfilter <netfilter@lists.netfilter.org>, William Stearns <wstearns@pobox.com>
+Cc: netfilter@lists.netfilter.org
 
-Good evening, Giovanni,
-
-On Thu, 12 Feb 2004, giovanni costagliola wrote:
-
-> hello guys,
-> 	I'm experiencing a strange problem with iptables nat configuration.
-> 
-> I've set up a star firewall with 3 physical NIC. I've configured two oh them
+Le jeu 12/02/2004 =E0 18:29, giovanni costagliola a =E9crit :
+> I've set up a star firewall with 3 physical NIC. I've configured two oh=
+ them
 > with multi-ip assignement.
-> 
-> let's go to the core of the problem. it seems that the iface identified by
-> eth0_1, eth0_0 are not recognized by iptables. if I change the name using
-> the less qualified eth0 (adding some more details to discriminate the
-> source) it works.
-> 
-> where I am wrong?
-> 
-> I have also noticed that iptable accept any name to identify the NIC.
-> 
-> my workaround is not so elegant. there's another way to name the iface
-> multiIPed?
+> let's go to the core of the problem. it seems that the iface identified=
+ by
+> eth0_1, eth0_0 are not recognized by iptables.
 
-	My best understanding is that iptables can only identify the 
-physical device - eth0.
-	Think about the problems of trying to do rules based on "eth0:1".  
-If I have 4 IP addresses on a subnet bound to a physical eth0 and I get a
-packet to the broadcast address of that subnet, which virtual interface
-would that match?
-	In short, iptables can only identify the physical device.  To get 
-nor granular, you're going to have to use -s or -d to match on ip 
-addresses, and then think about what to do with broadcast packets, for 
-example.
-	Cheers,
-	- Bill
+Aliases are not interfaces, they're just another IP for an interface
+answers ARP requests. That's why eth0:0, eth0:1, etc. usage is
+deprecated.
 
----------------------------------------------------------------------------
-	"Microsoft's biggest and most dangerous contribution to the 
-software industry may be the degree to which it has lowered user 
-expectations."
-	-- Esther Schindler, OS/2 Magazine
-(Courtesy of Bob Tracy - TDS <rct@merkin.csap.af.mil>)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+Netfilter matches interfaces, real ones. So you can't match aliases
+with. You'll have to use affected IP addresses and interface (i.e.
+eth0).
 
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
 
