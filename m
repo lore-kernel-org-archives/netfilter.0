@@ -1,11 +1,10 @@
-From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
-Subject: RE: Trying to get a Subnet NATted
-Date: Tue, 10 Dec 2002 08:52:18 +0100
+From: "louie miranda" <lmiranda@chikka.com>
+Subject: portfw on iptables 2.4 kernel problem.
+Date: Tue, 10 Dec 2002 16:56:39 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B32154A646@hslex01.hslbz.local>
+Message-ID: <014901c2a02a$0dbf59f0$0b00000a@nocpc3>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2A021.0FF82200"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,99 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'Kevin L. Collins'" <kcollins@qx.net>, "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+I have an internel ftp server w/c i want to access over my linux router(gw)
+Its internel IP is 10.0.0.11 and port 21. My externel IP lets say
+203.100.100.1.
+I followed the docs w/c i found at linuxdoc
+http://www.tldp.org/HOWTO/IP-Masquerade-HOWTO/forwarders.html
+I type in this iptables rule set,
 
-------_=_NextPart_001_01C2A021.0FF82200
-Content-Type: text/plain
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --dport 21 -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A PREROUTING -t nat -p tcp -d $EXTIP --dport 21 -j DNAT --to
+10.0.0.11:21
 
-> I've got this command in my script:
-> iptables -t nat -A POSTROUTING -o EXTIF -j SNAT --to-source EXTIP
+I enabled ip forwarding thru the kernel by typing this command, (this is the
+first thing i type then the iptables rule set)
 
-> I've also tried this:
-> iptables -t nat -A POSTROUTING -o EXTIF -j SNAT --to-source EXTIP
-> iptables -t nat -A POSTROUTING -s 10.200.9.0/24 -o EXTIF -j SNAT
---to-source EXTIP
-> iptables -t nat -A POSTROUTING -s 10.200.10.0/24 -o EXTIF -j SNAT
---to-source EXTIP
+echo "1" > /proc/sys/net/ipv4/ip_forward
 
-If these lines are in your script, what is you FORWARD rule ? Normally a
-firewall has policy DROP for the INPUT and FORWARD (some also OUTPUT, but
-not always) chains.
-If you have FORWARD policy set to DROP but don't have an ACCEPT for your
-SNAT rules, they won't work.
+svr:/# cat /proc/sys/net/ipv4/ip_forward
+1
+svr:/#
 
-When you want to SNAT 10.200.9.0/24 and 10.200.10.0/24 it should look like
-this (assuming you have policy DROP for the FORWARD chain) :
+And still it does not work..
 
-iptables -t nat -A POSTROUTING -s 10.200.9.0/24 -o $EXTIF -j SNAT
---to-source $EXTIP
-iptables -t nat -A POSTROUTING -s 10.200.10.0/24 -o $EXTIF -j SNAT
---to-source $EXTIP
-iptables -A FORWARD -s 10.200.9.0/24 -o $EXTIF -j ACCEPT
-iptables -A FORWARD -s 10.200.10.0/24 -o $EXTIF -j ACCEPT
+Trying 203.100.100.1...
+telnet: Unable to connect to remote host: Connection refused
 
 
-Rob
 
-------_=_NextPart_001_01C2A021.0FF82200
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>RE: Trying to get a Subnet NATted</TITLE>
-</HEAD>
-<BODY>
 
-<P><FONT SIZE=3D2>&gt; I've got this command in my script:</FONT>
-<BR><FONT SIZE=3D2>&gt; iptables -t nat -A POSTROUTING -o EXTIF -j SNAT =
---to-source EXTIP</FONT>
-</P>
+--
+thanks,
+louie miranda
 
-<P><FONT SIZE=3D2>&gt; I've also tried this:</FONT>
-<BR><FONT SIZE=3D2>&gt; iptables -t nat -A POSTROUTING -o EXTIF -j SNAT =
---to-source EXTIP</FONT>
-<BR><FONT SIZE=3D2>&gt; iptables -t nat -A POSTROUTING -s 10.200.9.0/24 =
--o EXTIF -j SNAT --to-source EXTIP</FONT>
-<BR><FONT SIZE=3D2>&gt; iptables -t nat -A POSTROUTING -s =
-10.200.10.0/24 -o EXTIF -j SNAT --to-source EXTIP</FONT>
-</P>
 
-<P><FONT SIZE=3D2>If these lines are in your script, what is you =
-FORWARD rule ? Normally a firewall has policy DROP for the INPUT and =
-FORWARD (some also OUTPUT, but not always) chains.</FONT></P>
-
-<P><FONT SIZE=3D2>If you have FORWARD policy set to DROP but don't have =
-an ACCEPT for your SNAT rules, they won't work.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>When you want to SNAT 10.200.9.0/24 and =
-10.200.10.0/24 it should look like this (assuming you have policy DROP =
-for the FORWARD chain) :</FONT></P>
-
-<P><FONT SIZE=3D2>iptables -t nat -A POSTROUTING -s 10.200.9.0/24 -o =
-$EXTIF -j SNAT --to-source $EXTIP</FONT>
-<BR><FONT SIZE=3D2>iptables -t nat -A POSTROUTING -s 10.200.10.0/24 -o =
-$EXTIF -j SNAT --to-source $EXTIP</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -s 10.200.9.0/24 -o $EXTIF -j =
-ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -s 10.200.10.0/24 -o $EXTIF -j =
-ACCEPT</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>Rob</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C2A021.0FF82200--
 
