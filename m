@@ -1,12 +1,12 @@
-From: Stephen Shirley <diamond+netfilter@skynet.ie>
-Subject: Re: conntrack broken with multiple gateways?
-Date: Mon, 07 Feb 2005 16:48:08 +0000
-Message-ID: <42079BC8.1020303@skynet.ie>
-References: <4202FA6F.5080500@skynet.ie>
-	<d64535605020403435dcc2b0b@mail.gmail.com>
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: ever block *outgoing* packets on your firewall?
+Date: Mon, 7 Feb 2005 17:44:27 +0000
+Message-ID: <20050207174427.GZ14572@metastasis.org.uk>
+References: <20050114200228.GA21562@spawar.navy.mil>
+	<20050114201404.GA27341@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <d64535605020403435dcc2b0b@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20050114201404.GA27341@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,18 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ulysses Almeida <ulysses.almeida@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Ulysses Almeida wrote:
-> Do you have your ReturnPathFilter disable? If it's enabled, multiple
-> routing is supose not to work
-> 
-> echo 0 > /proc/sys/net/ipv4/conf/*/rp_filter
+On Fri, Jan 14, 2005 at 03:14:04PM -0500, Jason Opperisano wrote:
+> On Fri, Jan 14, 2005 at 12:02:28PM -0800, seberino@spawar.navy.mil wrote:
 
-And that was it, thank you!
+> > I'm wondering if it is ever necessary to block
+> > *outgoing* packets at your firewall.
 
-Steve
+Yes, but others have answered this in a far more timely fashion than
+myself.
 
+> i run a default DROP policy on the OUTPUT chain of my firewalls and
+> only allow out necessary traffic (DNS, HTTP/FTP to update servers,
+> NTP, etc).  but i'm pretty odd when it comes to these things--i don't
+> know how necessary it is.  the one nice side-effect is that is keeps
+> me from doing something stupid when i'm ssh-ed into a firewall.
+
+Out of interest why "DROP" rather than "REJECT"?  With reject users,
+hosts or programs on the inside tend to fail straight away rather than
+taking a while to time out annoyingly.
+
+-- 
+Where are we going and what's with the hand basket?
 
