@@ -1,14 +1,15 @@
-From: ASHISH <ashishis@gmail.com>
-Subject: Re: Limit Virus Effects on Web Server
-Date: Fri, 7 Jan 2005 15:17:21 +0530
-Message-ID: <558224e3050107014741bb9a26@mail.gmail.com>
-References: <20050105144413.15525.qmail@webmail02.mesa1.secureserver.net>
-	<1105023418.20638.15.camel@nostromo.bgsecm.com>
-Reply-To: ASHISH <ashishis@gmail.com>
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: Guaranteeing bandwidth through netfilter-based router?
+Date: Fri, 7 Jan 2005 08:48:09 +0000
+Message-ID: <200501070848.09790.gdh@acentral.co.uk>
+References: <132A17DB-6023-11D9-BC93-000A95CFE5AA@latencyzero.com>
+	<20050106222649.GA26877@acentral.co.uk>
+	<1105064717.7100.78.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1105023418.20638.15.camel@nostromo.bgsecm.com>
+In-Reply-To: <1105064717.7100.78.camel@localhost>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,54 +20,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-If you are aware of the Ip's from which viral traffic is bombarding
-requests, then you can tighten the limit match for those IP's. But if
-it is a DDos attack, then netfilter cannot do much.
+On Friday 07 January 2005 02:25, John A. Sullivan III wrote:
 
-We are experimenting netfilter along with scripting over inhouse built
-algorithms. Like we analyse internet traffic periodically, and the
-scripts inserts and remove rules into netfilter generally once a day.
+> Not really, there are pertinent elements of netfilter.  Linux will to
+> some rudimentary traffic shaping based upon the TOS bits.  One can
+> change those in the mangle table.  Set the VoIP packets as best as you
+> can identify them with TOS of minimize-delay - John
 
-On 07 Jan 2005 00:48:49 +0100, Jose Maria Lopez <jkerouac@bgsec.com> wrote:
-> El mi=E9, 05 de 01 de 2005 a las 15:44, Benjamin Bostow escribi=F3:
-> > I have a gateway that directs all internal web traffic to my website.
-> > The site makes use of extensive DB calls. When someone with a virus
-> > that connects to port 80 plugs in behind the gateway the DB goes to
-> > 100% CPU usage. I am trying to limit this and try to filter out virus
-> > traffic from browser/user traffic. I was thinking I could use kinda the
-> > same rule as I have for preventing ping attacks but it doesn't seem to
-> > work. I have tried using "iptables -t nat -I PREROUTING 1 -p tcp -m tcp
-> > --dport 80 -m limit --limit 5/s --limit-burst 10 -j redirection_chain".
-> > It seems that all traffic no matter how great still goes to my
-> > webserver. Also, is there a way to drop packets over a certain amount
-> > per time from one user?
-> >
-> > Benjamin
->=20
-> Maybe an IPS like snort with the bleeding-rules can be useful to
-> drop some of this traffic.
->=20
-> --
-> Jose Maria Lopez Hernandez
-> Director Tecnico de bgSEC
-> jkerouac@bgsec.com
-> bgSEC Seguridad y Consultoria de Sistemas Informaticos
-> http://www.bgsec.com
-> ESPA=D1A
->=20
-> The only people for me are the mad ones -- the ones who are mad to live,
-> mad to talk, mad to be saved, desirous of everything at the same time,
-> the ones who never yawn or say a commonplace thing, but burn, burn, burn
-> like fabulous yellow Roman candles.
->                 -- Jack Kerouac, "On the Road"
->=20
->=20
+Interesting stuff - I didn't know the kernel itself would prioritise packets 
+simply by having these bits set, I thought they only existed so that some 
+upstream router / ISP could manage them.
 
-
---=20
-cheers
-Ashish
+Cheers,
+Gavin.
 
