@@ -1,10 +1,9 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: What's this?
-Date: Wed, 22 Dec 2004 19:59:17 +0100
-Message-ID: <20041222185859.EE9106E5D8@kshira.sterenborg.info>
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: What's this?
+Date: Wed, 22 Dec 2004 14:01:10 -0500 (EST)
+Message-ID: <Pine.LNX.4.61.0412221400520.9339@localhost.localdomain>
 References: <B8AA56031371696C3C526854@[192.168.10.245]>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <B8AA56031371696C3C526854@[192.168.10.245]>
 List-Id: <netfilter.vger.kernel.org>
@@ -17,28 +16,13 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: 'Netfilter ML' <netfilter@lists.netfilter.org>
-
-netfilter-bounces@lists.netfilter.org wrote:
-
-> I have found following lines in my mail log:
-
-A bell rings already...
-
-> ----------
-> Dec 22 18:10:13 xmail imap[29555]: SQUAT failed to open index
-> file Dec 22 18:10:13 xmail imap[29555]: SQUAT failed ----------
-> I am running FC3+Sendmail+Cyrus-imapd.
-> 
-> What is SQUAT? I don't remember setting this up.
-
-No Idea.
-But since you're talking about maillog, Sendmail and Cyrus-imapd I
-suppose you're mailing the wrong list.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Sasa Stupar <sasa@stupar.homelinux.net>
+Cc: Netfilter ML <netfilter@lists.netfilter.org>
 
 
-Gr,
-Rob
+  a *really* poorly chosen subject field?
 
+rday
 
