@@ -1,13 +1,10 @@
-From: "Christian E. =?iso-8859-1?q?L=F3pez?= Finnberg" <christian@finnberg.net>
-Subject: Imposible configuration?
-Date: Fri, 14 May 2004 16:22:37 +0100
+From: "azeem ahmad" <azeem484@hotmail.com>
+Subject: Re: smtp
+Date: Fri, 14 May 2004 15:41:01 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405141622.37892.christian@finnberg.net>
-Reply-To: christian@finnberg.net
+Message-ID: <BAY15-F11qrwMfNORuP0005ce41@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,61 +14,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all, Please I need some help...
+hi
+sorry for disturbing you a lot
+but i dont know how can i capture the screen. should i write it down
 
-I have a server with kernel 2.6.6 (netfilter activated), LAN 192.168.0.x/24=
-=20
-and 15 ISDN dial-up interfaces IPPPx. The ISDN interfaces are configured to=
-=20
-be dial-on-demand and they connect to 15 different win98 machines.=20
-
-My nightmare started when I realized that windows 98 RAS server always assi=
-gns=20
-the same IPs (192.168.55.1 to the Server and 192.168.55.2 to the client). I=
-=20
-want to automaticaly connect to any of this machines (so the source=20
-connection is in my own LAN).I assigned in my LAN a "virtual" IP to each=20
-remote PC (192.168.2.1, 192.168.3.1, ... and so on) and create the apropiat=
-e=20
-routes to it:
-
-My ISDN interfaces looks like this:
-ippp0     Link encap:Point-to-Point Protocol
-          inet addr:192.168.55.2  P-t-P:192.168.55.1  Mask:255.255.255.255
-          UP POINTOPOINT RUNNING NOARP  MTU:1500  Metric:1
-          collisions:0 txqueuelen:30
-          RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
-
-And My routes are this way:
-Destination     Gateway         Genmask         Flags Metric Ref    Use Ifa=
-ce
-192.168.2.1     0.0.0.0         255.255.255.255 UH    0      0        0 ipp=
-p0
-192.168.3.1     0.0.0.0         255.255.255.255 UH    0      0        0 ipp=
-p1
-192.168.4.1     0.0.0.0         255.255.255.255 UH    0      0        0 ipp=
-p2
-192.168.5.1     0.0.0.0         255.255.255.255 UH    0      0        0 ipp=
-p3
-192.168.6.1     0.0.0.0         255.255.255.255 UH    0      0        0 ipp=
-p4
-=2E..
-
-So the only resting step is to translate 192.168.x.1 to 192.168.55.1 in the=
-=20
-apropiate interface (In a POSTROUTE way), but I dont
-see a form to do this. :-(
-
-It is there any way of do this with netfilter or Linux?.=20
-I saw an old document that do something like this, but it used obsolet=20
-ipnatadm tool.
+Regards
+Azeem
 
 
-Many thanx,
 
-	Christian E. L=F3pez Finnberg
-	Las Palmas de Gran Canaria.
+>From: Gavin Hamill <gdh@acentral.co.uk>
+>To: netfilter@lists.netfilter.org
+>Subject: Re: smtp
+>Date: Fri, 14 May 2004 14:40:16 +0100
+>
+>On Friday 14 May 2004 14:19, azeem ahmad wrote:
+> > hi
+> > please tell me how can i save the output of tcpdump to a file
+> >
+> > i tried -F anf -w but it doesnt seem to work
+>
+>-w is the one to use, but you do need to tell it a filename. However, what 
+>I
+>meant was simply copy + paste the output you see on the console since that
+>will be a lot easier for us to glance at.. I mean the stuff like this:
+>
+>tel# tcpdump -i eth1 -n port 25
+>tcpdump: listening on eth1
+>14:39:37.592117 10.0.0.52.3564 > 194.200.209.13.25: S 
+>1292097321:1292097321(0)
+>win 64240 <mss 1460,nop,nop,sackOK> (DF)
+>14:39:37.592174 10.0.0.254.3564 > 10.0.0.253.25: S 1292097321:1292097321(0)
+>win 64240 <mss 1460,nop,nop,sackOK> (DF)
+>14:39:37.592353 10.0.0.253.25 > 10.0.0.254.3564: S 958030498:958030498(0) 
+>ack
+>1292097322 win 5840 <mss 1460,nop,nop,sackOK> (DF)
+>14:39:37.592381 194.200.209.13.25 > 10.0.0.52.3564: S 
+>958030498:958030498(0)
+>ack 1292097322 win 5840 <mss 1460,nop,nop,sackOK> (DF)
+>14:39:37.592587 10.0.0.52.3564 > 194.200.209.13.25: . ack 1 win 64240 (DF)
+>14:39:37.592603 10.0.0.254.3564 > 10.0.0.253.25: . ack 1 win 64240 (DF)
+>
+>Cheers,
+>Gavin.
+>
+
+_________________________________________________________________
+Add photos to your e-mail with MSN 8. Get 2 months FREE*. 
+http://join.msn.com/?page=features/featuredemail
+
 
