@@ -1,13 +1,15 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Problem behind my DMZ
-Date: Fri, 9 Jan 2004 10:26:57 -0500
+From: Unknown <unknown@unknown.invalid>
+Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
+Date: Fri, 9 Jan 2004 09:50:56 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040109152657.GA24304@cannon.eng.us.uu.net>
-References: <Law9-F354jsKlkag7KO00012b91@hotmail.com>
+Message-ID: <34314.5191124224$1073660059@news.gmane.org>
+References: <08934AF8-4258-11D8-AFEE-000393677A36@porchlight.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+From: Alistair Tonner <>
+In-Reply-To: <08934AF8-4258-11D8-AFEE-000393677A36@porchlight.ca>
 Content-Disposition: inline
-In-Reply-To: <Law9-F354jsKlkag7KO00012b91@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +20,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Martin Leduc <marled3@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: Peter Schobel <pschobel@porchlight.ca>, netfilter@lists.netfilter.org
 
-On Fri, Jan 09, 2004 at 09:54:42AM +0000, Martin Leduc wrote:
+On January 8, 2004 10:58 pm, Peter Schobel wrote:
+> On Thursday, January 8, 2004, at 09:33  PM, Alistair Tonner wrote:
+> > what do you get for modprobe --version and ld -v ?
+> > 	I suspect your modutils is incorrect for 2.6.0
+>
+> modprobe --version
+> module-init-tools version 0.9.12
+>
+> ld -v
+> GNU ld version 2.13.90.0.18 20030206
 
-> >Is your IP forwarding turned on?
-> 
-> Yes, it is.
+	Okay .. those are both good -- 
 
-OK. Then is proxy_arp turned on?
-
-> Can you explain to me why /32 against /28 netmask, or tell me 
-> where I can get the documentation?
-
-Take a look at lartc.org.
-
-> >Please use the "ip" utility instead of ifconfig/route/arp/... It's much 
-> >easier
-> >and more powerful...
-> 
-> Ok I will tried, but is not installed by default with slackware.  I will 
-> search where I can get it.
-
-You might be required to recompile the kernel with the Advanced Routing
-features.
-
-Ramin
-
+	is the error you are getting
+	"WARNING : dont include kernel headers in userspace"
+	?
+	
+	Alistair
+>
+>
+> *****************************
+> Peter Schobel
+> Network Administrator
+> Porchlight.ca
+> Unlimited Internet
+> *****************************
+> In a world without walls or fences
+> We will have no need for gates or windows
+> *****************************
 
