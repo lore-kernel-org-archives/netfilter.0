@@ -1,11 +1,13 @@
-From: Ian Batterbee <ian.batterbee@aut.ac.nz>
-Subject: Re: Broadcast layer2 forwarding (ff:ff:ff:ff:ff:ff)
-Date: Tue, 07 Jan 2003 11:36:20 +1300
+From: Chris Straessle <sacrelege@swissonline.ch>
+Subject: Re: netfilter under heavy load.
+Date: Tue, 07 Jan 2003 00:08:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E1A04E4.5090502@aut.ac.nz>
+Message-ID: <3E1A0C70.50705@swissonline.ch>
+References: <007101c2b4d0$be992520$0100a8c0@win98> <1262587210.20030106142415@complexsystem.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1262587210.20030106142415@complexsystem.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,50 +18,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tim.Shook@itt.com
-Cc: netfilter@lists.netfilter.org
+To: "ITM CS Ruslan O. Nesterov" <ruslan@complexsystem.ru>, Mike Olivere <mikeeo@msn.com>
+Cc: netfilter-admin@lists.netfilter.org, netfilter@lists.netfilter.org
 
-> If the MAC addresses on these are standard, manufacturer assigned addresses,
-> everything works fine.  If I manipulate the MACs with ifconfig and set them
-> to ALMOST any other MAC, everything works fine, however when I set the MAC
-> to a layer 2 broadcast (FF:FF:FF:FF:FF:FF), IPTables stops forwarding the
-> packet. 
+Hello,
+
+my company has tested several firewalls under high network load. The
+importest thing is the L2 cache size from the cpu.
+
+check this pdf, it has the information you need. :-)
+
+http://www.terreactive.com/fcgi/fcgi/home/archive/pdf/pf-speed-test.pdf
+
+
+bye,
+chris
+
+ps: sorry for my bad english... its not my language.
+
+
+ITM CS Ruslan O. Nesterov wrote:
+> Hello Mike,
+>    Well actually it's not a big problem, I got 100 GB a day passing
+>    through our gateway to our clients, as far i didn't find any
+>    problems for webservers wich are not NATed, as for clients who are
+>    in DMZ zone i sometimes get connection error, but it's 1 in 1000
+>    connections. I run a box with the following configuration:
+>    Single PIII-866 MHZ
+>    RAM: 256
+>    NIC: 2 Intel Gigabit ethernet cards (as far as i remember).
+>    Befor it I used a Firebox firewall and it really drived me nuts.
+>    Due to low productivity.
+>    
+> Sunday, January 5, 2003, 6:40:15 PM, you wrote:
 > 
-> Now, the question is:
+> MO> Hello, I don't know if this has been brought up before but I am going to be
+> MO> running netfilter under load on a fractional T-3 (12Mbps). The box will have
+> MO> 3 interfaces eth0 going to the Cisco 7200, eth1 (routable IPs) going to the
+> MO> webfarm for DMZ zone, and then eth2 will be NATed with a private LAN IP
+> MO> (192.168.1.x). I will be NATing over 200 clients and I know in the past this
+> MO> could be a problem with IPCHAINS because it would either run out of memory
+> MO> or start dropping connections. The webservers get about 7,000 hits a day and
+> MO> they won't be NATed but will be filtered with a mix of statefule and packet
+> MO> filtering rules. We have a Cisco PIX 525(which is just a Intel P600/512MB
+> MO> RAM) in place right now but I would like to move to Netfilter as it will be
+> MO> running on a dual P1ghz and a gig of memory. Is this possible? can Nefilter
+> MO> scale to this and beyond? and is there any tweaks I should know about?
 > 
-> Where is this packet being trapped and dropped?  Is it in the kernel
-> (routing)? Or is IPtables dropping it?  Is the Ethernet card dropping it?
+> MO> Thanks in advance.
+> 
+> MO> Mike
+> 
+> 
+> 
 
-
-It could be dropped in a number of places - even at the transmitting 
-station which may not ever actually transmit it.
-
-I know for sure that a a cisco router will complain (but still forward 
-it just in case) about source mac addresses being multicast (multicast 
-includes broadcast) - ie, if the last (right hand) bit of the first byte 
-of the MAC address as a human reads is set to 1 (which is the first bit 
-the NIC sees because of byte order reversal)
-
-If you want to pinpoint the fault, the first thing to do would be to 
-disable iptables and see what happens to the packet without it. You 
-could also check ifconfig or /proc/net/dev to see if the transmit 
-packet/byte counters actually increment.
-
-I know you said you are working with a bizarre setup, but I can't 
-imagine any situation where you would actually want a multicast source 
-MAC to be used. Even if it works on your network, it could easily be 
-silently dropped by  switches or routers on another network.
-
- From cisco.com (summarised)
-
-Using a broadcast or multicast MAC address as the source MAC for a frame 
-is not standards-compliant behavior. However, the switch still forwards 
-traffic sourced from a multicast MAC address.
-
-Typically, such frames are transmitted from a traffic generator (for 
-example, SmartBits) or third party devices that share a multicast MAC 
-address (for example, load balancing firewall or server products).
-
-
+-- 
+-----------------------------------------------------------------------
+Chris Straessle			  http://raptor.homeunix.net/
+Alias: sacrelege		  email: sacrelege@swissonline.ch
+-----------------------------------------------------------------------
 
 
