@@ -1,75 +1,73 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Forwarding traffic destined to local machine
-Date: Sat, 8 Nov 2003 20:37:52 +0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311082037.hA8Kbsj15742@agate.rockstone.co.uk>
-References: <Pine.SOL.4.20.0311081517280.3735-100000@csa.bu.edu>
+From: Kishore Dharmavaram <kishored@servgate.com>
+Subject: RE: Memory leaks in ip_conntrack?
+Date: Sat, 8 Nov 2003 19:08:13 -0800
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B204A@skat.sky.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.SOL.4.20.0311081517280.3735-100000@csa.bu.edu>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: 'Harald Welte' <laforge@netfilter.org>
+Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
 
-On Saturday 08 November 2003 8:25 pm, Leonid Veytser wrote:
+Hi Herald & All,
 
->   I have a kernel module that registers to listen on netfilter
-> hooks. I also have a user level program that uses libipq to
-> receive packets that were received by the module.
->    Now, the user application registers to listen to all packets coming in
-> on NF_IP_PRE_ROUTING hook. If, the packet is destined to the local
-> machine, I change the destination at iph->daddr to another destination and
-> I recalculate the checksum.
->
->   By this, the packet should show up at the NF_IP_FORWARD hook, but it
-> doesn't. It just gets dropped somewere beforehand.
->
-> What am I doing wrong?
+I verified & I find my 2.4.20 is already patched with UNCONFIRMED
+connections fix. 
 
-Oh.   From yur initial posting I assumed you were using DNAT and having some 
-problem.
+How it possible that /proc/slabinfo shows a lot more ip_conntracks than are
+shown in "/proc/net/ip_conntrack"?. /proc/slabinfo shows that maximum
+possible conntracks, 131072, are being currently used but
+/proc/net/ip_conntrack  shows only 21 connections. My box is refusing new
+connections because max conntracks have reached. 
 
-What you're attempting is beyond my expertise - can anyone else suggest what 
-to investigate?
+Please take a look at my console output given below:
 
-Antony.
+[root@Firewall root]# cat /proc/sys/net/ipv4/ip_conntrack_max
+13072
+[root@Firewall root]# cat /proc/slabinfo | fgrep ip_conn
+ip_conntrack      131072 131080    384 13108 13108    1
+[root@Firewall root]# cat /proc/net/ip_conntrack | wc -l
+     21
 
-> On Sat, 8 Nov 2003, Antony Stone wrote:
-> > On Saturday 08 November 2003 5:08 pm, Leonid Veytser wrote:
-> > > How can I forward traffic(to some different machine) that is destined
-> > > to the local machine using netfilter?
-> > >
-> > > Changing destination address at the prerouting hook doesn't seem to
-> > > work.
-> >
-> > Tell us what you did and how you know it didn't work and we may be able
-> > to help.
-> >
-> > Antony
-> >
-> > --
-> >
-> > G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-)
-> > N(-) o? w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++
-> > h++ r@? 5? !X- !R K--?
-> >                                                      Please reply to the
-> > list; please don't CC me.
+Can anyone tell how to findout which connections are using up the
+conntracks.
+
+Thanks,
+Kishore
+
+-----Original Message-----
+From: Harald Welte [mailto:laforge@netfilter.org]
+Sent: Saturday, November 08, 2003 3:44 AM
+To: Kishore Dharmavaram
+Cc: 'netfilter@lists.netfilter.org';
+'netfilter-devel@lists.netfilter.org'
+Subject: Re: Memory leaks in ip_conntrack?
+
+
+On Fri, Nov 07, 2003 at 02:21:13PM -0800, Kishore Dharmavaram wrote:
+> Hi All,
+> 
+> I have a Linux box running 2.4.20 kernel with netfilter(ip_conntrack)
+
+http://www.netfilter.org/security/2003-08-01-listadd.html
+
+> Thanks,
+> Kishore
 
 -- 
-
-Agnostics do not believe in God.
-Atheists believe there is no God.
-
-Does that make me an agnostic atheist if I do not believe there is no God?
-                                                     Please reply to the list;
-                                                           please don't CC me.
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+============================================================================
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
