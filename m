@@ -1,11 +1,12 @@
-From: "Tom Michiels" <linux@w3s.be>
-Subject: Re: `Microsoft VPN and iptables
-Date: Sat, 09 Nov 2002 13:30:22 +0100
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: redirect doesn't seem to work?
+Date: Sat, 9 Nov 2002 08:16:20 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <WorldClient-F200211091330.AA30220011@w3s.be>
-References: <1653.10.254.2.5.1036822899.squirrel@www.nobarrier.co.za>
+Message-ID: <Pine.LNX.4.44.0211090814410.15803-100000@dell>
+References: <1036471268.2912.7.camel@localhost.localdomain>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1653.10.254.2.5.1036822899.squirrel@www.nobarrier.co.za>
+In-Reply-To: <1036471268.2912.7.camel@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,56 +16,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jonathan <infomail@nobarrier.co.za>, netfilter@lists.netfilter.org
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-Jonathan,
+On 4 Nov 2002, Ben Russo wrote:
 
-Is your IP47 protocol setup okay ? If you are using ms pptp to setup a 
-vpn connection you need to know that the initial authentication is based 
-upon communication over 1723/tcp. When the authentication is achieved 
-then communication starts over an IP protocol with number 47. Your router 
-then should be able to route this protocol. 
-
-In most cases the issue is that the router is not able to forward this ip 
-packets.
-
-check this out : http://www.impsec.org/linux/masquerade/VPN-howto/VPN-
-Masquerade.html#toc1
-
-
-Grtz,
-
-Tom
------Original Message-----
-From: "Jonathan" <infomail@nobarrier.co.za>
-To: <netfilter@lists.netfilter.org>
-Date: Sat, 9 Nov 2002 08:21:39 +0200 (SAST)
-Subject: `Microsoft VPN and iptables
-
-> Hi all
+> Have a UNIX server.  User wants to write programs to receive SNMPTraps.
+> I *thought* I could redirect incomming traffic to port 162 to a high
+> port, (like 4162) where the user could have his programs receive the
+> messages with no special privelages?
 > 
-> Could some help me with this or point me in the right direction.
+> Anyway, a completely normal box, no special firewalling rules....
+> The only rule I create is:
 > 
-> I have a few microsoft machine in side my linux firewall and I need to
-> use
-> microsoft VPN to connect to a microsoft machine on the internet
-> when I double click on the icon is says " Connecting to
-> ???.???.???.???"
-> and then says "Verifing Usernamd & Password" and then times out. If I
-> dial
-> into the net and bypass the firewall I can connect.
-> Thank you
-> Jonathan X Peers
+> iptables -t nat -A POSTROUTING -p udp -m udp --dport 162 -j REDIRECT
+> --to-ports 4162
 > 
-> jonathan@nobarrer.co.za
+> Now, the user starts his program that binds to udp port 4162 ( I can see
+> it with "netstat -nap" ) but he doesn't see any packets coming in.
+> I run tcpdump -n | grep snmptrap and I see packets coming from the
+> network to the server on udp port 162, and the server sending back icmp
+> unreachable packets back to the sources??
 > 
-> 
-> 
-> ______________________________________
-> Mail has been scanned and protected by No Barrier Communications
-> www.nobarrier.co.za
+> Why doesn't the redirect work?
+
+don't you want that to be a PREROUTING rule, not POSTROUTING?
+
+
+
+
+rday (who now knows just enough to possibly give really bad advice :-)
 
 
