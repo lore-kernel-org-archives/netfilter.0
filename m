@@ -1,9 +1,8 @@
-From: Aaron Lin <aaron@tg-embedded.com>
-Subject: encapsulation scheme
-Date: Wed, 03 Dec 2003 17:00:57 -0500
+From: Michael Gale <mgale@utilitran.com>
+Subject: Hello -- kind of of topic -- but still related
+Date: Wed, 3 Dec 2003 15:10:30 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070488856.2996.0.camel@jessica>
-Reply-To: aaron@tg-embedded.com
+Message-ID: <20031203151030.31eaeacd.mgale@utilitran.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,36 +18,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hey guys,
-I'm writing a module to encapsulate IP packets and send them throught a
-tunnel between the 2 end-points, the IP packets being passed include
-those that are locally generated and that are forwarded from other
-computer (who sends their packets to this PC to be tunneled).
-My code seems to work fine with the packets that are generated locally,
-although it doesn't seem to make a lot of sense.
-Here's the set up of my program.
+Hello,
 
-I register my module to listen to packets coming through the POSTROUTING
-hook at my tunnel end-point (because I thought that hook would cover
-both types of packets mentioned above, after the criteria is met, i do
-the following :
-- hook the packet back at LOCAL_OUT hook
-- copy the old sk_buff to a new sk_buff and drop the old one
-- add my outer ip header to the new sk_buff
-- and finally do an ip_send( new_sk_buff ) to send it out again
+	I am wondering if any one can help me out with this. On our production FTP server and have setup of the firewall rules to allow FTP traffic.
 
-The postrouting code i wrote can differentiate between the original buff
-and the new buff to avoid infinite looping.
+$IPT -A INPUT -i $EXT -p tcp -d $EXT_IP --destination-port ftp -j ACCEPT
+$IPT -A INPUT -i $EXT -d $EXT_IP -m state --state RELATED -j ACCEPT
+$IPT -A INPUT -i $EXT -d $EXT_IP -m state --state ESTABLISHED -j ACCEPT
 
-This scheme seems to work fine with the locally generated packets
-(although it seems kinda weird), but always locks up my PC once it
-started receiving packets that are forwarded.
+Above these rules I have the following:
+$IPT -A INPUT -i $EXT -f -j firewall 
+$IPT -A INPUT -i $EXT -d $EXT_IP -m unclean -j firewall
+$IPT -A INPUT -i $EXT -d $EXT_IP -p tcp ! --syn -m state --state NEW -j firewall
 
-PS: I use the tunnel endpoint PC as the gateway to the other PC wishing
-to be tunneled.
+The firewall target logs the info and then drops the packet.
 
-Any input would be appreciated,
-Thanks,
-Aaron
+In my log I am seeing the following -- but our production FTP server is currently out side of our network so we can connecting to it through a Cisco router. Not my doing :(
+Dec  3 15:00:57 lightning kernel: Firewall:IN=eth0 OUT= MAC=X.X.X.X SRC=CISCO_ROUTER DST=FTP_SERVER LEN=40 TOS=0x00 PREC=0x00 TTL=255 ID=16538 PROTO=TCP SPT=5 DPT=35607 WINDOW=0 RES=0x00 ACK RST URGP=0 
 
+There are a large number of these packets -- at first it thought maybe it was the Cisco router doing something funny when a FTP connect closed and it was trying to close or reset the data channel. 
+
+Any ideas ?
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
