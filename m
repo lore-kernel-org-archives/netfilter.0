@@ -1,11 +1,12 @@
-From: "nicolas boussekeyt" <nicolas.boussekeyt@free.fr>
-Subject: Configure my firewall
-Date: Wed, 17 Mar 2004 10:35:4 +0100
+From: "Andriy Korud" <a.korud@vector.com.pl>
+Subject: How to change TOS of NATed/forwarded packets?
+Date: Tue, 16 Mar 2004 11:07:41 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040317093303.81268C194@postfix3-2.free.fr>
+Message-ID: <80908CC5B2C9DB47AAF8C77892FCB44314E18D@lion.vector.com.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +17,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi, I want filter my firewall for raleka worm.
+Hi,
+I've noticed the following problem - I cannot change TOS value of NATed =
+packet. I've tried to put rule in any chain of mangle table - no effect =
+- packets ARE matching the rule (counters grows properly) but TOS =
+remains unchanged.
+What am I doing wrong?
 
-Actually, i have used :
-iptables -A FORWARD -p tcp -i $EXTIF --dport 135 -j DROP
-iptables -A FORWARD -p tcp -i $EXTIF --dport 135 -j LOG
-iptables -A FORWARD -p udp -i $EXTIF --dport 135 -j DROP
-iptables -A FORWARD -p udp -i $EXTIF --dport 135 -j LOG
-iptables -A FORWARD -p tcp -i $EXTIF --dport 6667 -j DROP
-iptables -A FORWARD -p tcp -i $EXTIF --dport 6667 -j LOG
-iptables -A FORWARD -p udp -i $EXTIF --dport 6667 -j DROP
-iptables -A FORWARD -p udp -i $EXTIF --dport 6667 -j LOG
-iptables -A FORWARD -p tcp -i $EXTIF --dport 32767 -j DROP
-iptables -A FORWARD -p tcp -i $EXTIF --dport 32767 -j LOG
-iptables -A FORWARD -p udp -i $EXTIF --dport 32767 -j DROP
-iptables -A FORWARD -p udp -i $EXTIF --dport 32767 -j LOG
-iptables -A FORWARD -p tcp -i $EXTIF --dport 32768 -j DROP
-iptables -A FORWARD -p tcp -i $EXTIF --dport 32768 -j LOG
-iptables -A FORWARD -p udp -i $EXTIF --dport 32768 -j DROP
-iptables -A FORWARD -p udp -i $EXTIF --dport 32768 -j LOG
+thanks in advance,
 
-But the worm is back.
+--
 
-Can you give me information.
+Andriy Korud=20
+sales support engineer=20
+email: a.korud@vector.com.pl=20
 
+VECTOR sp. z o.o.=20
+ul. Krzemowa 6=20
+81 - 577 Gdynia=20
+POLAND=20
+tel. +48 58 / 77 17 000=20
+fax +48 58 / 77 17 100=20
+<http://www.vector.com.pl/>=20
 
 
