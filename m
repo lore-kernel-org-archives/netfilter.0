@@ -1,62 +1,69 @@
-From: don-nf@isis.cs3-inc.com (Don Cohen)
-Subject: trouble building iptables-1.2.7a on 2.4.17
-Date: Tue, 17 Dec 2002 20:02:57 -0800
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <200212180402.gBI42vB15590@isis.cs3-inc.com>
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+From: "=?iso-8859-1?q?Ing.=20C=E9sar=20Coello?=" <cecoello_2000@yahoo.com>
+Subject: Squid - Iptables
+Date: Mon, 23 Dec 2002 10:51:04 -0600 (CST)
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20021223165104.22694.qmail@web13605.mail.yahoo.com>
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-394547293-1040662264=:22062"
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: netfilter@lists.netfilter.org
 
-(Not sure whether this should go to user or devel list.)
+--0-394547293-1040662264=:22062
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Below is the transcript.  
 
-iptables-1.2.7a INSTALL says requires >=2.4.4, so 2.4.17 should work,
-right?  INSTALL also mentions patch-o-matic, but latest patch-o-matic
-README says >= 2.4.18.  Does that mean I shouldn't need it or that I
-have to get an earlier patch-o-matic or what?
+Estoy realizando un control  de acceso en base a las reglas de iptables. Pe=
+rmito o Deniego paquetes segun sea la direccion de la maquina cliente. todo=
+ me funciona perfectamente, excepto cuando utilizo el Squid. La direccion i=
+p que obtengo es la del servidor proxy y no la direccion cliente. Usando el=
+ X-forwared puedo conocer la direccion ip cliente, pero no se como agregar =
+una regla con iptables para permitir o denegar los paquetes que vengan desd=
+e ese ip. Pues si pongo en la regla el ip que obtengo con X-Forwared no pas=
+a nada.
 
-====
-[root@router2 /root]# cd iptables-1.2.7a/
-[root@router2 iptables-1.2.7a]# make KERNEL_DIR=/home/user/linux-2.4.17
-Making dependencies: please wait...
-Extensions found:
-cc -O2 -Wall -Wunused -I/home/user/linux-2.4.17/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o\
- extensions/libipt_ah_sh.o -c extensions/libipt_ah.c
-ld -shared -o extensions/libipt_ah.so extensions/libipt_ah_sh.o
-cc -O2 -Wall -Wunused -I/home/user/linux-2.4.17/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o\
- extensions/libipt_conntrack_sh.o -c extensions/libipt_conntrack.c
-In file included from extensions/libipt_conntrack.c:15:
-include/linux/netfilter_ipv4/ipt_conntrack.h:28: `IP_CT_DIR_MAX' undeclared here (not in a function)
-include/linux/netfilter_ipv4/ipt_conntrack.h:29: `IP_CT_DIR_MAX' undeclared here (not in a function)
-include/linux/netfilter_ipv4/ipt_conntrack.h:29: `IP_CT_DIR_MAX' undeclared here (not in a function)
-extensions/libipt_conntrack.c: In function `parse_status':
-extensions/libipt_conntrack.c:103: `IPS_EXPECTED' undeclared (first use in this function)
-extensions/libipt_conntrack.c:103: (Each undeclared identifier is reported only once
-extensions/libipt_conntrack.c:103: for each function it appears in.)
-extensions/libipt_conntrack.c:105: `IPS_SEEN_REPLY' undeclared (first use in this function)
-extensions/libipt_conntrack.c:107: `IPS_ASSURED' undeclared (first use in this function)
-extensions/libipt_conntrack.c: In function `parse':
-extensions/libipt_conntrack.c:202: `IP_CT_DIR_ORIGINAL' undeclared (first use in this function)
-extensions/libipt_conntrack.c:259: `IP_CT_DIR_REPLY' undeclared (first use in this function)
-extensions/libipt_conntrack.c: In function `print_status':
-extensions/libipt_conntrack.c:364: `IPS_EXPECTED' undeclared (first use in this function)
-extensions/libipt_conntrack.c:368: `IPS_SEEN_REPLY' undeclared (first use in this function)
-extensions/libipt_conntrack.c:372: `IPS_ASSURED' undeclared (first use in this function)
-extensions/libipt_conntrack.c: In function `matchinfo_print':
-extensions/libipt_conntrack.c:420: `IP_CT_DIR_ORIGINAL' undeclared (first use in this function)
-extensions/libipt_conntrack.c:440: `IP_CT_DIR_REPLY' undeclared (first use in this function)
-make: *** [extensions/libipt_conntrack_sh.o] Error 1
+Gracias
 
+=20
+
+
+
+---------------------------------
+Do You Yahoo!?
+Todo lo que quieres saber de Estados Unidos, Am=E9rica Latina y el resto de=
+l Mundo.
+Vis=EDta Yahoo! Noticias.
+
+--0-394547293-1040662264=:22062
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<P>Estoy realizando un control&nbsp; de acceso en base a las reglas de ipta=
+bles. Permito o Deniego paquetes segun sea la direccion de la maquina clien=
+te. todo me funciona perfectamente, excepto cuando utilizo el Squid. La dir=
+eccion ip que obtengo es la del servidor proxy y no la direccion cliente. U=
+sando el X-forwared puedo conocer la direccion ip cliente, pero no se como =
+agregar una regla con iptables para permitir o denegar los paquetes que ven=
+gan desde ese ip. Pues si pongo en la regla el ip que obtengo con X-Forware=
+d no pasa nada.</P>
+<P>Gracias</P>
+<P>&nbsp;</P><p><br><hr size=3D1 noshade><b>Do You Yahoo!?</b><br>
+<a href=3Dhttp://espanol.yahoo.com/mail_tagline/*http://espanol.news.yahoo.=
+com><img src=3D"http://us.i1.yimg.com/us.yimg.com/i/not/dailynews.gif" widt=
+h=3D30 height=3D26 border=3D0 align=3Dleft></a>
+Todo lo que quieres saber de Estados Unidos, Am=E9rica Latina y el resto de=
+l Mundo.<br>
+Vis=EDta <a href=3Dhttp://espanol.yahoo.com/mail_tagline/*http://espanol.ne=
+ws.yahoo.com>Yahoo! Noticias</a>.<br>
+--0-394547293-1040662264=:22062--
 
