@@ -1,12 +1,13 @@
-From: Michael Talbot-Wilson <mtw@chameleon.view.net.au>
-Subject: Re: which rule is right? HUH??
-Date: Thu, 30 May 2002 17:38:01 +0930
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DROP vs. REJECT vs. MIRROR
+Date: Thu, 13 Jun 2002 18:03:45 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200205300808.g4U881NS002185@chameleon.view.net.au>
-References: <FLEKIPPLAEDMJMOOBBDPKENMCEAA.stewart.thompson@shaw.ca>
+Message-ID: <200206131704.SAA08562@slate.rockstone.co.uk>
+References: <200205180511.g4I5B0R02342@gauss.counterexample.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: Your message of "Wed, 29 May 2002 20:10:29 MST."
-             <FLEKIPPLAEDMJMOOBBDPKENMCEAA.stewart.thompson@shaw.ca> 
+In-Reply-To: <200205180511.g4I5B0R02342@gauss.counterexample.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,75 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-I noticed this message and a couple of others from this list when clearing
-out my spam folder.  If you are writing in latin script, why in the name
-of **** are you setting ks_c_5601-1987 as your charset?!?
+On Saturday 18 May 2002 6:11 am, John T. Guthrie wrote:
 
-If you use a Korean charset no-one will see your messages.  If you are a
-Korean (this guy is in Canada), and assuming you want to send your message
-in English, please set a charset appropriate to the script you are using,
-that is, US-ASCII or ISO-8859-1.
+> Hello all,
+>
+> Please pardon me if this is answered elsewhere.  I have tried looking
+> through all of the documentation, but I am still left wondering what are
+> the advantages/disadvantages of the DROP, REJECT, and MIRROR targets?  I
+> know what they do, but I'm not quite certain as to what are some of the
+> situations when I would want to use each.  (I know that this may fall more
+> under the heading of "site policy".  I'm more interested in examples of why
+> people chose what they did.)  I am especially interested in examples of the
+> MIRROR target.
 
-> Hi:
-> 
-> 	You are half way there.
-> 
-> 	Rule 1 is ok. However you need to change rule 2.
-> 	Rule 1 means - If a packet is received  from the desired ip destined fo
-> r
->  the external ip for telnet. DNAT it to the internal telnet server address.
-> However the packet is still sitting at the external interface.
-> 
-> 	Rule 2 means - if there is a packet from the desired ip to the internal
-> telnet
-> 	Server then forward it.
-> 
-> 	You will also need a rule to allow the internal traffic out if it isn't
-> already in
-> 	your script. I normally specify the interfaces in the rules as well. Tr
-> y
-> to make
-> 	your rules as specific as possible. Set your default policy to drop fir
-> st
-> thing.
-> 	Then open up things as required with specific rules.
-> 
-> 	I removed the ip:23 from your DNAT rule. It is ok, but is only required
->  if
-> you
-> 	are actually changing the destination port. Below 1024 iptables shouldn
-> 't
-> 	change the destination port.
-> 
-> Stu.........
-> 
-> 
-> 
-> 
-> 1. PREROUTING chain
-> 
-> iptables -A PREROUTING -p tcp -s 10.0.0.1/24 --sport 1024:65535 -d \
-> 211.1.1.1 --dport 23 -j DNAT --to 192.168.1.2
-> 
-> 2. FORWARD chain
-> 
-> iptables -A FORWARD -p tcp -s 10.0.0.1/24 --sport 1024:65535 -d 192.168.1.2
-> \
-> --dport 23 -m state --state NEW,ESTABLISHED -j ACCEPT
-> 
-> 
-> Which is right? or both are right?
-> 
-> Thanks a lot.
-> 
-> 
-> 
-> 
-> 
-> 
+Basically:
+
+You DROP packets when you don't want the sender to get anything back (ie as 
+far as they're concerned, there wasn't a machine waiting to receive them on 
+that IP address).   It's by far best if you can make sure you DROP *all* 
+packets which are not being routed by your firewall (and of course you don't 
+run any services *on* the firewall, do you :-) so that the machine is 
+invisible on the net - if you DROP some, and ACCEPT or REJECT some, then a 
+program such as nmap will know there's something there which is actively 
+DROPping things.
+
+You REJECT packets when you want to sender to get a connection reset, which 
+will make their client respond much more quickly with "connection lost" or 
+some such.   ie you don't want them to be waiting around for a long time 
+whilst the TCP connection times out.
+
+My recommendation for choosing between these two is to DROP packets from the 
+outside (people you don't know and don't have any incentive to be nice to), 
+and REJECT packets coming from the inside (people on your local network who 
+you presumably want to get a quick and efficient response that the connection 
+cannot be made).
+
+I've never used MIRROR, and although it can sound quite cool, you should be 
+careful about using it, as it is pretty aggressive.   Basically anything 
+which comes in will be sent back to the source IP address, so someone port 
+scanning you will actually end up port scanning themselves.   The main 
+problem is when they port scan you with spoofed source addresses mixed in, 
+and you end up scanning someone else's system, who may (a) not like it, or 
+(b) block access from your network address/es.
+
+Like you, I'd be interested to hear of anyone using MIRROR for good reasons.
+
+ 
+
+Antony.
 
