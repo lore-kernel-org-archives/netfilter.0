@@ -1,8 +1,8 @@
-From: "Federico Cruciani" <f.cruciani@oxys.it>
-Subject: How to apply pom20030107 to RH 2.4.18-x kernels
-Date: Tue, 4 Mar 2003 19:04:42 +0100
+From: "Brian Bunnell" <bbunnell@iastate.edu>
+Subject: Start Up Script
+Date: Sun, 2 Mar 2003 12:43:02 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001a01c2e278$8dcde8b0$0a7fa8c0@oxys.lan>
+Message-ID: <NHBBICNKELBGKGHPCFMPOEMFCAAA.bbunnell@iastate.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,20 +18,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-If you try to apply the pom patches to a Red Hat Linux Kernel 2.4.18-x, you
-get an error applying the first cumulative patch "submitted/02_2.4.20".
+Hello
 
-I found that this happens because of a mistake in the
-submitted/02_2.4.20.patch file of the pom archive. This patch file includes
-the differences from each original kernel source file and the patched one.
-It's all correct but at line #4548, when patching the
-net/ipv4/netfilter/ipchains_core.c file there's a mistake; the patch about
-the MODULE_LICENSE string seems to be already applied. 
-So to apply the submitted/02_2.4.20 patch cleanly to a RH kernel source
-tree,  the 6 lines starting at line #4548 in the patch-o-matic
-submitted/02_2.4.20.patch file must be deleted.
+Thank you very much for helping me.  I have a perfectly good netfilter
+script that I run from the command line and everything works fine.  I would
+like this script to run when I boot up the computer.  I am having a lot of
+trouble finding quality resources on the net about this.
 
-Iok
+There are great resources for learning how to use netfilter.  However, when
+it comes to startup scripts, all the examples seem to be 25 pages long and
+incomprehensible or wnat me to completely rewrite the script I already have.
+
+Why can't I just tell the computer to run my script instead of the "Let the
+world in" script it runs at boot?
+
+Does anyone have any recommendations, resources or better yet, a good
+concise example for run level 3?
+
+Thank you very much
+Brian Bunnell
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.445 / Virus Database: 250 - Release Date: 1/21/03
 
 
 
