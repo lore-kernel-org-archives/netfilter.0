@@ -1,15 +1,10 @@
-From: Miguel Angel Amador L <amador@puc.cl>
-Subject: Re: learning firewall
-Date: Fri, 03 Sep 2004 08:44:47 -0400
+From: "dravya" <dravya@magma.ca>
+Subject: "No Route: Rusty's brain broke" ??????
+Date: Fri, 3 Sep 2004 10:01:27 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094215486.3029.4.camel@Quark>
-References: <20040902191645.GA28800@omega.lacnic.net.uy>
-	<20040903102543.GI3755@metastasis.org.uk>
-Reply-To: amador@puc.cl
+Message-ID: <200409031401.i83E1R53004651@webmail2.magma.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040903102543.GI3755@metastasis.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,16 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter mailing list <netfilter@lists.netfilter.org>
 
-Hi All,
- I have a questions, what module i must be install for the P2P
-conections ? (sorry for my english, is very slow)
- Thnx a lot 
 
-Regards
- Miguel Amador L.
+Hi all,
 
+I have two ppp connections setup and I want access the internet via these links....
+However, I get the error message "kernel: No Route: Rusty's brain broke".
+
+Is there a patch associated with this.... or can you suggest any fixes...
+
+Why would something like this happen??? Is this a problem with the ipt_MASQUERADE.c code???
+
+any tips or suggestions are much appreciated.
+
+Thanks
+
+Dravya 
 
 
 
