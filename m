@@ -1,13 +1,11 @@
-From: Roeland Moors <roelandmoors@pandora.be>
-Subject: Re: change TTL value
-Date: Fri, 9 Apr 2004 13:16:05 +0200
+From: Dimitris Kounalakis <dcoun@galinos.med.uoc.gr>
+Subject: NAT in a special case
+Date: Fri, 09 Apr 2004 14:56:36 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040409111605.GA972@home.be>
-References: <20040408161334.GA2396@home.be> <001301c41e01$1d3e4fc0$1202a8c0@admin> <407669BA.8040203@pandora.be> <004901c41e1a$7ee2c3f0$1202a8c0@admin>
+Message-ID: <40768F74.2050005@fammed.med.uoc.gr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <004901c41e1a$7ee2c3f0$1202a8c0@admin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,36 +15,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Fri, Apr 09, 2004 at 12:07:41PM +0200, Rob Sterenborg wrote:
-> > >>I'm trying to change the value of the TTL field with this line:
-> > >>$IPTABLES -t mangle -A PREROUTING -i $INET_IFACE -p igmp 
-> > >> -j TTL --ttl-inc 1
-> > >
-> > >>But when I try to execute this I have this error:
-> > >>iptables: No chain/target/match by that name
-> > >
-> > >
-> > > Did you compile TTL target support as a module ?
-> > > I don't see it in the module list (non-targets deleted), which means you
-> > > don't have TTL target support, unless you compiled it into the kernel
-> (but I
-> > > don't think so).
-> > >
-> >
-> > /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_ttl.ko
-> > Isn't this the TTL target module?
-> 
-> AFAIK target modules have uppercase chars, match modules have all lowercase
-> chars.
-> 
+Hello,
 
-Thanks, this is probably the problem, I think I have to install
-patch-o-matic for this module.
+I need a special case and I am not sure it can exist with NAT (SNAT or DNAT)
 
---
-Roeland
+I have two lan networks with IP range : 10.10.1.1/24 and 10.10.2.1/24. 
+The connection between then is done with a linux machine with two 
+ethernet cards.
+The first network has a mix of computer and VoIp devices and and the 
+second only computers.
+In the second network a pptp vpn server providing internet access (the 
+first nat) is in action and selected computers from both networks are 
+connected and take a 192.168.0.1/24 address in a virtual interface and 
+have Internet access.
+I want to give access to the internet to some VoIP and other hardware 
+that can not use the pptp vpn server in the first network (10.10.1.1/24).
+I have the idea to configure the linux machine to connect to the pptp 
+vpn server and then have it acting as a NAT machine for the machines in 
+the first network (10.10.1.1/24) using the same IP address range. In 
+other words, the linux machine has to simply route ip traffic to the 
+ethernet interface with destination the subnet 10.10.2.1/24 and acting 
+as NAT if the destination is the internet.
+Is that possible? Do you know where I can find an examlple close to that 
+to start with ?
+
+Thank you in advance
+Dimitris
 
