@@ -1,11 +1,13 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Help! problem with PPTPD and pptp nat helper
-Date: Tue, 21 Dec 2004 08:58:47 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F01986B@pxtvjoexd01.pxt.primeexalia.com>
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Accounting for national/international traffic
+Date: Tue, 21 Dec 2004 13:33:00 -0500
+Message-ID: <200412211333.00841.Alistair@nerdnet.ca>
+References: <20041221085518.92203.qmail@web42105.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <20041221085518.92203.qmail@web42105.mail.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,41 +19,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: __ Radien__ <radien@zworg.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-<cut from an earlier thread>
+On December 21, 2004 03:55 am, Jean Hoderd wrote:
+> Hi,
+>
+> Here's the situation: in many countries it is customary for IPS's to
+> have separate quotas for national/international traffic (in my case the
+> limits are 20GB/2GB per month).
+>
+> Now, given an IP address, knowing whether it is national or
+> international is a solved problem: there are publicly available lists
+> with the ranges of national IP addresses.
+>
+> The problem: how to keep track of the monthly internet usage divided
+> into national/international traffic.
+>
+> Please note that I am not interested in enforcing quotas per se (the
+> "quota" module, I believe).  Rather, I would simply like to know what
+> is the total traffic per category since the beginning of the month.
+>
+> I have searched netfilter's repository, and it seems that the
+> ipt_account module might do the trick.  However, since I am still a
+> newbie with netfilter, I am having some trouble defining the actual
+> rules to make it work.  Let us imagine, for instance, that I have n
+> ranges of national IP addresses.  Adding them to a "national" counter
+> seems easy:
+>
+> iptables -A INPUT -m account --addr "range1" --aname national
+> iptables -A INPUT -m account --addr "range2" --aname national
+> ...
+> iptables -A INPUT -m account --addr "rangen" --aname national
+>
+> The question is: how do I implement the logic for all non-matching
+> ranges, which should be added to an "international" counter?
+> Furthermore, I have already plenty of rules in my firewall, and I wish
+> that the traffic accounting would not interfere with them.
 
->trying to connect to a server which is itself behind a router and NAT'd
+ You want to have two user chains to do this.
+ create the 'accounting' chain in which you will account the packets with the 
+rules you've given, and *AFTER* each accounting rule put a matching rule that 
+RETURNS the packets to the calling chain.  At the end of the 'accounting' 
+chain add one rule to an 'international' chain that accounts for all non 
+returned packets.  At the end of the 'international chain the packets will 
+return to the 'accounting'  chain and since they are already on the end of 
+that they will RETURN to the calling chain.
 
-You mentioned that you applied the conntrack patch.  Did you do this on
-both the firewalls?  I have had success with the following.  Note that I
-have disabled ip_nat_pptp.  If I load ip_nat_pptp then only one person
-can connect and on the first time only.  Subsequent attempts fail.  I
-have asked but received no feedback on this as well.  But hopefully this
-will help you as well.
-
-Anyways, here's what I run and the order that I run them in.  The
-firewall currently has two active incoming connections I did test
-multiple outgoing connections when I configured it. =20
-
-/etc/rc.d/rc.local:
-/sbin/modprobe ip_conntrack_proto_gre
-/sbin/modprobe ip_conntrack_pptp
-/sbin/modprobe ip_nat_proto_gre
-#/sbin/modprobe ip_nat_pptp
-/sbin/modprobe ip_conntrack_irc
-/sbin/modprobe ip_nat_irc
-/sbin/modprobe ip_conntrack_ftp
-/sbin/modprobe ip_nat_ftp
-/sbin/modprobe ip_conntrack_mms
-/sbin/modprobe ip_nat_mms
-/sbin/modprobe ipt_LOG
-/sbin/modprobe ipt_TARPIT
-/sbin/modprobe ip_gre
-/sbin/modprobe ipt_MASQUERADE
-/sbin/modprobe ip_conntrack
-/sbin/modprobe iptable_nat
+iptables -A accounting -m account --addr 'range1' --aname national
+iptables -A accounting -d range1 -j RETURN
+iptables -A accounting -m account --addr 'range2' --aname national
+iptables -A accounting -d range2 -j RETURN
+iptables-A accounting -j international
+iptables -A international -m account --aname international
 
 
-Gary Smith
+ Alistair Tonner
+
+
+>
+> Thanks in advance for any help you can give me!
+> Regards,
+> Jean
+>
+>
+>
+>
+>
+> __________________________________
+> Do you Yahoo!?
+> Send a seasonal email greeting and help others. Do good.
+> http://celebrity.mail.yahoo.com
 
