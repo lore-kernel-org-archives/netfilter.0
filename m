@@ -1,15 +1,12 @@
-From: David Cannings <lists@edeca.net>
-Subject: Re: Iptables Email Alerting
-Date: Mon, 15 Mar 2004 18:15:24 +0000
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Iptables Email Alerting
+Date: Mon, 15 Mar 2004 10:20:57 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403151815.24769.lists@edeca.net>
-References: <20040315180815.18699.qmail@web40701.mail.yahoo.com>
-Reply-To: david@edeca.net
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF56791FB@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040315180815.18699.qmail@web40701.mail.yahoo.com>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,19 +17,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Real Cucumber <monkcucumber@yahoo.com>, netfilter@lists.netfilter.org
 
-On Monday 15 March 2004 18:08, Real Cucumber wrote:
+Netfilter is kernel space and there isn't email support in the kernel.
+My advice is either using crontab or write your own daemon to probe
+every few seconds.
+
+
+
+Real Cucumber wrote:
 > Does anyone know if it is possible to have IPtables
 > send email alerts
 > based on certain traffic?
->
+>=20
 > I'm looking for something similair to the -j LOG
 > option, perhaps a -j MAIL ?
-
-You could quite possibly jump to a userspace script that handles this.  I 
-believe the target is QUEUE, but support will need to be compiled into 
-your kernel to support it.
-
-David
+>=20
+> I realize that I could setup a manual cronjob to scan
+> the logfiles via grep and search for certain
+> activities, but it would obviously be much better to
+> have alerts sent in realtime.
+>=20
+> Any ideas?
+>=20
+>=20
+>=20
+> __________________________________
+> Do you Yahoo!?
+> Yahoo! Mail - More reliable, more storage, less spam
+> http://mail.yahoo.com=20
 
