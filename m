@@ -1,9 +1,14 @@
-From: "Alan Hourihane" <alan_hourihane@hotmail.com>
-Subject: applying individual patches in -ng
-Date: Wed, 14 Jul 2004 21:47:51 +0100
+From: Erik =?iso-8859-1?Q?Wikstr=F6m?= <eriwik@itstud.chalmers.se>
+Subject: Re: OT: alias for a network card
+Date: Thu, 15 Jul 2004 14:28:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <cd4650$i1q$1@sea.gmane.org>
+Message-ID: <20040715122848.GA40604@itstud.chalmers.se>
+References: <f51b72bc0407150121527f95a4@mail.gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <f51b72bc0407150121527f95a4@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -13,21 +18,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-In the older patch-o-matic system you could do this....
+On Thu, Jul 15, 2004 at 01:51:41PM +0530, Payal Rathod wrote:
 
-./runme extra/h323-conntrack-nat.patch
+> Hi,
+> Excuse for this OT question here. But I don't know where I can get an
+> answer. While doing  NAT i need to have alias IPs for my router
+> machine like,
+> # ipconfig eth0:1 192.168.0.4
+>=20
+> But these rules are lost once the machine is rebooted. How can I  make
+> them permanent?
+> I thought of putting these in rc.local but it rather crude approach as
+> my firewall might be started before that. I use Mandrake Linux.
 
-But what's the equivalent now in patch-o-matic-ng ??
+Find out what script starts the firewall and put the line before the
+line starting the firewall. Or, put it in the firewall script. Or even
+better, put it in the script that initializes your network card.
 
-Thanks,
-
-Alan.
-
-
-
+--
+Erik Wikstr=F6m
 
