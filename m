@@ -1,14 +1,15 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: Time based rules ...
-Date: Thu, 14 Nov 2002 11:44:21 +0530
+From: =?ISO-8859-1?Q?Bj=F8rn?= Ruberg <bjorn@ruberg.no>
+Subject: Re: DNAT to localhost
+Date: 14 Nov 2002 07:02:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211141144.21999.dharmu@nsecure.net>
-References: <1037199668.4556.30.camel@rayw.knowledgefactory.co.za> <200211141038.36884.dharmu@nsecure.net> <1037248941.4556.54.camel@rayw.knowledgefactory.co.za>
-Reply-To: dharmu@nsecure.net
+Message-ID: <1037253770.11775.18.camel@lilleulv>
+References: <1037219719.6450.5.camel@tux.go-nix.ca>
+	<1037225641.10536.1.camel@lilleulv> 
+	<1037231613.6791.13.camel@tux.go-nix.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1037248941.4556.54.camel@rayw.knowledgefactory.co.za>
+In-Reply-To: <1037231613.6791.13.camel@tux.go-nix.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,53 +19,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Raymond Leach <raymondl@knowledgefactory.co.za>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-But I don't think we can specify the time option in iptables. If any modules 
-are there using which we can specify the time let us know.
+On Thu, 2002-11-14 at 00:53, Nix N. Nix wrote:
+> On Wed, 2002-11-13 at 17:14, Bj=F8rn Ruberg wrote:
+> > On Wed, 2002-11-13 at 21:35, Nix N. Nix wrote:
 
-Regards,
-Dharmendra.T
-Linux Security Expert
-www.nsecure.net
-dharmu@nsecure.net
-On Thursday 14 November 2002 10:12, Raymond Leach wrote:
-> Hi
->
-> Yes, all my chains default policies are set to DROP.
->
-> I believe in taking the paranoid approach to security: assume everything
-> is bad and then only allow what you know to go where you want it to. I'm
-> sure you know the cliche by now :- 'where do you want to go today?'
->
-> On Linux we know where we want to go ...
->
-> Ray
->
-> On Thu, 2002-11-14 at 07:08, Dharmendra.T wrote:
-> > What is the default polic you have set for? I guess it is by dropping all
-> > the packets froom the forward chain and then you are allowing
-> > accordingly. Regards,
-> > Dharmendra.T
-> > Linux Security Expert
-> > www.nsecure.net
-> > dharmu@nsecure.net
-> >
-> > On Wednesday 13 November 2002 20:31, Raymond Leach wrote:
-> > > Hi
-> > >
-> > > Is there a way to put time restrictions on rules?
-> > > For eaxmple, something like:
-> > >
-> > > iptables -A FORWARD -i eth0 -p tcp -sport 1024: -dport 1024: -time
-> > > 0700:1700 -j DROP
-> > >
-> > > It would be nice ...
-> > >
-> > > Ray
+[snip]
 
--- 
+> I wrote a util that would open a SOCK_DGRAM socket and bind it to a
+> specific interface, like 127.0.0.1:<some_port> or
+> 192.168.1.1:<some_port> .  Thus, I had something listening on
+> localhost:8080/udp.  I added the rule, then tried this from a computer
+> on the 192.168.1.0/24 network (in bash):
+>=20
+> echo -n 'Abracadabra' > /dev/udp/192.168.1.1/80
+>=20
+> This had no effect.  It did have an effect without the rule and with my
+> util listening on 192.168.1.1:80 .
+
+Are you familiar with the brilliant tool netcat? You find it at
+http://www.atstake.com/research/tools/
+
+> > When you debug your iptables rules, turn on full logging to see what is
+> > being dropped.
+>=20
+> How do I do that ?
+
+Check out the LOG target (you'll find it in the netfilter docs) and find
+out how it works. Then apply a LOG rule before you redirect. If what you
+see there makes sense, apply (or add) a LOG rule after the redirect.
+Then you will be able to debug your redirection properly.
+
+You may also want to take a look at the utilities tcpdump and ethereal.
+Be, however, aware that the source code to tcpdump has been trojaned in
+at least one of the versions. Check with your Linux vendor
+(www.redhat.com etc) for precompiled packages.
+
+Bj=F8rn
 
 
