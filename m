@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: -m string  and RELATED
-Date: Mon, 4 Nov 2002 19:04:34 +0000
+Subject: Re: DNAT possible with the string module?
+Date: Mon, 4 Nov 2002 19:57:35 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021104190439.DGTP292.mta03-svc.ntlworld.com@there>
-References: <87znsptzey.fsf@arm.t19.ds.pwr.wroc.pl>
+Message-ID: <20021104195745.DUTJ27595.mta05-svc.ntlworld.com@there>
+References: <aq64dg$4br$1@hermes.vibe.ac>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <87znsptzey.fsf@arm.t19.ds.pwr.wroc.pl>
+In-Reply-To: <aq64dg$4br$1@hermes.vibe.ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,56 +18,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-On Monday 04 November 2002 10:14 am, Arkadiusz Miskiewicz wrote:
+On Monday 04 November 2002 3:40 pm, Udo Rader wrote:
 
-> Hi,
+> hi,
 >
-> I'm trying to log whole stream basing on string match.
+> I would like to do the following thing:
 >
-> iptables -A INPUT -m string --string "xyztest" -j LOG --log-prefix
-> "xyztest: " -m state --state NEW,ESTABLISHED,RELATED
+> 2 daemons listening on different ports (lets say 1234 and 2345).
 >
-> xyztest
-> 500 unrecognized command
+> The firewall then ideally takes all connects from clients to port 1234,
+> looks for a "magic string" (using -m string) in the packages and based
+> upon the (non)existance of the string finally decides, which daemon to
+> forward the connect to.
 >
-> - Nov  4 11:11:20 arm kernel: xyztest: IN=eth0 OUT=
-> MAC=00:10:22:fe:5a:91:00:02:44:1f:f3:b4:08:00 SRC=156.17.235.253
-> DST=156.17.236.105 LEN=61 TOS=0x10 PREC=0x00 TTL=62 ID=53540 DF PROTO=TCP
-> SPT=2637 DPT=25 WINDOW=5840 RES=0x00 ACK PSH URGP=0 (logged packet which
-> contains xyztest packet)
->
-> tralala
-> 500 unrecognized command
->
->  - nothing logged
->
-> Why is this not working - there is ESTABILISHED,RELATED rule - any ideas?
+> ... is there a chance for this to work?
 
-It is working.
+I think the answer is no, it cannot work (assuming you are talking about TCP 
+ports and not UDP ports).
 
-Every packet which comes in to the machine is tested against the rules in the 
-INPUT chain, and if the conditions match, then the target is triggered.
+The reason is as follows:
 
-Your rule says "if the packet contains the string xyztest and is state new, 
-established, or related, then log the packet with prefix xyztest".
+Before a client can send the magic string you are looking for, it needs to 
+have completed the TCP handshake of SYN - SYN/ACK - ACK, because it's only 
+after that's done that any data gets transferred between the systems.
 
-Therefore all packets which contain the string xyztest and which are new, 
-established or related will get logged.
-
-If a packet doesn't contain the string xyztest it won't match the test and it 
-won't get logged.
-
-Keep in mind that iptables is a packet filtering firewall.   It examines each 
-packet independently.
+Obviously the SYN and the SYN/ACK are to and from a specific port number on 
+the listening server, so by the time you get to see the magic string, the 
+choice of port number to connect to has already been made.
 
 Antony.
 
 -- 
 
-It is also possible that putting the birds in a laboratory setting
-inadvertently renders them relatively incompetent.
-
- - Daniel C Dennett
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
 
