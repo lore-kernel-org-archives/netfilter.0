@@ -1,12 +1,13 @@
-From: "Steve Howard" <showard@kennesaw.edu>
-Subject: Re: iptables rules for forwarding remote desktop
-Date: Wed, 06 Nov 2002 15:10:53 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DNAT possible with the string module?
+Date: Wed, 6 Nov 2002 20:21:41 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <sdc93102.060@kennesaw.edu>
+Message-ID: <20021106202328.FPYI9836.mta01-svc.ntlworld.com@there>
+References: <aq64dg$4br$1@hermes.vibe.ac> <20021104195745.DUTJ27595.mta05-svc.ntlworld.com@there> <pan.2002.11.06.17.34.41.666315@vibe.ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <pan.2002.11.06.17.34.41.666315@vibe.ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,55 +20,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thank you very much,
+On Wednesday 06 November 2002 5:34 pm, Udo Rader wrote:
 
-I tried those three rules, I even flushed all the other rules and saved. =
-This still is not working.
+> On Mon, 04 Nov 2002 21:36:10 +0000, Antony Stone wrote:
+> > On Monday 04 November 2002 3:40 pm, Udo Rader wrote:
+> >>
+> >> I would like to do the following thing:
+> >>
+> >> The firewall then ideally takes all connects from clients to port 1234,
+> >> looks for a "magic string" (using -m string) in the packages and based
+> >> upon the (non)existance of the string finally decides, which daemon to
+> >> forward the connect to.
+> >
+> > I think the answer is no, it cannot work (assuming you are talking about
+> > TCP ports and not UDP ports).
+> >
+> > Before a client can send the magic string you are looking for, it needs
+> > to have completed the TCP handshake of SYN - SYN/ACK - ACK, because it's
+> > only after that's done that any data gets transferred between the
+> > systems.
+>
+> I see your point.
+>
+> So am I right that the only way to achive this is by having some kind of
+> proxy dealing with this "magic-string"??
 
-I can scan the Linux machine with nmap and it does not show port 3389.
-I can scan the windows machine and it does show the port 3389.
-
-Should the port 3389 show up on a nmap scan of the Linux machine?
-
-
->>> Antony Stone <Antony@Soft-Solutions.co.uk> 11/06/02 01:56PM >>>
-On Wednesday 06 November 2002 6:45 pm, Steve Howard wrote:
-
-> I have a RedHat 8 machine with 2 ethernet cards. eth0 is connected via =
-dhcp
-> to the Internet (cable modem). eth1 is private 192.168.1.1. I have a
-> windows xp machine which I have set up to acquire a dhcp address, (it is
-> always 192.168.1.10). I would like to be able to use the remote desktop
-> (port 3389) from outside. I understand that I will have to forward port
-> 3389 to eth0 so that I can access this port from my office machine. I =
-have
-> seen recommendations of one rule, and I have seen recommendations that =
-have
-> three rules listed. Can anyone help me get this right?
-
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 3389 -j DNAT --to=20
-192.168.1.10
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -i eth0 -s a.b.c.d -p tcp --dport 3389 -j ACCEPT
-
-where a.b.c.d is the address of your office machine - otherwise anyone =
-will=20
-be able to access your xp desktop :-)
-
-I assume this service runs on TCP port 3389 - if it's UDP for some =
-reason,=20
-simply change both instances of tcp to udp in the rules above.
+Yes, a proxy is the correct solution for this problem (and is nearly always 
+the correct solution whenever someone thinks of using the --string match).
 
 Antony.
 
---=20
+-- 
 
-All matter in the Universe can be placed into one of two categories:
+Behind the counter a boy with a shaven head stared vacantly into space,
+a dozen spikes of microsoft protruding from the socket behind his ear.
 
-1. things which need to be fixed
-2. things which will need to be fixed once you've had a few minutes to =
-play=20
-with them
-
-
+ - William Gibson, Neuromancer (1984)
 
