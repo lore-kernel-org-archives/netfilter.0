@@ -1,14 +1,11 @@
-From: Askar <askarali@gmail.com>
-Subject: Re: what is --set-mes 128
-Date: Thu, 13 Jan 2005 11:13:56 +0500
-Message-ID: <a0f69e50501122213291aa355@mail.gmail.com>
-References: <a0f69e505011220501c9284b@mail.gmail.com>
-	<1105593361.8185.10.camel@hubcap.ljm.dom>
-Reply-To: Askar <askarali@gmail.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: PPTP problems again, still no solution
+Date: Wed, 12 Jan 2005 22:34:25 -0800
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F0198C5@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1105593361.8185.10.camel@hubcap.ljm.dom>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,56 +19,70 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thank you very much simpson ..ooops imean jason :)
+Hello,=20
+
+This is a repeat of a former post which is still unresolved...
+
+I have been having a hell of a time with the ip_nat_pptp filter working
+with a machine running POPTOP and PPTP-client.  Our current environment
+(RHEL 3).  I've emailed the author with no response to day.
+
+We have tried a few scripting solutions but nothing seems to be working.
+
+Here is a link to the general configuration
+http://www.localassociates.com/gary/alamo-network-diagram.png.
+
+Brief overview.  We have office A which connects to office B with a
+persistent PPTP connection.  Site A is using pptpclient and site B is
+running poptop.  This link works well unless I load ip_nat_pptp.  I can
+load ip_nat_proto_gre but it doesn't seem to impact it.  This part works
+great.=20
+
+We have mobile contractors coming from their remote offices.  When they
+get to our office primary office (site A) and they try to make a
+connection to their personal office (running POPTOP of Windows) it
+fails.  Loading ip_nat_pptp and ip_nat_proto_gre then the clients can
+indeed connect to the remote sites but now I run into problems from site
+A's firewall making a connection going out.  One thing to note is that
+the server fails to connect when ip_nat_proto_gre and ip_nat_pptp are
+loaded.  If either of these two modules are unloaded (doesn't matter
+which one) then the connection will succeed.  But if both of these
+modules are not loaded then the clients behind it (weather XP or Linux)
+cannot connect.
+
+How can we configure the firewall in such a way that it can open
+connections to external PPTP servers at the same time having machines
+behind it open up connections to other firewalls?  Please note we did
+patch the servers using patch-o-matic 20031219.  We've tried the newer
+patch-o-magic-ng but there seems to be some versioning issues.  Behind
+an MS server this works fine.
+
+What we have tried a couple things.  We put a script in place that will
+unload ip_nat_pptp before making the outgoing call from the server then
+waiting until the call is done and reloading it.  That gave us mixed
+results as it works for a couple minutes before the tunnel collapses.
+
+Here is out load script:
+
+/sbin/modprobe ip_conntrack_proto_gre
+/sbin/modprobe ip_conntrack_pptp
+/sbin/modprobe ip_nat_proto_gre
+#/sbin/modprobe ip_nat_pptp
+/sbin/modprobe ip_conntrack_irc
+/sbin/modprobe ip_nat_irc
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_nat_ftp
+/sbin/modprobe ip_conntrack_mms
+/sbin/modprobe ip_nat_mms
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_TARPIT
+/sbin/modprobe ip_gre
+/sbin/modprobe ipt_MASQUERADE
+/sbin/modprobe ip_conntrack
+/sbin/modprobe iptable_nat
 
 
-On Thu, 13 Jan 2005 00:16:01 -0500, Jason Opperisano <opie@817west.com> wrote:
-> On Wed, 2005-01-12 at 23:50, Askar wrote:
-> > Hello,
-> >
-> > can someone help mevto understand these rules...
-> >
-> > $iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 128
-> > $iptables -t nat -A PREROUTING -p tcp --tcp-flags SYN,RST SYN -j
-> > TCPMSS --set-mss 128
-> >
-> 
-> MSS == Maximum Segment Size
-> 
-> in english--it's the maximum amount of data that can be contained in a
-> TCP packet.
-> 
-> normal MSS calculation is:
-> 
-> MSS = MTU - 40
-> 
-> so--for example on an ethernet interface; where MTU = 1500, the MSS
-> would be 1460.
-> 
-> a common reason to mess around with "-j TCPMSS --set-mss" is when you're
-> tunneling your traffic over IPsec, and/or when PMTU discovery is broken.
-> 
-> maybe i'm missing something, but 128 seems like an *awfully* low value
-> to be forcing your MSS to.
-> 
-> > Secondly is there any benefit of changing TOS of packets going out i-e...
-> >
-> > $iptables -A OUTPUT -t mangle -p tcp --dport http -j TOS --set-tos
-> > Maximize-throughput
-> 
-> i doubt it.
-> 
-> -j
-> 
-> --
-> "We only get thirty sweet noggy days.  Then the government takes it
->  away again."
->         --The Simpsons
-> 
-> 
+We have tested this with iptables completely open to troubleshoot.  It
+didn't help.
 
-
--- 
-(after bouncing head on desk for days trying to get mine working, I'll make
-your life a little easier)
 
