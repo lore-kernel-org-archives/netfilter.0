@@ -1,15 +1,12 @@
-From: Frank Gruellich <frank@der-frank.org>
-Subject: Re: Need help with basic understanding of IPtables
-Date: Mon, 25 Oct 2004 22:01:30 +0200
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: Port 1900
+Date: Mon, 25 Oct 2004 13:07:22 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041025200130.GS29776@der-frank.org>
-References: <s17d10cf.018@hpsk12.net>
-	<20041025193800.GA24645@bender.817west.com>
-	<33D73F71797CC09A67671396@[10.169.6.246]>
+Message-ID: <20041025200722.2107.qmail@web61010.mail.yahoo.com>
+References: <417D0535.4090300@pbl.ca>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <33D73F71797CC09A67671396@[10.169.6.246]>
+In-Reply-To: <417D0535.4090300@pbl.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,22 +18,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Aleksandar Milivojevic <amilivojevic@pbl.ca>, netfilter <netfilter@lists.netfilter.org>
 
-* Kenneth Porter <shiva@sewingwitch.com> 25. Oct 04:
-> --On Monday, October 25, 2004 3:38 PM -0400 Jason Opperisano 
-> <opie@817west.com> wrote:
-> >a local IP address on this machine
-> Also note that this includes virtual interfaces, tunnel interfaces (the 
-> tun/tap driver, typically used in VPN's), and the loopback interface. It's 
-> not just NIC's.
 
-IP numbers belong to the IP stack and have nothing to do with
-interfaces.  This idea is completely useless, forget it, this will make
-things (eg. routing) a lot more understandable.  From this point of
-view, Jasons posting is IMHO very clear.
+--- Aleksandar Milivojevic <amilivojevic@pbl.ca> wrote:
 
- Regards, Frank.
--- 
-Sigmentation fault
+> Peter Marshall wrote:
+> > Oct 25 08:58:43 radium kernel: REJECT: frbk-rad IN=eth2 OUT=
+> > MAC=00:01:02:2f:78:4d:00:01:02:46:85:d6:08:00 SRC=192.168.100.101
+> > DST=192.168.100.1 LEN=160 TOS=0x00 PREC=0x00 TTL=1 ID=1464 PROTO=UDP
+> > SPT=29860 DPT=1900 LEN=140
+> > 
+> > I looked on the gys macine for a LONG time .. I can't see why this is
+> > happening.  I know 1900 is the msn port ..... Any ideas ?
+> 
+> 1900 is Universal Plug-and-Play.  It's used by messanger, however 
+> messanger works just fine without it.  There's registry entry to disable it:
+> 
+> Hive: HKEY_LOCAL_MACHINE
+> Key: Software\Microsoft\DirectPlayNATHelp\DPNHUPnP
+> Name: UPnPMode
+> Type: REG_DWORD
+> Value: 2 disabled
+> With UPnPMode=2, Universal Plug and Play Network Address Translation 
+> (NAT) traversal discovery does not occur.
+> 
+> Apperently this is good idea to do.  It seems there's more holes in UPnP 
+> than in Swiss cheese.
+> 
+> -- 
+> Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+> Systems Administrator                           1499 Buffalo Place
+> Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+> 
+> 
+Agreed... If you are in charge of medium to large network and not all of your
+users are not as Windows savy to go attempting to insert/remove reg keys. You
+might send out a memo directing users here
+
+http://www.grc.com/default.htm
+
+with a note to download and use the "Three Muskateers." These are excelent
+freeware apps to close off some obvious holes in Windows. They include UPnP,
+DCOMbobulator, and Shoot the Messenger. Hope this is of use to someone.
+
+John
+
+=====
+In the absence of order there will be chaos.
+
+
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail Address AutoComplete - You start. We finish.
+http://promotions.yahoo.com/new_mail 
 
