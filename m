@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Routing SMTP problem
-Date: Fri, 14 Jun 2002 08:53:13 +0100
+Subject: Re: TCP delay, solved
+Date: Fri, 14 Jun 2002 08:55:56 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206140753.g5E7rEA26724@Networker.rockstone.co.uk>
-References: <1597F9D20963E347AC9E232F0F636DA8047BA2@server.skinners.highsun.com.au>
+Message-ID: <200206140755.g5E7tuA26840@Networker.rockstone.co.uk>
+References: <01b801c21373$340fe960$638317d2@pacific.net.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <1597F9D20963E347AC9E232F0F636DA8047BA2@server.skinners.highsun.com.au>
+In-Reply-To: <01b801c21373$340fe960$638317d2@pacific.net.au>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,23 +20,19 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Friday 14 June 2002 4:19 am, Ian Pollock wrote:
+On Friday 14 June 2002 8:15 am, David Luyer wrote:
 
-> Hi,
-> Can anyone tell me if this is possible, we upgraded our internet access
-> from isdn (small isp) to broadband (telstra). We had a static ip of
-> eg:210.20.20.20 from our small isp on the isdn, with the new cable
-> connection we get dhcp ip address which makes it hard for mail routing. Ok
-> the big question can I alias the old static ip (small isp) we own of
-> 210.20.20.20 to my external etho dhcp (from telstra) device (ip of
-> 211.50.50.50) on my cable connection and route my mail through this way.
+> [ ident lookups causing tcpd to be slow ]
+>
+> > There's no satisfactory answer to this problem at present, I think.
+>
+> So it's a compile option on tcpd.  Recompile with it disabled.
 
-No.
+Yes, but that would need to be done by everyone out on the Internet whose 
+systems my clients try to contact, otherwise we're still going to get those 
+long delays (or a hole in my firewall).
 
-There is nothing you can do which would achieve this, because packets to the 
-ISDN address are going to get routed on the Internet to the small ISP, not to 
-Telstra.   You cannot change that from your position on the end of either of 
-the links.
+Not what I consider a "satisfactory solution" :-)
 
  
 
