@@ -1,8 +1,8 @@
 From: zynkx <skydive@megamail.pt>
-Subject: dhcrelay -*-*-*-*-*
-Date: Sun, 30 Nov 2003 00:01:37 +0000
+Subject: dhcrelay-*-*-*-*-*-*-*-
+Date: Sun, 30 Nov 2003 00:05:06 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070150497.3fc93361db2d9@paris-hme1>
+Message-ID: <1070150706.3fc93432d9526@paris-hme1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,30 +18,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-hi Ralff, Jeff and Ramin
+hi jeff, ralff and ramin
 
-my thought was not correct afterall... :) i thought=20
-dhcp could be forwarded :)
+i actually have my input and output to drop.
+if it works like a proxy it has to have input and=20
+output to accept.
 
-i have input a output to drop. i'm gonna change it to=20
-accept and read a few more stuff on dhcp to keep this=20
-going.
+the dhcrelay howto is no big deal you know... ;)
 
-fact is, dhcrelay howto explains nothing but putting=20
-dhcrelay running with the apropriatte flag wich is not=20
-hard at all :)
+gonna put it all to accept to see how it goes and i'll=20
+let you all know ;)))
 
-i guess my firewall setup is messing things up. gonna=20
-put it down and study the case.
-
-i'll be around to let you all know how it works :)
-
-tanx for caring ;)) [][][]
+tanx for caring one more time [][]
 
 
-"your life style, determines your death style..."
-
-
+"your life style determines your death style..."
 
 -------------------------------------------------
 Email Enviado utilizando o servi=E7o MegaMail
