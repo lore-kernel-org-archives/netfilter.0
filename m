@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: streaming problem
-Date: Wed, 11 Sep 2002 12:59:11 +0100
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: failover with iptables?
+Date: Wed, 11 Sep 2002 14:10:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209111159.g8BBxIv08420@vulcan.rissington.net>
-References: <1031698631.3224.7.camel@skuda.betanetgeb.com>
+Message-ID: <200209111410.14005.roy@karlsbakk.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1031698631.3224.7.camel@skuda.betanetgeb.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +16,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-On Tuesday 10 September 2002 11:24 pm, skuda wrote:
+hi
 
-> hi all :), i have a problem, i have 2 servers, with linux and apache
-> 1.3.26 in it, one (A) have a slow connection 64kbit isdn, and the other
-> (B) have a fast connection 100mbit, in A i have motion
-> (http://motion.technolust.cx/)sharing a webcam in port 8001 and a java
-> applet (cambozola) to show in the index of the webserver the camera in
-> real time, i would like connect the fast (B) to the slow connection (A)
-> and share with many people this camera without open more than one
-> connection from (B) to (A), because  bandwith is too little to open many
-> connections with B. Do you know any solution to this problem? thanks in
-> advance
+I currently have two identical servers I want to use in parallel with an=20
+iptables gate in front of them, so if one chrashes, iptables just sorts o=
+ut=20
+and redirects to the other.
 
-My only thought is to run Apache and the Java application on machine B, 
-telling it to get its data source from A.   Then you will get multiple 
-connections from people to the Java application but only a single feed from 
-the video source to machine B.
+but
 
-This is assuming, of course, that the Java application is intelligent enough 
-to serve multiple demands from a single data source.   If that's not the case 
-then you'd have to look into some sort of video client/server arrangement 
-between A & B so that B can act as the source of the data for the Java 
-application...
+is it possible to make the below (as stolen from various cisco sketches) =
+with=20
+iptables?
 
-Antony.
+If iptab_1 fails, iptab_2 should take over ip and (perhaps) mac address o=
+f=20
+iptab_1.=20
 
--- 
+ps: I don't think I need connection tracking.=20
 
-The first ninety percent of an engineering project takes ninety percent
-of the time, and the last ten percent takes the remaining ninety percent.
+roy
+
+
+         clients
+
+     |               |       =20
+     |               |
++----+----+     +----+----+
+|         |     |         |
+| iptab_1 |     | iptab_2 |
+|         |     |         |
++----+----+     +----+----+
+     |     \   /     |       =20
+     |      \ /      |
+     |       X       |       =20
+     |      / \      |
+     |     /   \     |
++----+----+     +----+----+
+|         |     |         |
+| server1 |     | server2 |
+|         |     |         |
++---------+     +---------+
+    =20
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
+
+Computers are like air conditioners.
+They stop working when you open Windows.
+
 
