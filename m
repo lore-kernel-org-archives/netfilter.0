@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ipt_string...
-Date: Thu, 6 May 2004 18:43:12 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: ipt_string...
+Date: Thu, 6 May 2004 10:58:04 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405061843.12557.Antony@Soft-Solutions.co.uk>
-References: <20040506172636.31443.qmail@web40702.mail.yahoo.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122F4F@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040506172636.31443.qmail@web40702.mail.yahoo.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +17,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: udo <udovdh@yahoo.com>, netfilter@lists.netfilter.org
 
-On Thursday 06 May 2004 6:26 pm, udo wrote:
+If you expect the string data on a specific port, you can narrow down
+the number of packets searched. Basically, the best way to cut down CPU
+is the ability to tell what 'isn't' in the string. Eg: If your traffic
+is some unknown protocol, anything RELATED doesn't need to get string
+matched. If you're just doing firewall based content filtering (not
+ideal) then you'd just use the string match on inbound tcp spt 80 and
+block tcp spt 443.
 
-> Hello,
->
-> Does the string match function better (uses less CPU)
-> when matching long patterns or is it better to keep
-> the patterns as short as possible?
-
-My advice is not to use the string match at all, or if you do, remember that 
-it will not be 100% effective.
-
-The reason is that the match works on IP packets, not on connection streams, 
-and therefore if you wanted to match my name "Antony Stone", and it turned 
-out that my first name was at the end of one packet, and my second name was 
-at the start of the next packet, the match would fail - netfilter would not 
-trigger in this situation.
-
-I would recommend you look at solutions which work at the application layer 
-instead of the network routing layer for this sort of thing.   Depending on 
-exactly what it is you're trying to do, Snort might be a good place to start.
-
-Regards,
-
-Antony.
-
--- 
-90% of networking problems are routing problems.
-9 of the remaining 10% are routing problems in the other direction.
-The remaining 1% might be something else, but check the routing anyway.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+As for the size of the string, I highly doubt that having different
+string lengths would make much of a performance hit. The search still
+has to traverse the entire packet regardless of how long the string is.
+The developer may say differently, but I don't see an advantage of
+either way.
 
