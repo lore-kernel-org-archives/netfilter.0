@@ -1,10 +1,14 @@
-From: "Babar Kazmi" <babarkazmi@hotmail.com>
-Subject: Re: Block MSN Messenger & Yahoo Messenger
-Date: Fri, 12 Dec 2003 10:19:39 +0500
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: Weird TCP flags?
+Date: Fri, 12 Dec 2003 00:20:40 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY9-F28GRpJqseWAtK000146fc@hotmail.com>
+Message-ID: <200312120020.40434.JALaramie@Loudoun-Fairfax.com>
+References: <003101c3c065$f61ad790$13fea8c0@melita.com> <200312112346.41936.JALaramie@Loudoun-Fairfax.com> <005401c3c06b$c4f107b0$13fea8c0@melita.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <005401c3c06b$c4f107b0$13fea8c0@melita.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,43 +18,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: mgale@utilitran.com, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ian Hunter <ihunter@hunterweb.net>, netfilter@lists.netfilter.org
 
-<html><div style='background-color:'><DIV class=RTE><mailto:netfilter-request@lists.netfilter.org?subject=help><mailto:netfilter@lists.netfilter.org><mailto:netfilter-request@lists.netfilter.org?subject=subscribe><mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>Hello Michael</mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe></mailto:netfilter-request@lists.netfilter.org?subject=subscribe></mailto:netfilter@lists.netfilter.org></mailto:netfilter-request@lists.netfilter.org?subject=help></DIV>
-<DIV class=RTE><mailto:netfilter-request@lists.netfilter.org?subject=help><mailto:netfilter@lists.netfilter.org><mailto:netfilter-request@lists.netfilter.org?subject=subscribe><mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe></mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe></mailto:netfilter-request@lists.netfilter.org?subject=subscribe></mailto:netfilter@lists.netfilter.org></mailto:netfilter-request@lists.netfilter.org?subject=help>&nbsp;</DIV>
-<DIV class=RTE><mailto:netfilter-request@lists.netfilter.org?subject=help><mailto:netfilter@lists.netfilter.org><mailto:netfilter-request@lists.netfilter.org?subject=subscribe><mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>Yes, You can block ports on Squid.</mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe></mailto:netfilter-request@lists.netfilter.org?subject=subscribe></mailto:netfilter@lists.netfilter.org></mailto:netfilter-request@lists.netfilter.org?subject=help></DIV>
-<DIV class=RTE><mailto:netfilter-request@lists.netfilter.org?subject=help><mailto:netfilter@lists.netfilter.org><mailto:netfilter-request@lists.netfilter.org?subject=subscribe><mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe></mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe></mailto:netfilter-request@lists.netfilter.org?subject=subscribe></mailto:netfilter@lists.netfilter.org></mailto:netfilter-request@lists.netfilter.org?subject=help>&nbsp;</DIV>
-<DIV class=RTE><mailto:netfilter-request@lists.netfilter.org?subject=help><mailto:netfilter@lists.netfilter.org><mailto:netfilter-request@lists.netfilter.org?subject=subscribe><mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>acl msn_messenger req_mime_type -i "illegal-mime-types.txt" <BR>http_access deny msn_messenger </mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe></mailto:netfilter-request@lists.netfilter.org?subject=subscribe></mailto:netfilter@lists.netfilter.org></mailto:netfilter-request@lists.netfilter.org?subject=help></DIV>
-<P><mailto:netfilter-request@lists.netfilter.org?subject=help><mailto:netfilter@lists.netfilter.org><mailto:netfilter-request@lists.netfilter.org?subject=subscribe><mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>Regards </mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe></mailto:netfilter-request@lists.netfilter.org?subject=subscribe></mailto:netfilter@lists.netfilter.org></mailto:netfilter-request@lists.netfilter.org?subject=help></P>
-<P><mailto:netfilter-request@lists.netfilter.org?subject=help><mailto:netfilter@lists.netfilter.org><mailto:netfilter-request@lists.netfilter.org?subject=subscribe><mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>Babar Kazmi.</P>
-<DIV class=RTE><BR></DIV></mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe></mailto:netfilter-request@lists.netfilter.org?subject=subscribe></mailto:netfilter@lists.netfilter.org></mailto:netfilter-request@lists.netfilter.org?subject=help>
-<DIV class=RTE><mailto:netfilter-request@lists.netfilter.org?subject=help><mailto:netfilter@lists.netfilter.org><mailto:netfilter-request@lists.netfilter.org?subject=subscribe><mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>&nbsp;</DIV>
-<DIV></DIV>&gt;Hello, 
-<DIV></DIV>&gt; 
-<DIV></DIV>&gt; Would running squid in transparent mode with no cache :) be able to block MSN and yahoo messenger :) 
-<DIV></DIV>&gt; 
-<DIV></DIV>&gt;Michael. 
-<DIV></DIV>&gt; 
-<DIV></DIV>&gt; 
-<DIV></DIV>&gt;On Thu, 11 Dec 2003 10:43:28 +1000 
-<DIV></DIV>&gt;"Lawrence Tang" <INGSIONG@DALTRON.COM.PG>wrote: 
-<DIV></DIV>&gt; 
-<DIV></DIV>&gt; &gt; Hi, 
-<DIV></DIV>&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp; I have an RH9 with NAT access for the client. I would like to block MSN &amp; Yahoo messenger from the client to access. 
-<DIV></DIV>&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp; Can any body advice me ? Thanks in advance. 
-<DIV></DIV>&gt; &gt; 
-<DIV></DIV>&gt; &gt; Best Regards, 
-<DIV></DIV>&gt; &gt; 
-<DIV></DIV>&gt; &gt; Lawrence Tang 
-<DIV></DIV>&gt; &gt; 
-<DIV></DIV>&gt; 
-<DIV></DIV>&gt; 
-<DIV></DIV>&gt;-- 
-<DIV></DIV>&gt;Michael Gale 
-<DIV></DIV>&gt;Network Administrator 
-<DIV></DIV>&gt;Utilitran Corporation 
-<DIV></DIV>&gt; 
-<DIV></DIV></mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe></mailto:netfilter-request@lists.netfilter.org?subject=subscribe></mailto:netfilter@lists.netfilter.org></mailto:netfilter-request@lists.netfilter.org?subject=help></div><br clear=all><hr>STOP MORE SPAM with <a href="http://g.msn.com/8HMAEN/2728??PS=">the new MSN 8</a> and get 2 months FREE*</html>
+On Thursday 11 December 2003 23:52, Ian Hunter wrote:
+> There are no users on that box though, and it's not web browser traffic
+> because the SOURCE port is 80, not the dest port, so this is web traffic
+> being served by that box for sure...
+>
+> I've seen references to doing --reply-with tcp-reject to this sort of
+> packet... ???
+
+Hmmm,  I wouldn't expect a SYN/ACK reply to be on a high port. I'm more of a 
+rules and logging kind of guy so I'm afraid you'll need to wait until the 
+tcp/ip (i.e. smart) people wake up.
+
+Jeff
+
+
+
 
