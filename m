@@ -1,11 +1,11 @@
-From: david <dlm4444@bigzoo.net>
-Subject: Why want my iptables scripts run in cron
-Date: Tue, 18 Mar 2003 22:01:19 -0500
+From: "Jeremy M. Dolan" <jmd@pobox.com>
+Subject: port forwarding local connections
+Date: Wed, 19 Mar 2003 16:02:08 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303182201.19202.dlm4444@bigzoo.net>
+Message-ID: <20030319220207.GA1783@foozle.attbi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +16,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-I have a simple script called routup.sh to start the routing at a certain=
-=20
-time, it is excutable. It runs fine at the command line but not cron. her=
-e is=20
-what my cron entry looks like:                0 9 * * * root   /etc/routu=
-p.sh
-#routup.sh
-#!/bin/bash
+I have a firewall machine (Red Hat 7.2) doing SNAT for a LAN, and port
+forwarding inbound 25 to the internal mail server.
 
-echo 1 > /proc/sys/net/ipv4/ip_forward
-iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE=20
+Public IP: 65.1.1.1
+Internal IP: 10.1.1.1
+kernel: 2.4.18-24.7.x
+iptables: 1.2.5-3
 
-I even went as far to add a path to the crontab file like this:
-vi crontab  =20
+The problem is mail sent from the firewall that needs to end up on the
+internal mail server. The firewall looks up the MX record, and gets
+back mailserver.domainname.com (which is 65.1.1.1). I'm not entirely
+clear what happens next, but at this point there is a biff connection
+(refused) over the loopback, and sendmail seems to fall back to using
+domainname.com (proper SMTP behavior) instead of
+mailserver.domainname.com, the MX. This, of course, bounces back.
 
-/sbin/iptables. =20
-where am i going wrong.=20
-The o.s. is linux mandrake 9.0
+TCP connections to 65.1.1.1:25 from the outside are fine, and connect
+to the MS Exchange server directly. But on the firewall, the
+connection is refused, not forwarded (local sendmail is listening only
+on 127.0.0.1).
 
-thanks for any help,
+I think Linux 2.2 sent packets destined for the eth0 IP through the
+loopback ipchains rules, but there is no interface specified in this
+iptables rule, so that should not be an issue:
 
-david=20
+# iptables -t nat -vnL|head -4
+Chain PREROUTING (policy ACCEPT 632K packets, 53M bytes)
+ pkts bytes target     prot opt in     out     source            destination
+   71  3304 DNAT       tcp  --  *      *       0.0.0.0/0         0.0.0.0/0          tcp dpt:25 to:10.1.1.4
+    0     0 DNAT       tcp  --  eth1   *       0.0.0.0/0         0.0.0.0/0          tcp dpt:5902 to:10.1.1.2:5900
 
+How can I get mail from the firewall to send to the internal mail
+server, without using user@[10.1.1.4] instead of user@company.com ?
+I've checked the Netfilter FAQ and NAT HOWTO but didn't see any
+information about how port forwarding behaves on the firewall itself.
 
+Thanks for any info (please Cc me, not on list)
 
+-- 
+Jeremy M. Dolan <mailto:jmd@pobox.com> <http://jmd.us/>
+PGP: 1024D/3C68A1BA 9470 210C A476 FFBB 6D11  0223 0D1C ABFC 3C68 A1BA
 
