@@ -1,13 +1,13 @@
-From: Patrick Schaaf <bof@bof.de>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Rule question
-Date: Sat, 22 Jun 2002 09:46:08 +0200
+Date: Sat, 22 Jun 2002 08:46:25 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020622094607.H5183@oknodo.bof.de>
+Message-ID: <20020622074627.KCNY19225.mta07-svc.ntlworld.com@there>
 References: <200206220935.12908.captain.nuke@gmx.at>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <200206220935.12908.captain.nuke@gmx.at>; from captain.nuke@gmx.at on Sat, Jun 22, 2002 at 09:35:12AM +0200
+In-Reply-To: <200206220935.12908.captain.nuke@gmx.at>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,36 +18,29 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick Petermair <captain.nuke@gmx.at>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-> So far I think I understand everything except this line:
-> $IPTABLES -A OUTPUT -o $INTIF -s $EXTIP -d $INTNET -j ACCEPT
-> 
-> How can an OUTPUT of the internal interface have the external IP address as 
-> source IP ?? And why would it be accepted?
+On Saturday 22 June 2002 8:35 am, Patrick Petermair wrote:
 
-OUTPUT is for packets from local processes on the firewall machine,
-which are going out to one or the other network interface. If you have
-a userlevel process bind()ing the external IP of your firewall, and it
-happens to connect() to a machine on the internal network, that rule
-makes it work. If you do not want that, do not use that rule.
+> Hi!
+>
+> I've read the following example script for a linux box with masquerading
+> and some firewall rules:
+>http://www.ecst.csuchico.edu/~dranch/LINUX/ipmasq/examples/rc.firewall-2.4-stronger
 
-> As far as I understand it, the masquerading and stuff is all done in the 
-> FORWARD chain.
+I've just had a look at this script, and I don't like a couple of the 
+variables he's set:
 
-Wrong. masquerading and all kind of NAT is done in one or the other
-chain of the NAT table.
+INTNET="192.168.1.0/24"
+INTIP="192.168.1.1/24"
 
-In the FORWARD chain, you just police the _results_ of the NAT action.
-NAT itself is in the NAT table.
+That INTNET is all very well, but the INTIP is a single address, and 
+therefore should end in /32, not /24.
 
-> I can't think of an example where a packet originating from 
-> the internal interface of my firewall can have the external IP as source.
+Given this little error, it might be worth checking the rest of this guy's 
+script to see if any other little inaccuracies have crept in...
 
-Be careful with your imagination: it becomes larger every year.
+ 
 
-best regards
-  Patrick
+Antony.
 
