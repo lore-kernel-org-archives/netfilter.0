@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: A simple question
-Date: Thu, 19 Aug 2004 10:47:07 -0700
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: netfilter and iproute2
+Date: Thu, 19 Aug 2004 18:57:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E359@alderaan.smgtec.com>
+Message-ID: <20040819175750.GA5618@acentral.co.uk>
+References: <D5C9032B2B09C64EA2409D6214E91AC90512AC@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90512AC@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Nick Drage <nickd@metastasis.org.uk>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+On Thu, Aug 19, 2004 at 01:44:21PM -0400, Jason Opperisano wrote:
+> yeah--your marks don't match.  the output of "iptables -t mangle -vnL"
+> shows you a mark of 0x32 (which is what 50 becomes in hex), whereas
+> your "ip rule" is looking for a mark of "50." change one of them.
 
-> If you're using IPTables as a seperate firewall then wouldn't you just
-> want SSHD listening on the internal interface?
+Ah ha! :)
 
->=20
-> You're presuming that IPTables isn't protecting a single host.  If
-> you're using it on a desktop or a server filtering on the OUTPUT chain
-> gives you a huge gain in security.
+Well done, Jason - I had no idea it could be a simple mixup between 
+different bases - it's now working like a charm - have a gold star and a
+choc-chip cookie =)
 
-Very true on both points. You should only bind SSH to your secured
-channels. Even then you'll have to be careful of internal staff/wormed
-PC's trying to exploit the service. Good audit logging and IDS traps for
-SSH exploits would be a good start.
-
-In the other case of a desktop Linux, you are very true that OUTPUT
-filtering will become more and more prevailent as desktop Linux matures.
-I was strictly speaking about gateway/firewalls, not end-user
-protection. I wouldn't doubt that someone will develop a netfilter
-module along the lines of zonealarm and other 'personal' firewalls.
+gdh
 
