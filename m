@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Firewall IP change
-Date: Sat, 24 Jul 2004 16:47:52 +0100
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: ftp access problem
+Date: Sat, 24 Jul 2004 14:01:34 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407241647.52286.Antony@Soft-Solutions.co.uk>
-References: <40FEE340.8090907@ctwa.com> <1090450600.2112.3.camel@localhost> <200407231457.30104.fred99@qualiflow.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <41024F9E.1060905@rtij.nl>
+References: <a0f69e504072403057b210342@mail.gmail.com> <200407241122.16298.Antony@Soft-Solutions.co.uk> <a0f69e5040724044591804e0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407231457.30104.fred99@qualiflow.com>
+In-Reply-To: <a0f69e5040724044591804e0@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,58 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Askar Ali Khan <askarali@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-On Friday 23 July 2004 1:57 pm, Fr=C3=A9d=C3=A9ric Gonzatti wrote:
+Askar Ali Khan wrote:
 
-> Hi all,
+>Hi Anthony,
+> 
+>On Sat, 24 Jul 2004 11:22:16 +0100, Antony Stone
+><antony@soft-solutions.co.uk> wrote:
+>  
 >
-> I've got a big problem with my firewall which have three ethernet cards.
-> eth0 : 172.16.2.1/255.255.255.0 ---->LAN
-> eth1: 192.168.2.1/255.255.255.0----->DMZ
-> eth2: 192.168.3.1/255.255.255.0-----> WAN
+>>On Saturday 24 July 2004 11:05 am, Askar Ali Khan wrote:
+>>
+>>    
+>>
+>>>Hi
+>>>
+>>>On my router/firewall which acting i am getting problem while anyone
+>>>tries to connect to ftp server he connected successfully however when
+>>>he types and command for example "ls" ftp server return error "500
+>>>Illegal PORT range rejected"
+>>>Everything else is working fine.
+>>>      
+>>>
+>>I see you are doing NAT on this firewall.   Do you have the nat_ftp support
+>>module loaded or compiled in to your kernel?
+>>
+>>Without that module, netfilter will not see the PORT commands in the FTP
+>>packets, and will not know what to do with the data connection on port 20
+>>associated with the control connection onn port 21.
+>>    
+>>
+>#modprobe nat_ftp
+>   modprobe: Can't locate module nat_ftp
+>  
 >
-> This firewall is connect to a router which have Wan IP 192.168.3.254 an=
-d a
-> public IP for WAN : 62.160.X.X/255.255.255.255
-> This configurations is working !!!
 
-This means that your WAN router must be doing SNAT for you on packets to =
-the=20
-Internet, and the corresponding DNAT on packets coming back again.
+Try ip_nat_ftp instead. Also, don't bother with port 20. Use a RELATED 
+rule to let in the data connections. All this is documented in lots of 
+howto's, www.netfilter.org is a good place to start.
 
-> I have tried to replace the Wan IP of my firewall by a public IP :
-> 62.160.X.Y # ifconfig eth2 62.160.X.Y netmask 255.255.255.248
-> # route add default gw 62.160.X.Z (which is new Ip of the router (WAN a=
-nd
-> LAN interfaces of the router are the same)
->
-> I can access to the internet from my firewall but unfortunately not fro=
-m my
-> LAN.
-> So now I come back to my old configuration until I ask why it was not
-> working. Have you got any idea please ?
+HTH,
+M4
 
-Yes; if you want to use your WAN router in bridging mode (which it is if =
-you=20
-have the same address on both internal and external interfaces) with a pu=
-blic=20
-IP on your firewall, then you need to SNAT outbound packets (which will=20
-automatically DNAT reply packets for you too):
 
-iptables -A POSTROUTING -t nat -o eth2 -j DNAT --to 62.160.X.Y
-
-Regards,
-
-Antony.
-
---=20
-This email was created using 100% recycled electrons.
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
 
 
