@@ -1,13 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: CBQ Log message  mean??
-Date: Wed, 20 Oct 2004 11:47:42 -0400
+Subject: Re: semi OT: default route
+Date: Wed, 20 Oct 2004 12:17:25 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041020154742.GA7169@bender.817west.com>
-References: <200410201341.i9KDf2R12817@securegate.mailserver.gajshield.com>
+Message-ID: <20041020161725.GA7221@bender.817west.com>
+References: <20041020132551.GA1720@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200410201341.i9KDf2R12817@securegate.mailserver.gajshield.com>
+In-Reply-To: <20041020132551.GA1720@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,32 +19,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-On Wed, Oct 20, 2004 at 07:07:42PM +0530, bruce wrote:
+On Wed, Oct 20, 2004 at 09:25:51AM -0400, Payal Rathod wrote:
 > Hi,
-> 
-> whenever i enable bandwidth  to interfaces, a flooding of 
-> "CBQ: class 00010001 has bad quantum==0, repaired"  message.
-> What is it actually mean???
-> Any troubles for the interface bandwidth???
-> It is telling that "repaired".....
-> 
-> 
-> Thanks in advance for your reply
+> I have a question which has haunted me for many months. If I have 2 ISP
+> connections with me, with default gw 1.2.3.4 and 4.5.6.7 and if I add 
+> both as default routes on my Linux gateway as,
+> route add -net default gw 1.2.3.4
+> route add -net default gw 4.5.6.7
+> and if I send a packet from a windows client to internet, which ISP will it
+> go through?
 
-you'll have a much higher probability of getting a reply to this
-question on the LARTC mailing list:
+this will sound like a stupid answer, but it will probably always use
+the route that you added first.  the 'route' command will allow you to
+added multiple default routes, but the ones you add after the first one
+end up getting ignored.  the 'ip' command won't let you add a default
+route once you have one (it uses teq and multipath for this):
 
-	http://lartc.org/#mailinglist
+	$ ip route list | grep default
+	default via 10.2.1.1 dev eth0
 
-you can also search the archives at:
+	$ sudo ip route add default via 10.2.1.2
+	RTNETLINK answers: File exists
 
-	http://marc.theaimsgroup.com/?l=lartc&r=1&w=2
+if you want to load-balance outbound traffic over multiple ISP links,
+you'll want to use something along the lines of the 'nth' patch from POM:
 
-and their how-to (as always) is located at:
+	http://netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO-3.html#ss3.9
 
-	http://lartc.org/howto/
+if you want to split outbound traffic over multiple links by source IP
+or protocol, etc--you can use the concepts from:
+
+	http://lartc.org/howto/lartc.netfilter.html
 
 -j
 
