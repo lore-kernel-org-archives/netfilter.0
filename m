@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: (no subject)
-Date: Mon, 17 Jun 2002 21:20:57 +0100
+From: Mark Tessier <mt@open2web.com>
+Subject: debugging iptables
+Date: Mon, 17 Jun 2002 16:59:03 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206172020.g5HKKxA20479@Networker.rockstone.co.uk>
-References: <002301c2163a$59175210$8147370a@washingtghv9lt>
+Message-ID: <20020617165903.4b7ac76a.mt@open2web.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <002301c2163a$59175210$8147370a@washingtghv9lt>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,27 +18,65 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Monday 17 June 2002 9:05 pm, James Mello wrote:
+I've set up a small network with 2 subnets: LAN and DMZ. The LAN and DMZ are
+connected by a rh7.1 running a iptables choke firewall. The rc.firewall
+script is based on Ziegler's chpt 6 choke firewall script. When I run the
+rc.firewall script I get several errors that I'm hoping someone can help me
+with. Here's a look at those errors:
 
-> Hrm... This did fix the problem, but I'm still not sure why the heck
-> connections other than those from localhost did work. Any ideas?
+iptables v1.2.1a: host/network `smtpx.xxxx.xx' not found
+Try `iptables -h' or 'iptables --help' for more information.
+iptables v1.2.1a: host/network `smtpx.xxxx.xx' not found
+Try `iptables -h' or 'iptables --help' for more information.
+iptables v1.2.1a: host/network `mail.yyyy.com' not found
+Try `iptables -h' or 'iptables --help' for more information.
+iptables v1.2.1a: host/network `mail.yyyy.com' not found
+Try `iptables -h' or 'iptables --help' for more information.
+iptables v1.2.1a: host/network `news.cis.dfn.de' not found
+Try `iptables -h' or 'iptables --help' for more information.
+Try `iptables -h' or 'iptables --help' for more information.
+Bad argument `1024:65535'
 
-Yes.   Your original ruleset allowed packets into the INPUT chain if they 
-were to destination port 22, and allowed all packets out of the OUTPUT chain.
+Here's the section that some of these  errors refer to:
 
-A remote client connecting by SSH will connect to port 22 through the INPUT 
-chain (allowed) and the reply packets go out of the OUTPUT chain (allowed).   
-All further packets in the session continue coming in on port 22 (allowed) 
-and going out through the OUTPUT chain (allowed).   Therefore the remote 
-client works.
+# Sending Mail to the Mail Gateway Server (TCP Port 25)
 
-The local client, though, connects to port 22 (allowed) and then the server 
-tries to reply to the client (also on the local machine) on port 32783 (or 
-whatever), and this has to go out through the OUTPUT chain and back in again 
-on the INPUT chain - which was not allowed, therefore the local connection 
-failed.
+iptables -A FORWARD -i $LAN_INTERFACE -o $DMZ_INTERFACE -p tcp \
+         -s $LAN_ADDRESSES --sport $UNPRIVPORTS \
+         -d $SMTP_SERVER --dport 25 \
+         -m state --state NEW -j ACCEPT
 
- 
+iptables -A OUTPUT -o $DMZ_INTERFACE -p tcp \
+         -s $DMZ_IPADDR --sport $UNPRIVPORTS \
+         -d $SMTP_SERVER --dport 25 \
+         -m state --state NEW -j ACCEPT
 
-Antony.
+###############################################################
+
+# Retrieving Mail as a POP Client (TCP Port 110)
+
+iptables -A FORWARD -i $LAN_INTERFACE -o $DMZ_INTERFACE -p tcp \
+         -s $LAN_ADDRESSES --sport $UNPRIVPORTS \
+         -d $POP_SERVER --dport 110 \
+         -m state --state NEW -j ACCEPT
+
+iptables -A OUTPUT -o $DMZ_INTERFACE -p tcp \
+         -s $DMZ_IPADDR --sport $UNPRIVPORTS \
+         -d $POP_SERVER --dport 110 \
+         -m state --state NEW -j ACCEPT
+
+I'm not sure why the script causes these error messages, while others like accessing an HTTP server doesn't produce any error mesages. DNS rules are prior to these rules.
+
+-- 
+Thanks,
+
+Mark
+
+
+
+
+-- 
+Thanks,
+
+Mark
 
