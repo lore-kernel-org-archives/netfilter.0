@@ -1,10 +1,9 @@
-From: "GUILHEM Michel (34)" <michel.guilhem@cp.finances.gouv.fr>
-Subject: how to interconnect two private network
-Date: Tue, 3 Dec 2002 09:13:02 +0000
+From: mailinglists@belfin.ch
+Subject: RE: IPTables Logging Problem.
+Date: Tue, 3 Dec 2002 09:43:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212030913.02744.michel.guilhem@cp.finances.gouv.fr>
+Message-ID: <31347F3CE518D6118ACB00A0246AD0560B2505@mx.seaan.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,57 +15,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: 'Amit Kumar Gupta' <amitkumar.gupta@wipro.com>, netfilter@lists.netfilter.org
 
 
-I'm trying to interconnect two private network with possibles addresses i=
-n the=20
-same netmask with the help on a proxy machine with two interfaces=20
+Hi
 
-example=20
+> I am having a problem reg IPtables Logging. Suppose I want to LOG all
+> the packets for a particular session. How I can do that? 
+> (Here, Session
+> say telnet is established b/w 2 hosts and I want to Log all 
+> the packets
+> on host A (say) i.e. the outgoing and incoming packets). 
+> I know abt the commans :-
+> 
+> Iptables -A INPUT -s HOSTA -d HOSTB -p tcp -sport 21 -j LOG 
 
-in the first network i have a client with IP address in 10.34.248.134 ( c=
-lass=20
-C ) and i try to reach a server on the other private network with an IP=20
-address 10.10.254.12 .
-My problem is=20
-With iptables and nat , it is possible to replace the address of clients =
-with=20
-the address of the proxy .
-But my purpose is to replace the client address in the proxy partially=20
-So i want to have a partial replacement on the input=20
-So the addresse 10.34.248.134 is changed in 154.34.248.134 by the nat .
-Therefore i want to change only the first byte of the client address .
+What kind of rule is that? does your client build up a connection from low
+ports to low ports? My computer doesn't do that. But to answer your
+question:
 
-In my machine proxy i have squid to requests on http, https , ftp under h=
-ttp
-and i have delegate to requests on another protocols or like "proxy socks=
-"=20
-So to manage the routes , i just need that the clients address be changed=
-=20
-beetwen the entry on the machine and the proxy service .
-Like this the route on the proxy machine are simplified because the reque=
-sts=20
-destinated to server are routed on the interface ( route by default ) .
-And all the request that are done by clients are routed on the other inte=
-rface=20
-on the nat with a rule for address 154.x.x.x and changed by the nat in=20
-address 10.x.x.x .
+iptables -A OUTPUT -s HOSTB -d HOSTA -p 6 --dport 21 -j LOG
 
-I want trying to do this the following rule
+will solve your problem.
 
-iptables -t nat -A POSTROUTING -s 10.0.0.0/255.0.0.0 -o eth0 -j SNAT --to=
-=20
-source 154.0.0.0/255.0.0.0=20
+> But it logs only packets from HostA to HostB 
 
-But i am not sure , is my probleme solvable by a combination of iptables =
-, nat=20
-and route ?
+of course
 
-Thanks for any clue=20
+> while I want the reverse
+> also. 
 
-Guilhem michel
+put in that second rule.
 
---=20
-Guilhem michel Administrateur proxy
+Philipp
 
