@@ -1,10 +1,11 @@
-From: "Sandy T. Santos" <sandy@bulacan.gov.ph>
-Subject: nat on multihomed server
-Date: Sat, 24 Jan 2004 11:35:22 +0800 (PHT)
+From: Amit Kucheria <akucheria@metricsystems.com>
+Subject: sending same packet stream over both links
+Date: Fri, 23 Jan 2004 19:48:47 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1164.203.131.168.150.1074915322.squirrel@www.localgovernance.net.ph>
-Reply-To: sandy@bulacan.gov.ph
+Message-ID: <1074916127.3329.9.camel@amit.metricsystems.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="=-IIx04pH6d4/Zk3t/dAfn";
+ protocol="application/pgp-signature"; micalg=pgp-sha1
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,31 +16,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Linux-Netfilter-Users Mailing List <netfilter@lists.netfilter.org>
 
-our campany has two internet links from different isp's. we then use both
-of these to host the company's webserver. what i want is that the
-webserver maybe accessible by coming from my isp1 link or my isp2 link. i
-know that i need to set up my dns to have two ip addresses that points to
-my linux box and then DNAT that connection towards my webserver. what i
-don't know is what's the iptables script gonna look like for the SNAT
-reply. how would i be able to determine that the request that came in to
-my webserver originated from my isp1 or isp2 link  so that the reply would
-be SNAT'ed to that interface?
 
-should i just make two SNAT  that replies to the request irregardless of
-the destination address? ex. iptables -t nat -A POSTROUTING -s 192.168.x.2
---sport 80 -j SNAT --to-ip (ip facing isp1) and  iptables -t nat -A
-POSTROUTING -s 192.168.x.2 --sport 80 -j SNAT --to-ip (ip facing isp2)
+--=-IIx04pH6d4/Zk3t/dAfn
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-other suggestions are welcome.
+Hi,
 
--- 
-Sandy T. Santos <sandy@bulacan.gov.ph>
-Provincial Information Technology Office
-Provincial Government of Bulacan
-Malolos, Philippines
+I have an application requirement that hints at the use of multicast,
+but I think it can be solved without it.
+
+
+                                    |------- [Receiver 1]
+[Sender] ------- [Relay/Router] ----|
+                                    |------- [Receiver 2]
+
+There is a UDP stream from the [sender] that needs to reach both the
+receivers. Is it possible to direct the stream to the [Router] and have
+iproute2/iptable rules that modify the packets and send it to both the
+receivers?
+
+Thanks for your time.
+
+Regards,
+Amit
+
+--=20
+     .| Amit Kucheria                       |.
+   ...| Wireless Systems Engineer           |...
+ .....| Metric Systems Corp., San Diego, CA |.....
+......| www.metricsystems.com               |......
+
+
+--=-IIx04pH6d4/Zk3t/dAfn
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQBAEesftLg6PvU36DYRAtV7AKDB9sWJAUaUwN/qZuAOJlc3Yk8HawCfVXzh
+G0G/KGXCFUNZ8QLreGF3zTE=
+=YXr6
+-----END PGP SIGNATURE-----
+
+--=-IIx04pH6d4/Zk3t/dAfn--
 
 
