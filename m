@@ -1,13 +1,15 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: iptables wishes
-Date: 01 Apr 2003 12:17:51 +0200
+From: Stephen Frost <sfrost@snowman.net>
+Subject: Re: AW: iptables wishes
+Date: Tue, 1 Apr 2003 07:13:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049192271.9857.49.camel@tux.rsn.bth.se>
-References: <200304010341.48281.netfilter@newkirk.us>
+Message-ID: <20030401121306.GX18434@ns.snowman.net>
+References: <65F646CE24EBF24AA3714070D537988E017F04@gargoyle.seaan.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rYAl11fiF69JSutc"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304010341.48281.netfilter@newkirk.us>
+Content-Disposition: inline
+In-Reply-To: <65F646CE24EBF24AA3714070D537988E017F04@gargoyle.seaan.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +19,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@newkirk.us
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: mailinglists <mailinglists@belfin.ch>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 2003-04-01 at 10:41, Joel Newkirk wrote:
 
-> Personally I have four:
-> 
-> 1 - revamped LOG entry format, especially cleaning up MAC.
+--rYAl11fiF69JSutc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-see the next remark.
+* mailinglists (mailinglists@belfin.ch) wrote:
+> Generally I think this is a problem of too large rule sets. Is there a wa=
+y to make containers of src/dst addresses? e.g. like this:
+>=20
+> container_untrusted_dns=3D"ip.addr.A, ip.addr.B, ip.addr.C"
+> container_trusted_dns"ip.addr.D, ip.addr.E"
+>=20
+> iptables -A FORWARD -p 6 -m state -s $container_trusted_dns --sport 1024:=
+ -d $container_untrusted_dns --dport 53 -o $waneth --state NEW,ESTABLISHED =
+-j ACCEPT
 
-> 2 - completely separate netfilter logging from kernel log streams.  (not 
-> just redirecting infrequently-used kernel streams, but actual dedicated 
-> netfilter streams)
+It's overkill for this but you can use ipt_recent for matching on many
+disseperate addresses or ippool for faster matching on IP addresses in
+small ranges.  ippool in netfilter currently uses a bitfield for it's
+IP address storage so you have to specify the range ahead of time and if
+the range is very large it takes up gobs of memory.  ipt_recent is meant
+for doing matches on recently seen IP addresses but can also be used for
+static lists without penalty if you use --rcheck for the check (and not
+--update).  ipt_recent is implemented as a hash table and so you can
+throw any address you want in it without concern for memory size beyond
+the total number of IP addresses you want to be able to store at once
+instead of their disparity.  More information on ipt_recent is available
+in the netfilter extension FAQ and at the homepage
+http://snowman.net/projects/ipt_recent/ .  ippool is documented as part
+of netfilter.
 
-use ULOG
-you can easily modify the format it uses for the logfile.
-that part of the source isn't complicated at all.
- 
-> 3 - Ability to match "original DestinationIP" of a DNATted packet in 
-> subsequent chains.  Useful with a single physical interface but multiple 
-> IPs bound to it.
+	Stephen
 
-Already there, look at the conntrack match (ipt_conntrack)
+--rYAl11fiF69JSutc
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-iptables -A FORWARD -m conntrack --ctorigdst 1.1.1.1 -j ACCEPT
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-> 4 - addition of support for a REM field in rules.  Would do nothing 
-> whatsoever except print the specified REMark text at the end of the rule 
-> in -L listings.  Something like:
-> iptables -A INPUT -p tcp --dport 22 -s a.b.c.d -j ACCEPT -REM JoelSSH
-> So that a -L listing could be easier & quicker to decipher sometimes.  It 
-> would also allow "iptables -L -v -n | grep Joel" to list only rules, in 
-> all chains, with "Joel" in the comment.
+iD8DBQE+iYJSrzgMPqB3kigRAt8WAJ9Qbsi6ZOCMTxgfBDbrGQMDugTblACgjGTm
+ZtL+LjfozpZ8ukq0sfhG10E=
+=fJd+
+-----END PGP SIGNATURE-----
 
-Has been debated frequently, you can probably find some of the
-discussions by using google.
-
--- 
-/Martin
+--rYAl11fiF69JSutc--
 
