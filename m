@@ -1,10 +1,9 @@
-From: "Linda Zhu" <lindazhu@utstar.com>
-Subject: remote telnet is blocked when internal ping is ongoing (re-submit)
-Date: Tue, 29 Jun 2004 10:34:36 -0400
+From: "Mike O" <mikeeo@msn.com>
+Subject: Re: weird netfilter problem
+Date: Tue, 29 Jun 2004 15:27:12 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <LCENIFAENEHNMKDCGDGBAENECJAA.lindazhu@utstar.com>
+Message-ID: <BAY4-F42aqnu1Um0ZZj0001cf7a@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,98 +14,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+Did some more testing seems I can ping the private side of the box, but not 
+the public side...this a conntrack issue maybe? then when I ping internal 
+from the firewall it works.
 
-This is Linda from UTStarcom. I have problems with iptable configuration.
+>From: Antony Stone <Antony@Soft-Solutions.co.uk>
+>Reply-To: netfilter@lists.netfilter.org
+>To: netfilter@lists.netfilter.org
+>Subject: Re: weird netfilter problem
+>Date: Tue, 29 Jun 2004 14:12:02 +0100
+>
+>On Tuesday 29 June 2004 2:02 pm, Mike O wrote:
+>
+> > Im trying to track down a problem Im having with iptables. For some 
+>reason
+> > the internal machines cannot reach the internet until I ping them from 
+>the
+> > iptables box. I check the conntrack tables and there still valid entries 
+>in
+> > there for that machine. if I reboot it works for about 5 minutes then
+> > stops. I tried upgrading the kernel to 2.4.26 and iptables 1.2.11 and 
+>the
+> > same problem happens. Any ideas? this was working fine for over 6 months
+> > then just starts doing this.
+>
+>Sounds like the client machines can't do ARP resolution for the IP address 
+>of
+>the gateway.
+>
+>I would suspect:
+>
+>1. The NIC on the firewall.
+>2. The switch on your LAN.
+>
+>Wait until one of the clients cannot get to the Internet, then examine its 
+>ARP
+>cache ("arp -an" on Linux, not sure about other O/Ss), and see if it has a
+>complete entry for the IP address of the firewall's internal interface.
+>
+>Then do your ping and repeat the ARP check.
+>
+>Regards,
+>
+>Antony.
+>
+>--
+>"The future is already here.   It's just not evenly distributed yet."
+>
+>  - William Gibson
+>
+>                                                      Please reply to the 
+>list;
+>                                                            please don't CC 
+>me.
+>
+>
 
-The problem happens on one card. The card has two ethernet interfaces:
-One is 172.16.xx.xx, and another is 192.168.xx.xx. The 172.16.xx.xx
-interface
-is used for remotely acceccing the card. The 192.168.xx.xx interface
-receives
-and transmit traffic.
-
-Part of our iptable configuration is attached below.
-
-In normal case, user can remotely telnet into this card with no problme.
-The problem occurs when we run ping from 196.168.xx.xx interface at a fast
-rate.
-
-e.g. ping -i 0.01 -s 1400 192.168.100.2, then the remote telnet to
-172.168.xx.xx
-interface is blocked.
-
-In the iptable configuration, we have one rule:
-
-$IPTABLES -A allowed_tcp -p TCP --syn -m limit --limit 1/second -j ACCEPT
-
-If we change the limit from 1/second to 20/second, then with one ping
-session,
-the telnet will be successful. After that, if we run two ping sessions:
-e.g.
-ping -i 0.01 -s 1400 192.168.100.2
-ping -i 0.01 -s 1400 192.168.100.3
-
-then telnet is blocked again.
-
-Then if we change the limit from 20/second to 100/second, remote telnet
-success.
-With the 100/second, even 4 ping sessions ongoing at same time, the remote
-telnet is OK.
-
-Basically, we don't setup any firewall for 192.168.xx.xx interface. My
-question
-is why the ping on 192.168.xx.xx interface will affect the remote telnet.
-The two
-interface are in different IP groups and on different hardware. Please
-advice.
-
-Thank you,
-Linda
-
-================== part of our iptable configuration =======================
-
-###
-# Create separate chains for TCP,UDP,ICMP to traverse
-#
-#
-
-$IPTABLES -N allowed_tcp
-$IPTABLES -N tcp_packets
-$IPTABLES -N udp_packets
-$IPTABLES -N icmp_packets
-#$IPTABLES -N allowed_ping
-
-#
-# Allowed chain
-#
-
-$IPTABLES -A allowed_tcp -p TCP --syn -m limit --limit 1/second -j ACCEPT
-$IPTABLES -A allowed_tcp -p TCP -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-$IPTABLES -A allowed_tcp -p TCP -j DROP
-
-#
-# TCP rules
-#
-
-### Telnet ###
-$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 23 -j allowed_tcp
-
-
-#
-# ICMP rules
-#
-
-$IPTABLES -A icmp_packets -p ICMP -s 0/0 -m limit --limit
-3/second --icmp-type 8
- -j ACCEPT
-$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type pong -j ACCEPT
-$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type port-unreachable -j
-ACCEPT
-$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT
 
 
