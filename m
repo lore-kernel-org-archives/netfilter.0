@@ -1,11 +1,14 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: whether there are any packets in the ip_queue
-Date: Tue, 20 Apr 2004 01:16:17 +0100
+From: Torsten Luettgert <t.luettgert@combox.de>
+Subject: Re: Large number of repeated rules with only differing -s
+	ipaddrs/cidrs
+Date: Mon, 19 Apr 2004 14:12:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004a01c4266c$b2d7d830$68892090@grouse>
+Message-ID: <1082376749.29831.11.camel@scaramouche>
+References: <4083A3B2.7020808@linuxmail.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-s/IfZEZNwGw+mmgi218S"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <4083A3B2.7020808@linuxmail.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,21 +18,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
 
-I am using libipq for userspace programming on netfilter. I am having
-problems to determine whether there are any packets in the ip_queue before I
-call the function ipq_read(). I just don't wish to call ipq_read() when
-there is no packet in the ip_queue, because I need my program to do other
-things rather than waiting for a packet arriving (after calling ipq_read(),
-the program will stop and wait for some time or until a packet coming from
-the kernel). Are there anybody on the list who has any idea about this?
+--=-s/IfZEZNwGw+mmgi218S
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-BTW, may I ask whether this is the proper list to ask about netfilter/libipq
-programming, since it seems few people on the list talking about this kind
-of questions?
+On Mon, 2004-04-19 at 12:02, Feizhou wrote:
+> I don't know if such a question has been asked before and the archive=20
+> didn't provide a search button...
+>=20
+> I have a whole bunch of ips/cidrs that I want to apply the rule to.
+>=20
+> Is there any way to insert one rule where the -s would be able to look=20
+> up a table (btree/hash/cdb whatever) that contains those ips/cidrs=20
+> instead of insert gazillion rules?
+>=20
+
+There's no built-in match for that. That's exactly why I wrote a match
+for this (back when we were hit by code red).
+
+I called it 'manyaddr', and it reads up to 15000 ip addresses (per rule)
+from a file. You can then match source or destination address against
+the addresses in the file.
+
+If you aren't afraid of patching your kernel and iptables tree,
+running patch-o-matic and recompiling everything, this could be
+a good solution for you.
+
+Please mail me if you want to give manyaddr a try.
+
+Greetings,
+Torsten L=FCttgert <t.luettgert at pressestimmen.de>
+
+--=-s/IfZEZNwGw+mmgi218S
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQBAg8ItbLxp21AqFXsRAqyUAKC5o+K+nxWueEj/70MbM0tGKKNK9gCcDh+V
+/VAt69xERq1uqCsdT95PzgA=
+=sgee
+-----END PGP SIGNATURE-----
+
+--=-s/IfZEZNwGw+mmgi218S--
 
 
