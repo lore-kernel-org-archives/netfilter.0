@@ -1,13 +1,12 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
+From: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
 Subject: Re: How to make a computer invisible
-Date: Sun, 30 Nov 2003 13:31:41 -0500
+Date: Sun, 30 Nov 2003 16:49:31 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070217100.2884.9.camel@grendel>
-References: <20031130181240.GD6930@zeus.tpfm.de>
+Message-ID: <008401c3b77b$12fee160$8b00000a@casa>
+References: <20031130181240.GD6930@zeus.tpfm.de> <006301c3b778$b22259a0$8b00000a@casa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031130181240.GD6930@zeus.tpfm.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +16,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Thomas Preissler <tomjohn@gmx.de>
-Cc: netfilter-user Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter-user Mailinglist <netfilter@lists.netfilter.org>
 
-On Sun, 2003-11-30 at 13:12, Thomas Preissler wrote:
+
+    Some new informations .....
+
+    iptables really cannot do that. But you should take a look at:
+
+http://sourceforge.net/projects/ebtables/
+
+    go to Files link and you'll see 'arptables' ..... guess what it does =
+???
+:)
+
+----- Original Message -----=20
+From: "Leonardo Rodrigues Magalh=E3es" <leolistas@solutti.com.br>
+To: "Thomas Preissler" <tomjohn@gmx.de>; "netfilter-user Mailinglist"
+<netfilter@lists.netfilter.org>
+Sent: Sunday, November 30, 2003 4:32 PM
+Subject: Re: How to make a computer invisible
+
+
+>     AFAIK, iptables can use some 'layer 2' information such as MAC Addr=
+ess
+> for doing some filtering in some tables, but it CANT be used for filter=
+ing
+> those 'layer 2' packets. That means iptables CANNOT modify ARP/RARP
+> behavior.
 >
-> how do I really make a computer totally invisibly as it would be
-> when it does not exist?
-
-Leave the power switch in the "off" position. ;-)
-
-> It is clear, that the simplest solution is to DROP all incoming
-> packets,
-
-Actually, dropping packets is a clear indication that you do in fact
-have a firewall protecting one or more systems. Its the only condition
-which will cause ICMP error packets to not be returned consistently. 
-
-You would be better off rejecting with host unreachables. then your
-firewall looks like a simple router, and the host in question looks like
-it is powered down.
-
-HTH,
-C
-
+> ----- Original Message -----=20
+> From: "Thomas Preissler" <tomjohn@gmx.de>
+> To: "netfilter-user Mailinglist" <netfilter@lists.netfilter.org>
+> Sent: Sunday, November 30, 2003 3:12 PM
+> Subject: How to make a computer invisible
+>
+> > how do I really make a computer totally invisibly as it would be
+> > when it does not exist?
+> >
+> > It is clear, that the simplest solution is to DROP all incoming
+> > packets, but what's about (R)ARP packets? Can they be blocked anyway?
 
 
