@@ -1,10 +1,13 @@
-From: Tasha Smith <tashamaillist@yahoo.com>
-Subject: VPN and getting through IPTABLES firewall
-Date: Wed, 3 Dec 2003 18:35:00 -0800 (PST)
+From: "Jeremy Jones" <jeremy@samnjack.com>
+Subject: RE: VPN and getting through IPTABLES firewall
+Date: Wed, 3 Dec 2003 19:50:08 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031204023500.15431.qmail@web60301.mail.yahoo.com>
+Message-ID: <000201c3ba11$575a4550$f80210ac@jccnnetxp>
+References: <20031204023500.15431.qmail@web60301.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031204023500.15431.qmail@web60301.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,8 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+
+In addition to udp port 500, you should accept forwarding of protocols =
+50
+and 51 for ipsec (-p 50 -j ACCEPT and -p 51 -j ACCEPT).
+
+Jeremy Jones
+
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Tasha Smith
+Sent: Wednesday, December 03, 2003 7:35 PM
+To: netfilter@lists.netfilter.org
+Subject: VPN and getting through IPTABLES firewall
+
 
 Hi Boyz,
 
@@ -30,16 +48,26 @@ VPN Client:
 4_65.18
 Security ESP,Triple DES, SHA
 Windows 2000 (192.168.0.1) LAN MAchine
- 
-I am having troubles trying to get my VPN to work working. I am running Windows 2000
-on my LAN and have a Redhat 7.3 machine as my firewall running iptables-1.2.7a. I
-have my rules set up to forward to port UDP 500 but it still wont connect it makes
-it to BANNER check then CUTS out. I will post all my rules at the bottom. The thing
+=20
+I am having troubles trying to get my VPN to work working. I am running
+Windows 2000
+on my LAN and have a Redhat 7.3 machine as my firewall running
+iptables-1.2.7a. I
+have my rules set up to forward to port UDP 500 but it still wont =
+connect it
+makes
+it to BANNER check then CUTS out. I will post all my rules at the =
+bottom.
+The thing
 is i can connect when i add this rule:
 $iptables -A FORWARD -i eth1 -o eth0 -s 192.168.0.0/24 -j ACCEPT
 
-I didnt want to just add this rule because of secruity and i really would like to
-know why it doesnt work when i added these rules which i thought they were used by
+I didnt want to just add this rule because of secruity and i really =
+would
+like to
+know why it doesnt work when i added these rules which i thought they =
+were
+used by
 VPN:
 
 $iptables -A FORWARD -i eth1 -p tcp -m multiport
@@ -47,9 +75,11 @@ $iptables -A FORWARD -i eth1 -p tcp -m multiport
 $iptables -A FORWARD -i eth1 -p udp --dport 500 -j ACCEPT
 $iptables -A FORWARD -i eth1 -p udp --dport 10000 -j ACCEPT
 
-If somebody could please shed some light on this for me ;) please and or help me
-create my rules to get VPN connected to my work. If you need anymore informationi
-could post right away. 
+If somebody could please shed some light on this for me ;) please and or
+help me
+create my rules to get VPN connected to my work. If you need anymore
+informationi
+could post right away.=20
 Here are all my rules, and yes the IP's all have been changed ;-)
 
 ---SNIP---
@@ -93,10 +123,10 @@ for f in /proc/sys/net/ipv4/conf/*/log_martians; do
 done
 
 #Where my iptables are located
-iptables="/usr/local/sbin/iptables"
+iptables=3D"/usr/local/sbin/iptables"
 
 # This will also update my ipaddress.
-IP_INET=`/sbin/ifconfig eth0 | grep inet | cut -d: -f2 | cut -d\  -f1`
+IP_INET=3D`/sbin/ifconfig eth0 | grep inet | cut -d: -f2 | cut -d\  -f1`
 
 # Remove any existing rules from all chains.
 $iptables --flush
@@ -172,7 +202,7 @@ $iptables -A FORWARD -i eth0 -s 192.168.0.0/24 -j DROP
 $iptables -A FORWARD -i eth0 -s 127.0.0.1/8    -j DROP
 
 # Allow SSH Access
-if [ "$CONNECTION_TRACKING" = "1" ]; then
+if [ "$CONNECTION_TRACKING" =3D "1" ]; then
    $iptables -A INPUT -i $eth0 -p tcp \
    -s 132.161.42.159  --sport 1024:65985 \
    -d $IP_INET --dport 22 \
@@ -185,7 +215,7 @@ $iptables -A INPUT -i eth0 -p tcp \
 
 
 # Allow Access for DNS UDP for my ISP DNS server.
-if [ "$CONNECTION_TRACKING" = "1" ]; then
+if [ "$CONNECTION_TRACKING" =3D "1" ]; then
    $iptables -A OUTPUT -o eth0 -p udp \
             -s $IP_INET --sport 1024:65985 \
             -d 202.98.4.130 --dport 98 \
@@ -197,7 +227,7 @@ $iptables -A OUTPUT -o eth0 -p udp \
          -d 202.98.4.130 --dport 98 -j ACCEPT
 
 
-if [ "$CONNECTION_TRACKING" = "1" ]; then
+if [ "$CONNECTION_TRACKING" =3D "1" ]; then
     $iptables -A OUTPUT -o eth0 -p udp \
              -s $IP_INET --sport 1024:65985 \
              -d 202.98.4.150 --dport 98 \
@@ -211,7 +241,7 @@ $iptables -A OUTPUT -o eth0 -p udp \
 $iptables -A INPUT -i eth1 -p udp --dport 98 -j ACCEPT
 
 # Allow access for my ISP DHCP server.
-if [ "$CONNECTION_TRACKING" = "1" ]; then
+if [ "$CONNECTION_TRACKING" =3D "1" ]; then
     $iptables -A OUTPUT -o eth0 -p udp \
              -s $IP_NET --sport 1024:65985 \
              -d 202.98.4.129 --dport 67 \
@@ -227,7 +257,7 @@ $iptables -A INPUT -i eth0 -p udp \
          -d $IP_INET     --dport 1024:65985 -j ACCEPT
 
 # Allow outgoing access for ftp sites
-if [ "$CONNECTION_TRACKING" = "1" ]; then
+if [ "$CONNECTION_TRACKING" =3D "1" ]; then
     $iptables -A OUTPUT -o eth0 -p tcp \
               -s $IP_INET --sport 1024:65985 \
               --dport 21 -m state --state NEW -j ACCEPT
@@ -242,7 +272,7 @@ $iptables -A OUTPUT -o eth0 -p tcp \
 $iptables -A INPUT -i eth1 -p tcp --dport 22 -j ACCEPT
 
 # Allow access to remote webservers PORT 80.
-if [ "$CONNECTION_TRACKING" = "1" ]; then
+if [ "$CONNECTION_TRACKING" =3D "1" ]; then
     $iptables -A OUTPUT -o eth0 -p tcp \
               -s $IP_INET --sport 1024:65985 \
               --dport 80 -m state --state NEW -j ACCEPT
@@ -262,7 +292,7 @@ $iptables -A INPUT -i eth1 -p tcp --dport 80 -j ACCEPT
 $iptables -A INPUT -i eth1 -p tcp --dport 10000 -j ACCEPT
 
 # Attempt to connect to HHTPS 443 connections.
-if [ "$CONNECTION_TRACKING" = "1" ]; then
+if [ "$CONNECTION_TRACKING" =3D "1" ]; then
     $iptables -A OUTPUT -o eth0 -p tcp \
               -m state --state NEW --dport 443 \
               --sport 1024:65985 -j ACCEPT
@@ -306,7 +336,7 @@ $iptables -A INPUT -i eth0 -p icmp \
           --icmp-type time-exceeded -d $IP_INET -j ACCEPT
 
 # Allow Outgoing pings to remote hosts
-if [ "$CONNECTION_TRACKING" = "1" ]; then
+if [ "$CONNECTION_TRACKING" =3D "1" ]; then
     $iptables -A OUTPUT -o eth0 -p icmp \
               -s $IP_INET --icmp-type echo-request \
               -m state --state NEW -j ACCEPT
@@ -316,7 +346,7 @@ $iptables -A OUTPUT -o eth0 -p icmp \
           -s $IP_INET --icmp-type echo-request -j ACCEPT
 
 # Incoming ping from Remote Hosts.
-if [ "$CONNECTION_TRACKING" = "1" ]; then
+if [ "$CONNECTION_TRACKING" =3D "1" ]; then
      $iptables -A INPUT -i eth0 -p icmp \
                -s 202.98.1.231 --icmp-type echo-request -d $IP_INET \
                -m state --state NEW -j ACCEPT
@@ -344,37 +374,44 @@ $iptables -A INPUT -i eth1 -p icmp \
 #My rules for EMULE;
 $iptables -A INPUT -p tcp --dport 4662 -j ACCEPT
 $iptables -A OUTPUT -p tcp -m multiport --sport 4661,4662 -j ACCEPT
-$iptables -t nat -A PREROUTING -p tcp --dport 4662 -j DNAT --to 192.168.0.69
+$iptables -t nat -A PREROUTING -p tcp --dport 4662 -j DNAT --to =
+192.168.0.69
 #These are my Forwarding rules.
 $iptables -A FORWARD -i eth1 -p tcp --dport 80 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 25,80,110,443 -j 
+$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 25,80,110,443 =
+-j=20
 ACCEPT
 $iptables -A FORWARD -i eth1 -p tcp --dport 21 -j ACCEPT
 $iptables -A FORWARD -i eth1 -p tcp --dport 22 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 
+$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport=20
 1040,1043,1046,1047,1048,1050,1051,1052,1098,1054 -j ACCEPT
 $iptables -A FORWARD -i eth1 -p udp --dport 500 -j ACCEPT
 $iptables -A FORWARD -i eth1 -p udp --dport 10000 -j ACCEPT
 $iptables -A FORWARD -i eth1 -p udp --dport 1863 -j ACCEPT
 $iptables -A FORWARD -i eth1 -p tcp --dport 1863 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 135,137,138,139 -j 
+$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 135,137,138,139 =
+-j=20
 ACCEPT
-$iptables -A FORWARD -i eth1 -p udp -m multiport --dport 135,137,138,139 -j 
+$iptables -A FORWARD -i eth1 -p udp -m multiport --dport 135,137,138,139 =
+-j=20
 ACCEPT
 $iptables -A FORWARD -i eth1 -p tcp --dport 1214 -j ACCEPT
 $iptables -A FORWARD -i eth1 -p udp --dport 1214 -j ACCEPT
 $iptables -A FORWARD -i eth1 -p tcp --dport 3389 -j ACCEPT
 $iptables -A FORWARD -i eth1 -p udp --dport 3389 -j ACCEPT
 $iptables -A FORWARD -i eth1 -p tcp --dport 6346 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 4242,4661,4662 -j 
+$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 4242,4661,4662 =
+-j=20
 ACCEPT
-$iptables -A FORWARD -i eth1 -p udp -m multiport --dport 4661,4662,4772 -j 
+$iptables -A FORWARD -i eth1 -p udp -m multiport --dport 4661,4662,4772 =
+-j=20
 ACCEPT
 $iptables -A FORWARD -p tcp --dport 4662 -i eth0 -o eth1 -j ACCEPT
 $iptables -A FORWARD -p udp --dport 4662 -i eth0 -o eth1 -j ACCEPT
 #$iptables -A FORWARD -i eth1 -j LOG --log-prefix "Unhandled Forward: "
 # Fowarding is allowed in the direction
-####$iptables -A FORWARD -i eth1 -o eth0 -s 192.168.0.0/24 -j ACCEPT *******
+####$iptables -A FORWARD -i eth1 -o eth0 -s 192.168.0.0/24 -j ACCEPT =
+*******
 
 # Enables Packet Forwarding
 $iptables -t nat -A POSTROUTING -o eth0  -j MASQUERADE
@@ -387,4 +424,7 @@ __________________________________
 Do you Yahoo!?
 Protect your identity with Yahoo! Mail AddressGuard
 http://antispam.yahoo.com/whatsnewfree
+
+
+
 
