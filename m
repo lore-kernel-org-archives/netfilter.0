@@ -1,12 +1,14 @@
-From: "tinozaure" <tinozaure@netcourrier.com>
-Subject: multilink using Cable and ADSL.
-Date: Thu, 12 Dec 2002 16:00:40 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: DROP Fin Scan
+Date: 12 Dec 2002 17:31:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <015a01c2a1ef$3cb166b0$c800a8c0@tino>
-References: <1039684623.4085.47.camel@rayw.knowledgefactory.co.za> <3DF86BDD.2090505@istitutocolli.org>
+Message-ID: <1039710680.11849.68.camel@elendil.intranet.cartel-securite.net>
+References: <20021124093933.24186.71076.Mailman@kashyyyk>
+	 <1039703255.3df89cd74ff10@zigzag.cantine.org>  <3DF8AA68.3040900@libero.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3DF8AA68.3040900@libero.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,57 +19,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: Blizzards <blizzards@libero.it>
+Cc: Dade <mailing@cantine.org>, netfilter@lists.netfilter.org
 
-Hello
-I try to use a Cable ISP and ADSL ISP together on the same gateway to hav=
-e
-benefit from low latency cable and High Bandwith ADSL at the same time.
+Le jeu 12/12/2002 =E0 16:25, Blizzards a =E9crit :
+> (only pachet with the SYN bit set and ACK,RST,FIN cleared can initiate =
+a new=20
+> connection)
 
-In this way I read lot of docs and essentialy the advanced routing HOWTO
-which explain how to mark packets to route them on an interface or anothe=
-r.
+A SYN-FIN can initiate a connection according to RFC. That's why --syn
+is equal to SYN,ACK,RST SYN and not to SYN,ACK,RST,FIN SYN.
 
-I tried the examples but these doesn't work.
+> iptables -A INPUT -p tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
 
-My Goal is to use Cable for low latency application and ADSL for all othe=
-r
-applications.
+One can do this. It is clear that thoses packets should not exist. But
+FIN bit is ignored, so...
 
-I need some help to understand how to proceed to realise this.
-
-
-This is my actual situation.
-eth0=3D 192.168.1.254 (DMZ )
-eth1=3D 192.168.0.254 (LAN)
-eth2=3D dynamic public ip (Cable ISP)
-ppp0=3D dynamic public ip (ADSL ISP)
-
-This is my simple iptables script for NAT
-
-----------------START---------------
-IPTABLES=3D"/sbin/iptables"
-
-echo "1" > /proc/sys/net/ipv4/ip_forward
-echo "1" > /proc/sys/net/ipv4/ip_dynaddr
-# Remise a Zero des regles du firewall au cas ou
-$IPTABLES -F
-$IPTABLES -t nat -F
-
-echo Init des regles par defaut
-$IPTABLES -P INPUT ACCEPT
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -P FORWARD ACCEPT
-
-
-echo Debut des regles de filtrage
-
-$IPTABLES -t nat -A POSTROUTING -s 192.168.0.0/23 -o ppp0 -j MASQUERADE
-
-#Fin des regles de routage
-echo "Firewall install=E9."
-----------------END---------------
-
-Thanks.
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security expert  - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
