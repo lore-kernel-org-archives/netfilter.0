@@ -1,16 +1,9 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: mac-filtering is not working (nfcan: addressed to exclusive
-	sender for this address)
-Date: Thu, 17 Mar 2005 18:19:24 -0500
-Message-ID: <20050317231924.GG3730@salty>
-References: <2239.1111100113@www54.gmx.net>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: Moritz Gartenmeister <moritz@uplink-verein.ch>
+Subject: dummy target?
+Date: Fri, 18 Mar 2005 14:46:20 +0100
+Message-ID: <423ADBAC.4020406@uplink-verein.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
-In-Reply-To: <2239.1111100113@www54.gmx.net> (from
-	+nfcan+jimlaur+7b5f1cc311.Port17#gmx.net@spamgourmet.com on Thu,
-	Mar 17, 2005 at 17:55:13 -0500)
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,40 +14,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On 2005.03.17 17:55, Manuel Schmitz - Port17@gmx.net wrote:
-> Hello,
-> 
-> I am desperately trying to establish mac-filtering on my debian-router.
-> 
-> - All default chains are empty, policy set to "ACCEPT".
-> - I execute
-> 
->   iptables -A FORWARD -m mac --mac-source $MY_MAC -j ACCEPT
-> 
->   and then set the FORWARD-Policy to "DROP". Now I expect the chain to
->   drop all packages exept these coming from $MY_MAC. Am I right?
-> - It does not work. It drops ALL traffic. So why?
+hi all
 
-How do you know that *all* packets are dropped?
-Why would changing the default policy affect a working rule?
-Have you done iptables -L -nvx and examined the counts?
+i want to use the counters for statistic stuff. i already have a working example. but i want to get 
+numbers for pakets, which i acutally have no rule for (e.g. all incoming traffic).
+is there a dummy target? like:
+$IPTABLES -t mangle -A PREROUTING -m physdev --physdev-in $INET_IF -j DUMMY
 
-The rule is for one direction only - from $MY_MAC to the world,
-there is no provision for traffic to $MY_MAC.
+dummy target: do nothing, do not terminate, do just increment counters.
 
-A rule like this would handle most reply traffic:
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-For a really good reference on iptables in general, check out
-http://iptables-tutorial.frozentux.net/
-
-
--- 
-Jim Laurino
-nfcan.x.jimlaur@dfgh.net
-Please reply to the list.
-Only mail from the listserver reaches this address.
+cheers
+moritz
 
