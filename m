@@ -1,13 +1,11 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: ssh
-Date: Mon, 24 Jun 2002 09:56:30 -0400
+From: "Nicholas N.E" <nicholas@3wsi.net>
+Subject: w/s on same LAN can't access DNAT'ed w/s
+Date: Mon, 24 Jun 2002 21:27:34 +0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020624135630.GC26150@cannon.eng.us.uu.net>
-References: <200206241331.OAA15709@slate.rockstone.co.uk> <Pine.LNX.4.21.0206241544220.11832-100000@dns.toxicfilms.tv>
+Message-ID: <20020624140559.1FCE67994D@smtp01.metro.net.id>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.21.0206241544220.11832-100000@dns.toxicfilms.tv>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,28 +16,43 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Cc: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-On Mon, Jun 24, 2002 at 03:47:49PM +0200, Maciej Soltysiak wrote:
+to be short :
 
-> > 1. You can't.   Netfilter / IPtables works by port number, not by content, so 
-> > you can only filter by port number.
-> Hmm, maybe you could...
-> Look:
-> 1. look for a openingpacket with ssh connection characteristics, say a
->    version string and mark packets, use recent module, put them to a
->    seperate chain. something like that.
+10.0.3.0/24 ---> Gatewaty --> Internet
+                              w.x.y.z
 
-Yes. Very expensive though and not full-proof in case of fragments.
+10.0.3.8 is DNAT'ed to accept http request and some UDP ports 
+To the gateway w/ public IP
 
-Ramin
+Internet ---> Gateway:80 -- DNAT--> 10.0.3.8:80
 
-> 2. filter by port number.
-> 
-> What do you think?
-> 
-> Maciej
-> 
+
+But workstations ( on the same LAN ) can not access 10.0.3.8 using the 
+Gateway's Public IP
+THey can only connect by typing 10.0.3.8 ( or hostname only ) in the 
+browser's URL box
+
+So far, I only use these on the nat tables :
+
+iptables -t nat -A PREROUTING -p tcp -s 0/0 -d $Gateway_Ext_IP --dport 80 
+-j DNAT --to 10.0.3.8:80
+
+AND 
+
+iptables -t nat -A POSTROUTING -s 0/0 -d 0/0 -o $ ext_iface -j SNAT --to 
+$Gateway_ext_IP
+
+Should I add something more so other workstations on the same LAN as 10.0.3.8
+can access it by using their gateway's Public IP ?
+
+I do not know what this is called tho'
+
+
+Thank you for reading.
+
+
+
+Nicholas.
 
