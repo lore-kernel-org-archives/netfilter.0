@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: sub interfaces (I appologize if this appears twice)
-Date: Mon, 31 May 2004 15:45:21 +0200
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: iptables Help
+Date: Mon, 31 May 2004 09:20:37 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1086011121.26732.16.camel@anduril.intranet.cartel-securite.net>
-References: <139a01c44713$2681ad80$49caa8c0@caris.priv>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E319@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <139a01c44713$2681ad80$49caa8c0@caris.priv>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,20 +16,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Peter Marshall <peter.marshall@caris.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: vinay@technoinfotech.com, netfilter@lists.netfilter.org
 
-Le lun 31/05/2004 =E0 15:28, Peter Marshall a =E9crit :
-> Can you (or is there any need to) specify sub interfaces within your ru=
-les?
-> (ie, -o eth0:1)
+Vinay, this isn't a simple problem that can be applied to a standardf
+template. To get some info on balancing and sculpting lines, see
+http://lartc.org or http://linux-ip.net/html/linux-ip.html=20
 
-No.
+They have enough reference material to get you through the process.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+You also have to note something else. If the two ISP line aren't from
+the same ISP, there's no guarantee this'll work at all. The problem is
+that each set of IP addresses tied to your PC are pointed to by your
+ISP. If your ISP finds you sending sources packets from a network that
+isn't theirs, they have all the right in the world to block those
+packets. Both Sender/Receiver have to have the same address to make
+connections.
+
+Good luck.
 
