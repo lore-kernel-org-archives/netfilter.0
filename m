@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: passive mode ftp
-Date: Fri, 23 May 2003 19:21:36 +1000
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: passive mode ftp
+Date: 23 May 2003 12:04:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A01923C@wardrive.citadelcomputer.com.au>
+Message-ID: <1053684294.1787.6.camel@raylinux.internal>
+References: <3ECDE243.3133BBAA@nerim.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-qrMu2zamOOt81SHeGgLB"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <3ECDE243.3133BBAA@nerim.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,19 +17,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Eric Constantineau <mekanik@nerim.net>, netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-WW91IG11c3QgbG9hZCANCiANCmluc21vZCBpcF9jb25udHJhY2tfZnRwDQogDQpvdGhlcndpc2Ug
-aXQgd29uJ3Qgd29yayB3aXRob3V0IGl0Li4geW91IG11c3QgYWxzbyBhZGQgYSBydWxlIHNpbWls
-YXIgdG8gdGhpcy4uDQogDQppcHRhYmxlcyAtQSBJTlBVVCAtcCB0Y3AgLS1tIHN0YXRlIFJFTEFU
-RUQgLWogQUNDRVBUDQogDQpZb3UgbXVzdCB1c2UgUkVMQVRFRCBhcyB0aGUgY29ubmVjdGlvbiBp
-cyByZWxhdGVkIHRvIGFuIGV4aXN0aW5nIGZ0cCBzZXNzaW9uIG9uIHBvcnQgMjEuIGlwX2Nvbm50
-cmFja19mdHAga25vd3MgdGhlIGNvbm5lY3Rpb24gYW5kIHBvcnQgeW91IG5lZ290aWF0ZWQgd2l0
-aCB0aGUgZnRwIHNlcnZlciBhbmQgYWxsb3dzIGl0Li4NCiANCmhvcGUgdGhhdCBoZWxwcy4uIHRo
-ZXJlJ3Mgc28gbWFueSBzY3JpcHRzIG91dCB0aGVyZSB3aGljaCBzaG93cyB0aGlzIGluZm8uDQoN
-CgktLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLSANCglGcm9tOiBFcmljIENvbnN0YW50aW5lYXUg
-W21haWx0bzptZWthbmlrQG5lcmltLm5ldF0gDQoJU2VudDogRnJpIDIzLU1heS0wMyA2OjU2IFBN
-IA0KCVRvOiBuZXRmaWx0ZXJAbGlzdHMubmV0ZmlsdGVyLm9yZyANCglDYzogDQoJU3ViamVjdDog
-cGFzc2l2ZSBtb2RlIGZ0cA0KCQ0KCQ0KCSANCg0K
+
+--=-qrMu2zamOOt81SHeGgLB
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 2003-05-23 at 10:56, Eric Constantineau wrote:
+> Hi !
+>=20
+> I want to be able to use passive ftp under my firewall...
+>=20
+> Right now passive mode does not function because I allow only packets
+> WITH port 21 as a destination OR source.  When in normal mode, packets
+> from the ftp server have 21 for the source port and the packets from the
+> client have 21 for the destination port so it works.  But, entering
+> passive mode, the destination and source ports are not 21, so my
+> firewall blocks.
+>=20
+> Using a ftp client such as leechftp, cuteftp, wsftp is okay, but using
+> the browser (iexplore) does not because it use passive mode.
+>=20
+> I don't want to open too much my ports, it would mean that someone could
+> use those ports to get access to inside networks...  But I want to be
+> able to use passive mode, some users do not want to use ftp client
+> software, or are not even able to install them...
+>=20
+> Is there a specific range of ports that all passive ftp use ?
+No, passive mode uses random ports from 1024 upwards.
+
+You could use a web proxy like squid. You can force squid to always use
+active mode.
+
+Alternatively, you could use the state inspection of iptables and the
+ftp connection tracking module to configure passive ftp.
+
+>=20
+> Thanks for helping me
+>=20
+> Eric
+>=20
+>=20
+>=20
+>=20
+
+--=-qrMu2zamOOt81SHeGgLB
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD4DBQA+zfJGh1fuR/Bv+ygRAq6SAKCbD2ytGNL3WBZh4lpIVvc+wVgCygCVGDoj
+V8f4+G0+X5VA7a3Um3fFQQ==
+=KiKV
+-----END PGP SIGNATURE-----
+
+--=-qrMu2zamOOt81SHeGgLB--
+
 
