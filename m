@@ -1,12 +1,12 @@
-From: "Eliot, GLI wireless tech support" <support8@greatlakes.net>
-Subject: Classifying W32/MyDoom.A
-Date: Thu, 29 Jan 2004 13:06:50 -0500
+From: "Egor Tur" <worldeb@ukr.net>
+Subject: REJECT rules with tcp-reset.
+Date: Thu, 29 Jan 2004 20:15:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3383379105910242B6F8878D41FA834201A7B5@glsql.greatlakes.net>
+Message-ID: <E1AmGhl-00039e-00@hammer.ukr.net>
+Reply-To: "Egor Tur" <worldeb@ukr.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +19,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Has anyone come up with a ruleset for classifying a random TCP or
-specific SMTP connection as being the W32/MyDoom.A virus?
-
-For instance, it spreads two ways:
-
-1) Through email
-2) Through Kazaa
-
-I want to be able to take a TCP stream (like a Kazaa download) and match
-it against a rule that would flag the packets with a specific MARK value
-if it is the MyDoom.A virus being transferred. I would also like a
-ruleset that would match if it is being transferred through SMTP.=20
-
-Anyone have any ideas how to do this without too many false positives?
-(IE a document on the web that describes the characteristics of
-MyDoom.A).=20
-
-Eliot Gable
-iSWAT Leader
-Internet Service Without Any Telephones
-Great Lakes Internet, Inc.
-112 N Howard Ave
-Croswell, MI 48422
-(810) 679-3395
+Hi folk.
+How can I correctly create rules with REJECT and tcp-reset.
+If I do
+eth0 - NET, eth1 LAN
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --sport 1024: -d MY.LAN.IP --dport 113 -j REJECT --reject-with tcp-reset
+iptables -A FORWARD -i eth1 -o eth0 -p tcp ! --syn --dport 1024: -s MY.LAN.IP --sport 113 -j ACCEPT
+iptables -t nat -A PREROUTING -i eth0 -p tcp --sport 1024: -d MY.NET.IP --dport 113 -j DNAT --to MY.LAN.IP:113
+I wait long time when I try connect with ftp & mail services.
+(And I see some attempts to connect to auth service)
+If I try REJECT --reject-with icmp-port-unreachable
+this work quickly but slowly then I permit authentication.
+When I try use INPUT & OUTPUT chains I have the same situation.
+ 
+nat & mangle tables have ACCEPT policy, filter - DROP
+ 
+What can I do in order to use tcp-reset?
+  
+iptables 1.2.9, kernel 2.4.24, REJECT rules compile in kernel.
+ 
+Thanx.
 
 
