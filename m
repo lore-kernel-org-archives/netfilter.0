@@ -1,13 +1,11 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: Ipchains and Webmin
-Date: Mon, 22 Dec 2003 08:35:59 -0500
+From: Gary Thomas <gary@chez-thomas.org>
+Subject: Troubles with NAT/MASQUERADE
+Date: 22 Dec 2003 12:03:47 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FE6F33F.1090707@Loudoun-Fairfax.com>
-References: <5876346$10720434363fe615ac5a6673.88338672@config4.schlund.de>
+Message-ID: <1072119826.25353.25.camel@hermes>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5876346$10720434363fe615ac5a6673.88338672@config4.schlund.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Netfilter Mailinglist' <netfilter@lists.netfilter.org>
 
-c0nd0r@kingsoc.de wrote:
+I'm trying to upgrade from an ipchains (working!) firewall+nat
+setup to one using iptables.  However, I get stuck when I
+try to enable masquerading.
 
->Hello,
->
->
->I need help for an iptables rule : 
->I'im using following /etc/sysconfig/iptables file ::
->www.kingsoc.de/firewall 
->It works fine, since it filters what i should. But I got one problem. I
->want to manage the Box with Webmin on port 10000 over Lan from the IP
->192.168.168.6.
->Could someone help me on making that possible ?
->
->  
->
+[root@hermes userspace]# ./iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+iptables: Invalid argument
 
-I haven't looked at your rules, but all you need to do after installing 
-the Webmin package is open up dport 10000 on the INPUT chain to allow 
-the remote host to connect. Something like this should work:
+I think the modules I need are loaded:
+[root@hermes linux-2.4.20]# lsmod
+Module                  Size  Used by    Not tainted
+ipt_MASQUERADE          2200   0  (autoclean)
+ipt_mark                 984   0  (autoclean)
+iptable_mangle          2776   1  (autoclean)
+iptable_nat            22008   1  (autoclean) [ipt_MASQUERADE]
+ipt_state               1080  92  (autoclean)
+ipt_REJECT              4024   4  (autoclean)
+ipt_limit               1560   6  (autoclean)
+ipt_LOG                 4184   6  (autoclean)
+ip_conntrack_ftp        5520   0  (unused)
+ip_conntrack_irc        4368   0  (unused)
+ip_conntrack           28296   4  [ipt_MASQUERADE iptable_nat ipt_state ip_conntrack_ftp ip_conntrack_irc]
+iptable_filter          2412   1  (autoclean)
+ip_tables              15096  11  [ipt_MASQUERADE ipt_mark iptable_mangle iptable_nat ipt_state ipt_REJECT ipt_limit ipt_LOG iptable_filter]
+  <snip>
 
-iptables -A INPUT  -s 192.168.168.6 -p tcp --dport 10000 -j ACCEPT
+Any ideas?
 
-I'll warn you that Webmin is pretty slow and tedious if you need to make 
-a lot of changes, but it seems to work well.
-
-Jeff
-
+-- 
+Gary Thomas <gary@chez-thomas.org>
 
 
