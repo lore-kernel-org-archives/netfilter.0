@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Redirect for transparent proxy does not work with https
-Date: 21 Mar 2003 19:30:14 +0100
+From: Dan Cox <dancox@speakeasy.net>
+Subject: redirecting everything to another machine
+Date: 21 Mar 2003 00:40:07 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048271413.3279.2.camel@elendil.intranet.cartel-securite.net>
-References: <20030321175750.6512.qmail@hm36.locaweb.com.br>
+Message-ID: <1048207207.6972.1360.camel@xavier>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030321175750.6512.qmail@hm36.locaweb.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "Luis Fernando C. Talora" <talora-listas@talora.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le ven 21/03/2003 =E0 18:57, Luis Fernando C. Talora a =E9crit :
-> I've tried to use RedHat Linux 8.0 to build a transparent proxy with
-> squid (squid-2.4.STABLE7-4) and netfilter (iptables-1.2.6a-2). Squid
-> is listening on port 8080. When a http packet arrives, the requisition
-> appears on squid log and the page is viewed nicely. When a https
-> requisition is made, squid seem not to recieve the redirection from
-> netfilter, though. The nat rule used for redirection follows:
->=20
->       iptables -t nat A PREROUTING -i $EXTERNAL_INTERFACE -p tcp -d !
-> $INTERNAL_NETWORK -m multiport --dports 80,443 -j REDIRECT --to-port
-> 8080
+With iptables how would I redirect all connection attempts coming from
+the Internet interface to a machine inside my DMZ? I also have a LAN
+that I have "masqueraded" though I don't know if thats related. My set
+up is below:
 
-Afaik, HTTPS cannot be proxied transparently as client must issue a
-CONNECT method to have the proxy fall back into TCP relay mode. Or you
-use kind of SSL certificate replacement...
+Internet IP/iface = eth0 1.2.3.4
+LAN IP/iface = eth1 192.168.0.1
+DMZ IP/iface = eth2 192.168.1.1
 
-You problem can be related to this.
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security expert  - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+Any help is very much appreciated. Thanks
+
+Dan Cox
+
 
 
