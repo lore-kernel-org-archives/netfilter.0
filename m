@@ -1,11 +1,11 @@
-From: "Mario Ohnewald" <mario.Ohnewald@gmx.de>
-Subject: ftp contrack
-Date: Mon, 24 Jan 2005 00:57:14 +0100 (MET)
-Message-ID: <22793.1106524634@www29.gmx.net>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: limit speed of file transfer
+Date: Sun, 23 Jan 2005 19:05:47 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10501231904190.6831-100000@darkstar.sysinfo.com>
+References: <41F5327F.3070803@wildcash.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <41F5327F.3070803@wildcash.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +16,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Rudi Starcevic <tech@wildcash.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello List!
+On Mon, 24 Jan 2005, Rudi Starcevic wrote:
 
-I am trying to redirect (NAT) to a internal ftp box (but both have a public
-ip).
-I am using those rules:
-
-modprobe ip_conntrack_ftp ports=21,2121
-modprobe ip_nat_ftp
-iptables -t nat -A PREROUTING -d $FW -p tcp --dport 2121 -j DNAT --to
-$FTP:21
-iptables -A POSTROUTING -t nat -d $FTP -p tcp --dport 21 -j SNAT --to
-$FW:2121
-
-
-They kind of worked for a while. The forwarding of port 21 to 2121 worked
-one out of 10 times maybe.
-
-Now the packets dont get forwarded at all anymore.
-/proc/sys/net/ipv4/ip_forward is set to 1.
-
-Default policy is set to ACCEPT when i am testing it.
-With tcpdump i see the packets coming in, but they don`t get forwarded.
+> Hi,
+> 
+> An option may be to use SSH with RSYNC instead of SCP.
+> The Rsync command has a bandwidth limit option.
+> 
+> I use it like this:
+> 
+> rsync -avz --bwlimit 10 -e ssh remoteuser@remotehost:/remote/dir /this/dir/
+> 
+> Check the 'man' pages for more info on the 'bwlimit' option.
 
 
-Any idea what i am doing wrong?
+The main caveat here is that it requires that rsync be installed on both
+ends.  Rsync is a great tool under ssh, but, still is not all that common.
+Especially with main vendor *nix's
 
+Thanks,
 
-Cheers, Mario
-
+Ron DuFresne
 -- 
-Sparen beginnt mit GMX DSL: http://www.gmx.net/de/go/dsl
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
+
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
+
 
