@@ -1,62 +1,182 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: Different routes for different src addresses
-Date: Wed, 07 Jul 2004 10:38:41 -0400
-Sender: linux-net-owner@vger.kernel.org
-Message-ID: <1089211121.21756.6.camel@localhost>
-References: <20040707120502.GA23120@nihil>
+From: "Eric Poulin" <epoulin@onepost.net>
+Subject: Re: Problem compiling Iptables 1.2.11 on Kernel 2.6.7 <Resolved, but other problem>
+Date: Wed, 7 Jul 2004 10:53:00 -0400
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <035101c46432$19e49650$800101df@lvl.digidyne.ca>
+References: <009001c4638f$7a173170$800101df@lvl.digidyne.ca> <015601c46399$68674140$800101df@lvl.digidyne.ca> <40EB1FC4.4090606@linux.org.ar>
+Reply-To: "Eric Poulin" <epoulin@onepost.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-net-owner@vger.kernel.org>
-In-Reply-To: <20040707120502.GA23120@nihil>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Alpt <alpt@freaknet.org>
-Cc: netfilter@lists.netfilter.org, linux-net@vger.kernel.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Wed, 2004-07-07 at 08:05, Alpt wrote:
-> Hi all,
-> is it possible to create a route for a single src address?
-> For example these are some routes I'd like to use: 
-> 
-> 1) "All the pkts coming from hostA with dst=hostX are routed to eth1".
-> 2) "All the pkts coming from hostB with dst=hostT are routed to eth0"
-> /*Normal routes start here*/
-> 3) "All the pkts (that are not pkts of type 1) and 2)) with dst=hostX
-> are routed to eth3"
-> 4) "All the pkts (that are not pkts of type 1) and 2)) with dst=hostU
-> are routed to eth2"
-> 5) And so on...
-> 
-> 
-> I mean _routing_, not natting. If I nat the pkts their destination will
-> change and I need to keep it intact.
-> 
-> In the FIB routing table I can only specify the target address, but I've 
-> noticed that the kernel's cache matches the source field. But when I try
-> to modify it I get: "Modifying `inet' routing cache not supported".
-> So, Is it possible to modify the krnl's cache from the user space with
-> some magic ioctl?
-> 
-> Is there a solution for this problem? Can netfilter do something for
-> this?
-> 
-> And, what's the best method to modify the FIB from user space? The ioctl
-> or the rtnetlink?
-> 
-> Thank you (^_^)
-> I live waiting your wise reply
-I have not digested your question fully but my initial reaction is that
-it can be done with iproute2.  If you are unfamiliar with it, look for a
-file named ip-cref.ps in your distribution.  In RedHat, it is typically
-under /usr/share/doc/iproute-2.4.7/ - John
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+Hey Jose, thanks for you help, the CVS version resolved it.
+
+I'll remember about it next time. Any idea when this will be incorporated=
+ in
+the official pom?
+
+Thanks again, I was getting really annoyed by this! :)
+
+Hum, I'm getting a new problem thought while compiling iptables as module=
+s
+inside my new kernel...
+
+net/ipv4/netfilter/ip_conntrack_standalone.c:222: error: redefinition of
+`ip_conntrack_defrag'
+net/ipv4/netfilter/ip_conntrack_standalone.c:202: error:
+`ip_conntrack_defrag' previously defined here
+net/ipv4/netfilter/ip_conntrack_standalone.c:303: error: redefinition of
+`ip_conntrack_defrag_local_out_ops'
+net/ipv4/netfilter/ip_conntrack_standalone.c:295: error:
+`ip_conntrack_defrag_local_out_ops' previously defined here
+net/ipv4/netfilter/ip_conntrack_standalone.c:202: warning:
+`ip_conntrack_defrag' defined but not used
+net/ipv4/netfilter/ip_conntrack_standalone.c:295: warning:
+`ip_conntrack_defrag_local_out_ops' defined but not used
+{standard input}: Assembler messages:
+{standard input}:745: Error: symbol `ip_conntrack_defrag_local_out_ops' i=
+s
+already defined
+make[3]: *** [net/ipv4/netfilter/ip_conntrack_standalone.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
+
+I'll do my research... Let me know if you encounter this...
+
+
+Eric
+
+----- Original Message -----=20
+From: "Jose Teves" <joseteves@linux.org.ar>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, July 06, 2004 5:55 PM
+Subject: Re: Problem compiling Iptables 1.2.11 on Kernel 2.6.7
+
+
+Eric,
+
+Download the last version of patch-o-matic-ng from cvs.netfilter.org
+
+
+http://cvs.netfilter.org/patch-o-matic-ng/patch-o-matic-ng.tar.gz?tarball=
+=3D1
+
+this it compiles without problems.
+
+good luck
+
+pd: i'm sorry my bad english :(
+
+--
+Jose Teves
+josxlnx at yahoo dot com dot ar
+
+Eric Poulin escribi=F3:
+
+>Well, it turned out I need to apply the 08_linux-2.6.7-user_attr.patch f=
+rom
+>patch-o-matic, however, it is failing since it needs to  apply
+>03_linux-2.6.5.patch, and it failed on the diff test... There is some
+>rejects according to the
+>output. Can't force it either... :(
+>
+>Interesting
+>
+>Eric
+>----- Original Message -----=20
+>From: "Eric Poulin" <epoulin@onepost.net>
+>To: <netfilter@lists.netfilter.org>
+>Sent: Tuesday, July 06, 2004 3:28 PM
+>Subject: Problem compiling Iptables 1.2.11 on Kernel 2.6.7
+>
+>
+>
+>
+>>Hello Guys,
+>>
+>>Any people succesfully compiled iptables 1.2.11 on 2.6.7?  Oddly, even
+>>without applying any patch-o-matics packages, I'm getting the following
+>>error while doing the make:
+>>
+>># make BINDIR=3D/sbin KERNEL_DIR=3D/usr/src/linux
+>>Making dependencies: please wait...
+>>Extensions found: IPv4:ROUTE IPv4:recent IPv6:ROUTE IPv6:ah IPv6:esp
+>>IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
+>>
+>>
+>>
+>gcc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VE=
+RSI
+O
+>
+>
+>>N=3D\"1.2.11\"  -fPIC -o extensions/libipt_ah_sh.o -c extensions/libipt=
+_ah.c
+>>In file included from include/libiptc/libiptc.h:6,
+>>                 from include/iptables.h:5,
+>>                 from extensions/libipt_ah.c:8:
+>>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: warning: n=
+o
+>>semicolon at end of struct or union
+>>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: error: syn=
+tax
+>>error before '*' token
+>>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:259: error: syn=
+tax
+>>error before '}' token
+>>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: t=
+ype
+>>defaults to `int' in declaration of `DECLARE_MUTEX'
+>>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
+>>parameter names (without types) in function declaration
+>>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
+>>`DECLARE_MUTEX' declared `static' but never defined
+>>make: *** [extensions/libipt_ah_sh.o] Error 1
+>>
+>>
+>>I'm getting this with a vanilla source code of the kernel and iptables.=
+ I
+>>was getting those with the patch-o-matic installed, but I wanted to nar=
+row
+>>it down. Kernel can compile easily those modules that are coming from
+>>iptables 1.2.9.
+>>
+>>Any idea?
+>>
+>>Eric
+>>
+>>
+>>
+>>
+>>
+>>
+>
+>
+>
+>
+>
+>
+>
+
+
+--=20
+Jose Teves
+joseteves at linux dot org dot ar
+
+
+
+
+
 
