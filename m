@@ -1,13 +1,14 @@
 From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: [PATCH] snort hex strings and libipt_string.c
-Date: 17 Feb 2003 08:38:15 +0100
+Subject: Re: Command not working  in latest version
+Date: 17 Feb 2003 08:30:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045467495.18515.109.camel@tux.rsn.bth.se>
-References: <20030216234709.A13902@orthanc.gambrl01.md.comcast.net>
+Message-ID: <1045467010.681.100.camel@tux.rsn.bth.se>
+References: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E9@EXCHANGE>
+	 <002901c2d616$c41d6300$0100a8c0@nikita>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030216234709.A13902@orthanc.gambrl01.md.comcast.net>
+In-Reply-To: <002901c2d616$c41d6300$0100a8c0@nikita>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +19,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Michael Rash <mbr@cipherdyne.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: "Paulo J. Matos" <pocm@mega.ist.utl.pt>
+Cc: Khanh Tran <khanh@slc.edu>, Netfilter <netfilter@lists.netfilter.org>
 
-On Mon, 2003-02-17 at 05:47, Michael Rash wrote:
-> The attached patch adds an option "--hex-string" to the string match
-> module to allow snort-style hex strings to be specified on the
-> command line.  This is useful because there are many signatures that
-> consist of non-printable characters and without this patch there is
-> no way to easily tell iptables to search for them.
+On Mon, 2003-02-17 at 00:54, Paulo J. Matos wrote:
 
-Please send patches to the netfilter-devel@lists.netfilter.org list, not
-too many developers read this list on a regular basis and might miss
-patches.
+> Hi Khanh,
+> 
+> I've compiled the kernel specifically like they said in your reference
+> except those new options of 2.4.20 but still I get 'Invalid Arguments' from
+> iptables 1.2.7a. What's Full NAT in kernel config, is that useful for
+> iptables?
+> 
+> I've run the line:
+> # iptables -v -t nat -A POSTROUTING -o eth1 -j SNAT --to 217.129.146.56
+> SNAT all opt -- in * out eth1 0.0.0.0/0 -> 0.0.0.0/0 to:217.129.146.56
+> iptables: Invalid Argument
+> 
+> This is indeed strange. Do you have any idea of what could I do now?
+> 
+> Is there any other iptables command line with the same outcome?
 
-I've been working a little with a patch from Gianni Tedesco to speed
-things up (it really speeds up the stringmatch) and adding support for
-ranges to it (which bytes to search in the packet). I'll add your patch
-to the mix when I get some time to play with this stuff again (might be
-a while).
+I just have to put an end to this thread :)
+
+The solution is simple, recompile userspace iptables against your new
+kernel.
+A major NAT patch was included in 2.4.20 that breaks compability so you
+have to recompile userspace iptables against the new kernelheaders to
+get NAT working again (same for the owner match).
 
 -- 
 /Martin
