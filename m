@@ -1,15 +1,14 @@
-From: Harald Welte <laforge@netfilter.org>
+From: Eric Leblond <eric@regit.org>
 Subject: Re: A humble proposal
-Date: Thu, 2 Oct 2003 21:51:32 +0200
+Date: Thu, 02 Oct 2003 23:26:12 +0200
 Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20031002195132.GA5758@sunbeam.de.gnumonks.org>
+Message-ID: <1065129971.561.24.camel@porky>
 References: <7C9884991ADAE0479C14F10C858BCDF5122E46@alderaan.smgtec.com>
+	 <20031002195132.GA5758@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dx3gxGTqGHJq+217"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-8Etbbipn0g2PJTIRVAVy"
 Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122E46@alderaan.smgtec.com>
+In-Reply-To: <20031002195132.GA5758@sunbeam.de.gnumonks.org>
 Errors-To: netfilter-devel-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter-devel@lists.netfilter.org>
@@ -19,63 +18,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Daniel Chemko <dchemko@smgtec.com>
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+To: Harald Welte <laforge@netfilter.org>
+Cc: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, nufw-devel@nongnu.org
 
 
---dx3gxGTqGHJq+217
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-8Etbbipn0g2PJTIRVAVy
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 23, 2003 at 09:13:21AM -0700, Daniel Chemko wrote:
-=20
-> I would like to take pam_iptables and expand it beyond its simple
-> structure. Features will include:
-> [...]
+Le jeu 02/10/2003 =C3=A0 21:51, Harald Welte a =C3=A9crit :
+> On Tue, Sep 23, 2003 at 09:13:21AM -0700, Daniel Chemko wrote:
+> > I have seen some of this functionality in Checkpoint, and I think that
+> > it would be immensely useful in the iptables community if it is adopted=
+.
+>=20
+> Just because a particular proprietary vendor offers a 'feature', it
+> doesn't necessarrily mean that we need to do a blind copy of that
+> feature.
 
-Feel free to implement those features.
+I agree with you in the sense that we can do a better work. As I said
+earlier in this thread and in this mailling list, the current tools
+provided by Netfilter are great enough to build a good user
+authentication system.
 
-> Since PAM returns the originating IP address of the request, most of the
-> rule functionality can be used to discriminate on a host level. I don't
-> think many people would have a problem with this. The only side effect
-> here is that a user behind a NAT'd network accessing the system opens
-> the services to everyone behind that host. This is unavoidable.
+The NuFW project (http://www.nufw.org) has managed to build a user
+authentication of packet, by (only) using libipq. We (the NuFW team)
+think that in the current state of the project, we have managed to prove
+the viability of the concept.
 
-I personally don't believe in this kind of 'security'.  The only way to
-do this in a really secure way is to open a VPN tunnel to your firewall
-and do the authentication related to the VPN protocol used.   Your
-firewall ruleset can then have seperate rules for packets coming from
-the VPN or packets outside of the VPN sessions.
+But, it's just the beginning ! With a slight modification of libipq and
+of the corresponding module conbined with the use of CONNMARK, we should
+be able to provide a user based marking of the connection.
+If we're able to do so, the path to a user based ,QOS, bandwith sharing,
+or even routing will be wide open.
 
-> I have seen some of this functionality in Checkpoint, and I think that
-> it would be immensely useful in the iptables community if it is adopted.
+We think that it's not a 'feature' but that it could really bring
+something to the iptables community.
 
-Just because a particular proprietary vendor offers a 'feature', it
-doesn't necessarrily mean that we need to do a blind copy of that
-feature.
-
+BR,
 --=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+Eric Leblond
+Nufw, Now User Filtering Works (http://www.nufw.org)
 
---dx3gxGTqGHJq+217
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+--=-8Etbbipn0g2PJTIRVAVy
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQE/fIHEXaXGVTD0i/8RAoPXAJ0fgb1np0i3DJ9mAfMsb6hRSSv/cwCeLhiZ
-qpAchxyBL3Pz5KaFaMVmCGo=
-=GipS
+iD8DBQA/fJfznxA7CdMWjzIRAsA7AJ443QTCMCqGsbfTqliHz0dVqF9RdgCgk1/0
+rvy/cayHdtP0+NoYrnr8+Pc=
+=tfZv
 -----END PGP SIGNATURE-----
 
---dx3gxGTqGHJq+217--
+--=-8Etbbipn0g2PJTIRVAVy--
 
