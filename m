@@ -1,13 +1,10 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Bug in FORWARD chain in iptables-1.2.7a with Linux kernel 2.4.20?
-Date: Tue, 24 Jun 2003 11:42:15 -0400
+From: Rinse Kloek <Rinse@solcon.org>
+Subject: RE: Question about -m tos option
+Date: Sat, 21 Jun 2003 14:08:30 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030624154215.GE32226@cannon.eng.us.uu.net>
-References: <000701c33989$aa826180$64a5a8c0@europe.cellnetwork.com>
+Message-ID: <70A180F483A4D611B18600E0810285C45CEEB4@EXCHANGE>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000701c33989$aa826180$64a5a8c0@europe.cellnetwork.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +16,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Christian Ericsson <christian.ericsson@bigfoot.com>
-Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: "'Pavel V. Yanchenko'" <balrog@mail.ru>, netfilter@lists.netfilter.org
 
-On Mon, Jun 23, 2003 at 03:16:31PM +0200, Christian Ericsson wrote:
+You need to patch iptables with the DSCP-target patch. Then you can use the
+DSCP target to set all TOS values.
 
-> Hi,
-> 
-> I have the following configuration:
-> 
-> INTERNET
-> |
-> Firewall (Linux box with IPTables)
-> |
-> Router (Linux box with IPTables)
-> 
+regards Rinse
 
-[snip]
+-----Oorspronkelijk bericht-----
+Van: Pavel V. Yanchenko [mailto:balrog@mail.ru]
+Verzonden: donderdag 19 juni 2003 19:41
+Aan: netfilter@lists.netfilter.org
+Onderwerp: Question about -m tos option
 
-> 
-> What could be wrong? Do I have to upgrade to the latest version of iptables
-> and the Linux kernel?
 
-If your rule set is not too big, send it to the list, for both the firewall and
-the router. What you're stating here doesn't make sense...
+Hello.
 
-Ramin
+I need to create a rule matching packets with 0x60 value of TOS field.
+The standard tos option of iptables doesn't accept such value, as well
+as dscp, which is extension to tos - it processes only 6 bits of TOS
+field :(
+I guess value 0x60 is precedence bits...
+
+The question is: how can I match such packets?
+
+Thanks in advance.
+
+  
+
+Best regards,
+ Pavel                          mailto:balrog@mail.ru
+
 
