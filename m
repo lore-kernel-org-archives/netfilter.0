@@ -1,8 +1,8 @@
-From: Kevin Quinn <quinn@preg.org>
-Subject: >13MB netfilter forward CRASH
-Date: Tue, 12 Aug 2003 11:15:53 -0400
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: iptables + RELATED
+Date: Tue, 12 Aug 2003 15:41:35 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F3904A9.10008@preg.org>
+Message-ID: <01dc01c36101$5bd8eaf0$49caa8c0@caris.priv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,41 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Greetings.  I am not subscribed to the list yet, so please respond to my 
-email address.  if this get's hairier, I'll get on the list.
+Hi, My name is Peter Marshall.  I am having some problems letting ftp
+through my firewall without opening all of the ports.  I was trying to get
+RELATED to work, but for some reason it will not.  Here is an example of
+what my file looks like
 
-I am having the exact same issue Marcel de Boer posted about last month. 
-  I have a WiFi and ethernet network in the house.  traffic from them is 
-forwarded along by a central linux box (redhat9) that also is connected 
-to the internet via a cable modem.  I am running NAT internally to run 
-off the one ip address my ISP provides.  I do plenty of filtering on the 
-internet interface, but forward along anything from the inside.
+$TABLENAME -A FORWARD -d x.x.x.x -o eth2 -j mychain
 
-I have transferred files via FTP from the internet to the linux box as 
-large as 6GB.  when I try to FTP from a machine behind the linux box, 
-the transfer goes fine until ~13MB then the linux box HANGS!
+$TABLENAME -A mychain -m state --state ESTABLISHED,RELATED -j ACCEPT
+$TABLENAME -A mychain -j DROP
 
-I do get some messages, but they happen periodically earlier in the 
-transfer as well.
+I don't think I need the ESTABLISHED, but I put it in anyways.
 
-kernel: skb_p80211_to_ether: OTHER frame too large (1536 > 1500)
-kernel: skb_p80211_to_ether: DIXII frame too large (1528 > 1500)
+If anyone could help it would be greatly appriciated.
+
+Thanks
 
 
-the same has happened from multiple boxen.  any lowly windoze box I can 
-find can bring my linux box to an absolute halt.  ouch.
+Peter Marshall
 
-if it would help, I can test this with no iptables rules, but I can't 
-imagine a different result.
-
-so, did Marcel find the answer or maybe someone has other clues?
-
-k
--- 
-Kevin Lee Quinn
-Technical Facilitator
 
 
