@@ -1,9 +1,10 @@
-From: Chris Born <ragable@attbi.com>
-Subject: Re: Letting Hotline downloads through
-Date: Thu, 17 Oct 2002 09:29:23 -0600
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: Tracking firewall resources
+Date: Thu, 17 Oct 2002 10:50:39 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.1.6.0.20021017092750.00b8f998@mail.attbi.com>
+Message-ID: <000201c27605$b4ca0e10$6601a8c0@s3ac>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,34 +15,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm trying to setup a Hotline server on an internal NATed machine and I'm 
-having problems with getting clients to download. Here's what I have so far:
 
-$EXTIF="eth1"
-$INTIF="eth0"
-$IPTABLES=/sbin/iptables
-$EXTIP=12.252.56.159
-$RAGABLE=192.168.0.2
 
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 5500:5503 -m state 
---state NEW,ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF -o $EXTIF --dport 5549 -m state --state 
-NEW,ESTABLISHED,RELATED
-$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 5500:5003 -j DNAT 
---to $RAGABLE:5500:5503
-$IPTABLES -A PREROUTING -t nat --dport 5549 -j SNAT --to $EXTIP
-
-According to the Hotline server documentation, incoming connection requests 
-come in on ports 5500 - 5503 while outgoing download connections are on 
-port 5549. People are able to connect to the server just fine, but are 
-unable to download so I'm wondering what rules I need to let the downloads 
-through.
-
--Chris Born 
-
+After doing some auditing on my firewall system. I noticed only 4Megs
+free of 64 Megs. With little swap usage. I ran top and it reported only
+20-30% being used by processes (I'm not sure if the percentage is
+physical or physical plus virtual) anyways is there a way to tell how
+much resources is being used by IPTables  ?
+ 
+Rowan Reid
+Job Captain, 
+Systems Administrator
+STUDIO 3 ARCHITECTS
+909  982  1717
 
 
