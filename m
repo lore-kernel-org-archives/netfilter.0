@@ -1,13 +1,11 @@
-From: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Subject: Re: firewall problem continued
-Date: Mon, 9 Aug 2004 11:22:46 -0400
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: Netfilter vs commercial
+Date: Mon, 9 Aug 2004 09:30:22 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040809152246.GB21508@tranquility.scriptkitchen.com>
-References: <20040809081216.GA12643@tranquility.scriptkitchen.com> <200408091155.10375.Antony@Soft-Solutions.co.uk> <20040809111959.GA16482@tranquility.scriptkitchen.com> <200408091231.33128.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040809093022.5842e85e@mgalepc.utilitran.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200408091231.33128.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,20 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Mon, Aug 09, 2004 at 12:31:33PM +0100, Antony Stone wrote:
-> Exactly the same as your extisting PREROUTING rule, but you put it in the 
-> OUTPUT chain instead (still in the nat table):
-> 
-> iptables -A OUTPUT -t nat -d 1.2.3.4 -p tcp --dport 25 -j DNAT --to 10.10.10.2 
-I am at home sick. But I did it remotely and tested it. It works. Thanks a lot
-Anthony and all who helped.
-I thought -t nat was never used in output chain.
+Hello,
 
-Thanks a lot again and I cannot wait to get back to work to test it throughly.
+	I know this question has most likely come up a few times and most people ask about performance and through put. But my
+question seems to me a little different.
 
-With warm regards,
--Payal
+I would like to know how people on this list ... which I know might be a biased opinion feel how a Netfilter firewall
+box .. properly configured would compare in security to a commercial firewall. 
+
+I do not want to compare performance or stats on through put but the strength of the firewall. The reason I am asking is
+to at the moment we are using Netfilter based firewalls which I have setup Squid and Frox and many other application
+level filters.
+
+Now some people in the company want to replace them with CheckPoints or WatchGuard firewalls. Which is fine ... security
+should be done in layers ... but the way I see it I will still need the linux boxes to run squid and frox unless the
+appliance allows you to install software from other sources (most likely not) or use custom config files (like my own
+squid.conf -- most likely not).
+
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
