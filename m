@@ -1,12 +1,12 @@
 From: "Ian! D. Allen" <idallen@idallen.ca>
 Subject: Re: CONNMARK save-mark and restore-mark not working ?
-Date: Fri, 18 Feb 2005 16:32:35 -0500
-Message-ID: <20050218213235.GC31190@elm.home.idallen.ca>
+Date: Fri, 18 Feb 2005 16:37:09 -0500
+Message-ID: <20050218213709.GD31190@elm.home.idallen.ca>
 References: <20050218084044.GA31190@elm.home.idallen.ca>
-	<4215CBE9.9020701@multitech.co.in>
+	<004001c515a8$80403df0$910010ac@coco>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4215CBE9.9020701@multitech.co.in>
+In-Reply-To: <004001c515a8$80403df0$910010ac@coco>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +19,27 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Vinod Chandran <vinod_chandran@multitech.co.in>
+To: Omar Garcia <omar.garcia@fractalia.biz>
 Cc: netfilter@lists.netfilter.org
 
-Vinod Chandran wrote:
-> >   iptables -t mangle -A OUTPUT -j MARK --set-mark 9
-> >   iptables -t mangle -A OUTPUT -j CONNMARK --save-mark
-> Here the mark value of the packet is set to 9, which will be saved 
-> to be used as conntrack mark for all the packets coming after this.
+On Fri, Feb 18, 2005 at 11:56:29AM +0100, Omar Garcia wrote:
+> And this?
+>     iptables -t mangle -A OUTPUT -j CONNMARK --restore-mark
+>     iptables -t mangle -A OUTPUT -m connmark ! --mark 0 -j ACCEPT
+>     iptables -t mangle -A OUTPUT -j MARK --set-mark 9
+>     iptables -t mangle -A OUTPUT -j CONNMARK --save-mark
 
-It isn't being saved.  The --save-mark does nothing.  It changes
-nothing in any of my ip_conntrack lines:
+That doesn't work because, as I posted, neither --save-mark nor
+--restore-mark appear to work.
 
-   # grep 'mark=9' /proc/net/ip_conntrack
-   #
+The --save-mark does not set and save the mark value in any line in
+/proc/net/ip_conntrack.
 
-That sounds broken, right?
+The --restore-mark does not take the mark value from a line in
+ip_conntrack and restore it into any packet.
 
-Linux elm 2.6.10-1mdk #2 Sat Jan 29 13:10:11 EST
-2005 i686 AMD Athlon(tm) XP 3200+ unknown GNU/Linux
+See my original posting for examples of this.  I think my kernel must be
+broken, unless I'm misunderstanding how these things are supposed to work.
 
 -- 
 -IAN!  Ian! D. Allen   Ottawa, Ontario, Canada
