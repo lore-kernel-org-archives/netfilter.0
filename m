@@ -1,14 +1,13 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: making services invisible
-Date: Fri, 11 Oct 2002 17:54:56 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Send mail Secure(SSL): No, Socket Error
+Date: Fri, 11 Oct 2002 18:20:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021011175456.C3805@funkyjesus.org>
-References: <3DA57D10.8040904@bol.com.br> <1034257577.1589.2.camel@tech004> <003001c2706b$20982a50$3201a8c0@leonardo>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <200210111720.g9BHKvL19784@vulcan.rissington.net>
+References: <200210111434.52124.mklingens@ism.nl> <200210111629.26991.mklingens@ism.nl> <001b01c27140$457471a0$8c01a8c0@sundaram>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <003001c2706b$20982a50$3201a8c0@leonardo>; from leolistas@solucoesip.net on Thu, Oct 10, 2002 at 11:41:32AM -0300
+In-Reply-To: <001b01c27140$457471a0$8c01a8c0@sundaram>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,26 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Oct 10, 2002 at 11:41:32AM -0300, Leonardo Rodrigues ( listas ) wrote:
-> 
->     DROP would make nmap ( or any other scanner ) mark that port as filtered
-> too. To make services closed and 'invisible' to scanners, you should use '-j
-> REJECT --reject-with tcp-reset'.
+On Friday 11 October 2002 5:07 pm, Sundaram Ramasamy wrote:
 
-Spot on :)
+> hi ,
+>
+> My external users are getting following error, while sending E-mail.
+>
+> Your server has unexpectedly terminated the connection. Possible causes for
+> this include server problems, network problems, or a long period of
+>
+> inactivity. Subject 'Coming Late', Account: 'www.percipia.com', Server:
+> 'www.percipia.com',
+>
+> Protocol: SMTP, Port: 25, Secure(SSL): No, Socket Error: 10053, Error
+> Number: 0x800CCC0F
+>
+> I am not allowing SSL port? Do I need to open the SSL port for this error?
 
-Isn't this one in an FAQ somewhere by now, seeing as no-one ever reads the
-rather good nmap man page.
+No, you don't need to allow SSL - that's why it says "Secure(SSL): No" - it 
+is not using SSL.
 
-I haven't checked but last time I looked the TTL will be different with RSTs
-sent from iptables rather than those sent because there's no listener on the
-port.  There are ways around this too, depends how invisible you want to
-be...
+The solution is to upgrade your mail client - getting them opff Outlook will 
+solve an awful lot of other security problems as well :-)
+
+If they don't want to run Kmail, Mutt, Mozilla etc, try them with something 
+like Pegasus or Eudora...
+
+Antony.
 
 -- 
-FunkyJesus System Administration Team
 
+90% of network problems are routing problems.
+9 of the remaining 10% are routing problems in the other direction.
+The remaining 1% might be something else, but check the routing anyway.
 
