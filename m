@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Port FWD via 2 NAT
-Date: Thu, 22 May 2003 07:49:26 +1000
+Subject: RE: can we shape the kazaa traffic
+Date: Thu, 22 May 2003 07:45:57 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6C77@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6C76@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,14 +17,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Adi <adi@nettek.pl>, netfilter@lists.netfilter.org
+To: Serge Blondin <sergebl@phreaker.net>, netfilter@lists.netfilter.org
 
-Err... did you label your picture right according to what you said??
-POSTROUTING should be done on linux1 according to your graphs.
-PREROUTING should be done on linux2
+You can if you know the ports it uses and if it's like DC++ which you =
+can specify the port, then use a tool which is pretty new which works on =
+a different ip layer. Below is a post recently sent regarding it.
 
-Also, we need to see all your rules as you may have a -j DROP somewhere =
-that might be blocking it ie. ( -P FORWARD -j DROP )
+The way it works is that it matches the packets content and pushes that =
+into the shaped pipe, iptables can actually do that too with the "-m =
+string" patch-o-matic module. I'm just not sure what happens after the =
+SYN packet if the connection keeps goign through the shaped pipe or =
+not..
+
+hope this helps...?
+
+
+----------------------------------------------------------------------
+From: arbitrator-linux-admin@lists.sourceforge.net
+[mailto:arbitrator-linux-admin@lists.sourceforge.net]On Behalf Of Art
+Reisman
+Sent: Wednesday, May 14, 2003 9:35 AM
+To: arbitrator-linux@lists.sourceforge.net
+Subject: [Bandwidth/Arbitrator-linux] Adapting Application Level Shaping
+(Kazaa) comments?
+
+
+There is a sourceforge project that has just released
+application shaping tools for TC
+
+http://l7-filter.sourceforge.net/
+
+We are in the process of adapting their "application
+detection code" into the arbitrator.. =20
+
+Their code works by matching text patterns in data
+packets. If you have any knowledge on this subject
+please share your thoughts experiences.
+
+Art
+-----------------------------------------------------------------------
+
+
 
 
 Thanks,
@@ -35,38 +68,22 @@ georgev@citadelcomputer.com.au
 
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
-
+=20
 
 -----Original Message-----
-From: Adi [mailto:adi@nettek.pl]
-Sent: Thursday, May 22, 2003 7:09 AM
+From: Serge Blondin [mailto:sergebl@phreaker.net]
+Sent: Thursday, May 22, 2003 6:49 AM
 To: netfilter@lists.netfilter.org
-Subject: Port FWD via 2 NAT
+Subject: can we shape the kazaa traffic
 
 
-Hello,
+I know a way of shapping the traffic with a Cisco Router, but i was=20
+wondering.
 
-For ascii art fans:
+I will be nice to shape the kazaa 2 traffic on my linux router.
 
-INTERNET----[eth0 LINUX1 eth1]----[eth0 LINUX2 eth1]----[Windows]
-
-Linux1 eth0 - public address, NAT, eth1 - 10.0.2.1
-Linux2 eth0 - 10.0.2.2, NAT, eth1 - 10.0.5.1
-Windows - 10.0.5.13
-
-What I can do on Linux1 and Linux2 to allow connect
-from INTERNET to telnet on Windows machine?
-
-I put on Linux1 something like this:
-iptables -A PREROUTING -t nat -p tcp -d (public address) --dport 23 -j =
-DNAT
---to 10.0.2.2:23
-On Linux2:
-iptables -A PREROUTING -t nat -p tcp -d 10.0.2.2 --dport 23 -j DNAT --to
-10.0.5.13
-
-But it still not working :( What I doing wrong?
-Adi
+Serge Blondin
+sergebl@phreaker.net
 
 
 
