@@ -1,10 +1,11 @@
-From: "Gabor Csuri" <gcsuri@ceauto.com>
-Subject: mark connections based a quote
-Date: Thu, 14 Nov 2002 22:40:09 +0100
+From: "Fadel" <fadel@siteplanet.com.br>
+Subject: blocking kazaa
+Date: Tue, 19 Nov 2002 13:11:15 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NGBBLBOMOLDNJFMPIGKLGEAPCFAA.gcsuri@ceauto.com>
+Message-ID: <200211191503.gAJF37aL014830@plutao.siteplanet.com.br>
+Reply-To: "Fadel" <fadel@siteplanet.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,22 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; 
+To: "netfilter@lists.netfilter.org"@plutao.siteplanet.com.br
 
-Hi All,
+Hi there,
 
- I need to restrict some connections into a bandwidth on my local network.
-The long downloads (and uploads) are very bad for our 800k/128k bandwidth.
-I thougth I would restrict the long downloads into a lower bandwidth, but I
-don't know how can I mark the long downloads.
-Can I mark the packets which are a part of a long connection maybe like
-this:
-iptables -m cquote --cquote 2000000 -j MARK --set-mark 1
-means it marks packet within a connection which are over 2MB.
+I got a trouble in my network while trying to block Kazaa.
+I tried to drop port 1214 with this rule:
 
-How can I do this?
+iptables -A FORWARD --dport 1214 -j DROP
 
-Thanks in advice, Gabor Csuri.
+but this doesn't work. so I did sniffing to see what kind of packets and
+ports kazaa uses and I saw that it searches for servers in different ports.
+later, I read in various texts around the net, but all recommend to block
+port 1214 and kazaa site. this probably worked in version 1.
+
+how could I block kazaa, since I need accept connections in high ports?
+
+sorry for the bad english.
+
+regards,
+
+phadell
+-------------------------------------------------
+Esta mensagem foi enviada
+por Siteplanet WebMail.
 
 
