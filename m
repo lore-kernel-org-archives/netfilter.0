@@ -1,8 +1,9 @@
-From: Bobo <boboaq@163.com>
-Subject: How to use more IP address for one netcard in Iptables?
-Date: Tue, 1 Apr 2003 11:30:43 +0800
+From: "Andrew S. Haydon" <andrew_s_haydon@yahoo.com>
+Subject: Re: -p icmp in IPv6 does not work
+Date: Mon, 31 Mar 2003 23:55:22 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030401033056.725471C9C1C78@sm204.163.com>
+Message-ID: <3E891BBA.9020907@yahoo.com>
+References: <Pine.GSO.4.44.0303311016410.25589-100000@rose.man.poznan.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,22 +16,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Marcin Kaminski <maxiu@man.poznan.pl>
+Cc: netfilter@lists.netfilter.org
 
-Hi
+To use -p icmpv6 may be helpful.
 
-    While  use Iptables as the gateway of my LAN,I would like to use NAT.
- 
-   I have six   C class address,and I want to use it on one netcard eth0 for NAT.
+Marcin Kaminski wrote:
 
-   Must I bind the six IP address with eth0 step by step under linux ?
+>Hi
+>I've tried to filter out some ICMPv6, but -p icmp does not seem to work.
+>ip6tables -A OUTPUT -p icmp -j DROP
+>is doing nothing. It looks like -p icmp matches nothing, filtering with
+>other rules (-s etc) works pretty well.
+>Of course any other jump (f.e. LOG) does nothing too with -p icmp.
+>I've tested it on Linux 2.4.20 from PLD and 2.4.19 from SuSe.
+>
+>What is wrong?
+>
+>
+>  
+>
 
-  Could I use the six IP address in the Shell scripts while only bind one Ip address 
-   with netcard eth0 ?
-
-  Thanks a lot.
-
-   
 
 
