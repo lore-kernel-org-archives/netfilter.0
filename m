@@ -1,13 +1,12 @@
-From: Meszaros Gergely <monk@geotronic.hu>
-Subject: Re: Masquarede stalls?
-Date: Tue, 10 Aug 2004 20:56:31 +0200
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Masquarede stalls?
+Date: Tue, 10 Aug 2004 15:13:27 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040810205631.797831f1.monk@geotronic.hu>
-References: <D5C9032B2B09C64EA2409D6214E91AC9051263@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051264@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC9051263@asimail2.alphanumeric.com>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,32 +19,46 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+> Unfortunately "tcpdump -n -nn -p -i ppp0 icmp" gives nothing (I hope i =
+did it well :)).
+> (what is -nn ? I cannot find that in the manpage.)
 
-Dear Antony and Jason! Many thanks for the quick response! I'm enthralled.
+       -n     Don't convert host addresses to names.   This  can  be  =
+used  to
+              avoid DNS lookups.
 
-Unfortunately "tcpdump -n -nn -p -i ppp0 icmp" gives nothing (I hope i did it well :)).
-(what is -nn ? I cannot find that in the manpage.)
+       -nn    Don't convert protocol and port numbers etc. to names =
+either.
 
-Are you sure this is a ICMP related problem? I can ping everything very quickly and correctly from the internal net. The things go wrong somewhere during the connections. :-( However you must be right, im not guru.
+guess that depends on the specific tcpdump you have...
 
+>
+> Are you sure this is a ICMP related problem? I can ping everything =
+very quickly and correctly from the internal net. The things go wrong =
+somewhere during the connections. :-( However you must be right, im not =
+guru.
+>
 
-Anthony, my ext interface is the following: 
+it's not an ICMP problem--it's a TCP problem.  the error message that =
+tells you there is a TCP problem is an ICMP packet, however...
 
-ppp0      Link encap:Point-to-Point Protocol  
-          inet addr:xxx.xxx.xxx.xxx  P-t-P:192.168.0.254  Mask:255.255.255.255
-          UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1492  Metric:1
-          RX packets:2255 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:3300 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 
-          RX bytes:133634 (130.5 KiB)  TX bytes:1083394 (1.0 MiB)
+>
+> And whats  that clamp-mss-to-mtu thing ? :)
+>
 
-MTU: 1492.  But I dunno it is bad or good :)
+you can try adding:
 
-Its less than 1500 bytes, however by only 8. Its bad? 
-And whats  that clamp-mss-to-mtu thing ? :)
+  iptables -I FORWARD -i $INTERNAL_IF -p tcp --syn -j TCPMSS =
+--clamp-mss-to-pmtu
+-OR-
+  iptables -I FORWARD -i $INTERNAL_IF -p tcp --syn -j TCPMSS --set-mss =
+1400
 
+to your test scenario to see if that fixes your problem.  if i recall =
+correctly, MSS =3D MTU - 40.  if you have an MTU issue--you're best bet =
+is to play around with tcpdump and different values of "--set-mss" until =
+you don't have the problem anymore (unless "--clamp-mss-to-pmtu" =
+magically works for you--it didn't for me).
 
-thank you !
-
-1 MonK
+-j
 
