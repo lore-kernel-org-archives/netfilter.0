@@ -1,14 +1,14 @@
 From: Joel Newkirk <firewalldude@newkirk.us>
-Subject: Re: NAT problem
-Date: Mon, 06 Oct 2003 16:38:50 -0400
+Subject: Re: load-balancing with netfilter: round robin or what??
+Date: Mon, 06 Oct 2003 16:43:34 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065472730.12495.194.camel@alpha.newkirk.us>
-References: <000001c38c05$923fb680$0f01a8c0@raul02>
+Message-ID: <1065473014.12493.200.camel@alpha.newkirk.us>
+References: <1065434375.1604.33.camel@vitoria.intra.cet.pt>
 Reply-To: firewalldude@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c38c05$923fb680$0f01a8c0@raul02>
+In-Reply-To: <1065434375.1604.33.camel@vitoria.intra.cet.pt>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +18,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Jose Pascual <jose.pascual@optivamedia.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pedro Salazar <pedro-b-salazar@ptinovacao.pt>
 Cc: netfilter@lists.netfilter.org
 
-Your SNAT rule should be matching dport, not sport.
+Ol=E1 Pedro.  (g - I read ahead ;^)
 
-Do you have a rule in FORWARD table on 192.168.1.2 that ACCEPTs this
-traffic?  And is 192.168.1.2 configured to even allow forwarding?
+On Mon, 2003-10-06 at 05:59, Pedro Salazar wrote:
+> Greetings,
+>=20
+> I pretend to load-balancing to two servers but apparently I think only
+> one machine is getting the requests.
+>=20
+> These are the rules I run in iptables:
+
+> /sbin/iptables -v -t nat -A PREROUTING --dst 192.168.89.44 -p tcp \
+>  --dport 9000 -j DNAT --to-destination 192.168.89.158:80 \
+>  --to-destination 192.168.89.159:80
+
+> /sbin/iptables -v -t nat -A OUTPUT -p tcp -m tcp --dport 9000 \=20
+> --dst 192.168.89.44 -j DNAT --to-destination 192.168.89.158:80 \
+>  --to-destination 192.168.89.159:80
+>=20
+> As you can see, I have two destinations hosts, 192.168.89.158/31. The
+> 192.168.89.44 is the gateway itself that is redirecting requests on port
+> 9000 to the two http servers. All of them are in the same network.
+
+But the rule performing the balancing is in OUTPUT table, and so only
+affects connections from the NAT box itself...  Also, I think your
+double --to construction is invalid, iptables accepts it but it appears
+never to look past the first IP.
+
+Try this rule:
+
+/sbin/iptables -t nat -A PREROUTING -d 192.168.89.44 -p tcp --dport  \
+9000 -j DNAT --to 192.168.89.158-192.168.89.159:80
+
+It will distribute new connections 'randomly' across the DNAT ip space,
+in this case two IPs.  This isn't 'real' load-balancing, but it's a
+quick and easy substitute that is sufficient for many purposes.
 
 j
-
-On Mon, 2003-10-06 at 08:30, Jose Pascual wrote:
-> Hi all,
-> I am new using iptables and surelly  this wil be an easy and stupid question
-> but perhaps you can help me. I want to understand NAT so I am trying to do
-> the following:
-> 
-> I have three computers in my LAN (192.168.1.1; 192.168.1.2 and 192.168.1.3).
-> 192.168.1.1 has a web server and I would like to access it through
-> 192.168.1.2 with NAT. For example openning my browser in 192.168.1.3 and
-> connecting to 192.168.1.2   I  should see the same as if I connected to
-> 192.168.1.1 web server directly, so I have done the following in
-> 192.168.1.2:
-> 
->  iptables -t nat -A PREROUTING -p tcp --dport 80 -j
-> DNAT --to-destination 192.168.1.1
-> 
-> 
->  iptables -t nat -A POSTROUTING -p tcp --sport 80 -j SNAT
-> --to-source 192.168.1.2
-> 
-> However it doesn't work. Anyone can help me?
-> 
-> Thanks
-> 
-> Regards
-> Jose Pascual
-> 
 
 
 
