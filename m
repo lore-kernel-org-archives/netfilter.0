@@ -1,14 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Mangling problem
-Date: Thu, 22 May 2003 01:33:56 +0200
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Port FWD via 2 NAT
+Date: Thu, 22 May 2003 09:56:06 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030522013356.798353f8.arnt@c2i.net>
-References: <20030415222001.8410.94392.Mailman@kashyyyk>
-	<000001c31f8f$1866f1d0$88cc858b@TOSHIBAFIRE>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6C8A@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c31f8f$1866f1d0$88cc858b@TOSHIBAFIRE>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +17,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Adi <adi@nettek.pl>, netfilter@lists.netfilter.org
+
+Also, you might best use IPSEC and create a tunnel instead of telnetting =
+over the internet which people can not only catch passwords but also =
+know your IP address behind the NAT. I have IPSEC running and can help =
+you set this up but off the list as it's non related..
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+=20
+
+-----Original Message-----
+From: Adi [mailto:adi@nettek.pl]
+Sent: Thursday, May 22, 2003 7:09 AM
 To: netfilter@lists.netfilter.org
+Subject: Port FWD via 2 NAT
 
-On Wed, 21 May 2003 12:49:54 +0100, 
-"Regina Reine" <regina@erg.abdn.ac.uk> wrote in message 
-<000001c31f8f$1866f1d0$88cc858b@TOSHIBAFIRE>:
 
-> 
-> Hi,
-> I am doing an experiment with iptables. I use a hub to connect two
+Hello,
 
-..hub?  And being visible wont hurt your experiment?
+For ascii art fans:
 
-> computers. Computer A captures the video packet (or any packets) and
-> computer B runs iptables and my code in Red Hat 8. Basically, with
-> hub, computer B will be able to see the packets coming to computer A.
-> I would like computer B to preroute this packet and put these packets
-> in userspace where I run my code. 
-> 
-> I uses :
-> 
-> ** Iptables -t mangle -I PREROUTING -p udp -I eth0 -j QUEUE
-> 
-> However, seems like I only be able to capture broadcast packets. (But
-> TCPDUMP could see the udp packets). I have checked my code (just a
-> simple code that scan what kind of packets and it worked with udp
-> generator such as iperf or hping). 
-> I have tried a few other similar ways but still only could capture
-> broadcast packets. Does anybody spots my mistake or could give me
-> advice for better solution? Thank you
-> 
-> Best regards,
-> Regina Reine
-> 
+INTERNET----[eth0 LINUX1 eth1]----[eth0 LINUX2 eth1]----[Windows]
 
-..you want tcpdump running in promiscous mode, 'info tcpdump' 
-for the gory details, it is also possible to pipe it.
+Linux1 eth0 - public address, NAT, eth1 - 10.0.2.1
+Linux2 eth0 - 10.0.2.2, NAT, eth1 - 10.0.5.1
+Windows - 10.0.5.13
 
-..you could also set up an ip-less sniff bridge, it works nicely 
-for bandwidth throttling too.  ;-)
+What I can do on Linux1 and Linux2 to allow connect
+from INTERNET to telnet on Windows machine?
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+I put on Linux1 something like this:
+iptables -A PREROUTING -t nat -p tcp -d (public address) --dport 23 -j =
+DNAT
+--to 10.0.2.2:23
+On Linux2:
+iptables -A PREROUTING -t nat -p tcp -d 10.0.2.2 --dport 23 -j DNAT --to
+10.0.5.13
+
+But it still not working :( What I doing wrong?
+Adi
 
 
 
