@@ -1,13 +1,13 @@
-From: Michal Kepien <lordpopcorn@poczta.onet.pl>
-Subject: Re: Firewall Setup on RH 9
-Date: Sat, 05 Jul 2003 09:30:23 +0200
+From: "Ray Anderson" <rsa@prideindustries.com>
+Subject: RE: Forwarding HTTP question
+Date: Sat, 5 Jul 2003 06:43:03 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0gvcgvc3jjvjmlog4a49p0lgosd9g9702c@4ax.com>
-References: <016201c33fa7$5c755eb0$660210ac@christo> <n6tbgvkvn94tuq3f8m01d5rah2n97tgnol@4ax.com> <1057383324.2821.34.camel@alpha.newkirk.us>
+Message-ID: <001201c342fb$5b45c730$fb09a8c0@viper11>
+References: <1057382564.2822.22.camel@alpha.newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1057383324.2821.34.camel@alpha.newkirk.us>
+In-Reply-To: <1057382564.2822.22.camel@alpha.newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +18,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Joel Newkirk <netfilter@newkirk.us>
+To: 'Joel Newkirk' <netfilter@newkirk.us>
 Cc: netfilter@lists.netfilter.org
 
->As I suspected from your misconception about forwarded traffic, you're=20
->an ipchains veteran... ;^)
+And don't forget to ALLOW the packets in the first place.  Made me crazy the
+first time I did that....Put in the FORWARD rule, but no ACCEPT rule.  
 
-Wow, thanks for the 'veteran' part :D Actually, I'm quite a newbie up
-here, but you're right, I _was_ using ipchains as I was quite unaware
-that it isn't the up-to-date tool to administer IP MASQ. However, the
-scheme I included in the previous post was taken from the Linux IP
-Masquerade HOWTO:
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport   80 -j allowed
+#HTTP
 
-http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/IP-=
-Masquerade-HOWTO.html#RC.FIREWALL-2.4.X-STRONGER
+-=Ray
 
-(quite long, sorry :)
+-----Original Message-----
+From: Joel Newkirk [mailto:netfilter@newkirk.us] 
+Sent: Friday, July 04, 2003 10:23 PM
+To: Guilherme Viebig
+Cc: *netfilter
+Subject: Re: Forwarding HTTP question
 
->With iptables FORWARD traffic never touches the INPUT or OUTPUT chains,
->those are explicitly for INPUT and OUTPUT to and from the box itself.
 
-I'm using the configuration I presented in the post and it works OK.
-However, if you know an easier way to achieve the same goal, please
-let me know :)
+On Fri, 2003-07-04 at 09:41, Guilherme Viebig wrote:
+> My Firewall has two interfaces
+> 
+> eth0 200.123.234.111
+> eth1 192.168.0.1
+> 
+> I have an internal webserver on 192.168.0.33
+> 
+> How can I setup iptables to forward incoming traffic by eth0 to port
+80 go
+> to 192.168.0.33:80 ?
 
-Below I attach my conception of packet traffic - it is taken from the
-Linux IPCHAINS HOWTO, so it may be _not_ up-to-date. If the way
-packets are treated changed in iptables, please tell me how.
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to
+192.168.0.33
 
-|        ----------------------------------------------------------------
-|        |            ACCEPT/                              lo interface |
-|        v           REDIRECT                  _______                  |
-|--> C --> S --> ______ --> D --> ~~~~~~~~ -->|forward|----> _______ -->=20
-|    h     a    |input |    e    {Routing }   |Chain  |     |output =
-|ACCEPT
-|    e     n    |Chain |    m    {Decision}   |_______| --->|Chain  |
-|    c     i    |______|    a     ~~~~~~~~        |     | ->|_______|
-|    k     t       |        s       |             |     | |     |   =20
-|    s     y       |        q       |             v     | |     |   =20
-|    u     |       v        e       v            DENY/  | |     v   =20
-|    m     |     DENY/      r   Local Process   REJECT  | |   DENY/
-|    |     v    REJECT      a       |                   | |  REJECT
-|    |   DENY               d       --------------------- |=20
-|    v                      e -----------------------------
-|   DENY                             =20
+j
 
-(i had to include pipes at the left to cheat line wrapping)
 
-Michal Kepien
 
