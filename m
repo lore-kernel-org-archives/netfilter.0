@@ -1,15 +1,13 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: Display rulenum
-Date: Sun, 26 Jan 2003 14:01:09 +0000
+From: Magnus Boden <sarek@ozaba.cx>
+Subject: Re: NAT of TFTP sessions
+Date: Sun, 26 Jan 2003 21:31:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030126140109.GI26189@miggy.org>
-References: <OFFEB3667B.A96202EB-ON65256CBA.0049D79C-65256CBA.004A36FF@lntinfotech.com>
+Message-ID: <3E3445B4.4090706@ozaba.cx>
+References: <1043539676.5018.19.camel@underworld> <20030126024127.5ab3f927.arnt@c2i.net> <001901c2c52d$c2457fd0$0a90a8c0@boris>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CNK/L7dwKXQ4Ub8J"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <OFFEB3667B.A96202EB-ON65256CBA.0049D79C-65256CBA.004A36FF@lntinfotech.com>
+In-Reply-To: <001901c2c52d$c2457fd0$0a90a8c0@boris>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,50 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: harish.k@lntinfotech.com
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Michael J. Tubby B.Sc. (Hons) G8TIC" <mike@thorcom.com>
 Cc: netfilter@lists.netfilter.org
 
+Hello,
 
---CNK/L7dwKXQ4Ub8J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It is in the patch-o-matic which has been split from 
+iptables-x.x.x.tar.bz2 file. Download 
+http://www.netfilter.org/files/patch-o-matic-20020825.tar.bz2
+and it is in there.
 
-On Sun, Jan 26, 2003 at 06:59:20PM +0530, harish.k@lntinfotech.com wrote:
-> How do I make iptables list the rule numbers along with the rules?
-> The -L option lists the rules, not the actual rule numbers. This will be
-> helpful where there are a *lot* of rules in a particular chain.
+Regards
+Magnus
 
-root@jimblewix:~;
-14:00:06 0$ iptables --help | grep line
-  --line-numbers                print line numbers when listing
-root@jimblewix:~;
-14:00:18 0$ iptables -L --line-numbers
-Chain INPUT (policy DROP)
-num  target     prot opt source               destination        =20
-1    acctin     all  --  anywhere             anywhere          =20
-2    acctio     all  --  anywhere             anywhere          =20
-<etc>=09
+Michael J. Tubby B.Sc. (Hons) G8TIC wrote:
+> Magnus et al,
+> 
+> I have several Linux firewall/gateway machines dotted around the
+> UK and Europe which are basically RedHat 7.3 + Kernet 2.4.20
+> + iptables 1.2.7a.
+> 
+> We have things on the inside like Cisco VoIP phones, print servers,
+> etc. that need to be able to TFTP code or configs in from a
+> server on the outside (public internet).
+> 
+> TFTP appears not to work and when I search google I find
+> information which refers to patches to "oldnat" but not to "newnat".
+> 
+> Is there something that I am missing? Is there a configuiration
+> module, helper, patch or something for iptables 1.2.7a which will
+> fix this?
+> 
+> Mike
+> 
+> 
+> 
+> 
+> 
 
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
-
---CNK/L7dwKXQ4Ub8J
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj4z6iUACgkQzbc+I5XfxKcLdQCfVZ7RsWgsaClRUt6Hev2efURt
-RmQAnjdXRG+KZVvFpD0kxVUmpqxd7+pY
-=04Qs
------END PGP SIGNATURE-----
-
---CNK/L7dwKXQ4Ub8J--
 
