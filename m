@@ -1,14 +1,11 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: Getting Closer But Still Having Problems
-Date: Tue, 3 Dec 2002 10:32:50 +0530
+From: Paulo Andre <pandre@darkstar.nom.za>
+Subject: Connectivity
+Date: 03 Dec 2002 09:11:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212031032.50936.dharmu@nsecure.net>
-References: <Pine.LNX.4.33.0211291153170.1440-100000@ts1.alberni.net>
-Reply-To: dharmu@nsecure.net
+Message-ID: <1038899508.345.14.camel@bigblue>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0211291153170.1440-100000@ts1.alberni.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,40 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Aaron Clausen <maureen-taocow@alberni.net>, netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi,
- If you compiled the module into the kernel just check with 
 
-#dmesg | grep module 
+I am running iptables 1.2.6a. The firewall/gateway server links a DMZ,
+Internal, External zones. The DMZ card is aliased with two different
+ip's (196.10.1.x and 196.10.10.x).
+I have a router on the DMZ that reboots every evening at a specific
+time, the router is not under our control.(196.10.10.y)
+When this happens iptables does not allow traffic through even though
+the router comes up immediately.
+I basically have to take the card down, reconfigure it with another ip
+(196.10.10.b) then it sees the router, take the card down again and
+reconfigure it to the original ip (196.10.10.x) and re-apply the rules. 
+Then everything works fine again.
 
-If you get the output then you should not worry about it.
+One way of fixing this is to get the router fixed, but this is not under
+my control. Could anyone tell me how I could fix the iptables side of
+things, surely iptables should be able to handle when and router
+reboots...???
 
-Regards,
-Dharmendra.T
-Linux Security Expert
-www.nsecure.net
-dharmu@nsecure.net
+Any suggestions please...
 
-On Saturday 30 November 2002 01:25, Aaron Clausen wrote:
-> On Fri, 29 Nov 2002, Aaron Clausen wrote:
-> > Alright, I managed to get the patched 2.4.19 kernel *and* iptables 1.2.7a
-> > binaries and libraries to compile cleanly.  Now I've got one last problem
-> > (I hope).  When I run "make install all", everything compiles fine, but
-> > it won't overwrite the old iptables binaries and libraries.  I suppose I
-> > have to remove these manually, so can somebody tell me where to look?
->
-> Never mind.  I did it the hard way, and everything is working A-okay. 
-> Sorry for being so belligerant, I was just getting frustrated with the
-> whole darn thing.
->
-> Now, another question.  Is there anything particular I have to do to get
-> H.323 connection tracking working?  I've compiled the code into the kernel,
-> so I don't need to load the modules, so is that it?
->
-> Another quick question, will the H.323 tracking permit more than one
-> machine to go through NAT with Netmeeting or whatever?
 
--- 
 
 
