@@ -1,13 +1,13 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: iptables and SMP performance
-Date: Tue, 1 Feb 2005 15:17:32 +0100
-Message-ID: <20050201141732.GU6878@sunbeam.de.gnumonks.org>
-References: <1106588554.8961.41.camel@d-phiggins-lnx.rovingplanet.com>
+Subject: Re: Logging only the first 20 packets of a new connection
+Date: Tue, 1 Feb 2005 15:27:52 +0100
+Message-ID: <20050201142752.GV6878@sunbeam.de.gnumonks.org>
+References: <200501071829.j07ITSXH082515@jkcpub.iserver.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DS29MnVNPmky9ZU5"
+	protocol="application/pgp-signature"; boundary="AEkhIf3vy/ReXTu0"
 Content-Disposition: inline
-In-Reply-To: <1106588554.8961.41.camel@d-phiggins-lnx.rovingplanet.com>
+In-Reply-To: <200501071829.j07ITSXH082515@jkcpub.iserver.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Patrick Higgins <phiggins@rovingplanet.com>
+To: Deepak Seshadri <dseshadri@broadbandmaritime.com>
 Cc: netfilter@lists.netfilter.org
 
 
---DS29MnVNPmky9ZU5
+--AEkhIf3vy/ReXTu0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 24, 2005 at 10:42:33AM -0700, Patrick Higgins wrote:
+On Fri, Jan 07, 2005 at 01:29:28PM -0500, Deepak Seshadri wrote:
+> Hello everybody,
+>=20
+> Could someone suggest how would I log only the first 15 or 20 packets of =
+any
+> new connection?
 
-> The rules are being applied to eth0 in our simplified test, and it
-> looks like the interrupts are only being serviced by CPU0. It appears
-> the iptables rules are also being tested on CPU0.
+this should now be possible using ipt_connbytes.
 
-Yes, the whole network stack is traversed on the CPU that has received
-the innterrupt from the nic.
-
-> Could we get better performance by balancing the eth0 interrupts
-> across CPUs? If not, how about balancing the testing of iptables
-> rules?
-
-You should set irq affinity so that e.g. eth0->cpu0, eth1->cpu1, etc.
+iptables -A FORWARD -j ULOG -m connbytes --connbytes 0:15 --connbytes-dir b=
+oth --connbytes-mode packets
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -52,7 +49,7 @@ You should set irq affinity so that e.g. eth0->cpu0, eth1->cpu1, etc.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---DS29MnVNPmky9ZU5
+--AEkhIf3vy/ReXTu0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -60,10 +57,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.5 (GNU/Linux)
 
-iD8DBQFB/498XaXGVTD0i/8RAklhAJ4nQFUrvZ1LGWtSVi4hQZNLbi2pBACfU1We
-qqV6Hh6mE/evWjSMApBk+7A=
-=i9wp
+iD8DBQFB/5HoXaXGVTD0i/8RAhSoAJ9q4JjdNCQDl863Fy98A/jOQF9jUwCfdobP
+IIj3pA8FzqvLn9+xQDFX0RY=
+=GjpN
 -----END PGP SIGNATURE-----
 
---DS29MnVNPmky9ZU5--
+--AEkhIf3vy/ReXTu0--
 
