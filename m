@@ -1,12 +1,10 @@
-From: "HareRam" <hareram@sol.net.in>
-Subject: Re: Fw: How to remove Established Connection
-Date: Fri, 11 Oct 2002 15:32:12 +0530
+From: Martijn Klingens <mklingens@ism.nl>
+Subject: Unexpected RSTs?
+Date: Fri, 11 Oct 2002 14:34:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006301c2710d$4511c060$7cfcc5cb@humanpc>
-References: <00e301c270e7$09c5a7e0$7cfcc5cb@humanpc> <20021011074918.SGVP459.mta02-svc.ntlworld.com@there> <002d01c270fe$86ca3c80$7cfcc5cb@humanpc> <3DA696C3.5000508@iprimus.com.au>
-Reply-To: "HareRam" <hareram@sol.net.in>
+Message-ID: <200210111434.52124.mklingens@ism.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,50 +16,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Michael <mutk@iprimus.com.au>, netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-thanks
+Please consider the following piece of our firewall script's output:
 
-let me try and get back to you
-any more help required
-iam doing now
-thanks to you and Antony also
+----
+* Setting up connection tracking for already-active traffic
+iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED -j ACCEPT
+iptables -A INPUT -m state --state RELATED -j ACCEPT
+iptables -A FORWARD -m state --state RELATED -j ACCEPT
+modprobe ip_conntrack_ftp
 
-hare
------ Original Message -----
-From: "Michael" <mutk@iprimus.com.au>
-To: <netfilter@lists.samba.org>
-Sent: Friday, October 11, 2002 2:45 PM
-Subject: Re: Fw: How to remove Established Connection
+[ .. snip creation and activation of custom chains .. ]
 
+* Setting up connection tracking for ACL lan
+iptables -A acl_lan -p tcp --tcp-flags RST RST -j log_lan
+iptables -A log_lan -p tcp --tcp-flags RST RST -j LOG \
+        --log-level debug --log-prefix '* DROP: Unexpected RST * '
+----
 
-> HareRam wrote:
->
-> >then ? how do i remove my establish client, when we do some accounting
-> >when he logged out, he should not get any browsing, as well as he should
-be
-> >removed from internet
-> >how can i achieve
-> >
-> >please guide me alternative method to achieve this
-> >
->
-> You remove the rule that accepts the established connection.
->
-> I have a specific rule for each host that is forwarded through firewall.
-> If I want to allow the host, I add the rule in FORWARD chain:
->
-> ACCEPT     all  --  *      eth0    <ip_of_host>
-> 0.0.0.0/0          state RELATED,ESTABLISHED
->
-> When I want to stop them I just remove the rule. Even if the established
-> entry appears and lingers in /proc/net/ip_conntrack, it can't go anywhere.
-> At least that's how it seems to work for me... Am I wrong??
->
-> Cheers,
-> Michael
->
->
->
+The last line intrigues me. We drop these packets since quite a while, but 
+didn't log them until yesterday. It turns out that almost 15% of my firewall 
+log now consists of packets qualifying as 'Unexpected RST' though.
+
+But... isn't the conntrack code at the beginning supposed to take care of 
+accepting RSTs if they are associated with an active connection? Isn't a 
+packet with RST that passes through the RELATED/ESTABLISHED match a packet 
+that is not associated with an active connection and should thus be dropped?
+
+I'm a bit surprised to see this to say the least. It's not a subnet-wide 
+portscan at least, the dropped packets definitely seem to indicate legitimate 
+traffic.
+
+Thanks in advance for any hints,
+-- 
+Martijn
 
 
