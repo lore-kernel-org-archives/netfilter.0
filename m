@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Hostname with DNAT  ? {OK}
-Date: Tue, 27 Jul 2004 09:44:52 +0100
+Subject: Re: Questions about the workings of iptables
+Date: Tue, 27 Jul 2004 09:47:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407270944.52819.Antony@Soft-Solutions.co.uk>
-References: <D5C9032B2B09C64EA2409D6214E91AC90511F6@asimail2.alphanumeric.com> <007101c473af$108ddc60$da0da8c0@pisic>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <200407270947.39244.Antony@Soft-Solutions.co.uk>
+References: <564DE4477544D411AD2C00508BDF0B6A21C4DABE@usahm018.exmi01.exch.eds.com> <200407261417.33159.Antony@Soft-Solutions.co.uk> <opsbsb0q0j2fsc0m@192.168.1.10>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <007101c473af$108ddc60$da0da8c0@pisic>
+In-Reply-To: <opsbsb0q0j2fsc0m@192.168.1.10>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,30 +21,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 27 July 2004 8:54 am, Danila Octavian wrote:
+On Tuesday 27 July 2004 8:20 am, Ashutosh wrote:
 
-> I'm afraid i was not very explicit ...
+> > No.   AFAIK the connection tracking in netfilter checks only src+dst
+> > IP+port, nothing else.
 >
-> I was trying to use strictly names and that's why :
->
-> I have only one public IP and 3 diferrent names. Behind the machine i have
-> a network with 4 servers which use that names :
+> .. And the Protocol
 
-In that case set up one mail relay (which only accepts mail for the four 
-domains), feed all external MX records to this one server, and then configure 
-it to relay mail for each domain on to each appropriate server.
+Er, well, yes.   I kind of took this bit for granted, but you're correct; a 
+conntrack entry for a TCP connection between a.b.c.d:e and v.w.x.y:z will not 
+match UDP packets on the same IPs and ports :)
 
-What you are trying to do is an application layer requirement; netfilter 
-cannot do this for you at the network routing layer.
+Also, conntrack entries take care of non-TCP/UDP connections (eg ICMP, ESP) 
+which do not have port numbers, therefore src+dst IP (and protocol) are the 
+only things matched here.
 
 Regards,
 
 Antony.
 
 -- 
-I love deadlines.   I love the whooshing noise they make as they go by.
-
- - Douglas Noel Adams
+Normal people think "If it ain't broke, don't fix it".
+Engineers think "If it ain't broke, it doesn't have enough features yet".
 
                                                      Please reply to the list;
                                                            please don't CC me.
