@@ -1,11 +1,12 @@
-From: Jeff Gordon <jeff.gordon@wellnow.com>
-Subject: Can I add a module to a prebuilt kernel?
-Date: Wed, 2 Jun 2004 03:38:46 -0400
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: Re: Resend TCP segment modified to the sender
+Date: Wed, 2 Jun 2004 11:28:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040602073846.GO18797@wellnow.com>
+Message-ID: <003b01c4488c$5e7a9650$68892090@grouse>
+References: <OF006EBA7E.83DBD3D8-ON65256EA7.00182C58@hss.hns.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +17,116 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: aksingh@hss.hns.com
+Cc: netfilter@lists.netfilter.org
 
-Forgive me if this is a frequent or recent question -- I've searched
-various places and haven't found the answer, thus far.  I program in
-Perl but not in C/C++.
+Hi Amit,
 
-I'm running a RH ES 3 system, and it appears _support_ for ipt_recent
-is included in the kernel but libipt_recent.so is nowhere to be found.
-Kernel source for the prebuilt kernel in the distribution is available.
+A few questions inline...
 
-Is there a simple way to build ipt_recent from source and have it
-function with this kernel, without compiling a kernel from scratch?
+> hi,
+>
+>    I am trying to do something similar, if anyone wants i can send the
+code
+> snippets. I start a telnet session between two hosts and then capture a
+> packet in between, and try to send back an RST segment, I do checksum
+> calculation and all my self. (both ip and tcp)
+> 1. NF_IP_LOCAL_OUT queues the packet to user space
+> 2. user space reads it using ipq_read, modifies packet, then sets a
+verdict
+> of NF_ACCEPT
+> 3. This packet is now caught at NF_IP_POST_ROUTING, I call netif_rx for
+> that skb from here and return NF_STOLEN from hook call back function of
+> NF_IP_POST_ROUTING.
 
-Thanks kindly,
+Hm, I don't know much about the kernel routine, but just wonder whether
+calling netif_rx means you grab the packet directly from POST ROUTING to the
+first step of receiving a packet from the interface? And NF_STOLEN means you
+never want the packet going to the interface?
 
--- 
+> 4. what happens after that is not clear to me, surely the RST i sent
+doesnt
+> reach the tcp connection it was intended for and hence the packet is
+> dropped  somewhere by the kernel. when and where is a problem for me, any
+> idea how do I fgiure that out.
 
- -- Jeff --   <http://www.wellnow.com>
+So your RST is supposed to go to the local machine itself?
 
- "There's nothing left in the world to prove.  All that's worth doing
-  is to love one another, using whatever means are available to serve."
+> Also Sven, The problem I talked about yesterday, POST_ROUTING not getting
+> the packet after LOCAL_OUT queued it to the user space. I overcame that
+> problem, but only after I started setting the mark to a particular value
+in
+> the NF_IP_LOCAL_OUT hooks function itself, before queuing it to the user
+> space. Earlier I was setting ipq_packet_msg->mark = THAT VALUE inside the
+> user level program.
+
+Then it should be my problem of using libnet...
+
+> Hence, these are my doubts :
+>
+>    ipq_packet_msg-> mark i.e all the fields in ipq_packet msg can we modiy
+>    them in user space, and inject the "modified" packet back into the
+>    kernel ? I dont think this is possible with ipq_packet_msg->mark field,
+>    that is just for reading.
+
+Agree.
+
+>    Also, if i want to modify the packet before
+>    setting a verdict of NF_ACCEPT, how do I do it, the ip header starts
+>    from (unsigned char *)(packet+1), am I right ?
+
+if
+ipq_packet_msg *m = ipq_get_packet(buf)
+packet = (unsigned char *)m + sizeof(*m)
+then
+ip header starts at *packet, not *(packet+1).
+
+>    Once i modify contents
+>    here, say interchange the src , dest ip, and then set verdict to
+>    NF_ACCEPT, the packet that is actually injected has the changed values.
+
+Yes, just figure out the modified packet length and ipq_set_verdict(handle,
+m->packet_id, packet_len, modified_packet).
+
+Jee
+
+> regards
+> Amit
+>
+>
+>
+>
+> "Kotatsu" <naughtydog@virgilio.it>@lists.netfilter.org on 06/02/2004
+> 12:09:44 AM
+>
+> Sent by:    netfilter-admin@lists.netfilter.org
+>
+>
+> To:    <netfilter@lists.netfilter.org>
+> cc:
+>
+> Subject:    Resend TCP segment modified to the sender
+>
+>
+>
+> Hi guys,
+> I have a problem. I have a  client (192.168.9.2) that send TCP segment
+> to a server (192.168.11.2).  Between this PC there is a Linux router that
+> captures all the segment  and do forwarding. I want that it takes a client
+> packet (the 10th TCP data  packet sended, for example), modify it as i
+> want, and then resend it to the  client with ipq_set_verdict.
+> Is this operation possible? Or netfilter  can only send the modified
+packet
+> at the server? If it's possible, which  field must i modify to do this
+> (i've tried to modify some flag but it doesn't  work)?
+>
+> Thanks for your help
+> Best regards
+>
+>
+>
+>
+>
+>
+
 
