@@ -1,14 +1,16 @@
 From: Harald Welte <laforge@gnumonks.org>
 Subject: Re: TTL mangling problems...
-Date: Fri, 21 Jan 2005 19:47:32 +0100
-Message-ID: <20050121184732.GR14460@sunbeam.de.gnumonks.org>
+Date: Fri, 21 Jan 2005 21:55:50 +0100
+Message-ID: <20050121205550.GS14460@sunbeam.de.gnumonks.org>
 References: <4147.192.168.3.47.1106333417.squirrel@192.168.3.47>
+	<20050121184732.GR14460@sunbeam.de.gnumonks.org>
+	<4442.192.168.3.47.1106336951.squirrel@192.168.3.47>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CMx2Qe8y1jN1ar4Y"
+	protocol="application/pgp-signature"; boundary="zOr5JpMIiGv/Oaxu"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <4147.192.168.3.47.1106333417.squirrel@192.168.3.47>
+In-Reply-To: <4442.192.168.3.47.1106336951.squirrel@192.168.3.47>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,25 +25,24 @@ To: wency@comelsoft.com
 Cc: netfilter@lists.netfilter.org
 
 
---CMx2Qe8y1jN1ar4Y
+--zOr5JpMIiGv/Oaxu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 21, 2005 at 08:50:17PM +0200, Ventsyslav Vassilev wrote:
-> Helo, Mr. Welte,
-> may be this is not the place where i must ask the question below, but i'm
-> unable to find the right place on the Net.
-
-netfilter@lists.netfilter.org or netfilter-devel@lists.netfilter.org
-
-> iptables v1.2.7a: Unknown arg `--ttl-set'
+On Fri, Jan 21, 2005 at 09:49:11PM +0200, Ventsyslav Vassilev wrote:
+> This is correct - i have searched in /usr/lib/iptables for that file and
+> libipt_TTL.so is NOT here.
 >=20
-> Can you tell me where is my error, please?
+> The command you send me returns the iptables help info, nothing more.
+>=20
+> OK....
+> So - can i ask you how to add the libipt_TTL.so plug-in?
 
-your iptables userspace program seems to lack the libipt_TTL.so plugin.
-
-What does 'iptables -j TTL -h' tell you? (last 6 lines)=20
+please read what patch-o-matic told you.  After appyling the patch, it
+should have told you to recompile the kernel and the iptables userspace
+program.  The iptables compile will notice that the kernel supoprts TTL
+target and build the required plugin.
 
 --=20
 - Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
@@ -52,7 +53,7 @@ What does 'iptables -j TTL -h' tell you? (last 6 lines)=20
 "Privacy in residential applications is a desirable marketing option."
                                                   (ETSI EN 300 175-7 Ch. A6)
 
---CMx2Qe8y1jN1ar4Y
+--zOr5JpMIiGv/Oaxu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -60,10 +61,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.5 (GNU/Linux)
 
-iD8DBQFB8U5EXaXGVTD0i/8RAvpDAKChX49233Gjn+lDTUEBwRh9/CVaiACdGldS
-3ImxKkpzXz3i49oYAi2W3tI=
-=seGy
+iD8DBQFB8WxWXaXGVTD0i/8RAireAJ9rLVjp6wys/brjwBGc/hxLNwKTpQCfSRyD
+YKeaP6Uz92vCPUphVo91bnM=
+=6kSd
 -----END PGP SIGNATURE-----
 
---CMx2Qe8y1jN1ar4Y--
+--zOr5JpMIiGv/Oaxu--
 
