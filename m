@@ -1,12 +1,11 @@
-From: Sven Riedel <sr@gimp.org>
-Subject: iptables -vv -L output description?
-Date: Thu, 4 Sep 2003 09:39:50 +0200
+From: =?gb2312?q?Bill=20Zhao?= <bzhaoa@yahoo.com.cn>
+Subject: ---How can I to the outside
+Date: Thu, 4 Sep 2003 16:08:45 +0800 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030904073950.GC12077@localnet>
-Reply-To: sr@gimp.org
+Message-ID: <20030904080845.34573.qmail@web15107.mail.bjs.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,22 +15,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="gb2312"
 To: netfilter@lists.netfilter.org
 
-Hi,
-is the output format of iptables -vv -L documented somewhere? Didn't
-find anything in the FAQ, HOWTO (the regular one that is) or the
-iptables manpage. 
-
-This is with iptables 1.2.8
-
-Regs,
-Sven
--- 
-Sven Riedel                      sr@gimp.org
-Liebigstr. 38 
-30163 Hannover                  "Python is merely Perl for those who
-                                 prefer Pascal to C" (anon)
-
+ICBUaGUgc2NyaXB0IGJlbG93IGlzIHRoZSBmaXJld2FsbCBzY3JpcHQgZm9yIG15IGRlcHQKb2Yg
+dGhlIGNvbXBhbnkuIExhbiBjYW4gYWNjZXNzIHRoZSBvdXRzaWRlIG5ldHdvcmsgYnkKbmF0IGFu
+ZCBvdXRzaWRlIGNhbiB2aXNpdCB0aGUgd2ViIGFuZCBmdHAgc2VydmVyIApsb2NhdGVkIGluIExh
+bi4gCiAgSXQgd29yayB2ZXJ5IHdlbGwgYnV0IGl0IG5lZXQgdGhlIG91dHNpZGUgaGFzIGEKcm91
+dGUgZW50cnkgdGhhdCBpcyB0YWtpbmcgdGhpcyBmaXJld2FsbCBhcyBnYXRld2F5IHRvCmVudGVy
+IHRoaXMgTGFuLiBBY3R1YWxseSBJIGhvcGUgdGhlIHdlYiBhbmQgZnRwIHNlcnZlcgpjYW4gCnNo
+b3cgdGhlbXNlbGYgYXQgZmlyZXdhbGwgdG8gdGhlIG91dHNpZGUuIElmIHNvIG5vCm5lZWQgCnRv
+IGhhdmUgdGhlIHJvdXRlIGVudHJ5IEkgbWVudGlvbmVkIGFib3ZlLgoKICBJIGRpZCB0aGluayBt
+dWNoIGhvdyB0byBkbyBpdCBhbmQgZmFpbCB0byB3b3JrIG91dC4KICBTb21lYm9keSBjYW4gaGVs
+cCBtZSBvciByZW1pbmQgbWUgb2YgdGhlIG1ldGhvZD8KClRoYW5rcyBpbiBhZHZhbmNlIQoKQmls
+bCBaaGFvICAgCiAgIAoKIyEvYmluL3NoCmVjaG8gMCA+Ci9wcm9jL3N5cy9uZXQvaXB2NC9pcF9m
+b3J3YXJkTEFOX0lQX05FVD0nMTkyLjE2OC42My4wLzI0JwpMQU5fTklDPSdldGgxJwpXQU5fSVA9
+JzEwLjE2MS4yNC4yMjAnCldBTl9OSUM9J2V0aDAnClBTX0lQPScxOTIuMTY4LjYzLjE5OCcKCiMg
+bG9hZCBzb21lIG1vZHVsZXMgKGlmIG5lZWRlZCkKbW9kcHJvYmUgaXBfbmF0X2Z0cAptb2Rwcm9i
+ZSBpcF9jb25udHJhY2tfZnRwbW9kcHJvYmUgaXBfY29ubnRyYWNrX2Z0cAoKIyBGbHVzaAppcHRh
+YmxlcyAtdCBuYXQgLUYgUE9TVFJPVVRJTkcKaXB0YWJsZXMgLXQgbmF0IC1GIFBSRVJPVVRJTkcK
+aXB0YWJsZXMgLXQgbmF0IC1GIE9VVFBVVAppcHRhYmxlcyAtRgoKaXB0YWJsZXMgLVAgSU5QVVQg
+RFJPUAppcHRhYmxlcyAtUCBGT1JXQVJEIERST1AKaXB0YWJsZXMgLVAgT1VUUFVUIEFDQ0VQVAoK
+IyBlbmFibGUgTWFzcXVlcmFkZSBhbmQgZm9yd2FyZGluZwppcHRhYmxlcyAtdCBuYXQgLUEgUE9T
+VFJPVVRJTkcgLXMgJExBTl9JUF9ORVQgLWoKTUFTUVVFUkFERQppcHRhYmxlcyAtQSBGT1JXQVJE
+IC1qIEFDQ0VQVCAtaSAkTEFOX05JQyAtcwokTEFOX0lQX05FVAppcHRhYmxlcyAtQSBGT1JXQVJE
+IC1tIHN0YXRlIC0tc3RhdGUKRVNUQUJMSVNIRUQsUkVMQVRFRCAtaiBBQ0NFUFQKCiMgTWFpbnRh
+aW5pbmcgcm91dGVyIGZyb20gTEFOCmlwdGFibGVzIC1BIElOUFVUIC1pICRMQU5fTklDIC1qIEFD
+Q0VQVAppcHRhYmxlcyAtQSBJTlBVVCAtbSBzdGF0ZSAtLXN0YXRlIEVTVEFCTElTSEVELFJFTEFU
+RUQKLWogQUNDRVBUCgojIE9wZW4gcG9ydHMgdG8gc2VydmVyIG9uIExBTgogaXB0YWJsZXMgLUEg
+Rk9SV0FSRCAtaiBBQ0NFUFQgLXAgdGNwIC0tZHBvcnQgODAKIGlwdGFibGVzIC10IG5hdCAtQSBQ
+UkVST1VUSU5HIC1pIGV0aDAgLXAgdGNwIC0tZHBvcnQgCiAgICA4MCAtaiBETkFUIC0tdG8gJFBT
+X0lQOjgwCiBpcHRhYmxlcyAtQSBGT1JXQVJEIC1qIEFDQ0VQVCAtcCB0Y3AgLS1kcG9ydCAyMQog
+aXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkgZXRoMCAtcCB0Y3AgLS1kcG9ydAoyMSAt
+aiBETkFUIC0tdG8gJFBTX0lQOjIxCgojIEVuYWJsZSBmb3J3YXJkaW5nCmVjaG8gMSA+IC9wcm9j
+L3N5cy9uZXQvaXB2NC9pcF9mb3J3YXJkCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkRvIFlvdSBZYWhvbyE/IArG9NPDtefTytXKusWj
+rMHsu+HRxbuizahbye3B2cbkvrPBxLXn07BdtcS2r7jQ98jBpqOsu7nT0M34wufJ48/xzbcr0cW7
+os2oytXS9Lv6tcjE48C0xMMKaHR0cDovL2NuLnJkLnlhaG9vLmNvbS9tYWlsX2NuL3RhZy8/aHR0
+cDovL2NuLm1lc3Nlbmdlci55YWhvby5jb20KCg==
