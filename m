@@ -1,14 +1,10 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: ipt_recent 0.2.3/0.2.7 --rttl doesn't work
-Date: Wed, 5 Feb 2003 04:20:59 +0100
+From: Blesson Paul <blessonpaul@softhome.net>
+Subject: Cable and ISDN connection
+Date: Wed, 05 Feb 2003 11:33:15 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030205042059.776b7cac.arnt@c2i.net>
-References: <F130IeK7IiGUpNfpjAn0000c4a5@hotmail.com>
-	<20030205025346.GC484@ns.snowman.net>
+Message-ID: <5.2.0.9.0.20030205111632.00a301d0@mail.SoftHome.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030205025346.GC484@ns.snowman.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +14,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, 4 Feb 2003 21:53:46 -0500, 
-Stephen Frost <sfrost@snowman.net> wrote in message 
-<20030205025346.GC484@ns.snowman.net>:
+Hi
+                 I am using NetFilter for connecting from the LAN to the 
+Internet. We have a linux server and using the NAT(SNAT) feature and that 
+linux server is the gateway. Presently we have cable connection. We need to 
+have a backup method if the cable connection fails. For that we subscribed 
+a ISDN connection.  Now these are some of our  requirements
 
-> * per j (perj8@hotmail.com) wrote:
-> > I'm using vanilla kernel 2.0.43 with patches from patch-o-matic CVS 
-> > (Jan24,2003), openmosix, super-freeS/WAN, ipt_recent 0.2.7 
-> > (ipt_recent-0.2.6.tar.gz).  And netfilter stuff all built as
-> > modules.
-> 
->   You're using 2.0.43?  iptables was introduced in 2.4... 
+1)   Is it possible to have both connection(Cable and ISDN) simultaneously 
+and Netfilter diverts the traffic from the LAN through both 
+ISDN            and Cable.
 
-...and, the bleeding edges: "finger @finger.kernel.org", 
-honed to size:  ;-)
+2)   If the above is not possible, is it possible to connect through ISDN 
+is something goes wrong with Cable connection
+        One problem here is that, for Cable connection, we have a constant 
+IP address and for ISDN we have a dynamic address
 
-The latest stable version of the Linux kernel:    2.4.20
-ditto prepatch for the stable Linux kernel tree:  2.4.21-pre4
-ditto beta version of the Linux kernel:           2.5.59
-ditto 2.2 version of the Linux kernel:            2.2.23
-ditto prepatch for the 2.2 Linux kernel tree:     2.2.24-rc2
-ditto 2.0 version of the Linux kernel:            2.0.39
-ditto prepatch for the 2.0 Linux kernel tree:     2.0.40-rc6
-ditto -ac patch to the stable Linux kernels:      2.4.21-pre4-ac2
-ditto -ac patch to the beta Linux kernels:        2.5.50-ac1 
-ditto -dj patch to the beta Linux kernels:        2.5.48-dj1
+                 Is any of the above possible with IP Tables
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+Blesson Paul,
+Software Engineer,
+Integrated Computing Environments Ltd,
+Cochin Special Economic Zone,
+Cochin - 682 030, India.
+Tel: +91-484-2413 083(O),  +91-484-2413 096(O)
+       +91-481-2380 893(R)
 
 
 
