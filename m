@@ -1,8 +1,7 @@
-From: Stindl Wolfgang EXT <Wolfgang.Stindl.extern@icn.siemens.de>
-Subject: Compiling ROUTE-patch
-Date: Tue, 14 Dec 2004 11:21:33 +0100
-Message-ID: <47D438A0510BD611B9470002A58EDAE70770A828@mchh2a6e.mchh.siemens.de>
-Mime-Version: 1.0
+From: "Sebastian" <netfilter@basti79.de>
+Subject: ARP Reply with wrong MAC
+Date: Tue, 14 Dec 2004 10:27:29 -0000
+Message-ID: <twig.1103020049.65314@basti79.de>
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,19 +13,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+A Linux box (kernel 2.4.24) with 2 ethernet interfaces connected to the same
+physical backbone. eth0 (public IP) and eth1 (10.0.0.1).
 
-I have some Problems compiling the ROUTE patch.
-Well compiling itselve works fine, but when I try to make modules_install I get the error:
+Sometime it ocures that an arp-request for 10.0.0.1 is answered with the
+mac-address of eth0. (proxy_arp on all interfaces is off)
 
-Unresolved Symbol ip_route_output
+Did anybody got a same problem and/or a solution?
 
-I tried to patch an debian-Kernel 2.4.26
-Has anybody else tried to add this patch?
+Greets
+  Sebastian.
 
-Regards
-Wolfgang
+
