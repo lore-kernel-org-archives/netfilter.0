@@ -1,11 +1,10 @@
-From: "Rasmus Aveskogh" <rasmus.aveskogh@utfors.se>
-Subject: Problems with arbitrary TOS-field settings.
-Date: Thu, 19 Dec 2002 18:15:27 +0100
+From: Chip Upsal <cupsal@cyberwolf.com>
+Subject: Update httpd.conf file:  Apache virtualhost not working behind fi
+	rewall.
+Date: Fri, 20 Dec 2002 12:35:23 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c2a782$3a8c8570$a10214ac@SE.INTRA>
+Message-ID: <3019863CF306D211BA4500A0CC30812DB4C241@exchange.cyberwolf.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C2A78A.9B295D60"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,124 +15,159 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+
+Update: 
+
+The format of the conf file has much to do with how the server responds.
+
+specifically the virtual host directives:
+for example:
+
+<VirtualHost 192.168.0.2>
+   ServerName site4.company.com
+   ServerAlias site4*
+   ServerAdmin admin@company.com
+   DocumentRoot D:/web_root/foo4
+   ErrorLog logs/site4.cyberwolf.com-error_log
+   CustomLog logs/site4.cyberwolf.com-access_log common
+</VirtualHost>
+
+192.168.0.2 is the internal address of the server; this will make all
+request to this server go to the first virtual root defined in the conf
+file.
+
+While if the directives look like:
+
+<VirtualHost *>
+   ServerName site4.company.com
+   ServerAlias site4*
+   ServerAdmin admin@company.com
+   DocumentRoot D:/web_root/foo4
+   ErrorLog logs/site4.cyberwolf.com-error_log
+   CustomLog logs/site4.cyberwolf.com-access_log common
+</VirtualHost>
+
+or:
+
+<VirtualHost site4.company.com>
+   ServerName site4.company.com
+   ServerAlias site4*
+   ServerAdmin admin@company.com
+   DocumentRoot D:/web_root/foo4
+   ErrorLog logs/site4.cyberwolf.com-error_log
+   CustomLog logs/site4.cyberwolf.com-access_log common
+</VirtualHost>
+
+Then all request to the server go the default DocumentRoot.
+
+Any ideas what the NATing in NETFILTER could be doing to the host header?
+
+I updated my iptables to version 1.2.6a with no help.
+
+
+Chip
+
+
+
+-----Original Message-----
+From: Chip Upsal 
+Sent: Thursday, December 19, 2002 6:39 PM
 To: netfilter@lists.netfilter.org
-Cc: erland.almstrom@utfors.se
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0005_01C2A78A.9B295D60
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Subject: Apache virtualhost not working behind firewall.
 
 
-Hi.
+I have a windows 2000 server running apache 2.0.43 with virtual hosts 
+behind an iptables firewall doing NAT.
+I am running iptables v1.2.5 on a redhat 7.3 server.
 
-I'm having some trouble setting the TOS-field in the IP header _to an =
-arbitrary value_
-using iptables.
-To manage to do this I first patched iptables (1.2.5) and my kernel =
-(2.4.18-3) with=20
-the patches for FTOS. I recompiled and reinstalled but ended up with:
+My nat and fowarding rules look like:
 
-# iptables -t mangle -A OUTPUT -j FTOS --set-ftos 128
-iptables: No chain/target/match by that name
+INET_IP="216.184.9.5"
+#HTTP_IP="216.184.9.6"
+PWWEB_IP="216.184.9.30"
+PWODBC_IP="216.184.9.29"
+INET_IFACE="eth2"
 
-"Ok? Well I might as well upgrade to latest iptables and latest =
-kernel-patches"
+LAN_IP="192.168.1.15"
+LAN_IP_RANGE="192.168.1.0/24"
+LAN_BCAST_ADRESS="192.168.1.255"
+LAN_IFACE="eth0"
 
-Though and done, iptables 1.2.7a installed and all the =
-"patch-o-matic"-patches
-installed. According to the documentation the TOS/FTOS-features was now =
-obsolete
-in favor of the DSCP option. So I tried again:
 
-# iptables -t mangle -A OUTPUT -j DSCP --set-dscp 128
-iptables: No chain/target/match by that name
+DMZ_PWWEB_IP="192.168.0.2"
+DMZ_PWSQL_IP="192.168.0.3"
+DMZ_PWODBC_IP="192.168.0.4"
+DMZ_IP="192.168.0.1"
+DMZ_IFACE="eth1"
 
-Well, it says somewhere that only values up to 0x4f was supported
-by DSCP, but a lower values doesn't affect the error.
 
-FTOS still seems to be part of the cose though, but same error occurs.
+$IPTABLES -A FORWARD -i $DMZ_IFACE -o $INET_IFACE -j ACCEPT
+$IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -m state \
+--state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $LAN_IFACE -o $DMZ_IFACE -j ACCEPT
+$IPTABLES -A FORWARD -i $DMZ_IFACE -o $LAN_IFACE -j ACCEPT
 
-What can I do to fix this? And even if DSCP works, how can I set the 8 =
-IP-header
-TOS-bits to a value between 0x00 and 0xff?
+#
+# PWWEB
+#
 
-Thanks in advance
-Rasmus Aveskogh - Utfors AB
+$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_PWWEB_IP \
+--dport 80 -j allowed
+$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_PWWEB_IP \
+-j icmp_packets
 
-------=_NextPart_000_0005_01C2A78A.9B295D60
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+#
+# PWODBC
+#
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.3315.2870" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Hi.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I'm having some trouble setting the =
-TOS-field in=20
-the IP header _to an arbitrary value_</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>using iptables.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>To manage to do this I first patched =
-iptables=20
-(1.2.5) and my kernel (2.4.18-3) with </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>the patches for FTOS. I recompiled and =
-reinstalled=20
-but ended up with:</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2># iptables -t mangle -A OUTPUT -j FTOS =
---set-ftos=20
-128</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>iptables: No chain/target/match by that =
+$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_PWODBC_IP \
+--dport 80 -j allowed
+$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -d 
+$DMZ_PWODBC_IP \
+-j icmp_packets
 
-name</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>"Ok? Well I might as well upgrade to =
-latest=20
-iptables and latest kernel-patches"</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Though and done, iptables 1.2.7a =
-installed and all=20
-the "patch-o-matic"-patches</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>installed. According to the =
-documentation the=20
-TOS/FTOS-features was now obsolete</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>in favor of the DSCP option. So I tried =
+#
+# PWWEB
+#
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $PWWEB_IP 
+--dport 80 \
+-j DNAT --to-destination $DMZ_PWWEB_IP
 
-again:</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2># iptables -t mangle -A OUTPUT =
--j&nbsp;DSCP=20
---set-dscp 128</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>iptables: No chain/target/match by that =
+$IPTABLES -t nat -A PREROUTING -p ICMP -i $INET_IFACE -d $PWWEB_IP \
+-j DNAT --to-destination $DMZ_PWWEB_IP
 
-name</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Well, it says somewhere that only values up to 0x4f was =
-supported</DIV>
-<DIV>by DSCP, but a lower values doesn't affect the error.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>FTOS still seems to be part of the cose though, but same error=20
-occurs.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>What can I do to fix this? And even if DSCP works, how can I set =
-the 8=20
-IP-header</DIV>
-<DIV>TOS-bits to a value between 0x00 and 0xff?</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thanks in advance</DIV>
-<DIV>Rasmus Aveskogh - Utfors AB</DIV></FONT></DIV></BODY></HTML>
+#
+# PWODBC
+#
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $PWODBC_IP 
+--dport 80 \
+-j DNAT --to-destination $DMZ_PWODBC_IP
 
-------=_NextPart_000_0005_01C2A78A.9B295D60--
+$IPTABLES -t nat -A PREROUTING -p ICMP -i $INET_IFACE -d $PWODBC_IP \
+-j DNAT --to-destination $DMZ_PWOBDC_IP
 
+
+The problem....
+When the server is connected directly to the internet all works well. 
+However, when it is behind the firewall the virtualhost are not working 
+(you can only access the default web site.
+
+Furthermore i am getting the following errors when starting iptables;
+
+[root@iptables init.d]# ./iptables restart
+Flushing all current rules and user defined chains:        [  OK  ]
+Clearing all current rules and user defined chains:        [  OK  ]
+Applying iptables firewall rules:                          [  OK  ]
+iptables v1.2.5: Unknown arg `--to-destination'
+Try `iptables -h' or 'iptables --help' for more information.
+                                                            [  OK  ]
+
+
+Any ideas on a solution would be most appriciated.
+
+
+Chip
 
