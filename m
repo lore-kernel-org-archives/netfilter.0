@@ -1,11 +1,13 @@
-From: "Rodney Green" <rgreen@cinchhost.com>
-Subject: POP3/SMTP redirect (?)
-Date: Sat, 2 Aug 2003 00:08:27 -0400
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: connection and bandwidth monitoring program
+Date: Sat, 2 Aug 2003 15:02:47 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001501c358ab$ba00eaa0$2802a8c0@pivot1>
+Message-ID: <FDEMKKNJDLAJDPNDPCDDKEDGNFAA.georgev@citadelcomputer.com.au>
+References: <5.2.0.9.0.20030801215222.02d60e30@198.52.32.246>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <5.2.0.9.0.20030801215222.02d60e30@198.52.32.246>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +20,36 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Greetings!
+I use MRTG though it's not realtime but at least I can map rules to graphs.
+I record everything to MySQL incase of reboots etc which lose the byte
+counts on rules so it gets rid of that problem..
 
-I have a machine running squid and a filter named Dan's Guardian on my
-network. I want to setup this machine to be the gateway that network users
-use to connect to all Internet services. HTTP and HTTPS work fine through
-the filter and squid. How can I use netfilter to pass traffic through this
-machine for POP3 and SMTP? Someone mentioned using some kind of redirect.
-Anyone have any idea on how to do this? Care to share that with me? :-)
+realtime would have to be ntop or packet sniffing use ethereal or something.
 
-Thanks,
-Rod
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Tomasz Korycki
+Sent: Saturday, August 02, 2003 11:53 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: connection and bandwidth monitoring program
 
-********************************************
-  CinchHost.com - Web Hosting Made Easier
-     ASP, PHP, CGI, WEBMAIL, And More
- Packages as Low as $9.99 - No Set Up fees
-        http://www.cinchhost.com/
-********************************************
+
+At 05:45 2003-08-01, you wrote:
+>Hello,
+>I looking for a connection and bandwidth monitoring program. I found one at
+>http://www.student.lu.se/~nbi98oli/connmon.html but there are no new
+>developements. It isn't possible for each nat computer to see the total
+>in/out curent traffic.
+>I would like to find a client-server program, with a win32 or java or
+applet
+>client.
+>does someone know an alternative?
+>sincerly yours
+>Olivier
+
+Maybe try ntop (ntop.org)? It does a lot of other things, but that too.
+
+
 
 
 
