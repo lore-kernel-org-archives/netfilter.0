@@ -1,11 +1,13 @@
-From: Paulo Andre <pandre@darkstar.nom.za>
-Subject: kazaa
-Date: 19 Dec 2002 10:08:07 +0200
+From: "Dharmendra.T" <dharmu@nsecure.net>
+Subject: Re: QOS
+Date: 19 Dec 2002 13:35:06 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040285287.11114.143.camel@bigblue>
+Message-ID: <1040285143.5920.0.camel@india>
+References: <1040280504.11113.140.camel@bigblue>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1040280504.11113.140.camel@bigblue>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,15 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: Paulo Andre <pandre@darkstar.nom.za>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-I know that this is an old topic but I have done some reading and am
-still stuck.
-I have opened tcp and udp for port 1214 outgoing, but Kazaa is still not
-connecting am I missing something..???
+HTB has very good options than CBQ. But bit confusing...
 
-Paulo
+Regards
+Dharmendra.T
+Linux Security Expert
 
+On Thu, 2002-12-19 at 12:18, Paulo Andre wrote:
+> Which is the better package to use for QOS??
+> HTB or CBQ..???
+> 
+> Paulo
+> 
+> 
+> 
+> 
 
 
 
