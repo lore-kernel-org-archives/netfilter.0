@@ -1,15 +1,16 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: Gavin Hamill <gdh@acentral.co.uk>
 Subject: Re: physdev match
-Date: Wed, 22 Sep 2004 14:01:22 +0300
+Date: Wed, 22 Sep 2004 12:17:11 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1403218a0409220401158fd1ed@mail.gmail.com>
+Message-ID: <200409221217.11787.gdh@acentral.co.uk>
 References: <1403218a04092203537a1bbd0c@mail.gmail.com>
 	<200409221158.19795.gdh@acentral.co.uk>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+	<1403218a0409220401158fd1ed@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409221158.19795.gdh@acentral.co.uk>
+In-Reply-To: <1403218a0409220401158fd1ed@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,32 +21,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Gavin Hamill <gdh@acentral.co.uk>, netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-ummm
-I was looking at the possibilities.
-Also, what if I don't want to use ebtables !!
+On Wednesday 22 September 2004 12:01, Mohamed Eldesoky wrote:
+> ummm
+> I was looking at the possibilities.
+> Also, what if I don't want to use ebtables !!
 
+'ebtables' is just a round-all term for what became of the 'bridge 
+firewalling' code. You don't need to use the 'ebtables' binary at all if all 
+you want to do is apply firewall rules on a bridged system.
 
-On Wed, 22 Sep 2004 11:58:19 +0100, Gavin Hamill <gdh@acentral.co.uk> wrote:
-> On Wednesday 22 September 2004 11:53, Mohamed Eldesoky wrote:
-> > Anyone know a patch for adding the physdev match to 2.4.21 kernels ??
-> > RHEL3U3.
-> 
-> I have no idea what changes RHEL3 brings to the table, but in the 2.4 series
-> no physdev match was required or necessary, because the 'bridge-nf' and later
-> 'ebtables' patches for 2.4.x. let "-i eth0" and friends work just fine on
-> bridged devices, as if they were not bridged.
-> 
-> Cheers,
-> Gavin.
-> 
-> 
+However, it remains to be seen whether the ebtables code would even patch 
+successfully on an RHEL kernel source, plus if using a 'Real' Red Hat kernel 
+is important to you, then you'll obviously not want to recompile at all.
 
+Unless RHEL already contains the support (look for 'Bridge firewalling 
+registered' in the 'dmesg' output from boot time) then you're a bit stuck.
 
+Of course, all this talk of ebtables is now off topic =)
 
--- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+Cheers,
+Gavin.
 
