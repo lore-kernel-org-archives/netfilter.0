@@ -1,12 +1,14 @@
-From: "Adam Kennedy" <akennedy@niesc.k12.in.us>
-Subject: Re: Having NAT problems
-Date: Thu, 1 Apr 2004 15:32:02 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: I thought ssh is port #22 ?!!
+Date: Thu, 1 Apr 2004 21:39:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040401203013.M36511@niesc.k12.in.us>
-References: <20040401192505.3100.69461.Mailman@vishnu.netfilter.org> <200404012039.48071.Antony@Soft-Solutions.co.uk> <20040401200109.M82978@niesc.k12.in.us> <200404012119.45564.Antony@Soft-Solutions.co.uk>
+Message-ID: <200404012139.16863.Antony@Soft-Solutions.co.uk>
+References: <E1B98i2-000R7B-7m@alf1.lmb.internal>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404012119.45564.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <E1B98i2-000R7B-7m@alf1.lmb.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +19,60 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, 1 Apr 2004 21:19:45 +0100, Antony Stone wrote
-> We don't mind if you obscure the IP addresses (so long as we can 
-> still tell which is which...)
-> 
-> However, from what you have posted, I think the problem is that you 
-> have no FORWARD rule to allow the DNATed packets through your firewall?
-> 
-> Oh, dear me, no - that's not it - you have a default ACCEPT policy 
-> on your FORWARD chain (I'm not surprised you don't want to post your 
-> public IP address to the list...)
-> 
-> Okay, how's this then  - please post all the rules which you think 
-> are needed for this pcAnywhere setup to work (with suitable partial 
-> obscuring of IPs if you wish).   Then we'll tell you if we can see 
-> something missing?
-> 
-> Regards,
-> 
-> Antony.
+On Thursday 01 April 2004 9:22 pm, T. Horsnell (tsh) wrote:
 
-That's actually what I wound up doing in the last post. That's all the rules
-on the box save for a few NAT entries which I just commented out. Commenting
-them out and re-running the file didn't do anything. I'm at my wits end. 
+> Hmmm. I thought it went like this:
+>
+> The client application requests a random high port
+> on the client machine (a socket). Then, using this
+> socket it makes a request to the required well-known
+> port (e.g. 22 for ssh) on the server machine.
+> Since no other application on the client box will ever
 
---
-Northern Indiana ESC
-Adam Kennedy - akennedy@niesc.k12.in.us
-Linux Specialist / Network Administrator
-Phone: (574) 254-0111 x113
-Toll Free: 800-326-5642
-Fax: (574) 254-0148
+"Ever" is not quite right - "simultaneously" or "concurrently" would be 
+better.   Another application might be given the same port number sometime 
+later, once this connection is over and done with.
+
+> be given the same high-numbered port as any other
+> application on that box, the client-ipaddr/highPort +
+> server-ipaddr/wellKnownPort combination defines a unique
+> 'circuit' over which further communication takes place.
+
+Yes, and it is this four-part combination which makes up a connection tracking 
+table entry in netfilter.
+
+> The client doesnt have to do special things to tell the
+> server what its connecting port-number is.
+
+The source port is included in the TCP packet header (as is the destination 
+port).   That's how the server knows which port to send the response back to 
+on the client.
+
+> Until along comes ftp, which has a command channel and
+> a data channel. So having made a connection in the
+> above way for the command channel, the client and server
+> have to make further negotiations for a data channel.
+
+Yes.   Whoever thought that was a good way to do things wasn't thinking about 
+security.
+
+> And firewalls have to be aware of this.
+
+Indeed :(
+
+Regards,
+
+Antony.
+
+-- 
+I don't know, maybe if we all waited then cosmic rays would write all our 
+software for us. Of course it might take a while.
+
+ - Ron Minnich, Los Alamos National Laboratory
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
