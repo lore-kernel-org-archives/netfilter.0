@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: logging with iptables
-Date: Sat, 13 Dec 2003 09:58:23 +0000
+From: Rodrigo Severo <rodrigo.lists@fabricadeideias.com>
+Subject: Re: Error Patho-o-matic modules
+Date: Sat, 13 Dec 2003 08:20:01 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312130958.24160.Antony@Soft-Solutions.co.uk>
-References: <37701240971DD31193970000F6CCB9F704CB7EFB@duke.datcon.co.uk>
+Message-ID: <3FDAE7D1.4000807@fabricadeideias.com>
+References: <3FDAD52D.5090206@bonbon.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <37701240971DD31193970000F6CCB9F704CB7EFB@duke.datcon.co.uk>
+In-Reply-To: <3FDAD52D.5090206@bonbon.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Joel <zealous@bonbon.net>
+Cc: netfilter@lists.netfilter.org
 
-On Saturday 13 December 2003 9:45 am, Piers Finlayson wrote:
+Joel wrote:
+> Dear all,
+> 
+> I want to install time modules from path-o-matic. I did all the things. 
+> Now time experimental modules is patched in the kernel. I have selected 
+> it as module (M). but when I am giving the command # make modules then 
+> it is giving me error.
+> below is the error:---
+> has any one solved this type of problem.
+> 
+> any help will be greatly appreciated.
+> Thanks
+> 
+> root@joel linux-2.4]# make modules
 
-> Hi,
->
-> Is it possible to log a packet's entire contents with iptables, rather than
-> just useful stuff from the packet header?
+I usually do a "make dep clean bzImage modules..." after patching my 
+kernel with patch-o-matic. Never had any problems like these.
 
-No.   Netfilter has a single fixed logging format which shows onlt the packet 
-header information, nothing from the body itself.
 
-> I can run tcpdump/tethereal etc to log the packets I'm interested in, but
-> figure it would be much neater if I can just use iptables to do it.
-
-You might want to have a look at http://gnumonks.org/projects/ulogd to see if 
-it will help with what you want, but I suspect tcpdump etc will remain your 
-best bet.
-
-Antony.
-
--- 
-"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
-Blaster].   However, these products are no longer supported.   Users of these
-products are strongly encouraged to upgrade to later versions."
-
-(which *are* affected by MS Blaster...)
-
-http://www.microsoft.com/security/security_bulletins/ms03-026.asp
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Rodrigo Severo
 
