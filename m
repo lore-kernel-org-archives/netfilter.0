@@ -1,9 +1,8 @@
-From: "Venkatesh. K" <venkatesh@cbayscribe.com>
-Subject: Re: help required
-Date: Mon, 10 Nov 2003 09:08:28 +0530
+From: Simon Kitching <simon@ecnetwork.co.nz>
+Subject: connection dropping for large data flows
+Date: Mon, 10 Nov 2003 17:08:01 +1300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <06f101c3a73c$1ae83dd0$2800a8c0@karu>
-References: <20031109161122.8833.qmail@web10009.mail.yahoo.com>
+Message-ID: <1068437281.1517.23.camel@pcjohns.ecnnz.ecnetwork.co.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,130 +18,77 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Turning off connection tracking is not going to help you to conserve
-CPU cycles. Savings in memory will be very less.
+Hi,
 
-In fact, enabling the connection tracking helps you in cutting down
-number of rules a packet has to traverse which in turn reduce the
-number of CPU cycles.
+I'm trying to set up iptables on a RedHat 8.0 server. I've got a setup
+I'm happy with, except for one major problem; I hope someone can help.
 
-Suppose you have 100 rules and a packet matching 100th rule has to
-traverse 99 rules before there is a match. With connection tracking enabled
-a packet belonging to an already established connection need to traverse
-only one rule assuming the first rule in your chain allows all packets
-belonging
-to an established connection.
+When I SSH to the machine, I can run commands, vi, etc. However when I
+run any command which generates more than a few lines of output, the ssh
+session hangs (from the perspective of the ssh client).
 
-Each connection tracking requires only 292 bytes of memory. Considering
-the cost of RAM today, it would be peanuts.
+Examples of commands that cause the "hang":
+ * ls -l
+ * more some-reasonable-size-file
+ * ps -efl
 
-Thanks,
+I presume I'm missing something simple, like a rule for "fragmented
+packets" or something similar. The iptables rules I am using are below.
 
-Venkatesh K
------ Original Message ----- 
-From: "venky b" <bvr96@yahoo.com>
-To: "SBlaze" <dagent.geo@yahoo.com>; <netfilter@lists.netfilter.org>
-Sent: Sunday, November 09, 2003 9:41 PM
-Subject: Re: help required
+Help would be much appreciated!
 
+One other minor problem: I can't get "ping" from the server back to
+itself to work either. I can't tell whether the machine can be pinged
+from any other host, because there are other firewalls between my
+desktop and the target server and I don't currently have access to
+another host on the same network as the target server. Is this perhaps
+because the ping "acknowledgement" packet isn't being allowed back in?
 
-> Hi,
->
-> Thanks for responding.
->
-> My requirement is as follows
->
-> I have a site with two IP subnets A and B.
->
-> A is connected to eth0 of IPtables firewall and B is
-> connected to eth1 interface.
->
-> For accessing machines in other locations A must cross
-> the firewall and go through the router in subnet B,
-> i.e. WAN connectivity is through subnet B.
->
-> I want to implement access control for traffic between
-> A and B with stateful rules as B is not trusted by A.
->
-> Rest of the traffic which is not from/to A
-> specifically, i.e. coming from or going to other
-> location should be allowed with ACCEPT target.
->
-> There are so many application servers in other
-> locations which will be accesed by subnet A users,
-> around 400.
->
-> So I do not want IPtables to keep connection tracking
-> entries for this traffic as it hogs the memory and
-> cpu.
->
-> But at the same time it should keep track of
-> communication betweeb A <-> B.
->
-> Is there a way to turn off/on connection tracking for
-> specific rules or chains ?
->
-> Hope this make everybody clear.
->
-> Thanks,
-> Venkatesh
->
->
->
->
->
->
-> --- SBlaze <dagent.geo@yahoo.com> wrote:
-> > You need to be way more specific on what it is you
-> > want to know. I don't think
-> > anyone can really help you since your didn't provide
-> > any information on what it
-> > is you really want to provided stateful inspection
-> > on.
-> >
-> > SBlaze
-> >
-> > --- venky b <bvr96@yahoo.com> wrote:
-> > > Hi All,
-> > >
-> > > Need help on a specific requirement.
-> > >
-> > > I want to enable the stateful inspection only for
-> > few
-> > > chains.
-> > >
-> > > I do not want iptables to maintain state inof for
-> > the
-> > > rest of the chains as it is not needed.
-> > >
-> > > Any thoughts on this ?
-> > >
-> > > Cheers
-> > > Venkatesh
-> > >
-> > >
-> > > __________________________________
-> > > Do you Yahoo!?
-> > > Protect your identity with Yahoo! Mail
-> > AddressGuard
-> > > http://antispam.yahoo.com/whatsnewfree
-> > >
-> >
-> >
-> > =====
-> > In the absence of order there will be chaos.
-> >
-> > __________________________________
-> > Do you Yahoo!?
-> > Protect your identity with Yahoo! Mail AddressGuard
-> > http://antispam.yahoo.com/whatsnewfree
->
->
-> __________________________________
-> Do you Yahoo!?
-> Protect your identity with Yahoo! Mail AddressGuard
-> http://antispam.yahoo.com/whatsnewfree
->
->
+Thanks in advance,
+
+Simon
+
+------- iptables.conf
+
+# don't forward any packets; this isn't a router!
+iptables -P FORWARD DROP
+iptables -F FORWARD
+                                                                                                                 # allow all packets outbound
+iptables -P OUTPUT ACCEPT
+iptables -F OUTPUT
+
+# deny inbound packets unless explicitly allowed
+# by other rules
+iptables -P INPUT DROP
+iptables -F INPUT
+                                                                                                                 # generic sanity rule that checks packet types;
+#   connection request (syn) packets are ok
+#   packets related to existing connections are ok
+# anything else is probably bad.
+                                                                                                                 iptables -N okay
+iptables -A okay -p TCP --syn -j ACCEPT
+iptables -A okay -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A okay -p TCP -j DROP
+                                                                                                                 # allow ping, for convenience
+iptables -A INPUT -p ICMP --icmp-type ping -j ACCEPT
+
+# allow connections from the local host back to
+# any port on the local host.
+iptables -A INPUT -p ALL -s 127.0.0.1 -j okay
+                                                                                                                 # Bloody IBM's MQSeries endmqm tool appears to need to connect
+# from the external ip address of this machine back to itself.
+#
+# If this host's ip address changes, then the line below needs
+# to be changed appropriately.
+iptables -A INPUT -p ALL -s xxx.xxx.xxx.xxx -j okay
+                                                                                                                 # allow incoming SSH from any host
+iptables -A INPUT -p TCP --destination-port 22 -j okay
+
+# allow incoming NTP (Network Time Protocol) UDP packets
+iptables -A INPUT -p UDP --destination-port 123 -j okay
+
+# allow incoming MQ from any host
+iptables -A INPUT -p TCP --destination-port 1414 -j okay
+                                                                                                                 
 
 
