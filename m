@@ -1,10 +1,12 @@
-From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: iptables -L TABLE -n -v -d x.x.x.x --dport x -i ethx
-Date: Mon, 1 Jul 2002 13:49:04 +1000
+From: "ganesh kumar godavari" <gkgodava@rediffmail.com>
+Subject: iptables detecting voip packet
+Date: 1 Jul 2002 04:51:12 -0000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA1BA@JUPITER>
+Message-ID: <20020701045112.14139.qmail@webmail7.rediffmail.com>
+Reply-To: "ganesh kumar godavari" <gkgodava@rediffmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -14,24 +16,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+	format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
 
 Hi all,
+  i have a question regarding identifying a voip connection. 
+following is the information i got from 
+http://support.microsoft.com/default.aspx?scid=kb;EN-US;q158623
 
-First post to the list and forgive me if someone's asked this before (I
-tried the archives)...
+NetMeeting uses the following Internet Protocol (IP) ports:
 
-Can the above command actually work or is there a way to print just 1 rule
-that matches as I tried something similar to what's shown above and it
-doesn't like it.. go figure.
+    Port      Purpose
+    -------------------------------------
+    389       Internet Locator Server (TCP)
+    522       User Location Server (TCP)
+    1503      T.120 (TCP)
+    1720      H.323 call setup (TCP)
+    1731      Audio call control (TCP)
+(*)Dynamic   H.323 call control (TCP)
+(*)Dynamic   H.323 streaming [RTP over UDP]
 
-Am I doing it wrong or does it not support it in iptables? At the moment I
-have to keep greping the rule I need to check.. is there a better way?
+To establish outbound NetMeeting connections through a firewall, 
+the firewall must be configured to do the following: Pass through 
+primary TCP connections on ports 522, 389, 1503, 1720 and 1731.
 
-thanks,
-George Vieira
+  i want to give maximum throughput to voip packets, the ports are 
+dynamic[indicated by * above]. is there any way i can check if the 
+packet is a voip ?
 
+Thanks a mil,
+
+---
+ganesh
+_________________________________________________________
+There is always a better job for you at Monsterindia.com.
+Go now http://monsterindia.com/rediffin/
 
 
