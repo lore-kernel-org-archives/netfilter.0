@@ -1,13 +1,14 @@
-From: "PiSiC..." <pisic@service.agress.ro>
+From: Julian Gomez <kluivert@tm.net.my>
 Subject: Re: DHCP related problem
-Date: Tue, 17 Jun 2003 16:43:07 +0300
+Date: Tue, 17 Jun 2003 20:46:11 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c334d6$62853a90$c80da8c0@pisic>
-References: <200306171130.h5HBUUWF027705@nycsmtp3out.rdc-nyc.rr.com>
-Reply-To: "PiSiC..." <pisic@service.agress.ro>
+Message-ID: <20030617124611.GA1360@floyd>
+References: <001001c334aa$bcef4d30$c80da8c0@pisic> <200306171130.h5HBUUWF027705@nycsmtp3out.rdc-nyc.rr.com>
+Reply-To: kluivert@tm.net.my
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200306171130.h5HBUUWF027705@nycsmtp3out.rdc-nyc.rr.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,63 +19,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mattgrogan@bigfoot.com, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
- I see that i wasn't very explicit...
-so... what i have: i have 12 stations in my LAN. I have set up DHCP with
-FixedAdress for those.
-I work in a computers service and i have a variable number of machines that
-come and go .
-I set up a pool for those fixed address computers and another one for
-unknown clients which is more restrictive.
-To get to my problem ... I want to drop anyone who sets his IP address and
-GW etc. staticaly.
-I want to let them access only if they request their address by DHCP.
-Any hints ?
+On Tue, Jun 17, 2003 at 07:24:16AM -0400, Matt Grogan spoke thusly:
+>If you want to go further than that, like stop someone from getting their
+>information from DHCP and then statically defining it and keeping that
+>address, it gets a little more involved. Maybe reducing the lease time and
+>scripting to check that all the stations in the DHCP range are also in the
+>list of DHCP clients on the server would help.
 
-Thanks in advance ,
+A slightly different angle, which just came up on the redhat-users ML a
+couple of days ago; which might work is :
 
-                Danila Octavian
+	-> All DHCP leases get an account created on your internal DNS
+	   resolver.
+	-> Your firewall refreshes your ruleset by only allowing a range
+	   of DHCP IP ranges, which have a corresponding DNS forward &&
+	   reverse entry.
 
+This is similar to Win2K functionality whereby all DHCP addresses get an
+automatic DNS entry created. Someone mentioned that ISC's DHCP package
+supports such functionality, you might want to take a look.
 
------ Original Message -----
-From: "Matt Grogan" <mattgrogan@nyc.rr.com>
-To: "'PiSiC...'" <pisic@service.agress.ro>; <netfilter@lists.netfilter.org>
-Sent: Tuesday, June 17, 2003 2:24 PM
-Subject: RE: DHCP related problem
+There will be some scripting involved, as Matt has already allured to.
 
-
-> You could set up DHCP with a smaller set of addresses, for example
-> x.x.x.100- x.x.x.110 if you only have 10 workstations. Then drop
-everything
-> accessing the Internet except for those source addresses.
->
-> If you want to go further than that, like stop someone from getting their
-> information from DHCP and then statically defining it and keeping that
-> address, it gets a little more involved. Maybe reducing the lease time and
-> scripting to check that all the stations in the DHCP range are also in the
-> list of DHCP clients on the server would help.
->
-> Matt Grogan
->
-> ________________________________________
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of PiSiC...
-> Sent: Tuesday, June 17, 2003 4:31 AM
-> To: netfilter@lists.netfilter.org
->
-> Hi all,
->
-> I want to ask you something... You know a possibility to drop outgoing
-> traffic of clients who define their address staticaly instead of using my
-> DHCP server ?
-> I also want to allow outgoing access to those who have their IP address
-> given by my DHCP server.
->
-> Thank you in advance,
-> Danila Octavian
->
->
-
-
+(snip rest)
 
