@@ -1,16 +1,10 @@
-From: test@seaconindia.com
-Subject: Re: DNAT Problem
-Date: Thu, 22 Apr 2004 18:36:09 +0530 (IST)
+From: Fisher Alex <Alex.Fisher@uk.thalesgroup.com>
+Subject: Re: Is this possible?
+Date: Thu, 22 Apr 2004 14:08:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1645.80.0.0.23.1082639169.squirrel@80.0.0.175>
-References: <1611.80.0.0.23.1082351242.squirrel@80.0.0.175>
-    <200404221207.12965.Antony@Soft-Solutions.co.uk>
-    <1589.80.0.0.23.1082637754.squirrel@80.0.0.175>
-    <200404221347.13412.Antony@Soft-Solutions.co.uk>
+Message-ID: <4087C3E0.8050509@uk.thalesgroup.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404221347.13412.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,35 +15,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi Anthony
-
-> On Thursday 22 April 2004 1:42 pm, test@seaconindia.com wrote:
->
->> Hi Antony
+Antony Stone wrote:
+> On Thursday 22 April 2004 1:36 pm, Fisher Alex wrote:
+> 
+> 
+>>>However, if someone is adamant that you need to set up network
 >>
->> Thanks for your reply, but my problem is as follows
+>>connectivity
 >>
->> I have email server running behind my firewall. Now all request coming
->> from internet are logged as if coming from my firewall. I want the
->> request
->> to be logged with source ip and not with firewall ip.
->
-> I know that is your problem.
->
-> I believe the change to your MASQUERADE / SNAT rule which I posted is a
-> solution to that problem.
->
-> If it is not a solution, then post your current ruleset so that we can
-> think
-> about it further.
->
+>>
+>>>between machines with such an unfriendly combination of IP addresses, I
+>>>suggest you simply set up multiple host-specific routes on the netflter
+>>>machine, telling it where to find each different 192.168.0.* destination
+>>>address, and don't have a standard 192.168.0.0/24 route on that system.
+>>
+>>Unfortunately, this is exactly what I can't do :(  This is because there
+>>are two of each 192.168.0.* IP address.  The original destination IP
+>>address has to taken into account when determining whether packets route
+>>through eth1 or eth2.
+> 
+> 
+> Have you considered using two netfilter boxes, one DNATting from 
+> 172.26.158.1-30 to 192.168.0.1-30 (network A), and the other DNATting from
 
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 25 -j DNAT --to
-192.168.0.6:25
+> 172.26.158.31-60 to 192.168.0.1-30 (network B)?
+> 
+> Regards,
+> 
+> Antony
+> 
 
-Regards
+Its just crossing my mind now :)
 
-Joel
+I've got 'use netfilter MARK value as routing key' switched on in the 
+kernel, so I think I'll give it a go before quitting and finding a 2nd box.
+
+Al
+This email and any attachments are confidential to the intended recipient
+and may also be privileged. If you are not the intended recipient please
+delete it from your system and notify Thales Underwater Systems on +44 1963
+370 551. You should not copy it or use it for any purpose nor disclose or
+distribute its contents to any other person.
 
