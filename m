@@ -1,16 +1,11 @@
-From: George Ross <gdmr@inf.ed.ac.uk>
-Subject: Re: vpn
-Date: Tue, 14 Sep 2004 14:55:17 +0100
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: vpn
+Date: Tue, 14 Sep 2004 10:46:14 -0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409141355.i8EDtHHu005079@eden.inf.ed.ac.uk>
-References: <012a01c49a61$340e8ad0$49caa8c0@caris.priv>
+Message-ID: <012a01c49a61$340e8ad0$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1923235162P";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: Your message of "Tue, 14 Sep 2004 10:46:14 -0300."
-	<012a01c49a61$340e8ad0$49caa8c0@caris.priv> 
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,36 +15,36 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Peter Marshall <peter.marshall@caris.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
---==_Exmh_1923235162P
-Content-Type: text/plain; charset=us-ascii
+I need to set up a vpn.  I am trying to figure out which would be best.  I
+need to connect my office with a sister office.  The employess are using
+windows machines.  They want to be able to get and put files from a windos
+file server. Windows networking would be a bonus.  Both offices have Linux
+firewalls.    Would ssh over a PPP tunnel work for this ?  Would pptp or
+cIPe be a better solution ?
 
-> I need to set up a vpn.  I am trying to figure out which would be best.  I
-> need to connect my office with a sister office.  The employess are using
-> windows machines. [...]
+I have my network setup below ... I was also wondering if it would be better
+to put the vpn server either behind the internal firewall, or in the dmz, or
+make it part of the internal firewall
 
-This is rather off-topic, but <http://openvpn.sourceforge.net/index.html>...
--- 
-Dr George D M Ross, School of Informatics, University of Edinburgh
-    Kings Buildings, Mayfield Road, Edinburgh, Scotland, EH9 3JZ
-Mail: gdmr@inf.ed.ac.uk   Voice: +44 131 650 5147   Fax: +44 131 667 7209
- PGP: 1024D/AD758CC5  B91E D430 1E0D 5883 EF6A  426C B676 5C2B AD75 8CC5
+my network in a nutshell.
+I have an internal network with an internal firewall.  I have an external
+network with an external firewall, and a dmz, between the internal and the
+external firewall.  All numbers in the dmz are internet routable (They have
+their own /26 network).  The external firewall has a 29 subnet on it's
+external interface.
+
+thanks for the help.
+
+Peter
 
 
 
---==_Exmh_1923235162P
-Content-Type: application/pgp-signature
+Peter Marshall, BCS
+Network Administrator, CARIS
+115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
+Phone:  (506) 458-8533 (Reception)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Exmh version 2.6.3 2003/04/04
-
-iD8DBQFBRvhFtnZcK611jMURAlmCAJ0UDC5pkWy7QuFhhOpaurq4JVn//wCfUNWB
-Ef6JEBZzO2eaBHeCqyU7+eI=
-=s/D5
------END PGP SIGNATURE-----
-
---==_Exmh_1923235162P--
 
