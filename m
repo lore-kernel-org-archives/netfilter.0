@@ -1,10 +1,11 @@
-From: "Farmer, Joseph - DFI" <Joseph.Farmer@dfi.state.wi.us>
-Subject: Fedora and Recent Module
-Date: Thu, 16 Oct 2003 10:08:03 -0500
+From: Patrick Mauritz  <oxygene@studentenbude.ath.cx>
+Subject: pptp patch
+Date: Wed, 15 Oct 2003 13:29:34 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <35A63C29D445834BA42FE172EC30EB3C189ED8@dfiemlp1.dfi.state.wi.us>
+Message-ID: <20031015112934.GA7317@t-stueck>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,22 +17,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-     The three beta releases of Fedora core (distribution formerly known as
-Redhat) have 
-had a problem with the recent module.  They ship with 1.2.8 but attempting
-to load the 
-recent module results in an error message because it cannot load
-libipt_recent.so.  
-Is there a way to patch the iptables that ships with Fedora so recent works?
-Could 
-I just drop this file from Mandrake's 1.2.8 in the appropriate directory?
-Will the 
-"patch-o-matic" system do this and, if so, is there a FAQ on how to do this?
-     Sorry for the noise.  I've trolled the list archives and didn't see
-this mentioned.
-Bug has been filed against Fedora.
+hello,
 
-Thanks. 
+I have a problem with the pptp patch from latest p-o-m, trying to
+forward external pptp clients to a firewalled pptp server (win2k server).
+
+clients <-> router <-> win2k server
+
+
+iptables setup on router:
+
+ip_{nat,conntrack}_{proto_gre,pptp} are loaded,
+1723 is DNATed from external to the server
+MASQUERADE is any to any
+
+when trying to connect to the server, the connection is dropped after 115 to 119 seconds.
+
+the connection lasts longer when I DNAT GRE protocol manually (and withou the pptp helpers), though that obviously only works for one user at a time.
+
+
+I have no idea what further information I could provide, but I'll provide everything asked for. please Cc: as I'm not on the list.
+
+TIA,
+patrick mauritz
 
