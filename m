@@ -1,9 +1,10 @@
-From: "SB CH" <chulmin2@hotmail.com>
-Subject: about bridge firewall
-Date: Mon, 14 Oct 2002 01:16:16 +0000
+From: =?ISO-8859-1?Q?Fl=E1vio?= Brito <flavio@gral.com.br>
+Subject: Newbie Question -forcing to pass in squid
+Date: 14 Oct 2002 00:03:08 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F189nwO1VwJhnD0Ez860000b8a7@hotmail.com>
+Message-ID: <1034560988.10075.15.camel@pegasus.gral.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,17 +15,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-CkhlbGxvLCBhbGwuCgpBcyB5b3Uga25vdywgSSBoZWFyZCB0aGF0IGJyaWRnZSBpcyBtb3JlIHNw
-ZWVkeSB0aGFuIE5BVCBtZXRob2QsIHJpZ2h0PwpzbyBJIHdvdWxkIGxpa2UgdG8gc2V0dXAgYnJp
-ZGVnIGZpcmV3YWxsIHVzaW5nIGlwdGFibGVzLgp0aGVuLCBEbyB5b3Uga25vdyB0aGF0IGFueSBn
-b29kIHJlZmVyZW5jZSBvciBkb2N1bWVudHMgYWJvdXQgYnJpZGdlIApmaXJld2FsbCB1c2luZyBp
-cHRhYmxlcz8oQXMgSSBrbm93LCB0aGUgYnJpZGdlIGZpcmV3YWxsIGlzIGF2YWlsYWJlIG9ubHkg
-CmlwY2hhaW5zLikKCkFsd2F5cyBzbyB0aGFua3MgaW4gYWR2YW5jZS4gOykKCgoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CsD8ILy8sOggvu618Lyts6oguPC15yBQQ7+hvK0gs7sgUEPDs7ezILvnv+vH0iC89iDA1rTCIL/C
-tvPAzrvzwMcgx8+15SwgTVNOIArApcfPteW4piDFrLivx8+8vL/kLiBodHRwOi8vbXNuLndlYmhh
-cmQuY28ua3IKCgo=
+
+Dear Friends
+
+I have two machines, and I trying to force all port 80 traffic to pass
+in SQUID 3128. But when people unset proxy in browser, they bypass SQUID
+to the Internet . I cannot put transparent proxy, because SQUID is
+authenticating.
+
+Suggestions?
+
+Thanks=20
+
+Fl=E1vio =20
+----------------------------------------------------------------------
+
+FW
+|-------------------------------|
+|	eth0 - 200.1.2.3	|----------------------> [INTERNET]
+|	eth1 - 192.168.1.1	|
+|-------------------------------|
+		|
+		|
+		SQUID
+		|
+|-------------------------------|
+|	eth0 - 192.168.1.33	|
+|-------------------------------|
+		|
+		|
+	INTERNAL_LAN
+		|
+|-------------------------------|
+|	192.168.1.0/24		|
+|-------------------------------|
+
+
+My Example
+
+
+iptables -F
+iptables -A INPUT -i lo -p all -j ACCEPT                    #   - Allow
+self access by loopback interface
+iptables -A OUTPUT -o lo -p all -j ACCEPT
+iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+#- Accept established connections
+iptables -A FORWARD -o eth0 -j ACCEPT
+iptables -t nat -A POSTROUTING -s $INTERNAL_NET -o $EXT -j MASQUERADE
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j ACCEPT  -d
+192.168.1.33
+iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT
+--to-port 3128
+
+
+
+
