@@ -1,13 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: patch-o-matic compile
-Date: Tue, 1 Apr 2003 19:38:49 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: deny cgi scanner
+Date: 01 Apr 2003 19:47:43 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030401193849.239665a9.arnt@c2i.net>
-References: <ABEKJILKOKKGGDJKHKDFKEHCCAAA.patrick@vikus.com>
+Message-ID: <1049219263.4784.14.camel@elendil.intranet.cartel-securite.net>
+References: <3E89CD8A.5020007@gmx.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ABEKJILKOKKGGDJKHKDFKEHCCAAA.patrick@vikus.com>
+In-Reply-To: <3E89CD8A.5020007@gmx.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Eric Marchionni <mailing-lists@gmx.ch>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 1 Apr 2003 11:35:24 -0500, 
-"Patrick Ahler" <patrick@vikus.com> wrote in message 
-<ABEKJILKOKKGGDJKHKDFKEHCCAAA.patrick@vikus.com>:
+Le mar 01/04/2003 =E0 19:34, Eric Marchionni a =E9crit :
+> does anybody know how to drop packets with
+> destination-port 80 after a limit of connections
+> has been reached?
+> i'd like to deny access for the attacker as soon
+> as a cgi-scan has been detected.
 
-> Hi, I just patched my kernel for h323 and string. Now it says that I'm
-> ready to compile. Being a bit of a linux newbie, only been using since
-> august, I'm a bit confused on what to do next. If someone could give
-> some kind of specific step by step procedure that'd be great. I've
-> re-compiled once before, but had problems.
+See patch-o-matic iplimit match :
 
-..cd back home to your kernel tree, read the README.  You may want 
-to edit the Makefile to name your new custom kernel, to, say, 
-2.4.20-telefon-pom or somesuch and to drop your new kernel home 
-into /boot.
+http://www.netfilter.org/documentation/pomlist/pom-base.html#iplimit
 
-..I prefer to use an old .config and run 'make oldconfig', 
-or start from scratch with 'make menuconfig', then 'make dep',
-'make modules', 'make modules_install', and then 'make install'.
+| Author: Gerd Knorr <kraxel@bytesex.org>
+| Status: ItWorksForMe[tm]
+|
+| This adds CONFIG_IP_NF_MATCH_IPLIMIT match allows you to restrict the
+| number of parallel TCP connections to a server per client IP address
+| (or address block).
+|
+| Examples:
+|
+| # allow 2 telnet connections per client host
+| iptables -p tcp --syn --dport 23 -m iplimit --iplimit-above 2 -j REJECT
+|
+| # you can also match the other way around:
+| iptables -p tcp --syn --dport 23 -m iplimit ! --iplimit-above 2 -j ACCE=
+PT
+|
+| # limit the nr of parallel http requests to 16 per class C sized
+| # network (24 bit netmask)
+| iptables -p tcp --syn --dport 80 -m iplimit --iplimit-above 16		\
+|	--iplimit-mask 24 -j REJECT
 
-..to simplify matters, a new and intuitive programming language
-interface is gaining momentum over at the FlightGear(.org), see
-http://seneca.me.umn.edu/pipermail/flightgear-devel/2003-April/016690.html
+I think it exactly fits your needs ;)
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+Note that someone has recently posted a patch to extend iplimit match to
+UDP.
 
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
+t=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
