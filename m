@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: block port 137
-Date: Tue, 3 Aug 2004 07:15:38 +0100
+Date: Tue, 3 Aug 2004 07:17:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408030715.38915.Antony@Soft-Solutions.co.uk>
-References: <267354A234DF4D46AA6AE56E1240BEF004A3BF@tv.wcslnet.net> <002401c47917$d0a6fd70$858310ac@suarapembaruan.com>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <200408030717.59289.Antony@Soft-Solutions.co.uk>
+References: <267354A234DF4D46AA6AE56E1240BEF004A3BF@tv.wcslnet.net> <002401c4 7917$d0a6fd70$858310ac@suarapembaruan.com> <1091513004.4660.34.camel@dc.nucleussoftware.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002401c47917$d0a6fd70$858310ac@suarapembaruan.com>
+In-Reply-To: <1091513004.4660.34.camel@dc.nucleussoftware.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,39 +21,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 03 August 2004 6:07 am, david wrote:
+On Tuesday 03 August 2004 7:04 am, Dhananjoy Chowdhury wrote:
 
-> Dear all,
-> How to block outgoing traffic over network that using port 137 udp
+> try dropping packets both with dport 137 and also with sport 137.
 
-iptables -I FORWARD -p udp --dport 137 -j DROP
+I disagree.
 
->, because my isp tell me that my network broadcast virus using port 137 udp,
-> i want to make all traffic (port 137) do go outside my network, so i plan to
-> blocking that traffic from my gateway.
->
-> I already try to do this rules, but not working :
-> #iptables -A FORWARD -p udp -s 0/0 --dport 137 -j DROP
+Try ACCEPTing the packets you *want* to go through the firewall, and DROP 
+everything else.
 
-1. Why are you allowing UDP 137 packets through your firewall anyway?   They 
-must be matching *some* rule on your machine in order to get through at all - 
-of course it could be a default ACCEPT policy rule (if it is then you should 
-certainly change that).
+Don't create individual rules to DROP the traffic you think you don't want 
+(you will always forget something, or there will be a new problem next week 
+which requires a new rule, etc).
 
-2. The rule you have suggested uses "-A" to append to the end of the ruleset - 
-what are the other rules which come before it?   Presumably one of those must 
-be allowing the packets through...
-
-Show us your ruleset, tell us how you're testing.
+Instead create individual rules to ACCEPT the traffic you need, and DROP 
+anything which doesn't fit that description.
 
 Regards,
 
 Antony.
 
--- 
-"I estimate there's a world market for about five computers."
+> On Tue, 2004-08-03 at 10:37, david wrote:
+> > Dear all,
+> > How to block outgoing traffic over network that using port 137 udp,
+> > because my isp tell me that my network broadcast virus using port 137
+> > udp, i want to make all traffic (port 137) do go outside my network,
+> > so i plan to blocking that traffic from my gateway.
+> >
+> > I already try to do this rules, but not working :
+> > #iptables -A FORWARD -p udp -s 0/0 --dport 137 -j DROP
+> >
+> >
+> >
+> >
+> > Regards,
+> > David Kandou
 
- - Thomas J Watson, Chairman of IBM
+-- 
+If builders made buildings the way programmers write programs, then the first 
+woodpecker to come along would destroy civilisation.
 
                                                      Please reply to the list;
                                                            please don't CC me.
