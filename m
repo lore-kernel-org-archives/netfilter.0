@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I submit you my rules, to have your opinions.
-Date: Fri, 12 Mar 2004 12:52:40 +0000
+Subject: Re: Re-8: connection to vpn Server (pptp) behind iptables FW
+Date: Fri, 12 Mar 2004 13:06:04 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403121252.40589.Antony@Soft-Solutions.co.uk>
-References: <4051AEC2.30100@wanadoo.fr>
+Message-ID: <200403121306.04135.Antony@Soft-Solutions.co.uk>
+References: <DIIE.000000EE00002A43@sbgit.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4051AEC2.30100@wanadoo.fr>
+In-Reply-To: <DIIE.000000EE00002A43@sbgit.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,55 +20,46 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Friday 12 March 2004 12:36 pm, Rakotomandimby Mihamina wrote:
+On Friday 12 March 2004 1:00 pm, peter.gehle@sbgit.com wrote:
 
-> Hi everybody.
-> I made several searches over the internet to build my firewall rules.
-> Here they are :
-> http://stko.dyndns.info/scripts/ipt
+> Ok, i have made an test, but in the syslog was nothing about the
+> connection? he logs nothing?
 
-I really think you should restrict the rules:
+So, maybe there's something about the protocol which simply doesn't work 
+through nat without a special helper, or something like that?
 
-> # My ISP DNS's ... is it correct to put this like that ?
-> iptables -A INPUT -s 193.252.19.3 -j ACCEPT
-> iptables -A INPUT -s 193.252.19.4 -j ACCEPT
-
-so that they only allow DNS packets (TCP + UDP, both port 53).   There's no 
-reason to give your ISPs DNS servers free access to everything on your 
-Firewall.
-
-You don't actually need:
-
-> iptables -A INPUT -p tcp --dport 20 -j ACCEPT
-
-because you already have:
-
-> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-This rule will allow FTP data connections on port 20 as being RELATED to the 
-control connection on port 21.
-
-SSH doesn't use UDP, so no need for this rule:
-
-> iptables -A INPUT -p udp --dport 22 -j ACCEPT
-
-Same for HTTP, FTP, NNTP and POP3 - they don't use UDP, so remove these rules:
-
-> iptables -A OUTPUT -p udp --dport 80 -j ACCEPT
-> iptables -A OUTPUT -p udp --dport 21 -j ACCEPT
-> iptables -A OUTPUT -p udp --dport 119 -j ACCEPT
-> iptables -A OUTPUT -p udp --dport 110 -j ACCEPT
+As I said, I'm not an expert on PPTP, I just thought the logging rules might 
+give you a bit more information about what's going on.   If not, it's over to 
+someone who knows how PPTP can be made to work....
 
 Regards,
 
 Antony.
 
+> -------- Original Message --------
+> Subject: Re: Re-6: connection to vpn Server (pptp) behind iptables FW
+> (12-Mrz-2004 13:28) From:    Antony@Soft-Solutions.co.uk
+> To:      peter.gehle@sbgit.com
+>
+> > On Friday 12 March 2004 12:24 pm, peter.gehle@sbgit.com wrote:
+> > > > It may be dynamic, but you can still find out what it is for a given
+> > > > session.
+> > >
+> > > How?
+> >
+> > If it's a Linux machine, ifconfig
+> > If it's a Win9x machine, winipcfg
+> > If it's a WinXP machine, ipconfig
+> > If it's something else, I don't know.
+> >
+> > Antony.
+
 -- 
-There's no such thing as bad weather - only the wrong clothes.
-
- - Billy Connolly
-
+There are only 10 types of people in the world:
+those who understand binary notation,
+and those who don't.
                                                      Please reply to the list;
                                                            please don't CC me.
+
 
 
