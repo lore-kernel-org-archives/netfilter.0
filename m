@@ -1,13 +1,12 @@
-From: "Tarek W." <ticallion@hotpop.com>
-Subject: Re: thoughts on a newbie tutorial i'll be giving shortly
-Date: Fri, 31 Oct 2003 02:07:53 +0200
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: thoughts on a newbie tutorial i'll be giving shortly
+Date: Fri, 31 Oct 2003 11:36:52 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067558874.1133.9.camel@carve.localdomain>
-References: <Pine.LNX.4.44.0310300725550.18040-100000@localhost.localdomain>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A28AC99@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <Pine.LNX.4.44.0310300725550.18040-100000@localhost.localdomain>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +17,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Tarek W." <ticallion@hotpop.com>, netfilter@lists.netfilter.org
 
-http://ticallion.nuit.ca/pub/iptables/ is something u should be looking
-at... it's a tutorial on irc I gave a while ago... purpose of which is
-to really make the user able to (ab/)use iptables.
+that's interesting..(off that URL) "I've been using iptables since RHL =
+7.0, a bit before that"
 
-u should look at it to either "grep -P" interesting things or inspect
-carefully for things to avoid :P
+RedHat 7.0 came with 2.2 kernel... how you get iptables compilable on =
+it?? ;)
 
-either way, people r invited to send flames/comments/wanton written
-violence to tarek [at] cyberia -dot- net /dot/ lb. errata should come
-out this week...
+Thanks,
+____________________________________________
+George Vieira=20
 
-happy hacking,
-Tarek
-
-On Thu, 2003-10-30 at 14:30, Robert P. J. Day wrote:
-> 
->   as a really low-level iptables intro i'm giving this monday,
-> i'm going to show and explain something like the following.
-> it's deliberately simplified as i have only about a half hour,
-> but i'm interested in whether anyone here has any kind of 
-> visceral reaction to this configuration -- whether i'm suggesting
-> anything violently insecure or anything like that.  (i've removed
-> a lot of preliminary variable setting, just wanting to show the
-> salient stuff.)
-<snip>
-
-
+> -----Original Message-----
+> From: Tarek W. [mailto:ticallion@hotpop.com]
+> Sent: Friday, 31 October 2003 11:08 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: thoughts on a newbie tutorial i'll be giving shortly
+>=20
+>=20
 
