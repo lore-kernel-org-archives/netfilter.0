@@ -1,13 +1,14 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: standby port at the bridge firewall ?
-Date: Mon, 17 Feb 2003 07:26:17 +0100
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: SNMP device replies by alternate address
+Date: 17 Feb 2003 08:33:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030217072617.7bc01331.arnt@c2i.net>
-References: <F93GsRbHozNNrUIY7Hp0001b6f5@hotmail.com>
+Message-ID: <1045463638.17705.20.camel@rayw.knowledgefactory.co.za>
+References: <000101c2d380$ae062c70$3201a8c0@BEOWULF>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-8IGeS9ciXT/7T/w28qpM"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F93GsRbHozNNrUIY7Hp0001b6f5@hotmail.com>
+In-Reply-To: <000101c2d380$ae062c70$3201a8c0@BEOWULF>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,70 +18,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Mon, 17 Feb 2003 04:31:30 +0000, 
-"SB CH" <chulmin2@hotmail.com> wrote in message 
-<F93GsRbHozNNrUIY7Hp0001b6f5@hotmail.com>:
 
-> 
-> Hello, all.
-> 
-> I would like to set standby switch like this.
-> So if a main switch is down, I would like to service with standby
-> switch instead of main switch.
-> (traffic using only main switch and just connects with standby switch
-> at normal state)
-> and I connected main switch with eth0, Sub switch with eth1,
-> and additionally connects standby switch with eth2 at the bridge
-> firewall.
-> 
-> 
->        Main Switch               Standby Switch 
->             |                         |
->             |                         |
->             ---------------------------
->                         |
->                    Bridge Firewall
->   
->                         |
->                      Sub Switch 
-> 
-> 
-> Then, How can I change this brctl script?
-> 
-> ### pre configuration just using eth0 and eth1
-> brctl addbr br0
-> brctl stp br0 off
-> brctl addif br0 eth0
-> brctl addif br0 eth1
-> ifconfig eth0 down
-> ifconfig eth1 down
-> ifconfig eth0 0.0.0.0 promisc up
-> ifconfig eth1 0.0.0.0 promisc up
-> ifconfig br0 211.1.1.1 promisc up
+--=-8IGeS9ciXT/7T/w28qpM
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-..drop this:
+On Thu, 2003-02-13 at 18:55, Peter Hurley wrote:
+> Is there an extension target that can be used in the PREROUTING chain of
+> nat and/or mangle to alter the incoming source ip address? Say something
+> in the form of...
+>=20
+> iptables -t nat -A PREROUTING -i eth1 -m mac --mac-source
+> xx.xx.xx.xx.xx.xx -j SRC_MANGLE --from_src 192.168.50.17/32
+>=20
 
-> route add default gw 211.1.1.1
+You need to use -j SNAT on postrouting:
+iptables -t nat -A POSTROUTING -o eth0 -m mac --mac-source
+xx.xx.xx.xx.xx.xx -j SNAT --to-source 192.168.50.17
 
-..let the bridge _learn_ about the two other routes.
+> The situation is this:  a SNMP device accepts SNMP requests on two
+> separate ip addresses.  One ip is fixed and private, the other is
+> dynamic/unknown.  This device is on the outside of a private network
+> being SNAT'ed.  The problem is that even though it receives SNMP
+> requests on the private ip address it replies with the other
+> dynamic/unknown ip address as the source.
+>=20
+> This means that ip_conntrack_core doesn't recognize the reply packet as
+> belonging to the previous outgoing request.
+>=20
+> Matching the reply packet is easy with the mac address which is fixed.
+> But I can't seem to get past that.  Marking and using iproute2 won't
+> work since only ip_conntrack* knows the reply path.  Mapping both
+> request and reply packets onto the same network (say 10.x.x.x) won't
+> work because the two SNMP addresses aren't simple
+> reflections/derivatives of each other (e.g., 192.168.50.17 and
+> xx.xx.72.116).
+>=20
+> Perhaps I'm missing something that already exists in the stock
+> netfilter?
+>=20
+> Thanks in advance,
+>=20
+> Peter Hurley
+> phurley@imaginexd.com
 
-> should do I change like this to us standby switch?
-> Will it works well?
-> doesn't do loop?
 
-..try 'brctl --help' for syntax, you want to set the "path cost" 
-low to the main switch, and high to the standby switch.  
+--=-8IGeS9ciXT/7T/w28qpM
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-..yeah, I know, 'brctl' does the same thing, it shows usage.  ;-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+iD8DBQA+UIJWh1fuR/Bv+ygRAqcoAJ9r14YEDrrCSyg1USMUL/rst4pJBwCdEJ7j
+H2CzqJA8O37vWEsjAN+j3U4=
+=t97o
+-----END PGP SIGNATURE-----
 
+--=-8IGeS9ciXT/7T/w28qpM--
 
 
