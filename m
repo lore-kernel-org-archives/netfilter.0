@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: iptables: troubling identifying  devices
-Date: Thu, 12 Feb 2004 18:51:10 +0100
+From: Scott Hall <halls@aros.net>
+Subject: Questions on rules syntax
+Date: Thu, 12 Feb 2004 10:53:34 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1076608270.1329.148.camel@elendil.intranet.cartel-securite.net>
-References: <BFEIJHPOPCCMOPEKHHMOOEDOCNAA.giovanni.costagliola@nexusat.it>
+Message-ID: <402BBD9E.2020003@aros.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BFEIJHPOPCCMOPEKHHMOOEDOCNAA.giovanni.costagliola@nexusat.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +15,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: giovanni costagliola <giovanni.costagliola@nexusat.it>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Le jeu 12/02/2004 =E0 18:29, giovanni costagliola a =E9crit :
-> I've set up a star firewall with 3 physical NIC. I've configured two oh=
- them
-> with multi-ip assignement.
-> let's go to the core of the problem. it seems that the iface identified=
- by
-> eth0_1, eth0_0 are not recognized by iptables.
+I am trying to add a rule that covers part of a class C range.  I want 
+to allow 10.0.0.50 through 10.0.0.254 or simply deny .1 through .50 then 
+allow the whole range.   Is there a syntax that will allow me to do this 
+in one rule?  I have searched extensively before bugging the list for help.
 
-Aliases are not interfaces, they're just another IP for an interface
-answers ARP requests. That's why eth0:0, eth0:1, etc. usage is
-deprecated.
+thanks,
 
-Netfilter matches interfaces, real ones. So you can't match aliases
-with. You'll have to use affected IP addresses and interface (i.e.
-eth0).
+-- 
+Scott Hall
+ArosNet Consulting
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!=20
+
 
