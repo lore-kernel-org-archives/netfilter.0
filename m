@@ -1,13 +1,10 @@
-From: "it clown" <suse@mailbox.co.za>
-Subject: Re: irc+iptables
-Date: Sat, 02 Oct 2004 19:32:35 +0200
+From: Mike Mestnik <cheako911@yahoo.com>
+Subject: Fwd: netfilter: Transparent squid running on another host.
+Date: Sat, 2 Oct 2004 12:44:06 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <web-460830972@mail01.infosat.net>
-References: <1096717884.22962.69.camel@wolfpack.ljm.dom>
+Message-ID: <20041002194406.64637.qmail@web11907.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1096717884.22962.69.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,68 +15,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "lists.netfilter.org netfilter" <netfilter@lists.netfilter.org>
 
-Sorry i ment port 6667 and not port 80 in the nat. I just
-throught that because in isa server you can connect to irc
-through it you could do the same with squid.
 
-On Sat, 02 Oct 2004 07:51:25 -0400
- Jason Opperisano <opie@817west.com> wrote:
-> On Sat, 2004-10-02 at 05:03, it clown wrote:
-> > Hi All,
-> > 
-> > i am having some trouble in getting irc working through
-> > iptables and squid.When i put a forwarder in my
-> iptables
-> > rule i can connect to irc but when i want to go through
-> the
-> > proxy i have no luck.I have loaded the ip_nat_irc and
-> > tried:
-> > 
-> > -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT
-> > --to-ports 3128.
+--- Mike Mestnik <cheako911@yahoo.com> wrote:
+
+> Date: Fri, 1 Oct 2004 14:33:49 -0700 (PDT)
+> From: Mike Mestnik <cheako911@yahoo.com>
+> Subject: netfilter: Transparent squid running on another host.
+> To: "lists.debian.org debian-firewal" <debian-firewall@lists.debian.org>
 > 
-> which is a nat rule redirecting tcp port 80 traffic to
-> your squid cache
-> running on tcp port 3128.
+> My *default GW* is 10.0.0.1(train) and I have squid running on
+> 10.0.0.110:3128(paladin).
+> I have setup squid to run as a TP, setting something about keeping http
+> headers and what not.  The proxy(when clients are configured) dose work,
+> but tcp showes that transparent client's are not using the proxy.
 > 
-> > I have made the changes in squid to allown port 6667.
-> > Port 6667 is allowed OUT.
+> These are the rules I have been trying to use, with out succsess...
 > 
-> what has has led you to believe that squid can proxy IRC
-> traffic?  i may
-> be out of the loop, but AFAIK, squid supports proxying
-> for:  HTTP,
-> HTTPS, FTP, Gopher, and WAIS.
+>         # Non-local transparent FTP and HTTP(S) proxy.
+>         iptables -t mangle -A PREROUTING -i $IFACE+ -p tcp\
+>             --src ! 10.0.0.110 --dport 80\
+>             -j MARK --set-mark 1
+>         iptables -t mangle -A PREROUTING -i $IFACE+ -p tcp\
+>             --src ! 10.0.0.110 --dport 443\
+>             -j MARK --set-mark 1
+> # Exclude a host.
+> #       iptables -t mangle -A PREROUTING -i $IFACE+ -p tcp\
+> #           --src 10.0.0.20 --dport 80\
+> #           -j MARK --set-mark 0
+> #       iptables -t mangle -A PREROUTING -i $IFACE+ -p tcp\
+> #           --src 10.0.0.20 --dport 443\
+> #           -j MARK --set-mark 0
+>         ip rule add fwmark 1 table web.out
+>         ip route add default via 10.0.0.110 dev $IFACE table web.out
 > 
-> even if it did support proxying for IRC, you're only
-> redirecting port
-> 80.
+> For now it's OK that 10.0.0.20 dosen't(may not) get exluded from the
+> transparent proxy.  I have another solution for this, if the above
+> commented rules don't do the trick.
 > 
-> for IRC, you'll need to use a forward rule along the
-> lines of:
 > 
->   iptables -A FORWARD -i $INSIDE_IF -p tcp --syn --dport
-> 6667 -j ACCEPT
 > 
-> HTH...
+> 		
+> _______________________________
+> Do you Yahoo!?
+> Express yourself with Y! Messenger! Free. Download now. 
+> http://messenger.yahoo.com
 > 
-> -j
-> 
-> disclaimer:  the rules contained in this message are
-> meant to illustrate
-> the requested functionality only, and not intended as a
-> recommendation
-> of best practices.  never execute any commands without
-> fully
-> understanding the implications.
 > 
 > -- 
-> Jason Opperisano <opie@817west.com>
+> To UNSUBSCRIBE, email to debian-firewall-REQUEST@lists.debian.org
+> with a subject of "unsubscribe". Trouble? Contact
+> listmaster@lists.debian.org
 > 
 > 
 
-_____________________________________________________________________
-For super low premiums ,click here http://www.dialdirect.co.za/quote
+
+
+		
+_______________________________
+Do you Yahoo!?
+Declare Yourself - Register online to vote today!
+http://vote.yahoo.com
 
