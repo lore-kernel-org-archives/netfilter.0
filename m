@@ -1,13 +1,11 @@
-From: =?ISO-8859-1?Q?Nicole_H=E4hnel?= <nicole.haehnel@epost.de>
-Subject: Re: Dead loop on netdevice ipsec0, fix it urgently!
-Date: Fri, 09 Jul 2004 13:50:14 +0200
+From: Pablo Allietti <pablo@lacnic.net>
+Subject: iptables in kernel 2.6.6
+Date: Fri, 9 Jul 2004 10:14:14 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40EE8676.8010708@epost.de>
-References: <40EE7E15.70204@epost.de> <200407091227.46746.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040709131414.GB16434@omega.lacnic.net.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407091227.46746.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I have no nat rules on interface ipsec0.
-There is only one rule on this interface.
-It's all allowed.
+a collegue ask this question for me 
 
-I have nat rules only for a little group of pcs and a proxy
-and they are only for surfing.
-
-
-Thanks!
-
-Nicole
+when compiling in IPTables stuff, I noticed that there was quite a bit
+of stuff that is now missing from the kernel 2.6.6
+Could someone point me to where I can find kernel patches or
+replacements for these:
 
 
+String Match
+DNAT Target
+SNAT Target
+TARPIT Target
 
-Antony Stone wrote:
-
-> On Friday 09 July 2004 12:14 pm, Nicole H=E4hnel wrote:
->=20
->=20
->>Hi,
->>
->>I get this error on my firewall-vpn-server
->>
->>Dead loop on netdevice ipsec0, fix it urgently!
->=20
->=20
-> What is your ruleset (specifically, any nat rules, and any rules applyi=
-ng to=20
-> interface ipsec0)?
->=20
->=20
->>Any ideas where this come from?
->=20
->=20
-> http://www2.frell.ambush.de/archives/freeswan-users/4677.html
->=20
-> Regards,
->=20
-> Antony.
->=20
 
 
