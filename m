@@ -1,9 +1,8 @@
-From: "Simon Garner" <sgarner@expio.co.nz>
-Subject: Re: execute iptables via web browsers?
-Date: Fri, 24 Oct 2003 21:43:23 +1300
+From: Stephen Liu <satimis@icare.com.hk>
+Subject: Starting iptables problem
+Date: Fri, 24 Oct 2003 20:29:24 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001701c39a0b$32aa86a0$0301a8c0@SIMON>
-References: <200310240725.h9O7PuE23633@smtp.postech.ac.kr>
+Message-ID: <3F998BA4.7070001@icare.com.hk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,21 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Jin Gu, Kim" <lilia21@postech.ac.kr>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Friday, October 24, 2003 8:25 PM NZT,
-Jin Gu, Kim <lilia21@postech.ac.kr> wrote:
+Hi all folks,
 
-> Hi all.
->
-> I made this file to view "nat" rules, but nothing was there. How can
-> I see the results via web?
->
+I just finished installing Gentoo 1.4 and could not start iptables
 
-You need to be root to view the tables, so that won't work. Though you
-should get an error to that effect...
+# rc-update add iptables default
+ * iptables already installed in runlevel default; skipping
 
--Simon
+# /etc/init.d/iptables status
+ * status:  stopped
+
+# /etc/init.d/iptables start
+ * WARNING:  "net.eth0" has already been started.
+ * Not starting iptables. First create some rules then run
+ * /etc/init.d/iptables save
+
+Kindly advise how to proceed.  Thanks in advance.
+
+B.R.
+Stephen Liu
 
 
