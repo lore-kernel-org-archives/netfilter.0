@@ -1,11 +1,14 @@
-From: Jeroen Vriesman <j.vriesman@prompt.nl>
-Subject: ip_conntrack_ftp in /proc/modules
-Date: Thu, 26 Feb 2004 16:25:47 +0100
+From: Glen Becker <solar04@comcast.net>
+Subject: Re: Dynamic redirection?
+Date: 26 Feb 2004 10:24:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040226162547.35e51e6c.j.vriesman@prompt.nl>
+Message-ID: <1077809082.2771.5.camel@merlin>
+References: <1077774151.3036.78.camel@merlin>
+	 <403DAF2C.1090303@snapgear.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <403DAF2C.1090303@snapgear.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +21,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Craig, thanks!  That works great for now; "simple is good".  If time
+permits later I would like to experiment with your and Jeroen's
+suggestion of marking.
 
-found something weird, seems like a bug to me. (kernel 2.4.24)
+-Glen
 
-I wanted to mark ftp packets in the PREROUTING mangle table with:
-
-iptables -t mangle -A PREROUTING -m helper --helper ftp -j MARK --set-mark 10
-
-didn't work at first, but if I load the module "ip_conntrack_ftp" with insmod, and then make the rule (not the other way around), it does work.
-So far so good, no problem.
-
-But when I do "cat /proc/modules":
-
-ip_conntrack_ftp        3984   0 (unused)
-ip_conntrack           19812   2 (autoclean) [ip_conntrack_ftp ipt_helper ipt_CONNMARK]
-
-
-Shouldn't it say that ip_conntrack_ftp is used by [ipt_helper] ?
-
-Or at least, when using --helper ftp, it should autoload the ip_conntrack_ftp, since it doesn't seem to work without it.
-The way it is now makes it possible to just rmmod ip_conntrack_ftp while you are using it, and without any warning, and when you insmod it, you have the remove the --helper ftp rule and put it again back in your firewall again to make it work.
-
-Maybe this is just a 2.4.24 thing, does anyone here have a 2.6 kernel running? Wonder if it's still the same on 2.6
-
-Cheers,
-Jeroen.
-
-
-
-
-
-
-
+On Thu, 2004-02-26 at 03:32, Philip Craig wrote:
+> Use these rules:
+> 
+> -t nat -A PREROUTING -s 192.168.2.128 -j ACCEPT
+> -t nat -A PREROUTING -d 192.168.2.128 -j ACCEPT
+> -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to 192.168.2.1
+> -P FORWARD DROP
+> -A FORWARD -p udp --dport 53 -j ACCEPT
+> -A FORWARD -p udp --sport 53 -j ACCEPT
+> -A FORWARD -s 192.168.2.128 -p ALL -j ACCEPT
+> -A FORWARD -d 192.168.2.128 -p ALL -j ACCEPT
+> 
+> If you don't like duplicating the rules like that, then you could
+> set marks in mangle PREROUTING and base both the nat and filter rules
+> off the mark.  Or you could patch your kernel to use ippool or ipset,
+> then you wouldn't need to dynamically add rules at all, you just
+> have one rule each in nat and filter referring to the pool/set.
 
 
