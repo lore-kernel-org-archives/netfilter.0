@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
 Subject: Re: Unable to apply pptp patch
-Date: Wed, 3 Jul 2002 10:49:29 +0100
+Date: Wed, 3 Jul 2002 08:29:33 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207030949.g639naU28824@vulcan.rissington.net>
-References: <200FAA488DE0D41194F10010B597610D2BA1F6@JUPITER> <00df01c22274$cbb59160$153fa8c0@hslbrabantzuid.nl>
+Message-ID: <20020703122933.GA32116@cannon.eng.us.uu.net>
+References: <200FAA488DE0D41194F10010B597610D2BA1F6@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <00df01c22274$cbb59160$153fa8c0@hslbrabantzuid.nl>
+Content-Disposition: inline
+In-Reply-To: <200FAA488DE0D41194F10010B597610D2BA1F6@JUPITER>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,30 +18,37 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: George Vieira <GeorgeV@citadelcomputer.com.au>
+Cc: "'R. Sterenborg'" <rsterenborg@xs4all.nl>, netfilter@lists.samba.org
 
-On Wednesday 03 July 2002 10:34 am, R. Sterenborg wrote:
+On Wed, Jul 03, 2002 at 07:18:29PM +1000, George Vieira wrote:
 
-> It's been a while since I searched ; is there a real VPN client and server
-> for Windows 9x/NT4/2000 ?
+> Yes limitation is to all versions and it's not a netfilter problem.. it's
+> the design of PPTP which was microsoft big stuff up from memory. The design
+> didn't allow multiple connections from the same source..
 
-By 'real', I assume you mean IPsec...
+And it wasn't supposed to. Not being an M$ lover, but:
 
-Are you looking for Open Source or $$$ ?
+pptp is a standard based on Cisco's L2F and Microsoft's L2TP. Its
+design is meant as an extention of ppp where the remote end of the
+ppp session is not the NAS/RAS (at the edge) but on the LNS (somewhere
+within the IP cloud). pptp has some very nice applications, and in a
+sense it can be considered as a VPN solution like any other tunneling
+solution ipip/gre/... but one has never claimed that it's a secure VPN
+solution like IPsec.
 
-Open Source, no I don't think there is an IPsec client/server for Windows.
+So, in short, don't blame something when using the wrong technology
+as a wrong solution.
 
-If you can spend $$$, then there's CheckPoint, obviously, I'm sure Cisco can 
-do something, there's a Nortel VPN client commonly used on wireless LAN 
-systems...
+Ramin
 
-Depending on what you need, have you considered using an SSH based VPN ?
-
-There are Open Source SSH clients for Windows, the server can be Windows or 
-Linux, you get multiplexed port forwarding and strong encryption...   Might 
-be a useful halfway house ?
-
- 
-
-Antony.
+> Use a Linux to Linux VPN and you can route the whole network back and
+> forth....
+> 
+> Also PPTP isn't the best VPN but is widely used due to the Micro$oft support
+> for it..
+> 
+> I'd rather use IPSEC if I can only just compile my damn kernel right for
+> once.. (it's been a while)..
 
