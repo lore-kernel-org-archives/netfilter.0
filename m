@@ -1,8 +1,8 @@
-From: Karl Lattimer <karl@kms-lan.co.uk>
-Subject: Kernel 2.6.5 - iptables 1.2.9 problems
-Date: Fri, 25 Jun 2004 17:03:10 +0100
+From: "Spiro Azkoul" <spiro@snacorp.net>
+Subject: SUN RPC portmap
+Date: Fri, 25 Jun 2004 09:01:07 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088179390.2701.14.camel@despair.kent-music.com>
+Message-ID: <200406251600.i5PG0vD4005549@ylpvm29.prodigy.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,15 +18,9 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, I've got a firewall script I've which i've been using for 2 years
-now on redhat 7.3 and redhat 9, after upgrading to fedora core 2 the
-script is misbehaving slightly. Some of my port forwards don't work
-correctly and some of my port blocking/opening doesn't work correctly.
-
-Any ideas what may be causing this?
-
+Can anyone think of a reason to simple block SUN RPC via iptables rather
+than simply stopping the service if it is a mail/pop/imap/web server?
 Thanks
 
-Karl
 
 
