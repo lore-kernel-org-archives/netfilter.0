@@ -1,12 +1,11 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: a sort of n00b question here but I'ld like to know.
-Date: Tue, 21 Oct 2003 11:11:38 -0700 (PDT)
+From: Anthony.Golia@morganstanley.com
+Subject: NAT weirdness when using default rtr load balancing
+Date: Tue, 21 Oct 2003 14:34:12 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031021181138.49502.qmail@web40202.mail.yahoo.com>
-References: <200310210046.16324.Alistair@nerdnet.ca>
+Message-ID: <3F957C24.2040808@morganstanley.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200310210046.16324.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,104 +15,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-To: Alistair@nerdnet.ca, Simon Garner <sgarner@expio.co.nz>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+Hi.  Running into trouble with SNAT.  Any help is appreciated.  Got a 
+machine with two ints on two different subnets and one /32 IP tied to 
+the loopback:
+
+saias12 /ms/user/g/goliaa 1$ ip addr show
+1: lo: <LOOPBACK,NOARP,UP> mtu 16436 qdisc noqueue
+     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+     inet 127.0.0.1/8 brd 127.255.255.255 scope host lo
+     inet 172.31.254.254/32 brd 127.255.255.255 scope global lo:0
+2: eth0: <BROADCAST,MULTICAST,NOTRAILERS,UP> mtu 1500 qdisc pfifo_fast 
+qlen 100
+     link/ether 00:50:8b:75:f7:58 brd ff:ff:ff:ff:ff:ff
+     inet 172.31.245.41/24 brd 172.31.245.255 scope global eth0
+3: eth1: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
+     link/ether 00:50:8b:75:f7:57 brd ff:ff:ff:ff:ff:ff
+     inet 172.31.246.41/24 brd 172.31.246.255 scope global eth1
+
+load balancing outgoing traffic out both subnets with two def routers of 
+equal weight:
+
+saias12 /ms/user/g/goliaa 2$ ip route show
+172.31.246.0/24 dev eth1  scope link
+172.31.245.0/24 dev eth0  proto kernel  scope link  src 172.31.245.41
+127.0.0.0/8 dev lo  scope link
+default
+	nexthop via 172.31.246.1  dev eth1 weight 1
+	nexthop via 172.31.245.1  dev eth0 weight 1
+
+iptables -t nat -A POSTROUTING -p tcp -m tcp --dport 9 -j SNAT --to 
+172.31.254.254
+
+cause i want all outgoing traffic on port 9 to go out with that src ip. 
+that works.  but when the traffic comes back in, it gets changed to the 
+ip of one of eth0 or eth1.  why?  FYI:  this doesn't happen if i have 
+just one default router:
+
+start a tcp connection from this machine to 144.14.15.234 (just some 
+other machine):
+
+saias12 /ms/user/g/goliaa 2# tethereal -i eth0 -f "port 9"
+Capturing on eth0
+
+   0.000000 172.31.254.254 -> 144.14.15.234 TCP spidrweb > discard [SYN] 
+Seq=3422061520 Ack=0 Win=5840 Len=0
+   0.002121 144.14.15.234 -> 172.31.245.41 TCP discard > spidrweb [SYN, 
+ACK] Seq=3425048263 Ack=3422061521 Win=5792 Len=0
+
+the first pkt is expected (src ip got changed by NAT).  But the second 
+pkt got changed to the IP of eth0.  But 144.14.15.234 did not send the 
+pkt to 172.31.245.41, it sent it to 172.31.254.254.
 
 
->=20
-> 	I agree the response is indeed sad, but I believe that's typical for tha=
-t=20
-> sort of forum.  Watching the traffic coming in to your router and chartin=
-g it
->=20
-> is NOT any sort of violation of any *rational* AUP.  Going farther than t=
-hat=20
-> might well be.  The average user of cable internet access has little idea=
- of=20
-> what goes on beyond the screen.  I've noted that DSL reports has a few de=
-cent
->=20
-> posters and occaisionaly has good advise, but frequently is populated by =
-
-> *twinks*.   Considering that you are supposed to be 2Mbs down... I'd doub=
-t=20
-> that the garbage is that substantial an issue.  I've takn to REJECT with =
-tcp=20
-> reset for anything targetting the windows filesharing ports off my segmen=
-t. =20
-> It seems to slow the constant scans, but may be bad policy.  I do know th=
-at=20
-> the ISP i'm with has a 'no filtering ' policy, and thats one reason I'm w=
-ith=20
-> them.  But there are days (immediately after a new worm comes out like?) =
-when
->=20
-> I wish......
->=20
->    In your case its possible that traffic from other folks on your segmen=
-t is
->=20
-> causing the slow connection.  However keep in mind that you get decent TC=
-P=20
-> ping times and poor pings in the game.  Perhaps the problem exists with t=
-he=20
-> *game* servers being slow to respoind to udp traffic due to their load.
->=20
->=20
-> >
-> >
-> > =3D=3D=3D=3D=3D
-> > In the absence of order there will be chaos.
-> >
-> > __________________________________
-> > Do you Yahoo!?
-> > The New Yahoo! Shopping - with improved product search
-> > http://shopping.yahoo.com
->=20
-> --=20
->=20
-> 	Alistair Tonner
-> 	nerdnet.ca
-> 	Senior Systems Analyst - RSS
-> =09
->      Any sufficiently advanced technology will have the appearance of mag=
-ic.
-> 	Lets get magical!
->=20
 
 
-This is the section that I am wondering about in Charter's AUP.
+-- 
+Cheers,
+Anthony
 
-7. NO =93HACKING"
-
-Customer will not use, nor allow others to use, the Service to access the
-accounts of others or to attempt to penetrate security measures of the Serv=
-ice
-or other computer systems (=93hacking=94) or to cause a disruption of the S=
-ervice
-to other on-line users. Customer will not use, nor allow others to use, too=
-ls
-designed for compromising network security, such as password-guessing progr=
-ams,
-cracking tools, packet sniffers or network probing tools.
-
-Wouldn't ntop be considered a "probing" tool?
-
-And getting back to my original reason and question for this post. How
-statistically can you see just how much iptables/netfilter is using of syst=
-em
-resources?
-
-Thanks Everyone
-SBlaze
-
-
-=3D=3D=3D=3D=3D
-In the absence of order there will be chaos.
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Shopping - with improved product search
-http://shopping.yahoo.com
 
