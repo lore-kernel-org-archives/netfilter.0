@@ -1,12 +1,15 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: QoS limitations ....
-Date: 17 Dec 2002 13:16:53 +0200
+From: Marcello Scacchetti <marcello.scacchetti@nextrem.it>
+Subject: Re: Redhat 7.3 and IPTables 1.2.7a (was ICMP Destination
+	Unreachable)
+Date: 17 Dec 2002 11:01:56 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040123813.1886.89.camel@rayw.knowledgefactory.co.za>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <1040119315.441.4.camel@nxitmirms1>
+References: <000a01c2a57f$e7a44f90$0501020a@compname3>
+	 <025b01c2a5b8$e2e7c200$13fcc5cb@nextto>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-v0Q1ipdrgEbeJlI9Gfbs"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <025b01c2a5b8$e2e7c200$13fcc5cb@nextto>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,59 +19,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: hare ram <hareram@sol.net.in>
+Cc: freedom <freedom10@idemation.com>, netfilter@lists.netfilter.org
 
+Try check here: http://www.haoli.org/rpm/redhat-7.x/RPMS/i386/
 
---=-v0Q1ipdrgEbeJlI9Gfbs
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Marcello
 
-Hi all
-
-Does anyone know of a limit to the number of filters or classes that can
-be attached to a single qdisc (let's say CBQ or HTB)?
-
-I have a client that want to do bandwidth throttling per ip across 10
-class C subnets.
-
-What problems can I expect, and does anyone have any other suggestions
-on how to accomplish this?
-
-Ray
-
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
-
---=-v0Q1ipdrgEbeJlI9Gfbs
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA9/wekh1fuR/Bv+ygRAqC1AKCGgs7sRhCOZfqaWlj/Z5+ryANHPACfQz5f
-P989v/Mb15P+IRCOiifmLng=
-=8R+h
------END PGP SIGNATURE-----
-
---=-v0Q1ipdrgEbeJlI9Gfbs--
-
+Il mar, 2002-12-17 alle 11:41, hare ram ha scritto:
+> hi
+> 
+> yes you can patch up the kernel with new version
+> but there is no Latest rpm availbale for 1.2.7a
+> 
+>  you need to use only 1.2.6a latest RPM with Redhat 8.0
+> ----- Original Message -----
+> From: "freedom" <freedom10@idemation.com>
+> To: "'Marcello Scacchetti'" <marcello.scacchetti@nextrem.it>;
+> <netfilter@lists.netfilter.org>
+> Sent: Tuesday, December 17, 2002 9:23 AM
+> Subject: RE: Redhat 7.3 and IPTables 1.2.7a (was ICMP Destination
+> Unreachable)
+> 
+> 
+> > Marcello,
+> >
+> > Sure...
+> >
+> > Is it possible to use IPTables version 1.2.7a with Redhat 7.3?  RH 7.3
+> > comes with a different version by default and I wanted to upgrade to
+> > 1.2.7a.  Is it possible?
+> >
+> > Also, do you know if any RPMs exist for IPTables version 1.2.7a and RH
+> > 7.3?
+> >
+> > Thanks!
+> > Kameron
+> >
+> > > -----Original Message-----
+> > > From: netfilter-admin@lists.netfilter.org [mailto:netfilter-
+> > > admin@lists.netfilter.org] On Behalf Of Marcello Scacchetti
+> > > Sent: Monday, December 16, 2002 7:18 AM
+> > > To: netfilter@lists.netfilter.org
+> > > Subject: Re: ICMP Destination Unreachable
+> > >
+> > > Hi Kameron,
+> > > can you be a little more verbose?
+> > > What does "run" means? Unable to set rules? Unable to run iptables
+> > > command? Unable to make rules work?
+> > >
+> > > Marcello
+> > >
+> > > Il ven, 2002-12-06 alle 16:09, Kameron ha scritto:
+> > > > Hello Gurus,
+> > > >
+> > > > I have a couple of quick questions...
+> > > >
+> > > > 1) Does anybody know of any reason why I couldn't run IPTables
+> > 1.2.7a
+> > > > with RH7.3.
+> > > >
+> > > > 2) Are there any .rpm's for IPTables 1.2.7.a available?  I attempted
+> > to
+> > > > compile my own, but didn't have any luck.
+> > > >
+> > > > Thanks!
+> > > > Kameron
+> > > --
+> > > Marcello Scacchetti <marcello.scacchetti@nextrem.it>
+> > >
+> >
+> >
+> >
+> >
+-- 
+Marcello Scacchetti <marcello.scacchetti@nextrem.it>
 
