@@ -1,14 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+From: "Akos Szalkai" <szalkai@2fkft.com>
 Subject: Re: mangle after nat in the postrouting chain
-Date: Fri, 28 Nov 2003 12:55:40 -0500
+Date: Fri, 28 Nov 2003 19:13:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311281255.40291.JALaramie@Loudoun-Fairfax.com>
-References: <20031128173350.GJ5232@2fkft.com>
+Message-ID: <20031128181358.GK5232@2fkft.com>
+References: <7C9884991ADAE0479C14F10C858BCDF5122EAA@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031128173350.GJ5232@2fkft.com>
 Content-Disposition: inline
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122EAA@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,27 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Friday 28 November 2003 12:33, Akos Szalkai wrote:
-> Hello,
->
-> is there any kind of patch (or even consideration to create one) for
-> packet mangling in the POSTROUTING chain after NAT?  (At least as far as
-> I see, right now it's mangle first, then NAT.)  I can also see the
-> advantages of mangle before NAT, so perhaps the ideal solution would be
-> mangling twice on the POSTROUTING chain, if it is possible.
->
-> The situation where I would find mangling after NAT very handy is the
-> following.  I have two independent internet connections, and a few NAT
-> rules which eventually decide the source address of the outgoing packet.
-> And only now, knowing the source address is it possible to route the
-> packet correctly.  Since we are way after routing here, only mangle
-> could help.
+On Fri, Nov 28, 2003 at 09:50:46AM -0800, Daniel Chemko wrote:
+> You are off basis. The System already routes twice.
 
-So you want to mangle the packet based on which interface it gets SNATed to in 
-POSTROUTING? Could you post the nat and mangle rules you're using or would 
-like to use?
+Yes, I know that.  This is not my problem.
 
-Jeff
+> The problem is that it SNAT's after you've already routed the packet.
+
+This is much closer to my problem, see below.
+
+>                 There is also the ROUTE patch, but it doesn't do what I
+> want it to do (change the packet's route!!).
+
+Yes, I am heavily using the ROUTE patch.  It does change the packet's
+route.  I don't think you can live without it in a multiple independent
+internet link environment.  Still, ROUTE targets are in the mangle
+table, so still, it is SNAT-ed after you reroute the packets with a
+ROUTE rule.
+
+I can get around this by making a more complex rulebase, but it would be
+much neater if I could mangle packets after NATing.  (The iproute2
+solution you mentioned is also a possibility, but it has the drawback
+that you have to use something else besides netfilter.  The ROUTE patch
+is very similar but IMHO more manageable.)
+
+Akos
+
+-- 
+Akos Szalkai <szalkai@2f.hu>
+IT Consultant, CISA
+2F 2000 Szamitastechnikai es Szolgaltato Kft.
+Tel: (+36-1)-4887700  Fax: (+36-1)-4887709  WWW: http://www.2f.hu/
 
