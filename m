@@ -1,10 +1,10 @@
-From: "Greg Dickinson" <gdickinson@logistasolutions.com>
-Subject: Static NATting
-Date: Tue, 18 Mar 2003 11:48:11 -0600
+From: KJ <ksj@sover.net>
+Subject: iptables, PPTP, and actually making it all work!
+Date: 18 Mar 2003 13:18:10 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <se770789.071@logistasolutions.com>
+Message-ID: <1048011490.1161.5.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=_83DCC7F9.C8A9DC0E"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,68 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a MIME message. If you are reading this text, you may want to 
-consider changing to a mail reader or gateway that understands how to 
-properly handle MIME multipart messages.
+Hello,
+I have a small network at my house (where I work out of, lucky me!) and
+I have been running Linux 7.3 and ipchains for sometime now.  I have a
+Linux 8 box built and ready to roll, but everytime I try to get it
+running, I run into roadblocks.  The issues are this.
+1) When I first get everything running I have access to the internet
+from my firewall box through eth0, I setup iptables to masquerade all,
+that is all I do... it worked in the past, but seems to not be working
+now.  I can't even ping eth1 from inside my network.
+2) I need to do PPTP through my iptables firewall and I can't... 
 
---=_83DCC7F9.C8A9DC0E
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+I'm very confused and frustrated, this has been going on for about a
+month and I can't find any help.  anyone that can help would be GREATLY
+appreciated. 
 
-Hello all,
-
-This question will undoubtedly get me branded as a n00b :-) but I am about =
-to go insane trying to figure this out.  Am I doing something wrong?
-
-Here's the scenario:
-
-I have a RedHat 8 (Kernel 2.4-18) firewall that I am going to run squid =
-on, as well as do some static NATting for some of the administrative PC's =
-here.  I have configured the Cisco router to direct all the traffic from =
-the affected /24 subnet to the linux box, and I am trying to do a 1-to-1 =
-NAT so we can do things like Terminal Services, etc. across the internet.  =
-I am using the following commands (the addresses are for my PC)
-
-iptables -t nat -A POSTROUTING -s 10.227.101.4 -j SNAT --to 207.157.9.<some=
-thing>
-iptables -t nat -A PREROUTING -s 207.157.9.<something> -j DNAT --to =
-10.227.101.4
-
-And all the traffic summarily dies at the firewall :-)
-
-I have aliased the 207.157.9.<something> address to the eth1 interface of =
-the firewall.  What simple, obvious thing have I missed?
-
-TIA,
-
---Greg
+Thank you in advance. 
+KJ
 
 
 
-Gregory B. Dickinson, CNE CCNA
-Systems Engineer
-Logista Solutions
-(205) 231-5602
-(tQ =3D 2b|!2b)
-
-
---=_83DCC7F9.C8A9DC0E
-Content-Type: text/x-vcard
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="Greg Dickinson.vcf"
-
-QkVHSU46VkNBUkQNClZFUlNJT046Mi4xDQpYLUdXVFlQRTpVU0VSDQpGTjpEaWNraW5zb24sIEdy
-ZWcNCk9SRzo7VGVjaG5pY2FsIFNlcnZpY2VzDQpFTUFJTDtXT1JLO1BSRUY7TkdXOkdEaWNraW5z
-b25AbG9naXN0YXNvbHV0aW9ucy5jb20NCk46RGlja2luc29uO0dyZWcNCkVORDpWQ0FSRA0KDQpC
-RUdJTjpWQ0FSRA0KVkVSU0lPTjoyLjENClgtR1dUWVBFOlVTRVINCkZOOkRpY2tpbnNvbiwgR3Jl
-Zw0KT1JHOjtUZWNobmljYWwgU2VydmljZXMNCkVNQUlMO1dPUks7UFJFRjtOR1c6R0RpY2tpbnNv
-bkBsb2dpc3Rhc29sdXRpb25zLmNvbQ0KTjpEaWNraW5zb247R3JlZw0KRU5EOlZDQVJEDQoNCkJF
-R0lOOlZDQVJEDQpWRVJTSU9OOjIuMQ0KWC1HV1RZUEU6VVNFUg0KRk46RGlja2luc29uLCBHcmVn
-DQpPUkc6O1RlY2huaWNhbCBTZXJ2aWNlcw0KRU1BSUw7V09SSztQUkVGO05HVzpHRGlja2luc29u
-QGxvZ2lzdGFzb2x1dGlvbnMuY29tDQpOOkRpY2tpbnNvbjtHcmVnDQpFTkQ6VkNBUkQNCg0K
-
---=_83DCC7F9.C8A9DC0E--
 
