@@ -1,70 +1,47 @@
-From: Jose Maria Lopez <jkerouac@eresmas.com>
-Subject: Re: Problem with 2 NAT and 2 ROUTE
-Date: 24 Aug 2004 07:17:01 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1093324620.22468.10.camel@nostromo.bgsecm.com>
-References: <008801c4891f$70be07b0$0800000a@pc08infierno>
+From: Stuart Clark <stoodio@gmail.com>
+Subject: connlimit and LVS
+Date: Wed, 25 Aug 2004 08:31:28 +1000
+Sender: netfilter-bounces@lists.netfilter.org
+Message-ID: <f3204f9a040824153160dbb46f@mail.gmail.com>
+References: <f3204f9a04082400405a81100c@mail.gmail.com>
+Reply-To: Stuart Clark <stoodio@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <008801c4891f$70be07b0$0800000a@pc08infierno>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <f3204f9a04082400405a81100c@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
+List-Archive: </pipermail>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-El lun, 23 de 08 de 2004 a las 16:42, Cristian Seva (VOIPLAB) escribió:
-> have a problem with mi linux BOX
-> 
-> Eth0 =  192.168.0.254  (RED A)
-> Eth1 =  200.69.123.177/130  (LINK A)
-> Eth2 =  192.168.0.100  (RED B)
-> Eth3 =  192.168.1.1 para el PPPOE
-> ppp0=  DynamicIP (LINK B)
-> -------------------------------------------------------------------
-> -DEFAULT ROUTE
-> 200.69.123.178 (LINKA)
-> ppp0 (cdo establece el PPPOE)
-> -------------------------------------------------------------------
-> -IPTABLES  NAT RULES
-> iptables -t nat -A POSTROUTING -s 192.168.0.0/255.255.255.128 -o ppp0 -j
-> MASQUERADE
-> iptables -t nat -A POSTROUTING -s 192.168.0.128/255.255.255.128 -o eth1 -j
-> MASQUERADE
-> -------------------------------------------------------------------
-> 
-> My problem is the only NAT works is the NAT with march with de default
-> route..
-> 
-> Can any one helme?
-> 
+Hi there..
 
-I think you need Advanced Routing using iproute2 nexthop facility
-to send the traffic to both routers, and then masquerade the
-connections, masquerading does know who to send the traffic but
-it doesn't know how to do it.
+I have a LVS setup with two directors direct routing to 4 real
+servers. I have been trying to use the 'connlimit' patch from
+Netfilter patch-o-matic on the director to restrict the number of
+concurrent connections coming into the VIP.  I have not been able to
+get it working with the PREROUTING or FORWARD tables, and was
+wondering if is due to LVS that connlimit can not seem to track
+connections?
 
+I have tried this on kernel 2.4.27/ipvs1.0.11 and kernel 2.6.7/ipvs1.2
+using the patch-o-matic from CVS at www.netfilter-org.  I can see that
+connections directed at the director IP are being detected with
+connlimit, but connections passing through the VIP to the real servers
+are not.
 
+iptables -t nat -I PREROUTING -p tcp --syn --dport 25 -m connlimit
+--connlimit-above 2 --connlimit-mask 24 -j LOG --log-level info
+--log-prefix " 2+ SMTP connections "
 
--- 
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPAÑA
+Any ideas how this can be made to work on the directors?
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
-
+Kind regards, Stuart.
 
