@@ -1,35 +1,88 @@
-From: "David S. Miller" <davem@redhat.com>
-Subject: Re: [PATCH] kfree_skb() bug in 2.4.22
-Date: Wed, 8 Oct 2003 07:11:59 -0700
-Sender: netdev-bounce@oss.sgi.com
-Message-ID: <20031008071159.586c5d3c.davem@redhat.com>
-References: <1065617075.1514.29.camel@localhost>
-	<3F840C9C.9050704@pobox.com>
-	<1065622303.1512.41.camel@localhost>
+From: "Nicolas" <fpnmml@free.fr>
+Subject: iptables v1.2.7a: Unknown arg `--icmp-type'
+Date: Wed, 8 Oct 2003 18:10:27 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <NFEBKDECMMGIAKCMGJGDOENJEOAA.fpnmml@free.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-bounce@oss.sgi.com>
-In-Reply-To: <1065622303.1512.41.camel@localhost>
-Errors-to: netdev-bounce@oss.sgi.com
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0029_01C38DC7.738E2690"
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Tobias DiPasquale <toby@cbcg.net>
-Cc: jgarzik@pobox.com, netdev@oss.sgi.com, linux-net@vger.kernel.org, linux-kernel@vger.kernel.org, coreteam@netfilter.org, netfilter@lists.netfilter.org, akpm@zip.com.au, kuznet@ms2.inr.ac.ru, pekkas@netcore.fi, jmorris@intercode.com.au, yoshfuji@linux-ipv6.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: netfilter@lists.netfilter.org
 
-On Wed, 08 Oct 2003 10:11:43 -0400
-Tobias DiPasquale <toby@cbcg.net> wrote:
+This is a multi-part message in MIME format.
 
-> Well, I certainly have done that already ;-) But I have checked kfree()
-> and vfree() and they have a sanity check for NULL before processing, as
-> well as those are also the well-known semantics for the userspace free()
-> call.
+------=_NextPart_000_0029_01C38DC7.738E2690
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-So what?  Those are totally different APIs and they in no way determine
-how other interfaces should behave.
+Hey all
 
-Passing NULL pointers around usually indicates poorly designed
-software anyways (unless the NULL pointer is being returned by
-a routine to indicate an allocation failure).
+I'm trying to add iptables rules and get the folowing error message:
+iptables v1.2.7a: Unknown arg `--icmp-type'
+when I type the following line:
+iptables -A INPUT -p icmp --icmp-type destination-unreachable -j ACCEPT
 
-This isn't even worth discussing anymore.
+It seems me there should be no problem with this.
+
+Any help would be welcome
+
+Nicolas
+
+------=_NextPart_000_0029_01C38DC7.738E2690
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial size=3D2>Hey=20
+all</FONT></SPAN></DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial size=3D2>I'm =
+trying to add=20
+iptables rules and get the folowing error message:</FONT></SPAN></DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial =
+size=3D2>iptables v1.2.7a:=20
+Unknown arg `--icmp-type'</FONT></SPAN></DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial size=3D2>when I =
+type the=20
+following line:</FONT></SPAN></DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial =
+size=3D2>iptables -A=20
+INPUT&nbsp;-p&nbsp;icmp --icmp-type destination-unreachable -j=20
+ACCEPT</FONT></SPAN></DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial size=3D2>It =
+seems me there=20
+should be no problem with this.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial size=3D2>Any =
+help would be=20
+welcome</FONT></SPAN></DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial=20
+size=3D2>Nicolas</FONT></SPAN></DIV>
+<DIV><SPAN class=3D138085615-08102003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0029_01C38DC7.738E2690--
+
 
