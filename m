@@ -1,13 +1,16 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: iptables + squid
-Date: Sun, 26 Sep 2004 10:27:11 -0400
+From: Stephen Frost <sfrost@snowman.net>
+Subject: Re: [ANNOUNCE] Proceedings of Netfilter Developer Workshop 2004
+Date: Sun, 26 Sep 2004 11:51:28 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096208831.16814.22.camel@wolfpack.ljm.dom>
-References: <web-453410391@mail01.infosat.net>
+Message-ID: <20040926155128.GE21419@ns.snowman.net>
+References: <20040925213322.GJ3236@sunbeam.de.gnumonks.org>
+	<1096169674.2341.9.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hCS/BWoPfTdmYtZi"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-453410391@mail01.infosat.net>
+Content-Disposition: inline
+In-Reply-To: <1096169674.2341.9.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +20,52 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Cc: Harald Welte <laforge@netfilter.org>, lwn@lwn.net, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
 
-On Sun, 2004-09-26 at 01:35, it clown wrote:
-> Hi All,
-> 
-> I want to run squid on the same box as iptables.I need to
-> setup the client pc's that they have to go through the
-> proxy to get to the internet... port 3128.They must not be
-> able to by pass the proxy to get internet access.What rule
-> do i need to add to iptables to only allow squid to have
-> internet access?
-> 
-> I want to give the clients internet access through squid,
-> thanks.
-> 
-> Regards
-> _____________________________________________________________________
-> For super low premiums ,click here http://www.dialdirect.co.za/quote
 
-# allow clients to connect to squid proxy
-iptables -A INPUT -i $INSIDE_IF -p tcp --syn --dport 3128 -j ACCEPT
+--hCS/BWoPfTdmYtZi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-# allow squid to fetch web content
-iptables -A OUTPUT -o $OUTSIDE_IF -p tcp --syn --dport 80 -j ACCEPT
+* John A. Sullivan III (john.sullivan@nexusmgmt.com) wrote:
+> On Sat, 2004-09-25 at 17:33, Harald Welte wrote:
+> > I finally finished writing up the proceedings of the 2004 Netfilter
+> > Developer Workshop, based on the notes taken by various attendees.
+> >=20
+> <snip>
+> Harald, I noticed the section where you were considering an organization
+> to manage funding.  If you would like, please take a look at the Open
+> Source Development Corporation (http://www.opensourcedevel.com).  OSDC
+> could potentially do the work or feel free to just adapt the ideas if
+> you like them (or reject all of it if it appears as nonsense to you!). =
+=20
+>=20
+> I originally set this up to manage the funding for the ISCS network
+> security management project but the goal is to handle many more projects
+> as a bridge between organizations which derive value from open source
+> projects and the teams which create the open source products.
 
-of course--this assumes that you do not allow clients through the
-FORWARD chain on port 80.
+As long as we're bringing up such things- Software in the Public
+Interest (http://www.spi-inc.org) is a non-profit organization which
+does this already for a number of projects already, most prominently
+Debian.
 
--j
+	Stephen
 
-disclaimer:  the rules contained in this message are meant to illustrate
-the requested functionality only, and not intended as a recommendation
-of best practices.  never execute any commands without fully
-understanding the implications.
+--hCS/BWoPfTdmYtZi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
--- 
-Jason Opperisano <opie@817west.com>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
+iD8DBQFBVuWArzgMPqB3kigRAqdpAJ4ruHu+ZSK25QnpR48HNF4dIf9X8ACfdRjS
+5/LKhbuVjlwoFsvRxhdNdYM=
+=u9gd
+-----END PGP SIGNATURE-----
+
+--hCS/BWoPfTdmYtZi--
 
