@@ -1,11 +1,10 @@
-From: Andreas Meyer <anmeyer@anup.de>
-Subject: fetchmail from intern
-Date: Mon, 17 Feb 2003 15:43:58 +0100 (CET)
+From: - = k o l i s k o = - <kolisko@penguin.cz>
+Subject: iptables stateful inspection and H.323
+Date: 18 Feb 2003 10:48:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030217144358.CE83417C93@delta.meyer.home>
-Reply-To: anmeyer@anup.de
+Message-ID: <1045561728.1515.25.camel@kolisko>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,34 +15,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: IPtables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Hello!
+Hi all,
 
-Running fetchmail from the mailserver behind the firewall I have
-the problem to go to the WAN.
+What is the current state of stateful inspection and H.323 protocol
+(netmeeting).=20
 
-It works as long as I stay within the LAN.
+I would like to know if will H.323 work:
 
-iptables -t nat -A PREROUTING -p TCP --dport 110 -m state --state
-NEW,ESTABLISHED,RELATED -j DNAT --to 192.168.1.75:110
+--state NEW,REL..,EST..  - OUT=20
+--state REL..,EST..  - IN
 
-But writing
+--=20
 
-iptables -t nat -A PREROUTING -p TCP --dport 110 -m state --state
-NEW,ESTABLISHED,RELATED -j DNAT --to 0.0.0.0:110
+---
+Michal Koles=E1r
+kolisko@penguin.cz
+http://kolisko.penguin.cz
++420.777.225.297
 
-I get a
-kernel: martian destination 0.0.0.0 from 192.168.1.3, dev eth0
 
-Must I install fetchmail on the firewall? Is this the only
-solution?
+Don't send me any attachment in Micro$oft (.DOC, .PPT) format please
+Read http://www.fsf.org/philosophy/no-word-attachments.html
+Preferable attachments: .PDF, .HTML, .TXT
+Thanx for adding this text to Your signature
 
--- 
-
-  Andreas Meyer
-
-Object Class   Common Name   userPassword
-posixAccount   andreas       {SSHA}hpyqObx1/BXbKFgXoqCayoGsvIgPYiVc
 
