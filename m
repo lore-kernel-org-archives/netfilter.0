@@ -1,9 +1,10 @@
-From: Bluesea Yreen <big_bluesea@yahoo.com>
-Subject: Does netfilter disable TCP checksum offload?
-Date: Mon, 20 Oct 2003 08:08:46 -0700 (PDT)
+From: "Sylvain BERTRAND" <sylvain.bertrand@supelec.fr>
+Subject: tools to modifiy the conntrack?
+Date: Mon, 20 Oct 2003 21:16:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031020150846.43255.qmail@web41706.mail.yahoo.com>
+Message-ID: <012b01c3973e$ba8c28a0$6500a8c0@SYFLO>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,30 +16,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi There,
+Hi,
 
-I am trying to use TCP checksum offload under Linux. I
-found that if I install the netfilter, I cannot use
-TCP checksum offload feature. Because "nf_hook_slow"
-is called if there is any HOOK registered in the
-output path, and "skb->ip_summed" is set to
-"CHECKSUM_NONE" eventually.
+I've got conntrack support in my 2.4.21 kernel. I'd like to flush it
+sometime, or at least delete a few lines.
+I'm not very excited about editing /proc/net/ip_conntrack by hand... So I'm
+wondering if there's anything the root can do to modify the conntrack (are
+there parameters somewhere?).
 
-Am I right about that I cannot use TCP checksum
-offload feature if there is any HOOK registered in the
-output path? If it's right, how can I use TCP checksum
-offload feature while having the netfilter installed.
-Can I do it but disabling some netfilter options?
+Thanks
 
-Thanks,
+Sylvain
 
-Bluesea
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Shopping - with improved product search
-http://shopping.yahoo.com
 
