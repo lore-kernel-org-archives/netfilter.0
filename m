@@ -1,14 +1,12 @@
-From: Doug Yeager <doug@aircomwireless.net>
-Subject: Re: denying local traffic  --SOLUTION
-Date: Wed, 12 Feb 2003 07:05:26 -0500
+From: Juan Carlos Hernandez Gonzalez <acuario1965@prodigy.net.mx>
+Subject: Block clients for mac address
+Date: Wed, 12 Feb 2003 12:37:19 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4.3.2.7.0.20030212070212.02ee7d60@yeagerautomation.com>
-References: <000701c2d226$24f56f50$bb00a8c0@DOUG1>
- <20030211222604.12c74c82.arnt@c2i.net>
- <000701c2d226$24f56f50$bb00a8c0@DOUG1>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAFXnZnPTWmEuxnKJINDeV5MKAAAAQAAAAzY+/7SPK+EejvgTLR+/cPQEAAAAA@prodigy.net.mx>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0082_01C2D293.7B88E5F0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030212031133.6cef010e.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,93 +16,159 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-i'm an idiot.  found out that wi-fi acts on layer 3 and netfilter code 
-can't do much about it.
-it act as a "hub" just like arnt has pointed out.  so the hostap guys said 
-there is a configuration for this if you are using the hostap code to run 
-the access point.  it is pretty handy code for a situation like this. here 
-was the solution:
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0082_01C2D293.7B88E5F0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+
+Hi list:
+ 
+I have a linux red hat and need configure my iptables for permit only
+mac address of clients .. some know how make this .. Thanks
+ 
+
+------=_NextPart_000_0082_01C2D293.7B88E5F0
+Content-Type: text/html;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
 
 
- > is there a way to not allow this using hostap? any settings at compile
- > time to only allow traffic from client to AP? but not client to client
- > through ap?
-Yes, you can disable this internal driver bridge code by setting
-ap_bridge_packets to 0: 'prism2_param wlan0 ap_bridge_packets 0'.
-This does not require any compile time configuration.
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C2D293.7B4A5650">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DocumentKind>DocumentEmail</w:DocumentKind>
+  <w:HyphenationZone>21</w:HyphenationZone>
+  <w:EnvelopeVis/>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.EstiloCorreo17
+	{mso-style-type:personal-compose;
+	mso-style-noshow:yes;
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:windowtext;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 3.0cm 70.85pt 3.0cm;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */=20
+ table.MsoNormalTable
+	{mso-style-name:"Tabla normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
 
+<body lang=3DES link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:35.4pt'>
 
+<div class=3DSection1>
 
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-US'>Hi =
+list:<o:p></o:p></span></font></p>
 
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-US'><o:p>&nbsp;</o:p></span=
+></font></p>
 
-At 03:11 AM 02/12/2003 +0100, Arnt Karlsen wrote:
->On Tue, 11 Feb 2003 18:34:32 -0500,
->"Doug Yeager" <doug@aircomwireless.net> top posted, err,
->top mailed in message <000701c2d226$24f56f50$bb00a8c0@DOUG1>:
-> >
-> > Arnt,
-> > Thank you very much.
-> > I think I understand what you are saying.  Just wanted to clear a few
-> > things up:
-> >
-> > This is the case:
-> > >..if people bring their own boxes
-> >
-> > >plug_ all wintendo ports, 137 tru 139.  _Plug_ goes anywhere
-> > >between the humanistic "reject" thru "drop" to less so "mirror",
-> > "same",
-> > >and "tarpit".
-> >
-> > What are the wintendo ports?  What purpose do they serve on windows
-> > machines?  I'm hoping you are referring to the ports that show the
-> > shared folders and such, so that I can prevent open file sharing by
-> > blocking them.  That is really what I want.
->
->..yup. 137 thru 139, there may be more, I don't know wintendo
->that well, I dropped wintendo95 in 1997, 23 reinstall in my last
->5 weeks... I took the hint.  ;-)
->
->..the wise way is block _everything_ below 1024, and then
->pop open _only_ the ports you need.
->
-> > If hostap acts like a hub, how can I manage any of these ports w/
-> > iptables?
->
->..you can't, ip address or not, _all_ antennas hears the same packets.
->You're left with vpn tunnels, ok, you _can_ use WEP etc too, it might
->not hurt to much, overheadwise.  Ok, iptables _can_ help deny and award
->a wifi card ip traffic access, and iptables can match on mac addresses.
->
->..in patch-o-matic, a few more modules can be thrown in to help
->troubleshoot your coffeeshop site, conn'track'ers etc.
->
->..once you're done, anonymize ip's where needed and post your solution
->on the list, there are more people around who needs this knowledge.
->
-> > Something like this does not work unless I'm trying to do it wrong:
-> > Is this because of the HUB issue?
-> >
-> > iptables -A INPUT -d 192.168.19.1 -i wlan0 -j ACCEPT #allow packets to
-> > AP
-> > iptables -A INPUT -d 192.168.19.0/255.255.255.0 -i wlan0 -j DENY
-> > #deny
-> > lan
-> >
-> > of course, it would be a similar command for the port blocking right?
-> >
-> > thx again,
-> > doug
-> >
->
->
->--
->..med vennlig hilsen = with Kind Regards from Arnt... ;-)
->...with a number of polar bear hunters in his ancestry...
->   Scenarios always come in sets of three:
->   best case, worst case, and just in case.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-US'>I have a <span =
+class=3DSpellE>linux</span>
+red hat and need configure my <span class=3DSpellE>iptables</span> for =
+permit
+only <span class=3DSpellE>mac</span> address of clients &#8230;&#8230; =
+some know
+how make <span class=3DGramE>this ..</span> =
+Thanks<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0082_01C2D293.7B88E5F0--
 
 
