@@ -1,67 +1,51 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: newbie struggling with p-o-m in kernel 2.6
-Date: Fri, 12 Mar 2004 13:57:22 -0500
-Sender: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
-Message-ID: <MPG.1abbd219144e52d99896a5@localhost>
+From: RedNuX@gmx.at
+Subject: ROUTING A IP and EREASE the URL EXTENSION ?
+Date: Sat, 13 Mar 2004 11:35:50 +0100 (MET)
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <23362.1079174150@www13.gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
-Errors-To: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
-List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmI2yCS0tKOigE@public.gmane.org>
-List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIRj+87qQpzpCql8G6E966Ow@public.gmane.org>
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIFcjs2lY4wUfKtGCp0j7rLg@public.gmane.org>
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+To: netfilter@lists.netfilter.org
 
-Hello.  I'm a newbie to patch-o-matic, though comfortable with patching 
-and building my own kernels.
+On my network a Client has problems with an URL which has burned in, in his
+system. Even if I remove the entries from registry, the URL is there with a
+restart again.
 
-I'm running kernel 2.6.3, and I'd like to install the 'condition' and 
-'time' extensions to netfilter.  But I'm having a really hard time of 
-it.  Here's as well as I can figure it right now:
+ I have diverted the inquiries the hate IP on google.de.
 
-- patch-o-matic, it seems, doesn't work at all with kernel 2.6.  I can't 
-find any statement about this on netfilter.org, but someone in a 
-newsgroup said it was so, and when I try to apply patches with p-o-m it 
-fails with complaints about not finding Config.help etc.  Shouldn't this 
-be a FAQ?
+$IPTABLES -t nat -A PREROUTING -p tcp -d $HATEIP --dport 80 -i eth1 -j DNAT
+--to $GOOGLE
 
-- I grabbed patch-o-matic-ng-20040302, and tried it.  But it won't apply 
-the condition and time patches, because both of them are marked 'linux 
-< 2.6.0'.
+The Problem is the URL-Extension... ( $HATEIP/index.php?v=3D4&aff=3D2130 ) =
+...
 
-So as far as I can tell, right now someone who wants to use the 
-condition and time extensions with kernel 2.6 is just out of luck.  Am I 
-right, or is there some other technique that I'm missing?  Do we have an 
-ETA for 2.6-compliant condition and time patches?
+On my Client, google says:
 
-Also, a couple of minor complaints from a newbie:
+Not Found
+The requested URL /index.php?v=3D4&aff=3D2130 was not found on this server.
 
-- It seems that all of the old patch suite structure is gone, but the 
-docs haven't caught up yet.  The Netfilter Extensions HOWTO is very 
-nice, but unfortunately it's no longer accurate.  The newbie is left to 
-discover this for himself and guess that where before he would run e.g. 
-'./runme extra/condition', the new command is './runme condition'.  
 
-- Even though I try to run runme in batch mode, it always asks where my 
-iptables source code is.  Looking through the script, there doesn't seem 
-to be an environment variable to set for that.
+Is it possible to be deleted this extension or gives it another possibility
+the inquiry on " $HATEIP / index.php? V=3D4*aff=3D2130 " on "google.de" far=
+ther
+supply?
 
-I realize that p-o-m-ng is a work in progress.  Please consider these to 
-be constructive suggestions for improvement.
+sorry for my bad English 8/
 
-Longer term, what is the plan for getting all of these useful extensions 
-merged into the main kernel line?
-
-Thanks for your help.
-Andrew.
-
--- 
-To reply by email, replace "deadspam.com" by "alumni.utexas.net"
+--=20
++++ NEU bei GMX und erstmalig in Deutschland: T=DCV-gepr=FCfter Virenschutz=
+ +++
+100% Virenerkennung nach Wildlist. Infos: http://www.gmx.net/virenschutz
 
 
