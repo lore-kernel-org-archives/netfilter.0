@@ -1,13 +1,13 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: SNAT of ICMP fragmentation-nee
-Date: Mon, 10 Jun 2002 10:52:44 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Filter incoming mails by sender's address?
+Date: Mon, 10 Jun 2002 15:52:51 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020610145244.GU29214@cannon.eng.us.uu.net>
-References: <Pine.LNX.4.44.0206101340570.30649-100000@albert.ha-vel.cz> <200206101218.g5ACIKU08127@vulcan.rissington.net>
+Message-ID: <200206101452.g5AEqxU08716@vulcan.rissington.net>
+References: <00a401c2108d$ba70e830$cb02a8c0@wstakacsi>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <200206101218.g5ACIKU08127@vulcan.rissington.net>
+In-Reply-To: <00a401c2108d$ba70e830$cb02a8c0@wstakacsi>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,40 +18,29 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.samba.org
+To: "netfilter (Elektronikus levelek)" <netfilter@lists.samba.org>
 
-On Mon, Jun 10, 2002 at 01:18:12PM +0100, Antony Stone wrote:
+On Monday 10 June 2002 3:47 pm, Takacs Istvan wrote:
 
-> On Monday 10 June 2002 12:45 pm, jakub@angel.cz wrote:
-> 
-> > :) this is really not the problem, now I am logging all packets, no adress
-> >
-> > specification ;)
-> >
-> > -A POSTROUTING -p icmp -m icmp --icmp-type 3/4 -j LOG --log-prefix "icmp
-> > SNAT POST "
-> 
-> Hmmm.   Okay - this is beyond my understanding of netfilter - can anyone else 
-> suggest why icmp packets going through the machine would get logged and 
-> processed by PREROUTING and FORWARD but not by POSTROUTING ?
+> Hi,
+>
+> Is there a way to filter incoming letters
+> by the sender's address, or is it
+> completely an MTA's function?
 
-Is it not because of the fact that the very first packet of a conn
-would go through the whole nat rule set and as soon as a rule is
-matched and a conn has been set up, the subsequent packets of that
-conn would not go through the whole rule set but get natted and
-de-natted by that entry? I thought I read this somewhere...
+Yes.   That is the correct answer.
 
-So, if you also had a DNAT for that conn in PREROUTING, after the
-first initial packet (which sets up the dnat entry), no other packet
-of that conn would scan through the PREROUTING rule set including
-the LOG rule...
+> We have a server what has to receive
+> mails and process their content automaically.
+> We'd like to restrict the email addresses
+> to those who just enabled to send mails
+> to that address.
+>
+> Can I do it somehow with netfilter?
 
-However, the filter table is always consulted for each and every
-packet, that's why you see the LOG in the FORWARD chain...
+No.
 
-Ramin
+ 
 
-> Antony.
+Antony.
 
