@@ -1,10 +1,13 @@
-From: Tim Cronin <tim@13-colonies.com>
-Subject: RE: iptables and linuxVirtualServer
-Date: Fri, 4 Oct 2002 10:52:03 -0500
+From: "Clint Todish" <ctodish@crayon.com>
+Subject: RE: are these enough now?
+Date: Fri, 4 Oct 2002 10:59:26 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <71FD63241A2DD511AFED00010236A4B33224CB@LIVAUDAIS>
+Message-ID: <000001c26bbf$05365e90$731010ac@motion>
+References: <200210041309.g94D9ML10904@vulcan.rissington.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200210041309.g94D9ML10904@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,61 +18,78 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Roberto Nibali' <ratz@tac.ch>, "'lvs-users@LinuxVirtualServer.org'" <lvs-users@LinuxVirtualServer.org>
-Cc: "'Walther@gehag-dsk.de'" <Walther@gehag-dsk.de>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+Cc: 'PayalR' <payal@hotpop.com>
 
->Yes, you're right and I was wrong redirecting you to the netfilter
-mailinglist. 
->We will solve it on the LVS mailinglist and if there are problems with
-netfilter 
->we will come back, ok?
+More than likely, someone pushed over a root kit to cover their
+tracks...if netstat -an doesn't show 2002 open, then you can be sure of
+it. Chances are, they've also replaced ps as well to hide the
+process...try:
+'/usr/sbin/lsof -I udp:2002' to get the PID. If you are running a RedHat
+install - 'rpm -Va' and look for a '5' in the 3rd position as that
+indicates a MD5 checksum difference from the binary on your machine and
+the original package. 
 
-Hey no problem, I must say that this is the most cordial and helpful
-mailing list I've been on. Thanks to everyone for your help. LVS has all
-ready
-saved me much time and money.
+Personally, I would recommend a reinstall as you never know for sure
+what may be left lurking around.
 
->Yes, it is clearly the NF_STOLEN interaction of LVS in the NAT part of the
-code.
-
-this sounds like I might have opened a can of worms. :^D 
-
-should/can lvs and iptables both track state, what would be the impact of
-that?
-
+-C
 
 -----Original Message-----
-From: Roberto Nibali [mailto:ratz@tac.ch]
-Sent: Friday, October 04, 2002 4:18 AM
-To: Tim Cronin
-Cc: 'Walther@gehag-dsk.de'; netfilter@lists.netfilter.org
-Subject: Re: iptables and linuxVirtualServer
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
+Sent: Friday, October 04, 2002 8:09 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: are these enough now?
 
 
-Hi,
+On Friday 04 October 2002 12:25 pm, PayalR wrote:
 
-Tim Cronin wrote:
-> yup, I've checked the packet exchange for a single page request.
-> 
-> the problem is that since lvs is handling the NAT for http
-> iptables doesn't look like it's tracking state.
+> Hi all,
+> Thanks a lot for the mails.
+>
+> > 161 - snmp - are you managing this system from elsewhere, or is this
+> > machine the snmp monitor ?   UDP 161 only needs to be inbound if
+this
+> > machine is being monitored from elsewhere
+>
+> Well, I don't know anyting about SNMP thing. But the guys at the 
+> server farm suggested I make some changes as told by them in my 
+> snmpd.conf, so that they say I there will be able to monitor my 
+> machine. I guess so I am just a client SNMP. So, which ports to keep 
+> open?
 
-Yes, you're right and I was wrong redirecting you to the netfilter
-mailinglist. 
-We will solve it on the LVS mailinglist and if there are problems with
-netfilter 
-we will come back, ok?
+UDP 161 inbound - to listen for SNMP commands
+UDP 162 outbound - to generate SNMP traps
 
-> if I let iptables handle nat to the web server the line below
-> works.
+> > > Also, nmap shows that 2002/udp globe is open. Shall I close it?
+> >
+> > machine already has the Slapper worm on it, since that opens UDP 
+> > port 2002
+>
+> well, my machine had a slapper worm. I removed the .bugtraq file from 
+> /tmp. Now still the port is open. This is very important to me. How do
 
-Yes, it is clearly the NF_STOLEN interaction of LVS in the NAT part of the
-code.
+> I close the port???? nmap report says,
+> 2002/udp   open        globe
+> How do I know where and what is globe? How do I shut it?
 
-Sorry for the confusion I created,
-Roberto Nibali, ratz
+Sorry - don't know - never had Slapper :-)   Anyone else here got any 
+experience or pointers ?
+
+> > I would recommend setting your OUTPUT chain to ESTABLISHED,RELATED
+>
+> do you mean similar to INPUT rule i.e using -m and all?
+
+Yes.
+
+Antony.
+
 -- 
-echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq' |
-dc
+
+Behind the counter a boy with a shaven head stared vacantly into space,
+a dozen spikes of microsoft protruding from the socket behind his ear.
+
+ - William Gibson, Neuromancer (1984)
+
 
