@@ -1,13 +1,12 @@
-From: <dan-lists.netfilter.org@unpossible.com>
-Subject: RE: Best performance: 2 cards, one on each PCI-X bus,
-	2 cards on one PCI-X bus, or a single card with two interfaces?
-Date: Sat, 11 Dec 2004 23:12:48 -0600
-Message-ID: <E1CdM2t-0006MK-00@deer.gmane.org>
-References: <27594E8BA9D5CA458F5EF87D88B6B48F019834@pxtvjoexd01.pxt.primeexalia.com>
+From: Stephen Jones <hivemynd@hivemynd.net>
+Subject: Re: pptp conntrack patch missing argument
+Date: Sun, 12 Dec 2004 00:32:11 -0600
+Message-ID: <41BBE5EB.50603@hivemynd.net>
+References: <1102718548.41ba265486969@webmail.sld.cu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F019834@pxtvjoexd01.pxt.primeexalia.com>
+In-Reply-To: <1102718548.41ba265486969@webmail.sld.cu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,62 +17,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "'Gary W. Smith'" <gary@primeexalia.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ali <ali@infomed.sld.cu>
+Cc: netfilter@lists.netfilter.org
 
-I want to maximize the number of packets that I can pass between the
-interfaces.  I want to meet the 850Kpps that Harald achieved.
+Hi Ali,
 
+Thanks for the info!  I should be able to give this a spin, against a 
+2.4.28 source tree, and test it in the next week or so!  Thanks again 
+for pointing this out.  I didn't think of scanning the rest of the 
+sources for calls to the same function in other sources, very good plan!
 
------Original Message-----
-From: Gary W. Smith [mailto:gary@primeexalia.com] 
-Sent: Saturday, December 11, 2004 7:04 PM
-To: dan-lists.netfilter.org@unpossible.com; netfilter@lists.netfilter.org
-Subject: RE: Best performance: 2 cards, one on each PCI-X bus,2 cards on one
-PCI-X bus, or a single card with two interfaces?
+Best regards,
 
-What are your trying to accomplish?  Performance for one thing
-differences from another.  Lot's of memory and raid with many disks are
-critical, that is, if your building a high volume SQL server...
+SJ
 
+PS: I CC'd the netfilter list with your suggestion in the hopes that it 
+does indeed fix the problem with the latest pom-ng release.
 
+Ali wrote:
 
-
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
-> bounces@lists.netfilter.org] On Behalf Of dan-
-> lists.netfilter.org@unpossible.com
-> Sent: Saturday, December 11, 2004 3:08 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Best performance: 2 cards, one on each PCI-X bus,2 cards on
-one
-> PCI-X bus, or a single card with two interfaces?
-> 
-> Hello,
-> 
-> I have been sifting the archives to come up with hardware to give me
-the
-> best performance.  I read Harald's threads surrounding the performance
-of
-> dual Opteron system and am building a box based on those specs (fast
-> memory,
-> NAPI, 32bit kernel, etc.).
-> 
-> Here's my question:
-> 
-> My motherboard has two 133Mhz PCI-X busses.  For best performance
-should I
-> (1) put one card on each bus, (2) put two cards on one bus, or (3) use
-a
-> single card with two interfaces?
-> 
-> I appreciate the advice.
-> 
-> Best regards,
-> 
-> Dan
-> 
-> 
+>Hi Stephen,
+>
+>While compiling a 2.4.27 kernel i suffered of the same problem you reported
+>on the netfilter list and as you, searching on the web don't provide me any
+>solution, but digging in the source i found that all calls to ip_nat_used_tuple
+>in net/ipv4/netfilter/ip_nat_proto_* used the same convention:
+>  if (!ip_nat_used_tuple(tuple, conntrack, maniptype, range->flags))
+>changing line 108 in ip_nat_proto_gre.c to that make it compile cleanly. So far
+>i haven't yet tested if it works ok but thougth that you may be interested :).
+>
+>Best regards,
+>  Ali
+>
+>Pd: i'm not in the netfilter list (found your message in google) that's the reason to
+>me writing you directly
+>
+>
+>-------------------------------------------------
+>Este mensaje fue enviado usando el servicio de correo en web de Infomed
+>http://webmail.sld.cu
+>
+>
+>  
+>
 
 
 
