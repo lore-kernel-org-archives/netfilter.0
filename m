@@ -1,11 +1,13 @@
-From: Andrius Kasparavicius <andrius@andrius.org>
-Subject: libip6t_state.so ?
-Date: Tue, 18 Feb 2003 18:02:15 +0200
+From: "hare ram" <hareram@sol.net.in>
+Subject: Lot of MAC Address
+Date: Tue, 18 Feb 2003 21:10:14 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030218160215.GB2601@mail.kalnieciai.lt>
+Message-ID: <05e701c2d764$08de8f20$13fcc5cb@Housecall>
+References: <1045576151.291.153.camel@bigblue>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,11 +18,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: users@ipv6.org, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-hi, has anybody made $subj? source? or should port myself? :-)
+Hi  all
 
-best regards,
-Andrius
+In my LAN, i have lot of MAC address,  ( pc's)
+how do i make a rule for 100 MAC address (PC) to allow
+and any other MAC address to Deny
+
+any suggestions
+thanks
+hare
+
 
