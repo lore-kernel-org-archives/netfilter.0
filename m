@@ -1,12 +1,12 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ip_conntrack cleanup
-Date: Fri, 14 Jun 2002 13:37:07 +0200 (CEST)
+Subject: Re: Autoloading h323 module
+Date: Fri, 14 Jun 2002 13:41:15 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33.0206141333100.17402-100000@blackhole.kfki.hu>
-References: <3CE9F837.3040606@snt.pl>
+Message-ID: <Pine.LNX.4.33.0206141338310.17402-100000@blackhole.kfki.hu>
+References: <20020523172836.GA32496@62-moo-3.acn.waw.pl>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3CE9F837.3040606@snt.pl>
+In-Reply-To: <20020523172836.GA32496@62-moo-3.acn.waw.pl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,23 +18,22 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Wojciech Sobola <Wojciech.Sobola@snt.pl>
+To: jmc <jmc@_REMOVE_prioris.mini.pw.edu.pl>
 Cc: netfilter@lists.samba.org
 
-On Tue, 21 May 2002, Wojciech Sobola wrote:
+On Thu, 23 May 2002, jmc wrote:
 
-> I have chains here, that can't be cleared out. Example:
-> tcp      6 321156 ESTABLISHED src=63.218.135.142 dst=62.xx.x.44 sport=63920 dport=80 [UNREPLIED] src=192.168.101.2
-> dst=63.218.135.142 sport=80 dport=63920 use=1
-...
+> I am trying to autoload <via kmod> some modules from iptables,
 
-Looks like ACK-scanning of the network.
+Some parts of the netfilter modules can be autoloaded. Others cannot.
 
-> Such table can stay even 2 or 3 days. If I put DROP into INPUT or
-> PREROUTING it doesn't change. Is this something suspicious?
+> specifically ip_conntrack_h323.o. I can load it manually, but to do it
+[..]
+> wrongly. I simply expect it to autoload when an h323 connection is made.
 
-Existing conntrack entries cannot be deleted by iptable rules.
-But those are harmless and will be time out later.
+No, protocol helper modules cannot be autoloaded and it won't be possible
+in the future either. But what's wrong with loading in the modules at boot
+time?
 
 Regards,
 Jozsef
