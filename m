@@ -1,15 +1,15 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Subject: Re: multiple mapping
-Date: Wed, 01 Sep 2004 07:33:08 -0400
+From: Mike <1100100@gmail.com>
+Subject: Policy Misunderstanding: RTFM Guidance Requested.
+Date: Wed, 1 Sep 2004 07:54:31 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094038388.2034.15.camel@localhost>
-References: <006701c48ff9$9627b5b0$2a245cc2@cea05>
-	<1094036834.2045.2.camel@localhost>
-	<007f01c49015$9544e610$2a245cc2@cea05>
+Message-ID: <8ca42282040901045464650094@mail.gmail.com>
+References: <7768933ECEDCA644AF7908B278CF125D021454@exchange.datec.com.fj>
+	<3063e5040831212267c70f95@mail.gmail.com>
+Reply-To: Mike <1100100@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <007f01c49015$9544e610$2a245cc2@cea05>
+In-Reply-To: <3063e5040831212267c70f95@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,45 +20,92 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Tomek Macioszek <tomekm@cea.pl>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 2004-09-01 at 07:19, Tomek Macioszek wrote:
-> Thanks for help. I have just only one question?
-> If I make multiple mapping like this:
-> iptables -t nat -A POSTROUTING -s 192.168.10.0/24 -o eth0 -j SNAT --to
-> 4.3.2.0/24
-> I should bind all this addresses (4.3.2.0/24) to eth0?
-> ip address add 4.3.2.2/24 dev eth0
-> ip address add 4.3.2.3/24 dev eth0
-> ip address add 4.3.2.4/24 dev eth0
-> ....
-> ip address add 4.3.2.254/24 dev eth0
-> Best regards
-> T.
-<snip>
-If that is what you want to do, you will probably want to use the NETMAP
-target from patch-o-matic.  The rule that you propose does not guarantee
-a one-to-one mapping.  It does a round-robin mapping.  Thus there is no
-guarantee that 192.168.10.5 maps to 4.3.2.5. In fact, it most likely
-will not.
+I have a linux box acting as router/firewall for my home network.
+It runs Gentoo Linux, kernel 2.4.26 and iptables 1.2.10.
+eth0 -> Internet
+eth1 -> Lan
 
-As far as I know, you will need to bind all of the addresses so that
-they respond to the ARP requests.
+I thought I had seen others on this list discuss starting with a
+completely closed router that denies all traffic - INPUT, OUTPUT, and
+FORWARD; filter, nat, and mangle.  Yet, when I reset my firewall
+Policies to initially DROP all INPUT, OUTPUT, and FORWARD traffic, and
+then append these policies with filter or nat rules, the policies
+still overrule and stop all traffic.
 
-This is where a tool like ISCS comes in handy
-(http://iscs.sourceforge.net).  Not only does it automate the access
-control configuration but it automates NAT and ARP.  You would simply
-create a server with a private IP address of 192.168.10.1-192.168.10.254
-and a public address of 4.3.2.1-4.3.2.254 and check the enforce
-one-to-one box.  It would then create all the NAT rules, the address
-bindings for ARP and distribute them to the gateway.  The project only
-has pre-alpha releases thus far but we are moving quickly toward a full
-release.  Good luck - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-Financially sustainable open source development
-http://www.opensourcedevel.com
+I've read the man page a few times and have found a few tutuorials on
+the net, but I'm still missing the fundamental understanding of how
+policies do/do not affect iptables rules.
 
+Can I get an RTFM push in the right direction on this subject.
+Thanks for your time and patience.
+
+Mike
+
+Maybe I should post the firewall so you can see there are no glaring
+errors in my syntax:
+
+ENABLE_FORWARDING_IPv4="yes"
+
+IPTABLES=/sbin/iptables
+DEPMOD=/sbin/depmod
+MODPROBE=/sbin/modprobe
+
+$DEPMOD -a
+$MODPROBE ip_tables
+$MODPROBE ip_conntrack
+$MODPROBE ip_conntrack_ftp
+$MODPROBE ip_conntrack_irc
+$MODPROBE iptable_nat
+$MODPROBE ip_nat_ftp
+
+echo "   Enabling forwarding.."
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+echo "   Enabling DynamicAddr.."
+echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+
+echo "   Flushing any pre-existing filter rules or conditions."
+$IPTABLES -t filter -F
+$IPTABLES -t nat -F
+$IPTABLES -t mangle -F
+
+echo "   Set the filter/nat/mangle packet Matching Table Policy."
+$IPTABLES -t filter -P INPUT DROP
+$IPTABLES -t filter -P OUTPUT DROP
+$IPTABLES -t filter -P FORWARD DROP
+$IPTABLES -t nat -P PREROUTING DROP
+$IPTABLES -t nat -P POSTROUTING DROP
+$IPTABLES -t nat -P OUTPUT DROP
+$IPTABLES -t mangle -P INPUT DROP
+$IPTABLES -t mangle -P OUTPUT DROP
+$IPTABLES -t mangle -P FORWARD DROP
+$IPTABLES -t mangle -P PREROUTING DROP
+$IPTABLES -t mangle -P POSTROUTING DROP
+
+echo "   INPUT/OUTPUT Rules for Routerbox."
+$IPTABLES -t filter -A INPUT -j ACCEPT
+$IPTABLES -t filter -A OUTPUT -j ACCEPT
+
+echo "   FORWARD Rules for data allowed IN and OUT of the LAN."
+$IPTABLES -t filter -A FORWARD -i eth0 -o eth1 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -t filter -A FORWARD -i eth0 -o eth1 -m state --state NEW -j ACCEPT
+
+
+echo "   Allowing HTTP and SSH Access."
+$IPTABLES -t filter -A INPUT -p tcp -i eth0 --dport 22 -m state
+--state NEW -j ACCEPT
+$IPTABLES -t filter -A INPUT -p tcp -i eth0 --dport 80 -m state
+--state NEW -j ACCEPT
+
+echo "   Enabling NAT MASQUERADE."
+$IPTABLES -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+echo "   Prevent remote machines from spoofing internal IP addresses."
+$IPTABLES -t filter -A INPUT -i eth0 -s 199.201.13.0/24 -j REJECT
+
+echo "   Do not respond to remote Pings."
+$IPTABLES -t filter -A INPUT -p icmp --icmp-type echo-request -j DROP
 
