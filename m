@@ -1,10 +1,10 @@
-From: <yuksel@aydin.no-ip.org>
-Subject: block an ip
-Date: Sat, 14 Sep 2002 02:39:01 -0000 (UTC)
+From: Marian Stepka <marians@itdimensions.com>
+Subject: Slow FTP through NAT box...
+Date: Fri, 13 Sep 2002 22:07:08 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <34638.10.0.0.10.1031971141.squirrel@aydin.no-ip.org>
+Message-ID: <3D8299CC.1CFC740A@itdimensions.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,19 +18,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi List;
 
-I'm a novice. I understand how to block acces to some ports but I didn't
-understand how to block an ip.
+I'm fighthing with NATing issues almost 3 days. Now I'm facing problem,
+that It take extremly long to get passive ftp access to the machine
+after NAT box. I can access it just using ftp command line client from
+Linux machine and none from Win working even PASV mode is enabled. But
+anyway initial handshaking take a pretty long, let's say 2 minutes. Box
+do nothing else just translate range from priavte IP range to normal
+Inet range.
 
-In fact, since 4 days, someone is trying ton hack my network and I have
-his ip (he is using more than 10 ip...).
+Other services works pretty well as ssh, web. But FTP driving me
+slightly mad. Do anybody out there have any idea what I did wrong or
+when I can find some info about? Probably I read whole Google. Or I'm
+blind or what...
 
-I dont really care cause he is using some funny ways (he thinks that I am
-under IIS :) ), but I prefer to stop him now.
+Marian
 
-Friendly,
-Yuksel.
-
-
+--
+*IN ROOT WE TRUST*
+Marian Stepka <mailto:stepka@tris.sk>
 
