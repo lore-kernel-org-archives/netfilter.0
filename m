@@ -1,14 +1,13 @@
-From: Tom Smith <tom@openadventures.org>
-Subject: Re: PPP Routing
-Date: Thu, 27 Feb 2003 08:23:18 -0700
+From: Magnus Solvang <magnus@solvang.net>
+Subject: Re: Problem with string (remove References-line in mailhead)
+Date: Thu, 27 Feb 2003 16:01:31 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E5E2D66.1050603@openadventures.org>
-References: <3E5D008A.7070804@openadventures.org> <20030226225616.GA380@tekilla.homeip.net>
+Message-ID: <20030227150131.GB30319@first.knowledge.no>
+References: <20030225215326.GA30804@first.knowledge.no> <087d01c2de67$5461f9a0$13fcc5cb@Housecall> <20030227134823.GD27107@first.knowledge.no> <200302270937.11589.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------000306070900080800020107"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030226225616.GA380@tekilla.homeip.net>
+Content-Disposition: inline
+In-Reply-To: <200302270937.11589.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,101 +17,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: wdyck@gmx.net
-Cc: netfilter@lists.netfilter.org
-
-
---------------000306070900080800020107
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by uccinc.net id h1RFNhS13417
-
-Thank you, this turned out to be the solution (ppp+).
-
-Tom
-
-Willi Dyck wrote:
-
->On Wed, Feb 26, 2003 at 10:59:38AM -0700, Tom Smith wrote:
-> =20
->
->>RedHat 7.3 Kernel 2.4.9-31
->>iptables 1.2.5
->>
->>I have a working Firewall/VPN. Problem is that I need to create a=20
->>seperate set of rules for each ppp# connection. For example, ppp0's=20
->>ruleset would be:
->>
->>$IPTABLES -A INPUT -i ppp0 -s $INTNET -d $INTNET -j ACCEPT
->>$IPTABLES -A OUTPUT -o ppp0 -s $INTNET -d $INTNET -j ACCEPT
->>$IPTABLES -A FORWARD -i ppp0 -d $INTNET -j ACCEPT
->>$IPTABLES -A FORWARD -o ppp0 -d $INTNET -j ACCEPT
->>
->>Is there a way to dynamically create the ppp# as new connections come=20
->>and go?
->>   =20
->>
->
->You might try 'ppp+' instead of 'ppp0'. Although it might not be what
->you want, since it will not be loaded dynamically, but it will match
->dynamically for all ppp# interfaces. See the netfilter docs for further
->info. Hope that helps.
->
->Gru=DF/Regards -- Willi
->
-> =20
->
-
---------------000306070900080800020107
-Content-Type: text/html; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <title></title>
-</head>
-<body>
-Thank you, this turned out to be the solution (ppp+).<br>
-<br>
-Tom<br>
-<br>
-Willi Dyck wrote:<br>
-<blockquote type="cite"
- cite="mid20030226225616.GA380@tekilla.homeip.net">
-  <pre wrap="">On Wed, Feb 26, 2003 at 10:59:38AM -0700, Tom Smith wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">RedHat 7.3 Kernel 2.4.9-31
-iptables 1.2.5
+Quoting Joel Newkirk (netfilter@newkirk.us):
+| On Thursday 27 February 2003 08:48 am, Magnus Solvang wrote:
+| > Quoting hare ram (hareram@sol.net.in):
+| > | Hi all
+| >
+| > Please remove the "References"-line in the mailheader when
+| > replying to someone elses mail while changing the topic.
+[...]
+| Not a particularly helpful suggestion
+[...]
+| More helpful would be to suggest NOT using "reply" and then changing the 
+| subject, since that is VERY likely how that field ended up in the header 
+| of his message.
 
-I have a working Firewall/VPN. Problem is that I need to create a 
-seperate set of rules for each ppp# connection. For example, ppp0's 
-ruleset would be:
+I believe that was implied in my response to Ram. This is a technical
+mailinglist. If someone can't edit the headers, then don't reply to
+someone elses mail when starting a new thread.
 
-$IPTABLES -A INPUT -i ppp0 -s $INTNET -d $INTNET -j ACCEPT
-$IPTABLES -A OUTPUT -o ppp0 -s $INTNET -d $INTNET -j ACCEPT
-$IPTABLES -A FORWARD -i ppp0 -d $INTNET -j ACCEPT
-$IPTABLES -A FORWARD -o ppp0 -d $INTNET -j ACCEPT
-
-Is there a way to dynamically create the ppp# as new connections come 
-and go?
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-You might try 'ppp+' instead of 'ppp0'. Although it might not be what
-you want, since it will not be loaded dynamically, but it will match
-dynamically for all ppp# interfaces. See the netfilter docs for further
-info. Hope that helps.
-
-Gru&szlig;/Regards -- Willi
-
-  </pre>
-</blockquote>
-</body>
-</html>
-
---------------000306070900080800020107--
-
-
+- M
 
