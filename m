@@ -1,13 +1,14 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: problem with trying the example
-Date: Mon, 01 Dec 2003 09:00:52 +0100
+From: Oleg Savostyanov <savostyanov@internetplustravel.ru>
+Subject: Re: pptp-conntrack-nat
+Date: Mon, 1 Dec 2003 14:43:22 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070265652.29823.3.camel@porky>
-References: <00a201c3b7ad$06b73100$cb0210ac@jz105>
+Message-ID: <396087453.20031201144322@internetplustravel.ru>
+References: <13121614429.20031127183415@internetplustravel.ru>
+Reply-To: Oleg Savostyanov <savostyanov@internetplustravel.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-EQk1mzFWa41okmmnTwph"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00a201c3b7ad$06b73100$cb0210ac@jz105>
+In-Reply-To: <13121614429.20031127183415@internetplustravel.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +18,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Jee J.Z." <jz105@york.ac.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+I didn't receive any answer to my question
+Is there any other group - may be which deal with extention
+developing to IP Tables?
+I even tryed to direct my question to developer of that
+package Harald Welte, but didn't got any answer.
 
 
---=-EQk1mzFWa41okmmnTwph
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 
-Le lun 01/12/2003 =C3=A0 02:47, Jee J.Z. a =C3=A9crit :
-> Hi all,
->=20
-> I am new to netfilter and even linux. I just wish to try the example code=
- in the man page of libipq (I saved it as test.c and have compiled it to te=
-st.o). But when I make it: #cc test.o -o test, the following errors showed =
-up:
->=20
-> [root@kite1 netfilter]# cc test.o -o test
+Thursday, November 27, 2003, 6:34:15 PM, you wrote:
 
-you need to link with the libipq library :
-=20
-	cc test.o -o test -lipq
+OS> I tryed to install extra package - pptp-conntrack-nat
+OS> but failed to do this.
+
+OS> The script tells me "Could not find place to slot in
+OS> ip_conntrack.h line", while testing and if I force it to install,
+OS> it installs.
+OS> And after that I do not see additional configure options while
+OS> configuring my kernel.
+OS> Do you have any ideas what to do?
 
 
---=20
-Eric Leblond
-Nufw, Now User Filtering Works (http://www.nufw.org)
+OS> Welcome to Rusty's Patch-o-matic!
+OS> Kernel:    /usr/src/kernel-source-2.4.18
+OS> Userspace: /usr/src
+OS> Each patch is a new feature: many have minimal impact, some do not.
+OS> Almost every one has bugs, so I don't recommend applying them all!
+OS> -------------------------------------------------------
+OS> Testing... pptp-conntrack-nat.patch NOT APPLIED (8 missing files)
+OS> The extra/pptp-conntrack-nat patch:
+OS>    Author: Harald Welte <laforge@gnumonks.org>
+OS>    Status: Beta
+OS>    This adds CONFIG_IP_NF_PPTP:
+OS>    Connection tracking and NAT support for PPTP.
+OS>    Note that this code currently has limitations
+OS>    - can only NAT connections from PNS to PAC
+OS>    - doesnt' support multiple calls within one session
+OS> -----------------------------------------------------------------
+OS> Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?]
+OS> Testing patch extra/pptp-conntrack-nat.patch...
+OS>    Placed new Config.in line
+OS>    Placed new Configure.help entry
+OS>    Placed new Makefile line
+OS>    Placed new Makefile line
+OS>    Placed new ip_conntrack.h line
+OS>    Placed new ip_conntrack.h line
+OS> Could not find place to slot in ip_conntrack.h line
+OS> Could not find place to slot in ip_conntrack.h line
+OS> Could not find place to slot in ip_conntrack.h line
+OS> Could not find place to slot in ip_conntrack.h line
+OS> Could not find place to slot in ip_conntrack.h line
+OS> Could not find place to slot in ip_conntrack.h line
+OS> TEST FAILED: patch NOT applied.
+OS> [Press enter to continue]
+OS> Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] f
+OS> Applying patch extra/pptp-conntrack-nat.patch...
+OS> Failed to patch copy of /usr/src/kernel-source-2.4.18
 
---=-EQk1mzFWa41okmmnTwph
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
+  
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQA/yvU0nxA7CdMWjzIRAgOFAKCKLF+uG7bhBFU5EwEReLRaUSkfnQCdFzJ1
-7iK2/ATd6PqLLQANHwSgb5o=
-=DBVU
------END PGP SIGNATURE-----
 
---=-EQk1mzFWa41okmmnTwph--
+-- 
+Best regards,
+ Oleg                            mailto:savostyanov@internetplustravel.ru
+
 
