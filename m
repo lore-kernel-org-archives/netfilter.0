@@ -1,11 +1,13 @@
-From: Krunk <krunkalot@hotpop.com>
-Subject: NFS and iptables.
-Date: Sat, 24 Apr 2004 17:00:37 -0500
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: NFS and iptables.
+Date: Sun, 25 Apr 2004 01:12:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1082844037.10067.20.camel@james>
+Message-ID: <1082848320.11802.12.camel@anduril.intranet.cartel-securite.net>
+References: <1082844037.10067.20.camel@james>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1082844037.10067.20.camel@james>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,76 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Krunk <krunkalot@hotpop.com>
+Cc: netfilter@lists.netfilter.org
 
-I've bound my NFS ports (moountd, statd, lockd, quotad) and freed up the
-ports they are bound to, but the client still hangs when I try to mount
-the remote share. 
+Le dim 25/04/2004 =E0 00:00, Krunk a =E9crit :
+> I've bound my NFS ports (moountd, statd, lockd, quotad) and freed up th=
+e
+> ports they are bound to, but the client still hangs when I try to mount
+> the remote share.
+[...]
+> command that opens ports:
+>  NFS=3D"2049 32764 32765 32766 32767 32768 32772 sunrpc"
+[...]
+> Apr 24 16:53:35 tuxmac DROPl:IN=3Deth1 OUT=3D MAC=3D<mac here>
+> SRC=3D192.168.xxx.xxx DST=3D192.168.xxx.xxx LEN=3D60 TOS=3D0x00 PREC=3D=
+0x00
+> TTL=3D64 ID=3D41035 DF PROTO=3DTCP SPT=3D896 DPT=3D111 WINDOW=3D5840 RE=
+S=3D0x00 SYN
+> URGP=3D0
 
-rpcinfo -p
- program vers proto   port
-    100000    2   tcp    111  portmapper
-    100000    2   udp    111  portmapper
-    100024    1   udp  32765  status
-    100024    1   tcp  32765  status
-    100003    2   udp   2049  nfs
-    100003    3   udp   2049  nfs
-    100003    2   tcp   2049  nfs
-    100003    3   tcp   2049  nfs
-    100021    1   udp  32772  nlockmgr
-    100021    3   udp  32772  nlockmgr
-    100021    4   udp  32772  nlockmgr
-    100021    1   tcp  32769  nlockmgr
-    100021    3   tcp  32769  nlockmgr
-    100021    4   tcp  32769  nlockmgr
-    100005    1   udp  32767  mountd
-    100005    1   tcp  32767  mountd
-    100005    2   udp  32767  mountd
-    100005    2   tcp  32767  mountd
-    100005    3   udp  32767  mountd
-    100005    3   tcp  32767  mountd
+As far as I can see, your client is trying to connect to portmapper in
+order to get NFS service port back. But there's nothing in your script
+excerpt that opens TCP/111.
 
-command that opens ports:
- NFS="2049 32764 32765 32766 32767 32768 32772 sunrpc"
-# opening tcp for NFS
-for i in $NFS
-do
-   echo -n "$i"
-   $IPT -A OUTPUT  -o $EXTIF -p tcp -s $EXTIP  \
-    --dport $i --syn -m state --state NEW -j ACCEPT
-   $IPT -A FORWARD -i $INTIF1 -p tcp -s $INTNET1 \
-    --dport $i --syn -m state --state NEW -j ACCEPT
-   $IPT -A FORWARD -i $INTIF2 -p tcp -s $INTNET2 \
-    --dport $i --syn -m state --state NEW -j ACCEPT
-done
-echo ""
-#opening udp for NFS
-for i in $NFS
-do
-    echo -n "$i"
-    $IPT -A OUTPUT  -o $EXTIF -p udp -s $EXTIP  \
-        --dport $i -m state --state NEW -j ACCEPT
-    $IPT -A FORWARD -i $INTIF1 -p udp -s $INTNET1 \
-        --dport $i -m state --state NEW -j ACCEPT
-    $IPT -A FORWARD -i $INTIF2 -p udp -s $INTNET2 \
-        --dport $i -m state --state NEW -j ACCEPT
-done
-echo ""
+PS : maybe you should consider use the RPC helper available in
+patch'o'matic extra section.
 
-
-This same loop is used for every service I've opened up (cups, ssh, etc)
-and works fine. So I'm sure the loop itself works (e.g. it's in the
-right spot sequentially, and the rest of the script works fine).
-
-output of log file when client is trying to connect:
-
-Apr 24 16:53:35 tuxmac DROPl:IN=eth1 OUT= MAC=<mac here> SRC=192.168.xxx.xxx DST=192.168.xxx.xxx LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=41035 DF PROTO=TCP SPT=896 DPT=111 WINDOW=5840 RES=0x00 SYN URGP=0
-Apr 24 16:53:37 tuxmac DROPl:IN=ppp0 OUT= MAC= SRC=129.81.224.6 DST=<my isp assigned ip> LEN=89 TOS=0x00 PREC=0x00 TTL=46 ID=17196 DF PROTO=TCP SPT=143 DPT=49366 WINDOW=32900 RES=0x00 ACK PSH FIN URGP=0
-Apr 24 16:53:38 tuxmac DROPl:IN=eth1 OUT= MAC=<eth1 mack here> SRC=192.168.xxx.xxx DST=192.168.xxx.xxx LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=41036 DF PROTO=TCP SPT=896 DPT=111 WINDOW=5840 RES=0x00 SYN URGP=0
-Apr 24 16:53:44 tuxmac DROPl:IN=eth1 OUT= MAC=<eth1 mac here> SRC=192.168.xxx.xxx DST=192.168.xxx.xxx LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=41037 DF PROTO=TCP SPT=896 DPT=111 WINDOW=5840 RES=0x00 SYN URGP=0
-
-The source and destination ip's are right.
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
