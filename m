@@ -1,14 +1,12 @@
-From: David Cannings <lists@edeca.net>
-Subject: Re: iptables dnat to loopback
-Date: Sun, 8 Aug 2004 09:41:38 +0100
+From: "Don Hughes" <support@microtechniques.com>
+Subject: string match
+Date: Sat, 07 Aug 2004 13:45:54 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408080941.38256.lists@edeca.net>
-References: <D5C9032B2B09C64EA2409D6214E91AC905124D@asimail2.alphanumeric.com> <1091945878.12669.0.camel@localhost>
+Message-ID: <4114DD12.12677.952F87@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1091945878.12669.0.camel@localhost>
-Content-Disposition: inline
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,20 +19,13 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 08 August 2004 07:17, Damian Gatabria wrote:
-> :o( no luck.
-> I even tried -F ing INPUT, FORWARD, OUTPUT, PREROUTING and POSTROUTING
-> before adding the rule, (all policies set to ACCEPT) and still no luck!
-> Forwarding is enabled,
-> net.ipv4.conf.all.forwarding = 1
-> net.ipv4.ip_forward = 1
-> and still the packets are going nowhere... however giving
-> the loopback an alias with an ip address of, say, 200.136.136.136
-> works... so why can't I route to 127.0.0.x? Is there anything
-> else I should check/add?
+Is there a version of the string match that works with the 2.6.5 
+kernel?
 
-You can't send packets from non 127/8 addresses to 127/8.  The kernel 
-filters them out and drops them as it considers them "martians".
+..don
 
-David
+support@microtechniques.com
+White Plains, NY
+
+
 
