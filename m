@@ -1,14 +1,15 @@
-From: Jamie Pratt <jamie@nucdc.org>
-Subject: Re: problems with alias
-Date: Fri, 16 Jul 2004 09:05:29 -0400
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Netfiler on RBL (fwd)
+Date: Fri, 16 Jul 2004 06:49:30 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40F7D299.8010803@nucdc.org>
-References: <12a1fd421dcf7411b2acdd8a5da18f59@147.162.2.222>
-Reply-To: jamie@nucdc.org
+Message-ID: <20040716134930.GG2214@obroa-skai.de.gnumonks.org>
+References: <Pine.LNX.4.33.0407152022110.771-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="6BvahUXLYAruDZOj"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <12a1fd421dcf7411b2acdd8a5da18f59@147.162.2.222>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.33.0407152022110.771-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +19,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: mh+netfilter@zugschluss.de, netfilter@lists.netfilter.org
 
 
+--6BvahUXLYAruDZOj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Batstru wrote:
+On Thu, Jul 15, 2004 at 08:23:20PM +0200, Jozsef Kadlecsik wrote:
+> Hi Harald,
+>=20
+> Surely, you should know about this. Even when "SpamCop is aggressive and
+> often errs".
 
-> Hi all!
-> I changed my server running redhat9 (kernel 2.4.x) with a new one with
-> fedora core 2 (kernel 2.6.x): each one has  2 ethernet interfaces, so I copy
-> network configuration fron rh9 to fc2 
-> 
-> eth0 --> 192.168.1.254 / 255.255.255.0
-> eth1 --> 82.186.92.90 / 255.255.255.254
-> eth1:1 --> 82.186.92.91 / 255.255.255.254
-> eth1:2 --> 82.186.92.92 / 255.255.255.254
-> eth1:3 --> 82.186.92.93 / 255.255.255.254
-> eth1:4 --> 82.186.92.93 / 255.255.255.254
-> also, I copy and apply iptables configuration but it does not work well.
-> now iptables doesn\'t apply rules to virtual interfaces, eth1...eth4.
-> a line of my configiguration files is:
-> -A INPUT -p tcp -m tcp -m state -d 82.186.92.91 --dport 20 --state NEW -j
-> ACCEPT
-> I tried different rules configuration but it still not work.
-> 
-> can you help me? 
->  --
->  Email.it, the professional e-mail, gratis per te: http://www.email.it/f
->  
->  Sponsor:
->  Lerboristeria.biz: per la tua bellezza e salute il miglior assortimento 
-> di prodotti erboristici ed oggettistica online
-> 
->  Clicca qui: http://adv.email.it/cgi-bin/foclick.cgi?mid=2152&d=20040716
-> 
-> 
+Thanks, Jozsef.
 
-Have you tried to use the iproute2 suite for aliasing instead of 
-ifconfig? I believe the ifconfig way is considered "deprecated". Then, 
-specify your rules by interface and/or ip and it should work properly - 
-maybe the old method only works in iptables using the interface name now?
+> ---------- Forwarded message ----------
+> Date: Thu, 15 Jul 2004 19:12:23 +0200
+> From: Marc Haber <mh+netfilter@zugschlus.de>
+> To: netfilter <netfilter@lists.netfilter.org>
+> Subject: Re: Netfiler on RBL
+>=20
+> On Thu, Jul 15, 2004 at 01:03:33PM -0400, David Cary Hart wrote:
+> > Jul 15 10:56:03 mail postfix/smtpd[18286]: connect from
+> > lakshmi.netfilter.org[62.128.28.23]
+> > Jul 15 10:56:03 mail postfix/smtpd[18286]: NOQUEUE: reject: RCPT from
+> > lakshmi.netfilter.org[62.128.28.23]: 554 Service unavailable; Client
+> > host [62.128.28.23] blocked using bl.spamcop.net; Blocked - see
+> > http://www.spamcop.net/bl.shtml?62.128.28.23;
+>=20
+> http://www.spamcop.net/bl.shtml says "However, it should be noted that
+> SpamCop is aggressive and often errs on the side of blocking mail".
+> You don't want to use any list that bases its result on user reports
+> for blocking.
 
-example:
+yes, I know about this.  I automatically receive lots of nagios tickets
+about this.  It also isn't the first time this happens to us. =20
 
-## old ip aliasing
-##/sbin/ifconfig eth0:0 192.168.0.1
-##/sbin/ifconfig eth0:1 192.168.0.2
+To be honest, I don't really care about spamcop. =20
 
-## New IP aliasing using ip tool from iproute2 package:
-/sbin/ip addr add 192.168.0.1/24 brd + dev eth0
-/sbin/ip addr add 192.168.0.2/24 brd + dev eth0
+> Greetings
+> Marc
 
-regards,
-jamie
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
+--6BvahUXLYAruDZOj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFA99zpXaXGVTD0i/8RAq4BAJ9mzqPLl4DZEGXN8Auu/XDDFQFgyQCghelr
+9JczN24+e/L8pPCp0tXFOo0=
+=6gIu
+-----END PGP SIGNATURE-----
+
+--6BvahUXLYAruDZOj--
 
