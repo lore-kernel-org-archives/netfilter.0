@@ -1,12 +1,13 @@
-From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
-Subject: RE: Multiple VPN Masquerading Works !! Thanks Everyone !
-Date: Mon, 9 Sep 2002 09:00:04 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: bandwidth again maybe O T
+Date: Mon, 9 Sep 2002 09:59:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019831@hslex01.hsl-brabantzuid.nl>
+Message-ID: <20020909085945.JAQ24905.mta01-svc.ntlworld.com@there>
+References: <FLEKIPPLAEDMJMOOBBDPGEKBCNAA.stewart.thompson@shaw.ca> <200209091158.11787@.>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C257CE.86659940"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200209091158.11787@.>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,92 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Monday 09 September 2002 7:31 am, PayalR wrote:
 
-------_=_NextPart_001_01C257CE.86659940
-Content-Type: text/plain;
-	charset="iso-8859-1"
+> Hi,
+> 	Thanks a lot for the mails. I am late to reply cos' my connection was down
+> for 4 days.
+> Well, I put the rules like
+> ptables -I FORWARD -d 192.168.0.1 -p tcp
+> iptables -I FORWARD -s 192.168.0.1 -p tcp
+>
+> Yes, I can see the logs by,
+> iptables -v -L
+> But there is nothing in FORWARD chain. The input and output chains are
+> filled up.
+> What is the problem?
 
-> Turns out my problem was because my routing isn't right. The 
-> pptp server
-> should have a default gateway to the netfilter box (like hard_ware
-Actually I forgot about that one, but yes... That's right.
+Are you trying to count packets going in & out of the firewall machine, or 
+are you trying to count packets going through the firewall between two other 
+machines ?
 
-> said), and also in my iptables rules I need to set the 
-> default rules to
-> DROP for INPUT and OUTPUT. I guess it won't work if we have ACCEPT for
-> all INPUT and OUTPUT when we try to do DNAT (correct me if I'm wrong).
-> 
-What broke things for me once was :
-echo 1 > /proc/sys/net/ipv4/conf/all/rp_filter
-Thought I was being smart, but I had asymetric routing :o)
+eg if you ping the firewall itself from some client, you will see packets 
+comin the INPUT chain, and replies go out the OUTPUT chain.   This will not 
+generate any FORWARD packets at all.
 
-Don't know about the default policy. I think it should also work with
-ACCECT, but you don't want that anyway if DROP works.
+if you ping machine A on one side of your firewall from machine B on the 
+other side of your firewall (neither A nor B actually is your firewall) then 
+you will see packets in the FORWARD chain but nothing in the INPUT or OUTPUT 
+chains.
 
-But ehm.. You tried 2 pptp patches : from pom and from impsec.org
-Which one have you got working ?
+Does this clarify things ?
 
+Antony.
 
-Rob
+-- 
 
-------_=_NextPart_001_01C257CE.86659940
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+There are two possible outcomes.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2650.12">
-<TITLE>RE: Multiple VPN Masquerading Works !! Thanks Everyone !</TITLE>
-</HEAD>
-<BODY>
+If the result confirms the hypothesis, then you've made a measurement.
+If the result is contrary to the hypothesis, then you've made a discovery.
 
-<P><FONT SIZE=3D2>&gt; Turns out my problem was because my routing =
-isn't right. The </FONT>
-<BR><FONT SIZE=3D2>&gt; pptp server</FONT>
-<BR><FONT SIZE=3D2>&gt; should have a default gateway to the netfilter =
-box (like hard_ware</FONT>
-<BR><FONT SIZE=3D2>Actually I forgot about that one, but yes... That's =
-right.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>&gt; said), and also in my iptables rules I need to =
-set the </FONT>
-<BR><FONT SIZE=3D2>&gt; default rules to</FONT>
-<BR><FONT SIZE=3D2>&gt; DROP for INPUT and OUTPUT. I guess it won't =
-work if we have ACCEPT for</FONT>
-<BR><FONT SIZE=3D2>&gt; all INPUT and OUTPUT when we try to do DNAT =
-(correct me if I'm wrong).</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>What broke things for me once was :</FONT>
-<BR><FONT SIZE=3D2>echo 1 &gt; =
-/proc/sys/net/ipv4/conf/all/rp_filter</FONT>
-<BR><FONT SIZE=3D2>Thought I was being smart, but I had asymetric =
-routing :o)</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Don't know about the default policy. I think it =
-should also work with ACCECT, but you don't want that anyway if DROP =
-works.</FONT></P>
-
-<P><FONT SIZE=3D2>But ehm.. You tried 2 pptp patches : from pom and =
-from impsec.org</FONT>
-<BR><FONT SIZE=3D2>Which one have you got working ?</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>Rob</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C257CE.86659940--
+ - Enrico Fermi
 
