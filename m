@@ -1,13 +1,13 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: VPN Clients
-Date: Thu, 5 Sep 2002 13:27:35 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Modem to Ethernet Bridge
+Date: Thu, 5 Sep 2002 18:09:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020905172735.GJ7289@cannon.eng.us.uu.net>
-References: <200209051044.48905.marks@crvinc.com>
+Message-ID: <200209051709.g85H9Jv01063@vulcan.rissington.net>
+References: <OE393fxdIvrLLKEUf5r00006d48@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200209051044.48905.marks@crvinc.com>
+In-Reply-To: <OE393fxdIvrLLKEUf5r00006d48@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mark Seamans <marks@crvinc.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi Mark,
+On Thursday 05 September 2002 4:37 pm, hard__ware wrote:
 
-On Thu, Sep 05, 2002 at 10:44:48AM -0500, Mark Seamans wrote:
+> Although this metod maybee hard at first it is a great experiance to
+> learn..
+>
+> Try using Portslave & Radius .. :D
+>
+> hope this help :D
 
-> I see below that someone asked which VPN client to use....
-> I have the same question, but I will be a bit more specific.
+Perhaps you could give a bit more information about this ?
 
-To be more specific you have to say first what kind of VPN you're
-talking about. PPTP or IPsec.
+1. Where do we find the Portslave and Radius software ?
+2. Are there any good HOWTOs, FAQs, or other documentation for what you is 
+quite a hard process ?
+3. Are there any problems with the end result?
 
-Ramin
+Antony.
 
-> 
-> How about a Windows Client???  The last time I looked there was not Freeswan 
-> for Windows.  Also, has anyone used the Cisco VPN Client?
-> Free would be nice....
-> 
-> Thanks!
-> 
-> Mark
+-- 
+
+Never write it in Perl if you can do it in Awk.
+Never do it in Awk if sed can handle it.
+Never use sed when tr can do the job.
+Never invoke tr when cat is sufficient.
+Avoid using cat whenever possible.
 
