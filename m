@@ -1,11 +1,11 @@
-From: "=?EUC-KR?B?s93HysXN?=" <netfilter@hanmail.net>
-Subject: hi i have a problem..
-Date: Thu, 06 Jun 2002 04:25:32 +0900 (KST)
+From: Tony Earnshaw <tonni@billy.demon.nl>
+Subject: Re: iptables compile trouble
+Date: 05 Jun 2002 21:26:20 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020606042532.HM.00000000000zGH7@www81.hanmail.net>
-Reply-To: "=?EUC-KR?B?s93HysXN?=" <netfilter@hanmail.net>
+Message-ID: <1023305181.4298.12.camel@billy.demon.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-In3RDtzG2aDhGJiwKcUr"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,25 +16,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/html; charset="euc-kr"
-To: netfilter@lists.samba.org
+To: "L.Kremkow" <kremkow@polytomy.org>
+Cc: netfilter@lists.samba.org
 
-c29ycnkgbXkgRW5nbGlzaCBpcyBwb29yCjxicj5pIGZpbmQgdGhlIGtlcm5lbC11c2VyIGNvbW11
-bmljYXRpb24gbWV0aG9kCjxicj5pIGZvdW5kIHRoaXMgbWV0aG9kICwgaXMgaXQgcmlnaHQ/Cjxi
-cj4KPGJyPjEgcHJvYyBmaWxlIHN5c3RlbQo8YnI+MiBpb2N0bAo8YnI+MyBuZXRsaW5rCjxicj40
-IGZpbGUKPGJyPjUgc3lzY3RsIAo8YnI+Cjxicj5idXQgaSBoYXZlIG5vIHNhbXBsZSBzb3VyY2Ug
-b3IgZG9jIChhbnkgYm9keSBoZWxwIG1lLikgICAgICAgICBbcXVlc3Rpb24gMV0KPGJyPmFuZCBp
-IGxpa2UgdG8ga25vdyBpcHRhYmxlJ3Mga2VybmVsLXVzZXIgY29tbXVuaWNhdGlvbiBtZXRob2Qu
-IFtxdWVzdGlvbiAyXQo8YnI+Cjxicj50aGFua3MgZm9yIHJlYWRpbmdeXgo8aW1nIHNyYz0iaHR0
-cDovL3d3dzgxLmhhbm1haWwubmV0L01haWwtYmluL2Noa2NtYWlsP2Zyb209bmV0ZmlsdGVyJnJj
-cHQ9bmV0ZmlsdGVyJTQwbGlzdHMlMkVzYW1iYSUyRW9yZyZtc2dpZD0yMDAyMDYwNjA0MjUzMiUy
-RUhNJTJFMDAwMDAwMDAwMDB6R0g3JTQwd3d3ODElMkVoYW5tYWlsJTJFbmV0Ij4KCjxicj48dGFi
-bGUgYm9yZGVyPTAgY2VsbHBhZGRpbmc9NSBjZWxsc3BhY2luZz0wIHdpZHRoPTEwMCUlPgo8dHI+
-PHRkIGJhY2tncm91bmQ9J2h0dHA6Ly9pbWFnZS5oYW5tYWlsLm5ldC9oYW5tYWlsL2dlbmVyYWwv
-ZG90bGluZV9zaW0uZ2lmJyBjb2xzcGFuPTIgaGVpZ2h0PTE+PC90ZD48L3RyPgo8dHI+Cjx0ZCB2
-YWxpZ249InRvcCIgbm93cmFwPjxmb250IGNvbG9yPSIjMzEyNDAwIiBzdHlsZT0iZm9udC1zaXpl
-OjlwdDsiPgoiv+y4riDAzsXNs90sIERhdW0iIDxhIGhyZWY9aHR0cDovL3d3dy5kYXVtLm5ldCB0
-YXJnZXQ9X3RvcD48Zm9udCBjb2xvcj0iIzMxMjQwMCI+aHR0cDovL3d3dy5kYXVtLm5ldDwvZm9u
-dD48L2E+PC9mb250PjwvdGQ+CjwvdHI+Cjx0cj4KPHRkIGFsaWduPSJjZW50ZXIiPjxpbWcgc3Jj
-PSdodHRwOi8vaW1hZ2UuaGFubWFpbC5uZXQvaG0vaW1fd2N1cC5naWYnIHdpZHRoPTUxMCBoZWln
-aHQ9Njc+PC90ZD4KPC90cj4KPC90YWJsZT4KCgoK
+
+--=-In3RDtzG2aDhGJiwKcUr
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+ons, 2002-06-05 kl. 20:29 skrev L.Kremkow:
+
+> At this point I'm stuck. Any help would be appreciated.
+
+Linux, you say. What distro?
+
+Are you trying to compile a distro-specific kernel, or kernel.org kernel
+code?
+
+If it's a distro kernel, has it put the source code where it's supposed
+to be?
+
+How did you configure the kernel:
+- 'make config',
+- 'make menuconfig'
+- 'make xconfig'?
+
+Does it comprise Netfilter support and have you included this?
+
+Have you run 'make pending-patches', or something else?
+
+Did you do that before compiling your kernel?
+
+What version of gcc are you using?
+
+Why would you think everyone on this list is clairvoyant?
+
+Tony
+
+--=20
+
+Tony Earnshaw
+
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
+
+
+
+--=-In3RDtzG2aDhGJiwKcUr
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA8/mXb99dgUTvnuYERAnNfAJ9J4iS9ROvqPBhBycJ9bMdg8yx2EACfZ3Y+
+ZO4A7pHPFdZJmQ+BaanpjVM=
+=sMNs
+-----END PGP SIGNATURE-----
+
+--=-In3RDtzG2aDhGJiwKcUr--
+
+
