@@ -1,9 +1,9 @@
-From: "Carlo Florendo" <carlo@hq.astra.ph>
-Subject: Re: local DNAT with bind,postfix,and iptables
-Date: Thu, 16 Oct 2003 14:53:56 -0800
+From: "Simon Garner" <sgarner@expio.co.nz>
+Subject: Re: NAT with two Internet links
+Date: Thu, 16 Oct 2003 20:45:37 +1300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005b01c39438$610bd270$200aa8c0@thorin>
-References: <DAAAFFB7B8C62F40BC87BF3E729F79E1296038@ibfdmail.ibfd.oin>
+Message-ID: <01d101c393b9$a8e3f390$0301a8c0@SIMON>
+References: <01b801c393b0$3c837080$0301a8c0@SIMON>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,59 +17,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Gaby Schilders <G.Schilders@ibfd.org>
-Cc: netfilter list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> ----- Original Message -----
-> From: "Gaby Schilders"
+On Thursday, October 16, 2003 7:37 PM [GMT+1200=NZT],
+Simon Garner <sgarner@expio.co.nz> wrote:
+
+> Hi,
 >
-> Perhaps I'm out of line here,
-
-No. Not at all :)
-
-but there are several ways leading to Rome,
-> as
-> they say here.
+> I have a small network with several Windows client PCs, a Linux
+> firewall/server, and two links to the Internet. What I want to do is
+> have certain traffic (based on source and/or destination ports) routed
+> through one link while everything else goes through the other.
 >
-> 1) Postfix trick mentioned by George (and obviously having only one
-> postfix
-> box instead of two with a voodoo like setup to compensate... ;-)
-> 2) Bind views (show the internal world something different than the
-> outside). This seems to generally be the most standard and most advised
-> way
-> of handling this kind of problem. See the Bind administrator guide at
-> isc.org.
-> 3) Local DNAT has been implemented but through p-o-m patches (in
-> CVS/snapshots only afaik), not standard kernel and I've never tried it so
-> I
-> don't know how good it will work. Use the CVS web-interface to look at the
-> patches/comments.
 
-Those insights are really useful.  Upon reading what you've mentioned, I
-remember split DNS.  The postfix trick by George was also new to me.
-However, I don't think I could try the patch soon.
+Nevermind, after a bit more googling I found the answer myself. The
+solution is to mark the wanted packets with iptables and then route them
+with iproute2, as per:
+http://www.lartc.org/howto/lartc.netfilter.html
 
-
-> 4) There was a four. It slipped my mind while thinking of the other
-> options
-> and I'll mention it as soon as it comes back to me... :-|
->
-> If you need more explanation, do ask, but I'm very busy today/tomorrow so
-> I
-> may not respond before Monday.
-
-Ok.  Just make sure you post them.  It could be something new and something
-I haven't heard of before.
-Some might also find that useful.
-
-Thanks!
-
-Best Regards,
-
-Carlo
-------
-Carlo Florendo
-Astra Philippines Inc.
-www.astra.ph
+-Simon
 
 
