@@ -1,13 +1,11 @@
 From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Logging MAC
-Date: Sat, 22 May 2004 11:57:32 -0400
+Subject: Fwd: Re: Can reach some websites, can't reach others
+Date: Sat, 22 May 2004 11:59:41 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405221157.32312.Alistair@nerdnet.ca>
-References: <5390820828.20040521103958@alternativa.com.br> <200405220809.47858.Alistair@nerdnet.ca> <200405221333.35216.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405221159.41811.Alistair@nerdnet.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405221333.35216.Antony@Soft-Solutions.co.uk>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -21,52 +19,52 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On May 22, 2004 08:33 am, Antony Stone wrote:
-> On Saturday 22 May 2004 1:09 pm, Alistair Tonner wrote:
-> > On May 22, 2004 05:06 am, Antony Stone wrote:
-> > > Surely there will *always* be two MAC addresses involved in a
-> > > communication - that's how two machines find each other across the
-> > > local subnet (ie: via a switch / hub / access point etc)?
-> >
-> > 	*Thwack*'s self in head.  Of course, so long as "Ethernet" is involved.
->
-> Or some similar broadcast-based medium such as 802.11 (which isn't
-> ethernet, but behaves like it for a lot of things, including MAC
-> addresses).
->
-> The general rule is: you need MAC addresses for broadcast-connected
-> networks (where each device can see every other locally-connected device) -
-> the MAC address is needed to tell one device from another.
->
-> You don't need MAC addresses for point-to-point (one-to-one) connected
-> networks, because you know there's only one device on the other end of each
-> of your own interfaces, therefore you don't need to specify where they're
-> going.
->
-> > 	in ipt_LOG.c MAC address logging is ONLY done in INPUT.  So ..if the
-> > 	packet is NOT destined for the machine, you wont see MAC.
->
-> Aha :)   [ * Light bulb * ]
->
-> The answer to the original poster's question.
->
-> I guess (without having looked at the source) that it should be a simple
-> enough hack to get ipt_LOG.c to log MAC addresses for all chains.
->
-	should be ridiculously simple -- the limiter is a wrapping if statement
 
-	if ( in && !out) {
+	Oooops ... didn't review the "to line" before I sent.
+	forwarding to the list for historical record.
 
-	(logging of MAC code)
-	}
+----------  Forwarded Message  ----------
 
-	I suspect that the clever hacker will want to re-wrap that if statement such 
-that it only logs it if there IS a MAC address present.  Not being a maven 
-with such, I'm NOT gonna make any suggestions as to how.
+Subject: Re: Can reach some websites, can't reach others
+Date: May 22, 2004 08:41 am
+From: Alistair Tonner <Alistair@nerdnet.ca>
+To: sr@gimp.org
 
-	Alistair
-
-> Regards,
+On May 22, 2004 07:59 am, Sven Riedel wrote:
+> Hi,
+> I'm using a Linux 2.6.6 box as a masquerading firewall via dialup for a
+> local network. From the internal network I can reach some websites (e.g.
+> www.debian.org) but can't reach others (e.g. www.freshmeat.net). The
+> unreachable sites _can_ be reached from the firewall-box itself though.
 >
-> Antony.
+> Throwing out all references to DROP in my firewall rules and setting the
+> policies of INPUT, OUTPUT and FORWARD to ACCEPT didn't change the
+> situation, so I doubt it's the rules used (they're appended down below
+> anyway, you never can tell...).
+>
+> An ethereal dump of a connection to the sites that fail from the internal
+> network shows that the 3-way handshake progresses as usual, but then the
+> sites server sends a "Previous TCP Segment Lost" message and all traffic
+> ceases.
+
+	<Beaucoup Snippage for brevity>
+
+	You don't mention what your connection is -- But I'm betting you are on some
+sort of DSL --  likely using something like pppoe to connect.  There is an
+issue with DSL pppoe connections from downstream boxen that DON"T do
+intelligent PMTU discovery .... like *cough* windows. You need a tweak that I
+don't see in your firewall as posted.
+
+	iptables -I POSTROUTING -t mangle -o (output device) -p tcp -m tcp  \
+--tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+
+	replace output device appropriately of course, ... Some folks put this in
+FORWARD chain but I figure to get *everything* in mangle POSTROUTING.
+
+	Alistair Tonner...
+
+> Regs,
+> Sven
+
+-------------------------------------------------------
 
