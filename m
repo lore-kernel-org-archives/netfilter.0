@@ -1,13 +1,12 @@
-From: Payal Rathod <payal-iptables@staticky.com>
-Subject: Re: default policy
-Date: Mon, 25 Aug 2003 14:56:35 +0000
+From: Marcelo Medici <gaucho@ericps.crc.uiuc.edu>
+Subject: RE: NetFilter rules break when freeswan is enabled
+Date: Mon, 25 Aug 2003 10:03:21 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030825145635.GA29591@staticky.com>
-References: <20030826083534.GA1573@linux.local> <1061801982.1507.38.camel@kermit>
+Message-ID: <Pine.SOL.4.30.0308250959260.13067-100000@ericps.crc.uiuc.edu>
+References: <DKEDJAAMDCDBHFKPBEMPIEKBCHAA.markee@bandwidthco.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1061801982.1507.38.camel@kermit>
+In-Reply-To: <DKEDJAAMDCDBHFKPBEMPIEKBCHAA.markee@bandwidthco.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +16,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ralf Spenneberg <lists@spenneberg.org>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: "Mark E. Donaldson" <markee@bandwidthco.com>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, Aug 25, 2003 at 10:59:42AM +0200, Ralf Spenneberg wrote:
-> Am Die, 2003-08-26 um 10.35 schrieb Payal Rathod:
-> > $IPTABLES -P INPUT DROP
-> > $IPTABLES -P OUTPUT ACCEPT
-> > $IPTABLES -P FORWARD DROP
-> > 
-> > $IPTABLES -t nat -A POSTROUTING -j MASQUERADE
-> > 
-> > $IPTABLES -A FORWARD -s 125.125.125.0/24 -p tcp -m tcp --dport 21 -j ACCEPT
-> > $IPTABLES -A FORWARD -s 125.125.125.0/24 -p tcp -m tcp --dport 80 -j ACCEPT
-> > $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> > $IPTABLES -A FORWARD -p icmp --icmp-type 0 -j ACCEPT
-> > 
-> > When I make FORWARD POLICY as ACCEPT it works, but not when I make it
-> > to DROP? Is there any bad rule anywhere?
-> Yes, apply masquerading only to the external interface, like
-> $IPTABLES -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+I am using SNAT, however its not the communication with the remote side of
+the vpn that concerns me right now. Once the ipsec interface is brought
+up, ALL masquerade functions stop, meaning that even when one of my
+internal machines tries to attach itself to an ip address that is not at
+the remote end of the vpn, the attempt fails.
+I have the necessary ports open for esp/ah, as the freeswan docs are
+fairly clear on it. Right now, my goal is just to get ipsec0 up but still
+allow my internal clients to use masq and reach non-vpn remote sights.
+Currently, once ipsec0 is admin up, my clients can't exist the network.
 
-Both the ips are connected to real world. One is connected to the ISDN
-router (internal ip) and the other to lease line.
-Some people use ISDN route some lease line route.
-I have 1 default gateway for each interface.
-Is this OK?
+Thank you for your time in responding to this!
 
-> If 125.125.125.0 is your internal ip-range you should be able to browse
-> to:
-> http://217.160.128.61
-> But since you do not allow any DNS traffic you can't resolve any
-> hostnames.
-> 
 
-Yes I releasied that. I have added tcp and udp for dns too.
-Waiting for the mail.
-With regards,
--Payal
+On Sun, 24 Aug 2003, Mark E. Donaldson wrote:
 
--- 
-For GNU/Linux Success Stories and Articles visit:
-          http://payal.staticky.com
+> Are you are using SNAT?  If so, this may be your problem.  Depending on
+> whether or not you are using ESP vs. AH, you may be encrypting the IP header
+> and this will break your system.
+>
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Marcelo Medici
+> Sent: Saturday, August 23, 2003 8:08 AM
+> To: netfilter@lists.netfilter.org
+> Subject: NetFilter rules break when freeswan is enabled
+>
+>
+> Hello,
+> I am currently seeing a problem on a machine running iptables 1.2.6.
+> The machine acts as a masquerade gateway for a group of rfc1918 addresses.
+> When I enable ipsec0 via the freeswan project, all forwarding using nat
+> ceases. The gateway server itself still has reachability outward, as well
+> as inward to the private network. It is only the masquerading that stops.
+>
+> Has anyone seen this type of behavior before? My iptables config is quite
+> large, but I can post it if a response requires it.
+>
+> Thank you.
+>
+>
+>
+>
+>
+
 
