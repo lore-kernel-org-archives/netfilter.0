@@ -1,10 +1,11 @@
-From: "SB CH" <chulmin2@hotmail.com>
-Subject: quota and time patch.
-Date: Fri, 27 Sep 2002 02:30:23 +0000
+From: Roger <roger@efn.org>
+Subject: whois
+Date: Thu, 26 Sep 2002 18:37:43 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F91y07vQONDZsbg5YX600007f11@hotmail.com>
+Message-ID: <20020926183743.A2461@efn.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,17 +15,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-CkhlbGxvIGFsbC4KCkkgd291bGQgbGlrZSB0byBsaW1pdCB0aGUgdHJhZmZpYyB1c2FnZSBwZXIg
-dXNlcgp1c2luZyBpcHRhYmxlcyBleHRlbnNpb24gZnVuY3Rpb24sIHF1b3RhIGFuZCB0aW1lLgoK
-Zm9yIGV4YW1wbGUsIEkgd291bGQgbGlrZSB0byBzZXQgbGlrZSB0aGlzLgoKb25lIGNhbiB1c2Ug
-MTBNIGh0dHAgdHJhZmZpYyBwZXIgaG91ciBwZXIgb25lIElQIGFkZHJlc3MgYXQgYnVzaW5lc3Mg
-CnRpbWUoMDlofjE4aCkuIAoKSXMgaXQgcG9zc2libGUgdG8gc2V0IHVzaW5nIGlwdGFibGVzPwoK
-CnRoYW5rcyBpbiBhZHZhbmNlLgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCry8sOggvu60wCCw98C7ILChtPW287W1IMSj
-sbiwoSDA1rTZtM+hpiDA/CC8vLDoIMSjsbi16bD6wMcgwfGwxb/uILi4s7LAuyDAzCAKsPe/obyt
-Li4uIGh0dHA6Ly9wZXJzb25hbHMubXNuLmNvLmtyL3NtdC9tc25rb3JlYS9zbXQuY2ZtP3BnPWhv
-bWUmZW10cmFwPXllcwoKCg==
+
+I'm having problems setting a rule to allow 'whois' queries.
+With the following:
+iptables -A OUTPUT  -o eth+ -p tcp --dport 43 -m state --state 
+NEW,ESTABLISHED -j ACCEPT
+
+iptables -A INPUT -i eth+ -p tcp --sport 43 -m state --state ESTABLISHED 
+-j ACCEPT
+
+with any unmatching being logged, there is a log entry for inbound tcp to 
+port 43
+
+I was under the impression that since I'm originating the request, then 
+the input should come through since it is an established connection.  If I 
+modify the INPUT rule to allow NEW,ESTABLISHED then it works.
+
+other services that I have set up in a similar fashion seem to work.
+
+Any idea what's going on?
+
+tia.
+Roger
+
+-- 
+
