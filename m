@@ -1,8 +1,9 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: Very basic question
-Date: Fri, 24 Sep 2004 13:09:39 +0200
+From: "Christian von Hausen" <cvonhausen@cimatelecom.com>
+Subject: Urgent Request
+Date: Thu, 23 Sep 2004 12:36:05 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096024177.6704.9.camel@coati>
+Message-ID: <200409231635.AEM39648@mailhost.interdata.net>
+Reply-To: cvonhausen@cimatelecom.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,25 +19,39 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2004-09-24 at 12:28, coding@digital-data.co.uk wrote:
-> Hi,
-> 
->             I am very new to trying to use iptables and was wondering if
-> someone could help me out with what I should do to solve my current problem.
+Hello
 
-> Ie forward all incoming traffic on eth2 going to address 213.249.230.206 to
-> 192.168.10.2 on eth1.
+            Unable to uncompress iptables-1.2.11 file... 
 
-only one is enough 
+ 
 
-> iptables -t nat -A PREROUTING -i eth2 -s 213.249.230.206 -j DNAT --to
-> 192.168.10.2
+[root@sipxpbx src]# uncompress -v iptables-1.2.11.tar.bz2
 
-traffic to 213.249.230.206 thus -d not -s :
-iptables -t nat -A PREROUTING -i eth2 -d 213.249.230.206 -j DNAT --to
-192.168.10.2
--- 
-Eric Leblond <eric@inl.fr>
-INL
+iptables-1.2.11.tar.bz2 - no .Z suffix
 
+ 
+
+            Please advice.
+
+ 
+
+Thx
+
+ 
+
+Christian von Hausen
+
+Senior Systems Engineer
+
+Cima Telecom
+
+Tel: 1-305-261-7778 x 153
+
+Direct: 1-786-539-5139
+
+Cell: 1-305-525-6303
+
+cvonhausen@cimatelecom.com
+
+ 
 
