@@ -1,12 +1,13 @@
-From: Fred Gansevles <fred@gansevles.defamilie.nl>
-Subject: FORWARD-ed packet doens't reach POSTROUTING
-Date: Fri, 20 Aug 2004 15:59:49 +0200
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+Subject: Re: Question regarding packet src/dst rewriting
+Date: Sat, 21 Aug 2004 11:10:35 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408201559.49352.fred@gansevles.defamilie.nl>
+Message-ID: <32820.207.236.167.130.1093101035.squirrel@207.236.167.130>
+References: <4126279F.7040109@closednetworks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <4126279F.7040109@closednetworks.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,61 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: fred@gansevles.defamilie.nl
+To: Russell Handorf <rhandorf@closednetworks.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+On Fri, August 20, 2004 12:32 pm, Russell Handorf said:
+> The weird behavior I am having is that whenever a packet from the
+> Internet comes in interface eth0, and gets forwarded to a server on
+> eth1, the server which resides on the eth1 side of the network sees the
+> source IP as coming from the router and not the real host on the
+> Internet. Vice versa applies as well (a node behind eth1 sends a packet
+> out to, say, google.com. Google.com sees the data as coming from the
+> router, and not the node which is behind eth1).
+>
 
-First: I'm not subscribed to this list so please make sure that any reply is 
-also sent to: fred@gansevles.defamilie.nl
+My assumption is that you are using a MASQUERADE rule regardless of the
+outgoing device.
 
-I have a weird problem trying to setup multiple routes on my NAT-box
+> I dont understand why the packet headers are being re-written. I also
+> dont understand if this is a specific problem with iptables, or the
+> linux kernel itself.
+>
+> eth2 and eth3 are masquerading, but eth1 is not.
+>
 
-I have the following setup:
-
- <local network>  <NAT-box>
- [192.168.0.0/24]  eth0: 192.168.0.1
-     eth1: <adsl.static.ip>
-     tunl1: <tunnel to remote NAT-box via eth1>
-
-The remote NAT-box can reach a special subnet which I want to connect to.
-The special subnet is also reachable thru eth1, but I want the packages that 
-reach the special subnet to be NAT-ted by the remote NAT-box
-
-On my NAT-box I add the following route:
-
- ip route add <special.sub.net> dev tunl1
-
-the relevant iptables rules are:
- iptables -t nat -A POSTROUTING -s 192.168.0.0/255.255.255.0 -o eth1 \
-  -j SNAT --to-source <adsl.static.ip>
- iptables -t nat -A POSTROUTING -o tunl1 \
-  -j SNAT --to-source <adsl.static.ip>
-
-All messages originating from my NAT-box for the special subnet are routed 
-through tunl1 and SNAT-ted by the second iptables rule
-
-All messages originating from my local subnet for the special subnet are 
-routed through tunl1 and *NOT* SNAT-ted by the second iptables rule (the 
-packages never reach the POSTROUTING chain)
-
-If I remove the special subnet route with:
-
- ip route del <special.sub.net> dev tunl1
-
-then all messages originating from my local subnet for the special subnet are 
-routed through eth1 and SNAT-ted by the first iptables rule
-
-All messages originating from my NAT-box for the special subnet are directely 
-routed through eth1 and *NOT* SNAT-ted (no matching rule for 
-SRC=<adsl.static.ip>)
-
-Summarizing: When I want to reach the special subnet using the remote NAT-box 
-I can only do this *ON* the NAT-box and all machines in my local subnet cat 
-*NOT REACH THE special subnet AT ALL*
+Okay, so you are using 2 MASQUERADE rules with specific outgoing device ?
+Please post your ruleset. PREROUTING and POSTROUTING chains should be eno=
+ugh.
 
 
-
-Can anybody shed some light on this problem?
-Please send relies to: fred@gansevles.defamilie.nl
 
