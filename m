@@ -1,16 +1,12 @@
-From: netfilter_user <netfilter_user@o2.pl>
-Subject: Re[4]: PREROUTING
-Date: Tue, 29 Apr 2003 17:59:20 +0200
+From: "Laila Winblad Berntsen" <john@pepco.no>
+Subject: Re: SNAT firewall maybe compromised. Misconfiguration?
+Date: Tue, 29 Apr 2003 19:08:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <11611759128.20030429175920@o2.pl>
-References: <13955288009.20030429092330@o2.pl>
- <200304290949.10989.pc-secure@home.nl> <50633741.20030429145355@o2.pl>
- <200304291049.38735.Alistair@nerdnet.ca>
-Reply-To: netfilter_user <netfilter_user@o2.pl>
+Message-ID: <003001c30e71$e4213260$010a0a0a@suburban>
+References: <004301c30e61$541d5190$1800a8c0@medusa>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304291049.38735.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,75 +17,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Alistair Tonner <Alistair@nerdnet.ca>
-Cc: SaVaGE <pc-secure@home.nl>, netfilter@lists.netfilter.org
+To: Thiago Lima  <thiagolima@webforce.com.br>, netfilter@lists.netfilter.org
 
-Hello Alistair,
+This is only telling whats the policy of the chain, setting it to DROP
+will drop all packets that dont match a rule in the chain.
 
-Tuesday, April 29, 2003, 4:49:38 PM, you wrote:
+A good idea would be to put them first.
 
-AT> On April 29, 2003 08:53 am, netfilter_user wrote:
->> Hello SaVaGE,
->>
->> Tuesday, April 29, 2003, 9:49:10 AM, you wrote:
->>
->> S> Op dinsdag 29 april 2003 09:23, schreef netfilter_user:
->> >> Hello everyone,
->> >>
->> >> this is my problem:
->> >> My LAN is connected to Internet via Linux machine with 2 interface (
->> >> ppp0 - for internet and eth1 for local net). I need to connect from
->> >> local host, service that is running on port 23073 and 23083 UDP in
->> >> internet. For this i wrote afew rules with PREROUTING but when I start
->> >> script with rules below i receive:
->> >>
->> >> Bad argument `PREROUTING'
->> >> Try `iptables -h' or 'iptables --help' for more information.
->> >> Bad argument `PREROUTING'
->> >> Try `iptables -h' or 'iptables --help' for more information.
->> >>
->> >>
->> >> iptables -t nat -A PREROUTING -p udp -d 80.50.60.185 --dport 23073 -j
->> >> DNAT --to-destination 192.168.1.2 iptables -t nat -A PREROUTING -p udp
->> >> -d 80.50.60.185 --dport 23083 -j DNAT --to-destination 192.168.1.2
->> >>
->> >> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23073 -j ACCEPT
->> >> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23083 -j ACCEPT
->> >>
->> >> What maybe a reason of this msg?
->> >> Im using slackware 8.1 with iptables 1.2.6a
->>
->> S> This behaviour is correct NATting is done on the POSTROUTING table !!!!
->>
->>
->> S> Pascal (PC-Secure Dutch security service)
->>
->> ammm....im afraid its not correct because I have received msg like this:
->>
->>  Bad argument `PREROUTING'
->>  Try `iptables -h' or 'iptables --help' for more information.
->>  Bad argument `PREROUTING'
->>  Try `iptables -h' or 'iptables --help' for more information.
->>
->> ...its not correct in my newbe opinion.
+Regards
+John Berntsen
+
+----- Original Message ----- 
+From: "Thiago Lima " <thiagolima@webforce.com.br>
+To: <Alistair@nerdnet.ca>; <netfilter@lists.netfilter.org>
+Sent: Tuesday, April 29, 2003 5:09 PM
+Subject: RE: SNAT firewall maybe compromised. Misconfiguration?
 
 
-
-AT>         Actually DNAT is acceptable in the PREROUTING chain.
-AT>         change the --to-destination option to 
-AT>         --to ip.ad.dr.ess:portnum
-AT>         or 
-AT>         --to ip.ad.dre.ss
-        
-
-Now I have to excuse everyone who answer on my mail... it is ofcourse
-my fault. I made mistake and had written "iptables -t nat
-PREROUTING..." and I should write like this "iptables -t nat -A
-PREROUTING...". I have forgotten about "-A". Forgive me plz and thx
-for your time and attention.
-
---
-Best regards,
-mailto:netfilter_user@o2.pl
+> 
+> No, I did not. 
+> 
+> The script was cut off, but only in some portforwarding rules, just more
+> 5 redirects. 
+> 
+> Should I use this -P INPUT DROP -P FORWARD DROP in both interfaces? In
+> the end of my script?
+> 
+> thanks
+> thiago.
+> 
+> 
+> -----Original Message-----
+> From: Alistair Tonner [mailto:Alistair@nerdnet.ca] 
+> S
+> 
+> You aren't showing us your policies, and that leads me to
+> believe
+> that the chain policies might be ACCEPT ... which is very not
+> good.
+> Also it ranter looks like this script was cut off.... so I can't
+> be sure...
+> 
+> $IPTABLES -P INPUT DROP
+> $IPTABLES -P FORWARD DROP
+> 
+> ?? do you do this at all??
+> -- 
+> 
+> Alistair Tonner
+> nerdnet.ca
+> Senior Systems Analyst - RSS
+> 
+>      Any sufficiently advanced technology will have the appearance of
+> magic.
+> Lets get magical!
+> 
+> 
 
 
