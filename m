@@ -1,8 +1,8 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: ftp
-Date: Wed, 19 May 2004 22:17:02 +0100
+Date: Wed, 19 May 2004 22:19:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405192217.02905.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405192219.33137.Antony@Soft-Solutions.co.uk>
 References: <BAY15-F30mEB4HGXAwx000684fd@hotmail.com>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
@@ -23,24 +23,23 @@ To: netfilter@lists.netfilter.org
 
 On Wednesday 19 May 2004 10:05 pm, azeem ahmad wrote:
 
-> hi all
-> i m unable to browse ftp. it says
-> an error occured opening that folder on the ftp server. make sure you have
-> permissions to access that folder
-> details
-> 200 type set to A
-> 500 Illegal port command
-> 500 LPRT not understood
+> iptables -t nat -A POSTROUTING -j MASQUERADE
 
-Do you get the same error when accessing the server from a machine not via the 
-netfilter firewall (eg localhost, or some other client on the same subnet)?
+Sorry - I forgot this bit in my last posting...
+
+It would be a good idea to restrict the above rule to only your external 
+interface:
+
+iptables -A POSTROUTING -t nat -o $extIF -j MASQUERADE
 
 Regards,
 
 Antony.
 
 -- 
-RTFM may be the appropriate reply, but please specify exactly which FM to R.
+Software development can be quick, high quality, or low cost.
+
+The customer gets to pick any two out of three.
 
                                                      Please reply to the list;
                                                            please don't CC me.
