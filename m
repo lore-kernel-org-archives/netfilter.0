@@ -1,12 +1,13 @@
-From: <netfilter@sbgit.com>
-Subject: Still having problems with forwadding
-Date: 15 Mar 2004 08:36:00 UT
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Still having problems with forwarding
+Date: Mon, 15 Mar 2004 08:50:29 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DIIE.000000FE00002A57@sbgit.com>
+Message-ID: <200403150850.29824.Antony@Soft-Solutions.co.uk>
+References: <DIIE.000000FE00002A57@sbgit.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="----_=_NextPart_000_00002A57.405578FF"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <DIIE.000000FE00002A57@sbgit.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Monday 15 March 2004 8:36 am, Peter <netfilter@sbgit.com> wrote:
 
-------_=_NextPart_000_00002A57.405578FF
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7Bit
+> Hi,
+>
+> i still having a lot of problems with the forwading of my vpn tunnel.
+> Now i can't connect to my system anyway?
+> The rest of my script (emule) has problems to, after i aplied the pptp
+> patch with pom and copiled the newest iptables version to my kernel.
 
-Hi,
+1. Can you be more specific about exactly what problems you are having - what 
+does work, what does not work, how are you testing it?
 
-i still having a lot of problems with the forwading of my vpn tunnel.
-Now i can't connect to my system anyway?
-The rest of my script (emule) has problems to, after i aplied the pptp patch with pom
-and copiled the newest iptables version to my kernel.
+2. Is it possible that you can simplify your ruleset by removing rules which 
+are nice to have, but have nothing to do with this problem (eg: the 
+rate-limited DROP rules, and the TCP flag matches), so that it is easier to 
+know what to focus on, and what is unimportant?
 
-Systemcheme:
-http://support.sbgit.com/Firewall.jpg
+Regards,
 
-Firewall Script:
-http://support.sbgit.com/firewall
+Antony.
 
-Thanx Peter
+-- 
+Most people are aware that the Universe is big.
 
-------_=_NextPart_000_00002A57.405578FF
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+ - Paul Davies, Professor of Theoretical Physics
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR></HEAD>
-<BODY style=3D"FONT: 10pt Courier New" leftMargin=3D5 topMargin=3D5>
-<DIV>Hi,</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>i still having a lot of problems with the forwading of my vpn tunnel.</DIV>
-<DIV>Now i can't connect to my system anyway?</DIV>
-<DIV>The rest of my script (emule) has problems to, after i aplied the pptp 
-patch with pom</DIV>
-<DIV>and copiled the newest iptables version to my kernel.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Systemcheme:</DIV>
-<DIV><A 
-href=3D"http://support.sbgit.com/Firewall.jpg">http://support.sbgit.com/Firewall.jpg</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Firewall Script:</DIV>
-<DIV><A 
-href=3D"http://support.sbgit.com/firewall">http://support.sbgit.com/firewall</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thanx Peter<A 
-href=3D"http://support.sbgit.com/irewall"></A><BR></DIV></BODY></HTML>
-------_=_NextPart_000_00002A57.405578FF--
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
