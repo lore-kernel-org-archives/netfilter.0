@@ -1,11 +1,11 @@
-From: Francois Chenais <Francois.Chenais@citb.bull.net>
-Subject: CVS built
-Date: Thu, 30 May 2002 14:35:49 +0200
+From: "ross" <ross@asm.org.uk>
+Subject: Loose packets
+Date: Thu, 30 May 2002 14:34:16 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020530143549.56bd6a63.Francois.Chenais@citb.bull.net>
+Message-ID: <003601c207de$b1b68c20$1700a8c0@asm.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- boundary="=.2BQffCguHbL1DM"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0037_01C207E7.137AF420"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -18,48 +18,156 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 To: netfilter@lists.samba.org
 
---=.2BQffCguHbL1DM
-Content-Type: text/plain; charset="iso-8859-1"
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0037_01C207E7.137AF420
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hello,=20
+Dear all
 
-  I'm newbie in netfilter hacking and I have to filter my packet
-  with an external application. I think that I have to look around
-  ip_queue.
+I have recently built a firewall for my home office. All seems well,
+it=92s fairly secure. One problem though, every time my Windows client
+sends a packet destined for my Linux box that is not destined for the
+Internet (say for example when I use PUTTY over SSH) PPPD dials up. I am
+pretty sure I need to set up a firewall rule to stop this, but I have
+tried several iptables rules all to no avail.
 
-  I just have checkouted the cvs netfilter/usernamespace=20
-	  		     and netfilter/testsuite
+=20
 
-  but I have an error building the libipq.
+Any guidance is much appreciated
 
-  The error says
+=20
 
-Francois : make
-Making dependencies: please wait...
-Something wrong... deleting dependencies.
-make: *** [/usr/src/linux/include/linux/netfilter_ipv4/ipt_dcsp.h] Error 1
-
-
-  I have a linux 2.4.17 kernel & src on a woody debian Linux box.
+Ross
 
 
-  Any idea ?
+------=_NextPart_000_0037_01C207E7.137AF420
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-  Thank in advance.
+<html>
 
-		Fran=E7ois
---=.2BQffCguHbL1DM
-Content-Type: application/pgp-signature
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
 
-iD8DBQE89hyocMXw4CWlEFsRAqtiAJ9XLQ7DbrPh67mFo1CjelZ0Jm3dggCgrTFw
-ynGYy2VuuTyiNcLxfXVd2cU=
-=+1Ad
------END PGP SIGNATURE-----
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
 
---=.2BQffCguHbL1DM--
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p.WfxFaxNum, li.WfxFaxNum, div.WfxFaxNum
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.WfxTime, li.WfxTime, div.WfxTime
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.WfxDate, li.WfxDate, div.WfxDate
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.WfxRecipient, li.WfxRecipient, div.WfxRecipient
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.WfxCompany, li.WfxCompany, div.WfxCompany
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.WfxSubject, li.WfxSubject, div.WfxSubject
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.WfxKeyword, li.WfxKeyword, div.WfxKeyword
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.WfxBillCode, li.WfxBillCode, div.WfxBillCode
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+span.EmailStyle25
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-GB link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Dear all</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I have recently built a firewall for my home office. =
+All
+seems well, it&#8217;s fairly secure. One problem though, every time my =
+Windows
+client sends a packet destined for my Linux box that is not destined for =
+the
+Internet (say for example when I use PUTTY over SSH) PPPD dials up. I am =
+pretty
+sure I need to set up a firewall rule to stop this, but I have tried =
+several
+iptables rules all to no avail.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Any guidance is much appreciated</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Ross</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0037_01C207E7.137AF420--
 
 
