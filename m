@@ -1,11 +1,12 @@
-From: trainier@kalsec.com
-Subject: Re: irc
-Date: Mon, 17 Nov 2003 12:43:15 -0500
+From: Leonid Veytser <veytser@cs.bu.edu>
+Subject: libipq with RAW sockets
+Date: Mon, 17 Nov 2003 12:57:30 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFD7AE25B0.4E5DA4B4-ON85256DE1.00606EE3-85256DE1.006156D2@kal.kalsec.com>
+Message-ID: <Pine.SOL.4.20.0311171256440.18010-100000@csa.bu.edu>
+References: <Pine.SOL.4.20.0311161628520.17534-100000@csa.bu.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.SOL.4.20.0311161628520.17534-100000@csa.bu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,37 +16,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'll attempt to clear things up a bit.
+ Hello,
+ 
+ I am using netfilter's libipq to process packets at user space. Then
+ depending on what packets I recieved, I need to create
+ "response" packets. I need to construct all the headers myself, so I
+ decided to user SOCK_RAW sockets. 
+ 
+ But, whenever I open a raw socket: 
+   sock = socket(AF_INET,SOCK_RAW,255)
+ I get the following error from libipq:
+   Failed to receive netlink message: Bad address
+ 
+ Is it that I can't use raw sockets together with netlink sockets?
+ If that is the case, what else can I do to create my own packets with all
+ headers?
+ 
+ Thanks.
+ 
+ 
+ 
 
-An irc proxy, is a machine that accepts a connection, then forwards you on 
-to the proxy server.  An irc bounce, is very similiar in nature.
-The general idea behind an irc proxy/bnc is that you have a way to 
-anonymize yourself.  You have a way of allowing many people to connect to 
-irc, from one address. (most irc servers don't allow more than 2 
-connections from the same IP.  With a proxy and, what's called an i:line, 
-they can allow proxied hosts if they're secure). 
-
-What I'm looking for, is not an irc proxy.  I'm already connecting to an 
-irc proxy.  The problem is, when I changed my default gateway to point at 
-my http-proxy, I can no longer make connections out to my irc server.  (It 
-comes back with a "connection refused").  I thought I would have to use 
-NAT in this case, just like I have to use NAT to allow http and ftp 
-requests, through the squid proxy server.
-Here's how I'm set up:
-
-
-Client machine ->   squid-proxy   ->  DMZ  ->  IRC Server.
-
-When the client machine sends a connection request to the irc server, it 
-comes back with a "Connection Refused".
-I thought I could use some NAT/Netfiltering rules, to fix this issue.
-
-Does any of this make sense, yet?  :-/
-
-Regards,
-
-Tim Rainier
 
