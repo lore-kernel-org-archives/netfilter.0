@@ -1,11 +1,15 @@
-From: "Babar Kazmi" <BabarKazmi@Hotmail.Com>
-Subject: Re: any documents on Link-Load balancing
-Date: Mon, 12 Jan 2004 10:01:17 +0500
+From: Unknown <unknown@unknown.invalid>
+Subject: Re: source-mac filtering
+Date: Mon, 12 Jan 2004 01:10:08 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000501c3d8c9$209d9450$6900a8c0@deamon>
+Message-ID: <29606.4762086191$1073888030@news.gmane.org>
+References: <Sea1-F7gMiX6AZCFgXe000520e9@hotmail.com> <20040111163756.GA6168@cannon.eng.us.uu.net> <1073847935.13069.16.camel@carve.personal.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+From: Alistair Tonner <>
+In-Reply-To: <1073847935.13069.16.camel@carve.personal.localdomain>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +20,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Tarek W." <mailinglists1@hotpop.com>, netfilter@lists.netfilter.org
 
-Hello
+On January 11, 2004 02:05 pm, Tarek W. wrote:
+> On Sun, 2004-01-11 at 18:37, Ramin Dousti wrote:
+> > dhcpd takes and puts packets by netlink sockets which bypass the whole
+> > IP stack. So in short, you cannot filter the requests nor the response.
+> >
+> > Ramin
 
-Are there any advanced manuals on it besides this site ?
+	I'll accept that .. but I have a question ... is ARP routing not 
+	related?? 
+	Are ARP queries not ethernet broadcasts on a similar level to 
+	DHCP broadcasts??
 
-Regards
+	(okay .. thats mighty off topic ..but perhaps its something we can 
+	consider network related)
 
-Babar Kazmi.
+	Alistair
 
->From: Antony Stone
->To:
->Subject: Re: any documents on Link-Load balancing
->Date: Sun, 11 Jan 2004 14:42:56 +0000
->MIME-Version: 1.0
 >
->On Friday 09 January 2004 7:19 am, san wrote:
+> <snippage>
 >
-> > BlankCan anyone help me to find out the link loadbalancing howto linux
->
->Suggest you start with http://lartc.org
->
->Antony
->
->-- 
->G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-)
-o?
->w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5?
->!X- !R K--?
->
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
->
->
-
-
+> this is slightly off... iirc, some of the negotiation happens that way,
+> further negotiation does not... what I'm sure of however is that if u
+> don't explicitely allow dhcpd traffic server-side, negotiation does not
+> work client-side... which means that not all traffic if any bypasses
+> netfilter... don't have the time to investigate further server-side...
+> sorry...
 
