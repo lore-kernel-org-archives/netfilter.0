@@ -1,7 +1,7 @@
-From: Guido Lorenzutti <guido@lorenzutti.com.ar>
-Subject: drop msn file transfers
-Date: Tue, 04 Jan 2005 21:12:11 -0300
-Message-ID: <41DB30DB.3000801@lorenzutti.com.ar>
+From: ro0ot <ro0ot@phreaker.net>
+Subject: Neighbour table overflow
+Date: Wed, 05 Jan 2005 08:42:32 +0800
+Message-ID: <41DB37F8.6020709@phreaker.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,21 +18,49 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi people, im new on the list.
+Hi,
 
-What I would like to do is to drop every "file transfer" in the msn. My 
-current situation is that in mi firewall:
+I had setup my bridge (br0) as below: -
 
-* im allowing the port 1863 on the FORWARD chain
-* i don't allow 80 on the FORWARD chain
-* every http packet goes thru the squid on the same machine.
-* The policy by default is DROP on the FORWARD chain.
+ifconfig eth0 0.0.0.0
+ifconfig eth5 0.0.0.0
 
-Any ideas? I think im going to have to sniff how the file transfer is 
-made to use regex on the iptables or try the patch for the iptables on 
-layer 7.
+brctl addbr br0
 
-Im going to investigate a little further and i will post my advances.
+brctl addif br0 eth0
+brctl addif br0 eth5
 
-PD: sorry for my english, i never study :)
+brctl stp br0 on
+
+ifconfig br0 192.168.1.1 netmask 255.255.255.0 broadcast 192.168.1.255
+
+I had my firewall scripts setup correctly.
+
+Once I connect both the interface (eth0 and eth5) to my network.  I 
+can't ping to my router (connect to eth0) or ping to my other IP 
+addresses (connect to eth5).  I check around and found out some messages 
+pops up in /var/log/syslog file as below: -
+
+Jan  2 10:44:22 fw01 kernel: ipt_tcpmss_target: bad length (64 bytes)
+Jan  2 10:44:32 fw01 last message repeated 11 times
+Jan  2 12:27:08 fw01 kernel: Neighbour table overflow.
+Jan  2 12:27:11 fw01 last message repeated 9 times
+Jan  2 12:27:13 fw01 kernel: NET: 10 messages suppressed.
+Jan  2 12:27:13 fw01 kernel: Neighbour table overflow.
+Jan  2 12:27:18 fw01 kernel: NET: 27 messages suppressed.
+Jan  2 12:27:18 fw01 kernel: Neighbour table overflow.
+
+Once I disconnect the cable from the eth5 interface, I can ping to my 
+router.  I try to reconnect the cable back to the eth5 interface and run 
+a ping to my router.  As the result, I can't ping the router and the 
+similar messages pops up in the /var/log/syslog file.
+
+How can I resolve this issue?
+
+Regards,
+ro0ot
+
+
+
+
 
