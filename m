@@ -1,11 +1,12 @@
-From: yangtao <yangtao_mike@huawei.com>
-Subject: How I get the origin IP and port, when I use the NAT function?
-Date: Tue, 30 Nov 2004 16:07:01 +0800
-Message-ID: <000501c4d6b3$9263a370$626d460a@china.huawei.com>
-Reply-To: yangtao <yangtao_mike@huawei.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: iptables and wireless card in promiscuous mode
+Date: Tue, 30 Nov 2004 14:05:30 +0100
+Message-ID: <1101819930.4556.33.camel@anduril.intranet.cartel-securite.net>
+References: <41AC6D4F.7000001@eurecom.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <41AC6D4F.7000001@eurecom.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
-
-I use the DNAT function to redirect all the traffic to loacl host.
-Then my application can process the traffic.
-But I want get the real destination IP before NAT transfer.
-
-Is there any function or API, my application can get the 
-relationship between the original IP and the IP after NAT.
+To: Claudio Lavecchia <Claudio.Lavecchia@eurecom.fr>
+Cc: netfilter@lists.netfilter.org
 
 
+> I have two laptops that have 802.11 wireless cards. I am developing some 
+> application that essentially perform sniffing functions using wireless 
+> cards in promiscuous mode. To test my code, I need those two laptops not 
+> to "see" each other (--> I do not want the wireless card of laptop A, 
+> which is operating in promiscuous mode to process packets coming from 
+> laptop B) and I tought to do it using iptables.
 
-Best Regards
-Mike  YangTao
+Promisc packet capture occurs before Netfilter filtering. So you can't
+prevent network adapter in promiscuous mode to sniff given packets using
+iptables. You must configure BPF to exclude the frames you don't want to
+see.
 
-****************************************************************************
-This e-mail and its attachments contain confidential information 
-from HUAWEI, which is intended only for the person or entity 
-whose address is listed above. Any use of the information 
-contained herein in any way (including, but not limited to, 
-total or partial disclosure, reproduction, or dissemination) 
-by persons other than the intended recipient(s) is prohibited. 
-If you receive this e-mail in error, please notify the sender 
-by phone or email immediately and delete it!
-*******************************************************************************
+
+-- 
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
