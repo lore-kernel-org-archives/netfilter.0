@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables help
-Date: Thu, 29 Jul 2004 07:32:12 +0100
+From: "Anuradha Kalyan" <anuradk@erivasystems.com>
+Subject: Oulook express not working on client machine
+Date: Thu, 29 Jul 2004 00:36:48 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407290732.13336.Antony@Soft-Solutions.co.uk>
-References: <410834D9.10404@pcraft.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200407290036.AA99483926@erivasystems.com>
+Reply-To: <anuradk@erivasystems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <410834D9.10404@pcraft.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,57 +16,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thursday 29 July 2004 12:20 am, Ashley M. Kirchner wrote:
+Hi, 
 
->     I need some help adding a few blocking rules (*) to an iptables
-> script that I once inherited, and grown over time.  I don't want to post
-> the whole thing here because I don't need to be spamming everyone with
-> it, but if there's a kind soul willing to help, I'll gladly send it
-> (unless no one objects to getting the whole file.)
->
->     (*) the basic gist is that I need to block places like hotmail.com,
-> yahoo.com, and other sites from getting accessed from only two machines
-> on our private network, during a specific period of time.  If we like
-> the way it works, we'll add more machines/IPs to it later.
+Sorry for asking a well known question. My squid configuration seems to be fine too. but the outlook express at client machine is not working. 
 
-1. What help do you need?   Adding rules to block specific traffic is quite 
-simple:
+My configuration: 
 
-iptables -I FORWARD -s a.b.c.d -d w.x.y.z -p tcp --dport 80 -j REJECT
+eth0: 192.168.1.97 (My Public IP) 
+eth1: 192.168.5.1 (My Lan IP) 
 
-(this is assuming that you meant you want to block web access - I've assumed 
-this because the domains you mentioned are best known as large websites)
+I have declared 25 and 110 as the safe ports also but still :(( 
 
-a.b.c.d is the machine in your network you want the block to apply to
-w.x.y.z is a machine on the Internet you don't want them to access
+Based on therad i saw at linux solve, I tried to do 
 
-2. Applying a time window to rules is also fairly simple once you've applied 
-the 'time' match from patch-o-matic:
+/sbin/iptables -t nat -A POSTROUTING -o eth1 -s 192.168.0.0/24 -j MASQUERADE 
 
-iptables -I FORWARD -s a.b.c.d -d w.x.y.z -p txp --dport 80 -m time 
---timestart 09:00 --timestop 17:00 -j REJECT
+But this also having no effect. 
 
-Do block the same packets as for the previous rule, but only between 09:00 and 
-17:00 each day.
+After lot of trials i even tried to disable iptables(https://phone.cs.columbia.edu/cinema/help/Online_documentation/Install/Troubleshoot4.html) and checked for the outlook but still it is not working.
 
-3. If it is primarily web access you want to restrict, you may well find that 
-Squid http://www.squid-cache.org is a better way of doing it; that can 
-control access to domains by domain name rather than requiring a rule for 
-each web server IP address (as netfilter does), and can also do time-based 
-matching as a standard facility.
+plz guide me to make my pop3 and smtp connections as transparent. 
 
-Hope this helps,
-
-Regards,
-
-Antony.
-
--- 
-Wanted: telepath.   You know where to apply.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+regards, 
+Anuradha 
+ 
+             
 
