@@ -1,14 +1,12 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Multiple Port Forwarding
-Date: Thu, 19 Aug 2004 19:40:59 -0400
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Multiple Port Forwarding
+Date: Thu, 19 Aug 2004 17:23:09 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408191940.59077.Alistair@nerdnet.ca>
-References: <001401c48633$600ec010$0400a8c0@icbmwxph>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E35A@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001401c48633$600ec010$0400a8c0@icbmwxph>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,57 +16,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Scorched <scorched1@btinternet.com>, netfilter@lists.netfilter.org
 
-On August 19, 2004 05:27 pm, Scorched wrote:
-> I found this group on google looking for how to do multiple port forwardi=
-ng
-> (I'm trying to setup so me and a friend can play Starcraft together on the
-> same connection [with different CD keys though, got two copies of the
+Scorched wrote:
+> I found this group on google looking for how to do multiple port
+> forwarding (I'm trying to setup so me and a friend can play Starcraft
+> together on the same connection [with different CD keys though, got
+> two copies of the game.. is all legit])
+>=20
+> I have exactly the same problem as this guy, so here's a copy of the
+> thread I found, that no one ever replied to to help with (I checked)
+> :/=20
 
-	<snippage>
-
-> sorry for this possibly "bad title"
->
-> but i=B4ve got a question regarding port forwarding and iptables
-> (i hope this question hasn=B4t been asked so much *gg)
->
-> is it possible to forward one port on the firewall to different clients?
->
-	Certainly it is *possible* -- and would be rather complex,
-	but you likely do not want to forward each packet to every client inside
-	the firewall.
-
-	What you want is a proxy server for the game protocol,
-	if what you are attempting to do is have outside game clients connect
-	to your inside game.
-
-	Not something that iptables can do.  However, ... outbound connections
-	from a lot of games to servers outside the firewall will work just fine, w=
-ith
-	ESTABLISHED, RELATED rules.
-
-	If you have *one* client inside that will be hosting the game, it is doabl=
-e,
-	and in that case the second, and successive clients inside the firewall=20
-	would connect directly to the INSIDE address of the (server) copy of the=20
-	game.  In THIS case you need to know details of the connection between=20
-	clients and server versions -- i.e. port numbers, protocols, and whatnot,
-	and set up appropriate ACCEPT and REDIRECT rules.
-=09
-
-	If what you are trying to do is have two games behind your firewall connect
-	to each other in different network segments, ... we'd need more detail, bu=
-t=20
-	it should be doable in FORWARDING and -t nat PREROUTING etc....
+The following article described a way to accomplish it. I'm not sure if
+its fresh:
+http://www.mplug.org/phpwiki/index.php/NetfilterStarcraft
 
 
-	Now ... Battlenet ... anyone care to write a conntrack/nat module for=20
-that ???  { yes ...  I KNOW the module rules!!!!}
+Me ---------|
+            |--- Firewall -- battle.net / Server
+My Friend --|
 
-	*grin*
+Each user wants to send their source port as 6112, but since only one
+guy can have that port, we have to change our source port. Ex.
 
-	Alistair Tonner
-=09
+Outgoing:
+ip-me:port-5112 -> dest:5112 >> FW >> ip-fw:port-5112 -> dest:5112
+ip-friend:port-5112 -> dest:5112 >> FW >> ip-friend:port-5113 ->
+dest:5112
+
+Return:
+dest:5112 -> ip-fw:port-5112 >> FW >> dest:5112 -> ip-me:5112
+dest:5112 -> ip-fw:port-5113 >> FW >> dest:5112 -> ip-friend:5112
+
+I can't see what's wrong with this picture unless Starcraft uses other
+messed up port assignments. If you really want to help us diagnose this,
+please run the game and list the ports that the program is using with
+the following details:
+
+protocol src_ip src_port dst_ip dst_port
+
+Please do this on the inside interface of the firewall, not the outside.
 
