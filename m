@@ -1,8 +1,8 @@
 From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
 Subject: Re: network range
-Date: Sat, 03 Apr 2004 17:03:04 -0500
+Date: Sat, 03 Apr 2004 17:02:17 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081029737.24410.2.camel@localhost>
+Message-ID: <1081029635.24411.0.camel@localhost>
 References: <web-275929490@mail01.infosat.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -78,6 +78,15 @@ john.sullivan@nexusmgmt.com
 If you are interested in helping to develop a GPL enterprise class
 VPN/Firewall/Security device management console, please visit
 http://iscs.sourceforge.net
-
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
