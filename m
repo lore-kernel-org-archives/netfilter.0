@@ -1,10 +1,9 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: iptables-like firewall for windows?
-Date: Fri, 22 Aug 2003 18:22:27 -0700
+From: cc <cc@belfordhk.com>
+Subject: Re: OT: iptables-like firewall for windows?
+Date: Sat, 23 Aug 2003 09:46:42 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DKEDJAAMDCDBHFKPBEMPIEJBCHAA.markee@bandwidthco.com>
+Message-ID: <3F46C782.2060103@belfordhk.com>
 References: <3F461A22.90300@bus.okstate.edu>
-Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,35 +18,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Joines <joines@bus.okstate.edu>, netfilter@lists.netfilter.org
+To: Netfilter Group <netfilter@lists.netfilter.org>
 
-Take a look at Pktfilter at http://www.hsc.fr/ressources/outils/pktfilter/
-It's stateless, but very good and quite flexible nevertheless.  Also, like
-netfilter, it's free.  I've been using it for about eight months and it gets
-the job done very well indeed.
+Jason Joines wrote:
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Jason Joines
-Sent: Friday, August 22, 2003 6:27 AM
-To: netfilter@lists.netfilter.org
-Subject: OT: iptables-like firewall for windows?
+>  We have a completely Linux back-end environment but unfortunately
+> hundreds of windows desktops.  I'm pretty tired of all the attacks on
+> the unprotected windows boxes but don't have the authority to put up a
+> network firewall.  We protect all of our Linux servers with iptables.
 
+It would be a lot cheaper to put up a Linux-based network firewall
+than to install Win-based firewalls on each desktop.  Tell your
+Supervisor that it is more feasible to install a firewall.
 
-  We have a completely Linux back-end environment but unfortunately
-hundreds of windows desktops.  I'm pretty tired of all the attacks on
-the unprotected windows boxes but don't have the authority to put up a
-network firewall.  We protect all of our Linux servers with iptables.
-Does anyone know of a similar tool for windows, particularly w2k?  The
-built-in stuff seems to be virtually worthless.
+Compare the costs and effectiveness.  If your supervisor expects
+you to install commercial firewalls to protect the windows
+desktop, he's really smegging smoking something strange.
 
-Thanks,
-
-Jason Joines
-Open Source = Open Mind
-========================
+I mean if you can afford to protect your Linux servers with
+iptables, how hard is it to add one more machine to protect
+ALL your workstations?   Mind you, I don't know how your
+company's system is setup, so I don't know if 'one' firewall
+is applicable enough (though it should...*shrug*)
 
 
+> Does anyone know of a similar tool for windows, particularly w2k?  The
+> built-in stuff seems to be virtually worthless.
+
+I wouldn't know.  I don't use the builtin stuff.
+
+You can try ZoneAlarm Pro, or Kerio.
 
 
 
