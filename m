@@ -1,12 +1,14 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
-Subject: Re: iptables with irc and auth
-Date: Mon, 10 Jan 2005 12:40:18 +0100
-Message-ID: <20050110114018.GD1098@torres.l21.ma.zugschlus.de>
-References: <33413.212.100.225.41.1105354789.squirrel@webmail.*>
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: Allow only SMTP 'callback'
+Date: Mon, 10 Jan 2005 11:55:47 +0000
+Message-ID: <200501101155.47992.gdh@acentral.co.uk>
+References: <200501101030.59086.gdh@acentral.co.uk>
+	<20050110111844.GA14390@zion.homelinux.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050110111844.GA14390@zion.homelinux.com>
 Content-Disposition: inline
-In-Reply-To: <33413.212.100.225.41.1105354789.squirrel@webmail.*>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,23 +20,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Mon, Jan 10, 2005 at 10:59:49AM -0000, squid@oranged.to wrote:
-> I am trying to configure iptables so that when I connect to IRC on port
-> 6667 it will allow the auth connection back on 113 from that IP address.
+On Monday 10 January 2005 11:18, Sven Schuster wrote:
 
-Do you really have an identd running on that port? If so, why don't
-you open the port generally? If you don't have identd running, a
---jump REJECT will do just fine.
+> Yes, should be doable by using the "recent" extension with something
+> like this:
 
-Greetings
-Marc
+Ah, superb - thanks for the tip :)
 
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 621 72739835
+Marc: The webservers do have correctly configured MTAs, I just don't want them 
+to be exposed all the time :)
+
+gdh
 
