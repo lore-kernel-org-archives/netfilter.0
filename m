@@ -1,11 +1,14 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: 2 NICs on same subnet
-Date: Fri, 5 Nov 2004 10:45:45 -0800
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E38F@alderaan.smgtec.com>
+From: Sven Schuster <schuster.sven@gmx.de>
+Subject: Re: 2 NICs on same subnet
+Date: Fri, 5 Nov 2004 20:16:21 +0100
+Message-ID: <20041105191621.GA17889@zion.homelinux.com>
+References: <7C9884991ADAE0479C14F10C858BCDF591E38F@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E38F@alderaan.smgtec.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,110 +19,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: a.ledvinka@promon.cz, schuster.sven@gmx.de, netfilter@lists.netfilter.org
-
-Ok, here's my two cents. There IS a solution, I can feel it. I'm just
-going to work through it through talking, and hope for the best. (Note,
-Although not totally in topic, the solution is in fact)
-
-1. You're getting inbound responses on the wrong NIC because you're
-sending IP requests from the wrong device. The Switch thinks that NIC 1
-does have IP #2 (AKA: Accidental ARP poison).=20
-2. I'm assuming you're using this for either an extra security mechanism
-or for a backup line
-3. I'm assuming that the machine is standalone and is not hosting
-services behind it. Lets just throw that complexity out the window.
-
-So, the real thing you need to do is FORCE packets to/from IP1 in/out of
-IF1 and packets to/from IP2 in/out of IF2.
+To: netfilter@lists.netfilter.org
+Cc: a.ledvinka@promon.cz
 
 
-Solution Overview
-
-1. Application Layer
-When you start your application, you must bind inbound/outbound traffic
-to a specific port. If your software doesn't support this, you could
-setup a local proxy server to do it.
-
-2. Firewall Layer
-When packets sourced as either IP1 or IP2 come into the OUTPUT chain,
-mark it accordingly.
-
-3. Routing Layer
-Read the mark on the packets coming down the pipe (Firewall OUTPUT) and
-direct the packets out the correct interface
-
-4. Datalink Layer=20
-We must flush out all ARP caches on any devices that may have been
-poisoned after everything else has been complete. This usually means
-turning off/on the network switch.
+--mP3DRpeJDSE+ciuQ
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
-Implementation details
+Hi Daniel,
 
-Step 1. Routing Tables
-Your routing tables should probably look like the following if it was
-setup default.
+On Fri, Nov 05, 2004 at 10:45:45AM -0800, Daniel Chemko told us:
+> Ok, here's my two cents. There IS a solution, I can feel it. I'm just
+> going to work through it through talking, and hope for the best. (Note,
+> Although not totally in topic, the solution is in fact)
+>=20
+> 1. You're getting inbound responses on the wrong NIC because you're
+> sending IP requests from the wrong device. The Switch thinks that NIC 1
+> does have IP #2 (AKA: Accidental ARP poison).=20
+> 2. I'm assuming you're using this for either an extra security mechanism
+> or for a backup line
+> 3. I'm assuming that the machine is standalone and is not hosting
+> services behind it. Lets just throw that complexity out the window.
+>=20
+> So, the real thing you need to do is FORCE packets to/from IP1 in/out of
+> IF1 and packets to/from IP2 in/out of IF2.
+>=20
 
-192.168.1.0/24 dev eth0  scope link=20
-192.168.1.0/24 dev eth1  scope link=20
-127.0.0.0/8 dev lo  scope link=20
-default via 192.168.1.254 dev eth0=20
-default via 192.168.1.254 dev eth1
-
-As you can see here, there's nothing FORCING the packets to go out
-either of the interfaces. Lets create a couple tables that will FORCE
-the traffic to one interface or the other.
-
-# Create a couple tables that will match against firewall MARK rules and
-direct them to new tables
-   ip rule add table 1 fwmark 1
-   ip rule add table 2 fwmark 2
-
-# Create the new tables to have 1 single route (I'm assuming there are
-no other routes!)
-   ip route add default dev ${IF_1} table 1 src ${SRC_IP_1}
-   ip route add default dev ${IF_2} table 2 src ${SRC_IP_2}
-
-All done. That takes care of the routing. Now to activate the routing
-code: Firewalls
-
-Step 2. Firewall Layer
-
-In order for all this to work, we need to mark packets that come in/out
-of the system on the correct ports. Since we don't have any other
-routes, I'm going to make this simple. If you want to be totally
-correct, I think the CONNMARK rule would be better, but worry about it
-after everything already works.
-
-# Mark packets from a source address to a specific MARK
-   iptables -t mangle -A OUTPUT --source ${SRC_IP_1} -j MARK 1
-   iptables -t mangle -A OUTPUT --source ${SRC_IP_2} -j MARK 2
-# If we get here without hitting one of the above rules, I'm going to
-take a default route from the 'main' routing table
-
-# Make sure that no matter what don't send packets with the wrong
-routing out unfettered
-   iptables -t nat -A POSTROUTING -o ${IF_1} -j SNAT --to ${IP_1}
-   iptables -t nat -A POSTROUTING -o ${IF_2} -j SNAT --to ${IP_2}
+thanks for your and everybody's else's tipps and discussion on this topic,
+I already wanted to try the iproute2 based solution today but didn't have
+enough time to do this. I'll try tomorrow and come back here and tell you
+about my success (or not :-).
+But I also think about going to my boss and tell him that this whole idea
+is crap as we won't be able to handle more input no matter if it comes in
+=66rom one interface or two...I think the best solution would be to let the
+second NIC stay down until the moment the first one won't work any more.
 
 
-Step 3. Application Layer
+Once again, thanks to everybody!!!
 
-Notice that in the firewall layer it used the --source to determine what
-MARK to assign. Any normal connection coming from the socket layer
-generally doesn't set the internet address source of the connection. If
-you know socket coding, you usually call socket then connect when a
-client connects to a server. Neither of these commands specify the
-IP/Port that you are connecting FROM. If your tool doesn't allow you to
-specify a src ip/port to connect from, you have issues.
+Sven
 
-One workaround that I came across was Squid Proxy. It does allow you to
-hard code the source address of the external connection by specifying
-tcp_outgoing_address. If your tool allows you to specify a proxy server,
-this could be your solution. If your tool doesn't allow you to specify
-the proxy / src ip of the connection, you may need to explore other
-alternatives.
+--=20
+Linux zion 2.6.9-rc1-mm4 #1 Tue Sep 7 12:57:19 CEST 2004 i686 athlon i386 G=
+NU/Linux
+ 20:09:17 up 1 day, 23:37,  1 user,  load average: 0.03, 0.05, 0.01
 
+--mP3DRpeJDSE+ciuQ
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQFBi9GFo4FAdB2PneQRAvdhAJ9h4YOn/ZQiGxTbp91uhwxe8jBvPACaAhgr
+vlRGa1VRyw7j0vyV+NrUwoQ=
+=8jpD
+-----END PGP SIGNATURE-----
+
+--mP3DRpeJDSE+ciuQ--
 
