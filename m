@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: NAT
-Date: Fri, 3 Oct 2003 12:22:50 +0200
+Subject: Re: RTSP
+Date: Fri, 3 Oct 2003 12:27:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031003102250.GW5758@sunbeam.de.gnumonks.org>
-References: <1065006710.3f7ab6766809d@mail.bewegungsmelder.de>
+Message-ID: <20031003102707.GX5758@sunbeam.de.gnumonks.org>
+References: <771599703.20030930173006@netfids.com> <20030930235504.GB2030@home.tig-grr.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="iuI/qVcDdq/IHvrO"
+	protocol="application/pgp-signature"; boundary="nydc3TyZakb7ip9W"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1065006710.3f7ab6766809d@mail.bewegungsmelder.de>
+In-Reply-To: <20030930235504.GB2030@home.tig-grr.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,23 +19,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: tlussnig@bewegungsmelder.de
-Cc: netfilter@lists.netfilter.org
+To: Geffrey Velasquez <g_netfilter@netfids.com>, netfilter@lists.netfilter.org, tmarshall@real.com
 
 
---iuI/qVcDdq/IHvrO
-Content-Type: text/plain; charset=iso-8859-1
+--nydc3TyZakb7ip9W
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 01, 2003 at 04:11:50AM -0700, tlussnig@bewegungsmelder.de wrote:
-> Hi,
-> i use iproute2 for statical nat.
+On Tue, Sep 30, 2003 at 04:55:04PM -0700, Tom Marshall wrote:
+> You can try this:
+>=20
+>   http://home.tig-grr.com/rtsp/index.html
 
-then you are totally wrong on this mailinglist, sorry.  Talk to
-linux-net or netdev@oss.sgi.com.
+Why did nobody submit that to patch-o-matic yet?=20
 
-> Cu Thomas Lu=DFnig
+Another issue, to quote from the above URL:
+> Please let me know if you use this module, and how it works for you.
+> The more feedback, the more incentive to improve the module and try to
+> get it into the mainline kernel.
+
+This is not possible.  The netfilter coreteam strongly opposes including
+conntrack/nat helpers for protocols where there is not at least one free
+software client and server implementation.  AFAIK, there is no free RTSP
+server implementation so far.  Please inform me, if I'm wrong.
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -47,17 +54,17 @@ linux-net or netdev@oss.sgi.com.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---iuI/qVcDdq/IHvrO
+--nydc3TyZakb7ip9W
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE/fU36XaXGVTD0i/8RAmbBAJ0euot3hBSrakP10X8JhweGbQZ7ugCfUFHy
-Y2z0RU+0hc+bgm83Y2T673k=
-=RJKj
+iD8DBQE/fU77XaXGVTD0i/8RAk0eAJ0Tz4Spdi5iFrjAI+RKjEV2cQ29UgCfX0oi
+V8QlH6tJPrUydxrQiH+Npkc=
+=HI1R
 -----END PGP SIGNATURE-----
 
---iuI/qVcDdq/IHvrO--
+--nydc3TyZakb7ip9W--
 
