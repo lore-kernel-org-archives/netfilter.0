@@ -1,11 +1,9 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: How to get "real time" kernel updates from iptables
-Date: Mon, 14 Mar 2005 23:32:40 +0100
-Message-ID: <1110839560.7535.4.camel@localhost.localdomain>
-References: <4235AECA.80305@bigpond.net.au>
+From: Pablo Allietti <pablo@lacnic.net>
+Subject: limit connections to ssh
+Date: Mon, 14 Mar 2005 21:01:11 -0300
+Message-ID: <20050315000111.GA34990@micron.lacnic.net.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <4235AECA.80305@bigpond.net.au>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +15,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: I & L Fogg <il.fogg@bigpond.net.au>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi,
+iptables can limit connections to a a port? for exmaple 
 
-For an Netfilter based authenticating firewall, you may have a look to
-NuFW : http://www.nufw.org/
+i need to permit only 3 connections to a ssh in a period of 5 minutes
 
-It is authenticating connections (Netfilter meaning) individually and it
-is not doing an IP==address association. Thus it even work on multiusers
-systems.
-
-BR,
--- 
-Eric Leblond <eric@inl.fr>
-
+iptables can do this?
 
