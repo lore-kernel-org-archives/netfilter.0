@@ -1,13 +1,13 @@
 From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Multi Port Tested & Example
-Date: Tue, 11 Jun 2002 17:55:39 -0400
+Subject: Re: IP address to MAC address
+Date: Tue, 11 Jun 2002 17:58:10 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020611215538.GD21405@cannon.eng.us.uu.net>
-References: <000d01c21191$53304e40$7b0010ac@dynamicaccess.lan>
+Message-ID: <20020611215809.GE21405@cannon.eng.us.uu.net>
+References: <081501c2118f$79efcf30$3200a8c0@jungle.funkybadger.org> <Pine.LNX.4.44.0206111744430.1615-100000@dhcp64-134-107-24.han.aus.wayport.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <000d01c21191$53304e40$7b0010ac@dynamicaccess.lan>
+In-Reply-To: <Pine.LNX.4.44.0206111744430.1615-100000@dhcp64-134-107-24.han.aus.wayport.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,177 +19,44 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Hard__warE <hard__ware@hotmail.com>
-Cc: netfilter@lists.samba.org
+To: rpjday <rpjday@mindspring.com>
+Cc: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>, netfilter@lists.samba.org
 
-Mr. Hard__warE,
+On Tue, Jun 11, 2002 at 05:45:56PM -0400, rpjday wrote:
 
-It's very cool that you're helping us with your preconf'ed scripts.
-But I think it's more appropriate if you could set up a web page for
-all these excellent suggestions/scripts that you've been posting so
-the people can go and take a look at it at their convenience.
-Just send us the URL and not an email every hour :-)
+> On Tue, 11 Jun 2002, Adam D. Barratt wrote:
+> 
+> > Non sequiter. /sbin contains, by convention, binaries connected with
+> > system administration. That is *not* the same as "binaries that may
+> > only be executed by root".
+> > 
+> > /sbin is not on non-root users' paths, by default, but that doesn't
+> > necessarily mean they can't execute stuff that lives there. Certainly,
+> > on my Debian Woody and Sid boxes here, the contents of /sbin
+> > are -rwxr-xr-x ;- the main thing stopping non-root users using some of
+> > them is a lack of privileges, not a lack of execute rights to the
+> > files.
+> > 
+> > Specifically, arp lives in /usr/sbin on my boxen, and whilst that's
+> > not on my normal user's path, and the files are owned by root.root, I
+> > can quite happily:
+> > 
+> >   /usr/sbin/arp -a
+> > 
+> > as any user. Similarly, a non-privileged user has no problems running
+> > /sbin/route.
+> 
+> i would go one step further and suggest that regular users might
+> consider adding /sbin and /usr/sbin to their search paths.  there's
+> nothing wrong with that, and it allows users to run the same commands
+> they would be allowed to run if they typed out the names in full:
+> "route" instead of "/sbin/route", for instance.
+
+The users who know what they're doing have done that already ;-) And
+there is no reason to include this path for the users that don't have
+a clue ;-)
 
 Ramin
 
-On Wed, Jun 12, 2002 at 07:45:38AM +1000, Hard__warE wrote:
-
-> i remember a while back people were screeming for help on multi port
-> 
-> well here what ya .. need
-> 
-> the example is For all SAMBA Ports to be added and DROPED
-> 
-> ---------------Start Below This Line---------------------
-> 
-> ## Load the Multi Port  Modue ##
-> 
-> echo -e "ipt_multiport, "
-> if [ -z "` $LSMOD | $GREP ipt_multiport | $AWK {'print $1'} `" ]; then
->    /sbin/insmod ipt_multiport
-> fi
-> 
-> ##########Creat Samba Chain #############
-> $IPTABLES -N SMB
-> $IPTABLES -A SMB -m multiport -p tcp --dport 135,136,137,138,139,445 -j DROP
-> $IPTABLES -A SMB -m multiport -p tcp --dport 135,136,137,138,139,445 -j DROP
-> $IPTABLES -A SMB -m multiport -p udp --sport 135,136,137,138,139,445 -j DROP
-> $IPTABLES -A SMB -m multiport -p udp --sport 135,136,137,138,139,445 -j DROP
-> 
-> $IPTABLES -A INPUT -s $UNIVERSE -d $UNIVERSE -j SMB
-> $IPTABLES -A OUTPUT -s $UNIVERSE -d $UNIVERSE -j SMB
-> $IPTABLES -A FORWARD -j SMB
-> 
-> To prove it works here is my Chains  /sbin/iptbales -L -n -v
-> 
-> Chain INPUT (policy DROP 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->     2   202 ACCEPT     all  --  lo     *       0.0.0.0/0
-> 0.0.0.0/0
->   470 49894 ACCEPT     all  --  eth0   *       172.16.0.0/16
-> 0.0.0.0/0
->     0     0 drop-and-log-it  all  --  eth1   *       172.16.0.0/16
-> 0.0.0.0/0
->     0     0 drop-and-log-it  all  --  eth1   *       0.0.0.0/0
-> 172.16.0.0/16
->     0     0 SPOOFED    icmp --  eth1   *       0.0.0.0/0
-> 0.0.0.0/0
->     0     0 ACCEPT     icmp --  eth1   *       0.0.0.0/0
-> 192.168.0.253
->    16  1395 ACCEPT     all  --  eth1   *       0.0.0.0/0
-> 192.168.0.253
->     0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
-> 192.168.0.212
->     0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
-> 192.168.0.212      state RELATED,ESTABLISHED
->     0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
-> 192.168.0.213
->     0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
-> 192.168.0.213      state RELATED,ESTABLISHED
->     0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
-> 192.168.0.253      state RELATED,ESTABLISHED
->    17  1702 SMB        all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0
->     0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0
-> 
-> Chain FORWARD (policy DROP 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->    67  5190 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
-> 172.16.0.111       tcp dpt:80
->     0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
-> 172.16.0.111       tcp dpt:443
->     0     0 ACCEPT     udp  --  eth1   *       0.0.0.0/0
-> 172.16.0.111       udp dpt:443
->     0     0 ACCEPT     tcp  --  eth1   *       192.168.0.212
-> 172.16.0.52        tcp
->     0     0 ACCEPT     udp  --  eth1   *       192.168.0.212
-> 172.16.0.52        udp
->     0     0 ACCEPT     tcp  --  eth1   *       192.168.0.213
-> 172.16.0.53        tcp
->     0     0 ACCEPT     udp  --  eth1   *       192.168.0.213
-> 172.16.0.53        udp
->   334 92708 SMB        all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0
->     0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
-> 0.0.0.0/0          tcp flags:0x16/0x02 limit: avg 1/sec burst 5
->     0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
-> 0.0.0.0/0          tcp flags:0x17/0x04 limit: avg 1/sec burst 5
->     0     0 ACCEPT     icmp --  eth1   *       0.0.0.0/0
-> 0.0.0.0/0          icmp type 8 limit: avg 1/sec burst 5
->     0     0 ACCEPT     all  --  eth1   eth0    0.0.0.0/0
-> 172.16.0.52        state RELATED,ESTABLISHED
->     0     0 ACCEPT     all  --  eth1   eth0    0.0.0.0/0
-> 172.16.0.53        state RELATED,ESTABLISHED
->   127 32555 ACCEPT     all  --  eth1   eth0    0.0.0.0/0
-> 0.0.0.0/0          state RELATED,ESTABLISHED
->   207 60153 ACCEPT     all  --  eth0   eth1    172.16.0.0/16
-> 0.0.0.0/0
->     0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0
-> 
-> Chain OUTPUT (policy DROP 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->     2   202 ACCEPT     all  --  *      lo      0.0.0.0/0
-> 0.0.0.0/0
->   392  151K ACCEPT     all  --  *      eth0    172.16.0.253
-> 172.16.0.0/16
->     0     0 ACCEPT     all  --  *      eth0    192.168.0.253
-> 172.16.0.0/16
->     0     0 drop-and-log-it  all  --  *      eth1    0.0.0.0/0
-> 172.16.0.0/16
->     0     0 ACCEPT     all  --  *      eth0    192.168.0.212
-> 172.16.0.0/16
->     0     0 ACCEPT     all  --  *      eth1    192.168.0.212
-> 0.0.0.0/0
->     0     0 ACCEPT     all  --  *      eth0    192.168.0.213
-> 172.16.0.0/16
->     0     0 ACCEPT     all  --  *      eth1    192.168.0.213
-> 0.0.0.0/0
->    16  1059 ACCEPT     all  --  *      eth1    192.168.0.253
-> 0.0.0.0/0
->     0     0 SMB        all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0
->     0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0
-> 
-> Chain SMB (3 references)
->  pkts bytes target     prot opt in     out     source
-> destination
->     0     0 DROP       tcp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0          multiport dports 135,136,137,138,139,445
->     0     0 DROP       tcp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0          multiport dports 135,136,137,138,139,445
->    17  1702 DROP       udp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0          multiport sports 135,136,137,138,139,445
->     0     0 DROP       udp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0          multiport sports 135,136,137,138,139,445
-> 
-> Chain SPOOFED (1 references)
->  pkts bytes target     prot opt in     out     source
-> destination
->     0     0 drop-and-log-it  all  --  *      *       10.0.0.0/8
-> 0.0.0.0/0
->     0     0 drop-and-log-it  all  --  *      *       172.16.0.0/16
-> 0.0.0.0/0
->     0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
-> 10.0.0.0/8
->     0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
-> 172.16.0.0/16
-> 
-> Chain drop-and-log-it (10 references)
->  pkts bytes target     prot opt in     out     source
-> destination
->     0     0 LOG        all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0          LOG flags 0 level 6
->     0     0 DROP       all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0
-> 
-> 
-> 
-> 
-> 
+> rday
 
