@@ -1,11 +1,11 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Qos using htb and transparent squid proxy
-Date: 29 Jan 2003 11:35:17 +0200
+From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
+Subject: RE: Qos using htb and transparent squid proxy
+Date: Wed, 29 Jan 2003 11:02:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1043832917.4693.8.camel@rayw.knowledgefactory.co.za>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <FD8F124A387AD6119F7900A0D218B321685F37@hslex01.hslbz.local>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-EImauHzimkBXKIKl4Ct0"
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2C77D.7C27FCB0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,61 +16,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
---=-EImauHzimkBXKIKl4Ct0
+------_=_NextPart_001_01C2C77D.7C27FCB0
 Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-Hi
+> ip basis while going through the transparent proxy. I think 
+> the proxy is doing all the downloading (as it should be) and 
+> therefore does not obey the bandwidth limits imposed on the 
+> requesting user.
 
-Has anyone had any experience with QoS using htb on a Linux internet
-gateway with a transparent squid proxy installed?
+But in squid you should be able to throttle the bandwidth when you use delay
+pools.
 
-I'm battling to get the bandwidth limiting to work on a per ip basis
-while going through the transparent proxy. I think the proxy is doing
-all the downloading (as it should be) and therefore does not obey the
-bandwidth limits imposed on the requesting user.
 
-Does anyone know how to accomplish this?
+Rob
 
-Regards
+------_=_NextPart_001_01C2C77D.7C27FCB0
+Content-Type: text/html
 
-Ray
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2653.12">
+<TITLE>RE: Qos using htb and transparent squid proxy</TITLE>
+</HEAD>
+<BODY>
 
---=-EImauHzimkBXKIKl4Ct0
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+<P><FONT SIZE=2>&gt; ip basis while going through the transparent proxy. I think </FONT>
+<BR><FONT SIZE=2>&gt; the proxy is doing all the downloading (as it should be) and </FONT>
+<BR><FONT SIZE=2>&gt; therefore does not obey the bandwidth limits imposed on the </FONT>
+<BR><FONT SIZE=2>&gt; requesting user.</FONT>
+</P>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+<P><FONT SIZE=2>But in squid you should be able to throttle the bandwidth when you use delay pools.</FONT>
+</P>
+<BR>
 
-iD8DBQA+N6BVh1fuR/Bv+ygRAsQsAJ9KoZ8/d3H0E4jlDRKCXktMq1Mn8QCcC19B
-ck7Q3sAB1OQhw20jLfjNQ+s=
-=NlH2
------END PGP SIGNATURE-----
+<P><FONT SIZE=2>Rob</FONT>
+</P>
 
---=-EImauHzimkBXKIKl4Ct0--
-
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2C77D.7C27FCB0--
 
