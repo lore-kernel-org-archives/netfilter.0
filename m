@@ -1,15 +1,18 @@
-From: Michel Bellemare <michel.bellemare@gmail.com>
-Subject: Re: gnutella
-Date: Thu, 21 Oct 2004 17:17:31 -0400
+From: Damjan <gdamjan@mail.net.mk>
+Subject: Re: What is the diference between ipfw of *bsd and netfilter of
+	linux?
+Date: Fri, 22 Oct 2004 04:16:25 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <f9a42cb404102114172fd3498b@mail.gmail.com>
-References: <f9a42cb404102107232273e04@mail.gmail.com>
-	<1098369207.24579.5.camel@porky>
-Reply-To: Michel Bellemare <michel.bellemare@gmail.com>
+Message-ID: <20041022021625.GD17225@legolas.on.net.mk>
+References: <1096920404.658.4.camel@pretorian>
+	<1096979251.668.2.camel@nostromo.bgsecm.com>
+	<20041005172315.GA22610@legolas.on.net.mk>
+	<1097000655.4415.4.camel@wolfpack.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1098369207.24579.5.camel@porky>
+Content-Disposition: inline
+In-Reply-To: <1097000655.4415.4.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,37 +22,24 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Group <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@lists.netfilter.org
 
-And is there any way to log how many bytes the application is using
-with each packet?
+> > However I agree with you that netfilter is easier to use and has more
+> > capabilities, I still can't beleive that netfilter (iptables actually=
+)
+> > doesn't have a way to identify rules uniquely (via an ID). So simple
+> > feaure, so powerfull, and still iptables doesn't have this.
+> >=20
+> > And no, linenumbers don't identify rules uniquely, they can change at
+> > any moment.
+>=20
+> check out the comment patch from POM.
+
+Ohh, and its in kernel-2.6.9 by default... I'm happy again.
 
 
-On Thu, 21 Oct 2004 16:33:27 +0200, Eric Leblond <eric@inl.fr> wrote:
-> You can do this for local traffic by using the owner module and :
->         --cmd-owner
-> For a whole network I see any solutions but slightly modify the NuFW
-> system to be able to mark packet with an uid corresponding to the
-> application (same way it can mark with userid).
-> 
-> 
-> 
-> On Thu, 2004-10-21 at 10:23 -0400, Michel Bellemare wrote:
-> > is there any way to log all the traffic that uses the gnutella protocol?
-> > i searched in the mailing list and google and found nothing.
-> >
-> > I looked to at a tcpdump capture and it never uses the same port...
-> >
-> > basically i want to control the number of bytes that goes out using
-> > this protocol.
-> >
-> > thank you very much!
-> > 
-> --
-> Eric Leblond <eric@regit.org>
-> NuFW, Now User Filtering Works : http://www.nufw.org
-> 
-> 
->
+--=20
+damjan | =D0=B4=D0=B0=D0=BC=D1=98=D0=B0=D0=BD
+This is my jabber ID --> damjan@bagra.net.mk <-- not my mail address!!!
 
