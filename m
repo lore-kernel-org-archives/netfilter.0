@@ -1,12 +1,12 @@
-From: "Ferry van Steen" <ferry.van.steen@InfoPart.nl>
-Subject: RE: confusing explanation regarding negation of protocol filtering
-Date: Wed, 9 Oct 2002 13:38:57 +0200
+From: Metzger Kobi <Yaakov_Metzger@persay.com>
+Subject: Changing the source on incoming messages
+Date: Wed, 9 Oct 2002 15:06:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D502122A1694B04EAE0F53D53CC2F764017578@exch2k-01.infopart.nl>
+Message-ID: <385D702A9C11D511A9E90008C7160AD5C38887@ismail1.comverse.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C26F94.BFEC5658"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +16,85 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-You are right, -p !tcp matches all but TCP, please note tho' that most
-users probably NEVER use these and as such it's hardly worth mentioning
-them. ! means not, not tcp is well, not tcp :-) Docs are to be taken
-with a grain of salt...=20
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-In addition to this, I read a book on C++ a little while. They are
-purists :-) (the writers that is). They wrote something along the lines
-of pure_sort() sorts in non-decreasing order, we say non-decreasing
-instead of increasing because there might be duplicates (thus variables
-have the same value, technically that's not increasing but it's kinda
-obvious ain't it? :-))
+------_=_NextPart_001_01C26F94.BFEC5658
+Content-Type: text/plain;
+	charset="windows-1255"
 
+Hi,
 
------Oorspronkelijk bericht-----
-Van: Robert P. J. Day [mailto:rpjday@mindspring.com]=20
-Verzonden: woensdag 9 oktober 2002 12:22
-Aan: netfilter mailing list
-Onderwerp: confusing explanation regarding negation of protocol
-filtering
+I am quite new to the netfilter buisiness, however I have the following
+problem that I am not sure wether i can solve using iptables.
+
+I would like to fool an aplication in my computer so while it thinks it
+communicates with x.y.z.w it will actually connect to a.b.c.d. (port number
+unchanged).
 
 
-  (sorry if these are painfully trivial questions, but sometimes the
-docs just don't seem to be consistent.)
+I succeeded in diverting the outgoing messages using DNAT on teh OUTPUT. The
+problem is that I could not change the source address on the incoming
+messages,
+ and the aplication won't work if the source is different. The SNAT cannot
+be put on the incoming messages (while DNAT can be put
+on outgoing messages).
 
-  based on both the man page and andreasson's tutorial, i can filter
-on protocol with some variation of
+Is there any other way to do this without touching other components on the
+net, and without touching the application.
 
-	-p tcp
-	-p udp
-	-p udp,icmp
-	-p ! tcp
-	-p <some protocol number here>
+Coby.
 
-and so on.  while the common filtering protocols are of course
-tcp, udp and icmp, there are far more listed in /etc/protocols
-that can be selected by name or number.
-=20
-  so it's a but puzzling that andreasson's tutorial claims that
-"--protocol ! tcp would mean to match the ICMP and UDP protocols."
-really?  i would have assumed it would have matched *every* other
-protocol but TCP.
+------_=_NextPart_001_01C26F94.BFEC5658
+Content-Type: text/html;
+	charset="windows-1255"
+Content-Transfer-Encoding: quoted-printable
 
-  am i misunderstanding the function of the "!" with respect to=20
-protocol?
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dwindows-1255">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2655.35">
+<TITLE>Changing the source on incoming messages</TITLE>
+</HEAD>
+<BODY>
 
-rday
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hi,</FONT>
+</P>
 
+<P><FONT SIZE=3D2 FACE=3D"Arial">I am quite new to the netfilter =
+buisiness, however I have the following problem that I am not sure =
+wether i can solve using iptables.</FONT></P>
 
+<P><FONT SIZE=3D2 FACE=3D"Arial">I would like to fool an aplication in =
+my computer so while it thinks it communicates with x.y.z.w it will =
+actually connect to a.b.c.d. (port number unchanged).</FONT></P>
+<BR>
 
+<P><FONT SIZE=3D2 FACE=3D"Arial">I succeeded in diverting the outgoing =
+messages using DNAT on teh OUTPUT. The problem is that I could not =
+change the source address on the incoming messages,</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;and the aplication won't work if =
+the source is different. The SNAT cannot be put on the incoming =
+messages (while DNAT can be put</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">on outgoing messages).</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Is there any other way to do this =
+without touching other components on the net, and without touching the =
+application.</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Coby.</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C26F94.BFEC5658--
 
