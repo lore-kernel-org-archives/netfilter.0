@@ -1,13 +1,12 @@
-From: "Jan Kaastrup" <jka@protego.dk>
-Subject: Iptables and SNAT
-Date: Tue, 17 Feb 2004 11:18:56 +0100
+From: "Kris" <kristiadi_himawan@dtp.net.id>
+Subject: filtering at bridge
+Date: Tue, 17 Feb 2004 17:46:26 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004d01c3f53f$73685cf0$2d64a8c0@pcjka>
-References: <1077000917.9435.6.camel@ssatchell1.pyramid.net>
+Message-ID: <010c01c3f5c1$0597bef0$15a02bca@Rangga>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0109_01C3F57D.F76849F0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1077000917.9435.6.camel@ssatchell1.pyramid.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +16,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi list
-After a reboot of my RedHat mashine, the NAT part of Iptables stop
-working.
+This is a multi-part message in MIME format.
 
-I get: "iptables: Invalid argument" when using snat.
+------=_NextPart_000_0109_01C3F57D.F76849F0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-My snat rule look like this:
-$IPTABLES -t nat -A POSTROUTING -o $EXT_INT -j SNAT --to-source $EXT_IP
+Does anyone know, iptables script for traffic blocking at a linux =
+bridge.
 
-I have made all netfilter stuff as modules.
-#lsmod
-ip_conntrack_irc        4336   1  (autoclean)
-ip_nat_irc              3440   0  (unused)
-ip_conntrack_ftp        5520   1  (autoclean)
-ip_nat_ftp              4240   0  (unused)
-ipt_ah                  1080   0  (unused)
-ipt_esp                 1112   0  (unused)
-iptable_nat            22040   2  [ip_nat_irc ip_nat_ftp]
-ppp_mppe               24088   0  (autoclean)
-bsd_comp                5464   0  (autoclean)
-ppp_async               9440   0  (autoclean)
-ppp_generic            24508   0  (autoclean) [ppp_mppe bsd_comp
-ppp_async]
-slhc                    6740   0  (autoclean) [ppp_generic]
-ipt_LOG                 4152   1  (autoclean)
-ipt_REJECT              4024   1  (autoclean)
-ipt_state               1048   5  (autoclean)
-iptable_mangle          2776   0  (autoclean) (unused)
-ip_conntrack           28296   4  (autoclean) [ip_conntrack_irc
-ip_nat_irc ip_conntrack_ftp ip_nat_ftp iptable_nat ipt_state]
-iptable_filter          2412   1  (autoclean)
-ip_tables              14872  10  [ipt_ah ipt_esp iptable_nat ipt_LOG
-ipt_REJECT ipt_state iptable_mangle iptable_filter]
+------=_NextPart_000_0109_01C3F57D.F76849F0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Any hints???
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Does anyone know, iptables script for =
+traffic=20
+blocking at a linux bridge.</FONT></DIV></BODY></HTML>
 
-I have tried to recompile iptables - but nothing seems to work - I know
-it did before the reboot.
-Only thing that has been changed is a static route being enabled, but
-this shouldn't make iptables complain:(
-
-Thanks a lot
+------=_NextPart_000_0109_01C3F57D.F76849F0--
 
 
