@@ -1,13 +1,13 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: [netfilter-core] Bug in iptables / nat
-Date: 27 Dec 2004 17:32:50 +0100
-Message-ID: <1103719223.5956.0.camel@nostromo.bgsecm.com>
-References: <000001c4e6be$07be4020$fe78a8c0@GERHARD>
-	<20041220183434.GE24142@sunbeam.de.gnumonks.org>
+From: Mike <1100100@gmail.com>
+Subject: One Nic; Multiple Subnets
+Date: Mon, 27 Dec 2004 11:38:55 -0500
+Message-ID: <8ca4228204122708388845e28@mail.gmail.com>
+References: <41CC19DF.2766.F2FCB6D@localhost>
+Reply-To: Mike <1100100@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041220183434.GE24142@sunbeam.de.gnumonks.org>
+In-Reply-To: <41CC19DF.2766.F2FCB6D@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El lun, 20 de 12 de 2004 a las 19:34, Harald Welte escribi=C3=B3:
-> Most likely Novell/SuSE compiled iptables against header files of a
-> different kernel than the kernel they ship in their distribution.
+I've been looking through the monthly archives of this list, but I
+can't find the needle in the haystack.  I saw this question answered
+before, and I'm hoping I'll see it again.  :-)
 
-Redhat had the same problem with one of their updates
-of iptables/kernel.
+I have an old slackware routerbox that only has room for 2 nics.
+Right now there are two nics. in it and they are set up like so:
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+eth0 --> Internet (Dynamic IP: Assigned by ISP)
+eth1 --> Lan  (Gateway Interface:  192.168.1.1)
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+I will soon be joining some computers from another LAN into the one
+mentioned above.
+I will need to set up security measures so that the new computers will
+not be hacked or viewed by the other users on the LAN.
 
+Even though I've only got one C-Class subnet (192.168.1.1 - 255), I
+want to create 2 or more "virtual" subnets to reside in this address
+range.
+
+How do I create the multiple subnets?
+Do I need to use route command or ipsec.?
+And what would the iptables rule look like, where Subnet "B" rejects
+all packets coming from Subnet "A"?
+
+Is this even close? ---
+$IPTABLES -t filter FORWARD -A -i eth1 -s 192.168.1.2/150
+--to-destination 192.168.1.151/253 -j DENY
+
+Thank you for your time and help.
+
+Mike
 
