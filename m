@@ -1,11 +1,14 @@
-From: Sao Do <saodohv@yahoo.com>
-Subject: I can't stop iptables with the command "service iptables stop"
-Date: Mon, 10 Mar 2003 00:23:54 -0800 (PST)
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Iptables efficiency
+Date: 11 Mar 2003 15:13:40 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030310082354.83406.qmail@web14807.mail.yahoo.com>
+Message-ID: <1047388420.11445.6.camel@raylinux.internal>
+References: <007b01c2e72f$76712180$0200a8c0@rinse>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-355899760-1047284634=:81892"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-EsuDnebhGtZ2fviUAMfG"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <007b01c2e72f$76712180$0200a8c0@rinse>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,53 +18,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
---0-355899760-1047284634=:81892
-Content-Type: text/plain; charset=us-ascii
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-Dear Sir or Madam,
+--=-EsuDnebhGtZ2fviUAMfG
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I have difficulties with iptables v1.2.6a. I have a bridge set on Linux Red hat 7.2 upgraded with kernel 2.4.18. I have installed iptables v1.2.6a. The bridge starts OK, iptables starts OK, but I when I execute the command:
+On Mon, 2003-03-10 at 20:04, Rinse Kloek wrote:
+> We use a RedHat 7.3 machine as bridge on a P3 1.8 Ghz with 2 64 bits
+> Gigabit interfaces. On the machine we have a lot of iptables rules like :
+>             all  --  213.134.x.0        0.0.0.0/0
+>             all  --  0.0.0.0/0            213.134.x.0
+> TOS    all  --  213.134.x.4        0.0.0.0/0          TOS set 0x08
+>             all  --  0.0.0.0/0            213.134.x.4
+>=20
+> We have about 3200 iptables rules on our bridge. I've tested today to
+> remove 1000 of these rules. The load dropped from about 40% to 25%. So I
+> think the iptables rule take up the most of the CPU load. Do you think th=
+is
+> is a problem of ineffeciency of iptables or just a 'limitation' in the
+> TCP/IP stack of linux ?
+>=20
+Probably the packet parser having a hard time trying to make sense of
+that many rules ...
 
-# service iptables stop
+> regards Rinse
+--=20
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(  Raymond Leach                       )
+ ) Knowledge Factory                  (
+(                                      )
+ ) Tel: +27 11 445 8100               (
+(  Fax: +27 11 445 8101                )
+ )                                    (
+(  http://www.knowledgefactory.co.za/  )
+ ) http://www.saptg.co.za/            (
+(  http://www.mapnet.co.za/            )
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   o                                o
+    o                              o
+        .--.                  .--.
+       | o_o|                |o_o |
+       | \_:|                |:_/ |
+      / /   \\              //   \ \
+     ( |     |)            (|     | )
+     /`\_   _/'\          /'\_   _/`\
+     \___)=3D(___/          \___)=3D(___/
 
-the following error occure:
 
-iptables: libiptc/libip4tc.c:384: do_check: Assertion 'h->info.valid_hooks==(1<<0|1<<3)' failed
+--=-EsuDnebhGtZ2fviUAMfG
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-/etc/init.d/iptables: line -2: 1393 Aborted                              iptables -t $i -F iptables: libiptc/libip4tc.c:384: do_check: Assertion 'h->info.valid_hooks==(1<<0|1<<3)' failed
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-/etc/init.d/iptables: line -225: 1397 Aborted                              iptables -t $i -X Resetting built-in chains to the default ACCEPT policy: iptables: libiptc/libip4tc.c:384: do_check: Assertion 'h->info.valid_hooks==(1<<0|1<<3)' failed
+iD8DBQA+beEEh1fuR/Bv+ygRAj0RAJ9iarURsnbcD16Bi5bgFdwzmfBHgwCfeT5U
+jCsoIowhjjos2bd/OEl9CV8=
+=dQlh
+-----END PGP SIGNATURE-----
 
-/etc/init.d/iptables: line -215: 1046 Aborted                              iptables -t mangle -P PREROUTING ACCEPT
+--=-EsuDnebhGtZ2fviUAMfG--
 
-                                                                                                       [FAILED]
-
-So, Please help me to solve the problems.
-
-Thank you very much! 
-
-
-
----------------------------------
-Do you Yahoo!?
-Yahoo! Tax Center - forms, calculators, tips, and more
---0-355899760-1047284634=:81892
-Content-Type: text/html; charset=us-ascii
-
-<P>Dear Sir or Madam,</P>
-<P>I have difficulties with iptables v1.2.6a. I have a bridge set on Linux Red hat 7.2 upgraded with kernel 2.4.18. I have installed iptables v1.2.6a. The bridge starts OK, iptables starts OK, but I when I execute the command:</P>
-<P># service iptables stop</P>
-<P>the following error occure:</P>
-<P>iptables: libiptc/libip4tc.c:384: do_check: Assertion 'h-&gt;info.valid_hooks==(1&lt;&lt;0|1&lt;&lt;3)' failed</P>
-<P>/etc/init.d/iptables: line -2: 1393 Aborted&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -t $i -F iptables: libiptc/libip4tc.c:384: do_check: Assertion 'h-&gt;info.valid_hooks==(1&lt;&lt;0|1&lt;&lt;3)' failed</P>
-<P>/etc/init.d/iptables: line -225: 1397 Aborted&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -t $i -X Resetting built-in chains to the default ACCEPT policy: iptables: libiptc/libip4tc.c:384: do_check: Assertion 'h-&gt;info.valid_hooks==(1&lt;&lt;0|1&lt;&lt;3)' failed</P>
-<P>/etc/init.d/iptables: line -215: 1046 Aborted&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -t&nbsp;mangle -P PREROUTING ACCEPT</P>
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [FAILED]</P>
-<P>So, Please help me to solve the problems.</P>
-<P>Thank you very much!&nbsp;</P><p><br><hr size=1>Do you Yahoo!?<br>
-<a href="http://rd.yahoo.com/finance/mailtagline/*http://taxes.yahoo.com/">Yahoo! Tax Center</a> - forms, calculators, tips, and more
---0-355899760-1047284634=:81892--
 
