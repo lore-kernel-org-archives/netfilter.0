@@ -1,13 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Loading Additional Modules
-Date: 28 Oct 2002 13:34:54 +0100
+From: Alistair Tonner <Alistair@alistairt.ath.cx>
+Subject: Re: Why would these rules cause errors only sometimes?
+Date: Thu, 24 Oct 2002 18:00:39 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1035808494.9552.11.camel@elendil>
-References: <OF4868D659.17C45E12-ON65256C60.003E4AD9-65256C60.004175C4@lntinfotech.com>
+Message-ID: <20021024220039.GA1068@Ajftl1.ajfthome.on.ca>
+References: <20021024074429.90347.qmail@web40708.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OF4868D659.17C45E12-ON65256C60.003E4AD9-65256C60.004175C4@lntinfotech.com>
+Content-Disposition: inline
+In-Reply-To: <20021024074429.90347.qmail@web40708.mail.yahoo.com>; from natasha3641@yahoo.com on Thu, Oct 24, 2002 at 03:44:29 -0400
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +18,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: harish.k@lntinfotech.com
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: Tasha Smith <natasha3641@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
-Le lun 28/10/2002 =E0 12:54, harish.k@lntinfotech.com a =E9crit :
-> I want to load the modules ip_conntrack_ftp and ip_nat_ftp automaticall=
-y
-> whenever the OS boots. I use Red Hat 7.3 and iptables-1.2.5-3.=20
-> How do I go about it?
 
-man 5 modules
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+
+This line will grab your current IP off the ppp0 link --
+
+  INET_IP=`ifconfig ppp0|grep P-t-P|awk -F : '{ print $2 }'|cut -d \  
+-f 1`;
+
+this line will grab your current IP off any ethx link
+
+   INET_IP=`ifconfig eth[x]|grep "inet addr"|awk -F : '{ print $2 
+}'|cut -d \  -f 1`;
+
+change the above to suit your needs ...
+
+
+	Alistair
+
+
+
+On 2002.10.24 03:44 Tasha Smith wrote:
+> 
+> ---OK...but the only problem is i have a DYNAMIC ip adress. Soo it
+> changes and
+> soo if i put an Ip adress i have right now in my script where eth0 is
+> it will
+> change and then it will block me from the net? How can i get it to
+> update my ip
+> adress in script when it changes!
+> 
+> 
+> __________________________________________________
+> Do you Yahoo!?
+> Y! Web Hosting - Let the expert host your web site
+> http://webhosting.yahoo.com/
+> 
+> 
+
 
