@@ -1,9 +1,8 @@
-From: Sanjay Arora <skpobox@hotpop.com>
-Subject: REPOST: PLEASE HELP..Routing an IP adress from a NATted interface..
-Date: 22 Aug 2004 11:58:20 +0530
+From: Banszki Gabor <banszki.gabor@chello.hu>
+Subject: queue buffer size increasing howto?
+Date: Sun, 22 Aug 2004 15:40:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1093156100.14147.17.camel@Sewak.Asr.Lan>
-Reply-To: skpobox@hotpop.com
+Message-ID: <1093182015.17276.24.camel@debian>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,38 +16,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all
+ 
+Hi everybody!
 
-My small cable ISP has a Linux box which is supposed to route my ip
-addtress. Normally, he is issuing private space ips in address range
-172.16.x.x. I have asked for a live IP and he has issued one,
-202.x.x.139.
+Greetings for you! I am a new member of this list. 
 
-The problem is that he has other IP addresses on the same interface,
-which are NATted to provide connectivity to 172.16.x.x. So when I get a
-web request, my server logs 202.x.x.137 as the source IP, which is
-actually my gateway on the ISP machine.
+Please somebody help me!
 
-On the other hand when I send mail, my source ip from the other end
-looks to be 202.x.x.130, which is again the ISPs IP.
+I am developing an application for counting and processing packets in a
+linux box with using the ip_queue module. 
 
-It seems that despite being issued a live IP, my IP is being proxied
-somehow or the source address is being mangled. The ISP does not seem to
-have the expertise to route the IP properly ;-) and has told me either
-to accept it, to tell him how is he supposed to do it or go back to
-172.16.x.x address.
+It is working properly, but sometimes I have a problem, that I get often
+this message:
 
-I myself am a ipfilter newbie. Can someone tell me how an IP is routed
-on an interface which is providing NAT services on a second IP. Pointers
-to resources for further reading on issues involved and any similar
-scripts/samples will be greatly appreciated. (My ISP seems to talk about
-pre-routing a lot....does not really tell exactly how he is pre-routing
-the packets for my IP).
+Failed to receive netlink message, No buffer space available
 
-With best regards.
-Sanjay.
+Maybee the cause of this, that the box has a lot of short hardly tasks
+sometimes. 
+I think the solution to prevent the packet loss If I would increase the
+queue length. I did it with this command:
+
+echo 2048 > /proc/sys/net/ipv4/ip_queue_maxlen
+
+#cat /proc/net/ip_queue
+Peer PID          : 23985
+Copy mode         : 2
+Copy range        : 2048
+Queue length      : 184
+Queue max. length : 2048
+
+The enviroment:
+ 2.4.26 kernel and  iptables: 1.2.9 with promiscuous patch 1.2.3
+
+
+With this command: watch -n 0 "cat /proc/net/ip_queue" during my
+application running the biggest number of "Queue length" is 255.
+
+I don't understand it, because the "Queue max. length" is 2048.
+
+How can I increase the queue length?
+
+What is the really method of the queue increasing?
+
+Thanx:
+
+Gabor
+
+
+
+
+
+
+
+
 
 
 
