@@ -1,12 +1,13 @@
-From: Kevin Dwyer <Kevin.Dwyer@algx.net>
-Subject: Re: inner workings of IP tables
-Date: Sun, 29 Sep 2002 19:37:40 -0400 (EDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Need Help
+Date: Sun, 29 Sep 2002 23:40:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.40.0209291918280.19073-100000@klepto.security.algx.lan>
-References: <20020929193020.YCUL13996.mta05-svc.ntlworld.com@there>
+Message-ID: <20020929224039.UBRU2092.mta07-svc.ntlworld.com@there>
+References: <F270kuutSgcOrBLSAQV00000096@hotmail.com> <002601c26807$3c41cc00$5120a8c0@mmx>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020929193020.YCUL13996.mta05-svc.ntlworld.com@there>
+In-Reply-To: <002601c26807$3c41cc00$5120a8c0@mmx>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,61 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Sorry to barge in, but included are some comments I thought must be made.
+On Sunday 29 September 2002 11:26 pm, Davide wrote:
 
-On Sun, 29 Sep 2002, Antony Stone transmitted the following:
-
-> On Sunday 29 September 2002 8:05 pm, Mitesh P Choksi wrote:
+> hello,
+>    this is the iptables version
 >
-> [ Comparing netfilter with Checkpoint Firewall-1 ]
+> /sbin/iptables -F
+> /sbin/iptables -t nat -F
 >
-> > What about ease of use? The GUI
+> /sbin/iptables -P INPUT ACCEPT
 
-http://www.fwbuilder.org
-(which incidentally generates rulesets for iptables, pf, and ipfilter)
+Ugh.
 
-Not that a GUI makes a good firewall.  Aren't you pretty much dead in the
-water with checkpoint if you don't have access to their GUI?  I know you
-can fw load policies, and possibly even compile them via CLI, but I
-challenge you to make competent ruleset changes with vi on checkpoint.
+> /sbin/iptables -P FORWARD ACCEPT
 
-> > Multiple firewalls.
+Ughhh !!!
 
-http://www.linux-ha.org
-http://w3.arobas.net/~jetienne/vrrpd/
-(and more, peep the linux-ha site for a huge list of resources)
+> /sbin/iptables -P OUTPUT ACCEPT
+>
+> echo "1" > /proc/sys/net/ipv4/ip_forward
 
-Netfilter doesn't have the code to pass the state table across machines
-(and would be a neat feature) but you can make a firewall pair by either
-using VRRPd or Linux-HA.  You'll drop active connections, but CP did too
-up until recently I think.
+It's a good idea to put this *after* your rules, to avoid any period of time 
+when the kernel's forwarding packets, but without a ruleset loaded...
 
-> > Management of firewalls.
+> # for trasparent proxy
+> /sbin/iptables -t nat -A PREROUTING -p tcp -s 0.0.0.0/0 --dport 80 -j
+> REDIRECT --to-ports 8080
 
-..is made more difficult with their reliance on a GUI, IMO.
+The -s 0.0.0.0/0 is redundant.
 
-..is made more difficult with their licensing schemes.
+> # for direct connection excluding HTTP
+> /sbin/iptables -A FORWARD -p tcp -s 0.0.0.0/0 --dport 80 -j DROP
 
-..is made more difficult when CP support says: Sorry, the only solution to
-esoteric bug #48129 is to upgrade to the newest version.  Sorry, the only
-solution to esoteric bug #48130 is to downgrade to the previous version.
-(as the clock counts the downtime)
+Please do this as an explicit ACCEPT rule for *outbound* packets which do not 
+match HTTP, and have a default DROP policy on the FORWARD chain (so you block 
+anything trying to come in).
 
-..is made more difficult when you upgrade the GUI and magically things
-like Manual IPSEC (and who knows what else) disappear.
+ie:
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -p tcp --dport ! 80 -o $extIF -j ACCEPT
 
+Antony.
 
-/* Kevin Dwyer                                Allegiance Internet */
-/* network security engineer                   Commerce Center II */
-/* email: Kevin.Dwyer@algx.net                7601 Ora Glen Drive */
-/* phone: 240-616-2075                        Greenbelt, MD 20770 */
-/*      >++++++++++[<++++++++++>-]<.+++++.----.[-]++++++++++.     */
+-- 
 
-
-
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
 
