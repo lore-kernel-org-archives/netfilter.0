@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Rob Sterenborg" <rob@sterenborg.info>
 Subject: Re: DNAT problem /  question
-Date: Fri, 18 Jun 2004 17:06:28 +0100
+Date: Fri, 18 Jun 2004 18:09:43 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406181706.28684.Antony@Soft-Solutions.co.uk>
+Message-ID: <003501c4554e$acf6ec10$1201a8c0@admin>
 References: <519AD2BA94FC6E4DB5DE078B2E37CB10A76BA5@PDBEX01E.pdb.fsc.net>
-Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <519AD2BA94FC6E4DB5DE078B2E37CB10A76BA5@PDBEX01E.pdb.fsc.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,48 +19,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 18 June 2004 4:45 pm, Arnauts, Bert wrote:
+> $IPTABLES -A INPUT   -m state --state NEW,
+> ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A OUTPUT  -m state --state NEW,
+> ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -m state --state NEW,
+> ESTABLISHED,RELATED -j ACCEPT
 
-> Hello all,
->
-> I am still stuck with my DNAT. I updated the information that was
-> requested.
-> Could you please check my config, if I execute this I can not ping my
-> internal lan ip of this host 172.25.239.208 any more. I think this is
-> really wierd. I included all kinds of information, hopefully enough for
-> you guys to take a look at.
+I do not think you want this. Since you don't specify protocol and/or
+port, you are accepting any packet that is NEW, RELATED or ESTABLISHED.
+That means any packet.
+This is the same as having a policy of ACCEPT for all filter chains with
+no rules to block anything. If you want to filter anything, leave the
+NEW out of the rules, or just set policy to ACCEPT and skip these rules.
+(Btw, do you have policy set to DROP for INPUT, OUTPUT and FORWARD so
+that these rules make sense ?)
 
-It appears you have overlooked both of John Sullivan's postings on this (both 
-more recent than mine).
 
-> $IPTABLES -t nat -A PREROUTING -d 172.25.239.220/27 -j DNAT
-> --to-destination 11.0.0.16
-> $IPTABLES -t nat -A OUTPUT -d 172.25.239.220/27 -j DNAT --to-destination
-> 11.0.0.16
-
-You have specified an inappropriate combination of address and netmask with 
-172.25.239.220/27 - the address 220 is not the base address of a /27 range, 
-and it is possible (I am not certain) that this combination is confusing 
-netfilter.
-
-The /27 range within which address .220 falls is 172.25.239.192 (the braodcast 
-address is 172.25.239.223), so firstly, try specifying that as your address 
-range and see if it helps.
-
-Secondly, do you really mean that you want all packets addressed to anywhere 
-within the /27 range to be redirected instead to 11.0.0.16?   That is a valid 
-rule, but seems like a slightly strange requirement.
-
-Regards,
-
-Antony.
-
--- 
-"Linux is going to be part of the future. It's going to be like Unix was."
-
- - Peter Moore, Asia-Pacific general manager, Microsoft
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Gr,
+Rob
 
 
