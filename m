@@ -1,14 +1,14 @@
 From: Joel Newkirk <firewalldude@newkirk.us>
-Subject: Re: inconsistant behaviour
-Date: 25 Sep 2003 03:07:07 -0400
+Subject: Re: problem with iptables with forward drop  policy.
+Date: 25 Sep 2003 03:24:34 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1064473627.1919.474.camel@alpha.newkirk.us>
-References: <3F72778D.2080207@didymodesigns.com.au>
+Message-ID: <1064474674.1921.507.camel@alpha.newkirk.us>
+References: <20030923182247.18490.qmail@servidor1.isabeldeespana.org>
 Reply-To: firewalldude@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F72778D.2080207@didymodesigns.com.au>
+In-Reply-To: <20030923182247.18490.qmail@servidor1.isabeldeespana.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,88 +18,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Ashley Maher <ashley.maher@didymodesigns.com.au>
+Content-Type: text/plain; charset="iso-8859-1"
+To: iptables@isabeldeespana.org
 Cc: netfilter@lists.netfilter.org
 
-On Thu, 2003-09-25 at 01:05, Ashley Maher wrote:
-> $IPTABLES -N ACCT
-> $IPTABLES -F ACCT
-> $IPTABLES -N ALLOW
-> $IPTABLES -P ALLOW DROP
+On Tue, 2003-09-23 at 14:22, iptables@isabeldeespana.org wrote:
+> I manage a network with three diferent range of IP=B4s 192.168.1.0 ,=20
+> 192.168.2.0 and 192.168.3.0.=20
+>=20
+> I have a router-firewall which connect theese internals networks.=20
+>=20
+> iptables rules on the router-firewall machine are...=20
 
-You can't set a policy on a custom chain - it always returns to the
-calling chain at the end.  Think of it as a hardwired "RETURN" policy...
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
+> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+> $IPTABLES -A FORWARD -j LOG=20
+> $IPTABLES -A FORWARD -s 192.168.1.19 -j ACCEPT=20
 
-> $IPTABLES -F ALLOW
-> 
-> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state 
-> ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A FORWARD -j ACCT
-> $IPTABLES -I FORWARD -d 202.129.z.y -j ACCEPT
-> $IPTABLES -A FORWARD -s 203.220.a.0/22 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
-> $IPTABLES -A FORWARD -s 203.220.b.0/24 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
-> $IPTABLES -A FORWARD -s 203.221.c.0/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
-> $IPTABLES -A FORWARD -s 203.220.d.0/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
-> $IPTABLES -A FORWARD -s 203.220.e.128/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
-> 
-> When a student logs on this instruction is given:
-> 
-> /sbin/iptables -A ALLOW -s $IP/32 -d 0.0.0.0/0 -o $EXTIF -j ACCEPT
-> /sbin/iptables -A ACCT -s 0.0.0.0/0 -d $IP/32 -i $EXTIF
-> 
-> This works well.
-> 
-> When a student logs off these instructions are given:
-> 
-> /sbin/iptables -D ALLOW -s $IP/32 -d 0.0.0.0/0 -o $EXTIF -j ACCEPT
-> /sbin/iptables -D ACCT -s 0.0.0.0/0 -d $IP/32 -i $EXTIF
-> 
-> Now this works fairly well. Less than 1% of the time it fails to remove 
-> the entry from the ALLOW chain and very rearly it fails to remove from 
-> the ACCT chain.
->
-> Where can I look to find this error. Though rare the 1% ends up being a 
-> significant number given the load is high.
+>  From host 192.168.1.19 which is a window machine I ping to machine=20
+> 192.168.3.15 which is a linux machine. the result is Ok.=20
+>=20
+> If I ping from 192.168.1.19 to 192.168.3.35 which is a window machine I=20
+> can=B4t get a response.=20
 
-?? There's no reason it should 'fail' to remove the rule from either
-chain.  However, what happens if a student logs on twice without logging
-off?  Will it enter two pairs of rules, but only delete one?  (That's
-what will happen if there are two matching rules to a single -D delete
-command - the first one found goes, anything else remains)  If this is
-the case, you;d be better off grepping the output of "$IPTABLES -L
-ALLOW" and making sure you remove duplicates.  Something like:
+Is this ALL of the rules?  I presume that $INTIF has three IPs, one per
+subnet?  In that case, you'd have forwarding from $INTIF back to $INTIF,
+which you don't list a rule for.  Your listed rules will allow
+192.168.1.19 to ping anything, but if the target it on $INTIF it will
+not be allowed to reply.  The linux machine may have a different subnet
+configured (like /16) - check "ip route show"  for "192.168.x.x/16", and
+also see if there's a route that would allow 192.168.1.0/24 directly on
+the interface, instead of listing a "via 192.168.3.1" or something
+similar pointing to your router.  (should probably only be three routes
+- "192.168.3.0/24 dev eth0", "127.0.0.0/8 dev lo", and "default via
+192.168.3.1 dev eth0"...)
 
-for ((c=0;c<$($IPTABLES -L -n ALLOW | grep -c $IP);c++)) 
-do
-	$IPTABLES -D ALLOW -s $IP/32 -d 0.0.0.0/0 -o $EXTIF -j ACCEPT
-done
+> I can ping from router to every IP on every network with forward policy s=
+et=20
+> as DROP by default.=20
 
-Or alternately, run your 'remove' function when they login, before
-creating new rules for them, to ensure that there's no 'legacy' of older
-rules for that IP.
+Of course, as that traffic would all hit INPUT and OUTPUT chains for the
+box itself...  not FORWARD.
 
-> Also msn messagenger packets do not seam to be counted by the iptables 
-> chain?? This is an observation from the help desk as students are 
-> complaining they are being logged off for inactivity and they are using 
-> messanger. When I hand check packets using iptables there appears to be 
-> no packet count. Whe they do a download there is.
+> Could you help me with the problem?=20
 
-What exactly is being monitored to determine 'activity'?  The ACCT chain
-rule for the student's IP?  That will never see ESTABLISHED or RELATED
-state packets.  You'd need to put the state rule AFTER the ACCT rule in
-FORWARD chain to ensure that ACCT counts ALL packets.
+Hopefully.
 
-> I'm not an iptables guru so hints and or suggestions appreciated.
->
-> thanks
-> 
-> Ashley
-
-Hope that helps.
+> Thanks in advance.=20
 
 j
-
 
 
 
