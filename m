@@ -1,13 +1,13 @@
-From: "Nathan Cassano" <nathan@cjhunter.com>
-Subject: RE: Additional user for iptables
-Date: Fri, 21 Jun 2002 13:50:09 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Question
+Date: Sat, 22 Jun 2002 00:12:28 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <007001c21965$3b4cdec0$2901a8c0@amos>
-References: <MBBBJHGKAGOKDNNIMPJHMEPKJGAA.davemiller@comcast.net>
+Message-ID: <20020621231230.XKAD19225.mta07-svc.ntlworld.com@there>
+References: <000401c21951$dcd11310$8147370a@washingtghv9lt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <MBBBJHGKAGOKDNNIMPJHMEPKJGAA.davemiller@comcast.net>
+In-Reply-To: <000401c21951$dcd11310$8147370a@washingtghv9lt>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,30 +18,25 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Dave Miller' <davemiller@comcast.net>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
+On Friday 21 June 2002 7:31 pm, James Mello wrote:
 
-
-Dave Miller wrote:
+> > Also I'm wondering say if I have a dmz and allow people to come into a
+> > server on port 80, will netfilter inspect the packet on all 7 layers
+> > of the OSI model and make sure that it is actually a http packet and
+> > following the rules and protocol specifications of http?
 >
->Hello - 
->
-> Is there a way to allow an additional (non root) user to access the
-iptables tool without using sudo or similar?
+> No, but there are experimental modules that will allow you to enforce
+> your own rules. I've heard of some IDS or attack detection capabilities
+> being done through IP tables.
 
-Hi Dave,
-	What are you trying to accomplish? What specific parts of
-iptables do you want your users to access?
+What sort of modules ?   I *hope* you don't mean the 'string' match ?
 
-In any case if you are bent on letting your users access iptables I
-would develop a suid c program that only accepts specific iptables
-manipulations (i.e. only blocking an ip address) and runs the iptables
-program. Heavily check the program's arguments so that nothing gets
-through but allowed data. Make sure that only designated users will have
-the permissions to executer this suid program.
+I'm not aware of anything based on IPtables which makes an effective (OSI 
+layer 7) IDS - it's just not designed for it, being a packet filter.....
 
+ 
 
-Nathan
-
-
+Antony.
 
