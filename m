@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Kazza
-Date: Tue, 10 Jun 2003 15:59:50 +1000
+From: narendra prabhu <naren@deeproot.co.in>
+Subject: Re: Question regarding unclean match support!
+Date: Tue, 10 Jun 2003 11:58:34 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6E12@wardrive.citadelcomputer.com.au>
+Message-ID: <3EE57A92.2040404@deeproot.co.in>
+References: <00a601c32e4a$577181a0$6828010a@telxsi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <00a601c32e4a$577181a0$6828010a@telxsi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +17,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Wratmoko hadi Handoko SW <wra_eng@2.pacific.net.id>, netfilter@lists.netfilter.org
-
-This is something that's being repeated asked. Use the patch-o-matic "-m =
-string --string" function to block Kazaas protocol.
-
-Check the archives...
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-=20
-
------Original Message-----
-From: Wratmoko hadi Handoko SW [mailto:wra_eng@2.pacific.net.id]
-Sent: Tuesday, June 10, 2003 2:52 PM
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Subject: Kazza
+Cc: Rahul Gulati <rgulati@tataelxsi.co.in>
 
+Rahul Gulati wrote:
 
-I like block kazza in my network with iptables
-what should i do ?
+>Hi, All,
+>
+>I had a question regarding support for "unclean" match in Linux 2.4.18
+>kernel.
+>I am not able to see "unclean" match as an option under IP: Netfilter
+>Configuration.
+>  
+>
+Use POM.... Its available in www.netfilter.com ....... It will help you 
+interactivly patch your kernel
+with lot more options (that are not present in kernel v2.4.18)...
 
-thanks for advanced
-
+//Narendra.
 
 
 
