@@ -1,13 +1,13 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: RE: anti-dos
-Date: Thu, 29 Jan 2004 07:55:25 +0200
+From: "Klemen Kecman" <klemen@sting.si>
+Subject: Re: Trouble rejecting connections
+Date: Thu, 29 Jan 2004 10:00:03 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1075355725.1999.73.camel@raylinux.internal>
-References: <F22386C3FEB012449238672E38ED61E71642B6@overlord.overturemedia.com>
+Message-ID: <006101c3e646$49e8f950$6a02a8c0@klemen>
+References: <E1AlxPY-00033X-P8@aphex.cyberpixels.com>
+Reply-To: "Klemen Kecman" <klemen@sting.si>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-cRSrfzkSTxMij889DDxg"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F22386C3FEB012449238672E38ED61E71642B6@overlord.overturemedia.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,116 +17,154 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Fritz Mesedilla <fritz.mesedilla@overturemedia.com>
-Cc: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+Cc: Ben <nigma@nigma.info>
+
+Still I think your problem will go away if you move LOG target above "# Open
+ports for server/services"
+
+Klemen Kecman
+Sting d.o.o.
+Computer I.T.
+
+Slackware user till the grave!
+
+----- Original Message -----
+From: "Ben" <nigma@nigma.info>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, January 28, 2004 10:39 PM
+Subject: RE: Trouble rejecting connections
 
 
---=-cRSrfzkSTxMij889DDxg
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2004-01-29 at 05:34, Fritz Mesedilla wrote:
-> I forgot to ask.
-> I am putting this before the rest of my rules, right? Will this allow leg=
-it transaction to get through?
->=20
-Yes, the rules to redirect to the syn-flood chain must be the first
-rules of each chain.
-> Thanks.
->=20
->=20
-> Cheers,
->=20
-> fritz <www.mesedilla.com>
-> ---
-> + Basta Ikaw Lord
->=20
->=20
->=20
->=20
+> Perhaps I explained incorrectly.  I want to be able to specifically deny
+an
+> IP address all access to the server at all.  I'm doing this with a line
+that
+> looks something like this
+>
+> $IPTABLES -A INPUT -s blocked.ip.address.here -j DROP
+>
+> However, when I do that, I am able to still connect from from
+> blocked.ip.address.here.  That's the main thing I am concerned with.
+>
+> Otherwise, my logging and lo lines work, so I'm going to stick with
+leaving
+> well enough alone.
+>
+> Thanks for your help,
+>
+> Ben Prince
+>
 > -----Original Message-----
-> From: Ray Leach [mailto:raymondl@knowledgefactory.co.za]
-> Sent: Wednesday, January 28, 2004 4:14 PM
-> To: Netfilter Mailing List (E-mail)
-> Subject: Re: anti-dos
->=20
->=20
-> On Wed, 2004-01-28 at 09:18, Fritz Mesedilla wrote:
-> > in preparation to sco's feb 1. dos attack, is there any special iptable=
-s rules that i can use to avoid dos attacks?
-> > all i have right now is i blocked all ports then opened the mail and in=
-ternet.
-> >=20
-> > what else can i do for rules?
-> >=20
-> You can use the limit support to limit packet rates:
->=20
-> ### syn-flood chain
-> $IPTABLES -N syn-flood
-> $IPTABLES -A syn-flood -i $IFACE_INET -m limit --limit 75/s
-> --limit-burst 100 -j RETURN
-> $IPTABLES -A syn-flood -i $IFACE_DMZ -m limit --limit 75/s --limit-burst
-> 100 -j RETURN
-> $IPTABLES -A syn-flood -i $IFACE_INT -j RETURN
-> $IPTABLES -A syn-flood -j LOG --log-prefix "SYN-FLOOD: "
-> $IPTABLES -A syn-flood -j DROP
->=20
-> $IPTABLES -A INPUT -i $IFACE_INT -p tcp --syn -j syn-flood
-> $IPTABLES -A INPUT -i $IFACE_DMZ -p tcp --syn -j syn-flood
-> $IPTABLES -A INPUT -i $IFACE_INET -p tcp --syn -j syn-flood
->=20
->=20
-> > thanks.
-> >=20
-> >=20
-> > Cheers,
-> >=20
-> > fritz <www.mesedilla.com>
-> > ---
-> > + Basta Ikaw Lord
-> >=20
-> >=20
-> >=20
-> >=20
-> > ----------------------------------------------------------------------
-> > This email and any files transmitted with it are confidential and
-> > intended solely for the use of the individual or entity to whom they
-> > are addressed. If you have received this email in error please notify
-> > the sender immediately by e-mail and delete this e-mail from your
-> > system. Please note that any views or opinions presented in this
-> > email are solely those of the author and do not necessarily represent
-> > those of the company. Finally, the recipient should check this email
-> > and any attachments for the presence of viruses. The company accepts
-> > no liability for any damage caused by any virus transmitted by this
-> > email.=20
-> >=20
-> > Overture Media, Inc.
-> > Direct Line: (632) 635-4785
-> > Trunkline:   (632) 631-8971 Local 146
-> > Fax: (632) 637-2206
-> > Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave.=
-, Quezon City 1100
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-cRSrfzkSTxMij889DDxg
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQBAGKBNh1fuR/Bv+ygRApweAKCu7tu4BSuK3gS/jdEAs/xW1M4UvgCfWVXh
-p0rYegdyZ/8m4UNm2ZdB+Sg=
-=D+mv
------END PGP SIGNATURE-----
-
---=-cRSrfzkSTxMij889DDxg--
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Klemen Kecman
+> Sent: Wednesday, January 28, 2004 4:49 AM
+> To: netfilter@lists.netfilter.org
+> Cc: Ben
+> Subject: Re: Trouble rejecting connections
+>
+> Place log target above all rules or create LOG chain.
+> Why use double drop?
+> If the default policy is set to DROP, there is no need for aditional drop
+> rules.
+> Allso fix the lo line .. it can be writen much simpler like $IPT -A
+INPUT -p
+> ALL -i $IF_LO -j ACCEPT $IPT -A OUTPUT -p ALL -o $IF_LO -j ACCEPT
+>
+> ----- Original Message -----
+> From: "Ben" <nigma@nigma.info>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Wednesday, January 28, 2004 10:19 AM
+> Subject: Trouble rejecting connections
+>
+>
+> > Hello all,
+> >
+> > I'm having trouble rejecting connections using iptables.  I am using
+> cPanel
+> > / WHM on a RedHat 7.3 a machine and iptables installed from
+> > iptables-1.2.8-8.72.3.i386.rpm .  I am using a script for my policy,
+> > it looks like this.
+> >
+> >
+> > //Start script
+> > IPTABLES="/sbin/iptables"
+> >
+> > #Flush everything, start from scratch
+> > $IPTABLES -F
+> >
+> > #Set default policies to DROP
+> > $IPTABLES -P INPUT DROP
+> > $IPTABLES -P FORWARD DROP
+> >
+> > #Allow all lo traffic
+> > $IPTABLES -A INPUT -i lo -s 0.0.0.0/0 -d 0.0.0.0/0 -j ACCEPT
+> >
+> > #Allow all related and established connections $IPTABLES -A INPUT -m
+> > state --state RELATED,ESTABLISHED -j ACCEPT
+> >
+> > #Set default OUTPUT policy to ACCEPT
+> > $IPTABLES -P OUTPUT ACCEPT
+> >
+> > # Open ports for server/services
+> > $IPTABLES -A INPUT -p tcp --dport 20 -j ACCEPT $IPTABLES -A INPUT -p
+> > tcp --dport 21 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 22 -j
+> > ACCEPT $IPTABLES -A INPUT -p tcp --dport 25 -j ACCEPT $IPTABLES -A
+> > INPUT -p tcp --dport 37 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 43
+> > -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT $IPTABLES -A
+> > INPUT -p udp --dport 53 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 80
+> > -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 110 -j ACCEPT $IPTABLES -A
+> > INPUT -p tcp --dport 113 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport
+> > 143 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 443 -j ACCEPT
+> > $IPTABLES -A INPUT -p tcp --dport 465 -j ACCEPT $IPTABLES -A INPUT -p
+> > udp --dport 465 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 873 -j
+> > ACCEPT $IPTABLES -A INPUT -p udp --dport 873 -j ACCEPT $IPTABLES -A
+> > INPUT -p tcp --dport 993 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport
+> > 995 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 2082 -j ACCEPT
+> > $IPTABLES -A INPUT -p tcp --dport 2083 -j ACCEPT $IPTABLES -A INPUT -p
+> > tcp --dport 2086 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 2087 -j
+> > ACCEPT $IPTABLES -A INPUT -p tcp --dport 2089 -j ACCEPT $IPTABLES -A
+> > INPUT -p tcp --dport 2095 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport
+> > 3306 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 6666 -j ACCEPT
+> >
+> > #Enable Blogger support (non-standards compliant piece of dogshit that
+> > it
+> > is)
+> > $IPTABLES -A INPUT -s 66.102.15.83 -j ACCEPT $IPTABLES -A INPUT -s
+> > 216.34.7.186 -j ACCEPT
+> >
+> > #Add passive-mode people here
+> > #$IPTABLES -A INPUT -s xxx.xxx.xxx.xxx -j ACCEPT
+> >
+> > #Add DENY people here
+> > #$IPTABLES -A INPUT -s 000.000.000.000 -j DROP $IPTABLES -A INPUT -s
+> > blocked.ip.address.here -j DROP
+> >
+> > #Logging
+> > $IPTABLES -A INPUT -j LOG --log-prefix "INPUTDEFAULT: "
+> >
+> > #Save rules
+> > iptables-save > /etc/sysconfig/iptables
+> >
+> > #Restart for rules to take effect
+> > service iptables restart
+> > //End script
+> >
+> > The problem is that I can still connect from blocked.ip.address.here.
+> What
+> > did I miss?
+> >
+> > Ben Prince
+> > Cyber Pixels
+> > Systems Administrator
+> > ben@cyberpixels.com
+> >
+> >
+>
+>
+>
+>
+>
 
 
