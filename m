@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPSec VPN Clients
-Date: Thu, 5 Sep 2002 09:06:03 +0100
+From: "Gustavo Marrero" <gusmarrero@hotmail.com>
+Subject: Red Hat 7.3 and your script
+Date: Wed, 04 Sep 2002 10:49:47 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020905080606.IAC5047.mta06-svc.ntlworld.com@there>
-References: <1031131583.12374.16.camel@bigblue> <200209041418.g84EIvv31290@vulcan.rissington.net> <1031208898.12373.36.camel@bigblue>
+Message-ID: <F35Xeg7tj2WAPZ50n1J0002e13c@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1031208898.12373.36.camel@bigblue>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +14,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Obsid@sentry.net
 
-On Thursday 05 September 2002 7:54 am, Security wrote:
+Dear iptables guru:
 
-> On Wed, 2002-09-04 at 16:18, Antony Stone wrote:
+My name is Gus. I am currently attempting to switch from ipchains (came with 
+red hat) to iptables. I copied your script
+http://www.sentry.net/~obsid/IPTables/rc.scripts.dir/current/ (dual-home)
+and saved it in:
+/etc/sysconfig
+modified it to my ip addresses and locations.
+For some reason or another I just cannot hit (after 10's of hours of 
+research) why it is not working.
+(ps. I am running the dual-homed firewall).
+This is what I get when booting. I did disable ipchains etc. I get the error 
+for what ever I place in the first line of the script.Your help will greatly 
+be appreciated.
 
-> > Please, please, use IPsec instead of PPTP...
-> >
-> > http://www.freeswan.org
-> >
-> > Works a treat.   Interoperable with other IPsec systems.   Plenty of info
-> > on getting it to work alongside and through netfilter.
-> >
-> > Antony.
->
-> Quick question, would it be advisable to set up the VPN Server on the
-> firewall, or to use another server?
+Bad argument `IPTABLES="/sbin/iptables'
+Try `iptables-restore -h' or 'iptables-restore --help' for more information.
+                                                           [FAILED]
 
-I would recommend running FreeS/WAN on the Firewall machine, because it 
-enables you to continue filtering traffic sent across the VPN.   If you put 
-them on separate machines (VPN Gateway inside the Firewall of course) then 
-the Firewall cannot tell what packets are inside the encrypted protocol 49 / 
-50 traffic.
+Please let me know if there is anything else I can do. Thanks a million.
 
-Also, if you use NAT on your Firewall, or have a single "road warrior" 
-machine at the other end, putting FreeS/WAN on the Firewall will make things 
-simpler.
+Gus
 
-Antony.
-
--- 
-
-There are two possible outcomes.
-
-If the result confirms the hypothesis, then you've made a measurement.
-If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
+_________________________________________________________________
+Send and receive Hotmail on your mobile device: http://mobile.msn.com
 
 
