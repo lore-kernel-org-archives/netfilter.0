@@ -1,14 +1,13 @@
-From: Patrick Petermair <captain.nuke@gmx.at>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Url not found ....
-Date: Sun, 7 Jul 2002 00:49:56 +0200
+Date: Sun, 7 Jul 2002 00:09:57 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207070049.56748.captain.nuke@gmx.at>
-References: <EPEHIDPIPEBFNAHLCHPGAEMJCEAA.dennis@core-enterprises.com> <200207070003.11633.captain.nuke@gmx.at> <20020706220349.HAZV16050.mta01-svc.ntlworld.com@there>
-Reply-To: captain.nuke@gmx.at
+Message-ID: <20020706230959.IUOX16050.mta01-svc.ntlworld.com@there>
+References: <EPEHIDPIPEBFNAHLCHPGAEMJCEAA.dennis@core-enterprises.com> <20020706220349.HAZV16050.mta01-svc.ntlworld.com@there> <200207070049.56748.captain.nuke@gmx.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020706220349.HAZV16050.mta01-svc.ntlworld.com@there>
+In-Reply-To: <200207070049.56748.captain.nuke@gmx.at>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -21,52 +20,29 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter Mailing List <netfilter@lists.samba.org>
 
-Am Sonntag, 7. Juli 2002 00:03 schrieb Antony Stone:
+On Saturday 06 July 2002 11:49 pm, Patrick Petermair wrote:
 
-> What are the logging rules on your firewall ?
+> Am Sonntag, 7. Juli 2002 00:03 schrieb Antony Stone:
+> > What are the logging rules on your firewall ?
 
-[....]
-$IPTABLES -P INPUT DROP
-$IPTABLES -F INPUT=20
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -F OUTPUT=20
-$IPTABLES -P FORWARD DROP
-$IPTABLES -F FORWARD=20
-$IPTABLES -t nat -F
+[ ....... ]
 
-#Allow only existing and related to INPUT
-$IPTABLES -A INPUT -i $EXTIF -m state --state ESTABLISHED,RELATED -j ACCE=
-PT
+> #FWD: Allow all connections OUT and only existing and related ones IN
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+> $IPTABLES -A FORWARD -j LOG
 
-#Allow int. LAN to access firewall
-$IPTABLES -A INPUT -i $INTIF -j ACCEPT
+Hmmm.   Not so different from mine, really, and I don't get any log entries 
+when I visit that site.
 
-#Allow ADSL modem to talk to firewall (authentication)
-$IPTABLES -A INPUT -i eth0 -s 10.0.0.138 -d 10.0.0.150 -j ACCEPT
+Can you run ethereal and capture the complete session to see whether, for 
+example, there are multiple FIN packets at the end of the session ?
 
-#Allow loopback
-$IPTABLES -A INPUT -i lo -s 127.0.0.1 -d 127.0.0.1 -j ACCEPT
+The log entry you posted has both FIN and ACK set, so I presume it's the very 
+last packet at the end of the connection...?
 
-#Log the rest
-$IPTABLES -A INPUT -j LOG
+ 
 
-#FWD: Allow all connections OUT and only existing and related ones IN
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state ESTABLISHED,REL=
-ATED=20
--j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-$IPTABLES -A FORWARD -j LOG
-
-#Enable masquerading
-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-
-
-The thing is that I get those log entries only at that specific page=20
-(stud4.tuwien.ac.at)...
-
-Regards,
-Patrick
-
-
-
+Antony.
 
