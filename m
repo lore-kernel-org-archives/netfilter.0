@@ -1,13 +1,11 @@
-From: "Jan Kaastrup" <jka@protego.dk>
-Subject: RE: Problems with kernel 2.6.1 and iptables
-Date: Mon, 16 Feb 2004 15:05:23 +0100
+From: "Galiatsis Sokratis" <sokratisg@optusclub.gr>
+Subject: problem with nmap
+Date: Mon, 16 Feb 2004 16:08:24 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009101c3f495$eb553440$2d64a8c0@pcjka>
-References: <1458943229.20040216101803@attla.net.ar>
+Message-ID: <001901c3f496$5feac900$7b00000a@optusclub.gr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1458943229.20040216101803@attla.net.ar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,78 +16,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Alexis' <alexis@attla.net.ar>
-Cc: 'netfilter' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi 
-Thanks so much for the answer.
-That did the trick.
-Now the iptables modules can be loaded automaticly!
+I want to know if there is a "special" rule which blocks all nmap scanning
+methods. I have something here for fragments, xmas, nmap etc but whenever i
+try to test it my server ports are always shown as open instead of stealth.
+I tried Online Symantec Security Scan and nmapping from another host from an
+external network. Both show the same results.
 
-I found out that it could not load the module iptable_filter.
-So doing:
-#modprobe iptable_filter - made it work.
+Thanx in advance.
 
+P.S: First submission in this mailing-list and I am a little confused to
+find answers in the emailed digest i receive. In addition to the
+mailing-list please email me for any suggestion you may have.
+sokratisg@optusclub.gr
 
- 
+Here are the rules i use for filtering all incoming traffic from ports 0 -
+1024. Above 1025 port any incoming (RELATED, ESTABLISHED) is allowed. These
+custom chains are inserted first from all in both INPUT and OUTPUT so that
+anything incoming not acceptable gets DROPed emmediately.
 
+#BAD_PACKETS CHAIN
+$iptables -A bad_packets -p tcp ! --syn -m state --state NEW -j
+LOG --log-level crit
+$iptables -A bad_packets -p tcp ! --syn -m state --state NEW -m
+limit --limit 6/h --limit-burst 5 -j DROP
+#SYNFLOOD CHAIN
+$iptables -A synflood -m limit --limit 1/s --limit-burst 4 -j RETURN
+$iptables -A synflood -j DROP
+#FRAGMENTS
+$iptables -A INPUT -i $ADSLIF -f  -m limit --limit 6/h -j LOG
+$iptables -A INPUT -i $ADSLIF -f -j REJECT
+#INVALID TCP PACKETS
+$iptables -A bad_packets -p tcp -m state --state INVALID -j LOG --log-level
+crit
+$iptables -A bad_packets -p tcp -m state --state NEW -m limit --limit
+6/h --limit-burst 5 -j DROP
 
-
------Original Message-----
-From: Alexis [mailto:alexis@attla.net.ar] 
-Sent: 16. februar 2004 14:18
-To: Jan Kaastrup
-Cc: netfilter
-Subject: Re: Problems with kernel 2.6.1 and iptables
-
-
-you need to change some things in /etc/rc.sysinit in order to modules
-work again.
-
-check for /proc/ksyms in that file and change it to /proc/kallsyms.
-then do a depmod -a
-
-maybe these changes could help you
-
-http://thomer.com/linux/migrate-to-2.6.html
-
-
-hope it helps
-
-
-
-Hello Jan,
-
-Monday, February 16, 2004, 7:13:48 AM, you wrote:
-
-JK> Hi list
-JK> I have search google for this error most of my weekend, and I cannot
-get
-JK> the answer :(
-JK> I have upgraded my kernel to 2.6.1 and made all the iptables stuff
-as
-JK> modules.
-JK> I can load all modules by hand perfectly, but still i get this
-error:
-JK> #Iptables -L
-JK> iptables v1.2.9: can't initialize iptables table `filter': Table
-does
-JK> not exist (do you need to insmod?)
-JK> Perhaps iptables or your kernel needs to be upgraded.
-
-JK> I have reinstalled iptables and done depmod -a
-JK> I have installed module-init-tools-2.0-pre10
-
-JK> It seems like it cannot mount modules automaticly, any ideas?
-JK> Which modules should absolutly be loaded, to make iptables work?
-JK> Could it be, that i am missing a
-JK>
-iptables-need-to-be-installed-to-make-iptables-work-for-kernel-2.6.x-pac
-JK> ket?
-
-JK> Thanks a lot
-
-
+##PORTSCANS CHAIN
+# ** FIN **
+$iptables -A portscans -p tcp -m tcp --tcp-flags ALL,FIN FIN -j DROP
+# ** XMAS Tree **
+$iptables -A portscans -p tcp -m tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+# ** Fin/Syn **
+$iptables -A portscans -p tcp -m tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+# ** ACK **
+$iptables -A portscans -p tcp -m tcp --tcp-flags ALL,ACK  ACK -j DROP
+# ** NULL **
+$iptables -A portscans -p tcp -m tcp --tcp-flags ALL NONE -j DROP
 
 
 
