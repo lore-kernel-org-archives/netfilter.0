@@ -1,10 +1,10 @@
-From: ashley@ideal.net.au
-Subject: inconsistant behaviour
-Date: Thu, 25 Sep 2003 14:51:38 +1000
+From: "Nikolai Dahlem" <Nikolai.Dahlem@epygi.de>
+Subject: UDP-conntrack/nat question
+Date: Thu, 25 Sep 2003 09:13:08 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F72745A.2050308@ideal.net.au>
+Message-ID: <DAELKAPIKOFAFFKELNHOIEADCAAA.Nikolai.Dahlem@epygi.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,74 +15,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-G'day,
+Hi,
 
-I've built a firewall-gateway for a Uni.
+I'm trying to conntrack/nat a udp-based protocol with a server listening on
+port x. My problem is, that the conntrack-helper sees all incoming and
+outgoing packets of the control connection, while the nat-helper is only
+called for outgoing packets. Due to the nature of the protocol I need
+IP_NAT_HELPER_F_ALWAYS to mangle the contents of both outgoing and incoming
+packets (even when there are no expected connections).
 
-The initial script sets up:
+The scenario is the following:
 
-IPTABLES=/sbin/iptables
+PC1 -> MASQ -> server
 
-EXTIF="eth1"
-INTIF="eth0"
+The conntrack module gets a packet from PC1 (src port x, dst port x) and
+parses the protocol.
+The nat_module mangles the packet content and the packet is send of to the
+server with the source address of MASQ (src port x, dst port x).
+The conntrack_module receives a packet from Server (src port: high, dst port
+x) and parses the protocol.
+The nat_module isn't called.
 
-echo "1" > /proc/sys/net/ipv4/ip_forward
+I reqister my modules with the following tuples:
 
-$IPTABLES -P INPUT ACCEPT
-$IPTABLES -F INPUT
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -F OUTPUT
-$IPTABLES -P FORWARD DROP
-$IPTABLES -F FORWARD
-$IPTABLES -N ACCT
-$IPTABLES -F ACCT
-$IPTABLES -N ALLOW
-$IPTABLES -P ALLOW DROP
-$IPTABLES -F ALLOW
+nat_module:
+hlpr->tuple.dst.protonum = IPPROTO_UDP;
+hlpr->tuple.src.u.udp.port = port x;
+hlpr->mask.src.u.udp.port = 0xFFFF;
+hlpr->mask.dst.protonum = 0xFFFF;
+hlpr->flags = IP_NAT_HELPER_F_ALWAYS;
 
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state 
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -j ACCT
-$IPTABLES -I FORWARD -d 202.129.z.y -j ACCEPT
-$IPTABLES -A FORWARD -s 203.220.a.0/22 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
-$IPTABLES -A FORWARD -s 203.220.b.0/24 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
-$IPTABLES -A FORWARD -s 203.221.c.0/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
-$IPTABLES -A FORWARD -s 203.220.d.0/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
-$IPTABLES -A FORWARD -s 203.220.e.128/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+conntrack_module:
+hlpr->tuple.src.u.udp.port = port x;
+hlpr->tuple.dst.protonum = IPPROTO_UDP;
+hlpr->mask.src.u.udp.port = 0xFFFF;
+hlpr->mask.dst.protonum = 0xFFFF;
 
-When a student logs on this instruction is given:
 
-/sbin/iptables -A ALLOW -s $IP/32 -d 0.0.0.0/0 -o $EXTIF -j ACCEPT
-/sbin/iptables -A ACCT -s 0.0.0.0/0 -d $IP/32 -i $EXTIF
+/proc/net/ip_conntrack lists both connections (answer&reply) as unreplied.
+Can someone explain to me why the reply is seen as a new connection ?
 
-This works well.
 
-When a student logs off these instructions are given:
+regards
 
-/sbin/iptables -D ALLOW -s $IP/32 -d 0.0.0.0/0 -o $EXTIF -j ACCEPT
-/sbin/iptables -D ACCT -s 0.0.0.0/0 -d $IP/32 -i $EXTIF
-
-Now this works fairly well. Less than 1% of the time it fails to remove 
-the entry from the ALLOW chain and very rearly it fails to remove from 
-the ACCT chain.
-
-Where can I look to find this error. Though rare the 1% ends up being a 
-significant number given the load is high.
-
-Also msn messagenger packets do not seam to be counted by the iptables 
-chain?? This is an observation from the help desk as students are 
-complaining they are being logged off for inactivity and they are using 
-messanger. When I hand check packets using iptables there appears to be 
-no packet count. Whe they do a download there is.
-
-I'm not an iptables guru so hints and or suggestions appreciated.
-
-thanks
-
-Ashley
-
+Nikolai Dahlem
 
 
