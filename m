@@ -1,9 +1,11 @@
-From: Reuven Kohanim <rkohanim@yahoo.com>
-Subject: iptable/netfilter and X protocol
-Date: Sun, 4 May 2003 08:24:48 -0700 (PDT)
+From: "John Guntenaar" <john@guntenaar.nl>
+Subject: per user IP adresses
+Date: Sun, 4 May 2003 20:38:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030504152448.36968.qmail@web41703.mail.yahoo.com>
+Message-ID: <000101c3126c$6c64d020$0200a8c0@WKSJOHN>
+Reply-To: <john@guntenaar.nl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,25 +17,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I have been successfully using X protocol across an
-ipchain gateway. I am trying to move to iptables.
-Everything is finally working smoothly except for X. I
-am bypassing masquerading when my source/destination
-are the X client/server so that I can use my
-non-masqed ip address for the 'display' parameter of
-say xterm application.Could anyone tell me if iptables
-supports X and if so how.
-One more general question: Is there a way to trace
-packets to see what goes in and out of the
-iptable/netfilter gateway?
+Hello,
 
-Thank you in advance
+I have a linux machine with 4 IP addresses, I have a couple of friends
+on that machine and I don't allow them to use IRC, so I simply blocked
+the IRC ports, but I want to use IRC from the 4th IP without the other
+users being able to use it. I think I can reach that goal by using the
+owner match facility of iptables, though I can't find any good examples
+with google, is it correct and can somebody post an example?
 
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
+Thanks in advantage,
+
+John
+
+
 
