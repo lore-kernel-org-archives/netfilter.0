@@ -1,11 +1,12 @@
-From: "Nicolas Ross" <rossnick-lists@cybercat.ca>
-Subject: Problem with iptables module
-Date: Tue, 5 Oct 2004 11:23:34 -0400
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Difference between arp proxy and dnat?
+Date: Tue, 5 Oct 2004 09:25:23 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <014a01c4aaef$5d500f10$bf07a8c0@civicXp>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E383@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,30 +16,76 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: mlist@libero.it, netfilter@lists.netfilter.org
 
-I've seen this a some of my boxes that are under RedHat 7.x. I Haven,t been 
-able to pinpoint the exact problem, and is quite anoying...
 
-The problem is that whever I want to restart (reload) iptables and it's 
-rules, I use the /etc/rc.d/init.d/iptables script that came with the 
-RedHat's RPM version of iptables. That scripts does the job of 
-loading/unloading the necessary modules from the system.
+> a) What is the difference between them?
 
-So, on most boxes, I load the ip_conntrack_ftp modules to help use passive 
-mode. When the script does a "modprobe -r ip_conntrack_ftp", it stalls 
-there, I have to kill the script, and I'm not able to kill (even -9) the 
-modprobe process, and this process sits there, eating 100% of the CPU.
+With NAT, you change the packet as its travelling through the firewall
+so if I want to hit 24.83.292.111 the packet would turn into something
+like destination 192.168.3.665. Because of this 'destination address
+change' it may break the odd badly designed protocol like FTP. In order
+to counter this negative side-effect, netfilter developers have written
+modules for 'fixing' these protocols to work in NAT environments.
 
-When I do a lsmod, I don't see any ip_tables module except ip_conntrack, 
-which is at the deleted state.
+With ProxyARP, you have two network segments, lets say A and B. They
+have the exact same subnet, but now there's a firewall between them. If
+hosts from A want to talk to B, the firewall has to -transparently-
+service the request to the host in B. This is done by ProxyARP. ProxyARP
+basically says, if I know machine C1 is in subnet B, then let people in
+A know that the firewall is C1. If C2 is in the A network, then the
+firewall must let the B subnet think that the firewall is C2.
 
-The current system I have this problem is a RedHat 7.1, kernel 2.4.20-24.7, 
-iptables 1.2.8.
-It does it also on a RedHat 7.3, custum kernel 2.4.24, patched (with only 
-pptp_conntrack_patch) iptables 1.2.10.
+In order to properly use ProxyARP in this configuration, you should also
+be using ebtables and the Linux bridging software.=20
 
-Any hints on this ? 
+Below is a pretty terse description of how this all works.
+
+             |----[br0]----|
+             |             |
+[A Net] - [eth0][Firewall][eth1] - [B Net]
+ |-254     |-100           |-101    |-1
+ |-253                              |-2
+                                    |-3
+
+254 -> MAC:FFFF who has 3
+MAC:eth0 -> MAC: 254 (I do)
+254 -> MAC:eth0 (payload)
+101 -> MAC:FFFF who has 3
+MAC:3 -> MAC:eth1 (I do)
+MAC:eth1 -> MAC:3 (payload)
+MAC:3 -> MAC:FFFF who has 254
+MAC:eth1 -> MAC:3 (I do)
+MAC:3 -> MAC:eth1 (payload)
+MAC:eth0 -> MAC:254 (payload)
+
+Once the ARP entries are cached, this path becomes a lot less chatty.
+
+
+> b) Are there situation in which I could be forced to use one of them?
+
+NAT can be used any time that you are using software that doesn't break
+with NAT software. There isn't really a reason not to use it unless the
+protocols your using don't work with it.
+
+ProxyARP is more difficult to setup / wrap your head around, and I find
+it less clear-cut to use. You will be forced to use it when you want
+public IP assigned computers to have internet access. Generally Bridged
+solutions are never 'required' unless you have customers that care about
+it. Also, it could be a hassle moving the IP's of all those computers to
+private IP's if you try moving to NAT.
+
+
+> c) What is the best?
+
+I prefer NAT, but both have meaningful purposes through.
+
+
+> d) Why lot of famous firewall suggest to use arp proxy?
+
+Because you are basically guaranteed that a protocol will work, it means
+less support costs for them :-) If you have patience, it can be a good
+solution.=20
 
 
