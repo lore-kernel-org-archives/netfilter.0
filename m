@@ -1,13 +1,12 @@
-From: "Neil Aggarwal" <neil@JAMMConsulting.com>
-Subject: SOLVED: NAT machines cant do 'dir' after connecting to FTP
-Date: Mon, 3 Jun 2002 12:18:28 -0500
+From: "Moti Levy" <moti@flncs.com>
+Subject: Re: Module list....
+Date: Mon, 3 Jun 2002 13:41:55 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <ENEBKGGOKDOEALIKAJMBCEFACHAA.neil@JAMMConsulting.com>
-References: <ENEBKGGOKDOEALIKAJMBAEEMCHAA.neil@JAMMConsulting.com>
+Message-ID: <005101c20b25$f5f5fe30$fd6e34c6@mlevy>
+References: <02060313133003.00761@erni> <000901c20b19$db19bc20$fd6e34c6@mlevy> <02060314142504.00761@erni>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <ENEBKGGOKDOEALIKAJMBAEEMCHAA.neil@JAMMConsulting.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,81 +17,78 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+To: Ernesto Silva <silva@athenea.ort.edu.uy>, netfilter@lists.samba.org
 
-Hello All:
+stupidity ?
+it took me a long long long time to figure this one out myself ;-)
+Moti
 
-Thanks to everyone on the group that helped me resolve
-the problem.  I really appreciate it.
-
-Thanks,
-	Neil.
-
---
-Neil Aggarwal
-JAMM Consulting, Inc.    (972) 612-6056, http://www.JAMMConsulting.com
-Custom Internet Development    Websites, Ecommerce, Java, databases
+----- Original Message -----
+From: "Ernesto Silva" <silva@athenea.ort.edu.uy>
+To: <netfilter@lists.samba.org>
+Sent: Monday, June 03, 2002 1:14 PM
+Subject: Re: Module list....
 
 
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Neil Aggarwal
-> Sent: Monday, June 03, 2002 10:31 AM
-> To: netfilter
-> Subject: NAT machines cant do 'dir' after connecting to FTP
-> 
-> 
-> Hello:
-> 
-> I have this setup:
-> 	Internet --- Linux Server --- Switch --- Internal Machines
-> 
-> The Linux server has a set of public IP addresses, lets
-> say 11.22.33.44 thru 11.22.33.99.  These are mapped
-> using NAT to the internal machines running static IP
-> addresses of 192.168.1.44 thru 192.168.1.99.
-> 
-> I can ftp from an internal machine and connect to an
-> external server.  I can give it a user name and password
-> and login successfully, but when I try to type dir or
-> ls, the ftp client sits for a long time
-> and then I get a message:
->  425 Not able to open data connection.
-> 
-> Here are the commands that I used:
-> 	# Load the conntrack ftp module
->       /sbin/modprobe ip_conntrack_ftp
-> 
->       # Flush any existing rules
->       /sbin/iptables -F
->       /sbin/iptables -t nat -F
-> 
-> 	# Set the default policies to ACCEPT all packets
->       /sbin/iptables -P INPUT ACCEPT
->       /sbin/iptables -P OUTPUT ACCEPT
->       /sbin/iptables -P FORWARD ACCEPT
->       /sbin/iptables -t nat -P PREROUTING ACCEPT
->       /sbin/iptables -t nat -P POSTROUTING ACCEPT
-> 
->       # Turn on forwarding
->       echo "1" > /proc/sys/net/ipv4/ip_forward
-> 
-> 	# Set-up routing to allow NAT of the internal machines (I did these
-> 	# three commands foe each of the internal machines)
->       /sbin/ifconfig eth0:n 11.22.33.n netmask $NETMASK broadcast $BCAST
->       /sbin/iptables -t nat -A PREROUTING -d 11.22.33.n -j DNAT --to
-> 192.168.1.n
->       /sbin/iptables -t nat -A POSTROUTING -s 192.168.1.n -j SNAT --to
-> 11.22.33.n
-> 
-> Any ideas??
-> 
-> Thanks,
-> 	Neil.
-> 
+> Sorry about my stupidity, I am really sorry.
+>
+> Thank you Moti.
+>
+>
+> On Monday 03 June 2002 13:14, you wrote:
+> > you mean ? like this ?
+> > http://www.netfilter.org/documentation/pomlist/pom-summary.html
+> >
+http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO.ht
+> >m l
+> >
+> > ----- Original Message -----
+> > From: "Ernesto Silva" <silva@athenea.ort.edu.uy>
+> > To: <netfilter@lists.samba.org>
+> > Sent: Monday, June 03, 2002 12:13 PM
+> > Subject: Module list....
+> >
+> > > Hi,
+> > > I have searched all the web (well... not all) and I couldn't find the
+> > > complete iptables module list, I mean nat-module, h323-module,
+> > > ftp-module, etc. and a basic explanation for each one.
+> > >
+> > > I have 3 mounted firewalls (with ipchains) and I need to update them
+to
+> > > iptables, so I want to know what already modules exists. I know I can
+> >
+> > write
+> >
+> > > my owns, but I'm a little bit far from that by now.
+> > >
+> > > Does anybody know where can I find the mentioned "module list" ???
+> > >
+> > > Thanks.
+> > > --
+> > > Sr. Ernesto Silva.
+> > > Webmaster.
+> > > Universidad ORT Uruguay.
+> > > Cuareim 1451.
+> > > Montevideo.
+> > > Montevideo - 11100.
+> > > Uruguay.
+> > >
+> > > silva@ort.ort.edu.uy (text only)
+> > > silva@athenea.ort.edu.uy
+>
 > --
-> Neil Aggarwal
-> JAMM Consulting, Inc.    (972) 612-6056, http://www.JAMMConsulting.com
-> Custom Internet Development    Websites, Ecommerce, Java, databases
-> 
+> Sr. Ernesto Silva.
+> Webmaster.
+> Universidad ORT Uruguay.
+> Cuareim 1451.
+> Montevideo.
+> Montevideo - 11100.
+> Uruguay.
+>
+> silva@ort.ort.edu.uy (text only)
+> silva@athenea.ort.edu.uy
+>
+>
+>
+
 
