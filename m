@@ -1,10 +1,9 @@
-From: Gary Metcalf <gtm@lou-telecom.net>
-Subject: ip masqurade
-Date: Fri, 06 Jun 2003 12:31:37 -0400
+From: Salman <almetador@yahoo.com>
+Subject: help for ftp
+Date: Thu, 5 Jun 2003 14:28:07 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EE0C1E9.4000502@lou-telecom.net>
+Message-ID: <20030605212807.18973.qmail@web20608.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,21 +14,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm running Slackware 8.1 with kernel 2.4.18. I'm needing to have some 
-computers on my LAN to gateway to the internet via my Linux Modem. My 
-modem does connect to the internet ok and I can use it via my Linux 
-system. What I don't know and have been reading the How-To's is how to 
-set this thing up. I've un-remarked some lines in my rc.modules file 
-that is supose to allow ipmasqurade when I boot. Now I have learned that 
-I need to build some tables and this is where I get lost.
-    My Linux IP address is: 192.168.168.1   and one of my computers 
-(windows) on my lan is: 192.168.168.2
-What lines do I need to input for iptables to set this up where it will 
-allow browsing and mail for my windows computer and other computers on 
-my lan which will fall in the ip range of 192.168.168.0/24
-     Gary
+hello guruz,
 
+I am unable to use ftp service from host to connect to
+any other machine on LAN even to my gateway server.
+any help would be appreciateable.
+I am using linux kernel 2.4.7-10 with my own firewall
+script.
+
+Salman
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
+http://calendar.yahoo.com
 
