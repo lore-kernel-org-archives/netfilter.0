@@ -1,21 +1,14 @@
-From: Chamara Gunaratne <pgunarat@csee.usf.edu>
-Subject: Re: make error with iptables 1.2.11
-Date: Wed, 30 Jun 2004 13:05:17 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: OT: Mail server problem [Was: Re: track bandwith used]
+Date: Wed, 30 Jun 2004 18:19:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6.0.3.0.0.20040630130146.03af8e18@babbage.csee.usf.edu>
-References: <200406291645.13172.pgunarat@csee.usf.edu>
- <200406292200.23738.Antony@Soft-Solutions.co.uk>
- <6.0.3.0.0.20040629172540.020522a8@babbage.csee.usf.edu>
- <200406292309.38461.Antony@Soft-Solutions.co.uk>
- <145030924.20040630030826@op.pl>
+Message-ID: <200406301819.30843.Antony@Soft-Solutions.co.uk>
+References: <E1BfiMm-0003iK-GU@vishnu.netfilter.org>
+Reply-To: "netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <145030924.20040630030826@op.pl>
-References: <200406291645.13172.pgunarat@csee.usf.edu>
- <200406292200.23738.Antony@Soft-Solutions.co.uk>
- <6.0.3.0.0.20040629172540.020522a8@babbage.csee.usf.edu>
- <200406292309.38461.Antony@Soft-Solutions.co.uk>
- <145030924.20040630030826@op.pl>
+In-Reply-To: <E1BfiMm-0003iK-GU@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -25,72 +18,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Thank you, what you have suggested worked. It looks like I needed to give 
-the kernel directory as /usr/src/linux for make to work correctly. Thanks 
-again :-)
+On Wednesday 30 June 2004 5:55 pm, Antony Stone wrote:
+
+> Well, there are plenty of network monitoring tools which will give you this
+> sort of information as an aggregate figure for an interface, or broken down
+> by source/destination address, port number etc - iptraf is not a bad start
+> to see what can be done.
+
+I think someone at anguita.dti2.net ([81.24.162.8]) has a mail server 
+configuration problem - that machine has just repeated a posting I made 
+several hours ago back to the list, and has also managed to change the 
+timestamp in doing so!
+
+This list can get confusing enough at the best of times, without having 
+someone else repeating my own postings back to me with a different time on 
+them :)
 
 Regards,
 
-Chamara
+Antony.
 
-At 09:08 PM 6/29/2004, you wrote:
->Witam
->
->Wednesday, June 30, 2004, 12:09:38 AM, you wrote:
->
->AS> Okay - that narrows it down.   Anyone else here have experience with 
->kernel
->AS> 2.4.26 and iptables 1.2.11?   I can't offer any advice on this one...
->
->I have 2.4.26 and iptables 1.2.11. I patched kernel and iptables
->sources with latest pom-ng and then succesfully  builded both. I'm using
->Slackware Linux with gcc 3.3.4. Here is step by step how I make this
->things works ;)
->
->1. Get kernel 2.4.26 sources, and decompress it to
->/usr/src/linux-2.4.26
->
->2. Make a symbolic link
->#ln -s /usr/src/linux-2.4.26 linux
->
->3. Get iptables sources
->#wget http://www.iptables.org/files/iptables-1.2.11.tar.bz2
->and decompress it to /usr/src/iptables-1.2.11
->
->4. Make a symbolic link
->#ln -s /usr/src/iptables-1.2.11 iptables
->
->5. Get lates p-o-m-ng
->#wget http://www.netfilter.org/files/patch-o-matic-ng-20040621.tar.bz2
->and decompress it to /usr/src/patch-o-matic-ng-20040621
->
->6. cd /usr/src/patch-o-matic-ng-20040621
->
->7. Now patch your sources with any extensions you want (i suggest you
->to choose only what your realy need). For example:
->#KERNEL_DIR=/usr/src/linux ./runme string
->#KERNEL_DIR=/usr/src/linux ./runme CONNMARK
->...
->
->8. And now the most important step ;)
->#cd /usr/src/iptables
->#make BINDIR=/sbin LIBDIR=/usr/lib
->#make BINDIR=/sbin LIBDIR=/usr/lib install
->
->9. If everything is fine, you can build your kernel.
->10. If not ... maybe try older (or newer) version of gcc.
->
->I hope this will help you.
->
->(Sorry for my poooooore english :)
->
->--
->Pozdrawiam
->  Marcin                            mailto:slacklist@op.pl
+-- 
+This email was created using 100% recycled electrons.
 
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
