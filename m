@@ -1,8 +1,8 @@
 From: "hard__ware" <hard__ware@hotmail.com>
-Subject: Completely NAT an ISP: A practical possibility?
-Date: Sun, 16 Jun 2002 09:47:19 +1000
+Subject: Nat OUTPUT chain
+Date: Sun, 16 Jun 2002 09:57:35 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <OE765XsCj1d4vJFRFWM00002445@hotmail.com>
+Message-ID: <OE35qimrMh0R1hY55Zo00015235@hotmail.com>
 Reply-To: "hard__ware" <hard__ware@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -19,51 +19,25 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Completely NAT an ISP: A practical possibility?
+this question is a bit old
+
+but ive seen it asked many other places .. :D
 
 
->Antony Stone wrote:
+the  -t nat OUTPUT  table seems to work fine for me
 
-> > Just out of interest, how are you proposing to handle bandwidth
-allocation -
-> > making sure each customer gets a reasonable bandwidth without hogging
-the
-> >whole link ?
+i have set up DNAT aswell as ACCEPT Rules
 
+(as i have a Default Policy of DROP,  IPTABLES -P -t  nat OUTPUT DROP  )
 
->(Ducking) Still studying that matter, but the current
->candidates-of-record are tc, and cbq, but the Advanced Routing HOWTO is
->about to scare me off from CBQ, even though they admit there that it is
->the "most hyped."
->
->I won't mind any advice in that arena, either :-)
->
->Thx.
+and the packets Traverse Through the chain correctly .. :-)
 
+i use two differnet versions of IPTables (i have 2 Firewall Boxes .. :-)
 
-A CBQ and a few SFQ limits will do this perfectly
-as you can match by IP / Protocol / Headers / (Actual Data Contained inside
-of each Packet / Frame )
-and ToS fw Marks .. :D
+IPTables 1.2.5mdk-1
+&
+IPTables 1.2.6a
 
-And about the NAT / ISP thing , i think it would be great to do someting
-like that .. :D
-i so hate peer-to-peer sharing over the internet ... lol
-
-what kind of ISP is it going to be dialup , ISDN ??
-
-because Radius & Portslave (Linux Dialin Server) will allow you to restict
-Bandwidth per client ...
-let me know how you go, as i have a Buisness Partner that plans to build a
-NAT / IPTables ISP
-so we can give these Buisness Based Clients exactlly what they want .. :D
-
-  hope this helps
-
-    Alex...
-
-Hard__warE
-
-
-
+if your having problems with this chain try an upgrade if your not already
+at these versions .. :-)
 
