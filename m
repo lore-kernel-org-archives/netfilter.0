@@ -1,9 +1,9 @@
-From: "xchris" <lyra@fastwebnet.it>
-Subject: Re: Redirection - considerations
-Date: Thu, 10 Apr 2003 19:58:51 +0200
+From: Peteris Krumins <newsgroups@lf.lv>
+Subject: REJECT target
+Date: Thu, 10 Apr 2003 22:23:29 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008c01c2ff8a$d845d4a0$79c01101@m56>
-References: <Pine.LNX.4.44.0304101345350.15216-100000@ns2.tje1.com>
+Message-ID: <43614623471.20030410222329@lf.lv>
+Reply-To: Peteris Krumins <newsgroups@lf.lv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,34 +17,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Eric Joe <sysop@ns2.tje1.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
------ Original Message -----
-From: "Eric Joe" <sysop@ns2.tje1.com>
+Hello netfilter,
 
+ Holy christ, i relied i could REJECT packets in any table, but
+ unfortunately after launching the program i was working on i got
+ ugly 'iptables: Invalid argument' after executing
+ `iptables -A PREROUTING -t mangle .. -j REJECT`
 
+ why cant i put -j REJECT in the PREROUTING chain of mangle table?
 
-> Didnt you already ask this question and got several answers from several
-> people? It is *NOT* immpossible. See for yourself
->
-> http://www.tje1.com
->
->
-> The site you will arrive at is forwarded from the real www server
+ Manual says it makes no sense, but it makes sense for me.
+ 
+ I mark certain packets (-j MARK) in the mangle table, and those
+ which are not marked should be REJECTed.
+ The only way, i think, i can solve it is using FORWARD and INPUT
+ chains of the filter table. Match any not marked packets in these
+ chains and REJECT from there. But this adds some extra time (packet
+ has to traverse other chain) and i have to duplicate the rules
+ (because of putting on both INPUT and FORWARD).
 
+ Is there a patch or smth to this problem, or it cant be done (REJECT
+ in mangle)?
 
-I'm sorry i posted more than one time.It was a mistake.
-
-I already realized that it's possible.
-But it has few limits!
-
-If i configure destination server with default gateway set to the first
-server i keep source address.
-
-If i leave it as is... i loose source address (with SNAT rule)
-
-Thank you again and sorry for multiple posting.
-Christian
+ 
+P.Krumins
 
 
