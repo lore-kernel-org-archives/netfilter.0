@@ -1,11 +1,14 @@
-From: Justin Pryzby <justinpryzby@users.sourceforge.net>
-Subject: [ANNOUNCE] Protowatch userspace monitoring for anomalous packets
-Date: Thu, 22 May 2003 14:50:16 -0400
+From: Dr Aldo Medina <aldomedina@hotpop.com>
+Subject: Re: Spanish translation of unreliable guides
+Date: 11 May 2003 20:33:47 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030522185016.GA27208@andromeda>
+Message-ID: <1052703238.1455.200.camel@linuxclient>
+References: <1052420516.843.120.camel@linuxclient> 
+	<20030510131720.751ce22a.arnt@c2i.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20030510131720.751ce22a.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,37 +18,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Arnt Karlsen <arnt@c2i.net>
+Cc: netfilter@lists.samba.org
 
-See [http://www.sf.net/projects/protowatch/].  I thought this list might
-be interested in my use of userland QUEUEing, though such use was
-probably not intended by the author of the QUEUE target!
+El s=E1b, 10-05-2003 a las 06:17, Arnt Karlsen escribi=F3:
+> On 08 May 2003 14:00:57 -0500,=20
+> Dr Aldo Medina <aldomedina@hotpop.com> wrote in message=20
+> <1052420516.843.120.camel@linuxclient>:
+>=20
+> > Greetings.
+> > Does a spanish translation of your guide exists?. I'm looking for one,
+> > or in any case I could even translate them. Could you please write me?
+> > TIA.
+> >=20
+> > Aldo Medina
+>=20
+> ..usually I don't mail to people, just post to the lists.
+>=20
+> ..since you asked us to mail you, I advice using the english base text
+> and feed it thru a language filter, some of them are not too bad, see=20
+> http://www.word2word.com/free.html and http://babelfish.org/ and
+> http://angli02.kgw.tu-berlin.de/call/webofdic/grammars.html for ideas.
 
-A section from the README file is included.
+Thank you very much. Since english isn't my native language, maybe I
+didn't explain myself very well :-)
 
-The interesting lines of code are:
+I'm asking permission for translating the guides which are missing a
+spanish version.
 
-	listen(sock, 1));
-	ipq_set_verdict(h, msg->packet_id, NF_ACCEPT, 0,0);
-	client=accept(sock, (struct sockaddr *) &addr, &len);
+:-)
 
-Please Cc: me in all replies, I am not subscribed.
 
-Justin Pryzby
-
-From the README:
-
-Protowatch is a userspace extension to Linux's 2.4 iptables firewalling
-code.  It is intended to watch all unanticipated traffic which reaches a
-machine.  `iptables -t filter -A INPUT -j QUEUE` will effectively create
-a new 'policy' sending all previously-unhandled packets to userspace.
-Userspace will dynamically start a server to accept the packet, and log
-whatever the client sends.  Useful for discovering what protocols are in use.
-
-Protowatch is intended to allow for easy identification of protocols;
-previously, to identify a Gnutella-type connection, the author had to
-modify his firewall script to accept connections to TCP:6346, then
-manually run a netcat listener.  Protowatch automates this process.
 
