@@ -1,16 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Ip handling
-Date: Fri, 20 Jun 2003 01:06:09 +0200
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Is this correct?
+Date: Fri, 20 Jun 2003 08:10:06 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030620010609.19929062.arnt@c2i.net>
-References: <7C9884991ADAE0479C14F10C858BCDF5122DDB@alderaan.smgtec.com>
-	<20030619130221.GA1373@floyd>
-	<20030619135924.GC7161@cannon.eng.us.uu.net>
-	<200306191916.29001.pc-secure@home.nl>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0192A0@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200306191916.29001.pc-secure@home.nl>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,37 +17,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Shawn <core@enodev.com>, netfilter@lists.netfilter.org
+
+The only way I know of to do that is use iproute2 (or ifconfig) and add =
+that IP to the firewalls eth0 device and fix your rule (lowercase J).
+
+ip addr add 10.0.0.1/8 dev eth0
+iptables -t nat -I PREROUTING -i eth0 -d 10.0.0.1 -j DNAT \
+ --to 192.168.0.1
+
+I think that'll work OK..
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
+-----Original Message-----
+From: Shawn [mailto:core@enodev.com]
+Sent: Friday, June 20, 2003 7:07 AM
 To: netfilter@lists.netfilter.org
+Subject: Is this correct?
 
-On Thu, 19 Jun 2003 19:16:28 +0200, 
-Pascal Italiaander <pc-secure@home.nl> wrote in message 
-<200306191916.29001.pc-secure@home.nl>:
 
-> Op donderdag 19 juni 2003 15:59, schreef Ramin Dousti:
-> > Thanks, Julian, for the complement.
+I have a, iptables statement I would just like someone to say if I have
+it right.
 
-> 
-> All we need to know is what spoofing is about ( not how it is done),
-> for iptables to make rules against spoofing.
+Let's say I have a linux box with eth0=3D10.0.0.250 and
+eth1=3D192.168.0.250, and there's a host (192.168.0.1) connected to =
+eth1.
+I want to route connections from hosts in 10.0.0.0/24 land to 10.0.0.1
+onto the linux box's eth0, and have them NATed to 192.168.0.1
 
-..the how is useful when testing your (clients etc) boxes, myself, I
-portscanned my isp's poptop server this afternoon, yes, I was asked to,
-and yes, I charge for such wee stunts.
+Will the following statement do that?
 
- 
-> Julian,
-> 
-> No offend Julian, but by vieuwing someones e-mail , you can tell if
-> someone is not a script-kiddy ?
-> Whauw, how do you do that, teach me . :-)
-
-..http://www.catb.org/~esr/faqs/hacker-howto.html
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+iptables -t nat -I PREROUTING -i eth0 -d 10.0.0.1 -J DNAT \
+	--to 192.168.0.1
 
 
 
