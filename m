@@ -1,13 +1,11 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: new nat target extension --jump rt_lookup
-Date: Sat, 26 Jul 2003 20:40:19 -0400
+From: "gkweb" <gkweb@wanadoo.fr>
+Subject: iprange patch failed
+Date: Sun, 27 Jul 2003 04:07:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030727004019.GB2152@cannon.eng.us.uu.net>
-References: <1059223007.1604.11.camel@drs0.manchotnetworks.net>
+Message-ID: <001001c353e3$d13467a0$0100a8c0@poste1>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1059223007.1604.11.camel@drs0.manchotnetworks.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +16,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Sat, Jul 26, 2003 at 02:36:46PM +0200, lartc@manchotnetworks.net wrote:
+Hi,
 
-> hi all,
-> 
-> just wondering what everyone would think about
-> 
-> iptables --append POSTROUTING or OUTPUT --table nat --jump rt_lookup
-> 
-> 
-> this would ask for a new route lookup as a packet traverses the nat
-> table (done once) and would enable the effective marking/routing of
-> locally generated packets, as well as determining a potentially new
-> out-interface after natting.
-> 
-> can anyone comment on potential problems/dangers/issues from such a
-> --jump?
+i would really need of the "iprange" feature for personal purpose, but i
+can't make it to patch my kernel.
+I download the patch with all his files on my patch-o-matic directory, on
+his own folder "iprange", i ran runme ./iprange, the patch failed.
+So i edited the patch to replace "linux-2.4.20-base" by "linux.orig" but one
+again the same error :
 
-An infinite loop, maybe? Also, OUTPUT is before routing anyway...
+Testing patch ./iprange...
+patch : **** read error : Is a directory
+Failed to patch copy of /usr/src/linux-2.4.21
 
-My 2c.
-Ramin
+How can i patch successfully my kernel 2.4.21 with this feature ?
 
-> 
-> cheers
-> 
-> charles
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
+Thanks.
+
+Guillaume.
+
+
 
