@@ -1,14 +1,10 @@
-From: Arne Sagnes <ASagnes@Tickets.com>
-Subject: Re: High Availability question
-Date: 02 Jul 2002 11:40:12 -0400
+From: Ben <bench@silentmedia.com>
+Subject: simple nat question
+Date: Tue, 2 Jul 2002 12:34:53 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1025624413.983.16.camel@icewind.arne.net>
-References: <20020702162559.B13687@pleple.ict.pwr.wroc.pl> 
-	<200207021436.g62EaUU26719@vulcan.rissington.net>
+Message-ID: <Pine.LNX.4.30.0207021225140.7072-100000@gilgamesh.eos.SilentMedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200207021436.g62EaUU26719@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,31 +14,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: NetFilter <netfilter@lists.samba.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: NetFilter <netfilter@lists.samba.org>
 
-On Tue, 2002-07-02 at 10:36, Antony Stone wrote:
-> 
-> Try section 12 under:
-> 
-> http://netfilter.samba.org/documentation/events/netfilter-ws-2001-summary.txt
+I've got a basic nat setup:
 
-  That's an interesting discussion that unfortunately seems to have come
-to a stand-still. :-/
+  internet
+     |
++====+=====+ eth0: 1.2.3.4
+| firewall |
++====+=====+ eth1: 10.0.0.1
+     |
++====+=====+ eth0: 10.0.0.2
+|  server  |
++==========+
 
 
-> Hope this helps (I hope someone else can say something even more helpful, 
-> though - it's a topic I'm very interested in too !)
-  
-  Indeed.  The topic is highly interesting, but it has not seen any
-activity since April.  Perhaps we should find out if anyone is
-interested in resurrecting the project? :-)
+What I would like is for packets coming from the server (10.0.0.2) to get
+SNAT'd to the firewall's IP address, 1.2.3.4. It seems easy enough to do:
 
-Arne.
--- 
-Arne Sagnes - Email: asagnes@tickets.com
-Work: +1 216 787 8613 - Cell: +1 216 577 2319
-Be careful of reading health books, you might die of a misprint.
+iptables -t nat -A POSTROUTING -o eth0 -s 10.0.0.2 -j SNAT --to 1.2.3.4
+
+But now I don't see how return packets are going to make it back to my
+server, because the firewall is going to think they are destined for it.
+If I add the rule:
+
+iptables -t nat -A PREROUTING -d 1.2.3.4 -i ! eth0 -j DNAT --to 10.0.0.2
+
+Then it seems I loose the ability for the firewall to run anything
+accessable to the outside world, like ssh.
 
 
