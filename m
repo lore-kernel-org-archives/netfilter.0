@@ -1,18 +1,14 @@
-From: Mike <1100100@gmail.com>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Port 21, 23, and 80 are open according to Shields Up at grc.com
-Date: Mon, 13 Sep 2004 08:35:53 -0400
+Date: Mon, 13 Sep 2004 08:53:07 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <8ca4228204091305357c754e81@mail.gmail.com>
+Message-ID: <1095079786.1899.8.camel@wolfpack.ljm.dom>
 References: <200409111150.50506.bulliver@badcomputer.no-ip.com>
 	<8ca42282040911160952abec3b@mail.gmail.com>
-	<3063e504091116141e3bf7f@mail.gmail.com>
-	<8ca4228204091200382f2d9a04@mail.gmail.com>
-	<3063e504091218152748ca34@mail.gmail.com>
-Reply-To: Mike <1100100@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3063e504091218152748ca34@mail.gmail.com>
+In-Reply-To: <8ca42282040911160952abec3b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,25 +19,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: George Alexandru Dragoi <waruiinu@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi George,
-
-I'm trying to figure this out as well.  The shields up results state,
-"one or more of your system's ports actively responded to our
-deliberate attempts to establish a connection." I'm trying to figure
-out what the active response was and what it means.
-
-I think I'll have to hit up one of the grc.com mailing lists.
-
-Mike 
-
-On Mon, 13 Sep 2004 04:15:22 +0300, George Alexandru Dragoi
-<waruiinu@gmail.com> wrote:
-> I am
-> curious how that test explain the manner HOW the ports are opened.
-> Maybe they are just not filtered.
+On Sat, 2004-09-11 at 19:09, Mike wrote:
+> Hi Group:
 > 
->
+> I've tested for open ports from all the LAN clients behind my linux
+> box router/gateway/firewall and all of them come up with the same
+> results: port 21, 23, and 80 are open according to the results of the
+> Steve Gibson Shields Up test.
+> 
+> I can't figure out how this can be happening.
+> I've run a full nmap -P0 (that's a zero) on all my local ip addresses
+> - 192.168.169.*
+
+you need to keep in mind that if your netfilter box is performing
+MASQ/SNAT for your LAN machines--the IP being scanned by grc.com is the
+public IP of the netfilter box.
+
+unless your doing some DNATs to machines on your LAN--you should focus
+your efforts on the netfilter machine itself.
+
+"netstat -lntu" would be a good place to start.
+
+i've always questioned the output of web-based scanners like grc.com;
+however, i just went to grc.com and tried it out, and achieved a
+*perfect* "TruStealth" rating...which must mean i'm super l33t like
+stevie...  :-P
+
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
+
 
