@@ -1,13 +1,13 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Internal machines can't resolve external addresses
-Date: Wed, 12 Jun 2002 16:02:22 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: TCP delay, solved
+Date: Wed, 12 Jun 2002 21:02:48 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020612200222.GM21405@cannon.eng.us.uu.net>
-References: <200206121516.g5CFGLU13571@vulcan.rissington.net> <000001c21231$082030a0$7200a8c0@blue> <20020612172851.GI21405@cannon.eng.us.uu.net> <200206121959.g5CJxDA02614@Networker.rockstone.co.uk>
+Message-ID: <200206122002.g5CK2nA02787@Networker.rockstone.co.uk>
+References: <0fbe01c2122e$f0783300$2901a8c0@amos>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <200206121959.g5CJxDA02614@Networker.rockstone.co.uk>
+In-Reply-To: <0fbe01c2122e$f0783300$2901a8c0@amos>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,23 +18,27 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-On Wed, Jun 12, 2002 at 08:59:10PM +0100, Antony Stone wrote:
+On Wednesday 12 June 2002 5:33 pm, Nathan Cassano wrote:
 
-> > Antony, how often did you answer this very question?
-> 
-> Yes, you're right - exactly the same question from several different people 
-> over the past few weeks.   I'm tempted to put the answer on one of my web 
-> pages and just reply with the URL from now on.
+> Well you learn something new every day. Today I learned inetd does ident
+> checks on it's clients.
 
-No need for that. This is already done in the HowTo:
+Yes, it's called tcpwrappers, and has been pretty standard on systems for I'd 
+say about four years now :-)
 
-http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-10.html
+> This is annoying, is there a way you can turn
+> this off inside inetd?
 
-Ramin
+Yes, it's the bit on each line of /etc/inetd.conf which says "/usr/sbin/tcpd" 
+- it does an ident lookup and logs the access to syslog before handing the 
+connection over to the real daemon.
 
-> Antony.
+If you don't want this to happen them remove the "/usr/sbin/tcpd" from 
+inetd.conf and just have the standard daemon listed there on its own.
+
+ 
+
+Antony.
 
