@@ -1,11 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Fwd: Re: FreeS/WAN + static NAT + 2 machines
-Date: Mon, 23 Sep 2002 17:04:42 +0100
+From: Steve Mickeler <steve@neptune.ca>
+Subject: Re: Fwd: Returned mail: see transcript for details
+Date: Mon, 23 Sep 2002 13:31:11 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209231604.g8NG4mv24864@vulcan.rissington.net>
+Message-ID: <Pine.LNX.4.44.0209231330470.31412-100000@triton.neptune.on.ca>
+References: <200209231603.g8NG3Lv24847@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200209231603.g8NG3Lv24847@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,49 +16,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-----------  Forwarded Message  ----------
 
-Subject: Re: FreeS/WAN + static NAT + 2 machines
-Date: Mon, 23 Sep 2002 16:57:41 +0100
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-To: nefilter@lists.netfilter.org
+Thats cuz nefilter != netfilter :)
 
-On Monday 23 September 2002 4:51 pm, Walther@gehag-dsk.de wrote:
-> > I'm intrigued to know what quantity of data you're trying to shovel
-> > through FreeS/WAN that you find the performance of the machine a
-> > limitation.   Please tell me your link bandwidth and a rough spec of the
-> > machine/s you're using.
+
+
+On Mon, 23 Sep 2002, Antony Stone wrote:
+
+> Strange - just got this back from the netfilter list server.....
 >
-> I have a 2MBit with about 15 official IP's.
+> ----------  Forwarded Message  ----------
+>
+> Subject: Returned mail: see transcript for details
+> Date: Mon, 23 Sep 2002 16:58:09 +0100
+> From: Mail Delivery Subsystem
+> To: <Antony@Soft-Solutions.co.uk>
+>
+> from lbr-wlan-57-66.external.my.domain.com [1x.14x.5x.6x]
+>
+>    ----- The following addresses had permanent fatal errors -----
+> <nefilter@lists.netfilter.org>
+>     (reason: 550 Unknown local part nefilter in
+>  <nefilter@lists.netfilter.org>)
+>
+>    ----- Transcript of session follows -----
+>
+> ... while talking to kashyyyk.netfilter.org.:
+> >>> RCPT To:<nefilter@lists.netfilter.org>
+>
+> <<< 550 Unknown local part nefilter in <nefilter@lists.netfilter.org>
+> 550 5.1.1 <nefilter@lists.netfilter.org>... User unknown
+>
+> -------------------------------------------------------
+>
+>
+> Antony.
+>
 
-What type / speed CPU on the FreeS/WAN box ?
-How much memory ?
-What load average does it generate ?
 
-I'm surprised you are experiencing performance problems with less than
-2Mbits/sec through FreeS/WAN.
 
-> i will install the testmachine on wednesday in the DMZ, and will try again
-> with the modes. i rechecked my rules and in my test-environment it works
-> now (with NAT).
+[-] Steve Mickeler [ steve@neptune.ca ]
 
-What did you change ?
+[|] Todays root password is brought to you by /dev/random
 
-> i will tell you on wednesday if it works or not, coz there is no way to
-> test it before this date.
+[+] 1024D/9AA80CDF = 4103 9E35 2713 D432 924F  3C2E A7B9 A0FE 9AA8 0CDF
 
-Okay.
-
-Antony.
-
---
-
-Having been asked to provide a reference for this man,
-I can confidently state that you will be very lucky indeed
-if you can get him to work for you.
-
--------------------------------------------------------
 
