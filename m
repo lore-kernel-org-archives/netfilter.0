@@ -1,12 +1,11 @@
-From: "Fredrik Emil Jensen" <fredrik.jensen@netpower.as>
-Subject: RE: transparent proxy
-Date: Mon, 15 Mar 2004 10:19:35 +0100
+From: <peter.gehle@sbgit.com>
+Subject: Re-2: Still having problems with forwarding
+Date: 15 Mar 2004 09:10:02 UT
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3C204966522884458700FF59D6EFB87A474DDE@FORUS01.netpower.lan>
+Message-ID: <DIIE.000000FD00002A60@sbgit.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,84 +16,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
-
-Hey=20
-
-I'm currently using squid and squidGuard for redirection. Setting up the
-rules:
-
-Iptables -t nat -A PREROUTING -p tcp -s 192.168.1.0/24 -d 0/0 --dport 80
--j REDIRECT --to-ports 3128=20
-
-But does anyone know what to do if you want to use iptables to bypass
-squid with single IP address?
-
-I know that you can add the rule "iptables -t nat -A POSTROUTING -o eth0
--s 192.168.1.10/32 -d 0/0 -j SNAT --to "source_Wan_address" ". But this
-rule will be added at the end of the rule list, and all traffic on port
-80 will still be redirected through squid. Even when I use priority
-"iptables -t nat -I POSTROUTING 1 etc" and I put higher priority on the
-rule for the bypass IP, it is still being redirected through squid. I
-have to remove the redirect rule before I can bypass squid.=20
-
-Does anyone know what I'm doing wrong?
-
-Using Slackware 9.1 with Kernel 2.6.2, iptables version 1.2.9 and squid
-2.5
-
-Regards,=20
-Fredrik
-
------Original Message-----
-From: Daniel F. Chief Security Engineer -
-[mailto:danielf@supportteam.net]=20
-Sent: 27. februar 2004 18:01
-To: Tomasz Macioszek; Netfilter
-Subject: Re: transparent proxy
-
-That rule should work fine, make sure you compiled squid with:
-
-./configure --enable-linux-netfilter=20
-
-But for more usefull info :)
-Here is a nice HOW-TO
-http://en.tldp.org/HOWTO/TransparentProxy.html
+To: netfilter@lists.netfilter.org
 
 
-On Friday 27 February 2004 02:48, Tomasz Macioszek wrote:
-> Hello!
-> I have a Linux server acting as a gateway between internal network and
-> internet. The iptables rule set have been working  good for long time.
-> I have configured squid on this server. When I have set internal
-network
-> client to use directly proxy server it has worked properly. But when I
-have
-> set iptable to redirect all http traffic to squid  port (3128) it
-didn't
-> work (transparent proxy).
-> This is my iptable rule:
-> iptables -t nat -A PREROUTING -p TCP --dport 80 -j REDIRECT --to-port
-3128
-> I think that all options in my kernel are set properly.
-> I don't know why it doesn't work
-> I set tcpdump to listen on 3128 port and when client tried to connect
-to
-> web server on port 3128 showed only first IP  package of this
-connection
-> and connections failed.
-> Could you send me a solution for this problem?
-> Best regards
-> Tomek
+> 1. Can you be more specific about exactly what problems you are having - 
+> what 
+> does work, what does not work, how are you testing it?
 
---=20
-_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:
--.,_
-Daniel Fairchild - Chief Security Officer | danielf@supportteam.net
-The distance between nothing and infinity is always the same no matter
-how=20
-close you get to nothing.
+Since i have made some changes i don't get an connection to my VPN Server,
+it seems that iptables don't forwards the vpn tunnel to my internet vpn server.
+
+i can't send any pings to the internet? 
+
+also i can't connect to my Terminalserver.
+
+I think the whole forwading don't works?
+
+> 2. Is it possible that you can simplify your ruleset by removing rules 
+> which 
+> are nice to have, but have nothing to do with this problem (eg: the 
+> rate-limited DROP rules, and the TCP flag matches), so that it is easier to 
+> 
+> know what to focus on, and what is unimportant?
+
+I think i have to write a complete new firewall script, but at first i will try
+to get all working what i need. 
+
+Thanks Peter
 
 
+To: Antony@Soft-Solutions.co.uk
+Cc: netfilter@lists.netfilter.org
 
 
