@@ -1,12 +1,10 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: CVS login
-Date: Fri, 11 Feb 2005 12:38:31 -0500 (EST)
-Message-ID: <29957.142.169.215.10.1108143511.squirrel@142.169.215.10>
-References: <20050211181740.4a62559a.Yop.Solo@gawab.com>
+From: Asim Shankar <asimshankar@gmail.com>
+Subject: No ICMP connections in /proc/net/ip_conntrack?
+Date: Fri, 11 Feb 2005 11:47:37 -0600
+Message-ID: <7bca1cb5050211094730ec3a1a@mail.gmail.com>
+Reply-To: Asim Shankar <asimshankar@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050211181740.4a62559a.Yop.Solo@gawab.com>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +16,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Yop Solo <Yop.Solo@gawab.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, February 11, 2005 12:17 pm, Yop Solo said:
-> Hello,
->
-> I'm new to those lists and hope to post in the good tread...
->
-> I try to get the last CVS sources.
-> [...]
-> What can I do ?
->
+Hi,
 
-Please use subversion as follow :
+I can't see any ICMP entries in /proc/net/ip_conntrack. My setup is as follows:
 
-svn co http://svn.netfilter.org/netfilter/trunk/ ./netfilter
+Machine A: 
+- Connected to the internet on eth0 and to a private (192.168.1.0/24) on eth1.
+- iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-Of course, you can specify what modules you want with /trunk/iptables,
-exemple.
+Machines B and C:
+- Connected to the private (192.168.1.0/24) network on eth0
+- Default gateway: Machine A
 
-> Cordially,
->
-> -- Yop Solo --
->
-HTH,
-Samuel
+Machine D:
+- Connected to the internet
 
+If I ssh/ftp/run a udp-echo client on machines A/B, connecting to
+machine D, I can see the entries in /proc/net/ip_conntrack on machine
+A.
+
+However, if I "ping D" from A and B, then no entry seems to be present
+in ip_conntrack. My understanding based on:
+http://www.faqs.org/docs/iptables/icmpconnections.html is that I
+should see something in ip_conntrack.
+
+Am I missing something?
+
+Thanks,
+Regards,
+
+-- Asim
 
