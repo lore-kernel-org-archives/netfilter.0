@@ -1,10 +1,13 @@
-From: fgentili@ialeware.it
-Subject: pom-2003-09-12 and kernel 2.4.22
-Date: Tue, 21 Oct 2003 13:39:24 +0200
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: help on  NAT Configuration
+Date: Tue, 21 Oct 2003 09:02:23 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF43231202.37435874-ONC1256DC6.003F631F-C1256DC6.00400866@tomware.it>
+Message-ID: <3F952E5F.6000308@Loudoun-Fairfax.com>
+References: <83055D4B014C9E478D2F04624B9E82CF39E82D@noveldc.novelgmt.mu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <83055D4B014C9E478D2F04624B9E82CF39E82D@noveldc.novelgmt.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,27 +17,94 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi to all,
-After applied pom-2003-09-12  to a 2.4.22 kernel I could not be able to
-setup rules  like :
+Gilles Yue wrote:
 
-iptable -t nat - A POSTROUTING -o eth3 -j SNAT etc ...
+> Dear all
+>
+> I want to share internet access on my LAN and my configurations are as=20
+> below. (see picture)
+>
+> Is my NAT configuration correct? I want to allow only some users to=20
+> access the internet-and check mail using outlook express.
+>
+> Thanks for helping.
+>
+> Rgds
+>
+> gy
+>
+> iptables =96vnL
+>
+> *> Chain INPUT (policy DROP 485 packets, 51391 bytes)*
+>
+>> pkts bytes target prot opt in out source
+>
+>> destination
+>
+>> 0 0 ACCEPT tcp -- * * 0.0.0.0/0
+>
+>> 0.0.0.0/0 tcp spt:53
+>
+>> 21 4504 ACCEPT udp -- * * 0.0.0.0/0
+>
+>> 0.0.0.0/0 udp spt:53
+>
+>> 0 0 ACCEPT udp -- * * 0.0.0.0/0
+>
+>> 0.0.0.0/0 udp spt:80
+>
+>> 813 704K ACCEPT tcp -- * * 0.0.0.0/0
+>
+>> 0.0.0.0/0 tcp spt:80
+>
+>> 0 0 ACCEPT udp -- * * 0.0.0.0/0
+>
+>> 0.0.0.0/0 udp spt:443
+>
+>> 16 3793 ACCEPT tcp -- * * 0.0.0.0/0
+>
+>> 0.0.0.0/0 tcp spt:443
+>
+>> 0 0 ACCEPT tcp -- * * 0.0.0.0/0
+>
+>> 0.0.0.0/0 state RELATED,ESTABLISHED
+>
+>> 0 0 ACCEPT all -- lo * 0.0.0.0/0
+>
+>> 0.0.0.0/0
+>
 
-I obteined an error which points " --oif not defined" or similar .....
-This error occute only working on nat TABLE
+This is the traffic into the firewall host from both NICs. It's a good=20
+idea to put the ESTABLISHED, RELATED rule near the top of the chain.=20
+Also, it should not be limited to the loopback interface.
 
-I tried to do a simple "run pending" but the error persist ....
+>>
+>
+>> *Chain FORWARD (policy DROP 0 packets, 0 bytes)*
+>
+>> pkts bytes target prot opt in out source
+>
+>> destination
+>
+>> 0 0 ACCEPT all -- eth1 eth0 0.0.0.0/0
+>
+>> 0.0.0.0/0 state RELATED,ESTABLISHED
+>
+>> 0 0 ACCEPT all -- eth0 eth1 0.0.0.0/0
+>
+>> 0.0.0.0/0
+>
+>>
+>
 
-it was  not a problem on kernel source because I work perfeclty with kernel
-2.4.22
+This is the chain that carries the traffic between the lan and the=20
+outside world. You have it wide open and are not filtering anything. I=20
+recommend you set the default policy to drop and only open the ports you=20
+need ( 80, 63, etc.). BTW, nice graphic :-)
 
-Did anyone had the same problem ???
-
-Thank you very Much
-
+Jeff
 
 
