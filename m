@@ -1,10 +1,10 @@
-From: alaadin@alaadin.org
-Subject: patch problem
-Date: Mon, 6 Sep 2004 15:28:16 +0300 (EEST)
+From: Steve Comfort <steve@4Dllc.com>
+Subject: Setup for an Access Point
+Date: Mon, 06 Sep 2004 15:45:38 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <3042.81.10.7.114.1094473696.squirrel@81.10.7.114>
+Message-ID: <413C6A02.7020504@4Dllc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,25 +15,16 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+Hi All,
 
-i am using iptables1.2.9
-with kernel2.6.5
-and i read in the website that there is a problem
-when using kernel2.6.x with iptables ..
-but i searched for patches to download ..
-but i didnot find any patches..
-so how to fix this problem ?
-can i fix this problem
-by download iptables.1.2.11 ?
-or by updating my kernel ?
-or by installing patches ?
-and how to install the patch of this problem
-please help ....
+Could anyone perhaps suggest a script to use in conjunction with a 
+bridge (ebtables/iptables combination)? I am trying (unsuccessfully) to 
+firewall a linux access point with one wlan and one eth interface...
 
-
+Best regards
+Steve Comfort
 
 
