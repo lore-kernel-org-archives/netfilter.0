@@ -1,8 +1,10 @@
-From: "Mark Jones" <mlp1@ig.com.br>
-Subject: IPtables 1.2.11 compiling error
-Date: Thu, 28 Oct 2004 16:04:47 -0300
+From: cookie <cookie@iacookie.net>
+Subject: random match and 2.6 kernel
+Date: Thu, 28 Oct 2004 19:46:53 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <clrft2$t0t$1@sea.gmane.org>
+Message-ID: <A51CE256-293B-11D9-912B-000A957651A0@iacookie.net>
+Mime-Version: 1.0 (Apple Message framework v619)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -13,58 +15,29 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi people,
-
-I=B4m having trouble compiling iptables 1.2.11 (in order to have the "strin=
-g"=20
-match module - it=B4s not included in the standard RPM)...
-I=B4m using Fedora 2 (full install) and when I try to compile, I receive=20
-"#error including kernel header in userspace; use the glibc headers=20
-instead!". My kernel sources are located in /usr/src/linux-2.6.5-1.358,=20
-uname -r =3D 2.6.5-1.358, iptables v1.2.11.
-
-Is there any other way to have the "libipt_string" module compiled? I=B4ve =
-
-googled about these errors, but coudn=B4t find any info that helped me to=20
-solve the problem... This is the output I get:
-
-[root@server01 iptables-1.2.11]# make KERNEL_DIR=3D/usr/src/linux-2.6.5-1.3=
-58
-Extensions found: IPv4:recent IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header=20
-IPv6:hbh IPv6:dst IPv6:rt
-cc -O2 -Wall -Wunused -I/usr/src/linux-2.6.5-1.358/include -Iinclude/ -DIPT=
-ABLES_VERSION=3D\"1.2.11\"=20
-  -D_UNKNOWN_KERNEL_POINTER_SIZE -fPIC -o extensions/libipt_ah_sh.o -c=20
-extensions/libipt_ah.c
-In file included from /usr/src/linux-2.6.5-1.358/include/linux/config.h:4,
-                 from=20
-/usr/src/linux-2.6.5-1.358/include/linux/netfilter_ipv4.h:8,
-                 from=20
-/usr/src/linux-2.6.5-1.358/include/linux/netfilter_ipv4/ip_tables.h:25,
-                 from include/libiptc/libiptc.h:6,
-                 from include/iptables.h:5,
-                 from extensions/libipt_ah.c:8:
-/usr/include/linux/autoconf.h:1:2: #error Invalid kernel header included in=
-=20
-userspace
-In file included from=20
-/usr/src/linux-2.6.5-1.358/include/linux/netfilter_ipv4.h:8,
-                 from=20
-/usr/src/linux-2.6.5-1.358/include/linux/netfilter_ipv4/ip_tables.h:25,
-                 from include/libiptc/libiptc.h:6,
-                 from include/iptables.h:5,
-                 from extensions/libipt_ah.c:8:
-/usr/src/linux-2.6.5-1.358/include/linux/config.h:6:2: #error including=20
-kernel header in userspace; use the glibc headers instead!
-make: *** [extensions/libipt_ah_sh.o] Error 1
-
-Mark Jones=20
-
-
+Hello-
+   I am new to the list.  I have been using netfilter for some time but  
+had
+always used the default setup.
+   Recently I came across Hisham Mardam Bey's website that details "Load  
+Balancing
+Across Multiple Links"
+http://linux.com.lb/wiki/index.pl? 
+node=Load%20Balancing%20Across%20Multiple%20Links
+and saw the first use of the random match.
+   I was anxious to try it, but I am running Fedora Core and a 2.6  
+kernel.
+   And after looking online and inside pomng-20040621, I came to the  
+conclusion that
+the random match was only available to the 2.4 kernel.  But being new  
+to using pom,
+I thought it would be wise to check with everyone before I threw in the  
+towel.
+Thanks
+Brian Cook
+  
 
 
