@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Strange RST,ACK packet from my Host
-Date: Thu, 23 Dec 2004 11:02:01 -0500
-Message-ID: <1103817721.6478.74.camel@hubcap.ljm.dom>
-References: <1103789255.41ca7cc7e4549@webmail.kwsoft.de>
+Subject: Re: blocking msn
+Date: Thu, 23 Dec 2004 11:13:51 -0500
+Message-ID: <1103818431.6478.83.camel@hubcap.ljm.dom>
+References: <a0f69e50412230713fbf2ec4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1103789255.41ca7cc7e4549@webmail.kwsoft.de>
+In-Reply-To: <a0f69e50412230713fbf2ec4@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,93 +20,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2004-12-23 at 03:07, lst_hoe01@kwsoft.de wrote:
-> Hello
+On Thu, 2004-12-23 at 10:13, Askar wrote:
+> hey here is quick question let suppose i drop MSN with the below rule
 > 
-> we have a mailserver protected itself by iptables and a firewall (iptables) in
-> front of it. The firewall sometimes log RST,ACK packets from our mailserver as
-> not permitted so i have done a tcpdump trace for one source IP for which this
-> is happening (attached to the mail).
-> This trace shows that after the last packet from the remote (217.219.215.10) our
-> mailserver respond with a RST,ACK packet from a random high port which is
-> dropped from the firewall because it does not match any connection??
+> #iptables -A FORWARD -p tcp --dport 1863 -j DROP
 > 
-> Can anyone explain why the mailserver send this strange packet?
+> but its not enough, if 1863 is blocked it tries to use port 80.
 > 
-> OS is Linux Kernel 2.4.21
-> Iptables v1.2.8
+> any work around ?
+> regards
 
-the RST,ACK from your mail server is not the strangest packet in this
-capture by a long shot.
+the "proper" way to do this, is to block "--dport 1863" in your firewall
+rules, and also REDIRECT port 80 traffic to a transparent HTTP proxy
+(like squid), and use ACLs in the proxy to block access to:
 
-after the three-way handshake--the remote machine sends this (before it
-ever receives the 220 banner from your mail server, already breaking the
-SMTP protocol):
+  http://gateway.messenger.hotmail.com/gateway/gateway.dll
 
-  POST / HTTP/1.0
-
-which is not an SMTP command.
-
-the remote machine then sends:
-
-  RSET
-
-which is a request to abort the current "mail transfer" and start
-fresh.  i'm pretty sure the RFC's require the remote side to wait for a:
-
-  250 OK
-
-response to an RSET before continuing.  the remote machine in your
-capture can't be bothered with such trivial things, and sends message
-data:
-
-  man eugene mookie
-  abcdef
-
-which does look pretty important, especially considering we have no MAIL
-FROM or RCPT TO at this point.
-
-after a couple of ACK's, the remote side sends:
-
-  FIN,ACK
-
-and your machine sends:
-
-  ACK
-
-which puts this connection (with respect to your firewall) into state
-"CLOSE-WAIT."
-
-your mail server then sends an SMTP error:
-
-  502 Error: Command not implemented
-
-which is probably in response to the POST command at the beginning, or
-possibly the 'man eugene mookie' command.
-
-to which the remote machine sends a RST packet, as it seems to have
-moved on with its life at this point.
-
-your firewall sees the client->server RST packet and puts the connection
-in CLOSE state.
-
-and finally, your mail server sends a RST,ACK to acknowledge the RST;
-which arrives 20 seconds after the connection went into CLOSE-WAIT, and
-10 seconds after the RST put the connection into CLOSE.
-
-my guess is that the RST,ACK is being sent after the firewall had
-removed the connection from conntrack.  i *believe* the default timeout
-for the TCP CLOSE state is 10 seconds; which would make sense.
-
-oh--and i don't know if you've picked up on this or not--but the remote
-machine in this communication never had any honorable intentions with
-this communication, and shouldn't concern you.
+if you want to do this with just IP filtering, you could try blocking
+port 80 access to 207.46.104.20, which is what that FQDN currently
+resolves to--but this solution is kludgey and requires that you keep up
+with the IP address(es) constantly.
 
 -j
 
 --
-"Kids, you tried your best and you failed miserably. The lesson is,
- never try."
+"I have been shot eight times this year, and as a result, I almost
+ missed work."
 	--The Simpsons
 
 
