@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: i386 or i686.. which one?
-Date: Mon, 9 Sep 2002 19:37:15 +0100
+From: Rainer Ellinger <rainer@ellinger.de>
+Subject: Re: "unclean" ?bug? with dell dns
+Date: Mon, 9 Sep 2002 20:27:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209091837.g89IbPv05983@vulcan.rissington.net>
-References: <A758C299015FD411887B0000E2131186C213E6@TRUVA>
+Message-ID: <200209091948.1734@ellinger.de>
+References: <20020827025542.A15684@yannick.lesaint> <20020828132419.GC21410@morinfr.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <A758C299015FD411887B0000E2131186C213E6@TRUVA>
+In-Reply-To: <20020828132419.GC21410@morinfr.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +18,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Guillaume Morin <guillaume@morinfr.org>, Yannick Le Saint <y.lesaint@free.fr>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 09 September 2002 4:02 pm, ?hsan  Turkmen wrote:
+Guillaume Morin wrote:
+> >  When i "dig www.euro.dell.com", i get in syslog :
+> I'd say that unclean matches the packet because of a checksum
+> mismatch. There must be a buggy router between you and the server.
 
-> Hi..
-> This is not the right place of asking that question, but i hope nobody
-> minds my asking:
-> ----"How to understand if my kernel source is RedHat  i386 or i686. Is
-> there a shoert way of undersatnding it...?"
+I ran into the same problem and can also confirm that this is a problem=20
+with dell's nameserver or a system on dell's side. Further=20
+investigation with ethereal showed that matching pakets had their udp=20
+crc set to 0x0000. My questions are:=20
 
-The kernel source is not specific to a processor (it's not even specific to 
-Intel x86 processors - it covers PPC, Alpha, MIPS..... as well).
+Should this condition really considered harmful and matched by unclean?
+Why is there no corresponding log message from the unclean module?
 
-The thing which is specific to the processor family is in 
-/usr/src/linux/.config - look for the lines starting with CONFIG_M386 and 
-going through to CONFIG_MCYRIXIII.
-
-The one which says =y at the end is the one your kernel will compile for.
-
-Antony.
-
--- 
-
-All matter in the Universe can be placed into one of two categories:
-
-1. things which need to be fixed
-2. things which will need to be fixed once you've had a few minutes to play 
-with them
+--=20
+rainer@ellinger.de
 
