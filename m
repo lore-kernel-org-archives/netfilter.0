@@ -1,11 +1,9 @@
-From: vlad f kropachew <vlad@ccs.ru>
-Subject: ip_conntrack_ftp
-Date: Mon, 7 Oct 2002 12:09:53 +0000
+From: Dominic Irrcher <dirrcher@colosseum.com>
+Subject: RE: blocking Emails using ip address or domain name
+Date: Wed, 9 Oct 2002 11:34:37 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E17yWou-0002dp-00@kashyyyk.netfilter.org>
-Reply-To: vlad@ccs.ru
+Message-ID: <A0B5F46E38ADD411967800805F777E9830C119@colosrva.colosseum.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,22 +15,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'bailey@tgpsolutions.com'" <bailey@tgpsolutions.com>
+Cc: "'sun@percipia.com'" <sun@percipia.com>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-hello. please ask the following question.  can i use the subject module for 
-accepting passive ftp trafic on non-standart ports? i have the ftp on port 
-20350, and after make configure with pass ESTABLISHED and RELATED connection 
-with different records, i see that ftp-data don't hit in RELATED rule, and 
-log contain next record after data transfer:
+heh .. sorry .. yes :)
 
--------------
-DEFAULT-DROP IN=eth0 OUT= MAC=00:60:08:5e:b1:ff:00:60:08:10:4b:d3:08:00 
-SRC=217.76.32.10 DST=217.76.32.9 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=36164 DF 
-PROTO=TCP SPT=1295 DPT=54245 WINDOW=32120 RES=0x00 SYN URGP=0
--------------
+as i said ... SOMETHING LIKE!!! just in case i made a silly mistake like
+that !!!!
 
-may be this module track only standart ftp-control port? 
-
-vlad/
+thanks for the correction 
 
 
