@@ -1,8 +1,8 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: blocking Multicast packets
-Date: Wed, 18 Aug 2004 05:43:03 -0600
+From: Steve Comfort <steve@4Dllc.com>
+Subject: Help with Access Point firewalling
+Date: Wed, 18 Aug 2004 13:48:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040818054303.1ec43592@mgalepc.utilitran.com>
+Message-ID: <41234202.6040903@4Dllc.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,30 +15,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+Hi all,
 
-	We seem to have a problem with multi-cast packets, our develop team was testing some kind of load balancer which is
-causing about 100 packets a second to be sent out continuously:
+I'm working on an embedded scenario that has got me a bit stumped, and 
+thought maybe one of the guru's here could help out.
 
+The device is based around an IXP processor and has an ethernet and a 
+wireless interface. When the wireless interface is configured as managed 
+(ie its a client) I have no problem and am happily using a modification 
+of Oskar Andreaason's firewall script to do the firewalling. Everything 
+works fine.
 
-05:35:44.864029 IP X.X.X.9128 > 230.0.0.1.9128: UDP, length: 1000
+However, what should I be doing if the device is configured as an Access 
+Point? I figured I need to allow in NEW TCP connections, but don't know 
+whether I will be able to use iptables to masquerading between the wlan 
+port and the eth port, (ie will the MASQUERADE target forward packets 
+received on the WLAN to the ETH interface ?) or whether I will have to 
+add a bridge and use ebtables?
 
-So this drives up the network card IRQ request I believe using anywhere from 10%-80% of the CPU:
+Any advice would be appreciated!
 
-    4 root      19  19     0    0     0 SWN  17.1  0.0 225:28   1 ksoftirqd_CPU1
-    3 root      19  19     0    0     0 SWN  14.5  0.0 228:31   0 ksoftirqd_CPU0
+Best regards
+Steve
 
-So I thought about adding in a iptables rule to block all the traffic but it is not working. I have added the following
-rules with out effect:
-
-iptables -I INPUT -i eth1 -s X.X.X.X -j DROP
-iptables -I FORWARD -i eth1 -s X.X.X.X -j DROP
-
-I never see the byte counters increment at all .. they are staying at zero ??
-
--- 
-Michael Gale
 
