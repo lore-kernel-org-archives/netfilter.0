@@ -1,16 +1,13 @@
-From: =?ISO-8859-1?Q?Ren=E9_Gallati?= <draxinusom@gmail.com>
-Subject: Re: vpn
-Date: Wed, 15 Sep 2004 10:42:36 +0200
+From: rob@sterenborg.info
+Subject: Re: Multiple PPTP clients behind NAT
+Date: Wed, 15 Sep 2004 11:25:27 +0200 (CEST)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <50f03b970409150142291aaa96@mail.gmail.com>
-References: <012a01c49a61$340e8ad0$49caa8c0@caris.priv>
-	<1095172947.2055.33.camel@localhost>
-	<20040914160735.GP26823@metastasis.org.uk>
-Reply-To: =?ISO-8859-1?Q?Ren=E9_Gallati?= <draxinusom@gmail.com>
+Message-ID: <33106.194.109.165.130.1095240327.squirrel@194.109.165.130>
+References: <20040914091713.68587.qmail@web52508.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040914160735.GP26823@metastasis.org.uk>
+In-Reply-To: <20040914091713.68587.qmail@web52508.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,54 +17,81 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
-Cc: Nick Drage <nickd@metastasis.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Tue, 14 Sep 2004 17:07:35 +0100, Nick Drage <nickd@metastasis.org.uk> wr=
-ote:
-> On Tue, Sep 14, 2004 at 10:42:27AM -0400, John A. Sullivan III wrote:
-> > On Tue, 2004-09-14 at 09:46, Peter Marshall wrote:
->=20
-> <snip>
->=20
-> > I would suggest an IPSec VPN using either the native IPSec stack in the
-> > latest Linux or either StrongSWAN (www.strongswan.org) or OpenSWAN
-> > (www.openswan.org) and placing access control and VPN on the same
-> > device.  That is how we design most devices for use in the ISCS project
-> > (http://iscs.sourceforge.net).
->=20
-> Reading "Network Security Hacks" recently I liked the look of VTun.  Any
-> thoughts on that?  How does it interface with IPTables?
+>>(Why would you use a 9 months old POM when a new one
+>>is available ?)
+>
+> The reason for using this patch is because
+> patch-o-matic-ng-20040621 said my kernel
+> is too old (I donot know why, my kernel was 2.4.20-8
+> which is the default kernel from RedHat 9).
+>
+> The reason for using kernel 2.4.26 is because we
+> searched on the web and someone said using
+> this kernel with this patch works.
 
-As far as I know openvpn uses it
-(http://openvpn.sourceforge.net/index.html) It is fairly easy to
-install and far more flexible and robust if one or both sides of the
-tunnels have dynamic ip addresses. I've used FreeSwan for some years
-and always had stability troubles when one side went down but the
-tunnel wasn't properly terminated on the other side and such things.
-I've switched to openvpn after the removal of the ipsec pseudodevices
-which made my firewall rules unusable.
+IMHO if you have to compile a new kernel it is best use a new one with
+the latest patches unlesss there is a very good reason not to.
+But ; that's IMHO ;-).
 
-Now with openvpn you again have a device per tunnel on which you can
-easily filter as before with ipsecN, just now they are called tunN
-and/or tapN (depending on which type of tunnel you want)
+> My configuration is exactly the following
+>
+> PPTP     |
+> client1->|
+>          |
+> PPTP     |
+> client2->|                                   |->PPTP
+>          |                                   |  Server
+>          |->eth1->NAT->eth0->...Internet...->|
+> ... ...->|                                   |->...
+>          |                                   |
+> PPTP     |
+> client n->|
+>
+> A. Private LAN: 192.168.10.0/24
+> B. eth1 IP:     192.168.10.1
+> C. eth0 IP:     129.94.60.128
+> D. PPTP server: 129.94.133.1
+> E. IPs in PPTP Server: 129.94.182.130, 129.94.182.131
+> (These IPs cannot be accessed without VPN)
+> F. All clients in private LAN are windows or Mac
+> machines. After the VPN is setup, they will be
+> assigned with IP addresses of 129.94.165.3 and
+> 129.94.165.4
+> G. The PPTP Server is not firewalled
+>
+> The problem is decribed as following:
+> 1. I setup one connection from client 1 to the PPTP
+> server, then I tried to test the connection by ping
+> either 129.94.182.130 or 129.94.182.131. It is
+> working.
+> 2. I setup the other connection from client 2 to the
+> same PPTP server. Then two cases will happen:
+>    a) if the client 1 keep pinging (a MAC), the
+> connection will fail;
+>    b) if client 1 stop pinging, the connection can be
+> established.
+> 3. After the second connection is setup. Client 2 can
+> ping, client 1 cannot ping any more, but the status
+> shows that the connection is still there.
 
-You can furthermore do some things that ipsec cannot or are very
-difficult. Using the tap's it emulates a virtual network card, so you
-have arp running over it. You can easily do dhcp over taps and
-furthermore broadcasts and multicast simply works over these pseudo
-devices. It's just like both ends of the vpn have an additional nic
-that is directly connected to each other.
+Sounds like conntrack is not working because then only 1 client would
+be able to connect to the PPTP server.
 
-I currently use it in a project where many peers connect to one vpn
-server which then bridges together all these vpn endpoints and thus
-creates one big "lan" segment where the peers can communicate to each
-other mainly using broadcast and multicast. (it's a network testbed
-for multihop routing protocols)
+Are you sure the following are loaded :
+ip_conntrack_proto_gre
+ip_nat_proto_gre
+ip_conntrack_pptp
+ip_nat_pptp
 
---=20
-C U
+You also create logging rules on the firewall to see what is going on.
+And you could check on the PPTP server if your ping arrives.
 
-     - -- ---- ----- -----/\/  Ren=E9 Gallati  \/\---- ----- --- -- -
+
+Gr,
+Rob
+
+
 
