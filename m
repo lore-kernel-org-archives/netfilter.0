@@ -1,11 +1,19 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: ftp contrack
-Date: Tue, 25 Jan 2005 15:04:54 -0500
-Message-ID: <2E314DE03538984BA5634F12115B3A4E01BC42F1@email1.mitretek.org>
+From: Mark Moseley <moseleymark@gmail.com>
+Subject: Re: use of the limiting options
+Date: Tue, 25 Jan 2005 12:17:22 -0800
+Message-ID: <294d5daa0501251217b1935c4@mail.gmail.com>
+References: <Pine.LNX.4.53.0501251248340.24829@altaica>
+	<Pine.LNX.4.53.0501251306320.24829@altaica>
+	<Pine.LNX.4.53.0501251327570.24829@altaica>
+	<294d5daa0501251137328fa4ff@mail.gmail.com>
+	<Pine.LNX.4.53.0501251340370.24829@altaica>
+	<294d5daa05012511513465fcc1@mail.gmail.com>
+	<Pine.LNX.4.53.0501251355270.24829@altaica>
+Reply-To: Mark Moseley <moseleymark@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <Pine.LNX.4.53.0501251355270.24829@altaica>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,61 +24,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jose Maria Lopez <jkerouac@bgsec.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Tib <tib@tigerknight.org>
+Cc: netfilter@lists.netfilter.org
 
-2121 is used for frox ftp proxy
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jose Maria =
-Lopez
-Sent: Tuesday, January 25, 2005 7:53 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: ftp contrack
-
-El mar, 25 de 01 de 2005 a las 13:15, Filip Sneppe escribi=F3:
-> On Mon, 24 Jan 2005 00:57:14 +0100 (MET), Mario Ohnewald
-> <mario.Ohnewald@gmx.de> wrote:
-> > Hello List!
-> >=20
-> > I am trying to redirect (NAT) to a internal ftp box (but both have a =
-public
-> > ip).
-> > I am using those rules:
-> >=20
-> > modprobe ip_conntrack_ftp ports=3D21,2121
-> > modprobe ip_nat_ftp
->=20
-> Hi Mario,=20
->=20
-> Add "ports=3D21,2121" to the "modprobe ip_nat_ftp" command.
-> That should do the trick.
->=20
-> modprobe ip_nat_ftp ports=3D21,2121
->=20
-> Regards,
-> Filip
-
-Maybe it's a stupid question, but...
-Why are you using port 2121 for ftp?
-I couldn't find any information on it being used.
-
-Regards.
-
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=D1A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+It's used very often for logging, so that the logging doesn't swamp
+the firewall's disk. Imagine you're dropping 100 packet/s and want to
+log what's going on. You'd want to have the logging rule limited to
+something like 1/s or whatever.
 
 
+
+On Tue, 25 Jan 2005 13:56:25 -0600 (CST), Tib <tib@tigerknight.org> wrote:
+> 
+> You're kidding o_O
+> 
+> I guess it makes sense.. the connections will trip that rule until it is
+> satisfied and then move onto the next. That's.. bizarre.
+> 
+> <EOL>
+> Tib
+> 
+> On Tue, 25 Jan 2005, Mark Moseley wrote:
+> 
+> > Heh, forgot to CC the list on my original reply, sorry.
+> >
+> > Makes sense on the --limit-burst. :)
+> >
+> > As far as adding the DROP/REJECT after that, once the connection limit
+> > in the --limit rule has been reached, it will simply just fall through
+> > the next rule (i.e. it doesn't do any implicit DROP'ing on its own).
+> > So the rule with the --limit just matches up to the rate in --limit
+> > and then doesn't match. Without a rule later on (or a policy to
+> > DROP/REJECT), any overflow will just get accepted.
+> >
+> >
+> >
+> > > Yup - once I saw an example of someone USING the limit options it made
+> > > sense :]
+> > >
+> > > The only thing --limit-burst does is say 'you have x many free tries
+> > > before you fall under the rate limit of Y/time restrictions'.
+> > >
+> > > So on mine, you can effectively connect twice in short succession before
+> > > you are cut back to once every 10 minutes (6 per hour).
+> > >
+> > > > Be sure to add a DROP or REJECT on the same match (unless the default
+> > > > policy is already that).
+> > >
+> > > I don't follow why to do this - explain?
+> > >
+> > > <EOL>
+> > > Tib
+> > >
+> >
+>
 
