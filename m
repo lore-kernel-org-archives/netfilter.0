@@ -1,10 +1,9 @@
-From: "Marcelo Moreira" <marcelo.moreira@qualitau.com>
-Subject: Re: Best distro for firewalls.
-Date: Mon, 11 Nov 2002 11:05:48 -0800
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: pptp anyone?
+Date: Tue, 12 Nov 2002 10:35:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007201c289b5$5882fae0$a828a8c0@qualitau.com>
-References: <003901c289aa$0014bd40$6601a8c0@s3ac>
-Mime-Version: 1.0
+Message-ID: <0AD6DA9E-F622-11D6-A9F7-000393950CC2@karlsbakk.net>
+Mime-Version: 1.0 (Apple Message framework v546)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,27 +15,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Rowan Reid <rreid@studio3arc.com>, 'iptables-list' <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: 'iptables-list' <netfilter@lists.samba.org>
 
-> Can some of you give me
-> some input on like Redhat Dabian and such. Just so you know I typically
-> do an ftp install, with a custom configured Kernel and firewall scripts.
-> 
+hi
 
+I need to allow for pptp/gre access through my firewall as to allow 
+people to connect remotely to some windoze boxes behind it.
 
-Forget Red Hat, Debian and Suse...
-Go for Slackware. This is the real, fully customizable distro.
-Then follow the scripts in http://www.sastk.org/
-to harden it.
+I've tried to follow the readmes and all that, but I can't make the 
+pptp patches into kernel? shouldn't there be some sort of menuconfig 
+choice after applying the patch? I have also tried applying it manually
 
-You shoul be fine with this. Also, check google and the archives.
-I believe this topic was already discussed a while ago, and you
-should get some more info there.
+thanks fo all help
 
-Have fun,
-Marcelo Moreira.
-
-
+roy
 
 
