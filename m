@@ -1,13 +1,14 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Re[2]: Invalid argument in -j SNAT
-Date: Wed, 3 Dec 2003 15:16:32 +0100
+From: Michael Gale <mgale@utilitran.com>
+Subject: Re: default policies for the NAT chains
+Date: Wed, 3 Dec 2003 07:58:21 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031203170322.1569A1B9B8@smtp.ttp.nl>
-References: <19067494521.20031203164055@internetplustravel.ru>
+Message-ID: <20031203075821.2c4301eb.mgale@utilitran.com>
+References: <20031202180302.32601c1d.mgale@utilitran.com>
+	<025c01c3b94c$7eaa9f30$73593a42@drbroyles.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <19067494521.20031203164055@internetplustravel.ru>
+In-Reply-To: <025c01c3b94c$7eaa9f30$73593a42@drbroyles.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +19,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Oleg Savostyanov' <savostyanov@internetplustravel.ru>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> >> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 
-> >> XXX.XXX.XXX.XXX with an error "iptables: Invalid argument" 
-> I suspect, 
-> >> that an argument is XXX.XXX.XXX.XXX
+Hello,
+
+	Thank you for your response, you did answer my question.
+
+Michael.
+
+
+On Tue, 2 Dec 2003 22:21:08 -0500
+<netfilter@drbroyles.com> wrote:
+
+> > So my question is do I need default policies for the NAT chains ?
 > 
-> RS> Did you compile and load the module iptable_nat ?
-> RS> Gr,
-> RS> Rob
-> Thank you for your answers
+> Michael, it is not necessary for you to specify default policies for the NAT
+> table chains, as dealing with the packets when they get to the FILTER table
+> chains will be sufficient.  To illustrate my point, look at figure 3b in the
+> following document ...
+> http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html#section3
+> The arrow to the extreme left pointing up is where a packet would "enter"
+> your server from the outside.  No matter which path it takes till it gets to
+> the "down" arrow at the extreme right, it will pass through either the
+> INPUT, OUTPUT, or FORWARD chains of the FILTER table.  Also, any packets
+> destined for your server will hit the INPUT chain first, giving you the
+> opportunity to deal with them.  So if you don't specifically have an accept
+> rule defined in the chains of your FILTER table, then packets you haven't
+> intended to ACCEPT/DROP/"whatever" will be dropped before they either exit
+> or pass through your server.
 > 
-> I compiled the kernel without modules
+> I hope this answers your question,
+> Brandon Broyles
 > 
-> yes, NAT is on
-> this is my kernel .config
-
-Yes, but did you also load iptable_nat (modprobe iptable_nat) ?
-What is the output of "lsmod | grep nat" ?
+> 
 
 
-Gr,
-Rob
-
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
