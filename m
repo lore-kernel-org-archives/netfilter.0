@@ -1,10 +1,11 @@
-From: Pablo Allietti <pablo@lacnic.net>
-Subject: dnat other problem
-Date: Tue, 25 Jan 2005 15:49:25 -0300
-Message-ID: <20050125184925.GB30422@omega.lacnic.net.uy>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: Help debugging iptables firewall....
+Date: Tue, 25 Jan 2005 09:46:20 -0800
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F01991D@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,69 +17,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: Greg Cope <gregcope@gmail.com>, netfilter@lists.netfilter.org
+
+Are you getting the connection coming back?  Try
+
+$IPTABLES -A FORWARD -o $DMZ_IFACE -o $LAN_IFACE -j ACCEPT
+
+And see if it makes any difference.  Forward works in both directions.
+We typically allow established,related to return the path that it came
+from.  You might need to do the same.
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Greg Cope
+Sent: Tuesday, January 25, 2005 9:25 AM
 To: netfilter@lists.netfilter.org
+Subject: Re: Help debugging iptables firewall....
 
-i found the problem. i have 2 servers in the net 192.168.1.x
+Hi Gary,
 
+Pinholes?  If you mean specific IP to specific IP:PORT on specfic
+interfaces then yes.
 
+DB is an oracle listener (port 1521)
 
+I have these:
 
-		internet
-		|
-		|200.20.0.12
-		Firewall
-		 192.168.1.1
-		|
-		|
-		|
-	----------------------
-192.168.1.79                192.168.1.143
+# for ssh to db server from webserver
+$IPTABLES -A FORWARD -p tcp --dport 22 -i $DMZ_IFACE -s $DMZ_EDGE_IP
+-o $LAN_IFACE -d $TROT_IP -j ACCEPT
 
+$IPTABLES -A FORWARD -p tcp --dport 1521 -i $DMZ_IFACE -s $DMZ_EDGE_IP
+-o $LAN_IFACE -d $TROT_IP -j ACCEPT
 
+I added 2 of your examples one before one after, and only see:
 
-and i have this rules
+Jan 25 17:21:43 gateway kernel: Oracle 1521 [tcp] before: IN=3Deth1
+OUT=3Deth2 SRC=3D192.168.254.3 DST=3D192.168.0.5 LEN=3D60 TOS=3D0x00 =
+PREC=3D0x00
+TTL=3D63 ID=3D30447 DF PROTO=3DTCP SPT=3D32907 DPT=3D1521 WINDOW=3D5840 =
+RES=3D0x00
+SYN URGP=3D0
 
+Which would imply that the rule is ok and the packets goes through -
+but why I am not getting a connection?
 
-$IPTABLES -A INPUT   -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A OUTPUT  -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -j ACCEPT -p tcp --dport 1248
-iptables -t nat -A PREROUTING -i eth0 -p tcp  --dport 1248 -j DNAT --to
-192.168.1.143:22
+Thanks,
 
-iptables -A FORWARD -j ACCEPT -p tcp --dport 1350
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 1350 -j DNAT --to
-192.168.1.79:22
-
-
-target     prot opt source               destination         
-DNAT       tcp  --  anywhere             anywhere            tcp
-dpt:1248 to:192.168.1.143:22 
-DNAT       tcp  --  anywhere             anywhere            tcp
-dpt:1350 to:192.168.1.79:22 
-DNAT       icmp --  anywhere             anywhere
-to:192.168.1.143 
-DNAT       tcp  --  anywhere             anywhere            tcp
-dpt:mysql to:192.168.1.143 
-
-
-when i restart the firewall one dnat not working.
-
-	if i connect first to port 1248
-		ssh 200.20.0.12 -p 1248
-	work good but port 1350 doesnt working.
-
-
-	if i connect first to port 1350 1248 dont work. is really
-extrange no ???  any help?
-
-	
--- 
-
-
-Pablo Allietti
-LACNIC
---------------
+Greg
 
 
