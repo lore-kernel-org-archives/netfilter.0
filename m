@@ -1,14 +1,12 @@
 From: Herman <Herman@AerospaceSoftware.com>
-Subject: Re: Port forwarding now *almost* works...
-Date: Sun, 12 Oct 2003 19:52:35 -0600
+Subject: The Great Big Portforwarding Secret
+Date: Sun, 12 Oct 2003 20:07:37 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310121952.35289.Herman@AerospaceSoftware.com>
-References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com> <200310121917.08663.Herman@AerospaceSoftware.com> <200310121930.04757.Herman@AerospaceSoftware.com>
+Message-ID: <200310122007.37833.Herman@AerospaceSoftware.com>
 Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200310121930.04757.Herman@AerospaceSoftware.com>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -22,22 +20,23 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Aaaaaaaaahhhhh...
+Hi everybody,
 
-It appears that nat is *not* handled by iptable_nat as one would expect, or at 
-least not *only* by that one.  The missing module is iptable_mangle and the 
-nice Redhat firewall script that I have been using, doesn't load that one, 
-saying that it is an unneeded kernel module - sigh.
+It appears that the netfilter_mangle module is required for nat to work 
+properly.  
 
-Once I loaded that with:
-iptables -F -t mangle
+I would like to thank Redhat for their very nice rc.firewall-2.4-stronger 
+script.  It works mostly - just this teenie little problem with it...
 
-and added my rules again, they now show up in the nat list, although it still 
-doesn't friggen work.  I think it is time to reboot the whole machine and 
-start over, but I thought I'll send this message first.
+Port forwarding now finally works and I can play Nectarine Radio on my laptop 
+with a decent set of rules in the firewall.
 
-Wheee, at least now I'm getting somewhere and in another day or so I can stop 
-banging my head on the table - maybe.
+So, now I can try the government Java applet port forwarding problem and if I 
+can get that to work somehow, then I can finally fix my client's machine.
+
+Thanks to everybody who read my desperate pleas and offered suggestions.
+
+Ten past eight pm and time for a cocktail to celebrate...
 
 Cheers,
 -- 
