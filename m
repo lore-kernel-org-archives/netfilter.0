@@ -1,10 +1,13 @@
-From: mailinglists@belfin.ch
-Subject: RE: rule check
-Date: Thu, 16 Jan 2003 16:46:34 +0100
+From: Qui Le <qle@telogy.com>
+Subject: Re: rule check
+Date: Thu, 16 Jan 2003 10:50:49 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <31347F3CE518D6118ACB00A0246AD0560B2674@mx.seaan.net>
+Message-ID: <200301161050.49338.qle@telogy.com>
+References: <000d01c2bd74$2db248f0$1e01a8c0@win2k.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000d01c2bd74$2db248f0$1e01a8c0@win2k.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,32 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Mike <mikeeo@msn.com>, netfilter@lists.netfilter.org
+
+  No.  The first rule has a broader scope than the second rule.  The second 
+rule limits the destination port to 2000 - 2050, whereas, the first rule will 
+accept any destination port.
+
+Qui
 
 
+On Thursday 16 January 2003 10:30 am, Mike wrote:
 > Are these two rules essentially the same ?
-
-no, they're not.
- 
+>
 > Thanks,
 > Mike
-> 
+>
 > iptables -A FORWARD -i eth2 -o eth0 -m state --state
 > NEW,ESTABLISHED,RELATED -j ACCEPT
-
-for traffic from eth2 over eth0 this rule is not restricted at all
-
-> 
+>
 > iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 2000:2050 -m
 > state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-
-this rule restricts to proto tcp and to destination ports 2000:2050
-
-I just don't know what you neet the related for here. new,established does
-the job.
-
-Philipp
-
-
 
