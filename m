@@ -1,12 +1,14 @@
-From: Sasa Stupar <sasa@stupar.homelinux.net>
-Subject: Re: Redirection question
-Date: Mon, 20 Dec 2004 18:05:49 +0100
-Message-ID: <41C7066D.7050604@stupar.homelinux.net>
-References: <41C705A1.2040107@stupar.homelinux.net>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: [netfilter-core] Bug in iptables / nat
+Date: Mon, 20 Dec 2004 19:34:34 +0100
+Message-ID: <20041220183434.GE24142@sunbeam.de.gnumonks.org>
+References: <000001c4e6be$07be4020$fe78a8c0@GERHARD>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YzdYn+D7cUqe+VA3"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41C705A1.2040107@stupar.homelinux.net>
+Content-Disposition: inline
+In-Reply-To: <000001c4e6be$07be4020$fe78a8c0@GERHARD>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +19,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Gerhard Lorbeer <Gerhard@Dr-Lorbeer.de>
+Cc: coreteam@netfilter.org, netfilter@lists.netfilter.org
 
-Sasa Stupar a =C3=A9crit :
 
-> Hi!
+--YzdYn+D7cUqe+VA3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Dec 20, 2004 at 07:02:04PM +0100, Gerhard Lorbeer wrote:
+> Hi,
+> We are using and supporting Suse/Novell-Linux.
+> Recently we had built firewall's for a custumer-installation with nat.
+> We wondered about many drops and found the reason.
 >=20
-> I have installed mail server on my lan. Now I would like to redirect al=
-l=20
-> lan users to use that mail server as smtp (similar as transparent proxy=
-=20
-> with squid). How do I do that smtp redirection?
-> I was thinking something like:
-> -------------
-> iptables -t nat -A PREROUTING -i eth0 -s ! smtp-box -p tcp --dport 25 -=
-j=20
-> DNAT --to smtp-box:25
-> iptables -t nat -A POSTROUTING -o eth0 -s local-network -d smtp-box -j =
+> It is a bug (feature?) in iptables, known already in previous, see:
+> http://www.mail-archive.com/cooker@linux-mandrake.com/msg130593.html
 
-> SNAT --to iptables-box
-> iptables -A FORWARD -s local-network -d smtp-box -i eth0 -o eth0 -p tcp=
-=20
-> --dport 25 -j ACCEPT
-> --------------
-> Is this correct?
->=20
-> Regards,
-> Sasa
->=20
+Most likely Novell/SuSE compiled iptables against header files of a
+different kernel than the kernel they ship in their distribution.
 
-I forgot some more infos:
-running on FC3 with sendmail. This is also a router with 2 NIC
-installed: one for internet and one for LAN.
+> iptables-nat is not working with INVALID packets. Maybe it's an
+> Suse-Problem. I've informed Suse/Novell about this.
 
-Sasa
+Feel free to tell them to contact me directly.  I'm Cc'ing the netfilter
+user list, since there might be others who are interested in this issue.
 
+> Friendly
+> Dr.-Ing. Gerhard Lorbeer
+> Dr.Lorbeer EDV-Service GmbH
+> Voetsdyck 8
+> D-47638 Straelen
 
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
+--YzdYn+D7cUqe+VA3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFBxxs6XaXGVTD0i/8RAgSwAJ4hbYrtSMFpeqnzMkqvQGTfCRn+4gCdGu1Z
+nPh++oCs4FTcuU00/MVEe0c=
+=IdF+
+-----END PGP SIGNATURE-----
+
+--YzdYn+D7cUqe+VA3--
 
