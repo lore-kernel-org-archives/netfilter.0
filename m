@@ -1,15 +1,13 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: tcp-window-tracking.patch fails to apply
-Date: 26 Apr 2003 15:03:52 +0200
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: RE: Kernel panic with RPC patch
+Date: 26 Apr 2003 08:35:14 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1051362232.5944.77.camel@tux.rsn.bth.se>
-References: <1051339036.4860.26.camel@jasiiitosh.nexusmgmt.com>
-	 <1051354468.5942.72.camel@tux.rsn.bth.se>
-	 <1051360177.1437.4.camel@jasiiitosh.nexusmgmt.com>
+Message-ID: <1051360514.1437.11.camel@jasiiitosh.nexusmgmt.com>
+References: <000001c30be8$fc3d7470$0200a8c0@basti79>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1051360177.1437.4.camel@jasiiitosh.nexusmgmt.com>
+In-Reply-To: <000001c30be8$fc3d7470$0200a8c0@basti79>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,22 +18,74 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: Sebastian <netfilter@basti79.de>, netfilter@lists.netfilter.org
 
-On Sat, 2003-04-26 at 14:29, John A. Sullivan III wrote:
-> No, I didn't.  I suppose I felt intimidated by the warning about not
-> applying all the patches.  Is it safe to apply all the patches, or at
-> least all the pending and submitted patches? Thanks - John
+	I suppose that makes sense.  Please let me ask a stupid question so I
+don't accidentally shoot myself in the foot.  Does your configuration
+activate the module at any time or is it waiting to be called at some
+future time? I assume that if you do call it, that it all works fine. 
+It would be perfectly acceptable to me to use it as a module.
+	Does anyone happen to know if the RPC patch supports using Microsoft
+RPC and the portmapper on port 135 for applications like Exchange and
+the Windows server administration utilities? I, obviously :-), haven't
+tried it.
+Thanks, all - John
 
-The submitted patches are always safe, the pending are the ones that's
-on their way into the kenel so they are safe as well.
-
-If you apply all submitted patches the netfilter part of your kernel
-will be up to speed with the latest kernel 2.4 development which is a
-good thing. It's always recommended that you apply all pending and
-submitted patches.
-
+On Sat, 2003-04-26 at 07:42, Sebastian wrote:
+> Same Problem here, but I solved it by compiling the RPC patch as module
+> instead of compiling it directly into the kernel.
+> 
+> Sebastian.
+> 
+> 
+> > -----Original Message-----
+> > From: netfilter-admin@lists.netfilter.org 
+> > [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
+> > John A. Sullivan III
+> > Sent: Saturday, April 26, 2003 11:20 AM
+> > To: netfilter@lists.netfilter.org
+> > Subject: Kernel panic with RPC patch
+> > 
+> > 
+> > I was thrilled to see the RPC patch but find that I cannot 
+> > use it.  My RedHat 7.3 system running kernel 2.4.20 hangs on 
+> > boot with:
+> > 
+> > Unable to handle kernel NULL pointer dereference at virtual 
+> > address 00000010
+> > 
+> > I thought it might be the use of cryptoapi so I removed it.  
+> > That made no difference.  I overwrote the kernel source with 
+> > a fresh copy and recompiled without cryptoapi.  That didn't 
+> > make a difference either.
+> > 
+> > I suspected some of the other patches but the one that made 
+> > the error go away when removed and return when applied was RPC.
+> > 
+> > Has anyone else had this problem?
+> > 
+> > -- 
+> > John A. Sullivan III
+> > Chief Technology Officer
+> > Nexus Management
+> > +1 207-985-7880
+> > john.sullivan@nexusmgmt.com
+> > ---
+> > If you are interested in helping to develop a GPL enterprise 
+> > class VPN/Firewall/Security device management console, please 
+> > visit http://iscs.sourceforge.net
+> > 
+> > 
+> > 
 -- 
-/Martin
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
+
 
