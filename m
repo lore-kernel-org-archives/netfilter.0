@@ -1,13 +1,13 @@
-From: "Andrew Smith" <nfml@k1k2.com>
-Subject: RE: Trouble with --dport
-Date: Tue, 22 Oct 2002 20:42:17 +1000 (EST)
+From: "hare ram" <hareram@sol.net.in>
+Subject: Problem with iptables P-O-M
+Date: Tue, 22 Oct 2002 16:14:27 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <37755.192.168.7.14.1035283337.squirrel@iw.k1k2.com>
-References: <DBAC6BAF12D1D64289EC75515BD865776858F2@exch101>
+Message-ID: <01c901c279b7$fe7a5000$7cfcc5cb@nextto>
+References: <20021021233312.512.qmail@web40701.mail.yahoo.com> <200210221014.g9MAErL00581@vulcan.rissington.net>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <DBAC6BAF12D1D64289EC75515BD865776858F2@exch101>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,64 +18,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-> Hey,
-> 
-> I had a similar problem. The cause was running the recent kernel
-> version and an older iptables. I upgraded iptables to the latest
-> version and my problem was solved.
-> 
-> Wouter
-> 
-> -----Original Message-----
-> From: Kim Leandersson [mailto:kim.leandersson@chs.chalmers.se] 
-> Sent: dinsdag 22 oktober 2002 9:59
-> To: Antony Stone; netfilter@lists.netfilter.org
-> Subject: RE: Trouble with --dport
-> 
-> I also got those errors when using v1.2.5. The iptables-save added a
-> "-m" in my rules-save and that caused the same error as "blah blah". I
-> edited the file (/var/lib/iptables/rules-save) and then restored the
-> rules again and it worked just fine after that. In the latest version
-> of iptables this is fixed.
-> 
-> //kim
-> 
->> -----Original Message-----
->> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk] 
->> Sent: Monday, October 21, 2002 11:15 PM
->> To: netfilter@lists.netfilter.org
->> Subject: Re: Trouble with --dport
->> 
->> 
->> On Monday 21 October 2002 10:07 pm, blah blah wrote:
->> 
->> > The exact error message is:
->> > iptables-restore v1.2.5: Unknown arg `--dport`
->> 
->> Okay, so this is an error from iptables-restore, not the 
->> straight iptables 
->> command (which is what I'd mistakenly thought you meant at first).
->> 
->> What commands did you set up before using iptables-save, and 
->> what is your 
->> saved configuration ?
->> 
->> Antony.
+Hi all
 
-No idea if this helps, but my firewall script/rules look like:
+iam using redhat 7.2 with iptable 1.2.5 rpm
+iam trying to patch the iptables with P-o-M
+i was patched only one option iplimit
+its patched with
 
-udp="-m udp -t udp"
-dp="--destination-port"
-iptables -A FORWARD -i $inet $udp -d 0/0 $dp 2002 -j DROP
+/var/tmp/patchomatic/netfilter/patch-o-matic/runme
+../userspace/extensions/libipt_iplimit.c
 
-(this is to stop bugtraq :-)
+patch is applied
+then
+i run in kernal
 
--- 
--Cheers
--Andrew
+make dep
+make
+make bzImage
+make modules
+make install
+make modules_install
 
-MS ... if only he hadn't been hang gliding!
+when iam doing make modules_install, iam getting following error
+any one can point me where iam doing wrong
+
+
+
+find kernel -path '*/pcmcia/*' -name '*.o' | xargs -i -r ln -sf ../{} pcmcia
+if [ -r System.map ]; then /sbin/depmod -ae -F System.map  2.4.18-3custom;
+fi
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.18-3custom/kernel/net/ipv4/netfilter/ipt_iplimit.o
+depmod:         ip_conntrack_find_get
+make: *** [_modinst_post] Error 1
+
+thanks
+advance
+
+hare
 
 
