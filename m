@@ -1,12 +1,12 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+From: Mattia Martinello <m.martinello@iol.it>
 Subject: Re: Ports
-Date: Mon, 9 Sep 2002 19:38:03 +0200 (CEST)
+Date: Mon, 09 Sep 2002 20:00:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0209091937330.22681-100000@dns.toxicfilms.tv>
-References: <3D7CDA9B.1070706@iol.it>
+Message-ID: <3D7CE1B1.4030309@iol.it>
+References: <3D7CDA9B.1070706@iol.it> <20020909174108.GS7289@cannon.eng.us.uu.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3D7CDA9B.1070706@iol.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,15 +16,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mattia Martinello <m.martinello@iol.it>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
 Cc: netfilter <netfilter@lists.netfilter.org>
 
-> iptables -A FORWARD -p tcp -s 0.0.0.0/0 -d 192.168.2.101 -dport 80 -j ACCEPT
-It is: --dport, not -dport
+Ramin Alidousti ha scritto:
 
-Regards
+>I think that your problem is --dport. You missed a "-".
+>
+>Ramin
+>
+Thank all wery much!
+Bye
+Mattia
 
 
 
