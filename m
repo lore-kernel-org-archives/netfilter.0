@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Re[2]: Question about marking traffic.
-Date: Mon, 28 Jun 2004 22:04:57 +0100
+From: Sam Loy <sampaw@mac.com>
+Subject: Please help...
+Date: Mon, 28 Jun 2004 16:56:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406282204.57874.Antony@Soft-Solutions.co.uk>
-References: <1987903676.20040628181707@op.pl> <200406281731.40331.Antony@Soft-Solutions.co.uk> <1499142519.20040628225033@op.pl>
-Reply-To: <netfilter@lists.netfilter.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <FC8C43AB-C94D-11D8-9C38-000A95AD0230@mac.com>
+Mime-Version: 1.0 (Apple Message framework v618)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1499142519.20040628225033@op.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +15,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Monday 28 June 2004 9:50 pm, mortar wrote:
+If I sound a little frustrated, keep in mind I'm now on week 2 of my 
+attempt to setup linux as a firewall router on my home network. I have 
+installed 3 different versions of linux, read hundreds of pages, tried 
+at least 5 different configurations 20 times each....but still I cannot 
+seem to share my dsl connection with my other machines.
 
-> I have one more question. Maybe someone can help.
->
-> What about tracking connections on non standard ftp ports (or http), for
-> example 2121? How can i recognize them as a ftp (or http) connections
-> and proper mark them?
+I have 2 NICs in a Linux 9 installation. One card connects to my lan 
+with a static ip of 192.168.1.1. The other connects to my DSL provider 
+which dynamically allocates the ip.
 
-I would answer this "you can recognise them just the same as you can recognise 
-them on 'standard' ports 21/20 or 80" - in other words (with a packet filter) 
-you can't - you just have to assume that ports = services (not always a safe 
-assumption).
+I did this:
 
-> I read about layer7-filter project, but is it necessery?
+modprobe iptable_nat
 
-Yes - if you want to know whether a traffic stream is HTTP (etc), you have to 
-look at OSI layer 7, because that's the only place HTTP means anything.
+# In the NAT table (-t nat), Append a rule (-A) after routing
+# (POSTROUTING) for all packets going out ppp0 (-o ppp0) which says to
+# MASQUERADE the connection (-j MASQUERADE).
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
 
-Netfilter works at OSI layers 3 & 4, therefore it can't identify what is HTTP 
-/ FTP / DNS etc - it can only guess.
+# Turn on IP forwarding
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-Regards,
 
-Antony.
+It does not work.  When I do a iptables -t nat  -n -L
+It displays:
 
--- 
-"Reports that say that something hasn't happened are always interesting to me, 
-because as we know, there are known knowns; there are things we know we know. 
-We also know there are known unknowns; that is to say we know there are some 
-things we do not know. But there are also unknown unknowns - the ones we 
-don't know we don't know."
+MASQUERADE all -- 0.0.0.0/0 		0.0.0.0/0
 
- - Donald Rumsfeld, US Secretary of Defence
+once for each time I've executed the above command. (now 7 times). I'm 
+sorry, but this doesn't seem right. 0 to 0? don't think so. So I try 
+different -o values - but always get the same.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Don't get it - Do I need to manually add a route? Completely befuttled 
+and ready to throw in the towell.
+
+Sam
 
 
