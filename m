@@ -1,11 +1,11 @@
-From: "Bertrand TACHAGO" <btachago@creolink.net>
-Subject: Re: Iptables and Zebra
-Date: Tue, 16 Dec 2003 12:58:29 +0100
+From: "CoyoteTM" <szeki@inc.hu>
+Subject: ftos why obsolate
+Date: Tue, 16 Dec 2003 13:27:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007501c3c3cb$ed17c040$220aa8c0@BERTRAND>
-References: <006301c3c3b7$e02ef0b0$220aa8c0@BERTRAND> <1071572792.1688.12.camel@kermit>
+Message-ID: <010d01c3c3d0$0541fb50$63ea38c3@hewlett7k6i3ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_010A_01C3C3D8.66C4C670"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,57 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Ralf Spenneberg <lists@spenneberg.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
-Bertrand TACHAGO
-Computer specialist / Network administrator
-Cellular: (237) 975 55 31
------ Original Message -----=20
-From: "Ralf Spenneberg" <lists@spenneberg.org>
-To: "Bertrand TACHAGO" <btachago@creolink.net>
-Cc: "Netfilter" <netfilter@lists.netfilter.org>
-Sent: Tuesday, December 16, 2003 12:06 PM
-Subject: Re: Iptables and Zebra
+------=_NextPart_000_010A_01C3C3D8.66C4C670
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
+Hello All!
 
-Am Die, 2003-12-16 um 10.34 schrieb Bertrand TACHAGO:
-> Hi to all!
-> I'm trying to setup a zebra router on a RH9 machine but right I'm
-> blocked because there's a firewall (iptables) problem. I had entered a
-> POSTROUTING rule (iptables -t nat -A POSTROUTING -o eth0 -j
-> MASQUERADE) but the packets are not routed to the external interface.
-> Can somebody help me solve this problem (use zebra routing protocol to
-> route packets from my network to the Internet)?
-Why are you trying to setup zebra?
+The ftos patch in the patch-o-matic is marked osolate. why ?
 
-If you just want the Linux box to operate as a simple router between two
-networks, remove zebra, activate forwarding and masquerading and you are
-done.
-Forwarding:
-sysctl -w net.ipv4.ip_forward=3D1
+I need to match to the TOS filed precedence bit(s).
 
-The needed static routes are usually set automatically as soon as the
-interfaces are initialized.
->
-Cheers,
+Thanks
+------=_NextPart_000_010A_01C3C3D8.66C4C670
+Content-Type: text/html;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-2">
+<META content=3D"MSHTML 6.00.2800.1276" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello All!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>The ftos patch in the patch-o-matic is =
+marked=20
+osolate. why ?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I need to match to the TOS filed =
+precedence=20
+bit(s).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV></BODY></HTML>
 
-Book: VPN mit Linux
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto      http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
-
-I'm trying to setup zebra because I have 3 subnets with 3 linux boxes
-configured as router with zebra and ospfd. Maybe if I activate Masquerading,
-it would work.
-Cheers,
+------=_NextPart_000_010A_01C3C3D8.66C4C670--
 
 
 
