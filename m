@@ -1,12 +1,14 @@
-From: "M. Ahmad Ijaz" <ahmad@netlogicbroadband.com>
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: newbie question
-Date: Thu, 8 Apr 2004 17:32:15 +0500
+Date: Thu, 8 Apr 2004 08:32:58 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000501c41d65$86446c30$aa47aacb@hacker>
+Message-ID: <200404080832.58198.JALaramie@Loudoun-Fairfax.com>
 References: <004601c41d60$9bf1af70$aa47aacb@hacker> <200404081302.49038.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200404081302.49038.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,46 +21,15 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-do i know where to put that "-t nat"
- iptables -A PREROUTING -s xxx.xxx.xxx.xxx/yyy.yyy.yyy.yyy -p tcp -m
-tcp --dport 80 -j REDIRECT --to-ports 8080
+Hey Antony,
 
------ Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, April 08, 2004 5:02 PM
-Subject: Re: newbie question
+I just wanted to take a minute to say 'Thanks' for all the time you put in 
+answering questions on this list. You probably help 10-15 people a day and 
+while many thank you for your help, I want to say thanks for those of us who 
+just listen in. I know that at least once a week I read one of your postings 
+and think 'hmmm, I didn't know that'. Those postings get printed and added to 
+my netfilter reference folder. You are a valuable asset to the list and I 
+appreciate your effort. Thanks from all of us.
 
-
-> On Thursday 08 April 2004 12:57 pm, M. Ahmad Ijaz wrote:
->
-> > when i try to use this command
-> >
-> > iptables -A PREROUTING -s xxx.xxx.xxx.xxx/yyy.yyy.yyy.yyy -p tcp -m tcp
-> > --dport 80 -j REDIRECT --to-ports 8080
-> >
-> > where xxx is any IP and yyy is the subnet mask, it returns me the same
-> > message i.e. iptables: No chain/target/match by that name
-> >
-> > So it also give the same message with POSTROUTING.
->
-> You need a "-t nat" in there, to tell it the rule is going into the nat
-table
-> of the PREROUTING chain, not the filter table (which is the default, but
-does
-> not exist in PREROUTING).
->
-> Regards,
->
-> Antony.
->
-> -- 
-> People who use Microsoft software should be certified.
->
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
->
-
+Jeff
 
