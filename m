@@ -1,12 +1,15 @@
-From: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>
-Subject: Re: Spoofed ip's
-Date: Wed, 12 Feb 2003 08:51:43 -0000
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: pptp conntrack in cvs
+Date: Wed, 12 Feb 2003 10:18:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0e0e01c2d273$f7ecd2c0$eb00010a@andromeda>
-References: <1044948351.23287.11.camel@filth.sadomain.co.za><3E491D30.1000909@maximum-linux.net> <20030212022803.009d8ad0.arnt@c2i.net>
+Message-ID: <20030212091827.GG13814@sunbeam.de.gnumonks.org>
+References: <001301c2d25a$27614190$0440a8c0@SC2003002>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5xSkJheCpeK0RUEJ"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <001301c2d25a$27614190$0440a8c0@SC2003002>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +19,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Enrico Demarin <enricod@videotron.ca>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-Arnt Karlsen wrote, Wednesday, February 12, 2003 1:28 AM:
 
-> On Tue, 11 Feb 2003 15:56:32 +0000,
-> uniplex <uniplex@maximum-linux.net> wrote in message
-> <3E491D30.1000909@maximum-linux.net>:
->
-> >
-> >  Would something like this look a little better for you?
-> >
-> >  RESERVED_NET="0.0.0.0/8 1.0.0.0/8 2.0.0.0/8 5.0.0.0/8 7.0.0.0/8
-[...]
-> ..some of these above are redundant, and some (wintendos?) need
-> 255.255.255.255/32, play with 'ipcalc -bnmp 0.0.0.0/1' upwards.
+--5xSkJheCpeK0RUEJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-More to the point, and even worse, some of them are *wrong*.
+On Tue, Feb 11, 2003 at 09:46:56PM -0800, Enrico Demarin wrote:
+> Hi Harald,
+>=20
+> =20
+>=20
+> I am trying to get your pptp conntrack module to work , trying to
+> connect to a linux poptop server and a win2k vpn through a linux
+> masquerading gateway running the latest netfilter cvs +
+> ip_conntrack_pptp, the client gets stuck in "Verifying username and
+> password", then after a while it times out. The old PPTP patch (by Brian
+> Kuschak),
 
-At a quick glance, 69/8, 81/8, 82/8, 219/8, 220/8 and 221/8 are *not*
-reserved. Some of them haven't been for nearly two years now.
+are you sure you have loaded ip_conntrack_proto_gre as well?  And which
+particular version of the pptp-conntrack-nat.patch are you using?  Also,
+sure that you ruleset allows for -p gre -m state --state ESTABLISHED,RELATE=
+D ?
 
-Adam
+> Let me know if I can be of help to get your patch to work.
 
+There are lots of users running the patch in a SNAT / MASQUERADE
+environment, and at least one commercial vendor is shipping the
+pptp-patch with its products.
+
+Please move further discussion of this subject to the netfilter
+list [with cc to me], where it belongs.
+
+> - Enrico
+
+--=20
+- Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+"If this were a dictatorship, it'd be a heck of a lot easier, just so long
+ as I'm the dictator."  --  George W. Bush Dec 18, 2000
+
+--5xSkJheCpeK0RUEJ
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE+ShFjXaXGVTD0i/8RAhDcAJ90XnGBfdZuFpE7+rQT0TIW0Irm2gCfdLLO
+reOtSjAIy7gPHZxnDdrSBWg=
+=qxon
+-----END PGP SIGNATURE-----
+
+--5xSkJheCpeK0RUEJ--
 
