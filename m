@@ -1,17 +1,11 @@
-From: <hamals@infinito.it>
-Subject: Re: web server in DMZ
-Date: Wed, 29 Sep 2004 11:35:04 +0200
+From: Patrick Dung <patrick_dkt@yahoo.com.hk>
+Subject: Rules for web server in DMZ
+Date: Wed, 29 Sep 2004 20:56:17 +0800 (CST)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <web-6704233@infinito.it>
-References: <web-6416739@infinito.it>
-	<1096381048.2330.47.camel@wolfpack.ljm.dom>
-	<web-6491079@infinito.it>
-	<1096383819.2330.50.camel@wolfpack.ljm.dom>
-	<41597FEE.9010401@cisco.com>
+Message-ID: <20040929125617.40325.qmail@web51808.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41597FEE.9010401@cisco.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,28 +15,32 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Marek Dohojda <mdohojda@cisco.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="big5"
+To: netfilter@lists.netfilter.org
 
-On Tue, 28 Sep 2004 08:14:54 -0700
-  Marek Dohojda <mdohojda@cisco.com> wrote:
-> Just create SNAT to that webserver so that whenever they 
->try to go to the external address it get mangled and 
->visible via its internal IP.  Or you could play with 
->advance routing wihch is a pain in this case.
-
-
-I've just create a snat for my internal hosts so they go 
-to outside with a public ip, but this solutions is not 
-working.
-
-_______________________________________
-Connessione ed e-mail gratuita da 10 mb
-consultabile tramite web e tramite pop.
-www.infinito.it vieni a scoprire tutti 
-i nostri servizi!
-
-http://www.infinito.it/xmail
-
-
+SGkKCkkgaGF2ZSBhIHF1ZXN0aW9uIGFib3V0IHdlYiBzZXJ2ZXIgaW4gZG16LiBJIGhhdmUKYXBw
+bGllZCBydWxlcyB0byBkbyBwdWJsaWMgSVAgPC0+IHByaXZhdGUgSVAgbWFwcGluZy4KCkZvciB0
+aGUgd2ViIGluIGRteiwgSSB3b3VsZCBvbmx5IGFsbG93IHRjcCBwb3J0IDgwIHRvCmdvIHRvIHRo
+ZSB3ZWIgc2VydmVyIGluIHRoZSBkbXouIEkgdXNlIGRlZmF1bHQgRFJPUApwb2xpY3ksIHNvIHNo
+b3VsZCBwZXJtaXQgdGNwIHBvcnQgODAgaW4gdGhlIElOUFVUCmNoYWluIG9yIHRoZSBGT1JXQVJE
+IGNoYWluPyBBbHNvIHNob3VsZCBJIHVzZSBzdGF0ZWZ1bAppbnNwZWN0aW9uIChORVcsIFJFTEFU
+RUQsIEVTVEFCTElTSEVEKSBpbiBib3RoIGNoYWluCm9yIG9ubHkgaW4gSU5QVVQgY2hhaW4/Cgp2
+ZXJzaW9uIDE6CmlwdGFibGVzIC1QIElOUFVUIGRyb3AKaXB0YWJsZXMgLVAgRk9SV0FSRCBkcm9w
+CmlwdGFibGVzIC1BIElOUFVUIC1pICRFWFQgLWQgJEhUVFBfSU5FVF9JUCAtcCAtLWRwb3J0Cjgw
+IC1tIHN0YXRlIC0tc3RhdGUgTkVXLEVTVEFCTElTSEVELFJFTEFURUQgLWogQUNDRVBUCmlwdGFi
+bGVzIC10IG5hdCAtQSBQUkVST1VUSU5HIC1pICRFWFQgLWQgJEhUVFBfSU5FVF9JUAotLWogRE5B
+VCAtLXRvICRETVpfSFRUUF9JUAppcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gJEVY
+VCAtcyAkRE1aX0hUVFBfSVAKLS1qIFNOQVQgLS10byAkSFRUUF9JTkVUX0lQCmlwdGFibGVzIC1B
+IEZPUldBUkQgLWkgJEVYVCAtbyAkRE1aX0lGIC1kICRETVpfSFRUUF9JUAotcCB0Y3AgLS1kcG9y
+dCA4MCAtbSBzdGF0ZSAtLXN0YXRlCk5FVyxFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVAoK
+dmVyc2lvbiAyOgppcHRhYmxlcyAtUCBJTlBVVCBkcm9wCmlwdGFibGVzIC1QIEZPUldBUkQgZHJv
+cAppcHRhYmxlcyAtQSBJTlBVVCAtaSAkRVhUIC1kICRIVFRQX0lORVRfSVAgLXAgLS1kcG9ydAo4
+MCAtbSBzdGF0ZSAtLXN0YXRlIE5FVyxFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVAppcHRh
+YmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSAkRVhUIC1kICRIVFRQX0lORVRfSVAKLS1qIERO
+QVQgLS10byAkRE1aX0hUVFBfSVAKaXB0YWJsZXMgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1vICRF
+WFQgLXMgJERNWl9IVFRQX0lQCi0taiBTTkFUIC0tdG8gJEhUVFBfSU5FVF9JUAppcHRhYmxlcyAt
+QSBGT1JXQVJEIC1pICRFWFQgLW8gJERNWl9JRiAtZCAkRE1aX0hUVFBfSVAKLXAgdGNwIC0tZHBv
+cnQgODAgLWogQUNDRVBUCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwqlsrH+p96hQra8unGhQqRwrFCsUC4uLgqu9rqpuWHBbiAgsaGk
+37Nzw7QKaHR0cDovL3VzLnJkLnlhaG9vLmNvbS9ldnQ9MjIyODEvKmh0dHA6Ly9yaW5ndG9uZS55
+YWhvby5jb20uaGsvCgo=
