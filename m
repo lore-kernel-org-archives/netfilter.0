@@ -1,12 +1,12 @@
-From: arif <djreef@yahoo.com>
-Subject: RE: identical scripts, 2 boxes, different behavior - what else should i look for?!
-Date: Tue, 16 Mar 2004 12:06:29 -0800 (PST)
+From: al clethero <aclethero@ihug.co.nz>
+Subject: Newbie - problem with PREROUTING on nat - I'm missing something
+	obvious?
+Date: 17 Mar 2004 13:49:07 +1300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040316200629.72046.qmail@web10208.mail.yahoo.com>
-References: <004d01c40b8d$3f363d30$2405010a@rsa>
+Message-ID: <1079484547.5206.18.camel@bluespi.orb.co.nz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004d01c40b8d$3f363d30$2405010a@rsa>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,115 +17,159 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ray Anderson <rsa@rb-com.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-THANK YOU!!!!!!!!! that is exactly my problem, i was
-sitting here playing with these rules for days and it
-had nothing to do with them!!!  it all makes sense
-now! well, except that i'm not sure why i could get it
-to work using MASQUERADE, even when the gateway was
-the old firewall, i guess it just works differently
-than SNAT :) THANKS AGAIN!!!!
+Folks
+
+I'm having some issues with the nat table and redirection. I'm trying to
+redirect traffic destined for port 80 to port
+8080, so that there is no need to specify a proxy server in the browser
+settings. I'm fairly new to netfilter, so it may be I'm missing
+something obvious. If so, I apologise beforehand!
+
+I set up a contrived scenario on my isolated test system as follows (so
+the browser, squid etc are all running on the same box):
+
+1/ I have nothing listening on port 80
+2/ Squid is running, listening on port 8080
+3/ Proxy options are turned off in the browser
+4/ iptables has the following statement in the nat table (and this is
+the only statement in my iptables while I test this out):
+
+   iptables -t nat -A PREROUTING  -p tcp --dport 80 -j REDIRECT
+--to-ports 8080
+
+My understanding of this rule is that any tcp packets destined for port
+80 on any interface will be redirected to port 8080.
+
+5/ I try to connect to www.google.com from the browser and the following
+should happen:
+
+the request goes out to port 80
+the rule in the nat table picks up the packet and forwards it to port
+8080, where squid connects to google, retrieves the page and supplies it
+to the browser.
+
+However, this doesn't seem to happen, connections go straight through to
+google from port 80 without being redirected. I have tested this by
+shutting down squid and having no proxy servers configured in the
+browser, yet I can still connect, whereas I would expect an error.
+
+If I check the iptables status before and after doing this I get
+
+Before
+
+iptables -t nat -v -L
+Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+         
+    0     0 REDIRECT   tcp  --  any    any     anywhere            
+anywhere
+       tcp dpt:http redir ports 8080
+ 
+Chain POSTROUTING (policy ACCEPT 10 packets, 600 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+         
+ 
+Chain OUTPUT (policy ACCEPT 10 packets, 600 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+         
+After
+
+Chain PREROUTING (policy ACCEPT 43 packets, 3496 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+         
+    0     0 REDIRECT   tcp  --  any    any     anywhere            
+anywhere
+       tcp dpt:http redir ports 8080
+ 
+Chain POSTROUTING (policy ACCEPT 209 packets, 13148 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+         
+ 
+Chain OUTPUT (policy ACCEPT 209 packets, 13148 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+         
+
+Since the above seems to indicate packets going through the nat
+prerouting chain but not being acted upon I suspect I am missing
+something fairly obvious!
+
+My version of Linux is Redhat 9.0 with a kernel of:
+Linux r1 2.4.20-8 #1 Thu Mar 13 17:18:24 EST 2003 i686 athlon i386
+GNU/Linux
+
+A modprobe returns
+
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/arp_tables.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/arptable_filter.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ip_conntrack.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ip_conntrack_ftp.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ip_conntrack_irc.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ip_nat_ftp.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ip_nat_irc.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ip_nat_snmp_basic.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ip_queue.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ip_tables.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipchains.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipfwadm.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_DSCP.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_ECN.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_LOG.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_MARK.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_MASQUERADE.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_MIRROR.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_REDIRECT.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_REJECT.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_TCPMSS.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_TOS.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_ULOG.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_ah.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_conntrack.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_dscp.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_ecn.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_esp.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_helper.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_length.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_limit.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_mac.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_mark.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_multiport.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_owner.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_pkttype.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_state.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_tcpmss.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_tos.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_ttl.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_unclean.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/iptable_filter.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/iptable_mangle.o
+/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/iptable_nat.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6_tables.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6t_LOG.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6t_MARK.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6t_eui64.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6t_length.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6t_limit.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6t_mac.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6t_mark.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6t_multiport.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6t_owner.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6table_filter.o
+/lib/modules/2.4.20-8/kernel/net/ipv6/netfilter/ip6table_mangle.o
 
 
---- Ray Anderson <rsa@rb-com.com> wrote:
-> Check the gateway on the internal machine you're
-> trying to forward to.
-> 
-> Internal box a will only talk through 1 firewall at
-> a time, or correct me if
-> I'm wrong.
-> 
-> Firewall1             ,        firewall 2
->    .
->   /|\
->    |
-> 
-> Box A  
-> Gateway is 
-> firewall 1
-> 
-> Incoming packet to internal box A through firewall 2
-> will not work because
-> box A tries to respond through firewall 1, not
-> firewall 2.
-> 
-> Or did I completely misunderstand the question?
-> 
-> -=Ray
->
-+-----------------------------------------------------------+
-> |                         | Ray Anderson            
->        |
-> |           |             | Systems Development
-> Manager     |
-> |           |             | 916.788.2444 (Office)   
->        |
-> |          (O)            | 916.798.9439 (Mobile)   
->        |
-> |X--------<_._>--------X  | PRIDE Industries        
->        |
-> |         (___)           | rsa at
-> prideindustries.com      |
-> |                         |
-> http://www.prideindustries.com  |
->
-+-----------------------------------------------------------+
-> It's the little things that cost you victories.
-> Group Captain Reade Tilley, RAF
-> 
-> 
-> > -----Original Message-----
-> > From: netfilter-admin@lists.netfilter.org 
-> > [mailto:netfilter-admin@lists.netfilter.org] On
-> Behalf Of arif
-> > Sent: Tuesday, March 16, 2004 11:11 AM
-> > To: netfilter@lists.netfilter.org
-> > Subject: identical scripts, 2 boxes, different
-> behavior - 
-> > what else should i look for?!
-> > 
-> > 
-> > ok, after being super frustrated trying to figure
-> out
-> > why i can't forward ports properly, i decided to
-> just
-> > take the script we currently are using on the soon
-> to
-> > be old firewall, and load it onto the new one. It
-> > loaded fine, but I get different behavior with the
-> two
-> > machines! I compared the rules line by line using
-> > iptables -L, and theyre identical. But I do not
-> get
-> > forwarded to the internal hosts like I should,
-> when I
-> > try with the new machine! The routing tables are
-> > identical also, and they both have the same kernel
-> > modules loaded... the original is a 2.4.20
-> precompiled
-> > redhat kernel, and the new one is 2.4.25 that i
-> > compiled myself - could it be something i am
-> missing
-> > in the kernel?? or is there something else i
-> should
-> > check? i have  /proc/sys/net/ipv4/ip_forward set
-> to 1
-> > of course.. i dont know what else to look for!!!
-> > HELP!!! :)
-> > 
-> > __________________________________
-> > Do you Yahoo!?
-> > Yahoo! Mail - More reliable, more storage, less
-> spam
-> > http://mail.yahoo.com
-> > 
-> 
+any thoughts would be appreciated,
+
+regards
+
+al
 
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail - More reliable, more storage, less spam
-http://mail.yahoo.com
 
