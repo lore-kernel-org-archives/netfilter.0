@@ -1,11 +1,13 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Re strings
-Date: Wed, 12 Jan 2005 15:58:19 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10501121557220.15730-100000@darkstar.sysinfo.com>
-References: <41E504EA.8811.B7A6F4@localhost>
+From: "Don Hughes" <support@microtechniques.com>
+Subject: Re: strings
+Date: Wed, 12 Jan 2005 16:28:13 -0500
+Message-ID: <41E5501D.1807.1DD666A@localhost>
+References: <20050112173043.C825DA9CF@mail.microtechniques.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41E504EA.8811.B7A6F4@localhost>
+In-reply-to: <20050112173043.C825DA9CF@mail.microtechniques.com>
+Content-description: Mail message body
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,48 +18,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Don Hughes <support@microtechniques.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
-Don,
 
-since googles returns nothing quickly that might resemelbe what Yousuf
-pointed you at, perhaps you could include his pointer here or more info?
+On 12 Jan 2005 at 12:30, Jason wrote:
 
-Thanks,
+> keep in mind that the spirit of this community is based upon
+> volunteer effort and everyone pitching in however they can to
+> help better the community as a whole.
 
-Ron DuFresne
+Absolutely, and very appreciated.  But I did not read the 
+previous posts as a demand, but more of frustration.  There are 
+many of us who are not hackers, and for whom netfilter is only a 
+small part of the job.  It can be frustrating to get a hundred 
+reasons why you should not be doing something that, for whatever 
+reason, you need to do anyway.
 
-On Wed, 12 Jan 2005, Don Hughes wrote:
+And, yes, it can be also be frustrating to answer the same 
+question over and over and over; but maybe that points to a 
+different issue in that the tutorials or documentation needs to 
+be modified. Searching the archives and getting 0 or 2000 hits is 
+not helpful.
 
-> occasionally people on this list have very little 
-> patience with others who don't do things the 
-> 'correct' way.  On my system I frequently have to 
-> implement things in a fashion that I would never 
-> even consider if I was supporting a hospital 
-> environment, for example.  In December, Yousuf 
-> Mustafa was kind enough to point me to the qnet 
-> patch.
-> 
-> 
-> 
-> 
-> 
 
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
+..don  
 
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
+support at microtechniques.com
+White Plains, NY
+
 
 
