@@ -1,12 +1,11 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: RE: block kazaa using iptables
-Date: Wed, 30 Apr 2003 11:15:49 +0200 (CEST)
+From: "Alex Nee" <hard__ware@dynamicaccess.biz>
+Subject: Re: Errors on starting of iptables
+Date: Wed, 30 Apr 2003 20:31:17 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0304301115360.318@dns.toxicfilms.tv>
-References: <2CE951F1A7DC0644A33B9F763D2029C0012A2867@mail.it.farmingdale.edu>
-Mime-Version: 1.0
+Message-ID: <002601c30f03$a2407e40$7b7b10ac@hardware>
+References: <20030430032702.12882.6272.Mailman@kashyyyk>
+Reply-To: "Alex Nee" <alex@dynamicaccess.biz>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2CE951F1A7DC0644A33B9F763D2029C0012A2867@mail.it.farmingdale.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,21 +15,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Gladson George <georgc@FARMINGDALE.EDU>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> Does anyone have a list of IP addresses for the kazaa servers?
-How about:
-solt@pysiak:~$ host -t a www.kazaa.com
-www.kazaa.com is an alias for rr1.kazaa.com.
-rr1.kazaa.com has address 217.116.226.13
-rr1.kazaa.com has address 217.116.224.67
-rr1.kazaa.com has address 217.116.224.68
-rr1.kazaa.com has address 217.116.224.69
-rr1.kazaa.com has address 217.116.224.70
-rr1.kazaa.com has address 217.116.226.11
-rr1.kazaa.com has address 217.116.226.12
+please use plain-text based emails, thank you.
+
+and why is you firewall lauching into panic mode .... line 170:
+
+ive tested this under redhat 9 & redhat 7.3 , and i have no problems
+
+iptables 1.2.8  & kernel 2.4.21-pre7
+
+Alex Nee
+Hard__warE
+
 
 
