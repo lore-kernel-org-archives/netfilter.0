@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Could be a stupid question...
-Date: Mon, 17 May 2004 11:26:28 +0100
+From: Stephane Bortzmeyer <bortzmeyer@nic.fr>
+Subject: [OT] A success story with connlimit
+Date: Mon, 17 May 2004 16:45:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405171126.28093.Antony@Soft-Solutions.co.uk>
-References: <200405172155.06592.dennis@airstrike.co.nz> <200405171109.50102.gdh@acentral.co.uk>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040517144515.GA22532@nic.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405171109.50102.gdh@acentral.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,44 +16,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Monday 17 May 2004 11:09 am, Gavin Hamill wrote:
+[Warning: may contain advertising.]
 
-> On Monday 17 May 2004 10:55, Dennis Morgan wrote:
-> > ie SEARCH / and a load of escape characters trying to get unauthorised
-> > access. I would like to know if there is a way with netfilter to drop
-> > these packets?
->
-> At a pinch, you could try the 'string match' module, but it's generally not
-> recommended.
+We used the connlimit patch
+(http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-connlimit),
+on a Debian-patched 2.4.26 Linux kernel, to manage the huge number of
+requests when we opened the ".fr" top-level domain last week. As far
+as 12 000 emails were received per minute and we had to ensure FIFO
+(first come, first served) and fairness, so it was not possible to
+dispatch the load to several machines.
 
-I *really* don't think it would work in this case, because the strings will be 
-at unpredictable points into the communications stream (less chance of it 
-being near the start of a packet, and therefore completely contained within 
-one packet), and to do this job effectively you'd need to match on regular 
-expressions, which the string match doesn't.
+In addition to that, several registrars, during the tests, managed to
+exhaust various resources of the system by accident (client programs
+too aggressive).
 
-> More usefully, you should look at http://l7-filter.sourceforge.net/ -
-> writing a little regex for this package to drop the WebDAV SEARCH requests
-> should be trivial.
+The connlimit patch allowed us to set up a maximum of five
+simultaneous connections per prefix of length 28. Most serious
+registrars never hit the limit but some who were using rogue SMTP
+clients or untuned regular MTA were limited that way, allowing the
+process to run smoothly. No big technical issue was noticed.
 
-Good suggestion - less overhead than a full proxy server as I suggested, and 
-ideal for the job.
+So, thanks to the developers of Netfilter and of connlimit.
 
-Regards,
+AFNIC (registry of ".fr")
+http://www.afnic.fr/
 
-Antony.
-
--- 
-Bill Gates has personally assured the Spanish Academy that he will never allow 
-the upside-down question mark to disappear from Microsoft word-processing 
-programs, which must be reassuring for millions of Spanish-speaking people, 
-though just a piddling afterthought as far as he's concerned.
-
- - Lynne Truss, "Eats, Shoots and Leaves"
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
