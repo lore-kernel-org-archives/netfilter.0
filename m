@@ -1,13 +1,12 @@
-From: "Jeremy Jones" <jeremy@samnjack.com>
-Subject: RE: Unassigned Networks List
-Date: Wed, 5 Mar 2003 07:52:25 -0700
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: TOS problem
+Date: Wed, 5 Mar 2003 14:55:13 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OCENLNBAGANFOEJAEAGOKEAFCAAA.jeremy@samnjack.com>
-References: <NGBBIFPIJNDPMFBPKBPGGEBDDKAA.NetFilter-Users@Compucenter.org>
+Message-ID: <Pine.LNX.4.51.0303051453490.24841@dns.toxicfilms.tv>
+References: <3e65f3f1.49d8.0@unacs.bg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NGBBIFPIJNDPMFBPKBPGGEBDDKAA.NetFilter-Users@Compucenter.org>
+In-Reply-To: <3e65f3f1.49d8.0@unacs.bg>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +16,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: nedco@unacs.bg
+Cc: netfilter@lists.netfilter.org
 
-This should help:
+> on tcpdump get
+> 02:36:44.898854 62.176.107.193 > 62.73.77.8: icmp: echo request
+> 02:36:44.956965 62.73.77.8 > 62.176.107.193: icmp: echo reply [tos 0x10]
+>
+> Am I doing something wrong?
+tcpdump on a different machine, if you're tcpdumping on a the iptables
+machine tcpdump gets a copy of the packet, then it is mangled, so tcpdump
+won't show that.
 
-http://www.iana.org/assignments/ipv4-address-space
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of George J.
-Jahchan, Eng.
-Sent: Tuesday, March 04, 2003 8:17 PM
-To: Netfilter
-Subject: Unassigned Networks List
-
-
-I need to ingress/egress filter unassigned netblocks and I am having a very
-hard time finding a comprehensive list of unassigned class B and C networks.
-It is extremely time consuming to go through the different regional
-registrars to come up with such a list, not to mention putting networks back
-together to minimize the number of rules.
-IANA has good class A and D lists, B and C classes are however listed "in
-bulk" (next to useless). Searching through Google I came up empty handed.
-Does anyone have a comprehensive list they are willing to share, or links to
-sites that list these network blocks.
-TIA
-
-
+Regards,
+Maciej
 
 
