@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: wiered problem
-Date: Thu, 20 May 2004 22:09:20 +0100
+From: "Andrew E. Mileski" <andrewm@isoar.ca>
+Subject: Re: ftp
+Date: Thu, 20 May 2004 22:41:39 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405202209.20946.Antony@Soft-Solutions.co.uk>
-References: <BAY15-F12RLNTaFagA30009460e@hotmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <40AD6C63.1050106@isoar.ca>
+References: <BAY15-F30mEB4HGXAwx000684fd@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F12RLNTaFagA30009460e@hotmail.com>
+In-Reply-To: <BAY15-F30mEB4HGXAwx000684fd@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thursday 20 May 2004 9:45 pm, azeem ahmad wrote:
+azeem ahmad wrote:
+> hi all
+> i m unable to browse ftp. it says
+> --------------------------------------------------------------------------------------------------------------------------------------- 
+> 
+> an error occured opening that folder on the ftp server. make sure you 
+> have permissions to access that folder
+> details
+> 200 type set to A
+> 500 Illegal port command
+> 500 LPRT not understood
+> -------------------------------------------------------------------------------------------------------------------------------------- 
 
-> i m running iptables, squid proxy, bind, and samba on same machine. it
-> works as a server for my LAN
-> the script that i ran is as follow but when i stat these rules the browsing
-> stops. the squid proxy is listening on port 8080. what can be the problem.
->
-> iptables -P INPUT DROP     [ correction from your later posting ]
-> iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
-> iptables -A INPUT -i eth0 -p udp --dport 8080 -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
-> iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
+By any chance are you browsing with IE?
 
-Squid may be listening on port 8080, but what about the replies it gets from 
-remote web servers after it sends out a request on port 80?
+If so, go into Tools->Internet Options->Advanced
+and check the box to enable: "Use Passive FTP (for firewall
+and DSL modem compatibility)", then click OK.
 
-I think you need a "reply packet" rule here:
-
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-I recommend you put this rule at the top of the list.
-
-Regards,
-
-Antony.
+If not, ignore me ;)
 
 -- 
-Most people have more than the average number of legs.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Andrew E. Mileski
 
