@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: how to block p2p
-Date: Thu, 11 Mar 2004 11:45:35 +0000
+From: "Marc Fargas" <telenieko@telenieko.com>
+Subject: Problem loading pptp_conntrack
+Date: Thu, 11 Mar 2004 13:42:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403111145.35177.Antony@Soft-Solutions.co.uk>
-References: <000501c4075b$ef029a00$2f00a8c0@deamon>
+Message-ID: <E1B1PWV-0006ap-O6@vishnu.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000501c4075b$ef029a00$2f00a8c0@deamon>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,65 +18,38 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 11 March 2004 11:27 am, Babar Kazmi wrote:
+I just updated my patch-o-matic from the CVS, also iptables and patched
+kernel 2.4.25
+I compiled everything as always, includind PPTP conntrack as a module but
+when I try to load de module I get that:
 
-> Dear
->
-> You can use squid or netfilter to block the same.
-> I think squid is more manageable and don't effect other stuff.
+modprobe ip_nat_pptp
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_nat_pptp.o:
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_nat_pptp.o: unresolved
+symbol ip_ct_gre_keymap_change
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_nat_pptp.o: insmod
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_nat_pptp.o failed
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_nat_pptp.o: insmod
+ip_nat_pptp failed
 
-But is port 80 (http) filtering sufficient to block p2p?
+modprobe ip_conntrack_pptp
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_conntrack_pptp.o:
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_conntrack_pptp.o:
+unresolved symbol ip_ct_gre_keymap_add
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_conntrack_pptp.o:
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_conntrack_pptp.o:
+unresolved symbol ip_ct_gre_keymap_destroy
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_conntrack_pptp.o: insmod
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_conntrack_pptp.o failed
+/lib/modules/2.4.25/kernel/net/ipv4/netfilter/ip_conntrack_pptp.o: insmod
+ip_conntrack_pptp failed
 
-I thought (I have little experience of trying to do this) that p2p networks 
-were sufficiently clever (read: adaptive) that if you blocked them 
-communicating by one means, then they would find an alternative (port 22, 25, 
-110, 443, 3128, 8080....etc)?
+What could be wrong there?
 
-Regards,
+POM applied patches correctly with no probs!
 
-Antony.
+Thanks for all.
 
-> >On Thu, Mar 11, 2004 at 09:26:26AM +0000, Antony Stone wrote:
-> > > On Thursday 11 March 2004 9:17 am, Tomasz Macioszek wrote:
-> > > > > > iptables -P FORWARD DROP
-> > > > >
-> > > > > iptables -F FORWARD
-> > > >
-> > > > I know but I would like to block only p2p traffic??
-> > > > Is patch which blocks only p2p??
-> > >
-> > > I do not know of a way to block p2p without blocking other protocols.
-> > >
-> > >
-> > > However, does not mean there isn't one, just that I don't know about
-> > > it.
-> > >
-> > > Regards,
-> > >
-> > > Antony.
-> > >
-> > > --
-> > > There's no such thing as bad weather - only the wrong clothes.
-> > >
-> > >  - Billy Connolly
-> > >
-> > >                                                      Please reply to
-> > > the
->
-> list;
->
-> > >                                                            please don't
->
-> CC me.
->
-> ><< signature.asc >>
 
--- 
-There are only 10 types of people in the world:
-those who understand binary notation,
-and those who don't.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
