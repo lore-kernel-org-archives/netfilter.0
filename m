@@ -1,12 +1,12 @@
-From: "Federico Lombardo" <egopfe@hotmail.com>
-Subject: Re: SYN Cookies
-Date: Tue, 24 Dec 2002 09:49:36 +0100
+From: Alex Huth <ahuth@pinguintown.de>
+Subject: Merry Christmas
+Date: Tue, 24 Dec 2002 12:21:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OE30pOUd0j7Mtb9z9tj00009428@hotmail.com>
-References: <H7D5MZ$I9Or4RCoD4e51vPZvonZ6tDR2AGxyE1hroSPZ3lJTgKD@bol.com.br>
+Message-ID: <200212241219.10413.ahuth__49450.3306843855$1040721474@pinguintown.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +16,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, gentoo-user@gentoo.org
 
-http://cr.yp.to/syncookies.html
-
-Syn Cookies are a Kernel Capabilities, not a Netfilter one.
-
-The rate limit just "rate" incoming TCP packet with SYN flag set.
+Hi folks on the list!
 
 
------ Original Message -----
-From: "augusto.favari" <augusto.favari@bol.com.br>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, December 19, 2002 12:08 PM
-Subject: SYN Cookies
+Not all the things we are disussing every day is so important, like family and 
+friends. So go and spent plenty of time with your family and let us come back 
+to the list after the silent days. 
+
+I wish you all a merry christmas and a happy new year! May a lot of your 
+wishes come true!
 
 
-Hi! I was looking for SYN Cookies help about SYN
-flooding.
-
-What is the difference about just allowing the SYN
-cookies system by default in the kernel and using the IP
-tables rate-limit function ?
-
-Iptables can use SYN cookies, can't it?
-
-Thanks,
-
-Augusto
+Greetings
 
 
-
-__________________________________________________________________________
-Venha para a VilaBOL!
-O melhor lugar para voc=EA construir seu site. F=E1cil e gr=E1tis!
-http://vila.bol.com.br
+Alex Huth
 
