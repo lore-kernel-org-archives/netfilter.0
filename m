@@ -1,13 +1,12 @@
-From: Wim Werk <wim@nice.be>
-Subject: Re: GRE/PPTP Pass-through problems
-Date: Thu, 04 Sep 2003 20:27:58 +0200
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: filter on ethernet alias
+Date: Fri, 5 Sep 2003 02:52:18 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F57842E.8080606@nice.be>
-References: <1062692878.965.4.camel@jorgea.calcom.com.mx>
+Message-ID: <Pine.LNX.4.56.0309050245370.17909@space.comunit.de>
+References: <20030904152250.GA25689@mtholyoke.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1062692878.965.4.camel@jorgea.calcom.com.mx>
+In-Reply-To: <20030904152250.GA25689@mtholyoke.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jorge Armando Medina <jmedina@calcom.com.mx>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ron Peterson <rpeterso@mtholyoke.edu>
+Cc: Netfilter Discussion <netfilter@lists.netfilter.org>
 
-Jorge
+On Thu, 4 Sep 2003, Ron Peterson wrote:
 
-My connection goes to a windows PPTP server behind the linux box, so there
-is no options.pptp. Anyway thanks for your answer.
+> So I was thinking I could do this by aliasing multiple IP's to a single
+> interface, and filter based on the virtual interface.  Can't do this, I
+> guess.  Neither can I filter on destination IP, because the box is a
+> gateway, not a destination.  Is there any way to filter a packet based
+> on which gateway ip address it was sent to, if both addresses are
+> assigned to the same interface?
 
-Note that this worked with a 2.2 kernel with ipchains
+No, there isn't.
 
-Regards
-Wim
+And it has a simple reason:
+The used IP of the gateway is not transmitted in routed packets.
 
-Jorge Armando Medina wrote:
+The client resolves the gateway-address from the routing table via arp to
+the mac-address of the gateway-interface, which will be the same for all
+virtual interfaces/adresses on this interface.
 
->I had the same problem, and I solved it putting in my options.pptpd
->configuration file as follow:
->
->lcp-echo-failure 30
->lcp-echo-interval 5
->
->This is to prevent timeouts in the client side, with the
->lcp-echo-faliure  your server send echo request to the clients for
->respons when are an idle time, so you can modify this parameter to a
->higher value.
->
->
->I hope this will solve your problem, well, It was enough for me.
->
->regards.
->
->
->  
->
+This mac-address is now stored in the ethernet-header of the ip-packet,
+with an ip destination-address behinde the gateway.
 
+A forwarded-via-gateway packet is for the gateway only:
+"A packet with my ethernet-address (mac), but not one of my ips"
 
+c'ya
+sven
+
+-- 
+
+The Internet treats censorship as a routing problem, and routes around it.
+(John Gilmore on http://www.cygnus.com/~gnu/)
 
