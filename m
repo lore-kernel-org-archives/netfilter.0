@@ -1,12 +1,13 @@
-From: "Ian Hunter" <ihunter@hunterweb.net>
-Subject: Re: Home web server using front firewall
-Date: Wed, 17 Dec 2003 16:56:42 -0500
+From: Peter Hoeg <disposable1@hoeg.com>
+Subject: Re: Firewalling non-IPsec connections
+Date: Wed, 17 Dec 2003 23:02:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002801c3c4e8$a82ca220$7000a80a@melita.com>
-References: <HFEBJMKNPOCPPMGFHDMCAEJBCDAA.esanz@minorplanetusa.com>
+Message-ID: <3FE0D27B.9080900@hoeg.com>
+References: <GFEPJIHHFOJDOFDMNAJDIEAGEKAA.mark@npsl.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <GFEPJIHHFOJDOFDMNAJDIEAGEKAA.mark@npsl.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,59 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Erick Sanz <esanz@minorplanetusa.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-> iptables -A FORWARD -i eth0 -p tcp -d 10.10.1.240 --dport 80 -m state \
-> --state NEW,ESTABLISHED,RELATED -j ACCEPT
+Mark Weaver wrote:
+
+>I have to guess so.  I've no idea TBH where the packets actually go, but
+>this definitely works for me.  I'm more of a cook than a chef when it comes
+>to netfilter.  I've tried looking around the source, but I'm pretty
+>clueless, and the native ipsec doesn't seem to be documented at all.  It's
+>not even got a maintainer listed, and virtually nothing in
+>linux/Documentation.  (If anyone could point me in the right direction that
+>would be great!).
 >
-> iptables -A FORWARD -i eth1 -p tcp -s 10.10.1.0/24 --source-port 80 \
-> -j ACCEPT
+mark, you simply rule! this fixed my problem. now, since i was going 
+nuts trying to figure it out and i couldn't find ANY info on ANYWHERE 
+(you guys were my last resort), so i have decided to make a small guide 
+(i needed to learn docbook anyway so this seemed like a good chance) 
+which can be found here:
+
+http://hoeg.org/lri/
+
+but one thing - to be honest i actually was thinking briefly about the 
+MARK solution myself but came to the conclusion that since it is similar 
+to the TOS marks you can set, then technically somebody else could tag 
+the packets themselves before entering my system which would bypass the 
+solution. and thats why i didnt take it further. can anybody shed any 
+light on that?
+
+but in order for the search engines to pick up this message: racoon 
+linux kernel 2.6 ipsec vpn tunnel firewall iptables netfilter
+
+>It kind of makes sense, because without this we'd have no possibility of
+>handling packets that came in via an IPSC tunnel separately.
 >
-> iptables -A FORWARD -o eth1 -p tcp -s 10.10.1.240 --sport 80 -m state \
-> --state NEW,ESTABLISHED,RELATED -j ACCEPT
-
-
-The first forward allows inbound traffic from eth0 (net?) to hit the
-webserver on 10.10.1.240
-The second forward allows any traffic FROM any webserver in the 10.10.1.0/24
-network out to anywhere (ODD!)
-The third forward specifically allows the web server at 10.10.1.240 to
-respond to web requests, and should be redundant with the second rule
-
-Here's my question -- which interface is which?  Assuming eth0 is the
-internet side, and eth1 is your DMZ side, you should have these:
-
-iptables -A FORWARD -i eth0 -p tcp -d  10.10.1.240 --dport 80 -j ACCEPT
-iptables -A FORWARD -i eth1 -p tcp -s 10.10.1.240 --sport 80 -m
-state --state ESTABLISHED,RELATED -j ACCEPT
-
-and that should do it.
-
-Are you logging dropped packets?
-
-> Also, I would like to "lock" my OUTPUT chain to avoid Netbios and other
-> protocols to go out... any recommendations?
-
-To drop netbios (137-139 tcp & udp), you'd probably want to drop it going
-out AND being forwarded, like this:
-
-iptables -A FORWARD -o eth0 -p tcp --dport 137 -j DROP
-iptables -A FORWARD -o eth0 -p tcp --dport 138 -j DROP
-iptables -A FORWARD -o eth0 -p tcp --dport 139 -j DROP
-iptables -A FORWARD -o eth0 -p udp --dport 137 -j DROP
-iptables -A FORWARD -o eth0 -p udp --dport 138 -j DROP
-iptables -A FORWARD -o eth0 -p udp --dport 139 -j DROP
-iptables -A OUTPUT -o eth0 -p tcp --dport 137 -j DROP
-iptables -A OUTPUT -o eth0 -p tcp --dport 138 -j DROP
-iptables -A OUTPUT -o eth0 -p tcp --dport 139 -j DROP
-iptables -A OUTPUT -o eth0 -p udp --dport 137 -j DROP
-iptables -A OUTPUT -o eth0 -p udp --dport 138 -j DROP
-iptables -A OUTPUT -o eth0 -p udp --dport 139 -j DROP
-
-> Thank you VERY much for your time!
-
-You get what you pay for... lol
+agree
 
 
