@@ -1,13 +1,13 @@
-From: "Nigel Clarke" <nigel@forever-networks.com>
-Subject: RE: IPTABLES vs Checkpoint
-Date: Tue, 26 Nov 2002 15:53:30 -0500
+From: Pavlos Parissis <p_pavlos@freemail.gr>
+Subject: Re: No such file or directory when using an asterisk
+Date: Tue, 26 Nov 2002 23:51:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <MKEJJFIGIGKMFKMKEEDBOEIACAAA.nigel@forever-networks.com>
-References: <3F5BAB933C75004690195047C4040A6D0535D4@tc-pdc.jhbA.techconcepts.co.za>
+Message-ID: <20021126235120.4e1c3bf3.p_pavlos@freemail.gr>
+References: <000001c294a6$db3c4f80$010da8c0@mrboboo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F5BAB933C75004690195047C4040A6D0535D4@tc-pdc.jhbA.techconcepts.co.za>
+In-Reply-To: <000001c294a6$db3c4f80$010da8c0@mrboboo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Wayne de Nobrega <wdenobre@techconcepts.co.za>, netfilter@lists.netfilter.org
-
-Wayne,
-
-How are the firewalls installed? In a cluster configuration or stand alone?
-
-In a stand alone you can go with either. If you're looking for scalability
-and use of
-things like VPNs, I'd go with Checkpoint. If you're looking for a stable
-stateful firewall, you'd be
-better off with iptables/netfilter.
-
-The Nokia IPSO is not that bad. It is a stripped down version of BSD. So,
-you're going to end up
-with a stateful / Unix firewall no matter how you look at it.
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Wayne de
-Nobrega
-Sent: Tuesday, November 26, 2002 2:28 PM
 To: netfilter@lists.netfilter.org
-Subject: IPTABLES vs Checkpoint
 
+Hello Robert,
 
-Hello,
+On Mon, 25 Nov 2002 11:19:44 -0600 "Robert Wideman"
+<rwideman@austin.rr.com> wrote:
+>  Getting errors with my script when I am running it.  My system works
+>  fine except for these echo commands:
+>  echo 1 > /proc/sys/net/ipv4/conf/*/log_martians
+>  The error that I get when I run the script is "No such file or
+>  directory." I can do the individual files without the "*" in there but
+>  when I use the asterisk (*) I get an error "Ambiguous redirect" when run
+>  from the command line.
+>  Any thoughts?
 
-I have a customer who is part of an international group which has a
-policy of using the Nokia Checkpoint firewall.  Due to the signifcant
-cost differences, and our preference, the local branch and ourselves
-would like to install an IPTABLES based firewall.  I need some help in
-motivating this to head office and am looking for information comparing
-the two solutions.  I need to focus on the technical issues of the two
-products and ultimately the inherent security realised from the two
-products.
+you can try this.
 
-Can anyone offer some input or point me to a source of information.
+for f in /proc/sys/net/ipv4/conf/*/log_martians; do
+                if [ -e $f ] ; then
+                        echo "1" > $f
+                        echo  -n -e "..""enabled."
+                else
+                        echo -e "support not found!"
+                fi
+        done
+Pavlos
 
-Many thanks
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I love having the feeling of being in control
+while i have the sensation of speed
 
-Wayne
+The surfer of life
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
