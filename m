@@ -1,11 +1,13 @@
-From: Payal Rathod <payalrathod@gmail.com>
-Subject: LAN accessing DMZ
-Date: Sun, 18 Jul 2004 18:53:53 +0530
+From: John <futurasci@gmail.com>
+Subject: Re: Strange ip_conntrack values
+Date: Sun, 18 Jul 2004 15:56:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <f51b72bc040718062373640612@mail.gmail.com>
+Message-ID: <ef83df6b04071806565f854eb6@mail.gmail.com>
+References: <ef83df6b040718033163810a15@mail.gmail.com> <200407181146.30331.Antony@Soft-Solutions.co.uk> <ef83df6b0407180428f43532d@mail.gmail.com> <200407181313.47640.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200407181313.47640.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +18,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi,
-I am trying out DMZ. But my LAN users (192.168 range) can access DMZ 
-(10.10.10.x) range without any restrictions. On this firewall machines
-there are 3 cards 1 for DMZ range, 1 for LAN range  and for my ISP.
+> Tcpdump is a good packet sniffer but it does not show the data in a
+> user-friendly format.
 
-I have,
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT ACCEPT  # Is this a Bad Idea?
-$IPTABLES -P FORWARD DROP
+ok I've made another tcpdump for ethereal and it's ok;
 
-For FORWARD I allow just,
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -s 192.168.0.0/16 -p tcp --dport 3128 -j ACCEPT
-$IPTABLES -A FORWARD -s 192.168.0.0/16 -p tcp --dport 53 -j ACCEPT
-$IPTABLES -A FORWARD -s 192.168.0.0/16 -p udp --dport 53 -j ACCEPT
+I've checked and I get a lot of this scheme :
 
-$IPTABLES -A FORWARD -s 10.0/8 -p tcp -j ACCEPT
-$IPTABLES -A FORWARD -s 10.0/8 -p udp -j ACCEPT
-$IPTABLES -A FORWARD -d 10.10.10.2 -p tcp --dport 25 -j ACCEPT
-(This I am just testing whether  I can access my DMZ port 25 from outside)
+No.     Time        Source                Destination           Protocol Info
+     10 0.004569    24.33.232.227         mydomain         TCP     
+1488 > http [SYN] Seq=0 Ack=0 Win=64240 Len=0 MSS=1460
+     11 0.004626    mydomain         24.33.232.227         TCP     
+http > 1488 [SYN, ACK] Seq=0 Ack=1 Win=5840 Len=0 MSS=1460
+    255 0.162181    24.33.232.227         mydomain         TCP     
+1488 > http [ACK] Seq=1 Ack=1 Win=64240 Len=0
+    258 0.165191    24.33.232.227         mydomain         TCP     
+1488 > http [FIN, ACK] Seq=1 Ack=1 Win=64240 Len=0
+    259 0.165313    mydomain         24.33.232.227         TCP     
+http > 1488 [FIN, ACK] Seq=1 Ack=2 Win=5840 Len=0
+    385 0.311935    24.33.232.227         mydomain         TCP     
+1488 > http [ACK] Seq=2 Ack=2 Win=64240 Len=0
 
-But still my LAN users can access 10.10.10.2:25 and also the webin 10000 port.
-What am I missing?
+(this is the whole tcp stream)
 
-Thanks a lot in advance and waiting eagerly for any answers.
+for others I get the complete http exchange : get ...
 
-With warm regards,
--Payal
+is it normal ?
+
+Ethereal is brand new for me so if you have some good tips to help me
+find some interesting information ... thanks a lot
+
+John
 
