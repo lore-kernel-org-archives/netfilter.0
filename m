@@ -1,13 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: round robin SNAT, multiple "to IP" setup, AIM issue?
-Date: Thu, 09 Sep 2004 00:10:31 -0400
+From: Abdul-Wahid Paterson <abdulwahid@gmail.com>
+Subject: Re: DNAT-Problem
+Date: Thu, 9 Sep 2004 09:44:25 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094703031.1739.84.camel@wolfpack.ljm.dom>
-References: <1094682791.413f88a75fabc@www.gotdoofed.com>
+Message-ID: <995fcdb00409090144c3959f0@mail.gmail.com>
+References: <20040909041047.7f8457cf@nixe>
+Reply-To: Abdul-Wahid Paterson <abdulwahid@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1094682791.413f88a75fabc@www.gotdoofed.com>
+In-Reply-To: <20040909041047.7f8457cf@nixe>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,53 +19,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Tom Fischer <tom.fischer@ebuz.de>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, 2004-09-08 at 18:33, Joe Drago wrote:
-> To make a long story short (TOO LATE!), I need to figure out a way to have the
-> Linux box use the same IP for both connections to the AIM servers. My first idea
-> was to potentially route all traffic destined for port 5190 across one of the
-> ten WAN IPs, but then I wondered if there was a way to have the linux router
-> "prefer" to use the same WAN IP as much as possible without resorting to a
-> 1-to-1 setup. There are more than 10 clients, so that really isn't an option.
+Are you sure that you are not dropping the packet in another
+table/chain. Perhaps do something like
 
-i (personally) would go the keep-it-simple route; and just SNAT all port
-5190 traffic to the same IP and move on with my life; i.e:
+watch -n 1 iptables -L -n -v
 
-  iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 5190 \
-    -j SNAT --to 5.5.5.69
-  iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 5.5.5.60-5.5.5.69
+so that you can see the packet count when you test to see if the
+packet rule is being accepted or dropped somewhere.
 
-if you're just dying to go "hog wild" with netfilter extensions--there's
-probably some crazy combination of random/recent/marking that could be
-used to split your tcp 5190 traffic into 10 "sticky" pools, each with
-their own SNAT...
+Abdul-Wahid
 
-if that gives you a headache--you could also split up your /22
-semi-evenly over the 10 public IP's manually, like:
 
-  iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 5190 \
-    -s 10.176.60.0/25 -j SNAT --to 5.5.5.60
-  iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 5190 \
-    -s 10.176.60.128/25 -j SNAT --to 5.5.5.61
-  iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 5190 \
-    -s 10.176.61.0/25 -j SNAT --to 5.5.5.62
-  iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 5190 \
-    -s 10.176.61.128/25 -j SNAT --to 5.5.5.63
-  iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 5190 \
-    -s 10.176.62.0/25 -j SNAT --to 5.5.5.64
-  iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 5190 \
-    -s 10.176.62.128/25 -j SNAT --to 5.5.5.65
-  iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 5190 \
-    -s 10.176.63.0/25 -j SNAT --to 5.5.5.66
-  iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 5190 \
-    -s 10.176.63.128/25 -j SNAT --to 5.5.5.67
-
-  iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 5.5.5.60-5.5.5.69
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
-
+On Thu, 9 Sep 2004 04:10:47 +0200, Tom Fischer <tom.fischer@ebuz.de> wrote:
+> Hi,
+> 
+> i have a problem with DNAT. We have to move some services for a few days
+> on another machine. So we want do DNAT on incoming Packets. I set
+> 
+> iptables -A PREROUTING -t nat -s 0/0 -d xxx.xxx.xxx.xxx -p tcp --dport
+> 9000-j DNAT --to xxx.xxx.xxx.xxx
+> 
+> Should be enough on this box in my opinion. So i can see the Packet
+> incoming on the old machine, and i can see the Packet with my Source IP
+> and the new destination IP, but i think the packet never leaves the old
+> machine. tcpdump looks like this
+> 
+> [root@server4 mysql]# tcpdump -n port 9000
+> tcpdump: listening on eth0
+> 04:02:04.746105 217.232.189.4.65423 > oldmachine.9000: S
+> 740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66069311
+> 0,nop,wscale 7> (DF) [tos 0x70]
+> 04:02:04.746151 217.232.189.4.65423 > newmachine.70.9000: S
+> 740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66069311
+> 0,nop,wscale 7> (DF) [tos 0x70]
+> 04:02:07.744772 217.232.189.4.65423 > oldmachine.9000: S
+> 740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66072311
+> 0,nop,wscale 7> (DF) [tos 0x70]
+> 04:02:07.744806 217.232.189.4.65423 > newmachine.9000: S
+> 740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66072311
+> 0,nop,wscale 7> (DF) [tos 0x70]
+> 
+> The packet never arivves on the new machine. What am I missing?
+> 
+> Kernel is 2.4.27, the box seems to be Fedora Core 2 and iptables is
+> Version 1.2.7a.
+> 
+> Anybody can help me out?
+> 
+> Tom
+> 
+>
 
