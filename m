@@ -1,15 +1,10 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: kernel-2.6, iptables-1.2.9, pppd-2.4.2
-Date: Sun, 28 Dec 2003 09:01:08 -0500
+From: "R. Lemos" <rslemos@hotmail.com>
+Subject: One broadcast to many unicast NATing
+Date: Tue, 30 Dec 2003 16:57:53 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <43302.7461906478$1072751618@news.gmane.org>
-References: <BAY2-F119GDlAiDZX560002d7de@hotmail.com> <1072565261.14009.11.camel@tarkus>
+Message-ID: <BAY8-F32XXfOiDKLYHl0004caee@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <1072565261.14009.11.camel@tarkus>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +14,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-To: Ted Kaczmarek <tedkaz@optonline.net>, zhang ping <dqzhangp@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
+Hi,
 
-	I agree that the info is thin, but that *sounds like* a=20
-	probelm with tcp-ecn ....=20
-=09
-	cat /proc/sys/net/ipv4/tcp_ecn=20
-	if its > 0
-	then
-	echo "0" > /proc/sys/net/ipv4/tcp_ecn
+I have a server which trust only a small number of hosts and must be totall=
+y=20
+hidden from the rest of its own local net (though I know I can't hide it in=
+=20
+the ethernet level). So I want to control which packets emerge from it,=20
+allowing only some destination addresses.
 
-	Alistair Tonner
+Actually the problem is that I must run a closed-source software that=20
+broadcasts to 255.255.255.255 and want to translate it to many (more than 2=
+)=20
+UDP unicast packets to these trusted hosts. Those packets must be binary=20
+copied, except for the destination address, which will be DNATed.
 
+It is like the DNAT target, but this one deals with one packet in and one=20
+packet out (to a host randomly choosen among a list of hosts). I think I=20
+need some sort of DNAT that one packet in is DNATed to many packets out (to=
+=20
+all hosts listed).
 
-On December 27, 2003 05:47 pm, Ted Kaczmarek wrote:
-> With the limited info provided going to be difficult to even guess.
-> Is ip_forward enabled?
->
-> Ethereal/tcpdump are your friends.
->
-> Ted
->
-> On Wed, 2003-12-24 at 19:11, zhang ping wrote:
-> > I use linux box to share a ADSL:
-> >
-> >   ----ADSL----PPPoE------LAN
-> >
-> > The linux kernel is 2.6.0
-> > The iptables is 1.2.9
-> > The pppd is 2.4.2
-> >
-> > pppd eth2 connect to internet, on linux box, everything is ok.
-> >
-> > iptables -t nat -A POSTROUTING -j MASQUERADE
-> >
-> > Within the LAN , i can surf some sites, but can't surf the others,
-> >
-> > What is the matter??????????
-> >
-> > Pls help me
-> >
-> > _________________________________________________________________
-> > =E4=BA=AB=E7=94=A8=E4=B8=96=E7=95=8C=E4=B8=8A=E6=9C=80=E5=A4=A7=E7=9A=
-=84=E7=94=B5=E5=AD=90=E9=82=AE=E4=BB=B6=E7=B3=BB=E7=BB=9F=E2=80=95 MSN Hotm=
-ail=E3=80=82  http://www.hotmail.com
+Could not find any such a target (one in, many out) in iptables. Did I miss=
+=20
+something? Is there any other (software) way to do it?
+
+Thanks.
+
+R. Lemos
+
+_________________________________________________________________
+MSN Messenger: instale gr=E1tis e converse com seus amigos.=20
+http://messenger.msn.com.br
+
 
