@@ -1,11 +1,16 @@
-From: cky@arcor.de
-Subject: problem with ip_connlimit modul
-Date: Mon, 23 Feb 2004 17:06:43 +0100 (CET)
+From: Mark Vevers <mark@vevers.net>
+Subject: Re: problem with ip_connlimit modul
+Date: Mon, 23 Feb 2004 16:57:28 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <32094483.1077552403980.JavaMail.ngmail@webmail02.arcor-online.net>
+Message-ID: <200402231657.29970.mark@vevers.net>
+References: <32094483.1077552403980.JavaMail.ngmail@webmail02.arcor-online.net>
+Reply-To: mark@vevers.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <32094483.1077552403980.JavaMail.ngmail@webmail02.arcor-online.net>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,41 +20,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: cky@arcor.de, netfilter@lists.netfilter.org
 
-Hi!
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I try to compile the new 2.4.25 kernel with patch-o-matic-20031219 and I've a little problem.
+On Monday 23 Feb 2004 4:06 pm, cky@arcor.de wrote:
+> I try to compile the new 2.4.25 kernel with patch-o-matic-20031219 and I'=
+ve
+> a little problem.
+>
+> All iptables works fine, but just the ipt_connlimit module makes trouble,
+> when I try to compile it.
 
-All iptables works fine, but just the ipt_connlimit module makes trouble, when I try to compile it.
+Check the latest CVS for the connlimit module ....  ip_conntrack_module
+is no longer used and the lines using it are deleted ... I think this is
+related to refcount fixing mentioned in the 2.4.25 change log.
 
-Here's my output:
+The following patch if applied as patch -lp0 < connlimit.patch in
+<KERNEL_DIR>/net/ipv4/netfilter will do just that ....=20
+(save the text between the lines as connlimit.patch)
 
+cheers
+Mark
+=2D -----------------------------------------------------------------------=
+=2D-----------------------
+=2D --- ipt_connlimit.c     2004-02-23 12:12:55.000000000 +0000
++++ ipt_connlimit.c     2004-02-23 12:13:49.000000000 +0000
+@@ -216,7 +216,4 @@
+ static int __init init(void)
+ {
+=2D -	/* NULL if ip_conntrack not a module */
+=2D -	if (ip_conntrack_module)
+=2D -		__MOD_INC_USE_COUNT(ip_conntrack_module);
+	return ipt_register_match(&connlimit_match);
+ }
+@@ -225,6 +222,4 @@
+ {
+	ipt_unregister_match(&connlimit_match);
+=2D -	if (ip_conntrack_module)
+=2D -		__MOD_DEC_USE_COUNT(ip_conntrack_module);
+ }
 
-gcc -D__KERNEL__ -I/usr/src/linux-2.4.25/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpreferred-stack-boundary=2 -march=athlon -DMODULE -DMODVERSIONS -include /usr/src/linux-2.4.25/include/linux/modversions.h  -nostdinc -iwithprefix include -DKBUILD_BASENAME=ipt_connlimit  -c -o ipt_connlimit.o ipt_connlimit.c
-ipt_connlimit.c: In function `init':
-ipt_connlimit.c:219: `ip_conntrack_module' undeclared (first use in this function)
-ipt_connlimit.c:219: (Each undeclared identifier is reported only once
-ipt_connlimit.c:219: for each function it appears in.)
-ipt_connlimit.c:220: warning: value computed is not used
-ipt_connlimit.c: In function `fini':
-ipt_connlimit.c:227: `ip_conntrack_module' undeclared (first use in this function)
-ipt_connlimit.c:228: warning: value computed is not used
-make[2]: *** [ipt_connlimit.o] Error 1
-make[2]: Leaving directory `/usr/src/linux-2.4.25/net/ipv4/netfilter'
-make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.4.25/net'
-make: *** [_mod_net] Error 2
+=2D -----------------------------------------------------------------------=
+=2D------------------------
+=2D --=20
+Mark Vevers.    mark@ifl.net / mark@vevers.net
+Principal Internet Engineer, Internet for Learning,
+Research Machines Plc. (AS5503)
+=2D --
+GPG Key: http://pgp.mit.edu:11371/pks/lookup?op=3Dget&search=3D0xB08F3CA3
+=46ingerprint: 85BA 30C4 9EC8 1792 4C8C   C31E 58B5 3D1C B08F 3CA3
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-
-Can anybody help? I think I've to rename something in ipt_connlimit.c, but I don't know that....
-Thanks in advance.
-
-Best regards,
-Thomas
-
-
-
+iD8DBQFAOjD4WLU9HLCPPKMRAlbeAKCKVikbwOt/UzqKzXHCbg8//uHT4gCfWI4n
+1EHcVx12skVBs1ewm7DeRok=3D
+=3DExXE
+=2D----END PGP SIGNATURE-----
 
 
