@@ -1,14 +1,13 @@
-From: Tim Miller <tj.miller@javaspotlet.com>
-Subject: Re: DHCP Issues
-Date: Thu, 20 Mar 2003 10:49:47 -0600 (CST)
+From: Henry Ritzlmayr <h.ritzlmayr@gmx.at>
+Subject: RE: Masquerading on local ports
+Date: 20 Mar 2003 17:26:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0303201047530.6606@beethoven.javaspotlet.com>
-References: <Pine.LNX.4.53.0303200827390.6606@beethoven.javaspotlet.com>
- <20030320151842.GB18401@placemark.com> <Pine.LNX.4.53.0303201024320.6606@beethoven.javaspotlet.com>
- <20030320164536.GD18401@placemark.com>
+Message-ID: <1048177609.1493.127.camel@localhost.localdomain>
+References: <FD8F124A387AD6119F7900A0D218B321019C75@hslex01.hslbz.local>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030320164536.GD18401@placemark.com>
+In-Reply-To: <FD8F124A387AD6119F7900A0D218B321019C75@hslex01.hslbz.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: NetFilter List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Thu, 20 Mar 2003, Kelly Setzer wrote:
+Am Don, 2003-03-20 um 16.29 schrieb Rob Sterenborg:
+> > And here is the question. How is it possible to nat a lokal port?
+> > 
+> > IPTABLES -t nat -A PREROUTING -p tcp -d 127.0.0.1 
+> > --destination-port 81 -j DNAT --to-destination 127.0.0.1:80
+> > 
+> > telnet localhost 80  <<< works
+> > telnet localhost 81  <<< Connection refused
+> 
+> iptables -t nat -A PREROUTING -d 127.0.0.1 -p tcp --dport 80 -j REDIRECT
+> --to-ports 81
+> 
+> 
+> Rob
 
->
-> How are you starting dhcpd?
+Tanks for the answer,
+I tried that one already but it behaves the same.
+I also tried 
 
-I am running it in the foreground, but eventually it will be run as a
-service.
+IPTABLES -t nat -A PREROUTING -p tcp -d 172.16.172.12 --destination-port
+81 -j REDIRECT --to-ports 80
 
-dhcpd -d -f eth3
+wich works perfect for both port 80 and 81 from a foreign host.
 
->
-> Kelly
->
+Henry
 
--- 
--Tim Miller
-
-"You are who you become"
-
-Email: tj.miller@javaspotlet.com
-Registered Linux User #302727
 
