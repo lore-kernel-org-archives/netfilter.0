@@ -1,13 +1,12 @@
-From: Alex McCubbin <alexm@chancery.com>
-Subject: Re: Limiting number of connections
-Date: 03 Jan 2003 17:06:30 -0800
+From: "John A. Novak" <jnovak@blueshiftinc.com>
+Subject: RE: DNAT and multiple public IP addresses; was RE: netfilter and multiple virtual interfaces
+Date: Fri, 3 Jan 2003 17:04:27 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1041642389.18529.127.camel@l-alexm-1.chancery.com>
-References: <20030104004751.GA3308@fenert.net>
+Message-ID: <F635E25A78F69C41B85DC6CB18972A9A474710@kepler.blueshiftinc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030104004751.GA3308@fenert.net>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,53 +17,97 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Daniel Fenert <daniel@rotfl.linux.krakow.pl>
+To: David Boone <netfilter@wizdom.net>, Andy Meader <ameader@corp.Lcom.net>
 Cc: netfilter@lists.netfilter.org
 
-I presume this is exactly what you are asking?
+I have a firewall configured to work similarly with the exception that =
+the public IP addresses are all on the same subnet, so my public web =
+servers would be at 1.1.1.2, 1.1.1.3 and 1.1.1.4, with the external =
+interface as 1.1.1.1.  This works as long as the external interface has =
+all the public IP addresses used assigned to it.
 
-From... patch-o-matic/base/iplimit.patch.help 
+JN =20
 
-Author: Gerd Knorr <kraxel@bytesex.org>
-Status: ItWorksForMe[tm]
+-----Original Message-----
+From: David Boone [mailto:netfilter@wizdom.net]
+Sent: Friday, January 03, 2003 4:15 PM
+To: 'Andy Meader'
+Cc: netfilter@lists.netfilter.org
+Subject: DNAT and multiple public IP addresses; was RE: netfilter and
+multiple virtual interfaces
 
-This adds CONFIG_IP_NF_MATCH_IPLIMIT match allows you to restrict the
-number of parallel TCP connections to a server per client IP address
-(or address block).
 
-Examples:
+netfilter won't work with virtual interfaces, so I'm left trying to get
+packets to flow between a public and a private network.
 
-# allow 2 telnet connections per client host
-iptables -p tcp --syn --dport 23 -m iplimit --iplimit-above 2 -j REJECT
+How would be a good way to assign multiple IP addresses to the same
+interface and then have answers to those IP addresses be forwarded to
+servers on a private network?
 
-# you can also match the other way around:
-iptables -p tcp --syn --dport 23 -m iplimit ! --iplimit-above 2 -j
-ACCEPT
+Here's an example:
 
-# limit the nr of parallel http requests to 16 per class C sized
-# network (24 bit netmask)
-iptables -p tcp --syn --dport 80 -m iplimit --iplimit-above 16		\
-	--iplimit-mask 24 -j REJECT
+Internet
+   |
+eth0 (1.1.1.1/24)
+   |
+netfilter Router=20
+   |
+eth1 (192.168.1.1/24)
+          |
+   +------+-----------+-------------+
+   |                  |             |
+Web server 1     Web server 2    Web server 3
+(192.168.1.2)   (192.168.1.3)    (192.168.1.4)
 
-Good luck - Alex.
+Where:
+web server 1 has public IP 1.1.2.1/24
+web server 2 has public IP 1.1.2.2/24
+web server 3 has public IP 1.1.2.3/24
 
-On Fri, 2003-01-03 at 16:47, Daniel Fenert wrote:
-> Is there a simple way to limit number of connection coming from particular
-> client (ip address or subnet)?
-> I've searched through archive, and found only some patch to CVS version
-> of netfilter (it was year 2000)...
-> 
-> I've got problem with a few clients, they' are able to make 200+
-> connections on 128Kbit connection (according to /proc/net/ip_conntrack)
-> 
-> I thought about it today for a few minutes, and came with the idea:
-> 1) Parse /proc/net/ip_conntrack and get clients with more than xxx
->    connections
-> 2) Setup rule to DROP NEW,RELATED to force them to close some connections
-> 3) wait a minute, go to 1) checking additionally number of connections
->    for blocked IP's. If number drops below xxx, delete rule DROP NEW,...
-> This is ugly, but possibly will work.
-> 
-> I hope that  there's better way to do it?
+I've tried setting up static arp entries, but I'm having some
+difficulties with routing, I think, since the web server's public IP's
+are on a separate network than the firewall's Internet IP (1.1.2 instead
+of 1.1.1).
+
+Thanks for any suggestions,
+Dave Boone
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Andy Meader
+Sent: Friday, December 20, 2002 9:05 PM
+To: David Boone
+Cc: netfilter@lists.netfilter.org
+Subject: Re: netfilter and multiple virtual interfaces
+
+
+Hi Dave,
+
+I know that on RH 7.1 that netfilter only sees an interface and its
+multineted (virtual) interfaces as the same interface. Possibly newer
+versions are different.
+
+Good luck.
+
+Andy
+
+On Fri, 20 Dec 2002, David Boone wrote:
+
+> Hi,
+>
+> I know you can apply a + (plus sign) to adapters in the form eth+ or
+> ppp+, but I'm setting up a firewall that will have several web servers
+> behind it and I would like to do something like eth0+ and/or eth0:+ in
+> the rules.  Does anyone know if this will work or do I have to enter
+> every single virtual adapter by hand?
+>
+> Thanks,
+> Dave Boone
+>
+>
+>
+
+
+
 
 
