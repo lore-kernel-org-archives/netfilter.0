@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: <skmail@mcewen.wcnet.org>
 Subject: Re: Forward rule can't specify destination address?
-Date: Thu, 6 Jun 2002 21:18:10 +0100
+Date: Thu, 6 Jun 2002 16:36:49 -0400 (EDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206062018.g56KIBA03225@Networker.rockstone.co.uk>
-References: <Pine.LNX.4.33.0206061501450.2909-100000@mcewen.wcnet.org>
+Message-ID: <Pine.LNX.4.33.0206061629110.24520-100000@mcewen.wcnet.org>
+References: <200206062018.g56KIBA03225@Networker.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.33.0206061501450.2909-100000@mcewen.wcnet.org>
+In-Reply-To: <200206062018.g56KIBA03225@Networker.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,30 +16,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Thursday 06 June 2002 8:10 pm, skmail@mcewen.wcnet.org wrote:
+I'm NAT'ing it also.  Should have put these in my first email I guess.
 
-> Hi all-
->
-> I have a linux box with 1 network card connected the internet with 7
-> internet IP's, and 1 network card and internal ip.  I'm trying to forward
-> a port from one of the internet ip's aliased to it across the firewall to
-> internal.  Here's the forward rule that I use:
->
-> $IPTB -A FORWARD -d 1.2.3.4 -p tcp --dport 3389 -j ACCEPT
->
-> When I connect to the specified IP address it doesn't work.  If I take the
-> destination IP out it works fine.  Any ideas as to why it won't work with
-> the destination IP?
-
-Presumably you are doing DNAT at the same time.   Is 1.2.3.4 the original 
-destination address before translation, or the real destination address of 
-the translated packet ?
-
-PREROUTING happens before FORWARDing.
+$IPTB -A FORWARD -d 1.2.3.4 -p tcp --dport 3389 -j ACCEPT
 
 
-Antony.
+$IPTB -t nat -A PREROUTING -d 1.2.3.4  -p tcp --dport 3389 -j DNAT 
+--to 192.168.0.1
+
+$IPTB -t nat -A POSTROUTING -s 192.168.0.1 -d ! 192.168.0.0/24 -j SNAT 
+--to 1.2.3.4
+
+
+Prerouting before forwarding?  So I need to specify 192.168.0.1 as the 
+destination in the forward rule?
+
+
+
 
