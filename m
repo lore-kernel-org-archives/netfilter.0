@@ -1,9 +1,10 @@
-From: udo <udovdh@yahoo.com>
-Subject: benchmarking iptables/netfilter code?
-Date: Sun, 9 May 2004 05:00:32 -0700 (PDT)
+From: limaunion <limaunion@fibertel.com.ar>
+Subject: Packet filter statistics
+Date: Sat, 08 May 2004 03:36:24 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040509120032.15947.qmail@web40701.mail.yahoo.com>
+Message-ID: <409C7FE8.3010103@fibertel.com.ar>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,30 +15,15 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi,
 
-Is there an (easy) way to do a speed benchmark on the
-firewall code?
-I.e.: How do I determine how much CPU time on a given
-system a certain stream of data (X mbit/s) takes to
-process?
-Also if there is data available on certain (low-end)
-configurations with their firewall performance that
-info would be welcome as well.
-If you have any ideas, please post.
+I'm looking for some nice packet filter statistics utility, I've found 
+this one for OpenBSD http://www.benzedrine.cx/pfstat.html and would like 
+to know if there's something similar for netfilter (very nice ui!).
 
-Kind regards,
-Udo
-
-
-	
-		
-__________________________________
-Do you Yahoo!?
-Win a $20,000 Career Makeover at Yahoo! HotJobs  
-http://hotjobs.sweepstakes.yahoo.com/careermakeover 
+Thanks in advance, and please CC as I'm not subscribed at the moment.
+LM
 
