@@ -1,12 +1,13 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: Latest POM and kernel 2.6
-Date: Mon, 6 Oct 2003 18:10:40 +0200 (CEST)
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: Change iptables log format (would be a nice feature)
+Date: 06 Oct 2003 12:12:26 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0310061805490.6963@dns.toxicfilms.tv>
-References: <02aa01c38c22$0cc66090$6e69690a@rimas>
+Message-ID: <1065456746.1189.32.camel@valhalla>
+References: <Pine.LNX.4.56L0.0310021637520.11122@sutsko.kollegie.dk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <02aa01c38c22$0cc66090$6e69690a@rimas>
+In-Reply-To: <Pine.LNX.4.56L0.0310021637520.11122@sutsko.kollegie.dk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Remus <rmocius@auste.elnet.lt>
+Content-Type: text/plain; charset="us-ascii"
+To: "Lasse B. Jensen" <gymer@odense.kollegienet.dk>
 Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Thu, 2003-10-02 at 10:40, Lasse B. Jensen wrote:
+>
+> Is it possible to change the log format of iptables?
 
-> Is any chance to apply the latest POM to kernel 2.6?
-Not all of it. Generally some pom patches will:
-- not apply, if they are not for this kernel, or they are already in 2.6
-  just get the latest 2.6 for most up2date netfilter code.
-- apply cleanly, if they are just as clean for 2.6 as for 2.4
-- apply with minor rejects about configure.help files:
-  Mainly the patches that introduce new targets/matches add their code
-  and add help messages to Configure. 2.6 does not have Configure, instead
-  it has Kconfig. So applying things like ipv4optsstrip will apply cleanly
-  but you won't get the help message.
+As others have pointed out this is not possible, however it might make a
+nice feature to be added in. I've noticed that in high bandwidth
+environments what chokes throughput the most is logging. This
+materializes as the boxes throughput topping out quicker as well as
+garbled/partial log entries being written.
 
-> Thanks in advance
-> Remus
-Regards,
-Maciej
+I *strongly* feel that one of Netfilter's biggest strengths is the level
+of detail in the logs and would hate to see that change. When your
+pushing high speeds however, your choices come down to collecting
+verbose info (and thus limiting throughput) or not collecting log
+entries. An option that permits a terse log format (say IPs, ports &
+transport only) might be a nice balance.
+
+Just my $.02,
+Chris
+
+
 
