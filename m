@@ -1,13 +1,12 @@
-From: ads nat <adsnat@yahoo.com>
-Subject: Re: Can IPTABLES be used to send alerts!
-Date: Wed, 27 Aug 2003 19:28:36 -0700 (PDT)
+From: Deshwal Chand <CDD@kampsax.co.in>
+Subject: RE: Can IPTABLES be used to send alerts!
+Date: Thu, 28 Aug 2003 09:42:25 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030828022836.63124.qmail@web20705.mail.yahoo.com>
-References: <E19s10M-00014S-Ge@kashyyyk.netfilter.org>
+Message-ID: <88116A11E9DFD411870900508BEC3831803C90@CPQ01>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1516299412-1062037716=:62123"
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C36D1A.967E9040"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E19s10M-00014S-Ge@kashyyyk.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +16,186 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: dir@att.net, Deshwal Chand <CDD@kampsax.co.in>
+To: 'Jim Carter' <jimc@math.ucla.edu>
 Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
---0-1516299412-1062037716=:62123
-Content-Type: text/plain; charset=us-ascii
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-I am not C developer. But fairly good in php.
-Is it possible to extract details of file (100 %) by using php.
-Thanks
+------_=_NextPart_001_01C36D1A.967E9040
+Content-Type: text/plain;
+	charset="iso-8859-1"
+
+Jim,
+
+you r fair enough in raising the legal and ethical point. I gave a wrong
+example. We do not intent to monitor the CVs or people looking for better
+jobs. We are a company who work on high security geographical data for
+clients. We have got people to sign the confidentiality agreements as well. 
+
+The e-mail server and LAN have been secured enough. The only thing that we
+intend to stop is the information about data. Even few text lines for us can
+be costly.
 
 
-dir@att.net wrote:
-Yes, this would be pretty straightforward to do if you are a C developer.
+Best Regards,
 
-You can use the QUEUE target to queue all HTTP traffic to userland. You 
-would then build a userland program to monitor packets for a set of suspect 
-keywords.
+Chand
 
-This approach wouldn't be bullet-proof because the HTTP traffic will be 
-fragmented to the MTU size, but it would probably catch 99% of the keywords 
-you care about. With a little more code, you could demux the TCP traffic to 
-rebuild the entire TCP stream, thereby making it 100%, but that's a lot more 
-effort for little return IMO.
+-----Original Message-----
+From: Jim Carter [mailto:jimc@math.ucla.edu]
+Sent: Wednesday, August 27, 2003 11:13 PM
+To: Deshwal Chand
+Cc: Netfilter (E-mail)
+Subject: Re: Can IPTABLES be used to send alerts!
 
-Regards, dir
 
-> HI,
-> 
-> I don't know whether this is the right place to raise this post.
-> 
+On Wed, 27 Aug 2003, Deshwal Chand wrote:
 > I am using IPTABLES and Squid. I want to monitor all the traffic going out
-> of this box. Suppose someone sends his/her CV from our network using his/her
+> of this box. Suppose someone sends his/her CV from our network using
+his/her
 > Yahoo or Hotmail account, then I may get an alert.
-> 
-> Can IPTABLES do this by using some addones!!
-> 
-> Pls. pardon me if i am being wrong in posting this question on this list.
 
+Another person pointed out that you could make a copy of your datastream,
+using iptables facilities, and feed it to a program that you write, which
+would do the analysis.  But actually analysing the data would be very hard,
+since you would have to understand meaning and intent, not just trigger on
+text strings.
 
+In American custom and law, monitoring users' content is not proper
+behavior.  At UCLA there is a specific regulation that would forbid it at
+my site.  Commercial web hosts such as msn.com have rules forbidding
+pornographic, defamatory, illegal, etc. postings, but in the USA the custom
+is that the host has to wait until someone claims to have been harmed by
+the posting, before taking action.  A few years ago, aol.com got proactive
+about editing postings that criticized AOL, and they were severely flamed
+for it.
 
----------------------------------
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
---0-1516299412-1062037716=:62123
-Content-Type: text/html; charset=us-ascii
+I don't know the situation in Indian and British law, but you should
+definitely consult a lawyer, as well as a spiritual advisor who can give
+you guidance in proper behavior according to Indian custom, before
+snooping on users to detect people trying to get a better job elsewhere.
+If I were interviewing a new programmer and he/she said he left his
+previous job because the employer was snooping on him, I would consider
+that a sufficient reason to leave the job.
 
-<DIV>I am not C developer. But fairly good in php.</DIV>
-<DIV>Is it possible to extract details of file&nbsp;(100 %) by using php.</DIV>
-<DIV>Thanks</DIV>
-<DIV><BR><BR><B><I>dir@att.net</I></B> wrote:</DIV>
-<BLOCKQUOTE class=replbq style="BORDER-LEFT: #1010ff 2px solid; MARGIN-LEFT: 5px; PADDING-LEFT: 5px">Yes, this would be pretty straightforward to do if you are a C developer.<BR><BR>You can use the QUEUE target to queue all HTTP traffic to userland. You <BR>would then build a userland program to monitor packets for a set of suspect <BR>keywords.<BR><BR>This approach wouldn't be bullet-proof because the HTTP traffic will be <BR>fragmented to the MTU size, but it would probably catch 99% of the keywords <BR>you care about. With a little more code, you could demux the TCP traffic to <BR>rebuild the entire TCP stream, thereby making it 100%, but that's a lot more <BR>effort for little return IMO.<BR><BR>Regards, dir<BR><BR>&gt; HI,<BR>&gt; <BR>&gt; I don't know whether this is the right place to raise this post.<BR>&gt; <BR>&gt; I am using IPTABLES and Squid. I want to monitor all the traffic going out<BR>&gt; of this box. Suppose someone sends his/her CV from our network using
- his/her<BR>&gt; Yahoo or Hotmail account, then I may get an alert.<BR>&gt; <BR>&gt; Can IPTABLES do this by using some addones!!<BR>&gt; <BR>&gt; Pls. pardon me if i am being wrong in posting this question on this list.<BR><BR></BLOCKQUOTE><p><hr SIZE=1>
-Do you Yahoo!?<br>
-<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
---0-1516299412-1062037716=:62123--
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA  90095-1555
+Email: jimc@math.ucla.edu    http://www.math.ucla.edu/~jimc (q.v. for PGP
+key)
+
+------_=_NextPart_001_01C36D1A.967E9040
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>RE: Can IPTABLES be used to send alerts!</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>Jim,</FONT>
+</P>
+
+<P><FONT SIZE=3D2>you r fair enough in raising the legal and ethical =
+point. I gave a wrong example. We do not intent to monitor the CVs or =
+people looking for better jobs. We are a company who work on high =
+security geographical data for clients. We have got people to sign the =
+confidentiality agreements as well. </FONT></P>
+
+<P><FONT SIZE=3D2>The e-mail server and LAN have been secured enough. =
+The only thing that we intend to stop is the information about data. =
+Even few text lines for us can be costly.</FONT></P>
+<BR>
+
+<P><FONT SIZE=3D2>Best Regards,</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Chand</FONT>
+</P>
+
+<P><FONT SIZE=3D2>-----Original Message-----</FONT>
+<BR><FONT SIZE=3D2>From: Jim Carter [<A =
+HREF=3D"mailto:jimc@math.ucla.edu">mailto:jimc@math.ucla.edu</A>]</FONT>=
+
+<BR><FONT SIZE=3D2>Sent: Wednesday, August 27, 2003 11:13 PM</FONT>
+<BR><FONT SIZE=3D2>To: Deshwal Chand</FONT>
+<BR><FONT SIZE=3D2>Cc: Netfilter (E-mail)</FONT>
+<BR><FONT SIZE=3D2>Subject: Re: Can IPTABLES be used to send =
+alerts!</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2>On Wed, 27 Aug 2003, Deshwal Chand wrote:</FONT>
+<BR><FONT SIZE=3D2>&gt; I am using IPTABLES and Squid. I want to =
+monitor all the traffic going out</FONT>
+<BR><FONT SIZE=3D2>&gt; of this box. Suppose someone sends his/her CV =
+from our network using his/her</FONT>
+<BR><FONT SIZE=3D2>&gt; Yahoo or Hotmail account, then I may get an =
+alert.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Another person pointed out that you could make a copy =
+of your datastream,</FONT>
+<BR><FONT SIZE=3D2>using iptables facilities, and feed it to a program =
+that you write, which</FONT>
+<BR><FONT SIZE=3D2>would do the analysis.&nbsp; But actually analysing =
+the data would be very hard,</FONT>
+<BR><FONT SIZE=3D2>since you would have to understand meaning and =
+intent, not just trigger on</FONT>
+<BR><FONT SIZE=3D2>text strings.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>In American custom and law, monitoring users' content =
+is not proper</FONT>
+<BR><FONT SIZE=3D2>behavior.&nbsp; At UCLA there is a specific =
+regulation that would forbid it at</FONT>
+<BR><FONT SIZE=3D2>my site.&nbsp; Commercial web hosts such as msn.com =
+have rules forbidding</FONT>
+<BR><FONT SIZE=3D2>pornographic, defamatory, illegal, etc. postings, =
+but in the USA the custom</FONT>
+<BR><FONT SIZE=3D2>is that the host has to wait until someone claims to =
+have been harmed by</FONT>
+<BR><FONT SIZE=3D2>the posting, before taking action.&nbsp; A few years =
+ago, aol.com got proactive</FONT>
+<BR><FONT SIZE=3D2>about editing postings that criticized AOL, and they =
+were severely flamed</FONT>
+<BR><FONT SIZE=3D2>for it.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>I don't know the situation in Indian and British law, =
+but you should</FONT>
+<BR><FONT SIZE=3D2>definitely consult a lawyer, as well as a spiritual =
+advisor who can give</FONT>
+<BR><FONT SIZE=3D2>you guidance in proper behavior according to Indian =
+custom, before</FONT>
+<BR><FONT SIZE=3D2>snooping on users to detect people trying to get a =
+better job elsewhere.</FONT>
+<BR><FONT SIZE=3D2>If I were interviewing a new programmer and he/she =
+said he left his</FONT>
+<BR><FONT SIZE=3D2>previous job because the employer was snooping on =
+him, I would consider</FONT>
+<BR><FONT SIZE=3D2>that a sufficient reason to leave the job.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>James F. =
+Carter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Voice 310 =
+825 2897&nbsp;&nbsp;&nbsp; FAX 310 206 6673</FONT>
+<BR><FONT SIZE=3D2>UCLA-Mathnet;&nbsp; 6115 MSA; 405 Hilgard Ave.; Los =
+Angeles, CA, USA&nbsp; 90095-1555</FONT>
+<BR><FONT SIZE=3D2>Email: jimc@math.ucla.edu&nbsp;&nbsp;&nbsp; <A =
+HREF=3D"http://www.math.ucla.edu/~jimc" =
+TARGET=3D"_blank">http://www.math.ucla.edu/~jimc</A> (q.v. for PGP =
+key)</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C36D1A.967E9040--
 
