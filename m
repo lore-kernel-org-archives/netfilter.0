@@ -1,9 +1,9 @@
-From: "xchris" <lyra@fastwebnet.it>
-Subject: Re: redirection
-Date: Wed, 9 Apr 2003 01:17:25 +0200
+From: Peteris Krumins <newsgroups@lf.lv>
+Subject: psd and active ftp mode
+Date: Wed, 9 Apr 2003 03:22:10 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b601c2fe25$03ee2920$23956401@m56>
-References: <Pine.LNX.4.44.0304081443120.28439-100000@ns2.tje1.com>        <200304082140.27919.lyra@fastwebnet.it> <43075.208.33.29.212.1049842172.squirrel@www.tje1.com>
+Message-ID: <136459744507.20030409032210@lf.lv>
+Reply-To: Peteris Krumins <newsgroups@lf.lv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,21 +19,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+hello,
 
------ Original Message -----
-From: "Eric Joe" <sysop@tje1.com>
+ i was just testing psd match and w/ ftp active mode.
 
+ I created 10000 files on the ftp server and set my ftp client to
+ active mode and let it download those files while having
+ `iptables -A INPUT -p tcp -m psd -j REJECT --reject-with tcp-reset`
+ (with psd default threshold/weigh values).
+ The psd matched 3136 packets.
 
-> I didnt catch the fact that you need the source address. Are you tracking
-> this for a reason? You can probably have iptables log the source address.
-> This does in fact work, been using it for  about 6 months now. Let me post
-> my exact rules (IPs are obsfucated)
+ Ftp server went mad issuing:
+  425: Unable to build data connection: Connection refused
 
-i need it because i'm trying to do a simple load balancing between 2 local
-servers running opennap.
-(and opennap needs to know the IP address otherwise downloads dont start)
-thnak you
+ This means i cannot relay on psd and block 'possible portscans'?
+ Any suggestions?
 
-xchris
+ The same would happen, if i created some rules with limit match..
+
+ 
+P.Krumins
 
 
