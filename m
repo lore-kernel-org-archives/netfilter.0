@@ -1,12 +1,13 @@
-From: Mohan Khurana <mkhurana@andrew.cmu.edu>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: SNAT matching question
-Date: Sun, 29 Sep 2002 13:09:13 -0400 (EDT)
+Date: Sun, 29 Sep 2002 17:46:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSO.4.44L-027.0209291259220.1180-100000@unix4.andrew.cmu.edu>
-References: <20020929164657.RSYO13996.mta05-svc.ntlworld.com@there>
+Message-ID: <20020929164657.RSYO13996.mta05-svc.ntlworld.com@there>
+References: <Pine.GSO.4.44L-027.0209291222490.1180-100000@unix4.andrew.cmu.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020929164657.RSYO13996.mta05-svc.ntlworld.com@there>
+In-Reply-To: <Pine.GSO.4.44L-027.0209291222490.1180-100000@unix4.andrew.cmu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,50 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sun, 29 Sep 2002, Antony Stone wrote:
+On Sunday 29 September 2002 5:26 pm, Mohan Khurana wrote:
 
-> No - I meant that there's no sensible way of balancing incoming connections
-> because you have no control over the routing of packets out on the Internet
-> which are coming to you.
+> Incoming connections does pose a problem.  So I assume that the problem is
+> that a packet comes in to a locally hosted server, this is no problem.
+> The problem occurs when packets are flowing back out, since they may go
+> over the wrong interface due to the equalize nexthop.
+>
+> right?
 
-Hmmm, this is true.
+No - I meant that there's no sensible way of balancing incoming connections 
+because you have no control over the routing of packets out on the Internet 
+which are coming to you.
 
-> Reply packets should not be a problem unless your ISPs block packets with
-> source addresses which don't match the network range you have from them.
+Reply packets should not be a problem unless your ISPs block packets with 
+source addresses which don't match the network range you have from them.
 
-This is also true, but what if they do block?  I was hoping there was a
-way to maintain connection tracking such that if there is a machine on the
-internet that connects to an internally hosted server, it would maintain
-the incoming gateway and interface, and then ensure that the equalize
-command would ensure that the outgoing packet going to the right gateway.
+The packets themselves will get reverse NATted automagically by netfilter in 
+the same way as the incoming packets.  No worries there.
 
-ip route default table 1 equalize
-	nexthop via 1.2.3.4
-	nexthop via 5.6.7.8
+Antony.
 
-Lets say some internet machine contact my webserver, which happens to be
-at 1.2.3.33.  It would come in on 1.2.3.4.  Now the webserver needs to
-send IP packets back out to the internet, so it does a routing table
-lookup.  Because ISP1 would block ISP2 traffic and vice-versa, if the
-selected gateway (as a result of the equalize statement above) is 5.6.7.8,
-then the only way to get that IP packet out would be to NAT it on an IP
-from ISP2.  Post-NAT, this would change the source field of the IP packet,
-and break communication (the machine on the internet wanted a source of
-1.2.3.33).
+-- 
 
-I think the solution is for incoming packets destined to servers marked as
-state NEW to have their gateway and source address placed in a table.
-When 1.2.3.33 wants to go out, the equalize flag should look up the table,
-see if the destination host is in there, and if it is, it should return
-the proper corresponding gateway.
-
-What do you think?  Is this possible?
-
-mohan
-
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
 
