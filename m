@@ -1,12 +1,13 @@
-From: kannel sms <kannel_sms@yahoo.com>
-Subject: RE: DHCP /MAC
-Date: Sat, 8 Nov 2003 05:14:40 -0800 (PST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DHCP /MAC
+Date: Sat, 8 Nov 2003 14:05:07 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031108131440.92567.qmail@web60208.mail.yahoo.com>
-References: <20031108120948.3F1B793E0@sterenborg.info>
+Message-ID: <200311081405.hA8E59j15513@agate.rockstone.co.uk>
+References: <20031108130517.88285.qmail@web60210.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031108120948.3F1B793E0@sterenborg.info>
+In-Reply-To: <20031108130517.88285.qmail@web60210.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+On Saturday 08 November 2003 1:05 pm, kannel sms wrote:
 
-That Transmission part is ok . what i'm doing is
-assining a ip via dhcp server . but there must be the
-firewall to block the unknown MAC . 
-I don't try to block MAC addresses via DHCP . because
-those assigning ips will not be the fixed for the
-users. 
-so overcome that problem i'm trying to use a iptables
-firewall. 
+> As u said i did all , but it will not reach my
+> requirement, because when i added that rule with a
+> specific MAC address , according to ur mail it will
+> allow  to get all the dhcp facilities .
+> But other machines also doing samething . so seems to
+> be somewhere has a small problem ,
 
-Actually i'm new to iptables . i don't have exact idea
-of how to block unknown MACs and allow trusted MACs.
+1. What *exactly* is not working correctly with the rules I suggested?   I 
+still do not understand whether you are saying that machines which should 
+have access are being blocked, or machines which should not have access are 
+being allowed.
 
-so actually this is the thing that i want to do .
-pls ...........can u knidly help me 
+2. Have you tried adding a LOGging rule as I suggested to check exactly what 
+MAC addresses are on the packets coming in to your machine, just to make sure 
+the machine is seeing what you think it should?
 
+Antony.
 
+-- 
 
-thanx 
+Mahatma Gandhi was once asked what he thought of Western Civilisation.
 
---- Rob Sterenborg <rob@sterenborg.info> wrote:
-> > I still find it hard to believe that your modem
-> users have 
-> > MAC addresses - all dialup systems I have seen use
-> PPP Point 
-> > to Point Protocol and there is no MAC address
-> identifying the 
-> > remote system.
-> 
-> I agree to this part, but he was talking about
-> dialup/cable access.
-> When I had cable access from Chello/UPC I had a
-> LanCity modem and it
-> actually had a MAC address. (Which could be abused
-> to get higher up/down
-> bandwith.)
-> 
-> 
-> Gr,
-> Rob
-> 
-> 
-
-
-__________________________________
-Do you Yahoo!?
-Protect your identity with Yahoo! Mail AddressGuard
-http://antispam.yahoo.com/whatsnewfree
+He replied, "That would be a very good idea."
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
