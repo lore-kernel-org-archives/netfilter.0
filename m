@@ -1,11 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: pptp nat and fedora core3
-Date: Thu, 17 Feb 2005 09:34:48 -0500
-Message-ID: <1108650888.4629.39.camel@hubcap.ljm.dom>
-References: <42149F1B.1000504@caris.com>
+From: Askar <askarali@gmail.com>
+Subject: Re: slow ftp
+Date: Thu, 17 Feb 2005 22:11:55 +0500
+Message-ID: <a0f69e505021709116d1ee760@mail.gmail.com>
+References: <a0f69e505021708481c4be836@mail.gmail.com>
+	<030e01c51511$cf9c6e10$b000a8c0@cybergeneration.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <42149F1B.1000504@caris.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <030e01c51511$cf9c6e10$b000a8c0@cybergeneration.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,59 +18,96 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Maxime Ducharme <mducharme@cybergeneration.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thu, 2005-02-17 at 08:41, Peter Marshall wrote:
-> I am building a firewall that has to support the natting of pptp ... I 
-> was hoping fedora core 3 would have the necessary conntrack modules 
-> (like gre and pptp) built into the kernel ... but it does not ...
+Hello Maxime,
 
-nope--sure doesn't.
+Thanks  for your quick reply, I added the above rules for all our
+company DNS servers but no luck still it takes times on
+Connecting.......
 
-> I would REALLY prefer to not have to re-compile the kernel ... 
+flushing firewall rules makes a difference that is "quick" connection :)
 
-well...ya gotta...
-
-> Is there 
-> a "laodmodule" line I can use to add the stuff at runtime ?  
-
-no.
-
-> What 
-> modules do I need ?
-
-ip_conntrack_pptp
-ip_conntrack_proto_gre
-ip_nat_pptp
-ip_nat_proto_gre
+regards
 
 
-> I am going to have windows xp boxes use the built in pptp client to 
-> connect out of my lan to an external site ....
-> 
-> Is there a difference between what you would do with rh9 and fed core3
 
-sort of.  redhat 9 is a 2.4-based distro, while fc3 is a 2.6-based
-distro.  you can search the archives on this, but my observation is that
-there are still issues with the 2.6 of the PPTP conntrack/nat code.
+On Thu, 17 Feb 2005 11:57:49 -0500, Maxime Ducharme
+<mducharme@cybergeneration.com> wrote:
+> Hello Askar
+>=20
+> Usually it is because of reverse DNS done
+> when a client connects.
+>=20
+> If your firewall doesnt have access to any DNS
+> and tries to resolve the client hostname, each time
+> a client connects, it will have to wait until the server
+> times out on DNS requests.
+>=20
+> Configure DNS and add
+> iptables -A OUTPUT -p udp --dport 53 -d $DNS_SERVER -j ACCEPT
+> iptables -A OUTPUT -p tcp --dport 53 -d $DNS_SERVER -j ACCEPT
+>=20
+> Replace $DNS_SERVER with your DNS server's IP.
+> If you have more, add as much rules as needed.
+>=20
+> You may also take a look into proftpd config, maybe
+> you can simply deactivate reverse DNS lookup on connect.
+>=20
+> Hope this helps
+>=20
+> Have a nice day
+>=20
+> Maxime Ducharme
+> Programmeur / Sp=E9cialiste en s=E9curit=E9 r=E9seau
+>=20
+> ----- Original Message -----
+> From: "Askar" <askarali@gmail.com>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Thursday, February 17, 2005 11:48 AM
+> Subject: slow ftp
+>=20
+> > hi list
+> >
+> > we are running ftp "proftpd" server it takes times when a user
+> > connects to ftp server however when I flush the iptables rules
+> > connection doesn't takes time, iptables firewall on the same machine,
+> > default policies are DROP,
+> > firewall script is very straight forward
+> >
+> > rules
+> > .
+> > .
+> > # Using Connection State to By-pass Rule Checking
+> > iptables -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > .
+> > .
+> > .iptables -A INPUT -p tcp --dport 20:21 -m state --state NEW -j ACCEPT
+> > .
+> > .
+> >
+> > # Load the FTP connection state helper module.
+> > modprobe ip_conntrack_ftp
+> > # Load the FTP NAT module.
+> > modprobe ip_nat_ftp
+> >
+> > any idea?
+> >
+> > regards
+> >
+> > --
+> > I love deadlines. I like the whooshing sound they make as they fly by.
+> > Douglas Adams
+> >
+>=20
+>=20
 
-if you *must* use 2.6, you almost certainly will want to grab the latest
-POM from SVN.  note:  "must" means the machine you are using as the
-firewall will not run with a 2.4 kernel.
 
-if the machine is 2.4-friendly, then stick with what works.  since rh9
-is eol--if this is a new install, and you like the rh-style of distro,
-might i suggest CentOS as base for your firewall?  take it from a guy
-that runs it--FC is a toy, and a nightmare to maintain if you're used
-stable code and patch updates that don't break things... 
-
--j
-
---
-"I'm better than dirt. Well, most kinds of dirt... not that fancy
- store-bought dirt... that stuff's loaded with nutrients, I... I
- can't compete with that stuff."
-	--The Simpsons
-
+--=20
+I love deadlines. I like the whooshing sound they make as they fly by.
+Douglas Adams
 
