@@ -1,15 +1,14 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: ip_conntrack_pptp
-Date: Thu, 22 Jan 2004 13:09:04 -0500
+From: Juan Hernandez <alucard@kanux.com>
+Subject: Re: netfilter stops working
+Date: 22 Jan 2004 14:30:43 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <49653.2438941815$1074795162@news.gmane.org>
-References: <20031221122445.GC5058@obroa-skai.de.gnumonks.org> <003601c3e100$6e8a68c0$2d64a8c0@pcjka> <20040122175345.GN1810@obroa-skai.de.gnumonks.org>
+Message-ID: <1074796242.27896.32.camel@webmail.aeropostal.com.ve>
+References: <1074788089.27896.13.camel@webmail.aeropostal.com.ve>
+	 <200401221239.53241.Alistair Tonner <>>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <20040122175345.GN1810@obroa-skai.de.gnumonks.org>
-Content-Disposition: inline
+In-Reply-To: <200401221239.53241.Alistair Tonner <>>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,26 +19,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Harald Welte <laforge@netfilter.org>, Jan Kaastrup <jka@protego.dk>
-Cc: 'Netfilter Development Mailinglist' <netfilter-devel@lists.netfilter.org>, 'Netfilter Mailinglist' <netfilter@lists.netfilter.org>
+To: Lista de netfilter <netfilter@lists.netfilter.org>
 
-On January 22, 2004 12:53 pm, Harald Welte wrote:
-> On Thu, Jan 22, 2004 at 04:57:26PM +0100, Jan Kaastrup wrote:
-> > Hi Harald and all on this list.
-> >
-> > I have problems with ip_conntrack_pptp patch from POM-20031219
-> > Does anyone know of this, or is it just me being stupid ?
->
-> *sigh* *sigh* *sigh*.
->
-> Does anybody actually ponder reading the 'README' file included in the
-> patch-o-matic package?
+On Thu, 2004-01-22 at 13:39, Alistair Tonner sender wrote:
+
+> 	Jaun -- you imply here that you've upgraded your kernel code.
+> 	Did you change the NIC drivers from modules to builtin of vice-versa?
+> 	Did you ensure that you've recompiled the iptables code?? <-- Although sometimes 
+> 	it will work after a kernel change, by default if you upgrade the kernel you MUST recompile iptables
+> 	userspace code ...(I suspect that in RH you may have a different RPM package for the newer kernel)
 
 
-	I thought that was for padding to make the MD5 sums work??? 
-	*grin*
+I upgraded the kernel after this problem started and makes no
+difference. I have recompiled everything and yes, it's a whole new
+package
 
-	Alistair
->
-> > Jan
+> 	
+> 	I found that after switching from 2.4.9 to 2.4.18 the network cards loaded in different sequences unless
+> 	I built them as modules and inserted them from a script .. .but thats my experience. (this chanages the 
+> 	interface order/sequence/labelling )
+> 
+> 	The packet you are seeing in the log is a DNS packet -- likely a reply to a DNS request, but between your
+> 	firewall script and what you've told us this sounds like it is a result of the interface labels having 
+> 	changed due to the load order of the NIC drivers changing somehow.  Now you are getting stuff coming
+> 	in on what you've defined as out and are sending the reply out that way... 
+> 
+
+Yes, it's a DNS packets, it's just one of the many packets that goes
+thru both interfaces and the one I chose to copy from the log... but all
+kinds of packages are shown. The problem I think is that somehow
+netfilter after sometime working, confuses input and output NICs in the
+same... as the logs show. And about the modules, have you seen in my
+script any modules that I should or should not load? any suggestions?
+
+> 
+> 	Next point ...are these interfaces BOTH somehow connected to a switch/hub out there ???? 
+> 	(see loooong thread early this month that exhibited same symptome and was a result of 
+> 	a cable being where it shouldn't be)
+> 
+
+Hehehehe... eth1 has a DSL connection and eth0 shares the connection to
+the users and have some other services for the LAN. I switch both cards
+with a completely different ones and the kernel loads the new drivers
+perfectly... I configure them and after sometime -about an hour- I start
+getting that log and everything stops working... with both kernels.
+
+
+Thanks a lot for your time... I appreciate it
+
+Juan
+
 
