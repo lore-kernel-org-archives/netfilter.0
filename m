@@ -1,15 +1,14 @@
 From: Kenneth Porter <shiva@sewingwitch.com>
 Subject: Re: Setting TOS in POSTROUTING mangle table
-Date: Wed, 06 Oct 2004 10:12:45 -0700
+Date: Wed, 06 Oct 2004 10:21:27 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <40E3223FC8318D76659A6579@[10.169.6.246]>
+Message-ID: <EC41761633122CEB2108A37F@[10.169.6.246]>
 References: <E0E0E80CC865BFEC576183B5@[10.169.6.246]>
 	<1097078302.5214.10.camel@wolfpack.ljm.dom>
-	<1097079300.2976.14.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1097079300.2976.14.camel@anduril.intranet.cartel-securite.net>
+In-Reply-To: <1097078302.5214.10.camel@wolfpack.ljm.dom>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,18 +22,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
---On Wednesday, October 06, 2004 6:15 PM +0200 Cedric Blancher 
-<blancher@cartel-securite.fr> wrote:
+--On Wednesday, October 06, 2004 11:58 AM -0400 Jason Opperisano 
+<opie@817west.com> wrote:
 
-> For Kenneth : if you still want to use TOS, I would reset it to 0 in
-> POSTROUTING chain, as some silly guys drop packets with non null TOS
-> value.
+> if the netfilter box is also the traffic shaper--set TOS in PREROUTING
+> so that that tc filters have the TOS values available to make a
+> decision.
 
-What "silly guys" do that? Sounds rather anti-social. I can see ignoring 
-the QoS request and dumping the packet in the default queue, but not 
-dropping the packets.
+That's what I'd like to do, but...
 
-Doesn't ssh set the Minimize-Delay value?
+<http://www.faqs.org/docs/iptables/traversingoftables.html>
 
+Is table 3.2 wrong? PREROUTING isn't even in that table, and there's no way 
+to affect a packet before the routing decision step and after the app has 
+delivered the packet to the kernel.
 
+I have no access to the source of the typical game server binary, so I 
+can't set the TOS bits before the packets hit the kernel. (The developer of 
+the Battlefield 1942 Linux server added this feature as an option, though.)
 
