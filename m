@@ -1,12 +1,11 @@
-From: "Michael P. Soulier" <michael_soulier@mitel.com>
-Subject: preserving fwmarks through KLIPS
-Date: Mon, 10 Jan 2005 16:36:57 -0500
-Message-ID: <1105393017.12167.24.camel@latte.nssg.mitel.com>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Packets that should have been DNATted appearing in INPUT table
+Date: Mon, 10 Jan 2005 19:27:12 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10501101924120.16399-100000@darkstar.sysinfo.com>
+References: <003601c4f51b$22c36790$4206a8c0@loki>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-Kw/3bjrEQxed0ntYWlu0"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <003601c4f51b$22c36790$4206a8c0@loki>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +16,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Marius Mertens <marius.mertens@gmx.de>
+Cc: netfilter@lists.netfilter.org
 
+On Sat, 8 Jan 2005, Marius Mertens wrote:
 
---=-Kw/3bjrEQxed0ntYWlu0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> On Friday, January 07, 2005 9:08 PM,
+> Michael Gale wrote:
+> 
+> > I believe you are misunderstanding what is happening, your rule:
+> >
+> > iptables -A INPUT -i ppp0 -p tcp --dport 4664 -j DROP
+> >
+> > Should not affect packets you are forwarding, because those packets
+> > from outside that are being sent to a internal machine should be
+> > matched against the FORWARD and not the INPUT.
+> 
+> Yes, this is exactly my problem: As you said, forwarded packets should never 
+> be matched against rules in INPUT. And thats where the DROP rule above 
+> enters the game: I just inserted it as a very primitive "test", just to have 
+> a packet counter for packets matching criteria "-i ppp0 -p tcp --dport 4664" 
+> in INPUT and expected it to be constantly zero. The only purpose of this 
+> drop rule is to show me, how many packets (matching the same criteria "-i 
+> ppp0 -p tcp --dport 4664") have not been DNATed in PREROUTING.
+> 
 
-Hello,
-
-I am trying to classify ipsec and non-ipsec traffic on the external
-interface of my box. I plan to use fwmarks in iptables, and then rely on
-those for queueing classification on the external interface.=20
-
-My question is, if I mark a packet before it is encrypted by KLIPS in
-FreeS/WAN, when it is re-injected with a new IP header, will that fwmark
-be maintained?=20
-
-Looking here:
-
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#MARKTARGET
-
-it is not clear. I'm going to do some testing but I was hoping that
-someone might have a definitive answer.=20
-
-I am using kernel 2.4.21.=20
+And there are other reasons that you might get this counter to increment
+and none of them relating to packets meant for the DNAT system<s>/rules on
+the FORWARD chain.  It's not enough of a test to validate your
+conclusions, adding a LOG rule prior to the drop might help track down
+'why' you are seeing that 'counter' increment.
 
 Thanks,
-Mike
 
---=20
-Michael P. Soulier <michael_soulier@mitel.com>, 613-592-2122 x2522
-6000/6010/60* Development, Mitel Corporation
-"...the word HACK is used as a verb to indicate a massive amount of
-nerd-like effort." -Harley Hahn, A Student's Guide to Unix
+Ron DuFresne
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
-
---=-Kw/3bjrEQxed0ntYWlu0
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQBB4vV5KGqCc1vIvggRAk4GAKDCVTdJBko4Niu5IARkUqd/rxwHEACbBLT0
-gYP+e6wrCK0iPODLr7qyVic=
-=vOaU
------END PGP SIGNATURE-----
-
---=-Kw/3bjrEQxed0ntYWlu0--
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
 
 
