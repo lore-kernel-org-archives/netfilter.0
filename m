@@ -1,11 +1,16 @@
-From: cky@arcor.de
-Subject: Re: Dinamic (www list) IP BAN ...
-Date: Thu, 22 Apr 2004 19:16:57 +0200 (CEST)
+From: test@seaconindia.com
+Subject: Re: DNAT Problem
+Date: Thu, 22 Apr 2004 23:48:10 +0530 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <19160336.1082654217586.JavaMail.ngmail@webmail07.arcor-online.net>
+Message-ID: <13723.80.0.0.2.1082657890.squirrel@202.149.196.178>
+References: <1611.80.0.0.23.1082351242.squirrel@80.0.0.175>
+    <200404221347.13412.Antony@Soft-Solutions.co.uk>
+    <1645.80.0.0.23.1082639169.squirrel@80.0.0.175>
+    <200404221421.44015.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200404221421.44015.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,64 +20,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi Antony
 
-just write a little script and call it by a cronjob every 30 minutes or so.
+>> >> I have email server running behind my firewall. Now all request
+>> coming
+>> >> from internet are logged as if coming from my firewall. I want the
+>> >> request to be logged with source ip and not with firewall ip.
+>> >
+>> > I know that is your problem.
+>> >
+>> > I believe the change to your MASQUERADE / SNAT rule which I posted is
+>> a
+>> > solution to that problem.
+>> >
+>> > If it is not a solution, then post your current ruleset so that we can
+>> > think about it further.
+>>
+>> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 25 -j DNAT --to
+>> 192.168.0.6:25
+>
+> I don't believe that can be your complete ruleset.
+>
+> I see nothing wrong with the above rule as it stands, however on its own
+> it's
+> not much good - you need a FORWARD rule to allow packets through to the
+> mail
+> server as well.
+>
 
-I assume your banlistfile is splitted into 2 or more tables (as you show), =
-like:
+Can you give me an example of the forward rule set.
 
-192.168.0.3     #comment 1
-10.10.3.2         #comment 2
-192.168.44.2   #comment 3
+> Anyway, I thought (I may be mistaken) that the problem was not with the
+> inbound DNAT, but with SNAT?
+>
 
-and so on.
+Or shall I attach my complete bash script ? (is it ok ?)
 
-So take a look at this (very simple) script (if you've more iptables rules,=
- you've to change the script, of course):
+Regards
 
-
-#!/bin/bash
-
-banfile=3D"/path/to/banlist.txt"
-
-iptables -F
-iptables -Z
-
-for ip in `cat $banfile | awk '{print $1}'`; do
-=09iptables -A INPUT -s $ip -j DROP
-done
-
-
-That's all.
-
-
-Best regards,
-Thomas
-
-
-On Thu, 22 Apr 2004 17:47:19 +0100
-Roque <roque@lpgc.net> wrote:
-
-> Hi all, i wonder if someone could help me with a little problem ...
-> I need to ban a number of IP=B4s that are posted in a plain text file on
-> a web site; the file changes every 30Min. The file is as simple as
->=20
-> banned-ip1    #Reason1
-> banned-ip2    #Reason
-> ...
->=20
-> The url can be reached in this way: http://www.url.com/ip/banned.txt
->=20
-> I have read the iptables man pages and haven=B4t seen nothing similar.
-> Is it really posible to do so?
-> Thanks in Advance. roque@lpgc.net
-
-
-
-
-
+Joel
 
