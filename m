@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Internal ip exiting network on firewall external nic despight rule
-Date: Sat, 21 Sep 2002 00:32:07 +0100
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: Internal ip exiting network on firewall external nic despight rule
+Date: Fri, 20 Sep 2002 16:13:49 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020920233209.UGJA17905.mta07-svc.ntlworld.com@there>
-References: <000301c260fa$f0b68860$0801a8c0@s3ac>
+Message-ID: <000401c260fb$611f3c50$0801a8c0@s3ac>
+References: <20020920230140.RKRZ10370.mta02-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000301c260fa$f0b68860$0801a8c0@s3ac>
+In-reply-to: <20020920230140.RKRZ10370.mta02-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,58 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-Hi.
 
-I just thought I'd clarify something which I might have mis-assumed, based on 
-what you said in your last reply:
+> > Since I'm cheap I don?t want to purchase another hub, I 
+> have my T1....
+> 
+> You have a T1 connections and you don't want to pay for another hub ?
 
-On Saturday 21 September 2002 12:10 am, Rowan Reid wrote:
+Why do you think I can't afford a hub, actually kudoes to Allegience
+Telecom
+$300 a month = T1 (6 phone lines and a 500K dedicated connection 16IP's)
+Tell em Rowan sent ya!
 
-> > Okay - this is how it works:
-> >
-> > The *original* packet (the first one) in what is going to be a natted
-> > connection gets to the firewall, enters the PREROUTING chain, and the
-> > destination address gets changed.   The packet then goes on
-> > to the FORWARD
->
-> So it gets nated at the PREROUTING chain oooooooohhhhhhhh ...
 
-Destination NAT (which is what I've assumed is going here - maybe 
-incorrectly) is done in the PREROUTING chain.
 
-Source NAT (which maybe is what you're doing ?) is done in the POSTROUTING 
-chain.
 
-However, apart from that difference, everything else I said is correct for 
-either situation:
+> Okay, but don't be surprised if your firewall doesn't work 
+> like that....
+> 
+<action>
+Kicks his networking for dummies book out the window
+</action>
 
-1. Reply packets for NATted connections always bypass any rules in both the 
-PREROUTING and POSTROUTING chains, and simply get automagically 
-reverse-natted according to whatever the original nat rule was.
-
-2. If the original packet got DNATted in the PREROUTING chain, then the reply 
-packet gets automagically SNATted at the POSTROUTING stage (ie after going 
-through the FORWARD chain).
-
-3. If the original packet got SNATted in the POSTROUTING chain, then the 
-reply packet gets automagically DNATted at the PREROUTING stage (ie before 
-going through the FORWARD chain).
-
-4. The FORWARD chain should always contain rules whcih relate to the "real" 
-source & destination addresses, no matter what DNAT may have already 
-occurred, or what SNAT may be about to occur.
-
-5. What I said about whether packets go through INPUT, OUTPUT or FORWARD was 
-accurate in all situations.
-
-Hope this helps.
-
-Antony.
-
--- 
-
-Normal people think "if it ain't broke, don't fix it".
-Engineers think "if it ain't broke, it doesn't have enough features yet".
 
