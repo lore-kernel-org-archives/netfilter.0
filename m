@@ -1,13 +1,12 @@
-From: Marcello Scacchetti <marcello.scacchetti@nextrem.it>
-Subject: Re: how to delete a piece of rule in iptables?
-Date: 18 Dec 2002 12:18:47 +0100
+From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
+Subject: RE: iptables accounting problem
+Date: Wed, 18 Dec 2002 15:00:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040210327.3449.2.camel@nxitmirms1>
-References: <200212181222.UAA02783@email.whu.edu.cn>
+Message-ID: <FD8F124A387AD6119F7900A0D218B32154A93A@hslex01.hslbz.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2A69D.D6FCC040"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200212181222.UAA02783@email.whu.edu.cn>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +16,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: bobo <boboaq@163.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>, "bobowd@sohu.com" <bobowd@sohu.com>
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hi,
-you can use iptables -D or -X or -F. -D to delete a single rule, -X do
-detele a chain and -F to flush all rules from a chain.
-Refer to man 8 iptables for details and examples.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Marcello
+------_=_NextPart_001_01C2A69D.D6FCC040
+Content-Type: text/plain
 
-Il mer, 2002-12-18 alle 13:30, bobo ha scritto:
->              i have insert some rules to iptables firewall.now,i would 
-> like to delete it  .
-> but i only know to use iptalbes -L to empty them.
-> but it lead to delete all the rules in it.
-> how to do ??
-> 
--- 
-Marcello Scacchetti <marcello.scacchetti@nextrem.it>
+>       I'm sorry for asking this question, I red all the documentation
+>       and still got no clue how to make ip accounting work.
+>       I got a pc with 2 ethernet cards all traffics goes through it.
+>       i created a rule like
+>       iptables -N xxx.xxx.xxx.xxx
+>       iptables -A input -d xxx.xxx.xxx.xxx -j xxx.xxx.xxx.xxx
+>       when i type
+>       iptables -L xxx.xxx.xxx.xxx -n -v
+>       i get 0 traffic information. How could be? Or whereis my
+>       mistake?
+
+What if you did it like this :
+iptables -A INPUT -d xxx.xxx.xxx.xxx
+Then iptables -L INPUT -nv should tell you how much traffic has passed by.
+
+You could also create your own rule of course, but I think it's overkill.
+iptables -N testrule
+iptables -A testrule -d xxx.xxx.xxx.xxx
+iptables -A INPUT -j testrule
+Then to check the traffic that passed by : iptables -L testrule -nv
+
+
+Rob
+
+------_=_NextPart_001_01C2A69D.D6FCC040
+Content-Type: text/html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2653.12">
+<TITLE>RE: iptables accounting problem</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I'm sorry for asking this question, I red all the documentation</FONT>
+<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and still got no clue how to make ip accounting work.</FONT>
+<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I got a pc with 2 ethernet cards all traffics goes through it.</FONT>
+<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i created a rule like</FONT>
+<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -N xxx.xxx.xxx.xxx</FONT>
+<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -A input -d xxx.xxx.xxx.xxx -j xxx.xxx.xxx.xxx</FONT>
+<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when i type</FONT>
+<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -L xxx.xxx.xxx.xxx -n -v</FONT>
+<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i get 0 traffic information. How could be? Or whereis my</FONT>
+<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mistake?</FONT>
+</P>
+
+<P><FONT SIZE=2>What if you did it like this :</FONT>
+<BR><FONT SIZE=2>iptables -A INPUT -d xxx.xxx.xxx.xxx</FONT>
+<BR><FONT SIZE=2>Then iptables -L INPUT -nv should tell you how much traffic has passed by.</FONT>
+</P>
+
+<P><FONT SIZE=2>You could also create your own rule of course, but I think it's overkill.</FONT>
+<BR><FONT SIZE=2>iptables -N testrule</FONT>
+<BR><FONT SIZE=2>iptables -A testrule -d xxx.xxx.xxx.xxx</FONT>
+<BR><FONT SIZE=2>iptables -A INPUT -j testrule</FONT>
+<BR><FONT SIZE=2>Then to check the traffic that passed by : iptables -L testrule -nv</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=2>Rob</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2A69D.D6FCC040--
 
