@@ -1,15 +1,11 @@
-From: Stephen Frost <sfrost@snowman.net>
-Subject: Re: question on recent module
-Date: Fri, 24 Jan 2003 20:33:28 -0500
+From: Francois van Doorneveld <francois@vandoorneveld.org>
+Subject: Having a problem loading NETMAP extension.
+Date: Sat, 25 Jan 2003 17:59:46 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030125013327.GO484@ns.snowman.net>
-References: <001901c2c3b3$5adfe4a0$3201a8c0@leonardo>
+Message-ID: <3E32C282.9040508@vandoorneveld.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5oH/S/bF6lOfqCQb"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <001901c2c3b3$5adfe4a0$3201a8c0@leonardo>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,55 +15,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Leonardo Rodrigues ( listas )" <leolistas@solucoesip.net>
-Cc: netfilter ML <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Howdy all,
 
---5oH/S/bF6lOfqCQb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I've searched and searched, but I can't seem to get this to work.
 
-* Leonardo Rodrigues ( listas ) (leolistas@solucoesip.net) wrote:
->     I'm trying to setup recent module for doing some great things here :)
-> Basically what I want is. Match some kind of traffic and, if that happens,
-> traffic for that source address will be completly and silently dropped. A=
-ll
-> examples of recent module I found were used on FORWARD chain, which is not
-> my case, as machine running recent will be the final destination of the
-> connection.
->=20
->     So, seems I'm successfully matching packets I need (
-> /proc/net/ipt_recent/myrulename ) is created and sources are being added
-> there. What I need now is: how can I make a rule on filter OUTPUT to DROP
-> all traffic if the source address was matched by recent module ? As I rea=
-d,
-> I can only check recent matches against source address ( --rcheck ). In
-> OUTPUT chain, source address is my own address and the address I need to
-> match is the DESTINATION one.
->=20
->     Can recent module help me in this situation ? Hope you understood it.
->=20
->     Anyway, thanks for your attention :)
+I installed the tarball for iptables 1.2.7a. In the tarball there is 
+also the .c file for the NETMAP extension.
 
-Using the latest versions of ipt_recent you can match against the
-destination IP address.  I know it's not very clear, but you can use
---rdest in a 'check' rule too, and it will take the destionation IP
-address of the packet and look it up in the recent list.
+I added the NETMAP extension in the Makefile for the extensions. It 
+copies the .so to the directory where the extensions are located, but 
+the following happens:
 
-	Stephen
+# iptables -m NETMAP -h
+iptables v1.2.7a: Couldn't load match `NETMAP'
 
---5oH/S/bF6lOfqCQb
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Try `iptables -h' or 'iptables --help' for more information.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+Any help on this would be very appreciated, as this is getting frustrating.
 
-iD8DBQE+MelnrzgMPqB3kigRAjBXAJsGp3njKI6ZD7mIZLjEoRPJK372WgCfdPuB
-Iqvy1XrlsW+lrj14n1RmNYY=
-=VSu8
------END PGP SIGNATURE-----
+Best regards,
 
---5oH/S/bF6lOfqCQb--
+Francois
+
 
