@@ -1,15 +1,10 @@
-From: Stephan Uhlmann <su@su2.info>
-Subject: Re: nat:REDIRECT on localhost not working in Kernel 2.6
-Date: Mon, 22 Nov 2004 04:11:38 +0100
-Message-ID: <200411220411.42182.su@su2.info>
-References: <200411191836.07261.su@su2.info>
-	<20041119174100.GA20905@bender.817west.com>
+From: "Sandy T. Santos" <sandy@bulacan.gov.ph>
+Subject: yahoo webcam
+Date: Tue, 23 Nov 2004 05:19:57 +0800
+Message-ID: <006401c4d0d9$04ef2a80$6339a8c0@amidala>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3379392.ik0usahUQc";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041119174100.GA20905@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,34 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
---nextPart3379392.ik0usahUQc
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+i have a problem enabling yahoo webcam on a NAT'ed
+drop-all-unless-specified firewalled box. currently the ym clients (all on
+win32's) can only access yahoo messenger via squid transparent proxy but
+this does not allow webcam to work. the requirements for yahoo webcam is
+that you have to open up TCP port 5100, i have done that but i still can't
+established a connection with the ym server. i was wondering if anyone here
+knows the complete rule for making this work.
 
+thanks.
 
-Just for the archive and to confirm: I tested it now with self-compiled ker=
-nel=20
-2.6.9 (on SuSE 9.2, default iptables 1.2.11) and it worked.
+``
+Sandy T. Santos
+Provincial Information Technology Office
+Provincial Government of Bulacan | http://www.bulacan.gov.ph
+Malolos, Bulacan
+Registered Linux User #345287
 
-Thanks everybody!
-
-
-Stephan
-
---nextPart3379392.ik0usahUQc
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQBBoVju0TAeRPnvmyERAgpqAJ9L/QdX+dII6cVdO8rOjzM7RlvmRQCfUYRi
-qY9MifE39NHeVlcOi1px9uo=
-=HsNl
------END PGP SIGNATURE-----
-
---nextPart3379392.ik0usahUQc--
 
