@@ -1,13 +1,12 @@
-From: Joerg Kinzebach <jk253@duck.franken.de>
-Subject: Re: MARK Locally Generated Packets
-Date: Fri, 20 Jun 2003 13:08:51 +0200
+From: Dan Egli <dan@shortcircuit.dyndns.org>
+Subject: IpTables, -m string, and domain names
+Date: Fri, 20 Jun 2003 08:58:07 -0600 (MDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030620130850.A2735@pond.franken.de>
-References: <20030619121130.H26250@finali.com>
+Message-ID: <Pine.LNX.4.44.0306200852001.11642-100000@shortcircuit.dyndns.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030619121130.H26250@finali.com>; from jeno@finali.com on Thu, Jun 19, 2003 at 12:11:30PM -0600
+ReSent-To: netfilter@lists.netfilter.org
+ReSent-Message-ID: <Pine.LNX.4.44.0306201106210.15118@shortcircuit.dyndns.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfliter@lists.netfilter.org
 
->      I'm trying to mark locally generated packets to be able to re-route
-> HTTP(S) requets out a different gateway. Similar to a transparent proxy,
-> with the exception that I want only traffic generated from this box to
-> get marked and re-routed. I've setup everything correctly according to
-> the many documents I've found, and I can manually use ip rules to get the
-> actions I want, I'm jut not getting a mark recognized by the ip rules.
+I need some help here.
 
-Something like this should do:
+I have a single IP from my internet provider. Any additional IPs are at 
+$5/mo for each address. So to save money I'm trying to use Iptables' 
+string match module from the patch-o-matic to match against domain names 
+in the packet. However, it doesn't seem to be working. Here's an example. 
+in the PREROUTIG chain:
 
-iptables -t mangle -I OUTPUT -p tcp --sport 443 -s <local_ip> \
-    -j MARK --set-mark 0xc
-
-ip rule add pref 1 fwmark 0xc table 101
-ip route add 0.0.0.0/0 via $router table 101
-
-This marks all ports originated on TCP port 443 of <local_ip> with
-"0xc" and for all packets with 0xc the routing table "101" will
-be used which routes everything that hits it towards $router.
-
-I asumme you used the PREROUTING chain of the mangle table instead
-of the OUTPUT chain.
+iptables -A PREROUTING -m string --string 'mydomain1.org' -m tcp -p tcp --dport 23 -j DNAT --to-destination 192.168.0.10:8023
 
 
+so if I try and telnet (port 23) to mydomain1.com, it should be redirected 
+to 192.168.0.10, port 8023, right? No go. I get dropped into the local 
+machine's telnet daemon. The rule didn't match. Why? Here's how the entry 
+is listed in my /etc/hosts:
 
-joerg
+12.210.176.53		mydomain1 mydomain1.org
+12.210.176.53 		mydomain2 mydomain2.org
+
+Is something wrong here? Is there a better way to forward traffic based on 
+the domain name in the packet?
+
+
+Thanks!
+
+--- Dan
+
+
+
 
