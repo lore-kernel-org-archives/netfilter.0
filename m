@@ -1,8 +1,8 @@
 From: <hamals@infinito.it>
-Subject: how to log dropped packet
-Date: Tue, 28 Sep 2004 12:12:26 +0200
+Subject: web server in DMZ
+Date: Tue, 28 Sep 2004 12:21:38 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <web-6413785@infinito.it>
+Message-ID: <web-6416739@infinito.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,17 +19,17 @@ Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
 
-hello
 
-I wrote all my firewall rules, and now I would like to log 
-all packet that will be dropped by my policy rule..
+I have a big problem
 
-..how can I do it?
+I have a web server in my DMZ, I reach it with his 
+internal IP 192.168.1.10 from my internal LAN, but I can't 
+reach them with his public IP.
 
-what kind of rules do I need?..and where have I to write 
-them?
+I did a DNAT and from internet everythings is ok, my web 
+server is working in right by DNAT.
 
-thanks
+Where is the problem?
 _______________________________________
 Connessione ed e-mail gratuita da 10 mb
 consultabile tramite web e tramite pop.
