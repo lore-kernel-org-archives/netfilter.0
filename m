@@ -1,13 +1,14 @@
-From: Luis Miguel Cruz <luismi@b2bi.es>
-Subject: Re: unclean rule
-Date: Fri, 11 Jun 2004 13:35:42 +0200
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: off topic - hope somebody can help
+Date: Fri, 11 Jun 2004 12:42:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40C9990E.7040607@b2bi.es>
-References: <40C99279.7010404@b2bi.es> <20040611142655.141a8084.grisha@unixro.net>
+Message-ID: <200406111242.10060.gdh@acentral.co.uk>
+References: <000901c44f53$44b9be80$0200000a@heretic> <200406111229.36397.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040611142655.141a8084.grisha@unixro.net>
+In-Reply-To: <200406111229.36397.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +18,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I asked it because I remember that in the past this module have a lot of=20
-problems, I like to know if those problems are solved now.
+On Friday 11 June 2004 12:29, Antony Stone wrote:
 
-I have a problem with a client, he can=B4t do a ftp to our servers :P
-The traffic match unclean rule:
+> Why shouldn't it?   The interface is still fully functioning even if you
+> choose to disconnect it - I think plenty of people would get upset if the
+> interface went down on its own just because the cable got unplugged (or the
+> hub had a short power failure)...
 
-iptables -A SEGURIDAD -m unclean -j DROP
+This is definately one of the biggest no-brain decisions Microsoft made with 
+Windows 2000 - as soon as the link on an Ethernet adapter disappears, all 
+open TCP sessions from the workstation are immediately reset.
 
-All traffic must across SEGURIDAD chain, I only have problems with ftp=20
-service and this client, the rest of the services runs perfectly for him.
+Multiply that by power-cycling a 48-port switch, and you have a headache :/
 
-What can be wrong? the client=B4s adsl router? :P
-
-
-Raileanu Grigore wrote:
-
-> On Fri, 11 Jun 2004 13:07:37 +0200
-> Luis Miguel Cruz <luismi@b2bi.es> wrote:
->=20
->=20
->>Is safe to use unclean module?
->>
->>--
->>Luis Miguel Cruz
->>
->>
->=20
->=20
-> Yes, you can discard without any problems unclean packets.
->=20
+gdh
 
