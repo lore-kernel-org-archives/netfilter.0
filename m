@@ -1,12 +1,10 @@
-From: Paul Dorman <pauld@cwa.co.nz>
-Subject: Re: Seamless communication across VPN link
-Date: Fri, 18 Mar 2005 10:11:23 +1300
-Message-ID: <1111093883.30955.25.camel@localhost.localdomain>
-References: <1110871981.692.68.camel@localhost.localdomain>
-	<4239306D.7030101@riverviewtech.net>
+From: "Manuel Schmitz" <Port17@gmx.net>
+Subject: mac-filtering is not working
+Date: Thu, 17 Mar 2005 23:55:13 +0100 (MET)
+Message-ID: <2239.1111100113@www54.gmx.net>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4239306D.7030101@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +15,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: gtaylor@riverviewtech.net
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Grant,
+Hello,
 
-thanks very much for your reply. Really kind of you to take so much time
-to explain things nice and clearly for me.
+I am desperately trying to establish mac-filtering on my debian-router.
 
-I had implemented exactly what you described, along with some SNAT rules
-to make the packets look like they were coming from the VC unit on the
-way back to the provider, but due to complications (H323 & NAT over two
-Linux firewalls are *not* cooperative) we had to abandon the whole idea
-of NATing. Instead we opted to bypass the ipsec connection for the VC
-traffic (which is encrypted anyway) using some policy routing and a
-couple of extra aliases on either side of the connection. I was
-fortunate enough to stumble onto an alternative kernel for the
-Smoothwalls which has the stuff required for source-based policy routing
-using iproute2. This approach was successful, and the implications of
-not using the ipsec for the H323 traffic isn't too severe as the traffic
-is encrypted at any rate, and our wireless is highly directional and
-would be difficult to sniff anyway.
+- All default chains are empty, policy set to "ACCEPT".
+- I execute 
 
-Thanks again for staying up late mulling over my predicament. It's
-always great to find people like yourself who are so generous with their
-time.
+  iptables -A FORWARD -m mac --mac-source $MY_MAC -j ACCEPT
+  
+  and then set the FORWARD-Policy to "DROP". Now I expect the chain to 
+  drop all packages exept these coming from $MY_MAC. Am I right? 
+- It does not work. It drops ALL traffic. So why?
 
-Regards,
-Paul
+--Manuel
 
+
+-- 
+SMS bei wichtigen e-mails und Ihre Gedanken sind frei ...
+Alle Infos zur SMS-Benachrichtigung: http://www.gmx.net/de/go/sms
 
