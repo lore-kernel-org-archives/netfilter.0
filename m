@@ -1,14 +1,10 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: IPSEC and other non tcp/udp/icmp blocking
-Date: Mon, 14 Oct 2002 15:31:41 +0100
+From: David Bourgeois <david@muelec.fpms.ac.be>
+Subject: Advice on network config (unix - linux and windows - mac)
+Date: Mon, 14 Oct 2002 17:55:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021014153141.D3805@funkyjesus.org>
-References: <41791.64.86.49.17.1034369123.squirrel@www.icafe.co.tz>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <YSWTUOIGZT2UOIQ31ZXCBGC71B6TN.3daae90a@pc5>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <41791.64.86.49.17.1034369123.squirrel@www.icafe.co.tz>; from murli@icafe.co.tz on Fri, Oct 11, 2002 at 11:45:23PM +0300
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,16 +18,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Oct 11, 2002 at 11:45:23PM +0300, Mitesh P Choksi wrote:
-> Dear All,
-> 
-> How does netfilter work with other protocols apart tcp/udp/icmp?
-> 
-> I am trying to either block or account IPSec traffic.
+I would like to setup a linux box as gateway - firewall and NAT (maybe DHCP too) for a network of SUN workstations, windows (98, XP, 2000) PC's and macs. 
 
-See the "--protocol" section in the man pages.
+I don't care about win and mac 's security but would like the SUN network to be as secure as possible. As I guess win can be easily compromised or in our case, untrusted 
+persons can have access to it so I thought of physically separating the unix network from the others by using 2 subnets (three network cards on the gateway). So having 
+two private networks, I can filter what goes from one to the other with the gateway's firewall (iptables in my case)
 
--- 
-FunkyJesus System Administration Team
+Is this the right way to do what I would like? Do you see any problem pointing out? Any recommandation would be welcome.
+
+Thanks,
+David Bourgeois
+
+
+
 
 
