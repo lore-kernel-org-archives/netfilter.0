@@ -1,10 +1,13 @@
-From: "patrick kuah" <patrickkuah@msn.com>
-Subject: Re: VPN question
-Date: Tue, 14 Oct 2003 15:25:13 +0000
+From: "Josh Berry" <josh.berry@linknet-solutions.com>
+Subject: Re: Problem about NAT and IP_CONNTRACK
+Date: Tue, 14 Oct 2003 09:37:02 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY4-F42tUqsLKqewA30000cc37@hotmail.com>
+Message-ID: <29651.204.214.145.6.1066142222.squirrel@mail.linknet-solutions.com>
+References: <Sea1-F12sD1Ty9CMdZp00007b4d@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Sea1-F12sD1Ty9CMdZp00007b4d@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,55 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: cbrenton@chrisbrenton.org
+Content-Type: text/plain; charset="gb2312"
+To: Huang tao <sandy_huangtao@hotmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Thanks Chris :)
-
-I'm using ipsec. Currently, my iptables is configured using stateful packet 
-inspection.
-Do i have to add the rules for port TCP/UDP 50 and TCP 50 ???
-Thank you :)
-
-patrick
-
-
->From: Chris Brenton <cbrenton@chrisbrenton.org>
->To: patrick kuah <patrickkuah@msn.com>
->CC: netfilter@lists.netfilter.org
->Subject: Re: VPN question
->Date: 14 Oct 2003 06:44:27 -0400
->
->On Tue, 2003-10-14 at 06:19, patrick kuah wrote:
-> > Hi all,
-> >
-> > I have configured a SNAT rule in my iptables but after configuring, i 
->can't
-> > VPN to my server which reside on another network.
->
->Do you see this traffic being dropped by your logs?
->
-> > Do i need to add rule for VPN traffic to flow through the SNAT? If yes, 
->what
-> > are the rule?
->
->VPN is a generic term. What kind of VPN are you talking about? IPSec?
->PPTP? SSL?
->
->If you mean IPSec, you need to open UDP/500 to UDP/500 as well as
->protocol 50. You also want to make sure that IPSec/IKE is only
->negotiating ESP as a security service, not AH.
->
->HTH,
->C
->
->
->
->
-
-_________________________________________________________________
-Take a break! Find destinations on MSN Travel. http://www.msn.com.sg/travel/
-
-
+U2V0IHRoZSBjb25uZWN0aW9uIHRyYWNraW5nIGxpbWl0IGF0IC9wcm9jL3N5cy9uZXQvaXB2NC9p
+cF9jb25udHJhY2tfbWF4OgoKRXhhbXBsZTogZWNobyAnMTAwMDAwJyA+PiAvcHJvYy9zeXMvbmV0
+L2lwdjQvaXBfY29ubnRyYWNrX21heAoKPiAgIEhJIQo+Cj4gICBJIHVzZSBpcHRhYmxlcyB0byBk
+byBOQVQgaW4gdGhlIE5JQyBvZiBteSBVbml2Lgo+Cj4gICBBYm91dCAyMDAwIGNvbXB1dGVycyBj
+b25uZWN0IHRvIGludHJhbmV0IGFuZCBuZWVkIHRvIGRvIE5BVC4KPgo+ICAgSSB1c2UgYSBIUCBz
+ZXJ2ZXIgMTI4TSBSQU0sIFAzIDEuMkcgQ1BVKE9ubHkgMSxOb3QgU01QKSwgUmVkSGF0IExpbnV4
+Cj4gOS4wCj4gd2l0aCBpcHRhYmxlcyAxLjIuOAo+Cj4gICBJIHNldHVwIGlwdGFibGVzIG9ubHkg
+dXNlIE5BVCBhbmQgaXBfY29ubnRyYWNrIChhbmQgZnRwIHN1cnBvcnQpLgo+Cj4gICBXaGVuIGlw
+dGFibGVzIHJ1bmluZywgYW55dGhpbmcgc2VlbXMgd2VsbCBkb25lLgo+Cj4gICBCdXQgc29vbiwg
+bWVzc2FnZSBwb3N0Ogo+Cj4gICAiaXBfdGFibGVzOiBOZWlnaGJvciBUYWJsZSBPdmVyZmxvdyEi
+ICBhbmQgImlwX2Nvbm50cmFjazogdGFibGUgZnVsbCwKPiBkcm9wcGluZyIKPgo+ICAgTXkgcXVl
+c3Rpb24gaXM6Cj4KPiAgIDEuIEhvdyBtYW55IGNvbm50cmFja3MgZG9lcyBpcF9jb25udHJhY2sg
+c3VycG9ydCBkdXIgdG8gbXkgc2VydmVyPyAgSG93Cj4gdG8gaW5jcmVhc2UgaXQ/Cj4KPiAgIDIu
+IEkgaGF2ZSBjaGVja2VkIHRoZSBzb3VyY2UgY29kZSBvZiBpcF90YWJsZXMsIGJ1dCBjYW4ndCBm
+aW5kIHRoZQo+IHJvdXRpbmUgd2hvIHBvc3QgdGhlIGZpcnN0IG1lc3NhZ2UuIFBsZWFzZSB0ZWxs
+IG1lIHdoYXQgY2F1c2UgaXQgYW5kIGhvdwo+IHRvCj4gc29sdmUgaXQuCj4KPiAgICBUYW5rcyBh
+IGxvdCEKPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCj4g0+vBqrv6tcTF89PRvfjQ0L27wfejrMfryrnTwyBNU04gTWVz
+c2VuZ2VyOiAgaHR0cDovL21lc3Nlbmdlci5tc24uY29tL2NuCj4KPgo+CgoKVGhhbmtzLApKb3No
+IEJlcnJ5LCBDVE8KTGlua05ldC1Tb2x1dGlvbnMKNDY5LTgzMS04NTQzCmpvc2guYmVycnlAbGlu
+a25ldC1zb2x1dGlvbnMuY29tCgoK
