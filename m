@@ -1,9 +1,9 @@
 From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: monitor masq. packets
-Date: Sat, 07 Dec 2002 13:06:23 +0100
+Subject: Re: Propert IPTABLES Configuration
+Date: Sat, 07 Dec 2002 12:57:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DF1E43F.8040008@karlsbakk.net>
-References: <001a01c29d6e$2dedd580$7900a8c0@ibmfhyhjarw99d>
+Message-ID: <3DF1E228.60804@karlsbakk.net>
+References: <Pine.LNX.4.44.0212062220210.30331-100000@firefox.malibyte.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,28 +17,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: zmooth <zmooth@btinternet.com>
-Cc: netfilter@lists.netfilter.org
+To: Bob Sully <rcs@malibyte.net>
+Cc: "james.Q.L" <shijialeeee@yahoo.ca>, netfilter@lists.netfilter.org
 
-zmooth wrote:
+Bob Sully wrote:
 
->Hi, ive noticed that : netstat -M does not work anymore. Is it just me ? i
->get :
+>Hey guys...I used to run a CS server on one of my machines.  This worked 
+>for me:
 >
->    netstat: no support for 'ip_masquerade' on this system, while iptables
->is loaded and masquerading already. Please help
+>        # GAMES
+>        # Half-Life/CounterStrike
+>        #
 >
+>        if [ $HALF_LIFE -gt 0 ]; then
 >
+>            iptables -A OUTPUT -o $EXTERNAL_INTERFACE -p UDP \
+>        --sport 27000:27050 --dport $UNPRIVPORTS -s $EXTERNAL_IP -d \
+>        $ANYWHERE -j ACCEPT
+>
+>            iptables -A INPUT -i $EXTERNAL_INTERFACE -p UDP \
+>        --sport $UNPRIVPORTS --dport 27000:27050 -s $ANYWHERE -d \
+>        $EXTERNAL_IP -j ACCEPT
+>
+>            if [ $VERBOSE -gt 0 ]; then
+>                echo "firewall: Half-Life/CounterStrike ports enabled"
+>            fi
+>
+>        fi
+>
+>where:
+>
+>$EXTERNAL_INTERFACE = eth0 in my case
+>$EXTERNAL_IP = obvious
+>$UNPRIVPORTS = 1024:65535
+>$ANYWHERE = any/0
 >  
 >
-it's not only you
-
-[root@fw root]# netstat -M
-netstat: no support for `ip_masquerade' on this system.
-
-and I'm using the MASQUERADE target, yes
+sure, but you'd better use -m state --state RELATED,ESTABLISHED[,NEW]? 
+instead of
+--sport $UNPRIVPORTS, as the former is stateful.
 
 roy
+
 
 
 
