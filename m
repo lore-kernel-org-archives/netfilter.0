@@ -1,12 +1,15 @@
-From: Tomasz Korycki <engine2@flow.mine.nu>
-Subject: Re: Packet Inspecting Filter with IPTables
-Date: Thu, 26 Aug 2004 01:11:55 -0400
+From: Thomas Kirk <thomas@arkena.com>
+Subject: Re: Multiple IPSEC VPNs through a firewall based on 2.4.2X kernel
+Date: Thu, 26 Aug 2004 11:13:28 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <5.2.0.9.0.20040826010850.00b14b60@198.52.32.246>
-References: <200408260451.i7Q4p0XH029352@flow8.flow.north.net>
+Message-ID: <20040826091328.GD18545@arkena.dk>
+References: <09D3F703EF3B0A4CBE28449EA9F3D32069F456@nicta-atp-mail.in.nicta.com.au>
+	<1093339912.2050.208.camel@localhost>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200408260451.i7Q4p0XH029352@flow8.flow.north.net>
+Content-Disposition: inline
+In-Reply-To: <1093339912.2050.208.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,30 +19,51 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Jeremy Andrew <corporate@superonline.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Cc: netfilter@lists.netfilter.org, Roksana Boreli <Roksana.Boreli@nicta.com.au>
 
-At 01:50 2004-08-26, Jeremy Andrew wrote:
->I wish to implement a feature on a linux box which I explained with detail
->in the following text;
->
->I have read about many different articles on how to take actions based on
->the contains of a packet. I think netfilter/iptables has support of what I
->wish to deploy on a Linux machine (kernel 2.4.20) acting as a gateway
->network node. I have not found enough information about the exact steps to
->be taken in order to;
->
->- Inspect each and every incoming packet for a specific port (ftp as an
->example), and then if the data packet contains a specific set of bits (ascii
->characters "GLOB" e.g), take actions based on a predefined rule (send a
->message to syslog) and then "drop" this packet.
+Hi
 
-That sounds an awful lot like a job for snort (www.snort.org) to me - did 
-You look? And with ACID You would be able to do reports and what-not, 
-too... Oh, and modify Your rules. Or, You can roll-your-own...
+On Tue, Aug 24, 2004 at 05:31:52AM -0400, John A. Sullivan III wrote:
 
- >>>>>>>>>>>>>>>>> snip! <<<<<<<<<<<<<< 
+> The answer depends on what exactly you are trying to do.  If you are
+> branching together two networks, you may wish to consider moving the
+> IPSec stack to the Linux gateway and creating a LAN-to-LAN connection.=20
+> If you wish to restrict access to just those few clients, you can make
+> such restrictions in iptables.
+
+Excusing me for interrupting the discussion but in a situation where i
+would like to make a LAN-to-LAN IPsec VPN between to offices both
+running iptables on the gateways. Ive been lurking on the liste for
+some time but i have a few questions regarding this. First each site
+have a link to internet howto specify which protocols that should go
+over VPN and which should go to internet? Which IPsec implementation
+would be the most stable and secure solution to use. Currently im
+using a couple of retired pcworkstations running debian woody so i
+would prefer something that is supported by debian but its not
+absolutly neccessary :)
+
+Thanks in advance
+
+--=20
+Venlig Hilsen/Kind Regards
+Thomas Kirk
+IT-chef
+ARKENA A/S
+
+Mejlgade 27-29, DK-8000 Aarhus C
+Havnegade 39, DK-1058 K=F8benhavn K
+
+Telephone Direct: +45 8620 4264
+Telephone Office: +45 7023 3456
+Telephone Mobile: +45 2612 3237
+
+Office FAX: +45 8620 4270
+WWW: http://www.arkena.com
+--
+
+"I've always wondered if there was a god. And now I know there is --
+and it's me." -- Homer Simpson
 
 
