@@ -1,11 +1,13 @@
-From: shaun <shaun@newfind.net>
-Subject: libiptc and adding a simple SNAT rule
-Date: Mon, 17 Jun 2002 08:59:16 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: nat problem.
+Date: Mon, 17 Jun 2002 19:11:19 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020617085916.A1493@localhost.sd.cox.net>
+Message-ID: <200206171811.g5HIBOA13184@Networker.rockstone.co.uk>
+References: <3D0BBC45.5000807@palaver.net> <030001c215b7$dc4d7f20$870110ac@samsi> <01f701c215ed$fca7c100$9300a8c0@edapter.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
+In-Reply-To: <01f701c215ed$fca7c100$9300a8c0@edapter.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,32 +18,37 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-Hello -
+On Monday 17 June 2002 11:58 am, umar wrote:
 
-I'm building an app that will dynamically modify rules in the POSTROUTING chain
-in the nat table (SNAT).  I can iterate through the list and remove chain
-entries ok so far, and I have some example code that successfully appends a
-'blank' rule to the chain.  
+> Hi, 
+>  
+> Trying out  a very simple configuration of a firewall here, but having some
+> problems.
+ The firewall  has two NIC's and have enabled ip forwarding.
+> 
+> I want the internal machines to connect to the internet,  So have enabled
+> NAT : 
+ Runing squid - transparent proxy on port 3232. Clients have been
+> onfigured to connect to internet directly. eth0 is my external interface.
+>  
+> Following are the nat rules conigured on the firewall
+>  
+> iptables -t nat -A PREROUTING -i eth0  -p tcp --dport 80 -j REDIRECT
+> --to-port 3232
+ 
+> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source x.x.x.x ( public
+> IP of the other netwrok card )
+ 
 
-But when I try to iptc_append_entry a simple but specific rule I've created in
-my app to the chain, I get an error on the iptc_commit.  
+What do you mean "IP of the *other* network card" ?
 
-In my app, I can compare (what should be) an identical rule as created by
-running /sbin/iptables vs. the struct ipt_entry I'm trying to append and the
-only difference I see is a difference in the target offset size.  Evidently,
-I'm supposed to add some data to the end of the struct ipt_entry.
+The address here should be the address of eth0.   Tell us if you're using 
+something else, and if so what you're using (we don'tneed to know the IP 
+address, just where it lives on the network).
 
-So my question:  What am I supposed to tack on to the end of the struct
-ipt_entry when constructing and appending a non multi-range SNAT rule?
+ 
 
-Thanks.
-
--- 
-Shaun McIntyre
-shaun@newfind.net
-(760) 230-1131 voice
-(619) 665-1424 cell
+Antony.
 
