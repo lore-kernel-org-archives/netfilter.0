@@ -1,12 +1,13 @@
-From: Toby <tobia.conforto@linux.it>
-Subject: Re: Deleting a rule from a DNAT chain
-Date: Thu, 24 Mar 2005 15:37:37 +0100
-Message-ID: <20050324143737.GB15012@ikkoku.ath.cx>
-References: <B00976467560E749B3E981F36CA7D6B3146520@centratel01.telecoms.local>
-	<424208DF.30709@riverviewtech.net>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Using NAT to relay traffic
+Date: Thu, 24 Mar 2005 10:03:18 -0600
+Message-ID: <4242E4C6.6050305@riverviewtech.net>
+References: <42420275.7030909@vsahost.com> <42420BC0.6030700@riverviewtech.net>
+	<4242CE01.5090105@vsahost.com>
+Reply-To: gtaylor@riverviewtech.net
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <424208DF.30709@riverviewtech.net>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <4242CE01.5090105@vsahost.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jared Cook <jared@vsahost.com>
+Cc: netfilter@lists.netfilter.org
 
-Grant Taylor wrote:
-> iptables -t nat -D PortForwarding_3191 <rule number from the top of the 
-> list starting with 1>
+You are welcome.  I'm glad that I could help.  :)
 
-That is correct.  
-
-To simplify things, first open a large xterm and do:
-
-	iptables -t nat -L PortForwarding_3191 -n -v --line-numbers
-	
-and look up the rule number.  Then use:
-
-	iptables -t nat -D PortForwarding_3191 <rule num>
-
-Just make sure that you're deleting that from the startup scripts or
-whatever it is that loads the rules when you reboot the machine.
+I do ask a favor, have a good day for me as I was up WAY too late working on things.  Now where did I put my sleeping bag at work???
 
 
-Toby
 
--- 
-Love(n): The delusion that one woman differs from another.
-						H.L. Mencken
+Grant. . . .
+
+Jared Cook wrote:
+
+> Thanks.  The SNAT piece indeed was the part I was missing.  It all works 
+> great now.
+
 
