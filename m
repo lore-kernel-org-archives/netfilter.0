@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: block ports
-Date: Mon, 16 Sep 2002 21:13:20 +0100
+From: "Raj Wurttemberg" <rajw@c64.us>
+Subject: RE: Upgrade Iptables...
+Date: Mon, 16 Sep 2002 16:55:40 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020916201323.OLCG17905.mta07-svc.ntlworld.com@there>
-References: <200209161226.11945@.> <20020916074619.KCJK295.mta06-svc.ntlworld.com@there> <200209170024.26303@.>
+Message-ID: <000e01c25dc3$6d7d0170$d201a8c0@hornet>
+References: <20020916201517.ONQE17905.mta07-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200209170024.26303@.>
+In-Reply-To: <20020916201517.ONQE17905.mta07-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +18,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, arif786@rogers.com
 
-On Monday 16 September 2002 8:01 pm, PayalR wrote:
 
-> Hi,
-> Thanks a lot for the mails. They were pretty helpful.
-> I still have some doubts.
-> Antony suggests putting,
-> iptables -P INPUT DROP
-> at start of rules while Alex wants it at end. What do I do?
+> On Monday 16 September 2002 8:23 pm, Arif Mahmood wrote:
+> > How do I do the  patch-o-matic, I mean if you send me the 
+> steps to do 
+> > patch-o-matic on RedHat 7.3.  I couldn't find the  patch-o-matic 
+> > documentations.
+http://www.netfilter.org/documentation/FAQ/netfilter-faq-1.html#ss1.5
 
-Doesn't matter.   Same thing.   I prefer having a default DROP policy, so I 
-know that's what's going to happen to any packets which reach the end of my 
-ruleset, and I can add rules any time without worrying about where the DROP 
-rule is.
+Unfortunately that FAQ is out of date and now completely *incorrect* for
+the new Patch-o-Matic (PoM). And on a RedHat type system even the
+documentation included with the package does not work. :(
 
-Alex may prefer to have an explicit rule saying DROP so it's more obvious 
-that it's there.
+The proper procedure would be to set your environment variable for
+KERNEL_DIR first. This is from a posting on 10-Sep-2002 by Fabrice
+(Thank you Fabrice!)
 
-If in doubt, use both :-)
+# KERNEL_DIR=/usr/src/linux-2.4 ./runme pending
+or
+# export KERNEL_DIR=/usr/src/linux-2.4; ./runme pending
 
-> I want to send email and browse the net from server. The server does have
-> to make dns look-ups.
+Of course be sure to set your KERNEL_DIR to the correct directory and
+read the "INSTALL" file that comes with the PoM package to ser the
+appropriate patch options. We should get the package maintainers to
+correct the FAQ and the PoM dox.
 
-In that case make sure TCP port 53 and UDP port 53 are allowed out from the 
-machine, and ESTABLISHED,RELATED packets are allowed back in.
+/*Raj*/
 
-> One more small thing, I was getting flood udp requests to port 2002.
 
-So is everyone these days:
-
-http://www.sophos.co.uk/virusinfo/analyses/linuxslappera.html
-
-> I had blocked ICMP totally incoming as outgoing totally.
-
-Not a good idea.   There are some ICMP packets you really should allow in to 
-your machine - these are covered by the RELATED rule.
-
-> Now what i did was for
-> port 2002 INPUT rule I told to REJECT the packet with reject-with
-> icmp-port-unreachable. Now will this setup send the error message back to
-> the remote server, cos' in the previous rule I had totally blocked ICMP.
-
-Yes it will, however I doubt it'll do much good.   My approach would be to 
-DROP these UDP 2002 packets and not use up any of your outgoing bandwidth 
-sending ICMP packets which the remote machine probably won't pay attention to.
-
-Antony.
-
--- 
-
-Perfection in design is achieved not when there is nothing left to add,
-but rather when there is nothing left to take away.
-
- - Antoine de Saint-Exupery
 
