@@ -1,10 +1,11 @@
-From: Walther@gehag-dsk.de
-Subject: Re: 1:1 NAT
-Date: Tue, 21 Jan 2003 18:00:34 +0100
+From: "Rodrigo Galindo" <ros@servidor.unam.mx>
+Subject: MS NetMeeting
+Date: Wed, 22 Jan 2003 18:24:54 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF2B77F626.D8E69574-ONC1256CB5.005D08E8-C1256CB5.005D1B0C@GEHAG-DSK.DE>
+Message-ID: <002901c2c275$dd61c6d0$027ba8c0@intellistation>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0026_01C2C243.8F743430"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,75 +16,85 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Transfer-Encoding: 7bit
-To: Mike <mikeeo@msn.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-hi,
+This is a multi-part message in MIME format.
 
-from outside to inside:
+------=_NextPart_000_0026_01C2C243.8F743430
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-iptables -t nat -A PREROUTING -d 208.15.232.12 -j DNAT --to 192.168.1.167
+Hello to all!
+I have a Linux box working as a local home router for 2 winXP machines =
+behind it.  The Linux box has at eth0 the ADSL link and a hub attached =
+to eth1. =20
 
-the other way around:
-
-iptables -t nat -A POSTROUTING -s 192.168.1.167 -j SNAT --to 208.15.131.12
-
-you should specify the input and output interface as well like this:
-
-iptables -t nat -A PREROUTING -i <external-interface> -o 
-<internal-interface> -d 208.15.232.12 -j DNAT --to 192.168.1.167
-
-and 
-
-iptables -t nat -A POSTROUTING -i <internal-interface> -o 
-<external-interface> -s 192.168.1.167 -j SNAT --to 208.15.232.12
-
-Best Regards,
-MfG.
-
-Stefan Walther
-stefan_walther@gehag-dsk.de
-dienst.: +4930/89786448
-Funk: +49172/3943961
-http://www.gehag-dsk.de
-
--------------------------------------------------------------- 
-Linux/UNIX is like an Indian Tipi:
-No Windows, no Gates and Apache inside.
-
-Outgoing Mail is certified mistake-free. 
-Examined by DOGMATIC infallibility system. 
-Version 6.04
+                    internet
+                        |
+                    eth0
+                  GATEWAY (Linux)
+                      eth1
+                       |
+                 COMPUTERS (WindowsXP)
 
 
+What kind of instruction do I need to set-up to the iptables to get MS =
+NetMeeting to work in the winXP boxes?
+
+Thank you!
+
+ros.
 
 
-"Mike" <mikeeo@msn.com>
-Sent by: netfilter-admin@lists.netfilter.org
-21.01.2003 17:00
+------=_NextPart_000_0026_01C2C243.8F743430
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
- 
-        To:     <netfilter@lists.netfilter.org>
-        cc: 
-        Subject:        1:1 NAT
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2722.900" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello to all!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I have a Linux box working as a local =
+home router=20
+for 2 winXP machines behind it.&nbsp; The Linux box has at eth0 the ADSL =
+link=20
+and a hub attached to eth1.&nbsp; </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+internet<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;=20
+|<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+eth0<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+GATEWAY=20
+(Linux)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+eth1<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+|<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+COMPUTERS (WindowsXP)</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>What kind of instruction do I need to =
+set-up to the=20
+iptables to get MS NetMeeting to work in the winXP boxes?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thank you!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>ros.</FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
 
-
-Can anyone point me to some docs on setting up 1:1 NAT on netfilter?
-
-What I am trying to do is like how its done on cisco PIX i.e
-"static (inside,outside) 208.15.232.12 192.168.1.167 netmask 
-255.255.255.255
-0 0"
-
-That way I don't have to do IP alias on my ethernet card.
-
-Thanks,
-
-Mike
-
-
-
-
+------=_NextPart_000_0026_01C2C243.8F743430--
 
 
