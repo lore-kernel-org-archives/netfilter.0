@@ -1,13 +1,14 @@
-From: "Leandro" <leandro@mail.webway.com.br>
-Subject: Log Analyser
-Date: Tue, 1 Jul 2003 15:30:31 -0300
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: Filtering out spoofed network addresses
+Date: 01 Jul 2003 21:32:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NFBBIHOFIMLCALNJNOOIGEHAECAA.leandro@mail.webway.com.br>
-References: <1054903485.5356.7.camel@sandertje>
+Message-ID: <1057087972.721.34.camel@tux.rsn.bth.se>
+References: <Pine.LNX.4.44.0306301039060.23945-100000@hay.haya.qc.ca>
+	 <20030630153033.GA29474@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1054903485.5356.7.camel@sandertje>
+In-Reply-To: <20030630153033.GA29474@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +18,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: "James R. Hay" <jrhay@HayA.QC.CA>, Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
+On Mon, 2003-06-30 at 17:30, Ramin Dousti wrote:
+> On Mon, Jun 30, 2003 at 10:42:13AM -0400, James R. Hay wrote:
+> 
+> > 
+> > Hi folks,
+> 
+> Hi James,
+> 
+> Indeed, you cannot do this with netfilter. Netfilter does not provide you
+> with the "don't care bits" as cisco calls it.
 
-Does anyone know a tool that show logs from Iptables in a HTML Report?
+What's wrong with:
 
-I=B4m using Iptables Log Analyser, but I have found many errors when I was
-working with a more powerfull server.
+-s 0.0.0.0/0.0.255.255
 
-This tool works like this:
+?
 
-1 - It=B4s configured iptables log=B4s prefix
-2 - A scheduled task (tail), read /var/log/messages and record these
-informations in a MySQL DB
-3 - An Web Interface shows the results.
-
-But, because of the use of a powerfull machine, sometimes, the prefix isn=
-=B4t
-being showed correctly.
-
-Does anyone know a solution for this?
-
-Thanks in Advance
-
-Leandro
-
-
-
+-- 
+/Martin
 
