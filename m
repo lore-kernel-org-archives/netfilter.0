@@ -1,8 +1,8 @@
-From: Jacob Friis Larsen <jfl@list.idg.dk>
-Subject: Tips for script
-Date: Thu, 05 Aug 2004 02:04:46 +0200
+From: Adam Majer <adamm@galacticasoftware.com>
+Subject: DNAT forwarding problems
+Date: Wed, 04 Aug 2004 17:44:37 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4111799E.5060607@list.idg.dk>
+Message-ID: <411166D5.30105@galacticasoftware.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,59 +15,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Would this script work like this:
-- Allow all outgoing.
-- Allow all to port 80, 21, 22, 25, 143
+Hi all,
 
-What else does it do?
-Any tips?
+I'm not subscribed to the list so please cc me any replies. Thank you.
 
-I got it from http://iptables-script.dk/index1.php
+I seem to have a major problem with DNAT. The setup is as follows,
 
-Thanks,
-Jacob
+external IP addresses: [A], [B]
+internal IP address: [C] - not the NAT box
+
+I want all udp port 53 traffic from [A]->[C] and from [B]->[C]. So I set
+up the following rules
+
+iptables -t nat -N dns-forward
+iptables -t nat -A dns-forward -p udp --dport 53 -j DNAT --to-dest [C]
+iptables -t nat -A PREROUTING -i A_interface -j dns-forward
+iptables -t nat -A PREROUTING -i B_interface -j dns-forward
+
+and in the packet table I set up forwarding as
+
+itpables -P FORWARD DROP
+iptables -A FORWARD -m conntrack --ctstate ESTABLISHED -j ACCEPT
+iptables -N dns
+iptables -A dns -d [C] -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -j dns
 
 
-#!/bin/sh
+When a packet comes over interface [A], (also the default route), it
+hits the PREROUTING chain, gets forwarded to [C] and then goes though
+FORWARD and gets to the DNS server.
 
-# iptables script generator: V0.1-2002
-# Comes with no warranty!
-# e-mail: michael@1go.dk
+When the packet comes over interface[B], it also gets to the PREROUTING
+chain, but it never gets to the FORWARD chain and thus never even gets
+to [C]. It just dissapears into thin air. My routing seems correct..
 
-# Diable forwarding
-echo 0 > /proc/sys/net/ipv4/ip_forward
+The routing is setup with the iproute2 tool. There are rule tables the
+specify correct paths for packets from interface_A and interface_B to
+all other interfaces and proper default routes (so that packets from B
+go back though B). The only difference is that [A] is also the default
+route in the default rule table. I can get from internal network D to C
+as it does not go though DNAT.
 
-WAN_IP='x.x.x.x'
-WAN_NIC='eth0'
+Any ideas? Can someone reproduce this problem?
 
-# load some modules (if needed)
-modprobe ip_nat_ftp
-modprobe ip_conntrack_ftp
+- Adam
 
-# Flush
-iptables -t nat -F POSTROUTING
-iptables -t nat -F PREROUTING
-iptables -t nat -F OUTPUT
-iptables -F
+PS. kernel 2.6.7, iptables 1.2.9
 
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -P OUTPUT ACCEPT
+-- 
+Building your applications one byte at a time
+http://www.galacticasoftware.com
 
-# Open ports on router for server/services
-iptables -A INPUT -j ACCEPT -p tcp --dport 80
-iptables -A INPUT -j ACCEPT -p tcp --dport 21
-iptables -A INPUT -j ACCEPT -p tcp --dport 22
-iptables -A INPUT -j ACCEPT -p tcp --dport 25
-iptables -A INPUT -j ACCEPT -p tcp --dport 143
-
-# STATE RELATED for router
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Enable forwarding
-echo 1 > /proc/sys/net/ipv4/ip_forward
 
 
