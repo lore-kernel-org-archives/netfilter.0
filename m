@@ -1,10 +1,13 @@
-From: "Hurley, Michael" <MHurley@law.uconn.edu>
-Subject: logging to console
-Date: Tue, 16 Dec 2003 10:59:16 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: logging to console
+Date: Tue, 16 Dec 2003 16:23:18 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <AD8D39C727CBD411BB2C0090273A727408F9ED49@mortimer.law.uconn.edu>
+Message-ID: <200312161623.18146.Antony@Soft-Solutions.co.uk>
+References: <AD8D39C727CBD411BB2C0090273A727408F9ED49@mortimer.law.uconn.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <AD8D39C727CBD411BB2C0090273A727408F9ED49@mortimer.law.uconn.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,30 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Using iptables 1.2.8-8.72.3 on Red Hat Linux 7.3, kernel 2.4.20-20.7.
+On Tuesday 16 December 2003 3:59 pm, Hurley, Michael wrote:
 
-Haven't found a solution to this so far: iptables LOG is logging to console.
-This only occurs on the consoles directly connected to the machine. Logging
-in remotely does not have this problem.
+> Using iptables 1.2.8-8.72.3 on Red Hat Linux 7.3, kernel 2.4.20-20.7.
+>
+> Haven't found a solution to this so far: iptables LOG is logging to
+> console. This only occurs on the consoles directly connected to the
+> machine. Logging in remotely does not have this problem.
 
-Here's what I've tried so far, w/o success:
-set log-level to notice, added kern.=notice /var/log/firewall to
-syslog.conf, restarted syslogd.
-set log-level to warning, added kern.=warning /var/log/firewall to
-syslog.conf, restarted syslogd.
+Try using the numeric values in your netfilter LOG rules instead of the words 
+notice and warning for the log-level.
 
-Still keeps on logging to local consoles. (BTW, kern.* is not accounted for
-in syslog.conf).
+Antony.
 
-I haven't tried setting the printk values yet (at present, the values are 6
-4 1 7)--unsure of what the consequences might be of tinkering with that.
+-- 
+"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
+Blaster].   However, these products are no longer supported.   Users of these
+products are strongly encouraged to upgrade to later versions."
 
-What is the best way to stop this irritating behavior? Thanks,
+(which *are* affected by MS Blaster...)
 
+http://www.microsoft.com/security/security_bulletins/ms03-026.asp
 
-Michael Hurley
-mhurley@law.uconn.edu 
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
