@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: open port to specific ip address
-Date: Mon, 10 Nov 2003 11:22:54 +0000
+From: Christian Riechmann <riechmann@fgan.de>
+Subject: IP6TABLES and Muulticast Listener ICMPV6 PDUs
+Date: Mon, 10 Nov 2003 12:50:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311101123.hAABN7j16772@agate.rockstone.co.uk>
-References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAHvCSmpkyA0+lP5YKpr7djsKAAAAQAAAAnvBmZOFHB0Oj5+mf5BZEMgEAAAAA@petzetakis-africa.co.za>
+Message-ID: <20031110115012.GB2850@ruf098.fkie.fgan.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAHvCSmpkyA0+lP5YKpr7djsKAAAAQAAAAnvBmZOFHB0Oj5+mf5BZEMgEAAAAA@petzetakis-africa.co.za>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +16,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Monday 10 November 2003 10:55 am, Lohan Spies wrote:
+Hello,
 
-> Hi All,
->
-> I need to know how will i open a specific port to a external ip mapping!
->
-> I need to specify a internal_ip:port on my internal network, and then if
-> someone connects to internal_ip:port it must redirect them to
-> external_ip with no cgi scripting and no authentication support!
->
-> How will i do this?
+I am working on a project dealing with IPv6 and Multicast. 
+I am trying to filter those IPv6 PDUs being sent by my host and
+containing ICMPv6 Multicast Listener Discovery Protocol (MLDP) PDUs.
+(In other words I want to see those Multicast Reports which
+inform a router that my host wants to see those PDUs which are
+sent to a specific multicast address.)These PDUs shall be queued
+for some processing within a user space program. 
 
-ip addr add dev eth1 internal_ip
-iptables -A PREROUTING -t nat -d internal_ip -p tcp --dport port -j DNAT --to 
-external_ip
-iptables -A FORWARD -d external_ip -p tcp --dport port -j ACCEPT
+I tried a lot of IP6TABLES rules, but just these types of 
+ICMPV6 PDUs are not queued. 
 
-I'm assuming TCP here since you didn't specify - if you need UDP instead 
-simply replace in both lines.   Also I've assumed eth1 is your internal 
-interface - change if needed.
+I tried different rules, but none worked:
+	ip6tables -A OUTPUT -p icmp6 -j QUEUE
+	ip6tables -A OUTPUT -p icmpv6 -j QUEUE
+	ip6tables -A OUTPUT -p ipv6-icmp -j QUEUE
 
-Antony.
+I should mention that ICMPv6 HELLO PDUs are well queued.
+And:
+	ip6tables -A OUTPUT -p ipv6 -j QUEUE
 
--- 
+The last rule queues all IPv6 PDUs except those I really
+want to see: MLDP-PDUs.
 
-It's a natural impulse to shape the random events we live through into 
-coherent narrative, otherwise our lives would feel like experimental theatre 
-or abstract painting, which would be a complete bloody nightmare.
+All tests running on Kernels 2.4.18, 2.4.22 and 2.6.0test8
+show the same results.
 
- - Pete McCarthy, The Road to McCarthy
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Hoping that somebody can help me.
+
+Christian Riechmann
+(riechmann@fgan.de)
+
 
