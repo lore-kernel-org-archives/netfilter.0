@@ -1,13 +1,15 @@
-From: "Franco Antonio Catena" <facatena@surson.com.br>
-Subject: QoS
-Date: Sat, 8 Mar 2003 12:23:56 -0300
+From: "i.t" <i.t@ithum.de>
+Subject: Re: How is Kazaa getting out without a rule?
+Date: Sat, 8 Mar 2003 20:08:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAtFtUV6DRYkmMbGSF92ZpwsKAAAAQAAAAf4ZC/qaxCUWa8XKwAM+cHAEAAAAA@surson.com.br>
-References: <045101c2e547$c8e84860$13fcc5cb@Housecall>
+Message-ID: <200303082008.54695.i.t@ithum.de>
+References: <20030307233027.80633.qmail@web80410.mail.yahoo.com>
+Reply-To: i.t@ithum.de
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <045101c2e547$c8e84860$13fcc5cb@Housecall>
+In-Reply-To: <20030307233027.80633.qmail@web80410.mail.yahoo.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,21 +19,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Netfilter' <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Tasha Smith <tashamaillist@yahoo.com>, netfilter@lists.netfilter.org
 
-Hi fellows
+msg Samstag 08 M=E4rz 2003 00:30 by Tasha Smith:
+> without creating rule. How is this possible? and does that mean if i ha=
+ve a
 
+if ip_forwarding is set to 1
+kazaa comes out if not further restricted on a very lot of ports (startin=
+g=20
+with 1214 and so on...)
 
-Its possible to do something LIKE QoS or CBQ using IPTABLES ?? I want to
-control the amount of Kbps per port in INBOUND and OUTBOUND directions
-
-thanks
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.459 / Virus Database: 258 - Release Date: 25/2/2003
- 
-
+Regards
+--=20
+ . ___
+ |  |  Irmund     Thum
+ |  |=20
 
