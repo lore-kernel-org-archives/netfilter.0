@@ -1,10 +1,13 @@
-From: "gold gold" <mr_gold55@hotmail.com>
-Subject: H323
-Date: Sat, 19 Jul 2003 07:08:40 +0000
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Help Required
+Date: Sat, 19 Jul 2003 19:07:22 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY1-F1173FIkPr1aTL00016940@hotmail.com>
+Message-ID: <FDEMKKNJDLAJDPNDPCDDCEBLNFAA.georgev@citadelcomputer.com.au>
+References: <20030717124033.M28975@vfmindia.biz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030717124033.M28975@vfmindia.biz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,26 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+To: Sridhar Murthy <sridhar@vfmindia.biz>, netfilter@lists.netfilter.org
+
+Don't use that GUI then..
+
+Try www.webmin.com as it probably has a better GUI or learn to script it
+yourself.. It's the best way.
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Sridhar Murthy
+Sent: Thursday, July 17, 2003 10:47 PM
 To: netfilter@lists.netfilter.org
-
-Hello everybody,
-
+Subject: Help Required
 
 
-     I've already asked this question before, but here it is again:
+Hi all,
 
+I require help in configuring firewall on Redhat 8.0 system my setup
+  is as follows:
 
-
-How do I enable my masqueraded Windows machine to use MSN's audio/video 
-conversation? I've been told to load the "H323" module and do some 
-"patch-o-matic stuff" (??), but I don't really know alot about these 
-stuff... could someone please give me detailed step-by-step instructions on 
-how to do that? I would really appreciate this. Thanks a lot.
-
-_________________________________________________________________
-The new MSN 8: smart spam protection and 2 months FREE*  
-http://join.msn.com/?page=features/junkmail
 
 
