@@ -1,10 +1,9 @@
-From: Ivan Kanis <ivank@juliva.com>
-Subject: prevent script kiddies to abuse my ppp connection
-Date: Thu, 10 Oct 2002 22:29:29 +0200
+From: mustaq ali <mushi_j@yahoo.com>
+Subject: Debugging iptables in kernel
+Date: Thu, 10 Oct 2002 12:05:53 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <15781.58154.125224.618756@juliva.com>
+Message-ID: <20021010190553.48743.qmail@web13507.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,40 +15,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
+ Hi everyone, 
+  
+ I am trying to add my own code into iptables source
+code. For that i want to debug iptables when it is
+running in kernel. I am using kdevelop as IDE and
+debugger. Actually i could able to debug iptables as a
+standalone application  using kdevelop. But i want to
+debug the iptables when it is running inside the
+kernel. I am using kernel 2.4, Mandrake 9.0, iptables
+1.2.7a and kdevelop 2.1. I would appreciate if you
+share your experiences in this case. My email id is
+mushi_j@yahoo.com.
 
-I have a ppp connection to the internet. My connection is limited to
-30 hours per month so I am watching it pretty closely. I have set up
-pppd to timeout after 3 minutes of inactivity. This works most of the
-time.
+Thanks,
+Mushi
 
-Some time it doesn't. Once I left my computer for an hour and I was
-surprised to see that the connection was still on! I thought that one
-of my proces was using the connection so i did a quick dump of ppp0. I
-was surprise to see that some script kiddy was looking at my netbios
-port!
-
-Now I have been thinking of ways to prevent these silliness from
-shutting down my conneciton within 3mn. If I firewall these incoming
-packets I believe that it won't help me. The blocked packet will still
-traverse the ppp link. So it will still be seen as "activity" to the
-ppp daemon. Correct me if I am mistaken.
-
-Is there a way to setup the the firewall to shutdown ppp if it doesnt
-see any valid packets within a given time limit?
-
-Love to hear some suggestions.
-
-Please CC me, I am not subscribed to the mailing list.
-
-Ivan
--- 
-/-----------------------------------------------------------------------------*
-|     "...Deep Hack Mode--that mysterious and       |        Ivan Kanis       |
-|     frightening state of consciousness where      |     ivank@juliva.com    |
-|     Mortal Users fear to tread." (Matt Welsh)     |      www.juliva.com     |
-*-----------------------------------------------------------------------------/
-
+__________________________________________________
+Do you Yahoo!?
+Faith Hill - Exclusive Performances, Videos & More
+http://faith.yahoo.com
 
