@@ -1,14 +1,13 @@
-From: =?koi8-r?Q?=22?=Vladimir Potapov=?koi8-r?Q?=22=20?=<varyag18@mail.ru>
-Subject: Re[2]: Problems with DNS
-Date: Mon, 08 Sep 2003 16:51:59 +0400
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Re[2]: Problems with DNS
+Date: Mon, 08 Sep 2003 15:44:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E19wLUt-000PXD-00.varyag18-mail-ru@f21.mail.ru>
-References: <1062852576.766.68.camel@elendil.intranet.cartel-securite.net>
-Reply-To: =?koi8-r?Q?=22?=Vladimir Potapov=?koi8-r?Q?=22=20?=<varyag18@mail.ru>
+Message-ID: <1063028676.1133.11.camel@elendil.intranet.cartel-securite.net>
+References: <E19wLUt-000PXD-00.varyag18-mail-ru@f21.mail.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1062852576.766.68.camel@elendil.intranet.cartel-securite.net>
+In-Reply-To: <E19wLUt-000PXD-00.varyag18-mail-ru@f21.mail.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +17,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="koi8-r"
-To: =?koi8-r?Q?=22?=Cedric Blancher=?koi8-r?Q?=22=20?= <blancher@cartel-securite.fr>
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?koi8-r?Q?=22?=Vladimir Potapov=?koi8-r?Q?=22=20?= <varyag18@mail.ru>
 Cc: netfilter@lists.netfilter.org
 
-SSBjYW5ub3QgYWRkIHRoaXMgcnVsZXMgd2l0aCAtLXN5biwgYmVjYXVzZSBpcHRhYmxlcyB0ZWxs
-IG1lIGVycm9yIDogYmFkIGFyZ3VtZW50ICctLXN5bicuCklmIHdyaXRlIHRoaXMgcnVsZXMgd2l0
-aG91dCAtLXN5biBhcmd1bWVudCAsIHRoZSBpcHRhYmxlcyBydWxlcyBhcHBseWluZyBzdWNjZXNz
-LklmIEkgd3JpdGUgcnVsZXMgd2l0aCBjaGFpbiBORVcgYnV0IHdpdGhvdXQgLS1zeW4gYXJndW1l
-bnQgLCBhcmUgdGhlIG15IHBhY2tldCBmaWx0ZXIgd2lsbCBiZSBhY2NlcHQob3IgZm9yd2FyZCkg
-bmV3IHBhY2tldCB3aXRob3V0IC0tc3luID8KCgo+IExlIHNhbSAwNi8wOS8yMDAzID8gMTI6NTMs
-IPfMwcTJzcnSIPDP1MHQz9cgYSA/Y3JpdCA6Cj4gPiBBbmQgd2hpY2ggY2hhaW4gYSBuZWVkIHlv
-IGFkZCB0byBydWxlc2V0Pwo+IAo+IEp1c3QgcmV3cml0ZSB5b3VyIHJ1bGVzZXQgYXMgZm9sbG93
-IDoKPiAKPiAjIG5hdCB0YWJsZQo+IC1BIFBSRVJPVVRJTkcgLXQgbmF0IC1kIDEyMS4xLjEuMSAt
-aSBldGgwIC1wIHRjcCAtaiBETkFUIFwKPiAJCS0tdG8tZGVzdGluYXRpb24gMTkyLjE2OC41LjIK
-PiAtQSBQUkVST1VUSU5HIC10IG5hdCAtZCAxMjEuMS4xLjEgLWkgZXRoMCAtcCB1ZHAgLWogRE5B
-VCBcCj4gCQktLXRvLWRlc3RpbmF0aW9uIDE5Mi4xNjguNS4yCj4gLUEgUE9TVFJPVVRJTkcgLXQg
-bmF0IC1vIGV0aDAgLWogU05BVCAtLXRvLXNvdXJjZSAxMjEuMS4xLjEKPiAKPiAjIGZpbHRlciB0
-YWJsZQo+IC1BIEZPUldBUkQgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1q
-IEFDQ0VQVAo+IC1BIEZPUldBUkQgLWQgMTkyLjE2OC41LjIvMjU1LjI1NS4yNTUuMjU1IC1pIGV0
-aDAgLW8gZXRoMSAtbSBzdGF0ZSBcCj4gCQktLXN0YXRlIE5FVyAtcCB0Y3AgLW0gdGNwIC0tZHBv
-cnQgNTMgLS1zeW4gLWogQUNDRVBUCj4gLUEgRk9SV0FSRCAtZCAxOTIuMTY4LjUuMi8yNTUuMjU1
-LjI1NS4yNTUgLWkgZXRoMCAtbyBldGgxIC1tIHN0YXRlIFwKPiAJCS0tc3RhdGUgTkVXIC1wIHVk
-cCAtbSB1ZHAgLS1kcG9ydCA1MyAtaiBBQ0NFUFQKPiAtQSBGT1JXQVJEIC1zIDE5Mi4xNjguNS4w
-LzI1NS4yNTUuMjU1LjAgLWkgZXRoMSAtbyBldGgwIC1tIHN0YXRlIFwKPiAJCS0tc3RhdGUgTkVX
-IC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCA1MyAtLXN5biAtaiBhbGxvdwo+IC1BIEZPUldBUkQgLXMg
-MTkyLjE2OC41LjAvMjU1LjI1NS4yNTUuMCAtaSBldGgxIC1vIGV0aDAgLW0gc3RhdGUgXAo+IAkJ
-LS1zdGF0ZSBORVcgLXAgdWRwIC1tIHVkcCAtLWRwb3J0IDUzIC1qIEFDQ0VQVAo+IAo+IEl0IHNo
-b3VsZCBwcm92aWRlIHRoZSBzYW1lIGZpbHRlcmluZyBmdW5jdGlvbm5hbGl0aWVzIHlvdSB3YW50
-ZWQsIHBsdXMKPiByZXR1cm5pbmcgcGFja2V0cyBhY2NlcHQgdGhyb3VnaCBFU1RBQkxJU0hFRCxS
-RUxBVEVEIHJ1bGUuIElmIHlvdSByZWFsbHkKPiB3YW50IHRvIHJlc3RyaWN0IGl0IHRvIFRDUCBh
-bmQgVURQIG9ubHksIGp1c3QgcmVwbGFjZSB0aGlzIHJ1bGUgd2l0aCB0d28KPiBtb3JlIHNwZWNp
-ZmljIG9uZXMgOgo+IAo+IC1BIEZPUldBUkQgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxS
-RUxBVEVEIC1wIHVkcCAtaiBBQ0NFUFQKPiAtQSBGT1JXQVJEIC1tIHN0YXRlIC0tc3RhdGUgRVNU
-QUJMSVNIRUQsUkVMQVRFRCAtcCB0Y3AgLWogQUNDRVBUCj4gCj4gSSByZW1vdmVkIHJ1bGVzIHRo
-YXQgc2VlbXMgcmVkdW5kYW50LCBpbiBwYXJ0aWN1bGFyIHlvdXIgVENQIGZsYWdzIGNoZWNrCj4g
-cnVsZSB0aGF0IHdhcyByZXBsYWNlZCB3aXRoIC0tc3luIHN3aXRjaCBhZGRpdGlvbi4gSSBhbHNv
-IHJlc3RyaWN0ZWQKPiBpbmJvdW5kIEROUyBmaWx0ZXJpbmcgdG8gMTkyLjE2OC41LjIgb25seS4K
-PiAKPiBIb3BlIHRoaXMgaGVscHMuCj4gCj4gLS0gCj4gaHR0cDovL3d3dy5uZXRleGl0LmNvbS9+
-c2lkLwo+IFBHUCBLZXlJRDogMTU3RTk4RUUgRmluZ2VyUHJpbnQ6IEZBNjIyMjZEQTlFNzJGQThB
-RUNBQTI0MDAwOEI0ODBFMTU3RTk4RUUKPiAKPiAKCg==
+Le lun 08/09/2003 =E0 14:51, =3D?koi8-r?Q?=3D22?=3DVladimir
+Potapov=3D?koi8-r?Q?=3D22=3D20?=3D a =E9crit :
+> I cannot add this rules with --syn, because iptables tell me error :
+> bad argument '--syn'.
+
+Strange...
+
+root@elendil:~# iptables --version
+iptables v1.2.8
+root@elendil:~# iptables -A FORWARD -d 192.168.5.2/255.255.255.255 -i
+eth0 -o eth1 -m state --state NEW -p tcp -m tcp --dport 53 --syn -j
+ACCEPT
+root@elendil:~# iptables -L FORWARD
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     tcp  --  anywhere             192.168.5.2        state NEW
+tcp dpt:domain flags:SYN,RST,ACK/SYN
+
+Are you sure you specify TCP protocol with --syn, for --syn is only
+valid for TCP. If you specify another protocol, or no protocol at all,
+you'll get an error :
+
+root@elendil:~# iptables -A FORWARD -d 192.168.5.2/255.255.255.255 -i
+eth0 -o eth1 -m state --state NEW --syn -j ACCEPT
+iptables v1.2.8: Unknown arg `--syn'
+Try `iptables -h' or 'iptables --help' for more information.
+
+> If write this rules without --syn argument , the iptables rules
+> applying success.If I write rules with chain NEW but without --syn
+> argument , are the my packet filter will be accept(or forward) new
+> packet without --syn ?
+
+If you don't specify --syn, both SYN and non SYN packets with state NEW
+will be accepted.
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+
