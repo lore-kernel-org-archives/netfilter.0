@@ -1,12 +1,13 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Deleting a rule from a DNAT chain
-Date: Wed, 23 Mar 2005 18:25:03 -0600
-Message-ID: <424208DF.30709@riverviewtech.net>
-References: <B00976467560E749B3E981F36CA7D6B3146520@centratel01.telecoms.local>
+Subject: Re: HELP! Transparent Proxy using bridging 2.6.9 and REDIRECT on
+ different subnet
+Date: Wed, 23 Mar 2005 18:35:31 -0600
+Message-ID: <42420B53.4090700@riverviewtech.net>
+References: <2F413D5F33545D4A8465BBEE900238CC3FA777@cymmail.cymphonix.com>
 Reply-To: gtaylor@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <B00976467560E749B3E981F36CA7D6B3146520@centratel01.telecoms.local>
+In-Reply-To: <2F413D5F33545D4A8465BBEE900238CC3FA777@cymmail.cymphonix.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +19,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eugene Joubert <eugenej@centratec.co.za>
-Cc: netfilter@lists.netfilter.org
+To: Trevor Paskett <tpaskett@cymphonix.com>
+Cc: coreteam@netfilter.org, netfilter@lists.netfilter.org
 
-iptables -t nat -D PortForwarding_3191 <rule number from the top of the list starting with 1>
+One thing that I forgot to mention is that if you are DROPing FORWARD traffic in your filter / FORWARD table you will need to ACCEPT traffic that come sin your LAN interface and back out your LAN interface.
+
+iptables -t filter -A FORWARD -i ${LAN} -o ${LAN} -j ACCEPT
+
+You could possibly put a -s and -d match in place to tighter constraints on what is forwarded around the LAN.
 
 
 
 Grant. . . .
 
-Eugene Joubert wrote:
-> Hi,
+Trevor Paskett wrote:
+> Thanks for your reply. Our product is a Linux based product that uses
+> netfilter. We have Squid and a filtering engine on our box. We are
+> strong supporters of netfilter. Our customers have many subnets behind
+> our box because of where it is placed in their network. Bringing up
+> alias's on br0 for each of their subnets that are not even on that
+> broadcast domain is a big band aid :). I think this is somehow a bug in
+> ip_nat_core.c and will investigate that further and have cc'd
+> coreteam@netfilter.org and hopefully that will get to Rusty who wrote
+> it.
 > 
-> I'm a little rusty. I need to delete a rule from a NAT user defined
-> chain. The chain is called PortForwarding_3191. I know to use -D but my
-> syntax is up to crap.
-> I did not create the rule myself as it was created by some sort of
-> webinterface.
-> Any help on the syntax will be appreciated.
+> As for the SNAT I think Jason Opperisano's response is correct.
+> Everything works great, except somewhere in ip_nat_core.c the src port
+> is getting changed to 1 from 80. I have attached an ethereal dump to
+> show this happening and a dump when it does what it is supposed to.
+> Everything between the 2 is the same, except after I captured the
+> no_work.cap, I did
 > 
-> Regards,
-> Eugene
+> ifconfig br0:0 192.168.255.165
 > 
+> So it had an IP on the test machine's subnet. Of course it worked fine
+> and that capture is work.cap
+> 
+> Thanks for all your help.
+> 
+> Trevor Paskett
+> Cymphonix Programmer - CCNA, CWNA
+> P: 801-938-1500 F: 801-938-1501
+
 
