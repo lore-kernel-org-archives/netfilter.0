@@ -1,15 +1,10 @@
-From: stderr <stderr@swissinfo.org>
-Subject: Re: iptables pom installation, help!
-Date: Fri, 02 Jul 2004 22:54:48 +0800
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: NTP
+Date: Fri, 2 Jul 2004 09:28:26 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088779915.13892.175.camel@darkstar>
-References: <20040702042722.12185.84804.Mailman@vishnu.netfilter.org>
-	 <6.0.3.0.1.20040702173337.5a864b90@mail.axisglobal.com>
-Reply-To: stderr@swissinfo.org
+Message-ID: <7EACCDBB65D37443912D80713CC1245D4728B9@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <6.0.3.0.1.20040702173337.5a864b90@mail.axisglobal.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,30 +15,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'Gavin Hamill' <gdh@acentral.co.uk>, netfilter@lists.netfilter.org
+
+do not i repeat...do not allow inbound ntp with a source port above the root
+ports.
+
+
+
+####################################
+# delbert.hudson@losangeles.af.mil #
+#        61cs/scbn, 3-0182         #
+####################################
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Gavin Hamill
+Sent: Friday, July 02, 2004 4:07 AM
 To: netfilter@lists.netfilter.org
-
-On Fri, 2004-07-02 at 17:37, Ryan Pagquil wrote:
-> hello,
-> 	i just want to ask the proper way to install the patch-o-matic for 
-> iptables. because i need the libipt_ipv4options.so for my firewall rules. 
-> i'm using iptables-1.2.7a. what are the things do i need for me to install 
-> it properly?
-
-Just extract the pom tarball and cd into it,
-then do a # ./runme.pl, 
-<Hey! KERNEL_DIR is not set> type in your
-kernel source path
-<Hey! IPTABLES_DIR is not set> enter the
-source path of your iptables ver.
-cd to your kernel source dir then do a 
-make modules && make modules_install
-
-but I'd rather opt with compiling a
-new kernel to make it cleaner (and safer)
-
-hth
---
--stderr(Cagayan de Oro)
+Subject: Re: NTP
 
 
+On Friday 02 July 2004 11:57, Steve Comfort wrote:
+> Hi all,
+>
+> Could someone tell me what rules I need in order to enable NTP?
+
+Simply allow incoming UDP on port 123. The 'normal' way is for both the
+source 
+and destination ports to be 123, but it is common (esp. with debugging) for 
+the source port to be >1024.
+
+Cheers,
+Gavin.
 
