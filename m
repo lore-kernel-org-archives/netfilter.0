@@ -1,13 +1,14 @@
-From: "Ferry van Steen" <ferry.van.steen@infopart.nl>
-Subject: RE: forward is not forwarding
-Date: Fri, 6 Sep 2002 08:24:45 +0200
+From: Alistair Tonner <Alistair@alistairt.ath.cx>
+Subject: Re: ftp server issue, trying to DL 1.2.7a
+Date: Thu, 5 Sep 2002 15:57:48 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001501c2556e$17b9eee0$1be02a0a@infopart.nl>
-References: <000901c2556c$b228c340$0401000a@win2k>
+Message-ID: <20020905195748.GA1932@Ajftl1.ajfthome.on.ca>
+References: <NEENJAPFEAIEMGMNIGFLMEKLCCAA.rwideman@austin.rr.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000901c2556c$b228c340$0401000a@win2k>
+Content-Disposition: inline
+In-Reply-To: <NEENJAPFEAIEMGMNIGFLMEKLCCAA.rwideman@austin.rr.com>; from rwideman@austin.rr.com on Thu, Sep 05, 2002 at 13:29:18 -0400
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,69 +18,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-In my scripts I use
 
-# Enable IPv4 Forwarding
-echo 1 > /proc/sys/net/ipv4/ip_forward
-# Enable SYN Cookie protection
-echo 1 > /proc/sys/net/ipv4/tcp_syncookies
-# Enable spoof protection
-for f in /proc/sys/net/ipv4/conf/*/rp_filter;
-  do echo 1 > $f;
-done;
-
-Anyone got others?
-
-Kind regards,
-
-Ferry van Steen
-InfoPart Automatisering B.V.
-Beeksestraat 24
-4841 GC Prinsenbeek
-The Netherlands
-Phone: +31 (0)76 - 5 44 04 11
-Fax: +31 (0)76 - 5 41 83 51
-Mobile: +31 (0)6 - 28 46 47 45
-E-Mail (business): ferry.van.steen@infopart.nl
-E-Mail (private): freaky@bananateam.nl
-MSN Messenger: freaky@freaky2000.dyndns.org
-ICQ (UIN (seldom used)): 191458
+No go on passive from here either,
+	set passive off,
+	transfer is fine...
 
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of R. Sterenborg
-Sent: vrijdag 6 september 2002 8:15
-To: netfilter@lists.netfilter.org
-Subject: RE: forward is not forwarding
-
-> > iptables -i eth0 -o eth1 -A FORWARD -j ACCEPT
-> > iptables -i eth1 -o eth0 -A FORWARD -j ACCEPT> Did you enable IP
-forwarding at the kernel level ?
-
-> what does "cat /proc/sys/net/ipv4/ip_forward" show ?
->
-> If 0, then you need to enable IP fowarding by doing this:
->
-> echo 1 > /proc/sys/net/ipv4/ip_forward
->
->
-
-Do you need netfilter ?
-How about your routing table (route -n). Do you have routings like :
-
-Destination     Gateway         Genmask
-...
-10.1.1.0        10.1.1.1        255.255.255.0
-192.168.1.0     192.168.1.1     255.255.255.0
-...
-
-
-Rob
-
-
+On 2002.09.05 13:29 Rob wrote:
+> Anyone else having this problem?
+> 
+> 
+> Connected to ftp.iptables.org (62.128.28.62).
+> 220 ProFTPD 1.2.5rc1 Server (netfilter/iptables FTP site) [kashyyyk]
+> Name (ftp.iptables.org:root): anonymous
+> 331 Anonymous login ok, send your complete email address as your
+> password.
+> Password:
+> 230 Anonymous access granted, restrictions apply.
+> Remote system type is UNIX.
+> Using binary mode to transfer files.
+> ftp> dir
+> 227 Entering Passive Mode (62,128,28,62,182,53).
+> 
+> thanks
+> Rob
+> 
+> 
+> 
 
 
