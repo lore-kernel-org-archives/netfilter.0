@@ -1,13 +1,12 @@
-From: "John H. Spicer" <jhs@edg.com>
-Subject: Re: Problem using fwmark -- how to mark packets from local host?
-Date: Wed, 03 Mar 2004 17:43:00 -0500
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: DNAT --to-destination: why not hostname?
+Date: Wed, 3 Mar 2004 13:33:33 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40465F74.8070609@edg.com>
-References: <7C9884991ADAE0479C14F10C858BCDF56791BB@alderaan.smgtec.com>
+Message-ID: <200403031333.33554.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF56791BB@alderaan.smgtec.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Daniel Chemko wrote:
-> Use the OUTPUT chain instead of the PREROUTING chain for packets
-> originating from the local system.
-> 
-> 
->>Is there a way to mark packets originating on the local system?
-> 
-> 
-> 
+The syntax from TFM, iptables(8):
+    --to-destination ipaddr[-ipaddr][:port-port]
+Obviously if you are going to use a range of destinations only IP 
+addresses would suffice. But why can't this option accept a hostname 
+for a single destination?
 
-Thanks.  I tried that, but it did not seem to have any effect.  The command I 
-used was:
+This would be convenient for scripting, in that you maintain control of 
+the firewall through DNS. As it is, to use a hostname I have to use an 
+intermediate step to get the IP, like this:
+    DEST_IP=`dig +short ${DEST_HOST}.domain.tld.`
+This is also less than ideal because if iptables resolved the name 
+itself, it would use the "search domain.tld" out of resolv.conf. For 
+dig I have to manually append it. And it's REALLY inconvenient in some 
+of my firewall machines where there is no BIND installed. It gets even 
+worse in sites which aren't running their own DNS ... AFAIK dig and 
+host only use DNS, not /etc/hosts, for resolving.
 
-iptables -t mangle -A OUTPUT -j MARK --set-mark 0x0a -p tcp --dport 25
+iptables DOES resolve hostnames used in other parameters, so why not 
+here? That should have been a question for the developer list, I guess, 
+but I'm not on that one.
 
-Now, when connecting from the localhost, I get:
-
-telnet: connect to address 66.33.196.49: No route to host
-
-I can still connect via the NAT'd systems okay.
-
-Thanks for the assistance!
-
-John.
+But a good question for this list might be: "How have you handled this 
+need in iptables scripting?" I have used the dig trick where available 
+and hard-coded IP's elsewhere.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
