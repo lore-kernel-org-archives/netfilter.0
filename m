@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: how to block udp frag?
-Date: Sat, 1 Jan 2005 19:08:45 -0500
-Message-ID: <20050102000845.GA11550@bender.817west.com>
-References: <1139dfe2050101155841faa4d0@mail.gmail.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+Subject: Re: NAT + Firewall
+Date: Sun, 02 Jan 2005 00:56:08 -0500
+Message-ID: <1104645369.8653.2.camel@jasiiitosh.opensourcedevel.com>
+References: <41D645A8.4183E803@ita.org.mo>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1139dfe2050101155841faa4d0@mail.gmail.com>
+In-Reply-To: <41D645A8.4183E803@ita.org.mo>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: edwardspl@ita.org.mo
+Cc: Netfilter users list <netfilter@lists.netfilter.org>
 
-On Sat, Jan 01, 2005 at 09:58:41PM -0200, Bruno Wallace wrote:
-> hello,
-> how to block this?????
+On Sat, 2005-01-01 at 14:39 +0800, edwardspl@ita.org.mo wrote:
+> Dear All,
 > 
-> 20:53:44.628586 83.102.166.15 > xxx.xxx.151.35: udp (frag 1720:25@512)
-> (ttl 53, len 45)
-> 0x0000   4500 002d 06b8 0040 3511 2599 5366 a60f        E..-...@5.%.Sf..
-> 0x0010   c896 9723 11ef 0035 0019 1e70 71f7 0100        ...#...5...pq...
-> 0x0020   0001 0000 0000 0000 0000 0200 0100             ..............
-> 20:53:47.197264 83.102.166.24 > xxx.xxx.151.34: udp (frag
-> 48577:25@512) (ttl 53, len 45)
-> 0x0000   4500 002d bdc1 0040 3511 6e87 5366 a618        E..-...@5.n.Sf..
-> 0x0010   c896 9722 11ef 0035 0019 1e68 71f7 0100        ..."...5...hq...
-> 0x0020   0001 0000 0000 0000 0000 0200 0100             ..............
-> 20:53:49.306206 83.102.166.76 > xxx.xxx.145.115: udp (frag
-> 21990:25@512) (ttl 53, len 45)
-> 0x0000   4500 002d 55e6 0040 3511 dbdd 5366 a64c        E..-U..@5...Sf.L
-> 0x0010   c896 9173 11ef 0035 0019 23e3 71f7 0100        ...s...5..#.q...
-> 0x0020   0001 0000 0000 0000 0000 0200 0100             ..............
-> 20:53:49.529603 83.102.166.7 > xxx.xxx.146.119: udp (frag
-> 26427:25@512) (ttl 53, len 45)
-> 0x0000   4500 002d 673b 0040 3511 c9c9 5366 a607        E..-g;.@5...Sf..
-> 0x0010   c896 9277 11ef 0035 0019 2324 71f7 0100        ...w...5..#$q...
-> 0x0020   0001 0000 0000 0000 0000 0200 0100   
+> Happy New Year !
 > 
-> thanks
-> Bruno Wallace
+> I want to know how to set the nat and firewall, then all of the client
+> PCs needn't to via ( throught ) leased line / broadband again, means
+> direct to internal network to connect with Internet Server ?
+> 
+> Many thank for your help !
+> 
+> Edward.
+> 
+> 
+> 
+I would suggest that you read Oskar Andreasson's excellent tutorial on
+using iptables.  You can find it in the tutorials section of the
+netfilter web page (http://www.netfilter.org).  There are also some
+slide shows available in the training section at
+http://iscs.sourceforge.net
+You could also use a GUI configuration like fwbuilder
+(http://www.fwbuilder.org) to make this easier.  When ISCS is ready, it
+will automatically configure even the most complex NAT such as nested,
+overlapping and range NAT.  Good luck in your studies - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
 
-either (a) use a default deny policy that doesn't allow UDP traffic or
-(b) in your rules where you accept UDP traffic, specify "! -f" which,
-according to the man page:
+Financially sustainable open source development
+http://www.opensourcedevel.com
 
-  When the "!" argument precedes the "-f" flag, the rule will only match
-  head  fragments, or unfragmented packets.
-
--j
 
