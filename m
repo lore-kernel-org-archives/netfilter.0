@@ -1,12 +1,13 @@
-From: <bmcdowell@coxhealthplans.com>
-Subject: RE: irc
-Date: Mon, 17 Nov 2003 10:28:51 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: tcp & udp timeout hardcoding
+Date: Mon, 17 Nov 2003 16:30:05 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D73101131848@coxhpexg.coxhp.com>
+Message-ID: <200311171630.hAHGU8j22270@agate.rockstone.co.uk>
+References: <20031117144208.GA22431@nest.8d.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20031117144208.GA22431@nest.8d.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,62 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Monday 17 November 2003 2:42 pm, xavier wrote:
 
-At the risk of getting OT, what is the point of a proxy for IRC on a =
-gateway?  I could see it as an anonymizer to bounce IRC off of, but on a =
-gateway this would not seem to functionally any different than NAT.  =
-What am I missing?
-
-Bob
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: Monday, November 17, 2003 10:18 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: irc
-
-
-On Monday 17 November 2003 4:10 pm, SBlaze wrote:
-
->  > All I can suggest is that you look around for an IRC proxy server,
->  > however I have no knowledge of such things myself.
-> >
-> > Regards,
-> >
-> > Antony.
+> Hello,
 >
-> There are such things as IRC Proxys. bnc is one of the more common =
-ones
-> that I have heard of. However this won't do him any good since he is
-> looking for a rule to allow in IRC protocol.
+> I saw in the 2.4.22 kernel source :
+>
+> /usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
+> static unsigned long tcp_timeouts[]
+> = { 30 MINS,    /*      TCP_CONNTRACK_NONE,     */
+>     5 DAYS,     /*      TCP_CONNTRACK_ESTABLISHED,      */
+>     2 MINS,     /*      TCP_CONNTRACK_SYN_SENT, */
+>     60 SECS,    /*      TCP_CONNTRACK_SYN_RECV, */
+>     2 MINS,     /*      TCP_CONNTRACK_FIN_WAIT, */
+>     2 MINS,     /*      TCP_CONNTRACK_TIME_WAIT,        */
+>     10 SECS,    /*      TCP_CONNTRACK_CLOSE,    */
+>     60 SECS,    /*      TCP_CONNTRACK_CLOSE_WAIT,       */
+>     30 SECS,    /*      TCP_CONNTRACK_LAST_ACK, */
+>     2 MINS,     /*      TCP_CONNTRACK_LISTEN,   */
+> };
+>
+> Is there any plan to be able to set thoses values throught /proc ?
+>
+> in some cases a 5 days timeout on tcp connexions may be too long...
 
-I'm not sure that *is* what he's looking for?   Quoting from his second=20
-posting:
+These are the standard values according to the TCP RFCs.   You can change 
+them on your machine if you like, but it involves a kernel recompile (or a 
+netfilter module recompile, if you use modules).
 
-"The 'firewall' in this case, is a transparent proxy server. =A0The =
-proxy=20
-server will be the gateway to the internet.   I need to allow irc =
-connections=20
-through this machine, somehow. =A0I don't know how to do that."
+Note that you can adjust these sort of timings for the normal Linux TCP/IP 
+stack by writing to various things in /proc/sys/net/ipv4, but this doesn't 
+affect the netfilter connection racking table timeouts.
 
-Therefore it seems to me that he's looking for an IRC proxy server, not =
-a=20
-packet filtering rule.
+See /usr/src/linux/Documentation/networking/ip-sysctl.txt for more details.
 
-Maybe I'm just confused.
+Bear in mind that fiddling with this sort of stuff can break your network 
+connectivity and/or compatibility.
+
+Regards,
 
 Antony.
 
---=20
+-- 
 
-This email was created using 100% recycled electrons.
+The first ninety percent of an engineering project takes ninety percent
+of the time, and the last ten percent takes the remaining ninety percent.
 
-                                                     Please reply to the =
-list;
-                                                           please don't =
-CC me.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
