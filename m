@@ -1,12 +1,12 @@
-From: "Pete Davis" <peted@springisd.org>
-Subject: Bridging firewall with iptables
-Date: Mon, 07 Oct 2002 15:42:44 -0500
+From: Ryan Hoegg <rhoegg@isisnetworks.net>
+Subject: Re: iptables vs cisco pix
+Date: Mon, 07 Oct 2002 16:41:28 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <sda1ab7e.047@hiway.springisd.org>
+Message-ID: <3DA1F178.6060901@isisnetworks.net>
+References: <40410.67.118.146.230.1033576589.squirrel@highwayshouse.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +16,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: , netfilter@lists.netfilter.org, , 
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-I have been trying to get a bridging firewall setup with iptables.  The
-iptables part, by itself, is not an issue.  I can get it done.  My
-question is: has anyone here ever gotten the bridging + iptables
-firewall to work?
+This topic has come up before.  You need to specify your security 
+requirements by building an enterprise security policy before you can 
+choose your tools to implement that policy.  PIX and other commercial 
+firewalls give you a lot more than packet filtering and NAT.  VPNs, log 
+analyzers, clustering, and intrusion detection are some of the features 
+you will not see in vanilla linux + iptables.  If your policy needs 
+these features, you can give your clients a proposal for your time to 
+install, configure, and document a custom linux based solution and 
+compare that with the purchase, installation, and configuration of a PIX.
 
-I am using 2.4.19 (I never get anything but 2.4.19 with dmesg or uname
--a) with bridge-nf-0.0.7-against-2.4.19.diff for the bridging patch.  I
-am following the documentation provided on bridge.sourceforge.org.
+You may find that a Watchguard Firebox is your best bet, especially 
+since it runs linux and iptables under the hood.
 
-I d/l'ed the 2.4.19.  Patched with bridge patch above.  Made the kernel
-with iptables support (most options as modules), "8021.d Ethernet
-bridging" and "netfilter (firewalling) support" included.  Everything
-compiled and installed without errors.  I added the interfaces to the
-bridge interface per the directions.  Set all ip addresses to 0.0.0.0
-promisc per the directions in the documentation.  The default rules for
-iptables are allow for input, output and forward (forward is the only
-one of importance).
+--
+Ryan Hoegg
+ISIS Networks
 
-At this point, I cannot get any devices on the 'outside' of the
-firewall to reach anything 'inside' the firewall.  Since all the rules
-are accept, it should work.  I get the feeling the problem may be with
-the bridging portion.
+Mike Hull wrote:
 
-Anyone gotten this bridge + firewall to work?
+>Does anyone know where I could find a comparison of linux+iptables vs
+>cisco pix?  I'm trying to convence a couple health care organizations to
+>get linux boxes rather than cisco pix solutions.  These people are stuck
+>on cisco.  Everything they have is overpriced cisco garbage.  Personally,
+>I have compared them, and I have had to replace cisco equipment with an
+>iptables firewall.  I don't think they're just going to take my word for
+>it though.
+>
+>Thanks,
+>Mike
+>
 
-Thanks,
-Pete
 
