@@ -1,14 +1,10 @@
-From: "Jorge Agrelo" <jagrelo@novadevices.com>
-Subject: Re: Limit module accept negation?
-Date: Thu, 13 Jan 2005 19:08:53 -0500
-Message-ID: <41E6C745.7555.2118F01@localhost>
-References: <41E2E0CB.18071.252B3E2C@localhost>
-Reply-To: jagrelo@novadevices.com
+From: Rene Cunningham <rene@dclabs.com.au>
+Subject: pptp-conntrack-nat and 2.6
+Date: Fri, 14 Jan 2005 11:50:46 +1100
+Message-ID: <20050114005046.GP18935@eden.office.dclabs.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <30044.142.169.215.10.1105539632.squirrel@142.169.215.10>
-Content-description: Mail message body
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,53 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Samuel Jean <sj-netfilter@cookinglinux.org>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi Samuel
+Gday,
 
-Yes, I want to limit (drop) as soon as we receive more than 1/s packet
-regardless of the source address?, Is there any other way to do that without using
-limit match with negation?
+Ive been tackling pptp-conntrack-nat with kernel 2.6 for the past couple of
+days and im not getting far.
 
-Regards
- 
-On 12 Jan 2005 at 9:20, Samuel Jean wrote:
+It appears that pptp-conntrack-nat for 2.6 is very experimental and is
+not working in its current state. It worked well in 2.4.
 
-> On Mon, January 10, 2005 8:08 pm, Jorge Agrelo said:
-> > Can I replace this two rules
-> >
-> > iptables -A INPUT -p tcp --syn -m limit --limit 1/s --limit-burst 4 -j
-> > ACCEPT
-> > iptables -A INPUT -p tcp --syn -j DROP
-> >
-> > For only this one? (Using negation)
-> >
-> > iptables -A INPUT -p tcp --syn -m limit ! --limit 1/s --limit-burst 4 -j
-> > DROP
-> 
-> Unfortunately, you can't without a bit of hacking.
-> If it happens you would, just grab ipt_limit.c and search for:
-> 
-> /* We're underlimit */
-> 
-> Change the return codes so it returns 0 when 'underlimit', otherwise, 1.
-> Am sorry if this is straigh, I am at work.
-> Note that this won't add '!' support but just doesn't match unless it
-> bursts the limit.
-> 
-> By the way, do you want to limit as soon as you receive more than 1/s packet
-> regardless of the source address?
-> 
-> >
-> > Thanks in advanced
-> 
-> HTH,
-> 
-> Samuel
-> 
-> 
+Ive come up with a quick hack, though it isnt very stable and is only
+limited to a single internal machine. It uses the MARK target to mark
+gre packets which allows netfilter to track the packets easily.
 
+external interface = ppp0
+internal pptp client = 192.168.1.50
+mark value = 1
 
+iptables -t mangle -A PREROUTING -i ppp0 -p gre -j MARK --set-mark 1
+iptables -t nat -A PREROUTING -i ppp0 -p gre -m mark --mark 1 -j DNAT
+--to 192.168.1.50
+iptables -A FORWARD -i ppp0 -p gre -m mark --mark 1 -j ACCEPT
 
+Are there any other solutions to getting internal workstations connected
+to external PPTP servers with connection tracking in 2.6? Assigning external
+routable addresses to internal machines really isnt an option at the
+moment.
+
+Cheers!
+
+-- 
+
+Rene Cunningham
+DCLabs Pty Ltd
+http://www.dclabs.com.au
 
