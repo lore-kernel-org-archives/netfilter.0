@@ -1,14 +1,13 @@
-From: Daniel Chemko <dchemko@smgtec.com>
-Subject: Re: iptables-restore help
-Date: Sun, 28 Sep 2003 00:30:07 -0700
+From: Adam Mercer <r.a.mercer@blueyonder.co.uk>
+Subject: Re: Problems with NAT
+Date: Sun, 28 Sep 2003 08:36:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F768DFF.1040802@smgtec.com>
-References: <20030928065817.34041.qmail@web20714.mail.yahoo.com>
+Message-ID: <20030928073635.GA4295@skymoo.dyndns.org>
+References: <20030927164414.GA16146@skymoo.dyndns.org> <LFEHKEBEBHAFGJBMNKAOCEOCCBAA.markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------010401050105050300050802"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030928065817.34041.qmail@web20714.mail.yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <LFEHKEBEBHAFGJBMNKAOCEOCCBAA.markee@bandwidthco.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,102 +17,95 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: ads nat <adsnat@yahoo.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Mark E. Donaldson" <markee@bandwidthco.com>
 Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------010401050105050300050802
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+On Sat, Sep 27, 2003 at 08:30:17PM -0700, Mark E. Donaldson wrote:
+> Adam - You have a mixture of "stateless" and "stateful" rules.  SSH is
+> passing in both directions because you have an explicit ACCEPT for it.  DNS
+> is blocked so you are unable to resolve.  Although you need to do more than
+> this for long term function and security, here is a quick fix so your system
+> should work.  Add:
+> 
+> ${IPTABLES} -A INPUT -m state --state NEW -j ACCEPT
+> ${IPTABLES} -A FORWARD -m state --state NEW -j ACCEPT
 
-iptables doesn't inherently save state data. Redhat 8.0 might do 
-something along those lines, but if you are really trying to play with 
-the iptables rules, it is probably best to disable the redhat stuff and 
-build your own startup / shutdown scripts so that you really know what 
-is going on under the hood.
+Mark
 
-ads nat wrote:
+Thanks for the response, I've added those rules and still nothing. I
+tried flushing all the rules, adding the example from the NAT howto and
+still nothing. eth1 receives the packets yet doesn't transmit them.
 
-> Hi,
-> I am learning to use iptables.
-> I have gone through FAQ and tutorials but have two problems :
->  
-> 1) I can create rules, delete rules, save rules with "iptables-save" 
-> command. But can not use "iptables-restore" properly. my iptables file 
-> is in at /etc/sysconfig/iptables
-> I am using Redhat Linux 8.0, iptables 1.2.6a version.
->  
-> Whatever rule I have saved goes off when i reboot system. As I have 
-> understood after using "iptables-restore" command, it should save 
-> rules in /etc/sysconfig/iptables file. So that when system reboots 
-> automatically it will be implimented.
->  
-> 2) I have set rule "iptables -A INPUT -i eth0 -m state --state NEW -m 
-> limit --limit 1 -j LOG" so that i can go through logs of NEW users 
-> tryong to connect to server. These are saved in which file?
-> Help appreciated.
->  
-> Thanks 
->  
->  
-> ------------------------------------------------------------------------
-> Do you Yahoo!?
-> The New Yahoo! Shopping 
-> <http://shopping.yahoo.com/?__yltc=s%3A150000443%2Cd%3A22708228%2Cslk%3Atext%2Csec%3Amail> 
-> - with improved product search 
+Could this be due to something missing in my kernel config, I know that
+I had a problem setting up the DHCP server as the kernel was missing
+somthing? What options to I need enabled in the kernel?
 
+Cheers
 
---------------010401050105050300050802
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Adam
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body>
-iptables doesn't inherently save state data. Redhat 8.0 might do
-something along those lines, but if you are really trying to play with
-the iptables rules, it is probably best to disable the redhat stuff and
-build your own startup / shutdown scripts so that you really know what
-is going on under the hood.<br>
-<br>
-ads nat wrote:<br>
-<blockquote type="cite"
- cite="mid20030928065817.34041.qmail@web20714.mail.yahoo.com">
-  <div>Hi,</div>
-  <div>I am learning to use iptables.</div>
-  <div>I have gone through FAQ and tutorials but&nbsp;have two problems :</div>
-  <div>&nbsp;</div>
-  <div>1) I can create rules, delete rules, save rules with
-"iptables-save" command. But can not use&nbsp;"iptables-restore" properly.
-my iptables file is in at /etc/sysconfig/iptables</div>
-  <div>I am using Redhat Linux 8.0, iptables 1.2.6a version.</div>
-  <div>&nbsp;</div>
-  <div>Whatever rule I have saved goes off when i reboot system. As I
-have understood after using "iptables-restore" command, it should save
-rules in /etc/sysconfig/iptables file. So that when system reboots
-automatically it will be implimented.</div>
-  <div>&nbsp;</div>
-  <div>2) I have set rule "iptables -A INPUT -i eth0 -m state --state
-NEW -m limit --limit 1 -j LOG" so that i can go through logs of NEW
-users tryong to connect to server. These are saved in which file? </div>
-  <div>Help appreciated.</div>
-  <div>&nbsp;</div>
-  <div>Thanks&nbsp;<br>
-  </div>
-  <div>&nbsp;</div>
-  <div>&nbsp;</div>
-  <hr size="1">Do you Yahoo!?<br>
-  <a
- href="http://shopping.yahoo.com/?__yltc=s%3A150000443%2Cd%3A22708228%2Cslk%3Atext%2Csec%3Amail">The
-New Yahoo! Shopping</a> - with improved product search
-</blockquote>
-</body>
-</html>
-
---------------010401050105050300050802--
-
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Adam Mercer
+> Sent: Saturday, September 27, 2003 9:44 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Problems with NAT
+> 
+> 
+> Hi
+> 
+> I'm trying to set up my firwall so that I can plug my laptop into eth1
+> of my desktop and use NAT to access the outside world on the laptop
+> 
+> I've followed the NAT Howto and my firewall contains the following rules
+> 
+>     # allow local-only connections
+>     ${IPTABLES} -A INPUT -i lo -j ACCEPT
+> 
+>     # free output on any interface to any ip for any service
+>     ${IPTABLES} -A OUTPUT -j ACCEPT
+> 
+>     # permit answers on already established connections
+>     # and permit new connections related to established ones
+>     ${IPTABLES} -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+>     ${IPTABLES} -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> 
+>     # allow incomg ssh connections
+>     ${IPTABLES} -A INPUT -p tcp  --dport ssh -j ACCEPT
+> 
+>     # NAT
+>     ${IPTABLES} -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+>     ${IPTABLES} -A FORWARD -s 10.0.0.0/24 -j ACCEPT
+> 
+>     # everything not accepted > /dev/null
+>     ${IPTABLES} -P INPUT DROP
+>     ${IPTABLES} -P FORWARD DROP
+>     ${IPTABLES} -P OUTPUT DROP
+> 
+>     # be verbose on dynamic ip-addresses
+>     echo 2 > /proc/sys/net/ipv4/ip_dynaddr
+> 
+>     # disable ExplicitCongestionNotification
+>     echo 0 > /proc/sys/net/ipv4/tcp_ecn
+> 
+>     # turn on IP forwarding
+>     echo 1 > /proc/sys/net/ipv4/ip_forward
+> 
+> The laptop (PowerBook G4) is assigned an ip address in the range
+> 10.0.0.2-.10
+> by a DHCP server. eth1 has an ip address 10.0.0.1, and eth0 is the
+> connection
+> to the outside world. After running ethereal it appears that no packets from
+> the local network are making it to eth0. However I can ssh into the server
+> if I
+> use ip address, but not hostname.
+> 
+> Can anyone help me out with this?
+> 
+> Thanks in advance
+> 
+> Adam
+> 
 
