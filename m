@@ -1,13 +1,14 @@
-From: "Markus" <listuser@sally.epygi.de>
-Subject: RE: 2 dif. connections separated
-Date: Tue, 20 Jul 2004 17:03:51 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: ruleset
+Date: Tue, 20 Jul 2004 16:37:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BDEHJGPIKNLKJJBCCFPLEEJICOAA.listuser@sally.epygi.de>
-References: <200407201554.45401.Antony@Soft-Solutions.co.uk>
+Message-ID: <200407201637.13100.Antony@Soft-Solutions.co.uk>
+References: <HAEOIFPIBBBLGLHOMLLIAEMFCEAA.bclark@eccotours.biz>
+Reply-To: "iptables" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407201554.45401.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <HAEOIFPIBBBLGLHOMLLIAEMFCEAA.bclark@eccotours.biz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,86 +19,73 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: iptables <netfilter@lists.netfilter.org>
 
-HiHo!
+On Tuesday 20 July 2004 3:58 pm, Brent Clark wrote:
 
-I think he has two routers, aka two different machines ;)
+> Hi all
+>
+> Below is a copied and pasted ruleset.
+> Anyone care to have a look, it would really be appreciated.
 
-ciao
-  markus
+<snip...>
 
+> # Allow for resolving of  DNS and lookup from  gate
+>
+> /sbin/iptables -A OUTPUT -o eth0 -p udp --dport 53 -m state --state NEW -j
+> ACCEPT
+> /sbin/iptables -A INPUT -i eth1 -p udp --sport 53 -m state --state NEW -j
+> ACCEPT
+> /sbin/iptables -A FORWARD -p udp --sport 53 -m state --state NEW -j ACCEPT
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-> Sent: Dienstag, 20. Juli 2004 16:55
-> To: netfilter@lists.netfilter.org
-> Subject: Re: 2 dif. connections separated
-> 
-> 
-> On Tuesday 20 July 2004 3:33 pm, Markus wrote:
-> 
-> > HiHo!
-> >
-> > I hope he doesn't want connection tracking, as IMHO he will
-> > only see UNREPLIED connections.
-> 
-> Why?   Netfilter will see the packets go out, adn it will see the replies come 
-> back in.   It won't care how they got to/from the Internet.
-> 
-> > Isn't this a problem for the nat-modules, like ftp?
-> 
-> I think they should work exactly as they do for a single connection setup.
-> 
-> If he had two separate netfilter machines, now *that* would be difficult to 
-> handle...
-> 
-> Regards,
-> 
-> Antony.
-> 
-> > > -----Original Message-----
-> > > From: netfilter-admin@lists.netfilter.org
-> > > [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-> > > Sent: Dienstag, 20. Juli 2004 16:24
-> > > To: netfilter@lists.netfilter.org
-> > > Subject: Re: 2 dif. connections separated
-> > >
-> > > On Tuesday 20 July 2004 3:13 pm, Pablo Allietti wrote:
-> > > > i have 2 router to internet 1 for 200.40.226.65 and other with
-> > > > 200.40.224.65
-> > > >
-> > > > is possible to divide this connections to make
-> > > >
-> > > > 200.40.226.64 // outgoing traffic
-> > > >
-> > > > 200.40.224.64 // input traffic ???
-> > > >
-> > > > with iptables ?
-> > >
-> > > Yes.   Set the default gateway for the router to point up 200.40.226.64's
-> > > link, and use SNAT to set all packets to have source address
-> > > 200.40.224.65.
-> > >
-> > > Then hope the ISP doesn't do strict ingress / egress filtering... :)
-> > >
-> > > Regards,
-> > >
-> > > Antony.
-> > >
-> > > --
-> > > Most people have more than the average number of legs.
-> > >
-> > >                                                      Please reply to the
-> > > list; please don't CC me.
-> 
-> -- 
-> The lottery is a tax for people who can't do maths.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
-> 
+Is your firewall running a DNS server?   If so, you want the INPUT rule.   If 
+not (ie: you are passing DNS requests through to somewhere else), you want 
+the FORWARD rule.   I'd be surprised if you really want both.
+
+Why do you specify source port 53 in the FORWARD rule instead of destination 
+port 53?   The reply packets are already taken care of by the 
+ESTABLISHED,RELATED rule.
+
+> # Allow access gate from 192.168.111.0/255.255.255.0
+>
+> /sbin/iptables -A INPUT -i eth1 -p all -s 192.168.111.0/24 -j ACCEPT
+
+You want *all* machines on 192.68.111.0./24 to have access to *all* services 
+on the firewall??
+
+> /sbin/iptables -A FORWARD -p all -s 192.168.111.0/24 -d 192.168.111.0/24 -j
+> ACCEPT
+
+This one makes no sense.   Packets from one subnet to another machine on the 
+same subnet do not go through the firewall.
+
+> # Allow access to port 80(http) and 443(https) to the gate
+>
+> /sbin/iptables -A INPUT -i eth1 -s 192.168.111.0/24 -p tcp -m
+> multiport --dport 80,443 -m state --state NEW -j ACCEPT
+
+You are running an http/s server on the firewall???
+
+> #/sbin/iptables -A INPUT -p tcp -m tcp --dport 21 -j ACCEPT
+
+You are running an FTP server on the firewall as well as HTTP, HTTPS and 
+perhaps DNS???   Something makes me think you don't know about good security 
+practice saying "don't run uneccessary (some people say "any") services on 
+your firewall, as a compromise of one service can lead to a compromise of the 
+firewall".
+
+Regards,
+
+Antony.
+
+-- 
+"It would appear we have reached the limits of what it is possible to achieve 
+with computer technology, although one should be careful with such 
+statements; they tend to sound pretty silly in five years."
+
+ - John von Neumann (1949)
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
