@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: ipconntract
-Date: 16 Oct 2002 20:51:07 +0200
+Date: Wed, 16 Oct 2002 20:29:00 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1034794267.13389.1.camel@elendil>
-References: <20021016182728.12947.qmail@web14003.mail.yahoo.com>
+Message-ID: <20021016192906.HTVK459.mta02-svc.ntlworld.com@there>
+References: <Pine.LNX.4.40.0210161441120.11823-100000@klepto.security.algx.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021016182728.12947.qmail@web14003.mail.yahoo.com>
+In-Reply-To: <Pine.LNX.4.40.0210161441120.11823-100000@klepto.security.algx.lan>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: alex leeken <leeken_alex@yahoo.com>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Le mer 16/10/2002 =E0 20:27, alex leeken a =E9crit :
-> How can i delete all state enteries
-> from state table?
+On Wednesday 16 October 2002 7:41 pm, Kevin Dwyer wrote:
 
-You just can't, unless you reboot.
+> On Wed, 16 Oct 2002, alex leeken transmitted the following:
+> > How can i delete all state enteries
+> > from state table?
+>
+> rm /proc/net/ip_conntrack
+>
+> ;)
 
-nfnetlink/ctnetlink patch from patch-o-matic aims to make userspace
-interactions with state table possible, but I have no idea about its
-current status.
+I trust the ;) above means you know that this won't work, of course ?
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curit=
-=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+Antony.
+
+-- 
+
+Having been asked to provide a reference for this man,
+I can confidently state that you will be very lucky indeed
+if you can get him to work for you.
 
