@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: irc
-Date: Mon, 17 Nov 2003 20:05:53 +0000
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Jeff's Rules
+Date: Mon, 17 Nov 2003 15:51:15 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311172005.hAHK5uj22443@agate.rockstone.co.uk>
-References: <OF35D63A47.696E0D67-ON85256DE1.0066888E-85256DE1.0066CA71@kal.kalsec.com> <200311171929.hAHJTrj22410@agate.rockstone.co.uk> <200311171456.22866.Alistair@nerdnet.ca>
+Message-ID: <3FB934C3.6080001@Loudoun-Fairfax.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311171456.22866.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +15,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: nf <netfilter@lists.netfilter.org>
 
-On Monday 17 November 2003 7:56 pm, Alistair Tonner wrote:
+It's been a busy day on the mailing list and I've already spent far more 
+time online than I should have, so I think this is a good time to share 
+"Jeff's Unofficial Rules for Using a Mailing List":
 
-> 	If you've several systems that want to connect and do DCC you
-> 	will want to make sure you load the conntrack and nat irc
-> 	handlers from iptables ... they aren't needed for plain connections,
-> 	but are for DCC sends/recieves.
+1.  If you're going to ask a question please be specific -- Saying "I 
+installed iptables and my system is broken, can u help me?" just doesn't 
+work. Anyone who bothers to answer a question like that will spend 5 
+e-mails just trying to figure out what your problem is. If you want 
+help, we need to know as much about your configuration, your rules, and 
+the exact symptoms of your problem as possible. Give us the info we need 
+to solve the problem.
 
-Indeed, however I assumed that anyone interested in the security of having a 
-firewall wouldn't be using insecure things like DCC.   However, your reminder 
-that there is a conntrack helper for this protocol is a good one.
+2.  We want to help you but we don't work for you -- We will freely 
+share our knowledge, time, and experience with you, but you have to do 
+the work. We simply don't have time or the interest to configure your 
+system or write your rules. Make your best effort then show what you've 
+done. We'll try and guide you to the answer you need. We don't want you 
+to feel intimidated or afraid to ask for advice. On the other hand if 
+you say something really dumb, we may snicker a bit. See rule 4.
 
-> 	As a rule these days a LOT of irc servers want an identd reply ...
-> 	identd is a horrible security problem, but you can use several
-> 	alternatives ... I've a python script that acts as a chrooted identd
-> 	server -- works a charm replying with random numbers ....
+3.  There are many very, very smart people who contribute to this list 
+who are experts in source code, rule design, firewall theory, and Linux 
+in general. The knowledge of the entire netfilter community is at your 
+fingertips. Treat them with respect and say thanks once in awhile.
 
-You mean they actually require an identd response before allowing a 
-connection (rather than just making it take a bit longer than usual)?
+4.  Don't take things so seriously -- While nobody wants to be bothered 
+by foolishness, off topic questions, and idle chitchat, it's ok to crack 
+a joke once and awhile. We work hard and are usually under lots of 
+stress. A light moment breaks up the day and makes things just a bit 
+more enjoyable.
 
-What's the point in that?   It adds nothing to security, adds very little to 
-logging opportunities, and only interferes with people trying to keep their 
-networks to themselves.
+5.  Don't spam the list with nonsense -- This is not the place for 
+resumes and sales pitches. While I don't set the rules for this list, I 
+can tell you that I don't mind an announcement of a related program, 
+script, or product, and long as it's brief and in text. Above all 
+*never* send out annoying e-mails like this one.
 
-Ho Hum; it's a strange world on the Internet....
+These rules do not reflect the opinions of the netfilter.org or anyone 
+else that matters. Follow these rules at your own risk. Your mileage may 
+vary. Do not take with alcohol.
 
-Antony.
+Jeff
 
--- 
 
-The idea that Bill Gates appeared like a knight in shining armour
-to lead all customers out of a mire of technological chaos
-neatly ignores the fact that it was he who, by peddling
-second-rate technology, led them into it in the first place.
-
- - Douglas Adams in The Guardian, August 25, 1995
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
