@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Iptables HowTo ?
-Date: Wed, 8 Oct 2003 15:06:33 +1000
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: Using a remote internet connection.
+Date: 08 Oct 2003 11:45:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C460@wardrive.citadelcomputer.com.au>
+Message-ID: <1065606321.1671.99.camel@kermit>
+References: <20031004003050.57956.qmail@web12701.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20031004003050.57956.qmail@web12701.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,17 +17,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Zoup <Zoup@zoup.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pete Zieba <pete_1024@yahoo.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-PiBjYW4geW91IGhlbHAgbWUgPyANCj4gb3IgZXhwZXJpZW5jZSBpcyB0aGUgYmVzdCB0ZWFjaGVy
-ID8gOikgDQo+IA0KZXhwZXJpZW5jZSBpcyB0aGUgYmVzdCB0ZWFjaGVyLi4uIEZpbmQgYSBwcm9i
-bGVtIGFuZCB0aGVuIGZpbmQgYSBzb2x1dGlvbiwgdGhhdCdzIGhvdyBJIHN0YXJ0ZWQuLg0KDQpJ
-ZiB5b3VyIHN1YnNjcmliZWQgdG8gdGhlIGxpc3QgdGhlbiB0cnkgYW5zd2VyaW5nIGEgZmV3IHF1
-ZXN0aW9ucyBhbmQgaWYgeW91IGNhbid0IHRoZW4gdGhhdCdzIHdoZXJlIHRoZSBsZWFybmluZyBz
-dGFydHMgYnkgZmluZGluZyBvdXQgaG93IHRvIGRvIGl0Li4NCg0KVGhhbmtzLA0KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCkdlb3JnZSBWaWVpcmENClN5c3Rl
-bXMgTWFuYWdlcg0KZ2VvcmdldkBjaXRhZGVsY29tcHV0ZXIuY29tLmF1DQoNCkNpdGFkZWwgQ29t
-cHV0ZXIgU3lzdGVtcyBQdHkgTHRkDQpodHRwOi8vd3d3LmNpdGFkZWxjb21wdXRlci5jb20uYXUN
-Cg==
+Am Sam, 2003-10-04 um 02.30 schrieb Pete Zieba:
+> I then do the following:
+> I reconfig my workstation to use his ISP's nameserver.
+> I can now ping domains (yahoo, etc.)
+> I CANNOT get to MOST websites. (msn.com is one of my
+> few successes)
+>=20
+> *Note that everything works fine if I try to get to
+> websites using "links" as a browser in the console of
+> my linux box. It is only machines on my LAN side that
+> have problems.
+You might have some problems with the PMTU-Discovery since you probably
+have several different MTUs on the Path and firewalling in between.
+Either get the firewalls to allow ICMP-frag-needed through or you might
+want to try the=20
+TCPMSS target to confine TCP-packet to a maximum size, like:
+-j TCPMSS --set-mss 1300 or -j TCPMSS --clamp-mss-to-pmtu
+I do not know if 1300 would be the best value but at least it should get
+the connection working if thats the problem.
+
+Cheers,
+
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
+
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
