@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Why cant the firewall machine resolve host names??
-Date: Sat, 26 Oct 2002 11:57:30 +0100
+From: Paul Aumer-Ryan <raptorion@yahoo.com>
+Subject: Creating a Hybrid Connection to Balance Traffic
+Date: Sat, 26 Oct 2002 12:04:33 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021026105733.LQJJ292.mta03-svc.ntlworld.com@there>
-References: <20021026104016.72923.qmail@web40712.mail.yahoo.com>
+Message-ID: <20021026190433.24795.qmail@web40607.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021026104016.72923.qmail@web40712.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,104 +15,68 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter mailinglist <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Saturday 26 October 2002 11:40 am, Tasha Smith wrote:
+I've got a peculiar situation that I hope you all
+would listen to and offer feedback on any possible
+implementations.
 
-> Hii,
-> Sorry to keep bugging you, but i think i am finally getting this whole
-> iptables thing. This is my exact script... Averything is working but the
-> FIREWALL machine CAN NOT resolve host names? I cant surf the net with the
-> firewall machine can you tell me why? I added the DNS rules but they didnt
-> work?? All my lan computers can SURF the net?
+So I've recently broke down and purchased a DSL
+connection for my home computer, and I've just
+discovered the joys of p2p file sharing (i.e., being
+able to download television shows that my local
+stations have stopped carrying, like Enterprise). 
+Anyway, as you can guess, these video files are rather
+large, and other users also grab them from my computer
+as well, so my upload speeds are rather high.  Since
+I've subscribed to DSL service through a local ISP,
+and since local ISPs are big on service but not on
+resources, I got a call from them recently asking me
+to tone down my upload bandwidth usage on the DSL
+line.  I've pretty much got to listen or I will lose
+my service.
 
-I've snipped out stuff which seems okay....
+My local setup consists of a linux box acting as a
+gateway for my home network of (gasp!) one computer
+and a laptop.  The linux box currently uses ipchains
+to perform the necessary IP masquerading for the
+connection.  Some quick stats:
 
-> # Remove any existing rules from all chains.
-> iptables --flush
-> iptables -t nat --flush
-> iptables -t mangle --flush
->
-> # Unlimited access on the loopback interface.
-> iptables -A INPUT  -i lo -j ACCEPT
-> iptables -A OUTPUT -o lo -j ACCEPT
->
-> # Set the default policy to drop.
-> iptables --policy INPUT DROP
-> iptables --policy FORWARD DROP
-> iptables --policy OUTPUT ACCEPT
->
-> iptables -t nat --policy PREROUTING ACCEPT
-> iptables -t nat --policy OUTPUT DROP ######
-> iptables -t nat --policy POSTROUTING DROP
->
-> # iptables -t mangle --policy PREROUTING DROP
-> # iptables -t mangle --policy OUTPUT DROP
+eth0: external network connection (to ISP)
+eth1: internal network
+ppp0: modem attached, but not currently used.
 
-Never, never, never set a default drop policy on nat or mangle tables.
+So here comes the question: since I've got to reduce
+my upload usage, I'd like to try to use the linux box
+to do a special form of SNAT routing.  I would like
+all outgoing data to leave through the attached ppp0
+interface (the modem which I can hook up to a dialup
+ISP) and all incoming data to come back in through the
+eth0 interface (the broadband connection to my local
+ISP).  Basically, I need to do a form of SNAT routing
+that overwrites the source address of packets leaving
+on the ppp0 interface with the IP address of the eth0
+interface, so when their replies come back the will
+come on the faster broadband connection.  This way the
+upload bandwidth usage on the DSL connection will be
+effectively zero, while I will still be able to enjoy
+the fast download speeds of the DSL line, satisfying
+both me and the ISP.
 
-It will stop things working.   The filter table is for filtering - do not try 
-to filter (ie drop or reject) packets in the other two tables.
+My issues include the current usage of SNAT routing
+(masquerading) since my local network connects to the
+internet through the linux box's one IP address, and
+how to use ipchains, iptables, or ipnatctl (or others)
+to perform this extra set of SNAT routing.  Does
+anyone have any ideas on how to implement this?
 
-> # Allow stateful connections
-> iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> # Allow Access for DNS service.
-> if [ "$CONNECTION_TRACKING" = "1" ]; then
->    iptables -A OUPUT -o eth0 -p udp \
+Sorry for the long story, and I thank everyone in
+advance for their time.  Have a good one,
+Paul
 
-You might want to spell OUTPUT correctly :-)
-
->             -s $IP_INET --sport 1024:65535 \
-
-Why are you restricting the source port to be above 1024 ?   If you are 
-running a name daemon on the machine it might be using a source port of 53.
-
->             -d 111.53.4.110 --dport 53 \
->             -m state --state NEW -j ACCEPT
-> fi
->
-> iptables -A OUTPUT -o eth0 -p udp \
->          -s $IP_INET     --sport 1024:65535 \
->          -d 111.53.4.110 --dport 53 -j ACCEPT
-
-I don't quite understand why you have this rule as well as the conditional 
-one above ?
-
-> iptables -A INPUT  -i eth0 -p udp \
->          -s 111.53.4.110  --sport 53 \
->          -d $eth0_address --dport 1024:65535 -j ACCEPT
-
-This should not be necessary because you have an ESTABLISHED,RELATED rule in 
-your INPUT chain already - that will allow the replies back.
-
-> if [ "$CONNECTION_TRACKING" = "1" ]; then
->     iptables -A OUTPUT -o eth0 -p tcp \
->              -s $IP_INET --sport 1024:65535 \
->              -d 111.53.4.110 --dport 53 \
->              -m state --state NEW -j ACCEPT
-> fi
->
-> iptables -A OUTPUT -o eth0 -p tcp \
->          -s $IP_INET --sport 1024:65535 \
->          -d 111.53.4.110 --dport 53 \
-
-Are you missing a -j ACCEPT on this rule ?   Again, I don't understand why 
-you have this as well as the one immediately above.
-
-> iptables -A INPUT -i eth0 -p tcp ! --syn \
->          -s 111.53.4.110 --sport 53 \
->          -d $IP_INET --dport 1024:65535 -j ACCEPT
-
-Not necessary with the ESTABLISHED,RELATED rule.
-
-Antony.
-
--- 
-
-Anyone that's normal doesn't really achieve much.
-
- - Mark Blair, Australian rocket engineer
+__________________________________________________
+Do you Yahoo!?
+Y! Web Hosting - Let the expert host your web site
+http://webhosting.yahoo.com/
 
