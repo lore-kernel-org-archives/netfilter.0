@@ -1,11 +1,11 @@
-From: "Krishna" <Krishna_shekhar@gmx.net>
-Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `': Table does not exist (do you need to insmod?) <<Help>>
-Date: Tue, 24 Sep 2002 17:24:00 +0530
+From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
+Subject: RE: Stopping greedy http clients!
+Date: Tue, 24 Sep 2002 15:15:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004e01c263c1$15ed33e0$2900a8c0@spectranet.com>
-References: <00fb01c263b7$a8fe5380$2900a8c0@spectranet.com> <002b01c263be$95b3f490$2b00a8c0@dharmu> <000901c263bd$da3d1480$2900a8c0@spectranet.com> <001701c263c1$887ebb40$2b00a8c0@dharmu>
+Message-ID: <FD8F124A387AD6119F7900A0D218B3210198A0@hslex01.hsl-brabantzuid.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C263CC.7B68D020"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,119 +16,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hi,
-This is all what I get!
-I have made rules in /etc/sysconfig/iptables and the
-/etc/rc.d/init.d/iptables points to this file and starts it.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-regards
-Krishna
+------_=_NextPart_001_01C263CC.7B68D020
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-Krishna Shekhar
-Network Administrator
-Wiplash Wireless
------ Original Message -----
-From: Dharmendra.T <dharmu@nsecure.net>
-To: Krishna <Krishna_shekhar@gmx.net>; <netfilter@lists.netfilter.org>
-Sent: Tuesday, September 24, 2002 5:27 PM
-Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
-Table does not exist (do you need to insmod?) <<Help>>
+> > Is there a way to set a "speed limit" on tcp port 80 
+
+> I would take a look at iplimit from patch-o-matic, which 
+> "allows you to
+> restrict the number of parallel TCP connections to a server 
+> per client IP
+> address (or address block)". It will not block the access to 
+
+Or use something (not netfilter related) like CBQ or HTB which implement
+bandwidth throttling.
+I found CBQ more difficult to setup than HTB, but the choice is yours.
 
 
-> You should send us the complete error message, which table the iptables
-> could not recognize
-> DHarmu
-> ----- Original Message -----
-> From: "Krishna" <Krishna_shekhar@gmx.net>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Tuesday, September 24, 2002 5:00 PM
-> Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
-> Table does not exist (do you need to insmod?) <<Help>>
->
->
-> > Hi,
-> >     It gives the same error
-> >
-> >  iptables-restore v1.2.5: can't initialize iptables table `': Table does
-> not
-> > exist (do you need to insmod?)
-> > Perhaps iptables or your kernel needs to be upgraded
-> >
-> > regards
-> > Krishna
-> >
-> > Krishna Shekhar
-> > Network Administrator
-> > Wiplash Wireless
-> > ----- Original Message -----
-> > From: Dharmendra.T <dharmu@nsecure.net>
-> > To: Krishna <Krishna_shekhar@gmx.net>; <netfilter@lists.netfilter.org>
-> > Sent: Tuesday, September 24, 2002 5:05 PM
-> > Subject: Re: iptables-restore v1.2.5: can't initialize iptables table
-`':
-> > Table does not exist (do you need to insmod?) <<Help>>
-> >
-> >
-> > > Hi Krishna,
-> > >  Have you tried it manually?
-> > > #iptables-restore < /etc/sysconfig/iptables
-> > >
-> > >  I think the iptables could not reach to the file
-> /etc/sysconfig/iptables
-> > > Regards
-> > > Dharmu
-> > > ----- Original Message -----
-> > > From: "Krishna" <Krishna_shekhar@gmx.net>
-> > > To: <netfilter@lists.netfilter.org>
-> > > Sent: Tuesday, September 24, 2002 4:16 PM
-> > > Subject: iptables-restore v1.2.5: can't initialize iptables table `':
-> > Table
-> > > does not exist (do you need to insmod?) <<Help>>
-> > >
-> > >
-> > > > Hi,
-> > > >
-> > > > I switched from ipchains to iptables. But whenever I start iptables
-it
-> > > gives
-> > > > me this error.
-> > > >
-> > > > iptables-restore v1.2.5: can't initialize iptables table `': Table
-> does
-> > > not
-> > > > exist (do you need to insmod?)
-> > > > Perhaps iptables or your kernel needs to be upgraded.
-> > > >
-> > > > lsmod shows that
-> > > > iptable_mangle,iptable_nat,ip_conntrack,iptable_filter and iptables
-> are
-> > > > loaded.
-> > > > That means the modules for iptables has loaded also I can see that
-> > modules
-> > > > for ipchains are not loaded and that is right.
-> > > >
-> > > > The iptables file is in /etc/sysconfig/iptables
-> > > > The table goes like this
-> > > > -P INPUT DROP
-> > > > -A FORWARD -s 192.168.0.0/24 -j MASQUERADE
-> > > > .......
-> > > > ...........
-> > > > ........................
-> > > > I am using RedHAt 7.1 and kernel 2.4.2-2
-> > > > What could be the problem?
-> > > >
-> > > > regards
-> > > > Krishna
-> > > >
-> > > > Krishna Shekhar
-> > > > Network Administrator
-> > > > Wiplash Wireless
-> > > >
-> > > >
-> >
-> >
+Rob
 
+------_=_NextPart_001_01C263CC.7B68D020
+Content-Type: text/html;
+	charset="iso-8859-1"
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2653.12">
+<TITLE>RE: Stopping greedy http clients!</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=2>&gt; &gt; Is there a way to set a &quot;speed limit&quot; on tcp port 80 </FONT>
+</P>
+
+<P><FONT SIZE=2>&gt; I would take a look at iplimit from patch-o-matic, which </FONT>
+<BR><FONT SIZE=2>&gt; &quot;allows you to</FONT>
+<BR><FONT SIZE=2>&gt; restrict the number of parallel TCP connections to a server </FONT>
+<BR><FONT SIZE=2>&gt; per client IP</FONT>
+<BR><FONT SIZE=2>&gt; address (or address block)&quot;. It will not block the access to </FONT>
+</P>
+
+<P><FONT SIZE=2>Or use something (not netfilter related) like CBQ or HTB which implement bandwidth throttling.</FONT>
+<BR><FONT SIZE=2>I found CBQ more difficult to setup than HTB, but the choice is yours.</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=2>Rob</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C263CC.7B68D020--
 
