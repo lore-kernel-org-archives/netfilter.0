@@ -1,12 +1,14 @@
-From: netfilter-maillist <vlad@fakt.tazovsky.ru>
-Subject: Re-re Modules "time"
-Date: Wed, 19 Mar 2003 09:08:35 +0500
+From: Tim Miller <tj.miller@javaspotlet.com>
+Subject: Re: DHCP Issues
+Date: Thu, 20 Mar 2003 10:49:47 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <12986944437.20030319090835@fakt.tazovsky.ru>
-Reply-To: netfilter-maillist <vlad@fakt.tazovsky.ru>
+Message-ID: <Pine.LNX.4.53.0303201047530.6606@beethoven.javaspotlet.com>
+References: <Pine.LNX.4.53.0303200827390.6606@beethoven.javaspotlet.com>
+ <20030320151842.GB18401@placemark.com> <Pine.LNX.4.53.0303201024320.6606@beethoven.javaspotlet.com>
+ <20030320164536.GD18401@placemark.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030320164536.GD18401@placemark.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +18,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: NetFilter List <netfilter@lists.netfilter.org>
 
-Hello, netfilter.
+On Thu, 20 Mar 2003, Kelly Setzer wrote:
 
->iptables -I INPUT 1 -p tcp -s 192.168.1.2/32 -m time --timestart \
->11:00 --timestop 17:00 --days Sun,Mon,Tue,Wed,Thu,Fri,Sat \
->-d 192.168.1.1/32 --j DROP
->Defaul policy in INPUT chain - DROP
->But... packets allows to 192.168.1.240 (server) in this
->time --> 11:00-17:00.
->>
->>If you use SNAT (masquerade) then it may be bypassing the input chain
->>because of a prerouting rule ...
->>
+>
+> How are you starting dhcpd?
 
-Why then in general operates the rule?
-If there is SNAT, that what build the rules with module "time"?
-The Rule operates, but can not understand, as it considers time.
+I am running it in the foreground, but eventually it will be run as a
+service.
+
+dhcpd -d -f eth3
+
+>
+> Kelly
+>
 
 -- 
-With best wishes,
- netfilter-maillist                          mailto:vlad@fakt.tazovsky.ru
+-Tim Miller
 
+"You are who you become"
+
+Email: tj.miller@javaspotlet.com
+Registered Linux User #302727
 
