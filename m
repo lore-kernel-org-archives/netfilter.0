@@ -1,16 +1,13 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Policy Misunderstanding: RTFM Guidance Requested.
-Date: Wed, 1 Sep 2004 12:53:52 -0400
+From: "Deepak Seshadri" <dseshadri@broadbandmaritime.com>
+Subject: RE: Policy Misunderstanding: RTFM Guidance Requested.
+Date: Wed, 1 Sep 2004 13:38:47 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409011253.52931.Alistair@nerdnet.ca>
-References: <7768933ECEDCA644AF7908B278CF125D021454@exchange.datec.com.fj>
-	<200409011044.27158.Alistair@nerdnet.ca>
-	<8ca4228204090109202271a1da@mail.gmail.com>
+Message-ID: <200409011734.i81HYpb0087633@jkcpub.iserver.net>
+References: <8ca4228204090108466549b5f3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8ca4228204090109202271a1da@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <8ca4228204090108466549b5f3@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,131 +18,98 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'Mike' <1100100@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-On September 1, 2004 12:20 pm, Mike wrote:
-> Hi Alistair,
->
+Hi Mike,
+Sorry for the late reply. I have been busy since morning.
+I see that some of your questions have been answered by Jason & Alistair.
+Let me first answer your 2nd question:
+ - If you are not using a "chain" for setting up rules but set the default
+policy to "drop" and if a packet traverses that chain then it will be
+dropped. Hence by putting rules, I classify packets that I want to allow.
+The rest will be dropped by default. 
 
-	<SNIPPAGE>
+I guess your 1st question is answered now: Yes, rules appended will override
+the default policies.
 
->
-> This comment pricks up my ears/eyes.  Why is this so, and do you have
-> links to discussions on this topic.
+This is how I would write the policies to achieve your goal:
 
-	Prowl back through the lists -- there are several discussions on the issue.
-	In the case of large scale firewalls there may be some call for using 
-	mangle and nat to do filtering but its not really a good idea, since you then 
-	need to build rules to let things through mangle and nat.
->
-> >         There is a wonderful fellow named Oskar Andreasson who has
-> > written a wonderful set of tutorials, and even provides some elemental
-> > scripts as guidelines
-> >         http://iptables-tutorial.frozentux.net/
-> >
-> >         Read and enjoy
->
-> Thanks for pointer.  I've got a Firefox tab open to it right now.
-> Looks very good.  Now let's see if I can absorb it.
->
-> > > echo "   Enabling forwarding.."
-> > > echo "1" > /proc/sys/net/ipv4/ip_forward
-> >
-> >         Urk
-> >           Do this at the *end* of the script. -- just a good habit to NOT
-> > turn on forwarding until all the rules are loaded to handle it.
->
-> That sounds like a very good idea to me.  Noted for edit this evening.
->
-> > > echo "   Set the filter/nat/mangle packet Matching Table Policy."
-> > > $IPTABLES -t filter -P INPUT DROP
-> > > $IPTABLES -t filter -P OUTPUT DROP
-> > > $IPTABLES -t filter -P FORWARD DROP
-> >
-> > The above are a (tm) Good Thing (tm)
->
-> Yes, this is the kind of thing that I want - start from complete
-> lockdown, and then open only one thing at a time until I can do
-> everything that I want on the network and maintain everything else in
-> lockdown.
->
-> > > $IPTABLES -t nat -P PREROUTING DROP
-> > > $IPTABLES -t nat -P POSTROUTING DROP
-> > > $IPTABLES -t nat -P OUTPUT DROP
-> > > $IPTABLES -t mangle -P INPUT DROP
-> > > $IPTABLES -t mangle -P OUTPUT DROP
-> > > $IPTABLES -t mangle -P FORWARD DROP
-> > > $IPTABLES -t mangle -P PREROUTING DROP
-> > > $IPTABLES -t mangle -P POSTROUTING DROP
-> >
-> > In general the above are a (tm) Really Bad Thing (tm)
->
-> As previously requested above, why are these policies bad/unworkable?
-> Any info. and links discussing these iptables fundamentals would be
-> greatly valued.
+Default policy for chains in Mangle & Nat tables to ACCEPT.
+Default policy for chains in filter table to DROP.
 
-	You now have to put in ACCEPT rules to get things through.  This gets 
-complicated by the fact that functionality changes in mangle and nat.   
-Better to let things through the mangle and nat tables, and do filtering in 
-the filter table.  There have been folks who like to drop things in the 
-mangle and nat tables, but setting actual DROP policies makes life very 
-difficult.
+Open dports ports 80 & 22 on the INPUT, FORWARD & OUTPUT chains.
+Enable stateful firewall rules on these chains.
+ACCEPT only NEW packets.
 
-> > > echo "   INPUT/OUTPUT Rules for Routerbox."
-> > > $IPTABLES -t filter -A INPUT -j ACCEPT
-> > > $IPTABLES -t filter -A OUTPUT -j ACCEPT
-> >
-> > Uhhh ... I hope these are only here because yer having problems --
-> >    These above two rules are a (tm) Really Bad Thing (tm)
-> >         (they basically allow everything in and out -- *ouch*)
->
-> You got it.  This is the rule of a man willing to submit his machines
-> to a world of hostility in a desperate attempt to get
-> some-packet/any-packet  through the routerbox.
->
-> > > echo "   FORWARD Rules for data allowed IN and OUT of the LAN."
-> > > $IPTABLES -t filter -A FORWARD -i eth0 -o eth1 -m state --state
-> > > ESTABLISHED,RELATED -j ACCEPT
-> >
-> > Repeat the above rule for filter INPUT
->
-> Ahh, I see what you are getting at.  Will do.
->
-> > > $IPTABLES -t filter -A FORWARD -i eth0 -o eth1 -m state --state NEW -j
-> > > ACCEPT
-> >
-> > The above rule is a (tm) Really Bad Thing (tm)
-> >         (basically allows everything into yer lan *ouch*)
->
-> Indeed, you are witnessing further desperation after hours of
-> scratching my head and muttering to myself.  :-)
->
-> > > echo "   Do not respond to remote Pings."
-> > > $IPTABLES -t filter -A INPUT -p icmp --icmp-type echo-request -j DROP
-> >
-> > Umm .. You *might* want to set this to deny ping requests from the
-> > outside, rather than dropping them all .. .unless you don't trust users
-> > on the inside. *grin*
->
-> I'm not quite sure I follow here.  How does this affect users behind
-> the firewall on the home LAN.
+I do not know the port # for samba services.
 
-	There is no definition of the SOURCE that you want to drop ICMP echorequests 
-from.  Thus this rule drops all ping echorequests.
-	iptables -t filter -A INPUT -p icmp -i [internet pipe device] -icmp-type \ 
-echo-request -j DROP  
- 	will allow your LAN users to ping the box, but prevent pings from the 
-internet from getting in.
+Hey, I am glad the diagram worked out for ya.
+Hope this helps.
+Take care,
 
-	Really and truely -- Oskar's tutorials are great and easy to read... and even 
-the sample firewalls there are decent enough to start with for a newbie.
+Deepak Seshadri
 
 
-	Alistair Tonner
+-----Original Message-----
+From: Mike [mailto:1100100@gmail.com] 
+Sent: Wednesday, September 01, 2004 11:46 AM
+To: Deepak Seshadri
+Cc: netfilter@lists.netfilter.org
+Subject: Re: Policy Misunderstanding: RTFM Guidance Requested.
 
->
-> Thanks again for your thoughtful response.
-> I'd hope you can spare some further time to respond.
->
-> Mike
+Hi Deepak,
+
+Thank you for your response.
+
+On Wed, 1 Sep 2004 09:27:22 -0400, Deepak Seshadri
+<dseshadri@broadbandmaritime.com> wrote:
+> 
+> If the default policy on your mangle & Nat chain is set to DROP & if you
+> have no rules to classify traffic in these tables, all your packets will
+get
+> dropped here. They will not make it to the FILTER table.
+
+This is a good point and shows where maybe I am starting to MIS-understand.
+
+
+1.  Can appended rules override default polices? 
+2.  Do you need to include appended rules to parts of the iptables
+chain that you are not using, or else all the packets will get
+dropped?  For example, do you have to set Mangle rules even if you are
+not using any Mangling but have set a DROP policy for mangling.
+
+> 
+> In your commands, first you have set the default policy to DROP on all
+> chains in the filter table. Then you have set policies to accept all the
+> traffic in the INPUT & OUTPUT chains. I do not get this. If you are aiming
+> to accept all packets in the INPUT & OUTPUT chain you might as well set
+the
+> default policy in these chains to ACCEPT.
+
+I understand your point here.  I used those -j ACCPT rules because
+everything else has failed so far to override the DROP policy, so that
+was a last resort desperately trying to get some packets through the
+routerbox.  I really don't want to accept everything blindly on the
+INPUT and OUTPUT of the routerbox.  I would actually like to set
+INPUT/OUTPUT rules that only allow traffic on a few different ports
+for web browsing, ssh access, and network samba; close everything
+else.
+
+
+> I will email you a diagram on the packet flow inside the kernel. Probably
+> that would make things easier in understanding where each chain exists
+> inside the kernel.
+> 
+
+Hey now, thanks for the diagram.  This is pretty cool stuff.  I need a
+few months to figure it all out though.  :-)
+
+Please write back on the other issues above if you have a chance.
+Hope to hear from you.
+
+Thanks,
+
+Mike
+
 
