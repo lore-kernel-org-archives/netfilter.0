@@ -1,15 +1,11 @@
-From: Tom Marshall <tommy@home.tig-grr.com>
-Subject: Re: New not syn (again...)
-Date: Sat, 2 Aug 2003 18:21:21 -0700
+From: <dummy1@gazeta.pl>
+Subject: Masquerade stopped working?!?!
+Date: Sun, 03 Aug 2003 10:40:47 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030803012121.GA30501@home.tig-grr.com>
-References: <7C9884991ADAE0479C14F10C858BCDF5122E16@alderaan.smgtec.com>
+Message-ID: <1059900068947.ew5.dummy1@gazeta.pl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122E16@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,82 +15,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I have a standard home network configuration:
 
---5mCyUwZo2JvN/JJP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+my local network 10.1.1.0/24
+            |
+            |
+    eth1 10.1.1.1
++----------------------+
+|my firewall/router box|
++----------------------+
+   eth0 192.168.1.92
+            |
+            |
+      192.168.1.1
++----------------------+
+|     foreign ISP      |
++----------------------+
+            |
+            |
+         Internet
 
-On Fri, Aug 01, 2003 at 08:57:15AM -0700, Daniel Chemko wrote:
-> Basically the client or the server sends out a FIN or RST to signify
-> that they are done with the connection. The Conntrack would drop the
-> session. Afterwards the other side sends out an acknowledgement that the
-> session was dropped. The packets are flagged as not established, since
-> the connection from the other side was closed. I think it depends on an
-> IPTables conntrack timeout value to determine how long to wait for the
-> other side's response.=20
->=20
-> I don't know what everyone else does about them, but I generally just
-> drop them It may not be that clean, leaving other PC's IP stacks timeout
-> the session close, but it happens so rarely to me, *meh*
+To connect coumputers from my local network to the internet I used 
+iptables and masquerade (snat was working to). Everything was 
+working fine since one day. Suddenly, about one week ago, machines 
+from local network have stopped seeing Internet, but my box is 
+working fine. I suspect my ISP doing some nasty dirty tricks. Is it 
+possible that ISP can recognize packets which are coming from my 
+local network and drops it? And how should I configure my box to go 
+around this problem? Please help! I spend a couple of days browsing 
+Internet and reading tons of documention and still know nothing.
 
-I use the following in my firewall script.  Maybe someone will find it
-useful.  Note logdrop chain is exactly that: log, then drop the packet.
+I give you some more details what I have tested. Maybe it helps you 
+to find out what the problem is.
 
-# Allow established connections to continue.  This is where the
-# great majority of traffic will be accepted, so it is first.
-iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+As I said everything is working fine on my box. Local network is 
+working fine too. From local machine I can see my box. Problem 
+starts when I want anything from internet. Nothing was working: 
+ping, http, dns... So I thought the problem is that local machine 
+can't see machines from internet because host names are not 
+resolved. I have installed bind (dns server) on my box. Then dns 
+starts working. And pings are working to the foreing hosts, but 
+nothing else. Browser finds host and no data is received, ssh can't 
+connect, and so on. What is going on?
+I have some firewall rules on my box. To be sure I removed them all 
+but one:
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-# Any TCP packet which is not a part of an established connection falls into
-# one of three categories: (1) connection handshake, (2) stray resend, or
-# (3) invalid.  Here we discard stray resends and log obvious hack attempts.
-# See table below:
-#
-# SYN RST ACK  What it means  Action
-# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D  =3D=3D=3D=3D=3D=3D=3D
-#  0   0   0   invalid        logdrop
-#  0   0   1   stray resend   DROP
-#  0   1   0   stray resend   DROP
-#  0   1   1   stray resend   DROP
-#  1   0   0   conn attempt   ok
-#  1   0   1   conn response  ok
-#  1   1   0   invalid        logdrop
-#  1   1   1   invalid        logdrop
+Any suggestion? Who can help?
 
-iptables -A INPUT   -p tcp --tcp-flags SYN,RST,ACK NONE    -j logdrop
-iptables -A INPUT   -p tcp --tcp-flags SYN,RST,ACK ACK     -j DROP
-iptables -A INPUT   -p tcp --tcp-flags SYN,RST     RST     -j DROP
-iptables -A INPUT   -p tcp --tcp-flags SYN,RST     SYN,RST -j logdrop
+I know very well iptables and netfiltering. I create many firewalls 
+with diffrent configurations. In this case I am fool.
 
-iptables -A OUTPUT  -p tcp --tcp-flags SYN,RST,ACK NONE    -j logdrop
-iptables -A OUTPUT  -p tcp --tcp-flags SYN,RST,ACK ACK     -j DROP
-iptables -A OUTPUT  -p tcp --tcp-flags SYN,RST     RST     -j DROP
-iptables -A OUTPUT  -p tcp --tcp-flags SYN,RST     SYN,RST -j logdrop
+Jakub
 
-=2E.. script continues ...
 
---=20
-America may be unique in being a country which has leapt from barbarism
-to decadence without touching civilization.
-        -- John O'Hara
 
---5mCyUwZo2JvN/JJP
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj8sY5AACgkQFMm9uvwPXW7mogCeISZSO9vds9RA37iDbXhALbdZ
-L1MAnRhDoHxypWMxAhz+2ce0nBHpJEzy
-=VRni
------END PGP SIGNATURE-----
-
---5mCyUwZo2JvN/JJP--
 
