@@ -1,13 +1,10 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: Trying to setup two ethernet cards with two websites
-Date: Fri, 3 Jan 2003 13:23:37 +0100
+From: "Simpson, Doug" <dsimpson@friedmancorp.com>
+Subject: RE: SMTP external
+Date: Fri, 3 Jan 2003 09:55:48 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2F508F90-1F16-11D7-97EA-000393950CC2@karlsbakk.net>
-References: <se1459fa.075@butchers.com>
-Mime-Version: 1.0 (Apple Message framework v548)
-Content-Transfer-Encoding: 7bit
+Message-ID: <20ED00AA0BC135449469D6EF0AE79C970FB3@ozlan.fcdomain.net>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <se1459fa.075@butchers.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +14,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: JUSTIN GERRY <JGERRY@butchers.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'Linux' <linux@usermail.com>, netfilter@lists.netfilter.org
 
-> To streamline the firewall I am writing, can I be safe to assume that:
->
-> CLASS_A="10.0.0.0/8"
-> IF1="eth0"
-> IF2="eth1"
->
-> (For example, I will drop anything claiming to be from a Class A
-> Private Network on either interface)
-> iptables -A INPUT  -i $IF1 -s $CLASS_A -j DROP
-> iptables -A INPUT  -i $IF2 -s $CLASS_A -j DROP
->
-> can be written in one line as:
-> iptables -A INPUT -s $CLASS_A -j DROP
->
-> This way by not specifying the interface (as it can come from either
-> eth0 or eth1) it will stop completely drop any requests claiming to be
-> from a class A private network?
+I thought about this but they already have a pop3 connection out on the
+internet.  They just need to send their mail when they are remote.
+Thanks
 
-sure. then just add 192.168/16 and 172.16/12 ;-)
+-----Original Message-----
+From: Linux [mailto:linux@usermail.com]
+Sent: Thursday, January 02, 2003 5:38 PM
+To: Simpson, Doug; netfilter@lists.netfilter.org
+Subject: Re: SMTP external
 
+
+Do they only need pop3 or pop3 and smtp?  If they need both, you may want to
+consider installing a web based email client for remote access.
+
+Linux303
+----- Original Message -----
+From: "Simpson, Doug" <dsimpson@friedmancorp.com>
+To: "'Linux'" <linux@usermail.com>; <netfilter@lists.netfilter.org>
+Sent: Thursday, January 02, 2003 4:34 PM
+Subject: RE: SMTP external
+
+
+> Yes, thank you.  This is one thing I am trying to avoid but there are
+those
+> who want remote access via their pop3 clients, etc.
+>
+> -----Original Message-----
+> From: Linux [mailto:linux@usermail.com]
+> Sent: Thursday, January 02, 2003 5:32 PM
+> To: Simpson, Doug; netfilter@lists.netfilter.org
+> Subject: Re: SMTP external
+>
+>
+> Before doing this, make sure you are not an open relay
+>
+> Linux303
+>
+> ----- Original Message -----
+> From: "Simpson, Doug" <dsimpson@friedmancorp.com>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Thursday, January 02, 2003 3:40 PM
+> Subject: SMTP external
+>
+>
+> > I do not really want to do it but I need to open my firewall to allow
+smtp
+> > access from the internet.
+> > First is there a safe way to do it? (HA)
+> > Second, what is the correct command to do this?
+> > Thanks,
+> > Doug
+> >
+>
 
