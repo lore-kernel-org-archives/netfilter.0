@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPSec - IPTables issues
-Date: Wed, 5 May 2004 16:22:26 +0100
+From: =?iso-8859-1?Q?Oriol_Magran=E9?= <omagrane@mediapro.es>
+Subject: Simple question
+Date: Wed, 5 May 2004 17:27:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405051622.26944.Antony@Soft-Solutions.co.uk>
-References: <20040502155538.GD515@schottelius.org> <20040504211557.GA236@schottelius.org> <4098FE7A.8070707@pbl.ca>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <001501c432b5$7a5c5f80$a704a8c0@mpro4167>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0012_01C432C6.3A26C7F0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4098FE7A.8070707@pbl.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +16,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 05 May 2004 3:47 pm, Aleksandar Milivojevic wrote:
+This is a multi-part message in MIME format.
 
-> Nico Schottelius wrote:
-> > I'll compare what freeswan did with what Linux 2.6 does now:
-> >
-> > Freeswan has virtual devices (ipsec*), through which the unencrypted
-> > packets come into the system. So you can add these firewall lines:
-> >
-> > - allow AH, ESP, UDP/500, deny rest on eth0
-> > - allow IPs/networks, etc. on ipsec0
->
-> Haven't worked much with IPSec (at least not over firewall).  Are you
-> sure that IPSec packets will go through Netfilter twice (once encrypted,
-> and than once again unencrypted)?
+------=_NextPart_000_0012_01C432C6.3A26C7F0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-They do.   This makes it easy to filter the packet types you want to allow 
-through the tunnel, rather than having a VPN which passes just everything.
 
-> Anyhow, if I assume that what you wrote is correct (and it is how Linux
-> kernel handles packets), I still don't see need for virtual devices.
+    Hello!
+    Just one question...
+    I have a firewall with the INPUT, OUTPUT and FORWARD policies set to =
+DROP, and now I want to allow connections from localhost to localhost =
+(any port). Which chains are implied here? INPUT? OUTPUT? Both?
+    How should the needed rule(s) be?
 
-That's the way FreeS/WAN does it.
+    Thank you very much in advance!
 
-Regards,
+    Oriol
 
-Antony.
 
--- 
-"There has always been an underlying argument that we should open up our 
-source code more broadly. The fact is that we are learning from open source 
-and we are opening our code more broadly through Shared Source.
+------=_NextPart_000_0012_01C432C6.3A26C7F0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Is there value to providing source code? The answer is unequivocally yes."
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Hello!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;Just&nbsp;one=20
+question...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;I have a =
+firewall with the=20
+INPUT, OUTPUT and FORWARD policies set to DROP, and now I want to allow=20
+connections from localhost to localhost (any port). Which chains are =
+implied=20
+here? INPUT? OUTPUT? Both?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; How should the =
+needed rule(s)=20
+be?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Thank you very much =
+in=20
+advance!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial =
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;Oriol</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
 
- - Jason Matusow, head of Microsoft's Shared Source Program, in response to 
-recent leaks of Windows source code on the Internet.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+------=_NextPart_000_0012_01C432C6.3A26C7F0--
 
 
