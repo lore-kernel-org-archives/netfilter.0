@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Trouble NAT'ing with a pool of public addresses
-Date: Wed, 17 Dec 2003 18:30:14 +0000
+From: "Erick Sanz" <esanz@minorplanetusa.com>
+Subject: RE: Home web server using front firewall
+Date: Wed, 17 Dec 2003 15:30:30 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312171830.14363.Antony@Soft-Solutions.co.uk>
-References: <1122.63.164.0.198.1071644845.squirrel@squirrel.dialnetwork.com>
+Message-ID: <HFEBJMKNPOCPPMGFHDMCAEJBCDAA.esanz@minorplanetusa.com>
+References: <200312102340.14210.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1122.63.164.0.198.1071644845.squirrel@squirrel.dialnetwork.com>
+In-Reply-To: <200312102340.14210.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,76 +18,129 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, Netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 17 December 2003 7:07 am, Adam Pyne wrote:
 
-> On our Cisco we used a pool of public IP's for our users to NAT through.
-> I've found a comparable configuration to do the same with iptables:
+Anthony,
+
+This are the entries I had to add to make it work:
+
+iptables -P INPUT   DROP
+iptables -P OUTPUT  DROP
+iptables -P FORWARD DROP
+
+iptables -t nat -A PREROUTING -p tcp -d 172.16.1.33 --dport 80 \
+	-j DNAT --to 10.10.1.240
+
+iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
+
+iptables -A INPUT -i eth0 -p tcp -d 172.16.1.33 --dport 80 -m state \
+	--state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A INPUT -i eth1 -p tcp -s 10.10.1.240 --sport 80 -m state \
+	--state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -i eth0 -p tcp -d 10.10.1.240 --dport 80 -m state \
+	--state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -i eth1 -p tcp -s 10.10.1.0/24 --source-port 80 \
+	-j ACCEPT
+
+iptables -A FORWARD -o eth1 -p tcp -s 10.10.1.240 --sport 80 -m state \
+	--state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A OUTPUT -o eth1 -j ACCEPT
+
+I have read the FAQ on forwarding; however, I can still not understand
+the 3 forwarding statements needed; one of them is for input on eth0
+(172.16.1.33) to 10.10.1.240.  The other one is for data received from
+eth1 (10.10.1.240); however, I don't understand the third forward (can't
+be taken out as it won't work then)... I see the difference as -i to
+-o ... Is there a newby explanation on why?
+
+Also, I would like to "lock" my OUTPUT chain to avoid Netbios and other
+protocols to go out... any recommendations?
+
+Thank you VERY much for your time!
+
+Best regards,
+Erick Sanz
+
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
+> Sent: Wednesday, December 10, 2003 5:40 PM
+> To: Netfilter
+> Subject: Re: Home web server using front firewall
 >
-> iptables -t nat -p all -A POSTROUTING -s 10.0.0.0/8 -o eth0 -j SNAT --to
-> x.x.x.x - y.y.y.y
 >
-> With this in place, outbound connections have a source address picked in a
-> round-robin fashion from the pool which is basically what we want in order
-> to not overload a single public IP.
-
-Sounds like you're worried about wearing out IP addresses :)
-
-For 150+ users I really wouldn't worry about hanging them all off a single 
-public IP.
-
-> However, we now have an issue with
-> some websites that have security measures in place to reject users
-> connecting via a different IP for each transaction subsequent to logging
-> in.
+> On Wednesday 10 December 2003 11:24 pm, Erick Sanz wrote:
 >
-> For example, if my initial connection to http://secure.foo.com comes from
-> xxx.xxx.xxx.4, the server will reject my next transaction if it comes from
-> xxx.xxx.xxx.5.
+> > All,
+> >
+> > I am trying to install a small web server at home in order
+> > to display some family pictures and some other personal
+> > topics (hobbies, interests ...)
+> >
+> > For this I need port forwarding and probably NAT to change
+> > the outgoing IP address.
 >
-> Somehow the Cisco NAT was able to address this with what I'm guessing was
-> some kind of translation tracking procedure (either that or perhaps magic
-> fairy dust) making subsequent connections to a site from a particular user
-> come from the same IP.
+> If you do DNAT for incoming packets, you will get automatic SNAT on the
+> outgoing reply packets - you do not need to set up your own rule
+> to handle
+> these.
 >
-> My question is, is there a way to configure iptables to do the same? If
-> not, in your opinion how many users can we expect to successfully NAT to
-> one public IP?
+> > I want the real server to be completely blocked for
+> > any other port than http and https on the web server
+> > (I am planning to accept requests only from the internal
+> > network).
+>
+> Um, do you really mean what that last bit says?   You only want to accept
+> requests from the internal network - ie not from the Internet???
+>
+> > Am I forgetting anything else?
+>
+> The only thing I can see missing from the rules you posted is:
+>
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+>
+> That rule will allow the reply packet to traverse your firewall,
+> and return to
+> the outside world (assuming that's what you really want to happen....).
+>
+> If you have any problems with the ruleset you posted (with the
+> above addition)
+> feel free to post here again, but please be as specific as you
+> can about what
+> the problem is, and how you have tested for it.
+>
+> Hope you have a good time with netfilter.
+>
+> Antony.
+>
+> --
+> Success is a lousy teacher.  It seduces smart people into
+> thinking they can't
+> lose.
+>
+>  - William H Gates III
+>
+>                                                      Please reply
+> to the list;
+>                                                            please
+> don't CC me.
+>
+>
+>
+>
+> This email message has been scanned for viruses.
+>
+>
 
-I would say "well over 150".
 
-The reasoning is as follows:
 
-Each outbound connection uses a different source port on the firewall in order 
-to connect to a remote machine.
+This email message has been scanned for viruses.
 
-There are 65535 source ports available, so either:
-
-a) guess how many concurrent connections an average user will have, divide 
-into 65535, and that's the number of users you can have, or
-
-b) think up a number of users, divide into 65535, and that's the number of 
-simultaneous connections each of them can have.
-
-Therefore, for your estimate of 150 users, 65535 / 150 = 436 simultaneous 
-concurrent connections per user.   Seems like enough to me :)
-
-By the way, if you do envisage running out of source ports like this, remember 
-to increase the size of the connection tracking table first, otherwise this 
-will be the limiting factor well before you run out of ports.
-
-Hope this helps,
-
-Antony.
-
--- 
-"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
-line program, and it ends up depending on the entire known universe."
-
- - Philip Hands
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
