@@ -1,13 +1,13 @@
-From: Patrick Schaaf <bof@bof.de>
-Subject: Re: Iptables forwarding
-Date: Thu, 27 Jun 2002 07:16:58 +0200
+From: Christian Seberino <seberino@spawar.navy.mil>
+Subject: Re: how is this stuff getting thru default deny iptables firewall?....
+Date: Thu, 27 Jun 2002 00:14:18 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020627071658.A1873@oknodo.bof.de>
-References: <1C61B9073EBFBD40B45FA90B8265B2DD1BE7@MELXCHW01.oz.quest.com>
+Message-ID: <20020627001418.A13910@spawar.navy.mil>
+References: <20020622103055.B32585@spawar.navy.mil> <20020622173842.AGM19225.mta07-svc.ntlworld.com@there> <20020623001302.A949@spawar.navy.mil> <20020623080704.YEZE2755.mta05-svc.ntlworld.com@there>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <1C61B9073EBFBD40B45FA90B8265B2DD1BE7@MELXCHW01.oz.quest.com>; from loc.huynh@oz.quest.com on Thu, Jun 27, 2002 at 01:48:58PM +1000
+In-Reply-To: <20020623080704.YEZE2755.mta05-svc.ntlworld.com@there>; from Antony@Soft-Solutions.co.uk on Sun, Jun 23, 2002 at 09:07:02AM +0100
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,25 +19,39 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Loc Huynh <loc.huynh@oz.quest.com>
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
 Cc: netfilter@lists.samba.org
 
-Hi,
+> Reverse nat for replying packets is automatic, therefore replies get 
+> destination natted when they come back in.
 
-> Unfortunately, there wasn't any message related to the forwarding.  it only
-> told me the firewall has been stoped and restarted successfully.
 
-Then the messages are either in a different file than the one I suggested
-as likely, or they are not logged at all. As the LOG target is the prime
-debugging tool for iptables, you definitely WANT to find out where it
-logs to. You will have to configure your syslog daemon (/etc/syslogd.conf)
-appropriately. Please, take some time to learn how to do that.
+This scares me.  So you are saying that there are "implicit" NAT
+rules for "replying packets" that are immune to iptables DROP rules?!
 
-> I have found out that I need to open port 1025 -> 65535 then it works,
+If a packet is part of an ESTABLISHED tcp connection then it
+can by pass an "SSH only" firewall?!??
 
-... and you have won nearly no security. Might as well not use iptables at all,
-almost.
+I *didn't* allow /any/ ESTABLISHED connections on FORWARD
+chain?!?!? How is iptables
+behaving as though I did!?!?!?  This is default hardcoded
+behavior for iptables?!?!? 
 
-regards
-  Patrick
+Chris
+
+
+-- 
+_______________________________________
+
+Dr. Christian Seberino
+SPAWAR Systems Center San Diego
+Code 2363
+53560 Hull Street
+San Diego, CA 92152-5001
+U.S.A.
+
+Phone: (619) 553-7940
+Fax:   (619) 553-2836
+Email: seberino@spawar.navy.mil
+_______________________________________
 
