@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Blocking source ports after REDIRECT
-Date: Wed, 14 Apr 2004 18:04:57 +0100
+From: Dave Barnum <dave@leaplab.com>
+Subject: Re: Multiple PPTP clients behind iptables.
+Date: Wed, 14 Apr 2004 16:24:11 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404141804.57989.Antony@Soft-Solutions.co.uk>
-References: <407D69F3.8050105@turton.co.za>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <407DC81B.9090503@leaplab.com>
+References: <GHEILNONPACCGBGKBEKKMEBICFAA.mani@manikandan.org> <001501c41e4b$1f079e70$51a2fea9@heretic>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <407D69F3.8050105@turton.co.za>
+In-Reply-To: <001501c41e4b$1f079e70$51a2fea9@heretic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,102 +17,102 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/html; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 14 April 2004 5:42 pm, Trevor Turton wrote:
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title></title>
+</head>
+<body>
+<meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+<title></title>
+Is this patch built into the 2.6 kernel?<br>
+<br>
+Alexis wrote:<br>
+<blockquote cite="mid001501c41e4b$1f079e70$51a2fea9@heretic" type="cite">
+  <pre wrap="">yes, you need the pptp patch
 
-> I am running an untrusted web/app server and mail server on a Linux
-> server, and choose to run then as non-root.  The apps must therefore use
-> ports other than the well-known privileged ones.
+ive been in the same situation, and applying the patch made it work just
+fine.-
 
-You can't start them as root, bind to a privileged port, then drop privilege 
-to run the remainder of the app as a standard user?
+see
+<a class="moz-txt-link-freetext"
+ href="http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-5.html#ss5.6">http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-5.html#ss5.6</a>
 
-> I have set up iptables
-> to redirect client requests addressed to the well-known ports to the
-> ports that these apps open, e.g.
->  25 -> 8025
->  80 -> 8080
-> 110 -> 8110
-> This works fine.
+----- Original Message ----- 
+From: "Manikandan" <a
+ class="moz-txt-link-rfc2396E" href="mailto:mani@manikandan.org">&lt;mani@manikandan.org&gt;</a>
+To: "Netfilter" <a
+ class="moz-txt-link-rfc2396E"
+ href="mailto:netfilter@lists.netfilter.org">&lt;netfilter@lists.netfilter.org&gt;</a>
+Sent: Friday, April 09, 2004 12:08 PM
+Subject: Multiple PPTP clients behind iptables.
 
-Fair enough - an alternative way to do it.
 
-> Out of obsessive neatness rather than for any good
-> technical reason I would like to block direct access to the apps through
-> their non-privileged (8xxx) ports.  When I insert a filter command to do
-> this, it blocks the redirected traffic as well.
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">Dear friends,
 
-> /sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 25  -j
-> REDIRECT --to-ports 8025
-> /sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 80  -j
-> REDIRECT --to-ports 8080
-> /sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 110 -j
-> REDIRECT --to-ports 8110
-> /sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 443 -j
-> REDIRECT --to-ports 8443
-> #
-> # accept traffic addressed to the serviced tcp ports
-> #
-> /sbin/iptables -A INPUT -p tcp --dport 22  -j ACCEPT
-> /sbin/iptables -A INPUT -p tcp --dport 25  -j ACCEPT
-> /sbin/iptables -A INPUT -p tcp --dport 80  -j ACCEPT
-> /sbin/iptables -A INPUT -p tcp --dport 110 -j ACCEPT
-> /sbin/iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+As I am getting more confused about VPN masq., request your help on
+this.
 
-There is absolutely no reason to have the above rules, since your apps are not 
-listening on those ports!   Port 25 just got redirected to 8025, 80 -> 8080, 
-110 -> 8110, and 443 -> 8443.   Remember that PREROUTING happens before 
-INPUT, so the INPUT chain only sees the destination addresses/ports after 
-they've been changed.
+My local LAN is 10.35.0.0/24
+My Linux box running red hat linux 9.0 with kernel 2.4.20-8. acting as the
+gateway for my LAN to Internet.
 
-> #
-> # filter out traffic to remaining privileged tcp ports
-> #
-> /sbin/iptables -A INPUT -p tcp -i eth0 --dport 0:1023 -j DROP
-> ## the following command blocks -eth0 --dport 25,80,110,443 as well!!
-> ## /sbin/iptables -A INPUT -p tcp -i eth0 --dport 8000:8443 -j DROP
+I need to allow my LAN clients to access Microsoft windows VPN (Windows
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->2000
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">Adv. Server) using PPTP over Internet.
+I am not able to make more than one connection to the VPN server as my LAN
+outgoing traffic to Internet is getting SNAT to single public IP.
 
-Yes, sure, because you're now blocking the packets which just got translated 
-from the low port numbers :)
 
-What you need to do is either:
+I read few guides and howtos to configure my firewall to allow multiple
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->PPTP
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">sessions. But still I couldn't get through.
 
-1. DROP the packets sent to the high port numbers in PREROUTING (not a 
-recommendation I would normally make, but there are always exceptions!)
+Do I need to patch my kernel? What support do I need to enable this
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->multiple
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">PPTP traffic.
 
-or
+Request your views and help on this.
 
-2. DNAT the high port numbers to something you don't care about, and then DROP 
-those in INPUT.
 
-eg:
-
-1. iptables -A PREROUTING -t nat -p tcp -i eth0 --dport 8025  -j DROP 
-iptables -A PREROUTING -t nat -p tcp -i eth0 --dport 8080  -j DROP 
-etc.
-
-or 
-
-2. iptables -A PREROUTING -t nat -p tcp -i eth0 --dport 8025 -j REDIRECT --to 
-65535
-iptables -A PREROUTING -t nat -p tcp -i eth0 --dport 8080 -j REDIRECT --to 
-65535
-etc.
-iptables -A INPUT -p tcp -i eth0 --dport 65535 -j DROP
+Have a nice day
 
 Regards,
+Manikandan.
 
-Antony.
 
--- 
-"There is no reason for any individual to have a computer in their home."
 
- - Ken Olsen, President of Digital Equipment Corporation (DEC, later consumed 
-by Compaq, later consumed by HP)
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
+
+
+
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
+
+
+  </pre>
+</blockquote>
+<br>
+</body>
+</html>
 
