@@ -1,12 +1,15 @@
-From: <bmcdowell@coxhealthplans.com>
-Subject: RE: Chain Policy DROP versus ACCEPT and logging
-Date: Mon, 13 Oct 2003 10:54:30 -0500
+From: Herman <Herman@AerospaceSoftware.com>
+Subject: Re: Port forwarding doesn't work.
+Date: Mon, 13 Oct 2003 12:05:55 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D731F419BF@coxhpexg.coxhp.com>
+Message-ID: <200310131205.55401.Herman@AerospaceSoftware.com>
+References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com> <200310121840.27031.Herman@AerospaceSoftware.com> <20031013031712.7fd7be69.arnt@c2i.net>
+Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20031013031712.7fd7be69.arnt@c2i.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,52 +19,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: blancher@cartel-securite.fr, tedkaz@optonline.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+
+On Sunday 12 October 2003 7:17 pm, Arnt Karlsen wrote:
+   On Sun, 12 Oct 2003 18:40:27 -0600,
+   Herman <Herman@AerospaceSoftware.com> wrote in message
+
+   <200310121840.27031.Herman@AerospaceSoftware.com>:
+   > The real problem that I'm trying to solve is this:
+   > Several hosts need to acces a gov service that uses Java and a certain
+   > port.
+
+   ..if these hosts are initiating this connection from your end,
+   " -j ESTABLISHED,RELATED" should do it, instead of you
+   running around chasing your tail.
+
+Hi Arnt,
+
+Could you please elaborate on that?
+
+As far as I can see, the hosts are initiating the connection, but the port 
+must somehow be forwarded through the firewall snat box.
+
+This is what I have:
+echo "   DNAT Forward port 3270 for Alberta Registries application on Pluto"
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 3270 -j ACCEPT
+$IPTABLES -t nat -A PREROUTING -i $EXTIF -p tcp --dport 3270 -j DNAT --to 
+192.168.10.1:3270
+
+This is working now, provided that I use that specific IP address on the 
+inside - I had to load the iptable_mangle module, which made my problems go 
+away...
+
+I don't understand how to add the ESTABLISHED,RELATED idea into this type of 
+rule.  
+
+Something like this:
+
+$IPTABLES -t nat -A PREROUTING -i $EXTIF -p tcp --dport 3270 -m state --state 
+ESTABLISHED,RELATED
+
+???
 
 
-I may be a little late chiming in on this, but personally my rules use a =
-'BAD' chain.  That chain ends with the LOG and DROP just like a normal =
-appended chain.  The difference is, I can explicitly deny things by =
-sending them to -j BAD.
-
-I do the same with -j GOOD, and then run sanity checks against the =
-packet  -sending some stuff to BAD before it actually hits the ACCEPT.
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Cedric Blancher
-Sent: Sunday, October 12, 2003 10:12 AM
-To: tedkaz@optonline.net
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Chain Policy DROP versus ACCEPT and logging
-
-
-Le dim 12/10/2003 =E0 16:00, Ted Kaczmarek a =E9crit :
-> Is their a way to log the default INPUT and FORWARD policies for =
-dropped
-> packets with them set to DROP as opposed to having them set to ACCEPT
-> and putting in logs for any deny rules.
-
-Logging in Netfilter does not behave as it used to with ipchains. You
-cannot log and drop within the same rule. Suppose you want to log and
-drop all UDP traffic :
-
-	iptables -A INPUT -p udp -j LOG --log-prefix "UDP dropped : "
-	iptables -A INPUT -p udp -j DROP
-
-LOG is a target (non terminating one).
-
-This said, if you want to log packets that hit chain policy, then you
-have to put a logging rule at the very end of the chain :
-
-	iptables -A INPUT -j LOG "INPUT chain policy drop : "
-
-And you're done.
-
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: =
-FA62226DA9E72FA8AECAA240008B480E157E98EE
+Cheers,
+-- 
+Herman Oosthuysen 
+B.Eng(E), MIEEE
+Aerospace Software Ltd.
+Ph: 1.403.241-8773, Cell: 1.403.852-5545, Fx: 1.403.241-8841
+Herman@AerospaceSoftware.com, http://www.AerospaceSoftware.com
 
