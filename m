@@ -1,15 +1,10 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: script firewall -- munged to OT -- very OT
-Date: Tue, 13 Apr 2004 20:53:40 -0400
+From: "Robert Gil" <h4idz@hotmail.com>
+Subject: syn flooding issue
+Date: Tue, 13 Apr 2004 21:58:42 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <24828.8360926837$1081905496@news.gmane.org>
-References: <20040413212810.35514.qmail@web40506.mail.yahoo.com> <>> <200404140105.56106.Antony@Soft-Solutions.co.uk>
+Message-ID: <BAY12-F72tCx1Dy3riC00044083@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <200404140105.56106.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,28 +14,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-On April 13, 2004 08:05 pm, Antony Stone wrote:
-> On Wednesday 14 April 2004 12:23 am, Alistair Tonner wrote:
-> > On April 13, 2004 06:02 pm, Antony Stone wrote:
-> > > "640 kilobytes (of RAM) should be enough for anybody."
-> > >
-> > >  - Bill Gates
-> >
-> > 	Antony -- I love yer sigs... And back then I was already cursing the
-> > bugger.
-> >
-> > 	(for what its worth, I was running DRDos at the time....)
->
-> Thanks for the compliment.   And I'll bet now you run FreeDos and Wine :) 
-> ?
->
-	Slackware or Gentoo 2.6.3 winex 3.3.1
-	(with vmware lurking about at work)
+ive been testing syn flooding and for some reason the rules drop the=20
+packets.... yet connections still time out like it was being flooded...=20
+perhaps i missed something...
 
-> Regards,
->
-> Antony.
+the input chain policy is DROP
+
+
+# Syn Protection
+
+iptables -N syn-flood
+iptables -A INPUT -p tcp --syn -j syn-flood
+iptables -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
+iptables -A syn-flood -j DROP
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+
+###############################################
+ive tested this by using hping2 with the following commands:
+
+hping2 -S -i u100 -p 80 xxx.xxx.xxx.xxx
+hping2 -S -i u100 -w 0 -p 80 xxx.xxx.xxx.xxx
+
+whenever i flood it the webserver just times out when i try to open a page =
+
+in a browser... i would assume the rules are incorrect but im baffled as to=
+=20
+what i did wrong... should these rules come before opening any ports? (trie=
+d=20
+it... same thing)  perhaps its just in the wrong order... if someone could =
+
+just throw me a hint or a rule or two that would be great
+
+~Rob
+
+_________________________________________________________________
+FREE pop-up blocking with the new MSN Toolbar =96 get it now!=20
+http://toolbar.msn.com/go/onm00200415ave/direct/01/
+
 
