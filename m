@@ -1,10 +1,16 @@
-From: "Antonio Paulo Salgado Forster" <aforster@br.ibm.com>
-Subject: RE: nmap
-Date: Tue, 22 Oct 2002 18:11:51 -0300
+From: kilobug@freesurf.fr (=?iso-8859-1?q?Ga=EBl?= Le Mignot)
+Subject: Re: nmap
+Date: Tue, 22 Oct 2002 23:05:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF59B2A494.B63B3403-ON03256C5A.007478A5@LocalDomain>
+Message-ID: <plopm3vg3ub2vw.fsf@drizzt.dyndns.org>
+References: <1035264046.15391.85.camel@hyperno>
+	<20021022174245.13d2766b.fonetica@tiscali.it>
+	<plopm31y6icovs.fsf@drizzt.dyndns.org>
+	<20021022211221.3d91e4fb.fonetica@tiscali.it>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021022211221.3d91e4fb.fonetica@tiscali.it> (antonio's
+ message of "Tue, 22 Oct 2002 21:12:21 +0200")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,107 +22,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andy Wood <andy.wood@sptrm.com>
+To: antonio <fonetica@tiscali.it>
 Cc: netfilter@lists.netfilter.org
 
 
-thanks for that :-)
+Tue, 22 Oct 2002 21:12:21 +0200, tu as dit : 
 
+ > Ok,but in order to set the policy at DROP,which port/protocols I have to set at ACCEPT to allow nmap from firewall box to anywhere nad from LAN to anywhere?
 
+If you don't block OUTPUT and allow ESTABLISHED and RELATED packets in INPUT,
+you don't need to open extra ports. Maybe some extra icmp for "weird" scans,
+that's all.
 
-Andy Wood <andy.wood@sptrm.com>@lists.netfilter.org on 10/22/2002 05:46:26
-PM
+-- 
+Gael Le Mignot "Kilobug" - kilobug@freesurf.fr - http://kilobug.free.fr
+GSM         : 06.71.47.18.22 (in France)   ICQ UIN   : 7299959
+Fingerprint : 1F2C 9804 7505 79DF 95E6 7323 B66B F67B 7103 C5DA
 
-Sent by:    netfilter-admin@lists.netfilter.org
-
-
-To:    Antonio Paulo Salgado Forster/Brazil/IBM@IBMBR
-cc:    netfilter@lists.netfilter.org
-Subject:    RE: nmap
-
-
-
-echo 32768 > /proc/sys/net/ipv4/ip_conntrack_max
-
- Value should depend on RAM
-
------Original Message-----
-From: Antonio Paulo Salgado Forster [mailto:aforster@br.ibm.com]
-Sent: Tuesday, October 22, 2002 3:19 PM
-To: Antony Stone
-Cc: netfilter@lists.netfilter.org
-Subject: Re: nmap
-
-
-
-I  had problems on scanning through netfilter depending on the kind of scan
-you run.. One of the problems you may face in case you run a ACK scan from
-a
-segment that has the permition for the traffic, you will have your
-conntrack
-full in a few seconds with ESTABLISHED connections that will take long to
-disappear.. The same will happen when portscanning from the firewall box
-with a default policy for OUTPUT set as ACCEPT.
-
-One of the ways to fix this is to increase the size of the conntrack.. I
-use
-to do that when creating the box by changing the source code and
-recompiling
-the kernel... but I dont know if there are any side effects on doing that..
-
---Regards,
-
-Forster
-
-
-
-
-Antony Stone <Antony@Soft-Solutions.co.uk>@lists.netfilter.org on
-10/22/2002
-03:31:42 PM
-
-Sent by:    netfilter-admin@lists.netfilter.org
-
-
-To:    netfilter@lists.netfilter.org
-cc:
-Subject:    Re: nmap
-
-
-
-On Tuesday 22 October 2002 4:42 pm, antonio wrote:
-
-> Hi Everyone,
->
-> Just a question:
-> I want to set up a firewall box with iptables in which I can use nmap.
-> Which ports/protocols can I set to ACCEPT and which to DROP?
-
-Do you mean you want to run nmap on a box also running netfilter, to scan
-other machines ?
-
-If so, set your OUTPUT policy to ACCEPT, set your INPUT policy to DROP with
-a single rule:
-
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-and you'll be able to scan other machines and get the replies back, but
-anything new coming in to your machine will be blocked.
-
-If I didn't understand correctly what you wanted to do please give more
-details.
-
-Antony.
-
---
-
-Which part of 'apt-get dist-upgrade' do you not understand ???
-
-
-
-
-
-
-
-
+Member of HurdFr: http://hurdfr.org - The GNU Hurd: http://hurd.gnu.org
 
