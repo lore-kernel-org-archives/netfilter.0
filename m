@@ -1,10 +1,9 @@
-From: Robert La Ferla <robertlaferla@comcast.net>
-Subject: Need example of ip rate limiting
-Date: Mon, 21 Jul 2003 14:08:12 -0400
+From: "Dubba Kor" <dubbakor@hotmail.com>
+Subject: Firewall - RH 9.0
+Date: Mon, 21 Jul 2003 15:37:05 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F1C2C0C.60906@comcast.net>
+Message-ID: <Sea1-F146BgUp5G9C1o000189b9@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,19 +14,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I would like to limit the number of HTTP (port 80) requests that any one 
-IP address can make agaist an Apache web server per second or per 
-minute.  I think iptables has such functionality.  Can someone give me 
-an example of how to do it?  Is there a better way to do it or is 
-iptables the best route?
+Hi All, I would like to build a firewall for my office network with DMZ
 
-Thanks!
+I have installed RedHat 9.0 in minimal installation mode (to use the PC as 
+Router/Firewall) with Kernel 2.4.20-8
 
+I am bit lost with the installation and usage of netfilters/IPtables. If any 
+of you can please write to me a step by step procedures in building a new 
+Firewall, I would really appreciate it very much. I looked on the internet 
+and all other documents/FAQs also. But, they all talk only advanced use and 
+configuration but not how to start and get into advanced mode.
 
+My ethernet interfaces are, eth0(Internet), eth1(DMZ) and eth2(LAN)
 
+Thanks very much in advance.
+DK
 
+_________________________________________________________________
+Tired of spam? Get advanced junk mail protection with MSN 8. 
+http://join.msn.com/?page=features/junkmail
 
 
