@@ -1,12 +1,13 @@
-From: "Brian French" <bfrench@imageworksstudio.com>
-Subject: RE: Trouble with router and iptables
-Date: Fri, 14 Jan 2005 12:58:04 -0500
-Message-ID: <KJEGIFLIAAKLNBMJNOIJOEHOECAA.bfrench@imageworksstudio.com>
-References: <186AC876521E0F46BDE77079A6567FD06F5F7E@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Trouble with router and iptables
+Date: Fri, 14 Jan 2005 13:19:51 -0500
+Message-ID: <20050114181951.GA26933@bender.817west.com>
+References: <20050114171545.GA26531@bender.817west.com>
+	<KJEGIFLIAAKLNBMJNOIJGEHOECAA.bfrench@imageworksstudio.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <186AC876521E0F46BDE77079A6567FD06F5F7E@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
+Content-Disposition: inline
+In-Reply-To: <KJEGIFLIAAKLNBMJNOIJGEHOECAA.bfrench@imageworksstudio.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,70 +19,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-www.imagestream.com
+On Fri, Jan 14, 2005 at 12:50:19PM -0500, Brian French wrote:
+> ok, so taking your following advise, i have come up with what i have below.
+> 
+> (i'm only including the entire script so if people search the archives, they
+> have a full script as a reference.)
+> 
+> this seem to be ok?
 
-the page that talks about SAND:
+s'alright by me.  but that's just IMHO.
 
-http://www.imagestream.com/SAND.html
+-j
 
-
------Original Message-----
-From: Hudson Delbert J Contr 61 CS/SCBN
-[mailto:Delbert.Hudson@LOSANGELES.AF.MIL]
-Sent: Friday, January 14, 2005 12:39 PM
-To: Brian French
-Cc: netfilter@lists.netfilter.org
-Subject: RE: Trouble with router and iptables
-
-
-what does 'sand' do? as there isnt any other info in this message. so i cant
-tell what the thread is.
-
-url ? for imagestream is ????
-
-~piranha
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Brian French
-Sent: Friday, January 14, 2005 9:35 AM
-Cc: netfilter@lists.netfilter.org
-Subject: RE: Trouble with router and iptables
-
-
-imagestream created a a program called 'sand'
-
-it's interface and config file looks just like Cisco's IOS' files.
-
------Original Message-----
-From: Samuel Jean [mailto:sj-netfilter@cookinglinux.org]
-Sent: Friday, January 14, 2005 12:31 PM
-To: Brian French
-Cc: netfilter@lists.netfilter.org
-Subject: RE: Trouble with router and iptables
-
-
-On Fri, January 14, 2005 11:57 am, Brian French said:
-> # External interface
-> EXT=Serial0
-> EXTIP=200.200.200.200
-> # Interlan interface
-> INT=Ethernet0
-> INTIP=192.168.0.1
-
-Uhmm.. Does anyone ported netfilter to Cisco's IOS ?
-
-Just kidding.. 8)
-
-Cheers!
-
-
-
-
-
-
-
+--
+"To alcohol: the cause of, and solution to, all of life's problems."
+        --The Simpsons
 
