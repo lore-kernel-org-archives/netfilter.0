@@ -1,14 +1,12 @@
-From: "Josh Berry" <josh.berry@linknet-solutions.com>
-Subject: Re: Block Kazaa from the internal network
-Date: Thu, 16 Oct 2003 08:33:56 -0500 (CDT)
+From: "Leonardo Santagostini" <lsantagostini@celletech.com.ar>
+Subject: A question and a little ascii art
+Date: Thu, 16 Oct 2003 13:26:44 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <30513.204.214.145.6.1066311236.squirrel@mail.linknet-solutions.com>
-References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAHvCSmpkyA0+lP5YKpr7djsKAAAAQAAAA5ydvLCDFokyTKr8TUdasbQEAAAAA@petzetakis-africa.co.za>
-    <007a01c393cb$e4156f40$0900a8c0@lowth.com>
+Message-ID: <000e01c39402$49e648e0$1900a8c0@celletech.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000F_01C393E9.249910E0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <007a01c393cb$e4156f40$0900a8c0@lowth.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,58 +16,130 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Chris Lowth <chris@lowth.com>
-Cc: Lohan Spies <l.spies@petzetakis-africa.co.za>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-You could use a combination of Snort-Inline:
-http://sourceforge.net/projects/snort-inline/
+This is a multi-part message in MIME format.
 
-and the rules that Snort has for Kazaa and other P2P stuff.
-
-And you could also use P2Pwall which is a P2P blocking module for
-IPTables: http://www.lowth.com/p2pwall/
+------=_NextPart_000_000F_01C393E9.249910E0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
 
-> Messagehttp://p2pwall.sourceforge.net
->   ----- Original Message -----
->   From: Lohan Spies
->   To: netfilter@lists.netfilter.org
->   Sent: Thursday, October 16, 2003 10:42 AM
->   Subject: Block Kazaa from the internal network
->
->
->   Hi All,
->
->   How can i block ALL Kazaa connections from inside my network?
->
->   Thanks,
->
->   Lohan Spies
->   Systems Administrator CSA / DBA / MCP
->   IQ Business Group
->   Tel: +27 12 521 7309
->   Fax: +27 12 541 3441
->   Cell: +27 83 258 2698
->   l.spies@petzetakis-africa.co.za
->
->
->
->
->
->   CONFIDENTIALITY CAUTION: If you have received this communication in
-> error, please note that it is intended for the addressee only, is
-> private and confidential and dissemination or copying prohibited. Please
-> notify us immediately by e-mail and return the original message. We
-> cannot assure that the integrity of this communication has been
-> maintained nor that it is free of errors, virus, interception or
-> interference. Thank you
+
+Here is my litle ascii art :-|
+
+        internet
+           |  ____________200.68.69.xxx
+           | /
+       firewall
+           | \________192.168.0.254
+       ---------------------------
+       |                         |
+192.168.0.1      192.168.0.25
 
 
-Thanks,
-Josh Berry, CTO
-LinkNet-Solutions
-469-831-8543
-josh.berry@linknet-solutions.com
+In the 192.168.0.1 i'm publishing some app made in home at port 80
+But on the public ip of mi FW im publishing my web page too
+The question is:
+I can view my app on 192.168.0.1 trough the following rule
+    iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 15000 -j DNAT
+--to 192.168.0.1:80 
+But on the LAN side (162.168.0.0) i cant see the app pointing to
+200.68.69.xxx:15000
+
+Any idea, suggestion ???
+
+Thanks in avance,
+Yours,
+Leonardo
+
+------=_NextPart_000_000F_01C393E9.249910E0
+Content-Type: text/html;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.4630.0">
+<TITLE>A question and a little ascii art</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
+<BR>
+<BR>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Here is my litle ascii art :-|</FONT>
+</P>
+
+<P><FONT SIZE=3D2 =
+FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+internet</FONT>
+
+<BR><FONT SIZE=3D2 =
+FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; |&nbsp; ____________200.68.69.xxx</FONT>
+
+<BR><FONT SIZE=3D2 =
+FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; | /</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+firewall</FONT>
+
+<BR><FONT SIZE=3D2 =
+FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; | \________192.168.0.254</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+---------------------------</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+|</FONT>
+
+<BR><FONT SIZE=3D2 =
+FACE=3D"Arial">192.168.0.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+192.168.0.25</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">In the 192.168.0.1 i'm publishing some =
+app made in home at port 80</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">But on the public ip of mi FW im =
+publishing my web page too</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">The question is:</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">I can view my app on 192.168.0.1 =
+trough the following rule</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp;&nbsp; iptables -t nat -A =
+PREROUTING -p tcp -i eth0 --dport 15000 -j DNAT --to 192.168.0.1:80 =
+</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">But on the LAN side (162.168.0.0) i =
+cant see the app pointing to 200.68.69.xxx:15000</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Any idea, suggestion ???</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Thanks in avance,</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Yours,</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Leonardo</FONT>
+</P>
+
+</BODY>
+</HTML>
+------=_NextPart_000_000F_01C393E9.249910E0--
 
 
