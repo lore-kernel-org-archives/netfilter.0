@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Using External NATTED addresses Inside the Firewall
-Date: Tue, 18 May 2004 21:39:51 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: forwarding
+Date: Tue, 18 May 2004 13:48:48 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405182139.51346.Antony@Soft-Solutions.co.uk>
-References: <6.0.0.22.2.20040518151903.03c3ee30@mail.naccrra.org> <200405182049.29795.Antony@Soft-Solutions.co.uk> <6.0.0.22.2.20040518161116.040f0c60@mail.naccrra.org>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122F54@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <6.0.0.22.2.20040518161116.040f0c60@mail.naccrra.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,38 +17,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: alucard@kanux.com
+Cc: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>, netfilter@lists.netfilter.org
 
-On Tuesday 18 May 2004 9:17 pm, David O'Brien wrote:
+Ok, one more thing:
 
-> At 03:49 PM 5/18/2004, Antony Stone wrote:
-> >
-> >http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
->
-> Current setup from iptables-save
->
-> Very much like the example at the link above however it doesn't work.
-> Looks like its bouncing around.
+Is the address 10.73.219.156 the only IP address on the external
+interface of the server1?
 
-What do you mean by "bouncing around"?
+If you don't bind the 10.73.219.156 IP address to the ethernet interface
+on server1, then hosts on that network won't be able to find the server
+even with the prerouting rule. You could solve this by Proxy-arp or just
+simply adding another IP address to the outside interface.
 
-> Any logging option I could enable to actually see the above in action?
-
-Well, "iptables -L -t nat -nvx; iptables -L -nvx" will show you packet & byte 
-counters so you can see whether any packets have matched the rules.
-
-Other than that, a packet sniffer (eg: tcpdump, ethereal) would be good.
-
-Regards,
-
-Antony.
-
--- 
-Microsoft may sell more software than any other company, but McDonald's sell 
-more burgers than any other company, and I think the other similarities are 
-obvious...
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+This may be redundant, but I don't believe the external interface's been
+discussed at all as a possible issue.
 
 
