@@ -1,11 +1,9 @@
 From: "Alex Nee" <hard__ware@dynamicaccess.biz>
-Subject: RE: RE Problem
-Date: Mon, 28 Apr 2003 14:40:51 -0700
+Subject: Re:RE Problem
+Date: Mon, 28 Apr 2003 14:49:28 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002501c30dce$d6a6b720$7b7b10ac@hardware>
+Message-ID: <003101c30dd0$0b18a8f0$7b7b10ac@hardware>
 Reply-To: "Alex Nee" <hard__ware@dynamicaccess.biz>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,9 +14,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: "lists.netfilter" <netfilter@lists.netfilter.org>
 
-Just changed to proper POP Mail
+> Just changed to proper POP Mail
+
+Testing one more time :-(
+
+Alex Nee
+Hard__warE
+
 
 
