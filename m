@@ -1,16 +1,12 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Dual ISPs - controlled path for certain ports - ip route
-	2	balancing for others
-Date: Thu, 23 Sep 2004 09:18:41 -0400
+From: Dominic Iadicicco <sctylib2004@yahoo.com>
+Subject: Re: Can anyone tell me how to do this?
+Date: Thu, 23 Sep 2004 06:22:16 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409230918.41588.Alistair@nerdnet.ca>
-References: <200409221315.05822.Alistair@nerdnet.ca>
-	<4152987C.90100@fastwebnet.it>
+Message-ID: <20040923132216.67295.qmail@web51303.mail.yahoo.com>
+References: <4152C919.1090903@mail.co.gilchrist.fl.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4152987C.90100@fastwebnet.it>
-Content-Disposition: inline
+In-Reply-To: <4152C919.1090903@mail.co.gilchrist.fl.us>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,56 +17,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-On September 23, 2004 05:33 am, Primero wrote:
-> Alistair Tonner wrote:
-> >	 I'm wondering if
-> >	there are rules I can use (consider that the webserver/mailserver and FTP
-> >	server are sadly on the firewall at the moment) to force the servers to
-> > reply via the DSL or internal lan only, even if the default route points
-> > at the cable link? (this would be a quick and dirty solution for me) --
-> > the cablelink will have to shortly support a VPN tunnel back to work.
->
-> i was using Iproute2 like u until a day i decided to "man iptables" ....
->
-> i've found in EXTENSIONS TARGET section:
->
-> ....
-> ROUTE
->
->        --continue
->               Behave like a non-terminating target and continue
-> traversing the rules.  Not valid in combination with `--iif'
-> ....
->
-> this way u can use a normal matching syntax of iptables and change the
-> routing decision about the "interesting traffic".
-> I hope it works since i had no time yet to try it out ... let us know :)
->
-	
-	*thwacks* self in head -- yes .. I've noted this in the past myself.. .but it 
-had just wandered off into space ... thanks ... I've just recompiled the 
-kernel ... the reason it wandered was that ROUTE is NOT in most default 
-kernel configs, its in patch-o-matic.  I'm running gentoo which does NOT have 
-any consistent method of pulling in patch-o-matic.  POM on gentoo takes some 
-more work than normal, but I've got patched in and up and runnng.  
+ok, I have another one for all.
 
-	Further question to the list.  Consider that I'm using iproute2 to share the 
-connection to two different ISP's, and I want specific traffic from my 
-internal network to only go out one interface.  Where in mangle would I put 
-these rules?
+I have now been tring to do this:
 
-	For the moment I'm trying this by putting them in PREROUTING since I'd want 
-the oif to OVERRIDE routing decisions -- I have my SNAT rules in place based 
-on output interface, but perhaps my logic is wrong ...   Has anyone done this 
-yet or am I headed for experimental territory??
-
-	*grins*
+I have an IP, 10.0.0.1 on eth1 and an IP 172.16.12.130
+at eth0. And heres were things get fun.  I want all
+ssh requests that go to 10.0.0.1 to get routed to
+172.16.12.130 just like it worked when we did it from
+.130 to .212.  (if anyone is new and doesn't what was
+discussed yesterday, please let me know I will post
+it.)
 
 
-	Alistair Tonner	
-	Rogers Shared Operations, 
-	Senior Operational Analyst, 
-	(soon to be junior HP/UX os support)
+Once again thanks for all help in advance.
+
+Dominic
+
+
+
+--- Eric Ellis <eellis@mail.co.gilchrist.fl.us> wrote:
+
+> Daniel Chemko wrote:
+> 
+> > Hudson Delbert J Contr 61 CS/SCBN wrote:
+> > 
+> >>firewalls and virii ???
+> >>
+> >>firewalls do not stop virus...
+> >>
+> >>virus detection and removal/mitigation software
+> does this chore
+> >>if bundled with the firewall tool.
+> >>
+> >>lets not lead the newbs astray...
+> > 
+> > 
+> > Well said... Sometimes I don't think about what
+> I'm typing until its
+> > been sent. I end up sounding like a so many PHB's.
+> 
+> > 
+> > Step 1: Loose nerd status
+> > Step 2: Become PHB
+> > Step 3: PROFIT!!
+> Sadly, your last statement is all too true. :)
+> 
+> -- 
+> Eric Ellis
+> Gilchrist County Sheriff's Department
+> IT Coordinator
+> eellis@mail.co.gilchrist.fl.us
+> 352-463-3181
+> 
+> 
+
+
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - 50x more storage than other providers!
+http://promotions.yahoo.com/new_mail
 
