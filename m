@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Forwarding Help
-Date: Thu, 20 Nov 2003 20:40:54 +0000
+Subject: Re: FORWARD question
+Date: Thu, 20 Nov 2003 20:51:06 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311202040.hAKKex723544@onyx.rockstone.co.uk>
-References: <SEA2-DAV257n6Hj1yNr000056bb@hotmail.com>
+Message-ID: <200311202051.hAKKp8723558@onyx.rockstone.co.uk>
+References: <20031120202717.74020.qmail@web40803.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <SEA2-DAV257n6Hj1yNr000056bb@hotmail.com>
+In-Reply-To: <20031120202717.74020.qmail@web40803.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +20,75 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 20 November 2003 8:26 pm, Michael Menges wrote:
+On Thursday 20 November 2003 8:27 pm, Nick wrote:
 
-> GlacierHello folks.  What's the best way to handle this situation:
+> Hi everyone,
 >
-> I wish to have my gateway/firewall using iptables to forward incoming
-> internet traffic destined to port 443 (https) to another machine on my
-> localnet (192.168.0.10) keeping the same port number, obviously.  I'm on a
-> cable connection with a dynamic IP address, of course. I've read the FAQ's
-> and man page but yet unable to come up with the proper syntax.  Any generic
-> command structures would be most helpful.
+> I have a question about PREROUTING and FORWARD.
+>
+> I use those rules(amongst others) to reach the FTP
+> server on the LAN:
+>
+>  $IPTABLES -t nat -A PREROUTING -p tcp -d $INET_IP -i
+> ppp0 --dport 21 -j DNAT --to $FTPSRVIP
+>
+>  $IPTABLES -A FORWARD -i ppp0 -o $LAN_IFACE -p tcp -d
+> $FTPSRVIP--dport 21 -m state --state NEW -j ACCEPT
+> $IPTABLES -A FORWARD -i ppp0 -o $LAN_IFACE -p tcp -d
+> $FTPSRVIP--dport 20 -j ACCEPT
+> $IPTABLES -A FORWARD -i ppp0 -o $LAN_IFACE -p tcp -d
+> $FTPSRVIP--dport 1024:65535 --sport 1024:65535 -j
+> ACCEPT
+>
+> Does this mean that all traffic coming from the
+> internet for ports 1024:65535 will be forwarded
+> towards the FTP server ports 1024:65535 ?
 
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 443 -j DNAT --to 
-192.168.0.10
-iptables -A FORWARD -d 192.168.0.1 -p tcp --dport 443 -j ACCEPT
+Yes.   If you have public (routable) IP addresses on your LAN (unlikely, but 
+you didn't say) this will allow a large amount of port scanning to be 
+successful.   If not, then packets can't be addressed to your LAN machines 
+anyway, so the final FORWARD rule will not do anything.
 
-eth0 is your external interface.   Adjust the rule if this assumption is 
-incorrect
+> What about traffic for ports 1024:65535 that should go
+> to other clients on the LAN ? Is it going to be
+> forwarded to the FTP server as well ?
 
-Ask if you don't see why the above rules do what you want.
+No, because you are only performing NAT on packets sent to TCP port 21.
 
-PS: What does "Glacier" mean?
+Packets sent to any other port will not be NATted, and will continue to their 
+original destination, assuming this was a routable address in the first place.
+
+> If yes, how could I forward only FTP traffic to the FTP server ?
+
+I really would recommend that you use connection tracking and the NAT helpers:
+
+1. Compile your kernel, or load the modules (depending on personal 
+preference) for FTP conntrack and FTP nat.
+
+2. Use the following rules:
+
+iptables -A PREROUTING -t nat -d a.b.c.d -p tcp --dport 21 -j DNAT --to 
+w.x.y.z
+
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -d w.x.y.z -p tcp --dport 21 -j ACCEPT
+
+Where a.b.c.d is your external (public) IP address, and w.x.y.z is the 
+internal (private) IP address of your FTP server.
+
+Connection tracking means no need to worry about port 20, and no need to open 
+up all the high ports to people on the outside.
+
+Regards,
 
 Antony.
 
 -- 
 
-How I want a drink, alcoholic of course, after the heavy chapters
-involving quantum mechanics.
+The only problem with the Universe as a platform, though, is that it is 
+currently running someone else's program.
 
- - 3.14159265358979
+ - Ken Karakotsios, author of SimLife
                                                      Please reply to the list;
                                                            please don't CC me.
 
