@@ -1,12 +1,13 @@
-From: "David Cannings" <lists@edeca.net>
-Subject: Re: open ports
-Date: Mon, 17 May 2004 10:43:53 +0100
+From: Dennis Morgan <dennis@airstrike.co.nz>
+Subject: Could be a stupid question...
+Date: Mon, 17 May 2004 21:55:06 +1200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003701c43bf3$7a1ab980$1400a8c0@DAVIDVAIO>
-References: <BAY15-F36xiW2wqUjfg0006b834@hotmail.com>
+Message-ID: <200405172155.06592.dennis@airstrike.co.nz>
+Reply-To: dennis@airstrike.co.nz
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,22 +20,15 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-From: "azeem ahmad" <azeem484@hotmail.com>
-> but its not the soulution to just leave the programs that have dynamic
-> ports. there must be a solution for them in netfilter
+Hi All...
+I am just writing to know if there is a way to BLOCK certain types of requests 
+getting to to the webserver?
 
-If you are very worried and have a large network, set up a SOCKS proxy.  I
-believe the Windows MSN client also supports HTTP proxying but I've never
-tried.  On a smaller scale, it is fairly safe to allow the whole range of
-outgoing ports to be ACCEPTed in your OUTPUT chain, such as allowing out
-2000-3000. You would have to find out the exact range it uses.  A rule
-allowing ESTABLISHED or RELATED in your INPUT chain will handle the replies.
+at present i am getting alot of problems with people using SEARCH requests 
 
-Unless you're going to use UPnP to open and close ports as needed it isn't
-easy to get programs like MSN that use lots of ports to work fully behind a
-firewall or NAT.  There is a UPnP daemon for Linux and a good article at:
-http://www.ruwebit.net/article/77.
+ie SEARCH / and a load of escape characters trying to get unauthorised access.
+I would like to know if there is a way with netfilter to drop these packets?
 
-David
-
+regards.
+Dennis
 
