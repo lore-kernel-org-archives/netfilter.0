@@ -1,11 +1,12 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
+From: "Marius Mertens" <marius.mertens@gmx.de>
 Subject: Re: Packets that should have been DNATted appearing in INPUT table
-Date: Tue, 11 Jan 2005 13:16:47 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10501111313200.7610-100000@darkstar.sysinfo.com>
-References: <20050111162914.GA14045@bender.817west.com>
+Date: Tue, 11 Jan 2005 19:15:27 +0100
+Message-ID: <008901c4f809$87cd7680$4206a8c0@loki>
+References: <Pine.LNX.4.05.10501101924120.16399-100000@darkstar.sysinfo.com><002801c4f7ee$ccf74210$4206a8c0@loki>
+	<20050111162914.GA14045@bender.817west.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050111162914.GA14045@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,82 +17,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
+On Tuesday, January 11, 2005 5:29 PM,
+Jason Opperisano wrote:
 
+> all the packets that were part of the established connections in step
+> 2 will no longer have a conntrack entry that ties them to the DNAT,
+> and they will end up in INPUT and get dropped.
 
-it's also quite possible these connetions his counter catches are not
-related to the NAT c0onnections at all, but, are the result of other
-systems scanning his or trying to find a way through his FW rulebase. My
-cash is on these counters incrementing due to kiddies and others merely
-scanning the ethers with new toys and trinkets they have found at various
-links and sec websites on the net.  But,this can be confirmed with
-comparing these INPUT hits with his FORWARDED NAT hits in the logs, yes?
+Thats a very interesting theory! I would never have thought of that myself. 
+And you are right, I actually do restart my firewall quite often during 
+testing phase. There are just 2 things still preventing me from being 
+completely happy:
+1) The drops still happen after running the firewall for several hours. Its 
+just a feeling, but isn't that a very long time for a tcp connection?
+2) When I take a look at /proc/net/ip_conntrack it does not empty when 
+restarting the firewall, so I thought, existing connections should go 
+unharmed.
 
-thanks,
+Maybe I looked in the wrong places, but are there detailed information about 
+how DNAT works internally (apart from reading the sources ;-))?
 
-Ron DuFresne
+Something I could also imagine, is that those 
+somehow-not-handled-as-i-expected-packets are just bogus packets not 
+belonging to any connection. In that case, namely that these packages are of 
+no use anyhow (and that they would have been dropped at the target box, 
+because of not belonging to any existing connection or initialising a new 
+connection themselves), it would be perfectly correct to drop them at the 
+router.
+But there are still things, I do not understand, if thats the case:
+Reverting to my mostly favourite game (comparing counters) I noticed the 
+following:
 
-On Tue, 11 Jan 2005, Jason Opperisano wrote:
+Chain PREROUTING (policy ACCEPT 646K packets, 32M bytes)
+ pkts bytes target     prot opt in     out     source 
+destination
+    0     0 LOG        tcp  --  ppp0   *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:4664 state INVALID LOG flags 0 level 6 prefix 
+`SUSPICIOUS: '
+  582 31900 LOG        tcp  --  ppp0   *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:4664 LOG flags 0 level 6 prefix `NORMAL: '
+  582 31900 DNAT       tcp  --  ppp0   *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:4664 to:192.168.6.10
+    0     0 LOG        tcp  --  ppp0   *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:4664 LOG flags 0 level 6 prefix `SUSPICIOUS: '
 
-> On Tue, Jan 11, 2005 at 04:03:11PM +0100, Marius Mertens wrote:
-> > Hi again,
-> > 
-> > I just subscribed to this list in order to save the moderator some work and 
-> > minimize the delays in our discussion ;-)
-> > So no need to cc anymore.
-> 
-> we greatly appreciate that.
-> 
-> > On Tuesday, January 11, 2005 1:27 AM,
-> > R. DuFresne wrote:
-> > 
-> > >[...]
-> > >validate your conclusions, adding a LOG rule prior to the drop might
-> > >help track down 'why' you are seeing that 'counter' increment.
-> > 
-> > Below are the packets logged by
-> > iptables -A INPUT -i ppp0 -p tcp --dport 4664 -j LOG --log-level 
-> > 6 --log-prefix "SUSPICIOUS: "
-> > after running some minutes.
-> 
-> you could easily be creating this situation yourself with your "testing"
-> methodology.  if you are:
-> 
-> 1) starting firewall
-> 2) allowing connections to establish
-> 3) stopping firewall, which includes removing ip_conntrack
-> 4) starting firewall
-> 
-> all the packets that were part of the established connections in step 2
-> will no longer have a conntrack entry that ties them to the DNAT, and
-> they will end up in INPUT and get dropped.
-> 
-> i'm not saying this is what you are doing--but it's an explanation for
-> what you're seeing--the DNAT functionality in netfilter works properly
-> in my experience.
-> 
-> -j
-> 
-> --
-> "To alcohol: the cause of, and solution to, all of life's problems."
->         --The Simpsons
-> 
+For me it looks perfectly normal and like should-be-working. But in INPUT 
+the drops are still there:
 
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source 
+destination
+   22  1096 DROP       tcp  --  ppp0   *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:4664
 
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
+I also noticed that the LOG rule in nat PREROUTING has far less matches 
+counted than the same LOG rule in mangle PREROUTING.
+
+Perhaps you can tell me, whether I am right if i think that either
+1) The critical packets have matched DNAT but somehow DNAT thought that it 
+should not alter the destination and rather direct it to INPUT
+2) The critical packets have never even entered nat PREROUTING (seems 
+probable, but I have no proof)
+
+Unfortunately, even if either of the two cases really happens, I still don't 
+have any explanation, why it does...
+
+Thank you very much,
+
+Marius 
 
 
