@@ -1,12 +1,12 @@
-From: "Marco Strullato" <batstru@email.it>
-Subject: Re: again problem with alias / virtual interface
-Date: Mon, 19 Jul 2004 18:30:32 +0200
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Squid Accelerator configuration
+Date: Tue, 20 Jul 2004 13:35:42 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007d01c46dae$0a45f330$eb53623e@x>
-References: <d3caf706513e42bc4d4a4a08209f5cd9@62.98.80.108> <40FC2286.3070005@pbl.ca>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511CC@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,58 +16,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
+To: Jim Matthews <jim.matthews@notes.duke.edu>, netfilter@lists.netfilter.org
+
+-A OUTPUT -p tcp --syn -s 192.168.1.1 --sport 1024: -d 192.168.1.5 =
+--dport 80 -j ACCEPT
+
+-j
+
+-----Original Message-----
+From: Jim Matthews [mailto:jim.matthews@notes.duke.edu]
+Sent: Thursday, July 15, 2004 10:46 AM
 To: netfilter@lists.netfilter.org
-
-> > -A INPUT -p tcp -m tcp -m state -i eth1:1 -d 82.186.92.91 --dport
-25 --state
-> > NEW -j ACCEPT
->
-> And here is the error.
->
-> As me (and I believe Antony, possibly others) already told you,
-> Netfilter does not know about virtual interfaces.  Virtual interfaces
-> are abstractions that exist in higher levels of kernel than Netfilter
-> is.  Netfilter is concerned only on which *physical* interface the
-> packet is.  Replace "-i eth1:1" with "-i eth1" in above rule (and same
-> for all other virtual interfaces you have) and you'll be fine:
->
-> -A INPUT -p tcp -m tcp -m state -i eth1 -d 82.186.92.91 --dport 25
-> --state NEW -j ACCEPT
-
-I've tried with just eth1 but the rule is not applied, or it seems not to be
-applied
-
-I've seen that using virtual interfaes is deprecated so I tryed to set
-multilple ip with iproute.
-If I set network interfaces only with iproute and not with ifconfig, network
-configuration seems to be absent.
-If I set network with ifconfig and not with iproute, network configuration
-seems ok
-So I can't to use iproute (to set interfaces) and iptables becacuse network
-configuration is absent.
-
-best regards
-
-marco
+Subject: Squid Accelerator configuration
 
 
+Hi
 
-=20
+We have a backend web server.  To off-load some of the load from the=20
+backend server, we have a Squid server in front.=20
 
-=20
+I am having an issue with my iptables configuration on my Squid box.=20
+Everything works correctly when I disable the firewall (no good), so I'm =
 
- --
+having problems with my rules on the Squid server.  I want to configure=20
+the systems so that:
 
- Email.it, the professional e-mail, gratis per te: http://www.email.it/f
+-On Squid-
+-allow all requests from Internet to port 80
+-allow all requests from WWW box to/from port 80
 
-=20
+-On WWW-
+-allow all forwarded requests to/from Squid Box to port 80
+-do not allow requests from Internet to port 80
 
- Sponsor:
+Has anyone setup something similar?  Any suggestions or pointers on how =
+to=20
+configure this?
 
- Rinfresca la tua estate con i climatizzatori ed i ventilatori
+Here is the ruleset I'm using on my Squid box:
 
-* che trovi disponibili=85 Crios, Orieme, Hokkaido, Argo, Carrier, Vortice
+# Squid
+# These rules are to allow testing from the internal network - the first =
 
- Clicca qui: http://adv.email.it/cgi-bin/foclick.cgi?mid=3D2650&d=3D20-7
+two rules are for the Squid port
+-A INPUT -s 192.168.1.0/24 -p tcp -m tcp --sport 1024: --dport squid -m=20
+state --state NEW,ESTABLISHED -j ACCEPT
+-A OUTPUT -s 192.168.1.0/24 -p tcp -m tcp --sport squid -m state --state =
+
+ESTABLISHED -j ACCEPT
+
+# These two rules are for the http port
+-A INPUT -s 192.168.1.0/24 -p tcp -m tcp --sport 1024: --dport http -m=20
+state --state NEW,ESTABLISHED -j ACCEPT
+-A OUTPUT -s 192.168.1.0/24 -p tcp -m tcp --sport http -m state --state=20
+ESTABLISHED -j ACCEPT
+
+# These two rules should cover the forwarding of connections for the=20
+backend WWW server
+-A FORWARD -s 0/0 -d 192.168.1.5 -p TCP --sport 1024:65535 --dport 80 -j =
+
+ACCEPT
+-A FORWARD -d 0/0 -s 192.168.1.5 -p TCP -m state --state ESTABLISHED -j=20
+ACCEPT
+
+Any help you could give would be greatly appreciated.  Thanks.
+
+Thanks.
+---------------------
+Jim Matthews=20
+ISS Systems Administrator=20
+Duke University - Perkins Library
+Box 90196
+Durham, NC 27708
+Email: jim.matthews@duke.edu
+Voice: 919-660-5963
+Fax: 919-684-6990
 
