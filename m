@@ -1,13 +1,12 @@
-From: Emmanuel Guiton <emmanuel@netlab.hut.fi>
-Subject: iptables.o: couldn't find the kernel version the module was compiled
- for
-Date: Wed, 12 Nov 2003 12:03:03 +0200
+From: "Julien Didron" <admin@tripnotik.dyndns.org>
+Subject: Forwarding GnomeMeeting to internal network
+Date: Wed, 12 Nov 2003 10:35:29 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB20557.9010403@netlab.hut.fi>
-Reply-To: emmanuel@netlab.hut.fi
+Message-ID: <20031112102230.M85506@tripnotik.dyndns.org>
+References: <Pine.LNX.4.58.0311111558160.8003@fhynpb.envafyvqr.arg> <Pine.LNX.4.33.0311120009030.26051-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.33.0311120009030.26051-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Vigil <nvnwdfuq02@sneakemail.com>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hei!
+Hello list,
 
-I have a Debian with a kernel 2.4.22. I tried to install iptables1.9 but 
-I get the following error when tying to load the module into the kernel:
-iptables.o: couldn't find the kernel version the module was compiled for
+I wish to use GnomeMeeting, for which I assume the only port that needs 
+opening is 1720.
+Now, how can I forward all incoming traffic to port 1720 on the router, to 
+one machine on the network that doesn't have a fixed IP (DHCP), but has name 
+on the domain thanks to DDNS (ex : abox.mydomain.net).
 
-With Google, I found an indication saying that I could be related to an 
-install of ipchains due to my distribution. It was indeed installed, but 
-after removing it I still get the same problem.
+Another question regarding ip_conntrack. After 5 days of use, I get the 
+following error in syslog : "ip_conntrack table full, dropping packet.". I 
+then increased the value in /proc/sys/net/ipv4/ip_conntrack_max, from 3048 to 
+8192, but I think this is a quick fix that won't get me too far ... Is there 
+a mean of flushing that table ? If not, how can I lower the TCP connection 
+timeouts ?
 
-Any suggestion?
+Thanks in advance.
 
-Thanks,
-
-             Emmanuel
-
+--
+Open WebMail Project (http://openwebmail.org)
 
