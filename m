@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Is it possible to forward broadcasting with IPtables?
-Date: Wed, 7 Apr 2004 10:40:31 +0100
+From: Jochen Vogel <jvogel@it-sec.de>
+Subject: AW: AW: bootp problems
+Date: Wed, 7 Apr 2004 12:40:19 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404071040.31480.Antony@Soft-Solutions.co.uk>
-References: <000001c41c6a$e971b1b0$1664640a@Younger>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <D3DD55FDB74AD511BA5100500416368053E847@ORION>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c41c6a$e971b1b0$1664640a@Younger>
+Received: **stripped**
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,42 +16,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Wednesday 07 April 2004 7:38 am, Younger Wang wrote:
+> How is Linux supposed to route a reply packet from 1.1.1.2:67 back to 
+> 0.0.0.0:68?
+> 
+> > SECOND the DialIn try it with BROADCAST
+> > with tcpdump on 2.1 i can see 0.0.0.0:68 > 255.255.255.255:67 It 
+> > doesnt work and i CAN see an entry in the iptables log
+> 
+> Broadcasts do not cross routers.   That is nothing to do with 
+> netfilter (and 
+> no, you cannot create any netfilter rules to make a broadcast 
+> cross to the 
+> other side).
+> 
+Ok. I give up. I will put a dhcp server in the segment.
 
-> Hi All,
->
-> I am seeking a way to forward WINs broadcast.
+But one info for my brain.
 
-Use a WINS server.   That will forward peer discovery requests to other 
-subnets.   Samba will do the job nicely.
-
-> Is it possible to be done with iptables? If not, is there a standard way
-> to do broadcast forwarding?
-
-There is no way to generically forward network broadcasts, otherwise the 
-entire Internet would get flooded with them.   Broadcasts are designed to 
-reach every machine on a local subnet, and no others.
-
-Regards,
-
-Antony.
-
--- 
-This email is intended for the use of the individual addressee(s) named above 
-and may contain information that is confidential, privileged or unsuitable 
-for overly sensitive persons with low self-esteem, no sense of humour, or 
-irrational religious beliefs.
-
-If you have received this email in error, you are required to shred it 
-immediately, add some nutmeg, three egg whites and a dessertspoonful of 
-caster sugar.   Whisk until soft peaks form, then place in a warm oven for 40 
-minutes.   Remove promptly and let stand for 2 hours before adding some 
-decorative kiwi fruit and cream.   Then notify me immediately by return email 
-and eat the original message.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Why can i see iptables log for 0.0.0.0:68 > 255.255.255.255:67 and not for
+0.0.0.0:68 > 1.1.1.2:67?
 
