@@ -1,11 +1,12 @@
-From: dhiraj.2.bhuyan@bt.com
-Subject: connection tracking query
-Date: Mon, 7 Apr 2003 10:02:39 +0100
+From: "Allan de Borde" <Allan@southport-college.ac.uk>
+Subject: Re: AW: Load Balancing
+Date: Mon, 07 Apr 2003 10:12:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7497DCA1C240C042B28F6657ADFD8E0926876C@i2km11-ukbr.domain1.systemhost.net>
+Message-ID: <se914f2f.073@hera>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,33 +16,115 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-
-
-1. I was reading the Iptables tutorial by Oskar Andreasson
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html.
-It says that connection tracking in done in the PREROUTING chain or OUTPUT
-chain (for locally generated packets). If connection tracking is done only
-at these two chains, what happens to the packets that don't belong to an
-already established connection? I understand that it will have to go through
-the filter rules - before the state table is updated for a NEW/RELATED
-connection. If that is the case, "conntrack" must be taking place at other
-chains too (where the filter is applied). The following document
-http://www.knowplace.org/netfilter/syntax.html does infact say that
-"conntrack" is happening not only in the PREROUTING and the OUTPUT chain,
-but also in INPUT and POSTROUTING chain. What I find strange with this is
-that for a packet that goes through the "FORWARD" chain, "conntrack" is done
-twice on the same packet - first in the "PREROUTING" chain and second in the
-"POSTROUTING" chain. Does anyone have any explanation for this?
-
-
-2. If a packet is found to belong to an already ESTABLISHED connection, does
-it still have to go through the filter rules again?
-
-
 Thanks,
-dhiraj
+
+I seem to how it up and running at the moment. I will read about these =
+patches and then take it this step further.
+
+Allan
+
+>>> "Michael Schoen" <schoen@anduras.de> 04/06/03 04:47am >>>
+Hi Allan,
+
+it s probably not a problem of iptables - try with the following kernel
+patches...
+
+http://www.ssi.bg/~ja/#routes=20
+
+--=20
+
+Michael Sch=F6n <schoen@anduras.de>
+
+
+> -----Urspr=FCngliche Nachricht-----
+> Von: netfilter-admin@lists.netfilter.org [mailto:netfilter-
+> admin@lists.netfilter.org] Im Auftrag von Allan de Borde
+> Gesendet: Donnerstag, 3. April 2003 09:40
+> An: mgm@paktronix.com=20
+> Cc: netfilter@lists.netfilter.org=20
+> Betreff: Re: Load Balancing
+>=20
+> Thanks,
+>=20
+> I didn't have the Kernel Development installed so installed it and
+then I
+> could compile the latest iproute.
+> With this version of iproute the ip route list command has lost the
+dead
+> onlink pervasive message
+> and it all looks ok. I will have to test further but it's looking
+good.
+>=20
+> Cheers,
+> Allan
+>=20
+> >>> "Matthew G. Marsh" <mgm@paktronix.com> 04/02/03 05:43pm >>>
+> On Wed, 2 Apr 2003, Allan de Borde wrote:
+>=20
+> > I am trying to test the load balancing on a test machine with 2
+external
+> > 2Mb Internet links and it doesn't appear to be working. I am using
+> > RedHat 8.0 and get this message when doing ip route list:
+> >
+> > default equalize
+> >         nexthop via xxx.xxx.xxx.xxx  dev eth1 weight 1 dead onlink
+> pervasive
+> >         nexthop via xxx.xxx.xxx.xxx  dev eth0 weight 1 onlink
+> >
+> > I have read a similar problem from this list and it appears that the
+> > RedHat RPM of iproute2 (iproute-2.4.7-5) is broken and this was
+resolved
+> > by installing a newer version of iproute.
+> >
+> > As I am very new to some aspects of Linux could someone inform me of
+how
+> > to compile and install iproute as it asks for you to change the
+> > KERNEL_INCLUDE directory in the Makefile and I have no idea where
+the
+> > Kernel include directory is. I can't get it to make.
+>=20
+> KERNEL_INCLUDE=3D/usr/src/linux
+>=20
+> Even RH symlinks /usr/src/linux to the appropriate version of kernel
+> installed. Make sure that you have installed the kernel development
+RPM as
+> that has the actual include files. Not installed by default unless you
+> installed the Developer workstation.
+>=20
+> > I have downloaded and installed iproute-2.4.7-7.rpm but this also
+has
+> the same problems.
+> >
+> > Cheers
+> > Allan
+> >
+> >
+> >
+> >
+> >
+> >
+>=20
+> --------------------------------------------------
+> Matthew G. Marsh,  President
+> Paktronix Systems LLC
+> 1506 North 59th Street
+> Omaha  NE  68104
+> Phone: (402) 553-2288
+> Email: mgm@paktronix.com=20
+> WWW:  http://www.paktronix.com=20
+> --------------------------------------------------
+>=20
+>=20
+>=20
+>=20
+>=20
+
+
+
+
+                                        
+
 
