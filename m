@@ -1,22 +1,16 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: FORWARD rules
-Date: Mon, 15 Sep 2003 19:34:22 +0200
+From: Security <security@ezsm.net>
+Subject: Re: ip_conntrack
+Date: Mon, 15 Sep 2003 19:40:18 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063647262.766.39.camel@elendil.intranet.cartel-securite.net>
-References: <20030910175253.GA2752@linux.local>
-	 <1063260568.26703.1.camel@risingsun.penguindia.com>
-	 <20030912100957.GA3360@linux.local>
-	 <1063363533.879.52.camel@elendil.intranet.cartel-securite.net>
-	 <20030912163656.19b9fb66.arnt@c2i.net>
-	 <1063378301.888.66.camel@elendil.intranet.cartel-securite.net>
-	 <20030912201425.25ca0ab4.arnt@c2i.net> <20030913022658.GD1667@linux.local>
-	 <20030913084256.73dc4a3d.arnt@c2i.net>
-	 <1063612582.928.17.camel@elendil.intranet.cartel-securite.net>
-	 <20030915183205.2f109f6f.arnt@c2i.net>
+Message-ID: <200309151940.20342.security@ezsm.net>
+References: <000801c378a1$f6c24360$243902c4@weatherman>
+Reply-To: security@ezsm.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030915183205.2f109f6f.arnt@c2i.net>
+In-Reply-To: <000801c378a1$f6c24360$243902c4@weatherman>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -26,17 +20,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Arnt Karlsen <arnt@c2i.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: Warren P <weatherman@webmail.co.za>, netfilter@lists.netfilter.org
 
-Le lun 15/09/2003 =E0 18:32, Arnt Karlsen a =E9crit :
-> ..me too, ;-)  I ofcourse meant we "weren't too clear on what=20
-> we meant to say"...  ;-)
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-We are now, that's the important point :)
+Just simply remove the mod ip_conntrac and any dependices and re-apply it.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+**Warning** this will require you to drop iptables while you do it...which may
+not be a good option depening on your network configuration. **/Warning**
+
+NH
+
+On Thursday 11 September 2003 4:19 pm, Warren P wrote:
+> hi
+>
+> does anyone know how to clear/flush the ip_conntrack table. Every 4 to 6
+> months i need to reboot my server because it drops packets and complains
+> that the table is full ...
+>
+> Regards,
+> Warren P
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE/Zk3jPEfiOMhBaIMRAqjlAJ4wemLaeC1n/MjvJnANCT4jDJUHgwCfdldB
+Dvk62MF2dxCx2uNilvCp13Y=
+=vmrB
+-----END PGP SIGNATURE-----
 
