@@ -1,9 +1,11 @@
-From: Khanh Tran <khanh@slc.edu>
-Subject: RE: Command not working  in latest version
-Date: Sun, 16 Feb 2003 11:32:23 -0500
+From: "Jason Corekin" <jason@corekin.no-ip.com>
+Subject: Re: Custom kernel won't load iptables modules
+Date: Sun, 16 Feb 2003 15:16:21 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E9@EXCHANGE>
+Message-ID: <008601c2d611$6b0764f0$5d01a8c0@jason>
+References: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E5@EXCHANGE>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,44 +17,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Paulo J. Matos" <pocm@mega.ist.utl.pt>, netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-You may not have all of the proper elements compiled into your kernel.  Try:
+    Thanks, it actually was not ipchains which I have worked hard  to remove
+all traces of.
+Rather it was ipfwadm which had been accidentally hardcoded in, instead of
+being removed.
+Boy do I feel stupid. :(
 
-http://www.e-infomax.com/ipmasq/howto/c-html/ipmasq-compiling3.1.html
+Jason Corekin
 
-Khanh Tran
-Network Operations
-Sarah Lawrence College
-
-
------Original Message-----
-From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-Sent: Sunday, February 16, 2003 11:04 AM
-To: Khanh Tran; netfilter@lists.netfilter.org
-Subject: Re: Command not working in latest version
+----- Original Message -----
+From: "Khanh Tran" <khanh@slc.edu>
+To: "Jason Corekin" <jason@corekin.no-ip.com>; <netfilter@lists.samba.org>
+Sent: Sunday, February 16, 2003 12:52 AM
+Subject: RE: Custom kernel won't load iptables modules
 
 
-
-> You should also make sure you are loading modules ip_tables and
-ip_conntrack
-> before you load your other modules.
-
-Iptables are built into the kernel, even after loading ipt_conntrack I
-receive invalid argument.
-
-I just do:
-iptables -t nat -F
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 217.129.146.56
-
-First line is ok, second returns invalid argument. Getting desperate. Any
-ideas?
-
-Best regards,
-
-Paulo
-
+> Sometimes Linux, especially boxes upgraded from previous RedHat installs,
+> hold onto the ipchains modules.  Try:
+>
+> /sbin/chkconfig --level=2345 ipchains off
+> /sbin/rmmod ipchains
+>
+> Then insert your iptables modules.
 >
 > Khanh Tran
 > Network Operations
@@ -60,77 +48,73 @@ Paulo
 >
 >
 > -----Original Message-----
-> From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-> Sent: Sunday, February 16, 2003 9:45 AM
-> To: Khanh Tran; netfilter@lists.netfilter.org
-> Subject: Re: Command not working in latest version
+> From: Jason Corekin [mailto:jason@corekin.no-ip.com]
+> Sent: Sunday, February 16, 2003 1:24 AM
+> To: netfilter@lists.samba.org
+> Subject: Custom kernel won't load iptables modules
 >
 >
-> > You'll now want to do:
-> >
-> > iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $EXTIP
-> >
-> > where eth0 is the interface going out to the Internet and $EXTIP is the
-> > public IP on that interface.
+> Does anybody no why I can not get my custom compiled kernel to load it's
+> iptables modules?
 >
-> Hi Khanh, strangely I still get Invalid Argument.
-> iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 217.129.146.56
+> I am running on RedHat 8.0.  I have everything else working, but iptables
+> goes to load I get the messages
 >
-> where eth1 is the interface that gives access to the internet with IP
-> 217.129.146.56 (given by DHCP server).
+> Feb 15 20:36:10 corekin iptables: Starting iptables:
+> Feb 15 20:36:10 corekin iptables:
+> /lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
+> Feb 15 20:36:10 corekin iptables: Hint: insmod errors can be caused by
+> incorrect module parameters, including invalid IO or IRQ parameters.
+> Feb 15 20:36:10 corekin iptables: You may find more information in syslog
+or
+> the output from dmesg
+> Feb 15 20:36:10 corekin iptables: init_module: Device or resource busy
+> Feb 15 20:36:10 corekin iptables:
+> /lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
+> insmod
+> /lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o
+> failed
+> Feb 15 20:36:10 corekin iptables:
+> /lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
+> insmod ip_tables failed
+> Feb 15 20:36:10 corekin iptables: iptables v1.2.6a: can't initialize
+> iptables table `filter': iptables who? (do you need to insmod?)
+> Feb 15 20:36:10 corekin iptables: Perhaps iptables or your kernel needs to
+> be upgraded.
+> Feb 15 20:36:10 corekin iptables:
+> /lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
+> Feb 15 20:36:10 corekin iptables: Hint: insmod errors can be caused by
+> incorrect module parameters, including invalid IO or IRQ parameters.
+> Feb 15 20:36:10 corekin iptables: You may find more information in syslog
+or
+> the output from dmesg
+> Feb 15 20:36:10 corekin iptables: init_module: Device or resource busy
+> Feb 15 20:36:10 corekin iptables:
+> /lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
+> insmod
+> /lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o
+> failed
+> Feb 15 20:36:10 corekin iptables:
+> /lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
+> insmod ip_tables failed
+> Feb 15 20:36:10 corekin iptables: iptables-restore v1.2.6a:
+> iptables-restore: unable to initializetable 'nat'
+> Feb 15 20:36:10 corekin iptables:
+> Feb 15 20:36:10 corekin iptables: Try `iptables-restore -h' or
+> 'iptables-restore --help' for more information.
+> Feb 15 20:36:10 corekin rc: Starting iptables: failed
 >
-> Thx for your patience,
+> I have attached my configuration file if that will help.
 >
-> Paulo
+> I explicitly made sure that fast switching was turned off, but beyond that
+I
+> do not know what else could conflict with iptables.
 >
-> >
-> > Khanh Tran
-> > Network Operations
-> > Sarah Lawrence College
-> >
-> >
-> > -----Original Message-----
-> > From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-> > Sent: Sunday, February 16, 2003 9:00 AM
-> > To: netfilter@lists.netfilter.org
-> > Subject: Command not working in latest version
-> >
-> >
-> > Hi all,
-> >
-> > I've changed from my old distribution to a new one that comes with
-> iptables
-> > 1.2.7a.
-> > I have iptables in the kernel (2.4.20) and I've loaded the modules
-> > iptable_nat, ipt_REDIRECT and ipt_MASQUERADE.
-> > I had in my previous distributions the following lines:
-> > iptables -t nat -F
-> > iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-> >
-> > This would give total access from lan attached to eth0 to the internet
-> > through my computer. But now, line 1 executes ok, line 2 gives:
-> > iptables: Invalid Argument
-> >
-> > If I do :
-> > iptables -t nat -A POSTROUTING -o eth0
-> > everything runs ok but lan has still no access to the internet as
-> expected.
-> > What's happening, any ideas?
-> >
-> > Best regards,
-> >
-> > Paulo
-> >
-> >
-> >
-> >
-> >
-> >
-> >
+> Thanks in advance
 >
+> Jason Corekin
 >
 >
 >
-
 
 
