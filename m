@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: how to use ipt_limit.o?
-Date: Mon, 9 Dec 2002 11:29:32 +0100
+From: "Peter" <chenlf@cibn.com>
+Subject: Re: how to use ipt_limit.o?
+Date: Mon, 9 Dec 2002 17:57:16 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019A36@hslex01.hslbz.local>
-References: <007e01c29f69$5b3c82f0$9801010a@winxp>
+Message-ID: <007e01c29f69$5b3c82f0$9801010a@winxp>
+References: <000d01c29f26$0c4f9170$9801010a@winxp> <1039427039.8900.11.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <007e01c29f69$5b3c82f0$9801010a@winxp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +16,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Peter' <chenlf@cibn.com>, Cedric Blancher <blancher@cartel-securite.fr>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Cedric Blancher <blancher@cartel-securite.fr>
 Cc: netfilter@lists.netfilter.org
 
-> iptables -A INPUT -p tcp --syn --dport http -j USER_CHAIN
-> iptables v1.2.7a: Couldn't load target
-> `USER_CHAIN':/usr/local/lib/iptables/libipt_USER_CHAIN.so:
-> cannot open shared object file: No such file or directory
-> why?
-
-As the name implies, USER_CHAIN is a user defined chain which is not
-available if you didn't define it.
-
-iptables -N USER_CHAIN
-iptables -A USER_CHAIN -j REJECT (or something more useful)
-Might help.
-
-There is a nice iptables tutorial which explains a whole lot at :
-http://iptables-tutorial.frozentux.net
-
-
-Rob
+aXB0YWJsZXMgLUEgSU5QVVQgLXAgdGNwIC0tc3luIC0tZHBvcnQgaHR0cCAtaiBVU0VSX0NIQUlO
+DQppcHRhYmxlcyB2MS4yLjdhOiBDb3VsZG4ndCBsb2FkIHRhcmdldCBgVVNFUl9DSEFJTic6L3Vz
+ci9sb2NhbC9saWIvaXB0YWJsZXMvbGliaXB0X1VTRVJfQ0hBSU4uc286IGNhbm5vdCBvcGVuIHNo
+YXJlZCBvYmplY3QgZmlsZTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQ0Kd2h5Pw0KLS0tLS0g
+T3JpZ2luYWwgTWVzc2FnZSAtLS0tLSANCkZyb206ICJDZWRyaWMgQmxhbmNoZXIiIDxibGFuY2hl
+ckBjYXJ0ZWwtc2VjdXJpdGUuZnI+DQpUbzogIlBldGVyIiA8Y2hlbmxmQGNpYm4uY29tPg0KQ2M6
+IDxuZXRmaWx0ZXJAbGlzdHMubmV0ZmlsdGVyLm9yZz4NClNlbnQ6IE1vbmRheSwgRGVjZW1iZXIg
+MDksIDIwMDIgNTo0MyBQTQ0KU3ViamVjdDogUmU6IGhvdyB0byB1c2UgaXB0X2xpbWl0Lm8/DQoN
+Cg0KPiBMZSBsdW4gMDkvMTIvMjAwMiA/MDI6NTUsIFBldGVyIGEg6WNyaXQgOg0KPiA+IGkgYW0g
+dXNpbmcgcmVkaGF0NzMga2VybmVsIDIuNC4xOC0xOC43IA0KPiA+IGkgd2FudCB0byBsaW1pdCBu
+dW1iZXIgb2YgaHR0cGQgYWNjZXNzIHBlci9jbGllbnQgDQo+ID4gaSB1c2UgDQo+ID4gIyBpbnNt
+b2QgIGlwdF9saW1pdC5vDQo+ID4gIyBpcHRhYmxlcyAtQSBJTlBVVCAtcCB0Y3AgLS1zeW4gLS1k
+cG9ydCBodHRwIC1tIGlwbGltaXQgLS1pcGxpbWl0LWFib3ZlIDQgLWogUkVKRUNUDQo+ID4gdGhl
+biBpIGdldCBlcnJvcjoNCj4gPiBpcHRhYmxlczogTm8gY2hhaW4vdGFyZ2V0L21hdGNoIGJ5IHRo
+YXQgbmFtZQ0KPiA+IHdobyBjYW4gaGVscCBtZQ0KPiANCj4gWW91ciBzeW50YXggaXMgd3Jvbmcs
+IHNvIFJURk0gOykNCj4gDQo+ICMgaXB0YWJsZXMgLW0gbGltaXQgLS1oZWxwDQo+IA0KPiBjYnJA
+ZWxlbmRpbDp+JCBzdWRvIGlwdGFibGVzIC1tIGxpbWl0IC0taGVscA0KPiBpcHRhYmxlcyB2MS4y
+LjdhDQo+IFsuLi5dDQo+IGxpbWl0IHYxLjIuN2Egb3B0aW9uczoNCj4gLS1saW1pdCBhdmcgbWF4
+IGF2ZXJhZ2UgbWF0Y2ggcmF0ZTogZGVmYXVsdCAzL2hvdXINCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBbUGFja2V0cyBwZXIgc2Vjb25kIHVubGVzcyBmb2xsb3dlZCBieSANCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvc2VjIC9taW51dGUgL2hvdXIgL2RheSBw
+b3N0Zml4ZXNdDQo+IC0tbGltaXQtYnVyc3QgbnVtYmVyIG51bWJlciB0byBtYXRjaCBpbiBhIGJ1
+cnN0LCBkZWZhdWx0IDUNCj4gDQo+IGxpbWl0IG1hdGNoIGlzIGRlc2NyaWJlZCBpbiBMaW51eCBm
+aWx0ZXJpbmcgSE9XVE8geW91IGNhbiByZWFkIG9uDQo+IGh0dHA6Ly93d3cubmV0ZmlsdGVyLm9y
+Zy8uDQo+IA0KPiBCeSB0aGUgd2F5LCBsaW1pdCBtYXRjaCBpcyBhaW1lZCB0byBtYXRjaCBwYWNr
+ZXRzIHRoYXQgYXJlIF91bmRlcl8gdGhlDQo+IHNwZWNpZmllZCAodmlhIC0tbGltaXQgYXJndW1l
+bnQpIGxpbWl0LiBJZiB5b3Ugd2FudCB0byBtYXRjaCBwYWNrZXRzDQo+IG92ZXIgdGhlIGxpbWl0
+LCB5b3UgaGF2ZSB0byBtb2RpZnkgeW91IHJ1bGVzZXQgYW5kIGludHJvZHVjZSBhIHVzZXINCj4g
+Y2hhaW4gZGVkaWNhdGVkIHRvIHRoaXMgbmVlZCB1bnRpbCAhIC0tbGltaXQgaXMgYXZhaWxhYmxl
+Lg0KPiANCj4gIyBpcHRhYmxlcyAtQSBJTlBVVCAtcCB0Y3AgLS1zeW4gLS1kcG9ydCBodHRwIC1q
+IFVTRVJfQ0hBSU4NCj4gIyBpcHRhYmxlcyAtQSBVU0VSX0NIQUlOIC1wIHRjcCAtLXN5biAtLWRw
+b3J0IGh0dHAgXCANCj4gLW0gbGltaXQgLS1saW1pdCA0L3MgLWogUkVUVVJODQo+ICMgaXB0YWJs
+ZXMgLUEgVVNFUl9DSEFJTiAtaiBSRUpFQ1QNCj4gDQo+IFNvIHlvdSBSRUpFQ1QgcGFja2V0cyBv
+dmVyIDQvcyBsaW1pdC4gVGhlcmUncyBiZWVuIGEgdGhyZWFkIG9uIHRoaXMNCj4gdG9waWMgZWFy
+bGllciwgeW91IHNob3VsZCBzZWFyY2ggbGlzdCBhcmNoaXZlcy4NCj4gDQo+IC0tIA0KPiBD6WRy
+aWMgQmxhbmNoZXIgIDxibGFuY2hlckBjYXJ0ZWwtc2VjdXJpdGUuZnI+DQo+IElUIHN5c3RlbXMg
+YW5kIG5ldHdvcmtzIHNlY3VyaXR5IGV4cGVydCAgLSBDYXJ0ZWwgU+ljdXJpdD8NCj4gUGhvbmUg
+OiArMzMgKDApMSA0NCAwNiA5NyA4NyAtIEZheDogKzMzICgwKTEgNDQgMDYgOTcgOTkNCj4gUEdQ
+IEtleUlEOjE1N0U5OEVFICBGaW5nZXJQcmludDpGQTYyMjI2REE5RTcyRkE4QUVDQUEyNDAwMDhC
+NDgwRTE1N0U5OEVFDQo+IA==
 
 
