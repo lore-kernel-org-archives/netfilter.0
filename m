@@ -1,7 +1,7 @@
-From: mdpeters <michael.peters@lazarusalliance.com>
-Subject: insmod: can't read 'ip_queue': No such file or directory?
-Date: Sun, 16 Jan 2005 11:20:28 -0500
-Message-ID: <41EA944C.8090904@lazarusalliance.com>
+From: Michael Milvich <mm@gmx.de>
+Subject: Time Patch and Kernel 2.6.10
+Date: Fri, 14 Jan 2005 15:02:51 +0100
+Message-ID: <41E7D10B.1080004@gmx.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,17 +16,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Does anyone know how I might fix this error? I am running Fedora Core 2 
-fully patched and iptables-1.2.11, kernel vmlinuz-2.6.10-1.9_FC2smp.
+Hallo,
 
-# ./insmod ip_queue
-insmod: can't read 'ip_queue': No such file or directory
+I want to update my firewall from kernel 2.4 to 2.6.
+When testing the new system the time patch doesn't work correctly. I 
+have the following problems:
 
--- 
+The option --timestart doesn't work. I can set any time for the hour 
+highter  then zero and iptables will block them. The timestop option 
+works correctly.
 
-Best regards,
+#This works
+iptables -A INPUT -m time --timestart 00:00/ --timestop 10:00 --days 
+Thu,Fri -j DROP
+#but if I set the timestart to/
+iptables -A INPUT -m time --timestart 01:00/ --timestop 10:00 --days 
+Thu,Fri -j DROP
+#everything will be blocked
+/
+The other Problem is the option days: if I set only one day it doesn' t 
+work.
+
+#This will block all
+iptables -A INPUT -m time --timestart 00:00/ --timestop 10:00 --days Fri 
+-j DROP/
+
+#This will work
+iptables -A INPUT -m time --timestart 00:00/ --timestop 10:00 --days 
+Thu,Fri -j DROP/
+
+Now my question is if the time patch could not work with kernel 2.6 or 
+if I am doing something wrong.
+
+Thanks for help
 
 Michael
 
