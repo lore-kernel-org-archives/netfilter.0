@@ -1,13 +1,13 @@
-From: William Stearns <wstearns@pobox.com>
-Subject: Re: Access to Internal server via public address
-Date: Wed, 10 Dec 2003 15:55:19 -0500 (EST)
+From: "Erick Sanz" <esanz@minorplanetusa.com>
+Subject: Home web server using front firewall
+Date: Wed, 10 Dec 2003 17:24:41 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0312101542130.2784-100000@sparrow>
-References: <200312102025.59656.Antony@Soft-Solutions.co.uk>
-Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <HFEBJMKNPOCPPMGFHDMCOECACDAA.esanz@minorplanetusa.com>
+References: <Pine.LNX.4.44.0312101542130.2784-100000@sparrow>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312102025.59656.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <Pine.LNX.4.44.0312101542130.2784-100000@sparrow>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,61 +17,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, Harald Welte <laforge@gnumonks.org>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Good afternoon, Anthony,
 
-On Wed, 10 Dec 2003, Antony Stone wrote:
+All,
 
-> On Wednesday 10 December 2003 8:16 pm, William Stearns wrote:
-> 
-> > On 10 Dec 2003, Vernon A. Fort wrote:
-> > >
-> > >   The Problem:  I have an alias public address DNAT'ed to and internal
-> > > address - normal and working
-> > >
-> > >   What i need is to access this server using the PUBLIC address from an
-> > > internal workstation.
-> 
-> > 	If the client box and the internal server in question are on the
-> > same cable, you essentially can't do this direcdtly (but read on).
-> >
-> > 	Picture this as a triangle; the internal machines on the bottom,
-> > (client left, server right) and the firewall at the top.  The packets
-> > physically all travel over the same Ethernet segment shared by all three
-> > machines, I'm just demonstrating who's talking to whom.
-> 
-> Excellent answer, Bill.
+I am trying to install a small web server at home in order
+to display some family pictures and some other personal
+topics (hobbies, interests ...)
 
-	Thanks so much.
+I would like to have the following configuration:
 
-> I think this explains a common situation (and a common FAQ) in more detail, 
-> and with more information, than I've seen before.   Hopefully it is clear to 
-> a network non-expert as well (I don't use the term newbie here, because once 
-> you've got DNAT working at all, you've clearly gone beyond that stage...)
-> 
-> Your reply is (IMHO) worthy of a FAQ entry in itself.
 
-	I suppose that's up to Harald, as he's the author of the FAQ and
-there doesn't _appear_ to be sgml source for the Netfilter faq on the
-homepage.  Harald, if you consider this worthy of a faq entry (look back a
-few in this thread) and can loan the the SGML source for a bit, I'd be
-glad to do the best I can on merging it in (but no promises on the ascii
-art!).
-	Cheers,
-	- Bill
+	Static IP -------- Linux    --------- Real web server
+	SBC ADSL	       Firewall       
+	            eth0              eth1
+	63.5.5.5				        10.10.1.5
 
----------------------------------------------------------------------------
-        "Industry wags are saying that God invented SCO to give people a
-company to hate more than Microsoft."
--- http://www.linuxworld.com/story/38045.htm
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
-Linux articles at:                         http://www.opensourcedigest.com
---------------------------------------------------------------------------
+For this I need port forwarding and probably NAT to change
+the outgoing IP address.
+
+I want the real server to be completely blocked for
+any other port than http and https on the web server 
+(I am planning to accept requests only from the internal 
+network).
+ 
+If you can shed some light on the port forwarding part,
+I think I can tackle the rest.  I believe it would be
+something like this:
+
+    iptables -P INPUT   DROP
+    iptables -P OUTPUT  DROP
+    iptables -P FORWARD DROP
+
+    iptables -t nat -A PREROUTING -p tcp -d 63.5.5.5 \
+    --dport 80 -j DNAT --to 10.10.1.5
+
+    iptables -t nat -A PREROUTING -p tcp -d 63.5.5.5 \
+    --dport 443 -j DNAT --to 10.10.1.5
+
+    iptables -A FORWARD -i eth1 -s 10.10.1.0/24 --sport 80 \
+    -j ACCEPT
+
+    iptables -A FORWARD -i eth1 -s 10.10.1.0/24 --sport 443 \
+    -j ACCEPT
+
+    iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
+
+
+I am already dropping all malformed packets before this
+entries, so nmap and nessus should not be able to do attacks;
+they will be able to tell there is a web server there,
+but that is all.
+
+Also, I am planning to use syn_cookies to avoid DoS attacks.
+
+Am I forgetting anything else?
+
+Beforehand, thank you for your help.
+
+PS. if someone has something like this working, could you
+please send me your config?
+
 
 
