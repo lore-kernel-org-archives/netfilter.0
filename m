@@ -1,9 +1,9 @@
-From: "Maciej Soltysiak" <solt@dns.toxicfilms.tv>
-Subject: Re: Mirror!!
-Date: Thu, 19 Feb 2004 14:49:29 +0100
+From: "John Black" <black@arbbs.net>
+Subject: Re: netfilter question
+Date: Thu, 19 Feb 2004 07:38:06 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003f01c3f6ef$32283ba0$0e25fe96@pysiak>
-References: <108e01c3f6ed$6fb6aa30$fe01000a@estacion1>
+Message-ID: <4034bc3e.3ecb.0@arbbs.net>
+Reply-To: black@arbbs.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,29 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Iptables Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> I have been sending messages for almost a month to the following emails:
-I've seen that.
+>Please post your complete ruleset, including the definitions >of variables such
 
-> coreteam@netfilter.org
-> webmaster@netfilter.org
-> netfilter-mirrors@lists.netfilter.org
-> solt@dns.toxicfilms.tv
-> laforge@netfilter.org
 >
-> And I receive no answer to the request I'm making.
-You see the problem is that there is one omnipotent do-lots-of-things
-person: Harald Welte. He is doing a lot of things around the project
-as the leader and it is possible that he did not find the time to log on
-to the nameserver to correct the zone because he's munching code,
-updating websites, holding conferences, doing his tasks at work, etc.
-I (solt@dns.toxicfilms.tv) am only a participating user. I think
-it'd be best just to keep mailing laforge@netfilter.org till you get
-through.
-(I hope that's fine with Harald)
 
-Regards,
-Maciej
+here are the rule sets.  
+iptables -A FORWARD -i eth0 -o eth1 -m state --state \ESTABLISHED, RELATED -j
+ACCEPT
+iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+iptables -A FORWARD -j LOG
 
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o eth0 \
+-d 161.x.x.x/21 -j SNAT --to 161.x.x.x
+
+<iptables -L -nvx>
+
+Chain INPUT (policy ACCEPT 127 packets, 9436 bytes)
+pkts  bytes target  prot opt in   out   source   destination
+
+
+Chain FORWARD (policy ACCEPT 36 packets, 1709 bytes)
+pkts     bytes target      prot opt    in    out     source
+destination
+ 0       0    ACCEPT   all     --    eth0  eth1   0.0.0.0/0    0.0.0.0/0 state
+RELATED, ESTABLISHED
+
+ 0       0    ACCEPT   all     --    eth1  eth0   0.0.0.0/0    0.0.0.0/0
+
+ 0       0    ACCEPT   all     --    *        *      0.0.0.0/0    0.0.0.0/0
+LOG flags 0 level 4
+
+Chain OUTPUT (policy ACCEPT 74 packets, 8568 bytes)
+pkts  bytes target  prot opt in   out   source   destination
+
+<iptables -t nat -L> 
+target  prot opt source            destination 
+SNAT    all  --  192.168.0.0/24    161.x.x.x/21 to:161.x.x.x
+
+
+John
+http://www.arbbs.net/
 
