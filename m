@@ -1,13 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: site not seen through squid
-Date: Wed, 16 Feb 2005 14:18:07 -0500
-Message-ID: <20050216191807.GA24223@bender.817west.com>
-References: <20050216155116.GA3520@tranquility.scriptkitchen.com>
-	<20050216181943.GA24001@bender.817west.com>
-	<20050216185121.GA8212@tranquility.scriptkitchen.com>
+From: "Raul I. Becette" <raulbecette@unp.edu.ar>
+Subject: port forwarding partially working
+Date: Wed, 16 Feb 2005 17:58:29 -0300
+Message-ID: <4213B3F5.1010508@unp.edu.ar>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20050216185121.GA8212@tranquility.scriptkitchen.com>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +14,94 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wed, Feb 16, 2005 at 01:51:21PM -0500, Payal Rathod wrote:
-> On Wed, Feb 16, 2005 at 01:19:43PM -0500, Jason Opperisano wrote:
-> > my guess is that your friend is using transparent redirection to 
-> > the
-> > squid proxy and not explicit proxying (i.e. configuring the proxy in the
-> 
-> No it is not transparent proxy. She has it configured in all browsers 
-> in her office.
-> Any clues?
+Hello again
 
-then my next guess is that the sharepoint server uses NTLM
-authentication, and the problem is:
+I am having trouble forwarding ports to internal servers.
 
-  http://www.squid-cache.org/Doc/FAQ/FAQ-11.html#ss11.14
+There is a server in the LAN at $SERV_BIBL running on Windows NT4 and 
+the port forwarding lines
 
-which links to:
+$IPTABLES -A FORWARD -i $PUB_IF -p tcp --dport 1024 -j ACCEPT
+$IPTABLES -t nat -A PREROUTING -i $PUB_IF -p tcp --dport 1024 -j DNAT 
+--to $SERV_BIBL:110
 
-  http://support.microsoft.com/kb/q198116/
+works ok when I telnet $PUB_IF 1024. I got redirected to the POP server 
+with no problems.
 
-punch line:  you can't put a proxy between a client and a server that
-does NTLM authentication
+The problem is when I try to forward port any other port (including 
+1024) to the same server on ports 25 or 21 (ftp access too).
+The lines I added to my iptables scripts are the same as above changing 
+1024 to 1025 and 110 to the service port (25 or 21).
 
-again--you'll have to bypass the proxy for this destination server (or
-configure the web server to use another authentication method).
+Mail server running is MERCUR SMTP Server (v4.02.07
+FTP Server running is WarFTPd 1.81.01
 
--j
+When I telnet internally to the private IP on ports 25 and 21 I have no 
+problems and get the welcome message of the service.
 
-ps - this is starting to sound more like a squid question than a
-netfilter question.
+The same thing happens with another internal server running on Mandrake 
+Linux
+POP works ok but MTA and FTP services are not forwarded on the ports I added
+Postfix Mail Server and ProFTPD 1.2.5rc1 Server
 
---
-"Kids, you tried your best and you failed miserably. The lesson is,
- never try."
-        --The Simpsons
+One last thing
+I have a forwarding of port 25 on $PUB_IF to port 25 on my internal POP 
+server with the users accounts and it works ok.
+Same with POP
+
+Below are the lines I have on my script for this I want to do
+
+# Abro el puerto de smtp para enviar los correos desde unpata hacia a La 
+Gran Bestia POP
+$IPTABLES -A FORWARD -i $PUB_IF -s $LAN_SMTP -p tcp --dport 25 -j ACCEPT
+$IPTABLES -t nat -A PREROUTING -i $PUB_IF -p tcp --dport 25 -j DNAT --to 
+$LAN_POP:25
+
+# POP a cuentas unpata.edu.ar y unp.edu.ar
+$IPTABLES -A FORWARD -i $PUB_IF -p tcp --dport 110 -j ACCEPT
+$IPTABLES -t nat -A PREROUTING -i $PUB_IF -p tcp --dport 110 -j DNAT 
+--to $LAN_POP:110
+-------------------------------------So far the forwarding works 
+OK------------------------------------------------------
+
+-------------------------------------From here only forwarding to 110 
+works--------------------------------------------
+# Cuentas biblioteca.unp.edu.ar
+$IPTABLES -A FORWARD -i $PUB_IF -p tcp --dport 1024 -j ACCEPT
+$IPTABLES -t nat -A PREROUTING -i $PUB_IF -p tcp --dport 1024 -j DNAT 
+--to $SERV_BIBL:110
+
+$IPTABLES -A FORWARD -i $PUB_IF -p tcp --dport 1025 -j ACCEPT
+$IPTABLES -t nat -A PREROUTING -i $PUB_IF -p tcp --dport 1025 -j DNAT 
+--to $SERV_BIBL:25
+
+# Cuentas ing.unp.edu.ar
+$IPTABLES -A FORWARD -i $PUB_IF -p tcp --dport 1030 -j ACCEPT
+$IPTABLES -t nat -A PREROUTING -i $PUB_IF -p tcp --dport 1030 -j DNAT 
+--to $SERV_ING:110
+
+$IPTABLES -A FORWARD -i $PUB_IF -p tcp --dport 1031 -j ACCEPT
+$IPTABLES -t nat -A PREROUTING -i $PUB_IF -p tcp --dport 1031 -j DNAT 
+--to $SERV_ING:25
+
+If you need more info just ask
+
+Any help would be greatly appreciated
+
+Thanks in advance
+
+
+-----------------------------------------------------------------
+Raul I. Becette
+E-mail: raulbecette@unp.edu.ar
+REPAC, Red Patagonica de  Comunicaciones
+Univ. Nac. de la Patagonia San Juan Bosco
+Ciudad Universitaria - Km.4.
+9000 - Comodoro Rivadavia - Chubut
+Tel/Fax : (0297) - 4550073
+------------------------------------------------------------------
+
 
