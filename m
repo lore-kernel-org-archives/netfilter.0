@@ -1,8 +1,8 @@
-From: "Michael T. Halligan" <michael@halligan.org>
-Subject: How to contact NAT ip address from NAT box?
-Date: Tue, 29 Oct 2002 17:01:09 -0800 (PST)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: recently confused about setting a chain policy
+Date: Tue, 29 Oct 2002 17:37:39 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210291659190.6853-100000@arrakis.halligan.org>
+Message-ID: <Pine.LNX.4.44.0210291727380.17897-100000@localhost.localdomain>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,24 +16,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-I'm setting up an SSL proxy that proxies to an ip that I'm controlling
-with LVS .. So I need to be able to contact my outside IP address
-from inside..  How would I go about this? I've tried doing something like
 
-# iptables -t nat -A POSTROUTING -d 216.38.142.76 -s 192.168.1.0/24 \
-               -p tcp --dport 80 -j SNAT --to 192.168.1.20
+  for the longest time, i always thought that, to set a global,
+total DROP policy as a starting point, i just had to:
 
- but that doesn't work.. Any thoughts?
+  # iptables -P INPUT DROP
+  # iptables -P OUTPUT DROP
+  # iptables -P FORWARD DROP
 
--- 
----------------------------
-Michael T. Halligan
-Chief Geek
-Halligan Infrastructure Designs.
-2250 Jerrold Ave #11
-San Francisco, CA 94124
-(415) 824.4453
+but i just looked at the "panic" clause in the case statement in
+/etc/init.d/iptables and i'm a bit confused.  why all the policy
+settings involving the nat and mangle tables, as in:
+
+
+  panic)
+	echo -n $"Changing target policies to DROP: "	
+	iftable filter -P INPUT DROP && \
+	    iftable filter -P FORWARD DROP && \
+	    iftable filter -P OUTPUT DROP && \
+	    iftable nat -P PREROUTING DROP && \
+	    iftable nat -P POSTROUTING DROP && \
+	    iftable nat -P OUTPUT DROP && \
+	    iftable mangle -P PREROUTING DROP && \
+	    iftable mangle -P OUTPUT DROP && \
+	    success $"Changing target policies to DROP" || \
+	    failure $"Changing target policies to DROP"
+	echo
+
+
+first, the above suggests that a policy is assigned, not just
+to a chain, but to a chain/table combination, which comes as a
+surprise to me.
+
+and second, what's with having a DROP policy on the nat and
+mangle tables anyway?  i thought those tables were strictly
+for packet transformation, not filtering.  certainly, the "nat"
+entries i've seen will jump, not to ACCEPT or DROP, but to
+SNAT or DNAT.  how would they accept or drop anyway?
+
+can anyone explain the above?  or am i just thoroughly
+confused yet again?
+
+rday
+
 
 
