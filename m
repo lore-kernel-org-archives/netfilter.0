@@ -1,13 +1,15 @@
-From: Sabrina Lautier <slautier@lavache.com>
+From: Athan <netfilter@miggy.org>
 Subject: Re: error Invalid kernel header inluded in user space
-Date: Mon, 10 Mar 2003 16:48:27 +0100
+Date: Mon, 10 Mar 2003 16:13:25 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1047311307.3e6cb3cbf12c5@lavache.alinto.com>
-References: <1047034725.3e687b653bce1@lavache.alinto.com>
+Message-ID: <20030310161325.GJ1025@miggy.org>
+References: <1047034725.3e687b653bce1@lavache.alinto.com> <1047311307.3e6cb3cbf12c5@lavache.alinto.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="M0YLxmUXciMpOLPE"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1047034725.3e687b653bce1@lavache.alinto.com>
+Content-Disposition: inline
+In-Reply-To: <1047311307.3e6cb3cbf12c5@lavache.alinto.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,78 +19,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter mailing list <netfilter@lists.netfilter.org>
-
-Why does nobody reply to my mail ? Is my question too obvious/stupid ?
-I still haven't find a solution to my issue... I still can compile 
-the linux kernel with iptables-1.2.7a and patch-o-matic kernel 
-patches :-(.
-
-Thanks in advance for any clue.
-Regards,
-Sabrina
-
-> ---------------- Beginning of the original message -----------------
--
-> Hi all !
-> 
-> I'm following the "Linux IP Masqueade HowTo" to set up a linux
-> router-firewall.
-> I'm having trouble compiling iptables and I don't know how to
-> solve my
-> problem...
-> 
-> I'm running linux redhat 7.3 with a 2.4.18-3 kernel but I've
-> downloaded the latest kernel version (2.4.20) in order to
-> compile it
-> with iptables-1.2.7a and patch-o-matic kernel patches.
-> 
-> When I try to compile here is the error I get:
-> 
-**********************************************************************
-> $ make KERNEL_DIR=/usr/src/kernel/linux
-> Extentions found:
-> cc -02 ...
-> In file included from
-> /usr/src/kernel/linux/include/linux/config.h:4,
-> from /usr/src/kernel/linux/include/linux/netfilter_ipv4.h:8,
-> from
-> /usr/src/kernel/linux/include/linux/netfilter_ipv4/iptables.h:25,
-> from include/libiptc.h:6,
-> from include/iptables.h:5,
-> from extentions/libipt_ah.c:8,
-> /usr/include/linux/autoconf.h:1:2: #error Invalid kernel
-> header
-> inluded in user space
-> make: ** [extentions/libipt_ah_sh.o] Error 1
-> 
-**********************************************************************
-> 
-> For information, I'm using gcc-2.96-110. I've tried to upgrade
-> to
-> gcc-3.2-7 but cannot find glibc-devel-2.2.90-12 required for
-> this
-> version of gcc (can someone tell me where to find it ?).
-> 
-> Any idea of how to solve my issue ?
-> Any help would be greatly appreciated.
-> 
-> Regards,
-> Sabrina
-> 
-> ---------------------------------------------
-> Powered by Alinto (http://www.alinto.net)
->         for lavache.com (http://www.lavacheautomatique.com)
-> 
-> 
-> ------------------- End of the original message --------------------
--
+To: Sabrina Lautier <slautier@lavache.com>
+Cc: Netfilter mailing list <netfilter@lists.netfilter.org>
 
 
-Sabrina
+--M0YLxmUXciMpOLPE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
----------------------------------------------
-Powered by Alinto (http://www.alinto.net)
-        for lavache.com (http://www.lavacheautomatique.com)
+On Mon, Mar 10, 2003 at 04:48:27PM +0100, Sabrina Lautier wrote:
+> > When I try to compile here is the error I get:
+> >=20
+> **********************************************************************
+> > $ make KERNEL_DIR=3D/usr/src/kernel/linux
+> > Extentions found:
+> > cc -02 ...
+> > In file included from
+> > /usr/src/kernel/linux/include/linux/config.h:4,
+> > from /usr/src/kernel/linux/include/linux/netfilter_ipv4.h:8,
+> > from
+> > /usr/src/kernel/linux/include/linux/netfilter_ipv4/iptables.h:25,
+> > from include/libiptc.h:6,
+> > from include/iptables.h:5,
+> > from extentions/libipt_ah.c:8,
+> > /usr/include/linux/autoconf.h:1:2: #error Invalid kernel
+> > header
+> > inluded in user space
+> > make: ** [extentions/libipt_ah_sh.o] Error 1
+
+  This implies something is defining __KERNEL__ (or not) when it
+shouldn't (or should) be.  Yes, I'm being vague as I've not tried it
+myself.  I notice the "cc -O2 ..." above, the full line might help.
+Also the actual error is from "/usr/include/linux/autoconf.h", do
+symlinks make that the same as
+"/usr/src/kernel/linux/include/linuxautoconf.h" or is it part of some
+'stub' headers package on your system?  A mismatch could cause such a
+problem.
+
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+
+--M0YLxmUXciMpOLPE
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAj5suaUACgkQzbc+I5XfxKd2bQCgixB2gQtUWgXc8y7fAKXVCcEu
+fUwAn0nUCeSz2TD/W2YKXnEFaDn3GgOf
+=tciG
+-----END PGP SIGNATURE-----
+
+--M0YLxmUXciMpOLPE--
 
