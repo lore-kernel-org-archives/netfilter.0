@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: DNAT a range of  ports to another range of portts
-Date: Mon, 25 Nov 2002 09:09:03 -0500
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: -m helper --helper pptp ?
+Date: 25 Nov 2002 16:35:21 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211250909.03520.netfilter@newkirk.us>
-References: <A4C806B83AC1974E8A2AC21267B922D62D27DC@exchange.int.ngi.be>
-Reply-To: netfilter@newkirk.us
+Message-ID: <1038238521.14752.407.camel@tux>
+References: <4710803634.20021125114458@wp.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <A4C806B83AC1974E8A2AC21267B922D62D27DC@exchange.int.ngi.be>
+In-Reply-To: <4710803634.20021125114458@wp.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,26 +18,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: jrw@ngi.be, netfilter@lists.netfilter.org
+To: Tomasz Wrona <twr@wp.pl>
+Cc: netfilter@lists.samba.org
 
-On Monday 25 November 2002 07:44 am, jrw@ngi.be wrote:
-> Hi all
-> I want to DNAT a connection to range of ports to another server but the=
-re
-> with others ports
+On Mon, 2002-11-25 at 11:44, Tomasz Wrona wrote:
+> Hi,
+> 
+> How do You think, is it valid to use such a match case ?
+> 
+>   -m helper --helper pptp
+>   -m helper --helper h323
+> 
+>   Personaly I used it but I have never seen if this rules had counted
+>   anything.
 
-> This rule will nat with the same range of ports
-> ${IPTABLES} -t nat -I PREROUTING -p TCP -i $INET_IFACE -s 0/0 -d $INET_=
-IP
-> --dport $START_PORT:$END_PORT -j DNAT --to $APPL_IP
->
-> I'm able to dnat for a range of port to the same range, but how could I
-> change it?
-> Is it possible?
+-m helper --helper pptp
 
-You should be able to use "-j DNAT --to $APPL_IP:$DSTART-$DEND"
+That should work given you have the ip_conntrack_pptp module loaded (or
+compiled into your kernel)
 
-and DNAT to the range of ports from DSTART to DEND.=20
+-m helper --helper h323
 
-j
+That will _not_ work. h323 is just the name of a collection of other
+protocols that run inside each other.
+
+The primary controlchannel can be matched with H.225 and the
+data-channels can be matched with H.245
+(case-sensitive!)
+
+-- 
+/Martin
+
+Never argue with an idiot. They drag you down to their level, then beat
+you with experience.
 
