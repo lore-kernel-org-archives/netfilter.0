@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: redesigning my firewall -- concepts and suggestions for a more structured layout
-Date: Fri, 26 Sep 2003 13:50:44 -0700
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: TARPIT target
+Date: Fri, 26 Sep 2003 23:32:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E55@alderaan.smgtec.com>
+Message-ID: <1064611946.812.36.camel@elendil.intranet.cartel-securite.net>
+References: <7A3B4AA360FDEF448F3390421FC8D731F41374@coxhpexg.coxhp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <7A3B4AA360FDEF448F3390421FC8D731F41374@coxhpexg.coxhp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,102 +17,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Alistair@nerdnet.ca, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: bmcdowell@coxhealthplans.com
+Cc: netfilter@lists.netfilter.org
 
-I do this in the same way you suggest. The only thing my FORWARD chain
-does is pass up rules to chains that handle interface-interface rules,
-then do policy decisions once the packet has failed to be accepted by
-the other chains.
+Le ven 26/09/2003 =E0 22:45, bmcdowell@coxhealthplans.com a =E9crit :
+> How do I use the TARPIT target?
+> I have iptables 1.2.8 installed and working otherwise.  I'm running Red=
+Hat 9.
+> When I try and use
+> 	'iptables -A FORWARD -j TARPIT'
+> I get
+> 	'iptables: No chain/target/match by that name'
 
+Your kernel does not support TARPIT.
 
+> I have rebuilt the kernel, but I do not see an option for 'TARPIT'
+> anywhere in the netfilter stuff.  Yes, I do have 'experimental' turned
+> on.  I have also deleted iptables completely and used only the source
+> to install it.
 
------Original Message-----
-From: Alistair Tonner [mailto:Alistair@nerdnet.ca]=20
-Sent: Thursday, September 25, 2003 9:31 PM
-To: netfilter@lists.netfilter.org
-Subject: redesigning my firewall -- concepts and suggestions for a more
-structured layout
+TARPIT target is in patch-o-matic (extra section). So you have to
+download and install it.
 
+	1. install patch-o-matic (see README)
+	2. rebuild your kernel from sources that got patched
+	3. build iptables
 
-	Okay ...=20
-	    I've been reading, watching and sometimes chipping in on
-this list for a=20
-	while now.  I started with Oskar Andreassens (hope I got that
-right, and=20
-	I hope some deity somewhere blesses the man for his work)  basic
-script
-	tutorial to set my firewall up originally.  My firewall has over
-time =09
-	modified and grown, and twiddled its way into a morass of rules
-that last
-	week gave me utter fits when I inserted a rule in which I
-goofed, and b0rked
-	the internal network filesharing system.  And couldn't see it
-right off as to=20
-	why ...=20
+And it should work.
 
-	I am endevouring to remake the basic "my multi-pc home lan needs
-	a firewall" firewall into something more organized, and I
-intend, as an
-	exercise to write it *cough* myself.  My question is .... given
-the above
-	basic premise, and a DROP default policy across all chains, Is
-it more
-	effcient, processing wise, to have all the rules in a flat line,
-or, since it
-	can make things easier to debug, have it parsed up in user
-chains.
+Not that TARPIT only applies to TCP connections. So your previously
+given command won't work :
 
-	My logic is this.  I can break my network traffic flow into 6
-directionally
-	oriented chains ( internet to server, internet to lan, lan to
-server, lan to
-	internet, server to internet, and server to lan) ... I *feel*
-that it makes
-	better logical sense to setup user chains for each direction,
-and=20
-	*then* have, at the top of each directional chain a jump to a
-chain
-	that handles things that go in all directions ( i.e. established
-related=20
-	and dns and things), then append rules that apply to that
-specific direction.
+	cbr@elendil:~$ sudo iptables -A FORWARD -j TARPIT
+	iptables: Invalid argument
 
-	From a system load perspective I recall that minimizing the
-number of rules
-	a packet must traverse lowers load.  Does my logic fall down
-somehwere here
-	that I am missing?  From a facility point of view, does anyone
-have comments
-	about ease of use/debug/tracing/problem solving?
-=09
-	Is the use of -m multiport to put several accepted ports into
-one rule an=20
-	imporovement in efficiency (a la fewer rules to traverse) or a
-burden based
-	on something in the multiport code adding load?
+You have to specify TCP matching :
 
-	Ummm ... okay .. there are several other questions boiling about
-in my brain,
-	but 1) its too darned late at night to get them out coherently
-and 2) its=20
-	time for bed. (gotta get up at 05:15 fer work)
+	cbr@elendil:~$ sudo iptables -A FORWARD -p tcp -j TARPIT
+	cbr@elendil:~$ sudo iptables -L FORWARD
+	Chain FORWARD (policy ACCEPT)
+	target     prot opt source               destination
+	TARPIT     tcp  --  anywhere             anywhere
 
-	Please don't suggest any packages that setup rules for me.  I
-want the
-	challenge of doing this m'self. (with a little input from the
-list of course)
-
-	Thanks for any and all assitance
 --=20
-
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-=09
-     Any sufficiently advanced technology will have the appearance of
-magic.
-	Lets get magical!
-
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
