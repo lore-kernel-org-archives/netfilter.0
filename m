@@ -1,13 +1,13 @@
-From: "Brent Deterding" <brent.deterding@techguardsecurity.com>
-Subject: RE: Linksys v. Netfilter
-Date: Sat, 22 Jun 2002 19:37:14 -0500
+From: Christian Seberino <seberino@spawar.navy.mil>
+Subject: Re: how is this stuff getting thru default deny iptables firewall?....
+Date: Sun, 23 Jun 2002 00:13:02 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <GEEBIPMLCAMAMAMCECKJCEFECGAA.brent.deterding@techguardsecurity.com>
-References: <FLEKIPPLAEDMJMOOBBDPAEHNCGAA.stewart.thompson@shaw.ca>
+Message-ID: <20020623001302.A949@spawar.navy.mil>
+References: <20020622103055.B32585@spawar.navy.mil> <20020622173842.AGM19225.mta07-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <FLEKIPPLAEDMJMOOBBDPAEHNCGAA.stewart.thompson@shaw.ca>
+Content-Disposition: inline
+In-Reply-To: <20020622173842.AGM19225.mta07-svc.ntlworld.com@there>; from Antony@Soft-Solutions.co.uk on Sat, Jun 22, 2002 at 06:38:40PM +0100
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,67 +18,103 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: stewart.thompson@shaw.ca, "David B. Bitton" <david@codenoevil.com>, netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-Correct me if I'm wrong - but we are talking about LinkSys Cable/Router
-things, right? The same devices that allow anything out?
+Antony
 
-Although people tend to forget it - a firewall is there to control traffic
-inbound AND outbound. If it isn't controlling it outbound then what's the
-difference between a netfilter box and a simple NAT-only solution?
-Everything out, nothing in.
+Thanks again.
 
--- Brent Deterding
+Here is my rule set... it is preceded by the usual stuff
+like flushing chains, dropping certain classes of packets, etc.
 
------Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org]On Behalf Of Stewart Thompson
-Sent: Saturday, June 22, 2002 3:57 PM
-To: David B. Bitton; netfilter@lists.samba.org
-Subject: RE: Linksys v. Netfilter
+These are the *only* rules with "-j ACCEPT" in my entire firewall script
+and somehow DNS sneaks thru...
 
 
-Hmmm. I don't know, but I would think it would be like comparing apples
-to oranges. I have, and continue to use both. The Linksys is quick and
-easy to set up, and can be looked after by someone with a reasonable
-amount of knowledge. It is great for small offices and homes where there
-are only a few computers and they have simple needs. It does have some
-problems with related connections, so I am not sure if it is truly stateful.
-	However, I would never consider it for a serious application like
-protecting a Corporate LAN. With Netfilter you can write a rule to cover
-every situation. To allow or block specific ports and ip's on a case by case
-basis. There are still a few areas that helper modules are being developed
-for, but there is a core of real dedicated guys working on it. One of the
-things I really like about Netfilter is the logging ability. I can set up
-rules
-to log all kinds of information, and real time data. There are also a number
-of other programs that allow traffic shaping, routing, and limiting. This
-kind of
-stuff just isn't possible wit the Linksys.
-	Yes it is more work to set up, and a little more capital outlay in
-Equipment. However, I think the results are well worth the investment.
-Just my two cents worth.
+$PROTECTED_NETWORK = 192.168.0.0/29
+$PROTECTED_NETWORK_SPACE = 192.168.0.0/16
 
-Stu...........
+...
 
+# Allow all thru loopback.
+$IPTABLES -t filter -A INPUT  -i $LOOPBACK_INTERFACE -j ACCEPT
+$IPTABLES -t filter -A OUTPUT -o $LOOPBACK_INTERFACE -j ACCEPT
 
------Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org]On Behalf Of David B. Bitton
-Sent: June 22, 2002 11:05 AM
-To: netfilter@lists.samba.org
-Subject: Linksys v. Netfilter
+# Only SSH from Internet but anything *to* Internet.
+$IPTABLES -t filter -A FORWARD     -i $INTERNET_INTERFACE             \
+          -s ! $PROTECTED_NETWORK_SPACE -d   $PROTECTED_PC_IP_ADDRESS \
+          -p tcp --dport $SSH_PORT                                    \
+          -j ACCEPT
+$IPTABLES -t filter -A FORWARD     -o $INTERNET_INTERFACE             \
+          -s   $PROTECTED_NETWORK       -d ! $PROTECTED_NETWORK_SPACE \
+          -j ACCEPT
 
-Have any whitepapers been written on the subject of a Linksys Router v. a
-Netfilter implementation?
---
+# Allow all thru priviate LAN NIC.
+$IPTABLES -t filter -A FORWARD     -i $PROTECTED_NETWORK_INTERFACE    \
+          -s $PROTECTED_NETWORK         -d ! $PROTECTED_NETWORK_SPACE \
+          -j ACCEPT
+$IPTABLES -t filter -A FORWARD     -o $PROTECTED_NETWORK_INTERFACE    \
+          -s ! $PROTECTED_NETWORK_SPACE -d   $PROTECTED_NETWORK       \
+          -j ACCEPT
 
-David B. Bitton
-david@codenoevil.com
-www.codenoevil.com
-
-Code Made Fresh DailyT
+# The usual NAT stuff here.
+$IPTABLES -t nat    -A PREROUTING  -i $INTERNET_INTERFACE             \
+          -s ! $PROTECTED_NETWORK_SPACE -d   $INTERNET_IP_ADDRESS     \
+          -p tcp --dport $SSH_PORT                                    \
+          -j DNAT --to-destination $PROTECTED_PC_IP_ADDRESS
+$IPTABLES -t nat    -A POSTROUTING -o $INTERNET_INTERFACE             \
+          -s   $PROTECTED_NETWORK       -d ! $PROTECTED_NETWORK_SPACE \
+          -j SNAT --to-source      $INTERNET_IP_ADDRESS
 
 
+I don't have *anything* with ESTABLISHED or RELATED that would allow
+DNS to sneak in...... *but it does*!?!?!?!?
 
+Chris
+
+
+On Sat, Jun 22, 2002 at 06:38:40PM +0100, Antony Stone wrote:
+> On Saturday 22 June 2002 6:30 pm, Christian Seberino wrote:
+> 
+> > My firewall *only* forwards SSH stuff to private LAN.
+> >
+> > It forwards *everything* _from_ private LAN to Internet however.
+> >
+> > How can the private LAN use DNS which it does????
+> >
+> > How is DNS server returning the info thru firewall
+> > if it *only* allows SSH??!?!?!?
+> 
+> Do you have a rule allowing reply packets from, say, a website back to your 
+> internal clients ?
+> 
+> Maybe:
+> 
+> iptables -A FORWARD -i $EXTIF -m state --state RELATED,ESTABLISHED -j ACCEPT
+> 
+> Same rule will allow replies to DNS requests.
+> 
+> If you don't have anything like that, post your ruleset and we'll have a 
+> think about it.
+> 
+>  
+> 
+> Antony.
+
+-- 
+_______________________________________
+
+Dr. Christian Seberino
+SPAWAR Systems Center San Diego
+Code 2363
+53560 Hull Street
+San Diego, CA 92152-5001
+U.S.A.
+
+Phone: (619) 553-7940
+Fax:   (619) 553-2836
+Email: seberino@spawar.navy.mil
+_______________________________________
 
