@@ -1,12 +1,10 @@
-From: "Gaby Schilders" <G.Schilders@ibfd.org>
-Subject: RE: Port Forwarding
-Date: Tue, 28 Oct 2003 13:49:33 +0100
+From: "Knight, Steve" <Steve.Knight@bskyb.com>
+Subject: RE: new iptables user - default options
+Date: Tue, 28 Oct 2003 12:54:24 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DAAAFFB7B8C62F40BC87BF3E729F79E1011990A1@ibfdmail.ibfd.oin>
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA578CB@OST_EXCH_USR5>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +15,72 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter list <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-No suggestions. Go for the WinXP solution if you feel more comfortable
-with that.
+Thanks Robert - I appreciate your response.
 
-<sarcasm>
-Just make sure you don't come running back when it is haxored into
-oblivion by a script-kiddy with too much time on his hands and a MS
-30-day exploit in his hands will you?
-</sarcasm>
+I have to say I'd agree - it seems to be more of a belt and braces approach
+to use your suggestion, and more in the spirit of what we were told in
+checkpoint kindergarten ["deny everything unless explicitly asked" - also
+sounds a bit like being married].
 
-If you think this to be a harsh reply, then maybe you can try to
-include a little bit more about your situation the next time you ask
-for help? Like what your setup is, what you've tried already, what
-part of the fine manuals you didn't understand... That sort of
-thing.
+Are the rules in each chain processed top down?
 
-If you still want to put some effort into the Linux/netfilter
-solution I suggest you do those things and put your problem on the
-list again. (If you want to know where to look things up, by all
-means ask).
+steve
 
-Good luck!
 
-Gaby
+
+
+
 
 -----Original Message-----
-From: Jason Mallory [mailto:jason@phxrising.com]
-Sent: maandag 27 oktober 2003 23:17
-To: netfilter@lists.netfilter.org
-Subject: Port Forwarding
+From: Robert P. J. Day [mailto:rpjday@mindspring.com] 
+Sent: 28 October 2003 12.34
+To: Knight, Steve
+Cc: netfilter@lists.netfilter.org
+Subject: Re: new iptables user - default options
 
 
-I am tring to do a simple port forwarding from the Internet to a mcahine =
+On Tue, 28 Oct 2003, Knight, Steve wrote:
 
-on my LAN. This has proven IMPOSSIBE! No matter how I try to forward=20
-ports, its not working. I am thinking about just setting up a simple=20
-Windows XP box and doing it that way after trying for 12 hours and 5=20
-different configuration methods. Any last suggestions before I switch?
+> Hi there
+> 
+> Rh9 has installed all the default filter policies as "accept" and then
+> forwards all packets from INPUT and FORWARD to a Lokkit chain.
+> 
+> Is this normal?  It seems to me [as a iptables n00b, although I am
+> checkpoint certified] to be ok, as eventually the traffic is hitting the
+> detailed lokkit chain, but is this the default install options that
+everyone
+> gets?
 
+it seems that it's just a philosophical difference.  you can set the
+DENY policy, then explicitly accept only what you want, or as RH did,
+accept everything only to pass it all to a user-defined chain that
+effectively does the same thing.
+
+personally, i'd rather see a DENY policy so that, if i somehow messed
+up some of my rules, i'm more likely to be *more* restrictive than
+less restrictive.  but RH's approach seems no worse, just different.
+
+rday
+
+
+
+.
+
+
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is 
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce, 
+distribute, store, retransmit, use or disclose its contents to anyone.
+ 
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
 
 
