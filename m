@@ -1,13 +1,11 @@
-From: "James A. Pattie" <james@pcxperience.com>
-Subject: Re: Start Up Script
-Date: Thu, 06 Mar 2003 09:55:30 -0600
+From: Sabrina Lautier <slautier@lavache.com>
+Subject: trouble compiling iptables v1.2.7a
+Date: Thu, 06 Mar 2003 16:36:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E676F72.1060702@pcxperience.com>
-References: <NHBBICNKELBGKGHPCFMPOEMFCAAA.bbunnell@iastate.edu>
+Message-ID: <1046964968.3e676ae844a48@lavache.alinto.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NHBBICNKELBGKGHPCFMPOEMFCAAA.bbunnell@iastate.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,67 +16,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Brian Bunnell <bbunnell@iastate.edu>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter mailing list <netfilter@lists.netfilter.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi all !
 
-Brian Bunnell wrote:
-> Hello
->
-> Thank you very much for helping me.  I have a perfectly good netfilter
-> script that I run from the command line and everything works fine.  I
-would
-> like this script to run when I boot up the computer.  I am having a lot of
-> trouble finding quality resources on the net about this.
->
-> There are great resources for learning how to use netfilter.  However,
-when
-> it comes to startup scripts, all the examples seem to be 25 pages long and
-> incomprehensible or wnat me to completely rewrite the script I already
-have.
->
-> Why can't I just tell the computer to run my script instead of the
-"Let the
-> world in" script it runs at boot?
->
-> Does anyone have any recommendations, resources or better yet, a good
-> concise example for run level 3?
+I'm following the "Linux IP Masqueade HowTo" to set up a linux
+router-firewall.
+I'm having trouble compiling iptables and I don't know how to solve my
+problem...
 
-If you are on a chkconfig/sysv system just add the necessary chkconfig
-entries to the top of your script, drop it in /etc/init.d and chkconfig
-{script name} on.  Make sure you disable the iptables scripts if on a
-redhat box.
+I'm running linux redhat 7.3 with a 2.4.18-3 kernel but I've
+downloaded the latest kernel version (2.4.20) in order to compile it
+with iptables-1.2.7a and patch-o-matic kernel patches.
 
-The PCX Firewall project will generate a redhat init script.
-http://pcxfirewall.sf.net/  Use that for examples on how to modify your
-script.
+When I try to compile here is the error I get:
+**********************************************************************
+$ make KERNEL_DIR=/usr/src/kernel/linux
+Extentions found:
+cc -02 ...
+In file included from /usr/src/kernel/linux/include/linux/config.h:4,
+from /usr/src/kernel/linux/include/linux/netfilter_ipv4.h:8,
+from /usr/src/kernel/linux/include/linux/netfilter_ipv4/iptables.h:25,
+from include/libiptc.h:6,
+from include/iptables.h:5,
+from extentions/libipt_ah.c:8,
+/usr/include/linux/autoconf.h:1:2: #error Invalid kernel header
+inluded in user space
+make: ** [extentions/libipt_ah_sh.o] Error 1
+**********************************************************************
 
+For information, I'm using gcc-2.96-110. I've tried to upgrade to
+gcc-3.2-7 but cannot find glibc-devel-2.2.90-12 required for this
+version of gcc (does anybody know of where to find it ?).
 
-- --
-James A. Pattie
-james@pcxperience.com
+Any idea of how to solve my issue ?
+Any help would be greatly appreciated.
 
-Linux  --  SysAdmin / Programmer
-Xperience, Inc.
-http://www.pcxperience.com/
-http://www.xperienceinc.com/
-
-GPG Key Available at http://www.pcxperience.com/gpgkeys/james.html
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQE+Z29xtUXjwPIRLVERAph1AKCm9hDscA7l/fgnoVf2vg5TvzGVngCfRdGJ
-tWrFpueX8wJ4AVpZ7Jw+MC0=
-=mimX
------END PGP SIGNATURE-----
+Regards,
+Sabrina
 
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
-
+---------------------------------------------
+Powered by Alinto (http://www.alinto.net)
+        for lavache.com (http://www.lavacheautomatique.com)
 
