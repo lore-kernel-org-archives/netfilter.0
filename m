@@ -1,9 +1,10 @@
-From: Paolo Rossi <paolo_76@inwind.it>
-Subject: SNAT multicast packet
-Date: Mon, 07 Feb 2005 09:46:10 +0100
-Message-ID: <42072AD2.4090509@inwind.it>
+From: Alexander Piavka <piavka@cs.bgu.ac.il>
+Subject: is NOTRACK modules the only way to avoid connection tracking?
+Date: Mon, 7 Feb 2005 14:00:25 +0200 (IST)
+Message-ID: <Pine.GSO.4.33.0502071342280.1529-100000@indigo>
+References: <1107767854.10815.3.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1107767854.10815.3.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,25 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Hi all,
-
-
-I have a trouble with netfilter. I need to perform a SNAT to outgoing multicast packet. Multicast packet come from 
-private network and i can't annunce this private source network in my routing domain. Because my network manage 
-multicast traffic with PIM-SM protocol and PIM perform RPF (reverse path forwarding), the clients can't see the 
-multicast traffic. I've read that netfilter don't support multicast SNAT, why?
-
-Is there someone can hel me?
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
 
-Thanks
+ Hello, i have a question about connection tracking.
 
+if i have at least one iptables rule with -m state ,no matter in which
+chain,then the conntrack module gets loaded in all iptables hooks and
+thus all packets will be connection tracked, even if i need to track
+only a small subset of packets. This means that the only way to avoid
+connection tracking for most of packes is to use the NOTRACK module in raw
+table to match them. Is my understanding correct?
+Or i can avoid connection tracking without the use of NOTRACK modules?
 
-Best wishes
+Thanks a lot
+Piavlo Alexander
 
-
-Paolo
 
