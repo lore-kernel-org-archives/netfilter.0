@@ -1,13 +1,14 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: iptables related
-Date: 08 Dec 2003 20:29:39 +0100
+Date: Mon, 8 Dec 2003 14:35:00 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070911779.28792.32.camel@kermit>
+Message-ID: <200312081435.00136.JALaramie@Loudoun-Fairfax.com>
 References: <20031208191947.GA1603@msservices>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20031208191947.GA1603@msservices>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +18,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jeffrin <jeffrin@gamebox.net>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Am Mon, 2003-12-08 um 20.19 schrieb Jeffrin:
+On Monday 08 December 2003 14:19, Jeffrin wrote:
 > hello all,
->=20
+>
 > iptables -A INPUT -sport 80 -j ACCEPT
->=20
+>
 > shows error ...
->=20
+>
 >  msservices:~# iptables -A INPUT --sport 80 -j ACCEPT
 > iptables v1.2.9: Unknown arg `--sport'
-You need to specify the protocol: -p tcp or -p udp
+> Try `iptables -h' or 'iptables --help' for more information.
+>
+> please help me ...
 
-Cheers,
+There are 2 dashes before sport:  --sport 80
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
-
-Book: VPN mit Linux
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+Jeff
 
