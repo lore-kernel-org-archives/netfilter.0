@@ -1,10 +1,13 @@
-From: aksingh@hss.hns.com
+From: "Mayank Kumar" <mayank_kumar@intersolutions.stpn.soft.net>
 Subject: RE: injecting new packets into the netfilter
-Date: Tue, 29 Jun 2004 11:20:52 +0530
+Date: Tue, 29 Jun 2004 11:49:10 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFBEB2E69E.A4B53B89-ON65256EC2.001FE33D@hss.hns.com>
+Message-ID: <BNELKLECKCDLOPNOBHFHOEBGJEAA.mayank_kumar@intersolutions.stpn.soft.net>
+References: <OFBEB2E69E.A4B53B89-ON65256EC2.001FE33D@hss.hns.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <OFBEB2E69E.A4B53B89-ON65256EC2.001FE33D@hss.hns.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,9 +18,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mayank Kumar <mayank_kumar@intersolutions.stpn.soft.net>
+To: aksingh@hss.hns.com
 Cc: netfilter@lists.netfilter.org
+
+Hi Amit
+thanks for ur prompt replies.
+firstly from ur replies it seems
+that
+1: Whatever packets that i will construct using libnet or
+   for that matter using ordinary bsd sockets would pass the
+   relevant hooks in the netfilter based on the dest ip address
+   i set. Is this true?? In this case i am constructing the packet
+   completely on my own.
+
+Now what i want to do is steal(NF_STOLEN) packets at specific hooks
+(generally pre routing)
+within the netfilter and queue them to a user mode process.
+The User mode process does some processing and either sends
+the same packet or completely new and umpteen in number packets
+at the post routing hook in netfilter(from ur answer using libnet).
+From ur answer it seems quite possible very easily. Correct
+me if i am wrong here. Also is there any advantage of using
+libnet over bsd sockets in terms of performance. Is there any
+other performance optmized way of sending and receiving packets from
+user to kernel mode?? Does netlink sockets way offer a more
+optimized way of doing it?? (Sorry for a flurry of questions!!)
+
+
+Now the second part is what if i want to move it all to kernel mode for
+performance reasons.
+This means steal packet at pre_routing and then queue them all to
+a kernel thread which was created using a kernel module. The kernel
+thread then does some processing on the packets and then sends either
+the captured packet or completely new packets out through the post routing
+hook.
+How can this be achieved??
+
+regds
+Mayank
+
+
+
+
+-----Original Message-----
+From: aksingh@hss.hns.com [mailto:aksingh@hss.hns.com]
+Sent: Tuesday, June 29, 2004 11:21 AM
+To: Mayank Kumar
+Cc: netfilter@lists.netfilter.org
+Subject: RE: injecting new packets into the netfilter
+
 
 
 
@@ -113,7 +162,6 @@ help if somebody can find a solution to this.
 Thanks in advance for any help on this.
 regds
 Mayank
-
 
 
 
