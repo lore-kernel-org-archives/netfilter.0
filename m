@@ -1,12 +1,12 @@
-From: Jaret <bitgod@gmail.com>
-Subject: Multiple iptables exceptions?
-Date: Thu, 23 Sep 2004 10:08:39 -0500
+From: Dominic Iadicicco <sctylib2004@yahoo.com>
+Subject: Re: Can anyone tell me how to do this?
+Date: Thu, 23 Sep 2004 08:14:13 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <bc9fb38004092308087dc97b87@mail.gmail.com>
-Reply-To: Jaret <bitgod@gmail.com>
+Message-ID: <20040923151413.68240.qmail@web51309.mail.yahoo.com>
+References: <1095951354.1750.36.camel@wolfpack.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1095951354.1750.36.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-When dealing with iptable rules you can use the "!" exception rule.
-For instance...
+yes
 
-IPTABLES -t nat -A PREROUTING -s 10.1.1.2 -d ! 207.46.0.0/16 --proto
-tcp --dport 80 -j DNAT --to-destination 10.1.1.3:80
+> wrote: On Thu, 2004-09-23 at 09:22, Dominic Iadicicco wrote:
+> ok, I have another one for all.
+> 
+> I have now been tring to do this:
+> 
+> I have an IP, 10.0.0.1 on eth1 and an IP 172.16.12.130
+> at eth0. And heres were things get fun. I want all
+> ssh requests that go to 10.0.0.1 to get routed to
+> 172.16.12.130 just like it worked when we did it from
+> .130 to .212. (if anyone is new and doesn't what was
+> discussed yesterday, please let me know I will post
+> it.)
 
-That statement will redirect any port 80 traffic from 10.1.1.2 to
-10.1.1.3 -unless- it is trying to reach the class B network
-207.46.0.0/16. That 207.46.0.0/16 happens to be part of the microsoft
-domain, this way the user will only be allowed to go get updates but
-will not be allowed to browse online freely. This has been tested and
-proven.
+are 10.0.0.1 and 172.16.12.130 on the same physical machine?
 
-So here comes the twist... microsoft does some dns load balancing and
-sometimes the update site resolves at 64.4.xx.xx. Ive been digging
-through documentation and trying to insert customized rules but I cant
-get it to accept anything I try to allow two exception statements...
+-j
 
-conceptually what im looking for is something like this...
+-- 
+Jason Opperisano 
 
-IPTABLES -t nat -A PREROUTING -s 10.1.1.2 -d ! 207.46.0.0/16,
-64.4.0.0/16 --proto tcp --dport 80 -j DNAT --to-destination
-10.1.1.3:80
 
-But iptables will not allow the double exception.. well it doesnt
-recognize the comma delimit anyways. Like I said I've tried to get
-this working a few ways and havent been able to in a single statement
-or through multiple statements.
 
-Does anyone out there know a work around for this? Preferably a
-solution that stays within IPtables.
 
-Thanks!
 
+		
+---------------------------------
+Do you Yahoo!?
+vote.yahoo.com - Register online to vote today!
