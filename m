@@ -1,9 +1,10 @@
-From: Mike Mestnik <cheako911@yahoo.com>
-Subject: Fwd: netfilter: Transparent squid running on another host.
-Date: Sat, 2 Oct 2004 12:44:06 -0700 (PDT)
+From: <mlist@libero.it>
+Subject: Logging source mac address
+Date: Sat, 2 Oct 2004 23:24:05 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041002194406.64637.qmail@web11907.mail.yahoo.com>
+Message-ID: <5650.48701032556$1096752275@news.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,67 +16,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "lists.netfilter.org netfilter" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
+Hi
+
+I installed Fedora core 2 and configured iptables with Guarddog and all
+works correctly (I know to configure iptables manually is better but I need
+to study it before manually write a configuration file).
+My problem is that I need to know if is possible or not always logging
+source mac address. With guarddog I tried all log levels ("debug", "alert",
+"critical") but the problem is that mac address is not always registered.
+Is there a way to log in all conditions (not only with drop or reject) the
+source mac address???
+
+Thanks a lot
+Marco
+Italy
+
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.771 / Virus Database: 518 - Release Date: 28/09/2004
+ 
 
 
---- Mike Mestnik <cheako911@yahoo.com> wrote:
-
-> Date: Fri, 1 Oct 2004 14:33:49 -0700 (PDT)
-> From: Mike Mestnik <cheako911@yahoo.com>
-> Subject: netfilter: Transparent squid running on another host.
-> To: "lists.debian.org debian-firewal" <debian-firewall@lists.debian.org>
-> 
-> My *default GW* is 10.0.0.1(train) and I have squid running on
-> 10.0.0.110:3128(paladin).
-> I have setup squid to run as a TP, setting something about keeping http
-> headers and what not.  The proxy(when clients are configured) dose work,
-> but tcp showes that transparent client's are not using the proxy.
-> 
-> These are the rules I have been trying to use, with out succsess...
-> 
->         # Non-local transparent FTP and HTTP(S) proxy.
->         iptables -t mangle -A PREROUTING -i $IFACE+ -p tcp\
->             --src ! 10.0.0.110 --dport 80\
->             -j MARK --set-mark 1
->         iptables -t mangle -A PREROUTING -i $IFACE+ -p tcp\
->             --src ! 10.0.0.110 --dport 443\
->             -j MARK --set-mark 1
-> # Exclude a host.
-> #       iptables -t mangle -A PREROUTING -i $IFACE+ -p tcp\
-> #           --src 10.0.0.20 --dport 80\
-> #           -j MARK --set-mark 0
-> #       iptables -t mangle -A PREROUTING -i $IFACE+ -p tcp\
-> #           --src 10.0.0.20 --dport 443\
-> #           -j MARK --set-mark 0
->         ip rule add fwmark 1 table web.out
->         ip route add default via 10.0.0.110 dev $IFACE table web.out
-> 
-> For now it's OK that 10.0.0.20 dosen't(may not) get exluded from the
-> transparent proxy.  I have another solution for this, if the above
-> commented rules don't do the trick.
-> 
-> 
-> 
-> 		
-> _______________________________
-> Do you Yahoo!?
-> Express yourself with Y! Messenger! Free. Download now. 
-> http://messenger.yahoo.com
-> 
-> 
-> -- 
-> To UNSUBSCRIBE, email to debian-firewall-REQUEST@lists.debian.org
-> with a subject of "unsubscribe". Trouble? Contact
-> listmaster@lists.debian.org
-> 
-> 
-
-
-
-		
-_______________________________
-Do you Yahoo!?
-Declare Yourself - Register online to vote today!
-http://vote.yahoo.com
 
