@@ -1,14 +1,11 @@
-From: "Tarek W." <mailinglists1@hotpop.com>
-Subject: Re: Filtering using port+process (i.e. open port 80 for Apache
-	only)
-Date: Wed, 03 Mar 2004 16:44:49 +0200
+From: Eoin Verling <eoin.verling@transas.com>
+Subject: iptables and IPCOMP
+Date: Wed, 3 Mar 2004 16:28:13 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1078324475.25485.184.camel@carve.personal.localdomain>
-References: <20040229122637.79368.qmail@web40101.mail.yahoo.com>
-Mime-Version: 1.0
+Message-ID: <C47F458E-6D2F-11D8-9B9B-000A95DAC91E@transas.com>
+Mime-Version: 1.0 (Apple Message framework v612)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040229122637.79368.qmail@web40101.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +15,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hi,
 
-http://netfilter.org/patch-o-matic/pom-extra.html#pom-extra-owner-socketlookup should help
+I'm relatively new to the iptables world, so apologies in advance ...
 
-On Sun, 2004-02-29 at 14:26, Moath A. Khalaf wrote:
-> Hi,
-> 
-> How can I filter using a port and allow some processes
-> to 
-> pass this filter. For example, I want to add a rule
-> that 
-> does not accept a connection on port 80 to any process
-> 
-> other than Apache web server.
-> 
-> Regards
-> 
-> __________________________________
-> Do you Yahoo!?
-> Get better spam protection with Yahoo! Mail.
-> http://antispam.yahoo.com/tools
-> 
-> 
+I'm running iptables on 2 linux boxes (v1.2.8), in 2 different 
+locations (offices). They are firewalls for both offices. I have ipsec 
+tunnels between both offices, terminating on these linux boxes.
+
+I am currently trying to install 2 bandwidth expanders (Xpand 4800) on 
+both sites. I have the devices _inside_ both firewalls, setup with 
+local IP addresses (ie both devices have false IP's, but can see (ping) 
+each other through the ipsec tunnel)
+
+I'm told that these devices use IPCOMP to communicate, but currently 
+they are not connected. So, I'm trying to find out where the blockage 
+is happening! So, my question is, how do I find out where/why the 2 
+devices are not connecting. For example, to find out if iptables is the 
+problem, I run the:-
+
+# iptables -t <table_name> -L -n
+
+where <table_name> is one of /proc/net/ip_table_names
+
+If nothing there, then can that be ruled out as the blockage of IPCOMP 
+getting through?
+How do I explicitly allow IPCOMP get through with iptables?
+
+any help would be greatly appreciated
+
+cheers
+E
 
 
