@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Forwarding in a NAT..
-Date: Sun, 22 Sep 2002 11:03:29 +0100
+Subject: Re: Setting and Routing on the TOS Source (SRC) and Destination (DST) Bits
+Date: Sun, 22 Sep 2002 11:35:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020922100331.EYTD2092.mta07-svc.ntlworld.com@there>
-References: <F185dlqHukzpaPE3vX7000158cf@hotmail.com>
+Message-ID: <20020922103530.LBDI6699.mta01-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0209202140330.2337-100000@laptop1.agatha> <20020922082118.EQR13996.mta05-svc.ntlworld.com@there> <004801c26222$7229fe40$026410ac@honor>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F185dlqHukzpaPE3vX7000158cf@hotmail.com>
+In-Reply-To: <004801c26222$7229fe40$026410ac@honor>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,66 +20,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 20 September 2002 4:03 am, Random Person wrote:
+On Sunday 22 September 2002 11:25 am, Sascha Reissner wrote:
 
-> Ok, this is a question that has probably been answered before, but I'm
-> going to ask anyway because I can't find the answer.
+> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
 >
-> I have 2 eth interfaces (eth0/eth1) and I use my linux box as a
-> firewall/gateway NAT... What I want to do is take any packet that comes to
-> eth0 (internet) that has destination port X and is trying to start a
-> connection is forwarded to eth1 (internal network)... but not to a specific
-> computer (i.e.. not mangled in any way but with the packet still having
-> same source/dest address).
+> > By the way, I was not advocating IPv6 per se - I was simply commenting on
+> > the confusion which would ensure if this thing called IPv8 became at all
+> > well known in the time between IPv4, which we all use now, and IPv6, which
+> > we're all supposed to be using sometime soon.
 >
-> Ok, did that make any sense?
+> Antony, don't care..
 
-No :-)
+Oh, that's okay - I don't.
 
-You want to take a packet which comes in to eth0 (your external interface) 
-with destination port X....
+> Jim Flemming was known for abusing this list as a propagate medium for his
+> - what he calls - IPv8 and IPv16 theories.
+>
+> He used to reply with total off-topic stuff mentioning his theories..
 
-Now, if it has come in to your external interface, one of three situations 
-applies:
+Hmmm.   I thought I'd been around this list for quite some time, but this is 
+the first I'd come across anything called IPv8, and it just seemed such a 
+silly idea that I didn't want to leave it in the archives without some 
+response pointing out how it breaks the IPv4 standard and could confuse a lot 
+of people who aren't too familiar with normal routing.
 
-1. The destination address on the packet is the external address of your 
-firewall, therefore if you don't change the destination address in a NAT rule 
-then it's not going to go anywhere else.
+> just try to not get into deeper discussions with him about that stuff and
+> he will calm down, too.
 
-2. The destination address on the packet is another address in the same 
-subnet as the external interface of your firewall, and that interface has 
-done a proxy arp for it.   Same thing applies here - if you don't change the 
-destination address in a NAT rule then the packet's not going to go any 
-further than your firewall.
-
-3. The destination address on the packet is an address which your ISP is 
-routing to you, through your firewall address (ie your ISP regards your 
-firewall as a router, and is routing packets with the destination address 
-we're discussing using the firewall address as a next-hop gateway).   In this 
-case you simply need to have the firewall know how to route those packets, 
-and have a suitable rule in your FORWARD chain to allow them, and they will 
-reach their destination (as specified in the original packet).
-
-If this doesn't answer your question please repeat the question, telling us:
-
-1. The external address of your firewall
-2. The internal address of your firewall
-3. The address range of machines on your internal LAN, to which you want 
-these packets to be sent
-4. An example destination address on such a packet so we can see how it might 
-be able to get there.
-
-By all means disguise / change / hide parts of any real IP addresses in the 
-above information, provided we can still understand what's left.   A good way 
-to do it is to make the first byte of any public IP addresses you're using 
-more than 300 - it's obviously an invalid address, but it doesn't stop us 
-answering the question.
+Fair enough.   I already said in my last posting that it was getting too 
+off-topic for netfilter, so let's stop.   It's only in retrospect that I 
+realised how off-topic it had already got from the original poster's 
+question, which was how to recognise the TOS bits being set by his ISP...
 
 Antony.
 
 -- 
 
-What is this talk of software 'release' ?
-Our software evolves and matures until it is capable of escape,
-leaving a bloody trail of designers and quality assurance people in its wake.
+Success is a lousy teacher.   It seduces smart people into thinking they 
+can't lose.
+
+ - William H Gates III
 
