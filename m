@@ -1,12 +1,13 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: iptables -vv -L output description?
-Date: Thu, 4 Sep 2003 09:11:12 -0700 (PDT)
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: fake ping reply
+Date: Thu, 4 Sep 2003 12:24:44 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030904161112.65022.qmail@web40210.mail.yahoo.com>
-References: <20030904073950.GC12077@localnet>
+Message-ID: <20030904162444.GB31513@cannon.eng.us.uu.net>
+References: <20030902165026.2edc8dfd.i.kuten@sam-solutions.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030904073950.GC12077@localnet>
+Content-Disposition: inline
+In-Reply-To: <20030902165026.2edc8dfd.i.kuten@sam-solutions.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +19,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: sr@gimp.org, netfilter@lists.netfilter.org
+To: "I.S.Kuten" <i.kuten@sam-solutions.net>
+Cc: netfilter@lists.netfilter.org
 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+On Tue, Sep 02, 2003 at 04:50:26PM +0300, I.S.Kuten wrote:
 
-Check out Table 6.3 Options.
-
-This is the only place I have seen information on this.
-
-SBlaze
-
-
---- Sven Riedel <sr@gimp.org> wrote:
-> Hi,
-> is the output format of iptables -vv -L documented somewhere? Didn't
-> find anything in the FAQ, HOWTO (the regular one that is) or the
-> iptables manpage. 
+> Hello ,
 > 
-> This is with iptables 1.2.8
+> i wanted to setup iptables , when someone pings my box , echo-reply
+> would come from other machine then mine .
+
+A very strange question. When the client sends you a echo-request, it
+expects to receive echo-reply from the same IP address. If some other
+IP address sends the echo-reply, it will simply get dropped by the OS
+on the client, as there is no match for this bogus packet...
+
+Now, what do you want to achieve with this? Fool the client that his
+ping, pinged someone else??
+
+If you feel unconfortable with someone pinging you, just drop them...
+
+Ramin
+
 > 
-> Regs,
-> Sven
-> -- 
-> Sven Riedel                      sr@gimp.org
-> Liebigstr. 38 
-> 30163 Hannover                  "Python is merely Perl for those who
->                                  prefer Pascal to C" (anon)
+> I've tried to play with PREROUTING & POSTROUTING chains but had no success .
 > 
-
-
-=====
-"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+> Anyone has solution ?
+> 
+> 
 
