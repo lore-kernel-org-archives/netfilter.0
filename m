@@ -1,13 +1,13 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: iptables dnat to loopback
-Date: Sun, 8 Aug 2004 13:50:11 -0400
+From: raido <raido@elin.ttu.ee>
+Subject: Re: DNAT forwarding problems
+Date: Mon, 9 Aug 2004 05:45:56 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408081350.12149.Alistair@nerdnet.ca>
-References: <D5C9032B2B09C64EA2409D6214E91AC905124D@asimail2.alphanumeric.com> <1091945878.12669.0.camel@localhost> <200408080941.38256.lists@edeca.net>
+Message-ID: <200408090545.56296.raido@elin.ttu.ee>
+References: <411166D5.30105@galacticasoftware.com> <200408051525.38235.raido@elin.ttu.ee> <41126680.2060403@galacticasoftware.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408080941.38256.lists@edeca.net>
+In-Reply-To: <41126680.2060403@galacticasoftware.com>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,47 +20,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: Adam Majer <adamm@galacticasoftware.com>
 
-On August 8, 2004 04:41 am, David Cannings wrote:
-> On Sunday 08 August 2004 07:17, Damian atabria wrote:
-> > :o( no luck.
-> >
-> > I even tried -F ing INPUT, FORWARD, OUTPUT, PREROUTING and POSTROUTING
-> > before adding the rule, (all policies set to ACCEPT) and still no luck!
-> > Forwarding is enabled,
-> > net.ipv4.conf.all.forwarding = 1
-> > net.ipv4.ip_forward = 1
-> > and still the packets are going nowhere... however giving
-> > the loopback an alias with an ip address of, say, 200.136.136.136
-> > works... so why can't I route to 127.0.0.x? Is there anything
-> > else I should check/add?
 >
-> You can't send packets from non 127/8 addresses to 127/8.  The kernel
-> filters them out and drops them as it considers them "martians".
->
-> David
+> The problem appears to be that the rp_filter ate the packets. It thought
+> that these packets were rogue packets. Anyway, when I disabled
+> rp_filter, the packets starting flowing but then there was the problem
+> of reply packets being sent out from a wrong interface. 
+It seems our configurations go here apart. I don't have IP addresses bound to 
+box, so, I don't have rp_filter either.  Turning off rp_filter for "all"  
+didn't change a thing.
+Thanks anyway and great you got your configuration to work.
 
-	Okay --- 
-	   If I'm following this thread correctly then, 
-	
-	we need two rules to manage this ... both Destination and Source Natting 
-these packets ... 
-	My question is ..... 
-	As I understand things DNAT is done in PREROUTING and SNAT is done in 
-POSTROUTING .. 
-
-	I can setup 
-	
-	iptables -I PREROUTING -t nat -p TCP -s 192.168.0.2 -d 10.1.105.45 --dport \ 
-3306 -j DNAT --to 127.0.0.1
-and (since nat postrouting FOLLOWS nat prerouting) 
-	iptables -I POSTROUTING -t nat -p TCP -s 192.168.0.2 -d 127.0.0.1 --dport \ 
-3306 -j SNAT --to 127.0.0.1
-
-	But I don't belive that this will solve the above problem of the /drop 
-martians/ behaviour.
-
-	Any comments folks?
-
-	Alistair Tonner
+Raido
 
