@@ -1,13 +1,14 @@
-From: "Manikandan" <mani@manikandan.org>
-Subject: OUTPUT chain in nat table.
-Date: Tue, 27 Apr 2004 17:37:36 +0530
+From: David Cannings <lists@edeca.net>
+Subject: Re: OUTPUT chain in nat table.
+Date: Tue, 27 Apr 2004 13:15:21 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GHEILNONPACCGBGKBEKKOEHFCFAA.mani@manikandan.org>
-Reply-To: <manikandan@manikandan.org>
+Message-ID: <200404271315.21173.lists@edeca.net>
+References: <GHEILNONPACCGBGKBEKKOEHFCFAA.mani@manikandan.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0015_01C42C7E.54A1FC60"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <GHEILNONPACCGBGKBEKKOEHFCFAA.mani@manikandan.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,111 +18,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Tuesday 27 April 2004 13:07, Manikandan wrote:
+> 	There is no issue with PREROUTING and POSTROUTING chains in nat
+> table now. But my OUTPUT DNAT is not working and it keeps giving me an
+> error " Invalid argument ".
+> iptables -t nat -A OUTPUT -d 10.35.47.120 -j DNAT -to 10.35.47.3
 
-------=_NextPart_000_0015_01C42C7E.54A1FC60
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+According to the manual page "--to-destination" is what you require 
+instead of "-to".
 
-Hi all,
-
-	I recently upgraded my kernel to 2.4.26 and iptables to 1.2.9. After
-this upgrade, my firewall script started throwing errors. I am using SNAT in
-PREROUTING chain, DNAT in POSTROUTING chain and DNAT in OUTPUT chain of nat
-table. 
-
-	There is no issue with PREROUTING and POSTROUTING chains in nat
-table now. But my OUTPUT DNAT is not working and it keeps giving me an error
-" Invalid argument ". 
-
-iptables -t nat -A OUTPUT -d 10.35.47.120 -j DNAT -to 10.35.47.3
-
-Is this command a valid one or not?. The same command was working fine with
-my old kernel 2.4.20 and iptables 1.2.7. 
-
-Could someone please help me. I tried googling a lot, but there is not
-enough information to continue troubleshooting.
-
-Any hint will be of great help.
-
-Regards,
-Manikandan.
-
-
-
-
-------=_NextPart_000_0015_01C42C7E.54A1FC60
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
-
-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
-AAAEAAAAOS4wAAsADoAIIAYAAAAAAMAAAAAAAABGAAAAAAaFAAAAAAAAAwAPgAggBgAAAAAAwAAA
-AAAAAEYAAAAAAYUAAAAAAAALABiACCAGAAAAAADAAAAAAAAARgAAAAAOhQAAAAAAAAMAGYAIIAYA
-AAAAAMAAAAAAAABGAAAAABGFAAAAAAAAAwAbgAggBgAAAAAAwAAAAAAAAEYAAAAAGIUAAAAAAAAe
-ACqACCAGAAAAAADAAAAAAAAARgAAAAA2hQAAAQAAAAEAAAAAAAAAHgArgAggBgAAAAAAwAAAAAAA
-AEYAAAAAN4UAAAEAAAABAAAAAAAAAB4ALIAIIAYAAAAAAMAAAAAAAABGAAAAADiFAAABAAAAAQAA
-AAAAAAALADSACCAGAAAAAADAAAAAAAAARgAAAACChQAAAQAAAAIB+A8BAAAAEAAAAHTbdbsejWdI
-ve2E+RTRCicCAfoPAQAAABAAAAB023W7Ho1nSL3thPkU0QonAgH7DwEAAABJAAAAAAAAADihuxAF
-5RAaobsIACsqVsIAAFBTVFBSWC5ETEwAAAAAAAAAAE5JVEH5v7gBAKoAN9luAAAARDpcTWFpbFxw
-ZXIucHN0AAAAAAMA/g8FAAAAAwANNP03AAACAX8AAQAAADMAAAA8R0hFSUxOT05QQUNDR0JHS0JF
-S0tPRUhGQ0ZBQS5tYW5pQG1hbmlrYW5kYW4ub3JnPgAAAwAGEENHbW8DAAcQVAIAAAMAEBAAAAAA
-AwAREAEAAAAeAAgQAQAAAGUAAABISUFMTCxJUkVDRU5UTFlVUEdSQURFRE1ZS0VSTkVMVE8yNDI2
-QU5ESVBUQUJMRVNUTzEyOUFGVEVSVEhJU1VQR1JBREUsTVlGSVJFV0FMTFNDUklQVFNUQVJURURU
-SFJPV0lOAAAAAMsy
-
-------=_NextPart_000_0015_01C42C7E.54A1FC60--
-
+David
 
