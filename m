@@ -1,48 +1,48 @@
-From: Alex Satrapa <alex@lintelsys.com.au>
-Subject: Re: How to block sending mail from local network.
-Date: Mon, 09 Feb 2004 08:42:05 +1100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4026AD2D.7060305@lintelsys.com.au>
-References: <4024C335.7080705@ergolight-sw.com>
-Reply-To: netfilter@lists.netfilter.org
+From: Jimmy Hedman <jimmy.hedman@southpole.se>
+Subject: Differences between MASQ and SNAT
+Date: Mon, 09 Feb 2004 13:42:50 +0100
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <1076330570.8454.13.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4024C335.7080705@ergolight-sw.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Cc: netfilter-devel@lists.netfilter.org
 
-David Harel wrote:
-> $IPTABLES -A INPUT -p ALL -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
+Hi,
+What's the REAL differences between MASQ and SNAT? I've had a problem
+where it didn't work with SNAT but it did work with MASQ...
+The setup was two firewalls (A and B) with a Ipsec tunnel between them
+and and another VPN onward from B. The old setup was to masquerade all
+the traffic from site A, even the traffic out on the VPN between FW A
+and FW B. Due to some other changes i had to remove the masquerade for
+traffic the over the VPN and do SNAT on FW B instead. This worked for
+everything but one machine. If i turned on MASQ for that machine on FW A
+everything worked again which made me puzzled what MASQ is doing that
+SNAT isn't.
 
-This only means that all machines on the local network can make connections to this machine itself.
+So, does MASQ do anything that SNAT doesn't in form of changing the
+header or such? Or should i find the answer in the Windows machine that
+was putting up the fight?
 
-If this machine is a router, and you want it to block outgoing SMTP connections, first identify which machine on your network is the authorised SMTP relay. If it's not the firewall itself, then you need to add a rule to accept forwarded packets for the SMTP relay, and block everyone else.  You'll need two rules like this:
+// Jimmy
 
-$IPTABLES -I FORWARD -p TCP -i $LAN_IFACE -s $SMTP_RELAY -j ACCEPT
-$IPTABLES -I FORWARD -p TCP -i $LAN_IFACE -s $LAN_IP_RANGE -j REJECT --reject-with icmp-net-prohibited
 
-I use "icmp-net-prohibited" since if someone is monitoring SMTP attempts, they'll see the ICMP packet telling them exactly why they can't make the connection. An alternative like -j DROP would mean the SMTP connections disappear into nothingness, and give the troubleshooter no hints as to what the problem is.
 
-> I tried a command:
-> $IPTABLES -A OUTPUT -p TCP -i $LAN_IFACE -s $LAN_IP_RANGE --dport smtp 
-> -j DROP
-> but it did nothing.
-
-This only prohibits this machine from making SMTP connections to other hosts on the local network.
-
-The INPUT chain is used for connections to this host, OUTPUT is used for connections from this host, while FORWARD is used for packets being forwarded by this host on behalf of other machines.
-
-HTH
-Alex Satrapa
+--=20
+Jimmy Hedman                       South Pole AB
+Phone:  +46 8 51420420             Gelbjutarv=E4gen 5
+Fax:    +46 8 51420429             SE - 17148 Solna=20
+e-mail: jimmy.hedman@southpole.se  www.southpole.se
 
 
