@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: Default policy
-Date: Sat, 21 Dec 2002 14:28:07 +0100
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: Best vpn w/ iptables.
+Date: Sat, 21 Dec 2002 08:03:17 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GOEDLKDBKHLHGAKAGFGKMELBLLAA.rsterenborg@xs4all.nl>
-References: <001501c2a8f3$40be2e40$1a01a8c0@vishal>
+Message-ID: <000e01c2a90a$79f7df50$6601a8c0@s3ac>
+References: <3E043B2B.70306@istitutocolli.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001501c2a8f3$40be2e40$1a01a8c0@vishal>
+In-reply-to: <3E043B2B.70306@istitutocolli.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: iptables <netfilter@lists.netfilter.org>
-
-> Following is the policy that my firewall generation script
-> gives, but my system hangs when i execute this, I am using
-> ssh to execute this script. I am opening all other required
-> ports. When I comment the last two lines my script works fine.
->
-> ******Script*******
->
-> #Set default policies to DROP
->
-> $IPTABLES -F INPUT
-> $IPTABLES -F OUTPUT
-> $IPTABLES -F FORWARD
-> $IPTABLES -P INPUT DROP
-> $IPTABLES -P OUTPUT DROP
-> $IPTABLES -P FORWARD DROP
->
-
-This ok.
-This will drop everything you didn't ACCEPT or REJECT or something.
-
-> # Rejecting all Packets
->
-> #$IPTABLES -A INPUT -s 0/0 -d 0/0 -p udp -j DROP
-> #$IPTABLES -A INPUT -s 0/0 -d 0/0 -p tcp -j DROP
-
-If you have this in front of the other rules, nothing will reach the
-other rules and you just killed (not only) your ssh connection. Not
-even on lo (127.0.0.1).
-You already have default policy DROP : just put in the ACCEPT and
-other rules you need.
+To: 'Andrea Rossato' <mailing_list@istitutocolli.org>, netfilter@lists.netfilter.org
 
 
-Rob
+> Starting from kernel 2.5.49 IPSec went into the tree: if you need 
+> encryption and authentication that could be a solution 
+> (probably better 
+> than freeswan, since the later was not considered for 
+> inclusion into the 
+> kernel). I don't need them, so I'm sticking with plain gre 
+> tunnels and 
+> linux-2.4.20
+
+I'm noticing the the IPSec implimentation uses/is protocol 50 -p 50
+Will any version of IPTables recognise this or will I be needing to
+update
+To the latest version of IPTables. I think I'm leaning towards 2.5.49
+kernel
+Implimentation givin I can trim it down enough to get something
+relitivly stable.
 
 
