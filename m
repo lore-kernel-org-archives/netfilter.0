@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables local port forwarding
-Date: Mon, 5 Apr 2004 18:44:34 +0100
+Subject: Re: iptables rules do not work
+Date: Mon, 5 Apr 2004 18:51:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404051844.35289.Antony@Soft-Solutions.co.uk>
-References: <20040403095005.GA4511@scholars.home> <200404031127.02648.Antony@Soft-Solutions.co.uk> <20040404110341.GA13605@scholars.home>
+Message-ID: <200404051851.52998.Antony@Soft-Solutions.co.uk>
+References: <B1A93958FC04D311B0240008C7F9DD2416227399@nalgexc1.nalg>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040404110341.GA13605@scholars.home>
+In-Reply-To: <B1A93958FC04D311B0240008C7F9DD2416227399@nalgexc1.nalg>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,42 +21,58 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 04 April 2004 12:03 pm, Mark Ord wrote:
+On Monday 05 April 2004 4:51 pm, Montreuil, Scott NALG-CA wrote:
 
-> On Sat, Apr 03, 2004 at 11:27:02AM +0100, Antony Stone wrote:
+> Hello,
 >
-> > The only thing I can think to ask is whether "iptables -L -t nat -nvx"
-> > shows the packet/byte counters for this rule incrementing when you do try
-> > to access port 81?
+> I have the exact same rules here for the exact same machine.
+
+Please can you show us the full ruleset with the interfaces listed as well 
+(ie: post "iptables -L -nvx" instead of just "iptables -L")?
+
+> I can connect internal to this machine on the ports specified but the rules
+> are not working for the IMAP server, they work no problem for the SMTP
+> server.
+
+Do you see the packet counters from "iptables -L -nvx" incrementing when you 
+try to connect, indicating that packets are matching the rules?
+
+> ACCEPT     tcp  --  anywhere             10.10.10.2         tcp dpt:smtp
+> DNAT       tcp  --  anywhere             static-89-102.dsl.tht.nettcp
+> dpt:smtp to:10.10.10.2:25
+> DNAT       udp  --  anywhere             static-89-103.dsl.tht.netudp
+> dpt:smtp to:10.10.10.2:25
+> DNAT       tcp  --  anywhere             static-89-103.dsl.tht.nettcp
+> dpt:smtp to:10.10.10.2:25
+> SNAT       tcp  --  10.10.10.0/24        10.10.10.2         tcp dpt:smtp
+> to:10.10.10.1
 >
-> They're not. External connections do (elsewhere on the LAN, or from the
-> internet, but we already know that, as those redirects work), but
-> connections from the iptables machine never show up in the nat table.
+> ACCEPT     tcp  --  anywhere             10.10.10.2         tcp dpt:imap
+> DNAT       tcp  --  anywhere             static-89-102.dsl.tht.nettcp
+> dpt:imap to:10.10.10.2:143
+> DNAT       tcp  --  anywhere             static-89-103.dsl.tht.nettcp
+> dpt:imap to:10.10.10.2:143
+> DNAT       udp  --  anywhere             static-89-103.dsl.tht.netudp
+> dpt:imap to:10.10.10.2:143
+> SNAT       tcp  --  10.10.10.0/24        10.10.10.2         tcp dpt:imap
+> to:10.10.10.1
+>
+>
+> Any dieas why I can't connet to IMAP?
 
-Hey - wait a minute - did I miss something there?   You're trying to NAT 
-packets from the netfilter machine itself in the PREROUTING chain???
+Is your IMAP server configured to accept connections from the address/es 
+you're trying to connect from?
 
-No - won't work.
-
-Sorry, I thought you were trying to get this working from the Internet - I 
-must have missed something in a previous posting about trying to do it from 
-the machine itself.
-
-> Now that I have a bit more of an idea what is going on, I've done
-> another search, can hit this, which says that this actually isn't
-> possible, as the PREROUTING table is bypassed on local connections.
-
-I agree.   You have to do it in the nat table of the OUTPUT chain (that's why 
-it's there).
+What do your system or mail server logs say when a connection is attempted?
 
 Regards,
 
 Antony.
 
 -- 
-If you want to be happy for an hour, get drunk.
-If you want to be happy for a year, get married.
-If you want to be happy for a lifetime, get a garden.
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
 
                                                      Please reply to the list;
                                                            please don't CC me.
