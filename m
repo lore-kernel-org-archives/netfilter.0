@@ -1,13 +1,11 @@
-From: Tony Earnshaw <tonye@billy.demon.nl>
-Subject: Re: limiting number of concurrent tcp sessions
-Date: Mon, 22 Mar 2004 16:44:46 +0100
+From: "Brice GIBOUDEAU" <brice@pingus.org>
+Subject: Target Request for QOS.
+Date: Mon, 22 Mar 2004 17:09:01 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1079970285.19134.53.camel@localhost>
-References: <20040322125944.GA9496@oasis.frogfoot.net>
+Message-ID: <4213.194.2.155.29.1079971741.squirrel@www.pingus.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040322125944.GA9496@oasis.frogfoot.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,69 +16,122 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Discussions <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-man, 22.03.2004 kl. 13.59 skrev Abraham van der Merwe:
+Hi,
 
-> Is there a way to limit the number of concurrent tcp sessions per host/ip
-> flowing through a machine in Linux?
-> 
-> There used to be a match for iptables which seems like it may be able to do
-> the job, but it doesn't seem to exist anymore:
-> 
-> ------------< snip <------< snip <------< snip <------------
-> iplimit v1.2.8 options:
-> [!] --iplimit-above n           match if the number of existing tcp
-> connections is (not) above n
->  --iplimit-mask n               group hosts using mask
-> ------------< snip <------< snip <------< snip <------------
+I can see different patch for iptables :
+     - a patch to mark packet from IP information (Source-IP,
+Destination-IP, sport, dport, protocol, etc ...)
+     - a patch to setup unusual route.
+But nothing to mark packet coming-from and going-to a router.
 
-This is half an answer ;) I've kernel-org 2.6.4 ACPI on this machine,
-Netfilter 1.2.9 and the required POM. This is thus a new Netfilter
-installation. The HOWTO describes iplimit, but for my installation there
-was no such thing. I found out that if one substitutes the word
-"connlimit" for "iplimit", then everything written about iplimit applies
-to connlimit.
+This is an example of a problem i trie to solve.
+I have 2 providers with 2 routers (one per provider), this 2 routers
+announce BGP route to my LinuxBox running iptables and Zebra.
+The 2 routers and my LinuxBox is on the same subnet.
 
-The bad news is, that what I'm trying doesn't work for me :(
 
-I have a rule:
+         |                      |
+         |                      |
+   ------------            ------------
+   -          -            -          -
+   -  Router1 -            - Router2  -
+   -          -            -          -
+   ------------            ------------
+         |                      |
+         |     -------------    |
+         -------   SWITCH  ------
+               -------------
+                     |
+                     |
+               ------------
+               -          -            -------------
+               - LinuxBox -------------|    DMZ    |
+               -          -            -------------
+               ------------
+                     |
+                     |
+                     |
+               ------------
+               |   LAN    |
+               ------------
 
-iptables -A INPUT -i $IFACE0 -s 194.159.xx.xx -p tcp --syn --dport smtp
--m connlimit --connlimit-above 1 -j LOG --log-prefix "fp=2nd Mailkick:1
-a=REJECT "
-iptables -A INPUT -i $IFACE0 -s 194.159.73.24 -p tcp --syn --dport smtp
--m connlimit --connlimit-above 1 -j REJECT
 
-(xx.xx for a bit of anonymity, the funny fp and a LOG prefixes are for
-my Fireparse reporter).
 
-However, the rule doesn't work, or connlimit doesn't work, for some
-reason.
 
-lsmod:
 
-ipt_connlimit           3200  2
-ipt_LOG                 5440  12
-ipt_state               1856  72
-ipt_REJECT              6656  14
-ipt_limit               2240  1
-iptable_filter          2752  1
-ip_tables              17808  6
-ipt_connlimit,ipt_LOG,ipt_state,ipt_REJECT,ipt_limit,iptable_filter
+I use QOS on the LinuxBox, for exemple :
 
--rwxr-xr-x    1 root     root         4173 mar 17 21:56
-/usr/local/lib/iptables/libipt_connlimit.so
+    - if i have 2 lines of 2 Mb/s than my ROOT Fifo (10:) size is 4Mb/s.
+    - I mark traffic for one of my server with 100 (ex : VoIP or VPN).
+    - I mark all other traffic with 101.
+    - I configure 2 FiFo, one of 10Kb/s for 101 fwmark and one of 3996Kb/s
+for 100 fwmark, with the options Bounded-Isolated disabled to share
+bandwidth.
+    My configuration is to prioritize traffic of VoIP or VPN and the free
+bandwidth can be used for download and upload by users.
 
-So I guess my question would be: Why?
+The problem is :
+----------------
 
-Best,
+    - A phoneCall or a VPN connection is open with a small traffic 10Kb/s.
+    - A user start a download on a FTP server at 2Mb/s (Full line
+Bandwidth) with the same outgoing & incoming Line than the VoIP or VPN
+connection.
+    -> The QOS don't think the line is full and the quality of VPN or
+PhoneCall is degraded (PacketLoss, etc ...).
 
---Tonny
+My question is :
+----------------
 
--- 
+    - Is it possible to add a target to mark a packet comming from a
+mac-address or the IP of the previous router.
+    - Is it possible to add a target to mark a packet going to a
+mac-address or the IP of the next router (With BGP i have all routing
+information in the routing table).
+    With this two target i can make a difference between the 2 routers
+traffic, than i can remove the FiFo of 4Mb/s and add 2 FiFo of 2Mb/s
+etc ....
 
-mail: billy - at - billy.demon.nl
-http://www.billy.demon.nl
+This is an other configuration i trie to solve the problem :
+------------------------------------------------------------
 
+
+         |                      |
+         |                      |
+   ------------            ------------
+   -          -            -          -
+   -  Router1 -            - Router2  -
+   -          -            -          -
+   ------------            ------------
+         |                      |
+         |                      |
+         --------       --------
+                 |      |
+                 |      |
+                 |      |
+               ------------
+               -          -            -------------
+               - LinuxBox -------------|    DMZ    |
+               -          -            -------------
+               ------------
+                     |
+                     |
+                     |
+               ------------
+               |   LAN    |
+               ------------
+
+
+I change configuration of the 2 routers to connect the routers directly to
+a dedicated interface, with that i can mark packet with the
+incoming/outgoing interface.
+If you do that traffic can go out with the router1 and return by router2
+than the Conntracking reject the packet and i need it on my LinuxBox ....
+Than the only solution is the 2 new target.
+
+
+Thanks,
+Brice GIBOUDEAU
 
