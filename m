@@ -1,12 +1,13 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: Automatic forwarding to own interfaces
-Date: Tue, 23 Sep 2003 11:25:21 +0200 (CEST)
+From: Eric Leblond <eric@regit.org>
+Subject: Re: Problem for Bittorrent Application behind Linux Firewall
+Date: Tue, 23 Sep 2003 11:46:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.58.0309231123500.15001@tux.rsn.bth.se>
-References: <200309230823.AA53674022@mirrormind.com>
+Message-ID: <1064310359.17646.17.camel@porky>
+References: <049201c381b3$672939f0$5a01a8c0@wireless.cheung.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-A2U76O2fPZ528VZ8Hc/K"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200309230823.AA53674022@mirrormind.com>
+In-Reply-To: <049201c381b3$672939f0$5a01a8c0@wireless.cheung.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +17,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Simon Lodal <simonl@mirrormind.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 23 Sep 2003, Simon Lodal wrote:
 
-> >That's a "normal" Linux behaviour. Linux answers packets destined to any
-> >of its own IPs own any interface, as long as your INPUT filtering rules
-> >allows it. You can set something like :
-> >
-> >	iptables -A INPUT -d 192.168.1.5 -i ! eth1 -j DROP
-> >	iptables -A OUTPUT -s 192.168.1.5 -o ! eth1 -j DROP
->
-> Hmm... I was afraid this was the case.
->
-> So in the common small scale setup with one box acting as router, firewall and internal web and smtp server, this is an absolute must. Or your "internal" web and smtp services will in fact be open to anyone.
->
-> So what is the point in configuring daemons to listen only on specific addresses?
->
-> This is probably a surprise to some, as it is to me. Quite a few firewall packages and setups miss this point.
+--=-A2U76O2fPZ528VZ8Hc/K
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Usually you don't even care about to which ip on the local machine someone
-connects, only the sourceip/interface they are connecting from. So just
-take out the -d part in INPUT rules.
+Le mar 23/09/2003 =C3=A0 11:16, Tom a =C3=A9crit :
+> Hello Everyone:
+> =20
+> #! /bin/sh
+> iptables -t nat -A PREROUTING -i ppp0 -p tcp --dport 6881:6889 -j DNAT
+> --to 192.168.1.90:6881-6889
+> iptables -A FORWARD -p tcp -s 192.168.1.90 --dport 6881:6889 -j ACCEPT
 
-/Martin
+If someone comes from external network, i.e Internet, you have to
+authorize packet to your machine :
+-d 192.168.1.90 and not -s !
+
+BR,
+--=20
+Eric Leblond
+Nufw, Now User Filtering Works (http://www.nufw.org)
+
+--=-A2U76O2fPZ528VZ8Hc/K
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQA/cBZXnxA7CdMWjzIRAn1oAJ90i6m8GzBUOW5O5jtz//Bkt0LFCACfUa+k
+NbYUSaBFktGJdJVHUxs7CUc=
+=+6RJ
+-----END PGP SIGNATURE-----
+
+--=-A2U76O2fPZ528VZ8Hc/K--
 
