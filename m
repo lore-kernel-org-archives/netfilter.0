@@ -1,10 +1,11 @@
-From: "Rowan Reid" <rreid@studio3arc.com>
-Subject: FW: PPTP through masquerading gateway
-Date: Tue, 9 Jul 2002 09:44:43 -0700
+From: Jan Humme <jan.humme@xs4all.nl>
+Subject: Do I need a firewall rule for RST ?
+Date: Tue, 9 Jul 2002 18:50:13 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001201c22767$fe3fe430$6b01a8c0@s3ac>
+Message-ID: <02070918501400.02824@Lms>
+Reply-To: jan.humme@xs4all.nl
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,33 +17,43 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org, "'R. Sterenborg'" <rsterenborg@xs4all.nl>, suse-linux-e@suse.com
+To: netfilter@lists.samba.org
 
+In /var/log/messages, I often find packages that have been rejected because 
+of the following rules:
 
-FYI
+$IPTABLES -A FORWARD -m multiport -p tcp -i ppp0 --sports $TCPOUT\
+	-j ACCEPT --tcp-flags ACK ACK
+$IPTABLES -A FORWARD -m multiport -p tcp -o ppp0 --dports $TCPOUT\
+	-j ACCEPT
 
-Some info I came across, unfortunatly I'm not a CVS genious and the only
-Method I know to patch I file is with zcat. Can someone answer this one
-for me.
+In short, what I want to achieve is that incoming traffic should always have 
+the ACK-bit set.
 
-> the pptp patch in the CVS won't apply. I've just submitted a 
-> patch to the -devel list. You can download the latest CVS 
-> tree and apply the following patch : 
-> http://fabnetwork.ifrance.com/fabnetwork/patches/conntrack_ppt
-p_patch_rediff.patch
-After that, running patch-o-matic, the pptp patch should now apply
-properly.
+Packets that are rejected most often are packets that have the RST-flag set:
 
-Have a nice day,
+Jul  9 14:08:58 jhh kernel: IN=ppp0 OUT=eth0 SRC=145.58.30.9 DST=192.168.0.1 
+LEN=40 TOS=0x00 PREC=0x00 TTL=49 ID=32896 PROTO=TCP SPT=80 DPT=1068 WINDOW=0 
+RES=0x00 RST URGP=0
+Jul  9 14:08:59 jhh kernel: IN=ppp0 OUT=eth0 SRC=145.58.30.9 DST=192.168.0.1 
+LEN=40 TOS=0x00 PREC=0x00 TTL=49 ID=33682 PROTO=TCP SPT=80 DPT=1068 WINDOW=0 
+RES=0x00 RST URGP=0
+Jul  9 14:09:01 jhh kernel: IN=ppp0 OUT=eth0 SRC=145.58.30.9 DST=192.168.0.1 
+LEN=40 TOS=0x00 PREC=0x00 TTL=49 ID=35186 PROTO=TCP SPT=80 DPT=1068 WINDOW=0 
+RES=0x00 RST URGP=0
 
-Fabrice.
---
-Fabrice MARIE
-Senior R&D Engineer
-Celestix Networks
-http://www.celestix.com/
+Questions:
 
-"Silly hacker, root is for administrators"
-       -Unknown
+1) AFAIK these packets are harmless, correct? Or could some of them be used 
+in attacks?
 
+2) (Assuming they are harmless:) is it safe then to add a rule:
+
+$IPTABLES -A FORWARD -m multiport -p tcp -i ppp0 --sports $TCPOUT\
+	-j ACCEPT --tcp-flags RST RST
+ 
+3) Is there perhaps a better way to deal with these kinds of packets? 
+Perhaps i should better use "state" and forget about the flags?
+
+Jan Humme.
 
