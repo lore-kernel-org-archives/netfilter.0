@@ -1,12 +1,12 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: inner workings of IP tables
-Date: Tue, 1 Oct 2002 13:51:50 +0800 (MYT)
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: Block/Accept by MAC Address
+Date: Tue, 01 Oct 2002 08:34:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0210011349550.5900-100000@dodobirdy.nestac.com>
-References: <Pine.LNX.4.40.0209291918280.19073-100000@klepto.security.algx.lan>
+Message-ID: <3D99420E.1080103@fugmann.dhs.org>
+References: <003a01c268ea$d98408a0$e951ea43@W2RZ8L4S02>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.40.0209291918280.19073-100000@klepto.security.algx.lan>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,25 +16,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jim Gifford <maillist@jg555.com>
+Cc: netfilter@lists.netfilter.org
 
-On Sun, 29 Sep 2002, Kevin Dwyer wrote:
+Jim Gifford wrote:
+> Is it possible to block or accept information from specific MAC Addresses.
+> 
+> Here is what I would like to do. Is to create a exempt and complete block
+> policy by mac address. I have a guy who keeps hacking my machine and his IP
+> address is always changing and so does his hostname. The only thing that was
+> common was his MAC address.
+> 
+> Thank you in advance for your help.
+> 
+> 
+If this person is hacking you from the internet, you cannot use the mac 
+address for filtering. The MAC addres on a packet is changed each time 
+the packet packet traverses through a router, and this you will always 
+see the same mac address on packets comming through your ISP.
 
-> http://www.linux-ha.org
-> http://w3.arobas.net/~jetienne/vrrpd/
-> (and more, peep the linux-ha site for a huge list of resources)
->
-> Netfilter doesn't have the code to pass the state table across
-> machines (and would be a neat feature) but you can make a firewall
-> pair by either using VRRPd or Linux-HA.  You'll drop active
-> connections, but CP did too up until recently I think.
+If he is hacking you from withing you lan, I suggest cutting his wire.
+(Alternativly use: iptables -t mangle -T PREROUTING -m mac --mac-source 
+XX:XX:XX:XX:XX:XX -j DROP)
 
-I _think_ PIX still has the option for either failover. With state and
-without state depending on what you're willing to lose and how much $$$
-you're willing to shell out :)
-
-(snip rest)
+Regards
+Anders Fugmann
+-- 
+Neo: 'Can you fly that thing?'
+Trinity: 'Not yet'.
+$ apt-get install pilot-prg-v212helicopter.
 
 
