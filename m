@@ -1,11 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Subject: Re: SNAT question
-Date: Fri, 20 Feb 2004 21:05:23 +0000
+Date: Fri, 20 Feb 2004 16:08:54 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402202105.23417.Antony@Soft-Solutions.co.uk>
+Message-ID: <1077311333.1983.10.camel@ca.gts.nexusmgmt.com>
 References: <40366adb.53af.0@arbbs.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <40366adb.53af.0@arbbs.net>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,49 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: black@arbbs.net
+Cc: netfilter@lists.netfilter.org
 
-On Friday 20 February 2004 8:15 pm, John Black wrote:
-
-> Everything works, when i do the lazy way and go to the web page
-> www.whatismyipaddress.com.
->
->
-> but my question is when i went to the MS chat room, it was showing me the
-> 192.168.x.x ipaddress.
->
+On Fri, 2004-02-20 at 15:15, John Black wrote:
+> Everything works, when i do the lazy way and go to the web page www.whatismyipaddress.com.
+> 
+> 
+> but my question is when i went to the MS chat room, it was showing me the 192.168.x.x
+> ipaddress.
+> 
 > why is this?
-
-Because Microsoft always do things differently from everyone else :) ?
-
-
-No, seriously though, some protocols embed the IP address of the machines 
-which are communicating inside the data which is transferred, so each end 
-knows what the other end's true IP address is, even if this then means they 
-can't talk to each other because one or both ends has an unroutable address.
-
-As far as I'm aware MS Chat is one of these protocols, although I've certainly 
-never used it myself.
-
-
-One thing you should be aware of is that if you use such a protocol to test 
-your network / firewall setup, then you should count yourself lucky that it 
-appears to work at all.   Many such protocols (which network people refer to 
-as embedding OSI layer 3 data inside OSI layer 7 packets) simply do not work 
-across NAT at all.
-
-Hope this helps clarify your confusion.
-
-Regards,
-
-Antony.
-
+I do not know the innards of the MS Chat protocol but could it be that
+it embeds the address information in the data portion of the packet? -
+John
 -- 
-There's no such thing as bad weather - only the wrong clothes.
-
- - Billy Connolly
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
