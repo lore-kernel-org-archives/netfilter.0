@@ -1,7 +1,7 @@
 From: Guido Lorenzutti <guido@lorenzutti.com.ar>
-Subject: travelling the tables and chains...
-Date: Sun, 03 Apr 2005 23:25:42 -0300
-Message-ID: <4250A5A6.6040509@lorenzutti.com.ar>
+Subject: is there a way to discriminate the ESTABLISHED traffic?
+Date: Sun, 03 Apr 2005 23:51:24 -0300
+Message-ID: <4250ABAC.5010207@lorenzutti.com.ar>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,18 +18,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi people, i would like to clean up my firewall script by creating new 
-chains in the filter table. Like this:
+How can i discriminate the traffic that my firewall is answering from a 
+NEW request from a network from the ESTABLISHED traffic that my firewall 
+is making from a NEW request from him?
 
-iptables -N FORWARD_WAN_TO_LAN
+In rules, to allow traffic TO my box from the lan 10.0.0.0/32
 
-Then, call the traffic in the FORWARD chain:
+1 ipt -A INPUT -s 10.0.0.0/32 -m state --state NEW -j ACCEPT
+2 ipt -A INPUT -s 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
+3 ipt -A OUTPUT -d 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
 
-iptables -A FORWARD -i $WAN -o $LAN -j FORWARD_WAN_TO_LAN
+Now, to allow traffic FROM my box to the lan 10.0.0.0/32
 
-Now how can i discriminate the DNATed packets from that rule? It's OK if 
-i MARK them in the PREROUTING chain and create a rule BEFORE in the 
-FORWARD chain to check if the packet im MARKed then -j DNATED_WAN_TO_LAN?
+4 ipt -A OUTPUT -d 10.0.0.0/32 -m state --state NEW -j ACCEPT
+5 ipt -A OUTPUT -d 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
+6 ipt -A INPUT -s 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
 
-Any better ideas?
+The 3 and 5 rules are exactly the same. Is there a way to discriminate 
+this or the things are just like this and there is nothing to do about it?
+
+Tnxs in advance.
 
