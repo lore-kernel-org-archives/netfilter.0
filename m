@@ -1,13 +1,12 @@
-From: George Georgalis <georgw@galis.org>
-Subject: Re: ssh connecting to wrong machine....
-Date: Mon, 3 Jun 2002 16:57:37 -0400
+From: Alin Nastac <mrness@technosoft.ro>
+Subject: Re: alias
+Date: Mon, 03 Jun 2002 23:56:47 +0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020603165737.A1199@trot.haven.dom>
-References: <20020602192157.A16556@trot.haven.dom> <002c01c20aaa$812e04b0$020aa8c0@matttm9svd8lrh> <20020603010544.E16556@trot.haven.dom> <001901c20af8$0b8bbe70$020aa8c0@matttm9svd8lrh>
+Message-ID: <3CFBD80F.5080105@technosoft.ro>
+References: <20020603195921.84898.qmail@web9908.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <001901c20af8$0b8bbe70$020aa8c0@matttm9svd8lrh>; from mhellman@raccoon.com on Mon, Jun 03, 2002 at 07:13:17AM -0500
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,30 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Matthew Hellman <mhellman@raccoon.com>
-Cc: George Georgalis <georgw@galis.org>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?J=F6rgen?= Danielsson <jorgen_d@yahoo.com>
+Cc: netfilter@lists.samba.org
 
-On Mon, Jun 03, 2002 at 07:13:17AM -0500, Matthew Hellman wrote:
+There is a solution:
+    ip addr add w.x.y.z/bits dev eth0 label eth00
+
+and use -i/-o eth00 in iptables.
+
+In fact, I believe you could use any alphanumeric characters after=20
+'eth0'. I'm not sure.
+
+J=F6rgen Danielsson wrote:
+
+>Hello
 >
->Looks good.  The only other thing I'd do is change your default OUTPUT
->policy to DROP and add this:
->iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+>I have a little question that perhaps someone knows
+>the answer to.
 >
->There was a recent bug in the iptables code that had some security
->implications (information disclosure), but I don't recall the details at the
->moment. The suggestion was to drop INVALID output, which this does.
+>Is it inpossible to use a alias in a rule. With that I
+>mean refer to a interface called eth1:0.
+>
+>I get this from every version of iptable i have tried
+>(1.2.2, 1.2.4, 1.2.6a):
+>
+>Warning: wierd character in interface `eth1:0' (No
+>aliases, :, ! or *).
+>
+>/J=F6rgen
+>
+>__________________________________________________
+>Do You Yahoo!?
+>Yahoo! - Official partner of 2002 FIFA World Cup
+>http://fifaworldcup.yahoo.com
+>
 
-I think I heard about that, disclosing LAN IPs? I didn't really pay
-attention at the time, thanks, it's fixed now.
-
-// George
-
-
--- 
-GEORGE GEORGALIS, System Admin/Architect    cell: 347-451-8229 
-Security Services, Web, Mail,            mailto:george@galis.org 
-File, Print, DB and DNS Servers.       http://www.galis.org/george 
 
 
