@@ -1,11 +1,15 @@
-From: "Riho Randla" <riho@hot.ee>
-Subject: iptables and suddenly refused connections for vpn
-Date: Mon, 14 Oct 2002 13:15:31 +0300
+From: Fabrice MARIE <fabrice-marie-sec@ifrance.com>
+Subject: Re: IPSEC and other non tcp/udp/icmp blocking
+Date: Mon, 14 Oct 2002 19:17:39 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01b601c2736a$a13c0cb0$c300a8c0@VAIO>
+Message-ID: <200210141917.40231.fabrice-marie-sec@ifrance.com>
+References: <41791.64.86.49.17.1034369123.squirrel@www.icafe.co.tz>
+Reply-To: fabrice-marie-sec@ifrance.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <41791.64.86.49.17.1034369123.squirrel@www.icafe.co.tz>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,21 +20,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: murli@icafe.co.tz, netfilter@lists.netfilter.org
 
-Hi,
+Hello Cyberdude,
 
-Can enybody suggest how I could track down a problem with sometimes refused
-connections? Couple of times a week nobody can make a vpn connection to our
-poptop vpn server. In /var/log/messages I get the following error:
+On Saturday 12 October 2002 04:45, Mitesh P Choksi wrote:
+> Dear All,
+> How does netfilter work with other protocols apart tcp/udp/icmp?
+> I am trying to either block or account IPSec traffic.
+> Regards,
+> Cyberdude Murli
+> The Earth
 
-pptpd[4374]: GRE: read(fd=5,buffer=8055a20,len=8260) from network failed:
-status = -1 error = Connection refused
+to block ipsec (IIRC):
+# iptables -A FORWARD -p 50 -j DROP
+# iptables -A FORWARD -p 51 -j DROP
+# iptables -A FORWARD -p tcp --dport 500 -j DROP
 
-When I restart my firewall everithing gets ok for a while again. How to find
-out what's going on with the pptpd or iptables (or maybe with the kernel)?
-And how to understand the components of the message from pptpd? I guess the
-problem is not in pptp, as restarting the firewall rules solves the issue.
+(to block ah&esp as well as the IKE daemon).
 
+Have a nice day,
 
+Fabrice.
+--
+Fabrice MARIE
+
+"Silly hacker, root is for administrators"
+       -Unknown
 
