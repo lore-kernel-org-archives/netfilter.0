@@ -1,12 +1,13 @@
-From: "CoyoteTM" <szeki@inc.hu>
-Subject: ftos why obsolate
-Date: Tue, 16 Dec 2003 13:27:50 +0100
+From: "Mark Weaver" <mark@npsl.co.uk>
+Subject: RE: Firewalling non-IPsec connections
+Date: Tue, 16 Dec 2003 14:45:14 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <010d01c3c3d0$0541fb50$63ea38c3@hewlett7k6i3ca>
+Message-ID: <GFEPJIHHFOJDOFDMNAJDCEPFEJAA.mark@npsl.co.uk>
+References: <200312160853.01932.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_010A_01C3C3D8.66C4C670"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200312160853.01932.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+> > The in-kernel ipsec does not have an ipsec0 virtual interface, that is
+> > where the problem come from - I don't see a way yet to destinguish
+> > decapsulated ipsec traffic from eth0 to eth1 from raw traffic
+> between the
+> > two interfaces.
+>
+> Ah.   I have yet to play with the features of 2.6 kernels,
+> therefore I didn't
+> realise that this version of IPsec has such a drawback compared
+> to FreeS/WAN.
+>
+I solved this using firewall marks.  Essentially, packets that come in via
+IPSEC and then get untunelled retain the fwmark, so you can do something
+like:
 
-------=_NextPart_000_010A_01C3C3D8.66C4C670
-Content-Type: text/plain;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+iptables -t mangle -A PREROUTING -i eth0 -p esp -j MARK --set-mark 1
+iptables -A INPUT -m mark --mark 1 -j ACCEPT
 
-Hello All!
+(Obviously repeat for forward if required and do further firewalling for
+anything you don't trust from your VPN).
 
-The ftos patch in the patch-o-matic is marked osolate. why ?
+There is also a way of matching particular SPIs inside AH/ESP packets (where
+you can do the same thing and set a mark).  This is even better because
+specific connections can then be tracked, untested but should be something
+like:
 
-I need to match to the TOS filed precedence bit(s).
+iptables -t mangle -A PREROUTING -m esp --espspi num:num -j MARK --set-mark
+1
 
-Thanks
-------=_NextPart_000_010A_01C3C3D8.66C4C670
-Content-Type: text/html;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+You would more than likely want to insert these into the firewall ruleset
+dynamically with the help of your keying daemon (freeswan, isakmpd, ...).
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1276" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hello All!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>The ftos patch in the patch-o-matic is =
-marked=20
-osolate. why ?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I need to match to the TOS filed =
-precedence=20
-bit(s).</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_010A_01C3C3D8.66C4C670--
-
+Mark
 
 
