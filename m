@@ -1,12 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ftp
-Date: Thu, 27 May 2004 20:14:04 +0100
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: ftp
+Date: Thu, 27 May 2004 21:34:51 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405272014.04877.Antony@Soft-Solutions.co.uk>
-References: <20040527164327.6B8A1DBD@sterenborg.info> <200405271906.54858.Antony@Soft-Solutions.co.uk> <11c201c4441a$f2b875b0$49caa8c0@caris.priv>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <20040527193451.05B99DBD@sterenborg.info>
+References: <11c201c4441a$f2b875b0$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <11c201c4441a$f2b875b0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -21,28 +20,20 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 27 May 2004 7:46 pm, Peter Marshall wrote:
+> > > .... Thank you for the info.  My question now is, will your rule
+> > > take care of both passive and active ftp ?  I would prefer to just
+> > > use active .. But
 
-> hmm .. i suppose that is right as well ....
->
+> > ip_conntrack_ftp does handle both passive and active ftp.
+
 > Any thoughts on my last question ?
 
-Sorry, what is your last question?   I can't see anything in your previous 
-postings which remains unanswered....
+As far as I see, Antony answered your last question : both passive and
+active ftp are handled.
+Or am I missing something ?
 
-Regards,
 
-Antony.
-
--- 
-Bill Gates has personally assured the Spanish Academy that he will never allow 
-the upside-down question mark to disappear from Microsoft word-processing 
-programs, which must be reassuring for millions of Spanish-speaking people, 
-though just a piddling afterthought as far as he's concerned.
-
- - Lynne Truss, "Eats, Shoots and Leaves"
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Gr,
+Rob
 
 
