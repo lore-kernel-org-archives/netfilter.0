@@ -1,36 +1,34 @@
-From: Andrew Walrond <andrew@walrond.org>
-Subject: Re: Iptables-1.2.9/10 compile failure with linux 2.6.7 headers
-Date: Fri, 18 Jun 2004 17:21:47 +0100
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <200406181721.47968.andrew@walrond.org>
-References: <200406181611.37890.andrew@walrond.org> <40D313DC.7000202@blue-labs.org>
+From: Patrick Leslie Polzer <leslie.polzer@gmx.net>
+Subject: Re: DNAT problem /  question
+Date: Fri, 18 Jun 2004 18:45:08 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20040618184508.23c93ae6.leslie.polzer@gmx.net>
+References: <519AD2BA94FC6E4DB5DE078B2E37CB10A76BA5@PDBEX01E.pdb.fsc.net>
+	<200406181706.28684.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org-S266139AbUFRQc2@vger.kernel.org>
-In-Reply-To: <40D313DC.7000202@blue-labs.org>
-Content-Disposition: inline
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200406181706.28684.Antony@Soft-Solutions.co.uk>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: David Ford <david+challenge-response@blue-labs.org>
-Cc: netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org
+To: netfilter@lists.netfilter.org
 
-Hi David,
+On Fri, 18 Jun 2004 17:06:28 +0100
+Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
 
-On Friday 18 Jun 2004 17:10, David Ford wrote:
-> Iptables should be using linux-libc-headers headers instead of kernel
-> headers.
+> You have specified an inappropriate combination of address and netmask with 
+> 172.25.239.220/27 - the address 220 is not the base address of a /27 range, 
+> and it is possible (I am not certain) that this combination is confusing 
+> netfilter.
+I don't think this is a problem. They'll be masked out anyway.
 
-Is this acquired knowledge, or new Netfilter policy?
-How dependant are the iptables tools on the specifc kernel running?
+Leslie
 
-Ie
-Can I build iptables for use on 2.6.7 kernel with 2.6.6 linux-libc-headers? 
-(probably)
-
-But could I build iptables for 2.6.7 kernel with 2.4.20 linux-libc-headers? 
-(probably not?)
-
-The INSTALL file states specifically to use 
-KERNEL_DIR=<<where-you-built-your-kernel>>
-
-Andrew
