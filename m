@@ -1,9 +1,12 @@
-From: Alaios <alaios@yahoo.com>
-Subject: ftos patch
-Date: Fri, 28 Jan 2005 07:50:08 -0800 (PST)
-Message-ID: <20050128155009.99786.qmail@web54702.mail.yahoo.com>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: iptables returns "module is wrong version"
+Date: 28 Jan 2005 17:02:07 +0100
+Message-ID: <1106928124.29980.13.camel@nostromo.bgsecm.com>
+References: <r02010100-1037-C21332F2714011D998C6000A95DF6F1E@[192.168.1.112]>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <r02010100-1037-C21332F2714011D998C6000A95DF6F1E@[192.168.1.112]>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,56 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: Kurt Yoder <ktynetfilter@richard-group.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi i want to know in advance if the followin patch
-would allow me to set whatever tos field i want or f.e
-0x28
-0x40
-0x48
-0x52
-0x30
-etc
-Thx
+El vie, 28 de 01 de 2005 a las 16:24, Kurt Yoder escribi=C3=B3:
+> How do I figure out which patches were applied to the iptables module?
+>=20
+> I installed iptables from source with no patches but am still getting
+> the same error message.
 
-4.1 ftos patch 
+You can see what patches (or modules) iptables have compiled looking
+into the /usr/lib/iptables or /usr/local/lib/iptables directory, and
+the kernel ones in
+/lib/modules/<kernel-version>/kernel/net/ipv4/netfilter
 
+but the problem it's that the iptables modules and the kernel modules
+must be synced and patched with the same path-o-matic, or it won't
+work properly.
 
-This patch by Matthew G. Marsh <mgm@paktronix.com>
-adds a new target that allows you to set the TOS of
-packets to an arbitrary value.
+Regards.
 
- 
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
 
-For example, if you want to set the TOS of all the
-outgoing packets to be 15, you can do as follows :
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
- 
-
-# iptables -t mangle -A OUTPUT -j FTOS --set-ftos 15
-
-# iptables -t mangle --list
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination  
-      
-FTOS       all  --  anywhere             anywhere     
-     TOS set 0x0f 
-
- 
-
-Supported options for the FTOS target are :
-
- 
-
---set-ftos value
-
--> Set TOS field in packet header to value. This value
-can be in decimal (ex: 32) or in hex (ex: 0x20)
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
