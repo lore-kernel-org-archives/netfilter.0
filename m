@@ -1,15 +1,10 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Documentation on libipq
-Date: Tue, 24 Jun 2003 19:14:53 +0200
+From: cable linux <cablelinux@yahoo.com>
+Subject: I implement that script plz check it again
+Date: Tue, 24 Jun 2003 12:22:18 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030624171453.GY2645@sunbeam.de.gnumonks.org>
-References: <3EF0DC6A.1090704@GameBox.net>
+Message-ID: <20030624192218.996.qmail@web14404.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cJfXB9mphngkt5vq"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3EF0DC6A.1090704@GameBox.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,59 +14,158 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Abhinav Gupta <a.gupta@GameBox.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+
+I sucessfully implement that script but, when i do
+iptables -NL command it shows only ethernet ip address
+information. i want to see the internet issues that is
+not showing to me.
 
 
---cJfXB9mphngkt5vq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+# Internal and External Devices
+#dev_world=ppp0
+dev_world=`/sbin/ifconfig ppp0|grep -w "inet addr"|awk
+-F: '{print $2}'|awk '{print $1}'`
+dev_int=eth0
 
-On Wed, Jun 18, 2003 at 03:40:58PM -0600, Abhinav Gupta wrote:
-> Hi,
->=20
-> Is there any documentation available for libipq? If there is, can=20
-> someone please send me links to it?
+# Firewall IP
+addr_int=192.168.1.1
 
-man libipq
-man ipq_create_handle
-man ipq_destroy_handle
-man ipq_errstr
-man ipq_get_msgerr
-man ipq_get_packet
-man ipq_message_type
-man ipq_perror
-man ipq_read
-man ipq_set_mode
-man ipq_set_verdict
+# Internal Net
+net_int=192.168.1.0/24
 
-All included in the standard iptables package.
-=20
-> Thanks in advance,
-> Abhinav.
+#Loading Modules
 
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+insmod ip_tables
+insmod iptable_filter
+insmod ip_conntrack
+insmod ip_conntrack_ftp
+insmod ipt_state
+insmod iptable_nat
+insmod ipt_MASQUERADE
+insmod ipt_limit
+insmod ipt_LOG
+insmod ipt_REJECT
+insmod iptable_mangle
 
---cJfXB9mphngkt5vq
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+#Disabling IP Spoofing attacks.
+#Comment this line out when using IPSEC
+echo 2 > /proc/sys/net/ipv4/conf/all/rp_filter
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+#Don't respond to broadcast pings
+echo "1" >
+/proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
 
-iD8DBQE++IcNXaXGVTD0i/8RAgvAAKCznO8KBCwdSEMkUcdVkHIX1A+krQCfdhKj
-xP29ObIW+bfrqQ9wTJYziqI=
-=OsNK
------END PGP SIGNATURE-----
 
---cJfXB9mphngkt5vq--
+#Enable forwarding
+echo 1 >/proc/sys/net/ipv4/ip_forward
+
+#Block source routing
+echo 0
+>/proc/sys/net/ipv4/conf/all/accept_source_route
+
+#Kill timestamps.  These have been the subject of a
+recent bugtraq thread
+echo 0 > /proc/sys/net/ipv4/tcp_timestamps
+
+#Enable SYN Cookies
+echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+
+#Kill redirects
+echo 0 >/proc/sys/net/ipv4/conf/all/accept_redirects
+
+#Enable bad error message protection
+echo 1 >
+/proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
+
+#Allow dynamic ip addresses
+echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+
+#Log martians (packets with impossible addresses)
+#RiVaL said that certain NICs don't like this. 
+Comment out if necessary.
+echo 1 >/proc/sys/net/ipv4/conf/all/log_martians
+
+#Set out local port range
+echo "32768 61000"
+>/proc/sys/net/ipv4/ip_local_port_range
+
+#Reduce DoS'ing ability by reducing timeouts
+echo 30 > /proc/sys/net/ipv4/tcp_fin_timeout
+echo 1800 > /proc/sys/net/ipv4/tcp_keepalive_time
+echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
+echo 0 > /proc/sys/net/ipv4/tcp_sack
+echo 1280 > /proc/sys/net/ipv4/tcp_max_syn_backlog
+
+#################################################################
+# Delete all Rules in Filtertable
+iptables -F
+
+#######################################################
+# Define new chains
+iptables -N BLOCK
+iptables -N EXT-INT
+iptables -N INT-EXT
+iptables -N ICMP-DENY
+iptables -N INT-IF
+iptables -N EXT-IF
+
+#######################################################
+
+iptables -A BLOCK -m state --state ESTABLISHED,RELATED
+-j ACCEPT
+iptables -A BLOCK -m state --state NEW -i ! $dev_world
+-j ACCEPT
+iptables -A BLOCK -j DROP
+
+iptables -A INPUT -j BLOCK
+iptables -A FORWARD -j BLOCK
+
+#################################################################
+# Point to chains
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -i $dev_int -s $net_int -j INT-IF
+iptables -A INPUT -d ! $addr_int -i $dev_world -s !
+$net_int -j EXT-IF
+iptables -A INPUT -j DROP
+
+iptables -A FORWARD -d ! $net_int -i $dev_world -s
+$net_int -j INT-EXT
+iptables -A FORWARD -d $net_int -i $dev_int -s !
+$net_int -j EXT-INT
+iptables -A FORWARD -j DROP
+
+iptables -A OUTPUT -j ACCEPT
+
+#################################################################
+# Chain Rules
+iptables -A EXT-INT -j DROP
+
+iptables -A EXT-IF -i ! $dev_world -j DROP
+iptables -A EXT-IF -p tcp --dport 22 -j ACCEPT
+iptables -A EXT-IF -p tcp --dport 5901 -j ACCEPT
+iptables -A EXT-IF -p tcp --dport 1024: -j ACCEPT
+iptables -A EXT-IF -p udp --dport 1024: -j ACCEPT
+iptables -A EXT-IF -j DROP
+
+iptables -A INT-IF -j ACCEPT
+
+################################################################
+# NAT Rules
+# Standard Routing
+iptables -A POSTROUTING -t nat -o $dev_world -j
+MASQUERADE -s $net_int
+
+
+
+
+
+
+
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! DSL - Now only $29.95 per month!
+http://sbc.yahoo.com
 
