@@ -1,16 +1,12 @@
-From: Robin Lynn Frank <rlfrank@paradigm-omega.com>
-Subject: Re: Dumb question
-Date: Thu, 26 Aug 2004 17:59:18 -0700
+From: "Ye, Xiaolu" <xiaolu.ye@intel.com>
+Subject: cross compile netfilter to arm-linux
+Date: Fri, 27 Aug 2004 10:23:49 +0800
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093568356.3959.18.camel@omega.paradigm-omega.net>
-References: <1093567709.3959.15.camel@omega.paradigm-omega.net>
-	<1093567944.21197.2.camel@dchws.tqmcube.com>
+Message-ID: <01385A324262E54DA1F2087B0A87EDBFA369CC@pdsmsx401.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-gTyT42QsIaA4F1sFIa6H"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1093567944.21197.2.camel@dchws.tqmcube.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,38 +16,139 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Netfilter Mail List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hi:
 
---=-gTyT42QsIaA4F1sFIa6H
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+    I want to cross compile netfilter(1.2.7a) to my arm-linux
+platform(Kernel 2.4.17-rmk3).
 
-On Thu, 2004-08-26 at 17:52, David Cary Hart wrote:
-> >=20
-> I use TARPIT. It is available in the latest POM which you can download.
-> You need the IPTables source code and the source for your kernel which
-> well then have to be recompiled. Make CERTAIN that you are not running
-> conntrack with TARPIT.=20
->=20
-Thanks.
---=20
-Robin Lynn Frank
-Director of Operations
-Paradigm-Omega, LLC
+    I add these lines to the Makefile:
 
---=-gTyT42QsIaA4F1sFIa6H
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+        CC :=3D /arm/bin/arm-linux-gcc #my arm gnu gcc
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Sed quis custodiet ipsos custodes?
+LD :=3D /arm/bin/arm-linux-ld  #my arm gnu linker
 
-iD8DBQBBLodko0pgX8xyW4YRAv+XAKCtRm95NazcWlUqTuy8RyBhOThGsgCgt9u+
-z+ej1ySbb29sap59UiN6Fwo=
-=dkaZ
------END PGP SIGNATURE-----
+AR :=3D /arm/bin/arm-linux-ar
 
---=-gTyT42QsIaA4F1sFIa6H--
+    Then compile the netfilter, some errors occur:
+
+        include/linux/netfilter_ipv4/ipt_conntrack.h:28: `IP_CT_DIR_MAX'
+undeclared here (not in a function)
+
+include/linux/netfilter_ipv4/ipt_conntrack.h:29: `IP_CT_DIR_MAX'
+undeclared here (not in a function)
+
+include/linux/netfilter_ipv4/ipt_conntrack.h:29: `IP_CT_DIR_MAX'
+undeclared here (not in a function)
+
+extensions/libipt_conntrack.c: In function `parse_status':
+
+extensions/libipt_conntrack.c:103: `IPS_EXPECTED' undeclared (first use
+in this function)   =20
+
+extensions/libipt_conntrack.c:103: (Each undeclared identifier is
+reported only once
+
+extensions/libipt_conntrack.c:103: for each function it appears in.)
+
+extensions/libipt_conntrack.c:105: `IPS_SEEN_REPLY' undeclared (first
+use in this function)
+
+extensions/libipt_conntrack.c:107: `IPS_ASSURED' undeclared (first use
+in this function)
+
+extensions/libipt_conntrack.c: In function `parse':
+
+extensions/libipt_conntrack.c:202: `IP_CT_DIR_ORIGINAL' undeclared
+(first use in this function)
+
+extensions/libipt_conntrack.c:259: `IP_CT_DIR_REPLY' undeclared (first
+use in this function)
+
+extensions/libipt_conntrack.c: In function `print_status':
+
+extensions/libipt_conntrack.c:364: `IPS_EXPECTED' undeclared (first use
+in this function)
+
+extensions/libipt_conntrack.c:368: `IPS_SEEN_REPLY' undeclared (first
+use in this function)
+
+extensions/libipt_conntrack.c:372: `IPS_ASSURED' undeclared (first use
+in this function)
+
+extensions/libipt_conntrack.c: In function `matchinfo_print':
+
+extensions/libipt_conntrack.c:420: `IP_CT_DIR_ORIGINAL' undeclared
+(first use in this function)
+
+extensions/libipt_conntrack.c:440: `IP_CT_DIR_REPLY' undeclared (first
+use in this function)
+
+make: *** [extensions/libipt_conntrack.o] Error 1
+
+   For this error, I check the netfilter code, and add two enum to
+ipt_conntrack.h/libipt_conntrack.c, and then pass these errors.
+
+=20
+
+    But, in compile progress, still have some errors:
+
+        extensions/libipt_tos.c:58: warning: `struct ipt_tos_info'
+declared inside parameter list
+
+extensions/libipt_tos.c:58: warning: its scope is only this definition
+or declaration, which is probably not what you want.
+
+extensions/libipt_tos.c: In function `parse_tos':
+
+extensions/libipt_tos.c:69: dereferencing pointer to incomplete type
+
+extensions/libipt_tos.c:75: dereferencing pointer to incomplete type
+
+extensions/libipt_tos.c: In function `parse':
+
+extensions/libipt_tos.c:95: warning: passing arg 2 of `parse_tos' from
+incompatible pointer type
+
+extensions/libipt_tos.c:97: dereferencing pointer to incomplete type
+
+extensions/libipt_tos.c: In function `print':
+
+extensions/libipt_tos.c:141: dereferencing pointer to incomplete type
+
+extensions/libipt_tos.c:142: dereferencing pointer to incomplete type
+
+extensions/libipt_tos.c: In function `save':
+
+extensions/libipt_tos.c:150: dereferencing pointer to incomplete type
+
+extensions/libipt_tos.c:151: dereferencing pointer to incomplete type
+
+extensions/libipt_tos.c: At top level:
+
+extensions/libipt_tos.c:159: sizeof applied to an incomplete type
+
+extensions/libipt_tos.c:160: sizeof applied to an incomplete type
+
+make: *** [extensions/libipt_tos.o] Error 1
+
+=20
+
+Anybody tell me how can I pass this error? Many Thanks!
+
+=20
+
+=20
+
+Best Regards!
+
+Ye.XiaoLu
+
+=20
+
+=20
+
+=20
 
