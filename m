@@ -1,12 +1,12 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Static compile issues
-Date: Thu, 29 May 2003 09:10:06 +1000
+From: Cory Visi <merlin@phear.lwz.org>
+Subject: Re: Static compile issues
+Date: Wed, 28 May 2003 17:11:42 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D2D@wardrive.citadelcomputer.com.au>
+Message-ID: <Pine.LNX.4.30.0305281709290.30704-100000@phear.lwz.org>
+References: <1054158893.21086.62.camel@dejawu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <1054158893.21086.62.camel@dejawu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +16,9 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Cory Visi <merlin@phear.lwz.org>, netfilter@lists.netfilter.org
-
-No, don't enable it.. why bother.
-
-I've noticed that there are more and more people with problems on 2.4.20 =
-kernel. Not sure the reason behind it or if it's the kernel or netfilter =
-causing it.. but so far my 2.4.19 is fine.. not that it helps you...
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
------Original Message-----
-From: Cory Visi [mailto:merlin@phear.lwz.org]
-Sent: Thursday, May 29, 2003 7:12 AM
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: Re: Static compile issues
-
 
 When I compile the kernel statically and enable IP Tables support,
 ipchains compatibilty is becomes no longer available. I have the Invalid
@@ -63,10 +42,8 @@ On 28 May 2003, Esteban wrote:
 > good luck
 >
 > On Wed, 2003-05-28 at 17:09, Cory Visi wrote:
-> > I am using a 2.4.20 kernel with pom-20030107 and iptables v1.2.7a. =
-From
-> > pom-20030107, I have installed all the pending patches and all the =
-base
+> > I am using a 2.4.20 kernel with pom-20030107 and iptables v1.2.7a. From
+> > pom-20030107, I have installed all the pending patches and all the base
 > > patches. In addition, I have installed the following extra patches:
 > >
 > > amanda-conntrack-nat.patch
@@ -78,23 +55,18 @@ base
 > > rsh.patch
 > > tftp-conntrack-nat.patch
 > >
-> > The problem is, when I compile the kernel statically and enable all =
-the
-> > iptables options, I cannot do NAT. Any iptables line that specifies =
-a
+> > The problem is, when I compile the kernel statically and enable all the
+> > iptables options, I cannot do NAT. Any iptables line that specifies a
 > > chain in the nat table causes an Invalid Argument:
 > >
-> > # iptables -t nat -A POSTROUTING -o $EXTERNAL -s $INTERNAL_NETWORK =
--j SNAT --to-source $EXTERNAL_IP
+> > # iptables -t nat -A POSTROUTING -o $EXTERNAL -s $INTERNAL_NETWORK -j SNAT --to-source $EXTERNAL_IP
 > > Invalid argument
 > >
 > > Another interesting thing to point out, is that I also compiled this
-> > kernel with modules and experienced the same problem. I was, =
-however, able
+> > kernel with modules and experienced the same problem. I was, however, able
 > > to fix it by disabling the IPv4 netfilter option for "NAT of local
 > > connections". For the module kernel, disabling this option fixes the
-> > problem. For the staticly compiled kernel, disabling this option has =
-no
+> > problem. For the staticly compiled kernel, disabling this option has no
 > > effect-- the error persists.
 > >
 > > Anyone have any ideas?
@@ -109,6 +81,5 @@ no
 >
 >
 >
-
 
 
