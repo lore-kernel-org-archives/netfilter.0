@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: I dont know how to forward port 80
-Date: Mon, 14 Feb 2005 17:32:50 -0500
-Message-ID: <1108420370.4338.23.camel@hubcap.ljm.dom>
-References: <420B54E3.8040900@google.com>
-	<1108128247.4489.45.camel@hubcap.ljm.dom>
-	<1108297731.10876.28.camel@nostromo.bgsecm.com>
+From: Travis Crook <travis@visionsbeyond.com>
+Subject: RE: ftp behind the firewall
+Date: Mon, 14 Feb 2005 15:54:09 -0700
+Message-ID: <1108421649.4852.7550.camel@Linsaidin>
+References: <186AC876521E0F46BDE77079A6567FD0F0DDC3@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1108297731.10876.28.camel@nostromo.bgsecm.com>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <186AC876521E0F46BDE77079A6567FD0F0DDC3@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,58 +16,129 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Cc: netfilter@lists.netfilter.org
 
-On Sun, 2005-02-13 at 07:28, Jose Maria Lopez Hernandez wrote:
-> El vie, 11-02-2005 a las 08:24 -0500, Jason Opperisano escribi=C3=B3:
-> >   # allow input packets that are part of an established connection
-> >   iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> >=20
-> >   # allow HTTP requests in
-> >   iptables -A INPUT -p tcp --syn --dport 80 -j ACCEPT
->=20
-> Sorry, I've seen in some of your answers that you never use
-> -m state --state NEW. Could you tell me why?=20
+On Mon, 2005-02-14 at 09:25 -0800, Hudson Delbert J Contr 61 CS/SCBN
+wrote:
+> travis,
+> 
+> re-state your scenario. its incomplete.
+> 
+> how do you know its running fine?
 
-for the sake of clarity.  when someone asks, "how do i allow http into
-my machine" it seems clearer to say:
+Normal Web traffic, ftp users outside the firewall coming in, windows
+boxes behind the firewall, etc. are all running and accessing
+information as expected.
+> 
+> what distro and version of linux are you running?
 
-  iptables -A INPUT -p tcp --syn --dport 80 -j ACCEPT
+Mandrake 8.1, kernel 2.4.8-26mdk
+> 
+> what doesn the config for ftp look like?
 
-rather than:
+Rules for ftp:
 
-  iptables -A INPUT -m state --state NEW -p tcp --syn \
-    --sport 1024:65535 --dport 80 -j ACCEPT
+# Network information you will need to adjust
+INTERNALIF="eth1"
+INTERNALNET="192.168.2.0/24"
+INTERNALBCAST="192.168.2.255"
+EXTERNALIF="eth0"
+MYADDR="12.42.147.158"  # Only needed for DNAT, leave out otherwise
 
-you're not going to make me add a disclaimer to all my posts that says
-"any rules are included to clarify a point of discussion.  do not use
-the rules posted without understanding the full security implications of
-such an act.  firewall rules lasting more than four hours require
-medical attention."
+#Insert modules- should be done automatically if needed
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_nat_ftp
 
-> I am updating
-> my firewall and I'm very confused with this, because you
-> seem to know everything about Netfilter and iptables,
+#Allow replies coming in
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-heh heh--thanks, i needed a laugh.
+#Send ftp to an internal machine
+$IPTABLES -A PREROUTING -t nat -i $EXTERNALIF -p tcp -d $MYADDR --dport
+20 -j DNAT --to 192.168.2.5:20
+$IPTABLES -A FORWARD -i $EXTERNALIF -p tcp -d 192.168.2.5 --dport 20 -j
+ACCEPT
 
->  and
-> I am using the NEW state in all my rules. Should I do it
-> or should I not?=20
+$IPTABLES -t nat -A PREROUTING -i $EXTERNALIF -p tcp -d $MYADDR --dport
+21 -j DNAT --to-destination 192.168.2.5
+$IPTABLES -A FORWARD -i $EXTERNALIF -p tcp -d 192.168.2.5 --dport 21 -j
+ACCEPT
+$IPTABLES -A FORWARD -i $EXTERNALIF -o $INTERNALIF -p tcp --syn -d
+192.168.2.5 --dport 21 -j ACCEPT
+#Masquerade internal connections going out.
+$IPTABLES -A POSTROUTING -t nat -o $EXTERNALIF -j MASQUERADE
 
-i do.
+> 
+> is the blocked by default.
+> 
+> when you say my windows machines dont seem ot have this problem..
+> where do these windoze boxen sit?
 
-> And by the way, should I use the --syn
-> flag?
+All computers (linux and windows) are on an internal network connected
+via a switch to the firewall.
+> 
+> anything anybody on this list offers up as a solution will not
+> be thought out well and will basically be a guess. 
+> 
+> i'm a visual person - draw me pix of your networks and 
+> sanitize the ip with rfc1918 addresses and bitmasks as it
 
-i do.
+Not quite sure I understand this...
 
--j
+> makes no difference as its all cidr.....
+> 
 
---
-"I'm not a bad guy! I work hard, and I love my kids. So why should
- I spend half my Sunday hearing about how I'm going to Hell?"
-	--The Simpsons
+Network picture
+
+Internet --> firewall --> internal network (linux and windows)
+
+firewall --> incoming ports: 80, 8080, 110, 25, 443, 143, 20, 21, all
+get routed to internal servers.  The rest are dropped/denied.
+
+internal network: should be completely masqueraded by the firewall
+#Masquerade internal connections going out.
+$IPTABLES -A POSTROUTING -t nat -o $EXTERNALIF -j MASQUERADE
+
+
+> guessing is a bad idea....
+> 
+Agreed.
+> 
+> need waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaay more info.
+> 
+
+Anything else?  Will gladly provide it.
+
+Thanks!
+
+-- 
+Travis Crook
+Visions Beyond
+www.VisionsBeyond.com
+(208) 478-7836
+
+> ~piranha
+> 
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Travis Crook
+> Sent: Monday, February 14, 2005 9:08 AM
+> To: netfilter@lists.netfilter.org
+> Subject: ftp behind the firewall
+> 
+> 
+> Hi all,
+> 	I would like to ask a question just for clarification.  I have a
+> firewall up and running just fine.  My problem is that I cannot ftp
+> through the firewall on a linux machine.  My windows machines don't seem
+> to have this problem.  Am I missing something?  Or is it a local linux
+> computer configuration issue.  I'll gladly provide any necessary
+> information.
+> 
+> Thanks!
+> 
+> 
+
 
 
