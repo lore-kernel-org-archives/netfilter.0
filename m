@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: HTTP Port forwarding issues
-Date: Mon, 8 Jul 2002 21:50:28 +0100
+From: Red Hat Enigma <redhat@zagros.ipm.ac.ir>
+Subject: Patch-O-matic
+Date: Tue, 9 Jul 2002 00:21:46 +0430 (IRST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708205030.ECXA4119.mta06-svc.ntlworld.com@there>
-References: <40c701c226bd$a51c87a0$2901a8c0@amos>
+Message-ID: <Pine.LNX.4.33.0207090018030.13923-100000@zagros.ipm.ac.ir>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <40c701c226bd$a51c87a0$2901a8c0@amos>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,18 +14,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Monday 08 July 2002 9:25 pm, Nathan Cassano wrote:
+Dear friends
+I still try to find a way to use patch-o-matic features on my kernel ( 
+2.4.18 ) ,when I run make patch-o-matic ,many patches say, applying patch 
+fail and I don't know why, I do the following steps :
 
-> Remember HTTP runs over UDP protocol also.
+make pending-patches
+make most-of-pom
+make patch-o-matic
+< compiling the kernel>
+make KERNEL_DIR
 
-WHAT ?????
+but many patches didn't apply .
 
-RFC # ?
+Regards
+Alireza
 
- 
-
-Antony.
 
