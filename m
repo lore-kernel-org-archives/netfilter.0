@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DROP vs. REJECT vs. MIRROR
-Date: Thu, 13 Jun 2002 18:03:45 +0100
+Subject: Re: ip_conntrack cleanup
+Date: Thu, 13 Jun 2002 18:09:56 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206131704.SAA08562@slate.rockstone.co.uk>
-References: <200205180511.g4I5B0R02342@gauss.counterexample.org>
+Message-ID: <200206131710.SAA08618@slate.rockstone.co.uk>
+References: <3CE9F837.3040606@snt.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200205180511.g4I5B0R02342@gauss.counterexample.org>
+In-Reply-To: <3CE9F837.3040606@snt.pl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,50 +20,35 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Saturday 18 May 2002 6:11 am, John T. Guthrie wrote:
+On Tuesday 21 May 2002 8:33 am, Wojciech Sobola wrote:
 
-> Hello all,
+> Hello,
 >
-> Please pardon me if this is answered elsewhere.  I have tried looking
-> through all of the documentation, but I am still left wondering what are
-> the advantages/disadvantages of the DROP, REJECT, and MIRROR targets?  I
-> know what they do, but I'm not quite certain as to what are some of the
-> situations when I would want to use each.  (I know that this may fall more
-> under the heading of "site policy".  I'm more interested in examples of why
-> people chose what they did.)  I am especially interested in examples of the
-> MIRROR target.
+> I've been using ipt 1.2.6a for 2 month's. There's seem to be a problem in
+> /proc/net/ip_conntrack. I have chains here, that can't be cleared out.
 
-Basically:
+> Example:
 
-You DROP packets when you don't want the sender to get anything back (ie as 
-far as they're concerned, there wasn't a machine waiting to receive them on 
-that IP address).   It's by far best if you can make sure you DROP *all* 
-packets which are not being routed by your firewall (and of course you don't 
-run any services *on* the firewall, do you :-) so that the machine is 
-invisible on the net - if you DROP some, and ACCEPT or REJECT some, then a 
-program such as nmap will know there's something there which is actively 
-DROPping things.
+> tcp      6 321156 ESTABLISHED src=63.218.135.142 dst=62.xx.x.44 sport=63920
+> dport=80 [UNREPLIED] src=192.168.101.2 dst=63.218.135.142 sport=80
+> dport=63920 use=1
+>
+> Such table can stay even 2 or 3 days.
 
-You REJECT packets when you want to sender to get a connection reset, which 
-will make their client respond much more quickly with "connection lost" or 
-some such.   ie you don't want them to be waiting around for a long time 
-whilst the TCP connection times out.
+The standard TCP timeout on an ESTABLISHED connection is 5 days.   I have no 
+idea why this was once thought to be a good idea, but it is now in the 
+standards.
 
-My recommendation for choosing between these two is to DROP packets from the 
-outside (people you don't know and don't have any incentive to be nice to), 
-and REJECT packets coming from the inside (people on your local network who 
-you presumably want to get a quick and efficient response that the connection 
-cannot be made).
+You could change it and recompile your kernel if you want, but this is the 
+reason you are seeing these connections for 2 or 3 days - they're not even 
+halfway to timing out yet :-)
 
-I've never used MIRROR, and although it can sound quite cool, you should be 
-careful about using it, as it is pretty aggressive.   Basically anything 
-which comes in will be sent back to the source IP address, so someone port 
-scanning you will actually end up port scanning themselves.   The main 
-problem is when they port scan you with spoofed source addresses mixed in, 
-and you end up scanning someone else's system, who may (a) not like it, or 
-(b) block access from your network address/es.
+Also, once a connection is in the conntrack table, you cannot get rid of it 
+by doing anything at all to your netfilter rules.
 
-Like you, I'd be interested to hear of anyone using MIRROR for good reasons.
+If you compiled modules you can remove and reinstall the ip_conntrack module, 
+but if you use a monolithic kernelonly a reboot willget these out of the 
+table.
 
  
 
