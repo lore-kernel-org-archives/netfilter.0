@@ -1,12 +1,14 @@
-From: Naleendra@dms.lanka.net
-Subject: problems with ftp
-Date: Tue, 17 Sep 2002 20:17:54 +0600
+From: Chris Born <ragable@attbi.com>
+Subject: RE: Telnet not being let through
+Date: Tue, 17 Sep 2002 22:27:01 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6029A399F5BFD6118BB200104B0DF37302764E@mailgate.dms.lanka.net>
+Message-ID: <5.1.1.6.0.20020917222230.00b3cca8@mail.attbi.com>
+References: <771DD65729F96D41B132C6189EE644552FE7BA@sydexch1.cs_au.com.
+ au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C25E55.03954320"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <771DD65729F96D41B132C6189EE644552FE7BA@sydexch1.cs_au.com.
+ au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,96 +18,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Kevin Saenz <ksaenz@citistreet.com.au>, netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Thanks, that fixed the problem. I assumed that the rule would only block IP 
+spoofing, as the place I got the rule from indicated so. Seemed logical to 
+me and not quite sure how a TCP telnet packet would get matched up to that one.
 
-------_=_NextPart_001_01C25E55.03954320
-Content-Type: text/plain;
-	charset="iso-8859-1"
+/sbin/iptables -A INPUT -i eth1 -s 192.168.0.0/24 -d 0.0.0.0/0 -j 
+drop-and-log-it
 
-Hi,
+-Chris Born
 
-	First & foremost thanks anthony, telnet works smoothly. 
+At 02:07 PM 9/18/2002 +1000, you wrote:
+>I think your problem is that you drop-and-log-it
+>before accepting anything substantial. IPTables works
+>top down unless your forward to other rules.
+>Basically what happens is if the rules don't apply to
+>the rules before drop-and-log-it then they are getting logged.
+>Usually your very last rule should be drop and log.
+>
+>Have you tired the Iptables tutorial by Oskar Andersen?
+>His examples are very good.
 
-	You see I am checking the services that I'll be needing one by one
-before by plug in the IPTABLES box in to a running network. Next on line is
-FTP. Now I've heard that FTP tends to be a bit bothersome . Listed below is
-my FTP ruleset. My connections are refused both ways. Your help is greatly
-appreciated.
 
-   #Allow FTP outbound.
-iptables -A INPUT -i $PPPIF -p tcp --sport 21 -m state --state ESTABLISHED
--j ACCEPT
-iptables -A OUTPUT -o $PPPIF -p tcp --dport 21 -m state --state
-NEW,ESTABLISHED -j ACCEPT   
-iptables -A INPUT -i $PPPIF -p tcp --sport 20 --dport $UP_PORTS  -m state
---state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -o $PPPIF -p tcp --sport $UP_PORTS --dport 20  -m state
---state ESTABLISHED -j ACCEPT
- iptables -A INPUT -i $PPPIF -p tcp --sport $UP_PORTS --dport $UP_PORTS  -m
-state --state ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -o $PPPIF -p tcp --sport $UP_PORTS --dport $UP_PORTS  -m
-state --state ESTABLISHED,RELATED -j ACCEPT 
-
--nal
-
-------_=_NextPart_001_01C25E55.03954320
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>problems with ftp</TITLE>
-</HEAD>
-<BODY>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hi,</FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">First &amp; foremost thanks anthony, telnet works =
-smoothly. </FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">You see I am checking the services that I'll be needing =
-one by one before by plug in the IPTABLES box in to a running network. =
-Next on line is FTP. Now I've heard that FTP tends to be a bit =
-bothersome . Listed below is my FTP ruleset. My connections are refused =
-both ways. Your help is greatly appreciated.</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp; #Allow FTP =
-outbound.</FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">iptables -A INPUT -i $PPPIF -p tcp =
---sport 21 -m state --state ESTABLISHED -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">iptables -A OUTPUT -o $PPPIF -p tcp =
---dport 21 -m state --state NEW,ESTABLISHED -j ACCEPT&nbsp;&nbsp; =
-</FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">iptables -A INPUT -i $PPPIF -p tcp =
---sport 20 --dport $UP_PORTS&nbsp; -m state --state ESTABLISHED,RELATED =
--j ACCEPT</FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">iptables -A OUTPUT -o $PPPIF -p tcp =
---sport $UP_PORTS --dport 20&nbsp; -m state --state ESTABLISHED -j =
-ACCEPT</FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;iptables -A INPUT -i $PPPIF -p =
-tcp --sport $UP_PORTS --dport $UP_PORTS&nbsp; -m state --state =
-ESTABLISHED -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">iptables -A OUTPUT -o $PPPIF -p tcp =
---sport $UP_PORTS --dport $UP_PORTS&nbsp; -m state --state =
-ESTABLISHED,RELATED -j ACCEPT </FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">-nal</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C25E55.03954320--
 
