@@ -1,9 +1,8 @@
-From: Marcin Sura <slacklist@op.pl>
-Subject: -m helper --helper -irc
-Date: Tue, 17 Aug 2004 20:04:41 +0200
+From: Antonio Alvarez <aramirez@teneinformatica.com>
+Subject: multiple destinations
+Date: Tue, 17 Aug 2004 19:49:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <51382563.20040817200441@op.pl>
-Reply-To: Marcin Sura <slacklist@op.pl>
+Message-ID: <1092768581.24655.11.camel@Toshiba.Toshiba>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,22 +16,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi
+	
 
-  I use following rule for marking irc dcc transfers from my NATed lan.
+Hello 
 
-  iptables -t mangle -A PREROUTING -p tcp -m helper --helper irc \
-  -m mark --mark 0 -j MARK --set-mark 1
 
-  And this works perfectly when I send a file to somebody, and doesn't
-  when somebody sends something to me. Why?
+how can i do.....
 
-  
+iptables -t nat -A PROSROUTING -p tcp --dport 80 -d ! 192.168.0.1 (and)
+! 192.168.0.50 (and) ! xxx.xxx.xxx.xxx -j REDIRECT 3128 
 
--- 
-Pozdrawiam
- Marcin                         mailto:slacklist@op.pl
+I need more than one destination ... may be ussing my own new chains????
+
+
+Thanks in advance
+
+
 
 
