@@ -1,14 +1,13 @@
-From: Daniel Wittenberg <daniel-wittenberg@starken.com>
-Subject: Re: Unassigned Networks List
-Date: 08 Mar 2003 00:48:47 -0600
+From: "hare ram" <hareram@sol.net.in>
+Subject: Re: equalize traffic when link is down
+Date: Sat, 8 Mar 2003 13:23:19 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1047106127.2050.56.camel@runabout.noc.starken.com>
-References: <NGBBIFPIJNDPMFBPKBPGOEJIDKAA.NetFilter-Users@Compucenter.org> 
-	<000701c2e53d$72cc42b0$026410ac@honor>
+Message-ID: <045101c2e547$c8e84860$13fcc5cb@Housecall>
+References: <1047107185.2050.62.camel@runabout.noc.starken.com>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000701c2e53d$72cc42b0$026410ac@honor>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,45 +18,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: Daniel Wittenberg <daniel-wittenberg@starken.com>, Netfilter <netfilter@lists.netfilter.org>
 
-Just something of interest I ran into the other day with a client.  We
-moved them to a new building, and setup their new wireless connection,
-and for the life of me couldn't ping their provider, but everyone else. 
-It seems their provider is using 172 and 10.x addresses for their
-wireless towers, and gateways to the internet.  So if I traceroute to
-the client I get public -> public -> private -> private -> private ->
-public.  It didn't work going out from the client at first because we
-drop all reserved addresses on the public NIC of the firewall, so we
-couldn't ping the provider.  I subsequently got in an "discussion" with
-their CTO about RFC 1918 on how it's probably not good to be using
-private IP's to route public traffic, at least IMHO.
+Hi
 
-Dan
+AFAIK,
 
-On Sat, 2003-03-08 at 00:39, Sascha Reissner wrote:
-> From: "George J. Jahchan, Eng." <NetFilter-Users@Compucenter.org>
-> 
-> [...]
-> 
-> > As mentioned before, classes A & D networks are fairly well documented on
-> > IANA's site <http://www.iana.org/assignments/ipv4-address-space>, but B
-> and
-> > C are listed as "various registries" and in bulk, which is of no help.
-> > I need a list of 128~191 and 192~223 netblocks which are either reserved
-> or
-> > not assigned.
-> 
-> [...]
-> 
-> so you plan on checking currently unassigned ip blocks on a daily base just
-> in case some ISP suddenly gets such a block assigned?
-> 
-> well, there are for sure some efford/reward relations that are not worth
-> doing.. this is one of them ;)
-> 
-> if you want security, unplug the network cable ;-)
-> 
+If the First Link down, the total traffic will move to Other Second  Link,
+if you are configure and load balancing the Link
 
+If you make the static routes , them the traffic will be dead
+
+If you made the Loadbalance the both the  links,
+ then it  will take some time to clear the routecache, once fresh route
+cache build you will have the fresh routes,
+so all the traffic will move towards active link.
+
+
+hare
+
+-----
+----- Original Message -----
+From: "Daniel Wittenberg" <daniel-wittenberg@starken.com>
+To: "Netfilter" <netfilter@lists.netfilter.org>
+Sent: Saturday, March 08, 2003 12:36 PM
+Subject: equalize traffic when link is down
+
+
+> If you use equalize with 2 default gateways (like 2 ISP's), and one of
+> them goes down, what happens to the traffic?  Will it automatically go
+> out the one up link, or will some traffic fail to go out?
+>
+> Dan
+>
+>
+>
 
 
