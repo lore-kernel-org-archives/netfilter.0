@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: port forwarding
-Date: Wed, 23 Jul 2003 16:41:07 +1000
+Subject: RE: good book on iptables..
+Date: Wed, 23 Jul 2003 16:42:58 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BF90@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BF91@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,19 +17,13 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sathi <sathiyan@gmx.net>
+To: Louie Miranda <louie@axishift.ath.cx>
 Cc: "Netfilter Mailling List (E-mail)" <netfilter@lists.netfilter.org>
 
-You can't. FTP doesn't send any header information like http's virtual =
-host information on which site it's for.
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
-the only option is to use different ports for different sites..
-
-ftp www.domain/com:10021
-ftp www.domain2/com:10022
-ftp www.domain3/com:10023
-
-that's the only what I know.
+That's one of many mirror I use for reference, it's where I learnt alot =
+about iptables whether it's complete or not..
 
 Thanks,
 ____________________________________________
@@ -45,29 +39,18 @@ HelpDesk: +61 2 9955 2698
 =20
 
 -----Original Message-----
-From: Sathi [mailto:sathiyan@gmx.net]
-Sent: Wednesday, July 23, 2003 4:06 PM
-To: Netfilter Mailing List
-Subject: port forwarding
+From: Louie Miranda [mailto:louie@axishift.ath.cx]
+Sent: Wednesday, July 23, 2003 4:18 PM
+To: netfilter@lists.netfilter.org
+Subject: good book on iptables..
 
 
-Hello All,
+Is there any good books about iptables?
 
-I am running squid reverse proxy for 5 different web servers.
+--
+Thank you,
+Louie Miranda (louie@axishift.ath.cx)
 
-I want to provide ftp access to clients so that they can update the web =
-page
-content.
-
-As all the host name resolve to the single address i find problem in =
-port
-forward the ftp request to the correct backend web server.
-
-How to make port forward the ftp request to the correct web server using
-iptables.
-
-Regards
-Sathi
 
 
 
