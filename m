@@ -1,13 +1,9 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: bad tcp packets?
-Date: Wed, 2 Feb 2005 08:56:25 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0502020852020.24248@blackhole.kfki.hu>
-References: <41FE32D4.4000103@usna.edu>
-	<1107193476.9909.4.camel@nostromo.bgsecm.com>
-	<Pine.CYG.4.58.0502010731340.544@MI340a.chem.mathsci.usna.edu>
+From: =?iso-8859-1?Q?Herv=E9?= <herve@lucidia.net>
+Subject: Two NICS with same IP and same client IP
+Date: Wed, 2 Feb 2005 09:35:31 -0000 (GMT)
+Message-ID: <61246.57.66.65.39.1107336931.squirrel@57.66.65.39>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-In-Reply-To: <Pine.CYG.4.58.0502010731340.544@MI340a.chem.mathsci.usna.edu>
+Content-Transfer-Encoding: quoted-printable
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,68 +14,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Kevin Van Workum <vanw@MI340a.chem.mathsci.usna.edu>
-Cc: Jose Maria Lopez <jkerouac@bgsec.com>, "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Tue, 1 Feb 2005, Kevin Van Workum wrote:
+Hello,
 
-> On Mon, 31 Jan 2005, Jose Maria Lopez wrote:
->
-> > El lun, 31 de 01 de 2005 a las 14:29, Kevin Van Workum escribi=C3=B3:
-> > > I'm learning about iptables and am working through the example script=
-s
-> > > in Oskar Andreasson's Iptables Tutorial 1.1.19. So I have the followi=
-ng
-> > > rules:
-> > >
-> > > iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LO=
-G
-> > > --log-prefix "New not syn:"
-> > > iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DR=
-OP
-> > >
-> > > My understanding of this rule is that all NEW tcp packets should by S=
-YN
-> > > also. So if they are not NEW and SYN, then we should log them and dro=
-p
-> > > them. I guess Andreasson wants to log them because they may indicate =
-a
-> > > problem of some sort. So in my log file, I get this:
-> > >
-> > > Jan 30 20:09:27 server kernel: New not syn:IN=3D OUT=3Dlo SRC=3D10.0.=
-0.100
-> > > DST=3D10.0.0.100 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D7678 D=
-F PROTO=3DTCP
-> > > SPT=3D34928 DPT=3D143 WINDOW=3D32767 RES=3D0x00 ACK PSH FIN URGP=3D0
-> > >
-> > > So what's the problem with these packets? It looks like some client i=
-s
-> > > contacting the imapd (which is running on my firewall) with some bad =
-tcp
-> > > packets?
-> >
-> > NEW without SYN packets can occur but they are very uncommon, the
-> > rule proposed it's correct in the 99% of the systems, but if you
-> > have a program or daemon that doesn't make the SYN/ACK-SYN/ACK
-> > correctly then you maybe have to allow this packets.
->
-> Is there a way to determine which program or daemon is producing these
-> packets?
+I have a weird setup I would like to make work: I have two identical
+subnets connected to one machine via two different NICs, like this:
 
-Any program or daemon may do, considering the following scenario: there
-are established connections going through your firewall and you remove
-then load in again the ip_conntrack module.
+Server             |         | Client 1
+eth0:192.168.100.1 |---------| 192.168.100.2
+                   |                              | Client 2
+eth1:192.168.100.1 |------------------------------| 192.168.100.2
 
-But the packages above are more probably late FIN packets: the conection
-was deleted from the conntrack table and then a delayed FIN packet
-belonging to the deleted connection arrived.
+These two machines only access an NFS share on the server, but I assume
+this is irrelevant: the problem is to route the packets back through the
+interface the request came from (I am not trying to access the boxes
+_from_ the server).
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+My first idea was to modify the source address as the request come in, an=
+d
+then route and put the original address back in the outgoing packet, but =
+I
+haven't found a way to do that.
+
+Anybody got any idea?
+
+Thanks in advance,
+Herv=E9.
 
