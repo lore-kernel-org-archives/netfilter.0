@@ -1,11 +1,11 @@
 From: "R. DuFresne" <dufresne@sysinfo.com>
 Subject: RE: INPUT or FORWARD;;
-Date: Mon, 20 Dec 2004 15:40:48 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10412201539220.18976-100000@darkstar.sysinfo.com>
-References: <20041220132421.DAE032F42A@kshira.sterenborg.info>
+Date: Mon, 20 Dec 2004 16:19:09 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10412201617430.18976-100000@darkstar.sysinfo.com>
+References: <1103549777.3264.18.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041220132421.DAE032F42A@kshira.sterenborg.info>
+In-Reply-To: <1103549777.3264.18.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,45 +18,61 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Rob Sterenborg <rob@sterenborg.info>
+To: Jason Opperisano <opie@817west.com>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, 20 Dec 2004, Rob Sterenborg wrote:
+On Mon, 20 Dec 2004, Jason Opperisano wrote:
 
-> netfilter-bounces@lists.netfilter.org wrote:
-> >> A multi-homed firewall having at least two interfaces, is known, at
-> >> least to itself by those IP/hostnames combos assinged to its
-> >> interfaces.  <i.e. ppp0 and eth0>  So say rules coming from the ppp0
-> >> interface into the firewall <INPUT rules> are directed to it's other
-> >> name/interface 
-> >> 
-> >> -i /dev/ppp0 -d /dev/eth0
+> On Mon, 2004-12-20 at 08:24, Rob Sterenborg wrote:
+> > I'm not sure I understand this :
+> > I agree it's a valid rule (syntax), but I don't think it will ever match
+> > a packet.
 > > 
-> > well--those values make no sense whatsoever, but if you're
-> > asking if the following is valid:
-> > 
-> >   iptables -A INPUT -i ppp0 -d $IP_OF_ETH0 -j ACCEPT
-> > 
-> > then yes.  the INPUT chain is traversed by packets destined
-> > for a local process (IP addresses).  the input interface is
-> > just a tag attached to the packet.
+> > If -i and -d are specified, they both have to match to accept a packet,
+> > right ?
+> > Because <ip_eth0> is not assigned to ppp0, how can -i ppp0 -d <ip_eth0>
+> > ever match for the INPUT chain ?
 > 
-> I'm not sure I understand this :
-> I agree it's a valid rule (syntax), but I don't think it will ever match
-> a packet.
+>   eth0 IP:  1.2.3.4
+>   eth1 IP:  10.1.1.1
 > 
-> If -i and -d are specified, they both have to match to accept a packet,
-> right ?
-> Because <ip_eth0> is not assigned to ppp0, how can -i ppp0 -d <ip_eth0>
-> ever match for the INPUT chain ?
+>   iptables -A INPUT -i eth1 -p icmp -d 1.2.3.4 -j ACCEPT
+> 
+> an ICMP echo-request packet arrives on eth1 with dst IP 1.2.3.4.
+> 
+> the routing code needs to figure out what the destination of the packet
+> is--so we do a route lookup.  1.2.3.4 is a local IP--OK, destination is
+> local.  packets with a local destination passes through the INPUT chain
+> of netfilter, so let's hook in...does the packet match our rule?
+> 
+>   -i eth1	YES
+>   -p icmp	YES
+>   -d 1.2.3.4	YES
+> 
+> so this rule matches--apply the target:
+> 
+>   -j ACCEPT
+> 
+> the majority of people i encounter need to free themselves from the
+> notation that there is some magic binding between interfaces and their
+> IP addresses, because the kernel certainly does not see things that way.
+> 
+> if you mean "destined for IP a.b.c.d and arriving on ethX" then say that
+> in your rule:
+> 
+>   iptables -A INPUT -i ethX -d a.b.c.d [...]
+> 
+> say what you mean and mean what you say.
 
-That was the rational of my asking if a rule that specified a "-i
-/dev/ppp0 -d /dev/eth0" setup would be a FORWARD rhather then a INPUT
-rule, as we are crossing interfaces with such a rule.
+
+If I'm reading all this correctly then if set as both INPUT and FORWARD
+rules the FORWARD rules would become redundant and never be hit as the
+INPTU rules would be caught first and deal with what becomes of the
+packets, yes?
 
 Thanks,
 
-Ron Duresne
+Ron DuFresne
 -- 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         admin & senior security consultant:  sysinfo.com
