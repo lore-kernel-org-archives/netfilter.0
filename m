@@ -1,13 +1,12 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: REDIRECT to multiple ports
-Date: Thu, 30 Sep 2004 09:33:08 -0500
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: connection tracking without iptables?
+Date: Thu, 30 Sep 2004 11:19:25 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <415C1924.2020100@pbl.ca>
-References: <00f501c4a664$592083a0$f90e0e0a@msojsi>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E37C@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <00f501c4a664$592083a0$f90e0e0a@msojsi>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +16,28 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jiann-Ming Su <sujiannming@gmail.com>, netfilter@lists.netfilter.org
 
-Shpend Bakalli wrote:
-> I have a transparent squid proxy with 3 running squid processes in it (to make use of mltiprocessor architecture). Each have different ports.
-> I'm using REDIRECT to redirect packets comming with destination port 80 to ports 3127 - 3129 in the proxy server.
-> Although the distribution of the requests should be done in a round-robin fashion, it seems it is not done like that.
-> Any idea how kernel/iptables manages this kind of redirection? Is it a simple round-robin or there is some other method of distribution?
+> Just trying to get an idea of the type and amount of traffic passing
+> through a subnet.  I've done this before with tcpdump, but that
+> required an external parsing program to reconstitute all the
+> connections from the tcpdump capture.
 
-Not really Netfilter related, but, why do you need multiple Squid 
-processes to make use of multiprocessor architecture?  Squid will spawn 
-child processes by itself and assign incomming requests to them in round 
-robin fashion.  Unless you have a huge number of incomming requests per 
-second, this shouldn't be a problem.
+The way I track this kind of information is from netfilter/iptables.
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+In the PREROUTING and POSTROUTING chains, you implement 'null' targets
+to add an internal netfilter counter to the packet stream.
+
+# Detect all outgoing web traffic from that subnet
+iptables -t mangle -A PREROUTING --source ${mynet}/${mymask} -p tcp
+--dport 80=20
+# Return Traffic
+iptables -t mangle -A PREROUTING --destination ${mynet}/${mymask} -p tcp
+--sport 80
+
+You may find this a little kludgy. I guess it is. The other alternative
+is to use IP accounting packages which are pre-built to do this stuff.
+You may find http://www.ntop.org/ntop.html or http://www.cacti.net/
+useful if you don't feel like doing it yourself.
 
