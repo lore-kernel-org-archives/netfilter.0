@@ -1,13 +1,14 @@
-From: Arthur Meyer <arthur.meyer@tbz.ch>
-Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
-Date: Tue, 13 Jan 2004 06:47:02 +0100
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: Port range forwarding
+Date: Mon, 12 Jan 2004 22:26:56 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401130647.02666.arthur.meyer@tbz.ch>
-References: <1130D4BF-4551-11D8-AFEE-000393677A36@porchlight.ca>
+Message-ID: <200401130626.i0D6QwHu016929@server5.bandwidthco.com>
+References: <E4DB60AD-44FC-11D8-842F-000A95DA9C9A@msa.hinet.net>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1130D4BF-4551-11D8-AFEE-000393677A36@porchlight.ca>
+In-Reply-To: <E4DB60AD-44FC-11D8-842F-000A95DA9C9A@msa.hinet.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,147 +19,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: 'Max Yin' <max.yin@msa.hinet.net>, netfilter@lists.netfilter.org
+
+I'm sure there are some better solutions available, but this should work:
+
+i=3100
+while [ "$i" -le 3500 ]
+do
+	$IPT -t nat -A PREROUTING -i eth0 -j DNAT -p tcp --	dport $i
+--to-destination 192.168.2.60:$i
+
+	i=`expr $i + 1`
+done 
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Max Yin
+Sent: Monday, January 12, 2004 4:43 AM
 To: netfilter@lists.netfilter.org
+Subject: Port range forwarding 
 
-Have you compiled netfilter with the option --with linux netfilter and se=
-t the=20
-transparent proxy instructions in squid?
-Arthur
+Hi,
+I'm not sure if this question is already been asked before or not, because I
+can't find any discussion before.
+
+I want to setup a port forwarding rule that will translate a specified port
+range to another port range, for example:
+
+iptables -t nat -A PREROUTING -i eth0 -j DNAT -p tcp --dport 3100:3500
+--to-destination \ 192.168.2.60:2100-2500
+
+But I found that all connections from 3100 to 3500 will be mapped to 2100
+port only, not 3100 to 2100, 3101 to 2101, etc.
+
+So, how can I make it? or is it possible ?
+
+Thanks
+Max
 
 
-On Monday 12 January 2004 23:45, Peter Schobel wrote:
-> yes all policies are set to ACCEPT and I assume that squid is working
-> fine since it works well by using the proxyhost on port 80 and 3128 or
-> by manually configuring the proxy in the browser
->
-> On Monday, January 12, 2004, at 04:31  PM, John A. Sullivan III wrote:
-> > Hmmm . . . your rules do indeed look wide open.  Have you double
-> > checked
-> > silly things like making sure all the policies are ACCEPT and squid c=
-an
-> > resolve names using DNS? Is there any chance that squid does not like
-> > 2.6?
-> >
-> > On Mon, 2004-01-12 at 15:57, Peter Schobel wrote:
-> >> If i access the proxyhost directly on port 80 i can see the request =
-to
-> >> the local host on 3128 and then i see a request from the local host =
-to
-> >> the remote proxy site and everything works fine - the squid log show=
-s
-> >> the access.  I'm not really sure what to do at this point i've been
-> >> trying any rule i can think of and i have a bunch of logging rules i=
-n
-> >> now to try to figure out what's going wrong but i'm not getting any
-> >> more information than what you see below.
-> >>
-> >> If i can't get this working by the end of the night, i'll probably
-> >> have
-> >> no choice but to format reinstall and try to get back to a working
-> >> configuration which i really don't want to do because i have a lot o=
-f
-> >> software installed and configured on that machine that i will have t=
-o
-> >> rebuild.
-> >>
-> >> Peter Schobel
-> >> ~
-> >>
-> >> On Monday, January 12, 2004, at 03:04  PM, Peter Schobel wrote:
-> >>> it appears to me as if it's redirecting to port 3128 but its not
-> >>> getting a reply from squid - the squid access log does not show the
-> >>> access at all as if it never received the packet
-> >>>
-> >>>
-> >>> Jan 12 14:52:21 proxyhost IN=3Deth0 OUT=3D
-> >>> MAC=3D00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=3D64.187.35.163
-> >>> DST=3D216.239.37.104 LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D=
-47715 DF
-> >>> PROTO=3DTCP SPT=3D53036 DPT=3D80 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D=
-0
-> >>> Jan 12 14:52:21 proxyhost IN=3Deth0 OUT=3D
-> >>> MAC=3D00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=3D64.187.35.163
-> >>> DST=3D10.0.0.1 LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D47715 =
-DF PROTO=3DTCP
-> >>> SPT=3D53036 DPT=3D3128 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-> >>> Jan 12 14:52:24 proxyhost IN=3Deth0 OUT=3D
-> >>> MAC=3D00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=3D64.187.35.163=
- DST=3D
-> >>> 10.0.0.1 LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D47717 DF PRO=
-TO=3DTCP
-> >>> SPT=3D53036 DPT=3D3128 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-> >>> Jan 12 14:52:27 proxyhost IN=3Deth0 OUT=3D
-> >>> MAC=3D00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=3D64.187.35.163=
- DST=3D
-> >>> 10.0.0.1 LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D47719 DF PRO=
-TO=3DTCP
-> >>> SPT=3D53036 DPT=3D3128 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-> >>> Jan 12 14:52:30 proxyhost IN=3Deth0 OUT=3D
-> >>> MAC=3D00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=3D64.187.35.163=
- DST=3D
-> >>> 10.0.0.1 LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D47721 DF PRO=
-TO=3DTCP
-> >>> SPT=3D53036 DPT=3D3128 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-> >>> Jan 12 14:52:33 proxyhost IN=3Deth0 OUT=3D
-> >>> MAC=3D00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=3D64.187.35.163=
- DST=3D
-> >>> 10.0.0.1 LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D47724 DF PRO=
-TO=3DTCP
-> >>> SPT=3D53036 DPT=3D3128 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-> >>> Jan 12 14:52:36 proxyhost IN=3Deth0 OUT=3D
-> >>> MAC=3D00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=3D64.187.35.163=
- DST=3D
-> >>> 10.0.0.1 LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D47726 DF PRO=
-TO=3DTCP
-> >>> SPT=3D53036 DPT=3D3128 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-> >>> Jan 12 14:52:42 proxyhost IN=3Deth0 OUT=3D
-> >>> MAC=3D00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=3D64.187.35.163=
- DST=3D
-> >>> 10.0.0.1 LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D47739 DF PRO=
-TO=3DTCP
-> >>> SPT=3D53036 DPT=3D3128 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-> >>> Jan 12 14:52:54 proxyhost IN=3Deth0 OUT=3D
-> >>> MAC=3D00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=3D64.187.35.163=
- DST=3D
-> >>> 10.0.0.1 LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D47743 DF PRO=
-TO=3DTCP
-> >>> SPT=3D53036 DPT=3D3128 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-> >>>
-> >>> On Saturday, January 10, 2004, at 12:26  AM, Alistair Tonner wrote:
-> >>>> =09Have you tried LOGging the INPUT chain for both 80 and 3128?
-> >>>> =09Or, perhaps more thorough, put a LOG rule in PREROUTING
-> >>>> =09before the REDIRECT/DNAT rule to log what you will change,
-> >>>> =09and since your destination is local, a LOG rule at the top of I=
-NPUT
-> >>>> =09to catch *everything* for the interim? -- then see at what poin=
-t
-> >>>> =09the packets are actually disappearing.
-> >>
-> >> *****************************
-> >> Peter Schobel
-> >> Network Administrator
-> >> Porchlight.ca
-> >> Unlimited Internet
-> >> *****************************
-> >> In a world without walls or fences
-> >> We will have no need for gates or windows
-> >> *****************************
-> >
-> > --
-> > John A. Sullivan III
-> > Chief Technology Officer
-> > Nexus Management
-> > +1 207-985-7880
-> > john.sullivan@nexusmgmt.com
->
-> *****************************
-> Peter Schobel
-> Network Administrator
-> Porchlight.ca
-> Unlimited Internet
-> *****************************
-> In a world without walls or fences
-> We will have no need for gates or windows
-> *****************************
 
 
