@@ -1,11 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Fwd: Re: limit HTTP-GET requests per IP
-Date: Fri, 30 Jan 2004 16:45:34 +0000
+From: "GoMi" <gomi@perezoso.net>
+Subject: IPP2P module not capturing p2p traffic at all,  but it seems to be working!!
+Date: Fri, 30 Jan 2004 18:42:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401301645.34669.Antony@Soft-Solutions.co.uk>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAAOspcUu9lN0KBjn1nIUpeJgEAAAAA@perezoso.net>
+References: <200401301523.31643.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200401301523.31643.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,49 +17,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Here's another suggestion whcih somebody sent me.
+Hi there folks :) I installed the ipp2p module v0.5a (i had 0.4 as well)
+to classify p2p traffic.
 
-----------  Forwarded Message  ----------
+I have it loaded and working:
 
-Subject: Re: limit HTTP-GET requests per IP
-Date: Fri, 30 Jan 2004 13:02:59 -0300
-From: Mart=EDn <martin@familia-fiumara.com.ar>
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Module                  Size  Used by    Not tainted
+ipt_ipp2p               2656   2
 
-You can use an apache module, called mod_throttle (from snert.com if I
-remember ...)
+And i have the CONNMARK module to mark traffic:
 
-En Fri, 30 Jan 2004 15:23:31 +0000, Antony Stone
+  iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
+     iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j ACCEPT
+     iptables -t mangle -A PREROUTING -p tcp -m ipp2p --ipp2p -j MARK
+--set-mark 2
+     iptables -t mangle -A PREROUTING -p tcp -m ipp2p --ipp2p-data -j
+MARK --set-mark 2
 
-<Antony@Soft-Solutions.co.uk> escribi=F3:
-> On Friday 30 January 2004 1:00 pm, Nikolai Dahlem wrote:
->> Hi,
->>
->> I got a problem. Various people are stupidly trying to mirror my
->> webserver
->> (wget and the like), which puts heavy load on it, due to the dynamic
->> generation of pages. Is there a way to specify a limit on requests per
->> second on an ip basis ?
->
-> I suggest you install Squid in Accelerator mode in front of the server
-> and use
-> the delay pools facility to limit bandwidth to groups of users.
->
-> Antony.
+	OTHER MARKING DONE FOR INTERACTIVE TRAFFIC
 
---=20
-How I want a drink, alcoholic of course, after the heavy chapters involvi=
-ng=20
-quantum mechanics.
+     iptables -t mangle -A PREROUTING -m mark --mark 0 -j MARK
+--set-mark 2
+  iptables -t mangle -A PREROUTING -j CONNMARK --save-mark
 
- - 3.14159265358979
+I have the qdiscs attached with HTB (working fine) and filters to
+classify marks (also working)
 
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+But the outcome of a iptables -t mangle -L -n -v -x shows this for
+ipp2p:
+
+    pkts      bytes target     prot opt in     out     source
+destination
+   14097  4339998 CONNMARK   all  --  *      *       0.0.0.0/0
+0.0.0.0/0          CONNMARK restore
+   10067  4144428 ACCEPT     all  --  *      *       0.0.0.0/0
+0.0.0.0/0          MARK match !0x0
+       6      504 MARK       icmp --  *      *       0.0.0.0/0
+0.0.0.0/0          MARK set 0x4
+       0        0 MARK       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          ipp2p v0.5a --ipp2p MARK set 0x2
+       0        0 MARK       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          ipp2p v0.5a --ipp2p-data MARK set 0x2
+      14      912 MARK       udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          udp dpt:53 MARK set 0x1
+     434    20812 MARK       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp dpt:80 MARK set 0x1
+       0        0 MARK       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp dpt:25 MARK set 0x2
+    3522   169036 MARK       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp dpts:0:1024 MARK set 0x1
+      10     2198 MARK       udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          udp dpt:!53 MARK set 0x2
+       5      240 MARK       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp dpt:1863 MARK set 0x1
+       0        0 MARK       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp dpt:1214 MARK set 0x2
+       2       80 MARK       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp spt:80 MARK set 0x5
+     471    22600 MARK       all  --  *      *       0.0.0.0/0
+0.0.0.0/0          MARK match 0x0 MARK set 0x2
+    4030   195570 CONNMARK   all  --  *      *       0.0.0.0/0
+0.0.0.0/0          CONNMARK save
+
+Any one with an idea why the hell is not recognizing traffic at all??
+Thank you!!
+
 
 
