@@ -1,13 +1,13 @@
-From: Frank Gruellich <frank@der-frank.org>
-Subject: Re: INPUT or FORWARD;;
-Date: Tue, 21 Dec 2004 00:36:12 +0100
-Message-ID: <20041220233612.GU30585@der-frank.org>
-References: <1103547524.2932.6.camel@hubcap.ljm.dom>
-	<20041220132421.DAE032F42A@kshira.sterenborg.info>
-Mime-Version: 1.0
+From: Rick Mann <rmann@latencyzero.com>
+Subject: Re: Inbound port mapping blocks outbound connection?
+Date: Mon, 20 Dec 2004 15:55:01 -0800
+Message-ID: <8FCFE8B8-52E2-11D9-BA43-000A95CFE5AA@latencyzero.com>
+References: <4CE68372-5207-11D9-BA43-000A95CFE5AA@latencyzero.com>
+	<1103548934.3264.6.camel@hubcap.ljm.dom>
+Mime-Version: 1.0 (Apple Message framework v619)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20041220132421.DAE032F42A@kshira.sterenborg.info>
+In-Reply-To: <1103548934.3264.6.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,58 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jason Opperisano <opie@817west.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
 
-* Rob Sterenborg <rob@sterenborg.info> 20. Dec 04:
-> netfilter-bounces@lists.netfilter.org wrote:
-> >   iptables -A INPUT -i ppp0 -d $IP_OF_ETH0 -j ACCEPT
-> I agree it's a valid rule (syntax), but I don't think it will ever match
-> a packet.
-> 
-> If -i and -d are specified, they both have to match to accept a packet,
-> right ?
-> Because <ip_eth0> is not assigned to ppp0, how can -i ppp0 -d <ip_eth0>
-> ever match for the INPUT chain ?
+On Dec 20, 2004, at 05:22, Jason Opperisano wrote:
 
-I can just repeat Jason: forget the concept of associating IP#s with
-interfaces if you ever intend to understand routing.  IP#s belong to the
-IPstack of the kernel.  Think of it in the ISO/OSI layer model:
+> well--you provide pretty much zero detail, so i'm going to have to put
+> my funny-looking kreskin hat on...
 
-   Something unimportant
---------------------------
-      IPstack with
- 10.0.0.1 and 192.168.0.1
---------------------------
-     NIC drivers for
-   eth0   and     eth1
------------.--------------
- hardware  | more hardware
+Really? I thought I put a lot of info in there. Please tell me what 
+else would have helped, so that I may do better next time.
 
-If somebody yells into the cable "Hey, 10.0.0.1, tell me (10.1.2.3) your
-MAC!" any interface getting this will ask the IPstack "Dude, are we
-10.0.0.1?"  If the IPstack (that has no idea of interface drivers at
-all) confirmes the NIC will answer with its MAC, no matter if anybody
-assotiated this IP# with it.  If other hosts have its MAC things are
-straighten out.  (This is a way, IP-spoofing works.)
+> the powers-that-be are telling me that you (like many other people that
+> as this question), did not specify "-i $OUTSIDE_IF" in your PREROUTING
+> nat rule, and therefore packets that arrive inbound on the inside
+> interface match and disappear into the ether.
+>
+>   iptables -t nat -A PREROUTING -i $OUTSIDE_IF -p tcp \
+>     -d $OUTSIDE_IP --dport 6969 -j DNAT --to-destination $INSIDE_HOST
 
-The association of IP#s to interfaces is just a little hint to build up
-the routing table automatically: if I issue something like
+Ah! Yes, this sounds very plausible. I appreciate the advice!
 
- # ifconfig eth0 10.0.0.1
-
-the routing process fills this with some good presumptions and adds
-
- # route add -net 10.0.0.0 netmask 255.0.0.0 dev eth0
-
-This is the only important point where interfaces meet IP#s: the routing
-table.  (Please correct my if I write nonsens.)
-
-HTH,
- regards, Frank.
 -- 
-Sigmentation fault
+Rick
+
 
