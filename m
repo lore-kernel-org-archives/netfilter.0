@@ -1,12 +1,12 @@
-From: Matthias Kattanek <mattes@mykmk.com>
-Subject: Re: Redhat 7.2 Kernel
-Date: Tue, 9 Jul 2002 10:20:39 -0700 (PDT)
+From: "Travis Crook" <travis@visionsbeyond.com>
+Subject: Speed Issues through NAT Firewall
+Date: Tue, 9 Jul 2002 11:29:49 -0600
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.44.0207091015020.4405-100000@e33.eng.roonetworks.com>
-References: <000701c22756$425ac1b0$153fa8c0@hslbrabantzuid.nl>
+Message-ID: <001701c2276e$3a94a0a0$6702a8c0@mindtrip.com>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0014_01C2273B.EFAF6C00"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <000701c22756$425ac1b0$153fa8c0@hslbrabantzuid.nl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,36 +16,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "R. Sterenborg" <rsterenborg@xs4all.nl>, "Mike G. Hammonds" <mhammonds@knowledgeinenergy.com>
-Cc: "Iptables-User-list (E-mail)" <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
+This is a multi-part message in MIME format.
 
-On Tue, 9 Jul 2002, R. Sterenborg wrote:
+------=_NextPart_000_0014_01C2273B.EFAF6C00
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> ----- Original Message ----- 
-> From: "Mike G. Hammonds" <mhammonds@knowledgeinenergy.com>
-> Subject: Redhat 7.2 Kernel
-> 
-> 
-> > Does the default install kernel of RH7.2 have iptable support already
-> > compiled in it?
-> > 
-> Yes it does.
+Hello,
+    I currently have two firewalls running.  Both on Mandrake 8.1 =
+running iptables.  I currently have two internet connections (one is a =
+DSL line at 1Mb, the other is straight from an ISP at 2.5 Mb).  I can =
+get 700Kb speeds through the firewall on the DSL line (which is about as =
+fast as it ever is) but I only get about 500Kb speeds through the =
+firewall on the ISP line.  Shouldn't I be able to get at least 2Mb =
+speeds through this firewall?=20
 
-Nope, that is not exactly true.
-All RedHat 7.x distribution with a 2.4.x kernel offer iptables as a 
-module. (same as ipchains)
+Thanks
 
-By default RH distries have ipchains activated. So in case you attempt
-e.g. 'iptables -L' you will encounter an error message.
+Travis Crook
+Visions Beyond
 
-no worries. easiest way around is to rename /etc/sysconfig/ipchains
-to /etc/sysconfig/ipchains.notinuse. Then reboot the box and run 
-'iptables' and it will autoload the respective module.
+------=_NextPart_000_0014_01C2273B.EFAF6C00
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-mattes
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 5.50.4728.2300" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hello,</DIV>
+<DIV>&nbsp;&nbsp;&nbsp; I currently have two firewalls running.&nbsp; =
+Both on=20
+Mandrake 8.1 running iptables.&nbsp; I currently have two internet =
+connections=20
+(one is a DSL line at 1Mb, the other is straight from an ISP at 2.5 =
+Mb).&nbsp; I=20
+can get 700Kb speeds through the firewall on the DSL line (which is =
+about as=20
+fast as it ever is) but I only get about 500Kb speeds through the =
+firewall on=20
+the ISP line.&nbsp; Shouldn't I be able to get at least 2Mb speeds =
+through this=20
+firewall? </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Travis Crook<BR>Visions Beyond</DIV></BODY></HTML>
 
+------=_NextPart_000_0014_01C2273B.EFAF6C00--
 
 
