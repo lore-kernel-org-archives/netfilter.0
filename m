@@ -1,14 +1,14 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: IPTBLE rule for Slapper" Linux Worm
-Date: Fri, 20 Sep 2002 00:44:24 -0400
+From: "Dharmendra.T" <dharmu@nsecure.net>
+Subject: Re: Routing rule for two gateways.
+Date: Fri, 20 Sep 2002 14:17:35 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209200044.24379.netfilter@newkirk.us>
-References: <00cf01c26051$9a2a5c00$0200000a@ramasamy>
-Reply-To: netfilter@newkirk.us
+Message-ID: <200209201417.35968.dharmu@nsecure.net>
+References: <00ce01c26051$994ca630$0200000a@ramasamy>
+Reply-To: dharmu@nsecure.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00cf01c26051$9a2a5c00$0200000a@ramasamy>
+In-Reply-To: <00ce01c26051$994ca630$0200000a@ramasamy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,69 +19,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Sundaram <sun@percipia.com>, netfilter@lists.netfilter.org
 
-On Thursday 19 September 2002 10:56 pm, Sundaram wrote:
-> What is the IP rule, I have set for following worm??
+Hi Sundaram,
+ I think you can specify both the gws as the default gateways and can connect 
+from internet using both the gateways.
+Regards,
+Dharmendra.T
+Linux Security Expert
+www.nsecure.net
+dharmu@nsecure.net
+On Friday 20 September 2002 07:49, Sundaram wrote:
+> Routing rule for two gateways.
 >
 >
-> Security Alert: Eradicating the "Slapper" Linux Worm
 >
-> http://www.extremetech.com/article2/0,3973,538734,00.asp
+> I have two Linux netfilter gateways for my network  (1) 192.168.1.10, (1)
+> 192.168.1.100 public IP in the external interface. Inside LAN I am running
+> ftp server (192.168.1.50) with default gateway as 192.168.1.10. From
+> Internet using Fist gateway public IP address I was able to access the ftp
+> server, but using second gateway public IP address I was not able to access
+> the ftp server.
+>
+>
+>
+> Where I need to set the routing, so that I can access the ftp server using
+> both gateway.
+>
+>
+>
+> Thanks in advance
+>
+> -SR
 
-(rules example below)
-Inbound 443 is the most useful of these, IF you can do it, since the othe=
-rs depend
-on the machine already being infected, which you can easily and quickly d=
-etermine
-yourself just after you start blocking inbound port 443, the infection ve=
-ctor.
-Just "ls -a /tmp" and make sure there's no ".bugtraq" or ".bugtraq.c" the=
-re.
-If they are you're already infected.
+-- 
 
-ExtremeTech tells us:
-   Delete the files if they are already present. Do "mkdir -m a=3D /tmp/.=
-bugtraq" and=20
-   "mkdir -m a=3D /tmp/.bugtraq.c", then reboot if you were already infec=
-ted. =20
-   The permissionless directories prevent an incoming infection from taki=
-ng up residence.=20
-
-They fails to mention that three seconds with an editor will create a ver=
-sion that=20
-saves itself under different names, but still partakes of the same DDoS n=
-etwork.
-
-(Symantec tells us: * Run LiveUpdate, which is the easiest way to obtain =
-virus definitions :^)
-
-If we want to be helpful, we can log any attempt to connect to us on UDP =
-2002,
-meaning the source is infected and thinks we are/were, and notify those s=
-ervers
-that they appear to be infected.
-
-
-# Block "Linux.Slapper.Worm" or "apache/mod_ssl worm"
-#
-# log & drop any inbound packets for UDP port 2002,=20
-# prevents already infected system receiving instructions.
-# this should only happen if we are/were infected.
-# If we're feeling charitable, let the source of any 2002
-# packets know that they are probably infected as well.  :^)
-/sbin/iptables -A INPUT -p UDP --dport 2002 -j LOG
-/sbin/iptables -A INPUT -p UDP --dport 2002 -j DROP
-#
-# Block inbound port 443 (Infection point) ONLY if you don't
-# need to serve HTTPS from machine.
-/sbin/iptables -A INPUT -p TCP --dport 443 REJECT
-#
-# Block outbound port 443 ONLY if you don't need to browse=20
-# to HTTPS from this machine.
-# This blocks an already infected system from propogating.
-/sbin/iptables -A OUTPUT -p TCP --dport 443 -j REJECT
-#
-
-# j
 
