@@ -1,10 +1,11 @@
-From: Kevin White <kwhite@kevbo.org>
-Subject: Connection stats logging?
-Date: Fri, 07 May 2004 13:53:43 -0400
+From: Harry <hari76@omantel.net.om>
+Subject: Bandwidth Monitor
+Date: Sat, 08 May 2004 12:57:25 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <409BCD27.6000203@kevbo.org>
+Message-ID: <006001c434da$7c6400e0$36b4fea9@SABNANIS>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+ boundary="Boundary_(ID_rPnyC8+ZjdSc9+ubqfew4w)"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,49 +16,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hello all,
+This is a multi-part message in MIME format.
 
-I sent this message on Monday (by mistake, it was sent twice).  I've not 
-seen a response, and I'm not sure where to go next.  I'm considering 
-asking in -dev, because I'm willing to do some coding, I just want to 
-make sure I'm looking in the right direction.
+--Boundary_(ID_rPnyC8+ZjdSc9+ubqfew4w)
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
 
-Please help me with any thoughts you can provide, so I go about solving 
-this the right way!  Thanks!
+Hi All,
+I have a DSL connection which has a bandwidth capacity of 3GB a month...having said that I have 16 machines hooked up on the network with a linux server, is there a away to capture/monitor the total consumption of bandwidth utilised per machine or server basis.This is complicated as I have squid also for caching.....did a lot of reserch there were some scripts for iptables but I cant figure out how to use it ?Has anyone used something like this B4?Help is really appreciated.
 
-We had a firewall application using an old OpenBSD (2.9).  One of the
-things it did on NAT was log lines like this when connections closed:
+Regards
 
-Apr 29 23:25:46 si000AmerSh ipmon[3122]: 23:25:46.021102 STATE:CLOSE
-216.65.19.55,53505 -> 192.168.0.82,25 PR tcp Pkts 60 Bytes 22144
-
-We used this line to do statistics.
-
-I'm trying to figure out how to get something similar with Netfilter.
-
-Basically, what I need is a report of the connection: where it was to,
-how many bytes and packets it had, when it closes.
-
-I've looked at ulogd, but I'm not sure that would be ideal.  Basically,
-I'd have to build my own connection tracker DB to assign every packet
-to, so I'd be at least doubling the memory footprint.
-
-I'm wondering if there's something built in that I can get to to give me
-these kinds of statistics.  Or if I should be writing an extension.
-(I'd like to get this data for every connection that goes through the
-firewall.)
-
-Thoughts, or pointers?  I'm looking for input before I waste too much
-time barking up the wrong tree.
-
-Thanks,
-
-Kevin
+Harry
 
 
 
 
+
+"In all this world, there is only you
+When all else ceases, there is only you"  
+-- to my MASTER!
+    Harish
+harish@sabnanis.com 
+harish.sabnani@cyberhutoman.com 
+
+--Boundary_(ID_rPnyC8+ZjdSc9+ubqfew4w)
+Content-type: text/html; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content="MSHTML 6.00.2800.1106" name=GENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=#ffffff>
+<DIV><FONT face=Verdana size=2>Hi All,</FONT></DIV>
+<DIV><FONT face=Verdana size=2>I have a DSL connection which has a bandwidth 
+capacity of 3GB a month...having said that I have 16 machines hooked up on the 
+network with a linux server, is there a away to capture/monitor the total 
+consumption of bandwidth utilised per machine or server basis.This is 
+complicated as I have squid also for caching.....did a lot of reserch there were 
+some scripts for iptables but I cant figure out how to use it ?Has anyone used 
+something like this B4?Help is really appreciated.</FONT></DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2>Regards</FONT></DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2>Harry</FONT></DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2>"In all this world, there is only you<BR>When all 
+else ceases, there is only you"&nbsp; <BR>-- to my MASTER!<BR>&nbsp;&nbsp;&nbsp; 
+Harish<BR><A href="mailto:harish@sabnanis.com">harish@sabnanis.com</A> <BR><A 
+href="mailto:harish.sabnani@cyberhutoman.com">harish.sabnani@cyberhutoman.com</A> 
+</FONT></DIV></BODY></HTML>
+
+--Boundary_(ID_rPnyC8+ZjdSc9+ubqfew4w)--
 
