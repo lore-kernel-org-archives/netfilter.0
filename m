@@ -1,13 +1,13 @@
-From: Frank Gruellich <frank@home.manuelm.org>
-Subject: Re: chains in the same table
-Date: Thu, 6 May 2004 12:50:26 +0200
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: IPSec - IPTables issues
+Date: Wed, 05 May 2004 14:07:03 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040506105025.GY29115@home.manuelm.org>
-References: <004c01c4334f$3f1329f0$cb0210ac@jz105>
+Message-ID: <40993B57.6070309@pbl.ca>
+References: <20040502155538.GD515@schottelius.org> <200405051622.26944.Antony@Soft-Solutions.co.uk> <40991270.5030803@pbl.ca> <200405051829.14783.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <004c01c4334f$3f1329f0$cb0210ac@jz105>
+In-Reply-To: <200405051829.14783.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-* Jee J.Z. <jz105@york.ac.uk>  6. May 04:
-> Hi all,
+Antony Stone wrote:
+> On Wednesday 05 May 2004 5:12 pm, Aleksandar Milivojevic wrote:
+>>Actually, I like better Linux 2.6 implementation that doesn't use virtual
+>>devices.
+> 
+> Yes, it seems like a better design; now if only we could work out how to 
+> filter the unencrypted traffic before it all just disappears down the tunnel, 
+> it might turn out to be a good idea.
 
-Hello,
+You let IPSec kernel module take care that anything unencrypted comming 
+from the wire or into the wire is dropped.  This should be easily 
+acomplished by setting IPSec policy for the connection to required.  So 
+you do not need Netfilter to filter out unencrypted traffic from the 
+wire.  IPSec is going to do that for you.
 
-> I'm asking a basic question that in the same table (for example, the
-> filter table), if a packet hit the INPUT chain while no rules are in
-> the INPUT chain and the default policy is ACCEPT, will the packet be
-> passed on to the FORWARD chain? If accepted again, be passed on to the
-> OUTPUT chain?
+Than in Netfilter, you accept packets if they are:
 
-No.  Any packets will traverse exactly one of INPUT, OUTPUT or FORWARD,
-indepentent of policies.
+1. IPSec packets (AH, ESP, UDP/500)
+2. unencrypted packets for the services (HTTP, FTP, telnet, etc) you are 
+allowing
 
-HTH,
- regards, Frank.
+This way, Netfilter will take care of packets before they are encrypted, 
+and after they are decrypted.  Therefore protecting the local services 
+and allowing you to filter "before it all just dissapears down the 
+tunnel".  IPSec will take care that there is no unecrypted traffic going 
+onto the wire (or accepted from the wire).
+
+So you don't need virtual interface to differentiate first and second 
+pass through Netfilter's chains.
+
 -- 
-Sigmentation fault
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
