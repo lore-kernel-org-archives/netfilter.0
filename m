@@ -1,9 +1,10 @@
-From: Nathan March <nmarch@overdrawn.net>
-Subject: Re: Suse 9.1 port forwarding woes
-Date: Mon, 10 Jan 2005 17:30:36 -0800
-Message-ID: <41E32C3C.2080907@overdrawn.net>
+From: Askar <askarali@gmail.com>
+Subject: packets traverse on proxy/firewall
+Date: Tue, 11 Jan 2005 10:37:10 +0500
+Message-ID: <a0f69e5050110213739cef613@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,45 +16,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Argh, I copied and pasted the wrong stuff over.
+hello masters im configuring firewal + proxy/cache server "squid" both
+on the same machine for our client. I gota few question regarding
+traverse of packet in this scenrio
+Proxy is transparent (interception)
 
-Correct:
+1) packets (port 80 requests) from client will traverse INPUT chain
+not FORWARD chain right?
 
-ace:~ # iptables --list
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:ssh
-ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:smtp
-ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:imap
+2) squid will fetch the content on behalf of the clients packet leave
+cache/firewall machine via OUTPUT chain right?
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere            state 
-ESTABLISHED
-ACCEPT     icmp --  anywhere             anywhere            state RELATED
-ACCEPT     all  --  anywhere             anywhere            state 
-NEW,ESTABLISHED
-ACCEPT     all  --  anywhere             anywhere            state 
-NEW,ESTABLISHED
-ACCEPT     tcp  --  anywhere             192.168.0.3         tcp dpt:http
+3) which chains packets will travers when response coming back from
+Internet that is Internet ----> Cache --->Clients
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-ace:~ # iptables -t nat --list
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       tcp  --  anywhere             anywhere            tcp 
-dpt:http to:192.168.0.3:80
+Default policies for INPUT, OUTPUT , FORWAD will be DROP in which
+chains i have to do filtering in either case i-e
+Clients ----->Firewal/cache-----Internet and 
+Internet --->Firewall/cache----->Clients
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-MASQUERADE  all  --  anywhere             anywhere
+regards
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+Askar
 
-
+-- 
+(after bouncing head on desk for days trying to get mine working, I'll make
+your life a little easier)
 
