@@ -1,14 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Gateway \ FW
-Date: Mon, 19 Jul 2004 10:36:52 +0100
+From: Joshua N Pritikin <jpritikin@pobox.com>
+Subject: Re: FAQ 3.13, but on the same box
+Date: Mon, 19 Jul 2004 15:14:54 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407191036.52096.Antony@Soft-Solutions.co.uk>
-References: <HAEOIFPIBBBLGLHOMLLIKEHMCEAA.bclark@eccotours.biz>
-Reply-To: "iptables" <netfilter@lists.netfilter.org>
+Message-ID: <20040719094454.GB1735@always.joy.eth.net>
+References: <20040718173200.GC718@always.joy.eth.net> <200407181844.22744.Antony@Soft-Solutions.co.uk> <20040719020059.GC679@always.joy.eth.net> <200407190951.37947.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="A6N2fC+uXW/VQSAv"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <HAEOIFPIBBBLGLHOMLLIKEHMCEAA.bclark@eccotours.biz>
+Content-Disposition: inline
+In-Reply-To: <200407190951.37947.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +19,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: iptables <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Monday 19 July 2004 9:49 am, Brent Clark wrote:
 
-> Hi all
->
-> I once again ask if anyone would be so kind as to review my rules and, sure
-> some advice.
+--A6N2fC+uXW/VQSAv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I also have a rule as such /sbin/iptables -A FORWARD -i eth1 -o eth0 -j
-> ACCEPT which looks very wrong to me,
+On Mon, Jul 19, 2004 at 09:51:37AM +0100, Antony Stone wrote:
+> On Monday 19 July 2004 3:00 am, Joshua N Pritikin wrote:
+> > On Sun, Jul 18, 2004 at 06:44:22PM +0100, Antony Stone wrote:
+> > > http://www.squid-cache.org/Doc/FAQ/FAQ-17.html#ss17.4
+> >
+> > This FAQ doesn't address my question.  I also looked at "Transparent
+> > Proxy with Linux and Squid mini-HOWTO" by Daniel Kiracofe.
+> >
+> > So far, all docs assume that the squid-box and the browser box are
+> > different machines.
+>=20
+> No, the link I posted is specifically for Squid + Netfilter on the same=
+=20
+> machine - you can tell this by the fact it uses REDIRECT, not DNAT.
 
-Why does it look very wrong to you?   What's the problem with it?   It seems 
-to me to be a rule allowing any traffic from your internal network to the 
-Internet - is that not what you want?
+I tried that rule already.  It only works for other machines on my
+network which are using the proxy as a gateway.
 
-A few other comments on your ruleset:
+I am trying to do Squid + Netfilter + BROWSER on the same machine.
 
-1. You have a LOT of INPUT and OUTPUT rules, and apparently very few FORWARD 
-rules, and yet this machine seems to be acting as a gateway router to the 
-Internet.
+--=20
+A new cognitive theory of emotion, http://openheartlogic.org
 
-2. You have a lot of specific DROP rules (as well as a default DROP policy).   
-Is there some good reason why you do not simply have specific ACCEPT rules 
-for the traffic you *want* (the rules for which would presumably be much 
-simpler and shorter than all the rules for the stuff you want to DROP), and 
-then the default DROP policy?
+--A6N2fC+uXW/VQSAv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-3. You have a line near the top of your ruleset: "/sbin/iptables -A FORWARD -m 
-state --state ESTABLISHED,RELATED -j ACCEPT", and then about half way down: 
-"/sbin/iptables -A FORWARD -i eth0 -o eth1 -m state --state 
-ESTABLISHED,RELATED -j ACCEPT".   The second is redundant, as the first will 
-accept ESTABLISHED and RELATED packets no matter what the interfaces are.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-Regards,
+iD8DBQFA+5gWqcqnlKSmC70RAo9bAJ4xFkkG3igpZH7JlfYCiE6MGa/9BgCfd7d7
+4UsxXsbfaeMVafHJQ1777js=
+=+phY
+-----END PGP SIGNATURE-----
 
-Antony.
-
--- 
-Bill Gates has personally assured the Spanish Academy that he will never allow 
-the upside-down question mark to disappear from Microsoft word-processing 
-programs, which must be reassuring for millions of Spanish-speaking people, 
-though just a piddling afterthought as far as he's concerned.
-
- - Lynne Truss, "Eats, Shoots and Leaves"
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--A6N2fC+uXW/VQSAv--
 
