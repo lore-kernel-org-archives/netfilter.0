@@ -1,13 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: pktstat and netfilter
-Date: 05 Aug 2003 10:31:06 +0200
+From: Tom Van Overbeke <tvanoverbeke@ccncsi.net>
+Subject: RE: Firewall software
+Date: Tue, 05 Aug 2003 10:47:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060072266.749.8.camel@elendil.intranet.cartel-securite.net>
-References: <3F2F6235.5080100@belfordhk.com>
+Message-ID: <000c01c35b2e$2de52100$d90315ac@rsrc.be.local>
+References: <003801c35b2a$c9a8c1e0$7700000a@lawrencewin2k>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+ boundary="Boundary_(ID_ghnwSy9gg+KjdVk3LvB44A)"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F2F6235.5080100@belfordhk.com>
+In-reply-to: <003801c35b2a$c9a8c1e0$7700000a@lawrencewin2k>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +18,126 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Edmund <cc@belfordhk.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: 'Lawrence - D' <ingsiong@daltron.com.pg>, "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Le mar 05/08/2003 =E0 09:52, Edmund a =E9crit :
-> Anyway, today I was majorly surprised to see
-> a Local IP sending a packet to a remote LAN
-> on port 80.
->     tcp  192.168.10.3:2041 <-> x.x.x.x:80
-> Is this supposed to happen?  Assuming that
-> pktstat listens to the resulting packet
-> after NAT'd, shouldn't the 192.168.10.3
-> be my actual Internet IP?
+This is a multi-part message in MIME format.
 
-Afaik, libpcap capture outgoing traffic at last routing point, i.e.
-before NF_IP_POST_ROUTING hook. Thus, packets you get are not yet
-SNATed.
-I think it's merely the same for inbound traffic (need someone to
-confirm), that is captured after NF_IP_PRE_ROUTING hook, and so is
-already DNATed.
+--Boundary_(ID_ghnwSy9gg+KjdVk3LvB44A)
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
 
-It's quite wierd as one would like to capture the very traffic that is
-sent to the wire or traffic recieved from the wire unaltered, whatever
-active ruleset.
+fwbuilder & firepoint
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+
+fwbuilder is a graphic interface with icons representing various firewall
+objects (hosts, firewalls, tcp ports), which makes it a lot easier to create
+a decent firewall policy.
+
+firepoint is a wrapper around fwbuilder with as main features access control
+& automatic activation of firewall policy. firepoint is not perfect (access
+control is actually not very secure), but this combo together with iptables
+enables one to create a rather professional firewall setup.
+
+
+Tom.
+
+  -----Original Message-----
+  From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Lawrence - D
+  Sent: 05 August 2003 10:23
+  To: Netfilter
+  Subject: Firewall software
+
+
+  Hi,
+      Can anyone recommend firewall software that can work together with
+IPtables ? User friendly interface.
+
+
+  Lawrence Tang
+
+****************************************************************************
+Disclaimer: 
+This electronic transmission and any files attached to it are strictly 
+confidential and intended solely for the addressee. If you are not 
+the intended addressee, you must not disclose, copy or take any
+action in reliance of this transmission. If you have received this 
+transmission in error, please notify the sender by return and delete
+the transmission.  Although the sender endeavors to maintain a
+computer virus free network, the sender does not warrant that this
+transmission is virus-free and will not be liable for any damages 
+resulting from any virus transmitted. 
+Thank You.
+****************************************************************************
+
+--Boundary_(ID_ghnwSy9gg+KjdVk3LvB44A)
+Content-type: text/html; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+
+<META content="MSHTML 6.00.2800.1170" name=GENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=#ffffff>
+<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
+size=2>fwbuilder &amp; firepoint</FONT></SPAN></DIV>
+<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
+size=2>fwbuilder is a graphic interface with icons representing various firewall 
+objects (hosts, firewalls, tcp ports), which makes it a lot easier to create a 
+decent firewall policy.</FONT></SPAN></DIV>
+<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
+size=2>firepoint is a wrapper around fwbuilder with as main features access 
+control &amp; automatic activation of firewall policy. firepoint is not perfect 
+(access control is actually not very secure), but this combo together with 
+iptables enables one to create a rather professional firewall 
+setup.</FONT></SPAN></DIV>
+<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
+size=2>Tom.</FONT></SPAN></DIV>
+<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+  <DIV class=OutlookMessageHeader dir=ltr align=left><FONT face=Tahoma 
+  size=2>-----Original Message-----<BR><B>From:</B> 
+  netfilter-admin@lists.netfilter.org 
+  [mailto:netfilter-admin@lists.netfilter.org]<B>On Behalf Of </B>Lawrence - 
+  D<BR><B>Sent:</B> 05 August 2003 10:23<BR><B>To:</B> 
+  Netfilter<BR><B>Subject:</B> Firewall software<BR><BR></FONT></DIV>
+  <DIV><FONT face=Arial size=2>Hi,</FONT></DIV>
+  <DIV><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp; Can anyone 
+  recommend&nbsp;firewall software that can work together with IPtables ? User 
+  friendly interface.</FONT></DIV>
+  <DIV>&nbsp;</DIV>
+  <DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=Arial size=2>Lawrence Tang 
+<BR></FONT></DIV></BLOCKQUOTE><FONT SIZE=3 COLOR=BLUE><PRE>****************************************************************************
+Disclaimer: 
+This electronic transmission and any files attached to it are strictly 
+confidential and intended solely for the addressee. If you are not 
+the intended addressee, you must not disclose, copy or take any
+action in reliance of this transmission. If you have received this 
+transmission in error, please notify the sender by return and delete
+the transmission.  Although the sender endeavors to maintain a
+computer virus free network, the sender does not warrant that this
+transmission is virus-free and will not be liable for any damages 
+resulting from any virus transmitted. 
+Thank You.
+****************************************************************************
+</PRE></FONT>
+</BODY></HTML>
+
+--Boundary_(ID_ghnwSy9gg+KjdVk3LvB44A)--
 
