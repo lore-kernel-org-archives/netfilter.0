@@ -1,8 +1,9 @@
-From: "Pedro C. Arias" <parias@sede.unr.edu.ar>
-Subject: Netmeeting and messenger ports
-Date: Tue, 13 May 2003 11:04:04 -0300
+From: "hare ram" <hareram@sol.net.in>
+Subject: iptables problem
+Date: Tue, 13 May 2003 20:43:29 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002d01c31958$835ecb30$f000010a@pc207pca>
+Message-ID: <1bd101c31962$358e1820$09603fca@Housecall>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,18 +17,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: IpTablesList <netfilter@lists.netfilter.org>
+To: netfilter@lists.samba.org
 
-Hello, I use NAT to connect internet my internal network trougth a Firewall
-make with iptables, i use NAT, but when somebody external to my network send
-me a file messenger say "Error to receive File ...." somebody has this
-problem ?, with netmeteeng too can't connect
+Hi
 
-Help me ...
+i have installed iptables 1.2.8a in RH 9.0
+and installed POM tooo
+when i do
 
-Thanks
-Pedro
-Rosario - argentina
+[root@ root]# iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
+REDIRECT --to-port 3128
+iptables: Invalid argument
+
+what is wrong
+i dont see any problem, but iam getting this error
+what could be the problem
+
+hare
 
 
 
