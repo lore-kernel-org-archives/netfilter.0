@@ -1,14 +1,13 @@
-From: Lukas Ruf <ruf@maremma.ch>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Clear Iptables chains?
-Date: Mon, 8 Jul 2002 16:46:58 +0200
+Date: Mon, 8 Jul 2002 15:56:09 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708144658.GR32764@tik.ee.ethz.ch>
-References: <839BF5387528D311AD5D00902751CFC301B0419A@HAVASSMX>
-Reply-To: Lukas Ruf <ruf@maremma.ch>
+Message-ID: <200207081456.g68EuF807141@vulcan.rissington.net>
+References: <839BF5387528D311AD5D00902751CFC301B0419A@HAVASSMX> <20020708144658.GR32764@tik.ee.ethz.ch>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <839BF5387528D311AD5D00902751CFC301B0419A@HAVASSMX>
+In-Reply-To: <20020708144658.GR32764@tik.ee.ethz.ch>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,31 +18,31 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Denis JULIEN <denis.julien@vupublishing.net>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -F
-iptables -X
+On Monday 08 July 2002 3:46 pm, Lukas Ruf wrote:
 
-but rtfm.
+> iptables -P INPUT ACCEPT
+> iptables -P OUTPUT ACCEPT
+> iptables -P FORWARD ACCEPT
+> iptables -F
+> iptables -X
 
---lpr
+Don't forget:
+iptables -F -t nat
+iptables -F -t mangle
 
-On Mon, 08 Jul 2002, Denis JULIEN wrote:
+Antony.
 
-> How can I clear all iptables chains before that my FW script be launched?
-> 
-> thank in advance
-> 
-> Denis
-> 
+> but rtfm.
 
--- 
-Lukas Ruf      Bellariastr. 11      CH-8002 Zuerich      +41 1 2813545
-http://www.lpr.ch                                http://www.maremma.ch    
-     http://www.{{topsy,nodeos}.net,{promethos,netbeast}.org}
+Always good advice :-)
+
+> On Mon, 08 Jul 2002, Denis JULIEN wrote:
+
+> > How can I clear all iptables chains before that my FW script be launched?
+> >
+> > thank in advance
+> >
+> > Denis
 
