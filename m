@@ -1,8 +1,8 @@
-From: "Jim Gifford" <maillist@jg555.com>
-Subject: Build Issue with 2.6.3
-Date: Tue, 2 Mar 2004 13:06:06 -0800
+From: Travis Crook <travis@visionsbeyond.com>
+Subject: Forwarding traffic to smtp server
+Date: Tue, 02 Mar 2004 15:16:00 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0cc501c4009a$2de236e0$d100a8c0@W2RZ8L4S02>
+Message-ID: <1078265760.2567.94.camel@linsaidin.visionsbeyond.mindtrip>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,23 +16,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Error is listed below. Any suggestions.
+Hi All,
+	I have a question for you.  These are my current rules for sending
+traffic on port 25 to my mail server.  I'm running kernel 2.4.
 
-/usr/include/linux/err_kernel_only.h:1:2: #error Kernel only header included
-in userspace
-extensions/libipt_ah.c: In function `parse_ah_spi':
-extensions/libipt_ah.c:39: error: `ERANGE' undeclared (first use in this
-function)
-extensions/libipt_ah.c:39: error: (Each undeclared identifier is reported
-only once
-extensions/libipt_ah.c:39: error: for each function it appears in.)
-make: *** [extensions/libipt_ah_sh.o] Error 1
-                -----Error at Build has occured-----
+$IPTABLES -A FORWARD -i $EXTERNALIF -o $INTERNALIF -p tcp --dport 25 -m
+state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
-----
-Jim Gifford
-maillist@jg555.com
+$IPTABLES -t nat -A PREROUTING -i $EXTERNALIF -p tcp --dport 25 -d
+$MYADDR -j DNAT --to-destination 192.168.2.254:25
+
+$IPTABLES -t nat -A POSTROUTING -o $EXTERNALIF -p tcp --dport 25 -d
+192.168.2.254 -j SNAT --to-source 192.168.2.250
+
+where $EXTERNAL is my external interface (eth0), $INTERNALIF is my
+internal interface (eth1), and $MYADDR is my IP address: 12.42.147.158.
+
+
+They seem to work other than my mail server views all packets as coming
+from the firewall and not from external IP addresses.  Is there a way to
+get the originating IP address to my mail server?
+
+Thanks!
+
+Travis Crook
+Visions Beyond
 
 
