@@ -1,13 +1,13 @@
-From: Daniel Wittenberg <daniel-wittenberg@starken.com>
-Subject: RE: module performance
-Date: 15 Feb 2003 15:34:16 -0600
+From: Willi Mann <newsletters@wm1.at>
+Subject: Re: strange log entries concerning mail server
+Date: Sat, 15 Feb 2003 23:05:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045344856.1551.9.camel@runabout.noc.starken.com>
-References: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E2@EXCHANGE>
+Message-ID: <3E4EB9C5.1070109@wm1.at>
+References: <20030213171002.5495.70915.Mailman@kashyyyk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E2@EXCHANGE>
+In-Reply-To: <20030213171002.5495.70915.Mailman@kashyyyk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +17,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Khanh Tran <khanh@slc.edu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org, k.tragant@firemail.de
 
-If you can't load modules it takes away one way that someone could
-install a LKM or trojan on the machine.
+Look at
 
-Dan
+http://www.iptables.org/documentation/tutorials/blueflux/iptables-tutorial.html#NEWNOTSYN
+(The paragraph with "..bad Microsoft TCP/IP implementations.." )
 
-On Sat, 2003-02-15 at 14:47, Khanh Tran wrote:
-> Thanks for the insight.  I didn't think it should affect the performance.
-> As far as security goes for dynamically loaded modules, are you talking
-> about someone getting at the modules from the local file system?
-> 
-> Khanh Tran
-> Network Operations
-> Sarah Lawrence College
-> 
-> 
-> -----Original Message-----
-> From: Daniel Wittenberg [mailto:daniel-wittenberg@starken.com]
-> Sent: Saturday, February 15, 2003 3:05 PM
-> To: Khanh Tran
-> Subject: Re: module performance
-> 
-> 
-> Linux kernel modules are not supposed to suffer any performance
-> difference when loaded dynamically or statically.  It applies to any
-> module (because of the way they are loaded), so you are good just doing
-> the modules.  Using statically built kernel's without module support is
-> better for security, but a PITA to upgrade.
-> 
-> Dan
+This *could* be the problem as long as your machine makes outgoing 
+sessions to these ports.
+
+I have similar problems with a HTTP-proxy.
+
+Willi Mann
 
 
 
