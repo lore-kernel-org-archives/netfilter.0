@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DHCRELAY through IPTABLES Firewall
-Date: Tue, 29 Oct 2002 10:29:59 +0000
+From: "Francois Dessart" <fd-list@ibelgique.com>
+Subject: SIP connection tracker ?
+Date: Tue, 29 Oct 2002 10:55:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210291030.g9TAU5e09742@vulcan.rissington.net>
-References: <001001c27d72$1352c350$8f33e40f@lsmith5953> <000b01c27f1d$f805e430$8f33e40f@lsmith5953> <001701c27f32$4c7a21c0$8f33e40f@lsmith5953>
+Message-ID: <059101c27f31$5db6a090$9f24a58b@segi.ulg.ac.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001701c27f32$4c7a21c0$8f33e40f@lsmith5953>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,24 +18,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 29 October 2002 10:02 am, bigman@monster-solutions.net wrote:
+Hello,
 
-> and I have also looked into this further by putting a sniffer on my DHCP
-> server. I see the request come in from the system that is getting an IP
-> successfully, but I never see a request from the system that is failing.
-> Both systems are on the same subnet so they should be using the same
-> netfilter rules.
+Is anyone currently developping a SIP (Session Initiation Protocol) NAT
+connection tracker?
 
-Would I be right in guessing that the system which works already has a DHCP 
-address, and is either renewing it (before its lease runs out) or is 
-requesting the same address again (after the lease has run out), whereas the 
-system which fails has never had a DHCP address and is trying to get one for 
-the first time ?
+I would be interested in having such a feature on my iptables NAT
+firewall.
 
-Antony.
+If not, I would like to try to develop one. However I have no experience
+at all regarding kernel/netfilter programming.
+Is it hard?
+Are there useful document I should read before starting?
 
--- 
+Thanks for your help.
 
-If the human brain were so simple that we could understand it,
-we'd be so simple that we couldn't.
+Francois.
+
 
