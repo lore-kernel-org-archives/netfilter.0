@@ -1,10 +1,12 @@
-From: "Small, Jim" <jim.small@eds.com>
-Subject: Maxium concurrent connections with IPTables
-Date: Mon, 2 Aug 2004 14:15:34 -0400
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: More neqbie questions
+Date: Mon, 2 Aug 2004 14:16:11 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <564DE4477544D411AD2C00508BDF0B6A22073275@usahm018.exmi01.exch.eds.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051221@asimail2.alphanumeric.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,19 +17,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Eric Ellis <eellis@mail.co.gilchrist.fl.us>, netfilter@lists.netfilter.org
 
-I'm curious, what is the maximum number of concurrent connections possible
-with IPTables using connection tracking for udp and for tcp?  (using latest
-2.4 kernel and 2.6 kernel)
+> # DNS
+> $IPT -A INPUT -i $INT -p udp --dport 53 -j ACCEPT
 
-I'd also be curious if this changes with the TCP window patch.
+is this machine a caching DNS server?
 
-I'm currently taking a Cisco firewall class and they're claiming that PIX
-which supports 500,000 concurrent connections with the appliance version and
-1,000,000 with the blade version vastly exceeds the capabilities of all
-general purpose O/S'.
+> ### OUTPUT chain
+> # The only thing doing output on this box are proxy
+> # servers, and the occasional SSH and HTTP for
+> # testing.
+> # SQUID proxy, and local HTTP requests.
+> $IPT -A OUTPUT -p tcp --dport 80 -j ACCEPT
+>
+> # SSH
+> $IPT -A OUTPUT -p tcp --dport 22 -j ACCEPT
+>
+> ### FORWARD chain
+>
+> $IPT -A OUTPUT -p tcp --dport 80 -j ACCEPT
+>
+>
+> # SSH
+>
+> $IPT -A OUTPUT -p tcp --dport 22 -j ACCEPT
 
-<> Jim
+if the answer to my previous question was "yes," you're going to need:
+
+	$IPT -A OUTPUT -p udp --dport 53 -j ACCEPT
+
+if not--you're going to need:
+
+	$IPT -A FORWARD -i $INT -p udp --dport 53 -j ACCEPT
+
+> # Accept anything else that's been established
+>
+> $IPT -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+>
+
+might i also recommend:
+
+	$IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+	$IPT -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+(normally i put these as the first rule in each chain rather than the =
+last)
+
+another common piece that is absent, that is probably causing your squid =
+redirect to fail:
+
+	$IPT -A INPUT -i lo -j ACCEPT
+	$IPT -A OUTPUT -o lo -j ACCEPT
+
+-j
 
