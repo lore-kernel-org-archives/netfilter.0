@@ -1,10 +1,9 @@
-From: Qunwei Chen <chenqunwei@yahoo.com>
-Subject: Re: sub interface filtering
-Date: Fri, 04 Apr 2003 20:31:04 -0500
+From: "B H R Balaji" <balaji@sol.net.in>
+Subject: Bridge with iptable
+Date: Thu, 3 Apr 2003 20:12:03 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E8E31D8.50801@yahoo.com>
-References: <7C9884991ADAE0479C14F10C858BCDF50C6FF0@alderaan.smgtec.com>
-Reply-To: chenqunwei@yahoo.com
+Message-ID: <071501c2f9ef$31312700$13fcc5cb@Housecall>
+Reply-To: "B H R Balaji" <balaji@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,65 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-I tried the google for "Advanced Traffic and Routing Howto" but failed 
-to find it. Does anyone have the location of this document?
+Hi
 
-Thanks in advance,
+iam trying to setup a bridge with iptable
+i have setup the transparent bridge,
 
-Qunwei
+and iam try to mark the http packets for QOS
+iam not able to see the packets
 
-Daniel Chemko wrote:
+i was going through the Lartc.org
+some where i read at this stage ( kernel 2.4.18-27 Redhat iam using) bridge
+will not support iptables.
+it will support only on kernel 2.5, is this true
 
->The Advanced Traffic and Routing Howto had everything I needed. It can
->show you how to setup its IP settings etc.. If you want to integrate
->into IPTables, the following example shows how simply this can be
->accomplished.
->
->$ ip address list
->1: lo: <LOOPBACK,UP> mtu 16436 qdisc noqueue 
->    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
->    inet 127.0.0.1/8 brd 127.255.255.255 scope host lo
->2: eth0: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
->    link/ether 11:11:11:11:11:11 brd ff:ff:ff:ff:ff:ff
->    inet 192.168.1.2/24 brd 192.168.1.255 scope global eth0
->    inet 192.168.1.111/32 scope global eth0
->3: eth1: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
->    link/ether 11:11:11:11:11:11 brd ff:ff:ff:ff:ff:ff
->    inet 192.168.2.1/24 brd 192.168.1.255 scope global eth1
->
->You notice that there are 2 addresses on the same interface eth0. I want
->to forward each IP address to a separate machine on a different subnet
->in this case, so I would do the following:
->
->iptables -t nat -A PREROUTING -j DNAT --destination 192.168.1.2 --to-
->destination 192.168.2.2
->
->iptables -t nat -A PREROUTING -j DNAT --destination 192.168.1.111 --to-
->destination 192.168.2.111
->
->You could have included "-i eth0" if you really wanted to, but unless
->you have the same IP address bolted to different interfaces, I don't see
->that mattering much. 
->
->
->-----Original Message-----
->From: Mike [mailto:mikeeo@msn.com] 
->Sent: Wednesday, April 02, 2003 12:34 PM
->To: Daniel Chemko; netfilter@lists.netfilter.org
->Subject: Re: sub interface filtering
->
->I hate to ask but do you have and example of using iproute2 for IP
->address aliases?
->
->Thanks,
->Mike
->
->
->  
->
+if false, where can i get the right documentation which help me to setup
+bridge with packet filtering
+
+thanks in advance for the help
+
+hare
 
 
 
