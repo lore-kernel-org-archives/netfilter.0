@@ -1,10 +1,13 @@
-From: Erik Enge <eenge@prium.net>
-Subject: Re: If eth0 goes down after a reboot, rules for it will be applied to eth1.
-Date: 11 Sep 2002 12:14:06 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Is DIVERT w/o forwarding feasible?
+Date: Wed, 11 Sep 2002 16:37:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <87ofb44i7l.fsf@prium.net>
+Message-ID: <200209111537.g8BFbCv08909@vulcan.rissington.net>
+References: <Pine.LNX.4.33.0209111953130.19450-100000@panda.center-f1.ru>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.33.0209111953130.19450-100000@panda.center-f1.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,45 +18,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: Antony@soft-solutions.co.uk
 
-On Wed, 11 Sep 2002 15:05:54 +0100, Antony Stone wrote:
+On Wednesday 11 September 2002 2:39 pm, Yury Bokhoncovich wrote:
 
-> The IP address which was supposed to be on the 'real' eth0, which has
-> just died, gets applied to what you think is eth1 (even though your
-> computer has just decided to rename it eth0 as the first working
-> ethernet card it found).
+> > Err, please explain why you do not want forwarding enabled.
+>
+> Because rule #1: "People makes mistakes". Disabled forwarding gives more
+> strict and reliable control under possible traffic.
 
-Correct:
+People make mistakes.   Agreed.
 
-Before death of NIC 1:
+But why does disabling forwarding in the kernel, and then providing some 
+other mechanism for packets to get between the inside & outside, make 
+mistakes any less likely ?   Surely there's still plenty of opportunities to 
+make mistakes in whatever system you *do* set up to allow connectivity to the 
+Internet, and if it's not as clear and standard as using netfilter, you might 
+find it a lot less simple to locate and correct those mistakes ?
 
-  NIC 1, eth0, 192.168.1.1
-  NIC 2, eth1, 192.168.1.2
-  NIC 3, eth2, 192.168.1.3
-  and so on...
+> > When there are Ferraris out there for
+> > free, why build your own skoda?
+>
+> I didn't catch exactly what you mean as "skoda"
 
-After death of NIC 2:
+Try Skoda = Trabant.   Does that help :-) ?
 
-  NIC 1 - dead
-  NIC 2, eth0, 192.168.1.2
-  NIC 3, eth1, 192.168.1.3
-  and so on...
+> And ole good ipchain was more suitable to tweak packets as I want, right?8-)
 
-> It is almost inconceivable that the interface connecting you to the
-> outside world will deign to communicate with your router (or whatever
-> else is the next hop upstream of you) because the IP address, network
-> address, default gateway, netmask etc don't match.
+ipchains is not stateful.   iptables is stateful.   Stateful inspection is 
+regarded as a Good Thing(TM).   Therefore we now use iptables.
 
-I don't follow you.  Let's suppose that the external interface now has
-very laid-back rules and still has the same IP address, network address,
-default gateway and netmask (because the 'ifconfig' statement wouldn't
-have changed).  Why is it inconceivable that that interface wolud
-communicate with my router?  I can't see why it wouldn't.
+Antony.
 
-Thanks for your reply,
+-- 
 
-Erik Enge.
+Documentation is like sex:
+when it's good, it's very very good;
+when it's bad, it's still better than nothing.
 
