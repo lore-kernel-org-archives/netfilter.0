@@ -1,64 +1,74 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DNATing packets sent to the NATing box
-Date: Sun, 14 Dec 2003 08:42:08 +0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312140842.08855.Antony@Soft-Solutions.co.uk>
-References: <20031214005212.GA8217@tinuviel.compendium.com.ar>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: iptable_nat module slows/hoses my Redhat 9.0 box
+Date: Sat, 13 Dec 2003 09:47:13 +0100
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20031213084713.GD8950@obroa-skai.de.gnumonks.org>
+References: <EFBADA8C200C2B418DA39734FD15475B0B20F1@skat.sky.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031214005212.GA8217@tinuviel.compendium.com.ar>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="DiL7RhKs8rK9YGuF"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <EFBADA8C200C2B418DA39734FD15475B0B20F1@skat.sky.com>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Kishore Dharmavaram <kishored@servgate.com>
+Cc: 'Jan Kaastrup' <jka@protego.dk>, netfilter@lists.netfilter.org, "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
 
-On Sunday 14 December 2003 12:52 am, horape@tinuviel.compendium.com.ar wrote:
 
-> I've a system that at its core has an UDP proxy that's the performance
-> bottleneck. I wanted to use the DNAT kernel facilities to replace my
-> code with the very tuned one on netfilter.
->
-> I'm adding a rule that says something like this:
->
-> /sbin/iptables -t nat -A PREROUTING -d myip -p udp -m udp --dport 5000 -j
-> DNAT --to-destination otherip:18918
->
-> but the rule never see the packets (they never got to the chain)
->
-> I assume that it's because I've a socket listening on udp:5000, and it
-> seems reasonable what's happening... I'd like to add a PREPREROUTING chain
-> that is processed before deciding if the packet is for a local socket, can
-> somebody give me a hint on where to look for it?
+--DiL7RhKs8rK9YGuF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-PREROUTING works exactly as the name suggests - it is applied to packets 
-before the routing decision is made about whether they are local, or being 
-routed through the box.   Therefore you *can* use the PREROUTING chain to 
-divert packets which would otherwise be accepted locally, so that they go to 
-another machine, or else divert packets which would have gone somewhere else, 
-so that they are accepted locally.
+On Fri, Dec 12, 2003 at 02:53:19PM -0800, Kishore Dharmavaram wrote:
+> Hello Jan & All,
+>=20
+> Yes I want to do that for UDP & ICMP, can you tellme how to remove statef=
+ul
+> inspection(connection tracking) for just ICMP and UDP protocols without
+> removing NAT on ICMP and UDP packets.
 
-You say the rule never sees the packets...  how do you know this?   Are you 
-looking at the packet / byte counters, and they stay at zero all the time?
+since the netfilter/iptables NAT implementation is fully dynamic
+stateful NAT, you cannot use any of our nat features without connection
+tracking.
 
-You also say you have a local process listening on port 5000 - is that getting 
-any packets and responding to them, even with above rule in place?
+It is also not possible to do NAT in a safe way, if connection tracking
+applies only to certain packets.  Because unless we lookup a connection
+tracking entry, we don't know which NAT bindings to apply to the
+particular packet.
 
-Antony.
+> Thanks,
+> Kishore
 
--- 
-The first fifty percent of an engineering project takes ninety percent of the 
-time, and the remaining fifty percent takes another ninety percent of the 
-time.
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+--DiL7RhKs8rK9YGuF
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/2tIRXaXGVTD0i/8RAgSNAKCftIIEema/QNw7NnVNo5sUxvfn/QCgjbEn
+k98SJOnojnamabWLZL0ZhRk=
+=xey6
+-----END PGP SIGNATURE-----
+
+--DiL7RhKs8rK9YGuF--
 
