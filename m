@@ -1,12 +1,13 @@
-From: <netfilter@drbroyles.com>
-Subject: Re: iptables or routing problem
-Date: Wed, 22 Oct 2003 01:51:15 -0400
+From: "Gilles Yue" <gyue@novelgmt.intnet.mu>
+Subject: NAT question?help
+Date: Wed, 22 Oct 2003 10:04:03 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b101c39860$81a06240$73593a42@drbroyles.com>
-References: <F22386C3FEB012449238672E38ED61E70A8D76@overlord.overturemedia.com> <008d01c3985f$1526df50$73593a42@drbroyles.com>
+Message-ID: <83055D4B014C9E478D2F04624B9E82CF39E83D@noveldc.novelgmt.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C39862.4B2480AA"
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,213 +17,710 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Fritz Mesedilla <fritz.mesedilla@overturemedia.com>
-Cc: "[netfilter] Mailing List" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Fritz,
-    Sorry, I forgot to mention that you would need to change the BROADCAST
-to 192.168.10.255 and the NETWORK to 192.168.10.0.
+This is a multi-part message in MIME format.
 
-Brandon Broyles
+------_=_NextPart_001_01C39862.4B2480AA
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
------ Original Message -----
-From: <netfilter@drbroyles.com>
-To: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Cc: "[netfilter] Mailing List" <netfilter@lists.netfilter.org>
-Sent: Wednesday, October 22, 2003 1:41 AM
-Subject: Re: iptables or routing problem
+My NAT and iptables configuration are installed on a pc called rh9.=20
+
+=20
+
+Users on my LAN connect to rh9 as a gateway to check their email on
+outlook express and browse on the internet.
+
+=20
+
+However, when I add the following rules, I cannot check mail on rh9
+itself but can browse only.
+
+=20
+
+iptables -t filter -P FORWARD DROP
+
+iptables -t nat -P FORWARD DROP
+
+=20
+
+Can anyone explain to me why this is the case? Or what can I do to check
+mail on rh9.
+
+=20
+
+My iptables and NAT configurations are as below=20
+
+=20
+
+Thanks for any help
+
+=20
+
+Rgds
+
+Gilles
+
+=20
+
+=20
+
+[root@rh9 root]# iptables -vnL
+
+=20
+
+Chain INPUT (policy DROP 478 packets, 46623 bytes)
+
+=20
+
+pkts bytes target     prot opt in     out     source
+destination
+
+=20
+
+0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp spt:53
+
+0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          udp spt:53
+
+0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          udp spt:80
+
+4   160 ACCEPT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp spt:80
+
+0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          udp spt:443
+
+0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp spt:443
+
+0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp spt:110
+
+0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          udp spt:110
+
+0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp spt:25
+
+0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          udp spt:25
+
+0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          udp spt:10000
+
+0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp spt:10000
+
+0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp dpt:10000
+
+0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          udp dpt:10000
+
+31  9152 ACCEPT    all  --  *      *       0.0.0.0/0
+0.0.0.0/0          state RELATED,ESTABLISHED
+
+=20
+
+Chain FORWARD (policy DROP 18 packets, 864 bytes)
+
+=20
+
+pkts bytes target     prot opt in     out     source
+destination
+
+394  185K ACCEPT     all  --  eth1   eth0    0.0.0.0/0
+0.0.0.0/0          state RELATED,ESTABLISHED
+
+309 56481 ACCEPT     all  --  eth0   eth1    0.0.0.0/0
+0.0.0.0/0
+
+=20
+
+Chain OUTPUT (policy ACCEPT 126 packets, 8793 bytes)
+
+=20
+
+pkts bytes target     prot opt in     out     source
+destination
+
+=20
+
+=20
+
+=20
+
+NAT Rules
+
+=20
+
+Chain PREROUTING (policy ACCEPT)
+
+target     prot opt source               destination
+
+=20
+
+Chain POSTROUTING (policy ACCEPT)
+
+target     prot opt source               destination
+
+MASQUERADE  all  --  anywhere             anywhere
+
+=20
+
+Chain OUTPUT (policy ACCEPT)
+
+target     prot opt source               destination
+
+=20
+
+=20
+
+  _____ =20
+
+=20
+
+=20
 
 
-> Fritz,
->     Change the IPADDR to be 192.168.10.? and the NETMASK to be
-> 255.255.255.0.
->
-> Brandon Broyles
->
-> ----- Original Message -----
-> From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-> To: <netfilter@drbroyles.com>
-> Sent: Wednesday, October 22, 2003 1:38 AM
-> Subject: RE: iptables or routing problem
->
->
->
-> Sorry for being ignorant... but how do I limit the subnet of eth1 to
-> 192.168.10.*/24?
->
-> here is my current ifcfg-eth1:
-> BOOTPROTO=none
-> GATEWAY=192.168.10.240
-> DEVICE=eth1
-> MTU=1500
-> NETMASK=255.255.0.0
-> BROADCAST=192.168.255.255
-> IPADDR=192.168.8.232
-> NETWORK=192.168.0.0
-> ONBOOT=yes
->
->
-> fritz <www.mesedilla.com>
-> ---
-> + Basta Ikaw Lord
->
->
->
-> > -----Original Message-----
-> > From: netfilter@drbroyles.com [mailto:netfilter@drbroyles.com]
-> > Sent: Wednesday, October 22, 2003 1:33 PM
-> > To: Fritz Mesedilla
-> > Cc: [netfilter] Mailing List
-> > Subject: Re: iptables or routing problem
-> >
-> >
-> > Fritz,
-> >     eth1 is getting these packets because the destination MAC
-> > address of
-> > those packets match eth1's MAC address.  The subnets you have
-> > defined for
-> > eth0 and eth1 overlap, so you may still be experiencing ARP
-> > problems.  Since
-> > the default gateway you are using has an IP of 198.168.10.240, might I
-> > suggest that you limit the subnet of eth1 to be
-> > 198.168.10.*/24?  If you
-> > make this change, you should be able to get your ARP problems
-> > straitened
-> > out.
-> >
-> > Brandon Broyles
-> >
-> > ----- Original Message -----
-> > From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-> > To: <netfilter@lists.netfilter.org>
-> > Sent: Wednesday, October 22, 2003 1:03 AM
-> > Subject: iptables or routing problem
-> >
-> >
-> >
-> > I dunno if this is a routing problem or my iptables.
-> >
-> > route:
-> > Kernel IP routing table
-> > Destination     Gateway         Genmask         Flags Metric
-> > Ref    Use
-> > Iface
-> > 192.168.9.0     *               255.255.255.0   U     0
-> > 0        0 eth0
-> > 192.168.0.0     *               255.255.0.0     U     0
-> > 0        0 eth1
-> > 127.0.0.0       *               255.0.0.0       U     0
-> > 0        0 lo
-> > default         192.168.10.240  0.0.0.0         UG    0
-> > 0        0 eth1
-> >
-> >
-> > ifconfig:
-> > eth0      Link encap:Ethernet  HWaddr 00:02:55:EE:C3:91
-> >           inet addr:192.168.9.1  Bcast:192.168.255.255
-> > Mask:255.255.255.0
-> >           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-> >           RX packets:377635 errors:0 dropped:0 overruns:0 frame:0
-> >           TX packets:7192 errors:0 dropped:0 overruns:0 carrier:0
-> >           collisions:0 txqueuelen:100
-> >           RX bytes:216836627 (206.7 Mb)  TX bytes:808284 (789.3 Kb)
-> >           Interrupt:10 Base address:0xa000
-> >
-> > eth1      Link encap:Ethernet  HWaddr 00:10:5A:D0:19:16
-> >           inet addr:192.168.8.232  Bcast:192.168.255.255
-> > Mask:255.255.0.0
-> >           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-> >           RX packets:1914380 errors:0 dropped:0 overruns:0 frame:0
-> >           TX packets:1522009 errors:0 dropped:0 overruns:0 carrier:1
-> >           collisions:2946 txqueuelen:100
-> >           RX bytes:480613108 (458.3 Mb)  TX bytes:1246359355
-> > (1188.6 Mb)
-> >           Interrupt:10 Base address:0xb800
-> >
-> > lo        Link encap:Local Loopback
-> >           inet addr:127.0.0.1  Mask:255.0.0.0
-> >           UP LOOPBACK RUNNING  MTU:16436  Metric:1
-> >           RX packets:40969 errors:0 dropped:0 overruns:0 frame:0
-> >           TX packets:40969 errors:0 dropped:0 overruns:0 carrier:0
-> >           collisions:0 txqueuelen:0
-> >           RX bytes:5714853 (5.4 Mb)  TX bytes:5714853 (5.4 Mb)
-> >
-> > iptables:
-> > LOGGED: IN=eth1 OUT= MAC=00:10:5a:d0:19:16:00:09:6b:e2:31:d7:08:00
-> > SRC=192.168.8.11 DST=192.168.9.1 LEN=48 TOS=0x00 PREC=0x00
-> > TTL=128 ID=63630
-> > DF PROTO=TCP SPT=2138 DPT=3128 WINDOW=64240 RES=0x00 SYN URGP=0
-> > LOGGED: IN=eth1 OUT= MAC=00:10:5a:d0:19:16:00:09:6b:e2:31:d7:08:00
-> > SRC=192.168.8.11 DST=192.168.9.1 LEN=48 TOS=0x00 PREC=0x00
-> > TTL=128 ID=63746
-> > DF PROTO=TCP SPT=2140 DPT=3128 WINDOW=64240 RES=0x00 SYN URGP=0
-> > LOGGED: IN=eth1 OUT= MAC=00:10:5a:d0:19:16:00:09:6b:e2:31:d7:08:00
-> > SRC=192.168.8.11 DST=192.168.9.1 LEN=48 TOS=0x00 PREC=0x00
-> > TTL=128 ID=63825
-> > DF PROTO=TCP SPT=2142 DPT=3128 WINDOW=64240 RES=0x00 SYN URGP=0
-> >
-> >
-> > How come iptables still says eth1 is being used by
-> > 192.168.9.1? This has
-> > been my biggest problem. I hope to restrict in iptables that
-> > eth0 is used by
-> > 192.168.9.1 for security reasons.
-> >
-> > I have no forwarding or any routing settings yet with
-> > iptables but a simple
-> > logging just to find out if the network interfaces work properly.
-> >
-> >
-> > fritz <www.mesedilla.com>
-> > ---
-> > + Basta Ikaw Lord
-> >
-> > ----------------------------------------------------------------------
-> > This email and any files transmitted with it are confidential and
-> > intended solely for the use of the individual or entity to whom they
-> > are addressed. If you have received this email in error please notify
-> > the sender immediately by e-mail and delete this e-mail from your
-> > system. Please note that any views or opinions presented in this
-> > email are solely those of the author and do not necessarily represent
-> > those of the company. Finally, the recipient should check this email
-> > and any attachments for the presence of viruses. The company accepts
-> > no liability for any damage caused by any virus transmitted by this
-> > email.
-> >
-> > Overture Media, Inc.
-> > Direct Line: (632) 635-4785
-> > Trunkline:   (632) 631-8971 Local 146
-> > Fax: (632) 637-2206
-> > Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor.
-> > Ortigas Ave.,
-> > Quezon City 1100
-> >
-> >
-> >
-> >
->
-> ----------------------------------------------------------------------
-> This email and any files transmitted with it are confidential and
-> intended solely for the use of the individual or entity to whom they
-> are addressed. If you have received this email in error please notify
-> the sender immediately by e-mail and delete this e-mail from your
-> system. Please note that any views or opinions presented in this
-> email are solely those of the author and do not necessarily represent
-> those of the company. Finally, the recipient should check this email
-> and any attachments for the presence of viruses. The company accepts
-> no liability for any damage caused by any virus transmitted by this
-> email.
->
-> Overture Media, Inc.
-> Direct Line: (632) 635-4785
-> Trunkline:   (632) 631-8971 Local 146
-> Fax: (632) 637-2206
-> Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave.,
-> Quezon City 1100
->
->
->
->
+------_=_NextPart_001_01C39862.4B2480AA
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+<html>
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>My NAT and iptables =
+configuration
+are installed on a pc called rh9. </span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>Users on my LAN =
+connect to
+rh9 as a gateway to check their email on outlook express and browse on =
+the
+internet.</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>However, when I add =
+the
+following rules, I cannot check mail on <b><u><span =
+style=3D'font-weight:bold'>rh9</span></u></b>
+itself but can browse only.</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><b><i><font size=3D2 =
+color=3Dblue
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:blue;font-weight:bold;font-style:italic'>iptables &#8211;t filter
+&#8211;P FORWARD DROP</span></font></i></b></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><b><i><font size=3D2 =
+color=3Dblue
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:blue;font-weight:bold;font-style:italic'>iptables &#8211;t nat =
+&#8211;P
+FORWARD DROP</span></font></i></b></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>Can anyone explain =
+to me why
+this is the case? Or what can I do to check mail on =
+rh9.</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>My iptables and NAT
+configurations are as below </span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>Thanks for any =
+help</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>Rgds</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>Gilles</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>[root@rh9 root]# =
+iptables
+&#8211;vnL</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><b><u><font size=3D2 =
+color=3Dred
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:red;font-weight:bold'>Chain INPUT (policy DROP 478 packets, 46623 =
+bytes)</span></font></u></b></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>pkts bytes
+target&nbsp;&nbsp;&nbsp;&nbsp; prot opt in&nbsp;&nbsp;&nbsp;&nbsp;
+out&nbsp;&nbsp;&nbsp;&nbsp;
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+destination</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp =
+spt:53</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+udp spt:53</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+udp spt:80</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>4&nbsp;&nbsp; 160 =
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp;
+tcp&nbsp; --&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tcp spt:80</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+udp spt:443</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tcp spt:443</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tcp spt:110</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+udp spt:110</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp =
+spt:25</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+udp spt:25</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+udp spt:10000</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tcp spt:10000</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tcp dpt:10000</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>0&nbsp;&nbsp;&nbsp;&nbsp; 0
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;udp dpt:10000</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>31&nbsp; 9152
+ACCEPT&nbsp;&nbsp;&nbsp; all&nbsp; --&nbsp; =
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+state RELATED,ESTABLISHED</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><b><u><font size=3D2 =
+color=3Dred
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:red;font-weight:bold'>Chain FORWARD (policy DROP 18 packets, 864 =
+bytes)</span></font></u></b></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>pkts bytes
+target&nbsp;&nbsp;&nbsp;&nbsp; prot opt in&nbsp;&nbsp;&nbsp;&nbsp;
+out&nbsp;&nbsp;&nbsp;&nbsp;
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;
+destination</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>394&nbsp; 185K
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; --&nbsp; eth1&nbsp;&nbsp;
+eth0&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+state RELATED,ESTABLISHED</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>309 56481
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; --&nbsp; eth0&nbsp;&nbsp;
+eth1&nbsp;&nbsp;&nbsp;
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 0.0.0.0/0</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><b><u><font size=3D2 =
+color=3Dred
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:red;font-weight:bold'>Chain OUTPUT (policy ACCEPT 126 packets, =
+8793
+bytes)</span></font></u></b></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>pkts bytes =
+target&nbsp;&nbsp;&nbsp;&nbsp;
+prot opt in&nbsp;&nbsp;&nbsp;&nbsp; out&nbsp;&nbsp;&nbsp;&nbsp;
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;
+destination</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><b><font size=3D3 =
+color=3Dnavy
+face=3D"Courier New"><span =
+style=3D'font-size:12.0pt;font-family:"Courier New";
+color:navy;font-weight:bold'>NAT Rules</span></font></b></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><b><font size=3D3 =
+color=3Dnavy
+face=3D"Courier New"><span =
+style=3D'font-size:12.0pt;font-family:"Courier New";
+color:navy;font-weight:bold'>Chain PREROUTING (policy =
+ACCEPT)</span></font></b></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>target&nbsp;&nbsp;&nbsp;&nbsp;
+prot opt
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;
+destination</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><b><font size=3D3 =
+color=3Dnavy
+face=3D"Courier New"><span =
+style=3D'font-size:12.0pt;font-family:"Courier New";
+color:navy;font-weight:bold'>Chain POSTROUTING (policy =
+ACCEPT)</span></font></b></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>target&nbsp;&nbsp;&nbsp;&nbsp;
+prot opt
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;
+destination</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>MASQUERADE&nbsp; =
+all&nbsp;
+--&nbsp;
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;
+anywhere</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><b><font size=3D3 =
+color=3Dnavy
+face=3D"Courier New"><span =
+style=3D'font-size:12.0pt;font-family:"Courier New";
+color:navy;font-weight:bold'>Chain OUTPUT (policy =
+ACCEPT)</span></font></b></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>target&nbsp;&nbsp;&nbsp;&nbsp;
+prot opt
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;
+destination</span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<div class=3DMsoNormal align=3Dcenter style=3D'text-align:center'><font =
+size=3D3
+face=3D"Times New Roman"><span style=3D'font-size:12.0pt'>
+
+<hr size=3D2 width=3D"100%" align=3Dcenter>
+
+</span></font></div>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C39862.4B2480AA--
 
