@@ -1,12 +1,14 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: forwarding
-Date: Tue, 18 May 2004 13:33:00 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Using External NATTED addresses Inside the Firewall
+Date: Tue, 18 May 2004 21:39:51 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF567934B@alderaan.smgtec.com>
+Message-ID: <200405182139.51346.Antony@Soft-Solutions.co.uk>
+References: <6.0.0.22.2.20040518151903.03c3ee30@mail.naccrra.org> <200405182049.29795.Antony@Soft-Solutions.co.uk> <6.0.0.22.2.20040518161116.040f0c60@mail.naccrra.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <6.0.0.22.2.20040518161116.040f0c60@mail.naccrra.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,28 +21,36 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
-> On Tuesday 18 May 2004 7:23 pm, Daniel Chemko wrote:
->=20
->> iptables -t nat -A POSTROUTING --destination ${server2} -j SNAT --to
->> ${server1_internal_ip}=20
->>=20
->> This is the last time I try to respond to you since you've been
->> ignoring the rest.
->=20
-> Who are you talking to here (your posting was addressed to two
-> individuals, plus the list), and what is "the rest" you refer to?
->=20
-> I have only seen one other email from you in this thread, and that
-> was in response to a somewhat off-topic posting about reverse
-> routing, which IMHO didn't require a response...
->=20
-> We don't want anyone to feel left out on this list, but if you've
-> posted other comments and not had a response, the reason is probably
-> that other list subscribers haven't seen what you said yet (no, I
-> don't know why that would be).
+On Tuesday 18 May 2004 9:17 pm, David O'Brien wrote:
 
-Sorry, I was referring to the last thread the poster openned. Not this
-one. I agree with the rest. I forgot that he had implemented the
-two-card solutino already.
+> At 03:49 PM 5/18/2004, Antony Stone wrote:
+> >
+> >http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
+>
+> Current setup from iptables-save
+>
+> Very much like the example at the link above however it doesn't work.
+> Looks like its bouncing around.
+
+What do you mean by "bouncing around"?
+
+> Any logging option I could enable to actually see the above in action?
+
+Well, "iptables -L -t nat -nvx; iptables -L -nvx" will show you packet & byte 
+counters so you can see whether any packets have matched the rules.
+
+Other than that, a packet sniffer (eg: tcpdump, ethereal) would be good.
+
+Regards,
+
+Antony.
+
+-- 
+Microsoft may sell more software than any other company, but McDonald's sell 
+more burgers than any other company, and I think the other similarities are 
+obvious...
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
