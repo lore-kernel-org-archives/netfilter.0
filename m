@@ -1,13 +1,13 @@
-From: "Luis Fernando Barrera" <luba@assist.com.gt>
-Subject: RE: SNAT
-Date: Tue, 12 Nov 2002 15:47:59 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: SNAT
+Date: Tue, 12 Nov 2002 21:29:11 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NABBIDJPNCAGKGOFGHBFKEKAPIAA.luba@assist.com.gt>
-References: <20021112212916.OYRS3711.mta02-svc.ntlworld.com@there>
+Message-ID: <20021112212916.OYRS3711.mta02-svc.ntlworld.com@there>
+References: <001a01c28a8e$9af7b7b0$0401000a@robbysan.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021112212916.OYRS3711.mta02-svc.ntlworld.com@there>
+In-Reply-To: <001a01c28a8e$9af7b7b0$0401000a@robbysan.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,25 +19,6 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-
-
-I think that the DNS traffic goes only on 53/tcp when transfering
-zones, and it uses the 53/udp for the queries.
-
-Also, if you use the BIND implementation of the DNS server, you
-can specify the source port, so the traffic can go from 53/udp to 53/udp
-
-Luis Fernando Barrera 
-luba@assist.com.gt
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: Tuesday, November 12, 2002 15:29
-To: netfilter@lists.netfilter.org
-Subject: Re: SNAT
-
 
 On Tuesday 12 November 2002 9:01 pm, Rob Sterenborg wrote:
 
@@ -61,6 +42,4 @@ With thanks to God,
 For all that's come before,
 For all that will come after,
 But most of all, for this bit right here now.
-
-
 
