@@ -1,14 +1,11 @@
-From: "Evan Borgstrom" <evan@unixpimps.org>
-Subject: Re: Strange setup
-Date: Sun, 19 Jan 2003 19:45:02 -0500 (EST)
+From: "Jet" <yenjet.chan@eglobal.com.my>
+Subject: Fw: IPtables (resend)
+Date: Mon, 20 Jan 2003 11:19:21 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084.10.35.120.83.1043023502.squirrel@mail.unixpimps.org>
-References: <1648.10.35.120.83.1043012159.squirrel@mail.unixpimps.org>
-        <1043015513.24583.16.camel@wizardslair>
+Message-ID: <00ba01c2c032$ba642be0$0bc8c80a@dolphin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1043015513.24583.16.camel@wizardslair>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,105 +16,110 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-That's not gonna work in my sitation. I guess I need to further explain
-how I'm looking for traffic to flow.
+To: "netfilter@lists" <netfilter@lists.netfilter.org>
 
 
-If traffic is from the WAN bound for the DMZ then the return path needs to
-leave the WAN.
+----- Original Message -----
+From: "Jet" <yenjet.chan@eglobal.com.my>
+To: "Miguel Amador L." <amador@puc.cl>
+Cc: <netfilter-request@lists.netfilter.org>
+Sent: Monday, January 20, 2003 11:00 AM
+Subject: Re: IPtables
 
-If traffic is from the WLAN bound for the DMZ then the return path needs
-to leave the WLAN.
 
-So, I need to be able to mark the connection somehow as the inbound
-traffic from the WAN is bound for the DMZ so that I can specify a
-different routing table for the return path so that it will leave the WAN
-as well, otherwise it might end up with a more specific route through the
-WLAN which will cause problems.
-
-Does that make more sense?
-
--Evan
-
-> If this traffic isn't LAN related then just do
+> (sorry, I don't speak spanish)
 >
-> ip rule add from $WAN_IP table $TABLE_NAME
+> What i do to mitigate the problem are as below:
 >
-> ip route add default via $WAN_PEER_IP dev $WAN_IF table $TABLE_NAME
+> iptables -A INPUT -i eth0 -p tcp ! --syn -m state --state NEW -j DROP
 >
-> This will add a source based route so that traffic entering on the
-> $WAN_IF has its resonses exit on the $WAN_IF.
+> where eth0 is my network interface that face outside.
+> I still don't know if this will break any protocol (or service) to work
+> properly.
+> So far, it seems to work for my testing.
 >
-> See the Advanced Routing HOWTO for more info.
+> Basically, here is how I test my firewall (A.B.C.1)
+> My firewall have a rule to allow incoming HTTP connection to my web server
+> (A.B.C.8)
+> At my firewall, I run a tool called iptstate to show me the connection
+state
+> on the firewall.
+> First I try with normal SYN connection.
+> hping -c 1 -S -a spoof.ip -p 80 A.B.C.8
 >
-> Regards,
+> Then, the tool, iptstate shows SYN_SEND, and immediately changed to
+SYN_RECV
+> The TTL is set to one minute. This is good.
+> And this is correct state that firewall suppose to have.
 >
-> PJ
+> Next, I try to do some evil test
+> hping -c 1 -A -a spoof.ip -p 80 A.B.C .8
 >
-> On Mon, 2003-01-20 at 08:35, Evan Borgstrom wrote:
->> I've got sort of a strange setup that I'm looking to accomplish some
->> strange async routing. I know how I want to accomplish it and am
->> pretty sure that I can do it with netfilter but just can't seem to
->> find the proper way.
->>
->> Here's the rundown on the network setup:
->>
->> [ LAN ] --
->> [ DMZ ] -- [ Firewall/Router ] -- [ WAN ]
->>                     |
->>                     |
->>                  [ WLAN ]
->>
->>
->> The WLAN is between myself and a couple of other people in my building
->> to provide redundant paths out of each of our networks and is working
->> beautifully. We all advertise (via BGP) blocks close to us to each to
->> provide the shortest path as well.
->>
->> Comming from the WAN I have a /29 routed to the DMZ which services a
->> number of machines that provide different services.
->>
->> The firewall/router is a linux box that is running iptables.
->>
->>
->> Now the problem:
->> Because of the advertisments comming over the WLAN I now have about 40
->> routes in the kernel routing table. Most of them are not very specific
->> since we advertise our ISP's blocks to each other, so I have routes
->> for /16's, /21's, etc... What happens is when someone that resides in
->> one of these blocks that I'm getting advertisements for tries to
->> access an address in my /29 their return path follows the advertisment
->> over the WLAN.
->>
->> Using the iproute2 package I've created a second routing table with a
->> single default route out my WAN default route. I'm hopping that
->> there's a way to tag the connection in the conntrack table and then -j
->> MARK it when a related,established packet comes back so that I use the
->> iproute2 package to specify that the second routing table will be
->> used.
->>
->> Anyone know of a way that I can accomplish this?
->>
->> Thanks in advance,
->> Evan
->>
->> --
->> Evan Borgstrom <evan@unixpimps.org>
->> http://www.unixpimps.org - SIG:ILL
->>
->>
->>
-> --
+> Now,  the tool, immediately shows the state of the connection as
+ESTABLISHED
+> and having the
+> TTL as 120 hours. This is bad because this is a packet that have the state
+> "NEW" with only "ACK"
+> tcp flag been turned on.
 >
-> 'Conformity is the jailer of freedom and the enemy of growth.' - John F.
-> Kennedy
-
-
--- 
-Evan Borgstrom <evan@unixpimps.org>
-http://www.unixpimps.org - SIG:ILL
-
+> Imagine, it an attacker spoof with a lot of IP addresses (maybe >10K) of
+> this type of packets, then
+> the firewall will filled up with all unnecessary packets that expire after
+> 120 hours.
+> This means a DOS attack to your firewall.
+>
+> I've experienced a performance slow down becasue of this.
+>
+>  - Jet
+> Security Analyst
+>
+> email: jchan@trusecure.com
+>
+>
+>
+> ----- Original Message -----
+> From: "Miguel Amador L." <amador@puc.cl>
+> To: "Jet" <yenjet.chan@eglobal.com.my>
+> Sent: Friday, January 17, 2003 10:47 PM
+> Subject: Re: IPtables
+>
+>
+> > Hi, i have the same problem, and i had to make a DMZ , on other ip range
+> for
+> > work with servers. (it is the correct way)
+> >
+> > but i know that may be can with combining DNAT and SNAT, but i don't
+want
+> > probe.
+> >
+> > if you be can do it... plase , tell me how are you do it..
+> >
+> > SAlu2
+> > Miguel
+> >
+> > PS: speak spanish ?
+> >
+> >
+> > Jet writes:
+> >
+> > > Can anyone pls verify that whether iptables is vulnerable to the
+> following
+> > > bugtraq ID?
+> > >
+> > > http://www.securityfocus.com/bid/6534
+> > >
+> > > Base on my testing (1.2.7a), it is vulnerable too.
+> > >
+> > >  - Jet
+> > > Security Analyst
+> > >
+> > > email: jchan@trusecure.com
+> > >
+> > >
+> > >
+> >
+> >
+> >
+>
 
 
