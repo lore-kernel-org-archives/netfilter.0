@@ -1,9 +1,12 @@
-From: mailinglists@belfin.ch
-Subject: RE: IPTables Logging Problem.
-Date: Tue, 3 Dec 2002 09:43:38 +0100
+From: "hare ram" <hareram@sol.net.in>
+Subject: Multible Links with Transparent Cache
+Date: Tue, 3 Dec 2002 16:11:37 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <31347F3CE518D6118ACB00A0246AD0560B2505@mx.seaan.net>
+Message-ID: <06f501c29ab8$8eb3c040$13fcc5cb@nextto>
+References: <31347F3CE518D6118ACB00A0246AD0560B2505@mx.seaan.net>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,38 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Amit Kumar Gupta' <amitkumar.gupta@wipro.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Hi all
 
-Hi
+i am running with RedHat 7.3 with iptables + transparent Cache
+its working well
 
-> I am having a problem reg IPtables Logging. Suppose I want to LOG all
-> the packets for a particular session. How I can do that? 
-> (Here, Session
-> say telnet is established b/w 2 hosts and I want to Log all 
-> the packets
-> on host A (say) i.e. the outgoing and incoming packets). 
-> I know abt the commans :-
-> 
-> Iptables -A INPUT -s HOSTA -d HOSTB -p tcp -sport 21 -j LOG 
+no i have added another Link to My network with another Provider
+now i want to Load Balance with Two Links
 
-What kind of rule is that? does your client build up a connection from low
-ports to low ports? My computer doesn't do that. But to answer your
-question:
+At now iam running both with 2 Different Server,
 
-iptables -A OUTPUT -s HOSTB -d HOSTA -p 6 --dport 21 -j LOG
+iam planning to do below
 
-will solve your problem.
+ eth0 with Public IP x.x.x.x gateway x.x.x.1
+ eht0:0 with Private IP (ADSL)  which is provided another Provider
+192.168.3.2 gateway is 192.168.3.1
 
-> But it logs only packets from HostA to HostB 
+i have LAN with 2 networks at this moment with 2 servers
 
-of course
+one Server Serving 192.168.2.0 network Going to First Link
+another Server Serving 192.168.20.0 network Going to Second Link
 
-> while I want the reverse
-> also. 
+i want  to load balance with this two network with One Server with
+Transparent cache,
+the cache and routing should automatically load Balance the Links
 
-put in that second rule.
+one link is 128kbps another is 256kbps Link
 
-Philipp
+any one recomend how to do this
+
+thanks
+hare
+
 
