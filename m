@@ -1,13 +1,11 @@
-From: jen@saturn5.com
-Subject: Re: ssl forward / proxy question
-Date: Tue, 29 Jul 103 11:51:51 -0700 (PDT)
+From: Richard Plana <rplana@zicorp.com>
+Subject: Adding listening ports
+Date: Tue, 29 Jul 2003 13:06:59 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030729185151.2216.qmail@saturn5.com>
-References: <20030726024618.GA31690@cannon.eng.us.uu.net>
+Message-ID: <3F26C5D3.7080002@zicorp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030726024618.GA31690@cannon.eng.us.uu.net> from "Ramin Dousti" at Jul 25, 3 10:46:18 pm
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,111 +15,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hi,
 
-i actually have 3 load-balanced webservers, and another lone one with virtu=
-al=20
-IPs. there are 5 SSL certificates at this time (some clients insist on havi=
-ng=20
-their own domain name), and it appears we are going to have more. i am tryi=
-ng=20
-to keep this as limited as possible, but there's only so much i can do sinc=
-e=20
-we only get 32 IPs from our co-lo facility.=20
+Because of (overly?) strict security policies at our company, one can 
+only make TCP connections to ports 80 and 443. I was wondering if 
+netfilter could be used to redirect packets destined for port 443 to the 
+listening sshd daemon on port 22 on an external machine.
 
-since i have, logically, 2 different webservers, would this work (barring s=
-quid
-or any proxies)? $EXTERNAL_IP1 and 2 are 2 different external IPs, whereas =
+I tried "iptables -I RH-Lokkit-0-50-INPUT 5 -p tcp -m tcp --dport 443  
+--syn -j ACCEPT" (I'm using RedHat's default config) and "iptables -t 
+nat -A PREROUTING -p tcp --dport 443 -j DNAT --to-destination 
+127.0.0.1:22" to do the actual routing, but that didn't seem to work:
 
-$WEBSERVER1 and 2 are the 2 different webservers.
+$ ssh -p 443 localhost
+ssh: connect to host localhost port 443: Connection refused
 
-iptables -A FORWARD -p tcp -s $EXTERNAL_IP1 -d $WEBSERVER1 --dport 443 -j A=
-CCEPT
-iptables -A FORWARD -p tcp -s $EXTERNAL_IP2 -d $WEBSERVER2 --dport 443 -j A=
-CCEPT=20
-thanks!
+Suggestions would be appreciated.
+-- 
 
--\jen
 
-=20
-> THe original poster has three web servers with three certs (I think). The
-> reverse proxy you are explaining below can only hold one cert (this is the
-> nature of SSL).=20
->=20
-> Ramin
->=20
-> On Sat, Jul 26, 2003 at 12:03:27AM +0200, Garcia Ruiz wrote:
->=20
-> > I can tell you that squid 2.5 supports reverse proxying and it works th=
-is
-> > way: Client -> SSL -> Squid (with certificates) -> No SSL -> Internal
-> > Server. I think that HTTP proxying supports reverse proxying for more t=
-han 1
-> > server but I don't know if it's the same for SSL. In this case your only
-> > problem is that the internal network donn't have encryption (Is it fine=
- for
-> > you=BF?). If reverse proxy works for you, you can get an extra: The loa=
-d of
-> > you web servers will be much lower (you won't probably get cached SSL p=
-ages
-> > but as you know, when requesting a page there are a lot of requests -im=
-ages
-> > among other- and these kind of requests can be cached and also are very
-> > heavy. The load of your servers would be also lower due to the lack of
-> > encryption-decryption inside them).
-> >=20
-> > Squid 3.0 supports Client -> SSL -> Squid (with certificates) -> SSL ->
-> > Internal Server but it is in developement state (I wouldn't use in
-> > production mode).
-> >=20
-> >=20
-> > Here you have some interesting links:
-> > http://squid.bilkent.edu.tr/mail-archive/squid-users/200102/0714.html
-> > http://www.squid-cache.org/mail-archive/squid-users/200303/1040.html
-> > http://squid.visolve.com/white_papers/reverseproxy.htm
-> >=20
-> > Regards,
-> >=20
-> > JBGR
-> >=20
-> > ----- Original Message -----=20
-> > From: "Ramin Dousti" <ramin@cannon.eng.us.uu.net>
-> > To: "Garcia Ruiz" <gar_ruiz@teleline.es>
-> > Cc: <jen@saturn5.com>; <netfilter@lists.netfilter.org>
-> > Sent: Friday, July 25, 2003 9:33 PM
-> > Subject: Re: ssl forward / proxy question
-> >=20
-> >=20
-> > > You mean squid is going to handle the "get" requests for https??????
-> > > Meaning it's terminating SSL, sending the right cert, negotiating a
-> > > session key with the client, getting the request and fetching the
-> > > contents based on the "get" request from the right web server on the
-> > > LAN????
-> > >
-> > > Can you confirm all the above? If so, squid is a big security hole,
-> > > but I'm sure it's not:
-> > >
-> > > http://www.squid-cache.org/Doc/FAQ/FAQ-1.html#ss1.12
-> > >
-> > > Ramin
-> > >
-> > > On Fri, Jul 25, 2003 at 08:38:14PM +0200, Garcia Ruiz wrote:
-> > >
-> > > > Have a look at Squid proxy. The last releases admit SSL reverse
-> > proxying. If
-> > > > it would be capable of handling different servers your problem woul=
-d be
-> > > > solved. You could have it inside of the firewall (but be careful wi=
-th
-> > > > security issues).
-> > > >
-> > > > Regards.
-> > > >
-> > > > BGR
-> > >
-> >=20
->=20
+*Richard Neal Plana, B.Sc., CCNA*
+Lead Software Engineer
+Zi Corp.
 
 
