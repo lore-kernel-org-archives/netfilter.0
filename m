@@ -1,11 +1,15 @@
-From: "Wayne McDougall" <netfilter@codeworks.gen.nz>
-Subject: [Q]: Filtering based on reverse DNS
-Date: Sat, 12 Apr 2003 19:24:42 +1200
+From: Athan <netfilter@miggy.org>
+Subject: Re: [Q]: Filtering based on reverse DNS
+Date: Sat, 12 Apr 2003 08:51:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NCBBIBNHAKHDGJGMPLPJCEKBKPAA.netfilter@codeworks.gen.nz>
+Message-ID: <20030412075101.GA32561@miggy.org>
+References: <NCBBIBNHAKHDGJGMPLPJCEKBKPAA.netfilter@codeworks.gen.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <NCBBIBNHAKHDGJGMPLPJCEKBKPAA.netfilter@codeworks.gen.nz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,45 +19,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-What I want to achieve is to filter based on a reverse name lookup on a =
-source (and ideally destination) IP on initiating a connection.
-
-Why? Because I'm in a country (island) where communication within the =
-country is very cheap, and communication outside is metered and =
-expensive. So I'd like to be able to apply traffic shaping (quotas and =
-rate limiting) and policing with different polices applying to whether =
-the IP is in my country or outside. I understand that reverse DNS does =
-not always work and I'm quite happy to treat anyone like that as being =
-outside. But if there IP resolve to *.nz I want to treat them =
-differently to everyone else.
-
-I appreciate that this sort of requirement isn't likely to be found in =
-the USA (where I suspect most of y'all are), and I suspect it may not be =
-very common elsewhere (anywhere else?). So I will understand if there =
-isn't much interest or support for this.
-
-My questions are:
-1. Is there anything already like this (or could be adapted)?
-2. Are there reasons why I shouldn't be doing this at all. I appreciate =
-that there would be a performance hit , and obviously I only want =
-reverse DNS lookups when connections are initiated - I don't mind =
-latency at that point, and obviously I should use a local caching =
-nameserver. But is it all a real mess and I shouldn't go there? Why not?
-3. If there is nothing out there, where should I attack this problem if =
-I was going to try and roll my own? A netfilter module, right?
+To: Wayne McDougall <netfilter@codeworks.gen.nz>
+Cc: netfilter@lists.netfilter.org
 
 
-Thank you for your time. I am new to this, so please forgive (and feel =
-free to correct) any inappropriate use of terminology.
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Apr 12, 2003 at 07:24:42PM +1200, Wayne McDougall wrote:
+> What I want to achieve is to filter based on a reverse name lookup on a s=
+ource (and ideally destination) IP on initiating a connection.
 
-Regards
+  Doing this dynamically is going to get very hairy very quickly IMO.
 
-Wayne McDougall
+  An alternative is to go via the whois info on the IP block an IP is
+in.  A quick check on your own IP includes info about the APNIC
+(Asia/Pacific NIC) registry at http://www.apnic.net/db/, looking a
+little further on that page reveals:
 
+	http://ftp.apnic.net/stats/apnic/
 
+The latest file from there is:
 
+	http://ftp.apnic.net/stats/apnic/apnic-2003-04-01
+
+and the fields are explained at:
+
+	ftp://ftp.apnic.net/pub/apnic/stats/apnic/_README-apnic-stats.txt
+
+It should be possible to use this information to create a list of IP
+blocks in CIDR notation that are assigned to NZ, and from that generate
+a list of rules for firewalling/traffic shaping.
+  Of course when dealing with a great number of rules like this you
+should take the advice someone else offered which is to aggregate the
+blocks into chunks, with top-level rules distinguishing between the
+chunks jumping to chains that deal with smaller sub-chunks and so on
+down to chains containing a few actual IP blocks.  This way you minimise
+the number of rules traversed for any given block.
+
+HTH,
+
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+
+--huq684BweRXVnRxX
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAj6XxWUACgkQIr2uvLNOS8OQgACfaVM2wDJlxpy0SUWQDX+FPYTJ
+rZMAnRva7qyUpeRLgVA0ZNeVL7QJ02i+
+=AayP
+-----END PGP SIGNATURE-----
+
+--huq684BweRXVnRxX--
 
