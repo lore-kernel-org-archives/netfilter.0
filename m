@@ -1,10 +1,13 @@
-From: John Mathey <jmathey@attbi.com>
-Subject: another port forwarding question
-Date: Wed, 03 Dec 2003 12:28:03 -0600
+From: "Aldo S. Lagana" <alagana@discmail.com>
+Subject: RE: stop ICMP broadcasts...
+Date: Wed, 3 Dec 2003 13:34:52 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6.0.1.1.2.20031203122704.02c71e98@mail>
+Message-ID: <200312031838.hB3IcjAm006197@discmail.com>
+References: <20031203184509.GC28783@cannon.eng.us.uu.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031203184509.GC28783@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,48 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Ramin Dousti' <ramin@cannon.eng.us.uu.net>
+Cc: netfilter@lists.netfilter.org
 
-Sorry, I mistyped, the second -p was --dport:
+I am on neither of those networks.  There are 2 devices on that network - an
+old cisco router and the iptables box - the cisco is simply a router in this
+case.
 
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Ramin Dousti
+Sent: Wednesday, December 03, 2003 1:45 PM
+To: Aldo S. Lagana
+Cc: netfilter@lists.netfilter.org
+Subject: Re: stop ICMP broadcasts...
 
-$IPT -t nat -A PREROUTING -d $MYEXTIP -p tcp  -s $MYSOURCEIP --dport 
-196  -j DNAT --to 192.168.1.50:80
+You cannot prevent any upstream router/host from sending you any
+kind of packet (including ICMP broadcasts). What you can do is
+to ignore them but be carefull not to ignore legitimate ICMP's.
 
-John
+What network are you on? The first broadcast is coming from
+216.112.46.227 and the second one is coming from 194.85.34.35.
+At least this is what the DNS says which most definitely is wrong
+because the broadcasts should only have local significance.
 
+Ramin
 
+On Wed, Dec 03, 2003 at 12:21:41PM -0500, Aldo S. Lagana wrote:
 
-
-   I'm trying to figure a way to forward a packet from a linux box to an 
-internal windows box given a specific port. I'm pretty sure I can specify a 
-port in my browser via a colon: eg: http://myfoobox:196, right?
-
-
-Here is the rule I've set up in the iptables:
-
-
-
-$IPT -t nat -A PREROUTING -d $MYEXTIP -p tcp  -s $MYSOURCEIP -p 196 -j DNAT 
---to 192.168.1.50
-
-Now, if I remove the -p ( port) it works, but I don't want every single 
-request coming here to get forwarded, just a specific port, I've tried 
-entering this in my browser:
-
-http;//myfoobox    - This works if I don't have a port  (-p ) in my 
-iptables rule
-http://myfoobox:196  - this doesn't work no matter what
-just entering the myfoobox   , still no go.
-
-The rule is the first one in my table so I know it has to at least get 
-evaluated, in other words, there's not another rule filtering it out before 
-it hits this.
-
-
-Thanks in advance
-John 
+> I'm attempting to stop these types of broadcasts directed at a NIC that
+has
+> a registered IP address:
+> 12:13:26.670379 w227.z216112046.bos-ma.dsl.cnc.net > X.X.X.X: icmp: echo
+> request
+> 12:13:26.701129 w227.z216112046.bos-ma.dsl.cnc.net > X.X.X.X: icmp: echo
+> request
+> 12:13:26.710815 w227.z216112046.bos-ma.dsl.cnc.net > 255.255.255.255:
+icmp:
+> echo request
+> 12:13:27.192127 ns.majordomo.ru > 255.255.255.255: icmp: echo request
+> 
+> I simply do not want those packets coming to my IP address - is it not
+> possible?  I attempted to set the /proc variable about no icmp broadcasts,
+> but I still see the packets in a tcpdump - is this simply what you can
+call
+> a mini-dos in that the icmp probes are not really hitting the iptables
+> ruleset?  These rules were no help:
+> iptables -t nat -I PREROUTING -i eth1 -p icmp -j DROP
+> iptables -I INPUT -i eth1 -p icmp -j DROP
+> 
 
 
