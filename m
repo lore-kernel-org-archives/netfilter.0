@@ -1,10 +1,13 @@
-From: arif <djreef@yahoo.com>
-Subject: forwarding rule (internal webserver) HELLPP!!
-Date: Mon, 15 Mar 2004 11:10:20 -0800 (PST)
+From: Frank Gruellich <frank@home.manuelm.org>
+Subject: Re: A match similar to quota but for packets
+Date: Mon, 15 Mar 2004 21:04:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040315191020.11187.qmail@web10205.mail.yahoo.com>
+Message-ID: <20040315200404.GL10272@home.manuelm.org>
+References: <20040315182648.GA21132@legolas.on.net.mk>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20040315182648.GA21132@legolas.on.net.mk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +21,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Anyone know why the following rule does not work when
-i use SNAT but does when i use MASQUERADE??
+* Damjan <gdamjan@mail.net.mk> 15. Mar 04:
+> I'm looking for a iptables module that matches packets similar to how 
+> quota matches bytes. A packet quota!
 
-/sbin/iptables -A PREROUTING -t nat -p tcp -d 63.x.x.x
---dport 80 -j DNAT --to 10.0.0.3:80
+What about the -m limit?  What exactly do you intend?
 
-When I use the following rule, the previous rule
-works: 
-/sbin/iptables -t nat -A POSTROUTING -o eth1 -j
-MASQUERADE
-
-but when i do it like this, i just get a connection
-refused from the outside:
-/sbin/iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o
-eth0 -j SNAT --to-source 63.203.63.246
-
-Both work as far as NAT'ing my internal hosts, but i
-cant get the darn forward to work! thanks!! :)
-
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail - More reliable, more storage, less spam
-http://mail.yahoo.com
+HTH,
+ regards, Frank.
+-- 
+Sigmentation fault
 
