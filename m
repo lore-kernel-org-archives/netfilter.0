@@ -1,12 +1,11 @@
-From: Nuitari <nuitari@balthasar.nuitari.net>
-Subject: Re: Advice on network config (unix - linux and windows - mac)
-Date: Tue, 15 Oct 2002 00:53:56 -0400 (EDT)
+From: "Sean Oh" <oh@storageone.co.kr>
+Subject: IP MASQ and IPROUTE2?
+Date: Tue, 15 Oct 2002 11:53:05 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210150051120.3001-100000@balthasar.nuitari.net>
-References: <YSWTUOIGZT2UOIQ31ZXCBGC71B6TN.3daae90a@pc5>
+Message-ID: <001101c273f5$fc2c5220$c300a8c0@COMPAQ>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <YSWTUOIGZT2UOIQ31ZXCBGC71B6TN.3daae90a@pc5>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +15,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 14 Oct 2002, David Bourgeois wrote:
-
-> I would like to setup a linux box as gateway - firewall and NAT (maybe
-> DHCP too) for a network of SUN workstations, windows (98, XP, 2000) PC's
-> and macs.
-> 
-> I don't care about win and mac 's security but would like the SUN
-> network to be as secure as possible. As I guess win can be easily
-> compromised or in our case, untrusted persons can have access to it so I
-> thought of physically separating the unix network from the others by
-> using 2 subnets (three network cards on the gateway). So having two
-> private networks, I can filter what goes from one to the other with the
-> gateway's firewall (iptables in my case)
-> 
-> Is this the right way to do what I would like? Do you see any problem
-> pointing out? Any recommandation would be welcome.
-> 
-> Thanks,
-> David Bourgeois
-
-You should have security for the windows/mac on the firewall itself.
-If you can, get a mail filter to remove some of the problems with security 
-in windows.
-
-Your idea is sound, but don't forget to treat traffic coming from the 
-mac/win part as being traffic from the internet (and vice-vesa).
-
-Also make sure that the physical network is distinct (eg 1 network card 
-for the sun network, 1 for internet, 1 for win/mac).
-
-
+SGkNCg0KSSBhbSBoYXZpbmcgYSBsaXR0bGUgcHJvYmxlbSB3aXRoIElQIE1BU1EgYW5kIElQUk9V
+VEUyLg0KSSBhbSB1c2luZyBSZWRIYXQgNy4zIHdpdGggSVBUQUJMRVMuDQoNCkkgaGF2ZSBhIGxp
+bnV4IGdhdGV3YXkgc2VydmVyIHdpdGggMyBOSUNzLg0KVGhlIGVudmlyb25tZW50IGlzIGFzIGZv
+bGxvd3M6DQoNCg0KTG9jYWwgTmV0d29yayAgICAgICstLS0tLS0tLS0tLS0rIGV0aDEoMjE4Lngu
+eC4yMCkgLS0+IElTUDENCigxOTIuMTY4LjAueCkgLS0tIHwgTGludXggU2VydmVyIHwtLS0tLS0t
+LQ0KICAgICAgICAgICAgICAgIGV0aDAgICB8ICAgICAgICAgICAgICAgICAgICB8IA0KICAgICAg
+MTkyLjE2OC4wLjEgIHwgICAgICAgICAgICAgICAgICAgIHwtLS0tLS0tLQ0KICAgICAgICAgICAg
+ICAgICAgICAgICAgICstLS0tLS0tLS0tLS0tKyBldGgyKDIxMS54LnguMTU1KSAtLT5JU1AyDQoN
+Cg0KVGhlIGV0aDEgYW5kIGV0aDIgYXJlIHRoZSBsaW5rcyB0byBpbnRlcm5ldC4gSSAgaGF2ZSAy
+IHByb3ZpZGVycyB0byBJbnRlcm5ldA0KYW5kIEkgd291bGQgbGlrZSB0byB1c2UgZXRoMiBhcyB0
+aGUgZGVmYXVsdCByb3V0ZSB0byBpbnRlcm5ldCBmcm9tIExvY2FsDQpOZXR3b3JrKDE5Mi4xNjgu
+MC54KSBhbmQgZXRoMSBhcyBmb3IgdGhlIHNlcnZlcnMoRE5TLCBtYWlsLCB3ZWIpIHRoYXQgcGVv
+cGxlIGZyb20gZXh0ZXJuYWwgSW50ZXJuZXQNCnRvIGFjY2Vzcy4gVGhlIHJlYXNvbiBiZWhpbmQg
+dGhhdCBpcyB0aGF0IHByb3ZpZGVyIElTUDIgYXJlIG5vdA0KYWxsb3dpbmcgbWUgdG8gcnVuIHNl
+cnZlcnMgb24gdGhhdCBsaW5rLCBzbyBJIGhhZCB0byBzZXR1cCBhbm90aGVyIGxpbmsgZm9yDQpz
+ZXJ2ZXJzKGV0aDEpLg0KDQpUaGUgSVAgbWFzcXVyYWRpbmcgaXMgdXNlZCBhbmQgaXAgZm9yd2Fy
+ZGluZyBpcyB0dXJuZWQgb24uDQoNCmVjaG8gMSA+IC9wcm9jL3N5cy9uZXQvaXB2NC9pcF9mb3J3
+YXJkDQoNCi9zYmluL2lwIHJvdXRlIGFkZCAyMTEueC54LjEyOCBkZXYgZXRoMiBzcmMgMjExLngu
+eC4xNTUgdGFibGUgU0kNCi9zYmluL2lwIHJvdXRlIGFkZCBkZWZhdWx0IHZpYSAyMTEueC54LjEy
+OSB0YWJsZSBTSQ0KL3NiaW4vaXAgcm91dGUgYWRkIDIxOC54LnguMCBkZXYgZXRoMSBzcmMgMjE4
+LngueC4yMCB0YWJsZSBLVA0KL3NiaW4vaXAgcm91dGUgYWRkIGRlZmF1bHQgdmlhIDIxOC54Lngu
+MSB0YWJsZSBLVA0KDQovc2Jpbi9pcCByb3V0ZSBhZGQgMjExLngueC4xMjggZGV2IGV0aDIgc3Jj
+IDIxMS54LnguMTU1DQovc2Jpbi9pcCByb3V0ZSBhZGQgMjE4LngueC4wIGRldiBldGgxIHNyYyAy
+MTgueC54LjIwDQoNCi9zYmluL2lwIHJvdXRlIGFkZCBkZWZhdWx0IHZpYSAyMTEueC54LjEyOQ0K
+DQovc2Jpbi9pcCBydWxlIGFkZCBmcm9tIDIxMS54LnguMTU1IHRhYmxlIFNJDQovc2Jpbi9pcCBy
+dWxlIGFkZCBmcm9tIDIxOC54LnguMjAgdGFibGUgS1QNCg0KL3NiaW4vaXB0YWJsZXMgLXQgbmF0
+IC1BIFBPU1RST1VUSU5HIC1zIDE5Mi4xNjguMC4wLzI0IC1qIE1BU1FVRVJBREUNCi9zYmluL2lw
+dGFibGVzIC1QIEZPUldBUkQgQUNDRVBUDQovc2Jpbi9pcHRhYmxlcyAtUCBJTlBVVCBBQ0NFUFQN
+Ci9zYmluL2lwdGFibGVzIC1QIE9VVFBVVCBBQ0NFUFQNCg0KDQpbcm9vdEB3d3cgcm9vdF0jIGlw
+IHJvdXRlIHNob3cNCjIxMS54LnguMTI4IGRldiBldGgyICBzY29wZSBsaW5rICBzcmMgMjExLngu
+eC4xNTUNCjIxOC54LnguMCBkZXYgZXRoMSAgc2NvcGUgbGluayAgc3JjIDIxOC54LnguMjANCjIx
+MS54LnguMTI4LzI1IGRldiBldGgyICBzY29wZSBsaW5rDQoxOTIuMTY4LjAuMC8yNCBkZXYgZXRo
+MCAgc2NvcGUgbGluaw0KMjE4LngueC4wLzI0IGRldiBldGgxICBzY29wZSBsaW5rDQoxMjcuMC4w
+LjAvOCBkZXYgbG8gIHNjb3BlIGxpbmsNCmRlZmF1bHQgdmlhIDIxMS54LnguMTI5IGRldiBldGgy
+DQoNCg0KaXQgd29ya3MgZmluZSggMTkyLjE2OC4wLnggY2FuIGFjY2VzcyB0aGUgaW50ZXJuZXQg
+YnkgbWFzcXVlcmFkaW5nIHZpYSBldGgyIGFuZCBleHRlcm5hbCBpbnRlcm5ldCBjYW4gYWNjZXNz
+IHRoZSBldGgxIGFuZCBldGgyKS4NCkJ1dCB0aGUgcHJvYmxlbSBpcyB0aGF0IHRoZSBob3N0cyBp
+biB0aGUgbG9jYWwgbmV0d29yayAoMTkyLjE2OC4wLngpIGNhbiBub3QgYWNjZXNzIDIxMS54Lngu
+MTU1KGV0aDIpIGFuZCAyMTgueC54LjIwKGV0aDEpLCBldmVuIHRob3VnaCBpcCBmb3J3YXJkaW5n
+IGlzIHR1cm5lZCBvbi4gSXQgY2FuIG9ubHkgYWNjZXNzIDE5Mi4xNjguMC4xDQoNCkNvdWxkIHNv
+bWVvbmUgcGxlYXNlIHN1Z2d1ZXN0ZWQgbWUgdGhlIHNvbHV0aW9ucz8NCg0KVGhhbmtzIGluIGFk
+dmFuY2UuDQoNCg==
 
 
