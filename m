@@ -1,11 +1,14 @@
-From: Jonathan Humphrey <jhumphrey@codemasters.com>
-Subject: Passive FTP through IPTables DNAT
-Date: Thu, 6 Mar 2003 18:20:51 -0000
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Start Up Script
+Date: Thu, 6 Mar 2003 18:36:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4D613EBFB75BD6118A5B00508BEEC62C0111CB53@JESS>
+Message-ID: <20030306183633.18c428a9.arnt@c2i.net>
+References: <NHBBICNKELBGKGHPCFMPOEMFCAAA.bbunnell@iastate.edu>
+	<3E676F72.1060702@pcxperience.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="----_=_NextPart_001_01C2E40C.F5F94881"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3E676F72.1060702@pcxperience.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,69 +18,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Thu, 06 Mar 2003 09:55:30 -0600, 
+"James A. Pattie" <james@pcxperience.com> wrote in message 
+<3E676F72.1060702@pcxperience.com>:
 
-------_=_NextPart_001_01C2E40C.F5F94881
-Content-Type: text/plain; charset="iso-8859-1"
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+> 
+> Brian Bunnell wrote:
+> > Hello
+> >
+> > Thank you very much for helping me.  I have a perfectly good
+> > netfilter script that I run from the command line and everything
+> > works fine.  I
+> would
+> > like this script to run when I boot up the computer.  I am having a
+> > lot of trouble finding quality resources on the net about this.
+> >
+> > There are great resources for learning how to use netfilter. 
+> > However,
+> when
+> > it comes to startup scripts, all the examples seem to be 25 pages
+> > long and incomprehensible or wnat me to completely rewrite the
+> > script I already
+> have.
+> >
+> > Why can't I just tell the computer to run my script instead of the
+> "Let the
+> > world in" script it runs at boot?
+> >
+> > Does anyone have any recommendations, resources or better yet, a
+> > good concise example for run level 3?
+> 
+> If you are on a chkconfig/sysv system just add the necessary chkconfig
+> entries to the top of your script, drop it in /etc/init.d and
+> chkconfig{script name} on.  Make sure you disable the iptables scripts
+> if on a redhat box.
+> 
+> The PCX Firewall project will generate a redhat init script.
+> http://pcxfirewall.sf.net/  Use that for examples on how to modify
+> your script.
 
-Does anyone have a working script for this?
+..the classic bsd approach is move your script to /etc/rc.d/rc.firewall 
+and call it from /etc/rc.d/rc.local, just before rc.local runs you
+online at boot time.
 
-I'm attempting to hide a FTP server behind a Linux IPTables firewall using
-dnat but having problems
-
-thx!
-
-
-**********************************************************************
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the system manager.
-
-This footnote also confirms that this email message has been swept by
-MIMEsweeper for the presence of computer viruses.
-
-**********************************************************************
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
 
-------_=_NextPart_001_01C2E40C.F5F94881
-Content-Type: text/html; charset="iso-8859-1"
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2656.60">
-<TITLE>Passive FTP through IPTables DNAT</TITLE>
-</HEAD>
-<BODY>
-
-<P><FONT SIZE=2 FACE="Arial">Does anyone have a working script for this?</FONT>
-</P>
-
-<P><FONT SIZE=2 FACE="Arial">I'm attempting to hide a FTP server behind a Linux IPTables firewall using dnat but having problems</FONT>
-</P>
-
-<P><FONT SIZE=2 FACE="Arial">thx!</FONT>
-</P>
-
-<CODE><FONT SIZE=3><BR>
-<BR>
-**********************************************************************<BR>
-This email and any files transmitted with it are confidential and<BR>
-intended solely for the use of the individual or entity to whom they<BR>
-are addressed. If you have received this email in error please notify<BR>
-the system manager.<BR>
-<BR>
-This footnote also confirms that this email message has been swept by<BR>
-MIMEsweeper for the presence of computer viruses.<BR>
-<BR>
-**********************************************************************<BR>
-</FONT></CODE>
-</BODY>
-</HTML>
-------_=_NextPart_001_01C2E40C.F5F94881--
 
