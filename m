@@ -1,12 +1,13 @@
-From: Mihamina Rakotomandimby <mrakotom@free.fr>
-Subject: clearing last installation
-Date: Mon, 25 Aug 2003 15:13:31 +0200
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: dns replies (udp) blocked but why ?
+Date: Mon, 25 Aug 2003 09:36:41 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200308251513.31677.mrakotom@free.fr>
+Message-ID: <20030825133641.GA28045@cannon.eng.us.uu.net>
+References: <000101c36b08$754459f0$d90315ac@rsrc.be.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <000101c36b08$754459f0$d90315ac@rsrc.be.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +18,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Tom Van Overbeke <tvanoverbeke@ccncsi.net>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Hi everybody ,
-I'm writing about a mistake i made during one installation .
-i'm running linux 2.4.21 on slackware 9 .
--I downloaded iptables 1.2.8 sources .
-- I first compiled/installed it just with KERNEL_DIR option .
-- it installed me the stuff into /usr/local/......
-- I did not like it so i manually removed all the files related to iptables 
-into /usr/local 
-( since iptables has told me what files he had copyied in and there is no 
-"uninstall" rule into the Makefile)
-- i compiled/installed the package with :
-% make BINDIR=/usr/bin LIBDIR=/usr/lib MANDIR=/usr/man KERNEL_DIR=/usr...
-% make install BINDIR=/usr/bin LIBDIR=/usr/lib MANDIR=/usr/man KERNEL_DIR 
+On Mon, Aug 25, 2003 at 02:57:35PM +0200, Tom Van Overbeke wrote:
 
-but when i run a test iptables line ( just to test with ping ):
-iptables -A INPUT -s 127.0.0.1 -p icmp -j DROP
+> Hi,
+> 
+> I'm seeing a lot of these messages in my iptables logs lately:
+> 
+> Aug 25 14:46:21 dobermann kernel: -drop_the_rest-IN= OUT=eth1 SRC=172.21.3.1
+> DST=172.21.3.10 LEN=62 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=53
+> DPT=3412 LEN=42
+> 
+> 
+> however, the iptables config should accept it:
+> 
+> i have this rule on the firewall (which is also the dns server, hence the
+> 'INPUT')
+> 
+> $IPTABLES -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A INPUT -p udp  -s 172.21.0.0/16  --source-port
+> 024:65535  --destination-port 53  -m state --state NEW  -j ACCEPT
 
-It replies :
-iptables v1.2.8: Couldn't load target 
-`standard':/usr/local/lib/iptables/libipt_standard.so: cannot open shared 
-object file: No such file or directory
+I can't understand the topology of your network and what 172.21.0.0/16
+should represent but a server to server query might be from port 53.
+Why are you filtering based on the source port?
 
-The fact is that iptables is looking for lib into /usr/local/lib ( if my guess 
-is right )
-What should i do ?
-Thanks in advance :-)
+> 
+> the 172.21.3.10 is the only one causing problems, i noticed howerver that
+> this is udp, whereas most dns related traffic i can see is tcp.
 
+Most DNS traffic you see should be UDP though. Why are you seeing more
+TCP than UDP?
+
+> could it be a connection tracking problem ?
+
+If 172.21.3.10 is too slow in replying and the reply time exceeds the
+UDP conntrack timeout you'd see this behaviour. Maybe that's the reason.
+
+Ramin
+
+> 
+> 
+> 
+> thx,
+> 
+> 
+> Tom.
 
