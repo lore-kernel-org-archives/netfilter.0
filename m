@@ -1,14 +1,14 @@
 From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: SMTP external
-Date: Thu, 2 Jan 2003 20:29:16 -0500
+Subject: Re: fw-builder
+Date: Thu, 2 Jan 2003 21:01:53 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301022029.16450.netfilter@newkirk.us>
-References: <20ED00AA0BC135449469D6EF0AE79C970FAB@ozlan.fcdomain.net> <00c801c2b2b7$23ccf870$6301a8c0@VAIO> <20030102234447.GA11431@miggy.org>
+Message-ID: <200301022101.53365.netfilter@newkirk.us>
+References: <20ED00AA0BC135449469D6EF0AE79C970FA3@ozlan.fcdomain.net>
 Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030102234447.GA11431@miggy.org>
+In-Reply-To: <20ED00AA0BC135449469D6EF0AE79C970FA3@ozlan.fcdomain.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,52 +19,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Athan <netfilter@miggy.org>, netfilter@lists.netfilter.org
+To: "Simpson, Doug" <dsimpson@friedmancorp.com>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Thursday 02 January 2003 06:44 pm, Athan wrote:
+On Thursday 02 January 2003 04:18 pm, Simpson, Doug wrote:
+> Here is my rc.firewall that I generated using FW Builder.
+> I want to add these lines -
+> iptables -t nat -A POSTROUTING -p tcp --dport 110 -o eth0 -s
+> $INTERNAL_IP -j SNAT --to $external_ip
+> iptables -t nat -A POSTROUTING -p tcp --dport 23 -o eth0 -s
+> $INTERNAL_IP -j SNAT --to $EXTERNAL_IP
+> Where can I put these in the script and do I need to follow the same
+> pattern as the script?
+> Thank you
+> Doug
+> ##############################################
+> #!/bin/sh
+> #
+> #  This is automatically generated file. DO NOT MODIFY !
+> #
+> #  Firewall Builder  fwb_ipt v1.0.7-
 
-> =09iptables -A INPUT -m state --state NEW,ESTABLISHED -p tcp
-> =09--sport 25
-> =09iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -p tcp
-> =09--dport 25
->
-> Untested, off the top of my head, but should do the job.
->
-> -Ath
+> $IPTABLES -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Umm, it might help to have a target... adding "-j ACCEPT" perhaps?  :^)=20
-Also, since the intent is to let outside clients connect TO port 25, the=20
-INPUT rule should use --dport, while the OUTPUT should use --sport.  Of=20
-course, if a looser OUTPUT rule already exists (like EST/REL with no=20
-protocol specified) then the OUTPUT rule would be redundant anyway. =20
-(but would also be a sign that the firewall /could/ be tighter)
-
- If logging of 'all' access is desired, at least for a test period, I'd=20
-suggest logging ONLY state NEW connections in INPUT, to keep from being=20
-overwhelmed.  Unless something goes seriously wrong, or you have=20
-unsecure rules elsewhere, you will still log each and every IP that=20
-tries to connect to port 25, but only once per attempt, instead of once=20
-for each packet in 3mb worth of family christmas pictures or such.  (and=20
-lord help your logfile if they send it to several family members=20
-individually... :^)  It'd probably be a good idea to log port 25 DROPs=20
-as well, so you can see if anyone has been poking around.
-
-For individual IP control just redirect all NEW state dport 25 from INPUT=
-=20
-to a custom chain that has an ACCEPT rule for each client IP, and a DROP=20
-at the end.  Obviously this would require either that every client has a=20
-static IP, or that you allow ranges of IP's which their dynamic IP is=20
-assigned from, and the latter isn't a good idea.  Since you're unlikely=20
-to be lucky enough that every client is (and would remain) on a static=20
-IP, this probably is pointless.
-
-Finally, and probably most important, go to http://sendmail.net=20
-(presuming that's what you'd be running) and download and install latest=20
-releases, and read through and follow all their security instructions. =20
-Starting with version 8.10 (8.12 is current release) sendmail supports=20
-SMTP AUTH - use it.
+Right here would probably make sense.  Actually you can put them=20
+anywhere, since there are no other POSTROUTING rules in the script. =20
+Just DON'T put them inside a loop or a conditional statement.  There's=20
+no explicit need to follow the pattern in the script, but be aware that=20
+if you rebuild the ruleset with fw-builder you will need to manually=20
+re-insert these afterwards, AFAIK.
 
 j
-
 
 
