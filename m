@@ -1,12 +1,14 @@
-From: "Dick St.Peters" <stpeters@NetHeaven.com>
-Subject: RE: mangle, filter & FORWARD
-Date: Wed, 2 Jun 2004 11:04:47 -0400
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Destination Nat
+Date: Wed, 2 Jun 2004 11:13:58 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <16573.60559.927239.101640@saint.heaven.net>
-References: <20040602051716.80453.qmail@web41705.mail.yahoo.com>
-	<1086158045.4482.19.camel@laptop.stwerff.xs4all.nl>
+Message-ID: <200406021113.58570.Alistair@nerdnet.ca>
+References: <40b74a21.49.47a3.1468065555@arbbs.net> <013201c44853$1829e220$9322a141@black> <1086175160.4146.1.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1086158045.4482.19.camel@laptop.stwerff.xs4all.nl>
+In-Reply-To: <1086175160.4146.1.camel@localhost>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +18,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Ludo Stellingwerff writes:
+On June 2, 2004 07:19 am, John A. Sullivan III wrote:
+> -p 6 is the same as -p tcp only a little faster as it does not have to
+> look up tcp in the protocols file and translate it from tcp to 6.  UDP
+> would be -p 17, ICMP -p 1, ESP -p 50, etc.
 
-> Chains are now called tables and you have 3 root-tables: mangle, nat and
+	That lookup would only be done when the rule was posted or loaded.
+	Thus - the time saving is only on loading the rule.  
+	I believe that the rule data is *all* stored in numeric form ...
+	But I could be completely wrong on that front.
 
-This is utterly wrong.  Chains are still called chains.  See
-"man iptables" and "iptables --help".  Tables are groups of
-related-purpose chains.
-
-> Then you have 5 'hooks': the places in the network subsystem where these
-> tables can be used:
-> PRE-ROUTING, INPUT, FORWARD, OUTPUT, POST-ROUTING
-
-PREROUTING, INPUT, FORWARD, OUTPUT, and POSTROUTING are the names of
-chains.  Fulling specifying a chain requires giving its chain name and
-the table it's in.
-
-I realize most users on the list know this, but I felt this
-needed correcting for the archives.
-
-> > > For a really good refreence on iptables in general,
-> > > check out
-> > > http://iptables-tutorial.frozentux.net/
-> > 
-> 
-> Did you check the http://lartc.org/howto/ ?
-> It very clear and handson.
-
-It also has very little to do with ntfilter/iptables. 
-
---
-Dick St.Peters, stpeters@NetHeaven.com 
+	Alistair.
+>
+> On Tue, 2004-06-01 at 23:38, John Black wrote:
+> > thanks, ill give it a try tomorrow when i get to work.  what is the -p 6?
+> > ----- Original Message -----
+> > From: John A. Sullivan III <john.sullivan@nexusmgmt.com>
+> > To: <black@arbbs.net>
+> > Cc: <netfilter@lists.netfilter.org>
+> > Sent: Friday, May 28, 2004 8:56 PM
+> > Subject: Re: Destination Nat
+> >
+> > > If I understand you correctly and remember your original rule, then I
+> > > think you have it backward.  If you are changing the destination, you
+> > > probably want to change it from the public address to the private
+> > > address:
+> >
+> > john
 
