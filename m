@@ -1,10 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Compiling ip_[conntrack|nat]_pptp
-Date: Tue, 20 Apr 2004 07:46:15 +0200
+From: Harry <hari76@omantel.net.om>
+Subject: Rules for Blocking Proxies...
+Date: Tue, 20 Apr 2004 09:44:46 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040420054614.AB314398@sterenborg.info>
+Message-ID: <000b01c426f6$cc216f10$36b4fea9@SABNANIS>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+ boundary="Boundary_(ID_qWQQ0Hd6d18xrMn4qT75Pg)"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,54 +16,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Netfilter' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi,
+This is a multi-part message in MIME format.
 
-I compiled kernel 2.4.26 with pom-ng-17042004 and applied (amongst others)
-the pptp patch.
-Everything compiles fine except for that patch.
+--Boundary_(ID_qWQQ0Hd6d18xrMn4qT75Pg)
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
 
-When I do a "make modules_install", the last lines are :
+Hi All,
+I am running Fedora and Redhat 9 on two servers at my Cybercafe, connected on two Hi speed Lines, I have a decent firewall script, but these days I am facing issues about people changing the Proxy settings in order to get thru porn sites, can anybody suggest some rules which I can implement in the script that avoids connection to these servers? Suggestions are welcome.
 
-if [ -r System.map ]; then /sbin/depmod -ae -F System.map  2.4.26-4; fi
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.26-4/kernel/net/ipv4/netfilter/ip_conntrack_pptp.o
-depmod:         ip_ct_gre_keymap_add
-depmod:         ip_ct_gre_keymap_destroy
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.26-4/kernel/net/ipv4/netfilter/ip_nat_pptp.o
-depmod:         ip_ct_gre_keymap_change
+Regards
 
-I notice in /lib/modules/2.4.26-4/kernel/net/ipv4/netfilter that there are
-ip_conntrack_pptp.o and ip_nat_pptp.o but I don't have a
-ip_conntrack_proto_gre.o which I do have on my "old" iptables box.
-
-Kernel config snip :
-
-#
-# Networking options
-#
-...
-CONFIG_NET_IPGRE=m
-
-#
-#   IP: Netfilter Configuration
-#
-CONFIG_IP_NF_CONNTRACK=m
-...
-CONFIG_IP_NF_PPTP=m
-# CONFIG_IP_NF_PPTP_DEBUG is not set
-...
-CONFIG_IP_NF_NAT_PPTP=m
+Harry
 
 
-And that's about all I can find about GRE and PPTP in .config.
-Could somebody please tell me what I'm doing wrong ?
 
 
-Gr,
-Rob
+"In all this world, there is only you
+When all else ceases, there is only you"  
+-- to my MASTER!
+    Harish
+harish@sabnanis.com 
+harish.sabnani@cyberhutoman.com 
 
+--Boundary_(ID_qWQQ0Hd6d18xrMn4qT75Pg)
+Content-type: text/html; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content="MSHTML 6.00.2800.1106" name=GENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=#ffffff>
+<DIV><FONT face=Verdana size=2>Hi All,</FONT></DIV>
+<DIV><FONT face=Verdana size=2>I am running Fedora and Redhat 9 on two servers 
+at my Cybercafe, connected on two Hi speed Lines, I have a decent firewall 
+script, but these days I am facing issues about people changing the Proxy 
+settings in order to get thru porn sites, can anybody suggest some rules which I 
+can implement in the script that avoids connection to these servers? Suggestions 
+are welcome.</FONT></DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2>Regards</FONT></DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2>Harry</FONT></DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2>"In all this world, there is only you<BR>When all 
+else ceases, there is only you"&nbsp; <BR>-- to my MASTER!<BR>&nbsp;&nbsp;&nbsp; 
+Harish<BR><A href="mailto:harish@sabnanis.com">harish@sabnanis.com</A> <BR><A 
+href="mailto:harish.sabnani@cyberhutoman.com">harish.sabnani@cyberhutoman.com</A> 
+</FONT></DIV></BODY></HTML>
+
+--Boundary_(ID_qWQQ0Hd6d18xrMn4qT75Pg)--
 
