@@ -1,13 +1,15 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Allow Proxy connection
-Date: 18 Jun 2003 15:36:30 +0200
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: iptable question
+Date: Wed, 18 Jun 2003 11:20:35 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1055943389.2530.98.camel@raylinux.internal>
-References: <000701c3359c$925ca020$0200a8c0@basti79>
+Message-ID: <200306181120.35468.Alistair@nerdnet.ca>
+References: <20030618134048.90305.qmail@web14708.mail.yahoo.com>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ajBTDsg0f557I+i3gdSw"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000701c3359c$925ca020$0200a8c0@basti79>
+In-Reply-To: <20030618134048.90305.qmail@web14708.mail.yahoo.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +19,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Craig <elitesyntax@yahoo.com>, netfilter@lists.netfilter.org
 
+On June 18, 2003 09:40 am, Craig wrote:
+> How can i debug my iptables script?
+>
+>
+>
+> #!/bin/sh
+> #
+> # The location of the IPTables binary file on your
+> system.
 
---=-ajBTDsg0f557I+i3gdSw
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+<<SNIPPED FOR BREVITY >>
 
-I use similar rules except:
+> $IPT -A INPUT -p icmp --icmp-type 11 -j ACCEPT
+> $IPT -A INPUT -p icmp --icmp-type 8 -m limit --limit
+> 1/second -j ACCEPT
+> $IPT -A INPUT -p icmp -j DROP
+>
+>
+> =====
+> EliteSyntax  www.linuxnewbie.org
+>
+>
+>
 
-<snip>
+	Depends on what your trying to find, but I've been inclined to put
+	"echo" statements between groups of rules to catch where the 
+	errors are occurring and then narrow the search from there.
+	
+	?? 40 character line wrap on your MTA?  or b0rked script?
+	if the line wraps are like that in the script ... you need to fix that 
+	before anything else.   If the wraps are from your MTA ... thats okay.
 
-> iptables -A OUTPUT -o eth0 -p tcp --dport 80:90 -m state --state
-> NEW,ESTABLISHED -j ACCEPT
-> iptables -A INPUT  -i eth0 -p tcp --sport 80:90 -m state --state
-> ESTABLISHED     -j ACCEPT
->=20
-Then of course there's also port 8080 for tomcat and 443 for SSL with
-similar rules.
-
-Since you are using state matching, only established connections are
-allowed back in.
-
-> But this works only if the webserver in the internet is running on port
-> 80. So i tried to use the -m owner --uid-owner option to match all
-> packets from the proxy user. The i had to accept all ESTABLISHED packets
-> in the INPUT chain, because the owner match works only in OUTPUT chain.
->=20
-> What i did now is the following:
->=20
-> iptables -A OUTPUT -o eth0 -p tcp -m owner --uid-owner proxy -m state
-> --state NEW -j CONNARK --set-mark 1
-> iptables -A OUTPUT -o eth0 -m connmark --mark 1 -j ACCEPT
-> iptables -A INPUT  -i eth0 -m connmark --mark 1 -j ACCEPT
->=20
-> This seems to work, but what i wann know now:
->  - Is this solution secure?
->  - Anybody got a better solution?
->=20
-> Regards
-> Sebastian.
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-ajBTDsg0f557I+i3gdSw
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD4DBQA+8Grdh1fuR/Bv+ygRAnboAJ9p4LX4K6vmPWBCa2BX2cURN+LPqwCWImbT
-B+QM2d6FnZ/Jj5/LwHPpIA==
-=m7nT
------END PGP SIGNATURE-----
-
---=-ajBTDsg0f557I+i3gdSw--
-
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
