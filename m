@@ -1,11 +1,12 @@
-From: mohammad Mahbubur rahman <mahbub71@yahoo.com>
-Subject: Re: Kernel AODV and libipq library
-Date: Wed, 26 Jan 2005 11:45:58 -0800 (PST)
-Message-ID: <20050126194559.26552.qmail@web52302.mail.yahoo.com>
-References: <876ef97a0501260826514b150d@mail.gmail.com>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: iptables returns "module is wrong version"
+Date: 26 Jan 2005 20:57:53 +0100
+Message-ID: <1106769471.25216.1.camel@nostromo.bgsecm.com>
+References: <r02010100-1037-1EB3505C6FC311D998C6000A95DF6F1E@[192.168.1.112]>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <876ef97a0501260826514b150d@mail.gmail.com>
+In-Reply-To: <r02010100-1037-1EB3505C6FC311D998C6000A95DF6F1E@[192.168.1.112]>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,85 +17,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Tobias DiPasquale <codeslinger@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-thanks for your reply. i use the kernel aodv
-implementation of the nist (means the following one).
+El mi=C3=A9, 26 de 01 de 2005 a las 18:53, Kurt Yoder escribi=C3=B3:
+> Hi list
+>=20
+> I'm getting an error when running iptables:
+>=20
+> root@ns2:~# iptables -L -v
+> iptables v1.2.11: can't initialize iptables table `filter': Module is
+> wrong version
+> Perhaps iptables or your kernel needs to be upgraded.
+>=20
+>=20
+> and yet, iptables module seems to be loaded fine:
+>=20
+> root@ns2:~# lsmod
+> Module                  Size  Used by
+> iptable_filter          3840  0=20
+> ip_tables              19712  1 iptable_filter
+> ipv6                  283624  33=20
+> isofs                  38052  0=20
+> af_packet              25676  2=20
+> eepro100               32396  0=20
+> hw_random               6368  0=20
+> amd74xx                15280  0=20
+> evdev                  11456  0=20
+> ohci_hcd               22212  0=20
+> tg3                    70880  0=20
+> firmware_class         11840  1 tg3
+> e100                   35264  0=20
+> mii                     6464  2 eepro100,e100
+> capability              6216  0=20
+> commoncap               9280  1 capability
+> ide_cd                 42848  0=20
+> ide_core              157248  2 amd74xx,ide_cd
+> cdrom                  39784  1 ide_cd
+> rtc                    14928  0=20
+> ext3                  122640  1=20
+> jbd                    65072  1 ext3
+> mbcache                11016  1 ext3
+> sd_mod                 22016  3=20
+> 3w_xxxx                41380  2=20
+> scsi_mod              132544  2 sd_mod,3w_xxxx
+> unix                   31968  193=20
+> font                    9600  0=20
+> vesafb                  7408  0=20
+> cfbcopyarea             4608  1 vesafb
+> cfbimgblt               3776  1 vesafb
+> cfbfillrect             4800  1 vesafb
+>=20
+>=20
+> I'm running kernel 2.6.8 and iptables 1.2.11. I'm using Debian packages
+> for the kernel and iptables. Anyone encountered this before and been
+> able to get around it?
+> --
+>=20
+> Kurt Yoder
+> The Richard Group
+> tel: 703-525-7156
 
-http://w3.antd.nist.gov/wctg/aodv_kernel/
+You probably don't have your kernel modules and iptables synced.
+They both have to be compiled with the same patches of
+patch-o-matic or it won't work.
 
-When the aodv is running and i try to load the
-ip_queue module by modprobe ip_queue, it gives the
-message that device or resource is busy, insmod
-ip_queue failed.
+Regards.
 
-But when i stop the aodv and load the ip_queue module,
-it dont give any message. After that i give one rule
-to queue udp packet going through 6002 port (just for
-testing). When any packet go through this port, both
-the machine hangs. I dont know why this is happened.
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
 
-Do u know any alternative by which i can modify any
-ongoing or upcoming packets in adhoc network.
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
-mahbub
-
---- Tobias DiPasquale <codeslinger@gmail.com> wrote:
-
-> On Wed, 26 Jan 2005 07:58:23 -0800 (PST), mohammad
-> Mahbubur rahman
-> <mahbub71@yahoo.com> wrote:
-> > Hi,
-> > I am working on an Adhoc network running kernel
-> AODV
-> > version 2.1 (on Redhat linux kernel 2.4.20). The
-> AODV
-> > is running fine. Now I am trying to queue some
-> packets
-> > onto the user space for modification using libipq
-> > library. But incase of running the libipq example
-> > program, i have to load the ip_queue module by
-> > modprobe ip_queue first. When i load this module
-> and
-> > running the example program, the machines are
-> hanged.
-> > Can anyone please tell me why??
-> > 
-> > Can anyone pls suggest me how i can get some
-> packets
-> > onto the user space for modification incase of ad
-> hoc
-> > network???
-> 
-> AFAIK, the current Linux implementation of AODV uses
-> ip_queue.
-> Therefore, due to the limitations of ip_queue, you
-> can't then use
-> anything else that would use ip_queue while you're
-> running that. Where
-> did you get your implementation? Is it this one:
-> 
-> http://user.it.uu.se/~henrikl/aodv/
-> 
-> or this one?:
-> 
-> http://w3.antd.nist.gov/wctg/aodv_kernel/
-> 
-> If its the latter, disregard all of the above.
-> 
-> -- 
-> [ Tobias DiPasquale ]
-> 0x636f6465736c696e67657240676d61696c2e636f6d
-> 
-
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - now with 250MB free storage. Learn more.
-http://info.mail.yahoo.com/mail_250
 
