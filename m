@@ -1,13 +1,13 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: iptables support this?
-Date: Sat, 19 Jul 2003 14:08:45 +1000
+Subject: RE: Double nat
+Date: Sat, 19 Jul 2003 14:21:36 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDEMKKNJDLAJDPNDPCDDAEBKNFAA.georgev@citadelcomputer.com.au>
-References: <20030718145526.49893.qmail@web41505.mail.yahoo.com>
+Message-ID: <FDEMKKNJDLAJDPNDPCDDMEBKNFAA.georgev@citadelcomputer.com.au>
+References: <20030718203122.0f105933.epv_xemul@mail.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030718145526.49893.qmail@web41505.mail.yahoo.com>
+In-Reply-To: <20030718203122.0f105933.epv_xemul@mail.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Augusto Flavio <augustoflavioms@yahoo.com.br>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Xemul <epv_xemul@mail.ru>, netfilter@lists.netfilter.org
 
-I had at one stage about 500+ rules and had no performance lose on a 2MB
-HDSL link using a Pentium 2 300Mhz server.. I was actually shocked.. ;)
-It was more services running on that box that lagged ie. transparent prox=
-y,
-mail gateway, etc.. but not iptables..
+> #/sbin/iptables -A POSTROUTING -t nat -s 192.168.1.0/24 -j
+SNAT --to-source 192.168.2.91
+Just use MASQUERADE, easier if/should your IP change (eg. DHCP)
+
+WHat you should do is -j LOG on your PRE and POST routing as well as
+FORWARDing rules.See where the packets go and if there's any DROP rules then
+log the dropped rules too..
+
+I'm assuming that all your default policies are ACCEPT except for FORWARD
+since it's not mentioned.
 
 -----Original Message-----
 From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Augusto Flavio
-Sent: Saturday, July 19, 2003 12:55 AM
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Xemul
+Sent: Saturday, July 19, 2003 2:31 AM
 To: netfilter@lists.netfilter.org
-Subject: iptables support this?
+Subject: Double nat
 
 
-Hi,
+Well here goes my network configuration.
+I have two computers.
+1st has two ifs:
+eth0 192.168.2.91
+eth1 172.16.1.1
+2nd has one if:
+eth0 172.16.1.2
 
+On 192.168.2.0/24 subnet I have a 192.168.2.254 router (I can't admin
+it) which provides NAT for the 192.168.2.0 subnet.
 
-The IPTables support some like 500 rules?
-The performance fail much?
+I want to make NAT for my 2nd comp on the 1st one.
 
+I do the following on the 1st comp:
 
-Tkz!
+#/sbin/iptables -A POSTROUTING -t nat -s 192.168.1.0/24 -j SNAT
+--to-source 192.168.2.91
+#/sbin/iptables -A FORWARD -i eth0 -o eth1 -m state --state
+RELATED,ESTABLISHED -j ACCEPT
+#/sbin/iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
 
+The 2nd comp has default router set to 172.16.1.1.
 
-Augusto Flavio
-
-_______________________________________________________________________
-Yahoo! Mail
-Mais espa=E7o, mais seguran=E7a e gratuito: caixa postal de 6MB, antiv=ED=
-rus,
-prote=E7=E3o contra spam.
-http://br.mail.yahoo.com/
+Everything goes fine but nothing works.
+I can see with tcpdump all incoming packets from eth1 but I can't see
+any outgoing from eth0 corresponding to them.
+What should I do?
 
 
 
