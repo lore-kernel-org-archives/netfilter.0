@@ -1,14 +1,12 @@
-From: Joel <zealous@bonbon.net>
-Subject: Re: Ip accounting Help
-Date: Wed, 23 Jun 2004 16:27:25 +0530
+From: "Manikandan" <manikandan@manikandan.org>
+Subject: ACK,RST getting dropped in the firewall.
+Date: Wed, 23 Jun 2004 16:36:12 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087988244.2036.60.camel@joel.d2visp.com>
-References: <1087962571.2041.10.camel@joel.d2visp.com>
-	 <200406231001.24925.Antony@Soft-Solutions.co.uk>
+Message-ID: <GHEILNONPACCGBGKBEKKKEAMCHAA.manikandan@manikandan.org>
+Reply-To: <manikandan@manikandan.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406231001.24925.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,69 +17,78 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 2004-06-23 at 14:31, Antony Stone wrote:
-> On Wednesday 23 June 2004 4:49 am, Joel wrote:
-> 
-> > Hi all,
-> >
-> > Currently I am working on Ip accounting in linux.
-> > My system is Redhat 9.0 with iptables v1.2.7a
-> > This redhat is doing Squid-Caching/ Nat/ Bandwidth management with tc/
-> > Real ip forwarding.
-> >
-> > I want to do Ip accounting of upload and download. I want to know how
-> > much per ip bandwidth consumption is ?
-> >
-> > As i m doing source nat and Real ip forwarding, FORWARD chain will have
-> > bytes counters. So FORWARD chain will give the correct figure of how
-> > much the ip has used the bandwidth ???
-> 
-> Beware of trying to do this if you are using the stateful connection tracking 
-> of netfilter (iptables -I FORWARD -m state --state ESTABLISHED,RELATED), 
-> because if you are, then almost all of the packets going through the machine 
-> (specifically, all except the first one of each connection) will be processed 
-> by this one rule, and all the other rules in the FORWARD chain will only see 
-> one packet per connection (the first one).
-> 
-> You may be able to do what you want using the mangle table of the FORWARD 
-> chain, but not with the default filter table.
-> 
-> Regards,
-> 
-> Antony.
--- 
+Hi Friends,
+
+I am running a stateful firewall in Redhat linux 9 with iptables. I accept
+connections, which are ESTABLISHED, RELATED to come inside my LAN and
+firewall. I am seeing packets getting dropped which are actually RST packets
+of web traffic.  My firewall also blocks incoming connections which are syn
+but not new.
+
+My log file is getting filled like this.
+
+Jun 23 16:42:43 javagreen kernel: New not syn:IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
+DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=51601 DF PROTO=TCP
+SPT=80 DPT=2162 WINDOW=64574 RES=0x00 ACK URGP=0
+Jun 23 16:42:43 javagreen kernel: New not syn:IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
+DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=51601 DF PROTO=TCP
+SPT=80 DPT=2162 WINDOW=64574 RES=0x00 ACK URGP=0
+Jun 23 16:43:22 javagreen kernel: IPT INPUT packet died: IN=eth1 OUT=
+MAC=ff:ff:ff:ff:ff:ff:00:0d:60:40:99:db:08:00 SRC=0.0.0.0 DST=255.255.22.255
+LEN=340 TOS=0x00 PREC=0x00 TTL=128 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=320
+Jun 23 16:43:26 javagreen kernel: IPT INPUT packet died: IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=4.78.20.2
+DST=202.138.22.218 LEN=84 TOS=0x00 PREC=0x00 TTL=41 ID=0 DF PROTO=ICMP
+TYPE=8 CODE=0 ID=58217 SEQ=55219
+Jun 23 16:43:26 javagreen kernel: IPT INPUT packet died: IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=166.90.213.130
+DST=202.138.22.218 LEN=84 TOS=0x00 PREC=0x00 TTL=41 ID=0 DF PROTO=ICMP
+TYPE=8 CODE=0 ID=8475 SEQ=60480
+
+Jun 23 16:49:07 javagreen kernel: New not syn:IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
+DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=29723 DF PROTO=TCP
+SPT=80 DPT=2193 WINDOW=65073 RES=0x00 ACK URGP=0
+Jun 23 16:49:07 javagreen kernel: New not syn:IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
+DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=29723 DF PROTO=TCP
+SPT=80 DPT=2193 WINDOW=65073 RES=0x00 ACK URGP=0
+Jun 23 16:49:07 javagreen kernel: New not syn:IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
+DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=29748 DF PROTO=TCP
+SPT=80 DPT=2194 WINDOW=65063 RES=0x00 ACK URGP=0
+Jun 23 16:49:07 javagreen kernel: New not syn:IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
+DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=29748 DF PROTO=TCP
+SPT=80 DPT=2194 WINDOW=65063 RES=0x00 ACK URGP=0
+Jun 23 16:49:08 javagreen kernel: New not syn:IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
+DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=30132 DF PROTO=TCP
+SPT=80 DPT=2192 WINDOW=64507 RES=0x00 ACK URGP=0
+Jun 23 16:49:08 javagreen kernel: New not syn:IN=eth0 OUT=
+MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
+DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=30132 DF PROTO=TCP
+SPT=80 DPT=2192 WINDOW=64507 RES=0x00 ACK URGP=0
 
 
-Hi Antony,
 
-Yes I am using stateful connection tracking of netfilter ( iptables -I FORWARD -m state --state ESTABLISHED,RELATED)
-So as per you i have used FORWARD chain in MANGLE table like this.
+All the packets come from web sites that have recently been visited and
+appear to be the closing down of the TCP connection. It seems that the
+netfilter connection tracking is clearing up the connection before it
+actually gets closed. netstat on the client machine for the connection shows
+the connection in the state CLOSE_WAIT. So far I have only been
+seeing these logs for http connections on port 80 and on port 135.
 
-# iptables -t mangle -i eth1 -A FORWARD -s 10.1.1.24/29 -j ACCEPT  ---> I think for Download traffic  ---> M I right ?
-# iptables -t mangle -i eth0 -A FORWARD -d 10.1.1.24/29 -j ACCEPT  ---> I think for Upload traffic ----> M I right ?
 
-This is the output of 
-# iptables -t mangle -nvL FORWARD
+Could someone help me in this?
 
-Chain FORWARD (policy ACCEPT 1747K packets, 318M bytes)
- pkts bytes target     prot opt in     out     source               destination
- 1068 91499 ACCEPT     all  --  eth1   *       10.1.1.24/29         0.0.0.0/0
-  148 26923 ACCEPT     all  --  eth0   *       0.0.0.0/0            10.1.1.24/29
+Thanks in advance.
 
-Antony i have lot of other ip address but i have created only this subnet for mangle table for testing.
-Traffic bytes are passing through this.
-So is the correct method ?
-Will be the bytes over here are accurate ???
-
-Thanking you,
-
-Joel n.solanki
-Systems Administrator
-(M) 91-9825500258
-D2V ISP PVT LTD
-http://www.d2visp.com/
-
+Regards,
+Manikandan.
 
 
