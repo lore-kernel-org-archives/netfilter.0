@@ -1,12 +1,15 @@
-From: "B H R Balaji" <balaji@sol.net.in>
-Subject: problem with bridge+iptables+ulog
-Date: Wed, 12 Mar 2003 12:50:31 +0530
+From: "Alexander W. Janssen" <alexander.janssen@gmx.de>
+Subject: Re: netfilter hangups
+Date: Wed, 12 Mar 2003 06:51:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <066a01c2e867$dd94fec0$13fcc5cb@Housecall>
-Reply-To: "B H R Balaji" <balaji@sol.net.in>
+Message-ID: <20030312055138.GB1282@ynfonatic.de>
+References: <3019863CF306D211BA4500A0CC30812DC6790D@exchange.cyberwolf.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s/l3CgOIzMHHjg/5"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <3019863CF306D211BA4500A0CC30812DC6790D@exchange.cyberwolf.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,51 +19,83 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
-Cc: Antony Stone <Antony@Soft-Solutions.co.uk>
-
-Hi all
-
-some one can help i have the following setup
-
-x.x.x.1/24            x.x.x.2/24
-   +------+                               +------+
-  | Router A |------+ +---------| PC B |
-   +------+              | |              +------+
-                              | |
-                        eth0| | eth1
-                          +-----+
-                            | qos | (br0 =3D x.x.x.3/24)
-                          +-----+
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
+--s/l3CgOIzMHHjg/5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Router A is connected to internet
-QOS box running with bridge
-PC B is my LAPTOP
+On Tue, Mar 11, 2003 at 03:00:20PM -0700, Chip Upsal wrote:
+> [root@iptables1 root]# /etc/sysconfig/iptables condrestart
+> iptables: Chain already exists
+> iptables: Chain already exists
+> iptables: Chain already exists
+> iptables: Chain already exists
+> iptables: Chain already exists
 
-iam try to make the ULOG usig the following command
+The error is, what is says. If you create a custom chain with the -N switch
+and fill it with data, the following can happen:
 
+castor:~# iptables -N bla                   # New chain
+castor:~# iptables -A bla -j REJECT         # some rule
+castor:~# iptables -X bla                   # try to delete
+iptables: Chain is not empty                # doesn't work. surprise
+castor:~# iptables -N bla                   # that seems to be your problem
+iptables: Chain already exists              # oh, well...
+castor:~# iptables -F bla                   # flush the chain
+castor:~# iptables -X bla                   # delete it
+castor:~# iptables -N bla                   # be a lucky boy
+castor:~# echo $?
+0                                           # yeah, baby
 
-$IPTABLES -I INPUT -i eth1 -j ULOG --ulog-nlgroup 1 --ulog-cprange
-   --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
+=20
+> Or if i get no error the firewall will not recognize any of the changes i
+> have made.
 
-iam not able to see any LOG here in my LOG file
+What i gues what happens is that:
 
-when i do this with out  interfce
+1. Create chain
+2. Fill chain
+3.1. Try to delete chain without flushing it first -> will fail
+3.2. Forget to delete chain
+4. Try to create chain -> chain allready exists
+5. Fill chain with rules -> since the chain was never flushed, it just keeps
+up filling with rules
 
-$IPTABLES -I INPUT  -j ULOG --ulog-nlgroup 1 --ulog-cprange
-   --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
+> In either case i am forced to reboot the firewall to get things going aga=
+in.
 
-iam able to see some logs using BR0
+Na, i don't think so. Look into your script into the "stop" section (i don't
+really know that script, but SYSV-init-style scripts should be the same
+everywhere). Look if you custom created chains are getting flushed and
+deleted. If they arent't do it there. Save. Try.
 
-how can i get the logs from eth0 and eth1
+If it doesn't work: Send the script.
 
-any suggestion will be great
+> Chip Upsal
+> SysAdmin
 
-hare
+Alex.
 
+--=20
+"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
+l."
+Instructions for use of this post: Insert tounge in cheek. Read as normal.
 
+--s/l3CgOIzMHHjg/5
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: Weitere Infos: siehe http://www.gnupg.org
+
+iEYEARECAAYFAj5uyuoACgkQEMMZKORQoYIsDwCfbHrLYR9AVmax0/0UMozC8jVU
+qfQAnA5CHIiUzuOCUpNb9j39uvRBW1H6
+=qwEQ
+-----END PGP SIGNATURE-----
+
+--s/l3CgOIzMHHjg/5--
 
