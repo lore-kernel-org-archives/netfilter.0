@@ -1,11 +1,13 @@
 From: Erik Pagel <erik.pagel@gmx.de>
-Subject: Yet another FTP connection problem
-Date: Thu, 06 Jun 2002 17:41:52 +0200
+Subject: Re: Yet another FTP connection problem
+Date: Thu, 06 Jun 2002 18:27:24 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <ado218$88i$2@main.gmane.org>
+Message-ID: <376292209.1023388044@[192.168.13.4]>
+References: <200206061555.g56FtUA31837@vulcan.rissington.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <200206061555.g56FtUA31837@vulcan.rissington.net>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -17,46 +19,33 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
 
-Hi,
+Hi again,
+sorry not to be specific enough,
 
-there seems to be a problem within my FTP rules. I'm not able to make any 
-ftp connection.
-I'm able to send but not to recevie any package.
-Maybe someone can point me to my mistake.
 
-iptables -N ftp
-#No incomming connections, only outgoing and only in PASV mode.
-iptables -A ftp -p tcp --dport 20:21 -o $I_EXTERN -j ACCEPT
-iptables -A ftp -p tcp --sport 20:21 -i $I_EXTERN -m state --state 
-ESTABLISHED,RELATED -j ACCEPT
-iptables -A ftp -p tcp --dport 20:21 -i $I_EXTERN -m state --state 
-NEW,INVALID -j LOG --log-level warning --log-prefix "DROP:FTP Incomming"
-iptables -A ftp -p tcp --dport 20:21 -i $I_EXTERN -m state --state 
-NEW,INVALID -j DROP
-iptables -A INPUT   -j ftp
-iptables -A OUTPUT  -j ftp
-iptables -A FORWARD -j ftp
+>> there seems to be a problem within my FTP rules. I'm not able to make any
+>> ftp connection.
+>> I'm able to send but not to recevie any package.
+>
+> Please be more specific.   If you are "unable to make any ftp connection"
+> then how are you able to send files ?
+No I'm not able to send any files. I'm not even able to make any connection.
+All end with a connection timeout. Iptraf shows that the response to my 
+first tcp-package (SYN) from the ftp server made it to my external 
+interface but didn't get through the rules.
+Maybe my internet box didn't recognise it as related connection.
+The ip_nat_ftp and ip_contrack_ftp modules are loaded.
 
-all I get after some tries to establish a connection from my firewall to 
-ftp.funet.fi:
+> You say you can send but not receive - do you mean that the PUT command
+> works  and the GET command doesn't ?
+>
+> If that is what you mean, then it's not a netfilter problem.....
+see above.
+>
+> Antony.
+>
+bye Erik
 
-iptables -v -L ftp
- pkts bytes target prot opt in     out   source    destination
-   20  1200 ACCEPT tcp  --  any    ppp+  anywhere  anywhere  tcp 
-dpts:ftp-data:ftp
-    0     0 ACCEPT tcp  --  ppp+   any   anywhere  anywhere  tcp 
-spts:ftp-data:ftp state RELATED,ESTABLISHED
-    0     0 ACCEPT tcp  --  ppp+   any   anywhere  anywhere  tcp 
-dpts:ftp-data:ftp state RELATED,ESTABLISHED
-    0     0 LOG    tcp  --  ppp+   any   anywhere  anywhere  tcp 
-dpts:ftp-data:ftp state INVALID,NEW LOG level warning prefix `DROP:FTP 
-Incomming'
-    0     0 DROP   tcp  --  ppp+   any   anywhere  anywhere  tcp 
-dpts:ftp-data:ftp state INVALID,NEW
---------------------------
-
-Thanks in advance
-Erik Pagel
 
