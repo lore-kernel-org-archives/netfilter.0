@@ -1,14 +1,12 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: ICMP question
-Date: Sun, 24 Nov 2002 16:34:38 +0000
+From: "Brandon Broyles" <netfilter@drbroyles.com>
+Subject: Is there something wrong with patch-o-matic?
+Date: Sun, 24 Nov 2002 12:32:33 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021124163438.A14289@funkyjesus.org>
-References: <NABBIDJPNCAGKGOFGHBFOELFPIAA.luba@assist.com.gt> <IMEDICLPAGAOCBLCCKLPGELFEFAA.homes@darrelldieringer.com>
-Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Message-ID: <04bb01c293df$79be2610$4545450a@drbroyles.com>
+References: <031e01c2930e$41097800$4545450a@drbroyles.com> <200211241243.59265.fabrice@netfilter.org> <038e01c2937d$cece8030$4545450a@drbroyles.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <IMEDICLPAGAOCBLCCKLPGELFEFAA.homes@darrelldieringer.com>; from homes@darrelldieringer.com on Thu, Nov 14, 2002 at 03:47:18PM -0600
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,25 +17,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, fabrice@netfilter.org
 
-On Thu, Nov 14, 2002 at 03:47:18PM -0600, Darrell F. Dieringer wrote:
-> 
-> Anyone please feel free to correct me if I'm wrong, but I think your
-> original rules would work fine if your "ESTABLISHED" rule was changed
-> to "ESTABLISHED,RELATED".  Perhaps the "NEW,ESTABLISHED" rule should
-> also say "NEW,ESTABLISHED,RELATED" as well.
-> 
-> If your internal machine issues an "echo request", the "echo reply"
-> will be a "RELATED" packet.  (I'd use icmp type numbers, but I don't
-> know them off the top of my head.)
 
-/usr/include/netinet/ip_icmp.h
+----- Original Message -----
+From: "Brandon Broyles" <netfilter@drbroyles.com>
+To: <fabrice@netfilter.org>; <netfilter@lists.netfilter.org>
+Sent: Sunday, November 24, 2002 12:53 AM
+Subject: Re: Am I making a bone-headed mistake with patch-o-matic ?
 
-Is always handy for this kind of thing ( 8 and 0 respectively ).
 
--- 
-FunkyJesus System Administration Team
+> From what I read in the above link, I think something may be wrong with my
+> patch-o-matic I got via CVS.  I ran a (./runme base) and I got the following
+> output.  In this output the only thing that is "Already applied:" is the
+> first line.  Nothing else seems to be applied after that.  Plus, that link
+> above references  switches ( Do you want to apply this patch [N/y/t/f/q/?] )
+> that I am not getting.
+
+I think I may have a clue on where to start.  I was looking at the 'isapplied'
+script that came with patch-o-matic.  In line 32 it references a command that
+doesn't exist for me.  It reads as such...
+
+MISSING_FILES=`patch -R -s -f -p1 < $PATCH | grep "No file to patch" | wc -l`
+
+
+I have no 'patch' command and there isn't one anywhere under my netfilter
+directory I got from CVS.  I'm not too keen with shell scripting, so I'm not
+sure how the absence of a patch command will effect the overall workings of the
+'runme' script.
+
+
+Is this as it should be or is something wrong with the patch-o-matic that I
+downloaded?
+
+Thanks,
+Brandon Broyles
 
 
