@@ -1,10 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Fwd: Netmeeting NATing IP address
-Date: Mon, 9 Sep 2002 14:57:56 +0100
+From: "Nikodim Nikodimov" <nick@riskeng.bg>
+Subject: Re: MASQUERADE for 2 Internet connections
+Date: Mon, 9 Sep 2002 16:53:38 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209091358.g89Dw2v05516@vulcan.rissington.net>
+Message-ID: <00d101c25808$4c867ca0$37d2a8c0@nikodimov>
+References: <005a01c257f7$e2e51dc0$6e69690a@rimas>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00CE_01C25821.71C2EBC0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,112 +17,129 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi.
+This is a multi-part message in MIME format.
 
-Can anyone on the list help this guy ?   I do not use netmeeting, so I can't 
-answer this one....
+------=_NextPart_000_00CE_01C25821.71C2EBC0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Antony.
+Why you don't maquerade the hole net?
 
-----------  Forwarded Message  ----------
+ iptables -A POSTROUTING -t nat -s 10.105.105.0/24 -d 0.0.0.0/0.0.0.0 -o =
+eth0 -j MASQUERADE
 
-Subject: Netmeeting NATing IP address
-Date: Mon, 9 Sep 2002 09:54:59 -0400
-From: "Sundaram Ramasamy" <sun@percipia.com>
-To: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-
-Hi,
-
-I want  outside user  initiate the  Netmeeting connection to inside user, I
-NATed public IP address to my user machine, but still  we are not able to
-connect from outside.
-
-I am attaching me script. can any one help me on this. Is there any other
-way to achive this.
-
-Thanks
--SR
+----- Original Message -----=20
+  From: Rimas=20
+  To: netfilter@lists.netfilter.org=20
+  Sent: Monday, September 09, 2002 2:56 PM
+  Subject: MASQUERADE for 2 Internet connections
 
 
-#!/bin/bash
-#set -xv
+  Hi folks,
 
-EXT="eth0"
-INT="eth1"
-LO="lo"
+  I have configured NAT for 1 Inet connection :=20
+  iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE - working =
+solution
 
-GW_IP="192.168.1.10"
-ANY="Any/0"
-SUB_NET="192.168.1.0/24"
+  I use 10.105.105.x internal IP addresing
 
-PRIVP="0:1023"
+  Now I have a second one Inet connection (eth2).
 
-UNPRI="1024:65535"
+  How to make MASQUERADE like this:
+  1st Inet - MASQUERADE for 10.105.105.100-105
+  2nd Inet - MASQUERADE for 10.105.105.xx for all except 100-105
 
-IPT="/sbin/iptables"
-
-modprobe ip_nat_h323
-
-echo 1 > /proc/sys/net/ipv4/tcp_syncookies
-
-for f in /proc/sys/net/ipv4/conf/*/rp_filter; do
-        echo 1 > $f
-done
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
+  Basicly to use the same IP addresing for both Inet connections
 
 
-$IPT -P INPUT DROP
-$IPT -P OUTPUT ACCEPT
-$IPT -P FORWARD DROP
 
-$IPT -X
-$IPT -F
-$IPT -t nat -F
-$IPT -t nat -X
+  Thanks in advance
+
+  Rimas
 
 
-$IPT -A INPUT   -i $INT -j ACCEPT
-$IPT -A OUTPUT  -o $INT -j ACCEPT
-$IPT -A FORWARD -i $INT -j ACCEPT
-$IPT -A FORWARD -o $INT -j ACCEPT
+------=_NextPart_000_00CE_01C25821.71C2EBC0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-$IPT -A INPUT  -i $LO -j ACCEPT
-$IPT -A OUTPUT -o $LO -j ACCEPT
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Why you don't maquerade the hole =
+net?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;iptables -A POSTROUTING -t nat -s =
 
+10.105.105.0/24 -d 0.0.0.0/0.0.0.0 -o eth0 -j MASQUERADE</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>----- Original Message ----- </DIV>
+<BLOCKQUOTE dir=3Dltr=20
+style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
+BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A title=3Drmocius@auste.elnet.lt =
+href=3D"mailto:rmocius@auste.elnet.lt">Rimas</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
+  title=3Dnetfilter@lists.netfilter.org=20
+  =
+href=3D"mailto:netfilter@lists.netfilter.org">netfilter@lists.netfilter.o=
+rg</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Monday, September 09, =
+2002 2:56=20
+  PM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> MASQUERADE for 2 =
+Internet=20
+  connections</DIV>
+  <DIV><BR></DIV>
+  <DIV><FONT face=3DArial size=3D2>Hi folks,</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>I have configured NAT for 1 Inet =
+connection :=20
+  </FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>iptables -t nat -A POSTROUTING =
+-o&nbsp;eth0 -j=20
+  MASQUERADE - working solution</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>I use 10.105.105.x internal IP=20
+  addresing</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>Now I have a second one Inet =
+connection=20
+  (eth2).</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>How to make MASQUERADE like =
+this:</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>1st Inet - MASQUERADE for=20
+  10.105.105.100-105</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>2nd Inet - MASQUERADE for =
+10.105.105.xx for all=20
+  except 100-105</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>Basicly to use the same IP addresing =
+for both=20
+  Inet connections</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>Thanks in advance</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>Rimas</FONT></DIV>
+  <DIV><FONT face=3DArial =
+size=3D2></FONT>&nbsp;</DIV></BLOCKQUOTE></BODY></HTML>
 
-$IPT -t nat -A POSTROUTING -o $EXT -j MASQUERADE
-$IPT -A FORWARD -i $EXT -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPT -A FORWARD -i $EXT -m state --state NEW -j ACCEPT
+------=_NextPart_000_00CE_01C25821.71C2EBC0--
 
-: For NetMeeting
-
-$IPT -A OUTPUT -o $EXT -p udp --sport 1024:65535 --dport 53 -j ACCEPT
-$IPT -A INPUT  -i $EXT -p udp --sport 53 --dport 1024:65535 -j ACCEPT
-$IPT -A OUTPUT -o $EXT -p tcp --sport $UNPRI --dport 53 -j ACCEPT
-$IPT -A INPUT  -i $EXT -p tcp --sport 53 --dport $UNPRI -j ACCEPT
-
-$IPT -A FORWARD -i $EXT -p tcp --dport 113 --syn -j REJECT
-
-#NAT to user machine for Netmeeting
-EXT_IP1=215.183.76.135
-INT_IP1=192.168.1.135
-
-ip addr add $EXT_IP1 dev $EXT
-
-$IPT -t nat -A PREROUTING -i $EXT -d $EXT_IP1 -j DNAT --to $INT_IP1
-$IPT -t nat -A POSTROUTING -o $EXT -s $INT_IP1 -j SNAT --to-source $EXT_IP1
-
-$IPT -A INPUT -j LOG --log-prefix "input "
-$IPT -A OUTPUT -j LOG --log-prefix "output "
-$IPT -A FORWARD -j LOG --log-prefix "forward "
-
--------------------------------------------------------
-
--- 
-
-Most people have more than the average number of legs.
 
