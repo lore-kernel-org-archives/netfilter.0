@@ -1,12 +1,13 @@
-From: Nils Ohlmeier <lists@ohlmeier.de>
-Subject: Try to NAT a RTP stream
-Date: Sun, 27 Apr 2003 08:24:31 +0200
+From: "Michael K" <micke@klintan.se>
+Subject: RE: How to block a range of IPs?
+Date: Sun, 27 Apr 2003 09:25:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304270824.31892.lists@ohlmeier.de>
+Message-ID: <000101c30c8e$1d885870$0200a8c0@klintan.local>
+References: <Law15-F69D7eX6Djee700022e1a@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <Law15-F69D7eX6Djee700022e1a@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'Afshin Lamei' <linux_st@hotmail.com>, netfilter@lists.netfilter.org
 
-Hello,
 
-i try to NAT RTP streams with my own application (i do not use iptables to 
-insert the rules -> should i go to netfilter-devel?).
 
-Scenario:
-192.168.0.114 <-----> 192.168.0.2
-                      Netfilter NAT
-                     217.224.223.167 <--------------> 195.37.77.110
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org 
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Afshin Lamei
+> Sent: Sunday, April 27, 2003 8:12 AM
+> To: netfilter@lists.netfilter.org
+> Subject: How to block a range of IPs?
+> 
+> 
+> Hi,
+> How can I write a rule for a custom range of IPs? for 
+> example, I want to 
+> block every WWW packet incoming from eth1, which source is an 
+> IP between 
+> 192.168.1.10 and 192.168.1.20.
+> please help me writing an example.
+> thank you
+> afshin
+> 
+> 
 
-The result is that packets go from private to public but not vice versa. And 
-the ruleset looks like this (empty chains omitted, ruleset is only for 
-debuging, masquerade rule is for keeping my existing connections):
+You can't, but if you subnet, the closest will be 192.168.1.1 to
+192.168.0.14 using mask 255.255.255.240.
+Or 192.168.1.1 to 192.168.0.30 using mask 255.255.255.224.
 
-Chain FORWARD (policy ACCEPT 237 packets, 47356 bytes)
- pkts bytes target     prot opt in     out     source               
-destination
-    0     0 ACCEPT     udp  --  *      *       195.37.77.110        
-192.168.0.114      udp spts:18554:18555 dpts:8766:8767
-  399 79648 ACCEPT     udp  --  *      *       192.168.0.114        
-195.37.77.110      udp spts:8766:8767 dpts:18554:18555
+Example:
+iptables -A INPUT -i eth0 -p tcp -s 192.168.1.0/255.255.255.240 --dport
+www -j DROP
 
-Chain PREROUTING (policy ACCEPT 3481 packets, 552K bytes)
- pkts bytes target     prot opt in     out     source               
-destination
-    0     0 DNAT       udp  --  *      *       195.37.77.110        
-217.224.223.167    udp spts:18554:18555 dpts:32790:32791 
-to:192.168.0.114:8766-8767
+/Klintan
 
-Chain POSTROUTING (policy ACCEPT 660 packets, 52480 bytes)
- pkts bytes target     prot opt in     out     source               
-destination
-    0     0 SNAT       udp  --  *      *       192.168.0.114        
-195.37.77.110      udp spts:8766:8767 dpts:18554:18555 
-to:217.224.223.167:32790-32791
-    9  1835 MASQUERADE  all  --  *      *       192.168.0.0/23       0.0.0.0/0
 
-What i do not understand is why the packets from internal hit the rule in 
-FORWARD but do not hit the same rule in POSTROUTING.
-The second strange thing is that packets come in on the external interface 
-(observed with ngrep) but to not hit the PREROUTING rule.
-I fear i missed something obvious :-(
-
-Any help/ideas appreciated.
-
-Greetings
-  Nils Ohlmeier
 
