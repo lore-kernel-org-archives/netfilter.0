@@ -1,12 +1,13 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: filter on ethernet alias
-Date: Fri, 5 Sep 2003 02:52:18 +0200 (CEST)
+From: Deshwal Chand <CDD@kampsax.co.in>
+Subject: Difficulties in stopping mass advertisement IP directed broadcast
+	 popup windows
+Date: Fri, 5 Sep 2003 10:16:33 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.56.0309050245370.17909@space.comunit.de>
-References: <20030904152250.GA25689@mtholyoke.edu>
+Message-ID: <88116A11E9DFD411870900508BEC3831803CB6@CPQ01>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C37368.AE93A310"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030904152250.GA25689@mtholyoke.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +17,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ron Peterson <rpeterso@mtholyoke.edu>
-Cc: Netfilter Discussion <netfilter@lists.netfilter.org>
+To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-On Thu, 4 Sep 2003, Ron Peterson wrote:
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-> So I was thinking I could do this by aliasing multiple IP's to a single
-> interface, and filter based on the virtual interface.  Can't do this, I
-> guess.  Neither can I filter on destination IP, because the box is a
-> gateway, not a destination.  Is there any way to filter a packet based
-> on which gateway ip address it was sent to, if both addresses are
-> assigned to the same interface?
+------_=_NextPart_001_01C37368.AE93A310
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-No, there isn't.
+Hi
 
-And it has a simple reason:
-The used IP of the gateway is not transmitted in routed packets.
+We used to receive ip directed popup windows mass messages. I blocked
+135,137-39, 445 ports and they stopped. Now they have started to come again.
 
-The client resolves the gateway-address from the routing table via arp to
-the mac-address of the gateway-interface, which will be the same for all
-virtual interfaces/adresses on this interface.
+Any comments!
 
-This mac-address is now stored in the ethernet-header of the ip-packet,
-with an ip destination-address behinde the gateway.
 
-A forwarded-via-gateway packet is for the gateway only:
-"A packet with my ethernet-address (mac), but not one of my ips"
+BR
+Chand
 
-c'ya
-sven
+------_=_NextPart_001_01C37368.AE93A310
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
--- 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>Difficulties in stopping mass advertisement IP directed =
+broadcast popup windows</TITLE>
+</HEAD>
+<BODY>
 
-The Internet treats censorship as a routing problem, and routes around it.
-(John Gilmore on http://www.cygnus.com/~gnu/)
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hi</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">We used to receive ip directed popup =
+windows mass messages. I blocked 135,137-39, 445 ports and they =
+stopped. Now they have started to come again.</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Any comments!</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">BR</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Chand</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C37368.AE93A310--
 
