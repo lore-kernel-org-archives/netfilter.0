@@ -1,9 +1,8 @@
-From: "Alejandro Cabrera Obed" <sisdis@tournet.com.ar>
-Subject: iptables basic concepts
-Date: Fri, 28 Nov 2003 11:19:50 -0300
+From: Juan Hernandez <alucard@kanux.com>
+Subject: any sugestions
+Date: 28 Nov 2003 12:01:11 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000701c3b5ba$b42935d0$0200a8c0@ale>
-Reply-To: "Alejandro Cabrera Obed" <sisdis@tournet.com.ar>
+Message-ID: <1070034917.1170.15.camel@webmail.aeropostal.com.ve>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,22 +16,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
+To: Lista de netfilter <netfilter@lists.netfilter.org>
 
-Hi everybody !!!
-I have seen a pair of iptables scripts in order to learn the technique and I
-noted that there's no a unique order in the construction of the ruleset. I'm
-new at this matter so I have to ask you this 2 short questions:
+Im using this in a webserver that must redirect everything to
+192.168.0.2 in port 25... any suggestions? using this script will enable
+to accept connections in port 80 and forward all the port 25 to the
+other server?? am I missing something or could it be improved?? 
 
-1) What option is the best: at first I set the default policies in the
-chains and later I flush all the existing firewall rules or viceversa ???
+echo 0 > /proc/sys/net/ipv4/ip_forward
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -i eth1 -d 192.168.0.2 -p tcp --dport 25 -j ACCEPT
+iptables -t nat -A PREROUTING -i eth0 -d 192.168.0.1 -p tcp --dport 25
+-j DNAT --to-destination 192.168.0.2:25
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-2) Is it a good practice to start the iptables firewalling rules from the
-rc.local script or is it better from the /etc/init.d/iptables script ??? (I
-use RH 9 and I start iptables from rc.local)
+Thanx a lot 
 
-Thanks a lot, byeeeee
 
-Alejandro
+-- 
+Juan Hernandez
+>Slacker til' death do us apart
+If it seems slow it's just because there are too many things loaded...
+and of course, it's not slack
+
 
 
