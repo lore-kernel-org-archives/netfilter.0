@@ -1,13 +1,14 @@
-From: Arthur Meyer <arthur.meyer@tbz.ch>
-Subject: Re: Passive FTP Problem in NAT.
-Date: Thu, 16 Sep 2004 08:58:18 +0200
+From: George Alexandru Dragoi <waruiinu@gmail.com>
+Subject: Re: please help - iptables drops tcp/ip connections
+Date: Thu, 16 Sep 2004 10:49:13 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409160858.18046.arthur.meyer@tbz.ch>
-References: <84F19A978A20454D96263C93109EE76937CE@telex.atom01.local>
+Message-ID: <3063e5040916004941e821d3@mail.gmail.com>
+References: <50592.203.94.69.222.1095265884.squirrel@mail.roomsnet.com>
+Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <84F19A978A20454D96263C93109EE76937CE@telex.atom01.local>
+In-Reply-To: <50592.203.94.69.222.1095265884.squirrel@mail.roomsnet.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,64 +18,41 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Is the nat-ftp-helper module loades?
+server:~# cat /proc/sys/net/ipv4/netfilter/ip_conntrack_max
+12288
 
-insmod ip_nat_ftp
+This is on a machine with 192M RAM, the default of that sysctl value
+is proportionalwith the amount of RAM, but it can be changed, afaik
+every ip_conntrack entry (/proc/net/ip_conntrack) needs arround
+300bytes from RAM.
 
-Arthur Meyer
 
-On Wednesday 15 September 2004 16:51, Svavar =D6rn Eysteinsson wrote:
-> Hi.
->
-> Could someone help me or give me advice regarding NAT on a FTP server
-> located in my DMZ.
->
-> This is my setup :
->
-> My Firewall(Linux 2.4.22-1) :
->
-> - eth0 =3D Public Interface (x.x.x.66 / 26 )
->
-> - eth1 =3D DMZ Interface (172.16.100.254 / 24 )
->
-> - eth2 =3D My Internal Network ( 192.168.1.1 / 24 )
->
->
-> I have a FTP server located on my DMZ Network. The server is listening
-> on a "non-standard" ftp port. It listens on port : 2121.
->
-> To generate my firewall config I use FwBuilder. I've tried many
-> configurations but, I never get the data port to open( e.g. to list a
-> directory)
->
-> In my configuration I've allowed, and NAT'ed the following services
-> to my FTP server located on the DMZ  :
->
-> FTP =09=09=3D =09TCP Destination Port : Start : 2121 - End : 2121
-> FTP_DATA=09=3D=09TCP Source Port : Start : 20 - End : 20
-> =09=09=09        Destination : Start : 1024 - End : 65535
->
-> I can connect, but cannot list the directories.
->
-> p.s. I'm running Proftpd on my FTP server. I have also tried to configu=
-re
-> the "PassivePorts=3D 60000 65534" to configure a group of the passive p=
-orts.
-> But it's the same issue with the directory listening.
->
-> Any help would be much appreciated.
->
->
-> Best regards to all,
->
-> Svavar O
-> Reykjavik - Iceland
+On Wed, 15 Sep 2004 22:31:24 +0600 (LKT), mohan@roomsnet.com
+<mohan@roomsnet.com> wrote:
+> Hi
+> Please advice, I am running a iptables 1.2.11 on Debian Woody with 2.4.24
+> kernel. I have a DMZ with 7 machines (4 linux, 3 windows) and 80 Windows
+> machines on the LAN side.
+> 
+> The windows machines makes a lot of tcp/ip connections with internal
+> client machines (oracle and java). As certain time (around 4000
+> simultaneous TCP/IP connections) the machine running iptables drops
+> connections and failures occur.
+> 
+> Are there any kernel or iptables setting required to be set for such a
+> large number of connections???
+> Please advice
+> 
+> Thanks
+> Mohan
+> 
+> 
 
---=20
 
-This email was created using 100% recycled electrons.
 
+-- 
+Bla bla
 
