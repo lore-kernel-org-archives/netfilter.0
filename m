@@ -1,13 +1,14 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: iptables problem
-Date: Wed, 14 May 2003 16:47:10 +0530
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Help for IP Masquerading
+Date: Wed, 14 May 2003 14:37:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004001c31a0a$5cf103c0$09603fca@Housecall>
-References: <1bd101c31962$358e1820$09603fca@Housecall> <004001c31971$65185c40$6800817d@TESTE>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <20030514143718.13318bb8.arnt@c2i.net>
+References: <20030514075139.50609.qmail@web11504.mail.yahoo.com>
+	<E6D65A6EE5AAD6119DE800B0D03DA0C528966F@MS_LEU1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <E6D65A6EE5AAD6119DE800B0D03DA0C528966F@MS_LEU1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +19,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Guilherme Viebig <guilherme@plannercorretora.com.br>, netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-still same problem
+On Wed, 14 May 2003 11:04:38 +0200, 
+"Rob Sterenborg" <rob@sterenborg.info> wrote in message 
+<E6D65A6EE5AAD6119DE800B0D03DA0C528966F@MS_LEU1>:
 
-hare
------ Original Message -----
-From: "Guilherme Viebig" <guilherme@plannercorretora.com.br>
-To: <netfilter@lists.samba.org>
-Sent: Tuesday, May 13, 2003 10:32 PM
-Subject: Re: iptables problem
+> > Q-2 I am using Linux 7.2 with kernel 2.4.7-10. can anyone 
+>  > tell me is this kernel monolithic or  modularized?
+> 
+>  It's modularized.
+>  But I really think you'd better compile a vanilla 2.4.20 kernel with
+>  the latest patch-o-matic and iptables.
 
 
-> Change REDIRECT to DNAT
-> ----- Original Message -----
-> From: "hare ram" <hareram@sol.net.in>
-> To: <netfilter@lists.samba.org>
-> Sent: Tuesday, May 13, 2003 12:13 PM
-> Subject: iptables problem
->
->
-> > Hi
-> >
-> > i have installed iptables 1.2.8a in RH 9.0
-> > and installed POM tooo
-> > when i do
-> >
-> > [root@ root]# iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
-> > REDIRECT --to-port 3128
-> > iptables: Invalid argument
-> >
-> > what is wrong
-> > i dont see any problem, but iam getting this error
-> > what could be the problem
-> >
-> > hare
-> >
-> >
-> >
->
->
->
+..more reasons to drop 2.4.7-10; check
+http://rhn.redhat.com/errata/rh72-errata.html
+for "kernel" and "security".
+
+..you want _all_ security upgrades, in your shoes 
+I'd possibly upgrade to RH-7.3, _no_ further, I'm _not_ 
+impressed by RH-8.0 nor RH-9, nor by Red Hat's act with 
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=89171
+
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
 
 
