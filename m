@@ -1,13 +1,11 @@
-From: ihernandez@cinemasoft.com.ar
-Subject: Re: PPTP NAT and iptables compilation - SOLVED
-Date: Mon, 29 Mar 2004 21:15:40 +0000
+From: "V. A.H." <vlhip@yahoo.com>
+Subject: Firewall question...
+Date: Mon, 29 Mar 2004 16:59:04 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040329211540.GA27248@cinemasoft.com.ar>
-References: <20040329190109.GB26945@cinemasoft.com.ar>
+Message-ID: <20040330005904.81980.qmail@web41401.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-323393399-1080608344=:81608"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040329190109.GB26945@cinemasoft.com.ar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +15,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-i have done all the procedure from scratch, patched all with
-patch-o-matic and now it woks fine!
-thanks for your attention!
-ivan
+--0-323393399-1080608344=:81608
+Content-Type: text/plain; charset=us-ascii
 
-On Mon, Mar 29, 2004 at 07:01:09PM +0000, ihernandez@cinemasoft.com.ar wrote:
-> Hello. i have used patch-o-matic to add the pptp-nat helper module
-> kernel works fine, but userspace iptables tool fails with:
-> "iptables: Invalid argument"
-> 
-> i have seen a lot of posts and the solution is to compile the
-> iptables-1.2.9 tools
-> i downloaded a fresh copy from www.netfilter.org and run make
-> KERNEL_DIR=mykerneldir
-> it says:
-> Extensions found: IPv4:recent IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header
-> IPv6:hbh IPv6:dst IPv6:rt
-> 
-> then i install.
-> fine, but it continues with it's problems!!!!
-> what can i do to compile the tools th right way?
-> 
+Hello,
+ 
+Considering the folowing network scheme:
+ 
+Internet (Diffrent ISP) ------ Subnet Y (10.0.0.0/20)
+                                                |
+                                                |
+                                                |
+                                            (eth0)
+                                           Firewall
+                                            (eth1)
+                                                |
+                                                |
+                                                |
+                                        My Subnet(10.0.1.0/24) ------ Firewall/Router(SNAT) ------ Internet (My ISP).
+ 
+I have to filter all traffic between Subnet Y and My Subnet with a firewall box. And I don't know how to forward this traffic between those two interfaces presented in this scheme.
+ 
+Many thanx.
+
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! Finance Tax Center - File online. File on time.
+--0-323393399-1080608344=:81608
+Content-Type: text/html; charset=us-ascii
+
+<DIV>Hello,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Considering the folowing network scheme:</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Internet (Diffrent ISP) ------ Subnet Y (10.0.0.0/20)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb
+ sp;&nbsp;&nbsp;&nbsp;|</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (eth0)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Firewall<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(eth1)</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ |<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; My Subnet(10.0.1.0/24) ------ Firewall/Router(SNAT) ------ Internet (My ISP).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I have to filter all traffic between Subnet Y and My Subnet with a firewall box. And I don't know how to forward this traffic between those two interfaces presented in this scheme.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Many thanx.</DIV><p><hr size=1><font face=arial size=-1>Do you Yahoo!?<br>
+<a href="http://taxes.yahoo.com/filing.html"><b>Yahoo! Finance Tax Center</a></b> - File online. File on time.
+--0-323393399-1080608344=:81608--
 
