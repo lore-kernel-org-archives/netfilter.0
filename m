@@ -1,10 +1,14 @@
-From: JC <jchaser@yahoo.com>
-Subject: NAT Host down and ICMP host unreachable
-Date: Mon, 22 Dec 2003 22:37:26 -0800 (PST)
+From: Andreas Kretschmer <andreas_kretschmer@despammed.com>
+Subject: Re: [despammed] -i and -o options for iptables FORWARD chain
+Date: Fri, 2 Jan 2004 14:30:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031223063726.83624.qmail@web13421.mail.yahoo.com>
+Message-ID: <20040102133002.GA6057@kaufbach.delug.de>
+References: <009a01c3cff6$ee23bd90$a5bbd00c@issaquah>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <009a01c3cff6$ee23bd90$a5bbd00c@issaquah>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,44 +18,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hello Everybody, 
+am  Wed, dem 31.12.2003, um 15:36:34 -0800 mailte Gongya Yu folgendes:
+> Hi, I just updated Linux kernel to 2.6.0 with iptables and ebtables enabl=
+ed.
 
-I apologize if you've seen something like this but
-searching on something similar to the subject line
-above has turned up nill.
+I'm using iptables on 2.4.x, possible there are differences with 2.6.x.
 
-Scenario 
+> =20
+> But iptables ignores -i and -o options for FORWARD chain. Wheneneve I use
+> something like -i eth0 or -o eth0, the rule is just ignored.
 
-HostA ------> FW/NAT -----(port translation) --->
-HOSTB
-(10.10.1.1)                                 
-(192.168.7.1)
+RTFM!
 
-Rules:
-iptables -A PREROUTING -t nat -p tcp --dport 80 -j
-DNAT --to 192.168.7.1:80 
-iptables -A FORWARD -p tcp -d 192.168.7.1 --dport 80
--j ACCEPT
+-i is only for INPUT, FORWARD and PREROUTING
+-o is only for FORWARD, OUTPUT and POSTROUTING
 
-So everything works, but when HostB goes down for
-maintence or from a DOS or whatevever FW/NAT will send
-an ICMP host unreachable with the natted address to
-HostA.
+You can use -s and -d (Source and Destination-IP).
 
-I suppose I'm correct in perceiving that this behavior
-is normal, so I'll have to ask how do some of you
-people go about dealing with situations such as these?
 
-Thanks,
-
-JC
-
-__________________________________
-Do you Yahoo!?
-Free Pop-Up Blocker - Get it now
-http://companion.yahoo.com/
+Andreas
+--=20
+Diese Message wurde erstellt mit freundlicher Unterst=FCtzung eines freilau-
+fenden Pinguins aus artgerechter Freilandhaltung.   Er ist garantiert frei
+von Micro$oft'schen Viren. (#97922 http://counter.li.org)     GPG 7F4584DA
+Was, Sie wissen nicht, wo Kaufbach ist? Hier: N 51.05082=B0, E 13.56889=B0 =
+;-)
 
