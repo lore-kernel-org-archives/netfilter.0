@@ -1,14 +1,13 @@
-From: Rohan Almeida <arc_of_descent@gmx.net>
-Subject: Re: HELP : How to group IP addresses by refering to them as a single name ?
-Date: Thu, 19 Sep 2002 15:07:34 +0530
+From: Adam Young <adam@vbfx.com>
+Subject: Re: [PATCH] associate user defined name with rule match
+Date: Thu, 19 Sep 2002 07:46:25 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020919150734.51d3c1d4.arc_of_descent@gmx.net>
-References: <200209041320.g84DKjv31137@vulcan.rissington.net>
-	<20020919074555.18679.qmail@web40202.mail.yahoo.com>
+Message-ID: <20020919074625.007828aa.adam@vbfx.com>
+References: <Pine.LNX.4.44L.0209172244330.10390-102000@hunger.screamingdaemon.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020919074555.18679.qmail@web40202.mail.yahoo.com>
+In-Reply-To: <Pine.LNX.4.44L.0209172244330.10390-102000@hunger.screamingdaemon.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,27 +20,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Alok Shukla <alokshukla@yahoo.com> thus wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> iptables -t nat -D POSTROUTING -s 192.168.0.11-50  -d
-> any/0 -J MASQUERADE
+On Tue, 17 Sep 2002 22:48:04 -0700 (PDT)
+Jay Schulist <jschlst@linux-sna.org> wrote:
 
-Well, I don't think the above option is available
-with the current version of iptables
-Why don't u create subnets.
 
-for eg. for 8 ips from 192.168.0.0 - 192.168.0.7
-u can use "-s 192.168.0.7/29"
+	Isn't this already available via --log-prefix ?  I've been using that for the
+longest time, and if I want to see all hits on port 1433, I just say "grep MSSQL
+/var/log/messages", for example, and it brings all of those up.
 
-similarly for 192.168.0.8 - 192.168.0.15
-u can use "-s 192.168.0.15/29"
+	Adam
 
-Just a suggestion :-)
-Might not be the most appropriate
+> Hello Harald,
+> Here is a new match which allows the user to associate a name with a rule.
+> It is a very simple match, but it is useful if the user needs an easy way
+> to track a rule by name.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
 
-But, i would normally create some shell or perl
-scripts to manipulate the ips
-
---
-arc_of_descent
+iD8DBQE9ibkRUanLvazj+VgRAjTHAJ9Wk6JZa11FTKyXB/BF095x1hBunQCfXH/S
+jfF1zT8Gn7cbstJNVSUN6uI=
+=MN++
+-----END PGP SIGNATURE-----
 
