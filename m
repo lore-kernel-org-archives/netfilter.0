@@ -1,13 +1,13 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Preferred way of preserving firewall rules on system reboots?
-Date: Thu, 13 May 2004 11:11:29 -0500
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: Re: selective connection tracking?
+Date: Thu, 13 May 2004 10:28:29 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40A39E31.40905@pbl.ca>
-References: <40A38ABF.4090907@pbl.ca> <1084460291.1771.183.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <20040513102829.6d29f70d@mgalepc.utilitran.com>
+References: <1084383723.40a261ebb1122@mail.borderware.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1084460291.1771.183.camel@anduril.intranet.cartel-securite.net>
+In-Reply-To: <1084383723.40a261ebb1122@mail.borderware.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, fming@borderware.com
 
-Cedric Blancher wrote:
-> Le jeu 13/05/2004 =E0 16:48, Aleksandar Milivojevic a =E9crit :
->=20
->>What is your preferred way of preserving firewall configuration on=20
->>firewall reboots?  I know this is probably distribution specific.
->=20
->=20
-> Every time I need to save the ruleset :
->=20
-> 	iptables-save > /etc/firewall
->=20
-> Then, in a startup script (/etc/init.d/networking on my Debian), I add =
-:
->=20
-> 	iptables-restore < /etc/firewall
+Hello Ming,
 
-This is something what Red Hat's init.d script is doing (if called with=20
-"save").  However, using this approach, there's no space left for any=20
-comments.  It is questionable I would still remember why I have some=20
-"special" set of rules one year from now, if there was no comments in=20
-the file.  And it makes very hard for somebody else to change anything I =
+	I thought you could do connection tracking per port for example if you where
+forwarding / allowing out http and ssh but then wanted to block SSH.
 
-created (something obvious to me might not be obvious to somebody else,=20
-hack it might not be obvious to me couple of months down the road).  I=20
-find having comments in configuration files very important.
+At first you would have:
 
---=20
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+iptables -A forward -i eth1 -o eth0 -s internalnetwork -p tcp --dport 80 -match
+state --state ESTABLISHED,NEW -j ACCEPT
+
+iptables -A forward -i eth1 -o eth0 -s internalnetwork -p tcp --dport 22 -match
+state --state ESTABLISHED,NEW -j ACCEPT
+
+Would allow port 80 and port 22 new or established connections, then if you
+removed the rule for port 22 and had a default policy of deny then SSH
+connections should be dropped.
+
+Michael.
+
+
+
+On Wed, 12 May 2004 13:42:03 -0400 (EDT)
+fming@borderware.com wrote:
+
+> Hi,
+> 
+> I am from the FreeBSD/ipfilter world. I recently switched to Linux and 
+> netfilter. One question I have with netfilter connection tracking is whether 
+> there I can instruct the connection tracking to selectively tracking 
+> connections.
+> 
+> Looks to me once I loaded the conn_track modules, everything was tracked. Is 
+> there a way I can specify, for example, that I only want http to be tracked? 
+> All other traffic will be dropped anyway, tracked or not.
+> 
+> Regards,
+> Ming
+> 
+> 
+> 
+> 
+> 
+
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
