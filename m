@@ -1,11 +1,14 @@
-From: Banszki Gabor <banszki.gabor@chello.hu>
-Subject: queue buffer size increasing howto?
-Date: Sun, 22 Aug 2004 15:40:16 +0200
+From: Tobias DiPasquale <codeslinger@gmail.com>
+Subject: Re: queue buffer size increasing howto?
+Date: Sun, 22 Aug 2004 10:55:00 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1093182015.17276.24.camel@debian>
+Message-ID: <876ef97a040822075556951a4@mail.gmail.com>
+References: <1093182015.17276.24.camel@debian> <876ef97a0408220750591cc852@mail.gmail.com>
+Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <876ef97a0408220750591cc852@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +21,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
- 
-Hi everybody!
+On Sun, 22 Aug 2004 15:40:16 +0200, Banszki Gabor
+<banszki.gabor@chello.hu> wrote:
+>
+> Hi everybody!
+>
+> Greetings for you! I am a new member of this list.
+>
+> Please somebody help me!
+>
+> I am developing an application for counting and processing packets in a
+> linux box with using the ip_queue module.
+>
+> It is working properly, but sometimes I have a problem, that I get often
+> this message:
+>
+> Failed to receive netlink message, No buffer space available
 
-Greetings for you! I am a new member of this list. 
+This message indicates the the buffer for the netlink socket was full.
+This is different from the queue that ip_queue has internally for
+packets to be sent to userspace. You will need to open the netlink
+socket with a larger buffer, which can be accomplished by using
+setsockopt(2):
 
-Please somebody help me!
+int fd, rv, size = LARGE_SOCKET_BUFFER;
 
-I am developing an application for counting and processing packets in a
-linux box with using the ip_queue module. 
+fd = socket( PF_NETLINK, SOCK_RAW, NETLINK_FIREWALL);
+rv = setsockopt( fd, SOL_SOCKET, SO_RCVBUF, &size, sizeof( size));
+...
 
-It is working properly, but sometimes I have a problem, that I get often
-this message:
+> With this command: watch -n 0 "cat /proc/net/ip_queue" during my
+> application running the biggest number of "Queue length" is 255.
+>
+> I don't understand it, because the "Queue max. length" is 2048.
 
-Failed to receive netlink message, No buffer space available
+See above. You should be able to increase the size of the socket
+receive buffer in your userspace process without changing the length
+of ip_queue's internal packet queue, but test that out to make sure.
+You will probably need to run the process with root privileges to
+change your socket receive buffer size, however.
 
-Maybee the cause of this, that the box has a lot of short hardly tasks
-sometimes. 
-I think the solution to prevent the packet loss If I would increase the
-queue length. I did it with this command:
-
-echo 2048 > /proc/sys/net/ipv4/ip_queue_maxlen
-
-#cat /proc/net/ip_queue
-Peer PID          : 23985
-Copy mode         : 2
-Copy range        : 2048
-Queue length      : 184
-Queue max. length : 2048
-
-The enviroment:
- 2.4.26 kernel and  iptables: 1.2.9 with promiscuous patch 1.2.3
-
-
-With this command: watch -n 0 "cat /proc/net/ip_queue" during my
-application running the biggest number of "Queue length" is 255.
-
-I don't understand it, because the "Queue max. length" is 2048.
-
-How can I increase the queue length?
-
-What is the really method of the queue increasing?
-
-Thanx:
-
-Gabor
-
-
-
-
-
-
-
-
-
-
+--
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
