@@ -1,11 +1,14 @@
-From: "Ruslan Kazansky" <rsllst2@kursknet.ru>
-Subject: iptables -m state & New !SYN (conntrack problem)
-Date: Wed, 23 Oct 2002 12:30:15 +0400
+From: Stewart Thompson <stewart.thompson@shaw.ca>
+Subject: RE: IPTables Query
+Date: Wed, 23 Oct 2002 01:00:46 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00d901c27a6e$69db5bd0$fe01a8c0@upr>
+Message-ID: <FLEKIPPLAEDMJMOOBBDPEEBDDEAA.stewart.thompson@shaw.ca>
+References: <OF61962908.A658CCF9-ON65256C5B.0023060F-65256C5B.00245CCC@lntinfotech.com>
+Reply-To: stewart.thompson@shaw.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <OF61962908.A658CCF9-ON65256C5B.0023060F-65256C5B.00245CCC@lntinfotech.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,85 +19,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: harish.k@lntinfotech.com, netfilter@lists.netfilter.org
+
+Hi:
+
+	This isn't really practical. Most routers will drop packets
+from private ranges. So your request won't make it to it's destination
+Anyway. Netfilter will make sure the request gets back to the right
+Machine. Why do you need this?
+
+
+Stu..........
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of
+harish.k@lntinfotech.com
+Sent: October 22, 2002 11:37 PM
 To: netfilter@lists.netfilter.org
+Subject: IPTables Query
 
-Hi!
+Hello List,
 
-I am use linux, kernel 2.4.18, frontend - iptables v1.2.6a.
+This is my first mail to the Netfilter List. I am a newbie to
+IPTables, so please be gentle :-)
 
-1)
+I have a Red Hat Linux 7.3 box running iptables-1.2.5-3.
+I am using iptables primarily for Source NAT.
+The machine has two IP Addresses
 
-iptables consist the following rules:
+eth0      : 172.25.8.130
+eth0:0    : 172.25.8.125
 
-====begin============
-iptables -t filter -A bad_pkt -p TCP -m state --state ! NEW -j ACCEPT
+I am terribly confused with the OUTPUT chain. I have read from
+the documentation that the OUTPUT chain is used for locally
+generated packets. The machine always uses the IP Add of eth0
+for any locally generated packets. How do I configure the OUTPUT
+chain such that the machine uses the IP Add 172.25.8.125 when it
+requests for specific ports or protocols.
+For eg, I want the machine to use the Source IP as 172.25.8.125
+whenever it runs a DNS query. How do I go about this?
 
-iptables -t filter -A bad_pkt -p TCP -m state --state NEW --tcp-flags
-SYN,ACK,FIN,RST SYN -j ACCEPT
-
-iptables -t filter -A bad_pkt -p TCP -j LOG --log-prefix "New !SYN: "
-
-====end============
-
-In log i see packets, which conntrack is mark "NEW", but it flags is
-equivalent to:
-
---tcp-flags SYN,ACK,FIN,RST ACK,FIN
-
---tcp-flags SYN,ACK,FIN,RST ACK
-
---tcp-flags SYN,ACK,FIN,RST ACK,RST
-
-The ports number say, that is not portscan, it's normal connection packets.
-
-Also, view "netstat -neoA inet" is not eqiv "cat /proc/net/ip_conntrack".
-
-I.e ip_conntrack state is not corresponding REAL TCP-state !!!
-
-Is that normal or kernel (ipfilter) bug ???
-
-2)
-
-/proc/net/ip_conntrack consist very long (till 5 days) hanging record, AFAIR
-corresponded:
-
-(linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c):
-
-      5 DAYS,     /*      TCP_CONNTRACK_ESTABLISHED,      */
-
-Some people recommended decrease TCP_CONNTRACK_ESTABLISHED to 2 hour.
-
-However, in kernel source (2.4.19, patch-2.4.20-pre11) maintainers is not
-confirm this correction, why... ???
-
-What is the way against possible DOS-attack to ip_conntrack, where, IMHO,
-to:
-
-  ip_conntrack: maximum limit of XXX entries exceeded ?
-
-Also, view "netstat -neoA inet" is not consist "hanging" connection, it show
-only in
-
-/proc/net/ip_conntrack...
-
-3)
-
-Why timeout for ip_conntrack in
-
-linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
-
-is different from TCP-timeout ?
-
-Or it's only for UDP & ICMP protocols ?
-
-______________________________
-Ruslan Kazansky,
-Network Administrator,
-ISP Joint Stock Company
-"Electrosvyaz - Kursk Region",
-Kursk, Russia, http://www.kursknet.ru
-
-
-
+TIA
+Rgds
+--
+---------------------------------------------------------------
+Harish K                             <harish.k@lntinfotech.com>
+Systems Engineer                            Tel - 91-22-6948065
+Don't drink and drive. You might hit a bump and spill your beer
+---------------------------------------------------------------
 
 
