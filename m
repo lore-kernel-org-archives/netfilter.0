@@ -1,11 +1,13 @@
-From: Georgi Chorbadzhiyski <gf@unixsol.org>
-Subject: dscp match
-Date: Tue, 21 May 2002 17:38:54 +0300
+From: SoulBlazer <soul@lamp-post.net>
+Subject: Re: PPTP/GRE + Newnat Issues
+Date: Thu, 13 Jun 2002 12:26:11 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CEA5BFE.6050109@unixsol.org>
+Message-ID: <20020613163505.000604B26@lists.samba.org>
+References: <20020613000213.6C95F4490@lists.samba.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20020613000213.6C95F4490@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,24 +17,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Is dscp match work in the recent iptables?
+I have received private email's regarding similar occurrences.  Perhaps there 
+is some weirdness about since I am not alone on this?
 
-# uname -a
-Linux router 2.4.17 #10 Tue Mar 26 01:26:47 EET 2002 i686 unknown
+Additionally if this is a problem with the module should I move this 
+conversation to the netfilter-devel list ? opinions ?
+--
+Re: PPTP/GRE + Newnat Issues
+Date: Thu, 13 Jun 2002 15:47:00 +0200
+From: <robert@xxxx.nospam.xxx>
+To: "SoulBlazer" <soul@lamp-post.net>
 
-# iptables --version
-iptables v1.2.7-20020520
+same promblems at me,
+no solution known
+greets
 
-# iptables -A INPUT -m dscp --dscp 0x20 -j ACCEPT
-iptables: No chain/target/match by that name
-
-The same happens with iptables 1.2.6a (from slackware-current)
-
-Please CC me on replies I'm not on the list.
-Thanks.
-
-
+On June 12, 2002 07:53 pm, SoulBlazer wrote:
+> Hey List,
+>
+> I've been having a problem getting PPTP/GRE (ms-vpn) sessions to work
+> properly using netfilter cvs (06/12/2002) and a 2.4.19-pre10 kernel (please
+> note I have tried the following with a vanilla 2.4.18 kernel as well to
+> which the same results have occurred).
+>
+> After applying the newnat and pptp patches to my kernel I compile with the
+> following :
+>
+> CONFIG_IP_NF_CT_PROTO_GRE=y
+> CONFIG_IP_NF_PPTP=y
+>
+> (I also have standard iptables options allowing for nat enabled)
+>
+> After a recompile and reboot, I create the following rule for a winXP
+> workstation on my LAN:
+>
+> iptables -t nat -A POSTROUTING -s 192.168.12.19 -j SNAT --to 64.119.104.135
+>
+> I then verify connectivity on the winXP box via the ping command and
+> subsequent web browsing; all which yield success.
+>
+> I then attempt to use the VPN adapter in Network places and it appears to
+> work however gets stuck at the 'Verifying username/password' (the l/p is
+> correct btw).  I go on the linux firewall and open up tcpdump to which I am
+> getting the following:
+>
+> my.ext.addr.1081 > remote.vpn.server.1723: tcp 0 (DF)
+> remote.vpn.server.1723 > my.ext.addr.1081: tcp 0
+> my.ext.addr.1081 > remote.vpn.server.1723: tcp 156 (DF)
+> remote.vpn.server.1723 > my.ext.addr.1081: tcp 156
+> my.ext.addr.1081 > remote.vpn.server.1723: tcp 168 (DF)
+> remote.vpn.server.1723 > my.ext.addr.1081: tcp 32
+> remote.vpn.server > my.ext.addr: gre-proto-0x880B (gre encap)
+> my.ext.addr > remote.vpn.server: icmp: my.ext.addr protocol 47 unreachable
+>
+> I have a feeling the pptp/gre support does not like being built internally
+> opposed to modularly, so I recompile them as modules and attempt again.
+>
+> With the same rules and the following loaded as modules :
+>
+> Module                  Size  Used by
+> ip_nat_proto_gre        1248   0  (unused)
+> ip_conntrack_pptp       2352   1  (autoclean)
+> ip_nat_pptp             1712   0  (unused)
+> ip_conntrack_proto_gre    1952   0  [ip_conntrack_pptp ip_nat_pptp]
+>
+>
+> I again try to establish a vpn connection .. and again I get the same
+> protocol 47 unreachable messages.
+>
+> Any ideas ?
 
