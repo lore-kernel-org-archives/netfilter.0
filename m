@@ -1,14 +1,11 @@
-From: Sheldon Hearn <sheldonh@starjuice.net>
-Subject: Re: Transparant proxy
-Date: Fri, 04 Jun 2004 15:14:41 +0200
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: return
+Date: Fri, 4 Jun 2004 10:39:24 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1086354881.2699.15.camel@axl.seasidesoftware.co.za>
-References: <40BF3E60.2060206@efn.uncor.edu>
-	 <1157.172.16.131.133.1086337464.squirrel@mail.suarapembaruan.co.id>
+Message-ID: <00f201c44a39$599a9230$49caa8c0@caris.priv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1157.172.16.131.133.1086337464.squirrel@mail.suarapembaruan.co.id>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,22 +16,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: david@suarapembaruan.co.id
-Cc: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Fri, 2004-06-04 at 10:24, david@suarapembaruan.co.id wrote:
+I was just wondering if anyone here uses "return" in their rules .. I
+understand what it is for .. just wondering if it is efficient to use.
 
-> can anybody tell me how to set rules in iptables if i want to use
-> transparant proxy.
+ex.
 
-That depends on what you mean by transparent proxy.  You may be looking
-for the tproxy patch, which was included in patch-o-matic CVS on May 11,
-or alternatively is available at:
+-A Forward -s 192.168.200.5 -o eth1 -j subchain1
+-A Forward -s 192.168.200.0/24 -o eth1 -j subchain2
 
-http://www.balabit.com/products/oss/tproxy/
+-A subchain1 -d 200.200.200.200 --dport 1234 -j ACCEPT
+-A subchain1 -d 200.200.300.300 --dport 4321 -j ACCEPT
+-A subchain1 -j RETURN
 
-Ciao,
-Sheldon.
+-A subchain2 .......... blah blah blah ....
 
+Or would you just write the rules different ?
+
+Also, I was wondering is there a way to specify multiple source ip address ?
+
+ex -s 192.168.200.5, 192.168.200.20 .....
+
+Thank you,
+Peter.
+
+
+Peter Marshall, BCS
+Network Administrator, CARIS
+115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
+Phone:  (506) 458-8533 (Reception)
 
 
