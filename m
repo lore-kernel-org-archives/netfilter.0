@@ -1,14 +1,12 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: RTSP & RTP w/ Darwin Thru iptables
-Date: Thu, 22 Jul 2004 15:02:41 -0400
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: rules suggestion
+Date: Thu, 22 Jul 2004 16:31:43 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407221502.41890.Alistair@nerdnet.ca>
-References: <6.0.0.22.0.20040721132755.037c5bb8@arctictern.ddive.com> <200407212150.39176.Antony@Soft-Solutions.co.uk> <6.0.0.22.0.20040721171320.03983e78@arctictern.ddive.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511E0@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <6.0.0.22.0.20040721171320.03983e78@arctictern.ddive.com>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,153 +19,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On July 22, 2004 11:19 am, Dan Barron wrote:
-
-	Please note -- this is somewhat edited for brevity!!!
-
-
->  >> I have been struggling with setting up my iptables firewall to allow
->  >> for RTSP & RTP connections to a Darwin Streaming Server.
-> TCP/UDP Ports 554 & 7070 (RTSP) and UDP ports 6790:6999 (RTP) - the way I
-> believe it to work is that the stream is asked for and controlled using the
-> TCP port then the video is streamed over the UDP port.
+> $ipt -t filter -A OUTPUT -o $extif_name -p udp -d 192.168.1.255 =
+--dport
+> 137:139 -j DROP  #NETBIOS
 >
->  >> I have a firewall with a public Internet connection and a DMZ and
->  >> private LAN.  The Darwin server lives on its own server in the DMZ.
-
-> After more configuration tries, I am seeing that the RTSP TCP packets on
-> port 7070 get DNAT'd fine to the Darwin Server - but it never responds back
-> with either a TCP packet or a UDP packet.  To make sure the Darwin Server
-> Linux box allows for Darwin to work properly,  the Darwin server has two
-> eth ports, one on the DMZ, and one on the private LAN, and if I use its
-> private LAN ip addr in quicktime viewer the Darwin server works fine and
-> answers back with streaming media no problems.  So, this tells me that I
-> have a firewall issue of some kind.
+> $ipt -t filter -A INPUT -i $extif_name -p udp -d 192.168.1.255 --dport
+> 137:139 -j DROP  #NETBIOS
 >
-
-	Ummm... Private LAN ip on a DMZ box???  not a good thing .
-	 What is the Darwin box's default gateway??, and what 
-	IP does it see the connections originating from? 	
-
-	Can you LOG packets coming off the Darwin box at the 
-	firewall in reply to the inbound RTSP requests? ... 
-	I'd suggest LOGging both the DMZ ip an LAN ip of 
-	the Darwin box *grin*
-	
-	At this moment I'd bet that the Darwin box is replying on the
-	LAN side of the network.
-
-	
-	Further comments below in the rules:
-
+> $ipt -t filter -A FORWARD -i $extif_name -p udp -d 192.168.1.255 =
+--dport
+> 137:139 -j DROP  #NETBIOS
 >
-> (internet) ------ firewall ------ (DMZ) ----- Darwin Server
->
->                   (Private LAN)             +- Web Server
->
->                     W2K PC
->
-> Here is my current set of relevant rules.
->
-> #~~~ Additional udp_packets Chain ~~~
->
-> $IPTABLES -N udp_packets
->
-> $IPTABLES -A udp_packets -p UDP -s 0/0 --destination-port 554 -j ACCEPT
-> $IPTABLES -A udp_packets -p UDP -s 0/0 --destination-port 7070 -j ACCEPT
-> $IPTABLES -A udp_packets -p UDP -s 0/0 --destination-port 6970:6999 -j
-> ACCEPT
-	Why do you accept these on the firewall?? you want to route them to the
-	Darwin Box right? --- these should jumped to from FORWARD, not INPUT.
-> #~~~ INPUT Chain ~~~
->
-> $IPTABLES -A INPUT -p UDP -i $INET_IFACE -j udp_packets
-> $IPTABLES -A INPUT -p UDP -i $DMZ_IFACE -j udp_packets
->
-> #~~~ FORWARD Chain ~~~
->
+> $ipt -t filter -A FORWARD -o $extif_name -p udp -d 192.168.1.255 =
+--dport
+> 137:139 -j DROP  #NETBIOS
 
+all these rules block are UDP 137-139 to the specific broadcast address =
+on your internal LAN.  while this is nice for tidying up your logs; i =
+*believe* the original poster was looking to keep netbios-related =
+traffic from leaking out to the internet.  in which case, my =
+recommendation is:
 
+-A FORWARD -o $external_if -p udp --dport 137:138 -j DROP
+-A FORWARD -o $external_if -p tcp --dport 139 -j DROP
+-A FORWARD -o $external_if -p tcp --dport 445 -j DROP
 
-> $IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -p tcp \
->    -d $DMZ_STREAMING --dport 554 -j ACCEPT
-> $IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -p tcp \
->    -d $DMZ_STREAMING --dport 7070 -j ACCEPT
-> $IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -p udp \
->    -d $DMZ_STREAMING --dport 554 -j ACCEPT
-> $IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -p udp \
->    -d $DMZ_STREAMING --dport 7070 -j ACCEPT
-> $IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -p udp \
->    -d $DMZ_STREAMING --dport 6970:6999 -j ACCEPT
->
-^^^^	This will NOT allow LAN_IFACE origin packets to make the translation
-	to the DMZ. -- thus testing from your LAN will not work when pointed
-	at the outside IP.
+two notes:
 
+all the examples are using "-A."  keep in mind that if you already have =
+some kind of "allow everything on the inside out" rule, these will never =
+get matched.  in such a case, you would need to "-I FORWARD x" where x =
+=3D the numnber of the "allow everything out" rule.
 
-> $IPTABLES -A FORWARD -i $DMZ_IFACE -p udp \
->    --dport 6970:6999 -m state --state NEW -j ACCEPT
-> $IPTABLES -A FORWARD -i $DMZ_IFACE -p udp \
->    --dport 7070 -m state --state NEW -j ACCEPT
-> $IPTABLES -A FORWARD -i $DMZ_IFACE -p udp \
->    --dport 554 -m state --state NEW -j ACCEPT
-> $IPTABLES -A FORWARD -i $DMZ_IFACE -p udp \
->    --dport 6970:6999  -j ACCEPT
-> $IPTABLES -A FORWARD -i $DMZ_IFACE -p udp \
->    --dport 7070 -j ACCEPT
-> $IPTABLES -A FORWARD -i $DMZ_IFACE -p udp \
->    --dport 554 -j ACCEPT
->
-^^^^^Why not allow the Darwin box to reply on *any* port ...
-	At least until you've pinned down the problem? -- I'm 
-	not sure but I believe that there is a control reply on a 
-	random port before the connection is correctly setup, 
-	--- *BUT* that is hearsay... so I might be wrong.
+it gets mentioned all the time on this list, but hey--you can never get =
+too much of a good thing, right:
 
+the best way to design your firewall rules is to start with a default =
+drop, and then just allow the specific traffic that you need.  it may =
+take slightly longer to get it setup initially, but requires much less =
+care & feeding in the long run.
 
-
-> #~~~ PREROUTING ~~~
->
-> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -p tcp \
->    --dport 554 -j DNAT --to-destination $DMZ_STREAMING:554
-> $IPTABLES -t nat -A PREROUTING --dst $INET_IP -p tcp \
->    --dport 7070 -j DNAT --to-destination $DMZ_STREAMING:7070
-> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -p udp \
->    --dport 554 -j DNAT --to-destination $DMZ_STREAMING:554
-> $IPTABLES -t nat -A PREROUTING --dst $INET_IP -p udp \
->    --dport 7070 -j DNAT --to-destination $DMZ_STREAMING:7070
-> $IPTABLES -t nat -A PREROUTING --dst $INET_IP -p udp \
->    --dport 6970:6999 -j DNAT \
->    --to-destination $DMZ_STREAMING:6970-6999
-
-^^^^Again, in respect of LAN connections, this will not mangle any 
-	connections from your LAN, since it includes $INET_IFACE.
-	
->>
-> And here's my log rules and what I see when trying to connect via my
-> private LAN pc and the public domain address pointing to my public IP.
->
-	
-	For the time being, log everything from BOTH IP addesses of the 
-	Darwin box and keep in mind that if you want to test the Darwin 
-	box's functionality from the LAN using the PUBLIC addess, you will need 
-	to setup a weird set of rules -- 
-
-	on the way to the DARWIN box you need to BOTH DNAT and SNAT the 
-	connection so that the Darwin box will reply BACK to the firewall for 
-	your LAN connection (where the connection will be unDNATted and
-	unSNATted) 
-
-	At the moment your Darwin box is NOT going to route the connection 
-	back through the firewall for a LAN based client because he can talk 
-	DIRECTLY to the LAN client through his own LAN nic.  Thus your client
-	wont see things correctly ... nor will the firewall see the return packets 
-	*ever*
-
-	As I said ... a box on both DMZ and LAN is not a good thing *tm*
-
-
-	*grin*
-
-	Alistair Tonner
+-j=20
 
