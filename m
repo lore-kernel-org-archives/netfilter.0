@@ -1,8 +1,8 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Subject: Re: vpn
-Date: Tue, 14 Sep 2004 10:42:27 -0400
+From: "Brent Clark" <bclark@eccotours.biz>
+Subject: RE: vpn
+Date: Tue, 14 Sep 2004 16:22:20 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095172947.2055.33.camel@localhost>
+Message-ID: <HAEOIFPIBBBLGLHOMLLIMEJGCMAA.bclark@eccotours.biz>
 References: <012a01c49a61$340e8ad0$49caa8c0@caris.priv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,43 +18,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Peter Marshall <peter.marshall@caris.com>
-Cc: netfilter@lists.netfilter.org
+To: Peter Marshall <peter.marshall@caris.com>, netfilter@lists.netfilter.org
 
-On Tue, 2004-09-14 at 09:46, Peter Marshall wrote:
-> I need to set up a vpn.  I am trying to figure out which would be best.  I
-> need to connect my office with a sister office.  The employess are using
-> windows machines.  They want to be able to get and put files from a windos
-> file server. Windows networking would be a bonus.  Both offices have Linux
-> firewalls.    Would ssh over a PPP tunnel work for this ?  Would pptp or
-> cIPe be a better solution ?
-> 
-> I have my network setup below ... I was also wondering if it would be better
-> to put the vpn server either behind the internal firewall, or in the dmz, or
-> make it part of the internal firewall
-> 
-> my network in a nutshell.
-> I have an internal network with an internal firewall.  I have an external
-> network with an external firewall, and a dmz, between the internal and the
-> external firewall.  All numbers in the dmz are internet routable (They have
-> their own /26 network).  The external firewall has a 29 subnet on it's
-> external interface.
-<snip>
-I would suggest an IPSec VPN using either the native IPSec stack in the
-latest Linux or either StrongSWAN (www.strongswan.org) or OpenSWAN
-(www.openswan.org) and placing access control and VPN on the same
-device.  That is how we design most devices for use in the ISCS project
-(http://iscs.sourceforge.net).
+Hi
 
-You will need to manage the Windows networking carefully as the
-broadcasts normally associated with browsing and with some forms of
-NetBIOS Name Resolution will not work through the VPN.  There is a lot
-of information in the FressS/WAN/ StrongSWAN / OpenSWAN archives about
-that. Good luck with it - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-Financially sustainable open source development
-http://www.opensourcedevel.com
+maybe look at openswan.
 
+Kind Regards
+Brent Clark
 
