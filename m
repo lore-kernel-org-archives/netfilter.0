@@ -1,14 +1,12 @@
-From: Henry Ritzlmayr <h.ritzlmayr@gmx.at>
-Subject: Re: Redirecting incoming traffic to 127.0.0.1
-Date: 21 Mar 2003 17:58:10 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: internet gateway bandwidth control
+Date: Fri, 21 Mar 2003 09:35:57 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048265890.1492.144.camel@localhost.localdomain>
-References: <1048257065.1493.137.camel@localhost.localdomain>
-	 <016101c2efbb$db2b8360$8201a8c0@daviddesktop>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF50C6FC1@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <016101c2efbb$db2b8360$8201a8c0@daviddesktop>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,65 +16,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-SNAT ist only valid in the POSTROUTING chain. But even that didn=B4t do=20
-the trick.=20
-Do you know any way to check what really happens with the packet since
-tcpdump only shows it before natting?=20
-If there is no tool/command or anything like that - than it looks like I
-found something to refreshen my c/c++ skills.
+This calls for TC. Go to http://lartc.org/
 
-Henry
+There is more than you ever wanted to know about it.
 
+-----Original Message-----
+From: realsite internetcafe [mailto:realsiteinternetcafe@yahoo.com]=20
+Sent: Friday, March 21, 2003 8:18 AM
+To: netfilter@lists.netfilter.org
+Subject: internet gateway bandwidth control
 
-Am Fre, 2003-03-21 um 16.09 schrieb David Ruggles:
-> I think (if I understand the problem) I would try this:
->=20
-> iptables -t nat -A PREROUTING -p tcp -d 172.16.172.12 -j
-> DNAT --to-destination 127.0.0.1
-> iptables -t nat -A PREROUTING -p tcp -d 127.0.0.1 -j SNAT --to-source
-> 127.0.0.1
->=20
-> Please let me know if this works.
->=20
-> Thanks,
-> David Ruggles
->=20
-> CCNA MCSE (NT) CNA A+
-> Network Engineer, Safe Data, Inc
-> 910-285-7200    david@safedatausa.com
-> 0100011101101111011001000110110001101111011101100110010101110011011110010=
-110
-> 111101110101
-> ----- Original Message -----
-> From: "Henry Ritzlmayr" <h.ritzlmayr@gmx.at>
-> To: "Netfilter Mailing List" <netfilter@lists.netfilter.org>
-> Sent: Friday, March 21, 2003 9:31 AM
-> Subject: Redirecting incoming traffic to 127.0.0.1
->=20
->=20
-> > I have a service running on a box wich is only able to bind to 127.0.0.1
-> > (hardcoded and I can=B4t get the source to change it). Since I want to =
-use
-> > it from any other box the only way to solve that I think is to nat
-> > incoming packets to 127.0.0.1.
-> >
-> > IPTABLES -t nat -A PREROUTING -p tcp -d 172.16.172.12 -j DNAT
-> > --to-destination 127.0.0.1
-> >
-> > and many others wich I tried don=B4t work.
-> >
-> > If I understood REDIRECT correctly it only changes to the local IP where
-> > the packet came in (in my situation 172.16.172.12) wich also not solves
-> > the problem.
-> >
-> > any ideas?
-> >
-> > Henry
-> >
-> >
->=20
+hi all.
+
+need help in formulating an iptables rule.
+
+i need suggestion on a gnu/linux solution for my
+internet gateway server sharing a adsl connection via
+iptables_nat.
+
+i got client that uses kazaa too much, but i dont want
+to block kazaa i only need to retune it and give him
+slow connection. problem is, i dont want to limit his
+connection to the server coz the server is a samba
+server also. only need to limit his kazaa connection.
+
+heres the design:
+
+if client bandwidth > 35kbps=20
+then limit only to 35kbps
+where kazaa dport and sport are 80 and 1214.
+where -s 192.168.0.0/255.255.255.255.0 except
+192.168.0.1 and 192.168.0.15 (.1 is the server and .15
+is my box in my room, i believe i would be needing the
+"!", but how do i make it for two ip address?)
+where eth0 is 192.168.0.1 (LAN)
+and
+eth1 is 203.204.250.206 (DSL)
+
+of course i know thats not the rule. but im having a
+hard time formulating it. ive read all the netfilet
+how-to's but i need to incorporate and thats the
+problem.
+
+or i need better suggestion.
+
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
