@@ -1,14 +1,12 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: IPLIMIT Patch UDP
-Date: Fri, 21 Feb 2003 03:22:31 -0500
+From: Eugene Joubert <eugenej@centratel.co.za>
+Subject: RE: snat Invalid argument??? (urgent)
+Date: Fri, 21 Feb 2003 10:58:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302210322.31461.netfilter@newkirk.us>
-References: <HEEHJDADEHEPKKEAOCPPAEPHCCAA.susan.sagan@cgi.com> <20030219162633.GC455@eychenne.org> <1045785009.1014.74.camel@alex.pcprices.com.pe>
-Reply-To: netfilter@newkirk.us
+Message-ID: <B848917C9D07D71199C5005004D778B8017B8C@TELECOMS04>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2D987.6AC67AC0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1045785009.1014.74.camel@alex.pcprices.com.pe>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +16,121 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Ing. CIP Alejandro Celi  Mariategui" <alex@linux.org.pe>, netfilter@lists.netfilter.org
+To: 'Luis Miguel Cruz Miranda' <luismi@b2bi.es>, netfilter@lists.netfilter.org
 
-On Thursday 20 February 2003 06:50 pm, "Ing. CIP Alejandro Celi "=20
-Mariategui wrote:
-> (Sorry, but my english is very bad)
->
-> Hi,
->
-> I compile with p-o-m the server kernel with IPLIMIT Patch by Gerd
-> Knorr <kraxel@bytesex.org>
->
-> It work fine, i can limit ex: max 10 TCP connections on the server,
-> but i want to limit the UDP connections to 10 (max).
->
-> How I can do it?
->
-> Alex
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-The IPLIMIT patch is limited to only work with TCP.  You'd likely need to=
-=20
-write your own changes to the kernel.  At a VERY quick glance, this:
+------_=_NextPart_001_01C2D987.6AC67AC0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-+=09/* refuse anything but tcp */
-+=09if (ip->proto !=3D IPPROTO_TCP)
-+=09=09return 0;
+Did you use this as is ...with a broken line. I tried your syntax in =
+one
+line and got no errors.
 
-in the IPLIMIT patch (in iplimit.c) MIGHT provide the solution if it=20
-accomodated IPPROTO_UPD as well as, or instead of, IPPROTO_TCP.
+Try using it in one line....
 
-j
+-----Original Message-----
+From: Luis Miguel Cruz Miranda [mailto:luismi@b2bi.es]=20
+Sent: 21 02 2003 10:41 AM
+To: netfilter@lists.netfilter.org
+Subject: snat Invalid argument??? (urgent)
 
+
+I execute this line:
+
+# iptables -t nat -A POSTROUTING -s 10.1.0.253 -o eth0 -j SNAT =
+--to-source=20
+194.149.216.62
+iptables: Invalid argument
+
+but it returns Invalid argument????
+What is wrong here?
+
+
+Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+                                         |       C/A - Parcela 86-C
+Tel: +34 902 506 605                    |       33.428 - CAYES - =
+LLANERA
+Fax:+34 985 980 794                     |       ASTURIAS =
+(ESPA=D1A/SPAIN)
+
+
+
+------_=_NextPart_001_01C2D987.6AC67AC0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>RE: snat Invalid argument??? (urgent)</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>Did you use this as is ...with a broken line. I tried =
+your syntax in one line and got no errors.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Try using it in one line....</FONT>
+</P>
+
+<P><FONT SIZE=3D2>-----Original Message-----</FONT>
+<BR><FONT SIZE=3D2>From: Luis Miguel Cruz Miranda [<A =
+HREF=3D"mailto:luismi@b2bi.es">mailto:luismi@b2bi.es</A>] </FONT>
+<BR><FONT SIZE=3D2>Sent: 21 02 2003 10:41 AM</FONT>
+<BR><FONT SIZE=3D2>To: netfilter@lists.netfilter.org</FONT>
+<BR><FONT SIZE=3D2>Subject: snat Invalid argument??? (urgent)</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2>I execute this line:</FONT>
+</P>
+
+<P><FONT SIZE=3D2># iptables -t nat -A POSTROUTING -s 10.1.0.253 -o =
+eth0 -j SNAT --to-source </FONT>
+<BR><FONT SIZE=3D2>194.149.216.62</FONT>
+<BR><FONT SIZE=3D2>iptables: Invalid argument</FONT>
+</P>
+
+<P><FONT SIZE=3D2>but it returns Invalid argument????</FONT>
+<BR><FONT SIZE=3D2>What is wrong here?</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2>Luis Miguel Cruz =
+Miranda.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B2B =
+INTEGRAL, S.A.</FONT>
+<BR><FONT SIZE=3D2>CCNA - Systems =
+Administrator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pol. Ind. de Asipo</FONT>
+<BR><FONT =
+SIZE=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+C/A - Parcela 86-C</FONT>
+<BR><FONT SIZE=3D2>Tel: +34 902 506 =
+605&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 33.428 - CAYES - LLANERA</FONT>
+<BR><FONT SIZE=3D2>Fax:+34 985 980 =
+794&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ASTURIAS (ESPA=D1A/SPAIN)</FONT>
+</P>
+<BR>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2D987.6AC67AC0--
 
