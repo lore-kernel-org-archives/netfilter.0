@@ -1,13 +1,14 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: bridge + nat
-Date: Mon, 19 Jul 2004 16:31:20 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Ipv6 array ORDER
+Date: Mon, 19 Jul 2004 15:39:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3063e504071907313a194279@mail.gmail.com>
-References: <3063e5040718224645349687@mail.gmail.com> <200407191025.44076.Antony@Soft-Solutions.co.uk>
+Message-ID: <200407191539.15333.Antony@Soft-Solutions.co.uk>
+References: <20040719142833.GA26461@darkalpt>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407191025.44076.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040719142833.GA26461@darkalpt>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +19,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-That is what i wanted to do, with 2 NICs to make a bridge between
-internet and the LAN, assign the public ip to one of the LAN machine,
-and prite ips to the rest of machines, and to hope it will work, seems
-not, i hoped i could do this. If the voip hardware/software wont work
-in nat with port forward, i wont change there with linux.
-Maybe there is a suggestion for that voip, or if i can do this with 3
-NICs, and 1 single public IP.
+On Monday 19 July 2004 3:28 pm, Alpt wrote:
 
-Thanks in advance
-
-On Mon, 19 Jul 2004 10:25:44 +0100, Antony Stone
-<antony@soft-solutions.co.uk> wrote:
-> On Monday 19 July 2004 6:46 am, George Alexandru Dragoi wrote:
-> 
-> > Hello, i am trying to make a linux machine as both router and bridge.
-> 
-> How many NICs do you have in the machine?
-> 
-> So long as you are bridging between some group of NICs, and then routing
-> between the bridge group and the other NICs, then you should be able to
-> simply set up routing, netfilter etc using device name br0 for the bridge.
-> 
-> You cannot do bridging and routing on the same group of NICs.
-> 
-> Hope this helps,
-> 
-> Regards,
-> 
-> Antony.
-> 
-> --
-> Software development can be quick, high quality, or low cost.
-> 
-> The customer gets to pick any two out of three.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
+> Hi there,
+> What's the ipv6 array ORDER in the in6_addr struct?
+> In other words what's the word order of  "__u32           u6_addr32[4];" ?
+> Is it "most significant word first" or "least significant first"?
 >
+> And each word is in network byte order right?
+
+This sort of question is probably better suited to the netfilter developers' 
+mailing list rather than the netfilter users' list.   Somebody here might 
+know, but I wouldn't bet on it.   Somebody on the developers' list really 
+should know.
+
+Regards,
+
+Antony.
+
+-- 
+"When you talk about Linux versus Windows, you're talking about which 
+operating system is the best value for money and fit for purpose. That's a 
+very basic decision customers can make if they have the information available 
+to them. Quite frankly if we lose to Linux because our customers say it's 
+better value for money, tough luck for us."
+
+ - Steve Vamos, MD of Microsoft Australia
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
