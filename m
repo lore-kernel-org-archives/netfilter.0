@@ -1,13 +1,12 @@
-From: Robert Cole <robert.cole@support4linux.com>
-Subject: 3 part firewall
-Date: Tue, 20 May 2003 23:42:51 -0700
+From: "pengjie" <bill@acamar.com.cn>
+Subject: strange phenomena about ip_conntrack
+Date: Wed, 21 May 2003 16:24:04 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200305202342.51581.robert.cole@support4linux.com>
-Reply-To: robert.cole@support4linux.com
+Message-ID: <004401c31f72$57415ca0$02020a0a@acamarpeng>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0041_01C31FB5.64FFC050"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +16,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Like David T I'm a bit frustrated myself. :)
+This is a multi-part message in MIME format.
 
-The flexiblity of iptables has got me pulling my hair out. Here's what I would 
-like to do:
+------=_NextPart_000_0041_01C31FB5.64FFC050
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-I have a server that has 3 real interfaces (no aliases). eth0 is the public, 
-eth1 is the private and eth2 is the DMZ interface. All the books and docs 
-I've seen so far work with only two interfaces and trying to adapt those 
-scripts is giving me a headache.
+aGksYWxsLA0KDQpJJ20gYSBuZXdiaWUgb2YgbmV0ZmlsdGVyLkkgaGF2ZSBhIHByb2JsZW0gb24g
+aXQuIEkgdGhpbmsgaXQgbWF5YmUgaGFzIHNvbWUgYnVncy4NCg0KQSBtb250aCBhZ28gbXkgZ2F0
+ZXdheSB1c2luZyBsaW51eDIuNC03LTEwIGNhbiBub3QgZm9yd2FyZCBhbnkgcGFja2V0cyBiZWNh
+dXNlIGl0J3MgY29ubnRyYWNrIHRhYmxlIGlzIGZ1bGwsIGl0IGRpc3BsYWllcyAiaXBfY29ubnRy
+YWNrOiB0YWJsZSBmdWxsLCBkcm9wcGluZyBwYWNrZXQuIi50aGUgbWVtb3J5IG9mIHRoZSBnYXRl
+d2F5IGlzIDI1Nk0uDQpBZnRlciB0aGF0IGkgZG8gYSBleHBlcmltZW50IG9uIGl0Lg0KDQpJIHNl
+dCB0aGUgdmFyaWFibGUgaGFzaF9zaXplIDIwLCB0aGVuIHRoZSB2YXJpYWJlbCBpcF9jb25udHJh
+Y2tfbWF4IHNob3VsZCBiZSAxNjAuDQpJIGFkanVzdCB0aGUgVENQIHRpbWVvdXQgb24gZXN0YWJs
+aXNoZWQgdG8gMSBob3VycywgYW5kIGRlY3JlYXNlIHRoZSB1ZHAgdGltZW91dCB0byAxLzMgb2Yg
+b3JpZ2luYWwgdmFsdWUuDQpJIGRlbnkgdGhlIGJyb2FkY2FzdCBwYWNrZXQgdG8gbGVhdmUgdHJh
+Y2sgaW4gY29ubnRyYWNrIHRhYmxlIGJ5IG9wZW4gdGhlIGNvbmRpdGlvbiAnI2lmIDAgJyB0byAn
+I2lmIDEnIGluIGhlYWRlciBvZiBmdW5jdGlvbiBpcF9jb25udHJhY2tfaW4gLg0KSSBwcmludCB0
+aGUgdmFsdWUgb2YgaXBfY29ubnRyYWNrX2NvdW50IGluIHRoZSBoZWFkZXIgb2YgZnVuY3Rpb24g
+aW5pdF9jb25udHJhY2suDQoNCkFmdGVyIDIgZGF5cywgdGhlIGNvbm50cmFjayB0YWJsZSBpcyBm
+dWxsLCAvdmFyL2xvZy9tZXNzYWdlcyBkaXNwbGF5IHRoZSBpcF9jb25udHJhY2tfY291bnQgaXMg
+MTY3LCBhbmQgL3Byb2MvbmV0L2lwX2Nvbm50cmFjayBpcyBlbXB0eS4gDQoNCldoeT8hLCBXaHkg
+dGhlIGlwX2Nvbm50cmFja19jb3VudCBpcyBiaWdnZXIgdGhhbiBpcF9jb25udHJhY2tfbWF4Pw0K
+V2h5IGlzIC9wcm9jL25ldC9pcF9jb25udHJhY2sgaXMgZW1wdHk/DQpob3cgY2FuIHRoaXMgb2Nj
+dXJzPw0KDQp3aG8gY2FuIGhlbHAgbWU/DQoNCnRoYW5rcyBpbiBhZHZhbmNlIQ0K
 
-I want to allow all private traffic out to the internet through PAT (port 
-address translation). But when going from the LAN to the DMZ I want no nat or 
-pat going on, only when leaving to the internet. 
+------=_NextPart_000_0041_01C31FB5.64FFC050
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-Next I would like a strict rule that allows another public IP to be 1 to 1 
-nat'd from the public interface to a server out the DMZ interface.
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PWdi
+MjMxMiIgaHR0cC1lcXVpdj1Db250ZW50LVR5cGU+PEJBU0UgDQpocmVmPSJmaWxlOi8vQzpcUHJv
+Z3JhbSBGaWxlc1xDb21tb24gRmlsZXNcTWljcm9zb2Z0IFNoYXJlZFxTdGF0aW9uZXJ5XCI+DQo8
+TUVUQSBjb250ZW50PSJNU0hUTUwgNS4wMC4yOTIwLjAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxF
+PjwvU1RZTEU+DQo8L0hFQUQ+DQo8Qk9EWSBiZ0NvbG9yPSNmZmZmZmYgb25sb2FkPXZic2NyaXB0
+OktKX3N0YXJ0KCk+DQo8RElWPg0KPERJVj5oaSxhbGwsPC9ESVY+DQo8RElWPiZuYnNwOzwvRElW
+Pg0KPERJVj5JJ20gYSZuYnNwO25ld2JpZSBvZiBuZXRmaWx0ZXIuSSBoYXZlIGEgcHJvYmxlbSBv
+biBpdC4gSSB0aGluayBpdCBtYXliZSBoYXMgDQpzb21lIGJ1Z3MuPC9ESVY+DQo8RElWPiZuYnNw
+OzwvRElWPg0KPERJVj5BIG1vbnRoIGFnbyBteSBnYXRld2F5IHVzaW5nIGxpbnV4Mi40LTctMTAg
+Y2FuIG5vdCBmb3J3YXJkIGFueSBwYWNrZXRzIA0KYmVjYXVzZSBpdCdzIGNvbm50cmFjayB0YWJs
+ZSBpcyBmdWxsLCBpdCBkaXNwbGFpZXMgImlwX2Nvbm50cmFjazogdGFibGUgZnVsbCwgDQpkcm9w
+cGluZyBwYWNrZXQuIi50aGUgbWVtb3J5IG9mIHRoZSBnYXRld2F5IGlzIDI1Nk0uPC9ESVY+DQo8
+RElWPkFmdGVyIHRoYXQgaSBkbyBhIGV4cGVyaW1lbnQgb24gaXQuPC9ESVY+DQo8RElWPiZuYnNw
+OzwvRElWPg0KPERJVj5JIHNldCB0aGUgdmFyaWFibGUgaGFzaF9zaXplIDIwLCB0aGVuIHRoZSB2
+YXJpYWJlbCBpcF9jb25udHJhY2tfbWF4IHNob3VsZCANCmJlIDE2MC48L0RJVj4NCjxESVY+SSBh
+ZGp1c3QgdGhlIFRDUCB0aW1lb3V0IG9uIGVzdGFibGlzaGVkIHRvIDEgaG91cnMsIGFuZCZuYnNw
+O2RlY3JlYXNlIHRoZSANCnVkcCB0aW1lb3V0IHRvIDEvMyBvZiBvcmlnaW5hbCB2YWx1ZS48L0RJ
+Vj4NCjxESVY+SSBkZW55IHRoZSBicm9hZGNhc3QgcGFja2V0IHRvIGxlYXZlIHRyYWNrIGluIGNv
+bm50cmFjayB0YWJsZSBieSBvcGVuIHRoZSANCmNvbmRpdGlvbiAnI2lmIDAmbmJzcDsnIHRvICcj
+aWYgMScgaW4gaGVhZGVyIG9mIGZ1bmN0aW9uIGlwX2Nvbm50cmFja19pbiAuPC9ESVY+DQo8RElW
+PkkgcHJpbnQgdGhlIHZhbHVlIG9mIGlwX2Nvbm50cmFja19jb3VudCBpbiB0aGUgaGVhZGVyIG9m
+IGZ1bmN0aW9uIA0KaW5pdF9jb25udHJhY2suPC9ESVY+DQo8RElWPiZuYnNwOzwvRElWPg0KPERJ
+Vj5BZnRlciAyIGRheXMsIHRoZSBjb25udHJhY2sgdGFibGUgaXMgZnVsbCwgL3Zhci9sb2cvbWVz
+c2FnZXMgZGlzcGxheSB0aGUgDQppcF9jb25udHJhY2tfY291bnQgaXMgMTY3LCBhbmQgL3Byb2Mv
+bmV0L2lwX2Nvbm50cmFjayBpcyBlbXB0eS4gPC9ESVY+DQo8RElWPiZuYnNwOzwvRElWPg0KPERJ
+Vj5XaHk/ISwgV2h5IHRoZSBpcF9jb25udHJhY2tfY291bnQgaXMgYmlnZ2VyIHRoYW4gaXBfY29u
+bnRyYWNrX21heD88L0RJVj4NCjxESVY+V2h5IGlzIC9wcm9jL25ldC9pcF9jb25udHJhY2sgaXMg
+ZW1wdHk/PC9ESVY+DQo8RElWPmhvdyBjYW4gdGhpcyBvY2N1cnM/PC9ESVY+DQo8RElWPiZuYnNw
+OzwvRElWPg0KPERJVj53aG8gY2FuIGhlbHAgbWU/PC9ESVY+DQo8RElWPiZuYnNwOzwvRElWPg0K
+PERJVj50aGFua3MgaW4gYWR2YW5jZSE8L0RJVj48L0RJVj48L0JPRFk+PC9IVE1MPg0K
 
-I've got the new riders second edition of the linux firewalls book and tons of 
-howto's and yet I'm having trouble putting together this simple firewall.
-
-I'm currently using narc to setup the firewall and it appears to work to get 
-basic internet bound traffic from the lan and I can get to the DMZ from the 
-LAN without translation so I'm close here but getting the 1 to 1 NAT working 
-is causing me grief.
-
-Any ideas?
-
-Thanks,
-Robert
+------=_NextPart_000_0041_01C31FB5.64FFC050--
 
 
