@@ -1,11 +1,10 @@
-From: iansolo <iansolo.netfilter@betisgroup.com>
-Subject: Re: ftp nat  MAX PORTS
-Date: Mon, 07 Feb 2005 12:42:18 +0100
-Message-ID: <4207541A.7030700@betisgroup.com>
-References: <420100AF.1040105@betisgroup.com>
+From: Dean Anderson <dean@av8.com>
+Subject: Re: (no subject)
+Date: Mon, 7 Feb 2005 00:24:17 -0500 (EST)
+Message-ID: <Pine.LNX.4.44.0502070009450.13062-100000@localhost.localdomain>
+References: <Pine.LNX.4.44.0502062232200.13062-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <420100AF.1040105@betisgroup.com>
+In-Reply-To: <Pine.LNX.4.44.0502062232200.13062-100000@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,70 +15,172 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Dean Anderson <dean@av8.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
-somebody have understand my problem?
+Ok, I fixed the openwrt problem. Turned out they had some of their own 
+netfilter patches. I turned those off, and used only the patch-o-matic-ng
+patchs, and things worked.
 
-thanks
+These patches were distributed by openwrt to be applied against the 
+linksys kernel:  The first one is pretty substantial.
 
-iansolo wrote:
-> Hi All,
-> I've a problem with ftpserver behind a NAT.
-> My necessity is to run ftpserver in a different port then 21.
-> This is the situation:
+wc 100-revert_netfilter.patch 
+   5834   22128  179845 100-revert_netfilter.patch
+wc 110-conntrack_setting.patch 
+     20      67     715 110-conntrack_setting.patch
+
+I'm not sure what the openwrt folks and/or linksys was thinking with
+these...  They worked on earlier versions of the linksys kernel... I
+suspect a distribution/versioning problem caused by the netfilter group.  
+There is very little documentation on the netfilter site about how the
+netfilter kernel modules should get updated. 
+
+Clearly, someone was very confused with these patches. It might be that
+linksys was confused earlier, and the openwrt folks were taking that out
+with their patches. Or maybe it is the other way around.  I don't know. It
+sure left me confused, and wondering wtf.
+
+Seems like there should be a better way to distribute kernel modules.  I 
+didn't intend to become a netfilter internals expert.
+
+		--Dean
+
+On Sun, 6 Feb 2005, Dean Anderson wrote:
+
+> I'm trying to build openWRT (www.openwrt.org) using a new kernel from 
+> linksys.  The kernel claims that it is 2.4.20, but it seems to have some 
+> modifications, preventing netfilter from applying patches.
 > 
-> Router
-> |
-> Firewall
-> |
-> Ftpserver
+> I want to run iptables 1.2.11, and need (of course) the matching kernel
+> modules.  Is there is "complete file" (ie non-patch) distribution of the
+> netfilter kernel modules?  I couldn't find one on the ftp.netfilter.org 
+> site, nor on the website.
 > 
-> I use this modules ad pass these parameters :
+> Thanks
 > 
-> /sbin/modprobe ip_tables
-> /sbin/modprobe ip_conntrack
-> /sbin/modprobe ip_conntrack_ftp ports=21,9000
-> /sbin/modprobe iptable_nat
-> /sbin/modprobe ip_nat_ftp ports=21,9000
-> /sbin/modprobe ipt_MASQUERADE
-> /sbin/modprobe ipt_state
+> 		--Dean
 > 
-> The realtive iptables rules are only these:
+> #ignore whitespace in patches
+> /mnt1/openWRT.20050205/buildroot/build_mipsel/staging_dir/bin/sed -i -e 
+> "s,\-p1,\-l \-p1," 
+> /mnt1/openWRT.20050205/buildroot/build_mipsel/patch-o-matic-ng-20050206/runme
+> touch 
+> /mnt1/openWRT.20050205/buildroot/build_mipsel/patch-o-matic-ng-20050206/.unpacked
+> /mnt1/openWRT.20050205/buildroot/sources/patch-kernel.sh 
+> /mnt1/openWRT.20050205/buildroot/build_mipsel/WRT54G_3_01_3_0922/release/src/linux/linux 
+> /mnt1/openWRT.20050205/buildroot/sources/openwrt/kernel/netfilter/patches
 > 
-> $IPTABLES -t nat -A PREROUTING -p tcp -d $EXT_LAN_FW --dport 9000 -j NAT 
-> --to-destination $IP_FTPSERVER:9000
-> $IPTABLES -A FORWARD -i $EXT_IF -p tcp --dport 9000 -j ACCEPT -d 
-> $IP_FTPSERVER
+> Applying 
+> /mnt1/openWRT.20050205/buildroot/sources/openwrt/kernel/netfilter/patches/100-revert_netfilter.patch 
+> using plaintext: 
+> patching file include/linux/netfilter_ipv4/ip_conntrack.h
+> Hunk #1 FAILED at 45.
+> Hunk #2 FAILED at 77.
+> Hunk #3 succeeded at 261 (offset 3 lines).
+> 2 out of 3 hunks FAILED -- saving rejects to file 
+> include/linux/netfilter_ipv4/ip_conntrack.h.rej
+> patching file include/linux/netfilter_ipv4/ip_conntrack_h323.h
+> patching file include/linux/netfilter_ipv4/ip_conntrack_mms.h
+> patching file include/linux/netfilter_ipv4/ip_conntrack_pptp.h
+> patching file include/linux/netfilter_ipv4/ip_conntrack_proto_gre.h
+> Reversed (or previously applied) patch detected!  Assume -R? [n] 
+> Apply anyway? [n] 
+> Skipping patch.
+> 1 out of 1 hunk ignored -- saving rejects to file 
+> include/linux/netfilter_ipv4/ip_conntrack_proto_gre.h.rej
+> patching file include/linux/netfilter_ipv4/ip_conntrack_tftp.h
+> patching file include/linux/netfilter_ipv4/ip_conntrack_tuple.h
+> patching file include/linux/netfilter_ipv4/ip_nat_pptp.h
+> patching file include/linux/netfilter_ipv4/ip_pool.h
+> patching file include/linux/netfilter_ipv4/ipt_pool.h
+> patching file net/ipv4/netfilter/Config.in
+> Hunk #1 FAILED at 7.
+> Hunk #2 succeeded at 18 (offset 1 line).
+> Hunk #4 FAILED at 56.
+> Hunk #5 succeeded at 75 (offset 8 lines).
+> 2 out of 6 hunks FAILED -- saving rejects to file 
+> net/ipv4/netfilter/Config.in.rej
+> patching file net/ipv4/netfilter/Makefile
+> Hunk #1 FAILED at 31.
+> Hunk #2 succeeded at 63 (offset 5 lines).
+> Hunk #4 succeeded at 94 (offset 5 lines).
+> 1 out of 4 hunks FAILED -- saving rejects to file 
+> net/ipv4/netfilter/Makefile.rej
+> patching file net/ipv4/netfilter/ip_conntrack_core.c
+> patching file net/ipv4/netfilter/ip_conntrack_ftp.c
+> patching file net/ipv4/netfilter/ip_conntrack_h323.c
+> patching file net/ipv4/netfilter/ip_conntrack_mms.c
+> patching file net/ipv4/netfilter/ip_conntrack_pptp.c
+> Reversed (or previously applied) patch detected!  Assume -R? [n] 
+> Apply anyway? [n] 
+> Skipping patch.
+> 1 out of 1 hunk ignored -- saving rejects to file 
+> net/ipv4/netfilter/ip_conntrack_pptp.c.rej
+> patching file net/ipv4/netfilter/ip_conntrack_pptp_priv.h
+> patching file net/ipv4/netfilter/ip_conntrack_proto_gre.c
+> Reversed (or previously applied) patch detected!  Assume -R? [n] 
+> Apply anyway? [n] 
+> Skipping patch.
+> 1 out of 1 hunk ignored -- saving rejects to file 
+> net/ipv4/netfilter/ip_conntrack_proto_gre.c.rej
+> patching file net/ipv4/netfilter/ip_conntrack_proto_tcp.c
+> Hunk #3 FAILED at 186.
+> Hunk #4 succeeded at 210 (offset 7 lines).
+> 1 out of 4 hunks FAILED -- saving rejects to file 
+> net/ipv4/netfilter/ip_conntrack_proto_tcp.c.rej
+> patching file net/ipv4/netfilter/ip_conntrack_proto_udp.c
+> patching file net/ipv4/netfilter/ip_conntrack_standalone.c
+> patching file net/ipv4/netfilter/ip_conntrack_tftp.c
+> patching file net/ipv4/netfilter/ip_nat_core.c
+> patching file net/ipv4/netfilter/ip_nat_h323.c
+> patching file net/ipv4/netfilter/ip_nat_helper.c
+> Hunk #8 FAILED at 208.
+> 1 out of 8 hunks FAILED -- saving rejects to file 
+> net/ipv4/netfilter/ip_nat_helper.c.rej
+> patching file net/ipv4/netfilter/ip_nat_mms.c
+> patching file net/ipv4/netfilter/ip_nat_pptp.c
+> Reversed (or previously applied) patch detected!  Assume -R? [n] 
+> Apply anyway? [n] 
+> Skipping patch.
+> 1 out of 1 hunk ignored -- saving rejects to file 
+> net/ipv4/netfilter/ip_nat_pptp.c.rej
+> patching file net/ipv4/netfilter/ip_nat_proto_gre.c
+> Reversed (or previously applied) patch detected!  Assume -R? [n] 
+> Apply anyway? [n] 
+> Skipping patch.
+> 1 out of 1 hunk ignored -- saving rejects to file 
+> net/ipv4/netfilter/ip_nat_proto_gre.c.rej
+> patching file net/ipv4/netfilter/ip_nat_standalone.c
+> patching file net/ipv4/netfilter/ip_nat_tftp.c
+> patching file net/ipv4/netfilter/ip_pool.c
+> patching file net/ipv4/netfilter/ip_tables.c
+> patching file net/ipv4/netfilter/ipchains_core.c
+> patching file net/ipv4/netfilter/ipfwadm_core.c
+> patching file net/ipv4/netfilter/ipt_ECN.c
+> patching file net/ipv4/netfilter/ipt_LOG.c
+> patching file net/ipv4/netfilter/ipt_REJECT.c
+> patching file net/ipv4/netfilter/ipt_ULOG.c
+> patching file net/ipv4/netfilter/ipt_multiport.c
+> patching file net/ipv4/netfilter/ipt_pool.c
+> patching file net/ipv6/mcast.c
+> patching file include/linux/ppp-comp.h
+> Patch failed!  Please fix 
+> /mnt1/openWRT.20050205/buildroot/sources/openwrt/kernel/netfilter/patches/100-revert_netfilter.patch!
+> make: *** 
+> [/mnt1/openWRT.20050205/buildroot/build_mipsel/WRT54G_3_01_3_0922/release/src/linux/linux/.nf-patched] 
+> Error 1
 > 
-> Unfortunately don't work!
 > 
 > 
-> VERY IMPORTANT :
-> 
-> - All work fine is the port is 21!!
-> 
-> - When I try to connect with my ftp-client(with port 9000), at a certain 
-> point I tray to send packets to local IP of firewall ($EXT_LAN_FW).....
-> 
-> Others Questions:
-> 
-> - In the source code of ip_conntrack_ftp there is a variable "MAX_PORTS",
-> but I don't understand what mean...
-> - What is "Patch-O-Matic" ?
-> 
-> 
-> Thanks a lot in advance!
-> iansolo
-> 
-> ps: excuse me, my English is poor
-> 
-> 
-> 
-> 
-> ________ Information from NOD32 ________
-> This message was checked by NOD32 Antivirus System for Linux Mail Server.
-> http://www.nod32.com
+
+-- 
+Av8 Internet   Prepared to pay a premium for better service?
+www.av8.net         faster, more reliable, better service
+617 344 9000   
+
+
 
 
