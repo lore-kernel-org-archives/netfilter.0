@@ -1,16 +1,14 @@
-From: Sheldon Hearn <sheldonh@starjuice.net>
-Subject: Re: skip other iptables marking if packet is already marked
-Date: Mon, 31 May 2004 13:56:46 +0200
+From: David Cannings <lists@edeca.net>
+Subject: Re: FW: Filtering multiple networks
+Date: Mon, 31 May 2004 13:19:33 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1086004606.9100.15.camel@axl.seasidesoftware.co.za>
-References: <020701c446e0$44e95ee0$0100a8c0@newlife>
-	 <1085991395.26732.12.camel@anduril.intranet.cartel-securite.net>
-	 <1085996196.9107.5.camel@axl.seasidesoftware.co.za>
-	 <1086004005.26732.14.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <200405311319.33568.lists@edeca.net>
+References: <E1BUk4b-0006Wv-Cf@vishnu.netfilter.org> <20040531104524.GA26731@home.manuelm.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1086004005.26732.14.camel@anduril.intranet.cartel-securite.net>
+In-Reply-To: <20040531104524.GA26731@home.manuelm.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,24 +19,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: Ming-Ching Tiew <mingching.tiew@redtone.com>, netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Mon, 2004-05-31 at 13:46, Cedric Blancher wrote:
+On Monday 31 May 2004 10:45, Frank Gruellich wrote:
+> * Markus Zeilinger <mz@sea.uni-linz.ac.at> 31. May 04:
+> > - Thy is DROP bad here? As I see REJECT would send an error message
+> > back to the source, but this would not make any sense on packets
+> > coming on the WAN interface with private IP addresses, or am I wrong?
+> It would be kinda polite to point the sender of the packets to his
+> misconfigured box.  REJECT is like yelling 'Hey, you are wrong!'
+> DROPping is like closing your eyes to somebodys problem.  Anyway, it's
+> you decision right here.
 
-> > Really?  No mark and mark 0 are different?
-> 
-> Well, I though. I just check and I was wrong. Sorry, my fault.
+Can you please explain how a TCP RST or ICMP message is supposed to get 
+back to a spoofed RFC 1918 (or otherwise reserved) address?  Sending 
+replies of any sort out of a WAN interface onto the Internet to a 
+reserved or private address is very bad practice.  Some would even argue 
+that sending to unallocated space is bad.  If border routers don't drop 
+such packets, your firewall most certainly should.
 
-No worries;  it gave me an opportunity to promote the "CONNMARK
-restore-mark creates conntrack entry?" thread, on which I'm pretty
-desperate for feedback.
-
-Oops, I did it again!  Britney Spears would be proud. ;-)
-
-Ciao,
-Sheldon.
-
-
-
+David
 
