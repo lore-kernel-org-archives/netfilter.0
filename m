@@ -1,8 +1,8 @@
 From: Gianni Pucciani <gp.puccio@tin.it>
 Subject: Re: vpn under linux
-Date: Sat, 10 Apr 2004 11:31:43 +0200
+Date: Sat, 10 Apr 2004 11:41:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4077BEFF.4060902@tin.it>
+Message-ID: <4077C15E.9080701@tin.it>
 References: <4077B7EF.5070805@tin.it> <200404101018.38664.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -19,6 +19,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Netfilter <netfilter@lists.netfilter.org>
+
+Hi,
+I forget one things, waht about the CIPE solution. I read that in the 
+rh9 sec guide about VPN.
+
+And then, I see this  news:  the FreeS/WAN project is no longer in 
+active development, it could be a problem?
+
+thanks
 
 Antony Stone wrote:
 
@@ -38,11 +47,7 @@ Antony Stone wrote:
 >
 >SSH is Secure Shell, and at least it contains some encryption, but again, is 
 >almost nothing to do with VPNs (but more on that later).
->  
 >
-I thought that they could be used in conjuction to achieve vpn 
-functionalities...
-
 >PPTP is Pretty Poor Tunneling Protocol (oh, no, sorry, it's a Point to Point 
 >Tunneling Protocol...), and is the way Microsoft systems do VPN.
 >
@@ -55,10 +60,7 @@ functionalities...
 >I use FreeS/WAN, I like it, it works well with netfilter (once you've got used 
 >to the path the packets take at each end), and I'm happy with its 3DES/RSA 
 >security.
->  
 >
-Ok, I'll investigate this solution :-), thanks.
-
 >I said I'd mention more about SSH - that also uses good encryption and is 
 >therefore secure, and once you have an SSH connection between two machines, 
 >you can "tunnel" almost any network traffic you like between them, and it 
@@ -70,13 +72,7 @@ Ok, I'll investigate this solution :-), thanks.
 >transparently through a nice secure tunnel across the Internet.
 >
 >Hope this helps,
->  
 >
-Sure it helps :-)
-Thank you very much!
-
-Gianni
-
 >Regards,
 >
 >Antony.
