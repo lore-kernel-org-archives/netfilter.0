@@ -1,12 +1,12 @@
-From: Steve Mickeler <steve@neptune.ca>
-Subject: Re: Fwd: Returned mail: see transcript for details
-Date: Mon, 23 Sep 2002 13:31:11 -0400 (EDT)
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: Listening ports.
+Date: Mon, 23 Sep 2002 20:22:33 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0209231330470.31412-100000@triton.neptune.on.ca>
-References: <200209231603.g8NG3Lv24847@vulcan.rissington.net>
+Message-ID: <Pine.LNX.4.44.0209232021160.5825-100000@dns.toxicfilms.tv>
+References: <000001c2632b$ab4b0840$6601a8c0@s3ac>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200209231603.g8NG3Lv24847@vulcan.rissington.net>
+In-Reply-To: <000001c2632b$ab4b0840$6601a8c0@s3ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: Rowan Reid <rreid@studio3arc.com>
+Cc: netfilter@lists.netfilter.org
+
+> Is there a way to list listening ports per interface .. ? Or IP would be
+> better.
+Let's see, try:
+netstat -ntlp | grep <your.ip> | less -n
+
+You can omit the less thingy, will work anyway :)
+
+Regards,
+Maciej Soltysiak
 
 
-Thats cuz nefilter != netfilter :)
-
-
-
-On Mon, 23 Sep 2002, Antony Stone wrote:
-
-> Strange - just got this back from the netfilter list server.....
->
-> ----------  Forwarded Message  ----------
->
-> Subject: Returned mail: see transcript for details
-> Date: Mon, 23 Sep 2002 16:58:09 +0100
-> From: Mail Delivery Subsystem
-> To: <Antony@Soft-Solutions.co.uk>
->
-> from lbr-wlan-57-66.external.my.domain.com [1x.14x.5x.6x]
->
->    ----- The following addresses had permanent fatal errors -----
-> <nefilter@lists.netfilter.org>
->     (reason: 550 Unknown local part nefilter in
->  <nefilter@lists.netfilter.org>)
->
->    ----- Transcript of session follows -----
->
-> ... while talking to kashyyyk.netfilter.org.:
-> >>> RCPT To:<nefilter@lists.netfilter.org>
->
-> <<< 550 Unknown local part nefilter in <nefilter@lists.netfilter.org>
-> 550 5.1.1 <nefilter@lists.netfilter.org>... User unknown
->
-> -------------------------------------------------------
->
->
-> Antony.
->
-
-
-
-[-] Steve Mickeler [ steve@neptune.ca ]
-
-[|] Todays root password is brought to you by /dev/random
-
-[+] 1024D/9AA80CDF = 4103 9E35 2713 D432 924F  3C2E A7B9 A0FE 9AA8 0CDF
 
 
