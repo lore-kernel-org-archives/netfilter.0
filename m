@@ -1,13 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: FTP connection track
-Date: Thu, 16 Sep 2004 16:16:36 -0400
+From: Frank Gruellich <frank@der-frank.org>
+Subject: Re: how many rules can be added?
+Date: Thu, 16 Sep 2004 23:26:31 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095365796.2489.88.camel@wolfpack.ljm.dom>
-References: <4149F298.2020202@o2.pl>
+Message-ID: <20040916212631.GR12986@der-frank.org>
+References: <1314.81.10.7.66.1095343827.squirrel@81.10.7.66>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4149F298.2020202@o2.pl>
+Content-Disposition: inline
+In-Reply-To: <1314.81.10.7.66.1095343827.squirrel@81.10.7.66>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, 2004-09-16 at 16:07, Krystian wrote:
-> hi
-> 
-> i have a problem and would like to ask how you would do it.
-> i have a linux router box. behind is my computer.
-> I would like to track FTP connections so I can priotize them i my QoS.
-> what rules should be applied to my box?
-> 
-> Krystian
+* Alaadin <alaadin@alaadin.org> 16. Sep 04:
+> Hello,
 
-  iptables -t mangle -A PREROUTING -m helper --helper ftp \
-    -j MARK --set-mark 1
+Hi,
 
-queue based on that mark (or the lack thereof).  setting up queuing is
-beyond the scope of this list.  more info at:
+> how many ip tables rules can i add ?
 
-        http://lartc.org/howto/index.html
+<URL:http://lists.netfilter.org/pipermail/netfilter/2004-March/050891.html>
 
--j
+> i added already 40
+> if i added untill 100 or 500 rule
+> would this make problems ?
 
+No.
+
+> would this make the system lag ?
+> would this make the system hang
+
+Depends on your system: is it something with 8MHz and 4MBs of RAM?  I
+have a router (P2, 133MHz, 24MB).  In daily work it has about 200 rules
+and a throughput of ~160KB/s.  Adding 6000 "-s $RANDOMIP -d $RANDOMIP -j
+LOG"'s resulted in a throughput of ~100KB/s and a nice system load.
+
+> or its unlimited?
+
+No.  HTH,
+ regards, Frank.
 -- 
-Jason Opperisano <opie@817west.com>
-
+Sigmentation fault
 
