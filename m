@@ -1,15 +1,15 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Problem with bridge+iptables+ulog
-Date: Thu, 13 Mar 2003 01:01:43 +0100
+From: Athan <netfilter@miggy.org>
+Subject: Re: UDP and ICMP traceroute
+Date: Thu, 13 Mar 2003 00:16:36 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030313010143.5174883d.arnt@c2i.net>
-References: <078601c2e886$039a49e0$13fcc5cb@Housecall>
-	<20030312135021.58bf6699.arnt@c2i.net>
-	<07cc01c2e8ae$8d8ee160$13fcc5cb@Housecall>
+Message-ID: <20030313001636.GN1025@miggy.org>
+References: <3E6FB954.8080708@qwest.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mejza3ZMMA5Za1mX"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <07cc01c2e8ae$8d8ee160$13fcc5cb@Housecall>
+Content-Disposition: inline
+In-Reply-To: <3E6FB954.8080708@qwest.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,68 +19,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Sapient2003 <sapient@qwest.net>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, 12 Mar 2003 21:16:31 +0530, 
-"hare ram" <hareram@sol.net.in> wrote in message 
-<07cc01c2e8ae$8d8ee160$13fcc5cb@Housecall>:
 
-> From: "Arnt Karlsen" <arnt@c2i.net>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Wednesday, March 12, 2003 6:20 PM
-> Subject: Re: Problem with bridge+iptables+ulog
-> 
-> 
-> > On Wed, 12 Mar 2003 15:55:34 +0530, 
-> > "hare ram" <hareram@sol.net.in> wrote in message 
-> > <078601c2e886$039a49e0$13fcc5cb@Housecall>:
-> > 
-> > > Hi all
-> > > 
-> > > some one can help i have the following setup
-> > > 
-> > > x.x.x.1/24            x.x.x.2/24
-> > >    +----------+                     +------+
-> > >    | Router A |---------+ +---------| PC B |
-> > >    +----------+         | |         +------+
-> > >                         | |
-> > >                     eth0| | eth1
-> > >                       +-----+
-> > >                       | qos | (br0 =3D x.x.x.3/24)
-> > >                       +-----+
-> > > 
-> > > 
-> > > 
-> > > Router A is connected to internet
-> > > QOS box running with bridge
-> > > PC B is my LAPTOP
-> > > 
-> > > iam try to make the ULOG usig the following command
-> > > 
-> > > 
-> > > $IPTABLES -I INPUT -i eth1 -j ULOG --ulog-nlgroup 1 --ulog-cprange
-> > >    --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
-> > 
-> > ..does eth1 have an ip address?  Why does br0 have an ip address 
-> > at all?  IMNTHO, it does not need it, but then I can generate logs 
-> > from: 'tcpdump -i $interface | grep -v $whatever-I-dont-need \
-> >  | grep $what-I-want.etc.iterate.greps.as.needed >> $logfile '
-> >  
-> Hi
-> 
-> thanks, BR0 have IP becoz of monitoring purpose
-> 
-> i would like to use IPTABLES to monitor the packets 
-> but i could not able to do so, looking for the same help.
+--mejza3ZMMA5Za1mX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-..ok, I monitor etc from a third nic inside my firewall, and left 
-my bridge and its interfaces, ip-less, outside my firewall.
+On Wed, Mar 12, 2003 at 05:48:52PM -0500, Sapient2003 wrote:
+> I am trying to have iptables pick out traceroute packets. Windows uses=20
+> ICMP for it's traceroute, so I use this:
+>=20
+> iptables -t filter -A INPUT -p icmp -s 0/0 -d 10.0.0.1 --icmp-type=20
+> time-exceeded -j QUEUE
+>=20
+> Linux, however, uses both ICMP and UDP... How can I tell iptables to=20
+> look for UDP traceroute packets?
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+  You can't, without hacking the traceroute client to only use a very
+specific range of ports.  We did this at one place I used to work when
+we had a non-stateful firewall.
 
+  I guess the other possibility is to hack the traceroute client to put
+an actual, unique (enough), payload in the outgoing UDP packet, and then
+have an ipt kernel module looking for that.
+
+  If you must tie down outgoing UDP such that you can't just use the
+statefulness of iptables/netfilter then I'd suggest trying to find a
+linux traceroute that does things the same way as the Windows one.
+
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+
+--mejza3ZMMA5Za1mX
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAj5vzeQACgkQzbc+I5XfxKcfdACeIBVz5udFmRvoLpN/1N/DkVpR
+EFQAn30KBbr79p2ot2n+ibAijZldv2Dv
+=YNrF
+-----END PGP SIGNATURE-----
+
+--mejza3ZMMA5Za1mX--
 
