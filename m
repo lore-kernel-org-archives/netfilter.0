@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I need help , please
-Date: Fri, 5 Jul 2002 17:00:24 +0100
+From: James Morris <jmorris@intercode.com.au>
+Subject: Re: FYI: QUEUE & ipqmpd bugs
+Date: Sat, 6 Jul 2002 02:12:01 +1000 (EST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207051600.g65G0V802444@vulcan.rissington.net>
-References: <002701c2242f$9498cd20$0a01a8c0@ed> <015601c22405$f21c42d0$8703000a@aid.inf.cu>
+Message-ID: <ag4gim$3mn$2@main.gmane.org>
+References: <003301c2242d$7fca2e40$0689cb8a@etbx180>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <015601c22405$f21c42d0$8703000a@aid.inf.cu>
+In-Reply-To: <003301c2242d$7fca2e40$0689cb8a@etbx180>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,34 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jean-Michel Hemstedt <jean-michel.hemstedt@alcatel.be>
+Cc: netfilter-devel@lists.samba.org, netfilter@lists.samba.org
 
-On Friday 05 July 2002 10:25 am, david wrote:
+On Fri, 5 Jul 2002, Jean-Michel Hemstedt wrote:
 
-> OK , I agree.In fact I  am just trying.
-> I heve tested a simpler script :
->
-> # Standard default policies
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
-> iptables -P OUTPUT DROP
->
-> am here you have the output.
-> /etc/rc.d/init.d/iptables : command not found
-> iptables: bad police name
-> iptables: bad police name
-> iptables: bad police name
-> /etc/rc.d/init.d/iptables : command not found
+> FYI,
+> 
+> I upgraded to iptables-1.2.6a (user & kernel-2.4.18 patches)
+> and got the following (maybe known) problems:
+> 
+> - QUEUE target is NOK with kernel compiled with CONFIG_IP_NF_QUEUE=m
+>   => the packets are queued, but ipq_create_handle() returns 
+>      "can't create netlink socket"
+>      "ERROR: Unable to create netlink socket: Connection refused"
+>     (problem with exported symbols?)
+>   =>quick fix: compile kernel with CONFIG_IP_NF_QUEUE=y
+> 
 
-Do you have . in your path ???   It looks to me as though you're in 
-/etc/rc.d/init.d when you type this, and it's trying to run the iptables 
-script in the local directory instead of the iptables binary in /sbin
+You need to explicitly load the ip_queue module.
 
-What happens if you cd to /root and type
-iptables -P INPUT DROP
 
- 
+- James
+-- 
+James Morris
+<jmorris@intercode.com.au>
 
-Antony.
+
 
