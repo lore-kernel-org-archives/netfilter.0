@@ -1,15 +1,14 @@
-From: "Vishwanatn T. K." <tkvishy@yahoo.com>
-Subject: Re: stupid redirect question
-Date: 09 Sep 2003 05:47:34 +0000
+From: "Dharmendra.T" <dharmu@nsecure.net>
+Subject: Re: Firewall performance querry
+Date: 09 Sep 2003 12:36:44 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063086453.2520.4.camel@risingsun.penguindia.com>
-References: <GKEILLINGDHHPJJGKJDIEEBCCBAA.jeremy@slicenet.net>
-	 <1062999357.960.16.camel@india.nsecure.net>
-Reply-To: tkvishy@yahoo.com
+Message-ID: <1063091215.9187.4.camel@india.nsecure.net>
+References: <20030905062950.M87452@ahm.cmc.net.in> 
+	<20030909053404.M44692@ahm.cmc.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="=-0uJ3EoVJewRq9+Bcbwa6"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1062999357.960.16.camel@india.nsecure.net>
+In-Reply-To: <20030909053404.M44692@ahm.cmc.net.in>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,104 +18,99 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Dharmendra.T" <dharmu@nsecure.net>
-Cc: Jeremy Davis <jeremy@slicenet.net>, Netfilter List <netfilter@lists.netfilter.org>
+To: Pradeep Bhomia <pradeepbhomia@ahm.cmc.net.in>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, 2003-09-08 at 05:35, Dharmendra.T wrote:
-> On Sat, 2003-09-06 at 12:40, Jeremy Davis wrote: 
->         Ok my problem is when I add a port redirection in the prerouting chain so
->         that port 80 traffic goes to a certain box.  I used this rule
->         
->         iptables -t nat -I PREROUTING -i ppp0 -p tcp --dport 80 -j DNAT --to
->         192.168.0.5:80
->         
 
-You need to add a rule for matching the state in the FORWARD chain of
-the filter table
+--=-0uJ3EoVJewRq9+Bcbwa6
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-$ /usr/sbin -A FORWARD -m state --state NEW,RELATED,ESTABLISHED -j
-ACCEPT
+On Tue, 2003-09-09 at 11:21, Pradeep Bhomia wrote:
 
->         but this kills all lan http traffic from getting back in to the
->         workstations.  What am I missing?
->         
->         Jeremy
->         
->         This says that all the traffic coming to ppp0 detsined to port 80( as you have not specifed the destination ip) will be redirected to 192.168.0.5 on port 80. 
-> So make sure that this what you wanted. Else give destination ip with
-> the above rule.
+    Hello Friends,
+    
+    I have recently setup an iptables based firewall and put a Sendmail server 
+    behind firewall (although after facing some problems and with help from 
+    friends in this mailling list). Now I want to put a proxy server behind this 
+    same firewall. Right now the proxy server is connected directly to the 
+    internet. Before moving ahead I want to know what will be the load on the 
+    firewall. The configuration of firewall box is P4, ~1.8GHz, 256MB RAM, 
+    Mandrake Linux 9.1, IPTables 1.2.7 and Shorewall 1.3.14. I will be having 
+    aroung 300-400 concurrent users. I plan to setup NATting. Can anybody help me 
+    in this regard. Whether NATting will be sufficient to take care about this 
+    load or some other method can be used ( Total load on firewall will be some 
+    1000 email accounts on sendmail server and around 400 clients for web 
+    browsing). If anybody can direct me to some websites having some sort of 
+    statistics for iptables.
+    
+    Thanks a lot,
+    
+    Pradeep Bhomia
+    
 
-even if you add destination IP address it still means the same, that all
-traffic comming to ppp0 with <some IP> to port 80 will be redirected to
-192.168.0.5 :)
+See basically the firewall will not process much of your traffic, which
+simply forwards the packets. So the currnet configuration for
+firewalling is sufficient for iptables.
+And you have to use natting if you are placing the proxy server before
+the firewall. 
+-- 
+Regards
+Dharmendra.T
+dharmu@nsecure.net
+Linux Security and Admin
 
-Also the ip address is dynamic as the interface is PPP hence IP address
-is optional
+--=-0uJ3EoVJewRq9+Bcbwa6
+Content-Type: text/html; charset=utf-8
 
-> Regards
-> Dharmendra.T
-> dharmu@nsecure.net
-> Linux Security and Administrator.
->         
->         Here is my nat table
->         
->         Chain PREROUTING (policy ACCEPT 11624 packets, 749K bytes)
->          pkts bytes target     prot opt in     out     source
->         destination
->             0     0 DNAT       tcp  --  any    any     anywhere             anywhere
->         tcp dpt:dnsix to:192.168.0.5:80
->             0     0 DNAT       tcp  --  any    any     anywhere             anywhere
->         tcp dpt:cadlock to:192.168.0.5:1000
->             2   120 DNAT       tcp  --  ppp0   any     anywhere             anywhere
->         tcp dpt:ftp to:192.168.0.5:21
->             3   144 DNAT       tcp  --  any    any     anywhere             anywhere
->         tcp dpt:telnet to:192.168.0.5:23
->         
->         Chain POSTROUTING (policy ACCEPT 12 packets, 780 bytes)
->          pkts bytes target     prot opt in     out     source
->         destination
->          9770  490K MASQUERADE  all  --  any    ppp0    anywhere
->         anywhere
->         
->         Chain OUTPUT (policy ACCEPT 43 packets, 2737 bytes)
->          pkts bytes target     prot opt in     out     source
->         destination
->         
->         
->         
->         Here is my filter table
->         
->         Chain INPUT (policy ACCEPT 5427 packets, 393K bytes)
->          pkts bytes target     prot opt in     out     source
->         destination
->           823 75341 ACCEPT     icmp --  ppp0   any     anywhere             anywhere
->           423 52420 ACCEPT     all  --  ppp0   any     anywhere             anywhere
->         state RELATED,ESTABLISHED
->             0     0 ACCEPT     tcp  --  ppp0   any     anywhere             anywhere
->         tcp dpt:ssh
->           348 59851 LOG        all  --  ppp0   any     anywhere             anywhere
->         LOG level warning
->           348 59851 REJECT     all  --  ppp0   any     anywhere             anywhere
->         reject-with icmp-port-unreachable
->         
->         Chain FORWARD (policy DROP 80 packets, 3840 bytes)
->          pkts bytes target     prot opt in     out     source
->         destination
->             0     0 ACCEPT     tcp  --  ppp0   eth1    anywhere             anywhere
->         tcp dpt:cadlock
->             0     0 ACCEPT     tcp  --  ppp0   eth1    anywhere             anywhere
->         tcp dpt:http
->            18  1001 ACCEPT     tcp  --  ppp0   eth1    anywhere             anywhere
->         tcp dpt:ftp
->          3444  140K ACCEPT     tcp  --  ppp0   eth1    anywhere             anywhere
->         tcp dpt:telnet
->          113K   19M ACCEPT     all  --  eth1   ppp0    anywhere             anywhere
->          126K   94M ACCEPT     all  --  ppp0   eth1    anywhere             anywhere
->         state RELATED,ESTABLISHED
->         
->         
-> -- 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
+</HEAD>
+<BODY>
+On Tue, 2003-09-09 at 11:21, Pradeep Bhomia wrote:
+    <BLOCKQUOTE>
+<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Hello Friends,</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>I have recently setup an iptables based firewall and put a Sendmail server </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>behind firewall (although after facing some problems and with help from </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>friends in this mailling list). Now I want to put a proxy server behind this </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>same firewall. Right now the proxy server is connected directly to the </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>internet. Before moving ahead I want to know what will be the load on the </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>firewall. The configuration of firewall box is P4, ~1.8GHz, 256MB RAM, </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Mandrake Linux 9.1, IPTables 1.2.7 and Shorewall 1.3.14. I will be having </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>aroung 300-400 concurrent users. I plan to setup NATting. Can anybody help me </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>in this regard. Whether NATting will be sufficient to take care about this </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>load or some other method can be used ( Total load on firewall will be some </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>1000 email accounts on sendmail server and around 400 clients for web </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>browsing). If anybody can direct me to some websites having some sort of </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>statistics for iptables.</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Thanks a lot,</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Pradeep Bhomia</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
+    </BLOCKQUOTE>
+<FONT SIZE="3">See basically the firewall will not process much of your traffic, which simply forwards the packets. So the currnet configuration for firewalling is sufficient for iptables.</FONT>
+<BR>
+<FONT SIZE="3">And you have to use natting if you are placing the proxy server before the firewall. </FONT>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+<PRE>-- 
+Regards
+Dharmendra.T
+dharmu@nsecure.net
+Linux Security and Admin</PRE>
+</TD>
+</TR>
+</TABLE>
 
+</BODY>
+</HTML>
+
+--=-0uJ3EoVJewRq9+Bcbwa6--
 
 
