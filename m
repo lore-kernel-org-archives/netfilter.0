@@ -1,8 +1,8 @@
-From: "Brei, Matt" <mbrei@medclaiminc.com>
+From: "George Vieira" <georgev@citadelcomputer.com.au>
 Subject: RE: Multiple IP addresses
-Date: Wed, 21 May 2003 21:25:03 -0400
+Date: Thu, 22 May 2003 11:31:55 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <091A6DF13847F44395B31658ED61C19C63A437@yellowstone.medclaim.local>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6C94@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,7 +17,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, George Vieira <georgev@citadelcomputer.com.au>
+To: "Brei, Matt" <mbrei@medclaiminc.com>, netfilter@lists.netfilter.org
+
+OK well you have to write the rules a little differently then.
+You can write it this way which redirects ALL port 80/443 including the =
+other IP (4.3.2.1), then add a rule for the 1 address (4.3.2.1) and =
+redirect that to 10.1.1.2 example below....
+
+# Redirect for this one IP to it's server
+iptables -A PREROUTING -t nat -i $EXTDEV -d 4.3.2.1 -p tcp --dport 80 -j =
+DNAT 10.1.1.2
+# Everything else goes to 10.1.1.1 server.
+iptables -A PREROUTING -t nat -i $EXTDEV            -p tcp --dport 80 -j =
+DNAT 10.1.1.1=20
+
+
+does that make better sense now..??
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+=20
+
+-----Original Message-----
+From: Brei, Matt [mailto:mbrei@medclaiminc.com]
+Sent: Thursday, May 22, 2003 11:25 AM
+To: netfilter@lists.netfilter.org; George Vieira
+Subject: RE: Multiple IP addresses
+
 
 
 
