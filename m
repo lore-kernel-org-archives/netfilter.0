@@ -1,13 +1,14 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: Bridge+Bandwidth Control
-Date: 11 Apr 2003 11:13:56 +0530
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Limit of --log-prefix
+Date: 11 Apr 2003 08:29:30 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1050039841.937.39.camel@india>
-References: <000d01c2ffbd$947bac30$010aa8c0@crz2>
+Message-ID: <1050042570.8964.6.camel@raylinux.internal>
+References: <3E91FE2E.1030603@talika.eii.us.es>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-Baxa6PlgjEzFWJl9DPc4"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-l/wCB5xQEpkuQZEIoqyS"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000d01c2ffbd$947bac30$010aa8c0@crz2>
+In-Reply-To: <3E91FE2E.1030603@talika.eii.us.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,101 +18,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: =?ISO-8859-1?Q?Hern=E1n?= Mailluquet <hernan@mdp.edu.ar>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
---=-Baxa6PlgjEzFWJl9DPc4
+--=-l/wCB5xQEpkuQZEIoqyS
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2003-04-11 at 05:32, Hern=E1n Mailluquet wrote:
+You could use ULOG from the P-O-M.
 
-    Hi!
-   =20
-    I was trying to implement traffic control on a linux
-    bridge. Basically, I'll need to allocate designated bandwidth
-    to various services while the rest get throttled.
-   =20
-    Eg. on a 10MBit bandwidth.
-    http/ftp will get 128K
-    while the rest (smtp/POP3) will get 64K.
-    Whatever traffic passing through the bridge
-    in one direction must not exceed 192K.
-   =20
-    To my dismay, I realised that firewall marking classifier
-    will not work under bridging mode.
-   =20
-    So right now I'm kind of stuck because of that.
-   =20
-    Can someone tell me whether if I can implement something like
-    the above?
-   =20
-    Thanks.
-   =20
-    Hi
 
-Why don't you try implimenting traffic controller (iproute)?
+On Tue, 2003-04-08 at 00:39, Javier Miguel Rodr=EDguez wrote:
+>     Hello
+>=20
+>     Is there any patch available to increase the default limit of 31=20
+> chars of --log-prefix?
+>=20
+>     Thank you for your support
+>=20
 --=20
-Regards
-Dharmendra.T
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(  Raymond Leach                       )
+ ) Knowledge Factory                  (
+(                                      )
+ ) Tel: +27 11 445 8100               (
+(  Fax: +27 11 445 8101                )
+ )                                    (
+(  http://www.knowledgefactory.co.za/  )
+ ) http://www.saptg.co.za/            (
+(  http://www.mapnet.co.za/            )
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   o                                o
+    o                              o
+        .--.                  .--.
+       | o_o|                |o_o |
+       | \_:|                |:_/ |
+      / /   \\              //   \ \
+     ( |     |)            (|     | )
+     /`\_   _/'\          /'\_   _/`\
+     \___)=3D(___/          \___)=3D(___/
 
 
+--=-l/wCB5xQEpkuQZEIoqyS
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
---=-Baxa6PlgjEzFWJl9DPc4
-Content-Type: text/html; charset=utf-8
+iD8DBQA+lmDKh1fuR/Bv+ygRAnjpAKCTiYCR8ClWRXZTK7zOqK5iNRfW0QCfa1OI
+GRumrfaWvSHktDITonp/ED0=
+=aCyu
+-----END PGP SIGNATURE-----
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
-</HEAD>
-<BODY>
-On Fri, 2003-04-11 at 05:32, Hern&#225;n Mailluquet wrote:
-    <BLOCKQUOTE>
-<PRE><FONT COLOR="#737373"><FONT SIZE="3"><I>Hi!</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>I was trying to implement traffic control on a linux</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>bridge. Basically, I'll need to allocate designated bandwidth</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>to various services while the rest get throttled.</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>Eg. on a 10MBit bandwidth.</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>http/ftp will get 128K</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>while the rest (smtp/POP3) will get 64K.</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>Whatever traffic passing through the bridge</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>in one direction must not exceed 192K.</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>To my dismay, I realised that firewall marking classifier</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>will not work under bridging mode.</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>So right now I'm kind of stuck because of that.</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>Can someone tell me whether if I can implement something like</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>the above?</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>Thanks.</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT SIZE="3">Hi</FONT></PRE>
-    </BLOCKQUOTE>
-<FONT SIZE="3">Why don't you try implimenting traffic controller (iproute)?</FONT>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<PRE>-- 
-Regards
-Dharmendra.T
-
-
-</PRE>
-</TD>
-</TR>
-</TABLE>
-
-</BODY>
-</HTML>
-
---=-Baxa6PlgjEzFWJl9DPc4--
+--=-l/wCB5xQEpkuQZEIoqyS--
 
 
