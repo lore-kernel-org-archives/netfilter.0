@@ -1,14 +1,11 @@
-From: Thorsten Scherf <tscherf@web.de>
-Subject: Re: Multiple -d flags
-Date: Sat, 11 Jan 2003 22:37:10 +0100
+From: Mattia Martinello <mattia@mattiamartinello.com>
+Subject: New chain
+Date: Sun, 12 Jan 2003 00:58:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301112237.10799.tscherf@web.de>
-References: <3E20855F.9040006@mattiamartinello.com>
-Reply-To: tscherf@web.de
+Message-ID: <3E20AFBE.5060404@mattiamartinello.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E20855F.9040006@mattiamartinello.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +15,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Mattia Martinello <mattia@mattiamartinello.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-> iptables -A FORWARD -s 0.0.0.0/0 -d 213.21.136.8/255.255.255.255 -dport
-> 80 -j ACCEPT
-> shows me the following error:
-> iptables v1.2.5: multiple -d flags not allowed
-> Try `iptables -h' or 'iptables --help' for more information.
+Hi
 
-You have to specify a protocol with the -p option, then you can use --dpo=
-rt!
-Try this one:
+I wish to create and use a new chain which logs all DROP packets, but 
+after DROP rules i must write ACCEPT rules too.
+All DROP packets (not ALLOWED ones) have to be logged.
+I wish to open the comunications between 192.168.1.0/24 and 192.168.1.254.
+All packets between 192.168.1.0/24 and 192.168.1.254 haven't to be logged.
 
-iptables -A FORWARD -s 0.0.0.0/0 -d 213.21.136.8/255.255.255.255 -p tcp=20
---dport 80 -j ACCPET
+I tried to do this:
 
+iptables -N LOG_DROP
+iptables -A LOG_DROP -j LOG --log-tcp-options --log-ip-options 
+--log-prefix '[IPTABLES DROP] : '
+iptables -A LOG_DROP -j DROP
+
+iptables -A INPUT -j LOG_DROP
+iptables -A OUTPUT -j LOG_DROP
+iptables -A FORWARD -j LOG_DROP
+
+iptables -A LOG_DROP -s 192.168.1.0/24 -d 192.168.1.254/255.255.255.255 
+-j ACCEPT
+iptables -A LOG_DROP -s 192.168.1.254/255.255.255.255 -d 192.168.1.0/24 
+-j ACCEPT
+
+But it doesn't work.
+Could you tell me how I can solve this problem, please?
+
+Thank you very much
+Bye
+Mattia
 
 
