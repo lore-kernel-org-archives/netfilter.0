@@ -1,10 +1,21 @@
-From: =?iso-8859-1?B?SOVrYW4gRW5nYmxvbQ==?= <cynic_0@hotmail.com>
-Subject: Re: source-mac filtering
-Date: Sun, 11 Jan 2004 01:59:45 +0100
+From: Peter Frischknecht <peter@empoweringsolutions.com>
+Subject: Re: Protecting against DoS
+Date: 10 Jan 2004 20:50:50 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Sea1-F156GvVgpKW4bG00052192@hotmail.com>
+Message-ID: <1073785847.9615.487.camel@peterlaptop>
+References: <20031209154333.GB17221@edu.joroinen.fi>
+	 <20031209090221.413b7286.mgale@utilitran.com>
+	 <20031209162820.GC17221@edu.joroinen.fi>
+	 <20031209094047.4dbb09f9.mgale@utilitran.com>
+	 <20031209165146.GD17221@edu.joroinen.fi>
+	 <20031209100650.485e8a4f.mgale@utilitran.com>
+	 <20031209171322.GE17221@edu.joroinen.fi>
+	 <20031210165306.GH17221@edu.joroinen.fi>
+Reply-To: peter@empoweringsolutions.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031210165306.GH17221@edu.joroinen.fi>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,81 +25,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Pasi =?ISO-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+Cc: netfilter@lists.netfilter.org
 
-I've tried with blocking broadcasts, but the result is the same, iptables=20
-says the packets are  dropped, and yet the dhcpd is responding.
+Hello,
 
-Could it make any difference with another dhcpd ?
+I wanted to let you know that you are not alone.
+We manage networks in apartment complexes.  Hundreds of students use
+their computers simultaneously and we have always been able to deal with
+DoS attacks.
 
-/H=E5kan E.
+The attack you described is identical to the one we have suffered since
+sometime in September.  In short: it cannot be stopped.  But there are
+many things you can do.
 
+As you may have found in personal research, the worm has the following
+characteristics:
+1 - It is a Zombie.  Computers do NOT automatically start attacking web
+sites.  They wait for an instruction from outside.
+2 - The connection to the outside "master server" is done via IRC.
+3 - The infected computer attacks 1 to a few web servers at a time. (we
+have never seen more than 3).
+4 - Completely random spoofed src addresses.
+5 - The MAC address is (Thank You GOD) not being spoofed.
+6 - The intensity of the attack deems the offending computer almost
+useless during the attack.
 
->From: H=E5kan Engblom <cynic_0@hotmail.com>
->To: netfilter@lists.netfilter.org
->Subject: Re: source-mac filtering
->Date: Sun, 11 Jan 2004 01:43:30 +0100
->
->Yes I can try that.
->
->However I do managed to get the DHCP-discovery packets dropped (and logged=
-=20
->as dropped) by a general DROP-rule after having matched on vaild source-ma=
-c=20
->addresses. But even if iptables consider the packets to be dropped, they=20
->are still forwarded to the dhcpd. This could be seen using "iptables -L -v"
->
->I think it's more likely that the dhcp-server listens on a very low layer.
->
->I'll try it anyway.
->
->/H=E5kan E.
->
->
->>From: Antony Stone <Antony@Soft-Solutions.co.uk>
->>To: <netfilter@lists.netfilter.org>
->>Subject: Re: source-mac filtering
->>Date: Sun, 11 Jan 2004 00:25:25 +0000
->>
->>On Sunday 11 January 2004 12:13 am, Pawel Staszewski wrote:
->>
->> > Hello
->> >
->> > Maybe try to block broadcast to the "blocked" client....
->> > "-m pkttype --pkttype broadcast ........."
->> >
->> > I use it and this work fine...
->>
->>You can use a rule with this match in it to stop your DHCP server giving =
+It seemed from your description that your network was fairly small.
+In order to save bandwidth, we implement a transparent caching
+strategy.  So we redirect port 80 to the cache.  Guess what!!!  Our
+caching server ends up the target of the attack!!!
 
->>out
->>addresses?
->>
->>I thought DHCPD caught the packets before they ever got to netfilter,
->>therefore you couldn't block the traffic with any sort of rule.
->>
->>Antony.
->>
->>--
->>Ramdisk is not an installation procedure.
->>
->>                                                      Please reply to the=
-=20
->>list;
->>                                                            please don't =
+I can tell you that I tried every pertinent module in the patch-o-matic
+volume.  It was a 3 month ordeal with very frequent lockups. "connlimit"
+does not work because once you enable SYN cookies, there are no
+connections to limit.  "limit" draws too much CPU power, eventually
+helping lock up the box.
 
->>CC me.
->>
->>
->
->_________________________________________________________________
->Hitta r=E4tt k=F6pare p=E5 MSN K=F6p & S=E4lj http://www.msn.se/koposalj
->
->
+Blocking the foreign IP sources at the FORWARD level (or INPUT in my
+case) stopped the packets, but still kept my server with a very high
+system use.
 
-_________________________________________________________________
-Hitta r=E4tt p=E5 n=E4tet med MSN S=F6k http://search.msn.se/
+I have hundreds of rules in the MANGLE and NAT tables, so the bad
+packets were still traveling and being matched against all those rules. 
+I placed the drops for the foreign IPs in the MANGLE table.  If you look
+at the docs, it is the first table the packet hits.
+
+BTW, to stop foreign IP packets, I created one ACCEP rule for every
+known IP class inside my network.  The last line simply DROPs everything
+coming from the internal network.
+
+My networks are basically functional now.  But the HIGH CPU use
+persists.  It is likely caused by the interrupt handling or the packet
+counters/rules checking.  I recently ran accross this page on lowering
+the interrupt handling:
+ftp://robur.slu.se/pub/Linux/net-development/NAPI/NAPI_HOWTO.txt
+
+Feel free to correspond with me.  We can trade ideas on the topic.
+
+Peter Frischknecht
+Empowering Solutions, Inc.
+
 
 
