@@ -1,83 +1,76 @@
-From: "Hildebrand, Brian" <BrianHildebrand@universalcomputersys.com>
-Subject: RE: log interpreter , for report ...
-Date: Tue, 13 Jan 2004 08:19:23 -0600
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D8FBABA1EF6F2E4DBCC88903F60691F302856926@houxchsvr.ucscorp.ucs.pvt>
+From: Harald Welte <laforge@netfilter.org>
+Subject: New netfilter/iptables homepage
+Date: Tue, 13 Jan 2004 15:28:56 +0100
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20040113142856.GR20206@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="h1wVxq8aeHrvhZJz"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
-
-Answer to 1:
-
-IN and OUT  are the in and out physical interfaces
-SRC and DST are source and destination IP (obviously)
-SPT is source port
-DPT is destination port (you have an RPC port mapper request there (port =
-135))
-
-The rest you can pretty safely ignore except for the flags. I've never =
-needed to use any of them except for TTL on occasion.
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
 
 
------Original Message-----
-From: Rakotomandimby Mihamina [mailto:mrakotom@free.fr]
-Sent: Tuesday, January 13, 2004 7:58
-To: netfilter@lists.netfilter.org
-Subject: log interpreter , for report ...=20
+--h1wVxq8aeHrvhZJz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
 
-Hi again ,
+I've just put the new (3rd incarnation) of the netfilter/iptables
+homepage online.=20
 
-1=B0) This is a line of iptables log
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D80.14.205.152 DST=3D80.15.220.67 LEN=3D48 =
-TOS=3D0x00 PREC=3D0x00=20
-TTL=3D121 ID=3D64444 DF PROTO=3DTCP SPT=3D4717 DPT=3D135 WINDOW=3D16384 =
-RES=3D0x00 SYN=20
-URGP=3D0
+The changes shouldn't be too visible to the user, as everything is
+hidden behind the same layout as the old homepage. =20
 
-How to see what port have been attempted ?
+However, the whole page is now built from docbook-website XML, which
+should produce way cleaner results than our own cut+paste perlscript
+template system.
 
-2=B0) Is  fwlogwatch a tool that will help me to make the logs more =
-readable ,=20
-or a tool that will tell me that something is attempting to @#$=A3 my =
-network ?
+The new homepage also features patch-o-matic-ng HTMLization.  pomlist
+has disappeared in favour of pom-ng.
 
-What i'm looking for is something like this :
-http://www.gege.org/iptables/
-but i dont want to install SQL nor Apache /PHP .
+If you find any broken links, please report them to
+webmaster@netfilter.org, where I will take care of them.
 
-Does it exist ?
-I just want a kind of report of what has been DROPped but in a readable=20
-format ...=20
+	- Harald Welte (netfilter core team)
 
-Anyway , the logging format can be read , but it needs training , and i =
-have=20
-no training .
+P.S.: Yes, I know... our XSLT's don't yet produce fully-compliant XHTML
+1.0.  If anybody is more keen with all this buzzword-compatible 'web
+technology' than I am - feel free to volunteer.
+
 --=20
-Rakotomandimby Mihamina Andrianifaharana
-Tel : +33 2 38 76 43 65
-http://stko.dyndns.info/site_principal/Members/mihamina
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
+--h1wVxq8aeHrvhZJz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-----------------------------------------
-The information transmitted in this message is intended only for the =
-person or entity to whom it is addressed and may contain confidential =
-and/or privileged material.  Any review, retransmission, dissemination =
-or other use of, or taking of any action in reliance upon this =
-information by persons or entities other than the intended recipient is =
-prohibited.  If you received this in error, please contact the sender =
-and destroy any copies of this document.
+iD8DBQFABACoXaXGVTD0i/8RAoV9AJ0WseP5AjP0SS3cOawBLlLVAVBX7gCeJH4O
+D2/0klJS52wv7kioTWY+/+U=
+=3Dh4
+-----END PGP SIGNATURE-----
+
+--h1wVxq8aeHrvhZJz--
 
