@@ -1,10 +1,11 @@
-From: Jason Lunz <lunz@falooley.org>
-Subject: Re: archive
-Date: Wed, 29 Sep 2004 20:37:07 +0000 (UTC)
+From: Jiann-Ming Su <sujiannming@gmail.com>
+Subject: connection tracking without iptables?
+Date: Wed, 29 Sep 2004 16:50:33 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <cjf6di$ksq$1@sea.gmane.org>
-References: <1096228311.31631.27.camel@nostromo.bgsecm.com>
-	<HAEOIFPIBBBLGLHOMLLIEEDLCPAA.bclark@rocketseed.us>
+Message-ID: <561dc3260409291350dc64a8a@mail.gmail.com>
+Reply-To: Jiann-Ming Su <sujiannming@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,21 +16,14 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-bclark@rocketseed.us said:
-> does anyone know of the link for searching the netfilter archive.  And
-> if there is not one, could one be installed.
->
-> It really makes things easier, even for researching like old topics.
-
-http://news.gmane.org/gmane.comp.security.firewalls.netfilter.general/
-
-there may be others, of course.
-
-Jason
-
+This is probably a dumb question, but is it possible to track
+connections without iptables/netfilter?
+-- 
+Jiann-Ming Su
+"I have to decide between two equally frightening options.  
+                                            If I wanted to do that,
+I'd vote." --Duckman
 
