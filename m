@@ -1,14 +1,10 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: to snat or to dnat .. that is the question
-Date: Tue, 1 Jun 2004 11:16:55 -0400
+From: aksingh@hss.hns.com
+Subject: Re: ipq_read and NF_ACCEPT
+Date: Tue, 1 Jun 2004 21:06:12 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406011116.55391.Alistair@nerdnet.ca>
-References: <5D3C2276FD64424297729EB733ED1F76062433BA@email1.mitretek.org> <146b01c447e7$db846180$49caa8c0@caris.priv>
+Message-ID: <OF4EF850DA.FCF7B184-ON65256EA6.0055AF77@hss.hns.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <146b01c447e7$db846180$49caa8c0@caris.priv>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,89 +15,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-On June 1, 2004 10:51 am, Peter Marshall wrote:
-> yes, my firewall is the default route on all internal boxes
->
-> ----- Original Message -----
-> From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-> To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
-> <netfilter@lists.netfilter.org>
-> Sent: Tuesday, June 01, 2004 11:42 AM
-> Subject: RE: to snat or to dnat .. that is the question
->
->
-> If the box 192.168.0.20 does not have the firewall's IP as its default
-> route, then it will not work correctly (DNAT), I am not sure about SNAT.
->
->
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Peter Marshall
-> Sent: Tuesday, June 01, 2004 10:30 AM
-> To: netfilter
-> Subject: to snat or to dnat .. that is the question
->
-> Hi again.
->
-> I am at a bit of a quandary, and am not sure what to do.
->
-> Let the external interface on my firewall be 100.100.100.100
-> I have an internal box; 192.168.0.20 that needs to connect to an
-> external
-> box 200.200.200.200 on port 2000.
->
-> I want the internal box to connect to hit my firewall on a different
-> port ..
-> say 15000
->
-> so basically
->
-> start: .... -s 192.168.0.20 -d 200.200.200.200 --dport 15000
-> after firewall -s 100.100.100.100 -d 200.200.200.200 --dport 2000
->
-> How can I do this ?
->
-> I started out with:
->
-> $IPT -t nat -A POSTROUTING -d 200.200.200.200 --dport 15000 -p tcp -i
-> eth0 \
->        -j SNAT --to-source 100.100.100.100
->
-> But this does not change the destination port (obviously). I thought
-> about
-> doing the following
->
-> $IPT -t nat -A PREROUTING -d 100.100.100.100 --dport 15000 -p tcp -i
-> eth0 \
->          -j DNAT --to-destination 200.200.200.200 --dport 2000
-	
-> However, I don't think that this will change my source address.  Also,
-> will
-> this even forwarded the packets ?  They would be coming on the input
-> chain
-> would they not ?
-
-	Since you've done this in PREROUTING no, they wont hit the INPUT chain.
-	This is where to start.
->
->
-
-	You need then to have a FORWARD rule to allow the packets, and 
-ESTABLISHED,RELATED, and then in POSTROUTING add a rule to SNAT those packets 
-destined to 200.200.200.200:2000 ( you could, if need be, add the source to 
-the rule as well)
-> Thank you for the help.
-> Peter Marshall
->
->
-> Peter Marshall, BCS
-> Network Administrator, CARIS
-> 115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
+Content-Transfer-Encoding: 7bit
+To: "Jee J.Z." <jz105@york.ac.uk>
+Cc: netfilter@lists.netfilter.org
 
 
-	Alistair Tonner
-	-- from slightly west of there, on the last lake 
-	T.O.
+
+
+
+Hi Jee
+
+ As far as I understand, they will "NOT" hit NF_IP_LOCAL_IN, i.e any packet
+coming from the local host, even if its ipddrr==that of the machine, hits
+NF_IP_LOCAL_OUT, then NF_IP_POST_ROUTING and then goes out, so when it gets
+caught back again by NF_IP_PRE_ROUTING and then NF_IP_LOCAL_IN its
+altogether a new skb ... thats the way it happens as far as i know.
+Someone pls correct me if i am wrong.
+
+regards
+Amit
+
 
