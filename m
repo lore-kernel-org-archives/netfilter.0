@@ -1,12 +1,12 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Two connections shared by ports
-Date: Wed, 03 Nov 2004 10:44:34 -0600
-Message-ID: <41890AF2.9050402@pbl.ca>
-References: <41890694.8070706@treedesign.com>
+From: "Deepak Seshadri" <dseshadri@broadbandmaritime.com>
+Subject: RE: iptables script file
+Date: Wed, 3 Nov 2004 12:14:41 -0500
+Message-ID: <200411031709.iA3H9dYp099070@jkcpub.iserver.net>
+References: <20041028150535.GA4228@bender.817west.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41890694.8070706@treedesign.com>
+In-Reply-To: <20041028150535.GA4228@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,36 +17,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Jason Opperisano' <opie@817west.com>, netfilter@lists.netfilter.org
 
-Tony VanScoy wrote:
-> My Goal:  Setup ipfilter to share two Internet connections.
-> 
-> Perhaps sharing is the wrong word.  I would like ipfilters to use 
-> Internet connection 1 for any  traffic, incoming and outgoing, through 
-> ports 21,25, 110, 143, 995, and maybe others.  The rest of the traffic 
-> would travel through Internet connection 2 without limits.
-> 
-> The problem is that our office uploads numerous files through mail and 
-> ftp that are usually 50M, possibly larger.  These uploads are unmanaged 
-> and suck the life out of our bandwidth.  It sucks browsing the net like 
-> I was back on my 28.8 dial up. I just want to dedicate one of our 
-> connections for those uploads/downloads to relieve the office of these 
-> troubles.
-> 
-> Is it possible?
+Those who replied to my post, thank you very much. I guess the unanimous
+answer is to edit the /etc/sysconfig/iptables file. I'll start modifying my
+script to suit the format in this file.
 
-Look at Linux Advanced Routing howto (www.lartc.org).  It will show you 
-how.  Chapter 11 is what you need.  In short, you'd mark packets for 
-ports 21,25,110, and so on using Netfilter and than you would route them 
-thruogh one connection, and route everything else through another. 
-While you are at LARTC, you can do more interesting things, like traffic 
-shaping, to solve your problems (of some types of traffic getting too 
-much of your bandwith).
+Regards,
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Deepak Seshadri
+
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> bounces@lists.netfilter.org] On Behalf Of Jason Opperisano
+> Sent: Thursday, October 28, 2004 11:06 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: iptables script file
+> 
+> On Thu, Oct 28, 2004 at 09:56:36AM -0400, Deepak Seshadri wrote:
+> > Hello everybody,
+> >
+> > Kenneth: Thank you very much for the reply. I'll look into this option.
+> >
+> > Does anybody have any other suggestion? How does everyone load their
+> > rule-set?
+> 
+> here's the state-of-the-union:
+> 
+> loading rules from a script that issues "iptables -A ..." commands over
+> & over again is not "efficient."  whether this inefficiency is a problem
+> or not depends on the number of rules being loaded.  the firewall i'm
+> testing with uses an actual ruleset of ~100 rules and takes less than 5
+> seconds to load:
+> 
+>   time ./fw start
+> 
+>   real    0m4.632s
+>   user    0m0.300s
+>   sys     0m4.310s
+> 
+> here's an example using a script that loads 1024 rules of the form:
+> 
+>   iptables -A INPUT -i eth0 -p tcp --syn -m state --state NEW \
+>     -s 10.x.y.1/24 -j ACCEPT
+> 
+>   (where x and y are incremented via a for loop)
+> 
+>   # time ./addrules
+> 
+>   real    0m20.855s
+>   user    0m0.410s
+>   sys     0m20.440s
+> 
+> now, let's do an "iptables-save" on those loaded rules, and see how long
+> an "iptables-restore" takes:
+> 
+>   # time iptables-restore 1000rules.save
+> 
+>   real    0m1.253s
+>   user    0m0.080s
+>   sys     0m1.130s
+> 
+> all these tests are performed on the same machine:
+> 
+> Linux vmg2 2.4.26-gentoo-r9 #2 Fri Sep 3 07:13:35 EDT 2004 i686 Intel(R)
+> Pentium(R) M processor 1.70GHz GenuineIntel GNU/Linux
+> 
+> 192 MB RAM
+> 
+> so, the upshot is this--if your ruleset is sufficiently large to make
+> the inefficiency of scripted "iptables" commands a problem--you'll need
+> to use "iptables-restore" to load your rules.  once you get the hang of
+> it, it really isn't that hard to just edit the "iptables-restore" file
+> format (even though this isn't "recommended").
+> 
+> hope this helps...
+> 
+> -j
+> 
+> --
+> Jason Opperisano <opie@817west.com>
+
+
 
