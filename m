@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Microsoft VPN and iptables
-Date: Sat, 9 Nov 2002 13:32:44 +0000
+From: "Brad Morgan" <B-Morgan@concentric.net>
+Subject: RE: Question on PREROUTING and INPUT chains
+Date: Sat, 9 Nov 2002 07:17:28 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021109133247.IWMO20191.mta03-svc.ntlworld.com@there>
-References: <1653.10.254.2.5.1036822899.squirrel@www.nobarrier.co.za>
+Message-ID: <NABBJOOEOFODEALNMJAJKEBEHCAA.B-Morgan@concentric.net>
+References: <H52KD3$II79GwJU6pjw8ZNZc1oYk1taD6_z_kdUix49OEr@uol.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1653.10.254.2.5.1036822899.squirrel@www.nobarrier.co.za>
+In-Reply-To: <H52KD3$II79GwJU6pjw8ZNZc1oYk1taD6_z_kdUix49OEr@uol.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +18,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: =?iso-8859-1?Q?Carlos_Fa=C4=BFanha?= <carlos.facanha@uol.com.br>, netfilter@lists.netfilter.org
 
-On Saturday 09 November 2002 6:21 am, Jonathan wrote:
+> I have a Linux box used as NAT server and firewall. All 
+> requests on its port 80 are forwarded to a local webserver 
+> inside my network. I want to block access to all services 
+> including http from a specific external host.
 
-> Hi all
->
-> Could some help me with this or point me in the right direction.
->
-> I have a few microsoft machine in side my linux firewall and I need to use
-> microsoft VPN to connect to a microsoft machine on the internet
-> when I double click on the icon is says " Connecting to ???.???.???.???"
-> and then says "Verifing Usernamd & Password" and then times out. If I dial
-> into the net and bypass the firewall I can connect.
+Carlos,
 
-Are you using NAT, and is the VPN system using PPTP (I think this is common 
-with M$ things...) ?
+You almost answered your own question.  "All requests on its
+port 80 are forwarded".  So the rule to block a specific IP
+needs to be in the FORWARD chain, not the INPUT chain.
 
-If the answer to both of these is yes, then I think you need to investigate 
-the PPTP connection tracking module patch for netfilter, because otherwise 
-this protocol gets upset by the address translation.
+Regards,
 
-Sorry to be a bit vague about this, but I don't use PPTP or M$ VPNs - I am 
-simply reporting on stuff I have seen on this mailing list in the past from 
-other people apparently trying to do the same thing.
+Brad
 
-If anyone knows that M$ VPNs can be made to work without doing this, please 
-jump in and help...
 
-Antony.
-
--- 
-
-Normal people think "if it ain't broke, don't fix it".
-Engineers think "if it ain't broke, it doesn't have enough features yet".
 
