@@ -1,13 +1,13 @@
-From: Chris Straessle <sacrelege@swissonline.ch>
-Subject: Re: any VPN program at linux?
-Date: Thu, 21 Nov 2002 23:49:21 +0100
+From: "Robert Wideman" <mrboboo@yahoo.com>
+Subject: RE: ..anyone else seen this?: https://sourceforge.net/  down
+Date: Thu, 21 Nov 2002 16:20:18 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DDD62F1.1090209@swissonline.ch>
-References: <F176nap2SAWQ8AZndKa000008b7@hotmail.com>
+Message-ID: <APEOLAIKHDNKEELFHGNCOELCCCAA.mrboboo@yahoo.com>
+References: <20021116094358.0af26246.arnt@c2i.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F176nap2SAWQ8AZndKa000008b7@hotmail.com>
+In-Reply-To: <20021116094358.0af26246.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: SB CH <chulmin2@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
 
-> Hello,  all.
+Yes, seen it yesterday and today.
+Rob
 
-hi,
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Arnt Karlsen
+Sent: Saturday, November 16, 2002 2:44 AM
+To: netfilter@lists.netfilter.org
+Subject: ..anyone else seen this?: https://sourceforge.net/ down
 
-> I would like to use VPN at linux?
-> Do you know any recommendable program?
 
-http://openvpn.sourceforge.net/
+..anyone else seen this?: https://sourceforge.net/  down
 
-> Thanks in advance.
+..reads:"We're Sorry.
+The SF.net domain is temporarily pointing at this maintenance page.
+Please access the SourceForge.net site at https://sourceforge.net -- you
+will be redirected there in 10 seconds."
 
-no problem,
-chris
+..well, I did yesterday this time too.
+
 
 -- 
------------------------------------------------------------------------
-Chris Straessle			  http://raptor.homeunix.net/
-Alias: sacrelege		  email: sacrelege@swissonline.ch
------------------------------------------------------------------------
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
 
 
