@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPMasq denying localhost connections
-Date: Wed, 4 Aug 2004 07:49:54 +0100
+Subject: Re: block port 137
+Date: Wed, 4 Aug 2004 08:03:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408040749.54305.Antony@Soft-Solutions.co.uk>
-References: <pan.2004.08.03.19.44.16.29288@wlt.com.br>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200408040803.02568.Antony@Soft-Solutions.co.uk>
+References: <267354A234DF4D46AA6AE56E1240BEF004A3BF@tv.wcslnet.net> <200408030717.59289.Antony@Soft-Solutions.co.uk> <00d601c479cf$352a91f0$858310ac@suarapembaruan.com>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <pan.2004.08.03.19.44.16.29288@wlt.com.br>
+In-Reply-To: <00d601c479cf$352a91f0$858310ac@suarapembaruan.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +18,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 03 August 2004 8:44 pm, Leandro Guimar=C3=A3es Faria Corsetti =
-Dutra=20
-wrote:
+On Wednesday 04 August 2004 4:00 am, david wrote:
 
-> I have a 2.6.7 Linux kernel system on Debian testing, with an
-> Ethernet interface to the cable modem and another to the internal
-> network.
->
-> 	With Linux 2.4 IPMasq worked OK, but with 2.6 I can=E2=80=99t anymore
-> reach localhost 127.0.0.1.  This hinders me from using the squid proxy
-> cache, for example.
->
-> 	I never fooled around with routing, and was intimidated by
-> IPMasq=E2=80=99s /etc files.  Couldn=E2=80=99t find specific troublesho=
-oting
-> information for IPTables.  Any hint is welcome=E2=80=A6
+> Dear Antony,
+> I agree with you, i must block all traffic and accept one-by-one rules that
+> i want, but the problem is i don't know how to do this
 
-We need to see your ruleset in order to be able to help.
+1. Here's the basic idea:
 
-Post the output of "iptables -L -nvx; iptables -L -t nat -nvx" and also t=
-ell=20
-us basic things about your network, such as:
- - name and IP address of firewall external interface
- - name and IP address of firewall internal interface
- - internal network address range
- - location and IP addresses of DNS servers
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i $INTIF -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -i $INTIF -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -i $INTIF -p tcp --dport 53 -j ACCEPT
+iptables -A FORWARD -j LOG
+
+These rules mean "DROP any packets which I don't have a rule to ACCEPT, then 
+ACCEPT all packets except the first of any connection, then ACCEPT the first 
+packets for web browsing and DNS, then LOG any other packets which try to get 
+through."
+
+2. The important part of the above ruleset, for someone like you who is not 
+quite sure what rules to use to ACCEPT the packets you want (and you don't 
+want to default DROP any packets by omission), is the final LOG rule.
+
+That rule will tell you what packets are trying to get through the ruleset, 
+but haven't been ACCEPTed by one of the previous rules - and you may want to 
+add a rule to specifically ACCEPT some of them.   Of course, you may *not* 
+want to accept some of them either, so you're happy for those to continue 
+being DROPped.   In that case (packets you know that you don't want), the 
+next refinement of the ruleset is:
+
+3. Add some specific DROP rules just before the final LOG rule, so that the 
+packets you know about and do not want get DROPped without being logged.
+
+The final outcome of this is a ruleset which:
+a) ACCEPTs the packets you know you want
+b) DROPs the packets you know you don't want
+c) LOGs any other packets you haven't thought about or weren't expecting
+
+As you can see, you can build such a ruleset gradually - if you don't want to 
+disrupt communications through the firewall as you do it, just leave the 
+default policy on ACCEPT as you add the specific ACCEPT rules, and then once 
+you have no more wanted packets being DROPped, you can set the policy to DROP 
+and concentrate on cutting down what gets LOGged.
+
+I do recommend studying one of the netfilter tutorials such as Oskar 
+Andreasson's at http://iptables-tutorial.frozentux.net so that you get a 
+better understanding of how packets make their way through netfilter, and 
+also what packets are necessary for correct and efficient operation of a 
+network (some of them may be non-obvious, such as TCP DNS in my mini-ruleset 
+above, or certain types of ICMP packets etc).
 
 Regards,
 
 Antony.
 
---=20
-Late in 1972 President Richard Nixon announced that the rate of increase =
-of=20
-inflation was decreasing.   This was the first time a sitting president u=
-sed=20
-a third derivative to advance his case for re-election.
+-- 
+Anyone that's normal doesn't really achieve much.
 
- - Hugo Rossi, Notices of the American Mathematical Society
+ - Mark Blair, Australian rocket engineer
 
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
