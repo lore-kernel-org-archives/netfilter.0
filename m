@@ -1,12 +1,13 @@
-From: "Erik Ahlner" <whyz@home.se>
-Subject: Re: Should i be worried?
-Date: Wed, 29 Jan 2003 01:45:04 +0100
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: port forwarding problem
+Date: Wed, 29 Jan 2003 02:21:19 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003801c2c72f$aa18af50$0200a8c0@whyzpc>
-References: <0B2759D401C1D211ACA500805FFE2C3F0860BE22@cmxserv3.hilton.com>
+Message-ID: <20030129022119.7cdcb112.arnt@c2i.net>
+References: <24307.192.168.0.1.1043741649.squirrel@mail.intermediacorp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <24307.192.168.0.1.1043741649.squirrel@mail.intermediacorp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,56 +20,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Tue, 28 Jan 2003 16:14:09 +0800 (PHT), 
+<oarojo@intermediacorp.com> wrote in message 
+<24307.192.168.0.1.1043741649.squirrel@mail.intermediacorp.com>:
 
------ Original Message -----
-From: "Preston Wade" <Preston_Wade@hilton.com>
-To: "'Erik Ahlner'" <whyz@home.se>; <netfilter@lists.netfilter.org>
-Sent: Wednesday, January 29, 2003 12:30 AM
-Subject: RE: Should i be worried?
+> hello guys!!! Can someone help me on my problem regarding iptables???
+> 
+> This has been my problem a month now.. I'm running a redhat 7.3
+> firewall server with two NICs; eth0 facing the internal network
+> (192.168.0.x) and eth1 facing the internet (external network). Now I
+> wish to forward all traffic on eth1, port 25 to another to my mail
+> server (say, 192.168.0.2). I did something like:
+> 
+> iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
+> iptables -A FORWARD -p tcp --dport 25 -d 192.168.0.2 -j ACCEPT
+> iptables -A PREROUTING -t nat -p tcp --dport 25 -d x.x.x.x -j DNAT
+>  --to 192.168.0.2
+> 
+> Now when i used to test SMTP connection thru telnetting from another
+> server... say:
+> 
+> #telnet xxx.xxx.xxx.xxx 25
+> 
+> It just stucked in there doesn't continue...
+> 
+> using nmap on my firewall:
+> 
+> #nmap xxx.xxx.xxx.xxx -p 25
+> 
+> it says that port 25 is filtered...
+> 
+> 
+> Is there anything wrong with my iptable rules? I would really
+> appreciate if you can send me your help... thanks!
 
+..a stab in the dark: 'cat /proc/sys/net/ipv4/ip_forward' says?
 
-> This rule would allow someone outside your firewall to route to your
-> internal boxes.  I wouldn't accept all connection from the external
-> interface to the internal interface.
->
-> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-you're right.. you reccon this would be better?
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-
-
-> Also I wouldn't have a default policy of ACCEPT for the INPUT chain
-either.
-> $IPTABLES -P INPUT ACCEPT
->
->
-> Anyway.... the log entry below is interesting because it shows that the
-> packet came in on eth0 and went out eth0, but given the source and
-> destination addresses I would think it would have came in on one interface
-> and gone out a different.  The first two look like DNS queries based on
-the
-> DPT, but the source port is that of a NetBIOS service.  The last entry
-looks
-> like potentially a legitimate web request.
->
-> Which interface is your outside?
-> Can you show us the output of a netstat -nr?
->
-
-eth0 is the nic to the outside..
-and sure, here comes the output from netstat -nr!
-
-Destination     Gateway         Genmask         Flags   MSS Window  irtt
-Iface
-130.236.146.0   0.0.0.0         255.255.255.0   U        40 0          0
-eth0
-192.168.0.0     0.0.0.0         255.255.255.0   U        40 0          0
-eth1
-127.0.0.0       0.0.0.0         255.0.0.0       U        40 0          0 lo
-0.0.0.0         130.236.146.1   0.0.0.0         UG       40 0          0
-eth0
-
-thanks
 
 
