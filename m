@@ -1,11 +1,10 @@
-From: Michael <mutk@iprimus.com.au>
-Subject: Re: understanding ip_conntrack entry
-Date: Fri, 04 Oct 2002 12:45:04 +1000
+From: PayalR <payal@hotpop.com>
+Subject: are these enough now?
+Date: Fri, 4 Oct 2002 12:47:04 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D9D00B0.8080901@iprimus.com.au>
-References: <000f01c26b18$2d114990$3201a8c0@leonardo>
+Message-ID: <29706.0698424049$1033719511@news.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,78 +15,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter ML <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-netstat uses files in /proc/net (from netstat man page) :
-/proc/net/dev -- device information
+Hello,
+I am providing webspace, email services etc. to few institutes. I have=20
+drafted a firewall policy for my server. Can you please check if it is ri=
+ght=20
+and tell me if I have gone wrong anywhere? I have formulated suggestion b=
+y=20
+various list-members in past.
 
-/proc/net/raw -- raw socket information
+The script contains,
 
-/proc/net/tcp -- TCP socket information
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-/proc/net/udp -- UDP socket information
+iptables -A INPUT -i eth0 -p $proto --dport $port -j ACCEPT
+To keep the script short in this e-mail I am replacing $proto with tcp an=
+d=20
+udp in each line of the actual script.
+$port is replaced by,
+21, 22, 23, 25, 53, 80, 110,143, 161, 162, 199, 953, ,993,3306, 8007, 800=
+9
+We are SNNP client, so I think I need 161 and 162 open, right?
+Also, nmap shows that 2002/udp globe is oopen. Shall I close it?
 
-/proc/net/igmp -- IGMP multicast information
+So for e.g each line will actually look like this in the script,
+iptables -A INPUT -i eth0 -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 25 -j ACCEPT
 
-/proc/net/unix -- Unix domain socket information
+I understand that ACCEPT for udp for 21, 22, 23, 80, 3306 is not required=
+=2E I=20
+just wanted to confirm this from the list.
 
-/proc/net/ipx -- IPX socket information
+Also, I want to know if I should put the same rules for OUTPUT? Shall I j=
+ust=20
+copy the above rules and replace INPUT with OUTPUT in them?
+Maciej had suggested this before,
+iptables -P OUTPUT ACCEPT
+iptables -A OUTPUT -s ! <your.real.ip> -j DROP
+IS this enough for my present senario?
 
-/proc/net/ax25 -- AX25 socket information
+Also, do I set FORWARD to DROP?
 
-/proc/net/appletalk -- DDP (appletalk) socket information
+I know that there must be a elegant way of doing this, but it is just a s=
+tart=20
+for me. For now, I want to get the whole thing working properly. I am los=
+ing=20
+bandwidth due to some stupid programs from inside and outside.
 
-/proc/net/nr -- NET/ROM socket information
+Please tell me if I am making a mistake anywhere. I will be remotely logi=
+n in=20
+the server to do this? I certainly don't want ssh to stop :)=20
 
-/proc/net/route -- IP routing information
+Thanks a lot in advance and eagerly waiting for the replies (especially a=
+bout=20
+the OUTPUT part, of which I have some reservations which i will discuss=20
+later).
 
-/proc/net/ax25_route -- AX25 routing information
-
-/proc/net/ipx_route -- IPX routing information
-
-/proc/net/nr_nodes -- NET/ROM nodelist
-
-/proc/net/nr_neigh -- NET/ROM neighbours
-
-/proc/net/ip_masquerade -- masqueraded connections
-
-/proc/net/snmp -- statistics
-
-It doesn't use or know anything about ip_conntrack
-Therefore any statefull activity cannot be shown in netstat. Maybe it 
-needs re-writing ?? :)
-
-Cheers,
-Michael
-
-
-
-Leonardo Rodrigues ( listas ) wrote:
-
->    Hello Guys,
->
->    I'd like your help to understand this entry from /proc/net/ip_conntrack:
->
->tcp      6 325849 ESTABLISHED src=192.168.10.1 dst=192.168.229.25
->sport=53699 dport=80 [UNREPLIED] \
->    src=192.168.229.25 dst=192.168.10.1 sport=80 dport=53699 use=1
->
->
->    Well ...... 192.168.10.1 is my iptables box and 192.168.229.25 is one of
->my remote machines. My question is .... if this connection is marked as
->ESTABLISHED, shouldnt it appear on 'netstat -an' entries ??? I think it
->should, but it's not appearing there .....
->
->    Sincerily,
->    Leonardo Rodrigues
->
->
->
->
->  
->
-
-
-
+Bye.
+-Payal
 
