@@ -1,11 +1,10 @@
-From: Charlie Brady <charlieb-netfilter@budge.apana.org.au>
-Subject: Re: simple PC-based router using IPTABLES
-Date: Thu, 13 Jan 2005 10:24:33 -0500 (EST)
-Message-ID: <Pine.LNX.4.44.0501131021030.2774-100000@e-smith.charlieb.ott.istop.com>
-References: <20050112084540.55383.qmail@web12508.mail.yahoo.com>
+From: Roderik van Heijst <roderik@digicit.nl>
+Subject: forwarding to an external ip
+Date: Wed, 12 Jan 2005 18:09:26 +0100
+Message-ID: <20050112170926.GA4744@digicit.nl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050112084540.55383.qmail@web12508.mail.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,39 +15,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Lim Boon Ping <syseeker@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+hi there,
 
-On Wed, 12 Jan 2005, Lim Boon Ping wrote:
+i spent the whole day (which sucks btw :( ) trying to figure out how to
+forward 62.131.95.133:4321 (phex) to 131.155.228.4:1111 (orion). Quickly said, after 6
+hours (which is too long IMHO) i got it to work. However, phex was just
+for testing and i want it to work on 80.69.73.147 (boron) so i figured - if i
+copied the complete setup of iptables at phex to boron, it should do the same. 
 
-> I need some help on using IPTABLES to setup a simple PC-based router
-> (for LAN usage). The PC consists of a 10/100 NIC on eth0, and a gigabit
-> fiber NIC on eth1. The gigabit fiber NIC is connected to another
-> fiber-based port, whereas the 10/100 NIC is connected to a 10/100 hub.
-> Now, for all packets coming from eth0, forward it to eth1, and vice
-> versa.  Could anyone verify/suggest commands to set for this setting?
+... Nopez. Honestly, I can't understand what's making the difference .. must be due to
+different kernels, but this is user-space right .. should work the same?
+I'm sorry if i sound frustrated, but i am.
 
-You don't need to use iptables at all if you just want a router. And 
-perhaps you want to set up a bridge, anyway.
+iptables -F
+iptables -t nat -F
+iptables -t nat -A PREROUTING -p tcp -i ppp0 --dport 1111 -j DNAT --to
+131.155.228.4
+iptables -t nat -A POSTROUTING -p tcp --dport 1111 -j MASQUERADE
+iptables -L
+iptables -t nat -L
 
-> # iptables -A FORWARD -i eth0 -o eth1 
-> # iptables -A FORWARD -i eth1 -o eth0 
->  
-> Is it that's all we need to do?
+that's all i had to do on phex to get it working.
+iptables -L, iptables -t nat -L and iptables -t mangle -L output exactly the same (phex & boron).
 
-Those commands don't do anything useful.
+Now for the difference that i can spot which may have to do with this:
+phex uses 2.4.20 whereas boron has 2.4.24. A subtle difference (at least that's what it
+seems to me) is that phex preroutes things from ppp0 while boron should
+do that from eth0, maybe that can be the problem? i don't see how, but
+that doesn't surprise me anymore by now. I hope any of you can bravely
+come up with some sort of answer that should push me into the right
+direction of solving this .. well .. i don't know what it is. Aargh!
 
-I suggest you start here:
+oh and happy newyear.
 
-http://www.faqs.org/docs/iptables/
+p.s. i'm not on this list, figured it's a little silly to subscribe for
+one question, so please reply/cc/bcc to my address, which is
+roderik@digicit.nl .. and many thanks in advance.
 
-Google will also find you many, many descriptive articles on setting up 
-routers and firewalls using netfilter/iptables.
-
----
-Charlie
+p.p.s. i noticed that
+iptables -t nat -A PREROUTING -p tcp -i ppp0 --dport 1111 -j DNAT --to
+:4444
+does not do the same as
+ iptables -t nat -A PREROUTING -p tcp -i ppp0 --dport 1111 -j DNAT --to
+ 127.0.0.1:4444
+ when that box is directly addressed, which is another mystery for me..
+ but that's probably how it should work.
 
 
