@@ -1,13 +1,11 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: natting issue-URGENT---i need help badly
-Date: Tue, 03 Feb 2004 11:46:55 -0500
+From: Valentijn Sessink <valentyn+netfilter-users@nospam.openoffice.nl>
+Subject: MTU on masqueraded connections
+Date: Tue, 3 Feb 2004 22:27:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1075826815.1905.21.camel@jasiiitosh.nexusmgmt.com>
-References: <20040203161751.6693.qmail@web20725.mail.yahoo.com>
+Message-ID: <20040203212738.GA9427@openoffice.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040203161751.6693.qmail@web20725.mail.yahoo.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,93 +16,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: ip tables <iptables_help@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Tue, 2004-02-03 at 11:17, ip tables wrote:
-> Dear group,
-> 
-> I have a machine with 2 NICs one having the IP
-> 10.2.240.19(eth2) and one 192.168.128.4(eth1). I use
-> redhat 9.0(2.4.20-8) with the built in iptables
-> V1.2.7a.
-> Yes i have a eth0 also.
-> I have the following rules. My idea is to permit only
-> http on port 80 and nrpc on port 1352. With this setup
-> after making the POSTROUTING default policy to ACCEPT
-> i could telnet to both the ports 1352 and 80. But when
-> i try to connect to the Domino server via a Lotus
-> notes client it fails. I would prefer to have the
-> POSTROUTING to DROP by default also. I'm confused.
-> Help me. Thanks for your time.
-> 
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
-> iptables -P OUTPUT DROP
-> iptables -t nat --policy PREROUTING DROP
-> iptables -t nat --policy OUTPUT DROP
-> iptables -t nat --policy POSTROUTING ACCEPT
-> iptables -t nat -A POSTROUTING -o eth2 -j SNAT
-> --to-source 10.2.240.19
-> iptables -t nat -A PREROUTING -i eth2 -p tcp --sport
-> 1:65535 -d 10.2.240.19 \
-> --dport 80 -j DNAT --to-destination 192.168.128.5
-> iptables -t nat -A PREROUTING -i eth2 -p tcp --sport
-> 1:65535 -d 10.2.240.19 \
-> --dport 1352 -j DNAT --to-destination 192.168.128.5
-> iptables -t nat -A PREROUTING -i eth2 -p udp --sport
-> 1:65535 -d 10.2.240.19 \
-> --dport 1352 -j DNAT --to-destination 192.168.128.5
-> iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport
-> 1:65535 -d 192.168.128.5 \
-> --dport 80 -m state --state NEW -j ACCEPT
-> iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport
-> 1:65535 \
-> -d 192.168.128.5 --dport 1352 -m state --state NEW -j
-> ACCEPT
-> iptables -A FORWARD -i eth2 -o eth1 -p udp --sport
-> 1:65535 \
-> -d 192.168.128.5 --dport 1352 -m state --state NEW -j
-> ACCEPT
-> iptables -A FORWARD -i eth2 -o eth1 -p tcp -m state \
-> --state RELATED,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -i eth1 -o eth2 -p tcp -m state \
-> --state RELATED,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -i eth1 -o eth2 -p udp -m state \
-> --state RELATED,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -i eth2 -o eth1 -p udp -m state \
-> --state RELATED,ESTABLISHED -j ACCEPT
-> 
-<snip>
-I must confess that I don't have the time to fully digest your rules
-but, since this sounds like an emergency, here are a couple of quick
-ideas.  I hope they help rather than hurt!
+Hello Netfilter list,
 
-You will generally not want to DROP in your NAT table.  It makes heavy
-use of connection tracking and does not see all packets.  Place your
-access control in mangle for malicious packets (malformed, probes, etc.)
-and in filter for access control on otherwise legitimate packets.
+Can anyone tell me (or point me to a link) how MTU detection works in a
+masqueraded environment? I.e. are there different MTU's for inside and
+outside networks (meaning the masquerading router would see the inside
+traffic as separate from outside traffic), or is the inside MTU copied to
+the outside interface - i.e. the whole thing is seen as one sort of "broken
+up" connection?
 
-I use a different syntax in my forward chain but I do not know if yours
-is an error.  Since --dport is an implicit match for -p tcp or -p udp, I
-put it next to that parameter and not after the -d destination
-parameter.
+(On a side note (and somewhat related) I read that the MASQUERADE target does
+the same as the ancient "defragment all" option in the kernel, but I can't
+find information about that).
 
-Is there a chance that the Notes traffic dynamically switches to some
-other port, i.e., it starts on 1352 but then moves to something else
-like ftp, Sun and MS RPC do? A packet trace with a tool like ethereal
-would help you see that (www.ethereal.com).
+(Background of my question is that MTU in IPsec tunnels is not correctly
+evaluated, and when you have an IPsec tunnel that terminates on a
+masquerading router, you get to see 
+13:57:30.240329 $router > $outside: icmp: $router unreachable
+which is rather odd - and prevents further communication.
+See http://bugzilla.kernel.org/show_bug.cgi?id=1148)
 
-Good luck - John
+(please note that my previous message about this had some nonsensical source
+listing, it pointed to ip_output.c to send icmp frag_needed, which has
+nothing to do with the above).
+
+Valentijn
 -- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
-
+http://www.openoffice.nl/   Open Office - Linux Office Solutions
+Valentijn Sessink  valentyn+sessink@nospam.openoffice.nl
 
