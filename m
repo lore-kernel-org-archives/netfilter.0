@@ -1,14 +1,14 @@
 From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: RE: iptables with alias?
-Date: Sat, 05 Oct 2002 14:52:12 -0700
+Subject: RE: Trigger firewall Script on IP Change:
+Date: Sat, 05 Oct 2002 15:53:20 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPKEHADBAA.stewart.thompson@shaw.ca>
-References: <20021005205315.FLSK7631.mta03-svc.ntlworld.com@there>
+Message-ID: <FLEKIPPLAEDMJMOOBBDPGEHDDBAA.stewart.thompson@shaw.ca>
+References: <20021005223853.YOAC27697.mta05-svc.ntlworld.com@there>
 Reply-To: stewart.thompson@shaw.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20021005205315.FLSK7631.mta03-svc.ntlworld.com@there>
+In-reply-to: <20021005223853.YOAC27697.mta05-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,58 +18,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Antony Stone <antony@soft-solutions.co.uk>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
 Hi Antony:
 
-=09This just a test. My posts don't seem to be showing up on the list=
-.
+	Thanks for the tip. I will have a look.
+I new it was possible, I just wasn't sure how.
 
 Regards,
 
-Stu........
+Stu.......
 
 
 -----Original Message-----
-=46rom: netfilter-admin@lists.netfilter.org
+From: netfilter-admin@lists.netfilter.org
 [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: October 5, 2002 1:53 PM
+Sent: October 5, 2002 3:39 PM
 To: netfilter@lists.netfilter.org
-Subject: Re: iptables with alias?
+Subject: Re: Trigger firewall Script on IP Change:
 
-On Saturday 05 October 2002 9:37 pm, Jeppe S=F8rensen wrote:
+On Saturday 05 October 2002 11:03 pm, Stewart Thompson wrote:
 
-> Hello
+> Hi All:
 >
-> I have a little question that perhaps someone can help me with
->
-> I have a interface to the inet with 4 dynamic ip addr
-> eth0 =3D first dynamic ip addr
-> eth0:0 =3D second dynmaic ip addr
-> and so on
->
-> I want to make 1 on 1 nat on the frist 2 aliass and the last 2 alia=
-s are
-> for the rest of the network 192.168.1.5 nat to eth0
-> 192.168.1.6 nat to eth0:0
-> 192.168.1.7-to-15 nat to eth0:1
-> 192.168.1.16-to-30 nat to eth0:2
+>         Can anyone tell me how to automatically trigger
+> my firewall script to execute when the IP on the External
+> Interface changes. Thanks.
 
-You're right - netfilter doesn't accept : characters in interface nam=
-es.
+If your external IP address is changing, you must be using DHCP...
 
-I suggest you create a script to (re)write appropriate SNAT rules, wh=
-ich is
-called by dhcpcd, or whatever else you use to acquire your dynamic
-addresses...
+If you're using ISCs dhcpcd, you can create scripts called
+/etc/dhcpc/dhcpcd-<ifname>.exe where <ifname> is eth0, eth1, eth2 etc which
+will get called whenever there's a new address on the interface.
+
+man dhcpcd for a bit more info.
 
 Antony.
 
 --
 
-The difference between theory and practice is that
-in theory there is no difference, whereas in practice there is.
-
+I vote "no" to this proposal to form a committee to investigate whether we
+should or should not hold a ballot on whether to vote yet.
 
 
