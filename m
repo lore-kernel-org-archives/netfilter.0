@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Firewall script by Iptables in redhat 9
-Date: Mon, 12 Apr 2004 10:21:16 +0100
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: Interaction of Ethereal and iptables?
+Date: Mon, 12 Apr 2004 07:55:58 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404121021.16383.Antony@Soft-Solutions.co.uk>
-References: <5.1.1.1.2.20040412095542.02ce11d8@jakarta.omnes.slb.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1081770958.16832.3.camel@localhost>
+References: <065601c41f87$34f209e0$9701a8c0@office>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.1.1.1.2.20040412095542.02ce11d8@jakarta.omnes.slb.com>
+In-Reply-To: <065601c41f87$34f209e0$9701a8c0@office>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,44 +18,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jay Levitt <lists-netfilter@shopwatch.org>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 12 April 2004 3:58 am, Sutono wrote:
-
-> Hi Alll,
->
-> Are some of you have a firewall script use iptables in linux redhat 9?
-> If you have, could you share to me please ....
->
-> Thank you
-
-Here's a script I find pretty secure.   I don't think there's anything 
-specific to RedHat 9 about it, so it should work on other distros too:
-
-iptables -F
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
-
-It lets me use ssh from my box to other machines (I can tunnel any other 
-protocols through ssh), and it stops anything else getting into my machine.
-
-Share and enjoy.
-
-Regards,
-
-Antony.
-
+On Sun, 2004-04-11 at 01:38, Jay Levitt wrote:
+> I'm occasionally seeing lines like the following, always to the same
+> machine which is on my internal network:
+>  
+> Apr 11 01:11:52 linux kernel: Rejected output by default:IN= OUT=eth0
+> SRC=192.168.1.150 DST=192.168.1.151 LEN=40 TOS=0x00 PREC=0x00 TTL=64
+> ID=30662 DF PROTO=TCP SPT=993 DPT=3736 WINDOW=6432 RES=0x00 ACK FIN
+> URGP=0 
+>  
+> This corresponds to a LOG and then a DROP rule.  So I set up Ethereal
+> to capture the packet trace.  I didn't see the packet there, so I
+> changed the DROP to an ACCEPT, assuming that iptables is probably
+> dropping the outbound packet before Ethereal (ok, libpcap) can see
+> it.  
+>  
+> The weird thing is - even with just a LOG/ACCEPT rule, the packet is
+> STILL missing from Ethereal's trace!  All other packets from that time
+> frame are there, but this particular one isn't.  Could iptables be
+> imagining it somehow?  I'm using libpcap 0.7.2, which was current till
+> a few days ago...  I've done an iptables --list OUTPUT and verified
+> that the last item on the OUTPUT chain is an ACCEPT of all packets,
+> although the default policy is still technically DROP.
+<snip>
+Is there any chance it is being dropped by some other rule before it
+hits the accept rule? If you add a log rule just in front of the ACCEPT
+rule, is the packet still logged?
 -- 
-The first fifty percent of an engineering project takes ninety percent of the 
-time, and the remaining fifty percent takes another ninety percent of the 
-time.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
