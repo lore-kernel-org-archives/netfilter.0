@@ -1,12 +1,13 @@
-From: "Sundaram Ramasamy" <sun@percipia.com>
-Subject: IP address to MAC address
-Date: Tue, 11 Jun 2002 08:39:39 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IP address to MAC address
+Date: Tue, 11 Jun 2002 13:53:45 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <004c01c21145$0d9a0b10$0601a8c0@sundaram>
-References: <001601c2113a$aa85b560$0500a8c0@escritoriomundial.com.br>
+Message-ID: <200206111253.g5BCrqU10699@vulcan.rissington.net>
+References: <001601c2113a$aa85b560$0500a8c0@escritoriomundial.com.br> <004c01c21145$0d9a0b10$0601a8c0@sundaram>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <004c01c21145$0d9a0b10$0601a8c0@sundaram>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,16 +20,24 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi,
+On Tuesday 11 June 2002 1:39 pm, Sundaram Ramasamy wrote:
 
-I have IP address of the machine, I want to get the MAC address of that
-machine thru. my program.
+> Hi,
+>
+> I have IP address of the machine, I want to get the MAC address of that
+> machine thru. my program.
+>
+> Is there  sample program with accepts the IP address and return's the MAC
+> address of the  machine.
 
-Is there  sample program with accepts the IP address and return's the MAC
-address of the  machine.
+You could try this:
 
+ping $IP -c1 >/dev/null 2>&1
+grep $IP /proc/net/arp | tr -s ' ' | cut -d' ' -f4
 
-Thanks
-Sundaram
+(There's a single space in between each of those pairs of ' ', in case it's 
+not obvious.)
+ 
 
+Antony.
 
