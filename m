@@ -1,8 +1,9 @@
-From: John <john@jjgb.com>
-Subject: Iptables - Memory Allocation Errors
-Date: Tue, 30 Nov 2004 13:16:19 -0700
-Message-ID: <6.1.2.0.2.20041130125155.02271640@pop2.jjgb.com>
+From: Sven Anders <anders@anduras.de>
+Subject: Reset conntrack?
+Date: Wed, 01 Dec 2004 15:12:52 +0100
+Message-ID: <41ADD164.6000803@anduras.de>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------050406010102080408020106"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,63 +15,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-System Info:
+This is a multi-part message in MIME format.
+--------------050406010102080408020106
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 
-Netra T1 105
-Linux sparky 2.4.27-sparc #2 Thu Oct 7 10:49:35 MDT 2004 sparc64 sun4u TI 
-UltraSparc IIi (Sabre) GNU/Linux
-440Mhz
-512Meg Ram
-18Gig HD
-Gentoo Incarnation.
-Has been extremely stable.
-iptables v1.2.11
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I have a previously developed firewall that goes way back in 
-years.  However, several years ago I switched to iptables from ipchains 
-when I went to Red Hat 7.3 on an X86 box.
 
-Having a few years of automated door slamming of cracker's, port scans etc. 
-etc., I have a sizable list of blocked IP's I would like to continue to 
-use.  Bout 1800 or so, as a matter of fact, plus my actual rules 
-allowing/disallowing services and such.  I could supply entire firewall if 
-needed, but I can't imagine I am the only one with this difficulty.
+Is it possible to reset the conntrack list or set any entry to the state NE=
+W to force
+a recheck against new filter rules?
 
-This whole firewall loads nicely on an X86 box running 128Meg ram and a 
-2.4.19 stock kernel and a X86 box I just set up using a 2.6.7 kernel on a 
-Gentoo distro. with 256M ram.
+The problem is:
+~  If I set the (new) filtering rules with the target DROP, I want old
+~  (existing) connections to be dropped immediatly.
+~  The global rule '--state RELATED,ESTABLISHED' I set would still allow th=
+em...
 
-However, on the Sparc box, it will load only 857 lines of "iptables -A 
-INPUT -i $EXTERNAL_INTERFACE -s $BANNED -j DROP" and then I get "iptables - 
-memory allocation error" line after line through out the rest of the 
-load.  When I do "iptables -L -n |wc -l" the 857 shows up.
+(Please answer directly too, because I'm not subscribed to this list!)
 
-I can load my basic I/O rules then start the loop for these IP's, and when 
-it hits the total of 857, same indication...
+Regards
+~ Sven
 
-Can anyone out there help me out?  Is this a Sparc64 thingy, and if so, how 
-may I work around it?
+- --
+~ Sven Anders <anders@anduras.de>
 
-Much thanks in advance.
+~ ANDURAS service solutions AG
+~ Innstra=DFe 71 - 94036 Passau - Germany
+~ Web: www.anduras.de - Tel: +49 (0)851-4 90 50-0 - Fax: +49 (0)851-4 90 50=
+-55
 
-John
+Rechtsform: Aktiengesellschaft - Sitz: Passau - Amtsgericht Passau HRB 6032
+Mitglieder des Vorstands: Sven Anders, Marcus Junker, Michael Sch=F6n
+Vorsitzender des Aufsichtsrats: Dipl. Kfm. Karlheinz Antesberger
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-John Jaeger - Billings, Montana
+iD8DBQFBrdFj5lKZ7Feg4EcRAs18AJsHAAhGH+grtjJMraakWqtzFb99AgCeONtw
+1N28gx4MrLGwd3kkpIIzUUw=3D
+=3DoJ2Q
+-----END PGP SIGNATURE-----
 
-EMail To	: <mailto:john@jjgb.com>
-Home Page	: <http://www.jjgb.com>
-
-PGP:
-RSA Key ID: 0xAAEC7751  <http://www.jjgb.com/public_files/RSA_Key.zip>
-
-"Our liberty is protected by four boxes...
-     The ballot box, the jury box, the soap box, and the cartridge box."
-                                    - Anonymous
-
-"Soap Box" didn't work, now using the "Cartridge Box" 3/20/2003
-
+--------------050406010102080408020106--
 
