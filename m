@@ -1,15 +1,13 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: Reg iptables Connection tracking
-Date: Fri, 10 Jan 2003 14:02:37 +0000
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: urgent question!
+Date: 10 Jan 2003 13:39:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030110140237.GE22487@miggy.org>
-References: <4223A04BF7D1B941A25246ADD0462FF5647695@blr-m3-msg.wipro.com>
+Message-ID: <1042202377.10157.17.camel@elendil.intranet.cartel-securite.net>
+References: <000801c2b7e2$52bcec00$f7ef6c50@dom.local>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IvGM3kKqwtniy32b"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4223A04BF7D1B941A25246ADD0462FF5647695@blr-m3-msg.wipro.com>
+In-Reply-To: <000801c2b7e2$52bcec00$f7ef6c50@dom.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,49 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Amit Kumar Gupta <amitkumar.gupta@wipro.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
+Le jeu 09/01/2003 =E0 14:23, Max ZAUNER a =E9crit :
+> i am rookie in linux. anyway, during my firewall setup everything
+> installed properly. after starting my firewall a message pops up
+> saying:=20
+> cannot load module: libipt_-j.so
 
---IvGM3kKqwtniy32b
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think you've let a lonely -m switch, meaning without module reference.
 
-On Fri, Jan 10, 2003 at 10:33:48AM +0530, Amit Kumar Gupta wrote:
-> As soon as somebody pings to my m/c , that fellow doesn't get the reply
-> and on my m/c , kernel keeps dumping certain messages which are like
-> this :-
->=20
-> Ip_contrack: maximum limit of 1016 entries exceeded.
+cbr@elendil:~$ sudo iptables -A INPUT -m -j
+iptables v1.2.7a: Couldn't load match
+`-j':/usr/local/lib/iptables/libipt_-j.so: cannot open shared object
+file: No such file or directory
 
-   echo 32760 > /proc/sys/net/ipv4/ip_conntrack_max
-
-Works to increase the size of the table.  I had a problem with a default
-of ~4092 for this when I was copying LOTS of files between machines
-using "get -R directory" in ncftp.  The above cured it.
-
-HTH,
-
--Ath
 --=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
-
---IvGM3kKqwtniy32b
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj4e0n0ACgkQzbc+I5XfxKfU5QCcDys+nK33ViEg1Tu6KSRPUGcZ
-Za4AnAlnBbM5O6ZI8GXBxP52KMsR53pX
-=7Vvm
------END PGP SIGNATURE-----
-
---IvGM3kKqwtniy32b--
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
+t=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
