@@ -1,8 +1,8 @@
 From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: I thought ssh is port #22 ?!!
-Date: Thu, 1 Apr 2004 09:20:55 -0800
+Subject: RE: I'm sure you can solve this
+Date: Thu, 1 Apr 2004 09:36:56 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF567928A@alderaan.smgtec.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122F38@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,86 +17,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Martinez, Michael" <MMARTINEZ@CSREES.USDA.GOV>, cldavis@speakeasy.net, netfilter@lists.netfilter.org
-Cc: Fajar Priyanto <fajarpri@arinet.org>
+To: decompose <decompose@orcon.net.nz>, netfilter@lists.netfilter.org
 
-Unfortunately I have the "privilage" of maintaining a customer TCP
-protocol which cans you if your source and destination ports aren't as
-specified by their fcked up protocol!!
+Firstly, what benefit are you trying to get from having multiple jumps
+on the same subnet? It seems needlessly complicated.
+You can 'bounce' off an interface with some dirty work. Example:
 
------Original Message-----
-From: Martinez, Michael [mailto:MMARTINEZ@CSREES.USDA.GOV]=20
-Sent: Thursday, April 01, 2004 7:14 AM
-To: cldavis@speakeasy.net; netfilter@lists.netfilter.org
-Cc: Fajar Priyanto
-Subject: RE: I thought ssh is port #22 ?!!
+# Redirect all traffic coming from 192.168.1.* to 192.168.1.222,
+assuming that 192.168.1.222 is the default gateway for this gateway. I
+am assuming the internal IP address of this computer is 192.168.1.200
+
+# You don't need the mark, but what the hell, its there if you like it
+:-)
+iptables -t mangle -A PREROUTING -s 192.168.1.0/16 -j MARK --set-mark
+222
+iptables -t nat -A POSTROUTING -d 192.168.1.222 -m mark --mark 222 -j
+SNAT --to 192.168.1.200
+# Allow in-out forwarding if using locked down FORWARD chain
+iptables -t filter -A FORWARD -i eth1 -o eth1 -j ACCEPT
 
 
-Port 32873 is the return port on the ssh client.
-
-Here's how it works. The server listens on port 22. The client opens a
-connection to the server, and tells the server which return port to use.
-If you do "netstat -an" you will see the server talking on port 22, and
-the client talking on some high numbered port like 32873. The high
-number port used is random. It will change from one session to the next.
-
-This is true not just for ssh - it is true for most tcp applications.
-
-Michael Martinez
-Unix System Administrator
+Mind you, because of the SNAT, you have to drop the benefit of knowing
+the source address at the second gateway.
 
 -----Original Message-----
-From: cldavis@speakeasy.net [mailto:cldavis@speakeasy.net]=20
-Sent: Wednesday, March 31, 2004 9:10 PM
+From: decompose [mailto:decompose@orcon.net.nz]=20
+Sent: Wednesday, March 31, 2004 10:47 PM
 To: netfilter@lists.netfilter.org
-Cc: Fajar Priyanto
-Subject: Re: I thought ssh is port #22 ?!!
+Subject: I'm sure you can solve this
 
-You should edit sshd_config with the port command and set it to 22.  If
-the directive is not present, I've had some versions of ssh listen on
-everything, others only 22. =20
 
-You may also want to use the PermitRootLogin no directive to disable
-root logins and use a regular user account to log in and then su to root
-if need be.
+Hi Ive read the docs and still can't work it out (Yes I'm stupid)
 
-As far as the firewall, you may want to setup your firewall to drop all
-packets except packets sent to needed services.
+Background: I want to forward traffic from hosts on the switch to=20
+through router A to router B. (and later from router B to a host on the=20
+switch, but i guess I could just invert the first problem).
 
-Hope that helps
-Chris
-> -----Original Message-----
-> From: Fajar Priyanto [mailto:fajarpri@arinet.org]
-> Sent: Thursday, April 1, 2004 01:32 AM
-> To: netfilter@lists.netfilter.org
-> Subject: I thought ssh is port #22 ?!!
->=20
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->=20
-> Hi guys,
-> I'm not really sure about this. I thought ssh is made in port #22?=20
-> When I made a ssh session into my server, /var/log/messages showed=20
-> this: Apr  1 09:20:20 server2 sshd[2711]: Accepted password for root=20
-> from 192.168.0.234 port 32873 ssh2
->=20
-> Why did it use port #32873?
-> Is there something wrong with my ssh or firewall?
-> TIA,
-> - --
-> Fajar Priyanto | Reg'd Linux User #327841 | http://linux.arinet.org
-> 08:31:42 up 36 min, Mandrake Linux release 9.2 (FiveStar) for i586=20
-> public key: https://www.arinet.org/fajar-pub.key
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.2.3 (GNU/Linux)
->=20
-> iD8DBQFAa3EYkp5CsIXuxqURAluBAKCNiyg8+KXYDu/JuZghSVMXvfrjMgCdG7O2
-> Bb4SQcbOiAqALl1o9yQ5H1k=3D
-> =3D4uUZ
-> -----END PGP SIGNATURE-----
->=20
->=20
->=20
+I think one of the reasons i'm having trouble with this is because all=20
+hosts are on the same subnet (here is the setup)
+
+[switch]-->[router A]-->[router B]-->(Inet)
+         192.168.0/24
+
+Ive tryed various things this being one of them (where x is a host on=20
+the switch)
+iptables -t mangle -A POSTROUTING -p tcp -s 192.168.0.x -d 192.168.0.223
+
+--destination-port 80
+
+I hope my question is clear enough. Thanks in advance
 
 
 
