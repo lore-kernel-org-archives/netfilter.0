@@ -1,15 +1,10 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: PPTP CONNTRACK NAT patch for 2.6
-Date: Fri, 19 Nov 2004 22:02:41 +0100
-Message-ID: <20041119210241.GO6790@sunbeam.de.gnumonks.org>
-References: <20041119072111.GF6790@sunbeam.de.gnumonks.org>
-	<20041119195104.44980.qmail@web52509.mail.yahoo.com>
+From: Manuel Mollar Villanueva <mm@mobelt.com>
+Subject: DNAT sends packed by wrong interface
+Date: Sat, 20 Nov 2004 00:30:24 +0100
+Message-ID: <419E8210.1020504@mobelt.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CNfT9TXqV7nd4cfk"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20041119195104.44980.qmail@web52509.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,51 +15,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Joseph Kwok <joseph_k@pacbell.net>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hi,
+I have encountered a problem when using DNAT:
 
---CNfT9TXqV7nd4cfk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Scenario:
 
-On Fri, Nov 19, 2004 at 11:51:04AM -0800, Joseph Kwok wrote:
-> I can't find it, where is it? I am more than happy to
-> check it out.
+iptables v1.2.7a
+Linux 2.4.20
 
-It's on svn.netfilter.org:
+Computer A:
+   eth0 ip 150.128.49.236/21
+   eth1 ip 10.1.1.1/24
+   iptables -t nat -A PREROUTING -d 150.128.49.236 -p tcp --dport 8080 
+-j DNAT --to-destination 10.1.1.2:80
 
-http://svn.netfilter.org/cgi-bin/viewcvs.cgi/trunk/patch-o-matic-ng/pptp-co=
-nntrack-nat/
+Computer B:
+  eth0 connected to eth1 of computer A, ip 10.1.1.2
 
-Any recent patch-o-matic-ng snapshot will work, you can download nightly
-snapshots from ftp.netfilter.org or any of the mirrors.
+Client C:
+  ip 213.171.249.250
+  When accessing port 8080 of A is redirected to port 80 on B,  OK
 
-> Thanks,
-> Joseph
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+Client D:
+  ip 150.128.49.219, in the SAME NETWORK of A (eth0)
+  When connecting to A, port 8080, the configured DNAT redirects the 
+packets to 10.1.1.2:80 , BUT PACKETS ARE SENT to interface ETH0, not to 
+interface eth1 as expected, so , do not arrive to B.
+  The same problem occurs for any client in the network of A
 
---CNfT9TXqV7nd4cfk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+Some idea?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+Thanks
 
-iD8DBQFBnl9xXaXGVTD0i/8RAvWEAJ0Z87JMPbIQ0oVF+kVcHdQqVg0RhgCeOZcx
-P5s03LTM+xdUEwBmjBdal5E=
-=3epY
------END PGP SIGNATURE-----
-
---CNfT9TXqV7nd4cfk--
 
