@@ -1,13 +1,13 @@
-From: vic ismakaev <viclists@mail.esoo.ru>
-Subject: SNAT & POSTROUTING chain
-Date: Thu, 17 Apr 2003 15:09:38 +0600
+From: "Kevin Smith" <ksmith@perfht.com>
+Subject: RE: netfilter digest, Vol 1 #778 - 8 msgs
+Date: Thu, 17 Apr 2003 07:05:11 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304171509.38467.viclists@mail.esoo.ru>
-Reply-To: viclists@mail.esoo.ru
+Message-ID: <NGBBLGFEALDADHNDAAFFEEHJDJAA.ksmith@perfht.com>
+References: <20030416190301.23250.53934.Mailman@kashyyyk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20030416190301.23250.53934.Mailman@kashyyyk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,21 +20,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi!
-I've setup an iptables-1.2.7a.
-  When I try add new rule in POSTROUTING chain.
+I did a bit of digging and looking and found out the problem, I chose the
+wrong processor architecture (386 instead of 586). As soon as I changed it
+and recompiled it booted like a champ.
 
-[root@vic 123]# iptables  -A POSTROUTING -p tcp -s 192.168.1.2 -j SNAT -o eth0 
---to-source $REAL_IP
-iptables: No chain/target/match by that name
+Kev
 
-or
-[root@vic 123]# iptables -t nat -A POSTROUTING -p tcp  -j SNAT -o eth0 
---to-source $REAL_IP
-iptables: Invalid argument
+------=_NextPart_000_0005_01C303F9.003020C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-What is it means?
+Not 100% sure if this is the correct forum, but I did get the patch from the
+site :)
+I Just Upgraded my RH7.2 Kernel to 2.4.20, all went well until it rebooted.
+It reaches Grub, I choose the proper version, it displays the registers then
+reboots.  I've been able to boot from an older kernel so I believe it is the
+kernel itself. I am still troubleshooting this but would appreciate a few
+suggestions on where to look. BTW the Only patches I put in it have to do
+with NAT.
+My next trick will be recompiling it with no patches (im hoping this does
+the same thing as the only reason Im doing this is the patches),
+Thanks,
+Kev
 
-Regards
-Victor V Ismakaev
 
