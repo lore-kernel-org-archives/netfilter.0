@@ -1,12 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: MARKing question
-Date: Mon, 31 Jan 2005 11:25:31 -0500
-Message-ID: <20050131162531.GA24980@bender.817west.com>
-References: <a0f69e5050131022966942181@mail.gmail.com>
+From: <hamals@infinito.it>
+Subject: FTP rules
+Date: Mon, 31 Jan 2005 17:40:24 +0100
+Message-ID: <web-42708298@infinito.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <a0f69e5050131022966942181@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,60 +15,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Mon, Jan 31, 2005 at 03:29:32PM +0500, Askar wrote:
-> hi list, 
-> 
-> I'm MARKing packets in PREROUTING of mangle with the below rule to
-> route them from other route then the default route .(iproute2 +
-> iptables)
-> 
-> $iptables -A PREROUTING -i eth0 -t mangle -s 202.xxx.xxx.0/24 -d 0/0
-> -p tcp --dport 80 -j MARK --set-mark 4
-> 
-> What I want is to exclude a single IP from the above to be MARKed, i-e
-> the particular IP packets goes through default route of the firewall
-> machine not through iproute2 route.
-> 
-> Is this possible with iptables or I have to apply pom (extentions) to
-> accomplished this?
 
-two thoughts:  1) ACCEPT the packet from the "excluded IP" prior to the
-mark rule or 2) reset the MARK on packets from the "excluded IP" after
-the mark rule.
+  my PCs behind my firewall didn't get ftp connection to 
+any external ftp server. Why?
 
-version 1:
+/sbin/modprobe ip_contrack
+/sbin/modprobe ip_contrack_ftp
 
-  iptables -t mangle -A PREROUTING -i eth0 -p tcp -s $EXCLUDED_IP \
-    --dport 80 -j ACCEPT
+# LAN -> INTERNET
+iptables -A FORWARD -i $LAN -o $INET -p tcp --dport 21 -j 
+ACCEPT
+iptables -A FORWARD -i $LAN -o $INET -p tcp --dport 20 -j 
+ACCEPT
 
-  iptables -t mangle -A PREROUTING -i eth0 -p tcp -s 202.xxx.xxx.0/24 \
-    --dport 80 -j MARK --set-mark 4
+# INTERNET ->LAN
+iptables - A FORWARD -i $INET -o $LAN -p tcp -m state 
+--state ESTABLISHED, RELATED -j ACCEPT
 
-version 2:
+# NAT
+iptables -t nat -A POSTROUTING -s $IPs_LAN -o $INET -j 
+SNAT  --to-source $INET_IP
 
-  iptables -t mangle -A PREROUTING -i eth0 -p tcp -s 202.xxx.xxx.0/24 \
-    --dport 80 -j MARK --set-mark 4
 
-  iptables -t mangle -A PREROUTING -i eth0 -p tcp -s $EXCLUDED_IP \
-    --dport 80 -j MARK --set-mark 0
+Thanks fo help
+_______________________________________
+Connessione ed e-mail gratuita da 10 mb
+consultabile tramite web e tramite pop.
+www.infinito.it vieni a scoprire tutti 
+i nostri servizi!
 
-version 1 gets packets from $EXCLUDED_IP out of the mangle PREROUTING
-chain as quickly as possible.
+http://www.infinito.it/xmail
 
-version 2 allows packets from $EXCLUDED_IP to continue to traverse
-mangle PREROUTING in case you want to do other stuff to it.
-
-which one is "better" would depend on your specific situation.
-
--j
-
---
-"I saw this in a movie about a bus that had to SPEED around a city,
- keeping its SPEED over fifty, and if its SPEED dropped, it would
- explode. I think it was called, 'The Bus That Couldn't Slow Down.'"
-        --The Simpsons
 
