@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Problem with counting
-Date: Sat, 5 Oct 2002 09:28:05 +0100
+From: PayalR <payal@hotpop.com>
+Subject: Re: are these enough now?
+Date: Sat, 5 Oct 2002 17:09:55 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021005082807.KQUS7631.mta03-svc.ntlworld.com@there>
-References: <Pine.LNX.4.44.0210050609420.13964-100000@balthasar.nuitari.net>
+Message-ID: <13507.8325089582$1033818243@news.gmane.org>
+References: <200210041218.26636@.> <200210042048.36993@.> <20021004191400.YGEY459.mta02-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210050609420.13964-100000@balthasar.nuitari.net>
+In-Reply-To: <20021004191400.YGEY459.mta02-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,28 +20,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 05 October 2002 11:12 am, Nuitari wrote:
+Hello all,
+Thanks a lot for the mails. Well, I will reply to all the mails but first=
+=20
+here is some more info/problem :)
+I tried this script on my dummy server.=20
+But I faced 3 problems.
 
-> I'm trying to get the byte counters to work with my nat firewall.
->
-> However, only a small fraction of all of the traffic is actualy counted.
->
-> iptables -A FORWARD -o eth0 -d 10.0.0.2 -j ACCEPT
-> iptables -A FORWARD -i eth0 -d 10.0.0.2 -j ACCEPT
->
-> to try to count both incoming and outgoing data for the 10.0.0.2 host.
-> However when I do
->
-> iptables -L -n -v -x
->
-> All I see is 0 transfer, which is quite impossible as I use that host to
-> transfer huge amounts of data.
+1. I could not ping to any ip/domain name.
+I got an error that ping: operation not permitted, even though I had not=20
+specifically told it to drop ICMP.
 
-Show us the rest of your rules.
+2. I could not resolve host names, even though I had rules for port 53 li=
+ke=20
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 53 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 953 -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 53 -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 953 -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 53 -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 53 -j ACCEPT
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -i eth0 -p tcp --sport 53 -j ACCEPT
+iptables -A OUTPUT -i eth0 -p udp --sport 53 -j ACCEPT
+iptables -A OUTPUT-i eth0 -p tcp --dport 953 -j ACCEPT
+iptables -A OUTPUT-i eth0 -p udp --dport 953 -j ACCEPT
+I am using BIND 9.1.3
 
-Antony.
+3. If I give a OUTPUT rule for e.g.,
+iptables -A OUTPUT -i eth0 -p tcp --sport 21 -j ACCEPT
+I get an error saying I cannot specify -i eth0. It works properly when=20
+I remove -i eth0. Is it OK?
 
--- 
+I have all the default policies of INPUT, OUTPUT and FORWARD set to drop.
 
-This email was created using 100% recycled electrons.
+Thanks a lot for helping me out and bye=20
+-Payal
 
