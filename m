@@ -1,8 +1,8 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: traceroute
-Date: Wed, 30 Jun 2004 09:33:35 -0400
+From: "IZEM Farid" <Farid.IZEM@abxlogistics.fr>
+Subject: (no subject)
+Date: Wed, 30 Jun 2004 15:33:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E62E7FF@email1.mitretek.org>
+Message-ID: <B732FD42D68974438C1451C73C1D030FD1EE0E@FR92EX02.eu.abxlogistics.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,38 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-You need to set up the ESTABLISHED,RELATED rule.
+Hi all,
 
-Here is an example of a test firewall:
-http://installkernel.tripod.com/ipls
+I'm trying to customize my iptables rules.
+Let us imagine we have three hosts which users have to access:=20
+	HOST1
+	HOST2
+	HOST3
 
+Is this configuration correct?
+	Iptables -N HOST1_RULESETS
+	Iptables -N HOST2_RULESETS
+	Iptables -N HOST3_RULESETS
+=09
+In each new chain, I will add rules to accept connections to some =
+services like telnet, ssh, IBM Client Access.
+And after, I will do this thing:
+	Iptables -A FORWARD -i eth0 -o eth1 -j HOST1_RULESETS
+	Iptables -A FORWARD -i eth0 -o eth1 -j HOST2_RULESETS
+	Iptables -A FORWARD -i eth0  -o eth1 -j HOST3_RULESETS
 
+In fact, what I'm looking for is that I can organized my rules by hosts =
+instead of adding all rules to all hosts in FORWARD chain ?
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Peter Marshall
-Sent: Wednesday, June 30, 2004 9:06 AM
-To: netfilter
-Subject: traceroute
+With the configuration, I describe, will all rules in the HOSTX_RULESETS =
+being check ?
 
-Hi.  I was wondering what I would need for rules to have traceroute work
-through my firewall.  (I have a box behind the firewall trying to get
-out
-using traceroute).
+I think, it's correct but I'm not totally sure.
 
-I have an allow established connections on my forwared chain, and I am
-allowing anything from the source IP of the box in question to leave ...
-It
-appears that the problem is on the packets comming back in .. but I am
-not
-sure what I have to do to fix it ....
+Thanks for you help,
 
-Thanks
-
-Peter
-
+Best regards,=09
+=20
+Farid IZEM
+Ing=E9nieur Syst=E8me Unix
+Soci=E9t=E9 ABX Logistics France
+48-50, route principale du port
+92232 Gennevilliers
+T=E9l. : 01-41-47-61-78
+Email : farid.izem@abxlogistics.fr
 
 
