@@ -1,13 +1,15 @@
-From: "doc" <doc@drow.org>
-Subject: Tweaking netfilter timers
-Date: Sun, 12 May 2002 13:43:24 -0400
+From: Joerg Mayer <jmayer@loplof.de>
+Subject: Re: MS Windows domain logon via netfilter NAT
+Date: Sun, 12 May 2002 20:30:27 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001301c1f9dc$8446fa50$6401a8c0@melswinbox>
-Reply-To: "doc" <doc@drow.org>
+Message-ID: <20020512203027.I623@thot.informatik.uni-kl.de>
+References: <3CDEA665.5040605@ufl.edu>
+Reply-To: Joerg Mayer <jmayer@loplof.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0010_01C1F9BA.FD2C3290"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <3CDEA665.5040605@ufl.edu>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,63 +19,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Kramer <kramer@ufl.edu>
+Cc: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
+On Sun, May 12, 2002 at 01:29:09PM -0400, Kramer wrote:
+> Windows client hosts on the NATed LAN can't find the NT4 Domain for=20
+> logon.  Therefore Network Neighborhood browsing doesn't work.  Strangely =
 
-------=_NextPart_000_0010_01C1F9BA.FD2C3290
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> direct UNC connections will work if logon credentials are not required.
 
-Greetings,
+In normal IP networks running windows, the DC is found via the WINS service.
+WINS is the pre win2k version of DNS. WINS is used to map host- and service-
+names to IP-addresses. AFAIK, there is currently no support for WINS in
+iptables/netfilter, thus the answer your win client gets back points to
+the not-NATed address, which is unreachable. By directly specifying the
+machine you work around that problem (you manually to what the wins service
+would have done otherwise).
 
-  I apologise in case this is a question that you all are often faced =
-with.. Unfortunately, I'm unable to find the answer in any of the =
-documentation.
+  ciao
+        J=F6rg
 
-  I'm trying to find out how to set masquerading nat timeouts for =
-tcp/udp/icmp sessions.. Also, does anyone know of a script that displays =
-NAT/MASQ entries from /proc/net/ip_conntrack in a more human friendly =
-form than 'cat' ?  Just wanted to check before I cobble one together.
-
--George
-
-
-------=_NextPart_000_0010_01C1F9BA.FD2C3290
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2715.400" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Greetings,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp; I apologise in case this is a =
-question that=20
-you all are often faced with.. Unfortunately, I'm unable to find the =
-answer in=20
-any of the documentation.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp; I'm trying to find out how to =
-set=20
-masquerading nat timeouts for tcp/udp/icmp sessions.. Also, does anyone =
-know of=20
-a script that displays NAT/MASQ entries from /proc/net/ip_conntrack in a =
-more=20
-human friendly form than 'cat' ?&nbsp; Just wanted to check before I =
-cobble one=20
-together.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>-George</FONT></DIV>
-<DIV><SMALL></SMALL>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0010_01C1F9BA.FD2C3290--
+--
+Joerg Mayer                                          <jmayer@loplof.de>
+I found out that "pro" means "instead of" (as in proconsul). Now I know
+what proactive means.
 
 
