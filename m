@@ -1,10 +1,9 @@
-From: kannel sms <kannel_sms@yahoo.com>
-Subject: Pls help me    DHCP / MAC
-Date: Tue, 11 Nov 2003 08:57:18 -0800 (PST)
+From: bmcdowell@coxhealthplans.com
+Subject: Redirect to Honeypot?
+Date: Tue, 11 Nov 2003 15:57:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031111165718.17211.qmail@web60205.mail.yahoo.com>
+Message-ID: <94930-2200311211205755548@coxhealthplans.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1838503673-1068569838=:16880"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,70 +14,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
---0-1838503673-1068569838=:16880
-Content-Type: text/plain; charset=us-ascii
 
-Dear Friends ,
- 
-I already submitted my question to netfilter mailing list , but i think , i must do some explanation again of my requrement ............pls attention . 
- 
-I have an DHCP Server  which  is runs on Red Hat Linux 8  machine , this DHCP server normally allow to access Cable modem users . 
- 
-But currently i'm testing this on a LAN  with few NICs. ...... so What i'm trying to do is ..............
- 
-In my LAN i have prepaired 3 PCs.
-1. Configured the DHCP server and test the other clients for the ip assining , they connected well .
-2.Now i need to allow DHCP faclility for a One PC and others should be DROP.So those machines NICs have MAC addresses .
-3.MAC address wise it can be DROP/ACCEPT the users.
-4. finally when test the clients there must be only one users has to be connected to the DHCP server  and the others can't be have an ip .
- 
-so this is the main thing that i want to do ......................
- 
-I think u all can understand the situation , if u don't mind can somebody give me the iptable configurations for this matter . this is a extremly needful request ....pls .
-i need ur help 
- 
-Thnak u 
- 
- 
- 
- 
- 
+Does anyone on the list have a recomendation as to how one might use
+iptables to redirect traffic to a honeypot?  I have a few ideas, but
+I'd really like to hear from someone who has a solution they like (or
+even an idea they like).  Thanks in advance.
 
+To clarify just a bit:
 
----------------------------------
-Do you Yahoo!?
-Protect your identity with Yahoo! Mail AddressGuard
---0-1838503673-1068569838=:16880
-Content-Type: text/html; charset=us-ascii
+I'd like to be able to redirect packets instead of dropping them. 
+I'd also like to be able to do this as a catch-all rule at the end of
+my input and forward chains.  The overall idea is to combine randomly
+dropping packets, tarpitting, and live honeypot responses (from
+different OS'es) in an effort to utterly stump recon efforts.  In my
+head, I have visions of Linux boxes reporting they're running IIS 5
+and Crays running (x app), etc.
 
-<DIV>Dear Friends ,</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I already submitted my question to netfilter mailing list , but i think , i must do some explanation again of my requrement ............pls attention . </DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I have an DHCP Server&nbsp; which&nbsp; is runs on Red Hat Linux 8&nbsp; machine , this DHCP server normally allow to access Cable modem users . </DIV>
-<DIV>&nbsp;</DIV>
-<DIV>But currently i'm testing this on a LAN&nbsp; with few NICs. ...... so What i'm trying to do is ..............</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>In my LAN i have prepaired 3 PCs.</DIV>
-<DIV>1. Configured the DHCP server and test the other clients for the ip assining , they connected well .</DIV>
-<DIV>2.Now i need to allow DHCP faclility for a One PC and others should be DROP.So those machines NICs have MAC addresses .</DIV>
-<DIV>3.MAC address wise it can be DROP/ACCEPT the users.</DIV>
-<DIV>4. finally when test the clients there must be only one users has to be connected to the DHCP server&nbsp; and the others can't be have an ip .</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>so this is the main thing that i want to do ......................</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I think u all can understand the situation , if u don't mind can somebody give me the iptable configurations for this matter . this is a extremly needful request ....pls .</DIV>
-<DIV>i need ur help </DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thnak u </DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV><p><hr SIZE=1>
-Do you Yahoo!?<br>
-<a href="http://antispam.yahoo.com/whatsnewfree">Protect your identity with Yahoo! Mail AddressGuard</a>
---0-1838503673-1068569838=:16880--
+In my testing so far, I've found that combining randomly dropping
+packets and tarpitting to be extremely effective at slowing normal
+NMap scans.  In some cases, scan time was increased to well over two
+hours.  Now I'd like to introduce live ports into that mix.  This
+way, a positive hit on a live port would not necessarily have to be
+one of my production boxes.  In fact, it probably isn't...
+
+Thanks again,
+
+Bob
+
 
