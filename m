@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: AW: Firewall workaround
-Date: Fri, 16 Jan 2004 18:38:09 +0000
+From: <bmcdowell@coxhealthplans.com>
+Subject: RE: AW: Firewall workaround
+Date: Fri, 16 Jan 2004 12:44:02 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401161838.09129.Antony@Soft-Solutions.co.uk>
-References: <357895CFC8CB7C44900D6A4F46D08AA90459CF@exchangeserver.IAT.local> <200401161810.29026.Antony@Soft-Solutions.co.uk> <20040116182408.M27061@tkevans.com>
+Message-ID: <7A3B4AA360FDEF448F3390421FC8D731014BE567@coxhpexg.coxhp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040116182408.M27061@tkevans.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,40 +19,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 16 January 2004 6:24 pm, Tim Evans wrote:
 
-> On Fri, 16 Jan 2004 18:10:29 +0000, Antony Stone wrote
->
-> > I thought you meant you wanted to bypass the firewall filtering and
-> > access some (specific) machines using protocols which were being
-> > blocked, but if you want to have a more general routing solution
-> > then I agree that a VPN is the way to go.
->
-> And you do, of course, mean to observe your organization's Internet
-> security policies, right?  Organizations put firewalls in place for a
-> reason.
+And of course, people by-pass firewalls for a reason too.  Clearly the =
+user here feels the firewall is too restrictive.
 
-I am, of course, assuming that the original poster of the question is 
-complying with the relevant Acceptable Use Policies, however if he wants to 
-use the services which are made available (such as SSH on port 22) to access 
-other services out on the Internet, then I'm not going to say he can't do it.
+It's a lot like passwords.  If they're complex enough to be secure, =
+people use post-it notes.
 
-Any sysadmin who thinks that a firewall which allows SSH is secure doesn't 
-understand enough about common protocols.
+The real question is whether or not the user has the authority to =
+by-pass it and whether or not the firewall admin has the authority to be =
+so restrictive in the first place.
 
-If the AUP specifies what the end user is allowed to do with SSH, then of 
-course that's a different matter.
 
-Regards,
+Bob
 
-Antony.
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Tim Evans
+Sent: Friday, January 16, 2004 12:24 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: AW: Firewall workaround
 
--- 
-Anything that improbable is effectively impossible.
 
- - Murray Gell-Mann, Novel Prizewinner in Physics
+On Fri, 16 Jan 2004 18:10:29 +0000, Antony Stone wrote
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> I thought you meant you wanted to bypass the firewall filtering and=20
+> access some (specific) machines using protocols which were being=20
+> blocked, but if you want to have a more general routing solution=20
+> then I agree that a VPN is the way to go.
+
+And you do, of course, mean to observe your organization's Internet =
+security
+policies, right?  Organizations put firewalls in place for a reason.
+
+--
+Tim Evans, TKEvans.com, Inc.    |    5 Chestnut Court
+tkevans@tkevans.com             |    Owings Mills, MD 21117
+http://www.tkevans.com/         |    443-394-3864
+http://www.come-here.com/News/  |   =20
 
 
