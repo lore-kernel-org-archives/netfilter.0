@@ -1,11 +1,12 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: Iptables fails on -m state --state!
-Date: Thu, 17 Feb 2005 12:36:14 -0500 (EST)
-Message-ID: <49063.142.169.215.10.1108661774.squirrel@142.169.215.10>
-References: <4214DD69.50903@fastwebnet.it>
+From: Mohammad Khan <mkhan@lextranet.com>
+Subject: Re: DNATing back to the same network
+Date: Thu, 17 Feb 2005 12:31:41 -0500
+Message-ID: <1108661500.24164.1.camel@localhost.localdomain>
+References: <Pine.LNX.4.58.0501131538030.16403@desktop.agenda.si>
+	<49876.142.169.215.10.1105631762.squirrel@142.169.215.10>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <4214DD69.50903@fastwebnet.it>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <49876.142.169.215.10.1105631762.squirrel@142.169.215.10>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Marco <marco.nicoloso@fastwebnet.it>
-Cc: netfilter@lists.netfilter.org
+To: Samuel Jean <sj-netfilter@cookinglinux.org>, netfilter@lists.netfilter.org
 
-On Thu, February 17, 2005 1:07 pm, Marco said:
-> Hi there,
->
-> even if the corresponding module is built into the kernel and loaded,
-> iptables fails (No chain/target/match with that name, or something like
-> that).
->
-> What can I do?
+On Thu, 2005-01-13 at 10:56, Samuel Jean wrote:
+> On Thu, January 13, 2005 9:42 am, danci@agenda.si said:
+> > Hi!
+> 
+> Hi Danilo!
+> 
+> > [...]
+> > Is it possible to change netfilter behaviour? Any other work-around for
+> > that?
+> 
+> http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
+> 
+> >
+> > Thanks, Danilo
+> 
+> HTH,
+> 
+> Samuel
+> 
 
-Please show us the output of :
+I had the same issue.
+Thanks for posting the documentation link.
 
-cat /proc/net/ip_tables_matches | grep state
+MOhammad
 
-And show us the rule you did input.
-
->
-> Thanks
->
-> Marco Nicoloso
->
->
-
-Best regards,
-Samuel
+-- 
+"Mad cow? You'd be mad too, if someone was trying to eat you."
 
 
