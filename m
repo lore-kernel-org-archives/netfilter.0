@@ -1,11 +1,9 @@
-From: "Yan Li" <netfilterlist@hotmail.com>
-Subject: About libipq
-Date: Thu, 24 Oct 2002 17:26:01 +0100
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: setting up my own ruleset under red hat 8.0
+Date: Thu, 24 Oct 2002 11:46:50 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OE23n4DVvm24TzmKYTg00006f8e@hotmail.com>
+Message-ID: <Pine.LNX.4.44.0210241142001.364-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0009_01C27B82.6CAFA310"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,66 +14,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0009_01C27B82.6CAFA310
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+  ok, time for another almost certainly trivial question.
+what's the proper procedure for establishing my own iptables
+ruleset for red hat 8.0?
 
-SGkgYWxsLA0KDQpJIHdyb3RlIGEgc21hbGwgcHJvZ3JhbSB3aGljaCBjb3B5IHRoZSBpbnB1dCBw
-YWNrZXRzIGZyb20gdGhlIGtlcm5lbCB0byB0aGUgdXNlcnNwYWNlIHVzaW5nIGxpYmlwcS4gQW5k
-IHRoZSBwYWNrZXRzIGFyZSBzdG9yZWQgaW4gYSBidWZmZXIgaW4gdXNlcnNwYWNlIHdoaWNoIGlz
-IGFjdHVyYWxseSBhbiBhcnJheSwgc2F5IGJ1Zi4gIA0KDQpVc2luZzogDQppcHFfcGFja2V0X21z
-Z190ICogbSA9IGlwcV9nZXRfcGFja2V0KGJ1Zik7DQoNCkkgY2FuIGFjY2VzcyBzb21lIHBhcmFt
-ZXRlcnMgb2YgdGhlIHBhY2tldHMgbGlrZSB0aGUgcGFja2V0IElELCBwYWNrZXQgbGVuZ3RoIHdo
-aWNoIGFyZSBkZWZpbmVkIGluIHRoZSBzdHJ1Y3QgaXBxX3BhY2tldF9tc2dfdC4gRm9yIGV4YW1w
-bGUsIG0tPnBhY2tldF9pZCBwb2ludHMgdG8gdGhlIHBhY2tldCBJRC4gQnV0IGhvdyBjYW4gSSBn
-ZXQgb3RoZXIgaW5mb3JtYXRpb24gb2YgdGhlIHBhY2tldHMsIGxpa2UgdGhlIHNvdXJjZSBhbmQg
-ZGVzdGluYXRpb24gYWRkcmVzcywgdGhlIHByb3RvY29sLCBldGMuIElzIHRoZXJlIGFueSBmdW5j
-dGlvbiBvciBzaG91bGQgSSByZWFkIGRpZmZlcmVudCB1bml0IG9mIHRoZSBhcnJheSwgYnVmLCB0
-byBkbyB0aGF0PyANCg0KSSBhbSBvbmx5IGEgYmVnaW5uZXIuIE1hbnkgdGhhbmtzIGZvciB5b3Vy
-IGtpbmQgcmVwbHkuDQoNCllhbg==
+  first, i noticed that the startup script /etc/init.d/iptables
+will, at boot time, look for the iptables config file
+/etc/sysconfig/iptables and will run "iptables-restore" based on the 
+contents of that file as it was saved during installation.
 
-------=_NextPart_000_0009_01C27B82.6CAFA310
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+  once i define my own ruleset, i'm assuming that, first, i
+want to delete /etc/sysconfig/iptables to remove any trace of
+the former ruleset so that it does not get pulled in at
+boot time.
 
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
-MC4yODAwLjExMDYiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
-Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+
-SGkgYWxsLDwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT0iVGltZXMgTmV3IFJvbWFuIj48
-L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+SSB3
-cm90ZSBhIHNtYWxsIHByb2dyYW0gd2hpY2gmbmJzcDtjb3B5IHRoZSANCmlucHV0IHBhY2tldHMg
-ZnJvbSB0aGUga2VybmVsIHRvIHRoZSB1c2Vyc3BhY2UgdXNpbmcgbGliaXBxLiBBbmQgdGhlIHBh
-Y2tldHMgYXJlIA0Kc3RvcmVkIGluIGEgYnVmZmVyIGluIHVzZXJzcGFjZSB3aGljaCBpcyBhY3R1
-cmFsbHkmbmJzcDthbiBhcnJheSwgc2F5IDxFTT48Rk9OVCANCmZhY2U9IkNvdXJpZXIgTmV3IiBz
-aXplPTI+YnVmPC9GT05UPjwvRU0+LjxFTT4mbmJzcDsgPC9FTT48L0ZPTlQ+PC9ESVY+DQo8RElW
-PjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48
-Rk9OVCBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPlVzaW5nOiA8L0ZPTlQ+PC9ESVY+DQo8RElWPjxG
-T05UIGZhY2U9IkNvdXJpZXIgTmV3IiBzaXplPTI+aXBxX3BhY2tldF9tc2dfdCAqIG0gDQo9Jm5i
-c3A7aXBxX2dldF9wYWNrZXQoYnVmKTs8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9IlRp
-bWVzIE5ldyBSb21hbiI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBmYWNlPSJUaW1l
-cyBOZXcgUm9tYW4iPkkgY2FuIGFjY2VzcyBzb21lIHBhcmFtZXRlcnMgb2YgdGhlIHBhY2tldHMg
-DQpsaWtlIHRoZSBwYWNrZXQgSUQsIHBhY2tldCBsZW5ndGggd2hpY2ggYXJlIGRlZmluZWQgaW4g
-dGhlIDxGT05UIA0KZmFjZT0iQ291cmllciBOZXciIHNpemU9Mj5zdHJ1Y3QgaXBxX3BhY2tldF9t
-c2dfdDwvRk9OVD4uIEZvciBleGFtcGxlLCA8Rk9OVCANCmZhY2U9IkNvdXJpZXIgTmV3IiBzaXpl
-PTI+bS0mZ3Q7cGFja2V0X2lkPC9GT05UPiBwb2ludHMgdG8gdGhlJm5ic3A7cGFja2V0IA0KSUQu
-Jm5ic3A7QnV0IGhvdyBjYW4gSSBnZXQgb3RoZXIgaW5mb3JtYXRpb24gb2YgdGhlIHBhY2tldHMs
-IGxpa2UgdGhlIHNvdXJjZSBhbmQgDQpkZXN0aW5hdGlvbiBhZGRyZXNzLCB0aGUgcHJvdG9jb2ws
-IGV0Yy4gSXMgdGhlcmUgYW55IGZ1bmN0aW9uIG9yIHNob3VsZCBJIHJlYWQgDQpkaWZmZXJlbnQg
-dW5pdCBvZiB0aGUgYXJyYXksPEVNPiZuYnNwOzxGT05UIGZhY2U9IkNvdXJpZXIgTmV3IiANCnNp
-emU9Mj5idWYsPC9GT05UPiZuYnNwOzwvRU0+dG8gZG8gdGhhdD8mbmJzcDs8L0ZPTlQ+PC9ESVY+
-DQo8RElWPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+PC9GT05UPiZuYnNwOzwvRElWPg0K
-PERJVj48Rk9OVCBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPkkgYW0gb25seSBhIGJlZ2lubmVyLiBN
-YW55IHRoYW5rcyBmb3IgeW91ciANCmtpbmQgcmVwbHkuPC9GT05UPjwvRElWPg0KPERJVj48Rk9O
-VCBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQg
-ZmFjZT0iVGltZXMgTmV3IFJvbWFuIj5ZYW48L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRNTD4NCg==
+  and second, what's the preferred place to add my own ruleset?
+i can certainly add a script call to /etc/rc.local, for instance.
+is there a better place?
 
-------=_NextPart_000_0009_01C27B82.6CAFA310--
+rday
+
 
