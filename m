@@ -1,107 +1,83 @@
-From: "Sathi" <sathiyan@gmx.net>
-Subject: Destination NAT
-Date: Fri, 14 Mar 2003 16:31:44 +0530
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <045501c2ea19$1dfc4830$870110ac@samsi>
-Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0452_01C2EA47.332FBF60"
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+From: jim@netgate.com (Jim Thompson)
+Subject: Re: [NoCat] spoofing client IP configuration
+Date: Thu, 13 Mar 2003 16:52:30 -0800 (PST)
+Sender: hostap-admin@shmoo.com
+Message-ID: <20030314005230.85F27F4006@netgate.com>
+References: <5.2.0.9.0.20030313064430.0323ecb0@yeagerautomation.com>
+Return-path: <hostap-admin@shmoo.com>
+In-Reply-To: <5.2.0.9.0.20030313064430.0323ecb0@yeagerautomation.com>
+Errors-To: hostap-admin@shmoo.com
+List-Unsubscribe: <http://lists.shmoo.com/mailman/listinfo/hostap>,
+	<mailto:hostap-request@shmoo.com?subject=unsubscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+List-Post: <mailto:hostap@shmoo.com>
+List-Help: <mailto:hostap-request@shmoo.com?subject=help>
+List-Subscribe: <http://lists.shmoo.com/mailman/listinfo/hostap>,
+	<mailto:hostap-request@shmoo.com?subject=subscribe>
+List-Archive: <http://lists.shmoo.com/pipermail/hostap/>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: doug@aircomwireless.net, hostap@shmoo.com, , netfilter@lists.netfilter.org, nocat@lists.nocat.net, , nocatnet@lists.nocat.net, 
 
-This is a multi-part message in MIME format.
+Its been discussed on the list before.  Its basically spoofed ARP responses and NAT.
 
-------=_NextPart_000_0452_01C2EA47.332FBF60
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Check the archives...
 
-Hello All,
+Jim
 
-I am running squid as reverse proxy and its working fine.
+	From nocat-admin@lists.nocat.net  Thu Mar 13 04:14:29 2003
+	X-Original-To: jim@netgate.com
+	X-Sender: doug@ycomsystems.com@yeagerautomation.com
+	X-Mailer: QUALCOMM Windows Eudora Version 5.2.0.9
+	To: nocat@lists.nocat.net;, nocatnet@lists.nocat.net;,
+		hostap@shmoo.com;, netfilter@lists.netfilter.org
+	From: Doug Yeager <doug@aircomwireless.net>
+	Mime-Version: 1.0
+	Content-Type: text/plain; charset="us-ascii"; format=flowed
+	Subject: [NoCat] spoofing client IP configuration
+	Sender: nocat-admin@lists.nocat.net
+	Errors-To: nocat-admin@lists.nocat.net
+	X-BeenThere: nocat@lists.nocat.net
+	X-Mailman-Version: 2.0.12
+	Precedence: bulk
+	List-Help: <mailto:nocat-request@lists.nocat.net?subject=help>
+	List-Post: <mailto:nocat@lists.nocat.net>
+	List-Subscribe: <http://lists.nocat.net/mailman/listinfo/nocat>,
+		<mailto:nocat-request@lists.nocat.net?subject=subscribe>
+	List-Id: Development list for the NoCatAuth project <nocat.lists.nocat.net>
+	List-Unsubscribe: <http://lists.nocat.net/mailman/listinfo/nocat>,
+		<mailto:nocat-request@lists.nocat.net?subject=unsubscribe>
+	List-Archive: <http://lists.nocat.net/pipermail/nocat/>
+	Date: Thu, 13 Mar 2003 06:58:24 -0500
 
-Now i need to set iptables rules to forward ftp ports directly to =
-backend server for file upload.
+	o.k.,
+	managing a public WLAN, people have all sorts of IP configurations preset 
+	on their clients (not all are dhcp clients enabled).
+	i am currently running a DHCP server and it works *MOST* of the time.  the 
+	ultimate solution would be to somehow ignore the client ip configuration 
+	and map to the clients on the server side based on their mac address, or 
+	something like that.  i know this is possible because there are hotels that 
+	do this kind of thing.....some terms like "nomadic server" have popped up.
 
-I set in prerouting rule as
+	i want the server to route based on local addresses, so this service 
+	hopefully would run at the mac level.
+	the public wlan currently runs:
+	nocat gateway
+	HostAP
+	Iptables firewall
+	DHCPD  (server in question by this email)
 
-/sbin/iptables -t nat -A PREROUTING -p tcp --dport 20 -d 172.16.1.10 -j =
-DNAT --to 172.16.1.25
-/sbin/iptables -t nat -A PREROUTING -p tcp --dport 21 -d 172.16.1.10 -j =
-DNAT --to 172.16.1.25
+	any alternatives to DHCP that do this would be great....i just want people 
+	configured to their work ip configs to be able to get on.  would moving to 
+	802.11 auth help?  i don't think so because after authentication you still 
+	need an IP to do anything...unless i'm thinking about this wrong.
 
-Note: Reverse proxy and backend servers are running in same network.and =
-by reverse proxy has only one network interface.
-
-but i was not able to connect to backend server.
-
-In tcpdump i can see a request from client to squid server but it is not =
-forwarding to backend server.
-
-What is the correct rule to forward the ftp ports to backend server.
-
-Regards,
-Sathi
-
-------=_NextPart_000_0452_01C2EA47.332FBF60
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2314.1000" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hello All,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am running squid as reverse proxy and =
-its working=20
-fine.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Now i need to set iptables rules to =
-forward ftp=20
-ports directly to backend server for file upload.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I set in prerouting rule =
-as</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>/sbin/iptables -t nat -A PREROUTING -p =
-tcp --dport=20
-20 -d 172.16.1.10 -j DNAT --to 172.16.1.25</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>/sbin/iptables -t nat -A PREROUTING -p =
-tcp --dport=20
-21 -d 172.16.1.10 -j DNAT --to 172.16.1.25</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Note: Reverse proxy and backend servers are running in same =
-network.and by=20
-reverse proxy has only one network interface.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>but i was not able to connect to backend server.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>In tcpdump i can see a request from client to squid server but it =
-is not=20
-forwarding to backend server.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>What is the correct rule to forward the ftp ports to backend =
-server.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Regards,</DIV>
-<DIV>Sathi</DIV></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0452_01C2EA47.332FBF60--
+	thx,
+	doug
 
 
+	_______________________________________________
+	NoCat mailing list
+	NoCat@lists.nocat.net
+	http://lists.nocat.net/mailman/listinfo/nocat
