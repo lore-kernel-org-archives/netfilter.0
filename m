@@ -1,12 +1,13 @@
-From: James Morris <jmorris@intercode.com.au>
-Subject: Re: [SECURITY] Local Netfilter / IPTables IP Queue PID Wrap Flaw
-Date: Wed, 4 Dec 2002 00:29:11 +1100 (EST)
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: how to interconnect two private network
+Date: 03 Dec 2002 14:14:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Mutt.LNX.4.44.0212040025010.28607-100000__30251.6040196226$1038924980@blackbird.intercode.com.au>
-References: <Mutt.LNX.4.44.0212032155570.27990-100000@blackbird.intercode.com.au>
+Message-ID: <1038921285.8905.9.camel@elendil.intranet.cartel-securite.net>
+References: <200212030913.02744.michel.guilhem@cp.finances.gouv.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Mutt.LNX.4.44.0212032155570.27990-100000@blackbird.intercode.com.au>
+In-Reply-To: <200212030913.02744.michel.guilhem@cp.finances.gouv.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,36 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-announce@lists.netfilter.org
-Cc: netfilter-devel@lists.samba.org, netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "GUILHEM Michel (34)" <michel.guilhem@cp.finances.gouv.fr>
+Cc: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Le mar 03/12/2002 =E0 10:13, GUILHEM Michel (34) a =E9crit :
+[...]
+> I want trying to do this the following rule
+> iptables -t nat -A POSTROUTING -s 10.0.0.0/255.0.0.0 -o eth0 -j SNAT --=
+to=20
+> source 154.0.0.0/255.0.0.0=20
+> But i am not sure , is my probleme solvable by a combination of iptable=
+s , nat=20
+> and route ?
 
-Just an update on this, someone has pointed out that the recommended
-2.4.20 kernel has a ext3 data corruption bug (which fortunately will not
-affect most users).
+I do not think DNAT will work until you specify a DNAT rule per client
+(i.e. static DNAT).
 
-The changset comments for the ext3 bug are at:
-<http://linux.bkbits.net:8080/linux-2.4/cset@1.793?nav=index.html|ChangeSet@-1d>
+You can use patch-o-matic NETMAP target that is almost what you exactly
+want :
 
-Please be careful if updating to 2.4.20, or wait until 2.4.21.
+	http://www.netfilter.org/documentation/pomlist/pom-base.html#NETMAP
 
+NETMAP target just alters network part of IP, letting host part
+unmodified. It can provide both DNAT and SNAT if respectively used in
+PREROUTING or POSTROUTING.
 
-- - James
-- -- 
-James Morris
-<jmorris@intercode.com.au>
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE97LGqKVbBrEQtqycRAnyaAJ9xMP2FFhMiB4EHQlEdCQ2Kf7z2bwCeLq2J
-IS9YvQzsHYCJILYLo6vsbmo=
-=V9f/
------END PGP SIGNATURE-----
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security expert  - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
