@@ -1,13 +1,13 @@
 From: Marcello Scacchetti <marcello.scacchetti@nextrem.it>
-Subject: Re: Firewall help
-Date: 11 Dec 2002 21:01:35 +0100
+Subject: Re: Filter by IP address problems
+Date: 11 Dec 2002 22:04:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1039636895.24853.12.camel@nxitmirms1>
-References: <000301c2a14e$7733f510$0114a8c0@CyberDawn.Net>
+Message-ID: <1039640664.25014.8.camel@nxitmirms1>
+References: <1039642859.4340.14.camel@damon.betcolan>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000301c2a14e$7733f510$0114a8c0@CyberDawn.Net>
+In-Reply-To: <1039642859.4340.14.camel@damon.betcolan>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,48 +20,67 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
-make sure you have enabled ip forwarding into
-/proc/sys/net/ipv4/ip_forward, if this file contains 0 do an:
-echo "1" > /proc/sys/net/ipv4/ip_forward. This should solve the problem
-between internal network and dmz. For the external network you probably
-need nat or masq. This is because each machine on dmz and internal
-network should have default gateway set to firewall interfaces suppose
-for dmz the gateway could be: 192.168.1.1 and for internal network could
-be: 192.168.2.1. Each of this addresses should be configured on firewall
-interfaces as (for example) eth0 and eth1. To be able to talk with
-public services you must use nat or set on all public servers something
-like: route add -net 192.168.1.0 netmask 255.255.255.0 gw
-xxx.xxx.xxx.xxx
-and
-route add -net 192.168.2.0 netmask 255.255.255.0 gw xxx.xxx.xxx.xxx
-where xxx.xxx.xxx.xxx is your firewall external interface ip address (in
-my example eth2 interface address).
-This of course could lead to many security risks, so i can't suggest
-this to you, really. Better could be to set a masq on packets coming
-from your dmz and internal network going to external networks. This
-could be done on the firewall using something like:
-iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
-where eth2 is your external firewall interface.
-Hope to have solved your problem,
-
+Hi Damon,
+can you post on this list the output of:
+iptables -nL
+and of:
+iptables -t nat -nL
+and if possible the output of:
+ifconfig
+hiding public ip addresses?
+If you prefer you can use output of iptables-save for me is the same.
+Thanks,
 			Marcello
 
 
-Il mer, 2002-12-11 alle 20:49, DeWet van Rooyen ha scritto:
-> I installed a machine with Redhat 8 and are trying to set up a iptables
-> firewall with 2 internal segments (DMZ and internal network).
-> My machine have 3 Network cards.
->  
->  Is this possible ?
->  
->  I can seem to get all the segments to see each other. Can you give me an
->  idea on how to do this. Is it just a question of routes / Nat and Arp
->  entries ?
->  
-> DMZ - 192.168.1.0 / 255.255.255.0
-> Internal Network / 192.168.2.0 / 255.255.255.0
-> For the external interface, I have 64 ip addresses - 255.255.255.192
+Il mer, 2002-12-11 alle 22:40, Damon Brinkley ha scritto:
+> Hey everyone!  I'm getting extremely frustrated at iptables right now
+> because it doesn't seem to follow the rules as ipchains did.  Basically
+> I'm just trying to replace my ipchains server with a new computer that
+> uses 2.4 and iptables.  This is a NAT/gateway machine and we filter our
+> users by IP addresses.  The different ip blocks have certain access to
+> certain services.  I've copied over my old script that's running right
+> now and changed everything to work with iptables but it doesn't seem to
+> deny anyone.
+> 
+> Here's the basic rules I have right now for testing.  
+> 
+> ###################################
+> 
+> # disable ip forwarding while rules are applied
+> echo 0 > /proc/sys/net/ipv4/ip_forward
+> 
+> /sbin/modprobe iptable_nat
+> /sbin/modprobe ip_conntrack
+> 
+> /sbin/iptables -F
+> /sbin/iptables -t nat -F
+> /sbin/iptables -X
+> /sbin/iptables -t nat -X
+> 
+> /sbin/iptables -P INPUT DROP
+> /sbin/iptables -P OUTPUT DROP
+> /sbin/iptables -P FORWARD DROP
+> 
+> # no access
+> /sbin/iptables -A INPUT -s 172.17.0.0/20 -j DROP
+> 
+> # NAT
+> /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+> /sbin/iptables -A FORWARD -j ACCEPT
+> 
+> # turn on ip forwarding
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+> 
+> ####################
+> 
+> If I change my laptop IP to 172.17.0.244 then I'm able to ping
+> www.yahoo.com when the no access rule should deny then from doing
+> anything.  This is all working on a machine that uses ipchains...what am
+> I doing wrong?
+> 
+> Thanks
+> Damon Brinkley
 -- 
 Marcello Scacchetti <marcello.scacchetti@nextrem.it>
 
