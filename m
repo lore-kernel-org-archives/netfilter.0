@@ -1,11 +1,12 @@
-From: Frederic Gobin <frederic.gobin@earthtvnet.com>
-Subject: ulog daemon : undefined symbol: mysql_connect
-Date: Thu, 24 Apr 2003 13:20:20 +0200
+From: Yury Bokhoncovich <byg@center-f1.ru>
+Subject: Re: Is DIVERT w/o forwarding feasible?
+Date: Thu, 24 Apr 2003 18:56:19 +0700 (NOVST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BBFCA355-7646-11D7-84F3-0003938423EC@earthtvnet.com>
-Mime-Version: 1.0 (Apple Message framework v552)
-Content-Transfer-Encoding: 7bit
+Message-ID: <Pine.LNX.4.44L0.0304241855030.11620-100000@panda.center-f1.ru>
+References: <3D7EFBCF.70406@fugmann.dhs.org>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3D7EFBCF.70406@fugmann.dhs.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,44 +16,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Anders Fugmann <afu@fugmann.dhs.org>
+Cc: netfilter@lists.netfilter.org
 
-Hi there,
+Hello!
 
-I currently trying th ulog daemon and have a little problem :
+We had found what we look for: TINC. JFYI.
 
-Each time I start the daemon, I get the following error :
+On Wed, 11 Sep 2002, Anders Fugmann wrote:
 
-Thu Apr 24 14:16:34 2003 <7> ulogd.c:455 load_plugins: 
-'/usr/local/lib/ulogd/ulogd_MYSQL.so': 
-/usr/local/lib/ulogd/ulogd_MYSQL.so: undefined symbol: mysql_connect
+> > I need an advice for this topic: is diverting without forwarding feasible?
 
-Used build steps :
+> Technically yes. But you would have to spend alot of time coding, and 
 
-	configure --with-mysql
-		(without problems, even find mysql at the right place ...)
-	make
-		(had some problems, resolved them by changing a line in the 
-Rules.make:
-		From :
-			MYSQL_CFLAGS=-I/usr/local/mysql/include/mysql
-		To :
-			MYSQL_CFLAGS=-I/usr/local/mysql/include
-		After that, no compile problems.)
-	make install
-		(no problems)
+-- 
+WBR, Yury Bokhoncovich, Senior System Administrator, NOC of F1 Group.
+Phone: +7 (3832) 106228, ext.140, E-mail: byg@center-f1.ru.
+Unix is like a wigwam -- no Gates, no Windows, and an Apache inside.
 
-Used versions :
-	Kernel	: 2.4.20
-	Netfilter	: 1.2.7a
-	Ulogd	: 1.0
-	Mysql	: 4.0.12
-
-I hope that somebody can help ...
-
-Thanks for reading
-
-Frederic Gobin
 
 
