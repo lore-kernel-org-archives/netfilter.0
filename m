@@ -1,12 +1,11 @@
-From: "Martinez, Michael" <MMARTINEZ@CSREES.USDA.GOV>
-Subject: The basis for deciding which NIC to use in a multiple NIC system
-Date: Wed, 2 Jun 2004 14:42:02 -0400
+From: Sheldon Hearn <sheldonh@starjuice.net>
+Subject: Channel bonding and IRQ affinity
+Date: Wed, 02 Jun 2004 20:53:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9908FCB837A50642B74E2BEC198843091AF245@csrees-exchsrvb.csrees.usda.gov>
+Message-ID: <1086202435.21053.11.camel@axl.seasidesoftware.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,10 +18,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-TGV0J3Mgc2F5IHlvdSBoYXZlIGEgTGludXggc3lzdGVtIHdpdGggdHdvIE5JQyBjYXJkcyBlYWNo
-IG9uIHRoZSBzYW1lIHN1Ym5ldC4gTGV0J3Mgc2F5IHRoZSBzeXN0ZW0gd2FudHMgdG8gdGFsayB0
-byBhbm90aGVyIGNvbXB1dGVyIG9uIHRoZSBzdWJuZXQuIEhvdyBkb2VzIHRoZSBrZXJuZWwgZGVj
-aWRlIHdoaWNoIE5JQyB0byB1c2U/DQogDQpJcyB0aGVyZSBhIHdheSB0byBmb3JjZSB0aGUgdXNl
-IG9mIGEgcGFydGljdWxhciBOSUMgZm9yIGFuIGFwcGxpY2F0aW9uIHJ1bm5pbmcgdW5kZXIgYSBw
-YXJ0aWN1bGFyIHVzZXJuYW1lPw0KIA0KTWljaGFlbCBNYXJ0aW5leg0KIA0K
+
+With the 2.6 kernel, it seems that a single CPU is used to service a
+single NIC.  I've read a paper on NAPI that explains why this is done,
+and that makes sense.
+
+However, it does mean you can't scale a Linux box horizontally (i.e.
+more CPUs) to increase its maximum loss-free forwarding rate.
+
+So I'm thinking of getting a couple of 4-port cards and using channel
+bonding to produce two bonded interfaces, each serviced by 4 ports.
+
+But I worry. :-)
+
+Will the code path from packet receipt, through Netfilter, and up to
+packet transmission fix one bonded interface to a single CPU, or is the
+limitation that only one CPU is used to service a single physical NIC?
+
+Thanks,
+Sheldon.
+
 
