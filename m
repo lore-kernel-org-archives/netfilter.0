@@ -1,8 +1,8 @@
 From: "Alex Bennee" <alex@bennee.com>
 Subject: Re: how to drop MP3 and other Downloads
-Date: Tue, 12 Nov 2002 12:30:13 -0000 (GMT)
+Date: Tue, 12 Nov 2002 12:32:21 -0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <38976.217.42.120.194.1037104213.squirrel@www.bennee.com>
+Message-ID: <38978.217.42.120.194.1037104341.squirrel@www.bennee.com>
 References: <088301c28a44$e3aa6740$13fcc5cb@nextto>
 Reply-To: alex@bennee.com
 Mime-Version: 1.0
@@ -29,13 +29,14 @@ hare ram said:
 > how do the drop all downloads more than 1MB from
 > the day time
 > and rest of the time open for all
->
-> any suggestion is greate
-> thanks
-> hare
 
-You can try the connytes patch
-http://libre.act-europe.fr/gvd/gvd-1.2.5-src.tgz
+That of course was not the connbytes patch. You can find it at
+http://luxik.cdi.cz/~devik/connbytes/.
+
+You may need some sort of crontab to change the rules as you go. You can
+also use connbytes with the --mark to move all long lived downloads to a
+lower tc class if your doing traffic shaping.
+
 Alex
 www.bennee.com/~alex/
 
