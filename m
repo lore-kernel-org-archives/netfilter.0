@@ -1,12 +1,13 @@
-From: madhav bhasin <madhavbhasin@yahoo.com>
-Subject: XMA, syn, fin etsc scans
-Date: Sun, 21 Dec 2003 08:52:11 -0800 (PST)
+From: Alex Satrapa <alex@lintelsys.com.au>
+Subject: Re: Questions about Patch-o-Matic
+Date: Mon, 22 Dec 2003 08:30:37 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031221165211.62151.qmail@web10102.mail.yahoo.com>
-References: <20031221052832.21599.60293.Mailman@netfilter-sponsored-by.noris.net>
+Message-ID: <3FE610FD.6080505@lintelsys.com.au>
+References: <EOEIJIEEJODPHJKGJHMBGEHKCBAA.arthur.niu@neighbourhoodlink.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031221052832.21599.60293.Mailman@netfilter-sponsored-by.noris.net>
+In-Reply-To: <EOEIJIEEJODPHJKGJHMBGEHKCBAA.arthur.niu@neighbourhoodlink.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,21 +17,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Arthur Niu wrote:
+>    1. How to check kernel version?
 
-Hi,
- 
-can you please guide me to create rules which can
-prevent XMAS, syn stealth,fin stealth scans 
-against my firewall.how should i block them
+'uname -r' will return a version number in the format '2.4.21'.
 
-Madhav
+>    2. When I run ./runme base, it told me program =93'patch' is missing,
+>       please install it!=94, what does the patch mean? Redhat patch or
+>       iptables patch?
 
-__________________________________
-Do you Yahoo!?
-New Yahoo! Photos - easier uploading and sharing.
-http://photos.yahoo.com/
+That means you need to install the program called 'patch'. I don't know=20
+which RPM it comes in though. This is actually a piece of software which=20
+applies patches to existing source code thus:
+
+    [root@localost]# patch -p0 < myversion.diff
+
+HTH
+Alex
+
 
