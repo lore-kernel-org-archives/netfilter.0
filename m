@@ -1,13 +1,17 @@
-From: Tom Van Overbeke <tvanoverbeke@ccncsi.net>
-Subject: RE: New not syn (again...)
-Date: Mon, 04 Aug 2003 10:01:08 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Newbie: why is this packet being dropped/logged?
+Date: 04 Aug 2003 10:04:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c35a5e$90f4bdd0$d90315ac@rsrc.be.local>
-References: <7C9884991ADAE0479C14F10C858BCDF5122E16@alderaan.smgtec.com>
+Message-ID: <1059984295.921.22.camel@elendil.intranet.cartel-securite.net>
+References: <3F2DEB07.1060801@mega-bucks.co.jp>
+	 <1059980959.926.1.camel@elendil.intranet.cartel-securite.net>
+	 <3F2E0B71.9010408@mega-bucks.co.jp>
+	 <1059982839.921.10.camel@elendil.intranet.cartel-securite.net>
+	 <3F2E1026.2040000@mega-bucks.co.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <7C9884991ADAE0479C14F10C858BCDF5122E16@alderaan.smgtec.com>
+In-Reply-To: <3F2E1026.2040000@mega-bucks.co.jp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +21,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Le lun 04/08/2003 =E0 09:49, Jean-Christian Imbeault a =E9crit :
+> Had a look and no errors were logged in that file.
 
+This file is not a log. This is your conntrack table. When it is full,
+packets that should have been spoted as NEW are INVALID because there's
+no place left to handle them. Afaik, INVALID for TCP means the packets
+is really fucked or an error occured during state matching.
 
-I'm having the same problem as the original poster, i'd like to have these
-entries no longer visible in my firewall logs, so do you have any idea on
-how to change this "conntrack timeout value" to something higher ?
+Could you post an iptables-save output for your INPUT chain so we can
+have a complete ruleset description ?
 
+> Also, is my rule overkill in the sense that specifying all three of NEW=
+,
+> ESTABLISHED and RELATED states is not necessary. I could get away with
+> just NEW and RELATED?
 
-thanks,
+It is a bit redundant with previous rule that allows ESTABLISHED and
+RELATED packets, whatever source, destination and protocol they may
+have. So, ESTABLISHED HTTP packets to 203.179.86.66 would not reach your
+rule, being accepted by previous one. Moreover, RELATED is useless, as
+HTTP does not have related connections such as FTP or IRC.
 
-
-Tom.
-
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Daniel Chemko
-Sent: 01 August 2003 17:57
-To: Gavin Hamill; netfilter@lists.netfilter.org
-Subject: RE: New not syn (again...)
-
-
-Basically the client or the server sends out a FIN or RST to signify
-that they are done with the connection. The Conntrack would drop the
-session. Afterwards the other side sends out an acknowledgement that the
-session was dropped. The packets are flagged as not established, since
-the connection from the other side was closed. I think it depends on an
-IPTables conntrack timeout value to determine how long to wait for the
-other side's response.
-
-I don't know what everyone else does about them, but I generally just
-drop them It may not be that clean, leaving other PC's IP stacks timeout
-the session close, but it happens so rarely to me, *meh*
-
-
->My question is regarding syn packets, and probably statefulness... I'm
->getting
->a lot of log messages like this:
-
-
-
-****************************************************************************
-Disclaimer: 
-This electronic transmission and any files attached to it are strictly 
-confidential and intended solely for the addressee. If you are not 
-the intended addressee, you must not disclose, copy or take any
-action in reliance of this transmission. If you have received this 
-transmission in error, please notify the sender by return and delete
-the transmission.  Although the sender endeavors to maintain a
-computer virus free network, the sender does not warrant that this
-transmission is virus-free and will not be liable for any damages 
-resulting from any virus transmitted. 
-Thank You.
-****************************************************************************
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
