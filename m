@@ -1,12 +1,13 @@
-From: amateurguy@telus.net
-Subject: Re: iptables / FTP masquerading: Port command illega
-Date: Wed, 23 Mar 2005 11:31:00 -0800
-Message-ID: <1111606260.4241c3f418f5b@webmail.telus.net>
-References: <1111590778.4241877a4e631@webmail.telus.net>
-	<20050323173554.GA22883@bender.817west.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: HELP! Transparent Proxy using bridging 2.6.9 and REDIRECT on
+	different subnet
+Date: Wed, 23 Mar 2005 14:42:07 -0500
+Message-ID: <20050323194207.GA23346@bender.817west.com>
+References: <2F413D5F33545D4A8465BBEE900238CC3FA74E@cymmail.cymphonix.com>
+	<4241C264.5060800@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20050323173554.GA22883@bender.817west.com>
+Content-Disposition: inline
+In-Reply-To: <4241C264.5060800@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,80 +19,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: opie@817west.com
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi There,
+On Wed, Mar 23, 2005 at 01:24:20PM -0600, Grant Taylor wrote:
+> 1)  REDIRECT or DNAT traffic coming from the client machine to proxy with a 
+> known address.
+> 2)  SNAT traffic coming from the proxy with a known address back to an 
+> address the client machines are expecting.  I'm not sure as of how to do 
+> this as the source address that they are expecting will be different 
+> depending on where they are trying to connect to.  Seeing as how Squid can 
+> correctly transparent proxy traffic when it is on the correct subnet I'm 
+> going to assume that it knows how to handle this issue.
 
-Thank you for the reply.  Nope, I hadn't tried it but just did.  I did an rmmod 
-on each and then a modprobe just as outlined below and no change observed.   Do 
-I need to reboot?  I even restarted iptables service.
+i didn't read the original post (or re-posts thereafter, as i have
+nothing of value to add to a bridging question), but i can add this to #2
+there...in the case of REDIRECT--the client is expecting a response from
+the target web server--so a SNAT doesn't make sense in that scenario,
+as it would be pretty much guaranteed to break the communication.
 
-Looked at the actual packets sent:
+REDIRECT is a whole different beast from DNAT.
 
-The inbound packet from the client is using a Port command using a non-routable 
-IP which I would expect since the client doesn't know its sitting behind our 
-corporate firewall.  When the packet is received by the LInux f/w box running 
-vsftpd, naturally the source IP of the packet itself has been translated to a 
-public IP and naturally, tcpdump  logs the packet on the external interface 
-before the netfilter NAT subsystem event attempts to translate the inner Port 
-command, so the Port commmd continues to use the internal, non-routable IP of 
-the client.  The response from the fw to the client ftp station is the 
-usual "500 Illegal PORT command".
+-j
 
-What is interesting is that you mentioned to supply the ip_nat_ftp module with 
-the port argument as well and when I do an lsmod, its unused still.  Is it 
-supposed to be that way?  I would expect these two modules to handle the 
-translation of the PORT command so that vsftpd will issue a connect on 
-translated IP (hence public IP).  
-
-Just curious too, with "trace" on in the ftp client, I get the "tp: bind: 
-Address already in use" error.  Just to confirm, this bind failure is on the 
-server side right?   Now, if that's the case, does it really have to do with 
-the PORT IP argument right now ... or is it the two parameter port number in 
-the PORT command that it doesn't like?   Since this is in active mode (passive 
-works fine on port 29), the vsftpd should be taking that the PORT arguments and 
-connecting back to the ftp client which should now be listening on that port 
-using in its initial PORT cmd to the server and I don't see any outbound 
-connection request (SYN pkts) so it really must be choking on the PORT cmd on 
-the server.  But why?
-
-Thanks everyone!
-
-Quoting Jason Opperisano <opie@817west.com>:
-
-> On Wed, Mar 23, 2005 at 07:12:58AM -0800, amateurguy@telus.net wrote:
-> > modules in memory are:
-> > 
-> > ip_conntrack_ftp 5296 1 (autoclean)
-> > ip_nat_ftp 4112 0 (unused)
-> > iptable_mangle 2776 0 (autoclean) (unused)
-> > ipt_MASQUERADE 2200 1 (autoclean)
-> > iptable_nat 21720 2 (autoclean) [ip_nat_ftp ipt_MASQUERADE]
-> > ipt_state 1048 10 (autoclean)
-> > ip_conntrack 26976 3 (autoclean) [ip_conntrack_ftp ip_nat_ftp
-> ipt_MASQUERADE 
-> > iptable_nat ipt_state]
-> > iptable_filter 2412 1 (autoclean)
-> > ip_tables 15096 7 [iptable_mangle ipt_MASQUERADE iptable_nat ipt_state 
-> > iptable_filter]
-> > 
-> > Anybody know whats going on?
-> 
-> did you modprobe with:
-> 
-> 	modprobe ip_conntrack_ftp ports=21,29
-> 	modprobe ip_nat_ftp ports=21,29
-> 
-> -j
-> 
-> --
-> "Ah! the searing kiss of hot lead; how I missed you! I mean, I think
->  I'm dying."
->          --The Simpsons
-> 
-> 
-
-
-
+--
+"Facts are meaningless. You could use facts to prove anything that's
+ even remotely true!"
+         --The Simpsons
 
