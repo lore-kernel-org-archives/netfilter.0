@@ -1,12 +1,14 @@
-From: Emanoil Kotsev <emanuel@abc.at>
-Subject: compiling iptables support for other machine
-Date: Sat, 03 May 2003 13:29:01 +0200
+From: leolistas@solucoesip.net
+Subject: RE: TCM MSS control over OUTPUT chain
+Date: Sat,  3 May 2003 09:07:16 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EB3A7FD.22A17A1@abc.at>
+Message-ID: <1051963636.3eb3b0f4a3a96@www.solucoesip.net>
+References: <000001c31165$b8cfc8a0$100aa8c0@bwhwangnotepc>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------4F005767D9AF20273C89A644"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000001c31165$b8cfc8a0$100aa8c0@bwhwangnotepc>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,86 +18,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
-
---------------4F005767D9AF20273C89A644
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-Hi, folks,
-
-I might be wrong looking for help in this forum but as it is related to
-the topic I hope someone can give me a usefull advice or an idea where
-I can find related information to solve the following problem:
-=====
-I am trying to compile a new kernel on my machine (MA) for anathor
-machine (MB) that I am using as firewall, where I need extended iptables
-support.
-
-MB is very slow and does not have enough diskspace, so I can not install
-compilers or headers there.
-Tehre is enough space for a new kernel though.
-
-What I was trying ot do is to compile the kernel on MA and to install it
-after I nfs-mount the linux-directory from MA to MB.
-Unfortunately a developers environment on MB is missing and I got
-following error after i do
-make install
-
-make: *** No rule to make target
-`/usr/src/kernel-source-2.4.20/include/asm/param.h', needed by
-`/usr/src/kernel-source-2.4.20/include/linux/sched.h'.  Stop.
-
-Unfortunately on MA everything is compiling fine - where is the problem
-what do I need for the asm/param.h
-
-Is it enough to compile on MA and to copy the relevant stuff eg. vmlinuz
-+ modules to MB
-
-thanks a lot
-
---
-+ Emanoil Kotsev - - - - -+
-+ E-Mail: emanuel@t2u.com +
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, bwh@net-safe.co.kr
 
 
 
---------------4F005767D9AF20273C89A644
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+   Houston, we have a problem !! Forwarded packets will NEVER reach OUTPUT 
+chain. OUTPUT is only reached by locally generated packets and INPUT will 
+only be reached by locally destinated packets. If the machine is 'routing' 
+that packet, no matter if it will be NATed or not, it will never reach 
+OUTPUT.
 
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-Hi, folks,
-<p>I&nbsp;might be wrong looking for help in this forum but as it is related
-to the topic I&nbsp;hope someone can give me a usefull advice or an idea
-where I&nbsp;can find related information to solve the following problem:
-<br>=====
-<br>I&nbsp;am trying to compile a new kernel on my machine (MA) for anathor
-machine (MB) that I&nbsp;am using as firewall, where I&nbsp;need extended
-iptables support.
-<p>MB is very slow and does not have enough diskspace, so I&nbsp;can not
-install compilers or headers there.
-<br>Tehre is enough space for a new kernel though.
-<p>What I&nbsp;was trying ot do is to compile the kernel on MA and to install
-it after I&nbsp;nfs-mount the linux-directory from MA to MB.
-<br>Unfortunately a developers environment on MB is missing and I&nbsp;got
-following error after i do
-<br>make install
-<p>make: *** No rule to make target `/usr/src/kernel-source-2.4.20/include/asm/param.h',
-needed by `/usr/src/kernel-source-2.4.20/include/linux/sched.h'.&nbsp;
-Stop.
-<p>Unfortunately on MA everything is compiling fine - where is the problem
-what do I&nbsp;need for the asm/param.h
-<p>Is it enough to compile on MA and to copy the relevant stuff eg. vmlinuz
-+ modules to MB
-<p>thanks a lot
-<pre>--&nbsp;
-+ Emanoil Kotsev - - - - -+
-+ E-Mail: emanuel@t2u.com +</pre>
-&nbsp;</html>
+   Why cant you do this in FORWARD chain ? You should notice that MSS is 
+not a final rule, I mean, you can use this as the very first rule in 
+FORWARD chain. MSS will be mangled and other rules WILL be parsed. TCPMSS 
+is different from ACCEPT/DROP/REJECT which are final rules, that means, no 
+further rule processing will occur.
 
---------------4F005767D9AF20273C89A644--
+   I've this kind of configuration running in SEVERAL machines which act 
+as gateways for their networks and it works just fine !
+
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --tcp-flags SYN,RST SYN -j 
+TCPMSS --set-mss 1400
+
+
+   Sincerily,
+   Leonardo Rodrigues
+
+
+Citando "Hwang, Byoung Woo" <bwh@net-safe.co.kr>:
+
+> Hi,
+> The machine where I want to try to control the size of TCP MSS
+> is a gateway. eth0 is connected to the internal lan which use
+> virtual IPs and eth1 is connected to ADSL modem and uses PPPOE.
+> After the command "iptables -A OUTPUT -p tcp --tcp-flags SYN,RST SYN -j
+> TCPMSS --set-mss 1400"
+> packets from gateway itself to outside are controlled on TCP MSS size
+> but
+> packets from Internal LAN to Internet which are NATed by Masquerading
+> are
+> not controlled on TCP MSS size.
+> I have a reason why I cannot control on FORWARD chain.
+> 
+> Please, help
+> 
+> Reguards,
+
 
 
