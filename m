@@ -1,19 +1,13 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: transparent squid with internal sites as well
-Date: 27 Nov 2002 09:15:19 +0200
+From: Alexandre <asaugusto@fazenda.sp.gov.br>
+Subject: NAT + PSD
+Date: Tue, 03 Dec 2002 12:19:43 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1038381319.1450.74.camel@rayw.knowledgefactory.co.za>
-References: <20021125121935.0adac911.bain@tcsn.co.za>
-	 <1038221585.19172.151.camel@rayw.knowledgefactory.co.za>
-	 <20021127085814.16b50de3.bain@tcsn.co.za>
-	 <1038380456.1451.65.camel@rayw.knowledgefactory.co.za>
-	 <20021127091419.57f9a3e6.bain@tcsn.co.za>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <3DECBD7F.DD58EF7@fazenda.sp.gov.br>
+References: <000801c29949$359d2a70$02a8a8c0@hades> <000c01c29969$a8617410$0a0a0a0a@windblows>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-hisb49um+pzZuK9n9glM"
+Content-Type: multipart/mixed;
+ boundary="------------E8D8F7319B766179F02ABB8C"
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Raymond Leach <Ray@work>
-In-Reply-To: <20021127091419.57f9a3e6.bain@tcsn.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,73 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Henti Smith <bain@tcsn.co.za>
-Cc: Raymond Leach <raymondl@knowledgefactory.co.za>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+Cc: netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+--------------E8D8F7319B766179F02ABB8C
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+hi all
+i install a new iptables version 1.27a to use a psd suport.
+but my network stop a Nat service ...
+when a go back a 1.26 version , the NAT work ok !
+any people has a problems that iptables do not do a NAT with PSD ???
+thanks a lot
 
 
---=-hisb49um+pzZuK9n9glM
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Alexandre
 
-On Wed, 2002-11-27 at 09:14, Henti Smith wrote:
-> > > No it's not. the dns server is on the outside of the firewall.
-> > > What does split horizon DNS do ?=20
-> > >=20
-> > Basically it resolves names to different ip addresses based on where th=
-e
-> > request came from. For example it can be setup so that if a person on
-> > the local lan makes a dns request for www.foo.bar.com it will give back
-> > 192.168.1.123 and if someone from outside requests www.foo.bar.com it
-> > resolves to the public ip address , e.g. 196.4.160.123.
->=20
-> Ok ... let me draw a complete picture then.=20
-> We have two DNS servers one for internal use and one for external use.
-> The internal uses the external for "normal" internet DNS and the internal=
- handles all internal DNS.
-> So. If a machine on the internal network pings www.website.ady he gets 10=
-.9.9.9
-> on the outside you ping and get 196.9.9.9 which points to firewall. that =
-ip on the firewall is being redirected to=20
-> 10.9.9.9 on the inside.=20
->=20
-> So in a sence the DNS is split.=20
-> I think the problem tho is that once the redirecting os squid works corre=
-ctly, it grabs the internal web as well and for some reason=20
-> boggs it up. if it's not working the packets get to 10.9.9.9 on the inter=
-nal network fine.
->=20
-> I'm way new to transparent proxy, but I've done a bit of playing iptables=
-.=20
-> I'm going to play around witha  few more ideas tho.
-We also use squid as a transparent proxy here. For internal websites
-though, do you need them to go through the proxy? Is there some tracking
-that you need to do, or would it not be possible to 'catch' the requests
-to the servers using iptables before they get redirected to squid? This
-is what we do, and it works fine.
+--------------E8D8F7319B766179F02ABB8C
+Content-Type: text/x-vcard; charset=us-ascii;
+ name="asaugusto.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Description: Card for Alexandre
+Content-Disposition: attachment;
+ filename="asaugusto.vcf"
 
-Also, check what interface squid is using to process the request. It
-might be trying to use the external interface instead of the internal
-one.
+begin:vcard 
+n:da Silva Augusto;Alexandre 
+x-mozilla-html:FALSE
+org:Secretaria de Estado dos Negocios da Fazenda;DTI - Departamento de Tecnologia da Informacao
+adr:;;;;;;
+version:2.1
+email;internet:asaugusto@fazenda.sp.gov.br
+title:Administrador de Sistemas Unix
+x-mozilla-cpt:;3424
+fn:Alexandre da Silva Augusto
+end:vcard
 
-Ray
->=20
-> Thanks for the help so far.
->=20
-> Henti=20
---=20
-
---=-hisb49um+pzZuK9n9glM
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA95HEHh1fuR/Bv+ygRAlDMAKC4elU1hrPdwZ+pvNr2UMBMzRLLmACgmPL+
-/VllWTARDU0Ggbn7z6yaeqg=
-=MEsh
------END PGP SIGNATURE-----
-
---=-hisb49um+pzZuK9n9glM--
+--------------E8D8F7319B766179F02ABB8C--
 
 
