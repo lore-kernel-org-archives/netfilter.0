@@ -1,8 +1,8 @@
-From: "Antonio W. Lagnada" <nfets@msn.com>
-Subject: Newby Question
-Date: Sat, 19 Oct 2002 00:00:06 -0800
+From: "Antonio Paulo Salgado Forster" <aforster@br.ibm.com>
+Subject: RE: nmap
+Date: Tue, 22 Oct 2002 18:11:51 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F23V4jWdrEr6wSSakoC000006ea@hotmail.com>
+Message-ID: <OF59B2A494.B63B3403-ON03256C5A.007478A5@LocalDomain>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,38 +14,109 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Andy Wood <andy.wood@sptrm.com>
+Cc: netfilter@lists.netfilter.org
 
-Help!
 
-I can't seem to get iptables to forward to my internal server
+thanks for that :-)
 
-eth0:  INTERNAL_IP
-eth1:  INTERNET
 
-WEBSERVER_IP is the ip address of the webserver
 
-I am trying to forward port 80 to an internal machine at port 8080 and it 
-doesn't work.  If I change the ip address to be eth0's ip, then it works.
+Andy Wood <andy.wood@sptrm.com>@lists.netfilter.org on 10/22/2002 05:46:26
+PM
 
-# this doesn't work
-$IPTABLES -A PREROUTING -t nat -i eth1 -p tcp --dport 80 \
-    -j DNAT --to $WEBSERVER_IP:8080
+Sent by:    netfilter-admin@lists.netfilter.org
 
-# if I run a webserver on the firewall machine, the following works
-$IPTABLES -A PREROUTING -t nat -i eth1 -p tcp --dport 80 \
-    -j DNAT --to $INTERNAL_IP:8080
 
+To:    Antonio Paulo Salgado Forster/Brazil/IBM@IBMBR
+cc:    netfilter@lists.netfilter.org
+Subject:    RE: nmap
+
+
+
+echo 32768 > /proc/sys/net/ipv4/ip_conntrack_max
+
+ Value should depend on RAM
+
+-----Original Message-----
+From: Antonio Paulo Salgado Forster [mailto:aforster@br.ibm.com]
+Sent: Tuesday, October 22, 2002 3:19 PM
+To: Antony Stone
+Cc: netfilter@lists.netfilter.org
+Subject: Re: nmap
+
+
+
+I  had problems on scanning through netfilter depending on the kind of scan
+you run.. One of the problems you may face in case you run a ACK scan from
+a
+segment that has the permition for the traffic, you will have your
+conntrack
+full in a few seconds with ESTABLISHED connections that will take long to
+disappear.. The same will happen when portscanning from the firewall box
+with a default policy for OUTPUT set as ACCEPT.
+
+One of the ways to fix this is to increase the size of the conntrack.. I
+use
+to do that when creating the box by changing the source code and
+recompiling
+the kernel... but I dont know if there are any side effects on doing that..
+
+--Regards,
+
+Forster
+
+
+
+
+Antony Stone <Antony@Soft-Solutions.co.uk>@lists.netfilter.org on
+10/22/2002
+03:31:42 PM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    netfilter@lists.netfilter.org
+cc:
+Subject:    Re: nmap
+
+
+
+On Tuesday 22 October 2002 4:42 pm, antonio wrote:
+
+> Hi Everyone,
+>
+> Just a question:
+> I want to set up a firewall box with iptables in which I can use nmap.
+> Which ports/protocols can I set to ACCEPT and which to DROP?
+
+Do you mean you want to run nmap on a box also running netfilter, to scan
+other machines ?
+
+If so, set your OUTPUT policy to ACCEPT, set your INPUT policy to DROP with
+a single rule:
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+and you'll be able to scan other machines and get the replies back, but
+anything new coming in to your machine will be blocked.
+
+If I didn't understand correctly what you wanted to do please give more
+details.
+
+Antony.
 
 --
-nfets@msn.com
+
+Which part of 'apt-get dist-upgrade' do you not understand ???
 
 
 
-_________________________________________________________________
-Internet access plans that fit your lifestyle -- join MSN. 
-http://resourcecenter.msn.com/access/plans/default.asp
+
+
+
+
 
 
