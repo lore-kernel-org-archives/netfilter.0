@@ -1,13 +1,12 @@
-From: "James A. Pattie" <james@pcxperience.com>
-Subject: Re: how to redirect certain IPs to specific url
-Date: Wed, 30 Jun 2004 10:14:32 -0500
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: RE: traceroute
+Date: Wed, 30 Jun 2004 17:19:06 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40E2D8D8.6050201@pcxperience.com>
-References: <a0f69e504063000446f514e22@mail.gmail.com> <200406300931.16812.Antony@Soft-Solutions.co.uk> <a0f69e5040630021311b0555d@mail.gmail.com> <200406301034.44072.Antony@Soft-Solutions.co.uk>
+Message-ID: <Pine.LNX.4.33.0406301717270.26411-100000@blackhole.kfki.hu>
+References: <2E314DE03538984BA5634F12115B3A4E62E80A@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406301034.44072.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E62E80A@email1.mitretek.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Wed, 30 Jun 2004, Piszcz, Justin Michael wrote:
 
-Antony Stone wrote:
+> ICMP is "allowed" when you -I INPUT ESTABLISHED,RELATED.
 
-| If www.abc.com resolves to more than one IP address, only one will get entered
-| into the rule if you specify the name (and you would need to use multiple
-| rules if you specify by IP), and therefore only some of the packets sent to
-| ww.abc.com would match the rule.
-|
+That's false.
 
-I just tested and if you say use www.yahoo.com, which resolves to multiple
-entries, you get that many iptables rules generated for each unique IP that
-www.yahoo.com resolves to.  I've been relying on this feature for a long time. :)
+> You do not have to allow it explicitly (ie: allow icmp so other machines
+> can ping your machine).
 
+That's false, again.
 
-- --
-James A. Pattie
-james@pcxperience.com
+Read the documentation and do not spread false info.
 
-Linux -- SysAdmin / Programmer
-Xperience, Inc.
-http://www.pcxperience.com/
-http://www.xperienceinc.com/
-http://www.pcxperience.org/
-
-GPG Key Available at http://www.pcxperience.com/gpgkeys/james.html
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFA4tjXtUXjwPIRLVERAvFyAKCe3AYePy69ry/RPYkfs1saIUqIRgCgttVp
-HM6SXxZo+/hXeN/Hs7CnrR8=
-=qy1L
------END PGP SIGNATURE-----
-
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
-MailScanner thanks transtec Computers for their support.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
