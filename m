@@ -1,13 +1,14 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: RE: Multiple IPSEC VPNs through a firewall based on 2.4.2X kernel
-Date: Wed, 25 Aug 2004 07:29:20 -0400
+From: Vincent Blondel <vincent.blondel@chello.be>
+Subject: Re: FTP Connection problems.
+Date: Wed, 25 Aug 2004 13:29:47 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093433311.2034.36.camel@localhost>
-References: <09D3F703EF3B0A4CBE28449EA9F3D3206F1D7A@nicta-atp-mail.in.nicta.com.au>
+Message-ID: <1093433387.1825.28.camel@lbedlbxl.dev.xtra-net.org>
+References: <OFF5CB5ADF.C30D9246-ONC1256EFB.003B55C5-C1256EFB.003D7ECC@promon.cz>
+Reply-To: vincent.blondel@chello.be
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <09D3F703EF3B0A4CBE28449EA9F3D3206F1D7A@nicta-atp-mail.in.nicta.com.au>
+In-Reply-To: <OFF5CB5ADF.C30D9246-ONC1256EFB.003B55C5-C1256EFB.003D7ECC@promon.cz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,74 +19,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Roksana Boreli <Roksana.Boreli@nicta.com.au>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Thanks for the clarification.  Does the Cisco Linux client support any
-form of NAT Traversal? If it does, that is the way to go.  The
-documentation should tell you what you will need to open on your
-firewall.  If not, you can try tracing using Ethereal and see what
-protocols and ports it uses.
+On Wed, 2004-08-25 at 13:11, a.ledvinka@promon.cz wrote:
+> could be many reasons.
+> 
+> either side wants to do ident lookup and timeouts or
+> either side wants to do reverse and forward dns lookup somwhere around 
+> accepting connection before anything happens and timeouts on nonworking 
+> dns or
+> you use some inteligent ftp client that would rever to passive ftp if 
+> active is not working or else.
+> 
+> best to choose command line ftp client and test it with explicit passive 
+> mode on and off to see if it is realy able to open both types of 
+> connections.
+> next check dns from both ends of connection and see how fast (and if it is 
+> correct - not serverfail/nxdomain/... type of response) you get answer 
+> from dns service for both revers and forward lookups for other side.
+> then allow or reject (don't simply drop) traffic for ident service or 
+> modify ftp server setting
+> 
+> btw: not directly related to your problem but you might also want to: $fw 
+> -A FORWARD -p icmp -m state --state RELATED -j ACCEPT (and maybe OUTPUT 
+> too)
 
-If it does not support NAT-T, then I think your only option is to assign
-fixed IP addresses :-(  Perhaps you can isolate an IP subnet they use
-(not a bad idea as per the paragraph below) and use the NETMAP target
-from pom.
+To test my iptables configuration, I am doing the very basic connection
+tests :
 
-This ability for visitors to attach to their own networks does sound a
-bit dangerous.  Is the company management aware that there is the
-possibility that someone on the other side of those visiting VPN tunnels
-could use the visiting station as an access point to your internal
-network? Of course, someone may have addressed that and isolated the
-points from which visitors can connect to their own WAN.  Take care -
-John
+wget --passive 192.168.125.1://pub/test.iso
 
-On Wed, 2004-08-25 at 03:24, Roksana Boreli wrote:
-> Thanks Jason.
-> 
-> > enable IKE over TCP on the clients and UDP encapsulation.  
-> > this is not a problem with netfilter, but with multiple
-> >  IPSec clients behind *any* NAT = device.
-> 
-> Perhaps some additional info needs to be added about my configuration.
-> I need to use standard Cisco Linux clients, as this is for people
-> visiting (with their laptops and standard VPN setup for remote access)
-> and wanting to get to their (Cisco) server.  In fact, it could be more
-> than one ipsec server at some time in the future.  I definitely need to
-> use a Cisco VPN gateway (can't use FreeSwan), I cannot have a single vpn
-> client from the Linux router device as the requirement is for multiple
-> clients behind this device.  The Cisco gateway and Win 2k client can set
-> up a connection through a NAT router, we have tried this with a Netgear
-> device.  So I thought the issue was similar to pptp vpn pass-through for
-> multiple clients (i.e. a patch for the kernel/iptables was the way to
-> go), hence the question.  
-> 
-> Kind regards, Roksana 
-> 
-> 
-> Subject: RE: Multiple IPSEC VPNs through a firewall based on 2.4.2X
-> kernel
-> Date: Tue, 24 Aug 2004 07:56:33 -0400
-> From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-> To: <netfilter@lists.netfilter.org>
-> 
-> Hi,
-> 
-> I am trying to set up multiple ipsec VPN clients working behind a Linux
-> router with NAT/PAT, based on a 2.4.20 (can be 2.4.22) kernel. I would 
-> like to be able to connect a number of Windows (2k or XP) machines to 
-> an existing Cisco VPN server.
-> 
-> Kind regards, Roksana
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+ftp 192.168.125.1
+<this takes here already 8 seconds>
+anonymous
+password
+cd test
+get test.iso
+
+So this could not be a dns problem. This could also not be a traffic
+congestion problem because I am trying this config with three stations
+(connected directly by a ethernet cable) located on my desk.
+
+Regards
+Vincent
 
 
