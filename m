@@ -1,11 +1,13 @@
-From: "Zelmans, Bernard" <BZelmans@CROSSBEAMSYS.COM>
-Subject: iptables and SIP
-Date: Tue, 14 Dec 2004 12:18:41 +0100
-Message-ID: <498D2534FBEB784686D402666966F6162540E9@sophia.crossbeamsys.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: duplicating packets to other interface
+Date: Tue, 14 Dec 2004 08:34:33 -0500
+Message-ID: <1103031273.3390.30.camel@hubcap.ljm.dom>
+References: <1102900009.41bceb29f2fac@www.banda.lv>
+	<41BE8B84.8040000@snapgear.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <41BE8B84.8040000@snapgear.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,13 +21,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Is there some iptables code that supports SIP:
--opening the pinhole
--modify the IP address of the end point in the signaling so that the rtp
-channel is opened properly
--closing the pinhole when the call is terminated
--preventing DOS attacks
+On Tue, 2004-12-14 at 01:43, Philip Craig wrote:
+> Get the ROUTE extension from patch-o-matic-ng and use the --tee option.
 
+wow--that was a timely question, as the addition of "--tee" to the ROUTE
+target was committed to CVS:
 
-Thanks, b
+  Modified Tue Dec 14 02:58:31 2004 UTC (10 hours, 48 minutes ago)
+
+ask and ye shall...
+
+-j
+
+--
+"You heard me, I won't be in for the rest of the week... I told you,
+ my baby beat me up... oh it is not the worst excuse I ever thought up."
+	--The Simpsons
+
 
