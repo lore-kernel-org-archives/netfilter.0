@@ -1,13 +1,10 @@
-From: "Tsachi Sharfman" <Tsachi_Sharfman@etagon.com>
-Subject: Deleting Connection Tracking information
-Date: Mon, 8 Jul 2002 14:31:26 +0200
+From: BGrummel@zuendel.de
+Subject: Antwort: Re: Antwort: RE: Most stable firewall distro
+Date: Mon, 8 Jul 2002 13:41:29 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <agbtac$rh2$2@main.gmane.org>
+Message-ID: <OF20FB00F3.D5EE995E-ONC1256BF0.003FFC60@zuendel.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2267B.609B96BC"
 Return-path: <netfilter-admin@lists.samba.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,148 +14,165 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org, netfilter-devel@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C2267B.609B96BC
-Content-Type: text/plain;
-	charset="WINDOWS-1255"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-=20
-
-I would like to add a NAT rule on a gateway while connections are =
-passing through it, and have the rule apply to existing connections. I =
-understand this is not the behavior when the rule is simply added to the =
-NAT table, since netfilter consults the NAT table only for the first =
-packet of the connection. I assume that if I can delete connection =
-tracking information on the gateway, once a packet belonging to an =
-existing connection passes through the gateway netfilter will regard it =
-as a new connection (since there is no connection tracking information =
-for it), and apply the new NAT rules that existing connection. My =
-questions are:
-
-=20
-
-1.	Is my assumption correct?
-2.	Is the answer to the first question is yes, how can I delete =
-connection tracking information?
-
-=20
-
-Thanks,
-
-Tsachi Sharfman.
+                                                                                                                             
+                    Raymond Leach                                                                                            
+                    <raymondl@knowledgefact        An:     BGrummel@zuendel.de                                               
+                    ory.co.za>                     Kopie:  netfilter@lists.samba.org                                         
+                    Gesendet von:                  Thema:  Re: Antwort: RE: Most stable firewall distro                      
+                    netfilter-admin@lists.s                                                                                  
+                    amba.org                                                                                                 
+                                                                                                                             
+                                                                                                                             
+                    08.07.2002 12:31                                                                                         
+                                                                                                                             
+                                                                                                                             
 
 
-------_=_NextPart_001_01C2267B.609B96BC
-Content-Type: text/html;
-	charset="WINDOWS-1255"
-Content-Transfer-Encoding: quoted-printable
 
-<html>
 
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1255">
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
- /* List Definitions */
- ol
-	{margin-bottom:0in;}
-ul
-	{margin-bottom:0in;}
--->
-</style>
 
-</head>
 
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
-<div class=3DSection1>
+>IMO the best firewall 'solution' is SuSE Firewall on CD. Similar to the
+>debian solution described below, boots from CD and rules written to
+>floppy.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hi,</span></font></p>
+->
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
+thats right but i want to do it on my self
+so that i know what my firewall is doing
+and the packaging at debin is very good
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>I would like to add a NAT rule on a gateway while
-connections are passing through it, and have the rule apply to existing
-connections. I understand this is not the behavior when the rule is =
-simply
-added to the NAT table, since netfilter consults the NAT table only for =
-the
-first packet of the connection. I assume that if I can delete connection
-tracking information on the gateway, once a packet belonging to an =
-existing
-connection passes through the gateway netfilter will regard it as a new
-connection (since there is no connection tracking information for it), =
-and apply
-the new NAT rules that existing connection. My questions =
-are:</span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
 
-<ol start=3D1 type=3D1>
- <li class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-     font-family:Arial'>Is my assumption correct?</span></font></li>
- <li class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-     font-family:Arial'>Is the answer to the first question is yes, how =
-can I
-     delete connection tracking information?</span></font></li>
-</ol>
+On Mon, 2002-07-08 at 12:05, BGrummel@zuendel.de wrote:
+>
+>                     "Ed Street"
+>                     <blacknet@simplyaquat        An:     "'Antony Stone'"
+<Antony@Soft-Solutions.co.uk>,
+>                     ics.com>
+<netfilter@lists.samba.org>
+>                     Gesendet von:                Kopie:
+>                     netfilter-admin@lists        Thema:  RE: Most stable
+firewall distro
+>                     .samba.org
+>
+>
+>                     04.07.2002 01:06
+>                     Bitte antworten an
+>                     blacknet
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+> Hello,
+>
+> The correct choice to go with would be debian.  You can do a minimal
+> install from a business card cd and have everything you need.  For those
+> of you that's interested contact me off list for the details and the
+> script/iso file (approx 41 megs)
+>
+>
+>
+> - a good choice
+> - i am working on a cd-based firewall on debian. booting from cd and
+> firewall rules from
+> - write-protect disk. no hdd is needed. if a kernelchange is needed
+-create
+> a new cd.
+> - if somebody hacks it reboot and hes gone!
+>
+>
+> Ed
+>
+> -----Original Message-----
+> From: netfilter-admin@lists.samba.org
+> [mailto:netfilter-admin@lists.samba.org] On Behalf Of Antony Stone
+> Sent: Wednesday, July 03, 2002 6:34 PM
+> To: netfilter@lists.samba.org
+> Subject: Re: Most stable firewall distro
+>
+> On Wednesday 03 July 2002 11:23 pm, riffraff wrote:
+>
+> > ---------- Original Message ----------------------------------
+> > From: "Miguel Laborde" <miguel.laborde@canada.com>
+> > Date: Wed, 3 Jul 2002 18:22:38 -0400
+> >
+> > >Hello all,
+> > >  I have a question here for those of you who use iptables heavily
+> in a
+> > >production environment. Right now I am about to replace a older
+> Mandrake
+> > >(release 7.2) with an updated linux firewall however before I go
+> ahead and
+> > >do that, I'm interested in knowing what you people consider the most
+> > > stable distribution for a linux firewall.
+> > >  I realize that the underlying OS and iptables software is common
+> across
+> > > all distributions however some distributions apply patches which
+> others
+> > > don't, and as result might be better suitable as a firewall.
+> > >
+> > >
+> > >  Thanks for your time,
+> > >                 Miguel
+> >
+> > I just used redhat 7.0 (I think, it's been a while), and removed
+> everything
+> > that was completely unnecessary, then compiled a whole new kernel (I
+> had
+> > to; I'm using the bridge-netfilter patch).  So, it isn't much of a
+> redhat
+> > anymore, just uses redhat paths and rpm.
+>
+> I agree with this approach.   A firewall shouldn't really be any
+> recognisable
+> distro, because distros basically differ in all the add-ons they include
+>
+> around the kernel, nearly all of which you should not have on a
+> firewall.
+>
+> And, as suggested above, you really ought to compile your own kernel for
+> a
+> firewall, too, so it contains what you want and doesn't contain what you
+>
+> don't want, therefore you start from ftp://ftp.kernel.org and 'make
+> config'
+> (or whichever variation of that you prefer).
+>
+> The 'distro' I would really like to see people use for firewalls is
+> Linux
+> >From Scratch, because this is expressly designed to contain only the
+> tools
+> you choose for a specific job, and not a whole bunch that someone else
+> thought might come in handy one day.....
+>
+> Not the easiest thing to play with though, admittedly.
+>
+> http://www.linuxfromscratch.org
+>
+>
+>
+> Antony.
+>
+>
+>
+>
+>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks,</span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Tsachi Sharfman.</span></font></p>
 
-</div>
 
-</body>
-
-</html>
-=00
-------_=_NextPart_001_01C2267B.609B96BC--
 
