@@ -1,12 +1,13 @@
-From: "IZEM Farid" <Farid.IZEM@abxlogistics.fr>
-Subject: RE: (no subject)
-Date: Thu, 1 Jul 2004 18:45:04 +0200
+From: Juan Hernandez <alucard@kanux.com>
+Subject: [Fwd: [SA11980] Linux Kernel Netfilter TCP Option Matching Denial
+ of Service Vulnerability]
+Date: Thu, 01 Jul 2004 12:54:13 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B732FD42D68974438C1451C73C1D030FD1EFEB@FR92EX02.eu.abxlogistics.com>
+Message-ID: <40E441B5.9000809@kanux.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;
+ boundary="------------020503010707080202090506"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,124 +17,116 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Thanks Anthony for you help,
+This is a multi-part message in MIME format.
+--------------020503010707080202090506
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Don't worry about the rule in my firewall, in each one,
-Source and destination are checked both in FORWARD and PREROUTING chain.
-Everything is clear for me and I will terminate the customisation=20
-Of my firewall next week because I'm in my holidays for three days.
+I thought you guys would be interested in this since I haven't read 
+anything today in this mailing list
 
-Thanks for all,
+Juan
 
-Best regards,
+--------------020503010707080202090506
+Content-Type: message/rfc822;
+ name="[SA11980] Linux Kernel Netfilter TCP Option Matching Denial of Service Vulnerability"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="[SA11980] Linux Kernel Netfilter TCP Option Matching Denial of Service Vulnerability"
 
-Farid IZEM
-Ing=E9nieur Syst=E8me Unix
-Soci=E9t=E9 ABX Logistics France
-48-50, route principale du port
-92232 Gennevilliers
-T=E9l. : 01-41-47-61-78
-Email : farid.izem@abxlogistics.fr
-
-
-> Anthony,
->
-> Ok, I understand what you explain and I will test as soon as possible.
-> I always setup netfilter by adding rules to INPUT, OUTPUT, DNAT, .. =
-chain.
-> But in this way, netfilter is very difficult to maintain.
-> In fact, my firewall has 2 networks interfaces and it's doing SNAT and
-> DNAT. SNAT and DNAT is properly working but difficult to administrate.
-> As it is already in production environnement, I have to plan when =
-modificat
->
-> In your opinion, which solution is better:
->
-> 	Create DNAT rules like
-> 		Iptables -A PREROUTING -d 192.19.93.100 -j DNAT
-> 				--to-destination 92.92.1.100
-> 		Iptables -A FORWARD -i eth0 -o eth1 -p tcp -s 172.19.92.100
-> 				-d 92.92.1.100 --dport 23 -j ACCEPT
->
-> 	Or
-> 		Iptables -A PREROUTING -s 172.19.92.100 -d 192.19.93.100
-> 				--dport 23 - j DNAT --to-destination 92.92.1.100:23
-
-You have omitted to list the FORWARDing rule which is needed with the =
-second=20
-example of the PREROUTING rule:
-
-iptables -A FORWARD -i eth0 -o eth1 -d 92.92.1.100 -j ACCEPT
-
-(Following the style you have outlined with the differences between the =
-two=20
-PREROUTING rules).
-
-In other words, you always need a PREROUTING rule, and a FORWARD rule, =
-for=20
-packets to get through the firewall and reach the intended machine.
-
-As for my opinion as to which is better - I prefer the one which is =
-easier=20
-(for you) to understand.   Firewall maintenance is more important in =
-almost=20
-all cases than ultimate efficiency of a ruleset, achieved by shaving a =
-test=20
-here and there off the rules in case it takes up another CPU cycle or =
-two.
-
-In general that means I favour fully explicit rules - both for clarity =
-and=20
-security.   If you only intend to allow packets to TCP, port 23 =
-(although I=20
-cannot imagine why you want to allow anything at all to that particular=20
-port....) and you want those packets to be allowed only from a specific =
-IP=20
-address, going through the firewall in one particular direction, then =
-make=20
-this clear in both the rules which are needed:
-
-iptables -A PREROUTING -t nat -p tcp --dport 23 -i eth0 -s 172.19.92.100 =
--d=20
-192.19.93.100 -j DNAT --to 92.92.1.100
-iptables -A FORWARD -p tcp --dport 23 -i eth0 -o eth1 -s 172.19.92.100 =
--d=20
-92.92.1.100 -j ACCEPT
-
-If you find the duplication of information less clear, then simply it so =
-that=20
-you are happy with the rules (and they still provide the security you=20
-require).   So long as you don't completely omit the source address (for =
-
-example), so that packets get accepted from anywhere, then you should =
-use the=20
-rules you will find easiest to understand in three months' time....
-
-Regards,
-
-Antony.
-
---=20
-"Reports that say that something hasn't happened are always interesting =
-to me,=20
-because as we know, there are known knowns; there are things we know we =
-know.=20
-We also know there are known unknowns; that is to say we know there are =
-some=20
-things we do not know. But there are also unknown unknowns - the ones we =
-
-don't know we don't know."
-
- - Donald Rumsfeld, US Secretary of Defence
-
-                                                     Please reply to the =
-list;
-                                                           please don't =
-CC me.
+Return-Path: <nobody@secunia.com>
+Delivered-To: hvjuan@kanux.com
+Received: (qmail 10594 invoked from network); 1 Jul 2004 13:34:31 -0000
+Received: from mail.secunia.com (213.150.41.240)
+  by 192.168.74.2 with SMTP; 1 Jul 2004 13:34:31 -0000
+Received: (qmail 4145 invoked from network); 1 Jul 2004 13:13:41 -0000
+Received: from unknown (HELO secunia.com) (192.168.100.228)
+  by mail.secunia.com with SMTP; 1 Jul 2004 13:13:41 -0000
+Received: (from nobody@localhost)
+	by secunia.com (8.12.10/8.12.10/Submit) id i61DHRf1020304;
+	Thu, 1 Jul 2004 15:17:27 +0200
+Date: Thu, 1 Jul 2004 15:17:27 +0200
+Message-Id: <200407011317.i61DHRf1020304@secunia.com>
+To: hvjuan@kanux.com
+Subject: [SA11980] Linux Kernel Netfilter TCP Option Matching Denial of Service Vulnerability
+From: Secunia Security Advisories <sec-adv@secunia.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
 
+TITLE:
+Linux Kernel Netfilter TCP Option Matching Denial of Service
+Vulnerability
+
+SECUNIA ADVISORY ID:
+SA11980
+
+VERIFY ADVISORY:
+http://secunia.com/advisories/11980/
+
+CRITICAL:
+Moderately critical
+
+IMPACT:
+DoS
+
+WHERE:
+From remote
+
+OPERATING SYSTEM:
+Linux Kernel 2.6.x
+http://secunia.com/product/2719/
+
+DESCRIPTION:
+Adam Osuchowski and Tomasz Dubinski have reported a vulnerability in
+the Linux kernel, which can be exploited by malicious people to cause
+a DoS (Denial of Service).
+
+The vulnerability is caused due to the use of an incorrect variable
+type within the "tcp_find_option()" function of the netfilter
+subsystem. This can be exploited by sending a specially crafted TCP
+packet, which causes the kernel to enter an infinite loop and consume
+all available CPU resources.
+
+Successful exploitation requires that iptables is used with rules
+matching TCP options ("--tcp-option").
+
+SOLUTION:
+Don't use any rules matching TCP options.
+
+PROVIDED AND/OR DISCOVERED BY:
+Adam Osuchowski and Tomasz Dubinski
+
+----------------------------------------------------------------------
+
+About:
+This Advisory was delivered by Secunia as a free service to help
+everybody keeping their systems up to date against the latest
+vulnerabilities.
+
+Subscribe:
+http://secunia.com/secunia_security_advisories/
+
+Definitions: (Criticality, Where etc.)
+http://secunia.com/about_secunia_advisories/
+
+
+Please Note:
+Secunia recommends that you verify all advisories you receive by
+clicking the link.
+Secunia NEVER sends attached files with advisories.
+Secunia does not advise people to install third party patches, only
+use those supplied by the vendor.
+
+----------------------------------------------------------------------
+
+Unsubscribe: Secunia Security Advisories
+http://secunia.com/sec_adv_unsubscribe/?email=hvjuan@kanux.com
+
+----------------------------------------------------------------------
+
+--------------020503010707080202090506--
 
 
