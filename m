@@ -1,13 +1,11 @@
-From: Matt Hellman <netfilter@taxandfinance.com>
-Subject: Re: Restricted Access
-Date: Mon, 07 Jul 2003 23:46:45 -0500
+From: =?ISO-8859-1?Q?Andr=E9?= Aun <andre_aun@terra.com.br>
+Subject: Redirecting ports - not working
+Date: Thu, 10 Jul 2003 08:20:54 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F0A4CB5.6060809@taxandfinance.com>
-References: <001e01c34437$cf18b9a0$b900a8c0@ljhpm.com.au>
+Message-ID: <20030710082054.5c82b4f1.andre_aun@terra.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001e01c34437$cf18b9a0$b900a8c0@ljhpm.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +15,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Craig Thew wrote:
+Hi all,
 
->Hi everyone,
->
->I have a very basic iptables setup to allow my windows clients to access
->the net
->through iptables, What I want to do is allow some clients to have full
->access the any websites
->and others to be resticted to certain sites only, Can iptables do this?.
->Does someone have an example
->or point me in the right direction     
->
->Many Thanks
->
->CT
->
-Unless you have a very small number of ip addresses and ports you want 
-to allow those "restricted clients" to access...I would advise using an 
-application layer proxy like Squid. It would have the added benefit of 
-allowing you to configure authentication as well, which is almost always 
-a more effective and thorough way to restrict [and monitor] client 
-access. Goodluck,
+Here is my situation: i have a slackware box running a virtual machine unde=
+r vmware. The virtual machine is a Windows 2003 server. In my server, i hav=
+e 2 devices: eth0, vith the static/valid ip adress, and eth1 with my local =
+network adress (192.168.0.0). The virtual machine gets the following ip adr=
+ess: 192.168.237.128 and can ping the internet (i configure the virtual mac=
+hine bridged with eth1, no problem).
 
-Matt
+What i want: redirect the traffic from port 80 of my linux (eth0, valid adr=
+ess) to the virtual machine (192.168.237.128).
+
+I've tryed the following solution:
+
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to 192.16=
+8.237.128:80
+iptables -t nat -A POSTROUTING -s 192.168.237.128 -p tcp -j SNAT --to <my v=
+alid ip adress>
+
+But it doesn't work. I see this in the /proc/net/ip_conntrack :
+
+tcp      6 111 SYN_SENT src=3D<ip_of_my_remote_box> dst=3D<ip_of_eth0(valid=
+ adress)> sport=3D42560 dport=3D80 [UNREPLIED] src=3D192.168.237.128 dst=3D=
+<ip_of_my_remote_box> sport=3D80 dport=3D42560 use=3D1
+
+Please... who can welp me? I spent 2 days in this problem ;)
+
+Thanx in advance... and sorry for the bad english :)
+
+Andr=E9 Aun
 
 
