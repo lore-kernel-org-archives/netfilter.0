@@ -1,12 +1,11 @@
 From: Marty Phee <mphee@jump-technologies.com>
 Subject: Re: VPN through the firewall
-Date: Thu, 03 Mar 2005 15:56:12 -0600
-Message-ID: <422787FC.6020308@jump-technologies.com>
-References: <42263F2C.9030600@jump-technologies.com>
-	<1109805779.4455.1.camel@hubcap.ljm.dom>
+Date: Thu, 03 Mar 2005 15:57:02 -0600
+Message-ID: <4227882E.8040100@jump-technologies.com>
+References: <27594E8BA9D5CA458F5EF87D88B6B48F1CB5@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1109805779.4455.1.camel@hubcap.ljm.dom>
+In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F1CB5@pxtvjoexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,27 +19,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Yes, PPTP I believe.
+ip_conntrack is there.  Is that the same?
 
-Jason Opperisano wrote:
-> On Wed, 2005-03-02 at 17:33, Marty Phee wrote:
-> 
->>I've got a SUSE box running my home firewall and a WinXP work machine 
->>that I use to VPN into the office network.  Before I put this SUSE 9.2 
->>in I had a Mandrake 9.1 box that worked just fine.
->>
->>Everything but my VPN connection to the office works.
-> 
-> 
-> by VPN, do you mean PPTP?
-> 
-> -j
-> 
-> --
-> "Beer. Now there's a temporary solution."
-> 	--The Simpsons
-> 
-> 
-> 
+ip6t_state              2304  23
+ip6_conntrack          43744  1 ip6t_state
+ipt_state               2432  35
+ip6t_REJECT             7936  3
+ipt_REJECT              7680  3
+iptable_mangle          3456  1
+iptable_filter          3584  1
+ip6table_mangle         3200  0
+ip_nat_ftp              6096  0
+iptable_nat            25804  1 ip_nat_ftp
+ip_conntrack_ftp       73712  1 ip_nat_ftp
+ip_conntrack           49312  4 
+ipt_state,ip_nat_ftp,iptable_nat,ip_conntrack_ftp
+ip_tables              18944  10 
+ipt_TOS,ipt_policy,ipt_LOG,ipt_limit,ipt_pkttype,ipt_state,ipt_REJECT,iptable_mangle,iptable_filter,iptable_nat
+ip6table_filter         3328  1
+ip6_tables             20112  6 
+ip6t_LOG,ip6t_limit,ip6t_state,ip6t_REJECT,ip6table_mangle,ip6table_filter
+ipv6                  264096  23 ip6_conntrack,ip6t_REJECT
 
 
