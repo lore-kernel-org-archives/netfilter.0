@@ -1,16 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Bizarre rule requirement
-Date: Fri, 31 Dec 2004 17:51:38 -0500
-Message-ID: <20041231225138.GA8193@bender.817west.com>
-References: <41D5A87C.4040508@starnetworks.us>
-	<20041231195406.GA7578@bender.817west.com>
-	<41D5B11C.9060303@starnetworks.us>
-	<20041231204004.GA7810@bender.817west.com>
-	<41D5D62D.5060906@starnetworks.us>
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: IRC commtrack module ques
+Date: Sat, 25 Dec 2004 23:06:14 +0100
+Message-ID: <20041225220614.GA28168@sunbeam.de.gnumonks.org>
+References: <200412252026.iBPKQ8Kp004941@freddie.dsiaz.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <41D5D62D.5060906@starnetworks.us>
+In-Reply-To: <200412252026.iBPKQ8Kp004941@freddie.dsiaz.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,37 +19,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "Keven R. Pittsinger" <jamstar7@dsiaz.com>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Fri, Dec 31, 2004 at 03:43:57PM -0700, Kevin P. Fleming wrote:
-> 1) You are forwarding all inbound UDP traffic to a single device. My 
-> example was simplified; the final application for this technique could 
-> have tens of phones behind the NAT, each needing to work this way. 
-> That's why I phrased my original request the way I did; it was 
-> predicated on learning the outbound port number and other bits related 
-> to a specific "connection" (even though this is UDP) and basing the 
-> inbound rules on those details.
-> 
-> 2) You assume that the port number assigned when the phone sends out its 
-> first UDP packet (from port 4000) by the NAT will also be 4000... it 
-> very well may not be, if that port is already in use on the public side 
-> of the NAT for another user. In that case, the FORWARD rule can't work, 
-> because it doesn't know what port number the conntrack code assigned for 
-> this specific connection (and it could be different for the next 
-> connection).
 
-i didn't assume anything, i proposed a broad-sword-hack-work-around
-that met the requirements of the simplified scenario you presented.
-say what you mean and mean you say.
+--AhhlLboLdkugWU4S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-now that we know the real situation/requirements--maybe someone else can
-be of more use; as i have no experience with netfilter+VoIP--just
-commercial firewalls (which magically work as a side-effect of their
-hefty price tags).
+On Sat, Dec 25, 2004 at 01:26:08PM -0700, Keven R. Pittsinger wrote:
+>=20
+> OK, I got a stoopid question for ya.  I've read the sourcecode in the ker=
+nel=20
+> sources for this module.  I know you can load it via your rc.local
+> script.  My question is, what alias do I use to get it to list right
+> in modules.conf?
 
-l8er.
+there is no way to auto-load this module.  Howe would there be one?
+What kind of event would trigger auto-loading?  The decision to use it
+or not is only based on the policy of the system administrator.
 
--j
+If you want to use it permanently, either 'modprobe' it from a script,
+or link it statically into your kernel.
+
+> Thanxx
+> Keven
+
+--=20
+- Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+Programming is like sex: One mistake and you have to support it your lifeti=
+me
+
+--AhhlLboLdkugWU4S
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFBzeRWXaXGVTD0i/8RAqDRAJ9tIMWasfHacExA3QkVrRkIgMHrsACeKV5o
+Nfd/O41l79Dvwq2xmxf5f9o=
+=wB4J
+-----END PGP SIGNATURE-----
+
+--AhhlLboLdkugWU4S--
 
