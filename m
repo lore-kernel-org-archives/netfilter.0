@@ -1,10 +1,8 @@
-From: vaida bogdan <vaida.bogdan@gmail.com>
-Subject: prerouting and postrouting + clamav + clamsmtpd
-Date: Sat, 19 Feb 2005 14:54:34 +0200
-Message-ID: <12848a3b050219045423ee8992@mail.gmail.com>
-Reply-To: vaida bogdan <vaida.bogdan@gmail.com>
+From: Jeff McCarthy <intel1914a@yahoo.com>
+Subject: Support for asymmetric routing?
+Date: Sat, 19 Feb 2005 08:39:17 -0800 (PST)
+Message-ID: <20050219163917.89551.qmail@web50710.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,28 +14,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-My network design looks like this:
+I would like to configure 2 linux boxes for use with
+asymmetric routing. Is there a way to share state
+tables between 2 different linux boxes? If traffic
+goes out through one linux box I want to be able to
+allow it back through another box, based on state
+information. 
 
-WIN1
-WIN2    -    GW1    -   MAIL SERVER    -   GW2
-WIN3
+I found the netfilter-ha trunk but not sure if that
+will do what I need.
 
-GW1 iptable rules:
-PREROUTING
-REDIRECT   tcp  --  eth0:1/24  MAIL_SERVER     tcp dpt:smtp redir ports 10025
-POSTROUTING
-SNAT       all  --  eth0:1/24  anywhere       to:eth0
+Thanks,
+
+--Jeff
 
 
-
-WIN are on the internal network, GW1 does SNAT. I've had a lot of
-virii problems on the internal network but MAIL SERVER logs show the
-GW1 ip. I installed clamav+clamsmtpd and added the PREROUTING rule.
-The problem is I don't get connections on localhost:10025. I can't
-access the internal network (WIN) to telnet and check why. Does the
-current firewall configuration have any flaw? I added the PREROUTING
-rule to pass any traffic to the MAIL_SERVER through clamsmtpd for
-scanning.
+	
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Mail - You care about security. So do we. 
+http://promotions.yahoo.com/new_mail
 
