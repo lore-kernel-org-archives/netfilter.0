@@ -1,15 +1,10 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: to patch, or not to patch? --- 1.2.7a mucked up?
-Date: 28 Mar 2003 00:11:53 +0100
+From: Art Reisman <astormchaser2002@yahoo.com>
+Subject: Bridging, Netfilter
+Date: Thu, 27 Mar 2003 15:49:16 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048806713.30450.7.camel@tux.rsn.bth.se>
-References: <1048778825.17439.7.camel@midgard.guardium.com>
-	 <001301c2f481$67a1a300$0e0aa8c0@Nussele>
-	 <1048802554.1342.17.camel@midgard.guardium.com>
+Message-ID: <20030327234916.2862.qmail@web10404.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1048802554.1342.17.camel@midgard.guardium.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,26 +15,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Joe Judge <joe_judge@guardium.com>
-Cc: Cedric Blancher <blancher@cartel-securite.fr>, Netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Thu, 2003-03-27 at 23:02, Joe Judge wrote:
-> Summary -- 
-> 	Why does the recent patch-o-matic version have 
-> 	extra/ROUTE code that uses "ifname" and "ipto" in
-> 	a structure ... when ... iptables 1.2.7a tries to 
-> 	compile ROUTE support which uses "if_name" and
-> 	"if_index" ??
-> 
-> What version of iptables code goes with what version of
-> patch-o-matic ?
+Hello netfilter list...
 
-Use iptables and p-o-m versions from cvs. instructions on how to get it
-are availiable on http://netfilter.org
+I just released a version of the Linux Bandiwidth
+Arbitrator (www.apconnections.net) that should
+hopefully be compatible with netfilter.  Since this
+tool is built on top of the Linux Bridge, I updated my
+code with the patches for
+Bridging to support  Netfilter.
 
-You might want to look in https://bugzilla.netfilter.org as well,
-there's an entry there about this issue.
+Are there  any gotcha's I need to be aware of
+currently with Bridging and Netfilter? Are you running
+a bridge and netfilter with problems? Problem Free?
 
--- 
-/Martin
+Please let me know
+
+Thanks
+
+Art Reisman
+
 
