@@ -1,17 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: semi OT: default route
-Date: Wed, 20 Oct 2004 14:24:37 -0400
+From: "jgalvez@webpipe.net" <jgalvez@webpipe.net>
+Subject: A secure router, by MAC address
+Date: Wed, 20 Oct 2004 12:46:06 -0600
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041020182437.GA7555@bender.817west.com>
-References: <20041020132551.GA1720@tranquility.scriptkitchen.com>
-	<20041020161725.GA7221@bender.817west.com>
-	<20041020163734.GR21006@metastasis.org.uk>
-	<20041020164830.GA7438@bender.817west.com>
-	<20041020165737.GB7751@tranquility.scriptkitchen.com>
+Message-ID: <1098297965.5686.9.camel@6-allhosts>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20041020165737.GB7751@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,25 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Oct 20, 2004 at 12:57:37PM -0400, Payal Rathod wrote:
-> On Wed, Oct 20, 2004 at 12:48:30PM -0400, Jason Opperisano wrote:
-> > yes--the linux routing code will do dead gateway detection and fall
-> > back to a lower metric route in the event of failure, and also go back
-> > to the higher metric route upon resurrection.  this can be useful for
-> > an active-standby setup.
-> 
-> routed might help here. Right?
+I am trying to setup a router, that forwards traffic from one interface
+for only a specific set of MAC addresses.
 
-no--routed is a method for learning routes.  you already know what the
-routes are.  you're looking for a method to balance traffic over two
-physical links.  the solution to that goal is more complicated than just
-adding two default gateways.
+Users on eth1 side will use a static IP address with a known MAC
+address. DHCP will be running on eth1 for rogue users. If the source IP
+is 10.0.0.0/8 all port 80 traffic needs to be redirected to localhost
+port 80. ONLY traffic from a listed IP and MAC should be allowed to be
+forwarded out.
 
--j
+I need some recommendation on how to accomplish this.  If you could
+point me to a similar example or something I can figure it out . The
+more specific the better.  I have a few of my notes and attempts below.
 
--- 
-Jason Opperisano <opie@817west.com>
+TIA
+-Josh
+
+eth0:
+ -Allow all traffic, in and out
+eth1:
+ -Allow all DHCP traffic - something like below
+  #iptables -I INPUT -i eth1 -p udp --dport 67:68 --sport 67:68 \
+  -j ACCEPT
+ -Allow all incoming traffic by source IP and MAC address
+  #iptables -A PREROUTING -i eth1 -t mangle -m mac \
+  --source 208.5.x.242 --mac-source 00:30:65:0e:91:d6 -j ACCEPT
+ -Redirect all port 80 traffic from 10.0.0.0/8 to localhost:80
+ -Drop all other incoming traffic
+  #iptables -A PREROUTING -i eth1 -t mangle -j DROP
+
+	
+
 
