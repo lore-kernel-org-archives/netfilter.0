@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Log question
-Date: Mon, 7 Jun 2004 16:06:37 +0100
+From: "Erick Sanz" <esanz@minorplanetusa.com>
+Subject: ip_conntrack_ftp and port forwarding
+Date: Mon, 7 Jun 2004 12:29:40 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406071606.37187.Antony@Soft-Solutions.co.uk>
-References: <40C48126.9030003@whitehallcanada.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <FLECICIIDHIEIENHHOOLIEDPCBAA.esanz@minorplanetusa.com>
+References: <200405141237.08794.gdh@acentral.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40C48126.9030003@whitehallcanada.com>
+In-Reply-To: <200405141237.08794.gdh@acentral.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,113 +20,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 07 June 2004 3:52 pm, Michael Sams wrote:
+ 
+	All,
 
-> Hi there... I am sorry if this questions has already been asked. I am
-> try to understand some iptables logs. The one I have attached I don't
-> really understand. Could someone point me in the right direction?
->
-> Any help is greatly appreciated!
->
-> 1.2.3.4 = My server
->
-> Jun 7 02:23:48
+	I have a firewall at home protecting a web server (personal
+stuff); I would like to add ftp capabilities in order to upload
+files from work, so I can work home.
 
-Date & time - pretty obvious :)
+	ASCII diagram:
 
-> myserver
 
-Your server's hostname.
+	DSL -- Firewall -- Web server / FTP server
 
-> kernel:
 
-Kernel log message
+	My current rules to allow http are (no other rules included):
 
-> INVALID STATE:
 
-The string you specified for "log-prefix"
+iptables -t nat -A PREROUTING -p tcp -d 172.16.1.34 --dport 80 -j DNAT \ 
+	--to 192.168.0.20
+iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
 
-> IN=lo
+iptables -A FORWARD -i eth0 -p tcp -d 192.168.0.20 --dport 80 -m state \
+	--state NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i eth1 -p tcp -s 192.168.0.20 --source-port 80 -j \
+	ACCEPT
 
-Packet came in on loopback interface
+	I know I need to use ip_conntrack_ftp; however I am not sure if
+it allows port forwarding...
 
-> OUT=
+	Really basic question, but I was wondering what everybody is doing...
 
-Packet is not going to go out on any interface
+Best regards,
+Erick
 
-> MAC=00:00:00:00:00:00
 
-Destination MAC address is blank (loopback doesn't use it).
-
-> :00:00:00:00:00:00:
-
-Source MAC address is blank (loopback doesn't use it)
-
->08:00
-
-Protocol is IP over ethernet
-
-> SRC=1.2.3.4
-
-Source IP address
-
-> DST=1.2.3.4
-
-Destination IP address
-
-> LEN=68
-
-Packet length including headers.
-
-> TOS=0x00
-
-Type Of Service flags not set (= 0000 0000)
-
-> PREC=0xC0
-
-Precedence bits = 1100 0000
-
-> TTL=64
-
-Time to live = 64: another 64 hops to go before the packet expires
-
-> ID=13447
-
-ICMP ID number = 13447
-
-> PROTO=ICMP
-
-This is an ICMP packet
-
-> TYPE=3
-
-ICMP type = 3 (Destination Unreachable)
-
-> CODE=1
-
-ICMP code = 1 (Host Unreachable)
-
-> [SRC=1.2.3.4 DST=219.141.107.<snip> LEN=40 TOS=0x00 PREC=0x00 TTL=255
-> ID=0 DF PROTO=TCP SPT=5554 DPT=4715 WINDOW=0 RES=0x00 ACK RST URGP=0 ]
-
-Snippet of the original packet which this ICMP error is referring to (a TCP 
-packet from 1.2.3.4 to 219.141.107.<snip>, from source port 5554 to 
-destination port 4715, with the reset flag set, therefore something was 
-obviously trying to terminate an already-established connection).
-
-See http://logi.cc/linux/netfilter-log-format.php3 for more details on 
-netfilter's logging format.
-
-Regards,
-
-Antony.
-
--- 
-There are only 10 types of people in the world:
-those who understand binary notation,
-and those who don't.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+This email message has been scanned for viruses.
 
 
