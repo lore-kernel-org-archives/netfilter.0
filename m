@@ -1,17 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: FORWARD rules
-Date: Fri, 12 Sep 2003 16:51:41 +0200
+From: Faheem Mitha <faheem@email.unc.edu>
+Subject: Re: comments about lokkit default script
+Date: Fri, 12 Sep 2003 13:26:14 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063378301.888.66.camel@elendil.intranet.cartel-securite.net>
-References: <20030910175253.GA2752@linux.local>
-	 <1063260568.26703.1.camel@risingsun.penguindia.com>
-	 <20030912100957.GA3360@linux.local>
-	 <1063363533.879.52.camel@elendil.intranet.cartel-securite.net>
-	 <20030912163656.19b9fb66.arnt@c2i.net>
+Message-ID: <Pine.LNX.4.44.0309121323530.1054-100000@Chrestomanci>
+References: <200309120902.41066.gdh@acentral.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030912163656.19b9fb66.arnt@c2i.net>
+In-Reply-To: <200309120902.41066.gdh@acentral.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,19 +16,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Arnt Karlsen <arnt@c2i.net>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Gavin Hamill <gdh@acentral.co.uk>
 Cc: netfilter@lists.netfilter.org
 
-Le ven 12/09/2003 =E0 16:36, Arnt Karlsen a =E9crit :
-> On Fri, 12 Sep 2003 12:45:34 +0200,=20
-> Cedric Blancher <blancher@cartel-securite.fr> wrote in message=20
-> > > $IPTABLES -A INPUT -m state --state NEW,ESTABLISHED,RELATED \
-> ..lose "NEW".
 
-Just what I said, wasn't it ?
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+On Fri, 12 Sep 2003, Gavin Hamill wrote:
+
+> On Friday 12 September 2003 07:11, Faheem Mitha wrote:
+> > Dear People,
+> >
+> > Are the lines
+> >
+> > iptables -A RH-Lokkit-0-50-INPUT -p udp -m udp -s 207.69.188.18*
+> > --sport 53 -d 0/0 -j ACCEPT
+> >
+> > allowing through the DHCP connection? The 207.69.188.18* are
+> > Earthlink servers, they look like nameservers.
+>
+> Your second hunch is right - they are for Eathlink's nameservers, since that's
+> what will be defined in /etc/resolv.conf... DNS lookups reply using a UDP
+> source port of 53, hence the lines added by lokkit..
+>
+> I would be wary of the fact that DHCP (which uses UDP ports 67 and 68) is
+> currently blocked, so if you start to get connection problems in the near
+> future, you'll know why - you should probably see messages from your DHCP
+> client that it was unable to renew the lease...
+>
+> iptables -A INPUT -p UDP -i eth0 --dport 67 --sport 68 -j ACCEPT
+>
+> is what I use to ensure that the DHCP traffic is permitted from the outside
+> world.
+
+Hi. Thanks for the info. Does the rest of the configuration look Ok then?
+
+                                                              Faheem.
+
 
