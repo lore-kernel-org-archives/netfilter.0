@@ -1,50 +1,62 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Creating rules without the /sbin/iptables command?
-Date: Wed, 17 Mar 2004 22:34:20 +0100 (CET)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0403172230510.11069-100000@filer.marasystems.com>
-References: <1079551538.1424.23.camel@anduril.intranet.cartel-securite.net>
+From: Nick Taylor <nickt@lightlink.com>
+Subject: Re: Configure my firewall
+Date: Wed, 17 Mar 2004 16:52:50 -0500 (EST)
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <Pine.GSU.4.58.0403171651500.14046@adore.lightlink.com>
+References: <20040317093541.C8A5BC154@postfix3-2.free.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <1079551538.1424.23.camel@anduril.intranet.cartel-securite.net>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040317093541.C8A5BC154@postfix3-2.free.fr>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: Victor Julien <victor@nk.nl>, netfilter@lists.netfilter.org, Netfilter Developers List <netfilter-devel@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: nicolas boussekeyt <nicolas.boussekeyt@free.fr>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Wed, 17 Mar 2004, Cedric Blancher wrote:
+Well, I don't know how this worm spreads, so I can't help with firewall
+design, but it seems to me that you might want the LOG rules before the
+DROP rules, no?
 
-> Le mer 17/03/2004 =E0 19:46, Victor Julien a =E9crit :
-> > My program (written in c) creates rules by opening a pipe to=20
-> > /sbin/iptables. However this is quite slow with large rulessets and o=
-n=20
-> > slow hardware. Is there another way, like an iptables librarycall or=20
-> > something?
->=20
-> You could use iptables libs that stand in /usr/lib/iptables, just like
-> iptables does.
+On Wed, 17 Mar 2004, nicolas boussekeyt wrote:
 
-Or actually the preferred interface for this type of operations is to use=
-=20
-iptables-restore, the batch version of iptables. The speed difference fro=
-m=20
-using iptables-restore and direct calls is pretty minimal by any means.
-
-libiptc is an internal interface of the iptables source tree and is
-subject to change at any time. This should not be used directly unless yo=
-u=20
-have very good reasons.
-
-Regards
-Henrik
-
+> Date: Wed, 17 Mar 2004 10:37:42 +0100
+> From: nicolas boussekeyt <nicolas.boussekeyt@free.fr>
+> To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+> Subject: Configure my firewall
+>
+> Hi, I want filter my firewall for raleka worm.
+>
+> Actually, i have used :
+> iptables -A FORWARD -p tcp -i $EXTIF --dport 135 -j DROP
+> iptables -A FORWARD -p tcp -i $EXTIF --dport 135 -j LOG
+> iptables -A FORWARD -p udp -i $EXTIF --dport 135 -j DROP
+> iptables -A FORWARD -p udp -i $EXTIF --dport 135 -j LOG
+> iptables -A FORWARD -p tcp -i $EXTIF --dport 6667 -j DROP
+> iptables -A FORWARD -p tcp -i $EXTIF --dport 6667 -j LOG
+> iptables -A FORWARD -p udp -i $EXTIF --dport 6667 -j DROP
+> iptables -A FORWARD -p udp -i $EXTIF --dport 6667 -j LOG
+> iptables -A FORWARD -p tcp -i $EXTIF --dport 32767 -j DROP
+> iptables -A FORWARD -p tcp -i $EXTIF --dport 32767 -j LOG
+> iptables -A FORWARD -p udp -i $EXTIF --dport 32767 -j DROP
+> iptables -A FORWARD -p udp -i $EXTIF --dport 32767 -j LOG
+> iptables -A FORWARD -p tcp -i $EXTIF --dport 32768 -j DROP
+> iptables -A FORWARD -p tcp -i $EXTIF --dport 32768 -j LOG
+> iptables -A FORWARD -p udp -i $EXTIF --dport 32768 -j DROP
+> iptables -A FORWARD -p udp -i $EXTIF --dport 32768 -j LOG
+>
+> But the worm is back.
+>
+> Can you give me information.
+>
+>
+>
+>
 
