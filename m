@@ -1,17 +1,13 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: iptables and iproute
-Date: Mon, 26 Apr 2004 19:27:11 +0200
+Subject: Re: DNAT and promiscuous mode
+Date: Mon, 26 Apr 2004 19:30:28 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1083000431.1795.0.camel@anduril.intranet.cartel-securite.net>
-References: <1082964013.1772.14.camel@Toshiba.Toshiba>
-	 <1082965885.1794.1.camel@anduril.intranet.cartel-securite.net>
-	 <1082966886.1772.18.camel@Toshiba.Toshiba>
-	 <1082969954.1794.35.camel@anduril.intranet.cartel-securite.net>
-	 <1082998422.1772.72.camel@Toshiba.Toshiba>
+Message-ID: <1083000628.1795.4.camel@anduril.intranet.cartel-securite.net>
+References: <408D40DC.2010201@ida.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1082998422.1772.72.camel@Toshiba.Toshiba>
+In-Reply-To: <408D40DC.2010201@ida.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,15 +18,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Antonio Alvarez <aramirez@teneinformatica.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: Travis Johnson <tlj@ida.net>
+Cc: netfilter@lists.netfilter.org
 
-Le lun 26/04/2004 =E0 18:53, Antonio Alvarez a =E9crit :
-> To solve this problem you can use=20
-> ip route add default via dev eth1 src 192.168.1.1 table test
+Le lun 26/04/2004 =E0 19:03, Travis Johnson a =E9crit :
+> Is it possible to use DNAT on an interface that only runs in promiscuou=
+s=20
+> mode to redirect web traffic to a different IP address?
+> Traffic does not pass thru the firewall, only a single ethernet=20
+> interface in promiscuous mode.
 
-Yes, I know, but my box already had the SNAT rule set, and my lazyness
-won ;)
+Yes, you can handle traffic with a promisc interface just the way you
+handle it with a normal one as long as it is destined to its MAC
+address.
+
+But you may describe your setting and will a bit more, for I don't
+really understand the purpose of promisc there.
 
 --=20
 http://www.netexit.com/~sid/
