@@ -1,13 +1,14 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: FORWARDING and NAT chains
-Date: Fri, 30 Jan 2004 07:50:11 +0200
+From: Daniel Chemko <dchemko@smgtec.com>
+Subject: Re: Classifying W32/MyDoom.A
+Date: Thu, 29 Jan 2004 21:41:01 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1075441811.1999.116.camel@raylinux.internal>
-References: <001901c3e670$a4bd2250$3d40000a@wisdom>
+Message-ID: <4019EE6D.2020306@smgtec.com>
+References: <3383379105910242B6F8878D41FA834201A7B5@glsql.greatlakes.net> <1075441566.1999.114.camel@raylinux.internal>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-6NCV1/wdZDCMTrhyIkkI"
+Content-Type: multipart/alternative;
+ boundary="------------010601050702010401090809"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001901c3e670$a4bd2250$3d40000a@wisdom>
+In-Reply-To: <1075441566.1999.114.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +18,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Ray Leach <raymondl@knowledgefactory.co.za>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+
+This is a multi-part message in MIME format.
+--------------010601050702010401090809
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Netfilter is not an application layer Firewall.
+
+Try something like sendmail/Mailscanner and pick up clamav. I was 
+blocking before I even knew about the virus!
 
 
---=-6NCV1/wdZDCMTrhyIkkI
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Ray Leach wrote:
 
-On Thu, 2004-01-29 at 16:02, Srinivasa Hebbar wrote:
-> Hello,
->=20
-> I believe that the NAT PREROUTING and POSTROUTING will=20
-> always takes place for all the incoming/outgoing packets
-> irrespective of whether the packet is destined to the node or not.
->=20
-> I have a situvation that if the dest. IP address of the packet is
-> for the local node, then apply NAT rule, otherwise it should simply
-> forward the packet according to the routing table.
->=20
-> How can I achive the above?
->=20
-Use the INPUT chain of the nat table.
+>On Thu, 2004-01-29 at 20:06, Eliot, GLI wireless tech support wrote:
+>  
+>
+>>Has anyone come up with a ruleset for classifying a random TCP or
+>>specific SMTP connection as being the W32/MyDoom.A virus?
+>>    
+>>
+>
+><<snip>>
+>
+>  
+>
+>>Anyone have any ideas how to do this without too many false positives?
+>>(IE a document on the web that describes the characteristics of
+>>MyDoom.A). 
+>>    
+>>
+>
+>Since it spreads via SMTP from clients and not servers, why not just
+>block all smtp traffic outbound to the internet from your client
+>machines, and only allow your mail server to send smtp mail?
+>
+>Of course you would need a decent anti-virus program on the mail server.
+>
+>The other way you could possibly do this is by using a string match to
+>look inside any smtp packets for matches of the attachment names(?).
+>
+>  
+>
 
-> Any help is very much appreciated.
->=20
-> Regards,
-> S. Hebbar.
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+--------------010601050702010401090809
+Content-type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
---=-6NCV1/wdZDCMTrhyIkkI
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Netfilter is not an application layer Firewall.
+Try something like sendmail/Mailscanner and pick up clamav. I was blocking before I even knew about the virus!
+Ray Leach wrote:
+On Thu, 2004-01-29 at 20:06, Eliot, GLI wireless tech support wrote:
+Has anyone come up with a ruleset for classifying a random TCP or specific SMTP connection as being the W32/MyDoom.A virus?
+<<snip>>
+Anyone have any ideas how to do this without too many false positives? (IE a document on the web that describes the characteristics of MyDoom.A).
+Since it spreads via SMTP from clients and not servers, why not just block all smtp traffic outbound to the internet from your client machines, and only allow your mail server to send smtp mail? Of course you would need a decent anti-virus program on the mail server. The other way you could possibly do this is by using a string match to look inside any smtp packets for matches of the attachment names(?).
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQBAGfCTh1fuR/Bv+ygRAgLrAJ9QO/q0iAQoC0g9ej07719w2WNSvACgkYZu
-PPisda7dWc3V0VvxYLU4NtU=
-=IGkb
------END PGP SIGNATURE-----
-
---=-6NCV1/wdZDCMTrhyIkkI--
-
+--------------010601050702010401090809--
 
