@@ -1,11 +1,13 @@
-From: Scott Lamb <slamb@slamb.org>
-Subject: conntrack idle timeout
-Date: Tue, 25 Feb 2003 21:09:24 -0600
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Port Forwarding Problem
+Date: Wed, 26 Feb 2003 04:20:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E5C2FE4.3010007@slamb.org>
+Message-ID: <20030226042038.75c8a032.arnt@c2i.net>
+References: <3E5BB0BF.2070401@openadventures.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3E5BB0BF.2070401@openadventures.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,23 +17,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Is there a way to control the time it takes for an idle, established TCP 
-session to be purged from conntrack's state tables? I'm looking for the 
-something like "ipchains -M -S". I saw at 
-<http://www.syrlug.org/contrib/ipmasq.html> that there is no iptables 
-equivalent, but I'm hoping it's changed since then. Maybe there's a 
-sysctl or something?
+On Tue, 25 Feb 2003 11:06:55 -0700, 
+Tom Smith <tom@openadventures.org> wrote in message 
+<3E5BB0BF.2070401@openadventures.org>:
 
-The problem I'm experiencing is pretty simple. I leave ssh sessions open 
-for a while (possibly several hours). I come back to them and get a 
-"Connection reset by peer" error and have to open a new session. Back 
-when I used ipchains, "iptables -M -S 86400 10 60" or similar solved the 
-problem for me.
+> RedHat 7.3 w/ Kernel 2.4.9-13
 
-Thanks,
-Scott Lamb
+..you want 2.4.18-24.7.x, _several_ errata fixes.
+
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
 
 
