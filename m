@@ -1,11 +1,12 @@
-From: Andrew Beekhof <beekhof@gmail.com>
-Subject: Masquerade difficulties
-Date: Fri, 7 Jan 2005 22:42:34 +0100
-Message-ID: <26ef5e705010713424fac90a9@mail.gmail.com>
-Reply-To: Andrew Beekhof <beekhof@gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: transparent bridge troubles?
+Date: Fri, 7 Jan 2005 16:53:24 -0500
+Message-ID: <20050107215324.GA1430@bender.817west.com>
+References: <074001c4f4ea$388d1070$3e0010ac@esonet18>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <074001c4f4ea$388d1070$3e0010ac@esonet18>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,36 +18,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi All,
+On Fri, Jan 07, 2005 at 01:53:48PM -0500, mdpeters wrote:
+> This is my bridge setup:
+> 
+> /sbin/modprobe ip_queue
+> /sbin/ifconfig eth1 0.0.0.0
+> /sbin/ifconfig eth2 0.0.0.0
+> /usr/local/sbin/brctl addbr br0
+> /usr/local/sbin/brctl addif br0 eth1
+> /usr/local/sbin/brctl addif br0 eth2
+> /sbin/ifconfig br0 up
+> /usr/local/sbin/brctl stp br0 off
+> /sbin/ifconfig br0 0.0.0.0 -arp
 
-I'm having some difficulties getting masquerading to work and hoping
-for some pointers...
+i'm a little rusty on my linux bridging commands--but why did you
+execute that last command?  the "ifconfig br0 0.0.0.0 -arp" one.  it
+seems like that would block arp traffic from traversing the bridge, but
+i could be mistaken...
 
-The server (BoxA) has an ipsec (openswan) connection to another
-network and I've run:
-        echo 1 > /proc/sys/net/ipv4/ip_forward
-        iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+-j
 
-On the client (BoxB) I've set the gateway for the other network to be BoxA.
-
-Normally that does the trick, but not today...
-If BoxB tries to ping BoxC, I can see BoxA forwarding the request but
-it never gets an answer to forward back to BoxB.  Obviously BoxA can
-ping BoxC directly.
-
-There are no errors in dmesg or /var/log/messages and I tried
-comparing "-j LOG" entries from my old server (a SLES9 box) where
-masquerading works with those from my new server and everything looks
-the same... it just doesn't work :(
-
-Any pointers on what I'm missing or things to try would be appreciated.
-
-Andrew
-
-Distro: Gentoo
-Kernel: 2.6.9-gentoo-r13
-iptables: iptables v1.2.11
-Openswan: Linux Openswan U2.2.0/K2.6.9-gentoo-r13 (native)
+--
+"I bet Einstein turned himself all sorts of colors before he invented
+ the light bulb."
+        --The Simpsons
 
