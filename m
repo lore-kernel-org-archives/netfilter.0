@@ -1,11 +1,13 @@
-From: lst_hoe01@kwsoft.de
-Subject: Re: SMTP Nating required?
-Date: Wed, 23 Feb 2005 14:30:29 +0100
-Message-ID: <1109165429.421c857533bf0@webmail.kwsoft.de>
-References: <20050223122835.7C74F51F6A@mailin.kwsoft.de>
+From: Yuwen Dai <yuwend@gmail.com>
+Subject: Re: internal host can not access hotmail
+Date: Wed, 23 Feb 2005 22:17:37 +0800
+Message-ID: <f7e5481105022306175a6b09dc@mail.gmail.com>
+References: <f7e5481105022104583d0d3b19@mail.gmail.com>
+	<421A9F1F.5080906@zhmail.com>
+Reply-To: Yuwen Dai <yuwend@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20050223122835.7C74F51F6A@mailin.kwsoft.de>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <421A9F1F.5080906@zhmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +19,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Wenzhuo Zhang <wenzhuo@zhmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Zitat von Nitin Mandolkar <nitin.mandolkar@absarcagen.com>:
+On Tue, 22 Feb 2005 10:55:27 +0800, Wenzhuo Zhang <wenzhuo@zhmail.com> wrote:
+> Yuwen Dai wrote:
+> > Any advice to diagnose this problem?  I once thought maybe something
+> > wrong with the FORWARD rules, and tried to log the blocked
+> > packages. But there's no log info.
+> 
+> Probably you're encoutering the Path MTU Discovery problem. There are
+> serveral solutions to this problem.
+> 
+> 1. Lower the MTU of the network interface of your internal host.
+> 
+> 2. Use the clamp-mss-to-pmtu feature of iptables:
+>     # iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS \
+>          --clamp-mss-to-pmtu
 
-> Dear Net Filter Team.
->
->
->
-> Subject : SMTP Nating required?
->
->
->
-> AS we install Squid proxy server on red Hat Linux 9.
->
-> Squid is working fine on Linux machine and doing his
->
-> Job good.
->
->
->
-> But on client machine when we configure outlook express
->
-> With SMTP server as mail.xyz.com and pop3 server as pop.xyz.com
->
-> It is not resolving that names. It is giving the error. But with Web ma=
-il
-> client
->
-> I can check my mail.
->
->
->
-> How can I resolve this problem..
+Thank you.  I used this rule to solved the problem.
 
-You need a working DNS to resolve the names. If your Squid box can resolv=
-e
-install a caching NS and point your clients to this machine. So far nothi=
-ng
-related to iptables/netfilter??
 
-Regards
 
-Andreas
+> 
+> 3. Use the clamp MSS feature of rp-pppoe (e.g. -m 1412).
+> 
 
+Now ppp uses a rp-pppoe.so plugin in peers/dsl-provider:
+plugin rp-pppoe.so eth0
+
+instead of
+pty "/usr/sbin/pppoe -I eth0 -T 80 -m 1452"
+
+So I don't know if I can use an option.
+
+Best regards,
+Dai Yuwen
 
