@@ -1,10 +1,9 @@
-From: =?gb2312?q?Bill=20Zhao?= <bzhaoa@yahoo.com.cn>
-Subject: Re: natting help needed urgently. (Dharmendra.T)
-Date: Mon, 8 Sep 2003 16:25:13 +0800 (CST)
+From: "akshaysalkar" <akshaysalkar@indiatimes.com>
+Subject: where should logs go??
+Date: Mon, 08 Sep 2003 13:57:51 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030908082513.79873.qmail@web15101.mail.bjs.yahoo.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Message-ID: <200309080812.NAA08173@WS0005.indiatimes.com>
+Reply-To: "akshaysalkar"<akshaysalkar@indiatimes.com>
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,31 +14,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-SGksCgogIFBsZWFzZSB0ZWxsIG1lIHdoYXQgbGludXggdmVyc2lvbiBpcyBhdCB0aGUgZmlyZXdh
-bGwKQXJlIHlvdSB1c2luZyBpcGNoYWluIG9yIGlwdGFibGVzPwpJIGtub3cgaG93IHRvIGRvIHRo
-YXQgdXNpbmcgaXB0YWJsZXMoUkg3LlgpCgoKQmlsbFoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpPbiBTdW4sIDIwMDMtMDktMDcgYXQgMTY6MzQsIFBh
-eWFsIFJhdGhvZCB3cm90ZToKCiAgICBIaSwKICAgIEkgaGF2ZSBhc2tlZCB0aGlzIGJlZm9yZSBi
-dXQgbm9ib2R5IHJlc3BvbmRlZC4gSXMKdGhpcyB1bi1kby1hYmxlPwogICAgSSBoYXZlIGEgd2lu
-ZG93cyBib3ggd2hpY2ggaXMgb24gaW50ZXJ0bmFsIGlwCjE5Mi4xNjguMTAuMy4gSSB3YW50IAp0
-aGUKICAgIG91dHNpZGUgd29ybGQgdG8gYWNjZXNzIHRoZSBzZXJ2ZXJzIChmdHAsIGh0dHAsCnNt
-dHAsIHBvcDMpIGZyb20gCml0LgogICAgVGhlIHNjZW5lIGlzIHNvbWV0aGluZyBsaWtlIHRoaXMs
-CiAgICAKICAgIAogICAgKy0tLS0tLS0tLS0rICAgICAgICstLS0tLS0tLS0tLS0tLSsgICAgICAg
-IAorLS0tLS0tLS0tLS0tLS0tKwogICAgfCAgICAgICAgICArLS0tPjwtLSsgTGludXggICAgICAg
-ICstLS0tPi0tPC0rd2luMmsKICAgICAgICAgfAogICAgfHJvdXRlciAgICB8ICAgICAgIHwgICgx
-LjIuMy40KSAgIHwgICAgICAgICB8CigxOTIuMTY4LjEwLjMpfAogICAgKy0tLS0tLS0tLS0rICAg
-ICAgICstLS0tLS0tLS0tLS0tLSsgICAgICAgIAorLS0tLS0tLS0tLS0tLS0tKwogICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgSSBhbSBub3QgYWJsZSB0byByZWRpcmVj
-dCBhbnkgcmVxdWVzdCBmb3Igd2luZG93cwpib3ggZnJvbSBvdXRzaWRlIAp3b3JsZAogICAgdG8g
-aW50ZXJuYWwgbWFjaGluZSAxOTIuMTY4LjEwLjMKICAgIAogICAgUGxlYXNlIGhlbHAgbWUgdG8g
-c29sdmUgdGhpcyBwcm9ibGVtLgogICAgCiAgICBXYWl0aW5nIGVhZ2VybHkgZm9yIGFueSBoZWxw
-IG9uIHRoaXMuCiAgICAKICAgIFdpdGggd2FybSByZWdhcmRzLAogICAgLVBheWFsCiAgICAKICAg
-IC0tIAogICAgIlZpc2l0IEdOVS9MaW51eCBTdWNjZXNzIFN0b3JpZXMiCiAgICBodHRwOi8vcGF5
-YWwuc3RhdGlja3kuY29tCkd1ZXN0LUJvb2sgU2VjdGlvbiBVcGRhdGVkLgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkRvIFlvdSBZYWhv
-byE/IArG9NPDtefTytXKusWjrMHsu+HRxbuizahbye3B2cbkvrPBxLXn07BdtcS2r7jQ98jBpqOs
-u7nT0M34wufJ48/xzbcr0cW7os2oytXS9Lv6tcjE48C0xMMKaHR0cDovL2NuLnJkLnlhaG9vLmNv
-bS9tYWlsX2NuL3RhZy8/aHR0cDovL2NuLm1lc3Nlbmdlci55YWhvby5jb20KCg==
+
+i was going throught eh iptables tutorial etc.
+and regarding logging... i am quite confused.
+it says somehwere in the tutorial that specifaction of iptables should be
+iptables -A FORWARD -p tcp -j LOG --log-level debug
+
+then somewhere below
+kern.=info /var/log/iptables in your syslog.conf file and then letting all your LOG messages in iptables use log level info, would make all messages appear in the /var/log/iptables file.
+
+so what should be the syslog 
+should it be
+kern.debug
+or 
+kern.info
+or can it be even
+kern.warn
+
+i'm confused.
+i tried kern.warn
+and the logs do go to /var/log/iptables (the file i created for itpables logs) but then quite a lot go to /var/log/messages also.
+
+i want to avoid the messages going to /var/log/messages
+
+any suggestions...
+
+
+regards,
+
+
+
+
+Get Your Private, Free E-mail from Indiatimes at http://email.indiatimes.com
+
+ Buy The Best In BOOKS at http://www.bestsellers.indiatimes.com
+
+Bid for for Air Tickets on Air Sahara Flights at Prices Lower Than Before. Just log on to http://airsahara.indiatimes.com and Bid Now!
+
+
