@@ -1,13 +1,12 @@
-From: Frank Gruellich <frank@home.manuelm.org>
-Subject: Re: FW: Filtering multiple networks
-Date: Mon, 31 May 2004 12:45:24 +0200
+From: "Vinay Poojary" <vinay@technoinfotech.com>
+Subject: iptables Please Help
+Date: Mon, 31 May 2004 16:33:14 +0530 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040531104524.GA26731@home.manuelm.org>
-References: <E1BUk4b-0006Wv-Cf@vishnu.netfilter.org>
+Message-ID: <33934.10.0.0.199.1086001394.squirrel@10.0.0.254>
+Reply-To: vinay@technoinfotech.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <E1BUk4b-0006Wv-Cf@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +17,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-* Markus Zeilinger <mz@sea.uni-linz.ac.at> 31. May 04:
-> Hi Frank,
+Dear Sir,
 
-Hello,
+  I have installed redhat 9.0 for my server, i have two Internet links. I
+have 3 Interface cards attached to my server where the two Internet links
+terminate and One Internet card for my local network.
 
-> thx for you prompt answer!
+suppose
 
-No problem.  Thanks for not top posting you next reply.  Thanks for not
-mangeling threading by setting a Reference: header with a real
-mailreader.
+eth0 - 10.0.0.200 (Local Lan IP address)
+eth1 - 11.0.0.254  (The first Isp Link terminate let it be of tata ) eth2
+- 12.0.0.254  (The second isp Link terminate Let it be of sify)
 
-> - Thy is DROP bad here? As I see REJECT would send an error message back to
-> the source, but this would not make any sense on packets coming on the WAN
-> interface with private IP addresses, or am I wrong?
+ My default gateway is Isp 1 (eth1) But the problem with these is that
+they charge a lot .
 
-It would be kinda polite to point the sender of the packets to his
-misconfigured box.  REJECT is like yelling 'Hey, you are wrong!'
-DROPping is like closing your eyes to somebodys problem.  Anyway, it's
-you decision right here.
+ So what i want is to upload from eth1 (first Internet Link) and download
+from eth2 (second Internet link).
 
-> - Why is INPUT not appropriated here? Should I do the dropping earlier
-> perhaps in the mangle table?
+ Please send me any iptable rule which could do this.
 
-Forget it, everything fine.  I saw a -d for a -s.  BTW: never filter
-anything in mangle.
+Thanks In advance,
 
-HTH,
- regards, Frank.
--- 
-Sigmentation fault
+Waiting for your reply,
+
+Regards,
+vinay
 
