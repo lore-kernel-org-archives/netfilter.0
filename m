@@ -1,10 +1,15 @@
-From: James <krunkalot@hotpop.com>
-Subject: Odd iptables behavior. One port range works, another doesn't
-Date: Sun, 21 Nov 2004 19:56:33 -0600
-Message-ID: <BC36F80F-3C29-11D9-9337-000A95B6BD3E@hotpop.com>
-Mime-Version: 1.0 (Apple Message framework v619)
+From: Stephan Uhlmann <su@su2.info>
+Subject: Re: nat:REDIRECT on localhost not working in Kernel 2.6
+Date: Mon, 22 Nov 2004 04:11:38 +0100
+Message-ID: <200411220411.42182.su@su2.info>
+References: <200411191836.07261.su@su2.info>
+	<20041119174100.GA20905@bender.817west.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart3379392.ik0usahUQc";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20041119174100.GA20905@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,38 +20,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I am trying to use non-standard ports with torrents. If I use the 
-standard ports: 6880:6899, it works fine. However, if I simply change 
-the port range to 6280:6299, it no longer matches and my default DROP 
-rule at the end of my chain catches the packets.
-
-My full script can be found here, it is fairly thorough in its comments:
-http://www.tuxmac.homelinux.org/~james/scripts/fwsoho.full
-
-In an attempt to debug, I trimmed out all of the DROP and REJECT rules 
-except the default, catch-alls at the bottom. I discovered that if I 
-used the --dport with the following rules the alternate port range 
-would not work, but if I left the --dport off and did a straight 
-accept, it did:
-
-$IPT -A OUTPUT  -o $EXTIF -p tcp -s $EXTIP  \
-     --dport $ports -m state --state NEW -j ACCEPT
-    $IPT -A FORWARD -i $INTIF -p tcp -s $INTNET \
-     --dport $ports -m state --state NEW -j ACCEPT
-
-Here is a link to the trimmed down rule set:
-http://www.tuxmac.homelinux.org/~james/scripts/fwsoho
-
-Finally, here is the output of "iptables -L" and below it "iptables -t 
-nat -L PREROUTING -vn" with the troublesome 6280:6299 range used
-http://www.tuxmac.homelinux.org/~james/scripts/rules
+--nextPart3379392.ik0usahUQc
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
 
-Any input is greatly appreciated, thanks in advance
+Just for the archive and to confirm: I tested it now with self-compiled ker=
+nel=20
+2.6.9 (on SuSE 9.2, default iptables 1.2.11) and it worked.
 
--james
+Thanks everybody!
 
+
+Stephan
+
+--nextPart3379392.ik0usahUQc
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQBBoVju0TAeRPnvmyERAgpqAJ9L/QdX+dII6cVdO8rOjzM7RlvmRQCfUYRi
+qY9MifE39NHeVlcOi1px9uo=
+=HsNl
+-----END PGP SIGNATURE-----
+
+--nextPart3379392.ik0usahUQc--
 
