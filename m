@@ -1,12 +1,12 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: iptables problem
-Date: Tue, 13 May 2003 20:43:29 +0530
+From: Kevin McConnell <kevymac@yahoo.com>
+Subject: Re: H323 patch with VPN
+Date: Tue, 13 May 2003 07:57:25 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1bd101c31962$358e1820$09603fca@Housecall>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <20030513145725.90106.qmail@web40306.mail.yahoo.com>
+References: <001f01c31892$8ec25c60$95dc6f89@wonderland>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001f01c31892$8ec25c60$95dc6f89@wonderland>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +17,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
-
-Hi
-
-i have installed iptables 1.2.8a in RH 9.0
-and installed POM tooo
-when i do
-
-[root@ root]# iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
-REDIRECT --to-port 3128
-iptables: Invalid argument
-
-what is wrong
-i dont see any problem, but iam getting this error
-what could be the problem
-
-hare
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+Cc: Calvin <calvinproject@ihug.com.au>
 
 
+--- Calvin <calvinproject@ihug.com.au> wrote:
+> Hi all,
+
+Hi Calvin
+
+> I just want to ask if I use VPN to protect all the
+> traffics, will the H323 patch for netfilter still
+> able to work?
+
+It should work.
+
+> It seems to me that all the traffic going out and
+> coming in through the firewall are encrypted, so how
+> to make it works?
+
+The vpn software on both ends should be able to
+decrypt the packets.
+
+
+
+=====
+Kevin C. McConnell --RHCE-- <Red Hat Certified Engineer>
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
 
