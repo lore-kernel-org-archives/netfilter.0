@@ -1,13 +1,10 @@
-From: "Robert Wideman" <rwideman@austin.rr.com>
-Subject: RE: Samba blocked?
-Date: Tue, 26 Nov 2002 18:00:51 -0600
+From: Art Reisman <astormchaser2002@yahoo.com>
+Subject: RE: Traffic Shaping
+Date: Tue, 3 Dec 2002 08:22:31 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001101c295a8$12c4b1c0$010da8c0@mrboboo.com>
-References: <000d01c2958f$d3fadbd0$1e00a8c0@yamatto>
+Message-ID: <20021203162231.54299.qmail@web10411.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <000d01c2958f$d3fadbd0$1e00a8c0@yamatto>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,75 +15,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Dan Egli' <dan@shortcircuit.dyndns.org>, netfilter@lists.netfilter.org
-
-Check your DNS settings.  Your using the DNS name or hosts in the first one
-and the in the second you use the IP address......
-
-Robert Wideman
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Dan Egli
-Sent: Tuesday, November 26, 2002 3:06 PM
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: Samba blocked?
+Cc: geoff@uslinux.net, jumurlick@sispro.com.br
 
 
-Ok. I'm a fair bit confused here. I'm trying to setup a IPtables filter set
-that will block certain ports and allow others. It seems to work perfectly
-for anything other than Samba. If I try:
 
-smbclient //myserver/shared1, it fails to connect. But using the IP in place
-of it:
-smbclient //192.168.0.2/shared1 works just fine. I am specifically allowing
-NetBIOS-ns, NetBIOS-ssn, and NetBIOS-dgm. Still no go. What's wrong?
+You might want to look at this interesting alternative
 
-Thanks!
--- Dan
+First let me preface I am not in any way in
+competition with the other published tools avaiable to
+Linux, such as the LARTC and Netfilter I fully support
+their efforts; however  I have been  working on a
+traffic shaping tool that may be of interest, and yes
+it does overlap some existing utilities. But it
+differs by  attempting to be totally turn key, (among
+other things) It is designed for the user that does
+not want to get down to the level of %50 FTP, %20 HTTP
+or whatever. 
 
-tables:
+The tool is  getting into a serious beta trial for
+some Public school districts in the state of
+Washington and yes it is all open source. I'd still 
+call it in the proof on concept stage and gaining
+momentum
 
-#!/bin/bash
-IPT=/sbin/iptables
-# step 1 - ensure iptables are loaded
-modprobe ip_conntrack_ftp
-# that should pull in all dependant modules
-#step 2  SET DEFAULT POLICY
+The details can be found www.apconnections.net
 
-$IPT -P INPUT DROP
-$IPT -P OUTPUT ACCEPT
-$IPT -P FORWARD DROP
-
-# step 3 FLUSH THE TABLES
-$IPT -F INPUT
-$IPT -F OUTPUT
-$IPT -F FORWARD
-$IPT -t nat -F PREROUTING
-$IPT -t nat -F POSTROUTING
-$IPT -t nat -F OUTPUT
-
-# setp 4 - setup rules
-$IPT -A INPUT -p tcp -m multiport --dports smtp,ftp,telnet,ssh -j ACCEPT
-$IPT -A INPUT -p tcp -i eth0 -m multiport --dports
-telnet,ssh,domain,nntp,ntp,printer,pop3,imap,http,https,netbios-ns,netbios-d
-gm,netbios-ssn -j ACCEPT
-$IPT -A INPUT -p udp -i eth0 -m multiport --dports
-domain,ntp,netbios-ns,netbios-dgm,netbios-ssn -j ACCEPT
-$IPT -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-$IPT -A INPUT -j LOG
-
-$IPT -A FORWARD -i eth0 -j ACCEPT
-$IPT -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-$IPT -A FORWARD -j LOG
-# step 5 - enable NAT
-$IPT -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 64.122.31.38
-# step 6 - setup the proc files for a propper firewall
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-
-P.S. With these rules, it should only log packets that are failing, and I
-see the packets on port 137 in the log, so I don't know what's wrong.
+Art
+>     Hello,
+>     Anybody knows if there is some module for
+netfilter that works 
+like
+> traffic shaper ? i am trying to shaper my traffic
+but in dinamic way, 
+not
+> static , like 50 % for FTP and 25 % SMTP, 5% ICMP 
+... what is best 
+way t=
+o
+> do it ?
 
 
