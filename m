@@ -1,47 +1,80 @@
-From: Sam Johnston <samj@aos.net.au>
-Subject: Changing MAC Addresses
-Date: Sat, 07 Dec 2002 14:37:01 +1100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DF16CDD.5000400@aos.net.au>
+From: Toth Szabolcs <totya@mail.ajkanet.hu>
+Subject: Help! ip traffic accounting and bidirection with iptables ??
+Date: Fri, 13 Dec 2002 17:42:44 +0100 (CET)
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <Pine.LNX.4.21.0212131702290.24104-100000@eagle.ajkanet.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+Cc: netfilter-devel@lists.netfilter.org
 
-Afternoon all,
 
-I'm not sure if this is the best forum for this question as it is not 
-necessarily directly related to Netfilter, but I can't think of anywhere 
-else I might find anyone capable of answering it, so here goes.
+Hi All !
 
-I have a bunch of xboxes running linux which all have the same MAC 
-address: 00:00:00:00:00:00. This causes obvious problems when more than 
-1 machine is on any one segment. I'm led to believe I can work around 
-the problem by putting something like:
+I have the following network schema :
 
-/sbin/ifconfig eth0 hw ether 00:50:f2:ab:cd:ef up
+         firewall
+         _________
+ INET    |   |	 |     LAN 
+<------>ETH0 |   ETH1<----->
+1.2.3.5  |   |   |    192.168.0.0/16
+         ---------
+	  server
 
-fairly early in the boot process (specifically, I've chosen the pre-up 
-directive in /etc/network/interfaces as they're running Debian).
+I measure the ip traffic for each user who are in the LAN segment.
+I measure all traffic that goes to , come from the server and INET.
 
-When I do this I'm able to see the MAC<->IP mapping in the ARP table of 
-another machine, but it doesn't respond. I figure that something 
-somewhere is remembering the old MAC address and dropping anything that 
-doesn't match, although I don't know enough about low level networking 
-in linux to be sure.
+I used unil now ipchains. The following rules make it possible for me to
+see seperated the incoming and outgoing traffic on each user ip:
 
-Any suggestions would be appreciated.
+pkts	bytes
+1125     208155 -          all  ------ 0xFF 0x00  eth1 				192.168.2.10         0.0.0.0/0             n/a
+1542    1153702 -          all  ------ 0xFF 0x00  eth1 				0.0.0.0/0            192.168.2.10          n/a
+---------------
 
-Sam
+ipchains -N acct
+ipchains -A input -j acct -s 192.168.0.0/16 -b
+ipchains -A output -j acct -s 192.168.0.0/16 -b
+
+ipchains -A acct -p all -s 192.168.0.19  -i eth1 -b
+ipchains -A acct -p all -s 192.168.2.10  -i eth1 -b
+ipchains -A acct -p all -s 192.168.2.26  -i eth1 -b
+ipchains -A acct -p all -s 192.168.2.42  -i eth1 -b
+ipchains -A acct -p all -s 192.168.2.58  -i eth1 -b
+......
+.....
+.....
+(n+1)
+
+Now I would change to iptables but I have a problem that I can not solve.
+I can not measure the ip traffic / seperated for incoming and outgoing !!/ 
+in ONE rule beacuse there is now "-b" /bidirection/ option in the 
+iptables.
+
+Now I use the following rules in iptables:
+
+iptables -N acct
+iptables -A acct -d 192.168.2.10
+iptables -A acct -s 192.168.2.10
+........
+.......
+(2n+1)
+
+iptables -A INPUT -i eth1 -s 192.168.0.0/16 -j acct
+iptables -A FORWARD -j acct
+iptables -A OUTPUT -o eth1 -d 192.168.0.0/16 -j acct
+
+If anybody know a better solution please write me: totya@ajkanet.hu
 
 
