@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: iptables and wifi access point
-Date: Mon, 28 Jul 2003 08:04:18 +1000
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: iptables and wifi access point
+Date: Mon, 28 Jul 2003 02:27:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BFD0@wardrive.citadelcomputer.com.au>
+Message-ID: <20030728022715.4ed85d7e.arnt@c2i.net>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A15BFD0@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15BFD0@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +18,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jason <arnjuka@optonline.net>, netfilter@lists.netfilter.org
-
-1. Security =3D Forget WEP (or even 128bit WEP.. it sucks.). Use IPSEC =
-tunnels over wifi.
-2. You can setup the wifi cards ethernet name to be anything, ie wifi0 =
-or eth10. Makes scripting easier.
-3. DO NOT USE MAC FILTERING... Wifi can easily be spoofed mac addresses =
-hence the reason for number 1 above.
-4. Remember in some/most/all countries that subleasing internet access =
-is illegal without a carrier license (it is in Australia, dunno about =
-anywhere else)..
-
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-=20
-
------Original Message-----
-From: Jason [mailto:arnjuka@optonline.net]
-Sent: Monday, July 28, 2003 6:00 AM
 To: netfilter@lists.netfilter.org
-Subject: iptables and wifi access point
 
+On Mon, 28 Jul 2003 08:04:18 +1000, 
+"George Vieira" <georgev@citadelcomputer.com.au> wrote in message 
+<09B04A55822EFF4DA48D2E0BB2941D4A15BFD0@wardrive.citadelcomputer.com.au
+>:
 
-Hi all, this is my first time writing here.  Here goes.
+> 1. Security = Forget WEP (or even 128bit WEP.. it sucks.). Use IPSEC
+> tunnels over wifi. 
 
-I'm setting up an accesspoint with a redhat9 box and a prism 2 netgear
-wifi card.  The box has the wifi adapter and two wired nic adapters.
-The wifi is for the access point and all the clients that will connect
-to it, one nic is for the dsl, and the other is for wired machines on
-the network.
+..ok, a dumb question: which tunnelling gives best signal security 
+per cpu omph expenditure?
 
-I wanted to use iptables and cbq {i think} for routing/firewalling and
-bandwidth limiting and shaping.  If anyone has done this before and
-maybe has sample config files, or if you know any good docs to read
-please point me in the right direction.
+> 4. Remember in some/most/all countries that subleasing internet
+> access is illegal without a carrier license (it is in Australia, dunno
+> about anywhere else)..
 
-I want to make the network as secure as possible and as accessable as
-possible.  Sorry for asking such a broad question, I'm just hoping that
-someone has done this already, or someone might have some ideas for me.
+..huh?  I thought it was the isp's who put stuff like that in 
+their service contracts?  
+(Usually to protect their own network and business.)
 
-TIA,
-Jason
+..and, logging _is_ wise, so you can show "who did what when", 
+whenever the cops etc get nosy.  
 
+.._after_ they produce the search warrant, of course.  ;-)
 
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
 
