@@ -1,12 +1,14 @@
-From: "Manikandan" <manikandan@manikandan.org>
-Subject: Unable to apply pptp conntrack patch
-Date: Fri, 14 May 2004 16:05:05 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Iptables do nat with Protocol 47 or GRE
+Date: Fri, 14 May 2004 11:39:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GHEILNONPACCGBGKBEKKCEMPCFAA.manikandan@manikandan.org>
-Reply-To: <manikandan@manikandan.org>
+Message-ID: <200405141139.39356.Antony@Soft-Solutions.co.uk>
+References: <E1BOZqT-0001Ro-Vu@vishnu.netfilter.org>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <E1BOZqT-0001Ro-Vu@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +19,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi all,
+On Friday 14 May 2004 11:24 am, Sez wrote:
 
-        I am trying to patch my RedHat kernel kernel-2.4.20-31.9 with pptp
-conntrack patch as my NAT clients requires access to one of my Windows 2000
-VPN server. I am getting the following error when I patch my kernel.
+> Hi people,
+>
+> I have a a vpn server in my Intranet. If i want access to this server i
+> will pass my firewall.
+>
+> The diagram is
+>
+> VPN_CLIENT(W2k box) ---- router ---- (192.168.55.94 eth0) FIREWALL
+> (192.168.55.95 eth1)-------- (192.168.55.92)VPN_SERVER
+>
+> I create all iptables rules and VPN_CLIENT can connect to server. One
+> client go well. But if another client try to connect he has this error
+> 		*** error  721: Remote server don't response. ***
 
-[root@manikandan patch-o-matic-ng-20040302]# ./runme pptp-conntrack-nat/
-Hey! KERNEL_DIR is not set.
-Where is your kernel? [/usr/src/linux] /usr/src/linux-2.4.20-31.9
-Where is your iptables source code? [/usr/src/iptables]
-/usr/src/iptables-1.2.9
-Loading patchlet definitions... done
-Welcome to Patch-o-matic (1.14)!
+Are you using the PPTP NAT connection tracking helper module?   If not, you 
+will not be able to support more than one connection at a time.
 
-Kernel:         /usr/src/linux-2.4.20-31.9
-Iptables:       /usr/src/iptables-1.2.9
+Regards,
 
-Each patch is a new feature: many have minimal impact, some do not.
-Almost every one has bugs, so don't apply what you don't need!
--------------------------------------------------------
-Already applied:
+Antony.
 
-Not all requirements fulfilled for pptp-conntrack-nat/, skipping:
- Can't find a patch version of  matching your  version
+-- 
+There are two possible outcomes:
 
-Excellent! Source trees are ready for compilation.
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discovery.
 
-Any help!
+ - Enrico Fermi
 
--- Manikandan.
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
