@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Iptables 1.2.9 compilation problem with kernel 2.6.2
-Date: Sun, 15 Feb 2004 16:58:28 +0100
+Subject: Re: can't delete with iptables
+Date: Sun, 15 Feb 2004 16:59:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040215155828.GP15567@sunbeam.de.gnumonks.org>
-References: <002401c3eed4$1624e520$c2bf09ca@huecal>
+Message-ID: <20040215155955.GQ15567@sunbeam.de.gnumonks.org>
+References: <200402070721.i177LxJ09969@mail.bg8.so-net.ne.jp>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZqRzwd/9tauJXEMK"
+	protocol="application/pgp-signature"; boundary="X35wERi4JU/f1kly"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <002401c3eed4$1624e520$c2bf09ca@huecal>
+In-Reply-To: <200402070721.i177LxJ09969@mail.bg8.so-net.ne.jp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,27 +19,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: B H R Balaji <balaji@sol.net.in>
-Cc: netfilter@lists.samba.org
+To: Hideaki Nemoto <eme@bg8.so-net.ne.jp>
+Cc: netfilter@lists.netfilter.org
 
 
---ZqRzwd/9tauJXEMK
+--X35wERi4JU/f1kly
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 09, 2004 at 11:45:16AM +0530, B H R Balaji wrote:
-> Hi all
+On Sat, Feb 07, 2004 at 04:23:07PM +0900, Hideaki Nemoto wrote:
+> Hi,
 >=20
-> i have already installed FEDORA in PC
+> I can't delete the rule by iptables, that I inserted
+> with my program using libiptc.
 >=20
-> i have downloaded the Latest Kernel 2.6.2
->=20
-> i have uninstalled old RPM of iptables
-> Downloaded 1.2.9
+> I've managed to insert, replace, and delete the rulesfrom my program.
+> But I can't delete that rule by iptables, or the ip6tables.
 
-please try without using the connlimit patch.  It seems to mess up the
-includes.
+Please note that libiptc is not meant as a public API for 3rd party
+applications.  We do not encourage people to do so, and it is not
+supported at all.
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -51,7 +51,7 @@ includes.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---ZqRzwd/9tauJXEMK
+--X35wERi4JU/f1kly
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -59,10 +59,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQFAL5ckXaXGVTD0i/8RAkR8AJ0WeGMf4TYnYfJcd0tFu3ZsM78L1QCeMGxR
-hAdkw6kg4xmAgJl8RQ8vWEc=
-=jfgD
+iD8DBQFAL5d7XaXGVTD0i/8RAg5/AKCag5Tpej6WJDIJkTVXLMy05HYlLgCdGpuR
+Bm6eaPo7SZLd0O7yr6mWCJA=
+=fqwQ
 -----END PGP SIGNATURE-----
 
---ZqRzwd/9tauJXEMK--
+--X35wERi4JU/f1kly--
 
