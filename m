@@ -1,12 +1,12 @@
-From: Stephen Smoogen <smoogen@lanl.gov>
-Subject: Re: Blocking Kazaa
-Date: Sat, 23 Aug 2003 18:01:47 -0600 (MDT)
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Blocking Kazaa
+Date: Sun, 24 Aug 2003 11:47:10 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0308231758360.27327-100000@cic-mail.lanl.gov>
-References: <20030822183848.21628.qmail@web40206.mail.yahoo.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C17F@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030822183848.21628.qmail@web40206.mail.yahoo.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,41 +16,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: SBlaze <dagent.geo@yahoo.com>
-Cc: Jean-Rene Cormier <jean-rene.cormier@cipanb.ca>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jean-Rene Cormier <jean-rene.cormier@cipanb.ca>, netfilter@lists.netfilter.org
+
+well if it help, use squid to block anything to the kazaa servers =
+(whatever they are..)since kazaa tries to use port 80, a transparent =
+proxy would be good in this case..
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
+-----Original Message-----
+From: Jean-Rene Cormier [mailto:jean-rene.cormier@cipanb.ca]
+Sent: Friday, August 22, 2003 9:50 PM
+To: netfilter@lists.netfilter.org
+Subject: Blocking Kazaa
 
 
-Kazzaa uses 1214 for only certain traffic (talking to its supernodes).  
-We found that blocking 1214 was insufficient for stopping people from
-using Kazzaa as it uses a bunch of dynamic ports and searches of DNS
-ranges. [Blocking the DNS ranges seems to be futile as they seem to have
-changed several times.] The only thing I have heard that might be useful
-is to combine snort with iptables in that snort figures out who inside
-your network is using Kazzaa and then you block that IP address via 
-iptables. Now how you get the two to work together? That is the 64k 
-questions :(
+Anybody know a way of blocking Kazaa? I've tried the string matching way
+but it doesn't seem to work. I tried logging all connections from  my
+windows desktop so I could see to which port it connects and it connects
+to so many different port that you basically need to block ports 1000 to
+4000 but after that it connects to port 80 which obviously I can't
+block. I installed ethereal on the windows desktop to check which string
+I could filter but couldn't find anything useful.
 
+Anybody have an idea what can be done? I'm thinking another option would
+be to block the IP of the servers but there seem to be quite a list...
+that's if it doesn't just try some random IPs...
 
-On Fri, 22 Aug 2003, SBlaze wrote:
+Jean-Rene Cormier
 
->http://www.securitymetrics.com/portscan.adp
->
->Above is an online port scanner. It scans for Kazzaa openings(among other
->things). It seems to think that Kazzaa is open always on 1214. As I said before
->I am not sure as I do not use Kazzaa. If you find anything out about this I
->will gladly write up something on my web site to show other users how to block
->Kazzaa as it seems to come up alot.
->
->Thanks
->SBlaze
->
-
--- 
-Stephen John Smoogen            smoogen@lanl.gov
-Los Alamos National Labrador  CCN-5 Sched 5/40  PH: 5-8058
-Ta-03 SM-261  MailStop P208 DP 17U  Los Alamos, NM 87545
--- So shines a good deed in a weary world. = Willy Wonka --
 
 
