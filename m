@@ -1,11 +1,10 @@
 From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: HUP
-Date: Wed, 16 Mar 2005 16:30:04 -0500 (EST)
-Message-ID: <Pine.LNX.4.60.0503161627290.19696@darkstar.sysinfo.com>
-References: <42383F7C.2040300@eccotours.dyndns.org>
-	<42385514.70600@SCampbell.net>
+Subject: Re: Packets Counting
+Date: Wed, 16 Mar 2005 16:33:51 -0500 (EST)
+Message-ID: <Pine.LNX.4.60.0503161631410.19696@darkstar.sysinfo.com>
+References: <4238655B@webmail.wichita.edu>
 Mime-Version: 1.0
-In-Reply-To: <42385514.70600@SCampbell.net>
+In-Reply-To: <4238655B@webmail.wichita.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,66 +17,35 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Steven M Campbell <Netfilter@SCampbell.net>
-Cc: iptables <netfilter@lists.netfilter.org>
+To: "M. A. Imam" <maimam@wichita.edu>
+Cc: netfilter@lists.netfilter.org
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
+On Wed, 16 Mar 2005, M. A. Imam wrote:
 
+> Hi,
+>
+> How can i count the number of packets on an interface evry 2 or 5 seconds. and
+> i want to count only specific packets like only arriving packets from port
+> 5001
+>
+> Any ideas...
+>
 
-I've often found that killing the attached process can often leave the 
-state of the connection in a funky way for sometime. and that it most the 
-time serves better to kill the login shell.  Course, I tend to not kill as 
-sweetly these busy days then I used to back a few years ago, and this 
-might indeed have something to do with state left in limbo for timeout 
-periods.
+Or;  how to chew up resources;
+
+cron this to run every 3-5 seconds, minutes, hours, days or years are the 
+desire hits you;
+
+iptables -L -v |grep 5001
+
+add redirection to a file and you'll have something more to play with.
 
 Thanks,
 
 Ron DuFresne
-
-On Wed, 16 Mar 2005, Steven M Campbell wrote:
-
-> netstat --inet -p  will show you the attached process and you can kill that 
-> process.
->
-> scampbell@linux:~> netstat --inet -p -n
-> Active Internet connections (w/o servers)
-> Proto Recv-Q Send-Q Local Address           Foreign Address         State 
-> PID/Program name
-> tcp        0      0 10.8.178.10:33819       22.33.44.123:22 
-> ESTABLISHED 8083/ssh
-> tcp        0      0 10.8.178.10:32795       64.12.165.101:5190 
-> ESTABLISHED 6984/gaim
-> tcp        0      0 10.8.178.10:33083       207.46.107.52:1863 
-> ESTABLISHED 6984/gaim
->
-> If I want to terminate that ssh connection I just  kill 8083
->
-> Brent Clark wrote:
->
->> Hi
->> 
->> I performed a netstat-nat on my fw.
->> 
->> And there is a entry that I dont like.
->> 
->> This is my employer working from home, probally left the remote desktop 
->> session open.
->> 
->> tcp   host81-153-16-165.range81-153.btcen:3191 
->> resmanager.eccotours.local:3389          ESTABLISHED
->> 
->> anyone know how I can just this kill this NATTED connection.
->> 
->> Any advice would be most appreciated.
->> 
->> Kind Regards
->> Brent Clark
->> 
->
-
 - -- 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          admin & senior security consultant:  sysinfo.com
@@ -93,8 +61,8 @@ strings attached.  I love you for free...
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQFCOKVgst+vzJSwZikRAtsiAJwIN9YEcGcpb70X5RHcnCHFXFPAJACcDd/9
-yv9SoQijvEiajlSpfooL+qM=
-=a34B
+iD8DBQFCOKZEst+vzJSwZikRAs3RAKCGI8Ji1bMGHHHebbAYi951EUFQQACgosUJ
+pSAQIRep4SsVhm82CxpoXMQ=
+=XwHT
 -----END PGP SIGNATURE-----
 
