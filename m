@@ -1,13 +1,13 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: RE: Blocking Netranges Based on IP-to-Country CSV
-Date: Mon, 20 Sep 2004 11:10:01 -0300
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Cannot use iptable extensions
+Date: Mon, 20 Sep 2004 10:36:30 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <E1C9Orn-0006PT-00@deer.gmane.org>
-References: <200409201357.i8KDvZNg022820@outbound3.mail.tds.net>
+Message-ID: <1095690990.1898.41.camel@wolfpack.ljm.dom>
+References: <20040920082059.57559.qmail@web805.mail.yahoo.co.jp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409201357.i8KDvZNg022820@outbound3.mail.tds.net>
+In-Reply-To: <20040920082059.57559.qmail@web805.mail.yahoo.co.jp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,71 +18,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: nutbrownhares@tds.net, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Ok, now, from south america WHERE WE THE INDIANS LIVE, and with this
-question understood from the first moment and before all the short minded
-discussion.
+On Mon, 2004-09-20 at 04:20, d l wrote:
+> Hi,
+> I am using vanilla Fedora Core 2, without configuring
+> firewall in anaconda during initial install.
+> 
+> Simple rules seems to works with built in modules. e.g. 
+> iptables -A INPUT -p ICMP -j DROP
+> 
+> However when I tried to use extension modules like
+> <connlimit> and <owner>, iptables always gives me error.
+> 
+> For <owner>:
+> iptables -m owner --help
+> .......
+> OWNER match v1.2.9 options:
+> [!] --uid-owner userid     Match local uid
+> [!] --gid-owner groupid    Match local gid
+> [!] --pid-owner processid  Match local pid
+> [!] --sid-owner sessionid  Match local sid
+> [!] --cmd-owner name       Match local command name
+> 
+> # iptables -A INPUT -m owner --cmd-owner mlnet -j test
+> iptables: Invalid argument
 
-The approach for this technical issue ill do is a script to insert those
-rules. Off course there could be a lot of other approaches but.
+the owner match is only valid in the OUTPUT chain, for what should be
+obvious reasons, but may not be...
 
-If my csv is something like this
+refer to:
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
-CountryA,a.b.c.d/16
-countryA,z.x.d.e/12
+for more information.
 
-Ill do something like
+> # iptables -m owner --cmd-owner
+> iptables v1.2.9: Unknown arg `--cmd-owner'
+> Try `iptables -h' or 'iptables --help' for more
+> information.
 
----cut here
+this is simply an invalid commmand, as you have no -[AID] specified...
 
+man iptables
+if you don't understand my comment.
 
-#!/usr/bin/perl -w
+> And similar results with <connlimit> extension.
+> 
+> There are corresponding so files in /lib/iptables for that
+> 2 extensions.
+> /lib/iptables/libipt_connlimit.so
+> /lib/iptables/libipt_owner.so
 
-open FILE,"<file.csv";
+those are the libraries for the "iptables" command itself.  i doubt that
+FC2 has the connlimit kernel module compiled by default.  if it does:
 
-while(<FILE>)
-{
-@a=split(",",$_);
-System("iptables -A CHAIN -s $a[0] -j DROP");
-}
-Close FILE;
+ls /lib/modules/`uname -r`/kernel/net/ipv4/netfilter/*connlimit*
 
----cut here
+will return something along the lines of:
 
-But, i think that you can choose the method based on these directive
+ipt_connlimit.o
 
-"if theres more banned addresses of permited" < set policy to drop and add
-the allowed ones with a script like the posted one.
-"if theres more allowed addresses of banned" < to set policy to accept is
-not a good idea, at least you may add a drop at the bottom of the chain and
-use the script provided.
+my money is on the fact that it isn't there.
 
-Off course there could be other approaches, but i hope it helps.
+> So what is wrong with my iptables? It looks like that it
+> didn't load the extensions properly to me.
+> 
+> Any help is appreciated.
 
-Regards
+if you need additional extensions beyond what your distribution
+provides, read:
 
+http://netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO.html
 
- 
+and have at it.
 
------Mensaje original-----
-De: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] En nombre de
-nutbrownhares@tds.net
-Enviado el: Lunes, 20 de Septiembre de 2004 10:58
-Para: netfilter@lists.netfilter.org
-Asunto: Blocking Netranges Based on IP-to-Country CSV
+not to assume anything--but i'll go ahead and answer your next post now:
 
-With all due respect, I initially asked a technical question: given a data
-file, how does one block ranges from that file.  I didn't ask if people
-agreed or disagreed with why we want to do this.   The "why" isn't relevant
-to the discussion.  I'm also not interested in whether it is or is not 100%
-effective; I know it isn't.  It will still eliminate 95% of the traffic I
-want to stop.  So far I've seen a lot of political opinions.  Does anyone
-have a technical answer?
+after you patch & recompile your kernel--you must recompile your
+"iptables" userland package for everything to work properly.
 
+-j
 
-
-
+-- 
+Jason Opperisano <opie@817west.com>
 
 
