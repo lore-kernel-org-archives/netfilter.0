@@ -1,11 +1,12 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: Re: libipq speed
-Date: Tue, 20 Apr 2004 14:30:33 +0100
+From: "Alexis" <alexis@tpys.com.ar>
+Subject: Re: Rules for Blocking Proxies...
+Date: Tue, 20 Apr 2004 10:35:26 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00af01c426db$a80f8820$68892090@grouse>
-References: <OFB36523E3.68912DA0-ON65256E7C.00336D2F@hss.hns.com>
+Message-ID: <006f01c426dc$572c2cf0$0c00a8c0@pepelui>
+References: <000b01c426f6$cc216f10$36b4fea9@SABNANIS>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_006C_01C426C3.31664280"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,52 +17,117 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: aksingh@hss.hns.com
-Cc: netfilter@lists.netfilter.org
+To: Harry <hari76@omantel.net.om>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hi again,
+This is a multi-part message in MIME format.
 
->
-> Hi
->
->     On  many links regarding user space hanlding of packets I have read
-> warnings about using libipq, speed wise .... "do this only if u dont want
-> ultra high speeds and all" ... this speed issue arises because we need to
-> copy things from kernel space to usr space and vice versa, or is there any
-> other reason for this. I mean suppose i want to make a process that gets
-> the packets from the kernel and plays with them and then reinjects them
-> into the kernel( my process has to be in user space) ... keeping this
-> constraint in mind (the process that tinkers with the packets has to be in
-> user space), is there any faster solution than using libipq i.e do these
-> warnings just mean that using libipq gives slower results when if packet
-> mangling is done in the kernel space itself .. which is quite obvious, or
-> do they mean that we can have better ways(faster) than libipq for user
-> space packet mangling.
+------=_NextPart_000_006C_01C426C3.31664280
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I think the speed penalty is caused by userspace processing and delivery
-from kernel to userspace and vice versa. This should not be particular for
-libipq.
+set up your own proxy server and only permit connections to this box :)
 
-Jee
 
-> thanks
-> Amit
->
-> "DISCLAIMER: This message is proprietary to Hughes Software Systems
-Limited
-> (HSS) and is intended solely for the use of the individual to whom it is
-> addressed. It may contain  privileged or confidential information and
-> should not be circulated or used for any purpose other than for what it is
-> intended. If you have received this message in error, please notify the
-> originator immediately. If you are not the intended recipient, you are
-> notified that you are strictly prohibited from using, copying, altering,
-or
-> disclosing the contents of this message. HSS accepts no responsibility for
-> loss or damage arising from the use of the information transmitted by this
-> email including damage from virus."
->
->
->
+  ----- Original Message -----=20
+  From: Harry=20
+  To: netfilter@lists.netfilter.org=20
+  Sent: Tuesday, April 20, 2004 1:44 PM
+  Subject: Rules for Blocking Proxies...
+
+
+  Hi All,
+  I am running Fedora and Redhat 9 on two servers at my Cybercafe, =
+connected on two Hi speed Lines, I have a decent firewall script, but =
+these days I am facing issues about people changing the Proxy settings =
+in order to get thru porn sites, can anybody suggest some rules which I =
+can implement in the script that avoids connection to these servers? =
+Suggestions are welcome.
+
+  Regards
+
+  Harry
+
+
+
+
+  "In all this world, there is only you
+  When all else ceases, there is only you" =20
+  -- to my MASTER!
+      Harish
+  harish@sabnanis.com=20
+  harish.sabnani@cyberhutoman.com 
+------=_NextPart_000_006C_01C426C3.31664280
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>set up your own proxy server and only =
+permit=20
+connections to this box :)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<BLOCKQUOTE dir=3Dltr=20
+style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
+BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A title=3Dhari76@omantel.net.om =
+href=3D"mailto:hari76@omantel.net.om">Harry</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
+  title=3Dnetfilter@lists.netfilter.org=20
+  =
+href=3D"mailto:netfilter@lists.netfilter.org">netfilter@lists.netfilter.o=
+rg</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Tuesday, April 20, 2004 =
+1:44=20
+  PM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Rules for Blocking=20
+  Proxies...</DIV>
+  <DIV><BR></DIV>
+  <DIV><FONT face=3DVerdana size=3D2>Hi All,</FONT></DIV>
+  <DIV><FONT face=3DVerdana size=3D2>I am running Fedora and Redhat 9 on =
+two servers=20
+  at my Cybercafe, connected on two Hi speed Lines, I have a decent =
+firewall=20
+  script, but these days I am facing issues about people changing the =
+Proxy=20
+  settings in order to get thru porn sites, can anybody suggest some =
+rules which=20
+  I can implement in the script that avoids connection to these servers? =
+
+  Suggestions are welcome.</FONT></DIV>
+  <DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DVerdana size=3D2>Regards</FONT></DIV>
+  <DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DVerdana size=3D2>Harry</FONT></DIV>
+  <DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DVerdana size=3D2>"In all this world, there is only =
+you<BR>When=20
+  all else ceases, there is only you"&nbsp; <BR>-- to my=20
+  MASTER!<BR>&nbsp;&nbsp;&nbsp; Harish<BR><A=20
+  href=3D"mailto:harish@sabnanis.com">harish@sabnanis.com</A> <BR><A=20
+  =
+href=3D"mailto:harish.sabnani@cyberhutoman.com">harish.sabnani@cyberhutom=
+an.com</A>=20
+  </FONT></DIV></BLOCKQUOTE></BODY></HTML>
+
+------=_NextPart_000_006C_01C426C3.31664280--
 
 
