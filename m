@@ -1,12 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: H323..... and getting close! anyone tell me whats going wrong!
-Date: Wed, 5 Jun 2002 14:13:54 +0200 (CEST)
+From: =?iso-8859-1?Q?Rasmus_B=F8g_Hansen?= <moffe@amagerkollegiet.dk>
+Subject: ECN target problems
+Date: Wed, 5 Jun 2002 14:28:39 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33.0206051410290.8715-100000@blackhole.kfki.hu>
-References: <3CFDFECC.8070807@attbi.com>
+Message-ID: <Pine.LNX.4.44.0206051421500.1937-100000@grignard>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3CFDFECC.8070807@attbi.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,29 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Robert La Ferla <robertlaferla@attbi.com>
-Cc: Shazad Malik <smalik@vistawiz.com>, netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: netfilter@lists.samba.org
 
-On Wed, 5 Jun 2002, Robert La Ferla wrote:
+Hi
 
-> I have a question for Jozsef.  Could you tell us the procedure to
-> install newnat + h323 from a cvs installation?  You can assume that the
-> source code has already been checked out.  This may solve my problem
-> too.  I think I ran the runme script when installing it on my system.
+I just installed 2.4.19-pre10 with all available pending patches from
+iptables CVS. Besides the dscp, DSCP, newnat13 patches.
 
-Run './runme extra' and try to apply all pending pacthes (if some pending
-patches fail, don't bother). Then apply the h323 patch.
+Rebooting to the new kernel, I cannot make the ECN target work...
 
-That's all.
+root@grignard:~# /tmp/iptables/bin/iptables --version
+iptables v1.2.7
+root@grignard:~# uname -a
+Linux grignard 2.4.19-pre10 #2 tir jun 4 18:36:56 CEST 2002 i686 unknown
+root@grignard:~# /tmp/iptables/bin/iptables -t mangle -A OUTPUT -p tcp -j E=
+CN --ecn-tcp-remove
+iptables: Invalid argument
+root@grignard:~# dmesg|tail -n 1
+ECN: unsupported ECN operation 30
 
-Regards,
-Jozsef
+Am I doing something wrong? Is there anything that can be done about
+this?
+
+TIA
+/Rasmus
+
+--=20
+-- [ Rasmus "M=F8ffe" B=F8g Hansen ] --------------------------------------=
 -
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-WWW-Home: http://www.kfki.hu/~kadlec
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+[ Cancel Cancelled ]
+              - Pine
+----------------------------------[ moffe at amagerkollegiet dot dk ] --
 
 
