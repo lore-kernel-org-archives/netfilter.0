@@ -1,11 +1,11 @@
-From: Tish Best <tish.best@wichita.edu>
-Subject: Expanation needed for Connection Tracking with NAT One-Way
-Date: Tue, 08 Jun 2004 22:01:33 -0500
+From: Wichert Akkerman <wichert@wiggy.net>
+Subject: 2.6 DNAT does not work?
+Date: Wed, 9 Jun 2004 23:26:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40C3B3E9@webmail.wichita.edu>
+Message-ID: <20040609212606.GB9192@wiggy.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,54 +16,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I am trying to test some research ideas and am not able to perform NAT 
-translation on incoming packets only.  I am trying to explain why, and am 
-looking for a confirmation (or correction) of what I think is happening.  I 
-have two Routers (B and C) in my network.  I am trying to send packets 
-directly from A to D through B, but route the replies through C and B using 
-NAT translation.
+I'm having some problem getting DNAT to work on machines running 2.6
+kernels. I tried both 2.6.2 and 2.6.6 and the show the same behaviour.
+I am using this iptables rule:L
 
-                  D
-                 /  \
-                /    \
-         A --- B ---- C
+iptables -t nat -A PREROUTING -p tcp -d 194.109.254.66 --dport 8000 \
+	-j DNAT --to-destination 192.168.1.50:443
 
-The gateway route of Host D is to Router C.  Router C has the following 
-iptables entries in the NAT PREROUTING and NAT POSTROUTING table.
+The destination is reachable from the router. But when I try to connect
+to 194.109.254.66:8000 a icmp port unreachable is returned and no
+connection attempt to 192.168.1.50 is made.
 
-iptables -t nat -A PREROUTING -s D -d A -j DNAT --to B
-iptables -t nat -A POSTROUTING -s D -d B -j SNAT --to C
+Wichert.
 
-Router B has the following entries in its iptables NAT PREROUTING and 
-POSTROUTING tables.
-
-iptables -t nat -A PREROUTING -s C -d B -j LOG
-iptables -t nat -A PREROUTING -s C -d B -j DNAT --to A
-iptables -t nat -A POSTROUTING -s C -d A -j LOG
-iptables -t nat -A POSTROUTING -s C -d A -j SNAT --to D
-
-I am able to see the first TCP SYN packet travel from A through B to D.  At 
-this point Router B has an ip_conntrack entry from A to D.  I then see the 
-reply travel from D to C.  C successfully performs NAT translation, and the 
-packet is sent to Router B with a source of C and a destination of B.  I added 
-logging to the iptables entries in Router B, and I see the packet get 
-translated in both the PREROUTING and the POSTROUTING tables, but the packet 
-is never sent.  I never see a new conntrack entry for this packet.
-
-I think that Router B is dropping the packet through connection tracking since 
-it cannot add a new conntrack entry for this packet because it already has an 
-entry for packets from A to D that do not require NAT translation.  If it 
-added a new entry, then it would not know whether to translate the next packet 
-from A to D or send it directly to D.
-
-Is this analysis correct?  Is there anyway to send packets directly to D and 
-router them back to A through C and B using NAT translation the way I have 
-described using iptables or otherwise?  Any explanation on what criteria 
-connection tracking uses to drop packets in this case would be a great help.
-
-Thanks,
-Tish Best
-
+-- 
+Wichert Akkerman <wichert@wiggy.net>    It is simple to make things.
+http://www.wiggy.net/                   It is hard to make things simple.
 
