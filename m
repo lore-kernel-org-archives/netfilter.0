@@ -1,12 +1,13 @@
-From: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
-Subject: Re: Groups in iptables
-Date: Sat, 29 Nov 2003 16:06:01 -0300
+From: Juan Hernandez <hvjuan@kanux.com>
+Subject: RE: port forwarding in a web server
+Date: 26 Nov 2003 11:52:02 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001301c3b6ab$d569cf10$8b00000a@casa>
-References: <000301c3b69e$3e4122d0$6400a8c0@pfontenot>
+Message-ID: <1069861922.6615.12.camel@webmail.aeropostal.com.ve>
+References: <200311261527.hAQFRkAm029339@discmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200311261527.hAQFRkAm029339@discmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,66 +18,68 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: paul@pitbull-racing.com, "Net Filter (E-mail)" <netfilter@lists.netfilter.org>
+To: "Aldo S. Lagana" <alagana@discmail.com>
+Cc: 'Lista de netfilter' <netfilter@lists.netfilter.org>
 
+Thank you all for your help but this was answered yesterday... if you'd
+like, ill forward the mail in which it ended
 
-    Source and destination addresses cannot be given as a 'group of IPs'.
-It's true that source and destination addresses CAN be always written as
-net.work.address/mask, thus allowing you to specify a whole C
-(your.net.work.0/24 ) network of even networks with different masks.
+Juan
 
-    In your case, 192.168.0.25, 192.168.0.26 and 192.168.0.27 cannot be
-written as network/mask. So you CANNOT write one SINGLE rule to do what you
-want. You'll probably need to write a single rule for each address.
-
-    But if you're one of those who are not afraid of source code and
-recompiling things, you may wanna try iprange iptables module that can be
-found on patch-o-matic. This module makes possible to specify any given
-range of IPs as source and/or destination.
-
-[root@firewall root]# iptables -m iprange --help
-iptables v1.2.9
-[ ..... looooooots of information ...... ]
-
-iprange match v1.2.9 options:
-[!] --src-range ip-ip        Match source IP in the specified range
-[!] --dst-range ip-ip        Match destination IP in the specified range
-
-
-    Anyway, neither iprange can be used if your IP addresses are completly
-different from each other (192.168.0.20, 10.10.2.1, 172.16.3.1,
-200.201.202.203) .... in this case you'll for sure have to give several
-rules, one for each address.
-
-    Hope this helps you :)
-
-    Sincerily,
-    Leonardo Rodrigues
-
-
------ Original Message ----- 
-From: "Paul Fontenot" <paul@pitbull-racing.com>
-To: "Net Filter (E-mail)" <netfilter@lists.netfilter.org>
-Sent: Saturday, November 29, 2003 2:28 PM
-Subject: Groups in iptables
-
-
-> I would imagine the answer to this is yes, but I haven't found anything on
-> the subject. If you wanted to limit outbound traffic for a certain port to
-> certain group of servers is that possible?
->
-> For example, can I create a group:
->
-> MAILSERVERS = 192.168.0.25, 192.168.0.26, 192.168.0.27
->
-> and use that in a ruleset:
-> -A INSIDE_ACCESS_OUT -s $MAILSERVERS -p tcp -m tcp --dport 25 --tcp-flags
-> SYN,RST,ACK SYN -j ACCEPT
->
-> and then drop the rest:
-> -A INSIDE_ACCESS_OUT -p tcp -m tcp --dport 25 -j DROP
->
->
->
+On Wed, 2003-11-26 at 11:24, Aldo S. Lagana wrote:
+> " it's just not forwarding anything"
+> 
+> Add FORWARD rules -d 192.168.0.1 -j ACCEPT
+> 
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Juan Hernandez
+> Sent: Monday, November 24, 2003 11:05 AM
+> To: Lista de netfilter
+> 
+> Hi there...
+> 
+>    This may have been answered many times in this mailing list but I
+> haven't found anything on the web about something that would make my
+> server forward the way I want to, and what's ironic is that it seems
+> simple. Here's my scenario: I have a static IP address routed (1.1.1.1)
+> to one server using a 192.168.0.* address. Is a cisco router and
+> everything works fine. This server has 192.168.0.1 as it's address and
+> functions as a web server, everything works fine but, I have another
+> server that works as our mail server that is using 192.168.0.2. I've
+> been trying to redirect everything coming from port 25 to my mail server
+> but it doesn't get any answer. These are the rules I've been using: 
+> 
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+> 
+> modprobe iptable_nat
+> 
+> #allow all outgoing traffic from the mail server 
+> 
+> iptables -t nat -A POSTROUTING -p tcp -o eth0 -j SNAT --to 192.168.0.1
+> 
+> #dnat
+> iptables -t nat -A PREROUTING -p tcp --dport 25 -i eth0 -j DNAT --to
+> 192.168.0.1:25
+> 
+> The gateway on the mailserver is 192.168.0.1 which is the webserver that
+> it's forwarding everything... and I have tried so many things that
+> sometimes the webserver stops working...
+> 
+> Using that configuration, if I nmap the webserver it shows that tport 25
+> is filtered but, if i telnet to taht port I wont get any response... and
+> the mailserver is running perfectly, it's just not forwarding anything
+> 
+> Any suggestions would be appreciated...
+> 
+> Thanks a lot for your time
+> 
+> Juan
+> 
+> 
+> 
+> 
+> 
+> 
 
 
