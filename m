@@ -1,15 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: --limit 5/m doesn't work
-Date: Wed, 23 Mar 2005 09:16:24 -0500
-Message-ID: <1111587384.4513.21.camel@hubcap.ljm.dom>
-References: <000001c52f53$ed3f3220$1500a8c0@itasam>
-	<558224e30503222255158832bc@mail.gmail.com>
-	<558224e305032300217c4772c9@mail.gmail.com>
-	<1111585483.4513.12.camel@hubcap.ljm.dom>
-	<Pine.LNX.4.61.0503230853200.5803@localhost.localdomain>
+From: "Sebastiao Antonio Campos \(GWA\)" <sa.campos@datasulsp.com.br>
+Subject: Neighbour table overflow
+Date: Wed, 23 Mar 2005 11:08:34 -0300
+Message-ID: <000901c52fb2$ee024ee0$080211ac@PIVT>
+Reply-To: "Sebastiao Antonio Campos \(GWA\)" <sa.campos@datasulsp.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.61.0503230853200.5803@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,39 +15,106 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: Netfilter list <netfilter@lists.netfilter.org>, Sertys <sertys@supportivo.org>
 
-On Wed, 2005-03-23 at 08:59, Robert P. J. Day wrote:
-> huh?  i'm pretty sure that's not true, as i remember figuring this out
-> once upon a time.  i'll go back to my notes but, as i *remember* it,
-> it's easiest to think in terms of tokens.  "limit-burst" means you get
-> that many tokens with which to "pay" to accept incoming packets.  if
-> you start with a limit burst of, say, 20, then you can accept the
-> first 20 packets, regardless of how fast they arrive -- they just cost
-> you all of your tokens almost immediately.
-> 
-> the "limit" of 5/m means that you are replenished with another token
-> at that rate -- effectively every 12 seconds -- but only up to your
-> limit-burst maximum of 20.
-> 
-> what this means is that, if you're getting just hammered, when you
-> start, you'll accept the first 20 packets and, after that, another one
-> every 12 seconds.  if things quiet down, then you're allowed to build
-> up your reserve of tokens again, but only up to your burst-limit.
-> 
-> i actually set up a set of rules once and *watched* this happen.
-> 
-> does that make sense?
-> 
-> rday
+After I had applied the solution bellow I got the follwing msg error:
 
-true that.
+Neighbour table overflow.
 
--j
+Tks
 
---
-"'Wet Cement' - is there any sweeter sign?  Maybe 'High Voltage.'"
-	--The Simpsons
+
+----- Original Message ----- 
+From: "Sebastiao Antonio Campos (GWA)" <sa.campos@datasulsp.com.br>
+To: "Netfilter list" <netfilter@lists.netfilter.org>; "Sertys"
+<sertys@supportivo.org>
+Sent: Tuesday, March 22, 2005 9:51 PM
+Subject: Re: Two netwok cards to access the internet.
+
+
+> Thanks.
+>
+> It is working good.
+>
+>
+>
+> ----- Original Message ----- 
+> From: "Sertys" <sertys@supportivo.org>
+> To: "Netfilter list" <netfilter@lists.netfilter.org>
+> Sent: Tuesday, March 22, 2005 7:24 PM
+> Subject: Re: Two netwok cards to access the internet.
+>
+>
+> On Tue, 22 Mar 2005 18:54:26 -0300, Sebastião Antônio Campos
+> <sa.campos@datasulsp.com.br> wrote:
+>
+> Well, that's easy. When you know the ports you want to map through the
+> interfaces, just do
+>
+> iptables -t nat -A POSTROUTING -m multiport -p tcp -s 172.17.1.8 --dports
+> 25,110,1723,1701,47 -o eth0 -j MASQUERADE
+> iptables -t nat -A POSTROUTING -s 172.17.0.0/16 -o eth2 -j MASQUERADE
+> or even better
+> iptables -t nat -A POSTROUTING -s 172.17.0.0/16 -o eth2 -j SNAT
+> --to-source $ETH2_IP
+>
+> Those are simple states, you might add --syn or -m state, it's a choice of
+> yours anyway.
+>
+>
+> > Hi!
+> >
+> > I have the following:
+> >
+> > A RedHat 9.0 with 3 Network cards: One we use in local network (eth1)
+> > and the other (eth0 and eth2)  to access the internet.
+> >
+> > I'd like to separate the traffic. In the eth0 use only with the e-mail
+> > server (pop, smtp, 1723, 1701 and protocol 47) and the eht0 with others
+> > traffis (http, https, msn....).
+> >
+> > I tried
+> >
+> > iptables -t nat -A POSTROUTING -o eth2 -s 172.17.1.8 -j MASQUERADE
+> > (--this ip addrs is pop and smtp server)
+> > iptables -t nat -A POSTROUTING -o eth0 -s 172.17.0.0/16 -j MASQUERADE
+> >
+> > But when I did this I could not access the port 1723, 1701 and protocol
+> > 47 using the eth2.
+> >
+> > I tried too use only iptables -t nat -A POSTROUTING -o eth2 -s
+> > 172.17.0.0/16 -j MASQUERADE
+> >
+> > And I got the same prob.
+> >
+> > If I use iptables -t nat -A POSTROUTING  -s 172.17.0.0/16 -j MASQUERADE
+> >
+> > I will get a success access. Only when I use iptables -t nat -A
+> > POSTROUTING  -s 172.17.0.0/16 -j MASQUERADE (without -o eth2 or -o
+eth0).
+> >
+> >
+> > Who could help me?
+> >
+> > Thanks
+> >
+> >
+> > Sebastiгo Antфnio Campos
+> > Infojoi Computadores Ltda
+> > Joinville -SC - R. Iririъ, 3587
+> > Cml. (47) 437-0796 - Cel. (47) 9927-5349
+> > tiao@infojoi.com.br
+> > http://www.lupusnet.com.br
+>
+>
+>
+> -- 
+> www.supportivo.org
+>
+> I can't stop myself checking for pigs in the outlets. Everybody thinks i'm
+> a punk, cause of the hairstyle(220V).
+> end
+>
 
 
