@@ -1,12 +1,14 @@
-From: "Serguei I. Ivantsov" <manowar@gsc-game.kiev.ua>
-Subject: NAT support for peer-to-peer games
-Date: Tue, 21 Sep 2004 11:04:20 +0300
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: Static Internal to public IP mapping, and ARP difficulties
+Date: Tue, 21 Sep 2004 13:12:47 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <00cf01c49fb1$da5492e0$e310f43e@manowar>
-Reply-To: "Serguei I. Ivantsov" <manowar@gsc-game.kiev.ua>
+Message-ID: <20040921121247.GO3786@metastasis.org.uk>
+References: <1095620211.3098.4.camel@jabbera-laptop>
+Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <1095620211.3098.4.camel@jabbera-laptop>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,67 +19,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello!
+On Sun, Sep 19, 2004 at 06:56:50PM +0000, Michael Barry wrote:
+> Sorry for the DUPE, but I forgot a subject line in my last message. I am
+> sort of frazled trying to figure this out.
 
-I just interesting - whether something changes in Netfilter to support
-peer-to-peer games.
-How to implement the scheme described below using netfilter?
+Bah, by the looks of it it's only early evening in your local time, wait
+until after midnight :)
 
-<from the article>
-...
-Here's how the hosts know where to send the packets:
+> I have a bunch of public IP addresses, for example, in the range
+> 192.168.1.100-192.168.1.104. 
+> 
+> I have a 5 computers on my internal network statically defined from
+> 192.168.0.100-192.168.0.104. 
+> 
+> I am trying to create a rule where each computer will always map to the
+> same public ip address. For example I did: iptables -t nat -s
+> 192.168.0.100 -j SNAT --to-source 192.168.1.100. 
+> 
+> The problem is if I try to do a ping from 192.168.0.100 it correctly
+> gets translated to 192.168.1.100 and the ping goes out, but when the
+> reply comes back there is an ARP request for WHO-HAS 192.168.1.100, and
+> since no-one technically holds this address no reply is ever sent, and
+> the ping reply gets dropped. Does anyone know a solution to this
+> problem?
 
-1) There is a well-known server with a well-known port, not
-behind any NAT or firewall. Its only purpose is to relay
-the public and local addresses of all participants in a session
-to each other. (A host's public address is the address/ UDP port pair
-seen by the outside world; its local address is the pair it
-thinks it has.)
+Yes, the best explanation is from the ubiqutous Jason Opperisano:
 
-2) To join the session, a new host sends its local address
-to the well-known server. The server then stores the new
-host's public address (from the UDP header) together with its
-local address (embedded in the packet).
-The list of all participants' public and local addresses are
-then sent down to the new host. The new host notes its own public
-address in the reply from the server.
+http://msgs.securepoint.com/cgi-bin/get/netfilter-0409/31/1.html
 
-3) The server sends the public and local address of the
-new host to all existing participants.
+Use "ip addr" to set up the alias on your Internet facing interface, as
+you're getting the arp requests it looks like everything else - i.e.
+routing, is already set up.  So once the aliases are in this *should*
+work...
 
-4) The new host then sends a hello packet to both the public and
-local addresses of each participant; likewise, the existing
-participants all send hello packets to both the public and
-local addresses of the new host. The packet contains
-the sending host's public and local addresses.
-These are analogous to TCP's SYN packet, and are retransmitted
-periodically if no response is received (see below).
-
-5) The act of sending a packet to the other participants
-signals the firewall that a reply will be coming back along
-the reverse path. It opens up a return path which just
-reverses the source and destination address/ UDP port pairs.
-This seems to be a common feature of many firewalls and
-SOHO routers (e.g. the Cisco PIX). I don't know how
-widespread it is. Is there any data on what firewalls
-support this behavior?
-
-6) For participants behind different firewalls / NATs / masquerading
-hosts, one packet (the one sent to the peer's public address)
-will make it through. For participants behind the same firewall / NAT /
-masquerading host, the other packet (the one sent to the peer's
-local address) will make it through.
-For participants with two IP interfaces, one or the other packet
-will make it through; it doesn't matter which.
-
-
-The entire Dan Kegel article can be found here:
-
-http://www.hasenstein.com/HyperNews/get/linux-ip-nat/97.html
-
---
- Serguei I. Ivantsov
-
+-- 
+mors omnia vincit
 
