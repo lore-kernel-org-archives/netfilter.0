@@ -1,14 +1,21 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: track bandwith used
-Date: Wed, 30 Jun 2004 18:07:57 +0100
+From: Chamara Gunaratne <pgunarat@csee.usf.edu>
+Subject: Re: make error with iptables 1.2.11
+Date: Wed, 30 Jun 2004 13:05:17 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406301807.57782.Antony@Soft-Solutions.co.uk>
-References: <00e501c45ea3$28e2d110$49caa8c0@caris.priv> <200406301717.52224.Antony@Soft-Solutions.co.uk> <138c01c45ec2$8467d480$49caa8c0@caris.priv>
-Reply-To: "netfilter" <netfilter@lists.netfilter.org>
+Message-ID: <6.0.3.0.0.20040630130146.03af8e18@babbage.csee.usf.edu>
+References: <200406291645.13172.pgunarat@csee.usf.edu>
+ <200406292200.23738.Antony@Soft-Solutions.co.uk>
+ <6.0.3.0.0.20040629172540.020522a8@babbage.csee.usf.edu>
+ <200406292309.38461.Antony@Soft-Solutions.co.uk>
+ <145030924.20040630030826@op.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <138c01c45ec2$8467d480$49caa8c0@caris.priv>
+In-Reply-To: <145030924.20040630030826@op.pl>
+References: <200406291645.13172.pgunarat@csee.usf.edu>
+ <200406292200.23738.Antony@Soft-Solutions.co.uk>
+ <6.0.3.0.0.20040629172540.020522a8@babbage.csee.usf.edu>
+ <200406292309.38461.Antony@Soft-Solutions.co.uk>
+ <145030924.20040630030826@op.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +25,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Wednesday 30 June 2004 5:51 pm, Peter Marshall wrote:
-
-> You could make a connection out to a remote server.  That remote server
-> might try to make a connection back to us that has nothing to do with the
-> reason we connected to them.
-
-Such a connection would not be regarded as RELATED by the netfilter code.
-
->  But the server may see it as related and allow it.
-
-I think you should read about netfilter's definition of RELATED.   It doesn't 
-just mean "any packet which comes back from an IP address we're already 
-talking to".
-
-For example, I said that FTP data connections were RELATED to the FTP control 
-connection - but that is only if you have loaded the FTP Conntrack Helper 
-module, or compiled FTP Conntrack support into your kernel.   That helper is 
-what RELATEs the two parts of FTP together in netfilter.
-
-Basically, if you don't have a helper module which understands why a 
-connection should be RELATED to another one, then it won't be.
-
-Arbitrary packets from IP addresses which happen to be part of an ESTABLISHED 
-connection don't count - they will be seen as NEW incoming connections, and 
-make their own way through your ruleset (until they are persumably DROPped), 
-having no assiciation whatever to anything else which may be in your 
-connection tracking table.
-
-Hope this clarifies things?
+Thank you, what you have suggested worked. It looks like I needed to give 
+the kernel directory as /usr/src/linux for make to work correctly. Thanks 
+again :-)
 
 Regards,
 
-Antony.
+Chamara
 
--- 
-Ramdisk is not an installation procedure.
+At 09:08 PM 6/29/2004, you wrote:
+>Witam
+>
+>Wednesday, June 30, 2004, 12:09:38 AM, you wrote:
+>
+>AS> Okay - that narrows it down.   Anyone else here have experience with 
+>kernel
+>AS> 2.4.26 and iptables 1.2.11?   I can't offer any advice on this one...
+>
+>I have 2.4.26 and iptables 1.2.11. I patched kernel and iptables
+>sources with latest pom-ng and then succesfully  builded both. I'm using
+>Slackware Linux with gcc 3.3.4. Here is step by step how I make this
+>things works ;)
+>
+>1. Get kernel 2.4.26 sources, and decompress it to
+>/usr/src/linux-2.4.26
+>
+>2. Make a symbolic link
+>#ln -s /usr/src/linux-2.4.26 linux
+>
+>3. Get iptables sources
+>#wget http://www.iptables.org/files/iptables-1.2.11.tar.bz2
+>and decompress it to /usr/src/iptables-1.2.11
+>
+>4. Make a symbolic link
+>#ln -s /usr/src/iptables-1.2.11 iptables
+>
+>5. Get lates p-o-m-ng
+>#wget http://www.netfilter.org/files/patch-o-matic-ng-20040621.tar.bz2
+>and decompress it to /usr/src/patch-o-matic-ng-20040621
+>
+>6. cd /usr/src/patch-o-matic-ng-20040621
+>
+>7. Now patch your sources with any extensions you want (i suggest you
+>to choose only what your realy need). For example:
+>#KERNEL_DIR=/usr/src/linux ./runme string
+>#KERNEL_DIR=/usr/src/linux ./runme CONNMARK
+>...
+>
+>8. And now the most important step ;)
+>#cd /usr/src/iptables
+>#make BINDIR=/sbin LIBDIR=/usr/lib
+>#make BINDIR=/sbin LIBDIR=/usr/lib install
+>
+>9. If everything is fine, you can build your kernel.
+>10. If not ... maybe try older (or newer) version of gcc.
+>
+>I hope this will help you.
+>
+>(Sorry for my poooooore english :)
+>
+>--
+>Pozdrawiam
+>  Marcin                            mailto:slacklist@op.pl
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
