@@ -1,11 +1,13 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: REDIRECT to more than one port does not work
-Date: Wed, 02 Mar 2005 18:58:42 +0100
-Message-ID: <1109786323.6490.4.camel@nostromo.bgsecm.com>
-References: <1109784929.4225f9611dd4a@imp2-q.free.fr>
+From: Matthew Schumacher <matt.s@aptalaska.net>
+Subject: Re: ip_conntrack table is full with razor requests. Something isn't
+ timing out.
+Date: Wed, 02 Mar 2005 09:58:58 -0900
+Message-ID: <42260CF2.4080404@aptalaska.net>
+References: <4224A715.8030907@aptalaska.net>
+	<Pine.LNX.4.58.0503020853460.16314@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1109784929.4225f9611dd4a@imp2-q.free.fr>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.LNX.4.58.0503020853460.16314@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,55 +18,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@lists.netfilter.org
 
-El mi=C3=A9, 02-03-2005 a las 18:35 +0100, odanes@free.fr escribi=C3=B3:
+Jozsef Kadlecsik wrote:
 > Hi,
->=20
-> I would like to forward tcp connection to port 8000 to ports 8080 and 8=
-081 on
-> the same machine in order to load balance HTTP request to two processes=
-. So
-> I'va add the following rule
->=20
-> iptables -t nat -A  PREROUTING -p tcp --dport 8000 -m state --state NEW=
- -j
-> REDIRECT --to-ports 8080-8081
->=20
-> I think that the first connection will be forwarded to 8080 and the sen=
-cond to
-> 8081 and so on. But when I connect to the port 8000 the connection is a=
-lways
-> redirected to the same port 8080.
->=20
-> Is my thought wrong ?
+> 
+> On Tue, 1 Mar 2005, Matthew Schumacher wrote:
+> 
+> 
+>>Since upgrading to 2.6.10 I have been having problems with my
+>>ip_conntrack table filling up.  It appears it is full of razor
+>>(http://razor.sf.net) requests from my internal mail server.
+>>
+>>I raised the ip_conntrack_max to 8192 and there are only a few hosts
+>>behind nat so I am certain something isn't getting flushed out.
+>>
+>>How do I go about diagnosing this.  What specifically does ip_conntrack
+>>need to see in the tcp session to mark the session as expired in the table?
+> 
+> 
+> Run tcpdump and record at least one full session of the razor traffic.
+> Best is if you capture the traffic on both side of the firewall in order
+> to make sure nothing got lost. Collect anything relevant from the
+> kernel log file and attach the /proc/net/ip_conntrack lines referring to
+> the session. Post the collected data and then we can start to hunt down
+> the reason of the problem.
+> 
 
-The rule seems to be OK, but maybe you are testing your system from
-one IP only, and -m state --state NEW it's not watching your connections
-as NEW, but as ESTABLISHED. Have you tried it from some different IPs?
+Jozsef,
 
-Anyway I think you should remove the -m state --state NEW, so all the
-packets from the connection are DNATed.
-
-> regads, olivier.
-
-Regards.
-
---=20
-
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+Here is the relevant part of the dump:
 
 
+10:15:34.144668 IP 66.151.150.24.2703 > 64.4.232.33.54120: P 37:47(10) 
+ack 78 win 5840
+10:15:34.147076 IP 64.4.232.33.54120 > 66.151.150.24.2703: . ack 47 win 
+49640
+10:15:34.151703 IP 64.4.232.33.54120 > 66.151.150.24.2703: P 78:83(5) 
+ack 47 win 49640
+10:15:34.153156 IP 64.4.232.33.54120 > 66.151.150.24.2703: F 83:83(0) 
+ack 47 win 49640
+10:15:34.217685 IP 66.151.150.24.2703 > 64.4.232.33.54120: . ack 83 win 5840
+10:15:34.256491 IP 66.151.150.24.2703 > 64.4.232.33.54120: . ack 84 win 5840
+10:15:34.311607 IP 66.151.150.24.2703 > 64.4.232.33.54120: R 47:47(0) 
+ack 84 win 5840
+
+Since there is a ACK before the RST it is safe to assume that the bug 
+documented at 
+https://lists.netfilter.org/pipermail/netfilter-devel/2004-December/017908.html 
+was the problem.
+
+Since kernel 2.6.11 came out this morning, and the bug fix appears in 
+the changelog, I went ahead and upgraded and the problems are resolved.
+
+If you would like more information then let me know, but at this point, 
+I think it's safe to say that this bug is squashed.
+
+schu
 
