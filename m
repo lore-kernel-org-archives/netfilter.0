@@ -1,12 +1,12 @@
-From: <Josh.Berry@compucom.com>
-Subject: IPTables State Tracking
-Date: Fri, 29 Aug 2003 09:38:49 -0500
+From: "Daniel Arjona" <darjona@transito.gob.pa>
+Subject: I can't resolve DNS name
+Date: Fri, 29 Aug 2003 12:38:49 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0C7C6E1720E8D74FB52EBEF93649730A0116BF07@2k099exm01.compucom.local>
+Message-ID: <0afd01c36e54$67e73620$0221a0c0@DANIEL>
+Reply-To: "Daniel Arjona" <darjona@transito.gob.pa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,15 +19,135 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Does IPTables track virtual state of ICMP and UDP packets?  I know that
-UDP and ICMP are not stateful connections, but does IPTables perform
-pseudo-stateful tracking of these connections such as some other
-firewalls that basically timeout UDP/ICMP connections after a specific
-time?
+Hello:
 
-Thanks,
-Josh Berry
-Information Security Group
-972-856-5402
+I tried to configure an iptables firewall, but i can't.  I need cofigure
+this to use FTP, Kazaa, Internet, ICQ and access the IMAP server of Netscape
+with my Netscape Client.
+
+Observations:
+I have LRH 8.0 and iptables is in the my unique server with squid, qmail and
+others.
+My router is directly connected to the NIC of the server.
+When i try to connect to any FTP Server, i recieve this message "I can't
+resolve DNS name"
+I can't do ping to any IP Address
+
+
+
+Regards from Panama,
+
+Daniel Arjona
+
+PD:  Please see mi script and my outputs to the commands:
+        iptables -L -n
+        iptables -t nat -L
+
+
+############################################################################
+##
+#!/bin/sh
+# SCRIPT de IPTABLES
+# Firewall entre red-local e internet con servicios abiertos de puerto
+############################################################################
+
+################################################  FLUSH de reglas
+iptables -F
+iptables -X
+iptables -Z
+iptables -t nat -F
+####################################################### Cargo Variables
+PRIVATE_NET=192.160.33.0/24
+PRIVATE_NIC=eth1
+PUBLIC_NIC=eth0
+################################################### Establecemos politica
+ACEPTAR por defecto
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -t nat -P PREROUTING ACCEPT
+iptables -t nat -P POSTROUTING ACCEPT
+####################################################### INPUTS 143=IMAP,
+25=SMTP, 110=POP3
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -s $PRIVATE_NET -i $PRIVATE_NIC -j ACCEPT
+iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 110 -j ACCEPT
+###########################################################################
+# FORWARDS
+## FORWARD ACEPTED 80=HTTP, 143=IMAP, 53=DNS, 21=FTP, 1214=KAZAA
+iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 80 -j
+ACCEPT
+iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 143 -j
+ACCEPT
+iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 53 -j
+ACCEPT
+iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p udp --dport 53 -j
+ACCEPT
+iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 21 -j
+ACCEPT
+iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 1214 -j
+ACCEPT
+iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 3128 -j
+ACCEPT
+
+## FORWARD DENIED
+# iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -j DROP
+################################################################
+ENMASCARAMIENTO
+iptables -t nat -A POSTROUTING -s $PRIVATE_NET -o $PUBLIC_NIC -j  MASQUERADE
+################################################################ HABILITAR
+FORWARDING
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+############################################################### CERRAR
+ACCESO A INDESEADOS
+# iptables -A INPUT -s 0.0.0.0/0 -i $PUBLIC_NIC -p tcp --dport 1:1024 -j
+DROP
+# iptables -A INPUT -s 0.0.0.0/0 -i $PUBLIC_NIC -p udp --dport 1:1024 -j
+DROP
+
+## DENIED WEBMIN PORT ACCESS
+# iptables -A INPUT -s 0.0.0.0/0 -i $PUBLIC_NIC -p tcp --dport 10000 -j DROP
+
+service iptables save
+
+# Fin del script
+
+
+*************************************
+[root@transito root]# iptables -t nat -L
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+MASQUERADE  all  --  192.160.33.0/24      anywhere
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+ ******************************************
+
+[root@transito root]# iptables -L -n
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     all  --  192.160.33.0/24      0.0.0.0/0
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:25
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:110
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     tcp  --  192.160.33.0/24      0.0.0.0/0          tcp dpt:80
+ACCEPT     tcp  --  192.160.33.0/24      0.0.0.0/0          tcp dpt:143
+ACCEPT     tcp  --  192.160.33.0/24      0.0.0.0/0          tcp dpt:53
+ACCEPT     udp  --  192.160.33.0/24      0.0.0.0/0          udp dpt:53
+ACCEPT     tcp  --  192.160.33.0/24      0.0.0.0/0          tcp dpt:21
+ACCEPT     tcp  --  192.160.33.0/24      0.0.0.0/0          tcp dpt:1214
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
 
 
