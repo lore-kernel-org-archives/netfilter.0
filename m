@@ -1,12 +1,11 @@
-From: "Ian! D. Allen" <idallen@idallen.ca>
-Subject: Re: CONNMARK save-mark and restore-mark not working ?
-Date: Fri, 18 Feb 2005 16:37:09 -0500
-Message-ID: <20050218213709.GD31190@elm.home.idallen.ca>
-References: <20050218084044.GA31190@elm.home.idallen.ca>
-	<004001c515a8$80403df0$910010ac@coco>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Let me understand *RETURN*
+Date: Fri, 18 Feb 2005 18:59:23 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10502181857270.12098-100000@darkstar.sysinfo.com>
+References: <42163444.70206@lopsch.com>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <004001c515a8$80403df0$910010ac@coco>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <42163444.70206@lopsch.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +16,75 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Omar Garcia <omar.garcia@fractalia.biz>
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: Daniel Lopes <lopsch@lopsch.com>
 Cc: netfilter@lists.netfilter.org
 
-On Fri, Feb 18, 2005 at 11:56:29AM +0100, Omar Garcia wrote:
-> And this?
->     iptables -t mangle -A OUTPUT -j CONNMARK --restore-mark
->     iptables -t mangle -A OUTPUT -m connmark ! --mark 0 -j ACCEPT
->     iptables -t mangle -A OUTPUT -j MARK --set-mark 9
->     iptables -t mangle -A OUTPUT -j CONNMARK --save-mark
 
-That doesn't work because, as I posted, neither --save-mark nor
---restore-mark appear to work.
+	[SNIP]
 
-The --save-mark does not set and save the mark value in any line in
-/proc/net/ip_conntrack.
+>=20
+> iptables -N rule1
+> iptables -A rule1 -j RETURN
+> iptables -N rule2
+> iptables -A rule2 -j RETURN
+> iptables -N rule3
+> iptables -A rule3 -j RETURN
+>=20
+> So now every packet destined for the local machine always wents through=
+=20
+> the INPUT chain. The default policy is set to drop.
+> Now let=C2=B4s say there=C2=B4s a packet for the local machine. It went=
+=C2=B4s to the=20
+> INPUT chain. The INPUT chain sends it to rule1. In rule one the RETURN=20
+> traget sends it back to the INPUT chain. The INPUT chain sends it to=20
+> rule2. Rule2 sends it back to the INPUT chain and so on till it is=20
+> droppped by the default policy.
+>=20
+> iptables -P INPUT DROP
+>=20
+> iptables -A INPUT -j rule1
+>=20
+> iptables -N rule1
+> iptables -A rule1 -j rule2
+> iptables -N rule2
+> iptables -A rule2 -j RETURN
+> iptables -N rule1
+> iptables -A rule1 -j RETURN
+>=20
+> Again the INPUT chain sends it to rule1. Rule1 sends it to rule2. Rule2=
+=20
+> sends it via RETURN back to rule1 and rule1 back to INPUT chain where i=
+t=20
+> is dropped via default policy.
+>=20
+> I hope this will help you. You can see RETURN always sends a packet bac=
+k=20
+> to the outer chain from where it was send to the actual chain.
+>=20
+>=20
 
-The --restore-mark does not take the mark value from a line in
-ip_conntrack and restore it into any packet.
 
-See my original posting for examples of this.  I think my kernel must be
-broken, unless I'm misunderstanding how these things are supposed to work.
+It was my understanding that a user chain could not jump to another user
+chain, that this was only allowed in the default chains <input, output an=
+d
+forward>?
 
--- 
--IAN!  Ian! D. Allen   Ottawa, Ontario, Canada
-       EMail: idallen@idallen.ca   WWW: http://www.idallen.com/
-       College professor (Linux) via: http://teaching.idallen.com/
-       Support free and open public digital rights:  http://eff.org/
+Thanks,
+
+
+Ron DuFresne
+--=20
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
+
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
+
 
