@@ -1,13 +1,11 @@
-From: Stephen J Smoogen <smoogen@lanl.gov>
-Subject: Re: ip_conntrack: table full, dropping packet
-Date: Fri, 24 Sep 2004 09:19:02 -0600
+From: Eric Ellis <eellis@mail.co.gilchrist.fl.us>
+Subject: Can't interpret this log entry
+Date: Fri, 24 Sep 2004 11:53:35 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <41543AE6.2060800@lanl.gov>
-References: <e73cec8004092401074a667c3a@mail.gmail.com>
+Message-ID: <415442FF.1060304@mail.co.gilchrist.fl.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e73cec8004092401074a667c3a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "www.piratehosting.net" <webmazter@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-www.piratehosting.net wrote:
-> 512mb ram
-> about 150,000 connections
-> its a ircd server with 15 clients at 1024 users each.
-> i have to keep moving it up as the conntrack doesnt empty
-> 
+I'm slightly confused about this log entry that I'm seeing pop up in my 
+syslog.
+
+The firewall is 200.21.1.254, on a private net.
+
+Sep 24 11:57:03 firewall kernel: IN=eth0 OUT= 
+MAC=00:40:05:3d:51:e9:00:50:3e:ed:28:a0:08:00 SRC=200.175.75.101 DST=200.2
+1.1.254 LEN=56 TOS=0x00 PREC=0x00 TTL=43 ID=10814 PROTO=ICMP TYPE=3 
+CODE=3 [SRC=200.21.1.254 DST=200.175.75.101 LEN=48 T
+OS=0x00 PREC=0x00 TTL=102 ID=2554 DF PROTO=TCP INCOMPLETE [8 bytes] ] 
 
 
-Depending on the linux kernel you are using.. this is a 'known' bug. Red 
-Hat Linux for the 7,8,9 series has a patch from netfilter experimental 
-that does not let go connections. There is also another kernel version 
-that seems to have this issue (2.4.18?) but I cant remember which one it 
-was. Putting on the latest 2.4.x kernel with a clean netfilter patch 
-fixed the problem on our boxes.
+it *almost* looks like my box is sending an ICMP query, and getting a 
+"port closed" response.  The thing that bothers me about this is that I 
+don't allow ICMP to talk on the box at all, so I shouldn't be sending 
+ICMP, or if the machine tries to, I should be getting it logged, as I'm 
+logging all of my drops.
 
+Confused.
 -- 
-Stephen John Smoogen	        | CCN-5 Security Team
-LANL SIRT Team Leader           | SMTP:  smoogen@lanl.gov
-Los Alamos National Laboratory  | Voice: 505.664.0645
-Ta-03 SM-1498 MS: B255 DP 10S   | FAX:   505.665.7793
-Los Alamos, NM 87545            |
+Eric Ellis
+Gilchrist County Sheriff's Department
+IT Coordinator
+eellis@mail.co.gilchrist.fl.us
+352-463-3181
 
