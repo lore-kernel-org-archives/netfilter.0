@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Weird routing problem?
-Date: Wed, 01 Dec 2004 08:45:41 -0500
-Message-ID: <1101908741.3251.33.camel@hubcap.ljm.dom>
-References: <200412010418.41288.hancock@anansispaceworks.com>
-	<002101c4d7a9$f00c4f80$e167aec1@wsidipl05>
+From: Claudio Lavecchia <Claudio.Lavecchia@eurecom.fr>
+Subject: Re: iptables and wireless card in promiscuous mode
+Date: Wed, 01 Dec 2004 15:34:26 +0100
+Message-ID: <41ADD672.1090303@eurecom.fr>
+References: <424BCB4EA242A1429A8AF0548E8CFF0E123999@apexexchange.ApexSoftware.Com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <002101c4d7a9$f00c4f80$e167aec1@wsidipl05>
+In-Reply-To: <424BCB4EA242A1429A8AF0548E8CFF0E123999@apexexchange.ApexSoftware.Com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +17,189 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Scott Knake <sknake@Apexsoftware.com>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, 2004-12-01 at 08:30, Robert Schimansky wrote:
-> hello,
-> 
-> when using an ethernet-dsl-modem - and maybe with some other devices too - 
-> you have to set the MTU of your NAT-ed computers. see 
-> http://www.annoyances.org/exec/show/article04-107
-> 
-> I would appreciate if somebody could tell how I could solve this on the 
-> router insteasd of reconfiguring the "clients"
+BTW you are right, filtering at a lower layer is the most 
+straightforward approach.
+Can anyone tell me how to set up a simple filter using BPF that blocks 
+all the packets coming from a given MAC address?
 
-search the list archives--i *think* that question came up once before.
+Thx a lot
 
-...or type 'man iptables' as the exact command needed is in there.
+Claudio
 
-...or read my last post.
+Scott Knake wrote:
 
--j
-
---
-"No jury in the world is going to convict a baby ... Maybe Texas."
-	--The Simpsons
+>iptables -t MANGLE -D PREROUTING 1.
+>It was also mentioned earlier to configure BPF to drop the undesired
+>packets.. what is wrong with this solution?
+>
+>  
+>
+>>Well,
+>>
+>>In fact  I really wanted my WLAN card set in promiscuous mode to drop 
+>>all the packets coming from the other laptop, this means that I wanted
+>>    
+>>
+>a 
+>  
+>
+>>filter BEFORE the promiscuos mode filter.
+>>And by the way: how do I cancel a rule from the PREROUTING chain?
+>>If I do the standard way, I get:
+>>
+>>~ # iptables -D PREROUTING 1
+>>iptables: No chain/target/match by that name
+>>
+>>Thx
+>>
+>>Claudio
+>>
+>>
+>>Alistair Tonner wrote:
+>>
+>>    
+>>
+>>>see inlined:
+>>>
+>>>On November 30, 2004 07:53 am, Claudio Lavecchia wrote:
+>>>
+>>>
+>>>      
+>>>
+>>>>Hello People,
+>>>>
+>>>>I have a little question:
+>>>>
+>>>>I have two laptops that have 802.11 wireless cards. I am developing
+>>>>        
+>>>>
+>some
+>  
+>
+>>>>application that essentially perform sniffing functions using
+>>>>        
+>>>>
+>wireless
+>  
+>
+>>>>cards in promiscuous mode. To test my code, I need those two laptops
+>>>>        
+>>>>
+>not
+>  
+>
+>>>>to "see" each other (--> I do not want the wireless card of laptop A,
+>>>>which is operating in promiscuous mode to process packets coming from
+>>>>laptop B) and I tought to do it using iptables. so on laptop A i
+>>>>        
+>>>>
+>added
+>  
+>
+>>>>the following rule:
+>>>>
+>>>>iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_B -j DROP
+>>>>
+>>>>and on laptop B I added the rule:
+>>>>
+>>>>iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_A -j DROP
+>>>>
+>>>>I just executed my first tests and the feeling  I got is that, for
+>>>>example, the wlan card of  laptop B still passes through the packet
+>>>>coming from laptop A.
+>>>>
+>>>>Can anyone confirm  this analysis? If I am right, can anyone give me
+>>>>        
+>>>>
+>a
+>  
+>
+>>>>hint to possibly workaround this?
+>>>>
+>>>>
+>>>>        
+>>>>
+>>>Urrm.
+>>>You are likely doing the filtering in the wrong pipe.  These rules
+>>>      
+>>>
+>will only
+>  
+>
+>>>drop packets that are destined for the IP of the host they are on.
+>>>      
+>>>
+>You
+>  
+>
+>>>PROBABLY are trying to drop *all* traffic from the other laptop.
+>>>      
+>>>
+>Iptables
+>  
+>
+>>>can do this at the IP layer, however you will STILL be able to see the
+>>>traffic across that card (from the other laptop) with any decent
+>>>      
+>>>
+>sniffer
+>  
+>
+>>>program since ip sniffers work below the IP layer, before iptables
+>>>      
+>>>
+>gets the
+>  
+>
+>>>packet to filter.  Most decent network sniffers, however, can do mac
+>>>      
+>>>
+>address
+>  
+>
+>>>filtering on input.
+>>>      
+>>>
+>>>If you would like to have the traffic dropped anyway, there are
+>>>      
+>>>
+>better places
+>  
+>
+>>>to put these rules, even though many are strongly against filtering
+>>>      
+>>>
+>anywhere
+>  
+>
+>>>but in the filter table (including myself) the following would get the
+>>>traffic off your iptables radar:
+>>>
+>>>iptables -A PREROUTING -t mangle -m mac --mac-source
+>>>      
+>>>
+>MAC_ADDRESS_LAPTOP_A -j \
+>  
+>
+>>>DROP
+>>>
+>>>Although in truth I'm not sure that this is wise, it might serve your
+>>>purposes.
+>>>
+>>>Alistair Tonner
+>>>RSO HP Unix support
+>>>
+>>>
+>>>
+>>>
+>>>      
+>>>
+>
+>  
+>
 
 
