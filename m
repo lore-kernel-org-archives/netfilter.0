@@ -1,10 +1,12 @@
-From: Kiran Kumar <immidi_kiran@yahoo.com>
-Subject: Re: IPTables Flow Chart
-Date: Thu, 11 Mar 2004 19:33:51 -0800 (PST)
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: IPTables Flow Chart
+Date: Thu, 11 Mar 2004 20:00:59 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040312033351.22482.qmail@web14010.mail.yahoo.com>
+Message-ID: <200403120400.i2C40rfG014733@server5.bandwidthco.com>
 References: <4050C869.8080506@mtaonline.net>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <4050C869.8080506@mtaonline.net>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,27 +18,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-To: Jim Cliver <jclive@mtaonline.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Jim Cliver' <jclive@mtaonline.net>, netfilter@lists.netfilter.org
 
---- Jim Cliver <jclive@mtaonline.net> wrote:
-> Ok, we should be good to go now!  The link above is
-> still good dwg'ng=20
-> has been updated.
->=20
-> Thanks also to Antony for the quick catch!
+Nice job Jim.  You've packed a considerable amount of complex stuff into a
+very small space.  I'm sure many will find this beneficial. 
 
-  I think, eventually, this should be hosted on
-netfilter.org. Jim, Would be nice if you can take it
-to them.
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Jim Cliver
+Sent: Thursday, March 11, 2004 12:13 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: IPTables Flow Chart
 
-=3D=3D=3D=3D=3D
-Regards,
-Kiran Kumar Immidi
+Jim Cliver wrote:
+>> Thank you to all that replied to my first posting of the drawing, I 
+>> really appreciate the feedback!
+>>
+>> I believe that all of your suggestions and comments have been 
+>> incorporated into this revision...
+>>
+>> http://www.aptalaska.net/~jclive/IPTablesFlowChart.pdf
+>>
+>> As always, your comments, suggestions and corrections are welcome.
+>>
+>> Regards,
+>> jim
+>>
+>>
+>>
+> Sorry Folks,
+> 
+> Just found an error, will correct and repost.  Directonal arrows from 
+> Interface B to PREROUTING process are missing...
+> 
+> jim
+> 
+> 
+> 
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Search - Find what you=92re looking for faster
-http://search.yahoo.com
+Ok, we should be good to go now!  The link above is still good dwg'ng has
+been updated.
+
+Thanks also to Antony for the quick catch!
+
+jim
+
+
+
 
