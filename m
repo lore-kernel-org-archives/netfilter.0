@@ -1,11 +1,12 @@
-From: <Derek_Chen@trend.com.tw>
-Subject: packet filtering in virtual NIC
-Date: Tue, 11 Jan 2005 18:50:15 +0800
-Message-ID: <05D4351F36F7844CAE6F3C6499156745086969CF@twexmail01.tw.trendnet.org>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Suse 9.1 port forwarding woes
+Date: Tue, 11 Jan 2005 07:41:09 -0500
+Message-ID: <1105447269.9691.4.camel@hubcap.ljm.dom>
+References: <41E32C3C.2080907@overdrawn.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <41E32C3C.2080907@overdrawn.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +20,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Mon, 2005-01-10 at 20:30, Nathan March wrote:
+> Argh, I copied and pasted the wrong stuff over.
+> 
+> Correct:
+> 
+> ace:~ # iptables --list
 
-Hi, All
+i shoulda mentioned this in my last post--can you post the output of
+"iptables -vnxL && iptables -t nat -vnxL" instead of just "iptables
+--list" as we cannot see interface names or other information that may
+be releavent.
 
-I create a virtual netowrk card by supplementing a network driver. To=
- simulate the activity of receving packets I customize packet data and call=
- ioctl to feed them to netif_rx. My registered hook is like this
- static struct nf_hook_ops ns_hook =3D { {NULL,NULL},scan_hook,
-                                                             =
- //PF_INET,NF_IP_PRE_ROUTING,                           //I have tried this
-                                                             =
- PF_BRIDGE,NF_BR_PRE_ROUTING,                     // and this
-                                                               1};
-Both hooks point does not work for my crafted data but work for real=
- packets (through real NIC).
-Does anyone know what I'm doing wrong? Thanks for help.
+also--is this firewall machine the default gateway for 192.168.0.3?
 
- Derek
+-j
 
-                =0D
+--
+"Do you want to change your name to Homer Junior? The kids can call
+ you Hoju!"
+	--The Simpsons
 
 
-
-TREND MICRO EMAIL NOTICE
-The information contained in this email and any attachments is confidential=
- and may be subject to copyright or other intellectual property protection.=
- If you are not the intended recipient, you are not authorized to use or=
- disclose this information, and we request that you notify us by reply mail=
- or telephone and delete the original message from your mail system.
