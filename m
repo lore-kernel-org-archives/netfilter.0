@@ -1,18 +1,12 @@
-From: Henti Smith <bain@tcsn.co.za>
-Subject: Re: transparent squid with internal sites as well
-Date: Wed, 27 Nov 2002 09:26:41 +0200
+From: Michael <mutk@iprimus.com.au>
+Subject: Re: Samba Blocked? (repost)
+Date: Wed, 27 Nov 2002 18:06:37 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021127092641.3d320dd8.bain@tcsn.co.za>
-References: <20021125121935.0adac911.bain@tcsn.co.za>
-	<1038221585.19172.151.camel@rayw.knowledgefactory.co.za>
-	<20021127085814.16b50de3.bain@tcsn.co.za>
-	<1038380456.1451.65.camel@rayw.knowledgefactory.co.za>
-	<20021127091419.57f9a3e6.bain@tcsn.co.za>
-	<1038381319.1450.74.camel@rayw.knowledgefactory.co.za>
+Message-ID: <3DE47D0D.9060702@iprimus.com.au>
+References: <001d01c29598$b3087a00$1e00a8c0@yamatto> <200211261924.56163.netfilter@newkirk.us> <001401c295bc$ee9c34c0$1e00a8c0@yamatto> <200211270000.04548.netfilter@newkirk.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1038381319.1450.74.camel@rayw.knowledgefactory.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,30 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: raymondl@knowledgefactory.co.za
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On 27 Nov 2002 09:15:19 +0200
-Raymond Leach <Ray@work> wrote:
+Joel Newkirk wrote:
 
-> > I'm way new to transparent proxy, but I've done a bit of playing iptables. 
-> > I'm going to play around witha  few more ideas tho.
-> We also use squid as a transparent proxy here. For internal websites
-> though, do you need them to go through the proxy? Is there some tracking
-> that you need to do, or would it not be possible to 'catch' the requests
-> to the servers using iptables before they get redirected to squid? This
-> is what we do, and it works fine.
+>On Tuesday 26 November 2002 09:30 pm, Dan Egli wrote:
+>  
+>
+>>that is correct. And I know for a fact that NetBIOS-ns is in the services
+>>file because I've seen it, and I did try it both ways. Every time I try to
+>>connect using //myserver/shared1 I get the following log lines:
+>>    
+>>
+>
+>Very strange.  the only packets caught here with --dport 137 are on lo with lo IP, then
+>--sport 137 with 64.x.x.x on lo, and --sport 137 with local 192.x x.x on lo.  It looks like the
+>'real' --dport 137 packets get through (they're not listed here) but the machine tries to
+>query itself on lo to resolve the names.  shot in the dark, try:
+>
+>/sbin/iptables -A INPUT -i lo -j ACCEPT
+>/sbin/iptables -A OUTPUT -o lo -j ACCEPT
+>
+>to let these through.  I've only done minimal work with samba, so I don't know if this self-request
+>is normal or not...
+>  
+>
 
-internal browsing we don't care about ... but I do need to provide stats for external traffic
-if I can redirect the internal stuff before it gets to the proxy cool .. 
-as long as the rest still goes to proxy and I get stats as per usual on how much they download
+I think it's due to smbd talking to nmbd via lo when it receives a bcast 
+??  Something like that.
+Something like this is generally needed anyway:
 
-> Also, check what interface squid is using to process the request. It
-> might be trying to use the external interface instead of the internal
-> one.
+iptables -A INPUT  -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
 
-any ideas how to do that ? 
 
-Henti 
+Cheers,
+Michael
+
+
 
