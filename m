@@ -1,12 +1,13 @@
-From: "Sundaram Ramasamy" <sun@percipia.com>
-Subject: Re: iptables 1.2.7a management problem
-Date: Wed, 4 Dec 2002 11:49:18 -0500
+From: Sherman Boyd <meekrob@mitosys.com>
+Subject: Re: New iptables "cookbook"
+Date: Wed,  4 Dec 2002 10:44:39 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000a01c29bb5$16a62bd0$8c01a8c0@sundaram>
-References: <F117cdEc83LUEM7RAlu00028454@hotmail.com>
+Message-ID: <1039023879.3dee3f07c1502@meth.gravital.net>
+References: <1038950722.3ded2142edaef@meth.gravital.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1038950722.3ded2142edaef@meth.gravital.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Afshin Lamei <linux_st@hotmail.com>, netfilter@lists.samba.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-if your using redhat Linux.
+My apologies to anyone who tried to view the iptables cookbook in IE.  I'm using
+AxKit to generate html from an xml document on the fly, IE doesn't seem to like
+this.  I've generated a static HTML page here for IE users:
 
-1. create a shell script that will accept stop/start parameter and put in in
-the /etc/init.d directory.
+http://gentoo.mitosys.com/iptables-cookbook.html
 
-2. use chkconfig command to add your script as a service
+Again thanks for looking, and please let me know what you think.
 
-
-you can see look some file in the /etc/init.d directory.
-
-Thanks
-SR
-
------ Original Message -----
-From: "Afshin Lamei" <linux_st@hotmail.com>
-To: <netfilter@lists.samba.org>
-Sent: Wednesday, December 04, 2002 11:28 AM
-Subject: iptables 1.2.7a management problem
+Sherman Boyd
+meekrob@mitosys.com
 
 
-> Hi,
-> How can I deal with iptables like a service? I've installed it according
-to
-> the netfilter's guide, after that, I expected that I could deal with it as
-a
-> service, but I coudn't.
-> Do I need to manually setup iptables after each system boot??
-> --afshin
->
-> _________________________________________________________________
-> The new MSN 8: advanced junk mail protection and 2 months FREE*
-> http://join.msn.com/?page=features/junkmail
->
->
+Quoting Sherman Boyd <meekrob@mitosys.com>:
 
+> Hi everyone,
+> 
+> I'm writing an "iptables cookbook" a Gentoo Linux specific iptables tutorial.
+> 
+> After working on this sucker late into the night I'm sure there are tons of
+> errors and inconsistencies, so if you are interested please read the doc and
+> send me an email pointing out it's flaws.  (BTW I know the GFDL is under a
+> code
+> listing, that will be resolved before I publish the doc)  
+> 
+> You can find it here:
+> http://gentoo.mitosys.com/iptables-cookbook.xml
+> 
+> I'm looking for feedback on technical accuracy as well as style.  Be
+> brutally
+> honest, you won't hurt my feelings, but please be brief.
+> 
+> Thank you for your time,
+> 
+> Sherman Boyd
+> meekrob@mitosys.com
+> 
+> 
 
