@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ftp again
-Date: Sat, 22 May 2004 16:56:16 +0100
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Logging MAC
+Date: Sat, 22 May 2004 11:57:32 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405221656.16525.Antony@Soft-Solutions.co.uk>
-References: <BAY15-F4dP1h5lOX3Af000a1ed3@hotmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200405221157.32312.Alistair@nerdnet.ca>
+References: <5390820828.20040521103958@alternativa.com.br> <200405220809.47858.Alistair@nerdnet.ca> <200405221333.35216.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F4dP1h5lOX3Af000a1ed3@hotmail.com>
+In-Reply-To: <200405221333.35216.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,74 +21,52 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 22 May 2004 4:29 pm, azeem ahmad wrote:
-
-> hi all
-> when i run this script on my box the natting of ftp stops. neither clients
-> browse in non-paasive mode nor in passive mode
-> what is the problem
-
-Perhaps you do not have the nat_ftp and conntrack_ftp modules loaded or 
-compiled into your kernel?
-
-> iptables -F
-> iptables -t nat -F
-> iptables -P INPUT DROP
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
-> iptables -A INPUT -i eth0 -p udp --dport 8080 -j ACCEPT
-
-What are you using UDP port 8080 for?
-
-> iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
-> iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
-> iptables -A INPUT -i eth0 -p udp --dport 137  -j ACCEPT
-> iptables -A INPUT -i eth0 -p udp --dport 138  -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
+On May 22, 2004 08:33 am, Antony Stone wrote:
+> On Saturday 22 May 2004 1:09 pm, Alistair Tonner wrote:
+> > On May 22, 2004 05:06 am, Antony Stone wrote:
+> > > Surely there will *always* be two MAC addresses involved in a
+> > > communication - that's how two machines find each other across the
+> > > local subnet (ie: via a switch / hub / access point etc)?
+> >
+> > 	*Thwack*'s self in head.  Of course, so long as "Ethernet" is involved.
 >
-> iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
-> iptables -t nat -A PREROUTING -p udp --dport 80 -j REDIRECT --to-port 8080
-
-Same question as above...
-
-> iptables -P FORWARD DROP
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A FORWARD -i eth0 -p tcp --dport 20        -j ACCEPT
-> iptables -A FORWARD -i eth0 -p udp --dport 20        -j ACCEPT
-> iptables -A FORWARD -i eth0 -p tcp --dport 21        -j ACCEPT
-> iptables -A FORWARD -i eth0 -p udp --dport 21        -j ACCEPT
-
-FTP does not use UDP, so two of the above four rules are irrelevant, and 
-stateful packet filtering (which you are clearly using from the first rule in 
-your FORWARD chain) means that you do not need a rule for the data connection 
-on TCP port 20 - therefore you only need one of the above four rules:
-
-iptables -A FORWARD -i eth0 -p tcp --dport 21        -j ACCEPT
-
-> iptables -A FORWARD -i eth0 -p tcp --dport 443       -j ACCEPT
-> iptables -A FORWARD -i eth0 -p tcp --dport 5000      -j ACCEPT
-> iptables -A FORWARD -i eth0 -p tcp --dport 5001      -j ACCEPT
-> iptables -A FORWARD -i eth0 -p tcp --dport 5005      -j ACCEPT
-> iptables -A FORWARD -i eth0 -p tcp --dport 5050      -j ACCEPT
-> iptables -A FORWARD -i eth0 -p tcp --dport 6660:6670 -j ACCEPT
-> iptables -A FORWARD -i eth0 -p tcp --dport 7000      -j ACCEPT
-> #iptables -A FORWARD -i eth0 -p tcp --dport 28805     -j ACCEPT
-> iptables -A FORWARD -i eth0 -p tcp --dport 51215     -j ACCEPT
+> Or some similar broadcast-based medium such as 802.11 (which isn't
+> ethernet, but behaves like it for a lot of things, including MAC
+> addresses).
 >
-> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+> The general rule is: you need MAC addresses for broadcast-connected
+> networks (where each device can see every other locally-connected device) -
+> the MAC address is needed to tell one device from another.
+>
+> You don't need MAC addresses for point-to-point (one-to-one) connected
+> networks, because you know there's only one device on the other end of each
+> of your own interfaces, therefore you don't need to specify where they're
+> going.
+>
+> > 	in ipt_LOG.c MAC address logging is ONLY done in INPUT.  So ..if the
+> > 	packet is NOT destined for the machine, you wont see MAC.
+>
+> Aha :)   [ * Light bulb * ]
+>
+> The answer to the original poster's question.
+>
+> I guess (without having looked at the source) that it should be a simple
+> enough hack to get ipt_LOG.c to log MAC addresses for all chains.
+>
+	should be ridiculously simple -- the limiter is a wrapping if statement
 
-Regards,
+	if ( in && !out) {
 
-Antony.
+	(logging of MAC code)
+	}
 
--- 
-It is also possible that putting the birds in a laboratory setting 
-inadvertently renders them relatively incompetent.
+	I suspect that the clever hacker will want to re-wrap that if statement such 
+that it only logs it if there IS a MAC address present.  Not being a maven 
+with such, I'm NOT gonna make any suggestions as to how.
 
- - Daniel C Dennet
+	Alistair
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+> Regards,
+>
+> Antony.
 
