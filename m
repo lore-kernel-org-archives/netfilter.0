@@ -1,13 +1,11 @@
-From: "Ashley M. Kirchner" <ashley@pcraft.com>
-Subject: Re: Re: iptables help
-Date: Thu, 29 Jul 2004 15:59:11 -0600
+From: "Joao Alberto M. dos Reis" <joao@afreis.com.br>
+Subject: choosing the output gateway
+Date: Thu, 29 Jul 2004 19:29:03 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4109732F.10008@pcraft.com>
-References: <D5C9032B2B09C64EA2409D6214E91AC905120E@asimail2.alphanumeric.com>
+Message-ID: <1091140143.23217.29.camel@goku.afreis.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-HsYAMkLGYrRUrOqSF5Uw"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC905120E@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +15,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Jason Opperisano wrote:
 
->someone already mentioned this--but this is *not* the "best" way to do this.  a transparent redirect to a squid server with a "dstdomain .yahoo.com" will block access to anything.yahoo.com regardless of IP address.
->  
->
-    This I understand, however this was the fastest solution I could 
-implement considering the time constraints I'm working with.  I will 
-most certainly look into installing/setting up squid in the future.
+--=-HsYAMkLGYrRUrOqSF5Uw
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-    Hey Jason?  Thanks for all your help.  Really appreciate it.  The 
-same goes to the list in general as well.
+Hi,
 
--- 
-W | I haven't lost my mind; it's backed up on tape somewhere.
-  +--------------------------------------------------------------------
-  Ashley M. Kirchner <mailto:ashley@pcraft.com>   .   303.442.6410 x130
-  IT Director / SysAdmin / WebSmith             .     800.441.3873 x130
-  Photo Craft Laboratories, Inc.            .     3550 Arapahoe Ave. #6
-  http://www.pcraft.com ..... .  .    .       Boulder, CO 80303, U.S.A.
+I have the following:
+1 linux box with 2 valid IPs with different gateways each.
 
+I need to port forward different ports inside my network to different
+machines.
 
+I have set a default gateway to the first link and created a routing
+table for the second link pointing to the second gateway. but when I
+make my portforward to this second link, the packets try to leave by the
+first gateway.
+
+How can I fix that?
+
+TIA,
+Joao Reis.=20
+
+--=-HsYAMkLGYrRUrOqSF5Uw
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQBBCXovcfDZuH0KEiERAn5wAJ47UsyT5XtObC/wvtBGGfKsSh8CLACgg47k
+FALeTyTtbbao8pev0sF06Kc=
+=wmPH
+-----END PGP SIGNATURE-----
+
+--=-HsYAMkLGYrRUrOqSF5Uw--
 
 
