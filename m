@@ -1,8 +1,9 @@
 From: Nick Drage <nickd@metastasis.org.uk>
-Subject: failure when using --string
-Date: Thu, 26 Aug 2004 23:17:40 +0100
+Subject: forwarding traffic to different hosts
+Date: Thu, 26 Aug 2004 23:43:57 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040826221740.GE22322@metastasis.org.uk>
+Message-ID: <20040826224357.GF22322@metastasis.org.uk>
+Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
@@ -21,15 +22,22 @@ To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 Hi,
 
-Any ideas why this would be failing?  It's the example straight out of
-the documentation:
+Sorry, another question, things aren't working well for me tonight.  If
+I want traffic to port 777 on a host to be redirected to another host on
+the same LAN, will this do the job?
 
-host# iptables -A INPUT -m string --string 'cmd.exe' -j QUEUE
-iptables: No chain/target/match by that name
+I'm on host 198.81.129.100, and I want all traffic from IP address
+207.155.252.12 to port 777 to be redirected to a different host, .101 on
+the same network, if I try this rule it fails:
 
-This is on a Debian Stable box.  Is it possible that "-m string" is
-permitted by the userspace tool but the functionality hasn't been
-included in the kernel?
+iptables -t nat -I PREROUTING --source 207.155.252.12 -p tcp --dport 777
+-j DNAT --to-destination 198.81.129.101
+
+But I don't see anything in the logs.  I tried permitting all traffic to
+port 777 in for FORWARD and OUTPUT tables, but that didn't make a
+difference.
+
+Any ideas?
 
 -- 
 mors omnia vincit
