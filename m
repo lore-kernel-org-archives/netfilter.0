@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: FAQ 3.13, but on the same box
-Date: Sun, 18 Jul 2004 18:44:22 +0100
+Subject: Re: LAN accessing DMZ
+Date: Sun, 18 Jul 2004 18:59:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407181844.22744.Antony@Soft-Solutions.co.uk>
-References: <20040718173200.GC718@always.joy.eth.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200407181859.47417.Antony@Soft-Solutions.co.uk>
+References: <f51b72bc040718062373640612@mail.gmail.com> <200407181812.31070.Antony@Soft-Solutions.co.uk> <20040718173937.GA31408@tranquility.scriptkitchen.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040718173200.GC718@always.joy.eth.net>
+In-Reply-To: <20040718173937.GA31408@tranquility.scriptkitchen.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +19,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Sunday 18 July 2004 6:32 pm, Joshua N Pritikin wrote:
+On Sunday 18 July 2004 6:39 pm, Payal Rathod wrote:
 
-> I understand how to set up a transparent proxy.  However, it is
-> possible to run a transparent proxy and web browser on the same box?
+> I do not have access to that machine till tomorrow. But I have copied the
+> firewall script at http://payal.staticky.com/fw2.txt
 
-Yes.
+I do not understand how you can connect through this ruleset to TCP port 10000 
+from anywhere.
 
-> What if I put the proxy on a loopback interface and REDIRECT port 80
-> to port 3128 the loopback?  Would that work?
+I look forward to the ruleset listing with packet counters.
 
-Sounds good to me.
+Please make sure you also post the following information:
 
-http://www.squid-cache.org/Doc/FAQ/FAQ-17.html#ss17.4
+1. The IP address of the machine you are connecting *from* to TCP port 10000.
+
+2. The IP address of the machine you are connecting *to* on TCP port 10000.
+
+3. The network info for each subnet connected to the firewall.
+
+(By the way, there is a problem, probably unimportant, but worth correcting 
+anyway, with the "-s 10.10.10.0/255.0.0.0" in your ruleset.   The address 
+should not contain more 1-bits than the netmask, therefore this should either 
+be "-s 10.10.10.0/255.255.255.0" or else "-s 10.0.0.0/255.0.0.0", depending 
+on which netmask is correct for your subnet.)
 
 Regards,
 
 Antony.
 
 -- 
-The first fifty percent of an engineering project takes ninety percent of the 
-time, and the remaining fifty percent takes another ninety percent of the 
-time.
+These clients are often infected by viruses or other malware and need to be 
+fixed.  If not, the user at that client needs to be fixed...
+
+ - Henrik Nordstrom, on Squid users' mailing list
 
                                                      Please reply to the list;
                                                            please don't CC me.
