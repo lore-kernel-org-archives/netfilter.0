@@ -1,10 +1,10 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: Fedora 3 + netfilter 1.2.11 + FXP
-Date: Mon, 7 Mar 2005 13:03:23 +0100
-Message-ID: <C530C43619DA8F459D7A1A4DADE00EB1DD13@knowledge.wizdom.nu>
+From: Askar <askarali@gmail.com>
+Subject: nagios plugin
+Date: Mon, 7 Mar 2005 17:23:24 +0500
+Message-ID: <a0f69e505030704234d8474d8@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-class: urn:content-classes:message
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,45 +16,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hello,
+hi list
+anyone using nagios to monitor iptables firewall machine, and plugin
+avaible for check iptables status via nagios?
 
-=20
 
-I am running a standard installation of Fedora Core 3 (2.6.10-1.770.FC3)
-& netfilter 1.2.11
+regards
 
-=20
-
-Is there anybody here that can give me an answer to the following
-question:
-
-Is it possible to enable FXP in this configuration? (above config, no
-new kernel compiling, patching etc)
-
-=20
-
-If possible, how can I enable it?
-
-=20
-
-I tried putting add options ip_conntrack_ftp fxp=3D1 in =
-/etc/modules.conf,
-but this doesn't help
-
-=20
-
-Spent all morning wading through the web and all the years old
-documentation available, but I haven't found what I was looking for.
-Found some stuff about this ftp-fxp patch, but that too seems legacy for
-very old version.
-
-=20
-
-Greets,
-
-Sietse
-
-=20
+Askar 
+-- 
+I love deadlines. I like the whooshing sound they make as they fly by.
+Douglas Adams
 
