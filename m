@@ -1,13 +1,12 @@
-From: George Agnelli <george@mattandgeorge.com>
-Subject: Re: IPSec passthrough with iptables
-Date: Tue, 15 Oct 2002 11:09:06 +0000
+From: Alasdair Ramsay <alasdair.ramsay@cdc.uk.net>
+Subject: Re: H.323 Masquerading
+Date: Tue, 15 Oct 2002 10:02:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B9D1A7D2.3DF9%george@mattandgeorge.com>
-References: <20021015082231.RBQR27697.mta05-svc.ntlworld.com@there>
+Message-ID: <3DABD9B9.3020807@cdc.uk.net>
+References: <20021011152949.GM10468@qno.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021015082231.RBQR27697.mta05-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,16 +16,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Christian H. Kuhn" <christian.kuhn@qno.de>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-I'm having a similar problem and am not very experienced yet with iptables.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> Make sure you are forwarding (both ways :-) protocol 50 (ESP), protocol 51
-> (AH) and UDP sport 500 / dport 500 (IKE).
+I used exatly the same patch with vanilla 2.4.19 but also patched with
+freeswan, pax and LIDS(not active).  Build worked first time, exhibiting
+the classic symptoms of one way audio untill the (newnat16v2) helper
+module was compilled in.  Never got any errors apart from the occasional
+out of order packets when tearing down connections.
 
-Could you show me the best way to write this in iptables syntax?
+One think I notice is that you are using MASQERADE not SNAT.  I was SNAT
+~ and DNAT'ing this protocol.  I was also not loading the modules, all of
+the networking options are compilled statically.
 
-George
+HTH
+
+Alasdair Ramsay
+
+
+Christian H. Kuhn wrote:
+<LOTS>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.0 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQE9q9mw4+7BX0uR648RAopRAKCAMwz9XZNDhdqHxX9N0EU9udIplgCdEfK0
+/iwKnLT4fBqsAw2to8W7iyE=
+=bN6P
+-----END PGP SIGNATURE-----
+
 
 
