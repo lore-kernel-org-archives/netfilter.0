@@ -1,8 +1,8 @@
-From: Rahul Jadhav <rahul@iatp.org>
-Subject: nat problem...
-Date: Fri, 15 Nov 2002 14:45:08 -0600
+From: "Nix N. Nix" <nix@go-nix.ca>
+Subject: Netfilter chain locations
+Date: 16 Nov 2002 18:38:17 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DD55CD4.70704@iatp.org>
+Message-ID: <1037489896.14145.275.camel@tux.go-nix.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,48 +15,89 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a setup without a dmz, ie, the servers (http, mail, ssh) share the same subnet as my intranet clients (dhcp). The iptables script I am struggling with allows clients to browse the net but refuses them connections to the servers. Somehow the firewall refuses tcp/udp connections meant for the servers. The firewall machine runs no public services (forwards traffic only).
-the forward and nat rules that i use are 
+The Linux packet filtering HOWTO displays the following diagram in order
+to illustrate the locations of the various filter table chains.
+                          _____
+Incoming                 /     \         Outgoing
+       -->[Routing ]--->|FORWARD|------->
+          [Decision]     \_____/        ^
+               |                        |
+               v                       ____
+              ___                     /    \
+             /   \                   |OUTPUT|
+            |INPUT|                   \____/
+             \___/                      ^
+               |                        |
+                ----> Local Process ----
 
-public_ip=external web ip
-intra_dev=internal iface
-extra_dev=external iface
-intra_ip=internal ip
-extra_ip=external ip
-http=http server ip
-mail=mail server ip
+This diagram has often helped me place rules in their proper places. 
+Unfortunately, this diagram doesn't include the location of the
+nat.PREROUTING, nat.POSTROUTING, nat.OUTPUT, and all the mangle tables. 
+As a result, I've spent nearly an hour trying to figure out how to DNAT
+packets coming from localhost (you put the DNAT rules in nat.OUTPUT, not
+nat.PREROUTING).
 
-# forward
-$iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-# do I need these 2 lines
-$iptables -A FORWARD -p tcp -i $intra_dev -o $extra_dev -j ACCEPT
-$iptables -A FORWARD -p udp -i $intra_dev -o $extra_dev -j ACCEPT
+So, I've come up with another ASCII art diagram displaying /all/
+chains.  I undoubtedly have some mistakes in it so, please, feel free to
+correct.
 
-$iptables -A FORWARD -p tcp -i $extra_dev -m state --state NEW,ESTABLISHED,RELATED --dport 80 -j ACCEPT
-$iptables -A FORWARD -p tcp -i $extra_dev -m state --state NEW,ESTABLISHED,RELATED --dport 81 -j ACCEPT
+I have pdf, dia, and txt versions of the diagram available in the
+tarball at ftp://go-nix.ca/up/netfilter-diag.tar.bz2 .  If you find it
+easier to correct the dia version instead of hitting the space bar
+several hundred times, by all means, please do so.
 
-$iptables -A FORWARD -p tcp -i $extra_dev -o $intra_dev --dport 80 -d $http -j ACCEPT
-$iptables -A FORWARD -p tcp -i $extra_dev -o $intra_dev --dport 81 -d $mail -j ACCEPT
+The diagram is based on the above diagram, as well as packet LOGs I've
+added to every single chain and then triggered by firing a packet from
+remote to local, from local to remote, from behind local to remote (to
+trace the FORWARD stuff), and from remote to behind local (via DNAT). 
+Here's what it looks like to me:
 
-# prerouting
-$iptables -A PREROUTING -t nat -p tcp -i $extra_dev -d $public_ip --dport 80 -j DNAT --to $http
-$iptables -A PREROUTING -t nat -p tcp -i $extra_dev -d $public_ip --dport 81 -j DNAT --to $mail
++--------+
+|Incoming|-+
++--------+ |
+           v
+  _______________
+ /               \                                        +--------+
+|mangle.PREROUTING|                                    +->|Outgoing|
+ \_______________/                                     |  +--------+
+         |                  ____________         _____________
+         v                 /            \       /             \
+   ____________       +-->|mangle.FORWARD|     |nat.POSTROUTING|
+  /            \      |    \____________/       \_____________/
+ |nat.PREROUTING|     |          |                     ^
+  \____________/      |          v                     |
+        |             |     ____________       ________________ 
+        |             |    /            \     /                \
+        |  [Routing ]-+   |filter.FORWARD|-->|mangle.POSTROUTING|
+        +->[Decision]      \____________/     \________________/
+               |                                       ^
+               |                                       |
+               |                                  ___________
+               v                                 /           \
+          __________                            |filter.OUTPUT|
+         /          \                            \___________/
+        |mangle.INPUT|                                 ^
+         \__________/                                  |
+               |                                    ________
+               |                                   /        \
+               |                                  |nat.OUTPUT|
+               v                                   \________/
+          __________                                   ^
+         /          \                                  |
+        |filter.INPUT|                            ___________
+         \__________/                            /           \
+               |                                |mangle.OUTPUT|
+               |                                 \___________/
+               |                                       ^
+               |                                       |
+               +----------->Local Process--------------+
 
-# postrouting
-# either these 2 rules or the masquerade rule works
+Please correct this as necessary.  I'd like to finally get iptables
+straight, in my mind at least.
 
-$iptables -A POSTROUTING -t nat -p tcp -o $extra_dev -s $intra_lan -d $universe -j SNAT --to $extra_ip
-$iptables -A POSTROUTING -t nat -p tcp -o $extra_dev -s $intra_lan -d $universe -j SNAT --to $extra_ip
-
-$iptables -A POSTROUTING -t nat -o $extra_dev -j MASQUERADE
-
-does someone see a problem that I can't. Also, could someone enlighten me about the output chain and whether or not I need it here.
-Thanks
-
-Rahul
-
+Thanks !
 
 
