@@ -1,12 +1,12 @@
-From: ATest@sbsdk12.org (Coutts, Ashe (Testing Account))
-Subject: Iptables redirecting port 80 traffic to a FilterCube
-Date: Tue, 16 Sep 2003 10:33:49 -0700
+From: Jim Carter <jimc@math.ucla.edu>
+Subject: Re: why must linux for halted firewall?
+Date: Tue, 16 Sep 2003 10:46:25 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F66E70D.25385.7ADD10@localhost>
+Message-ID: <Pine.LNX.4.53.0309161040220.4397@xena.cft.ca.us>
+References: <BAY8-F93kuutSgcOrBL0000ec1b@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-description: Mail message body
+In-Reply-To: <BAY8-F93kuutSgcOrBL0000ec1b@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Chua Boon Ping <nitb@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-The linux fw computer I am using has one interface on the WAN side: 
-eth0, "$InternalNumber"
-another facing the outside world router:
-eth1, "$InternetNumber"
+On Mon, 15 Sep 2003, Chua Boon Ping wrote:
+> concerning "why opts for Linux(netfilter/iptables) rather than OpenBSD to
+> implement a Halted Firewall". actually, can OpenBSD be halted just like
+> Linux kernel do?
 
-I have now had to install a Commercial Squid filtering proxy in the small LAN 
-between eth1 and the router to the internet. Its IP# is "$InternetFilter".
+I'm not sure what you mean by a "halted firewall".  Do you mean that the
+kernel uses the "halt" instruction when there is no work to do?  Actually,
+if you have APM or ACPI BIOS (all recent machines do), the kernel will use
+them to conserve power if the machine has been halted for a while, and if
+the BIOS has that capability.
 
-If I place the "$InternetFilter" ip# along with port 3128 in a browser's proxy 
-settings all is filtered as expected. But we have hundreds of users and would 
-like to use iptables to send any port 80 traffic coming in eth0 on the fw out its 
-eth1 and directly to the $InternetFilter ip number so that it will filter out the 
-sites deemed inappropriate. I amd not sure I need to also change the port 
-number but understanding how to do this would also be helpful.
+I like Linux iptables because it's flexible and semi-comprehensible, and it
+can do (almost) everything I want to, and it uses relatively little CPU per
+packet.  But what you really need is a reply from someone who knows both
+NetBSD and Linux, and can say what's good about NetBSD firewall code.
 
-I do not understand the syntax well enough to do what I wish.
-
-Thanks in advance for any suggestions.
-
-
-
-
-"Experience is not what happens to you, it
- is what you do with what happens to you"
-       -- Aldous Huxley (1894-1963)
-
-   Ashe Coutts (acoutts@sbsdk12.org)
-   805.963.7751 Ext 260
-   Fax 805.884.1557
-
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
+Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
