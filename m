@@ -1,17 +1,13 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Routing decision?
-Date: 15 Sep 2003 15:46:32 +0200
+From: Dan Egli <dan@shortcircuit.dyndns.org>
+Subject: Re: Firewall blocking FTP
+Date: Mon, 15 Sep 2003 07:48:41 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063633591.31093.99.camel@raylinux.internal>
-References: <3F657D37.1010000@able.be>
-	 <1063616905.31092.78.camel@raylinux.internal>  <3F65981D.1060700@able.be>
-	 <1063628083.31092.82.camel@raylinux.internal>  <3F65B63E.7030203@able.be>
-	 <1063631398.31092.91.camel@raylinux.internal>
-	 <1063632718.932.71.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <3F65C339.1070406@shortcircuit.dyndns.org>
+References: <Pine.LNX.4.44.0309112016190.3734-100000@shortcircuit.dyndns.org> <200309151154.09370.gdh@acentral.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-eKsR4d5FDCdZOQ/P5gIH"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1063632718.932.71.camel@elendil.intranet.cartel-securite.net>
+In-Reply-To: <200309151154.09370.gdh@acentral.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,77 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: Wim Ceulemans <wim.ceulemans@able.be>, Netfilter Mailing List <netfilter@lists.netfilter.org>, pieter@able.be
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Gavin Hamill <gdh@acentral.co.uk>
+Cc: netfilter@lists.netfilter.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
---=-eKsR4d5FDCdZOQ/P5gIH
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Gavin Hamill wrote:
+| On Friday 12 September 2003 03:19, Dan Egli wrote:
+|
+|>All seems to work fine, EXCEPT that I
+|>cannot connect to ftp servers using the pasv method.
+|
+|
+| Ensure you are loading the ip_nat_ftp and/or ip_conntrack_ftp modules,
+since
+| this will watch on port 21 for the relevant FTP PORT/PASV commands and
+| open ports accordingly.
+|
+|
+|>P.S. I'm not subscribed to the list, so please CC me on your replies.
+|
+|
+| Too bad...
+|
+| Cheers,
+| Gavin.
+|
+|
 
-On Mon, 2003-09-15 at 15:31, Cedric Blancher wrote:
-> Le lun 15/09/2003 =E0 15:09, Ray Leach a =E9crit :
-> > I think that the aliases on the interface have something to do with it.
->=20
-> Nope.
-> When you DNAT an IP address that does not belong to your DNATing box,
-> there won't be anybody to answer prior router ARP requests on it, unless
-> you either set an alias up or tell this router that the IP as to get
-> routed through the DNATing box.
->=20
-> > I have had to add input and output rules in some situations to get DNAT
-> > to work the way it is supposed to (redirect to a different destination)=
-.
-> > It is strange.
->=20
-> Yes it is. I can get DNAT working without specifying any INPUT or OUTPUT
-> chain. Can you illustrate a situation for which you have to specify
-> INPUT and OUTPUT rules ?
-Sure.
+Doh! That was it. ip_nat_ftp wasn't loaded. ip_conntrack_Ftp was, but no
+ip_nat_ftp.
 
-My firewall machine currently has 5 NICs, each with their own ip (one
-has a public ip - eth0)
-eth0 has the public ip. It also has 10 alias ips.
-eth1 has a private ip of 192.168.1.1.
-eth1 network is my dmz with all the web servers from 192.168.1.165 to
-192.168.1.173.
+Ok. I feel very silly now.
 
-If I want to DNAT incoming traffic destined to on of the aliases bound
-to interface eth0 to a server in the dmz - eth1 192.168.1.165 (for
-example), then I need :
+Thank you for your help!
 
- - a PREROUTING DNAT rule
- - a FORWAORD rule for each direction (eth0 -> eth1 and eth1 -> eth0)
- - and an INPUT rule for eth0 alias ip.
-
-Does that make sense?
-
-If I remove the INPUT rule, my DNAT does not work, the packets get sent
-to the OUTPUT chain ...
-
-Ray
-
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-eKsR4d5FDCdZOQ/P5gIH
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
+- --- Dan
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
+Version: GnuPG v1.2.2 (MingW32)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
-iD8DBQA/ZcK3h1fuR/Bv+ygRAn54AJ935TOUmyiltPyPBzOt0mcLfb5FIgCdEzVQ
-qFMF1JcxFDNCN8kFCTrpznY=
-=s+Fk
+iD8DBQE/ZcM5xQEzeXtVwzoRAl62AJ9W7SCkAeXoyo4n745FL4ppkseiWQCg0HTG
+uD2ir2cq19ilaX5i/5IInuI=
+=4hKc
 -----END PGP SIGNATURE-----
 
---=-eKsR4d5FDCdZOQ/P5gIH--
 
 
