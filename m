@@ -1,10 +1,12 @@
-From: hclfm@pricol.co.in
-Subject: Re: Newbie: need help with table rules
-Date: Fri, 14 Feb 2003 16:55:22 +0530
+From: "Albert Cervera Areny" <informatic@sedifa.com>
+Subject: Re: using ip_nat_ftp
+Date: Fri, 14 Feb 2003 14:17:12 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFBADBE506.8D6B86F6-ON65256CCD.003E70D0@pricol.co.in>
+Message-ID: <49309.80.26.113.199.1045228632.squirrel@www.clientes.sedifa.com>
+References: <46338.80.26.113.199.1045142920.squirrel@www.clientes.sedifa.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <46338.80.26.113.199.1045142920.squirrel@www.clientes.sedifa.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,20 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
-Cc: Eugene Joubert <eugenej@centratel.co.za>, netfilter@lists.netfilter.org, netfilter-admin@lists.netfilter.org
+To: Albert Cervera Areny <informatic@sedifa.com>
+Cc: netfilter@lists.netfilter.org
 
+It seems that my firewall is what makes ip_nat_ftp not usefull. Could
+someone tell me how should I configure the firewall to enable ftp client
+requests?
 
-Hi,
-
-Modify stateful rule like this.
-
-$IPT -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-
-Hope your problem is solved.
-
-regards,
-
-U.SivaKumar
+> Hi,
+>   I'm trying to use ip_nat_ftp but I don't know if it is necessary to do
+> anything else apart from loading the ip_nat_ftp module. I've tried to
+> load it but can't access properly to ftpav.ca.com unless I use passive
+> mode. It wouldn't be a problem if eTrust supported ftp access with
+> passive mode :(
+>
+>   Thanks for any help!
+>
+>
+>
 
 
