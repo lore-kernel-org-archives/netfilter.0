@@ -1,49 +1,48 @@
-From: Tony Earnshaw <tonye@billy.demon.nl>
-Subject: Re: Network Diagraming Tool
-Date: Wed, 31 Mar 2004 14:50:37 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080737423.7492.54.camel@localhost>
-References: <7C9884991ADAE0479C14F10C858BCDF567927E@alderaan.smgtec.com>
-	 <1080692954.2471.147.camel@localhost>  <406AADE9.4000609@draigBrady.com>
+From: Oskar Andreasson <blueflux@koffein.net>
+Subject: [announce] upcoming iptables tutorial 1.2.0, online and (possibly) bookshape
+Date: Wed, 31 Mar 2004 17:01:01 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20040331170101.B26160@www.haringstad.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <406AADE9.4000609@draigBrady.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, lartc@mailman.ds9a.nl
 
-ons, 31.03.2004 kl. 13.39 skrev P@draigBrady.com:
+Hi Everyone,
 
-> Why do people not look for packages first?
+It's been quite some time since you last heard from me but... it's about time I make a minor announcement.
 
-Long story :)
+Before I say anything else, I would like to let people know that I am contemplating printing a book version of the new version of the tutorial. If you are interested, let me know at http://iptables-tutorial.frozentux.net/interest.php. If the turnout is large enough, I will make everything I can to make a printed series. It would be much appreciated if people could spread this around, so to make it known. 
 
-> Anyway I usually start here:
-> http://dag.wieers.com/home-made/apt/mega-merge.php
-> Specifically dia is here:
-> http://dag.wieers.com/packages/dia/
->=20
-> P=E1draig.
->=20
-> p.s. The default dia with fedora core 1 doesn't have
-> all the nice new network shapes.
+I have by now added 5 chapters to the iptables tutorial, updated most parts so that it covers 2.4 and 2.6 kernels, and iptables 1.2.9, fixed a lot of old bugs and problems, split down chapters to get a more uniform size on all chapters, et cetera. 
 
-Thanks, P=E1draig. I'll go there.
+The new chapters are these:
 
---Tonni
+* tcp/ip introduction
+* ip filtering introduction
+* nat introduction
+* debugging chapter
+* graphical user interfaces
 
---=20
+it is also updated in these areas
 
-mail: billy - at - billy.demon.nl
-http://www.billy.demon.nl
+* Up to date coverage of all targets/matches in 2.6.4 kernel and 2.4.24
+* Additional installation notes on different distributions.
+* and much more...
+
+For a complete table of contents of the current version on the writing desk, look at http://iptables-tutorial.frozentux.net/iptables-tutorial-ng-toc.txt.
+
+Thank you!
 
 
