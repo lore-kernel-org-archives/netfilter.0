@@ -1,11 +1,11 @@
-From: Ruslan Spivak <alienoid@is.lg.ua>
-Subject: REDIRECT question
-Date: Fri, 11 Jul 2003 14:09:15 +0300
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F0E9ADB.7080005@is.lg.ua>
+From: xavier renaut <list.netfilter=W+vduneg5OqcvWdFBKKxig@public.gmane.org>
+Subject: nat, filter, and mangle order
+Date: Fri, 11 Jul 2003 10:21:36 -0400
+Sender: netfilter-admin=wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Message-ID: <20030711142136.GT10896@natch.8d.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,27 +15,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Hello!
-
-Can you help me with the following:
-
-i try to make REDIRECT on my local host -
-
-$IPTABLES -t nat -N REDIRECT_CHAIN
-$IPTABLES -t nat -A REDIRECT_CHAIN -p tcp --dport 80 -j REDIRECT 
---to-port 7080
-$IPTABLES -t nat -A PREROUTING -j REDIRECT_CHAIN
-
-When users in my LAN connect to my host's 80 port they are redirected to 
-7080 - it's ok. But when i try to do on my host - telnet localhost 80 - 
-i get connection refused (looks like redirection doesn't work). What 
-maybe the problem?
-
-Best regards,
-Ruslan
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter=wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
 
 
+Hello,
+
+here is the scheme for the filter table :
+
+
+
+                          _____
+Incoming                 /     \         Outgoing
+       -->[Routing ]--->|FORWARD|------->
+          [Decision]     \_____/        ^
+               |                        |
+               v                       ____
+              ___                     /    \
+             /   \                   |OUTPUT|
+            |INPUT|                   \____/
+             \___/                      ^
+               |                        |
+                ----> Local Process ----
+
+
+in which order are processed the nat, filter, mangle for the OUPUT chain
+for example ?
+
+if i generate a packet locally, will it hit the nat or the filter table
+first ? (in the OUTPUT context)
+
+thanks
+
+
+-- 
+xavier
 
