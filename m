@@ -1,13 +1,12 @@
-From: Kelly Setzer <Kelly.Setzer@placemark.com>
-Subject: Re: I have to become a bandwidth Nazi , Netfilter useable.
-Date: Sat, 1 Mar 2003 09:38:00 -0600
+From: "Guss" <guss@muenster.de>
+Subject: iptables
+Date: Thu, 27 Feb 2003 18:04:58 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030301153800.GC27466@placemark.com>
-References: <000201c2dffa$8ad18480$0c05a8c0@Sherby>
+Message-ID: <E18oRSw-0005ml-00@kashyyyk.netfilter.org>
+Reply-To: "Guss" <guss@muenster.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000201c2dffa$8ad18480$0c05a8c0@Sherby>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; 
 To: netfilter@lists.netfilter.org
 
-On Sat, Mar 01, 2003 at 09:57:43AM -0400, George Peverill wrote:
->  
-> I am running a small network (about 10-12 machines) with a linux gateway
-> machine providing http/ssh/vpn(pptp)/firewalling/NAT
-> Recently we've had someone that loves to hog bandwidth a tad (ie:
+hi,
 
-To clarify - the switch should be half-duplex while his computer
-remains full duplex.  Quite often, ethernet cards will not redo nway
-autonegation once the link is up.  Sometimes they do, at which point
-he'd just have a normal half-duplex link which doesn't really slow him
-down very much relative to your upstream bandwidth.
+on my operating system SuSe 8.0 I could not find the entries:
+/proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
+/proc/sys/net/ipv4/icmp_destunreach_rate
+/proc/sys/net/ipv4/icmp_echoreply_rate
+/proc/sys/net/ipv4/icmp_paramprob_rate
+/proc/sys/net/ipv4/icmp_timeexeceed_rate
+so I got by the first Test of my beginner script error-messages. Can't find
+it
+And the error message: $IPTABLES -P unknown
 
-Kelly
+The script is from the book 'Das Firewallbuch' from SuSe (germany).
+
+Thanks for help!
+
+W. Guss
+
+
+
+________________________________________________
+Message sent using Publikom-Mail  - webmail public preview -
 
 
