@@ -1,13 +1,13 @@
-From: Payal Rathod <payalrathod@gmail.com>
-Subject: Re: NATting again
-Date: Fri, 16 Jul 2004 23:19:50 +0530
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: Re: AW: a NAT question
+Date: Fri, 16 Jul 2004 13:55:37 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <f51b72bc0407161049d9edfa7@mail.gmail.com>
-References: <f51b72bc04071608505bc1da93@mail.gmail.com> <200407161703.42973.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040716175537.GA19206@tranquility.scriptkitchen.com>
+References: <7A89E0296B649C4AAFD251222B1492906C4FD8@dmsbsrv1.intranet.dmsb.de> <40F7972A.9060306@arava.co.il>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407161703.42973.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
+In-Reply-To: <40F7972A.9060306@arava.co.il>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,20 +18,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-Hi,
+On Fri, Jul 16, 2004 at 11:51:54AM +0300, Micha Silver wrote:
+> Have you tried Shorewall? http://www.shorewall.net
+> You can do it with either DNAT or proxy arp.
 
-On Fri, 16 Jul 2004 17:03:42 +0100, Antony Stone 
-
-> iptables -A PREROUTING -t nat -d a.b.c.d -p tcp --dport 21 -j DNAT --to
-> w.x.y.z
-> iptables -A FORWARD -d w.x.y.z -p tcp --dport 21 -j ACCEPT
-
-Why is the FORWARD rule needed here? Doesn't the PREROUTING rule
-handle the same or rather the rule in ESTABLISHED and RELATED in
-FORWARD chain handle it? Why do we need a seperate FORWARD rule?
-
-With warm regards,
+Ok. I will try it. But I am not too fond of using tools for firewall.
+Thanks.
 -Payal
+
 
