@@ -1,9 +1,10 @@
-From: "J R" <mrjre@hotmail.com>
-Subject: getting, somewhere...still, need, help, with, NAT, tcp
-Date: Tue, 25 Jun 2002 15:59:53 +0000
+From: Stephanie_Martinez@Dell.com
+Subject: I know this shouldn't be this hard
+Date: Tue, 25 Jun 2002 12:09:09 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <F1506Dcu4nODENdwDWJ00021ba3@hotmail.com>
+Message-ID: <B802F5F25EAD9B43A2D3A7A336853532025095C7@AUSXMPC117.aus.amer.dell.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -14,96 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi guys I didnt respond to the previous thread I started a few days ago=20
-because all the mail was going straight into my junk mail box and I didnt=20
-know...sorry I couldn't read it all and so what I am writing might be a bit=
-=20
-redundant for all of you, but with a bit of help and a lot of stress I have=
-=20
-found out what my problem is, however I dont know what to do about it.
+Its making my head hurt though :(
 
-Situation:  I have pcanywhere running on a lan and want to connect to it=20
-over the net through my linux machine.  I have successfully done this=20
-without a problem with mandrake linux using a shell script.  However I have=
-=20
-tried another linux distro (Gentoo) on another box with a similar setup,=20
-running the same shell script for the iptable rules and with a kernel custo=
-m=20
-built with all netfilter options enabled.  However, when I try to connect=20
-through this machine, it will not connect.  I then generated log entries an=
-d=20
-checked both the logs of the working machine vs the non working machine and=
-=20
-am given the following information:
+I've just finished setting up my firewall rules again to get my ip
+masqurading working again.  However, I'm running a service on my linux box
+that I also would like to run on a windows box, so what I'm looking to do is
+forward a port from one box to another.  Sounds simple right? lol, so the
+examples I've seen would have me think.
 
-working machine:
+eth0 is my internet connection and is a dynamic ip so trying to stear clear
+of anythig that requires an ip on it
+eth1 is my internal network on the linux box and runs on ip 192.168.0.1
+192.168.0.101 is the ip of the machine with the service i want to run
 
-Jun 25 11:18:58 blitzware kernel: IN=3Deth0 OUT=3D=20
-MAC=3D00:50:ba:d4:88:94:00:04:27:ef:28:2d:08:00 SRC=3Dxx.xx.xx.xx=20
-DST=3Dyy.yy.yy.yy LEN=3D30 TOS=3D0x
-00 PREC=3D0x00 TTL=3D53 ID=3D40962 PROTO=3DUDP SPT=3D20097 DPT=3D5632 LEN=
-=3D10
+As hptotetical examples so that I can be sure I can  understand which is
+which, lets say I want to forward any incomming connection to port 2000 on
+the linux box (which would come in on eth0), to port 5000 on 192.168.0.101
+(the windows machine).
 
-Jun 25 11:18:58 blitzware kernel: IN=3Deth0 OUT=3D=20
-MAC=3D00:50:ba:d4:88:94:00:04:27:ef:28:2d:08:00 SRC=3Dxx.xx.xx.xx=20
-DST=3Dyy.yy.yy.yy LEN=3D52 TOS=3D0x
-00 PREC=3D0x00 TTL=3D53 ID=3D41474 DF PROTO=3DTCP SPT=3D20098 DPT=3D5631 WI=
-NDOW=3D60352=20
-RES=3D0x00 SYN URGP=3D0
+Any help with figuring out where I'm going wrong is greatly appreciated.
 
-non-working machine:
-
-Jun 25 09:38:56 mymachine kernel: IN=3Deth0 OUT=3D=20
-MAC=3D00:50:ba:23:bb:7d:00:04:27:ef:28:2d:08:00 SRC=3Dxx.xx.xx.xx
-DST=3Dyy.yy.yy.yy LEN=3D30 TOS=3D0x00 PREC=3D0x00 TTL=3D53 ID=3D24066 PROTO=
-=3DUDP=20
-SPT=3D19907 DPT=3D5632 LEN=3D10
-
-As you can see, for the working machine there are both tcp and udp entries =
-
-from iptables, but in the non working machine there is no tcp entry.  Can=20
-anyone help me understand why there isnt, and what I can do to ensure there=
-=20
-will be a tcp entry and that tcp will work?
-
-The script I use is simple, as follows:
-
-#!/bin/sh
-iptables -F
-iptables -t nat -F
-echo 1 > /proc/sys/net/ipv4/ip_forward
-iptables -t nat -A PREROUTING -p tcp --dport 5631 -i eth0 -j LOG --log-leve=
-l=20
-info
-iptables -t nat -A PREROUTING -p tcp --dport 5632 -i eth0 -j LOG --log-leve=
-l=20
-info
-iptables -t nat -A PREROUTING -p udp --dport 5631 -i eth0 -j LOG --log-leve=
-l=20
-info
-iptables -t nat -A PREROUTING -p udp --dport 5632 -i eth0 -j LOG --log-leve=
-l=20
-info
-iptables -t nat -A PREROUTING -p tcp --dport 5631 -i eth0 -j DNAT --to=20
-192.168.1.1:5631
-iptables -t nat -A PREROUTING -p tcp --dport 5632 -i eth0 -j DNAT --to=20
-192.168.1.1:5632
-iptables -t nat -A PREROUTING -p udp --dport 5631 -i eth0 -j DNAT --to=20
-192.168.1.1:5631
-iptables -t nat -A PREROUTING -p udp --dport 5632 -i eth0 -j DNAT --to=20
-192.168.1.1:5632
-
-If anyone can help I would appreciate it.
-
-Jeff
+I only get this list daily so if you want to respond directly at
+stephanie_martinez@dell.com or send me an AOL IM at uglydamntoes I'd
+appreciate it.  Trying to get this incorporated into my firewall startup
+stuff, and i'm having fits figuring it out :(
 
 
-_________________________________________________________________
-Join the world=92s largest e-mail service with MSN Hotmail.=20
-http://www.hotmail.com
 
 
