@@ -1,11 +1,11 @@
-From: Dworf <root@dworf.com>
-Subject: high load preformance firewall
-Date: Sat, 28 Sep 2002 21:00:33 +0200
+From: Naleendra@dms.lanka.net
+Subject: inner workings of IP tables
+Date: Sat, 28 Sep 2002 20:11:46 +0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209282100.33610.root@dworf.com>
-Reply-To: root@dworf.com
+Message-ID: <6029A399F5BFD6118BB200104B0DF37302766F@mailgate.dms.lanka.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C266F8.FAB1BCF0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,68 +16,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-I have a little problem with my firewall at the firm... The firm is a big=
-=20
-target for users doing an syn flood. The firewall is connected to the ISP=
-=20
-with an 155Mbit ATM connection. The ISP is doing an total deny on icmp on=
-=20
-incomming connections so we get rid of ddos. So the only attacks comming =
-to=20
-the server are syn floods. The servers behind the firewall are running so=
-me=20
-special made applications that need constant tcp connection to outside wo=
-rld=20
-to other firms. So when the synflood attack is comming in the connections=
-=20
-drop after a while and the firewall runs out of resources. The firewall h=
-as=20
-an mrtg installed and it shows that it doesnt use up all of th 155Mbit on=
-ly=20
-lets say 60% when there is an attack. And the system drops the active=20
-connections couse the timeout is expired of the tcl connection.
+------_=_NextPart_001_01C266F8.FAB1BCF0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-This is the syn protection i have:
+HI LIST,
 
-----
-iptables -N syn-flood
-iptables -A INPUT -p tcp --syn -j syn-flood
-iptables -A syn-flood -m limit --limit 2/s --limit-burst 4 -j RETURN
-iptables -A syn-flood -j DROP
+	As I've informed you 'fore I am working on the qualitative analysis
+of IPTABLEs... & I need to compare it with Checkpoint. From what I've heard
+Checkpoint is still the best. 
 
-iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
-----
+	1- Because there is minimal network load
+	2- It works between the layers datalink & network making the OS that
+much secure & making it a must pass-through layer for all pkts. in & out.
+	3- It securely supports typical " loop-hole prone protocols such as
+FTP, UDP & RPC protocols.
 
-First the firewall droped after about 10minutes of attack then i added th=
-is=20
-settings....:
---
-/bin/echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-/bin/echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route
-/bin/echo "0" > /proc/sys/net/ipv4/conf/all/accept_redirects
-/bin/echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
-/bin/echo "1" > /proc/sys/net/ipv4/conf/all/log_martians
-/bin/echo "0" > /proc/sys/net/ipv4/ip_forward
+	No, I am not here to brag about checkpoint. I hardly know the thing.
+& I use a IPTables firewall. I need some info /web sites on how the Iptables
+modules work.. yeah the inner workings. Can some one help pls. ?
 
-/bin/echo "2" > /proc/sys/net/ipv4/conf/all/rp_filter
-/bin/echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-/bin/echo "0" > /proc/sys/net/ipv4/tcp_timestamps
-/bin/echo "15" > /proc/sys/net/ipv4/tcp_fin_timeout
-/bin/echo "1600" > /proc/sys/net/ipv4/tcp_keepalive_time
-/bin/echo "0" > /proc/sys/net/ipv4/tcp_window_scaling
-/bin/echo "0" > /proc/sys/net/ipv4/tcp_sack
---
+ -nal
 
-after this it survives about 20 - 30minutes but not more.
+------_=_NextPart_001_01C266F8.FAB1BCF0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Can someone help me a little more?!
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>inner workings of IP tables</TITLE>
+</HEAD>
+<BODY>
 
-Thank you
+<P><FONT SIZE=3D2 FACE=3D"Arial">HI LIST,</FONT>
+</P>
 
-David
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">As I've informed you 'fore I am working on the =
+qualitative analysis of IPTABLEs... &amp; I need to compare it with =
+Checkpoint. From what I've heard Checkpoint is still the best. =
+</FONT></P>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">1- Because there is minimal network load</FONT>
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">2- It works between the layers datalink &amp; network =
+making the OS that much secure &amp; making it a must pass-through =
+layer for all pkts. in &amp; out.</FONT></P>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">3- It securely supports typical &quot; loop-hole prone =
+protocols such as FTP, UDP &amp; RPC protocols.</FONT>
+</P>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">No, I am not here to brag about checkpoint. I hardly =
+know the thing. &amp; I use a IPTables firewall. I need some info /web =
+sites on how the Iptables modules work.. yeah the inner workings. Can =
+some one help pls. ?</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;-nal</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C266F8.FAB1BCF0--
 
