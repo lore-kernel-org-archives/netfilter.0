@@ -1,13 +1,15 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: question on sting match option
-Date: Mon, 25 Oct 2004 15:41:07 -0400
+From: Kenneth Porter <shiva@sewingwitch.com>
+Subject: Re: Need help with basic understanding of IPtables
+Date: Mon, 25 Oct 2004 12:50:50 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041025194107.GA24708@bender.817west.com>
-References: <000901c4ba62$1bec7860$69fea8c0@off>
+Message-ID: <33D73F71797CC09A67671396@[10.169.6.246]>
+References: <s17d10cf.018@hpsk12.net>
+	<20041025193800.GA24645@bender.817west.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20041025193800.GA24645@bender.817west.com>
 Content-Disposition: inline
-In-Reply-To: <000901c4ba62$1bec7860$69fea8c0@off>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +19,17 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Mon, Oct 25, 2004 at 04:13:20PM +0900, James wrote:
-> Untitled Document
->            
->                   Dear netfilter people
-> 
->                   I've wanted to use -string match filter so worked with kernel compiling... but finally ended up here.
-> 
->                   I've done CVS patch (Patch-O-Matic), but I can't could fine any string match option in menuconfig.
-> 
->                   How can I do? 
+--On Monday, October 25, 2004 3:38 PM -0400 Jason Opperisano 
+<opie@817west.com> wrote:
 
-what kernel version are you patching against?  i ask because AFAIK,
-the string patch is 2.4 only.
+> a local IP address on this machine
 
-did you "./runme pending"?
+Also note that this includes virtual interfaces, tunnel interfaces (the 
+tun/tap driver, typically used in VPN's), and the loopback interface. It's 
+not just NIC's.
 
-did the string patch apply cleanly?
 
--j
-
--- 
-Jason Opperisano <opie@817west.com>
 
