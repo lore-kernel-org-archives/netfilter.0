@@ -1,12 +1,12 @@
-From: Moritz Gartenmeister <moritz@uplink-verein.ch>
-Subject: Re: MARK
-Date: Wed, 23 Mar 2005 16:19:52 +0100
-Message-ID: <42418918.5060204@uplink-verein.ch>
-References: <42409559.7080001@uplink-verein.ch>
-	<1111586266.4513.19.camel@hubcap.ljm.dom>
+From: Tobias DiPasquale <codeslinger@gmail.com>
+Subject: Re: ClusterIP
+Date: Wed, 23 Mar 2005 10:46:14 -0500
+Message-ID: <876ef97a05032307466d774ac6@mail.gmail.com>
+References: <42418886.8000603@abwaters.com>
+Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1111586266.4513.19.camel@hubcap.ljm.dom>
+In-Reply-To: <42418886.8000603@abwaters.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,22 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Bryan Waters <bryanw@abwaters.com>
+Cc: netfilter@lists.netfilter.org
 
-Jason Opperisano wrote:
-> my guess would be that if you've been patching and compiling here and
-> there, that you may have ended up with and iptables utility that doesn't
-> know about the MARK target; i.e., you have no libipt_MARK.so file...on
-> my machine here it's in /lib/iptables/...might be diff depending on your
-> specific distro.
+On Wed, 23 Mar 2005 08:17:26 -0700, Bryan Waters <bryanw@abwaters.com> wrote:
+> I want to use clusterip on a couple of machines to do load balancing and
+>   ip failover.  I would like to know if there is more info on the
+> clusterip module and if anyone knows if it is stable or if it even works.
+> 
+> I've asked this question a couple of times on this list with no
+> response.  I'm about to just try experimentation but is the reason i've
+> received no response due to just lack of any experience with CLUSTERIP?
 
-in fact that was the problem.
-i fixed it with recompiling an patching linux 2.6.11.3 and iptables 1.3.1.
-anyone got the connlimit patch successfully applied?
+CLUSTERIP is new in the 2.6.10 mainline kernel. I couldn't find much
+information about using it either, so I'd say just try it out and see
+how it works. If you'd report back to the list what you find out, that
+would be even better ;-)
 
-am i the only person, who sporadic gets this troubles? or is this just normal?
+P.S. I saw your earlier posts, but didn't reply since I've never used
+it and couldn't find any good information on it either... I was
+waiting for a reply, too :-D
 
-cheers!
-moritz
+-- 
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
