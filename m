@@ -1,14 +1,14 @@
 From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: forwarding traffic to different hosts
-Date: Fri, 27 Aug 2004 10:09:43 +0100
+Subject: Re: failure when using --string
+Date: Fri, 27 Aug 2004 10:14:46 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040827090943.GG22322@metastasis.org.uk>
-References: <D5C9032B2B09C64EA2409D6214E91AC90512F0@asimail2.alphanumeric.com>
+Message-ID: <20040827091446.GH22322@metastasis.org.uk>
+References: <D5C9032B2B09C64EA2409D6214E91AC906420B@asimail2.alphanumeric.com>
 Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90512F0@asimail2.alphanumeric.com>
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC906420B@asimail2.alphanumeric.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,22 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Aug 26, 2004 at 08:21:00PM -0400, Jason Opperisano wrote:
+On Thu, Aug 26, 2004 at 06:54:21PM -0400, Jason Opperisano wrote:
 
-> > iptables -t nat -I PREROUTING --source 207.155.252.12 -p tcp --dport 777
-> > -j DNAT --to-destination 198.81.129.101
+> yup--most distros do not compile the string match (i *think* suse
+> does).  try:
+> 
+> ls /lib/modules/`uname -r`/kernel/net/ipv4/netfilter/ipt_string.o
+> 
+> and make sure you have the actual module.  if not, grab p-o-m and
+> follow the instructions:
+> 
+>   http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO.html
 
->   iptables -t nat -I POSTROUTING -p tcp --dport 777 -s 207.155.252.12 \
->     -d 198.81.129.101 -j SNAT --to-source 198.81.129.100
+Yes, I thought that was the case, not seeing "string" anywhere in
+/lib/modules... sorry, I should have said that I'd looked.
 
-Thanks... but I wanted to keep the original source.  Sorry, udp is
-really what I've got in mind here, I was just using tcp because it's
-easier to test with "telnet 198.81.129.100 777" than it is to fire up a
-program to create a UDP packet.
-
-What I'm looking for is for queries to one DNS server from certain IP
-addresses to be redirected to another... but without any interaction
-with the BIND daemon itself.
+I'm not sure about upgrading netfilter on a distribution like Debian,
+apt-get trundles along nicely, I'm kind of loathe to play.  Is anyone
+else here using a more recent version of netfilter on Debian?
 
 -- 
 mors omnia vincit
