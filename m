@@ -1,8 +1,8 @@
 From: Bobo <boboaq@163.com>
-Subject: Are there some good  IPTABELS WEBMIN modules?
-Date: Sat, 28 Dec 2002 15:18:18 +0800
+Subject: are there some good iptables modules for webmin?
+Date: Sat, 28 Dec 2002 20:32:1 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021228071629.35B611CB680C2@sm206.163.com>
+Message-ID: <20021228123012.249F11CB6816A@sm206.163.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,16 +17,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+Cc: bobowd@sohu.com, bobowd@sohu.com
 
-hi
+hello;
 
-   In these days,I am learning using WEBMIN to  manager LINUX remotely.
-   Are there some good  IPTABELS WEBMIN modules?
-   I have used two kinds,but each one is not good. one is a standard module of webmin(http://freshmeat.net/users/tniemueller),
-but it's function is too simple. 
-  The other is turtle firewall module for  webmin,it is not perfect too.
+    While using  WEBmin to manage linux and iptables,i feel the iptables modules for webin is 
+not good and convinent.
 
-   Are there any good iptables modules for mebmin?
+   Except standard iptables modules and   turtle modules for webmin ,
+   Do you know any other good iptable modules for webmin ?
 
    Thanks
 
