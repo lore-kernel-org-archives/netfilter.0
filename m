@@ -1,12 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Customizing LOG output
-Date: 26 Jan 2005 14:29:28 +0100
-Message-ID: <1106737096.24810.14.camel@nostromo.bgsecm.com>
-References: <20050126015350.47754CD9F8@ws1-2a.us4.outblaze.com>
+Subject: Re: what protocols need UDP instead of just TCP?? DNS, IMAP, SSH,
+	etc.?
+Date: 26 Jan 2005 14:29:31 +0100
+Message-ID: <1106737232.14109.17.camel@nostromo.bgsecm.com>
+References: <20050126000550.GB15359@spawar.navy.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050126015350.47754CD9F8@ws1-2a.us4.outblaze.com>
+In-Reply-To: <20050126000550.GB15359@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,12 +21,27 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mi=C3=A9, 26 de 01 de 2005 a las 02:53, Josh Larocque escribi=C3=B3:
-> Thanks Samuel, I'll give it a shot!
+El mi=C3=A9, 26 de 01 de 2005 a las 01:05, seberino@spawar.navy.mil escri=
+bi=C3=B3:
+> I'm only allowing TCP out of my firewall.
+>=20
+> What apps/protocls need UDP?
+>=20
+> DNS, IMAP, SSH, etc.?
 
-You can also give a try to ULOG, it logs to databases,
-plain files, syslog formats, etc. It could be a lot
-easier to modify ULOG than the iptables o Netfilter code.
+DNS needs UDP for sure.
+
+>=20
+> I dunno if I need to allow UDP for anything.
+
+Just for DNS if you don't have more protocols like NFS or the
+like that use the UDP.
+
+Make a lsof -i and look at the daemons you have and if they
+are listening to UDP or TCP ports, or consult the /etc/services
+list to know if your services need UDP or not.
+
+> chris
 
 Regards.
 
