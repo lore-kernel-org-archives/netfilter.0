@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: wireless security
-Date: Thu, 10 Jun 2004 15:10:54 +0100
+From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
+Subject: Why I can not logon to a DC through my Linux box gateway?
+Date: Thu, 10 Jun 2004 19:34:30 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406101510.54483.Antony@Soft-Solutions.co.uk>
-References: <0b5b01c44ee2$f2e7cef0$49caa8c0@caris.priv> <200406101428.46072.Antony@Soft-Solutions.co.uk> <0bb501c44ef1$996deee0$49caa8c0@caris.priv>
-Reply-To: "netfilter" <netfilter@lists.netfilter.org>
+Message-ID: <000001c44ede$e4e7a8b0$1d01a8c0@palettemm.com>
+Reply-To: <bassam@palettemm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <0bb501c44ef1$996deee0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,38 +17,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Thursday 10 June 2004 2:48 pm, Peter Marshall wrote:
+Dear Fellows,
+   I am developing a Wi-Fi project and I got stuck in my progress when I
+tried to logo on to a domain controller through my Linux gateway box. In
+fact I have the following depicted scenario:
 
-> Thank you very much for the help.
->
-> Is IDS a packet sniffer ?
++------------+                          +------------+
++------------+
+|    Client  |eth0                 eth1 |    GW      |eth0
+eth0| Domain     |
+| User name: |192.168.0.3   192.168.0.1 |            |192.168.1.232
+192.168.1.23| Controller |
+| Password:  |--------------------------|
+|----------------------------|            |
+| Domain     |       LAN                |            |             LAN
+|            |
++------------+                          +------------+
++------------+
 
-Most IDSs do operate by packet sniffing, yes (although you can run them on a 
-gateway router if that's what you want to monitor).
 
-IDS means Intrusion Detection System, and such things are used to look out for 
-known attack patterns or anomalous behaviour on your network.
+When I try to logon to the DC by using this above scenario I get the
+following message "The system cannot log you on because the domain
+<xxxx> is not available". It seems that the client is not able to see
+the domain controller the my linux gateway.
+Note: I wrote my own firewall by using iptables, and I tried my best to
+overcome this problem but I couldn't.
 
-Many people monitor both the outside and inside of a firewall, so they know:
-a) what probes/attacks were attempted (from outside) and got blocked
-b) what probes/attacks got through
-c) what probes/attacks originated from the inside
-d) what strange traffic is happening on the network (eg from viruses / worms / 
-trojans)
+So any idea or support I can find from your side, your cooperation is
+highly appreciated.
 
-Regards,
+Regards
+Bassam A. Al-Khaffaf
+R & D Engineer
+R & D Department
+Palette Multimedia Bhd.
 
-Antony.
-
--- 
-These clients are often infected by viruses or other malware and need to be 
-fixed.  If not, the user at that client needs to be fixed...
-
- - Henrik Nordstrom, on Squid users' mailing list
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.516 / Virus Database: 313 - Release Date: 9/1/2003
+ 
 
 
