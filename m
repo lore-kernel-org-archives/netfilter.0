@@ -1,12 +1,14 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: udp port forwarding from internal network to internet
-Date: Thu, 27 Jan 2005 09:37:07 -0500
-Message-ID: <1106836627.5784.28.camel@hubcap.ljm.dom>
-References: <20050127143101.19462.qmail@web30905.mail.mud.yahoo.com>
+Subject: Re: myfirewall help
+Date: Thu, 27 Jan 2005 09:44:03 -0500
+Message-ID: <1106837043.5784.36.camel@hubcap.ljm.dom>
+References: <1fac6581fa72b3.1fa72b31fac658@vsnl.net>
+	<1106835582.5784.16.camel@hubcap.ljm.dom>
+	<41F8FC71.7050702@mail.co.gilchrist.fl.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050127143101.19462.qmail@web30905.mail.mud.yahoo.com>
+In-Reply-To: <41F8FC71.7050702@mail.co.gilchrist.fl.us>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,68 +22,35 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2005-01-27 at 09:31, Kevin Van Workum wrote: 
-> >   # adjust these to suit
-> >   INT_IF=eth1
+On Thu, 2005-01-27 at 09:36, Eric Ellis wrote:
+> Jason:
+> 
+> He has a squid proxy on the other side. :)  3128 is the default for squid.
 
-is the internal interface of the firewall machine
+really?  wow--i didn't know that.
 
-> >   EXT_IF=eth0
+web servers listen on tcp port 80 by default.
+squid listens on tcp port 3128 by default.
+none of this is new to anyone (hopefully).
 
-is the external interface of the firewall machine
+now i ask again--explain to me what communication pattern results in a
+TCP packet with a source port of 80 and a destination port of 3128.
 
-> >   EXT_IP=`ip -4 -o addr sh $EXT_IF | awk '{print
-> > $4}' | cut -d"/" -f1`
-
-is the external ip address of the firewall machine
-
-> >   SRV_IP=1.2.3.4
-
-is the IP address of the server on the internet you're trying to connect
-to
-
-> >   SRV_PORT=1111
-
-is the UDP port you're trying to connect to on the server on the
-internet
-
-> >   iptables -A FORWARD -m state --state
-> > ESTABLISHED,RELATED -j ACCEPT
-
-allows the replies to established connections and related connections
-and error messages through the FORWARD chain of the firewall
- 
-> >   iptables -A FORWARD -i $INT_IF -o $EXT_IF -p udp
-> > -d $SRV_IP \
-> >     --dport $SRV_PORT -j ACCEPT
-
-allows packets arriving inbound on the internal interface destined for
-the udp port on the server on the internet to be forwarded through the
-firewall
- 
-> >   iptables -t nat -A POSTROUTING -o $EXT_IF -j SNAT
-> > --to-source $EXT_IP
-
-translates the source IP of packets exiting the firewall to the external
-IP address of the firewall.
- 
-> Thanks. Just so I understand what I'm doing here.
-> SVR_IP is the IP of the server on the internet that my
-> app on my internal network is conntacting? 
-
-yup.
-
-> What is the effect of these rules?
-> Can you explain in english what these rules mean?
-> What IP does my app connect to, the internal IP of my
-> server with the internet connection?
-
-nope--the IP of the server on the internet.
+i would prefer that you provide tcpdump output as part of the reply as
+well.
 
 -j
 
+ps--i understand that it's inevitable that eventually a client machine
+will use a source port of 3128 when connecting to a web server, and the
+reply packets from the web server to the client will actually match this
+pattern:  sport=80 dport=3128.  if this is the case that the OP was
+trying to account for--then i retract all my posts in this thread.
+
 --
-"Homer no function beer well without."
+"I've added an extra ingredient just for you.  The merciless peppers
+ of Quetzlzacatenango!  Grown deep in the jungle primeval by the
+ inmates of a Guatemalan insane asylum."
 	--The Simpsons
 
 
