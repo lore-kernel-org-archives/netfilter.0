@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Re[2]: Problem with Port forwarding
-Date: Tue, 6 Apr 2004 13:44:23 +0100
+From: Vlad Adomnicai <vlada@xana.ro>
+Subject: High CPU usage + Kernel option
+Date: Tue, 06 Apr 2004 16:35:52 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404061344.23168.Antony@Soft-Solutions.co.uk>
-References: <146373237921.20040405211401@internetplustravel.ru> <200404051854.13708.Antony@Soft-Solutions.co.uk> <1825056156.20040406114126@internetplustravel.ru>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <4072B238.6050509@xana.ro>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1825056156.20040406114126@internetplustravel.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +15,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 06 April 2004 8:41 am, Oleg Savostyanov wrote:
+Hi,
+   I have a K6/2 333 machine with 64Mb of RAM and two network cards. 
+(3c509 and an Intel one both with TCP cheksum offloading and Cpu )
+   I use Fedora Core 1 with the default kernel    and iptables 1.2.9.
 
-> Hello Antony,
->
-> Thank you for your answer.
->
-> Now the connection does not logged
-> I can see the thirst packet on mail server,
-> but it is timed out
->
-> telnet X.X.X.X 25
-> Trying X.X.X.X...
-> telnet: Unable to connect to remote host: Connection timed out
->
-> This is the log from mail server:
-> Tue 2004-04-06 10:31:42: [804:52:2] Accepting SMTP connection from [Y.Y.Y.Y
-> : 33222]
+   At high traffic through the router (6-7Mbytes/second) the CPU goes to 
+100% and I can't even log on to it through SSH:
+[root@root web]# ssh 192.168.200.1 -C -v
+OpenSSH_3.5p1, SSH protocols 1.5/2.0, OpenSSL 0x0090701f
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: Applying options for *
+debug1: Rhosts Authentication disabled, originating port will not be 
+trusted.
+debug1: ssh_connect: needpriv 0
+debug1: Connecting to 192.168.200.1 [192.168.200.1] port 22.
+debug1: Connection established.
+debug1: identity file /root/.ssh/identity type -1
+debug1: identity file /root/.ssh/id_rsa type -1
+debug1: identity file /root/.ssh/id_dsa type -1
+    and stands there until a timeout occures.
+   On the network behind the router are aproxymately 200 users for which 
+I have about 200 iptables rules  like this iptables -A FORWARD -s <ip> 
+-m mac --mac-source <mac> -j ACCEPT and 200   iptables -A FORWARD -d 
+<ip> -j ACCEPT, to allow passage only for the machines with the corect 
+pair of ip/mac. I could give up the last 200 rules, as they don't serve 
+a real purpose in limiting the access but they are used only for 
+bandwidth monitoring / ip.
+   Does anyone know how to lower the cpu usage with this configuration? 
+tweaks of any kind? Would a 2.6 kernel improve the situation? I have 
+also seen an option in the 2.4 kernels CONFIG_NET_HW_FLOWCONTROL 
+(Forwarding between high speed interfaces) but there it is written that 
+it supports only some network devices and I don't know about 3coms or 
+intel ones.
 
-Well, the fact that you see this in your mail log suggests to me that the TCP 
-handshake SYN - SYN/ACK - ACK has been completed, and the connection is now 
-available for data transfer.
+  Any one has any ideas? another way of setting the rules? another 
+filtering method? tweaking parameters? or at least what kind of system 
+will it be necessary for this setup to be able to at least log on to the 
+machine and do something on it. Also, would a FreeBSD be more suitable 
+for this on the same configuration?
 
-> Tue 2004-04-06 10:31:42: [804:52:2] Socket connection closed by the other
-> side (how rude!)
+Thanks in advance for any informations.
+Vlad Adomnicai
 
-You're not running TCPwrappers on the mail server or something, are you, and 
-it needs to get a response from the client before maintaining the connection?
-
-> Tue 2004-04-06 10:31:42: [804:52:2] Winsock Error 10053 Software caused a
-> connection abort.
-> Tue 2004-04-06 10:31:42: [804:52:2] Unexpected socket closure
-
-What do you see in the packet / byte counters from "iptables -L -nvx; iptables 
--L -t nat -nvx" when you try to make a connection?   Do you see packets in 
-the PREROUTING DNAT rule, the FORWARD rule towards the mail server, and the 
-FORWARD rule for the replies?
-
-Regards,
-
-Antony.
-
--- 
-Ramdisk is not an installation procedure.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
