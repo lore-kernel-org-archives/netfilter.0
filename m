@@ -1,14 +1,11 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: TTL target
-Date: Fri, 23 Jul 2004 18:14:41 -0400
+From: =?iso-8859-1?Q?Bruno_Negr=E3o?= <vpopmail@engepel.com.br>
+Subject: the impossible "iptables -C" option
+Date: Fri, 23 Jul 2004 20:24:54 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407231814.41551.JALaramie@Loudoun-Fairfax.com>
-References: <7EACCDBB65D37443912D80713CC1245D02382A6E@fsnsab20.losangeles.af.mil>
+Message-ID: <01be01c4710c$440a79e0$5100a8c0@egp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7EACCDBB65D37443912D80713CC1245D02382A6E@fsnsab20.losangeles.af.mil>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,26 +18,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 23 July 2004 17:03, Hudson Delbert J Contr 61 CS/SCBN wrote:
-> no...is that short enough
+Hi guys, I didn't understand the following question and answer on
+netfilter's faq:
 
-OK, let's recap:
+"3.18 Why isn't the 'iptables -C' (--check) option implemented?
 
-1) You hijack a guys thread about the TTL target and give a diatribe about 
-security policy (I'm guessing since the posting is actually incoherent)
+Well, first of all, we're lazy ;). To be honest, implementing a check
+option is almost impossible as soon as you start to do stateful
+firewalling. Traditional stateless firewalling bases it's decision just on
+information present in the packets header. But with connection tracking
+(and '-m state' based rules), the outcome of the filtering decision depends
+on header+payload, as well as header+payload of previous packets within
+this connection."
 
-2) You top post your messages.
+First of all, what does they mean about "--check"? What would they check?
 
-3) You mention topics that have little to do with netfilter and give no 
-explanation what the connection is to that thread or any other thread as far 
-as I can tell.
+What is "packet payload"? How does it make the "--check" option impossible
+to be implemented?
 
-4) You give a smartass answer to one the brightest and most helpful (not to 
-mention tolerant) members of this list.
+thanks in advance,
+bruno negrao
 
-Here in DC we have a saying that fits this situation: "It's time to break the 
-crack pipe." Here on the netfilter list we have another saying: "Stay on 
-topic and please don't top post or hijack threads."
 
-Jeff
+
 
