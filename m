@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: NAT, ports and iptables
-Date: Sun, 2 Jun 2002 09:21:06 +0100
+From: gvt_lnx@gmx.net
+Subject: Nat OUTPUT chain
+Date: Sun, 2 Jun 2002 15:42:52 +0200 (MEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206020821.g528L8A27004@Networker.rockstone.co.uk>
-References: <000101c209d8$5183e720$6401a8c0@GKXP>
+Message-ID: <20747.1023025372@www58.gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <000101c209d8$5183e720$6401a8c0@GKXP>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,33 +16,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter@lists.samba.org, netfilter@lists.samba.org
 
-On Sunday 02 June 2002 2:53 am, iptables@kilsgaard.dk wrote:
+Hi friends, I'am reading some howto and I found that OUTPUT chain in NAT
+table is broken...? that's true?
 
-> 	I would like to open some ports (80,21,22.).
-> 	And then i would like to translate a port to a local Ip
-> address, so i can access a PC on my local LAN from the internet.
-> Is the rules i have made okay, or is there an better way to do the
-> trick.
->
-> Is there a place where there is a description of iptables and its
-> possibilities?
+Could I write a rule like this:
 
-You want:
+iptables -t nat -A OUTPUT -d x.x.x.x -j DNAT --to-destination y.y.y.y
 
-http://www.netfilter.org/documentation
+Thanks in advance.
+Geffrey
 
-specifically
+-- 
+GMX - Die Kommunikationsplattform im Internet.
+http://www.gmx.net
 
-http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO.html
-
-and maybe also
-
-http://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO.html
-http://www.netfilter.org/documentation/HOWTO/networking-concepts-HOWTO.html
-
-
-Antony.
 
