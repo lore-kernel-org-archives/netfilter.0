@@ -1,14 +1,14 @@
 From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: Compile error
-Date: Sun, 25 Jul 2004 08:27:08 -0700
+Subject: RE: ToS and Windows
+Date: Sun, 25 Jul 2004 10:09:48 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <SERVER7xpAOAkK5LqN3000000ad@server7.bandwidthco.com>
-References: <41024E26.19563.4B6804@localhost>
+Message-ID: <SERVER7pGR881Np7vXe000000ae@server7.bandwidthco.com>
+References: <1090735278.4548.10.camel@rivendell.home.local>
 Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <41024E26.19563.4B6804@localhost>
+In-Reply-To: <1090735278.4548.10.camel@rivendell.home.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,32 +19,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Don Hughes' <support@sannotes.org>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
  
 
 -----Original Message-----
 From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Don Hughes
-Sent: Saturday, July 24, 2004 8:55 AM
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Florin Andrei
+Sent: Saturday, July 24, 2004 11:01 PM
 To: netfilter@lists.netfilter.org
-Subject: Compile error
+Subject: ToS and Windows
 
-I am trying to recompile iptables under SuSE 9.1 to add the time module and
-get the following when issuing a make:
+Slightly offtopic.
 
-Recompiling the kernel and iptables is not always the easiest task. You must
-get EVERYTHING right for things to be successful. You have not provided
-enough information yet to diagnose the problem. This information is needed:
+I'm using "-j TOS --set-tos" with apparently good results. I manage to
+control the ToS on the packets sent by a Linux box to a couple Windows
+boxes.
+The problem is that the packets sent back by the Windows machines do not
+have ToS set. How do i set ToS on Windows?
+One of the Win systems is Win2K, the other is WinXP.
 
-1. The exact commands you have used for the configuration and building
-process for any changes made to either iptables or the netfilter elements
-within the kernel.
 
-2. What is your kernel version? I believe SUSE 9.1 stock uses 2.6.?, but
-confirm this.
-
-3. Did you apply POM, or in this case POM-NG?
+You should be able to set TOS on the packets from the Windows boxes as they
+enter the firewall interface. However, if you do not (or cannot) wish to do
+this, there is a very nifty little Windows utility called "cablenut" which
+will allow you to set the TOS (or any other tcp/ip packet value) before the
+packet leaves the Windows machine. The utility is freeware. Run a google
+search on cablenut to find it. Should come up on first page.
 
 
 
