@@ -1,13 +1,13 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: Natted IRC "inherently insecure"?
-Date: 08 Jul 2002 02:38:00 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: forwarding
+Date: Mon, 8 Jul 2002 01:53:20 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1026088680.1283.253.camel@tux>
-References: <3D243492.6090408@tampabay.rr.com>  <20020708001941.GC653@ns>
+Message-ID: <20020708005322.KPDJ4119.mta06-svc.ntlworld.com@there>
+References: <003101c2262f$33ff1a30$1606d6d1@nebuchadnezza> <20020708003031.PFFP23840.mta03-svc.ntlworld.com@there> <003801c22632$521c93a0$1606d6d1@nebuchadnezza>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020708001941.GC653@ns>
+In-Reply-To: <003801c22632$521c93a0$1606d6d1@nebuchadnezza>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,48 +18,52 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Stephen Frost <sfrost@snowman.net>
-Cc: "Jesse W. Asher" <jasher1@tampabay.rr.com>, Netfilter <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-On Mon, 2002-07-08 at 02:19, Stephen Frost wrote:
+On Monday 08 July 2002 4:47 am, Tim wrote:
 
-> > Comments?
-> 
-> The client/tool is one thing but I think what they were probably getting
-> at is the issue of DCC.  The problem with DCC is that it expects to be
-> able to reach any >1024 port on the remote system.  The two clients work
-> out, over the IRC network, the ports to use.  If your firewall doesn't
-> allow connections to high ports outbound or inbound, and you don't use
-> some kind of IRC helper in your firewall, then DCC won't work.  This may
-> be acceptable to you but some people feel they need DCC.  Using an IRC
-> helper in your firewall can mitigate these problems some.  They can't
-> fix everything though because of the way in which the DCC protocol
-> works.  A user using DCC can potentially allow a scan of the high ports
-> on at least the machine they're IRC'ing from.
-> 
-> Unfortunately I'm not very familiar with the internals of the netfilter
-> IRC-helper module or what checks it does but there are some things it
-> has no way to know due simply to where it has to be and what it gets to
-> see.  I havn't heard of many people getting attacked in such a way
-> though so the chances of you being exploited in that way are probably
-> pretty slim.  Unless you have someone going for you specifically using
-> an IRC helper will probably be enough.  Most attackers are going for
-> 'easy' targets, things they can sweep large network blocks for; such as
-> the recent OpenSSH holes, various Windows-based services, etc.
+> yes...it does say echo 1 > /proc/sys/net/ipv4/ip_forward  .... and when I
+> look in file is has the number 1 on it as it should according to this
+> command.
 
-The only way to get a DCC expections set up is to send out a DCC request
-and then the expectation will send packets only to the host that sent
-the DCC request. This can be used to sort of add dynamic port-forwards
-if you are sitting behind NAT. I don't see it as a real security-problem
-as if you want real security you won't use a helper of any kind. And if
-a DCC request is sent out with the purpose of letting an attacker in,
-the chances are that the attacker already has access to this machine to
-send out the DCC request because the user will probably not send it (or
-perhaps it's a new email trojan for a certain unnamed mailclient? :).
+Okay, what's the output of
+iptables -L -n -v -x
+iptables -L -n -v -x -t nat
 
--- 
-/Martin
+after you've tried to send some packets through the machine ?
 
-Never argue with an idiot. They drag you down to their level, then beat
-you with experience.
+Oh, and just to be sure - how do yu know your machine isn't forwarding 
+packets ?   What happens / doesn't happen to tell you it's not working ?
+
+Oh, and by the way - what are the addresses / netmasks on your Internal / DMZ 
+interfaces, and what's your routing table ?
+
+ 
+
+Antony.
+
+> ----- Original Message -----
+> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> To: "iptables-list" <netfilter@lists.samba.org>
+> Sent: Sunday, July 07, 2002 5:30 PM
+> Subject: Re: forwarding
+>
+> > On Monday 08 July 2002 4:25 am, Tim wrote:
+> > > Well, it looks like my netfilter rules/commands are not forwarding even
+> > > though I have
+> > >
+> > > ## Routing packets (traffic) between INTERNAL and DMZ
+> > > "echo "1" /proc/sys/net/ipv4/ip_forward"
+> >
+> > That really says
+> > echo 1 >/proc/sys/net/ipv4/ip_forward
+> > or
+> > echo "1" >/proc/sys/net/ipv4/ip_forward
+> > doesn't it ?
+> >
+> > (Note specifically the > sign)
+> >
+> >
+> >
+> > Antony.
 
