@@ -1,37 +1,66 @@
-From: "Noname Noname" <spphu@hotmail.com>
-Subject: iptables with iplimit option
-Date: Sun, 24 Aug 2003 10:02:09 +0700
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY7-F298fdFsLowAQZ000006e9@hotmail.com>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Who is using the talk conntrack/nat helper?
+Date: Sun, 24 Aug 2003 09:24:39 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030824072439.GM6750@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="acOuGx3oQeOcSZJu"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: Richard Gooch <rgooch@ras.ucalgary.ca>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-Hi all
 
-i'm trying to use iptables with iplimit option, i'm getting the below 
-problem
-can any one help what is the caused problem and how can I solve it?
+--acOuGx3oQeOcSZJu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[root@www root]# iptables -A INPUT -p tcp --syn --dport http -m iplimit 
---iplimit-above 4 -j REJECT
-iptables: No chain/target/match by that name
+Hi!
 
-thanks in advanced
+While discussing what patches from patch-o-matic to include in the
+mainstream kernel, we've come about the talk conntrack/nat helper.
 
-_________________________________________________________________
-Add photos to your e-mail with MSN 8. Get 2 months FREE*. 
-http://join.msn.com/?page=features/featuredemail
+Since talk is an ancient protocol - it is questionable whether support
+for this is really needed by someone.
 
+So the big question is:  Does anybody actually use the talk
+conntrack/nat helper modules?  If yes, are you satisfied with it's
+functionality?
+
+Thanks.
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--acOuGx3oQeOcSZJu
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/SGg3XaXGVTD0i/8RAkjMAJ9lAtbcyFYCEr0GDGM0MiB+5QiiJwCfWUgF
+BjjNpzZJzOpHvecRYnvHMTs=
+=bYaO
+-----END PGP SIGNATURE-----
+
+--acOuGx3oQeOcSZJu--
 
