@@ -1,13 +1,12 @@
-From: "Gilles Yue" <gyue@novelgmt.intnet.mu>
-Subject: MRTG and IPTABLES
-Date: Wed, 7 Jan 2004 10:54:30 +0400
+From: "kaiwen" <cal_kaiwen@hotmail.com>
+Subject: Re: Match packet mark with --set-mark to ip rule fwmark
+Date: Wed, 7 Jan 2004 15:25:52 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <83055D4B014C9E478D2F04624B9E82CFD4D5@noveldc.novelgmt.mu>
+Message-ID: <Law11-OE66fa281NPs60001e8d8@hotmail.com>
+References: <Law11-OE68Dt3HvoFOA00000021@hotmail.com> <3FFB927B.4010208@snapgear.com> <LAW11-OE14FjwUbowDp0001e8e9@hotmail.com> <3FFBA469.9080205@snapgear.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3D4EB.192C69D0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,134 +16,89 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Philip Craig <philipc@snapgear.com>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi,
 
-------_=_NextPart_001_01C3D4EB.192C69D0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I tried the following configurations:-
 
-MRTG cannot work properly due to iptables running.
+(1) [root@g webauth]# ip route show table test2
+prohibit 192.168.250.197
+192.168.8.0/24 via 192.168.8.88 dev br0
 
-=20
+(2) [root@g webauth]# iptables -t mangle -L
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+MARK       all  --  anywhere             anywhere           MARK set 0x5
 
-Anybody knows which port number to open to enable MRTG to work properly.
+(3) [root@g webauth]# ip ru
+0:      from all lookup local
+32765:  from all fwmark        5 lookup test2
+32766:  from all lookup main
+32767:  from all lookup 253
 
-=20
+Ping from 192.168.8.129 will go to iptables and got marked 5, it goes to
+local table, but no route match for it, so it goes to table test2.
+The destination of the packet is 192.168.250.197, so it is prohibited, I
+suppose the ping will not be successful.
+Have I got the explanation right?
 
-Thanks.
+I have got a question, packet travles through routing table first or
+iptables?
 
-=20
-
-Rgds
-
-gy
-
-=20
-
-=20
+But, it is successful.
 
 
-------_=_NextPart_001_01C3D4EB.192C69D0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-<html>
+----- Original Message -----
+From: "Philip Craig" <philipc@snapgear.com>
+To: "kaiwen" <cal_kaiwen@hotmail.com>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Wednesday, January 07, 2004 2:17 PM
+Subject: Re: Match packet mark with --set-mark to ip rule fwmark
 
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
 
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:SimSun;
-	panose-1:2 1 6 0 3 1 1 1 1 1;}
-@font-face
-	{font-family:"\@SimSun";
-	panose-1:2 1 6 0 3 1 1 1 1 1;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>MRTG cannot work properly due to iptables =
-running.</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Anybody knows which port number to open to enable =
-MRTG to
-work properly.</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks.</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Rgds</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>gy</span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>&nbsp;</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-=00
-------_=_NextPart_001_01C3D4EB.192C69D0--
+> kaiwen wrote:
+> > (2)[root@g root]# ip ro show table test2
+> > prohibit 192.168.8.88
+> > prohibit 192.168.250.197
+> >
+> > (3) [root@g root]# iptables -t mangle -L
+> > Chain OUTPUT (policy ACCEPT)
+> > target     prot opt source               destination
+> > MARK       all  --  anywhere             anywhere           MARK set 0x5
+>
+> But you changed both the IP address for the prohibit *and* the
+> chain the mark is in.  So you still won't get packets that match
+> both.  Just change one or the other.
+>
+> That is, if you want to drop an incoming ping packet, then the
+> prohibit must specify a local IP, and the mark rule must be in
+> the PREROUTING chain.  If you want to drop an outgoing ping packet,
+> then the prohibit must specify a remote IP, and the mark rule must
+> be in the OUTPUT chain.  You could also just always put the mark
+> rule in both PREROUTING and OUTPUT.
+>
+> Here's another option: change the mark rule so that it specifies
+> the source or destination, and also change the prohibit to be
+> 'prohibit any'.
+>
+> > Take a look at ip rule, the first rule route all packet to table local,
+> > which has a route for 192.168.8.0/24. Is it true that once there is one
+rule
+> > which match for the packet, it will route according to it. If so, I
+remove
+> > the route from table local and put it at table test2, which is
+> > Configurations B.
+>
+> Yes, it will use the first route that matches.  Note that moving the
+> route to table test2 will break routing for packets that don't use
+> table test2.  You probably want to move it to table main.
+>
+> --
+> Philip Craig - SnapGear, A CyberGuard Company - http://www.SnapGear.com
+>
+>
 
