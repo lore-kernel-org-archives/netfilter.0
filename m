@@ -1,13 +1,13 @@
-From: "Shaun Hedges" <sh@realsecure.net>
-Subject: RE: Netfilter max simultaenous connections limit>?
-Date: Wed, 3 Sep 2003 08:38:13 -0700
+From: Paul Caritj <pcaritj@riovia.net>
+Subject: Re: Maximum Number of Chains
+Date: Wed, 03 Sep 2003 11:42:04 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IAEOKBNDAKLABMLEEMMKOEEBFOAA.sh@realsecure.net>
-References: <3F55EA62.3090301@wm1.at>
+Message-ID: <3F560BCC.4020907@riovia.net>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A15C21A@wardrive.citadelcomputer.com.au> <20030903120302.M95330@tkevans.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F55EA62.3090301@wm1.at>
+In-Reply-To: <20030903120302.M95330@tkevans.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,106 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Willi Mann <newsletters@wm1.at>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: tkevans@tkevans.com, netfilter@lists.netfilter.org
 
-Hi Willi,
+Agreed,
+Heres my situatuation: I need to create rules on the fly for 
+(potentially) up to 4000 users. What I need is a way to delete *all* the 
+rules for a given ip address without knowing the full contents of the 
+rule (only the ip); as you might have guessed, I'm doing this 
+programatically.
 
-I used conntrack originally but the state table filled up very fast and I
-began having connection errors, so i'm simply using forward rules now.
+My current solution is to have one chain for each associated IP. Is 
+there a better solution to this problem?
 
-Do you have anymore ideas or does anyone else?  I'm seeing some different
-behaviour now without changing anything..
+As for memory...I can have as much as I need, if anyone knows how much 
+that would be. :)
 
-But still, can netfilter do the job?
+Tim Evans wrote:
 
-Thx
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Willi Mann
-Sent: Wednesday, September 03, 2003 6:20 AM
-To: netfilter@lists.netfilter.org; sh@realsecure.net
-Subject: Re: Netfilter max simultaenous connections limit>?
-
-
-> Hello,
+>On Wed, 3 Sep 2003 09:25:51 +1000, George Vieira wrote
+>  
 >
-> We have high speed applications that open up hundreads of threads per
-> computer very fast then close then open again.  At one time, we can have
-> about 15000 tcp connections going through the firewall at once.  We've
-> recently been adding more application servers but we're noticing that the
-> bandwidth usage isn't going up intune with the number of computers, it's
-> actually staying around the same.  We know this shouldn't be the case so
-am
-> wondering if 15000+ connections is too much for a RH Linux+netfilter
-> configuration using no stateful inspection just basic FORWARD'ing rules to
-> block all traffic from those machines except one port coming in.  Our
-> firewall rules:
-> *filter
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> :RH-Lokkit-0-50-INPUT - [0:0]
-> -A INPUT -j RH-Lokkit-0-50-INPUT
-> -A RH-Lokkit-0-50-INPUT -i eth0 -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 65456 --syn -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -i lo -j ACCEPT
-> -A FORWARD -d 192.168.168.0/27 -p udp -m udp --sport 53 -j ACCEPT
-> -A FORWARD -d 192.168.168.0/27 -p udp -m udp --dport 53 -j ACCEPT
-> -A FORWARD -d 192.168.168.0/27 -p tcp -m tcp --syn -j DROP
-> -A FORWARD -d 192.168.168.0/27 -p udp -j DROP
-> -A RH-Lokkit-0-50-INPUT -p udp -m udp -s 0/0 --sport 53 -d 0/0 -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -p udp -m udp -s 0/0 --dport 53 -d 0/0 -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 80 --syn -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --syn -j REJECT
-> -A RH-Lokkit-0-50-INPUT -p udp -m udp -j REJECT
+>>How much memory do you have???
+>>
+>>I've added at once stage around 500+ rules in once chain alone, if 
+>>that helps you in anyway..
+>>    
+>>
 >
-> COMMIT
+>Seems to me if you have to ask about the maximum number of rules, you already
+>have too many. There are ways to create general rules that apply to many
+>cases--i.e., address ranges, port ranges, etc.
+>--
+>Tim Evans                       |    5 Chestnut Court
+>tkevans@tkevans.com             |    Owings Mills, MD 21117
+>http://www.tkevans.com/         |    443-394-3864
+>http://www.come-here.com/News/  |    
 >
-> WE basically just allow nothing in to the subnet but everything out..
 >
-> Our router is a P1.7ghz Celeron w/ 512mb ram and IDE disks and 2 3com NIC
-> nic cards..  Is this insufficient?  Our b/w usage is a mere 2.5mbits, but
-we
-> have about 8mbits available, and when it goes up, we seem to add more
-> incoming bandwidth as outgoing, it looks as though the errors or timeouts
-> are increasing.
 >
-> Any ideas?  Do I have to increase a limit in anyway?
+>.
 >
-Hi!
-Conntrack always notes (in my expierence) the state of connections if
-loaded.
-
-1) Check if ip_conntrack -module is loaded. (lsmod). If it is not and it
-is not directly compiled into the kernel, my ideas won't help you.
-
-2) Check /proc/sys/net/ipv4/ip_conntrack_max
-
-3) Check /proc/net/ip_conntrack at high load. (wc -l ip_conntrack) If
-the value is close to 2) then you can:
-*Set /proc/sys/net/ipv4/ip_conntrack_max to a higher value (which seems
-to be the worst idea because connection-tracking without needing it just
-eats up ressources.)
-*Try to remove ip_conntrack with rmmod.
-*Check if the notrack module is available in your kernel. You would need
-an addition rule.
-*Remove the ip_conntrack.o -module from
-lib/modules/2.4.21/kernel/net/ipv4/netfilter (Don't know if that makes
-problems)
-*Compile the (RedHat-)kernel without connection-tracking. I think that
-this would be the best choice for your setup because it is the cleanest
-way.
-*And as always in Linux, there might be other solutions I havn't
-considered.
-
-Hope this helps and it's not that netfilter just hasn't got enough power
-for your needs.
-
-Willi Mann
-
-
-
+>  
+>
 
 
