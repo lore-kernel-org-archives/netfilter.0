@@ -1,13 +1,12 @@
-From: Kim Jensen <kimj@dawn.dk>
-Subject: Re: clearing basics: semi-OT
-Date: Thu, 10 Apr 2003 17:21:36 +0200
+From: "ihira" <ihira@rain.amath.nchu.edu.tw>
+Subject: A problem of libiptc !!
+Date: Wed, 9 Apr 2003 14:41:00 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304101721.36861.kimj@dawn.dk>
-References: <20030410080650.GA1720@linux.localdomain>
+Message-ID: <000e01c2fe62$fbc50b40$7d08788c@ihira>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000B_01C2FEA6.09DA8FA0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030410080650.GA1720@linux.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +16,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Payal Rathod <linux@rpayal.cjb.net>, netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 10 April 2003 10:06, Payal Rathod wrote:
-> Hi,
-> I am trying to clear some of my basics. I am reading IP-Masquerading HO=
-WTO.
-> In it these things were mentioned,
->
-> UNIVERSE=3D"0.0.0.0/0"
-> $IPTABLES -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
->
-> What exactly does 0.0.0.0/0 mean? And why should we be concerned with
-> it? And what is the use of rule given after it?
->
-0.0.0.0/0 means everybody!
+This is a multi-part message in MIME format.
 
-The rule is saying that everything from and to the localhost should be=20
-accepted - in general a very good thing, unless you know what you are doi=
-ng!
+------=_NextPart_000_000B_01C2FEA6.09DA8FA0
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
-> INTNET=3D"192.168.1.0/24"
-> INTIP=3D"192.168.1.1/24"
->
-> The first one means the entire network of 192.168.1.x? What exactly is
-> the second one. Does it just means 192.168.1.1 then why "/24"?
-> And lastly,
->
-The 192.168.1.0/24 means: everything from 192.168.1.0 to 192.168.1.255. T=
-he=20
-/24 is part of the mask, read=20
-http://www.netfilter.org/documentation/HOWTO//networking-concepts-HOWTO.t=
-xt.
+Dear all :
 
-> $IPTABLES -N drop-and-log-it
-> $IPTABLES -A drop-and-log-it -j DROP
->
-> Why was this rule made? And why was it "dropped"? What is the logic
-> behind this? Shouldn't it be,
-> $IPTABLES -P drop-and-log-it DROP
->
-There is no default chain called drop-and-log-it, which is why you make a=
-=20
-custom chain. A better version would be:
-$IPTABLES -N drop-and-log-it
-$IPTABLES -F drop-and-log-it
-$IPTABLES -A drop-and-log-it -j LOG
-$IPTABLES -A drop-and-log-it -j DROP
+I have a proble about using libiptc function "iptc_append_entry".
+When use this function, we should pass an argument *ipt_enrty.
+This argument include the IP header information!
+But where we pass the other information like tcp port to the function =
+for appending a rule to netfilter?
 
-The first line creates a new chain (-N) with the name drop-and-log-it. Th=
-e=20
-second line (-F) flushes the new chain in case you already have this chai=
-n=20
-running. The third lines appends a rule which logs everything and finally=
- the=20
-fourth line drops the packets.
+I hope somebody can give me an example code for adding a rule to =
+netfilter !
 
-/Kim
+I am sorry about my poor English and thank for everyone spending time =
+and pations to read my letter!
+Good luck for everyone and everyone's family 
+------=_NextPart_000_000B_01C2FEA6.09DA8FA0
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
+<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2>Dear all :</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>I have a proble about using libiptc function=20
+"iptc_append_entry".</FONT></DIV>
+<DIV><FONT size=3D2>When use this function, we should pass an argument=20
+*ipt_enrty.</FONT></DIV>
+<DIV><FONT size=3D2>This argument include the IP header =
+information!</FONT></DIV>
+<DIV><FONT size=3D2>But where we pass the other information like tcp =
+port to the=20
+function for appending a rule to netfilter?</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>I hope somebody can give me an example code for =
+adding a rule=20
+to netfilter !</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV>
+<DIV><FONT size=3D2>I am sorry about my poor English and thank =
+for&nbsp;everyone=20
+spending time and pations to read my letter!</FONT></DIV>
+<DIV><FONT size=3D2>Good&nbsp;luck for&nbsp;everyone and&nbsp;everyone's =
+
+family</FONT>&nbsp;</DIV></DIV></BODY></HTML>
+
+------=_NextPart_000_000B_01C2FEA6.09DA8FA0--
 
 
