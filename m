@@ -1,13 +1,11 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Two IP add
-Date: 05 Jun 2003 13:07:43 +0200
+From: Matthew Pocock <matthew.pocock@ncl.ac.uk>
+Subject: bootpc
+Date: Thu, 05 Jun 2003 12:53:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054811262.13885.34.camel@raylinux.internal>
-References: <200306051156.45624.pandre@darkstar.nom.za>
+Message-ID: <3EDF2F41.8080505@ncl.ac.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-TDgH4imiWH5nDFdKloc0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200306051156.45624.pandre@darkstar.nom.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +15,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hi,
 
---=-TDgH4imiWH5nDFdKloc0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I've set up my bridge+firewall, and everything is hunkeydory. I am doing 
+statefull filtering. I let all traffic out, and all related/established 
+traffic in. Then, I only allow new icmp & tcp:ssh connections in.
 
-On Thu, 2003-06-05 at 11:56, Paulo Andre wrote:
-> I would like to do the following:
->=20
-> Stop MASQUESRADING to two servers say. 10.10.10.5 and 10.10.10.8, how wou=
-ld i=20
-> do this with a rule.
->=20
-> iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers ip' -j MASQUERADE=
-=20
-> now how would i put in two ip address's ?
->=20
-how about using 3 rules?
-iptables -t nat -A POSTROUTING -d server1.ip.address -j return
-iptables -t nat -A POSTROUTING -d server2.ip.address -j return
-iptables -t nat -A POSTROUTING -s x.x.x.x -j MASQUERADE
+To get windows 95 & 98 PCs on the inside to boot & join the network, I 
+had to open up udp ports bootps & bootpc for new connections 
+orriginating from the outside. I don't know the finer details about how 
+these protocols work, but presumably they are connecting to the booting 
+PC in response to some DHCP request it has made. Is there some module I 
+should have loaded that would flag these connections as RELATED to some 
+outgoing connection? Have I done something silly? Is this even possible?
 
-Ray
+Thanks,
 
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-TDgH4imiWH5nDFdKloc0
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+3yR+h1fuR/Bv+ygRAj+1AJ9jKtKqEATWrYkgnrr8+z7y+1ktsACfVWST
-L3wFYK9uMaNrAld2YNBl4mg=
-=DQir
------END PGP SIGNATURE-----
-
---=-TDgH4imiWH5nDFdKloc0--
+Matthew
 
 
