@@ -1,15 +1,17 @@
-From: Stephen Frost <sfrost@snowman.net>
-Subject: Re: -m recent
-Date: Thu, 23 Jan 2003 17:40:28 -0500
+From: Evan Borgstrom <evan@unixpimps.org>
+Subject: Re: Strange setup
+Date: 23 Jan 2003 21:50:02 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030123224028.GM484@ns.snowman.net>
-References: <3E2FEA1C.9030305@maximum-linux.net> <20030123191505.GL484@ns.snowman.net> <3E301172.101@maximum-linux.net>
+Message-ID: <1043376601.1583.65.camel@venom.int.unixpimps.org>
+References: <1648.10.35.120.83.1043012159.squirrel@mail.unixpimps.org>
+	 <1043015513.24583.16.camel@wizardslair>
+	 <1084.10.35.120.83.1043023502.squirrel@mail.unixpimps.org>
+	 <1043049030.24581.76.camel@wizardslair>
+	 <1043074151.1391.39.camel@venom.int.unixpimps.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="raC6veAxrt5nqIoY"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3E301172.101@maximum-linux.net>
+In-Reply-To: <1043074151.1391.39.camel@venom.int.unixpimps.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,57 +21,95 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: uniplex <uniplex@maximum-linux.net>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfiler E-Mail List <netfilter@lists.netfilter.org>
 
+Ok, I've come across how cisco implements exactly what I'm looking to
+do. I realize that this is not a cisco, but possibly from reading this
+someone will further understand what I'm trying to accomplish and think
+of a way to do so with netfilter.
 
---raC6veAxrt5nqIoY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+http://www.cisco.com/univercd/cc/td/doc/product/software/ios113ed/113ed_cr/secur_c/scprt3/screflex.htm
 
-* uniplex (uniplex@maximum-linux.net) wrote:
-> How can I tell what version of ipt_recent I have? I downloaded the=20
-> latest version of patch-o-matic and installed your patch from there.
->=20
-> I tried using --name in different places but it still doesn't seem to=20
-> work for whatever reason. Here's what I've tested with now.
->=20
-> iptables -A INPUT -i eth0 -p all -m recent --update -j DROP --name icmps
->=20
-> iptables -N icmps
-> iptables -A INPUT -p icmp -i eth0 -j icmps
-> iptables -A icmps -m limit --limit 2/hour --limit-burst 1 -j LOG=20
-> --log-level alert --log-prefix "icmp: "
-> iptables -A icmps -m recent --set -j DROP --name icmps
-> iptables -A icmps -j DROP
+Basically, Reflexive access lists (explained in that URL) allow you to
+use a 'reflect' target when you are creating an access list, this
+reflect target then ensures that traffic will leave the interface the
+session began on. For instance, if I have eth1 and gre1 both possible
+interfaces for inbound traffic to the DMZ, when traffic enters eth1 I
+need a mechanism to ensure it leaves eth1 as well even if a more
+specific route exists pointing to gre1.
 
-It'd be before the -j DROP to see if that fixes it.  Recent versions of
-ipt_recent will print out to your kernel log (which you can usually see
-via dmesg) what version of ipt_recent it is.  If you're not seeing that
-then you probably want to try and get a later version.  The latest
-'released' version is on my website,
-http://snowman.net/projects/ipt_recent/ .  There have been a number of
-bug fixes, however, and so if you want to try my current 'beta' you can
-download it from:
-http://snowman.net/projects/ipt_recent/ipt_recent-0.2.6.tar.gz .
-I've had alot of good responses to the beta so I'm planning on
-releasing it when I have some time to do the 'paperwork'.  My son was
-born a week ago and I'm still pretty busy with him tho. :)
+Anyone got any ideas?
 
-	Stephen
+-Evan
 
---raC6veAxrt5nqIoY
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+On Mon, 2003-01-20 at 09:49, Evan Borgstrom wrote:
+> Thanks for the reply Peter,
+> 
+> That's the sortta setup I was playing with yesterday. Kindda kludgey but
+> it would work.
+> 
+> What would be nice is if connection tracking would log the source
+> interface of the last packet. That way in the PREROUTING table I could
+> check that and change the mark on the packet so that it would pick a
+> different routing table. Perhaps I should look at implementing that on
+> my setup to see how it works...
+> 
+> The only other way I thought of doing it was using TOS bits inside the
+> network (say give an 8 to anything coming over the WAN and a 16 to
+> anything coming over the WLAN), but I can't find a way to make my sun
+> boxes set the same TOS for related pakets...
+> 
+> If anyone else has ideas, comments, etc... on this I'm always up to
+> listen.
+> 
+> -Evan
+> 
+> On Mon, 2003-01-20 at 02:50, Peter Johnson wrote:
+> > Ok, gotcha now...
+> > 
+> > Still do 
+> > ip rule add from $WAN_IP table $WAN_TABLE
+> > ip rule add from $WLAN_IP table $WLAN_TABLE
+> > and 
+> > ip route add default via $WAN_PEER_IP dev $WAN_IF table $WAN_TABLE
+> > ip route add default via $WLAN_PEER_IP dev $WAN_IF table $WLAN_TABLE
+> > 
+> > Add iptables rules approximately as follows:
+> > 
+> > $IPTABLES -t nat -A PREROUTING -i $WAN_IF -j DNAT $DMZ_IP_0-16
+> > $IPTABLES -t nat -A PREROUTING -i $WLAN_IF -j DNAT $DMZ_IP_17-32
+> > 
+> > $IPTABLES -t nat -A POSTROUTING -o $WAN_IF -j SNAT $WAN_IP
+> > $IPTABLES -t nat -A POSTROUTING -o $WLAN_IF -j SNAT $WLAN_IP
+> > 
+> > $IPTABLES -t filter -A FORWARD -i $WAN_IF -o $DMZ_IF -j ACCEPT
+> > $IPTABLES -t filter -A FORWARD -i $WLAN_IF -o $DMZ_IF -j ACCEPT
+> > 
+> > That takes care of the initial connection i.e. SYN packets. The IPTables
+> > nat table is only used on the initial packet on each connection.
+> > 
+> > For the actual routing, the only thing that I can think of is assigning
+> > two IPs (aliases) to each server in the DMZ say .0-16 for WAN and 17-32
+> > for WLAN then using
+> > 
+> > $IPTABLES -t mangle -A PREROUTING -s $DMZ_IP_0-16 -j MARK --set-mark 1
+> > and
+> > $IPTABLES -t mangle -A PREROUTING -s $DMZ_IP_17-32 -j MARK --set-mark 2
+> > 
+> > then add
+> > 
+> > ip rule add fwmark 1 table $WAN_TABLE
+> > and
+> > ip rule add fwmark 2 table $WLAN_TABLE
+> > 
+> > 
+> > Sorry but that is all I can come up with at the moment.
+> > 
+> > PJ
+-- 
+Evan Borgstrom <evan@unixpimps.org>
+http://www.unixpimps.org
+http://www.ragga-jungle.com
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+MG9crzgMPqB3kigRAsb2AJwJj/N6CBl9HhvVz5t7SLX0/mTw/gCghswc
-q65J1eUXBABYG5hGCt+JmS0=
-=ZBuk
------END PGP SIGNATURE-----
-
---raC6veAxrt5nqIoY--
 
