@@ -1,14 +1,13 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: RE: invert problem with multiport
-Date: Tue, 18 Jun 2002 15:18:22 -0700
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Completely NAT an ISP: A practical possibility?
+Date: Tue, 18 Jun 2002 18:50:58 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPMEDKCGAA.stewart.thompson@shaw.ca>
-References: <3D0F56B9.5952D779@conterra.de>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <20020618225058.GC27054@cannon.eng.us.uu.net>
+References: <3D0BBC45.5000807@palaver.net> <200206152233.g5FMXPA27757@Networker.rockstone.co.uk> <20020616001745.N2090@funkyjesus.org> <20020618171543.919DF681A5@engenho.terra.com.br> <20020618185005.GC26150@cannon.eng.us.uu.net> <20020618202115.32CD7C94DF@srv11-sao.terra.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3D0F56B9.5952D779@conterra.de>
+Content-Disposition: inline
+In-Reply-To: <20020618202115.32CD7C94DF@srv11-sao.terra.com.br>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,54 +18,37 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Christoph Gossen <gosen@conterra.de>, netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Rodrigo Senra <rodsenra@gpr.com.br>
+Cc: netfilter@lists.samba.org
 
-Hi Christoph:
+On Tue, Jun 18, 2002 at 05:22:03PM -0300, Rodrigo Senra wrote:
 
-	I am still running iptables 1.24. However, in that version I
-don't think it supported the ! negation on multiport. Later versions
-may have added that capability. Perhaps one of the members of
-the list has a more definitive answer.
+> > This would break lots of protocols. How would the clients put up with
+> > this broken functionality?
+> 
+> Good observation. Yes it breaks some (all not NAT-able), and when this is used
+> clients have to live up with the limitations. But as I said, for the time being 
+> this is used to accomodate a multiple-ISP cenario where clients need basically
+> HTTP, FTP, and less percentage of H.323.  
 
-Stu...............
+Just a small note. FTP is one of the protocols that would break...
 
+Ramin
 
-
------Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org]On Behalf Of Christoph Gossen
-Sent: June 18, 2002 8:50 AM
-To: netfilter@lists.samba.org
-Subject: invert problem with multiport
-
-Hello,
-
-I think there's a bug in the behaviour of the multiport module - for
-example, a line like
-
-        iptables -p tcp -A OUTPUT -m multiport ! --dport 25 -j DROP
-
-causes the same behaviour as
-
-        iptables -p tcp -A OUTPUT -m multiport --dport 25 -j DROP
-
-or
-
-        iptables -p tcp -A OUTPUT --dport 25 -j DROP
-
-and NOT (as one would expect) that one caused by
-
-        iptables -p tcp -A OUTPUT ! --dport 25 -j DROP
-
-Inverting the (set of) port(s) due to the "!" sign in the first line
-above is just ignored
-(no syntax error occures)!
-
-Any comments?
-
-Thanks,
-
-Christoph
-
-
+> 
+> Take notice that NAT takes place before the packets reach their service providers.
+> So maybe, I couldn't call it properly  "NAT an ISP" as the title suggests.
+>  
+> > Or maybe they tunnel on top of this IP network
+> 
+> Not that I know of.
+> Thank you for your observations.
+> 
+> regards,
+> Senra
+> -- 
+> Rodrigo Senra         
+> MSc Computer Engineer   (GPr Sistemas Ltda)     rodsenra@gpr.com.br 
+> http://www.ic.unicamp.br/~921234  (LinUxer 217.243) (ICQ 114477550)
 
