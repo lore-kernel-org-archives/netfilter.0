@@ -1,13 +1,12 @@
-From: Thomas Themel <themel@iwoars.net>
-Subject: Re: IP-Range and Subnetmask
-Date: Wed, 5 Nov 2003 22:42:04 +0100
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: RE: My ack is more important than anything else!
+Date: Wed, 5 Nov 2003 13:57:26 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031105214204.GI30148@iwoars.net>
-References: <3FA969BA.3090908@web.de>
+Message-ID: <20031105215726.48967.qmail@web40209.mail.yahoo.com>
+References: <7C9884991ADAE0479C14F10C858BCDF52E37BD@alderaan.smgtec.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3FA969BA.3090908@web.de>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF52E37BD@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,41 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Bewerbungsadresse@web.de" <bewerbungsadresse@web.de>
-Cc: netfilter@lists.netfilter.org
+To: Daniel Chemko <dchemko@smgtec.com>, Elver Loho <kernelpenguin@hot.ee>, netfilter@lists.netfilter.org
 
-bewerbungsadresse@web.de wrote on 2003-11-05:
-> is it possible to prevent spoofing attacks to 172.16.0.0-172.31.255.255 
+If ya going to post a URL at least post the right one :P
 
-> something like that
-> iptables -A INPUT -p tcp -s 172.16.0.0/255.31.0.0 -d $INET_IP -i ppp0 -j 
-> SPOOFED
+http://lartc.org
+
+--- Daniel Chemko <dchemko@smgtec.com> wrote:
+> http://lartc.net
 > 
-> but i think the rule above is wrong
+> -----Original Message-----
+> From: Elver Loho [mailto:kernelpenguin@hot.ee] 
+> Sent: Wednesday, November 05, 2003 11:15 AM
+> To: netfilter@lists.netfilter.org
+> Subject: My ack is more important than anything else!
+> 
+> Prioritization of outgoing acknowledgement packets. How?
+> 
+> 
+> Elver Loho
+> 
+> 
+> 
 
-It is. Netmasks are comprised of a sequence of 0..* ones followed by a
-sequence of 0..* zeroes, which is why you can write them as /nn, nn
-being the number of ones.
 
-255.31.0.0 	= 1111 1111 0000 1111 0000 0000 0000 0000
+=====
+In the absence of order there will be chaos.
 
-What you want is
-
-1111 1111 1111 0000 0000 0000 0000 0000 -> /12 if you want it easy,
-
-255.240.0.0 if you like doing binary conversion.
-
-
-> so: is it possible at all?
-> or do i have to write a loop or all single ip-ranges manually?
-
-Not in this case (since you've got an area that fits exactly into a
-/12).
-
-ciao,
--- 
-[*Thomas  Themel*]  While differing widely in the various little bits we know,
-[extended contact]  in our infinite ignorance we are all equal. 
-[info provided in]
-[*message header*]      - Karl Popper
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
 
