@@ -1,66 +1,76 @@
-From: "Nauman Malik" <naumanm@khi.wol.net.pk>
-Subject: Connection Limit
-Date: Wed, 24 Sep 2003 15:11:57 +0500
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309241511570875.15D98FA9@smtp.khi.wol.net.pk>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: New Version (1.13) of PPTP conntrack/nat helper
+Date: Wed, 24 Sep 2003 12:13:29 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030924101329.GW31401@sunbeam.de.gnumonks.org>
+References: <20030923144924.GM31401@sunbeam.de.gnumonks.org> <3F707404.5080107@able.be>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=====_10643983176334=_"
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CuZtzLgFeSWyzOuB"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <3F707404.5080107@able.be>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Wim Ceulemans <wim.ceulemans@able.be>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
---=====_10643983176334=_
-Content-Type: text/plain; charset="ISO-8859-1"
+
+--CuZtzLgFeSWyzOuB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Tue, Sep 23, 2003 at 06:25:40PM +0200, Wim Ceulemans wrote:
+=20
+> If I switch CONFIG_IP_NF_NAT_LOCAL off, the forwarding to a pptp server=
+=20
+> behind the firewall works.
+> If switch it on, I don't see any gre packet behind the firewall, so it=20
+> does not work.
+>=20
+> However, with CONFIG_IP_NF_NAT_LOCAL on I have had two freezes (firewall=
+=20
+> completely stuck and I had to switch it on and off).
 
-I have added module for conn-limit through iptables. But when I run this=
- command, I got error of No Chain/target/match . Is the following command=
- correct or am I missing something?
+So to summarize:  It works perfectly of it is OFF, but you have problems
+with DNAT and crashes, if it is ON.  That is surprising - it seems like
+the problems have just been reverting :(
 
+Did you do anything in particular when the firewall hang happened? (like
+unloading/loading a module, ...)?
 
+> Regards
+> Wim
 
-# /sbin/iptables -A INPUT -p tcp --syn --dport http -m iplimit=
- --iplimit-above 4 -j REJECT
-iptables: No chain/target/match by that name
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
+--CuZtzLgFeSWyzOuB
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Thanx.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
+iD8DBQE/cW5JXaXGVTD0i/8RAtJsAJ9u9O+8+lqmeuQ9VnT6VfKzUu3gVQCfTGyy
++9Kkm7EykwwyKaQ+Y/351Y4=
+=5sBL
+-----END PGP SIGNATURE-----
 
---=====_10643983176334=_
-Content-Type: text/html; charset="us-ascii"
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type>
-<META content="MSHTML 5.00.3700.6699" name=GENERATOR></HEAD>
-<BODY bgColor=#ffffff style="FONT-FAMILY: Arial" text=#000000>
-<DIV><FONT size=2>Hi,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=2>I have added module for conn-limit through iptables. But when 
-I run this command, I got error of No Chain/target/match . Is the following 
-command correct or am I missing something?</FONT></DIV>
-<DIV><FONT size=2></FONT>&nbsp;</DIV>
-<DIV><FONT size=2></FONT>&nbsp;</DIV>
-<DIV><FONT size=2></FONT>&nbsp;</DIV>
-<DIV><FONT size=2># /sbin/iptables -A INPUT -p tcp --syn --dport http -m iplimit 
---iplimit-above 4 -j REJECT<BR>iptables: No chain/target/match by that 
-name</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thanx.</DIV></BODY></HTML>
-
-
---=====_10643983176334=_--
-
+--CuZtzLgFeSWyzOuB--
 
