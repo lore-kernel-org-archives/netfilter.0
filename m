@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Howto Make a gateway with iptables rules?
-Date: Wed, 10 Mar 2004 18:52:47 +0000
+Subject: Re: related to -z option
+Date: Wed, 10 Mar 2004 18:55:08 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403101852.48099.Antony@Soft-Solutions.co.uk>
-References: <20040310054905.M99122@cc.iut.ac.ir>
+Message-ID: <200403101855.08655.Antony@Soft-Solutions.co.uk>
+References: <BAY12-F12shalxyPyF10000278a@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040310054905.M99122@cc.iut.ac.ir>
+In-Reply-To: <BAY12-F12shalxyPyF10000278a@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +20,37 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 10 March 2004 5:53 am, masroor wrote:
+On Wednesday 10 March 2004 11:47 am, rohit persaie wrote:
 
-> Hi,
->   I have a linux redhat9.0 - I want to create an gateway between our
-> sections  and central site.
-> It have 4 ethernet cards. 2 cards for internal LANs with 2 invalid sunbet
-> 192.168.101.x and 192.168.102.x range. 3th card for intranet use such
-> connect to our web-server or email-server, 4th card for internet connection
-> and when they want go to internet.i want also close all extra ports and
-> close udp + icmp protocols.
-> How i could do this with IPTABLES Rules? Anybody have such this schema?
-> Any help would be appriciated
+> Dear All,
+>
+> There is one option in iptables .....-Z , used for  the  packet  and byte
+> counters in all the chains.
+>
+> Please tell me the use of this option, with example.
 
-Oskar Andreasson's netfilter tutorial at 
-http://iptables-tutorial.frozentux.net should tell you most, if not all, of 
-what you need to know.
+# clear the packet counters to zero
+iptables -Z
 
-If you have any specific questions after getting as far as you can with that, 
-feel free to come back and ask here.
+# wait for some traffic to go through the machine (eg: come back tomorrow)
+sleep 86400
+
+# look at the counters now to find out how much traffic has matched each rule
+iptables -L -nvx
+
+# Repeat as long as the information interests you
 
 Regards,
 
 Antony.
 
-(Yes, I know this is the same answer as I gave this morning, but then, it's 
-the same quesion.)
-
 -- 
-What makes you think I know what I'm talking about?
-I just have more O'Reilly books than most people.
+Programming is a Dark Art, and it will always be. The programmer is
+fighting against the two most destructive forces in the universe:
+entropy and human stupidity. They're not things you can always
+overcome with a "methodology" or on a schedule.
+
+ - Damian Conway, Perl God
 
                                                      Please reply to the list;
                                                            please don't CC me.
