@@ -1,14 +1,16 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Bandwidth Balance, balance of Load
-Date: Sat, 15 Feb 2003 09:58:06 -0500
+From: Michiel Brandenburg <michielb@toad.stack.nl>
+Subject: Re[2]: using ip_nat_ftp
+Date: Sat, 15 Feb 2003 19:29:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302150958.06735.netfilter@newkirk.us>
-References: <000c01c2d4e2$01454710$0100a8c0@fede>
-Reply-To: netfilter@newkirk.us
+Message-ID: <64338714703.20030215192909@stack.nl>
+References: <46338.80.26.113.199.1045142920.squirrel@www.clientes.sedifa.com>
+ <49309.80.26.113.199.1045228632.squirrel@www.clientes.sedifa.com>
+ <3E4CEF2A.2040702@lucidpixels.com>
+Reply-To: michielb <michielb@toad.stack.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000c01c2d4e2$01454710$0100a8c0@fede>
+In-Reply-To: <3E4CEF2A.2040702@lucidpixels.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +20,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Federico Berardi <fed@argentina.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Saturday 15 February 2003 06:04 am, Federico Berardi wrote:
-> I m newbie
-> Can i do it with IPTables?
-> Iam sharing internet and when someone download a big file, the others
-> can=B4t surf Can i do something with IPTables?
-> Fede!
 
-Read up at http://lartc.org/howto , the Linux Advanced Routing and=20
-Traffic Control HowTo.  What you are looking for, specifically, is=20
-called Ingress Policing, but your situation will probably be improved if=20
-you study and grok Queuing Disciplines as well as bandwidth management.
+Question:
+I'm trying to allow passive ftp traffic for a server running on a
+nonstandard port (1212) with a non-modular ip_nat_ftp.
 
-j
+Is there a way to append something to the kernel boot to add 1212 to
+the list of ftp ports the helper should check ?
+
+-- 
+Best regards,
+ Michiel
+
 
 
