@@ -1,10 +1,10 @@
-From: "Sylvain BERTRAND" <sylvain.bertrand@supelec.fr>
-Subject: tools to modifiy the conntrack?
-Date: Mon, 20 Oct 2003 21:16:56 +0200
+From: Evan Harris <eharris@puremagic.com>
+Subject: Bug/Problem with DNAT on OUTPUT chain (-t nat -A OUTPUT) that breaks
+ routing?
+Date: Mon, 20 Oct 2003 16:12:20 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <012b01c3973e$ba8c28a0$6500a8c0@SYFLO>
+Message-ID: <Pine.LNX.4.44.0310201555460.7787-100000@kinison.puremagic.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,19 +15,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
 
-I've got conntrack support in my 2.4.21 kernel. I'd like to flush it
-sometime, or at least delete a few lines.
-I'm not very excited about editing /proc/net/ip_conntrack by hand... So I'm
-wondering if there's anything the root can do to modify the conntrack (are
-there parameters somewhere?).
+I'm trying to setup a linux kernel box that is on an ip-ip vpn tunnel, and
+want to DNAT all traffic (except the tunnel payload packets) for the "real"
+ip of the other tunnel endpoint to go to its in-tunnel endpoint (so they are
+properly encrypted).
 
-Thanks
+The machine in question has a default route going to the tunnel device
+(tun0), and a host specific route going out a different device (wlan0) so
+the tunnel datagrams can get to the tunnel server.
 
-Sylvain
+After setting up the output DNAT, it is correctly rewriting the packets to
+go to the in tunnel address.  However, after the rewrite, the kernel is
+disregarding the routing that says that packets to the in-tunnel address
+should go to the tun0 device, and instead is trying to send them out the
+original device the packets would have gone out if they had not been
+dnat'ed (wlan0).
+
+According to the documentation for iptables, it appears that the OUTPUT
+chain on the nat table should happen before the routing decision is made,
+but that appears to not be the case.  Is this a bug, or are the docs wrong?
+And if the docs are wrong, what is the correct way to accomplish this?
+
+I am using a stock linux kernel 2.4.20, with iptables 1.2.8.  Please CC me,
+as I am not on the mailing list.
+
+Evan
 
 
