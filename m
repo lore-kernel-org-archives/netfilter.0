@@ -1,16 +1,12 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Packets missing state ?
-Date: Tue, 23 Dec 2003 10:21:22 -0500
+From: ads nat <adsnat@yahoo.com>
+Subject: Re: IPTABLES syntax problem.
+Date: Tue, 23 Dec 2003 07:30:18 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1072192881.2184.371.camel@grendel>
-References: <200312231828.59518.rajiv@theargoncompany.com>
-	 <200312231857.21676.vinayakm@theargoncompany.com>
-	 <200312231907.58135.vinayakm@theargoncompany.com>
-	 <200312231354.36213.Antony@Soft-Solutions.co.uk>
+Message-ID: <20031223153018.33886.qmail@web60406.mail.yahoo.com>
+References: <1072191976.2184.355.camel@grendel>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312231354.36213.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <1072191976.2184.355.camel@grendel>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,63 +17,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Chris Brenton <cbrenton@chrisbrenton.org>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 2003-12-23 at 08:54, Antony Stone wrote:
->
-> Yes, they are NEW because they are for a connection which netfilter has 
-> decided is over - therefore it is no longer ESTABLISHED, and any packets 
-> which continue to appear will be treated as a NEW connection.
+Ya,
+Following worked from command line :
+#######
+iptables -A INPUT -p tcp ! --tcp-flags SYN SYN -m
+state --state NEW -j LOG --log-prefix " New not syn: "
 
-ESTABLISHED state is maintained for 5 days, so I'm guessing the problem
-is not there. When I've seen this before the traces usually show the
-following:
+#######
 
-*ESTABLISHED communications go fine
-*One side issues a FIN/ACK to tear down the connection
-*state timing is dropped from 5 days to 2 minutes
-*Other end of the connection has more data to send &
-Attempts transmission after the 2 min. timer expires
-*Packet is dropped by the firewall and logged
 
-Normally a FIN/ACK exchange takes place pretty quickly but per the RFCs
-one end does not have to close as well if it does not think its
-finished. These can cause the log entries you are experiencing.
+Does this means that I should enter all rules from
+command line.
+Please guide me.
+Thanks
 
-I saw this *a lot* back in the beta days when Rusty had the FIN expire
-set to one minute. Now that its at two minutes, it happens less
-frequently.
-
-Of course I have seen scanning in the wild like this that uses a fixed
-source port of 80 so you'll just think* that its a state issue. The
-scanning can identify static Vs. stateful firewalling as well as what
-hosts are up or down. You need to log outbound HTTP to be able to tell
-the difference.
-
-> >  Another peculiar log which we would like to get more info on are
-> >
-> >  Dec 23 18:43:05 theargonserver kernel: IPT IN_FIREWALL_NEW: IN=eth1 OUT=
-> >  MAC=00:03:47:6a:5c:6b:00:c0:49:25:d1:a3:08:00 SRC=80.15.238.66
-> >  DST=xxx.xxx.xxx.xxx LEN=73 TOS=0x00 PREC=0x00 TTL=55 ID=0 DF PROTO=UDP
-> >  SPT=31819 DPT=53 LEN=53
-> >
-> >  There are a lot of packets to port 53. Is this normal?
+--- Chris Brenton <cbrenton@chrisbrenton.org> wrote:
+> On Tue, 2003-12-23 at 08:37, ads nat wrote:
+> > I modified rules as follows :
+> > 
+> > ###########
+> > -A INPUT -p tcp ! --tcp-flags SYN SYN -m state
+> --state
+> > NEW -j LOG --log-prefix " New not syn: "
 > 
-> Yes.   UDP port 53 means client-to-server DNS lookups. 
+> <snip>
+> 
+> > Applying iptables firewall rules: iptables-restore
+> > v1.2.6a: Unknown arg `--tcp-flags'
+> 
+> Well this could be your problem. Try upgrading to
+> 1.2.8 or later. Could
+> be the option is not supported in older version,
+> especially as an
+> inverse. 
+> 
+> To isolate whether its your script or a version
+> issue, try running the
+> iptables command straight from the command line and
+> see if you get the
+> same error.
+> 
+> HTH,
+> C
+> 
+> 
 
-It could also be server to server queries as well as a load balancer.
-See if you have an outbound query that immediately precedes this log
-entry. If so, its someone pulling metrics to see what IP to serve up to
-you. I'm leaning towards load balancer on this one as the source IP has
-no PTR. It could however be one of your users on their home account and
-their DNS entries are still pointed at the home office.
 
-BTW, if the above was a successful recursive query you really need to
-lock the box down. See the Bugtraq post I did back in Sept. on how
-spammers can park their domain on your recursive DNS.
-
-HTH,
-C
-
-
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
 
