@@ -1,13 +1,11 @@
-From: "Jan Kaastrup" <jka@protego.dk>
-Subject: ip_conntrack_pptp
-Date: Thu, 22 Jan 2004 16:57:26 +0100
+From: Juan Hernandez <alucard@kanux.com>
+Subject: netfilter stops working
+Date: 22 Jan 2004 12:14:49 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003601c3e100$6e8a68c0$2d64a8c0@pcjka>
-References: <20031221122445.GC5058@obroa-skai.de.gnumonks.org>
+Message-ID: <1074788089.27896.13.camel@webmail.aeropostal.com.ve>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031221122445.GC5058@obroa-skai.de.gnumonks.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,42 +16,98 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Harald Welte' <laforge@netfilter.org>, 'Netfilter Development Mailinglist' <netfilter-devel@lists.netfilter.org>
-Cc: 'Netfilter Mailinglist' <netfilter@lists.netfilter.org>
+To: Lista de netfilter <netfilter@lists.netfilter.org>
 
-Hi Harald and all on this list.
-
-I have problems with ip_conntrack_pptp patch from POM-20031219
-
-It seems the patch doesn't apply what it should:
-
-"In the pptp-conntrack-nat.patch.configure.help it says something like
-this:
-CONFIG_IP_NF_CT_PROTO_GRE
-  This module adds generic support for connection tracking and NAT of
-the
-  GRE protocol (RFC1701, RFC2784).  Please note that this will only work
-  with GRE connections using the key field of the GRE header."
-
-I do something like this for patching my kernel (2.4.21):
-patch -p1 < ./path-o-mat.../ip_conntrack_pptp.patch, and everything
-seems allright.
-
-But I Never get the option in my kernelconfiguration - I want to make it
-as a module.
-I do have the ip_conntrack_pptp.c and .h file, maybe it is possible to
-make my module out of them?
+Hi there...
 
 
-Does anyone know of this, or is it just me being stupid ?
+   I'm running a firewall-router machine in a Red Hat Linux 9 box. I
+have uploaded Red hat's latest kernel 2.4.20-28 I guess. My problem is
+this... This box has been working perfectly for the last 6 months and it
+even had a 6 months uptime with no reboots. Suddendly, the box quit
+working and I started getting this message when I log the packets...
+
+-----
+IN=eth0 OUT=eth0 SRC=192.168.0.14 DST=200.44.32.13 LEN=62 TOS=0x00
+PREC=0x00 TTL=127 ID=49243 PROTO=UDP SPT=1090 DPT=53 LEN=42
+-----
+
+which means that somehow Linux confuses input interface and output  in
+the same: "IN=eth0 OUT=eth0". 
+
+This is my rc.firewall script:
+
+-----
+[alucard@servidor alucard]$ more /etc/rc.d/rc.firewall
+#!/bin/sh
+FWVER=0.74
+IPTABLES=/sbin/iptables
+DEPMOD=/sbin/depmod
+MODPROBE=/sbin/modprobe
+
+EXTIF="eth1"
+INTIF="eth0"
+
+echo "   External Interface:  $EXTIF"
+echo "   Internal Interface:  $INTIF"
+echo -en "   loading modules: "
+$DEPMOD -a
+echo -en "ip_tables, "
+$MODPROBE ip_tables
+echo -en "ip_conntrack, "
+$MODPROBE ip_conntrack
+echo -en "ip_conntrack_ftp, "
+$MODPROBE ip_conntrack_ftp
+echo -en "ip_conntrack_irc, "
+$MODPROBE ip_conntrack_irc
+echo -en "iptable_nat, "
+$MODPROBE iptable_nat
+echo -en "ip_nat_ftp, "
+$MODPROBE ip_nat_ftp
+echo "   Habilitando Mascaras IP.."
+echo "1" > /proc/sys/net/ipv4/ip_forward
+echo "   Habilitando DynamicAddr.."
+echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -t nat -F
+
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
+$IPTABLES -A INPUT -i $EXTIF -p tcp --dport 22 -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+
+$IPTABLES -A FORWARD -j LOG
 
 
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+-----
 
-Thanks a lot in regards
+What's odd here is that if I reboot the computer, I'd still get the same
+log message but if I do this:
 
-Jan
+ifconfig eth0 down
+ifconfig eth1 down
+ifconfig eth0 192.168.0.1 #router's address
+ifconfig eth1 up #DHCP internet access
 
+it will work -but not always, sometimes both interfaces do not ping
+anybody- but it will quit working after an hour or so not allowing any
+other services -like internal ftp or mail fetching- and I'll start
+having those logs again... I have checked all the box for any security
+issues and I haven't found any- I have latest packages due to a red hat
+network subscription-. What's weird is that it worked flawlessly for 6
+months... 
 
+Thanks a lot for your time...
 
+Juan
 
 
