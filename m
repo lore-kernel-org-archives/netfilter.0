@@ -1,10 +1,11 @@
-From: Alexey Sheshka <pulsar@magister.by>
-Subject: pptp + iptables
-Date: Fri, 13 Sep 2002 17:33:05 +0300
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: martians from myself?
+Date: 13 Sep 2002 16:28:45 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020913173305.4945ce45.pulsar@magister.by>
+Message-ID: <1031927325.15445.3.camel@rayw>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-Jl+bGYmdaf1PXFWAoOVV"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,27 +16,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-Hi !
 
-I have folowing troble.
-Then I'm connecting to pptp server (195.x.x.34)  from Windows2000 box (192.168.15.132) pptp connection dies 
-with error message : "The specified port is not connected."
-I think this is netfilter problem.
+--=-Jl+bGYmdaf1PXFWAoOVV
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-My NAT box has :
-iptables v1.2.7a
-stock 2.4.19 kernel from ftp.kernel.org with latest patch-o-matic
-ip_conntrack_pptp ip_nat_pptp ip_conntrack_proto_gre iptable_nat    propertly loaded
+Hi
 
-My NAT script:
+Can someone tell me what would cause this:
 
-#!/bin/bash
-echo 0 > /proc/sys/net/ipv4/ip_forward
-ipt=/usr/local/sbin/iptables
-$ipt -p tcp -A PREROUTING -t nat -s 192.168.15.0/24 -d 0/0 --dport 80 -j DNAT --to 212.x.x.170:3128
-$ipt -p tcp -A POSTROUTING -t nat -s 192.168.15.0/24 -d 0/0 --dport ! 80 -j SNAT --to 212.x.x.170
-echo 1 > /proc/sys/net/ipv4/ip_forward
+Sep 13 16:32:07 firefly kernel: NET: 70 messages suppressed.
+Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
+127.0.0.75, on dev eth2
+Sep 13 16:32:07 firefly kernel: ll header:
+00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
+Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
+127.0.0.171, on dev eth2
+Sep 13 16:32:07 firefly kernel: ll header:
+00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
+Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
+127.0.0.208, on dev eth2
+Sep 13 16:32:07 firefly kernel: ll header:
+00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
+Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
+127.0.0.244, on dev eth2
+Sep 13 16:32:07 firefly kernel: ll header:
+00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
+Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
+127.0.0.64, on dev eth2
+Sep 13 16:32:07 firefly kernel: ll header:
+00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
+Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
+127.0.0.40, on dev eth2
+Sep 13 16:32:07 firefly kernel: ll header:
+00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
+Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
+127.0.0.151, on dev eth2
+Sep 13 16:32:07 firefly kernel: ll header:
+00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
+Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
+127.0.0.54, on dev eth2
+Sep 13 16:32:07 firefly kernel: ll header:
+00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
+Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
+127.0.0.211, on dev eth2
+Sep 13 16:32:07 firefly kernel: ll header:
+00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
+Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
+127.0.0.23, on dev eth2
+Sep 13 16:32:07 firefly kernel: ll header:
+00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
+
+The MAC address in the ll header is the interface on my firewall.
+
+Any help would be appreciated
+
+Ray
+
+--=20
+----------------------------------------
+Raymond Leach
+Internet Infrastructure
+Knowledge Factory
+Tel: +27-11-445-8100 Fax: +27-11-445-8101
+www: http://www.knowledgefactory.co.za
+----------------------------------------
+"It is a man's own fault if his mind grows
+ torpid in old age." - Samual Jackson
+
+--=-Jl+bGYmdaf1PXFWAoOVV
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9gfYdh1fuR/Bv+ygRAi2DAJ9AMwr8sT6J3hjrO+NlYI+g+aY+4ACeNqdj
+8hjXr1oc4QYirOI7K2NWbto=
+=/eYn
+-----END PGP SIGNATURE-----
+
+--=-Jl+bGYmdaf1PXFWAoOVV--
+
 
