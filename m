@@ -1,14 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ipfilter on satellite receive only PC
-Date: Sat, 26 Jun 2004 09:45:38 +0100
+From: Joel Solanki <zealous@bonbon.net>
+Subject: Re: Ip accounting Help--> Urgent
+Date: Sat, 26 Jun 2004 14:50:59 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406260945.38438.Antony@Soft-Solutions.co.uk>
-References: <40DD28BA.82DEE8DA@neduet.edu.pk> <200406260915.01035.Antony@Soft-Solutions.co.uk> <a0f69e5040626012851d190ba@mail.gmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1088241658.2283.35.camel@joel.d2visp.com>
+References: <1087962571.2041.10.camel@joel.d2visp.com>
+	 <200406231241.29378.Antony@Soft-Solutions.co.uk>
+	 <1088224225.3133.20.camel@joel.d2visp.com>
+	 <200406260922.14221.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <a0f69e5040626012851d190ba@mail.gmail.com>
+In-Reply-To: <200406260922.14221.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,63 +21,139 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Saturday 26 June 2004 9:28 am, Askar Ali Khan wrote:
+Good morning Antone and all.
 
-> this is out im running on my slackware, adjust it to your needs :)
+			
+	LINUX SERVER eth0 200.200.200.200 (public ip) --> switch 
+		     eth1 192.168.0.1/24   -------------> switch
 
-That's okay - I run Slackware too :)
 
-> #!/bin/bash
-> #
-> # Basic script to keep the nasties out of slack-lap
->
-> # First we make the default policy to drop everything
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
->
-> # Allow established connections and programs that use
-> loopback
->
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED
-> -j ACCEPT
-> iptables -A INPUT -s 127.0.0.0/8 -d 127.0.0.0/8 -i lo
-> -j ACCEPT
+Yes 192.168.0.2 is the ip of windows 98 machine.
+I have done SNAT on linux server.
+Below are the rules:-
 
-# Also allow established connections *through* the router, as well as *to* it:
+[root@joel root]# iptables -t mangle -nvL
+Chain PREROUTING (policy ACCEPT 5321 packets, 1574K bytes)
+ pkts bytes target     prot opt in     out     source        destination
 
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+Chain INPUT (policy ACCEPT 4 packets, 452 bytes)
+ pkts bytes target     prot opt in     out     source        destination
 
-# Now allow first packets of the connections we want to become established
+Chain FORWARD (policy ACCEPT 5299 packets, 1571K bytes)
+ pkts bytes target     prot opt in     out     source        destination
+ 2672 1461K            all  --  eth1   *       192.168.0.2   0.0.0.0/0
+ 2627  110K            all  --  eth0   *       0.0.0.0/0     192.168.0.2
 
-iptables -A FORWARD -i eth0 -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -i eth0 -p udp --dport 53 -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 53 -j ACCEPT
+Chain OUTPUT (policy ACCEPT 2 packets, 140 bytes)
+ pkts bytes target     prot opt in     out     source        destination
 
-> # Lets allow ssh to connect
->
-> iptables -A INPUT -p tcp --dport 22 -i ppp0 -j ACCEPT
->
-> #end script
+Chain POSTROUTING (policy ACCEPT 5301 packets, 1571K bytes)
+ pkts bytes target     prot opt in     out     source        destination
 
-The above rules should allow machines on your internal network (assumed to be 
-connected to eth0, adjust if otherwise) to do DNS lookups and HTTP requests 
-to the outside world.
+[root@joel root]#
 
-Hopefully this gives you a template to which you can add more rules for 
-whatever other protocols you want to allow.
+I have tested again this rules
+I just upload squid.tar.gz which is of 1.3M. and i found the above
+results. Its only showing the 110K bytes ...file is of 1.3M and traffic
+bytes are more in other rule ..its showing 1461K. so i cant get what is
+exactly going on with this chains...
+
+Below are other iptables results..........
+------------------------------------------------------------------------------------------------------------------------
+
+[root@joel root]# iptables -nvL
+Chain INPUT (policy ACCEPT 9 packets, 1053 bytes)
+ pkts bytes target     prot opt in     out     source        destination
+    0     0 ACCEPT     all  --  eth1   *       192.168.0.2   0.0.0.0/0
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+pkts	bytes	target	prot	opt	in	out	source		destination
+2690	1462K	ACCEPT	all	--	*	eth1	192.168.0.2	0.0.0.0/0	state	NEW,RELATED,ESTABLISHED
+2638	111K	ACCEPT	all	--	*	eth1	0.0.0.0/0	192.168.0.2	state	NEW,RELATED,ESTABLISHED
+
+Chain OUTPUT (policy ACCEPT 7 packets, 450 bytes)
+pkts	bytes	target	prot	opt	in	out	source		destination
+---------------------------------------------------------------------------------------------------------------------------
+
+
+[root@joel root]# iptables -t nat -nvL
+Chain PREROUTING (policy ACCEPT 463 packets, 43776 bytes)
+ pkts bytes target     prot opt in     out     source       destination
+
+Chain POSTROUTING (policy ACCEPT 41 packets, 2532 bytes)
+pkts	bytes	target	prot	opt	in	out	source		destination
+237	12398	SNAT	all	--	*	eth0	192.168.0.2	0.0.0.0/0	to:200.200.200.200
+
+Chain OUTPUT (policy ACCEPT 41 packets, 2532 bytes)
+ pkts bytes target     prot opt in     out     source       destination
+
+
+---------------------------------------------------------------------------------------------------------------------------
 
 Regards,
 
-Antony.
-
+On Sat, 2004-06-26 at 13:52, Antony Stone wrote:
+> On Saturday 26 June 2004 5:30 am, Joel Solanki wrote:
+> 
+> > Hello all, ANTONY ...hoping something from u :)
+> 
+> Good morning :)
+> 
+> > I am testing ip accounting on my production server for last 2 days but i
+> > can sort the things. Any body if u could throw little light that would
+> > be really helpful to me.
+> > This is my testing results.
+> >
+> > # $IPT -t mangle -i eth1 -A FORWARD -s 192.168.0.2
+> > # $IPT -t mangle -o eth0 -A FORWARD -d 192.168.0.2
+> >
+> > Results:-
+> >
+> > Chain FORWARD (policy ACCEPT 6853 packets, 2981K bytes)
+> >  pkts bytes target     prot opt in     out     source        destination
+> >  3267 1483K            all  --  eth1   *       192.168.0.2   0.0.0.0/0
+> >     0     0            all  --  *      eth0    0.0.0.0/0     192.168.0.2
+> >
+> > I download squid-2.5.STABLE5.tar.gz from my ftp server.
+> > The size of squid is 1.3M
+> >
+> > Now when i did upload same squid package from local machine to remote
+> > ftp server it doesnt show any bytes counter in second command :--you can
+> > see that above ...counters bytes are 0.
+> 
+> Two very obvious questions first - I don't think these will be the problem, 
+> but I might as well check:
+> 
+> 1. Is the machine you are uploading to connected via eth0?
+> 2. Does the machine you are uploading to have IP address 192.168.0.2?
+> 
+> Both the above must be "yes" for the second rule you have (the one that's not 
+> apparently working properly) to count packets.
+> 
+> Now for the suggestion where I think you *may* have an error:
+> 
+> 3. Do you have any PREROUTING nat rules which mean that by the time packets 
+> hit the FORWARD chain, they're no longer addressed to 192.168.0.2?
+> 
+> A good way to answer this would be to show us the rule in your FORWARDing 
+> filter table which allows the connection (the upload connection which you are 
+> having problems measuring) to work.
+> 
+> I cannot think of any reason why a rule in the FORWARD mangle table would not 
+> see packets which are correctly being processed by the FORWARD filter table.
+> 
+> Regards,
+> 
+> Antony.
 -- 
-The words "e pluribus unum" on the Great Seal of the United States are from a 
-poem by Virgil entitled "Moretum", which is about cheese and garlic salad 
-dressing.
+Joel n.solanki
+Systems Administrator
+(M) 91-9825500258
+D2V ISP PVT LTD
+http://www.d2visp.com
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
 
 
