@@ -1,76 +1,72 @@
-From: Stephen CS Howe <info@fabsurplus.com>
-Subject: Re: error: ip_tables.o init_module:Device or resource busy
-Date: Mon, 10 Nov 2003 21:05:12 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068494712.5220.241.camel@twogiga.tower>
-References: <3FAFCFEC.8010700@fabsurplus.com>
-	 <1068491048.3652.2.camel@dchws.TQMcube.com>
+From: Kishore Dharmavaram <kishored@servgate.com>
+Subject: RE: Memory leaks in ip_conntrack?
+Date: Mon, 10 Nov 2003 12:10:27 -0800
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B204E@skat.sky.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1068491048.3652.2.camel@dchws.TQMcube.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: "David C. Hart" <dch@TQMcube.com>
-Cc: Iptables Mailing List <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+Cc: "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
 
-Dear David,
+Alistair & All,
 
-Thanks for the advice.
-Seeing as I have never manually done a kernel install, I have just taken
-the following steps:-
--upgraded to iptables 1.2.8 from tar.gz
--installed kernel 2.4.22-1.2115.nptl using "no-brain" rpm commands.
-Those purists amongst the list readers will be happy to note this has
-not got me anywhere:-
-*******************************************************************
-iptables -L
-/lib/modules/2.4.22-1.2115.nptl/kernel/net/ipv4/netfilter/ip_tables.o: 
-init_module: Device or resource busy
-Hint: insmod errors can be caused by incorrect module parameters, 
-including invalid IO or IRQ parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.22-1.2115.nptl/kernel/net/ipv4/netfilter/ip_tables.o: 
-insmod 
-/lib/modules/2.4.22-1.2115.nptl/kernel/net/ipv4/netfilter/ip_tables.o
-failed
-/lib/modules/2.4.22-1.2115.nptl/kernel/net/ipv4/netfilter/ip_tables.o: 
-insmod ip_tables failed
-iptables v1.2.8: can't initialize iptables table `filter': iptables who?
-(do you need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded.
-*********************************************************************
+I believe /proc/slabinfo gives # of conntracks being used, in my tests I
+usually find slabinfo number is same as number of entries in
+/proc/net/ip_conntrack. But, after 18hrs or so the number in /proc/slabinfo
+reaches maximum and box starts refusing connections, /proc/net/ip_conntrack
+show 20 to 30 entries, I hear /proc/net/ip_conntrack is unreliable and
+broken. Anyway, I guess I have to dig into the code.
 
-At this stage, am I going to have to manually configure the kernel ??
-I guess so, but seeing as I do not know what I am doing, I'd appreciate
-any input from somebody who knows what they are doing.
+Thanks,
+-Kishore
+
+-----Original Message-----
+From: Alistair Tonner [mailto:Alistair@nerdnet.ca]
+Sent: Sunday, November 09, 2003 4:40 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: Memory leaks in ip_conntrack?
 
 
-steve
+	
+	Actually Anthony I'm inclined to agree with you .. I was just
+pointing out 
+that the assumption that the count in /proc/slabinfo (ip_conntrack) is  an 
+indication of the count in /proc/net/ipv4/ip_conntrack is completely 
+incorrect.  i.e. the two counters are keeping track of dfferent things.
+
+	I'm curious myself (as to what is causing this gent's problem) as
+there have 
+been so many queries on this subject lately, and as I pointed out to Oskar
+we 
+*really* are starting to need a FAQ on this.  
+
+	i.e. -- if you think this is a problem, here's best how to determine
+if 
+iptables is causing memory issues on your system.  Frequenly folks are 
+implementing iptables and don't understand linux memory management schema 
+and the affects it has on what they see on their screens.
+
+	Not that I'm complaining, ... Its good learning for me as I try to
+diagnose 
+the issue on my system, but it might make new users lives easier if we had 
+the info out there to start with.
 
 
-On Mon, 2003-11-10 at 20:04, David C. Hart wrote:
-> On Mon, 2003-11-10 at 12:50, Steve wrote:
-> > I'd like to preface this mail by saying that if a little knowledge is a 
-> > dangerous thing, then I am very dangerous....
-> > 
-> > I have recently installed redhat 9.0 over the top of RH V7.3 and then I 
-> > upgraded to iptables 1.2.7a with a 2.4.20-18.9 kernel using apt-get.
-> > When I try to do anything with iptables, I get the following error:-
-> > 
-> Presumably that's a stock RH kernel. For starters, 2.4.22 is completely
-> stable and offers a noticeable improvement in throughput. You might want
-> to custom compile and install it yourself.
-> 
->                                ---------
->             Quality Management - A Commitment to Excellence
-
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
