@@ -1,12 +1,10 @@
-From: Steve Mickeler <steve@warning.ca>
-Subject: Re: Using heartbeat for fall over on IPTables Firewall
-Date: Mon, 17 Mar 2003 15:39:09 -0500 (EST)
+From: Chip Upsal <cupsal@cyberwolf.com>
+Subject: RE: Using heartbeat for fall over on IPTables Firewall
+Date: Mon, 17 Mar 2003 14:44:32 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0303171537430.6946@gypsy>
-References: <OF3F839083.CA2009BC-ON83256CEC.005C8032@LocalDomain>
+Message-ID: <3019863CF306D211BA4500A0CC30812DC67938@exchange.cyberwolf.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OF3F839083.CA2009BC-ON83256CEC.005C8032@LocalDomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,10 +14,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Antonio Paulo Salgado Forster <aforster@br.ibm.com>
+To: 'Steve Mickeler' <steve@warning.ca>, Antonio Paulo Salgado Forster <aforster@br.ibm.com>
 Cc: Chip Upsal <cupsal@cyberwolf.com>, netfilter@lists.netfilter.org
+
+in what ways is this better then heartbeat?
+
+-----Original Message-----
+From: Steve Mickeler [mailto:steve@warning.ca]
+Sent: Monday, March 17, 2003 1:39 PM
+To: Antonio Paulo Salgado Forster
+Cc: Chip Upsal; netfilter@lists.netfilter.org
+Subject: Re: Using heartbeat for fall over on IPTables Firewall
+
 
 
 I'll second the vote for keepalived.
@@ -47,7 +55,8 @@ On Mon, 17 Mar 2003, Antonio Paulo Salgado Forster wrote:
 > Sent by:    netfilter-admin@lists.netfilter.org
 >
 >
-> To:    netfilter@lists.netfilter.org, "'linux-ha@muc.de'" <linux-ha@muc.de>
+> To:    netfilter@lists.netfilter.org, "'linux-ha@muc.de'"
+<linux-ha@muc.de>
 > cc:
 > Subject:    Using heartbeat for fall over on IPTables Firewall
 >
