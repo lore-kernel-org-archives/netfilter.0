@@ -1,12 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: (no subject)
-Date: Fri, 16 Apr 2004 15:00:09 +0200
+From: rrecaba@usb.ve
+Subject: Connection Tracking Limits.
+Date: Fri, 16 Apr 2004 09:03:11 -0400 (VET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002f01c423b2$bff5bbc0$1202a8c0@admin>
-References: <E1BEJWp-0005UN-EQ@ht8b10.server4sale.com>
+Message-ID: <Pine.LNX.4.58.0404160851070.27976@seraph.dst.usb.ve>
+References: <407F9D35.6070204@ice-dev.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <407F9D35.6070204@ice-dev.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +16,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> I was wondering if anybody could tell me how to setup a rule that
-> forwards all packets from a particular IP, regardless of the ports,
-> on to another machine?
 
-You mean to DNAT connections to a server behind the firewall ?
+Hello List,
 
-iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state RELATED,ESTABLISED -j ACCEPT
-iptables -A FORWARD -d <dest_ip> -j ACCEPT
-iptables -t nat -A PREROUTING -s <src_ip_range> -j DNAT <dest_ip>
-echo 1 > /proc/sys/net/ipv4/ip_forward
+I was wondering if anyone has had experience on pushing the max
+connections limit of the connection tracking module above its default.
 
-For <src_ip_range>, see below.
+I mean, what exactly could I expect to happen if I
 
-> I was also wondering if it is possible to forward an entire IP range,
-> or the DNS using wildcards? For example forwarding all connections
-> from *.aol.com regardless of the port onto a specific IP? If this is
-> possible, could anybody tell me how I would go about it?
+echo 32752 > /proc/sys/net/ipv4/ip_conntrack_max
 
-Using a range is possible :
-- use subnets like /24 or 255.255.255.0
-- use the iprange patch from POM. You will have to patch your kernel for
-that to work.
-See http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-iprange
+on a 256 Mb machine ? (whose default max limit is 16376)
 
-You cannot use wildcard domain lookups in iptables rules so you'd have to
-find out which ip ranges you want to match yourself.
+Does it actually track more connections unreliably or some other? or does
+it just ignore the oversized value?
 
-
-Gr,
-Rob
+Many thanks in advance,
+Ruben.
 
 
