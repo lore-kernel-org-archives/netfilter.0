@@ -1,11 +1,9 @@
-From: Arindam Haldar <arindamhaldar@inbox.lv>
-Subject: Re: PLs HELP !
-Date: Fri, 31 May 2002 18:29:19 +0530
+From: Michael Montero <mmontero@mail.communityconnect.com>
+Subject: IP Aliasing
+Date: Fri, 31 May 2002 12:55:57 -0400 (EDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CF773A7.7060907@inbox.lv>
-References: <XVQFCQNHBPO09ZUFD43212WRP2VYVJH.3cf6f883@ALEXEY>
+Message-ID: <Pine.LNX.4.04.10205311254170.5797-100000@lysa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,66 +14,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: alexey_talikov@texlab.com.uz
-Cc: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-I havent seen it without traffic--i cant replace this running server at 
-the moment ! .. but i can tell u one thing--even at off peak hours the 
-server handles traffic of atleast 512kbps with a max of 2mbps which is 
-comming from the ISP !
+I'm trying to set up 2 IP aliases on my firewall box.  It's Redhat 7.2.  I
+believe I have the 2 alias (eth0:0 and eth0:1) set up properly.  Is there
+anything in particular I need to do with iptables to activate these 2
+interfaces?  I've attempted to execute rules with the interface specified
+as eth0:0 and iptables does not seem to like that.  Anyone have any docs I
+can read about proper IP aliasing under Redhat and what I need to do for
+iptables?
 
-Alexey Talikov wrote:
-> This messages appear with traffic or not ??
-> 
-> 31.05.2002 9:14:31, Arindam Haldar <arindamhaldar@inbox.lv> wrote:
-> 
->>hi to u all again !
->>i posted the below message yestreday... this log message keeps on commng 
->>in the messages file EVERY 1min & hence is filing up the disc space 
->>given for /var/log
->>pls .. i need some direction in knowing what could be the possible 
->>problem !..
->>Thanking u all in advance...
->>this is the message posted earlier.....
->>
->>hi all,
->>i am getting these messages in my /var/log/messages..
->>can someone tell me whats hapenning here..
->>iptables v1.2.7-2--2-423 with  kernel 2.4.18 & patched htb3.3-020512 & 
->>imq-2.4.18...
->>May 30 05:09:58 cab1 kernel: ASSERT: ip_nat_core.c:840 
->>&ip_conntrack_lock not readlocked
->>May 30 05:10:04 cab1 kernel: ASSERT ip_nat_core.c:739 
->>&ip_conntrack_lock_R71150de5 readlocked
->>May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:91 
->>&ip_conntrack_lock_R71150de5 readlocked
->>May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:743 
->>&ip_conntrack_lock not readlocked
->>May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:973 
->>&ip_conntrack_lock not readlocked
->>May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:840 
->>&ip_conntrack_lock not readlocked
->>May 30 05:10:04 cab1 kernel: ASSERT ip_nat_core.c:739 
->>&ip_conntrack_lock_R71150de5 readlocked
->>May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:91 
->>&ip_conntrack_lock_R71150de5 readlocked
->>May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:743 
->>&ip_conntrack_lock not readlocked
->>May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:840 
->>&ip_conntrack_lock not readlocked
->>[root@cab1 root]#
->>
->>awaiting reply
->>a.h
->
->  
-> -----------------------------------
-> mailto:alexey_talikov@texlab.com.uz
-> BR
-> Alexey Talikov
-> FORTEK
-> -----------------------------------
->
+Thanks!
+
 
 
