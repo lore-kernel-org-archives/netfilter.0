@@ -1,12 +1,11 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: RE: Consulta iptables v1.2.11
-Date: Mon, 13 Dec 2004 12:21:56 -0300
-Message-ID: <E1Cds1N-0003Cr-00@deer.gmane.org>
-References: <200412131619.04806.clist@uah.es>
+From: "Alejandro Kurchis" <sisdis@tournet.com.ar>
+Subject: Actualizar a ipfilter 1.2.11 o similar
+Date: Mon, 13 Dec 2004 12:44:14 -0300
+Message-ID: <004301c4e12a$9a2b9500$0200a8c0@ale>
+Reply-To: Alejandro Kurchis <sisdis@tournet.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200412131619.04806.clist@uah.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,89 +16,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: clist@uah.es, netfilter@lists.netfilter.org
-Cc: 'Jorge Enrique' <nunezj@ucbcba.edu.bo>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Si, iptables soporta CIDR
-=20
+Hola gente, escribo en castellano porque veo que hay varios que hablan esta
+lengua en esta lista.
 
-> -----Mensaje original-----
-> De: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] En nombre de Clist
-> Enviado el: Lunes, 13 de Diciembre de 2004 12:19
-> Para: netfilter@lists.netfilter.org
-> CC: Jorge Enrique
-> Asunto: Re: Consulta iptables v1.2.11
->=20
-> hola Jorge Enrique,
->=20
-> 192.168.107.0/24 esto es notaci=F3n cdir, verdad?=20
-> creo que el iptables no la admite, usa 192.168.107.0/255.255.255.0
->=20
-> -p ALL es superfluo, no pongas nada...
-> =20
-> los modulos suele cargarlos =E9l mismo, con tal de que a=F1adas=20
-> el match necesario
->  ejmp a=F1ade '-m tcp' si vas a usar -p tcp
->=20
-> a=F1ade iptables -I INPUT -m state --state RELATED;ESTABLISHED -j =
-ACCEPT
-> esto ahorra evaluar todas las reglas para cada paquete de una=20
-> conexi=F3n ya en curso.
->=20
-> quizas el conntrack de ftp no lo cargue, eso me pasa a veces a mi,=20
->=20
-> por lo demas todo bien.
->=20
-> Un saludo
->=20
-> On Monday 13 December 2004 16:06, Jorge Enrique wrote:
-> > Hola a todos, el viernes pasado termine de configuar mi firewall en
-> > fedora core 3, en el cual tengo corriendo el squid todo=20
-> bien,, estado
-> > queiendo colocar algunas reglas con el iptables donde me sale el
-> > siguiente error:
-> >=20
-> > Ejecutando reglas y configuracion de iptables para servidor
-> > ...1...2...3...4...iptables v1.2.11: multiple -s flags not allowed
-> > Try `iptables -h' or 'iptables --help' for more information.
-> > Bad argument `22'
-> > Try `iptables -h' or 'iptables --help' for more information.
-> >=20
-> >=20
-> > En las reglas que estoy utilizando donde coloco el flag -s es en las
-> > siguientes.
-> > $IPTABLES -A INPUT -p ALL -i eth1 -s 192.168.107.0/24 -j ACCEPT
-> > $IPTABLES -A INPUT -p ALL -i eth1 -s 192.168.108.0/24 -j ACCEPT
-> > $IPTABLES -A INPUT -p ALL -i eth1 -s 192.168.105.0/24 -j ACCEPT
-> >=20
-> > donde hago referencia a las subredes que se tienen de origen
-> > como referencia estos son los modulos que estoy utilizando
-> >=20
-> > /sbin/depmod -a
-> > /sbin/modprobe ip_conntrack
-> > /sbin/modprobe iptable_filter
-> > /sbin/modprobe iptable_mangle
-> > /sbin/modprobe iptable_nat
-> > /sbin/modprobe ipt_LOG
-> > /sbin/modprobe ipt_limit
-> > /sbin/modprobe ipt_state
-> > /sbin/modprobe ip_nat_ftp
-> > /sbin/modprobe ip_conntrack_ftp
-> >=20
-> > Alguna idea porq me sale este error.
-> >=20
-> >=20
-> >=20
-> >=20
-> >=20
->=20
-> --=20
-> -------------------------------------------------
-> Clister UAH
-> -------------------------------------------------
->=20
->=20
+Yo tengo Linux Red Hat 9 con iptables 1.2.7a, el kernel es 2.4.20-8. Aclaro
+que no soy experto en instalaciones sobre todo las que incluyan al kernel.
+
+Me gustaria actualizar a una version mas actual de iptables (por ej. la
+1.2.11a) como para usar el filtrado por STRING entre otros, pero
+sinceramente lei mucha informacion y estoy mareado. Lei por ahi que deberia
+parchear el kernel, usar ademas patch-o-matic, etc etc.
+
+Pregunto brevemente: no existe la posibilidad de instalar una nueva version
+de iptables desde un RPM y listo ??? De lo contrario alguno me puede dar el
+URL de una guia que sea clara y concisa para hacerlo yo mismo ??
+
+Mil gracias,
+
+Saludos.
+
+A.K.
 
 
