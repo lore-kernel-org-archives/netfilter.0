@@ -1,14 +1,15 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: NFS/RPC
-Date: Sat, 13 Dec 2003 11:16:18 -0800
+From: Eric Leblond <eric@regit.org>
+Subject: Re: Modify packets using netfilter
+Date: Sat, 13 Dec 2003 21:21:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312131916.hBDJGINC023488@server5.bandwidthco.com>
-References: <1071301981.3fdac55d5a562@anchor.net.au>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <1071346885.1309.3.camel@porky>
+References: <007101c3c190$0b3d6450$cb0210ac@jz105>
+	 <200312131549.45158.Antony@Soft-Solutions.co.uk>
+	 <007d01c3c198$873df440$cb0210ac@jz105>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-r8HdRIBG0U8/OXmX72yV"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1071301981.3fdac55d5a562@anchor.net.au>
+In-Reply-To: <007d01c3c198$873df440$cb0210ac@jz105>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +19,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Michael Hall' <ninti@ninti.com>, netfilter@lists.netfilter.org
-
-RPC services are notoriously difficult to get across a firewall because most
-services DO NOT use predictable port numbers - and, consequently, a large
-high port range must be opened up.  However, NFS is the RPC exception, in
-that it nearly always uses port 2049.  Having said that, opening up your
-firewall to NFS is a bad idea.  Now, if you must, in additional to the NFS
-port of TCP/UDP 2049, you will need to open the portmapper (port 111
-TCP/UDP) and mountd (typically port 635). You will probably also need to
-open the RPC managed lockd (typically port 4045) and statd in both
-directions.  So, to answer your question, yes it is possible, but you just
-ripped your firewall to sheds.
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Michael Hall
-Sent: Friday, December 12, 2003 11:53 PM
-To: netfilter@lists.netfilter.org
-Subject: NFS/RPC
-
-Hi All:
-
-Excuse me if this is a well-worn question, but the list archives don't
-appear to be searchable (at least I could find a search facility).
-
-I have been using iptables since it came out around 2 years ago, but have
-never tried to get NFS through it.
-
-The firewall in question is not net connected, but on an internal LAN
-server.
-I'm just being paranoid about what goes on inside the network as well.
-
-Anyway, my head hurts and I've decided to ask for help: Is it possible to
-get NFS and RPC and whatever else is needed through an iptables firewall? If
-so, how?
-
-I read on Google that RPC is what complicates the issue.
-
-TIA
-
-Mick
+To: "Jee J.Z." <jz105@york.ac.uk>
+Cc: netfilter@lists.netfilter.org
 
 
+--=-r8HdRIBG0U8/OXmX72yV
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
+Le sam 13/12/2003 =C3=A0 17:45, Jee J.Z. a =C3=A9crit :
+> Hi Antony and all,
+>=20
+> Thanks for your reply. What I am trying to do is to get the whole packets=
+ including their payloads and store them into a self defined queue, and ran=
+domly modify some bits in each packet.=20
+> I am using iptables userspace programming. Does anybody have some good id=
+ea how to achieve this? Thank you.
 
+with libipq you can modify the payload of the packet :
+
+Take from man page :
+int ipq_set_verdict(const struct ipq_handle *h, ipq_id_t  id,  unsigned
+       int verdict, size_t data_len, unsigned char *buf);
+
+if data_len is not 0 and buf is not NULL, the header and payload of the
+packet get replaced by the datas pointed by buf.
+
+BR,
+--=20
+Eric Leblond
+Nufw, Now User Filtering Works (http://www.nufw.org)
+
+--=-r8HdRIBG0U8/OXmX72yV
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQA/23TFnxA7CdMWjzIRAr71AJ9h7zrthjVdm/R5Vcb+xyjYrYcD3QCeL9zL
+pL4dSWfpNY38t5Kc206s2uU=
+=0tgz
+-----END PGP SIGNATURE-----
+
+--=-r8HdRIBG0U8/OXmX72yV--
 
