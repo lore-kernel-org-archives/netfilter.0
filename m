@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Url not found ....
-Date: Sat, 6 Jul 2002 22:31:17 +0100
+From: "Dennis Cardinale" <dennis@core-enterprises.com>
+Subject: RE: Url not found ....
+Date: Sat, 6 Jul 2002 17:35:33 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020706213119.PZDB4119.mta06-svc.ntlworld.com@there>
-References: <200207062258.42170.captain.nuke@gmx.at> <200207062113.RAA09576@onevista.com>
+Message-ID: <EPEHIDPIPEBFNAHLCHPGAEMJCEAA.dennis@core-enterprises.com>
+References: <20020706213119.PZDB4119.mta06-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200207062113.RAA09576@onevista.com>
+In-Reply-To: <20020706213119.PZDB4119.mta06-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,7 +18,17 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailing List <netfilter@lists.samba.org>
+
+You are right...he needs to change to dash (-) to a tilda (~).
+
+-----Original Message-----
+From: netfilter-admin@lists.samba.org
+[mailto:netfilter-admin@lists.samba.org]On Behalf Of Antony Stone
+Sent: Saturday, July 06, 2002 5:31 PM
 To: netfilter@lists.samba.org
+Subject: Re: Url not found ....
+
 
 On Saturday 06 July 2002 10:13 pm, John Adams wrote:
 
@@ -40,14 +50,15 @@ On Saturday 06 July 2002 10:13 pm, John Adams wrote:
 
 Okay.   I didn't try the URL myself before posting the last suggestion.
 
-I've just tried now, and I get an error 404, which is definitely *not* a 
-netfilter problem - it means the remote server *has* been contacted (ie all 
-the routing has worked), and the remote server has said "I do not have that 
+I've just tried now, and I get an error 404, which is definitely *not* a
+netfilter problem - it means the remote server *has* been contacted (ie all
+the routing has worked), and the remote server has said "I do not have that
 page".
 
 I'd suggest you check those digits in the middle of the URL.
 
- 
+
 
 Antony.
+
 
