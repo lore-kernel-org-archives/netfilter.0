@@ -1,12 +1,11 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: How do you think about this....
-Date: Tue, 6 Apr 2004 10:09:18 -0700
+From: Kenneth Andresen <kenneth@cancun.net>
+Subject: Why is networking enabled at kernel level?
+Date: Tue, 06 Apr 2004 12:59:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF56792B1@alderaan.smgtec.com>
+Message-ID: <1081274356.2983.2.camel@kenneth.intracol.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,8 +16,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "D. Prima Prayudi" <prima@arc.itb.ac.id>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-You don't describe how you've done anything. Nobody knows how you slowed
-down nmap before, so we surely can't tell you how to do it now.
+Hello all, 
+
+I have been searching for information related with why networking is
+part of the Linux kernel itself, but have found nothing at either
+kernel.org or with any of my Google searches. 
+
+I can see multiple pro's and con's but am looking for a more extensive
+discussion about this. Anyone who can provide me with some good links?
+
+
+Best regards,
+Kenneth
+
 
