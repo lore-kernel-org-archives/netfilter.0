@@ -1,11 +1,11 @@
 From: "Patrick Ahler" <pmahler@vikus.com>
 Subject: routing
-Date: Thu, 22 Jan 2004 11:17:04 -0500
+Date: Thu, 22 Jan 2004 11:31:02 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <810BC538117E9F4E9BB152E0C100DF1F0A4F3E@farmer.vikus.net>
+Message-ID: <810BC538117E9F4E9BB152E0C100DF1F0A4F3F@farmer.vikus.net>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3E103.2CEC9D5B"
+	boundary="----_=_NextPart_001_01C3E105.946D9061"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -21,7 +21,7 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C3E103.2CEC9D5B
+------_=_NextPart_001_01C3E105.946D9061
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -51,7 +51,7 @@ A.B.C.x
 Thanks,
 Patrick A.
 
-------_=_NextPart_001_01C3E103.2CEC9D5B
+------_=_NextPart_001_01C3E105.946D9061
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -130,5 +130,5 @@ LANG=3D"en-us"></SPAN></P>
 
 </BODY>
 </HTML>
-------_=_NextPart_001_01C3E103.2CEC9D5B--
+------_=_NextPart_001_01C3E105.946D9061--
 
