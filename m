@@ -1,11 +1,9 @@
-From: "Carl Holtje ;021;vcsg6;" <cwh0803@cs.rit.edu>
-Subject: Re: Source/Destination matching question..
-Date: Tue, 15 Feb 2005 12:00:49 -0500 (EST)
-Message-ID: <Pine.GSO.4.58.0502151159570.12207@frazi.cs.rit.edu>
-References: <Pine.GSO.4.58.0502151132360.12207@frazi.cs.rit.edu>
-	<33789.142.169.215.10.1108487349.squirrel@142.169.215.10>
+From: "Aaron S. Joyner" <aaron@joyner.ws>
+Subject: Multiple subnets of the same IP space, different VLANs, same box...
+Date: Tue, 15 Feb 2005 12:17:05 -0500
+Message-ID: <42122E91.2000707@joyner.ws>
 Mime-Version: 1.0
-In-Reply-To: <33789.142.169.215.10.1108487349.squirrel@142.169.215.10>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,46 +14,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org, vlan@lanforge.com
 
-On Tue, 15 Feb 2005, Samuel Jean wrote:
+Okay, first let me admit that what I'm trying to do is a bit on the 
+weird side, and stems from some historical requirements that I can not 
+easily change.  Having said that, here's the scoop.
 
-> On Tue, February 15, 2005 11:41 am, Carl Holtje ;021;vcsg6; said:
-> > All-
-> >
-> > Is there a way to define a rule to combine the following lines:
-> > -A INPUT -s xxx.xxx.xxx.xxx -d yyy.yyy.yyy.yyy -j DROP
-> > -A INPUT -s zzz.zzz.zzz.zzz -d yyy.yyy.yyy.yyy -j DROP
-> >
-> > ... something like
-> > -A INPUT -s xxx.xxx.xxx.xxx -s zzz.zzz.zzz.zzz -d yyy.yyy.yyy.yyy -j DROP
-> >   or even
-> > -A INPUT -s xxx.xxx.xxx.xxx -s zzz.zzz.zzz.zzz -j DROP
->
-> Yes. But that requires an extension match. Quickly, I can think of 3:
->
-> o 'recent' match part of mainline kernel since a while.
->   You can add your `pool' of ips via /proc.
->   See http://www.snowman.net/projects/ipt_recent/
->
-> o 'pool' match. You need ippool(8) to feed your pool.
->
-> And finally, the best of all:
->
-> o 'set' match. Which is part of the ultimate ipset 2.0 (the successor
->   to pool match).
->
->   See http://people.netfilter.org/kadlec/ipset/
+I have numerous subnets, which are all identical.  Each has devices in 
+the 10.1.1.0/24 range that need to talk to a server at 10.1.1.1.  All 
+subnets for the sake of argument will be Class C ranges.  (1)  They are 
+all connected through Cisco switches, via 802.1q VLANs, back to a single 
+Linux box.  Each subnet comes in on a virtual interface (courtesy of 
+vconfig), such as eth1.10, eth1.11, etc.  I need to be able to respond 
+to each of those interfaces as 10.1.1.1, with (so far) only ICMP and UDP 
+traffic.
 
-IPSet is perfect for what I need! Thanks!
+At first, I'd hoped to be able to simply assign that same IP, 10.1.1.1, 
+over and over to each of the VLAN interfaces, and everything would work 
+itself out.  Unfortunately, that doesn't work.  It works fine for the 
+first box, but not for the second.  The second IP, on the second VLAN, 
+is unable to correctly ARP with the second client.  I can beat the ARP 
+problem temporarily by forcing a ping out the VLAN interface (ping -I 
+eth1.11 10.1.1.2, for example), or by adding a static ARP entry, but 
+even after ARP is handled, traffic simply doesn't flow up the IP stack 
+(or more realistically I think it's not flowing back *down* the IP stack 
+correctly).
 
-Carl
+In discussing this problem with a friend, he suggests that the problem 
+is that when Linux attempts to take a packet from the responding service 
+(ICMP from the kernel, or tftp from tftpd, for example), it starts fresh 
+to determine how to send out that packet, attempts to look up the 
+destination in the ARP cache, regardless of the interface it came in on, 
+and sends to the first entry it finds.  I currently believe that this is 
+why the simple / ideal solution I describe above is failing.
 
-- --
+I've considered that some magic with iptables DNAT, SNAT, or REDIRECT 
+targets, perhaps combined with the mangle table's ROUTE target, may 
+allow this to be possible, but I can't wrap my head around how to get 
+the packets properly mangled, and I'm still not 100% convinced that will 
+bypass the ARP problem.  Another possible (very ugly) solution would be 
+to run virtual machines attached to each of those VLAN interfaces, which 
+would separate out the problem of one "box" having lots of identical IP 
+addresses and ARP entries, but it seems like an amazing waste of resources.
 
-"There are 10 types of people in the world: Those who understand binary
-and those that don't."
+Any input anyone can offer about possible solutions, or even providing 
+further insight into the problem, would be most appreciated.  :)
 
+Aaron S. Joyner
+
+(1) IP addresses have, of course, been changed to protect the innocent.
 
