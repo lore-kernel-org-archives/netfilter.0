@@ -1,97 +1,84 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Hello -- complicated firewal :(
-Date: Tue, 02 Dec 2003 07:51:07 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070344266.4549.31.camel@raylinux.internal>
-References: <20031201124713.3fea02c6.mgale@utilitran.com>
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: dstlimit filter on stock 2.4.22
+Date: Sun, 30 Nov 2003 21:50:33 +0530
+Sender: linux-net-owner@vger.kernel.org
+Message-ID: <20031130162033.GM26749@obroa-skai.de.gnumonks.org>
+References: <200311252004.33005.timg@tpi.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-jaxhBbPVhq6CtM1BAU6D"
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031201124713.3fea02c6.mgale@utilitran.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JWJEtCrVvH5hpatL"
+Return-path: <linux-net-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <200311252004.33005.timg@tpi.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Tim Gardner <timg@tpi.com>
+Cc: linux-net@vger.kernel.org, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
 
---=-jaxhBbPVhq6CtM1BAU6D
-Content-Type: text/plain
+--JWJEtCrVvH5hpatL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2003-12-01 at 21:47, Michael Gale wrote:
-> Hello,
->=20
-> 	I have been using iptables for a while but only in simple setups. Now I =
-have been given the task to setup a major enterprise level firewall.
->=20
-> This firewall has 22 external virtual IP addresses plus one primary inter=
-nal and external IP. Oh it also has 1 virtual IP on the internal as well.
->=20
-> So right now I have two firewalls running a master and slave cluster - wh=
-ich every one is master listens on it's external and internal primary IP's =
-for connections from me only so I can administer it.
->=20
-> Plus then the master will listen on the 22 virtual IP's for DNAT them to =
-the severs on the DMZ.
->=20
-> The slave will only listen for traffic on the external and internal prima=
-ry IP's so I can administer it.
->=20
-> For a failover to be transparent the internal NIC of the master will list=
-en on 172.16.0.1 and this is the internal networks gateway. This is NOT the=
- primary IP of either firewall.
->=20
-> OK my question is .. when my master is up on firewall-1 it will listen on=
- 172.16.0.1 (internal network default gateway) and 172.16.0.2 (primary INTE=
-RNAL IP used only for administration)
->=20
-Why do you need a virtual IP for administration? One IP on the internal
-should be sufficient.
+On Tue, Nov 25, 2003 at 08:04:11PM -0700, Tim Gardner wrote:
+> I've been messing with the patch-o-matic/base/dstlimit.patch filter from =
+CVS.=20
 
-Use an INPUT rule to allow only your IP to administer the firewall:
-iptables -P INPUT DROP
-.
-.
-.
-iptables -A INPUT -i eth1 -p tcp --dport 22 -s <your_ip> -d 172.16.0.1
--j ACCEPT
+Hey, cool.  I never made an announcement for that code, but still it
+seems to get used ;)
 
-> How can I make it so internal users can only use 172.16.0.1 as a internet=
- gateway and NOT 172.16.0.2. =20
+Be warned that although I have written dstlimit (as contract work), I
+don't neccessarily agree with what dstlimit does. =20
 
-> >From my knowledge the FORWARD chain can only filter on source and destin=
-ation address -- I would think I would have to filter out based on what IP =
-the packet was forwarded to ... but how ?
->=20
-> I hope this is clear -- I tried looking for help on some IRC channels and=
- nobody understood what I was talking about.
+Ratelimiting of SYN packets (with limit or dstlimit) can only be helpful
+in a very small subset of all cases.
+
+In most cases, you will actually make the situation worse if you do any
+kind of SYN limiting.  The problem is:  As soon as you hit the
+configured limit, you will definitely have a DOS.  And chances are good
+that your configured rate will result in a sooner DOS than without the
+limit.
+
+The only case where ratlimiting of SYN on a firewall will help is:
+
+- the service[s] you protect can survive a packet-per-second rate _less_
+  than the firewall
+- you know exactly how many packets-per-second (or syn-per-second) your
+  to-be-protected service[s] can handle.
+
+In that particular case, you can create a limit rule that allows a few
+packets/syn's less than your service[s] can handle.
+
+The way more common cases is:
+- your firewall will not handle a higher pps/sps rate than the
+  service[s] you want to protect.  in this case an attacker wil DoS your=20
+  firewall independent of any limits set.
+
+> It uses constructs from 2.6 that do not exist in 2.4.=20
+
+please refer to davem's reply.
+
+> Tim Gardner - timg@tpi.com
+
 --=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+- Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+Programming is like sex: One mistake and you have to support it your lifeti=
+me
 
---=-jaxhBbPVhq6CtM1BAU6D
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+--JWJEtCrVvH5hpatL
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQA/zChKh1fuR/Bv+ygRAlGoAJ9EDqAW5dF46wfbQi+7emShKLEgWQCeJ8KE
-9VsLJRKyB3zb2RFL0ZHDcto=
-=q0ry
+iD8DBQE/yhjnXaXGVTD0i/8RAiw8AJ99a7o3AiJD71fGOmQYto+2nA2YYQCffrP0
+xVcJxWBnD9IZ3QvxAIunZw8=
+=fT26
 -----END PGP SIGNATURE-----
 
---=-jaxhBbPVhq6CtM1BAU6D--
-
-
+--JWJEtCrVvH5hpatL--
