@@ -1,12 +1,12 @@
-From: Thomas Lussnig <thomas.lussnig@bewegungsmelder.de>
-Subject: Re: pptp + iptables MTU ???
-Date: Sun, 15 Sep 2002 15:57:34 +0200
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: block ports
+Date: Tue, 17 Sep 2002 16:30:58 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D8491CE.1010100@bewegungsmelder.de>
-References: <20020913173529.41af8435.pulsar@bofh.homeunix.org> <3D8219B0.7070309@bewegungsmelder.de> <20020915111113.OSCA14766.mta05-svc.ntlworld.com@there>
+Message-ID: <Pine.LNX.4.44.0209171625380.12896-100000@dns.toxicfilms.tv>
+References: <200209171745.06648@.>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200209171745.06648@.>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: PayalR <payal@hotpop.com>
+Cc: netfilter@lists.netfilter.org
 
->
->
->>i have one question, when TCP packet's where send the filter change the
->>MTU sice (T-Error.com problem)
->>But i do not acivate such an rule for UDP or GRE Protocol. Is it
->>possible that this is the source for the
->>problems with pptp conection over an maserading server ?
->>    
->>
->MTU applies to IP packets, not specifically to TCP packets (which are a 
->particular form of data inside an IP packet).
->
->UDP and GRE are also transported inside IP packets, so if you need to set the 
->MTU on your external interface to get TCP/IP packets to work, I think you 
->should do the same thing for UDP/IP and GRE/IP packets too.
->
->Antony.
->
-Hi,
-i used this as an entry in the iptables. its mentioned in most of the 
-examples. But i think it do not work for
-UPD and GRE. This was the question if GRE/UDP need such spezial handling 
-to maybe this is the problem for
-the failed pptp connections ?
-If yes mean this that i have to adjust the Mtu values on every client 
-behind the server that should use pptp.
-The server have the correct mtu for the ppp0 interface.
+> iptables -A INPUT -p udp --dport 21 -j ACCEPT
+skip this.
 
-Cu Thomas
+> iptables -A INPUT -p udp --dport 22 -j ACCEPT
+this too
 
-iptables -A FORWARD -j TCPMSS   -o ppp+          -p   tcp --tcp-flags   
-SYN,RST SYN --clamp-mss-to-pmtu
+> iptables -A INPUT -p udp --dport 143 -j ACCEPT
+this too
+
+> iptables -A INPUT -p udp --dport 3306 -j ACCEPT
+and this.
+
+ftp, ssh, https and mysql do not use udp for transport.
+
+DNS does, so let it be.
+
+> I am not sure exactly exactly about ESTABLISHED, RELATED which Anthony was
+> talking about.
+Put a
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+so that
+1) Packets traverse a less number of rules
+2) Allow eg. icmp related traffic to existing connections (like port
+unreachables)
+
+2) Well, if you do not need ACLs in OUTPUT, you may put some sanity
+checks there: like -m unclean -m ttl, -m state --state INVALID, etc.
+You may add a rule:
+iptables -P OUTPUT ACCEPT
+iptables -A OUTPUT -s ! <your.real.ip> -j DROP
+
+If you are not forwarding, set it to ACCEPT.
+
+Regards,
+Maciej soltysiak
+
 
 
