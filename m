@@ -1,41 +1,52 @@
-From: =?iso-8859-1?Q?Jeppe_S=F8rensen?= <smed@tdcadsl.dk>
-Subject: iptables with alias again
-Date: Mon, 7 Oct 2002 19:41:18 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001201c26e28$be880e50$3dd6a483@CBOOK>
+From: Oskar Andreasson <blueflux@koffein.net>
+Subject: [almost OT] ipsysctl-tutorial pre-beta version
+Date: Mon, 7 Oct 2002 19:43:40 +0200 (CEST)
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0210071935500.1772-100000@laptop1.agatha>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Hello
-If I have a interface with e.g. 3 alias
-eth0
-eth0:0
-eth0:1
-eth0:2
+Hi All,
 
-will this following rules apply on only eth0 and not eth0:0, eth0:1 and
-eth0:2 or will it apply on all of them
+Just wanted to let everyone know that the ipsysctl-tutorial is released 
+in a kind of super-pre-beta version or so. It's far far from complete, it 
+probably contain 500 errors per word that it consists of, but.... I'd just 
+like to see if some people would like to read through parts of it and see 
+what they think of it? This is the URL to the current version:
 
-iptables -A INPUT -i eth0 --dport 80 -j ACCEPT
-iptables -A INPUT -i eth0 -j DROP
+http://ipsysctl-tutorial.frozentux.net
 
-e.g If I get a packet on eth0:1 will the packet get ACCEPT if it is for port
-80 or do I have to make a rule for all the alias where I use the alias ip
-instead of the -i eth0 option?
+Is this document worth the effort? Is this anything along the lines what 
+you have wished for? Is there anything missing (yes, tons that I know 
+of=))? Find any bugs or errors on my part? 
 
+I will be totally honest, this document probably took me several hundreds 
+of hours getting this far, since I had to pretty much read up on every 
+single variable in the source code. Considering that I am a fairly bad 
+coder, this took some considerable part of the time:). I am pretty damn 
+certain that this has led to hundreds of errors, and people will probably 
+want to kill me for some of them.
 
-Jeppe Sorensen
+Thanks for any kind of feedback!
+
+-- 
+----
+Oskar Andreasson
+http://www.frozentux.net
+http://iptables-tutorial.frozentux.net
+http://ipsysctl-tutorial.frozentux.net
+mailto:blueflux@koffein.net
 
 
