@@ -1,10 +1,10 @@
-From: =?iso-8859-1?q?Bissio?= <bissio2000@yahoo.it>
-Subject: Re: POM Question
-Date: Mon, 8 Sep 2003 09:22:27 +0200 (CEST)
+From: =?gb2312?q?Bill=20Zhao?= <bzhaoa@yahoo.com.cn>
+Subject: Re: natting help needed urgently. (Dharmendra.T)
+Date: Mon, 8 Sep 2003 16:25:13 +0800 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030908072227.68022.qmail@web41511.mail.yahoo.com>
+Message-ID: <20030908082513.79873.qmail@web15101.mail.bjs.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,47 +15,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="gb2312"
 To: netfilter@lists.netfilter.org
 
-Hi,
-
-There was a mistake in my previous question... i mean
-iptables and not ipchains, so my question is: can i
-use last release of POM having iptables 1.2.5
-installed on my linux box???
-
-Thanks again
-
-
-
-Hi 
-
-You can use this module with iptables only. I still
-don't understand why you are using ipchains when you
-will get good options in iptables. 
-
--- 
-Regards
-Dharmendra.T
-dharmu@nsecure.net
-Linux Security and Administrator.
- 
-
-On Sat, 2003-09-06 at 21:15, Bissio wrote: 
-Hi all,
-
-I'm wondering if i can update my netfilter using last
-release of POM (patch-o-matic-20030107) if i have
-ipchains ver 1.2.5 installed.
-
-
-Thanks
-Bissio
-
-
-
-______________________________________________________________________
-Yahoo! Mail: 6MB di spazio gratuito, 30MB per i tuoi allegati, l'antivirus, il filtro Anti-spam
-http://it.yahoo.com/mail_it/foot/?http://it.mail.yahoo.com/
-
+SGksCgogIFBsZWFzZSB0ZWxsIG1lIHdoYXQgbGludXggdmVyc2lvbiBpcyBhdCB0aGUgZmlyZXdh
+bGwKQXJlIHlvdSB1c2luZyBpcGNoYWluIG9yIGlwdGFibGVzPwpJIGtub3cgaG93IHRvIGRvIHRo
+YXQgdXNpbmcgaXB0YWJsZXMoUkg3LlgpCgoKQmlsbFoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpPbiBTdW4sIDIwMDMtMDktMDcgYXQgMTY6MzQsIFBh
+eWFsIFJhdGhvZCB3cm90ZToKCiAgICBIaSwKICAgIEkgaGF2ZSBhc2tlZCB0aGlzIGJlZm9yZSBi
+dXQgbm9ib2R5IHJlc3BvbmRlZC4gSXMKdGhpcyB1bi1kby1hYmxlPwogICAgSSBoYXZlIGEgd2lu
+ZG93cyBib3ggd2hpY2ggaXMgb24gaW50ZXJ0bmFsIGlwCjE5Mi4xNjguMTAuMy4gSSB3YW50IAp0
+aGUKICAgIG91dHNpZGUgd29ybGQgdG8gYWNjZXNzIHRoZSBzZXJ2ZXJzIChmdHAsIGh0dHAsCnNt
+dHAsIHBvcDMpIGZyb20gCml0LgogICAgVGhlIHNjZW5lIGlzIHNvbWV0aGluZyBsaWtlIHRoaXMs
+CiAgICAKICAgIAogICAgKy0tLS0tLS0tLS0rICAgICAgICstLS0tLS0tLS0tLS0tLSsgICAgICAg
+IAorLS0tLS0tLS0tLS0tLS0tKwogICAgfCAgICAgICAgICArLS0tPjwtLSsgTGludXggICAgICAg
+ICstLS0tPi0tPC0rd2luMmsKICAgICAgICAgfAogICAgfHJvdXRlciAgICB8ICAgICAgIHwgICgx
+LjIuMy40KSAgIHwgICAgICAgICB8CigxOTIuMTY4LjEwLjMpfAogICAgKy0tLS0tLS0tLS0rICAg
+ICAgICstLS0tLS0tLS0tLS0tLSsgICAgICAgIAorLS0tLS0tLS0tLS0tLS0tKwogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgSSBhbSBub3QgYWJsZSB0byByZWRpcmVj
+dCBhbnkgcmVxdWVzdCBmb3Igd2luZG93cwpib3ggZnJvbSBvdXRzaWRlIAp3b3JsZAogICAgdG8g
+aW50ZXJuYWwgbWFjaGluZSAxOTIuMTY4LjEwLjMKICAgIAogICAgUGxlYXNlIGhlbHAgbWUgdG8g
+c29sdmUgdGhpcyBwcm9ibGVtLgogICAgCiAgICBXYWl0aW5nIGVhZ2VybHkgZm9yIGFueSBoZWxw
+IG9uIHRoaXMuCiAgICAKICAgIFdpdGggd2FybSByZWdhcmRzLAogICAgLVBheWFsCiAgICAKICAg
+IC0tIAogICAgIlZpc2l0IEdOVS9MaW51eCBTdWNjZXNzIFN0b3JpZXMiCiAgICBodHRwOi8vcGF5
+YWwuc3RhdGlja3kuY29tCkd1ZXN0LUJvb2sgU2VjdGlvbiBVcGRhdGVkLgoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkRvIFlvdSBZYWhv
+byE/IArG9NPDtefTytXKusWjrMHsu+HRxbuizahbye3B2cbkvrPBxLXn07BdtcS2r7jQ98jBpqOs
+u7nT0M34wufJ48/xzbcr0cW7os2oytXS9Lv6tcjE48C0xMMKaHR0cDovL2NuLnJkLnlhaG9vLmNv
+bS9tYWlsX2NuL3RhZy8/aHR0cDovL2NuLm1lc3Nlbmdlci55YWhvby5jb20KCg==
