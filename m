@@ -1,8 +1,8 @@
 From: zynkx <skydive@megamail.pt>
-Subject: (no subject)
-Date: Fri, 28 Nov 2003 20:26:46 +0000
+Subject: dhcrelay
+Date: Fri, 28 Nov 2003 20:30:16 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070051206.3fc7af86dc233@paris-hme1>
+Message-ID: <1070051416.3fc7b058800c7@paris-hme1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,6 +18,7 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
+
                                 _______________
 =09=09=09=09| gateway 1   |
 =09=09=09=09|192.168.0.253|
@@ -28,7 +29,7 @@ To: netfilter@lists.netfilter.org
 =09=09_______________        |
 =09=09|DHCP SERVER  |=09       |=09
 =09
-=09=09|192.168.0.1  |        |      =20
+=09=09|192.168.0.1  |        |
 =09=09|_____________|=09       |
 =09=09=09=09       |
 =09=09=09=09________________
@@ -42,9 +43,9 @@ To: netfilter@lists.netfilter.org
 =09_________________________________
 =09=09=09|=09=09|=09
 =09|=09=09=09
-=09=09_______________    _______________ =20
+=09=09_______________    _______________
 ______________
-=09=09|192.168.100.1 |   |192.168.100.2| =20
+=09=09|192.168.100.1 |   |192.168.100.2|
 |192.168.100.3|  _______________    ______________
 _______________
 
@@ -52,21 +53,35 @@ _______________
 hi all:
 
 
-i have this lan i am supposed to use dhcrelay on=20
-gateway 2 so the 192.168.100.0/24 machines can get an=20
-ip address. i have the input and output chain of the=20
+i have this lan i am supposed to use dhcrelay on
+gateway 2 so the 192.168.100.0/24 machines can get an
+ip address. 192.168.0.1 is the dhcp serveer.i have the=20
+input and output chain of the
 gateway 2 to drop.
 
 my question is:
 
-do those request require input and output to accept? i=20
-don't really think so because those packer are not for=20
-gateway 2 but are to be routed to 192.168.100.0/24=20
-machines...=20
+do those request require input and output to accept? i
+don't really think so because those packer are not for
+gateway 2 but are to be routed to 192.168.100.0/24
+machines...
 
 what do you guys think of this??
 
+sorry for the very bad drawing...=20
+
 tanx ;))))
+unix is user friendly. it's just selective when
+choosing
+friends.
+
+-------------------------------------------------
+Email Enviado utilizando o servi=E7o MegaMail
+
+----- Final da mensagem re-enviada -----
+
+
+
 unix is user friendly. it's just selective when=20
 choosing=20
 friends.
