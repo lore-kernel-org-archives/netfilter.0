@@ -1,14 +1,12 @@
-From: ml@proficuous.com
-Subject: RE: PLEASE HELP with DNAT problem
-Date: Thu, 30 Oct 2003 21:02:34 -0600 (CST)
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: Masquerading
+Date: Fri, 31 Oct 2003 11:19:05 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4780.209.134.141.210.1067569354.squirrel@webmail.proficuous.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A28AC9F@wardrive.citadelcomputer.com.a
-     u>
+Message-ID: <F22386C3FEB012449238672E38ED61E70A8DC4@overlord.overturemedia.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A28AC9F@wardrive.citadelcomputer.com.a
-     u>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,56 +17,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: George Vieira <georgev@citadelcomputer.com.au>
-Cc: ml@proficuous.com, netfilter@lists.netfilter.org
+To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
->> I tried to DNAT the lan back
->> to itself and
->> it just isn't working..
->
-> If I think I know what your trying to do, you are doing a LAN to LAN
-> connection right?
->
-> Don't forget that a LAN to LAN DNAT also must have a POSTROUTING SNAT rule
-> so the destination server replies back via the firewall/NAT server.
-> otherwise it'll reply directly to the client and the client will drop the
-> packet immediately.
-Ok..i guess this is what i'm missing.  I'm not sure where i should be
-source natting to however.
 
-the packet starts at lan....destined for internet...now..it supposedly
-should get DNATED back to lan..... now like i say..after the first DNAT
-rule that DNATS it back to the lan, it hits another one one that the DNATs
-it to the DMZ, but this one doesn't have the port specific information, as
-normally i'd want it ending up in the DMZ.
+Greetings!
 
-i just don't see how a SNAT fits in here.  but then that's why i'm asking
-fr help.
+I hope you can help me again with this.
+We have remote data centers.=20
+Only 2 remaining centers are not connected by WAN.
 
-Thanks agagin
-Aaron P. Martinez
->
-> Have you done any tcpdumping or -j LOGing??
->
-> Thanks,
-> ____________________________________________
-> George Vieira
-> Systems Manager
-> georgev@citadelcomputer.com.au
->
-> Citadel Computer Systems Pty Ltd
-> http://www.citadelcomputer.com.au
->
-> Phone   : +61 2 9955 2644
-> HelpDesk: +61 2 9955 2698
->
->
->> -----Original Message-----
->> From: ml@proficuous.com [mailto:ml@proficuous.com]
->> Sent: Friday, 31 October 2003 1:18 PM
->> To: netfilter@lists.netfilter.org
->> Subject: PLEASE HELP with DNAT problem
->
+This my current situation:
+workstation --- firewall dc#1 --- internet --- firewall dc#2 --- server
+
+
+Would this be possible with iptables through masquerading:
+workstation #1 --- firewall dc#1 --- internet --- firewall dc#2 --- =
+server #1
+workstation #2 --- firewall dc#1 --- internet --- firewall dc#2 --- =
+server #1
+
+It means only one ip address from data center #1 is allowed to access =
+the server in data center #2.
+
+I need to share workstations 1 & 2 to use the only ip address from data =
+center #1 allowed to access the server in data center #2.
+
+Thanks in advance.
+
+
+Cheers,
+
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
+
+
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
+
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Fax: (632) 637-2206
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
 
