@@ -1,11 +1,11 @@
-From: "Nix N. Nix" <nix@go-nix.ca>
-Subject: DNAT to localhost
-Date: 13 Nov 2002 03:45:54 -0500
+From: Iva "Cabric" Cabric <ivac@gnjilux.srk.fer.hr>
+Subject: ULOG with -m state
+Date: Fri, 22 Nov 2002 16:53:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037177152.5232.48.camel@tux.go-nix.ca>
+Message-ID: <20021122155352.GA5665@gnjilux.srk.fer.hr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +16,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Why doesn't this work ?
+Hello,
+I have found a bug in iptables when "-j ULOG" and "-m state" are
+used together, for example:
 
-/sbin/iptables -t nat -A PREROUTING -p udp --destination 192.168.1.1/32
---dport 80 -j DNAT --to-destination 127.0.0.1:8080
+$ iptables -A ssh -j ULOG -p tcp -m state --state NEW
 
-The idea is:  The Web server listens solely on 127.0.0.1:8080 .  This
-allows me to run a Web server as a non-root user.  But then, I want
-${OUTSIDE_IP}:80 and 192.168.1.1:80 (my interface) to be forwarded to
-127.0.0.1:8080 .  I'm sure you've guessed by now that I'm running the
-Web server on my firewall ;o)
+reports:
 
-Anyway, I tried setting /proc/sys/net/ipv4/conf/lo/rp_filter to 0, but
-that didn't help either.
+iptables v1.2.6a: You must specify `--state'
+Try `iptables -h' or 'iptables --help' for more information.
 
-IMHO, the reason this doesn't work is that the above rule is added at
-the PREROUTING stage of the game.  So, when the packet is routed, the
-routing decision is based on 
-+----------------------+
-|  Packet              |
-+----------------------+
-|source:<192.168.1.xxx>|
-|dest:  <127.0.0.1>    |
-+----------------------+
-and, of course, somewhere, this packet gets dropped, because nothing
-should be able to reach 127.0.0.0/8 but 127.0.0.0/8, right ?  But hell,
-I'm no expert.
+but using DROP works fine:
 
-So, is there any way to forward TCP ports from local interfaces to the
-loopback interface ?
+$ iptables -A ssh -j DROP -p tcp -m state --state NEW
+(no error)
 
+$ iptables -L ssh
+target     prot opt source               destination         
+ACCEPT     tcp  --  anywhere             xxx.xxx.xxx.xxx    state ESTABLISHED
+DROP       tcp  --  anywhere             anywhere           state NEW 
+(first rule is not important...)
 
+Kernel is 2.4.19, iptables are v1.2.6a and system is Debian based
+(iptables are from .deb packet, and kernel is manually bulit from
+kernel-source-2.4.19).
 
-Thanks for your advice.
+I haven't found anything about that in changelog for v1.2.7a, but
+maybe it has been already fixed. Anyone else with same problem?
+
+p.s.
+
+It could also be Debian specific problem, in that case I'll send
+bug report to them, but I would like to check with you first.
+
+TIA
 
 
