@@ -1,13 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: Weird problem
-Date: Tue, 14 Oct 2003 13:49:12 -0400
+From: oumer@kom.auc.dk
+Subject: Re: libipq and threads, problems, very annoying problem
+Date: Tue, 14 Oct 2003 20:03:35 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F8C3718.7010005@Loudoun-Fairfax.com>
-References: <1066129218.13064.13.camel@forbidden.cipanb.ca>	 <3F8BEAEB.1060005@Loudoun-Fairfax.com>	 <1066136413.12935.43.camel@forbidden.cipanb.ca>	 <3F8C1700.3070902@Loudoun-Fairfax.com> <1066150751.17734.60.camel@forbidden.cipanb.ca>
+Message-ID: <1066154615.3f8c3a77a364b@webmail.kom.auc.dk>
+References: <20031014164734.41953.qmail@web13906.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1066150751.17734.60.camel@forbidden.cipanb.ca>
+In-Reply-To: <20031014164734.41953.qmail@web13906.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,168 +17,267 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+The code snippet I posted is just a sample, in my real code I have only two
+threads, one thread using libipq to get packets and notify another thread about
+that, and that thread will be emulate a certain link layer protocol, and when
+the processing is done, the thread that is doing the libipq staff will get the
+verdict and it will use the set_verdict to let the packet go or drop it. As I am
+interested on the exact arrival times of the packets, I wanted to dump the data
+into two files, one when it reaches the queue and once just before the verdict
+is passed on the data. As there are more than twenty parameters defining my link
+layer protocol, and it is statistical, I don't think I can use the method you
+specified. 
 
->>>-A POSTROUTING -s 192.168.0.2 -o eth0 -j SNAT --to-source 123.123.123.12
->>>-A POSTROUTING -s 192.168.0.6 -o eth0 -j SNAT --to-source 123.123.123.7
->>>-A POSTROUTING -s 192.168.0.8 -o eth0 -j SNAT --to-source 123.123.123.13
->>>-A POSTROUTING -s 192.168.0.4 -o eth0 -j SNAT --to-source 123.123.123.10
->>>-A POSTROUTING -s 192.168.1.51 -o eth0 -j SNAT --to-source
->>>123.123.123.51
->>>-A POSTROUTING -s 192.168.1.52 -o eth0 -j SNAT --to-source
->>>123.123.123.52
->>>-A POSTROUTING -s 192.168.1.53 -o eth0 -j SNAT --to-source
->>>123.123.123.53
->>>-A POSTROUTING -s 192.168.1.54 -o eth0 -j SNAT --to-source
->>>123.123.123.54
->>>-A POSTROUTING -s 192.168.1.55 -o eth0 -j SNAT --to-source
->>>123.123.123.55
->>>-A POSTROUTING -s 192.168.1.56 -o eth0 -j SNAT --to-source
->>>123.123.123.56
->>>-A POSTROUTING -s 192.168.1.57 -o eth0 -j SNAT --to-source
->>>123.123.123.57
->>>-A POSTROUTING -s 192.168.1.58 -o eth0 -j SNAT --to-source
->>>123.123.123.58
->>>-A POSTROUTING -s 192.168.1.59 -o eth0 -j SNAT --to-source
->>>123.123.123.59
->>>-A POSTROUTING -s 192.168.1.60 -o eth0 -j SNAT --to-source
->>>123.123.123.60
->>>COMMIT
->>>
->>>*filter
->>>:INPUT DROP [61:8249]
->>>:FORWARD DROP [72:4535]
->>>:OUTPUT DROP [0:0]
->>>-A INPUT -i lo -j ACCEPT
->>>-A INPUT -d 123.123.123.254 -j ACCEPT
->>>-A INPUT -d 192.168.0.1 -j ACCEPT
->>>-A INPUT -d 192.168.1.1 -j ACCEPT
->>>-A FORWARD -i eth2 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
->>>-A FORWARD -o eth2 -m state --state RELATED,ESTABLISHED -j ACCEPT
->>> 
->>>
->>>      
->>>
->>These should be on the external interface. Your ip addr shows this as a
->>lan interface. I think you've assigned either the rules or the IPs to
->>the wrong interfaces.
->>    
->>
->
->Does it make a difference if I put it on eth0 or eth2? The thing is I
->don't want new connections from eth1 to enter eth2 that's why I put the
->stateful stuff on eth2. 
->  
->
 
-It doesn't matter to iptables which interface is internal or external as 
-long as the internal iface has a local IP and the external has a public 
-IP. In your rules you're treating eth2 as the public interface, but 
-based on the output below, you have a private IP assigned to it. See below:
+Quoting Scott MacKay <scottmackay@yahoo.com>:
 
->  
->
->>>-A FORWARD -d 192.168.0.6 -i eth0 -p tcp -m tcp --dport 25 -j DROP
->>>-A FORWARD -d 192.168.0.8 -i eth0 -p tcp -m tcp --dport 25 -j DROP
->>>-A FORWARD -i eth0 -o eth1 -j ACCEPT
->>>-A FORWARD -i eth1 -o eth0 -j ACCEPT
->>> 
->>>
->>>      
->>>
->>Your treating these as local interfaces, but eth0 is your external
->>interface.
->>    
->>
->
->What I want here is that packets from eth0 to eth1 is allowed to go
->through and from eth1 to eth0 is allowed to go through also but I don't
->want incoming connections from the internet to port 25 on these 2 boxes.
->So I thought that those lines would block connections coming into eth0
->and since the PREROUTING stuff is passed through before the FORWARD, I
->put the internal IP addresses.
->
->Thanks for your help!
->
->Jean-Rene Cormier
->
->
->  
->
->>>-A OUTPUT -o lo -j ACCEPT
->>>-A OUTPUT -s 123.123.123.254 -j ACCEPT
->>>-A OUTPUT -s 192.168.0.1 -j ACCEPT
->>>-A OUTPUT -s 192.168.1.1 -j ACCEPT
->>>COMMIT
->>>
->>>The way the network is setup is we have a Cisco router (owned by our
->>>ISP) that goes to the internet with IP 123.123.123.1 and the netfilter
->>>box has IP 123.123.123.254 on the external interface. I'm using
->>>192.168.0.0/24 and 192.168.1.0/24 on the internal interfaces. My
->>>workstation is in the 192.168.1.0/24 subnet and when I was trying to
->>>ping the Cisco router, it wouldn't work but I could ping another
->>>computer on the 123.123.123.0/24 subnet and after that I could ping the
->>>router and everything worked. Also there's a few people who couldn't
->>>connect to the net even after I tried pinging a computer in the
->>>123.123.123.0/24 subnet, when I turned on logging in the FORWARD table
->>>for their IPs it started working and I could remove that rules
->>>afterwards and it would continue to work. I setup the rules pretty basic
->>>for now to make sure everything works before I start locking stuff out.
->>>
->>>Here's the output of ip addr show on the netfilter box:
->>>
->>>1: lo: <LOOPBACK,UP> mtu 16436 qdisc noqueue
->>>   link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
->>>   inet 127.0.0.1/8 scope host lo
->>>      
->>>
-loopback is fine
-
->>>2: eth0: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
->>>   link/ether 00:04:23:5f:8f:f8 brd ff:ff:ff:ff:ff:ff
->>>   inet 123.123.123.254/24 brd 123.123.123.255 scope global eth0
->>>   inet 123.123.123.2/32 scope global eth0
->>>   inet 123.123.123.3/32 scope global eth0
->>>   inet 123.123.123.7/32 scope global eth0
->>>   inet 123.123.123.10/32 scope global eth0
->>>   inet 123.123.123.12/32 scope global eth0
->>>   inet 123.123.123.13/32 scope global eth0
->>>   inet 123.123.123.51/32 scope global eth0
->>>   inet 123.123.123.52/32 scope global eth0
->>>   inet 123.123.123.53/32 scope global eth0
->>>   inet 123.123.123.54/32 scope global eth0
->>>   inet 123.123.123.55/32 scope global eth0
->>>   inet 123.123.123.56/32 scope global eth0
->>>   inet 123.123.123.57/32 scope global eth0
->>>   inet 123.123.123.58/32 scope global eth0
->>>   inet 123.123.123.59/32 scope global eth0
->>>   inet 123.123.123.60/32 scope global eth0
->>>      
->>>
-
-Your rules show eth0 as a private interface, but this shows it with 
-public IPs.
-
->>>3: eth1: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
->>>   link/ether 00:04:23:5f:8f:f9 brd ff:ff:ff:ff:ff:ff
->>>   inet 192.168.0.1/24 brd 192.168.0.255 scope global eth1
->>>4: eth2: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
->>>   link/ether 00:04:23:5f:77:d2 brd ff:ff:ff:ff:ff:ff
->>>   inet 192.168.1.1/24 brd 192.168.1.255 scope global eth2
->>>      
->>>
-
-Your rules treat eth2 as the public interface, but here ip addr shows it 
-has been assigned a private IP address. You need to make sure that the 
-interface which is physically connected to the ISP has a public IP and 
-that your rules match the physical connections. Try logging all traffic 
-through each interface for a few minutes then review the log. You should 
-be able to see which interface is actually facing the router and which 
-ones are facing the lan. Then adjust your rules and IP addresses to 
-match the physical connections.
-
-Jeff
-
+> Is there a particular reason why you need to generate
+> a thread per packet?  Threads can have a moderate
+> overhead, expecially if you are creating them in the
+> hundreds (depending on your traffic levels).
+> If you are just looking to delay, I would suggest
+> this:
+> 
+> Create a fifo, linked list, or such with 2 structure
+> elements: a packet buffer (for the ipq_read data) and
+> a timestamp.  Optional: I believe the packet has a
+> timestamp marked on it but I have never used that.
+> in a loop do something like:
+> while (some loop condition)  {
+>    get the current time
+>    if there are 1+ packets queued
+>        get the timestamp of the 1st packet 
+>        set 'timeout':subtract first packet time from
+> now
+>    else
+>        'timeout' = 0
+>    call ipq_read with the timeout
+>    if we got a packet
+>        set its time += 100ms
+>        add it to the end of the queue
+>    get the current time
+>    if first packet time - now <= 0
+>       release packet
+> } 
+> Basically, the first packet will always have the
+> shortest delay.  By setting a timeout, you can exit
+> the ipq_read and handle a packet due for release
+> without the need for threads.
+> Hope it helps!
+> 
+> --- Oumer Teyeb <oumer@kom.auc.dk> wrote:
+> > I am sorry, but I forgot to mention that I am aware
+> > that libipq is not 
+> > thread safe (I read it in one of the message boards,
+> > don't remember 
+> > where). Can this problem be attributed to that ? And
+> > if so is there a 
+> > way around it? I am kind of stuck with my project
+> > unless I do this 
+> > properly, so help is really really appreciated.
+> > 
+> > Thanks again
+> > 
+> > Oumer Teyeb wrote:
+> > 
+> > > Hi,
+> > >
+> > > Here is a sample code where I try to delay every
+> > packet by some time 
+> > > (in the code I posted here it is fixed to 100
+> > msec.). Inorder to do 
+> > > so, I start a pthread for every packet that is
+> > received by libipq . I 
+> > > have iptables rules that queues tcp packets that
+> > are coming and going 
+> > > to some other machine. I then ftp to that machine.
+> > The program works, 
+> > > the problem is with the dumping. I have two files,
+> > one is supposed to 
+> > > capture the files when they reach the queue
+> > (new_file_2) and the other 
+> > > just before the set verdict is called
+> > (new_file_3). The new_file_2 
+> > > works properly. The problem is with new_file_3. I
+> > couldn't get how, 
+> > > but somehow, at some location, some erroneous
+> > entries are put into the 
+> > > file, the end effect being tcpdump not able to
+> > recognize the file at 
+> > > some point. To check, I commented out the only
+> > line which makes the 
+> > > two files differ, i.e the one that changes the
+> > time stamp of the 
+> > > packet header (as indicated by *********), and the
+> > two files are not 
+> > > the same. First I thought maybe one thread was
+> > writing to the file, 
+> > > and then another thread becomes active and writes
+> > also. So I 
+> > > introduced a mutex_variable that will avoid such
+> > > problem. But it doesn't help at all. Could you
+> > please tell me what I 
+> > > am doing wrong? I have to save the files myself as
+> > tcpdump get the 
+> > > packets before the firewall for incoming packets 
+> > > Thanks in advance,
+> > > Oumer
+> > >
+> > > #include <sys/time.h>
+> > > #include <linux/netfilter.h>
+> > > #include <netinet/in.h>
+> > > #include <libipq.h>
+> > > #include <pthread.h>
+> > > #include <unistd.h>
+> > > #include <signal.h>
+> > > #include <string.h>
+> > > #include <stdio.h>
+> > > #include <stdlib.h>
+> > > #include "errors.h"
+> > > #include <mcheck.h>
+> > >
+> > > #define BUFSIZE 2048
+> > >
+> > > struct ipq_handle *h;
+> > > ipq_packet_msg_t *m;
+> > >
+> > > FILE* new_file_2;
+> > > FILE* new_file_3;
+> > >
+> > > pthread_mutex_t mutex_write;
+> > >
+> > > /* char src_mac[6] = {0,0,0xb4,0x4b,0x2c, 0xe1};
+> > */
+> > > /* char dst_mac[6] = {0,0xb,0x46, 0x10, 0x57,
+> > 0x80}; */
+> > > /* char ether_type[2] = {8,0}; */
+> > >
+> > > char src_dst_ether [14] = {0,0,0xb4,0x4b,0x2c,
+> > 0xe1,0,0xb,0x46, 0x10, 
+> > > 0x57, 0x80,8,0};
+> > >
+> > > //stolen from pcap
+> > > struct PCAP_file_header {
+> > >    unsigned int magic;
+> > >    short major;
+> > >    short minor;
+> > >    int thiszone;    /* gmt to local correction */
+> > >    unsigned int sigfigs;    /* accuracy of
+> > timestamps */
+> > >    unsigned int snaplen;    /* max length saved
+> > portion of each pkt */
+> > >    unsigned int linktype;    /* data link type
+> > (LINKTYPE_*) */
+> > > };
+> > >
+> > > struct PCAP_packet_header {
+> > >    struct timeval ts;    /* time stamp */
+> > >    int caplen;    /* length of portion present */
+> > >    int len;    /* length this packet (off wire) */
+> > > };
+> > >
+> > > typedef struct {
+> > >  int         sleep_time;
+> > >  ipq_packet_msg_t *packet;
+> > > //  unsigned char *data;
+> > >  struct PCAP_packet_header pkt_header;
+> > >  int thread_id;
+> > > } params;
+> > >
+> > > static void die(struct ipq_handle *h)
+> > > {
+> > >        ipq_perror("ipq_error::");
+> > >        ipq_destroy_handle(h);
+> > >        exit(1);
+> > > }
+> > >
+> > > void *delay_packet (void *param_packet)
+> > > {
+> > >    int status;
+> > >    params *myparams= (params*) param_packet;
+> > >    status = pthread_detach (pthread_self ());
+> > >    if (status != 0)
+> > >        err_abort (status, "Detach thread");
+> > >
+> > >   usleep(100000);
+> > >   pthread_mutex_lock (&mutex_write);
+> > >   //  gettimeofday(&(myparams->pkt_header.ts),
+> > NULL);   
+> > > ************************
+> > >   fwrite(&(myparams->pkt_header), sizeof(struct
+> > PCAP_packet_header),1, 
+> > > new_file_3);
+> > >   fwrite(src_dst_ether,1, 14, new_file_3);
+> > >   fwrite((unsigned int*)(myparams->packet+1), 1, 
+> > > myparams->packet->data_len, new_file_3);
+> > >   //free(myparams->packet);
+> > >   pthread_mutex_unlock (&mutex_write);
+> > >   status = ipq_set_verdict(h,
+> > myparams->packet->packet_id,NF_ACCEPT, 
+> > > 0, NULL);
+> > >   if (status < 0)
+> > >      die(h);
+> > >   free(myparams);
+> > >   return NULL;
+> > > }
+> > >
+> > > void signal_handler(int sig)
+> > > {
+> > >  if (h)
+> > >    ipq_destroy_handle(h);
+> > >  fclose(new_file_2);
+> > >  fclose(new_file_3);
+> > >  exit(0);
+> > > }
+> > >
+> > > int main(int argc, char **argv)
+> > > {
+> > >   mtrace();
+> > >   int status;
+> > >   unsigned char buf[BUFSIZE];
+> > >   int thread_id=0;
+> > >     new_file_2= fopen("dump_tcp_data.txt", "w+b");
+> > >   new_file_3 = fopen("dump_tcp_data_after.txt",
+> > "w+b");
+> > >     pthread_mutex_init(&mutex_write, NULL);
+> > >   struct PCAP_file_header *file_header =   (struct
+> > 
+> > > PCAP_file_header*)(malloc(sizeof(struct
+> > PCAP_file_header)));
+> > >     file_header->magic=0xa1b2c3d4;
+> > >   file_header->major=2;
+> > >   file_header->minor=4;
+> > >   file_header->thiszone=0;
+> > >   file_header->sigfigs=0;
+> > >   file_header->snaplen=65535;
+> > >   file_header->linktype=1;
+> > >     fwrite(file_header, sizeof(struct
+> > PCAP_file_header),1, new_file_2);
+> > >   fwrite(file_header, sizeof(struct
+> > PCAP_file_header),1, new_file_3);
+> > >     free(file_header);
+> > >   pthread_t thread;
+> > >      h = ipq_create_handle(0, PF_INET);
+> > >    sigset(SIGINT, signal_handler);
+> > >    if (!h)
+> > >                die(h);
+> > >    status = ipq_set_mode(h, IPQ_COPY_PACKET,
+> > BUFSIZE);
+> > >    if (status < 0)
+> > >      die(h);
+> > >    printf("PACKET_ID\t\tDATA_LENGTH\tSTATUS\n");
+> > >    printf("=========\t\t============\t=======\n");
+> > 
+> === message truncated ===
+> 
+> 
+> __________________________________
+> Do you Yahoo!?
+> The New Yahoo! Shopping - with improved product search
+> http://shopping.yahoo.com
+> 
+> 
 
