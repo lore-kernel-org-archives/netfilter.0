@@ -1,12 +1,9 @@
-From: "Nir Cohen" <nirc@test.macam98.ac.il>
-Subject: How to use apache redirect with Iptables
-Date: Wed, 15 May 2002 17:04:12 +0200
+From: root <root@alexis.macam.ac.il>
+Subject: How to use apache redirect with iptables
+Date: Wed, 15 May 2002 16:24:06 +0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1C3F31F94BAB1340A94AAC5CAFBA834708E64C@webmailsrv01.test.macam98.ac.il>
-Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Message-ID: <200205151324.g4FDO6L16851@alexis.macam.ac.il>
 Return-path: <netfilter-admin@lists.samba.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,16 +13,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-SGVsbG8gQWxsDQpJIGNvbmZpZ3VyZSBJcHRhYmxlcyB3aXRoIDMgY2FyZHMgZXh0ZXJuYWwsbGFu
-IGFuZCBkbXouDQpJIGhhdmUgMiBodHRwIHNlcnZlcnMgaW4gdGhlIGRteiAuUGFja2V0cyB0aGF0
-IGNvbWluZyBpbiB0byBwb3J0IDgwIEkgYW0gZG9pbmcgRE5BVCB0byBhIA0Kd2ViIHNlcnZlciBp
-biB0aGUgRE1aLkkgdHJ5IHRvIGRvIGFwYWNoZSByZWRpcmVjdCBmcm9tIHRoaXMgd2ViIHNlcnZl
-ciAoaW4gdGhlIGh0dHBkLmNvbmYgLXJlZGlyZWN0IG9wdGlvbg0KIFJlZGlyZWN0IC8gaHR0cDov
-LzE5Mi4xNjguMS4zKSB0byBhbm90aGVyIHdlYiBzZXJ2ZXIgDQppbiB0aGlzIHNlZ21lbnQgYnV0
-IGl0IGlzIG5vdCB3b3JraW5nLg0KRG9lcyBhbnlvbmUga25vdyBob3cgdG8gZG8gdGhpcz8NCiAN
-CiANCiANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRoYW5r
-cyBpbiBhZHZhbmNlIE5pcg0K
+Hello All
+I configure Iptables with 3 cards external,lan and dmz.
+I have 2 http servers in the dmz .Packets that coming in to port 80 I am doing DNAT to a 
+web server in the DMZ.I try to do apache redirect from this web server (in the httpd.conf -redirect option
+ Redirect / http://192.168.1.3) to another web server 
+in this segment but it is not working.
+Does anyone know how to do this?
+ 
+ 
+ 
+                                             Thanks in advance Nir
 
