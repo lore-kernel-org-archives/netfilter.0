@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Using IPTABLES, cannot go to External Interface
-Date: Wed, 18 Jun 2003 09:11:04 +1000
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Seeing all packets
+Date: Tue, 17 Jun 2003 19:13:39 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6ED3@wardrive.citadelcomputer.com.au>
+Message-ID: <20030617231339.GB1654@cannon.eng.us.uu.net>
+References: <661F9268BBA8CB4EB92CC12B8C42F06901F64D@pluto.rovingplanet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <661F9268BBA8CB4EB92CC12B8C42F06901F64D@pluto.rovingplanet.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Paul Albert <palbert@rovingplanet.com>
+Cc: netfilter@lists.netfilter.org
 
-> there won't be anyone to answer ARP requests on them
-oh ok, well we have (unfortunately) a router in front of our firewall =
-which I've added host routes to go via the firewall for those =
-destinations. Just made it easier for me and I didn't have to worry =
-about multiple IPs on the firewall as they are routed to it. Probably =
-not a clean way but better than adding 32+ IPs to a firewall... not sure =
-what the Linux limit was so this was the safest way for me.
+Once the NAT rule kicks in for certain session all the subsequent
+packets of that session would bypass the nat rules...
 
-Just for your information.
+Ramin
 
------Original Message-----
-From: Cedric Blancher [mailto:blancher@cartel-securite.fr]
-Sent: Monday, June 16, 2003 11:41 PM
-To: George Vieira
-Cc: Netfilter (E-mail)
-Subject: RE: Using IPTABLES, cannot go to External Interface
+On Tue, Jun 17, 2003 at 02:38:55PM -0600, Paul Albert wrote:
 
+> Hi - 
+> 
+> I'm trying to do some firewalling on every packet that goes through our
+> firewall.  We're doing our filtering in the PREROUTING chain (not
+> recommended, I realize), because we must do our firewalling to determine
+> whether we need to NAT a request.  There are times when the NAT
+> PREROUTING chain is bypassed, and I'm not exactly sure why.  The docs
+> say that "it will be bypassed in certain cases," however I cannot
+> determine what these cases are.
+> 
+> Why are the packets getting sent past the NAT PREROUTING chain?
+> Is there a way to send all of the data through this chain?
+> 
+> Regards,
+> Paul
+> 
 
