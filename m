@@ -1,13 +1,13 @@
-From: Mark Anacker <manacker@lot66.com>
-Subject: Re: Relay to DNS Server ?
-Date: Wed, 16 Jun 2004 10:44:36 -0700
+From: "Alexis" <alexis@tpys.com.ar>
+Subject: RE: icq
+Date: Wed, 16 Jun 2004 14:51:35 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40D08704.7020804@lot66.com>
-References: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108> <40D04BB9.2030907@akao.fr> <20040616155319.3ae01819.leslie.polzer@gmx.net> <200406161830.21188.Antony@Soft-Solutions.co.uk>
+Message-ID: <E1BaeZ8-00006V-3O@vishnu.netfilter.org>
+References: <17e501c453c9$a9b83490$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406161830.21188.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <17e501c453c9$a9b83490$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +17,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
-> On Wednesday 16 June 2004 2:53 pm, Patrick Leslie Polzer wrote:
-> 
-> 
->>On Wed, 16 Jun 2004 15:31:37 +0200
->>
->>Akao <technique@akao.fr> wrote:
->>
->>>Is it possible to use netfilter rules to "relay" clients DNS requests ?
->>
->>Masquerading does that, but you must allow packets to port 53 tcp/udp to
->>pass through to your ISP's DNS servers and their related packets back.
-> 
-> 
-> This is a completely correct and accurate answer to your question, however I 
-> think you would get much better performance for very little effort if you set 
-> up a simple caching-only name server somewhere on your network (possibly even 
-> on the firewall itself, but don't tell anyone I suggested that :)
-> 
-> Regards,
-> 
-> Antony.
-> 
+Let port tcp/5050 pass trough to destination "at least" login.icq.com
 
-You might want to run a DNS cache like dnsmasq on the firewall box, then 
-use a REDIRECT or DNAT rule to grab client's requests and force them 
-into the cache.  That way, the client's don't have to change their DNS 
-server list, and you get the benefits of caching.
 
--- 
-Mark Anacker
-Chameleon Technology, Inc.
+
+-----Mensaje original-----
+De: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] En nombre de Peter Marshall
+Enviado el: Mi=E9rcoles, 16 de Junio de 2004 14:45
+Para: netfilter
+Asunto: icq
+
+what do I need to do to allow ICQ to work through my firewall
+
+
+Peter Marshall, BCS
+Network Administrator, CARIS=20
+115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
+Phone:  (506) 458-8533 (Reception)=20
+
+
 
