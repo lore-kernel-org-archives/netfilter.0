@@ -1,11 +1,10 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Re: ftp again
-Date: Tue, 15 Jun 2004 12:10:42 -0300
+From: "Jonathan Villa" <jvilla@e37.net>
+Subject: allow range syntax - perplexed
+Date: Tue, 15 Jun 2004 12:00:49 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <169d01c452ea$ecc5fe00$49caa8c0@caris.priv>
-References: <BAY15-F34STM4fkm908000a429c@hotmail.com> <169101c452e5$fb31a660$49caa8c0@caris.priv> <200406151557.43940.Antony@Soft-Solutions.co.uk>
+Message-ID: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,52 +18,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thanks .. I should have replied to my message about 20 seconds after I
-posted ... It is amazing how things will not work when you make a spelling
-mistake
+To my understanding the following will allow any address in the x.x.x.0
+block access
 
-ie: modeprobe vis modprobe
+$IPTABLES -A INPUT -p tcp --dport 22 -s xxx.xxx.xx.0/24  -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 3306 -s xxx.xxx.xx.0/24  -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 80 -s xxx.xxx.xx.0/24 -j ACCEPT
 
-Sorry to bother you with a question that involved my stupidity.
+It of course is not working...
 
-Peter
+my temporary solution : looping through 1-254
 
+not very nice when I need to show someone the current rules.
 
------ Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, June 15, 2004 11:57 AM
-Subject: Re: ftp again
+-confused
 
-
-On Tuesday 15 June 2004 3:35 pm, Peter Marshall wrote:
-
-> when I try to run the ip_conntrack_ftp module using the command
-> "modeprobe ip_conntrack_ftp" or
-> "/sbin/modeprobe ip_conntrack_ftp" it says module not found.
->
-> I searched for the module on my system and it does exist in
-> "/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/"
-
-What does "uname -r" tell you for the kernel version you are running?
-
-If this doesn't match 2.4.20-8 then modprobe (note spelling?) will not be
-able
-to find the above file.
-
-Regards,
-
-Antony.
-
--- 
-There are only 10 types of people in the world:
-those who understand binary notation,
-and those who don't.
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
 
 
 
