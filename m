@@ -1,13 +1,13 @@
-From: Marek Dohojda <mdohojda@cisco.com>
-Subject: Re: Please help...
-Date: Mon, 28 Jun 2004 15:18:15 -0700
+From: Marco Colombo <marco@esi.it>
+Subject: Re: Question about marking traffic.
+Date: Tue, 29 Jun 2004 11:29:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40E09927.4000101@cisco.com>
-References: <FC8C43AB-C94D-11D8-9C38-000A95AD0230@mac.com>
+Message-ID: <40E1368E.4040207@esi.it>
+References: <1987903676.20040628181707@op.pl> <200406281731.40331.Antony@Soft-Solutions.co.uk> <1499142519.20040628225033@op.pl> <200406282204.57874.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FC8C43AB-C94D-11D8-9C38-000A95AD0230@mac.com>
+In-Reply-To: <200406282204.57874.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +18,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sam Loy <sampaw@mac.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-well 0/0 is exactly right. that just means the whole internet.
+Antony Stone wrote:
+> On Monday 28 June 2004 9:50 pm, mortar wrote:
+> 
+> 
+>>I have one more question. Maybe someone can help.
+>>
+>>What about tracking connections on non standard ftp ports (or http), for
+>>example 2121? How can i recognize them as a ftp (or http) connections
+>>and proper mark them?
+> 
+> 
+> I would answer this "you can recognise them just the same as you can recognise 
+> them on 'standard' ports 21/20 or 80" - in other words (with a packet filter) 
+> you can't - you just have to assume that ports = services (not always a safe 
+> assumption).
+> 
+> 
+>>I read about layer7-filter project, but is it necessery?
+> 
+> 
+> Yes - if you want to know whether a traffic stream is HTTP (etc), you have to 
+> look at OSI layer 7, because that's the only place HTTP means anything.
+> 
+> Netfilter works at OSI layers 3 & 4, therefore it can't identify what is HTTP 
+> / FTP / DNS etc - it can only guess.
 
-What are your other chains setup as?
+Not completely true, IMHO. conntrack modules look well above the TCP level
+(OSI levels make little sense for the TCP/IP protocol suite, they simply
+don't fit perfectly) otherwise they won't work. ip_conntrack_ftp does look
+at the FTP protocol, and is able to recognise incoming (data) connections
+as RELATED to the control one. But I don't know how to use such knowledge
+to detect FTP running on non-stardard ports, particularly in matching a
+rule.
 
-Sam Loy wrote:
-> If I sound a little frustrated, keep in mind I'm now on week 2 of my 
-> attempt to setup linux as a firewall router on my home network. I have 
-> installed 3 different versions of linux, read hundreds of pages, tried 
-> at least 5 different configurations 20 times each....but still I cannot 
-> seem to share my dsl connection with my other machines.
-> 
-> I have 2 NICs in a Linux 9 installation. One card connects to my lan 
-> with a static ip of 192.168.1.1. The other connects to my DSL provider 
-> which dynamically allocates the ip.
-> 
-> I did this:
-> 
-> modprobe iptable_nat
-> 
-> # In the NAT table (-t nat), Append a rule (-A) after routing
-> # (POSTROUTING) for all packets going out ppp0 (-o ppp0) which says to
-> # MASQUERADE the connection (-j MASQUERADE).
-> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> 
-> # Turn on IP forwarding
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> 
-> 
-> It does not work.  When I do a iptables -t nat  -n -L
-> It displays:
-> 
-> MASQUERADE all -- 0.0.0.0/0         0.0.0.0/0
-> 
-> once for each time I've executed the above command. (now 7 times). I'm 
-> sorry, but this doesn't seem right. 0 to 0? don't think so. So I try 
-> different -o values - but always get the same.
-> 
-> Don't get it - Do I need to manually add a route? Completely befuttled 
-> and ready to throw in the towell.
-> 
-> Sam
-> 
-> 
-> 
+.TM.
+-- 
+       ____/  ____/   /
+      /      /       /			Marco Colombo
+     ___/  ___  /   /		      Technical Manager
+    /          /   /			 ESI s.r.l.
+  _____/ _____/  _/		       Colombo@ESI.it
 
