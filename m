@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: LOG target and de-SNAT
-Date: Thu, 26 Sep 2002 23:05:59 +0100
+Subject: Re: iptables + nat problem in large network
+Date: Thu, 26 Sep 2002 23:26:07 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020926220601.TMBQ28842.mta06-svc.ntlworld.com@there>
-References: <AB711091BCDBD51199B80060943F1A3C472F9F@MVOS001>
+Message-ID: <20020926222610.VSGU13996.mta05-svc.ntlworld.com@there>
+References: <20020926204651.GB3801@alucicrazy.tacnet.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <AB711091BCDBD51199B80060943F1A3C472F9F@MVOS001>
+In-Reply-To: <20020926204651.GB3801@alucicrazy.tacnet.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +17,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 26 September 2002 11:41 pm, Couchet J (Jorge) wrote:
+On Thursday 26 September 2002 9:46 pm, bueno wrote:
 
-> Hello All,
+> Hello all,
+> 	        I have had problems with iptables nat with some servers.
+>         Is strange, because the nat works during some time...
 >
-> I have two questions about Netfilter:
+>         I have a machine with 3 interfaces...
+>         eth0 - 200.xxx.xxx.163
+>         eth1 - 10.1.2.1
+>         eth2 - 10.0.0.1
+>                10.0.0.65
+>                10.0.1.1
+>                10.0.1.65
+>                10.0.2.1
+>                10.0.2.65
+>                10.0.3.1
+>                10.0.3.65
+>                10.0.4.1
+>                10.0.5.1
+>                10.0.5.65
+>                10.0.5.129
+>                10.0.5.194
+>                10.0.6.1
 >
-> 1) The first, perhaps isn=B4t 100% Netfilter, but is related. How do you
-> disable that the text log appear in the active tty when you use the LOG
-> target? (the text log appear in the active tty -with the an user in the
-> system or not- and in the message file, and I only want the text in the
-> message file).
+>         I have the following rules for MASQUERADE:
+>         iptables -t nat -A POSTROUTING -s 10.1.2.0/25 -j MASQUERADE
+>         iptables -t nat -A POSTROUTING -s 10.0.0.0/16 -j MASQUERADE
 
-Use the --log-level option to the LOG target to assign the priority you wan=
-t=20
-for the logging, and then make sure your /etc/syslog.conf file specifies th=
-at=20
-this priority goes to a file and not to the console.
+These two rules will masquerade packets from eth1 to the outside world (seems 
+sensible) and from eth2 to the outside world (ditto), but also from eth1 to 
+eth2, and from eth2 to eth1.
 
-> 2) Which is the specific place/time where the de-SNAT is done? The SNAT is
-> done in the POSTROUTING chain (in the nat table), and the de-SNAT where?
+Do you really want packets between eth1 and eth2 to be masqueraded ?   Surely 
+they can be normally routed with the original source address left intact ?   
+I'd have thought a better rule than the two above would be the single:
 
-De-SNATting (on the reply packet) is carried out at the PREROUTING chain, b=
-ut=20
-is done in the background, automagically as they say, rather than needing a=
-=20
-specific rule for it in the PREROUTING chain.
+iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
 
-Reply packets are recognised by the entry in the connection tracking table =
+<snip long quote of tcpdump / ping showing strange things...>
 
-which was created by the outgoing packet, and they bypass the rules in the =
+> it remains thus during long time, more than 1 hour
+> note that, 1 second later eth1 stops to answer, eth2 starts...
 
-PREROUTING chain.
+I would check two things:
 
-> How do I catch the packet before the de-SNAT operation is carried out??.
+1. How many concurrent connections do you have on your machine, and what size 
+is your connection tracking table ?
 
-You can't unless you disable connection tracking and run a non-stateful=20
-inspection firewall :-)
+wc -l /proc/net/ip_conntrack
+cat /proc/sys/net/ipv4/ip_conntrack_max
 
+2. Is your ARP table behaving sensibly ?
+
+On the firewall machine, try
+
+arp -an
+
+when the ping is working as it should, and again when it is not, and see if 
+the entry for machine 10.1.2.17 is different ?
 
 Antony.
 
---=20
+-- 
 
-The difference between theory and practice is that
-in theory there is no difference, whereas in practice there is.
+Most people are aware that the Universe is big.
+
+ - Paul Davies, Professor of Theoretical Physics
 
