@@ -1,12 +1,10 @@
-From: "Julien Didron" <admin@tripnotik.dyndns.org>
-Subject: Re: Forwarding GnomeMeeting to internal network
-Date: Wed, 12 Nov 2003 13:11:10 +0000
+From: "Knight, Steve" <Steve.Knight@bskyb.com>
+Subject: RE: Forwarding GnomeMeeting to internal network
+Date: Wed, 12 Nov 2003 14:18:23 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031112125811.M97146@tripnotik.dyndns.org>
-References: <Pine.LNX.4.58.0311111558160.8003@fhynpb.envafyvqr.arg> <Pine.LNX.4.33.0311120009030.26051-100000@blackhole.kfki.hu> <20031112102230.M85506@tripnotik.dyndns.org> <200311121043.hACAhVj18353@agate.rockstone.co.uk>
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA579C5@OST_EXCH_USR5>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311121043.hACAhVj18353@agate.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,6 +18,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
+Fyi - MLdonkey is a windows & unix peer-to-peer client application [see
+mldonkey.org]
+
+-----Original Message-----
+From: Julien Didron [mailto:admin@tripnotik.dyndns.org] 
+Sent: 12 November 2003 1.11
+To: Netfilter Mailing List
+Subject: Re: Forwarding GnomeMeeting to internal network
+
+
 Hi again,
 
 
@@ -27,15 +35,19 @@ Thanks for the answer Antony.
 I'll then grant this box a fixed IP using DHCP declaration with the MAC 
 adress.
 
-Concerning the ip_conntrack table, I indeed have a sort of worm on my network 
-called "MLdonkey" ;o) (it's on some other box on the network), process that I 
-kill everytime the problem occurs, but with no success : i still get the very 
+Concerning the ip_conntrack table, I indeed have a sort of worm on my
+network 
+called "MLdonkey" ;o) (it's on some other box on the network), process that
+I 
+kill everytime the problem occurs, but with no success : i still get the
+very 
 same error line in syslog.
 after increasing the value of ip_conntrack_max, I monitored the traffic on 
 the outgoing interface, that was very little : say from 150B/s to 500B/s up 
 and down.
 For information my local network (this is home) is composed of 4 machines 
-ranging from mail server (smtp and pop) to DDNS, DHCP and web server ... But 
+ranging from mail server (smtp and pop) to DDNS, DHCP and web server ... But
+
 I really don't think it to be a "large" network :o)
 
 Again, thanks for the informations.
@@ -56,15 +68,18 @@ Subject: Re: Forwarding GnomeMeeting to internal network
 > >
 > > I wish to use GnomeMeeting, for which I assume the only port that needs
 > > opening is 1720.
-> > Now, how can I forward all incoming traffic to port 1720 on the router, to
+> > Now, how can I forward all incoming traffic to port 1720 on the router,
+to
 > > one machine on the network that doesn't have a fixed IP (DHCP), but has
 > > name on the domain thanks to DDNS (ex : abox.mydomain.net).
 > 
 > netfilter can only redirect packets to known IP addresses.
 > 
 > > Another question regarding ip_conntrack. After 5 days of use, I get the
-> > following error in syslog : "ip_conntrack table full, dropping packet.". I
-> > then increased the value in /proc/sys/net/ipv4/ip_conntrack_max, from 3048
+> > following error in syslog : "ip_conntrack table full, dropping packet.".
+I
+> > then increased the value in /proc/sys/net/ipv4/ip_conntrack_max, from
+3048
 > > to 8192, but I think this is a quick fix that won't get me too far ...
 > 
 > Several thousand active connections is a *lot*.   Unless you have a very
@@ -96,5 +111,23 @@ Subject: Re: Forwarding GnomeMeeting to internal network
 >                    Please reply to the list;                         
 >                                   please don't CC me.
 ------- End of Original Message -------
+
+
+
+
+.
+
+
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is 
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce, 
+distribute, store, retransmit, use or disclose its contents to anyone.
+ 
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
 
 
