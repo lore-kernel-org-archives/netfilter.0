@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: -i and -o options for iptables FORWARD chain
-Date: Fri, 2 Jan 2004 13:08:16 +0000
+From: "Iced Tea" <Iced_tea@gmx.net>
+Subject: Re: iptables newbie
+Date: Sat, 27 Dec 2003 20:09:53 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401021308.16360.Antony@Soft-Solutions.co.uk>
-References: <009a01c3cff6$ee23bd90$a5bbd00c@issaquah>
+Message-ID: <000a01c3ccad$033417e0$056fa8c0@gotcha>
+References: <Pine.GSO.4.58.0312271424260.10965@peppar.cs.umu.se> <1072536610.1868.41.camel@jasiiitosh.nexusmgmt.com> <Pine.GSO.4.58.0312271715200.23735@peppar.cs.umu.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <009a01c3cff6$ee23bd90$a5bbd00c@issaquah>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +17,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Johan Cimen <c99jcn@cs.umu.se>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 31 December 2003 11:36 pm, Gongya Yu wrote:
 
-> Hi, I just updated Linux kernel to 2.6.0 with iptables and ebtables
-> enabled.
+----- Original Message ----- 
+From: "Johan Cimen" <c99jcn@cs.umu.se>
+To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Saturday, December 27, 2003 6:05 PM
+Subject: Re: iptables newbie
+
+
 >
-> But iptables ignores -i and -o options for FORWARD chain. Wheneneve I use
-> something like -i eth0 or -o eth0, the rule is just ignored.
+> A more precise explanation of my problem:
+> When I use below command within my script,
 >
-> Any suggestions ?
+> iptables -t mangle -A OUTPUT -o $IFACE -p UDP --dport 7001 -j TOS
+> --set-tos 0x10
+>
+> where I have an iptables -L at the very end, I can see the results:
+>
+> Chain OUTPUT (policy ACCEPT)
+> target  prot opt source  destination
+> TOS     udp -- anywhere  anywhere    udp dpt:7001 TOS set
+Maximize-Throughput
 
-I am not a 2.6 expert by any means, so this is just a suggestion: did you 
-recompile the userspace tools (iptables) to match the new kernel code 
-(netfilter)?
+for detailed information use verbose option -v:
 
-Antony.
+iptables -vL OUTPUT
 
--- 
-My New Year's resolution is not to make any resolutions I can't keep.
-
-I'm wondering whether I've failed already.
-                                                     Please reply to the list;
-                                                           please don't CC me.
+tschoe
+  Ulrich
 
 
