@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: masq through an eth alias
-Date: Thu, 13 Jun 2002 08:54:34 +0100
+From: =?ISO-8859-1?Q?Pasi_K=E4rkk=E4inen?= <pasik@iki.fi>
+Subject: Getting counter values per rule number
+Date: Thu, 13 Jun 2002 11:42:00 +0300 (EEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206130754.g5D7sZA10488@Networker.rockstone.co.uk>
-References: <200206130724.g5D7Omi00924@g38.rdsbv.ro>
+Message-ID: <Pine.LNX.4.33.0206131137130.21524-100000@edu.joroinen.fi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206130724.g5D7Omi00924@g38.rdsbv.ro>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,20 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
 To: netfilter@lists.samba.org
 
-On Thursday 13 June 2002 8:25 am, Petre Bandac wrote:
 
-> can I masquerade through eth0:1 ?
+Hello!
 
-You can't use the MASQUERADE target, no, but then you should only be using 
-that if you have a dynamic address on the interface anyway (which I really 
-doubt you have if you're setting up eth0:1 etc).
+How can I get byte (and packet) counter values per rule number?
+I mean something like this:
 
-You can use -j SNAT --to <addr on eth0:1>
+iptables -L my_chain -v -x rule_number
 
- 
+So I could easily parse the results from the iptables output..
 
-Antony.
+If I have lots of rules, it's not very efficient to parse the output for
+whole chain and search the correct rule..
+
+Any other methods to get the same information more easily?
+
+Thanks!
+
+
+- Pasi K=E4rkk=E4inen
+
+                                   ^
+                                .     .
+                                 Linux
+                              /    -    \
+                             Choice.of.the
+                           .Next.Generation.
+
 
