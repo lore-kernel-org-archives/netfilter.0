@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: iptables -t nat -A OUTPUT - j DNAT
-Date: Sat, 24 May 2003 11:53:05 +1000
+Subject: RE: REDIRECT after SNAT?
+Date: Sat, 24 May 2003 11:37:45 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CCA@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CC8@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,55 +17,63 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Leszek Zur <lzur@record.com.pl>, netfilter@lists.netfilter.org
+To: Paul Clark <paul@xmill.com>, netfilter@lists.netfilter.org
 
-this usually means you did not compile the patch-o-matic patch to fix =
-the OUTPUT bug. Can you check this and make sure it's done as it's not =
-default (for some weird resason)..
+I know what your trying to do.. there is no way really as even large =
+ISPs who use TProxies don't do this and when you browse some sites they =
+say "Hey, your from <insert IP here>" and it's not yours...
+
+The reason it won't work is that once REDIRECT runs it enters Squid =
+immediately and squid then takes over and you can't change the address.
+If you SNAT it first, then it just goes out and the REDIRECT won't =
+activate..
+
+You'd basically have to write your own netfilter module which does this =
+and maybe it could work..
+
+eg.
+
+iptables -A PREROUTING -t nat -i $INTDEV -p tcp --dport 80 -m =
+SNEAKYMODULE --use_orig_source -j REDIRECT --to-port 3128
+
+that would be nice.. ;)
+
+Some websites are now smarter and they ignore HTTP_REMOTE server =
+variables because they also see a X_HTTP_FORWARDER variable which the =
+proxy adds to the header as showing the REAL source of the request.. =
+this is usually the client not the proxy IP.. but it's up to the website =
+to know this..
 
 -----Original Message-----
-From: Leszek Zur [mailto:lzur@record.com.pl]
-Sent: Saturday, May 24, 2003 12:41 AM
+From: Paul Clark [mailto:paul@xmill.com]
+Sent: Saturday, May 24, 2003 3:07 AM
 To: netfilter@lists.netfilter.org
-Subject: iptables -t nat -A OUTPUT - j DNAT=20
+Subject: REDIRECT after SNAT?
 
 
-Hello all.
+Hi,
 
-Slackware 9.0
-kernel 2.4.20
-iptables 1.2.7a
+Is there any way to force a REDIRECT to (e.g.) a local Web server =
+_after_
+SNAT has been done?  I have a Truly Evil Scheme to map VLANs to SNAT =
+address
+ranges, and I want it to work with a transparent proxy -on the same =
+device-
+(I'm pretty sure it would work fine split across two devices).
 
-iptables -t nat -A OUTPUT -d 1.1.1.1 -j DNAT --to-destination 2.2.2.2
-iptables: Invalid argument
+The problem is that the SNAT has to happen in nat:POSTROUTING, and =
+REDIRECTs
+have to happen in nat:PREROUTING - so by the time my Evil SNAT Hackery =
+has
+happened, it's too late to force it to the local machine.
 
-From iptables manual:
-   DNAT
-       This  target  is  only valid in the nat table, in the PREROUTING =
-and
-OUTPUT chains,
-       and user-defined chains which are only called from those chains.  =
-It
-specifies that
-       the destination address of the packet should be modified (and all
-future packets in
-       this connection will also be mangled), and rules should cease =
-being
-examined.   It
-       takes one type of option:
+Is there such a thing as a 'retry this packet from the beginning' =
+target?
 
-       --to-destination ipaddr[-ipaddr][:port-port]
-              which can specify a single new destination IP address, an
-inclusive range of
-              IP addresses, and optionally, a port range (which is only
-valid if the  rule
-              also  specifies  -p tcp or -p udp).  If no port range is
-specified, then the
-              destination port will never be modified.
+Thanks in advance
 
+Paul
 
-
-anybody can help me ??
 
 
 
