@@ -1,12 +1,13 @@
-From: dhiraj.2.bhuyan@bt.com
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: RE: new tcp connections, without SYN
-Date: Wed, 9 Apr 2003 14:00:19 +0100
+Date: 09 Apr 2003 15:06:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7497DCA1C240C042B28F6657ADFD8E09268776@i2km11-ukbr.domain1.systemhost.net>
+Message-ID: <1049893612.22719.31.camel@elendil.intranet.cartel-securite.net>
+References: <7497DCA1C240C042B28F6657ADFD8E09268776@i2km11-ukbr.domain1.systemhost.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <7497DCA1C240C042B28F6657ADFD8E09268776@i2km11-ukbr.domain1.systemhost.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,61 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org, carlosble@terra.es, blancher@cartel-securite.fr
+To: dhiraj.2.bhuyan@bt.com
+Cc: netfilter@lists.netfilter.org, carlosble@terra.es
 
-As far as I understand, an "ACK" packet can also start a "NEW" =
-connection.
-If the connection remains idle for long, the Netfilter's connection =
-tracking
-engine times out that connection and removes it's entry from the state
-table. Now when an "ACK" packet comes back after sometime, the =
-connection
-tracking engine marks this as a "NEW" connection. However am not sure =
-how
-the state changes to "ESTABLISHED".
+Le mer 09/04/2003 =E0 15:00, dhiraj.2.bhuyan@bt.com a =E9crit :
+> As far as I understand, an "ACK" packet can also start a "NEW" connecti=
+on.
+> If the connection remains idle for long, the Netfilter's connection tra=
+cking
+> engine times out that connection and removes it's entry from the state
+> table. Now when an "ACK" packet comes back after sometime, the connecti=
+on
+> tracking engine marks this as a "NEW" connection. However am not sure h=
+ow
+> the state changes to "ESTABLISHED".
 
-dhiraj
-
------Original Message-----
-From: Cedric Blancher [mailto:blancher@cartel-securite.fr]
-Sent: 09 April 2003 11:33
-To: carlosble@terra.es
-Cc: netfilter@lists.netfilter.org
-Subject: Re: new tcp connections, without SYN
-
-
-Le mer 09/04/2003 =E0 13:16, Carlos Ble a =E9crit :
-> Hi all. Two days ago, i added the policy that drops all new tcp
-connections
-> that starts without SYN to prevent port scaners and other attacks:
-> iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j =
-LOG \
-> --log-prefix "NEW tcp try no SYN:"
-> iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j =
-DROP
-
-You can add RELATED state to this :
-
-	iptables -A bad_tcp_packets -p tcp ! --syn -m state \
-		--state NEW,RELATED -j DROP
-
-> Another question: I had disabled the icmp answers :
-> echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
-> echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-> to try to be "invisible" for some wicked programs .
-> will i have problems with some other programas that makes ping=20
-> before establish a connection?=20
-
-If a program waits for a ping reply before attempting connection, sure
-you'll have problems. You can mitigeate this issue dealing echo =
-requests
-with your ruleset, and so having some addresses that still can ping.
+Timers for Netfilter's conntrack should be the same as TCP stacks. So,
+if conntrack times out, then destination TCP stack should time out too.
+that means if a ACK gets so delayed that related conntrack entry gets
+dropped, than it would be also dropped by destination TCP stack.
 
 --=20
 C=E9dric Blancher  <blancher@cartel-securite.fr>
 IT systems and networks security - Cartel S=E9curit=E9
 Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  =
-FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
-
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
