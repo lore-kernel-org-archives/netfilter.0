@@ -1,13 +1,10 @@
-From: Greg Cope <gregcope@gmail.com>
-Subject: Re: Help debugging iptables firewall....
-Date: Tue, 25 Jan 2005 17:24:59 +0000
-Message-ID: <c0e9781f050125092466365224@mail.gmail.com>
-References: <27594E8BA9D5CA458F5EF87D88B6B48F01991C@pxtvjoexd01.pxt.primeexalia.com>
-Reply-To: Greg Cope <gregcope@gmail.com>
+From: Pablo Allietti <pablo@lacnic.net>
+Subject: dnat other problem
+Date: Tue, 25 Jan 2005 15:49:25 -0300
+Message-ID: <20050125184925.GB30422@omega.lacnic.net.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F01991C@pxtvjoexd01.pxt.primeexalia.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,86 +16,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi Gary,
+i found the problem. i have 2 servers in the net 192.168.1.x
 
-Pinholes?  If you mean specific IP to specific IP:PORT on specfic
-interfaces then yes.
 
-DB is an oracle listener (port 1521)
 
-I have these:
 
-# for ssh to db server from webserver
-$IPTABLES -A FORWARD -p tcp --dport 22 -i $DMZ_IFACE -s $DMZ_EDGE_IP
--o $LAN_IFACE -d $TROT_IP -j ACCEPT
+		internet
+		|
+		|200.20.0.12
+		Firewall
+		 192.168.1.1
+		|
+		|
+		|
+	----------------------
+192.168.1.79                192.168.1.143
 
-$IPTABLES -A FORWARD -p tcp --dport 1521 -i $DMZ_IFACE -s $DMZ_EDGE_IP
--o $LAN_IFACE -d $TROT_IP -j ACCEPT
 
-I added 2 of your examples one before one after, and only see:
 
-Jan 25 17:21:43 gateway kernel: Oracle 1521 [tcp] before: IN=eth1
-OUT=eth2 SRC=192.168.254.3 DST=192.168.0.5 LEN=60 TOS=0x00 PREC=0x00
-TTL=63 ID=30447 DF PROTO=TCP SPT=32907 DPT=1521 WINDOW=5840 RES=0x00
-SYN URGP=0
+and i have this rules
 
-Which would imply that the rule is ok and the packets goes through -
-but why I am not getting a connection?
 
-Thanks,
+$IPTABLES -A INPUT   -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A OUTPUT  -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -j ACCEPT -p tcp --dport 1248
+iptables -t nat -A PREROUTING -i eth0 -p tcp  --dport 1248 -j DNAT --to
+192.168.1.143:22
 
-Greg
+iptables -A FORWARD -j ACCEPT -p tcp --dport 1350
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 1350 -j DNAT --to
+192.168.1.79:22
 
-On Tue, 25 Jan 2005 09:13:04 -0800, Gary W. Smith <gary@primeexalia.com> wrote:
-> I would recommend that you put a log entry for the protocol(s) or IP to
-> IP connections that you want to debug across the DMZ.  I did this while
-> trying to debug some IPSEC traffic.
-> 
-> -A FORWARD -p tcp -m tcp --dport 1433 -j LOG --log-prefix "MySQL [tcp]:
-> " --log-level 1
-> -A FORWARD -p udp -m udp --dport 1433 -j LOG --log-prefix "MySQL [udp]:
-> " --log-level 1
-> 
-> Put this at the beginning of the chain (tweak it for whatever DB you
-> need) and then just watch the calls to make sure that you are see the
-> flow that you want.  When you are done move them down to the end of the
-> chain, if they are still hitting then you are loosing packets.
-> 
-> BTW, are you running pinholes (point to point IP for each port you want
-> open)?  What DB?
-> 
-> Gary Wayne Smith
-> 
-> 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Greg Cope
-> Sent: Tuesday, January 25, 2005 8:54 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Help debugging iptables firewall....
-> 
-> Hi All,
-> 
-> I have a 3 interface firewall (internet, dmz, lan).
-> 
-> For some reason a dmz host can longer ssh or connect to a DB server on
-> the lan(it could before).
-> 
-> Nothing seems to get logged with a $IPTABLES -A FORWARD -j LOG
-> --log-prefix "FORWARD DENY: " rule.  And when I disable the FW and
-> enable the plain routing it seems to be able to connect ok.
-> 
-> At a loss as to why this would not work without logging something.
-> 
-> Firewall and Webserver are FC1, DB server is Redhat AS3.
-> 
-> Could someone suggest some ideas on debuging this?
-> 
-> Any  ideas gratefully received.
-> 
-> Greg
-> 
->
+
+target     prot opt source               destination         
+DNAT       tcp  --  anywhere             anywhere            tcp
+dpt:1248 to:192.168.1.143:22 
+DNAT       tcp  --  anywhere             anywhere            tcp
+dpt:1350 to:192.168.1.79:22 
+DNAT       icmp --  anywhere             anywhere
+to:192.168.1.143 
+DNAT       tcp  --  anywhere             anywhere            tcp
+dpt:mysql to:192.168.1.143 
+
+
+when i restart the firewall one dnat not working.
+
+	if i connect first to port 1248
+		ssh 200.20.0.12 -p 1248
+	work good but port 1350 doesnt working.
+
+
+	if i connect first to port 1350 1248 dont work. is really
+extrange no ???  any help?
+
+	
+-- 
+
+
+Pablo Allietti
+LACNIC
+--------------
+
 
