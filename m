@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ftp forward to internal machine
-Date: Tue, 4 Jun 2002 23:38:38 +0100
+From: "John Jones" <jjones@merlintechnologies.com>
+Subject: Ipmasqadm translation
+Date: Tue, 4 Jun 2002 15:50:06 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206042238.g54MceA10923@Networker.rockstone.co.uk>
-References: <Pine.LNX.4.44.0206041531190.30454-100000@wookie.shorewall.net>
+Message-ID: <003901c20c1a$2ef7ccf0$6301a8c0@JJONES1>
+References: <200206042229.g54MTuA10411@Networker.rockstone.co.uk>
+Reply-To: <jjones@merlintechnologies.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.44.0206041531190.30454-100000@wookie.shorewall.net>
+In-Reply-To: <200206042229.g54MTuA10411@Networker.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,19 +19,24 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.samba.org" <netfilter@lists.samba.org>
+To: Iptables <netfilter@lists.samba.org>
 
-On Tuesday 04 June 2002 11:32 pm, Tom Eastep wrote:
+How would I translate this rules from ipchains/ipmasqadm to iptables:
 
-> On Tue, 4 Jun 2002, Antony Stone wrote:
+  ipmasqadm portfw -a -P udp -L 10.0.0.4 5162 -R 192.168.1.200 5162
 
-> > You're almost certainly using "-m state --state RELATED" to handle port
-> > 20 for you.   Isn't stateful inspection wonderful :-)
+Would the following work:
 
-> And also loading ip_conntrack_ftp.o and ip_nat_ftp.o.
+ iptables -A PREROUTING -t nat -p udp -d 10.0.0.4 --dport 5162 -j DNAT
+--to 192.168.1.200:5162
+ iptables -I FORWARD 1 -p udp -d 192.168.1.200 --dport 5162 -j ACCEPT
 
-Well, yes, that's where your stateful inspection comes in, innit ?   :-)
+Do I have the translation right, there?  Or did ipmasqadm do two-way
+forwarding, and I need to do so with another set of rules like so:
+
+ iptables -A PREROUTING -t nat -p udp -d 192.168.1.200 --dport 5162 -j
+DNAT --to 10.0.0.4:5162
+ iptables -I FORWARD 1 -p udp -d 10.0.0.4 --dport 5162 -j ACCEPT
 
 
-Antony.
 
