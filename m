@@ -1,16 +1,15 @@
-From: O-Zone <liste@zerozone.it>
-Subject: Re: DMZ to DMT through ROUTER problem !
-Date: Fri, 21 May 2004 16:08:37 +0200
+From: Marcelus Trojahn <trojahn@alternativa.com.br>
+Subject: Re[2]: Logging MAC
+Date: Fri, 21 May 2004 11:17:02 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405211608.42467.liste@zerozone.it>
-References: <200405201318.34706.liste@zerozone.it> <200405211130.21108.liste@zerozone.it> <200405211119.14458.Antony@Soft-Solutions.co.uk>
-Reply-To: liste@zerozone.it
+Message-ID: <2693045015.20040521111702@alternativa.com.br>
+References: <5390820828.20040521103958@alternativa.com.br>
+ <200405211453.02935.Antony@Soft-Solutions.co.uk>
+Reply-To: Marcelus Trojahn <trojahn@alternativa.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405211119.14458.Antony@Soft-Solutions.co.uk>
-Content-Description: clearsigned data
-Content-Disposition: inline
+In-Reply-To: <200405211453.02935.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,56 +19,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Antony Stone <netfilter@lists.netfilter.org>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Friday, May 21, 2004, 10:53:02 AM, voce escreveu:
 
-On Friday 21 May 2004 12:19, Antony Stone wrote:
-> How do you route reply packets from those two public IPs back to the
-> sender?
+> May 21 14:47:15 Firewall kernel: IN=eth0 OUT=
+> MAC=00:05:5d:63:88:b8:00:d0:58:e0:04:cf:08:00 SRC=253.47.80.398 
+> DST=253.121.341.14 LEN=48 TOS=0x00 PREC=0x00 TTL=115 ID=25492 DF PROTO=TCP
+> SPT=3961 DPT=2745 WINDOW=16384 RES=0x00 SYN URGP=0
 
-Ok problem with UDP solved...again many many thanks ! But a little problem=
-=20
-still remain with IPSEC.
+Not for me... Take a look:
+May 21 11:13:20 BACKUP kernel: [smtp]IN=eth1 OUT=eth0 SRC=10.10.10.81
+DST=200.221.11.50 LEN=48 TOS=0x00 PREC=0x00 TTL=127 ID=60955 DF PROTO=TCP
+SPT=2438 DPT=25 WINDOW=8192 RES=0x00 SYN URGP=0
 
-On Firewall we have OpenSwan to connect from remote places. Inside our=20
-INTRANET, however some of us use IPSEC clients, such SSH Sentinel or SafeNe=
-t=20
-LT, to connect to remote IPSEC (using NAT-T Encapsulation).=20
+Maybe cause I use preffix?
 
-What happens when an intranet's user (10.0.0.40) try to connect to remote=20
-IPSEC server (81.113.x.y) ?
+--
+Marcelus Trojahn
 
-10.0.0.40 -----> [MASQ - 10.0.0.1] ----> 81.113.x.y
-10.0.0.40 <-xx- [MASQ - 10.0.0.1] <--- 81.113.x.y
-
-the reply to IPSEC packet was NOT forwarded and take by OpenSwan on 10.0.0.=
-1=20
-with, of course, "who are you and why the f&%k calling me ?".
-
-To enable firewall (10.0.0.1) accepting IPSEC connection i've used the=20
-following rules:
-
-# IPSEC
-$IPTABLES -A INPUT -i $INET_IFACE -p udp --dport 500 -j ACCEPT
-$IPTABLES -A INPUT -i $INET_IFACE -p 50 -j ACCEPT
-$IPTABLES -A INPUT -i $INET_IFACE -p 51 -j ACCEPT
-
-How i can keep working correctly MASQ ?
-
-Oz
-
-=2D --=20
-I always had a repulsive need to be something more than human.
-		-- David Bowie
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFArg1oYuBSFbgkEysRAn8EAKDftszKctvX4gDK8G98HEDqllCvxgCguUy6
-sZQ3BxQzAEucvi8yXa0XAbE=3D
-=3DcPye
-=2D----END PGP SIGNATURE-----
 
 
