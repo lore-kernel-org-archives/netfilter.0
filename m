@@ -1,11 +1,9 @@
-From: "bino-psn" <bino@indoakses-online.com>
-Subject: Re: Recomendations for replacing a Raptor (Symantec Enterprise) firewall
-Date: Thu, 22 Jan 2004 17:56:36 +0700
+From: "Technical" <technical@sojourn.dyndns.org>
+Subject: how do you specify an entire domain like *.mydomain.com
+Date: Thu, 22 Jan 2004 06:25:55 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008701c3e0d6$691edf80$0300a8c0@indoaksesbno>
-References: <000901c3e090$db03aef0$0400a8c0@bradmorgan>
+Message-ID: <34198.66.65.52.125.1074770755.squirrel@sojourn.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,39 +15,10 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Brad ..
-You can take a look at http://leaf.sourceforge.net
-LEAF = Linux Embeded Aplication Firewall
-By default .. it's only a floppy in size.
-Sincerely
--bino-
------ Original Message -----
-From: "Brad Morgan" <B-Morgan@concentric.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, January 22, 2004 9:38 AM
-Subject: Recomendations for replacing a Raptor (Symantec Enterprise)
-firewall
-
-
-I have a Raptor (version 6.5) firewall running on Windows NT 4.0.  We have a
-/27 netblock with multiple FTP and Web servers at different public addresses
-within this block.
-
-I'd like to replace this firewall with something like Smoothwall but need to
-be able to redirect multiple public IP addresses to the proper internal
-machines.  I'd like to use a Netfilter / iptables based solution.
-
-Can you suggest some possible alternatives?  I guess I could just use a
-general purpose Linux distribution, but I was hoping for something a bit
-more focused.
-
-Thanks,
-
-Brad Morgan
-
-
-
+-A RH-Firewall-1-INPUT -s *.*.myvwz.com -m state --state NEW -m tcp -p tcp
+--dport 110 -j ACCEPT
 
 
