@@ -1,13 +1,13 @@
-From: Willem Oldeman <willem@king-pin.nl>
-Subject: Re: Port Forwarding for port 25 (again...)
-Date: Tue, 25 Feb 2003 23:54:01 +0100
+From: "Michael K" <micke@klintan.se>
+Subject: RE: How to log
+Date: Wed, 26 Feb 2003 00:03:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302252354.01250.willem@king-pin.nl>
-References: <20030225005407.GA28447@first.knowledge.no>
+Message-ID: <000401c2dd22$20e9e060$0200a8c0@klintan.local>
+References: <200302251620.36405.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030225005407.GA28447@first.knowledge.no>
+In-Reply-To: <200302251620.36405.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,137 +18,69 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Magnus Solvang <magnus@solvang.net>, netfilter@lists.samba.org
+To: netfilter@newkirk.us, netfilter@lists.netfilter.org
 
-A handy tool for debugging firewalls is tcpdump.
-You can check traffic on all interfaces, or independantly from each other=
-=2E
-You may want to check your routing tables too.
+> -----Original Message-----
+> From: Joel Newkirk [mailto:netfilter@newkirk.us] 
+> Sent: Tuesday, February 25, 2003 10:21 PM
+> To: Michael K; netfilter@lists.netfilter.org
+> Subject: Re: How to log
+> 
+> 
+> On Tuesday 25 February 2003 04:01 pm, Michael K wrote:
+> > When I uses the --jump LOG in iptables it logs to /dev/console. Read
+> > the man page for syslog.conf(5) and added "kern.warn 
+> /var/log/krnmsg".
+> > Restarted syslog; and still it logs to /dev/console.
+> 
+> You need to use "kern.=warn" to designate a target for kernel warning 
+> messages.  You also, IIRC, need to make sure you don't have a kern.* 
+> entry before it, or a *.warn.
+> 
+> > Can I prevent this from happening?
+> 
+> Possibly.  Check if you have a "kern.*" or any other entry going to 
+> "/dev/console", and if you do you can comment it out.
+> 
+> > Is there another (better) way to log?
+> 
+> You can use the ULOG target, but you'll need to install a few 
+> userspace 
+> programs to deal with that.  If all you want is to look through logs 
+> occasionally for anything unexpected, or use the log to debug 
+> firewall 
+> rules as you work, follow the suggestion below.
+> 
+> > Can't I use something like "iptables.* /var/log/iptables" so that I
+> > only get messages from iptables? (Did try it, byt didn't work)
+> 
+> You can get close to this on most systems.  With most stable-kernel 
+> installations you have very few entries in the kernel debug 
+> stream, so 
+> you can add the parameter "--log-level 7" to you LOG rules, 
+> and divert 
+> "kern.=debug" in your syslog.conf file to an (almost) 
+> iptables-only log.  
+> If you also use the "--log-prefix" parameter you can prepend 
+> a specified 
+> string to each log entry from that rule, to help in reading 
+> the log.  A 
+> useful example of all this is:
+> 
+> iptables -A FORWARD -j LOG --log-level 7 --log-prefix "Unexpected 
+> Forward:"
+> 
+> As the last rule in the FORWARD chain.  If you have "kern.=debug 
+> /var/log/iptables" in syslog.conf then "cat /var/log/iptables | grep 
+> Unexp" would list out all the matching log entries.
+> 
+> > BTW: the system is Redhat 7.3
+> 
+> j
+> 
+Thank you for your great answer. I'll check it later when I am @ work.
 
-HTH,
-Willem
+Regards Michael
 
-On Tuesday 25 February 2003 01:54, Magnus Solvang wrote:
-> I have a firewall set up with an internal (192.168.1.20) and
-> an external ip-address (x.x.x.49). The former mailserver for
-> this domain has been placed on the LAN, and given the address
-> 192.168.1.101. MX for the domain still points to its old
-> ip-address (x.x.x.34). The firewall is behind the router for
-> the external domain.
->
-> I'm can't seem to be able to forward smtp-traffic from x.x.x.34
-> to 192.168.1.101 via the firewall. I _am_ able to forward port
-> 25 from the firewalls external interface to the mailserver behind,
-> but as mentioned - not from the former ip-address of the mailserver,
-> and to the new internal address.
->
-> I have tried numerous versions of:
-> $IPTABLES -t nat -A PREROUTING -i $INET_NCARD -d x.x.x.34 -p tcp \
-> --dport 25 -j DNAT --to-destination 192.168.1.101:25
->
-> But a telnet to the old, external ip-address of the mailserver
-> just hangs (untill it returns a "No route to host".
->
-> Unfortunatly, I have copied parts from various firewall-scripts
-> around the net, but I think I'm understanding most of it now.
->
-> Below are different output from iptables -L
-> I could ask them to change MX to point to the firewall, but
-> I'm hoping to avoid it, if possible.
->
-> - M
->
->
-> # iptables -v -L -t nat
-> Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source             =20
-> destination 0     0 DNAT       tcp  --  any    any     anywhere        =
-   =20
-> anywhere           tcp dpt:http to:192.168.1.101 0     0 DNAT       tcp=
-  --
->  eth1   any     anywhere             193.69.71.49       tcp dpt:smtp
-> to:192.168.1.101
->
-> Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source             =20
-> destination 0     0 MASQUERADE  all  --  any    any     192.168.1.0/24 =
-   =20
->  anywhere 0     0 SNAT       all  --  any    eth0    anywhere          =
- =20
-> anywhere           to:193.69.71.49
->
-> Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source             =20
-> destination
->
->
-> # iptables -v -L FORWARD
-> Chain FORWARD (policy ACCEPT 259 packets, 16059 bytes)
->  pkts bytes target     prot opt in     out     source             =20
-> destination 486 29545 bad_tcp_packets tcp -- any any     anywhere     =20
-> anywhere 0     0 ACCEPT     tcp  --  eth1   eth0    anywhere           =
-=20
-> 192.168.1.101      state NEW,RELATED,ESTABLISHED tcp dpt:smtp 325 23403
-> ACCEPT     all  --  eth0   eth1    anywhere             anywhere 4   35=
-5
-> LOG        all  --  any    any     anywhere             anywhere       =
-  =20
-> limit: avg 3/min burst 3 LOG level debug prefix `IPT FORWARD packet die=
-d: '
->
->
-> # iptables -v -L INPUT
-> Chain INPUT (policy ACCEPT 6 packets, 759 bytes)
->  pkts bytes target     prot opt in     out     source             =20
-> destination 99  7212 bad_tcp_packets  tcp  --  any    any     anywhere =
-   =20
->  anywhere 2   318 ACCEPT     all  --  eth0   any     192.168.1.0/24    =
- =20
-> anywhere 0     0 ACCEPT     all  --  lo     any     localhost.localdoma=
-in
-> anywhere 0     0 ACCEPT     all  --  lo     any     192.168.1.20       =
-=20
-> anywhere 19  1444 ACCEPT     all  --  lo     any     x.x.x.49          =
- =20
-> anywhere 0     0 ACCEPT     all  --  eth0   any     anywhere           =
-=20
-> 192.168.1.255 0     0 ACCEPT     udp  --  eth0   any     anywhere      =
-   =20
->   anywhere           udp spt:bootpc dpt:bootps 103  7797 ACCEPT     all=
-  --
->  any    any     anywhere             x.x.x.49            state
-> RELATED,ESTABLISHED 0     0 tcp_packets  tcp  --  eth1   any     anywhe=
-re =20
->         anywhere 2   292 udp_packets  udp  --  eth1   any     anywhere =
-   =20
->      anywhere 0     0 icmp_packets  icmp --  eth1   any    anywhere    =
-   =20
->   anywhere 0     0 ACCEPT     tcp  --  any    any     anywhere         =
-  =20
-> anywhere           state NEW,ESTABLISHED tcp dpt:smtp 6   759 LOG      =
-=20
-> all  --  any    any     anywhere             anywhere           limit: =
-avg
-> 3/min burst 3 LOG level debug prefix `IPT INPUT packet died: '
->
->
-> # iptables -v -L OUTPUT
-> Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source             =20
-> destination 94 13672 bad_tcp_packets  tcp  --  any    any     anywhere =
-   =20
->  anywhere 0     0 ACCEPT     all  --  any    any     localhost.localdom=
-ain
-> anywhere 0     0 ACCEPT     all  --  any    any     192.168.1.20       =
-=20
-> anywhere 128 16212 ACCEPT     all  --  any    any     x.x.x.49         =
-  =20
-> anywhere 0     0 ACCEPT     tcp  --  any    any     anywhere           =
-=20
-> anywhere           state RELATED,ESTABLISHED tcp spt:smtp 0     0 LOG  =
-   =20
->  all  --  any    any     anywhere             anywhere           limit:=
- avg
-> 3/min burst 3 LOG level debug prefix `IPT OUTPUT packet died: '
 
 
