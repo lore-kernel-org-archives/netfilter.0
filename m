@@ -1,11 +1,13 @@
-From: <netfilter@sbgit.com>
-Subject: Is my script good and secure?
-Date: 15 Mar 2004 13:28:16 UT
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Is my script good and secure?
+Date: Mon, 15 Mar 2004 13:50:03 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DIIE.000000E500002A8E@sbgit.com>
+Message-ID: <200403151350.03709.Antony@Soft-Solutions.co.uk>
+References: <DIIE.000000E500002A8E@sbgit.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <DIIE.000000E500002A8E@sbgit.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,88 +20,67 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Is this a good and secure Firewall Script?
+On Monday 15 March 2004 1:28 pm, netfilter@sbgit.com wrote:
 
-Thanx Peter
-----------------------------------------------------
-#! /bin/sh
+> Is this a good and secure Firewall Script?
 
-echo "1" > /proc/sys/net/ipv4/ip_forward # Initialising of Forwarding
+> echo "1" > /proc/sys/net/ipv4/ip_forward # Initialising of Forwarding
 
-# Flushen, Deleting, Create#
-################################################################
-iptables -F
-iptables -F -t nat
+Suggest you do this at the end, after setting up all the rules, instead of at 
+the beginning, when some packets might get forwarded before you're ready.
 
-iptables -F sperre
-iptables -X sperre
-iptables -N sperre
-iptables -F sperre
+> iptables -F sperre
+> iptables -X sperre
+> iptables -N sperre
 
-# first contact #
-#################
-iptables -A sperre -i eth1 -s ! 192.168.1.0/255.255.255.0 -j DROP                 # Drop everything how not comes from lokal LAN
-iptables -A sperre -i eth1 --dport 22,19,21,22,25,3389,1723,23000:23001 -j ACCEPT # Allow outbound only for specific ports
-iptables -A sperre -i lo -s 127.0.0.1/255.0.0.0 -j ACCEPT                         # Allow everything from loopback
-iptables -A sperre -i eth0 -s 192.168.1.0/255.255.255.0 -j DROP                   # Drop everyting how comes fro outside to inside  with LAN IP's
+I notice you are calling this user-defined chain from both INPUT and FORWARD - 
+this means that all the protocols you allow *through* the firewall are also 
+accepted *to* it - is this what you want?
 
-# acceptstuff #
-###############
-iptables -A sperre -p tcp --dport 21 -j ACCEPT             # ftp 
-iptables -A sperre -p tcp --dport 23001:23001 -j ACCEPT    # Battlefield Server
-iptables -A sperre -p tcp --dport 90 -j ACCEPT             # DVISE
-iptables -A sperre -p tcp --dport 80 -j ACCEPT             # HTTP
-iptables -A sperre -p tcp --dport 3389 -j ACCEPT           # VPN
+> iptables -A sperre -i eth1 --dport 22,19,21,22,25,3389,1723,23000:23001 -j
+> ACCEPT # Allow outbound only for specific ports
 
-# Antworten zulassen #
-######################
-iptables -A sperre -m state --state ESTABLISHED,RELATED -j ACCEPT
+For example, the above rule is going to get called by both FORWARD and INPUT - 
+think about whether that's what you meant to set up.
 
-# Reject everything else (RFC-conform) #
-#######################################
-iptables -A sperre -p tcp -j REJECT --reject-with tcp-reset
-iptables -A sperre -p udp -j REJECT --reject-with icmp-port-unreachable
+> iptables -A sperre -p tcp --dport 23001:23001 -j ACCEPT    # Battlefield
 
-# activating sperre#
-#####################
-iptables -A INPUT -j sperre
-iptables -A FORWARD -j sperre
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
+Did you mean "--dport 23000:23001"?
 
-iptables -P OUTPUT ACCEPT # output accept
-iptables -P OUTPUT ACCEPT -t nat
+> iptables -A sperre -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-# NAT #
-#######
-iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE 
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 21 -j DNAT --to 192.168.1.198        # FTP to FTP-Server
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 3389 -j DNAT --to 192.168.1.220      # Terminal Server
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 1723 -j DNAT --to 192.168.1.2        # VPN Server
-iptables -A PREROUTING -t nat -i eth0 -p 47  -j DNAT --to 192.168.1.220                   # VPN Server
-iptables -A PREROUTING -t nat -i eth0 -p 37  -j DNAT --to 192.168.1.220                   # VPN Server
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 4661:4662 -j DNAT --to 192.168.1.198 # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 6343 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 6300 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 4242 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 8888 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 6661:6662 -j DNAT --to 192.168.1.198 # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p udp --dport 4665 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p udp --dport 4672 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p udp --dport 6665 -j DNAT --to 192.168.1.198      # EDONKEY
+Put this rule at the top of the chain, so it gets matched first - nearly all 
+of your traffic will match here, so make it efficient to process.
 
-# Special Rules
-iptables -A INPUT -i eth0 -s 0/0 -p tcp --destination-port 25 -j ACCEPT
-iptables -A OUTPUT -o eth1 -s 0/0 -p tcp --destination-port 25 -j ACCEPT
-iptables -A INPUT -i eth0 -s 192.168.1.0/24 -p tcp --destination-port 25 -j ACCEPT
-iptables -A OUTPUT -o eth0 -s 0/0 -p tcp --destination-port 25 -j ACCEPT
+> iptables -A PREROUTING -t nat -i eth0 -p 37  -j DNAT --to 192.168.1.220
 
-iptables -A INPUT lo -p tcp --destination-port 10024 -j ACCEPT
-iptables -A OUTPUT -o lo -p tcp --destination-port 10024 -j ACCEPT
+You have a VPN which uses protocol 37 (DDP: Datagram Delivery Protocol) ???
 
-iptables -A INPUT -i lo -p tcp --destination-port 10025 -j ACCEPT
-iptables -A OUTPUT -o lo -p tcp --destination-port 10025 -j ACCEPT
+I think you mean 47: GRE.
 
-echo "Firewall started"
+> # Special Rules
+> iptables -A INPUT -i eth0 -s 0/0 -p tcp --destination-port 25 -j ACCEPT
+> iptables -A OUTPUT -o eth1 -s 0/0 -p tcp --destination-port 25 -j ACCEPT
+> iptables -A INPUT -i eth0 -s 192.168.1.0/24 -p tcp --destination-port 25 -j
+> ACCEPT
+
+No need for this rule as packets will match on the INPUT rule above (unless 
+you meant eth1?)
+
+> iptables -A INPUT lo -p tcp --destination-port 10024 -j ACCEPT
+
+Missing a "-i" there :)
+
+> echo "Firewall started"
+
+Good luck.
+
+Antony.
+
+-- 
+Most people have more than the average number of legs.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
