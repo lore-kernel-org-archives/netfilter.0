@@ -1,13 +1,13 @@
-From: "Leon Stankowski" <leons@voicenet.com>
-Subject: RE: Question about nfmark
-Date: Wed, 4 Jun 2003 21:17:21 -0400
+From: "hare ram" <hareram@sol.net.in>
+Subject: Re: MSN Voice chat with Iptables
+Date: Thu, 5 Jun 2003 09:09:15 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FLEDIJIDBADCKKAGHJNMOEDHCJAA.leons@voicenet.com>
-References: <20030604183302.31857.2836.Mailman@kashyyyk>
+Message-ID: <00ac01c32b14$09c128e0$c2bf09ca@Housecall>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DA0@wardrive.citadelcomputer.com.au> <3EDDEDA1.9030801@phreaker.net> <00d301c32ad5$25bb2c10$0100a8c0@windows>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030604183302.31857.2836.Mailman@kashyyyk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-In a chain you can make the target "MARK" and assign it a ID.  Example:
+Hi  all
+Does any one installed
 
-	iptables -t mangle -A PREROUTING -p tcp --dport 80 -j MARK --set-mark 25
+Upnp Successfully in REDHAT
+i been doing this practice more than 30 days now
+but no luck, any expert can guide me how can i process
+even i have posted in to linux-igd group, looks like the news group dead, no
+responce also for the same
 
-Later in any chain you can use the "mark" match item to look for these
-marked packets / streams.  Example:
+any help will be great
 
-	iptables -t nat -A POSTROUTING --mark 25 -j SNAT --to-source 10.0.0.1
-
-Have fun,
-Leon
-
------Original Message-----
-From: Abhinav Gupta <gupta@cpsc.ucalgary.ca>
-Subject: Question about nfmark
-
-Hi,
-I am a newbie to netfilter. While going through some code, I saw a
-comment that nfmark can be used for communicating between the different
-hooks. Could someone please explain me how this can be done.
-
-Thanks in advance.
-
-Abhinav.
+hare
 
 
