@@ -1,12 +1,13 @@
-From: "curlybraces" <curlybraces@dialogsl.net>
-Subject: Fw: DROP All MACs
-Date: Mon, 17 Nov 2003 23:09:33 +0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: tcp & udp timeout hardcoding
+Date: Mon, 17 Nov 2003 17:27:51 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002901c3ad2d$9229c390$0d1ea8c0@win2000adv>
-Reply-To: "curlybraces" <curlybraces@dialogsl.net>
+Message-ID: <200311171727.hAHHRtj22315@agate.rockstone.co.uk>
+References: <20031117144208.GA22431@nest.8d.com> <200311171630.hAHGU8j22270@agate.rockstone.co.uk> <20031117180925.GA15103@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031117180925.GA15103@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,76 +18,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
-Cc: Antony Stone <Antony@Soft-Solutions.co.uk>
+To: netfilter@lists.netfilter.org
 
+On Monday 17 November 2003 6:09 pm, Ramin Dousti wrote:
 
------ Original Message ----- 
-From: "curlybraces" <curlybraces@dialogsl.net>
-To: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-Sent: Monday, November 17, 2003 10:18 PM
-Subject: Re: DROP All MACs
-
-
-> Oh , i'm sorry
->
-> i will explain , but i need good solution for this matter today itself
-> ...............pls
->
-> let me to explain ,
->
-> in my lan has 5 windpows 2000 pcs. and one Red Hat Linux 8 box .This linux
-> box has 2 ethernet - eth0 , eth1 .
-> DHCP , Firewall ( iptables ) running in the Linux box .Normally without
-> implemention g firewall dhcp server works fine . why i'm try to install a
-> firewall for the dhcp server  is i want block some machines which r
-strainge
-> to the network .
-> using MACs we can restric such unknown users .
-> so what i'm trying to do is
-> as default policies input , forward, output drop .
-> as a next step i sugest to do drop all macs which r in the network .
-> as a next step i willing to do accept one by one which r known as trusted
-> users .
->
-> so my . Antony this is the i want to implemet for the LAN . If I
-> successfully implemented for the LAN , next step is implement this
-firewall
-> for the Cable modem for the public users.
->
-> so now i think what am i expecting u ....................!!!!!!!
-> pls reply me soon...........now can u tell me ur any contact no : ?
->
-> thank u
->
->
-> ----- Original Message ----- 
-> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-> To: "curlybraces" <curlybraces@dialogsl.net>
-> Sent: Monday, November 17, 2003 9:36 PM
-> Subject: Re: DROP All MACs
->
->
-> > On Monday 17 November 2003 3:29 pm, curlybraces wrote:
-> >
-> > > Mr. Antony
+> On Mon, Nov 17, 2003 at 04:30:05PM +0000, Antony Stone wrote:
+> > On Monday 17 November 2003 2:42 pm, xavier wrote:
+> > > Hello,
 > > >
-> > > can u give me ur any contact no : to contact u wright now ?
-> > > then i can tell  u my exact problem ?
+> > > I saw in the 2.4.22 kernel source :
+> > >
+> > > /usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
+> > > static unsigned long tcp_timeouts[]
+> > > = { 30 MINS,    /*      TCP_CONNTRACK_NONE,     */
+> > >     5 DAYS,     /*      TCP_CONNTRACK_ESTABLISHED,      */
+> > >     2 MINS,     /*      TCP_CONNTRACK_SYN_SENT, */
+> > >     60 SECS,    /*      TCP_CONNTRACK_SYN_RECV, */
+> > >     2 MINS,     /*      TCP_CONNTRACK_FIN_WAIT, */
+> > >     2 MINS,     /*      TCP_CONNTRACK_TIME_WAIT,        */
+> > >     10 SECS,    /*      TCP_CONNTRACK_CLOSE,    */
+> > >     60 SECS,    /*      TCP_CONNTRACK_CLOSE_WAIT,       */
+> > >     30 SECS,    /*      TCP_CONNTRACK_LAST_ACK, */
+> > >     2 MINS,     /*      TCP_CONNTRACK_LISTEN,   */
+> > > };
+> > >
+> > > Is there any plan to be able to set thoses values throught /proc ?
+> > >
+> > > in some cases a 5 days timeout on tcp connexions may be too long...
 > >
-> > No, sorry.
-> >
-> > I am prepared to answer questions on the netfilter mailing list, but if
-> > you're not willing to explain your problem there, I'm not willing to
-give
-> you
-> > my private phone number.
-> >
-> > Maybe somebody else will be kind enough to help you personally.
-> >
-> > Regards,
-> >
-> > Antony Stone.
+> > These are the standard values according to the TCP RFCs.
 >
+> Which RFC talks about TCP_CONNTRACK_ESTABLISHED, again? I don't think
+> it's written yet ;-)
 
+Agreed :)   The above table is obviously an extended version of the timeouts 
+used in a normal TCP/IP stack, with the addition of things only needed for a 
+connection tracking system.
+
+The timeouts are based, I believe, on RFC 793 (esp. the wonderful diagram on 
+page 23).
+
+Antony.
+
+-- 
+
+Wanted: telepath.   You know where to apply.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
