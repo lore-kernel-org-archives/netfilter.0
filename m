@@ -1,13 +1,12 @@
-From: "Andrew Smith" <nfml@k1k2.com>
-Subject: Re: Help in IPTABLES
-Date: Tue, 14 Jan 2003 15:33:52 +1100 (EST)
+From: Christian Hammers <ch@westend.com>
+Subject: filtering asym. routing without "ip_conntrack: table full"?
+Date: Tue, 14 Jan 2003 10:37:11 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3909.192.168.7.41.1042518832.squirrel@iw.k1k2.com>
-References: <200301131530.14106.netfilter@newkirk.us>
+Message-ID: <20030114093711.GC9940@westend.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200301131530.14106.netfilter@newkirk.us>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,76 +16,194 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-> On Sunday 12 January 2003 03:01 am, Arnt Karlsen wrote:
-> 
->> ..the wee point I was trying to make, is an iptables firewall is
->> vulnerable while it is being set up, so echo "0" first to stop
->> forwarding, set up the firewall, and echo "1" at the end of the
->> script to start forwarding again, a wee nit into your helpful
->> responses to him.
-> 
-> I do this myself in my script, but believe there is an additional 
-> solution, at least for some distros:
-> 
-> I'm running RedHat 7.3, and so everything runs off SysV-Init.  I was 
-> greatly bothered by the fact that the S07iptables startup link would
-> get  run quite a bit (well, a few seconds at least :^) before my
-> firewall  would.  Changing my firewall to a lower number in the
-> sequence wouldn't  work easily, since I'm on a Dynamic IP at the moment
-> and had to start up  ADSL to get the IP, since I use it 'statically' in
-> SNAT.  It also would  need (or at least want) syslog up and running. 
-> Couldn't easily move  ADSL up in the sequence, since it depended on
-> networking in general.   Everything is pretty much fixed in the
-> sequence it already starts in.
-> 
-> Then it occurred to me:  Modify the /etc/init.d/iptables script to set 
-> DROP policies, instead of the horribly shortsighted ACCEPT default it 
-> uses.  As soon as this occurred to me I changed it, and I feel much
-> more  comfortable now, knowing that if the whole startup collapses
-> right after  iptables and network scripts, I'm still not wide open.
-> 
-> My sequence now is 
-> iptables->ip6tables->network->syslog->ADSL->firewall->ip6firewall-
->freenet
-> (freenet is the startup for the IPv6inIPv4 tunnel)
-> 
-> I modified the /etc/init.d/iptables script to set DROP policies in both
->  the 'start' and 'stop' functions.
-> 
-> Despite being more comfortable with this, I'd like to hear if anyone
-> sees  a hole in my reasoning.
-> 
-> j
+Hello
 
-Totally lacking in useful details but ...
-I setup 2 client machines with RH7.3 back in August ...
-I always modify the "network" script to run my own rc.firewall
-(that's just how I do it ;-)
-I used to do it before the interfaces came up, I've now changed
-it to do so AFTER the interfaces come up
-The reason is that 7.3 wouldn't forward packets to the internet
-unless my firewall script was run after the interfaces started.
-Internet connection using ADSL
-(I liked the "before" option coz it avoided the short hole in
-security while booting ... on ipchains)
-I didn't go into the details of what was going on, but I worked it
-out by reinstalling my own 6.2 firewall as 7.3 and then spotted the
-solution to whatever problem I had caused (I never worked out
-exactly what the problem was) by the fact that it worked if I AGAIN
-ran my rc.firewall after it had finished booting
-Anyway - just a hint if you happen to get the same problem with
-your "iptables->ip6tables->network->syslog->AD
-           SL->firewall->ip6firewall->freenet"
-though it may never happen to you ...
-I never did bother to work out the true cause :-)
+I have a border router that does dynamic and asymetric routing.
+Now, after upgrading from 2.4.19 to 2.4.20 yesterday I got the following=20
+message in my syslog twice this night:
+	kernel: ip_conntrack: table full, dropping packet.
+The /proc/net/ip_conntrack table has 36911 entries, mostly all [UNREPLIED].
 
--- 
--Cheers
--Andrew
+I'm now wondering, why ip_conntrack comes into play at all - I'm
+thought, I was using it only for my INPUT table but the connections in
+/proc/net/ip_conntrack are definitely ones that are going from one ethX
+to another ethX getting filtered only in FORWARD and only by source and=20
+destination IP.
 
-MS ... if only he hadn't been hang gliding!
+/proc/sys/net/ipv4/ip_conntrack_max was at 32767 and has now temporarily=20
+raised to 65520 although I don't want to have conntrack for forwarding
+at all.=20
+Oh, it's grown to 36911 while typing, so I be happy about answers :)
+
+bye,
+
+-christian-
+
+
+# free
+             total       used       free     shared    buffers cached
+Mem:        516548     274016     242532          0      12500 128248
+-/+ buffers/cache:     133268     383280
+
+# lsmod=20
+Module                  Size  Used by    Not tainted
+ipt_state                608   1  (autoclean)
+ipt_LOG                 3200   2  (autoclean)
+ip_nat_ftp              3424   0  (unused)
+iptable_nat            19348   1  [ip_nat_ftp]
+ip_conntrack_ftp        4096   1  [ip_nat_ftp]
+iptable_filter          1760   1  (autoclean)
+ip_tables              13184   6  [ipt_state ipt_LOG iptable_nat iptable_fi=
+lter]
+dummy                   1088   1=20
+eepro100               18444   3=20
+mii                     2320   0  [eepro100]
+rtc                     6012   0  (autoclean)
+unix                   13892  16  (autoclean)
+
+
+relevant Kernel config:
+#
+# Networking options
+#
+CONFIG_PACKET=3Dy
+CONFIG_PACKET_MMAP=3Dy
+CONFIG_NETLINK_DEV=3Dm
+CONFIG_NETFILTER=3Dy
+CONFIG_NETFILTER_DEBUG=3Dy
+CONFIG_FILTER=3Dy
+CONFIG_UNIX=3Dm
+CONFIG_INET=3Dy
+CONFIG_IP_MULTICAST=3Dy
+CONFIG_IP_ADVANCED_ROUTER=3Dy
+CONFIG_IP_MULTIPLE_TABLES=3Dy
+CONFIG_IP_ROUTE_FWMARK=3Dy
+# CONFIG_IP_ROUTE_NAT is not set
+CONFIG_IP_ROUTE_MULTIPATH=3Dy
+CONFIG_IP_ROUTE_TOS=3Dy
+CONFIG_IP_ROUTE_VERBOSE=3Dy
+CONFIG_IP_ROUTE_LARGE_TABLES=3Dy
+# CONFIG_IP_PNP is not set
+CONFIG_NET_IPIP=3Dm
+CONFIG_NET_IPGRE=3Dm
+CONFIG_NET_IPGRE_BROADCAST=3Dy
+CONFIG_IP_MROUTE=3Dy
+CONFIG_IP_PIMSM_V1=3Dy
+CONFIG_IP_PIMSM_V2=3Dy
+CONFIG_ARPD=3Dy
+# CONFIG_INET_ECN is not set
+CONFIG_SYN_COOKIES=3Dy
+
+#
+#   IP: Netfilter Configuration
+#
+CONFIG_IP_NF_CONNTRACK=3Dy
+CONFIG_IP_NF_FTP=3Dm
+CONFIG_IP_NF_IRC=3Dm
+CONFIG_IP_NF_QUEUE=3Dm
+CONFIG_IP_NF_IPTABLES=3Dm
+CONFIG_IP_NF_MATCH_LIMIT=3Dm
+CONFIG_IP_NF_MATCH_MAC=3Dm
+CONFIG_IP_NF_MATCH_PKTTYPE=3Dm
+CONFIG_IP_NF_MATCH_MARK=3Dm
+CONFIG_IP_NF_MATCH_MULTIPORT=3Dm
+CONFIG_IP_NF_MATCH_TOS=3Dm
+CONFIG_IP_NF_MATCH_ECN=3Dm
+CONFIG_IP_NF_MATCH_DSCP=3Dm
+# CONFIG_IP_NF_MATCH_AH_ESP is not set
+CONFIG_IP_NF_MATCH_LENGTH=3Dm
+CONFIG_IP_NF_MATCH_TTL=3Dm
+CONFIG_IP_NF_MATCH_TCPMSS=3Dm
+CONFIG_IP_NF_MATCH_HELPER=3Dm
+CONFIG_IP_NF_MATCH_STATE=3Dm
+CONFIG_IP_NF_MATCH_CONNTRACK=3Dm
+CONFIG_IP_NF_MATCH_UNCLEAN=3Dm
+CONFIG_IP_NF_MATCH_OWNER=3Dm
+CONFIG_IP_NF_FILTER=3Dm
+CONFIG_IP_NF_TARGET_REJECT=3Dm
+CONFIG_IP_NF_TARGET_MIRROR=3Dm
+CONFIG_IP_NF_NAT=3Dm
+CONFIG_IP_NF_NAT_NEEDED=3Dy
+CONFIG_IP_NF_TARGET_MASQUERADE=3Dm
+CONFIG_IP_NF_TARGET_REDIRECT=3Dm
+# CONFIG_IP_NF_NAT_LOCAL is not set
+CONFIG_IP_NF_NAT_SNMP_BASIC=3Dm
+CONFIG_IP_NF_NAT_IRC=3Dm
+CONFIG_IP_NF_NAT_FTP=3Dm
+CONFIG_IP_NF_MANGLE=3Dm
+CONFIG_IP_NF_TARGET_TOS=3Dm
+# CONFIG_IP_NF_TARGET_ECN is not set
+# CONFIG_IP_NF_TARGET_DSCP is not set
+CONFIG_IP_NF_TARGET_MARK=3Dm
+CONFIG_IP_NF_TARGET_LOG=3Dm
+# CONFIG_IP_NF_TARGET_ULOG is not set
+CONFIG_IP_NF_TARGET_TCPMSS=3Dm
+# CONFIG_IP_NF_ARPTABLES is not set
+# CONFIG_IPV6 is not set
+# CONFIG_KHTTPD is not set
+# CONFIG_ATM is not set
+# CONFIG_VLAN_8021Q is not set
+
+#
+# =20
+#
+# CONFIG_IPX is not set
+# CONFIG_ATALK is not set
+
+#
+# Appletalk devices
+#
+# CONFIG_DEV_APPLETALK is not set
+# CONFIG_DECNET is not set
+# CONFIG_BRIDGE is not set
+# CONFIG_X25 is not set
+# CONFIG_LAPB is not set
+# CONFIG_LLC is not set
+# CONFIG_NET_DIVERT is not set
+# CONFIG_ECONET is not set
+# CONFIG_WAN_ROUTER is not set
+# CONFIG_NET_FASTROUTE is not set
+# CONFIG_NET_HW_FLOWCONTROL is not set
+
+#
+# QoS and/or fair queueing
+#
+CONFIG_NET_SCHED=3Dy
+CONFIG_NET_SCH_CBQ=3Dm
+CONFIG_NET_SCH_HTB=3Dm
+CONFIG_NET_SCH_CSZ=3Dm
+CONFIG_NET_SCH_PRIO=3Dm
+CONFIG_NET_SCH_RED=3Dm
+CONFIG_NET_SCH_SFQ=3Dm
+CONFIG_NET_SCH_TEQL=3Dm
+CONFIG_NET_SCH_TBF=3Dm
+CONFIG_NET_SCH_GRED=3Dm
+CONFIG_NET_SCH_DSMARK=3Dm
+CONFIG_NET_SCH_INGRESS=3Dm
+CONFIG_NET_QOS=3Dy
+CONFIG_NET_ESTIMATOR=3Dy
+CONFIG_NET_CLS=3Dy
+CONFIG_NET_CLS_TCINDEX=3Dm
+CONFIG_NET_CLS_ROUTE4=3Dm
+CONFIG_NET_CLS_ROUTE=3Dy
+CONFIG_NET_CLS_FW=3Dm
+CONFIG_NET_CLS_U32=3Dm
+CONFIG_NET_CLS_RSVP=3Dm
+CONFIG_NET_CLS_RSVP6=3Dm
+CONFIG_NET_CLS_POLICE=3Dy
+
+#
+# Network testing
+#
+CONFIG_NET_PKTGEN=3Dm
+
+--=20
+Christian Hammers             WESTEND GmbH  |  Internet-Business-Provider
+Technik                       CISCO Systems Partner - Authorized Reseller
+                              L=FCtticher Strasse 10     Tel 0241/701333-11
+ch@westend.com                D-52064 Aachen              Fax 0241/911879
 
 
