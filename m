@@ -1,8 +1,9 @@
-From: Uwe Eisner <Uwe.Eisner@globit.com>
-Subject: Virtual Hosts
-Date: Fri, 31 May 2002 09:43:07 +0200
+From: Damijan Sencar <damijan.sencar@zrs-tk.si>
+Subject: Re: Logging NEW ssh connections
+Date: Fri, 31 May 2002 09:55:42 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CF7298B.6010506@globit.com>
+Message-ID: <3CF72C7E.8050006@zrs-tk.si>
+References: <3A5DC36EC1506C40825C05BE65E62AEF0E79B7@neptuno.idea.com.mx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -16,30 +17,65 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.samba.org
+To: netfilter <netfilter@lists.samba.org>
 
-Hi @ all,
+It works now!
 
-I am starting set up a iptables based firewall (iptables v1.2.5) on a 
-Suse Linux 8.0prof machine.
-I created a virtual host an eth0, which is eth0:1.
+Thanx,
 
-The situation is, that the firewall is a zebra OSPFD-Router (verson 
-0.92a), too. And the machine needs a public IP-Address at the internal 
-interface as well. How ever, I would like to use internal ip-stack at my 
-network, wherefor I need a virtual host, needn't I?
+Damijan
 
-I have same roule at iptables like:
-iptables -A FORWARD -d 192.168.0.0/16 -i eth0:1 -j ACCEPT
+Omar Castaneda Acosta wrote:
 
-The script stoped with following error:
-Warning: wierd chracter in interface 'eth0:1' (No aliases, :, ! or *)
+>Make these changes to your firewall script:
+>
+>if [ -n "`$IPTABLES -L | $GREP log-and-forget`" ]; then
+>   $IPTABLES -F log-and-forget
+>fi  
+>
+>....
+>
+>$IPTABLES -N log-and-forget
+>$IPTABLES -A log-and-forget -j LOG --log-level warning --log-prefix
+>"[WARNING] "                
+>$IPTABLES -A log-and-forget -j RETURN
+>
+># The next rules should be on the top of INPUT, FORWARD and OUTPUT
+>chains
+>
+>$IPTABLES -A INPUT -p TCP -dport 22 -m state -state NEW -j
+>log-and-forget
+>$IPTABLES -A FORWARD -p TCP -dport 22 -m state -state NEW -j
+>log-and-forget
+>$IPTABLES -A OUTPUT -p TCP -dport 22 -m state -state NEW -j
+>log-and-forget
+>
+>
+>-----Original Message-----
+>From: Damijan Sencar [mailto:damijan.sencar@zrs-tk.si]
+>Sent: Thursday, May 30, 2002 7:13 AM
+>To: netfilter@lists.samba.org
+>Subject: Logging NEW ssh connections
+>
+>Hi!
+>
+>I want to log all new ssh connections from Internet to syslogd. I added
+>chain as follows but it doesn't log anything.
+>
+>$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 22 -m state --state NEW
+>-j LOG --log-level DEBUG --log-prefix "NEW SSH IN
+> logged"
+>$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 22 -j allowed
+>
+>
+>However it works (logs all packets to syslogd)  if I change state from
+>NEW to ESTABLISHED. What could be wrong there?
+>
+>Thanx,
+>
+>Damijan
+>
+>
 
-In same list, it is mentioned, that it works, other guys say, it works not..
-
-Hope sameone can help me..
-
-Thx and best reguards
-Uwe Eisner
 
 
