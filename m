@@ -1,15 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: what filtering to do on the OUTPUT chain?
-Date: 23 Oct 2002 08:51:53 +0200
+From: harish.k@lntinfotech.com
+Subject: RE: IPTables Query
+Date: Wed, 23 Oct 2002 13:37:40 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1035355913.20496.19.camel@elendil>
-References: <1035317344.8858.14.camel@elendil>
-	<Pine.LNX.4.44.0210221605170.15445-100000@localhost.localdomain> 
-	<20021023003146.D8681@funkyjesus.org>
+Message-ID: <OF4C23D8BB.4F323586-ON65256C5B.002C3B86-65256C5B.002CA6D5@lntinfotech.com>
+References: <FLEKIPPLAEDMJMOOBBDPEEBDDEAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021023003146.D8681@funkyjesus.org>
+In-Reply-To: <FLEKIPPLAEDMJMOOBBDPEEBDDEAA.stewart.thompson@shaw.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,58 +16,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Nick Drage <nickd@funkyjesus.org>
-Cc: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: stewart.thompson@shaw.ca
+Cc: netfilter@lists.netfilter.org
 
-Le mer 23/10/2002 =E0 01:31, Nick Drage a =E9crit :
-> "--cmd-owner" is your friend, your close, personal, bestest friend.
+Hi Stewart,
 
---cmd-owner is, imho, not usable on its own for filtering purposes, such
-as application based filtering.
+I have a Checkpoint firewall sitting in front of me. It's IP Add is 
+172.25.8.1. This machine does the NAT and filter functions.
+It is in turn connected to a router thru another interface and to the 
+Internet.
+The IP Add 172.25.8.125 *has* permission to pass thru, but the IP
+172.25.8.130 does not. So locally generated packets destined for
+DNS servers need to have the source IP of 172.25.8.125.
 
-I'll try to show why :
+Rgds
+-- 
+---------------------------------------------------------------
+Harish K                             <harish.k@lntinfotech.com>
+Systems Engineer                            Tel - 91-22-6948065
+Don't drink and drive. You might hit a bump and spill your beer
+---------------------------------------------------------------
 
-root@elendil:~# iptables -A OUTPUT -m owner --cmd-owner "nc" -j REJECT
 
-So I should not be able to execute a netcat. I use a REJECT rule to give
-a simple example.
 
-cbr@elendil:~$ nc 192.168.1.10 22
-(UNKNOWN) [192.168.1.10] 22 (ssh) : Connection refused
 
-Fine. That's what I wanted.
+Stewart Thompson <stewart.thompson@shaw.ca>
+10/23/2002 01:30 PM
+Please respond to stewart.thompson
+ 
+        To:     harish.k@lntinfotech.com, netfilter@lists.netfilter.org
+        cc: 
+        Subject:        RE: IPTables Query
 
-cbr@elendil:~$ ln -s /bin/nc toto
-cbr@elendil:~$ ./toto 192.168.1.10 22
-SSH-2.0-Feydreiva SSH daemon
 
-Well, a bit tricky... If you investigate a bit more and set a DROP
-policy up with only allowed application, you'll discover you just can't
-specify a command path, only a command name. That means if you allow
-"ping" command, any command named ping will do the trick, would it be a
-symlink named "ping" to another command or a binary named "ping". So, if
-you want to do it well, you have to restrict your filesystem, forbiding
-users to write in order to prevent them to create another "ping".
+Hi:
 
-So --cmd-owner becomes useful when used with other matches, to restrict
-ping command to ICMP echo requests as an exemple :
+                 This isn't really practical. Most routers will drop 
+packets
+from private ranges. So your request won't make it to it's destination
+Anyway. Netfilter will make sure the request gets back to the right
+Machine. Why do you need this?
 
-iptables -A OUTPUT -m owner --cmd-owner "ping" -m state --state NEW \
-	-p icmp --icmp-type echo-request -j ACCEPT
 
-Solution would be to match commands not on name, but on the exact binary
-location (inode number, device number), but it is far out of my skills
-to implement this. Moreover, it could affect performance (but you can
-reduce it well using state match and only filter NEW packets using this
-stuff).
+Stu..........
 
-By the way, owner match is very useful to me, especially --uid-owner and
---gid-owner.
-
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security expert  - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
