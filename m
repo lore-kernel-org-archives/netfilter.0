@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Syntax/NAT OUTPUT
-Date: Tue, 9 Jul 2002 21:27:03 +0100
+From: Tomasz Wrona <tmp@eter.tym.pl>
+Subject: Deleting rule with "-m time" doesn't work.
+Date: Tue, 9 Jul 2002 22:56:28 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020709202705.FPXL290.mta02-svc.ntlworld.com@there>
-References: <000801c2279c$6e2364f0$4fcf3cd0@nebuchadnezza>
+Message-ID: <1747283092.20020709225628@wp.pl>
+Reply-To: Tomasz Wrona <tmp@eter.tym.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <000801c2279c$6e2364f0$4fcf3cd0@nebuchadnezza>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,39 +17,30 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: iptables-list <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-On Tuesday 09 July 2002 11:59 pm, Tim wrote:
+Hello,
 
-> Scenario: router eth0 to Fwall 192.168.2.2
->                Fwall eth0 from router 192.168.2.1
->                Fwall eth1 from DMZ 172.16.1.1
->                Fwall eth2 from LAN 192.168.1.1
->
-> My understanding of concepts of filtering and nat
->
-> Pinging from the router eth0 thu Fwall eth2 to LAN, it first goes through
-> PREROUTING nat table then the filter INPUT----this the path it takes to get
-> to any box in the LAN .....yes ?
+What could be a reason that deleting rule with "-m time" doesn't work?
 
-No.   Packets only go through the INPUT chain if they are addressed to the 
-firewall itself.
+When I add sample rule:
+iptables -t mangle -A FORWARD -i eth0 -o eth1 -m time --timestart \
+18:00 --timestop 19:00 --days Mon,Tue,Wed,Thu,Fri,Sat,Sun -j ACCEPT
 
-If they are being routed through the firewall to something on the other side, 
-they go through the FORWARD chain.
+and than:
+iptables -t mangle -D FORWARD -i eth0 -o eth1 -m time --timestart \
+18:00 --timestop 19:00 --days Mon,Tue,Wed,Thu,Fri,Sat,Sun -j ACCEPT
 
-You're right about them going through PREROUTING first, though, and they also 
-go through POSTROUTING afterwards.
+I have following message:
+iptables: Bad rule (does a matching rule exist in that chain?)
 
-> To get a reply from this ping it must go thru the NAT OUTPUT then filter
-> OUTPUT.....this is my understanding of the return path for this ping from
-> the router eth0.....is this correct so far ?
+Deleting rule ie. with iptables -t mangle -D FORWARD 1 works fine.
 
-The OUTPUT chain is only for packets originating on the firewal itself, so 
-unless you type the ping command on the firewall, the OUTPUT chains 
-(filtering and nat) are not involved.
+I used latest v 1.2.6a
 
- 
 
-Antony.
+Regards,
+tw                   
+--
+
 
