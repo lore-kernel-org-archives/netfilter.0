@@ -1,13 +1,13 @@
-From: George Garvey <tmwg-netfilter@inxservices.com>
-Subject: Re: Requestion for help with GRE tunnel
-Date: Tue, 18 Jun 2002 08:59:53 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: invert problem with multiport
+Date: Tue, 18 Jun 2002 17:18:37 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020618085953.C2662@inxservices.com>
-References: <20020618063945.A2662@inxservices.com>
+Message-ID: <200206181618.RAA27678@slate.rockstone.co.uk>
+References: <3D0F56B9.5952D779@conterra.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020618063945.A2662@inxservices.com>; from tmwg-netfilter@inxservices.com on Tue, Jun 18, 2002 at 06:39:45AM -0700
+In-Reply-To: <3D0F56B9.5952D779@conterra.de>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,74 +18,52 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-   Thanks for the fast response. I remembered that I have a spare IP on
-an ADSL, so changed the setup as follows, based on your mention of a
-requirement for a router. This setup still lets me experiment with both
-computers in the same room, but is more similar to the final desired
-setup:
+On Tuesday 18 June 2002 4:50 pm, Christoph Gossen wrote:
 
-eth0: 192.168.2.2 ---------- gigE switch ------ eth0: 192.168.1.12
-------------------------			----------------------
-| salesns.inxsales.lan |			| ns.inxservices.com |
-------------------------			----------------------
-eth1: 63.193.79.20 --------- 100 switch -------	eth2: 63.193.79.19
-				|		eth1: 66.134.162.140
-			    ADSL modem			|
-			    	|		  SDSL modem/hub
-				|			|
-				------- internet --------
+> Hello,
+>
+> I think there's a bug in the behaviour of the multiport module - for
+> example, a line like
+>
+>         iptables -p tcp -A OUTPUT -m multiport ! --dport 25 -j DROP
+>
+> causes the same behaviour as
+>
+>         iptables -p tcp -A OUTPUT -m multiport --dport 25 -j DROP
+>
+> or
+>
+>         iptables -p tcp -A OUTPUT --dport 25 -j DROP
+>
+> and NOT (as one would expect) that one caused by
+>
+>         iptables -p tcp -A OUTPUT ! --dport 25 -j DROP
+>
+> Inverting the (set of) port(s) due to the "!" sign in the first line
+> above is just ignored
+> (no syntax error occures)!
+>
+> Any comments?
 
-GRE tunnel (withvan):				GRE tunnel (withsales):
-63.193.79.20 -> 63.193.79.19			63.193.79.19 -> 63.193.79.20
-IP: 192.168.3.1					IP: 192.168.3.2
-ip route add 192.168.1.0/24 dev withvan		ip route add 192.168.2.0/24
-							dev withsales
+I don't use the multiport match myself, but I'd expect it to be:
 
-I can ping 63.193.79.19 from 63.193.79.20.
-I can ping 63.193.79.20 from 63.193.79.19.
-I cannot ping 192.168.1.12 from salesns.
+iptables -p tcp -A OUTPUT -m multiport --dport ! 25 -j DROP
 
-Here are the commands I'm using:
+In other words "a destination port which isn't 25"....
 
-192.168.1.12:
+What does that do for you ?
 
-/sbin/ip link set dev eth0 up mtu 1500
-/sbin/ip address add 192.168.1.12/24 broadcast 192.168.1.255 dev eth0
+I note from the man page for iptables, though, that --dport has the [ ! ] 
+option, but "multiport --dport" doesn't, so maybe negating multiports is not 
+supported at all ?
 
-/sbin/ip link set dev eth1 up
-/sbin/ip address add 66.134.162.140/29 broadcast 66.134.162.143 dev eth1
+If you enter all the above rules, what do you get from
 
-/sbin/ip link set dev eth2 up
-/sbin/ip address add 63.193.79.19/29 broadcast 63.193.79.23 dev eth2
+iptables -L OUTPUT -v -n ?
 
-/sbin/ip link set dev lo up
-/sbin/ip address add 127.0.0.1/8 broadcast + dev lo
+ 
 
-/sbin/ip route add default via 63.193.79.17 dev eth2
-
-/sbin/ip tunnel add withsales mode gre remote 63.193.79.20 local 63.193.79.19 ttl 255 dev eth0
-/sbin/ip link set withsales up
-/sbin/ip address add 192.168.3.2/24 broadcast + dev withsales
-/sbin/ip route add 192.168.2.0/24 dev withsales
-
-192.168.2.2:
-
-/sbin/ip link set dev eth0 up mtu 1500
-/sbin/ip address add 192.168.2.2/24 broadcast 192.168.2.255 dev eth0
-
-/sbin/ip link set dev eth1 up
-/sbin/ip address add 63.193.79.20/29 broadcast 63.193.79.23 dev eth1
-
-/sbin/ip link set dev lo up
-/sbin/ip address add 127.0.0.1/8 broadcast + dev lo
-
-/sbin/ip route add default via 63.193.79.20 dev eth1
-
-/sbin/ip tunnel add withvan mode gre remote 63.193.79.19 local 63.193.79.20 ttl 255 dev eth0
-/sbin/ip link set withvan up
-/sbin/ip address add 192.168.3.1/24 broadcast + dev withvan
-/sbin/ip route add 192.168.1.0/24 dev withvan
+Antony.
 
