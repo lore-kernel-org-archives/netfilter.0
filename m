@@ -1,13 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: irc
-Date: Mon, 17 Nov 2003 11:35:19 -0500
+Date: Mon, 17 Nov 2003 16:38:10 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB8F8C7.8090104@Loudoun-Fairfax.com>
-References: <20031117161039.97875.qmail@web40203.mail.yahoo.com> <200311171618.hAHGIAj22261@agate.rockstone.co.uk>
+Message-ID: <200311171638.hAHGcDj22282@agate.rockstone.co.uk>
+References: <7A3B4AA360FDEF448F3390421FC8D73101131848@coxhpexg.coxhp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311171618.hAHGIAj22261@agate.rockstone.co.uk>
+In-Reply-To: <7A3B4AA360FDEF448F3390421FC8D73101131848@coxhpexg.coxhp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
+On Monday 17 November 2003 4:28 pm, bmcdowell@coxhealthplans.com wrote:
 
->On Monday 17 November 2003 4:10 pm, SBlaze wrote:
->
->  
->
->> > All I can suggest is that you look around for an IRC proxy server,
->> > however I have no knowledge of such things myself.
->>    
->>
->>>Regards,
->>>
->>>Antony.
->>>      
->>>
->>There are such things as IRC Proxys. bnc is one of the more common ones
->>that I have heard of. However this won't do him any good since he is
->>looking for a rule to allow in IRC protocol.
->>    
->>
->
->I'm not sure that *is* what he's looking for?   Quoting from his second 
->posting:
->
->"The 'firewall' in this case, is a transparent proxy server.  The proxy 
->server will be the gateway to the internet.   I need to allow irc connections 
->through this machine, somehow.  I don't know how to do that."
->
->Therefore it seems to me that he's looking for an IRC proxy server, not a 
->packet filtering rule.
->
->Maybe I'm just confused.
->  
->
-Say it ain't so!  :-)
+> At the risk of getting OT, what is the point of a proxy for IRC on a
+> gateway?  I could see it as an anonymizer to bounce IRC off of, but on a
+> gateway this would not seem to functionally any different than NAT.  What
+> am I missing?
 
-Just out of curiosity, what exactly is the difference between an IRC 
-server and an IRC proxy?
+I don't think you're missing anything.   And whether an IRC proxy would 
+anonymise connections depends on how the proxy was written, I think (an http 
+proxy does not necessarily anonymise http connections, for example, and an 
+smtp proxy (aka mail server) certainly doesn't).
 
-Client connects to server
-Client connects to proxy
+I simply think packet filtering and application proxying are two approaches 
+to building a firewall, and some people choose one, some people choose the 
+other.   This list is mainly for people using the packet filtering method, 
+but it doesn't mean it's the only way to do it.
 
-Server relays
-Proxy relays
+Antony.
 
-Hmmm.
+-- 
 
+Software development can be quick, high-quality, or low-cost.
 
+The customer gets to pick any two out of three.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
