@@ -1,8 +1,8 @@
 From: =?iso-8859-1?q?vamsi=20krishna?= <b_vamsi2002@yahoo.co.in>
 Subject: errors in compiling the hooks
-Date: Sun, 11 Jan 2004 06:55:08 +0000 (GMT)
+Date: Sun, 11 Jan 2004 06:55:50 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040111065508.4617.qmail@web8207.mail.in.yahoo.com>
+Message-ID: <20040111065551.22353.qmail@web8201.mail.in.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
