@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DNAT Problem
-Date: Thu, 22 Apr 2004 12:07:12 +0100
+From: Fisher Alex <Alex.Fisher@uk.thalesgroup.com>
+Subject: Is this possible?
+Date: Thu, 22 Apr 2004 12:30:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404221207.12965.Antony@Soft-Solutions.co.uk>
-References: <1611.80.0.0.23.1082351242.squirrel@80.0.0.175> <1061.80.0.0.23.1082435491.squirrel@80.0.0.175> <1481.80.0.0.23.1082630400.squirrel@80.0.0.175>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <4087ACE0.1020006@uk.thalesgroup.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1481.80.0.0.23.1082630400.squirrel@80.0.0.175>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,41 +15,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thursday 22 April 2004 11:40 am, test@seaconindia.com wrote:
+Hi.
 
-> >> iptables -t nat -A POSTROUTING -j MASQUERADE
-> >> or
-> >> iptables -t nat -A POSTROUTING -j SNAT --to 192.168.0.254
->
-> Yes I do have "iptables -t nat -A POSTROUTING -j MASQUERADE"
-> And as suggested by you I have modified the above rule with
-> respective nic. But no luck.
->
-> Can you please advice me on what rule set to use on my firewall. I
-> want users from outside to come in for POP & SMTP. But I want
-> their request to be forwarded with their real ips and not firewall ip.
+I'll do my best to explain what I'm trying to acheive with a linux box 
+and 3 NICS.
 
-I think you need to change your generic MASQUERADE or SNAT rule so that it 
-specifies only packets leaving the external interface - not the internal 
-interface.
+I have two sets of systems.  Each system has about 30 IP addresses 
+spread across various bits of hardware.  The two systems are identical 
+(ie have the same 30 IP addresses).  The addresses are all part of the 
+class C subnet 192.168.0.*
 
-For example:
+The IP addresses for each system are now set in stone and can't be 
+changed.  Furthermore, similar addresses are already in use on our network.
 
-iptables -A POSTROUTING -t nat -o $extIF -j SNAT --to a.b.c.d
+I've been given a set of IP addresses I CAN use (172.26.158.*)
 
-Where a.b.c.d is the external IP of $extIF
+A diagram might help here ...
 
-Regards,
+   -----------        -----------------
+   - System1 ---------|eth1            |
+   -----------        |                |
+                      |  Linux Router  |
+                      |            eth0|------------Rest of the network
+                      |                |
+   -----------        |                |
+   - System2 ---------|eth2            |
+   -----------        ------------------
 
-Antony.
+I also have an address I can use for eth0 which will make the router 
+visible from machines on the rest of the network.  This can be set as 
+the default gateway for connections to the 172.26.158.* subnet.
 
--- 
-What makes you think I know what I'm talking about?
-I just have more O'Reilly books than most people.
+I would like PCs on the normal network to be able to connect with either 
+system by addressing them with addresses off the 172.26.158 subnet. 
+I'll assign 30 of these IPs to each system.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+For example. 172.26.158.10 might be mapped onto 192.168.0.2 on eth1
+whilst  172.26.158.50 might be mapped onto 192.168.0.2 on eth2
 
+Is this at all possible?  I assume I'll need to use at least DNAT but 
+also apply some other trickery to route to the correct interface.  As a 
+newbie to IPTables, I'm not sure how I might even begin to set up rules 
+for this.
+
+Hopefully this is the sort of thing people want to do all the time and 
+it will be easy :)
+
+Any help would be very much appreciated.
+
+Thanks,
+
+Al
+
+
+
+
+This email and any attachments are confidential to the intended recipient
+and may also be privileged. If you are not the intended recipient please
+delete it from your system and notify Thales Underwater Systems on +44 1963
+370 551. You should not copy it or use it for any purpose nor disclose or
+distribute its contents to any other person.
 
