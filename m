@@ -1,76 +1,66 @@
-From: Herman <Herman@AerospaceSoftware.com>
-Subject: Re: Bridge question
-Date: Fri, 17 Oct 2003 07:52:17 -0600
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310170752.17546.Herman@AerospaceSoftware.com>
-References: <B4B08E56FC7A304EB88DC4B97043921816EFBE@hqmail03.mpr.org> <200310162115.00685.Herman@AerospaceSoftware.com> <1066397839.29597.6.camel@jccn-crux-linux.djc.state.id.us>
-Reply-To: Herman@AerospaceSoftware.com
+From: Harald Welte <laforge@netfilter.org>
+Subject: [ANNOUNCE] Summary of netfilter developer workshop 2003
+Date: Fri, 17 Oct 2003 22:10:55 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20031017201055.GW21521@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1066397839.29597.6.camel@jccn-crux-linux.djc.state.id.us>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3loezlmesXOUD0D5"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
 Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Jeremy Jones <jeremy@samnjack.com>, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-Aaaaaaaaah...  Thanks Jeremy!
 
-I think ebtables is exactly what the doctor ordered.
+--3loezlmesXOUD0D5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'll try my bridge+iptables kludge - explained in another post - as well and 
-see which one we get to work properly first - we are running short on time 
-with this project.
+Hi!
 
-Cheers,
+Jozsef has put together a small web page on the 2nd netfilter developer
+workshop that was held in Budapest two months ago. =20
 
-Herman
+The page also links to a small (incomplete) summary of the workshop.
 
-On Friday 17 October 2003 7:37 am, Jeremy Jones wrote:
-   Herman,
+If you're interested about what we've been talking, and what decisions
+were made, that webpage might be worth reading.
 
-   in addition to the bridge.sourceforge.net pages, have a look at
-   ebtables.sourceforge.net.  the howto documentation you'll find at, say,
-   tldp.org is a little out of date, but at ebtables, you may find more
-   helpful info.  i've been using the bridging code & netfilter-bridge
-   kernel patch with 2.4.x for a while now, along with ebtables (analagous
-   to iptables, but filters at layer 2), and it's doing wonders for me.
+URL: http://www.netfilter.org/~kadlec/workshop-2003-budapest/
 
-   good luck,
+It also features a group photo of all attending netfilter developers.
 
-   Jeremy
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-   On Thu, 2003-10-16 at 21:15, Herman wrote:
-   > Hi everybody,
-   >
-   > This question is not about iptables, but it is closely related, so
+--3loezlmesXOUD0D5
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-   somebody
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-   > might know the answer:
-   > I am trying to construct a bridge, to filter 802.1q tags and protect a
+iD8DBQE/kEzPXaXGVTD0i/8RAiC0AKCGEUT2i29LsJBnfGnPgPci6VZE+QCfVQRZ
+HIyuVRn98Hm4DLRG+X4lWLU=
+=WZHx
+-----END PGP SIGNATURE-----
 
-   legacy
-
-   > version 2.2 kernel server, while preserving port to port security on
-
-   the LAN,
-
-   > using the VLAN module.
-   >
-   > Can anybody refer me to some documentation on filtering on a bridge
-
-   for the
-
-   > 2.4 kernel?
-   >
-   > Regards,
+--3loezlmesXOUD0D5--
 
