@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ftp access problem
-Date: Sat, 24 Jul 2004 11:22:16 +0100
+Subject: Re: the impossible "iptables -C" option
+Date: Sat, 24 Jul 2004 11:27:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407241122.16298.Antony@Soft-Solutions.co.uk>
-References: <a0f69e504072403057b210342@mail.gmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200407241127.25946.Antony@Soft-Solutions.co.uk>
+References: <01be01c4710c$440a79e0$5100a8c0@egp> <200407240856.03201.Antony@Soft-Solutions.co.uk> <1090664200.2012.21.camel@grendel>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <a0f69e504072403057b210342@mail.gmail.com>
+In-Reply-To: <1090664200.2012.21.camel@grendel>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,34 +19,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Saturday 24 July 2004 11:05 am, Askar Ali Khan wrote:
+On Saturday 24 July 2004 11:16 am, Chris Brenton wrote:
 
-> Hi
+> On Sat, 2004-07-24 at 03:56, Antony Stone wrote:
+> > I understand it to mean "check what would happen to a packet of this type
+> > if it went through the ruleset"
 >
-> On my router/firewall which acting i am getting problem while anyone
-> tries to connect to ftp server he connected successfully however when
-> he types and command for example "ls" ftp server return error "500
-> Illegal PORT range rejected"
-> Everything else is working fine.
+> Yup, that's what it did under ipchains. :)
+>
+> > > What is "packet payload"? How does it make the "--check" option
+> > > impossible to be implemented?
+> >
+> > It makes it impossible to implement --check because there's no way to
+> > provide the payload on the command line.
+>
+> Not quite true as you would just use a sting match, same as you would in
+> a filtering rule.
 
-I see you are doing NAT on this firewall.   Do you have the nat_ftp support 
-module loaded or compiled in to your kernel?
+I'll assume you meant the "string" match :)   Although the idea of a sting 
+match in a firewall rule is an interesting one....
 
-Without that module, netfilter will not see the PORT commands in the FTP 
-packets, and will not know what to do with the data connection on port 20 
-associated with the control connection onn port 21.
+I agree that for textual content you could say "a packet from this IP address 
+to TCP port 23 containing the string 'root'", however lots of protocols use 
+binary data (eg: ssh which encrypts the datastream, and http which commonly 
+gzips it), and this would be hard to represent in a command-line request.
+
+However, as discussed by other people, there is more than one reason why 
+"check" is hard to implement, payload is just one of them (and I agree that 
+state is a more significant problem, and much harder to deal with).
+
+I don't believe it'll be implemented either.
 
 Regards,
 
 Antony.
 
 -- 
-"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
-line program, and it ends up depending on the entire known universe."
+All matter in the Universe can be placed into one of two categories:
 
- - Philip Hands
+1. Things which need to be fixed.
+2. Things which need to be fixed once you've had a few minutes to play with 
+them.
 
                                                      Please reply to the list;
                                                            please don't CC me.
