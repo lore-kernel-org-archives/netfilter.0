@@ -1,16 +1,12 @@
-From: Oleg Savostyanov <osavostyanov@internetplustravel.ru>
-Subject: Fwd: Re[4]: Problem with Port forwarding
-Date: Fri, 9 Apr 2004 16:33:59 +0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Re[4]: Problem with Port forwarding
+Date: Fri, 9 Apr 2004 13:53:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1715916171.20040409163359@internetplustravel.ru>
-References: <146373237921.20040405211401@internetplustravel.ru>
- <200404051854.13708.Antony@Soft-Solutions.co.uk>
- <1825056156.20040406114126@internetplustravel.ru>
- <200404061344.23168.Antony@Soft-Solutions.co.uk>
- <325389781.20040409162513@internetplustravel.ru>
-Reply-To: Oleg Savostyanov <osavostyanov@internetplustravel.ru>
+Message-ID: <200404091353.32056.Antony@Soft-Solutions.co.uk>
+References: <146373237921.20040405211401@internetplustravel.ru> <200404061344.23168.Antony@Soft-Solutions.co.uk> <325389781.20040409162513@internetplustravel.ru>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <325389781.20040409162513@internetplustravel.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -25,73 +21,67 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a forwarded message
-From: Oleg Savostyanov <osavostyanov@internetplustravel.ru>
-To: Antony Stone <netfilter@lists.netfilter.org>
-Date: Friday, April 9, 2004, 4:25:13 PM
-Subject: Problem with Port forwarding
+On Friday 09 April 2004 1:25 pm, Oleg Savostyanov wrote:
 
-===8<==============Original message text===============
-Hello Antony,
+> On Tuesday, April 6, 2004, 4:44:23 PM, Antony Stone wrote:
+>
+> > What do you see in the packet / byte counters from "iptables -L -nvx;
+> > iptables -L -t nat -nvx" when you try to make a connection?   Do you
+> > see packets in the PREROUTING DNAT rule, the FORWARD rule towards the
+> > mail server, and the FORWARD rule for the replies?
+>
+> iptables -L -nvx
+> 562 27336 ACCEPT tcp--eth0 eth1 0.0.0.0/0 10.10.10.252 tcp dpt:25
+> 566 27576 ACCEPT tcp--eth0 eth1 0.0.0.0/0 10.10.10.252 tcp dpt:25
 
+Is this the NEW rule early on in your ruleset (I'm assuming you're still using 
+the ruleset you posted on Tuesday: 
+http://lists.netfilter.org/pipermail/netfilter/2004-April/051811.html)   If 
+so, there's something strange about it catching 4 packets - only the first 
+one should be NEW, the rest should be ESTABLISHED and match on a rule further 
+down your ruleset.
 
+> iptables -L -t nat -nvx
+>
+> Chain PREROUTING (policy ACCEPT 207941 packets, 25904040 bytes)
+> pkts      bytes target     prot opt in     out     source      destination
+> 185  8964 DNAT tcp--eth0 * 0.0.0.0/0 62.105.158.196 tcp dpt:25
+> to:10.10.10.252
+> Chain PREROUTING (policy ACCEPT 207933 packets, 25903472 bytes)
+> pkts      bytes target     prot opt in     out     source      destination
+> 184  8904 DNAT tcp--eth0 * 0.0.0.0/0 62.105.158.196 tcp dpt:25
+> to:10.10.10.252
 
-Tuesday, April 6, 2004, 4:44:23 PM, you wrote:
+Okay, I'm slightly puzzled by this, because there is a smaller number of 
+packets in the second log entry than the first - I can only assume that this 
+is an "after" and "before" display :)
 
-AS> On Tuesday 06 April 2004 8:41 am, Oleg Savostyanov wrote:
->> Hello Antony,
->> Thank you for your answer.
->> Now the connection does not logged
->> I can see the thirst packet on mail server,
->> but it is timed out
->>
->> telnet X.X.X.X 25
->> Trying X.X.X.X...
->> telnet: Unable to connect to remote host: Connection timed out
->>
->> This is the log from mail server:
->> Tue 2004-04-06 10:31:42: [804:52:2] Accepting SMTP connection from [Y.Y.Y.Y
->> : 33222]
+This shows only a single matching packet, which if it's the first SYN packet, 
+and there was an acceptable SYN-ACK response, is what I'd expect, since the 
+nat rules only see the first packet in a connection, and all the others get 
+handled magically in the background by the connection tracking software.
 
-AS> Well, the fact that you see this in your mail log suggests to me that the TCP
-AS> handshake SYN - SYN/ACK - ACK has been completed, and the connection is now
-AS> available for data transfer.
+I recommend you put a packet sniffer (ethereal is a good one) on the network 
+segment between the firewall and the mail server, and see what packets are 
+there.
 
->> Tue 2004-04-06 10:31:42: [804:52:2] Socket connection closed by the other
->> side (how rude!)
+I'm of the opinion that netfilter is working fine, but there's some 
+application layer problem which is causing the connection not to succeed.
 
-AS> You're not running TCPwrappers on the mail server or something, are you, and
-AS> it needs to get a response from the client before maintaining the connection?
-No
->> Tue 2004-04-06 10:31:42: [804:52:2] Winsock Error 10053 Software caused a
->> connection abort.
->> Tue 2004-04-06 10:31:42: [804:52:2] Unexpected socket closure
+Regards,
 
-AS> What do you see in the packet / byte counters from "iptables -L -nvx; iptables
-AS> -L -t nat -nvx" when you try to make a connection?   Do you see packets in
-AS> the PREROUTING DNAT rule, the FORWARD rule towards the mail server, and the
-AS> FORWARD rule for the replies?
-iptables -L -nvx
-562 27336 ACCEPT tcp--eth0 eth1 0.0.0.0/0 10.10.10.252 tcp dpt:25
-566 27576 ACCEPT tcp--eth0 eth1 0.0.0.0/0 10.10.10.252 tcp dpt:25
-iptables -L -t nat -nvx
-
-Chain PREROUTING (policy ACCEPT 207941 packets, 25904040 bytes)
-pkts      bytes target     prot optin     out     source               destination
-185  8964 DNAT tcp--eth0 * 0.0.0.0/0 62.105.158.196 tcp dpt:25 to:10.10.10.252
-Chain PREROUTING (policy ACCEPT 207933 packets, 25903472 bytes)
-pkts      bytes target     prot optin     out     source               destination
-184  8904 DNAT tcp--eth0 * 0.0.0.0/0 62.105.158.196 tcp dpt:25 to:10.10.10.252
-
-
-AS> Regards,
-
-AS> Antony.
-
-
+Antony.
 
 -- 
-Best regards,
- Oleg                            mailto:osavostyanov@internetplustravel.ru
+"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
+Blaster].   However, these products are no longer supported.   Users of these
+products are strongly encouraged to upgrade to later versions."
+
+(which *are* affected by MS Blaster...)
+
+http://www.microsoft.com/security/security_bulletins/ms03-026.asp
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
