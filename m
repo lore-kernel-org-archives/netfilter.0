@@ -1,9 +1,8 @@
-From: "rruegner" <robowarp@gmx.de>
-Subject: p.o.m-ng+linux-2.6.2 pptp
-Date: Fri, 20 Feb 2004 18:10:28 +0100
+From: =?ISO-8859-1?Q?Marc_Recht=E9?= <mrechte@randodetente.org>
+Subject: Anybody heard about UP&P ?
+Date: Fri, 20 Feb 2004 08:14:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002101c3f7d4$7046a030$32640a0a@robopc>
-References: <Pine.LNX.4.33.0402200953150.16037-100000@blackhole.kfki.hu>
+Message-ID: <4035B3BC.6030901@randodetente.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,12 +15,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi aply this make this failure
-pptp-conntrack-nat has dependency on foo, but foo is not known
-any idea?
-Regards
+To enable remote assistance from Internet of a WinXP PC on a LAN using 
+NAT one must have a UP&P NAT compatible router.
+
+Can Netfilter act as such a router, and if so do you have an idea of the 
+chain to apply ?
+
+Thanks for your help
+
+Marc.
+
 
