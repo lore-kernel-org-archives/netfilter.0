@@ -1,13 +1,10 @@
-From: SaVaGE  <pc-secure@home.nl>
-Subject: Re: How to block a range of IPs?
-Date: Mon, 28 Apr 2003 20:06:07 +0200
+From: Miguel Manso <mmanso@yahoo.com>
+Subject: Local IP not being local
+Date: Mon, 28 Apr 2003 18:27:55 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304282006.07732.pc-secure@home.nl>
-References: <20030427140602.30833.28944.Mailman@kashyyyk> <200304281941.38386.pc-secure@home.nl> <200304281952.37671.pc-secure@home.nl>
+Message-ID: <20030429012755.66519.qmail@web11501.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304281952.37671.pc-secure@home.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,114 +15,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Op maandag 28 april 2003 19:52, schreef u:
-> Op maandag 28 april 2003 19:41, schreef u:
-> > Op maandag 28 april 2003 18:14, schreef John A. Sullivan III:
-> > > You can  use the tool at http://subnetcreator.sourceforge.net/ to
-> > > easily determine which subnets are contained in your IP address ran=
-ge.=20
-> > > The same logic is being built into the iptables+ management tool be=
-ing
-> > > developed in http://iscs.sourceforge.net/ .  However,even better,it
-> > > appears there is a patch available in patch-o-matic that allows one=
- to
-> > > enter a range directly in iptables.  I haven't tried it yet but hop=
-e to
-> > > do so soon to replace that logic in ISCS.  Good luck - John
-> > >
-> > > On Sun, 2003-04-27 at 10:06, netfilter-request@lists.netfilter.org
-> > >
-> > > wrote:
-> > > > --__--__--
-> > > >
-> > > > Message: 4
-> > > > From: "Afshin Lamei" <linux_st@hotmail.com>
-> > > > To: netfilter@lists.netfilter.org
-> > > > Subject: How to block a range of IPs?
-> > > > Date: Sun, 27 Apr 2003 10:41:54 +0430
-> > > >
-> > > > Hi,
-> > > > How can I write a rule for a custom range of IPs? for example, I =
-want
-> > > > to block every WWW packet incoming from eth1, which source is an =
-IP
-> > > > between 192.168.1.10 and 192.168.1.20.
-> > > > please help me writing an example.
-> > > > thank you
-> > > > afshin
-> > > >
-> > > >
-> > > >
-> > > >
-> > > >
-> > > > _________________________________________________________________
-> > > > Help STOP SPAM with the new MSN 8 and get 2 months FREE*
-> > > > http://join.msn.com/?page=3Dfeatures/junkmail
-> >
-> > AT_HOME_RANGE=3D"213.51.16.0/21 213.51.24.0/21"
-> >
-> >  ${ECHO} -n "Drop and log @HOME_USERS in range: "
-> >     for athomerange in ${AT_HOME_RANGE} ; do
-> >            ${IPTABLES} -A INPUT -i ${EXT_INTERFACE} -s ${athomerange}=
- -m
-> > limit \
-> >                -j LOG --log-prefix "@HOME_USER:DROP "
-> >           ${IPTABLES} -A @HOME_CHK -i ${EXT_INTERFACE} -s ${athomeran=
-ge}
-> > -j DROP
-> >         ${ECHO} -n "${athomerange} "
-> >   done
-> >
-> > this is an example off a line i use  , if you wish to have more range=
-s,
-> > you have to make a new rule like this ,but another name like
-> > "AT_HOME_RANGE2"
-> >
-> > good luck
-> >
-> > Pascal (PC-Secure)
->
-> so in your picture it would be like this ::
->
->
-> EXT_INTERFACE=3D"eth1"
-> IPTABLES=3D"/usr/bin/iptables
-> AT_HOME_RANGE=3D"192.168.1.10/24 192.168.1.20/24"
->
->  ${ECHO} -n "Drop and log @HOME_USERS in range: "
->     for athomerange in ${AT_HOME_RANGE} ; do
->             ${IPTABLES} -A INPUT -i ${EXT_INTERFACE} -s ${athomerange} =
--m
->  limit \
->                 -j LOG --log-prefix "@HOME_USER:DROP "
->            ${IPTABLES} -A INPUT -i ${EXT_INTERFACE} -s ${athomerange} -=
-j
->  DROP
->          ${ECHO} -n "${athomerange} "
->    done
->
-> ready and go
->
-> Pascal (PC-Secure)
+Hi there,
 
-ok i forgot your wish for the www port so here it is::
+I've a linux machine acting as a router. I'm VERY happy with it and I'm
+learning a lot (iptables rocks).
 
-EXT_INTERFACE=3D"eth1" # or INT_INTERFACE
-IPTABLES=3D"/usr/bin/iptables
-AT_HOME_RANGE=3D"192.168.1.10/24 192.168.1.20/24"
+Now, I've something strange that I don't know how to solve.
 
- ${ECHO} -n "Drop and log @HOME_USERS in range: "
-    for athomerange in ${AT_HOME_RANGE} ; do
-           ${IPTABLES} -A INPUT -i ${EXT_INTERFACE} -p all -s ${athomeran=
-ge} \=20
-=09--dport 80 -m limit -j LOG --log-prefix "@HOME_USER:DROP "
-           ${IPTABLES} -A INPUT -i ${EXT_INTERFACE} -p all -s ${athomeran=
-ge} \
- =09--dport 80 -j DROP
-         ${ECHO} -n "${athomerange} "
-   done
+I've a static public IP, let's imagine - 100.100.100.1
 
-=20
+All the requests to that IP are redirected to the internal ip - 192.168.1.6
+
+Now, inside 192.168.1.6 if I ping 100.100.100.1 I get:
+
+64 bytes from 100.100.100.1: icmp_seq=16 ttl=61 time=23.7 ms
+
+But, if I ping 'localhost' I get:
+
+64 bytes from localhost.localdomain (127.0.0.1): icmp_seq=1 ttl=64 time=0.044
+ms
+
+
+This means that the ping that I'm doing to 100.100.100.1 is going to the
+router, going to the outside, coming back to the router and to the internal
+machine again.
+
+Can I "say" something to the linux router to just redirect all the requests to
+the 100.100.100.1 ip to the internal machine 192.168.1.6?
+
+Thanks a lot for the help.
+
+=====
+Miguel Manso
+mmanso@yahoo.com
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
 
