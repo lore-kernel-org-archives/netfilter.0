@@ -1,15 +1,10 @@
-From: cbaker@bbbscentralohio.org
-Subject: Re: Hoax..
-Date: Wed, 23 Apr 2003 15:00:34 -0400
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Fwd: Fw: something you should remember
+Date: Wed, 23 Apr 2003 11:10:42 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EA6AA92.15646.15BBD6C@localhost>
-References: <1051117353.25368.12.camel@alpha.newkirk.us>
-Reply-To: cbaker@bbbscentralohio.org
+Message-ID: <20030423181042.18075.qmail@web40201.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20030423201033.3e567f63.arnt@c2i.net>
-Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,90 +15,113 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Catherine Cardwell <bluetopazz_2000@yahoo.com>, Sylvia Chan <aerogirl213@yahoo.com>, Dub <Eagle_Warrior@msn.com>, Gus <glfaulk@cox.net>, Michelle <mistyblue30224@yahoo.com>, nf <netfilter@lists.netfilter.org>, Ray Parish <rparish@digitalwebzone.com>, dave w <qcsdave@hotmail.com>
 
-Hopefully, most people here already knew that this was a hoax. It 
-obviously wasn't confidential. I have been forwarding all such spams 
-to Spamcop. I actually saw a decrease for a while. Go to 
-<www.spamcop.net>.
 
-What is the Secret Service address? And does that accomplish 
-anything?
-
-Chris
-
-On 23 Apr 2003 at 9:07, Kevin Smith wrote:
-
-> 
-> >>UNION TOGOLAISE DE BANQUE LOME TOGO,
-> >>LOME-TOGO.
-> >>STRICTLY AND CONFIDENTIAL,
->     ^^^^^^^^^^^^^^^^^^^^
-> The Hint this this is a hoax..(I mean to a mailing list?)
+--- WILLIAM ROZIER <EAGLE_WARRIOR@msn.com> wrote:
+> From WILLIAM ROZIER Wed Apr 23 10:24:50 2003
+> From: "WILLIAM ROZIER" <EAGLE_WARRIOR@msn.com>
+> To: "Amanda Starnes" <ASTARNES@NLAMERICA.COM>,
+> 	"billy" <w_griffinjr@msn.com>,
+> 	"Catherine Cardwell" <bluetopazz_2000@yahoo.com>,
+> 	"dixielawgirl" <dixielawgirl@hotmail.com>,
+> 	"lori C" <misslorrie86511@yahoo.com>,
+> 	"melinda rollins" <iveysmiles99@hotmail.com>,
+> 	"Tina Butts" <tinabeezee@hotmail.com>,
+> 	"SBlaze" <dagent.geo@yahoo.com>
+> Subject: Fw: something you should remember
+> Date: Wed, 23 Apr 2003 13:24:50 -0400
 > 
 > 
 > 
+> ----- Original Message -----
+> From: Quent Floyd
+> Sent: Wednesday, April 23, 2003 8:16 AM
+> To: Beaty_Larry@Colstate.edu; cjl_31545@yahoo.com; deloreto4@yahoo.com;
+> dottie10@earthlink.net; EAGLE_WARRIOR@msn.com; ekight@hotmail.com;
+> fgb4jc@hotmail.com; hall_martha@colstate.edu; hhines@exchangebankshares.com;
+> ikeenglish@mindspring.com; jbieger@centralky.com; JimmyM@sbcwr.org;
+> jqhollywood@hotmail.com; jolierape@yahoo.com; kay.mooney@weyerhaeuser.com;
+> kpasto1@comcast.net; ksimpson@hcbe.net; lady_bug_wells@hotmail.com;
+> lilliemfrancis@hotmail.com; mijackson@hcbe.net; qfloyd@hcbe.net;
+> r_bridgers@hotmail.com; snorfleet@hotmail.com; sieghi@mindspring.com;
+> stevielittle@netcommander.com; SUMMIEFISH@aol.com;
+> tanyayarbrough117@hotmail.com; TimberLandsSouth@weyerhaeuser.com;
+> godawgstm@aol.com; Wendy.Harkins@plumcreek.com
+> Subject: Fwd: something you should remember
+> 
+> 
+> 
+> 
+> 
+>   
+> "The Pledge of Allegiance - Senator John McCain  
+> >From a speech made by Capt. John S. McCain, US, (Ret) who  
+> represents Arizona in the U.S. Senate:  
+> As you may know, I spent five and one half years as a prisoner  
+> of war during the Vietnam War. In the early years of our  
+> imprisonment, the NVA kept us in solitary confinement or two or  
+> three to a cell. In 1971 the NVA moved us from these conditions  
+> of isolation into large rooms with as many as 30 to 40 men to a room.  
+> This was, as you can imagine, a wonderful change and was a direct  
+> result of the efforts of millions of Americans on behalf of a few  
+> hundred POWs 10,000 miles from home.  
+> One of the men who moved into my room was a young man named  
+> Mike Christian. Mike came from a small town near Selma, Alabama.  
+> He didn't wear a pair of shoes until he was 13 years old. At 17, he  
+> enlisted in the US Navy. He later earned a commission by going to  
+> Officer Training School. Then he became a Naval Flight Officer and  
+> was shot down and captured in 1967. Mike had a keen and deep  
+> appreciation of the opportunities this country and our military  
+> provide for people who want to work and want to succeed.  
+> As part of the change in treatment, the Vietnamese allowed some  
+> prisoners to receive packages from home. In some of these packages  
+> were handkerchiefs, scarves and other items of clothing. Mike got  
+> himself a bamboo needle. Over a period of a couple of months, he  
+> created an American flag and sewed on the inside of his shirt. Every  
+> afternoon, before we had a bowl of soup, we would hang Mike's shirt  
+> on the wall of the cell and say the Pledge of Allegiance. I know the  
+> Pledge of Allegiance may not seem the most important part of our  
+> day now, but I can assure you that in that stark cell it was indeed  
+> the most important and meaningful event.  
+> One day the Vietnamese searched our cell, as they did periodically,  
+> and discovered Mike's shirt with the flag sewn inside, and removed it.  
+> That evening they returned, opened the door of the cell, and for the  
+> benefit of all of us, beat Mike Christian severely for the next couple  
+> of hours. Then, they opened the door of the cell and threw him in.  
+> We cleaned him up as well as we could.  
+> The cell in which we lived had a concrete slab in the middle on which  
+> we slept. Four naked light bulbs hung in each corner of the room. As  
+> I said, we tried to clean up Mike as well as we could. After the  
+> excitement died down, I looked in the corner of the room, and sitting  
+> there beneath that dim light bulb with a piece of red cloth, another  
+> shirt and his bamboo needle, was my friend, Mike Christian. He was  
+> sitting there with his eyes almost shut from the beating he had received,  
+> making another American flag.  
+> He was not making the flag because it made Mike Christian feel better.  
+> He was making that flag because he knew how important it was to us  
+> to be able to Pledge our allegiance to our flag and country.  
+> So the next time you say the Pledge of Allegiance, you must never  
+> forget the sacrifice and courage that thousands of Americans have  
+> made to build our nation and promote freedom around the world.  
+> You must remember our duty, our honor, and our country.  
+> "I pledge allegiance to the flag of the United States of America  
+> and to the republic for which it stands, one nation under God,  
+> indivisible, with liberty and justice for all."  
+> PASS THIS ON... and on... and on!!!!!!  
+> 
+> 
+> 
+> Add photos to your e-mail with MSN 8. Get 2 months FREE*.  
+> 
 
 
+=====
+"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
 
-On 23 Apr 2003 at 20:10, Arnt Karlsen wrote:
-
-> On 23 Apr 2003 13:02:33 -0400, 
-> Joel Newkirk <netfilter@newkirk.us> wrote in message 
-> <1051117353.25368.12.camel@alpha.newkirk.us>:
-> 
-> > On Wed, 2003-04-23 at 12:26, Arnt Karlsen wrote:
-> > > On Wed, 23 Apr 2003 09:07:28 -0400, 
-> > > "Kevin Smith" <ksmith@perfht.com> wrote in message 
-> > > <NGBBLGFEALDADHNDAAFFCEIKDJAA.ksmith@perfht.com>:
-> > > 
-> > > > 
-> > > > >>UNION TOGOLAISE DE BANQUE LOME TOGO,
-> > > > >>LOME-TOGO.
-> > > > >>STRICTLY AND CONFIDENTIAL,
-> > > >     ^^^^^^^^^^^^^^^^^^^^
-> > > > The Hint this this is a hoax..(I mean to a mailing list?)
-> > > 
-> > > ..this went to and __thru__ the netfilter list ?????????
-> > > I thought is was only my ~/.procmailrc having a hickup.
-> > 
-> > Someone harvested the archives of this mailinglist for email
-> > addresses, and is sending various forms of these "Nigerian 419 scam"
-> 
-> ..the Africans should make the Nigerians ban this idiocy, it hurts
-> everybodys business, I mean filtering on "business" and all African
-> country names, as most people end up doing, will deny _all_ African
-> businesses, _any_ fair business online, because of this Nigerian "419"
-> criminal idiocy and vice versa.
-> 
-> ..face it, with Nigerian "419", who needs racism?  ;-)
-> 
-> > emails.  I use netfilter@newkirk.us for ONLY this mailinglist and
-> > associated conversations, and I get about one of these every 2-3
-> > weeks now at that address.  
-> > 
-> > They're mailing direct to the email addresses found in the archive. 
-> 
-> ..ah.  Gentlemen, mod your ~/.procmailrc to only accept posts 
-> from netfilter-admin@lists.netfilter.org.  Next step would be 
-> GPG signatures and autoforward anything that fails, to the Law.
-> 
-> > I forward them to the Secret Service, who collect these in the US.
-
-========================================
-Chris Baker -- technical specialist
-614-839-2447x108
-cbaker@bbbscentralohio.org
-Big Brothers Big Sisters
-Association of Central Ohio
-www.bbbscentralohio.org
-Opinions expressed in this e-mail are solely my own.
-========================================
-Register now for BBBS largest and most enjoyable
-fund raiser of the year--Bowl for Kids' Sake!
-Visit http://bfks.kintera.org/centralohio
-OR call 614-839-2447.
-It's not about bowling. It's about having fun
-and raising money for the kids!
-
+__________________________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo
+http://search.yahoo.com
 
