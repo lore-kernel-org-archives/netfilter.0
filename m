@@ -1,11 +1,13 @@
-From: Juan Hernandez <hvjuan@kanux.com>
-Subject: port forwarding in a web server
-Date: 24 Nov 2003 12:05:09 -0400
+From: "Aldo S. Lagana" <alagana@discmail.com>
+Subject: RE: port forwarding in a web server
+Date: Wed, 26 Nov 2003 10:24:25 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069689909.1083.13.camel@webmail.aeropostal.com.ve>
+Message-ID: <200311261527.hAQFRkAm029339@discmail.com>
+References: <1069689909.1083.13.camel@webmail.aeropostal.com.ve>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1069689909.1083.13.camel@webmail.aeropostal.com.ve>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,7 +18,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Lista de netfilter <netfilter@lists.netfilter.org>
+To: 'Juan Hernandez' <hvjuan@kanux.com>, 'Lista de netfilter' <netfilter@lists.netfilter.org>
+
+" it's just not forwarding anything"
+
+Add FORWARD rules -d 192.168.0.1 -j ACCEPT
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Juan Hernandez
+Sent: Monday, November 24, 2003 11:05 AM
+To: Lista de netfilter
 
 Hi there...
 
@@ -56,6 +68,7 @@ Any suggestions would be appreciated...
 Thanks a lot for your time
 
 Juan
+
 
 
 
