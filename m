@@ -1,12 +1,10 @@
-From: Kiran Kumar <immidi_kiran@yahoo.com>
-Subject: RE: IPTables Flow Chart
-Date: Thu, 11 Mar 2004 21:11:31 -0800 (PST)
+From: ip tables <iptables_help@yahoo.com>
+Subject: Redhat enterprise linux 2.1
+Date: Thu, 11 Mar 2004 21:51:08 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040312051131.86210.qmail@web14006.mail.yahoo.com>
-References: <000501c407ec$3b173730$2f00a8c0@deamon>
+Message-ID: <20040312055108.65021.qmail@web20721.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000501c407ec$3b173730$2f00a8c0@deamon>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +16,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
+To: red hat <redhat-list@redhat.com>, ip tables <netfilter@lists.netfilter.org>
 
-Another suggestion, It would be good if in each of the
-chains, you could put all the tables involved and in
-that order.
+Dear group,
 
-This link has it.
-http://www.netfilter.org/documentation/HOWTO//netfilter-hacking-HOWTO-3.htm=
-l#ss3.2
+I have installed RHEL 2.1 on a Gigabyte 8KNXP with 1
+IDE and 2 SATAs on the intel  ICH5R(since this allows
+me to create a mirrored disk set)
 
---- Babar Kazmi <BabarKazmi@Hotmail.Com> wrote:
-> Dear Jim
->=20
-> Great Work .. Very Smart Approach :)
-> Please also Host it at netfiler .. for future
-> reference ...
->=20
-> Regards
+Question=20
+how can i have the kernel 2.6 on my machine?
 
+Thanks and regards
 
-=3D=3D=3D=3D=3D
-Regards,
-Kiran Kumar Immidi
 
 __________________________________
 Do you Yahoo!?
