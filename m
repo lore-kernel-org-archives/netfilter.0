@@ -1,10 +1,11 @@
-From: "Andy Wood" <andy@digitalindustry.org>
-Subject: Flex Resp Is Resetting The Wrong Port
-Date: Sun, 27 Apr 2003 19:36:07 -0400
+From: czesn <czesn@gazeta.pl>
+Subject: basics
+Date: Mon, 28 Apr 2003 03:24:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030427233605.IQGW8308.lakecmmtao01.coxmail.com@vaio>
+Message-ID: <2610830283.20030428032413@gazeta.pl>
+Reply-To: czesn <czesn@gazeta.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,209 +19,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-	The subject says it all.  It is a very basic rule, just for testing.
-Below is the rule:
+Hello everyone,
 
-alert tcp 23.45.130.209 any -> 12.23.8.155 80 (msg:"Test Commection =
-Reset";
-resp: rst_all; sid:1001001; rev:1;)
+Im newbe at iptables, and unfourtunately i got nobody to ask for
+solution, maybe You may help.
 
-	Notice below that the reset response is happening on tcp port 28,
-and the web page still displays.
+My problem
 
-	Any Ideas??  Thanks!
-
-	Andy
+I want to create quite tight rules of firewall for my home network. I
+have set deamons like this:
 
 
-[root@lfw log]# tcpdump -i eth0 -p -n -nn tcp and host 23.45.130.209 and =
-not
-port ssh
-tcpdump: listening on eth0
-19:23:11.016812 23.45.130.209.3811 > 12.23.8.155.80: S
-964698099:964698099(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
-19:23:11.017066 12.23.8.155.80 > 23.45.130.209.3811: S
-1452223348:1452223348(0) ack 964698100 win 5840 <mss =
-1460,nop,nop,sackOK>
-(DF)
-19:23:11.017820 12.23.8.155.28 > 23.45.130.209.3811: R 0:0(0) ack =
-964698099
-win 0
-19:23:11.067777 23.45.130.209.3811 > 12.23.8.155.80: . ack 1 win 64240 =
-(DF)
-19:23:11.068263 12.23.8.155.28 > 23.45.130.209.3811: R
-1452223349:1452223349(0) ack 2 win 0
-19:23:11.080866 23.45.130.209.3811 > 12.23.8.155.80: P 1:464(463) ack 1 =
-win
-64240 (DF)
-19:23:11.081458 12.23.8.155.28 > 23.45.130.209.3811: R
-1452223349:1452223349(0) ack 465 win 0
-19:23:11.082247 12.23.8.155.80 > 23.45.130.209.3811: . ack 464 win 6432 =
-(DF)
-19:23:11.082943 12.23.8.155.80 > 23.45.130.209.3811: P 1:215(214) ack =
-464
-win 6432 (DF)
-19:23:11.083053 12.23.8.155.80 > 23.45.130.209.3811: F 215:215(0) ack =
-464
-win 6432 (DF)
-19:23:11.139277 23.45.130.209.3811 > 12.23.8.155.80: . ack 216 win 64026
-(DF)
-19:23:11.139671 12.23.8.155.28 > 23.45.130.209.3811: R
-1452223564:1452223564(0) ack 465 win 0
-19:23:11.151604 23.45.130.209.3811 > 12.23.8.155.80: F 464:464(0) ack =
-216
-win 64026 (DF)
-19:23:11.151783 12.23.8.155.80 > 23.45.130.209.3811: . ack 465 win 6432 =
-(DF)
-19:23:11.152189 12.23.8.155.28 > 23.45.130.209.3811: R
-1452223564:1452223564(0) ack 465 win 0
-19:23:11.162828 23.45.130.209.3812 > 12.23.8.155.80: S
-964777481:964777481(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
-19:23:11.163042 12.23.8.155.80 > 23.45.130.209.3812: S
-1445886514:1445886514(0) ack 964777482 win 5840 <mss =
-1460,nop,nop,sackOK>
-(DF)
-19:23:11.163529 12.23.8.155.28 > 23.45.130.209.3812: R 0:0(0) ack =
-964777481
-win 0
-19:23:11.234975 23.45.130.209.3813 > 12.23.8.155.80: S
-964837706:964837706(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
-19:23:11.235188 12.23.8.155.80 > 23.45.130.209.3813: S
-1449401634:1449401634(0) ack 964837707 win 5840 <mss =
-1460,nop,nop,sackOK>
-(DF)
-19:23:11.235608 12.23.8.155.28 > 23.45.130.209.3813: R 0:0(0) ack =
-964837706
-win 0
-19:23:11.287607 23.45.130.209.3812 > 12.23.8.155.80: . ack 1 win 64240 =
-(DF)
-19:23:11.288023 12.23.8.155.28 > 23.45.130.209.3812: R
-1445886515:1445886515(0) ack 2 win 0
-19:23:11.302611 23.45.130.209.3812 > 12.23.8.155.80: P 1:352(351) ack 1 =
-win
-64240 (DF)
-19:23:11.303203 12.23.8.155.28 > 23.45.130.209.3812: R
-1445886515:1445886515(0) ack 353 win 0
-19:23:11.303894 12.23.8.155.80 > 23.45.130.209.3812: . ack 352 win 6432 =
-(DF)
-19:23:11.304377 12.23.8.155.80 > 23.45.130.209.3812: P 1:215(214) ack =
-352
-win 6432 (DF)
-19:23:11.304527 12.23.8.155.80 > 23.45.130.209.3812: F 215:215(0) ack =
-352
-win 6432 (DF)
-19:23:11.358026 23.45.130.209.3813 > 12.23.8.155.80: . ack 1 win 64240 =
-(DF)
-19:23:11.358172 12.23.8.155.28 > 23.45.130.209.3813: R
-1449401635:1449401635(0) ack 2 win 0
-19:23:11.366981 23.45.130.209.3813 > 12.23.8.155.80: P 1:349(348) ack 1 =
-win
-64240 (DF)
-19:23:11.367573 12.23.8.155.28 > 23.45.130.209.3813: R
-1449401635:1449401635(0) ack 350 win 0
-19:23:11.368275 12.23.8.155.80 > 23.45.130.209.3813: . ack 349 win 6432 =
-(DF)
-19:23:11.368749 12.23.8.155.80 > 23.45.130.209.3813: P 1:215(214) ack =
-349
-win 6432 (DF)
-19:23:11.368825 12.23.8.155.80 > 23.45.130.209.3813: F 215:215(0) ack =
-349
-win 6432 (DF)
-19:23:11.388212 23.45.130.209.3812 > 12.23.8.155.80: . ack 216 win 64026
-(DF)
-19:23:11.388355 12.23.8.155.28 > 23.45.130.209.3812: R
-1445886730:1445886730(0) ack 353 win 0
-19:23:11.450421 23.45.130.209.3812 > 12.23.8.155.80: F 352:352(0) ack =
-216
-win 64026 (DF)
-19:23:11.450599 12.23.8.155.80 > 23.45.130.209.3812: . ack 353 win 6432 =
-(DF)
-19:23:11.451010 12.23.8.155.28 > 23.45.130.209.3812: R
-1445886730:1445886730(0) ack 353 win 0
-19:23:11.460228 23.45.130.209.3813 > 12.23.8.155.80: . ack 216 win 64026
-(DF)
-19:23:11.460642 12.23.8.155.28 > 23.45.130.209.3813: R
-1449401850:1449401850(0) ack 350 win 0
-19:23:11.545203 23.45.130.209.3814 > 12.23.8.155.80: S
-964957831:964957831(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
-19:23:11.545427 12.23.8.155.80 > 23.45.130.209.3814: S
-1445933293:1445933293(0) ack 964957832 win 5840 <mss =
-1460,nop,nop,sackOK>
-(DF)
-19:23:11.545843 12.23.8.155.28 > 23.45.130.209.3814: R 0:0(0) ack =
-964957831
-win 0
-19:23:11.555041 23.45.130.209.3813 > 12.23.8.155.80: F 349:349(0) ack =
-216
-win 64026 (DF)
-19:23:11.555231 12.23.8.155.80 > 23.45.130.209.3813: . ack 350 win 6432 =
-(DF)
-19:23:11.555733 12.23.8.155.28 > 23.45.130.209.3813: R
-1449401850:1449401850(0) ack 350 win 0
-19:23:11.604183 23.45.130.209.3815 > 12.23.8.155.80: S
-964992673:964992673(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
-19:23:11.604401 12.23.8.155.80 > 23.45.130.209.3815: S
-1452677308:1452677308(0) ack 964992674 win 5840 <mss =
-1460,nop,nop,sackOK>
-(DF)
-19:23:11.604886 12.23.8.155.28 > 23.45.130.209.3815: R 0:0(0) ack =
-964992673
-win 0
-19:23:11.687905 23.45.130.209.3814 > 12.23.8.155.80: . ack 1 win 64240 =
-(DF)
-19:23:11.688332 12.23.8.155.28 > 23.45.130.209.3814: R
-1445933294:1445933294(0) ack 2 win 0
-19:23:11.705491 23.45.130.209.3815 > 12.23.8.155.80: . ack 1 win 64240 =
-(DF)
-19:23:11.705865 12.23.8.155.28 > 23.45.130.209.3815: R
-1452677309:1452677309(0) ack 2 win 0
-19:23:11.761510 23.45.130.209.3814 > 12.23.8.155.80: P 1:350(349) ack 1 =
-win
-64240 (DF)
-19:23:11.761917 12.23.8.155.80 > 23.45.130.209.3814: . ack 350 win 6432 =
-(DF)
-19:23:11.762286 12.23.8.155.28 > 23.45.130.209.3814: R
-1445933294:1445933294(0) ack 351 win 0
-19:23:11.762420 12.23.8.155.80 > 23.45.130.209.3814: P 1:215(214) ack =
-350
-win 6432 (DF)
-19:23:11.762515 12.23.8.155.80 > 23.45.130.209.3814: F 215:215(0) ack =
-350
-win 6432 (DF)
-19:23:11.772773 23.45.130.209.3815 > 12.23.8.155.80: P 1:350(349) ack 1 =
-win
-64240 (DF)
-19:23:11.773566 12.23.8.155.28 > 23.45.130.209.3815: R
-1452677309:1452677309(0) ack 351 win 0
-19:23:11.773970 12.23.8.155.80 > 23.45.130.209.3815: . ack 350 win 6432 =
-(DF)
-19:23:11.774432 12.23.8.155.80 > 23.45.130.209.3815: P 1:215(214) ack =
-350
-win 6432 (DF)
-19:23:11.774507 12.23.8.155.80 > 23.45.130.209.3815: F 215:215(0) ack =
-350
-win 6432 (DF)
-19:23:11.831848 23.45.130.209.3814 > 12.23.8.155.80: F 350:350(0) ack =
-215
-win 64026 (DF)
-19:23:11.832026 12.23.8.155.80 > 23.45.130.209.3814: . ack 351 win 6432 =
-(DF)
-19:23:11.832477 12.23.8.155.28 > 23.45.130.209.3814: R
-1445933508:1445933508(0) ack 351 win 0
-19:23:11.842877 23.45.130.209.3814 > 12.23.8.155.80: . ack 216 win 64026
-(DF)
-19:23:11.843362 12.23.8.155.28 > 23.45.130.209.3814: R
-1445933509:1445933509(0) ack 352 win 0
-19:23:11.850144 23.45.130.209.3815 > 12.23.8.155.80: . ack 216 win 64026
-(DF)
-19:23:11.850536 12.23.8.155.28 > 23.45.130.209.3815: R
-1452677524:1452677524(0) ack 351 win 0
-19:23:11.860351 23.45.130.209.3815 > 12.23.8.155.80: F 350:350(0) ack =
-216
-win 64026 (DF)
-19:23:11.860530 12.23.8.155.80 > 23.45.130.209.3815: . ack 351 win 6432 =
-(DF)
-19:23:11.860910 12.23.8.155.28 > 23.45.130.209.3815: R
-1452677524:1452677524(0) ack 351 win 0
+deamons accessible from ppp0 (internet) and eth1 (local net)
+ftp port 21 tcp
+ssh port 22 tcp
+httpd port 80
 
+seamons accessible ONLY for eth1 (local net)
+dhcpd port 67 udp
+squid port 3128 tcp
+
+and some squid proccess work on 32773 udp
+
+I cant write rules to block everything other than above services.
+I have tryed many solutions, but none of them worked. If anyone of
+You, could help me with that i would be forever in debt.
+
+I have a few more newbe question:
+
+1. If in my system runs only deamons that are above on the list, is this nessecery to
+   block unussed ports?
+2. Is it wise to block all ports above  REGISTERED PORT NUMBERS ( above
+   1000 port ), when in system runs http server that answer to client
+   from global net on this ports, and proxy server that answer to the
+   local clients on this ports ???
+
+
+-- 
+Best regards,
+mailto:czesn@gazeta.pl
+
+
+------------ R E K L A M A ------------ 
+PITY 2002 - okres rozliczen trwa! Wystarczy Ci program Jupiter 2002 Premium i po klopocie - nawet skomplikowana deklaracje przygotujesz w kwadrans. Przekonaj sie sam i zamow: http://pity.elfin.pl/premium/ e-mail: pity@elfin.pl. Najpopularniejszy program do rozliczen podatkowych na rynku (od 2001 roku ponad 1.000.000 kopii). Copyright Elfin Sp. z o.o. 
 
