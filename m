@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Multi PPTP clients behind iptables firewall
-Date: Tue, 27 May 2003 21:02:00 +1000
+Subject: RE: MASQUERADING problem under iptables 1.2.8 - kernel 2.4.20
+Date: Tue, 27 May 2003 21:04:35 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D07@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D08@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,73 +16,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Urban Spielmann <spielmann@it-insourcing.ch>, Ralf Spenneberg <lists@spenneberg.org>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: duvault@efrei.fr, netfilter@lists.netfilter.org
 
-FYI, the reason why you needed GRE is because GRE is PORTless =
-connections and iptables without the GRE module cannot determine which =
-client inside it's for because connection tracking uses ports to =
-track.... but GRE has none...
+Did the MASQUERADE module compile for 1.2.8?
 
-so the module find what's what and does it's little magic.. ;)
+did you go to /usr/src/linux and do a make menuconfig (or whatever) and =
+check that ALL of the modules required are ticked and ready for =
+compiling???
+
+is there any of these files on your system (mine's been over upgraded ;)
+
+/lib/modules/2.4.2-2/kernel/net/ipv4/netfilter/ipt_MASQUERADE.o
+/lib/modules/2.4.16/kernel/net/ipv4/netfilter/ipt_MASQUERADE.o
+/lib/modules/2.4.18/kernel/net/ipv4/netfilter/ipt_MASQUERADE.o
+/lib/modules/2.4.19/kernel/net/ipv4/netfilter/ipt_MASQUERADE.o
+
+if not then that's why....
 
 -----Original Message-----
-From: Urban Spielmann [mailto:spielmann@it-insourcing.ch]
-Sent: Tuesday, May 27, 2003 6:10 PM
-To: Ralf Spenneberg
-Cc: Netfilter
-Subject: AW: Multi PPTP clients behind iptables firewall
+From: Julien Duvault [mailto:duvault@efrei.fr]
+Sent: Monday, May 26, 2003 8:18 AM
+To: netfilter@lists.netfilter.org
+Subject: MASQUERADING problem under iptables 1.2.8 - kernel 2.4.20
 
 
-Now it works, but I had to do not only
-modprobe ip_nat_pptp
-also
-modprobe ip_nat_proto_gre
+Hi,
 
-I do not know why. But im lucky it works.
+I'm contacting you, as I've a problem with netfilter. Let's sum up the
+situation :
+The system I'am reunning is a linux/debian woody, this host is acting as =
+a
+router, and gateway, for my home network over an ADSL link. I used to =
+have
+the default stable iptables package 1.2.6 (if I am not wrong) with =
+kernel
+2.4.18. Every thing were find, I was happy. I decided to upgrade to =
+kernel
+2.4.20 and iptables 1.2.8 and all patches. Since that time, I can't use
+anymore the MASQUERADE target with kernel 2.4.20 (the modules are =
+corectly
+loaded ...). The amazing thing is that it perfectly working on kernel
+2.4.18 with the same version of iptables.
+So is there a bug somewhere in the combination of iptables
+1.2.8/kernel-2.4.20 ? I don t think so because i didn t find any
+informations about such a problem ... Maybe something happen during my
+compilation of 2.4.20 which make MASQUERADE not working ?
+So if someone here have information, I would be very happy to solve this
+problem.
+Thanks,
 
-Regards,
-Urban
+Julien.
 
------Urspr=FCngliche Nachricht-----
-Von: Ralf Spenneberg [mailto:lists@spenneberg.org]=20
-Gesendet: Dienstag, 20. Mai 2003 08:16
-An: Urban Spielmann
-Cc: Netfilter
-Betreff: Re: Multi PPTP clients behind iptables firewall
-
-
-Am Sam, 2003-05-17 um 05.41 schrieb Urban Spielmann:
-> Hi
-> =20
-> I have Windows-XP-Clients behind a linux firewall ( kernal 2.4.20). I=20
-> do VPN over PPTP to a VPN-Server on the internet.
-> =20
-> I configured the iptables and it works fine for ONE client.
-> =20
-> But a second client at the same time does not :-(
-> =20
-> Do I have to use any patches for kernal 2.4.20?
-Yes.
-You have to use the nat_pptp module. Depending on your kernel you have =
-to patch and recompile your kernel. You will find the patch on=20
-http://www.netfilter.org.
-Then do a=20
-modprobe ip_nat_pptp
-And it should work.
-
-Cheers,
-
-Ralf
 --=20
-Ralf Spenneberg
-RHCE, RHCX
+BOFH excuse #149 : Insert coin for new game
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                   =20
-http://honeynet.spenneberg.org
+
 
 
 
