@@ -1,14 +1,8 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: I dont know how to forward port 80
-Date: Tue, 15 Feb 2005 10:16:57 +0100
-Message-ID: <1108459017.6825.3.camel@nostromo.bgsecm.com>
-References: <420B54E3.8040900@google.com>
-	<1108128247.4489.45.camel@hubcap.ljm.dom>
-	<1108297731.10876.28.camel@nostromo.bgsecm.com>
-	<1108420370.4338.23.camel@hubcap.ljm.dom>
+From: Ola Nilsson <ola@fam-nilsson.org>
+Subject: IPSec through my firewall
+Date: Tue, 15 Feb 2005 11:25:58 +0100
+Message-ID: <87vf8ui0g9.fsf@helmut.nilsson.homedns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1108420370.4338.23.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,46 +13,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-El lun, 14-02-2005 a las 17:32 -0500, Jason Opperisano escribi=C3=B3:
-> for the sake of clarity.  when someone asks, "how do i allow http into
-> my machine" it seems clearer to say:
->=20
->   iptables -A INPUT -p tcp --syn --dport 80 -j ACCEPT
->=20
-> rather than:
->=20
->   iptables -A INPUT -m state --state NEW -p tcp --syn \
->     --sport 1024:65535 --dport 80 -j ACCEPT
->=20
-> you're not going to make me add a disclaimer to all my posts that says
-> "any rules are included to clarify a point of discussion.  do not use
-> the rules posted without understanding the full security implications o=
-f
-> such an act.  firewall rules lasting more than four hours require
-> medical attention."
+Hello,
 
-Thanks for the info. I was really bothered by this matter. I thought
-it was OK, but after reading your posts I was really confused.
+I've got problems with getting IPSec (using NAT-T) traffic through my
+Linux 2.6.10 based firewall. I've now changed my iptables script to
+something rather simple:
 
-Regards.
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
---=20
+Which is far to open, but I used it to try to find the problem. What I
+see with Ethereal is that the connection seems to have two
+phases. Both phases uses UDP on port 4500. In the first phase ISAKMP
+is used, then ESP.
 
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+192.168.3.249   is the IP of the machine on my LAN that wants to do IPSec.
+1.2.3.4         is the IP of the other end of the IPSec tunnel
+5.6.7.8         is the IP of my firewalls interface on the internet
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+This is what I see:
 
+No.     Time        Source          Destination     Protocol Info
+      3 0.001148    192.168.3.249   1.2.3.4         ISAKMP   Aggressive
+      4 0.001165    5.6.7.8         1.2.3.4         ISAKMP   Aggressive
+      5 9.999541    1.2.3.4         5.6.7.8         ISAKMP   Aggressive
+      6 9.999586    1.2.3.4         192.168.3.249   ISAKMP   Aggressive
+
+    460 77.461355   192.168.3.249   1.2.3.4         ESP      ESP (SPI=0x384a545c)
+    461 77.461383   192.168.3.249   1.2.3.4         ESP      ESP (SPI=0x384a545c)
+    462 78.961453   192.168.3.249   1.2.3.4         ESP      ESP (SPI=0x384a545c)
+
+During the ISAKMP phase, my firewall NATs like it shall, and the
+client reports the tunnel as working. But once the real ESP traffic
+starts to flow, it doesn't get NATed as I would like it to.
+
+I've googled quite a lot, and also tried using firehol to set up the
+iptables (and gotten some help on the firehol forum), but I'm still
+unsuccessfull. What should I do to debug this? Anyone have a set of
+rules that allows ISAKMP/ESP on UDP port 4500?
+
+Regards,
+-- 
+/Ola Nilsson
 
 
