@@ -1,8 +1,8 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: Packet Mangling, conn_tracking
-Date: Tue, 1 Apr 2003 05:02:01 -0800 (PST)
+From: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>
+Subject: information + real examples ?
+Date: Tue, 1 Apr 2003 16:06:44 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030401130201.27234.qmail@web13908.mail.yahoo.com>
+Message-ID: <B5747F3DB39FD411884B00B0D07808CCB6C9C2@server10>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,39 +16,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hiyas,
-I am interested in performing some packet mangling,
-preferably in a Userspace QUEUE.  My general goal is
-to obfuscate packet contents (IP payload and below)
-'on the wire' between 2 hosts which both have the
-QUEUE application, so:
+Hi all,
 
-HostA
-  |    (Normal packet)
-FW Router
-  |
-  |    (Mangled packet)
-  |
-FW Router
-  |    (Normal packet)
-HostB
+I am pretty new to iptables and soon i will install one in an operatiol
+environment.
+Now, the system is iptables on a debian linux with kernel 2.4.20 and 2
+netcards.
+One netcard one -say- range 10.10.0.0 and one range on 192.168.0.0
+There is a program the clients on 10.10.0.0 range will have to reach on the
+other range so i will have to use NAT and i also need standard security.
+But is it possible that someone could send me some scripts or examples so
+that i can have a clear view how this is all set up ?
+I just so that i have some different points of views.
 
-Since I want to mangle the IP payload (including
-tcp/udp header), I was curious about where I could do
-it so that it was demangled before I do filtering
-rules and before any connection tracking was
-performed.
-If I establish a QUEUE for the mangle PREROUTING and
-de-mangle an incoming packet, will that make the
-contents of the unmangled packet available for INPUT
-and connection tracking?
+best regards,
 
--Scott 
+Philippe Dhont 
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Tax Center - File online, calculators, forms, and more
-http://platinum.yahoo.com
 
