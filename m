@@ -1,16 +1,15 @@
 From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: Request about MAC Address (cross posted to ebtables and
-	netfilter)
-Date: Thu, 23 Sep 2004 17:46:09 +0300
+Subject: Re: physdev match
+Date: Thu, 23 Sep 2004 17:47:28 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1403218a04092307461ea7d0c4@mail.gmail.com>
-References: <1403218a040923054731f66fed@mail.gmail.com>
-	<1095950130.1750.22.camel@wolfpack.ljm.dom>
+Message-ID: <1403218a0409230747732d8ff8@mail.gmail.com>
+References: <1403218a040923070324faf49f@mail.gmail.com>
+	<4152DBF7.9060402@pbl.ca>
 Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1095950130.1750.22.camel@wolfpack.ljm.dom>
+In-Reply-To: <4152DBF7.9060402@pbl.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,39 +22,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-ahh
-Really sorry, I was searching in IANA, and didn't find any information
-Thanks alot Jason, you are one of the stars here.
+I have this in that path.
+libipt_physdev.so
+
+However, I will try again.
 
 
-On Thu, 23 Sep 2004 10:35:30 -0400, Jason Opperisano <opie@817west.com> wrote:
-> On Thu, 2004-09-23 at 08:47, Mohamed Eldesoky wrote:
-> > I have seen this on my logs
-> > Destination: 00:0c:76:e7:fa:a9 (Micro-St_e7:fa:a9)
+On Thu, 23 Sep 2004 09:21:43 -0500, Aleksandar Milivojevic
+<amilivojevic@pbl.ca> wrote:
+> Mohamed Eldesoky wrote:
+> > Ok, I got a stock kernel 2.4.27 patched with ebtables-bnrf, and
+> > noticed that it has added physdev match.
+> > But whenever I try to test a rule with -m physdev --physdev-in <int>
+> > it gives me
 > >
-> > I have searched for the manufacturer assigned this mac, and I failed !!
-> > Anyone knows anything about such manufacturer ??
+> > iptables: Invalid argument
+> >
+> > Any special requirements to use it ??
 > 
-> according to:  http://standards.ieee.org/regauth/oui/index.shtml
-> 
-> a search for 000c76 yields:
-> 
-> 00-0C-76   (hex)                MICRO-STAR INTERNATIONAL CO., LTD.
-> 000C76     (base 16)            MICRO-STAR INTERNATIONAL CO., LTD.
->                                 No 69, Li-De Street, Jung-He City, Taipe
->                                 Taipei
->                                 TAIWAN, REPUBLIC OF CHINA
-> 
-> googling for MICRO-STAR INTERNATIONAL leads us to:
-> 
->         http://www.msicomputer.com/
-> 
-> i'd guess the MAC is from an onboard NIC from one of their motherboards.
-> 
-> -j
+> Have you patched both userspace (iptables utility) and kernel?  This
+> sounds like iptables utility wasn't patched.  Look into /lib/iptables
+> directory and see what modules you have.
 > 
 > --
-> Jason Opperisano <opie@817west.com>
+> Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+> Systems Administrator                           1499 Buffalo Place
+> Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 > 
 > 
 
