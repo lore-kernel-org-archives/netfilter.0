@@ -1,9 +1,11 @@
-From: Rudi Starcevic <tech@wildcash.com>
-Subject: Port-forwarding Perfomance
-Date: Wed, 23 Feb 2005 17:33:56 -0800
-Message-ID: <421D2F04.8090100@wildcash.com>
+From: lst_hoe01@kwsoft.de
+Subject: Re: Firewall did not block SSH - what is wrong
+Date: Wed, 23 Feb 2005 08:42:59 +0100
+Message-ID: <1109144579.421c34033a74f@webmail.kwsoft.de>
+References: <17870.1109099790@www17.gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <17870.1109099790@www17.gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,43 +16,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Zitat von ju0815nk@gmx.net:
 
-I have www port-forwarding setup and running OK.
+> Hi,
+>
+> thanks for your help. Actually, I wanted to block all incoming traffic =
+that
+> is not related to connections originating from my machine. Should a def=
+ault
+> policy of dropping all packets plus allowing only related packages be
+> sufficient ?
+>
+> e.g.
+>
+> $IPTABLES -P INPUT DROP
+> $IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -m state --state \
+>  ESTABLISHED,RELATED -j ACCEPT
 
-However I wonder if they way I have configured it is not the most 
-optimal for speed and performance.
+I would loose the "-d $EXTIP" because you want ESTABLISHED and RELATED al=
+so on
+your internal IFs. Traffic coming in your external IF for your internal n=
+et or
+your internal IF should be checked in the FORWARD chain.
 
-I have a default policy of DROP with a total of about 30 rules.
+> Is there any way to test iptables-based firewalls without access to a s=
+econd
+> machine ?
+> I installed the rule you told me and commented out the one allowing
+> connections to the firewall - but how can I test that it works for me
+> (except testing if my email/mozilla works)?
 
-These rules below do my www port-forwarding, can you see if there is a 
-better way to do this ?
+There are many online scanners available at the net. For example
+http://scan.sygatetech.com/. Choose one and see what's happening.
 
-# ENABLE FORWARDING / NAT / MASQUERADING
-echo "1" > /proc/sys/net/ipv4/ip_forward
+Regards
 
-# NAT Forwarding Setup
-$IPTABLES --table nat --append POSTROUTING --out-interface $ETH0 -j 
-MASQUERADE
-$IPTABLES -A FORWARD -i $ETH1 -j ACCEPT
-$IPTABLES -A FORWARD -i $ETH0 -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# http Port-Forwarding setup
-$IPTABLES -t nat -A PREROUTING -i $ETH0 -p tcp --dport 80 -d $MEDIA1_IP 
--j DNAT --to $MEDIA1_LO:80
-
-Many thanks,
-Kind regards
-Rudi
-
-
--- 
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.300 / Virus Database: 266.4.0 - Release Date: 22/02/2005
+Andreas
 
 
