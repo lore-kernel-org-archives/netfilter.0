@@ -1,9 +1,11 @@
-From: Reuven Kohanim <rkohanim@yahoo.com>
-Subject: seeking help on iptable/netfilter and X protocol
-Date: Mon, 12 May 2003 06:11:14 -0700 (PDT)
+From: "Moti Levy" <moti@flncs.com>
+Subject: Re: top level rules
+Date: Mon, 12 May 2003 09:24:35 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030512131114.86082.qmail@web41704.mail.yahoo.com>
+Message-ID: <00b701c31889$d6b63f40$0901010a@bvg6>
+References: <ABEKJILKOKKGGDJKHKDFEEAICBAA.patrick@vikus.com> <1052743756.1399.0.camel@xbox>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,27 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-I have been successfully using X protocol across an
-ipchains gateway. I am trying to move to iptables. 
-Finally ,and thanks to some help that I got at this
-forum, everything is working smoothly except for X.
+iptables -L -n --line0numbers will list the rule numbers 
+iptables -I CHAINNAME rulenumber_to_insert REST OF RULE
 
-I am bypassing masquerading when my source/destination
-are the X client/server so that I can use my
-non-masqed ip address for the 'display' parameter of
-say xterm application. Could anyone tell me if
-iptables
-does or does not supports X.
-
-Thanks
-Reuven
+----- Original Message ----- 
+From: "Filip Sneppe" <filip.sneppe@cronos.be>
+To: "Patrick Ahler" <patrick@vikus.com>
+Cc: "netfilter EMAIL" <netfilter@lists.netfilter.org>
+Sent: Monday, May 12, 2003 8:49 AM
+Subject: Re: top level rules
 
 
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
+> On Mon, 2003-05-12 at 14:25, Patrick Ahler wrote:
+> > Is there any way to insert a new rule at the top of a table...
+> > 
+> > For instance, I have rules...
+> > 
+> > RULE 1
+> > RULE 2
+> > RULE 3
+> > RULE 4
+> > 
+> > in order... but what if I want to place a rule before rule 1? Is that
+> > possible?
+> 
+> Yes, just use the -I (insert) option of iptablesinstead of -A (append).
+> 
+> Regards,
+> Filip
+> 
+> 
+> 
+> 
 
