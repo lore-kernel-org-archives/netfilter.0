@@ -1,11 +1,13 @@
-From: Travis Crook <travis@visionsbeyond.com>
-Subject: Forwarding traffic to smtp server
-Date: Tue, 02 Mar 2004 15:16:00 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Forwarding traffic to smtp server
+Date: Tue, 2 Mar 2004 22:26:46 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1078265760.2567.94.camel@linsaidin.visionsbeyond.mindtrip>
+Message-ID: <200403022225.36217.Antony@Soft-Solutions.co.uk>
+References: <1078265760.2567.94.camel@linsaidin.visionsbeyond.mindtrip>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1078265760.2567.94.camel@linsaidin.visionsbeyond.mindtrip>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +20,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi All,
-	I have a question for you.  These are my current rules for sending
-traffic on port 25 to my mail server.  I'm running kernel 2.4.
+On Tuesday 02 March 2004 10:16 pm, Travis Crook wrote:
 
-$IPTABLES -A FORWARD -i $EXTERNALIF -o $INTERNALIF -p tcp --dport 25 -m
-state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> Hi All,
+> 	I have a question for you.  These are my current rules for sending
+> traffic on port 25 to my mail server.  I'm running kernel 2.4.
+>
+> They seem to work other than my mail server views all packets as coming
+> from the firewall and not from external IP addresses.  Is there a way to
+> get the originating IP address to my mail server?
 
-$IPTABLES -t nat -A PREROUTING -i $EXTERNALIF -p tcp --dport 25 -d
-$MYADDR -j DNAT --to-destination 192.168.2.254:25
+I'll bet you have a SNAT or MASQUERADE rule which you didn't bother to tell 
+us, which applies to all interfaces.   Change it so it applies only to your 
+external interface and you should be a happier person.
 
-$IPTABLES -t nat -A POSTROUTING -o $EXTERNALIF -p tcp --dport 25 -d
-192.168.2.254 -j SNAT --to-source 192.168.2.250
+Antony.
 
-where $EXTERNAL is my external interface (eth0), $INTERNALIF is my
-internal interface (eth1), and $MYADDR is my IP address: 12.42.147.158.
+-- 
+Anyone that's normal doesn't really achieve much.
 
+ - Mark Blair, Australian rocket engineer
 
-They seem to work other than my mail server views all packets as coming
-from the firewall and not from external IP addresses.  Is there a way to
-get the originating IP address to my mail server?
-
-Thanks!
-
-Travis Crook
-Visions Beyond
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
