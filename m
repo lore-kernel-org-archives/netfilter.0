@@ -1,12 +1,11 @@
-From: Kevin McConnell <kevymac@yahoo.com>
-Subject: Re: Some webpages inaccessible through IPTables
-Date: Fri, 7 Feb 2003 11:15:35 -0800 (PST)
+From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
+Subject: Re: PPTP through iptables firewall
+Date: Fri, 7 Feb 2003 20:20:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030207191535.84360.qmail@web40309.mail.yahoo.com>
-References: <20030207184027.346DC232BA@www.fastmail.fm>
+Message-ID: <001501c2cedd$ec0d3ce0$0401000a@robbysan.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030207184027.346DC232BA@www.fastmail.fm>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +16,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Sven Bolt <sven_bolt@fastmail.fm>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+> NB> connections involving GRE has changed from UNKNOWN to GRE. But=20
+> NB> with this patch it is not possible to connect, now the windows=20
+> NB> client only reach "verifying username and password" and then
+> NB> times out.
+>=20
+> I had the same problem. I also tried to connect from external IP
+> located behind firewall without any rules. I couldnt connect to
+> pptp server also [with timeout]. Then I recognized then unloading=20
+> ip_nat_pptp module causes the connection could be achieved correct.=20
+> [Other related modules ie. ip_conntrack_pptp,=20
+> ip_conntrack_proto_gre doesn't influence connection].
+
+Here too. I can compile the thing, but it won't work.
+I get messages in syslog like :
+
+Feb  1 16:21:01 router kernel: ip_conntrack_pptp.c: bad csum
+Feb  1 16:21:50 router last message repeated 3 times
+
+The ip_conntrack|nat_pptp patch downloaded from www.impsec.org for
+kernel 2.4.17 worked for me, but I need to compile a newer kernel and I
+can't get it done anymore.
+
+Is there someone who has got this working ??
 
 
---- Sven Bolt <sven_bolt@fastmail.fm> wrote:
-> Hello,
-> I saw the problem already on the list, but ther was
-> no solution to it:
-> I use an iptables-gateway 1.2.6a on debian with
-> kernel 2.4.18 with just 
-> 
-> echo 1 > /proc/.../ip_forward
-> and iptables --table at -A POSTROUTING -j MASQUERADE
-> 
-> I can access through this gateway most webpages, but
-> for example
-> www.ebay.com among several others I can't access.
-> What could the problem be?
+Besides, isn't there anyone that hasn't got problems when compiling
+iptables-1.2.7a ? It complains about not having if_name and if_index
+defined in ipt_ROUTE.h. (plain kernel-2.4.20, patched with
+pom-20030107).
+In ipt_ROUTE.h I don't see an if_index nor if_name, however there is an
+ifname. So I created the ifindex myself (unsigned int ifindex, it was
+somewhere in the past pom's). And in the libipt_ROUTE.c file (iptables
+package) I changed all instances if_name and if_index to ifname and
+ifindex.
 
-Perhaps the kernel is compiled with ECN, and that
-particular sites firewall is "ECN braindead". Just one
-of many possibilites.
+I don't know if that was the right thing to do, but now iptables
+compiles and so far I don't have any problems with it.
 
 
-=====
-Kevin C. McConnell --RHCE-- <Red Hat Certified Engineer>
+Gr,
+Rob
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
 
