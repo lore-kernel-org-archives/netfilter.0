@@ -1,9 +1,11 @@
-From: "Lasse B. Jensen" <gymer@odense.kollegienet.dk>
-Subject: Change iptables log format
-Date: Thu, 2 Oct 2003 16:40:05 +0200 (CEST)
+From: Martin Ferrari - Decidir IT <mferrari@decidir.net>
+Subject: urgent - netfilter rejecting 60% of DNS requests!
+Date: Wed, 1 Oct 2003 15:23:36 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.56L0.0310021637520.11122@sutsko.kollegie.dk>
+Message-ID: <0EF8394892B74144ACF999556D1FD6BB7DE395@dexter.decidir.net>
+Reply-To: mferrari@decidir.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,26 +16,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Netfilter list (E-mail)" <netfilter@lists.samba.org>
 
-Is it possible to change the log format of iptables?
+Hi, I don't know what's happening, but I discovered that my firewall is
+currently rejecting with port unreachable about 60% of the DNS queries =
+I
+receive, but this is not happening with the other kind of traffic I =
+manage
+(http and smtp).
 
-ala: 
+I use connection tracking and ip_conntrack_max is set to 32k. Dmesg =
+doesn't
+report anything!
 
-from
+Please, ANY help would be greatly welcomed!
 
-Oct  2 16:39:44 charlie kernel: LOGPREFIX IN=eth0 OUT=eth1 
-SRC=172.17.5.184 DST=80.60.235.54 LEN=48 TOS=0x00 PREC=0x00 TTL=123 
-ID=52255 DF PROTO=TCP SPT=3240 DPT=1214 WINDOW=44032 RES=0x00 SYN URGP=0
+---
 
-to
+Martin Ferrari
+Administrador UNIX
+Decidir
+________________________________________
+mailto:mferrari@decidir.net
+Vis=EDtenos en http://www.decidir.com
+Decidir.com International Ltd.
 
-Oct  2 16:39:44 charlie kernel: NEW:bred-kirstine:IN=eth0 OUT=eth1 
-SRC=172.17.5.184 DST=80.60.235.54 PROTO=TCP SPT=3240 DPT=1214
+******************* Confidencialidad en Internet Email =
+********************
+Este mensaje puede contener informaci=F3n confidencial. Si usted no es =
+el
+destinatario de este mail, o la persona encargada de recibir los
+mensajes para dicha persona, por favor no copie ni reenv=EDe este =
+mensaje.
+De ser as=ED, por favor destruya este mensaje y de ser tan amable
+notifique al remitente con un Email. En caso de no querer recibir esta
+clase de informaci=F3n via Internet por favor av=EDsenos cuanto antes.
+Conclusiones, opiniones y cualquier otro tipo de informaci=F3n que
+contenga este mensaje y que no este directamente relacionado con el
+rubro oficial de esta Empresa, no debe ser tomado en cuenta.
 
-
---
-Lasse B. Jensen
 
