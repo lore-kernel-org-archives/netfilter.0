@@ -1,8 +1,8 @@
 From: funny guy <asteriskmail@yahoo.com>
 Subject: Multiple PPTP clients behind NAT
-Date: Mon, 20 Sep 2004 00:01:37 -0700 (PDT)
+Date: Mon, 20 Sep 2004 00:01:54 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040920070137.8590.qmail@web52509.mail.yahoo.com>
+Message-ID: <20040920070154.68500.qmail@web52503.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
