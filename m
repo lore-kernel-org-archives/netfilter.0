@@ -1,13 +1,13 @@
-From: Frank Gruellich <frank@home.manuelm.org>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Dinamic (www list) IP BAN ...
-Date: Thu, 22 Apr 2004 19:00:25 +0200
+Date: Thu, 22 Apr 2004 18:07:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040422170025.GE6219@home.manuelm.org>
+Message-ID: <200404221807.50204.Antony@Soft-Solutions.co.uk>
 References: <1331752368.20040422174719@lpgc.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <1331752368.20040422174719@lpgc.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -21,37 +21,56 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hello,
+On Thursday 22 April 2004 5:47 pm, Roque wrote:
 
-* Roque <roque@lpgc.net> 22. Apr 04:
-> I need to ban a number of IP=B4s that are posted in a plain text file on
+> Hi all, i wonder if someone could help me with a little problem ...
+> I need to ban a number of IP=B4s that are posted in a plain text file o=
+n
 > a web site; the file changes every 30Min. The file is as simple as
->=20
+>
 > banned-ip1    #Reason1
 > banned-ip2    #Reason
 > ...
->=20
 > The url can be reached in this way: http://www.url.com/ip/banned.txt
-
-WARNING: this is very, very bad!  Don't insert rules automatic from an
-untrusted source (anything outside of your net _is_ untrusted).  Said
-this...
-
+>
 > I have read the iptables man pages and haven=B4t seen nothing similar.
 > Is it really posible to do so?
 
- # iptables -N banned_ips 2>/dev/null
- # iptables -F banned_ips
- # wget --output-document=3D- http://www.url.com/ip/banned.txt |
- > while read ip reason
- > iptables -A banned_ips -d $ip -j REJECT
- > done
+I would suggest you set up a cron job which runs a shell script to fetch =
+the=20
+list (using wget or lynx etc), then add the current IPs to a user-defined=
+=20
+chain, then switch a rule in INPUT or FORWARD (you don't say which it is =
+you=20
+want to ban, possibly both) to that chain from the previous one which was=
+ in=20
+place, then flush the old list ready for populating the next time around.
 
-Repeat this every 30min by cron.  Insert the chain banned_ips whereever
-you need it (likely in your FORWARD).
+ie: you have two user-defined chains, one of which is in use, and the oth=
+er of=20
+which you are populating with the banned IPs, then you switch between the=
+m.
 
-HTH,
- regards, Frank.
+Don't try adn use just one list, or else you will either (a) have trouble=
+=20
+removing the old entries, or (b) have some period of time when there are =
+no=20
+IPs in the banned list (which presumably is undesirable).
+
+Regards,
+
+Antony.
+
 --=20
-Sigmentation fault
+Success is a lousy teacher.  It seduces smart people into thinking they c=
+an't=20
+lose.
+
+ - William H Gates III
+
+                                                     Please reply to the =
+list;
+                                                           please don't C=
+C me.
+
 
