@@ -1,16 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: NOT acceptable "/etc/sysconfig/network-scripts/ifup" script !!!
-Date: Thu, 15 May 2003 19:48:43 +0200
+From: "Leonardo Borda" <borda@netwall.com.br>
+Subject: link failover
+Date: Thu, 15 May 2003 15:07:31 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030515194843.6c8876f2.arnt@c2i.net>
-References: <200305142155.31623.pc-secure@home.nl>
-	<200305150215.56631.pc-secure@home.nl>
-	<20030515145236.7044bbf1.arnt@c2i.net>
-	<200305151742.26913.pc-secure@home.nl>
+Message-ID: <IHEHKFMEMKMGFDMIAHCIKEKIDMAA.borda@netwall.com.br>
+Reply-To: <borda@netwall.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200305151742.26913.pc-secure@home.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,42 +17,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "P.Italiaander" <pc-secure@home.nl>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 15 May 2003 17:42:26 +0200, 
-"P.Italiaander" <pc-secure@home.nl> wrote in message 
-<200305151742.26913.pc-secure@home.nl>:
+Hello aLL.
 
-> Op donderdag 15 mei 2003 14:52, schreef Arnt Karlsen:
-> 
-> > ..I know, ipup _is_ buggy, my hint was more on Red Hats somewhat
-> > sloppy QA attitude.  I mean, if I should _not_ use RH9 to route
-> > traffic, I would like to know _that_ from the docs.
-> >
-> > ..does Mandrake or Debian turn their rear end onto _whoever_ like
-> > RH-9 does in
-> > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=89171 ???
-> 
-> 
-> I've checked , but Mandrake 9.1 is not effected with that bug.
-> Thanks for mention it. 
-> On Debian i don't know  ,don't have it , i use OpenBSD en Linux SuSe ,
-> Redhat ,Mandrake.
-> 
-> Does anyone have tested yet,  my patched /sbin/ifup file, for
-> iptables-script ??
+	We have two internet access one ADSL connection and another 256Mbps
+internet dedicated link.
 
-..the wifi part of it works fine, but it _introduces_ bug # 89171,
-I tested with a thinkpad 760 ED I use as AP, it runs RH-7.3.
+	We want to configure our firewall (iptables) to choose/detect and determine
+when one of that links goes down e automatically reasign another path to the
+internet. (like as a link backup).
+	I know that I can do it writing a script, but I think its not beautiful...
+:)
 
-..it looks like Red Hat cannot use mac addresses to ID nics.
+	I tried to find something on the web but the documents was related to HA
+(high availability) which is not my case, I want to have just one firewall
+doing the job.
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+	Glad if you help!
 
+thanks Borda.
+
+
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.481 / Virus Database: 277 - Release Date: 13/5/2003
 
 
