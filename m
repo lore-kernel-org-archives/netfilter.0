@@ -1,14 +1,14 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: netfitler against Trojans and worms
-Date: Mon, 5 Jul 2004 15:59:52 +0100
+Date: Mon, 5 Jul 2004 16:21:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407051559.52393.gdh@acentral.co.uk>
-References: <1d7da3f40407050659476384b7@mail.gmail.com> <200407051510.06470.gdh@acentral.co.uk> <1d7da3f40407050746589209b5@mail.gmail.com>
+Message-ID: <200407051622.00035.Antony@Soft-Solutions.co.uk>
+References: <1d7da3f40407050659476384b7@mail.gmail.com> <200407051510.06470.gdh@acentral.co.uk>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1d7da3f40407050746589209b5@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <200407051510.06470.gdh@acentral.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,25 +21,59 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 05 July 2004 15:46, Saad Faruque wrote:
-> I did think of doing  it the other way around, but again i have to
-> list all the internet services that are being used which is also
-> changing continuously. 
+On Monday 05 July 2004 3:10 pm, Gavin Hamill wrote:
 
-Unless you're running a lot of P2P applications, I can't see the 'need' list 
-being very long... 21, 22, 80, 110, 143, 443, 993, 995... maybe a few others 
-for remote desktop apps, etc.
+> On Monday 05 July 2004 14:59, Saad Faruque wrote:
+> > i did find couple of sites ex.
+> > (http://www.doshelp.com/trojanports.htm) which lists some ports. but i
+> > really am not sure if u simply block all these ports if it will effect
+> > my clients regular internet activity. any alternative suggestions are
+> > also welcome :)
+>
+> My suggestion would to stop fire-fighting and instead turn the problem on
+> its head.
+>
+> Change your default policy from ACCEPT to DROP, and put in rules so that
+> people are allowed to access port 80, 443, etc. and only the ports they
+> actually NEED access to.
 
-> more like a layer 7 filtering. im just trying to find a
-> smarter way of doing it, which will be more effective and could be
-> updated easily.
+I agree completely with this.   Standard security practice is to "block 
+everything which is not expressly allowed", and to allow only that which is 
+known to be needed.
 
-This is possible :)
+In a later posting you say you don't know what to allow - one approach which 
+is very effective is to block everything, allow web, email and dns, then wait 
+until your users say "I can't do X", and then decide whether they should be 
+allowed to do X or not.
 
-http://l7-filter.sourceforge.net/
+If it isn't you who makes the decisions about what they should be allowed to 
+do, then ask the person whose decision it is to give you a list of all the 
+applications they're supposed to be able to access on the Internet.
 
-It needs kernel 2.6 to be 'easy', if you use 2.4 you can only rate-limit and 
-not simply drop packets based on the application type.
+In another posting you also said that you are not able to ensure the security 
+of the machines in the internal network.   A good way to deal with that is to 
+apply the security policy above, but then LOG all blocked packets, and 
+summarise them by source IP address on a daily basis.   Anyone whose machine 
+generates enough blocked traffic that it looks like it's infected with 
+something gets a DROP (or REJECT) rule in the firewall until they clean up 
+their machine.
 
-gdh
+You don't have to say much to justify this - you are insisting that they clean 
+their machines so that they don't spread things to other machines on the 
+network.   You can stop them spreading it to the Internet, but you can't stop 
+them spreading to the local LAN.
+
+Regards,
+
+Antony.
+
+-- 
+Behind the counter a boy with a shaven head stared vacantly into space,
+a dozen spikes of microsoft protruding from the socket behind his ear.
+
+ - William Gibson, Neuromancer (1984)
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
