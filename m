@@ -1,15 +1,14 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Masquerading multiple VPN clients (Windows)
-Date: Thu, 22 Jan 2004 15:30:39 -0500
+From: Alex Satrapa <alex@lintelsys.com.au>
+Subject: Re: could someone translate these rules inot plain english
+Date: Fri, 23 Jan 2004 08:40:40 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040122203039.GA10688@obroa-skai.de.gnumonks.org>
-References: <20040122083018.5896a9da.bs@axysdesign.com> <20040122102939.71b72b55.bs@axysdesign.com>
+Message-ID: <40104358.2050908@lintelsys.com.au>
+References: <33682.66.65.52.125.1074751856.squirrel@sojourn.dyndns.org>      <400F6EF4.2060608@lintelsys.com.au> <34137.66.65.52.125.1074768489.squirrel@sojourn.dyndns.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040122102939.71b72b55.bs@axysdesign.com>
+In-Reply-To: <34137.66.65.52.125.1074768489.squirrel@sojourn.dyndns.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,55 +18,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Vichaya Sidhipong <bs@axysdesign.com>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+Technical wrote:
+> If the default is that iptables to reject all packets that cannot not be
+> deall with any of the previous rules, why would somemone use the last
+> rule??  am I missing something??
+
+It explicitly tells the remote computer that they're not *allowed* to 
+communicate with that host - as opposed to just dropping the packets 
+(pretending you're a black hole), or rejecting the packets with "host 
+unreachable" or "port unreachable".  These two options imply that the 
+remote host is *allowed* to try connecting, but there's just nothing there.
+
+The administrator at the other end would likely act different ways in 
+these circumstances. Upon noticing that there are many "host 
+unreachable" messages coming through, the administrator would take the, 
+"leave it alone and try again" stance - since the assumption would be 
+that something is broken. "host prohibited" messages explicitly state to 
+the administrator that everything is working just as it should be, and 
+that communication with that host is simply not allowed.
 
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jan 22, 2004 at 10:29:39AM -0800, Vichaya Sidhipong wrote:
-> Hi Harald,
->=20
-> patch-o-matic 20031219
-> kernel version 2.4.24, debian sid
-> iptables 1.2.9, also patched and rebuilt
->=20
-> I did load these modules:
->=20
-> ip_conntrack_proto_gre
-> ip_conntrack_pptp
-> ip_nat_pptp
-
-you are missing the ip_nat_proto_gre module
-
-> Thank you,
-> Bill
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQFAEDLvXaXGVTD0i/8RAiu1AKCmtiwPn0i2Cti5BF0ebglwkewKkgCdFiFP
-ANKdLud2K5sVp0ZDZSYPzz0=
-=DcF7
------END PGP SIGNATURE-----
-
---mP3DRpeJDSE+ciuQ--
 
