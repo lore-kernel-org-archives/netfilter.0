@@ -1,15 +1,13 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: ip_queue.o and libipq
-Date: Wed, 26 May 2004 09:37:47 +0200
+From: =?iso-8859-1?Q?CPD_-_David_Carde=F1osa_Rubio?=
+	 <dcardenosa@cac.retecal.es>
+Subject: RE: iptables and samba
+Date: Wed, 26 May 2004 10:29:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040526073747.GA9500@zion.homelinux.com>
-References: <OF35BDBBAA.9AF2C01B-ON65256EA0.001C4D30@hss.hns.com>
+Message-ID: <7528A97D83FBD411BEF40003471B905B05D8FF1B@ZAR1>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C442FB.A0464200"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <OF35BDBBAA.9AF2C01B-ON65256EA0.001C4D30@hss.hns.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,79 +17,256 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: aksingh@hss.hns.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
---5vNYLRcllDrimb99
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+------_=_NextPart_001_01C442FB.A0464200
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
+Hi
 
-Hi Amit,
+This seems to be related to inverse name resolution.
+You can try put the client computer name in /etc/hosts and try the =
+conection
+again.
+In some cases samba try to resolv the client computer name, make a DNS
+query, until the DNS query finish the conection not be establised =
+correctly.
 
-On Wed, May 26, 2004 at 10:45:23AM +0530, aksingh@hss.hns.com told us:
->=20
-> Hi,
->=20
->    Does anybody have an idea which function of ip_queue.c is invoked when
-> a userland process does a ipq_read ?
+Gratings=20
 
-ipqueue works via netlink. When a packet is queued ipq_enqueue_packet
-is called with the skb as one of its arguments. This function then
-prepares the netlink packet and sends it to userspace via=20
-netlink_unicast. netlink_unicast itself will enqueue the netlink packet
-on the socket receive queue of the socket (see net/netlink/af_netlink.c::
-netlink_sendskb which is called from netlink_unicast). When userspace
-(ipq_read) reads from the netlink socket, when there's data on this
-socket receive queue the first packet will be dequeued and returned to
-userspace.
+David Carde=F1osa
 
-(I hope this explanation is understandable, I'm still in the learning
-process with regard to how the kernel works, so should I be wrong
-anybody please correct me :)
-
-> Also, once a NF_QUEUE is returned by a netfilter hook and till the packet
-> is copied to userland by ipq_read how many copies are involved ?.
->=20
-> I believe there is just one copy when the packet is copied from sk_buff in
-> the queue maintained by ip_queue is copied to the buffer supplied by
-> ipq_read ? or are there more involved ?
->=20
-> also --- is netfilter server down ? havent received any mails since the
-> last two days, there seems to be no problem at my mail server ?
-
-Seems like it's down, I didn't receive mails since may 23rd...
->=20
-> thanks
-> Amit
->=20
-> "DISCLAIMER: This message is proprietary to Hughes Software Systems Limit=
-ed
-
-Do you think such a disclaimer makes sense when posting to a
-mailing list??
+-----Mensaje original-----
+De: azeem ahmad [mailto:azeem484@hotmail.com]
+Enviado el: domingo, 23 de mayo de 2004 11:21
+Para: netfilter@lists.netfilter.org
+Asunto: iptables and samba
 
 
-Sven
+hi
+i m using the script below
+------------------------------------------------------------------------=
+----
+---------------------------------------------------------
+iptables -F
+iptables -t nat -F
+iptables -P INPUT DROP
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 137  -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 138  -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
 
---=20
-Linux zion 2.6.6-tcp #4 Thu May 13 20:39:05 CEST 2004 i686 athlon i386 GNU/=
-Linux
- 09:27:29  up 12 days, 11:30,  1 user,  load average: 0.10, 0.03, 0.01
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port =
+8080
+#iptables -t nat -A PREROUTING -p udp --dport 80 -j REDIRECT --to-port =
+8080
 
---5vNYLRcllDrimb99
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 21        -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 443       -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 5000      -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 5001      -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 5005      -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 5050      -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 6660:6670 -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 7000      -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 28805     -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 51215     -j ACCEPT
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+------------------------------------------------------------------------=
+----
+---------------------------------------------------------
 
-iD8DBQFAtElLo4FAdB2PneQRAvYXAJ9oLMR2UM3BhVmy90QvyHvtRYv8EACcDITp
-HJx3boKgnTxe+5cylglIqWo=
-=ICQY
------END PGP SIGNATURE-----
+i have two shares on samba server "Soft and linux" in these shares =
+there are
 
---5vNYLRcllDrimb99--
+many folders. whenever i run the above script and then i open the share =
+it=20
+takes atleast 4  minutes to open the share. but it doesnt take time =
+while=20
+browsing inside share.
+mean there is a folder on soft share like soft/adobe/acrobat/acrobat6
+when i double click on soft it takes atleast 4 minutes but after that =
+when i
+
+click on adobe then acrobat then acrobat6 it takes now time it just =
+brose=20
+them normally. same problem is with the other share named linux.
+but if i dont run this script then all shares work fine with no delay
+
+i dont know what is the udp port 80 for but i just saw its traffic on =
+my=20
+network in iptraf so i included it in my script
+
+Regards
+Azeem
+
+_________________________________________________________________
+Add photos to your e-mail with MSN 8. Get 2 months FREE*.=20
+http://join.msn.com/?page=3Dfeatures/featuredemail
+
+
+------_=_NextPart_001_01C442FB.A0464200
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>RE: iptables and samba</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>Hi</FONT>
+</P>
+
+<P><FONT SIZE=3D2>This seems to be related to inverse name =
+resolution.</FONT>
+<BR><FONT SIZE=3D2>You can try put the client computer name in =
+/etc/hosts and try the conection again.</FONT>
+<BR><FONT SIZE=3D2>In some cases samba try to resolv the client =
+computer name, make a DNS query, until the DNS query finish the =
+conection not be establised correctly.</FONT></P>
+
+<P><FONT SIZE=3D2>Gratings </FONT>
+</P>
+
+<P><FONT SIZE=3D2>David Carde=F1osa</FONT>
+</P>
+
+<P><FONT SIZE=3D2>-----Mensaje original-----</FONT>
+<BR><FONT SIZE=3D2>De: azeem ahmad [<A =
+HREF=3D"mailto:azeem484@hotmail.com">mailto:azeem484@hotmail.com</A>]</F=
+ONT>
+<BR><FONT SIZE=3D2>Enviado el: domingo, 23 de mayo de 2004 11:21</FONT>
+<BR><FONT SIZE=3D2>Para: netfilter@lists.netfilter.org</FONT>
+<BR><FONT SIZE=3D2>Asunto: iptables and samba</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2>hi</FONT>
+<BR><FONT SIZE=3D2>i m using the script below</FONT>
+<BR><FONT =
+SIZE=3D2>---------------------------------------------------------------=
+----------------------------------------------------------------------</=
+FONT></P>
+
+<P><FONT SIZE=3D2>iptables -F</FONT>
+<BR><FONT SIZE=3D2>iptables -t nat -F</FONT>
+<BR><FONT SIZE=3D2>iptables -P INPUT DROP</FONT>
+<BR><FONT SIZE=3D2>iptables -A INPUT -m state --state =
+ESTABLISHED,RELATED -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p tcp --dport 8080 -j =
+ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p tcp --dport =
+22&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p tcp --dport =
+53&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p udp --dport =
+53&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p udp --dport 137&nbsp; =
+-j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p udp --dport 138&nbsp; =
+-j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p tcp --dport 139&nbsp; =
+-j ACCEPT</FONT>
+</P>
+
+<P><FONT SIZE=3D2>iptables -t nat -A PREROUTING -p tcp --dport 80 -j =
+REDIRECT --to-port 8080</FONT>
+<BR><FONT SIZE=3D2>#iptables -t nat -A PREROUTING -p udp --dport 80 -j =
+REDIRECT --to-port 8080</FONT>
+</P>
+
+<P><FONT SIZE=3D2>iptables -P FORWARD DROP</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -m state --state =
+ESTABLISHED,RELATED -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
+21&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
+443&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
+5000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
+5001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
+5005&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
+5050&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport 6660:6670 =
+-j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
+7000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
+28805&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
+<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
+51215&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
+</P>
+
+<P><FONT SIZE=3D2>iptables -t nat -A POSTROUTING -o ppp0 -j =
+MASQUERADE</FONT>
+<BR><FONT =
+SIZE=3D2>---------------------------------------------------------------=
+----------------------------------------------------------------------</=
+FONT></P>
+
+<P><FONT SIZE=3D2>i have two shares on samba server &quot;Soft and =
+linux&quot; in these shares there are </FONT>
+<BR><FONT SIZE=3D2>many folders. whenever i run the above script and =
+then i open the share it </FONT>
+<BR><FONT SIZE=3D2>takes atleast 4&nbsp; minutes to open the share. but =
+it doesnt take time while </FONT>
+<BR><FONT SIZE=3D2>browsing inside share.</FONT>
+<BR><FONT SIZE=3D2>mean there is a folder on soft share like =
+soft/adobe/acrobat/acrobat6</FONT>
+<BR><FONT SIZE=3D2>when i double click on soft it takes atleast 4 =
+minutes but after that when i </FONT>
+<BR><FONT SIZE=3D2>click on adobe then acrobat then acrobat6 it takes =
+now time it just brose </FONT>
+<BR><FONT SIZE=3D2>them normally. same problem is with the other share =
+named linux.</FONT>
+<BR><FONT SIZE=3D2>but if i dont run this script then all shares work =
+fine with no delay</FONT>
+</P>
+
+<P><FONT SIZE=3D2>i dont know what is the udp port 80 for but i just =
+saw its traffic on my </FONT>
+<BR><FONT SIZE=3D2>network in iptraf so i included it in my =
+script</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Regards</FONT>
+<BR><FONT SIZE=3D2>Azeem</FONT>
+</P>
+
+<P><FONT =
+SIZE=3D2>_______________________________________________________________=
+__</FONT>
+<BR><FONT SIZE=3D2>Add photos to your e-mail with MSN 8. Get 2 months =
+FREE*. </FONT>
+<BR><FONT SIZE=3D2><A =
+HREF=3D"http://join.msn.com/?page=3Dfeatures/featuredemail" =
+TARGET=3D"_blank">http://join.msn.com/?page=3Dfeatures/featuredemail</A>=
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C442FB.A0464200--
 
