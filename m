@@ -1,62 +1,95 @@
-From: "Shubho Biswas" <shubhobiswas@hotmail.com>
-Subject: Re: iptables masquerading
-Date: Wed, 14 Apr 2004 13:04:40 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY8-F89IlxnZnvjgDL00039ee6@hotmail.com>
+From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
+Subject: Re: Blocking source ports after REDIRECT
+Date: Wed, 14 Apr 2004 13:03:38 -0400
+Sender: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Message-ID: <MPG.1ae738f53f9a4d349896ad@localhost>
+References: <407D69F3.8050105@turton.co.za>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+Errors-To: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmI2yCS0tKOigE@public.gmane.org>
+List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIRj+87qQpzpCql8G6E966Ow@public.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIFcjs2lY4wUfKtGCp0j7rLg@public.gmane.org>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
 
-I've rebuilt iptables as a static binary and this seems to work for me.  I 
-guess I must have screwed up something in the linking in the dynamic 
-version.
+> I am running an untrusted web/app server and mail server on a Linux 
+> server, and choose to run then as non-root.  The apps must therefore use 
+> ports other than the well-known privileged ones.  I have set up iptables 
+> to redirect client requests addressed to the well-known ports to the 
+> ports that these apps open, e.g.
+>  25 -> 8025
+>  80 -> 8080
+> 110 -> 8110
+> This works fine.  Out of obsessive neatness rather than for any good 
+> technical reason I would like to block direct access to the apps through 
+> their non-privileged (8xxx) ports.  When I insert a filter command to do 
+> this, it blocks the redirected traffic as well.  Does anyone have a 
+> suggestion for me?  The commands are listed below, with the one that 
+> breaks connectivity commented out with ##
+> 
+> Regards
+> Trevor Turton
+> 
+> #!/bin/bash
+> ###############################################################################
+> # This script redirects various well-known services to local 
+> unprivileged ports
+> # and block the other privileged ports.
+> # 2004-04-13 Trevor Turton
+> ###############################################################################
+> #
+> # turn on IP forwarding:
+> #
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+> #
+> # redirect well-known services' ports to local unprivileged ports
+> #
+> /sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 25  -j 
+> REDIRECT --to-ports 8025
+> /sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 80  -j 
+> REDIRECT --to-ports 8080
+> /sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 110 -j 
+> REDIRECT --to-ports 8110
+> /sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 443 -j 
+> REDIRECT --to-ports 8443
+> #
+> # accept traffic addressed to the serviced tcp ports
+> #
+> /sbin/iptables -A INPUT -p tcp --dport 22  -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp --dport 25  -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp --dport 80  -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp --dport 110 -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+> #
+> # filter out traffic to remaining privileged tcp ports
+> #
+> /sbin/iptables -A INPUT -p tcp -i eth0 --dport 0:1023 -j DROP
+> ## the following command blocks -eth0 --dport 25,80,110,443 as well!!
+> ## /sbin/iptables -A INPUT -p tcp -i eth0 --dport 8000:8443 -j DROP
+> #
+> # accept traffic to serviced udp port (dns)
+> #
+> /sbin/iptables -A INPUT -p udp --dport 53  -j ACCEPT
+> #
+> # filter out traffic to remaining privileged udp ports
+> #
+> /sbin/iptables -A INPUT -p udp -i eth0 --dport 0:1023 -j DROP
 
-In the static version, the library files get installed too and the doc seems 
-to say that they're required for some reason.  So I get bigger /sbin files 
-and all the library files.  Maybe I can safely get rid of the 
-usr/lib/iptables files?
+See if this makes sense:
 
-Shubho
-
-----------------------------------------------------------
-Hi there,
-
-I've cross-compiled iptables for my x86 (486) embedded device and installed
-it successfully.  I did NOT use the static binary option so I have all the
-iptables lib installed too.  I'm using linux kernel 2.4.25 with no patches
-and almost all netfilter options enabled (iptables support is enabled) .
-When on my embedded device I do:
-
-# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-I get this error:
-
-iptables v1.2.9: Couldn't load target `MASQUERADE':File not found
-Try `iptables -h' or 'iptables --help' for more information.
-
-So I tried:
-# iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 192.168.1.160
-
-and got:
-iptables v1.2.9: Unknown arg `--to'
-Try `iptables -h' or 'iptables --help' for more information.
-
-Did I miss something when installing?
-
-Shubho
-
-_________________________________________________________________
-http://join.msn.com/?pgmarket=en-ca&page=byoa/prem&xAPID=1994&DI=1034&SU=http://hotmail.com/enca&HL=Market_MSNIS_Taglines
+Your port REDIRECTion happens in the PREROUTING table, _before_ the 
+packets reach the INPUT table.  See the diagram at 
+http://www.netfilter.org/documentation/HOWTO//packet-filtering-HOWTO-
+6.html.  So your INPUT rules never match: by the time a packet addressed 
+to, say, port 110 arrives there, its destination port has already been 
+changed to 8110.  So the ACCEPT rule on port 110 doesn't match.  Instead 
+the packet falls through to your DROP rule, where it gets clobbered.
 
 
