@@ -1,7 +1,7 @@
 From: fear81@gazeta.pl
 Subject: Windows Update through Mandrake firewall
-Date: Tue, 5 Apr 2005 02:40:03 +0200
-Message-ID: <1903233541.20050405024003@gazeta.pl>
+Date: Tue, 5 Apr 2005 02:48:18 +0200
+Message-ID: <1098547239.20050405024818@gazeta.pl>
 Reply-To: fear81@gazeta.pl
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,6 +18,9 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
+Message connected with:
+https://lists.netfilter.org/pipermail/netfilter/2004-February/050393.html
 
 << It was a Squid problem. Squid had disabled several applications. Once I
 << enabled those web apps, Windows Update worked fine. Thanks for the
