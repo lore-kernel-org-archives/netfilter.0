@@ -1,11 +1,13 @@
-From: "Joao C. Marigonda" <joao@neotechnologies.com.br>
-Subject: Active FTP with client behind NAT
-Date: Sat, 10 May 2003 00:20:02 -0300
+From: hewa0000@student.mh.se
+Subject: Rule matching question [iptables code structure]
+Date: Tue, 06 May 2003 14:56:45 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1052536802.3ebc6fe2603dd@webmail.webnow.com.br>
+Message-ID: <df0d10589.10589df0d@student.mh.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-language: sv
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +20,48 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello all, excuse me...
+[Please mail us personally (oan@itm.mh.se) as well
+as mailing the list since we are not members of this
+mail-list]
 
-I have found lots of explanations about ip_conntrack_ftp but no one could help 
-me to solve the following problem:
+We have a quite difficult question for all you elite
+people.... =)
  
-My FTP server is behind a firewall (ports >1023 blocked), so FTP should be 
-always done in ACTIVE MODE and so, the client needs to send PORT command to 
-server and server will open the data connection...
-But the client is behind a NAT and the data connection from the FTP server is 
-rejected by the NAT. This makes the client timeout because it will never get 
-the SYN packet from server...
+When we add a rule to iptables that filter on
+MAC-address (or IP address and port for that
+matter). Does iptables ONLY check for the
+MAC-address option (alas in that case we filter on
+MAC-address)?.
 
-Question: How to configure NAT to track this incoming FTP data connection from 
-any server behind a firewall to any clients in the LAN ????
- 
-Thanks very much!
- 
- 
-Joao
+Based on a the report "Performance analysis of the
+Linux firewall on a host" by James Harris and
+Americo J. Melara. It is stated that for each check
+if the MAC-address in the rule match the given
+MAC-address, the Iptables-algorithm ALWAYS checks
+all possibilities (MAC-address, IP, Port, Protocol,
+Interface..). 
+Does anyone know this to be the truth?
 
+We are currently working on a big project where we
+use big lists of rules that are based on MAC and
+IP-addresses. And we are trying to understand why
+these lists of rules crave so much computation power
+to execute.
 
+If Iptables always run a check for every possible
+way to match our packet with a single rule
+(ip,mac,protocol,interface...) it consumes alot more
+(actually we belive it to be around 6 times as much
+according to the nature of the algorithm) as necessary. 
 
+Optimally the algorithm would ONLY check for a
+MAC-Address match if that is what we are filtering
+on. We truly hope this also is the case. But please,
+someone who knows this :-) :
+Answer us!
+
+Sincerly,
+Open Access Networks Project MidSweden University.
+oan@itm.mh.se
 
 
