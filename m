@@ -1,10 +1,11 @@
-From: aksingh@hss.hns.com
-Subject: ip_queue.o in 2.4.26
-Date: Mon, 9 Aug 2004 13:13:55 +0530
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: firewall problem continued
+Date: Mon, 9 Aug 2004 04:12:16 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF7CB938B4.EA0AFC78-ON65256EEB.002A00D2@hss.hns.com>
+Message-ID: <20040809081216.GA12643@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,64 +17,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Sven Schuster <schuster.sven@gmx.de>
-Cc: netfilter@lists.netfilter.org
-
-
-
-
-
-Hi ,
-
-  I recently installed 2.4.26, I have ip_queue.c there but no ip_queue.o,
-how do I make ip_queue.o ? Why was ip_queue.c not compiled in the first
-place ?
-
-  PS : CC the reply to me
-
-regards
-Amit
----------------------- Forwarded by Amit Kumar Singh/HSS on 08/09/2004
-01:23 PM ---------------------------
-
-
-Amit Kumar Singh/HSS@HSS@lists.netfilter.org on 08/06/2004 10:20:40 AM
-
-Sent by:    netfilter-admin@lists.netfilter.org
-
-
-To:    netfilter@lists.netfilter.org
-cc:    kernelnewbies-bounce@nl.linux.org
-
-Subject:    ip_queue.o in 2.4.26
-
-
-
-
-
-
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
 Hi,
+I am rephrasing my last question with better words and more information.
+My firewall config (simple) is kept at,
+http://payal.staticky.com/tables.txt
 
-  I recently installed 2.4.26, I have ip_queue.c there but no ip_queue.o,
-how do I make ip_queue.o ?
+My problem is simple I have a DMZ machine where mail server is hosted.
+Its apache (needed for webmail) can be accessed from outside world by
+http://<ext IP>. But if I give http://<ext IP> from a LAN machine I cannot
+access it. Upon further investigation I found that port 25 and 110 can be
+accessed from LAN but not from the gateway (firewall) machine. Therefore,
+since this machine is also a simple squid proxy to LAN, I cannot access
+webmail thru' LAN. Now, if someone can help me in access those services 
+from the firewall machine itself, it will be great.
+I have blocked access to port 80 -d 0/0 from LAN and allow access
+only through squid.
 
-regards
-Amit
+If you need more information, do tell.
 
-
-
-
-*****************    HSS-Private    *************
-"DISCLAIMER: This message is proprietary to Hughes Software Systems Limited
-(HSS) and is intended solely for the use of the individual to whom it is
-addressed. It may contain  privileged or confidential information and
-should not be circulated or used for any purpose other than for what it is
-intended. If you have received this message in error, please notify the
-originator immediately. If you are not the intended recipient, you are
-notified that you are strictly prohibited from using, copying, altering, or
-disclosing the contents of this message. HSS accepts no responsibility for
-loss or damage arising from the use of the information transmitted by this
-email including damage from virus."
-
+Waiting eagerly for any inputs.
+With warm regards,
+-Payal
 
