@@ -1,16 +1,12 @@
-From: Juan Hernandez <alucard@kanux.com>
-Subject: Re: simple questions to finally understand netfilter
-Date: 27 Nov 2003 13:53:24 -0400
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: iptables and yahoo games
+Date: Fri, 28 Nov 2003 14:43:51 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069955604.9126.63.camel@webmail.aeropostal.com.ve>
-References: <1069947718.9126.39.camel@webmail.aeropostal.com.ve>
-	 <1069949045.28653.85.camel@kermit>
-	 <1069949657.9126.55.camel@webmail.aeropostal.com.ve>
-	 <1069955392.28653.96.camel@kermit>
+Message-ID: <F22386C3FEB012449238672E38ED61E70A8EEF@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1069955392.28653.96.camel@kermit>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,38 +17,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ralf Spenneberg <lists@spenneberg.org>
-Cc: Lista de netfilter <netfilter@lists.netfilter.org>
+To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
-Thank you...
 
-Juan
+Greetings friends!
+What are the rules to allow yahoo games in iptables?
 
-On Thu, 2003-11-27 at 13:49, Ralf Spenneberg wrote:
-> Am Don, 2003-11-27 um 17.14 schrieb Juan Hernandez:
-> > Another question...
-> > 
-> > On Thu, 2003-11-27 at 12:04, Ralf Spenneberg wrote:
-> > > Am Don, 2003-11-27 um 16.41 schrieb Juan Hernandez:
-> > > 
-> > > > 1) This rule tells netfilter to drop any packet forwarding I guess
-> > > > iptables -P FORWARD DROP
-> > > This is a default rule. All packets not accepted or dropped by other
-> > > rules will be dropped by this one.
-> > 
-> > If this drops everything else, how come there's access to the webserver
-> > in that same machine?? It's not that I dont want it, its just that im
-> > curious on what does this rule drops exactly cause I can still access my
-> > webserver 
-> Because the FORWARD chain only covers packets to be forwarded to other
-> machines. Packets destined to the local machine are filtered in the
-> INPUT chain. Do a 
-> iptables -P INPUT DROP 
-> and you webserver should stop responding (if there are no other INPUT
-> rules).
-> 
-> Cheers,
-> 
-> Ralf
+Thanks.
+
+Cheers,
+
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
+
+
+
+
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
+
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Fax: (632) 637-2206
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
 
