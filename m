@@ -1,12 +1,14 @@
-From: =?iso-8859-1?q?dee3lmo?= <dee3lmo@yahoo.co.uk>
-Subject: SRC and DST
-Date: Sat, 31 Jul 2004 08:42:42 +0100 (BST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: droping in forward/postrouting
+Date: Sat, 31 Jul 2004 08:48:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040731074242.71441.qmail@web25207.mail.ukl.yahoo.com>
+Message-ID: <200407310848.28840.Antony@Soft-Solutions.co.uk>
+References: <OF314C1F3E.9AD1008B-ON80256EE0.005745C8@start-global.com> <a0f69e504072913084fc39ee8@mail.gmail.com> <a0f69e504072923151d18afa3@mail.gmail.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-838915268-1091259762=:71045"
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <a0f69e504072923151d18afa3@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,49 +18,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
---0-838915268-1091259762=:71045
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+On Friday 30 July 2004 7:15 am, Askar Ali Khan wrote:
 
-Hello,
- 
-I'm quite new to netfilter and I'm using iptables for a short time and till now I'm loving it. But I have a question about the SRC and DST addresses.
- 
-I know you can filter on the source and destination addresses. On my box I receive a packet with the following addresses:
-SRC=62.234.65.26 DST=62.234.111.0
- 
-The strange thing is that both the addresses are not mine! I always thought that either the SRC or DST address must be the IP of my box or am I missing something. An other strange thing is that the DST ip address is a network address? Isn't this quite strange? A network address is not a computer so how to know where package is send to?
- 
-Could anyone please explain these issues?
- 
-Thanx in advance,
-dee3lmo
+> hi
+> I duno but filter table "FORWARD" not blocking/dropping any of these
+> site actaully these are spywares a gift from windowz and why i want to
+> drop these dirty shits coz they consume lot of my precious bandwidth
+> "dialup" ;)
+>
+> iptables -I FORWARD -s 0/0 -d 66.35.229.0/24 -j DROP
+> iptables -I FORWARD -s 0/0 -d  212.4.208.105 -j DROP
+> iptables -I FORWARD -s 0/0 -d 66.35.229.185 -j DROP
+> iptables -I FORWARD -s 0/0 -d  64.152.73.0/24 -j DROP
+> iptables -I FORWARD -s 0/0 -d  66.35.229.236 -j DROP
+>
+> However PREROUTING do working and dropping it :)
+>
+> iptables -t nat -I PREROUTING -s 0/0 -d 66.35.229.0/24 -j DROP
+> iptables -t nat -I PREROUTING -s 0/0 -d  212.4.208.105 -j DROP
+> iptables -t nat -I PREROUTING -s 0/0 -d 66.35.229.185 -j DROP
+> iptables -t nat -I PREROUTING -s 0/0 -d  64.152.73.0/24 -j DROP
+> iptables -t nat -I PREROUTING -s 0/0 -d  66.35.229.236 -j DROP
 
-		
----------------------------------
- ALL-NEW Yahoo! Messenger - all new features - even more fun!  
---0-838915268-1091259762=:71045
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Do you have both these sets of rules in your ruleset at the same time?
 
-<DIV>Hello,</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I'm quite new to netfilter and I'm using iptables for a short time and till now I'm loving it. But I have a question about the SRC and DST addresses.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I know you can filter on the source and destination addresses.&nbsp;On my box I receive a packet with the following addresses:</DIV>
-<DIV>SRC=62.234.65.26 DST=62.234.111.0</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>The strange thing is that both the addresses are not mine! I always thought that either the SRC or DST address must be the IP of my box or am I missing something. An other strange thing is that the DST ip address is a network address? Isn't this quite strange? A network address is not a computer so how to know where package is send to?</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Could anyone please explain these issues?</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thanx in advance,</DIV>
-<DIV>dee3lmo</DIV><p>
-		<hr size=1> <font size="2" face="Verdana, Arial, Helvetica, sans-serif"><a href="http://uk.rd.yahoo.com/evt=21626/*http://uk.messenger.yahoo.com"><strong><font face="Arial, Helvetica, sans-serif">ALL-NEW 
-Yahoo! Messenger</font></strong></a><font face="Arial, Helvetica, sans-serif"><strong> 
-- all new features - even more fun!</strong></font><strong><font color="#FF9900"> 
-</font></strong></font> 
---0-838915268-1091259762=:71045--
+If so, then packets which are DROPped in the PREROUTING chain will never make 
+it to the FORWARD chain (because they've been DROPped), therefore the FORWARD 
+rules will never see anything to DROP.
+
+Try changing both targets from DROP to LOG, and see if the packets go through 
+both chains as expected.
+
+Also, of the five rules you've listed, two are pointless, as the addresses 
+66.35.229.185 and 66.35.229.236 both fall within the first /24 range 
+specified and will therefore be caught by the first rule.
+
+If, on the other hand, you're saying that putting the rules above into 
+PREROUTING does DROP the packets, but removing them from PREROUTING and 
+putting them into FORWARD instead does not DROP the packets, then show us the 
+rest of your PREROUTING ruleset, as you may be changing the destination 
+address before the packets reach FORWARD?
+
+Regards,
+
+Antony.
+
+-- 
+I think, therefore I am.
+I'm pink, therefore I'm Spam.
+I drink, therefore I think I am.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
