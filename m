@@ -1,12 +1,13 @@
-From: "Mario Antonio" <dino@webjogger.net>
-Subject: Re: Newbie Question - starting iptables as a service
-Date: Thu, 17 Oct 2002 18:34:21 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Rules not taking effect
+Date: Fri, 18 Oct 2002 00:35:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <02b501c2762d$567c5570$13c01dd0@shadowfax>
-References: <000401c27622$cb705ee0$3864a8c0@discmail.com> <20021017212717.VXCL292.mta03-svc.ntlworld.com@there>
+Message-ID: <20021017233505.MZJE27697.mta05-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0210171625040.6045-100000@altaica.tigerknight.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0210171625040.6045-100000@altaica.tigerknight.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,21 +20,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Friday 18 October 2002 12:27 am, Tib wrote:
 
-I install iptables v1.2.7a, and I uninstall the old version through rpm -e
-iptables.
-It seems that it trashed my init.d/iptables script
+> I'm using 1.2.6a-5 for debian, using init.d scripts. The problem is that
+> when I write a rule, it does not take effect.
 
+Please explain this ?
 
-How can I start iptables as a service (linux 7.3)?
+> I have also found that a rule I had in place from earlier and I flushed it,
+> still worked even though iptables -t nat -L showed nothing.
 
-How can I make iptables to reload the rules?
+You mention -t nat specifically.
 
+You should be aware that existing connections which have been NATted bypass 
+the explicit rules in the nat table, in order to perform forward and reverse 
+NAT transparently, automatically and efficiently.
 
-Regards
+If your FORWARD chain (I'm assuming this is a routing firewall) contains a 
+rule to allow ESTABLISHED packets then further packets in a connection stream 
+will continue to pass through the firewall even if you remove the rule/s 
+which originally allowed the connection to get set up.
 
----
-[This e-mail was scanned for viruses by Webjogger's AntiVirus Protection System]
+> I've been told that the module ip_conntrack may have something to do with
+> this, but I cannot rmmod it because it's busy and insmod says it's already
+> there.
 
+What exactly are you trying to do ?   What rules are you trying to remove, or 
+what traffic are you trying to block ?
+
+Antony.
+
+-- 
+
+Most people are aware that the Universe is big.
+
+ - Paul Davies, Professor of Theoretical Physics
 
