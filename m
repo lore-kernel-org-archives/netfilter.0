@@ -1,8 +1,8 @@
 From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
 Subject: RE: samba and iptables
-Date: Fri, 17 Oct 2003 17:47:17 +0800
+Date: Fri, 17 Oct 2003 17:56:44 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8D5C@overlord.overturemedia.com>
+Message-ID: <F22386C3FEB012449238672E38ED61E70A8D5D@overlord.overturemedia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,18 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>, "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
+To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
 
-Yes.=20
-I seem to be able to make it work now.=20
-I'm still testing it then I will post here what I did to make it work.
+Here is what I did:
+190.200.5.51 - my computer
+190.200.5.235 - windows domain controller
 
-It all needed something like allow the windows domain controller to =
-reply back to the samba server.
+$IPTABLES -A INPUT -p tcp -s 190.200.5.51 --dport 137:139 -j ACCEPT
+$IPTABLES -A INPUT -p udp -s 190.200.5.51 --dport 137:139 -j ACCEPT
+$IPTABLES -A INPUT -p udp -s 190.200.5.235 --sport 137:139 -j ACCEPT
 
-Thanks again!
+I forgot to allow the windows domain controller to reply back to the =
+samba server.
 
+Thanks.
 
 fritz <www.mesedilla.com>
 ---
