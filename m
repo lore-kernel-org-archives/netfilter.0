@@ -1,14 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: ftp access problem
-Date: Sat, 24 Jul 2004 09:28:20 -0400
+From: adderek <adderek@polbox.com>
+Subject: Re: TTL target
+Date: Sat, 24 Jul 2004 15:36:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407240928.20309.JALaramie@Loudoun-Fairfax.com>
-References: <a0f69e504072403057b210342@mail.gmail.com> <a0f69e5040724044591804e0@mail.gmail.com> <200407241413.48571.Antony@Soft-Solutions.co.uk>
+Message-ID: <410265C6.4080100@polbox.com>
+References: <D5C9032B2B09C64EA2409D6214E91AC90511EB@asimail2.alphanumeric.com> <1090613367.28446.3.camel@dchws.tqmcube.com> <41024706.8060603@polbox.com> <200407241239.52659.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407241413.48571.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
+In-Reply-To: <200407241239.52659.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: NetFilter List <netfilter@lists.netfilter.org>
 
-On Saturday 24 July 2004 09:13, Antony Stone wrote:
-> On Saturday 24 July 2004 12:45 pm, Askar Ali Khan wrote:
-> > Hi Antony,
-> >
-> > On Sat, 24 Jul 2004 11:22:16 +0100, Antony Stone wrote:
-> > > I see you are doing NAT on this firewall.   Do you have the nat_ftp
-> > > support module loaded or compiled in to your kernel?
-> >
-> > #modprobe nat_ftp
-> >    modprobe: Can't locate module nat_ftp
->
-> Okay, that may not be the exact name of it - I don't use modules, so
-> perhaps someone else here can tell you the definitive name for the module?
+Antony Stone wrote:
+> What stops them doing the same thing with the TTL value in their packets, 
+> before they reach you?
+> 
+> Or just using a proxy which creates its own packets anyway?
+> 
+> Or using an SSH tunnel to forward the other traffic?
+> 
+> Or using a different O/S which sets a different initial TTL value than you're 
+> assuming, when it sends packets?
 
-Try using:
+Nothing. If they know what they are doing then there is no way to detect 
+or to stop such incidents. But people who have enough knowledge to do 
+something like this..... there are only few of them :)
 
-ip_tables
-iptable_nat
-ip_nat_ftp
-
-Jeff
+Only a couple people will know what is proxy and how to set it up.
+Only a few of them will know how to set up an SSH tunell and how to usae it.
+And people who know how to use TTL.... There will be only about 5 people 
+of a thousand....
 
