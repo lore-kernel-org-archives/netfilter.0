@@ -1,9 +1,8 @@
-From: "Leonardo Borda" <borda@netwall.com.br>
-Subject: link failover
-Date: Thu, 15 May 2003 15:07:31 -0300
+From: "Garcia Ruiz" <gar_ruiz@teleline.es>
+Subject: Kernel module iptable_drop
+Date: Thu, 15 May 2003 20:51:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IHEHKFMEMKMGFDMIAHCIKEKIDMAA.borda@netwall.com.br>
-Reply-To: <borda@netwall.com.br>
+Message-ID: <008701c31b13$2949d920$05001aac@breton1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,29 +18,16 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello aLL.
+I am trying to build a firewall with firewall builder. It makes a rule
+refered to the kernel iptable_drop module but in fact it doesn't exist in my
+box. I think that all modules refered to iptables are compiled as modules in
+my linux kernel. Does anyone know what the iptable_drop module is? I have
+iptables version 1.2.6a (maybe it is an old module that doesn't exist
+anymore).
 
-	We have two internet access one ADSL connection and another 256Mbps
-internet dedicated link.
+Regards,
 
-	We want to configure our firewall (iptables) to choose/detect and determine
-when one of that links goes down e automatically reasign another path to the
-internet. (like as a link backup).
-	I know that I can do it writing a script, but I think its not beautiful...
-:)
+Juan
 
-	I tried to find something on the web but the documents was related to HA
-(high availability) which is not my case, I want to have just one firewall
-doing the job.
-
-	Glad if you help!
-
-thanks Borda.
-
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.481 / Virus Database: 277 - Release Date: 13/5/2003
 
 
