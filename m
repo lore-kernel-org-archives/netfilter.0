@@ -1,12 +1,11 @@
-From: "Steve Jones" <sjones@ftdata.com>
-Subject: RE: NAT and DNS/NTP servers
-Date: Sun, 2 May 2004 09:49:12 -0400
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: icmp echo reply && FORWARD chain
+Date: Sun, 2 May 2004 15:24:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <79C037414A4B604CA73F5222570C6DFC7EC6@e2k3.ftdata.com>
+Message-ID: <006701c43051$39130ad0$68892090@grouse>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Andrew E. Mileski" <andrewm@isoar.ca>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-If you didn't just make a typo in the transcription of this, you may
-want to check your LAN side address.  Your LAN_NET in this is not the
-subnet that your LAN_IP is on..  I wonder if this is confusing your
-rules?
--Steve
+Hi all,
 
------Original Message-----
+My rules on a gateway linux box (PC2) are set as follows:
 
-LAN is a private network:
-   LAN_IFC=3Deth0
-   LAN_NET=3D192.168.0/24
-   LAN_IP=3D192.168.1.1
+Internet(PC1 and so on)-----------(eth0)-PC2-(eth1)-------------Internal
+networks(PC3 and so on...)
 
-WAN is the internet:
-   WAN_IFC=3Deth1
-   WAN_NET=3D209.217.118.0/29
-   WAN_IP=3D209.217.118.226
+iptables -F
+iptables -F -t nat
+iptables -I FORWARD -j QUEUE
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to global_ip
+iptables -t nat -A PREROUTING -i eth1 -j DNAT --to 192.168.0.2
+
+ICMP echo request packets from PC1 or PC3 to PC2 can be caught by the
+FORWARD chain queuing to userspace, however, ICMP echo reply (in response to
+ping request from PC2) packets from PC1 or PC3 to PC2 will be ignored by the
+FORWARD chain. Is this a reasonable phenomenon? Could anyone tell me the
+reasons? Thanks a lot in advance!
+
+Cheers,
+Jee
 
 
