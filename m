@@ -1,13 +1,11 @@
-From: Fallucchi Antonio <fallucch@csr.unibo.it>
-Subject: Re: ip_conntrack_max
-Date: Thu, 08 Jul 2004 19:02:56 +0200
+From: Payal Rathod <payalrathod@gmail.com>
+Subject: SNAT
+Date: Fri, 9 Jul 2004 09:27:08 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40ED7E40.60800@csr.unibo.it>
-References: <40ED161F.5070804@cisbic.com> <200407081152.42618.Antony@Soft-Solutions.co.uk> <40ED4865.7020208@cisbic.com> <200407081429.24492.Antony@Soft-Solutions.co.uk>
+Message-ID: <f51b72bc04070820577fd223df@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407081429.24492.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,58 +15,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi,
+While reading man page of iptables I stumbled in MASQUERADE section,
 
-> <>
-> This is difficult. I think we should start by asking "what do you mean 
-> by a
-> connection?" Remember that many web browsers, for example, will open 5-10
-> simultaneous connections in order to load all the elements of a web page.
-> DNS needs its own connections in order to do name lookups. Some 
-> connections
-> are long-term (eg: telnet, ssh - even when you're not typing, the 
-> connection
-> is still there), some are very transient (eg: http - once you have the 
-> page
-> displayed, there's no connection between your browser and the server 
-> until
-> you click on another hyperlink).
->
-Thancks for the instruction..
+| This  target  is only valid in the nat table, in the POSTROUTING chain.
+|  It should only be used with dynamically assigned  IP  (dialup)  connec-
+|  tions: if you have a static IP address, you should use the SNAT target.
 
-> <>Why do you want to limit connections per machine? What are you 
-> trying to
-> achieve?
->
-The problem are the P2P software that create any connection on the 
-conntrack..
-Because filter all p2p port is very difficult, I thought that to limit 
-the number of simultaneous connection
-is a gooa idea..
+Can someone explain please why this is not valid when I am using a
+permanent conneciton terminating at say eth0 and also a small example
+on how SNAT can be used in the place?
 
->That sounds fine.   Tell us if you get "connection tracking table full" errors 
->again.
->
->Regards,
->
->Antony.
->
->  
->
-Bye
-
-ps: it's ok the signature now?
-
--- 
- ---------------------------------------------------------------
-| |||||||    ||    |  Fallucchi Antonio Giuseppe  mat. 2282     |
-| ||        ||||    |      --> Live free() of die() <--         |
-| ||||     ||  ||    |        OpenSource philosophy             |
-| ||      ||||||||    |  Universita' di Bologna sede di Cesena  |
-| ||     ||      ||    |    Cdl di Scienze dell'Informazione    |
- ---------------------------------------------------------------
-
-
+Thanks a lot in advance.
+With warm regards,
+Payal
 
