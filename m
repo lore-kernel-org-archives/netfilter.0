@@ -1,68 +1,57 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Call for testing: patch-o-matic-ng
-Date: Mon, 22 Dec 2003 13:00:47 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20031222120047.GK5058@obroa-skai.de.gnumonks.org>
-References: <20031221122445.GC5058@obroa-skai.de.gnumonks.org> <1072086985.1031.7.camel@nienna.balabit>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: SMTP Routing Based On Recipient
+Date: Tue, 23 Dec 2003 06:37:33 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1072179452.2184.286.camel@grendel>
+References: <1072121282.10935.12.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nywXBoy70X0GaB8B"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1072086985.1031.7.camel@nienna.balabit>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1072121282.10935.12.camel@localhost.localdomain>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: KOVACS Krisztian <hidden@balabit.hu>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: aellis@saberlogic.com
+Cc: netfilter@lists.netfilter.org
+
+On Mon, 2003-12-22 at 14:28, Adam Ellis wrote:
+>
+> What I
+> am wondering is this - would it be possible to redirect SMTP to my Linux
+> server, use iptables to check that the recipient matches a valid user
+> from a list I'd supply, and, if so, route the message to the Exchange
+> server? 
+
+As others have mentioned, this is not an optimal choice. You *might* be
+able to hack things together using strings and tarpit, but it would be a
+kluge at best.
+
+A couple of other options:
+I use a combination of Sendmail, ClamAV, MimeDefang and Spamassassin to
+clean up all inbound e-mail before passing it off to my mail server. You
+can find a great tutorial on setting this up here:
+http://www.rudolphtire.com/mimedefang-howto/
+
+If you would rather get something that gives you a support contract, You
+might want to check out the CanIT Appliance:
+http://www.canit.ca/products.php
+
+Its pretty much the same setup I mention above with a few extra bells
+and whistles to make it easier to use. Of course you also have to pay
+for it, but it does come with support.
+
+HTH,
+C
 
 
---nywXBoy70X0GaB8B
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ 
 
-On Mon, Dec 22, 2003 at 10:56:26AM +0100, KOVACS Krisztian wrote:
->   I've tried it, and had some problems with it. Namely, the following
-> error message (Debian woody and sid, perl 5.6.1 and 5.8.2):
->=20
-> hidden@big:~/patch-o-matic-ng$ ./runme=20
-> Examining kernel in /usr/src/linux-2.4.22-tproxy113
-> Can't bless non-reference value at /usr/share/perl/5.6.1/Term/Cap.pm line=
- 136.
 
-thanks, I'll apply your fix.
-
->  Regards,
->    Krisztian KOVACS
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---nywXBoy70X0GaB8B
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/5tzvXaXGVTD0i/8RAo10AJwLuEZoeK+G7oR0XUjU20+zLCM8lQCfWoxT
-IbWUwPRe2sEJzGLjSdoEkvo=
-=a4qt
------END PGP SIGNATURE-----
-
---nywXBoy70X0GaB8B--
 
