@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Dual Internet Connection
-Date: Mon, 1 Jul 2002 08:52:20 +0100
+From: =?ISO-8859-1?Q?Z=E9=20Lu=EDs?= <zeluis@objetivo-americana.com.br>
+Subject: iptables - edition with browser
+Date: Mon, 01 Jul 2002 08:10:00 -0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020701075222.ROAE19225.mta07-svc.ntlworld.com@there>
-References: <NEBBKAFNMLLNBNGMMLLLGEJNCJAA.dcrooks@succeed.net>
+Message-ID: <3D203888.30506@objetivo-americana.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <NEBBKAFNMLLNBNGMMLLLGEJNCJAA.dcrooks@succeed.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,34 +15,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.samba.org
 
-On Monday 01 July 2002 12:45 am, Dan Crooks wrote:
+hi everybody,
 
-> I have two internet connections, one DSL and one Cable.  I want to run both
-> connections to one machine using seperate NIC's.  Can I apply the same
-> rules to both interfaces?  I can't see a problem with incoming connections
-> but not sure about the outgoing.
->
-> I want to be able to select what connection each computer on my LAN uses
-> for it's internet connection by changing their gateway.  I'm just not sure
-> how to implement the firewall.
+I have a problem with iptables. I use one script that it automatically 
+catches the doors of an archive text and opens or it closes the doors 
+that are in this archive. It functions well.
+I have an interface web made in jsp that it edits this archive text. 
+When I edit this archive with browser, iptables I report errors similar 
+to ("invalid dest port"). I use a textarea to edit the archive. Browser 
+can be sending characters that iptables does not recognize?
 
-You will find this a *little* tricky using a single firewall - it would be 
-easier to use two firewalls, possibly with 3 NICs each - internal, external, 
-and to the other firewall, but if you want to do it on one machine, you'll 
-need to learn about iproute2 and special routing table methods for specifying 
-different external routes depending on the source address from your internal 
-machines.
+Thanks a lot.
 
-The netfilter rules are no problem - just specify whatever you want and they 
-will do their job - the less simple part is getting the underlying routing on 
-the machine to send the packets out where you want them to go...
-
-Hope this helps,
-
- 
-
-Antony.
 
