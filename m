@@ -1,14 +1,14 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: IP Alias with iptables
-Date: Mon, 19 Apr 2004 16:12:39 +0000
+Date: Mon, 19 Apr 2004 22:31:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404191612.39869.Alistair@nerdnet.ca>
-References: <EMEKLOMJOPNJPAFKHEDJGECHCDAA.rhaces_chistes@yahoo.com.mx> <200404191625.45747.Antony@Soft-Solutions.co.uk>
+Message-ID: <200404192231.42723.Antony@Soft-Solutions.co.uk>
+References: <EMEKLOMJOPNJPAFKHEDJGECHCDAA.rhaces_chistes@yahoo.com.mx> <200404191625.45747.Antony@Soft-Solutions.co.uk> <200404191612.39869.Alistair@nerdnet.ca>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404191625.45747.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
+In-Reply-To: <200404191612.39869.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,42 +21,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On April 19, 2004 03:25 pm, Antony Stone wrote:
-> On Monday 19 April 2004 5:07 pm, Rodrigo Haces wrote:
-> > > > I have only one network adapter in my Server, but i need to have 2
-> > > > different networks, 192.168.1.0 to the MAC addresses i know and
-> > > > 192.168.0.0 to the MAC addresses i don't know
-> > >
-< < Much snippage for brevity >>
+On Monday 19 April 2004 5:12 pm, Alistair Tonner wrote:
 
-
-> on which network range you want to do what.
->
-> > > > if not, is there a way to create an eth0 and eth1 witn the same
-> > > > adapter?
-> > >
-> > > No.   It's a simple (and cheap) job to add another ethernet card,
-> > > though.
+> On April 19, 2004 03:25 pm, Antony Stone wrote:
 > >
-> > No PCI slots available... :(
+> > I suggest another firewall then - trying to set up a firewall with only
+> > one ethernet interface is a poor enough solution (from a security point
+> > of view) in the first place, but if there is wireless access involved as
+> > well then I would not even consider it.
 >
-> I suggest another firewall then - trying to set up a firewall with only one
-> ethernet interface is a poor enough solution (from a security point of
-> view) in the first place, but if there is wireless access involved as well
-> then I would not even consider it.
+> 	Thanks Antony  -- again you have expressed precisely what I would have
+> said -- succinctly and clearly.
 >
->
-	Thanks Antony  -- again you have expressed precisely what I would have said 
--- succinctly and clearly.
+> 	Aliased (stacked) interfaces ARE NOT SECURE.  Period.
 
-	Aliased (stacked) interfaces ARE NOT SECURE.  Period.
+Indeed.   I would like to see this emphasised more in the netfilter howtos & 
+tutorials.   Multiple addresses on one interface are all very well, so long 
+as they exist within the same subnet; however anyone trying to use multiple 
+*network* addresses on one physical interface is defeating their security by 
+ignoring what the different OSI network layers mean.
 
-	(And Hubs don't help)
+Even someone who thinks "I have a switch; my packets cannot be sniffed" simply 
+hasn't investigated Dug Song's (and similar) network tools sufficiently.
 
-	Alistair Tonner
+Regards,
 
+Antony.
 
- Regards,
->
-> Antony.
+-- 
+Having been asked for a reference for this man,
+I can confirm that you will be very lucky indeed if you can get him to work 
+for you.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
