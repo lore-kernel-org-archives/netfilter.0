@@ -1,13 +1,15 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: snooping port 25 packets
-Date: Mon, 04 Oct 2004 21:21:48 -0400
+From: Clist <clist@uah.es>
+Subject: Re: LOG Rate Limit Problem
+Date: Tue, 5 Oct 2004 12:25:34 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096939308.1787.20.camel@wolfpack.ljm.dom>
-References: <4161C991.1070705@mortonfarms.com>
+Message-ID: <200410051225.34091.clist@uah.es>
+References: <Pine.LNX.4.58.0410042052580.10057@ris713.UniXpress.com>
+Reply-To: clist@uah.es
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4161C991.1070705@mortonfarms.com>
+In-Reply-To: <Pine.LNX.4.58.0410042052580.10057@ris713.UniXpress.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +19,42 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2004-10-04 at 18:07, Doug Yeager wrote:
-> i would like to use netfilter to snoop SMTP packets on my firewall.
-> has anybody done this?  is it possible?
-> i was leaning in the direction of trying to use the QUEUE target for 
-> user space processing.....but i'm not sure if that is the way to go.
+duplicate the rule that limits, first log and then drop with the same=20
+limitation (2/s).=20
+I use this setup to limit syns logging them and dropping them and it runs.
 
-the QUEUE target is the way to go if you need to do custom processing to
-make the accept/drop decision; or if you want to modify & reinsert the
-packet into the stream.
+jumping to LOG doesnt ACCEPT de packet as i understand...
 
-> once i send the packet to the QUEUE target, how do i put it back on the 
-> wire?
-> what i really want is a copy of each packet to port 25 sent to a user 
-> space program.
 
-if you just need to capture packets, you can use any bpf reader to do it
-(tcpdump, snort, ethereal).
+El Martes, 5 de Octubre de 2004 03:04, Lucky Leavell escribi=F3:
+> iptables v1.2.8
+> OS: SuSE 9.1
+>
+> After reading several references here on rate limiting logging I tried the
+> following short chain which was intended to log a packet subject to the
+> rate limit and then drop it unconditionally:
+>
+> -A LogDrop  -m limit --limit 2/s -j LOG --log-prefix "ICMP:Drop "
+> -A LogDrop -physdev --physdev-in eth0 -j DROP
+> -A LogDrop -physdev --physdev-in eth1 -j DROP
+>
+> However, the first statement not only logged the packets subject to the
+> rate limit but also acted as an implicit ACCEPT.  My understanding was
+> that the logging should take place but then the packets should be dropped
+> unconditionally by one of the following DROPs. When the LOG statement was
+> commented out, the packets were dropped as desired.
+>
+> I have reread my documentation and still do not see where my mistake is.
+> Could someone please enlighten my understanding>
+>
+> Thank you,
+> Lucky Leavell
 
-not 100% sure what you looking to do, but snort inline
-(http://snort-inline.sourceforge.net/) may be of some use to you as
-well.
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
-
+=2D-=20
+=2D------------------------------------------------
+Clister UAH
+=2D------------------------------------------------
 
