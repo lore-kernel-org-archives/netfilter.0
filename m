@@ -1,14 +1,14 @@
-From: iansolo <iansolo.netfilter@betisgroup.com>
-Subject: Re: ftp nat MAX PORTS
-Date: Tue, 08 Feb 2005 14:54:47 +0100
-Message-ID: <4208C4A7.3080208@betisgroup.com>
-References: <420100AF.1040105@betisgroup.com>
-	<bd35181c05020211473cb89b35@mail.gmail.com>
-	<4201D91A.5030500@betisgroup.com>
-	<200502081011.46026.luismnieto@gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Port 25
+Date: Tue, 08 Feb 2005 09:10:25 -0500
+Message-ID: <1107871825.4399.7.camel@hubcap.ljm.dom>
+References: <Pine.LNX.4.05.10502071325260.15692-100000@darkstar.sysinfo.com>
+	<1107854056.17398.1.camel@nostromo.bgsecm.com>
+	<1107868554.4399.4.camel@hubcap.ljm.dom>
+	<1107870748.13418.17.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <200502081011.46026.luismnieto@gmail.com>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1107870748.13418.17.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,29 +19,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Luis Nieto <luismnieto@gmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Ok, but my problem is redirect all from port 9000 of external=20
-interface(of fw) to same port of ftpserver.
+On Tue, 2005-02-08 at 08:52, Jose Maria Lopez wrote:
+> I see your point, but just googling a bit:
+> 
+> http://www.chiark.greenend.org.uk/~peterb/network/drop-vs-reject
+> 
+> so things are maybe somewhat more complex.
 
-$IPTABLES -t nat -A PREROUTING -p tcp -d $EXT_LAN_FW --dport 9000 -j=20
-DNAT --to-destination $IP_FTPSERVER:9000
+i think it's really a matter of opinion.  i happen to not agree with the
+author of the link you provided.  that doesn't make me right, though.
 
-But this don't work with ftp flow...
+-j
 
-Luis Nieto wrote:
-> El Jue 03 Feb 2005 04:56, escribi=F3:
-> $IPTABLES -t nat -A PREROUTING -p tcp -d $EXT_LAN_FW --dport 21 -j DNAT=20
-> --to-destination $IP_FTPSERVER:9000
-> =20
-> In this way, all the requirements for FTP connections that arrives to you=
-r=20
-> extern interface should be redirected to $IP_FTPSERVER:9000
->=20
->=20
-> ________ Information from NOD32 ________
-> This message was checked by NOD32 Antivirus System for Linux Mail Server.
-> http://www.nod32.com
+--
+"Be careful when we capture him! We cannot claim the reward unless
+ we have 51% of the carcass"
+	--The Simpsons
 
 
