@@ -1,10 +1,13 @@
-From: saravanan sakthi <lxsara@yahoo.com>
-Subject: how to block files with specific extensions
-Date: Fri, 6 Sep 2002 03:04:10 -0700 (PDT)
+From: "Kristian F. Hansen" <kribba@online.no>
+Subject: Active mode FTP
+Date: Fri, 6 Sep 2002 12:19:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020906100410.27681.qmail@web12902.mail.yahoo.com>
+Message-ID: <20020906121914.5da2babe.kribba@online.no>
+References: <200209050852.g858qoL9024510@letterbox.scut.edu.cn>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200209050852.g858qoL9024510@letterbox.scut.edu.cn>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,21 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-Dear friend,
- iam usind rc.firewall for NATing. This Linux box acts
-as a gateway for my client systems to connect to the
-internet. now here i want to block files with certain
-extensions passing to my client machines. please help
-me ...
+Some weeks ago i tried to get help here with my problem, but still there is no solution to this problem so here i go again. 
 
-Regards,
-Saravanan
+I have a NAT/Gateway box connected to the internet. Behind that box i've got 3 computers. When i try to use actice mode ftp (client side) behind the NAT box it doesn't work, only passive mode seems to work. But, from the NAT box i can use client side active ftp. This is quite annyoing and i would preciate any help....my iptables script can be found at: 
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Finance - Get real-time stock quotes
-http://finance.yahoo.com
+folk.uio.no/kristfh/firewallScript.txt
+
+
+
+
+------------------
+
+
+Mvh
+Kristian F. Hansen
+
+
+------------------
+
 
