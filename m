@@ -1,13 +1,12 @@
-From: Esteban Ribicic <eribicic@sinectis.com>
-Subject: Re: Traffic limitation with iptables
-Date: Tue, 22 Jul 2003 19:16:25 -0300
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Filtering problem
+Date: Wed, 23 Jul 2003 08:36:38 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030722191625.480036d9.eribicic@sinectis.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15BF6B@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0192C5@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15BF6B@wardrive.citadelcomputer.com.au>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +17,206 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>
-Cc: epv_xemul@mail.ru, netfilter@lists.netfilter.org
+To: "Gonzalez, Federico" <fgonzalez@goyaike.com>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-that would not be shapping...ass dropping/rejecting packets implicates
-much more yhing under tcp/ip..
+What you need to do is:
 
-maybe lartc.org may help too..(this is not the mailing-list i think)
-fix me if im wrong
-Esteban
+1. DNAT the external IP address to the internal IP address when it's =
+comming from the internal NIC.=20
+2. SNAT internal clients to the EXTernal IP address.
+
+I use this method with our websites which are held internally..
+
+EXTDEV=3D"eth0"
+INTDEV=3D"eth1"
+EXTWEB=3D"w.x.y.z"
+INTWEB=3D"10.0.0.9"
+INTNET=3D"10.0.0.0/24"
+
+iptables -A PREROUTING -t nat -p tcp -d $EXTWEB --dport 80 -j DNAT --to =
+$INTWEB
+iptables -A POSTROUTING -t nat -p tcp -s $INTNET -d $EXTWEB --dport 80 =
+-j SNAT --to 10.0.0.254 #Firewall IP
+
+well, something like that.. (in a rush ;) )
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+=20
+
+-----Original Message-----
+From: Gonzalez, Federico [mailto:fgonzalez@goyaike.com]
+Sent: Wednesday, July 23, 2003 4:58 AM
+To: Netfilter Mailing List
+Subject: Filtering problem
 
 
-On Wed, 23 Jul 2003 08:07:40 +1000
-"George Vieira" <georgev@citadelcomputer.com.au> wrote:
+Hello all,
 
-> Use the Quota patch and it'll limit the rule by itself..			
-> 
-> Thanks,
-> ____________________________________________
-> George Vieira
-> Systems Manager
-> georgev@citadelcomputer.com.au
-> 
-> Citadel Computer Systems Pty Ltd
-> http://www.citadelcomputer.com.au
-> 
-> 
-> 
-> -----Original Message-----
-> From: Xemul [mailto:epv_xemul@mail.ru]
-> Sent: Wednesday, July 23, 2003 2:09 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Traffic limitation with iptables
-> 
-> 
-> Hi.
-> I wanna solve such a problem:
-> When I see that byte counter on some chain reaches or exceedes any fixed
-> value - then IMMEDIATELY insert into that cahin new first rule (e.g. -j
-> DROP) or delete some rules from any other chain. Or more abstract - how
-> can can discover that byte counter is higher than smth without
-> "polling" chains?
-> 
-> Sorry for sending such a mail into announce, developers and user
-> maillists but I need help as soon as possible. :)
-> 
-> 
+   I have just installed the IPTABLES 1.2.8 on linux red hat 7.2,
+Kernel 2.4.21. Everything works fine except for one problem:
+
+I have a firewall as the entrance point to my network, it has two
+interfaces eth0 pointing to the internet, static IP and eth1 pointig to
+the internal network.
+
+the following URL http://www.mycompany.com points to the firewall IP
+port 80, it is DNATed to the 10.0.0.9:80, and it's working fine.
+
+when i try tp access the webserver from a PC in the internal network
+using the http://www.mycompany.com url , it doesnt work because the
+firewall receives the request and forward it to the webserver DNATing
+the packet, but the webserver sees the request comming not from the
+firewall but from a PC in the internal network, so it sends the response
+to that PC and when that PC receives the response (the ACK to the SYN)
+it drops the packet because it didn't send a SYN to that machine.
+
+I tried to SNAT the packet in the postrounting but it is not working.
+
+Any idea about can i do ?
+
+Thanks in advance.
+
+My script is :
+
+IPTABLES=3D/sbin/iptables
+#IPTABLES=3D/usr/local/sbin/iptables
+DEPMOD=3D/sbin/depmod
+MODPROBE=3D/sbin/modprobe
+
+
+EXTIF=3D"eth0"
+INTIF=3D"eth1"
+EXTIP=3D"200.X.X.X"
+INTIP=3D"10.0.0.11"
+
+echo "   External Interface:  $EXTIF"
+echo "   Internal Interface:  $INTIF"
+
+$DEPMOD -a
+
+$MODPROBE ip_tables
+
+echo -en "ip_conntrack, "
+$MODPROBE ip_conntrack
+
+echo -en "iptable_nat, "
+$MODPROBE iptable_nat
+
+echo -e "   Done loading modules.\n"
+
+echo "   Enabling forwarding.."
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+#Direcciones IP
+EXCHANGE=3D"10.0.0.2"
+PROXY=3D"10.0.0.6"
+WEBSERVER=3D"10.0.0.9"
+PC_FGONZA=3D"10.0.0.30"
+
+echo "   Clearing any existing rules and setting default policy.."
+$IPTABLES -P INPUT DROP
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT DROP
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -t nat -F
+
+#Habilito el Logging
+
+#Libero la interface interna
+$IPTABLES -A INPUT  -i lo -j ACCEPT
+$IPTABLES -A OUTPUT -o lo -j ACCEPT
+
+#Habilito el ping
+$IPTABLES -A INPUT   -p icmp -j ACCEPT
+$IPTABLES -A OUTPUT  -p icmp -j ACCEPT
+$IPTABLES -A FORWARD -p icmp -j ACCEPT
+
+#Habilito Salir desde esta maquina
+$IPTABLES -A OUTPUT -o $INTIF -s $INTIP -d 10.0.0.0/24 -j ACCEPT
+$IPTABLES -A OUTPUT -o $INTIF -s $EXTIP -d 10.0.0.0/24 -j ACCEPT
+
+$IPTABLES -A INPUT -i $INTIF -d $INTIP -j ACCEPT
+
+echo "Habilito el servicio Telnet desde la red interna"
+$IPTABLES -A INPUT -i $INTIF -p tcp --dport 23 -j ACCEPT
+$IPTABLES -A OUTPUT -o $INTIF -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+
+$IPTABLES -A FORWARD -i $INTIF -o $INTIF -j ACCEPT
+
+#Salida directa a Inet.
+OUTIP=3D"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 =
+25
+\
+26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41"
+for i in $OUTIP
+do
+  $IPTABLES -A FORWARD -i $INTIF -s 10.0.0.$i -j ACCEPT
+done
+
+echo "  Blocking invalid ICMP packets "
+$IPTABLES -A INPUT   -i $EXTIF -m state -p icmp --state INVALID -j DROP
+$IPTABLES -A FORWARD -i $EXTIF -m state -p icmp --state INVALID -j DROP
+$IPTABLES -A OUTPUT  -o $EXTIF -m state -p icmp --state INVALID -j DROP
+$IPTABLES -A FORWARD -o $EXTIF -m state -p icmp --state INVALID -j DROP
+
+echo " Anti spoofing "
+
+$IPTABLES -A INPUT -i $EXTIF -s 10.0.0.0/8  -j DROP
+$IPTABLES -A INPUT -i $EXTIF -s 127.0.0.0/8 -j DROP
+
+echo "   Enabling SNAT (MASQUERADE) functionality on $EXTIF"
+
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j SNAT --to $EXTIP
+
+#F.Gonzalez
+$IPTABLES -A FORWARD -m state --state NEW -d $PC_FGONZA -j ACCEPT
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 8080 \
+          -j DNAT --to $PC_FGONZA:80
+
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 8000 \
+          -j DNAT --to $PC_FGONZA:8080
+
+#Web server
+$IPTABLES -A FORWARD -m state --state NEW -d $WEBSERVER -j ACCEPT
+#  WWW
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 80 \
+          -j DNAT --to $WEBSERVER:80
+# HTTPS
+
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 443 \
+          -j DNAT --to $WEBSERVER:443
+
+#Mail server
+$IPTABLES -A FORWARD -m state --state NEW -d $EXCHANGE -j ACCEPT
+#  SMTP
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 25 \
+          -j DNAT --to $EXCHANGE:25
+#  IMAP
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 143 \
+          -j DNAT --to $EXCHANGE:143
+#  POP3
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 110 \
+          -j DNAT --to $EXCHANGE:110
+
+
+$IPTABLES -A PREROUTING -t nat -p udp -d $EXTIP --dport 7000 \
+          -j DNAT --to 10.0.0.4:27960
+
+$IPTABLES -A INPUT   -j DROP
+$IPTABLES -A OUTPUT  -j DROP
+$IPTABLES -A FORWARD -j DROP
+
+
 
