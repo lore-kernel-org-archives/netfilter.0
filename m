@@ -1,11 +1,14 @@
-From: Jon Colverson <netfilter@vcxz.co.uk>
-Subject: Problem with two subnets NATed onto a third subnet on one box.
-Date: Thu, 29 Apr 2004 03:00:57 +0100
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: default policy for nat/mangle table
+Date: Wed, 28 Apr 2004 21:01:34 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <409061D9.6040000@vcxz.co.uk>
+Message-ID: <200404290401.i3T41c2v007274@server5.bandwidthco.com>
+References: <20040428030406.4153.h011.c009.wm@mail.canada.com.criticalpath.net>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040428030406.4153.h011.c009.wm@mail.canada.com.criticalpath.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,81 +18,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: swissguy@canada.com, netfilter@lists.netfilter.org
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of
+swissguy@canada.com
+Sent: Wednesday, April 28, 2004 3:04 AM
 To: netfilter@lists.netfilter.org
+Subject: default policy for nat/mangle table
 
-Hello. Apologies in advance for the length of this mail.
+hello
 
-I'm attempting to set up an environment which I can use to test some 
-NAT-traversal software on one machine. I'm using Linux 2.6.5 and 
-iptables 1.2.9.
+i have a pretty basic problem, but i dont understand it really os debian
+kernel 2.4.18-bf2.4 iptables version 1.2.6a-5
 
-I start by adding four addresses to an Ethernet device:
+i wrote the following testscript:
+#!/bin/bash
 
-  ip addr add 10.0.1.1/24 dev eth0
-  ip addr add 10.0.2.1/24 dev eth0
-  ip addr add 10.0.3.1/24 dev eth0
-  ip addr add 10.0.3.2/24 dev eth0
+IPT="/sbin/iptables"
 
-10.0.1.0/24 and 10.0.2.0/24 are the pretend private networks. 
-10.0.3.0/24 is the pretend public Internet and 10.0.3.1 and 10.0.3.2 are 
-the addresses of the NATs for 10.0.1.0 and 10.0.2.0 respectively.
 
-I then set up the NAT as follows:
+$IPT -F
+$IPT -t nat -F
+$IPT -t mangle -F
 
-  iptables -t nat -A POSTROUTING -s 10.0.1.0/24 -d 10.0.1.0/24 -j ACCEPT
-  iptables -t nat -A POSTROUTING -s 10.0.1.0/24 -j SNAT --to 10.0.3.1
+$IPT -P INPUT   ACCEPT
+$IPT -P OUTPUT  ACCEPT
+$IPT -P FORWARD ACCEPT
 
-  iptables -t nat -A POSTROUTING -s 10.0.2.0/24 -d 10.0.2.0/24 -j ACCEPT
-  iptables -t nat -A POSTROUTING -s 10.0.2.0/24 -j SNAT --to 10.0.3.2
+$IPT -t nat -P PREROUTING  DROP
+$IPT -t nat -P OUTPUT      DROP
+$IPT -t nat -P POSTROUTING DROP
 
-This seems to work as expected. I can run a server with:
 
-  ip addr add 10.0.3.5/24 dev eth0
-  nc -u -l -s 10.0.3.5 -p 2345
+$IPT -t mangle -P PREROUTING  DROP
+$IPT -t mangle -P INPUT       DROP
+$IPT -t mangle -P FORWARD     DROP
+$IPT -t mangle -P POSTROUTING DROP
+$IPT -t mangle -P OUTPUT      DROP
 
-and connect to it with:
 
-  nc -u -s 10.0.1.1 10.0.3.5 2345
+$IPT --delete-chain
+$IPT -t nat --delete-chain
+$IPT -t mangle --delete-chain
 
-and the packets are NATed through 10.0.3.1. Now, what I'm really trying 
-to do is to establish UDP communications between the hosts 10.0.1.1 and 
-10.0.2.1 using the "UDP hole punching" technique that's described in 
-section 3.3 of the following Internet Draft:
+when i boot and all the policies are in all 3 tables accept i can do what i
+want. now i set the default policy from nat and mangle to drop (there are no
+rules)
 
-  http://midcom-p2p.sourceforge.net/draft-ford-midcom-p2p-01.txt
+but somehow it has influence on my filter table, i cant ping or access with
+ssh.
 
-I use the following to try to send the packets between the two:
+now i was thinking that maybe every packet goes through mangle prerouting
+before it comes to filter table and thats the reason for. but i am not sure
+and it would be nice to understand whats going on or what i am doing wrong
 
-  echo | nc -u -s 10.0.1.1 -p 2345 10.0.3.2 2345
-  echo | nc -u -s 10.0.2.1 -p 2345 10.0.3.1 2345
+also in the book i use (linux firewall by r.ziegler) the example contains
+also to set default to drop on ALL
+3 tables.
 
-This produces the following entries in /proc/net/ip_conntrack (Sometimes 
-the source ports are translated, but on this occasion they were not):
+thanks for you help
+Francis
 
-  udp      17 2 src=10.0.1.1 dst=10.0.3.2 sport=2345 dport=2345 
-[UNREPLIED] src=10.0.3.2 dst=10.0.3.1 sport=2345 dport=2345 use=1
-  udp      17 1 src=10.0.2.1 dst=10.0.3.1 sport=2345 dport=2345 
-[UNREPLIED] src=10.0.3.1 dst=10.0.3.2 sport=2345 dport=2345 use=1
+I'm a little late getting to this so you may have a better answer than what
+I'm about to give you. But . . . Setting you NAT table chains to default
+DROP would be enough to give anyone nightmares. I set all my default FILTER
+chains to DROP, MANGLE to ACCEPT, and NAT to ACCEPT. Never done me wrong
+yet. Let us know if you need more help.
 
-and the following traffic is observed by tcpdump -i lo:
-
-  20:29:16.588121 10.0.3.2.2345 > 10.0.3.1.2345: udp 1 (DF)
-  20:29:16.588169 10.0.3.1 > 10.0.3.2: icmp: 10.0.3.1 udp port 2345 
-unreachable [tos 0xc0]
-  20:29:18.484435 10.0.3.1.2345 > 10.0.3.2.2345: udp 1 (DF)
-  20:29:18.484482 10.0.3.2 > 10.0.3.1: icmp: 10.0.3.2 udp port 2345 
-unreachable [tos 0xc0]
-
-The first UDP packet creates the second entry in the connection-tracking 
-table. The second UDP packet seems to match the expectations of the 
-connection but it remains UNREPLIED. The second UDP packet doesn't make 
-it to its intended destination (as you can tell by the second icmp port 
-unreachable packet).
-
-Thanks for any help.
-
--- 
-Jon
 
 
