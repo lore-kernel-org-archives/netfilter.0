@@ -1,11 +1,13 @@
-From: "Jet" <yenjet.chan@eglobal.com.my>
-Subject: NAT only - No connection tracking
-Date: Mon, 11 Nov 2002 18:56:51 +0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: NAT only - No connection tracking
+Date: Mon, 11 Nov 2002 11:06:51 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ff01c28971$0a0429f0$0bc8c80a@dolphin>
+Message-ID: <200211111106.gABB6ue27802@vulcan.rissington.net>
+References: <00f701c28970$f3587bc0$0bc8c80a@dolphin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <00f701c28970$f3587bc0$0bc8c80a@dolphin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,17 +20,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: "netfilter@lists" <netfilter@lists.netfilter.org>
 
-Hi all,
+On Monday 11 November 2002 10:56 am, yenjet.chan@eglobal.com.my wrote:
 
-How can I make my iptable to do just NAT, no connection tracking?
+> Hi all,
+>
+> How can I make my iptable to do just NAT, no connection tracking?
 
-No matter how hard I tried to configure netfilter to load only iptable_nat,
-it will load ip_conntrack too.
+Yes - just don't compile connection tracking support in, and don't try to use 
+the -m state match.
 
-Basically, I want to make my iptable to become a NAT device without stateful
-inspection.
-It this possible?
+> No matter how hard I tried to configure netfilter to load only iptable_nat,
+> it will load ip_conntrack too.
 
-.//Jet
+I suggest you recompile the kernel without building the conntrack module.
 
+> Basically, I want to make my iptable to become a NAT device without
+> stateful inspection.
+
+You do realise that your NAT rules will become a lot more complicated because 
+of this, don't you ?
+
+Antony.
+
+-- 
+
+Having been asked to provide a reference for this man,
+I can confidently state that you will be very lucky indeed
+if you can get him to work for you.
 
