@@ -1,11 +1,10 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: WinMX:
-Date: Wed, 05 Jun 2002 14:57:58 -0700
+From: "Nathan Cassano" <nathan@cjhunter.com>
+Subject: What ICMP packets does state RELATED allow?
+Date: Wed, 5 Jun 2002 15:07:20 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPMEGCCFAA.stewart.thompson@shaw.ca>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <012801c20cdd$5cb24d50$2925ae3f@amos>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -19,16 +18,11 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi All:
 
-        I am having some problems with WinMX through a iptables firewall.
-It doesn't seem to like the way WinMX uses UDP packets. Is there a helper
-module for this, or can anyone suggest some rules. WinMX is running on
-multiple machines behind the firewall. So, I just can't forward the specific
-ports to a particular machine. Thanks.
-
-Stu.........
-
-
+Hi NetFilter Gurus,
+	I have heard that ip_conntrack will allow ICMP packets pass that
+are related to an existing connection. My question is what specific
+related ICMP packets does conntrack allow for a given connection? Does
+it allow Source Quench (--icmp-type 4) or Redirects (--icmp-type 5)? 
 
 
