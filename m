@@ -1,10 +1,11 @@
-From: Kevin Dwyer <Kevin.Dwyer@algx.net>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: ipconntract
-Date: Wed, 16 Oct 2002 14:41:41 -0400 (EDT)
+Date: 16 Oct 2002 20:51:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.40.0210161441120.11823-100000@klepto.security.algx.lan>
+Message-ID: <1034794267.13389.1.camel@elendil>
 References: <20021016182728.12947.qmail@web14003.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20021016182728.12947.qmail@web14003.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,25 +17,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: alex leeken <leeken_alex@yahoo.com>
 Cc: netfilter@lists.samba.org
 
-On Wed, 16 Oct 2002, alex leeken transmitted the following:
-
+Le mer 16/10/2002 =E0 20:27, alex leeken a =E9crit :
 > How can i delete all state enteries
 > from state table?
 
-rm /proc/net/ip_conntrack
+You just can't, unless you reboot.
 
-;)
+nfnetlink/ctnetlink patch from patch-o-matic aims to make userspace
+interactions with state table possible, but I have no idea about its
+current status.
 
-/* Kevin Dwyer                                Allegiance Internet */
-/* network security engineer                   Commerce Center II */
-/* email: Kevin.Dwyer@algx.net                7601 Ora Glen Drive */
-/* phone: 240-616-2075                        Greenbelt, MD 20770 */
-/*      >++++++++++[<++++++++++>-]<.+++++.----.[-]++++++++++.     */
-
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curit=
+=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
