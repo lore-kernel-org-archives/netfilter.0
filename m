@@ -1,11 +1,13 @@
-From: "Robert Allmeroth" <netfilter@epygi.de>
-Subject: How fast is a rule append ?
-Date: Fri, 27 Jun 2003 16:12:18 +0200
+From: Johnoel Ancheta <johnoel@hawaii.edu>
+Subject: Re: RE: PPTP server behind firewall
+Date: Fri, 27 Jun 2003 11:48:39 -1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <PIEIIGGHCLEGAPAHFMDOMEFNCOAA.netfilter@epygi.de>
+Message-ID: <7056c36feb11.6feb117056c3@hawaii.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-language: en
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,64 +17,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="macroman"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hello :)
+> > i building a floppy router.  it works except for the vpn
+> > support.  i've had this working before using Brian Kuschak
+> > pptp kernel patches a long time ago.  since then i lost my notes.
+> 
+> Are you aware that Brian Kuschak's patch is obsolete as of 2.4.19 
+> or so?
+> The equivalent patch is known as the pptp-conntrack-nat patch and is
+> bundled in the netfilter patch-o-matic utility.
+i used Kuschak's patch for kernel 2.4.12or15 (i can't remember) and it
+worked.  i spent about a week trying to get the patch-o-matic-20030107
+working.  i watched packets fly and were unable to make the connection.
+so, i gave up and decided to use 2.4.19 with Brian Kuschak's patch and
+iptables-1.2.8.  in one hour everything worked.
+
+i think i patched linux-2.4.20 correctly since i can see these files in
+the kernel src.
++++
+linuxppc-020802-newnat14-h323/include/linux/netfilter_ipv4/ip_conntrack_pptp.h
+     Fri Aug  2 14:37:28 2002
++++
+linuxppc-020802-newnat14-h323/include/linux/netfilter_ipv4/ip_conntrack_proto_gre.h
+Fri Aug  2 14:37:28 2002
++++
+linux-2.4.18-pptp3.01//include/linux/netfilter_ipv4/ip_conntrack_tuple.h
+   Mon Apr  8 12:42:36 2002
++++
+linuxppc-020802-newnat14-h323/include/linux/netfilter_ipv4/ip_nat_pptp.h
+   Fri Aug  2 14:37:28 2002
++++ linux-2.4.18-pptp3.01//net/ipv4/netfilter/ip_conntrack_core.c      
+Mon Apr  8 13:30:11 2002
++++ linux-2.4.18-pptp3.01//net/ipv4/netfilter/ip_conntrack_pptp.c      
+Mon Apr  8 16:40:37 2002
++++ linux-2.4.18-pptp3.01//net/ipv4/netfilter/ip_conntrack_pptp_priv.h 
+Mon Apr  8 12:42:36 2002
++++ linux-2.4.18-pptp3.01/net/ipv4/netfilter/ip_conntrack_proto_gre.c  
+2002-08-29 13:01:00.000000000 +0200
++++ linux-2.4.18-pptp3.01//net/ipv4/netfilter/ip_nat_core.c     Mon Apr
+ 8 13:21:45 2002
++++ linux-2.4.18-pptp3.01//net/ipv4/netfilter/ip_nat_pptp.c     Mon Apr
+ 8 16:40:47 2002
++++ linux-2.4.18-pptp3.01//net/ipv4/netfilter/ip_nat_proto_gre.c       
+Mon Apr  8 16:40:56 2002
++++ linuxppc-benh-190302-newnat-pptp2.06/net/ipv4/netfilter/Config.in  
+Thu Apr  4 16:12:41 2002
++++ linuxppc-benh-190302-newnat-pptp2.06/net/ipv4/netfilter/Makefile   
+Thu Apr  4 16:12:41 2002
+
+anyhow, i should try and trace the problem in the src but i don't 
+understand what going on there.  thanks all for your help.
+
+johnoel@hawaii.edu
 
 
-we have a script which is doing the following... but the NTP client fails
-
-
-        /bin/iptables -A SystemOut -p udp --sport 1024:65535 --dport 123 =
--j ACCEPT
-        /bin/msntp -r -x $TIME_UPDATE -f /var/run/msntp.save -F $PIDFILE =
-$TIMESERVER
-
-
-If we change the script like this, it works pretty good.
-        /bin/iptables -A SystemOut -p udp --sport 1024:65535 --dport 123 =
--j ACCEPT
-	  /bin/sleep 1
-        /bin/msntp -r -x $TIME_UPDATE -f /var/run/msntp.save -F $PIDFILE =
-$TIMESERVER
-
-As you can see the LOG is matched, but the same "accept" rule (recently a=
-dded)
-has not matched (counter 0).
-any ideas ?
-
-best regards
-  Robert & Markus
-
------ log ------
-user.info msntp: [3215]: msntp started
-daemon.warn klogd: IN=3D OUT=3Deth1 SRC=3D10.20.10.177 DST=3D195.13.1.153=
- LEN=3D76 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DFPROTO=3DUDP SPT=3D1028=
- DPT=3D123
-LEN=3D56
-daemon.warn klogd: seen IN=3D OUT=3Deth1 SRC=3D10.20.10.177 DST=3D195.13.=
-1.153 LEN=3D76 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF PROTO=3DUDP SPT=3D=
-1028
-DPT=3D123 LEN=3D56
-user.err msntp: [3215]: unable to send NTP packet
-user.err msntp: [3215]: Operation not permitted
-user.notice init.d: ntp: started
-------- end log -------
-+bash-2.05# iptables -vnL SystemOut
-Chain SystemOut (1 references)
- pkts bytes target     prot opt in     out     source               desti=
-nation
-    9   684 LOG        udp  --  *      *       0.0.0.0/0            0.0.0=
-.0/0          udp dpt:123 LOG flags 0 level 4 prefix `seen
-'
-    0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0=
-.0/0          udp spts:1024:65535 dpt:123
-
-
-------------------
-Epygi Labs DE           |  Herrenstra=DFe 23
-Robert Allmeroth        |  76133 Karlsruhe
-Tel: +49 721 20596 43   |  Fax: +49 721 20596 59
 
 
