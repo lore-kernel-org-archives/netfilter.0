@@ -1,11 +1,11 @@
-From: Bill Chappell <chappell@borg.com>
-Subject: Re: kazaa rulset
-Date: Mon, 28 Jul 2003 21:17:57 -0400
+From: "HTB" <kerasakti@nusa.net.id>
+Subject: Are IP ALIASES supported by iptables?
+Date: Tue, 29 Jul 2003 12:06:14 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F25CB45.C0F717AB@borg.com>
+Message-ID: <008301c3558f$22b075e0$080a0a0a@medannic>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
- boundary="------------A48463E01D7A7BC67F3C93AC"
+	boundary="----=_NextPart_000_0080_01C355C9.CEDFB260"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,80 +18,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---------------A48463E01D7A7BC67F3C93AC
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+------=_NextPart_000_0080_01C355C9.CEDFB260
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> replying to juanca:
->
->
-> I expect that these rules resulted in the error messages I moved up
-> below them.
->
->
->>
->> iptables -A FORWARD -d a342.g.akamai.net -p tcp tcp -j DROP
->> iptables -A FORWARD -d a342.g.akamai.net -p tcp udp -j DROP
->> Bad argument `tcp'
->> Try `iptables -h' or 'iptables --help' for more information.
->> Bad argument `udp'
->> Try `iptables -h' or 'iptables --help' for more information.
->
->
-> For the other error messages, I would try commenting out
-> all the rules (except one for the first try) and run the script that
-> loads them un-commenting one at a time.
->
-> For an exercise like that, script flushall is helpful between
-> runs:
-> iptables -t filter -F
-> iptables -t mangle -F
-> iptables -t nat -F
->
->
-> --
-> William Chappell,     Software Engineer,     Critical Technologies, Inc.
-> Suite 400 Technology Center, 4th Floor 1001 Broad Street, Utica, NY 13501
-> 315-793-0248  x148  < bill.chappell@critical.com >  www.critical.com
->
+When i want to active nat using iptable on eth0:0 (aliasing) "error =
+appear"
+# /sbin/iptables -A POSTROUTING -j MASQUERADE -t nat -s 192.168.0.0/24 =
+-o eth0:0
+Warning: wierd character in interface `eth0:0' (No aliases, :, ! or *).
 
---------------A48463E01D7A7BC67F3C93AC
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Are IP ALIASES supported by iptables?
 
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
 
-<blockquote TYPE=CITE>replying to juanca:
-<br>&nbsp;
-<p>I expect that these rules resulted in the error messages I moved up
-<br>below them.
-<br>&nbsp;
-<blockquote TYPE=CITE>&nbsp;
-<br>iptables -A FORWARD -d a342.g.akamai.net -p tcp tcp -j DROP
-<br>iptables -A FORWARD -d a342.g.akamai.net -p tcp udp -j DROP
-<br>Bad argument `tcp'
-<br>Try `iptables -h' or 'iptables --help' for more information.
-<br>Bad argument `udp'
-<br>Try `iptables -h' or 'iptables --help' for more information.</blockquote>
 
-<p><br>For the other error messages, I would try commenting out
-<br>all the rules (except one for the first try) and run the script that
-<br>loads them un-commenting one at a time.
-<p>For an exercise like that, script flushall is helpful between
-<br>runs:
-<br>iptables -t filter -F
-<br>iptables -t mangle -F
-<br>iptables -t nat -F
-<br>&nbsp;
-<pre>--&nbsp;
-William Chappell,&nbsp;&nbsp;&nbsp;&nbsp; Software Engineer,&nbsp;&nbsp;&nbsp;&nbsp; Critical Technologies, Inc.
-Suite 400 Technology Center, 4th Floor 1001 Broad Street, Utica, NY 13501
-315-793-0248&nbsp; x148&nbsp; &lt; bill.chappell@critical.com >&nbsp; www.critical.com</pre>
-</blockquote>
-</html>
+regards
 
---------------A48463E01D7A7BC67F3C93AC--
+HTB
+
+
+------=_NextPart_000_0080_01C355C9.CEDFB260
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2479.1" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>When i want to active nat using iptable =
+on eth0:0=20
+(aliasing) "error appear"</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2># /sbin/iptables -A POSTROUTING -j =
+MASQUERADE -t=20
+nat -s 192.168.0.0/24 -o eth0:0<BR>Warning: wierd character in interface =
+
+`eth0:0' (No aliases, :, ! or *).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><FONT size=3D3>
+<P>Are IP ALIASES supported by iptables?</P>
+<P>&nbsp;</P>
+<P><FONT size=3D2>regards</FONT></P>
+<P><FONT size=3D2>HTB</FONT></P></FONT></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0080_01C355C9.CEDFB260--
 
 
