@@ -1,12 +1,9 @@
 From: spdesai@gnvfc.net
-Subject: IP traffic/accounting  per user
-Date: Sun, 20 Feb 2005 09:48:39 +0530
-Message-ID: <1108873119.42180f9f66ae7@mail.gnvfc.net>
-References: <20050214110926.99202.qmail@web53709.mail.yahoo.com>
-	<16210062593.20050214144250@osetia.org>
+Subject: Bandwidth Limiting (rate-limit) through IPTABLE
+Date: Sun, 20 Feb 2005 10:03:29 +0530
+Message-ID: <1108874009.42181319912c0@mail.gnvfc.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <16210062593.20050214144250@osetia.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +15,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: maxim@osetia.org
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hello ..
+Hello all
 
-I have installed NetAMS on my IPTABLE server to monitor per IP traffic and 
-based on that accounting them..
+I am using IPTABLE for below purpose onlyy..
 
-It generating html file regurely but it is not updated...i.e it show Zero 
-In/Out traffic for hour/month/week etc.
+To restrict ping from/to LAN
+To restrict ftp from/to LAN
+To restrict telnet from/to LAN
+To restrict site from/to LAN
+To restrict messanger from/to LAN
+To restrict particular port like IMAP/pop3 from/to LAN
 
-when i run netams it show below message at the end.
-  
-NeTAMS is now operational, 20.02.2005 09:54:31
-Shutdown signal received at 20.02.2005 09:54:31
-NeTAMS exiting at 20.02.2005 09:54:31
+Pl. let me know the whether IPTABLE can use in any other way ..i.e any other 
+purpose in which IPTABLE can be use.
 
-Pl. help me for proper configuration..
+can IPTABLE use for bandwidth limiting..????
 
-thanks in advance
+-regards,
+suhag.
 
-suhag
+
 
 
 
