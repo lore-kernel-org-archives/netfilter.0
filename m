@@ -1,64 +1,37 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Memory leaks in ip_conntrack?
-Date: Sat, 8 Nov 2003 12:43:32 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20031108114332.GH5741@sunbeam.de.gnumonks.org>
-References: <EFBADA8C200C2B418DA39734FD15475B0B2041@skat.sky.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: DHCP /MAC
+Date: Sat, 8 Nov 2003 13:09:53 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20031108120948.3F1B793E0@sterenborg.info>
+References: <200311081129.hA8BTgj15423@agate.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5nbaS3kz4OSBzmjj"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <EFBADA8C200C2B418DA39734FD15475B0B2041@skat.sky.com>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200311081129.hA8BTgj15423@agate.rockstone.co.uk>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Kishore Dharmavaram <kishored@servgate.com>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+> I still find it hard to believe that your modem users have 
+> MAC addresses - all dialup systems I have seen use PPP Point 
+> to Point Protocol and there is no MAC address identifying the 
+> remote system.
+
+I agree to this part, but he was talking about dialup/cable access.
+When I had cable access from Chello/UPC I had a LanCity modem and it
+actually had a MAC address. (Which could be abused to get higher up/down
+bandwith.)
 
 
---5nbaS3kz4OSBzmjj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Gr,
+Rob
 
-On Fri, Nov 07, 2003 at 02:21:13PM -0800, Kishore Dharmavaram wrote:
-> Hi All,
->=20
-> I have a Linux box running 2.4.20 kernel with netfilter(ip_conntrack)
-
-http://www.netfilter.org/security/2003-08-01-listadd.html
-
-> Thanks,
-> Kishore
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---5nbaS3kz4OSBzmjj
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/rNbkXaXGVTD0i/8RAjmBAJ0cxis7pKAz8O++/2D8THLrVhT40gCeMXGC
-ncPKBUBsoUSjLN+fMzlZFYc=
-=8atj
------END PGP SIGNATURE-----
-
---5nbaS3kz4OSBzmjj--
 
