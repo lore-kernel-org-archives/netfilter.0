@@ -1,10 +1,9 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: about ipq_set_verdict()
-Date: Thu, 15 Apr 2004 01:17:49 +0100
+From: "Shubho Biswas" <shubhobiswas@hotmail.com>
+Subject: Re: iptables masquerading
+Date: Wed, 14 Apr 2004 13:04:40 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <036e01c4227f$1611e900$68892090@grouse>
+Message-ID: <BAY8-F89IlxnZnvjgDL00039ee6@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,26 +14,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all,
+I've rebuilt iptables as a static binary and this seems to work for me.  I 
+guess I must have screwed up something in the linking in the dynamic 
+version.
 
-I am using the libipq library to do userspace programming on netfilter. I am
-having some problems understanding the return values of the function
-ipq_set_verdict():
+In the static version, the library files get installed too and the doc seems 
+to say that they're required for some reason.  So I get bigger /sbin files 
+and all the library files.  Maybe I can safely get rid of the 
+usr/lib/iptables files?
 
-When I set verdict (either NF_ACCEPT or NF_DROP) without modifying the
-packet, the return value of ipq_set_verdict is 28 and everything works well;
-however, when I set verdict trying to modify the packet, ipq_set_verdict
-returns 88, and the packet seems always to be dropped even when I set
-NF_ACCEPT.
+Shubho
 
-Does anybody know what these return values mean? Moreover, could anybody
-tell me how I can successfully modify a packet using libipq? Thank you very
-much in advance!!
+----------------------------------------------------------
+Hi there,
 
-Regards,
-Jee
+I've cross-compiled iptables for my x86 (486) embedded device and installed
+it successfully.  I did NOT use the static binary option so I have all the
+iptables lib installed too.  I'm using linux kernel 2.4.25 with no patches
+and almost all netfilter options enabled (iptables support is enabled) .
+When on my embedded device I do:
+
+# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+I get this error:
+
+iptables v1.2.9: Couldn't load target `MASQUERADE':File not found
+Try `iptables -h' or 'iptables --help' for more information.
+
+So I tried:
+# iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 192.168.1.160
+
+and got:
+iptables v1.2.9: Unknown arg `--to'
+Try `iptables -h' or 'iptables --help' for more information.
+
+Did I miss something when installing?
+
+Shubho
+
+_________________________________________________________________
+http://join.msn.com/?pgmarket=en-ca&page=byoa/prem&xAPID=1994&DI=1034&SU=http://hotmail.com/enca&HL=Market_MSNIS_Taglines
 
 
