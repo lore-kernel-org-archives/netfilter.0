@@ -1,15 +1,13 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: physdev match
-Date: Thu, 23 Sep 2004 17:47:28 +0300
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Can anyone tell me how to do this?
+Date: Thu, 23 Sep 2004 10:55:55 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1403218a0409230747732d8ff8@mail.gmail.com>
-References: <1403218a040923070324faf49f@mail.gmail.com>
-	<4152DBF7.9060402@pbl.ca>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Message-ID: <1095951354.1750.36.camel@wolfpack.ljm.dom>
+References: <20040923132216.67295.qmail@web51303.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4152DBF7.9060402@pbl.ca>
+In-Reply-To: <20040923132216.67295.qmail@web51303.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,41 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I have this in that path.
-libipt_physdev.so
-
-However, I will try again.
-
-
-On Thu, 23 Sep 2004 09:21:43 -0500, Aleksandar Milivojevic
-<amilivojevic@pbl.ca> wrote:
-> Mohamed Eldesoky wrote:
-> > Ok, I got a stock kernel 2.4.27 patched with ebtables-bnrf, and
-> > noticed that it has added physdev match.
-> > But whenever I try to test a rule with -m physdev --physdev-in <int>
-> > it gives me
-> >
-> > iptables: Invalid argument
-> >
-> > Any special requirements to use it ??
+On Thu, 2004-09-23 at 09:22, Dominic Iadicicco wrote:
+> ok, I have another one for all.
 > 
-> Have you patched both userspace (iptables utility) and kernel?  This
-> sounds like iptables utility wasn't patched.  Look into /lib/iptables
-> directory and see what modules you have.
+> I have now been tring to do this:
 > 
-> --
-> Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-> Systems Administrator                           1499 Buffalo Place
-> Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
-> 
-> 
+> I have an IP, 10.0.0.1 on eth1 and an IP 172.16.12.130
+> at eth0. And heres were things get fun.  I want all
+> ssh requests that go to 10.0.0.1 to get routed to
+> 172.16.12.130 just like it worked when we did it from
+> .130 to .212.  (if anyone is new and doesn't what was
+> discussed yesterday, please let me know I will post
+> it.)
 
+are 10.0.0.1 and 172.16.12.130 on the same physical machine?
 
+-j
 
 -- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+Jason Opperisano <opie@817west.com>
+
 
