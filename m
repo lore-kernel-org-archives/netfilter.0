@@ -1,12 +1,12 @@
-From: swissguy@canada.com
-Subject: dhcp
-Date: Tue, 17 Aug 2004 02:30:02 -0700 (PDT)
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Suggestion Needed
+Date: Tue, 17 Aug 2004 07:49:49 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040817023002.1197.h008.c009.wm@mail.canada.com.criticalpath.net>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC905128B@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +19,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hello
+> I  am running Iptables with Squid procy server on my LAN, Just wanted =
+to take
+> suggestion that is it worth trying to block all the Trojan Ports, I =
+came across
+> a list which has about 350 Odds ports, my windows 2k machines are too =
+vulnerable
+> to these trojans?I have norton Corporate Edition, which catches most =
+of the vir
+> us but still there are times when the network gets very slow?Will this =
+be a good
+> solution?
 
-i have a strange problem, not sure whats going on. i
-have  a dhcp3-server on a machine. the server is serves
-to eth1 and eth2 addresses. now i would like to block
-the server (so that a client cant send a request
-anymore).
+instead of trying to keep up with an ever changing list of =
+virus/trojan/backdoor ports, your time would be better spent compiling a =
+list of port you need to allow out; and allow only those ports, blocking =
+all other ports.
 
-but so far i dont even manage to block the dhcprequest
-with the default policy drop.
+> Also what are spoofed packets?I use ethereal to monitor traffic and I =
+see a lo
+> t of dropped packets from the kernel?Is there a way to stop this?
 
-i have all 3 tables all chains drop
-i dont have any rule
+"spoofed" packets in the context of a firewall generally refer to =
+packets arriving on an interface with a source IP that falls in the =
+range of another interface--with the hope to make it through your =
+firewall rules; i.e.,=20
 
-but when i do tcpdump i can see the following
+eth0 (external):  1.2.3.4/24
+eth1 (internal):  10.1.1.1/24
 
-192.168.5.30 bootpc > 192.168.5.1 bootps ......
-192.168.5.1 bootps > 192.168.5.30.bootpc ....
+a packet arriving on eth0 with a source IP of 10.1.1.100 is "spoofed."  =
+in the general sense, a spoofed packet is any packet with a forged =
+source address (commonly used in DoS attacks).
 
-what is going on? does dhcp-request goes somehow over
-layer2?
+if you don't want to see them--don't log them.
 
-or am i missing the big picture?
-
-thanks
-francis
+-j
 
