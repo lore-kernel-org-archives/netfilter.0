@@ -1,8 +1,7 @@
-From: BusyBoy <busyboy@gmail.com>
-Subject: restriction for some hosts.
-Date: Thu, 2 Dec 2004 03:20:10 -0800
-Message-ID: <d594c764041202032049654f4b@mail.gmail.com>
-Reply-To: BusyBoy <busyboy@gmail.com>
+From: Steve Comfort <steve@4Dllc.com>
+Subject: Is this at all possible
+Date: Thu, 02 Dec 2004 14:05:40 +0200
+Message-ID: <41AF0514.4030503@4Dllc.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,32 +15,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi all,
 
-I need some help in iptables  and I want to allow   some  hosts
-to ping to my box and rest of the network or internet blocked.
+I'm 99% sure that the answer to this one is no, but a customer asked :)
 
-like I have linux box 192.168.0.1 (Gateway) and 192.168.0.2 to
-192.168.0.100 are clients.
+They have two buildings with networks running on the same (192.168.2.x) 
+subnet.
 
-I want only
+Is it possible to configure a (wireless) router that would be capable of 
+routing between these identical sub-nets. Somehow, maybe restricting one 
+half to addresses below 127 and getting cunning with the netmask?
 
-192.168.0.5
-192.168.0.10
-192.168.0.55
+Don't ask why they don't want to change to different subnets!
 
-to be allowed to ping my linux box 192.168.0.1 and internet hosts  but
-rest of the machines should be  blocked.( not being able  to ping and
-traceroute )
+A resounding lack of response will be sufficient confirmation for me 
+that this is a silly scenario.
 
-any help in this reagrd will be highly appriciated.
+Ciao
+Steve Comfort
 
 
--- 
-Nasir Mahmood
-Systems + Network Admin.
-Asia Net.
 
