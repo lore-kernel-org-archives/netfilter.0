@@ -1,12 +1,11 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Round Robin Load Balancing
-Date: Fri, 18 Jul 2003 08:52:25 +1000
+From: "Sridhar Murthy" <sridhar@vfmindia.biz>
+Subject: Help Required
+Date: Fri, 18 Jul 2003 08:57:32 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BF43@wardrive.citadelcomputer.com.au>
+Message-ID: <20030718032717.M92025@vfmindia.biz>
+Reply-To: "Sridhar Murthy" <sridhar@vfmindia.biz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +16,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Daniel Chemko <dchemko@smgtec.com>, Javier Govea <jgovea@magma.ca>, Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-It's the NTH patch. he he p-o-m..=20
+Hi all,
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+I require help in configuring firewall on Redhat 8.0 system my setup 
+  is as follows:
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-=20
+ We have a Cable Modem connection with sendmail and proxy service 
+ running on Linux 8 system with 2 nic cards.
 
------Original Message-----
-From: Daniel Chemko [mailto:dchemko@smgtec.com]
-Sent: Friday, July 18, 2003 8:37 AM
-To: Javier Govea; Ramin Dousti
-Cc: netfilter@lists.netfilter.org
-Subject: RE: Round Robin Load Balancing
+ One nic card is having local LAN ipaddress and the other is taking 
+ an ipaddress from the ISP through dhcp protocol.
 
+ The problem i am facing is when i use the gui utility to configure the 
+firewall i am not able to see the second nic card(during installation i was 
+able to see both the nic cards) which uses the dhcp for an ipaddress
 
-There is an extension that says something like every N packets, execute
-this rule. I forgot what it was called though.. *doh*
+ Can anybody help in configuring a firewall for the this setup.
+
+Regards,
+
+Sridhar
 
