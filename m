@@ -1,11 +1,11 @@
-From: "WT" <wtang@pku.edu>
-Subject: UDP and IPIP forwarding
-Date: Thu, 5 Dec 2002 20:55:29 +0800
+From: Blizzards <blizzards@libero.it>
+Subject: Re: NAT IP POOL!
+Date: Thu, 05 Dec 2002 12:59:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003601c29c5d$aa821aa0$1a00a8c0@lncwei>
+Message-ID: <3DEF3FA4.1010404@libero.it>
+References: <3DEF3465.4070003@libero.it> <1039088743.489.31.camel@xbox>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0033_01C29CA0.A4E69330"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,220 +16,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Filip Sneppe <filip.sneppe@cronos.be>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+>
+>
+>Hi,
+>
+>You probably want to look at the NETMAP target that is in patch-o-matic.
+>SNAT and DNAT targets will do some loadbalancing. You'll get weird
+>results with your setup.
+>
+>With NETMAP you can do source NAT and destination NAT of whole subnets
+>with a strict 1:1 mapping.
+>
+Ok, but if i need to SNAT a whole subnet 192.168.1.0/24 with a short 
+pool of address like 172.16.1.1-172.16.1.10
+with a strict 1:1 only 10 ip are natted.
+NETMAP give me the ability to write down a PAT address for the rest of 
+connections?
+Or for short pool it's better to setup interfaces aliases?
 
-------=_NextPart_000_0033_01C29CA0.A4E69330
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
+Thanks.
+Giulius.
 
-Hi guys,
-
-I am trying to set up 2 IPtables based Firewall/NAT with UDP and IPIP =
-forwarding function as listed below:
-
-1) Forward UDP (port 434) package to an internal host;
-2) Forward IPIP package to a host in the same subnet as the Firewall's, =
-where the outer IP head of the IPIP package has a destination to a =
-special IP address.=20
-
-Here is an illustration of the scenario:
-
-   package from 192.168.0.1
-                 to 192.168.0.10 (UDP 434)
-                        |=20
-                        v
---------------192.168.0.10-----------------=20
-               10.3.10.10
-                        | forward to 10.3.10.201
-                        v
---------------10.3.10.201---------------------------------------- =
-10.3.10.13----------------
-                                    to 172.3.10.5 (IPIP)        =
-172.3.10.13
-                                    from 10.3.10.201                  |
-                                                                         =
-     | forward to 172.3.10.5
-                                                                         =
-     v
-                                                                        =
-172.3.10.5 (get IPIP package and reply to 192.168.0.1)
-                                                                         =
-           =20
-
-The IPIP reply from 172.3.10.5 to 192.168.0.1 needs to be forwarded by =
-10.3.10.13 to 10.3.10.201.
-
-I used IPtable and Linux 8 on 192.168.0.10 and 10.3.10.13 and =
-encountered both problems:
-1) Only one UDP package (the 1st one?) is forwarded to 10.3.10.201, =
-others are dropped. And once a while (every 12 minutes), there is one =
-package forwarded. That's it.
-2) I can Ping the 10.3.10.201 in the Firewall's subnet, but IPIP package =
-is not forwarded at all. They are still sent to 192.168.0.1 and =
-dropped...
-
-Can any expert give me some idea what may be wrong? I followed the =
-instruction of the IPtables. But it just doesn't work well. Please help.
-
-Thanks!
-
-Wey
-------=_NextPart_000_0033_01C29CA0.A4E69330
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dgb2312">
-<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>Hi guys,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am trying to set up&nbsp;2 IPtables =
-based=20
-Firewall/NAT with UDP and IPIP forwarding function as listed =
-below:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>1) Forward UDP (port 434) package to an =
-internal=20
-host;<BR>2) Forward IPIP package to a host in the same subnet as the =
-Firewall's,=20
-where the outer IP head of the IPIP package has a destination to a =
-special IP=20
-address. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Here is an illustration of the=20
-scenario:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;package from=20
-192.168.0.1</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to=20
-192.168.0.10 (UDP 434)</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;|=20
-</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;=20
-v</FONT></DIV>
-<DIV><FONT face=3DArial =
-size=3D2>--------------192.168.0.10-----------------=20
-</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;=20
-10.3.10.10</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;=20
-| forward to 10.3.10.201</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;v</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>--------------10.3.10.201---------------------------------------=
--=20
-10.3.10.13----------------</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;to&nbsp;172.3.10.5=20
-(IPIP)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-172.3.10.13</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;from=20
-10.3.10.201&nbsp;&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-
-|</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|=20
-forward to 172.3.10.5</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-v</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;172.3.10.5=20
-(get IPIP package and reply to 192.168.0.1)</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;=20
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>The IPIP&nbsp;reply from 172.3.10.5 to =
-192.168.0.1=20
-needs to be forwarded by 10.3.10.13 to 10.3.10.201.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I used IPtable&nbsp;and Linux 8 on =
-192.168.0.10 and=20
-10.3.10.13 and encountered both problems:<BR>1) Only one UDP package =
-(the 1st=20
-one?) is forwarded to 10.3.10.201, others are dropped. And once a while =
-(every=20
-12 minutes), there is one package forwarded. That's it.<BR>2) I can Ping =
-
-the&nbsp;10.3.10.201 in the Firewall's subnet, but IPIP package is not =
-forwarded=20
-at all. They are still sent to 192.168.0.1 and dropped...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Can any expert give me some idea what =
-may be wrong?=20
-I followed the instruction of the IPtables. But it just doesn't work =
-well.=20
-Please help.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks!</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial =
-size=3D2>Wey</FONT></DIV></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0033_01C29CA0.A4E69330--
+>
+>Regards,
+>Filip
+>
+>
+>  
+>
 
 
 
-____________________________
-BN3 Hosted Customer Service Solution, basic service FREE.
-CRM enable your web site in 5 minutes! http://www.bn3.com
 
