@@ -1,10 +1,13 @@
-From: Dax Kelson <dax@gurulabs.com>
-Subject: DNATd server behind fw with two ISPs
-Date: Mon, 11 Nov 2002 19:10:39 -0700 (MST)
+From: "Rob" <mrboboo@yahoo.com>
+Subject: RE: Best distro for firewalls.
+Date: Mon, 11 Nov 2002 22:11:09 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0211111909550.1971-100000@mooru.gurulabs.com>
+Message-ID: <NEENJAPFEAIEMGMNIGFLMEEKCEAA.mrboboo@yahoo.com>
+References: <3DD0519C.B860FCAB@gmx.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3DD0519C.B860FCAB@gmx.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,33 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Consider the following:
-                 ________
-(ISP1)=====eth0:| 2.4.18 |
-		|Firewall|:eth2=====(WWW/DNS server @ 10.3.2.1)
-(ISP2)=====eth1:|__NAT___|
+HA, i hear ya on that one.
+I have personally liked RH for server setups, MDK for workstation OR server
+setups.  MDK is based off of RH BUT it separates out the /etc to separate
+config folders a little more so your base /etc isnt so dirty.
 
-On the firewall there are these DNAT rules:
+Robert Wideman
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp -d REAL.IP.FROM.ISP1 --dport
-25 -j DNAT --to 10.3.2.1:25
-
-iptables -t nat -A PREROUTING -i eth1 -p tcp -d REAL.IP.FROM.ISP2 --dport
-25 -j DNAT --to 10.3.2.1:25
-
-Question:
-
-What sort of SNAT and/or policy routing can I do so that the responses
-from the internal 10.3.2.1 server are SNATed to and leave the appropriate
-external interface on the firewall (the appropriate interface would be the 
-external interface that the connection originated from).
-
-TIA,
-Dax
-
+>>-----Original Message-----
+>>From: netfilter-admin@lists.netfilter.org
+>>[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Martin Stricker
+>>Sent: Monday, November 11, 2002 6:56 PM
+>>To: netfilter@lists.samba.org
+>>Subject: Re: Best distro for firewalls.
+>>
+>>
+>>Vladas Keparoutis wrote:
+>>>
+>>> Hi,
+>>> I'd recommend gentoo (gentoo.org)
+>>> It is very flexible and fast with updates.
+>>
+>>Yeah, but you have to compile everything. On the 486 I use as a firewall
+>>this is more than a pain...
+>>
+>>Best regards,
+>>Martin Stricker
+>>--
+>>Homepage: http://www.martin-stricker.de/
+>>Linux Migration Project: http://www.linux-migration.org/
+>>Red Hat Linux 7.3 for low memory: http://www.rule-project.org/
+>>Registered Linux user #210635: http://counter.li.org/
 
 
