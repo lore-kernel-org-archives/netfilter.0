@@ -1,12 +1,12 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Newbie in a deep trouble!!!
-Date: Wed, 11 Aug 2004 08:12:08 -0400
+From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
+Subject: wherr to find and how to install ip_conntrck_pptp and ip_nat_pptp modules
+Date: Wed, 11 Aug 2004 18:17:07 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051268@asimail2.alphanumeric.com>
+Message-ID: <E1BusYF-000728-6z@vishnu.netfilter.org>
+Reply-To: <bassam@palettemm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +17,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Elvis Aaron Presley <elvisa@terra.es>, Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
->
-> First I put this:
->
-> iptables -t nat -A PREROUTING -p tcp -d ! 172.16.0.0/16 --dport 80 -j =
-REDIRECT --to-port 3128
->
-> Ok with this, the 10.34.x.x pcs can access to internet through the =
-proxy and can view the web pages of the 172.16.x.x pcs ... It works!!!
->
-> Then I put this:
->
-> iptables -t nat -A PREROUTING -p tcp -d ! 10.34.0.0/16 --dport 80 -j =
-REDIRECT --to-port 3128
->
-> With this,  the 172.16.x.x pcs can access to internet through the =
-proxy and can view the web pages of the 10.34.x.x pcs ... It works =
-too!!!
->
-> This commands works separately, but when I put the two at same time it =
-doesn't work.
+Hi All,
+I am trying to enable a multiple VPN tunnels to pass through my Linux
+machine so that VPN clients on the LAN can access the VPN server on the WAN.
+Through my google search I found there are two modules required to enable
+this functionality on my Linux box, these modules should be loaded in the
+kernel. So any body can help and direct me where to find these two modules
+and how can I install them?
 
-it's because 10.34.0.0/16 matches "-d ! 172.16.0.0/16" and 172.16.0.0/16 =
-matches "-d ! 10.34.0.0/16"
+I have two linux machines the first one is Redhat 9 (kernel 2.4.20) and the
+second one is Fedora core 2 (kernel 2.6.5)
 
-> Can anybody help me please????
+If I am mistaken, so please direct me on how to enable multiple VPN
+connection to pass through my boxes?
 
-i can try.  your PREROUTING rules should be, in order:
+--------------	--------------	--------------
+|VPN-Client-1|	|VPN-Client-2|	|VPN-Client-n|
+--------------	--------------	--------------
+|			|			|
+|			|			|
+|------------------------------------
+|
+| LAN side
+|
+|
+|
+---------------
+|Linux machine|
+---------------
+|
+|
+| WAN side
+|
+|
+------------
+|VPN Server|
+------------
 
-iptables -t nat -A PREROUTING -p tcp -d 172.16.0.0/16 --dport 80 -j =
-ACCEPT
-iptables -t nat -A PREROUTING -p tcp -d 10.34.0.0/16 --dport 80 -j =
-ACCEPT
-iptables -t nat -A PREROUTING -p tcp -i ! eth0 --dport 80 -j REDIRECT =
---to-port 3128
 
-which allows traffic to 172.16.0.0/16 and 10.34.0.0/16 to pass without =
-going through the squid proxy, and anything else received on either eth2 =
-or eth1 to get redirected to the squid cache.
+I am expecting you urgent help regarding this matter
 
--j
+Thanks in advance
+
+Bassam
+
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.729 / Virus Database: 484 - Release Date: 7/27/2004
+ 
+
 
