@@ -1,8 +1,8 @@
 From: "Mark E. Donaldson" <markee@bandwidthco.com>
 Subject: RE: Port range forwarding
-Date: Mon, 12 Jan 2004 22:26:56 -0800
+Date: Mon, 12 Jan 2004 22:29:26 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401130626.i0D6QwHu016929@server5.bandwidthco.com>
+Message-ID: <200401130629.i0D6TOHu016959@server5.bandwidthco.com>
 References: <E4DB60AD-44FC-11D8-842F-000A95DA9C9A@msa.hinet.net>
 Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
@@ -21,16 +21,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: 'Max Yin' <max.yin@msa.hinet.net>, netfilter@lists.netfilter.org
 
-I'm sure there are some better solutions available, but this should work:
+Now let me fix that:
 
 i=3100
+X=2100
 while [ "$i" -le 3500 ]
 do
 	$IPT -t nat -A PREROUTING -i eth0 -j DNAT -p tcp --	dport $i
---to-destination 192.168.2.60:$i
+--to-destination 192.168.2.60:$x
 
 	i=`expr $i + 1`
-done 
+	x=`expr $x + 1`
+done  
 
 -----Original Message-----
 From: netfilter-admin@lists.netfilter.org
