@@ -1,73 +1,60 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [ANNOUNCE] call for testing of patch-o-matic-ng
-Date: Sun, 29 Feb 2004 11:25:06 +0100 (CET)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0402291121270.25361-100000@filer.marasystems.com>
-References: <20040229101116.GA10012@pcw.home.local>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Strange log info from iptables ?
+Date: Sun, 29 Feb 2004 10:31:04 +0000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <200402291031.04792.Antony@Soft-Solutions.co.uk>
+References: <20040227175608.666a0e38.Information-Cascade@ntlworld.com> <20040227190555.214cbc6e.Information-Cascade@ntlworld.com> <000d01c3fea4$ea271f70$de0aa8c0@comp>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <20040229101116.GA10012@pcw.home.local>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000d01c3fea4$ea271f70$de0aa8c0@comp>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Willy TARREAU <willy@w.ods.org>
-Cc: Harald Welte <laforge@netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sun, 29 Feb 2004, Willy TARREAU wrote:
+On Sunday 29 February 2004 9:17 am, Bo Jacobsen wrote:
 
->   - first, I didn't find how to specify where my iptables sources is
->     installed, so I had to enter it by hand each time I restarted it.
->     I did not find any env variable in the perl code, and I must say
->     that my understanding of perl is, hmmm.. very limited.
+> What is the following log info. It looks like some kind of combined ICMP
+> and DNS ?
 
-There is a --path= option which can specify the path to both iptables and 
-the kernl.
+Log entries for ICMP packets include the data in the body of the ICMP packet, 
+which is the header of the packet the ICMP is about.
 
->   - ROUTE and TRACE told me :
->     "unable to find ladd slot in src /usr/src/linux-2.4.25-pomng/./net/ipv6/Makefile"
->     I think they wanted to add a line in the Makefile but didn't find
->     the right place to do so. BTW, is there a way to install a patch
->     only for ipv4 or for ipv6 like before ?
+Remember that ICMP provides the error messages on the Internet, about other 
+(usually UDP) packets, so they contain information about the packet which 
+caused the error.
 
-Please try with the large patch of .ladd files I posted on netfilter-devel 
-yesterday.
+> Feb 29 10:02:03 WFx-SH kernel:
+> DROP-OUT:IN= OUT=eth0 SRC=192.168.1.2 DST=212.54.64.171
+> LEN=198 TOS=0x00 PREC=0xC0 TTL=64 ID=30626
+> PROTO=ICMP TYPE=3 CODE=3 [SRC=212.54.64.171 DST=192.168.1.2 LEN=170
+> TOS=0x00 PREC=0x40 TTL=59 ID=53582
+> PROTO=UDP SPT=53 DPT=59554
+> LEN=150 ]
 
->   - I observed usual conflicts :
->     present 'CONNMARK' conflicts with to-be-installed 'connbytes'
->     present 'raw' conflicts with to-be-installed 'conntrack-seqfile'
->     present 'CONNMARK' conflicts with to-be-installed 'conntrack_arefcount'
+Everything up to the [ is info about the ICMP packet.
 
-Yes.
+Everything between [ and ] is info about the UDP packet which the ICMP is in 
+response to.
 
->   - and finally, trying to apply conntrack_locking litterally killed my
->     box in out of memory within a few tens of seconds (I could not even
->     run ps) :
->       Out of Memory: Killed process 9841 (runme).
->       Out of Memory: Killed process 9970 (ps).
->       Out of Memory: Killed process 159 (bash).
->       Out of Memory: Killed process 158 (bash).
-> 
->     Since conntrack_locking needs conntrack_arefcount which could not
->     be applied, I wonder if there's some problem resolving dependancies.
+Regards,
 
-Not unlikely.
+Antony.
 
-Applying "extra" blindly is not recommended. There is reasons to why a 
-patch is in "extra", and many of these extensions conflict with each 
-other.
+-- 
+Anything that improbable is effectively impossible.
 
-If you want patches from extra you better name the patches you want 
-explicily, after applying the base set.
+ - Murray Gell-Mann, Novel Prizewinner in Physics
 
-Regards
-Henrik
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
