@@ -1,9 +1,7 @@
-From: Vinod Chandran <vinod_chandran@multitech.co.in>
-Subject: Re: Usage of CONNMARK
-Date: Sat, 05 Feb 2005 13:06:23 +0530
-Message-ID: <42047777.3030102@multitech.co.in>
-References: <42032EC5.4090303@multitech.co.in>
-	<Pine.LNX.4.61.0502041515360.10050@filer.marasystems.com>
+From: Mike Ireton <mike-netfilter@tiedyenetworks.com>
+Subject: Using -m limit to stop outbound portscanning viruses
+Date: Sat, 05 Feb 2005 14:37:47 -0800
+Message-ID: <42054ABB.5040700@tiedyenetworks.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
@@ -17,60 +15,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
- 
-Currently, from the FTP helper if DROP is given, the packets are not 
-getting dropped since the conntrack entry exists and also since from 
-where the helper routine is called, there is no check for return value 
-of NF_DROP. Hence when NF_DROP is returned, inside ip_conntrack_in, I 
-set the conntrack value
-       ct->mark = 1
- However this CONNMARK value is getting applicable only from the next 
-packet ownwards.
+Howdy list,
 
-If on the other hand, say I try to change the mark value, 
-(*pskb)->nfmark ( I assume it contains the MARK indicator), and put a 
-rule in the KEEP_STATE_FORWARD chain to drop packets with the specific 
-mark value, the kernel is panicing , with a BUG in sched.c. I also get 
-panic if I call nf_conntrack_put.
+I'm concerned about portscanning viruses which have infected customer 
+machines and are using all of that subscribers outbound to scan for 
+(say) open port 445's all over the net. This isn't good for the wireless 
+and tends to use up substantial resources in disproportion to the amount 
+of data actually being moved. I have control over all my subscriber's 
+CPE gear (running a custom embedded linux distro) and I am considering 
+including an outbound firewalling feature to slow the rate at which new 
+connections can be established. Basiclly, I want to ratelimit outbound 
+syn's to some sane number (5/sec to start). I already have qos and 
+bandwidth control in place at the cpe side, but this job is more 
+'packets per second' oriented than 'bytes per second'.
 
-The problem in my case, is the error is detected after the conntrack 
-state is changed. I am wondering whether this is the reason why its 
-causing all the problems.
+I've looked at various cookbook examples of using '-m limit 5/s' and did 
+rules like '-p tcp --tcp-flags SYN -m limit --limit 5/s -j DROP', but I 
+effectively cut myself off and couldn't make any connections at all. 
+Does anyone have a code snippet that could share which would do this job 
+for me?
 
-Thanks,
-Vinod C
-
-Henrik Nordstrom wrote:
-
-> On Fri, 4 Feb 2005, Vinod Chandran wrote:
->
->> I am using the CONNMARK patch.
->> Inside conntrack_core, in case of special conditions, I have modified 
->> the mark value in the conntrack.
->
->
-> When in conntrack is this modification done?
->
->> However this CONNMARK value is getting effective only for the next 
->> packet and not for the same packet.
->
->
-> The connmark match looks at the connection mark value at the time the 
-> connmark match is evaluated.
->
->> Is there some way by which, I can make the settings applicable to the 
->> same packet itself?
->
->
-> It is, assuming it's done before you need to evaluate the match.
->
-> Regards
-> Henrik
->
-
-
+Thanks.
 
 
