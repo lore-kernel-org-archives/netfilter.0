@@ -1,11 +1,13 @@
-From: "Jeremy C. Reed" <reed@reedmedia.net>
-Subject: building iptables with linux-2.4.20 fails due to headers in wrong
- places
-Date: Wed, 30 Apr 2003 15:47:03 -0700 (PDT)
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Communication Redirect (Revised)
+Date: 01 May 2003 00:47:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.43.0304301533340.1683-100000@pilchuck.reedmedia.net>
+Message-ID: <1051742856.2545.3.camel@elendil.intranet.cartel-securite.net>
+References: <3EB0371D.8080300@qwest.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3EB0371D.8080300@qwest.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,54 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Sapient2003 <sapient@qwest.net>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-I have iptables-1.2.8.
+Le mer 30/04/2003 =E0 22:50, Sapient2003 a =E9crit :
+> OpenBSD uses the packet filter pf to redirect communications to a=20
+> program. Is ther anything like this for Linux? I tried IPTABLES for thi=
+s=20
+> task, like so: iptables -t filter -A INPUT -p udp -s 0/0 -d 66.47.159.1=
+1=20
+> --destination-port 53 -j REDIRECT dns ... As it turns out, REDIRECT=20
+> isn't for forwarding packets to another program...
 
-Doing a "make" (with BSD make and with GNU make) returns problems like:
+Netfilter has no such feature. What you can do is have your program
+listen to a local port and then redirect traffic to this local UDP port
+53. If you have a DNS server listening on this port, you're done.
 
-$ time make BINDIR=/usr/bin LIBDIR=/usr/lib  MANDIR=/usr/man
-KERNEL_DIR=/tmp/pkgsrc/misc/linux-kernel/work.k3/linux-2.4.20/
-Making dependencies: please wait...
-Something wrong... deleting dependencies.
-make: ***
-[/tmp/pkgsrc/misc/linux-kernel/work.k3/linux-2.4.20/include/net/if.h]
-Error 1
+This is a basic stup for transparent proxying.
 
-real    0m9.562s
-user    0m7.720s
-sys     0m2.360s
-
-
-So I manually copied include/linux/if.h to include/net/if.h (in my
-kernel source) and then:
-
-Making dependencies: please wait...
-Something wrong... deleting dependencies.
-make: ***
-[/tmp/pkgsrc/misc/linux-kernel/work.k3/linux-2.4.20/include/net/ethernet.h]
-Error 1
-*** Error code 2
-
-I do have that ethernet.h file at include/asm-cris/ethernet.h (my system
-is i386).
-
-I pointed the KERNEL_DIR to the linux-2.4.20 directory.
-
-I did this with a fresh unextract of kernel sources and also did with
-kernel sources after a build. The INSTALL document and FAQ doesn't have
-any hints about this.
-
-Any ideas?
-
-(By the way, iptables-1.2.8 completely built on a different machine when
-KERNEL_DIR was /usr/src/linux and that linux was very old 2.2.14. Maybe
-it should check to make sure kernel source is new enough.)
-
-   Jeremy C. Reed
-   http://bsd.reedmedia.net/
-
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
