@@ -1,13 +1,13 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: RE: Iptables do nat with Protocol 47 or GRE
-Date: Fri, 14 May 2004 11:12:40 -0300
+From: "Andrew E. Mileski" <andrewm@isoar.ca>
+Subject: Re: Unable to apply pptp conntrack patch
+Date: Fri, 14 May 2004 10:46:33 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1BOdSr-0007Nt-4u@vishnu.netfilter.org>
-References: <200405141414.34877.Antony@Soft-Solutions.co.uk>
+Message-ID: <40A4DBC9.6000702@isoar.ca>
+References: <Pine.LNX.4.33.0405141253510.21804-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405141414.34877.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <Pine.LNX.4.33.0405141253510.21804-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Im not shure about the question.
+Jozsef Kadlecsik wrote:
+> 
+> Your kernel, iptables source and patch-o-matic versions are too old:
+> oldest supported kernel is 2.4.23, iptables is 1.2.10 (from cvs).
+> And definitely use newer pom-ng.
 
-Could you be more specific?
+Since this has been asked before, and I have some RPMS on hand...
 
- 
+I've made 2.4.22-1.2149.nptl.pptp available at:
+   http://isoar.ca/ftp/~andrewm/redhat/RPMS
+   http://isoar.ca/ftp/~andrewm/redhat/SRPMS
+The required updated iptables can also be found there.
 
------Mensaje original-----
-De: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] En nombre de Antony Stone
-Enviado el: Viernes, 14 de Mayo de 2004 10:15
-Para: netfilter@lists.netfilter.org
-Asunto: Re: Iptables do nat with Protocol 47 or GRE
+I've tested this kernel against Intel's Centrino VPN test suite on an
+Intel provided validation system, and it passed.  An Intel rep should be
+by the office next week for a spot-check, so the kernel should gain
+certification *knocks on wood*
 
-On Friday 14 May 2004 2:00 pm, Sez wrote:
+For a newer kernel, my hacks to the spec file for patch-o-matic can be
+used to build your own RPMS.  The iptables package just needs to be
+re-compiled against the updated kernel headers.
 
-> I have a microsoft server to l2tp/ipsec. And my firewall is a Linux. I 
-> understand that if i create a server in micro$oft box, i can routing 
-> the traffic with Linux with any problem (no recompile, multiple users, 
-> nat with l2tp/ipsec).
-
-Can someone who knows about L2TP / IPsec step in here please?
-
-Regards,
-
-Antony.
-
---
-The lottery is a tax for people who can't do maths.
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
-
-
+-- 
+Andrew E. Mileski
 
