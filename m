@@ -1,14 +1,14 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Using an device alias?
-Date: 06 Jan 2003 07:30:32 +0200
+From: "ITM CS Ruslan O. Nesterov" <ruslan@complexsystem.ru>
+Subject: Re: netfilter under heavy load.
+Date: Mon, 6 Jan 2003 14:24:15 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1041831032.5194.21.camel@rayw.knowledgefactory.co.za>
-References: <b74ecb8788.b8788b74ec@cvip.net>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <1262587210.20030106142415@complexsystem.ru>
+References: <007101c2b4d0$be992520$0100a8c0@win98>
+Reply-To: "ITM CS Ruslan O. Nesterov" <ruslan@complexsystem.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-sXoDYDIzpUVvoOLnGfap"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <b74ecb8788.b8788b74ec@cvip.net>
+In-Reply-To: <007101c2b4d0$be992520$0100a8c0@win98>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,78 +18,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Steve M Bibayoff <smb23@csufresno.edu>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-admin@lists.netfilter.org, Mike Olivere <mikeeo@msn.com>
+Cc: netfilter@lists.netfilter.org
+
+Hello Mike,
+   Well actually it's not a big problem, I got 100 GB a day passing
+   through our gateway to our clients, as far i didn't find any
+   problems for webservers wich are not NATed, as for clients who are
+   in DMZ zone i sometimes get connection error, but it's 1 in 1000
+   connections. I run a box with the following configuration:
+   Single PIII-866 MHZ
+   RAM: 256
+   NIC: 2 Intel Gigabit ethernet cards (as far as i remember).
+   Befor it I used a Firebox firewall and it really drived me nuts.
+   Due to low productivity.
+   
+Sunday, January 5, 2003, 6:40:15 PM, you wrote:
+
+MO> Hello, I don't know if this has been brought up before but I am going to be
+MO> running netfilter under load on a fractional T-3 (12Mbps). The box will have
+MO> 3 interfaces eth0 going to the Cisco 7200, eth1 (routable IPs) going to the
+MO> webfarm for DMZ zone, and then eth2 will be NATed with a private LAN IP
+MO> (192.168.1.x). I will be NATing over 200 clients and I know in the past this
+MO> could be a problem with IPCHAINS because it would either run out of memory
+MO> or start dropping connections. The webservers get about 7,000 hits a day and
+MO> they won't be NATed but will be filtered with a mix of statefule and packet
+MO> filtering rules. We have a Cisco PIX 525(which is just a Intel P600/512MB
+MO> RAM) in place right now but I would like to move to Netfilter as it will be
+MO> running on a dual P1ghz and a gig of memory. Is this possible? can Nefilter
+MO> scale to this and beyond? and is there any tweaks I should know about?
+
+MO> Thanks in advance.
+
+MO> Mike
 
 
---=-sXoDYDIzpUVvoOLnGfap
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-Hi
+-- 
+Best regards,
+ ITM                            mailto:ruslan@complexsystem.ru
 
-It doesn't make sense to attach rules to alias interfaces, since the
-packets are coming in the same physical interface whether it is eth0:1
-or eth0.
-
-So if you use just eth0 your rules should work as expected as long as
-you qualify them further with the correct (alias)ip.
-
-Ray
-
-On Fri, 2003-01-03 at 21:28, Steve M Bibayoff wrote:
-> Sorry if everyone gets this twice, this one is a
-> second posting when I realized this was a closed list.
->=20
-> Original question:
-> Is it possible to use iptables with a device alias
-> (ex.. eth0:1)? I tries to add a filter rule and got
-> an error:
-> % iptables -t filter -I INPUT -i eth0:1 -j ACCEPT
-> Warning: wierd character in interface `eth0:1' (No
-> aliases, :, ! or *).
->=20
-> If i list the rules, it's listed, but it doesn't
-> appear to be working. I was wondering if someone had
-> a definite answer.
->=20
-> TIA
->=20
-> Steve
->=20
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
-
---=-sXoDYDIzpUVvoOLnGfap
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA+GRR4h1fuR/Bv+ygRAiSDAKCV7HmI5CMLR7y/Dd4PZb2AxV9M2wCfR2+l
-IpxH7VWwQP6jj+f01v94Sc0=
-=epsf
------END PGP SIGNATURE-----
-
---=-sXoDYDIzpUVvoOLnGfap--
 
 
