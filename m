@@ -1,11 +1,13 @@
-From: "IT Clown" <iptables@mailbox.co.za>
-Subject: passive ftp
-Date: Sat, 17 Apr 2004 19:50:35 +0200
+From: Krunk <krunkalot@hotpop.com>
+Subject: Is there a more active mailing list for security?
+Date: Sat, 17 Apr 2004 13:03:47 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <web-287943006@mail01.infosat.net>
+Message-ID: <1082225027.4220.1.camel@james>
+References: <web-287943006@mail01.infosat.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <web-287943006@mail01.infosat.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +20,11 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi 
+This list seems a little slow...maybe one or two questions a day.
+Haven't seen a reply yet. Would anyone know what a more active mailing
+list would be where I could receive help?
 
-I am having some trouble to access passive mode ftp sites.I
-have a firewall with ip forwarding enabled.When a pc on the
-network want to access passive ftp servers i need to do the
-following in my rules ( on the server ):
+James
 
--A OUTPUT -p tcp -m multiport --dport 21,20 -j ACCEPT
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -i eth0 -j ACCEPT
--A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-But i do not want every query to be forwarded i only want
-say ftp access to be forwarded. Why does the following not
-work ( on the server ):
-
--A FORWARD -p tcp -i eth0 -o ppp0 --dport 20 -j ACCEPT
--A FORWARD -p tcp -i eth0 -o ppp0 --dport 21 -j ACCEPT
--A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-Regards
-______________________________________________________________
-Herbalife Independent Distributor http://www.healthiest.co.za
 
