@@ -1,29 +1,50 @@
 From: Arnt Karlsen <arnt@c2i.net>
-Subject: http://rhn.redhat.com/errata/RHSA-2003-172.html
-Date: Wed, 14 May 2003 22:35:20 +0200
-Sender: ntop-admin@unipi.it
-Message-ID: <20030514223520.0f933aae.arnt@c2i.net>
-Reply-To: ntop@unipi.it
+Subject: Re: NOT acceptable "/etc/sysconfig/network-scripts/ifup" script !!!
+Date: Wed, 14 May 2003 23:16:37 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20030514231637.72cc3ff8.arnt@c2i.net>
+References: <200305142155.31623.pc-secure@home.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <ntop-admin@unipi.it>
-Errors-To: ntop-admin@unipi.it
-List-Unsubscribe: <http://listgateway.unipi.it/mailman/listinfo/ntop>,
-	<mailto:ntop-request@unipi.it?subject=unsubscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200305142155.31623.pc-secure@home.nl>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Post: <mailto:ntop@unipi.it>
-List-Help: <mailto:ntop-request@unipi.it?subject=help>
-List-Subscribe: <http://listgateway.unipi.it/mailman/listinfo/ntop>,
-	<mailto:ntop-request@unipi.it?subject=subscribe>
-List-Archive: <http://listgateway.unipi.it/pipermail/ntop/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: ipcop-devel@lists.sourceforge.net
-Cc: ipcop-user@lists.sourceforge.net, ntop@Unipi.IT, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi, 
+On Wed, 14 May 2003 21:55:31 +0200, 
+"P.Italiaander" <pc-secure@home.nl> wrote in message 
+<200305142155.31623.pc-secure@home.nl>:
 
-..http://rhn.redhat.com/errata/RHSA-2003-172.html is appearantly serious
-enough to get Red Hat to drop their no-upgrade-to-match-newest-vanilla
+> hello all , 
+> 
+> I have just installed the new Mandrake 9.1 as workstation , and i had
+> to adjust the ifup script ,since i use internal, an dhcp-server.So it 
+> automaticaly adapt the /etc/hosts file.
+> But to my  suprise , i saw that the ifup script , still is written for
+> ipchains !!!! THIS IS NOT ACCEPTABLE 
+> So i will correct it the iptables-script , when it's done 
+> i'll send a copy , for other Mandrake or RedHat users , maybe come
+> handy
+> 
+> Pascal
+> 
+
+
+..heh, check out
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=89171
+
+...but there _is_ hope for RH:
+http://rhn.redhat.com/errata/RHSA-2003-172.html is appearantly serious 
+enough to get Red Hat to drop their no-upgrade-to-match-newest-vanilla 
 policy, _all_ supported RH versions are asked to go to 2.4.20-13.
 
 -- 
@@ -31,3 +52,6 @@ policy, _all_ supported RH versions are asked to go to 2.4.20-13.
 ...with a number of polar bear hunters in his ancestry...
   Scenarios always come in sets of three: 
   best case, worst case, and just in case.
+
+
+
