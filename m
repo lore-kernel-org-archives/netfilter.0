@@ -1,13 +1,13 @@
-From: netfilter@tommi.org
-Subject: Re: MSN Messenger
-Date: Thu, 14 Nov 2002 09:36:30 +0000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: MS Messenger
+Date: Tue, 12 Nov 2002 21:11:31 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021114093630.GC1656@ok.is>
-References: <200211132155.gADLtH705415@octavio.ods.org> <Pine.LNX.4.33.0211131542550.21434-100000@ts1.alberni.net>
+Message-ID: <20021112211133.CBFI18329.mta06-svc.ntlworld.com@there>
+References: <Pine.LNX.4.33.0211121036290.3900-100000@ts1.alberni.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.33.0211131542550.21434-100000@ts1.alberni.net>
+In-Reply-To: <Pine.LNX.4.33.0211121036290.3900-100000@ts1.alberni.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +18,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Aaron Clausen <maureen-taocow@alberni.net>
-Cc: Octavio Alvarez Piza <alvarezp@octavio.ods.org>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-nohup daemon &
+On Tuesday 12 November 2002 6:38 pm, Aaron Clausen wrote:
 
-Haven't tried but this almost always works.
+> I'm running iptables, and have a user claiming that they cannot use MS
+> Messenger.  I have no other complaints, but I'm not exactly sure if any
+> other users are actually using MS Messenger?  Does there have to be special
+> connection tracking.
+>
+> I'm also blocking the MS file sharing ports at the router.  Would this
+> cause the problem?
 
-- Tomas Edwardsson
-- Linux/Unix support
-- Opin Kerfi HF
+I don't know about MS Massager specifically, but you could investigate what's 
+going on by logging the packets which get dropped from this particular user's 
+IP address- that should at least tell you what protocol they're trying to 
+use...
 
-On Wed, Nov 13, 2002 at 03:43:14PM -0800, Aaron Clausen wrote:
-> From: Aaron Clausen <maureen-taocow@alberni.net>
-> To: Octavio Alvarez Piza <alvarezp@octavio.ods.org>
-> cc: <netfilter@lists.netfilter.org>
-> Subject: Re: MSN Messenger
-> Date: Wed, 13 Nov 2002 15:43:14 -0800 (PST)
-> 
-> On Wed, 13 Nov 2002, Octavio Alvarez Piza wrote:
-> 
-> > Aaron, just some info: Messenger does not use UPnP for file transfers. Voice conversations will work with UPnPd but file xfers won't.
-> 
-> I got a hold of the "reaim" binary, which purports to do this.
-> Unfortunately it doesn't behave like a daemon, and I can't figure out how to
-> run it detached from a terminal session.  Anybody got any ideas?
-> 
-> -- 
-> Aaron Clausen
-> 
+Put this at the end of your FORWARD chain, just before the default drop:
+
+iptables -A FORWARD -s a.b.c.d -j LOG --log-prefix="MSM user: "
+
+where a.b.c.d is the IP address of the user who's complaining.
+
+Antony.
+
+-- 
+
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
 
