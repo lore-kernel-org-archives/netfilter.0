@@ -1,17 +1,10 @@
-From: Fernando Barrocal <fbarrocal@uol.com.br>
-Subject: RE: iptables1.2.7 + pptp + rh9
-Date: Wed, 22 Oct 2003 11:09:46 -0200
+From: "dimitri borjac" <dimitri_borjac@hotmail.com>
+Subject: iptables and SPI
+Date: Wed, 22 Oct 2003 13:26:59 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6.0.0.22.0.20031022110933.01bf1518@pop3.uol.com.br>
-References: <7C9884991ADAE0479C14F10C858BCDF5122E76@alderaan.smgtec.com>
- <6.0.0.22.0.20031021195845.01b5faa0@pop3.uol.com.br>
- <1066780235.23642.4.camel@proto.voiceplus.com.au>
+Message-ID: <Law10-F111cDjoYAPNX00000043@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1066780235.23642.4.camel@proto.voiceplus.com.au>
-References: <7C9884991ADAE0479C14F10C858BCDF5122E76@alderaan.smgtec.com>
- <6.0.0.22.0.20031021195845.01b5faa0@pop3.uol.com.br>
- <1066780235.23642.4.camel@proto.voiceplus.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,63 +16,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Evan Davies <evand@voiceplus.com.au>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+sorry to disturb all of you once more... and thank you Julian for your first 
+answer...
 
-It worked !
+but actually i think i wasn't clear enough in my last mail : is it possible 
+to use iptables in order to NAT different VPN established between different 
+NATted hosts and 1 remote gateway (the same gateway for all of them) ?  Such 
+a NAT would be made by watching both addresses, ports and SPIs...
 
-Thanks a lot !
+In other words :  is it possible for iptables to go and check the SPI field 
+in the ESP Header of the IPsec packet in ESP tunnel mode ?
 
+Hope i make me more clear this time :)
+Thanks in advance !
 
-At 21:50 21/10/2003, Evan Davies wrote:
->I first applied the patch-o-matic to the kernel.
->Recompile and installed iptables 1.2.8 with the following commands:
-> > make BINDIR=/sbin LIBDIR=/lib MANDIR=/usr/share/man
-> > make BINDIR=/sbin LIBDIR=/lib MANDIR=/usr/share/man install
->Configure the kernel with new options
->Run make bzImage ; make modules ; make modules_install
->Install new kernel image
->Reboot
->
->
->On Wed, 2003-10-22 at 07:59, Fernando Barrocal wrote:
-> > Still after installing 1.2.8 it does not work. Do I need to compile ipt ?
-> > and the kernel ?
-> >
-> > At 19:15 21/10/2003, Daniel Chemko wrote:
-> > >Download ipt 1.2.8 or 1.2.9 if it is out.
-> > >Or, use the CVS userspace
-> > >
-> > ># KERNEL_DIR=<yourkerneldir> make
-> > ># make install
-> > >
-> > >You might want to change the destination directories in the Makefile to
-> > >conform to the Redhat deployment layout
-> > >LIBDIR=/lib/
-> > >MANDIR=/usr/man
-> > >etc..
-> > >
-> > >-----Original Message-----
-> > >From: Fernando Barrocal [mailto:fbarrocal@uol.com.br]
-> > >Sent: Tuesday, October 21, 2003 2:04 PM
-> > >To: netfilter@lists.netfilter.org
-> > >Subject: iptables1.2.7 + pptp + rh9
-> > >
-> > >
-> > >Hi,
-> > >
-> > >I am applying the pptp patch with patch-o-matic in my redhat 9.0.
-> > >Somebody
-> > >have somer step by step to patch the kernel, compile the iptable
-> > >userspace
-> > >and compile the kernel to accept DNAT ?
-> > >
-> > >Thanks in advance
-> > >
-> > >Fernando Barrocal
->--
->Evan Davies <evand@voiceplus.com.au>
+Dimo
 
+_________________________________________________________________
+Hotmail : un compte GRATUIT qui vous suit partout et tout le temps ! 
+http://g.msn.fr/FR1000/9493
 
 
