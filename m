@@ -1,10 +1,10 @@
-From: cjs2895 <cjs2895@hotmail.com>
-Subject: Kazaa conntrack module?
-Date: Tue, 23 Mar 2004 13:20:30 -0600
+From: Ben Yerushalmi <beny@pd.verio.net>
+Subject: Redirect ports on localhost
+Date: Tue, 23 Mar 2004 13:10:21 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40608DFE.4010703@hotmail.com>
+Message-ID: <406099AD.2070403@verio.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,23 +18,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Folks,
+Hi,
 
-I thought that I had found a conntrack module that allowed people using 
-Kazaa behind a NAT firewall to download from people who are also behind 
-a Nat firewall. I don't remember it being very complicated, and I think 
-it was just substituting the external IP Address for the internal IP 
-address in one of the protocol's headers.
+I'm trying to redirect traffic on my DNS server. I have bind listening 
+on port 5300 (UDP) instead of 53. I've got it working from the internal 
+network but seem to have problem on redirecting localhost traffic. I've 
+tried changing both PREROUTING and OUTPUT chains in the nat table but it 
+doesn't seem to help.
 
-Unfortunately I've misplaced that file and I can't come up with a 
-combination of keywords that finds it for me on Google. I don't suppose 
-anyone here has come across something similar and knows where the home 
-site is?
+iptables -A PREROUTING -t nat -p udp -i lo --dport domain -j REDIRECT 
+--to-ports 5300
 
-Please respond in e-mail to cjs2895@hotmail.com and I will post a 
-summary of the responses to this list.
+and
 
-Christopher
+iptables -A OUTPUT -t nat -p udp -d localhost  --dport domain -j 
+REDIRECT --to-ports 5300
+
+
+Anyone have luck doing this? What am I missing?
+
+Thanks,
+Ben
 
 
 
