@@ -1,13 +1,13 @@
 From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: irc
-Date: Mon, 17 Nov 2003 13:04:57 -0500
+Subject: Re: MAC Block for the DHCP via iptables
+Date: Mon, 17 Nov 2003 13:17:10 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB90DC9.4010005@Loudoun-Fairfax.com>
-References: <20031117161039.97875.qmail@web40203.mail.yahoo.com> <200311171618.hAHGIAj22261@agate.rockstone.co.uk> <3FB8F8C7.8090104@Loudoun-Fairfax.com> <200311171733.hAHHXgj22323@agate.rockstone.co.uk>
+Message-ID: <3FB910A6.9040207@Loudoun-Fairfax.com>
+References: <008801c3ad28$da9e4b50$0d1ea8c0@win2000adv> <200311171702.hAHH2pj22305@agate.rockstone.co.uk> <3FB90889.9040804@Loudoun-Fairfax.com> <200311171757.hAHHvTj22359@agate.rockstone.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311171733.hAHHXgj22323@agate.rockstone.co.uk>
+In-Reply-To: <200311171757.hAHHvTj22359@agate.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +18,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
 Antony Stone wrote:
 
->On Monday 17 November 2003 4:35 pm, Jeffrey Laramie wrote:
+>On Monday 17 November 2003 5:42 pm, Jeffrey Laramie wrote:
 >
 >  
 >
->>Just out of curiosity, what exactly is the difference between an IRC
->>server and an IRC proxy?
+>>Antony Stone wrote:
+>>    
 >>
->>Client connects to server
->>Client connects to proxy
->>
->>Server relays
->>Proxy relays
->>
->>Hmmm.
+>>>iptables -P INPUT DROP
+>>>iptables -P FORWARD DROP
+>>>iptables -P OUTPUT DROP
+>>>
+>>>iptables -F INPUT
+>>>iptables -F FORWARD
+>>>iptables -F OUTPUT
+>>>
+>>>then no IP traffic will be allowed into, out of, or through, the machine.
+>>>      
+>>>
+>>Chandana, Antony is making a theoretical point here. Your loopback
+>>interface uses the OUTPUT chain and dropping every OUTPUT packet could
+>>cause some unexpected problems. I wouldn't recommend doing this. If you
+>>ever really wanted to block *all* traffic just unplug the network card(s).
 >>    
 >>
 >
->In that case I simply don't know enough about the IRC protocol (which is 
->true).
+>Very well said, Jeffrey :)
 >
->It sounds like SMTP to me - there's no such thing as an SMTP proxy, because 
->that is what an SMTP server is.   Perhaps this is the ideal answer to the 
->original question :) ?
+>Netfilter rules should never be implemented without understanding what they 
+>do, and "blocking all traffic" is an unlikely condition for a working 
+>machine.   Apart from anything else, what use is a machine that can't talk or 
+>listen :) ?
 >  
 >
 
-Functionally sticking an IRC server on the perimeter works, but then you 
-have the work of securing and maintaining an IRC server which is no 
-small task. Maybe SBlaze knows more about the proxy he mentioned and how 
-it works. If your letting IRC (bots!) into your LAN you've got your 
-hands full.
+On this side of the pond we call them "paper weights" :p
 
 Jeff
 
