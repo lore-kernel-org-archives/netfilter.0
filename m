@@ -1,12 +1,11 @@
-From: "Chris M. Gamble" <chris.gamble@cpbinc.com>
-Subject: Seeking assistance for broken LOG target after upgrade
-Date: Thu, 22 Jan 2004 13:27:23 -0600
+From: Andreas Jellinghaus <aj@dungeon.inka.de>
+Subject: ipv6 / kernel 2.6.1 (-bk6)
+Date: Wed, 21 Jan 2004 00:21:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9E0E7DA2130F1D42861EC43B568E99FC09165D@mail1.cpbinc.in>
+Message-ID: <pan.2004.01.20.23.21.46.777134@dungeon.inka.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,26 +18,13 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I recently upgraded a redhat 7.3 base install to a new 2.4.24 kernel and =
-upgraded the iptables to 1.2.9. Along with this, I implemented the pom =
-base set to the kernel before installing.=20
+Hi,
 
-Now, everything works better than ever, except when I try to use the LOG =
-target.=20
+is the plain kernel good enough, or do I need
+patch-o-matic to filter ipv6 with netfilter?
 
-When using the LOG target, I get the error that no such chain/target =
-exists. Based on this, I tried to modprobe the ipt_LOG module, and =
-attached is my error:
+It looks like there is no connection tracking?
 
-/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_LOG.o: unresolved =
-symbol nf_log_unregister
-/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_LOG.o: unresolved =
-symbol nf_log_register
-/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_LOG.o: insmod =
-/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_LOG.o failed
-/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_LOG.o: insmod ipt_LOG =
-failed
-
-Please help, I am at a complete loss what to do next.
+Regards, Andreas
 
 
