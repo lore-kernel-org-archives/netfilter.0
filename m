@@ -1,14 +1,13 @@
-From: "Leandro Takashi Hirano" <takashi@alcidesmaya.com.br>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: Port Scanner
-Date: Wed, 5 Nov 2003 12:44:06 -0200 (BRST)
+Date: Wed, 05 Nov 2003 15:37:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <60242.200.180.170.253.1068043446.squirrel@www.alcidesmaya.com.br>
+Message-ID: <1068043048.810.141.camel@elendil.intranet.cartel-securite.net>
 References: <60101.200.180.170.253.1068041679.squirrel@www.alcidesmaya.com.br>
-        <200311051419.hA5EJtr13138@agate.rockstone.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311051419.hA5EJtr13138@agate.rockstone.co.uk>
+In-Reply-To: <60101.200.180.170.253.1068041679.squirrel@www.alcidesmaya.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,76 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Lista de Mail netfilter <netfilter@lists.netfilter.org>
+To: Leandro Takashi Hirano <takashi@alcidesmaya.com.br>
+Cc: Lista de Mail netfilter <netfilter@lists.netfilter.org>
 
-> On Wednesday 05 November 2003 2:14 pm, Leandro Takashi Hirano wrote:
->
->> How does this rule work?
->>
->> iptables -A FORWARD -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit
->> ?limit 1/s -j ACCEPT
->
-> It means that any packets which have the RST flag set, and the SYN, ACK,
-> FIN  flags cleared, will only be allowed *through* the firewall at a
-> maximum rate  of one packet per second.
->
->> Is it safe to use only this rule to avoid port scanners?
->
-> Depends what you mean by "safe" and "avoid" :)
->
-> Here are some observations on the above rule:
->
-> 1. It is in the FORWARD chain, therefore it has no effect on people port
->  scanning the firewall itself (it would need to be in the INPUT chain to
->  affect that).
->
-> 2. One packet per second will be ACCEPTed.   What happens to the other
-> packets (and whether anything gets returned to the scanner) depends on
-> the  other rules following this one in the chain.
+Le mer 05/11/2003 =E0 15:14, Leandro Takashi Hirano a =E9crit :
+> Is it safe to use only this rule to avoid port scanners?
 
+See psd match :
 
-OK, one packet per second will be ACCEPTed, but aren=B4t the other packets
-going to be DROPed?
+	http://www.netfilter.org/documentation/pomlist/pom-base.html#psd
 
-
-
->
-> 3. The rule only applies to packets with RST set, and SYN, ACK, FIN
-> clear.    Therefore it will incfluence the outcome of a RST port scan,
-> but have no  effect on a FIN scan, or a SYN scan.
->
-
-Do I have also to create a rule for FIN scan and SYN scan?
-Do you have some port scanners rules to show me? (and other protection
-rules too)
-
-And thanks very much for the help!!!
-
-> I think in order to answer your question we first need to know:
->
->  - what response do you want someone to get when they attempt to port
-> scan
-> your system?
->
-
-no answer....
-
-> Regards,
->
-> Antony.
->
->
-> --
->
-> "It is not the strongest of the species that survive, nor the most
-> intelligent, but the ones most responsive to change."
->
->  - Charles Darwin
->                                                      Please reply to the
-> list;
->                                                            please don't
-> CC me.
-
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
 
