@@ -1,10 +1,12 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: patch-o-matic for 2.4.27?
-Date: Sat, 28 Aug 2004 05:23:17 -0700 (PDT)
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: How to install patch-o-matic
+Date: Sat, 28 Aug 2004 09:46:10 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040828122317.2104.qmail@web13910.mail.yahoo.com>
+Message-ID: <200408280946.11013.Alistair@nerdnet.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,20 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Is there a patch-o-matic release for 2.4.27?  I am
-using iptables 1.2.11 with that kernel.  nf_log seems
-to patch OK, but the 'raw' table patch fails.  Is this
-patch updated anywhere?
+On August 27, 2004 04:50 am, Bassam A. Al-Khaffaf wrote:
+> Thanks for the great information,
+> 	I have successfully upgraded and recompiled the kernel according to
+> the URL you gave to me.
+>
+> You have mentioned to compile the user space, so what do u mean by user
+> space and how to compile it, do you mean I have to go inside the
+> /usr/src/iptables-1.2.11 and write the following instructions again:
+>
+> make KERNEL_DIR=/usr/src/linux-2.4.27
+> make install KERNEL_DIR=/usr/src/linux-2.4.27
+>
+> Do I need to compile this user space before I start the actual
+> configuration and compilation for the kernel as described in the URL
+> http://www.digitalhermit.com/linux/Kernel-Build-HOWTO.html?
 
--Scott
+>
+> Regards
+> Bassam
+>
 
+	Short answer is yes.
 
-		
-_______________________________
-Do you Yahoo!?
-Win 1 of 4,000 free domain names from Yahoo! Enter now.
-http://promotions.yahoo.com/goldrush
+	iptables userspace refers to the iptables code itself that is NOT part of the 
+kernel (kernelspace)
+	Thus the iptables package itself.
+
+	Alistair
+
 
