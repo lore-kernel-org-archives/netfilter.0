@@ -1,10 +1,10 @@
-From: "Michael Lawford" <mike@plenty.co.za>
-Subject: Iptables and RaQ550 problems....
-Date: Tue, 18 Feb 2003 18:42:11 +0200
+From: Luis Miguel Cruz Miranda <luismi@b2bi.es>
+Subject: patch-o-matic and userpace
+Date: Thu, 20 Feb 2003 12:18:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <HAEDIOFCFBKACBFKGGJEEEJKCIAA.mike@plenty.co.za>
+Message-ID: <5.2.0.9.2.20030220121447.01c5bbb0@172.26.0.8>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,44 +15,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi There,
+Hi all again,
 
-I have a RaQ550 server that runs iptables.  The other day i logged in and
-got 1000+ of the following message from my server.
+I am trying to use the patch called 'userspace/ipt_REJECT-fake-source.pat=
+ch'
+As I read, if I use that patch I need to recompile iptables user programs.
 
-This alert notification is to inform you of network activity occurring on
-your host.
+The problems is that I can't use that patch because I don't know have any=
+=20
+idea how to patch iptables source code.
 
-           Timestamp:  Tue 18 Feb 2003 12:05:54 PM SAST
-          Alert Type:  Port Scan Detected
-           Interface:  eth0
-            Protocol:  3/3/icmp
- Packet Size (bytes):  99
+I have this tree:
 
-      Source Address:  (my IP here)
-         Source port:
-           Direction:  outbound
- Destination Address:  196.7.0.138 (UUNet's main DNS server)
-    Destination Port:
+|-- iptables-1.2.7a
+|   |-- extensions
+|   |-- include
+|   |   |-- libippool
+|   |   |-- libipq
+|   |   |-- libiptc
+|   |   |-- libipulog
+|   |   `-- linux
+|   |       |-- netfilter_ipv4
+|   |       `-- netfilter_ipv6
+|   |-- ippool
+|   |-- libipq
+|   |-- libiptc
+|   `-- libipulog
+|-- patch-o-matic -> patch-o-matic-20030218
+|-- patch-o-matic-20030218
+|   |-- base
+|   |-- broken
+|   |-- extra
+|   |-- not-accepted
+|   |-- obsolete
+|   |-- oldnat
+|   |-- optimizations
+|   |-- pending
+|   |-- submitted
+|   `-- userspace
+`-- userspace -> iptables-1.2.7a
 
-           Log Entry:  eth0:portscan: 3/3/icmp (my IP here) -> 196.7.0.138
-99 (22)
+Is it correct to patch iptables-1.2.7a?
 
 
-And I keep getting these little error messages every 2 or 3 minutes...  Now
-my network and UUNet guys tell me that it is IPTables that is trying to
-resolve to their main DNS server.  They have checked the settings and all
-appears to be well so they think that it is a bug.  If their is a fix /
-patch please let me know about it.  I am tearing my hair out trying to fix
-it.  Any advice would be appreciated.
+Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+                                         |       C/A - Parcela 86-C
+Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
+Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN)
 
-I look forward to hearing from you.
-
-Regards,
-
-Michael
 
 
