@@ -1,13 +1,11 @@
 From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: RE: Logging question
-Date: Wed, 9 Feb 2005 11:11:16 -0500 (EST)
-Message-ID: <7643.142.169.215.10.1107965476.squirrel@142.169.215.10>
-References: <3144.142.169.215.10.1107963344.squirrel@142.169.215.10>
-	<!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4wwL6DwAQAAAA7ow78K+3jEWLSOFdgBEHbAEAAAAA@rogers.com>
+Subject: Re: Netfilter or DNS issue?
+Date: Wed, 9 Feb 2005 11:23:43 -0500 (EST)
+Message-ID: <9255.142.169.215.10.1107966223.squirrel@142.169.215.10>
+References: <200502081314.AA721338@mail.cybercorpinc.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4ww
-	L6DwAQAAAA7ow78K+3jEWLSOFdgBEHbAEAAAAA@rogers.com>
+In-Reply-To: <200502081314.AA721338@mail.cybercorpinc.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,46 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: dave beach <drbeach@rogers.com>
+To: glens@mail.cybercorpinc.com
 Cc: netfilter@lists.netfilter.org
 
-On Wed, February 9, 2005 10:35 am, dave beach said:
-> Thanks, Samuel.
->
-> So, if I understand correctly, the reason that nothing at all is being
-> logged out eth0 (via the rule in the nat/POSTROUTING chain) is because =
-all
-> those packets are related to packets previously seen by the state machi=
-ne
-> and thus don't traverse that chain.
+On Tue, February 8, 2005 4:14 pm, Glen Spidal said:
+> Greetings all,
 
-Unless you tell my that you put the logging rule _after_ the DNAT rule.
-I assume the above is right, but a bit unbeleivable. If that's really
-what happen (entries already exist), you can verify if my
-assumption/explanation is right by unloading the ip_conntrack module
-(and everything depending on). And test again with fresh conntrack.
+gug Glen !
 
 >
-> Okay, but that leaves me with the question about why I'd see so many
-> packets
-> logged out eth1 via a similar rule in the same place. The above
-> explanation
-> seems to tell me that each and every packet so logged would be the
-> "first",
-> and thus new.
+> I have constructed a wirewall based off of the tutorial at frozentux.  =
+The
+> problem I'm having is that I have two DNS servers with the second being=
+ a
+> slave to the first.  I can DIG other domains from the slave DNS server
+> except for my own.  IT appears that the slave DSN server is not getting
+> updated for the primary one. Here's my script:
 
-Perhaps you've put your eth1 logging after eth1 DNAT and you see log for
-the eth0 NAT. Is that possible case ?
+Can you draw us an ASCII schema of your current setup ?
 
->
-> I guess the way to test this would be to move BOTH rules to
-> mangle/POSTROUTING. I'd expect, based on the above, to see the packets
-> logged out eth1 to jump dramatically. Does this sound generally correct=
-?
+For me, it appears that both DNS are on the same physical segment and
+logical network.
 
-Both logging rules at top of this chain should tell you the truth.
+The DMZ part of your script just confuse my assumption.
 
-Cheers,
+Thanks,
 Samuel
 
 
