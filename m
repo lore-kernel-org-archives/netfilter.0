@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Iptables --owner-uid
-Date: Sun, 15 Sep 2002 12:00:10 +0100
+From: Kim Jong Tae <dejavu@bora.dacom.co.kr>
+Subject: hook function in  NF_IP_LOCAL_IN does not interruptible_sleep_on?
+Date: Sun, 15 Sep 2002 20:13:28 +0900 (KST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020915110012.OKLT14766.mta05-svc.ntlworld.com@there>
-References: <39778BFB9C25BA429794B15B50AEC781045424@server-dcms> <20020914141419.GC24368@Ajftl1.ajfthome.on.ca>
+Message-ID: <Pine.GSO.3.94K.1020915200933.12847A-100000@bora.dacom.co.kr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020914141419.GC24368@Ajftl1.ajfthome.on.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +14,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Saturday 14 September 2002 3:14 pm, Alistair Tonner wrote:
 
-> What I'm reading is that the process generating the packets
-> 	(for owner match to work) has to be a process running on the
-> 	box on which iptables firewall is running.  If the packets are
-> 	coming through the forward chain (i.e. from downstream pc's)
-> 	there is no way of matching UID (owner) as there is no owning
-> 	process generating the packet.
+Hi all.
 
-That is correct.
+I  makes hook function, which will communicate with user process
+for each packet's arrival.
+First, hook function sends data to user process and user process sends
+back data. I think that before receiving data from user process, hook
+function must wait.  hook func's wait is using interruptible_sleep_on.
+When hook func call interruptible_sleep_on, system hangs!!!
 
->  	You might be better off matching
-> 	MAC addresses in this case ...
+code is below .
 
-I don't see why that is any better than matching IP address ?   Surely 
-there's going to be a one-to-one correspondence between MAC address and IP 
-address for the Windows clients, so you cannotdo anymore in netfilter with 
-one than with the other....
+static unsigned int
+enpia_dr_in(unsigned int hooknum,
+                struct sk_buff **skb_p,
+                const struct net_device *in,
+                const struct net_device *out,
+                int (*okfn)(struct sk_buff *))
+{
+....
 
-The interesting part is to workout whether Samba (which is running on the 
-netfilter machine) can tie up user ID with IP address, and then add/remove 
-netfilter rules by running a script when the user logs in/out.
+        interruptible_sleep_on(waitq)
+        /* this point system hangs, and console prints "killing interrupt
+handler " */
+...
+}
 
-Antony.
 
-> On 2002.09.14 07:53 Didier Hung Wan Luk wrote:
-> > I may be wrong but I am in confusion here..
-> > If I am using Samba as a PDC and all my win clients are members of the
-> > samba domain... are they not using the uid given by Samba? Which is
-> > itself mapped to a unix user (id) then if this is the case it should
-> > work is it not..??
+static struct nf_hook_ops in_ops = {
+        { NULL, NULL },
+         hook_func, PF_INET, NF_IP_LOCAL_IN, 100
+};
 
--- 
+When hook fuction goes to interruptible_sleep_on, linux is down.
+Same result comes when udp sock communication instead of
+nf_register_sockopt.
 
-How I want a drink, alcoholic of course, after the heavy chapters
-involving quantum mechanics.
 
- - 3.14159265358979
+
+Why this happens?
+
+Is there a method to wait for some condition in netfilter hook func in  
+linux kernel?
+
+If it is impossible, is there another methods to communicate user process?
+
+any comment is appreciate!
+
+
 
