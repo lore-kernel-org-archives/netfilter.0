@@ -1,13 +1,13 @@
 From: "Ranjeet Shetye" <ranjeet.shetye@zultys.com>
-Subject: RE: HELP: Conntrack table filling up !!!
-Date: Tue, 31 Dec 2002 12:54:57 -0800
+Subject: RE: Doing Bridge with firewalling
+Date: Tue, 31 Dec 2002 13:30:47 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c2b10e$e13376a0$0100a8c0@zultys.com>
-References: <3E075D48.70801@interplus.ro>
+Message-ID: <001001c2b113$e2181800$0100a8c0@zultys.com>
+References: <20021231205417.GQ677@ns>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E075D48.70801@interplus.ro>
+In-Reply-To: <20021231205417.GQ677@ns>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,12 +21,37 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 
-There are ways in which pings (ICMP packets) can fill up conntrack
-tables quickly. Are you running into problems with ICMP traffic only or
-with any traffic ? e.g. look at /proc/net/ip_conntrack . Is it filled up
-with ICMP traffic connections only ? If so, you might want to protect
-your linux box from malformed ICMP packets, by DROPping all such packets
-in the "filter" table.
+I think that we need to clearly define the terminology for Kevin.
+
+Interface - this is a tricky definition. One can refer to the PHYSICAL
+interface (i.e. ethernet port) as an interface. You can also refer to
+the LOGICAL interface (i.e. the one to which you allocate an IP
+address). These two are DIFFERENT. You _might_ be able to make things
+clearer by using "<ethernet> port" for the physical interface, and "<ip>
+interface" for the logical interface.
+
+(PDU = protocol data unit)
+The names used to refer to the unit of data transfer are different at
+different layers:
+Frames = layer 2 PDUs
+Packets = layer 3 PDUs
+
+Bridge - layer 2 device i.e. "link control" layer i.e. transfers frames
+across physical interfaces.
+Router - layer 3 device i.e. network later i.e. transfers packets across
+logical interfaces.
+
+When you selectively tranfer frames (layer 2 PDUs) across a bridge, its
+called filtering (frames).
+When you selectively transfer packets (layer 3 PDUs) across a firewall,
+its called firewalling/packet filtering.
+
+I think I got it right :D.
+
+Hence when you downsize your (layer 3) router into a (layer 2) bridge,
+your neo-bridge becomes a layer 2 entity and disappears from the layer 3
+i.e. it is no longer visible at layer 3. Therefore no firewalling, no
+NAT.
 
 Ranjeet Shetye
 Senior Software Engineer
@@ -43,44 +68,52 @@ http://www.zultys.com/
 > -----Original Message-----
 > From: netfilter-admin@lists.netfilter.org 
 > [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
-> Mircea Ciocan
-> Sent: Monday, December 23, 2002 11:00 AM
-> To: netfilter@lists.netfilter.org
-> Cc: netfilter-devel@lists.netfilter.org
-> Subject: HELP: Conntrack table filling up !!!
+> Stephen Frost
+> Sent: Tuesday, December 31, 2002 12:54 PM
+> To: Kevin McConnell
+> Cc: Brad Chapman; Afshin Lamei; netfilter@lists.netfilter.org
+> Subject: Re: Doing Bridge with firewalling
 > 
 > 
-> 	Hi everybody,
+> * Kevin McConnell (kevymac@yahoo.com) wrote:
+> > 
+> > --- Stephen Frost <sfrost@snowman.net> wrote:
+> > > The two havn't got anything to do with each other.
+> > > NATing is modifying
+> > > packets as they pass through the router.  Addressing
+> > > is the IP address
+> > > and whatnot to access the firewall/router.  One does
+> > > not require the
+> > > other.
+> > 
+> > This leads me to another question then. What are the 
+> advantages of not 
+> > having an IP address assigned to
+> > interface(s) of the firewall? Like for instance, if my firewall was 
+> > the gateway to the outside world, how would I tell machines 
+> behind the 
+> > firewall to get out to the outside world if they didn't 
+> have a default
+> > route pointing to the internal address of the
+> > firewall? Also, how would packets that hit the
+> > firewall get routed through the other side?
 > 
-> 	I have this problem with connexion tracking table 
-> filling to the max 
-> and then it remains in a state "near the edge" that will allow only a 
-> small number of new conexions and will cause a large packet 
-> loss, even 
-> "sendto: operation not permited" sometimes when I ping the neighboor 
-> routers and so on.
-> 	Everything got cleared up if I delete the ip tables 
-> rules that deal 
-> with contrack and remove and reinsert ip_conntrack module.
-> 	Now if there is some method of avoiding this ( I only 
-> see a discution 
-> from 2001 that was not conclusive) or if there is is an method to 
-> time-out faster those conexions in conntrack table or even a 
-> method of 
-> globaly quick-flush that table ( could be a even an 
-> experimental patch, 
-> I'm willing to try it and report) I'd very muck like to hear about it.
-> 	Anyhow, thank you for your good work and have a happy new year.
-> 		
-> 		Regards,
+> A router is not a bridge.  The two are different things.  
+> You're thinking of things in terms of a 'router'.  In order 
+> for your computers to reach the external network they have to 
+> go through a router, true.  A firewall can be implemented as 
+> part of a router or as part of a bridge. The only requirement 
+> being that the packets are required to pass through the 
+> device.  If you implemented your firewall as a bridge then 
+> the machines on the network wouldn't 'see' it, they would 
+> point their default routes to the router on the opposite side 
+> of the bridge.
 > 
-> 		Mircea Ciocan
+> I think the critical point here is that you need to 
+> understand what a bridge is and how it works and how it's 
+> different from a router.
 > 
-> P.S. kernel is 2.4.18 and machine have enough ram ( 512 MB) and 
-> processing power ( P-III 800MHZ), traffic is something like 
-> 50 Mb/s top 
-> ans 25-30 medium.
-> 
+> 	Stephen
 > 
 
 
