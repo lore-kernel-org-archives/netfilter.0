@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: iptables for spoofing
-Date: 04 Apr 2003 16:19:11 +0200
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: patch-o-matic automatic build ?
+Date: Fri, 4 Apr 2003 16:49:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049465950.4794.1.camel@elendil.intranet.cartel-securite.net>
-References: <HCTMC1$Ix9ReBi3coFoqW2avUnEYGRctoNNS_JdXwlN6@bol.com.br>
+Message-ID: <20030404164917.175b9f47.arnt@c2i.net>
+References: <000901c2fa92$abef6f80$5863a8c0@note>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <HCTMC1$Ix9ReBi3coFoqW2avUnEYGRctoNNS_JdXwlN6@bol.com.br>
+In-Reply-To: <000901c2fa92$abef6f80$5863a8c0@note>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Julio Cesar Ody <julioody@bol.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le ven 04/04/2003 =E0 15:19, Julio Cesar Ody a =E9crit :
-> Hello. I'm taking some classes on
-> iptables, and I heard it's possible to
-> use iptables to spoof outgoing packets
-> (or any packet at all).
-> So, my question is: How do I do it ?
-> How can I alter the source address of
-> a given packet using iptables ?
+On Fri, 4 Apr 2003 12:12:16 +0200, 
+"Johannes Walch" <j.walch@nwe.de> wrote in message 
+<000901c2fa92$abef6f80$5863a8c0@note>:
 
-Use SNAT :
+> hi all,
+> 
+> does anyone know if its possible to select the patch-o-matic modules
+> automatically (e.g by a file / list) rather then executign ./runme
+> extra and doing it interactively ?
+> 
+> for example sth. like ./runme extra h323-patch ....
+> 
+> johannes walch
 
-	iptables -t nat -A POSTROUTING <packet def.> -j SNAT --to $IP
+..according to the README, you're supposed to be able to extract 
+any and all of the patches.
 
-And you're done.
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-You should read Filtering and NAT HOWTO on http://www.netfilter.org/.
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
