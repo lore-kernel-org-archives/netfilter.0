@@ -1,14 +1,12 @@
-From: Alistair Tonner <Alistair@alistairt.ath.cx>
-Subject: Re: ICQ and masqueraded clients- is module written yet?
-Date: Wed, 23 Oct 2002 12:22:01 -0400
+From: "Juliano Dapper" <juliano@dualcon.com.br>
+Subject: z-newnat16 again......
+Date: Wed, 23 Oct 2002 16:36:38 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021023162201.GA725@Ajftl1.ajfthome.on.ca>
-References: <909130024.3256.122.camel@localhost>
+Message-ID: <000a01c27ac3$21285d20$3200a8c0@dualcon.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0007_01C27AB2.5C0E3EC0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <909130024.3256.122.camel@localhost>; from adam@pentatrade.hu on Fri, Oct 23, 1998 at 04:07:04 -0400
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,61 +16,83 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
-To: Nemeth Adam <adam@pentatrade.hu>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0007_01C27AB2.5C0E3EC0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+[root@teste /]# lsmod
+Module                  Size  Used by    Not tainted
+ipt_MASQUERADE          1184   0  (autoclean)
+iptable_filter          1728     0  (unused)
+iptable_nat            14420   0  [ipt_MASQUERADE]
+ip_conntrack         22188   1  [ipt_MASQUERADE iptable_nat]
+ip_tables              10528   5  [ipt_MASQUERADE iptable_filter =
+iptable_nat]
+
+[root@teste /]# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+iptables: Invalid argument
+
+Linux teste.dualcon.com.br 2.4.19 #1 Qua Out 23 11:54:48 BRST 2002 i586 =
+unknown
 
 
-	For the record, it has been stated by the core team that they
-	will not write a module for an app that has a proprietary 
-component,
-	and since the ICQ server is proprietary, they won't write the 
-module.
 
-	On the positive side, ICQ will work natively through an 
-IPTABLES firewall,
-	although direct connections from client to client will not 
-work.  File transfers
-	are at best iffy as to if they'll work ...The clients need only 
-be configured to
-	send through server.
-	 
-	Since IPTABLES is on my system only for the home/DMZ and there 
-are only
-	four clients that use ICQ here, I've allocated a range of ports 
-for each client in
-	the 4000 range and put in rules to DNAT the connections on 
-those ports, plus
-	configured the clients to use only those ports for transfers 
-(ICQ Firewall settings)
-	...	 
-	This is acceptable to me, but I imagine that on the scale of an 
-ISP that it would be
-	annoying if the ISP were assigning clients non-routable IP's.  
-If the ISP is
-	assigning routable IP's then ICQ will work fine with no 
-adjustments to the firewall
-	between the ISP clients and the Internet.
 
-On 1998.10.23 04:07 Nemeth Adam wrote:
-> Hello,
-> 
-> 	I'm using kernel 2.4 with iptables, and I masquerade intranet
-> clients
-> with it. Users want to use ICQ (ICQ 2000/licq). I know, there was an
-> icq
-> module for ipchains, but I want to use iptables.
-> 	Has anyone written the module yet, or have anyone a trick to
-> make it
-> fully useable?
-> 
-> 	Thanks:	 
-> 				Adam Nemeth
-> 
-> --
-> Udvozlettel:
-> 				Nemeth Adam <adam@pentatrade.hu>
-> 
-> 
+
+Linux Registered user # 237204
+------=_NextPart_000_0007_01C27AB2.5C0E3EC0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>[root@teste /]#=20
+lsmod<BR>Module&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+Size&nbsp; Used by&nbsp;&nbsp;&nbsp; Not=20
+tainted<BR>ipt_MASQUERADE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;=20
+1184&nbsp;&nbsp; 0&nbsp;=20
+(autoclean)<BR>iptable_filter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;=20
+1728&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;=20
+(unused)<BR>iptable_nat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;=20
+14420&nbsp;&nbsp; 0&nbsp;=20
+[ipt_MASQUERADE]<BR>ip_conntrack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+22188&nbsp;&nbsp; 1&nbsp; [ipt_MASQUERADE=20
+iptable_nat]<BR>ip_tables&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+10528&nbsp;&nbsp; 5&nbsp; [ipt_MASQUERADE iptable_filter=20
+iptable_nat]</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>[root@teste /]# iptables -t nat -A =
+POSTROUTING -o=20
+eth0 -j MASQUERADE<BR>iptables: Invalid argument</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Linux teste.dualcon.com.br 2.4.19 #1 =
+Qua Out 23=20
+11:54:48 BRST 2002 i586 unknown</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</DIV>
+<DIV><BR></DIV></FONT>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</DIV></FONT>
+<DIV><FONT face=3DArial size=3D2>Linux Registered user #=20
+237204</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0007_01C27AB2.5C0E3EC0--
 
 
