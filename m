@@ -1,14 +1,14 @@
-From: "Stuart Lamble" <stu@gateway10.homeip.net>
-Subject: RE: Logging default drop
-Date: Thu, 8 Apr 2004 19:40:14 +0200
+From: peter frischknecht <peter@empoweringsolutions.com>
+Subject: Official IMQ support
+Date: Thu, 08 Apr 2004 13:59:12 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000501c41d90$8cea2db0$0464a8c0@stu>
-References: <200404081830.59845.Antony@Soft-Solutions.co.uk>
-Reply-To: <stu@gateway10.homeip.net>
+Message-ID: <1081447150.10056.60.camel@linux.local>
+References: <20040408162803.3624.39959.Mailman@vishnu.netfilter.org>
+Reply-To: peter@empoweringsolutions.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404081830.59845.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040408162803.3624.39959.Mailman@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,48 +21,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I was not aware that I was doing that. Is it to do with this damn
-outlook Cr@P that I am using?
+Is there any chance that we will get IMQ incorporated in future releases of netfilter/kernel?
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-Sent: Thursday, April 08, 2004 7:31 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: Logging default drop
+The development was picked up again (it was unmaintained).
+You can see it here:
+www.linuximq.net
 
+They have patches for 2.4 and 2.6 kernels.
 
-On Thursday 08 April 2004 6:24 pm, Stuart Lamble wrote:
+IMQ, for those who don't already know, IMQ allows for NATting AND providing Bandwidth Control up/downstream.  It Creates an Intermediate Queueing Device that can be used to do the QoS stuff, while the regular Ethernet adapter can perform the NAT.
 
-> Ok, so what does "toppost" mean?
+I have been using IMQ for a very long time (Network with 500 users), and I can vouch for its stability.  It keeps me from having 2 daisy-chained routers on site.
 
-Regards,
+Flames or comments are welcome...C'mon, anybody else out there uses IMQ?
 
-Antony.
+Have a great day,
 
--- 
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing on usenet and in e-mail?
-
-                                                     Please reply to the
-list;
-                                                           please don't
-CC me.
-
-
-
----
-Incoming mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.654 / Virus Database: 419 - Release Date: 4/6/2004
- 
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.654 / Virus Database: 419 - Release Date: 4/6/2004
- 
-
+Peter Frischknecht
 
