@@ -1,11 +1,14 @@
-From: Bart Matthaei <bart@dreamflow.nl>
-Subject: ICMP traffic + iproute + tunnel problems
-Date: Wed, 19 May 2004 23:11:05 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: ftp
+Date: Wed, 19 May 2004 22:17:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040519211105.GH1003@dreamflow.nl>
+Message-ID: <200405192217.02905.Antony@Soft-Solutions.co.uk>
+References: <BAY15-F30mEB4HGXAwx000684fd@hotmail.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <BAY15-F30mEB4HGXAwx000684fd@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,60 +19,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi All,
+On Wednesday 19 May 2004 10:05 pm, azeem ahmad wrote:
 
-I have the following problem:
+> hi all
+> i m unable to browse ftp. it says
+> an error occured opening that folder on the ftp server. make sure you have
+> permissions to access that folder
+> details
+> 200 type set to A
+> 500 Illegal port command
+> 500 LPRT not understood
 
-I have a tunnel between my home router and my colocated machine.
-I use source routing (iproute) to route all traffic coming from my home
-network (public ipspace) over the tunnel.
-
-Everything works fine. But when a user traceroutes a host in my home
-network, or sends traffic to an unreachable host, all ICMP replies are
-coming from the ip address of my cable connection (eth0), which is still
-the default route on the home router itself.
-
-I don't want to change the default route to my tunnel for various reasons I
-don't want to explain here.
-
-217.170.2.120/29 is my home network.
-
-217.170.2.119 is my local tunnel endpoint.
-217.170.2.118 is my remote tunnel endpoint.
-
-I've tried the following:
-
-# this catches all traffic traveling out from eth0 which was originated
-# from the tunnel.
-iptables -A OUTPUT -t mangle -m conntrack --ctorigdst 217.170.2.120/29 -o eth0 -j MARK --set-mark 1
-
-# This sends all the marked packets to routing table 2. I've also added
-# 'nat 217.170.2.119', but it doesn't fix things.
-ip ru add fwmark 1 table 2
-
-# This sends the traffic through the tunnel
-ip ro add default via 217.170.2.118 dev tunnel src 217.170.2.119 table 2
-
-Ok, all of this works. Except for one thing; the source isn't altered.
-
-So the packets are sent through the tunnel, but the source address is still
-the eth0 ip, which can't be routed through the tunnel.
-
-The only logical alternative is SNAT on the OUTPUT chain, which isn't
-possible with netfilter at this point.
-
-Is there another way to do this?
+Do you get the same error when accessing the server from a machine not via the 
+netfilter firewall (eg localhost, or some other client on the same subnet)?
 
 Regards,
 
-Bart Matthaei
+Antony.
 
 -- 
-Bart Matthaei                    bart@dreamflow.nl 
+RTFM may be the appropriate reply, but please specify exactly which FM to R.
 
-Sometimes a cigar is just a cigar.
-                -- Sigmund Freud
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
