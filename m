@@ -1,16 +1,15 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Firewall Setup on RH 9
-Date: 05 Jul 2003 14:20:40 -0400
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Firewall setup at boot - trouble with setting up the LOG target
+Date: Sat, 5 Jul 2003 20:50:49 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1057429240.2823.156.camel@alpha.newkirk.us>
-References: <016201c33fa7$5c755eb0$660210ac@christo>
-	 <n6tbgvkvn94tuq3f8m01d5rah2n97tgnol@4ax.com>
-	 <1057383324.2821.34.camel@alpha.newkirk.us>
-	 <0gvcgvc3jjvjmlog4a49p0lgosd9g9702c@4ax.com>
+Message-ID: <200307052050.49797.Alistair@nerdnet.ca>
+References: <7C9884991ADAE0479C14F10C858BCDF52E3554@alderaan.smgtec.com> <200307042233.46558.Alistair@nerdnet.ca> <n7vcgvs39brkp00l6atko40tdbbdld4sro@4ax.com>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <0gvcgvc3jjvjmlog4a49p0lgosd9g9702c@4ax.com>
+In-Reply-To: <n7vcgvs39brkp00l6atko40tdbbdld4sro@4ax.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -24,75 +23,52 @@ Content-Type: text/plain; charset="us-ascii"
 To: Michal Kepien <lordpopcorn@poczta.onet.pl>
 Cc: netfilter@lists.netfilter.org
 
-On Sat, 2003-07-05 at 03:30, Michal Kepien wrote:
+On July 5, 2003 03:30 am, Michal Kepien wrote:
+> >	KERNEL_DIR=/xxx/xxxx/xxx ./configure --prefix=/
+> >	                        ^^^^^^^^^^^^ being wherever your kernel source
+> > code hides.
+>
+> You mean the source code dir (e.g. /usr/src/linux-2.4.19) or the
+> config file (e.g. /usr/src/linux-2.4.19/.config)?
+	That should be the directory where your current kernel source 
+	cod e is .
 
-> >With iptables FORWARD traffic never touches the INPUT or OUTPUT chains,
-> >those are explicitly for INPUT and OUTPUT to and from the box itself.
-> 
-> I'm using the configuration I presented in the post and it works OK.
-> However, if you know an easier way to achieve the same goal, please
-> let me know :)
+>
+> >	personally I have all my networking delayed until after I'm multiuser
+> >	-- and then only the inside stuff gets started...
+> >	*after* the box is up and stable I start the internet cruft and
+> >	the firewall...
+>
+> You mean you start the firewall manually (i.e. it is not started
+> automatically at boot time)?
+>
+	It is started automatically at boot time .. .I just keep the networking
+	stuff including the firewall until all the processes that do NOT	
+	absolutely require it are started ... including all the system monitoring
+	and other daemons are started... 
 
-# We'll consider eth2 the 'unsecure' LAN, and use ppp0 for external
-# (it could just as easily be eth0 or whatever)
-INTIF1 = eth1
-INTIF2 = eth2
-EXTIF = ppp0
-INTIP1 = 192.168.0.0/24
-INTIP2 = 192.168.1.0/24
-EXTIP = a.b.c.d
-IPT = /sbin/iptables
-ADDFWD = "$IPT -A FORWARD"
-ADDIN = "$IPT -A INPUT
+	I did a *lot* of reading about my systems startup scripts to get this
+	firing correctly ... 
 
-$IPT -F
-$IPT -P INPUT DROP
-$IPT -P FORWARD DROP
+> >	Simple expedience says that you should turn off forwarding
+> >	very early in your startup scripts and then turn it on at the *end*
+> >	of the firewall script.
+>
+> OK, I did it but what does it change? :)
+>
 
-$ADDFWD -m state --state ESTABLISHED,RELATED -j ACCEPT
-$ADDFWD -i $INTIF1 -s $INTIP1 -j ACCEPT
-$ADDFWD -i $INTIF2 -s $INTIP2 -d !$INTIP1 -j ACCEPT
-$ADDFWD -i $INTIF2 -d $INTIP1 -j LOG --log-level debug --log-prefix
-"LAN2Prohib:"
-$ADDFWD -i $INTIF2 -s !$INTIP2 -j LOG --log-level debug --log-prefix
-"LAN2Spoof:"
+	It makes sure that connections *through* your box are properly firewalled.
+	-- I don't bring the ppp0 dsl interface (my internet connection) up until 
+	after the policies are set to DROP .. but that's me being paranoid.
 
-$ADDIN -m state --state ESTABLISHED,RELATED -j ACCEPT
-$ADDIN -i $INTIF1 -j ACCEPT
+> Michal Kepien
 
-$IPT -t nat -A POSTROUTING -o $EXTIF -p SNAT --to $EXTIP
+-- 
 
-
-
-This will let LAN1 connect to LAN2, to the firewall box, or to the
-internet without restriction.  It will let LAN2 connect ONLY to the
-internet (without restriction).  It will let the firewall box connect to
-anything without restriction.
-
-Realistically this should be ACCEPTing only the required ports in
-FORWARD and INPUT, and possibly OUTPUT as well.  Personally I prefer
-DROP policy on OUTPUT and explicit ACCEPT of only traffic I want
-outbound.  As it stands it offers security from incursions from the
-internet or from LAN2, and 'masquerades' LAN1 and LAN2 behind the public
-IP.  (be aware that iptables uses the target MASQUERADE to specify a
-particular form of SNAT where it automatically determines the IP of the
-outbound interface each time, used for dynamic IP setups.)
-
-> Below I attach my conception of packet traffic - it is taken from the
-> Linux IPCHAINS HOWTO, so it may be _not_ up-to-date. If the way
-> packets are treated changed in iptables, please tell me how.
-
-Essentially I already did... ;^)  The best tutorial, including a nice
-diagram (in "Traversing of Tables and Chains"), is Oskar Andreasson's at
-http://iptables-tutorial.frozentux.net .  There is a very different
-diagram, as well as my own firewall script (a rather complex script that
-actually IS a script, with multiple functions and parameters) at the
-minimalist, incomplete http://live.newkirk.us/netfilter/index.html . 
-The short of it is that a packet is inbound, goes through
-nat-PREROUTING, then a routing decision is made:  thisbox?->INPUT 
-else->FORWARD.
-
-j
-
-
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
