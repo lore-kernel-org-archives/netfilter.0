@@ -1,10 +1,13 @@
-From: Paryl Tomasz <Tomasz.Paryl@gze.pl>
-Subject: How to use arptables ?
-Date: Wed, 5 Jun 2002 15:47:52 +0200
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: How to prevent smurf atacks?
+Date: Wed, 5 Jun 2002 09:53:03 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <B4A243E4F5A6D311B31B00A0C9B79A51019482E9@exmail1.dyrekcja.gze.pl>
+Message-ID: <20020605135303.GF29214@cannon.eng.us.uu.net>
+References: <LAW2-F126qZNn1NCpEq000166b1@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <LAW2-F126qZNn1NCpEq000166b1@hotmail.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,14 +19,27 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+To: Francisco Alfonso Martinez Lopez <pijoman@hotmail.com>
+Cc: netfilter@lists.samba.org
 
-Hi
+On Wed, Jun 05, 2002 at 01:27:41PM +0000, Francisco Alfonso Martinez Lopez wrote:
 
-Does anyone how to use arptables in 2.4.18 pre 19 ?.
-I was sucessfully applly two modules into ther ram and what how ?
-Is there any doc ? 
+> 
+> Hi everybody,how I can denied smurf atacks over my host,it's a single 
+> connection to Internet,any possibilitie of denied smurf atack on the 
+> firewall?(my host execute dual boot:suse linux&windows)
 
-Tom
+What exactly do you mean by "smurf attack"? Let us know and
+the rules will follow...
 
+Ramin
+
+> 
+> Thanks in advance,folks!!(...and sorry for my english)
+> 
+> 
+> 
+> _________________________________________________________________
+> Get your FREE download of MSN Explorer at http://explorer.msn.com/intl.asp.
+> 
 
