@@ -1,11 +1,13 @@
-From: Shri Shrikumar <shri@urbyte.com>
-Subject: Help setting up a firewall on a machine
-Date: Fri, 16 May 2003 12:30:26 +0100
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: error compiling iptables-1.2.8 on linux kernel-2.5.69
+Date: 16 May 2003 14:22:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EC4CBD2.9000004@urbyte.com>
+Message-ID: <1053087745.659.30.camel@tux.rsn.bth.se>
+References: <20030516081758.GH30683@gsib.sl.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030516081758.GH30683@gsib.sl.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,52 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Anatoly Pugachev <mator@gsib.ru>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
+On Fri, 2003-05-16 at 10:17, Anatoly Pugachev wrote:
+> Hello.
+> Sorry if i missed something essencials from the docs on compiling
+> iptables (INSTALL), but i'm unable to compile it. Here what i have:
+> iptables 1.2.8 got from netfilter.org
+> linux kernel version 2.5.69 from kernel.org
+> gcc-3.2.3 from RH rawhide
+> libc-2.3.2 from RH rawhide
+> and errors compiling iptables, 
+> $ make KERNEL_DIR=../linux-2.5.69 2>&1 | tee error-log.txt
+> in attached text file.
+> PS: i've succesfully compiled iptables, using source of 2.4.20 kernel.
+> So can i use this binary with newer linux kernel 2.5.X ?
 
-I am just configuring a machine and would like to setup a firewall on it
-using iptables. I am keen on setting up properly on the first go since I
-dont want to be left with a machine that I cant ssh into.
+Try itables from cvs instead. You really expect a developmentkernel to
+compile with a stable iptables? :)
 
-The machine has just one nic eth0 which is connected to the net. There
-is not NAT or MASQ to be done
+The binary compiled against 2.4.20 should work, but wheres the fun in
+that? :)
 
-Here is what I have so far.
-
-/sbin/iptables -N block
-/sbin/iptables -A block -p ICMP -j ACCEPT
-/sbin/iptables -A block -m state --state ESTABLISHED,RELATED -j ACCEPT
-/sbin/iptables -A block -j DROP
-
-/sbin/iptables -A INPUT -j block
-/sbin/iptables -A FORWARD -j block
-
-What rules do I need to add to the block chain to allow any new
-connections from machine to the outside world ? would it just be
-
-/sbin/iptables -A block -m state --state NEW -o eth0 -j ACCEPT
-
-I am also going to be hosting a site, so the following rule will be
-added as well,
-
-/sbin/iptables -I block -p tcp --dport 80 -j ACCEPT
-
-
-Do these rules sound about right ?
-
-
-Thanks and regards,
-
-
-
-Shri
 -- 
-------------------------------------------------------------------------
-Shri Shrikumar       U R Byte Solutions           Tel:   0845 644 4745
-I.T. Consultant	     Edinburgh, Scotland          Mob:   0773 980 3499
-                      Web: www.urbyte.com          Email: shri@urbyte.com
-
-
+/Martin
 
