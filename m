@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Forwarding help
-Date: Thu, 27 Nov 2003 13:21:16 +0000
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: quick questions ---
+Date: Thu, 27 Nov 2003 14:26:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311271321.16493.Antony@Soft-Solutions.co.uk>
-References: <000701c3b469$17203ba0$14d36c50@anonymous> <200311271258.29327.Antony@Soft-Solutions.co.uk> <1069938876.20811.5.camel@raylinux.internal>
+Message-ID: <1069939599.12114.54.camel@elendil.intranet.cartel-securite.net>
+References: <FDB52A0429DFD31196FB0008C7D972D50EA57B26@OST_EXCH_USR5>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1069938876.20811.5.camel@raylinux.internal>
+In-Reply-To: <FDB52A0429DFD31196FB0008C7D972D50EA57B26@OST_EXCH_USR5>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +17,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Knight, Steve" <Steve.Knight@bskyb.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 27 November 2003 1:14 pm, Ray Leach wrote:
+Le jeu 27/11/2003 =E0 14:02, Knight, Steve a =E9crit :
+> 1) can iptables use eth0:0 as a valid interface distinct from eth0 ?
 
-> Halflife like most network games uses UDP, so should be able to work
-> through nat.
+No, because eth0:0 is _not_ an interface, it is an alias (afaik, usage
+of eth0:0 aliases are deprecated for this very reason). It's just
+another IP to which your interface (eth0) answers.
 
-I'm not sure I see the reasoning here.   Just because something uses UDP 
-doesn't automatically mean it will work through nat?
+>  So I can use eth0 as LAN internal i/f and eth0:0 as DMZ internal i/f.
 
-The criterion for whether a protocol will work through nat or not is whether 
-the IP address that each end-system thinks it has gets embedded in the 
-communication somewhere or not.   If those addresses do get embedded in the 
-packet contents, then it won't work through nat without a helper which 
-understands where and how the embedding is done, and can fiddle about with 
-it.
+This is to me a _very_ bad idea.
 
-I don't think it makes any difference whether the packets get to the other end 
-by TCP, UDP or anything else?
+The point of creating a DMZ is having public services hosted on a
+different ethernet segment than the one used for LAN. As hosts with
+public services are the most likely to get compromised, DMZ creates a
+compartiment so a cracker who would root one of them won't get full
+access to LAN stations. If your public services are on the same ethernet
+segment than LAN is, the intruder will have full access to its
+ressources... Setting up a different IP addressing scheme on the same
+ethernet segment is no security at all.
 
-Antony.
+If you want more info on what one can do once root on an ethernet
+segment :
 
--- 
-The first fifty percent of an engineering project takes ninety percent of the 
-time, and the remaining fifty percent takes another ninety percent of the 
-time.
+	http://www.arp-sk.org/
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> 2) Back when I did my checkpoint certs we covered "static NAT" - simple
+> one-to-one address translation, rather than "hide NAT" - aka iptables S=
+NAT /
+> MASQUERADE....
+> ...the question I have is -=20
+> is the example given in Ziegler starting on p280 and table 7.1 "Host
+> Forwarding to Servers in a Privately Addressed DMZ" an example of "stat=
+ic
+> NAT"?
 
+If my Ziegler remembers are OK, yes.
+
+To map an IP, it should be something like=20
+
+	iptables -t nat -A PREROUTING -d $PubIP -j DNAT --to $PrivIP
+
+If your want to map one service only (aka port forwarding) :
+
+	iptables -t nat -A PREROUTING -d $PubIP --dport 80 \
+		-DNAT --to $PrivIP:80
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
 
