@@ -1,55 +1,39 @@
-From: =?gb2312?q?Bill=20Zhao?= <bzhaoa@yahoo.com.cn>
-Subject: ---How can I to the outside
-Date: Thu, 4 Sep 2003 16:08:45 +0800 (CST)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030904080845.34573.qmail@web15107.mail.bjs.yahoo.com>
+From: Kjetil Torgrim Homme <kjetilho=6miFZF/5cTBuMpJDpNschA@public.gmane.org>
+Subject: [quagga-users 369] Re: FW: Antefacto and 2.4.21
+Date: Wed, 03 Sep 2003 11:19:35 +0200
+Sender: quagga-users-bounces=UOy77sIEA+cAd7ICUelF/Q@public.gmane.org
+Message-ID: <1r65ka6xg8.fsf@glesvat.ifi.uio.no>
+References: <Pine.LNX.4.44.0309011948200.5869-100000@l>
+	<3F5551F1.5040505@simutronics.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <quagga-users-bounces@lists.quagga.net>
+In-Reply-To: <3F5551F1.5040505@simutronics.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <http://lists.quagga.net/mailman/listinfo/quagga-users>,
+	<mailto:quagga-users-request@lists.quagga.net?subject=unsubscribe>
+List-Archive: <http://lists.quagga.net/pipermail/quagga-users>
+List-Post: <mailto:quagga-users@lists.quagga.net>
+List-Help: <mailto:quagga-users-request@lists.quagga.net?subject=help>
+List-Subscribe: <http://lists.quagga.net/mailman/listinfo/quagga-users>,
+	<mailto:quagga-users-request@lists.quagga.net?subject=subscribe>
+Errors-To: quagga-users-bounces@lists.quagga.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: jimm=2zrVkTMJS9g5UWNf+nJyDw@public.gmane.org
+Cc: "LinuxVirtualServer.org users mailing list." <lvs-users=9NwHyUdJu3J9kDVj6ABq+kzrnptfnCPw@public.gmane.org>, netfilter=wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org, quagga-users=UOy77sIEA+cAd7ICUelF/Q@public.gmane.org, "=?iso-8859-1?q?Elizabeth_Stokely_<lizabeth=2zrVkTMJS9g5UWNf+nJyDw@public.gmane.org>._Jo=E3o_?=
+	=?iso-8859-1?q?Nuno_Mendes?=" <lizabeth=2zrVkTMJS9g5UWNf+nJyDw@public.gmane.org>
 
-ICBUaGUgc2NyaXB0IGJlbG93IGlzIHRoZSBmaXJld2FsbCBzY3JpcHQgZm9yIG15IGRlcHQKb2Yg
-dGhlIGNvbXBhbnkuIExhbiBjYW4gYWNjZXNzIHRoZSBvdXRzaWRlIG5ldHdvcmsgYnkKbmF0IGFu
-ZCBvdXRzaWRlIGNhbiB2aXNpdCB0aGUgd2ViIGFuZCBmdHAgc2VydmVyIApsb2NhdGVkIGluIExh
-bi4gCiAgSXQgd29yayB2ZXJ5IHdlbGwgYnV0IGl0IG5lZXQgdGhlIG91dHNpZGUgaGFzIGEKcm91
-dGUgZW50cnkgdGhhdCBpcyB0YWtpbmcgdGhpcyBmaXJld2FsbCBhcyBnYXRld2F5IHRvCmVudGVy
-IHRoaXMgTGFuLiBBY3R1YWxseSBJIGhvcGUgdGhlIHdlYiBhbmQgZnRwIHNlcnZlcgpjYW4gCnNo
-b3cgdGhlbXNlbGYgYXQgZmlyZXdhbGwgdG8gdGhlIG91dHNpZGUuIElmIHNvIG5vCm5lZWQgCnRv
-IGhhdmUgdGhlIHJvdXRlIGVudHJ5IEkgbWVudGlvbmVkIGFib3ZlLgoKICBJIGRpZCB0aGluayBt
-dWNoIGhvdyB0byBkbyBpdCBhbmQgZmFpbCB0byB3b3JrIG91dC4KICBTb21lYm9keSBjYW4gaGVs
-cCBtZSBvciByZW1pbmQgbWUgb2YgdGhlIG1ldGhvZD8KClRoYW5rcyBpbiBhZHZhbmNlIQoKQmls
-bCBaaGFvICAgCiAgIAoKIyEvYmluL3NoCmVjaG8gMCA+Ci9wcm9jL3N5cy9uZXQvaXB2NC9pcF9m
-b3J3YXJkTEFOX0lQX05FVD0nMTkyLjE2OC42My4wLzI0JwpMQU5fTklDPSdldGgxJwpXQU5fSVA9
-JzEwLjE2MS4yNC4yMjAnCldBTl9OSUM9J2V0aDAnClBTX0lQPScxOTIuMTY4LjYzLjE5OCcKCiMg
-bG9hZCBzb21lIG1vZHVsZXMgKGlmIG5lZWRlZCkKbW9kcHJvYmUgaXBfbmF0X2Z0cAptb2Rwcm9i
-ZSBpcF9jb25udHJhY2tfZnRwbW9kcHJvYmUgaXBfY29ubnRyYWNrX2Z0cAoKIyBGbHVzaAppcHRh
-YmxlcyAtdCBuYXQgLUYgUE9TVFJPVVRJTkcKaXB0YWJsZXMgLXQgbmF0IC1GIFBSRVJPVVRJTkcK
-aXB0YWJsZXMgLXQgbmF0IC1GIE9VVFBVVAppcHRhYmxlcyAtRgoKaXB0YWJsZXMgLVAgSU5QVVQg
-RFJPUAppcHRhYmxlcyAtUCBGT1JXQVJEIERST1AKaXB0YWJsZXMgLVAgT1VUUFVUIEFDQ0VQVAoK
-IyBlbmFibGUgTWFzcXVlcmFkZSBhbmQgZm9yd2FyZGluZwppcHRhYmxlcyAtdCBuYXQgLUEgUE9T
-VFJPVVRJTkcgLXMgJExBTl9JUF9ORVQgLWoKTUFTUVVFUkFERQppcHRhYmxlcyAtQSBGT1JXQVJE
-IC1qIEFDQ0VQVCAtaSAkTEFOX05JQyAtcwokTEFOX0lQX05FVAppcHRhYmxlcyAtQSBGT1JXQVJE
-IC1tIHN0YXRlIC0tc3RhdGUKRVNUQUJMSVNIRUQsUkVMQVRFRCAtaiBBQ0NFUFQKCiMgTWFpbnRh
-aW5pbmcgcm91dGVyIGZyb20gTEFOCmlwdGFibGVzIC1BIElOUFVUIC1pICRMQU5fTklDIC1qIEFD
-Q0VQVAppcHRhYmxlcyAtQSBJTlBVVCAtbSBzdGF0ZSAtLXN0YXRlIEVTVEFCTElTSEVELFJFTEFU
-RUQKLWogQUNDRVBUCgojIE9wZW4gcG9ydHMgdG8gc2VydmVyIG9uIExBTgogaXB0YWJsZXMgLUEg
-Rk9SV0FSRCAtaiBBQ0NFUFQgLXAgdGNwIC0tZHBvcnQgODAKIGlwdGFibGVzIC10IG5hdCAtQSBQ
-UkVST1VUSU5HIC1pIGV0aDAgLXAgdGNwIC0tZHBvcnQgCiAgICA4MCAtaiBETkFUIC0tdG8gJFBT
-X0lQOjgwCiBpcHRhYmxlcyAtQSBGT1JXQVJEIC1qIEFDQ0VQVCAtcCB0Y3AgLS1kcG9ydCAyMQog
-aXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkgZXRoMCAtcCB0Y3AgLS1kcG9ydAoyMSAt
-aiBETkFUIC0tdG8gJFBTX0lQOjIxCgojIEVuYWJsZSBmb3J3YXJkaW5nCmVjaG8gMSA+IC9wcm9j
-L3N5cy9uZXQvaXB2NC9pcF9mb3J3YXJkCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkRvIFlvdSBZYWhvbyE/IArG9NPDtefTytXKusWj
-rMHsu+HRxbuizahbye3B2cbkvrPBxLXn07BdtcS2r7jQ98jBpqOsu7nT0M34wufJ48/xzbcr0cW7
-os2oytXS9Lv6tcjE48C0xMMKaHR0cDovL2NuLnJkLnlhaG9vLmNvbS9tYWlsX2NuL3RhZy8/aHR0
-cDovL2NuLm1lc3Nlbmdlci55YWhvby5jb20KCg==
+[Jim Miller]:
+>
+>   Well, I'm in the middle stages of setting up two linux server
+>   firewalls (iptables/netfilter - doing stateful firewalling) with
+>   keepalived (vrrp) and the LVS framework kernel patch, in a
+>   Master/Backup configuration (keepalive seems to like having the
+>   lvs framework to build on).
+
+what are you using LVS for?  sounds like you don't need it.
+keepalived runs fine without LVS.
+
+-- 
+Kjetil T.			|  read and make up your own mind
+				|  http://www.cactus48.com/truth.html
