@@ -1,13 +1,11 @@
-From: "Vlad H." <cpsgx@yahoo.com>
-Subject: Re: How to build a better security setup for my problem?
-Date: Sat, 13 Mar 2004 10:19:27 -0800 (PST)
+From: MaXxX <maxxx@anime-h.com>
+Subject: terminating connections when an interface goes down
+Date: Sat, 13 Mar 2004 19:24:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040313181927.80861.qmail@web41605.mail.yahoo.com>
-References: <200403131750.10374.Antony@Soft-Solutions.co.uk>
+Message-ID: <1127959457.20040313192408@anime-h.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-335992904-1079201967=:76707"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403131750.10374.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +15,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
---0-335992904-1079201967=:76707
-Content-Type: text/plain; charset=us-ascii
+Hello.
+
+Having recently switched to a faster ISP but with dynamically assigned
+(and forcibly changed every 24h) IP, I'd like the conntrack module to
+TERMINATE all active connections when the IP changes. Some programs
+behave very badly when their connections are left to time out, and
+some services ban a user for quite a long time when they detect a
+double login (and that's how a timeout-IP change-relogin looks to
+them)...
+
+So far I've been using the MASQUERADE target, but all the difference
+between it and SNAT is that it forgets its connections. What I'd like
+is that it terminated them - preferably by generating a two-way
+FIN+RST (or whatever a "terminate" packet looks like).
+
+Is there an option I can use for that, or should I try to make a patch
+for it (if so, what source file should I be mostly looking at?)
+
+-- 
+ |\  /|      \~~~/     \~~~/
+ | \/ |  /\   > <  \~/  > <    ICQ# 3146019
+ |____| /__\ /___\ /_\ /___\    IQ# 3.14159
+"This is Pearl Harbor! Japanese aircraft incom-" NO CARRIER
 
 
-1.) What activity are you trying to allow?
-General internet access for a small group of users from a larger local network: web, ftp, mail, etc.
-
-2.) What activity are you trying to prevent?
-Deny internet access for all other local users.
-
-3.) What is your concern?
-A denied user can change his mac address to aa:aa:aa:aa:aa:aa and ip address to x.x.x.x for example and become a valid internet user.
-
-
-Do you Yahoo!?
-Yahoo! Mail - More reliable, more storage, less spam
---0-335992904-1079201967=:76707
-Content-Type: text/html; charset=us-ascii
-
-<DIV>
-<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0 ?>
-<TBODY>
-<TR>
-<TD>
-<P><FONT size=2>1.) What&nbsp;activity are you trying to allow?<BR>General internet access for a small group of users from a larger local network: web, ftp, mail, etc.</FONT></P>
-<P><FONT size=2>2.) What activity are you trying to prevent?<BR>Deny internet access for all other local users.</FONT></P>
-<P><FONT size=2>3.) What is your concern?<BR>A denied user can change his mac address to aa:aa:aa:aa:aa:aa and ip address to x.x.x.x&nbsp;for example&nbsp;and become a valid internet user.</FONT></P></TD></TR></TBODY></TABLE></DIV><p><font face=arial size=-1>Do you Yahoo!?<br>
-<a href="http://us.rd.yahoo.com/mailtag_us/*http://mail.yahoo.com" target="_blank"><b>Yahoo! Mail</a></b> - More reliable, more storage, less spam
---0-335992904-1079201967=:76707--
 
