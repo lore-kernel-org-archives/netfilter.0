@@ -1,14 +1,11 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: RE: New connection to windows boxes very slow, very fast
-	afterinitial delay
-Date: Tue, 16 Mar 2004 10:53:36 -0500
+From: Jose Luis Faria <jose@di.uminho.pt>
+Subject: forward for some IPs and SNAT the rest
+Date: Tue, 16 Mar 2004 15:58:46 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1079452416.2021.128.camel@grendel>
-References: <C8DE82BEF24D0146862937D2A9DD0E92026843@qlmail2.qlogitek.com>
+Message-ID: <40572436.9080308@di.uminho.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms030503020302070506080009"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <C8DE82BEF24D0146862937D2A9DD0E92026843@qlmail2.qlogitek.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +15,104 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Miguel Laborde <Miguel.Laborde@qlogitek.com>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tue, 2004-03-16 at 10:33, Miguel Laborde wrote:
-> Hi Ray, 
-> 	thanks for the reply however I don't think this is a netbios issue. I realize I said \\dmzmachine but really in this case I'm using an IP address and I'm connecting to the c$ drive so there shouldn't be any Netbios name lookups
+This is a cryptographically signed message in MIME format.
 
-I think you are confused. _NetBEUI_ is its own stand-alone protocol.
-When older systems use IP, its actually NetBIOS/IP. Do a:
-netstat -an
+--------------ms030503020302070506080009
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-and you should see ports between 137-139 open. These are the NetBIOS
-ports.
+Hello,
 
-As for your question about Windows creating a new session based on an
-ACK packet, this is false. Windows properly returns a RST to these
-packets. SYN and SYN/PSH are the only two valid flag combinations I've
-found on Windows for connection establishment. 
-
-Now, it *could* be that you are banging your head against the state
-table time out. This is 5 days by default, or less if one end signals a
-Window size of zero (time-wait). If the session is sitting quieter for
-longer than that, Netfilter could be killing the session. You could fix
-this by writing a rule that passes ACK packets from the outside host,
-but this would be a potential security hole. Best fix would be some kind
-of a keep alive (file copy running on a scheduled process or something
-similar).
-
-HTH,
-Chris
+I have a firewall inside my organization, but I want to preserve some 
+source IPs,
+and the rest must be SNATed:
 
 
+host 1 - 192.168.0.1 ------------\
+                                  \
+                                   \ +--------------+
+                                    \|  firewall    | 193.137.1.1 (ex.)    
+host 2 - 192.168.0.2 ----------------|  with        |---------------> 
+internet
+                                    /|  iptables    |       |
+                                   / +--------------+       |
+                                  /  /                      | internal
+host 3 - 192.168.0.3 ------------/  /                       |  routing
+                                   /                        |
+                                  /                         v
+host 4 - 192.168.0.4 ------------/                        license server
+
+the host 1 and host 2 must arrive to the license server with the original IP( 192.168.0.1/2) and the others host must be translated with SNAT into 193.137.1.1.
+
+
+some help?
+
+
+P.S: Now every hosts use the SNAT for all, but I want to exclude some of them.
+-- 
+
+   :)  cumprimentos
+------------------------------------
+         Jose Luis Faria
+         Universidade do Minho
+   /\    Escola de Engenharia
+  /\/\   Departamento Informatica
+         http://www.di.uminho.pt/~jose
+
+
+--------------ms030503020302070506080009
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIFvjCC
+AtswggJEAgErMA0GCSqGSIb3DQEBBAUAMIGwMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFTWlu
+aG8xDjAMBgNVBAcTBUJyYWdhMR4wHAYDVQQKExVVbml2ZXJzaWRhZGUgZG8gTWluaG8xJDAi
+BgNVBAsTG0RlcGFydGFtZW50byBkZSBJbmZvcm1hdGljYTEYMBYGA1UEAxMPY2EuZGkudW1p
+bmhvLnB0MSEwHwYJKoZIhvcNAQkBFhJhZG1pbkBkaS51bWluaG8ucHQwHhcNMDQwMjE4MTM0
+MDUwWhcNMDkwODEyMTM0MDUwWjCBujELMAkGA1UEBhMCUFQxDjAMBgNVBAgTBU1pbmhvMQ4w
+DAYDVQQHEwVCcmFnYTEeMBwGA1UEChMVVW5pdmVyc2lkYWRlIGRvIE1pbmhvMSQwIgYDVQQL
+ExtEZXBhcnRhbWVudG8gZGUgSW5mb3JtYXRpY2ExIzAhBgNVBAMUGkpvc8OpIEx1w61zIE9s
+aXZlaXJhIEZhcmlhMSAwHgYJKoZIhvcNAQkBFhFqb3NlQGRpLnVtaW5oby5wdDCBnzANBgkq
+hkiG9w0BAQEFAAOBjQAwgYkCgYEA2H9OzAtDcTuRqsi0uNNEAFa6ZiP1a4Ze8Uz3am4fXU8L
+FCz5VQ40YScuc9s9F9AYF5trxmEzKxoM6bFyDzfHnuqgjT35nDSSu0SR6+fFyJvtlK6WkzY9
+tySkPs7K9lt+d3R+LNpDpShuAe8VFnQDD3zSCzMRjR8z6uO2lv0Gg9kCAwEAATANBgkqhkiG
+9w0BAQQFAAOBgQCx3AJnb/y3+YGbzoZginjo9ZVpJ4x78bSg5mekcrE9EGjTjlWL21/3hsZ3
+0clqExeemqMs+nIAa/d1rvKCmVfkwV3KrwGWABwYTyakUCpL3JLb+iZ+VVszE36pfEAdBNJS
+RrHJ897zWOC46ywVpYYcxj3x3nfPFrvhyfTE3c3zwjCCAtswggJEAgErMA0GCSqGSIb3DQEB
+BAUAMIGwMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFTWluaG8xDjAMBgNVBAcTBUJyYWdhMR4w
+HAYDVQQKExVVbml2ZXJzaWRhZGUgZG8gTWluaG8xJDAiBgNVBAsTG0RlcGFydGFtZW50byBk
+ZSBJbmZvcm1hdGljYTEYMBYGA1UEAxMPY2EuZGkudW1pbmhvLnB0MSEwHwYJKoZIhvcNAQkB
+FhJhZG1pbkBkaS51bWluaG8ucHQwHhcNMDQwMjE4MTM0MDUwWhcNMDkwODEyMTM0MDUwWjCB
+ujELMAkGA1UEBhMCUFQxDjAMBgNVBAgTBU1pbmhvMQ4wDAYDVQQHEwVCcmFnYTEeMBwGA1UE
+ChMVVW5pdmVyc2lkYWRlIGRvIE1pbmhvMSQwIgYDVQQLExtEZXBhcnRhbWVudG8gZGUgSW5m
+b3JtYXRpY2ExIzAhBgNVBAMUGkpvc8OpIEx1w61zIE9saXZlaXJhIEZhcmlhMSAwHgYJKoZI
+hvcNAQkBFhFqb3NlQGRpLnVtaW5oby5wdDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA
+2H9OzAtDcTuRqsi0uNNEAFa6ZiP1a4Ze8Uz3am4fXU8LFCz5VQ40YScuc9s9F9AYF5trxmEz
+KxoM6bFyDzfHnuqgjT35nDSSu0SR6+fFyJvtlK6WkzY9tySkPs7K9lt+d3R+LNpDpShuAe8V
+FnQDD3zSCzMRjR8z6uO2lv0Gg9kCAwEAATANBgkqhkiG9w0BAQQFAAOBgQCx3AJnb/y3+YGb
+zoZginjo9ZVpJ4x78bSg5mekcrE9EGjTjlWL21/3hsZ30clqExeemqMs+nIAa/d1rvKCmVfk
+wV3KrwGWABwYTyakUCpL3JLb+iZ+VVszE36pfEAdBNJSRrHJ897zWOC46ywVpYYcxj3x3nfP
+FrvhyfTE3c3zwjGCA6gwggOkAgEBMIG2MIGwMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFTWlu
+aG8xDjAMBgNVBAcTBUJyYWdhMR4wHAYDVQQKExVVbml2ZXJzaWRhZGUgZG8gTWluaG8xJDAi
+BgNVBAsTG0RlcGFydGFtZW50byBkZSBJbmZvcm1hdGljYTEYMBYGA1UEAxMPY2EuZGkudW1p
+bmhvLnB0MSEwHwYJKoZIhvcNAQkBFhJhZG1pbkBkaS51bWluaG8ucHQCASswCQYFKw4DAhoF
+AKCCAkcwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDQwMzE2
+MTU1ODQ2WjAjBgkqhkiG9w0BCQQxFgQUAJtTIg24dz9k94M2EoAZuQJP+QgwUgYJKoZIhvcN
+AQkPMUUwQzAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYF
+Kw4DAgcwDQYIKoZIhvcNAwICASgwgccGCSsGAQQBgjcQBDGBuTCBtjCBsDELMAkGA1UEBhMC
+UFQxDjAMBgNVBAgTBU1pbmhvMQ4wDAYDVQQHEwVCcmFnYTEeMBwGA1UEChMVVW5pdmVyc2lk
+YWRlIGRvIE1pbmhvMSQwIgYDVQQLExtEZXBhcnRhbWVudG8gZGUgSW5mb3JtYXRpY2ExGDAW
+BgNVBAMTD2NhLmRpLnVtaW5oby5wdDEhMB8GCSqGSIb3DQEJARYSYWRtaW5AZGkudW1pbmhv
+LnB0AgErMIHJBgsqhkiG9w0BCRACCzGBuaCBtjCBsDELMAkGA1UEBhMCUFQxDjAMBgNVBAgT
+BU1pbmhvMQ4wDAYDVQQHEwVCcmFnYTEeMBwGA1UEChMVVW5pdmVyc2lkYWRlIGRvIE1pbmhv
+MSQwIgYDVQQLExtEZXBhcnRhbWVudG8gZGUgSW5mb3JtYXRpY2ExGDAWBgNVBAMTD2NhLmRp
+LnVtaW5oby5wdDEhMB8GCSqGSIb3DQEJARYSYWRtaW5AZGkudW1pbmhvLnB0AgErMA0GCSqG
+SIb3DQEBAQUABIGACgrgPMWnlvbbr7zJkufdG6NOArmkJsYj4mZ5aVoE0Zw3OwNTU5zUkXSP
+WHR3eAzYM/AwUqElMqCNWQM+Rr+yKNMg3LQ5wnWZCHvsXZkMEpk+hX/KOQg+rfuC4Kb8JfMF
+NPsXj6Cfxbzx2QYH7GAHXLrLNqnmMjvoCYYDht7EedUAAAAAAAA=
+--------------ms030503020302070506080009--
 
