@@ -1,11 +1,14 @@
-From: "Oskar Andreasson" <blueflux@koffein.net>
-Subject: RE: FTP failed
-Date: Fri, 5 Jul 2002 12:20:41 +0200
+From: Jan Humme <jan.humme@xs4all.nl>
+Subject: Re: advanced ip accounting
+Date: Fri, 5 Jul 2002 13:00:09 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <JDEDJDGNHFIOEFENPFELEEBFCMAA.blueflux@koffein.net>
-References: <200FAA488DE0D41194F10010B597610D2BA246@JUPITER>
+Message-ID: <02070513000901.14428@Lms>
+References: <20020705074508.GB2006@mt.mk.cvut.cz>
+Reply-To: jan.humme@xs4all.nl
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200FAA488DE0D41194F10010B597610D2BA246@JUPITER>
+In-Reply-To: <20020705074508.GB2006@mt.mk.cvut.cz>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,50 +18,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: George Vieira <GeorgeV@citadelcomputer.com.au>, 'Mitsuo HAMADA' <mhamada@qwanty.com>, netfilter@lists.samba.org
+To: Martin Tomasek <mtd@mk.cvut.cz>
+Cc: netfilter@lists.samba.org
 
-
-> BTW: Why is it I'm seeing so many people using the ! so much?? I actually
-> never use it except for possibly #!/bin/bash and that's it.
+On Friday 05 July 2002 09:45, Martin Tomasek wrote:
+> Hello all,
 >
-
-Because it's simple and timesaving, both for you and the firewall,
-basically. For example, why write:
-
-iptables -i eth0 -j ACCEPT
-iptables -i eth1 -j ACCEPT
-iptables -i eth2 -j ACCEPT
-iptables -i eth3 -j ACCEPT
-iptables -i tr0 -j ACCEPT
-iptables -i ppp0 -j ACCEPT
-
-When you could write:
-
-iptables -i ! lo -j ACCEPT
-
-This is an extremely simple example, of course, but still valid. It puts
-less stress on you, as well as cpu cycles.
-
-Have a nice day,
-
-----
-Oskar Andreasson
-http://iptables-tutorial.haringstad.com
-http://people.unix-fu.org/andreasson/
-mailto: blueflux@koffein.net
-
-> thanks,
-> George Vieira
-> Systems Manager
-> Citadel Computer Systems P/L
-> http://www.citadelcomputer.com.au
+> I'm looking for some accounting for netfilter, which should be used like
+> this:
 >
+> iptables -A FORWARD -s 1.2.0.0/16 -j ACCOUNTING
 >
+> and which sends data to userspace periodically. It should collect
+> protocol-ips-ports triplets, for which it will count bytes.
+> I could't use -j ULOG or pcap because of big overhead -- I want to use
+> it on gigabit router.
 >
->
+> Have you seen something like this?
 
+How about using the "IP accounting" facility of iptables? Try:
 
+#iptables -A FORWARD -s 1.2.0.0/16
+
+i.e. without the -j option, to create a counter, and use
+
+#iptables -L -v
+
+to read out the results.
+
+#iptables -Z 
+
+to reset.
+
+You can make similar entries to count by service port.
+
+Jan Humme.
 
