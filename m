@@ -1,15 +1,14 @@
-From: "Dharmendra T." <dharmu@nsecure.net>
-Subject: Re: Bridge/VPN question.
-Date: 23 Jun 2004 15:00:20 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Routing between two firewalls
+Date: Wed, 23 Jun 2004 10:34:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087983028.7624.55.camel@dharmu.nsecure.net>
-References: <041201c45865$cb810cf0$c10da8c0@arvmobile>
-	<1087980148.7626.35.camel@dharmu.nsecure.net> 
-	<200406231008.40635.Antony@Soft-Solutions.co.uk>
+Message-ID: <200406231034.54767.Antony@Soft-Solutions.co.uk>
+References: <40D94B3D.8050308@openscroll.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406231008.40635.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <40D94B3D.8050308@openscroll.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,64 +21,56 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-06-23 at 14:38, Antony Stone wrote:
-> On Wednesday 23 June 2004 9:42 am, Dharmendra T. wrote:
-> 
-> > Hi,
-> >
-> > Are there any other rules you have defined? If no, this may work:
-> >
-> > iptables -P INPUT DROP
-> > iptables -P OUTPUT DROP
-> > iptables -P FORWARD DROP
-> >
-> > iptables -A FORWARD -o eth0 -p tcp -m tcp -d <approved mail server>
-> > --dport 25 -j ACCEPT
-> >  iptables -A OUTPUT -o eth0 -p tcp -m tcp -d <approved mail server>
-> > --dport 25 -j ACCEPT
-> 
-> The above rules (if you are propsing them as a complete ruleset) are a highly 
-> secure system - nothing will get through it, and nothing will get to 
-> communicate with the box itself.
-> 
-> Why?
-> 
-> 1. You have a default DROP policy on FORWARD (good idea), and a rule allowing 
-> packets to TCP port 25 on a specific server, but no rule allowing replies 
-> back again.   Therefore no traffic gets *through* the machine.
-> 
-> 2. You have a default DROP policy on INPUT, and no rules in the INPUT chain 
-> allowing anything at all, therefore no packets can get in (which makes the 
-> rule in the OUTPUT chain allowing some packets out somewhat pointless).
-> 
-> Regards,
-> 
-> Antony.
-> 
-> -- 
-> "Black holes are where God divided by zero."
-> 
->  - Steven Wright
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
+On Wednesday 23 June 2004 10:19 am, Sudhakar Chandra wrote:
 
-Yes I agree. But these rules were given assuming that the user has given
-Required rulsets (Assuming means that the user can connect to the
-approved mail server. Please check the last mail to which I replied).
+> I have a setup that I assume should be pretty common.  I have a LAN
+> (192.168.100.0/24) which has two gateways / firewalls on it.  Both the
+> gateways are dual-homed.
+>
+> LAN ---> (192.168.100.1) Gateway 1 (isp1.global.ip) --->
+> LAN ---> (192.168.100.2) Gateway 2 (isp2.global.ip) --->
+>
+> Gateway 1 routes through ISP1 and Gateway 2 through ISP2.  Some machines
+> in my LAN have .1 set as the gateway and some have .2 as the gateway.
+>
+> I have my mail server connected to one of the global IPs that ISP2 has
+> given me.  Or in other words, mail server is on the same subnet as the
+> external interface of Gateway 2.
+>
+> As things are today, packets originating on machines having Gateway 1 as
+> their default gateway traverse out through ISP1, the global internet,
+> back through ISP2 into my global ISP2 subnet.  This is a waste of
+> bandwidth as well as slow.
+>
+> I want to set up a rule on Gateway 1 such that all packets destined to
+> my mail server (actually, my entire ISP2 subnet) should be sent to
+> Gateway 2 for routing.
+>
+> I tried adding a static route on Gateway 1 to route all packets destined
+> to the mail server to Gateway 2 like so:
+>
+> route add -host mail.server.ip gw 192.168.100.2
+>
+> After I set this up, I am able to traceroute to mail server (packets
+> flow through Gateway 2).  But when I try connecting to port 25, nothing
+> happens.
+
+Do you have FORWARDing rules on both gateways allowing TCP port 25 packets 
+from your internal network to the mail server?
 
 Regards,
--- 
-Dharmendra T.
-Linux Security and Admin,
-www.nsecure.net
 
-This message is intended for the addressee only. It may contain
-privileged or confidential information. If you have received
- this message in error, please notify the sender and destroy the message
-immediately. Unauthorised use or reproduction of 
-this message is strictly prohibited.
+Antony.
+
+-- 
+There are two possible outcomes:
+
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
