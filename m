@@ -1,10 +1,11 @@
-From: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
-Subject: Do these rules cut it?
-Date: Mon, 17 Feb 2003 19:11:24 +0900
+From: Chris Barnes <runtimeerror@bigpond.com>
+Subject: i need serious help with netfilter related software
+Date: 17 Feb 2003 22:23:31 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E50B54C.1050509@mega-bucks.co.jp>
+Message-ID: <1045481011.21551.11.camel@billybob.back2front.homelinux.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-fwodcZMKpf5MP6lfBBP/"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,99 +16,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Thanks to everyone who helped with get iptables up and going. I finally
-have a set of rules that seem to work!
-
-I'm still a bit worried that my rules aren't strict enough though or
-that there is some gapping whole or something in them. Also in order to
-get everything to work I needed to add some rules to let in DNS (answers
-to queries?) but I can't figure out why I need them.
-
-These rules are for a web server (SERVER2) in a DMZ and what I am trying
-to accomplish is:
-
-- allow SSH access only from PCs within my LAN
-- allow all HTTP and HTTPS access
-- allow the web server to connect to a DB on it's eth1 card
-- block everything else
-
-The network looks like this:
-
-LAN ---- FIREWALL ---- WAN
-   |       (x.241)
-   |          |
-   |          |
-   |          |
-   |        (eth0)
-PC(W2K)   SERVER2(eth1,z.2)---SERVER1
-(y.103)   (x.244)              (z.1)
+To: Netfilter <netfilter@lists.netfilter.org>
 
 
-Here are the rules I have. I'm looking for any comments or suggestions
-on how I could (or should) improve on these rules (I have no control
-over the firewall rules though ...)
+--=-fwodcZMKpf5MP6lfBBP/
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Thanks in advance!
+Hi people.
+I'm only new to the list so i feel a little uncomfortable asking this so
+soon but anyway here goes.
 
-----------
-#!bin/sh
+I need someone to give me a hand writing a piece of software which works
+quite closely with iptables.
 
-IPT="/usr/local/sbin/iptables"
-IP1="x.x.x.244"
-IP2="z.z.z.2"
-LAN="y.y.y.0/24"
-PG="z.z.z.1"
+The software is for a student accomodation hostel. We are getting high
+speed internet very soon and every person will have access to this. but
+we need to track each individuals downloads so we can charge them.
 
-# Delete any old rules
+anyway, since i'm not that experienced with iptables i need someone to
+give me a hand with the rules. I can do all the coding, and i have a
+basic idea of how i'd like the chains set out but i really dont know how
+i should put the rules together to allow the students maximum access to
+most web resources like instant messaging, web downloads, online games,
+streaming media, etc...
 
-for i in filter
-do
-    $IPT -t $i -F
-    $IPT -t $i -X
-done
+The only other option is to use a web proxy and user authentication but
+that limits what the students can do on the net because not all net
+applications have web proxy support and the ones that do support it dont
+always support authentication...so tracking their usage with iptables
+seems like the best thing to do.
 
-$IPT --policy INPUT   DROP
-$IPT --policy OUTPUT  ACCEPT
-$IPT --policy FORWARD DROP
+I've done quite a bit of searching on the net for a software bundle
+which will do what we want but they are either too expensive or they
+dont do what we need so the last option is to write something for our
+selves.
 
-# Loopback accepts everything
+anyone seriously interested in helping please email me privately and
+i'll give you more details about it.
 
-$IPT -A INPUT  -i lo -j ACCEPT
-$IPT -A OUTPUT -o lo -j ACCEPT
+thanks very much :)
 
-# DNS
-$IPT -A INPUT -p tcp --dport 53 -j ACCEPT
-$IPT -A INPUT -p udp --dport 53 -j ACCEPT
+--=-fwodcZMKpf5MP6lfBBP/
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-# For some I reason need this ...
-$IPT -A INPUT -p TCP -s 0/0  -i eth0 -d $IP1 --sport 53  -m state
---state NEW,ESTABLISHED,RELATED -j ACCEPT
-$IPT -A INPUT -p UDP -s 0/0  -i eth0 -d $IP1 --sport 53  -m state
---state NEW,ESTABLISHED,RELATED -j ACCEPT
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
 
-# Allow SHH from LAN only, HTTP, HTTPS from anywhere for new and
-previously established connections
+iD8DBQA+UMYyMutcjt77K+ARAsgoAJ9B9p84vlLrG4e1NRcldUTgbQPzsgCfVurN
+ggG5bTpQYjI69tY96ohy8lA=
+=UiaG
+-----END PGP SIGNATURE-----
 
-$IPT -A INPUT -p TCP -s $LAN -i eth0 -d $IP1 --dport 22  -m state
---state NEW,ESTABLISHED,RELATED -j ACCEPT
-$IPT -A INPUT -p TCP -s $LAN -i eth0 -d $IP1 --dport 80  -m state
---state NEW,ESTABLISHED,RELATED -j ACCEPT
-$IPT -A INPUT -p TCP -s $LAN -i eth0 -d $IP1 --dport 443 -m state
---state NEW,ESTABLISHED,RELATED -j ACCEPT
-
-# DB connections
-
-$IPT -A INPUT -p TCP -s $PG --sport 5432 -i eth1 -d $IP2 -m state
---state NEW,ESTABLISHED,RELATED -j ACCEPT
-
-# For outgoing mail
-$IPT -A INPUT -p tcp --sport 25 -j ACCEPT
-
-#log anything that made it his far w/o being accepted
-$IPT -A INPUT -j LOG --log-level debug --log-prefix "DROP packet:"
-
+--=-fwodcZMKpf5MP6lfBBP/--
 
 
