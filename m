@@ -1,8 +1,8 @@
 From: "Afshin Lamei" <linux_st@hotmail.com>
-Subject: Masquerade or SNAT?
-Date: Sun, 08 Dec 2002 11:21:36 +0330
+Subject: Kernel options and loadable modules
+Date: Sun, 08 Dec 2002 14:22:02 +0330
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F121TgkIsREXVT2rvDN0000b32a@hotmail.com>
+Message-ID: <F150MozgYLowspDKicU0001ede9@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -19,18 +19,19 @@ Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
 Hi,
-should I use Ip Masquerading only for PPP or SLIP connenctions? and If I 
-want to connect two internal LANs (without bridging), is the only solution 
-the SNAT?
-thanks,
--afshin lamei
-
-
-
+There are several kernel options needed for firewalling, wich must be 
+selected while compiling the kernel, such as :
+CONFIG_NETFILTER, CONFIG_PACKET, CONFIG_IP_NF_CONNTRACK, etc.
+I want to now that what is the differnce between the kernel options and 
+loadable modules such as ip_nat_ftp, ip_tables, ... ? Are they the same in 
+importance and what loadable modules are exactly needed for running 
+iptables?
+regards,
+-afshin
 
 
 _________________________________________________________________
-MSN 8 with e-mail virus protection service: 2 months FREE* 
-http://join.msn.com/?page=features/virus
+The new MSN 8: advanced junk mail protection and 2 months FREE* 
+http://join.msn.com/?page=features/junkmail
 
 
