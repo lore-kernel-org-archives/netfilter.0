@@ -1,13 +1,12 @@
-From: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
+From: "Peter Marshall" <peter.marshall@caris.com>
 Subject: Re: wireless security
-Date: Thu, 10 Jun 2004 11:26:09 -0700
+Date: Thu, 10 Jun 2004 15:18:31 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040610182609.GA23024@ranjeet-pc2.zultys.com>
-References: <0b5b01c44ee2$f2e7cef0$49caa8c0@caris.priv>
+Message-ID: <0c4a01c44f17$55c6f1c0$49caa8c0@caris.priv>
+References: <7EACCDBB65D37443912D80713CC1245D47282C@fsnsab20.losangeles.af.mil> <200406101700.57718.Antony@Soft-Solutions.co.uk> <0c3201c44f06$c01c6160$49caa8c0@caris.priv> <200406101741.48713.Antony@Soft-Solutions.co.uk> <1086888854.2015.110.camel@localhost>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <0b5b01c44ee2$f2e7cef0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,81 +17,103 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@lists.netfilter.org>
+To: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>, netfilter <netfilter@lists.netfilter.org>
 
-* Peter Marshall (peter.marshall@caris.com) wrote:
-> Hi guys,
-> 
-> I am sure someone has been faced with this problem, and I was just wondering
-> what the possible solutions are.  A city wide free wireless network has just
-> expanded to cover the area encompassing our building.  The provider of this
-> is also the provider of our Internet (via fiber).  It was decided that it
-> would be advantageous for some of our employees to be able to use this
-> wireless network when we bring in clients etc.  This of course opens a large
-> possibility of problems concerning crap getting onto our network (especially
-> if they are connected to wireless and plugged into the network).
-> 
-> We have made it a policy that a personal firewall be installed on all
-> firewalls, and that at no time is a wireless card to be plugged into a
-> laptop while connected to our LAN.  This of course does not do much for
-> internal cards ....
-> 
-> Is there anyway at all that I can firewall this ?  Or is there a way o
-> prevent the two networks from being active at the same time .. I am at a bit
-> of a loss here.
-> 
-> Thank you all,
-> Peter
-> 
-> 
-> Peter Marshall, BCS
-> Network Administrator, CARIS
-> 115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
-> Phone:  (506) 458-8533 (Reception)
-> 
-> 
+ahh .. that makes much more sense :)
 
-1. Firewall - between corporate and YOUR ISP.
-2. Firewall & anti-Virus on EVERY client that uses the public City-ISP.
-(ZoneAlarm comes to mind as the easiest/best solution on windows)
-3. Snort your network at all times.
-(IDS = Intrusion Detection System)
-(IPS = Intrusion Prevention System)
+Peter
 
-4. Assuming the use of laptops, if I were you, I'd allocate one SEPERATE
-room/area which is the only place where access to the public city-ISP
-is allowed.
+----- Original Message ----- 
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+To: "netfilter" <netfilter@lists.netfilter.org>
+Sent: Thursday, June 10, 2004 2:39 PM
+Subject: Re: wireless security
 
-5. This way, there is no possibility of anyone "forgetting" to remove the
-intranet cable while using the wireless city-ISP.
-You KNOW that some people will "try" to or get into the "habit" of plugging
-into both networks at the same time, cos it is easier to break the rules than
-to follow them. If you make it mandatory for them to physically move to a
-seperate room for city-ISP, and this room does not have any corporate cable
-drops, you've addressed 90% of the problem. I am assuming that people with
-wireless corporate access have ONE pccard and can use it EITHER to be a part
-of corporate n/w OR a part of city-ISP.
 
-OR
+On Thu, 2004-06-10 at 12:41, Antony Stone wrote:
+> On Thursday 10 June 2004 5:19 pm, Peter Marshall wrote:
+>
+> > > ----- Original Message -----
+> > > From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> > > To: "netfilter" <netfilter@lists.netfilter.org>
+> > > Sent: Thursday, June 10, 2004 1:00 PM
+> > > Subject: Re: wireless security
+> > >
+> > > The problem Peter has, however, is that there is no single firewall
+> > > between the wireless people he's trying to keep out, and the wired
+network
+> > > he's trying to protect.   The vulnerability lies in client machines
+which
+> > > may (inadvertently, deliberately, or unknowingly) be connected to both
+> > > wired and wireless networks simultaneously.
+> >
+> > That was exactly my problem Antony.  Thank you for re-iterating it for
+me.
+> > I was not sure if I was very clear after some of the responses.
+>
+> The reason why I recommended a NIDS (Network Intrusion Detection System)
+is
+> that you can place this as a passive sniffer on the wired network, and see
+if
+> you get any strange traffic coming from client machines.
+>
+> I accept John Sullivan's point about HIDS (Host Intrusion Detection
+Systems),
+> and that's a good idea (in general) for servers, however I would suggest
+that
+> your other client machines are just as a much in need of protection, and I
+> doubt very much that you could find a suitable HIDS to install on those,
+let
+> alone be able to manage them and get useful data about what's going on.
+>
+> One slightly wacky idea I've had for some time which you might want to
+think
+> about is writing a script to run on a machine on your wired network which
+> goes round each of the IP addresses (assigned by DHCP?) of your client
+> machines, which might also have a simultaneous wireless link, and attempt
+a
+> traceroute through them as a default gateway.   If you get more than one
+hop,
+> you've got trouble.
+>
+> Regards,
+>
+> Antony.
+Good points, as always, Antony.  I particularly like your script idea!
 
-5. You could throw a WiFi access point (AP) into this seperate room, which
-will allow wireline ethernet access, and ban ALL other wifi access, corporate
-or city-ISP.
+You are correct that my comments about HIDS was not directed towards the
+clients and belies my indirect approach.  Here is where my practical
+side kicks in.  I figure that no matter how zealously a user policy is
+followed and enforced, as long as the control resides with the end user,
+somewhere, someday, someone will violate it.  Even if they do not, they
+may still be compromised by a trojan, a backdoor planted via Phishing or
+an unprotected, home-user wireless network.  Therefore, I tend to
+proceed under the assumption that I will be compromised (as indeed you
+are by advocating NIDS).  The wireless change may provide a convenient
+presentation venue to convince management to fund the security needed to
+ensure that critical information is as well protected as is practical by
+making sure:
 
-The remaining 1% of stubborn people who cause 99% of the problems, you 
-beat into submission using the 800-page corporate policy handbook. :)
+1) even authorized users have access to only the information they need
+and doing so in a way that minimizes impact on the business function
+(http://iscs.sourceforge.net)
 
-HTH
+2) systems (possibly including user devices) are as invulnerable to
+attack as possible (http://www.nessus.org + some form of patch
+management / software distribution)
+
+3) I know if someone has slipped through all the multiple layers of
+defense (http://osiris.shmoo.com)
+
+Sorry for not explaining my approach of using the wireless change as an
+excuse to implement a security paradigm that assumes the attacker is on
+the inside - I just thought my original e-mail was doing a good enough
+job of reflecting my excessive verbosity without it :-) - John
 
 -- 
-Ranjeet Shetye
-Senior Software Engineer
-Zultys Technologies
-Ranjeet dot Shetye at Zultys dot com
-http://www.zultys.com/
- 
-The views, opinions, and judgements expressed in this message are solely those of
-the author. The message contents have not been reviewed or approved by Zultys.
+Open Source Development Corporation
+Financially sustainable open source development
+http://www.opensourcedevelopmentcorp.com
+
 
 
