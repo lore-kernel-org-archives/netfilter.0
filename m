@@ -1,12 +1,15 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Change of ip addresses continues.... :(
-Date: Thu, 26 Aug 2004 14:48:16 -0700
+From: Michael Sconzo <msconzo@net.tamu.edu>
+Subject: Odd question with source based blocking
+Date: Thu, 26 Aug 2004 16:57:03 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E361@alderaan.smgtec.com>
+Message-ID: <20040826165702.H1111@net.tamu.edu>
+References: <D5C9032B2B09C64EA2409D6214E91AC90512EE@asimail2.alphanumeric.com>
+	<1093555992.4293.37.camel@porky>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <1093555992.4293.37.camel@porky>;
+	from eric@inl.fr on Thu, Aug 26, 2004 at 11:33:12PM +0200
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,58 +20,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Eric Leblond <eric@inl.fr>, netfilter@lists.netfilter.org
-Cc: dravya@magma.ca
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Eric Leblond wrote:
-> On Thu, 2004-08-26 at 23:26, Jason Opperisano wrote:
->>> I have been trying various set of rules in various table in order
->>> to have packets go over the right link. ie. packet's src add should
->>> match outgoing link's ip address.YET, there iptables -t mangle -A
->>> PREROUTING -j CONNMARK --restore-mark=20
->>> iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j ACCEPT
->>> iptables -t mangle -A PREROUTING -m mark ! --mark 0 -p icmp -j MARK
->>> --set-mark 1 iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j
->>> MARK --set-mark 2=20
->=20
-> There's something weird here :
-> -m mark ! --mark 0
-> at each line you should better do
-> -m mark --mark 0
-> at the two last lines.
->=20
-> BR,
+I have a brief (hopefully) question.
 
-Just to confirm, Eric is correct, you should be using -m mark --mark 0
-for the last two rules. In conclusion, for the most simple of setups for
-this, we'd have the following:
+I currently have a box that sits inline with a firewall setup similiar
+to the following
 
-	iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
-# Skip through any pre-classifed traffic
-	iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j ACCEPT
-# Define inbound policies
-	iptables -t mangle -A PREROUTING -m mark --mark 0 -m state
---state NEW -i ppp0 -j MARK --set-mark 1
-	iptables -t mangle -A PREROUTING -m mark --mark 0 -m state
---state NEW -i ppp1 -j MARK --set-mark 2
-# Default policy route for any internal traffic
-	iptables -t mangle -A PREROUTING -m mark --mark 0 -j MARK
---set-mark 2
-	iptables -t mangle -A PREROUTING -j CONNMARK --save-mark
+FORWARD - Policy - DROP
+ * allow DNS
+ * allow DHCP
+ * all WEB
+ * allow all from 192.168.1.0/24 -> BLOCKED
+ * allow all to 192.168.1.0/24 -> BLOCKED
 
-	iptables -t mangle -A OUTPUT -j CONNMARK --restore-mark
-	iptables -t mangle -A OUTPUT -m mark ! --mark 0 -j ACCEPT
-# Make sure any packets that have existing IP's before this networking
-level to keep their existing IP's
-	iptables -t mangle -A OUTPUT -m mark --mark 0 --source
-${ppp0_ip} -j MARK --set-mark 1
-	iptables -t mangle -A OUTPUT -m mark --mark 0 --source
-${ppp1_ip} -j MARK --set-mark 2
-# Default policy route for this firewall
-	iptables -t mangle -A OUTPUT -m mark --mark 0 -j MARK --set-mark
-2
-	iptables -t mangle -A OUTPUT -j CONNMARK --save-mark
+BLOCKED
+ * Block this IP
+ * Block this other IP
+ * etc ...
 
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -o ppp1 -j MASQUERADE
+I've tried setting the default policy of BLOCKED to accept, however it
+doesn't seem to let traffic through that doesn't match any one of the
+'block this IP rule'.
+
+The only catch is, I remove the 'block this IP' rules from the BLOCKED
+list, so it makes it hard to ensure an ALLOW rule remains at the
+bottom.  Any ideas on how I can do this (default allow traffic not
+hitting a rule on BLOCKED to be ALLOWED?
+
+Thanks!
+-=Mike
+
+-- 
+_
+_ Michael J. Sconzo
+_ Computing & Information Services, Texas A&M University
+
+The New Testament offers the basis for modern computer coding theory,
+in the form of an affirmation of the binary number system.
+        But let your communication be Yea, yea; nay, nay: for
+        whatsoever is more than these cometh of evil.
+                -- Matthew 5:37
 
