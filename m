@@ -1,13 +1,13 @@
 From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: NAT & MySQL
-Date: Tue, 25 Nov 2003 12:19:16 -0500
+Subject: Re: iptables script
+Date: Tue, 25 Nov 2003 12:36:13 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FC38F14.1050409@Loudoun-Fairfax.com>
-References: <3FC3485C.000009.00204@adburne>
+Message-ID: <3FC3930D.2040909@Loudoun-Fairfax.com>
+References: <83055D4B014C9E478D2F04624B9E82CFD4B1@noveldc.novelgmt.mu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FC3485C.000009.00204@adburne>
+In-Reply-To: <83055D4B014C9E478D2F04624B9E82CFD4B1@noveldc.novelgmt.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,27 +20,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-adburne wrote:
+Gilles Yue wrote:
 
-> The forward rules on the gateway are:
+> How do make your linux pc bypass default iptables located in 
+> /etc/sysconfig/iptables script and makes it execute your new and 
+> customized iptables scripts.
+>
 >  
-> # "Accept forward all connections to port 3306 on ppp0"
-> iptables -A FORWARD -p tcp -i ppp0 --dport 3306 -o eth0 -j ACCEPT
-> # "All stablished connections are ok"
-> iptables -A FORWARD -i ppp0 -o eth0 -m state --state 
-> ESTABLISHED,RELATED -j ACCEPT
-> # "All connection from inside to outside are accepted"
-> iptables -A FORWARD -i eth0 -o ppp0 -j ACCEPT
-> # "Rest go away"
-> iptables -A FORWARD -j REJECT
->  
-> NAT rule:
-> iptables -t nat -A PREROUTING -p tcp -i ppp0 --dport 3306 -j DNAT --to 
-> 192.168.0.80 -s 200.10.10.1
+>
+> Can anybody send me a simple script. Thanks
 >
 
-Are you using MASQUERADE or SNAT ? If you aren't then the outside can't 
-'see' your internal server.
+It varies by distro.  On Redhat systems one way to do it is to run your 
+script and then use " /etc/init.d/rc.d/iptables save" to save the 
+current configuration. SuSE is a little more complicated so I disabled 
+the SuSE script through YaST2, ran my iptables script, and then use 
+Webmin to save and restart my configuration. You can also call your 
+script from the /etc/init.d/boot.local file which runs at boot.
+
+Hope this helps.
 
 Jeff
 
