@@ -1,11 +1,12 @@
-From: "Michael P. Ryan" <mryan@mail.arc.nasa.gov>
-Subject: strange problem.
-Date: Fri, 17 Jan 2003 10:31:10 -0800
+From: =?iso-8859-1?Q?Omar_Casta=F1eda_Acosta?= <omar@idea.com.mx>
+Subject: Subnetting
+Date: Fri, 17 Jan 2003 11:39:57 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D98357A0-2A49-11D7-A5F4-0003934AB744@mail.arc.nasa.gov>
-Mime-Version: 1.0 (Apple Message framework v551)
-Content-Transfer-Encoding: 7bit
+Message-ID: <3450D7F41847FE489C49F2568F0DE27601F328@neptuno.idea.com.mx>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,48 +16,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello List:
 
-  On redhat 7.3 iptables 1.2.5, all needed modules appear to be loaded 
-correctly.
+I'm trying to change my current setup from what I'm doing now:
 
-I have the box setup to nat and that works like a charm, but run into 
-problems when I try to port forward to the internal network. Here is 
-what I run, all pretty text book from what I can tell:
-
-$IPTABLES -P INPUT ACCEPT
-$IPTABLES -F INPUT
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -F OUTPUT
-$IPTABLES -P FORWARD DROP
-$IPTABLES -F FORWARD
-$IPTABLES -t nat -F
-
-# Portfw section
-$IPTABLES -A FORWARD -i eth0 -o eth1 -p tcp --dport 23 -m state --state 
-NEW,ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A PREROUTING -t  nat -p tcp -d my.external.ip --dport 23 -j 
-DNAT --to 192.168.0.6:23
-#
+INET < --- > ROUTER < --- > FIREWALL < --- > LAN
+                A              NAT
+                |           FILTERING
+                V             PROXY
+            VoIP BOX
 
 
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state 
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-$IPTABLES -A FORWARD -j LOG
-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+To:
 
---
-No errors are ever given, and iptables -L lists the rules no problem. 
-However port 23 is never opened, or shown via netstat -a.
+INET < --- > ROUTER < --- > HUB < --- > FIREWALL < --- > SWITCHES < --- =
+> LAN
+               NAT           |          FILTERING =20
+                             |           PROXY
+                             |
+                             \- > VoIP BOX
 
-I am on kernel 2.4.18-19.7.x fwiw
+This is because the NAT on my new router support H323 perfectly. Plus =
+ISP won't
+provide extra IP addresses (Just one for the whole setup).
 
-Any help or suggestions would be greatly appreciated.
 
--mike
+*******************
+I know how to configure iptables to perform what I want to do. I just =
+want some
+advice in what would be the best way to subnet my network.
+*******************
+
+
+
+Right now (to make it work, I didn't have to modify my firewall scripts) =
+the
+sub-netting is as follows:
+
+(Router) has the ISP provided valid Internet IP address on the WAN =
+interface.
+(Router) has a 172.16.0/24 address on the Ethernet interface.
+(Firewall) has a 172.16.0/24 address on the EXTERNAL interface.
+(Firewall) has a 192.168.0/24 address on the INTERNAL interface. =
+(Everyone's gateway)
+(VoIP box) has a 172.16.0/24 address on the EXTERNAL interface.
+
+Right now the firewall runs proxies for SMTP, WEB and FTP. A VPN (PPTP =
+and IPSEC)
+service. And a permanent VPN tunnel with another location (configured as =
+this one).
+DNS services and SSH for administration. It filters outgoing and =
+incoming traffic
+according to usage and abuse policies (filter everything but legitimate =
+incoming
+traffic and valid hosts to use http, ftp, etc).
+
+I'd appreciate any suggestions.
+
+Thanks,
+Omar Casta=F1eda Acosta
+Systems Administrator
+iDEA S.A. de C.V.
+Voice: +52 (614) 414-2808 x 109
+Mobile: +52 (614) 406-5241
+VoIP: voip.idea.com.mx x 109
+omar@idea.com.mx
+
+
 
 
