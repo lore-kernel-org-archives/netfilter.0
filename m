@@ -1,11 +1,13 @@
-From: "Rob Verduijn" <rverduij@dds.nl>
-Subject: rp-l2tpd iptables and rh9 but no google
-Date: Fri, 18 Jul 2003 21:01:33 +0200
+From: Eric Leblond <eric@regit.org>
+Subject: Re: rp-l2tpd iptables and rh9 but no google
+Date: 18 Jul 2003 21:49:19 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <HBELLDKFGOFPEHBLCFCLCEBJCCAA.rverduij@dds.nl>
+Message-ID: <1058557759.16546.2.camel@porky>
+References: <HBELLDKFGOFPEHBLCFCLCEBJCCAA.rverduij@dds.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-VPwxpnCEelprnY0xofgW"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <HBELLDKFGOFPEHBLCFCLCEBJCCAA.rverduij@dds.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,53 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi there,
 
-I've got this curious problem with netfilter.
+--=-VPwxpnCEelprnY0xofgW
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-On my gateway pc I'm running rh9 and am keeping it up to date with the
-up2date utility.
-I've got a motorola cable modem connected to my network card eth1 (DHCP my
-isp requires this, range is something from 10.0.0.0/21 don't ask me why /21)
-Over this connection I set up tunnel using l2tp (rp-l2tpd 0.3) which is ppp0
-(DHCP again, couple of class c range addresses)
-My internal network is connected to eth0 (192.168.0.1/24)
+Le ven 18/07/2003 =E0 21:01, Rob Verduijn a =E9crit :
+> Hi there,
+>=20
+> I've got this curious problem with netfilter.
 
-My default policys are accept for everything
+> I did
+> echo 1 > /proc/sys/net/ipv4/ip_forward
 
-I did
-echo 1 > /proc/sys/net/ipv4/ip_forward
+>=20
+> I can ping google so icmp seems to work but I can't surf the web for goog=
+le.
+> Neither windows nor linux will work.
 
-and
+You may have look to the MTU, with encapsulation in L2TP you loose some
+bytes.
+To test try increase your ping size with the -s option.
 
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+If it is working with -s 1500 then try to look at tcpmss.
 
-set the gateway to the other end of the ppp tunnel
+BR,
+--=20
+Eric Leblond <eric@regit.org>
 
-From on my network I can happely surf the web to almost any page from a pc
-that has his gateway set to 10.0.0.1
-(And the proper dns entrys network card drivers etc,etc..)
+--=-VPwxpnCEelprnY0xofgW
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
 
-But I can't surf to www.google.com
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-I can ping google so icmp seems to work but I can't surf the web for google.
-Neither windows nor linux will work.
+iD8DBQA/GE8/nxA7CdMWjzIRAsBGAJ91450p/Je2jKFLo+MMu5uytSSsSACfUSdD
+v/g5thnMkbFmX7YGDfeo0Fk=
+=CtGV
+-----END PGP SIGNATURE-----
 
-However if I log in to my gateway start mozilla and surf to google it works
-fine.
-
-I'm I forgetting something? (Obviously, but what?)
-
-Does anybody know why I can't surf to google via my gateway?
-
-Many thanx
-
-oh before I forget this is where i got the rp-l2tpd
-http://sourceforge.net/projects/rp-l2tp/
-running version rp-l2tpd-0.3
-
-
+--=-VPwxpnCEelprnY0xofgW--
 
