@@ -1,14 +1,13 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: martians from myself?
-Date: 15 Sep 2002 13:11:28 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Iptables --owner-uid
+Date: Sun, 15 Sep 2002 12:00:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1032088288.28097.140.camel@tux>
-References: <1031927325.15445.3.camel@rayw>
+Message-ID: <20020915110012.OKLT14766.mta05-svc.ntlworld.com@there>
+References: <39778BFB9C25BA429794B15B50AEC781045424@server-dcms> <20020914141419.GC24368@Ajftl1.ajfthome.on.ca>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-oAehexvdGkLEewpuRxdr"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1031927325.15445.3.camel@rayw>
+In-Reply-To: <20020914141419.GC24368@Ajftl1.ajfthome.on.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Raymond Leach <raymondl@knowledgefactory.co.za>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
+On Saturday 14 September 2002 3:14 pm, Alistair Tonner wrote:
 
---=-oAehexvdGkLEewpuRxdr
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> What I'm reading is that the process generating the packets
+> 	(for owner match to work) has to be a process running on the
+> 	box on which iptables firewall is running.  If the packets are
+> 	coming through the forward chain (i.e. from downstream pc's)
+> 	there is no way of matching UID (owner) as there is no owning
+> 	process generating the packet.
 
-On Fri, 2002-09-13 at 16:28, Raymond Leach wrote:
-> Hi
->=20
-> Can someone tell me what would cause this:
->=20
-> Sep 13 16:32:07 firefly kernel: martian source 108.122.0.0 from
-> 127.0.0.23, on dev eth2
-> Sep 13 16:32:07 firefly kernel: ll header:
-> 00:01:02:50:b8:9e:08:00:20:a5:04:26:08:00
->=20
-> The MAC address in the ll header is the interface on my firewall.
->=20
-> Any help would be appreciated
+That is correct.
 
-so I assume 00:01:02:50:b8:9e is the macaddress of your interface?
-(destination mac in the frame)
+>  	You might be better off matching
+> 	MAC addresses in this case ...
 
-the packet is sent from 08:00:20:a5:04:26 with 127.0.0.23 as sourceip
-(loopback ip), try to find out which machine on your network that is.
+I don't see why that is any better than matching IP address ?   Surely 
+there's going to be a one-to-one correspondence between MAC address and IP 
+address for the Windows clients, so you cannotdo anymore in netfilter with 
+one than with the other....
 
+The interesting part is to workout whether Samba (which is running on the 
+netfilter machine) can tie up user ID with IP address, and then add/remove 
+netfilter rules by running a script when the user logs in/out.
 
---=20
-/Martin
+Antony.
 
-Never argue with an idiot. They drag you down to their level, then beat
-you with experience.
+> On 2002.09.14 07:53 Didier Hung Wan Luk wrote:
+> > I may be wrong but I am in confusion here..
+> > If I am using Samba as a PDC and all my win clients are members of the
+> > samba domain... are they not using the uid given by Samba? Which is
+> > itself mapped to a unix user (id) then if this is the case it should
+> > work is it not..??
 
---=-oAehexvdGkLEewpuRxdr
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+-- 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+How I want a drink, alcoholic of course, after the heavy chapters
+involving quantum mechanics.
 
-iD8DBQA9hGrgWm2vlfa207ERAsWPAJ92nqtwIS2s6aVz/2WRV5Ws9vt1vwCgvPri
-zAvL1nqYPyKCuY1tOt3VzAY=
-=/1kE
------END PGP SIGNATURE-----
-
---=-oAehexvdGkLEewpuRxdr--
+ - 3.14159265358979
 
