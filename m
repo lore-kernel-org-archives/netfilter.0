@@ -1,14 +1,12 @@
-From: xa <xmaillist@skynet.be>
-Subject: Re: block nmap info
-Date: Thu, 27 Jan 2005 22:24:00 -0100
-Message-ID: <41F97810.5030405@skynet.be>
-References: <20050127200622.GA23921@omega.lacnic.net.uy>
-	<41F96615.9010701@skynet.be>
-	<20050127220928.GA27921@omega.lacnic.net.uy>
+From: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Subject: Re: make: *** [../ipset/libipt_set.h] Error 1
+Date: Thu, 27 Jan 2005 22:30:31 +0100
+Message-ID: <41F95D77.5000902@arcoscom.com>
+References: <41F94138.6050207@arcoscom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050127220928.GA27921@omega.lacnic.net.uy>
+In-Reply-To: <41F94138.6050207@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,62 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Allietti <pablo@lacnic.net>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
 Cc: netfilter@lists.netfilter.org
 
-Basically, nmap is just a program that send packets.
-Portscanning is just sending special packets and analysing answer.
-So, you can drop all packets from unauthorized person and they can't see 
-anything... (or just that they are filtered...)
-But the others can send packets and see respond, so they can say if a 
-service run on the ports they can access...
+Well, I don't know if this "work around" can work, but editing=20
+<iptables_dir>/extensions/ipt_SET.c and ipt_set.c comenting the #include=20
+"../ipset/libipt_set.h" directive, now the make works.
+
+Any developer can confirm this "patch"?
+
+Thanks
+
+    Samuel D=EDaz Garc=EDa
+     Director Gerente
+ArcosCom Wireless, S.L.L.
+
+mailto:samueldg@arcoscom.com
+http://www.arcoscom.com
+m=F3vil: 651 93 72 48
+tlfn/fax: 956 70 13 15
 
 
-Pablo Allietti wrote:
-> On Thu, Jan 27, 2005 at 09:07:17PM -0100, xmaillist wrote:
-> 
->>Hi,
->>nmap man page:
-> 
-> 
-> 
-> ok. then it is impossible to block nmap and portscanning? 
-> 
-> 
-> 
->>[...]
->>-sT
->>TCP connect() scan: This is the most basic form of TCP scanning. The 
->>connect() system call provided  by  your operating system is used to 
->>open a connection to every interesting port on the machine. If the port 
->>is listening, connect() will succeed, otherwise the port isn't 
->>reachable. One strong advantage to this technique is that you don't need 
->>any special privileges. Any user on most UNIX boxes is free to use this 
->>call. This sort of scan is easily detectable as target host logs will 
->>show a bunch of connection and  error messages for the services which 
->>accept() the connection just to have it immediately shutdown.  This is 
->>the default scan type for unprivileged users.
->>[...]
->>
->>-sT scan is a full TCP handshake (SYN -> SYN/ACK -> ACK), so you just 
->>have to forbid TCP connection on open ports...
->>But, if you block tcp accesses for anybody, nobody could connect to the 
->> service associate with the corresponding port.
->>So, you have to use rules that grant access for allow machine, and drop 
->>it for the others.
->>Nevertheless, other scans like -sS, -sF, -sX, -sN can still work...
->>
->>
->>Pablo Allietti wrote:
->>
->>>hi all (again), how can i made a rules for block nmap information?
->>>
->>>if i do nmap -sT myhost.com from a cybercafe for example,   nmap display
->>>all ports open. exist any way to block this? something like block
->>>scanports?
->>
-> ---end quoted text---
-> 
-
+Samuel D=EDaz Garc=EDa wrote:
+> After applying patch-o-matic-ng-20040621 (the last stable released)=20
+> successfully, compile & install my patched kernel and trying compile=20
+> iptables-1.2.11, the 'make KERNEL_DIR=3D/usr/src/linux-2.4.29' (obviously=
+,=20
+> my patched kernel is a 2.4.29), I get this error:
+>=20
+> Making dependencies: please wait...
+> Something wrong... deleting dependencies.
+> make: *** [../ipset/libipt_set.h] Error 1
+>=20
+> I think I need the 'ipset' sources, where are them?
+> where do I need copy them to make iptables (and modules) sucessfully?
+>=20
+> Thanks
+>=20
+> (sorry for my english)
+>=20
 
