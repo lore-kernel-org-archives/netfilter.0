@@ -1,15 +1,11 @@
-From: Herman <Herman@AerospaceSoftware.com>
-Subject: Re: Port forwarding doesn't work.
-Date: Mon, 13 Oct 2003 12:05:55 -0600
+From: "Dimitrios Pezaros" <dp@comp.lancs.ac.uk>
+Subject: Changing TCP MSS for IPv6
+Date: Mon, 13 Oct 2003 19:58:03 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310131205.55401.Herman@AerospaceSoftware.com>
-References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com> <200310121840.27031.Herman@AerospaceSoftware.com> <20031013031712.7fd7be69.arnt@c2i.net>
-Reply-To: Herman@AerospaceSoftware.com
+Message-ID: <E36B692FEB773C4BB3EC8B1828516B87A37030@exchange-be2.lancs.ac.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031013031712.7fd7be69.arnt@c2i.net>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,54 +16,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sunday 12 October 2003 7:17 pm, Arnt Karlsen wrote:
-   On Sun, 12 Oct 2003 18:40:27 -0600,
-   Herman <Herman@AerospaceSoftware.com> wrote in message
+Dear all,
 
-   <200310121840.27031.Herman@AerospaceSoftware.com>:
-   > The real problem that I'm trying to solve is this:
-   > Several hosts need to acces a gov service that uses Java and a certain
-   > port.
+I am experimenting with altering the TCP MSS using iptables/ip6tables
+v1.2.5 under Linux 2.4.18
 
-   ..if these hosts are initiating this connection from your end,
-   " -j ESTABLISHED,RELATED" should do it, instead of you
-   running around chasing your tail.
+I am able to do that for IPv4 traffic using the options e.g.
+iptables -A OUTPUT -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss
+1000
+iptables -A OUTPUT -p tcp --tcp-flags SYN,RST SYN -j TCPMSS
+--clamp-mss-to-pmtu
 
-Hi Arnt,
+This is, as expected, applied to IPv4 traffic. I need to do something
+equivalent (being able to manually alter MSS) for IPv6, but the TCPMSS
+option does not seem to work for ip6tables.
 
-Could you please elaborate on that?
+------------------------------------------------------------------------
+-----
+# ip6tables -A OUTPUT -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss
+1400
+ip6tables v1.2.5: Unknown arg `--set-mss'
+Try `ip6tables -h' or 'ip6tables --help' for more information.
+------------------------------------------------------------------------
+-----
 
-As far as I can see, the hosts are initiating the connection, but the port 
-must somehow be forwarded through the firewall snat box.
+Am I doing something obviously wrong, or such functionality is not (yet)
+implemented for ip6tables?
+Or even, is there a specific patch that I need to apply?
 
-This is what I have:
-echo "   DNAT Forward port 3270 for Alberta Registries application on Pluto"
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 3270 -j ACCEPT
-$IPTABLES -t nat -A PREROUTING -i $EXTIF -p tcp --dport 3270 -j DNAT --to 
-192.168.10.1:3270
+Many thanks for any help,
+Dimitris.
 
-This is working now, provided that I use that specific IP address on the 
-inside - I had to load the iptable_mangle module, which made my problems go 
-away...
-
-I don't understand how to add the ESTABLISHED,RELATED idea into this type of 
-rule.  
-
-Something like this:
-
-$IPTABLES -t nat -A PREROUTING -i $EXTIF -p tcp --dport 3270 -m state --state 
-ESTABLISHED,RELATED
-
-???
-
-
-Cheers,
--- 
-Herman Oosthuysen 
-B.Eng(E), MIEEE
-Aerospace Software Ltd.
-Ph: 1.403.241-8773, Cell: 1.403.852-5545, Fx: 1.403.241-8841
-Herman@AerospaceSoftware.com, http://www.AerospaceSoftware.com
 
