@@ -1,8 +1,8 @@
 From: "Dan Egli" <dan@shortcircuit.dyndns.org>
 Subject: Re: Samba blocked?
-Date: Tue, 26 Nov 2002 19:31:37 -0700
+Date: Tue, 26 Nov 2002 19:41:45 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001701c295bd$2967c7e0$1e00a8c0@yamatto>
+Message-ID: <002101c295be$881c5c00$1e00a8c0@yamatto>
 References: <000d01c2958f$d3fadbd0$1e00a8c0@yamatto> <3DE41C6F.2050704@iprimus.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -17,41 +17,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Michael <mutk@iprimus.com.au>
-Cc: netfilter@lists.netfilter.org
+To: Michael <mutk@iprimus.com.au>, netfilter@lists.netfilter.org
 
-Traffic to 192.168.0.255? I don't recall seeing anythign that would block
-that. Here's what the table list shows:
+Ok. I found the lookup order as:
+wins lmhosts bcast
 
-Chain INPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     tcp  --  anywhere             anywhere           multiport dports
-smtp,ftp,telnet,ssh,netbios-ns,netbios-dgm,netbios-ssn
-ACCEPT     tcp  --  anywhere             anywhere           multiport dports
-telnet,ssh,domain,nntp,ntp,printer,pop3,imap,http,https,netbios-ns,netbios-d
-gm,netbios-ssn
-ACCEPT     udp  --  anywhere             anywhere           multiport dports
-domain,ntp,router,netbios-ns,netbios-dgm,netbios-ssn
-ACCEPT     udp  --  anywhere             anywhere           multiport dports
-netbios-ns,netbios-dgm,netbios-ssn
-ACCEPT     tcp  --  anywhere             anywhere           multiport dports
-netbios-ns,netbios-dgm,netbios-ssn
-ACCEPT     all  --  anywhere             anywhere           state
-RELATED,ESTABLISHED
-LOG        all  --  anywhere             anywhere           LOG level
-warning
+Which is how a windows client would connect. (except it would read lmhosts
+first). This needs to work not only for
+smbclient but also for any windows machines in the 192.168.0.x network. And
+adding a lmhosts to each machine is not really an option except as an
+absolute last resort.
 
-Chain FORWARD (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere
-ACCEPT     all  --  anywhere             anywhere           state
-RELATED,ESTABLISHED
-LOG        all  --  anywhere             anywhere           LOG level
-warning
+I need the system to be able to resolve netbios names via broadcast if at
+all possible. I still don't see why a request to 192.168.0.255 would fail.
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+Here's the log fragments when I run smbclient //myserver/shared1 -U myuser:
+(resolve order = wins lmhosts bcast)
+Nov 26 20:33:22 mail last message repeated 2 times
+Nov 26 20:34:03 mail kernel: IN=lo OUT=
+MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1
+LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=32814 DPT=137 LEN=58
+Nov 26 20:34:07 mail last message repeated 2 times
+Nov 26 20:34:09 mail kernel: IN=lo OUT=
+MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=192.168.0.2
+DST=192.168.0.2 LEN=90 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137
+DPT=32814 LEN=70
+Nov 26 20:34:10 mail last message repeated 2 times
+Nov 26 20:34:10 mail kernel: IN=lo OUT=
+MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=64.122.31.38
+DST=64.122.31.38 LEN=90 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137
+DPT=32814 LEN=70
 
+Any ideas, anyone?
+
+-- Dan
 ----- Original Message -----
 From: "Michael" <mutk@iprimus.com.au>
 To: "Dan Egli" <dan@shortcircuit.dyndns.org>;
@@ -94,6 +93,7 @@ allowing
 >
 > Cheers,
 > Michael
+>
 >
 >
 >
