@@ -1,38 +1,39 @@
-From: Charles Reitzel <creitzel@rcn.com>
-Subject: Re: [apache-modules] Best HTML Parser
-Date: Wed, 08 Jan 2003 12:53:57 -0500
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <4.3.2.7.2.20030108124514.02d6f1d0@pop.rcn.com>
-References: <5.2.0.9.0.20030108124223.009f3e00@mail.SoftHome.net>
+From: "Timothy Harryman" <timothy@woodlandscenics.com>
+Subject: Newbie - Where is my kernel? Can't run POM
+Date: Wed, 8 Jan 2003 11:53:38 -0600
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <002301c2b73e$e0f36ca0$3f00a8c0@tharryman>
+Reply-To: timothy@woodlandscenics.com
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <5.2.0.9.0.20030108124223.009f3e00@mail.SoftHome.net>
-List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-Cc: apache-modules@covalent.net, DCOM <DCOM@DISCUSS.MICROSOFT.COM>, Linux Kernel <linux-kernel@vger.kernel.org>, modssl-users@modssl.org, netfilter@lists.netfilter.org, TEAMICE <teamice@yahoogroups.com>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-I am partial to HTML Tidy for a few reasons:
+It certainly is not in /usr/src/linux (nautilus & terminal show that
+/usr/src is empty - yes, I am showing all hidden/system files), nor
+anywhere else I have looked.
 
-1) cross-platform, reentrant C library
-2) very forgiving of sloppy, malformed markup
-3) produces clean markup - XHTML if requested
-4) C++, Perl, Pascal, COM and .NET bindings available,
-    others easily done with SWIG
+I have a default installation of RH 8.0, and through rhupdate, it has
+updated the kernel to 2.4.18-19.8.0
 
-But I must admit, as one of the primary developers, I am probably 
-biased.  But if you need to get your markup cleaned up so that you can 
-apply XML tools to it, it is probably the best game in town.
+I am trying to install patch-o-matic 20030107, and the script prompts me
+for the KERNEL_DIR.
 
-For more info: http://tidy.sourceforge.net/
+This is extremely frustrating, and any help is hugely appreciated!
 
-take it easy,
-Charlie
+<>< <>< <>< <>< <>< <>< <>< <>< <>< <>< <>< 
+Timothy 
+timothy@woodlandscenics.com
 
 
-At 12:43 PM 1/8/2003 +0530, Blesson Paul wrote:
->Hi all
->              Which is the Best HTML Parser in C/C++
->
->regards
->Blesson Paul
+
