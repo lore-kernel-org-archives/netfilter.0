@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: SNAT matching question
-Date: Sun, 29 Sep 2002 16:12:18 +0100
+Date: Sun, 29 Sep 2002 18:18:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020929151220.BHYV6699.mta01-svc.ntlworld.com@there>
-References: <Pine.GSO.4.44L-027.0209291005290.1180-100000@unix4.andrew.cmu.edu>
+Message-ID: <20020929171804.GPIU2092.mta07-svc.ntlworld.com@there>
+References: <Pine.GSO.4.44L-027.0209291259220.1180-100000@unix4.andrew.cmu.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.GSO.4.44L-027.0209291005290.1180-100000@unix4.andrew.cmu.edu>
+In-Reply-To: <Pine.GSO.4.44L-027.0209291259220.1180-100000@unix4.andrew.cmu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,65 +20,56 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 29 September 2002 3:15 pm, Mohan Khurana wrote:
+On Sunday 29 September 2002 6:09 pm, Mohan Khurana wrote:
 
-> I'm trying to use the equalize nexthop iproute2 command with netfilter in
-> order to load balance between two ISPs on this router.  Equalize gives me
-> different gateway IPs on route determination.  The problem is, if I have
-> two different ISPs, I think I want something in the NAT table that would
-> determine which gateway the packet was going out of in order to match it
-> to the right --to-source address.
+> On Sun, 29 Sep 2002, Antony Stone wrote:
 
-Okay - I understand why you want to change the source address now, however I 
-think you're attempting to set it to the wrong value.   If you set the source 
-address of a packet to be the next hop router you're just about to send it 
-to, then the reply will get back to that router and no further.
+> > Reply packets should not be a problem unless your ISPs block packets with
+> > source addresses which don't match the network range you have from them.
+>
+> This is also true, but what if they do block?  I was hoping there was a
+> way to maintain connection tracking such that if there is a machine on the
+> internet that connects to an internally hosted server, it would maintain
+> the incoming gateway and interface, and then ensure that the equalize
+> command would ensure that the outgoing packet going to the right gateway.
 
-I assume your network setup is something like this:
+I do not know enough about equalise-routing to know how to do this.
 
-Internet
-    |
-ISP no. 1
-    |
-Router 1
-    |
-Public IP 1
-   eth0
-Netfilter box eth2 ------- Local network with private addresses
-   eth1
-Public IP2
-    |
-Router 2
-    |
-ISP no 2
-    |
-Internet
+> Lets say some internet machine contact my webserver, which happens to be
+> at 1.2.3.33.  It would come in on 1.2.3.4.  Now the webserver needs to
+> send IP packets back out to the internet, so it does a routing table
+> lookup.  Because ISP1 would block ISP2 traffic and vice-versa, if the
+> selected gateway (as a result of the equalize statement above) is 5.6.7.8,
+> then the only way to get that IP packet out would be to NAT it on an IP
+> from ISP2.  Post-NAT, this would change the source field of the IP packet,
+> and break communication (the machine on the internet wanted a source of
+> 1.2.3.33).
 
-You need to SNAT to Public IP 1 if you're sending via ISP 1, and Public IP 2 
-if you're sending via ISP 2.
+Correct.   If that happened, the communication would break.
 
-Therefore I suggest you use the following rules in your POSTROUTING chain:
+> I think the solution is for incoming packets destined to servers marked as
+> state NEW to have their gateway and source address placed in a table.
+> When 1.2.3.33 wants to go out, the equalize flag should look up the table,
+> see if the destination host is in there, and if it is, it should return
+> the proper corresponding gateway.
 
-iptables -A POSTROUTING -t nat -o eth0 -j SNAT --to $pubIP1
-iptables -A POSTROUTING -t nat -o eth1 -j SNAT --to $pubIP2
+If you can implement such a table then yes I agree this system should work.
 
-(Note that PubIP1 is not 1.2.3.4 - that address is on router 1.   Similarly 
-PubIP2 is not 5.6.7.8 - that address is on router 2.)
+There is an alternative, and that is to run your web server with two private 
+IP addresses, and have the public address from ISP 1 translate to private IP 
+1, and the public address from ISP 2 translate to private IP 2.   The web 
+server is configured to provide precisely the same content for either IP 
+address.
 
-Then when the replies come back in again (they will come through the same ISP 
-as the outbound packet left, because that's the way PubIP1 and PubIP2 are 
-routed), they will reach the netfilter box, which can do the reverse NAT, and 
-send the packets on to the original source somewhere inside your LAN.
-
-Just don't ask about how to do this for incoming connections (ie servers on 
-your network instead of clients).
+If you do that, then the web server will reply from the same source address 
+as the original request used for its destination address, and you can use 
+source-based routing in iproute2 to make sure that replies from private IP 1 
+always go via ISP 1, and replies from private IP 2 always go via ISP 2.
 
 Antony.
 
 -- 
 
-It is also possible that putting the birds in a laboratory setting
-inadvertently renders them relatively incompetent.
-
- - Daniel C Dennett
+Normal people think "if it ain't broke, don't fix it".
+Engineers think "if it ain't broke, it doesn't have enough features yet".
 
