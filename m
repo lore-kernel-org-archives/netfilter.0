@@ -1,14 +1,14 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: trying to document/understand the iptables kernel config options
-Date: Tue, 8 Apr 2003 04:00:46 -0400
+From: Carles Xavier Munyoz =?iso-8859-15?q?Bald=F3?= <carles@descom.es>
+Subject: POP/SMTP traffic graphics.
+Date: Tue, 8 Apr 2003 10:53:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304080400.46995.netfilter@newkirk.us>
-References: <Pine.LNX.4.44.0304071559390.20173-100000@dell>
-Reply-To: netfilter@newkirk.us
+Message-ID: <200304081053.15957.carles@descom.es>
+Reply-To: carles@descom.es
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0304071559390.20173-100000@dell>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +18,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Robert P. J. Day" <rpjday@mindspring.com>, iptables mailing list <netfilter@lists.netfilter.org>
+Content-Type: Text/Plain; charset="iso-8859-1"
+To: netfilter@lists.samba.org
 
-On Monday 07 April 2003 04:19 pm, Robert P. J. Day wrote:
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-[snipped humiliating reminder of my oversight :^)]
+Hello,
+I'm using MRTG to monitor muy Internet link traffic.
+My bulk traffic is POP and SMTP.
 
->   so now, the first question or two.  first, even after you
-> select "IP tables support", you can deselect *everything*
-> inside that menu.  if you do that, is there *anything* you
-> can do in terms of netfiltering?  i mean, does that single
-> selectable "IP tables support" option have any functionality
-> all by itself?
+Is there any way using NetFilter to get the bandwidth usage of this kind of=
+=20
+traffic data to build the corresponding MRTG traffic graphics ?
 
-Yes.  If you select "IP tables support" but no further options within=20
-that set, you can still perform filtering.  For example, you could still=20
-ACCEPT or DROP based on source or destination IP.
+I would like to have one MRTG traffic graph for POP traffic and another for=
+=20
+SMTP traffic.
+Is it possible with the NetFilter help ?
+Any other solution for it ?
 
->   second, i notice that even if you deselect "IP tables
-> support", you can still independently select the option
-> "Connection tracking (required for masq/NAT) above it.
-> without IP tables support, what is the value/function of
-> the Connection tracking option?  what can you still do
-> with it?
+Greetings.
+=2D ---
+Carles Xavier Munyoz Bald=F3
+carles@descom.es
+Descom Consulting
+Telf: +34 965861024
+=46ax: +34 965861024
+http://www.descom.es/
+=2D ---
+=2D----BEGIN PGP SIGNATURE-----
+Version: PGP 6.5.8
 
-I presume that netfilter would still track connections, and that=20
-information would still be available through /proc/net/ip_conntrack=20
-however.  Useful for accounting or logging from userspace perhaps.  I'm=20
-not aware of any useful purpose it would serve.  Anyone else?
-
->   more questions to come.
->
-> rday
-
-j
+iQA/AwUBPpKN9jvYAf7VZNaaEQJkCgCgkvaBWg3yDsXC3oKxbWyvS/JgDHYAoNXb
+fbyziTw0qAm0fI5ZqVjCKNeW
+=3DD0kb
+=2D----END PGP SIGNATURE-----
 
 
