@@ -1,11 +1,10 @@
-From: "Harish Sabnani" <harish.sabnani@cyberhutoman.com>
-Subject: Help Needed
-Date: Thu, 13 Nov 2003 19:06:05 +0400
+From: Federico Petronio <petronio@agro.uba.ar>
+Subject: conn limit question (limit module or similar)
+Date: Thu, 13 Nov 2003 12:11:18 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001201c3a9f7$ab954a90$36b4fea9@station1>
+Message-ID: <3FB39F16.2010708@agro.uba.ar>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000F_01C3AA19.3055F5B0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,60 +15,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hello all...
 
-------=_NextPart_000_000F_01C3AA19.3055F5B0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I use for some time a module called 'limit' to limit the amount of 
+connections per timeunit to my SMTP server.  But the limitations I found 
+is that you need to write a rule that matches to apply the filter:
 
-Hi All,=20
+-A INPUT -s 0/0 -d 0/0 -m limit --limit 60/minute --limit-burst 45 -m 
+tcp -p tcp --dport 25 --syn -j SMTPCHAINS
 
-I am using Iptables with IPmasquerade on my LAN network to share the =
-Internet connection, I have used rc.firewall script that I downloaded =
-from the netfilter site.The whole setup is rocking but I get mssgs at =
-/var/log/messages every sec, is there a way I can stop this? Sometimes, =
-this clogs my network ?
+I mean... it is not possible to define something like:
 
-Any pointers in this reagard will be appreciated.
+"do no accept more than 60 connections per minute for ANY IP, and, if 
+that limit is reach for some IP, do not limit the rest of connections"
 
-Regards
+since you can not write a rule for all the possible IPs. I found a (not 
+so good) solution to this... I divided the IPs range in 8 groups:
 
-Harish 
-------=_NextPart_000_000F_01C3AA19.3055F5B0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+-A SMTPCHAINS -s 0.0.0.0/0.0.0.7 -d 0/0 -m limit --limit 45/minute 
+--limit-burst 20 -m tcp -p tcp --dport 25 --syn -j ACCEPT
+-A SMTPCHAINS -s 0.0.0.1/0.0.0.7 -d 0/0 -m limit --limit 45/minute 
+--limit-burst 20 -m tcp -p tcp --dport 25 --syn -j ACCEPT
+-A SMTPCHAINS -s 0.0.0.2/0.0.0.7 -d 0/0 -m limit --limit 45/minute 
+--limit-burst 20 -m tcp -p tcp --dport 25 --syn -j ACCEPT
+-A SMTPCHAINS -s 0.0.0.3/0.0.0.7 -d 0/0 -m limit --limit 45/minute 
+--limit-burst 20 -m tcp -p tcp --dport 25 --syn -j ACCEPT
+-A SMTPCHAINS -s 0.0.0.4/0.0.0.7 -d 0/0 -m limit --limit 45/minute 
+--limit-burst 20 -m tcp -p tcp --dport 25 --syn -j ACCEPT
+-A SMTPCHAINS -s 0.0.0.5/0.0.0.7 -d 0/0 -m limit --limit 45/minute 
+--limit-burst 20 -m tcp -p tcp --dport 25 --syn -j ACCEPT
+-A SMTPCHAINS -s 0.0.0.6/0.0.0.7 -d 0/0 -m limit --limit 45/minute 
+--limit-burst 20 -m tcp -p tcp --dport 25 --syn -j ACCEPT
+-A SMTPCHAINS -s 0.0.0.7/0.0.0.7 -d 0/0 -m limit --limit 45/minute 
+--limit-burst 20 -m tcp -p tcp --dport 25 --syn -j ACCEPT
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DVerdana size=3D2>Hi All, </FONT></DIV>
-<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DVerdana size=3D2>I am using Iptables with IPmasquerade =
-on my LAN=20
-network to share the Internet connection, I have used rc.firewall script =
-that I=20
-downloaded from the netfilter site.The whole setup is rocking but I get =
-mssgs at=20
-/var/log/messages every sec, is there a way I can stop this? Sometimes, =
-this=20
-clogs my network ?</FONT></DIV>
-<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DVerdana size=3D2>Any pointers in this reagard will be=20
-appreciated.</FONT></DIV>
-<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DVerdana size=3D2>Regards</FONT></DIV>
-<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DVerdana size=3D2>Harish </FONT></DIV></BODY></HTML>
+but I stell want something better. I guess that using some kind of 
+connection trucking to know the histoty of connections from each IP 
+could be the solution.
 
-------=_NextPart_000_000F_01C3AA19.3055F5B0--
+The question is... Is there any module o reluset that achive that?
+
+Thank you very much....
+-- 
+
+                                        Federico Petronio
+                                        petronio@agro.uba.ar
+                                        Linux User #129974
+
+---
+There are only 10 types of people in the world:
+              Those who understand binary and those who don't.
+
 
 
