@@ -1,13 +1,10 @@
-From: Peter Schobel <pschobel@porchlight.ca>
-Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
-Date: Mon, 12 Jan 2004 17:45:49 -0500
+From: "prince" <prince@resoftcorp.com>
+Subject: iptables v1.2.7a: can't initialize iptables table `filter'
+Date: Mon, 12 Jan 2004 16:19:33 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1130D4BF-4551-11D8-AFEE-000393677A36@porchlight.ca>
-References: <1073943063.3044.94.camel@jasiiitosh.nexusmgmt.com>
-Mime-Version: 1.0 (Apple Message framework v553)
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040113001933.M22372@resoftcorp.com>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1073943063.3044.94.camel@jasiiitosh.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,121 +14,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-yes all policies are set to ACCEPT and I assume that squid is working 
-fine since it works well by using the proxyhost on port 80 and 3128 or 
-by manually configuring the proxy in the browser
+Dear Group,
 
-On Monday, January 12, 2004, at 04:31  PM, John A. Sullivan III wrote:
+I am getting the following whenever I tried to do any operation with iptables.
 
-> Hmmm . . . your rules do indeed look wide open.  Have you double 
-> checked
-> silly things like making sure all the policies are ACCEPT and squid can
-> resolve names using DNS? Is there any chance that squid does not like
-> 2.6?
->
-> On Mon, 2004-01-12 at 15:57, Peter Schobel wrote:
->> If i access the proxyhost directly on port 80 i can see the request to
->> the local host on 3128 and then i see a request from the local host to
->> the remote proxy site and everything works fine - the squid log shows
->> the access.  I'm not really sure what to do at this point i've been
->> trying any rule i can think of and i have a bunch of logging rules in
->> now to try to figure out what's going wrong but i'm not getting any
->> more information than what you see below.
->>
->> If i can't get this working by the end of the night, i'll probably 
->> have
->> no choice but to format reinstall and try to get back to a working
->> configuration which i really don't want to do because i have a lot of
->> software installed and configured on that machine that i will have to
->> rebuild.
->>
->> Peter Schobel
->> ~
->>
->> On Monday, January 12, 2004, at 03:04  PM, Peter Schobel wrote:
->>
->>> it appears to me as if it's redirecting to port 3128 but its not
->>> getting a reply from squid - the squid access log does not show the
->>> access at all as if it never received the packet
->>>
->>>
->>> Jan 12 14:52:21 proxyhost IN=eth0 OUT=
->>> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163
->>> DST=216.239.37.104 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=47715 DF
->>> PROTO=TCP SPT=53036 DPT=80 WINDOW=8192 RES=0x00 SYN URGP=0
->>> Jan 12 14:52:21 proxyhost IN=eth0 OUT=
->>> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163
->>> DST=10.0.0.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=47715 DF PROTO=TCP
->>> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
->>> Jan 12 14:52:24 proxyhost IN=eth0 OUT=
->>> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST=
->>> 10.0.0.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=47717 DF PROTO=TCP
->>> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
->>> Jan 12 14:52:27 proxyhost IN=eth0 OUT=
->>> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST=
->>> 10.0.0.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=47719 DF PROTO=TCP
->>> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
->>> Jan 12 14:52:30 proxyhost IN=eth0 OUT=
->>> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST=
->>> 10.0.0.1 LEN=44 TOS=0x00 PREC=0x00 TTL=63 ID=47721 DF PROTO=TCP
->>> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
->>> Jan 12 14:52:33 proxyhost IN=eth0 OUT=
->>> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST=
->>> 10.0.0.1 LEN=44 TOS=0x00 PREC=0x00 TTL=63 ID=47724 DF PROTO=TCP
->>> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
->>> Jan 12 14:52:36 proxyhost IN=eth0 OUT=
->>> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST=
->>> 10.0.0.1 LEN=44 TOS=0x00 PREC=0x00 TTL=63 ID=47726 DF PROTO=TCP
->>> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
->>> Jan 12 14:52:42 proxyhost IN=eth0 OUT=
->>> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST=
->>> 10.0.0.1 LEN=44 TOS=0x00 PREC=0x00 TTL=63 ID=47739 DF PROTO=TCP
->>> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
->>> Jan 12 14:52:54 proxyhost IN=eth0 OUT=
->>> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST=
->>> 10.0.0.1 LEN=44 TOS=0x00 PREC=0x00 TTL=63 ID=47743 DF PROTO=TCP
->>> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
->>>
->>> On Saturday, January 10, 2004, at 12:26  AM, Alistair Tonner wrote:
->>>>
->>>> 	Have you tried LOGging the INPUT chain for both 80 and 3128?
->>>> 	Or, perhaps more thorough, put a LOG rule in PREROUTING
->>>> 	before the REDIRECT/DNAT rule to log what you will change,
->>>> 	and since your destination is local, a LOG rule at the top of INPUT
->>>> 	to catch *everything* for the interim? -- then see at what point
->>>> 	the packets are actually disappearing.
->>>> 	
->>>
->>>
->>>
->> *****************************
->> Peter Schobel
->> Network Administrator
->> Porchlight.ca
->> Unlimited Internet
->> *****************************
->> In a world without walls or fences
->> We will have no need for gates or windows
->> *****************************
-> -- 
-> John A. Sullivan III
-> Chief Technology Officer
-> Nexus Management
-> +1 207-985-7880
-> john.sullivan@nexusmgmt.com
->
->
-*****************************
-Peter Schobel
-Network Administrator
-Porchlight.ca
-Unlimited Internet
-*****************************
-In a world without walls or fences
-We will have no need for gates or windows
-*****************************
+% iptables -L
 
+iptables v1.2.7a: can't initialize iptables table `filter': iptables who? (do 
+you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
+
+% rpm -qa | grep kernel
+kernel-pcmcia-cs-3.1.31-13
+kernel-2.4.20-28.9
+kernel-BOOT-2.4.20-28.9
+kernel-doc-2.4.20-28.9
+kernel-source-2.4.20-28.9
+
+% lsmod
+Module                  Size  Used by    Not tainted
+e1000                  54528   1 
+ext3                   61280   2 
+jbd                    46804   2  [ext3]
+3w-xxxx                36192   3 
+sd_mod                 11916   6 
+scsi_mod               63416   2  [3w-xxxx sd_mod]
+
+How do I get this resolved? It seems the problem is after I upgraded the 
+kernel. I am running RH 9.
+
+Thanks,
+Prince. 
 
