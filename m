@@ -1,9 +1,9 @@
 From: "hare ram" <hareram@sol.net.in>
 Subject: Re: [LARTC] Performanace fo the Iptables Server
-Date: Wed, 27 Aug 2003 22:33:10 +0530
+Date: Wed, 27 Aug 2003 23:20:33 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <011601c36cbd$185a5da0$c2bf09ca__8931.60624332285$1062044216@Housecall>
-References: <019f01c36c5e$9f7868e0$c2bf09ca@Housecall> <200308271730.07228.stef.coene@docum.org>
+Message-ID: <026101c36cc3$b6b76280$c2bf09ca__2758.08266965232$1062078096@Housecall>
+References: <019f01c36c5e$9f7868e0$c2bf09ca@Housecall> <200308271917.00121.stef.coene@docum.org> <015d01c36cc1$11fbabe0$c2bf09ca@Housecall> <200308271941.53445.stef.coene@docum.org>
 Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -23,60 +23,55 @@ Cc: lartc@mailman.ds9a.nl
 
 Hi Stef
 
-thanks for the reply
+Thats right, if i make cron job run every 5min, so i will loose only 5min of
+data.
 
-yes i would like to do accounting the source IP
-so i need to log them all the traffic,
-so i will know each IP how much transfering DATA
+i was not understand
+" You can record the difference between the 2 reads and discard
+negative values. "
 
-with my configuration, is there any performance issue
-i may have more than thousands of passing through this firewall or qos
-server
+you mean to say first 5min and next 5min bytes increasing ok
+if not i will discard and take new values you mean.
 
-so my PC will have any performance issue or,
-this configuration need any modification
+If i make the log to mysql, so it will be 24hours right
+is there anything i can make every 5min dump the data to Mysql using ULOG
 
-thanks
+
 hare
 ----- Original Message -----
 From: "Stef Coene" <stef.coene@docum.org>
 To: "hare ram" <hareram@sol.net.in>; <netfilter@lists.samba.org>
 Cc: <lartc@mailman.ds9a.nl>
-Sent: Wednesday, August 27, 2003 9:00 PM
+Sent: Wednesday, August 27, 2003 11:11 PM
 Subject: Re: [LARTC] Performanace fo the Iptables Server
 
 
-> On Wednesday 27 August 2003 07:46, hare ram wrote:
-> > Hi all
+> On Wednesday 27 August 2003 19:31, hare ram wrote:
+> > Hi Stef
 > >
-> > I have RH 9.0
-> > PIII with 550Mhz
-> > 512MB RAM
+> > How about Source and Desitination port, and protocol wise bytes transfer
+(
+> > like http, ftp, icmp, udp), if i want to track.
 > >
-> > working fine with Iptables+TC+HTB
+> > next limitation, if the Server goes down, the traffic will be zero, that
+> > will be another Limitation
+> Not true.  If you record the counters each 5 minutes, you loose max 5
+minutes
+> of counters.  You can record the difference between the 2 reads and
+discard
+> negative values.
+>
+> > If i send the all the traffic to Mysql, so i can get the old data to.
 > >
-> > Now i want o make accounting system using ULOG
+> > may be you can correct me if, i may be wrong thinking
 > >
-> > so i introduced  to send all logs to Mysql
-> > So i can make my own Graphs
-> >
-> > iptables -A INPUT -j ULOG
-> > iptables -A FORWARD -j ULOG
-> > iptables -A OUTPUT -j ULOG
-> >
-> >
-> > the Server is connected to Several Clients
-> >
-> > does this server will have any Impact of performance
-> > or this PC can handle Easily
-> >
-> > how can caluculate the PC configuration,
-> The needed configutation also depends on how many logs you will have and
-how
-> you are going to proces them.
-> And do you really want to log everything?  If you are interested in what's
-> going thru your firewall, you can also log the connections.  Or you can
-> install ntop on the firewall.
+> > correct me with the best methods to do
+> If you really want it very detailed (src/dst - address/port), you indeed
+have
+> to log it to mysql or so.
+> You can calulcate the number of updates you have to do mysql and simulate
+this
+> on a test box.
 >
 > Stef
 >
