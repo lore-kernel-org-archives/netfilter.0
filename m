@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Does anybody work on supporting SPD matching Netfilter MARKS?
-Date: Wed, 19 Jan 2005 09:41:24 -0500
-Message-ID: <1106145684.4934.32.camel@hubcap.ljm.dom>
-References: <41EE01DF.5040707@protactive.nl>
+Subject: Re: ip + mac authentication
+Date: Wed, 19 Jan 2005 09:44:00 -0500
+Message-ID: <1106145840.4934.35.camel@hubcap.ljm.dom>
+References: <20050119103603.82231.qmail@web30810.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41EE01DF.5040707@protactive.nl>
+In-Reply-To: <20050119103603.82231.qmail@web30810.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,41 +20,28 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2005-01-19 at 01:44, Ludo Stellingwerff wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
+On Wed, 2005-01-19 at 05:36, Linux Query wrote:
+> Hi all!
 > 
-> Hi All,
+> I want to ensure that each of my clients can have
+> access to the net only with the ip address which is
+> specifically assigned to him / her. Is the following
+> going to work ?
 > 
-> I was wondering if someone has been working on and/or has a patch
-> which implement's the use of Netfilter Marks for ipsec spd matching
-> under the linux kernel 2.6. This would be similar to the NetBSD
-> "tagged" option of 'setkey':
+> iptables -I FORWARD -o externalinterface -s
+> xx.xx.xx.xx -m mac --mac-source yy:yy:yy:yy:yy -j
+> ACCEPT
 > 
-> spdadd tagged "ssh" -P out esp/transport//require
-> 
-> But then something like:
-> 
-> ~     spdadd tagged 1 -P out esp/transport//require
-> or  spdadd mark 1 -P out esp/transport//require
+> or is it required to be done in some other way ?
 
-this may not be "good enough" for what you need--but why not just MARK
-the ESP packets in mangle PREROUTING, for later filtering:
-
-  iptables -t mangle -A PREROUTING -p 50 -s $VPN_PEER_1 \
-    -j MARK --set-mark 1
-
-  iptables -A [INPUT|FORWARD] -m mark --mark 1 [...] -j ACCEPT
-
-also--have a look at the "policy" match in POM, as i *think* it will do
-what you want.
-
-and finally--please don't cross-post--it's poor form.
+looks good to me.  you may want to specify "-i $INTERNAL_INTERFACE" as
+well, but that's just me.
 
 -j
 
 --
-"Let us all bask in television's warm glowing warming glow."
+"It is better to remain silent and thought a fool, than open your
+ mouth and remove all doubt."
 	--The Simpsons
 
 
