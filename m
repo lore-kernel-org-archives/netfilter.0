@@ -1,9 +1,10 @@
-From: Paul Albert <palbert1@yahoo.com>
-Subject: iptables and 802.1q tagging
-Date: Tue, 20 May 2003 17:08:14 -0700 (PDT)
+From: Andreas Jellinghaus <aj@dungeon.inka.de>
+Subject: iptables and 2.5.* ipsec
+Date: 14 May 2003 11:53:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030521000814.26768.qmail@web40811.mail.yahoo.com>
+Message-ID: <1052906039.6883.24.camel@simulacron>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,36 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi - 
+Hi,
 
-I'm using a box with 2 network interfaces as a 
-bridge with iptables.  I was attempting to send
-packets
-that were 802.1Q tagged to the QUEUE target and didn't
+How does 2.5.* ipsec and netfilter interact?
 
-see them as expected.  After checking out my 
-configuration, it seemed that everything was working
-as 
-expected (I fully expected something to be incorrect).
+I guess this way, but I'm not sure:
+(encrypted) network card -> routing -> INPUT -> decrypt
+(decrypted) ipsec -> routing -> INPUT/FORWARD 
 
-I googled to determine whether an iptables 
-bridge that is filtering on IP addresses would be 
-smart enough to pick up on the fact that the packets 
-have 802.1Q tags or not.  No definitive answer was 
-found.  My question is just that - does iptables 
-notice that the tag is present or will it not know 
-what to do with such a packet?
+A normal packet is processed this way:
+ipsec -> routing -> INPUT/FORWARD 
 
-Thanks,
-Paul
+The first is easy to see: proto 50 or 51 (or udp port 500 for ike).
+But how can I see whether an unencrypted packet came in unencrypted
+or came in encrypted via ipsec?
 
+with freeswan I could match -i ipsec0, but with kernel 2.5.* there
+is no ipsec0 device. What shall I use instead? fwmark?
 
+Thanks for your help.
 
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
+Regards, Andreas
+
 
