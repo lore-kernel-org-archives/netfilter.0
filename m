@@ -1,8 +1,8 @@
-From: "Udo Rader" <spamtrash2@vibe.ac>
-Subject: DNAT possible with the string module?
-Date: Mon, 04 Nov 2002 16:40:32 +0100
+From: Mark Atwood <mra@pobox.com>
+Subject: Using mangle table to change source address, how?
+Date: 04 Nov 2002 12:28:59 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <aq64dg$4br$1@hermes.vibe.ac>
+Message-ID: <m3vg3d84fo.fsf@khem.blackfedora.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,23 +16,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-hi,
 
-I would like to do the following thing:
+I have an interface eth1, with an IP address 192.168.23.100
 
-2 daemons listening on different ports (lets say 1234 and 2345). 
+I've configured eth1 to have a subinterface eth1:0, and
+have given that subinterface an IP address 172.23.1.3.
 
-The firewall then ideally takes all connects from clients to port 1234, 
-looks for a "magic string" (using -m string) in the packages and based 
-upon the (non)existance of the string finally decides, which daemon to 
-forward the connect to.
+There is a host on the segment that this interface is connected to
+with an IP address of 172.23.1.2.
 
-... is there a chance for this to work?
-... or any other ways to achieve this?
+If I send packets to that host 172.23.1.2, the packets from me have a
+source address of 192.168.23.100, not 172.23.1.3!
 
-thanks for your work!!!
+Can I use the mangle table to rewrite the source address?  If so,
+what is the iptable command line?
 
-udo
+Or is there an easier way?
+
+-- 
+Mark Atwood   | Well done is better than well said.
+mra@pobox.com | 
+http://www.pobox.com/~mra
 
