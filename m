@@ -1,11 +1,15 @@
-From: Chris Schanzle <nospam@nist.gov>
-Subject: How to drop arps when protocol addrs of sender = target
-Date: Wed, 10 Sep 2003 13:04:10 -0400
+From: "Joao F. Serejo" <lx90@netcabo.pt>
+Subject: Re: hi
+Date: Thu, 11 Sep 2003 03:48:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F5F598A.3080609@nist.gov>
+Message-ID: <20030911024824.GA2102@lx90.netcabo.pt>
+References: <831411C4CBD37C4A91DBEC9B98A64C8B6C42C8@spmail.summitmedia.com.ph>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <831411C4CBD37C4A91DBEC9B98A64C8B6C42C8@spmail.summitmedia.com.ph>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,29 +19,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-Cc: schanzle@nist.gov
+To: Aris Santillan <aris@femalenetwork.com>
+Cc: netfilter@lists.netfilter.org
 
-I have a need to not respond to arps where the protocol address of the 
-sender is the same as the target, which is the case when Windows clients 
-try to ARP for the manually-configured address it is about to use.  If 
-it gets a response, it disables the interface.  I currently respond 
-because of a global arp entry ("arp ... -s ... netmask 0.0.0.0 pub"), 
-which is required for my application.
 
-I want to receive and respond to all other ARPs (e.g., for routers).
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I cannot change the Windows clients.
+Please don't miss this great doc :
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
-It does not appear to me this can be done with iptables or arptables 
-(comparisons between two fields in the packet).  Any suggestions before 
-I start hacking on kernel code?
+and many other you can find in the netfilter.org project home page.
 
-Thanks,
+GodLuck
 
-Chris Schanzle
-[yes, the nospam *does* go to me.  :-]
+On 17:19 Tue 20 May     , Aris  Santillan wrote:
+> hi=20
+>=20
+> im new here! at your mailing list
+> i hope you can help me to use iptables..
+>=20
+>=20
+>=20
+> thanks
 
+--=20
+ /* Sincerely, Joao Serejo, <lx90@netcabo.pt>, Lisbon - Portugal */
+
+--huq684BweRXVnRxX
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/X+J4RNnlwKTMYgIRAkoQAJ9rOxZXMogWnqf1OgvmOnpA4VY2XACgz44b
+1c/JHpzIwPLGL06qd/2ggZQ=
+=Z78I
+-----END PGP SIGNATURE-----
+
+--huq684BweRXVnRxX--
 
 
