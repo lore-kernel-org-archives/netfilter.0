@@ -1,13 +1,14 @@
-From: Alexis <alexis@tpys.com.ar>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Packet forwarding.
-Date: Wed, 07 Apr 2004 14:28:19 -0300
+Date: Wed, 7 Apr 2004 18:37:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081358898.1498.21.camel@pepelui.baicom>
-References: <1081357206.4074339639b86@mail.tscnet.net>
+Message-ID: <200404071837.29160.Antony@Soft-Solutions.co.uk>
+References: <1081357206.4074339639b86@mail.tscnet.net> <200404071814.34654.Antony@Soft-Solutions.co.uk> <1081358721.40743981919b2@mail.tscnet.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1081357206.4074339639b86@mail.tscnet.net>
+In-Reply-To: <1081358721.40743981919b2@mail.tscnet.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +18,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="macroman"
-To: bdameron@tscnet.net, Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-T24gV2VkLCAyMDA0LTA0LTA3IGF0IDE0OjAwLCBiZGFtZXJvbkB0c2NuZXQubmV0IHdyb3RlOgo+
-ICBJIGhhdmUgMiBsaW51eCBtYWNoaW5lcy4gT25lIGlzIGFjY2Vzc2FibGUgdmlhIHRoZSBvdXRz
-aWRlIHdvcmxkIChJbnRlcm5ldAo+IG1hY2hpbmUpIHRoZSBvdGhlciBoYXMgbm8gb3V0c2lkZSBj
-b25uZWN0aXZpdHkgKExBTiBNYWNoaW5lKS4gSSBuZWVkIHRvIHJlZGlyZWN0Cj4gcG9ydCA0NDMg
-dHJhZmZpYyB0byBhbmQgZnJvbSB0aGUgTEFOIHNlcnZlciB2aWEgdGhlIEludGVybmV0IG1hY2hp
-bmUuIElzIHRoaXMKPiBwb3NzaWJsZSB3aXRoIElwdGFibGVzPyBJIGhhdmUgc2V0dXAgcGFja2V0
-IGZvcndhcmRpbmcgYnV0IHRoZW4gdGhlIExBTiBzZXJ2ZXIKPiB0cmllcyB0byBjb25uZWN0IGRp
-cmVjdGx5IHRvIHRoZSBjbGllbnQgbWFjaGluZSBpbnN0ZWFkIG9mIHRvIHRoZSBJbnRlcm5ldAo+
-IG1hY2hpbmUuIEFueSBkaXJlY3Rpb24gYXBwcmVjaWF0ZWQuCgpoYXZpbmcgQUNDRVBUIGluIEZP
-UldBUkQgcG9saWN5IGRvIHRoaXMgaW4gdGhlICJpbnRlcm5ldCIgYm94CgoKZWNobyAnMScgPiAv
-cHJvYy9zeXMvbmV0L2lwdjQvaXBfZm9yd2FyZAppcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElO
-RyAtcCB0Y3AgLS1zcG9ydCA0NDMgLWogRE5BVCAtLXRvIExBTl9JUDo0NDMKaXB0YWJsZXMgLXQg
-bmF0IC1BIFBPU1RST1VUSU5HIC1vIFdBTl9JRiAtaiBNQVNRVUVSQURFCgoKYW5kIHNldCB0aGUg
-ImludGVybmV0IiBtYWNoaW5lIGFzIHRoZSBkZWZhdWx0IGdhdGV3YXkgb2YgdGhlIExBTiBib3gu
-CgoKVGhpcyBpcyBhIGJhZCBpZGVhIChpdHMgb25seSBhbiBhcHByb2FjaCksIHBlcmhhcHMgeW91
-IF9tdXN0XyByZWFkIGFib3V0CmNvbm5lY3Rpb24gdHJhY2tpbmcsIFNOQVQgYW5kIEROQVQsIHRo
-ZW4gY2hhbmdlIHNvbWUgcG9saWNpZXMgdG8gRFJPUAphbmQgaW1wcm92ZSB0aGVzZSBydWxlcy4K
-CnNlZSBodHRwOi8vd3d3Lm5ldGZpbHRlci5vcmcvZG9jdW1lbnRhdGlvbi9pbmRleC5odG1sCgpS
-ZWdhcmRzCgoKLS0gClR1cyBwcm9ibGVtYXMgbm8gc2UgcHVlZGVuIHJlc29sdmVyIGVuIGVsIG1p
-c21vCm5pdmVsIG1lbnRhbCBxdWUgdGVuw61hcyBjdWFuZG8gbG9zIGNyZWFzdGUuIAoJCUFsYmVy
-dCBFaW5zdGVpbgoKCg==
+On Wednesday 07 April 2004 6:25 pm, bdameron@tscnet.net wrote:
+
+> > If you tell us what your rules are and give us some more detail about
+> > your network setup, we might be able to help, however a better solution
+> > for you is to look at some of the excellent documentation available to
+> > learn how to do it yourself.   This is not a hard problem, and you will be
+> > able to manage your system much better in future if you understand more
+> > about how it works.
+> >
+> > One very important detail which is not clear from your description above
+> > is: where is the "client machine" located?
+>
+>   Client machine being anyone from the outside world. And I have looked
+> over some of the documentation. Basically there is no current firewall
+> policies. Just want anything coming in on xxx.xxx.xxx.xxx:443 (Internet
+> Machine) to be routed to 10.10.1.110:443 (Internal Lan Machine).
+>
+> Looks like I need to mangle the packet header so that the Lan machine thinks
+> that the Internet machine is sending the packet and then have the Internet
+> machine redirect the packet to the client. Client again being someone on the
+> Internet. Not sure if this can be done or not. Correct me if I am wrong.
+
+With all due respect, yes, you are very wrong.   This is a simple "nat + 
+forward" situation.
+
+Since you haven't said what your ruleset is, I shall assume none, and give you 
+an example of how to make work what you have asked for:
+
+iptables -F
+iptables -F -t nat
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 443 -d 10.10.1.110 -j ACCEPT
+iptables -A PREROUTING -i eth0 -p tcp --dport 443 -j DNAT --to 10.10.1.110
+
+If eth0 is not your external interface then change it in the above two rules 
+for whatever your external interface is.
+
+Regards,
+
+Antony.
+
+-- 
+Abandon hope, all ye who enter here.
+You'll feel much better about things once you do.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
+
