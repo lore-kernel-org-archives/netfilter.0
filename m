@@ -1,12 +1,15 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: virus warning
-Date: Tue, 27 Jan 2004 13:44:53 +0800
+From: Unknown <unknown@unknown.invalid>
+Subject: Re: virus warning
+Date: Tue, 27 Jan 2004 01:45:12 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E71642A9@overlord.overturemedia.com>
+Message-ID: <6489.44153585962$1075186142@news.gmane.org>
+References: <F22386C3FEB012449238672E38ED61E71642A9@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+From: Alistair Tonner <>
+In-Reply-To: <F22386C3FEB012449238672E38ED61E71642A9@overlord.overturemedia.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,41 +23,49 @@ Content-Type: text/plain; charset="us-ascii"
 To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
 
-friends,
+	Obviously this is a really new one ... F-prot didn't catch it .. and mines up to date ... 
+	However ... since kmail and linux don't much like 7 bit mime ... *grin* 
 
-we got a virus in our list.
-clamav warned me about it.
-it's now spreading like fire even on other lists.
-
-thought you might like to be warned.
+	I'm handing this one up to the folks at F-Prot to see why they didn't catch it...
 
 
-Cheers,
+	Alistair.
 
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
-
-
-
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Fax: (632) 637-2206
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
-
+On January 27, 2004 12:44 am, Fritz Mesedilla wrote:
+> friends,
+>
+> we got a virus in our list.
+> clamav warned me about it.
+> it's now spreading like fire even on other lists.
+>
+> thought you might like to be warned.
+>
+>
+> Cheers,
+>
+> fritz <www.mesedilla.com>
+> ---
+> + Basta Ikaw Lord
+>
+>
+>
+>
+> ----------------------------------------------------------------------
+> This email and any files transmitted with it are confidential and
+> intended solely for the use of the individual or entity to whom they
+> are addressed. If you have received this email in error please notify
+> the sender immediately by e-mail and delete this e-mail from your
+> system. Please note that any views or opinions presented in this
+> email are solely those of the author and do not necessarily represent
+> those of the company. Finally, the recipient should check this email
+> and any attachments for the presence of viruses. The company accepts
+> no liability for any damage caused by any virus transmitted by this
+> email.
+>
+> Overture Media, Inc.
+> Direct Line: (632) 635-4785
+> Trunkline:   (632) 631-8971 Local 146
+> Fax: (632) 637-2206
+> Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave.,
+> Quezon City 1100
 
