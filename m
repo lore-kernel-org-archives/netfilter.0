@@ -1,14 +1,14 @@
 From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Memory leak? <<-- FAQ subject somewhere maybe?
-Date: Fri, 7 Nov 2003 12:17:16 -0500
+Subject: Re: iprange
+Date: Fri, 7 Nov 2003 12:18:31 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311071217.16446.Alistair@nerdnet.ca>
-References: <20031103142830.14782.87331.Mailman@netfilter-sponsored-by.noris.net> <000301c3a2e2$ce7e05e0$12dfa643@tichael> <20031107165336.GW5741@sunbeam.de.gnumonks.org>
+Message-ID: <200311071218.31713.Alistair@nerdnet.ca>
+References: <Pine.LNX.4.58.0311071633360.3942@fhynpb.envafyvqr.arg>
 Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031107165336.GW5741@sunbeam.de.gnumonks.org>
+In-Reply-To: <Pine.LNX.4.58.0311071633360.3942@fhynpb.envafyvqr.arg>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,34 +20,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: blueflux@koffein.net
-Cc: netfilter@lists.netfilter.org
+To: Vigil <nvnwdfuq02@sneakemail.com>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On November 7, 2003 11:53 am, Harald Welte wrote:
-> On Tue, Nov 04, 2003 at 08:49:10AM -0600, Michael Friedhoff wrote:
+On November 7, 2003 11:45 am, Vigil wrote:
+> Hi, I have just installed iptables 1.2.9 from source, but it seems that the
+> iprange module that is now built in, is not working. From the iprange pom
+> documentation, it used to be that '-m iprange --dst-range
+> 10.0.0.0-10.5.255.255.255' would work. Now, that is not working. It gives
+> the error, "iptables: No chain/target/match by that name", and iptables
+> isn't recognising -m as an argument anyway, but perhaps the -m argument is
+> added by pom, which I'm not using now. I figured I don't need to '-m
+> iprange', since it is built in, but without that, iptables doesn't
+> recognise --dst-range. I thought maybe I don't need to tell it that it's a
+> range any more, that it will recognise it as a range, and so with just '-d
+> 10.0.0.0-10.5.255.255.255', iptables complains that the host/network is not
+> found.
 >
-> what is your ps outout supposed to tell us?
+> Is iprange even being built in, as the changelog suggests? Do I have to
+> activate it in some way? Or has the iprange usage changed? How do I get it
+> working as before?
 >
-> > I am not positive that netfilter is the cause for
-> > the memory loss, but it is the only purpose of the
-> > machine.  In the last 12 hours, the amout of
-> > available memory has decreased by 1.5MB.  I know
-> > that isn't much, but since this is a production box,
-> > I would rather not have to reboot it constantly.
->
-> what amount of memory are you referring to?  'free' memory (as in the
-> top program) will always be very low, since linux uses almost all free
-> memory for caching/buffering.
->
-> the output of /proc/slabinfo (|grep ip_conntrack) should be more useful
-> to see if the conntrack hash is growing or not.
->
-> > --Michael Friedhoff
+> Thanks.
 
+	how many copies of iptables are there on your system? which one is being 
+used, what versions are they?
 
-	Oskar A: --- just a suggestion we *really* need to make this a FAQ ... 
-perhaps you could put an appropriate caveat in your marvellous tutorials???
-	With some outline for absolute newbies to determine 
 -- 
 
 	Alistair Tonner
