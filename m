@@ -1,12 +1,20 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: Win32, Win2k version of IPTABLES
-Date: Mon, 14 Feb 2005 18:17:08 -0800
-Message-ID: <SERVER7IIZS2TRqf69a00000023@server7.bandwidthco.com>
-References: <000001c51160$f3333840$9600a8c0@netcontent>
-Reply-To: markee@bandwidthco.com
+From: Josh Nerius <jnerius@gmail.com>
+Subject: Re: Fwd: Linux as router (Gateway Server)
+Date: Mon, 14 Feb 2005 20:32:38 -0600
+Message-ID: <4f3930a70502141832715b4043@mail.gmail.com>
+References: <1dceb012050211233357e23dd4@mail.gmail.com>
+	<1dceb01205021123483860fb86@mail.gmail.com>
+	<1108216901.4462.27.camel@hubcap.ljm.dom>
+	<4f3930a705021214026db11902@mail.gmail.com>
+	<420EB7C3.7040303@hotpop.com>
+	<4f3930a70502121833627af1bd@mail.gmail.com>
+	<420F4010.7050609@hotpop.com>
+	<4f3930a705021313382ed454fe@mail.gmail.com>
+	<1108419310.4338.4.camel@hubcap.ljm.dom>
+Reply-To: Josh Nerius <jnerius@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <000001c51160$f3333840$9600a8c0@netcontent>
+In-Reply-To: <1108419310.4338.4.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +26,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Egon Phillips' <egon.phillips@sympatico.ca>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+> didn't someone in this thread already point out that his rules don't
+> include:
+> 
+>   iptables -A INPUT -i lo -j ACCEPT
+>   iptables -A OUTPUT -o lo -j ACCEPT
+> 
+> -j
+
+Yes, I believe I said something to that effect in my original reply. 
 
 
-Is there a version of iptables on Win2k or Win32 that does not require
-cygwin?
-
-Thank you.
-____________________________________________________
-The Brockton Initiative (http://brockton.dyndns.org) Egon Phillips, Chair
-
-
-No. But pktfilter has some of the functionality and is actually quite good
-considering it's Win32. Find it here:
-
-http://www.hsc.fr/ressources/outils/pktfilter/
-http://sourceforge.net/projects/pktfilter
-
-
-
-########################################################
-This message has been scanned for viruses and dangerous content by
-MailScanner, and is believed to be clean.
-
-postmaster@bandwidthco.com
-MailScanner at bandwidthco.com is for your absolute protection.
-########################################################
-
-
-
-
-########################################################
-This message has been scanned for viruses and dangerous 
-content by MailScanner, and is believed to be clean.
-
-postmaster@bandwidthco.com
-MailScanner at bandwidthco.com is for your absolute protection.
-########################################################
-
+-- 
+Math problems? Call 1-800-[(10x)(13i)^2]-[sin(xy)/2.362x]
 
