@@ -1,11 +1,13 @@
-From: <tom@digital-data.co.uk>
-Subject: Very basic question.
-Date: Fri, 24 Sep 2004 11:26:24 +0100
+From: Patrick Dung <patrick_dkt@yahoo.com.hk>
+Subject: Re: How to use netfilter to do static IP mapping?
+Date: Fri, 24 Sep 2004 16:17:37 +0800 (CST)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <E1CAozd-0004s0-00@deer.gmane.org>
+Message-ID: <20040924081737.46229.qmail@web51806.mail.yahoo.com>
+References: <1096009057.9581.68.camel@wolfpack.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1096009057.9581.68.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,40 +17,29 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="big5"
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-Hi,
-
-            I am very new to trying to use iptables and was wondering if
-someone could help me out with what I should do to solve my current problem.
-
-I have a PC with 3 ethernet cards, one is connected to the internet (eth2).
-I want to use network translation to forward all requests to a pair of
-static IP addresses I have to particular locales on an internal network
-(which is accessed through eth1).
-
-Ie forward all incoming traffic on eth2 going to address 213.249.230.206 to
-192.168.10.2 on eth1.
-
- 
-
-I have tried the following, but it just seems to redirect all traffic to the
-local firewall:
-
- 
-
-iptables -t nat -A POSTROUTING -o eth1 -s 192.168.10.2 -j SNAT --to
-213.249.230.206
-
-iptables -t nat -A PREROUTING -i eth2 -s 213.249.230.206 -j DNAT --to
-192.168.10.2
-
- 
-
-What am I doing wrong?
-
- 
-
-Tom 
-
+VGhhbmtzLCB0aGF0IHJvY2tzLgoKUmVnYXJkcwpQYXRyaWNrCgogLS0tIEphc29uIE9wcGVyaXNh
+bm8gPG9waWVAODE3d2VzdC5jb20+IKS6rmWhRwo+IE9uIFRodSwgMjAwNC0wOS0yMyBhdCAyMzoy
+NCwgUGF0cmljayBEdW5nIHdyb3RlOgo+ID4gRGVhciBBbGwKPiA+IAo+ID4gVGhpcyBpcyB3aGF0
+IEkgd2FudDoKPiA+IAo+ID4gZXRoMCBhcyBpbnRlcm5ldCAoMS4xLjEuMSkKPiA+IGV0aDEgYXMg
+ZG16ICgxMC4xLjEuMSkKPiA+IAo+ID4gZG16IGhhcyBhIHdlYiAoMTAuMS4xLjIpIGFuZCBkbnMg
+KDEwLjEuMS4zKSBzZXJ2ZXIKPiA+IHdpdGggcHJpdmF0ZSBJUC4KPiA+IFRoZSBuZXRmaWx0ZXIg
+Zncgd2lsbCBkbyB0aGUgc3RhdGljIElQIChwdWJsaWMgdG8KPiA+IHByaXZhdGUpIElQIG1hcHBp
+bmcuCj4gPiBBdmFsaWFibGUgcHVibGljIElQIChleGFtcGxlKToKPiA+IDEuMS4xLjEgKGV0aDAp
+LCAxLjEuMS4yIChmb3Igd2ViKSwgMS4xLjEuMyAoZm9yCj4gZG5zKQo+ID4gCj4gPiBOb3cgSSBo
+YXZlIHRoZXNlIHJ1bGVzOgo+ID4gCj4gPiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAt
+aSBldGgwIC1kIDEuMS4xLjIKPiAtcAo+ID4gdGNwIC0tZHBvcnQgODAgLWogRE5BVCAtLXRvIDEw
+LjEuMS4yOjgwCj4gPiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSBldGgwIC1kIDEu
+MS4xLjMKPiAtcAo+ID4gdWRwIC0tZHBvcnQgNTMgLWogRE5BVCAtLXRvIDEwLjEuMS4zOjUzCj4g
+PiAKPiA+IFRoZSBwcm9ibGVtIGlzIHRoYXQgdGhlcmUgaXMgbm8gcmVzcG9uc2UgZnJvbQo+IDEu
+MS4xLjIKPiA+IGFuZCAxLjEuMS4zLgo+ID4gRG8gSSBuZWVkIG90aGVyIHNwZWNpYWwgc2V0dGlu
+ZyAocHJveHkgYXJwPykKPiAKPiB5dXAuICBvbiBuZXRmaWx0ZXIgbWFjaGluZToKPiAKPiAgIGlw
+IGFkZHJlc3MgYWRkIDEuMS4xLjIgZGV2IGV0aDAKPiAgIGlwIGFkZHJlc3MgYWRkIDEuMS4xLjMg
+ZGV2IGV0aDAKPiAKPiAgcmVtZW1iZXIgdG8gdXNlIDEwLjEuMS5bMjNdIGluIHlvdXIgZmlsdGVy
+IHJ1bGVzCj4gYW5kIG5vdCAxLjEuMS5bMjNdLgo+IAo+IC1qCj4gCj4gLS0gCj4gSmFzb24gT3Bw
+ZXJpc2FubyA8b3BpZUA4MTd3ZXN0LmNvbT4KPiAKPiAKPiAgCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KpbKx/qfeoUK2vLpxoUKkcKxQ
+rFAuLi4Krva6qblhwW4gILGhpN+zc8O0Cmh0dHA6Ly91cy5yZC55YWhvby5jb20vZXZ0PTIyMjgx
+LypodHRwOi8vcmluZ3RvbmUueWFob28uY29tLmhrLwoK
