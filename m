@@ -1,9 +1,11 @@
-From: =?unknown-8bit?q?=C1=CE=E7=F7?= <liao812@163.com>
-Subject: =?gb2312?B?YSBxdWVzdGlvbiBvZiBOQVQ=?=
-Date: Tue, 7 Jan 2003 16:38:59 +0800 (CST)
+From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
+Subject: RE: pptp+masq - the .config file
+Date: Tue, 7 Jan 2003 09:39:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E1A9223.00001A.23552@bj230.163.com>
+Message-ID: <FD8F124A387AD6119F7900A0D218B32154AAF8@hslex01.hslbz.local>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2B628.5CE16E60"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,33 +16,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-To: netfilter@lists.netfilter.org
+To: 'Netfilter mailinglist' <netfilter@lists.netfilter.org>
 
-SSBoYXZlIGEgcXVlc3Rpb24gd2hlbiBpIHVzZSB0aGUgTkFULgoKSSBoYXZlIHR3byBMQU4gQSBh
-bmQgQiAsIEEgaXMgMjAyLjExNS42MC4wLzI0IGFuZCBCIGlzIDIwMi4xMTUuNzAuMC8yNCAuCkxB
-TiBBIGhhdmUgYSBzZXJ2ZXIgQyB3aGljaCBpcCBpcyAyMDIuMTE1LjYwLjIsIGFuZCAgTEFOIEIg
-aGF2ZSBhIHNlcnZlciBEIHdoaWNoIGlwIGlzIDIwMi4xMTUuNzAuMyAsIG5vcm1hbCwgdGhlIHNl
-cnZlciBDIHByb3ZpZGUgdGhlIHNlcnZpY2UsIHdoZW4gdGhlIHNlcnZlciBEIHNodXRkb3duLCBJ
-IHdhbnQgdXNlIHNlcnZlciBCIHByb3ZpZGUgCnRoZSBzZXJ2aWNlIGludGVhZCBvZiB0aGUgc2Vy
-dmVyIEMuCiBJIHRoaW5rIHRoZSBOQVQgbWF5YmUgc29sdmUgdGhlIHF1ZXN0aW9uIC4gU28sIEkg
-dXNlIHRoZSBETkFUIGFuZCBTTkFUOgoKYXQgdGhlIG5ldGdhdGUgb2YgTEFOIEEsZG8gdGhpczoK
-I2lwdGFibGVzIC10IG5hdCAtQSBQUkVST1VUSU5HIC1zICEgMjAyLjExNS43MC4wLzI0IC1kIDIw
-Mi4xMTUuNjAuMiAtaiBETkFUIC0tdG8gMjAyLjExNS43MC4zCiNpcHRhYmxlcyAtQSBGT1JXQVJE
-IC1kIDIwMi4xMTUuNzAuMC8yNCAtaiBBQ0NFUFQKCmF0IHRoZSBuZXRnYXRlIG9mIExBTiBCICwg
-ZG8gdGhpczoKI2lwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtcyAyMDIuMTE1LjcwLjMg
-LWQgISAyMDIuMTE1LjYwLjAvMjQgLWogU05BVCAtLXRvIDIwMi4xMTUuNjAuMiAKCmJ1dCB3aGVu
-IEkgY2hlY2sgdGhlIGlwIHBhY2thZ2UgdXNlIHRjcGR1bXAgLCBJIGZpbmQgdGhlIFNOQVQgZGlk
-IG5vdCB3b3JrLCB0aGUgc291cmNlIGFkZHJlc3Mgb2YgdGhlIHBhY2thZ2UgZnJvbSB0aGUgc2Vy
-dmVyIEQgaXMgMjAyLjExNS43MC4zICwgbm90IDIwMi4xMTUuNjAuMi4KCnRoZW4gSSBkbyBhIHRl
-c3QuIHdoZW4gaSBzZW5kIGEgcGluZyBwYWNrYWdlIGZyb20gdGhlIHNlcnZlciBELCB0aGUgc291
-cmNlIGFkZHJlc3Mgb2YgdGhlIHBpbmcgCgpwYWNrYWdlIGNoYW5nZSB0aGUgMjAyLjExNS42MC4y
-LCBoZXJlIHRoZSBTTkFUIHdvcmsgd2VsbC4gCgpzbywgSSBkbyBub3QgdW5kZXJzdGFuZCB3aHkg
-dGhlIFNOQVQgY2FuIHdvcmsgd2hlbiBzZW5kIHRoZSByZXF1aXJlIHBhY2thZ2UgYW5kIG5vdCB3
-b3JrIHdoZW4gcmVwbHkgdGhlIHJlcHVpcmUgLi4uLgoKVGhhbmsgeW91IFZFUlkgbXVjaCEKPT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PQrUqrWpoaLH6cjLvdqyu9TZ1/a5wrbAyMshxOO7ubK7v+zAtNS8u+GjvwlodHRwOi8vZGF0aW5n
-LjE2My5jb20vCs340te+48DWsr/OqsTjvajU7NK7uPazrLy2tcTLvcjLyefH+KOhCQlodHRwOi8v
-b3VyLjE2My5jb20K0MLE6tPQwPGjoSBWSVDTys/k0rK/ydLUw+K30dPDo6EJCWh0dHA6Ly92aXAu
-MTYzLmNvbS9wYXltZW50L01vYmlsZVBheW1lbnQuc2h0bWwKCgo=
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
+
+------_=_NextPart_001_01C2B628.5CE16E60
+Content-Type: text/plain
+
+> hi
+> 
+> sorry - I forgot
+> 
+> here's the kernel config. I've tried building the netfilter 
+> modules both hard 
+> linked and as modules (as this is)
+
+You're having this problem for some time now, but.. did you try to compile
+the kernel and netfilter/iptables on different boxes ?
+
+
+Rob
+
+------_=_NextPart_001_01C2B628.5CE16E60
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>RE: pptp+masq - the .config file</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>&gt; hi</FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; sorry - I forgot</FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; here's the kernel config. I've tried building =
+the netfilter </FONT>
+<BR><FONT SIZE=3D2>&gt; modules both hard </FONT>
+<BR><FONT SIZE=3D2>&gt; linked and as modules (as this is)</FONT>
+</P>
+
+<P><FONT SIZE=3D2>You're having this problem for some time now, but.. =
+did you try to compile the kernel and netfilter/iptables on different =
+boxes ?</FONT></P>
+<BR>
+
+<P><FONT SIZE=3D2>Rob</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2B628.5CE16E60--
+
