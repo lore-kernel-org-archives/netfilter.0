@@ -1,12 +1,13 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `': Table does not exist (do you need to insmod?) <<Help>>
-Date: Tue, 24 Sep 2002 18:34:33 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Checkpoint VPN through Iptables
+Date: Tue, 24 Sep 2002 14:57:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002801c263ca$f480f1b0$2b00a8c0@dharmu>
-References: <00fb01c263b7$a8fe5380$2900a8c0@spectranet.com> <002b01c263be$95b3f490$2b00a8c0@dharmu> <000901c263bd$da3d1480$2900a8c0@spectranet.com> <001701c263c1$887ebb40$2b00a8c0@dharmu> <004e01c263c1$15ed33e0$2900a8c0@spectranet.com>
+Message-ID: <200209241357.g8ODvNv26202@vulcan.rissington.net>
+References: <8F31D8DF00BBD411975C00508B6D6E65F89096@hermes.upu.int>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <8F31D8DF00BBD411975C00508B6D6E65F89096@hermes.upu.int>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,140 +18,85 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Krishna <Krishna_shekhar@gmx.net>, netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-I can see only two rules in your mail. These two rules should not give any
-problem like this. I guess that you have more rules which is giving this
-error. Have you cheked whether the input chain is dropped completely. If the
-input chain is getting dropped completely you may have to recompile the
-kernel with all the modules(netfilter) and check again
-Regards
-Dharmu
------ Original Message -----
-From: "Krishna" <Krishna_shekhar@gmx.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, September 24, 2002 5:24 PM
-Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
-Table does not exist (do you need to insmod?) <<Help>>
+On Tuesday 24 September 2002 1:37 pm, Netfilter.UPU wrote:
 
+> Hi all,
+>
+> I have the following script
+>
+> $IPTABLES -F
+> $IPTABLES -t nat -F
+> $IPTABLES -t mangle -F
+> $IPTABLES -P INPUT ACCEPT
+> $IPTABLES -P FORWARD ACCEPT
+> $IPTABLES -t nat -A POSTROUTING -s 192.168.0/24 -o eth0 -j MASQUERADE
 
-> Hi,
-> This is all what I get!
-> I have made rules in /etc/sysconfig/iptables and the
-> /etc/rc.d/init.d/iptables points to this file and starts it.
->
-> regards
-> Krishna
->
-> Krishna Shekhar
-> Network Administrator
-> Wiplash Wireless
-> ----- Original Message -----
-> From: Dharmendra.T <dharmu@nsecure.net>
-> To: Krishna <Krishna_shekhar@gmx.net>; <netfilter@lists.netfilter.org>
-> Sent: Tuesday, September 24, 2002 5:27 PM
-> Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
-> Table does not exist (do you need to insmod?) <<Help>>
->
->
-> > You should send us the complete error message, which table the iptables
-> > could not recognize
-> > DHarmu
-> > ----- Original Message -----
-> > From: "Krishna" <Krishna_shekhar@gmx.net>
-> > To: <netfilter@lists.netfilter.org>
-> > Sent: Tuesday, September 24, 2002 5:00 PM
-> > Subject: Re: iptables-restore v1.2.5: can't initialize iptables table
-`':
-> > Table does not exist (do you need to insmod?) <<Help>>
-> >
-> >
-> > > Hi,
-> > >     It gives the same error
-> > >
-> > >  iptables-restore v1.2.5: can't initialize iptables table `': Table
-does
-> > not
-> > > exist (do you need to insmod?)
-> > > Perhaps iptables or your kernel needs to be upgraded
-> > >
-> > > regards
-> > > Krishna
-> > >
-> > > Krishna Shekhar
-> > > Network Administrator
-> > > Wiplash Wireless
-> > > ----- Original Message -----
-> > > From: Dharmendra.T <dharmu@nsecure.net>
-> > > To: Krishna <Krishna_shekhar@gmx.net>; <netfilter@lists.netfilter.org>
-> > > Sent: Tuesday, September 24, 2002 5:05 PM
-> > > Subject: Re: iptables-restore v1.2.5: can't initialize iptables table
-> `':
-> > > Table does not exist (do you need to insmod?) <<Help>>
-> > >
-> > >
-> > > > Hi Krishna,
-> > > >  Have you tried it manually?
-> > > > #iptables-restore < /etc/sysconfig/iptables
-> > > >
-> > > >  I think the iptables could not reach to the file
-> > /etc/sysconfig/iptables
-> > > > Regards
-> > > > Dharmu
-> > > > ----- Original Message -----
-> > > > From: "Krishna" <Krishna_shekhar@gmx.net>
-> > > > To: <netfilter@lists.netfilter.org>
-> > > > Sent: Tuesday, September 24, 2002 4:16 PM
-> > > > Subject: iptables-restore v1.2.5: can't initialize iptables table
-`':
-> > > Table
-> > > > does not exist (do you need to insmod?) <<Help>>
-> > > >
-> > > >
-> > > > > Hi,
-> > > > >
-> > > > > I switched from ipchains to iptables. But whenever I start
-iptables
-> it
-> > > > gives
-> > > > > me this error.
-> > > > >
-> > > > > iptables-restore v1.2.5: can't initialize iptables table `': Table
-> > does
-> > > > not
-> > > > > exist (do you need to insmod?)
-> > > > > Perhaps iptables or your kernel needs to be upgraded.
-> > > > >
-> > > > > lsmod shows that
-> > > > > iptable_mangle,iptable_nat,ip_conntrack,iptable_filter and
-iptables
-> > are
-> > > > > loaded.
-> > > > > That means the modules for iptables has loaded also I can see that
-> > > modules
-> > > > > for ipchains are not loaded and that is right.
-> > > > >
-> > > > > The iptables file is in /etc/sysconfig/iptables
-> > > > > The table goes like this
-> > > > > -P INPUT DROP
-> > > > > -A FORWARD -s 192.168.0.0/24 -j MASQUERADE
-> > > > > .......
-> > > > > ...........
-> > > > > ........................
-> > > > > I am using RedHAt 7.1 and kernel 2.4.2-2
-> > > > > What could be the problem?
-> > > > >
-> > > > > regards
-> > > > > Krishna
-> > > > >
-> > > > > Krishna Shekhar
-> > > > > Network Administrator
-> > > > > Wiplash Wireless
-> > > > >
-> > > > >
-> > >
-> > >
->
->
+Simple enough.....
 
+> My little understanding of firewall, linux and iptables, makes me believe
+> that :
+> a) I've a quite secureless FW-HOME and my internal LAN is nated
+
+i agree.
+
+> b) no matter the protocol, the src/dst ports etc, everything should pass.
+
+From inside to outside, yes.   Also reply packets provided you have 
+connection tracking support.
+
+> c) The checkpoint client should be able to access my enterprise VPN
+
+Maybe :-)
+
+> My problem is that the client cannot access my enterprise VPN.
+> I added some loging rules and it seems that
+> My client uses UDP, src port 500 dst port 500.
+
+Okay - that is the IKE protocol as used with IPsec.
+
+> The FW-HOME send that to FW-UPU (prot udp, src port 500 dst port 500)
+> (masquerading the IP@)
+> The FW-UPU replies to FW-UPU (prot udp, src port 500 dst port 500)
+> The FW-HOME replies : icmp port udp 500 unreachable
+
+The reason is because you are performing NAT on outgoing packets, but here 
+you are getting a (completely separate) connection from the outside to the 
+inside, for which you do not have a NAT rule.
+
+Here is what you should add:
+
+iptables -A PREROUTING -t nat -i eth0 -p udp --sport 500 --dport 500 -j DNAT 
+--to a.b.c.d
+
+where a.b.c.d is the internal IP address of your VPN client.
+
+You will also need to set up the same translation for protocol 50 (ESP) in 
+order to allow that connection to be made after IKE has established the 
+encryption keys.
+
+There is one thing you said which makes me think this is likely to work at 
+all:
+
+> Another info:
+> It worked with a Redhat 7.0 + ipchains
+
+I presume that was also with NAT (masquerading) in operation ?
+
+The reason I say that is because there are twoways of using IPsec: transport 
+mode and tunnel mode.
+
+Transport mode does not work through NAT.
+Tunnel mode does work through NAT.
+
+Hope this helps,
+
+Antony.
+
+-- 
+
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
 
