@@ -1,13 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Bandwidth Monitoring
-Date: Sun, 31 Aug 2003 03:03:58 +0200
+From: "Tim Evans" <tkevans@tkevans.com>
+Subject: RE: Maximum Number of Chains
+Date: Wed, 3 Sep 2003 08:03:02 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030831030358.4f75b5dc.arnt@c2i.net>
-References: <04a901c36e18$ad2d6650$2a0110ac@SAMHP>
+Message-ID: <20030903120302.M95330@tkevans.com>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A15C21A@wardrive.citadelcomputer.com.au>
+Reply-To: tkevans@tkevans.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <04a901c36e18$ad2d6650$2a0110ac@SAMHP>
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15C21A@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +18,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: George Vieira <georgev@citadelcomputer.com.au>, Paul Caritj <pcaritj@freespace-networks.net>, netfilter@lists.netfilter.org
 
-On Fri, 29 Aug 2003 16:01:11 +0530, 
-"Sathi" <sathiyan@gmx.net> wrote in message 
-<04a901c36e18$ad2d6650$2a0110ac@SAMHP>:
-
-> Hello All,
+On Wed, 3 Sep 2003 09:25:51 +1000, George Vieira wrote
+> How much memory do you have???
 > 
-> Is there any way to findout the bandwidth used by a client(LAN user),
-> from Linux gateway server.
-> 
-> I have to take monthly statistics of bandwidth used by a client (LAN
-> user).
+> I've added at once stage around 500+ rules in once chain alone, if 
+> that helps you in anyway..
 
-..several, 'iptables -vnL' shows how much traffic etc per rule, 
-setting up rules per user and 'iptables -vnL' every month etc 
-is one way, there is MRTG, ntop, RRD etc.
- 
-> FYI i am using CBQ for bandwidth control
-
-...for each user?  Try 'http://fmb.no/ipcop/setup-cbq-0.0.4.tar.bz2', 
-I'm open for ideas etc on -0.0.5.  ;-)
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+Seems to me if you have to ask about the maximum number of rules, you already
+have too many. There are ways to create general rules that apply to many
+cases--i.e., address ranges, port ranges, etc.
+--
+Tim Evans                       |    5 Chestnut Court
+tkevans@tkevans.com             |    Owings Mills, MD 21117
+http://www.tkevans.com/         |    443-394-3864
+http://www.come-here.com/News/  |    
 
 
