@@ -1,10 +1,9 @@
-From: "David Busby" <busby@pnts.com>
-Subject: Re: SNAT "invalid argument"
-Date: Mon, 4 Aug 2003 12:08:38 -0700
+From: Peteris Krumins <newsgroups@lf.lv>
+Subject: Interesting problems
+Date: Mon, 4 Aug 2003 23:41:07 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <06a001c35abb$cfcf0120$1100000a@busbydev>
-References: <20030804185601.GA8546@free.transpect.com>
-Reply-To: "David Busby" <busby@pnts.com>
+Message-ID: <3276876863.20030804234107@lf.lv>
+Reply-To: Peteris Krumins <newsgroups@lf.lv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,41 +17,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Whit Blauvelt <whit@transpect.com>, netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-In this doc
-http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-6.html#ss6.1 it says
-use --to-source, not --to
+Hello,
 
-/B
------ Original Message ----- 
-From: "Whit Blauvelt" <whit@transpect.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Monday, August 04, 2003 11:56
-Subject: SNAT "invalid argument"
+ I am experiencing some trouble w/ linux-2.4.22-pre10-ac1 and
+ iptables 1.2.8 w/ patch-o-matic-20030802.
 
 
-> Hi,
->
-> I've been using SNAT for some time on several systems. However on a system
-I
-> just built I get the following response:
->
-> # iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 1.2.3.4
-> iptables: Invalid argument
->
-> That's with 1.2.3.4 replaced by a real IP (or not).
->
-> This is driving me up the wall since "Full NAT"  support is compiled into
-> the 2.4.21 kernel. The iptables version is 1.2.8. The only thing different
-> in the kernel options from what I've used before is that I also included
-> "NAT of local connections" - haven't tried to use that yet though.
->
-> iptables is otherwise working fine. -j MASQUERADE (also compiled in) also
-> gives me an "Invalid argument" - so it does look like something's wrong in
-> the NAT section, but damned if I know what.
->
-> Whit
->
+ The problem is like this:
+
+  - there is a computer PII 266, now with 192mb ram, it's running
+    custom linux distribution with 1 user process - getty, as I log
+    in, a bash is spawned.
+
+    Only ESTABLISHED,RELATED outbound connections are allowed, NEW and
+    INVALID inbound are REJECTed.
+
+    All the traffic is routed via this computer - 8Mbit link
+    constant, - lots of users more than 300 - everyone does something
+    different.
+
+    I set up max. 20000 conntrack entries unfortunately
+    after a day there already are already 15000 connection tracking entires
+    and the load of the computer each 5 minutes jumps up to 2 then goes
+    down to 0.3 and jumps to 2 again etc., 15 minute avg load keeps at
+    0.7. But unfortunately entries are growing and growing, more ram
+    is used, computer load grows and suddenly any traffic routed via
+    this computer is killed, nothing flows through.
+    Kernel shouts that conntrack table is full but a
+    `wc -l /proc/net/ip_conntrack' shows around 20000 entries.
+    A reboot helps.
+     
+    If i increase it even more (50000), the load gets so high that
+    establishing a new connection takes more than a second and then
+    the box dies anyway with the same error that conntrack table is
+    full.
+
+    The question is what could i do to avoid the growthy of connection
+    tracking entries? I guess the entries taking up space are already
+    established tcp connections which were not properly terminated, so
+    they are there to timeout.
+
+    I noticed exactly the same on 2.4.22-pre6 and pom20030714
+    
+    An ascii for network setup is:
+                         ____
+           .---.   .---./    \
+INTERNET---| 1 |---| 2 |-------corporate network
+           `---'   `---'\____/
+
+1 - my box
+ (ESTAB., RELATED allowed to internet everything else denied)
+2 - traffic accounting/shaping and main router
+ (much much faster box than box 1)
+
+
+P.Krumins
 
 
