@@ -1,12 +1,13 @@
-From: Chris Wilson <chris@netservers.co.uk>
-Subject: Re: Traffic going out wrong interface
-Date: Wed, 10 Sep 2003 17:51:57 +0100 (BST)
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Some subject
+Date: Wed, 10 Sep 2003 13:43:40 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0309101747300.23381-100000@localhost>
-References: <3F4D5905.9030400@chrisbrenton.org>
+Message-ID: <20030910174340.GA24654@cannon.eng.us.uu.net>
+References: <20030910170222.ACD1459AC9@pandora.onwave.com.br>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F4D5905.9030400@chrisbrenton.org>
+Content-Disposition: inline
+In-Reply-To: <20030910170222.ACD1459AC9@pandora.onwave.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,29 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Chris Brenton <cbrenton@chrisbrenton.org>
+To: Kilson Arruda <iptables@onwave.com.br>
 Cc: netfilter@lists.netfilter.org
 
-Hi Chris,
+First of all the notation is:
 
-> So it appears that something about having iptables kick back RST's 
-> rather than type 3's caused the bogus ARP packets as well as the RST 
-> being transmitted out the wrong interface as I described below. I'm not 
-> sure if I'm the only one having this problem, but then again I'm not 
-> sure how many people scrutinize layer 2 as deeply as I do. ;-)
+-d, --destination [!] address[/mask]
 
-If it is the same problem as the RSTs (which looks likely, given the
-symptoms), you could try applying the latest patch-o-matic, or at least
-submitted/66_netfilter-policy-routing.patch.
+and not:
 
-Cheers, Chris.
--- 
-   ___ __     _
- / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
-\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+[!] -d, --destination address[/mask]
 
+Secondly, there is only one "-d" permitted in each rule. If you can bundle
+the IP's with the mask you're fine otherwise you need to have multiple rules.
 
+Ramin
+
+On Wed, Sep 10, 2003 at 01:02:22PM -0300, Kilson Arruda wrote:
+
+> I have a Transparent Proxy like this
+> 
+> $IPTABLES -t nat -A PREROUTING -p tcp
+> --dport 80 ! -d $DIRECT_IP -m mac --mac-source $MAC -j REDIRECT --to-port
+> 3128
+> 
+> Question: can I use more then one "! -d", or multiple IPs to don't REDIRECT
+> the port 80 for more then one IP?
+> If yes, how can I do this?
+> 
+> --
+> Kilson Arruda
+> Linux User # 228238
+> 
+> 
+> 
+> ________________________________________________
+> www.onwave.com.br - Internet e Conectividade
+> 
+> 
 
