@@ -1,8 +1,7 @@
-From: Miguel Angel Amador L <amador@puc.cl>
-Subject: Max Concurrent Session
-Date: Fri, 10 Dec 2004 16:11:39 -0300
-Message-ID: <1102705899.4516.50.camel@JOKER.INFOWORLD.CL>
-Reply-To: amador@puc.cl
+From: Federico Lucifredi <flucifredi@acm.org>
+Subject: is this 1969 ? Are we on the moon yet?
+Date: Fri, 10 Dec 2004 14:13:02 -0500
+Message-ID: <41B9F53E.2060302@acm.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,18 +15,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: NetFilter Users <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi All
- I need implement a firewall that support 2000 concurrent sessions, it
-is posible with Iptables/Netfiler ?? 
- What need to do?
+err, Why oh Why is all netfilter mail coming from 1969 ? Is Doug 
+Engelbart in charge of this project ?
 
-Thanks for all
+-Federico
 
-regards
- Miguel Angel Amador L.
+_________________________________________
+-- "Where the tides of Fortune take us, no one can know" 
+	- Chancellor Gowron
 
+Muad'Dib of Caladan (Federico L. Lucifredi)- Harvard University & BU
+http://metcs.bu.edu/~lucifred
 
 
