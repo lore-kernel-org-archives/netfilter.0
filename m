@@ -1,148 +1,72 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Netfilter problem with new 2.4.22
-Date: Thu, 18 Sep 2003 23:40:02 +0200
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <3F6A2632.6030005@trash.net>
-References: <3F697788.8080103@isfera.ru>
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: Question about TTL patch
+Date: Tue, 16 Sep 2003 08:38:13 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20030916063813.GB666@obroa-skai.de.gnumonks.org>
+References: <Pine.LNX.4.44.0309121504370.7718-100000@pingwin.eu.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040009000201000602020600"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <3F697788.8080103@isfera.ru>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yNb1oOkm5a9FJOVX"
+Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0309121504370.7718-100000@pingwin.eu.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Diadon <diadon@isfera.ru>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
-
-This is a multi-part message in MIME format.
---------------040009000201000602020600
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Diadon wrote:
-
-> > On 2.4.21 all works fine
-> > In tcpdump on 2.4.21:
-> > 14:41:41.752557 somehost.auth > somehost1.32825: R 0:0(0) ack 
-> 217583467 win 0 (DF)
->
-> > In tcpdump on 2.4.22:
-> > nothing....... 
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: Andrzej Nakonieczny <dzemik@pingwin.eu.org>
+Cc: netfilter@lists.netfilter.org
 
 
-Hi Diadon,
-the problem seems to be that a dst for local input doesn't carry pmtu 
-information, the pmtu
-is set by rt_set_nexthop which is skipped for local input. The packet is 
-dropped by send_reset
-because of this check:
+--yNb1oOkm5a9FJOVX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-        /* "Never happens" */
-        if (nskb->len > nskb->dst->pmtu)
-                goto free_nskb;
+On Fri, Sep 12, 2003 at 03:11:17PM +0200, Andrzej Nakonieczny wrote:
+> Hello.
+>=20
+> 	I would like to add TTL target to my own chain. This chain is=20
+> connected to POSTROUTING's chain in mangle table. But when I try to add=
+=20
+> that target then I've got "iptables: Invalid argument". Is there any=20
+> simple way to do that ?
 
-;)
+Actually I don't think there is a way you could call the TTL target,
+where you would just receive the 'Invalid Argument' message without any
+further error message in syslog/dmesg.
 
-I've attached two possible fixes for this. The first one restores 
-behaviour from before the
-routing changes for LOCAL_OUT, the other one removes the check since 
-obviously
-"Never happens" is not true anymore (and it is not an error). Another 
-possibility would
-be something like "if (nskb->dst->pmtu && nskb->len > nskb->dst->pmtu)  ..."
-Someone from the coreteam should comment which solution is prefered.
+All four error paths in checkfn() do a printk about the exact error
+cause.
 
-Regards,
-Patrick
+> Regards,
+> Andrzej
 
---------------040009000201000602020600
-Content-Type: text/plain;
- name="x.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="x.diff"
+--=20
+- Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+Programming is like sex: One mistake and you have to support it your lifeti=
+me
 
-===== net/ipv4/netfilter/ipt_REJECT.c 1.13 vs edited =====
---- 1.13/net/ipv4/netfilter/ipt_REJECT.c	Fri Jul 25 23:15:41 2003
-+++ edited/net/ipv4/netfilter/ipt_REJECT.c	Thu Sep 18 23:00:58 2003
-@@ -34,16 +34,17 @@
- 		attach(new_skb, nfct);
- }
- 
--static inline struct rtable *route_reverse(struct sk_buff *skb, int local)
-+static inline struct rtable *route_reverse(struct sk_buff *skb, int hook)
- {
- 	struct iphdr *iph = skb->nh.iph;
- 	struct dst_entry *odst;
- 	struct rt_key key = {};
- 	struct rtable *rt;
- 
--	if (local) {
-+	if (hook != NF_IP_FORWARD) {
- 		key.dst = iph->saddr;
--		key.src = iph->daddr;
-+		if (hook == NF_IP_LOCAL_IN)
-+			key.src = iph->daddr;
- 		key.tos = RT_TOS(iph->tos);
- 
- 		if (ip_route_output_key(&rt, &key) != 0)
-@@ -75,7 +76,7 @@
- }
- 
- /* Send RST reply */
--static void send_reset(struct sk_buff *oldskb, int local)
-+static void send_reset(struct sk_buff *oldskb, int hook)
- {
- 	struct sk_buff *nskb;
- 	struct tcphdr *otcph, *tcph;
-@@ -104,7 +105,7 @@
- 			 csum_partial((char *)otcph, otcplen, 0)) != 0)
- 		return;
- 
--	if ((rt = route_reverse(oldskb, local)) == NULL)
-+	if ((rt = route_reverse(oldskb, hook)) == NULL)
- 		return;
- 
- 	hh_len = (rt->u.dst.dev->hard_header_len + 15)&~15;
-@@ -372,7 +373,7 @@
- 		send_unreach(*pskb, ICMP_PKT_FILTERED);
- 		break;
- 	case IPT_TCP_RESET:
--		send_reset(*pskb, hooknum == NF_IP_LOCAL_IN);
-+		send_reset(*pskb, hooknum);
- 	case IPT_ICMP_ECHOREPLY:
- 		/* Doesn't happen. */
- 		break;
+--yNb1oOkm5a9FJOVX
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
---------------040009000201000602020600
-Content-Type: text/plain;
- name="y.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="y.diff"
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-===== net/ipv4/netfilter/ipt_REJECT.c 1.13 vs edited =====
---- 1.13/net/ipv4/netfilter/ipt_REJECT.c	Fri Jul 25 23:15:41 2003
-+++ edited/net/ipv4/netfilter/ipt_REJECT.c	Thu Sep 18 23:28:49 2003
-@@ -186,10 +186,6 @@
- 	nskb->nh.iph->check = ip_fast_csum((unsigned char *)nskb->nh.iph, 
- 					   nskb->nh.iph->ihl);
- 
--	/* "Never happens" */
--	if (nskb->len > nskb->dst->pmtu)
--		goto free_nskb;
--
- 	connection_attach(nskb, oldskb->nfct);
- 
- 	NF_HOOK(PF_INET, NF_IP_LOCAL_OUT, nskb, NULL, nskb->dst->dev,
+iD8DBQE/Zq/VXaXGVTD0i/8RAqFJAKCRDUvnyB/U4hsyRMTFL04uQWvYxgCdHw6j
+V0R1OIJEDggJGRYYbvwjBCE=
+=uZ5W
+-----END PGP SIGNATURE-----
 
---------------040009000201000602020600--
-
+--yNb1oOkm5a9FJOVX--
 
