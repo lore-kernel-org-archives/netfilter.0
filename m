@@ -1,11 +1,11 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Saving IPTable rules..oops
-Date: Thu, 30 Dec 2004 01:45:14 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10412300139250.29138-100000@darkstar.sysinfo.com>
-References: <1104359353.1972.40.camel@localhost>
+From: Zacky Ho <zackyho@yahoo.com>
+Subject: Re: (no subject)
+Date: Wed, 29 Dec 2004 22:56:48 -0800 (PST)
+Message-ID: <20041230065648.84267.qmail@web41206.mail.yahoo.com>
+References: <1104359539.7318.116.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1104359353.1972.40.camel@localhost>
+In-Reply-To: <1104359539.7318.116.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,85 +16,247 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-On Wed, 29 Dec 2004, John A. Sullivan III wrote:
+Hi Jason,
+Thanks a lot!
+Since the script is provided by my friend, there are
+some modification in the script. First is I use port
+1080 for web access. Second is I will check with my
+friend about TCP/UDP port. Third is I will modify the
+log format for easy watching. Many thanks for your
+advice! One more thing will need your supprt......
 
-> On Wed, 2004-12-29 at 15:15, R. DuFresne wrote:
+I Would like to introduce the detail about setting
+Firewall at home. There is a Linux Box runnning RedHat
+9 as a gateway/firewall. There are 2 network cards
+installed in it. One is connected to ISP via cable
+modem, which gets IP 222.166.46.146. Another network
+card is connected to a switch and has static IP
+192.168.123.254. I have register a domain name
+"zackyho.no-ip.com" from no-ip.com. Using its provided
+windows client update program, I see the real IP
+reported back is "61.xxx.xxx.xxx". 
+My Web server which runs Apache is installed in W2K
+box which has static IP 192.168.123.222 and also
+connect to the switch. I would like to provide
+external access as http://zackyho.no-ip.com. Is there
+any missing/mistakes in the script "rc.fireall.txt"
+Please kindly adivse. Thanks in advance!
+ 
+--- Jason Opperisano <opie@817west.com> wrote:
+
+> On Wed, 2004-12-29 at 04:01, Zacky Ho wrote:
+> > #
+> > # allowed chain
+> > #
+> > 
+> > $IPTABLES -A allowed -p TCP --syn -j ACCEPT
+> > $IPTABLES -A allowed -p TCP -m state --state
+> > ESTABLISHED,RELATED -j ACCEPT
+> > $IPTABLES -A allowed -p TCP -j DROP
+> > ## added 20040403 from Thomas
+> > $IPTABLES -A allowed -p TCP -j LOG --log-prefix
+> > "FW-DroppedAllow:"
+> > ## added 20040403 from Thomas
+> 
+> your LOG rule needs to come *before* the DROP rule
+> in order for it to
+> ever log anything.
+> 
+> > #
+> > # TCP rules
+> > #
+> > 
+> > $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 21
+> -j
+> > allowed
+> > $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 22
+> -j
+> > allowed
+> > $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 80
+> -j
+> > allowed
+> > $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 113
+> -j
+> > allowed
+> > #apache
+> > $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 80
+> -j
+> > allowed
+> > $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport
+> 8888 -j
+> > allowed
+> > $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport
+> 1080 -j
+> > allowed
+> > ### added 2004 12 28
+> > #$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport
+> 139 -j
+> > allowed
+> > ###
+> > # 
+> > $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport
+> 1580 -j
+> > allowed
+> > $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 113
+> -j
+> > allowed
+> > # winmx
+> > #$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport
+> 6699
+> > -j allowed
+> > # MTS
+> > $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport
+> 5080 -j
+> > allowed
+> > ## added 2003 08 25
+> > $IPTABLES -A tcp_packets -p TCP -j LOG
+> --log-prefix
+> > "FW-DroppedTCP: "
+> > ## added 2003 08 25
+> 
+> um--you're jumping to "tcp_packets" from INPUT.  do
+> you really run *all*
+> these services on your firewall?  and do you really
+> want *all* these
+> services exposed to the Internet?  i sure hope not. 
+> and port 80 is in
+> there twice.
+> 
+> > #
+> > # UDP ports
+> > #
+> > 
+> > $IPTABLES -A udp_packets -p UDP -s 0/0
+> --source-port
+> > 53 -j ACCEPT
+> > #if [ $DHCP == "yes" ] ; then
+> > # $IPTABLES -A udp_packets -p UDP -s $DHCP_SERVER
+> > --sport 67 \
+> > # --dport 68 -j ACCEPT
+> > #fi
+> > 
+> > #$IPTABLES -A udp_packets -p UDP -s 0/0
+> > --destination-port 53 -j ACCEPT
+> > #$IPTABLES -A udp_packets -p UDP -s 0/0
+> > --destination-port 123 -j ACCEPT
+> > $IPTABLES -A udp_packets -p UDP -s 0/0 --dport 20
+> -j
+> > ACCEPT
+> > $IPTABLES -A udp_packets -p UDP -s 0/0 --dport 21
+> -j
+> > ACCEPT
+> > $IPTABLES -A udp_packets -p UDP -s 0/0 --dport 22
+> -j
+> > ACCEPT
+> > $IPTABLES -A udp_packets -p UDP -s 0/0 --dport 23
+> -j
+> > ACCEPT
+> 
+> um--what UDP services are ports 20-23?
+> 
 > <snip>
-> > > > Jason
-> > > The way I've typically seen it work is that the init.d/iptables script
-> > > calls iptables-restore and passes it the /etc/sysconfig/iptables file. 
-> > > This file is written when you do init.d/iptables save.
-> > 
-> > 
-> > perhaps on redhat and debian, and maybe suse systems that have moved away
-> > from the standard upon which linux was formed, namely bsd.  Those dists
-> > that retain their bsd layouts have no /etc/init.d directory, everything
-> > lies under /etc/rc.d/.  They also lack the red-hat layout of a
-> > /etc/sysconfig/ directory.  And it's a shame things are seperating out in
-> > the linux world like this as many of the tools and toys bewing created
-> > either conform to the new redhat layouts or follow older established
-> > standards.  Thus, some tools that have been coming out the past few years
-> > are only good under redhat or debian or suse, and fail to function if they
-> > compile at all, without being hacked prior to a make, and sometimes my
-> > skills are not enough to hack them into compiling at all uunder a
-> > different, more standard dist. <sigh>
-> > 
-> > 
-> > Thanks,
-> > 
-> > Ron DuFresne
 > 
-> Thanks for pointing that out, Ron.  I was going to mention it but then
-> thought it would just muddy the waters.  We use both SYSV and BSD style
-> scripts in the ISCS project.  The iptables script in the rc directories
-> can still call iptables-restore and reference an iptables file.  That's
-> what we typically do.  If I recall correctly, isn't there also a step in
-> BSD style initiations that can call SYSV style scripts? I thought I
-> recalled seeing that on Slackware - John
+> > #
+> > # 4.1.5 FORWARD chain
+> > #
+> > 
+> > #
+> > # Bad TCP packets we don't want
+> > #
+> > ## Added 20040403 from Thomas
+> > $IPTABLES -A FORWARD -i $LAN_IFACE -p UDP  \
+> > --destination-port 135:139 -j LOG --log-prefix
+> > "FW-Dropped_135-139: "
+> > $IPTABLES -A FORWARD -i $LAN_IFACE -p UDP  \
+> > --destination-port 135:139 -j DROP
+> > ## Added 20040403 from Thomas
+> > 
+> > $IPTABLES -A FORWARD -p tcp -j bad_tcp_packets
+> > 
+> > #
+> > # Accept the packets we actually want to forward
+> > #
+> > 
+> > $IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
+> > $IPTABLES -A FORWARD -m state --state
+> > ESTABLISHED,RELATED -j ACCEPT
 > 
+> somewhere in here you want:
+> 
+>   $IPTABLES -A FORWARD -i $INET_IFACE -o $LAN_IFACE
+> -p tcp --syn \
+>     -d 192.168.123.222 --dport 1080 -j ACCEPT
+> 
+> > #
+> > # Log weird packets that don't match the above.
+> > #
+> > 
+> > $IPTABLES -A FORWARD -m limit --limit 3/minute
+> > --limit-burst 3 -j LOG \
+> > --log-level DEBUG --log-prefix "IPT FORWARD packet
+> > died: "
+> > 
+> > #
+> > # 4.1.6 OUTPUT chain
+> > #
+> > 
+> > #
+> > # Bad TCP packets we don't want.
+> > #
+> > 
+> > $IPTABLES -A OUTPUT -p tcp -j bad_tcp_packets
+> > 
+> > #
+> > # Special OUTPUT rules to decide which IP's to
+> allow.
+> > #
+> > 
+> > $IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
+> > $IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
+> > $IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
+> > 
+> > #
+> > # Log weird packets that don't match the above.
+> > #
+> > 
+> > $IPTABLES -A OUTPUT -m limit --limit 3/minute
+> > --limit-burst 3 -j LOG \
+> > --log-level DEBUG --log-prefix "IPT OUTPUT packet
+> > died: "
+> > 
+> > ######
+> > # 4.2 nat table
+> > #
+> > 
+> > #
+> > # 4.2.1 Set policies
+> > #
+> > 
+> > #
+> > # 4.2.2 Create user specified chains
+> > #
+> > 
+> > #
+> > # 4.2.3 Create content in user specified chains
+> > #
+> > 
+> > #
+> > # 4.2.4 PREROUTING chain
+> > #
+> > 
+> > #
+> 
+=== message truncated ===
 
-Which surprised me when first seeing it in early Slackware versions and to
-this date, but, it's description seems to clarify;
 
-sysvinit (init, the parent of all processes)
 
-System V style init programs by Miquel van Smoorenburg
-that control the booting and shutdown of your system. These support a
-number of system runlevels, each with a specific set of utilities
-spawned.  For example, the normal system runlevel is 3, which
-starts agetty on virtual consoles tty1 - tty6. Runlevel 4 starts xdm.
-Runlevel 0 shuts the system down.
-
-Seems to more support others in this thread about the basis of linux
-systems <GNU?> design...
-
-Now the scripts do include a start;stop;restart functionality, that was
-lacking in earlier versions <which one could easily add in earlier, I
-still run a system with a modified 3.5 version of Slackware and had to add
-that functionality to parts of the rc.* files I wanted the functionality
-for...
-
-Still all housed unter /etc/rc.d/
-
-Thanks,
-
-Ron DuFresne
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
-
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Mail - Easier than ever with enhanced search. Learn more.
+http://info.mail.yahoo.com/mail_250
 
