@@ -1,12 +1,12 @@
 From: Chris Wilson <chris@netservers.co.uk>
-Subject: Re: Patch-o-matic help
-Date: Mon, 7 Jul 2003 13:50:10 +0100 (BST)
+Subject: Re: Error responce when limiting access
+Date: Mon, 7 Jul 2003 15:03:15 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0307071345550.16552-100000@localhost>
-References: <200307031501.00905.sysadmin_lists@iwa-solutions.com>
+Message-ID: <Pine.LNX.4.44.0307071501260.16552-100000@localhost>
+References: <3F0953DB.BB9B3B4@danbbs.dk>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307031501.00905.sysadmin_lists@iwa-solutions.com>
+In-Reply-To: <3F0953DB.BB9B3B4@danbbs.dk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: System Administrator <sysadmin_lists@iwa-solutions.com>
-Cc: netfilter@lists.netfilter.org
+To: Mogens Valentin <monz@danbbs.dk>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hello, Mr Administrator,
+Hi Mogens,
 
-> I have iptable 1.26 setup on a Redhat 8 server.  This server also needs to 
-> function as a PPTP VPN server.  It appears that PoPToP is the only reasonable 
-> way to acomplish that.  I can get PoTPoP to work but I am told that I need to 
-> be able to pass GRE packets.
->   It looks like there is a patch to do this but requires patch-o-matic.  
-> Looking at the README, it looks like I run a command called runme.  and then 
-> recompile the Kernel.
->   I'm yet to go through the recompile.  Anybody willing to help the 
-> inexperienced become experienced?
+> Using iptables, I can of cause deny access to cirtain IP addresses or
+> websites, however, I'd like to make sure clients do not just get a
+> timeout, not found or something alike.
+> AFICS, it'll be difficult to set some errorresponce a browser can
+> understand, allowing it to display a meaningful errorresponce.
 
-You don't need any patch-o-matic, the functionality is built into iptables
-since long ago. You just need to allow in Protocol 47 (GRE) as well as TCP
-port 1723 (PPTP control channel). So the following rules should do it:
-
-iptables -I INPUT -i <external-interface> -p tcp --dport 1723 -j ACCEPT
-iptables -I INPUT -i <external-interface> -p 47               -j ACCEPT
-
-If you only need connections from certain IP addresses, then you can 
-narrow this down in order to protect your PPTP server from intruders.
-
-By the way, if you make a custom kernel with the PPTP NAT patch, then it 
-may cause problems with running a PPTP server on the same machine (at 
-least, I saw this in one case, but I didn't build that kernel so I don't 
-know exactly which patch was used).
+Use a DNAT rule to redirect them to a local web server, or a Squid proxy 
+which is configured to deny all requests. Then you can configure these 
+to serve up a suitable error page which you can design yourself.
 
 Cheers, Chris.
---
+-- 
    ___ __     _
  / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
 / (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
