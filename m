@@ -1,11 +1,11 @@
-From: Pieter van Leuven <p.vanleuven@aramiska.net>
-Subject: pptp-natting problems with kernel 2.4.2[56] and patch-o-matic.
-Date: Mon, 7 Jun 2004 17:19:26 +0200
+From: "Ricardo C" <racham@hotmail.com>
+Subject: Stealth on emule....
+Date: Mon, 7 Jun 2004 12:39:49 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040607151926.GA3260@vanleuven.org>
+Message-ID: <BAY1-DAV37L3915RXUX0002aaa7@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,60 +16,133 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+------Message Previous of Antony.
+>I see no rule in your ruleset allowing those packets through the >FORWARD chain
+>on your machine, therefore it won't pass them on to the client?
+>
+>Maybe I'm missing something because of the layout of the rules - if >you think
+>the appropriate FORWARDing rules are there, please post the >output of
+>"iptables -L -nvx; iptables -L -t nat -nvx; iptables -L -t mangle ->nvx"
+>because I find this an easier format to understand for such a long >ruleset.
 
-Currently busy with building a kernel + modules for customers. 
-These customers want to connect from multiple clients to multiple
-pptp-servers. Without the pptp patch-o-matic this works of course
-for one client to one server. 
+OK, Thanks you Antony...
 
-After patching the kernel and activating the debug option I got the 
-following output: 
+Linux:~# iptables -L -nvx
+Chain INPUT (policy DROP 29421 packets, 1718646 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+  101717  5292111 bad_tcp_packets  tcp  --  *      *       0.0.0.0/0            0.0.0.0/0
+    6560   808679 ACCEPT     all  --  eth1   *       192.0.0.0/8          0.0.0.0/0
+       2      244 ACCEPT     all  --  lo     *       127.0.0.1            0.0.0.0/0
+       0        0 ACCEPT     all  --  lo     *       192.168.111.1        0.0.0.0/0
+       0        0 ACCEPT     all  --  lo     *       200.xxx.xxx.xxx         0.0.0.0/0
+    3142   642016 ACCEPT     all  --  *      *       0.0.0.0/0            200.xxx.xxx.xxx       state
+RELATED,ESTABLISHED
+   24164  1124548 tcp_packets  tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0
+    4464  1114537 udp_packets  udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0
+     927    46338 icmp_packets  icmp --  eth0   *       0.0.0.0/0            0.0.0.0/0
+   13005   809968 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0          limit: avg 3/min
+burst 3 LOG flags 0 level 7 prefix `IPT INPUT packet died: '
 
-ip_nat_pptp.c:init: ip_nat_pptp.c: registering NAT helper
-ip_nat_pptp version 1.5 loaded
-ip_conntrack_pptp.c:conntrack_pptp_help: ctinfo = 2, skipping
-ip_nat_pptp.c:tcp_help: entering
-ip_nat_pptp.c:tcp_help: Not touching dir ORIG at hook PREROUTING
-ip_nat_pptp.c:tcp_help: entering
-ip_nat_pptp.c:tcp_help: pptp packet too short
-ip_conntrack_pptp.c:conntrack_pptp_help: RST/FIN received, timeouting GRE
-ip_conntrack_pptp.c:conntrack_pptp_help: no full PPTP header, can't track
-ip_nat_pptp.c:tcp_help: entering
-ip_nat_pptp.c:tcp_help: pptp packet too short
-ip_nat_pptp.c:tcp_help: entering
-ip_nat_pptp.c:tcp_help: Not touching dir REPLY at hook POSTROUTING
+Chain FORWARD (policy DROP 11272 packets, 552279 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+14218836 7001833881 bad_tcp_packets  tcp  --  *      *       0.0.0.0/0            0.0.0.0/0
+ 7966884 4793464646 ACCEPT     all  --  eth1   *       0.0.0.0/0            0.0.0.0/0
+ 6585552 2237493007 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0          state
+RELATED,ESTABLISHED
+    8688   425676 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0          limit: avg 3/min
+burst 3 LOG flags 0 level 7 prefix `IPT FORWARD packet died: '
 
-The pptp tunnel couldn't be setup. (Ended in an error code 789)
+Chain OUTPUT (policy DROP 2 packets, 128 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+    5192   230734 bad_tcp_packets  tcp  --  *      *       0.0.0.0/0            0.0.0.0/0
+       2      244 ACCEPT     all  --  *      *       127.0.0.1            0.0.0.0/0
+    2127   454165 ACCEPT     all  --  *      *       192.168.111.1        0.0.0.0/0
+    8965   590752 ACCEPT     all  --  *      *       200.xxx.xxx.xxx         0.0.0.0/0
+       0        0 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0          limit: avg 3/min
+burst 3 LOG flags 0 level 7 prefix `IPT OUTPUT packet died: '
 
-Can someone indicate what went wrong with setting up with this 
-pptp-session? And how this can be solved?
+Chain allowed (3 references)
+    pkts      bytes target     prot opt in     out     source               destination
+       0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp
+flags:0x16/0x02
+       0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          state
+RELATED,ESTABLISHED
+       0        0 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0
 
-The relevant used iptables filter rules are:
+Chain bad_tcp_packets (3 references)
+    pkts      bytes target     prot opt in     out     source               destination
+    4819   230860 REJECT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp
+flags:0x12/0x12 state NEW reject-with tcp-reset
+   75974  5381480 LOG        tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp
+flags:!0x16/0x02 state NEW LOG flags 0 level 4 prefix `New not syn:'
+   75974  5381480 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp
+flags:!0x16/0x02 state NEW
 
-iptables -A FORWARD -i eth0 -i -m state --state NEW -j ACCEPT
-iptables -A FORWARD -i eth1 -i -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source <PUBLIC-ADDRESS>
+Chain icmp_packets (1 references)
+    pkts      bytes target     prot opt in     out     source               destination
+     251     7920 DROP       icmp --  *      *       0.0.0.0/0            0.0.0.0/0          icmp type 8
+      54     3372 DROP       icmp --  *      *       0.0.0.0/0            0.0.0.0/0          icmp type 11
 
-(eth0 is interface on the LAN-side, eth1 is the interface on internet side)
+Chain tcp_packets (1 references)
+    pkts      bytes target     prot opt in     out     source               destination
+       0        0 allowed    tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:4661
+       0        0 allowed    tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:4662
+       0        0 allowed    tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:4711
 
-Used software:
-   linux-2.4.25 and linux 2.4.26
-   patch-o-matic-ng-20040602 and 20040603
-   iptables-1.2.10-20040602
+Chain udp_packets (1 references)
+    pkts      bytes target     prot opt in     out     source               destination
+       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0          udp dpt:2074
+       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0          udp dpt:4000
+       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0          udp dpt:4665
+       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0          udp dpt:4672
+    1774   609945 DROP       udp  --  eth0   *       0.0.0.0/0            255.255.255.255    udp dpts:67:68
+Linux:~#
+---------------
+----------------
 
-pptp-client: W2K-professional server
-pptp-server: cisco PIX 501
+Linux:~# iptables -L -t nat -nvx
+Chain PREROUTING (policy ACCEPT 459191 packets, 27464157 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+      63     2809 DNAT       tcp  --  *      *       0.0.0.0/0            200.xxx.xxx.xxx       tcp dpt:4661
+to:192.168.111.2:4661
+   11346   555376 DNAT       tcp  --  *      *       0.0.0.0/0            200.xxx.xxx.xxx       tcp dpt:4662
+to:192.168.111.2:4662
+       0        0 DNAT       udp  --  *      *       0.0.0.0/0            200.xxx.xxx.xxx       udp dpt:4665
+to:192.168.111.2:4665
+       0        0 DNAT       udp  --  *      *       0.0.0.0/0            200.xxx.xxx.xxx       udp dpt:4672
+to:192.168.111.2:4672
 
-Regards,
-   Pieter
--- 
-Pieter van Leuven - Aramiska, Broadband Reality - Network Service Engineer
-http://www.aramiska.com/, t: +31 (0)499 365 478; m: +31 (0)6 5249 7305
-De Waal 40, P.O. Box 989, 5600 AZ Eindhoven, The Netherlands
+Chain POSTROUTING (policy ACCEPT 1 packets, 208 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+  350137 19348610 SNAT       all  --  *      eth0    0.0.0.0/0            0.0.0.0/0          to:200.xxx.xxx.xxx
 
+Chain OUTPUT (policy ACCEPT 1354 packets, 176307 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+Linux:~#
+------------------
 
+Linux:~# iptables -L -t mangle -nvx
+Chain PREROUTING (policy ACCEPT 14720036 packets, 7058043928 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+
+Chain INPUT (policy ACCEPT 119262 packets, 7994213 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+
+Chain FORWARD (policy ACCEPT 14600748 packets, 7050048259 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+
+Chain OUTPUT (policy ACCEPT 11528 packets, 1085092 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+
+Chain POSTROUTING (policy ACCEPT 14597456 packets, 7049102787 bytes)
+    pkts      bytes target     prot opt in     out     source               destination
+Linux:~#
+-----------------------
+---------------------
+And please, Antony, I don't have great iptables knowledge... you could tell me what rule should add and what
+rule should remove or to modify (and how... ) so that it works????
+I thank you cordially your help
+Richard
 
