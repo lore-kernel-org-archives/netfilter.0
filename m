@@ -1,12 +1,9 @@
-From: Gabriel Paues <gabriel@sics.se>
-Subject: Re: sk_buff
-Date: Tue, 04 Jun 2002 10:35:49 +0200
+From: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>
+Subject: Error when using iptables 1.2.6a (or another version)
+Date: Tue, 4 Jun 2002 10:42:26 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CFC7BE5.FA258BE7@sics.se>
-References: <001e01c20a47$2ebba380$8ad9abd4@luigicart>
-Reply-To: gabriel@sics.se
+Message-ID: <B5747F3DB39FD411884B00B0D07808CCB6C1FC@server10>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -18,29 +15,28 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Luigi Cartuccia <luigicart@tin.it>
-Cc: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
 
-Hi Luigi!
+[root@server11 iptables-1.2.6]# ./iptables -L
+/lib/modules/2.4.18-6mdksecure/kernel/net/ipv4/netfilter/ip_tables.o.gz:
+init_module: Device or resource busy
+Hint: insmod errors can be caused by incorrect module parameters, including
+invalid IO or IRQ parameters
+modprobe: insmod
+/lib/modules/2.4.18-6mdksecure/kernel/net/ipv4/netfilter/ip_tables.o.gz
+failed
+modprobe: insmod ip_tables failed
+iptables v1.2.6: can't initialize iptables table `filter': iptables who? (do
+you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
+[root@server11 iptables-1.2.6]# 
 
-Nowadays the kernel comes with some documentation.
 
-Type:
+This is what i get, i'm pretty new with iptables but i really would like to
+use it.
 
-make htmldocs
+Greetz!
 
-in the linux source tree root and some nice docs will be generated. A
-section about functions operating on sk_buff is included. Together with
-the headerfile for sk_buff you should be able to sort things out. Check
-out the Makefile (in the route of the linux source tree) for other
-documentation variants. I think there is a pdfdocs as well.
-
-Good luck!
-
-/gabriel
-
-Luigi Cartuccia wrote:
-
-> Hi I'm Luigi.Where I can find material on sk_buff?Thank you
-
+Philippe Dhont 
 
