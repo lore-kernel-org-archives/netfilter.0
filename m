@@ -1,13 +1,13 @@
-From: Rowan Reid <rreid@studio3arc.com>
-Subject: RE: Routing Public IPs over NAT Address Space
-Date: Mon, 14 Jul 2003 12:57:50 -0700
+From: Willi Mann <newsletters@wm1.at>
+Subject: Re: SNAT kills local stuff?
+Date: Mon, 14 Jul 2003 22:07:02 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000401c34a42$34c8aed0$1001a8c0@s3ac>
-References: <200307141052.AA122028212@mail.alberni.net>
+Message-ID: <3F130D66.30505@wm1.at>
+References: <20030714184402.742.30442.Mailman@kashyyyk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200307141052.AA122028212@mail.alberni.net>
+In-Reply-To: <20030714184402.742.30442.Mailman@kashyyyk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +17,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: techlists@alberni.net, 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org, busby@pnts.com
 
+Please tell us what you mean by "connect out". Do you mean connections 
+to any other host or do you mean connections to hosts outside your LAN?
 
+My guess is that the problem occurs because all packets go through the 
+POSTROUTING chain, not only packets that will go to the Internet. That's 
+why most examples use (only) -o.
 
-I'm gonna take a shot and guess your going some vpn routing.  Well
-either way the solution is the same .. Don't route the packets meant for
-the public domain. Then just route them using a standard routing table
-entry. I clipped the following rule from my rules. It basically states
-NAT everything outgoing except 10.0.0.0/24 which in this case is my VPN.
-After that routing is handled via the routing table.
+I'd suggest to analyze your IP-Traffic with ethereal.
 
-
-IPTABLES -t nat -A POSTROUTING -o $EXTIF ! -d 10.0.0.0/24 -j SNAT --to
-$EXTIP 
-
-> Just like the subject says; is there any way to route a 
-> public IP/subnet over a NAT address space?
-> 
-> -- 
-> Aaron Clausen
-> 
+WM
 
 
