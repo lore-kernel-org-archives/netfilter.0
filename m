@@ -1,18 +1,16 @@
-From: Jose Maria Lopez <jkerouac@eresmas.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: linux-2.6.9-rc1 compilation and configuration issue (fwd)
-Date: 08 Sep 2004 21:37:45 +0200
+Date: Wed, 08 Sep 2004 21:26:06 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094672264.23966.37.camel@nostromo.bgsecm.com>
+Message-ID: <1094671566.3884.9.camel@anduril.intranet.cartel-securite.net>
 References: <200409072333.i87NXJZA012251@bassett.home.org>
 	<413F12D1.3050108@pbl.ca>
 	<1094665198.23966.21.camel@nostromo.bgsecm.com>
 	<413F4E20.9040807@pbl.ca>
-	<1094667545.11117.30.camel@nostromo.bgsecm.com>
-	<413F56CB.2090509@pbl.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <413F56CB.2090509@pbl.ca>
+In-Reply-To: <413F4E20.9040807@pbl.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,70 +20,37 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Cc: Jose Maria Lopez <jkerouac@bgsec.com>, "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mié, 08 de 09 de 2004 a las 21:00, Aleksandar Milivojevic escribió:
-> Jose Maria Lopez wrote:
-> [snip]
-> > there are things simply impossible.
-> 
-> Impossible? There's no such thing ;-)
-> 
-> > I don't see the difference with Solaris. If you want to upgrade your
-> > Solaris you have to apply a lot of upgrades, also to the kernel. That's
-> > the impression I have from the little contact I had with Solaris.
-> 
-> Not really.  Solaris (well, SunOS actually) has "disadvantage" of being 
-> closed-source.  So Sun had to publish API and document data structures 
-> garanteed not to change in set period of time (as defined in Solaris 
-> device driver development guides).  That allows for a third party to 
-> provide loadable kernel module that works with current version of 
-> Solaris kernel (both generic and patched), and possibly future versions 
-> of Solaris kernel (up to some point).  Of course, if developer doesn't 
-> wonder into the undocumented land ;-)  More than once I used kernel 
-> module compiled for previous version of Solaris (one was driver for 
-> Sun's unfortunate BigMac ethernet card, don't remember exatly what the 
-> others were).
-> 
+Le mer 08/09/2004 =E0 20:23, Aleksandar Milivojevic a =E9crit :=20
+> ....  Instead of just downloading one or two additional kernel modules=20
+> (couple of kB) that we really need (in either source or object format),=
+=20
+> and there would be no need to recompile them when upgrading the kernel.=
+=20
 
-The same can be said for the Linux kernel, for a version of the kernel
-you can have binary modules given by any vendor. The kernel structures
-doesn't change much between the same kernel tree. Normally a distributor
-can give source code for a kernel module that can be compiled for any
-of the versions of the same kernel tree. One example of this is VMWare
-and the kernel modules it needs, they give you some compiled binary
-modules for some kernel versions, and the source code that can be
-compiled.
+That would imply that everybody would have the same kernel, which is far
+from being the case, from one distro to another, and from one's build to
+other's, for anyone can build its own kernel, with its own options,
+optimizations and architecture.
 
-> If there was such a thing in Linux kernel, bringing some of the new 
-> features might be a bit slower and harder task for core Linux developers 
-> (you can't just change that function call, or data structure), but on 
-> the other hand some of the "impossible" to implement features would 
-> become "possible"...
-> 
+>   That was one of the things in which Solaris is light years ahead of=20
+> Linux (sorry to have to say that, but it's the hard truth).
 
-But then we won't have so many upgrades in the kernel, and some of
-this upgrades are needed, because some of them are for bugs. What
-does Sun do when they found a bug in the kernel? They probably give
-their customers a kernel upgrade. The same can be said for Linux, but
-with more frequent upgrades. You have to choose, having stability in
-the kernel structures to have third party modules easy to deliver or
-having new features more frequently.
+The hard truth is that Solaris is closed source and has a few
+architectures to maintain. Which means they just have to produce a
+couple of modules to please their all users. If you consider a single
+Linux distro, it will be the same. You can download packages, that
+contains binary modules, and they will install just fine, just like
+Solaris. But just like for Solaris, you will only have features
+maintainers consider relevant for you.
 
-> Becoming way off topic, anyhow...
--- 
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPAÑA
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
