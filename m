@@ -1,9 +1,10 @@
-From: =?iso-8859-15?Q?Mart=EDn?= <martin@familia-fiumara.com.ar>
-Subject: Redirect and change the source IP
-Date: Mon, 03 Nov 2003 10:24:24 -0300
+From: Rohit Kumar Mehta <rohitm@engr.uconn.edu>
+Subject: simple port forwarding question
+Date: Mon, 03 Nov 2003 08:58:53 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <oprx2cuychpvmot6@192.168.2.1>
+Message-ID: <3FA65F1D.20205@engr.uconn.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,9 +16,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-How can I redirect inbound traffic and also change the source IP of this 
-traffic?
+
+Hi guys, I was wondering if someone could help me out here.  I am fairly 
+well confused after trying to muddle through
+this tutorial:
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+
+I think what I want to do should be easy.  Perhaps someone could help.
+
+We are trying to trick the systems into believing that the Kerberos 5 
+server is on IP#2 (let's call it 192.168.28.3)
+but it is in fact on IP#1 (192.168.28.2).
+
+Maybe my attempted iptables commands will make it blatantly obvious what 
+I am trying to do:
+
+iptables -t nat -A PREROUTING --dst 192.168.28.3 -p tcp --dport 88 -j 
+DNAT --to 192.168.28.2
+iptables -t nat -A PREROUTING --dst 192.168.28.3 -p udp --dport 88 -j 
+DNAT --to 192.168.28.2
+
+iptables -t nat -A POSTROUTING -p udp --dst 192.168.28.2 --dport 88 -j 
+SNAT --to-source 192.168.28.3
+iptables -t nat -A POSTROUTING -p tcp --dst 192.168.28.2 --dport 88 -j 
+SNAT --to-source 192.168.28.3
+
+iptables -t nat -A OUTPUT --dst 192.168.28.3 -p tcp --dport 88 -j DNAT 
+--to-destination 192.168.28.2
+iptables -t nat -A OUTPUT --dst 192.168.28.3 -p udp --dport 88 -j DNAT 
+--to-destination 192.168.28.2
+
+
+Basically we want it so that if I do a "telnet 192.168.28.3 88", I get a 
+connection to "192.168.28.2:88"
+This works - when I initiate the connection from 192.168.28.3, but from 
+any other machine on the network
+it does not work.
+
+Am I doing something wrong or forgetting a key step?  Thanks!
+
+Rohit
+
 
