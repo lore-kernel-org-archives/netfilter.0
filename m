@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: (no subject)
-Date: Fri, 21 Nov 2003 12:52:24 +0100
+From: Nick <fenderflames@yahoo.com>
+Subject: Re: FORWARD question
+Date: Fri, 21 Nov 2003 03:59:15 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019D11@hslex01.hslbz.local>
-References: <1069413363.3fbdf3f35886d@paris-hme1>
+Message-ID: <20031121115915.79176.qmail@web40805.mail.yahoo.com>
+References: <200311211134.hALBYt724579@onyx.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1069413363.3fbdf3f35886d@paris-hme1>
+In-Reply-To: <200311211134.hALBYt724579@onyx.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,71 +16,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: 'skydive' <skydive@megamail.pt>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-> now i happen to have a proxy server running on the=20
-> same machine as the web server, and i would like to=20
-> block incoming traffic to my web server from addresses
-> wich are not portuguese. i already got a list of the=20
->=20
-> ip ranges and net masks of all autonomous systems=20
-> located in portugal. i first tried to accept all those=20
-> ip ranges, and then droped all other incoming. what=20
-> happens is that proxy will accept connections only=20
-> from those ip ranges i accepted initialy ( the=20
-> postuguese ones). Let=B4s say i'm trying to connect to=20
-> hotmail.com. i won't work since that ip range is not=20
-> being accepted.
+Antony, I thought I had it all figured out.
+Apparently, I don't... :-(
 
-If I understand this correctly... :
+On the routing machine the INPUT looks something like
+this:
 
-If you don't want to accept IP's that are not from Portugal then you
-should put the block in the INPUT chain only.
-iptables -P INPUT DROP
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A INPUT -s <ip/mask> -j ACCEPT
-...
-iptables -A INPUT -s <ip/mask> -j ACCEPT
-Accept everything that has a rule ; drop the rest.
-The RELATED,ESTABLISHED rule catches everything you need in addition to
-the initial connection.
+$IPTABLES -N allowed
+$IPTABLES -N tcp_packets
+
+$IPTABLES -A allowed -p TCP --syn -j ACCEPT
+
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 21 -j
+allowed
+
+$IPTABLES -A INPUT -p ALL -d $INET_IP -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A INPUT -p TCP -i $INET_IFACE -j
+tcp_packets
 
 
-If you want Squid to connect to hotmail.com for you, it generates
-outgoing traffic -> it needs an OUTPUT rule to let it do that.
-When you set the default policy of the OUTPUT chain to DROP, it can
-cause unexpected results if you don't accept packets coming back from
-the server. If set to ACCEPT, you shouldn't need a rule for the OUTPUT
-chain to accept.
-iptables -P OUTPUT DROP
-iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 3128 -j ACCEPT
+So, if I understand what you're saying, I shouldn't
+have this
 
-> is there a way to accept connections related with=20
-> previous conections made to this machine to por 3128=20
-> (squid default port)?
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 21 -j
+allowed
 
-See above.
+in my INPUT. I should have it in FORWARD. Right ?
 
-> i want to accept conections that even if they do not=20
-> match with ipranges i'm accepting, they're related=20
-> with a previous connection made to the proxy server,=20
-> related with proxy port whatever it'll be ;))
+I thought it should be in INPUT so that the router
+'gets' the incoming request, and once it has it, it
+will FORWARD it to the LAN server. 
 
-The connections are 2 way :
-1. from webbrowser to proxy and vv (initital conn. is INPUT)
-2. from proxy to webserver and vv (initial conn. is OUTPUT)
-You have to write rules for the initial connection, and catch the rest
-with "RELATED,ESTABLISHED".
+Now, if this rule should be in the FORWARD, what
+should I have in INPUT in order to acept NEW FTP
+requests ? Or is FORWARD doing this automatically ? 
 
-> i'm aware this can not be this easy... but still=20
-> believe there is a way out :))
+I promised that the previous message would be the last
+one. Sorry for breaking my promise :-)
 
-Of course ;-)
-
-
-Gr,
-Rob
-
+__________________________________
+Do you Yahoo!?
+Free Pop-Up Blocker - Get it now
+http://companion.yahoo.com/
 
