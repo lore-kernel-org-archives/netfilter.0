@@ -1,11 +1,9 @@
-From: Helge Weissig <helgew@grajagan.org>
-Subject: Re: protocol 50 unreachable
-Date: Fri, 3 Dec 2004 09:11:27 -0800 (PST)
-Message-ID: <Pine.LNX.4.44.0412030908140.29374-100000@gollum.grajagan.net>
-References: <41B0094F.2010602@snapgear.com>
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: another msn question
+Date: Fri, 3 Dec 2004 10:15:35 -0800
+Message-ID: <29F6FAF7F2C0D41190980002A513591E0E93BAC7@FSNSAB30>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41B0094F.2010602@snapgear.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,46 +14,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: 'Peter Marshall' <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
 
-ahhh... finally I see something... but what does it mean??? 
+if no one has submitted an answer its probably due to the fact that 
+i like many network and system admin's prefer behavior described.
 
-added the following two log rules:
-$IPTABLES -A PREROUTING -t mangle -j LOG --log-level info --log-prefix 'all mangle preroute: '
-$IPTABLES -A PREROUTING -t mangle -m conntrack --ctstate INVALID -j LOG --log-level info --log-prefix 'contrack mangle preroute: '
+messenging services and the like are ripe with stuff like
 
-the second generates the following error:
-iptables v1.2.6a: Couldn't load match `conntrack':/lib/iptables/libipt_conntrack.so: cannot open shared object file: No such file or directory
+sql injection, addy harvesting, session hijax,,,way to buggy to
+leave connected w/out checks.
 
-the ESP's however now show up in the log (these are nmap generated):
-Dec  3 09:07:23 gollum kernel: all mangle preroute: IN=eth0 OUT= MAC=00:90:27:ca:39:56:00:10:67:00:b4:3e:08:00 SRC=vpn.server.ip DST=ext.if.ip LEN=20 TOS=0x00 PREC=0x00 TTL=32 ID=56785 PROTO=ESP INCOMPLETE [0 bytes] 
-Dec  3 09:07:23 gollum kernel: all mangle preroute: IN=eth0 OUT= MAC=00:90:27:ca:39:56:00:10:67:00:b4:3e:08:00 SRC=vpn.server.ip DST=ext.if.ip LEN=20 TOS=0x00 PREC=0x00 TTL=32 ID=7732 PROTO=ESP INCOMPLETE [0 bytes] 
+glad you are frustrated - probably not the saftest thing to do.
 
-h.
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Peter
+Marshall
+Sent: Friday, December 03, 2004 6:25 AM
+To: netfilter
+Subject: another msn question
 
-On Fri, 3 Dec 2004 at 16:35 +1000, Philip Craig wrote:
 
-PC> Helge Weissig wrote:
-PC> > I mean with "incomplete" that the tcpdump traffic I see does not show up 
-PC> > in the logs. I used your rules at the end of your reply and see the same 
-PC> > thing: ESP from VPN_SERVER hits $EXTIF, triggers the "protocol 50 
-PC> > unreachable" icmp response and no log entry ever shows up in the kernel 
-PC> > log from the iptables log rule. I am suspecting that your option 3) is 
-PC> > indeed the problem.
-PC> > 
-PC> > h.
-PC> 
-PC> It is possible that a conntrack already exists, or the packet can't be
-PC> conntracked, so the packet doesn't pass through nat PREROUTING.
-PC> 
-PC> Try putting the log rule in the mangle PREROUTING chain.
-PC> If they do match a log rule here, check if they are invalid
-PC> with -m conntrack --ctstate INVALID.
-PC> 
-PC> Also check if there are any esp conntracks in /proc/net/ip_conntrack
-PC> 
-PC> 
+This has been asked before by many ... but I am asking again incase someone
+has actually found a solution ... Is there a way to keep msn messenger from
+constantly disconnecting behind nat (when multiple users are using it of
+course).
+
+Frustrated msn user.
 
 
