@@ -1,13 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: ip aliasing considered harmful?
-Date: Mon, 10 Jan 2005 15:04:43 -0500
-Message-ID: <20050110200443.GA10819@bender.817west.com>
-References: <1105364334.12623.5.camel@hubcap.ljm.dom>
-	<BAY101-F3E491799BCD5242A2D14DDF970@phx.gbl>
+From: Nathan March <nmarch@overdrawn.net>
+Subject: Suse 9.1 port forwarding woes
+Date: Mon, 10 Jan 2005 12:28:53 -0800
+Message-ID: <41E2E585.9040308@overdrawn.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <BAY101-F3E491799BCD5242A2D14DDF970@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +15,86 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Mon, Jan 10, 2005 at 06:51:25PM +0000, Curby . wrote:
-> Other scripts that try to handle aliases match on both interface and IP; as 
-> you hinted, there's no way to handle aliases directly.
-> 
-> What's the standard way to store these settings so they take effect upon 
-> boot?  Since /etc/init.d usually only contains scripts and not custom 
-> configurations, i guess /etc/sysconfig/network-scripts/ifup.d would be the 
-> one way of doing it.
+Despite my best attempts, I cannot seem to get port forwarding working 
+on a suse 9.1 machine using iptables.
 
-i don't know that there's necessarily a "standard" way to do this.  if
-the aliases are needed solely for iptables nat purposes--i just
-add/remove them as part of my firewall script start/stop.
+My firewall.sh:
 
--j
+#!/bin/bash
 
---
-"Operator! Give me the number for 911!"
-        --The Simpsons
+IPTABLES='/usr/sbin/iptables'
+
+EXTIF='eth0'
+INTIF1='eth1'
+INTIF2='eth2'
+
+/bin/echo 1 > /proc/sys/net/ipv4/ip_forward
+
+$IPTABLES -F
+$IPTABLES -t nat -F
+$IPTABLES -X
+
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+
+$IPTABLES -A FORWARD -m state --state ESTABLISHED -j ACCEPT
+$IPTABLES -A FORWARD -p icmp -m state --state RELATED -j ACCEPT
+
+
+$IPTABLES -A FORWARD -i $INTIF1 -o $EXTIF -m state --state 
+NEW,ESTABLISHED -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF2 -o $EXTIF -m state --state 
+NEW,ESTABLISHED -j ACCEPT
+
+$IPTABLES -A INPUT --protocol tcp --dport 22 -j ACCEPT
+$IPTABLES -A INPUT --protocol tcp --dport 25 -j ACCEPT
+$IPTABLES -A INPUT --protocol tcp --dport 143 -j ACCEPT
+
+$IPTABLES -A FORWARD -i eth0 -d 192.168.0.3 --protocol tcp --dport 80 -j 
+ACCEPT
+$IPTABLES -A PREROUTING -i eth0 -t nat -p tcp --dport 80 -j DNAT --to 
+192.168.0.3:80
+
+
+After the script runs:
+linux:~ # iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination        
+ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:ssh
+ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:smtp
+ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:imap
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination        
+ACCEPT     all  --  anywhere             anywhere            state 
+ESTABLISHED
+ACCEPT     icmp --  anywhere             anywhere            state RELATED
+ACCEPT     all  --  anywhere             anywhere            state 
+NEW,ESTABLISHED
+ACCEPT     all  --  anywhere             anywhere            state 
+NEW,ESTABLISHED
+ACCEPT     tcp  --  anywhere             192.168.0.3         tcp 
+dpt:http flags:FIN,SYN,RST,ACK/SYN state NEW
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination        
+linux:~ # iptables -t nat --list
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination        
+DNAT       tcp  --  anywhere             anywhere            tcp 
+dpt:http to:192.168.0.3
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination        
+MASQUERADE  all  --  anywhere             anywhere           
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Anyone have any ideas what I'm doing wrong?
+
+Thanks,
+Nathan
 
