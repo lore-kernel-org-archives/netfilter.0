@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IP Alias with iptables
-Date: Tue, 20 Apr 2004 19:27:14 +0100
+Subject: Re: Leaking ICMP and UDP packets
+Date: Tue, 20 Apr 2004 19:37:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404201927.14766.Antony@Soft-Solutions.co.uk>
-References: <EMEKLOMJOPNJPAFKHEDJGECHCDAA.rhaces_chistes@yahoo.com.mx> <200404192231.42723.Antony@Soft-Solutions.co.uk> <16517.26251.561739.758706@saint.heaven.net>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <200404201937.20176.Antony@Soft-Solutions.co.uk>
+References: <Pine.LNX.4.44.0404201059380.9758-100000@dudester.spoontail.com>
+Reply-To: Netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <16517.26251.561739.758706@saint.heaven.net>
+In-Reply-To: <Pine.LNX.4.44.0404201059380.9758-100000@dudester.spoontail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +19,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Tuesday 20 April 2004 7:06 pm, Dick St.Peters wrote:
+On Tuesday 20 April 2004 7:06 pm, Daniel David Benson wrote:
 
-(Quoted from Alistair Tonner):
+> Ok, so if I understand correctly, the 10.101.10.103 host is trying to
+> respond to this windows box -- it only knows the default gateway to get to
+> that 169 address.
 
-> > > 	Aliased (stacked) interfaces ARE NOT SECURE.  Period.
+Yes, and the default gateway (your firewall) only knows its external interface 
+to send out packets which don't belong to the internal LAN/s.
 
-(Quoted from me):
+>  It doesn't NAT because it doesn't have a corresponding
+> "initiated" NAT entry?  I guess I'm confused as to why it doesn't match
+> the global NAT entry -- I suspect it's my lack of understanding of how NAT
+> is implemented.
 
-> > Indeed.   I would like to see this emphasised more in the netfilter
-> > howtos & tutorials.   Multiple addresses on one interface are all very
-> > well, so long as they exist within the same subnet; however anyone trying
-> > to use multiple *network* addresses on one physical interface is
-> > defeating their security by ignoring what the different OSI network
-> > layers mean.
->
-> I want to add some qualification to these statements.  Aliased
-> interfaces do not inherently introduce any insecurity in cases
-> where you don't care about subnet separation.
+Hm, actually, yes, you have a point there - you do have a generic SNAT rule 
+which should apply to any packets leaving the external interface.   I don't 
+have an answer for that one right now.
 
-I agree.   However, Alistair and I were not claiming that aliased interfaces 
-introduce an insecurity where you don't require any security - we were simply 
-saying that you cannot (should not) use them where you require to have secure 
-separation of your subnets.
+>  In the end, I should be blocking these 169 requests in
+> the FORWARD table anyway.
 
-If you want to overlap two logical networks on one physical infrastructure, 
-and you do not require any security between them, then aliased interfaces are 
-ideal for the job.
+Yes, that would be a good plan.
 
-However, if you are trying to keep two logical networks securely separate from 
-each other (as the original poster wanted to do), then aliased interfaces 
-will defeat your attempts at this.
+> Is it common practice to set the NAT chains default policies to DROP?
+
+NO!!!!   *Never* set a nat table (or a mangle table) to have any default 
+policy other than ACCEPT.
+
+Think really *really* hard before using a rule with a DROP target in the nat 
+or mangle tables (it can be valid sometimes, but make sure know what it will 
+do before you use it).
+
+>  I guess, I'd like to know the best way to stop these bad boys from getting
+> out to be a good netizen.
+
+Well, I wouldn't worry about it too much - an upstream ISP will drop them soon 
+enough with that destination address.
+
+If you do want to drop them yourself, however, start with the addresses listed 
+in http://www.rfc-editor.org/rfc/rfc3330.txt and block anything entering or 
+leaving your network with a source or destination address in these ranges.
 
 Regards,
 
 Antony.
 
 -- 
-There are two possible outcomes:
+"The future is already here.   It's just not evenly distributed yet."
 
- If the result confirms the hypothesis, then you've made a measurement.
- If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
+ - William Gibson
 
                                                      Please reply to the list;
                                                            please don't CC me.
