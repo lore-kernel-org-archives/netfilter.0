@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: smtp
-Date: Fri, 14 May 2004 13:46:09 +0100
+Subject: Re: Iptables do nat with Protocol 47 or GRE
+Date: Fri, 14 May 2004 13:44:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405141346.09095.Antony@Soft-Solutions.co.uk>
-References: <BAY15-F29OTHXMm9VWL0005acdf@hotmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200405141344.54206.Antony@Soft-Solutions.co.uk>
+References: <E1BObZs-0004GV-Ld@vishnu.netfilter.org>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F29OTHXMm9VWL0005acdf@hotmail.com>
+In-Reply-To: <E1BObZs-0004GV-Ld@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,21 +21,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 14 May 2004 12:17 pm, azeem ahmad wrote:
+On Friday 14 May 2004 1:15 pm, Sez wrote:
 
-> hi all
-> i m havingg a continous upload on port 25 but i m unable to know which ip
-> from my network is uploading on port 25. i saw on iptraf that some one is
-> continously uploading on 25. the hardware addresss that iptraf is showing
-> isnt really on my LAN but the traffic is coming from my LAN
-> how can i find out the real hardware address or ip of the machine uploading
+> And, with l2pt or ipsec, iptables work fine without path GRE???
 
-Plug a packet sniffer (eg: ethereal) into the link using a hub?
+IPsec does not use GRE.   IPsec uses protocols 50 and 51 - ESP and AH.
+
+IPsec works fine over NAT in Tunnel Mode (not Transport Mode without serious 
+fiddling with things).
+
+GRE is protocol 47.
+
+L2TP is a UDP-based protocol (port 1701) as far as I know.
+
+Regards,
 
 Antony.
 
 -- 
-Most people have more than the average number of legs.
+Your work is both good and original.  Unfortunately the parts that are good 
+aren't original, and the parts that are original aren't good.
+
+ - Samuel Johnson
 
                                                      Please reply to the list;
                                                            please don't CC me.
