@@ -1,11 +1,9 @@
-From: Andreas Meyer <anmeyer@gmx.net>
-Subject: fetchmail from intern
-Date: Mon, 17 Feb 2003 17:11:03 +0100 (CET)
+From: "Simpson, Doug" <dsimpson@friedmancorp.com>
+Subject: RE: recommended GUI frontends for iptables?
+Date: Mon, 17 Feb 2003 10:48:17 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030217161103.D1AE417C93@delta.meyer.home>
-Reply-To: anmeyer@gmx.net
+Message-ID: <20ED00AA0BC135449469D6EF0AE79C97203ED7@ozlan.fcdomain.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,34 +15,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: IPtables <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: "'Robert P. J. Day'" <rpjday@mindspring.com>, netfilter mailing list <netfilter@lists.netfilter.org>
 
-Hello!
+I have used fwbuilder.
 
-Running fetchmail from the mailserver behind the firewall I have
-the problem to go to the WAN.
-
-It works as long as I stay within the LAN.
-
-iptables -t nat -A PREROUTING -p TCP --dport 110 -m state --state
-NEW,ESTABLISHED,RELATED -j DNAT --to 192.168.1.75:110
-
-But writing
-
-iptables -t nat -A PREROUTING -p TCP --dport 110 -m state --state
-NEW,ESTABLISHED,RELATED -j DNAT --to 0.0.0.0:110
-
-I get a
-kernel: martian destination 0.0.0.0 from 192.168.1.3, dev eth0
-
-Must I install fetchmail on the firewall? Is this the only
-way to go?
+-----Original Message-----
+From: Robert P. J. Day [mailto:rpjday@mindspring.com]
+Sent: Monday, February 17, 2003 5:24 AM
+To: netfilter mailing list
+Subject: recommended GUI frontends for iptables?
 
 
--- 
 
-  Andreas Meyer
+  which of the many GUI frontends have folks found mesh
+nicely with the latest iptables?  is there a FAQ for this?
 
-Object Class   Common Name   userPassword
-posixAccount   andreas       {SSHA}hpyqObx1/BXbKFgXoqCayoGsvIgPYiVc
+rday
+
 
