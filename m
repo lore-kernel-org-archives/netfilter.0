@@ -1,10 +1,13 @@
-From: "edgar bautista" <edgar_bautista@hotmail.com>
-Subject: Configuration problem..
-Date: Tue, 03 Jun 2003 12:07:34 -0500
+From: "Leon Stankowski" <leons@voicenet.com>
+Subject: RE: problems filtering ms file shares
+Date: Tue, 3 Jun 2003 14:01:05 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY1-F152brDYsnU1UO00016445@hotmail.com>
+Message-ID: <FLEDIJIDBADCKKAGHJNMAECGCJAA.leons@voicenet.com>
+References: <20030603122601.14988.13389.Mailman@kashyyyk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030603122601.14988.13389.Mailman@kashyyyk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,74 +17,148 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
->>Hi there!!
->>I=B4ve got the next configuration, so let me try to explain my ascii art.
->>
->>In city A I=B4ve  on my netwok 1 the IP=B4s 192.1.x.1/24
->>The  1760 Router has the ip 192.1.x.254
->>In this side I use a red hat 8.0 with nat and i use it to give
->>internet access to some pc=B4s in Network 1 using : IPTABLES -T NAT
->>-A POSTROUTING -O ETH1 -J MASQUERADE -S WS_IPADDRESS -D 0.0.0.0/0
->>In the linus box I=B4ve got 2 Nic=B4s with the addresses 174.19.4.7 the
->>internal nic and the other with the ip adderess 174.19.4.1 the
->>external directly connected to the modem.
->>Everythig works fine I`ve got internet service in Network 1 in City A.
->>
->>
->>The Goal here is to give internet service to Nerwork 2 using this=20
->>structure.
->>In Network 2 ( City 2 ) the ip addresses have the form 192.1.y.1/24
->>The router has the address 192.1.y.254
->>
->>When I try to make ping from any station from Network1 to Network2
->>I`ve got a response but if a try to make a ping from Network 2 to
->>Netwok 1 I just can get a response from any station except when I
->>try to ping to the Linux Box where the Nat resides so I can configure my =
+Hi Matthew,
 
->>clients in Network2 as I did cause  they need to "see"the linux box.
->>
->>Can some one help me to perform this? or maybe the cuestion should be....=
-=20
->>is this configuration posible?
->>
->>Another question is about how to configure my clients in Network 2 to=20
->>provide internet access, do you belive that this configuration using the =
+I was attempting to do something similar with a very similar setup and
+discovered that a lot of things start working better / more consistently if
+you turn off IP forwarding, i.e. cat "0" > /proc/sys/net/ipv4/ip_forward.
 
->>cisco has problems?
->>
->>Just in Network 1 I=B4ve got a NT 4.0 using wins and in network 2
->>I=B4ve no serves of any kind just the routers an a workstation with just =
-one=20
->>nic.
->>
->>Is my problem about name resolution?
->>
->>Thanks a lot.
->>Edgar Bautista
->>
->>                                                  CITY A            CITY B
->>Internet<--=A6Adsl Modem=A6-=A6RH8.0=A6---- NET1              NET2
->>                                                     =A6                 =
-   =20
->>    =A6
->>                                                     HUB               =20
->>HUB
->>                                                     =A6                 =
-   =20
->>    =A6
->>                                                   =20
->>CISCO--------------CISCO
->>                                                     1760             =20
->>1751
->>
->
+Best,
+Leon
 
-_________________________________________________________________
-MSN 8 with e-mail virus protection service: 2 months FREE*=20
-http://join.msn.com/?page=3Dfeatures/virus
+Original message follows:
+
+Date: Sun, 1 Jun 2003 19:03:52 +0100
+From: Matthew Pocock <Matthew.Pocock@newcastle.ac.uk>
+To: netfilter@lists.netfilter.org
+Subject: problems filtering ms file shares
+
+Hi,
+
+I'm having trouble setting fire wall rules on a bridge. I'm running rh9, and
+have patched the kernel with bridge-nf-0.0.10-against-2.4.20.diff and
+ebtables-v2.0.003_vs_2.4.20.diff as well as installing the utilities brctl
+and
+ebtables.
+
+Using iptables (editing my uni2lan & lan2uni chains), I seem to be able to
+control what goes through the firewall well enough to convince ping, http,
+nmap and traceroute (with and without the -I option) that protocols & ports
+are reachable or not.
+
+However, windows file sharing seems go go right through. If I pull either
+cable out of the bridge, then windows file sharing across the bridge stops
+(no
+supprise there), but if the cable is in, file sharing is always functional,
+even if I set all chains to deny everything (by uncommenting the debugging
+rules below).
+
+Down at the bottom of the netfilter/iptables docs, it says I should be using
+the physdev module to match bridge ports, but it seems that this module is
+not
+present on my system. Other docs say that it is only needed for kernels
+2.5.44
+and greater...
+
+iptables-restore v1.2.7a: Couldn't load match
+`physdev':/lib/iptables/libipt_physdev.so: cannot open shared object file:
+No
+such file or directory
+
+tcpdump (run seperately on eth0 and eth1) seems to be showing exactly what
+you
+would expect given the firewall rules & doesn't show the packets
+transmitting
+information between the two PCs, but the two PCs still are doing file
+sharing.
+
+I'm feeling bewildered.
+
+I use this script to set up the bridge:
+
+/usr/sbin/brctl addbr br0
+/usr/sbin/brctl stp br0 off
+/usr/sbin/brctl addif br0 eth0
+/usr/sbin/brctl addif br0 eth1
+/sbin/ifconfig eth0 down
+/sbin/ifconfig eth1 down
+/sbin/ifconfig eth0 0.0.0.0 up
+/sbin/ifconfig eth1 0.0.0.0 up
+/sbin/ifconfig br0 128.240.227.17
+echo "1" > /proc/sys/net/ipv4/ip_forward
+/sbin/route add default gw 128.240.227.251
+
+My iptables config looks like this:
+
+############################################################################
+##
+#
+# iptables config file written by Matthew Pocock (matthew.pocock@ncl.ac.uk)
+#
+
+## main chains
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+:lan2uni - [0:0]
+:uni2lan - [0:0]
+
+############################################################################
+##
+#
+## debugging rules
+#-A FORWARD -j DROP
+#-A INPUT -j DROP
+#-A OUTPUT -j DROP
+
+############################################################################
+##
+#
+## drop all invalid packets, iregardless
+-A FORWARD -m state --state INVALID -j DROP
+
+## split traffic depending upon direction
+-A FORWARD -i eth0 -o eth1 -j uni2lan
+-A FORWARD -i eth1 -o eth0 -j lan2uni
+
+############################################################################
+##
+#
+## let everything out - is this a good plan?
+## we should realy be a bit more careful here, but hey-ho
+-A lan2uni -j ACCEPT
+
+############################################################################
+##
+#
+## let only specific things in
+
+## stuff we've seen before should get through
+-A uni2lan -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+## accept some new connections for 'nice' protocols
+## we know they are new, as we've dropped all invalid things earlier, and
+just
+## now we let related & established through.
+
+## ping, ssh
+-A uni2lan -p icmp -j ACCEPT
+-A uni2lan -p tcp --dport 22 -j ACCEPT
+
+## drop everything else comming in
+-A uni2lan -j REJECT
+
+
+
+COMMIT
+
+
+Thanks,
+
+Matthew
 
 
