@@ -1,11 +1,11 @@
-From: "R. Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: SNAT?
-Date: Tue, 29 Oct 2002 14:17:27 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: SNAT?
+Date: Tue, 29 Oct 2002 13:07:33 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001901c27f4d$87579af0$0401000a@robbysan.org>
+Message-ID: <200210291307.g9TD7he10081@vulcan.rissington.net>
 References: <003f01c27f47$60e06740$c800640a@grooverider>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <003f01c27f47$60e06740$c800640a@grooverider>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,38 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'NetFilter Mailing List' <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: NetFilter Mailing List <netfilter@lists.samba.org>
 
+On Tuesday 29 October 2002 12:33 pm, Svavar =D6rn Eysteinsson wrote:
+
+> Hi everyone.
+> I?m very new to doing the SNAT thing.
+>
 > The thing is, is there any way to SNAT a individual computer on my
 > internal network to a different public ip address?
 
-Sure.
+Yes, you can SNAT anything you like to anything else you like.   So long as=
+ a=20
+packet goes through netfilter, you can SNAT it.
 
-> All my internal network is masqueraded as the x.x.x.98/24 ip
-> address. I
-> want to SNAT my internal IP address 10.100.0.200 to
-> x.x.x.99/24 Is that
-> possible?
+However, depending on what source address you give it, the replies may or m=
+ay=20
+not get back again, which is a separate routing problem, nothing to do with=
+=20
+netfilter.
 
-Create the rules in this order :
+Remember that if you send packets out through netfilter and NAT them, they =
 
-# iptables -t nat -A POSTROUTING -s 10.100.0.200 -j SNAT --to-source
-x.x.x.99
-# iptables -t nat -A POSTROUTING -s 10.100.0.0/24 -j SNAT --to-source
-x.x.x.98
+will only get reverse-NATted if the replies come back through the same=20
+netfilter machine.
 
-# iptables -A FORWARD -s 10.100.0.200 -d x.x.x.99 -j ACCEPT
-# iptables -A FORWARD -s 10.100.0.0/24 -d x.x.x.98 -j ACCEPT
+Antony.
 
-When the first rule is matched, it is executed.
-So your PC on 10.100.0.200 hits first its own rule so never hits the
-subnet rule.
-The other PC's don't hit the specific rule and match the subnet rule.
-Of course the PC would have to have a static IP address, because
-otherwise another PC could be 10.100.0.200...
+--=20
 
+This email is intended for the use of the individual addressee(s) named abo=
+ve=20
+and may contain information that is confidential, privileged or unsuitable =
 
-Rob
+for overly sensitive persons with low self-esteem, no sense of humour, or=20
+irrational religious beliefs.
 
+If you have received this email in error, you are required to shred it=20
+immediately, add some nutmeg, three egg whites and a dessertspoonful of=20
+caster sugar. =A0 Whisk until soft peaks form, then place in a warm oven fo=
+r 40=20
+minutes. =A0 Remove promptly and let stand for 2 hours before adding some=20
+decorative kiwi fruit and cream. =A0 Then notify me immediately by return e=
+mail=20
+and eat the original message.
 
