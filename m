@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Problem setting Default policy 'DROP'
-Date: Sun, 1 Feb 2004 08:25:52 +0000
+From: "Olexandr O. Galay" <root@e-mail.te.ua>
+Subject: Re[2]: ipt_connlimit trouble
+Date: Sun, 1 Feb 2004 13:21:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402010825.52368.Antony@Soft-Solutions.co.uk>
-References: <20040201073938.71937.qmail@web60404.mail.yahoo.com>
+Message-ID: <13687727281.20040201132148@e-mail.te.ua>
+References: <19730527125.20040131212831@e-mail.te.ua>
+ <GFEPJIHHFOJDOFDMNAJDAECIFEAA.mark@npsl.co.uk>
+Reply-To: "Olexandr O. Galay" <root@e-mail.te.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040201073938.71937.qmail@web60404.mail.yahoo.com>
+In-Reply-To: <GFEPJIHHFOJDOFDMNAJDAECIFEAA.mark@npsl.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +20,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-On Sunday 01 February 2004 7:39 am, ads nat wrote:
+Hello, Mark!
 
-> Script changes default policy of INPUT, OUTPUT and
-> FORWARD to DROP. When I change default to DROP in my
-> script my connection drops.
->
-> Any idea what should be problem?
+Replying to your letter:
 
-This indicates that your ruleset does not have an ACCEPT rule for "your 
-connection".
 
-I suggest you leave the default policy at ACCEPT, add a LOG rule at the end of 
-the chain (presumably INPUT, if you're talking about your connection to the 
-firewall itself), and then see what packets get LOGged as a result of 
-continuing to use your connection.
 
-Whatever gets LOGged will tell you what you need to add a rule to ACCEPT.
+>> 4. compile and install kernel with all options of iptables sets
+>> to M (module)
+M> Missing a reboot step here?
+No, i reboot machine when installed new kernel
 
-Regards,
+>> so, now when i trying to # modprobe ipt_connlimit i get:
+>> [root@test /]# modprobe ipt_connlimit
+>> /lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o:
+>> unresolved symbol ip_conntrack_find_get
+M> Also try depmod -e -F /<path>/System.map and see if you still get the same
+M> problem.
+I make depmod -e -F /usr/src/linux-2.4.24/System.map
+But ipt_connlimit not loads :(
 
-Antony.
+
 
 -- 
-Documentation is like sex.
-When it's good, it's very very good.
-When it's bad, it's still better than nothing.
+Best Regards, Mark!
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Sunday, February 1, 2004, 13:20
+
+Olexandr O. Galay
+mailto:root@e-mail.te.ua
+http://www.macros.org.ua
+ICQ: 29292281
 
 
