@@ -1,13 +1,12 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Where does linux kernel ipsec hook in
-Date: Thu, 21 Oct 2004 08:06:54 -0500
+From: Michel Bellemare <michel.bellemare@gmail.com>
+Subject: gnutella
+Date: Thu, 21 Oct 2004 10:23:45 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4177B46E.4030209@pbl.ca>
-References: <20683.194.211.242.140.1098271907.squirrel@194.211.242.140>
+Message-ID: <f9a42cb404102107232273e04@mail.gmail.com>
+Reply-To: Michel Bellemare <michel.bellemare@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20683.194.211.242.140.1098271907.squirrel@194.211.242.140>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,27 +16,16 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Johannes Kleimola <johannes@kleimola.fi>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Group <netfilter@lists.netfilter.org>
 
-Johannes Kleimola wrote:
->   1) linux 2.6 kernel ipsec (encrypt and decrypt) and
+is there any way to log all the traffic that uses the gnutella protocol?
+i searched in the mailing list and google and found nothing.
 
-I remember seeing answer to this one on the list a while ago, check the 
-list archives.  Vaugly remeber that it goes through the Netrilter twice 
-(encrypted, and than unencrypted).  But don't remember if it was for 
-*swan, linux native implementation, or both.
+I looked to at a tcpdump capture and it never uses the same port...
 
->   2) linux packet sniffers (tcpdump, ethereal)
+basically i want to control the number of bytes that goes out using
+this protocol.
 
-Packet sniffers always give you packets as they arrive from the wire, 
-and as they leave to the wire, since they work by opening device 
-directly.  So, in table 3-1 it would be part of step 2, in table 3-2 
-part of step 8, and in table 3-3 part of steps 2 and 10.
-
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+thank you very much!
 
