@@ -1,12 +1,13 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: packet reording (was: Re: modifying packets using netfilter)
-Date: Fri, 2 Apr 2004 01:40:19 +0100
+From: Shane Hickey <shane@howsyournetwork.com>
+Subject: Re: Need help with rate-limiting NTTP traffic
+Date: Thu, 1 Apr 2004 20:20:54 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007801c4184b$130253f0$68892090@grouse>
-References: <200404012158.QAA24193@buzzard.research.telcordia.com>
+Message-ID: <20040401202054.1fffa4b6@daneel.volumen.net>
+References: <20040331165409.0d498074@daneel.volumen.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040331165409.0d498074@daneel.volumen.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,51 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: bss@research.telcordia.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Bruce,
+I found the solution to my exact problem (right down the NNTP client) at
+http://mail.gnu.org/archive/html/pan-users/2003-11/msg00009.html
 
-I am still very eager to find the answers, especially for packet re-ordering
-at userspace. If you find the answers, I would be grateful if you let me
-know. I will let you know vice versa.
+For those who want the answer now with now clicking, you can do it all
+with this:
 
-Cheers,
-Jee
+tc qdisc add dev $WANIFACE handle ffff: ingress
+tc filter add dev $WANIFACE parent ffff: protocol ip prio 50 u32 match
+ip sport 119 0xffff police rate 800kbit burst 15k drop flowid :1
 
+Thanks.
 
-> Hi,
->
-> I was doing a web search re netfilter and found some questions you
-> posted to the netfilter mailing list, but I couldn't find the answers.
-> Did you get answers to the questions (listed below)?
->
-> > Hi Eric and all,
-> >
-> > Thank you again. I have a few further questions:
-> > 1. How many packets can ip_queue queue for userspace? How can we change
-t=
-> > he
-> > size of QUEUE?
-> > 2. Can we use ipq_read() and ipq_set_verdict() to access and process
-queu=
-> > ed
-> > packets in any order?
-> >     More specifically, for example, I wish to ipq_read() a number of
-pack=
-> > ets
-> > from QUEUE before ipq_set_verdict() any of them, and then
-ipq_set_verdict=
-> > ()
-> > in whichever order I want. It is possible?
-> >
-> > Cheers,
-> > Jee
->
-> Thank you.
->
-> Bruce Siegell
-> bss@research.telcordia.com
->
-
+-- 
+Shane Hickey <shane@howsyournetwork.com>: Network/System Consultant
+GPG KeyID: 777CBF3F
+Key fingerprint: 254F B2AC 9939 C715 278C  DA95 4109 9F69 777C BF3F
+Listening to: Bill Frisell  - Vernon Reid - Small Hands
 
