@@ -1,11 +1,9 @@
-From: "Paulo J. Matos" <pocm@mega.ist.utl.pt>
-Subject: Re: Command not working  in latest version
-Date: Sun, 16 Feb 2003 16:04:04 -0000
+From: Khanh Tran <khanh@slc.edu>
+Subject: RE: Command not working  in latest version
+Date: Sun, 16 Feb 2003 11:32:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003701c2d5d5$070e8e60$0100a8c0@nikita>
-References: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E8@EXCHANGE>
+Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E9@EXCHANGE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,7 +15,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Khanh Tran <khanh@slc.edu>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "Paulo J. Matos" <pocm@mega.ist.utl.pt>, netfilter@lists.netfilter.org
+
+You may not have all of the proper elements compiled into your kernel.  Try:
+
+http://www.e-infomax.com/ipmasq/howto/c-html/ipmasq-compiling3.1.html
+
+Khanh Tran
+Network Operations
+Sarah Lawrence College
+
+
+-----Original Message-----
+From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
+Sent: Sunday, February 16, 2003 11:04 AM
+To: Khanh Tran; netfilter@lists.netfilter.org
+Subject: Re: Command not working in latest version
+
 
 
 > You should also make sure you are loading modules ip_tables and
@@ -116,5 +131,6 @@ Paulo
 >
 >
 >
+
 
 
