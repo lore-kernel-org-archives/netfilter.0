@@ -1,8 +1,7 @@
-From: Richard Palmer <richard.palmer@gmail.com>
-Subject: Death in Userspace
-Date: Thu, 17 Feb 2005 12:47:03 +1100
-Message-ID: <100c0ba705021617471b585003@mail.gmail.com>
-Reply-To: Richard Palmer <richard.palmer@gmail.com>
+From: Peter Marshall <peter.marshall@caris.com>
+Subject: pptp nat and fedora core3
+Date: Thu, 17 Feb 2005 09:41:47 -0400
+Message-ID: <42149F1B.1000504@caris.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
@@ -15,25 +14,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+I am building a firewall that has to support the natting of pptp ... I 
+was hoping fedora core 3 would have the necessary conntrack modules 
+(like gre and pptp) built into the kernel ... but it does not ...
 
-  I have a application that is handling packets received from iptables
-via the QUEUE target. The user space programme does it's stuff, then
-accepts the packets. All is working fine, however in the event of a
-error (the user space programme dies for some reason), is there any
-way of telling iptables to no longer try to pass packets onto the
-QUEUE target ?, i.e. some sort of libipq flag to automatically accept
-all packets if it thinks the peer has died. Currently the only options
-I can think of are a signal handler that manipulate the iptables rules
-(not good), or a wrapper script around the user space programme to
-monitor it and remove the rule if it dies. Any other options ?
+I would REALLY prefer to not have to re-compile the kernel ... Is there 
+a "laodmodule" line I can use to add the stuff at runtime ?  What 
+modules do I need ?
 
-This is with a 2.4 kernel btw.
+I am going to have windows xp boxes use the built in pptp client to 
+connect out of my lan to an external site ....
 
-Thanks,
+Is there a difference between what you would do with rh9 and fed core3
 
-Richard.
+Thanks for the advice,
+Peter
+
 
