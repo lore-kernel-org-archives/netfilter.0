@@ -1,35 +1,50 @@
-From: mdew <mdew@mdew.dyndns.org>
-Subject: blocking servers
-Date: 06 Mar 2003 17:25:10 +1300
-Sender: mldonkey-users-bounces+gnm-mldonkey-users-651=gmane.org@nongnu.org
-Message-ID: <1046924708.1182.6.camel@nirvana.flat>
+From: "hare ram" <hareram@sol.net.in>
+Subject: Accouting
+Date: Thu, 6 Mar 2003 14:19:02 +0530
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <003701c2e3bd$3cea3020$0200a8c0@Housecall>
+References: <3e660b98.769a.0@unacs.bg>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <mldonkey-users-bounces+gnm-mldonkey-users-651=gmane.org@nongnu.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Help: <mailto:mldonkey-users-request@nongnu.org?subject=help>
-List-Post: <mailto:mldonkey-users@nongnu.org>
-List-Subscribe: <http://mail.nongnu.org/mailman/listinfo/mldonkey-users>,
-	<mailto:mldonkey-users-request@nongnu.org?subject=subscribe>
-List-Archive: <http://mail.gnu.org/pipermail/mldonkey-users>
-List-Unsubscribe: <http://mail.nongnu.org/mailman/listinfo/mldonkey-users>,
-	<mailto:mldonkey-users-request@nongnu.org?subject=unsubscribe>
-Errors-To: mldonkey-users-bounces+gnm-mldonkey-users-651=gmane.org@nongnu.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mldonkey-users@nongnu.org
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
+
+Hi all
+
+i just trying to make Bridge and accounting
+
+eth0 and eth1
+eth0 lan side eth1 internet side
+
+i would like to have accounting details like 
+
+TCP in/out
+UDP in/out
+ICM in/out
+unknow in/out
+
+http in/out
+ftp in/out
+voice in/out
+chat in/out
+unknow in/out
+
+and make them available in my local webserver, for html view
+
+any guidance will be appriciate
+
+thanks
+hare
 
 
-Ive been messing with iptables, trying to block the connection o 
-certain mldonkey general servers.
-
-On my firewall, i used these lines...
-
-iptables -A FORWARD -s 10.0.0.3 -d 148.216.18.89 -j DROP
-iptables -A FORWARD -s 10.0.0.3 -d 24.128.236.196 -j DROP
-iptables -A FORWARD -s 10.0.0.3 -d 24.132.124.37 -j DROP
-
-but I still managed to connect to the servers
-
--- 
-mdew <mdew@mdew.dyndns.org>
