@@ -1,9 +1,10 @@
-From: Nuutti Kotivuori <naked@iki.fi>
-Subject: Per connection transfer rate matching
-Date: Thu, 05 Feb 2004 00:31:30 +0200
+From: "mark smith" <markcs@wildmail.com>
+Subject: problems using FTOS extension
+Date: Thu, 5 Feb 2004 11:42:43 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <877jz2iiil.fsf@iki.fi>
+Message-ID: <598558C21D078804AB348529E476E840@markcs.wildmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,38 +16,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I have recently trying to find a solution to a QoS problem of sorts.
+Hi all,
 
-What I would wish to be able to do, is to mark a connection based on
-the data transfer rate in that connection. That is, to have some sort
-of a token bucket filter or rate estimator attached to a certain
-connection tracking connection - and to be able to use that in
-netfilter rules.
+I need to use the FTOS target. Took me quite a
+while to figure out how to get it 'available' for
+use. (I added 'FTOS' to the PF_EXT_SLI field of
+the Makefile in the extensions directory of the
+1.2.9 distro and that seems to have done the
+trick. After running make and make install the
+libipt_FTOS.so file gets copied into
+/usr/local/lib/iptables).
 
-An example problem case is trivial. Let's assume we have an
-interactive transfer class, which has several interactive sessions
-where latency is tried to be kept to a minimum. Occasionally some
-interactive session might start transferring a lot of data - in which
-case it should be scheduled into the maximum throughput class,
-forgetting latency, until it doesn't transfer that much and it should
-be returned to the interactive class again.
+I'm having trouble using the correct syntax for a
+rule though. This rule,using TOS, works fine:
+iptables -I OUTPUT -t mangle -j TOS --set-tos 0x02
 
-The 'connbytes' match in the patch-o-matic matches on cumulative
-transfer amounts on a per connection basis. The 'limit' match matches
-packets on a simple token bucket implementation. Combining these two
-to something which matches bytes on a simple token bucket per
-connection would create the desired result.
+Trying the same thing with FTOS:
+iptables -I OUTPUT -t mangle -j FTOS --set-ftos 0x02
+Produces the error message:
+iptables: No chain/target/match by that name
 
-So, does such a thing exist already? If not, do other people see this
-as useful as I do? Or have I missed something crucial?
+Looks weird. Interestingly, if I don't provide
+the --set-ftos argument I get a logical error
+message:
+iptables v1.2.9: FTOS target: Parameter
+--set-ftos is required
+So it looks like FTOS can be used but I'm doing
+something wrong with the --set-ftos argument.
 
-And finally, if it doesn't exist already, making such a module
-shouldn't be too hard - would anyone be willing to undertake such an
-ordeal?
+I'm running a 2.4.20-8 kernel on RH9.
 
--- Naked
+Thanks,
 
+Mark.
+
+
+&#8216;The ideals which have lighted my way, 
+and time after time given me new 
+courage 
+to face life cheerfully, have 
+been kindness, beauty, and truth. The 
+trite subjects of life &#8211; possessions, 
+outward success, luxury &#8211; have always 
+seemed contemptible.&#8217; 
+
+Albert Einstein
+------------------
+
+Protect your right to breathe clean, smoke-free air:
+http://www.care2.com/go/z/11238/1043
 
