@@ -1,13 +1,13 @@
 From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: Trouble rejecting connections
-Date: Wed, 28 Jan 2004 08:21:07 -0500
+Subject: Re: Iptables
+Date: Wed, 28 Jan 2004 08:25:24 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4017B743.2030906@Loudoun-Fairfax.com>
-References: <E1Allqr-0002Mv-LJ@aphex.cyberpixels.com>
+Message-ID: <4017B844.8090901@Loudoun-Fairfax.com>
+References: <Sea2-F29KdVVDMCcltD00014e88@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1Allqr-0002Mv-LJ@aphex.cyberpixels.com>
+In-Reply-To: <Sea2-F29KdVVDMCcltD00014e88@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,105 +20,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Ben wrote:
+jean-francois fleury wrote:
 
->Hello all,
 >
->I'm having trouble rejecting connections using iptables.  I am using cPanel
->/ WHM on a RedHat 7.3 a machine and iptables installed from
->iptables-1.2.8-8.72.3.i386.rpm .  I am using a script for my policy, it
->looks like this.
+> Im new with Iptables but iv been working on it since the last month to 
+> built up rule set.
+> I have a linux box with 3 int
 >
+> Eth0 = $EXT (connected to ppp0, ADSL provider)
 >
->//Start script
->IPTABLES="/sbin/iptables"
+> Eth1 = $DMZ (only a web server for now)
+> Eth2 = $INT (my main computer(net surf) and one for IDS, 
+> tcpdumb,backup, etc)
 >
->#Flush everything, start from scratch
->$IPTABLES -F
->
->#Set default policies to DROP
->$IPTABLES -P INPUT DROP
->$IPTABLES -P FORWARD DROP
->
->#Allow all lo traffic
->$IPTABLES -A INPUT -i lo -s 0.0.0.0/0 -d 0.0.0.0/0 -j ACCEPT
->
->#Allow all related and established connections
->$IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
->
->#Set default OUTPUT policy to ACCEPT
->$IPTABLES -P OUTPUT ACCEPT
->
-># Open ports for server/services
->$IPTABLES -A INPUT -p tcp --dport 20 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 21 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 22 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 25 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 37 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 43 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT
->$IPTABLES -A INPUT -p udp --dport 53 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 80 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 110 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 113 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 143 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 443 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 465 -j ACCEPT
->$IPTABLES -A INPUT -p udp --dport 465 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 873 -j ACCEPT
->$IPTABLES -A INPUT -p udp --dport 873 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 993 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 995 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 2082 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 2083 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 2086 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 2087 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 2089 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 2095 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 3306 -j ACCEPT
->$IPTABLES -A INPUT -p tcp --dport 6666 -j ACCEPT
->
->#Enable Blogger support (non-standards compliant piece of dogshit that it
->is)
->$IPTABLES -A INPUT -s 66.102.15.83 -j ACCEPT
->$IPTABLES -A INPUT -s 216.34.7.186 -j ACCEPT
->
->#Add passive-mode people here
->#$IPTABLES -A INPUT -s xxx.xxx.xxx.xxx -j ACCEPT
->
->#Add DENY people here
->#$IPTABLES -A INPUT -s 000.000.000.000 -j DROP
->$IPTABLES -A INPUT -s blocked.ip.address.here -j DROP
->  
+> Basicly, i know im not the only one with this kind of setup, im sure 
+> ;) . First i want
+> to access my web server from the $INT to $DMZ to manage it, i want to 
+> access
+> internet $INT to $EXT (it can be $PPP0) and few other thing such as 
+> SSH from
+> inside and outside, give full access inside ($INT and in my $DMZ) to my
+> IDS. and like everyone else, good rules. What i would like its a setup 
+> rules
+> already made for this kind of network, that work but i can personolize 
+> it. Is
+> there someone with this kind of rules so i can start with something ?
 >
 
-You need to move these DROP and LOG rules up so they come before the 
-ACCEPT rules. Otherwise the packets may have already been accepted.
+Take a look here:  http://iptables-tutorial.frozentux.net/
+
+This is an excellent tutorial and has several examples including one 
+similar to your configuration.
+
+> If you want my actual rules i can send it. Thanks
+>
+> PS : sorry for my english but i write basicly in french.
+>
+
+Your English is better than my French :-)
 
 Jeff
-
->#Logging
->$IPTABLES -A INPUT -j LOG --log-prefix "INPUTDEFAULT: "
->
->#Save rules
->iptables-save > /etc/sysconfig/iptables
->
->#Restart for rules to take effect
->service iptables restart
->//End script
->
->The problem is that I can still connect from blocked.ip.address.here.  What
->did I miss?
->
->Ben Prince
->Cyber Pixels
->Systems Administrator
->ben@cyberpixels.com 
->
->
->
->  
->
-
 
 
