@@ -1,11 +1,11 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: nfs ports
-Date: 28 Jan 2005 19:55:45 +0100
-Message-ID: <1106938544.11290.5.camel@nostromo.bgsecm.com>
+Date: Fri, 28 Jan 2005 13:49:27 -0500
+Message-ID: <20050128184927.GA15097@bender.817west.com>
 References: <200501281250.55466.JALaramie@Loudoun-Fairfax.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 In-Reply-To: <200501281250.55466.JALaramie@Loudoun-Fairfax.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,64 +17,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-El vie, 28 de 01 de 2005 a las 18:50, Jeffrey Laramie escribi=C3=B3:
+On Fri, Jan 28, 2005 at 12:50:55PM -0500, Jeffrey Laramie wrote:
 > Hi All,
->=20
-> I've been fighting the good fight trying to maintain nfs connections th=
-ough my=20
-> firewall but I'm not winning. Every time I think I have opened the port=
-s I=20
+> 
+> I've been fighting the good fight trying to maintain nfs connections though my 
+> firewall but I'm not winning. Every time I think I have opened the ports I 
 > need nfs (portmapper?) uses a different port. My questions:
->=20
-> 1.  Is there a netfilter patch for tracking nfs ports similar to the on=
-e for=20
+> 
+> 1.  Is there a netfilter patch for tracking nfs ports similar to the one for 
 > ftp?
->=20
-> 2.  If not, can someone point me to a list of ports used by nfs so that=
- I can=20
+> 
+> 2.  If not, can someone point me to a list of ports used by nfs so that I can 
 > open up what I need once and for all?
->=20
-> Thanks
->=20
-> Jeff
 
-NFS uses the ports 2049/tcp 2049/udp, but you can obtain them
-from the server using rpcinfo with:
+RPC Portmapper		TCP 111
+NFSD			UDP 2049
 
-rpcinfo -p localhost|grep "nfs"|grep "tcp"|tr ' ' '\n'|grep -v
-"nfs"|tail -n 2|head -n 1
+IIRC statd, mountd, lockd, and rquotad are assigned their ports by the
+the portmapper when a request comes in; however, each daemon supports a
+"-p" option to nail it down to a single port--see the man page of each
+for specific syntax.  lockd is actually a kernel module that's loaded
+on demand, and you would need to pass the static TCP/UDP port to the
+modprobe command as an option (i.e. in modprobe.conf).
 
-rpcinfo -p localhost|grep "nfs"|grep "udp"|tr ' ' '\n'|grep -v
-"nfs"|tail -n 2|head -n 1
+check out:
 
-and for the services quota, lock, stat and mount we use the same method
-but changing the grep "nfs" by grep "mount", by example. Lockd only
-uses udp, quota uses tcp and udp, mount uses tcp and udp and stat uses
-also tcp and udp.
+http://www.faqs.org/docs/Linux-HOWTO/NFS-HOWTO.html#FIREWALLS
 
-For portmap we use the same method but changing nfs by portmapper. It
-uses tcp and udp. Normally it uses 111/tcp and 111/udp.
+for more specific details.
 
-This is the method we use in our GPL bastion-firewall software to
-find the ports.
+-j
 
-Regards.
-
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+--
+"This anonymous clan of slack-jawed troglodytes has cost me the
+ election, and yet if I were to have them killed, I would be the one
+ to go to jail. That's democracy for you.
+ You are noble and poetic in defeat, sir."
+        --The Simpsons
 
 
