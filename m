@@ -1,10 +1,9 @@
-From: "John Wells" <jb@sourceillustrated.com>
-Subject: Dumping state information
-Date: Wed, 30 Apr 2003 08:08:37 -0400 (EDT)
+From: "Cyrille Colin" <shishico@hotmail.com>
+Subject: Netfilter and SCTP
+Date: Wed, 30 Apr 2003 12:50:00 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <44095.157.234.254.3.1051704517.squirrel@coastal.homelinux.org>
+Message-ID: <Law8-F94rhYQYx3G5aY000150f0@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,17 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello Gents and Gals.
 
-Is there a way/utility/etc that will allow me to view the netfilter state
-tables at any given time?
+Hi,
 
-I appreciate your help.
+I would like to know how Netfilter's translator deals with SCTP / IP packets 
+(Stream Control Transmission Protocol, IP protocol 132).
 
-John
+similarly to UDP, it should be able to translate the source adress in the IP 
+header, and the source port in the SCTP common header, if needed. And 
+recompute SCTP and IP headers checksums.
 
+is this currently supported ? if not how Netfilter behave when receiving 
+such a packet ??
+
+any help on this would be very much appreciated... seems that NAT boxes do 
+not like SCTP very much...
+
+
+Thanks
+
+Cyrille
+
+
+
+
+
+_________________________________________________________________
+MSN Messenger : discutez en direct avec vos amis ! 
+http://www.msn.fr/msger/default.asp
 
 
