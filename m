@@ -1,12 +1,12 @@
-From: "Matthew Hellman" <mhellman@raccoon.com>
-Subject: Re: ssh connecting to wrong machine....
-Date: Mon, 3 Jun 2002 07:13:17 -0500
+From: Steve <steve@sheddy.net>
+Subject: Re: Broken fwmark
+Date: Mon, 3 Jun 2002 13:37:45 +0100 (BST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001901c20af8$0b8bbe70$020aa8c0@matttm9svd8lrh>
-References: <20020602192157.A16556@trot.haven.dom> <002c01c20aaa$812e04b0$020aa8c0@matttm9svd8lrh> <20020603010544.E16556@trot.haven.dom>
+Message-ID: <Pine.LNX.4.33.0206031317001.24311-100000@shaun.sheddy.net>
+References: <Pine.LNX.4.33.0206031218260.4553-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <Pine.LNX.4.33.0206031218260.4553-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,52 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: George Georgalis <georgw@galis.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@lists.samba.org
 
-> >> iptables -t nat -A PREROUTING -p tcp -s $EXT_host04 -j
-DNAT --to-destination $LAN_host04
-> >
-> >This is the major problem. If you're connection from a host on the
-Internet
-> >the source address is not going to be your firewall. Change this line to:
-> >iptables -t nat -A PREROUTING -p tcp -j DNAT --to-destination $LAN_host04
->
-> How's this? ($EXT_host04 is just an alias, and there will be more)
->
-> iptables -t nat -A PREROUTING -p tcp -d $EXT_host04 -j
-DNAT --to-destination $LAN_host04
->
 
-Good catch....I left an imporant piece out.  You'll definetely want the "-d
-xxx" in the rule.
 
-<snip>
-> This seems to be doing the job :-} I added another nat rule, does it
-> look okay?
->
-> LANIF=eth0
-> EXTIF=eth1
-> TCP_OPEN="22,25,53,80"
-> UDP_OPEN="53"
-> LAN_host04=192.168.xx.xx
-> EXT_host04=xx.xx.xx.xx
->
-> iptables -P INPUT DROP
-<snip>
-> iptables -P OUTPUT ACCEPT
+On Mon, 3 Jun 2002, Jozsef Kadlecsik wrote:
 
-Looks good.  The only other thing I'd do is change your default OUTPUT
-policy to DROP and add this:
-iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> Actually, I'm surprised that at some time it worked.
 
-There was a recent bug in the iptables code that had some security
-implications (information disclosure), but I don't recall the details at the
-moment. The suggestion was to drop INVALID output, which this does.
+So am I ;)
 
-Goodluck,
-Matt
+> What you want to achieve can be done by using Henrik Nordstrom's CONNMARK
+> patch from patch-o-matic.
 
+Thanks!! I've installed CONNMARK and got that working nicely.
+
+In the following config I'm marking connections incoming on eth2 to ensure
+replies go via eth2:-
+
+iptables -A PREROUTING -i eth2 -t mangle -j CONNMARK --set-mark 1
+
+Check if connmark is set and,if true, set the normal fwmark.
+I assumed the mark connmark set was the standard one set by mark but this
+doesn't seem to be the case?
+
+iptables -A PREROUTING -t mangle -m connmark --mark 1 -j MARK --set-mark 1
+
+Then take predefined route via eth2:-
+
+ip rule add from 1.2.3.0/28  fwmark 1 table wan
+
+This works nicely and allows my desktops to route their normal outgoing
+traffic via the NAT'd broadband connection but also respond to requests
+via the public routed subnet they sit on.
+
+Steve.
 
 
