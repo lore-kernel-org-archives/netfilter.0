@@ -1,13 +1,13 @@
-From: "Luis Fernando Barrera" <luba@assist.com.gt>
-Subject: RE: iptables suddently stop working
-Date: Wed, 6 Nov 2002 15:57:10 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables suddently stop working
+Date: Wed, 6 Nov 2002 22:39:32 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NABBIDJPNCAGKGOFGHBFGEHBPIAA.luba@assist.com.gt>
-References: <200211061815.gA6IFhe21468@vulcan.rissington.net>
+Message-ID: <20021106223940.UUGR292.mta03-svc.ntlworld.com@there>
+References: <NABBIDJPNCAGKGOFGHBFGEHBPIAA.luba@assist.com.gt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200211061815.gA6IFhe21468@vulcan.rissington.net>
+In-Reply-To: <NABBIDJPNCAGKGOFGHBFGEHBPIAA.luba@assist.com.gt>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,71 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
-
-My output is the following:
-
-(right now everything is working)
-
-# wc -l /proc/net/ip_conntrack
-    	156 /proc/net/ip_conntrack
-# cat /proc/sys/net/ipv4/ip_conntrack_max
-	65424
-
-My box has 1GB RAM.
-
-It gives Internet access to about 200 people, and also the server is
-used as a proxy/cache (using Squid).
-
-Thanks
-
-Luis
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: Wednesday, November 06, 2002 12:16
 To: netfilter@lists.netfilter.org
-Subject: Re: iptables suddently stop working
 
+On Wednesday 06 November 2002 9:57 pm, Luis Fernando Barrera wrote:
 
-On Wednesday 06 November 2002 6:09 pm, Luis Fernando Barrera wrote:
-
-> Hi all,
+> My output is the following:
 >
-> I have a strange behavior in my Red Hat 7.3 box using iptables...I allow
-> certain users to send ICMP packages across the firewall, using the FORWARD
-> chain and NAT table(with SNAT).
+> (right now everything is working)
 >
-> However sometimes the firewall stop routing the packets, but only certain
-> traffic. In my
-> case is the traffic accross the FORWARD chain.
-> Then... I just restart (flush) the iptables script and it works again.
-> I'm wondering whether there is some buffer which is getting full, so the
-> iptables code stop routing the packets?
+> # wc -l /proc/net/ip_conntrack
+>     	156 /proc/net/ip_conntrack
+> # cat /proc/sys/net/ipv4/ip_conntrack_max
+> 	65424
 >
-> Is there anything I should check? I use state-full connections in all the
-> rules.
+> My box has 1GB RAM.
 
-I don't seriously think it can be your connection tracking table, because
-that does not get cleared simply by flushing and reloading the rules.
+Okay, so this means you have 156 connections being tracked through your 
+firewall (seems a perfectly reasonable number for 200 users), with capacity 
+for up to 65424 connections before the box gets overloaded.
 
-However:
+If you ever got more than 65424 connections from 200 users it would indicate 
+a serious problem (eg Nimda on the machines...) - I would never expect that 
+to happen.
 
-1. What do you get for
-wc -l /proc/net/ip_conntrack
+So, can you check the next time things lock up:
 
-2. What do you get for
-cat /proc/sys/net/ipv4/ip_conntrack_max
+1. wc -l /proc/net/ip_conntrack
+just to see how many connection there are at that time
 
-3. How much memory do you have in your firewall ?
+2. top
+to see what process is using up most cpu time (and also what the current 
+system load is).
+
+Anyone else got any ideas on how to investigate this ?
 
 Antony.
 
---
+-- 
 
-Most people have more than the average number of legs.
+Perfection in design is achieved not when there is nothing left to add,
+but rather when there is nothing left to take away.
 
-
+ - Antoine de Saint-Exupery
 
