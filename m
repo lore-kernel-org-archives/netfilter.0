@@ -1,10 +1,11 @@
-From: Daniel Balkanski <Daniel.Balkanski@Informatik.TU-Chemnitz.DE>
-Subject: iptables and nfs mounts problems
-Date: Mon, 3 Jun 2002 13:21:01 +0200
+From: =?iso-8859-1?Q?Luiz_C=E9sar_Spies?= <luiz@raioxdanoite.com.br>
+Subject: MSN
+Date: Mon, 3 Jun 2002 11:45:42 -0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <E17EptV-0001zE-00@pat.hrz.tu-chemnitz.de>
+Message-ID: <002b01c20b0d$67d7ee00$c5f0cbc8@tigre>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0026_01C20AF4.3116A1E0"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,49 +16,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hello
+This is a multi-part message in MIME format.
 
-I have constant troubles with nfs mounts on my masquerading
-machine. Whenever I use iptables the nfs mounts on the
-masquerading machines are destroyed after some time.
-Setup consist of nfs server with public IP address and
-several clients with private addresses behind masquerading
-machine. My nfs server is an old RH 6.2 machine with
-kernel 2.2.16-3. This machine had about 460 days uptime
-before where rebooted because of power loss, so I'm
-not very keen to upgrade it. But I try different versions of linux
-on masquerading machines and clients behind (LM8.1, LM8.2
-RH7.2) and the result is always the same - periodicaly the
-nfs mounts on the frontend masquerading machine are
-destroyed, while the nfs mounts on clients are O.K. and
-the masqerading continue to work. If i use old ipchains on
-frontend to do the masquerading all work flawlessly.
-The problem is that iptables doesn't offer the flexibility
-I need....
+------=_NextPart_000_0026_01C20AF4.3116A1E0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Does it somebody experienced similar problems? Where
-can be the problem - nfs or iptables?
+Someone know MSN one client ask me to put shit program to work in =
+iptables proxy if someone know the rules send me a mail please...
 
-Best Regards
 
-Daniel
+Luiz
 
-P.S.: here is my quite usual iptables setup:
+------=_NextPart_000_0026_01C20AF4.3116A1E0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-iptables -P INPUT ACCEPT
-iptables -P FORWARD DROP
-iptables -P OUTPUT ACCEPT
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Someone know MSN one client ask me to =
+put shit=20
+program to work in iptables proxy if someone know the rules send me a =
+mail=20
+please...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Luiz</FONT></DIV></BODY></HTML>
 
-iptables -N block
-iptables -A block -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A block -m state --state NEW -i eth1 -j ACCEPT
+------=_NextPart_000_0026_01C20AF4.3116A1E0--
 
-iptables -A INPUT -j block
-iptables -A FORWARD -j block
 
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -d '!' 192.168.0.0/16 -j 
-SNAT --to <public IP of eth0>
 
