@@ -1,13 +1,11 @@
-From: "Rio Martin." <rio@martin.mu>
-Subject: Re: CONNLIMIT
-Date: Thu, 7 Apr 2005 09:29:40 +0000
-Message-ID: <200504070929.40549.rio@martin.mu>
-References: <001301c53aea$3884c230$7100000a@wim2000>
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: Ebtables & iptables!!
+Date: Thu, 7 Apr 2005 10:49:19 +0400
+Message-ID: <9927912d050406234959cd97fe@mail.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001301c53aea$3884c230$7100000a@wim2000>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,40 +19,27 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Try using -j DROP instead of -j REJECT
-And the last rule seemed to ACCEPT all of those rules you ve applied before.
-Remove it.
+Hi to all,
 
-Regards,
-Rio Martin.
----------------------------------------------------------
-Network & System Engineer
-Network Operation Center
-INSTITUT TEKNOLOGI NASIONAL 
-Email: rio@martin.mu
-Website: http://www.itenas.ac.id
----------------------------------------------------------
+I wanted to know abt the following:
 
-On Wednesday 06 April 2005 20:50, Luiz C. Spies wrote:
-> Hi to all, i try many time limit my port 25 to 2 connection, but i have no
-> achieve success yet!!!
->
-> I tried this rulez!
-> iptables -A INPUT -p tcp --syn --dport 25 -m connlimit --connlimit-above
-> 2 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
-> iptables -A INPUT -p tcp --syn --dport 25 -m connlimit --connlimit-above
-> 2 -j REJECT
-> iptables -p tcp --syn --dport 25 -m connlimit --connlimit-above 2 -j REJECT
-> iptables -p tcp --syn --dport 25 -m connlimit ! --connlimit-above 2 -j
-> ACCEPT
->
-> Anyone has idea!!!???
->
->
-> Greeting's to all!
->
-> PS: Sorry about my english!
->
->
-> Luiz C. Spies
+1) do we always have to set up ebtables as a bridge or bridge router
+to be able to use ebtables commands. Is it possible to have only a
+normal firewall using ebtables (just like with iptables). It's just
+that almost all examples I've come across talk abt building only
+bridges, bridgefirewalls or bridge routers. I just need a confirmation
+of this.
+
+2) Also, I want to make the packets move from the link layer right
+after ebtables NAT PREROUTING to iptables. I have not set up my PC as
+a bridge or bridge router.. I just want to set up a normal firewall
+that makes use of both ebtables and iptables.
+
+How do i go about it? do i use br-nf code?Does anyone have a sample
+script using br-nf code? If yes, pls send it to me.
+
+Thx in advance..
+
+Best regards,
+Visham Ramsurrun
 
