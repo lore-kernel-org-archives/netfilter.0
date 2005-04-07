@@ -1,7 +1,8 @@
-From: Jason Eberly <jason@killerinterviews.com>
-Subject: non-local destinations ARP instead of routing
-Date: Thu, 07 Apr 2005 11:19:42 -0500
-Message-ID: <1112890782.22652.42.camel@jaypad>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: non-local destinations ARP instead of routing
+Date: Thu, 7 Apr 2005 11:44:54 -0500
+Message-ID: <000d01c53b91$205fe7a0$f5001eac@riverview.office>
+References: <1112890782.22652.42.camel@jaypad>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,46 +17,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jason Eberly <jason@killerinterviews.com>, netfilter@lists.netfilter.org
 
-  I am seeing a most curious problem, and hope that someone here will
-recognize something obvious and smack me in the head with it before we
-have to delve into the inner depths of every relevant config...
+If the Vendor's (iptables) firwall is ARPing for your systems then their
+firwall thinks that the destination system is on their local LAN.  Check to
+make sure that they have correct routes to your network (assuming that you
+rnetwork is a different subnet than their LAN.  If the LANs do indeed have
+different subnets as in the vendor is 10.0.0.0/8 and yours is 10.1.2.0/24
+they need to make sure that they know to get to your subnet via your PIX
+firewall, it's a simple routing table entry.
 
-  Here's a quick-n-dirty text diagram of the current network layout:
+Any thing beyound this I (personally as I can't follow everything with out
+much info) would need to see more details about what subnets were where,
+what firwalls were doing what and what your PIX is doing connecting to the
+vendor's firewall.  Is this a VPN connection passing over the internet?  The
+more info the better.  In fact overwhel me with info and let me sort it out,
+that way I should have most of / everything that I need to help.  (Well
+that's the idea any way.)
 
- { V }--[ r ]--[ fw ]--[PIX]--{ L }
-                 x
-               [ s ]
-Key:
-V   =  Vendor's network
-r   =  Vendor's router
-fw  =  Vendor's (iptables) firewall
-s   =  Vendor's (samba) server
-PIX =  Our Cisco PIX Firewall
-L   =  Our LAN
 
-  Everything on the *left* side of the PIX is in a DMZ (from the LAN-
-side perspective.)  The 'fw' machine is configured to forward netbios
-connections to 's', the samba server.  Clients on our LAN use the IP
-address of 'fw' to map drives.  There did not used to be a 'fw' machine
-in this picture at all, but when the vendor added it they simply used
-the DMZ address previously owned by 's' and gave 's' a new one on a
-private subnet.  The 's' machine is directly connected to 'fw' with a
-crossover cable.
 
-  Here's where things get dodgy: when a client on our Lan tries to map a
-drive, the SYN packet gets to 'fw' as expected, and gets MASQ'd along to
-'s'.  The response come back, lands at 'fw' - at which point 'fw' starts
-ARPing for a destination MAC address as if the LAN client were local to
-the DMZ.
-
-  Does anyone eyeballing this have an 'Aha!' for me?  Or do we need to
-see iptables, routes, PIX rules, and packet captures to proceed?  Am I
-correct in thinking that this is a basic routing issue and not an
-iptables issue, that ARP is inappropriate here, and that the vendor's
-work-around (static ARP entries on 'fw') is an abomination?
-
-  Any insight would be greatly appreciated...  Thanks in advance!  :)
+Grant. . . .
+>   I am seeing a most curious problem, and hope that someone here will
+> recognize something obvious and smack me in the head with it before we
+> have to delve into the inner depths of every relevant config...
+>
+>   Here's a quick-n-dirty text diagram of the current network layout:
+>
+>  { V }--[ r ]--[ fw ]--[PIX]--{ L }
+>                  x
+>                [ s ]
+> Key:
+> V   =  Vendor's network
+> r   =  Vendor's router
+> fw  =  Vendor's (iptables) firewall
+> s   =  Vendor's (samba) server
+> PIX =  Our Cisco PIX Firewall
+> L   =  Our LAN
+>
+>   Everything on the *left* side of the PIX is in a DMZ (from the LAN-
+> side perspective.)  The 'fw' machine is configured to forward netbios
+> connections to 's', the samba server.  Clients on our LAN use the IP
+> address of 'fw' to map drives.  There did not used to be a 'fw' machine
+> in this picture at all, but when the vendor added it they simply used
+> the DMZ address previously owned by 's' and gave 's' a new one on a
+> private subnet.  The 's' machine is directly connected to 'fw' with a
+> crossover cable.
+>
+>   Here's where things get dodgy: when a client on our Lan tries to map a
+> drive, the SYN packet gets to 'fw' as expected, and gets MASQ'd along to
+> 's'.  The response come back, lands at 'fw' - at which point 'fw' starts
+> ARPing for a destination MAC address as if the LAN client were local to
+> the DMZ.
+>
+>   Does anyone eyeballing this have an 'Aha!' for me?  Or do we need to
+> see iptables, routes, PIX rules, and packet captures to proceed?  Am I
+> correct in thinking that this is a basic routing issue and not an
+> iptables issue, that ARP is inappropriate here, and that the vendor's
+> work-around (static ARP entries on 'fw') is an abomination?
+>
+>   Any insight would be greatly appreciated...  Thanks in advance!  :)
 
 
