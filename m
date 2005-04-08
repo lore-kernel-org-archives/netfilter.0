@@ -1,10 +1,13 @@
-From: Christian Seberino <seberino@spawar.navy.mil>
-Subject: not sure ESTABLISHED TCP traffic will have ACK flag set always...
-Date: Fri, 08 Apr 2005 08:57:24 -0700
-Message-ID: <1112975844.3544.94.camel@seberino.spawar.navy.mil>
+From: Jiann-Ming Su <sujiannming@gmail.com>
+Subject: Re: Iptables vs. Cisco PIX
+Date: Fri, 8 Apr 2005 13:28:34 -0400
+Message-ID: <561dc326050408102860ab8b4b@mail.gmail.com>
+References: <038201c53c4c$6e94e540$0200a8c0@ale>
+Reply-To: Jiann-Ming Su <sujiannming@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <038201c53c4c$6e94e540$0200a8c0@ale>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +19,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-Firewall packet filter question.....
+On Apr 8, 2005 11:05 AM, Alejandro Cabrera Obed <sisdis@tournet.com.ar> wrote:
+> Hi people !!!
+> 
+> This time I want to know your opinion about iptables vs. Cisco PIX....where
+> would you use each of them ????
+> Is it the same using iptables or PIX in big corporations with heavy Internet
+> traffic ???? Which is considered the "best" and why ???
+> 
+> I use iptables since a long time, but my network is under 50 workstations.
+> 
+> Thanks for your comments, they're welcome.
+>
+ 
+From personal experience, iptables shrugs off syn flood attacks better
+than anything out there.  You can't beat it for the price.  A
+colleague tested a PIX 550(?) and his Nokia running Checkpoint.  We've
+tested Checkpoint running on Quad Xeon Dell PowerEdge 6650.  A DDoS
+attack from a irc bot will render them useless.  Checkpoint is just
+bad architecture.  Even though you explicitly tell Checkpoint to drop
+certain packets, Checkpoint will still add those dropped packets to
+its connection table.  You can try reducing the timeout, but we
+haven't found it to be terribly useful.  He also found that
+SmartDefense just chokes HTTP traffic.  The only Checkpoint product to
+do better was SecurePlatform using Corrent's Turbocards.  While the
+connection table doesn't fill up on the PIX, the CPU still gets
+overloaded, so you can't make new legitimate connections easily.  I
+don't know how the more industrial versions of PIX will do, though.
 
-
-**After** setting up a TCP connection, it may seem to make
-sense that ALL future packets would set the ACK flag.
-
-(ACK is important in 2 way communication since both sides
-need to constantly confirm //receipt// of _past_ packets.)
-
-Therefore, you might think it would be a good idea to
-set up you firewall to drop packets on ESTABLISHED
-connections that don't have ACK bit set.
-
-However, here is an apparent case where non-ACKs exist!!!...
-
-1. One way traffic!!! --- sender has nothing to ACK!
-
-2. One side sends LESS packets then the other! --
-   fast side doesn't have enough incoming to ACK either!
-
-Agree? Why then do people say to drop non-ACK'd packets
-as suspicious??.... I would think it would be common
-for one side to send more packets then the other.  I could
-be wrong.
-
-Chris
-
+We have a quad PIII Dell PowerEdge 6450 running iptables protecting
+the residence halls on a college campus.  It gets syn flooded
+constantly, handles 90k peak connections, load average of 1.0, all on
+1GB of RAM.  The only short coming of iptables is the lack distributed
+management and lack of a high availability solution.  Distributed
+management is only a problem if you're managing more than several
+firewalls.  And, lack of HA makes it harder to deploy iptables fully
+on the enterprise.
+-- 
+Jiann-Ming Su
+"I have to decide between two equally frightening options. 
+ If I wanted to do that, I'd vote." --Duckman
 
