@@ -1,12 +1,11 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: not sure ESTABLISHED TCP traffic will have ACK flag setalways...
-Date: Fri, 8 Apr 2005 16:01:49 -0500
-Message-ID: <006901c53c7e$2ead1c90$f5001eac@riverview.office>
-References: <1112975844.3544.94.camel@seberino.spawar.navy.mil>
-	<20050408205224.GA15635@vetz.homelinux.org>
+From: "Ryan Belcher" <Ryanb@sealevel.com>
+Subject: Strange connection problems.
+Date: Fri, 8 Apr 2005 17:14:09 -0400
+Message-ID: <B39AA5DB06510C4591C6EDDD580B0B81B5315D@mail.int.sealevel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,30 +19,115 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> This problem is resolved by the TCP window? Am I right?
+Hi All,
 
-If the ""problem that you are referring to is how many unACKed packets can
-be sent by either side before it retransmits the packet that has not been
-ACKed, then Yes this number is controlled by the TCP Window size.  The TCP
-Window size is asically the number of TCP packets that can be sent out and
-still on the wire before the sender resends a packet assuming that it was
-dropped.
+Below I've posted my FW config.  It's handling 3 interfaces.  ppp0, =
+eth0, an ath0.
+It's on Linux kernel version 2.6.10.
 
-> One side CAN send more packets.
+Pretty much everything works as I expect except for a strange issue with =
+certain websites while trying to connect from clients within my network. =
+ For example, penny-arcade.com, americanexpress.com SSL logins, and a =
+few others.  If you want to poke at this configuration, penny-arcade =
+will appear to begin connection but after the SYN, ACK, then HTTP GET =
+sequence, the HTTP response never gets here (according to Ethereal =
+anyways).  If I try connecting from the actual firewalling box itself, =
+it works fine.
 
-Yes I believe that this is correct.  Any packets sent by the server MUST be
-ACKed by the client, but the client could ACK the SYN number of a packet
-sent later in the conversation thus ACKing all packets that were sent up to
-the point just prior to the number that was ACKed.  What??? When a packet is
-ACKed, the ACK number is the number of the next sequence number that the
-receiving system is expecting to receive from the server.  Thus if I have
-received packets 1234, 1235, 1236, and 1237 from you I would send a packet
-back to you with an ACK of 1238 statin gthat I'm expecting your next
-sequence number to be 1238 effectively ACKing all packets up to and
-including 1237.
+Does anyone have any ideas?
+
+Thanks,
+
+Ryan
+-----------------Snip----------------
+IPTABLES=3D/usr/sbin/iptables
+DEPMOD=3D/sbin/depmod
+MODPROBE=3D/sbin/modprobe
+IFCONFIG=3D/sbin/ifconfig
+AWK=3D/usr/bin/awk
+GETIP=3D/usr/bin/gethostip
+PENGUIN=3D192.168.0.4
+BRENT=3D192.168.0.12
+MERCURY=3D192.168.0.3
+EXTIF=3D"ppp0"
+INTIF=3D"eth0"
+WIRLS=3D"ath0"
+echo "   External Interface:  $EXTIF"
+echo "   Internal Interface:  $INTIF"
+echo "   Wirleless Interface:  $WIRLS"
+echo "   Enabling forwarding.."
+echo "1" > /proc/sys/net/ipv4/ip_forward
+echo "   Enabling DynamicAddr.."
+echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+
+# Start doing something...
+echo "   Clearing any existing rules and setting default policy.."
+$IPTABLES -P INPUT DROP
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -t nat -F
+$IPTABLES -t filter -F
+$IPTABLES -t mangle -F
+
+echo "   FWD: Allow all connections OUT and only existing and related =
+ones IN"
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -i $WIRLS -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $WIRLS -j ACCEPT
+$IPTABLES -A FORWARD -i $WIRLS -o $INTIF -j ACCEPT
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state =
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $EXTIF -o $WIRLS -m state --state =
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -j LOG
+
+echo "  INPUT: Allow local connections in.  Nothing from the outside =
+though."
+$IPTABLES -A INPUT -i $EXTIF -m state --state ESTABLISHED,RELATED -j =
+ACCEPT
+$IPTABLES -A INPUT -i $INTIF -j ACCEPT
+$IPTABLES -A INPUT -i $WIRLS -j ACCEPT
+
+echo "   Enabling SNAT (MASQUERADE) functionality on $EXTIF"
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+
+EXTIP=3D"`$IFCONFIG $EXTIF | $AWK =
+/$EXTIF/'{next}//{split($0,a,":");split(a[2],a," ");print a[1];exit}'`"
+
+#Enable Port forward...Webserver
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 80 -m state \
+ --state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 80 -j DNAT --to =
+$PENGUIN:80
+
+#Brent
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 4747 -m state \
+ --state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 4747 -j DNAT =
+--to $BRENT:4747
+
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 6112 -m state \
+ --state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 6112 -j DNAT =
+--to $BRENT:6112
+
+#Common Services to penguin
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 20:25 -m state \
+ --state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 20:25 -j DNAT =
+--to $PENGUIN
+
+#BITORRENT
+$IPTABLES -A INPUT -i $EXTIF -p tcp --dport 6880:6899 -j ACCEPT
 
 
 
-Grant. . . .
+
+echo -e "\nrc.firewall-2.4 v$FWVER done.\n"
+-----------------/Snip---------------
+
 
 
