@@ -1,14 +1,12 @@
-From: Michele Vetturi <michele.vetturi@iritaly.org>
-Subject: Re: not sure ESTABLISHED TCP traffic will have ACK flag set
-	always...
-Date: Fri, 8 Apr 2005 22:52:24 +0200
-Message-ID: <20050408205224.GA15635@vetz.homelinux.org>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: not sure ESTABLISHED TCP traffic will have ACK flag setalways...
+Date: Fri, 8 Apr 2005 16:01:49 -0500
+Message-ID: <006901c53c7e$2ead1c90$f5001eac@riverview.office>
 References: <1112975844.3544.94.camel@seberino.spawar.navy.mil>
-Reply-To: netfilter@lists.netfilter.org
+	<20050408205224.GA15635@vetz.homelinux.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1112975844.3544.94.camel@seberino.spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,28 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Apr 08, 2005, someone also known as Christian Seberino wrote:
-> 2. One side sends LESS packets then the other! --
->    fast side doesn't have enough incoming to ACK either!
+> This problem is resolved by the TCP window? Am I right?
 
-This problem is resolved by the TCP window? Am I right?
+If the ""problem that you are referring to is how many unACKed packets can
+be sent by either side before it retransmits the packet that has not been
+ACKed, then Yes this number is controlled by the TCP Window size.  The TCP
+Window size is asically the number of TCP packets that can be sent out and
+still on the wire before the sender resends a packet assuming that it was
+dropped.
+
+> One side CAN send more packets.
+
+Yes I believe that this is correct.  Any packets sent by the server MUST be
+ACKed by the client, but the client could ACK the SYN number of a packet
+sent later in the conversation thus ACKing all packets that were sent up to
+the point just prior to the number that was ACKed.  What??? When a packet is
+ACKed, the ACK number is the number of the next sequence number that the
+receiving system is expecting to receive from the server.  Thus if I have
+received packets 1234, 1235, 1236, and 1237 from you I would send a packet
+back to you with an ACK of 1238 statin gthat I'm expecting your next
+sequence number to be 1238 effectively ACKing all packets up to and
+including 1237.
 
 
-> Agree? Why then do people say to drop non-ACK'd packets
-> as suspicious??.... I would think it would be common
-> for one side to send more packets then the other.  I could
-> be wrong.
 
+Grant. . . .
 
-One side CAN send more packets.
-
-
--- 
-[ Michele Vetturi
-  --------------------------------------------------
-  IRItaly.org and Honeynet.it member
-  PGP key available at:    http://vetz.homelinux.org ]
 
