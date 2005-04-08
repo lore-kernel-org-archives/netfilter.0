@@ -1,7 +1,9 @@
-From: John Mok <jmok@attglobal.net>
-Subject: Linux firewall + NAT Traversal + IPsec
-Date: Fri, 08 Apr 2005 01:49:58 +0800
-Message-ID: <425572C6.2040007@attglobal.net>
+From: Sander Eikelenboom <S.Eikelenboom@stud.tue.nl>
+Subject: How can Iget multiple outgoing VPN (pptp) connections with
+	iptablesand snat?
+Date: Fri, 8 Apr 2005 13:22:02 +0200
+Message-ID: <1852402972.20050408132202@stud.tue.nl>
+Reply-To: Sander Eikelenboom <S.Eikelenboom@stud.tue.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,27 +17,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+The pom-ng pptp-conntrack-nat helper (and most other as far as i know)
+don't apply to kernel 2.6.11.x (yet). With kernel 2.6.10 the
+pptp-conntrack-nat patch should work fine!
 
-I'm new to Linux. Is it possible make a Linux box with firewall + NAT, 
-such that client PC(s) from the NATed internal network could connect to 
-a VPN gateway on the Internet :-
+I just use general iptables rules, to accept and forward related and
+esthablised traffic. And load all four modules (or compile them in)
 
- client PC ----- Linux iptables firewall + NAT ---- Internet ---- IPsec 
-VPN gateway
-192.168.x.x/16                                              (e.g. 
-Checkpoint FW-1)
-(VPN client)
-
-I hope someone could help to advise what software / kernel patch is 
-required on the Linux box to NAT traversal work and where to get the 
-HOWTO(s)?
-
-Thanks a lot.
-
-John Mok
 
 
