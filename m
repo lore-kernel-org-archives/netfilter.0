@@ -1,8 +1,7 @@
-From: "Alejandro Cabrera Obed" <sisdis@tournet.com.ar>
-Subject: Iptables vs. Cisco PIX
-Date: Fri, 8 Apr 2005 12:05:30 -0300
-Message-ID: <038201c53c4c$6e94e540$0200a8c0@ale>
-Reply-To: Alejandro Cabrera Obed <sisdis@tournet.com.ar>
+From: Christian Seberino <seberino@spawar.navy.mil>
+Subject: not sure ESTABLISHED TCP traffic will have ACK flag set always...
+Date: Fri, 08 Apr 2005 08:57:24 -0700
+Message-ID: <1112975844.3544.94.camel@seberino.spawar.navy.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,26 +16,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi people !!!
-
-This time I want to know your opinion about iptables vs. Cisco PIX....where
-would you use each of them ????
-Is it the same using iptables or PIX in big corporations with heavy Internet
-traffic ???? Which is considered the "best" and why ???
-
-I use iptables since a long time, but my network is under 50 workstations.
-
-Thanks for your comments, they're welcome.
-
-At last, I suggest the tutorial from Jose Negreira at www.iptableslinux.com,
-it's really good for persons who start into iptables world.
-
-Thnking in advance,
-
-Alejandro
+Firewall packet filter question.....
 
 
+**After** setting up a TCP connection, it may seem to make
+sense that ALL future packets would set the ACK flag.
+
+(ACK is important in 2 way communication since both sides
+need to constantly confirm //receipt// of _past_ packets.)
+
+Therefore, you might think it would be a good idea to
+set up you firewall to drop packets on ESTABLISHED
+connections that don't have ACK bit set.
+
+However, here is an apparent case where non-ACKs exist!!!...
+
+1. One way traffic!!! --- sender has nothing to ACK!
+
+2. One side sends LESS packets then the other! --
+   fast side doesn't have enough incoming to ACK either!
+
+Agree? Why then do people say to drop non-ACK'd packets
+as suspicious??.... I would think it would be common
+for one side to send more packets then the other.  I could
+be wrong.
+
+Chris
 
 
