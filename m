@@ -1,13 +1,11 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: Iptables vs. Cisco PIX
-Date: Fri, 08 Apr 2005 14:59:11 -0400
-Message-ID: <1112986751.5144.61.camel@jasiiitosh.nexusmgmt.com>
-References: <038201c53c4c$6e94e540$0200a8c0@ale>
-	<561dc326050408102860ab8b4b@mail.gmail.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: Redirecting mail
+Date: Fri, 8 Apr 2005 14:29:53 -0500
+Message-ID: <005301c53c71$5734b450$f5001eac@riverview.office>
+References: <003301c53c25$72c951e0$648045ac@sneak>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <561dc326050408102860ab8b4b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,39 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jiann-Ming Su <sujiannming@gmail.com>, "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
+To: Ilo Lorusso <sneak@ipnoc.co.za>, netfilter@lists.netfilter.org
 
-On Fri, 2005-04-08 at 13:28 -0400, Jiann-Ming Su wrote:
-> On Apr 8, 2005 11:05 AM, Alejandro Cabrera Obed <sisdis@tournet.com.ar> wrote:
-<snip>
-> We have a quad PIII Dell PowerEdge 6450 running iptables protecting
-> the residence halls on a college campus.  It gets syn flooded
-> constantly, handles 90k peak connections, load average of 1.0, all on
-> 1GB of RAM.  The only short coming of iptables is the lack distributed
-> management and lack of a high availability solution.  Distributed
-> management is only a problem if you're managing more than several
-> firewalls.  And, lack of HA makes it harder to deploy iptables fully
-> on the enterprise.
-Distributed management for iptables (and other firewalls) is exactly the
-goal of the ISCS project (http://iscs.sourceforge.net).  The project
-provides a more efficient administration tool than the most expensive
-management frameworks like Solsoft, SmartPipes or Provider1 and is
-entirely open source.
+This mail server in question (172.20.128.56), is it just used for sending
+email from your internal network out to the world or are you expecting email
+from the world to come inbound to it too?  Are you wanting this mail server
+to continue using the internet connection that it has for all traffic except
+SMTP or are you wanting all outbound traffic to pass through 192.168.16.56?
 
-As my hours available for the project have reduced dramatically over the
-last eight months, we (the seven other volunteers plus myself) could use
-as much help as anyone can give.  If you are in need of distributed
-management capability for iptables (as well as *swan, kernel IPSec,
-iproute2, network level user authentication and some PKI management) or
-have an academic interest and some time available, please contact me via
-e-mail or phone.  Thanks - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+I would be tempted to use a combination of IPTables and IP routing rules.
+Namely I'd do something like the following on the mail server
+(172.20.128.56)
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
+iptables -t nat -A OUTPUT -p tcp --sport 25 -j MARK --set-mark $SMTP_Mark
+ip route add table $IPRoute2_SMTP_Table 192.168.16.0/24 dev
+$DEV_of_internal_network src $IP_of_DEV_of_internal_network
+ip route add table $IPRoute2_SMTP_Table default via 192.168.16.56
+ip rule add fwmark $SMTP_Mark table $IPRoute2_SMTP_Table
+
+Where:
+$SMTP_Mark is the value you want to use to mark the packets that need to use
+the alternant route.
+$IPRoute2_SMTP_Table is the name as it appears in /etc/iproute2/rt_tables or
+the number of the table that you want to use.
+$DEV_of_internal_network is the device name of your internal network
+interface.
+$IP_of_DEV_of_internal_network is the IP address of the device name of your
+internal network interface.
+
+This should cause any traffic that leaves the mail server in question to
+pass through the alternent route out to the internet.  If you have any
+questions or need more help let me know and I'll see what I can do.
+
+
+
+Grant. . . .
 
 
