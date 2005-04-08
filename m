@@ -1,8 +1,8 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Redirecting mail
-Date: Fri, 8 Apr 2005 14:29:53 -0500
-Message-ID: <005301c53c71$5734b450$f5001eac@riverview.office>
-References: <003301c53c25$72c951e0$648045ac@sneak>
+Subject: Re: Linux firewall + NAT Traversal + IPsec
+Date: Fri, 8 Apr 2005 14:35:21 -0500
+Message-ID: <007b01c53c72$1af688f0$f5001eac@riverview.office>
+References: <200504081239.j38Cd8Gb011881@smtp26.wxs.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,40 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Ilo Lorusso <sneak@ipnoc.co.za>, netfilter@lists.netfilter.org
+To: Sietse van Zanen <sietse@wizdom.nu>, netfilter@lists.netfilter.org
 
-This mail server in question (172.20.128.56), is it just used for sending
-email from your internal network out to the world or are you expecting email
-from the world to come inbound to it too?  Are you wanting this mail server
-to continue using the internet connection that it has for all traffic except
-SMTP or are you wanting all outbound traffic to pass through 192.168.16.56?
-
-I would be tempted to use a combination of IPTables and IP routing rules.
-Namely I'd do something like the following on the mail server
-(172.20.128.56)
-
-iptables -t nat -A OUTPUT -p tcp --sport 25 -j MARK --set-mark $SMTP_Mark
-ip route add table $IPRoute2_SMTP_Table 192.168.16.0/24 dev
-$DEV_of_internal_network src $IP_of_DEV_of_internal_network
-ip route add table $IPRoute2_SMTP_Table default via 192.168.16.56
-ip rule add fwmark $SMTP_Mark table $IPRoute2_SMTP_Table
-
-Where:
-$SMTP_Mark is the value you want to use to mark the packets that need to use
-the alternant route.
-$IPRoute2_SMTP_Table is the name as it appears in /etc/iproute2/rt_tables or
-the number of the table that you want to use.
-$DEV_of_internal_network is the device name of your internal network
-interface.
-$IP_of_DEV_of_internal_network is the IP address of the device name of your
-internal network interface.
-
-This should cause any traffic that leaves the mail server in question to
-pass through the alternent route out to the internet.  If you have any
-questions or need more help let me know and I'll see what I can do.
+If I understood John correctly he is wanting to use his Linux IPSec firewall
+/ NAT router as one end of the IPSec VPN tunnel.  If that is indeed the case
+then yes Linux can be configured to do so.  You will need to look at
+FreeS/WAN (dyeing / defunct (as I know it)) and / or OpenS/WAN (alive and
+kicking very strongly).  There are some interoprability incompatabilities
+between different IPSec implementations between FreeS/WAN / OpenS/WAN and
+other vendor's IPSec VPN products.  I personaly know that I have gotten
+OpenS/WAN (version unknown at the moment) to work with Linksys BFEVP41
+(first version) routers as long as I keep a ping flowing through the VPN.
 
 
 
 Grant. . . .
+
+> As far as I know, you would not need anything on the Linux box.
+>
+> It will all depend on whether the clients and server IPSEC implementation
+> support IPSEC NAT T(raversal).
+>
+> Microsofts IPSEC implementation does. But has some drawbacks.
 
 
