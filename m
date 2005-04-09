@@ -1,12 +1,12 @@
-From: "Ilo Lorusso" <sneak@ipnoc.co.za>
-Subject: Re: Redirecting mail
-Date: Sat, 9 Apr 2005 17:59:10 +0200
-Message-ID: <001001c53d1d$11e678f0$648045ac@sneak>
-References: <003301c53c25$72c951e0$648045ac@sneak>
-	<005301c53c71$5734b450$f5001eac@riverview.office>
+From: Francesco Ciocchetti <primero@fastwebnet.it>
+Subject: Re: Iptables vs. Cisco PIX
+Date: Sat, 09 Apr 2005 20:10:24 +0200
+Message-ID: <42581A90.3050706@fastwebnet.it>
+References: <038201c53c4c$6e94e540$0200a8c0@ale>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <038201c53c4c$6e94e540$0200a8c0@ale>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,62 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Alejandro Cabrera Obed <sisdis@tournet.com.ar>, "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-Hi,
-I would just like to confirm with you, if machine 192.168.16.56 is to on the 
-same switch but 3 hops away will the method you describe still work?
+Alejandro Cabrera Obed wrote:
 
+>Hi people !!!
+>
+>  
+>
+Hi :)
 
+I would say that while Iptables is a set of Block to build a Wall ,
+Cisco PIX is a pre-built Wall you just have to paint and let it shine.
 
------ Original Message ----- 
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-To: "Ilo Lorusso" <sneak@ipnoc.co.za>; <netfilter@lists.netfilter.org>
-Sent: Friday, April 08, 2005 9:29 PM
-Subject: Re: Redirecting mail
+Iptables gives for sure a lot of opportunities of configuration and
+traffic control that a Cisco Pix does not and i think is not possible to
+forget that Iptables-Firewall is a complete Linux system with all the
+advantages this can gives, for example a cron-tab, scripting , and so on.
 
+I think that , as always, the choice depends on your needs from the device.
+If you need a statefull firewall failover your choose is done because
+iptables is not ready to do it yet while Cisco PIX does it in a clear
+and fast way.
 
-> This mail server in question (172.20.128.56), is it just used for sending
-> email from your internal network out to the world or are you expecting 
-> email
-> from the world to come inbound to it too?  Are you wanting this mail 
-> server
-> to continue using the internet connection that it has for all traffic 
-> except
-> SMTP or are you wanting all outbound traffic to pass through 
-> 192.168.16.56?
->
-> I would be tempted to use a combination of IPTables and IP routing rules.
-> Namely I'd do something like the following on the mail server
-> (172.20.128.56)
->
-> iptables -t nat -A OUTPUT -p tcp --sport 25 -j MARK --set-mark $SMTP_Mark
-> ip route add table $IPRoute2_SMTP_Table 192.168.16.0/24 dev
-> $DEV_of_internal_network src $IP_of_DEV_of_internal_network
-> ip route add table $IPRoute2_SMTP_Table default via 192.168.16.56
-> ip rule add fwmark $SMTP_Mark table $IPRoute2_SMTP_Table
->
-> Where:
-> $SMTP_Mark is the value you want to use to mark the packets that need to 
-> use
-> the alternant route.
-> $IPRoute2_SMTP_Table is the name as it appears in /etc/iproute2/rt_tables 
-> or
-> the number of the table that you want to use.
-> $DEV_of_internal_network is the device name of your internal network
-> interface.
-> $IP_of_DEV_of_internal_network is the IP address of the device name of 
-> your
-> internal network interface.
->
-> This should cause any traffic that leaves the mail server in question to
-> pass through the alternent route out to the internet.  If you have any
-> questions or need more help let me know and I'll see what I can do.
->
->
->
-> Grant. . . .
-> 
+I would always use a Cisco Pix as Border Firewall because of its
+reliability and performance, also because i would not do specific or
+particular filter at this level of network. I would instead use a
+Linux/Iptables firewall at 'User Level' because it would let me to do
+ANYTHING i want and because at this level i could , maybe, leave the
+statefull failover out to have the maximum flexibility possible.
+
+bye
+<P>
+
+ 
 
 
