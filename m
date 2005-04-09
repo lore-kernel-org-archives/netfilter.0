@@ -1,16 +1,15 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: not sure ESTABLISHED TCP traffic will have ACK flag setalways...
-Date: Sat, 09 Apr 2005 13:33:59 -0500
-Message-ID: <42582017.5030402@riverviewtech.net>
-References: <1112975844.3544.94.camel@seberino.spawar.navy.mil>
-	<20050408205224.GA15635@vetz.homelinux.org>
-	<006901c53c7e$2ead1c90$f5001eac@riverview.office>
-	<20050409062431.GA17505@spawar.navy.mil>
+Subject: Re: Redirecting mail
+Date: Sat, 09 Apr 2005 13:58:14 -0500
+Message-ID: <425825C6.5020504@riverviewtech.net>
+References: <003301c53c25$72c951e0$648045ac@sneak>
+	<005301c53c71$5734b450$f5001eac@riverview.office>
+	<001001c53d1d$11e678f0$648045ac@sneak>
 Reply-To: gtaylor@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050409062431.GA17505@spawar.navy.mil>
+In-Reply-To: <001001c53d1d$11e678f0$648045ac@sneak>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,26 +21,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: seberino@spawar.navy.mil
+To: Ilo Lorusso <sneak@ipnoc.co.za>
 Cc: netfilter@lists.netfilter.org
 
-> Thanks for your reply.  I did not know you could ACK multiple sequence
-> numbers with a single ACK.  That really helps.   You obviously
-> have a deep knowledge of TCP.
+> Hi,
+> I would just like to confirm with you, if machine 192.168.16.56 is to on 
+> the same switch but 3 hops away will the method you describe still work?
 
-You are welcome.  I have some info in my head but I'm not entirely sure that it is 100% accurate, I'm hoping that it's close though.  So if you find any thing wrong with what I'm saying please let me know.
+Based on your choice of word of "hop(s)" I'm going to assume that the 172,20,128.56 mail server that you want to route it's SMTP connections out a different INet connection is not directly connected to the same subnet that the 192.168.16.56 system is on.  That being the case I'm going to assume that you do have a way to establish a route internally on your lan via the 192.168.16.x/24 network to an unknown network, to any more unknown networks, to the 192.168.16.x/24 network.  If this is indeed the case I would make sure that all the routers that the traffic has to pass through to pass in to each network have a path to each of the other networks.  An example below should help with this.
 
-> I am still confused why anyone could believe that packets //without//
-> the ACK flag set are suspicious.  Going back to your scenario above,
-> there is a faster side blasting packets (1234, 1235, 1236, 1237...)
-> faster than the other side is sending packets.  Clearly the
-> faster side cannot set the ACK bit in all those packets
-> (1234, 1235, 1236, 1237...) on because the fast side has fewer
-> incoming packets to acknowledge right?
+[Machine A]
+INet connection with unknown IP
+172.20.128.56 on the 172.20.128.x/24 network
 
-When the faster sending site sends it's packets to the slower receiving site the packets that are sent (1234, 1235, 1236, 1237...) will all have the same Acknowledgment number set in their packet stating that the next packet the faster sender receives from the slower client should be that Sequence number.  I personally do not know of a scenario where it would be plausible to receive a TCP packet with out the ACK bit set except during the SYN, SYN-ACK, ACK-ACK initiation phase and even just the first packet does not have the ACK bit set.  Even if you send a RST (reset), FIN (finish), PSH (push), URG (urgent) (I'm trying to remember my flags here with out looking them up so I could be wrong) flags they will all be during an on going TCP conversation and thus would have the ACK bit / flag set.  The only really questionable flag is the RST where some TCP/IP stacks will send packets with the 
- RST flag set if they mistakenly receive a packet that was not destined to them.  This is i
-mplementation dependent and not clearly defined in RFCs and thus a matter of some confusion.  IMHO the stack tat received this packet should just drop the packet as it was obviously not meant for it and there was a failure elsewhere.
+[Machine B]
+172.20.128.254 on the 172.20.128.x/24 network
+10.0.0.1 on the 10.0.0.x/24 network
+
+[Machine C]
+10.0.0.254 on the 10.0.0.x/24 network
+192.168.144.1 on the 192.168.144.x/24 network
+
+[Machine D]
+192.168.144.254 on the 192.168.144.x/24 network
+192.168.16.1 on the 192.168.16.x/24 network
+
+[Machine E]
+192.168.16.56 on the 192.168.16.x/24 network
+INet connection with an unknown IP
+
+Following the above example I'm going to assume that you are wanting to route all SMTP traffic from Machine A out Machine E's internet connection.  To do this I would make sure that machines / routers have at least the following in their (main) routing tables:
+
+[Machine A's partial routing table]
+INet connection is local to Machine A
+172.20.128.x/24 network is local to Machine A
+10.0.0.x/24 network via Machine B metric of 1
+192.168.144.x/24 network via Machine B metric of 2
+192.168.16.x/24 network via Machine B metric of 3
+
+[Machine B's partial routing table]
+172.20.128.x/24 network is local to Machine B
+10.0.0.x/24 network is local to Machine B
+192.168.144.x/24 network via Machine C metric of 1
+192.168.16.x/24 network via Machine C metric of 2
+
+[Machine C's partial routing table]
+172.20.128.x/24 network via Machine B metric of 1
+10.0.0.x/24 network is local to Machine C
+192.168.144.x/24 network is local to Machine C
+192.168.16.x/24 network via Machine D metric of 1
+
+[Machine D's partial routing table]
+172.20.128.x/24 network via Machine C metric of 2
+10.0.0.x/24 network via Machine C metric of 1
+192.168.144.x/24 is local to Machine D
+192.168.16.x/24 is local to Machine D
+
+[Machine E's partial routing table]
+172.20.128.x/24 network via Machine D metric of 3
+10.0.0.x/24 network via Machine D metrick of 2
+192.168.144.x/24 network via Machine D metric of 1
+192.168.16.x/24 is local to Machine E
+INet connection is local to Machine E
+
+This will allow your traffic to pass from machine A to Machine E with known routes.  The only thing that might cause a problem is if you have firewalls on all systems DROPping or REJECTing traffic that is not from the local network trying to pass through it.  But if you open up your firewalls to the traffic on each of the networks that need to pass through then there is no reason why traffic from Machine A could not pass out the INet connection on Machine E.
+
+If you would like to give me some more details on what your network topology is I'd do my best to help you with what your routing tables would need to look like.
 
 
 
