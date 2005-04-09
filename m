@@ -1,15 +1,14 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Redirecting mail
-Date: Sat, 09 Apr 2005 13:58:14 -0500
-Message-ID: <425825C6.5020504@riverviewtech.net>
-References: <003301c53c25$72c951e0$648045ac@sneak>
-	<005301c53c71$5734b450$f5001eac@riverview.office>
-	<001001c53d1d$11e678f0$648045ac@sneak>
+Subject: Re: Iptables vs. Cisco PIX
+Date: Sat, 09 Apr 2005 14:07:06 -0500
+Message-ID: <425827DA.9020706@riverviewtech.net>
+References: <038201c53c4c$6e94e540$0200a8c0@ale>
+	<42581A90.3050706@fastwebnet.it>
 Reply-To: gtaylor@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001001c53d1d$11e678f0$648045ac@sneak>
+In-Reply-To: <42581A90.3050706@fastwebnet.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,74 +20,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ilo Lorusso <sneak@ipnoc.co.za>
-Cc: netfilter@lists.netfilter.org
+To: Francesco Ciocchetti <primero@fastwebnet.it>
+Cc: Alejandro Cabrera Obed <sisdis@tournet.com.ar>, "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-> Hi,
-> I would just like to confirm with you, if machine 192.168.16.56 is to on 
-> the same switch but 3 hops away will the method you describe still work?
+You make some very good points.  You are also correct in the fact that at your border firewall you need to be more liberal in what you let through as you don't have the flexibility to shut down what comes in on a bulk pattern, but you could shut things down based on their destination, or have a small sub chain set aside for each system and redirect traffic in to each sub chain depending on what system it is destined for.  As far as the redundancy / fail over you can accomplish much the same thing via VRRP in Linux with two firewalls configured identically.  In this case you would have two firewalls with their IP on the network both of which would be imulating a 3rd IP which would be the IP that all systems would use as their gateway.  This way the VRRP enabled Linux nodes would constantly pole each other to make sure that they are alive and functional.  If one of them goes down the other
+  takes up the slack in a very short amount of time (I'm not sure what it is, I think it's 
+less than 30 seconds).  Granted I have never messed with VRRP my self but from the reading that I have done on it this is EXACTLY what it is meant for.  Virtual Router Redundancy Protocol (VRRP) is the industry standard of Cisco's Hot Standby Router Protocol (HSRP).  You can also look at some of the Linux clustering technologies but I don't think they are exactly appropriate here.
 
-Based on your choice of word of "hop(s)" I'm going to assume that the 172,20,128.56 mail server that you want to route it's SMTP connections out a different INet connection is not directly connected to the same subnet that the 192.168.16.56 system is on.  That being the case I'm going to assume that you do have a way to establish a route internally on your lan via the 192.168.16.x/24 network to an unknown network, to any more unknown networks, to the 192.168.16.x/24 network.  If this is indeed the case I would make sure that all the routers that the traffic has to pass through to pass in to each network have a path to each of the other networks.  An example below should help with this.
-
-[Machine A]
-INet connection with unknown IP
-172.20.128.56 on the 172.20.128.x/24 network
-
-[Machine B]
-172.20.128.254 on the 172.20.128.x/24 network
-10.0.0.1 on the 10.0.0.x/24 network
-
-[Machine C]
-10.0.0.254 on the 10.0.0.x/24 network
-192.168.144.1 on the 192.168.144.x/24 network
-
-[Machine D]
-192.168.144.254 on the 192.168.144.x/24 network
-192.168.16.1 on the 192.168.16.x/24 network
-
-[Machine E]
-192.168.16.56 on the 192.168.16.x/24 network
-INet connection with an unknown IP
-
-Following the above example I'm going to assume that you are wanting to route all SMTP traffic from Machine A out Machine E's internet connection.  To do this I would make sure that machines / routers have at least the following in their (main) routing tables:
-
-[Machine A's partial routing table]
-INet connection is local to Machine A
-172.20.128.x/24 network is local to Machine A
-10.0.0.x/24 network via Machine B metric of 1
-192.168.144.x/24 network via Machine B metric of 2
-192.168.16.x/24 network via Machine B metric of 3
-
-[Machine B's partial routing table]
-172.20.128.x/24 network is local to Machine B
-10.0.0.x/24 network is local to Machine B
-192.168.144.x/24 network via Machine C metric of 1
-192.168.16.x/24 network via Machine C metric of 2
-
-[Machine C's partial routing table]
-172.20.128.x/24 network via Machine B metric of 1
-10.0.0.x/24 network is local to Machine C
-192.168.144.x/24 network is local to Machine C
-192.168.16.x/24 network via Machine D metric of 1
-
-[Machine D's partial routing table]
-172.20.128.x/24 network via Machine C metric of 2
-10.0.0.x/24 network via Machine C metric of 1
-192.168.144.x/24 is local to Machine D
-192.168.16.x/24 is local to Machine D
-
-[Machine E's partial routing table]
-172.20.128.x/24 network via Machine D metric of 3
-10.0.0.x/24 network via Machine D metrick of 2
-192.168.144.x/24 network via Machine D metric of 1
-192.168.16.x/24 is local to Machine E
-INet connection is local to Machine E
-
-This will allow your traffic to pass from machine A to Machine E with known routes.  The only thing that might cause a problem is if you have firewalls on all systems DROPping or REJECTing traffic that is not from the local network trying to pass through it.  But if you open up your firewalls to the traffic on each of the networks that need to pass through then there is no reason why traffic from Machine A could not pass out the INet connection on Machine E.
-
-If you would like to give me some more details on what your network topology is I'd do my best to help you with what your routing tables would need to look like.
+Of course there is also the fact that there are a LOT of people that know how to work with PIXies and could come in after you are hit by a Greyhound buss and take over, where there are relatively few people that could walk in and take over a complex Linux IPTables, IPRoute2, VRRP firewall.  But to each his own.
 
 
 
 Grant. . . .
+
+Francesco Ciocchetti wrote:
+> Alejandro Cabrera Obed wrote:
+> 
+> 
+>>Hi people !!!
+>>
+>> 
+>>
+> 
+> Hi :)
+> 
+> I would say that while Iptables is a set of Block to build a Wall ,
+> Cisco PIX is a pre-built Wall you just have to paint and let it shine.
+> 
+> Iptables gives for sure a lot of opportunities of configuration and
+> traffic control that a Cisco Pix does not and i think is not possible to
+> forget that Iptables-Firewall is a complete Linux system with all the
+> advantages this can gives, for example a cron-tab, scripting , and so on.
+> 
+> I think that , as always, the choice depends on your needs from the device.
+> If you need a statefull firewall failover your choose is done because
+> iptables is not ready to do it yet while Cisco PIX does it in a clear
+> and fast way.
+> 
+> I would always use a Cisco Pix as Border Firewall because of its
+> reliability and performance, also because i would not do specific or
+> particular filter at this level of network. I would instead use a
+> Linux/Iptables firewall at 'User Level' because it would let me to do
+> ANYTHING i want and because at this level i could , maybe, leave the
+> statefull failover out to have the maximum flexibility possible.
+> 
+> bye
+> <P>
+> 
+>  
+> 
+> 
 
