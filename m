@@ -1,13 +1,12 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: RE: vpn problem
-Date: Sat, 9 Apr 2005 17:23:02 +0200
-Message-ID: <48366.2903112874$1113060068@news.gmane.org>
-References: <42580075.7050007@elte.hu>
-Reply-To: edvin.seferovic@kolp.at
+From: "Ilo Lorusso" <sneak@ipnoc.co.za>
+Subject: Re: Redirecting mail
+Date: Sat, 9 Apr 2005 17:59:10 +0200
+Message-ID: <001001c53d1d$11e678f0$648045ac@sneak>
+References: <003301c53c25$72c951e0$648045ac@sneak>
+	<005301c53c71$5734b450$f5001eac@riverview.office>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42580075.7050007@elte.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +17,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>, netfilter@lists.netfilter.org
 
 Hi,
-
-you are going the right path, but... 
-
-I would set up a VPN gateway ( poptop for example ), and when they connect
-they could get a static IP. Based on this static IP it would be easy to
-control their access to db, file or some other server or service on your
-network. This would be easy to set up if you have not more then 20 users (
-IMHO ). This is only an idea and it is probably not the perfect solution ;)
-
-Regards,
-
-Edvin Seferovic
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Nagy Zoltan
-Sent: Samstag, 09. April 2005 18:20
-To: netfilter@lists.netfilter.org
-Subject: vpn problem
+I would just like to confirm with you, if machine 192.168.16.56 is to on the 
+same switch but 3 hops away will the method you describe still work?
 
 
-hi
 
-i'm think about how can i set up a vpn on our lan,
-and make possible that not all systems are reachable by the connected vpn
-users
-something like that user A have access to our data servers only, but user B
-can access the database,firewall servers
-i'm thinking about that if the clients can login to the vpn gw server i
-could use gid match to put the clients ip in a recent list,
-and i can use the recent lists to mark the packets and filter by that ;)
-i'm thinking about that i've missed something...and there is a simpler
-solution ;)
+----- Original Message ----- 
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+To: "Ilo Lorusso" <sneak@ipnoc.co.za>; <netfilter@lists.netfilter.org>
+Sent: Friday, April 08, 2005 9:29 PM
+Subject: Re: Redirecting mail
 
 
-kirk
-
-
+> This mail server in question (172.20.128.56), is it just used for sending
+> email from your internal network out to the world or are you expecting 
+> email
+> from the world to come inbound to it too?  Are you wanting this mail 
+> server
+> to continue using the internet connection that it has for all traffic 
+> except
+> SMTP or are you wanting all outbound traffic to pass through 
+> 192.168.16.56?
+>
+> I would be tempted to use a combination of IPTables and IP routing rules.
+> Namely I'd do something like the following on the mail server
+> (172.20.128.56)
+>
+> iptables -t nat -A OUTPUT -p tcp --sport 25 -j MARK --set-mark $SMTP_Mark
+> ip route add table $IPRoute2_SMTP_Table 192.168.16.0/24 dev
+> $DEV_of_internal_network src $IP_of_DEV_of_internal_network
+> ip route add table $IPRoute2_SMTP_Table default via 192.168.16.56
+> ip rule add fwmark $SMTP_Mark table $IPRoute2_SMTP_Table
+>
+> Where:
+> $SMTP_Mark is the value you want to use to mark the packets that need to 
+> use
+> the alternant route.
+> $IPRoute2_SMTP_Table is the name as it appears in /etc/iproute2/rt_tables 
+> or
+> the number of the table that you want to use.
+> $DEV_of_internal_network is the device name of your internal network
+> interface.
+> $IP_of_DEV_of_internal_network is the IP address of the device name of 
+> your
+> internal network interface.
+>
+> This should cause any traffic that leaves the mail server in question to
+> pass through the alternent route out to the internet.  If you have any
+> questions or need more help let me know and I'll see what I can do.
+>
+>
+>
+> Grant. . . .
+> 
 
 
