@@ -1,14 +1,10 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Iptables vs. Cisco PIX
-Date: Sat, 09 Apr 2005 14:07:06 -0500
-Message-ID: <425827DA.9020706@riverviewtech.net>
-References: <038201c53c4c$6e94e540$0200a8c0@ale>
-	<42581A90.3050706@fastwebnet.it>
-Reply-To: gtaylor@riverviewtech.net
+From: "Tom Cruickshank" <tcruicksh@gmail.com>
+Subject: question regarding pptp
+Date: Sat, 9 Apr 2005 18:27:09 -0400
+Message-ID: <42585697.3a8f454b.74e6.34dc@mx.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42581A90.3050706@fastwebnet.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,55 +15,149 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Francesco Ciocchetti <primero@fastwebnet.it>
-Cc: Alejandro Cabrera Obed <sisdis@tournet.com.ar>, "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@lists.netfilter.org
 
-You make some very good points.  You are also correct in the fact that at your border firewall you need to be more liberal in what you let through as you don't have the flexibility to shut down what comes in on a bulk pattern, but you could shut things down based on their destination, or have a small sub chain set aside for each system and redirect traffic in to each sub chain depending on what system it is destined for.  As far as the redundancy / fail over you can accomplish much the same thing via VRRP in Linux with two firewalls configured identically.  In this case you would have two firewalls with their IP on the network both of which would be imulating a 3rd IP which would be the IP that all systems would use as their gateway.  This way the VRRP enabled Linux nodes would constantly pole each other to make sure that they are alive and functional.  If one of them goes down the other
-  takes up the slack in a very short amount of time (I'm not sure what it is, I think it's 
-less than 30 seconds).  Granted I have never messed with VRRP my self but from the reading that I have done on it this is EXACTLY what it is meant for.  Virtual Router Redundancy Protocol (VRRP) is the industry standard of Cisco's Hot Standby Router Protocol (HSRP).  You can also look at some of the Linux clustering technologies but I don't think they are exactly appropriate here.
+Hello,
 
-Of course there is also the fact that there are a LOT of people that know how to work with PIXies and could come in after you are hit by a Greyhound buss and take over, where there are relatively few people that could walk in and take over a complex Linux IPTables, IPRoute2, VRRP firewall.  But to each his own.
+     I have a question regarding pptp. I=92ve read through many =
+documentations
+and so far not sure what I=92ve been doing wrong.
+
+=20
+
+I have a linux box which acts as a firewall. Port 1723 is ported to a
+windows RAS box inside the internal network.
+
+=20
+
+Here is what were my iptables rules.
+
+=20
+
+Iptables =96A PREROUTING =96t nat =96p tcp =96d xxx.xxx.xxx.xxx  =
+=96dport 1723 =96j DNAT
+=96to yyy.yyy.yyy.yyy:1723
+
+Iptables =96append FORWARD =96s yyy.yyy.yyy.0/24 =96j ACCEPT
+
+Iptables =96table nat =96append POSTROUTING =96out-interface ppp0 =96j =
+MASQUERADE
+
+Iptables =96append FORWARD =96p 47 =96s yyy.yyy.yyy.0/24 =96j ACCEPT
+
+=20
+
+xxx.xxx.xxx.xxx =3D external IP
+
+yyy.yyy.yyy.yyy =3D internal ip (ip for windows server)
+
+=20
+
+I was able to connect to the vpn server without any problems. Then the
+external IP changed.
+
+=20
+
+After changing the external IP in the iptables info, I keep getting=20
+
+=20
+
+A connection between the VPN server and the VPN client xxx.xxx.xxx.xxx =
+has
+been established, but the VPN connection cannot be completed. The most
+common cause for this is that a firewall or router between the VPN =
+server
+and the VPN client is not configured to allow Generic Routing =
+Encapsulation
+(GRE) packets (protocol 47). Verify that the firewalls and routers =
+between
+your VPN server and the Internet allow GRE packets. Make sure the =
+firewalls
+and routers on the user's network are also configured to allow GRE =
+packets.
+If the problem persists, have the user contact the Internet service =
+provider
+(ISP) to determine whether the ISP might be blocking GRE packets.
+
+=20
+
+For more information, see Help and Support Center at
+
+=20
+
+As far as I can tell, the GRE packets SHOULD be going through.
+
+=20
+
+I=92ve modified the Iptables to something like this without any success.
+
+=20
+
+iptables -A PREROUTING -t nat -p tcp -d xxx.xxx.xxx.xxx --dport 1723 -j =
+DNAT
+--to yyy.yyy.yyy.yyy:1723
+
+=20
+
+iptables -m state -A FORWARD -p tcp -s xxx.xxx.xxx.xxx/32 --state NEW -j
+ACCEPT
+
+iptables -m state -A FORWARD -p udp -s xxx.xxx.xxx.xxx/32 --state NEW -j
+ACCEPT
+
+iptables -m state -A FORWARD -p tcp -s yyy.yyy.yyy.0/24 --state NEW -j
+ACCEPT
+
+iptables -m state -A FORWARD -p udp -s yyy.yyy.yyy.0/24 --state NEW -j
+ACCEPT
+
+iptables -m state -A FORWARD -p 47 -s xxx.xxx.xxx.xxx/32 --state NEW -j
+ACCEPT
+
+iptables -m state -A FORWARD -p 47 -s yyy.yyy.yyy.0/24 --state NEW -j =
+ACCEPT
+
+=20
+
+iptables -m state -A FORWARD -p 47 --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -m state -A FORWARD -p tcp --state ESTABLISHED,RELATED -j =
+ACCEPT
+
+iptables -m state -A FORWARD -p udp --state ESTABLISHED,RELATED -j =
+ACCEPT
+
+=20
+
+iptables -A input -p 47 -s yyy.yyy.yyy.0/24 -d xxx.xxx.xxx.xxx -j ACCEPT
+
+iptables --append FORWARD -p tcp --destination-port 1723 --jump ACCEPT
+
+=20
+
+iptables --table nat --append POSTROUTING --out-interface ppp0 -j =
+MASQUERADE
+
+iptables --append FORWARD -s yyy.yyy.yyy.0/24 -j ACCEPT
+
+=20
+
+Would anyone have a clue what I might be doing wrong? Would appreciate =
+any
+assistance. Thanks!
+
+=20
+
+Sincerely,
+
+=20
+
+Tom Cruickshank
 
 
-
-Grant. . . .
-
-Francesco Ciocchetti wrote:
-> Alejandro Cabrera Obed wrote:
-> 
-> 
->>Hi people !!!
->>
->> 
->>
-> 
-> Hi :)
-> 
-> I would say that while Iptables is a set of Block to build a Wall ,
-> Cisco PIX is a pre-built Wall you just have to paint and let it shine.
-> 
-> Iptables gives for sure a lot of opportunities of configuration and
-> traffic control that a Cisco Pix does not and i think is not possible to
-> forget that Iptables-Firewall is a complete Linux system with all the
-> advantages this can gives, for example a cron-tab, scripting , and so on.
-> 
-> I think that , as always, the choice depends on your needs from the device.
-> If you need a statefull firewall failover your choose is done because
-> iptables is not ready to do it yet while Cisco PIX does it in a clear
-> and fast way.
-> 
-> I would always use a Cisco Pix as Border Firewall because of its
-> reliability and performance, also because i would not do specific or
-> particular filter at this level of network. I would instead use a
-> Linux/Iptables firewall at 'User Level' because it would let me to do
-> ANYTHING i want and because at this level i could , maybe, leave the
-> statefull failover out to have the maximum flexibility possible.
-> 
-> bye
-> <P>
-> 
->  
-> 
-> 
-
+--=20
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.0.308 / Virus Database: 266.9.5 - Release Date: 4/7/2005
+=20
