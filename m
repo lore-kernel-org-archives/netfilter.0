@@ -1,13 +1,16 @@
-From: Jiann-Ming Su <sujiannming@gmail.com>
-Subject: Re: VPN Server HOWTO
-Date: Sat, 9 Apr 2005 23:01:20 -0400
-Message-ID: <561dc32605040920012cef8661@mail.gmail.com>
-References: <20050410010511.48110.qmail@web51903.mail.yahoo.com>
-Reply-To: Jiann-Ming Su <sujiannming@gmail.com>
+From: seberino@spawar.navy.mil
+Subject: Re: not sure ESTABLISHED TCP traffic will have ACK flag setalways...
+Date: Sat, 9 Apr 2005 20:23:08 -0700
+Message-ID: <20050410032308.GA20000@spawar.navy.mil>
+References: <1112975844.3544.94.camel@seberino.spawar.navy.mil>
+	<20050408205224.GA15635@vetz.homelinux.org>
+	<006901c53c7e$2ead1c90$f5001eac@riverview.office>
+	<20050409062431.GA17505@spawar.navy.mil>
+	<42582017.5030402@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050410010511.48110.qmail@web51903.mail.yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <42582017.5030402@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,18 +22,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-On Apr 9, 2005 9:05 PM, Alireza Yazdani <yazdani1193@yahoo.com> wrote:
-> Hi all,
-> I want to install a vpn server on linux redhat 8.
-> my clients have win98,winxp,win2k O.S.
-> what can I do?
+> When the faster sending site sends it's packets to the slower
+  receiving
+> site the packets that are sent (1234, 1235, 1236, 1237...) will all
+  have
+> the same Acknowledgment number set in their packet stating that the
+  next
+> packet the faster sender receives from the slower client should be
+  that
+> Sequence number.
 
-http://openvpn.net/examples.html
+Grant
 
--- 
-Jiann-Ming Su
-"I have to decide between two equally frightening options. 
- If I wanted to do that, I'd vote." --Duckman
+Wow!  Thanks again.  You cleared up the last missing piece about ACKs!
+So the slow side can ACK multiple sequence numbers with a single
+packet.  Likewise, the /fast/ side can send multiple ACKs for
+the same repetitive sequence number.  That makes perfect sense.
+
+Now I believe that TCP packets can all have ACKs set on an
+ESTABLISHED connection.
+
+Chris
+
+P.S. BTW, I'm curious how you knew this level of great info.  Did you
+carefully read through RFC 793?  That was jam packed with info but
+hard to digest fully.
 
