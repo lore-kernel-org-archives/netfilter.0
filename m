@@ -1,7 +1,7 @@
 From: seberino@spawar.navy.mil
 Subject: Re: not sure ESTABLISHED TCP traffic will have ACK flag setalways...
-Date: Sat, 9 Apr 2005 20:23:08 -0700
-Message-ID: <20050410032308.GA20000@spawar.navy.mil>
+Date: Sat, 9 Apr 2005 20:54:03 -0700
+Message-ID: <20050410035403.GA20178@spawar.navy.mil>
 References: <1112975844.3544.94.camel@seberino.spawar.navy.mil>
 	<20050408205224.GA15635@vetz.homelinux.org>
 	<006901c53c7e$2ead1c90$f5001eac@riverview.office>
@@ -26,29 +26,26 @@ Content-Transfer-Encoding: 7bit
 To: Grant Taylor <gtaylor@riverviewtech.net>
 Cc: netfilter@lists.netfilter.org
 
-> When the faster sending site sends it's packets to the slower
-  receiving
-> site the packets that are sent (1234, 1235, 1236, 1237...) will all
-  have
-> the same Acknowledgment number set in their packet stating that the
-  next
-> packet the faster sender receives from the slower client should be
-  that
-> Sequence number.
+> The only really questionable flag is the RST where some TCP/IP stacks will
+> send packets with the RST flag set if they mistakenly receive a packet that
+> was not destined to them.  This is i
+> mplementation dependent and not clearly defined in RFCs and thus a matter
+> of some confusion.
 
-Grant
+I haven't read this in RFC 793 myself.  However, I've read other
+docs /about/ RFC 793 that state that RFC 793 mandates closed
+ports *must* send an RST in response to packets.  This is the
+basis for at least some of stealth scans like FIN, Xmas and NULL
+IIRC.
 
-Wow!  Thanks again.  You cleared up the last missing piece about ACKs!
-So the slow side can ACK multiple sequence numbers with a single
-packet.  Likewise, the /fast/ side can send multiple ACKs for
-the same repetitive sequence number.  That makes perfect sense.
+It is true that different stacks don't follow the RFC in this area.
+MS Windows does not do the proper thing in this area.  This
+is why the /absense/ of the RST from a closed port is one way
+to do OS fingerprinting!  If every OS followed the RFC in this
+area there would not be so much confusion if I understand things
+correctly.
 
-Now I believe that TCP packets can all have ACKs set on an
-ESTABLISHED connection.
+Cheers,
 
 Chris
-
-P.S. BTW, I'm curious how you knew this level of great info.  Did you
-carefully read through RFC 793?  That was jam packed with info but
-hard to digest fully.
 
