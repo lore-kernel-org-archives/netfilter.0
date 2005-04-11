@@ -1,52 +1,40 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCEMENT] ipset 2.2.0 released
-Date: Mon, 11 Apr 2005 10:51:08 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0504111021210.5292@blackhole.kfki.hu>
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: Re: netfilter Digest, Vol 9, Issue 20
+Date: Mon, 11 Apr 2005 13:41:37 +0400
+Message-ID: <9927912d05041102416fd81f7b@mail.gmail.com>
+References: <42590541.64d5ebb8.4602.ffffa2dcSMTPIN_ADDED@mx.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <42590541.64d5ebb8.4602.ffffa2dcSMTPIN_ADDED@mx.gmail.com>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hi to all, can any one tell me how to build load-balanced stateful
+iptables firewall .
 
-I'm happy to announce ipset 2.2.0. The new release contains the following
-fixes and new features:
+I am using redhat 9 with an upgraded kernel of 2.6.10.
 
-- Locking bug in ip_set_nethash.c fixed (Clifford Wolf and Rob Carlson)
-- ipset Makefile contained an unnecessary variable in IPSET_LIB_DIR
-  (Clifford Wolf)
-- Safety checkings of restore mode in ipset was incomplete (Robin H.
-  Johnson)
-- More careful resizing mode added by avoiding running under lock
-- stdin stored internally in a temporary file, so from now on we can feed
-  'ipset -R' from a pipe
+I have 2 multi-homed PCs (3 NICs each) that are connected by a cross
+cable. The traffic arrives on one of the PC through one interface and
+has to be distributed over the 2 PCs equally and processed by the
+firewall.
 
-A new set type called 'iptree' (inspired and triggered by Clifford
-Wolf) added, which makes possible to store IP addresses which
-automatically time out. Please note, this is an initial new feature with
-some hardcoded parameter (like the frequency of garbage collection) and
-thus may change in the future.
+How can we do this? 
 
-The svn repository at svn.netfilter.org contains the updated ipset and
-patch-o-matic-ng directories. Snapshots are available from the usual place
-at http://people.netfilter.org/kadlec/ipset.
+Pls help if you know..
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Regards,
+Visham
 
