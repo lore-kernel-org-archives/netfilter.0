@@ -1,104 +1,52 @@
-From: "Daniel Fourie \(DJN\)" <FourieDJ@telkom.co.za>
-Subject: How to SNAT FTP
-Date: Mon, 11 Apr 2005 08:26:39 +0200
-Message-ID: <C55C2B2C46581A429D06FFBFD73008C601E7256B@CNTRRA20-XCS00.telkom.co.za>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCEMENT] ipset 2.2.0 released
+Date: Mon, 11 Apr 2005 10:51:08 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0504111021210.5292@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="windows-1252"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Hi all
+Hi,
 
-=20
+I'm happy to announce ipset 2.2.0. The new release contains the following
+fixes and new features:
 
-I would like to ask you all a question on how to source nat (SNAT) an
-ftp connection. My network looks something like this.
+- Locking bug in ip_set_nethash.c fixed (Clifford Wolf and Rob Carlson)
+- ipset Makefile contained an unnecessary variable in IPSET_LIB_DIR
+  (Clifford Wolf)
+- Safety checkings of restore mode in ipset was incomplete (Robin H.
+  Johnson)
+- More careful resizing mode added by avoiding running under lock
+- stdin stored internally in a temporary file, so from now on we can feed
+  'ipset -R' from a pipe
 
-=20
+A new set type called 'iptree' (inspired and triggered by Clifford
+Wolf) added, which makes possible to store IP addresses which
+automatically time out. Please note, this is an initial new feature with
+some hardcoded parameter (like the frequency of garbage collection) and
+thus may change in the future.
 
-#         000
+The svn repository at svn.netfilter.org contains the updated ipset and
+patch-o-matic-ng directories. Snapshots are available from the usual place
+at http://people.netfilter.org/kadlec/ipset.
 
-#       0     0
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
-#    0           0
-
-#   0 192.168.0.0 0
-
-#   0             0
-
-#    0           0
-
-#       0     0
-
-#         000
-
-#          |
-
-#          |                                     0 0 0
-
-#   (165.168.1.1 =96 eth0)                      0         0
-
-#   0000000000000000                        0             0
-
-#   0              0                       0      DMZ      0
-
-#   0 devlab-fw-00 0 [172.20.1.1 =96 eth1]--0    172.20.0.0   0
-
-#   0              0                       0               0
-
-#   0000000000000000                        0             0
-
-#                                             0         0
-
-#                                                0 0 0
-
-=20
-
-I have got the following nat rules in my iptables firewall
-
-=20
-
-$IPTABLES -t nat -A POSTROUTING -s $NET_DMZ -o eth0 \
-
--j SNAT --to-source 192.168.1.1
-
-=20
-
-Everything seems to work fine, but ftp on the other hand is not
-working in active mode. The ftp helper is loaded (ip_conntrack_ftp,
-ip_nat_ftp).
-
-If I do a network scan I can see the connection coming to my machine,
-but the data connection witch is negotiated in the payload is not
-natted to the correct ip (192.168.1.1). This is suggesting to me that
-the ftp helper is not working. I am running a updated version of
-RedHat 9 current kernel is kernel-2.4.20-31.9.
-
-=20
-
-It will be appreciated if someone can help.
-
-=20
-
-Regards
-
-DevLab
-
-
---=20
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.308 / Virus Database: 266.9.5 - Release Date: 4/7/2005
-=20
