@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Strange connection problems.
-Date: Mon, 11 Apr 2005 18:04:08 -0400
-Message-ID: <20050411220408.GA23903@bender.817west.com>
-References: <B39AA5DB06510C4591C6EDDD580B0B81B5315D@mail.int.sealevel.com>
+Subject: Re: msn and yahoo messenger voice chat
+Date: Mon, 11 Apr 2005 18:19:40 -0400
+Message-ID: <20050411221940.GA23947@bender.817west.com>
+References: <002a01c53ccd$9fd13f60$6e5577d4@winntpro>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <B39AA5DB06510C4591C6EDDD580B0B81B5315D@mail.int.sealevel.com>
+In-Reply-To: <002a01c53ccd$9fd13f60$6e5577d4@winntpro>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,24 +21,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Apr 08, 2005 at 05:14:09PM -0400, Ryan Belcher wrote:
-> Hi All,
+On Sat, Apr 09, 2005 at 09:30:29AM +0300, Wennie V. Lagmay wrote:
+> Hi all,
 > 
-> Below I've posted my FW config.  It's handling 3 interfaces.  ppp0, eth0, an ath0.
-> It's on Linux kernel version 2.6.10.
+> Below are the config I tested and results:
 > 
-> Pretty much everything works as I expect except for a strange issue with certain websites while trying to connect from clients within my network.  For example, penny-arcade.com, americanexpress.com SSL logins, and a few others.  If you want to poke at this configuration, penny-arcade will appear to begin connection but after the SYN, ACK, then HTTP GET sequence, the HTTP response never gets here (according to Ethereal anyways).  If I try connecting from the actual firewalling box itself, it works fine.
+> 1. IPTABLES -A POSTROUTING -s 192.169.10.0/255.255.255.0 -j SNAT --to-source
+> xxx.xxx.85.113-xxx.xxx.85.115
+> 2. IPTABLES -A POSTROUTING -s 192.169.10.0/255.255.255.0 -d
+> xxx.xxx.85.113 -j MASQUERADE
+> 3. IPTABLES -A POSTROUTING -s 192.169.10.0/255.255.255.0 -j MASQUERADE
 > 
-> Does anyone have any ideas?
+> config 1, everything is working fine except  msn and yahoo messenger voice
+> chat.
+> config 2, everything is working fine except  msn and yahoo messenger voice
+> chat.
+> config 3, everything is working fine including msn and yahoo messenger voice
+> chat, the only problem is that this configuration is not fitted to our
+> setup. Can anybody have an idea on using config 1 and 2 with msn and yahoo
+> messenger voice chat enable? or do you have any solution enabling similar to
+> config 1 with all features enable?
 
-sounds like the classic description of an MTU issue.
+use the SAME target from PoM to tell iptables to use the same SNAT IP
+for subsequent connections between the same src and dst IP:
+
+  iptables -t nat -A POSTROUTING -s 192.169.10.0/24 \
+    -j SAME --to xxx.xxx.85.113-xxx.xxx.85.115
 
 -j
 
 --
-"Tom Tucker: This is Tom Tucker... Tucker's evil twin Todd Tucker
- out to destroy his brother's reputation. Now I'm going to go back inside
- my motel room where I'm going to have freaky sex with my prostitute
- with whom I still have another 45 minutes."
+"Peter: You wanna talk about awkward moments? Once, during sex,
+ I called Lois "Frank". Your move, Sherlock."
         --Family Guy
 
