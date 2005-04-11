@@ -1,12 +1,11 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: question regarding pptp
-Date: Mon, 11 Apr 2005 15:14:12 +0200
-Message-ID: <200504111314.j3BDECQA018701@smtp26.wxs.nl>
-References: <42585697.3a8f454b.74e6.34dc@mx.gmail.com>
+From: "Iptables" <Iptables@InterCept.Net>
+Subject: RE: Iptables vs. Cisco PIX
+Date: Mon, 11 Apr 2005 09:41:07 -0400
+Message-ID: <3BEC0FC090F538409A0736B2D37DA0ED0246F656@icptex02.corp.icpt.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42585697.3a8f454b.74e6.34dc@mx.gmail.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,146 +19,103 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
- I don't see a NAT rule for the GRE protocol:
+Both (all) firewalls have their ups and downs... as an enterprise user,
+I have used check point, Cisco PIX and IPTables. The biggest difference
+in all of them is learning curve, and a few features. Each firewall
+works differently in everyones environment (to a point), which basically
+means, eval the firewall and see how it performs in your environment. I
+run 22 IPTable firewalls on Fedora Core 2 across 22 of my 35 remote
+sites, and the rest are scheduled to have one installed by July. My
+sites run from T1's to a Full 45mb DS3 with 24/7 connections that
+includes customers and support personnel. All of my sites except for the
+1 DS3, run on Dell poweredge 700 servers ranging from P4 2.4Ghz - P4
+2.8Ghz and all with 512mb memory and 4 Nics and small 40-80gb hd's. The
+1 DS3's is connect to 2 Dell Dual Xeon 2.8ghz cpu poweredge 2650 with
+1ghz memory. All of my firewalls IPtables configures are configured
+manually by a file. I could not find a management console that would do
+advanced IPTables configuration and/or use the POM/POM-NG features. Most
+were just vanilla program that did basic NAT and packet filtering. I
+also run multiple Cisco PIX around my enterprise for different purposes
+(some for ISP connections, others to block and dmz customer connections,
+and some to protect sensitive systems). Most are PIX 515's and a couple
+of 525's. I have not seen any significant performance difference in
+either system. The PIX has mgmt consoles, but I use the command line to
+configure mine, which is pretty simple.
 
-Iptables -A PREROUTING -t nat -p 47 -d xxx.xxx.xxx.xxx  -j DNAT -to
-yyy.yyy.yyy.yyy
+The only real difference is configuration, troubleshooting connectivity
+problems, maintenance, and High availability. You have to take
+everything into consideration when considering which firewall to deploy.
+The cost of running a Pix versus running Linux on a dell or custom
+server is higher, especially if you want high availability (10-15k),
+then you have to think of maintenance costs.=20
 
-That might be your problem, as said in the error message.
+There are no "best" just firewalls with different feature sets for
+different environments. To help, at my last company, we migrated from 2
+Cisco PIX HA to 2 HA Check Points on Nokia IPSO (NG FP2). We saw no
+difference in performance, but a great improvement in rule management
+and easy configuration. But upgrades from 4.1 to NG sucked as well as
+initial configuration and setup of all systems (mgmt server and 2
+nokias). All these were just firewalls with no VPN connections, because
+there we had 2 cisco concentrators.=20
+=20
+I would choose a Linux system with IPTables, before choosing a PIX or
+Check point solution. I can run things like NTOP, packet sniff with
+ethereal, run Snort and so much more... I like PIX and I like Check
+Point and they will continue to be recommended firewalls from me for the
+respected environment and cost benefit.
+
+I am in the middle of implementing HA to my 2 Firewalls here that are
+connected to the DS3 on 2 Dell 2650s. I was at first using a shell
+script I made to ping the interface and "do" based on the responses. I
+am now getting ready to convert them over to VRRP and provide HA that
+way. Next after that is to get Zebra installed and provide some extra
+routing capabilities (BGP).
+
+http://www.imagestream.com/VRRP.html
+
+http://sourceforge.net/projects/vrrpd/
+
+http://www.zebra.org/
+
+
+Thanks,
+Michael Brown, CISSP-ISSMP, ISSAP
+Sr. Security Analyst
+Fidelity IFS Security Operations
 
 -----Original Message-----
 From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Tom Cruickshank
-Sent: 10 April 2005 00:27
-To: netfilter@lists.netfilter.org
-Subject: question regarding pptp
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Alejandro
+Cabrera Obed
+Posted At: Friday, April 08, 2005 11:06 AM
+Posted To: Iptables
+Conversation: Iptables vs. Cisco PIX
+Subject: Iptables vs. Cisco PIX
 
-Hello,
+Hi people !!!
 
-     I have a question regarding pptp. I've read through many documentations
-and so far not sure what I've been doing wrong.
+This time I want to know your opinion about iptables vs. Cisco
+PIX....where
+would you use each of them ????
+Is it the same using iptables or PIX in big corporations with heavy
+Internet
+traffic ???? Which is considered the "best" and why ???
 
- 
+I use iptables since a long time, but my network is under 50
+workstations.
 
-I have a linux box which acts as a firewall. Port 1723 is ported to a
-windows RAS box inside the internal network.
+Thanks for your comments, they're welcome.
 
- 
+At last, I suggest the tutorial from Jose Negreira at
+www.iptableslinux.com,
+it's really good for persons who start into iptables world.
 
-Here is what were my iptables rules.
+Thnking in advance,
 
- 
-
-Iptables -A PREROUTING -t nat -p tcp -d xxx.xxx.xxx.xxx  -dport 1723 -j DNAT
--to yyy.yyy.yyy.yyy:1723
-
-Iptables -append FORWARD -s yyy.yyy.yyy.0/24 -j ACCEPT
-
-Iptables -table nat -append POSTROUTING -out-interface ppp0 -j MASQUERADE
-
-Iptables -append FORWARD -p 47 -s yyy.yyy.yyy.0/24 -j ACCEPT
-
- 
-
-xxx.xxx.xxx.xxx = external IP
-
-yyy.yyy.yyy.yyy = internal ip (ip for windows server)
-
- 
-
-I was able to connect to the vpn server without any problems. Then the
-external IP changed.
-
- 
-
-After changing the external IP in the iptables info, I keep getting 
-
- 
-
-A connection between the VPN server and the VPN client xxx.xxx.xxx.xxx has
-been established, but the VPN connection cannot be completed. The most
-common cause for this is that a firewall or router between the VPN server
-and the VPN client is not configured to allow Generic Routing Encapsulation
-(GRE) packets (protocol 47). Verify that the firewalls and routers between
-your VPN server and the Internet allow GRE packets. Make sure the firewalls
-and routers on the user's network are also configured to allow GRE packets.
-If the problem persists, have the user contact the Internet service provider
-(ISP) to determine whether the ISP might be blocking GRE packets.
-
- 
-
-For more information, see Help and Support Center at
-
- 
-
-As far as I can tell, the GRE packets SHOULD be going through.
-
- 
-
-I've modified the Iptables to something like this without any success.
-
- 
-
-iptables -A PREROUTING -t nat -p tcp -d xxx.xxx.xxx.xxx --dport 1723 -j DNAT
---to yyy.yyy.yyy.yyy:1723
-
- 
-
-iptables -m state -A FORWARD -p tcp -s xxx.xxx.xxx.xxx/32 --state NEW -j
-ACCEPT
-
-iptables -m state -A FORWARD -p udp -s xxx.xxx.xxx.xxx/32 --state NEW -j
-ACCEPT
-
-iptables -m state -A FORWARD -p tcp -s yyy.yyy.yyy.0/24 --state NEW -j
-ACCEPT
-
-iptables -m state -A FORWARD -p udp -s yyy.yyy.yyy.0/24 --state NEW -j
-ACCEPT
-
-iptables -m state -A FORWARD -p 47 -s xxx.xxx.xxx.xxx/32 --state NEW -j
-ACCEPT
-
-iptables -m state -A FORWARD -p 47 -s yyy.yyy.yyy.0/24 --state NEW -j ACCEPT
-
- 
-
-iptables -m state -A FORWARD -p 47 --state ESTABLISHED,RELATED -j ACCEPT
-
-iptables -m state -A FORWARD -p tcp --state ESTABLISHED,RELATED -j ACCEPT
-
-iptables -m state -A FORWARD -p udp --state ESTABLISHED,RELATED -j ACCEPT
-
- 
-
-iptables -A input -p 47 -s yyy.yyy.yyy.0/24 -d xxx.xxx.xxx.xxx -j ACCEPT
-
-iptables --append FORWARD -p tcp --destination-port 1723 --jump ACCEPT
-
- 
-
-iptables --table nat --append POSTROUTING --out-interface ppp0 -j MASQUERADE
-
-iptables --append FORWARD -s yyy.yyy.yyy.0/24 -j ACCEPT
-
- 
-
-Would anyone have a clue what I might be doing wrong? Would appreciate any
-assistance. Thanks!
-
- 
-
-Sincerely,
-
- 
-
-Tom Cruickshank
+Alejandro
 
 
---
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.308 / Virus Database: 266.9.5 - Release Date: 4/7/2005
- 
+
+
 
 
