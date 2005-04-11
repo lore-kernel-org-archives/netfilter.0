@@ -1,13 +1,12 @@
-From: Visham Ramsurrun <vishamr2000@gmail.com>
-Subject: Re: netfilter Digest, Vol 9, Issue 20
-Date: Mon, 11 Apr 2005 13:41:37 +0400
-Message-ID: <9927912d05041102416fd81f7b@mail.gmail.com>
-References: <42590541.64d5ebb8.4602.ffffa2dcSMTPIN_ADDED@mx.gmail.com>
-Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: Strange connection problems.
+Date: Mon, 11 Apr 2005 11:33:34 +0200
+Message-ID: <425A446E.4070202@mnemon.de>
+References: <B39AA5DB06510C4591C6EDDD580B0B81B5315D@mail.int.sealevel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42590541.64d5ebb8.4602.ffffa2dcSMTPIN_ADDED@mx.gmail.com>
+In-Reply-To: <B39AA5DB06510C4591C6EDDD580B0B81B5315D@mail.int.sealevel.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,23 +17,168 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi to all, can any one tell me how to build load-balanced stateful
-iptables firewall .
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I am using redhat 9 with an upgraded kernel of 2.6.10.
+Hi,
 
-I have 2 multi-homed PCs (3 NICs each) that are connected by a cross
-cable. The traffic arrives on one of the PC through one interface and
-has to be distributed over the 2 PCs equally and processed by the
-firewall.
+I had the same problem some time ago. In my case the remote sites were
+not capable of ECN. Disabling ECN solved the problem for me:
 
-How can we do this? 
+echo 0 > /proc/sys/net/ipv4/tcp_ecn
 
-Pls help if you know..
+Ofcourse, your problem may be totally different - you will see.
 
-Regards,
-Visham
+Have a nice time,
+
+J=F6rg
+
+
+Ryan Belcher schrieb:
+> Hi All,
+>=20
+> Below I've posted my FW config.  It's handling 3 interfaces.  ppp0, eth=
+0, an ath0.
+> It's on Linux kernel version 2.6.10.
+>=20
+> Pretty much everything works as I expect except for a strange issue wit=
+h certain websites while trying to connect from clients within my network=
+.  For example, penny-arcade.com, americanexpress.com SSL logins, and a f=
+ew others.  If you want to poke at this configuration, penny-arcade will =
+appear to begin connection but after the SYN, ACK, then HTTP GET sequence=
+, the HTTP response never gets here (according to Ethereal anyways).  If =
+I try connecting from the actual firewalling box itself, it works fine.
+>=20
+> Does anyone have any ideas?
+>=20
+> Thanks,
+>=20
+> Ryan
+> -----------------Snip----------------
+> IPTABLES=3D/usr/sbin/iptables
+> DEPMOD=3D/sbin/depmod
+> MODPROBE=3D/sbin/modprobe
+> IFCONFIG=3D/sbin/ifconfig
+> AWK=3D/usr/bin/awk
+> GETIP=3D/usr/bin/gethostip
+> PENGUIN=3D192.168.0.4
+> BRENT=3D192.168.0.12
+> MERCURY=3D192.168.0.3
+> EXTIF=3D"ppp0"
+> INTIF=3D"eth0"
+> WIRLS=3D"ath0"
+> echo "   External Interface:  $EXTIF"
+> echo "   Internal Interface:  $INTIF"
+> echo "   Wirleless Interface:  $WIRLS"
+> echo "   Enabling forwarding.."
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+> echo "   Enabling DynamicAddr.."
+> echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+>=20
+> # Start doing something...
+> echo "   Clearing any existing rules and setting default policy.."
+> $IPTABLES -P INPUT DROP
+> $IPTABLES -F INPUT
+> $IPTABLES -P OUTPUT ACCEPT
+> $IPTABLES -F OUTPUT
+> $IPTABLES -P FORWARD DROP
+> $IPTABLES -F FORWARD
+> $IPTABLES -t nat -F
+> $IPTABLES -t filter -F
+> $IPTABLES -t mangle -F
+>=20
+> echo "   FWD: Allow all connections OUT and only existing and related o=
+nes IN"
+> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+> $IPTABLES -A FORWARD -i $WIRLS -o $EXTIF -j ACCEPT
+> $IPTABLES -A FORWARD -i $INTIF -o $WIRLS -j ACCEPT
+> $IPTABLES -A FORWARD -i $WIRLS -o $INTIF -j ACCEPT
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state ESTABLISHED,R=
+ELATED -j ACCEPT
+> $IPTABLES -A FORWARD -i $EXTIF -o $WIRLS -m state --state ESTABLISHED,R=
+ELATED -j ACCEPT
+> $IPTABLES -A FORWARD -j LOG
+>=20
+> echo "  INPUT: Allow local connections in.  Nothing from the outside th=
+ough."
+> $IPTABLES -A INPUT -i $EXTIF -m state --state ESTABLISHED,RELATED -j AC=
+CEPT
+> $IPTABLES -A INPUT -i $INTIF -j ACCEPT
+> $IPTABLES -A INPUT -i $WIRLS -j ACCEPT
+>=20
+> echo "   Enabling SNAT (MASQUERADE) functionality on $EXTIF"
+> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+>=20
+> EXTIP=3D"`$IFCONFIG $EXTIF | $AWK /$EXTIF/'{next}//{split($0,a,":");spl=
+it(a[2],a," ");print a[1];exit}'`"
+>=20
+> #Enable Port forward...Webserver
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 80 -m state \
+>  --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 80 -j DNAT --to=
+ $PENGUIN:80
+>=20
+> #Brent
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 4747 -m state \
+>  --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 4747 -j DNAT --=
+to $BRENT:4747
+>=20
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 6112 -m state \
+>  --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 6112 -j DNAT --=
+to $BRENT:6112
+>=20
+> #Common Services to penguin
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 20:25 -m state =
+\
+>  --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 20:25 -j DNAT -=
+-to $PENGUIN
+>=20
+> #BITORRENT
+> $IPTABLES -A INPUT -i $EXTIF -p tcp --dport 6880:6899 -j ACCEPT
+>=20
+>=20
+>=20
+>=20
+> echo -e "\nrc.firewall-2.4 v$FWVER done.\n"
+> -----------------/Snip---------------
+>=20
+>=20
+
+
+- --
+- -----------------------------------------------------------------------
+mnemon
+J=F6rg Harmuth
+Marie-Curie.Str. 1
+53359 Rheinbach
+
+Tel.: (+49) 22 26  87 18 12
+Fax:  (+49) 22 26 87 18 19
+mail: harmuth@mnemon.de
+Web:  http://www.mnemon.de
+PGP-Key: http://www.mnemon.de/keys/harmuth_mnemon.asc
+PGP-Fingerprint: 692E 4476 0838 60F8 99E2  7F5D B7D7 E48E 267B 204F
+- -----------------------------------------------------------------------
+Diese Mail wurde vor dem Versenden auf Viren und andere sch=E4dliche
+Software untersucht. Es wurde keine malizi=F6se Software gefunden.
+
+This Mail was checked for virusses and other malicious software before
+sending. No malicious software was detected.
+- -----------------------------------------------------------------------
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (MingW32)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFCWkRut9fkjiZ7IE8RAo+BAJwJEVwkWIzcSbOAcnbYW5ZNjs5jsgCfTc4/
+kEnCandN3ZPnXh4+GhMoLb4=3D
+=3D7BIz
+-----END PGP SIGNATURE-----
+
 
