@@ -1,11 +1,11 @@
-From: "Iptables" <Iptables@InterCept.Net>
-Subject: RE: Iptables vs. Cisco PIX
-Date: Mon, 11 Apr 2005 09:41:07 -0400
-Message-ID: <3BEC0FC090F538409A0736B2D37DA0ED0246F656@icptex02.corp.icpt.net>
+From: "Ryan Belcher" <Ryanb@sealevel.com>
+Subject: RE: Strange connection problems.
+Date: Mon, 11 Apr 2005 10:38:22 -0400
+Message-ID: <B39AA5DB06510C4591C6EDDD580B0B81AA9C35@mail.int.sealevel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,106 +16,191 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Both (all) firewalls have their ups and downs... as an enterprise user,
-I have used check point, Cisco PIX and IPTables. The biggest difference
-in all of them is learning curve, and a few features. Each firewall
-works differently in everyones environment (to a point), which basically
-means, eval the firewall and see how it performs in your environment. I
-run 22 IPTable firewalls on Fedora Core 2 across 22 of my 35 remote
-sites, and the rest are scheduled to have one installed by July. My
-sites run from T1's to a Full 45mb DS3 with 24/7 connections that
-includes customers and support personnel. All of my sites except for the
-1 DS3, run on Dell poweredge 700 servers ranging from P4 2.4Ghz - P4
-2.8Ghz and all with 512mb memory and 4 Nics and small 40-80gb hd's. The
-1 DS3's is connect to 2 Dell Dual Xeon 2.8ghz cpu poweredge 2650 with
-1ghz memory. All of my firewalls IPtables configures are configured
-manually by a file. I could not find a management console that would do
-advanced IPTables configuration and/or use the POM/POM-NG features. Most
-were just vanilla program that did basic NAT and packet filtering. I
-also run multiple Cisco PIX around my enterprise for different purposes
-(some for ISP connections, others to block and dmz customer connections,
-and some to protect sensitive systems). Most are PIX 515's and a couple
-of 525's. I have not seen any significant performance difference in
-either system. The PIX has mgmt consoles, but I use the command line to
-configure mine, which is pretty simple.
+Hello again,
 
-The only real difference is configuration, troubleshooting connectivity
-problems, maintenance, and High availability. You have to take
-everything into consideration when considering which firewall to deploy.
-The cost of running a Pix versus running Linux on a dell or custom
-server is higher, especially if you want high availability (10-15k),
-then you have to think of maintenance costs.=20
+That was one of the first things I checked and it is set to 0.  (I =
+remembered having the problem with Squid a while back).
 
-There are no "best" just firewalls with different feature sets for
-different environments. To help, at my last company, we migrated from 2
-Cisco PIX HA to 2 HA Check Points on Nokia IPSO (NG FP2). We saw no
-difference in performance, but a great improvement in rule management
-and easy configuration. But upgrades from 4.1 to NG sucked as well as
-initial configuration and setup of all systems (mgmt server and 2
-nokias). All these were just firewalls with no VPN connections, because
-there we had 2 cisco concentrators.=20
-=20
-I would choose a Linux system with IPTables, before choosing a PIX or
-Check point solution. I can run things like NTOP, packet sniff with
-ethereal, run Snort and so much more... I like PIX and I like Check
-Point and they will continue to be recommended firewalls from me for the
-respected environment and cost benefit.
+Any other ideas?
 
-I am in the middle of implementing HA to my 2 Firewalls here that are
-connected to the DS3 on 2 Dell 2650s. I was at first using a shell
-script I made to ping the interface and "do" based on the responses. I
-am now getting ready to convert them over to VRRP and provide HA that
-way. Next after that is to get Zebra installed and provide some extra
-routing capabilities (BGP).
-
-http://www.imagestream.com/VRRP.html
-
-http://sourceforge.net/projects/vrrpd/
-
-http://www.zebra.org/
-
-
-Thanks,
-Michael Brown, CISSP-ISSMP, ISSAP
-Sr. Security Analyst
-Fidelity IFS Security Operations
+Ryan
 
 -----Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Alejandro
-Cabrera Obed
-Posted At: Friday, April 08, 2005 11:06 AM
-Posted To: Iptables
-Conversation: Iptables vs. Cisco PIX
-Subject: Iptables vs. Cisco PIX
-
-Hi people !!!
-
-This time I want to know your opinion about iptables vs. Cisco
-PIX....where
-would you use each of them ????
-Is it the same using iptables or PIX in big corporations with heavy
-Internet
-traffic ???? Which is considered the "best" and why ???
-
-I use iptables since a long time, but my network is under 50
-workstations.
-
-Thanks for your comments, they're welcome.
-
-At last, I suggest the tutorial from Jose Negreira at
-www.iptableslinux.com,
-it's really good for persons who start into iptables world.
-
-Thnking in advance,
-
-Alejandro
+From: J=F6rg Harmuth [mailto:harmuth@mnemon.de]
+Sent: Monday, April 11, 2005 5:34 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: Strange connection problems.
 
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
+Hi,
+
+I had the same problem some time ago. In my case the remote sites were
+not capable of ECN. Disabling ECN solved the problem for me:
+
+echo 0 > /proc/sys/net/ipv4/tcp_ecn
+
+Ofcourse, your problem may be totally different - you will see.
+
+Have a nice time,
+
+J=F6rg
+
+
+Ryan Belcher schrieb:
+> Hi All,
+>=20
+> Below I've posted my FW config.  It's handling 3 interfaces.  ppp0, =
+eth0, an ath0.
+> It's on Linux kernel version 2.6.10.
+>=20
+> Pretty much everything works as I expect except for a strange issue =
+with certain websites while trying to connect from clients within my =
+network.  For example, penny-arcade.com, americanexpress.com SSL logins, =
+and a few others.  If you want to poke at this configuration, =
+penny-arcade will appear to begin connection but after the SYN, ACK, =
+then HTTP GET sequence, the HTTP response never gets here (according to =
+Ethereal anyways).  If I try connecting from the actual firewalling box =
+itself, it works fine.
+>=20
+> Does anyone have any ideas?
+>=20
+> Thanks,
+>=20
+> Ryan
+> -----------------Snip----------------
+> IPTABLES=3D/usr/sbin/iptables
+> DEPMOD=3D/sbin/depmod
+> MODPROBE=3D/sbin/modprobe
+> IFCONFIG=3D/sbin/ifconfig
+> AWK=3D/usr/bin/awk
+> GETIP=3D/usr/bin/gethostip
+> PENGUIN=3D192.168.0.4
+> BRENT=3D192.168.0.12
+> MERCURY=3D192.168.0.3
+> EXTIF=3D"ppp0"
+> INTIF=3D"eth0"
+> WIRLS=3D"ath0"
+> echo "   External Interface:  $EXTIF"
+> echo "   Internal Interface:  $INTIF"
+> echo "   Wirleless Interface:  $WIRLS"
+> echo "   Enabling forwarding.."
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+> echo "   Enabling DynamicAddr.."
+> echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+>=20
+> # Start doing something...
+> echo "   Clearing any existing rules and setting default policy.."
+> $IPTABLES -P INPUT DROP
+> $IPTABLES -F INPUT
+> $IPTABLES -P OUTPUT ACCEPT
+> $IPTABLES -F OUTPUT
+> $IPTABLES -P FORWARD DROP
+> $IPTABLES -F FORWARD
+> $IPTABLES -t nat -F
+> $IPTABLES -t filter -F
+> $IPTABLES -t mangle -F
+>=20
+> echo "   FWD: Allow all connections OUT and only existing and related =
+ones IN"
+> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+> $IPTABLES -A FORWARD -i $WIRLS -o $EXTIF -j ACCEPT
+> $IPTABLES -A FORWARD -i $INTIF -o $WIRLS -j ACCEPT
+> $IPTABLES -A FORWARD -i $WIRLS -o $INTIF -j ACCEPT
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state =
+ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -i $EXTIF -o $WIRLS -m state --state =
+ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -j LOG
+>=20
+> echo "  INPUT: Allow local connections in.  Nothing from the outside =
+though."
+> $IPTABLES -A INPUT -i $EXTIF -m state --state ESTABLISHED,RELATED -j =
+ACCEPT
+> $IPTABLES -A INPUT -i $INTIF -j ACCEPT
+> $IPTABLES -A INPUT -i $WIRLS -j ACCEPT
+>=20
+> echo "   Enabling SNAT (MASQUERADE) functionality on $EXTIF"
+> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+>=20
+> EXTIP=3D"`$IFCONFIG $EXTIF | $AWK =
+/$EXTIF/'{next}//{split($0,a,":");split(a[2],a," ");print a[1];exit}'`"
+>=20
+> #Enable Port forward...Webserver
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 80 -m state \
+>  --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 80 -j DNAT =
+--to $PENGUIN:80
+>=20
+> #Brent
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 4747 -m state =
+\
+>  --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 4747 -j DNAT =
+--to $BRENT:4747
+>=20
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 6112 -m state =
+\
+>  --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 6112 -j DNAT =
+--to $BRENT:6112
+>=20
+> #Common Services to penguin
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 20:25 -m state =
+\
+>  --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 20:25 -j DNAT =
+--to $PENGUIN
+>=20
+> #BITORRENT
+> $IPTABLES -A INPUT -i $EXTIF -p tcp --dport 6880:6899 -j ACCEPT
+>=20
+>=20
+>=20
+>=20
+> echo -e "\nrc.firewall-2.4 v$FWVER done.\n"
+> -----------------/Snip---------------
+>=20
+>=20
+
+
+- --
+- =
+-----------------------------------------------------------------------
+mnemon
+J=F6rg Harmuth
+Marie-Curie.Str. 1
+53359 Rheinbach
+
+Tel.: (+49) 22 26  87 18 12
+Fax:  (+49) 22 26 87 18 19
+mail: harmuth@mnemon.de
+Web:  http://www.mnemon.de
+PGP-Key: http://www.mnemon.de/keys/harmuth_mnemon.asc
+PGP-Fingerprint: 692E 4476 0838 60F8 99E2  7F5D B7D7 E48E 267B 204F
+- =
+-----------------------------------------------------------------------
+Diese Mail wurde vor dem Versenden auf Viren und andere sch=E4dliche
+Software untersucht. Es wurde keine malizi=F6se Software gefunden.
+
+This Mail was checked for virusses and other malicious software before
+sending. No malicious software was detected.
+- =
+-----------------------------------------------------------------------
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (MingW32)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFCWkRut9fkjiZ7IE8RAo+BAJwJEVwkWIzcSbOAcnbYW5ZNjs5jsgCfTc4/
+kEnCandN3ZPnXh4+GhMoLb4=3D
+=3D7BIz
+-----END PGP SIGNATURE-----
 
 
 
