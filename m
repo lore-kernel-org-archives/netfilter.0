@@ -1,13 +1,12 @@
-From: Taylor Grant <gtaylor@riverviewtech.net>
-Subject: Re: TCP packets with RST flag set but **not** ACK flag OK??
-Date: Mon, 11 Apr 2005 23:22:02 -0500
-Message-ID: <425B4CEA.3080303@riverviewtech.net>
-References: <1113247121.3544.118.camel@seberino.spawar.navy.mil>	<425AF2B7.2050402@riverviewtech.net>
-	<1113266214.2111.46.camel@grendel>
+From: Igor Popov <igorpopov@newmail.ru>
+Subject: module matches a set of source or destination ip addresses
+Date: Tue, 12 Apr 2005 09:27:50 +0300
+Message-ID: <200504120928.01319.igorpopov@newmail.ru>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart3265803.WM5NWzBaLo";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1113266214.2111.46.camel@grendel>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,93 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Chris Brenton <cbrenton@chrisbrenton.org>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-> RFC's define dropping packets as "A Bad Idea" (TM). See RFC 1812 for
-> more details.
+--nextPart3265803.WM5NWzBaLo
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Are you sure that it's RFC 1812 "Requirements for IP Version 4 Routers"?  I'm finding more information in RFC 793 "Transmission Control Protocol Functional Specification".  Namely it is possible to see packets with the RST flag both with ACK set and ACK unset, depending on the situation.  Primarily having to do with what state the TCP conversation is in, established or not.
+	Hi all,
+It there iptables module(something like mport), but that matches a set of=20
+source or destination ip addresses:
+iptables -A ... -p ... -m megamatcher -s ip1,ip2,...-d ip1,ip2,... -j ...
 
-According to the "Half-Open Connections and Other Anomalies" section of RFC 793 the following seems to be the case.  Half-Open Connections are defined as follows, per RFC.  Half-Open Connections are defined as one end of the TCP conversation having closed the connection while the other still has it open.  Here is the text from the RFC, "An established connection is said to be  "half-open" if one of the TCPs has closed or aborted the connection at its end without the knowledge of the other, or if the two ends of the connection have become desynchronized owing to a crash that resulted in loss of memory.".
+=2D-=20
+I have great faith in fools -- self confidence my friends call it.
+		-- Edgar Allan Poe
 
-(Sorry, this could get rather lengthy.)
+--nextPart3265803.WM5NWzBaLo
+Content-Type: application/pgp-signature
 
-<RFC 793 - Half-Open Connections - paragraph 3>
-...In an attempt to establish the connection, A's TCP  will send a segment containing SYN.  This scenario leads to the example shown in figure 10.  After TCP A crashes, the user attempts to re-open the connection.  TCP B, in the meantime, thinks the connection is open.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (FreeBSD)
 
-      TCP A                                           TCP B
+iQEVAwUAQltqcIE3+5OFEFEBAQJaiggAhDC3Xsj9AM56HWT+ome4Y7W5HufM9Tq/
+ZZ94Xx1J82a3X+WdFnsjX90X0mZxYO/k5cmnsCxMBlT88XwDavybJMNG/UuXpLge
+RhMgjygcNN/4WIG8DX+zKfKJ1oEjyFSwSBQEHyOYK0mxAMWEB92Xs6CHde+QUtkP
+CIya5h7xkqCTwSngNuDE5nzT8xp9ziKyRnYFZZg0ZUN58rLBNGU3AaGQOutF81nR
+9J+wkLYWXP+Jm3F/1mg/NKbdXOY0qm9egPu5Y2HIVtrlsv65aw6Do08IpsGXR35R
+EnMfuJ6Q1jpWSwhgf8cfZsIItGjs6PJ5rCsoVjteoKBzy6fLByhBIw==
+=WsXE
+-----END PGP SIGNATURE-----
 
-  1.  (CRASH)                               (send 300,receive 100)
-
-  2.  CLOSED                                           ESTABLISHED
-
-  3.  SYN-SENT --> <SEQ=400><CTL=SYN>              --> (??)
-
-  4.  (!!)     <-- <SEQ=300><ACK=100><CTL=ACK>     <-- ESTABLISHED
-
-  5.  SYN-SENT --> <SEQ=100><CTL=RST>              --> (Abort!!)
-
-  6.  SYN-SENT                                         CLOSED
-
-  7.  SYN-SENT --> <SEQ=400><CTL=SYN>              -->
-
-                     Half-Open Connection Discovery
-
-                               Figure 10.
-
-  When the SYN arrives at line 3, TCP B, being in a synchronized state,
-  and the incoming segment outside the window, responds with an
-  acknowledgment indicating what sequence it next expects to hear (ACK
-  100).  TCP A sees that this segment does not acknowledge anything it
-  sent and, being unsynchronized, sends a reset (RST) because it has
-  detected a half-open connection.  TCP B aborts at line 5.  TCP A will
-  continue to try to establish the connection; the problem is now
-  reduced to the basic 3-way handshake of figure 7.
-
-  An interesting alternative case occurs when TCP A crashes and TCP B
-  tries to send data on what it thinks is a synchronized connection.
-  This is illustrated in figure 11.  In this case, the data arriving at
-  TCP A from TCP B (line 2) is unacceptable because no such connection
-  exists, so TCP A sends a RST.  The RST is acceptable so TCP B
-  processes it and aborts the connection.
-
-  
-
-        TCP A                                              TCP B
-
-  1.  (CRASH)                                   (send 300,receive 100)
-
-  2.  (??)    <-- <SEQ=300><ACK=100><DATA=10><CTL=ACK> <-- ESTABLISHED
-
-  3.          --> <SEQ=100><CTL=RST>                   --> (ABORT!!)
-
-           Active Side Causes Half-Open Connection Discovery
-
-                               Figure 11.
-
-  In figure 12, we find the two TCPs A and B with passive connections
-  waiting for SYN.  An old duplicate arriving at TCP B (line 2) stirs B
-  into action.  A SYN-ACK is returned (line 3) and causes TCP A to
-  generate a RST (the ACK in line 3 is not acceptable).  TCP B accepts
-  the reset and returns to its passive LISTEN state.
-
-  
-
-      TCP A                                         TCP B
-
-  1.  LISTEN                                        LISTEN
-
-  2.       ... <SEQ=Z><CTL=SYN>                -->  SYN-RECEIVED
-
-  3.  (??) <-- <SEQ=X><ACK=Z+1><CTL=SYN,ACK>   <--  SYN-RECEIVED
-
-  4.       --> <SEQ=Z+1><CTL=RST>              -->  (return to LISTEN!)
-
-  5.  LISTEN                                        LISTEN
-
-       Old Duplicate SYN Initiates a Reset on two Passive Sockets
-
-                               Figure 12.
+--nextPart3265803.WM5NWzBaLo--
 
