@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: msn and yahoo messenger voice chat
-Date: Tue, 12 Apr 2005 08:39:40 -0400
-Message-ID: <20050412123940.GA26073@bender.817west.com>
-References: <1113309566.425bc17e6a46f@webmail.yanbulink.net>
+Subject: Re: stop uptime and name + version querying
+Date: Tue, 12 Apr 2005 08:48:18 -0400
+Message-ID: <20050412124818.GA26130@bender.817west.com>
+References: <425B9FCE.7050105@eccotours.dyndns.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1113309566.425bc17e6a46f@webmail.yanbulink.net>
+In-Reply-To: <425B9FCE.7050105@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,43 +21,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Apr 12, 2005 at 03:39:26PM +0300, Wennie V. Lagmay wrote:
+On Tue, Apr 12, 2005 at 12:15:42PM +0200, Brent Clark wrote:
+> Hi
 > 
-> Thank you Jason, I just want to confirm is it to be writen
+> I would like to know if iptables is the correct tool to stop people from 
+> retriving data, such as what "NAME" of services I run (e.g vsFTPd) and 
+> other things like (Uptime 90.302 days (since Wed Jan 12 03:08:12 2005)) etc
 > 
-> like this alone:
-> iptables -t nat -A POSTROUTING -s 192.169.10.0/24  -j SAME --to
-> xxx.xxx.85.113-xxx.xxx.85.115
+> And if so, how would you go about stoping the querys etc.
+> 
+> Does anyone know what service nmap talks to, to determine how long the 
+> box has been up and running for.
+> Just something I was thinking, kind regards
 
-yes--SAME can completely replace your SNAT rule, if you so desire.
+just a stab in the dark, but what does:
 
-> or the original SNAT plus SAME like this :
-> IPTABLES -A POSTROUTING -s 192.169.10.0/255.255.255.0 -j SNAT --to-source
-> xxx.xxx.85.113-xxx.xxx.85.115
+  sysctl net.ipv4.tcp_timestamps
 
-that rule isn't completely correct, as it has no "-t nat" in it.
-
-> iptables -t nat -A POSTROUTING -s 192.169.10.0/24  -j SAME --to
-> xxx.xxx.85.113-xxx.xxx.85.115
-
-if you're asking if you should have a SNAT rule followed by a SAME rule
-that are identical except for the target, then no--the SAME rule will
-never be matched in that scenario.
-
-if you want to combine SAME and SNAT--put the SAME rule first and have
-it match only on the specific ports used by the application in question
-that cannot handle src IP changes; and the SNAT rule second to catch the
-rest of the general traffic.
-
-HTH...
+have to say?
 
 -j
 
 --
-"Chris: Where do you think you go when you die?
- Southern boy: I learned from church that if you're good you go to
- heaven but if you're bad, you go to a place where the dead believe
- they're still living and they pray for death but death won't come.
- Chris: UPN?"
+"Janet: Hi. Cookie?
+ Stewie: Well, it's Stewie, but... you can call me "cookie" if you like.
+ Yes, I also answer to "Artemis," "Agent Buckwald" and "Snake." Yes,
+ I rather like "Snake." Snake."
         --Family Guy
 
