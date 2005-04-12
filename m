@@ -1,12 +1,10 @@
-From: Taylor Grant <gtaylor@riverviewtech.net>
-Subject: Re: module matches a set of source or destination ip addresses
-Date: Tue, 12 Apr 2005 02:30:59 -0500
-Message-ID: <425B7933.2040906@riverviewtech.net>
-References: <200504120928.01319.igorpopov@newmail.ru>
+From: Brent Clark <bclark@eccotours.dyndns.org>
+Subject: stop uptime and name + version querying
+Date: Tue, 12 Apr 2005 12:15:42 +0200
+Message-ID: <425B9FCE.7050105@eccotours.dyndns.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200504120928.01319.igorpopov@newmail.ru>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,23 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Igor Popov <igorpopov@newmail.ru>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: iptables <netfilter@lists.netfilter.org>
 
-Igor Popov wrote:
-> 	Hi all,
-> It there iptables module(something like mport), but that matches a set of 
-> source or destination ip addresses:
-> iptables -A ... -p ... -m megamatcher -s ip1,ip2,...-d ip1,ip2,... -j ...
-> 
+Hi
 
-If the IPs in question are in a subnet you can always specify the subnet it's self.  I.e.
+I would like to know if iptables is the correct tool to stop people from 
+retriving data, such as what "NAME" of services I run (e.g vsFTPd) and 
+other things like (Uptime 90.302 days (since Wed Jan 12 03:08:12 2005)) etc
 
-iptables -A ... -p ... -s 192.168.0.0/24 -d 172.30.16.0/128 ... -j ...
+And if so, how would you go about stoping the querys etc.
 
-You might want to take a look at the set match.  Set uses an external program (ipset?) to create and maintain the sets that are matched against.  I think set will allow you to have multiple IPs in it that are not necessarily in the same subnet or contiguous.  So that may do it for you.  I have not messed with ipset so I'm not much help for you.  Though a read of the man for it should help.
+Does anyone know what service nmap talks to, to determine how long the 
+box has been up and running for.
+Just something I was thinking, kind regards
 
+Brent Clark
 
+Copy and paste below:
+=====================================================
 
-Grant. . . .
+[root@ns root]# nmap -sV -P0 -O 1.2.3.4
+
+Starting nmap 3.48 ( http://www.insecure.org/nmap/ ) at 2005-04-12 11:23 BST
+Interesting ports on abc.abc.abc (1.2.3.4):
+(The 1652 ports scanned but not shown below are in state: closed)
+PORT      STATE SERVICE VERSION
+21/tcp    open  ftp     vsFTPd
+22/tcp    open  ssh     OpenSSH 3.6.1p2 (protocol 1.99)
+25/tcp    open  smtp    Exim smtpd 4.50
+80/tcp    open  http    Apache httpd 2.0.50 ((Fedora))
+10000/tcp open  http    Webmin httpd
+Device type: general purpose
+Running: Linux 2.4.X|2.5.X
+OS details: Linux Kernel 2.4.0 - 2.5.20
+Uptime 90.302 days (since Wed Jan 12 03:08:12 2005)
+
+Nmap run completed -- 1 IP address (1 host up) scanned in 12.841 seconds
 
