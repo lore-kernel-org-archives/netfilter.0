@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: How to SNAT FTP
-Date: Mon, 11 Apr 2005 19:10:09 -0400
-Message-ID: <20050411231009.GA24117@bender.817west.com>
-References: <C55C2B2C46581A429D06FFBFD73008C601E7256B@CNTRRA20-XCS00.telkom.co.za>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: TCP packets with RST flag set but **not** ACK flag OK??
+Date: Mon, 11 Apr 2005 20:36:54 -0400
+Message-ID: <1113266214.2111.46.camel@grendel>
+References: <1113247121.3544.118.camel@seberino.spawar.navy.mil>
+	<425AF2B7.2050402@riverviewtech.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <C55C2B2C46581A429D06FFBFD73008C601E7256B@CNTRRA20-XCS00.telkom.co.za>
+In-Reply-To: <425AF2B7.2050402@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +19,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: gtaylor+reply@riverviewtech.net
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Mon, Apr 11, 2005 at 08:26:39AM +0200, Daniel Fourie (DJN) wrote:
-<--snip impressive ascii art-->
-> I have got the following nat rules in my iptables firewall
-> 
-> $IPTABLES -t nat -A POSTROUTING -s $NET_DMZ -o eth0 \
-> 
-> -j SNAT --to-source 192.168.1.1
-> 
-> Everything seems to work fine, but ftp on the other hand is not
-> working in active mode. The ftp helper is loaded (ip_conntrack_ftp,
-> ip_nat_ftp).
-> 
-> If I do a network scan I can see the connection coming to my machine,
-> but the data connection witch is negotiated in the payload is not
-> natted to the correct ip (192.168.1.1). This is suggesting to me that
-> the ftp helper is not working. I am running a updated version of
-> RedHat 9 current kernel is kernel-2.4.20-31.9.
-> 
-> It will be appreciated if someone can help.
+On Mon, 2005-04-11 at 17:57, Taylor, Grant wrote:
+>
+> The TCP RST flag looks like it can be sent with out any other flags set in the packet in such a situation where there is no known on going connection
 
-(1) are you running the FTP server on port 21 (the conntrack and nat
-    helpers only track port 21 by default)
+Actually, you are usually going to see ACK set as well as the RST flab
+because the receiving system is acknowledging the receipt of the packet.
+The except is in reply to a non-established packet with only ACK set.
+The proper response here per the RFC's is RST only.
 
-(2) do your firewall rules allow "--state RELATED" packets back through
-    the FORWARD chain (from server -> client)?
+> As to your question as to whether or not it is acceptable for firewalls to drop packets with just the RST packet set inbound to you?  I'd say that you probably should not do that b/c the RST packet is a way to tell your TCP stack that it has done something wrong.
 
-(3) oh yeah--are you running an SSL-encrypted FTP server?
+The receipt of these packets should be pretty rare. Off the top of my
+head, one possible cause would be an established session where the
+remote end gets power cycled. You ACK to continue communications and the
+remote end sets RST only because it has no knowledge of the session
+(because the original session gets cleared during the power cycle). If
+you filter out in inbound RST, you system will fail to kill the session
+till it times out and issues its own RST/ACK.
 
--j
+> But if you choose to do this there is nothing technically wrong with it that I can see, just sort of like shooting your self
 
---
-"Protesters: Free Tibet! Free Tibet!
- Peter: I'll take it!
- Peter: Hello, China? I have something you may want. But it's gonna cost
- ya. That's right. All the tea."
-        --Family Guy
+Agreed, nor is it really buying you anything. If you are maintaining
+state Netfilter will dump the RST unless it matches the state table.
+
+> iptables -t filter -A FORWARD -i $INet -o $LAN -d $LAN_Subnet -p tcp --tcp-flags RST RST -m state --state INVALID,NEW -m limit ! --limit 1/second -j LOG --log-prefix 'Bogus inbound false TCP packets with RST flag set more than one time per second!'
+> iptables -t filter -A FORWARD -i $INet -o $LAN -d $LAN_Subnet -p tcp --tcp-flags RST RST -m state --state INVALID,NEW -j DROP
+> iptables -t filter -A FORWARD -i $INet -o $LAN -d $LAN_Subnet -p tcp --tcp-flags RST RST -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+Hummm. Not sure this is going to do anything. INVALID will be dropped
+normally and a better way to deal with NEW is to mask on SYN in your
+permit rules. ESTABLISHED should already be permitted as part of a
+general permit rule of the state table. 
+
+> This is an institutional political decision as some people feel that rejecting packets in some situations confirms your presence on the net vs just dropping them leaves the possible attacker wondering.
+
+<semi-rant>
+Actually, this is incorrect. Consider the following:
+Port is open = SYN/ACK returned
+Port is closed = RST/ACK returned
+System down = ICMP type 3, code 1 returned
+Net down = ICMP type 3, code 0 returned
+Packet blocked = ICMP type 3, code 13 returned
+Firewall with drop rule = nothing comes back
+
+Note the *only* time you will see nothing coming back consistently is
+when a firewall is in the way. So by dropping packets, you are
+confirming the existence of a firewall. As an example, run nmap against
+a firewall with a drop policy. It will actually report that a firewall
+is in the way when nothing comes back. No head scratching required. ;-)
+
+If you are looking to go stealthy, host unreachables (ICMP type 3, code
+1) are a better choice. Now your firewall looks like a simple up stream
+router with no filtering in place.
+
+Now, a drop policy does have some benefits. For example it will slow
+down a port scanner as the scanner tries to determine if its packets are
+getting lost or if there is a firewall in the way. However a default
+drop policy also has its drawbacks in that it returns nothing makes the
+address space far more appealing to an attacker to spoof as part of a
+TCP SYN flood attack (no response from your network allows them to tie
+up the connection pool for a longer period of time on the victim's
+system). So by implementing a default drop rule you are actually helping
+the attacker perform a successful flood. This one of the reasons why the
+RFC's define dropping packets as "A Bad Idea" (TM). See RFC 1812 for
+more details.
+</semi-rant>
+
+HTH,
+Chris
+
+
 
