@@ -1,14 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: stop uptime and name + version querying
-Date: Tue, 12 Apr 2005 09:14:13 -0400
-Message-ID: <20050412131413.GA26215@bender.817west.com>
-References: <425B9FCE.7050105@eccotours.dyndns.org>
-	<20050412124818.GA26130@bender.817west.com>
-	<425BC8F8.5060905@eccotours.dyndns.org>
+From: Daniel Lopes <lopsch@lopsch.com>
+Subject: Re: msn and yahoo messenger voice chat
+Date: Tue, 12 Apr 2005 16:27:51 +0200
+Message-ID: <425BDAE7.9060303@lopsch.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <425BC8F8.5060905@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,36 +15,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tue, Apr 12, 2005 at 03:11:20PM +0200, Brent Clark wrote:
-> [root@ns modules]# sysctl net.ipv4.tcp_timestamps
-> net.ipv4.tcp_timestamps = 1
-> [root@ns modules]#
-> 
-> Why
-> Is this something I can learn from (HOPE SO).
-> 
-> Thanks
-> Brent Clark
-> 
-> P.s. How do I do this (sysctl net.ipv4.tcp_timestamps)  on a Debian box
+Wennie V. Lagmay schrieb:
+> Hi all,
+>=20
+> Below are the config I tested and results:
+>=20
+> 1. IPTABLES -A POSTROUTING -s 192.169.10.0/255.255.255.0 -j SNAT --to-s=
+ource
+> xxx.xxx.85.113-xxx.xxx.85.115
+> 2. IPTABLES -A POSTROUTING -s 192.169.10.0/255.255.255.0 -d
+> xxx.xxx.85.113 -j MASQUERADE
+> 3. IPTABLES -A POSTROUTING -s 192.169.10.0/255.255.255.0 -j MASQUERADE
+>=20
+> config 1, everything is working fine except  msn and yahoo messenger vo=
+ice
+> chat.
+> config 2, everything is working fine except  msn and yahoo messenger vo=
+ice
+> chat.
+> config 3, everything is working fine including msn and yahoo messenger =
+voice
+> chat, the only problem is that this configuration is not fitted to our
+> setup. Can anybody have an idea on using config 1 and 2 with msn and ya=
+hoo
+> messenger voice chat enable? or do you have any solution enabling simil=
+ar to
+> config 1 with all features enable?
+>=20
+> Thank you very much,
+>=20
+> Wennie
+>=20
 
-man 8 sysctl would be a good place to start for that answer, but...
+Is there something else you use? I tried MSN voice chat behind my router
+also using MASQUERADE but it doens=B4t work because MSN sends src IP
+within the payload and therefor NAT fails.
 
-  sysctl -w net.ipv4.tcp_timestamps=0
-
-would be a good start.  see if that helps with the nmap uptime query.
-
-if so, add the setting to /etc/sysctl.conf (man 5 sysctl.conf for syntax)
-to survive reboots.
-
--j
-
---
-"Peter: At least they don't put their feminine ointments next to the
- mustard, Lois. That was the worst hot dog I ever ate."
-        --Family Guy
 
