@@ -1,10 +1,15 @@
-From: Daniel Lopes <lopsch@lopsch.com>
-Subject: Re: msn and yahoo messenger voice chat
-Date: Tue, 12 Apr 2005 16:27:51 +0200
-Message-ID: <425BDAE7.9060303@lopsch.com>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: TCP packets with RST flag set but **not** ACK flag OK??
+Date: Tue, 12 Apr 2005 10:41:57 -0400
+Message-ID: <1113316917.2007.26.camel@grendel>
+References: <1113247121.3544.118.camel@seberino.spawar.navy.mil>
+	<425AF2B7.2050402@riverviewtech.net> <1113266214.2111.46.camel@grendel>
+	<425B3354.2030807@riverviewtech.net> <1113278818.2151.87.camel@grendel>
+	<425B779B.60907@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <425B779B.60907@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,43 +20,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Taylor Grant <gtaylor@riverviewtech.net>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Wennie V. Lagmay schrieb:
-> Hi all,
->=20
-> Below are the config I tested and results:
->=20
-> 1. IPTABLES -A POSTROUTING -s 192.169.10.0/255.255.255.0 -j SNAT --to-s=
-ource
-> xxx.xxx.85.113-xxx.xxx.85.115
-> 2. IPTABLES -A POSTROUTING -s 192.169.10.0/255.255.255.0 -d
-> xxx.xxx.85.113 -j MASQUERADE
-> 3. IPTABLES -A POSTROUTING -s 192.169.10.0/255.255.255.0 -j MASQUERADE
->=20
-> config 1, everything is working fine except  msn and yahoo messenger vo=
-ice
-> chat.
-> config 2, everything is working fine except  msn and yahoo messenger vo=
-ice
-> chat.
-> config 3, everything is working fine including msn and yahoo messenger =
-voice
-> chat, the only problem is that this configuration is not fitted to our
-> setup. Can anybody have an idea on using config 1 and 2 with msn and ya=
-hoo
-> messenger voice chat enable? or do you have any solution enabling simil=
-ar to
-> config 1 with all features enable?
->=20
-> Thank you very much,
->=20
-> Wennie
->=20
+On Tue, 2005-04-12 at 03:24, Taylor Grant wrote:
+>
+> In short, deciding if the ACK and RST flags to together or not is about like deciphering the English language.
 
-Is there something else you use? I tried MSN voice chat behind my router
-also using MASQUERADE but it doens=B4t work because MSN sends src IP
-within the payload and therefor NAT fails.
+Luckily I speak native English and Hex. ;-) Try this: 
+
+In one terminal window run:
+tcpdump -nn -v -i lo
+
+In another terminal window run:
+hping -A -c 1 -p 5 127.0.0.1
+hping -S -c 1 -p 5 127.0.0.1
+
+You'll see the first packet causes a RST only to be returned. The second
+will cause a RST/ACK to be returned. So either condition is a
+possibility and a Netfilter rule base needs to handle both of them
+appropriately. 
+
+HTH,
+Chris
+
 
 
