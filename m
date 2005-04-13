@@ -1,11 +1,10 @@
-From: "Ryan Belcher" <Ryanb@sealevel.com>
-Subject: RE: Strange connection problems.
-Date: Tue, 12 Apr 2005 19:58:11 -0400
-Message-ID: <B39AA5DB06510C4591C6EDDD580B0B81AA9C40@mail.int.sealevel.com>
+From: "Andrew Hall" <temp02@bluereef.com.au>
+Subject: Dead loop on Virtual device BR0
+Date: Wed, 13 Apr 2005 11:38:06 +1000
+Message-ID: <0afc01c53fc9$70c82b30$5001010a@bluereef.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,55 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, luismnieto@gmail.com
-Cc: netfilter@lists.netfilter.org
-
-Gentlemen,
-
-Thank you!  That cleared things up perfectly.  ppp0 had the MTU set for =
-1492; however, none of the other interfaces did (including eth1 which I =
-failed to mention was actually the path to ppp0).  You are both =
-gentlemen and scholars.
-
-Thanks again!
-
-Ryan
-
------Original Message-----
-From: Jason Opperisano [mailto:opie@817west.com]
-Sent: Monday, April 11, 2005 6:04 PM
 To: netfilter@lists.netfilter.org
-Subject: Re: Strange connection problems.
 
+Hi,
 
-On Fri, Apr 08, 2005 at 05:14:09PM -0400, Ryan Belcher wrote:
-> Hi All,
->=20
-> Below I've posted my FW config.  It's handling 3 interfaces.  ppp0, =
-eth0, an ath0.
-> It's on Linux kernel version 2.6.10.
->=20
-> Pretty much everything works as I expect except for a strange issue =
-with certain websites while trying to connect from clients within my =
-network.  For example, penny-arcade.com, americanexpress.com SSL logins, =
-and a few others.  If you want to poke at this configuration, =
-penny-arcade will appear to begin connection but after the SYN, ACK, =
-then HTTP GET sequence, the HTTP response never gets here (according to =
-Ethereal anyways).  If I try connecting from the actual firewalling box =
-itself, it works fine.
->=20
-> Does anyone have any ideas?
+Not sure if this is a possible bug, but we are seeing the message "Dead =
+loop on Virtual device BR0" a lot.
 
-sounds like the classic description of an MTU issue.
+We are using 2.6.10 and have now tried 2.6.11.5 with native ipsec, =
+brouting, netfilter and HTB queuing enabled. If I shut down the ipsec =
+tunnel, this message goes away.
 
--j
+Can someone please explain what it means and whether it's a bug?
 
---
-"Tom Tucker: This is Tom Tucker... Tucker's evil twin Todd Tucker
- out to destroy his brother's reputation. Now I'm going to go back =
-inside
- my motel room where I'm going to have freaky sex with my prostitute
- with whom I still have another 45 minutes."
-        --Family Guy
+Please let me know if there is any more information you need.
 
+thanks,
 
+Andrew.
