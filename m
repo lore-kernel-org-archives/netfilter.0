@@ -1,7 +1,7 @@
 From: Christian Seberino <seberino@spawar.navy.mil>
-Subject: can you specify incoming *AND* outgoing NIC on a FORWARD rule?
-Date: Wed, 13 Apr 2005 13:44:08 -0700
-Message-ID: <1113425048.3544.169.camel@seberino.spawar.navy.mil>
+Subject: Cleanest way to deal with loopback interface?
+Date: Wed, 13 Apr 2005 13:50:50 -0700
+Message-ID: <1113425449.3544.177.camel@seberino.spawar.navy.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,13 +18,27 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-FORWARD only table where rules can have -i *and* -o ??
+I want first rules that packets encounter to be my DROP_CHAIN
+that weeds out suspicious packets including packets addressed
+to and from 127.0.0.1 (loopback):
 
-It seems to make sense that you could specify 2 NICs
-with FORWARD but not with INPUT or OUTPUT.
+# -------------------------------------------------------------
+$IPTABLES -t filter -P INPUT   DROP
+$IPTABLES -t filter -P OUTPUT  DROP
+$IPTABLES -t filter -P FORWARD DROP
+ 
+$IPTABLES -t filter -A INPUT   -j DROP_CHAIN
+$IPTABLES -t filter -A OUTPUT  -j DROP_CHAIN
+$IPTABLES -t filter -A FORWARD -j DROP_CHAIN
+  
+$IPTABLES -t filter -A INPUT  -i $LOOPBACK_INTERFACE -j ACCEPT
+$IPTABLES -t filter -A OUTPUT -o $LOOPBACK_INTERFACE -j ACCEPT
+# ------------------------------------------------------------
 
-Is that right?
+How can I make DROP_CHAIN drop bogus 127.0.0.1 addressed packets
+but still allow **legitimate** loopback traffic?
 
 Chris
+
 
 
