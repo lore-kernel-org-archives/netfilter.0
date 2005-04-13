@@ -1,7 +1,7 @@
-From: Jorge Enrique <nunezj@ucbcba.edu.bo>
-Subject: Help logs with iptables
-Date: Wed, 13 Apr 2005 16:16:57 -0400
-Message-ID: <1113423418.28220.2.camel@admin.ucbcba.edu.bo>
+From: Christian Seberino <seberino@spawar.navy.mil>
+Subject: can you specify incoming *AND* outgoing NIC on a FORWARD rule?
+Date: Wed, 13 Apr 2005 13:44:08 -0700
+Message-ID: <1113425048.3544.169.camel@seberino.spawar.navy.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,9 +18,13 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi everyone, how can i get reports with iptables
+FORWARD only table where rules can have -i *and* -o ??
 
-I have my script for my firewall but i need get reports for all traffic
-my network. How can I do it?
+It seems to make sense that you could specify 2 NICs
+with FORWARD but not with INPUT or OUTPUT.
+
+Is that right?
+
+Chris
 
 
