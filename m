@@ -1,14 +1,9 @@
-From: "Eduardo Spremolla" <edspremolla@antel.com.uy>
-Subject: Re: SNAT and IPSEC
-Date: Wed, 13 Apr 2005 14:29:11 -0300
-Message-ID: <1113413351.4244.11.camel@fly.in.iantel.com.uy>
-References: <1113329293.29536.13.camel@fly.in.iantel.com.uy>
-	<1113408523.8270.16.camel@plasma.starken.com>
+From: Stephen Beck <becks@marietta.edu>
+Subject: help with fast nat
+Date: Wed, 13 Apr 2005 15:45:42 -0400 (EDT)
+Message-ID: <Pine.GSO.4.58.0504131520420.25950@mcnet.marietta.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1113408523.8270.16.camel@plasma.starken.com>
-Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,59 +14,94 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Daniel Wittenberg <daniel-wittenberg@starken.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-That could be the easy way ;-)
+if this is the wrong place to ask this please just send me a better
+choice. Ime trying to set a router to do source NAT with a fixed
+translation table as i believe to be common with firewalls.
+in the testing stage my:
+inside net is 10.0.30.0/24
+outside net is 10.0.31.0/24
+the router itself is running RH advanced server 4 mostly 'out of the
+box' and on boot logs:
+ Linux version 2.6.9-5.ELsmp (bhcompile@decompose.build.redhat.com) (gcc
+version 3.4.3 20041212 (Red Hat 3.4.3-9.EL4)) #1 SMP Wed Jan 5 19:30:39
+EST 2005
 
-LALO
+the router is ip 199.218.109.251 and its outside router is a cisco 6513.
+for testing the cisco is forwarding 10.0.30.0/24 and 10.0.31.0/24 to the
+251 ip.
 
-On Wed, 2005-04-13 at 11:08 -0500, Daniel Wittenberg wrote:
-> Couldn't he just SNAT the packets on his side when they become un-
-> encapsulated?  I'm doing this on a couple of my vpn links.
->=20
-> Dan
->=20
-> On Tue, 2005-04-12 at 15:08 -0300, Eduardo Spremolla wrote:
-> > I have 2 local networks 10.2.2.0/24 and 10.37.130.0/24 =
-interconnected by
-> > a ipsec tunnel running on kernel 2.6 native ipsec. So far so good.
-> >=20
-> > Now the admin of 10.37.130.0 wants me to NAT my network to 10.3.3.0
-> > because he had a ip conflict. I cant SNAT because when the packet =
-goes
-> > to nat post it has been encapsulated in ESP and had the firewalls
-> > address, as you can see in the bottom log snipe.I try to use NETMAP =
-in
-> > mangle PREROUTING, but it changes the dest ip , not the source.
-> >=20
-> > Is this possible?
-> >=20
-> > Thanks in advance for any clue.
-> >=20
-> > LALO
->=20
->=20
+router interfaces (of intrest) :
+eth2      Link encap:Ethernet  HWaddr 00:0F:1F:66:2D:8B
+          inet addr:199.218.109.251  Bcast:199.218.109.255
+Mask:255.255.255.0
+          inet6 addr: fe80::20f:1fff:fe66:2d8b/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+eth3.930  Link encap:Ethernet  HWaddr 00:0F:1F:66:2D:8C
+          inet addr:10.0.30.1  Bcast:10.255.255.255  Mask:255.255.255.0
+          inet6 addr: fe80::20f:1fff:fe66:2d8c/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
 
 
-Este e-mail y cualquier posible archivo adjunto est=E1 dirigido =
-=FAnicamente al destinatario del mensaje y contiene informaci=F3n que =
-puede ser confidencial. Si Ud. no es el destinatario correcto por favor =
-notifique al remitente respondiendo este mensaje y elimine =
-inmediatamente el e-mail y los posibles archivos adjuntos al mismo de su =
-sistema. Est=E1 prohibida cualquier utilizaci=F3n, difusi=F3n o copia de =
-este e-mail por cualquier persona o entidad que no sean las =
-espec=EDficas destinatarias del mensaje. ANTEL no acepta ninguna =
-responsabilidad con respecto a cualquier comunicaci=F3n que haya sido =
-emitida incumpliendo nuestra Pol=EDtica de Seguridad de la =
-Informaci=F3n.
-. . . . . . . . .
-This e-mail and any attachment is confidential and is intended solely =
-for the addressee(s). If you are not intended recipient please inform =
-the sender inmediately, answering this e-mail and delete it as well as =
-the attached files. Any use, circulation or copy of this e-mail by any =
-person or entity that not is the specific addressee(s) is prohibited. =
-ANTEL is not responsible for any communication emitted without =
-respecting our Information Security Policy.
+for testing I have flushed iptables: iptables -F
+
+have: echo "1" > /proc/sys/net/ipv4/ip_forward
+
+
+[root@dorm-test ~]# ip route show
+10.0.30.0/24 dev eth3.930  proto kernel  scope link  src 10.0.30.1
+199.218.109.0/24 dev eth2  proto kernel  scope link  src 199.218.109.251
+default via 199.218.109.1 dev eth2
+[root@dorm-test ~]#
+
+
+[root@dorm-test ~]# ip rule show
+0:      from all lookup local
+32766:  from all lookup main
+32767:  from all lookup default
+[root@dorm-test ~]#
+
+
+at this point a pc on the inside running 10.0.30.5 (static)
+can ping my desktop (on anouther segment also off the cisco)
+tcp dumps along the way show icmp requests and replys as expected.
+
+then i :
+[root@dorm-test ~]# ip route add 10.0.31.5/32 via 10.0.30.5
+[root@dorm-test ~]# ip rule add from 10.0.30.5 nat 10.0.31.5
+[root@dorm-test ~]# ip route flush cache
+[root@dorm-test ~]#
+
+the pings stop.
+
+on the router input i can see the requests still comming with.
+[root@dorm-test ~]# tcpdump -nn -i eth3.930
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth3.930, link-type EN10MB (Ethernet), capture size 96 bytes
+15:34:06.474482 IP 10.0.30.5 > *.*.146.31: icmp 64: echo request seq 2251
+
+
+but all is quiet on eth2 and my desktop sees nothing.
+
+
+after tests:
+[root@dorm-test ~]# ip route show
+10.0.31.5 via 10.0.30.5 dev eth3.930
+10.0.30.0/24 dev eth3.930  proto kernel  scope link  src 10.0.30.1
+199.218.109.0/24 dev eth2  proto kernel  scope link  src 199.218.109.251
+default via 199.218.109.1 dev eth2
+[root@dorm-test ~]# ip rule show
+0:      from all lookup local
+32765:  from 10.0.30.5 lookup main map-to 10.0.31.5
+32766:  from all lookup main
+32767:  from all lookup default
+[
+
+can anyone get me on to the next step:
+
+Thankyou, Stephen Beck, Marietta College.
 
