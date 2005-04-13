@@ -1,14 +1,11 @@
-From: "Eduardo Spremolla" <edspremolla@antel.com.uy>
-Subject: Re: SNAT and IPSEC
-Date: Wed, 13 Apr 2005 09:01:21 -0300
-Message-ID: <1113393681.4244.3.camel@fly.in.iantel.com.uy>
-References: <1113329293.29536.13.camel@fly.in.iantel.com.uy>
-	<425C1D5F.7000302@lopsch.com>
+From: "Ryan Belcher" <Ryanb@sealevel.com>
+Subject: RE: Strange connection problems.
+Date: Wed, 13 Apr 2005 08:26:33 -0400
+Message-ID: <B39AA5DB06510C4591C6EDDD580B0B81B5315E@mail.int.sealevel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <425C1D5F.7000302@lopsch.com>
-Content-class: urn:content-classes:message
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,67 +16,84 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: Daniel Lopes <lopsch@lopsch.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Yes, the OpenSwan is mutch more clear, yuo have the packet with the
-originals ip in the nat post chain to the tunn0 device.=20
+Kind of depends on how you look at it.  If an ICMP Ping (as an example) =
+goes out of the network, the echo will make it back, but if an =
+unrelated, or unestablished ICMP is directed to the network from the =
+outside, it will be dropped.  I know this could be considered "bad form" =
+in the right context, but I'm not specifically worried about it.
 
-Is there any chance to aplay NETMAP to the source ip on PREROUTING ?
+In any case, everything's working as I expect now.
 
-LALO=20
+Thanks,
 
-On Tue, 2005-04-12 at 21:11 +0200, Daniel Lopes wrote:
-> Eduardo Spremolla schrieb:
-> > I have 2 local networks 10.2.2.0/24 and 10.37.130.0/24 =
-interconnected by
-> > a ipsec tunnel running on kernel 2.6 native ipsec. So far so good.
-> >=20
-> > Now the admin of 10.37.130.0 wants me to NAT my network to 10.3.3.0
-> > because he had a ip conflict. I cant SNAT because when the packet =
-goes
-> > to nat post it has been encapsulated in ESP and had the firewalls
-> > address, as you can see in the bottom log snipe.I try to use NETMAP =
-in
-> > mangle PREROUTING, but it changes the dest ip , not the source.
-> >=20
-> > Is this possible?
-> >=20
-> > Thanks in advance for any clue.
-> >=20
-> > LALO
-> >=20
-> According to http://www.shorewall.net/netmap.html, besides I =
-don=C2=B4t=20
-> really know how and when NETMAP interacts, it should work if you use =
-an=20
-> Interface for IPSec like the alternative IPSec stack implemented by=20
-> FreeS/WAN. For the native stack I don=C2=B4t know if it will work you =
-will=20
-> need to know when it exactly interacts. It will probably only work =
-when=20
-> implemented directly into the IPSec stack.
+Ryan
+
+-----Original Message-----
+From: Mohamed Eldesoky [mailto:eldesoky.lists@gmail.com]
+Sent: Wednesday, April 13, 2005 7:43 AM
+To: Ryan Belcher; netfilter
+Subject: Re: Strange connection problems.
+
+
+Are you blocking ICMP ??
+
+On 4/13/05, Ryan Belcher <Ryanb@sealevel.com> wrote:
+> Gentlemen,
+>=20
+> Thank you!  That cleared things up perfectly.  ppp0 had the MTU set =
+for 1492; however, none of the other interfaces did (including eth1 =
+which I failed to mention was actually the path to ppp0).  You are both =
+gentlemen and scholars.
+>=20
+> Thanks again!
+>=20
+> Ryan
+>=20
+> -----Original Message-----
+> From: Jason Opperisano [mailto:opie@817west.com]
+> Sent: Monday, April 11, 2005 6:04 PM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: Strange connection problems.
+>=20
+> On Fri, Apr 08, 2005 at 05:14:09PM -0400, Ryan Belcher wrote:
+> > Hi All,
+> >
+> > Below I've posted my FW config.  It's handling 3 interfaces.  ppp0, =
+eth0, an ath0.
+> > It's on Linux kernel version 2.6.10.
+> >
+> > Pretty much everything works as I expect except for a strange issue =
+with certain websites while trying to connect from clients within my =
+network.  For example, penny-arcade.com, americanexpress.com SSL logins, =
+and a few others.  If you want to poke at this configuration, =
+penny-arcade will appear to begin connection but after the SYN, ACK, =
+then HTTP GET sequence, the HTTP response never gets here (according to =
+Ethereal anyways).  If I try connecting from the actual firewalling box =
+itself, it works fine.
+> >
+> > Does anyone have any ideas?
+>=20
+> sounds like the classic description of an MTU issue.
+>=20
+> -j
+>=20
+> --
+> "Tom Tucker: This is Tom Tucker... Tucker's evil twin Todd Tucker
+>  out to destroy his brother's reputation. Now I'm going to go back =
+inside
+>  my motel room where I'm going to have freaky sex with my prostitute
+>  with whom I still have another 45 minutes."
+>         --Family Guy
+>=20
 >=20
 
 
-Este e-mail y cualquier posible archivo adjunto est=C3=A1 dirigido =
-=C3=BAnicamente al destinatario del mensaje y contiene informaci=C3=B3n =
-que puede ser confidencial. Si Ud. no es el destinatario correcto por =
-favor notifique al remitente respondiendo este mensaje y elimine =
-inmediatamente el e-mail y los posibles archivos adjuntos al mismo de su =
-sistema. Est=C3=A1 prohibida cualquier utilizaci=C3=B3n, difusi=C3=B3n o =
-copia de este e-mail por cualquier persona o entidad que no sean las =
-espec=C3=ADficas destinatarias del mensaje. ANTEL no acepta ninguna =
-responsabilidad con respecto a cualquier comunicaci=C3=B3n que haya sido =
-emitida incumpliendo nuestra Pol=C3=ADtica de Seguridad de la =
-Informaci=C3=B3n.
-. . . . . . . . .
-This e-mail and any attachment is confidential and is intended solely =
-for the addressee(s). If you are not intended recipient please inform =
-the sender inmediately, answering this e-mail and delete it as well as =
-the attached files. Any use, circulation or copy of this e-mail by any =
-person or entity that not is the specific addressee(s) is prohibited. =
-ANTEL is not responsible for any communication emitted without =
-respecting our Information Security Policy.
+--=20
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
