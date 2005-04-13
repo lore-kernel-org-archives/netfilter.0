@@ -1,9 +1,9 @@
-From: "hareram" <hareram@sol.net.in>
-Subject: Re: Logging suggestions
-Date: Wed, 13 Apr 2005 10:38:59 +0530
-Message-ID: <0b3501c53fe6$e682ffe0$09603fca@southern>
-References: <0aa401c53f73$5c19a2a0$09603fca@southern>
-	<20050412161134.GA5964@epsilon.rdc.pl>
+From: "Wennie V. Lagmay" <wlagmay@yanbulink.net>
+Subject: Re: msn and yahoo messenger voice chat
+Date: Wed, 13 Apr 2005 08:13:24 +0300
+Message-ID: <000a01c53fe7$84f10370$dc0aa8c0@winntpro>
+References: <1113309566.425bc17e6a46f@webmail.yanbulink.net><20050412123940.GA26073@bender.817west.com><001101c53f6f$a198e9c0$dc0aa8c0@winntpro>
+	<20050412170316.GA26811@bender.817west.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,44 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Mariusz Kruk <Kruk@epsilon.eu.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-Hi
+Thank you very much, so far its working fine.
 
-thanks for the
-Suggestions
+regards,
 
-can you point me to how can loggin only new connections
-any docs or examples will be helpfull
-
-hare
------ Original Message ----- 
-From: "Mariusz Kruk" <Kruk@epsilon.eu.org>
+wennie
+----- Original Message -----
+From: "Jason Opperisano" <opie@817west.com>
 To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, April 12, 2005 9:41 PM
-Subject: Re: Logging suggestions
+Sent: Tuesday, April 12, 2005 8:03 PM
+Subject: Re: msn and yahoo messenger voice chat
 
 
-> On Tue, Apr 12, 2005 at 08:51:54PM +0530, hareram wrote:
->> I have large  capacity link like STM with my provider
->> Iam planning to log the every packet, source IP , Dest IP, Src port, Dest
->> port , Type of Service
->> what kind of system configuration recommended
+> On Tue, Apr 12, 2005 at 05:55:13PM +0300, Wennie V. Lagmay wrote:
+> > Hi Jason just to inform you what have I learn with the configuration
+from
+> > you.
+> > With this rule:
+> > iptables A POSTROUTING -s 192.169.10.0/24  -j SAME --to
+> > xxx.xxx.85.113-xxx.xxx.85.115, it is intermitent, i mean sometimes it
+> > connects to voice but sometimes it does't.
 >
-> First of all, I would advise to think if you really really need the
-> logging of every packet that badly. Perhaps only logging new
-> connections would be sufficient. Otherwise you'll generate huge amounts
-> of data. Especially, if your link is quite full.
+> try using the "--nodst" option:
 >
-> -- 
-> /\-\/\-\/\-\/\-\/\-\/\-\/\ Irrelevant  proper  order  of words is, yes.
-> \  Kruk@epsilon.eu.org   / Yoda of Borg
-> / http://epsilon.eu.org/ \
-> \/-/\/-/\/-/\/-/\/-/\/-/\/
+>   iptables -t nat -A POSTROUTING -s 192.169.10.0/24 \
+>     -j SAME --nodst --to xxx.xxx.85.113-xxx.xxx.85.115
+>
+> -j
+>
+> --
+> "Stewie: How deliciously evil. It's like something out of Stephen King.
+>  Stephen King: Now for my 300th novel, a couple... is attacked... by
+>  a giant lamp monster.
+>  Editor: You're not even trying anymore are you?"
+>         --Family Guy
 >
 >
-> 
 
 
 
