@@ -1,9 +1,11 @@
-From: "Andrew Hall" <temp02@bluereef.com.au>
-Subject: Dead loop on Virtual device BR0
-Date: Wed, 13 Apr 2005 11:38:06 +1000
-Message-ID: <0afc01c53fc9$70c82b30$5001010a@bluereef.local>
+From: "hareram" <hareram@sol.net.in>
+Subject: Re: Logging suggestions
+Date: Wed, 13 Apr 2005 10:38:59 +0530
+Message-ID: <0b3501c53fe6$e682ffe0$09603fca@southern>
+References: <0aa401c53f73$5c19a2a0$09603fca@southern>
+	<20050412161134.GA5964@epsilon.rdc.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,22 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Mariusz Kruk <Kruk@epsilon.eu.org>, netfilter@lists.netfilter.org
 
-Hi,
+Hi
 
-Not sure if this is a possible bug, but we are seeing the message "Dead =
-loop on Virtual device BR0" a lot.
+thanks for the
+Suggestions
 
-We are using 2.6.10 and have now tried 2.6.11.5 with native ipsec, =
-brouting, netfilter and HTB queuing enabled. If I shut down the ipsec =
-tunnel, this message goes away.
+can you point me to how can loggin only new connections
+any docs or examples will be helpfull
 
-Can someone please explain what it means and whether it's a bug?
+hare
+----- Original Message ----- 
+From: "Mariusz Kruk" <Kruk@epsilon.eu.org>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, April 12, 2005 9:41 PM
+Subject: Re: Logging suggestions
 
-Please let me know if there is any more information you need.
 
-thanks,
+> On Tue, Apr 12, 2005 at 08:51:54PM +0530, hareram wrote:
+>> I have large  capacity link like STM with my provider
+>> Iam planning to log the every packet, source IP , Dest IP, Src port, Dest
+>> port , Type of Service
+>> what kind of system configuration recommended
+>
+> First of all, I would advise to think if you really really need the
+> logging of every packet that badly. Perhaps only logging new
+> connections would be sufficient. Otherwise you'll generate huge amounts
+> of data. Especially, if your link is quite full.
+>
+> -- 
+> /\-\/\-\/\-\/\-\/\-\/\-\/\ Irrelevant  proper  order  of words is, yes.
+> \  Kruk@epsilon.eu.org   / Yoda of Borg
+> / http://epsilon.eu.org/ \
+> \/-/\/-/\/-/\/-/\/-/\/-/\/
+>
+>
+> 
 
-Andrew.
+
+
