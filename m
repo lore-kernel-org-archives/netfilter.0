@@ -1,14 +1,12 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: Strange connection problems.
-Date: Wed, 13 Apr 2005 15:00:41 +0200
-Message-ID: <1403218a050413060068d2561d@mail.gmail.com>
-References: <B39AA5DB06510C4591C6EDDD580B0B81B5315E@mail.int.sealevel.com>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: SNAT and IPSEC
+Date: Wed, 13 Apr 2005 10:58:46 -0400
+Message-ID: <20050413145846.GA30293@bender.817west.com>
+References: <1113329293.29536.13.camel@fly.in.iantel.com.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <B39AA5DB06510C4591C6EDDD580B0B81B5315E@mail.int.sealevel.com>
 Content-Disposition: inline
+In-Reply-To: <1113329293.29536.13.camel@fly.in.iantel.com.uy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,92 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Ryan Belcher <Ryanb@sealevel.com>, netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-OK
-But I have read in this list before that some ICMP types shouldn't be
-blocked, or problems with the MTU may arise !!
+On Tue, Apr 12, 2005 at 03:08:12PM -0300, Eduardo Spremolla wrote:
+> I have 2 local networks 10.2.2.0/24 and 10.37.130.0/24 interconnected by
+> a ipsec tunnel running on kernel 2.6 native ipsec. So far so good.
+> 
+> Now the admin of 10.37.130.0 wants me to NAT my network to 10.3.3.0
+> because he had a ip conflict. I cant SNAT because when the packet goes
+> to nat post it has been encapsulated in ESP and had the firewalls
+> address, as you can see in the bottom log snipe.I try to use NETMAP in
+> mangle PREROUTING, but it changes the dest ip , not the source.
+> 
+> Is this possible?
+> 
+> Thanks in advance for any clue.
 
+dunno if this will help or not; as i have lost my test lab, but have you
+applied the ipsec patches from PoM:
 
-On 4/13/05, Ryan Belcher <Ryanb@sealevel.com> wrote:
-> Kind of depends on how you look at it.  If an ICMP Ping (as an example) g=
-oes out of the network, the echo will make it back, but if an unrelated, or=
- unestablished ICMP is directed to the network from the outside, it will be=
- dropped.  I know this could be considered "bad form" in the right context,=
- but I'm not specifically worried about it.
->=20
-> In any case, everything's working as I expect now.
->=20
-> Thanks,
->=20
-> Ryan
->=20
-> -----Original Message-----
-> From: Mohamed Eldesoky [mailto:eldesoky.lists@gmail.com]
-> Sent: Wednesday, April 13, 2005 7:43 AM
-> To: Ryan Belcher; netfilter
-> Subject: Re: Strange connection problems.
->=20
-> Are you blocking ICMP ??
->=20
-> On 4/13/05, Ryan Belcher <Ryanb@sealevel.com> wrote:
-> > Gentlemen,
-> >
-> > Thank you!  That cleared things up perfectly.  ppp0 had the MTU set for=
- 1492; however, none of the other interfaces did (including eth1 which I fa=
-iled to mention was actually the path to ppp0).  You are both gentlemen and=
- scholars.
-> >
-> > Thanks again!
-> >
-> > Ryan
-> >
-> > -----Original Message-----
-> > From: Jason Opperisano [mailto:opie@817west.com]
-> > Sent: Monday, April 11, 2005 6:04 PM
-> > To: netfilter@lists.netfilter.org
-> > Subject: Re: Strange connection problems.
-> >
-> > On Fri, Apr 08, 2005 at 05:14:09PM -0400, Ryan Belcher wrote:
-> > > Hi All,
-> > >
-> > > Below I've posted my FW config.  It's handling 3 interfaces.  ppp0, e=
-th0, an ath0.
-> > > It's on Linux kernel version 2.6.10.
-> > >
-> > > Pretty much everything works as I expect except for a strange issue w=
-ith certain websites while trying to connect from clients within my network=
-.  For example, penny-arcade.com, americanexpress.com SSL logins, and a few=
- others.  If you want to poke at this configuration, penny-arcade will appe=
-ar to begin connection but after the SYN, ACK, then HTTP GET sequence, the =
-HTTP response never gets here (according to Ethereal anyways).  If I try co=
-nnecting from the actual firewalling box itself, it works fine.
-> > >
-> > > Does anyone have any ideas?
-> >
-> > sounds like the classic description of an MTU issue.
-> >
-> > -j
-> >
-> > --
-> > "Tom Tucker: This is Tom Tucker... Tucker's evil twin Todd Tucker
-> >  out to destroy his brother's reputation. Now I'm going to go back insi=
-de
-> >  my motel room where I'm going to have freaky sex with my prostitute
-> >  with whom I still have another 45 minutes."
-> >         --Family Guy
-> >
-> >
->=20
-> --
-> Mohamed Eldesoky
-> www.eldesoky.net
-> RHCE
->=20
+  ipsec-01-output-hooks
+  ipsec-02-input-hooks
+  ipsec-03-policy-lookup
+  ipsec-04-policy-checks
 
+it is my understanding that these patches make packets traverse the
+netfilter hooks twice:  once clear, and again encrypted.
 
---=20
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+-j
+
+--
+"Peter: I call it... Petoria. I was going to call it Peterland,
+ but that gay bar by the airport took it."
+        --Family Guy
 
