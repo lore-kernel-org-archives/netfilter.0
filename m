@@ -1,14 +1,13 @@
-From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?=
-	<leolistas@solutti.com.br>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
 Subject: Re: feature request
-Date: Thu, 14 Apr 2005 15:37:04 -0300
-Message-ID: <425EB850.1060506@solutti.com.br>
-References: <aec22fc50504140950949956c@mail.gmail.com>
-	<425EB3F5.5020003@riverviewtech.net>
+Date: Thu, 14 Apr 2005 13:52:35 -0500
+Message-ID: <425EBBF3.9090904@riverviewtech.net>
+References: <aec22fc50504140950949956c@mail.gmail.com>	<425EB3F5.5020003@riverviewtech.net>
+	<425EB850.1060506@solutti.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <425EB3F5.5020003@riverviewtech.net>
+In-Reply-To: <425EB850.1060506@solutti.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,73 +19,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+To: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
 Cc: netfilter@lists.netfilter.org
 
+> 
+>    Guys, how about using the new comment module for making grepping easy 
+> ???? Instead of grepping the rules parameters, you can include an unique 
+> ID as a comment in your rule and simply grep for it !!! What do you 
+> think ??
 
-    Guys, how about using the new comment module for making grepping 
-easy ???? Instead of grepping the rules parameters, you can include an 
-unique ID as a comment in your rule and simply grep for it !!! What do 
-you think ??
+I've considered doing that my self for other projects.  But seeing as how I did not have any real solution / method for doing so already I did not want to propose it yet.  I'm thinking of using it for more of a ""system that would manage all your rules, not unlike SysV Init scripts, for you.  You would then go through that interface and work with iptables.  I know that what ever I end up coming up with I'll end up using some sort of numeric identifiers for the rules to be matched against so it is easier to machine parse.  I'll probably end up using a comment of something like this ':<numeric ID>:<free text comment>'.  This way the machine parseable identifier is there in the form of ':<numeric ID>:' where it will be easy to find on the line.  The <numeric ID> will be at the start of the comments and starting at about the same column on screen while still allowing for free text comments (
+ or as free as comment will allow it's self, just a bit shorter) thus making it easier to 
+search for a specific <numeric ID> visually, vs having it at the end of the comment which would make location of the <numeric ID> of the rule depend on the length of the free text.  Seeing as how comment is a relatively new match extension and not all systems have it in the kernel this system would be valid for new and patched kernels only.  Where as something that would parse the output of iptables(|-save) would be more backwards compatible.
 
-iptables -I FORWARD -i eth0 -o ppp0 -p tcp -s 12.34.56.78 -d 10.20.30.40 
--m state --state NEW,ESTABLISHED -m time --timestart 08:00 --timestop 
-15:45 --days Mon,Wed,Fri -m comment --comment "my_super_crazy_rule" -j 
-ACCEPT
-
-[root@correio ~]# iptables -nL FORWARD -v | grep my_super_crazy_rule | wc -l
-1
-[root@correio ~]# iptables -nL FORWARD -v | grep 
-my_nonexistant_super_crazy_rule | wc -l    
-0
-[root@correio ~]#
+I personally am EXTENSIVELY using the comment match extension, as well as planing on using TARPIT targets (that is a sticky subject un to it's self.  Pun intended.  :P  )
 
 
-    Sincerily,
-    Leonardo Rodrigues
 
-Taylor, Grant escreveu:
+Grant. . . .
 
->> more? Why not return failure and say "rule already loaded?" It`s not a
->> critic, i just want to understand why i can need more than 1 same rule
->> for 1 chain.
->
->
-> I'm just guessing here but I'd be willing to bet that the actual 
-> kernel space of IPTables is more like a database that gets traversed 
-> in kernel space.  The iptables command line tool is probably a user 
-> land space tool for listing, inserting, updating, and deleting entries 
-> in that database.  I'd say that to make things simpler the kernel does 
-> not do any checking to make sure that a rule is distinct as there is 
-> no harm in having multiple identical rules saver for the fact that it 
-> is an additional rule to traverse.  The iptables command line tool was 
-> not written to do any checking either as it is not required and this 
-> would probably complicate things quite a bit more.
->
->> So, i`d prefer to write something simular to init scripts, when i have
->> to remember state of each loaded rule: is it loaded or not. But here
->> there are other problems: what if i manually add/delete rule? this
->> should not happen if i have 'my super system', but it`s life... so
->> again i have to reinvent wheel.
->
->
-> You might try taking a look at iptables-save and iptables-restore 
-> respectively.  From the output of iptables-save it looks like all the 
-> lines that it generates would go directly after the iptables command.  
-> I.e. if you would normally type:
->
-> iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
->
-> You would see the following in the iptables-save output:
->
-> -A FORWARD -i eth0 -o eth1 -j ACCEPT
->
-> I'd be willing to bet that it is easier to parse this output than the 
-> normal iptables output for what you are doing.  Take a look at it and 
-> see if it will work for you.
->
->
->
-> Grant. . . .
->
->
