@@ -1,12 +1,14 @@
-From: "Michael Muenz" <linux@leute.server.de>
-Subject: Re: SNAT and IPSEC
-Date: Wed, 13 Apr 2005 16:26:10 +0200
-Message-ID: <d3j9vh$tnf$1@sea.gmane.org>
-References: <1113329293.29536.13.camel@fly.in.iantel.com.uy><425C1D5F.7000302@lopsch.com>
-	<1113393681.4244.3.camel@fly.in.iantel.com.uy>
+From: Filip Sneppe <filip.sneppe@gmail.com>
+Subject: Re: help with fast nat
+Date: Thu, 14 Apr 2005 09:42:26 +0200
+Message-ID: <9151ac2a05041400427dd043e2@mail.gmail.com>
+References: <Pine.GSO.4.58.0504131520420.25950@mcnet.marietta.edu>
+Reply-To: Filip Sneppe <filip.sneppe@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.GSO.4.58.0504131520420.25950@mcnet.marietta.edu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +20,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Stephen Beck <becks@marietta.edu>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Hi Stephen,
 
-> "Eduardo Spremolla" <edspremolla@antel.com.uy> schrieb im 
-> Newsbeitragnews:1113393681.4244.3.camel@fly.in.iantel.com.uy...
-> Yes, the OpenSwan is mutch more clear, yuo have the packet with the
-> originals ip in the nat post chain to the tunn0 device. 
+On 4/13/05, Stephen Beck <becks@marietta.edu> wrote:
 
-> Is there any chance to aplay NETMAP to the source 
-> ip on PREROUTING ?
+>=20
+> can anyone get me on to the next step:
+>=20
 
-I never used NETMAP but this is from the description:
-It can be applied to the PREROUTING chain to alter the destination of
-incoming connections, to the POSTROUTING chain to alter the source 
-of outgoing connections, or both (with separate rules).
+Unfortionately, "fast nat" is broken on 2.6 kernels, due to the ipsec code
+that went in. It should actually be removed. Apparently, even RH 2.4 kernel=
+s=20
+with the ipsec code are broken:
 
-You want to alter the source (10.2.2.0/24) and that's an outgoing conn.
-(Of course vice versa) ..
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=3D126611
 
-So perhaps this will work:
-iptables -t nat -A POSTROUTING -s 10.2.2.0/24 -d 10.37.130.0/24 \
-   -j NETMAP --to 10.3.3.0/24
-iptables -t nat -A PREROUTING -s 10.37.130.0/24 -d 10.3.3.0/24 \
-   -j NETMAP --to 10.2.2.0/24
+See also:
+http://mailman.ds9a.nl/pipermail/lartc/2004q4/014307.html
 
-- Michael
+And the thread at:
+http://marc.theaimsgroup.com/?l=3Dlinux-netdev&m=3D109582576330019&w=3D2
 
+So I guess you're better off trying something like the NETMAP target
+in iptables.
 
+Regards,
+Filip
 
