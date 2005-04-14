@@ -1,14 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Problem with DNAT from localhost to LAN via loopback
-Date: Thu, 14 Apr 2005 16:19:28 -0400
-Message-ID: <20050414201928.GA2726@bender.817west.com>
-References: <1113492519.425e8c27488ab@imp1-q.free.fr>
-	<20050414171847.GA2040@bender.817west.com>
-	<001d01c5412c$b6fda5d0$0926a8c0@HECTISIE>
+From: Nagy Zoltan <kirk@elte.hu>
+Subject: can i alter the icmp redirects source address?
+Date: Thu, 14 Apr 2005 23:32:09 +0159
+Message-ID: <425EE16F.9040108@elte.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <001d01c5412c$b6fda5d0$0926a8c0@HECTISIE>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,34 +15,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thu, Apr 14, 2005 at 10:01:14PM +0200, Charles Delorme wrote:
-> Thank you for that tip. Are there any side effects for this compilation
-> directive ?
+hi
 
-not that i'm aware of.  i suppose if you want to split hairs, you're
-forcing locally-generated packets to traverse an additional netfilter
-hook.  dunno that i would be concerned about that though.
+i'm searching for a module which can alter the source ip in the icmp redirect messages, because we have 2 networks in our lan,
+and i don't want the firewall to route those packets thru
+i've an arp-proxy based fw, and it has no ip's in the the 2 subnets, where the clients sitting, it increases ttl, and sends arp request with 0.0.0.0 source address,
+and the only thing i miss is that to modify the icmp-redirect packets to look like it's source address is our router, because icmp redirects is only accepted if it comes
+from a first hop router...and 10.0.0.2 is'nt it ;)
+i've thinked on taking up our router address to send the redirects as it should be, but in this case if the user ping our router...
+he can only be sure that our firewall is up, and not our router...
+i've putted some extra options in our dhcp server's option list so MS-XP's are able to route to the other subnet and communicate thru that way but this is
+only a half solution it would be best if i can send the redirects with the router's ip and forget the what's the user want's to send thru it...i don let the packages
+thru the wall..i'we just let the tcp syn's and 1 udp/sec to get routeing decision and generate the redirect message,
+then drop away ( i know that rfc say's that the router have to only notify the user about the better route, but i don't to see
+that traffic on that system...)
+another idea was to change the clients router to 10.0.0.2 and add a route for them to 10.0.0.2, but i don't like this to much ;)
 
-> I'm not sure to understand what kind of rule I need to add in the OUTPUT
-> chain. Should I copy the kind of rule I have in the PREROUTING table ?
 
-probably.  something like:
+how can i send hose packet with the right source, or any other solution?
 
-  iptables -t nat -A OUTPUT -p tcp -d $EXT_IP --dport 3739 \
-    -j DNAT --to-destination 192.168.38.9:3739
-
-the result being that when the firewall tries to connect to its own
-external IP on TCP port 3739, the connection gets DNAT-ed to the 38.9
-machine--which i *think* is what you were after.
-
--j
-
---
-"Stewie: Careful! You're washing a baby's scalp, not scrubbing the vomit
- out of a Christmas dress, you stupid holiday drunk."
-        --Family Guy
+kirk
 
