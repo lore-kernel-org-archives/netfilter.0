@@ -1,12 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: DNAT/SNAT question
-Date: Thu, 14 Apr 2005 18:59:04 -0400
-Message-ID: <20050414225904.GA3295@bender.817west.com>
-References: <27594E8BA9D5CA458F5EF87D88B6B48F019A8E@pxtvjoexd01.pxt.primeexalia.com>
+From: "Andrew Kraslavsky" <andykras@hotmail.com>
+Subject: Re: Rule "labels"?
+Date: Thu, 14 Apr 2005 16:03:11 -0700
+Message-ID: <BAY106-F108732D77FE7E6B62F713BD6350@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F019A8E@pxtvjoexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +14,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+To: gtaylor@riverviewtech.net
+Cc: netfilter@lists.netfilter.org
 
-On Thu, Apr 14, 2005 at 03:50:17PM -0700, Gary W. Smith wrote:
-> You caught another typo, it should have been .3-7.  Also, the prefix
-> changes will also help.
-> 
-> But I'm still concerned / confused about the OUTPUT chain.  We currently
-> use the OUTPUT chain for the 1:1 nat.  That seems to work fine on all
-> other configurations where we do nat'ing. 
-> 
-> Our rule is currently "[0:0] -A POSTROUTING -s 10.20.30.8 -j DNAT --to
-> 88.44.55.8" which works fine.  But can we also consolidate this using
-> the NETMAP like the pre/post route? 
+Grant,
 
-yes.
+>I think it would be FAR more practical to do an "iptables -t filter -L -n =
 
--j
+>-v --line-numbers", "iptables -t nat -L -n -v --line-numbers", "iptables -=
+t=20
+>mangle -L -n -v --line-numbers" and parse the output looking for all lines=
+=20
+>that match POLICY001.  I think this would be an excellent shell or Perl=20
+>script.
 
---
-"Peter: Hey, Brian. If cops are pigs, does that make you a Snausage?
- Brian: Clever, Peter. Did you stay up all night writing that?
- Peter: No, I got to bed around two, two-thirty."
-        --Family Guy
+Thanks for the suggestion.  I think it is a very good one.
+
+I had not heard of the "-m comment" option before and its not in my revisio=
+n=20
+of Oskar Andreasson's Iptables Tutorial (guess I need to refresh my docs).
+
+I am additionally hampered (protected?) by a dictum that scripting is not=20
+allowed in my little world, so, in the end, I would have to do what you=20
+describe programmatically (i.e. in a C or C++ program). However, I'm=20
+certainly not averse to prototyping the functionality in a shell or Perl=20
+script.  I do that sometimes anyway when I want a quick tunraround as I=20
+iterate through changes to the logic.
+
+I'll try playing around with that.  When I have something I'll send it to=20
+you, or is there some sort of common repository where netfilter/iptables=20
+denizens share stuff like this?
+
+Thanks for your help and advice,
+
+- Andrew
+
+_________________________________________________________________
+Don=92t just search. Find. Check out the new MSN Search!=20
+http://search.msn.click-url.com/go/onm00200636ave/direct/01/
+
 
