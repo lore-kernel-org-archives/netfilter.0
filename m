@@ -1,12 +1,12 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
+From: "Wennie V. Lagmay" <wlagmay@yanbulink.net>
 Subject: Re: Iptables version
-Date: Thu, 14 Apr 2005 10:49:26 +0200
-Message-ID: <1113468567.9036.2.camel@nostromo.bgsecm.com>
+Date: Thu, 14 Apr 2005 13:07:47 +0300
+Message-ID: <000c01c540d9$cf197480$dc0aa8c0@winntpro>
 References: <001101c540c9$9f9df2e0$dc0aa8c0@winntpro>
+	<003601c540ca$6116e8f0$09603fca@southern>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001101c540c9$9f9df2e0$dc0aa8c0@winntpro>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +17,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: hareram <hareram@sol.net.in>, "Netfilter @ lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El jue, 14-04-2005 a las 11:11 +0300, Wennie V. Lagmay escribi=C3=B3:
-> Hi all,
->=20
-> Where can I download the latest iptables for Fedora core 2 64 bit
+Thanks, also where can I find the procedure on how to recompile iptables
+based on my needs.
 
-You can find them at: http://rpmfind.net
-The version is 1.2.9, so is not the last version of iptables.
-But have in mind that the userspace tools and the kernel must
-be patched with the same patch-o-matic or the system won't work
-as expected.
+thanks,
+wennnie
+----- Original Message -----
+From: "hareram" <hareram@sol.net.in>
+To: "Wennie V. Lagmay" <wlagmay@yanbulink.net>; "Netfilter @
+lists.netfilter.org" <netfilter@lists.netfilter.org>
+Sent: Thursday, April 14, 2005 11:17 AM
+Subject: Re: Iptables version
 
-> thank youry much,
->=20
-> wennie
 
-Regards.
-
---=20
-
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+> Hi
+>
+> the latest Versions are available at
+> www.netfilter.org
+>
+> you are looking  RPM to install
+> http://mymirror.asiaosc.org/redhat/fedora/core/2/i386/os/Fedora/RPMS/
+>
+> i think this URL should help
+>
+>
+> hare
+>
+>
+> ----- Original Message -----
+> From: "Wennie V. Lagmay" <wlagmay@yanbulink.net>
+> To: "Netfilter @ lists.netfilter.org" <netfilter@lists.netfilter.org>
+> Sent: Thursday, April 14, 2005 1:41 PM
+> Subject: Iptables version
+>
+>
+> > Hi all,
+> >
+> > Where can I download the latest iptables for Fedora core 2 64 bit
+> >
+> > thank youry much,
+> >
+> > wennie
+> >
+> >
+> >
+> >
+> >
+>
+>
 
 
 
