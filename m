@@ -1,16 +1,10 @@
-From: "Eduardo Spremolla" <edspremolla@antel.com.uy>
-Subject: Re: SNAT and IPSEC
-Date: Thu, 14 Apr 2005 12:19:18 -0300
-Message-ID: <1113491959.6180.17.camel@fly.in.iantel.com.uy>
-References: <1113329293.29536.13.camel@fly.in.iantel.com.uy>
-	<425C1D5F.7000302@lopsch.com>
-	<1113393681.4244.3.camel@fly.in.iantel.com.uy>
-	<d3j9vh$tnf$1@sea.gmane.org> <425E783F.5070502@lopsch.com>
+From: Charles Delorme <charles.delorme@suricat.net>
+Subject: Problem with DNAT from localhost to LAN via loopback
+Date: Thu, 14 Apr 2005 17:28:39 +0200
+Message-ID: <1113492519.425e8c27488ab@imp1-q.free.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <425E783F.5070502@lopsch.com>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,81 +15,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: Daniel Lopes <lopsch@lopsch.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Are these patches incorporated in some iptables version so far?
+Hello list...
 
-I'm running 1.2.9-2.3.1 now. and do not have development environment in
-that box, as a secure measure.
+I've read a lot in the archive about DNAT/loopback and redirect, but I st=
+ill
+haven't found what I'm looking for (ok, I had some U2 in my mind at that =
+time.
+Don't you now ? :-)
 
-Thanks to every body who replayed so far.
+My configuration can be simplified as this (configuration is far more
+complicated, but I assume you only need revelant informations) :
+- a linux routeur/firewall/sshd/squid/etc with two interfaces (LAN -RFC19=
+18 -
+and WAN static official IP)
+- a LAN machine hosting a P2P service (PixVillage photo sharing - nothing
+illegal)
+- the P2P protocol only knows about the WAN IP of the linux box.
 
-LALO
+I've configured PREROUTING entries and associated POSTROUTING which works
+perfectly from internet or another machine on the LAN. A simple extract :
 
-On Thu, 2005-04-14 at 16:03 +0200, Daniel Lopes wrote:
-> Michael Muenz schrieb:
-> > Hi,
-> >=20
-> >=20
-> >>"Eduardo Spremolla" <edspremolla@antel.com.uy> schrieb im=20
-> >>Newsbeitragnews:1113393681.4244.3.camel@fly.in.iantel.com.uy...
-> >>Yes, the OpenSwan is mutch more clear, yuo have the packet with the
-> >>originals ip in the nat post chain to the tunn0 device.=20
-> >=20
-> >=20
-> >>Is there any chance to aplay NETMAP to the source=20
-> >>ip on PREROUTING ?
-> >=20
-> >=20
-> > I never used NETMAP but this is from the description:
-> > It can be applied to the PREROUTING chain to alter the destination =
-of
-> > incoming connections, to the POSTROUTING chain to alter the source=20
-> > of outgoing connections, or both (with separate rules).
-> >=20
-> > You want to alter the source (10.2.2.0/24) and that's an outgoing =
-conn.
-> > (Of course vice versa) ..
-> >=20
-> > So perhaps this will work:
-> > iptables -t nat -A POSTROUTING -s 10.2.2.0/24 -d 10.37.130.0/24 \
-> >    -j NETMAP --to 10.3.3.0/24
-> > iptables -t nat -A PREROUTING -s 10.37.130.0/24 -d 10.3.3.0/24 \
-> >    -j NETMAP --to 10.2.2.0/24
-> >=20
-> > - Michael
-> >=20
-> >=20
-> >=20
-> >=20
-> No it won=C2=B4t that=C2=B4s the problem because with native IPSec the =
-packets=20
-> only pass the chains once (without the patches). So they arrive tunnel =
+$IPTABLES -t nat -A PREROUTING -d $FW_INTERNET -p tcp --dport 3739 -j DNA=
+T
+--to-destination 192.168.38.9:3739
+$IPTABLES -t nat -A POSTROUTING -s $LAN -d $LAN -p tcp --dport 3739 -j SN=
+AT
+--to-source $FW_INTERNET
 
-> encapsulated at the POSTROUTING chain. But with the patches it would=20
-> probably work.
->=20
+My problem is from the linux box when trying "telnet [official WAN IP] 37=
+39"
+which replies "connection refused". "tcpdump -nt -i lo" shows a simple SY=
+N then
+RST. I've add LOG to chains (INPUT/FORWARD/OUTPUT/PREROUTING/POSTROUTING)=
+ and
+found this telnet connection does not go via the PREROUTING chain. So it
+doesn't find any local 3739 port listening so it is not redirected to the
+LAN... When I fire up a netcat listing on the port, I can get the connect=
+ion -
+off course (but as I said before, configuration is more complicated and t=
+his
+test was mandatory)
+
+I've read in the archive this might be the normal behaviour, PREROUTING c=
+hain
+being used only for external and not loopback connection. Is that true ?
+
+Is there a solution via iptables to solve this ?
+
+Or should I set up a local proxy listening on loopback to relay from 3739=
+ to the
+remote machine as if DNAT didn't exists ? Is so, can someone suggest a ge=
+neric
+tcp proxy I could use (even if this would be the worst solution since I d=
+on't
+have only one port to relay like that...)
+
+Thanks a lot !
 
 
-Este e-mail y cualquier posible archivo adjunto est=C3=A1 dirigido =
-=C3=BAnicamente al destinatario del mensaje y contiene informaci=C3=B3n =
-que puede ser confidencial. Si Ud. no es el destinatario correcto por =
-favor notifique al remitente respondiendo este mensaje y elimine =
-inmediatamente el e-mail y los posibles archivos adjuntos al mismo de su =
-sistema. Est=C3=A1 prohibida cualquier utilizaci=C3=B3n, difusi=C3=B3n o =
-copia de este e-mail por cualquier persona o entidad que no sean las =
-espec=C3=ADficas destinatarias del mensaje. ANTEL no acepta ninguna =
-responsabilidad con respecto a cualquier comunicaci=C3=B3n que haya sido =
-emitida incumpliendo nuestra Pol=C3=ADtica de Seguridad de la =
-Informaci=C3=B3n.
-. . . . . . . . .
-This e-mail and any attachment is confidential and is intended solely =
-for the addressee(s). If you are not intended recipient please inform =
-the sender inmediately, answering this e-mail and delete it as well as =
-the attached files. Any use, circulation or copy of this e-mail by any =
-person or entity that not is the specific addressee(s) is prohibited. =
-ANTEL is not responsible for any communication emitted without =
-respecting our Information Security Policy.
+
+
+
+
+
 
