@@ -1,11 +1,12 @@
-From: "Andrew Kraslavsky" <andykras@hotmail.com>
-Subject: Re: Rule "labels"?
-Date: Thu, 14 Apr 2005 16:08:54 -0700
-Message-ID: <BAY106-F3EE4E4E6B32EFA4D9FEB4D6350@phx.gbl>
-References: <425EE17F.9010705@myrealbox.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: DNAT/SNAT question
+Date: Thu, 14 Apr 2005 19:16:36 -0400
+Message-ID: <20050414231636.GA3376@bender.817west.com>
+References: <27594E8BA9D5CA458F5EF87D88B6B48F019A8F@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <425EE17F.9010705@myrealbox.com>
+Content-Disposition: inline
+In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F019A8F@pxtvjoexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-To: sjmccracky@myrealbox.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-sjm,
+On Thu, Apr 14, 2005 at 04:08:08PM -0700, Gary W. Smith wrote:
+> I'm almost there.  I get an error when trying to use NETMAP in the
+> OUTPUT chain.  Is there something else I need to add?
+> 
+> iptables -t nat -A OUTPUT -d 88.44.55.8/26  -j NETMAP --to 10.20.30.8/26
+> iptables v1.2.11: Bad network address `10.20.30.8/26'
 
-Thanks for the suggestion.  The "no scripting" limitation that is imposed o=
-n=20
-me makes Grant's suggestion seem more of a match (<-- alert! unintentional,=
-=20
-and very poor, pun) to my needs but I'll certainly give this a try too if I=
-=20
-run into trouble with the -m comment approach he suggested.
+'nother typo:  the network address for 10.20.30.8/26 is 10.20.30.0 not
+.8.  i thought we agreed on 10.20.30.8/29?
 
-I guess I should have mentioned that "no scripting" thing in my original=20
-post - sorry about that.
+-j
 
-Hmmm... Now that I think about it, VPN failover support is another task on =
-
-my assignment list.  Perhaps I'll use your idea to help solve that little=20
-(*shudder*) problem.
-
-Thanks,
-
-- Andrew
-
-_________________________________________________________________
-Don=92t just search. Find. Check out the new MSN Search!=20
-http://search.msn.click-url.com/go/onm00200636ave/direct/01/
-
+--
+"Lois: $49.95? Are you sure we can afford this?
+ Peter: Lois, our relationship can not be measured in nipples and
+ dimes... nickels and boobs... money."
+        --Family Guy
 
