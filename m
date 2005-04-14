@@ -1,10 +1,12 @@
-From: Charles Delorme <charles.delorme@suricat.net>
-Subject: Problem with DNAT from localhost to LAN via loopback
-Date: Thu, 14 Apr 2005 17:28:39 +0200
-Message-ID: <1113492519.425e8c27488ab@imp1-q.free.fr>
+From: `VL <vl.homutov@gmail.com>
+Subject: Re: feature request
+Date: Thu, 14 Apr 2005 20:50:51 +0400
+Message-ID: <aec22fc50504140950949956c@mail.gmail.com>
+Reply-To: `VL <vl.homutov@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,67 +20,54 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello list...
+On Apr 8, 2005 4:00 PM, Timothy Earl <mehimx@gmail.com> wrote:
+> Hi,
+>
+> I think to solve your problem you could work around it by using a series =
+of
+> awk grep and sed commands along with iptables -vL to test if your rule is
+> loaded, presently that is how i get my current ip etc..
+>
+> man awk, man grep, man sed
+>
+> for example:
+>
+> EXTIP=3D"`/sbin/ifconfig ppp0 | grep 'inet adr' | awk '{print $2}' | sed =
+-e
+> 's/.*$
+>
+> Regards,
+>
+> Tim
 
-I've read a lot in the archive about DNAT/loopback and redirect, but I st=
-ill
-haven't found what I'm looking for (ok, I had some U2 in my mind at that =
-time.
-Don't you now ? :-)
+I do know that i can work around my problem with thousands of ways =3D)
+. I was surprised that it is impossible with iptables just to test if
+rule was loaded, i was sure option existed. One more question i have:
+what is the reason to add rules, that already exists in chain more and
+more? Why not return failure and say "rule already loaded?" It`s not a
+critic, i just want to understand why i can need more than 1 same rule
+for 1 chain.
 
-My configuration can be simplified as this (configuration is far more
-complicated, but I assume you only need revelant informations) :
-- a linux routeur/firewall/sshd/squid/etc with two interfaces (LAN -RFC19=
-18 -
-and WAN static official IP)
-- a LAN machine hosting a P2P service (PixVillage photo sharing - nothing
-illegal)
-- the P2P protocol only knows about the WAN IP of the linux box.
+Second, grepping & awking around output of iptables with certain
+options doesn`t seem 'reliable' to me. I have to compare string like:
 
-I've configured PREROUTING entries and associated POSTROUTING which works
-perfectly from internet or another machine on the LAN. A simple extract :
+OUTPUT -o eth0 -p tcp -s 192.168.127.29 -d 192.168.127.30 -j ACCEPT
+to:
+0     0 ACCEPT     tcp  --  *      eth0    192.168.127.29
+192.168.127.30
 
-$IPTABLES -t nat -A PREROUTING -d $FW_INTERNET -p tcp --dport 3739 -j DNA=
-T
---to-destination 192.168.38.9:3739
-$IPTABLES -t nat -A POSTROUTING -s $LAN -d $LAN -p tcp --dport 3739 -j SN=
-AT
---to-source $FW_INTERNET
+Not impossible, but not very pleasant. The more complex rule i will
+have, the more pain. Additional parameters, for example mac addresses,
+tcp flags - what will happen to my rule matching, based on shell, if i
+add couple of new options to my rule?
 
-My problem is from the linux box when trying "telnet [official WAN IP] 37=
-39"
-which replies "connection refused". "tcpdump -nt -i lo" shows a simple SY=
-N then
-RST. I've add LOG to chains (INPUT/FORWARD/OUTPUT/PREROUTING/POSTROUTING)=
- and
-found this telnet connection does not go via the PREROUTING chain. So it
-doesn't find any local 3739 port listening so it is not redirected to the
-LAN... When I fire up a netcat listing on the port, I can get the connect=
-ion -
-off course (but as I said before, configuration is more complicated and t=
-his
-test was mandatory)
+So, i`d prefer to write something simular to init scripts, when i have
+to remember state of each loaded rule: is it loaded or not. But here
+there are other problems: what if i manually add/delete rule? this
+should not happen if i have 'my super system', but it`s life... so
+again i have to reinvent wheel.
 
-I've read in the archive this might be the normal behaviour, PREROUTING c=
-hain
-being used only for external and not loopback connection. Is that true ?
-
-Is there a solution via iptables to solve this ?
-
-Or should I set up a local proxy listening on loopback to relay from 3739=
- to the
-remote machine as if DNAT didn't exists ? Is so, can someone suggest a ge=
-neric
-tcp proxy I could use (even if this would be the worst solution since I d=
-on't
-have only one port to relay like that...)
-
-Thanks a lot !
-
-
-
-
-
-
-
+And all of this can be solved by simple( well,i think so =3D))
+modification. We can add -test option or we can return false while
+trying to load rule, that already exists in the chain.
 
