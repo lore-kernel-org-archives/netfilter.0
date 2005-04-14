@@ -1,13 +1,13 @@
-From: Julian Labuschagne <personxx@wan4u.co.za>
-Subject: Re: Port Forwarding Problem
-Date: Fri, 15 Apr 2005 11:23:31 +0000
-Message-ID: <425FA433.9040106@wan4u.co.za>
-References: <425F98B0.7040303@wan4u.co.za>
-	<20050415084039.7032.qmail@arcoscom.com>
+From: "Dr.Chandra" <dr.chandra@telenet.be>
+Subject: Re: IPv4 to IPv6
+Date: Thu, 14 Apr 2005 15:17:58 +0200
+Message-ID: <1113484678.8412.1.camel@creative.angels.be>
+References: <7faad17f050414051777aa04ec@mail.gmail.com>
+Reply-To: dr.chandra@telenet.be
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040202030007080206090801"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050415084039.7032.qmail@arcoscom.com>
+In-Reply-To: <7faad17f050414051777aa04ec@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,96 +18,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Nuno Amorim <na.amorim@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------040202030007080206090801
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Samuel D=C3=ADaz Garc=C3=ADa wrote:
+I assume you'll need a service to do the ipv4-6 translation, besides
+that you're just back to ip's and ports.
 
-> Without having a look into your scripts, I think you need:
-> 1) Allow INPUT into filter table to the port.
-> 2) Allow FORDWARD into filter table to the redirected conection.
-> Good luck.
->
-Line 56: $IPTABLES -A INPUT -i $INET_IFACE -p tcp --dport 800 -j ACCEPT
-Line 57: $IPTABLES -A INPUT -i $INET_IFACE -p udp --dport 800 -j ACCEPT
-Line 58:
-Line 59: # Forward Chain
-Line 60: $IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
-Line 61: $IPTABLES -A FORWARD -o $LAN_IFACE -j ACCEPT
+J.L.
 
-Line 85: $IPTABLES -A PREROUTING -t nat -p tcp -d $INET_IP --dport 800=20
--j DNAT --to 192.168.1.5:800
-Line 86: $IPTABLES -A PREROUTING -t nat -p udp -d $INET_IP --dport 800=20
--j DNAT --to 192.168.1.5:800
+Op do, 14-04-2005 te 13:17 +0100, schreef Nuno Amorim:
+> Hello!
+> 
+> 
+> What I want to do is in a box where I receive some UDP streams, do a
+> "NAT" where the output is going to be IPv6 multicast. This is only one
+> way, so no return traffic. Each udp port is translated to an IPv6
+> multicast address.
+> 
+> Is this possible in iptables?
+> 
+> Thanks in advance.
+> 
+> Nuno
+> 
 
-This is a few lines from the attached firewall.
-I think you may be reffering to these lines of the firewall script.
+-- 
+Dr.Chandra <dr.chandra@telenet.be>
+cyber.angels.be
 
-On Lines 56,57 I allow connections to my gateway on port 800
-On Lines 60,61 I allow all connections in the forwarding chain.
-And on Lines 85,86 is the port forwarding rules.
-
-Kind Regards Julian.
-
-
-
-
-
-
-
---------------040202030007080206090801
-Content-Type: text/plain;
- name="custom.firewall"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="custom.firewall"
-
-IyEvYmluL2Jhc2gKCiMgU2V0IHBhdGggdG8gaXB0YWJsZXMgYmluYXJ5CklQVEFCTEVTPS91
-c3Ivc2Jpbi9pcHRhYmxlcwoKIwojIExvb3BiYWNrIElQIGFuZCBJbnRlcmZhY2UKIwpMT19J
-RkFDRT0ibG8iCkxPX0lQPSIxMjcuMC4wLjEiCgojCiMgSW50ZXJuZXQgSVAgYW5kIEludGVy
-ZmFjZQojCklORVRfSVA9YC9zYmluL2lmY29uZmlnIHBwcDAgfCBncmVwICJpbmV0IGFkZHIi
-IHwgY3V0IC1kOiAtZjIgfCBjdXQgLWQgJyAnIC1mMWAKSU5FVF9JRkFDRT0icHBwMCIKCiMK
-IyBMQU4gUmFuZ2UsIElQIEFkZHJlc3MgYW5kIEludGVyZmFjZQojCkxBTl9JUD0iMTkyLjE2
-OC4xLjEiCkxBTl9JUF9SQU5HRT0iMTkyLjE2OC4xLjAvMjQiCkxBTl9CQ0FTVF9BRFJFU1M9
-IjE5Mi4xNjguMS4yNTUiCkxBTl9JRkFDRT0iZXRoMCIKCiMgCiMgU2V0IGRlZmF1bHQgcG9s
-aWNpZXMKIwokSVBUQUJMRVMgLVAgSU5QVVQgRFJPUAokSVBUQUJMRVMgLVAgT1VUUFVUIERS
-T1AKJElQVEFCTEVTIC1QIEZPUldBUkQgRFJPUAoKIwojIEZsdXNoIENoYWlucwojCiRJUFRB
-QkxFUyAtRgokSVBUQUJMRVMgLXQgbmF0IC1GCgojCiMgQWxsb3cgbG9vcGJhY2sgaW50ZXJm
-YWNlCiMKJElQVEFCTEVTIC1BIElOUFVUIC1pICRMT19JRkFDRSAtaiBBQ0NFUFQKJElQVEFC
-TEVTIC1BIE9VVFBVVCAtbyAkTE9fSUZBQ0UgLWogQUNDRVBUCgojIE91dHB1dCBDaGFpbgok
-SVBUQUJMRVMgLUEgT1VUUFVUIC1vICRJTkVUX0lGQUNFIC1wIHRjcCAtLWRwb3J0IDUzIC1q
-IEFDQ0VQVAokSVBUQUJMRVMgLUEgT1VUUFVUIC1vICRJTkVUX0lGQUNFIC1wIHVkcCAtLWRw
-b3J0IDUzIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgT1VUUFVUIC1vICRJTkVUX0lGQUNFIC1w
-IHRjcCAtLWRwb3J0IDI1IC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgT1VUUFVUIC1vICRJTkVU
-X0lGQUNFIC1wIHRjcCAtLWRwb3J0IDgwIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgT1VUUFVU
-IC1vICRJTkVUX0lGQUNFIC1wIHRjcCAtLWRwb3J0IDExMCAtaiBBQ0NFUFQKCiMgSW5wdXQg
-Q2hhaW4KJElQVEFCTEVTIC1BIElOUFVUIC1pICRJTkVUX0lGQUNFIC1wIHRjcCAtbSBzdGF0
-ZSAtLXN0YXRlIGVzdGFibGlzaGVkLHJlbGF0ZWQgLWogQUNDRVBUCiRJUFRBQkxFUyAtQSBJ
-TlBVVCAtaSAkSU5FVF9JRkFDRSAtcCB1ZHAgLW0gc3RhdGUgLS1zdGF0ZSBlc3RhYmxpc2hl
-ZCxyZWxhdGVkIC1qIEFDQ0VQVAoKJElQVEFCTEVTIC1BIElOUFVUIC1pICRJTkVUX0lGQUNF
-IC1wIHRjcCAtLWRwb3J0IDgwMCAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIElOUFVUIC1pICRJ
-TkVUX0lGQUNFIC1wIHVkcCAtLWRwb3J0IDgwMCAtaiBBQ0NFUFQKCiMgRm9yd2FyZCBDaGFp
-bgokSVBUQUJMRVMgLUEgRk9SV0FSRCAtaSAkTEFOX0lGQUNFIC1qIEFDQ0VQVAokSVBUQUJM
-RVMgLUEgRk9SV0FSRCAtbyAkTEFOX0lGQUNFIC1qIEFDQ0VQVAoKIwojIEFsbG93IElDTVAK
-IwokSVBUQUJMRVMgLUEgT1VUUFVUIC1vICRJTkVUX0lGQUNFIC1wIGljbXAgLWogQUNDRVBU
-CiRJUFRBQkxFUyAtQSBJTlBVVCAtaSAkSU5FVF9JRkFDRSAtcCBpY21wIC1qIEFDQ0VQVAoK
-IwojIFVzZXJzIGFsbG93ZWQgaW50ZXJuZXQgYWNjZXNzCiMKJElQVEFCTEVTIC1BIElOUFVU
-IC1pICRMQU5fSUZBQ0UgLXMgMTkyLjE2OC4xLjE0MyAtaiBBQ0NFUFQKJElQVEFCTEVTIC1B
-IE9VVFBVVCAtbyAkTEFOX0lGQUNFIC1kIDE5Mi4xNjguMS4xNDMgLWogQUNDRVBUCgokSVBU
-QUJMRVMgLUEgSU5QVVQgLWkgJExBTl9JRkFDRSAtcyAxOTIuMTY4LjEuNSAtaiBBQ0NFUFQK
-JElQVEFCTEVTIC1BIE9VVFBVVCAtbyAkTEFOX0lGQUNFIC1kIDE5Mi4xNjguMS41IC1qIEFD
-Q0VQVAoKJElQVEFCTEVTIC1BIElOUFVUIC1pICRMQU5fSUZBQ0UgLXMgMTkyLjE2OC4xLjgg
-LWogQUNDRVBUCiRJUFRBQkxFUyAtQSBPVVRQVVQgLW8gJExBTl9JRkFDRSAtZCAxOTIuMTY4
-LjEuOCAtaiBBQ0NFUFQKCgojCiMgQWRkIHBvcnQgZm9yd2FyZGluZyBydWxlCiMKJElQVEFC
-TEVTIC1BIFBSRVJPVVRJTkcgLXQgbmF0IC1wIHRjcCAtZCAkSU5FVF9JUCAtLWRwb3J0IDgw
-MCAtaiBETkFUIC0tdG8gMTkyLjE2OC4xLjU6ODAwCiRJUFRBQkxFUyAtQSBQUkVST1VUSU5H
-IC10IG5hdCAtcCB1ZHAgLWQgJElORVRfSVAgLS1kcG9ydCA4MDAgLWogRE5BVCAtLXRvIDE5
-Mi4xNjguMS41OjgwMAoKIwojIE1hc3F1ZXJhZGUgTEFOIHVzZXJzIChJbnRlcm5ldCBTaGFy
-aW5nKQojCiRJUFRBQkxFUyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gJElORVRfSUZBQ0Ug
-LWogU05BVCAtLXRvLXNvdXJjZSAkSU5FVF9JUAo=
---------------040202030007080206090801--
 
