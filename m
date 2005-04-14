@@ -1,12 +1,13 @@
 From: Taylor Grant <gtaylor@riverviewtech.net>
-Subject: Re: help with fast nat
-Date: Wed, 13 Apr 2005 19:25:26 -0500
-Message-ID: <425DB876.2050903@riverviewtech.net>
-References: <Pine.GSO.4.58.0504131520420.25950@mcnet.marietta.edu>
+Subject: Re: can you specify incoming *AND* outgoing NIC on a FORWARD rule?
+Date: Wed, 13 Apr 2005 19:27:24 -0500
+Message-ID: <425DB8EC.9040907@riverviewtech.net>
+References: <1113425048.3544.169.camel@seberino.spawar.navy.mil>
+	<20050413205556.GA31258@bender.817west.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.GSO.4.58.0504131520420.25950@mcnet.marietta.edu>
+In-Reply-To: <20050413205556.GA31258@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +19,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Stephen Beck <becks@marietta.edu>
+To: Jason Opperisano <opie@817west.com>
 Cc: netfilter@lists.netfilter.org
 
-What system is doing the pinging (IP / subnet) and what is it pining (IP / subnet)?
+> precisely.
 
-> [root@dorm-test ~]# ip route add 10.0.31.5/32 via 10.0.30.5
-
-If you were pinging 10.0.31.5 passing through this router where 10.0.31.x/24 was on a different subnet and you told this router that 10.0.31.5 was accessible via 10.0.30.5 (the system doing the ping) you just told the router to loop the traffic back on the system doing the pinging.
-
-> [root@dorm-test ~]# ip rule add from 10.0.30.5 nat 10.0.31.5
-
-I'm not sure what you are hoping to accomplish by doing this.  This will make any traffic coming from 10.0.30.5 (the system doing the pinging?) appear as if it is coming from 10.0.31.5 which would cause the router to send the traffic back to the 10.0.31.x/24 network.
-
-I have a feeling what you might have done (if I understand what you have written here correctly) is effectively do a double loop back as in the 10.0.30.5 system's traffic loops back on it's self at the router as does the 10.0.31.5 system's traffic loop back on it's self at the router too.
-
-There really is not enough information to try to help you, but based on what I have seen this is what I deduce.  I hope that will help you in some way.
+You beat me to the punch.  That is exactly what FORWARD does in allowing you to specify an inbound (-i) and outbound (-o) interface.
 
 
 
