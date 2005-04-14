@@ -1,7 +1,7 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+From: "Stephen J. McCracken" <sjmccracky@myrealbox.com>
 Subject: Re: Rule "labels"?
-Date: Thu, 14 Apr 2005 16:02:08 -0500
-Message-ID: <425EDA50.1010201@riverviewtech.net>
+Date: Thu, 14 Apr 2005 16:32:47 -0500
+Message-ID: <425EE17F.9010705@myrealbox.com>
 References: <BAY106-F357CEE5BD3D8B2616C1AD6D6350@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -21,29 +21,38 @@ Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Andrew Kraslavsky <andykras@hotmail.com>
 Cc: netfilter@lists.netfilter.org
 
-> Is there a way to associate rules together across tables or chains, 
-> possibly with a label?
-
-I can't give you a ""label, but I could give you a ""comment.  ;)  Try looking at a newer kernel (2.6.10?) as it includes the comment match (always returns true but let's you put a free text string in as a comment) which will be displayed when you iptables -L.
-
-> iptables -t filter -A FORWARD -label POLICY001 -i $PUBLIC_IF -d 
-> 192.168.168.23 -p tcp --dport 80 -j ACCEPT
-
-iptables -t filter -A FORWARD -m comment --comment 'POLICY001' -i $PUBLIC_IF -p tcp --dport 80 -j ACCEPT
-
-Should be the equivalent of what you are needing.
-
-> 2) Support rule deletion based on -label, e.g.:
+Andrew Kraslavsky wrote:
+[snip]
+> This equates to the following 2 rules, one in the 'nat' table and the 
+> other in the 'filter' table:
 > 
-> iptables -t filter -D FORWARD -label POLICY001
+> iptables -t nat -A PREROUTING -i $PUBLIC_IF -p tcp --dport 80 -j DNAT 
+> --to 192.168.168.23
+> 
+> iptables -t filter -A FORWARD -i $PUBLIC_IF -d 192.168.168.23 -p tcp 
+> --dport 80 -j ACCEPT
+> 
+> Later, the user decides to disable the policy which means deleting both 
+> of the rules above.  Since I cannot rely on knowing the indices of each 
+[snip]
 > 
 > Ideally, the delete command would remove all rules in the specified 
 > chain with the specified label, or all rules within the specified table, 
 > or even across all chains in all tables, but I'm not that greedy...
+> 
+> Suggestions?
 
-Well comment will not do that.  I'm not sure that I really want the capability to do so in the iptables command and / or the kernel as this would be more overhead for something that is seldom used.  I think it would be FAR more practical to do an "iptables -t filter -L -n -v --line-numbers", "iptables -t nat -L -n -v --line-numbers", "iptables -t mangle -L -n -v --line-numbers" and parse the output looking for all lines that match POLICY001.  I think this would be an excellent shell or Perl script.  If you would be interested in collaborating on such a project I'd be interested in seeing if I could help.
+It might not be as elegant as you are looking for, but I do something 
+similar with adding/deleting rules when VPNs come up/go down.  I have 
+been simply generating rules in a file and sourcing that file in the 
+VPN_up script.  I then have that file saved for the case when the VPN 
+goes down and just do a simple sed script to change all adds to deletes 
+and source that file in the VPN_down script.  You don't have the problem 
+of finding rules dynamically as you have the file that generated the 
+rules hanging around and can easily reverse the process changing "-A" to 
+"-D".
 
+Like I said, maybe not elegant, but it works.
 
-
-Grant. . . .
+sjm
 
