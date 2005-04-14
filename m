@@ -1,13 +1,16 @@
-From: "Eduardo Spremolla" <edspremolla@antel.com.uy>
-Subject: Re: can you specify incoming *AND* outgoing NIC on a FORWARD rule?
-Date: Thu, 14 Apr 2005 10:12:25 -0300
-Message-ID: <1113484346.6180.4.camel@fly.in.iantel.com.uy>
-References: <1113425048.3544.169.camel@seberino.spawar.navy.mil>
+From: Adrian Turcu <adrian.turcu@gmvinteractive.com>
+Subject: Re: I need help with "CONNMARK --set-mark"
+Date: Thu, 14 Apr 2005 14:25:06 +0100
+Message-ID: <200504141425.08821.adrian.turcu@gmvinteractive.com>
+References: <200504111134.26674.adrian.turcu@gmvinteractive.com>
+	<20050414124539.GA1297@bender.817west.com>
+	<9151ac2a0504140609156b7008@mail.gmail.com>
+Reply-To: adrian.turcu@gmvinteractive.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1113425048.3544.169.camel@seberino.spawar.navy.mil>
-Content-Class: urn:content-classes:message
+In-Reply-To: <9151ac2a0504140609156b7008@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +21,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Christian Seberino <seberino@spawar.navy.mil>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+Cc: Filip Sneppe <filip.sneppe@gmail.com>
 
-Forwarding is about passing packets from one nic to other.
-INPUT and OUTPUT are between a nic and the host itself.
-The packets not destined to or coming from your machine do not pass
-through INPUT and OUTPUT chains.
+Hi Filip,
 
-LALO=20
+On Thu 14 Apr 2005 14:09, Filip Sneppe wrote:
+>
+> I haven't followed this in great detail either, but I do know that
+> some people reported problems with the firewall MARK in combination
+> with tc filter ... fwmark on the LARTC mailing list. I do remember someone
+> explicitly using a u32 mark match too.
+>
+> I don't know what the details were, but could you give a different kernel
+> a try ? Sorry, I thought I kept the exact mail thread in my mailbox, but I
+> must have deleted it... You may want to check the LARTC archives for more
+> info.
+>
+> So try a different kernel first, if the problem persists and you're
+> convinced that this is a bug, you may want to take this to the -devel
+> mailing list, where the author of the CONNMARK patch also hangs out.
+>
+> Regards,
+> Filip
 
-On Wed, 2005-04-13 at 13:44 -0700, Christian Seberino wrote:
-> FORWARD only table where rules can have -i *and* -o ??
->=20
-> It seems to make sense that you could specify 2 NICs
-> with FORWARD but not with INPUT or OUTPUT.
->=20
-> Is that right?
->=20
-> Chris
->=20
->=20
+I have tried with 2 different kernels 2.6.10 and 2.6.11.6 and 2 different 
+iptables 1.3.0 and 1.3.1.  The behaviour is the same, most of the time the 
+CONNMARK does not work.
+I posted the 2.6.11.6 kernel with 1.3.1 iptables, 'cause I intend to use the 
+latest stable versions for both.
+
+I cannot say if this is a bug or not after reading through the message posted 
+by Jason. Although, if you go to the link posted by Jason, it looks like the 
+options of setting/saving the marks that CONNMARK has, they don't work as 
+most people will expect to (set mark to the connection and _save_ it 
+afterward inside the connetion, not resetting to zero and save it).
+
+I can post the original message to the devel list, maybe I'll get a different 
+twist from the author (if still there)
 
 
-Este e-mail y cualquier posible archivo adjunto est=E1 dirigido =
-=FAnicamente al destinatario del mensaje y contiene informaci=F3n que =
-puede ser confidencial. Si Ud. no es el destinatario correcto por favor =
-notifique al remitente respondiendo este mensaje y elimine =
-inmediatamente el e-mail y los posibles archivos adjuntos al mismo de su =
-sistema. Est=E1 prohibida cualquier utilizaci=F3n, difusi=F3n o copia de =
-este e-mail por cualquier persona o entidad que no sean las =
-espec=EDficas destinatarias del mensaje. ANTEL no acepta ninguna =
-responsabilidad con respecto a cualquier comunicaci=F3n que haya sido =
-emitida incumpliendo nuestra Pol=EDtica de Seguridad de la =
-Informaci=F3n.
-. . . . . . . . .
-This e-mail and any attachment is confidential and is intended solely =
-for the addressee(s). If you are not intended recipient please inform =
-the sender inmediately, answering this e-mail and delete it as well as =
-the attached files. Any use, circulation or copy of this e-mail by any =
-person or entity that not is the specific addressee(s) is prohibited. =
-ANTEL is not responsible for any communication emitted without =
-respecting our Information Security Policy.
+Regards,
+Adrian
 
