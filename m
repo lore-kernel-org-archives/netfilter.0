@@ -1,12 +1,14 @@
-From: "Charles Delorme" <charles.delorme@suricat.net>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Problem with DNAT from localhost to LAN via loopback
-Date: Thu, 14 Apr 2005 22:01:14 +0200
-Message-ID: <001d01c5412c$b6fda5d0$0926a8c0@HECTISIE>
+Date: Thu, 14 Apr 2005 16:19:28 -0400
+Message-ID: <20050414201928.GA2726@bender.817west.com>
 References: <1113492519.425e8c27488ab@imp1-q.free.fr>
 	<20050414171847.GA2040@bender.817west.com>
+	<001d01c5412c$b6fda5d0$0926a8c0@HECTISIE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <001d01c5412c$b6fda5d0$0926a8c0@HECTISIE>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +20,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+On Thu, Apr 14, 2005 at 10:01:14PM +0200, Charles Delorme wrote:
+> Thank you for that tip. Are there any side effects for this compilation
+> directive ?
 
->----- Original Message ----- 
->From: "Jason Opperisano" <opie@817west.com>
->Sent: Thursday, April 14, 2005 7:18 PM
-> On Thu, Apr 14, 2005 at 05:28:39PM +0200, Charles Delorme wrote:
-> > Hello list...
-> > [..]
-> your kernel needs to be compiled with:
->
->   CONFIG_IP_NF_NAT_LOCAL
->
-> in order to DNAT locally-generated packets.
->
+not that i'm aware of.  i suppose if you want to split hairs, you're
+forcing locally-generated packets to traverse an additional netfilter
+hook.  dunno that i would be concerned about that though.
 
-Thank you for that tip. Are there any side effects for this compilation
-directive ?
+> I'm not sure to understand what kind of rule I need to add in the OUTPUT
+> chain. Should I copy the kind of rule I have in the PREROUTING table ?
 
-> IIRC you then put the DNAT rule in the nat table OUTPUT chain to modify
-> the destination of local packets.
+probably.  something like:
 
-I'm not sure to understand what kind of rule I need to add in the OUTPUT
-chain. Should I copy the kind of rule I have in the PREROUTING table ?
+  iptables -t nat -A OUTPUT -p tcp -d $EXT_IP --dport 3739 \
+    -j DNAT --to-destination 192.168.38.9:3739
 
-Thanks.
+the result being that when the firewall tries to connect to its own
+external IP on TCP port 3739, the connection gets DNAT-ed to the 38.9
+machine--which i *think* is what you were after.
 
+-j
 
-
-
+--
+"Stewie: Careful! You're washing a baby's scalp, not scrubbing the vomit
+ out of a Christmas dress, you stupid holiday drunk."
+        --Family Guy
 
