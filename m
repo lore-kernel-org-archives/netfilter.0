@@ -1,14 +1,12 @@
-From: Filip Sneppe <filip.sneppe@gmail.com>
-Subject: Re: help with fast nat
-Date: Thu, 14 Apr 2005 09:42:26 +0200
-Message-ID: <9151ac2a05041400427dd043e2@mail.gmail.com>
-References: <Pine.GSO.4.58.0504131520420.25950@mcnet.marietta.edu>
-Reply-To: Filip Sneppe <filip.sneppe@gmail.com>
+From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
+Subject: Re: Help logs with iptables
+Date: Thu, 14 Apr 2005 10:05:52 +0200
+Message-ID: <1113465952.32274.4.camel@nostromo.bgsecm.com>
+References: <1113423418.28220.2.camel@admin.ucbcba.edu.bo>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.GSO.4.58.0504131520420.25950@mcnet.marietta.edu>
-Content-Disposition: inline
+In-Reply-To: <1113423418.28220.2.camel@admin.ucbcba.edu.bo>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,34 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Stephen Beck <becks@marietta.edu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi Stephen,
-
-On 4/13/05, Stephen Beck <becks@marietta.edu> wrote:
-
+El mi=C3=A9, 13-04-2005 a las 16:16 -0400, Jorge Enrique escribi=C3=B3:
+> hi everyone, how can i get reports with iptables
 >=20
-> can anyone get me on to the next step:
->=20
+> I have my script for my firewall but i need get reports for all traffic
+> my network. How can I do it?
 
-Unfortionately, "fast nat" is broken on 2.6 kernels, due to the ipsec code
-that went in. It should actually be removed. Apparently, even RH 2.4 kernel=
-s=20
-with the ipsec code are broken:
+What I do is creating chains for the rules I want to report.
+So I do:
 
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=3D126611
+iptables -N TCPCHAIN
+iptables -A TCPCHAIN -j RETURN
+iptables -A FORWARD -p tcp -j TCPCHAIN
 
-See also:
-http://mailman.ds9a.nl/pipermail/lartc/2004q4/014307.html
+I think you can see the trick. Then doing a iptables -L TCPCHAIN -xvn
+you have the rules.
 
-And the thread at:
-http://marc.theaimsgroup.com/?l=3Dlinux-netdev&m=3D109582576330019&w=3D2
+If you want a system to make reports you can have a look at our
+bastion-firewall-stats addon. It's GPL, and you can have the sources
+at our website. It creates rrdtool graphics in a web page with the data
+gathered from the chains using a libipc based daemon.
 
-So I guess you're better off trying something like the NETMAP target
-in iptables.
+Regards.
+--=20
 
-Regards,
-Filip
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
+
 
