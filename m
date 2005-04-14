@@ -1,8 +1,9 @@
-From: "Michael Sonntag" <sonntag@fim.uni-linz.ac.at>
-Subject: Fedora Core 3 + PPTP - NAT: Problems with multiple clients
-Date: Thu, 14 Apr 2005 21:58:47 +0200
-Message-ID: <BGEEINKEJMLPMKEOBFHDMEEFDIAA.sonntag@fim.uni-linz.ac.at>
-Reply-To: sonntag@fim.uni-linz.ac.at
+From: "Charles Delorme" <charles.delorme@suricat.net>
+Subject: Re: Problem with DNAT from localhost to LAN via loopback
+Date: Thu, 14 Apr 2005 22:01:14 +0200
+Message-ID: <001d01c5412c$b6fda5d0$0926a8c0@HECTISIE>
+References: <1113492519.425e8c27488ab@imp1-q.free.fr>
+	<20050414171847.GA2040@bender.817west.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,27 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-I have a firewall which does NAT of outgoing connections. Several clients
-behind this box must connect to the same external PPTP server. This did work
-fine on a 2.4.27 kernel.
 
-However, with the newest version of the PPTP conntrack/nat helper (from SVN,
-Revision 3839) and Fedora Core 3 (2.6.10), this does no longer work (both
-clients and server are unchanged, only the firewall is replaced). It applies
-cleanly and I can connect to an external PPTP server from a single client:
-everything works fine. But as soon as a second client behind the firewall
-tries to connect to this server, problems occur. Either the connection does
-not get established (most cases), or the first connection is broken
-(rarely); completely working: never. It seems, that some packets get mixed
-up between those two connections.
+>----- Original Message ----- 
+>From: "Jason Opperisano" <opie@817west.com>
+>Sent: Thursday, April 14, 2005 7:18 PM
+> On Thu, Apr 14, 2005 at 05:28:39PM +0200, Charles Delorme wrote:
+> > Hello list...
+> > [..]
+> your kernel needs to be compiled with:
+>
+>   CONFIG_IP_NF_NAT_LOCAL
+>
+> in order to DNAT locally-generated packets.
+>
 
-Is there any workaround for this or how to help the developers in resolving
-the problem? I have enabled all the debugging (printk), but the resulting
-log doesn't help (at least me).
+Thank you for that tip. Are there any side effects for this compilation
+directive ?
 
-Thanks,
-	Michael
+> IIRC you then put the DNAT rule in the nat table OUTPUT chain to modify
+> the destination of local packets.
+
+I'm not sure to understand what kind of rule I need to add in the OUTPUT
+chain. Should I copy the kind of rule I have in the PREROUTING table ?
+
+Thanks.
+
+
+
 
 
