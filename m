@@ -1,13 +1,11 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: feature request
-Date: Thu, 14 Apr 2005 13:52:35 -0500
-Message-ID: <425EBBF3.9090904@riverviewtech.net>
-References: <aec22fc50504140950949956c@mail.gmail.com>	<425EB3F5.5020003@riverviewtech.net>
-	<425EB850.1060506@solutti.com.br>
+From: "Michael Sonntag" <sonntag@fim.uni-linz.ac.at>
+Subject: Fedora Core 3 + PPTP - NAT: Problems with multiple clients
+Date: Thu, 14 Apr 2005 21:58:47 +0200
+Message-ID: <BGEEINKEJMLPMKEOBFHDMEEFDIAA.sonntag@fim.uni-linz.ac.at>
+Reply-To: sonntag@fim.uni-linz.ac.at
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <425EB850.1060506@solutti.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,23 +16,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-> 
->    Guys, how about using the new comment module for making grepping easy 
-> ???? Instead of grepping the rules parameters, you can include an unique 
-> ID as a comment in your rule and simply grep for it !!! What do you 
-> think ??
+I have a firewall which does NAT of outgoing connections. Several clients
+behind this box must connect to the same external PPTP server. This did work
+fine on a 2.4.27 kernel.
 
-I've considered doing that my self for other projects.  But seeing as how I did not have any real solution / method for doing so already I did not want to propose it yet.  I'm thinking of using it for more of a ""system that would manage all your rules, not unlike SysV Init scripts, for you.  You would then go through that interface and work with iptables.  I know that what ever I end up coming up with I'll end up using some sort of numeric identifiers for the rules to be matched against so it is easier to machine parse.  I'll probably end up using a comment of something like this ':<numeric ID>:<free text comment>'.  This way the machine parseable identifier is there in the form of ':<numeric ID>:' where it will be easy to find on the line.  The <numeric ID> will be at the start of the comments and starting at about the same column on screen while still allowing for free text comments (
- or as free as comment will allow it's self, just a bit shorter) thus making it easier to 
-search for a specific <numeric ID> visually, vs having it at the end of the comment which would make location of the <numeric ID> of the rule depend on the length of the free text.  Seeing as how comment is a relatively new match extension and not all systems have it in the kernel this system would be valid for new and patched kernels only.  Where as something that would parse the output of iptables(|-save) would be more backwards compatible.
+However, with the newest version of the PPTP conntrack/nat helper (from SVN,
+Revision 3839) and Fedora Core 3 (2.6.10), this does no longer work (both
+clients and server are unchanged, only the firewall is replaced). It applies
+cleanly and I can connect to an external PPTP server from a single client:
+everything works fine. But as soon as a second client behind the firewall
+tries to connect to this server, problems occur. Either the connection does
+not get established (most cases), or the first connection is broken
+(rarely); completely working: never. It seems, that some packets get mixed
+up between those two connections.
 
-I personally am EXTENSIVELY using the comment match extension, as well as planing on using TARPIT targets (that is a sticky subject un to it's self.  Pun intended.  :P  )
+Is there any workaround for this or how to help the developers in resolving
+the problem? I have enabled all the debugging (printk), but the resulting
+log doesn't help (at least me).
 
+Thanks,
+	Michael
 
-
-Grant. . . .
 
