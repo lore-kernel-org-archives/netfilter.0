@@ -1,11 +1,12 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: DNAT/SNAT question
-Date: Thu, 14 Apr 2005 16:45:40 -0700
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F019A91@pxtvjoexd01.pxt.primeexalia.com>
+From: "Charles Delorme" <charles.delorme@suricat.net>
+Subject: Re: Problem with DNAT from localhost to LAN via loopback
+Date: Fri, 15 Apr 2005 01:59:26 +0200
+Message-ID: <002701c5414d$fd2eff10$0926a8c0@HECTISIE>
+References: <1113492519.425e8c27488ab@imp1-q.free.fr><20050414171847.GA2040@bender.817west.com><001d01c5412c$b6fda5d0$0926a8c0@HECTISIE>
+	<20050414201928.GA2726@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,60 +20,13 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-No problem.  You've already done a lot to help put the whole thing under
-control.  Maybe that would be a nice enhancement to the NETMAP in the
-future...  There's always hoping anyways.
 
-Gary
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jason
-Opperisano
-Sent: Thursday, April 14, 2005 4:40 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: DNAT/SNAT question
-
-On Thu, Apr 14, 2005 at 04:28:00PM -0700, Gary W. Smith wrote:
-> I cleared and reloaded everything and it's now returning an Invalid
-> argument error. =20
->=20
-> Fine:
-> iptables -t nat -A PREROUTING -d 88.44.55.8/29 -j NETMAP --to
-> 10.20.30.8/29
-> iptables -t nat -A POSTROUTING -s 10.20.30.8/29  -j NETMAP --to
-> 88.44.55.8/29
->=20
-> Error:
-> iptables -t nat -A OUTPUT -d 88.44.55.8/26  -j NETMAP --to
-10.20.30.8/29
-> iptables: Invalid argument
->=20
-> Almost there.
-
-aww crap--i had to go an open my big fat mouth without looking at the
-dang help file...
-
-NETMAP is only valid in PREROUTING and POSTROUTING...so no dice in
-OUTPUT...
-
-looks like you gotta go the old 'for loop' route:
-
-  for i in `seq 8 127`; do
-    iptables -t nat -A OUTPUT -d 88.44.55.${i} -j DNAT --to
-10.20.30.${i}
-  done
-
-sorry 'bout that...
-
--j
-
---
-"Lois: Meg, I'm like one of those bald eagles you see on the Discovery
- Channel. Beautiful to look at, but mess with one of my chicks and
- I'll claw your fucking eyes out. Now who wants a cookie?
- Stewie: I do. Ooh, keep talking. All this talk about eye-gouging
- has got me all frisky."
-        --Family Guy
-
+----- Original Message ----- 
+From: "Jason Opperisano" <opie@817west.com>
+Sent: Thursday, April 14, 2005 10:19 PM
+> the result being that when the firewall tries to connect to its own
+> external IP on TCP port 3739, the connection gets DNAT-ed to the 38.9
+> machine--which i *think* is what you were after.
+> 
+It is... Let's re-compile... I'll keep you informed.
 
