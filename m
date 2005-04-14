@@ -1,9 +1,12 @@
-From: "Andrew Kraslavsky" <andykras@hotmail.com>
-Subject: Rule "labels"?
-Date: Thu, 14 Apr 2005 13:48:27 -0700
-Message-ID: <BAY106-F357CEE5BD3D8B2616C1AD6D6350@phx.gbl>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: Rule "labels"?
+Date: Thu, 14 Apr 2005 16:02:08 -0500
+Message-ID: <425EDA50.1010201@riverviewtech.net>
+References: <BAY106-F357CEE5BD3D8B2616C1AD6D6350@phx.gbl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <BAY106-F357CEE5BD3D8B2616C1AD6D6350@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,89 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Andrew Kraslavsky <andykras@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+> Is there a way to associate rules together across tables or chains, 
+> possibly with a label?
 
-Is there a way to associate rules together across tables or chains, possibly 
-with a label?
+I can't give you a ""label, but I could give you a ""comment.  ;)  Try looking at a newer kernel (2.6.10?) as it includes the comment match (always returns true but let's you put a free text string in as a comment) which will be displayed when you iptables -L.
 
-Note: As used here, a "policy" refers to an abstraction of one or more 
-iptables rules (and possibly, but not germane here, routing rules).
+> iptables -t filter -A FORWARD -label POLICY001 -i $PUBLIC_IF -d 
+> 192.168.168.23 -p tcp --dport 80 -j ACCEPT
 
-The reason I am seeking this is so that I can tag all rules that are used to 
-enforce a higher level policy such that, if that policy is later rescinded, 
-I can identify all of its constituent iptables rules by their label and 
-delete those rules.
+iptables -t filter -A FORWARD -m comment --comment 'POLICY001' -i $PUBLIC_IF -p tcp --dport 80 -j ACCEPT
 
-Otherwise, I have to remember the exact contents of each rule or track their 
-indices within each chain so that I can delete each rule on that basis.  
-That's not hard to do if a human is managing the rule set directly, but is a 
-bit cumbersome to code into a utility that abstracts rules into higher level 
-(i.e. more end user friendly) "policies".
+Should be the equivalent of what you are needing.
 
-Here's a simple example which will hopefully help illustrate what I am 
-trying to do.
+> 2) Support rule deletion based on -label, e.g.:
+> 
+> iptables -t filter -D FORWARD -label POLICY001
+> 
+> Ideally, the delete command would remove all rules in the specified 
+> chain with the specified label, or all rules within the specified table, 
+> or even across all chains in all tables, but I'm not that greedy...
 
-Setting the stage:
-1) The default is to drop packets in the FORWARD chain.
-2) There is a private local network using a non-Internet subnet (e.g. 
-192.168.168.0/24).
-3) The public network interface, represented by variable $PUBLIC_IF, is 
-connected to the Internet.
-4) SNAT (or sometimes MASQUERADE) is used to NAT traffic that originates 
-from the private network and is bound to the Internet.
+Well comment will not do that.  I'm not sure that I really want the capability to do so in the iptables command and / or the kernel as this would be more overhead for something that is seldom used.  I think it would be FAR more practical to do an "iptables -t filter -L -n -v --line-numbers", "iptables -t nat -L -n -v --line-numbers", "iptables -t mangle -L -n -v --line-numbers" and parse the output looking for all lines that match POLICY001.  I think this would be an excellent shell or Perl script.  If you would be interested in collaborating on such a project I'd be interested in seeing if I could help.
 
-The example policy:
 
-The user enables a policy that is stated something along the lines of 
-"Expose HTTP server at local host <local IP address> to the Internet" and 
-specifies local IP address 192.168.168.23 for this policy.
 
-This equates to the following 2 rules, one in the 'nat' table and the other 
-in the 'filter' table:
-
-iptables -t nat -A PREROUTING -i $PUBLIC_IF -p tcp --dport 80 -j DNAT --to 
-192.168.168.23
-
-iptables -t filter -A FORWARD -i $PUBLIC_IF -d 192.168.168.23 -p tcp --dport 
-80 -j ACCEPT
-
-Later, the user decides to disable the policy which means deleting both of 
-the rules above.  Since I cannot rely on knowing the indices of each rule 
-within its chain, I must delete them by passing the original arguments of 
-each rule to the iptables delete command.
-
-If I could label both rules with a common value and then do a chain by chain 
-delete based on the label, my programmatic life would be simpler.  I'm 
-envisioning something like the following:
-
-1) Include '-label' argument with the add rule command, e.g.:
-
-iptables -t filter -A FORWARD -label POLICY001 -i $PUBLIC_IF -d 
-192.168.168.23 -p tcp --dport 80 -j ACCEPT
-
-2) Support rule deletion based on -label, e.g.:
-
-iptables -t filter -D FORWARD -label POLICY001
-
-Ideally, the delete command would remove all rules in the specified chain 
-with the specified label, or all rules within the specified table, or even 
-across all chains in all tables, but I'm not that greedy...
-
-Suggestions?
-
-Thanks,
-
-- Andrew
-
-PS I guess such a label would be kind of like MARKing, but for rules instead 
-of packets.
-
-_________________________________________________________________
-Express yourself instantly with MSN Messenger! Download today - it's FREE! 
-http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
-
+Grant. . . .
 
