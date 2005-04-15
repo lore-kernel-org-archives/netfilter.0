@@ -1,12 +1,10 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Redirecting internal tcp connections
-Date: Fri, 15 Apr 2005 19:57:56 +0200
-Message-ID: <1113587876.10134.5.camel@nostromo.bgsecm.com>
-References: <425FF61B.9090008@lanhelp.com.br>
+From: Christian Hedegaard <christian.hedegaard@trustcommerce.com>
+Subject: trying to get DNAT and SNAT working together.
+Date: Fri, 15 Apr 2005 11:29:03 -0700
+Message-ID: <426007EF.1020903@trustcommerce.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <425FF61B.9090008@lanhelp.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +15,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
-
-El vie, 15-04-2005 a las 14:12 -0300, marcus escribi=C3=B3:
-> Hi, I have a lpd server on a remote host that ISP blocks port 515. I tr=
-y=20
-> to use something like "lpr -Plp@remotehost.com:900" but lprng doenst=20
-> seems to recognize the port argument. So, I think to use iptables to=20
-> redirect TCP requests on port 515 to port 900 but I dont know how. I've=
-=20
-> tried the following:
->=20
-> #iptables -A OUTPUT -p tcp --dport 515 -j REDIRECT --to-port 900
->=20
-> This gives me a "iptables: Invalid argument"
->=20
-> Any ideas?
-
-You have to do this in the nat table and the prerouting or
-output chain, and you should use DNAT instead of REDIRECT,
-because REDIRECT is for packets with destination your own
-machine. So we have:
-
-iptables -t nat -A PREROUTING -p tcp --dport 515 -j DNAT --to-
-destination remotehost.com:900
-
-Regards.
-
---=20
-
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
 
+Hey everyone. I'm trying to achieve something relatively simple (I think).
+
+I want a machine to sit on a public IP. when a request comes in for that 
+public IP, it redirects the packets to another machine on some public 
+IP. (iptables DNAT)
+
+when that machine gets the packet, it should think that it came from the 
+iptables DNAT machine, and send it back there. which is where iptables 
+SNAT comes in.
+
+however. I can't seem to get the two working together.
+
+in my office I have three machines.
+
+1.87 (running apache)
+1.72 (me)
+1.85 (iptables)
+
+I have these two rules:
+iptables -t nat -A PREROUTING -p tcp -d 1.85 --dport 80 -j DNAT \
+     --to-destination 1.87
+
+iptables -t nat -A POSTROUTING -p tcp -d 1.87 --dport 80 -j SNAT \
+     --to-source 1.85
+
+theoretically, this says that packets destined for 80 coming to the 
+iptables machine should get forwarded to the apache machine (1.87), and 
+any packets destined for the apache machine should be SNAT'ed back to 
+the firewall machine.
+
+basically, I just want a totally transparent packet forwarder that will 
+redirect traffic to the proper machine.
+
+however, it's not working. something in my config is wrong and I can't 
+figure it out.
+
+
+-- 
+Christian Hedegaard-Schou
+Sr. Systems Administrator
+TrustCommerce
+2 Park Plaza, Suite 350
+Irvine, CA 92614
+(949) 387 - 3747
+christian.hedegaard@trustcommerce.com
+http://www.trustcommerce.com/
 
