@@ -1,12 +1,13 @@
-From: Samuel =?utf-8?B?RMOtYXogR2FyY8OtYQ==?= <samueldg@arcoscom.com>
+From: Julian Labuschagne <personxx@wan4u.co.za>
 Subject: Re: Port Forwarding Problem
-Date: Fri, 15 Apr 2005 10:40:39 +0200
-Message-ID: <20050415084039.7032.qmail@arcoscom.com>
+Date: Fri, 15 Apr 2005 11:23:31 +0000
+Message-ID: <425FA433.9040106@wan4u.co.za>
 References: <425F98B0.7040303@wan4u.co.za>
+	<20050415084039.7032.qmail@arcoscom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------040202030007080206090801"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <425F98B0.7040303@wan4u.co.za>
+In-Reply-To: <20050415084039.7032.qmail@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,61 +18,96 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Julian Labuschagne <personxx@wan4u.co.za>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Without having a look into your scripts, I think you need: 
+This is a multi-part message in MIME format.
+--------------040202030007080206090801
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-1) Allow INPUT into filter table to the port.
-2) Allow FORDWARD into filter table to the redirected conection. 
+Samuel D=C3=ADaz Garc=C3=ADa wrote:
 
-Good luck. 
+> Without having a look into your scripts, I think you need:
+> 1) Allow INPUT into filter table to the port.
+> 2) Allow FORDWARD into filter table to the redirected conection.
+> Good luck.
+>
+Line 56: $IPTABLES -A INPUT -i $INET_IFACE -p tcp --dport 800 -j ACCEPT
+Line 57: $IPTABLES -A INPUT -i $INET_IFACE -p udp --dport 800 -j ACCEPT
+Line 58:
+Line 59: # Forward Chain
+Line 60: $IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
+Line 61: $IPTABLES -A FORWARD -o $LAN_IFACE -j ACCEPT
 
-Julian Labuschagne writes: 
+Line 85: $IPTABLES -A PREROUTING -t nat -p tcp -d $INET_IP --dport 800=20
+-j DNAT --to 192.168.1.5:800
+Line 86: $IPTABLES -A PREROUTING -t nat -p udp -d $INET_IP --dport 800=20
+-j DNAT --to 192.168.1.5:800
 
-> Hi everyone I'm a bit new to iptables so please bear with me on this on=
-e 
-> ;) 
-> 
-> I wrote a small firewall that basicaly nats users through my gateway 
-> machine only allowing certain hosts on my network Web DNS and Mail acce=
-ss. 
-> 
-> This section works fine. 
-> 
-> But I also want to port forward any connections from outside to port 80=
-0 
-> to a host running inside my LAN.
-> I added a rule in the PREROUTING table to do this. 
-> 
-> But it seems that no connection gets forwarded. 
-> 
-> If I set my default policies to ACCEPT and add the PREROUTING rule it 
-> actualy does the port forwarding correctly. 
-> 
-> I attached a copy of the firewall I wrote with this message. 
-> 
-> Please can someone have a look through it for me cause I'm sure I'm jus=
-t 
-> missing something. 
-> 
-> Kind Regards Julian. 
-> 
->  
-> 
- 
+This is a few lines from the attached firewall.
+I think you may be reffering to these lines of the firewall script.
+
+On Lines 56,57 I allow connections to my gateway on port 800
+On Lines 60,61 I allow all connections in the forwarding chain.
+And on Lines 85,86 is the port forwarding rules.
+
+Kind Regards Julian.
 
 
-Samuel D=EF=BF=BDaz Garc=EF=BF=BDa
-Director Gerente
-ArcosCom Wireless, S.L.L. 
-
-mailto:samueldg@arcoscom.com
-http://www.arcoscom.com
-m=EF=BF=BDvil: 651 93 72 48
-tlfn.: 956 70 13 15
-fax:   956 70 34 83 
 
 
+
+
+
+--------------040202030007080206090801
+Content-Type: text/plain;
+ name="custom.firewall"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="custom.firewall"
+
+IyEvYmluL2Jhc2gKCiMgU2V0IHBhdGggdG8gaXB0YWJsZXMgYmluYXJ5CklQVEFCTEVTPS91
+c3Ivc2Jpbi9pcHRhYmxlcwoKIwojIExvb3BiYWNrIElQIGFuZCBJbnRlcmZhY2UKIwpMT19J
+RkFDRT0ibG8iCkxPX0lQPSIxMjcuMC4wLjEiCgojCiMgSW50ZXJuZXQgSVAgYW5kIEludGVy
+ZmFjZQojCklORVRfSVA9YC9zYmluL2lmY29uZmlnIHBwcDAgfCBncmVwICJpbmV0IGFkZHIi
+IHwgY3V0IC1kOiAtZjIgfCBjdXQgLWQgJyAnIC1mMWAKSU5FVF9JRkFDRT0icHBwMCIKCiMK
+IyBMQU4gUmFuZ2UsIElQIEFkZHJlc3MgYW5kIEludGVyZmFjZQojCkxBTl9JUD0iMTkyLjE2
+OC4xLjEiCkxBTl9JUF9SQU5HRT0iMTkyLjE2OC4xLjAvMjQiCkxBTl9CQ0FTVF9BRFJFU1M9
+IjE5Mi4xNjguMS4yNTUiCkxBTl9JRkFDRT0iZXRoMCIKCiMgCiMgU2V0IGRlZmF1bHQgcG9s
+aWNpZXMKIwokSVBUQUJMRVMgLVAgSU5QVVQgRFJPUAokSVBUQUJMRVMgLVAgT1VUUFVUIERS
+T1AKJElQVEFCTEVTIC1QIEZPUldBUkQgRFJPUAoKIwojIEZsdXNoIENoYWlucwojCiRJUFRB
+QkxFUyAtRgokSVBUQUJMRVMgLXQgbmF0IC1GCgojCiMgQWxsb3cgbG9vcGJhY2sgaW50ZXJm
+YWNlCiMKJElQVEFCTEVTIC1BIElOUFVUIC1pICRMT19JRkFDRSAtaiBBQ0NFUFQKJElQVEFC
+TEVTIC1BIE9VVFBVVCAtbyAkTE9fSUZBQ0UgLWogQUNDRVBUCgojIE91dHB1dCBDaGFpbgok
+SVBUQUJMRVMgLUEgT1VUUFVUIC1vICRJTkVUX0lGQUNFIC1wIHRjcCAtLWRwb3J0IDUzIC1q
+IEFDQ0VQVAokSVBUQUJMRVMgLUEgT1VUUFVUIC1vICRJTkVUX0lGQUNFIC1wIHVkcCAtLWRw
+b3J0IDUzIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgT1VUUFVUIC1vICRJTkVUX0lGQUNFIC1w
+IHRjcCAtLWRwb3J0IDI1IC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgT1VUUFVUIC1vICRJTkVU
+X0lGQUNFIC1wIHRjcCAtLWRwb3J0IDgwIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgT1VUUFVU
+IC1vICRJTkVUX0lGQUNFIC1wIHRjcCAtLWRwb3J0IDExMCAtaiBBQ0NFUFQKCiMgSW5wdXQg
+Q2hhaW4KJElQVEFCTEVTIC1BIElOUFVUIC1pICRJTkVUX0lGQUNFIC1wIHRjcCAtbSBzdGF0
+ZSAtLXN0YXRlIGVzdGFibGlzaGVkLHJlbGF0ZWQgLWogQUNDRVBUCiRJUFRBQkxFUyAtQSBJ
+TlBVVCAtaSAkSU5FVF9JRkFDRSAtcCB1ZHAgLW0gc3RhdGUgLS1zdGF0ZSBlc3RhYmxpc2hl
+ZCxyZWxhdGVkIC1qIEFDQ0VQVAoKJElQVEFCTEVTIC1BIElOUFVUIC1pICRJTkVUX0lGQUNF
+IC1wIHRjcCAtLWRwb3J0IDgwMCAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIElOUFVUIC1pICRJ
+TkVUX0lGQUNFIC1wIHVkcCAtLWRwb3J0IDgwMCAtaiBBQ0NFUFQKCiMgRm9yd2FyZCBDaGFp
+bgokSVBUQUJMRVMgLUEgRk9SV0FSRCAtaSAkTEFOX0lGQUNFIC1qIEFDQ0VQVAokSVBUQUJM
+RVMgLUEgRk9SV0FSRCAtbyAkTEFOX0lGQUNFIC1qIEFDQ0VQVAoKIwojIEFsbG93IElDTVAK
+IwokSVBUQUJMRVMgLUEgT1VUUFVUIC1vICRJTkVUX0lGQUNFIC1wIGljbXAgLWogQUNDRVBU
+CiRJUFRBQkxFUyAtQSBJTlBVVCAtaSAkSU5FVF9JRkFDRSAtcCBpY21wIC1qIEFDQ0VQVAoK
+IwojIFVzZXJzIGFsbG93ZWQgaW50ZXJuZXQgYWNjZXNzCiMKJElQVEFCTEVTIC1BIElOUFVU
+IC1pICRMQU5fSUZBQ0UgLXMgMTkyLjE2OC4xLjE0MyAtaiBBQ0NFUFQKJElQVEFCTEVTIC1B
+IE9VVFBVVCAtbyAkTEFOX0lGQUNFIC1kIDE5Mi4xNjguMS4xNDMgLWogQUNDRVBUCgokSVBU
+QUJMRVMgLUEgSU5QVVQgLWkgJExBTl9JRkFDRSAtcyAxOTIuMTY4LjEuNSAtaiBBQ0NFUFQK
+JElQVEFCTEVTIC1BIE9VVFBVVCAtbyAkTEFOX0lGQUNFIC1kIDE5Mi4xNjguMS41IC1qIEFD
+Q0VQVAoKJElQVEFCTEVTIC1BIElOUFVUIC1pICRMQU5fSUZBQ0UgLXMgMTkyLjE2OC4xLjgg
+LWogQUNDRVBUCiRJUFRBQkxFUyAtQSBPVVRQVVQgLW8gJExBTl9JRkFDRSAtZCAxOTIuMTY4
+LjEuOCAtaiBBQ0NFUFQKCgojCiMgQWRkIHBvcnQgZm9yd2FyZGluZyBydWxlCiMKJElQVEFC
+TEVTIC1BIFBSRVJPVVRJTkcgLXQgbmF0IC1wIHRjcCAtZCAkSU5FVF9JUCAtLWRwb3J0IDgw
+MCAtaiBETkFUIC0tdG8gMTkyLjE2OC4xLjU6ODAwCiRJUFRBQkxFUyAtQSBQUkVST1VUSU5H
+IC10IG5hdCAtcCB1ZHAgLWQgJElORVRfSVAgLS1kcG9ydCA4MDAgLWogRE5BVCAtLXRvIDE5
+Mi4xNjguMS41OjgwMAoKIwojIE1hc3F1ZXJhZGUgTEFOIHVzZXJzIChJbnRlcm5ldCBTaGFy
+aW5nKQojCiRJUFRBQkxFUyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gJElORVRfSUZBQ0Ug
+LWogU05BVCAtLXRvLXNvdXJjZSAkSU5FVF9JUAo=
+--------------040202030007080206090801--
 
