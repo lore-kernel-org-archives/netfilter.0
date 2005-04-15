@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Complete Rule Syntax
-Date: Fri, 15 Apr 2005 16:09:18 -0400
-Message-ID: <20050415200918.GA7159@bender.817west.com>
-References: <1113593041.4738.18.camel@bodhittsatva>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: Redirecting internal tcp connections
+Date: Fri, 15 Apr 2005 15:17:26 -0500
+Message-ID: <42602156.50403@riverviewtech.net>
+References: <425FF61B.9090008@lanhelp.com.br>
+	<1113587876.10134.5.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1113593041.4738.18.camel@bodhittsatva>
+In-Reply-To: <1113587876.10134.5.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Fri, Apr 15, 2005 at 02:24:01PM -0500, Thomas Jones wrote:
-> Is there a resource available that contains a complete compilation of
-> the syntax used by iptables rules? Targets only available in certain
-> chains, positional semantics, and structure requirements, etc...
+> You have to do this in the nat table and the prerouting or
+> output chain, and you should use DNAT instead of REDIRECT,
+> because REDIRECT is for packets with destination your own
+> machine. So we have:
 > 
-> A book, howto, tutorial anything. 
-> 
-> I've found the resources via google do not have a complete listing of
-> available commands, options, and accepted values and/or value ranges.
-> 
-> I am developing an Document Type Definition to provide proper format of
-> iptables rules and/or commands for a custom XML Markup Language. But,
-> given the complexities of both DTD development syntax and iptables
-> syntax; it has proven to be heck of a job.
-> 
-> Any help would be greatly appreciated.
+> iptables -t nat -A PREROUTING -p tcp --dport 515 -j DNAT --to-
+> destination remotehost.com:900
 
-i honestly don't mean this as some sort of wise-ass answer, but you
-appear to be asking for the information contained in 'man 8 iptables.'
+I would suggest that you add a destination match as well so that you don't blindly redirect traffic destend to any system's LPD port.  I.e. make your IPTables like look like this:
 
-if you need the usage details for non-standard extensions, you can refer
-to the 'help' file in each extension's subdirectory in PoM (best way to
-get PoM these days is via svn @
-http://svn.netfilter.org/netfilter/trunk/patch-o-matic-ng/ )
+iptables -t nat -A PREROUTING -p tcp -d remotehost.com --dport 515 -j DNAT --to-destination remotehost.com:900
 
--j
 
---
-"Tom Tucker: I think I speak for everyone when I say, New York and
- everyone from there can fornicate themselves with an iron stick."
-        --Family Guy
+
+Grant. . . .
 
