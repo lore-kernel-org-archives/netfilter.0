@@ -1,15 +1,11 @@
-From: Thomas Jones <admin@buddhalinux.com>
-Subject: Re: Cleanest way to deal with loopback interface?
-Date: Sun, 17 Apr 2005 19:04:51 -0500
-Message-ID: <1113782691.22084.23.camel@bodhittsatva>
-References: <1113425449.3544.177.camel@seberino.spawar.navy.mil>
-	<20050413211349.GA31336@bender.817west.com>
-	<425DC2DA.7010608@riverviewtech.net>
-	<20050417232709.GA28390@spawar.navy.mil>
+From: Sander Eikelenboom <S.Eikelenboom@stud.tue.nl>
+Subject: Fedora Core 3 + PPTP - NAT: Problems with multiple clients
+Date: Fri, 15 Apr 2005 14:53:57 +0200
+Message-ID: <1056891510.20050415145357@stud.tue.nl>
+Reply-To: Sander Eikelenboom <S.Eikelenboom@stud.tue.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050417232709.GA28390@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,48 +19,65 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sun, 2005-04-17 at 18:27, seberino@spawar.navy.mil wrote:
-> How allow just legitimate loopback traffic then?
-> 
-> Chris
-> 
-> On Wed, Apr 13, 2005 at 08:09:46PM -0500, Taylor Grant wrote:
-> > >allow traffic on the loopback interface unconditionally,  and allow the
-> > >linux routing code 'martian' checks to drop 127.0.0.0/8 packets received
-> > >'on the wire' as it does by default.
-> >
-> > I don't think this is such a good idea.  I could reconfigure my system such
-> > that it's loop back interface was not in the 127.0.0.0/8 network and set a
-> > route to the 127.0.0.0/8 network to be via your IP on the LAN.  Assuming
-> > that your system and my system were on the same LAN and subnet and we could
-> > ping each other I would be able to access your 127.0.0.1 address as your
-> > kernel would forward traffic to the loop back network in your system.
-> >
 
-According to the TCP/IP specification this should not be an issue.
+Hi Michael,
 
-The loopback traffic outgoing response traverses the machine stack only
-as far as the network transport layer. Removing both the data link layer
-and physical layer and their appropriate protocols from the path of the
-data traffic.
+If packets would get mixed up, in my view the "call id's" should be mixed
+up too, and this should be noticeable in the logs. Perhaps you could enable
+the debugging and post the results of kern.log together with 2 tcpdumps of
+both external and internal interfaces:
 
-Thus, this effectively negates the chance that any reply communication
-could be submitted to the OUTPUT queue. Of course, this is all in
-theory. I've never tried this process myself.
+tcpdump -i eth0 -vvv -xx -s 0 ip host ip_addr_pptp_server > tcpdump-2.6.10+pptp+testcase-eth0.txt
+tcpdump -i eth1 -vvv -xx -s 0 ip host ip_addr_pptp_server > tcpdump-2.6.10+pptp+testcase-eth1.txt
 
-But, to answer your question Christian; the following rule will disallow
-packets with a source address of the loopback network coming from the
-internet side:
+Where you should change "ip_addr_pptp_server" with the IP address to which
+both clients try to connect to.
+Please use the netfilter to bugzilla to file the bug (you can upload the
+logs as attachments there).
 
-iptables -A INPUT -i $INTERNET_INTERFACE -s $LOOPBACK -j DROP
+This should give a complete overview of what is happening.
 
-Where INTERNET_INTERFACE is usually "eth0". And LOOPBACK is the reserved
-loopback range of "127.0.0.0/8".
+Don't know if it is possible for you, but you could try a patched vanilla
+2.6.10 kernel too, to rule out the fedora kernel has some incompatible
+patches for the pptp patch.
 
-This entry should be placed along with other source address spoofing
-scenarios in your ruleset.
 
-HTH.
-Thomas Jones
+Regards,
+
+Sander Eikelenboom
+
+
+
+
+
+
+
+
+
+
+
+
+
+I have a firewall which does NAT of outgoing connections. Several clients
+behind this box must connect to the same external PPTP server. This did work
+fine on a 2.4.27 kernel.
+
+However, with the newest version of the PPTP conntrack/nat helper (from SVN,
+Revision 3839) and Fedora Core 3 (2.6.10), this does no longer work (both
+clients and server are unchanged, only the firewall is replaced). It applies
+cleanly and I can connect to an external PPTP server from a single client:
+everything works fine. But as soon as a second client behind the firewall
+tries to connect to this server, problems occur. Either the connection does
+not get established (most cases), or the first connection is broken
+(rarely); completely working: never. It seems, that some packets get mixed
+up between those two connections.
+
+Is there any workaround for this or how to help the developers in resolving
+the problem? I have enabled all the debugging (printk), but the resulting
+log doesn't help (at least me).
+
+Thanks,
+        Michael
+
 
 
