@@ -1,14 +1,13 @@
-From: Bikrant Neupane <bikrant@wlink.com.np>
-Subject: Re: Complete Rule Syntax
-Date: Sat, 16 Apr 2005 06:40:06 +0545
-Message-ID: <200504160640.07328.bikrant@wlink.com.np>
-References: <1113593041.4738.18.camel@bodhittsatva>
-	<20050415200918.GA7159@bender.817west.com>
-	<1113599364.4738.26.camel@bodhittsatva>
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: packet-based load-balanced stateless iptables firewall
+Date: Sat, 16 Apr 2005 22:03:54 +0400
+Message-ID: <9927912d05041611031e3c93f@mail.gmail.com>
+References: <425fd35c.4b2f42c3.66d2.ffff9c96SMTPIN_ADDED@mx.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1113599364.4738.26.camel@bodhittsatva>
+In-Reply-To: <425fd35c.4b2f42c3.66d2.ffff9c96SMTPIN_ADDED@mx.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,41 +22,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 16 April 2005 02:54, Thomas Jones wrote:
-> On Fri, 2005-04-15 at 15:09, Jason Opperisano wrote:
-> > On Fri, Apr 15, 2005 at 02:24:01PM -0500, Thomas Jones wrote:
-> > <snip>
-> >
-> > i honestly don't mean this as some sort of wise-ass answer, but you
-> > appear to be asking for the information contained in 'man 8 iptables.'
-> >
-> > if you need the usage details for non-standard extensions, you can refer
-> > to the 'help' file in each extension's subdirectory in PoM (best way to
-> > get PoM these days is via svn @
-> > http://svn.netfilter.org/netfilter/trunk/patch-o-matic-ng/ )
-> >
-> > -j
-> >
-> > --
-> > "Tom Tucker: I think I speak for everyone when I say, New York and
-> >  everyone from there can fornicate themselves with an iron stick."
-> >         --Family Guy
->
-> I've already reviewed the man pages, etc... That's how I have compiled a
-> 10 page DOM model of iptables basic command structure; and its only
-> getting bigger. As you can see, this is no easy undertaking. I am just
-> looking for some documentation that may make it easier. Everthing I have
-> already developed has been based on the man page and personal
-> experience.
->
-> Not to mention, the man pages don't give reference to semantics and/or
-> structure requirements of a given rule.
-I think the link http://iptables-tutorial.frozentux.net/chunkyhtml/index.html 
-under "Tutorials" section in netfilter.org can be helpful to you :)
+Hi to all,
 
-regards,
-Bikrant
+I would like to know how to build a packet-based load-balanced
+stateless iptables firewall.
 
->
-> Thomas
+I came across this:
+
+In IPtables, load balancing is done by specifying multiple IP
+addresses in a DNAT rule. For example:
+
+iptables -t nat -A PREROUTING -i eth0 -o eth1 -d 192.0.34.72 -j DNAT
+--to-destination 192.168.1.2-192.168.1.4
+
+Is the load balancing done in a packet-based manner? Does it use the
+round-robin algorithm for it?
+
+Any help will be very much appreciated..
+
+Regards,
+Visham
 
