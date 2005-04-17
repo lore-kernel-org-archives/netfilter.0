@@ -1,12 +1,14 @@
-From: Phil Dibowitz <phil@ipom.com>
-Subject: [ANNOUNCE] IPTState 1.4
-Date: Sun, 17 Apr 2005 01:35:07 -0700
-Message-ID: <42621FBB.7080806@ipom.com>
+From: seberino@spawar.navy.mil
+Subject: Re: Cleanest way to deal with loopback interface?
+Date: Sun, 17 Apr 2005 16:27:09 -0700
+Message-ID: <20050417232709.GA28390@spawar.navy.mil>
+References: <1113425449.3544.177.camel@seberino.spawar.navy.mil>
+	<20050413211349.GA31336@bender.817west.com>
+	<425DC2DA.7010608@riverviewtech.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary=------------enig108D40C2EA3C9AA449625BEF
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <425DC2DA.7010608@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,52 +19,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig108D40C2EA3C9AA449625BEF
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Taylor Grant <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-Hey folks,
 
-IPTState 1.4 has been released.
+How allow just legitimate loopback traffic then?
 
-IPTState is a curses application that gives you a real-time, top-like
-view of states across your Netfilter/IPTables firewall.
+Chris
 
-New in this release is the ability to filter what is displayed by source
-and/or destination IP, the ability to tag entries where hostnames were
-truncated, the ability to surpress DNS-related entries (useful for
-name-resolution mode), and various code and documentation cleanups.
-
-You can get it here:
-
-  http://www.phildev.net/iptstate/
+On Wed, Apr 13, 2005 at 08:09:46PM -0500, Taylor Grant wrote:
+> >allow traffic on the loopback interface unconditionally,  and allow the
+> >linux routing code 'martian' checks to drop 127.0.0.0/8 packets received
+> >'on the wire' as it does by default.
+>
+> I don't think this is such a good idea.  I could reconfigure my system such
+> that it's loop back interface was not in the 127.0.0.0/8 network and set a
+> route to the 127.0.0.0/8 network to be via your IP on the LAN.  Assuming
+> that your system and my system were on the same LAN and subnet and we could
+> ping each other I would be able to access your 127.0.0.1 address as your
+> kernel would forward traffic to the loop back network in your system.
+>
+>
+>
+> Grant. . . .
+>
 
 --
-Phil Dibowitz                             phil@ipom.com
-Freeware and Technical Pages              Insanity Palace of Metallica
-http://www.phildev.net/                   http://www.ipom.com/
+_______________________________________
 
-"They that can give up essential liberty to obtain a little temporary
-safety deserve neither liberty nor safety."
- - Benjamin Franklin, 1759
+Christian Seberino, Ph.D.
+SPAWAR Systems Center San Diego
+Code 2872
+49258 Mills Street, Room 158
+San Diego, CA 92152-5385
+U.S.A.
 
-
---------------enig108D40C2EA3C9AA449625BEF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFCYh+7N5XoxaHnMrsRAqPBAJ9yl+cKEvesvAalbVhZ0gsGTWACngCeLlwi
-VcPe3gARQxCiiuYXjsy0fW0=
-=pdlq
------END PGP SIGNATURE-----
-
---------------enig108D40C2EA3C9AA449625BEF--
+Phone: (619) 553-9973
+Fax  : (619) 553-6521
+Email: seberino@spawar.navy.mil
+_______________________________________
 
