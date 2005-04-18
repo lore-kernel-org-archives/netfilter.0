@@ -1,11 +1,12 @@
-From: "Charles" <charles@aib.net>
-Subject: Proper way to setup DNAT to servers inside a different internal
-	network (VPN)?
-Date: Mon, 18 Apr 2005 18:34:03 +0800
-Message-ID: <001e01c54402$240ecbe0$0200a8c0@HOME>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: DROP
+Date: Mon, 18 Apr 2005 09:35:42 -0400
+Message-ID: <20050418133542.GA15413@bender.817west.com>
+References: <42634792.2070307@eccotours.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <42634792.2070307@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,59 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Dear all,
+On Mon, Apr 18, 2005 at 07:37:22AM +0200, Brent Clark wrote:
+> Hi all
+> 
+> I was wondering, if was adviseable to set the default policy for tables 
+> nat and mangle to DROP.
 
-My boss has need me to setup a DNAT at the gateway into a LAN server =
-inside
-an IPSec VPN, which is not at the same network as the pub gateway. That
-create a big problem! I hope someone can help me!
+no.  *all* packets traverse the filter chains--do your filtering
+there.
 
-The pub gateway is a RedHat 8.0 Linux with kernel 2.4.18, iptables =
-1.2.6a
-1.2.3.137 is the public ip at the pub gateway
-10.8.1.88 is the internal network address of the pub gateway
-and 10.8.2.99 is the internal network of the LAN server
-the vpn gateway at the LAN network is also the LAN gateway, has its own
-broadband connection connect to the Internet
-We need to forward at least (will be more in the future) HTTP, FTP, PPTP
-traffic at 1.2.3.137 into the LAN server!!
+this question seems to come up every so often, and the idea is
+absolutely indefensible, IMHO.
 
-I try to draw the network config here:
-[Internet client] <--> (eth0:1.2.3.137) [pub gateway] (eth1:10.8.1.88)
-<-(VPN)-> [vpn gateway] (eth1:10.8.2.1) <-LAN->(eth0:10.8.2.99) LAN =
-Server
+-j
 
-I've successfully make half the way by using DNAT and SNAT:
-iptables -t nat -A PREROUTING -i eth0 -d 1.2.3.137 -j DNAT --to =
-10.8.2.99
-iptables -t nat -A POSTROUTING -d 10.8.2.99 -j SNAT --to-source =
-10.8.1.88
-
-Problems:
-- Internet client connect to 1.2.3.137 http can connect to the LAN =
-server,
-browsing webpage is ok, but when doing a HTTP post upload it fails by =
-hang a
-period of time and then browser report webpage not found!
-- Internet client connect to 1.2.3.137 ftp can connect to the LAN =
-server,
-but ftp cannot start file transfer with both active/passive mode!
-- Internet client connect to 1.2.3.137 PPTP can connect to the LAN =
-server
-and start the pptp vpn connection, strange?
-
-Am I missing something?
-
-
-Thanks a lot!
-Charles
-
---=20
-I am using the free version of SPAMfighter for private users.
-It has removed 23251 spam emails to date.
-Paying users do not have this message in their emails.
-Try www.SPAMfighter.com for free now!
-
+--
+"Tom Tucker: And now time for the Ollie weather report.
+ Ollie: It's gonna rain.
+ Tom Tucker: Thanks Ollie."
+        --Family Guy
 
