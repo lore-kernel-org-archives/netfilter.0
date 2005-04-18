@@ -1,14 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: IP Forwading from Local IP to Live IP
-Date: Tue, 19 Apr 2005 07:42:26 -0400
-Message-ID: <20050419114226.GA19155@bender.817west.com>
-References: <1079365863.2163.8.camel@vejan>
-	<200403151608.12073.Antony@Soft-Solutions.co.uk>
-	<002a01c544b5$2222c300$0b01a8c0@dap.edu.ph>
+From: Filipe Abrantes <fla@inescporto.pt>
+Subject: UDP nat question
+Date: Mon, 18 Apr 2005 15:26:42 +0100
+Message-ID: <4263C3A2.70006@inescporto.pt>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <002a01c544b5$2222c300$0b01a8c0@dap.edu.ph>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,49 +15,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tue, Apr 19, 2005 at 03:55:18PM +0800, elg3ne wrote:
-> Hi guys, Im new to iptables.. hope someone can help me to this.
-> 
-> The situation is this, I have a webserver running on a local network machine
-> (192.168.1.3) & I want it to be accessible outside my network. Is it
-> possible?
-> 
-> setup is like this:
-> 
-> workstation (192.168.1.3) ---> HUB ---> server ( LIVE IP, accessible
-> everywhere on the net )
-> 
-> when user access the live IP ex. 10.0.0.3 can he forward to get the files on
-> the worstation?
+Hi all,
 
-three line guide to "port-forwarding:"
+I have a basic question about iptables UDP NAT.
 
-  iptables -t nat -A PREROUTING -i $EXT_IF -p tcp --dport $OUTSIDE_PORT \
-    -j DNAT --to-destination $INSIDE_HOST_IP:$INSIDE_PORT
+Imagine that you have 2 UDP sessions in your private LAN using the same 
+port. How does iptables nat these connections? One of the sessions will 
+get one external port of the NAT machine and the other session will get 
+another one? Does the usual MASQUERADE command suffice to achieve this?
 
-  iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables MASQUERADE command:
 
-  iptables -A FORWARD -i $EXT_IF -p tcp --syn \
-    -d $INSIDE_HOST_IP --dport $INSIDE_PORT -j ACCEPT
+$IPTABLES -t nat -A POSTROUTING -o $OUTBOUND_IFACE -j MASQUERADE
 
-where example values for all the variables are:
+Hope I have made myself clear and,
 
-  EXT_IF="eth0"
-  OUTSIDE_PORT="80"
-  INSIDE_HOST_IP="192.168.1.3"
-  INSIDE_PORT="8080"
+Thanks for your attention
 
-HTH...
+Filipe Abrantes
 
--j
+-- 
+Filipe Lameiro Abrantes
+INESC Porto
+Campus da FEUP
+Rua Dr. Roberto Frias, 378
+4200-465 Porto
+Portugal
 
---
-"Peter: Lois, When I'm through with them, our kids will be so smart,
- they'll be able to program their own VCRs without spilling piping hot
- gravy all over myself."
-        --Family Guy
+Phone: +351 22 209 4266
+E-mail: fla@inescporto.pt
 
