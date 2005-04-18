@@ -1,10 +1,12 @@
-From: Wycliffe Bahati <wbahati@afsat-ke.com>
-Subject: Bandwidth filter with Volume
-Date: 18 Apr 2005 13:03:25 +0300
-Message-ID: <1113818605.27478.22.camel@mzee.iwayafrica.com>
+From: Taylor Grant <gtaylor@riverviewtech.net>
+Subject: Re: Bandwidth filter with Volume
+Date: Mon, 18 Apr 2005 04:50:28 -0500
+Message-ID: <426382E4.5000607@riverviewtech.net>
+References: <1113818605.27478.22.camel@mzee.iwayafrica.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1113818605.27478.22.camel@mzee.iwayafrica.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,19 +17,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Wycliffe Bahati <wbahati@afsat-ke.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi all
-	I am looking for a utililty that could get an aggregated traffic of a
-particular ip on the nework, Sum cummulative volume downloaded and
-uploaded and limit it say 100MB per month. So when the user gets to
-100MB it inserts a filter for that host so that it can only do certain
-protocals say smtp and pop. Anybody had of a tool like this.
+> Hi all
+> 	I am looking for a utililty that could get an aggregated traffic of a
+> particular ip on the nework, Sum cummulative volume downloaded and
+> uploaded and limit it say 100MB per month. So when the user gets to
+> 100MB it inserts a filter for that host so that it can only do certain
+> protocals say smtp and pop. Anybody had of a tool like this.
 
-Rgds
-Wycliffe
-
+Off hand you are probilby looking at a QoS setup with HTB or TBF with a fairly large preload and a predetermined rate of refill.  You could also do some sort of emulation of this with IPTables limit match extension.
 
 
+
+Grant. . . .
 
