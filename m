@@ -1,12 +1,11 @@
-From: Taylor Grant <gtaylor@riverviewtech.net>
-Subject: Re: Bandwidth filter with Volume
-Date: Mon, 18 Apr 2005 04:50:28 -0500
-Message-ID: <426382E4.5000607@riverviewtech.net>
-References: <1113818605.27478.22.camel@mzee.iwayafrica.com>
+From: "Baake, Matthias" <m.baake@porta.de>
+Subject: RE: Bandwidth filter with Volume
+Date: Mon, 18 Apr 2005 12:09:09 +0200
+Message-ID: <201E6F5AC48C274996A5AD8304FAEF869A52@p001ex03.porta.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1113818605.27478.22.camel@mzee.iwayafrica.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +16,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: Wycliffe Bahati <wbahati@afsat-ke.com>
-Cc: netfilter@lists.netfilter.org
+Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
 
-> Hi all
-> 	I am looking for a utililty that could get an aggregated traffic of a
-> particular ip on the nework, Sum cummulative volume downloaded and
-> uploaded and limit it say 100MB per month. So when the user gets to
-> 100MB it inserts a filter for that host so that it can only do certain
-> protocals say smtp and pop. Anybody had of a tool like this.
+hi=20
 
-Off hand you are probilby looking at a QoS setup with HTB or TBF with a fairly large preload and a predetermined rate of refill.  You could also do some sort of emulation of this with IPTables limit match extension.
+there is a traffic quota extension for netfilter. just take a look at =
+http://www.netfilter.org
+maybe this could help you.
 
+greetings
 
 
-Grant. . . .
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Wycliffe
+Bahati
+Sent: Monday, April 18, 2005 12:03 PM
+To: netfilter@lists.netfilter.org
+Subject: Bandwidth filter with Volume
+
+
+Hi all
+	I am looking for a utililty that could get an aggregated traffic of a
+particular ip on the nework, Sum cummulative volume downloaded and
+uploaded and limit it say 100MB per month. So when the user gets to
+100MB it inserts a filter for that host so that it can only do certain
+protocals say smtp and pop. Anybody had of a tool like this.
+
+Rgds
+Wycliffe
+
+
+
+
 
