@@ -1,46 +1,39 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 2.2.1 released
-Date: Tue, 19 Apr 2005 09:49:51 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0504190947060.22052@blackhole.kfki.hu>
+From: "elg3ne" <sun@dap.edu.ph>
+Subject: IP Forwading from Local IP to Live IP
+Date: Tue, 19 Apr 2005 15:55:18 +0800
+Message-ID: <002a01c544b5$2222c300$0b01a8c0@dap.edu.ph>
+References: <1079365863.2163.8.camel@vejan>
+	<200403151608.12073.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hi guys, Im new to iptables.. hope someone can help me to this.
 
-As the subject says, the new release of ipset can be downloaded from
+The situation is this, I have a webserver running on a local network machine
+(192.168.1.3) & I want it to be accessible outside my network. Is it
+possible?
 
-http://ipset.netfilter.org/
+setup is like this:
 
-[Thanks to Harald for the virtual server.]
+workstation (192.168.1.3) ---> HUB ---> server ( LIVE IP, accessible
+everywhere on the net )
 
-The changelog:
+when user access the live IP ex. 10.0.0.3 can he forward to get the files on
+the worstation?
 
-2.2.1
- - Magic number in ip_set_nethash.h was mistyped (bug reported by Rob
-   Carlson)
- - ipset can now test IP addresses in nethash type of sets (i.e. addresses
-   in netblocks added to the set)
+thanks
 
-If you use nethash type of IP sets, please upgrade.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
 
