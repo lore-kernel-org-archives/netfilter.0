@@ -1,10 +1,12 @@
-From: "Doug C" <the_wasp@game-nation.net.nz>
-Subject: Remapping of starcraft UDP port 6112
-Date: Tue, 19 Apr 2005 18:58:23 +1200
-Message-ID: <001001c544af$d2bd15e0$3800a8c0@Dewasp>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: UDP nat question
+Date: Tue, 19 Apr 2005 08:03:15 -0400
+Message-ID: <20050419120315.GA19248@bender.817west.com>
+References: <4263C3A2.70006@inescporto.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <4263C3A2.70006@inescporto.pt>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,57 +18,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi there everyone
+On Mon, Apr 18, 2005 at 03:26:42PM +0100, Filipe Abrantes wrote:
+> Hi all,
+> 
+> I have a basic question about iptables UDP NAT.
+> 
+> Imagine that you have 2 UDP sessions in your private LAN using the same 
+> port. How does iptables nat these connections? One of the sessions will 
+> get one external port of the NAT machine and the other session will get 
+> another one? Does the usual MASQUERADE command suffice to achieve this?
 
-i play starcraft which uses udp port 6112 all is fine unless i want 2 =
-local comps in the same game. (changing the game port is no longer =
-supported as blizzard feels that starcraft is "nat-friendly", however =
-warcraft3 supports this feature)
+if you're talking about two machines in the inside network making
+outbound connections to the same UDP port; for example 53, then (a) it's
+highly unlikely that both connections will use the same source port and
+(b) yes--each machine gets its srcip:sport re-mapped to the iptables
+machine's pubip:mappedsrcport.  remember that connection-tracking uses
+four values to match a connection:
 
-i have attempted to write iptable configs to remap the ports but none =
-have worked =3D(
+  src ip, src port, dst ip, dst port
 
-i need a fully working normal nat/ip masq for other games like counter =
-strike and for normal downloading/browsing/email etc as well as:
+> iptables MASQUERADE command:
+> 
+> $IPTABLES -t nat -A POSTROUTING -o $OUTBOUND_IFACE -j MASQUERADE
 
-ClientA:
-outgoing traffic on udp port 6112 from clientA to be remapped to where =
-its already going udp port 60001
-incomming traffic on udp port 60001 needs to be remapped back to clientA =
-on upd port 6112
+sure.
 
-CLientB:
-outgoing traffic on udp port 6112 from clientB to be remapped to where =
-its already going udp port 60002
-incomming traffic on udp port 60002needs to be remapped back to clientB =
-on upd port 6112
+> Hope I have made myself clear and,
 
-so far i have:
-*************************************************************************=
-*****************************************************
-ADSL=3D$(/sbin/ifconfig hsb0 | grep "inet addr" | awk -F: '{print $2}' | =
-awk '{print $1}'|sed -n 1p)
+not really--because i'm guessing your actual question is about something
+infinitely more complicated that will come out after much dancing
+around...maybe i'm wrong.
 
-iptables -A PREROUTING -t nat -j DNAT -p udp -d $ADSL --dport 63001 =
---to-destination 192.168.0.3:6112
-iptables -A POSTROUTING -t nat -j SNAT -p udp -s $ADSL --sport 6112 =
---to-source 192.168.0.3:63001
+-j
 
-iptables -A PREROUTING -t nat -j DNAT -p udp -d $ADSL --dport 63002 =
---to-destination 192.168.0.56:6112
-iptables -A POSTROUTING -t nat -j SNAT -p udp -s $ADSL --sport 6112 =
---to-source 192.168.0.56:63002
-*************************************************************************=
-*****************************************************
+--
+"Lois: Peter, there's a naked man on this cake.
+ Peter: There were only two cakes left, and trust me, you do not want
+ the one of Al Roker with the Hershey Kiss nipples."
+        --Family Guy
 
-starcraft sends the game packets to all other clients in the game, it =
-does not work by sending them via a server then the server sending them =
-to the client
-ips of other people in the game will ovbiously be different from game to =
-game
-i hope you can help me
-
-cheers
-Doug
