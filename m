@@ -1,12 +1,10 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Remapping of starcraft UDP port 6112
-Date: Tue, 19 Apr 2005 14:23:50 -0500
-Message-ID: <42655AC6.9080007@riverviewtech.net>
-References: <001001c544af$d2bd15e0$3800a8c0@Dewasp>
+From: marcus <marcus@lanhelp.com.br>
+Subject: To block skype
+Date: Tue, 19 Apr 2005 16:39:13 -0300
+Message-ID: <42655E61.80404@lanhelp.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001001c544af$d2bd15e0$3800a8c0@Dewasp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +16,10 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Doug C <the_wasp@game-nation.net.nz>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> ADSL=$(/sbin/ifconfig hsb0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'|sed -n 1p)
-> 
-> iptables -A PREROUTING -t nat -j DNAT -p udp -d $ADSL --dport 63001 --to-destination 192.168.0.3:6112
-> iptables -A POSTROUTING -t nat -j SNAT -p udp -s $ADSL --sport 6112 --to-source 192.168.0.3:63001
-> 
-> iptables -A PREROUTING -t nat -j DNAT -p udp -d $ADSL --dport 63002 --to-destination 192.168.0.56:6112
-> iptables -A POSTROUTING -t nat -j SNAT -p udp -s $ADSL --sport 6112 --to-source 192.168.0.56:63002
-
-Doug, it looks like you might be using the wrong source IP to SNAT your traffic to in your POSTROUTING chain.  I would use the following rules and see if they work.
-
-iptables -t nat -A PREROUTING -p udp -d $ADSL --dport 63001 -j DNAT --to-destination 192.168.0.3:6112
-iptables -t nat -A POSTROUTING -p udp -s 192.168.0.3 --sport 6112 -j SNAT --to-source $ADSL:63001
-
-iptables -t nat -A PREROUTING -p udp -d $ADSL --dport 63002 -j DNAT --to-destination 192.168.0.56:6112
-iptables -t nat -A POSTROUTING -p udp -s 192.168.0.56 --sport 6112 -j SNAT --to-source $ADSL:63002
-
-It looks like you had your IPs backwards in your POSTROUTING rules.  However I'm a bit perplexed that your regular SNATing rules did not take care of this.  You may also need to explicitly allow traffic for these connections in your FORWARD chain if you have set the default policy to DROP.
+Is there any way to block skype traffic with netfilter? Anybody have 
+done this?
 
 
-
-Grant. . . .
 
