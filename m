@@ -1,9 +1,9 @@
-From: Filipe Abrantes <fla@inescporto.pt>
-Subject: UDP nat question
-Date: Mon, 18 Apr 2005 15:26:42 +0100
-Message-ID: <4263C3A2.70006@inescporto.pt>
+From: "Doug C" <the_wasp@game-nation.net.nz>
+Subject: Remapping of starcraft UDP port 6112
+Date: Tue, 19 Apr 2005 18:58:23 +1200
+Message-ID: <001001c544af$d2bd15e0$3800a8c0@Dewasp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,36 +15,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+hi there everyone
 
-I have a basic question about iptables UDP NAT.
+i play starcraft which uses udp port 6112 all is fine unless i want 2 =
+local comps in the same game. (changing the game port is no longer =
+supported as blizzard feels that starcraft is "nat-friendly", however =
+warcraft3 supports this feature)
 
-Imagine that you have 2 UDP sessions in your private LAN using the same 
-port. How does iptables nat these connections? One of the sessions will 
-get one external port of the NAT machine and the other session will get 
-another one? Does the usual MASQUERADE command suffice to achieve this?
+i have attempted to write iptable configs to remap the ports but none =
+have worked =3D(
 
-iptables MASQUERADE command:
+i need a fully working normal nat/ip masq for other games like counter =
+strike and for normal downloading/browsing/email etc as well as:
 
-$IPTABLES -t nat -A POSTROUTING -o $OUTBOUND_IFACE -j MASQUERADE
+ClientA:
+outgoing traffic on udp port 6112 from clientA to be remapped to where =
+its already going udp port 60001
+incomming traffic on udp port 60001 needs to be remapped back to clientA =
+on upd port 6112
 
-Hope I have made myself clear and,
+CLientB:
+outgoing traffic on udp port 6112 from clientB to be remapped to where =
+its already going udp port 60002
+incomming traffic on udp port 60002needs to be remapped back to clientB =
+on upd port 6112
 
-Thanks for your attention
+so far i have:
+*************************************************************************=
+*****************************************************
+ADSL=3D$(/sbin/ifconfig hsb0 | grep "inet addr" | awk -F: '{print $2}' | =
+awk '{print $1}'|sed -n 1p)
 
-Filipe Abrantes
+iptables -A PREROUTING -t nat -j DNAT -p udp -d $ADSL --dport 63001 =
+--to-destination 192.168.0.3:6112
+iptables -A POSTROUTING -t nat -j SNAT -p udp -s $ADSL --sport 6112 =
+--to-source 192.168.0.3:63001
 
--- 
-Filipe Lameiro Abrantes
-INESC Porto
-Campus da FEUP
-Rua Dr. Roberto Frias, 378
-4200-465 Porto
-Portugal
+iptables -A PREROUTING -t nat -j DNAT -p udp -d $ADSL --dport 63002 =
+--to-destination 192.168.0.56:6112
+iptables -A POSTROUTING -t nat -j SNAT -p udp -s $ADSL --sport 6112 =
+--to-source 192.168.0.56:63002
+*************************************************************************=
+*****************************************************
 
-Phone: +351 22 209 4266
-E-mail: fla@inescporto.pt
+starcraft sends the game packets to all other clients in the game, it =
+does not work by sending them via a server then the server sending them =
+to the client
+ips of other people in the game will ovbiously be different from game to =
+game
+i hope you can help me
 
+cheers
+Doug
