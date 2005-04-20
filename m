@@ -1,13 +1,13 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Possibility to lock iptables rules.
-Date: Wed, 20 Apr 2005 17:16:00 -0500
-Message-ID: <4266D4A0.2000706@riverviewtech.net>
-References: <1113994155.31280.29.camel@localhost.localdomain>	<20050420184753.GA25069@bender.817west.com>
-	<20050420220123.GA25652@bender.817west.com>
+Subject: Re: TTL Examples
+Date: Wed, 20 Apr 2005 17:24:00 -0500
+Message-ID: <4266D680.7090802@riverviewtech.net>
+References: <060601c54572$90801ab0$09603fca@southern>
+	<42663E7E.6050201@hotpop.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050420220123.GA25652@bender.817west.com>
+In-Reply-To: <42663E7E.6050201@hotpop.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,18 +19,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jason Opperisano <opie@817west.com>
+To: Georgi Alexandrov <tehlists@hotpop.com>
 Cc: netfilter@lists.netfilter.org
 
-> after pondering this further (post-post, natch)...i had a thought 
-> (yes--it hurt).  you could probably use SELinux to achieve this.  the
-> minimal benefits that others have pointed out, and the overly complex
-> nature of SELinux probably yields a pretty low benefit/cost ratio,
-> though.
+> This is pointless ... as the user on the other side can increase their 
+> TTL value the same way you decreased it :-)
 
-<smart a$$ comment>Want some ice?</smart a$$ comment>
+Not exactly.
 
-Eh, the benefit / cost ratio might be low, but we are hackers and we do what we do for the challenge / fun / bragging rights of it.
+If you use the "--ttl-dec" yes it would be sort of futile as the client on the other side could artificially inflate his / her TTL.  HOWEVER if you use the "--ttl-set" then you could set the TTL to be what ever you want irregardless of what it was set to when it came in to your router.
 
 
 
