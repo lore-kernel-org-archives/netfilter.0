@@ -1,11 +1,9 @@
-From: "Doug C" <the_wasp@game-nation.net.nz>
-Subject: Re: Remapping of starcraft UDP port 6112
-Date: Wed, 20 Apr 2005 19:39:25 +1200
-Message-ID: <000901c5457c$14e461e0$3800a8c0@Dewasp>
-References: <001001c544af$d2bd15e0$3800a8c0@Dewasp>
-	<42655AC6.9080007@riverviewtech.net>
+From: "Alexander Stieglecker" <a.stieglecker@gmx.net>
+Subject: Re: anyone know how to use clusterip
+Date: Wed, 20 Apr 2005 11:43:10 +0200
+Message-ID: <000001c5458d$5e476650$aa28abc1@Vagabond>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,63 +16,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Cc: netfilter@lists.netfilter.org
+To: 'Bryan Waters' <bryanw@abwaters.com>
+Cc: 'Jason Joines' <support@bus.okstate.edu>, netfilter@lists.netfilter.org
 
-cheers for spoting that the rules were backwards, i think i must have
-stuffed them up when putting them into the email.
+Hi Bryan,
 
-is it actually possible for iptables/netfilter to redirect the packets the
-way i want it to?
+I experimented with CLUSTERIP using 2 nodes.
+The traffic is distributed using Multicast-MAC-addresses over N-Nodes =
+(e.g.
+webservers). One node decides to ACCEPT the incoming packet. All others =
+DROP
+the packet (based on the srcip of the packet and the local node number).
+There is also a failover mechanism if one or more nodes die.
 
-if it is possible i dont see why it shouldnt work because as i said in the
-first question warcraft can use any port it pleases therefor the protocol
-must be able to handle it
------ Original Message -----
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-To: "Doug C" <the_wasp@game-nation.net.nz>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Wednesday, April 20, 2005 7:23 AM
-Subject: Re: Remapping of starcraft UDP port 6112
+My starting commands were:
 
+Node1:
+iptables -A INPUT -d 10.0.0.1 -p tcp --dport 80 -j CLUSTERIP --new
+--hashmode sourceip --clustermac 01:23:45:67:89:AB --total-nodes 2
+--local-node 1
 
-> > ADSL=$(/sbin/ifconfig hsb0 | grep "inet addr" | awk -F: '{print $2}' |
-awk '{print $1}'|sed -n 1p)
-> >
-> > iptables -A PREROUTING -t nat -j DNAT -p udp -d $ADSL --dport
-63001 --to-destination 192.168.0.3:6112
-> > iptables -A POSTROUTING -t nat -j SNAT -p udp -s $ADSL --sport
-6112 --to-source 192.168.0.3:63001
-> >
-> > iptables -A PREROUTING -t nat -j DNAT -p udp -d $ADSL --dport
-63002 --to-destination 192.168.0.56:6112
-> > iptables -A POSTROUTING -t nat -j SNAT -p udp -s $ADSL --sport
-6112 --to-source 192.168.0.56:63002
->
-> Doug, it looks like you might be using the wrong source IP to SNAT your
-traffic to in your POSTROUTING chain.  I would use the following rules and
-see if they work.
->
-> iptables -t nat -A PREROUTING -p udp -d $ADSL --dport 63001 -j
-DNAT --to-destination 192.168.0.3:6112
-> iptables -t nat -A POSTROUTING -p udp -s 192.168.0.3 --sport 6112 -j
-SNAT --to-source $ADSL:63001
->
-> iptables -t nat -A PREROUTING -p udp -d $ADSL --dport 63002 -j
-DNAT --to-destination 192.168.0.56:6112
-> iptables -t nat -A POSTROUTING -p udp -s 192.168.0.56 --sport 6112 -j
-SNAT --to-source $ADSL:63002
->
-> It looks like you had your IPs backwards in your POSTROUTING rules.
-However I'm a bit perplexed that your regular SNATing rules did not take
-care of this.  You may also need to explicitly allow traffic for these
-connections in your FORWARD chain if you have set the default policy to
-DROP.
->
->
->
-> Grant. . . .
->
->
+Node2:
+iptables -A INPUT -d 10.0.0.1 -p tcp --dport 80 -j CLUSTERIP --new
+--hashmode sourceip --clustermac 01:23:45:67:89:AB --total-nodes 2
+--local-node 2
+
+It's important that the clustermac parameter is a MULTICAST-MAC-address.
+CLUSTERIP replies with this multicast mac to ARP-requests containing ip
+10.0.0.1 . This makes the switch to flood the packets on all ports. Each
+node decides itself if it wants to drop the incoming packet based in the
+hash of the srcip (respectively srcip-srcport/srcip-srcport-destport).
+Be sure to enter at least "-d 10.0.0.1" as a standard match.
+After you've entered the commands take a look at the proc-fs using
+
+cat /proc/net/ipt_CLUSTERIP/10.0.0.1
+
+This shows you for how many node numbers the local node feels =
+responsible.
+You can add a node using the command:
+
+echo "+1" > /proc/net/ipt_CLUSTERIP/10.0.0.1
+
+or remove one using the same command but with "-1"
+
+A daemon like heartbeat could be used to do these commands when one node
+fails.
+
+I also discovered some problems:
+
+*Each node replies to an ARP-request with the clustermac but after a =
+while
+it sends an ARR-request itself containing its NIC-MAC which destroys the
+IP-Clustermac mapping on the clients. (Fixed thos using ARP-Tables)
+*Problems using FTP (two TCP-connections)
+
 
 
