@@ -1,10 +1,12 @@
-From: "Stephen P. Schaefer" <sschaefer@rfmd.com>
-Subject: Connection tracking via RPC transaction ID
-Date: Wed, 20 Apr 2005 14:42:13 -0400
-Message-ID: <4266A285.1040205@rfmd.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Possibility to lock iptables rules.
+Date: Wed, 20 Apr 2005 14:47:53 -0400
+Message-ID: <20050420184753.GA25069@bender.817west.com>
+References: <1113994155.31280.29.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <1113994155.31280.29.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,36 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm trying to SNAT an NFS client, but the NFS server (a NetApp) has
-two IP addresses, and though DNS advertises it at the first address,
-e.g. 192.168.200.10, its answers come back from the other address,
-e.g., 192.168.2.150. If I'm not behind the SNAT, there's no problem
-because the client kernel ignores the source IP address and just looks
-at the RPC transaction ID, but behind the SNAT, the fact that the
-answer comes back from a different address than that to which the
-request went breaks connection tracking.  I've currently worked around
-the problem with a DNAT rule:
+On Wed, Apr 20, 2005 at 12:49:15PM +0200, Anders Fugmann wrote:
+> Hi,
+> 
+> I would like to request a very simple feature: The possibility to lock
+> all iptable rules in the kernel, making them immutable.
+> 
+> This would be usefull on machines which act both as a firewall and as a
+> server. The problem today if an unwanted guest manages to break into the
+> machine running the firewall and becomes root, the person can easilly
+> change the rules, compromising the network guarded by the hacked
+> firewall.
+> 
+> If it was somehow possible to lock the rules once setup, the attacker
+> would be unable to modify the rules, the network guarded by the firewall
+> would not (pending on how the firewall was setup) not be compromised,
+> even if an attacker gained access to the firewall itself.
 
-iptables -t nat -A PREROUTING -d 192.168.200.10 -i eth1 -j DNAT --to-destination 192.168.2.150
+i'm guessing you're thinking about how the *BSD's have a concept of
+kern.securelevel, and certain things (like firewall rules) become
+immutable; even by root, at certain levels.
 
-...but I'm woried that this is less than robust.  In particular, I
-don't understad why the NetApp uses one address or the other to reply,
-and what will keep it from behaving differently tomorrow.  Is there a
-connection tracking module that works on RPC transaction ID and can
-ignore the source address?  Would it be difficult to write?  Is there
-code that does something similar that I should study?
+i'm not a kernel programmer, but i can tell you that the linux kernel
+doesn't have anything like kern.securelevel; and without it, i don't
+believe what you're asking for is possible.  i'd also figure that
+implementing kern.securelevel in the linux kernel would be beyond the
+scope of what the netfilter developers are responsible for.
 
-For reference, the rest of the relevant setup is like this:
+-j
 
-On the netfiltering box:
-
-eth0: 192.168.111.252/24
-eth1: 192.168.111.249/30
-
-SNAT:
-
-iptables -t nat -A POSTROUTING -s 192.168.111.250 -d ! 192.168.111.248/30 -o eth0 -j SNAT --to-source 192.168.111.252
+--
+"Stewie: Careful! You're washing a baby's scalp, not scrubbing
+ the vomit out of a Christmas dress, you stupid holiday drunk."
+        --Family Guy
 
