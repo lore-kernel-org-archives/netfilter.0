@@ -1,10 +1,12 @@
-From: Anders Fugmann <afu@fugmann.net>
-Subject: Possibility to lock iptables rules.
-Date: Wed, 20 Apr 2005 12:49:15 +0200
-Message-ID: <1113994155.31280.29.camel@localhost.localdomain>
+From: Georgi Alexandrov <tehlists@hotpop.com>
+Subject: Re: TTL Examples
+Date: Wed, 20 Apr 2005 14:35:26 +0300
+Message-ID: <42663E7E.6050201@hotpop.com>
+References: <060601c54572$90801ab0$09603fca@southern>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <060601c54572$90801ab0$09603fca@southern>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,55 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+hareram wrote:
 
-I would like to request a very simple feature: The possibility to lock
-all iptable rules in the kernel, making them immutable.
+> Hi all
+>
+> iam going through the doc from the following site
+>
+> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#RCTEST-IPTABLESTXT 
+>
+>
+> The TTL target is used to change the TTL (Time To Live) field of the 
+> packet. We could tell packets to only have a specific TTL and so on. 
+> One good reason for this could be that we don't want to give ourself 
+> away to nosy Internet Service Providers. Some Internet Service 
+> Providers do not like users running multiple computers on one single 
+> connection, and there are some Internet Service Providers known to 
+> look for a single host generating different TTL values, and take this 
+> as one of many signs of multiple computers connected to a single 
+> connection.
+>
+> I was looking for the option above said in the docs
+>
+> can some one give me the example script.
+>
+> i would like to restrict other side use only one PC, he/she should not 
+> use any proxy server or any other NAT.
+>
+This is pointless ... as the user on the other side can increase their 
+TTL value the same way you decreased it :-)
+refs: #TTLTARGET @ iptables-tutorial.frozentux.net
 
-This would be usefull on machines which act both as a firewall and as a
-server. The problem today if an unwanted guest manages to break into the
-machine running the firewall and becomes root, the person can easilly
-change the rules, compromising the network guarded by the hacked
-firewall.
-
-If it was somehow possible to lock the rules once setup, the attacker
-would be unable to modify the rules, the network guarded by the firewall
-would not (pending on how the firewall was setup) not be compromised,
-even if an attacker gained access to the firewall itself.
-
-I was thinking something in the lines of:
-
-iptables --lock [--action <PANIC|LOG>],
-
-where 'action' would specify how the machine should react if anyone was
-to try and modify the rules. PANIC would cause the system to panic. LOG
-would simple make the kernel log the attempt and then ignore the
-request.
-
-The only way to unlock the tables would be to reboot the machine. I know
-that this system if not 100% foolproof, as the attacker could install a
-custom kernel, and then reboot the machine, but it would cirtanly make
-at lot harder for most attackers
-
-I really hope that this feature could be implemented. I know that is is
-not excatly trivial to implement as the address of the bit signifying
-that the tables are lock would need to be hidden to avoid the attacker
-to simply write a zero the the specific address to unlock the tables.
-
-Regards
-Anders Fugmann
-
-P.s.
-Please CC me on replys, as I'm not on the list.
-
-
-
-
-
-
-
-
+regards,
+Georgi Alexandrov
 
