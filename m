@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Possibility to lock iptables rules.
-Date: Wed, 20 Apr 2005 14:47:53 -0400
-Message-ID: <20050420184753.GA25069@bender.817west.com>
-References: <1113994155.31280.29.camel@localhost.localdomain>
+Subject: Re: Connection tracking via RPC transaction ID
+Date: Wed, 20 Apr 2005 15:13:03 -0400
+Message-ID: <20050420191303.GA25136@bender.817west.com>
+References: <4266A285.1040205@rfmd.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1113994155.31280.29.camel@localhost.localdomain>
+In-Reply-To: <4266A285.1040205@rfmd.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,37 +21,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Apr 20, 2005 at 12:49:15PM +0200, Anders Fugmann wrote:
-> Hi,
+On Wed, Apr 20, 2005 at 02:42:13PM -0400, Stephen P. Schaefer wrote:
+> I'm trying to SNAT an NFS client, but the NFS server (a NetApp) has
+> two IP addresses, and though DNS advertises it at the first address,
+> e.g. 192.168.200.10, its answers come back from the other address,
+> e.g., 192.168.2.150. If I'm not behind the SNAT, there's no problem
+> because the client kernel ignores the source IP address and just looks
+> at the RPC transaction ID, but behind the SNAT, the fact that the
+> answer comes back from a different address than that to which the
+> request went breaks connection tracking.  I've currently worked around
+> the problem with a DNAT rule:
 > 
-> I would like to request a very simple feature: The possibility to lock
-> all iptable rules in the kernel, making them immutable.
+> iptables -t nat -A PREROUTING -d 192.168.200.10 -i eth1 -j DNAT 
+> --to-destination 192.168.2.150
 > 
-> This would be usefull on machines which act both as a firewall and as a
-> server. The problem today if an unwanted guest manages to break into the
-> machine running the firewall and becomes root, the person can easilly
-> change the rules, compromising the network guarded by the hacked
-> firewall.
-> 
-> If it was somehow possible to lock the rules once setup, the attacker
-> would be unable to modify the rules, the network guarded by the firewall
-> would not (pending on how the firewall was setup) not be compromised,
-> even if an attacker gained access to the firewall itself.
+> ...but I'm woried that this is less than robust.  In particular, I
+> don't understad why the NetApp uses one address or the other to reply,
+> and what will keep it from behaving differently tomorrow.  Is there a
+> connection tracking module that works on RPC transaction ID and can
+> ignore the source address?  Would it be difficult to write?  Is there
+> code that does something similar that I should study?
 
-i'm guessing you're thinking about how the *BSD's have a concept of
-kern.securelevel, and certain things (like firewall rules) become
-immutable; even by root, at certain levels.
+there's an RPC conntrack module in PoM:
 
-i'm not a kernel programmer, but i can tell you that the linux kernel
-doesn't have anything like kern.securelevel; and without it, i don't
-believe what you're asking for is possible.  i'd also figure that
-implementing kern.securelevel in the linux kernel would be beyond the
-scope of what the netfilter developers are responsible for.
+  http://svn.netfilter.org/netfilter/trunk/patch-o-matic-ng/rpc/
+
+it's 2.4-only, and i have no clue if it helps with this specific
+situation.
 
 -j
 
 --
-"Stewie: Careful! You're washing a baby's scalp, not scrubbing
- the vomit out of a Christmas dress, you stupid holiday drunk."
+"Quagmire: Tuesdays in the '80s I was always in bed by 8... and home
+ by 11."
         --Family Guy
 
