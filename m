@@ -1,12 +1,12 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: TTL Examples
-Date: Wed, 20 Apr 2005 17:32:23 -0500
-Message-ID: <4266D877.3030201@riverviewtech.net>
-References: <060601c54572$90801ab0$09603fca@southern>
+Subject: Re: matchlimit
+Date: Wed, 20 Apr 2005 17:39:53 -0500
+Message-ID: <4266DA39.8090907@riverviewtech.net>
+References: <4266383E.5000002@eccotours.dyndns.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <060601c54572$90801ab0$09603fca@southern>
+In-Reply-To: <4266383E.5000002@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,20 +18,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: hareram <hareram@sol.net.in>
-Cc: netfilter@lists.netfilter.org
+To: Brent Clark <bclark@eccotours.dyndns.org>
+Cc: iptables <netfilter@lists.netfilter.org>
 
-> can some one give me the example script.
+> What would be the recommended the rule for matchlimit FROM a specfic
+> ipaddess.
 
-I don't think there is really a script per say that will do this.  As quite often such systems are monitoring traffic remembering what recent values were and looking for a difference in the norm as a sign of something funny going on.
+iptables -t filter -A INPUT -s $Source_IP_of_attack -d $Your_IP -m limit ! --limit 5/minute --limit-burst 5 -j DROP
 
-> i would like to restrict other side use only one PC, he/she should not 
-> use any proxy server or any other NAT.
+I think you will want the "!" in there as you want to drop any packets that are over the limit.  You will need to reference the man page and play with this for a while.
 
-Rather than doing something to prevent the client from using multiple systems behind some sort of NAT and / or proxy I've found it much easier (technically and on my concious) and reliable to just allow the client to have as may systems as they want and just bill based on bandwidth.  If the client decides that they want to do this then they can do so, they will just have to distribute the bandwidth costs.
-
-If you really want to do this you could set something up that would limit the number of connections that any given IP could have initiated at one time.  However I think this could EASILY break a LOT of things.  If you REALLY want to put a system in place and have it try to guess if there are multiple clients behind a system you should probably look at the sequence numbers that are coming out in packets too as a single system should have sequence numbers that are incrementing higher, not necessarily in sequential as in 123, 124, 125, as in the current sequence number should be higher than the previous and the next sequence number should be larger than the current.  The sequence numbers should not jump all over the scale as this is another sign that there are multiple systems behind the firewall.  In fact quite often if you have enough sequence numbers you can even guess fairly close as to
-  how many systems are behind the firewall.
+One think to keep in mind is that this will only limit attacks coming from $Source_IP_of_attack and this may never happen again.  Thus I don't know how practice this rule is.  But this is my answer to your question.
 
 
 
