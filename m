@@ -1,12 +1,10 @@
-From: Georgi Alexandrov <tehlists@hotpop.com>
-Subject: Re: matchlimit
-Date: Wed, 20 Apr 2005 14:46:40 +0300
-Message-ID: <42664120.4090700@hotpop.com>
-References: <4266383E.5000002@eccotours.dyndns.org>
+From: "Daniel Wittenberg" <daniel-wittenberg@starken.com>
+Subject: NAT stops working
+Date: Wed, 20 Apr 2005 09:50:20 -0500
+Message-ID: <1114008620.28578.7.camel@plasma.starken.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4266383E.5000002@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,66 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Brent Clark wrote:
+We've got a high-speed wireless and DSL connection so I decided to try
+and load-balance the out-going connections.  I run a little script that
+does:
 
-> Hi all
->
-> What would be the recommended the rule for matchlimit FROM a specfic
-> ipaddess.
->
-> Last night I found that I was a victim of a dictionary brute force 
-> attack.
->
-> From what I gather I can see that no access was granted.
->
-> If anyone has any tip, advice, etc it would be most appreciated.
->
-> Kind Regards
-> Brent Clark
->
-> ====================================================================
-> Copy and paste below from logwatch
-> ====================================================================
->
->    --------------------- SSHD Begin ------------------------
-> Failed logins from these:
->      Ionutz/password from 80.84.248.224: 1 Time(s)
->      Melk/password from 80.84.248.224: 1 Time(s)
->      aaron/password from 80.84.248.224: 1 Time(s)
->     
+route flush scope global
+route flush cache
+route add default scope global equalize nexthop via <external gw 1> dev
+eth0 weight 1 nexthop via <external gw 2> dev eth1
 
-*snip*
+This appears to work for awhile, then incoming connections stop getting
+nat'd to their internal addresses.  I reboot or reset the firewall
+(flush all the tables and re-run this script) and things are good again
+for awhile.  I tried flooding some of the external IP's that are nat'd
+and it seems like after a certain amount of traffic the nat just stops
+working.  tcpdump shows traffic on the external interface coming in, but
+not going out anywhere.
 
-> Illegal user portmap from 80.84.248.224
-> Illegal user x from 80.84.248.224
-> Illegal user jas from 80.84.248.224
->    ---------------------- SSHD End -------------------------
->    ###################### LogWatch End #########################
->
->
+Anyone have ideas on how to debug this further or things to check?
 
-This will be kind of pointless too (baning ip addresses after they have 
-attacked you) ... like having an umbrella but after the rain has stopped.
-The better solution (my opinion) will be to secure your sshd to the 
-highest level possible.
-tips:
-keep it up to date,
-use strong passwords (long, containing numbers, special characters, up 
-and lower case),
-change the default port sshd listens to,
-allow only ssh version 2,
-disable password authentication at all and use pub/priv keys if possible,
-allow only specific users and/or groups if possible,
-disable root logins,
-and finally, if possible (i don't like this option but someone may find 
-it useful) - allow connections to the sshd port only from trusted/known 
-ip addresses.
+Thanks,
+Dan
 
-Everything written above is just my point of view and is concerning openssh.
-
-regards,
-Georgi Alexandrov
 
