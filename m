@@ -1,7 +1,9 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
-Subject: matchlimit
-Date: Wed, 20 Apr 2005 13:08:46 +0200
-Message-ID: <4266383E.5000002@eccotours.dyndns.org>
+From: "Doug C" <the_wasp@game-nation.net.nz>
+Subject: Re: Remapping of starcraft UDP port 6112
+Date: Wed, 20 Apr 2005 19:39:25 +1200
+Message-ID: <000901c5457c$14e461e0$3800a8c0@Dewasp>
+References: <001001c544af$d2bd15e0$3800a8c0@Dewasp>
+	<42655AC6.9080007@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,579 +17,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: iptables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi all
+cheers for spoting that the rules were backwards, i think i must have
+stuffed them up when putting them into the email.
 
-What would be the recommended the rule for matchlimit FROM a specfic
-ipaddess.
+is it actually possible for iptables/netfilter to redirect the packets the
+way i want it to?
 
-Last night I found that I was a victim of a dictionary brute force attack.
+if it is possible i dont see why it shouldnt work because as i said in the
+first question warcraft can use any port it pleases therefor the protocol
+must be able to handle it
+----- Original Message -----
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+To: "Doug C" <the_wasp@game-nation.net.nz>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Wednesday, April 20, 2005 7:23 AM
+Subject: Re: Remapping of starcraft UDP port 6112
 
- From what I gather I can see that no access was granted.
 
-If anyone has any tip, advice, etc it would be most appreciated.
-
-Kind Regards
-Brent Clark
-
-====================================================================
-Copy and paste below from logwatch
-====================================================================
-
-    --------------------- SSHD Begin ------------------------
-Failed logins from these:
-      Ionutz/password from 80.84.248.224: 1 Time(s)
-      Melk/password from 80.84.248.224: 1 Time(s)
-      aaron/password from 80.84.248.224: 1 Time(s)
-      abc/password from 80.84.248.224: 2 Time(s)
-      abraham/password from 80.84.248.224: 1 Time(s)
-      ace/password from 80.84.248.224: 1 Time(s)
-      adam/password from 202.158.162.201: 1 Time(s)
-      adela/password from 80.84.248.224: 1 Time(s)
-      adi/password from 80.84.248.224: 1 Time(s)
-      adm/password from 202.158.162.201: 1 Time(s)
-      admin/password from 193.254.240.176: 2 Time(s)
-      admin/password from 202.158.162.201: 7 Time(s)
-      adonix/password from 80.84.248.224: 1 Time(s)
-      adrian/password from 80.84.248.224: 1 Time(s)
-      adv/password from 80.84.248.224: 1 Time(s)
-      agata/password from 80.84.248.224: 1 Time(s)
-      ahto/password from 80.84.248.224: 1 Time(s)
-      ajiro/password from 80.84.248.224: 1 Time(s)
-      alan/password from 202.158.162.201: 1 Time(s)
-      alan/password from 80.84.248.224: 1 Time(s)
-      aldo/password from 80.84.248.224: 1 Time(s)
-      alejandro/password from 80.84.248.224: 1 Time(s)
-      aleon/password from 80.84.248.224: 1 Time(s)
-      alex/password from 202.158.162.201: 1 Time(s)
-      alex/password from 80.84.248.224: 1 Time(s)
-      alexandru/password from 80.84.248.224: 1 Time(s)
-      alfred/password from 80.84.248.224: 1 Time(s)
-      alias/password from 80.84.248.224: 1 Time(s)
-      alice/password from 80.84.248.224: 1 Time(s)
-      alina/password from 80.84.248.224: 1 Time(s)
-      alka/password from 80.84.248.224: 1 Time(s)
-      almacen/password from 80.84.248.224: 1 Time(s)
-  .
-.
-.
-.
-.
-      web/password from 202.158.162.201: 1 Time(s)
-      webadmin/password from 202.158.162.201: 1 Time(s)
-      webadmin/password from 80.84.248.224: 1 Time(s)
-      webmaster/password from 202.158.162.201: 2 Time(s)
-      webmasters/password from 80.84.248.224: 1 Time(s)
-      webrun/password from 80.84.248.224: 1 Time(s)
-      webster/password from 80.84.248.224: 1 Time(s)
-      weisz/password from 80.84.248.224: 1 Time(s)
-      whitecanyon/password from 80.84.248.224: 1 Time(s)
-      wolf/password from 80.84.248.224: 1 Time(s)
-      www-data/password from 202.158.162.201: 1 Time(s)
-      www/password from 202.158.162.201: 1 Time(s)
-      wwwrun/password from 202.158.162.201: 1 Time(s)
-      x/password from 80.84.248.224: 2 Time(s)
-      xfs/password from 80.84.248.224: 1 Time(s)
-      xian/password from 80.84.248.224: 1 Time(s)
-      xman/password from 80.84.248.224: 1 Time(s)
-      yamaguchi/password from 80.84.248.224: 1 Time(s)
-      yarul/password from 80.84.248.224: 1 Time(s)
-      yasuda/password from 80.84.248.224: 1 Time(s)
-      yoko/password from 80.84.248.224: 1 Time(s)
-      yokoyama/password from 80.84.248.224: 1 Time(s)
-      yoshinari/password from 80.84.248.224: 1 Time(s)
-      zako/password from 80.84.248.224: 1 Time(s)
-      zemba/password from 80.84.248.224: 1 Time(s)
-      zetina/password from 80.84.248.224: 1 Time(s)
-
-Illegal user bruce from 80.84.248.224
-Illegal user chuck from 80.84.248.224
-Illegal user darkman from 80.84.248.224
-Illegal user hostmaster from 80.84.248.224
-Illegal user jeffrey from 80.84.248.224
-Illegal user loverd from 80.84.248.224
-Illegal user eric from 80.84.248.224
-Illegal user lauren from 80.84.248.224
-Illegal user mark from 80.84.248.224
-Illegal user Melk from 80.84.248.224
-Illegal user palex from 80.84.248.224
-Illegal user quake from 80.84.248.224
-Illegal user save from 80.84.248.224
-Illegal user styx from 80.84.248.224
-Illegal user toto from 80.84.248.224
-Illegal user tuningar from 80.84.248.224
-Illegal user Ionutz from 80.84.248.224
-Illegal user abc from 80.84.248.224
-Illegal user adela from 80.84.248.224
-Illegal user adrian from 80.84.248.224
-Illegal user alexandru from 80.84.248.224
-Illegal user anca from 80.84.248.224
-Illegal user antica from 80.84.248.224
-Illegal user cncp from 80.84.248.224
-Illegal user contabil from 80.84.248.224
-Illegal user contempo from 80.84.248.224
-Illegal user crisan from 80.84.248.224
-Illegal user cristi from 80.84.248.224
-Illegal user cristina from 80.84.248.224
-Illegal user dana from 80.84.248.224
-Illegal user david from 80.84.248.224
-Illegal user dnp from 80.84.248.224
-Illegal user doina from 80.84.248.224
-Illegal user dorina from 80.84.248.224
-Illegal user ernest from 80.84.248.224
-Illegal user florin from 80.84.248.224
-Illegal user fotograf from 80.84.248.224
-Illegal user haitac from 80.84.248.224
-Illegal user ionita from 80.84.248.224
-Illegal user ionut from 80.84.248.224
-Illegal user ionutz from 80.84.248.224
-Illegal user jurca from 80.84.248.224
-Illegal user lucia from 80.84.248.224
-Illegal user maria from 80.84.248.224
-Illegal user medie from 80.84.248.224
-Illegal user moderna from 80.84.248.224
-Illegal user moised from 80.84.248.224
-Illegal user numis from 80.84.248.224
-Illegal user oprea from 80.84.248.224
-Illegal user paul from 80.84.248.224
-Illegal user preist from 80.84.248.224
-Illegal user radu from 80.84.248.224
-Illegal user rodica from 80.84.248.224
-Illegal user samba from 80.84.248.224
-Illegal user sanda from 80.84.248.224
-Illegal user secretar from 80.84.248.224
-Illegal user simina from 80.84.248.224
-Illegal user sorin from 80.84.248.224
-Illegal user sport from 80.84.248.224
-Illegal user personal from 80.84.248.224
-Illegal user taz from 80.84.248.224
-Illegal user teo from 80.84.248.224
-Illegal user tina from 80.84.248.224
-Illegal user webmasters from 80.84.248.224
-Illegal user adi from 80.84.248.224
-Illegal user alex from 80.84.248.224
-Illegal user alina from 80.84.248.224
-Illegal user anca from 80.84.248.224
-Illegal user ancutza from 80.84.248.224
-Illegal user arthur from 80.84.248.224
-Illegal user aurelia from 80.84.248.224
-Illegal user bogdan from 80.84.248.224
-Illegal user bremar from 80.84.248.224
-Illegal user calin from 80.84.248.224
-Illegal user cdvonline from 80.84.248.224
-Illegal user cerasela from 80.84.248.224
-Illegal user chimi from 80.84.248.224
-Illegal user cimpeanu from 80.84.248.224
-Illegal user ciprian from 80.84.248.224
-Illegal user claudia from 80.84.248.224
-Illegal user claudiu from 80.84.248.224
-Illegal user corbus from 80.84.248.224
-Illegal user cris from 80.84.248.224
-Illegal user dan from 80.84.248.224
-Illegal user promo from 80.84.248.224
-Illegal user radu from 80.84.248.224
-Illegal user raducu from 80.84.248.224
-Illegal user raul from 80.84.248.224
-Illegal user robert from 80.84.248.224
-Illegal user roxi from 80.84.248.224
-Illegal user sasha from 80.84.248.224
-Illegal user seba from 80.84.248.224
-Illegal user shadow from 80.84.248.224
-Illegal user stefan from 80.84.248.224
-Illegal user toor from 80.84.248.224
-Illegal user trigger from 80.84.248.224
-Illegal user vasi from 80.84.248.224
-Illegal user victor from 80.84.248.224
-Illegal user webadmin from 80.84.248.224
-Illegal user axente from 80.84.248.224
-Illegal user dascalu from 80.84.248.224
-Illegal user personal from 80.84.248.224
-Illegal user dispecer from 80.84.248.224
-Illegal user dorin from 80.84.248.224
-Illegal user mada from 80.84.248.224
-Illegal user medina from 80.84.248.224
-Illegal user nicoara from 80.84.248.224
-Illegal user slayer from 80.84.248.224
-Illegal user telegest from 80.84.248.224
-Illegal user wolf from 80.84.248.224
-Illegal user lady from 80.84.248.224
-Illegal user atb from 80.84.248.224
-Illegal user claudius from 80.84.248.224
-Illegal user officeinn from 80.84.248.224
-Illegal user sly from 80.84.248.224
-Illegal user xman from 80.84.248.224
-Illegal user tehnolog from 80.84.248.224
-Illegal user ambulator from 80.84.248.224
-Illegal user calcul from 80.84.248.224
-Illegal user contat from 80.84.248.224
-Illegal user diabet from 80.84.248.224
-Illegal user drweb from 80.84.248.224
-Illegal user echopedi from 80.84.248.224
-Illegal user eva from 80.84.248.224
-Illegal user farmacia from 80.84.248.224
-Illegal user garda from 80.84.248.224
-Illegal user healer from 80.84.248.224
-Illegal user isabel from 80.84.248.224
-Illegal user juridic from 80.84.248.224
-Illegal user nucleara from 80.84.248.224
-Illegal user razvan from 80.84.248.224
-Illegal user revista from 80.84.248.224
-Illegal user statistica from 80.84.248.224
-Illegal user bootcamp from 80.84.248.224
-Illegal user alan from 80.84.248.224
-Illegal user cisco from 80.84.248.224
-Illegal user dave from 80.84.248.224
-Illegal user gis from 80.84.248.224
-Illegal user jeff from 80.84.248.224
-Illegal user john from 80.84.248.224
-Illegal user kevin from 80.84.248.224
-Illegal user larry from 80.84.248.224
-Illegal user smiley from 80.84.248.224
-Illegal user software from 80.84.248.224
-Illegal user steve from 80.84.248.224
-Illegal user virgil from 80.84.248.224
-Illegal user walt from 80.84.248.224
-Illegal user ajiro from 80.84.248.224
-Illegal user arasawa from 80.84.248.224
-Illegal user asai from 80.84.248.224
-Illegal user ayase from 80.84.248.224
-Illegal user coupon from 80.84.248.224
-Illegal user daikanyama from 80.84.248.224
-Illegal user ebata from 80.84.248.224
-Illegal user hayatsu from 80.84.248.224
-Illegal user inada from 80.84.248.224
-Illegal user isamu from 80.84.248.224
-Illegal user kido from 80.84.248.224
-Illegal user kimura from 80.84.248.224
-Illegal user kitamura from 80.84.248.224
-Illegal user kuroiwa from 80.84.248.224
-Illegal user maeno from 80.84.248.224
-Illegal user nishi from 80.84.248.224
-Illegal user nishiyama from 80.84.248.224
-Illegal user oshima from 80.84.248.224
-Illegal user present from 80.84.248.224
-Illegal user press from 80.84.248.224
-Illegal user rapi from 80.84.248.224
-Illegal user recruit from 80.84.248.224
-Illegal user sakai from 80.84.248.224
-Illegal user sasaki from 80.84.248.224
-Illegal user shimada from 80.84.248.224
-Illegal user shopsupport from 80.84.248.224
-Illegal user suga from 80.84.248.224
-Illegal user suge from 80.84.248.224
-Illegal user takahashi from 80.84.248.224
-Illegal user usui from 80.84.248.224
-Illegal user yamaguchi from 80.84.248.224
-Illegal user yasuda from 80.84.248.224
-Illegal user yokoyama from 80.84.248.224
-Illegal user yoshinari from 80.84.248.224
-Illegal user client from 80.84.248.224
-Illegal user cvs from 80.84.248.224
-Illegal user graham from 80.84.248.224
-Illegal user ianh from 80.84.248.224
-Illegal user jill from 80.84.248.224
-Illegal user lisa from 80.84.248.224
-Illegal user phoebe from 80.84.248.224
-Illegal user boxer from 80.84.248.224
-Illegal user intraweb from 80.84.248.224
-Illegal user aldo from 80.84.248.224
-Illegal user aleon from 80.84.248.224
-Illegal user almacen from 80.84.248.224
-Illegal user areyes from 80.84.248.224
-Illegal user aolivari from 80.84.248.224
-Illegal user central from 80.84.248.224
-Illegal user dante from 80.84.248.224
-Illegal user eladio from 80.84.248.224
-Illegal user etambra from 80.84.248.224
-Illegal user evara from 80.84.248.224
-Illegal user gruiz from 80.84.248.224
-Illegal user josed from 80.84.248.224
-Illegal user kop from 80.84.248.224
-Illegal user lady from 80.84.248.224
-Illegal user mabad from 80.84.248.224
-Illegal user osilvera from 80.84.248.224
-Illegal user patriciar from 80.84.248.224
-Illegal user porteria from 80.84.248.224
-Illegal user rinocente from 80.84.248.224
-Illegal user rosa from 80.84.248.224
-Illegal user scan from 80.84.248.224
-Illegal user televideo from 80.84.248.224
-Illegal user ventas from 80.84.248.224
-Illegal user dummy from 80.84.248.224
-Illegal user ftpuser from 80.84.248.224
-Illegal user heinz from 80.84.248.224
-Illegal user joerg from 80.84.248.224
-Illegal user maeder from 80.84.248.224
-Illegal user oli from 80.84.248.224
-Illegal user pgsql from 80.84.248.224
-Illegal user regula from 80.84.248.224
-Illegal user sys from 80.84.248.224
-Illegal user arc from 80.84.248.224
-Illegal user jem from 80.84.248.224
-Illegal user mar from 80.84.248.224
-Illegal user ram from 80.84.248.224
-Illegal user rom from 80.84.248.224
-Illegal user sme from 80.84.248.224
-Illegal user gemss from 80.84.248.224
-Illegal user kurt from 80.84.248.224
-Illegal user weisz from 80.84.248.224
-Illegal user stud from 80.84.248.224
-Illegal user teach from 80.84.248.224
-Illegal user asmeja from 80.84.248.224
-Illegal user htdocs from 80.84.248.224
-Illegal user morgengold from 80.84.248.224
-Illegal user rpilz from 80.84.248.224
-Illegal user andor from 80.84.248.224
-Illegal user andreyd from 80.84.248.224
-Illegal user foreign from 80.84.248.224
-Illegal user lady from 80.84.248.224
-Illegal user hrr from 80.84.248.224
-Illegal user max from 80.84.248.224
-Illegal user stenkie from 80.84.248.224
-Illegal user sz from 80.84.248.224
-Illegal user tonic from 80.84.248.224
-Illegal user vova from 80.84.248.224
-Illegal user pauk from 80.84.248.224
-Illegal user roma from 80.84.248.224
-Illegal user angela from 80.84.248.224
-Illegal user apate from 80.84.248.224
-Illegal user bobrien from 80.84.248.224
-Illegal user greg from 80.84.248.224
-Illegal user konchog from 80.84.248.224
-Illegal user millard from 80.84.248.224
-Illegal user norine from 80.84.248.224
-Illegal user piotr from 80.84.248.224
-Illegal user sheetal from 80.84.248.224
-Illegal user tess from 80.84.248.224
-Illegal user thapkhay from 80.84.248.224
-Illegal user awstats from 80.84.248.224
-Illegal user neomail from 80.84.248.224
-Illegal user aaron from 80.84.248.224
-Illegal user abraham from 80.84.248.224
-Illegal user adonix from 80.84.248.224
-Illegal user agata from 80.84.248.224
-Illegal user alejandro from 80.84.248.224
-Illegal user alice from 80.84.248.224
-Illegal user alka from 80.84.248.224
-Illegal user amoswon from 80.84.248.224
-Illegal user amy from 80.84.248.224
-Illegal user hung from 80.84.248.224
-Illegal user ian from 80.84.248.224
-Illegal user ibis from 80.84.248.224
-Illegal user miko from 80.84.248.224
-Illegal user milena from 80.84.248.224
-Illegal user mustafa from 80.84.248.224
-Illegal user napoleon from 80.84.248.224
-Illegal user nareg from 80.84.248.224
-Illegal user nathan from 80.84.248.224
-Illegal user armenta from 80.84.248.224
-Illegal user ash from 80.84.248.224
-Illegal user astral from 80.84.248.224
-Illegal user atina from 80.84.248.224
-Illegal user augusto from 80.84.248.224
-Illegal user babes from 80.84.248.224
-Illegal user band from 80.84.248.224
-Illegal user barbaral from 80.84.248.224
-Illegal user beach from 80.84.248.224
-Illegal user bigman from 80.84.248.224
-Illegal user pakirus from 80.84.248.224
-Illegal user palmer from 80.84.248.224
-Illegal user paypal from 80.84.248.224
-Illegal user pelle from 80.84.248.224
-Illegal user philip from 80.84.248.224
-Illegal user picasso from 80.84.248.224
-Illegal user pix from 80.84.248.224
-Illegal user plasma from 80.84.248.224
-Illegal user president from 80.84.248.224
-Illegal user bountiful from 80.84.248.224
-Illegal user brenda from 80.84.248.224
-Illegal user bret from 80.84.248.224
-Illegal user brian from 80.84.248.224
-Illegal user brittany from 80.84.248.224
-Illegal user carlo from 80.84.248.224
-Illegal user interior from 80.84.248.224
-Illegal user jaime from 80.84.248.224
-Illegal user jake from 80.84.248.224
-Illegal user jal from 80.84.248.224
-Illegal user james from 80.84.248.224
-Illegal user jared from 80.84.248.224
-Illegal user jeeto from 80.84.248.224
-Illegal user jeffy from 80.84.248.224
-Illegal user randy from 80.84.248.224
-Illegal user real from 80.84.248.224
-Illegal user reception from 80.84.248.224
-Illegal user red from 80.84.248.224
-Illegal user rene from 80.84.248.224
-Illegal user resume from 80.84.248.224
-Illegal user rico from 80.84.248.224
-Illegal user rishi from 80.84.248.224
-Illegal user ritt from 80.84.248.224
-Illegal user rob from 80.84.248.224
-Illegal user robinson from 80.84.248.224
-Illegal user ruby from 80.84.248.224
-Illegal user clara from 80.84.248.224
-Illegal user coffee from 80.84.248.224
-Illegal user contact from 80.84.248.224
-Illegal user cordell from 80.84.248.224
-Illegal user corey from 80.84.248.224
-Illegal user cory from 80.84.248.224
-Illegal user curt from 80.84.248.224
-Illegal user jobs from 80.84.248.224
-Illegal user josh from 80.84.248.224
-Illegal user judy from 80.84.248.224
-Illegal user juliana from 80.84.248.224
-Illegal user justin from 80.84.248.224
-Illegal user kamran from 80.84.248.224
-Illegal user karyn from 80.84.248.224
-Illegal user kat from 80.84.248.224
-Illegal user scott from 80.84.248.224
-Illegal user sean from 80.84.248.224
-Illegal user search from 80.84.248.224
-Illegal user secretary from 80.84.248.224
-Illegal user shawn from 80.84.248.224
-Illegal user shelley from 80.84.248.224
-Illegal user shop from 80.84.248.224
-Illegal user sm from 80.84.248.224
-Illegal user editors from 80.84.248.224
-Illegal user ellen from 80.84.248.224
-Illegal user kim from 80.84.248.224
-Illegal user krystal from 80.84.248.224
-Illegal user laurie from 80.84.248.224
-Illegal user larry from 80.84.248.224
-Illegal user leah from 80.84.248.224
-Illegal user lenny from 80.84.248.224
-Illegal user linda from 80.84.248.224
-Illegal user lions from 80.84.248.224
-Illegal user live from 80.84.248.224
-Illegal user stephen from 80.84.248.224
-Illegal user tamara from 80.84.248.224
-Illegal user tashley from 80.84.248.224
-Illegal user testing from 80.84.248.224
-Illegal user tiffany from 80.84.248.224
-Illegal user todd from 80.84.248.224
-Illegal user fabes from 80.84.248.224
-Illegal user frank from 80.84.248.224
-Illegal user franz from 80.84.248.224
-Illegal user galleria from 80.84.248.224
-Illegal user gene from 80.84.248.224
-Illegal user geoff from 80.84.248.224
-Illegal user geoffrey from 80.84.248.224
-Illegal user gerri from 80.84.248.224
-Illegal user gigi from 80.84.248.224
-Illegal user loveme from 80.84.248.224
-Illegal user lrv from 80.84.248.224
-Illegal user lucas from 80.84.248.224
-Illegal user lady from 80.84.248.224
-Illegal user marko from 80.84.248.224
-Illegal user marline from 80.84.248.224
-Illegal user lady from 80.84.248.224
-Illegal user tony from 80.84.248.224
-Illegal user viera from 80.84.248.224
-Illegal user viri from 80.84.248.224
-Illegal user walter from 80.84.248.224
-Illegal user hello from 80.84.248.224
-Illegal user lady from 80.84.248.224
-Illegal user melt from 80.84.248.224
-Illegal user zetina from 80.84.248.224
-Illegal user yoko from 80.84.248.224
-Illegal user xian from 80.84.248.224
-Illegal user cecile from 80.84.248.224
-Illegal user joey from 80.84.248.224
-Illegal user ronaldo from 80.84.248.224
-Illegal user funny from 80.84.248.224
-Illegal user robomail from 80.84.248.224
-Illegal user clips from 80.84.248.224
-Illegal user cyberbob from 80.84.248.224
-Illegal user levsha from 80.84.248.224
-Illegal user porno from 80.84.248.224
-Illegal user simon from 80.84.248.224
-Illegal user vgv from 80.84.248.224
-Illegal user asien from 80.84.248.224
-Illegal user bea from 80.84.248.224
-Illegal user eleni from 80.84.248.224
-Illegal user emelie from 80.84.248.224
-Illegal user freebsd from 80.84.248.224
-Illegal user helen from 80.84.248.224
-Illegal user helena from 80.84.248.224
-Illegal user altunin from 80.84.248.224
-Illegal user balashov from 80.84.248.224
-Illegal user borisov from 80.84.248.224
-Illegal user cityline from 80.84.248.224
-Illegal user gubanov from 80.84.248.224
-Illegal user ivanovo from 80.84.248.224
-Illegal user nazarova from 80.84.248.224
-Illegal user sale from 80.84.248.224
-Illegal user semenov from 80.84.248.224
-Illegal user smike from 80.84.248.224
-Illegal user sysadm from 80.84.248.224
-Illegal user trinity from 80.84.248.224
-Illegal user ahto from 80.84.248.224
-Illegal user andres from 80.84.248.224
-Illegal user ange from 80.84.248.224
-Illegal user antik from 80.84.248.224
-Illegal user arendus from 80.84.248.224
-Illegal user arno from 80.84.248.224
-Illegal user ave from 80.84.248.224
-Illegal user chris from 80.84.248.224
-Illegal user hansa from 80.84.248.224
-Illegal user hotline from 80.84.248.224
-Illegal user itera from 80.84.248.224
-Illegal user jakov from 80.84.248.224
-Illegal user janek from 80.84.248.224
-Illegal user jura from 80.84.248.224
-Illegal user kerli from 80.84.248.224
-Illegal user krista from 80.84.248.224
-Illegal user liana from 80.84.248.224
-Illegal user lover from 80.84.248.224
-Illegal user magnus from 80.84.248.224
-Illegal user memini from 80.84.248.224
-Illegal user ragnar from 80.84.248.224
-Illegal user rain from 80.84.248.224
-Illegal user rando from 80.84.248.224
-Illegal user risto from 80.84.248.224
-Illegal user spott from 80.84.248.224
-Illegal user uno from 80.84.248.224
-Illegal user valmar from 80.84.248.224
-Illegal user alfred from 80.84.248.224
-Illegal user danny from 80.84.248.224
-Illegal user donna from 80.84.248.224
-Illegal user darrens from 80.84.248.224
-Illegal user dover from 80.84.248.224
-Illegal user fords from 80.84.248.224
-Illegal user iain from 80.84.248.224
-Illegal user joanna from 80.84.248.224
-Illegal user linda from 80.84.248.224
-Illegal user matt from 80.84.248.224
-Illegal user matthewd from 80.84.248.224
-Illegal user melanie from 80.84.248.224
-Illegal user moscow from 80.84.248.224
-Illegal user norman from 80.84.248.224
-Illegal user percy from 80.84.248.224
-Illegal user roger from 80.84.248.224
-Illegal user royd from 80.84.248.224
-Illegal user sarah from 80.84.248.224
-Illegal user tonys from 80.84.248.224
-Illegal user lola from 80.84.248.224
-Illegal user peribal from 80.84.248.224
-Illegal user guest from 80.84.248.224
-Illegal user office from 80.84.248.224
-Illegal user abc from 80.84.248.224
-Illegal user sales from 80.84.248.224
-Illegal user fax from 80.84.248.224
-Illegal user sandra from 80.84.248.224
-Illegal user info from 80.84.248.224
-Illegal user mike from 80.84.248.224
-Illegal user testuser from 80.84.248.224
-Illegal user mike from 80.84.248.224
-Illegal user xfs from 80.84.248.224
-Illegal user init from 80.84.248.224
-Illegal user portmap from 80.84.248.224
-Illegal user x from 80.84.248.224
-Illegal user jas from 80.84.248.224
-    ---------------------- SSHD End -------------------------
-    ###################### LogWatch End #########################
-
+> > ADSL=$(/sbin/ifconfig hsb0 | grep "inet addr" | awk -F: '{print $2}' |
+awk '{print $1}'|sed -n 1p)
+> >
+> > iptables -A PREROUTING -t nat -j DNAT -p udp -d $ADSL --dport
+63001 --to-destination 192.168.0.3:6112
+> > iptables -A POSTROUTING -t nat -j SNAT -p udp -s $ADSL --sport
+6112 --to-source 192.168.0.3:63001
+> >
+> > iptables -A PREROUTING -t nat -j DNAT -p udp -d $ADSL --dport
+63002 --to-destination 192.168.0.56:6112
+> > iptables -A POSTROUTING -t nat -j SNAT -p udp -s $ADSL --sport
+6112 --to-source 192.168.0.56:63002
+>
+> Doug, it looks like you might be using the wrong source IP to SNAT your
+traffic to in your POSTROUTING chain.  I would use the following rules and
+see if they work.
+>
+> iptables -t nat -A PREROUTING -p udp -d $ADSL --dport 63001 -j
+DNAT --to-destination 192.168.0.3:6112
+> iptables -t nat -A POSTROUTING -p udp -s 192.168.0.3 --sport 6112 -j
+SNAT --to-source $ADSL:63001
+>
+> iptables -t nat -A PREROUTING -p udp -d $ADSL --dport 63002 -j
+DNAT --to-destination 192.168.0.56:6112
+> iptables -t nat -A POSTROUTING -p udp -s 192.168.0.56 --sport 6112 -j
+SNAT --to-source $ADSL:63002
+>
+> It looks like you had your IPs backwards in your POSTROUTING rules.
+However I'm a bit perplexed that your regular SNATing rules did not take
+care of this.  You may also need to explicitly allow traffic for these
+connections in your FORWARD chain if you have set the default policy to
+DROP.
+>
+>
+>
+> Grant. . . .
+>
+>
 
 
