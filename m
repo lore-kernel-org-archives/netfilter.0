@@ -1,12 +1,10 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Possibility to lock iptables rules.
-Date: Wed, 20 Apr 2005 11:40:27 -0500
-Message-ID: <426685FB.4040607@riverviewtech.net>
-References: <1113994155.31280.29.camel@localhost.localdomain>
+From: "Stephen P. Schaefer" <sschaefer@rfmd.com>
+Subject: Connection tracking via RPC transaction ID
+Date: Wed, 20 Apr 2005 14:42:13 -0400
+Message-ID: <4266A285.1040205@rfmd.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1113994155.31280.29.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +16,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Anders Fugmann <afu@fugmann.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I don't know of a way to lock IPTables rules in the kernel, but this is my take on what you wrote.
+I'm trying to SNAT an NFS client, but the NFS server (a NetApp) has
+two IP addresses, and though DNS advertises it at the first address,
+e.g. 192.168.200.10, its answers come back from the other address,
+e.g., 192.168.2.150. If I'm not behind the SNAT, there's no problem
+because the client kernel ignores the source IP address and just looks
+at the RPC transaction ID, but behind the SNAT, the fact that the
+answer comes back from a different address than that to which the
+request went breaks connection tracking.  I've currently worked around
+the problem with a DNAT rule:
 
-If you did lock IPTables rules in to the kernel the only way to work with them would be to modify the firewall script and reboot the box (which is trivial if you gain root to a box).  This does little more than make it a pain and could easily be scripted.
+iptables -t nat -A PREROUTING -d 192.168.200.10 -i eth1 -j DNAT --to-destination 192.168.2.150
 
-This is really the reason that firewalls / routers are suppose to be standalone boxen.  The idea behind this is to not run any service(s) on a firewall / router that could be exploitable.  If you do want to have your firewall / router offer services to the world port forward any requests that you want to serve to a system behind the firewll / router in the DMZ which is in and of it's self firewalled from the rest of the network, this prevents this system from having access to the internal LAN if it is breached its self.  By doing this the firewall / router it's self is not offering any exploitable services to the world and thus can not be hacked in to via standard methods.
+...but I'm woried that this is less than robust.  In particular, I
+don't understad why the NetApp uses one address or the other to reply,
+and what will keep it from behaving differently tomorrow.  Is there a
+connection tracking module that works on RPC transaction ID and can
+ignore the source address?  Would it be difficult to write?  Is there
+code that does something similar that I should study?
 
-One solution that sort of applies, in such that it is impossible to modify a running firewall / router, is to run the firewall / router in runlevel 0.  Granted you could not use such a system as a standard server if you did this but it would allow the firewall to be running in production in such a way that it could not be modified or even accessed in any way shape or form remotely.  You would end up havening to reboot the box and send it in to Single user mode to work with things.  I personally have never done this as I have never felt the need to be that paranoid about my firewalls.  Typicaly I will run a firewall with no services listening on the internet side of the box and just SSH listening on the internal side.  If I am even more paranoid I will put the firewall / router physically close to another server and run a serial cable from the server that does have remote access (SSH) to 
- the firewall / router and do everything via serial console.  By using a serial console on
- the router and no services listening on any interface it is virtually impossibly (as far as I'm aware of) to connect to the box and modify any thing.
+For reference, the rest of the relevant setup is like this:
 
-Honestly in my (humble) opinion go spend $50 on a used system (if you don't have one) drop a couple of NICs in it and set it up as your firewall and port forward the traffic that you want to serve to the world to it.
+On the netfiltering box:
 
-As far as a way to lock rules in to the kernel I don't know that there is a way to do so nor do I think there should be a way as it would do nothing but slightly (2 - 10 minutes) slow down a good cracker.  Sure it might stop some script kiddies, but if a cracker can do it they can script it too, hens the latter problem.
+eth0: 192.168.111.252/24
+eth1: 192.168.111.249/30
 
+SNAT:
 
-
-Grant. . . .
+iptables -t nat -A POSTROUTING -s 192.168.111.250 -d ! 192.168.111.248/30 -o eth0 -j SNAT --to-source 192.168.111.252
 
