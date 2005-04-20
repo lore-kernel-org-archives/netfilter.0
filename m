@@ -1,11 +1,13 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Possibility to lock iptables rules.
-Date: Wed, 20 Apr 2005 17:02:41 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0504201659070.28995@darkstar.sysinfo.com>
+Date: Wed, 20 Apr 2005 18:01:23 -0400
+Message-ID: <20050420220123.GA25652@bender.817west.com>
 References: <1113994155.31280.29.camel@localhost.localdomain>
+	<20050420184753.GA25069@bender.817west.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1113994155.31280.29.camel@localhost.localdomain>
+Content-Disposition: inline
+In-Reply-To: <20050420184753.GA25069@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,98 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Anders Fugmann <afu@fugmann.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Wed, Apr 20, 2005 at 02:47:53PM -0400, Jason Opperisano wrote:
+> i'm guessing you're thinking about how the *BSD's have a concept of
+> kern.securelevel, and certain things (like firewall rules) become
+> immutable; even by root, at certain levels.
+> 
+> i'm not a kernel programmer, but i can tell you that the linux kernel
+> doesn't have anything like kern.securelevel; and without it, i don't
+> believe what you're asking for is possible.  i'd also figure that
+> implementing kern.securelevel in the linux kernel would be beyond the
+> scope of what the netfilter developers are responsible for.
 
+after pondering this further (post-post, natch)...i had a thought 
+(yes--it hurt).  you could probably use SELinux to achieve this.  the
+minimal benefits that others have pointed out, and the overly complex
+nature of SELinux probably yields a pretty low benefit/cost ratio,
+though.
 
+just a thought...
 
-Which is the number  one reason that a network's firewall should serve no 
-other purpose then that, firewalling the network, and not allow outside 
-nor most inside systems/users to connect to it, only those managing it.
+-j
 
-Even immutable flgs can be undone on a server that is hacked and root 
-gained.  And what you are requesting requires their be no modules on the 
-system, everything has to be compiled directly into the kernel, including 
-all the modules that iptables now deppends upon and uses.  You'd be much 
-better off and safer to just not let the average user beable to connect to 
-and enter the firewall.
-
-Thanks,
-
-Ron DuFresne
-
-On Wed, 20 Apr 2005, Anders Fugmann wrote:
-
-> Hi,
->
-> I would like to request a very simple feature: The possibility to lock
-> all iptable rules in the kernel, making them immutable.
->
-> This would be usefull on machines which act both as a firewall and as a
-> server. The problem today if an unwanted guest manages to break into the
-> machine running the firewall and becomes root, the person can easilly
-> change the rules, compromising the network guarded by the hacked
-> firewall.
->
-> If it was somehow possible to lock the rules once setup, the attacker
-> would be unable to modify the rules, the network guarded by the firewall
-> would not (pending on how the firewall was setup) not be compromised,
-> even if an attacker gained access to the firewall itself.
->
-> I was thinking something in the lines of:
->
-> iptables --lock [--action <PANIC|LOG>],
->
-> where 'action' would specify how the machine should react if anyone was
-> to try and modify the rules. PANIC would cause the system to panic. LOG
-> would simple make the kernel log the attempt and then ignore the
-> request.
->
-> The only way to unlock the tables would be to reboot the machine. I know
-> that this system if not 100% foolproof, as the attacker could install a
-> custom kernel, and then reboot the machine, but it would cirtanly make
-> at lot harder for most attackers
->
-> I really hope that this feature could be implemented. I know that is is
-> not excatly trivial to implement as the address of the bit signifying
-> that the tables are lock would need to be hidden to avoid the attacker
-> to simply write a zero the the specific address to unlock the tables.
->
-> Regards
-> Anders Fugmann
->
-> P.s.
-> Please CC me on replys, as I'm not on the list.
->
->
->
->
->
->
->
->
->
-
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCZsN3st+vzJSwZikRAkGTAJ4v81r7y2w63YXg1vpgaoD1rOdRsACcCtbs
-OWz5cGs/6Uonm6GAIdccz1k=
-=B9FP
------END PGP SIGNATURE-----
+--
+"Peter: Wow, is that really the blood of Christ?
+ Preacher: Yes, it is.
+ Peter: Holy crap, that guy must've been wasted 24 hours a day."
+        --Family Guy
 
