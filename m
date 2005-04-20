@@ -1,9 +1,9 @@
-From: "Alexander Stieglecker" <a.stieglecker@gmx.net>
-Subject: Re: anyone know how to use clusterip
-Date: Wed, 20 Apr 2005 11:43:10 +0200
-Message-ID: <000001c5458d$5e476650$aa28abc1@Vagabond>
+From: Anders Fugmann <afu@fugmann.net>
+Subject: Possibility to lock iptables rules.
+Date: Wed, 20 Apr 2005 12:49:15 +0200
+Message-ID: <1113994155.31280.29.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,59 +16,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Bryan Waters' <bryanw@abwaters.com>
-Cc: 'Jason Joines' <support@bus.okstate.edu>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Bryan,
+Hi,
 
-I experimented with CLUSTERIP using 2 nodes.
-The traffic is distributed using Multicast-MAC-addresses over N-Nodes =
-(e.g.
-webservers). One node decides to ACCEPT the incoming packet. All others =
-DROP
-the packet (based on the srcip of the packet and the local node number).
-There is also a failover mechanism if one or more nodes die.
+I would like to request a very simple feature: The possibility to lock
+all iptable rules in the kernel, making them immutable.
 
-My starting commands were:
+This would be usefull on machines which act both as a firewall and as a
+server. The problem today if an unwanted guest manages to break into the
+machine running the firewall and becomes root, the person can easilly
+change the rules, compromising the network guarded by the hacked
+firewall.
 
-Node1:
-iptables -A INPUT -d 10.0.0.1 -p tcp --dport 80 -j CLUSTERIP --new
---hashmode sourceip --clustermac 01:23:45:67:89:AB --total-nodes 2
---local-node 1
+If it was somehow possible to lock the rules once setup, the attacker
+would be unable to modify the rules, the network guarded by the firewall
+would not (pending on how the firewall was setup) not be compromised,
+even if an attacker gained access to the firewall itself.
 
-Node2:
-iptables -A INPUT -d 10.0.0.1 -p tcp --dport 80 -j CLUSTERIP --new
---hashmode sourceip --clustermac 01:23:45:67:89:AB --total-nodes 2
---local-node 2
+I was thinking something in the lines of:
 
-It's important that the clustermac parameter is a MULTICAST-MAC-address.
-CLUSTERIP replies with this multicast mac to ARP-requests containing ip
-10.0.0.1 . This makes the switch to flood the packets on all ports. Each
-node decides itself if it wants to drop the incoming packet based in the
-hash of the srcip (respectively srcip-srcport/srcip-srcport-destport).
-Be sure to enter at least "-d 10.0.0.1" as a standard match.
-After you've entered the commands take a look at the proc-fs using
+iptables --lock [--action <PANIC|LOG>],
 
-cat /proc/net/ipt_CLUSTERIP/10.0.0.1
+where 'action' would specify how the machine should react if anyone was
+to try and modify the rules. PANIC would cause the system to panic. LOG
+would simple make the kernel log the attempt and then ignore the
+request.
 
-This shows you for how many node numbers the local node feels =
-responsible.
-You can add a node using the command:
+The only way to unlock the tables would be to reboot the machine. I know
+that this system if not 100% foolproof, as the attacker could install a
+custom kernel, and then reboot the machine, but it would cirtanly make
+at lot harder for most attackers
 
-echo "+1" > /proc/net/ipt_CLUSTERIP/10.0.0.1
+I really hope that this feature could be implemented. I know that is is
+not excatly trivial to implement as the address of the bit signifying
+that the tables are lock would need to be hidden to avoid the attacker
+to simply write a zero the the specific address to unlock the tables.
 
-or remove one using the same command but with "-1"
+Regards
+Anders Fugmann
 
-A daemon like heartbeat could be used to do these commands when one node
-fails.
+P.s.
+Please CC me on replys, as I'm not on the list.
 
-I also discovered some problems:
 
-*Each node replies to an ARP-request with the clustermac but after a =
-while
-it sends an ARR-request itself containing its NIC-MAC which destroys the
-IP-Clustermac mapping on the clients. (Fixed thos using ARP-Tables)
-*Problems using FTP (two TCP-connections)
+
+
+
+
 
 
 
