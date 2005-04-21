@@ -1,11 +1,10 @@
-From: Rob Carlson <rcarlson@kitchenandassociates.com>
-Subject: IPSet Log and drop.
-Date: Thu, 21 Apr 2005 13:24:14 -0400
-Message-ID: <4267E1BE.9010303@kitchenandassociates.com>
-Reply-To: rcarlson@kitchenandassociates.com
+From: christopher.f.ulherr@exgate.tek.com
+Subject: logging of successful tcp connections
+Date: Thu, 21 Apr 2005 10:28:36 -0700
+Message-ID: <F97948CF897D7B46802A18845A8B9BFD471A59@us-rich-m01.global.tektronix.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,41 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Sorry if this is a dupe, the first one didn't seem 
-to go through...
+I would like to know if there is a way I can log only successful tcp
+connections. I'm only interested in successful (established) connections,
+and not just syn "connection attempts". I guess what I need is a way to log
+a single packet if it caused a state transition from NEW to ESTABLISHED. It
+would also be helpful to log the packet that terminated the connection
+(state change from established). In this manner, we could easily tell what
+connections were made, and their duration (and not rely on the userland
+application to log this info).
 
-I'm currently using ipset to block some large
-blocks of addresses.  It seems to be working well,
-but a couple of rogue emails have gotten through.
-  This is not my concern right now, rather I would
-like to see what _is_ being caught and try to
-establish a pattern/ratio.
+I've looked into using the state matching, but couldn't achieve this
+specific functionality with that.
 
-I've found that with vanilla IPTables, to log and
-block one sets up two rules, first the LOG
-statement, then immediately following, the DROP
-statement.  However since I am using a nethash in
-IPSet, I wonder if this approach would work, or
-whether scanning the hash twice to invoke each
-operation would be counter to the reason for using
-the IPset nethash.
+ 
 
-I have created a nethash with my "undesirable"
-address blocks, and then ran:
-iptables -A testhash -m set --set testhash src -j DROP
+Is there some trivial way to accomplish this I am overlooking?
 
-Would it be counter-productive to have:
-iptables -A testhash -m set --set testhash src -j LOG
-iptables -A testhash -m set --set testhash src -j
-DROP?
-
+ 
 
 Thanks,
 
-Rob
-
-
+Chris
 
