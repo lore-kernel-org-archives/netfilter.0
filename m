@@ -1,12 +1,14 @@
-From: Taylor Grant <gtaylor@riverviewtech.net>
-Subject: Re: How to make a mutli-homed host use one IP for a NAT'ed host
-Date: Thu, 21 Apr 2005 02:17:55 -0500
-Message-ID: <426753A3.7030800@riverviewtech.net>
-References: <c0e9781f0504202352240208e4@mail.gmail.com>
+From: =?ISO-8859-2?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Subject: [SOLVED] krn 2.4.30, iptables 1.3.1,
+ last pom and condition extension problem
+Date: Thu, 21 Apr 2005 12:15:49 +0200
+Message-ID: <42677D55.5020003@arcoscom.com>
+References: <4263FD5D.4050205@arcoscom.com> <4266407B.7060909@arcoscom.com>
+	<Pine.LNX.4.58.0504201403180.24434@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------020608000400050601090709"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <c0e9781f0504202352240208e4@mail.gmail.com>
+In-Reply-To: <Pine.LNX.4.58.0504201403180.24434@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +19,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Greg Cope <gregcope@gmail.com>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@lists.netfilter.org
 
-Greg, if I understand you correctly you have a system that is multi homed with one of it's IP addresses being port forwarded to a DMZ server?  What happens is that your DMZ server replies back to your router / firewall which then in turn send the traffic out it's default route with a source IP of something other than what you want your SMTP traffic to use?  If this is the case you need to so a few tings to get your traffic to go out the interface that you want with the IP that you want.
+This is a multi-part message in MIME format.
+--------------020608000400050601090709
+Content-Type: text/plain; charset="iso-8859-2"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 
-For starters you will need to use IPTables to mark the traffic that is coming in to your router / firewall from the DMZ mail server.
-Second you will need to create a new routeing table for this traffic via something like the following:
+Yes, when the "ipt_condition" module is loaded it creates the directory
+and the files with "0" into them.
 
-iptables -t nat -A OUTPUT -s $DMZ_Server_IP -p tcp --sport 25 -j MARK --set-mark $SMTP_Mark
-ip route add table $IPRoute2_SMTP_Table dev $DEV_of_SMTP_network_interface_or_alias src $IP_of_DEV_of_SMTP_network_interface_or_alias
-ip route add table $IPRoute2_SMTP_Table default via $Default_INet_Gateway
-ip rule add fwmark $SMTP_Mark table $IPRoute2_SMTP_Table
+We don't need to manually create the "ipt_condition" directory or the
+files (we can't write into /proc, I think).
 
-Where:
-$DMZ_Server_IP is the internal LAN ip of your SMTP server in the DMZ.
-$SMTP_Mark is the value you want to use to mark the packets that need to use the alternant route.
-$IPRoute2_SMTP_Table is the name as it appears in /etc/iproute2/rt_tables or the number of the table that you want to use.
-$DEV_of_SMTP_network_interface_or_alias is the device name or alias of your network interface that you want all SMTP traffic to use.
-$IP_of_DEV_of_SMTP_network_interface_or_alias is the IP address of the device name or alias of your network interface that you want all SMTP traffic to use.
-$Default_INet_Gateway is the IP address of your internet gateway.
+If we need to add more condition files, only need to add the iptables
+rule and then "rmmod ipt_condition" and then iptables will load by
+itself the "ipt_condition" module when it was needed.
 
-This should cause any SMPT traffic (source port 25 from the SMTP server) to go out a different interface / alias and thus use a different source IP when the traffic is sent out to the world.  If you have any questions or need more help let me know and I'll see what I can do.
+If you dont see the "ipt_condition" module with "lsmod | grep condition"
+command, you will need to run "modprobe ipt_condition" by hand.
+
+Best regards and thanks to all for your help.
 
 
-Greg Cope wrote:
-> Hi All,
-> 
-> I have a mutli-homed router/firewall.
-> 
-> One IP address is the default router gateway address
-> 
-> Three other (virtual) IP's are for applications (one of which is SMTP).
-> 
-> My mailserver is on a NAT'ed DMZ.
-> 
-> However when it sends mail the router uses the default gateway address
-> as opposed to the SMTP IP address.
-> 
-> This upsets reverse DNS lookups as it now appears to come from the
-> router as opposed to the mail IP (that has the correct reverse IP
-> address lookup).
-> 
-> Any ideas?
-> 
-> Greg
+
+Jozsef Kadlecsik wrote:
+
+> On Wed, 20 Apr 2005, [ISO-8859-15] Samuel D=EDaz Garc=EDa wrote:
+>=20
+>=20
+>>>I had trying to use -m condition iptables extension module, but when I
+>>>see /proc/net I cant see ipt_condition directory and I can't make it.
+>>>
+>>>How can I make the /proc/net/ipt_condition directory?
+>=20
+>=20
+> modprobe ipt_condition
+>=20
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>           H-1525 Budapest 114, POB. 49, Hungary
+>=20
+>=20
+>=20
+
+--=20
+    Samuel D=EDaz Garc=EDa
+     Director Gerente
+ArcosCom Wireless, S.L.L.
+
+mailto:samueldg@arcoscom.com
+http://www.arcoscom.com
+
+M=F3vil: 651 93 72 48
+Tlfn.: 956 70 13 15
+Fax:   956 70 34 83
+
+--------------020608000400050601090709--
 
