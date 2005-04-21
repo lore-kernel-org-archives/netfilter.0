@@ -1,12 +1,10 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: logging of successful tcp connections
-Date: Thu, 21 Apr 2005 14:58:34 -0500
-Message-ID: <426805EA.3000901@riverviewtech.net>
-References: <F97948CF897D7B46802A18845A8B9BFD471A59@us-rich-m01.global.tektronix.net>
+From: "Mark Wells" <markus@wiztech.cc>
+Subject: NAT problem when coming from private network
+Date: Thu, 21 Apr 2005 20:24:35 -0000 (GMT)
+Message-ID: <49795.72.11.67.10.1114115075.squirrel@72.11.67.10>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <F97948CF897D7B46802A18845A8B9BFD471A59@us-rich-m01.global.tektronix.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +15,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: christopher.f.ulherr@exgate.tek.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-> I would like to know if there is a way I can log only successful tcp
-> connections. I'm only interested in successful (established) connections,
-> and not just syn "connection attempts". I guess what I need is a way to log
-> a single packet if it caused a state transition from NEW to ESTABLISHED. It
-> would also be helpful to log the packet that terminated the connection
-> (state change from established). In this manner, we could easily tell what
-> connections were made, and their duration (and not rely on the userland
-> application to log this info).
+ Apologies if this is an RTFM but I have searched and found nothing.
 
-You don't ask for any thing easy do you.  ;)
+ The problem:
 
-> I've looked into using the state matching, but couldn't achieve this
-> specific functionality with that.
+We're doing NAT (DNAT) on our firewall from a valid outside ip to a
+machine on our private network which is handling mail. So the rule looks
+like this:
 
-I think this is something that is beyond basic state matching as state matching is just matching on the current state of the packet / connection.  This does not have any thing to do with the prior state of the packet / connection.
+/usr/sbin/iptables -t nat -A PREROUTING -i $EXTERNAL -d 72.11.67.10 -p tcp
+--destination-port 25 -j DNAT --to-destination 192.168.1.8:25
 
-> Is there some trivial way to accomplish this I am overlooking?
+/usr/sbin/iptables -A FORWARD -p tcp -i $EXTERNAL -d 192.168.1.8 --dport
+25 -j ACCEPT
 
-No, I don't think there is a ""trivial way to do this.  What initially comes to mind is to use the recent match extension for the history mechanism that is needed in this scenario.  I think you will need to so something along these lines to come even close to what you are after:
+$EXTERNAL being eth1 our  "outside" interface.  There is also a $INTERNAL
+which corresponds to eth0 - the interface on out private network.
 
-1)  Put all traffic in a NEW state in to a recent list (recent_NEW) and continue to handle it like you normally would.
-2)  Put all traffic in an ESTABLISHED state in to a (different) recent list (recent_ESTABLISHED) and continue to handle it like you normally would.
-3)  If traffic is ESTABLISHED that is on the recent_NEW list but not on the recent_ESTABLISHED list you know that this connection recently (as in this connection) transitioned from the NEW state to the ESTABLISHED state and thus would be added to the recent_ESTABLISHED list.  I would be tempted to jump to a new sub chain where you could log and do any other actions on the packet that you wanted to.
-4)  If traffic is ESTABLISHED that is on the recent_ESTABLISHED list and has the FIN flag set in the header you know that this connection recently (as in this connection) transitioned from the ESTABLISHED state to a closing (FIN) state and thus would be added to the recent_FIN list.  I would be tempted to jump to a new sub chain where you could log and do any other actions on the packet that you wanted to.
+Pretty standard stuff.
 
-You would also want to watch for any traffic that came in with the RST flag set as well as traffic that never goes through a FIN state.
+So NAT works great for incoming mail, and we have similar rules for POP3,
+IMAP, etc. All works great from outside.
 
-Keep in mind that this is all theoretical and had not even been cooded out (IPTables script written) and thus should be taken as what I would try first to set something like this up.  If you would like to give me some network config that you are working with I would be happy to see if I could not come up with working examples for you to use.
+The problem comes when we try to hit the mail server (by going to that
+outside ip),  from a machine that's already on the private network. So for
+example if I telnet to port 25 on 72.11.67.10 from my personal machine
+which is on 192.168.1.34 I get nothing. According to my reading of the
+rule, any packets that come from the outside bound for port 25 on the
+72.11.67.10 should be NATted to 192.168.1.8. Which they are if they come
+from the outside. Why shouldn't it work if packets try to hit port 25 on
+72.11.67.10 from the private network then?
 
+I tried something like this(and a few variations) to no avail:
+/usr/sbin/iptables -t nat -A PREROUTING -i $INTERNAL -d 72.11.67.10 -p tcp
+--destination-port 25 -j DNAT --to-destination 192.168.1.8:25
+/usr/sbin/iptables -A FORWARD -p tcp -i $INTERNAL -d 192.168.1.0/24 -j ACCEPT
 
+I also tried commenting out these lines:
+/usr/sbin/iptables -A FORWARD -i $EXTERNAL -s 192.168.0.0/16 -j DROP
+/usr/sbin/iptables -A INPUT -i $EXTERNAL -s 192.168.0.0/16 -j DROP
 
-Grant. . . .
+Which are the standard lines for blocking packets with spoofed private
+network addresses that might show up from the net.
+
+I only did that as a test to see if that was where the packets were
+getting hung up(being well aware of the potential security issues
+associated with not having these in place). No dice.  I can attach my
+complete script if it would help, but it's pretty standard stuff for
+masquerading from our private network out, and doing NAT to bring traffic
+to selected ports from the net to machines on the inside. Like our mail
+server.
+
+Of course I can go directly to the mail server by going  to 192.168.1.8
+and that works just fine, but that's beside the point.
+
+The problem is, we have guys here with laptops, and they need to be able
+to hit mail.gotvoice.com by name from both outside and inside. We got a
+bunch of other services here that people get to by name as well.
+
+We could just run a seperate DNS server internally to resolve the names to
+private addresses, but we really don't want to get into running two
+seperate DNS setups, when this should be a simple fix on the firewall.
+
+Any ideas?
+
+Appreciated as always,
+
+Mark
 
