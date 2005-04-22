@@ -1,12 +1,13 @@
-From: Taylor Grant <gtaylor@riverviewtech.net>
-Subject: Re: logging of successful tcp connections
-Date: Thu, 21 Apr 2005 18:55:01 -0500
-Message-ID: <42683D55.1060305@riverviewtech.net>
-References: <F97948CF897D7B46802A18845A8B9BFD471BB9@us-rich-m01.global.tektronix.net>
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: NAT problem when coming from private network
+Date: Thu, 21 Apr 2005 22:16:14 -0400
+Message-ID: <200504212216.15006.Alistair@nerdnet.ca>
+References: <49795.72.11.67.10.1114115075.squirrel@72.11.67.10>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <F97948CF897D7B46802A18845A8B9BFD471BB9@us-rich-m01.global.tektronix.net>
+In-Reply-To: <49795.72.11.67.10.1114115075.squirrel@72.11.67.10>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,27 +18,75 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: christopher.f.ulherr@exgate.tek.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-> Hrmm... I've looked over the recent patch, but I'm not certain how to
-> implement this 'and' logic "if it's in list A, but not in list B".. etc.
+On April 21, 2005 04:24 pm, Mark Wells wrote:
+>  Apologies if this is an RTFM but I have searched and found nothing.
+>
+>  The problem:
+>
+> We're doing NAT (DNAT) on our firewall from a valid outside ip to a
+> machine on our private network which is handling mail. So the rule looks
+> like this:
+>
+> /usr/sbin/iptables -t nat -A PREROUTING -i $EXTERNAL -d 72.11.67.10 -p tcp
+> --destination-port 25 -j DNAT --to-destination 192.168.1.8:25
+>
+> /usr/sbin/iptables -A FORWARD -p tcp -i $EXTERNAL -d 192.168.1.8 --dport
+> 25 -j ACCEPT
+>
+> $EXTERNAL being eth1 our  "outside" interface.  There is also a $INTERNAL
+> which corresponds to eth0 - the interface on out private network.
+>
+> Pretty standard stuff.
+>
+> So NAT works great for incoming mail, and we have similar rules for POP3,
+> IMAP, etc. All works great from outside.
+>
+> The problem comes when we try to hit the mail server (by going to that
+> outside ip),  from a machine that's already on the private network. So for
+> example if I telnet to port 25 on 72.11.67.10 from my personal machine
+> which is on 192.168.1.34 I get nothing. According to my reading of the
+> rule, any packets that come from the outside bound for port 25 on the
+> 72.11.67.10 should be NATted to 192.168.1.8. Which they are if they come
+> from the outside. Why shouldn't it work if packets try to hit port 25 on
+> 72.11.67.10 from the private network then?
 
-If you wanted to see if a packet was transitioning from NEW to ESTABLISHED I think it would be as simple as something like the following:
-
-iptables -t filter -A FORWARD -i $INet -o $LAN -d $INet_IP -m recent --rcheck --name recent_NEW -m recent ! --rcheck --name recent_ESTABLISHED -j Transition_to_ESTABLISHED
-
-I'm not sure about the placement of the "!" on the line, you might have to play with it a bit to make sure that the syntax is correct.  Anyone have any input here?
-
-> There must be some place in the connection tracking code where a simple
-> log can be placed. I'm not that familiar with the internals, but it
-> would seem that just before updating the state, you could just printk a
-> log. Am I way off here?
-
-I'm sure there is a place in the kernel code that this could be put, though I don't know as if many people would want such a thing.  It might be able to be there and something that is off by default and then turned on via /proc.
+	<Bulk snippage>
 
 
+	Basically your problem is this.  Works from outside.  Come inside and the 
+system contacts the firewall correctly, gets redirected to the correct inside 
+server ****** and the inside server replies directly to the inside pc ******* 
+and said packet (reply) is not related to anything the inside pc is aware of.
 
-Grant. . . .
+	Ta DAH!
+
+	Now -- to solve.
+
+	write a rule that takes the connections coming from inside ONLY that are 
+headed OUT of your firewall (on the way to the mailserver) and SNAT (Source 
+Nats) them to the inside ip of the firewall ... this way the mailserver (or 
+whatever else) replies back to firewall and firewall sends it to inside ip.
+
+(I'm NOT guarranteeing syntax here I'm TIRED)
+
+iptables -A POSTROUTING -t nat  -p tcp -s ${lan_ip_range} -d 
+${lan_ip_of_mailserver} \ --dport ${mail} -j SNAT --to-source 
+${lan_ip_of_firewall}
+
+
+	although it worked for me. -- FYI the reason for the -s filter there is so 
+that internet traffic connections ARE NOT SNATted on the way in -- thus when 
+you only see connections from the firewall to the mail server in the logs you 
+know it was someone on the inside of the lan ... 
+
+	-- off to bed with me.
+
+	Alistair Tonner
+>
+> Appreciated as always,
+>
+> Mark
 
