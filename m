@@ -1,11 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: RE: ddos / no connection tracking / tarpitting
-Date: Fri, 22 Apr 2005 09:32:31 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0504220927510.28541@blackhole.kfki.hu>
-References: <27594E8BA9D5CA458F5EF87D88B6B48F019AAF@pxtvjoexd01.pxt.primeexalia.com>
+From: "Andreas Mimz" <Andreas.Mimz@kos2.de>
+Subject: route all internet traffic through dummy device?
+Date: Fri, 22 Apr 2005 09:48:59 +0200 (CEST)
+Message-ID: <21722.212.18.18.20.1114156139.squirrel@212.18.18.20>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F019AAF@pxtvjoexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Gary W. Smith" <gary@primeexalia.com>
-Cc: Vic N <vic778@hotmail.com>, netfilter@lists.netfilter.org, Taylor Grant <gtaylor@riverviewtech.net>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Fri, 22 Apr 2005, Gary W. Smith wrote:
+Hello there!
 
-> Anyone else getting errors when sending to Jozsef on this list.  It's
-> the only site that has rejected my mail.
->
-> The following recipient(s) could not be reached:
->
->       Jozsef Kadlecsik on 4/22/2005 12:02 AM
->             There was a SMTP communication problem with the recipient's
-> email server.  Please contact your system administrator.
->             <pxtvjoexd01.pxt.primeexalia.com #5.5.0 smtp;550
-> <user-119bnnu.biz.mindspring.com[66.149.222.254]>: Client host rejected:
-> Access denied. Your site is banned because of the unsolicited mail
-> messages received from it.>
+I'm trying to route all internet traffic through a dummy network device.
+Unfortunately, I wasn't able to do that yet :-(
 
-That's due to the heavy spam filtering at our site.
+my setup is:
 
-I have whitelisted your E-mail address.
+eth0: 172.20.39.1 (netmask 255.255.255.0)
+dummy0: 172.25.79.1 (netmask 255.255.255.0)
+ppp0: <dynmic-ip>
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+currently, all outgoing traffic from the clients (connected to eth0) is
+masqueraded and then send via the ppp0 device. what I'm trying to do is
+that outgoing data through ppp0 is first routed through dummy0, basically
+just adding one hop.
+
+can anybody point me to the right direction?
+
+thanks in advance,
+
+andreas
+
 
