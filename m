@@ -1,11 +1,11 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+From: Daniel Lopes <lopsch@lopsch.com>
 Subject: Re: ddos / no connection tracking / tarpitting
-Date: Fri, 22 Apr 2005 17:28:55 -0500
-Message-ID: <42697AA7.7030802@riverviewtech.net>
+Date: Sat, 23 Apr 2005 01:05:52 +0200
+Message-ID: <42698350.1060400@lopsch.com>
 References: <BAY104-F417A02D74275560AA714548B2D0@phx.gbl>	<42688A26.9000705@riverviewtech.net>
 	<Pine.LNX.4.60.0504221707050.15167@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <Pine.LNX.4.60.0504221707050.15167@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
@@ -18,24 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "R. DuFresne" <dufresne@sysinfo.com>
-Cc: Vic N <vic778@hotmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-> the only way to really survive a ddos without affecting connectivity in 
-> any shapoe or form is to have a bigger pipe then the other end<s> does. 
-> idiots trying to ddos from a cable connection or dialup are not a 
-> problem and sufferable.  Those a tad higher in technical advancement 
-> with a bot net and tousands of zomies to attack from are likely to bring 
-> even the biggest pipes to a dead halt, at least getting in and our of 
-> the firewall gateway is impossible.  Traffic on the inside should be 
+R. DuFresne schrieb:
+>=20
+> the only way to really survive a ddos without affecting connectivity in=
+=20
+> any shapoe or form is to have a bigger pipe then the other end<s> does.=
+=20
+> idiots trying to ddos from a cable connection or dialup are not a=20
+> problem and sufferable.  Those a tad higher in technical advancement=20
+> with a bot net and tousands of zomies to attack from are likely to brin=
+g=20
+> even the biggest pipes to a dead halt, at least getting in and our of=20
+> the firewall gateway is impossible.  Traffic on the inside should be=20
 > unaffected.
+>=20
+> I've suffered attacks with a firewall not doing connection tracking and=
+=20
+> had no problems with either the firewall failing or suffereing a reboot=
+.=20
+> I have yet to suffer such an attack on a staeful firewall, but tend to=20
+> think I should suffer no less with such a firewall in place as apposed=20
+> to an the older mere packet filters I've been replacing over time. =20
+> Course, it helps to have enough RAM in the firewall in the firstplace..=
+.
+>=20
+> pipes size and RAM, them be the keys to surviival.
+>=20
+> Thanks,
+>=20
 
-One thing that I (personally) am trying to do (sort of) along these lines is to host a co-lo box at my ISP's facility and establish a GRE tunnel between my home system and this box and ultimately use an endpoint on this CO-LOed box as my default gateway.  This way I can set up QoS and specify what traffic is important to me and what has priority on what comes down my DSL pipe in a round about way.  Fortunetly I have an EXCELLENT working relationship, both professionally and personally, with my ISP and they would be willing to do such as well as drop any traffic that is destined to my DSL connection that did not come from the CO-LOed box.  This round about way would give me sufficient control over what traffic did flow down the DSL pipe to my house and thus mitigate DDoSing my DSL.  However seeing as my ISP only has 16 Mbps connection to the net it would not take much to DDoS them if it r
- eally came down to it.  But my DSL would not be DDoSed, just my ISP's upstream connection
-.  I know that this is not a real elegant solution, but I never did say that it was, just something that might work.  ;)
-
-
-
-Grant. . . .
+That=B4s the point. With professional DDoS attacks we are talking about=20
+people using their botnets and zombies and in total they can reach a=20
+bandwidth beyond the Gbit border. Not really easy to handle such packet=20
+storm ;).
 
