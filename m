@@ -1,13 +1,14 @@
-From: Taylor Grant <gtaylor@riverviewtech.net>
+From: Fabien Germain <fabien.germain@gmail.com>
 Subject: Re: route all internet traffic through dummy device?
-Date: Fri, 22 Apr 2005 03:01:46 -0500
-Message-ID: <4268AF6A.9090206@riverviewtech.net>
+Date: Fri, 22 Apr 2005 10:03:11 +0200
+Message-ID: <20a523fb05042201031a02a8a1@mail.gmail.com>
 References: <21722.212.18.18.20.1114156139.squirrel@212.18.18.20>
-	<20050422075914.GA27193@epsilon.rdc.pl>
+Reply-To: Fabien Germain <fabien.germain@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050422075914.GA27193@epsilon.rdc.pl>
+In-Reply-To: <21722.212.18.18.20.1114156139.squirrel@212.18.18.20>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +19,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Andreas Mimz <Andreas.Mimz@kos2.de>
+Cc: netfilter@lists.netfilter.org
 
-Mariusz Kruk wrote:
-> On Fri, Apr 22, 2005 at 09:48:59AM +0200, Andreas Mimz wrote:
-> 
->>I'm trying to route all internet traffic through a dummy network device.
->>Unfortunately, I wasn't able to do that yet :-(
-> 
-> 
-> I used a tunnel between dwo different addresses on loopback device (ie.
-> 127.0.0.2 and 127.0.0.3) and policy routing which puts everything from
-> outside to one end of the tunnel and from the inside into another end
-> (in my setup it works bi-directionaly - another hop is added for packets
-> traveling both ways).
-> If anyone is interested in more detailed description, I will gladly
-> provide info.
+Hello,
 
-I'm curious as to what purpose you would want to do such a thing?  Are you just trying to decrement the TTL by one hop or are you wanting to mess with QoS on inbound / outbound traffic?  If so why not use IMQ?
+On 4/22/05, Andreas Mimz <Andreas.Mimz@kos2.de> wrote:
+> I'm trying to route all internet traffic through a dummy network device.
+> Unfortunately, I wasn't able to do that yet :-(
 
+My question is probably stupid, but what is the goal of adding one hop ?
 
-
-Grant. . . .
+Fabien
 
