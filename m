@@ -1,7 +1,7 @@
 From: "Gary W. Smith" <gary@primeexalia.com>
 Subject: RE: ddos / no connection tracking / tarpitting
-Date: Fri, 22 Apr 2005 00:01:32 -0700
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F019AAE@pxtvjoexd01.pxt.primeexalia.com>
+Date: Fri, 22 Apr 2005 00:05:21 -0700
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F019AAF@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,8 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Taylor Grant <gtaylor@riverviewtech.net>
+To: "Gary W. Smith" <gary@primeexalia.com>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Taylor Grant <gtaylor@riverviewtech.net>
 Cc: Vic N <vic778@hotmail.com>, netfilter@lists.netfilter.org
+
+Anyone else getting errors when sending to Jozsef on this list.  It's
+the only site that has rejected my mail.
+
+The following recipient(s) could not be reached:
+
+      Jozsef Kadlecsik on 4/22/2005 12:02 AM
+            There was a SMTP communication problem with the recipient's
+email server.  Please contact your system administrator.
+            <pxtvjoexd01.pxt.primeexalia.com #5.5.0 smtp;550
+<user-119bnnu.biz.mindspring.com[66.149.222.254]>: Client host rejected:
+Access denied. Your site is banned because of the unsolicited mail
+messages received from it.>
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Gary W.
+Smith
+Sent: Friday, April 22, 2005 12:02 AM
+To: Jozsef Kadlecsik; Taylor Grant
+Cc: Vic N; netfilter@lists.netfilter.org
+Subject: RE: ddos / no connection tracking / tarpitting
 
 I've got an old p3, 800mhz 1u server with 128mb ram running tarpit with
 two external IP's (one low and one high).  This way up/down, down/up
@@ -77,5 +100,6 @@ E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
 PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
 Address : KFKI Research Institute for Particle and Nuclear Physics
           H-1525 Budapest 114, POB. 49, Hungary
+
 
 
