@@ -1,14 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Local Port Forwarding.
-Date: Fri, 22 Apr 2005 18:07:15 -0400
-Message-ID: <20050422220715.GA5807@bender.817west.com>
-References: <1114206098.6690.5.camel@cautin2.dcsc.utfsm.cl>
-	<20050422215756.GA5739@bender.817west.com>
-	<4269745C.70305@riverviewtech.net>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: REDIRCT vs. DNAT...
+Date: Fri, 22 Apr 2005 17:12:41 -0500
+Message-ID: <426976D9.2010009@riverviewtech.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4269745C.70305@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,24 +15,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Fri, Apr 22, 2005 at 05:02:04PM -0500, Taylor, Grant wrote:
-> >  iptables -t nat -A OUTPUT -p tcp -d $HostX --dport $PortY \
-> >    -j DNAT --to-destination $LocalHost:$PortY
-> 
-> Slight typo
-> 
-> iptables -t nat -A OUTPUT -p tcp -d $HostX --dport $PortX -j DNAT 
-> --to-destination $LocalHost:$PortY
+Are there any merits to using REDIRECT over (or under) DNAT when redirecting traffic back to the box that is doing the redirecting?  Reference Alejandro Villarroel's post (and thread) at https://lists.netfilter.org/pipermail/netfilter/2005-April/059942.html.
 
-whoops.  nice catch.
+I responded with an email stating to REDIRECT the traffic only moments after Jason Opperisano responded stating to DNAT the traffic.  I'm just curious if any one knows of any performance benefits / penalties for using REDIRECT vs. DNAT.
 
--j
 
---
-"Brian: You got anything on that remote lower than Mute?"
-        --Family Guy
+
+Grant. . . .
 
