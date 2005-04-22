@@ -1,14 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: DROP
-Date: Fri, 22 Apr 2005 10:28:45 -0400
-Message-ID: <20050422142845.GA4408@bender.817west.com>
-References: <42634792.2070307@eccotours.dyndns.org>
-	<20050418133542.GA15413@bender.817west.com>
-	<426901FD.4040301@hcjb.org.ec>
+From: Paulo Ricardo Bruck <pauloric@contato.com.br>
+Subject: Re: route all internet traffic through dummy device?
+Date: Fri, 22 Apr 2005 11:29:52 -0300
+Message-ID: <1114180192.4118.106.camel@pauloric.intranet>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-t7kozaddCiI8yD6FFaWd"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <426901FD.4040301@hcjb.org.ec>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,34 +17,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Apr 22, 2005 at 08:54:05AM -0500, Stephen J. McCracken wrote:
-> Jason Opperisano wrote:
-> >On Mon, Apr 18, 2005 at 07:37:22AM +0200, Brent Clark wrote:
-> 
-> >>I was wondering, if was adviseable to set the default policy for tables 
-> >>nat and mangle to DROP.
-> >
-> >no.  *all* packets traverse the filter chains--do your filtering
-> >there.
-> 
-> Just to better understand, don't all packets also pass the mangle table 
-> and only the first packet of a connection the nat table?
 
-yes--all packets will traverse mangle, and --state NEW packets traverse
-nat.
+--=-t7kozaddCiI8yD6FFaWd
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-there's nothing wrong with doing some pre-filter scrubbing of absolute
-stupidity in mangle, but the filter table is there for a reason
-(filtering).
+Hi Kruk and list
 
--j
+> As I wrote earlier on this list, I have a setup with linux router,=20
+> three
+> local interfaces and one outside interface. I do NAT and manage
+> bandwidth. Therefore I needed the IMQ functionality. Unfortunately, no
+> distro known by me at that time had kernel with IMQ (I didn't want to
+> use stock kernel and patch it myself every time I need to upgrade
+> kernel). Besides, it was also a kind of "proof-of-concept" solution.
+> Anyway, It works almost flawlessly (except for some strange behaviour
+> with GRE packets which I described few days ago).
 
---
-"Bad Cockroach: Man, I'm going to cut you up so bad, that you... you
- gonna wish I didn't cut you up so bad."
-        --Family Guy
+I agree w/ you. I'm studyng a lot of QoS and I stopped w/ IMQ x dummy.
+
+=46rom rom gname :http://article.gmane.org/gmane.linux.network/21224 . Jamal
+explained differences betwen IMQ x dummy. Like you I prefer not patch
+kernel..80)
+
+I know that's not a netfilter stuff but it's RELATED w/ it 8).
+Could you give some hints about your solution ? how-to/tutorial or other
+place where I can find ?
+
+thanks in advanced
+
+--=20
+\.\.\.\.\.\.\.\.\.\.\.\.\.\ Being  vewy, vewy quiet is iweviwent. <hehe-
+.\.Kruk@epsilon.eu.org.\.\. hehehe> - Fudd of Borg.
+\.http://epsilon.eu.org/\.\=20
+.\.\.\.\.\.\.\.\.\.\.\.\.\.=20
+
+
+--=20
+Paulo Ricardo Bruck - consultor
+
+
+--=-t7kozaddCiI8yD6FFaWd
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
+	assinada digitalmente
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQBCaQpg89ZqUGE0XNMRAkQaAKCLIJIM8W7ztDlugPAhExV1UNNKVACguoQC
+VE/QyDhBfZUmZhLVwc5htNM=
+=MHAh
+-----END PGP SIGNATURE-----
+
+--=-t7kozaddCiI8yD6FFaWd--
+
 
