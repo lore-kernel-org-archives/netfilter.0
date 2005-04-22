@@ -1,11 +1,12 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: ddos / no connection tracking / tarpitting
-Date: Fri, 22 Apr 2005 00:05:21 -0700
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F019AAF@pxtvjoexd01.pxt.primeexalia.com>
+From: Taylor Grant <gtaylor@riverviewtech.net>
+Subject: Re: ddos / no connection tracking / tarpitting
+Date: Fri, 22 Apr 2005 02:10:06 -0500
+Message-ID: <4268A34E.9000302@riverviewtech.net>
+References: <27594E8BA9D5CA458F5EF87D88B6B48F019AAF@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F019AAF@pxtvjoexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,90 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "Gary W. Smith" <gary@primeexalia.com>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Taylor Grant <gtaylor@riverviewtech.net>
-Cc: Vic N <vic778@hotmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Anyone else getting errors when sending to Jozsef on this list.  It's
-the only site that has rejected my mail.
+Gary W. Smith wrote:
+> Anyone else getting errors when sending to Jozsef on this list.  It's
+> the only site that has rejected my mail.
+> 
+> The following recipient(s) could not be reached:
+> 
+>       Jozsef Kadlecsik on 4/22/2005 12:02 AM
+>             There was a SMTP communication problem with the recipient's
+> email server.  Please contact your system administrator.
+>             <pxtvjoexd01.pxt.primeexalia.com #5.5.0 smtp;550
+> <user-119bnnu.biz.mindspring.com[66.149.222.254]>: Client host rejected:
+> Access denied. Your site is banned because of the unsolicited mail
+> messages received from it.>
 
-The following recipient(s) could not be reached:
-
-      Jozsef Kadlecsik on 4/22/2005 12:02 AM
-            There was a SMTP communication problem with the recipient's
-email server.  Please contact your system administrator.
-            <pxtvjoexd01.pxt.primeexalia.com #5.5.0 smtp;550
-<user-119bnnu.biz.mindspring.com[66.149.222.254]>: Client host rejected:
-Access denied. Your site is banned because of the unsolicited mail
-messages received from it.>
-
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Gary W.
-Smith
-Sent: Friday, April 22, 2005 12:02 AM
-To: Jozsef Kadlecsik; Taylor Grant
-Cc: Vic N; netfilter@lists.netfilter.org
-Subject: RE: ddos / no connection tracking / tarpitting
-
-I've got an old p3, 800mhz 1u server with 128mb ram running tarpit with
-two external IP's (one low and one high).  This way up/down, down/up
-scans all get hung.  It answers on most external ports.  One thing
-though, you need to tell it to ignore the broadcast.  When I take the
-firewall and bring it back up we have seen some problems (when it starts
-it's arp advertisements).
-
-I've also played with mirring SMTP and HTTP but tarpit'ing seems to work
-the best.
-
-Has been working fine for some time...
+No, can't say as I have.  However it looks like your IP address (66.149.222.254) has been banned by the receiving server.  I just pulled that from the header of the email that I am replying to.  You might want to check to see if you are black listed any where.
 
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jozsef
-Kadlecsik
-Sent: Thursday, April 21, 2005 11:50 PM
-To: Taylor Grant
-Cc: Vic N; netfilter@lists.netfilter.org
-Subject: Re: ddos / no connection tracking / tarpitting
 
-On Fri, 22 Apr 2005, Taylor Grant wrote:
-
-> > So my question is, is this the basic element of building a good
-> > anti-ddos solution wtih iptables to address a *large* volume of ddos
-> > traffic to build iptables w/o connection tracking?
->
-> Yes this is possible and (I think) fairly easy to do.  As I have never
-done this I can not tell you for sure, but this is what I would do if I
-were to do such a thing.
->
-> I will presume that you are wanting to drop all traffic to a specif
-port on an IP address for the sake of this discussion.
->
-> iptables -t raw -A PREROUTING -d 1.2.3.4 -p tcp --dport 5678 -j
-NOTRACK
-> iptables -t filter -A FORWARD -d 1.2.3.4 -p tcp --dport 5678 -j TARPIT
->
-> This will cause any traffic that comes in that is distend to 1.2.3.4
-on port 5678 to  NOT be tracked with the connecting tracking sub system
-and to subsequently be redirected to the TARPIT target.
-
-You *must* use the rule
-
-iptables -t raw -A PREROUTING -s 1.2.3.4 -p tcp --sport 5678 -j NOTRACK
-
-as well, otherwise conntrack will pick up the reply packets from the
-TARPIT target.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
-
-
+Grant. . . .
 
