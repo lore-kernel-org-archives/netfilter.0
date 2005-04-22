@@ -1,10 +1,10 @@
-From: christopher.f.ulherr@exgate.tek.com
-Subject: logging of successful tcp connections
-Date: Thu, 21 Apr 2005 09:38:37 -0700
-Message-ID: <F97948CF897D7B46802A18845A8B9BFD471A31@us-rich-m01.global.tektronix.net>
+From: Mariusz Kruk <Kruk@epsilon.eu.org>
+Subject: Re: 2 subnets
+Date: Fri, 22 Apr 2005 15:25:02 +0200
+Message-ID: <20050422132502.GA19589@epsilon.rdc.pl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,22 +19,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I would like to know if there is a way I can log only successful tcp
-connections. I'm only interested in successful (established)
-connections, and not just syn "connection attempts". I guess what I need
-is a way to log a single packet if it caused a state transition from NEW
-to ESTABLISHED. It would also be helpful to log the packet that
-terminated the connection (state change from established). In this
-manner, we could easily tell what connections were made, and their
-duration (and not rely on the userland application to log this info).
+On Thu, Apr 21, 2005 at 12:19:33PM -0300, Bernardo Vieira wrote:
+> Getting a ride on Mariusz's question, but probably deviating off topic:
+> I if a had the setup where the two subnets run off the same network card 
+> on virtual interfaces, i.e. not physically separeted, could I still run 
+> a DHCP server on them? How about bandwidth limiting? Could anyone give 
+> me some pointers?
 
-I've looked into using the state matching, but couldn't achieve this
-specific functionality with that.
+To clarify the things, the ethX:Y is a obsolete notation. This was the
+only way to specify multiple IPs on one physical interface up to 2.0 or
+2.2 line of kernels. It's still provided for compatibility reasons, I
+think.
+With modern kernels and tools you don't have to use this notation at
+all.
+Kernel itself doesn't know a thing about something called, for example,
+eth1:2. It's just another IP addr added to eth1 interface.
+Therefore, you can normally configure DHCP to bind to interface eth1 and
+assign IPs from both nets based on MAC address of requesting host.
+If you route the packets, it's irrelevant whether you push them to eth1
+or eth1:2. They end up on the same interface. So you can still attach
+your queues and disciplines to eth1.
 
-
-Is there some trivial way to accomplish this I am overlooking?
-
-
-Thanks,
-Chris
+-- 
+[------------------------] Bet   you   can't  stop  reading  here  <---
+[  Kruk@epsilon.eu.org   ] I knew it...
+[ http://epsilon.eu.org/ ] 
+[------------------------] 
 
