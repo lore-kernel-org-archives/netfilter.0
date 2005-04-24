@@ -1,12 +1,10 @@
-From: Edward Shornock <ed@crazeecanuck.homelinux.net>
-Subject: Re: blocking all trafic exapt selcter ports
-Date: Sat, 23 Apr 2005 05:20:24 -0400
-Message-ID: <426A1358.4000106@crazeecanuck.homelinux.net>
-References: <a3f524e05042301477b3598d3@mail.gmail.com>
+From: "Michael D. Berger" <m.d.berger@ieee.org>
+Subject: queue newbie
+Date: Sun, 24 Apr 2005 14:35:33 -0400
+Message-ID: <000001c548fc$6c946470$2801a8c0@MBRC40>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a3f524e05042301477b3598d3@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +16,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Kashif Ali Bukhari wrote:
-> i want to block all inbod access to my linux box and want to allow
-> dns, http proxy,ssh,telnet,and ftp 
-> how can i do this 
-> 
+On RH-WS-3 (4 when I get around to it), I would like
+to use the capabilities of -j QUEUE.  Google seems to
+indicate that I need libipq, and to get this, perhaps
+I need to get an rpm for iptables-devel.
+
+Is this the way to go?  If so, where is the best place
+to get the rpm, and what version should I get?  If not,
+how should I proceed?
+
+Thanks in advance for your help.
+Mike.
+
+--
+Michael D. Berger
+m.d.berger@ieee.org 
 
 
-First, please see
-http://www.catb.org/~esr/faqs/smart-questions.html
-
-iptables -A INPUT -p tcp --dport  21 -j ACCEPT
-iptables -A INPUT -p tcp --dport  22 -j ACCEPT
-iptables -A INPUT -p tcp --dport  23 -j ACCEPT
-iptables -A INPUT -p tcp --dport  53 -j ACCEPT
-iptables -A INPUT -p tcp --dport  3128 -j ACCEPT
-iptables -P INPUT DROP
-
-
-or if you compile your kernel/iptables with multiport support
-
-iptables -A INPUT -m multiport -p tcp --dports 21-23,53,3128 -j ACCEPT
-iptables -P INPUT DROP
-
-A classic RTFM/STFW case, nonetheless...
 
