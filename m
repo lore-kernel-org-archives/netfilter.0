@@ -1,10 +1,14 @@
-From: "Holger Brueckner [c]" <hb@ciphirelabs.com>
-Subject: problem with conntrack loosing state [signed]
-Date: Tue, 26 Apr 2005 18:36:35 +0200
-Message-ID: <1114533395.2969.39.camel@localhost>
+From: Michael Weinert <weinert@sys2.de>
+Subject: Re: where list of **reserved address**??? (IP addresses can *drop*)
+Date: Tue, 26 Apr 2005 20:21:57 +0200
+Message-ID: <200504262022.01152.weinert@sys2.de>
+References: <1114539542.3856.12.camel@seberino.spawar.navy.mil>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart11150092.9pNJkMvGRP";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1114539542.3856.12.camel@seberino.spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,74 +19,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hello,
+--nextPart11150092.9pNJkMvGRP
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-(please cc, i'm not a regular on the list)
-
-we're experiencing some strange problems with the conntrack engine
-loosing state. following setup:
-
-fw with several interfaces
-kernel 2.6.11.X
-iptables v1.2.11 (debian)
-
-all ips have a /32 netmask so that every traffic is routed through the
-firewall. this is assured by corresponding vlan setup on the switches.
-
-FORWARD is:
-Chain FORWARD (policy DROP)
-target     prot opt source               destination
-DROP       all  --  anywhere             anywhere            state
-INVALID
-ACCEPT     all  --  anywhere             anywhere            state
-RELATED,ESTABLISHED
-.....
-LOGDROP    all  --  anywhere             anywhere
-
-eventually after a day or two pakets pakets which should be matched by
-established coming in from the same interface as they go out will get
-dropped and logged.
-
-e.g.     srv1 --+-- fw -- srv3
-         srv2 --|
-
-"established" packet from srv1 to srv2 will get dropped after some days.
-it looks like the syn flags don't trigger the conntrack engine although
-the syn "pakets" go through the fw as expected, only pakets with no syn
-flag set get dropped.
-while this is the case the fw works perfectly for host which are not on
-the same interface. so conntrack for connections from srv1 to srv3 or
-srv2 to srv3 work as expected. rebooting the firewall is the only
-solution to the problem.
-
-there's not very much load on the server yet, last time i checked there
-were about 250 conntrack entries. it looks like this might be realted to
-Daniel Wittembergs "NAT stops working (more)" thread, at least the
-symptoms are quite similar.
-
-any suggestions to further debug this ? we just upgraded to 2.6.12-rc3
-to see if this is solved. if not we will downgrade and see if this
-happens again.
-
-holger brueckner
+Am Dienstag, 26. April 2005 20:19 schrieb Christian Seberino:
 
 
--- 
----------------------[ Ciphire Signature ]----------------------
-From: hb@ciphirelabs.com signed email body (1373 characters)
-Date: on 26 April 2005 at 16:36:15 UTC
-To:   netfilter@lists.netfilter.org
-----------------------------------------------------------------
-: Ciphire has secured this email against identity theft.
-: Free download at www.ciphire.com. The garbled lines
-: below are the sender's verifiable digital signature.
-----------------------------------------------------------------
-00fAAAAAEAAAD/bW5CXQUAAPsCAAIAAgACACDyIekZGJnmXEESCWWMu29LEN2zGD
-L5vPj6PVwT2NKTZwEAD46rZXne6ITF8oprNxCs8q8OjlSBDfprdoflGwjALEyKpe
-h9i85eLona6Se1WejNKCfRKCPNnqfIAy6On0t7qg==
-------------------[ End Ciphire Signed Message ]----------------
+What about this:
 
+wget http://www.iana.org/assignments/ipv4-address-space
+
+
+Michael.
+
+> where list of **reserved address**??? (IP address can *drop*)
+>
+> I had a list but I keep having to remove IP addresses from
+> it....either list keeps changing or my list is crap....
+
+=2D-=20
+
+          SysQuadrat    Systeme mit Sicherheit
+    Michael Weinert Stuttgart Filderstadt-Plattenhardt
+  Tel.: 0711-9970288 Fax: 5360559 Mobil: 0170-4141273
+   http://www.linux-firewall.de  weinert@sys2.de
+           KeyServer hkp://pgp.mit.edu
+
+--nextPart11150092.9pNJkMvGRP
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iQGlAwUAQm6Gyavpi4/XslceAQLLLgx/QCAwFy/1To6Vt2m1GhxYCkZZBSRdC8lB
+Ytlk2+KXjWH55KJcvcigkmEEDs9fgoBPcy7RpTy0x3uvnRd4TEQ+z4XjwQ3emeaa
+el3EJZmcYi7prxswnlysXVhuuTn/qNlisZR+QdV89hG0kOX105bHpL2GPMZ/U2y5
+k9SwIrlWXgGTIGu3ofa3hHPrX+lBmSesfPsuwB+rwvkOjscLQkePVZMUtQIGClLA
+kMtHdsfgt4HzMApfh2LcHv+/yrT8U1ifw0j0RYbepL2DnFEuCPke9om1P+nVL5aQ
+d+2m+QxFT9gdnoecwolPemKXfgmWi47VGcYiET96FIgA5lnH2FQxl9vvuay5npfh
+Nd+amPxr3mqc5CNUf9qcPMMkKykv4jpweewBcWA0uMQS2oyeemo56nAl4PtB0fLx
+UnwzUqgJlplt63EcV+xh+tOXav05ijbKc+JZ3v6QqvNYC1/mzMkS/JeId+gKPRtb
+rNv8Z3gs18QOujDdgpmk3643aMvG1Fx8VioIitI0gIl0ohUnXAM1Ug==
+=Z+Tl
+-----END PGP SIGNATURE-----
+
+--nextPart11150092.9pNJkMvGRP--
 
