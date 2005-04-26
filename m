@@ -1,14 +1,11 @@
-From: Mani kanth <manikanth04@gmail.com>
-Subject: Re: netfilter Digest, Vol 9, Issue 50
-Date: Tue, 26 Apr 2005 15:13:22 +0530
-Message-ID: <92bf04d20504260243113d4ea7@mail.gmail.com>
-References: <42690580.7572f072.78eb.58cdSMTPIN_ADDED@mx.gmail.com>
-Reply-To: Mani kanth <manikanth04@gmail.com>
+From: traef06@ebasedsecurity.com
+Subject: Management of bridged iptables
+Date: Tue, 26 Apr 2005 03:10:32 -0700
+Message-ID: <ffe712837a51442e9ab369947e567ab7@ebasedsecurity.com>
+Reply-To: traef06@ebasedsecurity.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42690580.7572f072.78eb.58cdSMTPIN_ADDED@mx.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,33 +19,15 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-please provide me with more information
+I've been scouring Google searches looking for an answer. If this is the wr=
+ong forum, please forgive me.=0D=0A=0D=0AI want to be able to setup iptable=
+s and I guess ebtables for a bridged firewall. My problem is that I also ne=
+ed to be able=0D=0Ato manage this remotely like with ssh or something.=0D=
+=0A=0D=0AHow do I do this and still be able to maintain a "stealthy" firewa=
+ll?=0D=0A=0D=0AThank you in advance for any help.=0D=0A=0D=0AThomas J. Raef=
+=0D=0Ae-Based Security, Inc.=0D=0A"You're either hardened, or you're hacked=
+!" 
 
 
-thank you
 
-k.mani kanth
-
-
-
-> Message: 4
-> Date: Fri, 22 Apr 2005 09:59:14 +0200
-> From: Mariusz Kruk <Kruk@epsilon.eu.org>
-> Subject: Re: route all internet traffic through dummy device?
-> To: netfilter@lists.netfilter.org
-> Message-ID: <20050422075914.GA27193@epsilon.rdc.pl>
-> Content-Type: text/plain; charset=3Diso-8859-2
->=20
-> On Fri, Apr 22, 2005 at 09:48:59AM +0200, Andreas Mimz wrote:
-> > I'm trying to route all internet traffic through a dummy network device=
-.
-> > Unfortunately, I wasn't able to do that yet :-(
->=20
-> I used a tunnel between dwo different addresses on loopback device (ie.
-> 127.0.0.2 and 127.0.0.3) and policy routing which puts everything from
-> outside to one end of the tunnel and from the inside into another end
-> (in my setup it works bi-directionaly - another hop is added for packets
-> traveling both ways).
-> If anyone is interested in more detailed description, I will gladly
-> provide info.
 
