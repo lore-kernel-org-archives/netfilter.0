@@ -1,12 +1,13 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: difference between DROPped pings and non existing hosts
-Date: Tue, 26 Apr 2005 17:12:21 -0500
-Message-ID: <426EBCC5.500@riverviewtech.net>
-References: <426E8530.6080203@lopsch.com>
+From: Richard Hauswald <staenker@rhcs.de>
+Subject: Re: Accounting with iptables vs. snmp
+Date: Wed, 27 Apr 2005 00:32:35 +0200
+Message-ID: <426EC183.2020701@rhcs.de>
+References: <0MKsEO-1DQUpM3MdQ-00057r@mxeu13.kundenserver.de>
+	<200504262117.51465.S.Guenther@in-put.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <426E8530.6080203@lopsch.com>
+In-Reply-To: <200504262117.51465.S.Guenther@in-put.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +18,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: S.Guenther@in-put.de
+Cc: netfilter@lists.netfilter.org
 
-> I would like to know how ICMP distinguishes between DROPped pings and=20
-> non existing hosts. Both times you don=C2=B4t get a reply from the=20
-> destination host but if it doesn=C2=B4t reply because it doesn=C2=B4t e=
-xist you=20
-> get the correct destination unreachable message if it drops the request=
-s=20
-> for example with IPTables you get a timeout. And I haven=C2=B4t a clue =
-why=20
-> this is so.
+Stefan-Michael. Guenther (in-put GbR) wrote:
+> Hello Richard,
+> 
+> 
+>>Hello Stefan,
+>>maybe (!)... your problem is simple so solve. You are appending this
+>>rules with the LOG target. So you will not count traffic which is
+>>blocked. Just write an -I instead of -A. But i don't know if thats the
+>>problem which took up to 25% of traffic difference. It sounds very
+>>strange, if you say that some times you count more than your provider
+>>and another day your provider counts more. Maybe you have an failure
+>>based on rounding the bytes to megabytes?
+>>
+> 
+> I don't block packets on this box, there is a cisco box between the net and 
+> the linux box. Last wednesday the difference was about 2.6 GB in only 24 
+> hours!
+Thats much traffic...
+> The scripts doesn't do any rounding, I've switched this feature off to 
+> get exact results. Even with all those portscans and P2P-packets, I don't 
+> think that this could add up to 2.6 GB.
+Sure? :-)
+> And it wouldn't explain why the box 
+> sometimes reports more traffic that the provider.
+Maybe there is another way to get access to the Internet. I mean another 
+way then to use the Linux box as gateway. That would explain why 
+sometimes more and some times less traffic is reported by your box than 
+from your ISP. If you have a DMZ and your traffic counter is in the DMZ, 
+than it will not count traffic for other DMZ servers. Is the box 
+directly connected to the cisco gateway? I mean using a cross over cat5? 
+If not, do so to exclude this failure possibility.
+> Could it be that the box is to slow, to see and log all packets?
+No. You are using iptables and not snort with a box connected to a 
+monitoring port on a switch with 100MBit and much network traffic.
+> Sometimes I find lines like "last message repeated 10 times" in the logfile but my 
+> scripts is able to analyse these lines, too.
+You could also change the LOG rule to a accept rule. If you do so, you 
+have to tell cron.hourly (for example) to grep/awk out the values for 
+the rule counters. It does not make sense with the log rule. If you 
+want, you can grep it out every minute. that won't produce much system 
+load. Try this way and test again.
+> And again, this would mean equal 
+> or less traffic, but no more traffic than the providers reports.
+And again: This sounds very strange. :-(
+> 
+> Stefan
 
-Just because you get an ICMP Host Unreachable message does not mean that =
-the host is not there or that the router can not reach it.  You should pr=
-obably check the source IP on the ICMP message.  I've had a discussion (w=
-ith little feed back) on this list to this very effect.  If the host that=
- you are trying to reach wants to it can REJECT the packet with icmp-host=
--unreachable it can do so in lieu of DROPing the packet.  In this situati=
-on you do see an ICMP Host Unreachable message, just from the IP address =
-of the host in question that you are trying to reach, thus you know that =
-someone is playing with you trying to make it so that you don't think the=
- host in question is there.
+Richard
 
-
-
-Grant. . . .
-
+-- 
+There are only 10 types of people in the world:
+Those who understand binary, and those who don't
 
