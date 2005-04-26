@@ -1,13 +1,11 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: Management of bridged iptables
-Date: Tue, 26 Apr 2005 12:33:32 +0200
-Message-ID: <1403218a05042603336a6fff29@mail.gmail.com>
-References: <ffe712837a51442e9ab369947e567ab7@ebasedsecurity.com>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: "Stefan-Michael. Guenther (in-put GbR)" <S.Guenther@in-put.de>
+Subject: Accounting with iptables vs. snmp
+Date: Tue, 26 Apr 2005 13:45:44 +0200
+Message-ID: <200504261345.45177.S.Guenther@in-put.de>
+Reply-To: S.Guenther@in-put.de
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <ffe712837a51442e9ab369947e567ab7@ebasedsecurity.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,35 +18,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: traef06@ebasedsecurity.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-You can give the firewall an IP address, on any interface, whether
-part of the bridge or not part of the bridge.
-This will still keep the firewall stealthy (not shown in traceroutes),
-as that IP is not a gateway for any server !!
+Hi,
 
-On 4/26/05, traef06@ebasedsecurity.com <traef06@ebasedsecurity.com> wrote:
-> I've been scouring Google searches looking for an answer. If this is the =
-wrong forum, please forgive me.
->=20
-> I want to be able to setup iptables and I guess ebtables for a bridged fi=
-rewall. My problem is that I also need to be able
-> to manage this remotely like with ssh or something.
->=20
-> How do I do this and still be able to maintain a "stealthy" firewall?
->=20
-> Thank you in advance for any help.
->=20
-> Thomas J. Raef
-> e-Based Security, Inc.
-> "You're either hardened, or you're hacked!"
->=20
->=20
+using iptables I have setup a traffic accounting on one of our client's 
+gateways:
 
+iptables -A INPUT -i $WAN -j LOG --log-level debug
+iptables -A OUTPUT -o $WAN -j LOG --log-level debug
+iptables -A FORWARD -j LOG --log-level debug
 
---=20
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+syslogd collects the entries in a single file which is analysed daily.
+
+The results corresponds to the amount of data I get with "iptables -L -v -n" .
+
+The provider of our client uses snmp on his router to calculate the traffic.
+
+Strange, but true: The numbers are never the same, sometimes iptables logs 
+more traffic, sometimes snmp. The differences are between 1 and 25 %.
+
+Obviously someone is doing something wrong. The provider is one of Germany's 
+big player, so I guess I made the mistake. But where and why?
+
+Thanks for any hint.
+
+Stefan
+-- 
+
+*****************************************
+in-put GbR - Das Linux-Systemhaus
+Stefan-Michael Guenther
+Moltkestrasse 49     D-76133 Karlsruhe
+Tel./Fax : +49 (0)721 / 83044 - 98/93
+http://www.in-put.de
+*****************************************
 
