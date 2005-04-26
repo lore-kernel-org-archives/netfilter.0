@@ -1,11 +1,13 @@
-From: traef06@ebasedsecurity.com
-Subject: Management of bridged iptables
-Date: Tue, 26 Apr 2005 03:10:32 -0700
-Message-ID: <ffe712837a51442e9ab369947e567ab7@ebasedsecurity.com>
-Reply-To: traef06@ebasedsecurity.com
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Management of bridged iptables
+Date: Tue, 26 Apr 2005 12:21:41 +0200
+Message-ID: <MS_LEU1nHM3SOlbpH710000004e@smtp.ttp.nl>
+References: <ffe712837a51442e9ab369947e567ab7@ebasedsecurity.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Class: urn:content-classes:message
+In-Reply-To: <ffe712837a51442e9ab369947e567ab7@ebasedsecurity.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,15 +21,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I've been scouring Google searches looking for an answer. If this is the wr=
-ong forum, please forgive me.=0D=0A=0D=0AI want to be able to setup iptable=
-s and I guess ebtables for a bridged firewall. My problem is that I also ne=
-ed to be able=0D=0Ato manage this remotely like with ssh or something.=0D=
-=0A=0D=0AHow do I do this and still be able to maintain a "stealthy" firewa=
-ll?=0D=0A=0D=0AThank you in advance for any help.=0D=0A=0D=0AThomas J. Raef=
-=0D=0Ae-Based Security, Inc.=0D=0A"You're either hardened, or you're hacked=
-!" 
+Symantec Mail Security replaced Message Body with this text message.  =
+The original text contained prohibited content and was quarantined.
+
+ID:MS_LEU1::SYQ450da5c3=20
 
 
+********* DISCLAIMER *********=20
+De informatie in dit E-mail bericht is uitsluitend bestemd voor de =
+geadresseerde. Verstrekking aan en gebruik door anderen is niet =
+toegestaan.
+Door de elektronische verzending van het bericht kunnen er geen rechten =
+worden ontleend aan de informatie. TTP staat niet in voor de juiste en =
+volledige overbrenging van de inhoud van een verzonden E-mail, noch voor =
+tijdige ontvangst daarvan.=20
 
 
