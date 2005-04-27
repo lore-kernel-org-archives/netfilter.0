@@ -1,14 +1,15 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: simple question
-Date: Wed, 27 Apr 2005 13:04:59 +0200
-Message-ID: <1114599900.5364.22.camel@anduril.intranet.cartel-securite.net>
+Date: Wed, 27 Apr 2005 13:07:02 +0200
+Message-ID: <1114600023.5364.24.camel@anduril.intranet.cartel-securite.net>
 References: <a0f69e50504270335efe7915@mail.gmail.com>
 	<1403218a05042703502786f182@mail.gmail.com>
 	<a0f69e50504270358398f221d@mail.gmail.com>
+	<1114599900.5364.22.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a0f69e50504270358398f221d@mail.gmail.com>
+In-Reply-To: <1114599900.5364.22.camel@anduril.intranet.cartel-securite.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,12 +24,13 @@ Content-Type: text/plain; charset="iso-8859-1"
 To: Askar <askarali@gmail.com>
 Cc: netfilter <netfilter@lists.netfilter.org>, Mohamed Eldesoky <eldesoky.lists@gmail.com>
 
-Le mercredi 27 avril 2005 =E0 16:58 +0600, Askar a =E9crit :
-> you mean if I have rules like
-> iptables -P FORWARD ACCEPT
+Le mercredi 27 avril 2005 =E0 13:04 +0200, Cedric Blancher a =E9crit :
+> If you have this, then any ACCEPT rule will be useless. As simple as
+> this.
 
-If you have this, then any ACCEPT rule will be useless. As simple as
-this.
+Well, not quite.
+It is, except if you want to rely on DROP/ACCEPT combinations to make
+exclusions and related stuff.
 
 
 --=20
