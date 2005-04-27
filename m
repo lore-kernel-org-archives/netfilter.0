@@ -1,14 +1,21 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: where list of **reserved address**??? (IP addresses can *drop*)
-Date: Wed, 27 Apr 2005 17:22:43 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0504271714230.10408@darkstar.sysinfo.com>
-References: <1114539542.3856.12.camel@seberino.spawar.navy.mil>
-	<426FB150.2060708@riverviewtech.net>
-	<Pine.LNX.4.60.0504271331080.9550@darkstar.sysinfo.com>
-	<20050427181849.GA23747@bender.817west.com>
+From: "Stian B. Barmen" <stian@barmen.nu>
+Subject: Re: Connection problems on large high speed connections.
+Date: Wed, 27 Apr 2005 16:25:10 +0200
+Message-ID: <1114611910.15242.56.camel@zepto.barmen.nu>
+References: <1114555837.14247.15.camel@zepto.barmen.nu>
+	<Pine.LNX.4.58.0504270854230.4795@blackhole.kfki.hu>
+	<1114585852.15246.11.camel@zepto.barmen.nu>
+	<1114586414.15242.14.camel@zepto.barmen.nu>
+	<1114608987.15240.49.camel@zepto.barmen.nu>
+	<Pine.LNX.4.58.0504271542470.5216@blackhole.kfki.hu>
+	<1114609896.15244.54.camel@zepto.barmen.nu>
+	<Pine.LNX.4.58.0504271554450.5216@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=sha1;
+	protocol="application/x-pkcs7-signature";
+	boundary="=-x8+jL9ZFFfCm6B7mt0J2"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050427181849.GA23747@bender.817west.com>
+In-Reply-To: <Pine.LNX.4.58.0504271554450.5216@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,85 +26,82 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Jason Opperisano <opie@817west.com>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-On Wed, 27 Apr 2005, Jason Opperisano wrote:
-
-> On Wed, Apr 27, 2005 at 01:33:52PM -0400, R. DuFresne wrote:
->> The only real reason to have to have a bogon listing of rules in a
->> firewall are those firewalls that tend to be permissive.  Firewalls with
->> default deny policies should not have to deal with keeping an up-to-date
->> listing of the bogons, nor all the clutter and added overhead of rules to
->> disallow these addresses.
->
-> that's an odd view.  the most common reason i see for people wanting to
-> filter "bogons" is when you make services available to "any" in your DMZ
-> (web, mail, dns, etc), and you want to filter out bogus src IP's as they
-> are obviously spoofed and the sender is up to no good.  <rant>of course
-> none of this would be necessary if f**king ISP's would just perform some
-> f**king egress filtering, but i digress...</rant>.
+--=-x8+jL9ZFFfCm6B7mt0J2
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
 
-agreed on the egess filtering and most reasons I've seen for not doing 
-egrees on netwokr borders are bogus.  But again a dmz firewall tends to 
-be more permissive then a default deny policy, so does not alter my stance 
-on this.  DMZ tend to be 'danger zones' anyways, and have to be 
-permissive...
+> A "-j RECECT --reject-with tcp-reset" generates a TCP RST, which always
+> kills the connection. A "-j RECECT" generates an ICMP error message, whic=
+h
+> - depending on the OS which receives the ICMP packet - might terminate a
+> TCP connection or might not. That is the very reason why "--reject-with
+> tcp-reset" is required.
 
->
-> as to the security benefit this provides--i'd guess it's pretty
-> negligible.  i've run firewalls that filter out the unassigned and
-> reserved address spaces, and they do not get a lot of hits.  if i was
-> going to spoof my src IP, i wouldn't use an unassigned or reserved block,
-> i'd probably use another entity i didn't like...
->
-> oh and PS--if you wanna do this--use a list (or write your own script)
-> that summarizes the netblocks down, so you have ~40 rules instead of
-> 100+.
->
+Thanks for that info! :)
 
-What I was trying to get across, and this might be what you sir are also 
-saying, is the resources for all the inactive bogons can really add to a 
-rulebase, the traversal of that rulebase and the resources that it takes 
-to maintain it in processing power, time and memory, let alone keeping the 
-list up-to-date, not to mention the latency that parsing a huge rulebase 
-can have on connectivity...
+Best regards
+Stian B. Barmen
 
-Of course, I'm talking permititer firewalling, sure perhaps their are 
-reasons to have especially complicated rule sets internally, to prevent 
-employee's from doing things they should not or only permitting finace 
-folks to get to finace servers and such, but, some of the things folks are 
-doing at their perimiters are not only messy, but, downright near to 
-dangerous in the maintainance of the schemes trying to be employed.
+--=-x8+jL9ZFFfCm6B7mt0J2
+Content-Type: application/x-pkcs7-signature; name=smime.p7s
+Content-Disposition: attachment; filename=smime.p7s
+Content-Transfer-Encoding: base64
 
-But, please, excuse my rants, I've been fighting battles all day with 
-vendors lacking clues and clients being absurd, all part of the daily 
-<smile>...
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIH2TCCAkcw
+ggGwoAMCAQICAw0JpTANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhh
+d3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVt
+YWlsIElzc3VpbmcgQ0EwHhcNMDQwOTE0MDc0NjEwWhcNMDUwOTE0MDc0NjEwWjBBMR8wHQYDVQQD
+ExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMR4wHAYJKoZIhvcNAQkBFg9zdGlhbkBiYXJtZW4ubnUw
+gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALT1umqvVN4S1U2YVvSh3Zl3qTaM5AZGPBM6L3kf
+YVGLVqWdeGYKlX+oZo7kThbA8OV+5Jg60rcEj6dEXqJV6ylN+XOByXFvepncxyC5w/rw4zpOfd7U
+niFUzEI4gjNk5Y+SoMXv0EBWiM0Fr9muVn1QpTEdH+XJC/36Y1+lNLknAgMBAAGjLDAqMBoGA1Ud
+EQQTMBGBD3N0aWFuQGJhcm1lbi5udTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBAUAA4GBAMOo
+tvQpl6dnepLkO3CL0gyvUgYec1s/QJkoDJvs7Bu+JOdCWY9YKJqqazuuJ1kMd3fzSRjDWt4nv5Zk
+w1/FBuE8baABEkCklugcWpnFinFoCHBVbY22vcY2k+EWoVsFhsille4FJo90Nf/Ds6c5ZE0t2wmM
+yhGBYNLTNF972rrZMIICRzCCAbCgAwIBAgIDDQmlMA0GCSqGSIb3DQEBBAUAMGIxCzAJBgNVBAYT
+AlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3
+dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTAeFw0wNDA5MTQwNzQ2MTBaFw0wNTA5MTQw
+NzQ2MTBaMEExHzAdBgNVBAMTFlRoYXd0ZSBGcmVlbWFpbCBNZW1iZXIxHjAcBgkqhkiG9w0BCQEW
+D3N0aWFuQGJhcm1lbi5udTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtPW6aq9U3hLVTZhW
+9KHdmXepNozkBkY8EzoveR9hUYtWpZ14ZgqVf6hmjuROFsDw5X7kmDrStwSPp0ReolXrKU35c4HJ
+cW96mdzHILnD+vDjOk593tSeIVTMQjiCM2Tlj5Kgxe/QQFaIzQWv2a5WfVClMR0f5ckL/fpjX6U0
+uScCAwEAAaMsMCowGgYDVR0RBBMwEYEPc3RpYW5AYmFybWVuLm51MAwGA1UdEwEB/wQCMAAwDQYJ
+KoZIhvcNAQEEBQADgYEAw6i29CmXp2d6kuQ7cIvSDK9SBh5zWz9AmSgMm+zsG74k50JZj1gomqpr
+O64nWQx3d/NJGMNa3ie/lmTDX8UG4TxtoAESQKSW6BxamcWKcWgIcFVtjba9xjaT4RahWwWGyKWV
+7gUmj3Q1/8OzpzlkTS3bCYzKEYFg0tM0X3vautkwggM/MIICqKADAgECAgENMA0GCSqGSIb3DQEB
+BQUAMIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBl
+IFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0aW9u
+IFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgQ0Ex
+KzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wHhcNMDMwNzE3MDAw
+MDAwWhcNMTMwNzE2MjM1OTU5WjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1
+bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3Vp
+bmcgQ0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMSmPFVzVftOucqZWh5owHUEcJ3f6f+j
+Huy9zfVb8hp2vX8MOmHyv1HOAdTlUAow1wJjWiyJFXCO3cnwK4Vaqj9xVsuvPAsH5/EfkTYkKhPP
+K9Xzgnc9A74r/rsYPge/QIACZNenprufZdHFKlSFD0gEf6e20TxhBEAeZBlyYLf7AgMBAAGjgZQw
+gZEwEgYDVR0TAQH/BAgwBgEB/wIBADBDBgNVHR8EPDA6MDigNqA0hjJodHRwOi8vY3JsLnRoYXd0
+ZS5jb20vVGhhd3RlUGVyc29uYWxGcmVlbWFpbENBLmNybDALBgNVHQ8EBAMCAQYwKQYDVR0RBCIw
+IKQeMBwxGjAYBgNVBAMTEVByaXZhdGVMYWJlbDItMTM4MA0GCSqGSIb3DQEBBQUAA4GBAEiM0VCD
+6gsuzA2jZqxnD3+vrL7CF6FDlpSdf0whuPg2H6otnzYvwPQcUCCTcDz9reFhYsPZOhl+hLGZGwDF
+GguCdJ4lUJRix9sncVcljd2pnDmOjCBPZV+V2vf3h9bGCE6u9uo05RAaWzVNd+NWIXiC3CEZNd4k
+sdMdRv9dX2VPMYICZjCCAmICAQEwaTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENv
+bnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElz
+c3VpbmcgQ0ECAw0JpTAJBgUrDgMCGgUAoIIBUzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
+CSqGSIb3DQEJBTEPFw0wNTA0MjcxNDI1MTBaMCMGCSqGSIb3DQEJBDEWBBRn71t6t6XeGoSmbLpL
+RJNknW/nQDB4BgkrBgEEAYI3EAQxazBpMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUg
+Q29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwg
+SXNzdWluZyBDQQIDDQmlMHoGCyqGSIb3DQEJEAILMWugaTBiMQswCQYDVQQGEwJaQTElMCMGA1UE
+ChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFs
+IEZyZWVtYWlsIElzc3VpbmcgQ0ECAw0JpTANBgkqhkiG9w0BAQEFAASBgBFu8KTY/Ws+B7JQajOd
+RM4T5HNgutB5nBSTgZTK4YRsOMKUkScqlIJpa4G7GDcZf+ktT0JXh22Fe0dvuZZnNICtXD3/ocZ5
+HTdjruCnPEUWx8uK1UTGu9Mh2zHS5R2F7ZOLYhKVscqnumUu2u1948er6fJA+lGwH9A+swG2Zggr
+AAAAAAAA
 
-My best to you and yours sir <and list>,
 
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+--=-x8+jL9ZFFfCm6B7mt0J2--
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCcAKost+vzJSwZikRAhZ3AJ9h2qesncsduTc83B+DJMu4lX8HRgCfaTd+
-CPyaITCpTVV17h5fNzkkkTc=
-=Pv3J
------END PGP SIGNATURE-----
 
