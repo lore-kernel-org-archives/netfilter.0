@@ -1,16 +1,17 @@
 From: "Stian B. Barmen" <stian@barmen.nu>
 Subject: Re: Connection problems on large high speed connections.
-Date: Wed, 27 Apr 2005 09:20:14 +0200
-Message-ID: <1114586414.15242.14.camel@zepto.barmen.nu>
+Date: Wed, 27 Apr 2005 11:44:17 +0200
+Message-ID: <1114595057.15244.31.camel@zepto.barmen.nu>
 References: <1114555837.14247.15.camel@zepto.barmen.nu>
 	<Pine.LNX.4.58.0504270854230.4795@blackhole.kfki.hu>
 	<1114585852.15246.11.camel@zepto.barmen.nu>
+	<1114586414.15242.14.camel@zepto.barmen.nu>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=sha1;
 	protocol="application/x-pkcs7-signature";
-	boundary="=-+zbuWPcyqnLoHY2EceRk"
+	boundary="=-G8G1qDnpRjperln5V8xP"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1114585852.15246.11.camel@zepto.barmen.nu>
+In-Reply-To: <1114586414.15242.14.camel@zepto.barmen.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,62 +22,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
 
---=-+zbuWPcyqnLoHY2EceRk
+--=-G8G1qDnpRjperln5V8xP
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-Here is another strange thing. When I run lsmod I get this output:
+I saw this on the netfilter page. Maybe I forgot to say I have a dual
+cpu system. Can this be the source of my problems?
 
-Module                  Size  Used by
-ipt_state               1344  -
-ipt_REJECT              5376  -
-iptable_filter          2048  -
-ipt_ULOG                6276  -
-ip_nat_irc              1632  -
-ip_nat_ftp              2336  -
-iptable_nat            19804  -
-ip_conntrack_irc       70608  -
-ip_conntrack_ftp       71504  -
-ip_conntrack           39016  -
-ppp_mppe_mppc          14724  -
-ppp_generic            21396  -
-slhc                    6304  -
-ipt_ipp2p               7872  -
-ip_tables              17632  -
-e100                   30656  -
 
-On my other firewalls I get more in the Used by column. More like this:
+Author: Patrick McHardy, <kaber@trash.net>=20
+Status: Working
 
-ipt_limit                984   6  (autoclean)
-ipt_LOG                 3448   1  (autoclean)
-ipt_REJECT              3288  15  (autoclean)
-ipt_state                568   5  (autoclean)
-iptable_filter          1740   1  (autoclean)
-ip_nat_irc              2704   0  (unused)
-ip_nat_ftp              3440   0  (unused)
-ip_conntrack_irc        3344   1
-ip_conntrack_ftp        4496   1
-iptable_nat            18232   3  [ip_nat_irc ip_nat_ftp]
-ip_conntrack           23048   4  [ipt_state ip_nat_irc ip_nat_ftp
-ip_conntrack_irc ip_conntrack_ftp iptable_nat]
-ip_tables              12992   8  [ipt_limit ipt_LOG ipt_REJECT
-ipt_state iptable_filter iptable_nat]
-smbfs                  39984   1  (autoclean)
-ppp_mppe               22680   0
-eepro100               20180   2
-mii                     2544   0  [eepro100]
-(this is a screen shot from a similar server but running 2.4 kernel)
+This patch fixes a deadlock condition in conntrack/nat-helpers
 
-Does this have anything to do with my file transfer problem?
+There is a possible deadlock condition with conntrack/nat-helpers:
 
-Best regards=20
+CPU1:
+conntrack-helper:help: lock(private_lock)
+ip_conntrack_expect_related: write_lock(ip_conntrack_lock)
+
+CPU2:
+nat-core:do_bindings: read_lock(ip_conntrack_lock)
+nat-helper:help: lock(private_lock)
+
+The lock in the nat-helper is unneccessary because the expectation
+is never changed and is protected by ip_conntrack_lock.
+
+
+How do I go about to implement this patch? I cannot find it patchomatic-ng,=
+ maybe I am doing it wrongly.=20
+
+Best regards
 Stian B. Barmen
 
---=-+zbuWPcyqnLoHY2EceRk
+--=-G8G1qDnpRjperln5V8xP
 Content-Type: application/x-pkcs7-signature; name=smime.p7s
 Content-Disposition: attachment; filename=smime.p7s
 Content-Transfer-Encoding: base64
@@ -120,17 +102,17 @@ GguCdJ4lUJRix9sncVcljd2pnDmOjCBPZV+V2vf3h9bGCE6u9uo05RAaWzVNd+NWIXiC3CEZNd4k
 sdMdRv9dX2VPMYICZjCCAmICAQEwaTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENv
 bnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElz
 c3VpbmcgQ0ECAw0JpTAJBgUrDgMCGgUAoIIBUzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
-CSqGSIb3DQEJBTEPFw0wNTA0MjcwNzIwMTRaMCMGCSqGSIb3DQEJBDEWBBRqFtlHcU/l3FzVYbRW
-yJ1hbITVETB4BgkrBgEEAYI3EAQxazBpMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUg
+CSqGSIb3DQEJBTEPFw0wNTA0MjcwOTQ0MTdaMCMGCSqGSIb3DQEJBDEWBBQqhj91FzUk02IbYC8q
++gAoJmMtGDB4BgkrBgEEAYI3EAQxazBpMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUg
 Q29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwg
 SXNzdWluZyBDQQIDDQmlMHoGCyqGSIb3DQEJEAILMWugaTBiMQswCQYDVQQGEwJaQTElMCMGA1UE
 ChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFs
-IEZyZWVtYWlsIElzc3VpbmcgQ0ECAw0JpTANBgkqhkiG9w0BAQEFAASBgD1/BysCf8xjueDuiodW
-KddfzYqiJXllZfkCHn+q1J93fjSjO4e78qYTw1IMbT9VlAl7arq/WT1Uuqngei3gtLXfO+eTLJvO
-VrX4Hoh+EILIXhFWw+BXvJySn4mOgCKM2CP/WEpDhNMA3DijCtBYr1p39/hzAl9rrQkqtijZQRSz
+IEZyZWVtYWlsIElzc3VpbmcgQ0ECAw0JpTANBgkqhkiG9w0BAQEFAASBgKDI+4T+aDzMgXiFu7sr
+ydRRDmhZ4IH5uX3zTUT8xp/GtALmoSZBlENjr7V6PmjHJ9EhJjetgEf5mOytWiGKY+fcvAudoahf
+N2P7JgoKLsN11g2/ay/pbO+ZpVgIiHmOsgNLQC+BC1o+1r/TVyNsSR2lBFVX7A7umLLvRSuyjp+p
 AAAAAAAA
 
 
---=-+zbuWPcyqnLoHY2EceRk--
+--=-G8G1qDnpRjperln5V8xP--
 
 
