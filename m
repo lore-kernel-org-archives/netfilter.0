@@ -1,11 +1,17 @@
-From: traef06@ebasedsecurity.com
-Subject: Re: Management of bridged iptables
-Date: Wed, 27 Apr 2005 05:12:02 -0700
-Message-ID: <0380eb44cd704cf780c1fd7f71cece5e@ebasedsecurity.com>
-Reply-To: traef06@ebasedsecurity.com
+From: "Stian B. Barmen" <stian@barmen.nu>
+Subject: Re: Connection problems on large high speed connections.
+Date: Wed, 27 Apr 2005 15:36:27 +0200
+Message-ID: <1114608987.15240.49.camel@zepto.barmen.nu>
+References: <1114555837.14247.15.camel@zepto.barmen.nu>
+	<Pine.LNX.4.58.0504270854230.4795@blackhole.kfki.hu>
+	<1114585852.15246.11.camel@zepto.barmen.nu>
+	<1114586414.15242.14.camel@zepto.barmen.nu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=sha1;
+	protocol="application/x-pkcs7-signature";
+	boundary="=-9WT2jjCFzp6Z6GavRkcT"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1114586414.15242.14.camel@zepto.barmen.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +22,99 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: eldesoky.lists@gmail.com
-Cc: netfilter@lists.netfilter.org
-
-Thank you.=0D=0A=0D=0ASo, just for my clarification, if I have eth0 (outsid=
-e interface) and eth1 as my internal interface and they both=0D=0Aare used =
-to form br0, I could assign eth0 an external IP address so that I can ssh i=
-nto the box for management?=0D=0A=0D=0AAm I following his correctly?=0D=0A=
-=0D=0AThen can I also assign eth1 an internal IP address so that I can mana=
-ge it from within as well? This won't harm the bridge=0D=0Ainterface br0?=
-=0D=0A=0D=0AThank you in advance for all your assistance.=0D=0A=0D=0A=0D=0A=
-Thomas J. Raef=0D=0Ae-Based Security, Inc.=0D=0A"You're either hardened, or=
- you're hacked!" =0D=0A=0D=0A-------- Original Message --------=0D=0A> From=
-: Mohamed Eldesoky <eldesoky.lists@gmail.com>=0D=0A> Sent: Tuesday, April 2=
-6, 2005 3:32 AM=0D=0A> To: traef06@ebasedsecurity.com=0D=0A> Subject: Re: M=
-anagement of bridged iptables=0D=0A> =0D=0A> You can give the firewall an I=
-P address, on any interface, whether=0D=0A> part of the bridge or not part =
-of the bridge.=0D=0A> This will still keep the firewall stealthy (not shown=
- in traceroutes),=0D=0A> as that IP is not a gateway for any server !!=0D=
-=0A> =0D=0A> On 4/26/05, traef06@ebasedsecurity.com <traef06@ebasedsecurity=
-.com> wrote:=0D=0A> > I've been scouring Google searches looking for an ans=
-wer. If this is the wrong forum, please forgive me.=0D=0A> > =0D=0A> > I wa=
-nt to be able to setup iptables and I guess ebtables for a bridged firewall=
-. My problem is that I also need to be able=0D=0A> > to manage this remotel=
-y like with ssh or something.=0D=0A> > =0D=0A> > How do I do this and still=
- be able to maintain a "stealthy" firewall?=0D=0A> > =0D=0A> > Thank you in=
- advance for any help.=0D=0A> > =0D=0A> > Thomas J. Raef=0D=0A> > e-Based S=
-ecurity, Inc.=0D=0A> > "You're either hardened, or you're hacked!"=0D=0A> >=
- =0D=0A> > =0D=0A> =0D=0A> =0D=0A> -- =0D=0A> Mohamed Eldesoky=0D=0A> www.e=
-ldesoky.net=0D=0A> RHCE =0D=0A
+To: netfilter@lists.netfilter.org
 
 
+--=-9WT2jjCFzp6Z6GavRkcT
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Solved it! :)
+
+Or rather, a friend of mine assisted me and we found the trouble.=20
+
+In the code I added at the end of INPUT, FORWARD and the redirected DMZ
+chain the following:
+
+iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+iptables -A FORWARD -p tcp -j REJECT --reject-with tcp-reset
+iptables -A DMZ -p tcp -j REJECT --reject-with tcp-reset
+
+
+I removed the --reject-with tcp-reset on each line and the problem
+dissapeard.
+
+The strange thing is that this communication should never reach this
+rule. When the communcation is established it should hit the rule:
+
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT=20
+
+Should it not? (this rule runs before the -j DMZ and I have another one
+for INPUT).
+
+I have no explanation for this behaviour. Will try to log and see what I
+can find but for now this is all I know.=20
+
+Thanks for the replies so far.=20
+
+Best regards
+Stian B. Barmen
+
+--=-9WT2jjCFzp6Z6GavRkcT
+Content-Type: application/x-pkcs7-signature; name=smime.p7s
+Content-Disposition: attachment; filename=smime.p7s
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIH2TCCAkcw
+ggGwoAMCAQICAw0JpTANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhh
+d3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVt
+YWlsIElzc3VpbmcgQ0EwHhcNMDQwOTE0MDc0NjEwWhcNMDUwOTE0MDc0NjEwWjBBMR8wHQYDVQQD
+ExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMR4wHAYJKoZIhvcNAQkBFg9zdGlhbkBiYXJtZW4ubnUw
+gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALT1umqvVN4S1U2YVvSh3Zl3qTaM5AZGPBM6L3kf
+YVGLVqWdeGYKlX+oZo7kThbA8OV+5Jg60rcEj6dEXqJV6ylN+XOByXFvepncxyC5w/rw4zpOfd7U
+niFUzEI4gjNk5Y+SoMXv0EBWiM0Fr9muVn1QpTEdH+XJC/36Y1+lNLknAgMBAAGjLDAqMBoGA1Ud
+EQQTMBGBD3N0aWFuQGJhcm1lbi5udTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBAUAA4GBAMOo
+tvQpl6dnepLkO3CL0gyvUgYec1s/QJkoDJvs7Bu+JOdCWY9YKJqqazuuJ1kMd3fzSRjDWt4nv5Zk
+w1/FBuE8baABEkCklugcWpnFinFoCHBVbY22vcY2k+EWoVsFhsille4FJo90Nf/Ds6c5ZE0t2wmM
+yhGBYNLTNF972rrZMIICRzCCAbCgAwIBAgIDDQmlMA0GCSqGSIb3DQEBBAUAMGIxCzAJBgNVBAYT
+AlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3
+dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTAeFw0wNDA5MTQwNzQ2MTBaFw0wNTA5MTQw
+NzQ2MTBaMEExHzAdBgNVBAMTFlRoYXd0ZSBGcmVlbWFpbCBNZW1iZXIxHjAcBgkqhkiG9w0BCQEW
+D3N0aWFuQGJhcm1lbi5udTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtPW6aq9U3hLVTZhW
+9KHdmXepNozkBkY8EzoveR9hUYtWpZ14ZgqVf6hmjuROFsDw5X7kmDrStwSPp0ReolXrKU35c4HJ
+cW96mdzHILnD+vDjOk593tSeIVTMQjiCM2Tlj5Kgxe/QQFaIzQWv2a5WfVClMR0f5ckL/fpjX6U0
+uScCAwEAAaMsMCowGgYDVR0RBBMwEYEPc3RpYW5AYmFybWVuLm51MAwGA1UdEwEB/wQCMAAwDQYJ
+KoZIhvcNAQEEBQADgYEAw6i29CmXp2d6kuQ7cIvSDK9SBh5zWz9AmSgMm+zsG74k50JZj1gomqpr
+O64nWQx3d/NJGMNa3ie/lmTDX8UG4TxtoAESQKSW6BxamcWKcWgIcFVtjba9xjaT4RahWwWGyKWV
+7gUmj3Q1/8OzpzlkTS3bCYzKEYFg0tM0X3vautkwggM/MIICqKADAgECAgENMA0GCSqGSIb3DQEB
+BQUAMIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBl
+IFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0aW9u
+IFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgQ0Ex
+KzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wHhcNMDMwNzE3MDAw
+MDAwWhcNMTMwNzE2MjM1OTU5WjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1
+bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3Vp
+bmcgQ0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMSmPFVzVftOucqZWh5owHUEcJ3f6f+j
+Huy9zfVb8hp2vX8MOmHyv1HOAdTlUAow1wJjWiyJFXCO3cnwK4Vaqj9xVsuvPAsH5/EfkTYkKhPP
+K9Xzgnc9A74r/rsYPge/QIACZNenprufZdHFKlSFD0gEf6e20TxhBEAeZBlyYLf7AgMBAAGjgZQw
+gZEwEgYDVR0TAQH/BAgwBgEB/wIBADBDBgNVHR8EPDA6MDigNqA0hjJodHRwOi8vY3JsLnRoYXd0
+ZS5jb20vVGhhd3RlUGVyc29uYWxGcmVlbWFpbENBLmNybDALBgNVHQ8EBAMCAQYwKQYDVR0RBCIw
+IKQeMBwxGjAYBgNVBAMTEVByaXZhdGVMYWJlbDItMTM4MA0GCSqGSIb3DQEBBQUAA4GBAEiM0VCD
+6gsuzA2jZqxnD3+vrL7CF6FDlpSdf0whuPg2H6otnzYvwPQcUCCTcDz9reFhYsPZOhl+hLGZGwDF
+GguCdJ4lUJRix9sncVcljd2pnDmOjCBPZV+V2vf3h9bGCE6u9uo05RAaWzVNd+NWIXiC3CEZNd4k
+sdMdRv9dX2VPMYICZjCCAmICAQEwaTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENv
+bnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElz
+c3VpbmcgQ0ECAw0JpTAJBgUrDgMCGgUAoIIBUzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
+CSqGSIb3DQEJBTEPFw0wNTA0MjcxMzM2MjdaMCMGCSqGSIb3DQEJBDEWBBT+miUOjYRja94NpZyj
+2i/Aa8gK3zB4BgkrBgEEAYI3EAQxazBpMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUg
+Q29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwg
+SXNzdWluZyBDQQIDDQmlMHoGCyqGSIb3DQEJEAILMWugaTBiMQswCQYDVQQGEwJaQTElMCMGA1UE
+ChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFs
+IEZyZWVtYWlsIElzc3VpbmcgQ0ECAw0JpTANBgkqhkiG9w0BAQEFAASBgIX2XmV/lHNqnV1LDl7L
+bECvchOxTU7Q2RabGlt5x1Y/JF4kGkOp/OYTq3hJBDz+zQLLrNhvqmQRBBsggF/lJT5cQhw10SmO
++zsiHuXf/PLRNWko6OvlArpkGNN2EPbMgOh83fnfJxnb6JwvHe5uVMZX+zYmw1HUHqC8RNjFmp26
+AAAAAAAA
+
+
+--=-9WT2jjCFzp6Z6GavRkcT--
 
 
