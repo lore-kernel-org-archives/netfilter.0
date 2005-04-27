@@ -1,15 +1,16 @@
 From: "Stian B. Barmen" <stian@barmen.nu>
 Subject: Re: Connection problems on large high speed connections.
-Date: Wed, 27 Apr 2005 09:10:52 +0200
-Message-ID: <1114585852.15246.11.camel@zepto.barmen.nu>
+Date: Wed, 27 Apr 2005 09:20:14 +0200
+Message-ID: <1114586414.15242.14.camel@zepto.barmen.nu>
 References: <1114555837.14247.15.camel@zepto.barmen.nu>
 	<Pine.LNX.4.58.0504270854230.4795@blackhole.kfki.hu>
+	<1114585852.15246.11.camel@zepto.barmen.nu>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=sha1;
 	protocol="application/x-pkcs7-signature";
-	boundary="=-teLVSJLXqKDQ/Rv8tIJ7"
+	boundary="=-+zbuWPcyqnLoHY2EceRk"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0504270854230.4795@blackhole.kfki.hu>
+In-Reply-To: <1114585852.15246.11.camel@zepto.barmen.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,44 +25,58 @@ To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@lists.netfilter.org
 
 
---=-teLVSJLXqKDQ/Rv8tIJ7
+--=-+zbuWPcyqnLoHY2EceRk
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-> NAT sequence number adjustment is broken since 2.6.11. I believe
-> the patch was submitted in after 2.6.12-rc3 had been released.
->=20
-> But it's an FTP/IRC/etc data channel related bug. It has nothing to do
-> with plain HTTP. Do you mean HTTP transfer is also broken or it's just an
-> FTP transfer initiated by a web client?
->=20
+Here is another strange thing. When I run lsmod I get this output:
 
-I get the same error if I run http or ftp. No difference.
+Module                  Size  Used by
+ipt_state               1344  -
+ipt_REJECT              5376  -
+iptable_filter          2048  -
+ipt_ULOG                6276  -
+ip_nat_irc              1632  -
+ip_nat_ftp              2336  -
+iptable_nat            19804  -
+ip_conntrack_irc       70608  -
+ip_conntrack_ftp       71504  -
+ip_conntrack           39016  -
+ppp_mppe_mppc          14724  -
+ppp_generic            21396  -
+slhc                    6304  -
+ipt_ipp2p               7872  -
+ip_tables              17632  -
+e100                   30656  -
 
-Here is wget screenshot:
+On my other firewalls I get more in the Used by column. More like this:
 
---09:08:01--
-http://www.cpan.no/ports/win32/Standard/x86/perl5.00402-bindist04-bc.zip
-  (try: 3) =3D> `perl5.00402-bindist04-bc.zip'
-Connecting to www.cpan.no[158.36.2.10]:80... connected.
-HTTP request sent, awaiting response... 206 Partial Content
-Length: 6,176,370 (5,278,602 to go) [application/zip]
+ipt_limit                984   6  (autoclean)
+ipt_LOG                 3448   1  (autoclean)
+ipt_REJECT              3288  15  (autoclean)
+ipt_state                568   5  (autoclean)
+iptable_filter          1740   1  (autoclean)
+ip_nat_irc              2704   0  (unused)
+ip_nat_ftp              3440   0  (unused)
+ip_conntrack_irc        3344   1
+ip_conntrack_ftp        4496   1
+iptable_nat            18232   3  [ip_nat_irc ip_nat_ftp]
+ip_conntrack           23048   4  [ipt_state ip_nat_irc ip_nat_ftp
+ip_conntrack_irc ip_conntrack_ftp iptable_nat]
+ip_tables              12992   8  [ipt_limit ipt_LOG ipt_REJECT
+ipt_state iptable_filter iptable_nat]
+smbfs                  39984   1  (autoclean)
+ppp_mppe               22680   0
+eepro100               20180   2
+mii                     2544   0  [eepro100]
+(this is a screen shot from a similar server but running 2.4 kernel)
 
-28%
-[++++++++++++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D>                               =
-                              ] 1,754,080    906.44K/s
+Does this have anything to do with my file transfer problem?
 
-09:08:02 (904.70 KB/s) - Read error at byte 1754080/6176370 (Connection
-reset by peer). Retrying.
-
-You can see that it downloaded a bit, stopped, resumed, stopped again.=20
-
-I hate peer sometimes .. :)
-
-Best regards
+Best regards=20
 Stian B. Barmen
 
---=-teLVSJLXqKDQ/Rv8tIJ7
+--=-+zbuWPcyqnLoHY2EceRk
 Content-Type: application/x-pkcs7-signature; name=smime.p7s
 Content-Disposition: attachment; filename=smime.p7s
 Content-Transfer-Encoding: base64
@@ -105,17 +120,17 @@ GguCdJ4lUJRix9sncVcljd2pnDmOjCBPZV+V2vf3h9bGCE6u9uo05RAaWzVNd+NWIXiC3CEZNd4k
 sdMdRv9dX2VPMYICZjCCAmICAQEwaTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENv
 bnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElz
 c3VpbmcgQ0ECAw0JpTAJBgUrDgMCGgUAoIIBUzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
-CSqGSIb3DQEJBTEPFw0wNTA0MjcwNzEwNTJaMCMGCSqGSIb3DQEJBDEWBBTVCd3v+p0BmyhuvfGT
-PGCWpeLS7TB4BgkrBgEEAYI3EAQxazBpMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUg
+CSqGSIb3DQEJBTEPFw0wNTA0MjcwNzIwMTRaMCMGCSqGSIb3DQEJBDEWBBRqFtlHcU/l3FzVYbRW
+yJ1hbITVETB4BgkrBgEEAYI3EAQxazBpMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUg
 Q29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwg
 SXNzdWluZyBDQQIDDQmlMHoGCyqGSIb3DQEJEAILMWugaTBiMQswCQYDVQQGEwJaQTElMCMGA1UE
 ChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFs
-IEZyZWVtYWlsIElzc3VpbmcgQ0ECAw0JpTANBgkqhkiG9w0BAQEFAASBgCOmmqRCfwaUMrmHsSj/
-inbthJIV2CsEIJIDgluOcwaRl20Hfn/E9sThONLoGXvHI9/4ipJCbAzkzNwIwYlBmc+LeGah+Xb6
-kArCvFZ4khwS8367c4qzLElnjHeDXjmee4/Cvam5M/CbIPeqJjMs8umPNQTcfnSfoz+sRHJOXVA+
+IEZyZWVtYWlsIElzc3VpbmcgQ0ECAw0JpTANBgkqhkiG9w0BAQEFAASBgD1/BysCf8xjueDuiodW
+KddfzYqiJXllZfkCHn+q1J93fjSjO4e78qYTw1IMbT9VlAl7arq/WT1Uuqngei3gtLXfO+eTLJvO
+VrX4Hoh+EILIXhFWw+BXvJySn4mOgCKM2CP/WEpDhNMA3DijCtBYr1p39/hzAl9rrQkqtijZQRSz
 AAAAAAAA
 
 
---=-teLVSJLXqKDQ/Rv8tIJ7--
+--=-+zbuWPcyqnLoHY2EceRk--
 
 
