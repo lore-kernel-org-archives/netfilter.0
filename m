@@ -1,11 +1,15 @@
-From: "Yu Zhiguo" <yuzg@nanjing-fnst.com>
+From: Tobias DiPasquale <codeslinger@gmail.com>
 Subject: Re: iptables mac destination filtering
-Date: Thu, 28 Apr 2005 18:27:57 +0800
-Message-ID: <000f01c54bdc$f23f7320$6104a8c0@skqianyi>
-References: <200504281014.j3SAEgpi030006@sunny.fnst.com.cn>
+Date: Thu, 28 Apr 2005 07:10:18 -0400
+Message-ID: <876ef97a0504280410210fc94e@mail.gmail.com>
+References: <1114681174.5821.19.camel@dhcp0-103.erasme.lan>
+	<20050428095710.GA7741@l01.thnet>
+Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050428095710.GA7741@l01.thnet>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,36 +21,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: edvin.seferovic@kolp.at, netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-SGVsbG8sDQoNCiAgICBJIHRoaW5rIHNvIDspDQoNCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0t
-LS0gDQoNCg0KDQo+IEhpLA0KPiANCj4gdGhhdCBpcyBhbHNvIHdoYXQgSSB3YW50ZWQgdG8gc2F5
-IDspIEFsdGhvdWdoIG5ldGZpbHRlciBpcyB3b3JraW5nIG9uIElQDQo+IGxheWVyLCBwYWNrYWdl
-cyB0aGF0IGNvbWUgaW4sIGNvbnRhaW4gdGhlIHNvdXJjZSBNQUMgYWRkcmVzcyBvZiB0aGUgc2Vu
-ZGVyDQo+IHNvIHRoYXQgaXMgd2h5IGZvciBleGFtcGxlIHRoZSBzb3VyY2UgTUFDIGZpbHRlcmlu
-ZyB3b3Jrcy4uLiByaWdodD8NCj4gDQo+IFJlZ2FyZHMsDQo+IA0KPiBFZHZpbiBTZWZlcm92aWMN
-Cj4gDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFl1IFpoaWd1byBbbWFp
-bHRvOnl1emdAbmFuamluZy1mbnN0LmNvbV0gDQo+IFNlbnQ6IERvbm5lcnN0YWcsIDI4LiBBcHJp
-bCAyMDA1IDEyOjA0DQo+IFRvOiBlZHZpbi5zZWZlcm92aWNAa29scC5hdDsgbmV0ZmlsdGVyQGxp
-c3RzLm5ldGZpbHRlci5vcmcNCj4gU3ViamVjdDogUmU6IGlwdGFibGVzIG1hYyBkZXN0aW5hdGlv
-biBmaWx0ZXJpbmcNCj4gDQo+IEhlbGxvLA0KPiANCj4gICAgIEZvciBzaW1wbHksIHRoaXMgaXMg
-YmVjYXVzZSBuZXRmaWx0ZXIgaXMgd29ya2luZyBvbiBJUCBsYXllci4NCj4gDQo+IA0KPiAtLS0t
-LSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tIA0KPiANCj4gPiBIaSwNCj4gPiANCj4gPiBJIHN1cHBv
-c2UgaXQgaXMgYmVjYXVzZSB5b3UgZG8gTk9UIGtub3cgdGhlIGRlc3RpbmF0aW9uIE1BQyBhZGRy
-ZXNzLiBUaGUNCj4gPiBkZXN0IE1BQyBhZGRyZXNzIGlzIGZvdW5kIG91dCBmaXJzdCB3aGVuIHRo
-ZSBwYWNrZXRzIGdldCBvdXQgb2YgaXB0YWJsZXMNCj4gYW5kDQo+ID4gZ28gdG8gdGhlIE5JQy4g
-QmVzaWRlcyAtIHlvdSBjYW5ub3QgZmluZCBvdXQgdGhlIE1BQyBhZGRyZXNzIG9mIHRoZSBob3N0
-DQo+ID4gdGhhdCBpcyByZWFjaGFibGUgb3ZlciBpLmUuIDMgaG9wcy4gUmVjYWxsIHRoZSBPU0kg
-bGF5ZXIgc3lzdGVtIGFuZCBpdA0KPiA+IHNob3VsZCBiZSBjbGVhci4gDQo+ID4gDQo+ID4gSSB0
-aGluayBJIGFtIG5vdCB3cm9uZyBoZXJlLiBJZiBzbywgcGxlYXNlIGNvcnJlY3QgbWUuDQo+ID4g
-DQo+ID4gUmVnYXJkcywNCj4gPiANCj4gPiBFZHZpbiBTZWZlcm92aWMNCj4gPiANCj4gPiAtLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IEZyb206IG5ldGZpbHRlci1ib3VuY2VzQGxpc3Rz
-Lm5ldGZpbHRlci5vcmcNCj4gPiBbbWFpbHRvOm5ldGZpbHRlci1ib3VuY2VzQGxpc3RzLm5ldGZp
-bHRlci5vcmddIE9uIEJlaGFsZiBPZiBUaG9tYXMNCj4gVHVycXVvaXMNCj4gPiBTZW50OiBEb25u
-ZXJzdGFnLCAyOC4gQXByaWwgMjAwNSAxMTo0MA0KPiA+IFRvOiBuZXRmaWx0ZXJAbGlzdHMubmV0
-ZmlsdGVyLm9yZw0KPiA+IFN1YmplY3Q6IGlwdGFibGVzIG1hYyBkZXN0aW5hdGlvbiBmaWx0ZXJp
-bmcNCj4gPiANCj4gPiBIaSwNCj4gPiANCj4gPiBJIHdvdWxkIGxpa2UgdG8ga25vdyB3aHkgaXQn
-cyBub3QgcG9zc2libGUgdG8gZmlsdGVyIG9uIG1hYyBkZXN0aW5hdGlvbg0KPiA+IGFkZHJlc3Mg
-d2l0aCBpcHRhYmxlcy4NCj4gPiANCj4gPiBUaGFua3MuDQo+ID4gDQo+ID4gDQo+ID4gDQo+IA==
+On 4/28/05, Michael Tautschnig <michael.tautschnig@zt-consulting.com> wrote=
+:
+> Could you please explain, why one would do that? IMHO the only possible u=
+se is
+> an interface in promiscous mode.
 
+Not really. I know of a project that wanted this functionality in
+order to be able to determine if the next hop was terminal, and if so,
+do some IDS scanning on it. This was in the context of AODV-assembled
+wireless LANs.
+
+--
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
