@@ -1,13 +1,11 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: RE: iptables mac destination filtering
-Date: Thu, 28 Apr 2005 12:14:21 +0200
-Message-ID: <30400.5539780066$1114682969@news.gmane.org>
-References: <01bf01c54bd9$94bcba30$6104a8c0@skqianyi>
-Reply-To: edvin.seferovic@kolp.at
+From: "Yu Zhiguo" <yuzg@nanjing-fnst.com>
+Subject: Re: iptables mac destination filtering
+Date: Thu, 28 Apr 2005 18:27:57 +0800
+Message-ID: <000f01c54bdc$f23f7320$6104a8c0@skqianyi>
+References: <200504281014.j3SAEgpi030006@sunny.fnst.com.cn>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <01bf01c54bd9$94bcba30$6104a8c0@skqianyi>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,62 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: edvin.seferovic@kolp.at, netfilter@lists.netfilter.org
 
-Hi,
-
-that is also what I wanted to say ;) Although netfilter is working on IP
-layer, packages that come in, contain the source MAC address of the sender
-so that is why for example the source MAC filtering works... right?
-
-Regards,
-
-Edvin Seferovic
-
------Original Message-----
-From: Yu Zhiguo [mailto:yuzg@nanjing-fnst.com] 
-Sent: Donnerstag, 28. April 2005 12:04
-To: edvin.seferovic@kolp.at; netfilter@lists.netfilter.org
-Subject: Re: iptables mac destination filtering
-
-Hello,
-
-    For simply, this is because netfilter is working on IP layer.
-
-
------ Original Message ----- 
-
-> Hi,
-> 
-> I suppose it is because you do NOT know the destination MAC address. The
-> dest MAC address is found out first when the packets get out of iptables
-and
-> go to the NIC. Besides - you cannot find out the MAC address of the host
-> that is reachable over i.e. 3 hops. Recall the OSI layer system and it
-> should be clear. 
-> 
-> I think I am not wrong here. If so, please correct me.
-> 
-> Regards,
-> 
-> Edvin Seferovic
-> 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Thomas
-Turquois
-> Sent: Donnerstag, 28. April 2005 11:40
-> To: netfilter@lists.netfilter.org
-> Subject: iptables mac destination filtering
-> 
-> Hi,
-> 
-> I would like to know why it's not possible to filter on mac destination
-> address with iptables.
-> 
-> Thanks.
-> 
-> 
-> 
+SGVsbG8sDQoNCiAgICBJIHRoaW5rIHNvIDspDQoNCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0t
+LS0gDQoNCg0KDQo+IEhpLA0KPiANCj4gdGhhdCBpcyBhbHNvIHdoYXQgSSB3YW50ZWQgdG8gc2F5
+IDspIEFsdGhvdWdoIG5ldGZpbHRlciBpcyB3b3JraW5nIG9uIElQDQo+IGxheWVyLCBwYWNrYWdl
+cyB0aGF0IGNvbWUgaW4sIGNvbnRhaW4gdGhlIHNvdXJjZSBNQUMgYWRkcmVzcyBvZiB0aGUgc2Vu
+ZGVyDQo+IHNvIHRoYXQgaXMgd2h5IGZvciBleGFtcGxlIHRoZSBzb3VyY2UgTUFDIGZpbHRlcmlu
+ZyB3b3Jrcy4uLiByaWdodD8NCj4gDQo+IFJlZ2FyZHMsDQo+IA0KPiBFZHZpbiBTZWZlcm92aWMN
+Cj4gDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFl1IFpoaWd1byBbbWFp
+bHRvOnl1emdAbmFuamluZy1mbnN0LmNvbV0gDQo+IFNlbnQ6IERvbm5lcnN0YWcsIDI4LiBBcHJp
+bCAyMDA1IDEyOjA0DQo+IFRvOiBlZHZpbi5zZWZlcm92aWNAa29scC5hdDsgbmV0ZmlsdGVyQGxp
+c3RzLm5ldGZpbHRlci5vcmcNCj4gU3ViamVjdDogUmU6IGlwdGFibGVzIG1hYyBkZXN0aW5hdGlv
+biBmaWx0ZXJpbmcNCj4gDQo+IEhlbGxvLA0KPiANCj4gICAgIEZvciBzaW1wbHksIHRoaXMgaXMg
+YmVjYXVzZSBuZXRmaWx0ZXIgaXMgd29ya2luZyBvbiBJUCBsYXllci4NCj4gDQo+IA0KPiAtLS0t
+LSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tIA0KPiANCj4gPiBIaSwNCj4gPiANCj4gPiBJIHN1cHBv
+c2UgaXQgaXMgYmVjYXVzZSB5b3UgZG8gTk9UIGtub3cgdGhlIGRlc3RpbmF0aW9uIE1BQyBhZGRy
+ZXNzLiBUaGUNCj4gPiBkZXN0IE1BQyBhZGRyZXNzIGlzIGZvdW5kIG91dCBmaXJzdCB3aGVuIHRo
+ZSBwYWNrZXRzIGdldCBvdXQgb2YgaXB0YWJsZXMNCj4gYW5kDQo+ID4gZ28gdG8gdGhlIE5JQy4g
+QmVzaWRlcyAtIHlvdSBjYW5ub3QgZmluZCBvdXQgdGhlIE1BQyBhZGRyZXNzIG9mIHRoZSBob3N0
+DQo+ID4gdGhhdCBpcyByZWFjaGFibGUgb3ZlciBpLmUuIDMgaG9wcy4gUmVjYWxsIHRoZSBPU0kg
+bGF5ZXIgc3lzdGVtIGFuZCBpdA0KPiA+IHNob3VsZCBiZSBjbGVhci4gDQo+ID4gDQo+ID4gSSB0
+aGluayBJIGFtIG5vdCB3cm9uZyBoZXJlLiBJZiBzbywgcGxlYXNlIGNvcnJlY3QgbWUuDQo+ID4g
+DQo+ID4gUmVnYXJkcywNCj4gPiANCj4gPiBFZHZpbiBTZWZlcm92aWMNCj4gPiANCj4gPiAtLS0t
+LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IEZyb206IG5ldGZpbHRlci1ib3VuY2VzQGxpc3Rz
+Lm5ldGZpbHRlci5vcmcNCj4gPiBbbWFpbHRvOm5ldGZpbHRlci1ib3VuY2VzQGxpc3RzLm5ldGZp
+bHRlci5vcmddIE9uIEJlaGFsZiBPZiBUaG9tYXMNCj4gVHVycXVvaXMNCj4gPiBTZW50OiBEb25u
+ZXJzdGFnLCAyOC4gQXByaWwgMjAwNSAxMTo0MA0KPiA+IFRvOiBuZXRmaWx0ZXJAbGlzdHMubmV0
+ZmlsdGVyLm9yZw0KPiA+IFN1YmplY3Q6IGlwdGFibGVzIG1hYyBkZXN0aW5hdGlvbiBmaWx0ZXJp
+bmcNCj4gPiANCj4gPiBIaSwNCj4gPiANCj4gPiBJIHdvdWxkIGxpa2UgdG8ga25vdyB3aHkgaXQn
+cyBub3QgcG9zc2libGUgdG8gZmlsdGVyIG9uIG1hYyBkZXN0aW5hdGlvbg0KPiA+IGFkZHJlc3Mg
+d2l0aCBpcHRhYmxlcy4NCj4gPiANCj4gPiBUaGFua3MuDQo+ID4gDQo+ID4gDQo+ID4gDQo+IA==
 
 
