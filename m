@@ -1,21 +1,13 @@
-From: "Stian B. Barmen" <stian@barmen.nu>
-Subject: Re: Connection problems on large high speed connections.
-Date: Wed, 27 Apr 2005 16:25:10 +0200
-Message-ID: <1114611910.15242.56.camel@zepto.barmen.nu>
-References: <1114555837.14247.15.camel@zepto.barmen.nu>
-	<Pine.LNX.4.58.0504270854230.4795@blackhole.kfki.hu>
-	<1114585852.15246.11.camel@zepto.barmen.nu>
-	<1114586414.15242.14.camel@zepto.barmen.nu>
-	<1114608987.15240.49.camel@zepto.barmen.nu>
-	<Pine.LNX.4.58.0504271542470.5216@blackhole.kfki.hu>
-	<1114609896.15244.54.camel@zepto.barmen.nu>
-	<Pine.LNX.4.58.0504271554450.5216@blackhole.kfki.hu>
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: no netfilter debugging?
+Date: Wed, 27 Apr 2005 20:38:31 -0400
+Message-ID: <200504272038.31964.Alistair@nerdnet.ca>
+References: <1114627064.13697.38.camel@plasma.starken.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=sha1;
-	protocol="application/x-pkcs7-signature";
-	boundary="=-x8+jL9ZFFfCm6B7mt0J2"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0504271554450.5216@blackhole.kfki.hu>
+In-Reply-To: <1114627064.13697.38.camel@plasma.starken.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,82 +18,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On April 27, 2005 02:37 pm, Daniel Wittenberg wrote:
+> I'm still trying to find out why NAT stops working after awhile, so I'm
+> again going to see if anyone has a way to debug this.  I'm not asking
+> for people to debug it for me, I'll do the leg-work, but how do you
+> debug at the kernel-level what netfilter is doing with packets?  The
+> firewall/load balancing works for awhile then suddenly stops working,
+> could be 5 minutes, could be 5 hours...I am at a loss as to what causes
+> it and nothing in dmesg/syslog for errors.  Just flushing the rules and
+> routing tables and re-configing fixes the problem so I'm guessing there
+> is some limit it is hitting, but with nothing being logged I don't know
+> where to start.  I'm not sure if some of the kernel debugging tools can
+> be limited to only view netfilter activity, but I think that's what I'll
+> need to figure this out.
 
---=-x8+jL9ZFFfCm6B7mt0J2
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+	y'know -- I've seen this thread a bit and am wondering ... 
+	
+1) Just an aside to think about:
+	You mention load balancing here... I can't recall off the top of my head if 
+its inbound LB or inbound LB, but I have to ask, do you have a pppoe link in 
+there?  I have to ask, I've a cable modem and a DSL modem.  The DSL is my 
+'service' port since the upstream doesn't filter ports, whereas the cable 
+link does, so my DNS and mail servers use the DSL side only.  Periodically 
+the DSL stream provider has fits, and does weird things to their routing 
+which will result in my service side connections hanging.  This makes things 
+look like they've stopped dead for a while until the DNS comes back.  You 
+would be astonished at the number of processess that need 'gethostbyname' .. 
+even in the windows world. 
 
+2) 
+	You want to debug? -- LOG is your first step in debugging.  Put a log rule at 
+the top and the bottom of each chain.  --log-prefix is your friend here.  Add 
+a cron or at process that dumps the state of /proc/net/conntrack and slabinfo
+ (you might want to filter that output to be relevant) and perhaps something 
+like netstat -an|grep WAIT (my favourite tool when debugging firewalls that 
+are pooching out -- if yer being too aggressive on filtering you could well 
+end up with sockets in all sorts of bad WAIT states.) all into 
+(syslog/messages/iptables/debug) logs.... make sure you get timestamps on 
+these.  Make SURE you LOG everything your dropping as well... i.e.
+insert a LOG rule before each drop statement  
+  You will have HUGE logfiles after a very short period of time, however once 
+you get to the point where the firewall is stopping you will have a timestamp 
+and a chance to munge through the cruft and find the anomaly
 
-> A "-j RECECT --reject-with tcp-reset" generates a TCP RST, which always
-> kills the connection. A "-j RECECT" generates an ICMP error message, whic=
-h
-> - depending on the OS which receives the ICMP packet - might terminate a
-> TCP connection or might not. That is the very reason why "--reject-with
-> tcp-reset" is required.
+3) 
+	Iptables components *can* have debug statements.  Some need only to have the 
+DEBUG set in the source file, some need to have the DEBUG macros built. -- I 
+leave this to the Developers myself, but I know that several of the optional 
+modules to iptables have debug macros already.  Read the source luke.  Turn 
+em on and rebuild the kernel and modules.  -- and be prepared to be spammed.
 
-Thanks for that info! :)
+	I could go on, but the above should provide you with a solid starting ground.  
+Once you *have* a hang, all those logs could come together to point to the 
+problem.  There are those who can quickly review the output of the above and 
+give you a solid answer.  You should sanitize the logged data by *ONLY* 
+removing data that could indicate your specific host/network and 
+usernames/etc ... in this case I STRONGLY reccomend that the post that you 
+send at that point have the following data:
 
-Best regards
-Stian B. Barmen
+	1) kernel version/iptables version, compiler version
+	2) a visual layout of the network (inbound connections firewall location, 
+outbound connections and where what bits are i.e. firewall here, server a 
+there etc etc...)
+	3) the results of iptables -L -n -v -x --line-numbers
+	                       iptables -L -n -v -x --line-numbers -t nat
+	                       iptables -L -n -v -x --line-numbers -t mangle
+	ip route (or route -n)
+	and the logfiles as indicated above with a good period of time prior to and 
+after the halt.  
+	Bonus points: *cough* gzip *cough* and a host where you could post the logs 
+would be a *really* good idea since you could then remove what might be 
+sensitive data from the net.
 
---=-x8+jL9ZFFfCm6B7mt0J2
-Content-Type: application/x-pkcs7-signature; name=smime.p7s
-Content-Disposition: attachment; filename=smime.p7s
-Content-Transfer-Encoding: base64
+	Alistair Tonner
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIH2TCCAkcw
-ggGwoAMCAQICAw0JpTANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhh
-d3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVt
-YWlsIElzc3VpbmcgQ0EwHhcNMDQwOTE0MDc0NjEwWhcNMDUwOTE0MDc0NjEwWjBBMR8wHQYDVQQD
-ExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMR4wHAYJKoZIhvcNAQkBFg9zdGlhbkBiYXJtZW4ubnUw
-gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALT1umqvVN4S1U2YVvSh3Zl3qTaM5AZGPBM6L3kf
-YVGLVqWdeGYKlX+oZo7kThbA8OV+5Jg60rcEj6dEXqJV6ylN+XOByXFvepncxyC5w/rw4zpOfd7U
-niFUzEI4gjNk5Y+SoMXv0EBWiM0Fr9muVn1QpTEdH+XJC/36Y1+lNLknAgMBAAGjLDAqMBoGA1Ud
-EQQTMBGBD3N0aWFuQGJhcm1lbi5udTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBAUAA4GBAMOo
-tvQpl6dnepLkO3CL0gyvUgYec1s/QJkoDJvs7Bu+JOdCWY9YKJqqazuuJ1kMd3fzSRjDWt4nv5Zk
-w1/FBuE8baABEkCklugcWpnFinFoCHBVbY22vcY2k+EWoVsFhsille4FJo90Nf/Ds6c5ZE0t2wmM
-yhGBYNLTNF972rrZMIICRzCCAbCgAwIBAgIDDQmlMA0GCSqGSIb3DQEBBAUAMGIxCzAJBgNVBAYT
-AlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3
-dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTAeFw0wNDA5MTQwNzQ2MTBaFw0wNTA5MTQw
-NzQ2MTBaMEExHzAdBgNVBAMTFlRoYXd0ZSBGcmVlbWFpbCBNZW1iZXIxHjAcBgkqhkiG9w0BCQEW
-D3N0aWFuQGJhcm1lbi5udTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtPW6aq9U3hLVTZhW
-9KHdmXepNozkBkY8EzoveR9hUYtWpZ14ZgqVf6hmjuROFsDw5X7kmDrStwSPp0ReolXrKU35c4HJ
-cW96mdzHILnD+vDjOk593tSeIVTMQjiCM2Tlj5Kgxe/QQFaIzQWv2a5WfVClMR0f5ckL/fpjX6U0
-uScCAwEAAaMsMCowGgYDVR0RBBMwEYEPc3RpYW5AYmFybWVuLm51MAwGA1UdEwEB/wQCMAAwDQYJ
-KoZIhvcNAQEEBQADgYEAw6i29CmXp2d6kuQ7cIvSDK9SBh5zWz9AmSgMm+zsG74k50JZj1gomqpr
-O64nWQx3d/NJGMNa3ie/lmTDX8UG4TxtoAESQKSW6BxamcWKcWgIcFVtjba9xjaT4RahWwWGyKWV
-7gUmj3Q1/8OzpzlkTS3bCYzKEYFg0tM0X3vautkwggM/MIICqKADAgECAgENMA0GCSqGSIb3DQEB
-BQUAMIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBl
-IFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0aW9u
-IFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgQ0Ex
-KzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wHhcNMDMwNzE3MDAw
-MDAwWhcNMTMwNzE2MjM1OTU5WjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1
-bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3Vp
-bmcgQ0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMSmPFVzVftOucqZWh5owHUEcJ3f6f+j
-Huy9zfVb8hp2vX8MOmHyv1HOAdTlUAow1wJjWiyJFXCO3cnwK4Vaqj9xVsuvPAsH5/EfkTYkKhPP
-K9Xzgnc9A74r/rsYPge/QIACZNenprufZdHFKlSFD0gEf6e20TxhBEAeZBlyYLf7AgMBAAGjgZQw
-gZEwEgYDVR0TAQH/BAgwBgEB/wIBADBDBgNVHR8EPDA6MDigNqA0hjJodHRwOi8vY3JsLnRoYXd0
-ZS5jb20vVGhhd3RlUGVyc29uYWxGcmVlbWFpbENBLmNybDALBgNVHQ8EBAMCAQYwKQYDVR0RBCIw
-IKQeMBwxGjAYBgNVBAMTEVByaXZhdGVMYWJlbDItMTM4MA0GCSqGSIb3DQEBBQUAA4GBAEiM0VCD
-6gsuzA2jZqxnD3+vrL7CF6FDlpSdf0whuPg2H6otnzYvwPQcUCCTcDz9reFhYsPZOhl+hLGZGwDF
-GguCdJ4lUJRix9sncVcljd2pnDmOjCBPZV+V2vf3h9bGCE6u9uo05RAaWzVNd+NWIXiC3CEZNd4k
-sdMdRv9dX2VPMYICZjCCAmICAQEwaTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENv
-bnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElz
-c3VpbmcgQ0ECAw0JpTAJBgUrDgMCGgUAoIIBUzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
-CSqGSIb3DQEJBTEPFw0wNTA0MjcxNDI1MTBaMCMGCSqGSIb3DQEJBDEWBBRn71t6t6XeGoSmbLpL
-RJNknW/nQDB4BgkrBgEEAYI3EAQxazBpMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUg
-Q29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwg
-SXNzdWluZyBDQQIDDQmlMHoGCyqGSIb3DQEJEAILMWugaTBiMQswCQYDVQQGEwJaQTElMCMGA1UE
-ChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFs
-IEZyZWVtYWlsIElzc3VpbmcgQ0ECAw0JpTANBgkqhkiG9w0BAQEFAASBgBFu8KTY/Ws+B7JQajOd
-RM4T5HNgutB5nBSTgZTK4YRsOMKUkScqlIJpa4G7GDcZf+ktT0JXh22Fe0dvuZZnNICtXD3/ocZ5
-HTdjruCnPEUWx8uK1UTGu9Mh2zHS5R2F7ZOLYhKVscqnumUu2u1948er6fJA+lGwH9A+swG2Zggr
-AAAAAAAA
+	(just my 3 cents worth after a long day explaining what iptables is to a 
+manager .....)
 
-
---=-x8+jL9ZFFfCm6B7mt0J2--
-
+>
+> Thanks,
+> Dan
 
