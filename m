@@ -1,51 +1,78 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: SNAT and DNAT
-Date: Wed, 27 Apr 2005 22:30:55 -0500
-Message-ID: <427058EF.8030102@riverviewtech.net>
-References: <426E4DAC.30900@newtech.fr>
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: Problem compiling iptables 3887
+Date: Thu, 28 Apr 2005 13:41:20 +1000
+Message-ID: <20050428034120.GJ11176@samad.com.au>
+References: <20050428014428.GF11176@samad.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <426E4DAC.30900@newtech.fr>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="va4/JQ6j8/8uipEp"
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20050428014428.GF11176@samad.com.au>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: julien WICQUART <j.wicquart@newtech.fr>
-Cc: netfilter@lists.netfilter.org
-
-> Hi,
-> 
-> i have a special situation.
-> 
-> (INTERNET) ===== 210.210.210.210/eth0|firewall|10.0.0.1/eth1 ===== 10.0.0.2|server|
-> 
-> I want to DNAT a port of my firewall on a server inside:
-> $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.210.210.210 -p tcp --dport 200 -j DNAT
-> - --to-destination 10.0.0.2:200
-> 
-> but the server inside only accept packets from the IP of the inside interface of the firewall :
-> 10.0.0.1 so i need that the source IP address of the packet sent by someone(x.x.x.x) on the internet
-> change in 10.0.0.1.
-> 
-> I try the SNAT, the MASQUERADE:
-> $IPTABLES -t nat -A POSTROUTING -o eth1 -s x.x.x.x -p tcp --dport 20000 -j SNAT --to 10.0.0.1
-> or
-> $IPTABLES -t nat -A POSTROUTING -o eth1 -s x.x.x.x -j MASQUERADE
-> it don't work.
-
-You are DNATing to the destination port of 200 where as you are later looking for traffic headed to 20000 and thus will never match the traffic that you DNATed.
-
-Another point (IMHO) that you might want to consider is that if you have any client systems on the inside of the firewall that will be trying to connect to the x.x.x.x server they will never get return traffic as it will be SNATed to the firewalls internal IP.  I would recommend that you add an additional "-d 10.0.0.2" match to your rule to make sure that you don't erroneously SNAT traffic that should be going else where.
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
 
+--va4/JQ6j8/8uipEp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Grant. . . .
+Hi=20
+
+Found it I had DEBUG flag set !
+
+A
+
+On Thu, Apr 28, 2005 at 11:44:28AM +1000, Alexander Samad wrote:
+> Hi
+>=20
+> I currently build my own kernel and iptables patched with pom-ng - I get
+> these via svn.  Iptables version 3887 , pom-ng  3887
+>=20
+> Whilst attempting to do this recently (last week or so) I have come
+> across this compilation problem
+>=20
+> cc -O2 -Wall -Wunused -I../../linux/include -Iinclude/
+> -DIPTABLES_VERSION=3D\"1.3.1\" -g -DDEBUG -pg  -DIPTC_DEBUG
+> -DNO_SHARED_LIBS=3D1   -c -o libiptc/libip6tc.o libiptc/libip6tc.c
+> libiptc/libip6tc.c: In function `do_check':
+> libiptc/libip6tc.c:281: warning: implicit declaration of function
+> `get_chain_end'
+> libiptc/libip6tc.c:282: warning: implicit declaration of function
+> `get_entry'
+> libiptc/libip6tc.c:282: error: invalid type argument of `->'
+> l
+>=20
+> I was wondering if somebody can help me fix it or tell me who to talk to
+> advise of the problem ?
+>=20
+> Thanks
+> Alex
+
+
+
+--va4/JQ6j8/8uipEp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFCcFtgkZz88chpJ2MRAiO1AKCEysgTVxJeofhK544fZFok9XIpRQCgxiWL
+pUyZcSPuNC4YQgNYitqNEEQ=
+=oQP3
+-----END PGP SIGNATURE-----
+
+--va4/JQ6j8/8uipEp--
 
