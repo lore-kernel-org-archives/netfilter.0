@@ -1,15 +1,13 @@
-From: Dwayne Hottinger <dhottinger@harrisonburg.k12.va.us>
-Subject: Re: How to stop the flood?
-Date: Thu, 28 Apr 2005 18:04:52 -0400
-Message-ID: <1114725892.f9cf2d7156ac0@webmail.harrisonburg.k12.va.us>
-References: <20050428154656.AA0188EDCEB@smtp.sterenborg.info>
-	<1114703659.6fb8089c0e877@webmail.harrisonburg.k12.va.us>
-	<Pine.LNX.4.60.0504281745440.16510@darkstar.sysinfo.com>
-	<42715C88.9070606@tarapine.co.nz>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: Management of bridged iptables
+Date: Fri, 29 Apr 2005 00:50:04 +0200
+Message-ID: <1403218a05042815502d3fe194@mail.gmail.com>
+References: <0380eb44cd704cf780c1fd7f71cece5e@ebasedsecurity.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42715C88.9070606@tarapine.co.nz>
+In-Reply-To: <0380eb44cd704cf780c1fd7f71cece5e@ebasedsecurity.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,55 +20,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: traef06@ebasedsecurity.com, netfilter <netfilter@lists.netfilter.org>
 
-If that was the case, you should be able to find the culprints via a sniffer.  I
-would watch for large amounts of icmp traffic and trace it back to the user. 
-Do you also supply DHCP and DNS to your subnets?  If so you can glean through
-the logs of each and get a W/S to IP name.  Shouldnt take much of a sniff to
-get the culprits.  Most of the time DOS attacks are done unknowlingly by users.
- Usually try to head that off by ensuring patches and virus software is up to
-date.  Although that isnt always foolproof.  If windows machines exist (and we
-all have to live with them) than these things will be issues.
-
-ddh
+Why don't you give the br0 an IP !!?
 
 
-Quoting wkc <wkc@tarapine.co.nz>:
-
-> R. DuFresne wrote:
-> > -----BEGIN PGP SIGNED MESSAGE-----
-> > Hash: SHA1
+On 4/27/05, traef06@ebasedsecurity.com <traef06@ebasedsecurity.com> wrote:
+> Thank you.
+>=20
+> So, just for my clarification, if I have eth0 (outside interface) and eth=
+1 as my internal interface and they both
+> are used to form br0, I could assign eth0 an external IP address so that =
+I can ssh into the box for management?
+>=20
+> Am I following his correctly?
+>=20
+> Then can I also assign eth1 an internal IP address so that I can manage i=
+t from within as well? This won't harm the bridge
+> interface br0?
+>=20
+> Thank you in advance for all your assistance.
+>=20
+>=20
+> Thomas J. Raef
+> e-Based Security, Inc.
+> "You're either hardened, or you're hacked!"
+>=20
+> -------- Original Message --------
+> > From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+> > Sent: Tuesday, April 26, 2005 3:32 AM
+> > To: traef06@ebasedsecurity.com
+> > Subject: Re: Management of bridged iptables
+> >
+> > You can give the firewall an IP address, on any interface, whether
+> > part of the bridge or not part of the bridge.
+> > This will still keep the firewall stealthy (not shown in traceroutes),
+> > as that IP is not a gateway for any server !!
+> >
+> > On 4/26/05, traef06@ebasedsecurity.com <traef06@ebasedsecurity.com> wro=
+te:
+> > > I've been scouring Google searches looking for an answer. If this is =
+the wrong forum, please forgive me.
+> > >
+> > > I want to be able to setup iptables and I guess ebtables for a bridge=
+d firewall. My problem is that I also need to be able
+> > > to manage this remotely like with ssh or something.
+> > >
+> > > How do I do this and still be able to maintain a "stealthy" firewall?
+> > >
+> > > Thank you in advance for any help.
+> > >
+> > > Thomas J. Raef
+> > > e-Based Security, Inc.
+> > > "You're either hardened, or you're hacked!"
+> > >
+> > >
 > >
 > >
-> > defiantly, as others have hinted, not everything is a technical/firewall
-> > issue.  Block the network access and let the user explain to their
-> > manager why they are not able to complete their work.  If this is
-> > consumer access, then you don't need their monies, send them on their
-> > merry way of finding another ISP to abuse.
-> >
-> > Thanks,
-> >
->
-> Is there the possibility the users may not know they are causing a
-> problem? Perhaps a virus or worm has arrived on their computer.
-> You could try blocking access, see who complains and then have a chat to
-> them.
-> Just my 2 cents worth.
->
-> --
-> Keith Clethero
->
->
->
-> System Administrator
-> Taranaki Sawmills Ltd.
-> Ph 06 7559000 x 816
->
+> > --
+> > Mohamed Eldesoky
+> > www.eldesoky.net
+> > RHCE
+>=20
+>=20
 
 
---
-Dwayne Hottinger
-Network Administrator
-Harrisonburg City Public Schools
+--=20
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
