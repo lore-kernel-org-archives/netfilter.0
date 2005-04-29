@@ -1,10 +1,13 @@
-From: Chadley Wilson <chadley@pinteq.co.za>
-Subject: forwarding pppd traffic!
-Date: Fri, 29 Apr 2005 06:44:13 +0200
-Message-ID: <200504290644.13636.chadley@pinteq.co.za>
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: Re: netfilter Digest, Vol 9, Issue 65
+Date: Fri, 29 Apr 2005 11:59:33 +0400
+Message-ID: <9927912d050429005922ecbd8d@mail.gmail.com>
+References: <4271a19b.662875ec.2288.402bSMTPIN_ADDED@mx.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4271a19b.662875ec.2288.402bSMTPIN_ADDED@mx.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,24 +22,13 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Greetings,
+Hi to all,
 
-I am a newbie to world of firewalling, I have read alot but I still don't 
-really get it!
+I wanted to know what we actually need to start iptables service on a
+PC. Do we have to write start or initialisation scripts?
 
-I have configured my mgetty with Autoppp, The pppd starts, I can see it in the 
-terminal login ;)
+If yes, can I can a sample of these scripts?
 
-How do I configure the firewall (iptables) to allow the dialed in client to 
-connect to the internet?
-
--- 
-Chadley Wilson
-Redhat Certified Technician 
-Cert Number: 603004708291270
-Pinnacle Micro
-Manufacturers of Proline Computers
-====================================
-Exercise freedom, Use LINUX
-=====================================
+Regards,
+Visham
 
