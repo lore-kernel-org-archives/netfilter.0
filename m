@@ -1,7 +1,8 @@
-From: jonathan <support-squid@bfinance.fr>
-Subject: squid + fwmark problem
-Date: Fri, 29 Apr 2005 12:24:28 +0200
-Message-ID: <1114770268.2852.16.camel@localhost.localdomain>
+From: "biju" <biju@qburst.com>
+Subject: rmi-iptables
+Date: Fri, 29 Apr 2005 13:15:23 +0530
+Message-ID: <MBEMLHBOKCBGKNFJDLJPMEBBCAAA.biju@qburst.com>
+Reply-To: biju@qburst.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,29 +19,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi, 
-I am running a squid transparent proxy on the same server than a
-iptables firewall. 
+hi guys,
+can anyone help me in writing a iptable rule for allowing a client to use
+the rmi object in the server. currently i am having the minimum policies
+set.
 
-I have two internet connections on the server and of course another one
-for th local network. 
-I use meta-data marking (netfilter / fwmark) to route the packets to
-ISP1 or ISP2 according the destination port. 
+nothing i have added to the existing default policy.
 
-It works very well if the proxy is inactive, but when I activate squid
-(with port redirection), packets are going to any output interface
-ignoring the packet marking rules. 
+i tried in the INPUT by appending the client's ID and ACCEPT but no success.
 
-But now I am "terrify" because I have just read in this mailing list
-that squid doesn't support the meta-data marking. 
+ but if used iptables -F it worked.
 
-Is that right and why ? does anybody have used both successfully ? Is
-there another solution for my problem ? 
+can anyone give a valuable help
 
-thanks a lot for helping a squid newbie...
-
-PS: sorry for my poor english.
-
-
+thanks in advance.
 
 
