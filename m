@@ -1,14 +1,10 @@
-From: Visham Ramsurrun <vishamr2000@gmail.com>
-Subject: Re: netfilter Digest, Vol 9, Issue 65
-Date: Fri, 29 Apr 2005 11:59:33 +0400
-Message-ID: <9927912d050429005922ecbd8d@mail.gmail.com>
-References: <4271a19b.662875ec.2288.402bSMTPIN_ADDED@mx.gmail.com>
-Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
+From: jonathan <support-squid@bfinance.fr>
+Subject: squid + fwmark problem
+Date: Fri, 29 Apr 2005 12:24:28 +0200
+Message-ID: <1114770268.2852.16.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4271a19b.662875ec.2288.402bSMTPIN_ADDED@mx.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,13 +18,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi to all,
+hi, 
+I am running a squid transparent proxy on the same server than a
+iptables firewall. 
 
-I wanted to know what we actually need to start iptables service on a
-PC. Do we have to write start or initialisation scripts?
+I have two internet connections on the server and of course another one
+for th local network. 
+I use meta-data marking (netfilter / fwmark) to route the packets to
+ISP1 or ISP2 according the destination port. 
 
-If yes, can I can a sample of these scripts?
+It works very well if the proxy is inactive, but when I activate squid
+(with port redirection), packets are going to any output interface
+ignoring the packet marking rules. 
 
-Regards,
-Visham
+But now I am "terrify" because I have just read in this mailing list
+that squid doesn't support the meta-data marking. 
+
+Is that right and why ? does anybody have used both successfully ? Is
+there another solution for my problem ? 
+
+thanks a lot for helping a squid newbie...
+
+PS: sorry for my poor english.
+
+
+
 
