@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
+From: Michal Ludvig <michal@logix.cz>
 Subject: Re: FTP server behind NAT
-Date: Fri, 29 Apr 2005 01:23:10 -0400
-Message-ID: <20050429052310.GA32353@bender.817west.com>
+Date: Fri, 29 Apr 2005 17:31:32 +1200
+Message-ID: <4271C6B4.8070808@logix.cz>
 References: <4271C141.5050008@logix.cz>
+	<20050429052310.GA32353@bender.817west.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4271C141.5050008@logix.cz>
+In-Reply-To: <20050429052310.GA32353@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +19,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Apr 29, 2005 at 05:08:17PM +1200, Michal Ludvig wrote:
-> 3) ip_conntrack_ftp is loaded
+Jason Opperisano wrote:
+> On Fri, Apr 29, 2005 at 05:08:17PM +1200, Michal Ludvig wrote:
+> 
+>>3) ip_conntrack_ftp is loaded
+> 
+> maybe you're just leaving this out, but is ip_nat_ftp loaded as well?
 
-maybe you're just leaving this out, but is ip_nat_ftp loaded as well?
+Ehm, no. Shame on me. Now it works, thanks a lot!
 
--j
-
---
-"Peter: Son, this is a big day for you. Today, you become the man
- of the house, because, when we get home, your mother is going to
- kill me."
-        --Family Guy
+Michal Ludvig
+-- 
+* Personal homepage: http://www.logix.cz/michal
 
