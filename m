@@ -1,12 +1,12 @@
-From: Dave Cinege <dcinege-mlists-dated-1115314932.11faa1@psychosis.com>
-Subject: Linux forwarding Win XP hosts VERY slowly
-Date: Sat, 30 Apr 2005 13:41:57 -0400
-Message-ID: <200504301341.58023.dcinege-mlists@psychosis.com>
-Reply-To: dcinege-mlists@psychosis.com
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: allow / deny clients
+Date: Sat, 30 Apr 2005 17:33:55 -0500
+Message-ID: <427407D3.40805@riverviewtech.net>
+References: <853706858e33.858e33853706@vsnl.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <853706858e33.858e33853706@vsnl.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I've built an advanced rotuign appliance, and I'm having 2 outstanding 
-problems, that I'm being to think are related to the linux ip/netfilter 
-stack, choking on XP traffic (possiblity XP-SP2) hosts that are on the LAN. 
-I'm running 2.4.30 at the moment. 
+> I would like to allow / deny access to the net to clients
+> based on : 
+> 
+> 1. client IPs.
+> 
+> or
+> 
+> 2. client IP + MAC
 
-The 2 problems I'm seeing:
+Rather than denying based on IP, especially in a DHCP environment where IPs could change, I would deny based on source MAC address.  You would write a rule like this:
 
-1) Forwarded traffic (most notably web) is VERY slow with XP clients. 
+iptables -t filter -A FORWARD -o eth0 -m mac --mac-source 01:23:45:67:89:ab -j ACCEPT
 
-Example: Saw this last 2 nights ago: Appliance has a linksys Wifi bridge 
-attached to a NIC. Customer browses through the appliance to the Linksys 
-config page. It moves like molasses. He browse to the local Zope hosted made 
-page. Slow as hell. I unplug his machine, and plug my linux laptop into same 
-switch port. Linksys and Zope pages load adn reload instantly. Plug his 
-machine in....slow again.
+This rule will allow the system with the mack address of 01:23:45:67:89:ab to access the internet.  I would probably recommend that you add some filters to check that the destination IP and possibly port are valid.  To do this you might want to jump to another chain to do the checking for you or have all traffic pass through that chain before hand.
 
-2) Zope serves user interface pages for the appliance. Zope has been locking 
-solid for no apparent reason, but only when and Windows host is attached. 
-The trick is SOME windows machine don't seem to cause a problem.
-Example: 
-I worked with a unit for 3 days using a customers XP desktop. Not a hiccup. My 
-partner came in and attached to the network and starting connect to our 
-appliance with his XP laptop. Within 15 minutes Zope was hung. 
+iptables -t filter -A FORWARD -o eth0 -m mac --mac-source 01:23:45:67:89:ab -j DstIPandPortCheck
 
-I'm really lost. ANY ideas out there?
+This would be such a rule to jump to the DstIPandPortCheck chain to do any additional validation.
 
+
+
+Grant. . . .
 
