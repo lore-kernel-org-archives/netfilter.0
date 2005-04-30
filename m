@@ -1,12 +1,12 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: ICMP types
-Date: Sat, 30 Apr 2005 17:55:49 -0500
-Message-ID: <42740CF5.9070705@riverviewtech.net>
-References: <8a79f08aaeef.8aaeef8a79f0@vsnl.net>
+Subject: Re: Linux forwarding Win XP hosts VERY slowly
+Date: Sat, 30 Apr 2005 18:06:57 -0500
+Message-ID: <42740F91.8020101@riverviewtech.net>
+References: <200504301341.58023.dcinege-mlists@psychosis.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8a79f08aaeef.8aaeef8a79f0@vsnl.net>
+In-Reply-To: <200504301341.58023.dcinege-mlists@psychosis.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,23 +20,38 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-varun_saa@vsnl.net wrote:
-> Hello,
->       As I understand there are more one 
-> type of ICMP ping.
+> I've built an advanced rotuign appliance, and I'm having 2 outstanding 
+> problems, that I'm being to think are related to the linux ip/netfilter 
+> stack, choking on XP traffic (possiblity XP-SP2) hosts that are on the LAN. 
+> I'm running 2.4.30 at the moment. 
+> 
+> The 2 problems I'm seeing:
+> 
+> 1) Forwarded traffic (most notably web) is VERY slow with XP clients. 
+> 
+> Example: Saw this last 2 nights ago: Appliance has a linksys Wifi bridge 
+> attached to a NIC. Customer browses through the appliance to the Linksys 
+> config page. It moves like molasses. He browse to the local Zope hosted made 
+> page. Slow as hell. I unplug his machine, and plug my linux laptop into same 
+> switch port. Linksys and Zope pages load adn reload instantly. Plug his 
+> machine in....slow again.
+> 
+> 2) Zope serves user interface pages for the appliance. Zope has been locking 
+> solid for no apparent reason, but only when and Windows host is attached. 
+> The trick is SOME windows machine don't seem to cause a problem.
+> Example: 
+> I worked with a unit for 3 days using a customers XP desktop. Not a hiccup. My 
+> partner came in and attached to the network and starting connect to our 
+> appliance with his XP laptop. Within 15 minutes Zope was hung. 
+> 
+> I'm really lost. ANY ideas out there?
 
-Yes, there are a LOT of different types ICMP packets.  It looks like there are ~28 of them in use (see http://www.iana.org/assignments/icmp-parameters).  You really don't want to just blindly drop ICMP packets as they are used to help control the internet or let you know when problems were encountered out on the wild surf of the net.  A common practice is to allow limited numbers of ICMP packets per a time period.  Usually this is system wide and not per destination IP.  Rather than doing this I would like to see some sort of limit per source IP.  A common accepted practice is to allow 1 ICMP (echo request and echo reply) packet per second as quite a few monitoring systems will ping (ICMP echo) a system expecting a response (ICMP echo reply) to see if a system is up and functioning.  (IMHO) Only in very rare / limited situation should ICMP be completely dropped.  Granted I have set up fi
- rewalls / servers in the past to do this but that was when I was just starting.  Some peop
-le / institutions have made political decisions to DROP ICMP traffic in an attempt to not become part of a reflected ICMP DDoS attack on someone.  Rather than doing this I would be more tempted to rate limit the number of ICMP packets that could come from (and reply to) any given source.  There are obviously certain situations where certain types if ICMP packets are absolutely wrong, i.e. you should *NEVER* receive an ICMP error (Echo Reply (0), Destination Unreachable (3), Source Quench (4), Alternate Host Address (6), Time Exceeded (11), Parameter Problem (12), Timestamp Reply (14)*, Information Reply (16)*, Address Mask Reply (18)*, Datagram Conversion Error (31), Mobile Host Redirect (32), IPv6 I-Am-Here (34), Mobile Registration Reply (36), Domain Name Reply (38), etx.) from a system that you are not presently communicating.  Rule sets can be built to trap such things using the rece
- nt and / or set match extensions, but are rather complex and lengthy.  I personally have n
-ot built such a rule set but see no problem doing so.  If you want help in this let me know and I'd be glad to do it, if for nothing else but the geek factor.  :)
+I don't know if this is related or not, but a couple of this come to mind.
 
-* = This ICMP type is not an error, but same is the idea.
+  1)  Check to make sure that it is not a ""windowing issue, i.e. the MTU/MRU, MSS, etc.
+  2)  I know that XP SP 2 changes the number of TCP/IP connections that a computer can have open at any given time.  I think the default prior to XP SP 2 was 50 or there abouts.  Now the default for XP SP 2 is 10, or so I have read.  Apparently this is a registry (?) setting that can be changed.  From what I have read is that this was / is an effort by M$ to make sure that infected systems can only infect other systems at a controlled rate.  This problem has primarily shown up on VoIP mailing lists as VoIP needs LOTS of small packets at any given time exceeding the amount that XP SP 2 will allow by default.
 
 
 
 Grant. . . .
-> What are these types and should they
-> all be allowed in iptables rules ?
-
 
