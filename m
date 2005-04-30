@@ -1,14 +1,14 @@
-From: Mogens Valentin <monz@danbbs.dk>
+From: "R. DuFresne" <dufresne@sysinfo.com>
 Subject: Re: ICMP types
-Date: Sun, 01 May 2005 01:40:48 +0200
-Message-ID: <42741780.9000603@danbbs.dk>
-References: <000101c54cf4$955d5460$6363a8c0@compaq>	<427378BC.6070804@danbbs.dk>
-	<20050430223538.GC12091@samad.com.au>
-Reply-To: monz@danbbs.dk
+Date: Sat, 30 Apr 2005 19:53:04 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0504301949110.3546@darkstar.sysinfo.com>
+References: <8a79f08aaeef.8aaeef8a79f0@vsnl.net>
+	<42740CF5.9070705@riverviewtech.net>
+	<Pine.LNX.4.60.0504301921220.3546@darkstar.sysinfo.com>
+	<42741668.7060001@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050430223538.GC12091@samad.com.au>
+In-Reply-To: <42741668.7060001@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,60 +19,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-Cc: Alexander Samad <alex@samad.com.au>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-Alexander Samad wrote:
-> On Sat, Apr 30, 2005 at 02:23:24PM +0200, Mogens Valentin wrote:
-> 
->>Ken Hilliard wrote:
->>
->>>In reading different firewall scripts/tutorials many of them recommend
->>>filtering ICMP packets. I added ICMP filter in my firewall but was
->>>unsure of the value as well. What is the consensus view out there?
->>
->>Not wanting to comment what the consensus are, but some types are 
->>generally considered nessesary to filter/allow.
->>
->>But its really not just a matter of filtering this-or-that, also what's 
->>set in /proc . There's a lot to read...
->>A few ideas:
->>
->>Filtering ICMP:
->>
->>### Define icmp_packets chain:
->>    $IPT -F icmp_packets
->>    $IPT -X icmp_packets
->>    $IPT -N icmp_packets
->>    $IPT -A icmp_packets -p icmp --icmp-type echo-request -j ACCEPT
->>    $IPT -A icmp_packets -p icmp --icmp-type echo-reply -j ACCEPT
->>    $IPT -A icmp_packets -p icmp --icmp-type destination-unreachable -j 
->>ACCEPTlog
->>    $IPT -A icmp_packets -p icmp --icmp-type network-unreachable -j 
->>ACCEPTlog
->>    $IPT -A icmp_packets -p icmp --icmp-type network-prohibited -j 
->>ACCEPTlog
->>    $IPT -A icmp_packets -p icmp --icmp-type source-quench -j ACCEPTlog
->>    $IPT -A icmp_packets -p icmp --icmp-type parameter-problem -j ACCEPTlog
->>    $IPT -A icmp_packets -p icmp --icmp-type time-exceeded -j ACCEPTlog
->>    $IPT -A icmp_packets -p icmp --icmp-type fragmentation-needed -j 
->>ACCEPTlog
->>    #$IPT -A icmp_packets -p icmp -j ACCEPTlog
->>    $IPT -A icmp_packets -p icmp -j LOG
-> 
-> 
-> 
-> why not use
-> -m limit --limit 1/s --limit-burst 5 
-> as well to limit them and then drop the rest!
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Yes, you're right. Actually thought about it awhile ago, but forgot.
-Tnx for reminding me :-
-And yes, I do start off dropping everything...
+On Sat, 30 Apr 2005, Taylor, Grant wrote:
 
--- 
-Kind regards,
-Mogens Valentin
+>> just deny pings to the broadcast address and this can be eliminated, and 
+>> this can be done in sysctl, does not require iptables rules and overhead.
+>
+> This will take care of traffic that was destined to a broadcast address, but 
+> not traffic that was destined to your IP directly.  I have known many a 
+> person say that it is better to DROP the ICMP traffic coming in on your WAN / 
+> INet interface so that you don't become part of a DDoS.  Usually the idea 
+> behind this is for multiple owned boxen to ping some other box at random with 
+> a spoofed source address in the ICMP packet.  This effectively will cause the 
+> recipient of the ICMP packets to reply to the system that is to be DDoSed.
 
+I have never seen a DDOS like this function without reflecting off the 
+broadcast address space.  In fact, there;'s perhaps still a list of the 
+borked networks that have not blocked access to their broadcast space, 
+maybe more then one.  But, I'd be interested in any such attack that works 
+without ampliphying off the broadcast address.
+
+
+Thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCdBpjst+vzJSwZikRAsXkAJ4oaXh+eIT0tnHXAlLpczKSDDB9eACgz5xr
+3oL0troG5bU0C2evvTcYgyI=
+=tGjd
+-----END PGP SIGNATURE-----
 
