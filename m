@@ -1,13 +1,11 @@
-From: Efraim <efraimg@gmail.com>
-Subject: Port mapping ANY:95 to originalIP:80
-Date: Sat, 30 Apr 2005 18:59:25 +0200
-Message-ID: <77d616405043009591570fad0@mail.gmail.com>
-References: <77d61640504300952e19c4c2@mail.gmail.com>
-Reply-To: Efraim <efraimg@gmail.com>
+From: Dave Cinege <dcinege-mlists-dated-1115314932.11faa1@psychosis.com>
+Subject: Linux forwarding Win XP hosts VERY slowly
+Date: Sat, 30 Apr 2005 13:41:57 -0400
+Message-ID: <200504301341.58023.dcinege-mlists@psychosis.com>
+Reply-To: dcinege-mlists@psychosis.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <77d61640504300952e19c4c2@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,23 +20,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
-I'm using my linux box as a router and I have an application that is
-make all the request in port 95.
-I need to make an iptables rule that will change the original port of
-any destination ip addres to 80.
-I know how to do it for a specific destination ip but I could not find
-the way to do it for any destination ip.
+I've built an advanced rotuign appliance, and I'm having 2 outstanding 
+problems, that I'm being to think are related to the linux ip/netfilter 
+stack, choking on XP traffic (possiblity XP-SP2) hosts that are on the LAN. 
+I'm running 2.4.30 at the moment. 
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 95 -j DNAT --to
-66.249.87.99:80
+The 2 problems I'm seeing:
 
-66.249.87.99 is the Google ip, but I need the rule to work for any ip.
-Something like:
+1) Forwarded traffic (most notably web) is VERY slow with XP clients. 
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp -d ANY --dport 95 -j DNAT
---to ANY:80
+Example: Saw this last 2 nights ago: Appliance has a linksys Wifi bridge 
+attached to a NIC. Customer browses through the appliance to the Linksys 
+config page. It moves like molasses. He browse to the local Zope hosted made 
+page. Slow as hell. I unplug his machine, and plug my linux laptop into same 
+switch port. Linksys and Zope pages load adn reload instantly. Plug his 
+machine in....slow again.
 
-I know that it is possible to do with checkpoint firewall but it is a
-little expensive...
+2) Zope serves user interface pages for the appliance. Zope has been locking 
+solid for no apparent reason, but only when and Windows host is attached. 
+The trick is SOME windows machine don't seem to cause a problem.
+Example: 
+I worked with a unit for 3 days using a customers XP desktop. Not a hiccup. My 
+partner came in and attached to the network and starting connect to our 
+appliance with his XP laptop. Within 15 minutes Zope was hung. 
+
+I'm really lost. ANY ideas out there?
+
 
