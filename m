@@ -1,13 +1,12 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: rules for skype
-Date: Sun, 01 May 2005 17:00:02 -0500
-Message-ID: <42755162.4090509@riverviewtech.net>
-References: <90ba0390f499.90f49990ba03@vsnl.net>
-	<a0f69e50505010246227a187f@mail.gmail.com>
+Subject: Re: port mapping ANY:95 to originalIP:80
+Date: Sun, 01 May 2005 17:07:12 -0500
+Message-ID: <42755310.2060203@riverviewtech.net>
+References: <77d61640504300952e19c4c2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a0f69e50505010246227a187f@mail.gmail.com>
+In-Reply-To: <77d61640504300952e19c4c2@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,13 +20,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> iptables -A FORWARD -p tcp --dport SKYPEPORT -j ACCEPT
-
-<devilish @^*% eating grin> He, Skype does not have a port (per say). </devilish @^*% eating grin>
-
-Skype will use just about any port that it can use (all the standards you would think for internet traffic) to connect to any ""super node that it can connect to.  unfortunately what qualifies as a Super Node is any node / computer that is running Skype that is directly connected to the internet with out a firewall that would inhibit other systems from connecting directly to it.  Do a Google for "Skype Protocol" and see what you find.  I have a PDF on it at the office that I'd be happy to send you.  (If you want this PDF I'll find the URL to it and post it to the list or email individually as I don't think the list would like a PDF sent to it.)  The only way that I've heard to even slow down Skype is to force it to pass through a proxy, beyond that nothing, that I have heard of or read about, will stop it.
+Hm, a touch quick on the draw to repost.  Sietse van Zanen posted a reply (https://lists.netfilter.org/pipermail/netfilter/2005-May/060125.html) to your earlier post with a solution that I just tested that did work for me.
 
 
 
 Grant. . . .
+
+Efraim wrote:
+> Hi,
+> I'm using my linux box as a router and I have an application that is
+> make all the request in port 95.
+> I need to make an iptables rule that will change the original port of
+> any destination ip addres to 80.
+> I know how to do it for a specific destination ip but I could not find
+> the way to do it for any destination ip.
+> 
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 95 -j DNAT --to
+> 66.249.87.99:80
+> 
+> 66.249.87.99 is the Google ip, but I need the rule to work for any ip.
+> Something like:
+> 
+> iptables -t nat -A PREROUTING -i eth0 -p tcp -d ANY --dport 95 -j DNAT
+> --to ANY:80
+> 
+> I know that it is possible to do with checkpoint firewall but it is a
+> little expensive...
 
