@@ -1,7 +1,7 @@
 From: varun_saa@vsnl.net
-Subject: DNS rules
-Date: Sun, 01 May 2005 14:33:01 +0500
-Message-ID: <911ce5913bf2.913bf2911ce5@vsnl.net>
+Subject: rules for skype
+Date: Sun, 01 May 2005 14:37:21 +0500
+Message-ID: <90ba0390f499.90f49990ba03@vsnl.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -25,14 +25,14 @@ Hello,
 eth0 is WAN with static IP connected to 512K DSL
 eth1 is LAN - 192.168.0.0/24 and 192.168.21.0/24
 
-I have 2 DNS provided by the ISP.
+I am doing a nat/masq on eth0.
 
-Is it usefull to have rules for DNS included
-in the iptables ?
+Some of clients are going to using Skype.
+
+Any rules to be included for skype ?
 
 Thanks
 
 Varun
-
 
 
