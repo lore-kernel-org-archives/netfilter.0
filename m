@@ -1,12 +1,16 @@
-From: itd.nam@undp.org
-Subject: Re: Linux forwarding Win XP hosts VERY slowly
-Date: Sun, 01 May 2005 13:27:24 +0100
-Message-ID: <41da4e91.4e9141da@undp.org>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: DNS rules
+Date: Sun, 1 May 2005 19:12:58 +0300
+Message-ID: <1403218a05050109123b8d08bc@mail.gmail.com>
+References: <915b3891601a.91601a915b38@vsnl.net>
+	<a0f69e505050103303d959c4e@mail.gmail.com>
+	<a0f69e505050103332635a25b@mail.gmail.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
+In-Reply-To: <a0f69e505050103332635a25b@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,94 +22,123 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Askar <askarali@gmail.com>, netfilter <netfilter@lists.netfilter.org>
 
------ Original Message -----
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Date: Sunday, May 1, 2005 5:10 am
-Subject: Re: Linux forwarding Win XP hosts VERY slowly
-> On April 30, 2005 01:41 pm, Dave Cinege wrote: 
-> > I've built an advanced rotuign appliance, and I'm having 2 
-> outstanding> problems, that I'm being to think are related to the 
-> linux ip/netfilter 
-> > stack, choking on XP traffic (possiblity XP-SP2) hosts that are 
-> on the LAN. 
-> > I'm running 2.4.30 at the moment. 
-> > 
-> > The 2 problems I'm seeing: 
-> > 
-> > 1) Forwarded traffic (most notably web) is VERY slow with XP 
-> clients.> 
-> > Example: Saw this last 2 nights ago: Appliance has a linksys 
-> Wifi bridge 
-> > attached to a NIC. Customer browses through the appliance to the 
-> Linksys> config page. It moves like molasses. He browse to the 
-> local Zope hosted 
-> > made page. Slow as hell. I unplug his machine, and plug my linux 
-> laptop> into same switch port. Linksys and Zope pages load adn 
-> reload instantly. 
-> > Plug his machine in....slow again. 
-> > 
-> > 2) Zope serves user interface pages for the appliance. Zope has been 
-> > locking solid for no apparent reason, but only when and Windows 
-> host is 
-> > attached. The trick is SOME windows machine don't seem to cause 
-> a problem. 
-> > Example: 
-> > I worked with a unit for 3 days using a customers XP desktop. 
-> Not a hiccup. 
-> > My partner came in and attached to the network and starting 
-> connect to our 
-> > appliance with his XP laptop. Within 15 minutes Zope was hung. 
-> > 
-> 
-> I would strongly suspect the XP box has a b0rken TCP stack 
-> happening. One 
-> thing that some windows systems will do is flat out ignore the TCP 
-> MTU/window 
-> size settings on the network, especially if you've a) set them up 
-> for modem 
-> dialup b) installed anything that is supposed to automatically 
-> improve your 
-> internet speed c) hard wired (EVER) the MTU settings. I had a 
-> win2k box that 
-> had this sort of issue once, and even though it was at that time 
-> set to use 
-> default settings for MTU/max recieve window and the like, I had to 
-> completely 
-> uninstall the tcp stack, the network card driver, all modem bits 
-> etc and 
-> reinstall em from scratch to get it to behave normally. For the 
-> record, 
-> Ethereal dumps of the communications CLEARLY show that the windows 
-> box is 
-> using bad MTU settings and bad TCP window sizes, if this is the case. 
-> 
-> I *still* believe that there are settings left on that box (still 
-> in use these 
-> days) that cause issues periodically. Cant wait to get it out of 
-> service 
-> later in May. 
-> 
-> Hmm ... Grant T has the same drift (darn ... mail filters are 
-> busy tonight -- 
-> must be lots of spam in this round ... took Grants mail 6 minutes 
-> to get into 
-> the box after yours....) 
-> 
-> Alistair Tonner 
-> 
-> > I'm really lost. ANY ideas out there? 
-> 
->
-Have a look at the WXP computer if patch KB893066 is installed as this one changes some default TCP window size. I had a whole LAN down before stumbling across this is one. Once removed everything worked fine. Here is the KB article from MS :
+I didn't understand that part !!
 
-http://support.microsoft.com/default.aspx?scid=kb;en-us;893066 
+On 5/1/05, Askar <askarali@gmail.com> wrote:
+> oops too quick to hit te Send buttong :)
+>=20
+> if you going to set
+> #resolv-file=3D
+> in /etc/dnsmasq then don't forget to repace it something
+>=20
+> resolv-file=3D/etc/mydnsservers (the file that holding the IPs of your
+> ISP dns servers)
+>=20
+> regards
+>=20
+>=20
+> On 5/1/05, Askar <askarali@gmail.com> wrote:
+> > dnsmasq would be a bit off topic here. :)
+> > you can download it from ....
+> > http://thekelleys.org.uk/dnsmasq/doc.html (I will prefer the source)
+> > After extracting the source, read "README" for howto install its
+> > pretty straight forward.
+> > ./configure; make install (needed)
+> >
+> > this will copy "dnsmasq" binary /usr/sbin , which needed to running
+> > the dnsmasq daemon by type "dnsmasq" as root.
+> >
+> > You can find the configuration file in /etc/dnsmasq.conf
+> >
+> > You only have to change the line...
+> >
+> > # Change this line if you want dns to get its upstream servers from
+> > # somewhere other that /etc/resolv.conf
+> > #resolv-file=3D
+> >
+> > Note is not necessary coz if you don't set "resolv-fle=3D" , dnsmasq
+> > will read /etc/resolv.conf for upstream dns servers (where you have
+> > already specified your ISP dns IPs)
+> > If you prefer to set "resolv-file=3D" tag then here are the setups
+> >
+> > #vi /etc/mydnsserver (create a file where you have to hard code the
+> > ips of your ISP dns servers
+> >
+> > in the file type
+> >
+> > nameserver xxx.xxx.xxx.xx (replace xxx with the ip)
+> > nameserver xxx.xxx.xxxx.xx (specify as many dns servers you wants)
+> >
+> > then in /etc/resolv.conf , delete all the entries and type ...
+> >
+> > nameserver 127.0.0.1
+> >
+> > Now start dnsmasq , and try to confirm that its working by "dig, host,
+> > nslook etc)
+> >
+> > You can also use dnsmasq as DHCP server ;)
+> >
+> > Now you have to tell iptables to allow upd port 53 hmmmm
+> >
+> > iptables -A INPUT -p udp -s 192.168.2.0/24 --dport 53 -j ACCEPT (for cl=
+ient)
+> > iptables -A OUTPUT -p udp --dport 53 -j ACCEPT (dnsmasq towards your IS=
+P dns)
+> >
+> > Hope this will helps
+> >
+> > Regards
+> > Askar
+> >
+> > On 5/1/05, varun_saa@vsnl.net <varun_saa@vsnl.net> wrote:
+> > >
+> > >
+> > > ----- Original Message -----
+> > > From: Askar <askarali@gmail.com>
+> > > Date: Sunday, May 1, 2005 3:22 pm
+> > > Subject: Re: DNS rules
+> > >
+> > > > Again it depends, how you setup your default policies. In case you =
+are
+> > > > using recommended "default DROP" then you have to tell iptables to
+> > > > allow "udp 53" towards your ISP.
+> > > >
+> > > > iptables -A FORWARD -p udp --dport 53 -j ACCEPT
+> > > >
+> > > >
+> > > > If you are running a small LAN then running a cache only dns on you=
+r
+> > > > gateway would be beneficial, (that it will cache the lookups)
+> > > >
+> > > > dnsmasq is excellent cache only dns server and i'm sure you would g=
+et
+> > > > is running within 10 minutes.
+> > > > you can also use bind in cache only mode.
+> > > >
+> > > Thanks
+> > >
+> > > Can you elaborate on dnsmasq. Please.
+> > >
+> > > Varun
+> > >
+> > >
+> >
+> > --
+> > I love deadlines. I like the whooshing sound they make as they fly by.
+> > Douglas Adams
+> >
+>=20
+> --
+> I love deadlines. I like the whooshing sound they make as they fly by.
+> Douglas Adams
+>=20
+>=20
 
-Hope this helps you ...
 
-Enjoy your day,
-
-Bernd Lippert
-
+--=20
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
