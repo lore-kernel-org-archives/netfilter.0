@@ -1,12 +1,13 @@
-From: "Michael D. Berger" <m.d.berger@ieee.org>
-Subject: RE: queue newbie
-Date: Sat, 30 Apr 2005 23:31:44 -0400
-Message-ID: <000001c54dfe$4f4597c0$2801a8c0@MBRC40>
-References: <426CF19F.1060004@au-kbc.org>
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Linux forwarding Win XP hosts VERY slowly
+Date: Sun, 1 May 2005 00:10:46 -0400
+Message-ID: <200505010010.47065.Alistair@nerdnet.ca>
+References: <200504301341.58023.dcinege-mlists@psychosis.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <426CF19F.1060004@au-kbc.org>
+In-Reply-To: <200504301341.58023.dcinege-mlists@psychosis.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,78 +19,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I have upgraded to RH-E-WS-4, and downloaded and installed the
-latest iptables as described below.  In C++, I wrote some code
-following the suggestions in:
-   http://www.crhc.uiuc.edu/~grier/projects/libipq.html
-To get it to compile, I had to do some hacking in:
-   linux/socket.h
-   bits/socket.h
-   bits/uio.h
-to deal with multiple definitions, but I got it to compile.
-However, it does not work; my code waits but does not receive
-the icmp pings I send it.
-I note that I do not have an environment variable QUEUE.  I
-could provide one, but this might be taking an asperin for
-cancer.
-Advice would be much appreciated.
-Mike.
+On April 30, 2005 01:41 pm, Dave Cinege wrote:
+> I've built an advanced rotuign appliance, and I'm having 2 outstanding
+> problems, that I'm being to think are related to the linux ip/netfilter
+> stack, choking on XP traffic (possiblity XP-SP2) hosts that are on the LAN.
+> I'm running 2.4.30 at the moment.
+>
+> The 2 problems I'm seeing:
+>
+> 1) Forwarded traffic (most notably web) is VERY slow with XP clients.
+>
+> Example: Saw this last 2 nights ago: Appliance has a linksys Wifi bridge
+> attached to a NIC. Customer browses through the appliance to the Linksys
+> config page. It moves like molasses. He browse to the local Zope hosted
+> made page. Slow as hell. I unplug his machine, and plug my linux laptop
+> into same switch port. Linksys and Zope pages load adn reload instantly.
+> Plug his machine in....slow again.
+>
+> 2) Zope serves user interface pages for the appliance. Zope has been
+> locking solid for no apparent reason, but only when and Windows host is
+> attached. The trick is SOME windows machine don't seem to cause a problem.
+> Example:
+> I worked with a unit for 3 days using a customers XP desktop. Not a hiccup.
+> My partner came in and attached to the network and starting connect to our
+> appliance with his XP laptop. Within 15 minutes Zope was hung.
+>
 
---
-Michael D. Berger
-m.d.berger@ieee.org 
+	I would strongly suspect the XP box has a b0rken TCP stack happening.  One 
+thing that some windows systems will do is flat out ignore the TCP MTU/window 
+size settings on the network, especially if you've a) set them up for modem 
+dialup b) installed anything that is supposed to automatically improve your 
+internet speed c) hard wired (EVER) the MTU settings.  I had a win2k box that 
+had this sort of issue once, and even though it was at that time set to use 
+default settings for MTU/max recieve window and the like, I had to completely 
+uninstall the tcp stack, the network card driver, all modem bits etc and 
+reinstall em from scratch to get it to behave normally.  For the record, 
+Ethereal dumps of the communications CLEARLY show that the windows box is 
+using bad MTU settings and bad TCP window sizes, if this is the case.
 
-> -----Original Message-----
-> From: bharathi [mailto:bharathi@au-kbc.org] 
-> Sent: Monday, April 25, 2005 9:33 AM
-> To: Michael D. Berger
-> Cc: netfilter
-> Subject: Re: queue newbie
-> 
-> 
-> Dear Mr.Berger,
->                             Download the latest version of 
-> iptables src 
-> and do the following to get libipq,
->   # make KERNEL_DIR=<<where-you-built-your-kernel>>
->   # make install KERNEL_DIR=<<where-you-built-your-kernel>>
->   # make install-devel
-> IMPORTANT:  Your kernel  must have enabled with the  
-> CONFIG_IP_NF_QUEUE 
-> ( Userspace queueing via NETLINK (EXPERIMENTAL) ) module to use this 
-> queueing feature with iptables.
-> 
-> thanks,
-> bharthix.
-> 
-> 
-> Michael D. Berger wrote:
-> 
-> >On RH-WS-3 (4 when I get around to it), I would like
-> >to use the capabilities of -j QUEUE.  Google seems to
-> >indicate that I need libipq, and to get this, perhaps
-> >I need to get an rpm for iptables-devel.
-> >
-> >Is this the way to go?  If so, where is the best place
-> >to get the rpm, and what version should I get?  If not,
-> >how should I proceed?
-> >
-> >Thanks in advance for your help.
-> >Mike.
-> >
-> >--
-> >Michael D. Berger
-> >m.d.berger@ieee.org 
-> >
-> >
-> >
-> >
-> >  
-> >
-> 
-> 
+I *still* believe that there are settings left on that box (still in use these 
+days) that cause issues periodically.  Cant wait to get it out of service 
+later in May.
 
+	Hmm ... Grant T has the same drift (darn ... mail filters are busy tonight -- 
+must be lots of spam in this round ... took Grants mail 6 minutes to get into 
+the box after yours....)
 
+	Alistair Tonner
+
+> I'm really lost. ANY ideas out there?
 
