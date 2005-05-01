@@ -1,13 +1,13 @@
 From: Askar <askarali@gmail.com>
-Subject: Re: rules for skype
-Date: Sun, 1 May 2005 14:46:29 +0500
-Message-ID: <a0f69e50505010246227a187f@mail.gmail.com>
-References: <90ba0390f499.90f49990ba03@vsnl.net>
+Subject: Re: DNS rules
+Date: Sun, 1 May 2005 14:52:09 +0500
+Message-ID: <a0f69e50505010252180ba805@mail.gmail.com>
+References: <911ce5913bf2.913bf2911ce5@vsnl.net>
 Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <90ba0390f499.90f49990ba03@vsnl.net>
+In-Reply-To: <911ce5913bf2.913bf2911ce5@vsnl.net>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,30 +23,33 @@ Content-Type: text/plain; charset="us-ascii"
 To: "varun_saa@vsnl.net" <varun_saa@vsnl.net>
 Cc: netfilter@lists.netfilter.org
 
-It depends, if you have "iptables -P FORWARD DROP" at the top of your
-rules set then you have to allow skype ports (any) with something like
-this
+Again it depends, how you setup your default policies. In case you are
+using recommended "default DROP" then you have to tell iptables to
+allow "udp 53" towards your ISP.
 
-iptables -A FORWARD -p tcp --dport SKYPEPORT -j ACCEPT
+iptables -A FORWARD -p udp --dport 53 -j ACCEPT
 
-and if you have ""iptables -P FORWARD ACCEPT" , then you don't have to
-do anything fanncy.
+
+If you are running a small LAN then running a cache only dns on your
+gateway would be beneficial, (that it will cache the lookups)
+
+dnsmasq is excellent cache only dns server and i'm sure you would get
+is running within 10 minutes.
+you can also use bind in cache only mode.
 
 regards
 
-Askar
-
+Askar Ali
 On 5/1/05, varun_saa@vsnl.net <varun_saa@vsnl.net> wrote:
 > Hello,
 >      My server is on Mandriva 10.1
 > eth0 is WAN with static IP connected to 512K DSL
 > eth1 is LAN - 192.168.0.0/24 and 192.168.21.0/24
 >=20
-> I am doing a nat/masq on eth0.
+> I have 2 DNS provided by the ISP.
 >=20
-> Some of clients are going to using Skype.
->=20
-> Any rules to be included for skype ?
+> Is it usefull to have rules for DNS included
+> in the iptables ?
 >=20
 > Thanks
 >=20
