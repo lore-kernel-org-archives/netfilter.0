@@ -1,12 +1,11 @@
-From: Efraim <efraimg@gmail.com>
-Subject: port mapping ANY:95 to originalIP:80
-Date: Sat, 30 Apr 2005 18:52:19 +0200
-Message-ID: <77d61640504300952e19c4c2@mail.gmail.com>
-Reply-To: Efraim <efraimg@gmail.com>
+From: Dean Anderson <dean@av8.com>
+Subject: Re: ICMP types
+Date: Sat, 30 Apr 2005 23:29:05 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44.0504302320540.990-100000@cirrus.av8.net>
+References: <8a79f08aaeef.8aaeef8a79f0@vsnl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <8a79f08aaeef.8aaeef8a79f0@vsnl.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +16,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: varun_saa@vsnl.net
+Cc: netfilter@lists.netfilter.org
 
-Hi,
-I'm using my linux box as a router and I have an application that is
-make all the request in port 95.
-I need to make an iptables rule that will change the original port of
-any destination ip addres to 80.
-I know how to do it for a specific destination ip but I could not find
-the way to do it for any destination ip.
+Necessary messages: (never block)
+        3 Destination Unreachable
+                (block code 4 and break PATH MTU)
+                (other codes are "Nice")
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 95 -j DNAT --to
-66.249.87.99:80
+Good Messages: (never harmful)
+        11 Time to live Exceeded
 
-66.249.87.99 is the Google ip, but I need the rule to work for any ip.
-Something like:
+Nice messages: (sometimes harmful)
+        4 Source Quench
+        8/0 Echo Request/Reply
+        12 Parameter Problem
+        13/14 Timestamp Request/Reply
+        15/16 Information Request/Reply
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp -d ANY --dport 95 -j DNAT
---to ANY:80
 
-I know that it is possible to do with checkpoint firewall but it is a
-little expensive...
+Dangerous (ought to be blocked, unless you know you need it;
+                in that case tightly restricted)
+        5 Redirect
+
+
+There was also recently an IOS patch released that exploited type 3 code 4
+(fragmentation needed--used in Path MTU Discovery) packets to reduce the
+MTU size to nearly nothing.  To do this, one needs the correct port
+numbers of a TCP connection, but this isn't all that hard to get in some
+cases. I don't recommend blocking type 3 code 4, but the attack can still
+be recognized, and the TCP stack can reject unrealisticly small PMTU 
+sizes.
+
+It might be handy to have a filter that recognizes this PMTU attack and 
+blocks it dynamically.  
+
+		--Dean
+
+On Sat, 30 Apr 2005 varun_saa@vsnl.net wrote:
+
+> Hello,
+>       As I understand there are more one 
+> type of ICMP ping.
+> 
+> What are these types and should they
+> all be allowed in iptables rules ?
+> 
+> Thanks
+> 
+> Varun
+> 
+> 
+> 
+> 
+
+-- 
+Av8 Internet   Prepared to pay a premium for better service?
+www.av8.net         faster, more reliable, better service
+617 344 9000   
+
+
 
