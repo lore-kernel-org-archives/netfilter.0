@@ -1,16 +1,13 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: DNS rules
-Date: Sun, 1 May 2005 19:12:58 +0300
-Message-ID: <1403218a05050109123b8d08bc@mail.gmail.com>
-References: <915b3891601a.91601a915b38@vsnl.net>
-	<a0f69e505050103303d959c4e@mail.gmail.com>
-	<a0f69e505050103332635a25b@mail.gmail.com>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: How to stop the flood?
+Date: Sun, 01 May 2005 14:19:24 -0500
+Message-ID: <42752BBC.8000203@riverviewtech.net>
+References: <20050428154656.AA0188EDCEB@smtp.sterenborg.info>	<1114703659.6fb8089c0e877@webmail.harrisonburg.k12.va.us>	<035101c54c15$2edb10e0$3b3429c4@rp>	<4271A606.9090504@riverviewtech.net>
+	<42742A0C.5040808@danbbs.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a0f69e505050103332635a25b@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <42742A0C.5040808@danbbs.dk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,124 +18,82 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Askar <askarali@gmail.com>, netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-I didn't understand that part !!
+> If clients can change IP's on the fly, they can change MAC's all the 
+> same. Of cause, arranging DHCP on a per-client-based-on-MAC scheme will 
+> catch this behavior (which you more or less pointed out).
 
-On 5/1/05, Askar <askarali@gmail.com> wrote:
-> oops too quick to hit te Send buttong :)
->=20
-> if you going to set
-> #resolv-file=3D
-> in /etc/dnsmasq then don't forget to repace it something
->=20
-> resolv-file=3D/etc/mydnsservers (the file that holding the IPs of your
-> ISP dns servers)
->=20
-> regards
->=20
->=20
-> On 5/1/05, Askar <askarali@gmail.com> wrote:
-> > dnsmasq would be a bit off topic here. :)
-> > you can download it from ....
-> > http://thekelleys.org.uk/dnsmasq/doc.html (I will prefer the source)
-> > After extracting the source, read "README" for howto install its
-> > pretty straight forward.
-> > ./configure; make install (needed)
-> >
-> > this will copy "dnsmasq" binary /usr/sbin , which needed to running
-> > the dnsmasq daemon by type "dnsmasq" as root.
-> >
-> > You can find the configuration file in /etc/dnsmasq.conf
-> >
-> > You only have to change the line...
-> >
-> > # Change this line if you want dns to get its upstream servers from
-> > # somewhere other that /etc/resolv.conf
-> > #resolv-file=3D
-> >
-> > Note is not necessary coz if you don't set "resolv-fle=3D" , dnsmasq
-> > will read /etc/resolv.conf for upstream dns servers (where you have
-> > already specified your ISP dns IPs)
-> > If you prefer to set "resolv-file=3D" tag then here are the setups
-> >
-> > #vi /etc/mydnsserver (create a file where you have to hard code the
-> > ips of your ISP dns servers
-> >
-> > in the file type
-> >
-> > nameserver xxx.xxx.xxx.xx (replace xxx with the ip)
-> > nameserver xxx.xxx.xxxx.xx (specify as many dns servers you wants)
-> >
-> > then in /etc/resolv.conf , delete all the entries and type ...
-> >
-> > nameserver 127.0.0.1
-> >
-> > Now start dnsmasq , and try to confirm that its working by "dig, host,
-> > nslook etc)
-> >
-> > You can also use dnsmasq as DHCP server ;)
-> >
-> > Now you have to tell iptables to allow upd port 53 hmmmm
-> >
-> > iptables -A INPUT -p udp -s 192.168.2.0/24 --dport 53 -j ACCEPT (for cl=
-ient)
-> > iptables -A OUTPUT -p udp --dport 53 -j ACCEPT (dnsmasq towards your IS=
-P dns)
-> >
-> > Hope this will helps
-> >
-> > Regards
-> > Askar
-> >
-> > On 5/1/05, varun_saa@vsnl.net <varun_saa@vsnl.net> wrote:
-> > >
-> > >
-> > > ----- Original Message -----
-> > > From: Askar <askarali@gmail.com>
-> > > Date: Sunday, May 1, 2005 3:22 pm
-> > > Subject: Re: DNS rules
-> > >
-> > > > Again it depends, how you setup your default policies. In case you =
-are
-> > > > using recommended "default DROP" then you have to tell iptables to
-> > > > allow "udp 53" towards your ISP.
-> > > >
-> > > > iptables -A FORWARD -p udp --dport 53 -j ACCEPT
-> > > >
-> > > >
-> > > > If you are running a small LAN then running a cache only dns on you=
-r
-> > > > gateway would be beneficial, (that it will cache the lookups)
-> > > >
-> > > > dnsmasq is excellent cache only dns server and i'm sure you would g=
-et
-> > > > is running within 10 minutes.
-> > > > you can also use bind in cache only mode.
-> > > >
-> > > Thanks
-> > >
-> > > Can you elaborate on dnsmasq. Please.
-> > >
-> > > Varun
-> > >
-> > >
-> >
-> > --
-> > I love deadlines. I like the whooshing sound they make as they fly by.
-> > Douglas Adams
-> >
->=20
-> --
-> I love deadlines. I like the whooshing sound they make as they fly by.
-> Douglas Adams
->=20
->=20
+Rather than DROPing based on a known IP/MAC pair you could accept based on IP/MAC pair thus if the client did change things on you they would not be able to get to the internet.  This is normally how this works.  About the only caveat that I can see for this would be if a client switched NICs with another client.
+
+> So you chose IMAP merely as an example.. Meaning you'd do similarly for 
+> other services if interest, right?  Good idea, tnx.
+
+Exactly
+
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 20
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 20
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 21
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 21
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 22
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 22
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 23
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 23
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 25
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 25
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 53
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 53
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p udp --dport 53
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p udp --sport 53
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 80
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 80
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 110
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 110
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 119
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 119
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 143
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 143
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --dport 443
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 443
+
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 20
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 20
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 21
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 21
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 22
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 22
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 23
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 23
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 25
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 25
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 53
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 53
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p udp --dport 53
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p udp --sport 53
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 80
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 80
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 110
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 110
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 119
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 119
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 143
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 143
+iptables -t filter -A FORWARD -i $Client_2 -s $Client_2_Subnet -p tcp --dport 443
+iptables -t filter -A FORWARD -o $Client_2 -d $Client_2_Subnet -p tcp --sport 443
+
+etc.  These rules will have their counter incremented for every packet that passes to or from one of your client's interfaces and subnets.  This way you will have an idea how much traffic of each type they generate.
+
+If you were really curious you could do something like the following too:
+
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --sport 0:1023 --dport 80
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 80 --dport 0:1023
+iptables -t filter -A FORWARD -i $Client_1 -s $Client_1_Subnet -p tcp --sport 1024:65535 --dport 80
+iptables -t filter -A FORWARD -o $Client_1 -d $Client_1_Subnet -p tcp --sport 80 --dport 1024:65535
+
+This will tell you the amount of traffic for each type originating from the non ephemeral range and how much traffic is originating from the ephemeral range.  IMHO *MOST* if not all of the client web traffic to web servers should originate from ephemeral ports.
 
 
---=20
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+
+Grant. . . .
 
