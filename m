@@ -1,8 +1,12 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: snat
-Date: Mon, 2 May 2005 17:32:42 +0200
-Message-ID: <BAY22-DAV73016DEEEE8DDD0EFAE2FB2270@phx.gbl>
+From: Daniel Lopes <lopsch@lopsch.com>
+Subject: Re: rules for skype
+Date: Mon, 02 May 2005 17:36:57 +0200
+Message-ID: <42764919.60507@lopsch.com>
+References: <20050502150901.DAEF39E9F4@dd6816.kasserver.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050502150901.DAEF39E9F4@dd6816.kasserver.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,23 +17,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello everybody.
-I would like to better understand the SNAT target.
-Man states:
-
-"You can add several --to-source option. If you specify
-more than one source address, either via an address range
-or multiple --to-source options, a simple round-robin  (one
-after another in cycle) takes place between these addresses.
-
-I would like to know if this round-robin cycle is per packet
-or per socket.
-
-TIA
-
+Seferovic Edvin schrieb:
+> I think that you can stop ALL https connections with squid.. if you wan=
+t of
+> course... but then, I dont know if there is such way as you described i=
+t. A
+> very good ACL implementation is squidGuard.
+>=20
+> But hey.. why do you want to stop skype?
+>=20
+> Regards,
+>=20
+> Edvin Seferovic
+>=20
+I can also block https by blocking port 443 that=B4s not the point. The=20
+point is to block "bad" 443 port traffic and let "good" traffic pass.
 
