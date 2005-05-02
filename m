@@ -1,12 +1,13 @@
-From: Dave Cinege <dcinege-mlists-dated-1115501355.b43282@psychosis.com>
-Subject: Re: Linux forwarding Win XP hosts VERY slowly
-Date: Mon, 2 May 2005 17:29:10 -0400
-Message-ID: <200505021729.10673.dcinege-mlists@psychosis.com>
-Reply-To: dcinege-mlists@psychosis.com
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: On vanilla Fedora 3, can't do a transparent proxy (-j REDIRECT)
+Date: Mon, 02 May 2005 16:55:06 -0500
+Message-ID: <4276A1BA.9040603@riverviewtech.net>
+References: <df31c4040505021142197fdcdc@mail.gmail.com>	<df31c40405050213556ddc65b2@mail.gmail.com>	<20050502210104.GB12530@bender.817west.com>	<200505021812.37561.ramoni@databras.com.br>
+	<df31c404050502141865ca509c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <df31c404050502141865ca509c@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +18,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: "Taylor, Grant" <gtaylor@riverviewtech.net>
 
-On Wednesday 31 December 1969 18:59, netfilter-request@lists.netfilter.org=
-=20
-wrote:
+Thank you Ramoni, you beat me to the punch.  The PREROUTING chain is for packets inbound and forwarding through the host (I believe), not packets that are generated on the box and will be going out to the world.  For packets generated on the box and going out to the world the OUTPUT chain is what you want to add your rules to.
 
-> I'm going to presume that the different subnet's from your eth1 and your
-> iptables rule 172.27.1.0/30 vs 172.27.0.0/30 was a typo.
+IMHO there is nothing wrong with testing from the box that is doing the (trans)proxying it's self, you just have to be aware that it will follow different rules than the rest of the network.  The same applies for IPSec VPNs via (Free|Open)SWAN.  I personally always start testing from the firewall it's self via pings, but I include the "-I" parameter to tell ping what IP to use thus emulating traffic that will be coming in from the LAN vs just going out via the WAN.  IMHO this is better in the long run to know how to do as you can do some preliminary testing via SSH connections with out having to have any access to a client system.  Thus you should know how to do the testing from the firewall it's self.
 
-I'm going to presume you saying 172.27.1.0/30 vs 172.27.0.0/30 was a=20
-typo.  ;  ) I'm lazy in the code that generates these rules and I just use=
-=20
-ip/mask. iptables seems to be intelligent enough to round down to the netwo=
-rk=20
-address. It does seem to work....
 
-# /sbin/iptables -t nat -I POSTROUTING -o eth1 -d 172.27.0.2/255.255.255.25=
-2 \
-=2Dj SNAT --to-source 172.27.0.2
 
-# iptables -t nat -L -n
-=2E..
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-SNAT       all  --  0.0.0.0/0            172.27.0.0/30      to:172.27.0.2
-
-> I'm not sure what to say. =A0I'm at a loss as to what might be causing
-> problems. =A0At this point I would start sniffing as much traffic as I co=
-uld
-> on all the networks going in and out of devices that you are working with.
-> =A0What you are trying to do looks reasonable to me. =A0I don't see any
-> inherent flaws in what you are trying to do. =A0But that is just my eyes,=
- see
-> what the rest of the list has to say.
-
-Well I will see if adding a 'clamp-mss-to-pmtu' rule makes any difference.=
-=20
-Beyond that the next step is to build a unit and XP box and leave them=20
-connected a few days until problems start. If problems start. I've yet to
-see these issues in-shop at all.
-
-Dave
-
+Grant. . . .
 
