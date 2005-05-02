@@ -1,13 +1,12 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: [SPAM] Re: rules for skype
-Date: Mon, 02 May 2005 14:33:44 -0500
-Message-ID: <42768098.3090709@riverviewtech.net>
-References: <20050502150901.DAEF39E9F4@dd6816.kasserver.com><42764919.60507@lopsch.com>	<42764E36.7080300@riverviewtech.net><BAY107-DAV7808D3CABD608123BCF2CB7270@phx.gbl>	<42765EE7.7040205@riverviewtech.net>
-	<BAY107-DAV9D47163CC3C594D794B10B7270@phx.gbl>
+Subject: Re: On vanilla Fedora 3, can't do a transparent proxy (-j REDIRECT)
+Date: Mon, 02 May 2005 14:42:52 -0500
+Message-ID: <427682BC.6000303@riverviewtech.net>
+References: <df31c4040505021142197fdcdc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY107-DAV9D47163CC3C594D794B10B7270@phx.gbl>
+In-Reply-To: <df31c4040505021142197fdcdc@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,35 +20,14 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> For the layer-7 patterns to work with iptables, you have to patch 
-> iptables. Here is the layer7 project URL:
-> http://l7-filter.sf.net
+> /proc/sys/net/ipv4/ip_forward shows: 1
 
-*nod*  I've played with layer 7 pattern matching before on my test router at home and was very impressed with it.  :)
+...
 
-> Note: They have a skype pattern matching only the voice traffic. For 
-> some reason they don't have the one that matches the authentication 
-> packets.
+> Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+>  pkts bytes target     prot opt in     out     source               destination
 
-Interesting...
-
-> Here is the one I use:
-> ------- begin-----
-> skype
-> ^\x16\x03\x01$|^\x17\x03\x01$
-> -------end-------
-
-Thanks.
-
->> *nod*  This is unfortunately the very nature of these troublesome 
->> protocols.  I'd also appreciate seeing your config if you could show 
->> it to us.
-> 
-> Sorry. Could you please tell me what config you are talking about?
-
-As Curly from the Three Stooges would say "Soytenly!"
-
-I'm interested in your iptables script (iptables-save) and tc script to see how you are doing things.  This is more personal interest to see how others are doing things to see if I can gain any pointers.
+I'm not trying to doubt you but either you took the info from iptables before any traffic has passed through the forward chain or there is a problem that is preventing traffic from traversing the forward chain.  You did say that you set ip_forward to 1 which should allow traffic to be forwarded.  Do an iptables -L -n -v to see if any traffic passing through your forward chain.
 
 
 
