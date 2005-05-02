@@ -1,7 +1,7 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: rules for skype
-Date: Mon, 02 May 2005 01:14:42 -0500
-Message-ID: <4275C552.5060703@riverviewtech.net>
+Subject: Re: rules for skype  (URL in this one)
+Date: Mon, 02 May 2005 01:16:37 -0500
+Message-ID: <4275C5C5.7020600@riverviewtech.net>
 References: <90ba0390f499.90f49990ba03@vsnl.net>	<a0f69e50505010246227a187f@mail.gmail.com>
 	<42755162.4090509@riverviewtech.net>
 Mime-Version: 1.0
@@ -25,4 +25,12 @@ To: netfilter@lists.netfilter.org
 > send you.  (If you want this PDF I'll find the URL to it and post it to 
 > the list or email individually as I don't think the list would like a 
 > PDF sent to it.)...
+
+The URL is http://www.cs.columbia.edu/~library/TR-repository/reports/reports-2004/cucs-039-04.pdf
+
+
+
+Grant. . . .
+
+P.S.  Sorry for the double post.  VNCing to the office and control keys don't work the best.
 
