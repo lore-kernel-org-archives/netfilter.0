@@ -1,13 +1,11 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Delay in responding caused by netfilter ?
-Date: Mon, 02 May 2005 02:50:06 -0500
-Message-ID: <4275DBAE.3040702@riverviewtech.net>
-References: <42721F84.6080503@mnemon.de>	<200504290937.49507.Alistair@nerdnet.ca>	<20050429142517.GA1074@bender.817west.com>
-	<4273031B.20009@riverviewtech.net>
+From: Mogens Valentin <monz@danbbs.dk>
+Subject: TCP_CONNTRACK_ESTABLISHED 5days
+Date: Mon, 02 May 2005 15:32:50 +0200
+Message-ID: <42762C02.8060300@danbbs.dk>
+Reply-To: monz@danbbs.dk
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4273031B.20009@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,18 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-> Rather than allowing ident would it be possible to do a REJECT (via 
-> iptables -t filter -A OUTPUT -j REJECT) (I'm not sure if this can be a 
-> policy or not) that way the ident will fail immediately verses timing 
-> out?  That is if you don't want the ident to happen.  Seeing as how a 
-> LOT of servers don't even support ident any more this might just as well 
-> be an option.
+(Sent this to the linux-net list; seems this list is more appropriate. 
+Sorry for any inconvenient xposting)
 
-I have written some rules and posted them to the mail list (see https://lists.netfilter.org/pipermail/netfilter/2005-May/060150.html) on how to REJECT Ident (Auth) queries only for systems that you have recently sent SMTP traffic to.  It would be fairly easy to extend it to work for Pop3 as well.  Take a look if you are interested.
+I fail to understand why TCP_CONNTRACK_ESTABLISHED has to be 5 days.
+It's not configurable from /proc, but I see nothing wrong in changing 
+the source to, say, 1 day.
+Would someone educate me, pls.
 
+/usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c :
 
+static unsigned long tcp_timeouts[]
+= { 30 MINS,    /*      TCP_CONNTRACK_NONE,     */
+    5 DAYS,     /*      TCP_CONNTRACK_ESTABLISHED,      */
+    2 MINS,     /*      TCP_CONNTRACK_SYN_SENT, */
+    60 SECS,    /*      TCP_CONNTRACK_SYN_RECV, */
+    2 MINS,     /*      TCP_CONNTRACK_FIN_WAIT, */
+    2 MINS,     /*      TCP_CONNTRACK_TIME_WAIT,        */
+    10 SECS,    /*      TCP_CONNTRACK_CLOSE,    */
+    60 SECS,    /*      TCP_CONNTRACK_CLOSE_WAIT,       */
+    30 SECS,    /*      TCP_CONNTRACK_LAST_ACK, */
+    2 MINS,     /*      TCP_CONNTRACK_LISTEN,   */
+};
 
-Grant. . . .
+-- 
+Kind regards,
+Mogens Valentin
+
 
