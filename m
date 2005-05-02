@@ -1,12 +1,13 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
 Subject: Re: rules for skype
-Date: Mon, 02 May 2005 10:56:56 -0500
-Message-ID: <42764DC8.70904@riverviewtech.net>
-References: <200505021507.j42F7cIb004153@rti02.co-lo.riverviewtech.net>
+Date: Mon, 02 May 2005 10:58:46 -0500
+Message-ID: <42764E36.7080300@riverviewtech.net>
+References: <20050502150901.DAEF39E9F4@dd6816.kasserver.com>
+	<42764919.60507@lopsch.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200505021507.j42F7cIb004153@rti02.co-lo.riverviewtech.net>
+In-Reply-To: <42764919.60507@lopsch.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,14 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> But hey.. why do you want to stop skype?
+> I can also block https by blocking port 443 that=B4s not the point. The=
+=20
+> point is to block "bad" 443 port traffic and let "good" traffic pass.
 
-As a consultant / network administrator some of my clients have sensitive environments where they need to control what goes in to and out of their network.  As such for in house instant messaging I'm going to implement Jabber.  There is no need for such as Skype for their day to day business needs.  If they ever do need any thing like it we will address that need when it arises.  I also have other clients who only want people to use the net for research and do not want to have to pay for the bandwidth that things such as Skype would use.  I'm more after blocking the P2P file sharing capability of Skype than I am the voice apps.  If people do need to communicate via VoIP I'll probably end up installing Asterisk and handing out soft phones.
+One thing that might be able to be done is to limit on the amount of traf=
+fic that can pass through any given HTTPS (443) connection.  Namely if an=
+ HTTPS connection is on going and has carried a meg of data or more (any =
+thing that would be more than any legitimate HTTPS web submit would be) y=
+ou could probably know that the traffic was not standard HTTPS traffic an=
+d thus safe to shut down.  This might trap some STunnel (?) (SSL tunnelin=
+g) but then you would know the IP of the other end and you could explicit=
+ly allow ongoing HTTPS connections to that IP.  This amount of data match=
+ could possibly be matched via the "connbyes" match extension from Patch =
+- O - Matic Extra Repository.
 
 
 
 Grant. . . .
+
+
 
