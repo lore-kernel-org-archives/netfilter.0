@@ -1,16 +1,11 @@
-From: "John G. Norman" <john.g.norman@gmail.com>
-Subject: Re: On vanilla Fedora 3, can't do a transparent proxy (-j REDIRECT)
-Date: Mon, 2 May 2005 17:18:21 -0400
-Message-ID: <df31c404050502141865ca509c@mail.gmail.com>
-References: <df31c4040505021142197fdcdc@mail.gmail.com>
-	<df31c40405050213556ddc65b2@mail.gmail.com>
-	<20050502210104.GB12530@bender.817west.com>
-	<200505021812.37561.ramoni@databras.com.br>
-Reply-To: john@7fff.com
+From: Dave Cinege <dcinege-mlists-dated-1115501355.b43282@psychosis.com>
+Subject: Re: Linux forwarding Win XP hosts VERY slowly
+Date: Mon, 2 May 2005 17:29:10 -0400
+Message-ID: <200505021729.10673.dcinege-mlists@psychosis.com>
+Reply-To: dcinege-mlists@psychosis.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200505021812.37561.ramoni@databras.com.br>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,66 +18,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
-To: Ramoni <ramoni@databras.com.br>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+Cc: "Taylor, Grant" <gtaylor@riverviewtech.net>
 
-Ramoni,
+On Wednesday 31 December 1969 18:59, netfilter-request@lists.netfilter.org=
+=20
+wrote:
 
-Thank you (and Jason) very, very much. I didn't know that the
-prerouting chain for the nat table is not valid for locally generated
-packets.
+> I'm going to presume that the different subnet's from your eth1 and your
+> iptables rule 172.27.1.0/30 vs 172.27.0.0/30 was a typo.
 
-Just to get this into the thread: Why is the output chain the right
-place for locally generated packets?
+I'm going to presume you saying 172.27.1.0/30 vs 172.27.0.0/30 was a=20
+typo.  ;  ) I'm lazy in the code that generates these rules and I just use=
+=20
+ip/mask. iptables seems to be intelligent enough to round down to the netwo=
+rk=20
+address. It does seem to work....
 
-I.e., if I did want a request to port 80 from the local machine to get
-redirected to port 8080, what would I do?
+# /sbin/iptables -t nat -I POSTROUTING -o eth1 -d 172.27.0.2/255.255.255.25=
+2 \
+=2Dj SNAT --to-source 172.27.0.2
 
-John
+# iptables -t nat -L -n
+=2E..
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+SNAT       all  --  0.0.0.0/0            172.27.0.0/30      to:172.27.0.2
 
-On 5/2/05, Ramoni <ramoni@databras.com.br> wrote:
-> And the prerouting chain at the nat table is not valid for locally genera=
-ted
-> packets.
-> The output chain is for that.
->=20
-> But in all cases, I think Jason is right.
->=20
-> On Monday 02 May 2005 18:01, Jason Opperisano wrote:
-> > On Mon, May 02, 2005 at 04:55:00PM -0400, John G. Norman wrote:
-> > > Here's a transcript:
-> > >
-> > > [root@preview ~]# /sbin/iptables -t filter -F
-> > > [root@preview ~]# /sbin/iptables -t mangle -F
-> > > [root@preview ~]# /sbin/iptables -t nat -F
-> > > [root@preview ~]# cat /proc/sys/net/ipv4/ip_forward
-> > > 1
-> > > [root@preview ~]# /sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp
-> > > --dport 80 80 -j REDIRECT --to-port 80
-> > > [root@preview ~]# wget http://localhost >/dev/null
-> >
-> > your problem is your testing methodology.  do not try and test
-> > transparent proxying from the proxy machine itself--it's not a valid
-> > test of what you really want; which is transparent proxying of client
-> > requests made from machines behind the proxy.
-> >
-> > start testing from behind the firewall/proxy and see if you still have
-> > problems.
-> >
-> > -j
-> >
-> > --
-> > "Stewie: It rubs the lotion on its skin or else it gets the hose again.=
-"
-> >         --Family Guy
->=20
-> --
-> Andr=E9 "Ramoni" (Cabelo)
-> Redes / Linux
-> Nada de Windows
-> Databras Informatica
-> Tel: (21) 2518-2363
-> Fax: (21) 2263-6830
->=20
->
+> I'm not sure what to say. =A0I'm at a loss as to what might be causing
+> problems. =A0At this point I would start sniffing as much traffic as I co=
+uld
+> on all the networks going in and out of devices that you are working with.
+> =A0What you are trying to do looks reasonable to me. =A0I don't see any
+> inherent flaws in what you are trying to do. =A0But that is just my eyes,=
+ see
+> what the rest of the list has to say.
+
+Well I will see if adding a 'clamp-mss-to-pmtu' rule makes any difference.=
+=20
+Beyond that the next step is to build a unit and XP box and leave them=20
+connected a few days until problems start. If problems start. I've yet to
+see these issues in-shop at all.
+
+Dave
+
 
