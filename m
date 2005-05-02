@@ -1,16 +1,12 @@
-From: Mogens Valentin <monz@danbbs.dk>
+From: Moritz Gartenmeister <moritz.gartenmeister@access.unizh.ch>
 Subject: Re: TCP_CONNTRACK_ESTABLISHED 5days
-Date: Tue, 03 May 2005 12:48:22 +0200
-Message-ID: <427756F6.9000803@danbbs.dk>
-References: <42762C02.8060300@danbbs.dk>
-	<427634ED.1030204@danbbs.dk>	<427639CD.6080107@riverviewtech.net>
-	<42764CF2.9060503@danbbs.dk>
-	<1403218a0505030123f2e857c@mail.gmail.com>
-Reply-To: monz@danbbs.dk
+Date: Mon, 02 May 2005 16:19:34 +0200
+Message-ID: <427636F6.3080008@access.unizh.ch>
+References: <42762C02.8060300@danbbs.dk> <427634ED.1030204@danbbs.dk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a0505030123f2e857c@mail.gmail.com>
+In-Reply-To: <427634ED.1030204@danbbs.dk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,49 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
-Cc: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+To: monz@danbbs.dk
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Mohamed Eldesoky wrote:
-> On 5/2/05, Mogens Valentin <monz@danbbs.dk> wrote:
+> Moritz, thanks for pointing that out.
+> Your suggested 10 minutes seems a bit short, though..
 > 
->>Taylor, Grant wrote:
->>
->>>>Moritz, thanks for pointing that out.
->>>>Your suggested 10 minutes seems a bit short, though..
->>>
->>>
->>>I would not set ip_conntrack_tcp_timeout_established to any thing lower
->>>than tcp_fin_timeout.  I would be tempted to set
->>>ip_conntrack_tcp_timeout_established to approximately double what
->>>tcp_fin_timeout is set to.  I don't know of any reason that conntrack
->>>would need to keep things for twice tcp_fin_timeout, but I'd rather be
->>>safe than sorry.  Besides even double of tcp_fin_timeout is CONSIDERABLY
->>>less than 5 days.
->>
->>Hmm, dunno if various distros set tcp_fin_timeout differently.
->>With 2.6.10, it's 60 secs (not a distro kernel, and I didn't set this).
->>Are you saying that Mouritz' 10mins will in some (distro?) cases violate
->>   ip_conntrack_tcp_timeout_established >= tcp_fin_timeout * 2 ?
->>
-> 
-> 
-> In debian3.1 it is 5 days too !!!
+> If we keep, say, a browser connection open longer than those 10m, it's 
+> supposed to either use keepalive, or an established session will simply 
+> be setup for another 10m, right?
 
-Yes, it's kernel defined, distros doesn't set it any differently, AFAIK.
+hm... depends on a few factors.
+a normal browser session should be closed after GET has delivered all data, there is no need to keep 
+the connection established.
+e.g. online-banking should use keepalive not only for this purpose.
+and it depends on your other firewall settings (syn flag etc).
 
-> The question now, what troubles would happen if we kep it/changed it !?!?!
+i got 500 clients, nobody claimed any troubles so far.
 
-None. When sessions timeout, so be it. When need be, a new session will 
-be setup. Works fine for me now.
+> Won't that create some additional load for a busy server, i.e. something 
+> else that this thought-of browser session?
 
--- 
-Kind regards,
-Mogens Valentin
+hm... there may exist some application, which need this, but i never saw one.
 
+> To the maintainer of ip_conntrack_proto_tcp.c (Paul Russell?):
+> Wouldn't it be fair to change TCP_CONNTRACK_ESTABLISHED permanently?
 
-Horse dropping have an easy life,
-they don't have to work and can smoke..
-   -- Mogens Valentin
+the question is, what would be a good value?
+everyone can change this value in a easy way.
 
 
