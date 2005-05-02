@@ -1,12 +1,12 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: snat
-Date: Mon, 02 May 2005 11:07:38 -0500
-Message-ID: <4276504A.7040103@riverviewtech.net>
-References: <BAY22-DAV73016DEEEE8DDD0EFAE2FB2270@phx.gbl>
+Subject: Re: netfilter Digest, Vol 10, Issue 4
+Date: Mon, 02 May 2005 11:10:44 -0500
+Message-ID: <42765104.6090207@riverviewtech.net>
+References: <200505021207.01267.dcinege-mlists@psychosis.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY22-DAV73016DEEEE8DDD0EFAE2FB2270@phx.gbl>
+In-Reply-To: <200505021207.01267.dcinege-mlists@psychosis.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,22 +20,10 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Marco Berizzi wrote:
-> Hello everybody.
-> I would like to better understand the SNAT target.
-> Man states:
-> 
-> "You can add several --to-source option. If you specify
-> more than one source address, either via an address range
-> or multiple --to-source options, a simple round-robin  (one
-> after another in cycle) takes place between these addresses.
-> 
-> I would like to know if this round-robin cycle is per packet
-> or per socket.
-> 
-> TIA
+> Yes. In my last example of the slow browing to an attached linksys, I was 
+> using Firefox on XP. Previously I had thought it was all IE, but it's not.
 
-Don't hold me to this, but I think that the SAME target will implement some SNATing across multiple IPs and ensure that any given connection and possibly system will get the ""same source IP (hens the name) as it goes out.  Can any one back me up on this?
+Am I reading this correctly?  Are you experiencing slow downs in connections to a Linksys's (device) management web page that is connected to the same network on the same subnet?  Translated are you experiencing slow downs in connections to a equipment when the traffic is not passing through your router?
 
 
 
