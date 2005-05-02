@@ -1,12 +1,9 @@
-From: "Ken Hilliard" <ken@acotec.com>
-Subject: RE: snat
-Date: Mon, 2 May 2005 10:14:14 +0700
-Message-ID: <000301c54ec5$0a0d1300$5f01a8c0@compaq>
-References: <20050502180627.GA11940@bender.817west.com>
+From: Brian Neu <proclivity76@yahoo.com>
+Subject: Urgent:  IPsec patches to 2.6.11.8 gives nf_reset is not known
+Date: Mon, 2 May 2005 11:19:57 -0700 (PDT)
+Message-ID: <20050502181957.29492.qmail@web51901.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050502180627.GA11940@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,52 +15,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Jason Opperisano' <opie@817west.com>, netfilter@lists.netfilter.org
-
-Much thanks.
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jason
-Opperisano
-Sent: Tuesday, May 03, 2005 1:06 AM
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: Re: snat
 
-On Mon, May 02, 2005 at 09:52:14AM +0700, Ken Hilliard wrote:
-> Hey, I'm pretty new to iptables. Where can I get a list of all these
-> iptables targets. For example, I never heard of (or read about) the
-SAME
-> target.
+I thought maybe I had identified a bug, but my
+bugzilla post about patchomatic installation problems
+was grouped into an IPsec functional bug.
 
-browse the descriptions at the netfilter site (or mirror of your
-choosing):
+https://bugzilla.netfilter.org/bugzilla/show_bug.cgi?id=328
 
-  http://netfilter.org/patch-o-matic/pom-submitted.html
-  http://netfilter.org/patch-o-matic/pom-pending.html
-  http://netfilter.org/patch-o-matic/pom-base.html
-  http://netfilter.org/patch-o-matic/pom-extra.html
+I'm looking for a solution to patch the kernel
+successfully.  I read posts about people getting this
+working, but can't figure out what I'm doing wrong.
 
-or--if your prefer, browse the help and info files directly from the SVN
-repository:
 
-  http://svn.netfilter.org/cgi-bin/viewcvs.cgi/trunk/patch-o-matic-ng/
 
-or--checkout your own copy of PoM from SVN, and browse the files in your
-local copy (if you ever actually want to apply any of the patches, this
-is probably the best route to go):
+Here is what I get when I try Patch-o-matic . . . . 
 
-  svn co https://svn.netfilter.org/netfilter/trunk/patch-o-matic-ng
 
-HTH...
+Welcome to Patch-o-matic ($Revision: 3733 $)!
 
--j
+Kernel:   2.6.11, /usr/src/linux-2.6.11.8
+Iptables: 1.3.1, /usr/src/iptables
+Each patch is a new feature: many have minimal impact,
+some do not.
+Almost every one has bugs, so don't apply what you
+don't need!
+-------------------------------------------------------
+Already applied: CLASSIFY SAME addrtype comment
+hashlimit realm sctp 
+NETMAP iprange
 
---
-"Grinch: You think you have won, you think all is well. Well kiss my
- green ass, I'll see you in hell."
-        --Family Guy
+Testing ipsec-01-output-hooks... not applied
+The ipsec-01-output-hooks patch:
+   Author: Patrick McHardy <kaber@trash.net>
+   Status: Testing, should be fine
 
+[NETFILTER+IPSEC 1/4]
+
+This patch adds new output hooks for IPsec. Packets
+traverse the hooks 
+like this:
+
+1. -> (plain) FORWARD   -> POST_ROUTING -> (encrypted)
+LOCAL_OUT -> 
+POST_ROUTING
+2. -> (plain) LOCAL_OUT -> POST_ROUTING -> (encrypted)
+LOCAL_OUT -> 
+POST_ROUTING
+-----------------------------------------------------------------
+Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?]
+y
+ipsec-01-output-hooks has dependency on nf_reset, but
+nf_reset is not 
+known
+ipsec-01-output-hooks has dependency on nf_reset, but
+nf_reset is not 
+known
+-----------------------------------------------------------------
 
 
 
