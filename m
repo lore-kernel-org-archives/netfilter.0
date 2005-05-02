@@ -1,12 +1,12 @@
-From: Dave Cinege <dcinege-mlists-dated-1115486436.908b88@psychosis.com>
-Subject: Re: Linux forwarding Win XP hosts VERY slowly
-Date: Mon, 2 May 2005 13:20:33 -0400
-Message-ID: <200505021320.33441.dcinege-mlists@psychosis.com>
-Reply-To: dcinege-mlists@psychosis.com
+From: "Deepak Seshadri" <d_s123@hotmail.com>
+Subject: Re: rules for skype
+Date: Mon, 2 May 2005 13:42:27 -0400
+Message-ID: <BAY107-DAV9D47163CC3C594D794B10B7270@phx.gbl>
+References: <20050502150901.DAEF39E9F4@dd6816.kasserver.com><42764919.60507@lopsch.com>	<42764E36.7080300@riverviewtech.net><BAY107-DAV7808D3CABD608123BCF2CB7270@phx.gbl>
+	<42765EE7.7040205@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,44 +17,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
 To: netfilter@lists.netfilter.org
-Cc: "Taylor, Grant" <gtaylor@riverviewtech.net>
 
-On Wednesday 31 December 1969 18:59, netfilter-request@lists.netfilter.org=
-=20
-wrote:
+>> - Block the authentication servers' IPs. The last I knew there were only 
+>> 2 servers for authentication. Their IPs are given in that pdf document. I 
+>> am not aware if they have added new servers now.
+>
+> *nod*  I had thought of this one as well.  Though I don't know how long 
+> lived this will be before Skype gets around this too.
+>
+>> - Use Layer-7 pattern. Again, the layer-7 pattern has worked for some and 
+>> not worked for many. It has worked for me.
+>> My network scenario: The network I manage has private addresses 
+>> throughout. I think it has something to do with NAT and private 
+>> addressing because in my case when the client tries to authenticate with 
+>> the server the hex-pattern of those UDP packets stays the same throughout 
+>> every session. This has not been true in every case. You can give it a 
+>> shot.
+>
+> Is there any way that you could share with us the layer 7 filters that you 
+> use?
 
-Grant,
+For the layer-7 patterns to work with iptables, you have to patch iptables. 
+Here is the layer7 project URL:
+http://l7-filter.sf.net
 
-> =A0 1) =A0Check to make sure that it is not a ""windowing issue, i.e. the
-> MTU/MRU, MSS, etc.=20
+Note: They have a skype pattern matching only the voice traffic. For some 
+reason they don't have the one that matches the authentication packets.
 
-Thanks for the hint. Looks like I should have some default 'clamp' rules as=
- a=20
-start.
+Here is the one I use:
+------- begin-----
+skype
+^\x16\x03\x01$|^\x17\x03\x01$
+-------end-------
 
-iptables -t filter -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS=20
-=2D-clamp-mss-to-pmtu=20
+Copy-paste the section between begin & end to a file named skype.pat.
+Follow the instructions provided on the layer-7 filter webpage on how to use 
+the pattern in your rule-set.
 
-Correct? What about the traffic going to the appliance? This rule fails on=
-=20
-INPUT....
+>
+>> - Use *tc* to choke the skype traffic. I have a list of apps to allow 
+>> through the network. The rest go into a default pipe of 2 Kbps. This 
+>> deteriorates the performance of the application. I think text chatting 
+>> will still go through but voice chatting, file sharing and all gets 
+>> choked.
+>> NOTE: I have had better success not blocking its default ports. That way 
+>> I can keep it away from the standard Internet ports and thus easily 
+>> classify it into the default pipe.
+>
+> Interesting.  I would not have thought of allowing just enough of the 
+> traffic so that you could identify it and sort of attempt to control it. 
+> However this would not be acceptable to some of my clients.  I'll keep 
+> that in mind as a technique to deal with vicious protocols in the future. 
+> Thanks.  :)
+>
+>> Now given the nature of this application, some things might work for you 
+>> and some might not. I thought I would share my knowledge on this ....
+>
+> *nod*  This is unfortunately the very nature of these troublesome 
+> protocols.  I'd also appreciate seeing your config if you could show it to 
+> us.
 
-> 2) =A0I know that XP SP 2 changes the number of TCP/IP=20
-> connections that a computer can have open at any given time. =A0I think t=
-he
-> default prior to XP SP 2 was 50 or there abouts. =A0Now the default for X=
-P SP
+Sorry. Could you please tell me what config you are talking about?
 
-This is a product I'm building. It's not a single Firewall in a shop. Once=
-=20
-it's out of my hands, I have no control over what is connecting to it. None=
- of=20
-these people care their machine is broken. So, I need to do what i can in=20
-Linux on the appliance.   : (
+>
+>
+> Grant. . . .
 
-Dave
-
-
+Deepak 
 
