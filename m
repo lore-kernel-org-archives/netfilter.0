@@ -1,12 +1,12 @@
-From: Dave Cinege <dcinege-mlists-dated-1115482024.a61dc0@psychosis.com>
-Subject: Re: netfilter Digest, Vol 10, Issue 4
-Date: Mon, 2 May 2005 12:07:01 -0400
-Message-ID: <200505021207.01267.dcinege-mlists@psychosis.com>
-Reply-To: dcinege-mlists@psychosis.com
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: snat
+Date: Mon, 02 May 2005 11:07:38 -0500
+Message-ID: <4276504A.7040103@riverviewtech.net>
+References: <BAY22-DAV73016DEEEE8DDD0EFAE2FB2270@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <BAY22-DAV73016DEEEE8DDD0EFAE2FB2270@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> > 1) Forwarded traffic (most notably web) is VERY slow with XP clients.
->
-> have you tried with a proper web browser, such as firefox ? IE is known
-> as not respecting the RFC for TCP and sending the HTTP request as data
-> in the first "SYN" packet (which is only recognised by IIS, of course)
-> so as to 'make' IE appear faster than it really is..
+Marco Berizzi wrote:
+> Hello everybody.
+> I would like to better understand the SNAT target.
+> Man states:
+> 
+> "You can add several --to-source option. If you specify
+> more than one source address, either via an address range
+> or multiple --to-source options, a simple round-robin  (one
+> after another in cycle) takes place between these addresses.
+> 
+> I would like to know if this round-robin cycle is per packet
+> or per socket.
+> 
+> TIA
 
-Yes. In my last example of the slow browing to an attached linksys, I was 
-using Firefox on XP. Previously I had thought it was all IE, but it's not.
-
-Dave
+Don't hold me to this, but I think that the SAME target will implement some SNATing across multiple IPs and ensure that any given connection and possibly system will get the ""same source IP (hens the name) as it goes out.  Can any one back me up on this?
 
 
+
+Grant. . . .
 
