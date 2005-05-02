@@ -1,13 +1,12 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: rules for skype  (URL in this one)
-Date: Mon, 02 May 2005 01:16:37 -0500
-Message-ID: <4275C5C5.7020600@riverviewtech.net>
-References: <90ba0390f499.90f49990ba03@vsnl.net>	<a0f69e50505010246227a187f@mail.gmail.com>
-	<42755162.4090509@riverviewtech.net>
+From: Raphael Jacquot <raphael.jacquot@imag.fr>
+Subject: Re: Linux forwarding Win XP hosts VERY slowly
+Date: Mon, 02 May 2005 09:07:07 +0200
+Message-ID: <4275D19B.7030409@imag.fr>
+References: <200504301341.58023.dcinege-mlists@psychosis.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42755162.4090509@riverviewtech.net>
+In-Reply-To: <200504301341.58023.dcinege-mlists@psychosis.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: dcinege-mlists@psychosis.com
+Cc: netfilter@lists.netfilter.org
 
-> ... I have a PDF on it at the office that I'd be happy to 
-> send you.  (If you want this PDF I'll find the URL to it and post it to 
-> the list or email individually as I don't think the list would like a 
-> PDF sent to it.)...
+Dave Cinege wrote:
+> I've built an advanced rotuign appliance, and I'm having 2 outstanding 
+> problems, that I'm being to think are related to the linux ip/netfilter 
+> stack, choking on XP traffic (possiblity XP-SP2) hosts that are on the LAN. 
+> I'm running 2.4.30 at the moment. 
+> 
+> The 2 problems I'm seeing:
+> 
+> 1) Forwarded traffic (most notably web) is VERY slow with XP clients. 
 
-The URL is http://www.cs.columbia.edu/~library/TR-repository/reports/reports-2004/cucs-039-04.pdf
+have you tried with a proper web browser, such as firefox ? IE is known
+as not respecting the RFC for TCP and sending the HTTP request as data
+in the first "SYN" packet (which is only recognised by IIS, of course)
+so as to 'make' IE appear faster than it really is..
 
+> Example: Saw this last 2 nights ago: Appliance has a linksys Wifi bridge 
+> attached to a NIC. Customer browses through the appliance to the Linksys 
+> config page. It moves like molasses. He browse to the local Zope hosted made 
+> page. Slow as hell. I unplug his machine, and plug my linux laptop into same 
+> switch port. Linksys and Zope pages load adn reload instantly. Plug his 
+> machine in....slow again.
+> 
+> 2) Zope serves user interface pages for the appliance. Zope has been locking 
+> solid for no apparent reason, but only when and Windows host is attached. 
+> The trick is SOME windows machine don't seem to cause a problem.
+> Example: 
+> I worked with a unit for 3 days using a customers XP desktop. Not a hiccup. My 
+> partner came in and attached to the network and starting connect to our 
+> appliance with his XP laptop. Within 15 minutes Zope was hung. 
+> 
+> I'm really lost. ANY ideas out there?
+> 
 
-
-Grant. . . .
-
-P.S.  Sorry for the double post.  VNCing to the office and control keys don't work the best.
+guess it's one more example of how badly Windows' TCP/IP stack is broken
+is so many ways...
 
