@@ -1,12 +1,12 @@
-From: Dave Cinege <dcinege-mlists-dated-1115488236.9c4d41@psychosis.com>
-Subject: Re: Linux forwarding Win XP hosts VERY slowly
-Date: Mon, 2 May 2005 13:50:32 -0400
-Message-ID: <200505021350.32836.dcinege-mlists@psychosis.com>
-Reply-To: dcinege-mlists@psychosis.com
+From: "Ken Hilliard" <ken@acotec.com>
+Subject: RE: snat
+Date: Mon, 2 May 2005 09:52:14 +0700
+Message-ID: <000001c54ec1$f5e5cd20$5f01a8c0@compaq>
+References: <20050502161453.GA11544@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20050502161453.GA11544@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,77 +17,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+To: 'Jason Opperisano' <opie@817west.com>, netfilter@lists.netfilter.org
+
+Hey, I'm pretty new to iptables. Where can I get a list of all these
+iptables targets. For example, I never heard of (or read about) the SAME
+target.
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jason
+Opperisano
+Sent: Monday, May 02, 2005 11:15 PM
 To: netfilter@lists.netfilter.org
-Cc: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: snat
 
-> > Yes. In my last example of the slow browing to an attached linksys, I w=
-as
-> > using Firefox on XP. Previously I had thought it was all IE, but it's
-> > not.
->
-> Am I reading this correctly? =A0Are you experiencing slow downs in
-> connections to a Linksys's (device) management web page that is connected
-> to the same network on the same subnet? =A0Translated are you experiencing
-> slow downs in connections to a equipment when the traffic is not passing
-> through your router?
+On Mon, May 02, 2005 at 11:07:38AM -0500, Taylor, Grant wrote:
+> Marco Berizzi wrote:
+> >Hello everybody.
+> >I would like to better understand the SNAT target.
+> >Man states:
+> >
+> >"You can add several --to-source option. If you specify
+> >more than one source address, either via an address range
+> >or multiple --to-source options, a simple round-robin  (one
+> >after another in cycle) takes place between these addresses.
+> >
+> >I would like to know if this round-robin cycle is per packet
+> >or per socket.
+> >
+> >TIA
+> 
+> Don't hold me to this, but I think that the SAME target will implement
+some 
+> SNATing across multiple IPs and ensure that any given connection and 
+> possibly system will get the ""same source IP (hens the name) as it
+goes 
+> out.  Can any one back me up on this?
 
-No. To get very specific:
+SAME is a way to have a pool of addresses for SNAT, but keep either (a)
+connections between the same src and dst IP SNAT-ed to the same SNAT IP
+or (b) all connections from a single src IP always get the same SNAT IP
+(regardless of dst IP).
 
-Local net
-    eth0: 192.168.1.1 - net/mask 192.168.1.0/24
-Configuration network (special type of network in my appliance)
-    eth1: 172.27.1.2 - net/mask 172.27.0.0/30
+for the sake of completeness, SAME also works for DNAT as well.
 
-The configuration network Masq's:
-/sbin/iptables -t nat -I POSTROUTING -o eth1 -d 172.27.0.2/255.255.255.252 \
-  -j SNAT --to-source 172.27.0.2
+-j
 
-The SNAT to configration networks is to simplify life, as we don't have to=
-=20
-deal with playing with routes back to the local network in the external=20
-devices, (wifi bridges, satellite terminals, etc)
+--
+"Peter: Oh, you people can kiss the fattest part of my ass."
+        --Family Guy
 
-And we normally browse to these devices via IP not hostname.
 
-So to clarify my situtation:
- Depending on what mood Windows is in, browering from a 192.168.1.0/24 host=
- to=20
-172.27.1.1 (linksys bridge in this case) or browsing to 192.168.1.1 (the=20
-appliance itself, running Zope) will become ungodly slow. SOMETIMES it is=20
-just fine.
-
-I am also seeing zope deadlock, which I now believe is related to this=20
-performance problem. When zope locks all other processes are fine, and the=
-=20
-box pings.=20
-
-To expand further on the zope issue:
-A few months ago I was remotly ssh'ed in to an appliance with my partner on=
-=20
-site. Zope had locked. I restarted the process. He connected a few times an=
-d=20
-it locked again. I could not get a head reply back when it locked.=20
-   (telnet 127.0.0.1 < HEAD / HTTP/1.0)
-We restarted it a dozen times with the same thing. It did not stop locking=
-=20
-until we rebooted the machine. All of this was via SSL.=20
-
-It was at this point I figured it was SSL in zope. I turned off SSL access.=
-=20
-Seemed to help but now we're seeing locking, though maybe less frequently.=
-=20
-I was wondering if it was hardware, IRQ, etc. all but ruled that out. As I=
-=20
-mentioned, I just saw everything run perfectly with my laptop, then I plug=
-=20
-the XP machine in, and it dies.
-
-If you can't tell this is really driving us crazy. I've got the simplest of=
-=20
-networks configs, barely any traffic, and it's running like shit with=20
-direclty attached hosts.=20
-
-Dave
 
 
