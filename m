@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: snat
-Date: Mon, 2 May 2005 11:53:28 -0400
-Message-ID: <20050502155328.GA11431@bender.817west.com>
-References: <BAY22-DAV73016DEEEE8DDD0EFAE2FB2270@phx.gbl>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: rules for skype
+Date: Mon, 02 May 2005 10:56:56 -0500
+Message-ID: <42764DC8.70904@riverviewtech.net>
+References: <200505021507.j42F7cIb004153@rti02.co-lo.riverviewtech.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <BAY22-DAV73016DEEEE8DDD0EFAE2FB2270@phx.gbl>
+In-Reply-To: <200505021507.j42F7cIb004153@rti02.co-lo.riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +17,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Mon, May 02, 2005 at 05:32:42PM +0200, Marco Berizzi wrote:
-> Hello everybody.
-> I would like to better understand the SNAT target.
-> Man states:
-> 
-> "You can add several --to-source option. If you specify
-> more than one source address, either via an address range
-> or multiple --to-source options, a simple round-robin  (one
-> after another in cycle) takes place between these addresses.
-> 
-> I would like to know if this round-robin cycle is per packet
-> or per socket.
+> But hey.. why do you want to stop skype?
 
-per connection.
+As a consultant / network administrator some of my clients have sensitive environments where they need to control what goes in to and out of their network.  As such for in house instant messaging I'm going to implement Jabber.  There is no need for such as Skype for their day to day business needs.  If they ever do need any thing like it we will address that need when it arises.  I also have other clients who only want people to use the net for research and do not want to have to pay for the bandwidth that things such as Skype would use.  I'm more after blocking the P2P file sharing capability of Skype than I am the voice apps.  If people do need to communicate via VoIP I'll probably end up installing Asterisk and handing out soft phones.
 
--j
 
---
-"Peter: Don't worry Lois. I'll handle this. I read a book about
- this kind of thing once. 
- Brian: Are you sure it was in a book? Are you sure it
- wasn't...nothing?"
-        --Family Guy
+
+Grant. . . .
 
