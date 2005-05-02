@@ -1,14 +1,12 @@
-From: Mogens Valentin <monz@danbbs.dk>
-Subject: Re: rules for skype
-Date: Mon, 02 May 2005 01:43:26 +0200
-Message-ID: <4275699E.1080102@danbbs.dk>
-References: <90ba0390f499.90f49990ba03@vsnl.net>	<a0f69e50505010246227a187f@mail.gmail.com>
-	<42755162.4090509@riverviewtech.net>
-Reply-To: monz@danbbs.dk
+From: Dave Cinege <dcinege-mlists-dated-1115427134.8327d0@psychosis.com>
+Subject: Re: Linux forwarding Win XP hosts VERY slowly
+Date: Sun, 1 May 2005 20:52:10 -0400
+Message-ID: <200505012052.11014.dcinege-mlists@psychosis.com>
+Reply-To: dcinege-mlists@psychosis.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42755162.4090509@riverviewtech.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,41 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
+Cc: "Taylor, Grant" <gtaylor@riverviewtech.net>
 
-Taylor, Grant wrote:
->> iptables -A FORWARD -p tcp --dport SKYPEPORT -j ACCEPT
-> 
-> 
-> <devilish @^*% eating grin> He, Skype does not have a port (per say). 
-> </devilish @^*% eating grin>
-> 
-> Skype will use just about any port that it can use (all the standards 
-> you would think for internet traffic) to connect to any ""super node 
-> that it can connect to.  unfortunately what qualifies as a Super Node is 
-> any node / computer that is running Skype that is directly connected to 
-> the internet with out a firewall that would inhibit other systems from 
-> connecting directly to it.
+On Wednesday 31 December 1969 18:59, netfilter-request@lists.netfilter.org=
+=20
+wrote:
 
-No wonder, since Skype is based upon the methods as used for Kazaa.
-Damn thing to deny too, as is many other sharing apps...
-AFAIR I found it slightly easier blocking such using ipchains explicit 
-in/out/forward rules, than with iptables and ESTABLISHED,RELATED rules.
+Grant,
 
-> Do a Google for "Skype Protocol" and see 
-> what you find.  I have a PDF on it at the office that I'd be happy to 
-> send you.  (If you want this PDF I'll find the URL to it and post it to 
-> the list or email individually as I don't think the list would like a 
-> PDF sent to it.)  The only way that I've heard to even slow down Skype 
-> is to force it to pass through a proxy, beyond that nothing, that I have 
-> heard of or read about, will stop it.
+> =A0 1) =A0Check to make sure that it is not a ""windowing issue, i.e. the
+> MTU/MRU, MSS, etc.=20
 
-Mind adding me to that list? If so, thanks a lot!
+Thanks for the hint. Looks like I should have some default 'clamp' rules as=
+ a=20
+start.
 
--- 
-Kind regards,
-Mogens Valentin
+iptables -t filter -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS=20
+=2D-clamp-mss-to-pmtu=20
+
+Correct? What about the traffic going to the appliance? This rule fails on=
+=20
+INPUT....
+
+> 2) =A0I know that XP SP 2 changes the number of TCP/IP=20
+> connections that a computer can have open at any given time. =A0I think t=
+he
+> default prior to XP SP 2 was 50 or there abouts. =A0Now the default for X=
+P SP
+
+This is a product I'm building. It's not a single Firewall in a shop. Once=
+=20
+it's out of my hands, I have no control over what is connecting to it. None=
+ of=20
+these people care their machine is broken. So, I need to do what i can in=20
+Linux on the appliance.   : (
+
+Dave
+
 
 
