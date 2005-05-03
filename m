@@ -1,7 +1,8 @@
-From: fabricio bianco abreu <fabricio@tc.df.gov.br>
-Subject: Bind and other services on a DMZ
-Date: Tue,  3 May 2005 14:48:48 -0300
-Message-ID: <20050503174537.09D1C1CE0A@juno.tc.df.gov.br>
+From: Kwang-Hyun.Baek@Dartmouth.EDU (Kwang-Hyun Baek)
+Subject: Making sure my "mangling" doesn't get mangled
+Date: 03 May 2005 16:14:05 EDT
+Message-ID: <51613155@newblitzen.Dartmouth.EDU>
+Reply-To: Kwang-Hyun.Baek@Dartmouth.EDU
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,140 +19,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, folks
+Hello.  I am trying to set up a system where netfilter module that is b=
+uilt-in to the kernel is the only thing that can mangle the packet even=
+tually...in other words, if the user mangles the packet, the kernel can=
+ mangle it later but no other netfilter/iptable can mangle it after the=
+ kernel mangles it.  Does it make sense?  How can I impose such rule? =20=
+Is there a way to do something like that?  I'm using SELinux by the way=
+, and if you know of a way to do that in SELinux, that would be fine, t=
+oo...
 
-I am trying to install a iptables based firewall to protect my servers pr=
-oviding
-information to the Internet in a DMZ fashioned mode.
+Also another thing...is there a way for a program to send a packet dire=
+ctly to the interface thereby bypassing iptables rules that I set up? =20=
+  If there is, is there a way to prevent it?  Thank you.
 
-I need some help to debug the rules I have set up.=20
-
-I will provide some background information:
-
-1. The firewall is a box with two ethernet adapters. The external adapter=
- piles
-two valid adresses (200.x.y.z) and the internel adapter has one invalid a=
-ddress
-(172.16.a.b)
-
-2. One DMZ machine (ip 172.16.0.5) is used to serve smtp, http, https, ft=
-p.
-
-3. Another DMZ machine (ip 172.16.0.2) is a bastion host, serving dns (bi=
-nd) and
-mascarading traffic from my internal network.
-
-As for the firewall (packet filtering) configuration I have set up a bunc=
-h of
-rules. Here are the outputs to the commands "iptables -nL" and "iptables =
--nL -t
-nat"=20
-
-------------------------------------------------------- begin
-Chain INPUT (policy DROP)
-target     prot opt source               destination        =20
-bad_tcp_packets  tcp  --  0.0.0.0/0            0.0.0.0/0          =20
-icmp_packets  icmp --  0.0.0.0/0            0.0.0.0/0          =20
-ACCEPT     all  --  0.0.0.0/0            172.16.0.1         =20
-ACCEPT     all  --  127.0.0.1            0.0.0.0/0          =20
-ACCEPT     all  --  200.x.y.2        0.0.0.0/0          =20
-ACCEPT     all  --  0.0.0.0/0            200.x.y.2       state RELATED,ES=
-TABLISHED=20
-LOG        all  --  0.0.0.0/0            0.0.0.0/0           limit: avg 3=
-/min
-burst 3 LOG flags 0 level 7 prefix `IPT INPUT packet died: '=20
-
-Chain FORWARD (policy DROP)
-target     prot opt source               destination        =20
-bad_tcp_packets  tcp  --  0.0.0.0/0            0.0.0.0/0          =20
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          =20
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state
-RELATED,ESTABLISHED=20
-allowed    tcp  --  0.0.0.0/0            172.16.0.5          multiport dp=
-orts
-20,21,25,80,443=20
-icmp_packets  icmp --  0.0.0.0/0            172.16.0.5         =20
-allowed    tcp  --  0.0.0.0/0            172.16.0.2          tcp dpt:53=20
-ACCEPT     udp  --  0.0.0.0/0            172.16.0.2          udp dpt:53=20
-icmp_packets  icmp --  0.0.0.0/0            172.16.0.2         =20
-LOG        all  --  0.0.0.0/0            0.0.0.0/0           limit: avg 3=
-/min
-burst 3 LOG flags 0 level 7 prefix `IPT FORWARD packet died: '=20
-
-Chain OUTPUT (policy DROP)
-target     prot opt source               destination        =20
-bad_tcp_packets  tcp  --  0.0.0.0/0            0.0.0.0/0          =20
-ACCEPT     all  --  127.0.0.1            0.0.0.0/0          =20
-ACCEPT     all  --  172.16.0.1           0.0.0.0/0          =20
-ACCEPT     all  --  200.x.y.2        0.0.0.0/0          =20
-LOG        all  --  0.0.0.0/0            0.0.0.0/0           limit: avg 3=
-/min
-burst 3 LOG flags 0 level 7 prefix `IPT OUTPUT packet died: '=20
-
-Chain allowed (2 references)
-target     prot opt source               destination        =20
-ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp flags:0x=
-16/0x02=20
-ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state
-RELATED,ESTABLISHED=20
-DROP       tcp  --  0.0.0.0/0            0.0.0.0/0          =20
-
-Chain bad_tcp_packets (3 references)
-target     prot opt source               destination        =20
-LOG        tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
-flags:!0x16/0x02 state NEW LOG flags 0 level 4 prefix `New not syn:'=20
-DROP       tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
-flags:!0x16/0x02 state NEW=20
-DROP       all  --  192.168.0.0/16       0.0.0.0/0          =20
-DROP       all  --  10.0.0.0/8           0.0.0.0/0          =20
-DROP       all  --  172.16.0.0/12        0.0.0.0/0          =20
-
-Chain icmp_packets (3 references)
-target     prot opt source               destination        =20
-ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           icmp type 8=20
-ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           icmp type 11=
-=20
-
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination        =20
-DNAT       tcp  --  0.0.0.0/0            200.x.y.5       multiport dports
-20,21,25,80,443 to:172.16.0.5=20
-DNAT       tcp  --  0.0.0.0/0            200.x.y.2       tcp dpt:53 to:17=
-2.16.0.2=20
-DNAT       udp  --  0.0.0.0/0            200.x.y.2       udp dpt:53 to:17=
-2.16.0.2=20
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination        =20
-SNAT       all  --  172.16.0.5           0.0.0.0/0           to:200.x.y.5=
-=20
-SNAT       all  --  0.0.0.0/0            0.0.0.0/0           to:200.x.y.2=
-=20
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination=20
------------------------------------------------------- end
-
-Are these setting correct?=20
-Is there a reason why a secondary DNS server, outside my DMZ, would not b=
-e able
-to syncronize (initiate a zone transfer) to my firewalled Bind server?
-
-Any comments are welcome.
-
-Thx.
-________________________________________________________________
-
-                     Fabricio=20
-________________________________________________________________
-
-
-
-
-
-
-
-________ Information from NOD32 ________
-This message was checked by NOD32 Antivirus System for Linux Mail Server.
-http://www.nod32.com
+John
 
