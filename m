@@ -1,10 +1,12 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: Re: snat
-Date: Tue, 3 May 2005 15:58:52 +0200
-Message-ID: <BAY22-DAV5B068BEF9AD1450DBD026B2180@phx.gbl>
-References: <BAY22-DAV73016DEEEE8DDD0EFAE2FB2270@phx.gbl>
-	<20050502155328.GA11431@bender.817west.com>
+From: Kirk <whereisgui@gmail.com>
+Subject: rules to allow a machine to join a windows domain
+Date: Tue, 3 May 2005 11:07:03 -0700
+Message-ID: <48be50bb05050311073f5f4d3@mail.gmail.com>
+Reply-To: Kirk <whereisgui@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,30 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Jason Opperisano wrote:
+Hello everyone,
 
-> On Mon, May 02, 2005 at 05:32:42PM +0200, Marco Berizzi wrote:
-> > Hello everybody.
-> > I would like to better understand the SNAT target.
-> > Man states:
-> >
-> > "You can add several --to-source option. If you specify
-> > more than one source address, either via an address range
-> > or multiple --to-source options, a simple round-robin  (one
-> > after another in cycle) takes place between these addresses.
-> >
-> > I would like to know if this round-robin cycle is per packet
-> > or per socket.
->
-> per connection.
->
-> -j
+I need to start moving three windows servers behind a firewall. Could
+someone tell me what ports I need to open so that the servers can join
+a windows domain?
 
-Thanks everybody.
+I already allow access to DNS( udp 53, tcp 53)  and WINS(tcp 137)
+servers but the test server still can't join the domain. The error I
+get is "a domain controller could not be contacted".
 
+I should point out that I'm able to connect to websites from the test
+server and I can connect to the web server I installed for testing
+incoming connections. Also, I'm able to join the domain when I take
+the machine off the firewall.
+
+Any hints will be appreciated.
+Thanks,
+-K
 
