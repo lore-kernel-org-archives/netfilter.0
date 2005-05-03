@@ -1,12 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: SNATTING FTP
-Date: Tue, 3 May 2005 14:30:55 +0200
-Message-ID: <20050503123058.24BC58EDCEB@smtp.sterenborg.info>
-References: <110c7844050503050579575350@mail.gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Setting up a Squid proxy server behind a firewall
+Date: Tue, 3 May 2005 08:35:39 -0400
+Message-ID: <20050503123539.GA14940@bender.817west.com>
+References: <32834.172.16.40.6.1115097787.squirrel@ltsp.pcce>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <110c7844050503050579575350@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <32834.172.16.40.6.1115097787.squirrel@ltsp.pcce>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,52 +18,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> i wanted to do SNAT on FTP connections which are destined 
-> from my local 
-> network to outside network. I tried the SNAT for ssh and it 
-> was working with 
-> the following rule
-> iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -p 
-> tcp -m tcp --dport 22 -m state --state NEW -j SNAT --to
-> 192.168.1.5
+On Tue, May 03, 2005 at 10:53:07AM +0530, lester@pccegoa.org wrote:
+> Hi,
+> I have setup a squid proxy server for our internal network. It works just
+> fine without a firewall setup. When I tried to apply rules to block
+> everything except the ports that squid requires, the proxy failed to get
+> passed the firewall. I have setup squid to use port 3128.
+> The rules applied are below:
+> (eth0 : internal n/w interface
+> eth2 : external n/w interface)
 > 
-> I tried the following rules for FTP but it is no working
+> modprobe ip_conntrack_ftp
 > 
-> iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -p 
-> tcp -m tcp --dport ftp -m state --state 
-> NEW,ESTABLISHED,RELATED -j SNAT --to 
-> 192.168.1.5
+> modprobe iptable_nat
 > 
-> iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -p 
-> tcp -m tcp --sport ftp-data -m state --state 
-> NEW,ESTABLISHED,RELATED -j SNAT 
-> --to 192.168.1.5
+> echo 1 > /proc/sys/net/ipv4/ip_forward
 
-modprobe ip_conntrack_ftp
-modprobe ip_nat_ftp
+is this machine also a packet-filtering, NAT-ing gateway?  if not (your
+rules lead me to believe it is not), you don't need the ftp_conntrack or
+nat module, or IP forwarding enabled.
 
-$IPT -A FORWARD -m state --state RELATED,ESTABLISHED \
-  -j ACCEPT
-# This will handle ftp-data (port 20) as well because
-# it is related to ftp (port 21).
+> iptables --flush
+> iptables -t nat --flush
+> iptables -t mangle --flush
+> 
+> iptables --policy INPUT DROP
+> iptables --policy OUTPUT DROP
+> iptables --policy FORWARD DROP
 
-$IPT -A FORWARD -s 192.168.1.0/24 -p tcp --dport 21 \
-  -j ACCEPT
+bare minimum rules:
 
-$IPT -t nat -A POSTROUTING -s 192.168.1.0/24 -p tcp \
-  --dport 21 -j SNAT --to <ext-ip>
+  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+  iptables -A INPUT -i eth0 -p tcp --syn --dport 3128 -j ACCEPT
+  iptables -A INPUT -i lo -j ACCEPT
 
-If 192.168.1.0/24 is your internal network, then 192.168.1.5 is an
-internal IP too.
-If you want to use ftp from your internal to an external network then
-your SNAT ip would have an external IP, not 192.168.1.5 which is
-internal. My guess is to replace 192.168.1.5 with an IP that is not in
-192.168.1.0/24 (or you made a typo ?).
+  iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+  iptables -A OUTPUT -p tcp --syn --dport 80 \
+    -m owner --uid-owner squid -j ACCEPT
+  iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+  iptables -A OUTPUT -p tcp --syn --dport 53 -j ACCEPT
+  iptables -A OUTPUT -i lo -j ACCEPT
 
+this assumes that squid only proxies HTTP traffic.
 
-Gr,
-Rob
+> What I would like to know is that, does squid use any other ports besides
+> 3128 when contacting the external world?
 
+of course--it uses the same ports that everything else uses for DNS,
+HTTP, etc...
+
+> Or are the rules that I have
+> applied totally wrong? I am using modprobe iptable_nat, echo 1 >
+> /proc/sys/net/ipv4/ip_forward for port forwarding to internal servers.
+> (which works). I have not appended those rules.
+
+i see...
+
+-j
+
+--
+"Peter: Lois, if this is your idea of a joke, you must write for Leno.
+ Stewie: Oh, oh you know, it is so fashionable to take a shot at Jay
+ Leno. The fact is the man's out there every bloody night, with fresh
+ material, and he's charming."
+        --Family Guy
 
