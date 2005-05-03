@@ -1,9 +1,9 @@
-From: "Bryan Althouse" <bryan.althouse@3phoenix.com>
-Subject: segmentation fault on ARM PXA-255
-Date: Mon, 2 May 2005 17:04:17 -0400
-Message-ID: <37247.1981602304$1115121455@news.gmane.org>
+From: lester@pccegoa.org
+Subject: Setting up a Squid proxy server behind a firewall
+Date: Tue, 3 May 2005 10:53:07 +0530 (IST)
+Message-ID: <32834.172.16.40.6.1115097787.squirrel@ltsp.pcce>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,22 +19,48 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 Hi,
+I have setup a squid proxy server for our internal network. It works just
+fine without a firewall setup. When I tried to apply rules to block
+everything except the ports that squid requires, the proxy failed to get
+passed the firewall. I have setup squid to use port 3128.
+The rules applied are below:
+(eth0 : internal n/w interface
+eth2 : external n/w interface)
 
-I have cross-compiled iptables ver. 1.3.0 for an ARM PXA-255 processor with
-a 2.6.7 kernel.  The following patch needed to be applied to the kernel
-before iptables would compile:
-http://www.ussg.iu.edu/hypermail/linux/kernel/0406.2/0754.html.  The
-resulting binaries seemed to be working fine until we tried the following
-command:
-"iptables -t mangle -A OUTPUT -p tcp --dport 3901 -j MARK --set-mark 1".
-This results in a segmentation fault.  I've seen similar behavior when
-kernel support for a needed iptables feature was missing.  But, in this case
-we have compiled into the kernel practically the entire Netfilter feature
-set.
+modprobe ip_conntrack_ftp
 
-Any ideas are greatly appreciated!
+modprobe iptable_nat
 
-Bryan      
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
+iptables --flush
+iptables -t nat --flush
+iptables -t mangle --flush
 
+iptables --policy INPUT DROP
+iptables --policy OUTPUT DROP
+iptables --policy FORWARD DROP
+
+iptables -A INPUT -i eth0 -p tcp --dport 3128 -m state --state NEW -j ACCEPT
+iptables -A OUTPUT -o eth2 -p tcp --sport 3128 -m state --state NEW -j ACCEPT
+
+iptables -t filter -A INPUT -i eth0 -p tcp -m state --state
+RELATED,ESTABLISHED -j ACCEPT
+iptables -t filter -A INPUT -i eth1 -p tcp -m state --state
+RELATED,ESTABLISHED -j ACCEPT
+
+iptables -t filter -A OUTPUT -o eth0 -p tcp -m state --state
+RELATED,ESTABLISHED -j ACCEPT
+iptables -t filter -A OUTPUT -o eth1 -p tcp -m state --state
+RELATED,ESTABLISHED -j ACCEPT
+....
+
+What I would like to know is that, does squid use any other ports besides
+3128 when contacting the external world? Or are the rules that I have
+applied totally wrong? I am using modprobe iptable_nat, echo 1 >
+/proc/sys/net/ipv4/ip_forward for port forwarding to internal servers.
+(which works). I have not appended those rules.
+
+Thanks for your help.
+Lester
 
