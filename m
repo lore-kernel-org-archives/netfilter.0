@@ -1,12 +1,11 @@
-From: Kirk <whereisgui@gmail.com>
-Subject: rules to allow a machine to join a windows domain
-Date: Tue, 3 May 2005 11:07:03 -0700
-Message-ID: <48be50bb05050311073f5f4d3@mail.gmail.com>
-Reply-To: Kirk <whereisgui@gmail.com>
+From: "Fabiano" <Fabiano@drive.com.br>
+Subject: RE: rules to allow a machine to join a windows domain
+Date: Tue, 3 May 2005 15:28:08 -0300
+Message-ID: <88088357DF0F2B4DA8AA6B8826B21BDC5069E6@mailrj.drive.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,8 +16,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
+To: Kirk <whereisgui@gmail.com>, netfilter@lists.netfilter.org
+
+Hi Kirk,
+
+Windows 2000 AD Authentication uses LDAP, so u need to open another =
+ports too, like LDAP: 389 UDP/TCP and 3268 TCP, kerberos: 88 UDP/TCP and =
+maybe another ones, like 135 TCP (RPC Service).
+What version of Windows r u using?
+
+
+-----Original Message-----
+From: Kirk [mailto:whereisgui@gmail.com]
+Sent: ter=E7a-feira, 3 de maio de 2005 15:07
 To: netfilter@lists.netfilter.org
+Subject: rules to allow a machine to join a windows domain
+
 
 Hello everyone,
 
@@ -38,4 +52,5 @@ the machine off the firewall.
 Any hints will be appreciated.
 Thanks,
 -K
+
 
