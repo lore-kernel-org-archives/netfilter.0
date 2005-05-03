@@ -1,15 +1,15 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: rules for skype
-Date: Tue, 03 May 2005 03:50:57 -0400
-Message-ID: <1115106657.14622.62.camel@jasiiitosh.nexusmgmt.com>
-References: <20050502150901.DAEF39E9F4@dd6816.kasserver.com>
-	<42764919.60507@lopsch.com><42764E36.7080300@riverviewtech.net>
-	<BAY107-DAV7808D3CABD608123BCF2CB7270@phx.gbl>
-	<002401c54fb0$33cdc950$2604a8c0@ndchunk>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: TCP_CONNTRACK_ESTABLISHED 5days
+Date: Tue, 3 May 2005 11:23:48 +0300
+Message-ID: <1403218a0505030123f2e857c@mail.gmail.com>
+References: <42762C02.8060300@danbbs.dk> <427634ED.1030204@danbbs.dk>
+	<427639CD.6080107@riverviewtech.net> <42764CF2.9060503@danbbs.dk>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <002401c54fb0$33cdc950$2604a8c0@ndchunk>
+In-Reply-To: <42764CF2.9060503@danbbs.dk>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,38 +21,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Victor Yeo <yeosv@ndc.com.tw>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: monz@danbbs.dk
+Cc: netfilter <netfilter@lists.netfilter.org>, "Taylor,
+	Grant" <gtaylor@riverviewtech.net>
 
-On Tue, 2005-05-03 at 15:17 +0800, Victor Yeo wrote:
-> > - Use *tc* to choke the skype traffic. I have a list of apps to allow
-> > through the network. The rest go into a default pipe of 2 Kbps. This
-> > deteriorates the performance of the application. I think text chatting
-> will
-> > still go through but voice chatting, file sharing and all gets choked.
-> > NOTE: I have had better success not blocking its default ports. That way I
-> > can keep it away from the standard Internet ports and thus easily classify
-> > it into the default pipe.
-> 
-> Where can i find more information on *tc* ? thanks for any reply.
-> 
-> Rgds,
-> Victor
-> 
-<snip>
-You can try 'man tc' and take a look at
-http://lartc.org/howto/index.html
+On 5/2/05, Mogens Valentin <monz@danbbs.dk> wrote:
+> Taylor, Grant wrote:
+> >> Moritz, thanks for pointing that out.
+> >> Your suggested 10 minutes seems a bit short, though..
+> >
+> >
+> > I would not set ip_conntrack_tcp_timeout_established to any thing lower
+> > than tcp_fin_timeout.  I would be tempted to set
+> > ip_conntrack_tcp_timeout_established to approximately double what
+> > tcp_fin_timeout is set to.  I don't know of any reason that conntrack
+> > would need to keep things for twice tcp_fin_timeout, but I'd rather be
+> > safe than sorry.  Besides even double of tcp_fin_timeout is CONSIDERABL=
+Y
+> > less than 5 days.
+>=20
+> Hmm, dunno if various distros set tcp_fin_timeout differently.
+> With 2.6.10, it's 60 secs (not a distro kernel, and I didn't set this).
+> Are you saying that Mouritz' 10mins will in some (distro?) cases violate
+>    ip_conntrack_tcp_timeout_established >=3D tcp_fin_timeout * 2 ?
+>=20
 
-Good luck - John
+In debian3.1 it is 5 days too !!!
 
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+The question now, what troubles would happen if we kep it/changed it !?!?!
 
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
+> Anyway, /usr/src/linux/Documentation/filesystems/proc.txt says
+>=20
+> tcp_fin_timeout
+> ---------------
+> The length of time in seconds it takes to receive a final FIN before the
+> socket is always closed.  This is strictly a violation of the TCP
+> specification, but required to prevent denial-of-service attacks.
+>=20
+> I'm having trouble understanding the 'strictly a violation' part.
+> Is it a (iana) crime to define tcp_fin_timeout?
+>=20
+> --
+> Kind regards,
+> Mogens Valentin
+>=20
+>=20
 
+
+--=20
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
