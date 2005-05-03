@@ -1,11 +1,14 @@
-From: "Fabiano" <Fabiano@drive.com.br>
-Subject: RE: rules to allow a machine to join a windows domain
-Date: Tue, 3 May 2005 17:59:29 -0300
-Message-ID: <88088357DF0F2B4DA8AA6B8826B21BDC5069E8@mailrj.drive.com.br>
+From: Kirk <whereisgui@gmail.com>
+Subject: Re: rules to allow a machine to join a windows domain
+Date: Tue, 3 May 2005 13:37:37 -0700
+Message-ID: <48be50bb05050313376f73d0d8@mail.gmail.com>
+References: <88088357DF0F2B4DA8AA6B8826B21BDC5069E6@mailrj.drive.com.br>
+Reply-To: Kirk <whereisgui@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <88088357DF0F2B4DA8AA6B8826B21BDC5069E6@mailrj.drive.com.br>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,22 +20,7 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
-To: Kirk <whereisgui@gmail.com>, netfilter@lists.netfilter.org
-
-Well man, if you are using ADC, u will need to open these ports: =
-53(T/U),88(T/U),135(TCP),139(TCP),389(T/U),445(TCP) and 691(TCP), and =
-maybe one high port to configure RPC Service to use as outgoing port.
-It's very interesting to use Ethereal to monitor and check what ports =
-are in effective use.
-
-Ok.Hgs.
-
------Original Message-----
-From: Kirk [mailto:whereisgui@gmail.com]
-Sent: ter=E7a-feira, 3 de maio de 2005 17:38
-To: Fabiano; netfilter@lists.netfilter.org
-Subject: Re: rules to allow a machine to join a windows domain
-
+To: Fabiano <Fabiano@drive.com.br>, netfilter@lists.netfilter.org
 
 Thanks Fabiano. I'll try it.
 
@@ -44,9 +32,9 @@ NT4
 On 5/3/05, Fabiano <Fabiano@drive.com.br> wrote:
 > Hi Kirk,
 >=20
-> Windows 2000 AD Authentication uses LDAP, so u need to open another =
-ports too, like LDAP: 389 UDP/TCP and 3268 TCP, kerberos: 88 UDP/TCP and =
-maybe another ones, like 135 TCP (RPC Service).
+> Windows 2000 AD Authentication uses LDAP, so u need to open another ports=
+ too, like LDAP: 389 UDP/TCP and 3268 TCP, kerberos: 88 UDP/TCP and maybe a=
+nother ones, like 135 TCP (RPC Service).
 > What version of Windows r u using?
 >=20
 >=20
