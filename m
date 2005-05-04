@@ -1,13 +1,13 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: Delay in responding caused by netfilter ? [Completely Solved]
-Date: Wed, 04 May 2005 13:27:53 +0200
-Message-ID: <4278B1B9.9040302@mnemon.de>
-References: <42721F84.6080503@mnemon.de>	<200504290937.49507.Alistair@nerdnet.ca>	<20050429142517.GA1074@bender.817west.com>
-	<4273031B.20009@riverviewtech.net>
+From: bharathi <bharathi@au-kbc.org>
+Subject: Iptables logs on High bandwidth traffic network
+Date: Wed, 04 May 2005 18:15:18 +0530
+Message-ID: <4278C3DE.7010403@au-kbc.org>
+Reply-To: bharathi@au-kbc.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigDD7C995020643B51C8E08AA8"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4273031B.20009@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +18,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigDD7C995020643B51C8E08AA8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
 Hi all,
+        I am planning to implement iptables log feature on a server
+machine(Dual xeon processor,Intel e100 cards,80GB SCSI and 2GB RAM)
+which is running in bridge mode (On RH 7.3).The average traffic on this
+machine is vary from 40-60Mbps.Hence I require some suggestion for some
+my questions like,
 
-Taylor, Grant schrieb:
-> 
-> Rather than allowing ident would it be possible to do a REJECT (via
-> iptables -t filter -A OUTPUT -j REJECT) (I'm not sure if this can be a
-> policy or not) that way the ident will fail immediately verses timing
-> out?  That is if you don't want the ident to happen.  Seeing as how a
-> LOT of servers don't even support ident any more this might just as well
-> be an option.
-> 
+1) On this High traffic the kernel will be stable/crash ?
+2) What would be the CPU Load and the server is able to do this job
+without any pain ?
+3) Up to how much traffic the iptables/kernel can able to handle without
+any issue and what should I do additionally if I need the
+   iptable-log should handle this much traffic?
 
-Which is what I did on one server (SuSE) and it solved the problem there.
 
-The other server was different in that the problem occured not always,
-only about 80% of all connections were affected and only POP3. The real
-solution can be found here:
+Advance thanks for your suggestion and pointers.
 
-http://www.washington.edu/imap/IMAP-FAQs/index.html issue 7.24
+bharthix.   
+         
 
-Quick summary. Mostly the cause is either reverse DNS request timing out
-or ident requests also timing out. The latter happens on systems running
-xinetd. In e.g /etc/xinetd.d/ipop3 are lines like
+--------------enigDD7C995020643B51C8E08AA8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-log_on_success += USERID
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-These lines cause inetd to start an ident request. Delete all of these
-and similar lines in each file they occur, restart xinetd and the prolem
-is gone. No need to write rules :)
+iD8DBQFCeMPj6Du9P0f3T7ARAkZyAJ4mQzKj8LtGGkrOL4v+JYcU3nIbFwCfVArG
+iURwFUsTk3bmLr+pAStZOLE=
+=v+9X
+-----END PGP SIGNATURE-----
 
-Thanks to all providing ideas and pointing me to ident.
-
-Have a nice time,
-
-Joerg
-
+--------------enigDD7C995020643B51C8E08AA8--
 
