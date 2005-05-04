@@ -1,12 +1,14 @@
-From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: Iptables logs on High bandwidth traffic network
-Date: Wed, 04 May 2005 13:18:23 -0400
-Message-ID: <427903DF.5030707@SCampbell.net>
-References: <4278C3DE.7010403@au-kbc.org>
+From: George Alexandru Dragoi <waruiinu@gmail.com>
+Subject: Re: matching the first packet of a connection
+Date: Wed, 4 May 2005 20:43:34 +0300
+Message-ID: <3063e50505041043787ebf03@mail.gmail.com>
+References: <1115220105.26791.25.camel@localhost.localdomain>
+Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4278C3DE.7010403@au-kbc.org>
+In-Reply-To: <1115220105.26791.25.camel@localhost.localdomain>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +19,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: iptables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Eric Leblond <eric@inl.fr>
+Cc: netfilter@lists.netfilter.org
 
-bharathi wrote:
+If you have nothing against ip_conntrack, use -m state --state NEW and
+accepts those connections
 
->Hi all,
->        I am planning to implement iptables log feature on a server
->machine(Dual xeon processor,Intel e100 cards,80GB SCSI and 2GB RAM)
->which is running in bridge mode (On RH 7.3).The average traffic on this
->machine is vary from 40-60Mbps.Hence I require some suggestion for some
->my questions like,
->
->1) On this High traffic the kernel will be stable/crash ?
->2) What would be the CPU Load and the server is able to do this job
->without any pain ?
->3) Up to how much traffic the iptables/kernel can able to handle without
->any issue and what should I do additionally if I need the
->   iptable-log should handle this much traffic?
->
->
->Advance thanks for your suggestion and pointers.
->
->bharthix.   
->         
->  
->
-Along with other advice offered, you may wish to take a look at argus 
-and ntop which are packages that collect nice summary information from 
-ethernet traffic.  They may be appropos to your goal.
 
+On 5/4/05, Eric Leblond <eric@inl.fr> wrote:
+> Hi,
+>=20
+> I'm trying to match the first packet of a connection : for a TCP
+> connection I want to match the first SYN packet received by the firewall
+> and ignore the possible reemission, in fact I want to accept them.
+>=20
+> Is this possible ?
+>=20
+> I've try to use the conntrack module but I was not successful.
+>=20
+> BR,
+> --
+> Eric Leblond <eric@inl.fr>
+>=20
+>=20
+
+
+--=20
+Bla bla
 
