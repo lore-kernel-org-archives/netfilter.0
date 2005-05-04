@@ -1,12 +1,12 @@
-From: Benjamin Jeeves <benjamin@benjamin76.plus.com>
-Subject: forcing outgoing traffic thought eth3
-Date: Wed, 4 May 2005 18:50:28 +0100
-Message-ID: <200505041850.28455.benjamin@benjamin76.plus.com>
-Reply-To: benjamin@benjamin76.plus.com
+From: Thomas Jones <admin@buddhalinux.com>
+Subject: Re: matching the first packet of a connection
+Date: Wed, 04 May 2005 12:57:07 -0500
+Message-ID: <42790CF3.9090801@buddhalinux.com>
+References: <1115220105.26791.25.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1115220105.26791.25.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,18 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Eric Leblond <eric@inl.fr>
+Cc: netfilter@lists.netfilter.org
 
-Hi all
+Eric Leblond wrote:
 
-I would like to use iptables for do something like this.
+>Hi,
+>
+>I'm trying to match the first packet of a connection : for a TCP
+>connection I want to match the first SYN packet received by the firewall
+>and ignore the possible reemission, in fact I want to accept them.
+>
+>Is this possible ?
+>
+>I've try to use the conntrack module but I was not successful.
+>
+>BR,
+>  
+>
+The "tcp filter" Table Match Operations provide:
 
-when a request is made from my client computer say 192.168.1.14 to my NFS 
-server which runs on say 192.168.1.7 I want to be able to force all the 
-outgoing traffic thought 192.168.1.6 would this be possable in iptables. If 
-so can you point down the right road please.
+-p tcp --syn
 
-Thank you
-
-Benjamin Jeeves
+Thomas
 
