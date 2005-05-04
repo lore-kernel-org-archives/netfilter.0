@@ -1,7 +1,7 @@
-From: jonathan <support-squid@bfinance.fr>
-Subject: squid + clamp-mss-to-pmtu
-Date: Wed, 04 May 2005 17:09:13 +0200
-Message-ID: <1115219353.2802.11.camel@localhost.localdomain>
+From: Eric Leblond <eric@inl.fr>
+Subject: matching the first packet of a connection
+Date: Wed, 04 May 2005 17:21:45 +0200
+Message-ID: <1115220105.26791.25.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,21 +19,17 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 Hi,
-I have a problem with squid and iptables.
-I have to use "TCPMSS --clamp-mss-to-pmtu" to adapt the mtu with the ISP
-requirement, but since I have installed the squid proxy, it seems like
-the iptables chains below doesn't work. 
 
-$iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN /
--j TCPMSS --clamp-mss-to-pmtu
+I'm trying to match the first packet of a connection : for a TCP
+connection I want to match the first SYN packet received by the firewall
+and ignore the possible reemission, in fact I want to accept them.
 
-$iptables -A OUTPUT -p tcp --tcp-flags SYN,RST SYN /
--j TCPMSS --clamp-mss-to-pmtu
+Is this possible ?
 
-Some websites still are unaccessible.
+I've try to use the conntrack module but I was not successful.
 
-Is there a way to make it work?
-
-thanks
+BR,
+-- 
+Eric Leblond <eric@inl.fr>
 
 
