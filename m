@@ -1,11 +1,15 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Iptables logs on High bandwidth traffic network
-Date: Wed, 4 May 2005 22:37:44 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505042221030.20686@blackhole.kfki.hu>
-References: <4278C3DE.7010403@au-kbc.org>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: matching the first packet of a connection
+Date: Wed, 04 May 2005 23:30:05 +0200
+Message-ID: <1115242205.5410.21.camel@porky>
+References: <1115220105.26791.25.camel@localhost.localdomain>
+	<4279248D.9090903@riverviewtech.net>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-rDm1snqatKIa21bvqYEF"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4278C3DE.7010403@au-kbc.org>
+In-Reply-To: <4279248D.9090903@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,46 +20,82 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: bharathi <bharathi@au-kbc.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 4 May 2005, bharathi wrote:
 
->         I am planning to implement iptables log feature on a server
-> machine(Dual xeon processor,Intel e100 cards,80GB SCSI and 2GB RAM)
-> which is running in bridge mode (On RH 7.3).The average traffic on this
-> machine is vary from 40-60Mbps.Hence I require some suggestion for some
-> my questions like,
+--=-rDm1snqatKIa21bvqYEF
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-That seems to be a decent machine.
+Hi,
 
-> 1) On this High traffic the kernel will be stable/crash ?
+Problem seems difficult to explain (and I'm not speaking well tonight),
+here's the detail :
 
-We tested netfilter in Gbit environment and could pump trough 200,000pps,
-when NAT-ing all the traffic. There was no stability problem whatsoever.
+In the scope of the NuFW project we need to queue SYN packets for
+connection we want to authenticate (see http://www.nufw.org/ for details
+on principles). For a single connection we want to QUEUE only the first
+packet coming to the firewall (SYN packet in the case of TCP). All
+subsequent packets of the connection even if they are also SYN packet
+(if for example server is unreachable or does not exist) have to me
+authorized or drop depending of the decision taken on the first packet.
+In fact this is an extension of the ESTABLISHED or RELATED match.
 
-> 2) What would be the CPU Load and the server is able to do this job
-> without any pain ?
+I hope my problem is clearly explained this time.
 
-If there will be no exotic and expensive matches like 'string', then
-there shouldn't be CPU problems. However choosing a good system bus,
-nice interfaces and fastest RAM you can get will serve well.
+BR and thanks for the help
 
-> 3) Up to how much traffic the iptables/kernel can able to handle without
-> any issue and what should I do additionally if I need the
->    iptable-log should handle this much traffic?
 
-Set up another machine connected via a third interface directly and let
-that machine fight with the disk I/O issues. Use the ULOG target instead
-of LOG.  (And of course disable logging on the console :-)
+On Wed, 2005-05-04 at 14:37 -0500, Taylor, Grant wrote:
+> > I'm trying to match the first packet of a connection : for a TCP
+> > connection I want to match the first SYN packet received by the firewal=
+l
+> > and ignore the possible reemission, in fact I want to accept them.
+> >=20
+> > Is this possible ?
+> >=20
+> > I've try to use the conntrack module but I was not successful.
+>=20
+> Question:  Are you wanting to just silently DROP the first connection att=
+empt and force people to try to reconnect via retransmission of the SYN pac=
+ket?  If that is the case you will want to do something out side of the con=
+nection tracking match extensions that exist because (as far as I know and =
+understand) they all deal within a given connection.  You are really wantin=
+g to break / prevent one connection attempt and then allow the subsequent o=
+nes.  Or at least that's how I understand what you have written.  I have a =
+feeling that you will be playing with the recent or set match extensions wh=
+ere you add a connection attempt to a recent list or set list while droppin=
+g the first connection attempt packet.  Subsequent connection attempt packe=
+ts can then be matched against the recent list or set list to see if there =
+has been a connection attempt dropped and if so accept the present connecti=
+on attempt.
+>=20
+> If you give me more to work with I might be able to come up with a rule s=
+et to help you out.
+>=20
+>=20
+>=20
+> Grant. . . .
+>=20
+--=20
+Eric Leblond <eric@regit.org>
+NuFW, Now User Filtering Works : http://www.nufw.org
+--=20
+Eric Leblond <eric@inl.fr>
+INL
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+--=-rDm1snqatKIa21bvqYEF
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+
+iD8DBQBCeT7dnxA7CdMWjzIRAsJfAJ93i6WrRyjH+HGOBPkoG4SA8Tz7+ACfaWP8
+m7T0eCdS1Lb0JRXI+WcSktM=
+=yUdu
+-----END PGP SIGNATURE-----
+
+--=-rDm1snqatKIa21bvqYEF--
+
 
