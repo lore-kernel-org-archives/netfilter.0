@@ -1,13 +1,12 @@
-From: Mogens Valentin <monz@danbbs.dk>
-Subject: Re: Installing iptables 1.31
-Date: Wed, 04 May 2005 15:28:46 +0200
-Message-ID: <4278CE0E.6060200@danbbs.dk>
-References: <000b01c5502d$ff4c0650$2101a8c0@compaq>
-Reply-To: monz@danbbs.dk
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Bind and other services on a DMZ
+Date: Wed, 4 May 2005 10:06:30 -0400
+Message-ID: <20050504140630.GA19302@bender.817west.com>
+References: <20050503174537.09D1C1CE0A@juno.tc.df.gov.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000b01c5502d$ff4c0650$2101a8c0@compaq>
+Content-Disposition: inline
+In-Reply-To: <20050503174537.09D1C1CE0A@juno.tc.df.gov.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Ken Hilliard wrote:
-> I've got a vanilla RH9 installing with (the bundled) iptables version
-> 1.27a. I would like to upgrade to the current version. Are there any
-> instructions on how to do this? 
+On Tue, May 03, 2005 at 02:48:48PM -0300, fabricio bianco abreu wrote:
+> Hi, folks
+> 
+> I am trying to install a iptables based firewall to protect my servers providing
+> information to the Internet in a DMZ fashioned mode.
+> 
+> I need some help to debug the rules I have set up. 
+> 
+> I will provide some background information:
+> 
+> 1. The firewall is a box with two ethernet adapters. The external adapter piles
+> two valid adresses (200.x.y.z) and the internel adapter has one invalid address
+> (172.16.a.b)
+> 
+> 2. One DMZ machine (ip 172.16.0.5) is used to serve smtp, http, https, ftp.
+> 
+> 3. Another DMZ machine (ip 172.16.0.2) is a bastion host, serving dns (bind) and
+> mascarading traffic from my internal network.
+> 
+> As for the firewall (packet filtering) configuration I have set up a bunch of
+> rules. Here are the outputs to the commands "iptables -nL" and "iptables -nL -t
+> nat" 
 
-Download the sources, configure and make. If no problems so far, rpm -e 
-the distro iptables, and make install your own stuff.
+when posting rules to the list, please either use "iptables [-t
+nat|mangle] -vnxL" or the output of "iptables-save."  without seeing
+all the information, it's too much guess-work.
 
--- 
-Kind regards,
-Mogens Valentin
+i.e., i bet the second rule in the FORWARD chain doesn't actually accept
+all traffic:
 
+  ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+
+also--you say 172.16.0.2 is also running some iptables rules--you appear
+to allow TCP 53 through the FORWARD chain of the first firewall, so i'd
+double-check the INPUT/OUTPUT chains of 172.16.0.2 as the source of the
+zone transfer issue, and then i'd check my bind ACLs.
+
+-j
+
+--
+"Stewie: My God, I'm to entrust my life to a turtle? Nature's "D"
+ student!"
+        --Family Guy
 
