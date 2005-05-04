@@ -1,11 +1,13 @@
-From: Kwang-Hyun.Baek@Dartmouth.EDU (Kwang-Hyun Baek)
-Subject: Making sure my "mangling" doesn't get mangled
-Date: 03 May 2005 16:14:05 EDT
-Message-ID: <51613155@newblitzen.Dartmouth.EDU>
-Reply-To: Kwang-Hyun.Baek@Dartmouth.EDU
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: Delay in responding caused by netfilter ? [Completely Solved]
+Date: Wed, 04 May 2005 13:27:53 +0200
+Message-ID: <4278B1B9.9040302@mnemon.de>
+References: <42721F84.6080503@mnemon.de>	<200504290937.49507.Alistair@nerdnet.ca>	<20050429142517.GA1074@bender.817west.com>
+	<4273031B.20009@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4273031B.20009@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,18 +21,40 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello.  I am trying to set up a system where netfilter module that is b=
-uilt-in to the kernel is the only thing that can mangle the packet even=
-tually...in other words, if the user mangles the packet, the kernel can=
- mangle it later but no other netfilter/iptable can mangle it after the=
- kernel mangles it.  Does it make sense?  How can I impose such rule? =20=
-Is there a way to do something like that?  I'm using SELinux by the way=
-, and if you know of a way to do that in SELinux, that would be fine, t=
-oo...
+Hi all,
 
-Also another thing...is there a way for a program to send a packet dire=
-ctly to the interface thereby bypassing iptables rules that I set up? =20=
-  If there is, is there a way to prevent it?  Thank you.
+Taylor, Grant schrieb:
+> 
+> Rather than allowing ident would it be possible to do a REJECT (via
+> iptables -t filter -A OUTPUT -j REJECT) (I'm not sure if this can be a
+> policy or not) that way the ident will fail immediately verses timing
+> out?  That is if you don't want the ident to happen.  Seeing as how a
+> LOT of servers don't even support ident any more this might just as well
+> be an option.
+> 
 
-John
+Which is what I did on one server (SuSE) and it solved the problem there.
+
+The other server was different in that the problem occured not always,
+only about 80% of all connections were affected and only POP3. The real
+solution can be found here:
+
+http://www.washington.edu/imap/IMAP-FAQs/index.html issue 7.24
+
+Quick summary. Mostly the cause is either reverse DNS request timing out
+or ident requests also timing out. The latter happens on systems running
+xinetd. In e.g /etc/xinetd.d/ipop3 are lines like
+
+log_on_success += USERID
+
+These lines cause inetd to start an ident request. Delete all of these
+and similar lines in each file they occur, restart xinetd and the prolem
+is gone. No need to write rules :)
+
+Thanks to all providing ideas and pointing me to ident.
+
+Have a nice time,
+
+Joerg
+
 
