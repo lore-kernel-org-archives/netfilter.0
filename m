@@ -1,13 +1,11 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: matching the first packet of a connection
-Date: Wed, 4 May 2005 20:43:34 +0300
-Message-ID: <3063e50505041043787ebf03@mail.gmail.com>
-References: <1115220105.26791.25.camel@localhost.localdomain>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+From: Benjamin Jeeves <benjamin@benjamin76.plus.com>
+Subject: forcing outgoing traffic thought eth3
+Date: Wed, 4 May 2005 18:50:28 +0100
+Message-ID: <200505041850.28455.benjamin@benjamin76.plus.com>
+Reply-To: benjamin@benjamin76.plus.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1115220105.26791.25.camel@localhost.localdomain>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,31 +18,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Eric Leblond <eric@inl.fr>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-If you have nothing against ip_conntrack, use -m state --state NEW and
-accepts those connections
+Hi all
 
+I would like to use iptables for do something like this.
 
-On 5/4/05, Eric Leblond <eric@inl.fr> wrote:
-> Hi,
->=20
-> I'm trying to match the first packet of a connection : for a TCP
-> connection I want to match the first SYN packet received by the firewall
-> and ignore the possible reemission, in fact I want to accept them.
->=20
-> Is this possible ?
->=20
-> I've try to use the conntrack module but I was not successful.
->=20
-> BR,
-> --
-> Eric Leblond <eric@inl.fr>
->=20
->=20
+when a request is made from my client computer say 192.168.1.14 to my NFS 
+server which runs on say 192.168.1.7 I want to be able to force all the 
+outgoing traffic thought 192.168.1.6 would this be possable in iptables. If 
+so can you point down the right road please.
 
+Thank you
 
---=20
-Bla bla
+Benjamin Jeeves
 
