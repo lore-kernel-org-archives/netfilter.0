@@ -1,13 +1,12 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Delay in responding caused by netfilter ? [Completely Solved]
-Date: Wed, 04 May 2005 11:23:36 -0500
-Message-ID: <4278F708.4080607@riverviewtech.net>
-References: <42721F84.6080503@mnemon.de>	<200504290937.49507.Alistair@nerdnet.ca>	<20050429142517.GA1074@bender.817west.com>	<4273031B.20009@riverviewtech.net>
-	<4278B1B9.9040302@mnemon.de>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Iptables logs on High bandwidth traffic network
+Date: Wed, 4 May 2005 12:39:48 -0400
+Message-ID: <20050504163948.GA19878@bender.817west.com>
+References: <4278C3DE.7010403@au-kbc.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4278B1B9.9040302@mnemon.de>
+Content-Disposition: inline
+In-Reply-To: <4278C3DE.7010403@au-kbc.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +17,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> Which is what I did on one server (SuSE) and it solved the problem there.
+On Wed, May 04, 2005 at 06:15:18PM +0530, bharathi wrote:
+> Hi all,
+>         I am planning to implement iptables log feature on a server
+> machine(Dual xeon processor,Intel e100 cards,80GB SCSI and 2GB RAM)
+> which is running in bridge mode (On RH 7.3).The average traffic on this
+> machine is vary from 40-60Mbps.Hence I require some suggestion for some
+> my questions like,
 
-*nod*
+60Mpbs is not a ton of traffic, i'd be interested in what the expected
+packets per second (pps) rate is, as that can be the
+forwarding/filtering killer.  in the extreme case, think about 60 Mbps
+of 1250 byte UDP packets vs. 60 Mbps of 60-300 byte TCP traffic...big
+difference.
 
-> The other server was different in that the problem occured not always,
-> only about 80% of all connections were affected and only POP3. The real
-> solution can be found here:
-> 
-> http://www.washington.edu/imap/IMAP-FAQs/index.html issue 7.24
+i'd also be so bold as to suggest you'd be much better off with e1000
+cards over e100 cards.  in my experience, if you can get 80 Mbps
+sustained out of a 100M card; you're kicking butt, and it's not
+something you'd want to do indefinitely.
 
-This article is written from the System Administrator's point of view, i.e. from the server end of the connection where as what I did was written from the end users point of view from the client end of the connection.  The solution that this article talks about is how to configure the server to not even query for Ident (Auth) information.  What I did was configure my firewall to do an automatic REJECT of any Ident (Auth) queries that come in to my firewall from an SMTP server that I have just recently spoken to.  It is entirely possible that I could set up an SMTP server on my home server (that I would send all my outbound mail at the house through) that would connect to the ultimate MX for each peice of mail that I send out.  The ultimate that I would talk to could be configured to send Ident (Auth) queries or it could just as easily be configured not to.  This is the situation that I h
- ave no control over the server (ultimate MX) that would be sending the Ident (Auth) queri
-es and this is the situation that I was addressing.  Personally IMHO these are two distinct problems that are EXTREMELY closely related to each other both having to do with Ident (Auth) and SMTP (or POP3 in your case) for the same connection, but on the opposite end of said connection.
+> 1) On this High traffic the kernel will be stable/crash ?
+> 2) What would be the CPU Load and the server is able to do this job
+> without any pain ?
 
-> Thanks to all providing ideas and pointing me to ident.
+it's possible that the NICs could peg the CPU servicing interrupts.
+there are docs out there on how to nail a specific NIC to a specific
+CPU, as you'll often see all your NICs being serviced by a single CPU.
 
-No problem and you are welcome.  :)
+i'd also note that in my experience, on both linux and the BSD's;
+bridging is *much* more CPU intensive than routing; which is probably
+counter-intuitive, since from a networking perspective bridging is a
+simpler operation than routing.  dunno if this has to do with
+implementation issues or just that it's being done in software vs.
+hardware.
 
+> 3) Up to how much traffic the iptables/kernel can able to handle without
+> any issue and what should I do additionally if I need the
+>    iptable-log should handle this much traffic?
 
+if you want to do a lot of logging, add a 3rd NIC to the box; setup a
+syslog server on that segment and let the syslog server deal with the
+disk I/O.
 
-Grant. . . .
+-j
+
+--
+"Chris: So, what are you wearing?  Wow. I bet you can see right through
+ that.
+ Lois: Chris, who are you talking to? 
+ Chris: Grandma."
+        --Family Guy
 
