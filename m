@@ -1,14 +1,13 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: matching the first packet of a connection
-Date: Wed, 04 May 2005 16:36:47 -0500
-Message-ID: <4279406F.1030703@riverviewtech.net>
-References: <1115220105.26791.25.camel@localhost.localdomain>	
-	<4279248D.9090903@riverviewtech.net>
-	<1115241663.5410.18.camel@porky>
+From: Mogens Valentin <monz@danbbs.dk>
+Subject: Re: Iptables logs on High bandwidth traffic network
+Date: Thu, 05 May 2005 00:40:39 +0200
+Message-ID: <42794F67.7060803@danbbs.dk>
+References: <4278C3DE.7010403@au-kbc.org> <4278F150.4000806@riverviewtech.net>
+Reply-To: monz@danbbs.dk
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1115241663.5410.18.camel@porky>
+In-Reply-To: <4278F150.4000806@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,19 +20,29 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
+Cc: "Taylor, Grant" <gtaylor@riverviewtech.net>
 
-> In the scope of the NuFW project we need to queue SYN packets for
-> connection we want to authenticate (see http://www.nufw.org/ for details
-> on principles). For a single connection we want to QUEUE only the first
-> packet coming to the firewall (SYN packet in the case of TCP). All
-> subsequent packets of the connection even if they are also SYN packet
-> (if for example server is unreachable or does not exist) have to me
-> authorized or drop depending of the decision taken on the first packet.
-> In fact this is an extension of the ESTABLISHED or RELATED match.
+Taylor, Grant wrote:
+>> Hi all,
+>>         I am planning to implement iptables log feature on a server
+>> machine(Dual xeon processor,Intel e100 cards,80GB SCSI and 2GB RAM)
+>> which is running in bridge mode (On RH 7.3).The average traffic on this
+>> machine is vary from 40-60Mbps.Hence I require some suggestion for some
+>> my questions like,
+>>
+ > The reason that
+> LOG is not meant for high volume logging is that it relies on SysLog to 
+> log it's data which in and of it's self is not meant for high volume 
+> longing.  SysLog will quite often become disk bound if you try to log 
+> such high volumes to it and thus the system will sort of flounder...
 
-I'm not quite sure how to "queue" packets as take them in to some sort of FIFO with a pause but possibly you do and you just need help matching which packets to queue.  I know with the recent match extension you could probably ""remember a connection attempt (how to remember for just that connection is a question in and of it's self though (working on this)) and queue the first one and then take some sort of action on subsequent based on how the packets are dequeued.  I think you are going to need to rely on some sort of external input, possibly via the condition match extension.  I've seen and briefly read about NuFU but I need to do so again to get up to speed to help with this.  Let me go do some reading and I'll get back to you.
+How about using a fifo (man mkfifo and man syslog) and let syslog pipe 
+to that fifo. Some program can then read from the fifo, parse data, and 
+maybe use a database for storing the parsed, now more limited, data.
+Might be a good ide to have the database on another system :-
 
+-- 
+Kind regards,
+Mogens Valentin
 
-
-Grant. . . .
 
