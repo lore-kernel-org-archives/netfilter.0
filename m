@@ -1,13 +1,15 @@
-From: Jason Opperisano <opie@817west.com>
+From: Eric Leblond <eric@inl.fr>
 Subject: Re: matching the first packet of a connection
-Date: Wed, 4 May 2005 14:34:04 -0400
-Message-ID: <20050504183404.GA20285@bender.817west.com>
+Date: Wed, 04 May 2005 20:50:39 +0200
+Message-ID: <1115232639.5410.3.camel@porky>
 References: <1115220105.26791.25.camel@localhost.localdomain>
-	<42790CF3.9090801@buddhalinux.com> <4279103F.9080601@lopsch.com>
+	<3063e50505041043787ebf03@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-ddstcFgBlBTVwHU43dBK"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4279103F.9080601@lopsch.com>
+In-Reply-To: <3063e50505041043787ebf03@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +20,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: George Alexandru Dragoi <waruiinu@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, May 04, 2005 at 08:11:11PM +0200, Daniel Lopes wrote:
-> >The "tcp filter" Table Match Operations provide:
-> >
-> >-p tcp --syn
-> >
-> >Thomas
-> >
-> or something like this:
-> -p tcp --tcp-flags ALL SYN -m state --state NEW
 
-it probably doesn't matter, but a "safer" match would probably be:
+--=-ddstcFgBlBTVwHU43dBK
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-  -p tcp SYN,ACK,FIN,RST SYN
+On Wed, 2005-05-04 at 20:43 +0300, George Alexandru Dragoi wrote:
+> If you have nothing against ip_conntrack, use -m state --state NEW and
+> accepts those connections
 
-i only say that because CWR and ECN are acceptable flags that may be set
-on a TCP SYN.  i don't believe --tcp-flags can match on these today,
-and i don't know if '--tcp-flags ALL' will get confused by these bits
-being set (i don't think it would), but i'd venture to guess at some
-point "ALL" will include them and it's something to be aware of.
+question was not so easy ;-)=20
+I mean that I want to match the "FIRST" SYN packet and not the second
+and following.
 
-from RFC 2481 section 6.1.1
+BR,
+--=20
+Eric Leblond <eric@inl.fr>
+INL
 
-"When a node sends a TCP SYN packet, it may set the ECN-Echo and CWR
- flags in the TCP header.  For a SYN packet, the setting of both the
- ECN-Echo and CWR flags are defined as an indication that the sending
- TCP is ECN-Capable, rather than as an indication of congestion or of
- response to congestion."
+--=-ddstcFgBlBTVwHU43dBK
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
--j
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
 
---
-"Stewie: Why does that man drop his club before he runs? I would
- bring it with me."
-        --Family Guy
+iD8DBQBCeRl+nxA7CdMWjzIRAnBxAJ9Ed7o4ibdq2YYG7Mc29qllpCnyaACfbTDp
+5bcu4NXtNrLYkXKIYGj3vN0=
+=wDyN
+-----END PGP SIGNATURE-----
+
+--=-ddstcFgBlBTVwHU43dBK--
+
 
