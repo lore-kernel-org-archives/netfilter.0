@@ -1,13 +1,12 @@
-From: Daniel Lopes <lopsch@lopsch.com>
-Subject: Re: matching the first packet of a connection
-Date: Wed, 04 May 2005 20:11:11 +0200
-Message-ID: <4279103F.9080601@lopsch.com>
-References: <1115220105.26791.25.camel@localhost.localdomain>
-	<42790CF3.9090801@buddhalinux.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: forcing outgoing traffic thought eth3
+Date: Wed, 04 May 2005 13:15:39 -0500
+Message-ID: <4279114B.7070302@riverviewtech.net>
+References: <200505041850.28455.benjamin@benjamin76.plus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42790CF3.9090801@buddhalinux.com>
+In-Reply-To: <200505041850.28455.benjamin@benjamin76.plus.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,32 +20,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Thomas Jones schrieb:
-> Eric Leblond wrote:
-> 
-> 
->>Hi,
->>
->>I'm trying to match the first packet of a connection : for a TCP
->>connection I want to match the first SYN packet received by the firewall
->>and ignore the possible reemission, in fact I want to accept them.
->>
->>Is this possible ?
->>
->>I've try to use the conntrack module but I was not successful.
->>
->>BR,
->> 
->>
-> 
-> The "tcp filter" Table Match Operations provide:
-> 
-> -p tcp --syn
-> 
-> Thomas
-> 
-> 
-or something like this:
--p tcp --tcp-flags ALL SYN -m state --state NEW
+> when a request is made from my client computer say 192.168.1.14 to my NFS 
+> server which runs on say 192.168.1.7 I want to be able to force all the 
+> outgoing traffic thought 192.168.1.6 would this be possable in iptables. If 
+> so can you point down the right road please.
 
+I think you will be looking at the ROUTE target (not sure where this is, hopefully someone else on the list can pick up here for me) to define where the traffic goes out of the system.
+
+If you don't want to mess with the ROUTE target you could probably MARK the traffic and then match it with an "ip rule ... fwmark" and have a specific route back to the network via a different routing table.
+
+
+
+Grant. . . .
 
