@@ -1,15 +1,12 @@
-From: Eric Leblond <eric@inl.fr>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
 Subject: Re: matching the first packet of a connection
-Date: Wed, 04 May 2005 20:50:39 +0200
-Message-ID: <1115232639.5410.3.camel@porky>
+Date: Wed, 04 May 2005 14:37:49 -0500
+Message-ID: <4279248D.9090903@riverviewtech.net>
 References: <1115220105.26791.25.camel@localhost.localdomain>
-	<3063e50505041043787ebf03@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-ddstcFgBlBTVwHU43dBK"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3063e50505041043787ebf03@mail.gmail.com>
+In-Reply-To: <1115220105.26791.25.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,39 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: George Alexandru Dragoi <waruiinu@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+> I'm trying to match the first packet of a connection : for a TCP
+> connection I want to match the first SYN packet received by the firewall
+> and ignore the possible reemission, in fact I want to accept them.
+> 
+> Is this possible ?
+> 
+> I've try to use the conntrack module but I was not successful.
+
+Question:  Are you wanting to just silently DROP the first connection attempt and force people to try to reconnect via retransmission of the SYN packet?  If that is the case you will want to do something out side of the connection tracking match extensions that exist because (as far as I know and understand) they all deal within a given connection.  You are really wanting to break / prevent one connection attempt and then allow the subsequent ones.  Or at least that's how I understand what you have written.  I have a feeling that you will be playing with the recent or set match extensions where you add a connection attempt to a recent list or set list while dropping the first connection attempt packet.  Subsequent connection attempt packets can then be matched against the recent list or set list to see if there has been a connection attempt dropped and if so accept the present connection
+  attempt.
+
+If you give me more to work with I might be able to come up with a rule set to help you out.
 
 
---=-ddstcFgBlBTVwHU43dBK
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2005-05-04 at 20:43 +0300, George Alexandru Dragoi wrote:
-> If you have nothing against ip_conntrack, use -m state --state NEW and
-> accepts those connections
-
-question was not so easy ;-)=20
-I mean that I want to match the "FIRST" SYN packet and not the second
-and following.
-
-BR,
---=20
-Eric Leblond <eric@inl.fr>
-INL
-
---=-ddstcFgBlBTVwHU43dBK
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-
-iD8DBQBCeRl+nxA7CdMWjzIRAnBxAJ9Ed7o4ibdq2YYG7Mc29qllpCnyaACfbTDp
-5bcu4NXtNrLYkXKIYGj3vN0=
-=wDyN
------END PGP SIGNATURE-----
-
---=-ddstcFgBlBTVwHU43dBK--
-
+Grant. . . .
 
