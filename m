@@ -1,14 +1,14 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: PPTP connection tracking and NAT helper
-Date: Thu, 5 May 2005 09:52:58 +0200
-Message-ID: <20050505075258.GM30482@sunbeam.de.gnumonks.org>
-References: <4279291E.2060103@nit.ca>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: matching the first packet of a connection
+Date: Thu, 05 May 2005 02:53:18 -0500
+Message-ID: <4279D0EE.2060706@riverviewtech.net>
+References: <1115220105.26791.25.camel@localhost.localdomain>	
+	<4279248D.9090903@riverviewtech.net>
+	<1115241663.5410.18.camel@porky>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jHwcxWEthkc1rt9P"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4279291E.2060103@nit.ca>
+In-Reply-To: <1115241663.5410.18.camel@porky>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,54 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Lukasz Kosewski <lkosewsk@nit.ca>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+> In the scope of the NuFW project we need to queue SYN packets for
+> connection we want to authenticate (see http://www.nufw.org/ for details
+> on principles). For a single connection we want to QUEUE only the first
+> packet coming to the firewall (SYN packet in the case of TCP). All
+> subsequent packets of the connection even if they are also SYN packet
+> (if for example server is unreachable or does not exist) have to me
+> authorized or drop depending of the decision taken on the first packet.
+> In fact this is an extension of the ESTABLISHED or RELATED match.
+
+After doing much deliberating and research I have come up with one thing that you might be able to try:
+
+iptables -t filter -A FORWARD -i $LAN -o $INet -m state --state NEW -m connbytes ! --connbytes 1: --connbytes-dir original --connbytes-mode packets -j QUEUE
+
+In theory this rule will look for and match against any packet that is passing from the $LAN to the $INet with a state of NEW and has NOT seen more than one packet coming from the original sending system.  After reading about NuFW they are queuing packets via the QUEUE target.
+
+Give this a shot and let me know what you think.
 
 
---jHwcxWEthkc1rt9P
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 04, 2005 at 03:57:18PM -0400, Lukasz Kosewski wrote:
-
-> The problem I have is that in 2.6.11, there no longer exists a 'union=20
-> ip_conntrack_nat_help' in include/linux/netfilter_ipv4/ip_conntrack.h,
-> to which the PPTP/NAT patches make changes.  While I can simply change
-> the patches such that they ignore this, I am not certain whether or
-> not this is intended, or whether I will be losing some functionality.
-
-please read the netfilter-devel archive.  I get asked this question at
-least ten times a week:
-
-There is no pptp/gre conntrack and nat helper for 2.6.11+, since this
-kernel version contains a redesigned infrastructure for such helpers.
-
-At this time, I see very limited chance that this new infrastructure is
-sufficient enough to actually implement the same functionality.  A
-straight 1:1 port ist definitely not possible.
-
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---jHwcxWEthkc1rt9P
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-
-iD8DBQFCedDaXaXGVTD0i/8RAoKxAJ4hm9+/nJ/hzvuq1k+Brilsu5XRkwCglhdd
-KWmnZP5+Qn1AjY2/rc6ZpCk=
-=EuZY
------END PGP SIGNATURE-----
-
---jHwcxWEthkc1rt9P--
+Grant. . . .
 
