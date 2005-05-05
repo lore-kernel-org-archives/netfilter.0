@@ -1,14 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Iptables logs on High bandwidth traffic network
-Date: Thu, 5 May 2005 12:07:30 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505051149490.21461@blackhole.kfki.hu>
-References: <4278C3DE.7010403@au-kbc.org> <4278F150.4000806@riverviewtech.net>
-	<42794F67.7060803@danbbs.dk> <4279570A.1090509@riverviewtech.net>
-	<Pine.LNX.4.58.0505050848090.21265@blackhole.kfki.hu>
-	<4279E96C.7010304@danbbs.dk>
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: forward packets directly to net?
+Date: Thu, 5 May 2005 06:23:11 -0400
+Message-ID: <200505050623.11868.Alistair@nerdnet.ca>
+References: <200505051153.52443.chadley@pinteq.co.za>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4279E96C.7010304@danbbs.dk>
+In-Reply-To: <200505051153.52443.chadley@pinteq.co.za>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,49 +18,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mogens Valentin <monz@danbbs.dk>
-Cc: netfilter@lists.netfilter.org, "Taylor, Grant" <gtaylor@riverviewtech.net>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
-
-On Thu, 5 May 2005, Mogens Valentin wrote:
-
-> >>>How about using a fifo (man mkfifo and man syslog) and let syslog pipe
-> >>>to that fifo. Some program can then read from the fifo, parse data, and
-> >>>maybe use a database for storing the parsed, now more limited, data.
-> >>>Might be a good ide to have the database on another system :-
-> >>
-> > Why where a FIFO and a program which parses and transmit the data to
-> > another system any faster than syslog/syslog-ng/ulogd/etc? (Why reinvent
-> > the wheel?)
+On May 5, 2005 05:53 am, Chadley Wilson wrote:
+> Greetings friends
 >
-> It might not.. AFAIK, the FIFO is implemented not as disk I/O, but is a
-> memory thingy.
-> It *appears* as file I/O, but the filesystem is used only to create that
-> named pipe.
-> Hence, my thought was that since logging with iptables has to go throu
-> syslog, this might offload faster through a FIFO.
-> The app reading the FIFO would preprocess the datastream and turn it
-> into chunks, exactly as Taylor put it.
-> Depending on what one really wants to look at / dig out of logging, the
-> FIFO-reading app could also reduce data.
+> I hope I explain this correctly, Please try and help me here, I am
+> seriously stuck
+>
+> I have two interfaces on a linux router {int} {ext}
+> I have two PCs on either side of the router {chad} on {int} and {xxx}on
+> {ext}
+>
+> {xxx} is my gw to the net, but {chad} needs to be the only PC that can
+> access the internet fron the {int} side.
+>
+> The problem I am faced with is how do I do it, Here is what I have got so
+> far:
+>
+>
+>
+> pt="/usr/sbin/iptables"
+> ext="eth0"
+> int="bond0"
+> chad="192.168.2.5"
+> etel="196.25.100.28"
+>
+>
+>
+> #Enable IP Forwarding
+> echo "1" >> /proc/sys/net/ipv4/ip_forward
+>
+>
+> #Clear All Tables
+> ${ipt} -t filter -F
+> ${ipt} -t nat -F
+>
+>
+> ## allow all from local interfaces [localhost]
+> ${ipt} -t filter -A INPUT -s 127.0.0.1 -j ACCEPT
+>
+>
+> ##Allow {chad} to etel internet direct
+> ${ipt} -t nat -A POSTROUTING -o ${ext} -s ${chad} -d ${etel} -p tcp -m tcp
+> --dport 80 --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> ${ipt} -t filter -A FORWARD -p tcp -m tcp -s ${chad} -d ${etel} -o ${ext}
+> --dport 80 -j MASQUERADE
+>
 
-At standard syslog, you can rely on its internal (not-tunable) buffering.
-At syslog-ng, you can speficy explicitly the buffer size (output queue
-size) per destination. At the ULOG target, you can specify how many
-packets should be queued in-kernel, before transmitting a multipart
-message to userspace.
+	Hmm. okay
+	1)  You don't appear to be setting chain POLICY anywhere -- and likely they 
+are all ACCEPT.  I suspect you want to set them to DROP, otherwise everyone 
+can get out.
+	2) You have these rules backwards as to which table they are in.  The 
+MASQUERADE rule should be in POSTROUTING -t nat, the ESTABLISHED,RELATED rule 
+should be in -t filter FORWARD.
+	3) You then need one more rule to let initial connections OUT through -t 
+filter FORWARD - This should filter by source IP and what dports you want to 
+let out, then you can drop said filtering on the MASQUERADE rule.
+	4) if you do set all POLICY to drop, you need to let loopback OUT as well.
 
-And as it was mentioned by others as well, one should offload real
-logging to another machine over a dedicated wire.
+>
+> Please could someone help me with a simpler rule?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+	I suspect it could be simpler, but it wouldn't nessesarily do what you want.
+	
+	
+	Alistair Tonner
 
