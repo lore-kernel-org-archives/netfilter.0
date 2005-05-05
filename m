@@ -1,11 +1,14 @@
-From: Chadley Wilson <chadley@pinteq.co.za>
-Subject: forward packets directly to net?
-Date: Thu, 5 May 2005 11:53:52 +0200
-Message-ID: <200505051153.52443.chadley@pinteq.co.za>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Iptables logs on High bandwidth traffic network
+Date: Thu, 5 May 2005 12:07:30 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505051149490.21461@blackhole.kfki.hu>
+References: <4278C3DE.7010403@au-kbc.org> <4278F150.4000806@riverviewtech.net>
+	<42794F67.7060803@danbbs.dk> <4279570A.1090509@riverviewtech.net>
+	<Pine.LNX.4.58.0505050848090.21265@blackhole.kfki.hu>
+	<4279E96C.7010304@danbbs.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <4279E96C.7010304@danbbs.dk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,63 +19,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mogens Valentin <monz@danbbs.dk>
+Cc: netfilter@lists.netfilter.org, "Taylor, Grant" <gtaylor@riverviewtech.net>
 
-Greetings friends
+Hi,
 
-I hope I explain this correctly, Please try and help me here, I am seriously 
-stuck
+On Thu, 5 May 2005, Mogens Valentin wrote:
 
-I have two interfaces on a linux router {int} {ext}
-I have two PCs on either side of the router {chad} on {int} and {xxx}on {ext}
+> >>>How about using a fifo (man mkfifo and man syslog) and let syslog pipe
+> >>>to that fifo. Some program can then read from the fifo, parse data, and
+> >>>maybe use a database for storing the parsed, now more limited, data.
+> >>>Might be a good ide to have the database on another system :-
+> >>
+> > Why where a FIFO and a program which parses and transmit the data to
+> > another system any faster than syslog/syslog-ng/ulogd/etc? (Why reinvent
+> > the wheel?)
+>
+> It might not.. AFAIK, the FIFO is implemented not as disk I/O, but is a
+> memory thingy.
+> It *appears* as file I/O, but the filesystem is used only to create that
+> named pipe.
+> Hence, my thought was that since logging with iptables has to go throu
+> syslog, this might offload faster through a FIFO.
+> The app reading the FIFO would preprocess the datastream and turn it
+> into chunks, exactly as Taylor put it.
+> Depending on what one really wants to look at / dig out of logging, the
+> FIFO-reading app could also reduce data.
 
-{xxx} is my gw to the net, but {chad} needs to be the only PC that can access 
-the internet fron the {int} side.
+At standard syslog, you can rely on its internal (not-tunable) buffering.
+At syslog-ng, you can speficy explicitly the buffer size (output queue
+size) per destination. At the ULOG target, you can specify how many
+packets should be queued in-kernel, before transmitting a multipart
+message to userspace.
 
-The problem I am faced with is how do I do it, Here is what I have got so far:
+And as it was mentioned by others as well, one should offload real
+logging to another machine over a dedicated wire.
 
-
-
-pt="/usr/sbin/iptables"
-ext="eth0"
-int="bond0"
-chad="192.168.2.5"
-etel="196.25.100.28"
-
-
-
-#Enable IP Forwarding
-echo "1" >> /proc/sys/net/ipv4/ip_forward
-
-
-#Clear All Tables
-${ipt} -t filter -F
-${ipt} -t nat -F
-
-
-## allow all from local interfaces [localhost]
-${ipt} -t filter -A INPUT -s 127.0.0.1 -j ACCEPT
-
-
-##Allow {chad} to etel internet direct
-${ipt} -t nat -A POSTROUTING -o ${ext} -s ${chad} -d ${etel} -p tcp -m tcp 
---dport 80 --state NEW,ESTABLISHED,RELATED -j ACCEPT
-${ipt} -t filter -A FORWARD -p tcp -m tcp -s ${chad} -d ${etel} -o ${ext} 
---dport 80 -j MASQUERADE
-
-
-
-Please could someone help me with a simpler rule?
-
-
--- 
-Chadley Wilson
-Redhat Certified Technician 
-Cert Number: 603004708291270
-Pinnacle Micro
-Manufacturers of Proline Computers
-====================================
-Exercise freedom, Use LINUX
-=====================================
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
