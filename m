@@ -1,12 +1,12 @@
-From: varun_saa@vsnl.net
-Subject: IP + MAC filter -  wireless client
-Date: Thu, 05 May 2005 10:58:53 +0500
-Message-ID: <cae754caa373.caa373cae754@vsnl.net>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Iptables logs on High bandwidth traffic network
+Date: Thu, 5 May 2005 08:59:16 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505050848090.21265@blackhole.kfki.hu>
+References: <4278C3DE.7010403@au-kbc.org> <4278F150.4000806@riverviewtech.net>
+	<42794F67.7060803@danbbs.dk> <4279570A.1090509@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
+In-Reply-To: <4279570A.1090509@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
-     My server is on Mandriva 10.1
-eth0 is WAN with static IP connected to 512K DSL
-eth1 is LAN - 192.168.0.0/24 and 192.168.21.0/24
+On Wed, 4 May 2005, Taylor, Grant wrote:
 
-I want to use IP + MAC filtering to allow/deny
-clients acces to net as follows.
+> > How about using a fifo (man mkfifo and man syslog) and let syslog pipe
+> > to that fifo. Some program can then read from the fifo, parse data, and
+> > maybe use a database for storing the parsed, now more limited, data.
+> > Might be a good ide to have the database on another system :-
+>
+> Using a FIFO to a program that parses and transmits the data to another
+> system to network might be a possibility.  Keep in mind that any
+> processing that you do on the packets has to be able to be done at least
+> as fast if not faster than the rate the packets come in.  If you ever
+> end up getting behind on the processing things will snowball on you VERY
+> quickly and more than likely end up in a very nasty mess.  This is why I
+> think it would be better to use something like TCPDump or Snort to sniff
+> the network and then post process the dumps.
 
-A FORWARD -i eth1 -o eth0 -s 192.168.0.5 \
--m mac --mac-source XX:XX:XX:XX:XX:XX -j ACCEPT
+Why where a FIFO and a program which parses and transmit the data to
+another system any faster than syslog/syslog-ng/ulogd/etc? (Why reinvent
+the wheel?)
 
-How do you handle a client connected to the LAN
-via wireless. In such a case there will be more
-than one MAC address in the route.
+If you sniff the network for logging, where do you actually want to sniff?
+Before the firewall? You'll have to cope with the same traffic as the
+firewall itself and won't see the dropped traffic on the other side.
+Behind the firewall? You won't see again the dropped traffic coming from
+outside. (Please note, I do not advise against an IDS inside which sniffs
+the traffic.)
 
-Can you have multiple MAC in one rule or it is better
-to have multiple rule for the same IP for each MAC.
-
-Thanks in advance
-
-Varun
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
