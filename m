@@ -1,16 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Iptables logs on High bandwidth traffic network
-Date: Thu, 5 May 2005 13:59:06 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505051356560.21615@blackhole.kfki.hu>
-References: <4278C3DE.7010403@au-kbc.org> <4278F150.4000806@riverviewtech.net>
-	<42794F67.7060803@danbbs.dk> <4279570A.1090509@riverviewtech.net>
-	<Pine.LNX.4.58.0505050848090.21265@blackhole.kfki.hu>
-	<4279CA3E.3000104@riverviewtech.net>
-	<Pine.LNX.4.58.0505051010140.21324@blackhole.kfki.hu>
-	<427A0256.5080709@danbbs.dk>
+From: "Robert Becskei" <brobiwbe@stcable.co.yu>
+Subject: Re: Iptables, php , realtime bandwidth usage
+Date: Thu, 5 May 2005 14:00:14 +0200
+Message-ID: <001a01c55169$ff137b90$1701a8c0@info2000256>
+References: <000e01c5515e$b0b62570$1701a8c0@info2000256>
+	<1115291894.21073.4.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <427A0256.5080709@danbbs.dk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,26 +17,80 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mogens Valentin <monz@danbbs.dk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="utf-8"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
-On Thu, 5 May 2005, Mogens Valentin wrote:
+Hello,
 
-> > That depends on how syslog is configured - you can easily disable syncing
-> > at every log event.
+ thank you for the fast response, I've tried ntop already, its to much fo=
+r=20
+this thing.
+
+ I would only like to see that user_a(b,c,d,e,f,g...etc) is currently=20
+downloading and uploading at kbyte/s (not really important if not possibl=
+e=20
+in realtime)
+
+ it would be nice to see via a webpage that what is actualy happening on =
+a=20
+per user basis, without even logging anything.
+
+ Sincerely
+ Robert B
+
+----- Original Message -----=20
+From: "Jose Maria Lopez Hernandez" <jkerouac@bgsec.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, May 05, 2005 13:18
+Subject: Re: Iptables, php , realtime bandwidth usage
+
+
+El jue, 05-05-2005 a las 12:39 +0200, Robert Becskei escribi=C3=B3:
+> Hello everyone,
 >
-> Yes, but doing so may cause loss of logging, or maybe it'll just delay
-> some messages due to not sync'ing at once.
+>
+>  I wonder if someone could help me find something similiar to this :
+>
+>  -can monitor bandwidthd usage in real time (php maybe...)
+>
+>  -if possible it could resolve ip address to dns name ? ( I have setup =
+my=20
+> own dynamicdns dhcp server combo )
+>
+>
+>
+>  I found a tool if someone would like to try it, but it is not a soluti=
+on=20
+> to my current problem.
+>
+>  http://web4.hm/index.php?http://web4.hm/html/webserver_root.html
 
-A FIFO and a buffering app suffers from exactly the same problems.
+Best think I know to monitor bandwidth is Ntop, but it's not realtime,
+it's based in rrdtool so you have data each some minutes.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+To monitor realtime bandwidth you could use pmacct in a Cacti script,
+and watch the results graphically with a browser.
+
+>  Sincerely
+>  Robert B
+
+Regards.
+
+--=20
+
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
+
+
 
