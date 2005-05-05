@@ -1,13 +1,10 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: squid + clamp-mss-to-pmtu
-Date: Thu, 5 May 2005 06:32:38 -0400
-Message-ID: <200505050632.38221.Alistair@nerdnet.ca>
-References: <1115219353.2802.11.camel@localhost.localdomain>
+From: "Robert Becskei" <brobiwbe@stcable.co.yu>
+Subject: Iptables, php , realtime bandwidth usage
+Date: Thu, 5 May 2005 12:39:18 +0200
+Message-ID: <000e01c5515e$b0b62570$1701a8c0@info2000256>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1115219353.2802.11.camel@localhost.localdomain>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,47 +18,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On May 4, 2005 11:09 am, jonathan wrote:
-> Hi,
-> I have a problem with squid and iptables.
-> I have to use "TCPMSS --clamp-mss-to-pmtu" to adapt the mtu with the ISP
-> requirement, but since I have installed the squid proxy, it seems like
-> the iptables chains below doesn't work.
+Hello everyone,
 
-	I doubt that squid 'broke' iptables mss clamp.
->
-> $iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN /
-> -j TCPMSS --clamp-mss-to-pmtu
->
-> $iptables -A OUTPUT -p tcp --tcp-flags SYN,RST SYN /
-> -j TCPMSS --clamp-mss-to-pmtu
->
-> Some websites still are unaccessible.
 
-	You are doing the clamp in both FORWARD and OUTPUT.  This is a good idea on 
-systems that require this function.  However since we don't know the flow on 
-your system we can't offer much in the way of advice.
+ I wonder if someone could help me find something similiar to this :
 
-	Please let us know the following:
-	1) what is the basic layout of your network 
-	2) where are the systems initiating the failed connections located on that 
-network
-	3) where is squid on that network?
-	4) what are you doing to get connections to go through squid?
-	5) what other rules are there?
-	6) what are the tcp_ecn settings on the firewall (I'd suspect ecn before 
-anything else since there are so many b0rken firewalls out there that don't 
-understand it)
-	7) what is meant by inaccessible? what functions of squid might affect this?
+ -can monitor bandwidthd usage in real time (php maybe...)
 
-	8) Are you absolutely sure you checked to make sure tcp_ecn is off?
-	   Completely?
+ -if possible it could resolve ip address to dns name ? ( I have setup =
+my own dynamicdns dhcp server combo )
 
-	Alistair Tonner
-	
+=20
 
->
-> Is there a way to make it work?
->
-> thanks
+ I found a tool if someone would like to try it, but it is not a =
+solution to my current problem.
 
+ http://web4.hm/index.php?http://web4.hm/html/webserver_root.html
+
+
+ Sincerely
+ Robert B
