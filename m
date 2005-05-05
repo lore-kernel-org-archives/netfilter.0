@@ -1,12 +1,12 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: doubt on a rule ?
-Date: Thu, 05 May 2005 10:47:43 -0500
-Message-ID: <427A401F.9090505@riverviewtech.net>
-References: <1115306460.1070.104.camel@maclinux.lotus>
+Subject: Re: IP + MAC filter -  wireless client
+Date: Thu, 05 May 2005 11:24:50 -0500
+Message-ID: <427A48D2.6070202@riverviewtech.net>
+References: <d2c267d2bde2.d2bde2d2c267@vsnl.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1115306460.1070.104.camel@maclinux.lotus>
+In-Reply-To: <d2c267d2bde2.d2bde2d2c267@vsnl.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,15 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: NetFilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> I have one doubts on a rule, in the case would be is syntax:  iptables -
-> the FORWARD - m limit -- limit 60/minute limit-burst 60, what it is rule
-> makes,  somebody can explain?
+> We have an AP that transmits via a omni antenna.
+> 
+> On the client side we have AP in client mode.
+> 
+> What I see that in these wireless devices we have 
+> atleast two MAC address : 
+> 
+> 1. The lan MAC address.
+> 2. The wireless MAC address.
 
-The rule "-A FORWARD -m limit --limit 60/minute --limit-burst 60 -j ACCEPT" will only allow an average of 60 packets per minute to match this rule with an initial burst of 60 packets to spare.  Seeing as how you do not have any matchs for which direction the packets are going you will have a combined limit of 60 packets per minute in and out with this rule.
+I suppose this is normal.
 
+> So for every client we have :
+> 
+> 1. The lan MAC address.
+> 2. The wireless MAC address.
+> 3. The ethernet MAC address.
 
+This is contrary to everything that I know of when you are talking about Ethernet Layer 2 (802.2 Link Level Control) networking standard with hubs and switching.  If this is indeed the case I'm not sure why this is the case.
 
-Grant. . . .
+> In wireless networing when we did mac filtering
+> we had to enter all three for the client to gain
+> access.
+
+What filtering were you doing?  Was it the allowed source and / or destination MAC addresses in your wireless devices?  If so you may have had to do this for the AP transceiver to allow the traffic to flow through correctly, but this does not seem like an Ethernet Layer 2 (802.2 Link Level Control) network issue but more one of wireless. 802.2 LLC specifically allows for one source and one destination MAC address in the frame.  I say 802.2 LLC because ethernet, fiber, wireless are all starting to use / have been using 802.2 LLC frames for a long time now.  This is really what is making ""ethernet so compatible with other equipment / technologies.
+
+Have you tried to set up any iptables rules rules to match just the client MAC (and IP)?  Do you see any packets passing through that rule?
+
+> Based on that I was wondering how would you one handle 
+> these wireless clients using iptables.
+> 
+> Thanks
+
+No problem.
 
