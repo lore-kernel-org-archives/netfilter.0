@@ -1,15 +1,10 @@
-From: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
-Subject: Re: Iptables, php , realtime bandwidth usage
-Date: Thu, 5 May 2005 14:21:43 -0300
-Message-ID: <f48e768e050505102175ad27b4@mail.gmail.com>
-References: <000e01c5515e$b0b62570$1701a8c0@info2000256>
-	<427A3E1C.3070803@riverviewtech.net>
-Reply-To: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: captive web system using DNAT and SNAT
+Date: Thu, 05 May 2005 15:11:58 -0500
+Message-ID: <1115323918.21170.65.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <427A3E1C.3070803@riverviewtech.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,48 +16,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-use it=20
+hello,
 
-http://ifmonitor.preteritoimperfeito.com/
+i am working on a captive web system and am using DNAT and SNAT to
+accomplish this. things are going well, but i am have hit a road block.
 
+currently our router is configured (via next hop routing) to send
+traffic to the firewall for certain vlans on our network. thus i am
+dealing with an asymmetrical route map. traffic coming from a vlan is
+sent to the firewall, but traffic destined for the same vlan does not
+pass through the firewall. this is fine, but it does make the problem a
+little more challenging.
 
+so in order to make the system captive, i am using DNAT. since it is an
+asymmetrical route map, i am using SNAT.
 
-On 5/5/05, Taylor, Grant <gtaylor@riverviewtech.net> wrote:
-> >  I wonder if someone could help me find something similiar to this :
-> >
-> >  -can monitor bandwidthd usage in real time (php maybe...)
-> >
-> >  -if possible it could resolve ip address to dns name ? ( I have setup =
-my own dynamicdns dhcp server combo )
->=20
-> You may want to look in to some of the SNMP monitoring tools (two come to=
- mind MRTG and Cacti) as they will do a lot of the graphics and graphical w=
-eb access for you.  However to do this you will either need a manged + SNMP=
- capable switch to watch which port each computer is plugged in to or you w=
-ill need to set up some sort of rules for counting on your router / firewal=
-l and then set up some sort of SNMP package on the router / firewall to poi=
-nt your SNMP monitoring app at.
->=20
-> As far as getting close to real time stats you could set up some iptables=
- rules to easily count what passes through the router in each direction for=
- each client.  You may want to look at the accounting matches as they are d=
-esigned explicitly for this or just basic packet matching rules will work t=
-oo.  One word to the wise (unless there is a way to defeat this) the bytes =
-and packet counters on iptables output will start rounding at some point, I=
-'m not sure where, so you may want to pass the -Z option to zero out the co=
-unters periodically (each polling cycle) to make sure that you get all pack=
-ets and not loose them to rounding.
->=20
->=20
-> Grant. . . .
->=20
->=20
+DNAT ensures that web traffic goes to the box i want, and SNAT ensures
+that the web talks back to firewall instead of directly to the original
+client (who is not expecting to be getting traffic from *that* web
+server).
 
+the problem is that if the client has traffic destined for the captive
+web server, then i dont want the firewall to DNAT or SNAT the traffic, i
+just want to let it go peacefully.
 
---=20
-Glaucius Djalma Pereira Junior
-glaucius@gmail.com
+here is my small firewall script that accomplishes the captive part:
+
+# catch all redirects to registration server
+iptables -t nat -A PREROUTING -i eth1 -p tcp -dport 80 -j DNAT
+--to-destination ${REGISTRATION_SERVER}
+
+iptables -t nat -A POSTROUTING -o eth0 -p tcp -dport 80 -j SNAT
+--to-source ${EXTERNAL_ADDRESS}
+
+iptables -t nat -A PREROUTING -i eth1 -p tcp -dport 80 -j DNAT
+--to-destination ${REGISTRATION_SERVER}
+
+iptables -t nat -A POSTROUTING -o eth0 -p tcp -dport 80 -j SNAT
+--to-source ${EXTERNAL_ADDRESS}
+
+so the above works for me. on my client machine i go to google.com the
+firewall redirects me to the registration server (${REGISTRATION_SERVER}
+and all is good.
+
+what i want to do is if i type in ${REGISTRATION_SERVER} in my address
+bar on the client system, then i dont want the firewall to do any DNAT
+or SNAT. what is the best way to accomplish this?
+
+thanks, 
+
+matt zagrabelny
+
 
