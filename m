@@ -1,12 +1,14 @@
-From: Greg Cope <gregcope@gmail.com>
-Subject: How to Get a DMZ hosts's trafic routed via a particular IP address
-	on a firewall?
-Date: Thu, 5 May 2005 17:31:54 +0100
-Message-ID: <c0e9781f05050509315ff51a77@mail.gmail.com>
-Reply-To: Greg Cope <gregcope@gmail.com>
+From: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
+Subject: Re: Iptables, php , realtime bandwidth usage
+Date: Thu, 5 May 2005 14:21:43 -0300
+Message-ID: <f48e768e050505102175ad27b4@mail.gmail.com>
+References: <000e01c5515e$b0b62570$1701a8c0@info2000256>
+	<427A3E1C.3070803@riverviewtech.net>
+Reply-To: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <427A3E1C.3070803@riverviewtech.net>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,56 +21,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
+use it=20
 
-I have an iptables firewall that has 3 ethernet cards,
-eth0(Red/internet) , eth1 (DMZ), eth2 (lan)
+http://ifmonitor.preteritoimperfeito.com/
 
-eth0 has a few alias;
 
-eth0 (217.154.55.249) gateway
-eth0:1 (217.154.55.250) for the mail server - an A record for mail.e-dba.ne=
-t
-eth0:2 (217.154.55.253) for a webserver
-eth0:3 (217.154.55.245) another alias for a host on the DMZ
 
-When sending trafic from this firewall host or any host behind it the
-trafic leaves from eth0 (217.154.55.249).
+On 5/5/05, Taylor, Grant <gtaylor@riverviewtech.net> wrote:
+> >  I wonder if someone could help me find something similiar to this :
+> >
+> >  -can monitor bandwidthd usage in real time (php maybe...)
+> >
+> >  -if possible it could resolve ip address to dns name ? ( I have setup =
+my own dynamicdns dhcp server combo )
+>=20
+> You may want to look in to some of the SNMP monitoring tools (two come to=
+ mind MRTG and Cacti) as they will do a lot of the graphics and graphical w=
+eb access for you.  However to do this you will either need a manged + SNMP=
+ capable switch to watch which port each computer is plugged in to or you w=
+ill need to set up some sort of rules for counting on your router / firewal=
+l and then set up some sort of SNMP package on the router / firewall to poi=
+nt your SNMP monitoring app at.
+>=20
+> As far as getting close to real time stats you could set up some iptables=
+ rules to easily count what passes through the router in each direction for=
+ each client.  You may want to look at the accounting matches as they are d=
+esigned explicitly for this or just basic packet matching rules will work t=
+oo.  One word to the wise (unless there is a way to defeat this) the bytes =
+and packet counters on iptables output will start rounding at some point, I=
+'m not sure where, so you may want to pass the -Z option to zero out the co=
+unters periodically (each polling cycle) to make sure that you get all pack=
+ets and not loose them to rounding.
+>=20
+>=20
+> Grant. . . .
+>=20
+>=20
 
-The firewalls default gateway router is an ADLS ethernet modem on 217.154.5=
-5.241
 
-However mail (SMTP) trafic goes in via 217.154.55.250, and I would
-like it to go out via 217.154.55.250 as this has the correct
-(mail.e-dba.net) PTR records.
-
-I have tried within my iptables script:
-
-SMTP_MARK=3D2
-echo 25 smtp.out >> /etc/iproute2/rt_tables
-IPROUTE2_SMTP_TABLE=3D"smtp.out"
-INET_IFACE=3D"eth0"
-MAIL_INET_ALIAS=3D"217.154.55.250"1"
-
-$IPTABLES -A PREROUTING -i eth0 -t mangle -p tcp --dport 25 -j MARK
---set-mark ${SMTP_MASK}
-ip rule add fwmark $SMTP_MARK table $IPROUTE2_SMTP_TABLE
-
-- All good so far
-
-But the following seem to do the wrong thing.....
-
-ip route add table $IPROUTE2_SMTP_TABLE dev $INET_IFACE src $MAIL_INET_ALIA=
-S
-ip route add table $IPROUTE2_SMTP_TABLE default via $INET_IP
-
-What am I doing wrong.
-
-If anyone knows of any howtos/tutorials to RTFM then please let me know.
-
-Thanks
-
-Greg
+--=20
+Glaucius Djalma Pereira Junior
+glaucius@gmail.com
 
