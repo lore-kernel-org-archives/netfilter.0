@@ -1,12 +1,16 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Iptables, php , realtime bandwidth usage
-Date: Thu, 05 May 2005 13:18:13 +0200
-Message-ID: <1115291894.21073.4.camel@nostromo.bgsecm.com>
-References: <000e01c5515e$b0b62570$1701a8c0@info2000256>
+From: Mogens Valentin <monz@danbbs.dk>
+Subject: Re: Iptables logs on High bandwidth traffic network
+Date: Thu, 05 May 2005 13:24:06 +0200
+Message-ID: <427A0256.5080709@danbbs.dk>
+References: <4278C3DE.7010403@au-kbc.org>
+	<4278F150.4000806@riverviewtech.net>	<42794F67.7060803@danbbs.dk>
+	<4279570A.1090509@riverviewtech.net>	<Pine.LNX.4.58.0505050848090.21265@blackhole.kfki.hu>	<4279CA3E.3000104@riverviewtech.net>
+	<Pine.LNX.4.58.0505051010140.21324@blackhole.kfki.hu>
+Reply-To: monz@danbbs.dk
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000e01c5515e$b0b62570$1701a8c0@info2000256>
+In-Reply-To: <Pine.LNX.4.58.0505051010140.21324@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +21,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-El jue, 05-05-2005 a las 12:39 +0200, Robert Becskei escribi=C3=B3:
-> Hello everyone,
->=20
->=20
->  I wonder if someone could help me find something similiar to this :
->=20
->  -can monitor bandwidthd usage in real time (php maybe...)
->=20
->  -if possible it could resolve ip address to dns name ? ( I have setup =
-my own dynamicdns dhcp server combo )
->=20
-> =20
->=20
->  I found a tool if someone would like to try it, but it is not a soluti=
-on to my current problem.
->=20
->  http://web4.hm/index.php?http://web4.hm/html/webserver_root.html
+Jozsef Kadlecsik wrote:
+> On Thu, 5 May 2005, Taylor, Grant wrote:
+> 
+> 
+>>>Why where a FIFO and a program which parses and transmit the data to
+>>>another system any faster than syslog/syslog-ng/ulogd/etc? (Why reinvent
+>>>the wheel?)
+>>
+>>It is my belief that Syslog and the mechanism that it uses to log is not
+>>meant for extreme volume of login.  As I understand it Syslog will log
+>>each and every individual packet that passes through the IPTables LOG
+>>target individually, thus causing a write through the kernel in to
+>>SysLog space and possibly to disk for a VERY small amount of data.
+> 
+> 
+> That depends on how syslog is configured - you can easily disable syncing
+> at every log event.
 
-Best think I know to monitor bandwidth is Ntop, but it's not realtime,
-it's based in rrdtool so you have data each some minutes.
+Yes, but doing so may cause loss of logging, or maybe it'll just delay 
+some messages due to not sync'ing at once. Lack of experience here :p
+I do use the non-sync feature to some extend; doesn't seem to cause too 
+much delay, though.
 
-To monitor realtime bandwidth you could use pmacct in a Cacti script,
-and watch the results graphically with a browser.
-
->  Sincerely
->  Robert B
-
-Regards.
-
---=20
-
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+-- 
+Kind regards,
+Mogens Valentin
 
 
