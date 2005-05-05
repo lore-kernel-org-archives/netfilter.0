@@ -1,13 +1,14 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Iptables logs on High bandwidth traffic network
-Date: Wed, 04 May 2005 18:13:14 -0500
-Message-ID: <4279570A.1090509@riverviewtech.net>
-References: <4278C3DE.7010403@au-kbc.org> <4278F150.4000806@riverviewtech.net>
-	<42794F67.7060803@danbbs.dk>
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Delay in responding caused by netfilter ? [Completely Solved]
+Date: Wed, 4 May 2005 20:29:21 -0400
+Message-ID: <200505042029.22089.Alistair@nerdnet.ca>
+References: <42721F84.6080503@mnemon.de> <4273031B.20009@riverviewtech.net>
+	<4278B1B9.9040302@mnemon.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42794F67.7060803@danbbs.dk>
+In-Reply-To: <4278B1B9.9040302@mnemon.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +19,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-> How about using a fifo (man mkfifo and man syslog) and let syslog pipe 
-> to that fifo. Some program can then read from the fifo, parse data, and 
-> maybe use a database for storing the parsed, now more limited, data.
-> Might be a good ide to have the database on another system :-
+On May 4, 2005 07:27 am, J=F6rg Harmuth wrote:
+> Hi all,
+>
+> Taylor, Grant schrieb:
+> > Rather than allowing ident would it be possible to do a REJECT (via
+> > iptables -t filter -A OUTPUT -j REJECT) (I'm not sure if this can be a
+> > policy or not) that way the ident will fail immediately verses timing
+> > out?  That is if you don't want the ident to happen.  Seeing as how a
+> > LOT of servers don't even support ident any more this might just as well
+> > be an option.
+>
+> Which is what I did on one server (SuSE) and it solved the problem there.
+>
+> The other server was different in that the problem occured not always,
+> only about 80% of all connections were affected and only POP3. The real
+> solution can be found here:
+>
+> http://www.washington.edu/imap/IMAP-FAQs/index.html issue 7.24
+>
+> Quick summary. Mostly the cause is either reverse DNS request timing out
+> or ident requests also timing out. The latter happens on systems running
+> xinetd. In e.g /etc/xinetd.d/ipop3 are lines like
+>
+> log_on_success +=3D USERID
+>
+> These lines cause inetd to start an ident request. Delete all of these
+> and similar lines in each file they occur, restart xinetd and the prolem
+> is gone. No need to write rules :)
 
-Using a FIFO to a program that parses and transmits the data to another system to network might be a possibility.  Keep in mind that any processing that you do on the packets has to be able to be done at least as fast if not faster than the rate the packets come in.  If you ever end up getting behind on the processing things will snowball on you VERY quickly and more than likely end up in a very nasty mess.  This is why I think it would be better to use something like TCPDump or Snort to sniff the network and then post process the dumps.  This post processing could probably be done as often or seldom as you would like, this is all tunable.  The reason that I like the post processing is that you have a rather large buffer before you start snowballing on your self, namely the disk to store dumps on.
 
-(maning mkfifo...)
+	Indeed would be the issue -- I'll not gloat -- but it comes from experienc=
+e=20
+at work with a mail server that was doing the same thing .. 'twas an identd=
+=20
+lookup that was waiting to time out when done through the firewall, but=20
+responding normally any other time.  That happened to be a Cisco pix, but t=
+he=20
+cause and the symptom are the same.  Also why I didn't suggest the solution=
+,=20
+just the cause.
 
-After reading about FIFOs and playing with them momentarily (mkfifo test; ls > test; (jump to different terminal) cat test) I would be worried about how much data could be queued in a fifo and what would happen if more data than that was dumped in to the fifo.  I personally see too many opportunities for things to break login this way.  Login this way may indeed work but I would not want to try this, especially on a higher speed link.  Seeing as I have no idea what speed this would break on I am even less likely to try it, but that is just me and my opinion.  You know what they say about opinions...
+	Alistair Tonner
+>
+> Thanks to all providing ideas and pointing me to ident.
 
+	Welcome, 'swat we all hereabouts for.
 
-
-Grant. . . .
+=09
+>
+> Have a nice time,
+>
+> Joerg
 
