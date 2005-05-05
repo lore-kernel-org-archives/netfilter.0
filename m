@@ -1,12 +1,13 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: IP + MAC filter -  wireless client
-Date: Thu, 05 May 2005 11:24:50 -0500
-Message-ID: <427A48D2.6070202@riverviewtech.net>
-References: <d2c267d2bde2.d2bde2d2c267@vsnl.net>
+From: Greg Cope <gregcope@gmail.com>
+Subject: How to Get a DMZ hosts's trafic routed via a particular IP address
+	on a firewall?
+Date: Thu, 5 May 2005 17:31:54 +0100
+Message-ID: <c0e9781f05050509315ff51a77@mail.gmail.com>
+Reply-To: Greg Cope <gregcope@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <d2c267d2bde2.d2bde2d2c267@vsnl.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,41 +18,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> We have an AP that transmits via a omni antenna.
-> 
-> On the client side we have AP in client mode.
-> 
-> What I see that in these wireless devices we have 
-> atleast two MAC address : 
-> 
-> 1. The lan MAC address.
-> 2. The wireless MAC address.
+Hi all,
 
-I suppose this is normal.
+I have an iptables firewall that has 3 ethernet cards,
+eth0(Red/internet) , eth1 (DMZ), eth2 (lan)
 
-> So for every client we have :
-> 
-> 1. The lan MAC address.
-> 2. The wireless MAC address.
-> 3. The ethernet MAC address.
+eth0 has a few alias;
 
-This is contrary to everything that I know of when you are talking about Ethernet Layer 2 (802.2 Link Level Control) networking standard with hubs and switching.  If this is indeed the case I'm not sure why this is the case.
+eth0 (217.154.55.249) gateway
+eth0:1 (217.154.55.250) for the mail server - an A record for mail.e-dba.ne=
+t
+eth0:2 (217.154.55.253) for a webserver
+eth0:3 (217.154.55.245) another alias for a host on the DMZ
 
-> In wireless networing when we did mac filtering
-> we had to enter all three for the client to gain
-> access.
+When sending trafic from this firewall host or any host behind it the
+trafic leaves from eth0 (217.154.55.249).
 
-What filtering were you doing?  Was it the allowed source and / or destination MAC addresses in your wireless devices?  If so you may have had to do this for the AP transceiver to allow the traffic to flow through correctly, but this does not seem like an Ethernet Layer 2 (802.2 Link Level Control) network issue but more one of wireless. 802.2 LLC specifically allows for one source and one destination MAC address in the frame.  I say 802.2 LLC because ethernet, fiber, wireless are all starting to use / have been using 802.2 LLC frames for a long time now.  This is really what is making ""ethernet so compatible with other equipment / technologies.
+The firewalls default gateway router is an ADLS ethernet modem on 217.154.5=
+5.241
 
-Have you tried to set up any iptables rules rules to match just the client MAC (and IP)?  Do you see any packets passing through that rule?
+However mail (SMTP) trafic goes in via 217.154.55.250, and I would
+like it to go out via 217.154.55.250 as this has the correct
+(mail.e-dba.net) PTR records.
 
-> Based on that I was wondering how would you one handle 
-> these wireless clients using iptables.
-> 
-> Thanks
+I have tried within my iptables script:
 
-No problem.
+SMTP_MARK=3D2
+echo 25 smtp.out >> /etc/iproute2/rt_tables
+IPROUTE2_SMTP_TABLE=3D"smtp.out"
+INET_IFACE=3D"eth0"
+MAIL_INET_ALIAS=3D"217.154.55.250"1"
+
+$IPTABLES -A PREROUTING -i eth0 -t mangle -p tcp --dport 25 -j MARK
+--set-mark ${SMTP_MASK}
+ip rule add fwmark $SMTP_MARK table $IPROUTE2_SMTP_TABLE
+
+- All good so far
+
+But the following seem to do the wrong thing.....
+
+ip route add table $IPROUTE2_SMTP_TABLE dev $INET_IFACE src $MAIL_INET_ALIA=
+S
+ip route add table $IPROUTE2_SMTP_TABLE default via $INET_IP
+
+What am I doing wrong.
+
+If anyone knows of any howtos/tutorials to RTFM then please let me know.
+
+Thanks
+
+Greg
 
