@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: How to Get a DMZ hosts's trafic routed via a particular IP
-	address on a firewall?
-Date: Thu, 5 May 2005 17:34:58 -0400
-Message-ID: <20050505213458.GA24884@bender.817west.com>
-References: <c0e9781f05050509315ff51a77@mail.gmail.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: captive web system using DNAT and SNAT
+Date: Thu, 05 May 2005 21:27:41 -0500
+Message-ID: <427AD61D.2050709@riverviewtech.net>
+References: <1115323918.21170.65.camel@localhost.localdomain>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <c0e9781f05050509315ff51a77@mail.gmail.com>
+In-Reply-To: <1115323918.21170.65.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,55 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thu, May 05, 2005 at 05:31:54PM +0100, Greg Cope wrote:
-> Hi all,
+> # catch all redirects to registration server
+> iptables -t nat -A PREROUTING -i eth1 -p tcp -dport 80 -j DNAT
+> --to-destination ${REGISTRATION_SERVER}
 > 
-> I have an iptables firewall that has 3 ethernet cards,
-> eth0(Red/internet) , eth1 (DMZ), eth2 (lan)
+> iptables -t nat -A POSTROUTING -o eth0 -p tcp -dport 80 -j SNAT
+> --to-source ${EXTERNAL_ADDRESS}
 > 
-> eth0 has a few alias;
+> iptables -t nat -A PREROUTING -i eth1 -p tcp -dport 80 -j DNAT
+> --to-destination ${REGISTRATION_SERVER}
 > 
-> eth0 (217.154.55.249) gateway
-> eth0:1 (217.154.55.250) for the mail server - an A record for mail.e-dba.net
-> eth0:2 (217.154.55.253) for a webserver
-> eth0:3 (217.154.55.245) another alias for a host on the DMZ
-> 
-> When sending trafic from this firewall host or any host behind it the
-> trafic leaves from eth0 (217.154.55.249).
-> 
-> The firewalls default gateway router is an ADLS ethernet modem on 217.154.55.241
-> 
-> However mail (SMTP) trafic goes in via 217.154.55.250, and I would
-> like it to go out via 217.154.55.250 as this has the correct
-> (mail.e-dba.net) PTR records.
+> iptables -t nat -A POSTROUTING -o eth0 -p tcp -dport 80 -j SNAT
+> --to-source ${EXTERNAL_ADDRESS}
 
-<--snip crazy routing stuff-->
+Did you mean to post the same rules twice?  Or am I really just missing something?
 
-sounds like you want 1-to-1 NAT for the mail server, which takes 2 NAT
-rules (one for connections initiated *to* the mailserver, and one for
-connections initiated *from* the mailserver):
+> what i want to do is if i type in ${REGISTRATION_SERVER} in my address
+> bar on the client system, then i dont want the firewall to do any DNAT
+> or SNAT. what is the best way to accomplish this?
 
-  iptables -t nat -A PREROUTING -i eth0 -d 217.154.55.250 \
-    -j DNAT --to-destination $MAILSRV_PRIV_IP
+Try changing your DNAT rule to be like the following:
 
-  iptables -t nat -A POSTROUTING -o eth0 -s $MAILSRV_PRIV_IP \
-    -j SNAT --to-source 217.154.55.250
+iptables -t nat -A PREROUTING -i eth1 -p tcp -d ! ${REGISTRATION_SERVER} -dport 80 -j DNAT --to-destination ${REGISTRATION_SERVER}
 
-sounds like you already have the 1st rule in place.  make sure the 2nd
-rule comes *before* any outbound SNAT/MASQ rule that is less specific.
+As this will DNAT any traffic that is not going to your ${REGISTRATION_SERVER} directly.
 
--j
 
---
-"Dennis Miller: I don't want to go on a rant, here, but America's
- foreign policy makes about as much sense as Beowulf having sex
- with Robert Fulton at the first battle of Antietam. I mean when
- a neo-conservative defenestrates it's like Raskolnikov filibuster
- deoxymonohydroxinate...
- Peter: What the hell does rant mean?"
-        --Family Guy
+
+Grant. . . .
 
