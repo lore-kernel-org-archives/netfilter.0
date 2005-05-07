@@ -1,11 +1,12 @@
-From: "Robert M. Marmorstein" <rmmarm@CS.WM.EDU>
-Subject: Blank Targets
-Date: Sat, 7 May 2005 06:34:28 -0400 (EDT)
-Message-ID: <Pine.LNX.4.58.0505070630490.20558@th107a-5.cs.wm.edu>
-References: <20050507061131.C7CF411B075@mail.cs.wm.edu>
+From: "Ruben Cardenal" <rubenc@arrakis.es>
+Subject: RE: Iptables, php , realtime bandwidth usage
+Date: Sat, 7 May 2005 13:02:14 +0200
+Message-ID: <8706.80538141659$1115463373@news.gmane.org>
+References: <000e01c5515e$b0b62570$1701a8c0@info2000256>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050507061131.C7CF411B075@mail.cs.wm.edu>
+In-Reply-To: <000e01c5515e$b0b62570$1701a8c0@info2000256>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-While testing out the graphical tool "firestarter" I noticed that it 
-creates a TTL match rule with no target.  iptables -L -n I get:
+ 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Chain OUTPUT (policy DROP)
-target     prot opt source               destination
-DROP       all  --  0.0.0.0/0            0.0.0.0/0           state INVALID
-           all  --  0.0.0.0/0            0.0.0.0/0           TTL match TTL 
-== 64
-ACCEPT     icmp --  192.168.1.0/24       0.0.0.0/0
+netfilter-bounces@lists.netfilter.org wrote:
+> Hello everyone,
+> 
+> 
+>  I wonder if someone could help me find something similiar to this :
+> 
+>  -can monitor bandwidthd usage in real time (php maybe...)
 
+  http://rtg.sf.net
 
-There is no chain named "      ".  Is this unusual?  What happens to 
-packets that match the TTL rule?
+  You can setup polling even every 10 seconds if you want to :) And, of
+course, select any timing period to be shown.
 
-Thanks for any input!
+  Regards,
 
-Robert
+- - Ruben
+
+-----BEGIN PGP SIGNATURE-----
+Version: PGP 8.1
+
+iQA/AwUBQnygNgcpyqBKAkY5EQJsewCdGLNqBxxxg89VPTd4KbrrFW7Oc3QAoOha
+3g8qOTjzG2TTERqcywB2s58Y
+=/okk
+-----END PGP SIGNATURE-----
 
 
