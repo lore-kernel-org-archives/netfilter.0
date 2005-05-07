@@ -1,12 +1,10 @@
-From: Felipe Kellermann <stdfk@terra.com.br>
-Subject: Re: CT: Something like max-src-conn
-Date: Sat, 7 May 2005 16:54:34 -0300 (BRST)
-Message-ID: <Pine.LNX.4.61.0505071648060.10176@nyvra.alien.bet>
-References: <Pine.BSO.4.62.0505060046560.30552@bepuvq.alien.bet>
-	<20050506045907.GA26053@bender.817west.com>
+From: Fabian Wolter <netfilter-ml@fabian-wolter.de>
+Subject: How to masquerade when using ROUTE
+Date: Sun, 08 May 2005 01:44:58 +0200
+Message-ID: <427D52FA.8020805@fabian-wolter.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050506045907.GA26053@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,24 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Fri, 6 May 2005 12:59am  -0400, Jason Opperisano wrote:
+Hi,
 
-> > The `max-src-conn' semantics: ``max-src-nodes <number>''.
-> > >From the man page: "Limits the maximum number of source addresses which 
-> > can simultaneously have state table entries".
-> 
-> connlimit?
+I want to route all outgoing port-25-traffic produced by the clients
+over ppp1. The rest schould take the default route over ppp0.
 
-Even though connlimit can limit the number of connections per IP address 
-or address range, it can not limit the number of nodes that are able to 
-simultaneously have entries in the conntrack, which is what max-src-nodes 
-does.
+I used the following command:
 
--- 
-Felipe Kellermann
+iptables -A PREROUTING -p tcp --dport 25 -t mangle -i eth0 -j ROUTE
+--oif ppp1
+
+But the source addresses of the packets are wrong as "tcpdump -ni ppp1"
+shows:
+
+01:20:24.422756 IP 192.168.0.4.32825 > 160.45.10.13.25: S
+2020082843:2020082843(0) win 5840 <mss 1460,sackOK,timestamp 266850[|tcp]>
+
+192.168.0.4 is the IP adress of the client which tried to connect to the
+mailserver 160.45.10.13.25.
+
+Masquarding is done to 192.168.0.0/24:
+
+# iptables -t nat -L POSTROUTING
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+MASQUERADE  all  --  192.168.0.0/24       anywhere
+
+My default route is set to ppp0.
+
+So, how can I replace/masquerade the 192.168.0.4 by the official IP
+address of ppp1?
+
+Regards,
+Fabian
+
 
