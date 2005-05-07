@@ -1,12 +1,11 @@
-From: varun_saa@vsnl.net
-Subject: Re: mails not going thru'
-Date: Sat, 07 May 2005 14:09:51 +0500
-Message-ID: <f036d7f0a1a5.f0a1a5f036d7@vsnl.net>
+From: "Robert M. Marmorstein" <rmmarm@CS.WM.EDU>
+Subject: Blank Targets
+Date: Sat, 7 May 2005 06:34:28 -0400 (EDT)
+Message-ID: <Pine.LNX.4.58.0505070630490.20558@th107a-5.cs.wm.edu>
+References: <20050507061131.C7CF411B075@mail.cs.wm.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
+In-Reply-To: <20050507061131.C7CF411B075@mail.cs.wm.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +16,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+
+While testing out the graphical tool "firestarter" I noticed that it 
+creates a TTL match rule with no target.  iptables -L -n I get:
+
+Chain OUTPUT (policy DROP)
+target     prot opt source               destination
+DROP       all  --  0.0.0.0/0            0.0.0.0/0           state INVALID
+           all  --  0.0.0.0/0            0.0.0.0/0           TTL match TTL 
+== 64
+ACCEPT     icmp --  192.168.1.0/24       0.0.0.0/0
 
 
+There is no chain named "      ".  Is this unusual?  What happens to 
+packets that match the TTL rule?
 
------ Original Message -----
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Date: Saturday, May 7, 2005 12:51 pm
-Subject: Re: mails not going thru'
+Thanks for any input!
 
-> >What I meant was that clients are not
-> > able send or recieve mails. Which was working.
-> 
-> What I'm asking is what server are your client's trying to connect 
-> to?  Are you trying to send email via your firewall or some other 
-> email server on the internet?
-> 
-> 
-> 
-> Grant. . . .
-> 
-> The server for which this iptables is being 
-written. 
-
-Client connected to the Mandrake 10.1 server.
-With eth0 as WAN and eth1 as LAN.
-
-I am not running any mail server.
-client send/recieve thru' firewall
-based iptables that is being discussed.
-
-Varun
+Robert
 
 
