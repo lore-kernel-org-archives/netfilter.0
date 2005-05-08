@@ -1,14 +1,13 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: SSH Brute force attacks
-Date: Sun, 8 May 2005 11:20:50 -0400
-Message-ID: <200505081120.50939.Alistair@nerdnet.ca>
-References: <427B93EE.3030905@eccotours.dyndns.org>
-	<427C52EC.6020004@riverviewtech.net>
+From: Fabian Wolter <netfilter-ml@fabian-wolter.de>
+Subject: Re: How to masquerade when using ROUTE
+Date: Sun, 08 May 2005 18:22:54 +0200
+Message-ID: <427E3CDE.1030008@fabian-wolter.de>
+References: <427D52FA.8020805@fabian-wolter.de>
+	<f48e768e05050807559b74d35@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <427C52EC.6020004@riverviewtech.net>
-Content-Disposition: inline
+In-Reply-To: <f48e768e05050807559b74d35@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,61 +18,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, oan@frozentux.net
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On May 7, 2005 01:32 am, Taylor, Grant wrote:
-> > One one of my hosted boxes, my logwatch scripts continuously pipe out my
-> > ssh and auth log of unsuccessful dictionary attacks
-> >
-> > I came across this link : http://blog.andrew.net.au/2005/02/17/
->
-> Not a bad idea, but I think there is a little bit of room for growth.
+Hi,
+
+Glaucius Djalma Pereira Junior wrote:
+> 1) create an entry in /etc/iproute2/rt_tables
+> 
+> echo "200            fabian
+
+I named it mail.out.
+
+# echo "200	mail.out" >>/etc/iproute2/rt_tables
+
+> 2) create the route default to route fabian
+> ip route add default via x.x.x.x dev ethX table fabian
+
+I think you meant ppp1 instead of ethX?
+
+# ip route add default via 217.5.98.57 dev eth0 table mail.out
+RTNETLINK answers: Network is unreachable
+# ip route add default via 217.5.98.57 dev ppp1 table mail.out
+#
+
+217.5.98.57 is my default gateway on ppp1.
+
+# route
+[...]
+217.5.98.57     *           255.255.255.255 UH    0      0        0 ppp1
+[...]
+
+> ip rule add from fwmark 3 lookup fabian prio 1
+
+I had to remove the string "from". Then I could apply it without any
+error messages.
+
+I did the other steps as you said. But tcpdump on ppp1 shows no traffic
+and in syslog the following message appears:
+
+May  8 17:55:20 eis kernel: MASQUERADE: Route sent us somewhere else.
+
+Regards,
+Fabian
 
 
-	Grant:  
-		I think you've put together the basis for a FAQ on recent/TARPIT here -- and 
-I like yer attitude *grin*
-
-	Oskar A:
-		
-		If you'd like I can buff the following up some, but I think this deserves a 
-mention in the iptables tutorial:
-
->
-> # Let's jump to the SSH_Brute_Force chain if this is a new connection that
-> is not from my IP address. # This will prevent processing these rules for
-> non SSH traffic.
-> iptables -A INPUT -p tcp --dport 22 -m state --state NEW -j SSH_Brute_Force
-> # Let's white list some IP addresses.
-> iptables -A SSH_Brute_Force -s $My_IP_Address -j RETURN
-> iptables -A SSH_Brute_Force -s $My_Friends_IP_Address -j RETURN
-> iptables -A SSH_Brute_Force -s $Any_other_IP_that_I_want_to_white list -j
-> RETURN # If there have not been 4 NEW connection attempts from this source
-> IP address in the last 60 seconds let's return to the INPUT chain. iptables
-> -A SSH_Brute_Force -m recent --name SSH ! --rcheck --seconds 60 -m recent
-> --hitcount 4 --set --name SSH -j RETURN # Well, the NEW connection has been
-> seen so let's update the SSH recent list. iptables -A SSH_Brute_Force -m
-> recent --name SSH --update
-> # I like to log on a line by it's self so I don't have to remember to do it
-> on my last line prior to the end of my script. iptables -A SSH_Brute_Force
-> -j LOG --log-prefix "SSH Brute Force Attempt:  " # Let's send the person
-> that is trying to SSH in to us to the TARPIT target and make them think
-> twice before they try again. # TARPIT will force the site that is SSHing in
-> to us to timeout the connection.  Sure stick you hand in my port, I'll grab
-> hold of it and not let go, # you will have to chew your arm off and grow a
-> new one and try again.  I'll hold your new arm again and again and again
-> and...  This should slow you down. iptables -A SSH_Brute_Force -j TARPIT
-> # I can be a mean vindictive SoB (Sweet Old Buzzard.  NOT!)
-
-	I like that in an admin. *grin*
-
-	Alistair Tonner
->
-> I tried putting in comments to explain the logic of what is going on, if
-> you have any questions please let me know.
->
->
->
-> Grant. . . .
 
