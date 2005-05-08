@@ -1,10 +1,15 @@
-From: "Michael D. Berger" <m.d.berger@ieee.org>
-Subject: FW: QUEUE problem on RH-E-WS-4
-Date: Sun, 8 May 2005 14:01:45 -0400
-Message-ID: <000001c553f7$fffe4a90$2801a8c0@MBRC40>
+From: Dwayne Hottinger <dhottinger@harrisonburg.k12.va.us>
+Subject: Re: SSH Brute force attacks
+Date: Sun,  8 May 2005 14:51:24 -0400
+Message-ID: <1115578284.c89d25d0e91ec@webmail.harrisonburg.k12.va.us>
+References: <427B93EE.3030905@eccotours.dyndns.org>
+	<427C52EC.6020004@riverviewtech.net>
+	<200505081120.50939.Alistair@nerdnet.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200505081120.50939.Alistair@nerdnet.ca>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,147 +21,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-In:
-   /usr/src/kernels/2.6.9-5.EL-i686/.config
-I find:
-   CONFIG_IP_NF_QUEUE=m
+Cool.  Ive been having the same issue for quite some time.  Im going to look
+hard at this.
 
-where other items have "=y" instrad of "=m".
-Might this be related to my problem?  Do I
-have to recompile the kernel?
-Thanks,
-Mike.
+ddh
+
+
+Quoting Alistair Tonner <Alistair@nerdnet.ca>:
+
+> On May 7, 2005 01:32 am, Taylor, Grant wrote:
+> > > One one of my hosted boxes, my logwatch scripts continuously pipe out my
+> > > ssh and auth log of unsuccessful dictionary attacks
+> > >
+> > > I came across this link : http://blog.andrew.net.au/2005/02/17/
+> >
+> > Not a bad idea, but I think there is a little bit of room for growth.
+>
+>
+> 	Grant:
+> 		I think you've put together the basis for a FAQ on recent/TARPIT here --
+> and
+> I like yer attitude *grin*
+>
+> 	Oskar A:
+>
+> 		If you'd like I can buff the following up some, but I think this deserves a
+> mention in the iptables tutorial:
+>
+> >
+> > # Let's jump to the SSH_Brute_Force chain if this is a new connection that
+> > is not from my IP address. # This will prevent processing these rules for
+> > non SSH traffic.
+> > iptables -A INPUT -p tcp --dport 22 -m state --state NEW -j SSH_Brute_Force
+> > # Let's white list some IP addresses.
+> > iptables -A SSH_Brute_Force -s $My_IP_Address -j RETURN
+> > iptables -A SSH_Brute_Force -s $My_Friends_IP_Address -j RETURN
+> > iptables -A SSH_Brute_Force -s $Any_other_IP_that_I_want_to_white list -j
+> > RETURN # If there have not been 4 NEW connection attempts from this source
+> > IP address in the last 60 seconds let's return to the INPUT chain. iptables
+> > -A SSH_Brute_Force -m recent --name SSH ! --rcheck --seconds 60 -m recent
+> > --hitcount 4 --set --name SSH -j RETURN # Well, the NEW connection has been
+> > seen so let's update the SSH recent list. iptables -A SSH_Brute_Force -m
+> > recent --name SSH --update
+> > # I like to log on a line by it's self so I don't have to remember to do it
+> > on my last line prior to the end of my script. iptables -A SSH_Brute_Force
+> > -j LOG --log-prefix "SSH Brute Force Attempt:  " # Let's send the person
+> > that is trying to SSH in to us to the TARPIT target and make them think
+> > twice before they try again. # TARPIT will force the site that is SSHing in
+> > to us to timeout the connection.  Sure stick you hand in my port, I'll grab
+> > hold of it and not let go, # you will have to chew your arm off and grow a
+> > new one and try again.  I'll hold your new arm again and again and again
+> > and...  This should slow you down. iptables -A SSH_Brute_Force -j TARPIT
+> > # I can be a mean vindictive SoB (Sweet Old Buzzard.  NOT!)
+>
+> 	I like that in an admin. *grin*
+>
+> 	Alistair Tonner
+> >
+> > I tried putting in comments to explain the logic of what is going on, if
+> > you have any questions please let me know.
+> >
+> >
+> >
+> > Grant. . . .
+>
+
 
 --
-Michael D. Berger
-m.d.berger@ieee.org 
-
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org 
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
-> Michael D. Berger
-> Sent: Saturday, May 07, 2005 2:44 PM
-> To: netfilter
-> Subject: QUEUE problem on RH-E-WS-4
-> 
-> 
-> Using RH-E-WS-4 that has kernel kernel-2.6.9-5.EL,
-> all freshly installed, I downloaded and installed
-> iptables-1.3.1 using the install script shown below.
-> 
-> I wrote the simple test program below, following
-> man libipq.
-> 
-> When I run it, and then send pings from another
-> box, the program prints "started", and nothing
-> else, indicating that the ipq_read never returns.
-> The pings get no response.  I note that if I
-> change QUEUE to ACCEPT in the iptables -A, the
-> pings respond appropriately.
-> 
-> Advice would be much appreciated.
-> 
-> Mike.
-> 
-> --
-> Michael D. Berger
-> m.d.berger@ieee.org 
-> --
-> 
-> *** install script ***
-> 
-> make KERNEL_DIR=/usr/src BINDIR=/usr/bin LIBDIR=/usr/lib
-> MANDIR=/usr/share/man
-> make install KERNEL_DIR=/usr/src BINDIR=/usr/bin LIBDIR=/usr/lib
-> MANDIR=/usr/share/man install
-> make install KERNEL_DIR=/usr/src BINDIR=/usr/bin LIBDIR=/usr/lib
-> MANDIR=/usr/share/man install-devel
-> 
-> *** start sequence ***
-> 
-> modprobe iptable_filter
-> modprobe ip_queue
-> iptables -A OUTPUT -p icmp -j QUEUE
-> netqueue # the name of my program
-> 
-> *** iptables-save output ***
-> 
-> # Generated by iptables-save v1.2.11 on Sat May  7 14:03:44 2005
-> *filter
-> :INPUT ACCEPT [30:6804]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [46:5164]
-> -A OUTPUT -p icmp -j QUEUE 
-> COMMIT
-> # Completed on Sat May  7 14:03:44 2005
-> 
-> *** code ***
-> 
-> // netqueue.c 05/07/05
-> 
-> #include <linux/netfilter.h>
-> #include <libipq.h>
-> #include <stdio.h>
-> 
-> #define BUFSIZE 2048
-> 
-> static void die (struct ipq_handle *hand)
-> {
->    ipq_perror("passer");
->    ipq_destroy_handle(hand);
->    exit(1);
-> }
-> 
-> int main(int argc, char* argv[])
-> {
->    int                     status;
->    unsigned char           buf[BUFSIZE];
->    struct ipq_handle*   	ipqHand;
-> 
-> 	ipqHand = ipq_create_handle(0,PF_INET);
-> 
-> 	if (ipqHand == 0)
-> 		die(ipqHand);
-> 
-> 	int cnt = 0;
-> 	while (cnt++ < 3)
-> 	{
-> 		fprintf(stderr,"started\n");
-> 		status = ipq_read(ipqHand,buf,BUFSIZE,0);
-> 		fprintf(stderr,"read\n");
-> 
-> 		if (status < 0)
-> 			die(ipqHand);
-> 
-> 		switch(ipq_message_type(buf))
-> 		{
-> 			case NLMSG_ERROR:
-> 				fprintf(stderr,"Error msg:
-> %s\n",ipq_get_msgerr(buf));
-> 			break;
-> 
-> 			default:
->          {
->             ipq_packet_msg_t*    msg = ipq_get_packet(buf);
-> 				fprintf (stderr,"Type =
-> %d\n",ipq_message_type(buf));
->             status = ipq_set_verdict(ipqHand,msg->packet_id,
->                         NF_ACCEPT,0,NULL);
->             if (status < 0)
->                die(ipqHand);
->          }
-> 		};
-> 	}
-> 
-> 	ipq_destroy_handle(ipqHand);
->    return 0;
-> }
-> 
-> 
-> 
-> 
-
-
+Dwayne Hottinger
+Network Administrator
+Harrisonburg City Public Schools
 
