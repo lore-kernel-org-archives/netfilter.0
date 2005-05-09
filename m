@@ -1,12 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: ICMP rule for stateful firewall
-Date: Mon, 9 May 2005 11:16:55 -0400
-Message-ID: <20050509151655.GA5153@bender.817west.com>
-References: <9927912d05050903154ad4c3f6@mail.gmail.com>
+Subject: Re: IP sent an invalid ICMP type to a broadcast and
+	icmp_ignore_bogus_error_responses
+Date: Mon, 9 May 2005 11:37:30 -0400
+Message-ID: <20050509153730.GA5268@bender.817west.com>
+References: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <9927912d05050903154ad4c3f6@mail.gmail.com>
+In-Reply-To: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,32 +22,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Mon, May 09, 2005 at 02:15:51PM +0400, Visham Ramsurrun wrote:
-> Hi to all,
+On Sat, May 07, 2005 at 09:26:28PM +0200, Sebastian Siewior wrote:
+> Hallo,
 > 
-> I wanted to ask if such a rule was possible:
+> My kernel complaints himself every second with:
 > 
-> iptables -A FORWARD -i eth0 -o eth0 -s 192.168.10.0/24 -d
-> 192.168.10.0/24 -m state --state NEW,ESTABLISHED,RELATED -p icmp
-> --icmp-type echo request -j ACCEPT
+> kernel: XX.XX.XX.XX sent an invalid ICMP type 3, code 1 error to a
+> broadcast: 0.0.0.0 on lo
+> 
+> In the meantime I supressed the messages via  
+> 
+> echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses". 
+> 
+> Other people solved this problem with 
+> 
+> iptables -A INPUT -i lo -j ACCEPT
+> 
+> but it won't work here. Does someone have an idea how I could find out
+> where the packets are comming from?
 
-first, it's "echo-request" not "echo request"
+ICMP Type 3 Code 1 == Destination Unreachable, Host Unreachable
 
-grant already covered all the idiosyncrasies of having the same inbound
-and outbound interface and the same layer3 subnet pretty thoroughly.
-the only thing i'll add is that i can't think of a situation where an
-ICMP echo-request packet would be marked RELATED or ESTABLISHED by the
-conntrack code.  in the case of a normal ping, ICMP echo-requests are
-NEW, and ICMP echo-replies are ESTABLISHED.
+seems odd that you would be sending/receiving those on lo.  i suppose
+they could be caused by not having rules that allow traffic on loopback:
 
-i guess given grant's and my comments; i'd say, while that rule is
-"possible" i don't see the point of it, and i question whether it meets
-the intended purpose.
+  iptables -A INPUT -i lo -j ACCEPT
+  iptables -A OUTPUT -o lo -j ACCEPT
+
+but you say these don't fix the problem?
+
+you may be able to pick out an offending packet by watching:
+
+  tcpdump -n -nn -p -i lo -s 1500 icmp
+
+as a proper ICMP 3/1 packet should have the original packet header
+in-tact as the data of the packet.
 
 -j
 
 --
-"Stewie: Careful! You're washing a baby's scalp, not scrubbing
- the vomit out of a Christmas dress, you stupid holiday drunk."
+"Peter: Make like Siamese twins and split... and then one of you die."
         --Family Guy
 
