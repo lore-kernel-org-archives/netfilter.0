@@ -1,12 +1,12 @@
-From: varun_saa@vsnl.net
-Subject: Re: mails not going thru'
-Date: Mon, 09 May 2005 11:13:05 +0500
-Message-ID: <fcd674fcd901.fcd901fcd674@vsnl.net>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: How to masquerade when using ROUTE
+Date: Mon, 09 May 2005 01:14:27 -0500
+Message-ID: <427EFFC3.3040300@riverviewtech.net>
+References: <427D52FA.8020805@fabian-wolter.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
+In-Reply-To: <427D52FA.8020805@fabian-wolter.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +17,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-
-
------ Original Message -----
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Date: Monday, May 9, 2005 11:37 am
-Subject: Re: mails not going thru'
-
-> > The server for which this iptables is being 
-> > written. 
-> > 
-> > Client connected to the Mandrake 10.1 server.
-> > With eth0 as WAN and eth1 as LAN.
-> > 
-> > I am not running any mail server.
-> > client send/recieve thru' firewall
-> > based iptables that is being discussed.
+> I want to route all outgoing port-25-traffic produced by the clients
+> over ppp1. The rest schould take the default route over ppp0.
 > 
-> If you are trying to configure your email clients on your local LAN 
-> to send email out via the internal IP address of your firewall 
-> (that is not running any email it's self) via redirecting inbound 
-> TCP connections to port 25 / 587 to a mail server somewhere on the 
-> internet?  If that is the case you will need to set up a DNAT rule 
-> that points to the mail server that you want to send email with.
+> I used the following command:
 > 
-> Other than that I can't see any thing that would be preventing your 
-> email from functioning.
-> 
-> 
-> 
-> Grant. . . .
-> 
-> Well my server in on Mandrake10.1
-with eth0 as WAN with static IP
-eth1 as LAN 192.168.0.xxx.
+> iptables -A PREROUTING -p tcp --dport 25 -t mangle -i eth0 -j ROUTE
+> --oif ppp1
 
-Clients connect to eth1 of the server.
+This seems reasonable enough.
 
-I hope this help
+> But the source addresses of the packets are wrong as "tcpdump -ni ppp1"
+> shows:
+> 
+> 01:20:24.422756 IP 192.168.0.4.32825 > 160.45.10.13.25: S
+> 2020082843:2020082843(0) win 5840 <mss 1460,sackOK,timestamp 266850[|tcp]>
+> 
+> 192.168.0.4 is the IP adress of the client which tried to connect to the
+> mailserver 160.45.10.13.25.
+> 
+> Masquarding is done to 192.168.0.0/24:
+> 
+> # iptables -t nat -L POSTROUTING
+> Chain POSTROUTING (policy ACCEPT)
+> target     prot opt source               destination
+> MASQUERADE  all  --  192.168.0.0/24       anywhere
+> 
+> My default route is set to ppp0.
+> 
+> So, how can I replace/masquerade the 192.168.0.4 by the official IP
+> address of ppp1?
 
-Varun
+It looks like there might be a chance that traffic that goes out ppp0 and ppp1 are matching your one POSTROUTING rule.  Is there a reason that you are not specifying an interface the traffic is going out to match against?  I.e.
 
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o ppp1 -j MASQUERADE
+
+I'm wondering if there is not some confusion in the kernel / routing code as to which source IP to use when going out ppp1.
+
+
+
+Grant. . . .
 
