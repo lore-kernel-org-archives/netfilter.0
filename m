@@ -1,12 +1,10 @@
-From: Sergio Penkale <spenkale@arnet.com.ar>
-Subject: Re: Can anyone tell wat's going on here?
-Date: Wed, 11 May 2005 20:47:01 -0300 (ART)
-Message-ID: <Pine.LNX.4.63.0505112036390.13190@palangana>
-References: <Pine.LNX.4.63.0505111249010.3025@palangana>
-	<20050511183015.GA13507@bender.817west.com>
+From: lmarcilly@aressi.fr
+Subject: Iptable on 64bit architecture
+Date: Mon, 9 May 2005 14:05:32 +0000
+Message-ID: <DIIE.000002F600001791@smtp.aressi.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050511183015.GA13507@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,22 +15,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Wed, 11 May 2005, Jason Opperisano wrote:
+Hi!
 
-> your symptoms scream 'MTU Issue' at me.  try this rule and see if it
-> fixes it:
->
->  iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN \
->    -j TCPMSS --clamp-mss-to-pmtu
+Sorry for my english!!
 
-It worked!!! Thanks!!
-You have no idea how much i fought with this.
+I just want to know if it's possible to use Iptable on a 64bit architecture?
 
-Thanks, Sergio.
+Thanks in advance!
+
+L.M.
+
+
 
 
