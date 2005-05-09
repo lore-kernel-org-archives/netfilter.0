@@ -1,15 +1,15 @@
-From: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
-Subject: Re: How to masquerade when using ROUTE
-Date: Mon, 9 May 2005 09:19:07 -0300
-Message-ID: <f48e768e05050905196a3ffaee@mail.gmail.com>
-References: <427D52FA.8020805@fabian-wolter.de>
-	<427EFFC3.3040300@riverviewtech.net>
-Reply-To: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Help: iptables NAT broken with pppoe
+Date: Mon, 9 May 2005 10:08:51 -0400
+Message-ID: <20050509140851.GA4840@bender.817west.com>
+References: <1115397393l.3864l.0l@antares.localdomain>
+	<427C5C41.3010407@riverviewtech.net>
+	<1115496014l.3549l.0l@antares.localdomain>
+	<427EFB7D.8010503@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <427EFFC3.3040300@riverviewtech.net>
 Content-Disposition: inline
+In-Reply-To: <427EFB7D.8010503@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,65 +21,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-irc channel is better than an IM program
+On Mon, May 09, 2005 at 12:56:13AM -0500, Taylor, Grant wrote:
+> Ok.  I've never heard or seen reference to /proc/sys/net/ipv4/ip_dynaddr 
+> before and I'm not sure what its purpose is let alone that it is requried.  
+> Does any one have any more information on what it is and what its purpose 
+> is?
 
-see you there
+************************************************************************
+$ cat /usr/src/linux-2.6.11/Documentation/networking/ip_dynaddr.txt 
 
-On 5/9/05, Taylor, Grant <gtaylor@riverviewtech.net> wrote:
-> > I want to route all outgoing port-25-traffic produced by the clients
-> > over ppp1. The rest schould take the default route over ppp0.
-> >
-> > I used the following command:
-> >
-> > iptables -A PREROUTING -p tcp --dport 25 -t mangle -i eth0 -j ROUTE
-> > --oif ppp1
->=20
-> This seems reasonable enough.
->=20
-> > But the source addresses of the packets are wrong as "tcpdump -ni ppp1"
-> > shows:
-> >
-> > 01:20:24.422756 IP 192.168.0.4.32825 > 160.45.10.13.25: S
-> > 2020082843:2020082843(0) win 5840 <mss 1460,sackOK,timestamp 266850[|tc=
-p]>
-> >
-> > 192.168.0.4 is the IP adress of the client which tried to connect to th=
-e
-> > mailserver 160.45.10.13.25.
-> >
-> > Masquarding is done to 192.168.0.0/24:
-> >
-> > # iptables -t nat -L POSTROUTING
-> > Chain POSTROUTING (policy ACCEPT)
-> > target     prot opt source               destination
-> > MASQUERADE  all  --  192.168.0.0/24       anywhere
-> >
-> > My default route is set to ppp0.
-> >
-> > So, how can I replace/masquerade the 192.168.0.4 by the official IP
-> > address of ppp1?
->=20
-> It looks like there might be a chance that traffic that goes out ppp0 and=
- ppp1 are matching your one POSTROUTING rule.  Is there a reason that you a=
-re not specifying an interface the traffic is going out to match against?  =
-I.e.
->=20
-> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> iptables -t nat -A POSTROUTING -o ppp1 -j MASQUERADE
->=20
-> I'm wondering if there is not some confusion in the kernel / routing code=
- as to which source IP to use when going out ppp1.
->=20
->=20
-> Grant. . . .
->=20
->=20
+  IP dynamic address hack-port v0.03
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  This stuff allows diald ONESHOT connections to get established
+  by dynamically changing packet source address (and socket's if
+  local procs).  It is implemented for TCP diald-box connections(1)
+  and IP_MASQuerading(2).
 
+  1)  Socket (and packet) source address is rewritten ON RETRANSMISSIONS
+      while in SYN_SENT state (diald-box processes).
+  2)  Out-bounded MASQueraded source address changes ON OUTPUT (when
+      internal host does retransmission) until a packet from outside is
+      received by the tunnel.
 
---=20
-Glaucius Djalma Pereira Junior
-glaucius@gmail.com
+  This is specially helpful for auto dialup links (diald), where the
+  ``actual'' outgoing address is unknown at the moment the link is going
+  up. So, the *same* (local AND masqueraded) connections requests that
+  bring the link up will be able to get established.
+
+  [*] At boot, by default no address rewriting is attempted. 
+  To enable:
+     # echo 1 > /proc/sys/net/ipv4/ip_dynaddr
+  To enable verbose mode:
+     # echo 2 > /proc/sys/net/ipv4/ip_dynaddr
+  To disable (default)
+     # echo 0 > /proc/sys/net/ipv4/ip_dynaddr
+
+  Enjoy!
+
+  -- Juanjo  <jjciarla@raiz.uncu.edu.ar>
+************************************************************************
+
+-j
+
+--
+"Narrator: Remember, nothing says "good job" like a firm, open-palm
+ slap on the behind."
+        --Family Guy
 
