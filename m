@@ -1,12 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: port and adress forward
-Date: Mon, 9 May 2005 19:56:41 +0200
-Message-ID: <20050509175535.C40718EDCEB@smtp.sterenborg.info>
-References: <427F7554.4000107@dud.com.br>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: Help: iptables NAT broken with pppoe
+Date: Mon, 09 May 2005 13:43:29 -0500
+Message-ID: <427FAF51.9000102@riverviewtech.net>
+References: <1115397393l.3864l.0l@antares.localdomain>	<427C5C41.3010407@riverviewtech.net>	<1115496014l.3549l.0l@antares.localdomain>	<427EFB7D.8010503@riverviewtech.net>
+	<1115663859l.3308l.0l@antares.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <427F7554.4000107@dud.com.br>
+In-Reply-To: <1115663859l.3308l.0l@antares.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> I have a web and mail server in my local lan with ip
-> 192.168.0.x and I have a firewall / gateway with valid
-> address.  I have a policy a to redirect port 80 to my
-> internal server. But I try to access my website inside my
-> internal lan and doesn't access.
-> 
-> My chain is below:
-> 
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 \
->    -j DNAT --to-dest 192.168.0.X
-> iptables -A FORWARD -p tcp -i eth0 --dport 80 \
->   -d 192.168.0.X -j ACCEPT
+> Set them all to either 0 or 1 - still the same picture, the reply from 
+> the  remote server results (in tcpdump) in the one with "win 0" being 
+> sent back  instead of passing it to eth0.
 
-I suppose your forward policy is DROP. Do you have a :
-$IPT -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-in your ruleset ?
+Hmm.  Would it be possible to see the output of iptables-save?  I'm just wondering if there is something else in the mix that is messing things up.
+
+> Any idea whom I could ask here for help? Maybe the Linux kernel mailing  
+> list? Or is there a more specialised one for networking issues?
+
+Sorry, I don't know off hand where to send you.  Any one else have any advice here?
 
 
-Gr,
-Rob
 
+Grant. . . .
 
