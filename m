@@ -1,12 +1,13 @@
-From: varun_saa@vsnl.net
-Subject: Re: mails not going thru'
-Date: Mon, 09 May 2005 08:53:33 +0500
-Message-ID: <fa0e7dfa38f4.fa38f4fa0e7d@vsnl.net>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: SSH Brute force attacks
+Date: Mon, 09 May 2005 00:41:16 -0500
+Message-ID: <427EF7FC.40707@riverviewtech.net>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<427C52EC.6020004@riverviewtech.net>	<200505081120.50939.Alistair@nerdnet.ca>	<1115578284.c89d25d0e91ec@webmail.harrisonburg.k12.va.us>
+	<20050508225747.GQ12091@samad.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
+In-Reply-To: <20050508225747.GQ12091@samad.com.au>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,84 +18,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-
-
------ Original Message -----
-From: Jason Opperisano <opie@817west.com>
-Date: Saturday, May 7, 2005 8:17 pm
-Subject: Re: mails not going thru'
-
-> On Sat, May 07, 2005 at 10:14:49AM +0500, varun_saa@vsnl.net wrote:
-> > *filter
-> > :FORWARD ACCEPT [0:0]
-> > :INPUT DROP [0:0]
-> > :OUTPUT ACCEPT [0:0]
-> > -A INPUT -s 127.0.0.1 -j ACCEPT
-> > -A INPUT -p tcp -m tcp -i eth1 --dport 3128 --sport 1024:65535 -j 
-> ACCEPT> -A INPUT -p udp -m udp -i eth1 --dport 3128 --sport 
-> 1024:65535 -j ACCEPT
-> > -A INPUT -s 62.0.0.0/255.0.0.0 -i eth0 -j REJECT
-> > -A INPUT -p tcp -m tcp -s 217.81.0.0/255.255.0.0 -i eth0 -j REJECT
-> > -A INPUT -i eth0 -j DROP
-> > -A INPUT -p tcp -m tcp -i eth1 --sport 80 -j DROP
-> > -A INPUT -m state -i eth1 --state ESTABLISHED,RELATED -j ACCEPT
-> > -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> > -A FORWARD -p tcp -i eth1 -o eth0 --dport 25 --sport 1024: -j 
-> ACCEPT  --syn 
-> > -A FORWARD -p tcp -i eth1 -o eth0 --dport 110 --sport 1024: -j 
-> ACCEPT  --syn 
-> > -A FORWARD -p tcp -i eth1 -o eth0 --dport 1863 --sport 1024: -j 
-> ACCEPT  --syn 
-> > -A FORWARD -p tcp -i eth1 -o eth0 --dport 5050 --sport 1024: -j 
-> ACCEPT  --syn 
+Alexander Samad wrote:
+> How efficient is recent, I currently scan my log files for 'evil'
+> activity and build up a list of around 2000s ip addresses which I place
+> into a BLOCKED chain, there is about 2 lines per entry cause I TARPIT
+> tcp sessions.  But I could more easily manage it with recent as I can
+> just use the test of are they in the list !
 > 
-> the policy of your FORWARD chain is set to ACCEPT, so even if there's
-> traffic you haven't accounted for in these rules--it will still be
-> allowed through.  you have a rule that allows SMTP (TCP 25) out--so i
-> bet if you type:
+> I am presuming it is more efficient to use recent cause it hashes the
+> address ! can any one confirm this ?
 > 
->  telnet 64.233.185.27 25
+> A
 
-[varun@saamail varun]$ telnet 64.233.185.27 25
-Trying 64.233.185.27...
+I'm not sure how ""efficient the recent match extension is as I have not pushed it this far.  Give it a try and let us know.  I know that I personally can now write a lot of code (be it because of lack of trying or other reasons) but I do know that I can help the various developers by using and testing and trying to break their code.  Oh, wait a moment, isn't that what the OSS community is about?  ;)
 
-No response
-> 
-> which is the IP of gmail's preferred MX, you'd get connected.  if 
-> you'reFORWARD policy was DROP, i'd say that the reason you can't 
-> send mail from
-> a client machine is because you have no rule allowing DNS traffic out:
-> 
->  -A FORWARD -i eth1 -o eth0 -p udp --sport 1024: --dport 53 -j ACCEPT
->  -A FORWARD -i eth1 -o eth0 -p tcp --syn --sport 1024: --dport 53 \
->     -j ACCEPT
-> 
-> but since those packets will be accepted by the chain policy, my only
-> guess is that you do not have any valid DNS servers configured on your
-> client machines--on a *nix box:
-> 
->  cat /etc/resolv.conf
-
-[varun@saamail varun]$ cat /etc/resolv.conf
-search saice.edu
-nameserver 203.145.184.13
-
-# ppp temp entry
-
-> 
-> -j
-> 
-
-Strange, I can browse but I can't ping ISP gateway
-and ISP DNS.
-
-I can ping ISP gateway and ISP DNS from server.
-
-
-Varun
-
+You might want to check out SnowMan's web page at http://snowman.net/projects/ipt_recent/ on the IPTables recent match.  I'm sure he would be happy to try to answer your question(s) there.  If you do contact SnowMan (via his "About" page, be sure to congratulate him on his (new) baby.)
 
