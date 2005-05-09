@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: port and adress forward
-Date: Mon, 9 May 2005 14:19:28 -0400
-Message-ID: <20050509181928.GA5978@bender.817west.com>
-References: <427F7554.4000107@dud.com.br>
+From: Chadley Wilson <chadley@pinteq.co.za>
+Subject: Redirecting traffic to my ftp site?
+Date: Mon, 9 May 2005 20:13:56 +0200
+Message-ID: <200505092013.56681.chadley@pinteq.co.za>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <427F7554.4000107@dud.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Mon, May 09, 2005 at 02:36:04PM +0000, Roberto Dud (listas) wrote:
-> Hi All,
-> 
-> I have a web and mail server in my local lan with ip 192.168.0.x and I 
-> have a firewall / gateway with valid address.  I have a policy a to 
-> redirect port 80 to my internal server. But I try to access my website 
-> inside my internal lan and doesn't access.
-> 
-> My chain is below:
-> 
->  iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT 
-> --to-dest 192.168.0.X
->  iptables -A FORWARD -p tcp -i eth0 --dport 80 -d 192.168.0.X -j ACCEPT
-> 
-> Anyone help me?
+Greetings
 
-1) connect to the web server using its 192.168.0.X address--no firewall
-involved.
+My firewall / router has two interfaces.
+bond0 == internal
+eth0 == external
 
-2) setup split dns so that www.mysite.com resolves to 192.168.0.X
-internally and the external IP of the firewall externally.
+I have an ftp server setup on the same box. If anyone on the internal network 
+tries to access http 80 or ftp 20:21 I would like to route them regardless of 
+the url entered to my ftp site.
+ 
+:} "evil I know"
 
-3) wait for someone else to post the stupid DNAT/SNAT solution.
+iptables -t nat -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT \
+--to-dest 192.168.0.1 (ftp??)
 
--j
+Could I use iptables for that?
+If how should that rule look?
 
---
-"Stewie: Mother, as first lady of the American stage Helen Hayes once
- said, "I'm going to kill you.""
-        --Family Guy
+Thanks in advance,
+
+Oh and by the way there is method in the madness ;)
+
+
+
+-- 
+Chadley Wilson
+Redhat Certified Technician 
+Cert Number: 603004708291270
+Pinnacle Micro
+Manufacturers of Proline Computers
+====================================
+Exercise freedom, Use LINUX
+=====================================
+
 
