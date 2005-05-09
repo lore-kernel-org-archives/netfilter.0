@@ -1,12 +1,12 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: How to masquerade when using ROUTE
-Date: Mon, 09 May 2005 01:14:27 -0500
-Message-ID: <427EFFC3.3040300@riverviewtech.net>
-References: <427D52FA.8020805@fabian-wolter.de>
+Subject: Re: mails not going thru'
+Date: Mon, 09 May 2005 01:19:30 -0500
+Message-ID: <427F00F2.5000308@riverviewtech.net>
+References: <fcd674fcd901.fcd901fcd674@vsnl.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <427D52FA.8020805@fabian-wolter.de>
+In-Reply-To: <fcd674fcd901.fcd901fcd674@vsnl.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,43 +20,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> I want to route all outgoing port-25-traffic produced by the clients
-> over ppp1. The rest schould take the default route over ppp0.
+> Well my server in on Mandrake10.1
+> with eth0 as WAN with static IP
+> eth1 as LAN 192.168.0.xxx.
 > 
-> I used the following command:
+> Clients connect to eth1 of the server.
 > 
-> iptables -A PREROUTING -p tcp --dport 25 -t mangle -i eth0 -j ROUTE
-> --oif ppp1
+> I hope this help
 
-This seems reasonable enough.
+Yes this does help.
 
-> But the source addresses of the packets are wrong as "tcpdump -ni ppp1"
-> shows:
-> 
-> 01:20:24.422756 IP 192.168.0.4.32825 > 160.45.10.13.25: S
-> 2020082843:2020082843(0) win 5840 <mss 1460,sackOK,timestamp 266850[|tcp]>
-> 
-> 192.168.0.4 is the IP adress of the client which tried to connect to the
-> mailserver 160.45.10.13.25.
-> 
-> Masquarding is done to 192.168.0.0/24:
-> 
-> # iptables -t nat -L POSTROUTING
-> Chain POSTROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> MASQUERADE  all  --  192.168.0.0/24       anywhere
-> 
-> My default route is set to ppp0.
-> 
-> So, how can I replace/masquerade the 192.168.0.4 by the official IP
-> address of ppp1?
+Try setting up a DNAT rule that will take any port 25 (SMTP) connections received on eth1 from your LAN and DNAT them to an SMTP server on the net that will relay for your network.  You would do this with something along the following lines:
 
-It looks like there might be a chance that traffic that goes out ppp0 and ppp1 are matching your one POSTROUTING rule.  Is there a reason that you are not specifying an interface the traffic is going out to match against?  I.e.
+iptables -t nat -A PREROUTING -i eth1 -s 192.168.0.0/24 -d $IP_Address_of_Firewall -p tcp --dport 25 -j DNAT --to-destination $IP_Address_of_SMTP_server
 
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -o ppp1 -j MASQUERADE
-
-I'm wondering if there is not some confusion in the kernel / routing code as to which source IP to use when going out ppp1.
+This should take any port 25 traffic (SMTP) that is inbound to your server and redirect it to an SMTP server on the net.
 
 
 
