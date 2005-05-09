@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Redirecting traffic to my ftp site?
-Date: Mon, 9 May 2005 14:27:16 -0400
-Message-ID: <20050509182716.GA6029@bender.817west.com>
-References: <200505092013.56681.chadley@pinteq.co.za>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: port and adress forward
+Date: Mon, 09 May 2005 13:28:32 -0500
+Message-ID: <427FABD0.6070602@riverviewtech.net>
+References: <427F7554.4000107@dud.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200505092013.56681.chadley@pinteq.co.za>
+In-Reply-To: <427F7554.4000107@dud.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Mon, May 09, 2005 at 08:13:56PM +0200, Chadley Wilson wrote:
-> Greetings
+> I have a web and mail server in my local lan with ip 192.168.0.x and I 
+> have a firewall / gateway with valid address.  I have a policy a to 
+> redirect port 80 to my internal server. But I try to access my website 
+> inside my internal lan and doesn't access.
 > 
-> My firewall / router has two interfaces.
-> bond0 == internal
-> eth0 == external
+> My chain is below:
 > 
-> I have an ftp server setup on the same box. If anyone on the internal network 
-> tries to access http 80 or ftp 20:21 I would like to route them regardless of 
-> the url entered to my ftp site.
->  
-> :} "evil I know"
+>  iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT 
+> --to-dest 192.168.0.X
+>  iptables -A FORWARD -p tcp -i eth0 --dport 80 -d 192.168.0.X -j ACCEPT
 
-um--it's called "transparent proxying" and i wouldn't refer to it as
-"evil."  that being said--the daemon listening on port 80/21 needs to
-support transparent proxying (like squid), otherwise it's well..."evil"
-wouldn't be *my* choice of words.
+Add a rule to your nat table like this:
 
-> iptables -t nat -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT \
-> --to-dest 192.168.0.1 (ftp??)
+iptables -t nat -A PREROUTING -i eth1 -s 192.168.0.0/24 -d $External_IP_Address_of_your_firewall -p tcp --dport 80 -j DNAT --to-destination 192.168.0.x
+iptables -t nat -A POSTROUTING -o eth1 -s 192.168.0.0/24 -d 192.168.0.x -p tcp --dport 80 -j SNAT --to-source $Internal_IP_Address_of_your_firewall
+iptables -A FORWARD -p tcp -i eth1 -o eth1 -d 192.168.0.x --dport 80 -j ACCEPT
 
-  iptables -t nat -A PREROUTING -i bond0 -p tcp --dport 80 \
-    -j REDIRECT --to-ports $PROXY_PORT
+This will DNAT any traffic coming from your LAN that is directed at the external IP of your firewall for your web server to go directly to the web server in house.  The likely reason that things are not working for you now is that the external IP of your firewall / router is directly accessible from the firewall / router its self and thus the traffic will not (logically) go out the internet connection and back in and pass through your other DNAT / related rules.
 
-  iptables -A INPUT -i bond0 -p tcp --dport $PROXY_PORT -j ACCEPT
 
-you'd also need rules to allow the firewall itself to go fetch the
-content for the end user.
 
--j
-
---
-"Stewie: Hidden missile behind the Great Wall? Ancient Chinese
- secret, huh?"
-        --Family Guy
+Grant. . . .
 
