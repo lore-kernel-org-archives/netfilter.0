@@ -1,12 +1,13 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: mails not going thru'
-Date: Mon, 09 May 2005 01:07:12 -0500
-Message-ID: <427EFE10.4080704@riverviewtech.net>
-References: <f036d7f0a1a5.f0a1a5f036d7@vsnl.net>
+Subject: Re: IP sent an invalid ICMP type to a broadcast and
+	icmp_ignore_bogus_error_responses
+Date: Mon, 09 May 2005 01:09:15 -0500
+Message-ID: <427EFE8B.4030009@riverviewtech.net>
+References: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <f036d7f0a1a5.f0a1a5f036d7@vsnl.net>
+In-Reply-To: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,19 +21,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> The server for which this iptables is being 
-> written. 
+Sebastian Siewior wrote:
+> Hallo,
 > 
-> Client connected to the Mandrake 10.1 server.
-> With eth0 as WAN and eth1 as LAN.
+> My kernel complaints himself every second with:
 > 
-> I am not running any mail server.
-> client send/recieve thru' firewall
-> based iptables that is being discussed.
+> kernel: XX.XX.XX.XX sent an invalid ICMP type 3, code 1 error to a
+> broadcast: 0.0.0.0 on lo
+> 
+> In the meantime I supressed the messages via  
+> 
+> echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses". 
+> 
+> Other people solved this problem with 
+> 
+> iptables -A INPUT -i lo -j ACCEPT
+> 
+> but it won't work here. Does someone have an idea how I could find out
+> where the packets are comming from?
 
-If you are trying to configure your email clients on your local LAN to send email out via the internal IP address of your firewall (that is not running any email it's self) via redirecting inbound TCP connections to port 25 / 587 to a mail server somewhere on the internet?  If that is the case you will need to set up a DNAT rule that points to the mail server that you want to send email with.
-
-Other than that I can't see any thing that would be preventing your email from functioning.
+Can we get an iptables-save output as well as an ifconfig -a?  I'm betting that something is preventing traffic from flowing to or from your lo interface.
 
 
 
