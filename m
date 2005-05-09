@@ -1,13 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: IP sent an invalid ICMP type to a broadcast and
-	icmp_ignore_bogus_error_responses
-Date: Mon, 9 May 2005 11:37:30 -0400
-Message-ID: <20050509153730.GA5268@bender.817west.com>
-References: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
+From: "Roberto Dud (listas)" <listas@dud.com.br>
+Subject: port and adress forward
+Date: Mon, 09 May 2005 14:36:04 +0000
+Message-ID: <427F7554.4000107@dud.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,49 +15,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Sat, May 07, 2005 at 09:26:28PM +0200, Sebastian Siewior wrote:
-> Hallo,
-> 
-> My kernel complaints himself every second with:
-> 
-> kernel: XX.XX.XX.XX sent an invalid ICMP type 3, code 1 error to a
-> broadcast: 0.0.0.0 on lo
-> 
-> In the meantime I supressed the messages via  
-> 
-> echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses". 
-> 
-> Other people solved this problem with 
-> 
-> iptables -A INPUT -i lo -j ACCEPT
-> 
-> but it won't work here. Does someone have an idea how I could find out
-> where the packets are comming from?
+Hi All,
 
-ICMP Type 3 Code 1 == Destination Unreachable, Host Unreachable
+I have a web and mail server in my local lan with ip 192.168.0.x and I 
+have a firewall / gateway with valid address.  I have a policy a to 
+redirect port 80 to my internal server. But I try to access my website 
+inside my internal lan and doesn't access.
 
-seems odd that you would be sending/receiving those on lo.  i suppose
-they could be caused by not having rules that allow traffic on loopback:
+My chain is below:
 
-  iptables -A INPUT -i lo -j ACCEPT
-  iptables -A OUTPUT -o lo -j ACCEPT
+  iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT 
+--to-dest 192.168.0.X
+  iptables -A FORWARD -p tcp -i eth0 --dport 80 -d 192.168.0.X -j ACCEPT
 
-but you say these don't fix the problem?
+Anyone help me?
 
-you may be able to pick out an offending packet by watching:
+thanks,
 
-  tcpdump -n -nn -p -i lo -s 1500 icmp
+Dud.
 
-as a proper ICMP 3/1 packet should have the original packet header
-in-tact as the data of the packet.
-
--j
-
---
-"Peter: Make like Siamese twins and split... and then one of you die."
-        --Family Guy
 
