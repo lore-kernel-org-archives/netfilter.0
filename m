@@ -1,14 +1,12 @@
-From: Albrecht =?unknown-8bit?q?Dre=DF?= <albrecht.dress@arcor.de>
-Subject: Re: Help: iptables NAT broken with pppoe
-Date: Tue, 10 May 2005 13:02:59 +0200 (CEST)
-Message-ID: <4448571.1115722979939.JavaMail.ngmail@webmail-06.arcor-online.net>
-References: <42808D9C.2000603@dsl.pipex.com>
-	<1115397393l.3864l.0l@antares.localdomain>	<427C5C41.3010407@riverviewtech.net>	<1115496014l.3549l.0l@antares.localdomain>	<427EFB7D.8010503@riverviewtech.net>	<1115663859l.3308l.0l@antares.localdomain>
-	<427FAF51.9000102@riverviewtech.net>
+From: Ian Laurie <iml@zip.com.au>
+Subject: philosophical question regarding NAT
+Date: Tue, 10 May 2005 11:13:04 +0000
+Message-ID: <1115723584l.29661l.0l@server.moose.blogdns.org>
+Reply-To: iml@zip.com.au
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42808D9C.2000603@dsl.pipex.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +17,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: andy.furniss@dsl.pipex.com, gtaylor@riverviewtech.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="Flowed"
+To: netfilter@lists.netfilter.org
 
-> One thought - the tcpdump is incomplete by just looking at port 80 you=20
-> can't see what ICMP are being sent.
+I've got a philosophical question regarding NAT as follows.
 
-Well, the idea was to reduce the amount of data reported by tcpdump. My nai=
-ve assumption was that running the two tcpdump's on eth0 and ppp0, I would =
-see the request packet coming from eth0, the masqueraded one on ppp0, and t=
-he same process in the opposite direction for the reply.
+Imagine the following unrealistic gateway firewall:
 
-Why do you think it would be important to see the icmp's, too?
+## eth0 =3D WAN, eth1 =3D LAN
+*nat
+:PREROUTING ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A POSTROUTING -o eth0 -j MASQUERADE
+COMMIT
 
-Cheers, Albrecht.
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+COMMIT
 
-Machen Sie aus 14 Cent spielend bis zu 100 Euro!
-Die neue Gaming-Area von Arcor - =FCber 50 Onlinespiele im Angebot.
-http://www.arcor.de/rd/emf-gaming-1
+Although NAT is enabled and LAN side systems will be NATed to the=20
+gateway's WAN side IP address, WAN side systems can still access=20
+systems on the inside of the firewall if they know what the LAN=20
+side addresses are (and have a route to the gateway somehow).
+
+In other words, even though NAT is active the bridging function=20
+provided by ip_forward is still happening as well.
+
+It seems you can disable the bridging function with the following=20
+PREROUTING rule:
+
+-A PREROUTING -i eth0 -d <private_lan_block> -j DROP
+
+which enforces NAT, ie, only NATed things can get through.  While=20
+you can achieve the same thing by setting policy of FORWARD to DROP=20
+and allowing only RELATED and ESTABLISHED stuff through (which I do)
+I am surprised I have not seen this PREROUTING rule used more=20
+often as a safety measure.
+
+It doesn't seem to break anything, does anyone know why this=20
+technique isn't seen more often?
+
+Ian
+
+
+
+
 
