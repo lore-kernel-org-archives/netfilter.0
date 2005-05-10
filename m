@@ -1,8 +1,9 @@
-From: Raphael Jacquot <raphael.jacquot@imag.fr>
-Subject: Re: Netfilter iptables on 64-bit architecture
-Date: Tue, 10 May 2005 10:38:56 +0200
-Message-ID: <42807320.80805@imag.fr>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+Subject: RE: Netfilter iptables on 64-bit architecture
+Date: Tue, 10 May 2005 11:31:46 +0200
+Message-ID: <28016.0385570072$1115717118@news.gmane.org>
 References: <DIIE.0000029D000017E9@smtp.aressi.fr>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,22 +19,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: lmarcilly@aressi.fr
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-lmarcilly@aressi.fr wrote:
-> Hi!
-> 
-> Excuse me for my english but i'm french!
-> 
-> I just want to know if I can compile Netfilter/Iptables on a 64-bit architecture?
-> 
-> Thanks in advance!
-> 
-> L. M.
-> 
-> 
-> 
+Hi,
 
-works here on this AMD64 box
+Ive answered to this message a few days ago... and the answer was YES !
+Iptables 1.3.1 compiled on Suse 9.2 on 64bit Athlon !
+
+Regards,
+
+Edvin Seferovic
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
+lmarcilly@aressi.fr
+Sent: Dienstag, 10. Mai 2005 10:40
+To: netfilter@lists.netfilter.org
+Subject: Netfilter iptables on 64-bit architecture
+
+Hi!
+
+Excuse me for my english but i'm french!
+
+I just want to know if I can compile Netfilter/Iptables on a 64-bit
+architecture?
+
+Thanks in advance!
+
+L. M.
+
+
+
+
+
 
