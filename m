@@ -1,12 +1,13 @@
-From: "Ruben Cardenal" <rubenc@arrakis.es>
-Subject: RE: Problem adding connlimit rule
-Date: Tue, 10 May 2005 15:21:27 +0200
-Message-ID: <39983.3577023402$1115730916@news.gmane.org>
-References: <1115725891.948.1.camel@nostromo.bgsecm.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Internet usage policy
+Date: Tue, 10 May 2005 09:32:40 -0400
+Message-ID: <20050510133240.GA9011@bender.817west.com>
+References: <mailman.0.1115718084.11687.netfilter@lists.netfilter.org>
+	<BAY12-F8D78244E7EC55433A54F3DE1F0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1115725891.948.1.camel@nostromo.bgsecm.com>
+Content-Disposition: inline
+In-Reply-To: <BAY12-F8D78244E7EC55433A54F3DE1F0@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Tue, May 10, 2005 at 09:40:55AM +0000, Ayobami Oladejo wrote:
+> 
+> Hello,
+> 
+> I am still a newbie in Linux. I have a challenge. Curently in my 
+> organisation, we want to run a policy not to allow some workstations to 
+> access the Internet until 6 p.m of each day. We currently use Squid on a 
+> RedHat Linux system.
+> How can I do this.
 
-netfilter-bounces@lists.netfilter.org wrote:
-> El mar, 10-05-2005 a las 13:26 +0200, Ruben Cardenal escribi=F3:
->> Hi,
->>=20
->>   I'm trying to add a quite simple rule but I get an error:
->>=20
->> # iptables -I INPUT -p tcp --syn --dport 25 -m connlimit
->> --connlimit-above 10 -j REJECT iptables: No chain/target/match by
->> that name=20
->=20
-> Maybe you don't have the support for the connlimit match compiled
-> for iptables. Check if you have the file:
-> /lib/iptables/libipt_connlimit.so
+squid supports time-based ACL's:
 
-  For this system libs are located under /usr/local/lib/iptables and
-libipt_connlimit.so is there.
+  http://squid.visolve.com/squid/squid24s1/access_controls.htm
 
-  Regards,
+-j
 
-- Ruben
+PS - squid has its own list:
+     http://www.squid-cache.org/mailing-lists.html
 
+--
+"Lois: So he just left without saying anything?
+ Peter: All I asked him to do was buy some peanuts and cracker jacks.
+ Brian: I don't care if he ever gets back. I wasn't being cute. I really
+ hope he's dead."
+        --Family Guy
 
