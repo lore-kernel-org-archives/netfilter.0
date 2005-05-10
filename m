@@ -1,13 +1,11 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: RE: Netfilter iptables on 64-bit architecture
-Date: Tue, 10 May 2005 11:31:46 +0200
-Message-ID: <28016.0385570072$1115717118@news.gmane.org>
-References: <DIIE.0000029D000017E9@smtp.aressi.fr>
-Reply-To: edvin.seferovic@kolp.at
+From: "Ayobami Oladejo" <ayooladejo@hotmail.com>
+Subject: Internet usage policy
+Date: Tue, 10 May 2005 09:40:55 +0000
+Message-ID: <BAY12-F8D78244E7EC55433A54F3DE1F0@phx.gbl>
+References: <mailman.0.1115718084.11687.netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <DIIE.0000029D000017E9@smtp.aressi.fr>
+In-Reply-To: <mailman.0.1115718084.11687.netfilter@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,39 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
 
-Ive answered to this message a few days ago... and the answer was YES !
-Iptables 1.3.1 compiled on Suse 9.2 on 64bit Athlon !
+Hello,
 
-Regards,
+I am still a newbie in Linux. I have a challenge. Curently in my 
+organisation, we want to run a policy not to allow some workstations to 
+access the Internet until 6 p.m of each day. We currently use Squid on a 
+RedHat Linux system.
+How can I do this.
 
-Edvin Seferovic
+Thank you.
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
-lmarcilly@aressi.fr
-Sent: Dienstag, 10. Mai 2005 10:40
-To: netfilter@lists.netfilter.org
-Subject: Netfilter iptables on 64-bit architecture
+Ayo
 
-Hi!
-
-Excuse me for my english but i'm french!
-
-I just want to know if I can compile Netfilter/Iptables on a 64-bit
-architecture?
-
-Thanks in advance!
-
-L. M.
-
-
-
-
+_________________________________________________________________
+Don't just search. Find. Check out the new MSN Search! 
+http://search.msn.com/
 
 
