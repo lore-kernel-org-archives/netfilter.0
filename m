@@ -1,13 +1,11 @@
-From: Andy Furniss <andy.furniss@dsl.pipex.com>
-Subject: Re: Help: iptables NAT broken with pppoe
-Date: Tue, 10 May 2005 11:31:56 +0100
-Message-ID: <42808D9C.2000603@dsl.pipex.com>
-References: <1115397393l.3864l.0l@antares.localdomain>	<427C5C41.3010407@riverviewtech.net>	<1115496014l.3549l.0l@antares.localdomain>	<427EFB7D.8010503@riverviewtech.net>	<1115663859l.3308l.0l@antares.localdomain>
-	<427FAF51.9000102@riverviewtech.net>
+From: "hareram" <hareram@sol.net.in>
+Subject: Re: Internet usage policy
+Date: Tue, 10 May 2005 16:01:31 +0530
+Message-ID: <011001c5554b$6eace560$09603fca@southern>
+References: <BAY12-F8D78244E7EC55433A54F3DE1F0@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <427FAF51.9000102@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +16,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: Ayobami Oladejo <ayooladejo@hotmail.com>, netfilter@lists.netfilter.org
 
-Taylor, Grant wrote:
->> Set them all to either 0 or 1 - still the same picture, the reply from 
->> the  remote server results (in tcpdump) in the one with "win 0" being 
->> sent back  instead of passing it to eth0.
-> 
-> 
-> Hmm.  Would it be possible to see the output of iptables-save?  I'm just 
-> wondering if there is something else in the mix that is messing things up.
-> 
->> Any idea whom I could ask here for help? Maybe the Linux kernel 
->> mailing  list? Or is there a more specialised one for networking issues?
-> 
-> 
-> Sorry, I don't know off hand where to send you.  Any one else have any 
-> advice here?
+check this link
+may help you
 
-One thought - the tcpdump is incomplete by just looking at port 80 you 
-can't see what ICMP are being sent.
+http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-time
 
-Andy.
+hare
+----- Original Message ----- 
+From: "Ayobami Oladejo" <ayooladejo@hotmail.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, May 10, 2005 3:10 PM
+Subject: Internet usage policy
+
+
+> 
+> Hello,
+> 
+> I am still a newbie in Linux. I have a challenge. Curently in my 
+> organisation, we want to run a policy not to allow some workstations to 
+> access the Internet until 6 p.m of each day. We currently use Squid on a 
+> RedHat Linux system.
+> How can I do this.
+> 
+> Thank you.
+> 
+> Ayo
+> 
+> _________________________________________________________________
+> Don't just search. Find. Check out the new MSN Search! 
+> http://search.msn.com/
+> 
+> 
+> 
+>
+
 
