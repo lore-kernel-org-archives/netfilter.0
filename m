@@ -1,12 +1,14 @@
-From: "Roberto Dud (listas)" <listas@dud.com.br>
-Subject: Re: port and adress forward
-Date: Mon, 09 May 2005 16:55:37 +0000
-Message-ID: <427F9609.8020804@dud.com.br>
-References: <427F7554.4000107@dud.com.br> <427FABD0.6070602@riverviewtech.net>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Help: iptables NAT broken with pppoe
+Date: Mon, 9 May 2005 23:00:37 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0505092258520.21981@darkstar.sysinfo.com>
+References: <1115397393l.3864l.0l@antares.localdomain>
+	<427C5C41.3010407@riverviewtech.net>
+	<1115496014l.3549l.0l@antares.localdomain>
+	<427EFB7D.8010503@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <427FABD0.6070602@riverviewtech.net>
+In-Reply-To: <427EFB7D.8010503@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +19,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: "Taylor, Grant" <gtaylor@riverviewtech.net>
 Cc: netfilter@lists.netfilter.org
 
-Taylor, Grant wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
->> I have a web and mail server in my local lan with ip 192.168.0.x and 
->> I have a firewall / gateway with valid address.  I have a policy a to 
->> redirect port 80 to my internal server. But I try to access my 
->> website inside my internal lan and doesn't access.
->>
->> My chain is below:
->>
->>  iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT 
->> --to-dest 192.168.0.X
->>  iptables -A FORWARD -p tcp -i eth0 --dport 80 -d 192.168.0.X -j ACCEPT
->
->
-> Add a rule to your nat table like this:
->
-> iptables -t nat -A PREROUTING -i eth1 -s 192.168.0.0/24 -d 
-> $External_IP_Address_of_your_firewall -p tcp --dport 80 -j DNAT 
-> --to-destination 192.168.0.x
-> iptables -t nat -A POSTROUTING -o eth1 -s 192.168.0.0/24 -d 
-> 192.168.0.x -p tcp --dport 80 -j SNAT --to-source 
-> $Internal_IP_Address_of_your_firewall
-> iptables -A FORWARD -p tcp -i eth1 -o eth1 -d 192.168.0.x --dport 80 
-> -j ACCEPT
->
-> This will DNAT any traffic coming from your LAN that is directed at 
-> the external IP of your firewall for your web server to go directly to 
-> the web server in house.  The likely reason that things are not 
-> working for you now is that the external IP of your firewall / router 
-> is directly accessible from the firewall / router its self and thus 
-> the traffic will not (logically) go out the internet connection and 
-> back in and pass through your other DNAT / related rules.
->
->
->
-> Grant. . . .
->
->
->
-it works....
-
-thanks a lot...
-
-Dud.
+On Mon, 9 May 2005, Taylor, Grant wrote:
 
 
+ 	[SNIP]
+
+>
+> *nod*
+>
+>> The modules ipt_MASQUERADE and iptable_nat *are* loaded, btw.
+>> 
+>>> Also, what is your "echo 2 > /proc/sys/net/ipv4/ip_dynaddr" doing for 
+>>> you?
+>> 
+>> I don't see any messages in /var/log messages or in dmesg, if you mean 
+>> that. Or did I miss your point here? I found some howto where they stated 
+>> this would be necessary...
+
+
+ip_dynaddr
+- ----------
+
+Enable dynamic  socket  address rewriting on interface address change. 
+This is useful for dialup interface with changing IP addresses.
+
+
+located under the kernel tree is the doc on pro/sys  sysctl;
+
+/usr/src/linux-<kern ver>/Documentation/filesystems/proc.txt
+
+
+Thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCgCPYst+vzJSwZikRAlC3AKCr3sM3oO7fz3V7uutaLlKCnmsbkQCgyLjq
+bgu2VI/ftJQ4II5auBy6CTY=
+=BiR3
+-----END PGP SIGNATURE-----
 
