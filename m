@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Internet usage policy
-Date: Tue, 10 May 2005 09:32:40 -0400
-Message-ID: <20050510133240.GA9011@bender.817west.com>
-References: <mailman.0.1115718084.11687.netfilter@lists.netfilter.org>
-	<BAY12-F8D78244E7EC55433A54F3DE1F0@phx.gbl>
+From: "Eric Wood" <eric@interplas.com>
+Subject: Re: SSH Brute force attacks
+Date: Tue, 10 May 2005 09:01:58 -0500
+Message-ID: <003401c55569$31df1e00$467ba8c0@your4f1261a8e5>
+References: <427B93EE.3030905@eccotours.dyndns.org>
+	<427C4EA3.5090501@riverviewtech.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <BAY12-F8D78244E7EC55433A54F3DE1F0@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
 To: netfilter@lists.netfilter.org
 
-On Tue, May 10, 2005 at 09:40:55AM +0000, Ayobami Oladejo wrote:
-> 
-> Hello,
-> 
-> I am still a newbie in Linux. I have a challenge. Curently in my 
-> organisation, we want to run a policy not to allow some workstations to 
-> access the Internet until 6 p.m of each day. We currently use Squid on a 
-> RedHat Linux system.
-> How can I do this.
+----- Original Message ----- 
+From: "Taylor, Grant"
+Subject: Re: SSH Brute force attacks
+> # TARPIT will force the site that is SSHing in to us to timeout the 
+> connection.  Sure stick you hand in my port, I'll grab hold of it and not 
+> let go,
+> # you will ahve to chew your arm off and grow a new one and try again.
 
-squid supports time-based ACL's:
+Very nice.  This is going into my standard config.  hehe.
+But for those interested, in order to get the recent module working for 
+RHEL3, you must recompile iptables srpm and follow this bugzilla report:
 
-  http://squid.visolve.com/squid/squid24s1/access_controls.htm
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=155608
 
--j
+-Eric Wood 
 
-PS - squid has its own list:
-     http://www.squid-cache.org/mailing-lists.html
-
---
-"Lois: So he just left without saying anything?
- Peter: All I asked him to do was buy some peanuts and cracker jacks.
- Brian: I don't care if he ever gets back. I wasn't being cute. I really
- hope he's dead."
-        --Family Guy
 
