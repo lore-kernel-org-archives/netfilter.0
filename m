@@ -1,10 +1,13 @@
-From: lmarcilly@aressi.fr
-Subject: Netfilter iptables on 64-bit architecture
-Date: Tue, 10 May 2005 08:39:39 +0000
-Message-ID: <DIIE.0000029D000017E9@smtp.aressi.fr>
+From: Georgi Alexandrov <tehlists@hotpop.com>
+Subject: Re: IP  + MAC filter -  doubt
+Date: Tue, 10 May 2005 11:38:55 +0300
+Message-ID: <4280731F.80508@hotpop.com>
+References: <c76dd6c78318.c78318c76dd6@vsnl.net>
+	<4279964B.90001@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4279964B.90001@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,19 +18,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi!
+Taylor, Grant wrote:
 
-Excuse me for my english but i'm french!
+>> A FORWARD -i eth1 -o eth0 -s 192.168.0.5 \
+>> -m mac --mac-source XX:XX:XX:XX:XX:XX -j ACCEPT
+>>
+>> First tell me if above rule correct.
+>
+>
+> Yes, that is one way to do it.  The ""other way(s) have to do with 
+> ACCEPTing vs redirecting to another chain for additional testing.
+>
+>> Second I think I need first a  rule to deny all IPs and MACs. Is that 
+>> correct ?
+>
+>
+> Yes you will need a rule (or FORWARD policy) to not forward or DROP 
+> packets.  I would put this at the end of your FORWARD chain (or at 
+> least the section that does your MAC to IP pairing) after you have 
+> decided what MAC IP pairs to allow through.  Explicitly allow what you 
+> want to get out and then DROP or REJECT the rest of the chaff.
+>
+>> Howto first deny all IPs and MACs ?
+>
+>
+> iptables -t filter -A FORWARD -i eth1 -o eth0 -j DROP
+>
+>> Thanks in advance
+>
+>
+> No problem.
+>
+>
+>
+> Grant. . . .
+>
+>
+The way i would handle the FORWARD chain in your scenario:
 
-I just want to know if I can compile Netfilter/Iptables on a 64-bit architecture?
+iptables -P FORWARD DROP   <-- set the default policy to DROP, anything 
+not matched by the rules will hit the default policy, e.g. be dropped.
+iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED 
+-j ACCEPT <- allow established & related packages back to the LAN.
+iptables -A FORWARD -i eth1 -o eth0 -s 192.168.0.5 -m mac --mac-source 
+XX:XX:XX:XX:XX:XX -j ACCEPT <-- accept requests to the WAN only for 
+particular ip with particular mac address.
 
-Thanks in advance!
 
-L. M.
-
-
-
+regards,
+Georgi Alexandrov
 
