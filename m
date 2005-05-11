@@ -1,12 +1,14 @@
-From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: Can anyone tell wat's going on here?
-Date: Wed, 11 May 2005 12:03:21 -0400
-Message-ID: <42822CC9.5080209@SCampbell.net>
-References: <Pine.LNX.4.63.0505111249010.3025@palangana>
+From: Ludger Zachewitz <ludger.z@gmx.de>
+Subject: Re: iptables and port 25
+Date: Wed, 11 May 2005 17:44:52 +0200
+Message-ID: <6.2.1.2.0.20050511173852.01e7d558@pop.gmx.net>
+References: <6.2.1.2.0.20050511160801.01e6e430@domino.offis.uni-oldenburg.de>
+	<20050511145529.GA12831@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.63.0505111249010.3025@palangana>
+In-Reply-To: <20050511145529.GA12831@bender.817west.com>
+References: <6.2.1.2.0.20050511160801.01e6e430@domino.offis.uni-oldenburg.de>
+	<20050511145529.GA12831@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +20,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Sergio Penkale wrote:
->
-> My main problem is that i don't know wat the problem is, i don't know 
-> if it's iptables-related, kernel-related or what. I haven't tried 
-> other kernels mainly
-> because it's a lot of trouble to get the driver of my USB ADSL modem 
-> to work
-> between different kernel versions.
-> I was using debian woody with a 2.4.19 kernel and everything worked fine,
-> the problem arised when i upgraded to sarge. The main configuration 
-> didn't
-> change during the upgrade.
-> Any suggestion on what the problem could be or at least how to trace it
-> would be much appreciated.
->
+Hi Jason,
 
-Have you checked 'netstat -in' for interface errors on the ethernet 
-connection, I am suspicious that you just have a duplex mismatch between 
-the host and client.  Worth a look.
+At 16:55 11.05.2005, you wrote:
+
+>looks like the port 25 packet is getting dropped by something between
+>your test machine and host X.  either the ISP of client machine or your
+>ISP filters TCP port 25 traffic (not uncommon).
+
+I have now tested it from different machines (with different ISPs).
+In fact, that's the reason. The ISP of the host X has dropped the
+packets over port 25.
+
+Many thanks for help!
+
+Ludger
+   
 
 
