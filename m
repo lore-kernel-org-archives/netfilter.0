@@ -1,13 +1,12 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: SSH Brute force attacks
-Date: Wed, 11 May 2005 13:21:18 -0500
-Message-ID: <42824D1E.7040508@riverviewtech.net>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>
-	<4281FC1A.8090000@eccotours.dyndns.org>
+From: Sergio Penkale <spenkale@arnet.com.ar>
+Subject: Re: Can anyone tell wat's going on here?
+Date: Wed, 11 May 2005 15:27:33 -0300 (ART)
+Message-ID: <Pine.LNX.4.63.0505111518480.3200@palangana>
+References: <Pine.LNX.4.63.0505111249010.3025@palangana>
+	<42822CC9.5080209@SCampbell.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4281FC1A.8090000@eccotours.dyndns.org>
+In-Reply-To: <42822CC9.5080209@SCampbell.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +17,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: iptables <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Steven M Campbell <Netfilter@SCampbell.net>
+Cc: netfilter@lists.netfilter.org
 
-> Thanks to Grant for the info above, but for some funny reason I cant get 
-> the following to work
-> 
-> iptables -A SSH_Brute_Force -m recent --name SSH ! --rcheck --seconds 60 
-> -m recent --hitcount 4 --set --name SSH -j RETURN
-> 
-> this what I get back:
-> =====================
-> [root@abc root]# iptables -A SSH_Brute_Force -m recent --name SSH ! 
-> --rcheck --seconds 60 -m recent --hitcount 4 --set --name SSH -j RETURN
-> iptables v1.2.9: Unknown arg `4'
-> Try `iptables -h' or 'iptables --help' for more information.
-> [root@ns root]#
+On Wed, 11 May 2005, Steven M Campbell wrote:
 
-I'm betting that you don't have the "recent" match extension compiled in to the kernel directly or as a module.  Try "iptables -m recent -h" to see if you get any output talking about recent at the bottom or if it complains.  I don't think that the recent extension is in the base kernel and thus you will have to apply some patches via p-o-m to the kernel and iptables and recompile your self.  Once you have support for the recent match extension you should be able to do what I have suggested.  If you need help just ask.
+> Have you checked 'netstat -in' for interface errors on the ethernet 
+> connection, I am suspicious that you just have a duplex mismatch between the 
+> host and client.  Worth a look.
 
+Thanks for the reply, but the ethernet link seems ok, i'm using squid 
+until i can fix this and it works fine.
+Besides, if i go back to woody (i made an image of my previous distro) it 
+works ok.
 
+This is the output of netstat, the client host is on eth0.
 
-Grant. . . .
+palangana:~# netstat -in
+Kernel Interface table
+Iface   MTU Met   RX-OK RX-ERR RX-DRP RX-OVR   TX-OK TX-ERR TX-DRP TX-OVR Flg
+eth0   1500 0      2649      0      0      0    1809      0      0      0 BMRU
+eth1   1500 0      7563      0      0      0    7444      0      0      1 BMU
+lo    16436 0       106      0      0      0     106      0      0      0 LRU
+nas0   1500 0     94132      0      0      0   74268     10      0     10 BMRU
+ppp0   1492 0     91901      0      0      0   72046      0      0      0 MOPRU
 
