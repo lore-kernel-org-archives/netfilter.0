@@ -1,13 +1,9 @@
-From: ro0ot <ro0ot@phreaker.net>
-Subject: Re: Two link adsl on the same server
-Date: Wed, 11 May 2005 22:46:16 +0800
-Message-ID: <42821AB8.3040702@phreaker.net>
-References: <00ee01c5557d$e1979d90$8b00000a@PIVT>	<4280EA95.8020306@phreaker.net>
-	<20050510235828.GJ15049@samad.com.au>
+From: Sergio Penkale <spenkale@arnet.com.ar>
+Subject: Can anyone tell wat's going on here?
+Date: Wed, 11 May 2005 12:49:39 -0300 (ART)
+Message-ID: <Pine.LNX.4.63.0505111249010.3025@palangana>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050510235828.GJ15049@samad.com.au>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,198 +14,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alexander Samad <alex@samad.com.au>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Alexander Samad wrote:
+Hi, I have a problem that's driving me crazy:
+I have a nat box running Debian Sarge under a 2.6.11.7 kernel. I compiled
+this kernel myself, which could be the source of problems.
+The nat box itself works great, but masquerading has a strange problem,
+some things work and others don't. For example some web pages (like google)
+work great, and some others (like hotmail for example), don't work at all,
+while in the nat box all of them work. 
+I've tried https pages on the clients and they work, so the problem seems to
+be at the level of packets, and it only affects the traffic that gets masqueraded.
+I have a lot of iptables rules, but it makes no difference using only trivial
+masquerading rules. That is: flushing everything, setting all policies to ACCEPT
+and adding "-A POSTROUTING -s 10.10.10.0/255.255.255.0 -o ppp0 -j MASQUERADE" in nat.
+Usinf SNAT instead of MASQUERADE doesn't make any difference either
 
->On Wed, May 11, 2005 at 01:08:37AM +0800, ro0ot wrote:
->  
->
->>Below is only examples: -
->>
->>First, include this in /etc/iproute2/rt_tables as below: -
->>
->>201 http.out
->>202 ftp.out
->>203 smtp.out
->>204 pop3.out
->>
->>Next, include this in a preferred executable file such as 
->>/usr/local/bin/rc.routing as below: -
->>
->>#!/bin/sh
->>
->># first ISP
->>ip route add 1.1.1.68/30 dev eth2 src 1.1.1.70 table 1
->>ip route add default via 1.1.1.69 table 1
->>
->># second ISP
->>ip route add 2.2.2.116/30 dev eth4 src 2.2.2.118 table 2
->>ip route add default via 2.2.2.117 table 2
->>    
->>
->
->you also need to add the local routes in these tables as well, otherwise
->they will not be able to talk inside !
->  
->
-Any example for the local routes?
+The problem also arises when doing ssh: i login to a remote machine and do an ls
+of a directory with many files. If i make this from the nat box it works fine,
+but if i repeat those same steps from a masqueraded client i only get one or
+two listing lines and then it just hangs.
+Here's the tethereal output of this: 201.252.166.212 is my ip and xxx.xxx.xxx.xxx
+is a remote machine, i've already loged in and i start capturing when i send the
+ls command. From the nat box it works ok:
 
->
->  
->
->>ip rule add from 1.1.1.70 table 1
->>ip rule add from 2.2.2.118 table 2
->>
->>ip route add 172.17.0.0/16 dev eth1 table 1
->>ip route add 2.2.2.116/30 dev eth4 table 1
->>
->>ip route add 172.17.0.0/16 dev eth1 table 2
->>ip route add 1.1.1.68/30 dev eth2 table 2
->>
->>ip route add default scope global nexthop via 1.1.1.70 dev eth2 nexthop 
->>via 2.2.2.118 dev eth4
->>
->>ip rule add fwmark 1 table http.out
->>ip rule add fwmark 2 table ftp.out
->>ip rule add fwmark 3 table smtp.out
->>ip rule add fwmark 4 table pop3.out
->>
->>ip route add default via 1.1.1.69 dev eth2 table http.out
->>ip route add default via 1.1.1.69 dev eth2 table ftp.out
->>
->>ip route add default via 2.2.2.117 dev eth4 table smtp.out
->>ip route add default via 2.2.2.117 dev eth4 table pop3.out
->>
->>Next, include this in a preferred executable file such as 
->>/usr/local/bin/rc.firewall as below: -
->>
->>#!bin/sh
->>
->>iptables -t nat -A POSTROUTING -o eth2 -j SNAT --to-source 1.1.1.70
->>iptables -t nat -A POSTROUTING -o eth4 -j SNAT --to-source 2.2.2.118
->>
->>iptables -t mangle -A PREROUTING -i eth1 -p tcp --dport 80 -j MARK 
->>--set-mark 1
->>iptables -t mangle -A PREROUTING -i eth1 -p tcp --dport 21 -j MARK 
->>--set-mark 2
->>iptables -t mangle -A PREROUTING -i eth1 -p tcp --dport 25 -j MARK 
->>--set-mark 3
->>iptables -t mangle -A PREROUTING -i eth1 -p tcp --dport 110 -j MARK 
->>--set-mark 4
->>
->>Hope it helps...
->>
->>Regards,
->>ro0ot
->>
->>
->>Sebasti?o Ant?nio Campos (GWA) wrote:
->>
->>    
->>
->>>Hi!
->>>
->>>We have two ADSL link on the same server and we'd like to use load balance.
->>>
->>>I tried to used, but I didn't have success.
->>>
->>>I use on eth1 172.17.1.6 mask 255.255.0.0 my local network;
->>>on eth2 my first ADSL 200.168.1.19 mask 255.255.255.192 default gw 
->>>200.204.140.1
->>>on eth4 my first ADSL 200.204.140.10 mask 255.255.255.192 default gw 
->>>200.179.1.1
->>>
->>>This IP are static.
->>>
->>>On my local network I have two servers (E-mail server and one web server) 
->>>and I need to PREROUTING with DNAT.
->>>
->>>And we would like to separate the port 80 and 21 using one link on eth0 
->>>and the port 25 and 110 other link eth4 and other ports eth0 or eth4 link.
->>>
->>>My files:
->>>
->>>My ifcfg-ethx files:
->>>
->>>#NIC SIS on board, usando link1 ADSL
->>>DEVICE=eth0
->>>ONBOOT=yes
->>>#BOOTPROTO=dhcp
->>>BOOTPROTO=static
->>>BROADCAST=200.168.1.63
->>>IPADDR=200.168.1.19
->>>NETMASK=255.255.255.192
->>>NETWORK=200.168.1.0
->>>#GATEWAY=200.168.1.1
->>>___________________________________________________________
->>>#Placa Realtek, Uso Local, slot 1
->>>DEVICE=eth1
->>>ONBOOT=yes
->>>BOOTPROTO=static
->>>IPADDR=172.17.1.6
->>>BROADCAST=172.17.255.255
->>>NETMASK=255.255.0.0
->>>NETWORK=172.17.0.0
->>>________________________________________________________
->>>#NIC Realtek, link 2 ADSL
->>>DEVICE=eth4
->>>ONBOOT=yes
->>>BOOTPROTO=static
->>>BROADCAST=200.204.140.63
->>>IPADDR=200.204.140.10
->>>NETMASK=255.255.255.192
->>>NETWORK=200.204.140.0
->>>
->>>_________________________________________________
->>>file /etc/sysconfig/network
->>>
->>>NETWORKING=yes
->>>HOSTNAME=rbz-firewall
->>>#GATEWAY=200.168.1.1
->>>GATEWAY=200.204.140.1
->>>___________________________________________________
->>>file /etc/iproute2/rt_tables
->>>
->>>#
->>># reserved values
->>>#
->>>#255    local
->>>#254    main
->>>#253    default
->>>#0      unspec
->>>
->>>#
->>># local
->>>#
->>>#1      inr.ruhep
->>>
->>>
->>>Could some one help me??
->>>
->>>Thanks
->>>
->>>
->>>Sebasti?o Ant?nio Campos
->>>Infojoi Computadores Ltda
->>>89.224-000 Joinville -SC - R. Iriri?, 3587
->>>Cml. (47) 437-0796 - Cel. (47) 9927-5349
->>>tiao@infojoi.com.br
->>>http://www.lupusnet.com.br
->>>
->>>
->>>
->>>
->>>      
->>>
->>
->>
->>
->>    
->>
+palangana:~# tethereal -i ppp0 '(host xxx.xxx.xxx.xxx) or (port 22)'
+Capturing on ppp0
+   0.000000 201.252.166.212 -> xxx.xxx.xxx.xxx SSH Encrypted request packet len=48
+   0.159113 xxx.xxx.xxx.xxx -> 201.252.166.212 SSH Encrypted response packet len=48
+   0.159304 201.252.166.212 -> xxx.xxx.xxx.xxx TCP 4874 > ssh [ACK] Seq=48 Ack=48 Win=2540 Len=0 TSV=59055726 TSER=229209706
+   0.210101 xxx.xxx.xxx.xxx -> 201.252.166.212 SSH Encrypted response packet len=144
+   0.210259 201.252.166.212 -> xxx.xxx.xxx.xxx TCP 4874 > ssh [ACK] Seq=48 Ack=192 Win=2812 Len=0 TSV=59055777 TSER=229209709
+   0.383142 xxx.xxx.xxx.xxx -> 201.252.166.212 SSH Encrypted response packet len=1440
+   0.383456 201.252.166.212 -> xxx.xxx.xxx.xxx TCP 4874 > ssh [ACK] Seq=48 Ack=1632 Win=3532 Len=0 TSV=59055950 TSER=229209716
+   0.463144 xxx.xxx.xxx.xxx -> 201.252.166.212 SSH Encrypted response packet len=1440
+   0.463349 201.252.166.212 -> xxx.xxx.xxx.xxx TCP 4874 > ssh [ACK] Seq=48 Ack=3072 Win=4252 Len=0 TSV=59056030 TSER=229209716
+   0.463154 xxx.xxx.xxx.xxx -> 201.252.166.212 SSH Encrypted response packet len=16
+   0.463481 201.252.166.212 -> xxx.xxx.xxx.xxx TCP 4874 > ssh [ACK] Seq=48 Ack=3088 Win=4252 Len=0 TSV=59056030 TSER=229209717
 
+but from a client this happens:
 
+palangana:~# tethereal -i ppp0 '(host xxx.xxx.xxx.xxx ) or (port 22)'
+Capturing on ppp0
+   0.000000 201.252.166.212 -> xxx.xxx.xxx.xxx  SSH Encrypted request packet len=48
+   0.074706 xxx.xxx.xxx.xxx  -> 201.252.166.212 SSH Encrypted response packet len=48
+   0.104737 xxx.xxx.xxx.xxx  -> 201.252.166.212 SSH Encrypted response packet len=144
+   0.105109 201.252.166.212 -> xxx.xxx.xxx.xxx  TCP 1356 > ssh [ACK] Seq=48 Ack=192 Win=64399 Len=0
+   0.118746 xxx.xxx.xxx.xxx  -> 201.252.166.212 SSH Encrypted response packet len=144
+   0.226971 201.252.166.212 -> xxx.xxx.xxx.xxx  TCP 1356 > ssh [ACK] Seq=48 Ack=336 Win=64255 Len=0
+   0.367701 xxx.xxx.xxx.xxx  -> 201.252.166.212 SSH [TCP Previous segment lost] Encrypted response packet len=1292
+   0.368144 201.252.166.212 -> xxx.xxx.xxx.xxx  TCP [TCP Dup ACK 6#1] 1356 > ssh [ACK] Seq=48 Ack=336 Win=64255 Len=0 SLE=1796 SRE=3088
 
+I don't know whether my ack on package #6 gets lost, or if i'm missing some packets
+sent by xxx.xxx.xxx.xxx.
+I could repeat this behavior anytime i want.
+
+My main problem is that i don't know wat the problem is, i don't know if it's 
+iptables-related, kernel-related or what. I haven't tried other kernels mainly
+because it's a lot of trouble to get the driver of my USB ADSL modem to work
+between different kernel versions.
+I was using debian woody with a 2.4.19 kernel and everything worked fine,
+the problem arised when i upgraded to sarge. The main configuration didn't
+change during the upgrade.
+Any suggestion on what the problem could be or at least how to trace it
+would be much appreciated.
+
+regards,
+Sergio.
 
