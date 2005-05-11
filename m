@@ -1,12 +1,13 @@
-From: Dave Cinege <dcinege-mlists-dated-1116221994.cb02fa@psychosis.com>
-Subject: Re: captive web system using DNAT and SNAT
-Date: Wed, 11 May 2005 01:39:50 -0400
-Message-ID: <200505110139.50503.dcinege-mlists@psychosis.com>
-Reply-To: dcinege-mlists@psychosis.com
+From: Christoph Georgi <christoph.georgi@web.de>
+Subject: Re: Two link adsl on the same server
+Date: Wed, 11 May 2005 19:22:07 +1200
+Message-ID: <4281B29F.4090302@web.de>
+References: <00ee01c5557d$e1979d90$8b00000a@PIVT>
+	<4280EA95.8020306@phreaker.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <4280EA95.8020306@phreaker.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,63 +18,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, Matt Zagrabelny <mzagrabe@d.umn.edu>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: ro0ot <ro0ot@phreaker.net>
+Cc: Netfilter list <netfilter@lists.netfilter.org>
 
-On Wednesday 31 December 1969 18:59, netfilter-request@lists.netfilter.org 
-wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> any thoughts?
+Hi,
 
-NOTE to Grant: The below might explain some of my issues
-  Re: Linux forwarding Win XP hosts VERY slowly
-Please comment on your thoughts...
+I don't quite get, why this has to be made so "complicated". I have two
+uplinks and do the following:
 
-Matt,
+Mark the traffic according to the uplink that I want to use
+* no mark -> default/non-priority traffic
+* -j MARK 1 for priority traffic (over the fast line, usually ISP 1)
+* -j MARK 2 for traffic always over ISP 1
+* -j MARK 3 for traffic always over ISP 2
 
-Take a look at: /proc/net/ip_conntrack
+Accordingly I have four routing tables:
+* 201 for priority traffic just containing
+~  'default via <gateway of isp 1> dev eth0
+* 202 for traffic static over ISP 1
+~  'default via <gateway of isp 1> dev eth0
+* 203 for traffic static over ISP 2
+~  'defualt via <gateway of isp 2> dev ppp0
+* default routing table (254)
+~  after all the "strange" entries
+~  'default via <gateway of isp 2> dev ppp0
 
-I'm dealing with a lot of weird issues with an appliance I've made that does 
-captive portaling and completely dynamic multiple gateway authorzation. 
+I have to SNAT the traffic that is routed via the priority table (201)
+and the 202 table, as the kernel uses the IP of the ISP in the default
+routing table (254) as source, and I have to disable rp_filters. No more
+fancy routing stuff set up.. And everything works fine.
 
-I'm starting to think some of my issues, that I thought were locking, are now 
-actually connecting that are locked up.
+Am I missing an important point?
 
-Where I know this was a problem was in my captive portal redirecting. I have 2 
-dnsmasq's running. One on port 53 and one on 5353.  The 5353 one replies with 
-a dummy IP to DNS responses to allow the browser to attempt a connection...my 
-firewall rules then REDIRECT to the appliance, and ultimatly the login page.
+thanks
+.christoph
 
-The problem is once that 53->5353 redirection conneciton is established, it's 
-kept alive, even when a new rule is added that should exclude it. 
 
-Example: 
-#Default rule
-iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 5353
+ro0ot wrote:
+| Below is only examples: -
+|
+[...]
 
-#Host then logins in and authorizes. (Notice these are inserted before
-#the above.)
-iptables -t nat -I PREROUTING -d %(hostip)s -j ACCEPT
-iptables -t nat -I PREROUTING -s %(hostip)s -j ACCEPT
+- --
 
-Should be ok, right? No. That host will continue to get REDIRECTed to port 
-5353.
 
-How I solved this was:
-echo 1 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream
+Christoph Georgi
+- -----------------------------
+email.  christoph.georgi@web.de
+fon.	+64 (0)9 815 8259
 
-Which forces the connection to time out in a 1 second. 
+registered linux user #380268
+ubuntu 5.04 (ubuntu.com)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
-I figured this would only be an issue with UDP connections like DNS. But after 
-reviewing  /proc/net/ip_conntrack 2 days ago when it seemed a host could no 
-longer connect to the appliance's web server, I'm thinking this might be a 
-similar issue of TCP connections going stale and no longer jibing with the 
-rule set. (This may be caused by or compounded by buggy Windows traffic.)
-
-So if things seem to get 'out of sync' again, you might try lowering some of 
-the timeout values in /proc/sys/net/ipv4/netfilter/. I'm going to try this 
-myself and see if it helps. 
-
-Dave
-
+iD8DBQFCgbJ/gQyJJUB4UhwRAgZgAKCDhqb6b/uBlALc8JNdhfnEe69aQwCg7QS6
+HQmCzmKJMLTvnQ7UanmYicA=
+=t3Ur
+-----END PGP SIGNATURE-----
 
