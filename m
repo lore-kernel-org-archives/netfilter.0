@@ -1,15 +1,10 @@
-From: Ian Laurie <iml@zip.com.au>
-Subject: Re: philosophical question regarding NAT
-Date: Wed, 11 May 2005 09:12:09 +0000
-Message-ID: <1115802729l.2805l.1l@server.moose.blogdns.org>
-References: <1115723584l.29661l.0l@server.moose.blogdns.org>
-	<d5q590$fsv$1@sea.gmane.org>
+From: Brent Clark <bclark@eccotours.dyndns.org>
+Subject: no Tarpit for debian kernel
+Date: Wed, 11 May 2005 09:29:24 +0200
+Message-ID: <4281B454.7070800@eccotours.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <d5q590$fsv$1@sea.gmane.org> (from Vasilii.Alferov@gmail.com on
-	Tue May 10 21:25:19 2005)
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,17 +15,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="Flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: iptables <netfilter@lists.netfilter.org>
 
-> More effective solution is to enable rp_filter in kernel using proc
-> filesystem or sysctl. It prevents anyone from spoofing IP addresses.
+Hi All
 
-DOH!!  How right you are..... rp_filter slipped my mind completely.
+I seem to have a problem with the debian 2.6.11 kernel, in that there is 
+no TARPIT module (unless I completely missed it).
 
-Thank you for reminding me.
+Im running iptables v1.2.11.
 
-Ian
+I downloaded the patchomatic from 
+(http://www.netfilter.org/files/patch-o-matic-ng-20040621.tar.bz2).
 
+on running the runme script, its asking for the iptables src.
 
+So my question is, it there a way to patch the kernel, without having to 
+get the iptables source.
+
+I see that I do have the libipt_TARPIT.so.
+
+Any tips and advice would greatfully be appreciated.
+
+Kind Regards
+Brent Clark
 
