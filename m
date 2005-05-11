@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Can anyone tell wat's going on here?
-Date: Wed, 11 May 2005 14:30:15 -0400
-Message-ID: <20050511183015.GA13507@bender.817west.com>
-References: <Pine.LNX.4.63.0505111249010.3025@palangana>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: captive web system using DNAT and SNAT
+Date: Wed, 11 May 2005 13:36:45 -0500
+Message-ID: <428250BD.3020304@riverviewtech.net>
+References: <200505110139.50503.dcinege-mlists@psychosis.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.63.0505111249010.3025@palangana>
+In-Reply-To: <200505110139.50503.dcinege-mlists@psychosis.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,52 +17,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wed, May 11, 2005 at 12:49:39PM -0300, Sergio Penkale wrote:
-> Hi, I have a problem that's driving me crazy:
-> I have a nat box running Debian Sarge under a 2.6.11.7 kernel. I compiled
-> this kernel myself, which could be the source of problems.
-> The nat box itself works great, but masquerading has a strange problem,
-> some things work and others don't. For example some web pages (like google)
-> work great, and some others (like hotmail for example), don't work at all,
-> while in the nat box all of them work. 
-> I've tried https pages on the clients and they work, so the problem seems to
-> be at the level of packets, and it only affects the traffic that gets 
-> masqueraded.
-> I have a lot of iptables rules, but it makes no difference using only 
-> trivial
-> masquerading rules. That is: flushing everything, setting all policies to 
-> ACCEPT
-> and adding "-A POSTROUTING -s 10.10.10.0/255.255.255.0 -o ppp0 -j 
-> MASQUERADE" in nat.
-> Usinf SNAT instead of MASQUERADE doesn't make any difference either
+> NOTE to Grant: The below might explain some of my issues
+>   Re: Linux forwarding Win XP hosts VERY slowly
+> Please comment on your thoughts...
 > 
-> The problem also arises when doing ssh: i login to a remote machine and do 
-> an ls
-> of a directory with many files. If i make this from the nat box it works 
-> fine,
-> but if i repeat those same steps from a masqueraded client i only get one or
-> two listing lines and then it just hangs.
-> Here's the tethereal output of this: 201.252.166.212 is my ip and 
-> xxx.xxx.xxx.xxx
-> is a remote machine, i've already loged in and i start capturing when i 
-> send the
-> ls command. From the nat box it works ok:
+> Matt,
+> 
+> Take a look at: /proc/net/ip_conntrack
+> 
+> I'm dealing with a lot of weird issues with an appliance I've made that does 
+> captive portaling and completely dynamic multiple gateway authorzation. 
+> 
+> I'm starting to think some of my issues, that I thought were locking, are now 
+> actually connecting that are locked up.
+> 
+> Where I know this was a problem was in my captive portal redirecting. I have 2 
+> dnsmasq's running. One on port 53 and one on 5353.  The 5353 one replies with 
+> a dummy IP to DNS responses to allow the browser to attempt a connection...my 
+> firewall rules then REDIRECT to the appliance, and ultimatly the login page.
+> 
+> The problem is once that 53->5353 redirection conneciton is established, it's 
+> kept alive, even when a new rule is added that should exclude it. 
+> 
+> Example: 
+> #Default rule
+> iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 5353
+> 
+> #Host then logins in and authorizes. (Notice these are inserted before
+> #the above.)
+> iptables -t nat -I PREROUTING -d %(hostip)s -j ACCEPT
+> iptables -t nat -I PREROUTING -s %(hostip)s -j ACCEPT
+> 
+> Should be ok, right? No. That host will continue to get REDIRECTed to port 
+> 5353.
+> 
+> How I solved this was:
+> echo 1 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream
+> 
+> Which forces the connection to time out in a 1 second. 
+> 
+> I figured this would only be an issue with UDP connections like DNS. But after 
+> reviewing  /proc/net/ip_conntrack 2 days ago when it seemed a host could no 
+> longer connect to the appliance's web server, I'm thinking this might be a 
+> similar issue of TCP connections going stale and no longer jibing with the 
+> rule set. (This may be caused by or compounded by buggy Windows traffic.)
+> 
+> So if things seem to get 'out of sync' again, you might try lowering some of 
+> the timeout values in /proc/sys/net/ipv4/netfilter/. I'm going to try this 
+> myself and see if it helps.
 
-your symptoms scream 'MTU Issue' at me.  try this rule and see if it
-fixes it:
+Very interesting.  This makes me think that there is a kernel routing caching type issue.  I expect that if this is indeed the case there could (or should) easily be a way to flush said cache or adjust a garbage collection interval.  This might need to be (summarized and) cross posted to a kernel developers mailing list to get their thoughts on it.
 
-  iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN \
-    -j TCPMSS --clamp-mss-to-pmtu
 
--j
 
---
-"Brian: Seriously, who buys a novelty fire extinguisher?
- Peter: I'll tell you who: someone who cares enough about physical
- comedy to put his entire family into serious danger, that's who."
-        --Family Guy
+Grant. . . .
 
