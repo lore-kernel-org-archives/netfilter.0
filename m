@@ -1,10 +1,9 @@
-From: "Sdimitrov" <st.dimitrov@gmail.com>
-Subject: broadcast and router ?
-Date: Sun, 15 May 2005 0:36:27 -0000
-Message-ID: <14655.9713095941$1116171242@news.gmane.org>
-Reply-To: Sdimitrov <st.dimitrov@gmail.com>
+From: Fruhwirth Clemens <clemens@endorphin.org>
+Subject: Bridging selected MACs
+Date: Thu, 12 May 2005 11:01:34 +0200
+Message-ID: <1115888494.12824.18.camel@ghanima>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,22 +15,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; 
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi. Sorry for my bad english.
+Hi everybody,
 
-Our local chat use a UDP 8167 and broadcast. All is OK but people over
-router in other network don't receive a packets.
+I like to ask, if there is way to construct a bridge, but only for two
+selected MAC addresses.  This can be achieved by 2 rules,
 
-Can I have route this packets to they's network with iptables?
+(Assuming 
+MAC0 is on eth0 and 
+MAC1 is on eth1)
 
-networks are 192.168.0.255 and 192.168.1.255
+MAC0 -> (MAC1 or broadcast MAC):      copy ethernet frame to eth1
+MAC1 -> (MAC0 or broadcast MAC):      copy ethernet frame to eth0
 
-thanks
+For this construction, there would be 2 new things needed in netfilter:
 
-________________________________________________
-Message sent using
-UebiMiau 2.7.2
+1. a --mac-dest rule
+2. a simple ethernet frame copy to a designated network device.
 
+These capabilities are not present, and the reason for this -- I presume
+-- is the bridge code in net/bridge.  Unfortunately, I have not found a
+way to get an operational bridge, as there are no filtering capabilities
+in the bridge control interface.  I'm also not sure if I should even aim
+for a bridge, because the box is doing NAT between eth0 and eth1.
+
+However, I would be thankful for any insight.
+
+(Please don't ask why I'm trying to construct this strange
+configuration. In a nutshell, I have a VOIP box supplied by my ISP that
+needs to sit on the external network, and talks to some radius DHCP in
+alien languages.  I simply don't want to wire the external network in my
+house to separate my DHCP traffic.)
+-- 
+Fruhwirth Clemens - http://clemens.endorphin.org 
+for robots: sp4mtrap@endorphin.org
 
