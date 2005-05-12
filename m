@@ -1,12 +1,10 @@
-From: Matthew Dombroski <matthew.dombroski@gmail.com>
-Subject: Multiple gateways and iptables
-Date: Thu, 12 May 2005 20:19:08 +1200
-Message-ID: <408540dd0505120119571aff1e@mail.gmail.com>
-Reply-To: Matthew Dombroski <matthew.dombroski@gmail.com>
+From: Oliver Korpilla <Oliver.Korpilla@gmx.de>
+Subject: Packet Injection
+Date: Thu, 12 May 2005 13:55:05 +0200
+Message-ID: <42834419.3060302@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +16,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hi,
-I am trying to set up a firewall/router box using linux-2.6.11 and iptables=
-.
-the question is:
-how to add multiple WAN gateways?
-for example, i have 2 internet connections, one is set as the default
-gateway and goes fine. Is it possible to make iptables (or anything
-else for that matter) forward traffic from a range of IP addresses to
-the other WAN connection?
+Hello!
 
-Thanks,
-Matt
+I'm new to the list, and what I've found in the list archives regarding
+packet injection is somewhat lacking in detail.
 
---=20
-check my reply-to header!
+What I want to do:
+
+I want to write a tool that sends and receives packets within the kernel
+context. It's generates traffic on one interface and receives the result
+of some blackbox modification to it on another interface.
+
+So I need both packet filtering / netfilter like capabilities and packet
+injection capabilities.
+
+While the way to go for the receiving end of the application is pretty
+straightforward, my question is: How to inject packets inside the kernel?
+
+One idea was to create the packets externally, store them in kernel RAM,
+and use netfilter hooks to inject them. The injection would be done by a
+linux kernel module or rather by a periodic tasklet registered by that
+module.
+
+Can you comment whether this is a feasible approach?
+
+Or could you come up with a better one, that fulfills the requirement of
+being in-kernel?
+
+Thanks and with kind regards,
+Oliver Korpilla
 
