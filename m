@@ -1,13 +1,11 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: IP sent an invalid ICMP type to a broadcast and
-	icmp_ignore_bogus_error_responses
-Date: Thu, 12 May 2005 01:50:43 -0500
-Message-ID: <4282FCC3.9090109@riverviewtech.net>
-References: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: Tarpit usage question
+Date: Wed, 11 May 2005 23:57:33 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582907389@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Sebastian Siewior wrote:
-> Hallo,
-> 
-> My kernel complaints himself every second with:
-> 
-> kernel: XX.XX.XX.XX sent an invalid ICMP type 3, code 1 error to a
-> broadcast: 0.0.0.0 on lo
-> 
-> In the meantime I supressed the messages via  
-> 
-> echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses". 
-> 
-> Other people solved this problem with 
-> 
-> iptables -A INPUT -i lo -j ACCEPT
-> 
-> but it won't work here. Does someone have an idea how I could find out
-> where the packets are comming from?
+Hi guys,=20
 
-Would it be possible to get an output of your routing table?  I'm starting to think that this *might* be a routing issue that somehow your kernel thinks that systems are available via the wrong interface.
+I had a usage question about tarpit in respects to connection tracking.
+We have a firewall that has a fairly heavy usage so we have put a
+separate box external of the firewall to do tarpitting of port scanners.
+Anyways, we are still being hit pretty hard by many things on this
+firewall.  I was thinking about configuration tarpit on the firewall
+cluster but wanted to ensure that connection tracking wasn't a problem.
+
+Is it as simple as just sending the connection to the NOTRACK chain
+before sending it to tarpit?
+
+iptaables -t raw -A INPUT -p tcp -m tcp --dport 80 -j NOTRACK
+iptables -A INPUT -p tcp -m tcp --dport 80 -j TARPIT
+
+Is there a better approach to this?  Will this even work?  The rules
+above are more or less just a sample.  I would want to block almost all
+traffic destined for the input chain on the firewall on the external
+interface unless it is related traffic. =20
+
+Gary Wayne Smith
 
 
 
-Grant. . . .
+
+
+
 
