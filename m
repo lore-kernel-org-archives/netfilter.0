@@ -1,11 +1,13 @@
-From: "hareram" <hareram@sol.net.in>
-Subject: Re: Multiple gateways and iptables
-Date: Thu, 12 May 2005 18:48:00 +0530
-Message-ID: <05c001c556f5$05264ea0$09603fca@southern>
-References: <408540dd0505120119571aff1e@mail.gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: mails not going thru'
+Date: Thu, 12 May 2005 09:47:29 -0400
+Message-ID: <20050512134729.GA16750@bender.817west.com>
+References: <13c5f5713c2d67.13c2d6713c5f57@vsnl.net>
+	<20050512123815.GA16545@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20050512123815.GA16545@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +18,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Matthew Dombroski <matthew.dombroski@gmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-http://www.lartc.org/howto/lartc.rpdb.multiple-links.html
+On Thu, May 12, 2005 at 08:38:15AM -0400, Jason Opperisano wrote:
+> On Thu, May 12, 2005 at 04:50:28PM +0500, varun_saa@vsnl.net wrote:
+> > root@saaserver root]#  telnet 64.233.185.27 25
+> > Trying 64.233.185.27...
+> > Connected to 64.233.185.27.
+> > Escape character is '^]'.
+> > 220 mx.gmail.com ESMTP 6si352981wrl
+> > quit
+> > 221 2.0.0 mx.gmail.com closing connection
+> > Connection closed by foreign host.
+> > 
+> > Sorry for the delay in replying.
+> > Just got stuck with other issues.
+> 
+> and the internal IP address of saaserver is the default gateway of the
+> internal client machines?
 
-this link should help u
+had a stupid thought:  you *have* enabled IP Forwarding on saaserver,
+right?
 
-hare
------ Original Message ----- 
-From: "Matthew Dombroski" <matthew.dombroski@gmail.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, May 12, 2005 1:49 PM
-Subject: Multiple gateways and iptables
+  sysctl net.ipv4.ip_forward
 
+should report:
 
-Hi,
-I am trying to set up a firewall/router box using linux-2.6.11 and iptables.
-the question is:
-how to add multiple WAN gateways?
-for example, i have 2 internet connections, one is set as the default
-gateway and goes fine. Is it possible to make iptables (or anything
-else for that matter) forward traffic from a range of IP addresses to
-the other WAN connection?
+  net.ipv4.ip_forward = 1
 
-Thanks,
-Matt
+if not, set it:
 
--- 
-check my reply-to header!
+  sysctl -w net.ipv4.ip_forward=1
 
+-j
 
-
-
+--
+"Contestant: I'll take the dying boy to block.
+ Tom Bergeron: Ok, Jeremy... is there anything lower than absolute
+ zero?
+ Jeremy: Uhh, yeah... my white cell count."
+        --Family Guy
 
