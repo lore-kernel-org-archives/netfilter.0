@@ -1,12 +1,12 @@
-From: Daniel Lopes <lopsch@lopsch.com>
-Subject: Re: iptables and voip
-Date: Fri, 13 May 2005 00:19:11 +0200
-Message-ID: <4283D65F.9080300@lopsch.com>
-References: <D4CFB69C345C394284E4B78B876C1CF108864C98@cceexc23.americas.cpqcorp.net>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: Tarpit usage question
+Date: Thu, 12 May 2005 18:37:00 -0500
+Message-ID: <4283E89C.5050709@riverviewtech.net>
+References: <57F9959B46E0FA4D8BA88AEDFBE582907389@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <D4CFB69C345C394284E4B78B876C1CF108864C98@cceexc23.americas.cpqcorp.net>
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE582907389@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Christ, Bryan schrieb:
-> I have a NAT firewall and two voip phones located behind the firewall.
-> I wanted to know if it was possible to prioritize that traffic with
-> iptables so that my phone conversations received enough bandwidth.  I
-> apologize if this information is somewhere on the netfilter website.  I
-> looked for something related but could only find information on
-> prioritizing quake and a few other services.  I also "google" it and
-> came up with nothing significant.
->=20
-> Thanks in advance to all who reply,
-> Bryan
->=20
->=20
+> Hi guys, 
+> 
+> I had a usage question about tarpit in respects to connection tracking.
+> We have a firewall that has a fairly heavy usage so we have put a
+> separate box external of the firewall to do tarpitting of port scanners.
+> Anyways, we are still being hit pretty hard by many things on this
+> firewall.  I was thinking about configuration tarpit on the firewall
+> cluster but wanted to ensure that connection tracking wasn't a problem.
+> 
+> Is it as simple as just sending the connection to the NOTRACK chain
+> before sending it to tarpit?
+> 
+> iptaables -t raw -A INPUT -p tcp -m tcp --dport 80 -j NOTRACK
+> iptables -A INPUT -p tcp -m tcp --dport 80 -j TARPIT
+> 
+> Is there a better approach to this?  Will this even work?  The rules
+> above are more or less just a sample.  I would want to block almost all
+> traffic destined for the input chain on the firewall on the external
+> interface unless it is related traffic.
 
-Perhaps you want to try the LARTC mailinglist it can be found via=20
-www.lartc.org it=B4s a better location to deal with such questions.
+If you were worried about just one port, as in your example, I would do what you have done.  However if you are planing on TARPITing a lot of ports (the majority of them) I would be tempted to do something like the following:
+
+iptables -t raw -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -t raw -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -t raw -A INPUT -p tcp -j NOTRACK
+iptables -t filter -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -t filter -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -t filter -A INPUT -p tcp -j TARPIT
+
+This should cause any traffic that is not destined to known good ports to be not tracked and thus safe to send to the TARPIT.
+
+
+
+Grant. . . .
 
