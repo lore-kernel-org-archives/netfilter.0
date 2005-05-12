@@ -1,12 +1,12 @@
-From: varun_saa@vsnl.net
-Subject: Re: mails not going thru'
-Date: Thu, 12 May 2005 16:50:28 +0500
-Message-ID: <13c5f5713c2d67.13c2d6713c5f57@vsnl.net>
+From: Martin Vassilev <mv-lists@net-surf.net>
+Subject: Problem with transparent proxing if catching traffic on vlan
+	interface
+Date: Thu, 12 May 2005 14:52:38 +0300
+Message-ID: <200505121452.39043.mv-lists@net-surf.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +17,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
+
+Hello , first of all sorry for poor english.
+
+Have some trouble with transparent proxing=09
+
+Configuration is simple:
+
+=2D-----------                            ----------
+|CLIENT| ---- eth/vlans ---- | GATE|
+=2D-----------                            ----------
+					transparent proxy
 
 
+=2D-----------------test1---------------------
+GATE:/#iptables  -t nat -I PREROUTING -p TCP -s `CLIENT`  \
+=2D-destination-port 80 -i vlan8 -j REDIRECT --to-ports 3128=20
 
------ Original Message -----
-From: Jason Opperisano <opie@817west.com>
-Date: Monday, May 9, 2005 8:04 pm
-Subject: Re: mails not going thru'
+CLIENT:/# telnet www.netfilter.org 80
+Trying 213.95.27.115...
+telnet: connect to address 213.95.27.115: Connection refused=20
+(thats the problem ;))
 
-> On Mon, May 09, 2005 at 08:53:33AM +0500, varun_saa@vsnl.net wrote:
-> > [varun@saamail varun]$ telnet 64.233.185.27 25
-> > Trying 64.233.185.27...
-> > 
-> > No response
-> 
-> try that from the firewall itself.  if it still doesn't work, i would
-> propose that your ISP blocks TCP port 25 traffic from customer IP's 
-> fromleaving it's network (mindspring used to do this, dunno if 
-> earthlinkcontinued the trend as i dropped them after they refused 
-> to rethink
-> their policy).
-> 
-> -j
-> 
-From the server
+GATE:/# tcpdump  -n -i vlan8 -f "net `CLIENT`"
+tcpdump: listening on vlan8
+11:43:28.336226 `CLIENT`.38842 > 213.95.27.115.80: S 1057989664:1057989664(=
+0)=20
+win 5840 <mss 1412,sackOK,timestamp 1881955228 0,nop,wscale 2> (DF) [tos=20
+0x10]
 
-root@saaserver root]#  telnet 64.233.185.27 25
-Trying 64.233.185.27...
-Connected to 64.233.185.27.
-Escape character is '^]'.
-220 mx.gmail.com ESMTP 6si352981wrl
-quit
-221 2.0.0 mx.gmail.com closing connection
-Connection closed by foreign host.
+GATE:/# iptables -t nat -n -L -v
+Chain PREROUTING (policy ACCEPT 32M packets, 1991M bytes)
+ pkts bytes target     prot opt in     out     source              =20
+destination
+    1    60 REDIRECT   tcp  --  vlan8  *       `CLIENT`      0.0.0.0/0     =
+    =20
+tcp dpt:80 redir ports 3128
 
-Sorry for the delay in replying.
-Just got stuck with other issues.
+nothing appear in squid=B4s access.log
 
 
-Varun
+=2D---------------test2------------------------
+After some rerouting to reach the gate through eth0
+
+GATE:/#iptables  -t nat -I PREROUTING -p TCP -s `CLIENT`  \
+=2D-destination-port 80 -i eth0 -j REDIRECT --to-ports 3128=20
+
+and all works fine.
+=2D--------------------------------------------
+
+Is there any differents for netfilter if catching traffic on eth or vlan=20
+interface ?
+
+P.S.
+Don=B4t have MTU problems with vlans.
+Tried to flush all tables before testing.
+Squid is configured properly.
+
+
+=2D-=20
+Best Regards,
+Martin Vassilev
 
 
