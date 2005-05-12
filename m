@@ -1,11 +1,16 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: Tarpit usage question
-Date: Wed, 11 May 2005 23:57:33 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582907389@pxtbenexd01.pxt.primeexalia.com>
+From: Sebastian Siewior <bigeasy@foo.fh-furtwangen.de>
+Subject: Re: IP sent an invalid ICMP type to a broadcast and
+ icmp_ignore_bogus_error_responses
+Date: Thu, 12 May 2005 09:05:18 +0200
+Message-ID: <20050512090518.446d78e6@mikejones.ghb.fh-furtwangen.de>
+References: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
+	<4282FCC3.9090109@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed;
+	boundary="Signature_Thu__12_May_2005_09_05_18_+0200_BEMzwJikJAIMf=b5"; 
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <4282FCC3.9090109@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,34 +21,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi guys,=20
+--Signature_Thu__12_May_2005_09_05_18_+0200_BEMzwJikJAIMf=b5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I had a usage question about tarpit in respects to connection tracking.
-We have a firewall that has a fairly heavy usage so we have put a
-separate box external of the firewall to do tarpitting of port scanners.
-Anyways, we are still being hit pretty hard by many things on this
-firewall.  I was thinking about configuration tarpit on the firewall
-cluster but wanted to ensure that connection tracking wasn't a problem.
+On Thu, 12 May 2005 01:50:43 -0500
+"Taylor, Grant" <gtaylor@riverviewtech.net> wrote:
 
-Is it as simple as just sending the connection to the NOTRACK chain
-before sending it to tarpit?
+>=20
+> Would it be possible to get an output of your routing table?  I'm
+> starting to think that this *might* be a routing issue that somehow
+> your kernel thinks that systems are available via the wrong interface.
+>=20
 
-iptaables -t raw -A INPUT -p tcp -m tcp --dport 80 -j NOTRACK
-iptables -A INPUT -p tcp -m tcp --dport 80 -j TARPIT
+default via 172.20.1.25 dev eth0=20
+172.20.1.24/30 dev eth0  proto kernel  scope link  src 172.20.1.26=20
+172.20.130.0/24 via 172.20.71.2 dev eth1=20
+172.20.131.0/24 via 172.20.71.2 dev eth1=20
+172.20.33.0/24 via 172.20.71.2 dev eth1=20
+172.20.34.0/24 via 172.20.71.2 dev eth1=20
+172.20.35.0/24 via 172.20.71.2 dev eth1=20
+172.20.36.0/24 via 172.20.71.2 dev eth1=20
+172.20.37.0/24 via 172.20.71.2 dev eth1=20
+172.20.38.0/24 via 172.20.71.2 dev eth1=20
+172.20.39.0/24 via 172.20.71.2 dev eth1=20
+172.20.40.0/24 via 172.20.71.2 dev eth1=20
+172.20.41.0/24 via 172.20.71.2 dev eth1=20
+172.20.42.0/24 via 172.20.71.2 dev eth1=20
+172.20.43.0/24 via 172.20.71.2 dev eth1=20
+172.20.44.0/24 via 172.20.71.2 dev eth1=20
+172.20.45.0/24 via 172.20.71.2 dev eth1=20
+172.20.46.0/24 via 172.20.71.2 dev eth1=20
+172.20.47.0/24 via 172.20.71.2 dev eth1=20
+172.20.64.0/24 via 172.20.71.2 dev eth1=20
+172.20.65.0/24 via 172.20.71.2 dev eth1=20
+172.20.67.0/24 dev eth5  proto kernel  scope link  src 172.20.67.254=20
+172.20.68.0/24 dev eth2  proto kernel  scope link  src 172.20.68.254=20
+172.20.70.0/24 via 172.20.71.2 dev eth1=20
+172.20.71.0/24 dev eth1  proto kernel  scope link  src 172.20.71.1=20
+172.20.73.0/24 dev eth4  proto kernel  scope link  src 172.20.73.254=20
+172.20.78.0/24 dev eth3  proto kernel  scope link  src 172.20.78.254=20
 
-Is there a better approach to this?  Will this even work?  The rules
-above are more or less just a sample.  I would want to block almost all
-traffic destined for the input chain on the firewall on the external
-interface unless it is related traffic. =20
-
-Gary Wayne Smith
 
 
+>=20
+>=20
+> Grant. . . .
+>=20
+>=20
 
 
+--=20
+Sebastian Siewior
 
+--Signature_Thu__12_May_2005_09_05_18_+0200_BEMzwJikJAIMf=b5
+Content-Type: application/pgp-signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFCgwAumNVcHP4/RwYRAtlXAJ9/3ynqXMUtN1EiqZiwTx0LcC1vvwCfemkt
+IeRn46sjvVPCMZ6GqARSx6w=
+=pqkJ
+-----END PGP SIGNATURE-----
+
+--Signature_Thu__12_May_2005_09_05_18_+0200_BEMzwJikJAIMf=b5--
 
