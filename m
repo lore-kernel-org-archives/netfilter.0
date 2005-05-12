@@ -1,12 +1,10 @@
-From: Georgi Alexandrov <tehlists@hotpop.com>
-Subject: Re: Transparent proxy to remote squid box
-Date: Thu, 12 May 2005 20:00:05 +0300
-Message-ID: <42838B95.4080901@hotpop.com>
-References: <42837F81.6050305@phreaker.net> <4283892B.1080005@hotpop.com>
-Mime-Version: 1.0
+From: Christophe SUIRE <christophe.suire@adelux.fr>
+Subject: NAT performance
+Date: Thu, 12 May 2005 23:24:16 +0200
+Message-ID: <80E06785-6636-4481-ABD1-6C6C28D52629@adelux.fr>
+Mime-Version: 1.0 (Apple Message framework v728)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4283892B.1080005@hotpop.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,57 +15,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Georgi Alexandrov wrote:
+Hi,
 
-> ro0ot wrote:
->
->> Hi,
->>
->> I have a working "transparent proxy to remote squid box" rules as 
->> below: -
->>
->> $IPTABLES -t nat -A PREROUTING -i eth1 -s ! 10.59.2.4 -p tcp --dport 
->> 80 -j DNAT --to 10.59.2.4:3128
->> $IPTABLES -t nat -A POSTROUTING -o eth1 -s 10.59.2.0/24 -d 10.59.2.4 
->> -j SNAT --to 10.59.2.1
->> $IPTABLES -t filter -A FORWARD -s 10.59.2.0/24 -d 10.59.2.4 -i eth1 
->> -o eth1 -p tcp --dport 3128 -j ACCEPT
->>
->> How can I not route the following network "1.1.1.0/24" to the remote 
->> squid box using IPTABLES?
->>
->> Regards,
->> ro0ot
->>
->>
-> Hello,
->
-> U can put 1 rule above the DNAT like this:
->
-> $IPTABLES -t nat -A PREROUTING -i eth1 -s 1.1.1.0/24 -p tcp --dport 80 
-> -j ACCEPT
-> $IPTABLES -t nat -A PREROUTING -i eth1 -s ! 10.59.2.4 -p tcp --dport 
-> 80 -j DNAT --to 10.59.2.4:3128
->
-> The first rule matches the requests coming from 1.1.1.0/24 to tcp port 
-> 80 and accepts them, e.g. the packets won't hit the next rule.
->
-> P.S.
-> you probably meant 10.1.1.0/24 ?
->
-> regards,
-> Georgi Alexandrov
->
->
-For the sake of completeness - you can also you the RETURN target in the 
-first rule, that will cause packets not to travel this chain anymore and 
-hit the chain's default policy. In most cases it's "ACCEPT" so the 
-RETURN target will do, if the chain's policy is DROP you should use the 
-ACCEPT target in the first rule.
+I have done some tests, and i'm surprise with the poor result with NAT.
+I have a linux firewall, 2.6.8 kernel, one card for public network,  
+and one card for the lan.
+All cards are giga bit cards.
+I have 10 PC which are each in a VLAN, and with a gateway which is  
+the virtual VLAN interface under the firewall link with the lan card.
+I have 5 switch with a 100Mbit/s uplink to the firewall (with a giga  
+bit backbone switch). I have 2PC under each switch. So in theory each  
+PC have 50Mbit/s of bandwidth.
+Each PC have 10 alias ip, so i have 10 networks with 10 virtuals  
+clients under each network.
+So each virtual client (100) have 5Mbit/s of bandwidth.
+On the firewall each vlan network is SNAT to go out to the internet.
+My bandwidth test is done with TPTEST, and a TPTEST server under the  
+public network of the firewall.
+My procedure is : tcp-receive of 50Mo
+     launch the test for 1 virtual client and get the time
+     launch the test for 2 virtuals clients together and get the time  
+for each
+     ....
+     launch the test for 100 virtuals ...
 
-regards,
-Georgi Alexandrov
+When i do my test without NAT, just routing, the total bandwidth used  
+is near to 500Mbit/s, which is great !
+But when i do my test with NAT, the total bandwidth used is near to  
+170Mbit/s !!! So i have an import drop of the performance !
+And this bandwidth is the same from 20 virtuals clients to 100  
+virtuals clients.
+So i understand that NAT need to rewrite all packets .. but here the  
+performance is very poor.
+If someone can explain me why ??
+
+Thanks a lot
+Christophe SUIRE
 
