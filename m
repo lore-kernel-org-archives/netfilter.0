@@ -1,11 +1,12 @@
-From: "Christ, Bryan" <bryan.christ@hp.com>
-Subject: iptables and voip
-Date: Thu, 12 May 2005 17:07:34 -0500
-Message-ID: <D4CFB69C345C394284E4B78B876C1CF108864C98@cceexc23.americas.cpqcorp.net>
+From: Daniel Lopes <lopsch@lopsch.com>
+Subject: Re: iptables and voip
+Date: Fri, 13 May 2005 00:19:11 +0200
+Message-ID: <4283D65F.9080300@lopsch.com>
+References: <D4CFB69C345C394284E4B78B876C1CF108864C98@cceexc23.americas.cpqcorp.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <D4CFB69C345C394284E4B78B876C1CF108864C98@cceexc23.americas.cpqcorp.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,17 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I have a NAT firewall and two voip phones located behind the firewall.
-I wanted to know if it was possible to prioritize that traffic with
-iptables so that my phone conversations received enough bandwidth.  I
-apologize if this information is somewhere on the netfilter website.  I
-looked for something related but could only find information on
-prioritizing quake and a few other services.  I also "google" it and
-came up with nothing significant.
+Christ, Bryan schrieb:
+> I have a NAT firewall and two voip phones located behind the firewall.
+> I wanted to know if it was possible to prioritize that traffic with
+> iptables so that my phone conversations received enough bandwidth.  I
+> apologize if this information is somewhere on the netfilter website.  I
+> looked for something related but could only find information on
+> prioritizing quake and a few other services.  I also "google" it and
+> came up with nothing significant.
+>=20
+> Thanks in advance to all who reply,
+> Bryan
+>=20
+>=20
 
-Thanks in advance to all who reply,
-Bryan
+Perhaps you want to try the LARTC mailinglist it can be found via=20
+www.lartc.org it=B4s a better location to deal with such questions.
 
