@@ -1,18 +1,13 @@
-From: Sebastian Siewior <bigeasy@foo.fh-furtwangen.de>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
 Subject: Re: IP sent an invalid ICMP type to a broadcast and
- icmp_ignore_bogus_error_responses
-Date: Thu, 12 May 2005 08:27:43 +0200
-Message-ID: <20050512082743.0dce7d7b@mikejones.ghb.fh-furtwangen.de>
+	icmp_ignore_bogus_error_responses
+Date: Thu, 12 May 2005 01:50:43 -0500
+Message-ID: <4282FCC3.9090109@riverviewtech.net>
 References: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
-	<427EFE8B.4030009@riverviewtech.net>
-	<20050510150823.2b1b2947@mikejones.ghb.fh-furtwangen.de>
-	<4282F2CC.3060307@riverviewtech.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-	boundary=Signature_Thu__12_May_2005_08_27_43_+0200_ZR03mqxMhl3OE3mr;
-	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4282F2CC.3060307@riverviewtech.net>
+In-Reply-To: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,37 +18,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
---Signature_Thu__12_May_2005_08_27_43_+0200_ZR03mqxMhl3OE3mr
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Sebastian Siewior wrote:
+> Hallo,
+> 
+> My kernel complaints himself every second with:
+> 
+> kernel: XX.XX.XX.XX sent an invalid ICMP type 3, code 1 error to a
+> broadcast: 0.0.0.0 on lo
+> 
+> In the meantime I supressed the messages via  
+> 
+> echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses". 
+> 
+> Other people solved this problem with 
+> 
+> iptables -A INPUT -i lo -j ACCEPT
+> 
+> but it won't work here. Does someone have an idea how I could find out
+> where the packets are comming from?
 
-On Thu, 12 May 2005 01:08:12 -0500
-"Taylor, Grant" <gtaylor@riverviewtech.net> wrote:
+Would it be possible to get an output of your routing table?  I'm starting to think that this *might* be a routing issue that somehow your kernel thinks that systems are available via the wrong interface.
 
-> Can I get a source IP address in place of the XX.XX.XX.XX?
->=20
-172.20.71.1
 
->=20
-> Grant. . . .
->=20
->=20
---=20
-Mit freundlichem Gru=DF
-Sebastian Siewior
 
---Signature_Thu__12_May_2005_08_27_43_+0200_ZR03mqxMhl3OE3mr
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFCgvdomNVcHP4/RwYRAgsLAJ0c7B14AqnQlSWp+Xq9ZyDpTgGPhwCdHkgq
-rxQgtvEqGd7bdeY3YaZb3YY=
-=tkmP
------END PGP SIGNATURE-----
-
---Signature_Thu__12_May_2005_08_27_43_+0200_ZR03mqxMhl3OE3mr--
+Grant. . . .
 
