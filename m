@@ -1,12 +1,11 @@
-From: "Alex Samad" <Alex@Samad.com.au>
-Subject: RE: Multiple gateways and iptables
-Date: Thu, 12 May 2005 23:14:24 +1000
-Message-ID: <17545.6275036142$1115903303@news.gmane.org>
+From: "hareram" <hareram@sol.net.in>
+Subject: Re: Multiple gateways and iptables
+Date: Thu, 12 May 2005 18:48:00 +0530
+Message-ID: <05c001c556f5$05264ea0$09603fca@southern>
 References: <408540dd0505120119571aff1e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <408540dd0505120119571aff1e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,18 +16,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: 'Matthew Dombroski' <matthew.dombroski@gmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Matthew Dombroski <matthew.dombroski@gmail.com>, netfilter@lists.netfilter.org
 
-Have a look at the lartc how to
+http://www.lartc.org/howto/lartc.rpdb.multiple-links.html
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Matthew
-Dombroski
-Sent: Thursday, 12 May 2005 6:19 PM
-To: netfilter@lists.netfilter.org
+this link should help u
+
+hare
+----- Original Message ----- 
+From: "Matthew Dombroski" <matthew.dombroski@gmail.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, May 12, 2005 1:49 PM
 Subject: Multiple gateways and iptables
+
 
 Hi,
 I am trying to set up a firewall/router box using linux-2.6.11 and iptables.
@@ -44,6 +45,7 @@ Matt
 
 -- 
 check my reply-to header!
+
 
 
 
