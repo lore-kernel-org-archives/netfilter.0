@@ -1,10 +1,14 @@
-From: Jeroen Akershoek <jeroena@sara.nl>
-Subject: invalid state: no input device?
-Date: Wed, 11 May 2005 09:14:03 +0200
-Message-ID: <20050511091403.5eeaa15c.jeroena@sara.nl>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: IP sent an invalid ICMP type to a broadcast and
+	icmp_ignore_bogus_error_responses
+Date: Thu, 12 May 2005 01:08:12 -0500
+Message-ID: <4282F2CC.3060307@riverviewtech.net>
+References: <20050507212628.6fd43793@mikejones.ghb.fh-furtwangen.de>	<427EFE8B.4030009@riverviewtech.net>
+	<20050510150823.2b1b2947@mikejones.ghb.fh-furtwangen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050510150823.2b1b2947@mikejones.ghb.fh-furtwangen.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,53 +19,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+> I attached ifconfig and rules with substituted IPs.
 
-I've got quite a strange problem. I'm using the UIF wrapper script to generate my firewall rules and
-ever since switching to 2.6 my log is filled with lots, really LOTS of messages about invalid
-state packets (UIF logs those by default).
+> kernel: XX.XX.XX.XX sent an invalid ICMP type 3, code 1 error to a broadcast: 0.0.0.0 on lo
 
-Example:
---------
-FW INVALID STATE: IN= OUT=lo SRC=145.xxx.xxx.xxx DST=145.xxx.xxx.xxx LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=19968 DF PROTO=TCP SPT=46228 DPT=636 WINDOW=256 RES=0x00 ACK RST URGP=0 OPT (0101080A94777CD5947034AC)
-
-It's mostly on port 636 (ldaps) to localhost, but I've seen it happen on port 80 as well:
-FW INVALID STATE: IN= OUT=eth0 SRC=145.xxx.xxx.xxx DST=194.109.xxx.xxx LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=38898 DF PROTO=TCP SPT=49927 DPT=80 WINDOW=128 RES=0x00 ACK PSH FIN URGP=0 OPT (0101080AB7996BDF00B6B4B8)
-
-relevant iptables config is as follows:
-----------------------------------------
-Chain OUTPUT (policy DROP)
-target     prot opt source               destination
-STATEOUTPUT  all  --  anywhere             anywhere
-ACCEPT     all  --  anywhere             anywhere
-
-Chain STATEOUTPUT (1 references)
-target     prot opt source               destination
-STATELESSOUTPUT  all  --  anywhere             anywhere            state INVALID
-ACCOUNTINGOUTPUT  all  --  anywhere             anywhere
-ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED
-STATENOTNEW  all  --  anywhere             anywhere            state INVALID,RELATED,ESTABLISHED,UNTRACKED
-
-Chain STATELESSOUTPUT (1 references)
-target     prot opt source               destination
-ACCOUNTINGSTATELESSOUTPUT  all  --  anywhere             anywhere
-LOG        all  --  anywhere             anywhere            limit: avg 20/min burst 5 LOG level debug tcp-options ip-options prefix `FW INVALID STATE: '
-DROP       all  --  anywhere             anywhere
+Can I get a source IP address in place of the XX.XX.XX.XX?
 
 
-Any ideas what this might be? I've had it with several versions of 2.6.x and my huge log files are really starting to
-annoy me. Otherwise the system seems to be working fine. I've considered just overruling the UIF rules and disabling
-logging, but I don't think it should even generate those invalid state packets, right?
 
-Regards,
-  Jeroen
--- 
-Jeroen Akershoek - BOFH extraordinaire
-SARA Computing and Network Services - Visualisation department
-tel: +31 20 5923000   fax: +31 20 6683167
-
-A day without sunshine is like, you know, night.
+Grant. . . .
 
