@@ -1,13 +1,12 @@
-From: Daniel Lopes <lopsch@lopsch.com>
-Subject: Re: IPSec masquerade with multiple clients
-Date: Fri, 13 May 2005 16:54:56 +0200
-Message-ID: <4284BFC0.8040701@lopsch.com>
-References: <015901c557ab$c31c19b0$5101a8c0@ALEPH>	<4284916E.1090604@hotpop.com>
-	<017f01c557b3$c71ee3a0$5101a8c0@ALEPH>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: Tarpit usage question
+Date: Fri, 13 May 2005 10:12:31 -0500
+Message-ID: <4284C3DF.3060102@riverviewtech.net>
+References: <57F9959B46E0FA4D8BA88AEDFBE58290738C@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <017f01c557b3$c71ee3a0$5101a8c0@ALEPH>
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE58290738C@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,61 +20,44 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Leonid Zeitlin schrieb:
-> ----- Original Message ----- 
-> From: "Georgi Alexandrov" <tehlists@hotpop.com>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Friday, May 13, 2005 2:37 PM
-> Subject: Re: IPSec masquerade with multiple clients
+> Ex.  The firewall external IP is 22.33.44.1 and I also assign 2-6 to the
+> firewall and NAT them in locally to 10.0.0.2-6 accordingly.  With this
+> said, if I setup the rules below on the raw table I'm assuming that it
+> will only be caught on the 22.33.44.1 IP.  Is this assumption wrong or
+> should I also qualify the addresses that I care about on the raw table.
 > 
-> 
-> 
->>Leonid Zeitlin wrote:
->>
->>
->>>Hi all,
->>>I have the following problem. I have a local network behind a Linux
-> 
-> router
-> 
->>>that does IP masquerade. All hosts on the LAN have 192.168.*.* addresses,
->>>and the Linux router has only one external IP address. I need IPSec VPN
->>>clients from the LAN to connect to an outside server. The client VPN
->>>software is Contivity VPN Client by Nortel Networks. If only one clients
->>>connects at a time, everything works fine. But once one client connects,
-> 
-> no
-> 
->>>other client can do so. For the second client the connection cannot be
->>>established. Is there any way to have multiple clients connect to the
->>>external VPN server simultaneously? Any help will be appreciated.
->>>
->>>Thanks in advance,
->>>  Leonid
->>>
->>>
->>>
->>>
->>>
->>
->>This question is asked at least once a week in this list, please take a
->>look at the archives.
->>
->>regards,
->>Georgi Alexandrov
->>
-> 
-> 
-> Yes, the answer is usually "enable NAT Traversal". My question then is, does
-> anyone know if NAT Traversal can be enabled in Contivity VPN Client. I
-> profess ignorance in this subject.
-> 
-> Thanks,
->    Leonid
-> 
-> 
-> 
-How about taking a look at the clients dokus or asking it at the Nortel 
-Support? I think they will help you ;), although I think the client 
-provides NAT-T because nearly all newer clients do it.
+> iptables -t raw -A INPUT -d 22.33.44.55 -p tcp --dport 22 -j ACCEPT
+> iptables -t raw -A INPUT -d 22.33.44.55 -p tcp --dport 443 -j ACCEPT
+> iptables -t raw -A INPUT -d 22.33.44.55 -p tcp -j NOTRACK
+> iptables -t filter -A INPUT -p tcp --dport 22 -j ACCEPT
+> iptables -t filter -A INPUT -p tcp --dport 443 -j ACCEPT
+> iptables -t filter -A INPUT -p tcp -j TARPIT
+
+Well the idea that I was after was that you explicitly handle anything except what you know to (likely) be valid traffic in such a way that it will not be connection tracked and ultimately TARPITed.  Thus if you have multiple valid source IP / port combinations you would want to do a series of ACCEPT targets.
+
+iptables -t raw -A INPUT -d 22.33.44.55 -p tcp --dport 22 -j ACCEPT
+iptables -t raw -A INPUT -d 22.33.44.55 -p tcp --dport 443 -j ACCEPT
+iptables -t raw -A INPUT -d 22.33.44.55 -p tcp -j NOTRACK
+iptables -t raw -A INPUT -d 22.33.44.1 -p tcp --dport 22 -j ACCEPT
+iptables -t raw -A INPUT -d 22.33.44.1 -p tcp --dport 443 -j ACCEPT
+iptables -t raw -A INPUT -d 22.33.44.1 -p tcp -j NOTRACK
+iptables -t raw -A INPUT -d 22.33.44.2 -p tcp --dport 22 -j ACCEPT
+iptables -t raw -A INPUT -d 22.33.44.2 -p tcp --dport 443 -j ACCEPT
+iptables -t raw -A INPUT -d 22.33.44.2 -p tcp -j NOTRACK
+...
+iptables -t filter -A INPUT -d 22.33.44.55 -p tcp --dport 22 -j ACCEPT
+iptables -t filter -A INPUT -d 22.33.44.55 -p tcp --dport 443 -j ACCEPT
+iptables -t filter -A INPUT -d 22.33.44.55 -p tcp -j TARPIT
+iptables -t filter -A INPUT -d 22.33.44.1 -p tcp --dport 22 -j ACCEPT
+iptables -t filter -A INPUT -d 22.33.44.1 -p tcp --dport 443 -j ACCEPT
+iptables -t filter -A INPUT -d 22.33.44.1 -p tcp -j TARPIT
+iptables -t filter -A INPUT -d 22.33.44.2 -p tcp --dport 22 -j ACCEPT
+iptables -t filter -A INPUT -d 22.33.44.2 -p tcp --dport 443 -j ACCEPT
+iptables -t filter -A INPUT -d 22.33.44.2 -p tcp -j TARPIT
+
+Something else that you might want to look in to would be using the set match extension.  The set match extension would be a good match for what you are doing as you can build a ""set of IP addresses, and / or ports, and or <bla> that can be bound together in such a way that you could match all the valid traffic in one rule vs multiple rules.  If you want help looking in to this let me know and I'll be glad to help.
+
+
+
+Grant. . . .
 
