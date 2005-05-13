@@ -1,14 +1,12 @@
-From: "Rakotomandimby (R12y) Mihamina"
-	<mihamina.rakotomandimby@etu.univ-orleans.fr>
-Subject: Re: When do iptables take effect when using iptables-restore
-Date: Fri, 13 May 2005 17:58:53 +0200
-Message-ID: <1115999933.4561.59.camel@ngeza>
-References: <63d3731e0505130835640d8da0@mail.gmail.com>
-Reply-To: netfilter@lists.netfilter.org
+From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+Subject: tableview.sh
+Date: Fri, 13 May 2005 18:48:44 +0200
+Message-ID: <fad9d484050513094833eb1148@mail.gmail.com>
+Reply-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <63d3731e0505130835640d8da0@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,38 +17,92 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, lartc <lartc@mailman.ds9a.nl>
 
-On Fri, 2005-05-13 at 11:35 -0400, Joubert Berger wrote:
-> Say I have 10,000 rules loaded.
+netfilter and lartc members
 
-God!
+I just thought it's time I contribute. I created this little script to
+help me while setting up iptables rules for firewalling, shaping or
+both. I hope this helps someone.
 
-> I now want to update them, so I edit my file and then run
-> iptables-restore to load the new rules.
+Called tableview.sh, inspired by Table Mountain, Cape Town, ZA :)
 
-Why wouldn't you deal with a shell script to do so?
-With a shell script you would exactly know what rules are applied at a
-moment.
+--- SOF ----
 
-> During all this iptables is applying policy on packets.  So, what
-> happens between the time I start running iptables-restore and when it
-> finishes it?=20
+#!/bin/sh
+#     ____
+#  /\/    \/\
+# /__________\
+#
+# Simple loop for keeping track of what is happening in a
+# iptables setup
+#
 
-If you update your rules, one thing you will have to do is to flush,
-anyway. If you dont, you'd append your updates to the existent rules. So
-once you flushed, I think your "reore" file is read line by line and the
-rules are applied as well as it is read.
+table_filter(){
+        echo
+        echo "FILTER TABLE"
+        echo "------------"
+        echo
+        iptables -nvL
+}
+table_mangle(){
+        echo
+        echo "MANGLE TABLE"
+        echo "------------"
+        echo
+        iptables -nvL -t mangle
+}
+table_nat(){
+        echo
+        echo "NAT TABLE"
+        echo "---------"
+        echo
+        iptables -nvL -t nat
+}
+footer(){
+        echo
+        echo "-------------------------------------------------------------=
+"
+        echo "Show table: [F]ilter, [M]angle, [N]AT or hit return to reload=
+"
+}
 
-But that's just my opinion. I habe no technical arguments, as you
-see :-)
+last=3D"filter"
 
+while [ 1 ]; do
+        clear
+        case "$REPLY" in
+                "F" | "f" )
+                        table_filter
+                        last=3D"filter"
+                        ;;
+                "M" | "m" )
+                        table_mangle
+                        last=3D"mangle"
+                        ;;
+                "N" | "n" )
+                        table_nat
+                        last=3D"nat"
+                        ;;
+                "Q" | "q" )
+                        exit 0
+                        ;;
+                *)
+                        table_$last
+                        ;;
+        esac
+        footer
+        read
+done
+
+--- EOF ---
+
+Regards
 
 --=20
-ASPO Infog=E9rance       http://aspo.rktmb.org/activites/infogerance
-Unofficial FAQ fcolc   http://faq.fcolc.eu.org/
-LUG sur Orl=E9ans et alentours (France).
-T=E9l : 02 34 08 26 04 / 06 33 26 13 14
 
+Kenneth Kalmer
+kenneth.kalmer@gmail.com
+http://opensourcery.blogspot.com
 
