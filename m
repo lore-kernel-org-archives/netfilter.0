@@ -1,11 +1,14 @@
-From: gerardo arnaez <garnaez@gmail.com>
-Subject: http connection hangs when connecting to forwarded IP
-Date: Fri, 13 May 2005 10:27:44 -0700
-Message-ID: <148eea710505131027505dc087@mail.gmail.com>
-Reply-To: gerardo arnaez <garnaez@gmail.com>
+From: Joubert Berger <joubertb@gmail.com>
+Subject: Re: When do iptables take effect when using iptables-restore
+Date: Fri, 13 May 2005 15:22:14 -0400
+Message-ID: <63d3731e05051312223ac9968@mail.gmail.com>
+References: <63d3731e0505130835640d8da0@mail.gmail.com>
+	<1115999933.4561.59.camel@ngeza>
+Reply-To: joubert@berger-family.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1115999933.4561.59.camel@ngeza>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,95 +21,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, garnaez@gmail.com
+To: netfilter@lists.netfilter.org
 
-Hello.
-Im using iptables to forward an entire Ip address
+On 5/13/05, Rakotomandimby (R12y) Mihamina
+<mihamina.rakotomandimby@etu.univ-orleans.fr> wrote:
+>=20
+> > I now want to update them, so I edit my file and then run
+> > iptables-restore to load the new rules.
+>=20
+> Why wouldn't you deal with a shell script to do so?
+> With a shell script you would exactly know what rules are applied at a
+> moment.
+>=20
 
-the set is
+It is done in a shell script :-)
 
-DSL <--->(eth1) Server A (eth0[192.168.1.1])<-->SWITCH<-->
-[192.168.1.2](eth0)ServerB
+> > During all this iptables is applying policy on packets.  So, what
+> > happens between the time I start running iptables-restore and when it
+> > finishes it?
+>=20
+> If you update your rules, one thing you will have to do is to flush,
+> anyway. If you dont, you'd append your updates to the existent rules. So
+> once you flushed, I think your "reore" file is read line by line and the
+> rules are applied as well as it is read.
+>=20
 
-ServerA listens on multiplle IP addresses
-I want Server A to forward a specific IP addres to Server B as
-if ServerB were directly connected to the internet
+If I was executing individual iptables commands, I understand what the
+impact is.  Once I flush the tables there would be no rules there.=20
+Then, as I add each policy, I would know that the policy changes as I
+add each rule one at a time.
 
-servA listens on 69.30.71.117 (alias eth1:1)=20
-I want it to forward al requests on this IP to server B
-Server B is 192.168.1.2
+But I am not sure how iptables-restore works.  From what I have read,
+it is considered an atomic action.  But, what does that mean?  Build
+the entire rules in kernel memory and then at the end hook this into
+the iptables search mechanism?  Or does it clear the table, then adds
+each rule one at the time at the same time it is also evaluating
+packets coming in.  Another way of asking it might be, is the atomic
+operation at the iptables-restore level or at the kernel level?  Not
+sure if I am explaining what I am looking after :-)
 
-From reading and going on line
-I have the follow iptables rules
-but when I try to connect to 6930.71.117 via a port 80 from outside the sys=
-tem
-It just hangs.
-Not sure where the trouble lays,
-any help appreciated
-the follw are my rules set
-
----------------------------
-iptables -F
-iptables -t nat -F
-iptables -t mangle -F #ignore if you get an error here
-iptables -X #deletes every non-builtin chain in the table
-echo "table cleanup complete"
-
-iptables -t nat -A PREROUTING -d 69.30.71.117 -j DNAT --to 192.168.1.2
-iptables -t nat -A POSTROUTING -s 192.168.1.2 -j SNAT --to 69.30.71.117
-echo "forward 69.30.71.117 to 192.168.1.2"
-
-
-#THESE ARE ACCEPTED OR NOT FROM OUTBOUND
-#iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
-#echo "Open 8080"
-#iptables -A INPUT -p tcp --dport 21 -j ACCEPT
-#echo "Start FTP"
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-echo "Start SSH"
-iptables -A INPUT -p tcp --dport 25 -j ACCEPT
-echo "ALLOW OUTSIDE SMTP"
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-echo "ALLOW APACHE"
-#iptables -A INPUT -p tcp --dport 110 -j ACCEPT
-#echo "ALLOW POP3"
-#iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-#echo "ALLOW APACHE SSL"
-#iptables -A INPUT -p tcp --dport 5901 -j ACCEPT
-#iptables -A INPUT -p tcp --dport 6001 -j ACCEPT
-#echo "Open TIGHT VNC"
-
-#Next Iptables This allows Mysql to work only on local connectionsa
-iptables -A INPUT -i ! eth1 -p tcp --dport 3306 -j ACCEPT
-echo "mySQL now limited to local connections"
-
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -m state --state NEW -i ! eth1 -j ACCEPT
-
-#THIS WILL FORWARD PACKETS FROM PUB TO LOCAL IF PREVIOUS ESTABLISHED
-iptables -A FORWARD -i eth1 -o eth0 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-
-iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-echo "Both network cards in action"
-
-# use this line if you have a static IP address from your ISP
-# replace your static IP with x.x.x.x
-#/sbin/iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to x.x.x.x
-# use this line only if you have dynamic IP address from your ISP
-iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-echo "Masquerade! Paper faces on parade. Masquerade--hide your face
-where the world will never find you."
-
-iptables -A INPUT -i eth1 -m state --state NEW,INVALID -j DROP
-iptables -A FORWARD -i eth1 -m state --state NEW,INVALID -j DROP
-echo "STOP NEW PACKETS FROM COMING IN THAT DONT MEET RULES ABOVE"
-
-#These two lines below dont work when I turn them on
-#Need to have it work with psad
-#iptables -A FORWARD -j LOG --log-prefix "DROP "
-#iptables -A FORWARD -j DROP
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-echo "ALL DONE, Any ERRORS?"
+--joubert
 
