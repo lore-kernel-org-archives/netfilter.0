@@ -1,12 +1,12 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: NAT performance
-Date: Thu, 12 May 2005 19:03:03 -0500
-Message-ID: <4283EEB7.7010207@riverviewtech.net>
-References: <80E06785-6636-4481-ABD1-6C6C28D52629@adelux.fr>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: Passing X11 through  IPTABLES NAT
+Date: Fri, 13 May 2005 08:56:03 +0200
+Message-ID: <200505130656.j4D6u8dc007171@smtp26.wxs.nl>
+References: <D1D49B61B5B64B4A8FB647B97BEC4ED9025521D9@DCEVS1.tekelec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <80E06785-6636-4481-ABD1-6C6C28D52629@adelux.fr>
+In-Reply-To: <D1D49B61B5B64B4A8FB647B97BEC4ED9025521D9@DCEVS1.tekelec.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +17,102 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: "'Hammond, Jeffrey'" <Jeffrey.Hammond@tekelec.com>, netfilter@lists.netfilter.org
+
+If you have only one IP address on the 'outside' interface of your firewall
+(the IP you NAT to/from), you will never be able to export a display on port
+6000 to more than one client on your private network.
+
+I don't know your complete setup, as you have not specified it here. But if
+you configure your firewall / X displays to use different ports (6000 for
+one, 6001 for another etc.) you will be able to use more clients on your
+private network.
+
+For example, if your NAT ip is 1.1.1.1 you can do the follwing.
+
+NAT 1.1.1.1 port 6000 to 192.168.10.50 port 6000
+NAT 1.1.1.1 port 6001 to 192.168.10.51 port 6001
+Etc.
+
+Than configure you X applications for the correct display and port. (export
+DISPLAY=1.1.1.1:0.0 for 192.168.10.50 port 6000) or (export
+DISPLAY=1.1.1.1:0.1 for 192.168.10.51 port 6001). Lots of X applications
+will allow you to use a -display option btw.
+
+Hope this clarifies some more.
+
+-----Original Message-----
+From: Hammond, Jeffrey [mailto:Jeffrey.Hammond@tekelec.com] 
+Sent: 12 May 2005 13:56
 To: netfilter@lists.netfilter.org
+Cc: Sietse van Zanen
+Subject: RE: Passing X11 through IPTABLES NAT
 
-Christophe SUIRE wrote:
-> Hi,
-> 
-> I have done some tests, and i'm surprise with the poor result with NAT.
-> I have a linux firewall, 2.6.8 kernel, one card for public network,  and 
-> one card for the lan.
-> All cards are giga bit cards.
-> I have 10 PC which are each in a VLAN, and with a gateway which is  the 
-> virtual VLAN interface under the firewall link with the lan card.
-> I have 5 switch with a 100Mbit/s uplink to the firewall (with a giga  
-> bit backbone switch). I have 2PC under each switch. So in theory each  
-> PC have 50Mbit/s of bandwidth.
-> Each PC have 10 alias ip, so i have 10 networks with 10 virtuals  
-> clients under each network.
-> So each virtual client (100) have 5Mbit/s of bandwidth.
-> On the firewall each vlan network is SNAT to go out to the internet.
-> My bandwidth test is done with TPTEST, and a TPTEST server under the  
-> public network of the firewall.
-> My procedure is : tcp-receive of 50Mo
->     launch the test for 1 virtual client and get the time
->     launch the test for 2 virtuals clients together and get the time  
-> for each
->     ....
->     launch the test for 100 virtuals ...
-> 
-> When i do my test without NAT, just routing, the total bandwidth used  
-> is near to 500Mbit/s, which is great !
-> But when i do my test with NAT, the total bandwidth used is near to  
-> 170Mbit/s !!! So i have an import drop of the performance !
-> And this bandwidth is the same from 20 virtuals clients to 100  virtuals 
-> clients.
-> So i understand that NAT need to rewrite all packets .. but here the  
-> performance is very poor.
-> If someone can explain me why ??
+Thank you;
 
-What are the specs on the system you are using as the firewall?
+	I actually got this to work doing exactly what you mentioned. I went
+from masquerading to dnat & snat and it worked. 
+
+	My problem now is that when I have 2 clients connected via the same
+VPN I can only get the DISPLAY back to an individual client (which ever one
+is the source IP in the SNAT statement). Putting a range of I.P.'s (i.e.
+--to-source 192.168.10.50-192.168.10.70) doesn't give me any display back.
+
+	I'm assuming I'm not connection or stream tracking.
+
+Jeff Hammond
+Customer Suppport
+972 461 4152
+
+-----Original Message-----
+From: Sietse van Zanen [mailto:sietse@wizdom.nu]
+Sent: Thursday, May 12, 2005 2:12 AM
+To: Hammond, Jeffrey
+Subject: RE: Passing X11 through IPTABLES NAT
+
+ Hi,
+
+This is most likely due to the fact, that the X11 connection is opened in
+the other direction. You will need to do some SNAT back to your clients.
+
+It goes like this:
+Client telnets ---> Server
+Server X11 ---> Client. (In fact your clients runs the X11 server, and the
+server the X11 client).
+
+Greets.
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Hammond, Jeffrey
+Sent: 10 May 2005 14:20
+To: netfilter@lists.netfilter.org
+Subject: Passing X11 through IPTABLES NAT
+
+All;
+
+            I'm using IPTABLES to NAT various client LINUX boxes through a
+VPN server. I'm able to connect through the server, NAT the client and out
+the VPN connection successfully. Telnet is successful. However when I try to
+export the X display back to my client I receive 'Can't open Display <I.P.>'
+where the I.P. is that of the NAT'd client from the host, and see and
+'invalid data' packet while sniffing on the client.
+I've tried DNATting X11 port 6000 packets back to the original I.P. with no
+success.
+
+ 
+
+            Any help would be appreciated.
+
+ 
+
+Jeff Hammond
+
+ 
 
 
 
-Grant. . . .
+
+
 
