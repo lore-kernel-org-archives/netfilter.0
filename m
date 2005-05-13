@@ -1,11 +1,11 @@
-From: "Rakotomandimby (R12y) Mihamina"
-	<mihamina.rakotomandimby@etu.univ-orleans.fr>
-Subject: just a remind
-Date: Fri, 13 May 2005 13:53:35 +0200
-Message-ID: <1115985215.4563.37.camel@ngeza>
-Reply-To: netfilter@lists.netfilter.org
+From: "Leonid Zeitlin" <lz@csltd.com.ua>
+Subject: Re: IPSec masquerade with multiple clients
+Date: Fri, 13 May 2005 15:03:30 +0300
+Message-ID: <017f01c557b3$c71ee3a0$5101a8c0@ALEPH>
+References: <015901c557ab$c31c19b0$5101a8c0@ALEPH>
+	<4284916E.1090604@hotpop.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,32 +17,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello.
 
-I have a rule set and I want to disable the acces of my server to some
-ips (they are "request flooding" me, and it's just a temporary
-rejection, just to give me the time to set up the scaling of the server)
-
-- I have the policy rules at the beginning (they DROP all by default)
-- then I have the allowing rules for the port 80 TCP (web server)
-- then allow ssh for all (dynamic IP at the admin's home)
-- then follows the rectrivtion, I rejects the IPs I want to reject on
-all ports.
-
-Is that the right steps? or should I reject them _before_ allowing 80
-TCP for all?
-
-It's iptables 1.2.10 and 1.2.11
-Thank you for all.
+----- Original Message ----- 
+From: "Georgi Alexandrov" <tehlists@hotpop.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Friday, May 13, 2005 2:37 PM
+Subject: Re: IPSec masquerade with multiple clients
 
 
---=20
-ASPO Infog=E9rance       http://aspo.rktmb.org/activites/infogerance
-Unofficial FAQ fcolc   http://faq.fcolc.eu.org/
-LUG sur Orl=E9ans et alentours (France).
-T=E9l : 02 34 08 26 04 / 06 33 26 13 14
+> Leonid Zeitlin wrote:
+>
+> >Hi all,
+> >I have the following problem. I have a local network behind a Linux
+router
+> >that does IP masquerade. All hosts on the LAN have 192.168.*.* addresses,
+> >and the Linux router has only one external IP address. I need IPSec VPN
+> >clients from the LAN to connect to an outside server. The client VPN
+> >software is Contivity VPN Client by Nortel Networks. If only one clients
+> >connects at a time, everything works fine. But once one client connects,
+no
+> >other client can do so. For the second client the connection cannot be
+> >established. Is there any way to have multiple clients connect to the
+> >external VPN server simultaneously? Any help will be appreciated.
+> >
+> >Thanks in advance,
+> >   Leonid
+> >
+> >
+> >
+> >
+> >
+>
+> This question is asked at least once a week in this list, please take a
+> look at the archives.
+>
+> regards,
+> Georgi Alexandrov
+>
+
+Yes, the answer is usually "enable NAT Traversal". My question then is, does
+anyone know if NAT Traversal can be enabled in Contivity VPN Client. I
+profess ignorance in this subject.
+
+Thanks,
+   Leonid
 
 
