@@ -1,20 +1,12 @@
-From: Christophe SUIRE <christophe.suire@adelux.fr>
-Subject: Re: NAT performance
-Date: Fri, 13 May 2005 12:19:53 +0200
-Message-ID: <5D2640AA-4335-43B2-A928-741D759757FB@adelux.fr>
-References: <80E06785-6636-4481-ABD1-6C6C28D52629@adelux.fr>
-	<4283EEB7.7010207@riverviewtech.net>
-	<02A7CEB4-AD81-4D92-BD1A-A2A5EB00AFF9@adelux.fr>
-	<Pine.LNX.4.60.0505130423320.5558@darkstar.sysinfo.com>
-	<A1364254-5C3D-48E2-A68C-2445EBA486D1@adelux.fr>
-	<Pine.LNX.4.58.0505131038510.2119@blackhole.kfki.hu>
-	<924E28FB-3288-4CBD-8A0B-40A8884C41FF@adelux.fr>
-	<Pine.LNX.4.58.0505131156160.2119@blackhole.kfki.hu>
-	<Pine.LNX.4.58.0505131210090.2119@blackhole.kfki.hu>
-Mime-Version: 1.0 (Apple Message framework v728)
-Content-Transfer-Encoding: quoted-printable
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: Maybe a Newbie question about SNAT/DNAT
+Date: Fri, 13 May 2005 12:17:01 +0200
+Message-ID: <42847E9D.4070107@mnemon.de>
+References: <001701c5573b$bb21d210$0bc8a8c0@DES007>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0505131210090.2119@blackhole.kfki.hu>
+In-Reply-To: <001701c5573b$bb21d210$0bc8a8c0@DES007>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -25,50 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-9"; delsp="yes"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-You can bind on ip address so ip alias are used ..
+Hi Melim,
 
-   -b <local address>        Bind to local address/interface
+melim schrieb:
+> 
+> I have a valid IP in a interface eth2 and a internal net ip on eth0, I'm
+> using some well documented rules to redirect port requisitions to another
+> internal server.
+> 
+> iptables -t nat -A PREROUTING -p tcp --dport 80 -d 200.180.X.X -j
+> DNAT --to-destination 192.168.200.251
+> iptables -t nat -A POSTROUTING -p tcp --sport 80 -s 192.168.200.251 -j
+> SNAT --to-source 200.180.X.X
 
--- =20
-Christophe Suire
+...
 
+> On the webserver I have a default gateway defined to another router, but
+> even removing it, won't work.
+> Only works when I defined the default GW to my router machine, but I don't
+> want to do this.
 
-Le 13 mai 05 =E0 12:14, Jozsef Kadlecsik a =E9crit :
+So you DNAT HTTP requests to 192.168.200.251 and you SNAT the reponses
+to 200.180.X.X. Ok so far. Some tcpdump would be nice, but I think you
+can solve this with the following rule:
 
-> On Fri, 13 May 2005, Jozsef Kadlecsik wrote:
->
->
->> On Fri, 13 May 2005, Christophe SUIRE wrote:
->>
->>
->>> A great paper !
->>> But i have done some bandwidth tests which is quiet different ..
->>> I know that NAT *is* expensive .. but i'm surprise that there no
->>> bandwidth difference between 20 client and 100 client.
->>> So i would like to understand why this limit ?
->>>
->>
->> Sorry, but I have to ask: don't you hit the limit of =20
->> ip_conntrack_max?
->>
->
-> Probably not. But as far as I see, you cannot specify the source IP
-> address at tptest. Are you sure the IP address aliases were used at =20=
+iptables -t nat -I POSTROUTING -p tcp -o eth0 --dport 80 \
+         -j SNAT --to-source 192.168.200.254
 
-> all?
->
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
->
->
+This assumes that eth0 on your router is 192.168.200.254. I think this
+happens:
+
+Incoming request from e.g. 1.1.1.1. DNAT to 192.168.200.251. This packet
+arrives at the web server:
+
+dst: 192.168.200.251
+src: 1.1.1.1 !!
+
+As 1.1.1.1 is not known to the web server he sends it to his default
+gateway, which is _not_ the router, so the packets vanish. tcpdump a bit
+and probably you will see exactly this.
+
+HTH and have a nice time,
+
+Joerg
 
 
