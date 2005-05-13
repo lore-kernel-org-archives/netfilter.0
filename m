@@ -1,15 +1,20 @@
-From: Joubert Berger <joubertb@gmail.com>
-Subject: Re: When do iptables take effect when using iptables-restore
-Date: Fri, 13 May 2005 15:22:14 -0400
-Message-ID: <63d3731e05051312223ac9968@mail.gmail.com>
-References: <63d3731e0505130835640d8da0@mail.gmail.com>
-	<1115999933.4561.59.camel@ngeza>
-Reply-To: joubert@berger-family.org
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: okay, I admit confusion here;
+Date: Fri, 13 May 2005 17:31:06 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0505131725190.2601@darkstar.sysinfo.com>
+References: <427B93EE.3030905@eccotours.dyndns.org>
+	<427C4EA3.5090501@riverviewtech.net>
+	<4281FC1A.8090000@eccotours.dyndns.org>
+	<42824D1E.7040508@riverviewtech.net>
+	<42825732.8010206@verisignlabs.com>
+	<428259CE.3080708@riverviewtech.net>
+	<42825D48.2060003@verisignlabs.com>
+	<20050511203452.GA13902@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1115999933.4561.59.camel@ngeza>
-Content-Disposition: inline
+In-Reply-To: <20050511203452.GA13902@bender.817west.com>
+ReSent-To: netfilter@lists.netfilter.org
+ReSent-Message-ID: <Pine.LNX.4.60.0505131743300.2518@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,45 +25,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+Cc: igor@portbridge.com
 
-On 5/13/05, Rakotomandimby (R12y) Mihamina
-<mihamina.rakotomandimby@etu.univ-orleans.fr> wrote:
->=20
-> > I now want to update them, so I edit my file and then run
-> > iptables-restore to load the new rules.
->=20
-> Why wouldn't you deal with a shell script to do so?
-> With a shell script you would exactly know what rules are applied at a
-> moment.
->=20
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-It is done in a shell script :-)
 
-> > During all this iptables is applying policy on packets.  So, what
-> > happens between the time I start running iptables-restore and when it
-> > finishes it?
->=20
-> If you update your rules, one thing you will have to do is to flush,
-> anyway. If you dont, you'd append your updates to the existent rules. So
-> once you flushed, I think your "reore" file is read line by line and the
-> rules are applied as well as it is read.
->=20
+I have moved from a p-p-p dialup serivce to a rr business class service 
+<and learned to hate verizion>.  Anyways, rr brings in a router, and 
+gives me the /28 block <router takes an address>.  how do I setup  eht0 
+and eth1 to share the same block?  Is this a case for interface bridging 
+and ip2route?
 
-If I was executing individual iptables commands, I understand what the
-impact is.  Once I flush the tables there would be no rules there.=20
-Then, as I add each policy, I would know that the policy changes as I
-add each rule one at a time.
 
-But I am not sure how iptables-restore works.  From what I have read,
-it is considered an atomic action.  But, what does that mean?  Build
-the entire rules in kernel memory and then at the end hook this into
-the iptables search mechanism?  Or does it clear the table, then adds
-each rule one at the time at the same time it is also evaluating
-packets coming in.  Another way of asking it might be, is the atomic
-operation at the iptables-restore level or at the kernel level?  Not
-sure if I am explaining what I am looking after :-)
 
---joubert
+router  <->   eth1 <external>   <->   eth0 <internal, connects to the home
+      							hub/switch>
+
+
+router = xxx.xxx.xxx.17
+
+eth1 = xxx.xxx.xxx.18
+
+eth0 = xxx.xxx.xxx.19
+
+
+Rest of the home net gets IP's 20-30
+
+
+Thanks,
+
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+              admin & senior security consultant:  sysinfo.com
+                              http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                      -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFChRyfst+vzJSwZikRAqknAJ90TrPyC6SULCWlisOkEzDCkGV3VwCcDpb/
+DEk9BSElkhK3zulClwzKAcA=
+=KHwY
+-----END PGP SIGNATURE-----
 
