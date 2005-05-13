@@ -1,11 +1,15 @@
-From: "hareram" <hareram@sol.net.in>
+From: "Rakotomandimby (R12y) Mihamina"
+	<mihamina.rakotomandimby@etu.univ-orleans.fr>
 Subject: Re: just a remind
-Date: Fri, 13 May 2005 17:35:01 +0530
-Message-ID: <090301c557b3$fdac09c0$09603fca@southern>
+Date: Fri, 13 May 2005 14:36:42 +0200
+Message-ID: <1115987802.4561.49.camel@ngeza>
 References: <1115985215.4563.37.camel@ngeza>
+	<090301c557b3$fdac09c0$09603fca@southern>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <090301c557b3$fdac09c0$09603fca@southern>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,40 +20,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi
+On Fri, 2005-05-13 at 17:35 +0530, hareram wrote:
+> you need to Drop all and allow what are the services required
+> that is the best practice
 
-you need to Drop all and allow what are the services required
-that is the best practice
+Yes, the policy is to drop.
 
-hare
------ Original Message -----=20
-From: "Rakotomandimby (R12y) Mihamina"=20
-<mihamina.rakotomandimby@etu.univ-orleans.fr>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, May 13, 2005 5:23 PM
-Subject: just a remind
+But is REJECT a terminatig target?=20
+(I just dont remember)
 
-
-Hello.
-
-I have a rule set and I want to disable the acces of my server to some
-ips (they are "request flooding" me, and it's just a temporary
-rejection, just to give me the time to set up the scaling of the server)
-
-- I have the policy rules at the beginning (they DROP all by default)
-- then I have the allowing rules for the port 80 TCP (web server)
-- then allow ssh for all (dynamic IP at the admin's home)
-- then follows the rectrivtion, I rejects the IPs I want to reject on
-all ports.
-
-Is that the right steps? or should I reject them _before_ allowing 80
-TCP for all?
-
-It's iptables 1.2.10 and 1.2.11
-Thank you for all.
+I know that ACCEPT is "terminating". I mean if a packet matches and is
+ACCEPTed, it is not processed by the following rules.
 
 
 --=20
@@ -57,9 +41,5 @@ ASPO Infog=E9rance       http://aspo.rktmb.org/activites/infogerance
 Unofficial FAQ fcolc   http://faq.fcolc.eu.org/
 LUG sur Orl=E9ans et alentours (France).
 T=E9l : 02 34 08 26 04 / 06 33 26 13 14
-
-
-
-
 
 
