@@ -1,13 +1,9 @@
-From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
-	<sa.campos@datasulsp.com.br>
-Subject: Re: tableview.sh
-Date: Fri, 13 May 2005 14:02:33 -0300
-Message-ID: <00a801c557dd$9160db40$8b00000a@PIVT>
-References: <fad9d484050513094833eb1148@mail.gmail.com>
-Reply-To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
-	<sa.campos@datasulsp.com.br>
+From: Brian Atkins <batkins@tlcdelivers.com>
+Subject: Natting IPs hanging
+Date: Fri, 13 May 2005 13:04:31 -0700
+Message-ID: <4285084F.1020500@tlcdelivers.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,17 +15,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>, netfilter@lists.netfilter.org, lartc <lartc@mailman.ds9a.nl>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Valeu a contirui=E7=E3o
+Greetings:
 
-J=E1 estou utilizando...
+I'm in the process of building my first dedicated firewall using 
+iptables/netfilter (v 1.2.11) on Gentoo Linux (2.6.11 kernel).  I want 
+to enable the natting of IPs, but I am having trouble getting the rules 
+to take.  Essentially, I would like to take a specific group of IPs 
+(servers) and nat them specifically to an internal ip address.  The 
+remainder of the internal IPs (workstations - dhcp) should be natted 
+outbound within a range of IPs.
 
-Very good Kenneth, the contribution is very nice... I love this list. The=20
-people are so cool (nice).
+Based on the docs on Netfilter.org and the man pages, I decided to start 
+off with the following:
 
-Ti=E3o
+iptables -t nat -A PREROUTING -i eth0 -d 141.xxx.xxx.xxx -j DNAT 
+--to-destination 10.xxx.xxx.xxx
 
+But, when I try to run the command, it just hangs. After a while, I can 
+break out of it with CTL-C.
+
+What gives?  Am I missing something?
+
+-- 
+Brian
 
 
