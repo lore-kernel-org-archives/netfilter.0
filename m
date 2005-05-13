@@ -1,12 +1,13 @@
-From: Georgi Alexandrov <tehlists@hotpop.com>
-Subject: Re: IPSec masquerade with multiple clients
-Date: Fri, 13 May 2005 14:37:18 +0300
-Message-ID: <4284916E.1090604@hotpop.com>
-References: <015901c557ab$c31c19b0$5101a8c0@ALEPH>
+From: Feizhou <feizhou@linuxmail.org>
+Subject: Re: NAT performance
+Date: Fri, 13 May 2005 19:52:31 +0800
+Message-ID: <428494FF.9020707@linuxmail.org>
+References: <80E06785-6636-4481-ABD1-6C6C28D52629@adelux.fr>	<4283EEB7.7010207@riverviewtech.net>	<02A7CEB4-AD81-4D92-BD1A-A2A5EB00AFF9@adelux.fr>	<Pine.LNX.4.60.0505130423320.5558@darkstar.sysinfo.com>	<A1364254-5C3D-48E2-A68C-2445EBA486D1@adelux.fr>
+	<Pine.LNX.4.58.0505131038510.2119@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <015901c557ab$c31c19b0$5101a8c0@ALEPH>
+In-Reply-To: <Pine.LNX.4.58.0505131038510.2119@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,30 +21,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Leonid Zeitlin wrote:
+Jozsef Kadlecsik wrote:
+> On Fri, 13 May 2005, Christophe SUIRE wrote:
+> 
+> 
+>>This not a problem with the network card, because when i do the test
+>>with only firewall routing i have a total bandwidth used near to
+>>500Mbit/s.
+>>But when i add an SNAT translation for each network (10) the total
+>>bandwidth used is near 170Mbit/s.
+>>So why this important difference without an with NAT ??
+> 
+> 
+> NAT *is* expensive. Have a look at the paper on netfilter performance
+> tests and comparisons at http://people.netfilter.org/kadlec/nftest.pdf
 
->Hi all,
->I have the following problem. I have a local network behind a Linux router
->that does IP masquerade. All hosts on the LAN have 192.168.*.* addresses,
->and the Linux router has only one external IP address. I need IPSec VPN
->clients from the LAN to connect to an outside server. The client VPN
->software is Contivity VPN Client by Nortel Networks. If only one clients
->connects at a time, everything works fine. But once one client connects, no
->other client can do so. For the second client the connection cannot be
->established. Is there any way to have multiple clients connect to the
->external VPN server simultaneously? Any help will be appreciated.
->
->Thanks in advance,
->   Leonid
->
->
->
->  
->
-
-This question is asked at least once a week in this list, please take a 
-look at the archives.
-
-regards,
-Georgi Alexandrov
+the ip_conntrack module sucks. Lovely cpu chewer.
 
