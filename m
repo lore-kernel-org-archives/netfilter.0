@@ -1,12 +1,11 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Passing X11 through  IPTABLES NAT
-Date: Fri, 13 May 2005 08:56:03 +0200
-Message-ID: <200505130656.j4D6u8dc007171@smtp26.wxs.nl>
-References: <D1D49B61B5B64B4A8FB647B97BEC4ED9025521D9@DCEVS1.tekelec.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: Tarpit usage question
+Date: Fri, 13 May 2005 00:01:59 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE58290738C@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <D1D49B61B5B64B4A8FB647B97BEC4ED9025521D9@DCEVS1.tekelec.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,101 +17,84 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "'Hammond, Jeffrey'" <Jeffrey.Hammond@tekelec.com>, netfilter@lists.netfilter.org
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>, netfilter@lists.netfilter.org
 
-If you have only one IP address on the 'outside' interface of your firewall
-(the IP you NAT to/from), you will never be able to export a display on port
-6000 to more than one client on your private network.
+Grant,=20
 
-I don't know your complete setup, as you have not specified it here. But if
-you configure your firewall / X displays to use different ports (6000 for
-one, 6001 for another etc.) you will be able to use more clients on your
-private network.
+We're on the same page here.  Just one more question to confirm my
+complete understanding.  We're natting some IP's in which we have
+special rules and tables for.  This is all handled in the post/pre nat
+table and the forward filter table.
 
-For example, if your NAT ip is 1.1.1.1 you can do the follwing.
+I'm assuming that the input chain of the raw table is for locally
+destined requests to the firewall itself.=20
 
-NAT 1.1.1.1 port 6000 to 192.168.10.50 port 6000
-NAT 1.1.1.1 port 6001 to 192.168.10.51 port 6001
-Etc.
+Ex.  The firewall external IP is 22.33.44.1 and I also assign 2-6 to the
+firewall and NAT them in locally to 10.0.0.2-6 accordingly.  With this
+said, if I setup the rules below on the raw table I'm assuming that it
+will only be caught on the 22.33.44.1 IP.  Is this assumption wrong or
+should I also qualify the addresses that I care about on the raw table.
 
-Than configure you X applications for the correct display and port. (export
-DISPLAY=1.1.1.1:0.0 for 192.168.10.50 port 6000) or (export
-DISPLAY=1.1.1.1:0.1 for 192.168.10.51 port 6001). Lots of X applications
-will allow you to use a -display option btw.
 
-Hope this clarifies some more.
+Like this:
 
------Original Message-----
-From: Hammond, Jeffrey [mailto:Jeffrey.Hammond@tekelec.com] 
-Sent: 12 May 2005 13:56
-To: netfilter@lists.netfilter.org
-Cc: Sietse van Zanen
-Subject: RE: Passing X11 through IPTABLES NAT
+iptables -t raw -A INPUT -d 22.33.44.55 -p tcp --dport 22 -j ACCEPT
+iptables -t raw -A INPUT -d 22.33.44.55 -p tcp --dport 443 -j ACCEPT
+iptables -t raw -A INPUT -d 22.33.44.55 -p tcp -j NOTRACK
+iptables -t filter -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -t filter -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -t filter -A INPUT -p tcp -j TARPIT
 
-Thank you;
-
-	I actually got this to work doing exactly what you mentioned. I went
-from masquerading to dnat & snat and it worked. 
-
-	My problem now is that when I have 2 clients connected via the same
-VPN I can only get the DISPLAY back to an individual client (which ever one
-is the source IP in the SNAT statement). Putting a range of I.P.'s (i.e.
---to-source 192.168.10.50-192.168.10.70) doesn't give me any display back.
-
-	I'm assuming I'm not connection or stream tracking.
-
-Jeff Hammond
-Customer Suppport
-972 461 4152
-
------Original Message-----
-From: Sietse van Zanen [mailto:sietse@wizdom.nu]
-Sent: Thursday, May 12, 2005 2:12 AM
-To: Hammond, Jeffrey
-Subject: RE: Passing X11 through IPTABLES NAT
-
- Hi,
-
-This is most likely due to the fact, that the X11 connection is opened in
-the other direction. You will need to do some SNAT back to your clients.
-
-It goes like this:
-Client telnets ---> Server
-Server X11 ---> Client. (In fact your clients runs the X11 server, and the
-server the X11 client).
-
-Greets.
 
 -----Original Message-----
 From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Hammond, Jeffrey
-Sent: 10 May 2005 14:20
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Taylor,
+Grant
+Sent: Thursday, May 12, 2005 4:37 PM
 To: netfilter@lists.netfilter.org
-Subject: Passing X11 through IPTABLES NAT
+Subject: Re: Tarpit usage question
 
-All;
+> Hi guys,=20
+>=20
+> I had a usage question about tarpit in respects to connection
+tracking.
+> We have a firewall that has a fairly heavy usage so we have put a
+> separate box external of the firewall to do tarpitting of port
+scanners.
+> Anyways, we are still being hit pretty hard by many things on this
+> firewall.  I was thinking about configuration tarpit on the firewall
+> cluster but wanted to ensure that connection tracking wasn't a
+problem.
+>=20
+> Is it as simple as just sending the connection to the NOTRACK chain
+> before sending it to tarpit?
+>=20
+> iptaables -t raw -A INPUT -p tcp -m tcp --dport 80 -j NOTRACK
+> iptables -A INPUT -p tcp -m tcp --dport 80 -j TARPIT
+>=20
+> Is there a better approach to this?  Will this even work?  The rules
+> above are more or less just a sample.  I would want to block almost
+all
+> traffic destined for the input chain on the firewall on the external
+> interface unless it is related traffic.
 
-            I'm using IPTABLES to NAT various client LINUX boxes through a
-VPN server. I'm able to connect through the server, NAT the client and out
-the VPN connection successfully. Telnet is successful. However when I try to
-export the X display back to my client I receive 'Can't open Display <I.P.>'
-where the I.P. is that of the NAT'd client from the host, and see and
-'invalid data' packet while sniffing on the client.
-I've tried DNATting X11 port 6000 packets back to the original I.P. with no
-success.
+If you were worried about just one port, as in your example, I would do
+what you have done.  However if you are planing on TARPITing a lot of
+ports (the majority of them) I would be tempted to do something like the
+following:
 
- 
+iptables -t raw -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -t raw -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -t raw -A INPUT -p tcp -j NOTRACK
+iptables -t filter -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -t filter -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -t filter -A INPUT -p tcp -j TARPIT
 
-            Any help would be appreciated.
-
- 
-
-Jeff Hammond
-
- 
+This should cause any traffic that is not destined to known good ports
+to be not tracked and thus safe to send to the TARPIT.
 
 
 
-
+Grant. . . .
 
 
