@@ -1,17 +1,17 @@
-From: Christophe SUIRE <christophe.suire@adelux.fr>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: NAT performance
-Date: Fri, 13 May 2005 11:51:44 +0200
-Message-ID: <924E28FB-3288-4CBD-8A0B-40A8884C41FF@adelux.fr>
+Date: Fri, 13 May 2005 11:57:29 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505131156160.2119@blackhole.kfki.hu>
 References: <80E06785-6636-4481-ABD1-6C6C28D52629@adelux.fr>
 	<4283EEB7.7010207@riverviewtech.net>
 	<02A7CEB4-AD81-4D92-BD1A-A2A5EB00AFF9@adelux.fr>
 	<Pine.LNX.4.60.0505130423320.5558@darkstar.sysinfo.com>
 	<A1364254-5C3D-48E2-A68C-2445EBA486D1@adelux.fr>
 	<Pine.LNX.4.58.0505131038510.2119@blackhole.kfki.hu>
-Mime-Version: 1.0 (Apple Message framework v728)
-Content-Transfer-Encoding: quoted-printable
+	<924E28FB-3288-4CBD-8A0B-40A8884C41FF@adelux.fr>
+Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0505131038510.2119@blackhole.kfki.hu>
+In-Reply-To: <924E28FB-3288-4CBD-8A0B-40A8884C41FF@adelux.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,47 +22,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; delsp="yes"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Christophe SUIRE <christophe.suire@adelux.fr>
 Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Fri, 13 May 2005, Christophe SUIRE wrote:
 
-A great paper !
-But i have done some bandwidth tests which is quiet different ..
-I know that NAT *is* expensive .. but i'm surprise that there no =20
-bandwidth difference between 20 client and 100 client.
-So i would like to understand why this limit ?
-Thx
+> A great paper !
+> But i have done some bandwidth tests which is quiet different ..
+> I know that NAT *is* expensive .. but i'm surprise that there no
+> bandwidth difference between 20 client and 100 client.
+> So i would like to understand why this limit ?
 
---=20
-Christophe Suire
+Sorry, but I have to ask: don't you hit the limit of ip_conntrack_max?
 
-
-Le 13 mai 05 =E0 11:22, Jozsef Kadlecsik a =E9crit :
-
-> On Fri, 13 May 2005, Christophe SUIRE wrote:
->
->
->> This not a problem with the network card, because when i do the test
->> with only firewall routing i have a total bandwidth used near to
->> 500Mbit/s.
->> But when i add an SNAT translation for each network (10) the total
->> bandwidth used is near 170Mbit/s.
->> So why this important difference without an with NAT ??
->>
->
-> NAT *is* expensive. Have a look at the paper on netfilter performance
-> tests and comparisons at http://people.netfilter.org/kadlec/nftest.pdf
->
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
->
->
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
