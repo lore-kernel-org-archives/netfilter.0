@@ -1,12 +1,14 @@
-From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
-Subject: tableview.sh
-Date: Fri, 13 May 2005 18:48:44 +0200
-Message-ID: <fad9d484050513094833eb1148@mail.gmail.com>
-Reply-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
+	<sa.campos@datasulsp.com.br>
+Subject: Re: tableview.sh
+Date: Fri, 13 May 2005 14:02:33 -0300
+Message-ID: <00a801c557dd$9160db40$8b00000a@PIVT>
+References: <fad9d484050513094833eb1148@mail.gmail.com>
+Reply-To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
+	<sa.campos@datasulsp.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,92 +19,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, lartc <lartc@mailman.ds9a.nl>
+Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
+To: Kenneth Kalmer <kenneth.kalmer@gmail.com>, netfilter@lists.netfilter.org, lartc <lartc@mailman.ds9a.nl>
 
-netfilter and lartc members
+Valeu a contirui=E7=E3o
 
-I just thought it's time I contribute. I created this little script to
-help me while setting up iptables rules for firewalling, shaping or
-both. I hope this helps someone.
+J=E1 estou utilizando...
 
-Called tableview.sh, inspired by Table Mountain, Cape Town, ZA :)
+Very good Kenneth, the contribution is very nice... I love this list. The=20
+people are so cool (nice).
 
---- SOF ----
+Ti=E3o
 
-#!/bin/sh
-#     ____
-#  /\/    \/\
-# /__________\
-#
-# Simple loop for keeping track of what is happening in a
-# iptables setup
-#
 
-table_filter(){
-        echo
-        echo "FILTER TABLE"
-        echo "------------"
-        echo
-        iptables -nvL
-}
-table_mangle(){
-        echo
-        echo "MANGLE TABLE"
-        echo "------------"
-        echo
-        iptables -nvL -t mangle
-}
-table_nat(){
-        echo
-        echo "NAT TABLE"
-        echo "---------"
-        echo
-        iptables -nvL -t nat
-}
-footer(){
-        echo
-        echo "-------------------------------------------------------------=
-"
-        echo "Show table: [F]ilter, [M]angle, [N]AT or hit return to reload=
-"
-}
-
-last=3D"filter"
-
-while [ 1 ]; do
-        clear
-        case "$REPLY" in
-                "F" | "f" )
-                        table_filter
-                        last=3D"filter"
-                        ;;
-                "M" | "m" )
-                        table_mangle
-                        last=3D"mangle"
-                        ;;
-                "N" | "n" )
-                        table_nat
-                        last=3D"nat"
-                        ;;
-                "Q" | "q" )
-                        exit 0
-                        ;;
-                *)
-                        table_$last
-                        ;;
-        esac
-        footer
-        read
-done
-
---- EOF ---
-
-Regards
-
---=20
-
-Kenneth Kalmer
-kenneth.kalmer@gmail.com
-http://opensourcery.blogspot.com
 
