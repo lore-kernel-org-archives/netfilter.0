@@ -1,12 +1,12 @@
-From: "dave beach" <drbeach@rogers.com>
-Subject: RE: IPSec masquerade with multiple clients
-Date: Fri, 13 May 2005 21:33:31 -0400
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4wwL6DwAQAAAAAB2T+dxCw0GGsvq99+UE8QEAAAAA@rogers.com>
-References: <017f01c557b3$c71ee3a0$5101a8c0@ALEPH>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: http connection hangs when connecting to forwarded IP
+Date: Sat, 14 May 2005 02:59:03 -0400
+Message-ID: <20050514065902.GA23344@bender.817west.com>
+References: <148eea710505131027505dc087@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <017f01c557b3$c71ee3a0$5101a8c0@ALEPH>
+Content-Disposition: inline
+In-Reply-To: <148eea710505131027505dc087@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,87 +18,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Leonid Zeitlin' <lz@csltd.com.ua>, netfilter@lists.netfilter.org
-
-I had the same problem - class C private net behind both a hardware
-broadband router and a dedicated IPTables firewall. My employer uses a
-Nortel Contivity VPN remote access solution, which does not have NAT
-traversal enabled on the Contivity box.
-
-With my previous router (Linksys BEFSR41), there's a tech bulletin on the
-Linksys site that states it only supports a single VPN passthrough
-connection. So, I upgraded to a newer model that supports more than one
-(because both my wife and I both need to do VPN passthrough from our
-respective at-home work laptops). I couldn't get multiple connections
-working through the IPTables firewall, so I "solved" it by leaving my wife's
-laptop connected through the IPTables firewall (and thence out via the
-broadband router), and plugging my laptop directly into a spare jack on the
-back of the broadband router.
-
-Both laptops can now happily connect to the mothership Contivity VPN box,
-and all is goodness. Not what I would have preferred (which would have been
-both laptops connecting through the IPTables box), but I can live with it.
-
-Other work users report that with various other broadband routers (SMC,
-particularly) they can connect multiple concurrent VPN passthrough sessions
-to the Contivity box, even with NAT traversal disabled - but they're just
-wiring multiple computers directly into the back of the routers. Why I
-couldn't get it to work through IPTables remains a mystery to me.
-
-Your mileage may vary.
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Leonid Zeitlin
-Sent: May 13, 2005 8:04 AM
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: Re: IPSec masquerade with multiple clients
 
+On Fri, May 13, 2005 at 10:27:44AM -0700, gerardo arnaez wrote:
+> Hello.
+> Im using iptables to forward an entire Ip address
+> 
+> the set is
+> 
+> DSL <--->(eth1) Server A (eth0[192.168.1.1])<-->SWITCH<-->
+> [192.168.1.2](eth0)ServerB
+> 
+> ServerA listens on multiplle IP addresses
+> I want Server A to forward a specific IP addres to Server B as
+> if ServerB were directly connected to the internet
+> 
+> servA listens on 69.30.71.117 (alias eth1:1) 
+> I want it to forward al requests on this IP to server B
+> Server B is 192.168.1.2
+> 
+> >From reading and going on line
+> I have the follow iptables rules
+> but when I try to connect to 6930.71.117 via a port 80 from outside the system
+> It just hangs.
+> Not sure where the trouble lays,
+> any help appreciated
+> the follw are my rules set
+> 
+> ---------------------------
+> iptables -F
+> iptables -t nat -F
+> iptables -t mangle -F #ignore if you get an error here
+> iptables -X #deletes every non-builtin chain in the table
+> echo "table cleanup complete"
+> 
+> iptables -t nat -A PREROUTING -d 69.30.71.117 -j DNAT --to 192.168.1.2
+> iptables -t nat -A POSTROUTING -s 192.168.1.2 -j SNAT --to 69.30.71.117
+> echo "forward 69.30.71.117 to 192.168.1.2"
+> 
+> 
+> #THESE ARE ACCEPTED OR NOT FROM OUTBOUND
+> #iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+> #echo "Open 8080"
+> #iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+> #echo "Start FTP"
+> iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+> echo "Start SSH"
+> iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+> echo "ALLOW OUTSIDE SMTP"
+> iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+> echo "ALLOW APACHE"
+> #iptables -A INPUT -p tcp --dport 110 -j ACCEPT
+> #echo "ALLOW POP3"
+> #iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+> #echo "ALLOW APACHE SSL"
+> #iptables -A INPUT -p tcp --dport 5901 -j ACCEPT
+> #iptables -A INPUT -p tcp --dport 6001 -j ACCEPT
+> #echo "Open TIGHT VNC"
+> 
+> #Next Iptables This allows Mysql to work only on local connectionsa
+> iptables -A INPUT -i ! eth1 -p tcp --dport 3306 -j ACCEPT
+> echo "mySQL now limited to local connections"
+> 
+> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A INPUT -m state --state NEW -i ! eth1 -j ACCEPT
+> 
+> #THIS WILL FORWARD PACKETS FROM PUB TO LOCAL IF PREVIOUS ESTABLISHED
+> iptables -A FORWARD -i eth1 -o eth0 -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
 
------ Original Message -----
-From: "Georgi Alexandrov" <tehlists@hotpop.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, May 13, 2005 2:37 PM
-Subject: Re: IPSec masquerade with multiple clients
+you need a rule to allow the forwarded port 80 packets:
 
+  iptables -A FORWARD -i eth1 -o eth0 -p tcp --syn \
+    -d 192.168.1.2 --dport 80 -j ACCEPT
 
-> Leonid Zeitlin wrote:
->
-> >Hi all,
-> >I have the following problem. I have a local network behind a Linux
-router
-> >that does IP masquerade. All hosts on the LAN have 192.168.*.* 
-> >addresses, and the Linux router has only one external IP address. I 
-> >need IPSec VPN clients from the LAN to connect to an outside server. 
-> >The client VPN software is Contivity VPN Client by Nortel Networks. 
-> >If only one clients connects at a time, everything works fine. But 
-> >once one client connects,
-no
-> >other client can do so. For the second client the connection cannot 
-> >be established. Is there any way to have multiple clients connect to 
-> >the external VPN server simultaneously? Any help will be appreciated.
-> >
-> >Thanks in advance,
-> >   Leonid
-> >
-> >
-> >
-> >
-> >
->
-> This question is asked at least once a week in this list, please take 
-> a look at the archives.
->
-> regards,
-> Georgi Alexandrov
->
+-j
 
-Yes, the answer is usually "enable NAT Traversal". My question then is, does
-anyone know if NAT Traversal can be enabled in Contivity VPN Client. I
-profess ignorance in this subject.
-
-Thanks,
-   Leonid
-
-
+--
+"Stewie: Damn you, vile woman, you've impeded my work since the day I
+ escaped your wretched womb."
+        --Family Guy
 
