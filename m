@@ -1,13 +1,11 @@
-From: Georgi Alexandrov <tehlists@hotpop.com>
-Subject: Re: SSH Brute force attacks
-Date: Sat, 14 May 2005 10:02:52 +0300
-Message-ID: <4285A29C.1020200@hotpop.com>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<42825732.8010206@verisignlabs.com>	<428259CE.3080708@riverviewtech.net>	<42825D48.2060003@verisignlabs.com>
-	<20050511203452.GA13902@bender.817west.com>
+From: alain sabban <alain.sabban@wanadoo.fr>
+Subject: status of SNAT
+Date: Sat, 14 May 2005 10:30:43 +0200
+Message-ID: <200505141030.43375.alain.sabban@wanadoo.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050511203452.GA13902@bender.817west.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,74 +16,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Jason Opperisano wrote:
+Hello,
 
->On Wed, May 11, 2005 at 03:30:16PM -0400, Pete Toscano wrote:
->  
->
->>Freaky.  My output is the same as yours with the exception of the 1.2.11
->>string.
->>
->>recent v1.2.11 options:
->><snip same stuff that you have>
->>ipt_recent v0.3.1: Stephen Frost <sfrost@snowman.net>.
->>http://snowman.net/projects/ipt_recent/
->>
->>I'm a little confused about the difference between "recent v1.2.11" and
->>"ipt_recent v0.3.1"  Is one a kernel component and the other the
->>userspace part?
->>    
->>
->
->yes, ipt_recent == kernel module.  the 1.2.11 is the version of the
->iptables userspace utility.
->
->  
->
->>I'm also a little confused about p-o-m.  Is this something I can apply
->>without recompiling my (modular) kernel? 
->>    
->>
->
->no.
->  
->
-I don't agree Jason. You can compile only the needed modules.
-Here's a tutorial (in bulgarian sorry, but you can get the idea from the 
-comments/commands) how to do that with fedora core 3:
-http://hardtrance.blogspot.com/2005/04/fedora-core-3-patch-o-matic-ipttimeko.html
+Sorry if this is a basic question. I've googled but can't figure out if SNAT 
+should work or not.
 
->  
->
->>Are there any good docs on how
->>to use p-o-m?  I didn't see any immediately obvious on the netfilter
->>site and the p-o-m section seems to end mid-
->>    
->>
->
->basic recipe:
->
->- download/extract kernel src
->- download/extract iptables src
->- download/extract p-o-m
->- apply patches from p-o-m
->- recompile kernel
->- recompile iptables
->- reboot, rinse, repeat.
->
->-j
->
->--
->"Stewie: Soooo Broccoli, mother says you're very good for me. But I'm
-> afraid I'm no good for you."
->        --Family Guy
->
->
->  
->
-regards,
-Georgi Alexandrov
+To connect from home to my office I've to use IPSEC. To have full access to my 
+company's network I've to SNAT all packets to a certain IP address. I did 
+this with an iptables rule like :
+
+iptables -t nat -A POSTROUTING  -d x.y.0.0/16 -j SNAT --to-source 172.a.b.c
+where x.y.0.0 is the class B network of my company's network, and 172.a.b.c is 
+an IP address routed in this company's network.
+
+Now what is working and what is not : At home on the same box, I've SuSE 9.2 
+and SuSE 9.3. (Note with both, I use the same ipsec.conf file)
+
+1/ SuSE 9.2 is based on kernel 2.6.8 + 4 netfilter/ipsec patches. When I 
+establish the IPSEC tunnel, everything works. No problem.
+
+2/ SuSE 9.3 is based on kernel 2.6.11 + 4 netfilter/ipsec patches. With this, 
+I have no problem to establish the IPSEC tunnel, but I can't do anything. If 
+I ping x.y.1.1 here is what tcpdump shows :
+
+09:33:09.555732 IP 192.168.1.100 > 194.t.u.v : ESP(spi=0x03dbfaed,seq=0x2b)
+09:33:09.629801 IP 194.t.u.v > 192.168.1.100: ESP(spi=0xce9c61eb,seq=0x2b)
+09:33:09.629801 IP x.y.1.1 > 172.a.b.c: icmp 64: echo reply seq 14
+09:33:09.629801 IP x.y.1.1 > 172.a.b.c: icmp 64: echo reply seq 14
+
+192.168.1.100 is the local IP address of the SuSE box.
+194.t.u.v is the public address of the IPSEC gateway of the company
+x.y.1.1 is an internal host in company's network
+172.a.b.c is the IP address that I've to use to have full access in company's 
+network.
+
+As you can see ping replies are coming to the SuSE box, but they are not 
+passed to the ping application which indicates 100% packet loss.
+
+With SuSE 9.2, the tcpdump shows exactly the same packets, but it works. I've 
+compiled 2.6.11.7 from kernel.org + 4 netfilter/ipsec patches. It gives same 
+failed result : IPSEC tunnel ok but nothing works.
+
+Is it a known problem or have I missed something ?
+Thanks for your help
+Rgds / AS
+
 
