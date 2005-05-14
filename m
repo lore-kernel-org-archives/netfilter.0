@@ -1,20 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: SSH Brute force attacks
-Date: Sat, 14 May 2005 11:47:23 -0400
-Message-ID: <20050514154723.GA24528@bender.817west.com>
-References: <427B93EE.3030905@eccotours.dyndns.org>
-	<427C4EA3.5090501@riverviewtech.net>
-	<4281FC1A.8090000@eccotours.dyndns.org>
-	<42824D1E.7040508@riverviewtech.net>
-	<42825732.8010206@verisignlabs.com>
-	<428259CE.3080708@riverviewtech.net>
-	<42825D48.2060003@verisignlabs.com>
-	<20050511203452.GA13902@bender.817west.com>
-	<4285A29C.1020200@hotpop.com>
+From: "Sadus ." <sadus@swiftbin.net>
+Subject: Re: Internal PC/external Gateway
+Date: Sat, 14 May 2005 19:20:33 +0300
+Message-ID: <1116087634.18707.2.camel@debianbox>
+References: <1116061176.12835.20.camel@debianbox>
+	<20050514153608.GA24455@bender.817west.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4285A29C.1020200@hotpop.com>
+In-Reply-To: <20050514153608.GA24455@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,62 +19,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Jason Opperisano <opie@817west.com>
+Cc: netfilter@lists.netfilter.org
 
-On Sat, May 14, 2005 at 10:02:52AM +0300, Georgi Alexandrov wrote:
-> Jason Opperisano wrote:
+The Multi routing doc is another scenario that includes sharing or load
+balancing between 2 providers to the same machine, that's not what i
+want.
+
+I tried using iproute2 and iptables (SNAT), but i just don't know what
+to set as default gw for PC2, since PC2 can't see Provider 2 unless the
+gateway of PC2 is the Linux GW (since it got ipforward).
+
+thanks
+
+On Sat, 2005-05-14 at 11:36 -0400, Jason Opperisano wrote:
+> On Sat, May 14, 2005 at 11:59:36AM +0300, Sadus . wrote:
+> > Hello,
+> > So here's my current setup at home.
+> > I control Provider 2. (which is not more than a simple box taking
+> > internet from provider 1 and that internet sharing enabled, restricted
+> > to the box' internal network and my IP which is on the external
+> > interface).
+> > I also control the Linux GW.
+> > 
+> >                                                                  
+> >                                           +------------+        
+> >                                           |            |       |
+> >                                       ----+ Provider 1 +-------
+> >         __                            |   |            |     /
+> >   PC1__/  \_         +------+-------+ |   +------------+    |
+> >   _/        \__      |              | |                    /
+> >  /             \     |              | |                    |
+> > | Local network -----+Linux GW  eth0|-                     |Internet
+> >  \_           __/    |              | |                    |
+> >    \__     __/       |              | |                    \
+> >   PC2 \___/          +------+-------+ |   +------------+    |
+> >                                       |   |            |     \
+> >                                       ----+ Provider 2 +-------
+> >                                           |            |       |
+> >                                           +------------+        
 > 
-> >On Wed, May 11, 2005 at 03:30:16PM -0400, Pete Toscano wrote:
-> > 
-> >
-> >>Freaky.  My output is the same as yours with the exception of the 1.2.11
-> >>string.
-> >>
-> >>recent v1.2.11 options:
-> >><snip same stuff that you have>
-> >>ipt_recent v0.3.1: Stephen Frost <sfrost@snowman.net>.
-> >>http://snowman.net/projects/ipt_recent/
-> >>
-> >>I'm a little confused about the difference between "recent v1.2.11" and
-> >>"ipt_recent v0.3.1"  Is one a kernel component and the other the
-> >>userspace part?
-> >>   
-> >>
-> >
-> >yes, ipt_recent == kernel module.  the 1.2.11 is the version of the
-> >iptables userspace utility.
-> >
-> > 
-> >
-> >>I'm also a little confused about p-o-m.  Is this something I can apply
-> >>without recompiling my (modular) kernel? 
-> >>   
-> >>
-> >
-> >no.
-> > 
-> >
-> I don't agree Jason. You can compile only the needed modules.
+> how about following the instructions in the document you copied that
+> ASCII art from [1]?
+> 
+> to paraphrase the openbsd folks, "don't ask how to do something, explain
+> to us what you've done and where you got stuck."
+> 
+> -j
+> 
+> [1]:  http://lartc.org/howto/lartc.rpdb.multiple-links.html
+> 
+> --
+> "Stewie: For God's sake, shake me. Shake me like a British nanny."
+>         --Family Guy
+> 
 
-that's a *very* dangerous piece of advice.  i'm sure you can find
-examples of PoM modules that are completely self-contained code that you
-can just compile as a module and copy into your /lib/modules/`uname -r`
-tree.  hell--'recent' may even be an example of such a module.  general
-advice; however, is that if you add patches from PoM, you recompile both
-your kernel and your iptables userspace.  this is true for more patches
-in PoM than it is untrue for.  i (for one), prefer not to have a rash of
-ppl follow this ill advice and start posting messages of why none of
-their nat rules will apply any more.
-
-my 2c...from experience...and from trying to support the
-inexperienced...
-
--j
-
---
-"Peter: You all know how observant I am.
- TV Announcer: And now back to Star Trek.
- Peter: Holy crap. Uhura's black?"
-        --Family Guy
 
