@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Internal PC/external Gateway
-Date: Sat, 14 May 2005 11:36:08 -0400
-Message-ID: <20050514153608.GA24455@bender.817west.com>
-References: <1116061176.12835.20.camel@debianbox>
+Subject: Re: Iptables as packet shaper
+Date: Sat, 14 May 2005 11:39:04 -0400
+Message-ID: <20050514153904.GA24505@bender.817west.com>
+References: <001901c5587b$53a2ff60$f00aa9c0@winxp>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1116061176.12835.20.camel@debianbox>
+In-Reply-To: <001901c5587b$53a2ff60$f00aa9c0@winxp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,43 +21,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sat, May 14, 2005 at 11:59:36AM +0300, Sadus . wrote:
-> Hello,
-> So here's my current setup at home.
-> I control Provider 2. (which is not more than a simple box taking
-> internet from provider 1 and that internet sharing enabled, restricted
-> to the box' internal network and my IP which is on the external
-> interface).
-> I also control the Linux GW.
+On Sat, May 14, 2005 at 02:51:55PM +0300, Wennie V. Lagmay wrote:
+> Hi all,
 > 
->                                                                  
->                                           +------------+        
->                                           |            |       |
->                                       ----+ Provider 1 +-------
->         __                            |   |            |     /
->   PC1__/  \_         +------+-------+ |   +------------+    |
->   _/        \__      |              | |                    /
->  /             \     |              | |                    |
-> | Local network -----+Linux GW  eth0|-                     |Internet
->  \_           __/    |              | |                    |
->    \__     __/       |              | |                    \
->   PC2 \___/          +------+-------+ |   +------------+    |
->                                       |   |            |     \
->                                       ----+ Provider 2 +-------
->                                           |            |       |
->                                           +------------+        
+> Im using iptables to filter, translate IP address and forward traffic,  Im 
+> using squid delay_pool to limit client access per user and per network, but 
+> im having a limitation with the squid delay_pool. I want to have a packet 
+> shaper that can can allow my user to have 32 kbps during peer time and 256 
+> during off peek time. Delay_pool is not capable of that. Can IPTABLES do 
+> this kind of shaping?
 
-how about following the instructions in the document you copied that
-ASCII art from [1]?
+no--bandwidth management is not the job of iptables, it is the job of tc
+from the iproute2 package.  details are at:
 
-to paraphrase the openbsd folks, "don't ask how to do something, explain
-to us what you've done and where you got stuck."
+  http://lartc.org/howto/lartc.qdisc.html
+
+lartc also has their own ML:
+
+  http://lartc.org/#mailinglist
 
 -j
 
-[1]:  http://lartc.org/howto/lartc.rpdb.multiple-links.html
-
 --
-"Stewie: For God's sake, shake me. Shake me like a British nanny."
+"Peter: Wow, is that really the blood of Christ?
+ Preacher: Yes, it is.
+ Peter: Holy crap, that guy must've been wasted 24 hours a day."
         --Family Guy
 
