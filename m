@@ -1,12 +1,12 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Temporally disable a host
-Date: Sun, 15 May 2005 18:28:34 -0500
-Message-ID: <4287DB22.4040608@riverviewtech.net>
-References: <1116065330.2995.106.camel@crux>
+Subject: Re: Combined Internal/External DNAT question
+Date: Sun, 15 May 2005 18:56:06 -0500
+Message-ID: <4287E196.5060403@riverviewtech.net>
+References: <428591F3.8090400@griffous.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1116065330.2995.106.camel@crux>
+In-Reply-To: <428591F3.8090400@griffous.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,103 +17,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-bjorn wrote:
-> Hello,
->=20
-> I use iptables based on the MonMotha's Firewall script.
-> I partly understand what it does but have not been able
-> to absorb all the functionality/possibilities that iptables
-> offers...
->=20
-> I would like to temporally disable one of the hosts inside
-> by private network from internet access. Possibly all traffic
-> or only http traffic. My idea was to add this rule through a
-> cron job at a specific time and then later run another job that
-> deletes the rule.
->=20
-> Please help me with a suitable iptables command to do this.
->=20
-> Regards,
->=20
-> /Bj=C3=B6rn
+> iptables -t nat -A PREROUTING -d 10.0.0.1 -i eth1 -p tcp --dport
+> <tcpservice> -j DNAT --to <relevant.internal.server>:<tcpservice>
+> And this works nicely.
 
-I would recommend that you take a look at the time match extension.  Time=
- match extension is meant to allow rule(s) to match based on time, day of=
- week, with start and stop dates with times.  This would allow you to hav=
-e a rule that would allow (ACCEPT) traffic to pass through to / from the =
-server in question only during the times that you want it to.  Follow thi=
-s rule up with a default drop policy to reject traffic if the former does=
- not allow the traffic to flow through.  You could conversely set up a ru=
-le to drop traffic during the times that you want the system to be off li=
-ne, but I prefer a default of drop and then explicitly allow the traffic =
-to through.
+*nod* As I would expect it to do so.  :)
 
-I would recomend that you set up a couple of rules in your firewall in th=
-e following order:
+> However I have the classic situation of internal clients using the DNS
+> entries for these servers which points them to my external IP. The
+> firewall forwards the traffic out the dsl interface to the internet as
+> it has no knowledge of my public IP. It doesn't work, the DSL router
+> can't NAT to and from the LAN interface.
 
-  1)  Set a rule using the time match extension, i.e.
-        iptables -t filter -A FORWARD -s $IP_address_of_server_to_protect=
- -m time --timestart 08:00 --timestop 17:00 --listofdays Mon,Tue,Wed,Thu,=
-Fri -j ACCEPT
-  2)  Set a rule that will by default match and drop any traffic that was=
- not explicitly accepted in the previous rule, i.e.
-        iptables -t filter -A FORWARD -s $IP_address_of_server_to_protect=
- -j DROP
+*nod*  You need to do some different D/SNATing on your firewall not the DSL modem / router.
 
-Or if you are wanting to only block port 80 and 443 traffic I would do so=
-mething like the following:
+> The following documentation is close to what I want, but doesn't quite work.
+> http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-10.html
+> 
+> The reason it doesn't work is that my firewall doesn't actually have the
+> external IP.
 
-  1)  Set a rule using the time match extension, i.e.
-        iptables -t filter -A FORWARD -s $IP_address_of_server_to_protect=
- -p tcp --dport 80 -m time --timestart 08:00 --timestop 17:00 --listofday=
-s Mon,Tue,Wed,Thu,Fri -j ACCEPT
-        iptables -t filter -A FORWARD -s $IP_address_of_server_to_protect=
- -p tcp --dport 443 -m time --timestart 08:00 --timestop 17:00 --listofda=
-ys Mon,Tue,Wed,Thu,Fri -j ACCEPT
-  2)  Set a rule that will by default match and drop any traffic that was=
- not explicitly accepted in the previous rule, i.e.
-        iptables -t filter -A FORWARD -s $IP_address_of_server_to_protect=
- -p tcp --dport 80 -j DROP
-        iptables -t filter -A FORWARD -s $IP_address_of_server_to_protect=
- -p tcp --dport 443 -j DROP
+This is not a problem.  You just have to tweak the rules slightly.
 
-Below is the output of "iptables -m time -h".
+> What I need is rule along the lines of:
+> iptables -t nat -I PREROUTING -d <publicIP> -s <internal-lan> -j DNAT
+> --to 10.0.0.1.
 
-TIME v1.3.1-20050422 options:
- [ --timestart value ] [ --timestop value] [ --days listofdays ] [ --date=
-start value ] [ --datestop value ]
-          timestart value : HH:MM (default 00:00)
-          timestop  value : HH:MM (default 23:59)
-                            Note: daylight savings time changes are not t=
-racked
-          listofdays value: a list of days to apply
-                            from Mon,Tue,Wed,Thu,Fri,Sat,Sun
-                            Coma speparated, no space, case sensitive.
-                            Defaults to all days.
-          datestart value : YYYY[:MM[:DD[:hh[:mm[:ss]]]]]
-                            If any of month, day, hour, minute or second =
-is
-                            not specified, then defaults to their smalles=
-t
-                            1900 <=3D YYYY < 2037
-                               1 <=3D MM <=3D 12
-                               1 <=3D DD <=3D 31
-                               0 <=3D hh <=3D 23
-                               0 <=3D mm <=3D 59
-                               0 <=3D ss <=3D 59
-          datestop  value : YYYY[:MM[:DD[:hh[:mm[:ss]]]]]
-                            If the whole option is ommited, default to ne=
-ver stop
-                            If any of month, day, hour, minute or second =
-is
-                            not specified, then default to their smallest=
+You are very close but off by a destination IP.  See below.
 
+> I would then have traffic from the internal lan, going the same
+> destination IP that my public natting rules are already built for. Which
+> should then redirect internal clients to my internal servers using these
+> same natting rules.
+
+This will not work as you have noticed for the reason you noticed below.
+
+> It appears however that once iptables had done it's initial DNAT of a
+> session as per the rule above, it doesn't reevalute the PREROUTING chain.
+> 
+> Which means that clients try to connect to the firewall itself rather
+> then being DNATed again.
+
+This is what I would expect to happen.
+
+> HELP, I need some kind of a double DNAT?
+
+No, you don't really want double DNAT.  What you really need to do (IMHO) is something you have alluded to that you do not want to do below.  You really need to use rules like this:
+
+iptables -t nat -I PREROUTING -i <internal-lan-interface> -d <publicIP> -s <internal-lan> -j DNAT --to-destination <relevant.internal.server>:<tcpservice>
+
+This will as you can probably guess cause your internal LAN traffic to that is outbound and destined to your public IP that your firewall knows nothing about to be DNATed to your real internal server.  However you will need to run an SNAT rule to prevent your internal server from responding directly to your internal LAN clients and thus causing a three way communications triangle where your client communicates (1st IP) to what it thinks is the server (2nd IP) which will redirect to the ultimate server (3rd IP) which will communicate directly back to your internal client thus confusing your internal client.
+
+iptables -t nat -A POSTROUTING -d <relevant.internal.server> -j SNAT --to-source <internal interface of your firewall>
+
+> I know there are solutions to this problem like dual dns, but getting
+> this would be MUCH quicker to setup/manage/scale, and I wouldn't have to
+> play DNS games.
+
+I cant' say as I blame you for not wanting to maintain multiple (master) DNS spaces as this will open up another can of worms.
+
+> I could also create a whole second set of rules DNATing internal traffic
+> destined for my public IP, to go to the correct server, but then I'd
+> have 2 chains of traffic to maintain. Is there no way I can do this all
+> with one set of rules, on the one firewall?
+
+Sorry, not that I'm aware of.  The only thing that comes to mind using one chain would be to do some funky routing tricks where the traffic would actually leave your firewall and then come back in the PREROUTING chain.  This in and of it's self is not very desirable and is cumbersome to maintain too.
 
 
 
 Grant. . . .
-
 
