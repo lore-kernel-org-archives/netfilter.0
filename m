@@ -1,9 +1,10 @@
-From: bjorn <b972@telia.com>
-Subject: Temporally disable a host
-Date: Sat, 14 May 2005 12:08:51 +0200
-Message-ID: <1116065330.2995.106.camel@crux>
+From: "Sdimitrov" <st.dimitrov@gmail.com>
+Subject: broadcast and router ?
+Date: Sun, 15 May 2005 0:36:27 -0000
+Message-ID: <14655.9713095941$1116171242@news.gmane.org>
+Reply-To: Sdimitrov <st.dimitrov@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,26 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"
+Content-Type: text/plain; charset="us-ascii"; 
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi. Sorry for my bad english.
 
-I use iptables based on the MonMotha's Firewall script.
-I partly understand what it does but have not been able
-to absorb all the functionality/possibilities that iptables
-offers...
+Our local chat use a UDP 8167 and broadcast. All is OK but people over
+router in other network don't receive a packets.
 
-I would like to temporally disable one of the hosts inside
-by private network from internet access. Possibly all traffic
-or only http traffic. My idea was to add this rule through a
-cron job at a specific time and then later run another job that
-deletes the rule.
+Can I have route this packets to they's network with iptables?
 
-Please help me with a suitable iptables command to do this.
+networks are 192.168.0.255 and 192.168.1.255
 
-Regards,
+thanks
 
-/Bj=C3=B6rn
+________________________________________________
+Message sent using
+UebiMiau 2.7.2
 
 
