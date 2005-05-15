@@ -1,12 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ICMP and conntrack
-Date: Mon, 16 May 2005 13:58:05 +0200
-Message-ID: <1116244685.5363.43.camel@anduril.intranet.cartel-securite.net>
-References: <6A0C419392D7BA45BD141D0BA4F253C776DF@loureiro.madeiratecnopolo.pt>
+From: ngabor@szbk.u-szeged.hu
+Subject: iptables redirect
+Date: Sun, 15 May 2005 17:58:26 +0200
+Message-ID: <1116172706.428771a2f1de3@rosi.brc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6A0C419392D7BA45BD141D0BA4F253C776DF@loureiro.madeiratecnopolo.pt>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +15,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Clemente Aguiar <caguiar@madeiratecnopolo.pt>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le lundi 16 mai 2005 =E0 12:21 +0100, Clemente Aguiar a =E9crit :
-> On a TCP or UDP protocol, if there are communication problems a ICMP
-> "responses" are generated.
+Hi!
 
-ICMP messages are genetrated to handle IP problems, regardless which
-layer 4 protocol is used. TCP has its own mechanisms to handle layer 4
-errors.
-Exception mode of ICMP port unreachable for UDP...
+Main firewall PREROUTING chain:
 
-> Does conntrack handle all ICMP "responses" correctly?
+ACCEPT     all  --  192.168.16.x1       0.0.0.0/0
+ACCEPT     all  --  192.168.16.x2        0.0.0.0/0
+...
+DNAT       tcp  --  0.0.0.0/0            x.y.z.v       multiport dports
+80,22,443 to:192.168.32.x
+REDIRECT   tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:80 r=
+edir
+ports 80
 
-Yes they are, with RELATED state.
+Internet enabled 192.168.16.x1 (...x2), other IPs disabled and to answer
+redirected main http-server (main homepage).
+If pub.ips send http to x.y.z.v then return 192.168.32.x http-server =3D>=
+ OK.
+If 192.168.16.x1 (...x2) priv.ips send http to x.y.z.v then answer main
+redirected http-server. WHILE? Top accept all packages from 192.168.16.x1
+(...x2).
+WHILE?
 
-> Shouldn't these messages be handled by conntrack as "RELATED" or
-> "ESTABLISHED" and be let through the firewall and therefore not be logged
-> (i.e. dropped)?
+by gabor
 
-They should. However, you may have a look at your conntrack table to see
-if thoses packets do actually match existing entries.
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
 
