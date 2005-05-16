@@ -1,13 +1,12 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Combined Internal/External DNAT question
-Date: Mon, 16 May 2005 15:50:42 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0505161548000.15128@darkstar.sysinfo.com>
-References: <42889941.5060507@griffous.net>
-	<4288E7F6.3030700@riverviewtech.net>
-	<Pine.LNX.4.60.0505161523100.15128@darkstar.sysinfo.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: ls delayed !!!
+Date: Mon, 16 May 2005 16:53:13 -0400
+Message-ID: <20050516205313.GA30898@bender.817west.com>
+References: <1115910577.26182.53.camel@maclinux.lotus>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.60.0505161523100.15128@darkstar.sysinfo.com>
+Content-Disposition: inline
+In-Reply-To: <1115910577.26182.53.camel@maclinux.lotus>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,136 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Thu, May 12, 2005 at 12:09:38PM -0300, brunO wrote:
+> Hello ! 
+> 
+> I am with following problem, I have ftp server functioning behind a
+> GATEWAY, the user effects login normally, obtains to create directory
+> and to remove directory, only has a problem that when the user tries to
+> list the content any directory, delays and it does not list the content,
+> appears the following acknowledgment of time-out connection, somebody
+> can help to decide this problem ?
+> 
+> 
+> Below I placed the procedure of login of user
+> 
+> Name (200.144.110.177:paul): user
+> 331 Password required for user.
+> Password:XXXXX
+> 230 User user logged in.
+> Remote system type is UNIX.
+> Using binary mode to transfer files.
+> ftp> ls
+> 227 Entering Passive Mode (200,144,110,177,170,63)
 
+assuming your FTP server is running on port 21:
 
-an interesting tidbit from the iptables man pages suggests that their is a 
-built in facility for this one to one nat thingie I'm looking into here;
+  modprobe ip_conntrack_ftp
+  modprobe ip_nat_ftp		(only if you're NAT-ing the server)
 
-    NETMAP
-        This  target allows you to statically map a whole network of 
-addresses onto another network of addresses.
-        It can only be used from rules in the nat table.
+and allow RELATED connections through your FORWARD chain.
 
-        --to address[/mask]
-               Network address to map to.  The resulting address will be 
-constructed in the  following  way:  All
-               'one'  bits  in the mask are filled in from the new 
-`address'.  All bits that are zero in the mask
-               are filled in from the original address.
+-j
 
-
-If I read this correctly, it appears to build the hash tables of addresses 
-for one eh?
-
-Thanks,
-
-Ron DuFresne
-
-On Mon, 16 May 2005, R. DuFresne wrote:
-
-> --[PinePGP]--------------------------------------------------[begin]--
-> On Mon, 16 May 2005, Taylor, Grant wrote:
->
->>> My problem still remains however Grant. I would have to create another
->>> DNAT rule to match each existing *real* public DNAT rule that currently
->>> exists to DNAT traffic from the Internet.  Do you have any further ideas
->>> for me? Given that a packet can have both the src and dst IP address
->>> rewritten in it's one trip through iptables, it seems to me that it 
->>> should
->>> be possible for two rewrites to happen at once. My thinking it perhaps
->>> breaking the nat table into several chains?  Any other suggestions, 
->>> you've
->>> been most helpful so far.
->> 
->> 
->> The only other thing that comes to mind would be to use iphash (IP)sets of
->> destination IP addresses on your original DNAT rules.  This would cause 
->> your
->> iptables rule to match based on the destination of your external IP of 
->> your
->> firewall OR your external IP of your DSL modem (/router) and DNAT the 
->> traffic
->> to the real server on your 2nd internal subnet.  Here is an example rule 
->> for
->> what you would need:
->> 
->> iptables -t nat -A PREROUTING -m set --set My_IP_Set dst -j DNAT
->> --to-destination <relevant.internal.server>:<tcpservice>
->> 
->> To support this rule you would need to do the following (likely before you
->> issued the above rule):
->> 
->> ipset -N My_IP_Set iphash
->> ipset -A My_IP_Set 10.0.0.1
->> ipset -A My_IP_Set <Public IP>
->> 
->> As stated before this should cause your one iptables rule to match packets
->> that are destined to any IP in the ip set "My_IP_Set" and DNAT said 
->> packets
->> to the <relevant.internal.server>:<tcpservice>.  I know that this is not 
->> the
->> multiple passes through the iptables chains like you were asking for, but 
->> I
->> think it will provide a solution comparable  to the result that you were
->> after.  Rather than have a rule that will alter traffic such that it will 
->> be
->> caught by another rule and then altered again why not have a rule that 
->> will
->> catch either type of traffic.
->> 
->
-> Actually, if this does not help the original poster, it may work in my
-> issues in the thread on "okay I admit confusion here..."
->
-> I think my best solution is one to one nat of public addresses to internal
-> private addresses.  Means I have to put some post/pre routing rules in
-> place and I might beable to shorten that all up with IP hashes as you are
-> suggesting here.  But, all in all I think that sure beats bridging
-> interfaces and dealing with trying to firewall at layer2...
->
->
-> Thanks,
->
->
-> Ron DuFresne
-> --
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->        admin & senior security consultant:  sysinfo.com
->                        http://sysinfo.com
-> Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
->
-> ...We waste time looking for the perfect lover
-> instead of creating the perfect love.
->
->                -Tom Robbins <Still Life With Woodpecker>
-> --[PinePGP]-----------------------------------------------------------
-> gpg: Signature made Mon 16 May 2005 03:27:47 PM EDT using DSA key ID 94B06629
-> gpg: Good signature from "dufresne <dufresne@sysinfo.com>"
-> --[PinePGP]----------------------------------------------------[end]--
->
-
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCiPmWst+vzJSwZikRAnNJAKDH9bP49JIBtFn1wK5Xbre/CHoNlgCffM0s
-fQET0waj7L4hdtx/EbPmaZY=
-=0jZG
------END PGP SIGNATURE-----
+--
+"Lois: Stewie, why don't you go play in the other room.
+ Stewie: Why don't you burn in hell."
+        --Family Guy
 
