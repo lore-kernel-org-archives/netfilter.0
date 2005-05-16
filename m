@@ -1,13 +1,20 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: broadcast and router ?
-Date: Mon, 16 May 2005 16:22:40 -0500
-Message-ID: <42890F20.90808@riverviewtech.net>
-References: <42876bf0.7523c613.1324.592eSMTPIN_ADDED@mx.gmail.com>
-	<1403218a050516012475c0343f@mail.gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Internal PC/external Gateway
+Date: Mon, 16 May 2005 17:48:13 -0400
+Message-ID: <20050516214813.GA31167@bender.817west.com>
+References: <1116061176.12835.20.camel@debianbox>
+	<20050514153608.GA24455@bender.817west.com>
+	<1116087634.18707.2.camel@debianbox>
+	<20050514164144.GA24669@bender.817west.com>
+	<1116090083.18707.6.camel@debianbox>
+	<20050514172613.GA24810@bender.817west.com>
+	<1116095410.18707.14.camel@debianbox>
+	<20050514190005.GA25010@bender.817west.com>
+	<1116114764.20275.0.camel@debianbox>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a050516012475c0343f@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <1116114764.20275.0.camel@debianbox>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +25,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-> ebtables ??
+On Sun, May 15, 2005 at 02:52:44AM +0300, Sadus . wrote:
+> When i run this:
+> ip rule add from 192.168.1.3 table T2
 > 
->>Hi. Sorry for my bad english.
->>
->>Our local chat use a UDP 8167 and broadcast. All is OK but people over
->>router in other network don't receive a packets.
->>
->>Can I have route this packets to they's network with iptables?
->>
->>networks are 192.168.0.255 and 192.168.1.255
+> i get this error:
+> RTNETLINK answers: Invalid argument
 
-If I could not get both networks working on a larger subnet (/23?) I would possibly try (D/S)NATing traffic that was destined to one subnetworks broadcast address to another and vice-versa.  I would also seriously look to see if there was an application level proxy for your chat program.  Below is a sample rule that I would be tempted to try:
+did you:
 
-iptables -t nat -A PREROUTING -i $LAN_1_if -d 192.168.0.255 -p udp --dport 8167 -j DNAT --to-destination 192.168.1.255
-iptables -t nat -A PREROUTING -i $LAN_2_if -d 192.168.1.255 -p udp --dport 8167 -j DNAT --to-destination 192.168.0.255
-iptables -t nat -A POSTROUTING -o $LAN_1_if -d 192.168.0.255 -p udp --dport 8167 -j SNAT --to-source $LAN_1_if_IP
-iptables -t nat -A POSTROUTING -o $LAN_2_if -d 192.168.1.255 -p udp --dport 8167 -j SNAT --to-source $LAN_2_if_IP
+  echo 202 T2 >> /etc/iproute2/rt_tables
 
-I *think* this is a quick and *DIRTY* hack that should get the traffic to cross the subnets.  I say DIRTY b/c this type of practice is avoided for a lot of different reasons.  You may or may not want to SNAT the traffic depending on how the client software plays.  I would make sure to ONLY DNAT traffic to the broadcast to a specific UDP port to prevent spreading of any other broadcast traffic.
+if you haven't i believe your error would be more along the lines of 
+'Error: argument "T2" is wrong: invalid table ID'
 
+does this give you the same error:
 
+  ip rule add from 192.168.1.3 table main
 
-Grant. . . .
+if so--verify that your kernel was compiled with:
+
+  CONFIG_IP_ADVANCED_ROUTER=y
+  
+if not--i don't believe you will be able to do policy routing until you
+recompile your kernel with the proper options set.
+
+-j
+
+--
+"Stewie: Yes, I rather like this God fellow. He's very theatrical, you
+ know, a pestilence here, a plague there. Omnipotence. Gotta get me some
+ of that."
+        --Family Guy
 
