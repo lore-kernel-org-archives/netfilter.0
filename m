@@ -1,13 +1,14 @@
-From: =?ISO-8859-2?Q?=A3ukasz_Hejnak?= <sziftgroup@wp.pl>
-Subject: Re: SSH Brute force attacks
-Date: Mon, 16 May 2005 10:16:56 +0200
-Message-ID: <428856F8.60706@wp.pl>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>
-	<42864CA9.7050802@riverviewtech.net>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: broadcast and router ?
+Date: Mon, 16 May 2005 11:24:47 +0300
+Message-ID: <1403218a050516012475c0343f@mail.gmail.com>
+References: <42876bf0.7523c613.1324.592eSMTPIN_ADDED@mx.gmail.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42864CA9.7050802@riverviewtech.net>
+In-Reply-To: <42876bf0.7523c613.1324.592eSMTPIN_ADDED@mx.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +19,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Sdimitrov <st.dimitrov@gmail.com>, netfilter <netfilter@lists.netfilter.org>
 
->> I'm on a HLFS system (april svn) and my kernel is now 2.6.11.9-grsec,
-> Silly question, have you insmoded or modprobed your recent module in to 
-> the kernel?  Do an lsmod to see if you see the recent module the loaded 
-> modules list. 
-Yes it is loaded, and partly works fine (I described it below)
+ebtables ??
 
-> If you would like I'd be happy to send you a 
-> copy of my .config file for you to look at and see the differences.
-If You can, please do so, cause I'm in a '-j TARPIT' here myself ;]
+On 5/15/05, Sdimitrov <st.dimitrov@gmail.com> wrote:
+> Hi. Sorry for my bad english.
+>=20
+> Our local chat use a UDP 8167 and broadcast. All is OK but people over
+> router in other network don't receive a packets.
+>=20
+> Can I have route this packets to they's network with iptables?
+>=20
+> networks are 192.168.0.255 and 192.168.1.255
+>=20
+> thanks
+>=20
+> ________________________________________________
+> Message sent using
+> UebiMiau 2.7.2
+>=20
+>=20
 
-I mean now I know a bit more, but still some bits are missing.
-I found info on the TARPIT, and it seems that it's not fully supported 
-in the 2.6.x kernels yet. So here I'm left with DROP.
-But as for the recent module itself it's a werid one, cause it looks 
-like my iptables don't accept lines like
-`iptables -m recent ... -m recent ...`
-I mean no matter what I put after the second -m recent, it get's 
-rejected with a 'Unknown arg' msg, altrough the first one works fine :\
-Can't figure this one out, anybody has an idea?
 
-Szift
+--=20
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
