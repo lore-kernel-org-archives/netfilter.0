@@ -1,7 +1,7 @@
 From: "bagwan ali" <bagwani@hotmail.com>
-Subject: redirect to 127.0.0.1
-Date: Tue, 17 May 2005 17:00:56 +0000
-Message-ID: <BAY16-F17DF0D129D7F2E3B94EB4BA160@phx.gbl>
+Subject: redirect to 127.0.0.1 [corrected]
+Date: Tue, 17 May 2005 17:04:30 +0000
+Message-ID: <BAY16-F138F014D31905BBA75CC46BA160@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -39,9 +39,9 @@ I tried the following to achive this in iptables and failed:
 iptables -t nat -A PREROUTING -p tcp -s $CLIENT_ONE -d $SERVER --dport 11000 
 -j REDIRECT --to-ports 11001
 iptables -t nat -A PREROUTING -p tcp -s $CLIENT_TWO -d $SERVER --dport 11000 
--j REDIRECT --to-ports 11001
+-j REDIRECT --to-ports 11002
 iptables -t nat -A PREROUTING -p tcp -s $CLIENT_THREE -d $SERVER --dport 
-11000 -j REDIRECT --to-ports 11001
+11000 -j REDIRECT --to-ports 11003
 
 where
 $SERVER           = 192.168.2.1
@@ -90,9 +90,9 @@ destination
     0     0 REDIRECT   tcp  --  *      *       192.168.2.50         
 192.168.2.1         tcp dpt:11000 redir ports 11001
     0     0 REDIRECT   tcp  --  *      *       192.168.2.51         
-192.168.2.1         tcp dpt:11000 redir ports 11001
+192.168.2.1         tcp dpt:11000 redir ports 11002
     0     0 REDIRECT   tcp  --  *      *       192.168.2.52         
-192.168.2.1         tcp dpt:11000 redir ports 11001
+192.168.2.1         tcp dpt:11000 redir ports 11003
 
 Chain POSTROUTING (policy ACCEPT 5086 packets, 322K bytes)
 pkts bytes target     prot opt in     out     source               
