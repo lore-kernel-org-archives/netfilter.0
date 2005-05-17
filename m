@@ -1,13 +1,21 @@
-From: =?ISO-8859-2?Q?=A3ukasz_Hejnak?= <sziftgroup@wp.pl>
-Subject: Re: SSH Brute force attacks
-Date: Tue, 17 May 2005 14:44:31 +0200
-Message-ID: <4289E72F.7020901@wp.pl>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42897A5E.7010401@wp.pl>
-	<42897EE5.90703@wp.pl> <42898402.10507@eccotours.dyndns.org>
+From: "Sadus ." <sadus@swiftbin.net>
+Subject: Re: Internal PC/external Gateway
+Date: Tue, 17 May 2005 15:55:18 +0300
+Message-ID: <1116334518.24331.6.camel@debianbox>
+References: <1116061176.12835.20.camel@debianbox>
+	<20050514153608.GA24455@bender.817west.com>
+	<1116087634.18707.2.camel@debianbox>
+	<20050514164144.GA24669@bender.817west.com>
+	<1116090083.18707.6.camel@debianbox>
+	<20050514172613.GA24810@bender.817west.com>
+	<1116095410.18707.14.camel@debianbox>
+	<20050514190005.GA25010@bender.817west.com>
+	<1116114764.20275.0.camel@debianbox>
+	<20050516214813.GA31167@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42898402.10507@eccotours.dyndns.org>
+In-Reply-To: <20050516214813.GA31167@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +26,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jason Opperisano <opie@817west.com>
+Cc: netfilter@lists.netfilter.org
 
-Brent Clark wrote:
-> Would you be so kind as to copy and paste your ruleset for this.
-No problem, here's my variation, based on Taylor Grant's ruleset
+Seems to be running smoothly. Thanks
 
-$ipt -N SSH_Brute_Force
-$ipt -A INPUT -p tcp --dport 22 -m state --state NEW -s ! $MyIP -j=20
-SSH_Brute_Force
-$ipt -A SSH_Brute_Force -m recent --set --name SSH
-$ipt -A SSH_Brute_Force -m recent ! --rcheck --name SSH --seconds 60=20
---hitcount 3 -j RETURN
-$ipt -A SSH_Brute_Force -m recent --name SSH --update
-$ipt -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
-$ipt -A SSH_Brute_Force -j DROP
+On Mon, 2005-05-16 at 17:48 -0400, Jason Opperisano wrote:
 
-I am forced to use DROP here instead of TARPIT as the TARPIT isn't
-supported yet for the 2.6.x kernel branch
-
---
-with regards
-=A3ukasz Hejnak
-
+> On Sun, May 15, 2005 at 02:52:44AM +0300, Sadus . wrote:
+> > When i run this:
+> > ip rule add from 192.168.1.3 table T2
+> > 
+> > i get this error:
+> > RTNETLINK answers: Invalid argument
+> 
+> did you:
+> 
+>   echo 202 T2 >> /etc/iproute2/rt_tables
+> 
+> if you haven't i believe your error would be more along the lines of 
+> 'Error: argument "T2" is wrong: invalid table ID'
+> 
+> does this give you the same error:
+> 
+>   ip rule add from 192.168.1.3 table main
+> 
+> if so--verify that your kernel was compiled with:
+> 
+>   CONFIG_IP_ADVANCED_ROUTER=y
+>   
+> if not--i don't believe you will be able to do policy routing until you
+> recompile your kernel with the proper options set.
+> 
+> -j
+> 
+> --
+> "Stewie: Yes, I rather like this God fellow. He's very theatrical, you
+>  know, a pestilence here, a plague there. Omnipotence. Gotta get me some
+>  of that."
+>         --Family Guy
+> 
