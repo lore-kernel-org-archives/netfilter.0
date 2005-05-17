@@ -1,13 +1,19 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
 Subject: Re: SSH Brute force attacks
-Date: Tue, 17 May 2005 10:21:25 -0500
-Message-ID: <428A0BF5.1080603@riverviewtech.net>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>	<42898402.10507@eccotours.dyndns.org>
-	<4289E72F.7020901@wp.pl> <4289EF97.2060009@eccotours.dyndns.org>
+Date: Tue, 17 May 2005 10:25:27 -0500
+Message-ID: <428A0CE7.40407@riverviewtech.net>
+References: <427B93EE.3030905@eccotours.dyndns.org>	
+	<427C4EA3.5090501@riverviewtech.net>	
+	<4281FC1A.8090000@eccotours.dyndns.org>	
+	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	
+	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	
+	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	
+	<4289957B.8070909@riverviewtech.net>
+	<1116333615.24331.4.camel@debianbox>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4289EF97.2060009@eccotours.dyndns.org>
+In-Reply-To: <1116333615.24331.4.camel@debianbox>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,18 +27,12 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> I managed to get TARPIT in my kernel.
-> But I decided it against using it.
-> 
-> Doesnt TARPIT use / create unnecessary overhead
+> When this is done, fully working, can you post your full iptables script 
+> that prevents brute forcing.
 
-No, quite the contrary TARPIT takes a connection directly in to the connected state (SYN, SYN-ACH, ACH-ACH) and releases all resources used in the kernel for the connection to prevent a resource DoS on your system.  The only thing that you need to be aware of is that if you are using connection tracking that conntrack will by default keep track of any connection that you TARPIT.  To get arround this I would recommend that you match the traffic that you are wanting to TARPIT in the raw table PREROUTING chain and send it to the NOTRACK target to prevent connection tracking from consuming resources.
+No problem, I'd be glad to.
 
-Here is a snipit from the kernel source about TARPIT:
-
-"Adds a TARPIT target to iptables, which captures and holds incoming TCP connections using no local per-connection resources.  Connections are accepted, but immediately switched to the persist state (0 byte window), in which the remote side stops sending data and asks to continue every 60-240 seconds.  Attempts to close the connection are ignored, forcing the remote side to time out the connection in 12-24 minutes."
-
-I sent a new version of the original script to the list early this morning that fixed some (major (gulp)) gubs.  I'll take a look at it again and see if I can't incorporate some code that will catch the traffic in the raw table's PREROUTING chain to be able to NOTRACK the traffic.
+What I posted early this morning should be functioning code as I did (this time) test it on my router at the house.  I was able to successfully control the number of SSH connection attempts that came in to my router at the house with it.  That being said the code should be ready for use.  If any one wants to test it and report any problems to me I'd be more than happy to try to resolve them.  I do however plan on adding some code to the script to send the traffic that will be TARPITed to the NOTRACK target in the raw table to prevent connection tracking from using up unnecessary resources.
 
 
 
