@@ -1,14 +1,13 @@
-From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
-Subject: Re: Iptables + ftp ??
-Date: Tue, 17 May 2005 22:46:17 +0200
-Message-ID: <fad9d48405051713464517ed9@mail.gmail.com>
-References: <1116359380.1180.10.camel@maclinux.lotus>
-Reply-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: redirect to 127.0.0.1 [corrected]
+Date: Tue, 17 May 2005 16:46:35 -0500
+Message-ID: <428A663B.70909@riverviewtech.net>
+References: <BAY16-F138F014D31905BBA75CC46BA160@phx.gbl>	<428A3E81.3030301@riverviewtech.net>	<428A4ED6.20500@riverviewtech.net>
+	<20050517203211.GA2367@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1116359380.1180.10.camel@maclinux.lotus>
-Content-Disposition: inline
+In-Reply-To: <20050517203211.GA2367@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,29 +18,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: aspenbr <aspenbr@yahoo.com.br>
-Cc: NetFilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jason Opperisano <opie@817west.com>
+Cc: netfilter@lists.netfilter.org
 
-# modprobe ip_conntrack_ftp
+> just 'cause i'm feelin' picky today...  "--state NEW" in -t nat is
+> redundant, as only "--state NEW" packets ever traverse -t nat.
 
-Do you want to allow FTP going out of the network onto the internet or
-FTP traffic into the server connected to the internet, or worse NATted
-to an internal host?
-
-On 17 May 2005 16:49:41 -0300, aspenbr <aspenbr@yahoo.com.br> wrote:
-> I am with problem, necessary to liberate the connection of my internal
-> net for external site of ftp the problem and that the site of ftp
-> connects using random doors, it has somebody me of the one tip as I make
-> to create a rule to connect with this site of ftp has security, I am
-> using iptables.  Thanks: -)
->=20
->=20
+Well pick away.  ;)  (Friendly) Banter back and forth like this is how I have learned a LOT of things over the years.  :)
 
 
---=20
 
-Kenneth Kalmer
-kenneth.kalmer@gmail.com
-http://opensourcery.blogspot.com
+Grant. . . .
 
