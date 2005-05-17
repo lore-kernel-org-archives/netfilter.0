@@ -1,11 +1,12 @@
-From: Volkov Peter <volkov_peter@list.ru>
-Subject: connlimit: Problems with patching kernel?
-Date: Mon, 16 May 2005 19:36:48 +0400
-Message-ID: <200505161936.48624.volkov_peter@list.ru>
+From: "Holger Brueckner [c]" <hb@ciphirelabs.com>
+Subject: Re: problem with conntrack loosing state [signed]
+Date: Tue, 17 May 2005 12:30:11 +0200
+Message-ID: <1116325811.3383.3.camel@localhost>
+References: <1114533395.2969.39.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1114533395.2969.39.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,71 +17,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello.
 
-I've tried to subscribe into netfilter mailing list, but failed. I did not=
-=20
-receive no mail from there (for two days already). So I'm trying to mail=20
-directly to mailing list. So CC answers to me.
+just for the record:
 
-In any way, thank you in advance for your time.
+problem has been solved by running kernel > 2.6.12-rc3
 
-My problem is that when I issue:
-iptables -A INPUT -p tcp --syn --dport 23 -m connlimit --connlimit-above 10=
- -j=20
-REJECT
-I have an error:
-iptables: No chain/target/match by that name
-
-It seems to me that I have not patched kernel, as I do not=20
-have /usr/src/linux/include/linux/netfilter_ipv4/ipt_connlimit.h in my kern=
-el=20
-sources. From HOWTO I know that I need to run runme to patch iptables and=20
-kernel.  But when I issue command, it tells me that I've already have patch=
-ed=20
-kernel and iptables. Look:
-
-************listing of runme*************
-# ./runme connlimit
-Hey! KERNEL_DIR is not set.
-Where is your kernel source directory? [/usr/src/linux]
-Hey! IPTABLES_DIR is not set.
-Where is your iptables source code directory?=20
-[/usr/src/iptables] /root/iptables
-Loading patchlet=20
-definitions................................................................=
-=2E.....................=20
-done
-
-Welcome to Patch-o-matic ($Revision: 3733 $)!
-
-Kernel: =C2=A0 2.6.11, /usr/src/linux
-Iptables: 1.3.1, /root/iptables
-Each patch is a new feature: many have minimal impact, some do not.
-Almost every one has bugs, so don't apply what you don't need!
-=2D------------------------------------------------------
-Already applied:
-
-Excellent! Source trees are ready for compilation.
-****************end of listing runme*********************
-
-I had the only kernel in my directory. I have right symlink. I exported=20
-KERNEL_DIR, IPTABLES_DIR, tried vanilla sources, but still no luck.
-Why ./runme tell me that everything is patched although it's not? How runme=
-=20
-checks that I have this patch installed? Can I can install patch manually?
-
-BTW. iptables are patched normaly and I=20
-have: /usr/local/lib/iptables/libipt_connlimit.so file. What is the problem=
-=20
-with kernel. Where is my problem?
-
-Thank you for your help in advance,
-Peter.
+h.
 
 
+On Tue, 2005-04-26 at 18:36 +0200, Holger Brueckner [c] wrote:
+> hello,
+> 
+> (please cc, i'm not a regular on the list)
+> 
+> we're experiencing some strange problems with the conntrack engine
+> loosing state. following setup:
+> 
+> fw with several interfaces
+> kernel 2.6.11.X
+> iptables v1.2.11 (debian)
+> 
+> all ips have a /32 netmask so that every traffic is routed through the
+> firewall. this is assured by corresponding vlan setup on the switches.
+> 
+> FORWARD is:
+> Chain FORWARD (policy DROP)
+> target     prot opt source               destination
+> DROP       all  --  anywhere             anywhere            state
+> INVALID
+> ACCEPT     all  --  anywhere             anywhere            state
+> RELATED,ESTABLISHED
+> .....
+> LOGDROP    all  --  anywhere             anywhere
+> 
+> eventually after a day or two pakets pakets which should be matched by
+> established coming in from the same interface as they go out will get
+> dropped and logged.
+> 
+> e.g.     srv1 --+-- fw -- srv3
+>          srv2 --|
+> 
+> "established" packet from srv1 to srv2 will get dropped after some days.
+> it looks like the syn flags don't trigger the conntrack engine although
+> the syn "pakets" go through the fw as expected, only pakets with no syn
+> flag set get dropped.
+> while this is the case the fw works perfectly for host which are not on
+> the same interface. so conntrack for connections from srv1 to srv3 or
+> srv2 to srv3 work as expected. rebooting the firewall is the only
+> solution to the problem.
+> 
+> there's not very much load on the server yet, last time i checked there
+> were about 250 conntrack entries. it looks like this might be realted to
+> Daniel Wittembergs "NAT stops working (more)" thread, at least the
+> symptoms are quite similar.
+> 
+> any suggestions to further debug this ? we just upgraded to 2.6.12-rc3
+> to see if this is solved. if not we will downgrade and see if this
+> happens again.
+> 
+> holger brueckner
+> 
+> 
+> 
+> 
+
+
+
+--
+------------------------ [ SECURITY NOTICE ] ------------------------
+To: netfilter@lists.netfilter.org.
+For your security, hb@ciphirelabs.com
+digitally signed this message on 17 May 2005 at 10:29:37 UTC.
+Verify this digital signature at http://www.ciphire.com/verify.
+------------------- [ CIPHIRE DIGITAL SIGNATURE ] -------------------
+Q2lwaGlyZSBTaWcuAVduZXRmaWx0ZXJAbGlzdHMubmV0ZmlsdGVyLm9yZwBoYkBjaXBoa
+XJlbGFicy5jb20AZW1haWwgYm9keQAJBgAAfAB8AAAAAQAAAJHHiUIJBgAArwIAAgACAA
+IAIPIh6RkYmeZcQRIJZYy7b0sQ3bMYMvm8+Po9XBPY0pNnAQAPjqtled7ohMXyims3EKz
+yrw6OVIEN+mt2h+UbCMAsTCv2wOnTCiMfYPjb8mnpo4EOy0ccziFlSwuEZM4elmcPU2ln
+RW5k
+--------------------- [ END DIGITAL SIGNATURE ] ---------------------
 
 
