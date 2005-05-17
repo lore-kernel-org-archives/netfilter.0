@@ -1,19 +1,10 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: SSH Brute force attacks
-Date: Tue, 17 May 2005 10:25:27 -0500
-Message-ID: <428A0CE7.40407@riverviewtech.net>
-References: <427B93EE.3030905@eccotours.dyndns.org>	
-	<427C4EA3.5090501@riverviewtech.net>	
-	<4281FC1A.8090000@eccotours.dyndns.org>	
-	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	
-	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	
-	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	
-	<4289957B.8070909@riverviewtech.net>
-	<1116333615.24331.4.camel@debianbox>
+From: "Steve Melo" <lists@communitytrust.ca>
+Subject: udp connection tracking
+Date: Tue, 17 May 2005 11:35:55 -0400
+Message-ID: <005b01c55af6$1db40980$3c01a8c0@ts.communitytrust.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1116333615.24331.4.camel@debianbox>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,17 +15,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> When this is done, fully working, can you post your full iptables script 
-> that prevents brute forcing.
+greetings list,
 
-No problem, I'd be glad to.
+I'm having a problem with a particular online game, winning eleven soccer 8.
+I need some kind of udp connection tracking and non of the helper modules
+seem to help.
+Firstly I'll describe what happens during the initial connection between the
+server and client:
 
-What I posted early this morning should be functioning code as I did (this time) test it on my router at the house.  I was able to successfully control the number of SSH connection attempts that came in to my router at the house with it.  That being said the code should be ready for use.  If any one wants to test it and report any problems to me I'd be more than happy to try to resolve them.  I do however plan on adding some code to the script to send the traffic that will be TARPITed to the NOTRACK target in the raw table to prevent connection tracking from using up unnecessary resources.
+1.) first the client will choose any random port over 1064 to use for the
+outgoing connection, lets use 1379 for this example.
+2.) the client will send a udp packet from port 1379 to the listening port
+on the server which is always 5739.
+3.) the server receives the packet, then chooses a random available port of
+its own, lets use 1184 for this example.
+4.) the server sends a single udp packet with a src port of 1184 to the dst
+port 1379 of the client.
+5.) after this single packet described in step 4, all the traffic between
+the client and server happen between ports 2222 and 5739.
+
+Here is an illustrated example
 
 
+ IP CLIENT.1379 > HOST.5739: UDP, length: 64
+ IP HOST.1184 > CLIENT.1379: UDP, length: 84 ** this is the troublesome
+packet **
+ IP HOST.5739 > CLIENT.1379: UDP, length: 60
+ IP HOST.5739 > CLIENT.1379: UDP, length: 60
+ IP CLIENT.1379 > HOST.5739: UDP, length: 60
+ IP HOST.5739 > CLIENT.1379: UDP, length: 60
+ IP CLIENT.1379 > HOST.5739: UDP, length: 16
+ IP HOST.5739 > CLIENT.1379: UDP, length: 60
+ IP CLIENT.1379 > HOST.5739: UDP, length: 60
+ IP HOST.5739 > CLIENT.1379: UDP, length: 60
+ IP CLIENT.1379 > HOST.5739: UDP, length: 60
 
-Grant. . . .
+Now, my problem is when i want to connect as a client, i have no way of
+knowing what port the server will choose to send that single packet (step 4
+above).  I also can't guess what port my client will use (step 1 above). All
+the other packets are fine because i can always expect a src or dst port
+with 5739.  This single packet is causing all my connection attempts to
+fail.
+
+Is there anything i can try besides forwarding all udp traffic to the
+client?
+
+Thank you,
+
+steve
+
+
 
