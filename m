@@ -1,13 +1,12 @@
-From: wlagmay@yanbulink.net
+From: "Wennie V. Lagmay" <wlagmay@yanbulink.net>
 Subject: Re: Host blocking
-Date: Tue, 17 May 2005 16:17:35 +0300
-Message-ID: <1116335855.4289eeef23b5b@webmail.yanbulink.net>
+Date: Tue, 17 May 2005 16:39:14 +0300
+Message-ID: <001701c55ae5$d1042e90$f00aa9c0@winxp>
 References: <003b01c55acb$841114a0$f00aa9c0@winxp>
-	<a0f69e50505170609ada74ed@mail.gmail.com>
+	<20050517131415.GA844@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a0f69e50505170609ada74ed@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,56 +17,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Askar <askarali@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-well I know how to configure transparent proxy, but I realy dont dont know whats
-will be the impact to my server and system. and number 2 even though I have a
-transparent proxy clients can always define there pereffered proxy isn't it? so
-the objective now is to block proxy.ISP.net including its corresponding IP
-address. Am I doing the right way?
+What if they define the ip address instead of domain name? How can I 
+block/accept  both domain name and ip address?
 
-Thanks,
+Thank you,
 
- wennie
+Wennie
+----- Original Message ----- 
+From: "Jason Opperisano" <opie@817west.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, May 17, 2005 4:14 PM
+Subject: Re: Host blocking
 
-Quoting Askar <askarali@gmail.com>:
 
-> hmm sound like you are running your proxy "squid" in non interception
-> mode, so why not give a kick to Interception "transparent" which mean
-> you don't have to configure each client to use your proxy i-e it will
-> be transparent to them.
+> On Tue, May 17, 2005 at 01:30:58PM +0300, Wennie V. Lagmay wrote:
+>> Our ISP's Proxy server is proxy.ISP.net , our company's own proxy server 
+>> is
+>> proxy.ourcompany.net. Our own proxy server has delay_pool but our ISP 
+>> proxy
+>> server dont have. I want to control our client to use only our company
+>> proxy server. how can I block the proxy.ISP.net using IP tables so that
+>> every body can be force to use our compnay proxy server. (note that our
+>> company proxy server is connected to our ISP proxy server as cache_peer
+>> parent)
 >
-> http://www.tldp.org/HOWTO/TransparentProxy.html
+> assuming your company proxy server is on a different machine than the
+> firewall:
 >
-> regards
 >
-> Askar
+>  iptables -A FORWARD -p tcp --syn -s proxy.ourcompany.net \
+>    -d proxy.ISP.net --dport $PROXY_PORT -j ACCEPT
 >
-> On 5/17/05, Wennie V. Lagmay <wlagmay@yanbulink.net> wrote:
-> > Our ISP's Proxy server is proxy.ISP.net , our company's own proxy server is
-> > proxy.ourcompany.net. Our own proxy server has delay_pool but our ISP proxy
-> > server dont have. I want to control our client to use only our company
-> proxy
-> > server. how can I block the proxy.ISP.net using IP tables so that every
-> body
-> > can be force to use our compnay proxy server. (note that our company proxy
-> > server is connected to our ISP proxy server as cache_peer parent)
-> >
-> > thanks,
-> >
-> > wennie
-> >
-> >
+>  # assuming your internal machines are allowed unfettered access
+>  # to the internet
 >
+>  iptables -A FORWARD -p tcp --syn -d proxy.ISP.net -j DROP
+>
+> -j
 >
 > --
-> I love deadlines. I like the whooshing sound they make as they fly by.
-> Douglas Adams
->
-
-
-
+> "Guy on Street #2: It's 3:00. Where the hell is Louie?
+> Guy on Street #1: Well, you tell me. Louie left his house at 2:15 and
+> had to travel a distance 6.2 miles traveling at a rate of five miles a
+> hour. When will Louie get here?
+> Guy On Street #2: Depends if he stops to see his ho.
+> Guy on Street #1: That's what we call a "variable"."
+>        --Family Guy
+> 
 
 
