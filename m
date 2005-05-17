@@ -1,14 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: redirect to 127.0.0.1 [corrected]
-Date: Tue, 17 May 2005 16:32:11 -0400
-Message-ID: <20050517203211.GA2367@bender.817west.com>
-References: <BAY16-F138F014D31905BBA75CC46BA160@phx.gbl>
-	<428A3E81.3030301@riverviewtech.net>
-	<428A4ED6.20500@riverviewtech.net>
+From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+Subject: Re: Iptables + ftp ??
+Date: Tue, 17 May 2005 22:46:17 +0200
+Message-ID: <fad9d48405051713464517ed9@mail.gmail.com>
+References: <1116359380.1180.10.camel@maclinux.lotus>
+Reply-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1116359380.1180.10.camel@maclinux.lotus>
 Content-Disposition: inline
-In-Reply-To: <428A4ED6.20500@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,34 +20,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: aspenbr <aspenbr@yahoo.com.br>
+Cc: NetFilter <netfilter@lists.netfilter.org>
 
-On Tue, May 17, 2005 at 03:06:46PM -0500, Taylor, Grant wrote:
-> In light of Jason's response about dealing with the kernel's martian code I 
-> think a rule like this needs to be added to the solution:
-> 
-> iptables -t mangle -A PREROUTING -d $SERVER -p tcp --dport 11000 -j ROUTE 
-> --iif lo --continue
-> iptables -t nat -A PREROUTING -d $SERVER -p tcp --dport 11000 -m state 
-> --state NEW -m nth --every 4 --packet 0 -j DNAT --to-destination 
-> 127.0.0.1:11000
-> iptables -t nat -A PREROUTING -d $SERVER -p tcp --dport 11000 -m state 
-> --state NEW -m nth --every 4 --packet 1 -j DNAT --to-destination 
-> 127.0.0.1:11001
-> iptables -t nat -A PREROUTING -d $SERVER -p tcp --dport 11000 -m state 
-> --state NEW -m nth --every 4 --packet 2 -j DNAT --to-destination 
-> 127.0.0.1:11002
-> iptables -t nat -A PREROUTING -d $SERVER -p tcp --dport 11000 -m state 
-> --state NEW -m nth --every 4 --packet 3 -j DNAT --to-destination 
-> 127.0.0.1:11003
+# modprobe ip_conntrack_ftp
 
-just 'cause i'm feelin' picky today...  "--state NEW" in -t nat is
-redundant, as only "--state NEW" packets ever traverse -t nat.
+Do you want to allow FTP going out of the network onto the internet or
+FTP traffic into the server connected to the internet, or worse NATted
+to an internal host?
 
--j
+On 17 May 2005 16:49:41 -0300, aspenbr <aspenbr@yahoo.com.br> wrote:
+> I am with problem, necessary to liberate the connection of my internal
+> net for external site of ftp the problem and that the site of ftp
+> connects using random doors, it has somebody me of the one tip as I make
+> to create a rule to connect with this site of ftp has security, I am
+> using iptables.  Thanks: -)
+>=20
+>=20
 
---
-"Stewie: Ha ha. Oh, this is so good it just HAS to be fattening."
-        --Family Guy
+
+--=20
+
+Kenneth Kalmer
+kenneth.kalmer@gmail.com
+http://opensourcery.blogspot.com
 
