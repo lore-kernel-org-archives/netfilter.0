@@ -1,12 +1,9 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: udp connection tracking
-Date: Tue, 17 May 2005 11:53:41 -0500
-Message-ID: <428A2195.8090308@riverviewtech.net>
-References: <005b01c55af6$1db40980$3c01a8c0@ts.communitytrust.ca>
+From: "bagwan ali" <bagwani@hotmail.com>
+Subject: redirect to 127.0.0.1
+Date: Tue, 17 May 2005 17:00:56 +0000
+Message-ID: <BAY16-F17DF0D129D7F2E3B94EB4BA160@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <005b01c55af6$1db40980$3c01a8c0@ts.communitytrust.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,44 +14,97 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> 1.) first the client will choose any random port over 1064 to use for the
-> outgoing connection, lets use 1379 for this example.
-> 2.) the client will send a udp packet from port 1379 to the listening port
-> on the server which is always 5739.
-> 3.) the server receives the packet, then chooses a random available port of
-> its own, lets use 1184 for this example.
-> 4.) the server sends a single udp packet with a src port of 1184 to the dst
-> port 1379 of the client.
-> 5.) after this single packet described in step 4, all the traffic between
-> the client and server happen between ports 2222 and 5739.
+Hi All,
 
-This is an interesting problem.
+I have a problem redirecting traffic from $SERVER:11000 to 127.0.0.1:10001. 
+The situation is that I need more than one serverprocess listening to ONE 
+specific port in this case port 11000. Ofcourse this is  not possible, but 
+there is only ONE client connection at a time to ONE serverprocess. So 
+instead that the process is listening on $SERVER:11000, it is listening on 
+127.0.0.1:10001 and the second serverprocess is listening on 127.0.0.1:10002 
+and so on. So I can depending on the source IP address redirect traffic from 
+$SERVER:11000 to 127.0.0.1:$FREEPORT. Let me give an example in pseudo 
+firewall rules:
 
-> Now, my problem is when i want to connect as a client, i have no way of
-> knowing what port the server will choose to send that single packet (step 4
-> above).  I also can't guess what port my client will use (step 1 above). All
-> the other packets are fine because i can always expect a src or dst port
-> with 5739.  This single packet is causing all my connection attempts to
-> fail.
+$CLIENT_ONE    to $SERVER:11000 REDIRECT 127.0.0.1:10001
+$CLIENT_TWO   to $SERVER:11000 REDIRECT 127.0.0.1:10002
+$CLIENT_THREE to $SERVER:11000 REDIRECT 127.0.0.1:10003
 
-What?  Is your psyche not working?  :P
+I tried the following to achive this in iptables and failed:
 
-> Is there anything i can try besides forwarding all udp traffic to the
-> client?
+iptables -t nat -A PREROUTING -p tcp -s $CLIENT_ONE -d $SERVER --dport 11000 
+-j REDIRECT --to-ports 11001
+iptables -t nat -A PREROUTING -p tcp -s $CLIENT_TWO -d $SERVER --dport 11000 
+-j REDIRECT --to-ports 11001
+iptables -t nat -A PREROUTING -p tcp -s $CLIENT_THREE -d $SERVER --dport 
+11000 -j REDIRECT --to-ports 11001
 
-Maybe....
+where
+$SERVER           = 192.168.2.1
+$CLIENT_ONE    = 192.168.2.50
+$CLIENT_TWO   = 192.168.2.51
+$CLIENT_THREE = 192.168.2.52
 
-I think that you might be able to do something with the recent match extension.  Seeing as how I don't have the WSWE8 game I can't test this for you.  But the idea behind it is to add the destination (IP) address of your initial packet to the server on UDP port 5379 to a recent set named WSWE8.  Subsequently any inbound UDP traffic will be checked against the recent set named WSWE8 to see if the source address is that of the server that you sent to less than 60 seconds ago.
+The problem is that the client and server cannot establish a connection. Who 
+can help me solve this porblem!!
 
-iptables -t filter -A FORWARD -i ${LAN} -o ${INet} -p udp --sport 1024:65535 --dport 5379 -m recent --set --name WSWE8 --rdest -j ACCEPT
-iptables -t filter -A FORWARD -i ${INet} -o ${LAN} -p udp -m recent --rcheck --seconds 60 --name WSWE8 --rsource -j ACCEPT
+Thanks in advance
 
-Seeing as how this one packet is the one that is troubling you I think you should fairly easily be able to integrate these rules in to your existing firewall.  Give these rules a try and see if they work for you.  If they do work for you (A - please let me know) try replacing the "--rcheck" parameter in the 2nd rule with "--remove" as this will remove the source IP from the WSWE8 recent set thus preventing any one else from doing any funny business with you.  :)
+-Luc
 
+My OS is Fedora Core 3 (kernel 2.6.11) with iptables v1.2.11.
+Here are my iptable rules:
 
+iptables -L -vn && iptables -t nat -L -vn
+[BEGIN RULES]
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+pkts bytes target     prot opt in     out     source               
+destination
+813K 2200M ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
+171K 8306K ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0 
+           state RELATED,ESTABLISHED
+8338  400K ACCEPT     all  --  *      *       192.168.2.0/24       0.0.0.0/0
+    0     0 REJECT     icmp --  *      *       0.0.0.0/0            
+0.0.0.0/0           reject-with icmp-port-unreachable
+  885 47572 LOG        all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           LOG flags 0 level 4
+  885 47572 REJECT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           reject-with icmp-port-unreachable
 
-Grant. . . .
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+pkts bytes target     prot opt in     out     source               
+destination
+
+Chain OUTPUT (policy ACCEPT 276K packets, 340M bytes)
+pkts bytes target     prot opt in     out     source               
+destination
+813K 2200M ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0
+
+Chain PREROUTING (policy ACCEPT 7873 packets, 474K bytes)
+pkts bytes target     prot opt in     out     source               
+destination
+    0     0 REDIRECT   tcp  --  *      *       192.168.2.50         
+192.168.2.1         tcp dpt:11000 redir ports 11001
+    0     0 REDIRECT   tcp  --  *      *       192.168.2.51         
+192.168.2.1         tcp dpt:11000 redir ports 11001
+    0     0 REDIRECT   tcp  --  *      *       192.168.2.52         
+192.168.2.1         tcp dpt:11000 redir ports 11001
+
+Chain POSTROUTING (policy ACCEPT 5086 packets, 322K bytes)
+pkts bytes target     prot opt in     out     source               
+destination
+
+Chain OUTPUT (policy ACCEPT 5086 packets, 322K bytes)
+pkts bytes target     prot opt in     out     source               
+destination
+[END RUULES]
+
+_________________________________________________________________
+FREE pop-up blocking with the new MSN Toolbar - get it now! 
+http://toolbar.msn.click-url.com/go/onm00200415ave/direct/01/
+
 
