@@ -1,7 +1,7 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
 Subject: Re: redirect to 127.0.0.1 [corrected]
-Date: Tue, 17 May 2005 16:46:35 -0500
-Message-ID: <428A663B.70909@riverviewtech.net>
+Date: Tue, 17 May 2005 16:48:31 -0500
+Message-ID: <428A66AF.1040604@riverviewtech.net>
 References: <BAY16-F138F014D31905BBA75CC46BA160@phx.gbl>	<428A3E81.3030301@riverviewtech.net>	<428A4ED6.20500@riverviewtech.net>
 	<20050517203211.GA2367@bender.817west.com>
 Mime-Version: 1.0
@@ -19,13 +19,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
 > just 'cause i'm feelin' picky today...  "--state NEW" in -t nat is
 > redundant, as only "--state NEW" packets ever traverse -t nat.
 
-Well pick away.  ;)  (Friendly) Banter back and forth like this is how I have learned a LOT of things over the years.  :)
+Ok, let's try for version 0.3.  :P~
+
+iptables -t mangle -A PREROUTING -d $SERVER -p tcp --dport 11000 -j ROUTE --iif lo --continue
+iptables -t nat -A PREROUTING -d $SERVER -p tcp --dport 11000 -m nth --every 4 --packet 0 -j DNAT --to-destination 127.0.0.1:11000
+iptables -t nat -A PREROUTING -d $SERVER -p tcp --dport 11000 -m nth --every 4 --packet 1 -j DNAT --to-destination 127.0.0.1:11001
+iptables -t nat -A PREROUTING -d $SERVER -p tcp --dport 11000 -m nth --every 4 --packet 2 -j DNAT --to-destination 127.0.0.1:11002
+iptables -t nat -A PREROUTING -d $SERVER -p tcp --dport 11000 -m nth --every 4 --packet 3 -j DNAT --to-destination 127.0.0.1:11003
 
 
 
