@@ -1,21 +1,14 @@
-From: "Sadus ." <sadus@swiftbin.net>
-Subject: Re: Internal PC/external Gateway
-Date: Tue, 17 May 2005 15:55:18 +0300
-Message-ID: <1116334518.24331.6.camel@debianbox>
-References: <1116061176.12835.20.camel@debianbox>
-	<20050514153608.GA24455@bender.817west.com>
-	<1116087634.18707.2.camel@debianbox>
-	<20050514164144.GA24669@bender.817west.com>
-	<1116090083.18707.6.camel@debianbox>
-	<20050514172613.GA24810@bender.817west.com>
-	<1116095410.18707.14.camel@debianbox>
-	<20050514190005.GA25010@bender.817west.com>
-	<1116114764.20275.0.camel@debianbox>
-	<20050516214813.GA31167@bender.817west.com>
+From: Askar <askarali@gmail.com>
+Subject: Re: Host blocking
+Date: Tue, 17 May 2005 18:09:04 +0500
+Message-ID: <a0f69e50505170609ada74ed@mail.gmail.com>
+References: <003b01c55acb$841114a0$f00aa9c0@winxp>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050516214813.GA31167@bender.817west.com>
+In-Reply-To: <003b01c55acb$841114a0$f00aa9c0@winxp>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -27,43 +20,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
+To: "Wennie V. Lagmay" <wlagmay@yanbulink.net>
 Cc: netfilter@lists.netfilter.org
 
-Seems to be running smoothly. Thanks
+hmm sound like you are running your proxy "squid" in non interception
+mode, so why not give a kick to Interception "transparent" which mean
+you don't have to configure each client to use your proxy i-e it will
+be transparent to them.
 
-On Mon, 2005-05-16 at 17:48 -0400, Jason Opperisano wrote:
+http://www.tldp.org/HOWTO/TransparentProxy.html
 
-> On Sun, May 15, 2005 at 02:52:44AM +0300, Sadus . wrote:
-> > When i run this:
-> > ip rule add from 192.168.1.3 table T2
-> > 
-> > i get this error:
-> > RTNETLINK answers: Invalid argument
-> 
-> did you:
-> 
->   echo 202 T2 >> /etc/iproute2/rt_tables
-> 
-> if you haven't i believe your error would be more along the lines of 
-> 'Error: argument "T2" is wrong: invalid table ID'
-> 
-> does this give you the same error:
-> 
->   ip rule add from 192.168.1.3 table main
-> 
-> if so--verify that your kernel was compiled with:
-> 
->   CONFIG_IP_ADVANCED_ROUTER=y
->   
-> if not--i don't believe you will be able to do policy routing until you
-> recompile your kernel with the proper options set.
-> 
-> -j
-> 
-> --
-> "Stewie: Yes, I rather like this God fellow. He's very theatrical, you
->  know, a pestilence here, a plague there. Omnipotence. Gotta get me some
->  of that."
->         --Family Guy
-> 
+regards
+
+Askar
+
+On 5/17/05, Wennie V. Lagmay <wlagmay@yanbulink.net> wrote:
+> Our ISP's Proxy server is proxy.ISP.net , our company's own proxy server =
+is
+> proxy.ourcompany.net. Our own proxy server has delay_pool but our ISP pro=
+xy
+> server dont have. I want to control our client to use only our company pr=
+oxy
+> server. how can I block the proxy.ISP.net using IP tables so that every b=
+ody
+> can be force to use our compnay proxy server. (note that our company prox=
+y
+> server is connected to our ISP proxy server as cache_peer parent)
+>=20
+> thanks,
+>=20
+> wennie
+>=20
+>=20
+
+
+--=20
+I love deadlines. I like the whooshing sound they make as they fly by.
+Douglas Adams
+
