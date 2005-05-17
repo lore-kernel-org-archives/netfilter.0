@@ -1,8 +1,9 @@
-From: mohammed abdul shakeel <shakeel1508@yahoo.com>
-Subject: Out look express problem
-Date: Tue, 17 May 2005 08:36:20 -0700 (PDT)
-Message-ID: <20050517153620.34310.qmail@web61217.mail.yahoo.com>
+From: haynes george <hmg_u@yahoo.co.in>
+Subject: Requiste for starting service iptables
+Date: Tue, 17 May 2005 21:58:16 +0100 (BST)
+Message-ID: <20050517205816.87529.qmail@web8407.mail.in.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,22 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi .. 
-i installed squid and it is working fine .. 
-i want use outlook express and wants configure my compay mail ID .. but it is not working .. 
- 
-i did port forwarding also..
-when i am useing this command "nmap -sS localhost " it is not showing port 110 and 25 
- 
-help me .. 
-regards
-shakeel
- 
+hi...
 
-		
----------------------------------
-Yahoo! Mail Mobile
- Take Yahoo! Mail with you! Check email on your mobile phone.
+i am trying to find out the services which should be
+started before the service iptables can be started.
+
+I have read thru the /etc/rc.d/init.d script and i
+think iptables depends on service network 
+
+Does it depend on any other service to start...???Is
+there any method to know this ?
+
+I need to know this cause its for my college project.
+
+
+plz do reply
+
+thnks
+
+haynes 
+kerala
+India
+
+
+
+
+
+
+
+________________________________________________________________________
+Yahoo! India Matrimony: Find your life partner online
+Go to: http://yahoo.shaadi.com/india-matrimony
+
