@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Host blocking
-Date: Tue, 17 May 2005 09:14:15 -0400
-Message-ID: <20050517131415.GA844@bender.817west.com>
-References: <003b01c55acb$841114a0$f00aa9c0@winxp>
+From: Brent Clark <bclark@eccotours.dyndns.org>
+Subject: Re: SSH Brute force attacks
+Date: Tue, 17 May 2005 15:20:23 +0200
+Message-ID: <4289EF97.2060009@eccotours.dyndns.org>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>
+	<42898402.10507@eccotours.dyndns.org> <4289E72F.7020901@wp.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <003b01c55acb$841114a0$f00aa9c0@winxp>
+In-Reply-To: <4289E72F.7020901@wp.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-2?Q?=A3ukasz_Hejnak?= <sziftgroup@wp.pl>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, May 17, 2005 at 01:30:58PM +0300, Wennie V. Lagmay wrote:
-> Our ISP's Proxy server is proxy.ISP.net , our company's own proxy server is 
-> proxy.ourcompany.net. Our own proxy server has delay_pool but our ISP proxy 
-> server dont have. I want to control our client to use only our company 
-> proxy server. how can I block the proxy.ISP.net using IP tables so that 
-> every body can be force to use our compnay proxy server. (note that our 
-> company proxy server is connected to our ISP proxy server as cache_peer 
-> parent)
+=A3ukasz Hejnak wrote:
+> Brent Clark wrote:
+>=20
+>> Would you be so kind as to copy and paste your ruleset for this.
+>=20
+> No problem, here's my variation, based on Taylor Grant's ruleset
+>=20
+> $ipt -N SSH_Brute_Force
+> $ipt -A INPUT -p tcp --dport 22 -m state --state NEW -s ! $MyIP -j=20
+> SSH_Brute_Force
+> $ipt -A SSH_Brute_Force -m recent --set --name SSH
+> $ipt -A SSH_Brute_Force -m recent ! --rcheck --name SSH --seconds 60=20
+> --hitcount 3 -j RETURN
+> $ipt -A SSH_Brute_Force -m recent --name SSH --update
+> $ipt -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  =
+"
+> $ipt -A SSH_Brute_Force -j DROP
+>=20
+> I am forced to use DROP here instead of TARPIT as the TARPIT isn't
+> supported yet for the 2.6.x kernel branch
 
-assuming your company proxy server is on a different machine than the
-firewall:
+Hi =A3ukasz
 
+Thanks for this.
 
-  iptables -A FORWARD -p tcp --syn -s proxy.ourcompany.net \
-    -d proxy.ISP.net --dport $PROXY_PORT -j ACCEPT
+I managed to get TARPIT in my kernel.
+But I decided it against using it.
 
-  # assuming your internal machines are allowed unfettered access
-  # to the internet
+Doesnt TARPIT use / create unnecessary overhead
 
-  iptables -A FORWARD -p tcp --syn -d proxy.ISP.net -j DROP
+Kind Regards
+Brent Clark
 
--j
-
---
-"Guy on Street #2: It's 3:00. Where the hell is Louie?
- Guy on Street #1: Well, you tell me. Louie left his house at 2:15 and
- had to travel a distance 6.2 miles traveling at a rate of five miles a
- hour. When will Louie get here? 
- Guy On Street #2: Depends if he stops to see his ho. 
- Guy on Street #1: That's what we call a "variable"."
-        --Family Guy
 
