@@ -1,13 +1,13 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
-Subject: Re: SSH Brute force attacks
-Date: Tue, 17 May 2005 15:20:23 +0200
-Message-ID: <4289EF97.2060009@eccotours.dyndns.org>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>
-	<42898402.10507@eccotours.dyndns.org> <4289E72F.7020901@wp.pl>
+From: wlagmay@yanbulink.net
+Subject: Re: Host blocking
+Date: Tue, 17 May 2005 16:17:35 +0300
+Message-ID: <1116335855.4289eeef23b5b@webmail.yanbulink.net>
+References: <003b01c55acb$841114a0$f00aa9c0@winxp>
+	<a0f69e50505170609ada74ed@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4289E72F.7020901@wp.pl>
+In-Reply-To: <a0f69e50505170609ada74ed@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +18,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-2?Q?=A3ukasz_Hejnak?= <sziftgroup@wp.pl>
+Content-Type: text/plain; charset="us-ascii"
+To: Askar <askarali@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-=A3ukasz Hejnak wrote:
-> Brent Clark wrote:
->=20
->> Would you be so kind as to copy and paste your ruleset for this.
->=20
-> No problem, here's my variation, based on Taylor Grant's ruleset
->=20
-> $ipt -N SSH_Brute_Force
-> $ipt -A INPUT -p tcp --dport 22 -m state --state NEW -s ! $MyIP -j=20
-> SSH_Brute_Force
-> $ipt -A SSH_Brute_Force -m recent --set --name SSH
-> $ipt -A SSH_Brute_Force -m recent ! --rcheck --name SSH --seconds 60=20
-> --hitcount 3 -j RETURN
-> $ipt -A SSH_Brute_Force -m recent --name SSH --update
-> $ipt -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  =
-"
-> $ipt -A SSH_Brute_Force -j DROP
->=20
-> I am forced to use DROP here instead of TARPIT as the TARPIT isn't
-> supported yet for the 2.6.x kernel branch
+well I know how to configure transparent proxy, but I realy dont dont know whats
+will be the impact to my server and system. and number 2 even though I have a
+transparent proxy clients can always define there pereffered proxy isn't it? so
+the objective now is to block proxy.ISP.net including its corresponding IP
+address. Am I doing the right way?
 
-Hi =A3ukasz
+Thanks,
 
-Thanks for this.
+ wennie
 
-I managed to get TARPIT in my kernel.
-But I decided it against using it.
+Quoting Askar <askarali@gmail.com>:
 
-Doesnt TARPIT use / create unnecessary overhead
+> hmm sound like you are running your proxy "squid" in non interception
+> mode, so why not give a kick to Interception "transparent" which mean
+> you don't have to configure each client to use your proxy i-e it will
+> be transparent to them.
+>
+> http://www.tldp.org/HOWTO/TransparentProxy.html
+>
+> regards
+>
+> Askar
+>
+> On 5/17/05, Wennie V. Lagmay <wlagmay@yanbulink.net> wrote:
+> > Our ISP's Proxy server is proxy.ISP.net , our company's own proxy server is
+> > proxy.ourcompany.net. Our own proxy server has delay_pool but our ISP proxy
+> > server dont have. I want to control our client to use only our company
+> proxy
+> > server. how can I block the proxy.ISP.net using IP tables so that every
+> body
+> > can be force to use our compnay proxy server. (note that our company proxy
+> > server is connected to our ISP proxy server as cache_peer parent)
+> >
+> > thanks,
+> >
+> > wennie
+> >
+> >
+>
+>
+> --
+> I love deadlines. I like the whooshing sound they make as they fly by.
+> Douglas Adams
+>
 
-Kind Regards
-Brent Clark
+
+
 
 
