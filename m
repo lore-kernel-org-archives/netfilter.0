@@ -1,12 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Requiste for starting service iptables
-Date: Wed, 18 May 2005 11:20:01 -0400
-Message-ID: <20050518152001.GA4924@bender.817west.com>
-References: <20050517205816.87529.qmail@web8407.mail.in.yahoo.com>
+Subject: Re: Connection tracking issues!!
+Date: Wed, 18 May 2005 11:23:27 -0400
+Message-ID: <20050518152327.GA4980@bender.817west.com>
+References: <428a4b34.1deda931.20f0.6f9fSMTPIN_ADDED@mx.gmail.com>
+	<9927912d0505172322c98d013@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20050517205816.87529.qmail@web8407.mail.in.yahoo.com>
+In-Reply-To: <9927912d0505172322c98d013@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,39 +22,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, May 17, 2005 at 09:58:16PM +0100, haynes george wrote:
-> hi...
-> 
-> i am trying to find out the services which should be
-> started before the service iptables can be started.
-> 
-> I have read thru the /etc/rc.d/init.d script and i
-> think iptables depends on service network 
-> 
-> Does it depend on any other service to start...???Is
-> there any method to know this ?
-> 
-> I need to know this cause its for my college project.
+On Wed, May 18, 2005 at 10:22:20AM +0400, Visham Ramsurrun wrote:
+> Also, I wanted to know if connection tracking still works for a TCP
+> connection where the SYN packet passes through stateful firewall FW1,
+> the SYN/ACK packet passes through stateful firewall FW2, the ACK
+> passes again through FW1 and the first data packet passes through FW2.
+> Is the connection considered as ESTABLISHED at that point on both
+> firewalls?
 
-there is no strict reason why the iptables startup script would depend
-on networking being up.  there's actually a pretty good argument that
-iptables should start before networking is brought up to reduce
-(eliminate?) the window of opportunity where the interfaces have IP
-addresses, but no firewall rules are loaded.
-
-one reason i could see why some people/vendors would want to wait for
-networking to startup before iptables starts, is if the interfaces have
-dynamic IP addresses that need to be calculated for the rules to be
-loaded.
-
-from a purely academic perspective, i would say that your firewall rules
-should load before your interfaces have IP addresses.
+absolutely not.
 
 -j
 
 --
-"Stewie: Forecast for tomorrow; A few sprinkles of genius with a chance
- of doom."
+"Baliff: Do you swear to tell the truth, the whole truth, and nothing
+ but the truth? 
+ Peter: I do... ya bastard."
         --Family Guy
-
 
