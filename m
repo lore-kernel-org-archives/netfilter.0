@@ -1,12 +1,14 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Route back
-Date: Wed, 18 May 2005 09:33:07 -0500
-Message-ID: <428B5223.6000604@riverviewtech.net>
-References: <000601c55b0a$e4949330$6701a8c0@LeoNB>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Host blocking
+Date: Wed, 18 May 2005 11:08:26 -0400
+Message-ID: <20050518150826.GA4863@bender.817west.com>
+References: <003b01c55acb$841114a0$f00aa9c0@winxp>
+	<20050517131415.GA844@bender.817west.com>
+	<000901c55b78$87815390$f00aa9c0@winxp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000601c55b0a$e4949330$6701a8c0@LeoNB>
+Content-Disposition: inline
+In-Reply-To: <000901c55b78$87815390$f00aa9c0@winxp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +19,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> I have a network with Windows 2k3 server inside connecting to a Linux Firewall. I setup the iptables to masquerade. Works fine. The firewall also pass web request to the 2k3 from the internet side.
+On Wed, May 18, 2005 at 10:09:27AM +0300, Wennie V. Lagmay wrote:
+> Hi Jason,
 > 
-> But if I want use IE to browse back the webserver in the internal network. It fails.
+> I try the the configuration and it is not working the way I want, maybe I 
+> need to elaborate my config.
 > 
-> Internet ---- (WAN IP) Linux Firewall (192.168.3.2) ---- (192.168.3.103) win2k3
+> The 1st linux server is the firewall:  It do forwarding, firewalling and 
+> natting it has 2 NIC card. The 1st NIC card IP is 203.172.xxx.97 / 30 which 
+> is connected to the internet , The 2nd NIC card is 203.172.xxx.105 / 28 
+> connected to LAN. local IP block for the clients 192.168.10.0/24 which is 
+> NAtted to 203.172.xxx.112-114.
 > 
-> The iptables rule file is :
+> The second is a linux server is a proxy server: It also have 2 NIC card. 
+> 1st NIC card is 203.172.xxx.102 /30 which is connected to the internet, the 
+> 2nd NIC card is 203.172.xxx.106 / 28 connected to LAN.
 > 
-> *filter
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> :UA-ACCEPT - [0:0]
-> -A INPUT -j UA-ACCEPT
-> -A UA-ACCEPT -i lo -j ACCEPT
-> -A UA-ACCEPT -i eth1 -p tcp --dport 22 -j ACCEPT
-> -A UA-ACCEPT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> -A UA-ACCEPT -j REJECT --reject-with icmp-host-prohibited
-> -A FORWARD -p tcp -m tcp -m state --state ESTABLISHED,RELATED --dport 80 -j ACCEPT
-> COMMIT
+> The process work like this: a client with ip address 192.168.10.2 wants to 
+> connect to the internet it will pass through firewall, the firewall then 
+> forward it to proxy and the will get the page then return it back to the 
+> client. in this case no natting is involve. the proxy server gets the page 
+> by its ip address then return it to 192.168.10.2. On the other hand if the 
+> same client want to chat, it will go to firewall, the firewall then 
+> translate the ip 192.168.10.2 to 203.172.xxx.112 then the client can chat.
 > 
-> *nat
-> :PREROUTING ACCEPT [0:0]
-> :POSTROUTING ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to 192.168.3.103
-> -A POSTROUTING -o eth0 -j MASQUERADE
-> 
-> I also tried to put :
-> 
-> iptables -t nat -A PREROUTING -d 1.2.3.4 -p tcp --dport 80 -j DNAT --to 192.168.3.103 where 1.2.3.4 assumed to be WANIP 
-> 
-> Also failed.
-> Any clue?
+> Our system work this way, As I mention they client can define our own proxy 
+> or our ISP's proxy, But I want every body to use our own proxy becaus we 
+> have dalay_pool.
 
-I'm going to presume that the IE that you are talking about is on the 2k3 server it's self.  If that is indeed the case and you are trying to browse to the WAN IP of your router you will never get in with the rules that you have.  This is because when your try to connect to the WAN IP via IE your traffic will go to your Linux router which will see the request for the WAN IP come in on it's internal side and go to the directly connected IP and not go out and back in the external interface.  To get around this you need to do one of two things, 1) take the inbound interface match off your PREROUTING rule or 2) add a second PREROUTING rule similar to what you do have but checking on the eth1 inbound interface.
+k--slight modification of previous rules:
 
+  # allow internal machines to connect to our proxy
+  iptables -A FORWARD -p tcp --syn -s 192.168.10.0/24 \
+    -d $OUR_PROXY_IP --dport $PROXY_PORT -j ACCEPT
 
+  # drop packets from inside net to ISP Proxy
+  iptables -A FORWARD -p tcp --syn -s 192.168.10.0/24 \
+    -d $ISP_PROXY_IP -j DROP
 
-Grant. . . .
+if your FORWARD policy is set to DROP, and you only allow specific
+services through the firewall from the internal network, keeping your
+users from connecting to things they shouldn't connect to becomes much
+easier.
+
+-j
+
+--
+"Black Knight: You see kids? Your father's nothing but a fizzle!
+ Peter: Hey, pal, nobody calls me a fizzle and gets away with it! Except
+ for that one guy who called me a fizzle and then he ran off. But
+ nobody else has ever called me a fizzle and got away with it! Actually
+ though, he was the only one who ever called me a fizzle. But after
+ today, only half the people who've called me a fizzle will have gotten
+ away with it!"
+        --Family Guy
 
