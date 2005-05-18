@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: smtp/pop and NAT only
-Date: Wed, 18 May 2005 11:45:46 -0400
-Message-ID: <20050518154546.GA5093@bender.817west.com>
-References: <201E6F5AC48C274996A5AD8304FAEF869ABB@p001ex03.porta.local>
+From: "Jim Miller" <jimm@simutronics.com>
+Subject: RE: SSH Brute force attacks
+Date: Wed, 18 May 2005 11:54:42 -0500
+Message-ID: <NDBBKABJBJCIJNAELLKEIEACJFAA.jimm@simutronics.com>
+References: <4289E72F.7020901@wp.pl>
+Reply-To: jimm@simutronics.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <201E6F5AC48C274996A5AD8304FAEF869ABB@p001ex03.porta.local>
+In-Reply-To: <4289E72F.7020901@wp.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +19,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, May 18, 2005 at 05:37:03PM +0200, Baake, Matthias wrote:
-> well i understood that he has a dynamnic ip address.
-> the 
-> 
-> "> No static IP"
-> 
-> statement was from the original poster afaik. correct me if iam wrong.
+> Brent Clark wrote:
+> > Would you be so kind as to copy and paste your ruleset for this.
+> No problem, here's my variation, based on Taylor Grant's ruleset
+>
+> $ipt -N SSH_Brute_Force
+> $ipt -A INPUT -p tcp --dport 22 -m state --state NEW -s ! $MyIP -j
+> SSH_Brute_Force
+> $ipt -A SSH_Brute_Force -m recent --set --name SSH
+> $ipt -A SSH_Brute_Force -m recent ! --rcheck --name SSH --seconds 60
+> --hitcount 3 -j RETURN
+> $ipt -A SSH_Brute_Force -m recent --name SSH --update
+> $ipt -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
+> $ipt -A SSH_Brute_Force -j DROP
+>
+> I am forced to use DROP here instead of TARPIT as the TARPIT isn't
+> supported yet for the 2.6.x kernel branch
+>
 
-you know what--i have no idea if you're right or wrong.  i apologize for
-breaking my promise to myself not to involve myself in the mindless
-drivel that are the posts from varun_saa@.
 
--j
+Is this true that Tarpit does not work with 2.6 kernels?  I was going to
+give it a try on one of my no-production firewalls.
 
---
-"Stewie: Well, I'd love to stay and chat, but you're a bitch."
-        --Family Guy
+
+
+Thanks,
+Jim
+
+
 
