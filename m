@@ -1,13 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Connection tracking issues!!
-Date: Wed, 18 May 2005 11:23:27 -0400
-Message-ID: <20050518152327.GA4980@bender.817west.com>
-References: <428a4b34.1deda931.20f0.6f9fSMTPIN_ADDED@mx.gmail.com>
-	<9927912d0505172322c98d013@mail.gmail.com>
+Subject: Re: smtp/pop and NAT only
+Date: Wed, 18 May 2005 11:29:09 -0400
+Message-ID: <20050518152909.GA5005@bender.817west.com>
+References: <201E6F5AC48C274996A5AD8304FAEF869AB9@p001ex03.porta.local>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <9927912d0505172322c98d013@mail.gmail.com>
+In-Reply-To: <201E6F5AC48C274996A5AD8304FAEF869AB9@p001ex03.porta.local>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,21 +21,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, May 18, 2005 at 10:22:20AM +0400, Visham Ramsurrun wrote:
-> Also, I wanted to know if connection tracking still works for a TCP
-> connection where the SYN packet passes through stateful firewall FW1,
-> the SYN/ACK packet passes through stateful firewall FW2, the ACK
-> passes again through FW1 and the first data packet passes through FW2.
-> Is the connection considered as ESTABLISHED at that point on both
-> firewalls?
+On Wed, May 18, 2005 at 02:21:50PM +0200, Baake, Matthias wrote:
+> No static IP
+> 
+> in this case this should work.
+> 
+>   $IPT -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/24 -j MASQUERADE
 
-absolutely not.
+MASQUERADE is for dynamic IP situations, SNAT is for static IP
+situations.  why are we recommending MASQUERADE in a static IP
+situation?
 
 -j
 
 --
-"Baliff: Do you swear to tell the truth, the whole truth, and nothing
- but the truth? 
- Peter: I do... ya bastard."
+"Stewie: Now look here...  Jo-LENE. I have an army to raise and I must
+ get to Managua at once. I require a window seat and an in-flight Happy
+ Meal. BUT NO PICKLES. OH, GOD HELP YOU IF I FIND PICKLES."
         --Family Guy
 
