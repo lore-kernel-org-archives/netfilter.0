@@ -1,11 +1,13 @@
-From: Askar <askarali@gmail.com>
-Subject: mangling stop working
-Date: Wed, 18 May 2005 10:34:32 +0500
-Message-ID: <a0f69e5050517223439804fad@mail.gmail.com>
-Reply-To: Askar <askarali@gmail.com>
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: Connection tracking issues!!
+Date: Wed, 18 May 2005 10:22:20 +0400
+Message-ID: <9927912d0505172322c98d013@mail.gmail.com>
+References: <428a4b34.1deda931.20f0.6f9fSMTPIN_ADDED@mx.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <428a4b34.1deda931.20f0.6f9fSMTPIN_ADDED@mx.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,52 +20,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-hi list from few days we are getting very strange problem on our
-office gateway running 2.6.11.8 kernel (custom compiled)
+Hi to all,
 
-We are using iproute2 + iptables marking feature to select different
-route and to route port 80 towards our cache server which again
-running linux + custom kernel.
+I read in the IPTables tutorial by Oskar Andreasson that the
+connection tracking does not follow the flow of a TCP connection. If I
+go with this, it means that after the SYN/ACK packet passes through
+the stateful firewall, the connection is set to ESTABLISHED.
 
+But it also says that it's only after the ACK packet has passed
+through the stateful firewall that the connection is considered
+ESTABLISHED. When SYN/ACK is received the flag is changed to SYN_RECV
+and not ESTABLISHED.
 
-#echo 221 cache.out >> /etc/iproute2/rt_tables
-#ip rule add fwmark 1 table cache.out
-#ip route add default via xxx.xxx.xxx.xx dev eth0 table cache.out
-#ip route flush cache
+Which one is good?
 
-#Mangle for Above Rule######
-iptables -A PREROUTING -i eth0 -t mangle -p tcp --dport 80 -j MARK
---set-mark 1 (marking for port 80, directed towards cache server)
-iptables -A PREROUTING -i eth0 -t mangle -p tcp -d xxx.xxx.xxx.xx -j
-MARK --set-mark 2 (direct the traffic for our company webserver)
-.
-.
-# then the SNAT rule
+Also, I wanted to know if connection tracking still works for a TCP
+connection where the SYN packet passes through stateful firewall FW1,
+the SYN/ACK packet passes through stateful firewall FW2, the ACK
+passes again through FW1 and the first data packet passes through FW2.
+Is the connection considered as ESTABLISHED at that point on both
+firewalls?
 
-From last two days if I checked on webserver (httpd) access.log, found
-that few of our LAN clients accessing web with proxy server IP, and
-the rest LAN clients with gatway IP. The problem is that we have few
-secure links which is restricted to be access from few IPs including
-the gateway IP. So if client coming with proxy server IP they got
-permission denied page.
-Then I have to add the proxy server IP in "allow", however this is not
-the solution thigns were working just fine from last few months its
-only from two days we are getting this problem.
-Yesterday I delete all the "ip rule" and rerun the firewall script,=20
-things start working but later in the morning I got the call from work
-that again few clients "LAN" getting the same "permission denied"
+Any input will be very much appreciated..
 
-Is this a bug in iproute2 or iptables ?
-
-Any help in this regard will be greatly appreciated.
-
-
-regards
-
-Askar Ali
---=20
-I love deadlines. I like the whooshing sound they make as they fly by.
-Douglas Adams
+Warm regards,
+Visham
 
