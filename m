@@ -1,8 +1,8 @@
-From: vaida bogdan <vaida.bogdan@gmail.com>
-Subject: allowing ssh in campus
-Date: Wed, 18 May 2005 00:42:26 +0000
-Message-ID: <12848a3b050517174268bc6b79@mail.gmail.com>
-Reply-To: vaida bogdan <vaida.bogdan@gmail.com>
+From: Askar <askarali@gmail.com>
+Subject: mangling stop working
+Date: Wed, 18 May 2005 10:34:32 +0500
+Message-ID: <a0f69e5050517223439804fad@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,26 +18,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-My campus connections look like this:
+hi list from few days we are getting very strange problem on our
+office gateway running 2.6.11.8 kernel (custom compiled)
 
-Dorm1 gateway ----\
-Dorm2 gateway ----|=3D> Campus gateway |-> OUTSIDE
-Dorm3 gateway ----/                                  \-> University Servers
+We are using iproute2 + iptables marking feature to select different
+route and to route port 80 towards our cache server which again
+running linux + custom kernel.
 
-Dorms' ips are private on different internal networks.
 
-I want to allow ssh (and other ports) access on request to users from
-one of the Dorms to OUTSIDE.
+#echo 221 cache.out >> /etc/iproute2/rt_tables
+#ip rule add fwmark 1 table cache.out
+#ip route add default via xxx.xxx.xxx.xx dev eth0 table cache.out
+#ip route flush cache
 
-If I allow Student1 ssh on dorm1 gateway then what do I tell the
-Campus gateway to allow ? (I can't allow full access from Dorm1's
-gateway public ip.
+#Mangle for Above Rule######
+iptables -A PREROUTING -i eth0 -t mangle -p tcp --dport 80 -j MARK
+--set-mark 1 (marking for port 80, directed towards cache server)
+iptables -A PREROUTING -i eth0 -t mangle -p tcp -d xxx.xxx.xxx.xx -j
+MARK --set-mark 2 (direct the traffic for our company webserver)
+.
+.
+# then the SNAT rule
 
-I would also like to consider security matters: (allow by ip&mac, or
-through proxy).
+From last two days if I checked on webserver (httpd) access.log, found
+that few of our LAN clients accessing web with proxy server IP, and
+the rest LAN clients with gatway IP. The problem is that we have few
+secure links which is restricted to be access from few IPs including
+the gateway IP. So if client coming with proxy server IP they got
+permission denied page.
+Then I have to add the proxy server IP in "allow", however this is not
+the solution thigns were working just fine from last few months its
+only from two days we are getting this problem.
+Yesterday I delete all the "ip rule" and rerun the firewall script,=20
+things start working but later in the morning I got the call from work
+that again few clients "LAN" getting the same "permission denied"
 
-Thanks in advance,
-   Bogdan
+Is this a bug in iproute2 or iptables ?
+
+Any help in this regard will be greatly appreciated.
+
+
+regards
+
+Askar Ali
+--=20
+I love deadlines. I like the whooshing sound they make as they fly by.
+Douglas Adams
 
