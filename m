@@ -1,12 +1,12 @@
-From: varun_saa@vsnl.net
-Subject: smtp/pop and NAT only
-Date: Wed, 18 May 2005 14:52:01 +0500
-Message-ID: <18e051d18e05d2.18e05d218e051d@vsnl.net>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: smtp/pop and NAT only
+Date: Wed, 18 May 2005 12:24:56 +0200
+Message-ID: <20050518102513.682708EDCEB@smtp.sterenborg.info>
+References: <18e051d18e05d2.18e05d218e051d@vsnl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
+In-Reply-To: <18e051d18e05d2.18e05d218e051d@vsnl.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,24 +20,42 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
-     My server is on FC3 (fedora3)
-eth0 is WAN ---> DSL router ----> ISP
-eth1 is LAN
+> Hello,
+>      My server is on FC3 (fedora3)
+> eth0 is WAN ---> DSL router ----> ISP
+> eth1 is LAN
 
-I would like to that 2 client 192.168.0.253
-and 192.168.0.248 are connected to " fedora3 server "
-via NAT.
+Not sure I understand the ASCII art : is your server the DSL router ?
 
-And all other clients connected to "fedora3 server"
-are able to only send / recieve mail.
+> I would like to that 2 client 192.168.0.253 and 192.168.0.248 
+> are connected to " fedora3 server "
+> via NAT.
 
-Howto do that
+So that they can do "anything" ?
 
-Thanks
+> And all other clients connected to "fedora3 server"
+> are able to only send / recieve mail.
+> 
+> Howto do that
 
-Varun
+Something like :
+
+$IPT -P FORWARD DROP
+
+$IPT -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+$IPT -A FORWARD -i eth1 -o eth0 -s 192.168.0.248 -j ACCEPT
+$IPT -A FORWARD -i eth1 -o eth0 -s 192.168.0.253 -j ACCEPT
+$IPT -A FORWARD -i eth1 -o eth0 -p tcp --dport 25 -j ACCEPT
+$IPT -A FORWARD -i eth1 -o eth0 -p tcp --dport 110 -j ACCEPT
+
+$IPT -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/24 -j SNAT \
+  --to-source <inet_ip>
+
+Maybe Oscars IPTables tutorial is something useful :
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
 
+Gr,
+Rob
 
 
