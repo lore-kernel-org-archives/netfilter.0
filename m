@@ -1,16 +1,12 @@
-From: vaida bogdan <vaida.bogdan@gmail.com>
-Subject: Re: allowing ssh in campus
-Date: Wed, 18 May 2005 08:49:46 +0000
-Message-ID: <12848a3b05051801491c31d816@mail.gmail.com>
-References: <12848a3b050517174268bc6b79@mail.gmail.com>
-	<200505180959.37970.torre_cremata@mail.ru>
-	<12848a3b05051801482ce06a21@mail.gmail.com>
-Reply-To: vaida bogdan <vaida.bogdan@gmail.com>
+From: varun_saa@vsnl.net
+Subject: smtp/pop and NAT only
+Date: Wed, 18 May 2005 14:52:01 +0500
+Message-ID: <18e051d18e05d2.18e05d218e051d@vsnl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <12848a3b05051801482ce06a21@mail.gmail.com>
-Content-Disposition: inline
+Content-language: en
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,35 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="koi8-r"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-SSBoYXZlIE5BVC4KKAo+IElmIEkgYWxsb3cgU3R1ZGVudDEgc3NoIG9uIGRvcm0xIGdhdGV3YXkg
-dGhlbiB3aGF0IGRvIEkgdGVsbCB0aGUKPiBDYW1wdXMgZ2F0ZXdheSB0byBhbGxvdyA/IChJIGNh
-bid0IGFsbG93IGZ1bGwgYWNjZXNzIGZyb20gRG9ybTEncwo+IGdhdGV3YXkgcHVibGljIGlwLgop
-CgpPbiA1LzE4LzA1LCDwo9TSIPfPzMvP1yAg4czFy9PBzsTSz9fJ3iA8dG9ycmVfY3JlbWF0YUBt
-YWlsLnJ1PiB3cm90ZToKPiBIZWxsbywgQm9nZGFuLgo+Cj4g9yDTz8/C3cXOyckgz9QgMTgg7cHK
-IDIwMDUgMDQ6NDIgdmFpZGEgYm9nZGFuIM7B0MnTwcwoYSk6Cj4gPiBNeSBjYW1wdXMgY29ubmVj
-dGlvbnMgbG9vayBsaWtlIHRoaXM6Cj4gPgo+ID4gRG9ybTEgZ2F0ZXdheSAtLS0tXAo+ID4gRG9y
-bTIgZ2F0ZXdheSAtLS0tfD0+IENhbXB1cyBnYXRld2F5IHwtPiBPVVRTSURFCj4gPiBEb3JtMyBn
-YXRld2F5IC0tLS0vICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwtPiBVbml2ZXJz
-aXR5IFNlcnZlcnMKPiA+Cj4gPiBEb3JtcycgaXBzIGFyZSBwcml2YXRlIG9uIGRpZmZlcmVudCBp
-bnRlcm5hbCBuZXR3b3Jrcy4KPiA+Cj4gPiBJIHdhbnQgdG8gYWxsb3cgc3NoIChhbmQgb3RoZXIg
-cG9ydHMpIGFjY2VzcyBvbiByZXF1ZXN0IHRvIHVzZXJzIGZyb20KPiA+IG9uZSBvZiB0aGUgRG9y
-bXMgdG8gT1VUU0lERS4KPiA+Cj4gPiBJZiBJIGFsbG93IFN0dWRlbnQxIHNzaCBvbiBkb3JtMSBn
-YXRld2F5IHRoZW4gd2hhdCBkbyBJIHRlbGwgdGhlCj4gPiBDYW1wdXMgZ2F0ZXdheSB0byBhbGxv
-dyA/IChJIGNhbid0IGFsbG93IGZ1bGwgYWNjZXNzIGZyb20gRG9ybTEncwo+ID4gZ2F0ZXdheSBw
-dWJsaWMgaXAuCj4KPiBEbyB5b3UgaGF2ZSBOQVQgb24gRG9ybSdzIGdhdGV3YXlzPyBJZiB5b3Ug
-aGF2ZSwgdGhlbiBpdCdzIGhhcmQgdGFzayB0bwo+IGRpZmZlcmVudGlhdGUgdXNlcnMgb24gQ2Ft
-cHVzIGdhdGV3YXkuIFNvIEkgc3VwcG9zZSB0aGF0IHlvdSBkbyBub3QgaGF2ZSBOQVQKPiB0aGVy
-ZSBhbmQgdGhleSBhcmUgYW4gb3JkaW5hcnkgcm91dGVycy4gVGhlbiBJIHRoaW5rIHJ1bGVzIHNo
-b3VsZCBiZSBsaWtlCj4gdGhpczoKPgo+IGlwdGFibGVzIC1QIEZPUldBUkQgRFJPUAo+IGlwdGFi
-bGVzIC1BIEZPUldBUkQgLXMgPHVzZXJzX0lQPiAtcCB0Y3AgLS1kcG9ydCAyMiAtaiBBQ0NFUFQK
-PiBpcHRhYmxlcyAtQSBGT1JXQVJEIC1kIDx1c2Vyc19JUD4gLXAgdGNwIC0tc3BvcnQgMjIgLW0g
-c3RhdGUgLS1zdGF0ZQo+IEVTVEFCTElTSEVELFJFTEFURUQgLWogQUNDRVBUCj4KPiA+IEkgd291
-bGQgYWxzbyBsaWtlIHRvIGNvbnNpZGVyIHNlY3VyaXR5IG1hdHRlcnM6IChhbGxvdyBieSBpcCZt
-YWMsIG9yCj4gPiB0aHJvdWdoIHByb3h5KS4KPgo+IHlvdSBjYW4gdXNlIG1hYyBhZGRyZXNzIG9u
-bHkgZm9yIGxvY2FsIG5ldHdvcmtzLiBCdXQgcHJveHkgaXMgcG9zc2libGUuCj4gTG9vayBmb3Ig
-c3F1aWQncyBhY2Nlc3MgY29udHJvbCBsaXN0cy4KPgo+IEhhdmUgSSBtaXNzZWQgeW91IHF1ZXN0
-aW9uPwo+Cj4gLS0KPiBfX19fX19fX19fX18KPiBQZXRlci4KPgo=
+Hello,
+     My server is on FC3 (fedora3)
+eth0 is WAN ---> DSL router ----> ISP
+eth1 is LAN
+
+I would like to that 2 client 192.168.0.253
+and 192.168.0.248 are connected to " fedora3 server "
+via NAT.
+
+And all other clients connected to "fedora3 server"
+are able to only send / recieve mail.
+
+Howto do that
+
+Thanks
+
+Varun
+
+
+
 
