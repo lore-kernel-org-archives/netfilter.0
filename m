@@ -1,11 +1,12 @@
-From: Chadley Wilson <chadley@pinteq.co.za>
-Subject: Iptables
-Date: Thu, 19 May 2005 19:45:22 +0200
-Message-ID: <200505191945.22293.chadley@pinteq.co.za>
-Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_yCNjCJM8wneouIk"
+From: codewarrior@cuseeme.de
+Subject: rebuilding an OpensourceVideoconferencechattool
+Date: Thu, 19 May 2005 20:35:40 +0200
+Message-ID: <FD4800AA-B0D7-45E6-9E4A-621CF3DB1547@cuseeme.de>
+References: <200505191945.22293.chadley@pinteq.co.za>
+Mime-Version: 1.0 (Apple Message framework v730)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200505191945.22293.chadley@pinteq.co.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,176 +17,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
+To: netfilter@lists.netfilter.org, Richard Stallman <rms@gnu.org>
 
---Boundary-00=_yCNjCJM8wneouIk
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hello richard,  Experts ,
 
-Greetings,
+Sorry for my  offtopic post,
 
-Sort of still a newbie with iptables! I ve been at it for a while, but 
-struggle to understand when things don't work when I think they are right.
+During  our  maillinglist disscussions
+in the emac-list i thought  of making  an announcement.
 
-OK heres the problem:
+Long times ago, there was a smart video chat tool,
+called CuSeeMe. I am tied a little bit on the tool.
+Nowadays with the all this Streaming Servers the
+time for video chat tools is coming back with power.
 
-I have a dns server configure, master zone int network, slave is external dns 
-box.
+So, I thought, it would be a smart idea to
+bring  CuSeeMee back.
+Now I found, that the sources of CuSeeMe are
+no longer available. Somehow they are gone.
 
-Dhcp server only internal.
+What do you think about the idea of rebuilding it ?
 
-Iptables must do the following:
-allow one int ip (me) to the external int face for everything. (the external 
-interface is actually our other internal network which has the gateway to the 
-internet)
+i am looking for  people that want  to join this
+free open source project.
 
-when I set my default policy to drop, my DNS and windows file sharing from the 
-ext network doesn't work. My mail and internet still work. I have removed the 
-broken lines and set my policy back to ACCEPT. But I would feel much safer if 
-it were drop and only allow services that I choose. As it is now, I can 
-access the net, mail and windows file shares, the dns for the FTP server is 
-working and all is bliss.
-How do I make this more secure?
+based on: <http://quicktimetcl.sourceforge.net/>
+and <http://www.openquicktime.org/>
 
-etel is our gateway
-my router has 6 cards in it. 5 are bond0 1 eth0 int and ext respectively.  
+this could help<http://homepage.mac.com/netmaster_bruce/>
 
-Attached is my iptables file, 
+and this: <http://ashcast.org/>
 
-Please could some one show me what is wrong I can't figure it out.
+more about the cuseeme history:
 
+<http://www.geektimes.com/michael/CU-SeeMe/internetTVwithCUSeeMe/ 
+index.html>
+
+CU-SeeMe WAS a free peer-to-peer videoconferencing program
+that allows interactive multiparty video and voice communication over
+the Internet or any local TCP/IP-based network.
+
+a free downloadable version for osx  10.41 tiger ROARR!!
+
+http://vchat.cu-seeme.org/download.html
+
+and my  testreflctor
+
+cuseeme:// 207.44.156.3 CID 0
+Max send.14 Max. Recieve.40
+
+
+more  about configuration;
+
+<http://www.daffi.org/cu.htm>
+
+and  i am happy  for  anyone  who is  interested joining
+this  great opensource project and
+will answer any question regarding this waiting for  any replys.
+
+So once again, sorry for bothering you with, perhaps
+an Off-Topic theme.
+
+
+have a nice  day  or  night
+
+Greetings from old europe
+
+please spread the  word
+
+marc manthey
 
 -- 
-Chadley Wilson
-Redhat Certified Technician 
-Cert Number: 603004708291270
-Pinnacle Micro
-Manufacturers of Proline Computers
-====================================
-Exercise freedom, Use LINUX
-=====================================
+"In a world without walls or fences, who needs Windows and Gates?"
 
---Boundary-00=_yCNjCJM8wneouIk
-Content-Type: text/plain;
-  charset="us-ascii";
-  name="iptables"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="iptables"
+Les Enfants Terribles Network
+office: 0049.221.355.80.32
+mobile: 0049.177.341.54.81
+http://www.cuseeme.de
+http://brain.let.de
+http://www.applehelpers.com
+aim://macfreak2004
+macfreak@jabber.org
 
-########    Firewall Setup     ##################
-########      Config           ##################
-#set -x
-ipt="/usr/sbin/iptables"
-ext="eth0"
-int="bond0"
-lo="127.0.0.1"
-chad="192.168.2.5"
-etel="196.25.100.28"
-#################################################
-
-
-#################################################
-####                                         ####
-####               BASIC SETUP               ####
-####                                         ####
-#################################################
-
-
-
-#Enable IP Forwarding
-echo "1" >> /proc/sys/net/ipv4/ip_forward
-
-
-#Clear All Tables
-${ipt} -t filter -F
-${ipt} -t nat -F
-
-
-##  Allow all from local interfaces [localhost]
-${ipt} -t filter -A INPUT -s ${lo} -j ACCEPT
-
-
-##  Allow all prerouting
-${ipt} -t nat -A PREROUTING -s 192.168.2.0/255.255.255.0 -j ACCEPT
-${ipt} -t nat -A PREROUTING -s 196.25.100.5/255.255.255.0 -j ACCEPT
-
-
-##  Allow all forwarding
-${ipt} -t filter -A FORWARD -i ${int} -o ${ext} -m state --state RELATED,ESTABLISHED -j ACCEPT
-${ipt} -t filter -A FORWARD -i ${ext} -o ${int} -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-
-##  Allow pings 
-${ipt} -t filter -A INPUT -p icmp -j ACCEPT
-
-
-##  Keep established connections on all interfaces
-${ipt} -t filter -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-${ipt} -t filter -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-##  Accept www from internet {ext}
-${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 80 -j ACCEPT
-
-
-#################################################
-####                                         ####
-####                RULES                    ####
-####                                         ####
-#################################################
-
-
-
-
-
-##  Masquerade {chad} outgoing to internet
-${ipt} -t nat -A POSTROUTING -o ${ext} -s ${chad} -j MASQUERADE
-${ipt} -t filter -A FORWARD -i ${int} -o ${ext} -s ${chad} -j ACCEPT
-
-
-##  Accept SSH from {etel}
-${ipt} -t filter -A INPUT -i ${ext} -s ${etel} -p tcp --dport 22 -j ACCEPT
-
-
-##  Accept ssh from all internal
-${ipt} -t filter -A INPUT -i ${int} -p tcp --dport 22 -j ACCEPT
-
-## Accept telnet
-${ipt} -t filter -A INPUT -p tcp --dport 23 -j ACCEPT
-${ipt} -t filter -A INPUT -p udp --dport 23 -j ACCEPT
-
-
-##  Accept incoming SMTP
-${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 25 -j ACCEPT
-
-
-##  Accept external POP3
-${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 110 -j ACCEPT
-
-
-##  Allow mail from ext to int
-${ipt} -t filter -A FORWARD -p tcp -m tcp -m state -s ${chad} -d 196.25.100.21 -o ${ext} --sport 25 --state NEW,ESTABLISHED,RELATED -j ACCEPT
-${ipt} -t filter -A FORWARD -p tcp -m tcp -m state -s ${chad} -d 196.25.100.21 -o ${ext} --sport 110 --state NEW,ESTABLISHED,RELATED -j ACCEPT
-
-
-##  Allow DNS updates
-${ipt} -t filter -A INPUT -i ${int} -p tcp --dport 53 -j ACCEPT
-${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 53 -j ACCEPT
-
-
-## Accept all from local interfaces
-${ipt} -t filter -A INPUT -i ${int} -j ACCEPT
-${ipt} -t filter -A INPUT -i ${int} -j ACCEPT
-
-
-## Drop all the rest, incoming , and forward between interfaces
-#${ipt} -t filter -A INPUT -j DROP
-#${ipt} -t filter -A FORWARD -j DROP
-
-### END OF FIREWALL ###
-
---Boundary-00=_yCNjCJM8wneouIk--
 
 
