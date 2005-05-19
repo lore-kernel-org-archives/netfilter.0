@@ -1,11 +1,11 @@
-From: Sertys <sertys@supportivo.org>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Prevent traceroutes
-Date: Fri, 20 May 2005 04:12:09 +0300
-Message-ID: <opsq1uyjfp76nf2y@xonix>
+Date: Thu, 19 May 2005 19:23:14 -0400
+Message-ID: <20050519232314.GA9369@bender.817west.com>
 References: <fad9d484050519150730dbc53d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 In-Reply-To: <fad9d484050519150730dbc53d@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,40 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
-To: Netfilter list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-In fact you can do it partially - windows tracert tool is based on ICMP =20
-and is easily preventable and routable. *nix traceroute and mtr are based=
- =20
-on udp and all you can do is redirect all yer traffic over the other =20
-network, which is purely incorrect. The trick is that the user can point =
-=20
-any port for udp connection and it still will work and trace. Sorry 4 the=
- =20
-disappointment.
-
-
-
-On Fri, 20 May 2005 00:07:11 +0200, Kenneth Kalmer =20
-<kenneth.kalmer@gmail.com> wrote:
-
+On Fri, May 20, 2005 at 12:07:11AM +0200, Kenneth Kalmer wrote:
 > Guys
->
+> 
 > How can I prevent users from doing a traceroute through my box using
 > iptables? Better still, how can I route a traceroute through a
 > different network than the default one?
->
-> Kind regards.
->
 
+this is not 100% infallible; as anyone running the traceroute can change
+the defaults, but you need to block both the UDP method of tracerouting
+and the ICMP method of tracerouting:
 
+  # standard UDP ports used by traceroute
+  iptables -A INPUT -p udp --dport 33434:33523 -j DROP
+  iptables -A FORWARD -p udp --dport 33434:33523 -j DROP
 
---=20
-www.supportivo.org
+  # ICMP echo-req's w/ low TTL
+  iptables -A INPUT -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
+  iptables -A FORWARD -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
 
-I can't stop myself checking for pigs in the outlets. Everybody thinks i'=
-m =20
-a punk, cause of the hairstyle(220V).
-end
+the choice of 5 as the min TTL to match on is purely arbitrary...you may
+be able to choose a better value for your specific topology.
+
+-j
+
+--
+"Brian: Congratulations, Peter. You're the Spalding Gray of crap."
+        --Family Guy
 
