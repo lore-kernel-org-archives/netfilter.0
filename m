@@ -1,12 +1,13 @@
-From: "Wennie V. Lagmay" <wlagmay@yanbulink.net>
-Subject: Re: Host blocking
-Date: Thu, 19 May 2005 07:10:56 +0300
-Message-ID: <000901c55c28$c1840870$d40aa8c0@winxp>
-References: <003b01c55acb$841114a0$f00aa9c0@winxp><20050517131415.GA844@bender.817west.com><000901c55b78$87815390$f00aa9c0@winxp>
-	<20050518150826.GA4863@bender.817west.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: SSH Brute force attacks
+Date: Wed, 18 May 2005 23:55:27 -0500
+Message-ID: <428C1C3F.9030600@riverviewtech.net>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>	<42898402.10507@eccotours.dyndns.org>
+	<4289E72F.7020901@wp.pl> <428B3798.9050407@eccotours.dyndns.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <428B3798.9050407@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,92 +18,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi Jason,
+> So my question is, cant we make iptables see the number of NEW 
+> connections / attempts (Basically dictionary attack) given in a time 
+> frame. And if the number of NEW connections exceed a certain time frame. 
+> Then start DROP or TARPIT.
 
-Thank you very much, I was able to block it but I do it this way:
+This *IS* based the number of NEW connections in a given time frame.  Note the "--seconds 60" parameter.  This is designed to see if there have been less than x number of NEW connections in the 60 second period.  If there have been less than x number of NEW connections in y time (seconds) then RETURN back to the calling chain and do not continue to parse this chain and ultimately TARPIT or DROP.
 
-iptables -A FORWARD -s 192.168.10.0/24  -d "ISP ISP ADDRESS" -j REJECT
-iptables -A FORWARD -d 192.168.10.0/24  -s "ISP ISP ADDRESS" -j REJECT
-iptables -A FORWARD -s 192.168.10.0/24 -j ACCEPT
-iptables -A FORWARD -d 192.168.10.0/24  -j ACCEPT
-
-Even though it is working, I want to know if I've done it right? and what is 
-the --syn in your sysntax?
+NOTE:  Take a look at https://lists.netfilter.org/pipermail/netfilter/2005-May/060570.html as this email has a newer (functioning) version of this script.
 
 
 
-
------ Original Message ----- 
-From: "Jason Opperisano" <opie@817west.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, May 18, 2005 6:08 PM
-Subject: Re: Host blocking
-
-
-> On Wed, May 18, 2005 at 10:09:27AM +0300, Wennie V. Lagmay wrote:
->> Hi Jason,
->>
->> I try the the configuration and it is not working the way I want, maybe I
->> need to elaborate my config.
->>
->> The 1st linux server is the firewall:  It do forwarding, firewalling and
->> natting it has 2 NIC card. The 1st NIC card IP is 203.172.xxx.97 / 30 
->> which
->> is connected to the internet , The 2nd NIC card is 203.172.xxx.105 / 28
->> connected to LAN. local IP block for the clients 192.168.10.0/24 which is
->> NAtted to 203.172.xxx.112-114.
->>
->> The second is a linux server is a proxy server: It also have 2 NIC card.
->> 1st NIC card is 203.172.xxx.102 /30 which is connected to the internet, 
->> the
->> 2nd NIC card is 203.172.xxx.106 / 28 connected to LAN.
->>
->> The process work like this: a client with ip address 192.168.10.2 wants 
->> to
->> connect to the internet it will pass through firewall, the firewall then
->> forward it to proxy and the will get the page then return it back to the
->> client. in this case no natting is involve. the proxy server gets the 
->> page
->> by its ip address then return it to 192.168.10.2. On the other hand if 
->> the
->> same client want to chat, it will go to firewall, the firewall then
->> translate the ip 192.168.10.2 to 203.172.xxx.112 then the client can 
->> chat.
->>
->> Our system work this way, As I mention they client can define our own 
->> proxy
->> or our ISP's proxy, But I want every body to use our own proxy becaus we
->> have dalay_pool.
->
-> k--slight modification of previous rules:
->
->  # allow internal machines to connect to our proxy
->  iptables -A FORWARD -p tcp --syn -s 192.168.10.0/24 \
->    -d $OUR_PROXY_IP --dport $PROXY_PORT -j ACCEPT
->
->  # drop packets from inside net to ISP Proxy
->  iptables -A FORWARD -p tcp --syn -s 192.168.10.0/24 \
->    -d $ISP_PROXY_IP -j DROP
->
-> if your FORWARD policy is set to DROP, and you only allow specific
-> services through the firewall from the internal network, keeping your
-> users from connecting to things they shouldn't connect to becomes much
-> easier.
->
-> -j
->
-> --
-> "Black Knight: You see kids? Your father's nothing but a fizzle!
-> Peter: Hey, pal, nobody calls me a fizzle and gets away with it! Except
-> for that one guy who called me a fizzle and then he ran off. But
-> nobody else has ever called me a fizzle and got away with it! Actually
-> though, he was the only one who ever called me a fizzle. But after
-> today, only half the people who've called me a fizzle will have gotten
-> away with it!"
->        --Family Guy
-> 
-
+Grant. . . .
 
