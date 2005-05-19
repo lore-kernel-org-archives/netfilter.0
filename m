@@ -1,12 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
 Subject: Re: Prevent traceroutes
-Date: Thu, 19 May 2005 19:23:14 -0400
-Message-ID: <20050519232314.GA9369@bender.817west.com>
+Date: Thu, 19 May 2005 19:33:47 -0400
+Message-ID: <20050519233347.GA9462@bender.817west.com>
 References: <fad9d484050519150730dbc53d@mail.gmail.com>
+	<20050519232314.GA9369@bender.817west.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <fad9d484050519150730dbc53d@mail.gmail.com>
+In-Reply-To: <20050519232314.GA9369@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,31 +22,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, May 20, 2005 at 12:07:11AM +0200, Kenneth Kalmer wrote:
-> Guys
+On Thu, May 19, 2005 at 07:23:14PM -0400, Jason Opperisano wrote:
+>   # standard UDP ports used by traceroute
+>   iptables -A INPUT -p udp --dport 33434:33523 -j DROP
+>   iptables -A FORWARD -p udp --dport 33434:33523 -j DROP
 > 
-> How can I prevent users from doing a traceroute through my box using
-> iptables? Better still, how can I route a traceroute through a
-> different network than the default one?
+>   # ICMP echo-req's w/ low TTL
+>   iptables -A INPUT -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
+>   iptables -A FORWARD -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
 
-this is not 100% infallible; as anyone running the traceroute can change
-the defaults, but you need to block both the UDP method of tracerouting
-and the ICMP method of tracerouting:
+looking at that response--there's a situation screaming for a custom
+chain:
 
-  # standard UDP ports used by traceroute
-  iptables -A INPUT -p udp --dport 33434:33523 -j DROP
-  iptables -A FORWARD -p udp --dport 33434:33523 -j DROP
+  iptables -N DROP_TRACE
+  iptables -A DROP_TRACE -p udp --dport 33434:33523 -j DROP
+  iptables -A DROP_TRACE -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
 
-  # ICMP echo-req's w/ low TTL
-  iptables -A INPUT -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
-  iptables -A FORWARD -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
-
-the choice of 5 as the min TTL to match on is purely arbitrary...you may
-be able to choose a better value for your specific topology.
+  iptables -A INPUT -j DROP_TRACE
+  iptables -A FORWARD -j DROP_TRACE
 
 -j
 
 --
-"Brian: Congratulations, Peter. You're the Spalding Gray of crap."
+"Announcer: Paw McTucket Beer. If you drink it, hot women will have
+ sex in your backyard."
         --Family Guy
 
