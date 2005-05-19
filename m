@@ -1,10 +1,10 @@
-From: "info@beeplove.com" <info@beeplove.com>
-Subject: Re: SSH Brute force attacks
-Date: Thu, 19 May 2005 11:31:08 -0400
-Message-ID: <203610-22005541915318418@M2W027.mail2web.com>
-Reply-To: info@beeplove.com
+From: Chadley Wilson <chadley@pinteq.co.za>
+Subject: Iptables
+Date: Thu, 19 May 2005 19:45:22 +0200
+Message-ID: <200505191945.22293.chadley@pinteq.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_yCNjCJM8wneouIk"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,68 +16,176 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I don't agree with you=2E
-See this:
-http://portknocking=2Eorg/view/details
+--Boundary-00=_yCNjCJM8wneouIk
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Greetings,
+
+Sort of still a newbie with iptables! I ve been at it for a while, but 
+struggle to understand when things don't work when I think they are right.
+
+OK heres the problem:
+
+I have a dns server configure, master zone int network, slave is external dns 
+box.
+
+Dhcp server only internal.
+
+Iptables must do the following:
+allow one int ip (me) to the external int face for everything. (the external 
+interface is actually our other internal network which has the gateway to the 
+internet)
+
+when I set my default policy to drop, my DNS and windows file sharing from the 
+ext network doesn't work. My mail and internet still work. I have removed the 
+broken lines and set my policy back to ACCEPT. But I would feel much safer if 
+it were drop and only allow services that I choose. As it is now, I can 
+access the net, mail and windows file shares, the dns for the FTP server is 
+working and all is bliss.
+How do I make this more secure?
+
+etel is our gateway
+my router has 6 cards in it. 5 are bond0 1 eth0 int and ext respectively.  
+
+Attached is my iptables file, 
+
+Please could some one show me what is wrong I can't figure it out.
 
 
-Port knocking can be made even more secure by using 'recent' match and
-TARPIT target=2E
+-- 
+Chadley Wilson
+Redhat Certified Technician 
+Cert Number: 603004708291270
+Pinnacle Micro
+Manufacturers of Proline Computers
+====================================
+Exercise freedom, Use LINUX
+=====================================
 
-If you send any packet to a port of my server that is not listening to
-(other than secret port), you will have to stay quite for 5 minutes to sen=
-d
-another try=2E
-Now, if there have 3 sequential port to get in my server using port
-knocking technique, how easy it will be if you fail to provide the sequenc=
-e
-correctly=2E
-You will have just one chace to provide the sequence in every five minutes=
-=2E
-This can be make even harder by having 5 or more sequence of port or by
-using TARPIT target=2E
-At the end, if you really can get 22 port open, I will suggest you to spen=
-t
-one night in Las Vegas and share the winning money at morning with us! :p
+--Boundary-00=_yCNjCJM8wneouIk
+Content-Type: text/plain;
+  charset="us-ascii";
+  name="iptables"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="iptables"
 
-Mohammad
-
-
-
-Original Message:
------------------
-From: Andrew Schulman andrex@alumni=2Eutexas=2Enet
-Date: Thu, 19 May 2005 11:01:24 -0400
-To: netfilter@lists=2Enetfilter=2Eorg
-Subject: Re: SSH Brute force attacks
-
+########    Firewall Setup     ##################
+########      Config           ##################
+#set -x
+ipt="/usr/sbin/iptables"
+ext="eth0"
+int="bond0"
+lo="127.0.0.1"
+chad="192.168.2.5"
+etel="196.25.100.28"
+#################################################
 
 
-> How about this:
->=20
-> 1=2E You will keep one random high port to accept new connection, say 32=
-456=2E
-> You box wont listen on that port though=2E
-> 2=2E If there have a request on that port, using recent match, you will
-> accpet new connection in different high port for 1 mintute=2E say port i=
-s
-> 34521
-> 3=2E You will send new connection request on 34521, again using recent m=
-atch
-> you will open port 22 to accept new connection for 1-3 minutes=2E
-> 4=2E You will log into your box !!
-
-Port knocking is the same as a plaintext password=2E
-http://software=2Enewsforge=2Ecom/software/04/08/02/1954253=2Eshtml
+#################################################
+####                                         ####
+####               BASIC SETUP               ####
+####                                         ####
+#################################################
 
 
 
---------------------------------------------------------------------
-mail2web - Check your email from the web at
-http://mail2web=2Ecom/ =2E
+#Enable IP Forwarding
+echo "1" >> /proc/sys/net/ipv4/ip_forward
 
+
+#Clear All Tables
+${ipt} -t filter -F
+${ipt} -t nat -F
+
+
+##  Allow all from local interfaces [localhost]
+${ipt} -t filter -A INPUT -s ${lo} -j ACCEPT
+
+
+##  Allow all prerouting
+${ipt} -t nat -A PREROUTING -s 192.168.2.0/255.255.255.0 -j ACCEPT
+${ipt} -t nat -A PREROUTING -s 196.25.100.5/255.255.255.0 -j ACCEPT
+
+
+##  Allow all forwarding
+${ipt} -t filter -A FORWARD -i ${int} -o ${ext} -m state --state RELATED,ESTABLISHED -j ACCEPT
+${ipt} -t filter -A FORWARD -i ${ext} -o ${int} -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+
+##  Allow pings 
+${ipt} -t filter -A INPUT -p icmp -j ACCEPT
+
+
+##  Keep established connections on all interfaces
+${ipt} -t filter -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+${ipt} -t filter -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+##  Accept www from internet {ext}
+${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 80 -j ACCEPT
+
+
+#################################################
+####                                         ####
+####                RULES                    ####
+####                                         ####
+#################################################
+
+
+
+
+
+##  Masquerade {chad} outgoing to internet
+${ipt} -t nat -A POSTROUTING -o ${ext} -s ${chad} -j MASQUERADE
+${ipt} -t filter -A FORWARD -i ${int} -o ${ext} -s ${chad} -j ACCEPT
+
+
+##  Accept SSH from {etel}
+${ipt} -t filter -A INPUT -i ${ext} -s ${etel} -p tcp --dport 22 -j ACCEPT
+
+
+##  Accept ssh from all internal
+${ipt} -t filter -A INPUT -i ${int} -p tcp --dport 22 -j ACCEPT
+
+## Accept telnet
+${ipt} -t filter -A INPUT -p tcp --dport 23 -j ACCEPT
+${ipt} -t filter -A INPUT -p udp --dport 23 -j ACCEPT
+
+
+##  Accept incoming SMTP
+${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 25 -j ACCEPT
+
+
+##  Accept external POP3
+${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 110 -j ACCEPT
+
+
+##  Allow mail from ext to int
+${ipt} -t filter -A FORWARD -p tcp -m tcp -m state -s ${chad} -d 196.25.100.21 -o ${ext} --sport 25 --state NEW,ESTABLISHED,RELATED -j ACCEPT
+${ipt} -t filter -A FORWARD -p tcp -m tcp -m state -s ${chad} -d 196.25.100.21 -o ${ext} --sport 110 --state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+
+##  Allow DNS updates
+${ipt} -t filter -A INPUT -i ${int} -p tcp --dport 53 -j ACCEPT
+${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 53 -j ACCEPT
+
+
+## Accept all from local interfaces
+${ipt} -t filter -A INPUT -i ${int} -j ACCEPT
+${ipt} -t filter -A INPUT -i ${int} -j ACCEPT
+
+
+## Drop all the rest, incoming , and forward between interfaces
+#${ipt} -t filter -A INPUT -j DROP
+#${ipt} -t filter -A FORWARD -j DROP
+
+### END OF FIREWALL ###
+
+--Boundary-00=_yCNjCJM8wneouIk--
 
 
