@@ -1,13 +1,11 @@
-From: Brian Atkins <batkins@tlcdelivers.com>
-Subject: Re: Natting IPs hanging
-Date: Fri, 20 May 2005 10:38:47 +0000 (UTC)
-Message-ID: <42908917.40407@tlcdelivers.com>
-References: <428FBAB0.8030206@tlcdelivers.com>
+From: "Limbert Fuentes Quiroga" <Limbert.Fuentes@unilever.com>
+Subject: Iptables Configuring my Firewall with DMZ
+Date: Thu, 19 May 2005 19:21:10 -0400
+Message-ID: <ISSMTP.2000_62_.20050519192110.202F@unilever.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Date: Sun, 22 May 2005 06:28:55 -0700
-In-Reply-To: <428FBAB0.8030206@tlcdelivers.com>
+Content-Language: es-ESP
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,259 +16,250 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="windows-1252"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Brian Atkins wrote:
+Dear All
 
-> Jason and John,
->
-> Again, thanks for the responses.  I've finally had an opportunity to 
-> dig back into it after a rather nightmare-ish week...
->
-> I tried a couple of different things, without much success.  First, 
-> seeing as how I'm realtively new at this, I went back to the docs on 
-> Netfilter and pulled a script out of the appedices of one of the 
-> HOWTOs and modified it for my use.  Following their setup, I used it 
-> to create several new chains and new rules that I hadn't thought of 
-> implementing.  Now, when I went back and checked out ip_tables_names 
-> and ip_tables_targets, I get the following:
->
-> root@fw>cat /proc/net/ip_tables_names
-> mangle
-> nat
-> filter
->
-> root@fw>cat /proc/net/ip_tables_targets
-> REJECT
-> LOG
-> DNAT
-> SNAT
->
-> Also, I checked out the kernel config and got the following list of 
-> modules that were created with the new build:
-> root@fw>grep _NF_ /usr/src/linux/.config
-> CONFIG_IP_NF_CONNTRACK=m
-> # CONFIG_IP_NF_CT_ACCT is not set
-> # CONFIG_IP_NF_CONNTRACK_MARK is not set
-> # CONFIG_IP_NF_CT_PROTO_SCTP is not set
-> CONFIG_IP_NF_FTP=m
-> # CONFIG_IP_NF_IRC is not set
-> # CONFIG_IP_NF_TFTP is not set
-> # CONFIG_IP_NF_AMANDA is not set
-> # CONFIG_IP_NF_QUEUE is not set
-> CONFIG_IP_NF_IPTABLES=m
-> CONFIG_IP_NF_MATCH_LIMIT=m
-> CONFIG_IP_NF_MATCH_IPRANGE=m
-> CONFIG_IP_NF_MATCH_MAC=m
-> CONFIG_IP_NF_MATCH_PKTTYPE=m
-> CONFIG_IP_NF_MATCH_MARK=m
-> CONFIG_IP_NF_MATCH_MULTIPORT=m
-> CONFIG_IP_NF_MATCH_TOS=m
-> CONFIG_IP_NF_MATCH_RECENT=m
-> CONFIG_IP_NF_MATCH_ECN=m
-> CONFIG_IP_NF_MATCH_DSCP=m
-> CONFIG_IP_NF_MATCH_AH_ESP=m
-> CONFIG_IP_NF_MATCH_LENGTH=m
-> CONFIG_IP_NF_MATCH_TTL=m
-> CONFIG_IP_NF_MATCH_TCPMSS=m
-> CONFIG_IP_NF_MATCH_HELPER=m
-> CONFIG_IP_NF_MATCH_STATE=m
-> CONFIG_IP_NF_MATCH_CONNTRACK=m
-> CONFIG_IP_NF_MATCH_OWNER=m
-> CONFIG_IP_NF_MATCH_ADDRTYPE=m
-> CONFIG_IP_NF_MATCH_REALM=m
-> # CONFIG_IP_NF_MATCH_SCTP is not set
-> CONFIG_IP_NF_MATCH_COMMENT=m
-> # CONFIG_IP_NF_MATCH_HASHLIMIT is not set
-> CONFIG_IP_NF_FILTER=m
-> CONFIG_IP_NF_TARGET_REJECT=m
-> CONFIG_IP_NF_TARGET_LOG=m
-> CONFIG_IP_NF_TARGET_ULOG=m
-> CONFIG_IP_NF_TARGET_TCPMSS=m
-> CONFIG_IP_NF_NAT=m
-> CONFIG_IP_NF_NAT_NEEDED=y
-> CONFIG_IP_NF_TARGET_MASQUERADE=m
-> CONFIG_IP_NF_TARGET_REDIRECT=m
-> CONFIG_IP_NF_TARGET_NETMAP=m
-> CONFIG_IP_NF_TARGET_SAME=m
-> CONFIG_IP_NF_NAT_SNMP_BASIC=m
-> CONFIG_IP_NF_NAT_FTP=m
-> CONFIG_IP_NF_MANGLE=m
-> CONFIG_IP_NF_TARGET_TOS=m
-> CONFIG_IP_NF_TARGET_ECN=m
-> CONFIG_IP_NF_TARGET_DSCP=m
-> CONFIG_IP_NF_TARGET_MARK=m
-> CONFIG_IP_NF_TARGET_CLASSIFY=m
-> CONFIG_IP_NF_RAW=m
-> CONFIG_IP_NF_TARGET_NOTRACK=m
-> CONFIG_IP_NF_ARPTABLES=m
-> CONFIG_IP_NF_ARPFILTER=m
-> CONFIG_IP_NF_ARP_MANGLE=m
->
-> Likewise, here is what is currently loaded:
-> root@fw>lsmod
-> Module                  Size  Used by
-> ip_nat_ftp              3584  0
-> ip_conntrack_ftp       72976  1 ip_nat_ftp
-> ipt_state               2560  5
-> ipt_limit               3072  2
-> iptable_mangle          3328  0
-> ipt_REJECT              6528  1
-> ipt_LOG                 7552  2
-> iptable_nat            23868  2 ip_nat_ftp
-> ip_conntrack           49992  4 
-> ip_nat_ftp,ip_conntrack_ftp,ipt_state,iptable_nat
-> iptable_filter          3328  1
-> ip_tables              23296  7 
-> ipt_state,ipt_limit,iptable_mangle,ipt_REJECT,ipt_LOG,iptable_nat,iptable_filter 
->
-> BLADABLADABLADA
->
-> Here is my routing table (for what it's worth):
-> root@fw>route
-> Kernel IP routing table
-> Destination     Gateway         Genmask         Flags Metric Ref    
-> Use Iface
-> [OUTSIDE _NET]  *               255.255.255.192 U     0      0        
-> 0 eth0
-> [INSIDE_NET]    *               255.0.0.0       U     0      0        
-> 0 eth2
-> loopback        localhost       255.0.0.0       UG    0      0        
-> 0 lo
-> default         [OUTSIDE_GW]    0.0.0.0         UG    0      0        
-> 0 eth0
->
-> And, finally, my current ruleset (and I welcome all critiques):
-> root@fw>iptables-save
-> # Generated by iptables-save v1.3.1
-> *mangle
-> :PREROUTING ACCEPT [4431:597383]
-> :INPUT ACCEPT [4387:587673]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [1709:222042]
-> :POSTROUTING ACCEPT [1686:202254]
-> COMMIT
-> *nat
-> :PREROUTING ACCEPT [2731:449771]
-> :POSTROUTING ACCEPT [13:950]
-> :OUTPUT ACCEPT [13:950]
-> -A PREROUTING -d [PUBLIC_IP] -i eth0 -j DNAT --to-destination 
-> [PRIVATE_IP]
-> -A PREROUTING -d [PUBLIC_IP] -i eth0 -j DNAT --to-destination 
-> [PRIVATE_IP]
-> -A POSTROUTING -s [PRIVATE_IP] -o eth0 -j SNAT --to-source [PUBLIC_IP]
-> -A POSTROUTING -s [PRIVATE_IP] -o eth0 -j SNAT --to-source [PUBLIC_IP]
-> COMMIT
-> *filter
-> :ALLOWED - [0:0]
-> :BAD_TCP_PACKETS - [0:0]
-> :ICMP_PACKETS - [0:0]
-> :INPUT DROP [2625:435028]
-> :FORWARD DROP [0:0]
-> :OUTPUT DROP [23:19788]
-> :POSTROUTING - [0:0]
-> :PREROUTING - [0:0]
-> :TCP_PACKETS - [0:0]
-> :UDP_PACKETS - [0:0]
-> -A ALLOWED -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j ACCEPT
-> -A ALLOWED -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
-> -A ALLOWED -p tcp -j DROP
-> -A BAD_TCP_PACKETS -p tcp -m tcp --tcp-flags SYN,ACK SYN,ACK -m state 
-> --state NEW -j REJECT --reject-with tcp-reset
-> -A BAD_TCP_PACKETS -p tcp -m tcp ! --tcp-flags SYN,RST,ACK SYN -m 
-> state --state NEW -j DROP
-> -A ICMP_PACKETS -s [PRIVATE_NET]/255.0.0.0 -p icmp -j ACCEPT
-> -A ICMP_PACKETS -s [PUBLIC_NET]/255.255.255.192 -p icmp -j ACCEPT
-> -A ICMP_PACKETS -s 127.0.0.0/255.0.0.0 -p icmp -j ACCEPT
-> -A ICMP_PACKETS -p icmp -m icmp --icmp-type 3/4 -j ACCEPT
-> -A INPUT -j PREROUTING
-> -A INPUT -p tcp -j BAD_TCP_PACKETS
-> -A INPUT -s 127.0.0.1 -i lo -j ACCEPT
-> -A INPUT -s [PRIVATE_IP_FW] -i lo -j ACCEPT
-> -A INPUT -s [PUBLIC_IP_FW] -i lo -j ACCEPT
-> -A INPUT -d [PUBLIC_IP_FW] -m state --state RELATED,ESTABLISHED -j ACCEPT
-> -A INPUT -p tcp -j TCP_PACKETS
-> -A INPUT -p udp -j UDP_PACKETS
-> -A INPUT -p icmp -j ICMP_PACKETS
-> -A FORWARD -p tcp -j BAD_TCP_PACKETS
-> -A FORWARD -d [PUBLIC_NET]/255.255.255.192 -p tcp -j PREROUTING
-> -A FORWARD -p icmp -m icmp --icmp-type 3/4 -j ICMP_PACKETS
-> -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-> -A FORWARD -m limit --limit 3/min --limit-burst 3 -j LOG --log-prefix 
-> "IPT FORWARD packet died: " --log-level 7
-> -A OUTPUT -s 127.0.0.1 -j ACCEPT
-> -A OUTPUT -s [PRIVATE_IP_FW] -j ACCEPT
-> -A OUTPUT -s [PUBLIC_IP_FW] -j ACCEPT
-> -A OUTPUT -m limit --limit 3/min --limit-burst 3 -j LOG --log-prefix 
-> "IPT OUTPUT packet died: " --log-level 7
-> -A TCP_PACKETS -p tcp -m tcp --dport 21 -j ALLOWED
-> -A TCP_PACKETS -p tcp -m tcp --dport 22 -j ALLOWED
-> -A TCP_PACKETS -p tcp -m tcp --dport 25 -j ALLOWED
-> -A TCP_PACKETS -p tcp -m tcp --dport 80 -j ALLOWED
-> -A TCP_PACKETS -p tcp -m tcp --dport 443 -j ALLOWED
-> -A TCP_PACKETS -p tcp -m tcp --dport 873 -j ALLOWED
-> -A TCP_PACKETS -p tcp -m tcp --dport 1999 -j ALLOWED
-> -A TCP_PACKETS -p tcp -m tcp --dport 4899 -j ALLOWED
-> -A TCP_PACKETS -p tcp -m tcp --dport 5666 -j ALLOWED
-> -A TCP_PACKETS -p tcp -m tcp --dport 8080 -j ALLOWED
-> -A TCP_PACKETS -p tcp -m tcp --dport 11371 -j ALLOWED
-> -A UDP_PACKETS -p udp -m udp --sport 53 -j ACCEPT
-> -A UDP_PACKETS -p udp -m udp --sport 123 -j ACCEPT
-> -A UDP_PACKETS -p udp -m udp --sport 873 -j ACCEPT
-> COMMIT
-> # Completed
->
-> I also tried FireHOL to build the rules from a config file.  I liked 
-> how *through* it appeared to be, but I went back to the original 
-> script for troubleshooting purposes.
->
+ =20
+Please they could help me to configure my firewall server to block the whole
+ports of the interface that this connected one to internet (except the port=
+s 25
+and 53 that it is forwarded to DMZ server), also to block the users of my n=
+et
+LAN so that alone they can enter to internet to transparent proxy (SQUID) t=
+hat
+this installed in my DMZ server. =20
+I attach the file with the configurations of my firewall server.
 
-Now, even more strange is that I stripped everything out right down to 
-just the natting piece and I still can't traverse the fw:
+Thank's and regard's
 
-# Generated by iptables-save v1.3.1 on Fri May 20 06:23:40 2005
-*raw
-:PREROUTING ACCEPT [185327:123272626]
-:OUTPUT ACCEPT [71616:17819696]
-COMMIT
-# Completed on Fri May 20 06:23:40 2005
-# Generated by iptables-save v1.3.1 on Fri May 20 06:23:40 2005
-*nat
-:PREROUTING ACCEPT [20964:3942558]
-:POSTROUTING ACCEPT [54:3564]
-:OUTPUT ACCEPT [53:3480]
--A PREROUTING -d [PUBLIC_IP] -i eth0 -j DNAT --to-destination [PRIVATE_IP]
--A PREROUTING -d [PUBLIC_IP] -i eth0 -j DNAT --to-destination [PRIVATE_IP]
--A POSTROUTING -s [PRIVATE_IP] -o eth0 -j SNAT --to-source [PUBLIC_IP]
--A POSTROUTING -s [PRIVATE_IP] -o eth0 -j SNAT --to-source [PUBLIC_IP]
-COMMIT
-# Completed on Fri May 20 06:23:40 2005
-# Generated by iptables-save v1.3.1 on Fri May 20 06:23:40 2005
-*filter
-:INPUT ACCEPT [955:375232]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [1219:191838]
-:POSTROUTING - [0:0]
-:PREROUTING - [0:0]
--A FORWARD -i eth1 -j POSTROUTING
-COMMIT
-# Completed on Fri May 20 06:23:40 2005
 
-By all intents I should be vulnerable to the world.  From the outside, I 
-can hit the external facing NIC, but I can't get to the public IP of one 
-of my webservers.  From the inside, I can hit both NICs (inside/outside) 
-on the firewall, but not the internal facing NIC on the ex-router.  From 
-the firewall, I can see both WWW and my internal network.
 
-Is there a tool to debug iptables to see if any of the rules are being 
-used by incoming traffic?
+			   INTERNET
+				i
+				i
+				i
+			+---------------+=09
+			i    ROUTER     i
+			+---------------+   =20
+				i=20
+				i
+				i
+				i
+				i
+				i
+				i eth0
+				i Public IP:
+				i 200.87.64.50/29			Public IP: 200.87.64.54/30
+			  +----------+					+-------------+
+		        i Firewall i					i    DMZ      i
+			  i	       i					i Sendmail    i
+			  i	       i		   			i   Squid     i
+	Linux		  i	       i----------------------------i (Trasparent i
+	Redhat 9.0	  i	       i eth2				i  Proxy)     i
+			  i	       i Public IP:           	i    DNS      i
+			  +----------+ 200.87.64.53/30		i   Apache	  i
+				i						+-------------+
+				i eth1					Linux Redhat 9.0
+				i IP LAN:
+				i 192.168.0.2/24
+				i
+				i
+				i
+				i
+			  +-----------+
+			  i  Switch   i
+			  i   LAN     i
+			  +-----------+
 
--- 
-Brian Atkins
-IT Services
-The Library Corporation
-http://TLCdelivers.com
-Ph: 800.624.0559
 
+
+INET_IP=3D"200.87.64.50"
+INET_IFACE=3D"eth0"
+
+LAN_IP=3D"192.168.0.2"
+LAN_IFACE=3D"eth1"
+
+# 1.3 DMZ Configuration
+
+DMZ_HTTP_IP=3D=94200.87.64.54"
+DMZ_DNS_IP=3D"200.87.64.54"
+DMZ_IP=3D"200.87.64.54"
+DMZ_IFACE=3D"eth2"
+
+# 1.4 Localhost Configuration
+
+LO_IFACE=3D"lo"
+LO_IP=3D"127.0.0.1"
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+# Configuration DROP
+
+IPTABLES -P INPUT DROP
+IPTABLES -P OUTPUT DROP
+IPTABLES -P FORWARD DROP
+
+# Create chain for =93bad tcp packets=94
+
+IPTABLES -N bad_tcp_packets
+
+# To create the separate chains for the ICMP, TCP y el UDP
+#
+
+IPTABLES -N allowed
+IPTABLES -N icmp_packets
+
+# Chain for bad_tcp_packets=20
+
+IPTABLES -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK -m state --s=
+tate
+NEW -j REJECT --reject-with tcp-reset
+IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG
+--log-prefix "New not syn:"
+IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
+
+# allowed chain=20
+#
+IPTABLES -A allowed -p TCP --syn -j ACCEPT
+IPTABLES -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A allowed -p TCP -j DROP
+
+# Rules ICMP
+#
+# Change rule totality
+IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 8 -j ACCEPT
+IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT
+
+
+# 4.1.4  Regla INPUT
+
+# Bad TCP packets we don't want=20
+#
+
+IPTABLES -A INPUT -p tcp -j bad_tcp_packets
+
+#
+# Internet packets for the box
+
+IPTABLES -A INPUT -p ICMP -i eth0 -j icmp_packets
+
+# From DMZ Interface to DMZ firewall IP
+
+IPTABLES -A INPUT -p ALL -i eth2 -d 200.87.64.53 -j ACCEPT
+
+# From LAN Interface to LAN firewall IP
+#=20
+
+IPTABLES -A INPUT -p ALL -i eth1 -d 192.168.0.2 -j ACCEPT
+
+# From Localhost interface to Localhost IP's
+#
+
+IPTABLES -A INPUT -p ALL -i lo -s 127.0.0.1 -j ACCEPT
+IPTABLES -A INPUT -p ALL -i lo -s 192.168.0.2 -j ACCEPT
+IPTABLES -A INPUT -p ALL -i lo -s 200.87.64.50 -j ACCEPT
+
+IPTABLES -A INPUT -p ALL -d 200.87.64.50 -m state --state ESTABLISHED,RELAT=
+ED
+-j ACCEPT
+
+# Log weird packets that don't match the above.
+#
+
+IPTABLES -A INPUT -m limit --limit 3/minute --limit-burst 3 -j LOG --log-le=
+vel
+DEBUG --log-prefix "IPT INPUT packet died: "
+
+#
+# 4.1.5 Rule FORWARD
+#
+
+# Bad TCP packets we don't want
+#
+
+IPTABLES -A FORWARD -p tcp -j bad_tcp_packets
+
+# Section of the DMZ
+#
+# General rules
+
+IPTABLES -A FORWARD -i eth2 -o eth0 -j ACCEPT
+IPTABLES -A FORWARD -i eth0 -o eth2 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+IPTABLES -A FORWARD -i eth1 -o eth2 -j ACCEPT
+IPTABLES -A FORWARD -i eth2 -o eth1 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+
+#
+#  DNS Server for the DMZ
+
+IPTABLES -A FORWARD -p TCP -i eth0 -o eth2 -d 200.87.64.54 --dport 53 -j al=
+lowed
+IPTABLES -A FORWARD -p UDP -i eth0 -o eth2 -d 200.87.64.54 --dport 53 -j AC=
+CEPT
+IPTABLES -A FORWARD -p ICMP -i eth0 -o eth2 -d 200.87.64.54 -j icmp_packets
+
+#
+# LAN Section
+#
+
+IPTABLES -A FORWARD -i eth1 -j ACCEPT
+IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#
+# Log weird packets that don't match the above.
+#
+
+IPTABLES -A FORWARD -m limit --limit 3/minute --limit-burst 3 -j LOG
+--log-level DEBUG --log-prefix "IPT FORWARD packet died: "
+
+#
+# 4.1.6 OUTPUT Chain
+#
+
+
+
+
+
+# Bad TCP packets we don't want.
+#
+
+IPTABLES -A OUTPUT -p tcp -j bad_tcp_packets
+
+# Special OUTPUT rules to decide which IP's to allow.
+#
+
+IPTABLES -A OUTPUT -p ALL -s 127.0.0.1 -j ACCEPT
+IPTABLES -A OUTPUT -p ALL -s 192.168.0.2 -j ACCEPT
+IPTABLES -A OUTPUT -p ALL -s 200.87.64.50 -j ACCEPT
+
+#
+# Log weird packets that don't match the above.
+#
+
+IPTABLES -A OUTPUT -m limit --limit 3/minute --limit-burst 3 -j LOG --log-l=
+evel
+DEBUG --log-prefix "IPT OUTPUT packet died: "
+
+# 4.2.4  PREROUTING Chain
+#
+
+IPTABLES -t nat -A PREROUTING -p TCP -i eth0 -d 200.87.64.50 --dport 80 -j =
+DNAT
+--to-destination 200.87.64.54
+IPTABLES -t nat -A PREROUTING -p TCP -i eth0 -d 200.87.64.50 --dport 53 -j =
+DNAT
+--to-destination 200.87.64.54
+IPTABLES -t nat -A PREROUTING -p UDP -i eth0 -d 200.87.64.50 --dport 53 -j =
+DNAT
+--to-destination 200.87.64.54
+
+# 4.2.5 POSTROUTING Chain
+#
+
+# Enable simple IP Forwarding and Network Address Translation
+
+IPTABLES -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 200.87.64.50
 
