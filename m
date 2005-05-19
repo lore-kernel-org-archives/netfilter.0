@@ -1,11 +1,14 @@
-From: Brian Atkins <batkins@tlcdelivers.com>
-Subject: RE: Natting IPs hanging
-Date: Thu, 19 May 2005 19:55:34 +0000 (UTC)
-Message-ID: <428FBAB0.8030206@tlcdelivers.com>
+From: Chadley Wilson <chadley@pinteq.co.za>
+Subject: Re: Iptables
+Date: Thu, 19 May 2005 22:13:26 +0200
+Message-ID: <200505192213.27006.chadley@pinteq.co.za>
+References: <200505191945.22293.chadley@pinteq.co.za>
+	<20050519193348.GA8623@bender.817west.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Date: Sat, 21 May 2005 15:48:16 -0700
+In-Reply-To: <20050519193348.GA8623@bender.817west.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,209 +19,212 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Jason and John,
+On Thursday 19 May 2005 21:33, Jason Opperisano wrote:
 
-Again, thanks for the responses.  I've finally had an opportunity to dig 
-back into it after a rather nightmare-ish week...
+> > ########    Firewall Setup     ##################
+> > ########      Config           ##################
+> > #set -x
+> > ipt="/usr/sbin/iptables"
+> > ext="eth0"
+> > int="bond0"
+> > lo="127.0.0.1"
+> > chad="192.168.2.5"
+> > etel="196.25.100.28"
+> > #################################################
+> >
+> > #################################################
+> > ####                                         ####
+> > ####               BASIC SETUP               ####
+> > ####                                         ####
+> > #################################################
+> >
+> > #Enable IP Forwarding
+> > echo "1" >> /proc/sys/net/ipv4/ip_forward
+> >
+> > #Clear All Tables
+> > ${ipt} -t filter -F
+> > ${ipt} -t nat -F
+>
+> there's also a mangle table...
 
-I tried a couple of different things, without much success.  First, 
-seeing as how I'm realtively new at this, I went back to the docs on 
-Netfilter and pulled a script out of the appedices of one of the HOWTOs 
-and modified it for my use.  Following their setup, I used it to create 
-several new chains and new rules that I hadn't thought of implementing.  
-Now, when I went back and checked out ip_tables_names and 
-ip_tables_targets, I get the following:
+How would the mangle table work for me?
+Well actually what does mangle do in english, I have read the man pages and 
+some docs I found on google and tldp, but I don't quite grasp the idea.
 
-root@fw>cat /proc/net/ip_tables_names
-mangle
-nat
-filter
+>   iptables -t mangle -F
+>
+> > ##  Allow all from local interfaces [localhost]
+> > ${ipt} -t filter -A INPUT -s ${lo} -j ACCEPT
+> >
+> >
+> > ##  Allow all prerouting
+> > ${ipt} -t nat -A PREROUTING -s 192.168.2.0/255.255.255.0 -j ACCEPT
+> > ${ipt} -t nat -A PREROUTING -s 196.25.100.5/255.255.255.0 -j ACCEPT
+>
+> um--what exactly are you trying to accomplish with these?
+I think it had some thing to do with setting the default policy to drop! and 
+having no access to any services, I never really worked out if this was the 
+cause.
 
-root@fw>cat /proc/net/ip_tables_targets
-REJECT
-LOG
-DNAT
-SNAT
+>
+> > ##  Allow all forwarding
+> > ${ipt} -t filter -A FORWARD -i ${int} -o ${ext} -m state --state
+> > RELATED,ESTABLISHED -j ACCEPT ${ipt} -t filter -A FORWARD -i ${ext} -o
+> > ${int} -m state --state RELATED,ESTABLISHED -j ACCEPT
+>
+> how about just:
+Cool, it take it this achieves the same goal?
 
-Also, I checked out the kernel config and got the following list of 
-modules that were created with the new build:
-root@fw>grep _NF_ /usr/src/linux/.config
-CONFIG_IP_NF_CONNTRACK=m
-# CONFIG_IP_NF_CT_ACCT is not set
-# CONFIG_IP_NF_CONNTRACK_MARK is not set
-# CONFIG_IP_NF_CT_PROTO_SCTP is not set
-CONFIG_IP_NF_FTP=m
-# CONFIG_IP_NF_IRC is not set
-# CONFIG_IP_NF_TFTP is not set
-# CONFIG_IP_NF_AMANDA is not set
-# CONFIG_IP_NF_QUEUE is not set
-CONFIG_IP_NF_IPTABLES=m
-CONFIG_IP_NF_MATCH_LIMIT=m
-CONFIG_IP_NF_MATCH_IPRANGE=m
-CONFIG_IP_NF_MATCH_MAC=m
-CONFIG_IP_NF_MATCH_PKTTYPE=m
-CONFIG_IP_NF_MATCH_MARK=m
-CONFIG_IP_NF_MATCH_MULTIPORT=m
-CONFIG_IP_NF_MATCH_TOS=m
-CONFIG_IP_NF_MATCH_RECENT=m
-CONFIG_IP_NF_MATCH_ECN=m
-CONFIG_IP_NF_MATCH_DSCP=m
-CONFIG_IP_NF_MATCH_AH_ESP=m
-CONFIG_IP_NF_MATCH_LENGTH=m
-CONFIG_IP_NF_MATCH_TTL=m
-CONFIG_IP_NF_MATCH_TCPMSS=m
-CONFIG_IP_NF_MATCH_HELPER=m
-CONFIG_IP_NF_MATCH_STATE=m
-CONFIG_IP_NF_MATCH_CONNTRACK=m
-CONFIG_IP_NF_MATCH_OWNER=m
-CONFIG_IP_NF_MATCH_ADDRTYPE=m
-CONFIG_IP_NF_MATCH_REALM=m
-# CONFIG_IP_NF_MATCH_SCTP is not set
-CONFIG_IP_NF_MATCH_COMMENT=m
-# CONFIG_IP_NF_MATCH_HASHLIMIT is not set
-CONFIG_IP_NF_FILTER=m
-CONFIG_IP_NF_TARGET_REJECT=m
-CONFIG_IP_NF_TARGET_LOG=m
-CONFIG_IP_NF_TARGET_ULOG=m
-CONFIG_IP_NF_TARGET_TCPMSS=m
-CONFIG_IP_NF_NAT=m
-CONFIG_IP_NF_NAT_NEEDED=y
-CONFIG_IP_NF_TARGET_MASQUERADE=m
-CONFIG_IP_NF_TARGET_REDIRECT=m
-CONFIG_IP_NF_TARGET_NETMAP=m
-CONFIG_IP_NF_TARGET_SAME=m
-CONFIG_IP_NF_NAT_SNMP_BASIC=m
-CONFIG_IP_NF_NAT_FTP=m
-CONFIG_IP_NF_MANGLE=m
-CONFIG_IP_NF_TARGET_TOS=m
-CONFIG_IP_NF_TARGET_ECN=m
-CONFIG_IP_NF_TARGET_DSCP=m
-CONFIG_IP_NF_TARGET_MARK=m
-CONFIG_IP_NF_TARGET_CLASSIFY=m
-CONFIG_IP_NF_RAW=m
-CONFIG_IP_NF_TARGET_NOTRACK=m
-CONFIG_IP_NF_ARPTABLES=m
-CONFIG_IP_NF_ARPFILTER=m
-CONFIG_IP_NF_ARP_MANGLE=m
+>   iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+>
+> > ##  Allow pings
+> > ${ipt} -t filter -A INPUT -p icmp -j ACCEPT
+> >
+> > ##  Keep established connections on all interfaces
+> > ${ipt} -t filter -A FORWARD -m state --state RELATED,ESTABLISHED -j
+> > ACCEPT
+>
+> we just did this above...
 
-Likewise, here is what is currently loaded:
-root@fw>lsmod
-Module                  Size  Used by
-ip_nat_ftp              3584  0
-ip_conntrack_ftp       72976  1 ip_nat_ftp
-ipt_state               2560  5
-ipt_limit               3072  2
-iptable_mangle          3328  0
-ipt_REJECT              6528  1
-ipt_LOG                 7552  2
-iptable_nat            23868  2 ip_nat_ftp
-ip_conntrack           49992  4 
-ip_nat_ftp,ip_conntrack_ftp,ipt_state,iptable_nat
-iptable_filter          3328  1
-ip_tables              23296  7 
-ipt_state,ipt_limit,iptable_mangle,ipt_REJECT,ipt_LOG,iptable_nat,iptable_filter
-BLADABLADABLADA
+> > ${ipt} -t filter -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> >
+> > ##  Accept www from internet {ext}
+> > ${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 80 -j ACCEPT
+>
+> you run a web server on your firewall?
 
-Here is my routing table (for what it's worth):
-root@fw>route
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use 
-Iface
-[OUTSIDE _NET]  *               255.255.255.192 U     0      0        0 eth0
-[INSIDE_NET]    *               255.0.0.0       U     0      0        0 eth2
-loopback        localhost       255.0.0.0       UG    0      0        0 lo
-default         [OUTSIDE_GW]    0.0.0.0         UG    0      0        0 eth0
+Uh no I ctually run an FTP server, I thought I needed to open port 80 to 
+access the internet. (as I said before I am a newbie, still wet behind the 
+ears :) )
 
-And, finally, my current ruleset (and I welcome all critiques):
-root@fw>iptables-save
-# Generated by iptables-save v1.3.1
-*mangle
-:PREROUTING ACCEPT [4431:597383]
-:INPUT ACCEPT [4387:587673]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [1709:222042]
-:POSTROUTING ACCEPT [1686:202254]
-COMMIT
-*nat
-:PREROUTING ACCEPT [2731:449771]
-:POSTROUTING ACCEPT [13:950]
-:OUTPUT ACCEPT [13:950]
--A PREROUTING -d [PUBLIC_IP] -i eth0 -j DNAT --to-destination [PRIVATE_IP]
--A PREROUTING -d [PUBLIC_IP] -i eth0 -j DNAT --to-destination [PRIVATE_IP]
--A POSTROUTING -s [PRIVATE_IP] -o eth0 -j SNAT --to-source [PUBLIC_IP]
--A POSTROUTING -s [PRIVATE_IP] -o eth0 -j SNAT --to-source [PUBLIC_IP]
-COMMIT
-*filter
-:ALLOWED - [0:0]
-:BAD_TCP_PACKETS - [0:0]
-:ICMP_PACKETS - [0:0]
-:INPUT DROP [2625:435028]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [23:19788]
-:POSTROUTING - [0:0]
-:PREROUTING - [0:0]
-:TCP_PACKETS - [0:0]
-:UDP_PACKETS - [0:0]
--A ALLOWED -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j ACCEPT
--A ALLOWED -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
--A ALLOWED -p tcp -j DROP
--A BAD_TCP_PACKETS -p tcp -m tcp --tcp-flags SYN,ACK SYN,ACK -m state 
---state NEW -j REJECT --reject-with tcp-reset
--A BAD_TCP_PACKETS -p tcp -m tcp ! --tcp-flags SYN,RST,ACK SYN -m state 
---state NEW -j DROP
--A ICMP_PACKETS -s [PRIVATE_NET]/255.0.0.0 -p icmp -j ACCEPT
--A ICMP_PACKETS -s [PUBLIC_NET]/255.255.255.192 -p icmp -j ACCEPT
--A ICMP_PACKETS -s 127.0.0.0/255.0.0.0 -p icmp -j ACCEPT
--A ICMP_PACKETS -p icmp -m icmp --icmp-type 3/4 -j ACCEPT
--A INPUT -j PREROUTING
--A INPUT -p tcp -j BAD_TCP_PACKETS
--A INPUT -s 127.0.0.1 -i lo -j ACCEPT
--A INPUT -s [PRIVATE_IP_FW] -i lo -j ACCEPT
--A INPUT -s [PUBLIC_IP_FW] -i lo -j ACCEPT
--A INPUT -d [PUBLIC_IP_FW] -m state --state RELATED,ESTABLISHED -j ACCEPT
--A INPUT -p tcp -j TCP_PACKETS
--A INPUT -p udp -j UDP_PACKETS
--A INPUT -p icmp -j ICMP_PACKETS
--A FORWARD -p tcp -j BAD_TCP_PACKETS
--A FORWARD -d [PUBLIC_NET]/255.255.255.192 -p tcp -j PREROUTING
--A FORWARD -p icmp -m icmp --icmp-type 3/4 -j ICMP_PACKETS
--A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -m limit --limit 3/min --limit-burst 3 -j LOG --log-prefix 
-"IPT FORWARD packet died: " --log-level 7
--A OUTPUT -s 127.0.0.1 -j ACCEPT
--A OUTPUT -s [PRIVATE_IP_FW] -j ACCEPT
--A OUTPUT -s [PUBLIC_IP_FW] -j ACCEPT
--A OUTPUT -m limit --limit 3/min --limit-burst 3 -j LOG --log-prefix 
-"IPT OUTPUT packet died: " --log-level 7
--A TCP_PACKETS -p tcp -m tcp --dport 21 -j ALLOWED
--A TCP_PACKETS -p tcp -m tcp --dport 22 -j ALLOWED
--A TCP_PACKETS -p tcp -m tcp --dport 25 -j ALLOWED
--A TCP_PACKETS -p tcp -m tcp --dport 80 -j ALLOWED
--A TCP_PACKETS -p tcp -m tcp --dport 443 -j ALLOWED
--A TCP_PACKETS -p tcp -m tcp --dport 873 -j ALLOWED
--A TCP_PACKETS -p tcp -m tcp --dport 1999 -j ALLOWED
--A TCP_PACKETS -p tcp -m tcp --dport 4899 -j ALLOWED
--A TCP_PACKETS -p tcp -m tcp --dport 5666 -j ALLOWED
--A TCP_PACKETS -p tcp -m tcp --dport 8080 -j ALLOWED
--A TCP_PACKETS -p tcp -m tcp --dport 11371 -j ALLOWED
--A UDP_PACKETS -p udp -m udp --sport 53 -j ACCEPT
--A UDP_PACKETS -p udp -m udp --sport 123 -j ACCEPT
--A UDP_PACKETS -p udp -m udp --sport 873 -j ACCEPT
-COMMIT
-# Completed
+> > #################################################
+> > ####                                         ####
+> > ####                RULES                    ####
+> > ####                                         ####
+> > #################################################
+> >
+> > ##  Masquerade {chad} outgoing to internet
+> > ${ipt} -t nat -A POSTROUTING -o ${ext} -s ${chad} -j MASQUERADE
+> > ${ipt} -t filter -A FORWARD -i ${int} -o ${ext} -s ${chad} -j ACCEPT
+> >
+> > ##  Accept SSH from {etel}
+> > ${ipt} -t filter -A INPUT -i ${ext} -s ${etel} -p tcp --dport 22 -j
+> > ACCEPT
+> >
+> > ##  Accept ssh from all internal
+> > ${ipt} -t filter -A INPUT -i ${int} -p tcp --dport 22 -j ACCEPT
+> >
+> > ## Accept telnet
+> > ${ipt} -t filter -A INPUT -p tcp --dport 23 -j ACCEPT
+> > ${ipt} -t filter -A INPUT -p udp --dport 23 -j ACCEPT
+>
+> 1) telnet only uses TCP, not UDP.
+> 2) telnet?  c'mon, what is this?  1997?
+>
+Our SCO-Unix box has not got ssh and it is linked nationwide to 500 dial-up  
+and dial-in sites all of which were setup in "1997" :} by someone else. So we 
+have to be able to telnet in and out of it. Offen I have files on my server, 
+which I need to access from a remote site via the SCO box using telnet. :( 
 
-I also tried FireHOL to build the rules from a config file.  I liked how 
-*through* it appeared to be, but I went back to the original script for 
-troubleshooting purposes.
+> > ##  Accept incoming SMTP
+> > ${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 25 -j ACCEPT
+> >
+> > ##  Accept external POP3
+> > ${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 110 -j ACCEPT
+>
+> you run SMTP and POP3 servers on your firewall too?  i'm sensing a
+> pattern here...
+No but I need to able to receive mail from my mail box on the ${ext} 
+interface!
+I take it this is wrong hey! 
+
+>
+> > ##  Allow mail from ext to int
+> > ${ipt} -t filter -A FORWARD -p tcp -m tcp -m state -s ${chad} -d
+> > 196.25.100.21 -o ${ext} --sport 25 --state NEW,ESTABLISHED,RELATED -j
+> > ACCEPT ${ipt} -t filter -A FORWARD -p tcp -m tcp -m state -s ${chad} -d
+> > 196.25.100.21 -o ${ext} --sport 110 --state NEW,ESTABLISHED,RELATED -j
+> > ACCEPT
+>
+> um--we've already ACCEPTed all ESTABLISHED,RELATED packets in
+> FORWARD--so it's redundant to keep using them in rules.  so we need to
+> create rules that allow packets that are NEW.  if you're trying to allow
+> $chad to connect to 196.25.100.21 on SMTP and POP3--those should be
+> dport, not sport:
+>
+OK! I see the logic.
+This is a new trick for me, Thanks
+I haven't read about -d <ip_addr> before!
+>   iptables -A FORWARD -i $int -o $ext -p tcp -s $chad \
+>     -d 196.25.100.21 --dport 25 -j ACCEPT
+>
+>   iptables -A FORWARD -i $int -o $ext -p tcp -s $chad \
+>     -d 196.25.100.21 --dport 110 -j ACCEPT
+>
+> from the text of you message, you want to allow $chad out on any
+> service, though--right?  then how about:
+>
+
+>   iptables -A FORWARD -i $int -o $ext -p tcp -s $chad -j ACCEPT
+>
+> (which you already have in here if we scroll back up a bit)
+>
+> > ##  Allow DNS updates
+> > ${ipt} -t filter -A INPUT -i ${int} -p tcp --dport 53 -j ACCEPT
+> > ${ipt} -t filter -A INPUT -i ${ext} -p tcp --dport 53 -j ACCEPT
+>
+> the DNS server runs on the firewall too, eh?  how's about:
+>
+Yes the firewall is a DNS and DHCP server too. (I only have linux PC so I make 
+it work). 
+Current with the default policy accept on the 196.25.100.0 network we can 
+resolve the ftp url i.e ftp://ns.teq/
+if I take out the ${ext} rule it doen't work.
+
+>   iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+>   iptables -A INPUT -p udp --dport 53 -j ACCEPT
+
+> (you need TCP for zone transfers, and UDP for regular name resolution
+> requests)
+OK, 
+>
+> > ## Accept all from local interfaces
+> > ${ipt} -t filter -A INPUT -i ${int} -j ACCEPT
+> > ${ipt} -t filter -A INPUT -i ${int} -j ACCEPT
+>
+> a rule so nice, we need it twice?
+>
+Oops thats a mistake :)
+
+> > ## Drop all the rest, incoming , and forward between interfaces
+> > #${ipt} -t filter -A INPUT -j DROP
+> > #${ipt} -t filter -A FORWARD -j DROP
+>
+> -j
+>
+Thanks Jason,
+
+I have learn't quite a bit from this, I shall save this mail for future use. 
+By the way, this is my first attempt at my own firewall, mostly an effort to 
+learn and understand. I always used the Redhat default or Susefirewall2. But 
+am not confident that they do the job right, also I never really understood 
+how to customise them. Hence build your own, Ha hA, not s easy when you 
+haven't got the knowledge, but I am sure I will get there.
+
+Thanks again,
+
 
 -- 
-Brian Atkins
-IT Services
-The Library Corporation
-http://TLCdelivers.com
-Ph: 800.624.0559
+Chadley Wilson
+Redhat Certified Technician 
+Cert Number: 603004708291270
+Pinnacle Micro
+Manufacturers of Proline Computers
+====================================
+Exercise freedom, Use LINUX
+=====================================
 
 
