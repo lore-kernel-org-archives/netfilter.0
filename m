@@ -1,9 +1,8 @@
-From: "Michael D. Berger" <m.d.berger@ieee.org>
-Subject: re: how to execute my libipq test program?
-Date: Thu, 19 May 2005 22:31:14 -0400
-Message-ID: <000001c55ce4$01032790$1e01a8c0@mbrc30>
+From: cranium2003 <cranium2003@yahoo.com>
+Subject: IP packet logging  function help
+Date: Thu, 19 May 2005 21:19:17 -0700 (PDT)
+Message-ID: <20050520041917.322.qmail@web33004.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,29 +15,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter-devel@lists.netfilter.org>, netfilter <netfilter@lists.netfilter.org>
 
-What kind of macline is it?  If unix or linux, try:
-ls -l myFile   and let us know what you see.
-./myFile       there may be a path issue.
-If windows, ask someone else.
-Mike.
+hello,
+       By adding iptable rule
+iptable -A OUTPUT -j LOG
+ I am able to check log of each outgoing packets. But
+i want to know who is actually calling ipt_log_target
+function defined in ipt_LOG.c as
+static unsigned int
+ipt_log_target(struct sk_buff **pskb,
+               unsigned int hooknum,
+               const struct net_device *in,
+               const struct net_device *out,
+               const void *targinfo,
+               void *userinfo)
 
---
-Michael D. Berger
-m.d.berger@ieee.org 
-
------Original Message-----
-From: hero lp [mailto:herolp@gmail.com] 
-Sent: Thursday, May 19, 2005 10:15 PM
-To: Michael D. Berger
-Subject: Re: how to execute my libipq test program?
-
-
-OK, thanks to your reply.
-I have followed your instructions step by step.
-But I get trouble at the last step. That is, when I try to execute my
-compiled program, there is an error ---- no such command. Why?
+I want to know which file in source code has pointer
+to call ipt_log_target function? I want instance/copy
+of const struct net_device *out to my function in
+kernel to know that eth0 or eth1 is transmitting
+packet.
+Thanks in advance.
+regards,
+cranium
 
 
+		
+__________________________________ 
+Do you Yahoo!? 
+Make Yahoo! your home page 
+http://www.yahoo.com/r/hs
 
