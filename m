@@ -1,13 +1,12 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Prevent traceroutes
-Date: Fri, 20 May 2005 10:34:49 -0500
-Message-ID: <428E0399.6020703@riverviewtech.net>
-References: <fad9d484050519150730dbc53d@mail.gmail.com>	<20050519232314.GA9369@bender.817west.com>	<20050519233347.GA9462@bender.817west.com>	<428D8638.4040301@riverviewtech.net>	<428D954E.1010105@riverviewtech.net>
-	<20050520152021.GA11737@bender.817west.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: IP packet logging  function help
+Date: Fri, 20 May 2005 11:33:35 -0400
+Message-ID: <20050520153335.GA11764@bender.817west.com>
+References: <20050520124142.88156.qmail@web33001.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050520152021.GA11737@bender.817west.com>
+Content-Disposition: inline
+In-Reply-To: <20050520124142.88156.qmail@web33001.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +17,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilterusers <netfilter@lists.netfilter.org>
 
-> please do this in -t mangle PREROUTING and not -t nat.  filtering in
-> -t nat is poor form, and i know lots of people are probably emulating
-> your scripts.
+On Fri, May 20, 2005 at 05:41:42AM -0700, cranium2003 wrote:
+> hello,
+>        Sorry i was hurry to know how to do what i want
+> by reading
+> > > >Because, in some table it is simply not yet
+> > > > determined, and you won't
+> > > > change anything about that by meddling with the
+> > > > generic target function
+> > > > call site.
+>      Your question is 
+> > > >So, in which iptables table do you intend to get 
+> at the output device?
+>      I want to know this in NAT table. 
+> regards,
+> cranium
 
-No problem.
+the output device is only known to the kernel after the routing decision
+has been made, until that point there's nothing you can do to magically
+make the output device "appear."  netfilter hooks before the routing
+decision is made (i.e. there is no output device determined yet):
 
-You heard him people, the mangle table is a better place to do this, so here is an updated script:
+  table		chain
+  -----		-----
+  mangle	PREROUTING
+  mangle	OUTPUT
 
-iptables -t mangle -A PREROUTING -i $LAN -p udp -m recent --name Drop_Traceroute --update --seconds 200 --rdest -j DROP
-iptables -t mangle -A PREROUTING -i $LAN -p udp -m recent --name Drop_Traceroute --set --rdest -m ttl --ttl-eq 1 -j DROP
-iptables -t mangle -A PREROUTING -i $LAN -p icmp -m recent --name Drop_Traceroute --update --seconds 200 --rdest -j DROP
-iptables -t mangle -A PREROUTING -i $LAN -p icmp -m recent --name Drop_Traceroute --set --rdest -m ttl --ttl-eq 1 -j DROP
+  nat		PREROUTING
 
-I have just tested this and found it to be fully functional on my home router too.  Have fun.  :)
+there's also no output device when dealing with any of the INPUT chains
+(not applicable).
 
+-j
 
-
-Grant. . . .
+--
+"Lois: Oh my god. you can only play the piano when you're drunk.
+ Peter: That's not true. I can also vomit, fall over, and make dirty
+ calls to your sister."
+        --Family Guy
 
