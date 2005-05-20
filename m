@@ -1,12 +1,10 @@
-From: Sebastian Siewior <bigeasy@foo.fh-furtwangen.de>
-Subject: Re: Prevent traceroutes
-Date: Fri, 20 May 2005 19:17:38 +0000
-Message-ID: <20050520191738.GD2883@lil-twin.cordelia.cmb>
-References: <fad9d484050519150730dbc53d@mail.gmail.com>
+From: Sebastian Docktor <sebi@tux-labor.de>
+Subject: Blocking ip addresses..
+Date: Fri, 20 May 2005 19:26:41 +0200
+Message-ID: <20050520172641.GF9921@gw.home.tux-labor.de>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <fad9d484050519150730dbc53d@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,19 +19,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, May 20, 2005 at 12:07:11AM +0200, Kenneth Kalmer wrote:
-> Guys
-> 
-> How can I prevent users from doing a traceroute through my box using
-> iptables? Better still, how can I route a traceroute through a
-> different network than the default one?
-> 
+Hi,
 
-iptables -t mangle -A PREROUTING -j TTL --ttl-inc 1
+I want to block specified IP Addresses "on the fly".
 
-this would make your router invisible :)
+My Firewall is started, and then without a restart, I want to
+block all established,new,related connection to a specified host or
+port.
+
+The Problem is, when I use the conntrack modul, and I block a IP with
+this command : 
+
+iptables -t nat -I POSTROUTING -p tcp  -s 192.168.0.23 --dport 25 -m
+conntrack --ctstate ESTABLISHED,NEW,RELATED -j DROP,
+
+
+then I can't create new Connections, but I can use further on the established
+connections.
+
+Is there a Solution to also stop working the established connections?
+
+regards sebi
+
 
 -- 
-regards
-Sebastian Siewior
+Sebastian Docktor <sebi@tux-labor.de>
 
