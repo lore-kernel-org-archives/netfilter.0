@@ -1,10 +1,11 @@
-From: Sebastian Docktor <sebi@tux-labor.de>
-Subject: Blocking ip addresses..
-Date: Fri, 20 May 2005 19:26:41 +0200
-Message-ID: <20050520172641.GF9921@gw.home.tux-labor.de>
+From: "Eldridge, Michael" <michael.eldridge@evolveddigital.com>
+Subject: arguments for netfilter deployment as an enterprise firewall?
+Date: Fri, 20 May 2005 11:37:37 -0500
+Message-ID: <99F78E116FF47D44A539DF931401001304A01763@mail00.evolveddigital.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+All,
 
-I want to block specified IP Addresses "on the fly".
+I am in the process of putting together a presentation advocating
+linux+netfilter as a replacement for our aging firewall setup.  I
+am looking for documents, case studies, benchmarks, comparisons,=20
+and any other information on netfilter's performance and viability
+as a transparent bridging firewall for a mission-critical redundant
+network.  I have been googling for the past few days and am unable
+to find the right information.
 
-My Firewall is started, and then without a restart, I want to
-block all established,new,related connection to a specified host or
-port.
+I am also considering openbsd or freebsd though I am not as
+experienced with pf as I am with netfilter.
 
-The Problem is, when I use the conntrack modul, and I block a IP with
-this command : 
+Any pointers, urls, books, testimonials, or other information would
+be greatly appreciated.
 
-iptables -t nat -I POSTROUTING -p tcp  -s 192.168.0.23 --dport 25 -m
-conntrack --ctstate ESTABLISHED,NEW,RELATED -j DROP,
+Thanks in advance,
 
-
-then I can't create new Connections, but I can use further on the established
-connections.
-
-Is there a Solution to also stop working the established connections?
-
-regards sebi
-
-
--- 
-Sebastian Docktor <sebi@tux-labor.de>
+-mike
 
