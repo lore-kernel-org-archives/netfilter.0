@@ -1,46 +1,48 @@
-From: Patrick Schaaf <bof@bof.de>
-Subject: Re: IP packet logging  function help
-Date: Fri, 20 May 2005 08:39:03 +0200
-Message-ID: <20050520063903.GA5261@oknodo.bof.de>
-References: <20050520041917.322.qmail@web33004.mail.mud.yahoo.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: Prevent traceroutes
+Date: Fri, 20 May 2005 01:39:52 -0500
+Message-ID: <428D8638.4040301@riverviewtech.net>
+References: <fad9d484050519150730dbc53d@mail.gmail.com>	<20050519232314.GA9369@bender.817west.com>
+	<20050519233347.GA9462@bender.817west.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050520041917.322.qmail@web33004.mail.mud.yahoo.com>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: cranium2003 <cranium2003@yahoo.com>
-Cc: netfilter <netfilter-devel@lists.netfilter.org>, netfilter <netfilter@lists.netfilter.org>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050519233347.GA9462@bender.817west.com>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-> I want to know which file in source code has pointer
-> to call ipt_log_target function?
+> looking at that response--there's a situation screaming for a custom
+> chain:
+> 
+>   iptables -N DROP_TRACE
+>   iptables -A DROP_TRACE -p udp --dport 33434:33523 -j DROP
+>   iptables -A DROP_TRACE -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
+> 
+>   iptables -A INPUT -j DROP_TRACE
+>   iptables -A FORWARD -j DROP_TRACE
 
-Like any other target function, you'll find the call, as an indirect
-function call to ->target(), in net/ipv4/netfilter/ip_tables.c, function
-ipt_do_table.
+I don't think that I could agree more about the need for a new chain.  I think I'd be tempted to do my match a bit differently though.
 
-> I want instance/copy of const struct net_device *out to my function in
-> kernel to know that eth0 or eth1 is transmitting packet.
+iptables -t filter -A DROP_TRACE -o eth0 -p udp -m recent --name Drop_Traceroute --update --seconds 200 --rdest -j DROP
+iptables -t filter -A DROP_TRACE -o eth0 -p udp -m recent --name Drop_Traceroute --set --rdest -m ttl --ttl-eq 1 -j DROP
+iptables -t filter -A DROP_TRACE -o eth0 -p icmp -m recent --name Drop_Traceroute --update --seconds 200 --rdest -j DROP
+iptables -t filter -A DROP_TRACE -o eth0 -p icmp -m recent --name Drop_Traceroute --set --rdest -m ttl --ttl-eq 1 -j DROP
 
-The above information will not help you at all with this quest.
-The LOG target already shows input and output interface, IF THEY ARE
-KNOWN.
+This should match any traffic (UDP or ICMP) that is leaving your network with a TTL of 1 which *should* be first packet in a traceroute that your firewall / router would see.  Seeing as how this should match any traceroute traffic you should be able to change the DROP target to be any thing else that you would want to redirect the traffic out some other interface be it via the ROUTE target or the MARK target in conjunction with ip routes.
 
-So, in which iptables table do you intend to get at the output device?
-Because, in some table it is simply not yet determined, and you won't
-change anything about that by meddling with the generic target function
-call site.
+The only thing that I have not figured out as of yet how to do is DROP the first packet that the firewall sees as every attempt that I made, even a DROP policy on the FORWARD and OUTPUT chain, did not block the first "TTL Time Exceeded" response.
 
-best regards
-  Patrick
+
+
+Grant. . . .
 
