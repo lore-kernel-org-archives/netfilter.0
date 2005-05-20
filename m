@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Prevent traceroutes
-Date: Thu, 19 May 2005 19:33:47 -0400
-Message-ID: <20050519233347.GA9462@bender.817west.com>
-References: <fad9d484050519150730dbc53d@mail.gmail.com>
-	<20050519232314.GA9369@bender.817west.com>
+From: hero lp <herolp@gmail.com>
+Subject: how to execute my libipq test program?
+Date: Fri, 20 May 2005 08:10:03 +0800
+Message-ID: <329d4f6f05051917107e881e92@mail.gmail.com>
+Reply-To: hero lp <herolp@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20050519232314.GA9369@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,32 +18,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, May 19, 2005 at 07:23:14PM -0400, Jason Opperisano wrote:
->   # standard UDP ports used by traceroute
->   iptables -A INPUT -p udp --dport 33434:33523 -j DROP
->   iptables -A FORWARD -p udp --dport 33434:33523 -j DROP
-> 
->   # ICMP echo-req's w/ low TTL
->   iptables -A INPUT -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
->   iptables -A FORWARD -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
+hello, everybody. Wish you a good day!
+I have compiled my test program with libipq. But when I try to execute
+it with netqueue command, I get some troubles. ----There exists no
+such command. Why? Then how to execute my program?
+Another question: I think it's something like writer and reader
+problem since kernel tries to put packets into user space and my
+program tries to read them. Is it necessary for user application to do
+some work for synchronization? If not, why?
 
-looking at that response--there's a situation screaming for a custom
-chain:
-
-  iptables -N DROP_TRACE
-  iptables -A DROP_TRACE -p udp --dport 33434:33523 -j DROP
-  iptables -A DROP_TRACE -p icmp --icmp-type 8 -m ttl --ttl-lt 5 -j DROP
-
-  iptables -A INPUT -j DROP_TRACE
-  iptables -A FORWARD -j DROP_TRACE
-
--j
-
---
-"Announcer: Paw McTucket Beer. If you drink it, hot women will have
- sex in your backyard."
-        --Family Guy
+Thanks for your suggestions!
 
