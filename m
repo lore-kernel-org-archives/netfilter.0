@@ -1,9 +1,11 @@
-From: "Andrew Kraslavsky" <andykras@hotmail.com>
-Subject: Re: TCP handshake sequence enforcement
-Date: Fri, 20 May 2005 12:50:06 -0700
-Message-ID: <BAY106-F323A17A50CAD33FE096DA3D6090@phx.gbl>
+From: un_brice <98111@free.fr>
+Subject: LAN pass, but not loopback
+Date: Sat, 21 May 2005 00:26:47 +0200
+Message-ID: <200505210026.47727.98111@free.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,82 +16,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
->>Good day,
->>
->>Does any part of iptables/netfilter (possibly conntrack?) provide srtict 
->>TCP handshake sequence enforcement?  By which I mean, ensure that:
->>
-> >1) The 1st packet in a TCP traffic flow has only the SYN flag set.
->>
->>2) The 2nd packet is a reply with only SYN+ACK (assuming the connection is 
->>being accepted).
->>
->>3) The 3rd packet is the ACK from the traffic flow originator.
->>
->>I know I can enforce the 1st part using a rule that checks the TCP flags 
->>on a traffic flow in the NEW state as described in section B.2 in Oskar 
->>Andreasson's excellent "Iptables Tutorial", which lists the following 
->>example (n.b. this example uses the old ipchains style '-syn' instead of 
->>the new '--tcp-flags' argument but these are functionally equivalent):
->>
->>     iptables -A INPUT -p tcp ! --syn -m state NEW -j DROP
->>
->>However, how can I enforce the second and third steps?
->>
->>Why do I ask?  Well, there's this outfit called ICSA, see, and this is one 
->>of their requirements and the places where I want to install my 
->>router/firewall demand ICSA certification.  I'm not real clear on the set 
->>of exploits the enforcement of the above would foil but I'm guessing some 
->>kind of intrusion or other.
->>
->>Anyway, I'm hoping this is something inherently handled by conntrack 
->>(because I'm lazy and I don't want to have to code anything up myself)...
+Hi,
+I'm currently trying to discover iptables. In that aim I created a little=20
+script to "protect" my lan (4 computers).
+It became pretty complex with the time, but remain clean... and should work=
+,=20
+at least I think.
+The problem is it doesn't : it contain, among other things
+#Loopback interface
+iptables -A INPUT -o lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+[..]
+#Apache
+iptables -A INPUT -p tcp --dport http -m connlimit ! --connlimit-above 40 \
+=2Dj ACCEPT
 
->as you state--you need to enforce step 1 in your rules:
->
->  iptables -A CHAIN -p tcp --syn -m state --state NEW ... -j ACCEPT
->
->steps 2 and 3 and (unmentioned) 4 (where the continuing SEQ and ACK
->numbers are validated against what is expected) and (unmentioned) 5
->where the 4-way TCP teardown sequence is validated are all handled by
->Jozsef Kadlecsik's tcp-window-tracking patch from PoM (for 2.4 kernels),
->which is in the mainline kernel as of 2.6.9.  the timeouts for the
->varied states are controlled by the 'sysctl net.ipv4.netfilter'
->variables.
+=46rom the inside, wget http://my_server works as it should, from outside a=
+lso,=20
+but not from the computer himself !
+=46or the same reason (i think) Samba cannot connect to CUPS... and I've ma=
+ny=20
+other problems.
+I've tried as I could to understand this problem but failed. On the other=20
+hand, each time I suspected a bug in a complex software (iptables here), I=
+=20
+was wrong.
+So, if one would have time to tell me were... mummy would be very happy as =
+she=20
+could print again -_^.
 
->as an aside, are you going to pay to have netfilter (or i guess more
->correctly, some installation/configuration thereof) ICSA certified?
+Sorry for my bad english. You can read the whole script at=20
+http://98111.free.fr/serv/served/iptables.en.sh , I tried to traduce commen=
+ts=20
+in english but I'm not sure of the result.
 
->-j
+By the way, what do you think of the way I tried to reduce the overload due=
+ to=20
+TARPIT ? Would it work ?
 
->--
->"Woman: Pervert.
->  Brian: Oh, don't flatter yourself, honey; I don't have any sweat
->  glands."
->        --Family Guy
+Thanks !
+Brice
 
-Jason,
-
-Thanks for the quick response.  I will deploy the tcp-window-tracking patch.
-
-Regarding ICSA certification, assuming my proposed router/firewall solution 
-is accepted by the folks for whom I'm toiling (I'm not sure how they'd feel 
-about my revealing who they are so I won't name names), they will pay for 
-ICSA certification.
-
-We are still a ways away from that stage but, if and when we get there, I 
-will be sure to report the results.
-
-Thanks again,
-
-- Andrew
-
-_________________________________________________________________
-On the road to retirement? Check out MSN Life Events for advice on how to 
-get there! http://lifeevents.msn.com/category.aspx?cid=Retirement
-
+=2D-=20
+"Emacs is my operating system, and Linux its device driver."
+ -- Bake Timmons
 
