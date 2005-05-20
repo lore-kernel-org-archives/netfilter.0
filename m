@@ -1,13 +1,12 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Prevent traceroutes
-Date: Fri, 20 May 2005 14:03:47 -0500
-Message-ID: <428E3493.4040505@riverviewtech.net>
-References: <fad9d484050519150730dbc53d@mail.gmail.com>	<20050519232314.GA9369@bender.817west.com>	<20050519233347.GA9462@bender.817west.com>	<428D8638.4040301@riverviewtech.net>	<428D954E.1010105@riverviewtech.net>	<20050520152021.GA11737@bender.817west.com>
-	<Pine.LNX.4.61.0505201443170.8116@e-smith.charlieb.ott.istop.com>
+Subject: Re: Blocking ip addresses..
+Date: Fri, 20 May 2005 14:07:18 -0500
+Message-ID: <428E3566.90705@riverviewtech.net>
+References: <20050520172641.GF9921@gw.home.tux-labor.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0505201443170.8116@e-smith.charlieb.ott.istop.com>
+In-Reply-To: <20050520172641.GF9921@gw.home.tux-labor.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,9 +20,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> Why is filtering in -t mangle not also poor form?
+> The Problem is, when I use the conntrack modul, and I block a IP with
+> this command : 
+> 
+> iptables -t nat -I POSTROUTING -p tcp  -s 192.168.0.23 --dport 25 -m
+> conntrack --ctstate ESTABLISHED,NEW,RELATED -j DROP,
+> 
+> then I can't create new Connections, but I can use further on the established
+> connections.
 
-I believe that you are really suppose to do the filtering in the filter table.  But seeing as how the kernel will respond to the traceroute packet that comes in before the rules in the filter table could DROP the packet we have to do this filtering elsewhere to beat the kernel to the punch.  Jason, do you have any additional comments / corrections?
+This problem has to do with the fact that the nat table is only traversed when establishing NEW connections from what I have been told.  I think this would be better done in the filter:FORWARD or the filter:OUTPUT table as such:
+
+iptables -t filter -I FORWARD -s 192.168.0.23 -p tcp --dport 25 -j DROP
+iptables -t filter -I OUTPUT -s 192.168.0.23 -p tcp --dport 25 -j DROP
 
 
 
