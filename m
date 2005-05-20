@@ -1,14 +1,13 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Prevent traceroutes
-Date: Fri, 20 May 2005 02:44:14 -0500
-Message-ID: <428D954E.1010105@riverviewtech.net>
-References: <fad9d484050519150730dbc53d@mail.gmail.com>	<20050519232314.GA9369@bender.817west.com>
-	<20050519233347.GA9462@bender.817west.com>
-	<428D8638.4040301@riverviewtech.net>
+From: Brian Atkins <batkins@tlcdelivers.com>
+Subject: Re: Natting IPs hanging
+Date: Fri, 20 May 2005 10:38:47 +0000 (UTC)
+Message-ID: <42908917.40407@tlcdelivers.com>
+References: <428FBAB0.8030206@tlcdelivers.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <428D8638.4040301@riverviewtech.net>
+Date: Sun, 22 May 2005 06:28:55 -0700
+In-Reply-To: <428FBAB0.8030206@tlcdelivers.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,26 +21,256 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> iptables -t filter -A DROP_TRACE -o eth0 -p udp -m recent --name Drop_Traceroute --update --seconds 200 --rdest -j DROP
-> iptables -t filter -A DROP_TRACE -o eth0 -p udp -m recent --name Drop_Traceroute --set --rdest -m ttl --ttl-eq 1 -j DROP
-> iptables -t filter -A DROP_TRACE -o eth0 -p icmp -m recent --name Drop_Traceroute --update --seconds 200 --rdest -j DROP
-> iptables -t filter -A DROP_TRACE -o eth0 -p icmp -m recent --name Drop_Traceroute --set --rdest -m ttl --ttl-eq 1 -j DROP
-> 
-> The only thing that I have not figured out as of yet how to do is DROP 
-> the first packet that the firewall sees as every attempt that I made, 
-> even a DROP policy on the FORWARD and OUTPUT chain, did not block the 
-> first "TTL Time Exceeded" response.
+Brian Atkins wrote:
 
-I just figured it out and have tested it.  I *think* the reason that my first script did not work for the first router is b/c the raw routing code will send the ICMP TTL time exceeded message before any of the chains in the filter table have a chance to process the packet.  Hens my using the nat:PREROUTING chain.  I have also made the filtering process easier too as you do not have to filter in the filter:INPUT and filter:FORWARD chains, just the nat:PREROUTING now.
+> Jason and John,
+>
+> Again, thanks for the responses.  I've finally had an opportunity to 
+> dig back into it after a rather nightmare-ish week...
+>
+> I tried a couple of different things, without much success.  First, 
+> seeing as how I'm realtively new at this, I went back to the docs on 
+> Netfilter and pulled a script out of the appedices of one of the 
+> HOWTOs and modified it for my use.  Following their setup, I used it 
+> to create several new chains and new rules that I hadn't thought of 
+> implementing.  Now, when I went back and checked out ip_tables_names 
+> and ip_tables_targets, I get the following:
+>
+> root@fw>cat /proc/net/ip_tables_names
+> mangle
+> nat
+> filter
+>
+> root@fw>cat /proc/net/ip_tables_targets
+> REJECT
+> LOG
+> DNAT
+> SNAT
+>
+> Also, I checked out the kernel config and got the following list of 
+> modules that were created with the new build:
+> root@fw>grep _NF_ /usr/src/linux/.config
+> CONFIG_IP_NF_CONNTRACK=m
+> # CONFIG_IP_NF_CT_ACCT is not set
+> # CONFIG_IP_NF_CONNTRACK_MARK is not set
+> # CONFIG_IP_NF_CT_PROTO_SCTP is not set
+> CONFIG_IP_NF_FTP=m
+> # CONFIG_IP_NF_IRC is not set
+> # CONFIG_IP_NF_TFTP is not set
+> # CONFIG_IP_NF_AMANDA is not set
+> # CONFIG_IP_NF_QUEUE is not set
+> CONFIG_IP_NF_IPTABLES=m
+> CONFIG_IP_NF_MATCH_LIMIT=m
+> CONFIG_IP_NF_MATCH_IPRANGE=m
+> CONFIG_IP_NF_MATCH_MAC=m
+> CONFIG_IP_NF_MATCH_PKTTYPE=m
+> CONFIG_IP_NF_MATCH_MARK=m
+> CONFIG_IP_NF_MATCH_MULTIPORT=m
+> CONFIG_IP_NF_MATCH_TOS=m
+> CONFIG_IP_NF_MATCH_RECENT=m
+> CONFIG_IP_NF_MATCH_ECN=m
+> CONFIG_IP_NF_MATCH_DSCP=m
+> CONFIG_IP_NF_MATCH_AH_ESP=m
+> CONFIG_IP_NF_MATCH_LENGTH=m
+> CONFIG_IP_NF_MATCH_TTL=m
+> CONFIG_IP_NF_MATCH_TCPMSS=m
+> CONFIG_IP_NF_MATCH_HELPER=m
+> CONFIG_IP_NF_MATCH_STATE=m
+> CONFIG_IP_NF_MATCH_CONNTRACK=m
+> CONFIG_IP_NF_MATCH_OWNER=m
+> CONFIG_IP_NF_MATCH_ADDRTYPE=m
+> CONFIG_IP_NF_MATCH_REALM=m
+> # CONFIG_IP_NF_MATCH_SCTP is not set
+> CONFIG_IP_NF_MATCH_COMMENT=m
+> # CONFIG_IP_NF_MATCH_HASHLIMIT is not set
+> CONFIG_IP_NF_FILTER=m
+> CONFIG_IP_NF_TARGET_REJECT=m
+> CONFIG_IP_NF_TARGET_LOG=m
+> CONFIG_IP_NF_TARGET_ULOG=m
+> CONFIG_IP_NF_TARGET_TCPMSS=m
+> CONFIG_IP_NF_NAT=m
+> CONFIG_IP_NF_NAT_NEEDED=y
+> CONFIG_IP_NF_TARGET_MASQUERADE=m
+> CONFIG_IP_NF_TARGET_REDIRECT=m
+> CONFIG_IP_NF_TARGET_NETMAP=m
+> CONFIG_IP_NF_TARGET_SAME=m
+> CONFIG_IP_NF_NAT_SNMP_BASIC=m
+> CONFIG_IP_NF_NAT_FTP=m
+> CONFIG_IP_NF_MANGLE=m
+> CONFIG_IP_NF_TARGET_TOS=m
+> CONFIG_IP_NF_TARGET_ECN=m
+> CONFIG_IP_NF_TARGET_DSCP=m
+> CONFIG_IP_NF_TARGET_MARK=m
+> CONFIG_IP_NF_TARGET_CLASSIFY=m
+> CONFIG_IP_NF_RAW=m
+> CONFIG_IP_NF_TARGET_NOTRACK=m
+> CONFIG_IP_NF_ARPTABLES=m
+> CONFIG_IP_NF_ARPFILTER=m
+> CONFIG_IP_NF_ARP_MANGLE=m
+>
+> Likewise, here is what is currently loaded:
+> root@fw>lsmod
+> Module                  Size  Used by
+> ip_nat_ftp              3584  0
+> ip_conntrack_ftp       72976  1 ip_nat_ftp
+> ipt_state               2560  5
+> ipt_limit               3072  2
+> iptable_mangle          3328  0
+> ipt_REJECT              6528  1
+> ipt_LOG                 7552  2
+> iptable_nat            23868  2 ip_nat_ftp
+> ip_conntrack           49992  4 
+> ip_nat_ftp,ip_conntrack_ftp,ipt_state,iptable_nat
+> iptable_filter          3328  1
+> ip_tables              23296  7 
+> ipt_state,ipt_limit,iptable_mangle,ipt_REJECT,ipt_LOG,iptable_nat,iptable_filter 
+>
+> BLADABLADABLADA
+>
+> Here is my routing table (for what it's worth):
+> root@fw>route
+> Kernel IP routing table
+> Destination     Gateway         Genmask         Flags Metric Ref    
+> Use Iface
+> [OUTSIDE _NET]  *               255.255.255.192 U     0      0        
+> 0 eth0
+> [INSIDE_NET]    *               255.0.0.0       U     0      0        
+> 0 eth2
+> loopback        localhost       255.0.0.0       UG    0      0        
+> 0 lo
+> default         [OUTSIDE_GW]    0.0.0.0         UG    0      0        
+> 0 eth0
+>
+> And, finally, my current ruleset (and I welcome all critiques):
+> root@fw>iptables-save
+> # Generated by iptables-save v1.3.1
+> *mangle
+> :PREROUTING ACCEPT [4431:597383]
+> :INPUT ACCEPT [4387:587673]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [1709:222042]
+> :POSTROUTING ACCEPT [1686:202254]
+> COMMIT
+> *nat
+> :PREROUTING ACCEPT [2731:449771]
+> :POSTROUTING ACCEPT [13:950]
+> :OUTPUT ACCEPT [13:950]
+> -A PREROUTING -d [PUBLIC_IP] -i eth0 -j DNAT --to-destination 
+> [PRIVATE_IP]
+> -A PREROUTING -d [PUBLIC_IP] -i eth0 -j DNAT --to-destination 
+> [PRIVATE_IP]
+> -A POSTROUTING -s [PRIVATE_IP] -o eth0 -j SNAT --to-source [PUBLIC_IP]
+> -A POSTROUTING -s [PRIVATE_IP] -o eth0 -j SNAT --to-source [PUBLIC_IP]
+> COMMIT
+> *filter
+> :ALLOWED - [0:0]
+> :BAD_TCP_PACKETS - [0:0]
+> :ICMP_PACKETS - [0:0]
+> :INPUT DROP [2625:435028]
+> :FORWARD DROP [0:0]
+> :OUTPUT DROP [23:19788]
+> :POSTROUTING - [0:0]
+> :PREROUTING - [0:0]
+> :TCP_PACKETS - [0:0]
+> :UDP_PACKETS - [0:0]
+> -A ALLOWED -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> -A ALLOWED -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A ALLOWED -p tcp -j DROP
+> -A BAD_TCP_PACKETS -p tcp -m tcp --tcp-flags SYN,ACK SYN,ACK -m state 
+> --state NEW -j REJECT --reject-with tcp-reset
+> -A BAD_TCP_PACKETS -p tcp -m tcp ! --tcp-flags SYN,RST,ACK SYN -m 
+> state --state NEW -j DROP
+> -A ICMP_PACKETS -s [PRIVATE_NET]/255.0.0.0 -p icmp -j ACCEPT
+> -A ICMP_PACKETS -s [PUBLIC_NET]/255.255.255.192 -p icmp -j ACCEPT
+> -A ICMP_PACKETS -s 127.0.0.0/255.0.0.0 -p icmp -j ACCEPT
+> -A ICMP_PACKETS -p icmp -m icmp --icmp-type 3/4 -j ACCEPT
+> -A INPUT -j PREROUTING
+> -A INPUT -p tcp -j BAD_TCP_PACKETS
+> -A INPUT -s 127.0.0.1 -i lo -j ACCEPT
+> -A INPUT -s [PRIVATE_IP_FW] -i lo -j ACCEPT
+> -A INPUT -s [PUBLIC_IP_FW] -i lo -j ACCEPT
+> -A INPUT -d [PUBLIC_IP_FW] -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A INPUT -p tcp -j TCP_PACKETS
+> -A INPUT -p udp -j UDP_PACKETS
+> -A INPUT -p icmp -j ICMP_PACKETS
+> -A FORWARD -p tcp -j BAD_TCP_PACKETS
+> -A FORWARD -d [PUBLIC_NET]/255.255.255.192 -p tcp -j PREROUTING
+> -A FORWARD -p icmp -m icmp --icmp-type 3/4 -j ICMP_PACKETS
+> -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A FORWARD -m limit --limit 3/min --limit-burst 3 -j LOG --log-prefix 
+> "IPT FORWARD packet died: " --log-level 7
+> -A OUTPUT -s 127.0.0.1 -j ACCEPT
+> -A OUTPUT -s [PRIVATE_IP_FW] -j ACCEPT
+> -A OUTPUT -s [PUBLIC_IP_FW] -j ACCEPT
+> -A OUTPUT -m limit --limit 3/min --limit-burst 3 -j LOG --log-prefix 
+> "IPT OUTPUT packet died: " --log-level 7
+> -A TCP_PACKETS -p tcp -m tcp --dport 21 -j ALLOWED
+> -A TCP_PACKETS -p tcp -m tcp --dport 22 -j ALLOWED
+> -A TCP_PACKETS -p tcp -m tcp --dport 25 -j ALLOWED
+> -A TCP_PACKETS -p tcp -m tcp --dport 80 -j ALLOWED
+> -A TCP_PACKETS -p tcp -m tcp --dport 443 -j ALLOWED
+> -A TCP_PACKETS -p tcp -m tcp --dport 873 -j ALLOWED
+> -A TCP_PACKETS -p tcp -m tcp --dport 1999 -j ALLOWED
+> -A TCP_PACKETS -p tcp -m tcp --dport 4899 -j ALLOWED
+> -A TCP_PACKETS -p tcp -m tcp --dport 5666 -j ALLOWED
+> -A TCP_PACKETS -p tcp -m tcp --dport 8080 -j ALLOWED
+> -A TCP_PACKETS -p tcp -m tcp --dport 11371 -j ALLOWED
+> -A UDP_PACKETS -p udp -m udp --sport 53 -j ACCEPT
+> -A UDP_PACKETS -p udp -m udp --sport 123 -j ACCEPT
+> -A UDP_PACKETS -p udp -m udp --sport 873 -j ACCEPT
+> COMMIT
+> # Completed
+>
+> I also tried FireHOL to build the rules from a config file.  I liked 
+> how *through* it appeared to be, but I went back to the original 
+> script for troubleshooting purposes.
+>
 
-iptables -t nat -A PREROUTING -i $LAN -p udp -m recent --name Drop_Traceroute --update --seconds 200 --rdest -j DROP
-iptables -t nat -A PREROUTING -i $LAN -p udp -m recent --name Drop_Traceroute --set --rdest -m ttl --ttl-eq 1 -j DROP
-iptables -t nat -A PREROUTING -i $LAN -p icmp -m recent --name Drop_Traceroute --update --seconds 200 --rdest -j DROP
-iptables -t nat -A PREROUTING -i $LAN -p icmp -m recent --name Drop_Traceroute --set --rdest -m ttl --ttl-eq 1 -j DROP
+Now, even more strange is that I stripped everything out right down to 
+just the natting piece and I still can't traverse the fw:
 
-This will prevent any traceroutes via the methods mentioned before from any computer coming in on interface $LAN.
+# Generated by iptables-save v1.3.1 on Fri May 20 06:23:40 2005
+*raw
+:PREROUTING ACCEPT [185327:123272626]
+:OUTPUT ACCEPT [71616:17819696]
+COMMIT
+# Completed on Fri May 20 06:23:40 2005
+# Generated by iptables-save v1.3.1 on Fri May 20 06:23:40 2005
+*nat
+:PREROUTING ACCEPT [20964:3942558]
+:POSTROUTING ACCEPT [54:3564]
+:OUTPUT ACCEPT [53:3480]
+-A PREROUTING -d [PUBLIC_IP] -i eth0 -j DNAT --to-destination [PRIVATE_IP]
+-A PREROUTING -d [PUBLIC_IP] -i eth0 -j DNAT --to-destination [PRIVATE_IP]
+-A POSTROUTING -s [PRIVATE_IP] -o eth0 -j SNAT --to-source [PUBLIC_IP]
+-A POSTROUTING -s [PRIVATE_IP] -o eth0 -j SNAT --to-source [PUBLIC_IP]
+COMMIT
+# Completed on Fri May 20 06:23:40 2005
+# Generated by iptables-save v1.3.1 on Fri May 20 06:23:40 2005
+*filter
+:INPUT ACCEPT [955:375232]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [1219:191838]
+:POSTROUTING - [0:0]
+:PREROUTING - [0:0]
+-A FORWARD -i eth1 -j POSTROUTING
+COMMIT
+# Completed on Fri May 20 06:23:40 2005
 
+By all intents I should be vulnerable to the world.  From the outside, I 
+can hit the external facing NIC, but I can't get to the public IP of one 
+of my webservers.  From the inside, I can hit both NICs (inside/outside) 
+on the firewall, but not the internal facing NIC on the ex-router.  From 
+the firewall, I can see both WWW and my internal network.
 
+Is there a tool to debug iptables to see if any of the rules are being 
+used by incoming traffic?
 
-Grant. . . .
+-- 
+Brian Atkins
+IT Services
+The Library Corporation
+http://TLCdelivers.com
+Ph: 800.624.0559
+
 
