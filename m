@@ -1,14 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Iptables
-Date: Fri, 20 May 2005 01:50:31 -0400
-Message-ID: <20050520055031.GA10259@bender.817west.com>
-References: <200505191945.22293.chadley@pinteq.co.za>
-	<200505192213.27006.chadley@pinteq.co.za>
-	<20050519214301.GA9129@bender.817west.com>
-	<200505200738.57268.chadley@pinteq.co.za>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Iptables
+Date: Fri, 20 May 2005 08:04:18 +0200
+Message-ID: <20050520060303.34BE88EDCEB@smtp.sterenborg.info>
+References: <200505200738.57268.chadley@pinteq.co.za>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <200505200738.57268.chadley@pinteq.co.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,35 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Fri, May 20, 2005 at 07:38:57AM +0200, Chadley Wilson wrote:
 > Would it be safe to set the OUTPUT default policy to ACCEPT?
-> Every time I set it to DROP I get locked out, I suppose it has to do with the 
-> fact that I have no rules for the OUTPUT chain.
+> Every time I set it to DROP I get locked out, I suppose it
+> has to do with the fact that I have no rules for the OUTPUT chain.
 
-well, if you're not going to add any rules to OUTPUT, then--yeah, leave
-it at ACCEPT.  the OUTPUT policy as ACCEPT or DROP is really more of an
-idealogical debate than anything else.  personally, i set mine to DROP
-and only allow the traffic that is absolutely necessary to save me from
-myself (i.e. don't tempt the fw admin to use the fw as a shell
-account).  things i deem necessary to allow out:
+A lot of people set OUTPUT policy to ACCEPT.
+You can always do something like :
 
-  DNS
-  NTP
-  FTP/HTTP to update server IP's
-  ICMP
+$ipt -P OUTPUT DROP
+$ipt -A OUTPUT -p tcp --sport 1024: -j ACCEPT
+$ipt -A OUTPUT -p udp --sport 1024: -j ACCEPT
+$ipt -A OUTPUT -p icmp -j ACCEPT
 
-this is all politic, i don't intend any decree by the statements made
-here.
+This way a program cannot pretend to something like a web- or
+mailserver. If you check "/proc/sys/net/ipv4/ip_local_port_range" you
+see the local portrange (sport) your box will use. You can use this
+range in your rules. E.g. you could  use "32768:61000" (if that is your
+range) instead of "1024:".
 
--j
 
---
-"Lois: What's going on?
- Stewie: We're playing house.
- Lois: The boy is all tied up.
- Stewie: Roman Polanski's house."
-        --Family Guy
+Gr,
+Rob
+
 
