@@ -1,11 +1,13 @@
-From: Damon Gray <dgray@internap.com>
-Subject: Re: Limiting connections per IP per port
-Date: Fri, 20 May 2005 09:11:39 -0400 (EDT)
-Message-ID: <Pine.LNX.4.62.0505200907240.27380@dgray-test.acs.internap.com>
-References: <20050520115932.D1635200009D@bmx2.internap.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: SSH Brute force attacks
+Date: Fri, 20 May 2005 09:53:37 -0500
+Message-ID: <428DF9F1.9060602@riverviewtech.net>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>	<42898402.10507@eccotours.dyndns.org>	<4289E72F.7020901@wp.pl>	<428B3798.9050407@eccotours.dyndns.org>	<428C1C3F.9030600@riverviewtech.net>	<428C56C9.9000607@eccotours.dyndns.org>	<428CA51D.4080206@riverviewtech.net>
+	<428DDFBC.1080905@eccotours.dyndns.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050520115932.D1635200009D@bmx2.internap.com>
+In-Reply-To: <428DDFBC.1080905@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,47 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Anthony Sadler <anthonys@faredge.com.au>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+> So... I cant see why I cant connect from a dynamically assigned ip.
+
+Brent, I'll have to take a closer look at your script later on (complete flow analysis vs just the SSH_Brute_Force chain).  But for now it looks like you have both versions (original and updated one) in your firewall, this could be causing a few problems as I don't think it would take more than one attempt in a 60 second period to get your self to the point that you would be TARPITed / DROPed.  However I think that you would be able to connect at least 1 time from any dynamic remote IP in the 60 second period.  Also keep in mind that the recent module (in the updated version) is using an --update option which will keep track of the number of times that you have tried to connect for 60 seconds after the last connection attempt.
+
+> $IPT -N SSH_Brute_Force
+> #$IPT -A INPUT -p tcp --dport 22 -m state --state NEW -s ! 196.31.9.82 
+> -j SSH_Brute_Force
+> #$IPT -A SSH_Brute_Force -m recent --set --name SSH
+> #$IPT -A SSH_Brute_Force -m recent ! --rcheck --name SSH --seconds 60 
+> --hitcount 3 -j RETURN
+> #$IPT -A SSH_Brute_Force -m recent --name SSH --update
+> #$IPT -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
+> #$IPT -A SSH_Brute_Force -j DROP
+> 
+> $IPT -A INPUT -p tcp --dport 22 -m state --state NEW -j SSH_Brute_Force
+> $IPT -A SSH_Brute_Force -s 196.31.9.82 -j RETURN
+> $IPT -A SSH_Brute_Force -m recent --set --name SSH --rsource
+> $IPT -A SSH_Brute_Force -m recent ! --update --seconds 60 --hitcount 8 
+> --name SSH --rsource -j RETURN
+> $IPT -A SSH_Brute_Force -m recent --update --name SSH --rsource
+> $IPT -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
+> $IPT -A SSH_Brute_Force -p tcp -j DROP
 
 
-Take a look at the connlimit module in patch-o-matic-ng. It's default 
-behavior is to limit connections per IP.
 
-iptables -I INPUT 1 -p tcp --syn --dport 25 -m connlimit
---connlimit-above 4 -j REJECT --reject-with tcp-reset
-
-You will however most likely need to patch your kernel to use it.
-
--Damon-
-
-On Fri, 20 May 2005, Anthony Sadler wrote:
-
-> Hey
->
-> First post :D
->
-> I have a linux mail server that is getting spammed and mail bombed. In an
-> attempt to control this, we are trying to limit the amount of connections to
-> the server on port 25.
-> Now we don't want to limit the total connections that are allowed to
-> connect, we would like to say that IP 1.2.3.4 can only have 4 sessions open
-> to us.
->
-> I've been looking at the IP_LIMIT module for iptables, but it seems I can
-> only either limit total connections, or do it on a per IP basis (which would
-> be impossible).
->
-> So to summarise, I want as many separate hosts to connect, but only to be
-> allowed, say, 4 concurrent connections.
->
-> Thanks!
->
-> Anthony Sadler
->
->
->
->
+Grant. . . .
 
