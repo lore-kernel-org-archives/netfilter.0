@@ -1,47 +1,64 @@
-From: =?utf-8?b?0J/RkdGC0YAg0JLQvtC70LrQvtCy?=
-	=?utf-8?b?INCQ0LvQtdC60YHQsNC90LTRgNC+0LLQuNGH?= <pvolkov@mics.msu.su>
-Subject: Re: SSH Brute force attacks
-Date: Sat, 21 May 2005 12:00:28 +0400
-Message-ID: <200505211200.28314.pvolkov@mics.msu.su>
-References: <427B93EE.3030905@eccotours.dyndns.org>
-	<42898402.10507@eccotours.dyndns.org> <4289E72F.7020901@wp.pl>
+From: Jonas Berlin <xkr47@outerspace.dyndns.org>
+Subject: Re: why incoming packet's device not logging?
+Date: Sat, 21 May 2005 10:07:54 +0000
+Message-ID: <428F087A.6050809@outerspace.dyndns.org>
+References: <20050521070446.49238.qmail@web33015.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4289E72F.7020901@wp.pl>
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <20050521070446.49238.qmail@web33015.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: cranium2003 <cranium2003@yahoo.com>
+Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter <netfilter@lists.netfilter.org>
 
-Hello Taylor and =C5=81ukasz.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Can anybody explain me you are using such combination of rules.
+Quoting cranium2003 on 2005-05-21 07:04 UTC:
+> hello,
+>     I added 3 rules to iptables as
+> iptables -A INPUT -j LOG
+> iptables -A OUTPUT -j LOG
+> iptables -A FORWARD -j LOG
+>  But i am getting log of forward and output chain
+> correctly but why when packet comes its incoming
+> device is not logged. My IPTABLES is
+  <snip>
+> -A INPUT -j RH-Lokkit-0-50-INPUT 
+> -A INPUT -j LOG 
+  <snip>
+> -A RH-Lokkit-0-50-INPUT -i lo -j ACCEPT 
+> -A RH-Lokkit-0-50-INPUT -i eth0 -j ACCEPT 
+> -A RH-Lokkit-0-50-INPUT -i eth1 -j ACCEPT 
 
-17 =D0=9C=D0=B0=D0=B9 2005 16:44 =C5=81ukasz Hejnak wrote:
-> No problem, here's my variation, based on Taylor Grant's ruleset
-> $ipt -A SSH_Brute_Force -m recent --set --name SSH
-> $ipt -A SSH_Brute_Force -m recent ! --rcheck --name SSH --seconds 60
-> --hitcount 3 -j RETURN=20
+It seems that these last three rules accept basically all packets and
+thus the LOG rule is never reached.. Or do you have more network cards
+than eth0 and eth1 ?
 
-Why this update here (see below)?
+You say it works for FORWARD, but I don't think I see how it could..
 
-> $ipt -A SSH_Brute_Force -m recent --name SSH --update
-> $ipt -A SSH_Brute_Force -j DROP
-=09
-Every time packet passed --set rule it updates SSH. So if drop this rule,=20
-nothing changes. Or am I wrong? Is there any idea behind this that I missed.
+I wonder if those ACCEPTs are there by mistake.. maybe they should be at
+the end of the RH-Lokkit-0-50-INPUT chain instead?
 
-Thank you for you attention,
-=2D-=20
-Peter.
+If you need further help, please give more info about your network setup.
+
+- --
+- - xkr47
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFCjwh5xyF48ZTvn+4RAiQnAJ96URdIrQ37/dbn2+LNUNameG3vHwCfewQ+
+LJ6nyzYfe4Zg4L+Xr3ifXyE=
+=npwq
+-----END PGP SIGNATURE-----
 
