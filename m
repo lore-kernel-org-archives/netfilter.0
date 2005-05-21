@@ -1,11 +1,16 @@
-From: Michelle Konzack <linux4michelle@freenet.de>
-Subject: Sub-Net-Router does not more forward
-Date: Sat, 21 May 2005 19:38:59 +0200
-Message-ID: <20050521173859.GA31526@freenet.de>
+From: bright true <brighttrue@gmail.com>
+Subject: Re: (no subject)
+Date: Sat, 21 May 2005 14:01:51 -0400
+Message-ID: <3b29fb79050521110142904b5@mail.gmail.com>
+References: <3b29fb79050520200817e1e315@mail.gmail.com>
+	<20050521181637.GA1564@bender.817west.com>
+	<3b29fb7905052022187076b17d@mail.gmail.com>
+	<20050521193152.GA1769@bender.817west.com>
+Reply-To: bright true <brighttrue@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050521193152.GA1769@bender.817west.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,106 +22,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
+Hello ,=20
 
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+i want to ask you , i there any way to accomplish the whole thing with out=
+=20
+the need of re-compiling the Kernel=20
 
-Hello *,
+and iptables actually i've a VPS and i don't have my own server and can't=
+=20
+compile the Kernel for one VPS only=20
 
-I am Running Debian GNU/Linux 3.0 with Kernel 2.4.27 and I have
-following Network since 6 years:
+Thanks alot=20
+Bye
 
-----8<----------------------------------------------------------------
-        Internet Access with dynamic IP Address
-                           |
-                           |
-                  +--------+--------+
-                  | Netgear  DM602A |
-                  +--------+--------+
-                           |IP 192.168.0.1
-                           |NM 255.255.255.240
-                           |NW 192.168.0.0
-                           |BC 192.168.0.15
-                           |
-                           |
-                           |IP 192.168.0.14
-                           |NM 255.255.255.240
-                           |NW 192.168.0.0
-                           |BC 192.168.0.15
-                           |GW 192.168.0.1
-+--------------------------+-------------------------------+
-|                         eth0                             |
-|                                                          |
-|      SUB-Net-Router without NAT or IP-Masquertading      |
-| IP-Forwarding is activated and I have NO iptables rules. |
-|                                                          |
-|          eth1        eth2        eth3        eth4        |
-+-----------+-----------+-----------+-----------+----------+
-IP 192.168. |0.193      |0.65       |0.33       |0.129
-NM 255.255. |255.192    |255.192    |255.224    |255.192
-NW 192.168. |0.0        |0.64       |0.32       |0.128
-BC 192.168. |0.15       |0.127      |0.63       |0.192
-            |           |           |           |
-            |           |           |           |
-          public      private     secure      cyber
-          network     network     network     network    =20
-----8<----------------------------------------------------------------
-
-Now I have following problem:
-
-If I am on the Sub-Net-Router I can reach the Internet and all
-subnets without any problems. I can reach the Sub-Net-Router from
-the Internet via SSH.
-
-'ping', 'wget' or 'ssh' between the subnets is working too.
-
-But if I am in one of the Sub-Nets, I can not get anything from the
-Internet.
-
-I have installed tcpdump and monitored eth2 and eth0 on the "Sub-Net-
-Router" and gotten following:
-
-I am in the "private network" on my Workststion <michelle1> which
-has the IP 192.168.0.71 and the gateway 192.168.0.65.  Now I 'ping
--c 2 www.debian.org' and can see, the DNS-Request is coming into eth2
-and goes to eth0 out.  The traffic LED on my Netgear DM602A is now
-blinking and I can see, the package is coming back into eth0.
-
-But now, my "Sub-Net-Router" stops forwarding the package back via
-eth2 to my Workststion <michelle1>...
-
-What I am missing here ?
-
-The bad thing is, the router was working for more then 6 years (Linux
-2.0.38 and now 2.4.27)
-
-Any Ideas ?
-
-Greetings
-Michelle
-
---=20
-Linux-User #280138 with the Linux Counter, http://counter.li.org/
-Michelle Konzack   Apt. 917                  ICQ #328449886
-                   50, rue de Soultz         MSM LinuxMichi
-0033/3/88452356    67100 Strasbourg/France   IRC #Debian (irc.icq.com)
-
---NzB8fVQJ5HfG6fxh
-Content-Type: application/pgp-signature; name="signature.pgp"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQFCj3IzC0FPBMSS+BIRAtDvAJ4onarz07Zp0WRmg2MakS4XgOBqWwCgvv0K
-4DfWNMoACj/ph5a/J3XMhOo=
-=D8w0
------END PGP SIGNATURE-----
-
---NzB8fVQJ5HfG6fxh--
-
+On 5/21/05, Jason Opperisano <opie@817west.com> wrote:
+>=20
+> On Sat, May 21, 2005 at 01:18:15AM -0400, bright true wrote:
+> > Hello ,
+> >
+> > Thanks for your reply , but can you give me the link of the patch i hav=
+e=20
+> to
+> > apply
+>=20
+> grab the latest snapshot of PoM available from:
+>=20
+> http://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/
+>=20
+> for example:
+>=20
+>=20
+> http://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/patch-o-matic-ng-2=
+0050520.tar.bz2
+>=20
+> you need to have both the source of your running kernel available and
+> the source of your iptables version available and following the
+> instructions in the PoM README file. basic recipe:
+>=20
+> - apply patches from PoM
+> - recompile kernel
+> - recompile iptables
+> - reboot & enjoy
+>=20
+> -j
+>=20
+> --
+> "Brian: Excuse me, would you like to taste my smoked meat log?"
+> --Family Guy
+>=20
+>
