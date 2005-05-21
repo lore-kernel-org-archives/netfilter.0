@@ -1,14 +1,13 @@
-From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
-Subject: Re: Load Balancing / Merging speed
-Date: Sun, 22 May 2005 00:33:02 +0200
-Message-ID: <fad9d48405052115331ed980d0@mail.gmail.com>
-References: <1116658510.2529.130.camel@debianbox>
-Reply-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: SSH Brute force attacks
+Date: Sat, 21 May 2005 17:37:19 -0500
+Message-ID: <428FB81F.6030403@riverviewtech.net>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<42898402.10507@eccotours.dyndns.org>
+	<4289E72F.7020901@wp.pl> <200505211200.28314.pvolkov@mics.msu.su>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1116658510.2529.130.camel@debianbox>
-Content-Disposition: inline
+In-Reply-To: <200505211200.28314.pvolkov@mics.msu.su>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,49 +18,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "Sadus ." <sadus@swiftbin.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On 5/21/05, Sadus . <sadus@swiftbin.net> wrote:
-> Hello,
-> If i want to search for HOWTOs that can enable me to merge the
-> connection speed of multiple providers (inboud/outbound), what should i
-> search for?
+> Why this update here (see below)?
+> 
+> $ipt -A SSH_Brute_Force -m recent --name SSH --update
+> 	
+> Every time packet passed --set rule it updates SSH. So if drop this rule, 
+> nothing changes. Or am I wrong? Is there any idea behind this that I missed.
 
-The nano howto if I'm not mistaken, and have a look at the eql qdisc
-and teql device.
-
->=20
-> what i mean by merging is, lets say my connection is shaped at 100K and
-> the other is also shaped at 100K, i want to be able using the 2 ISPs to
-> have 200K (in/out),
->=20
-> Does anyone have a HOWTO or Article about that Matter?
-
-I asked a similar question in the list not too long ago. Search the
-archives for the subject "Spill over" and have a look. There was some
-excellent replies from other members on the topic. I have honestly not
-had the chance to properly test the configurations myself, but from my
-searching and discussions here it won't be an easy feat to achieve.
-
-Relative load balancing is not that difficult, but to fully maximize
-the utilization of each link is another story.
-
->=20
-> Thanks
->=20
-
-Only a pleasure
-
->=20
->=20
->=20
+The "--set" rule is required because the testing that I did the "--update" rule would not effectively do the same thing as "--set" because there was no initial "--set" to be updated.  It's sort of a chicken and egg problem where you can not successfully have one with out having the other in this scenario.  The only draw back to having the "--set" that I'm aware of is that the hit count is incremented once per "--set" and "--update" thus you have to double the "--hitcount" value that you want to match against.
 
 
---=20
 
-Kenneth Kalmer
-kenneth.kalmer@gmail.com
-http://opensourcery.blogspot.com
+Grant. . . .
 
