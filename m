@@ -1,13 +1,14 @@
-From: anthonys@faredge.com.au
-Subject: Re: Limiting connections per IP per port
-Date: Sat, 21 May 2005 22:12:04 +1000 (EST)
-Message-ID: <2087.147.10.157.98.1116677524.squirrel@147.10.157.98>
-References: <20050520115932.D1635200009D@bmx2.internap.com>
-	<Pine.LNX.4.62.0505200907240.27380@dgray-test.acs.internap.com>
+From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+Subject: Re: Load Balancing / Merging speed
+Date: Sun, 22 May 2005 00:33:02 +0200
+Message-ID: <fad9d48405052115331ed980d0@mail.gmail.com>
+References: <1116658510.2529.130.camel@debianbox>
+Reply-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.62.0505200907240.27380@dgray-test.acs.internap.com>
+In-Reply-To: <1116658510.2529.130.camel@debianbox>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,69 +20,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Damon Gray <dgray@internap.com>
+To: "Sadus ." <sadus@swiftbin.net>
 Cc: netfilter@lists.netfilter.org
 
-Damon:
+On 5/21/05, Sadus . <sadus@swiftbin.net> wrote:
+> Hello,
+> If i want to search for HOWTOs that can enable me to merge the
+> connection speed of multiple providers (inboud/outbound), what should i
+> search for?
 
-Thanks for the reply.
-I had a poke around at that, but to me, that rule says:
-Insert a rule, that applies to SYN packets on port 25, that only allows
-four connections --> in total <-- to port 25.
+The nano howto if I'm not mistaken, and have a look at the eql qdisc
+and teql device.
 
-Am I reading that correctly? Or will that limit to 4 connections per IP,
-as I wish?
+>=20
+> what i mean by merging is, lets say my connection is shaped at 100K and
+> the other is also shaped at 100K, i want to be able using the 2 ISPs to
+> have 200K (in/out),
+>=20
+> Does anyone have a HOWTO or Article about that Matter?
 
-Thanks!
+I asked a similar question in the list not too long ago. Search the
+archives for the subject "Spill over" and have a look. There was some
+excellent replies from other members on the topic. I have honestly not
+had the chance to properly test the configurations myself, but from my
+searching and discussions here it won't be an easy feat to achieve.
 
-Anthony
+Relative load balancing is not that difficult, but to fully maximize
+the utilization of each link is another story.
 
->
-> Take a look at the connlimit module in patch-o-matic-ng. It's default
-> behavior is to limit connections per IP.
->
-> iptables -I INPUT 1 -p tcp --syn --dport 25 -m connlimit
-> --connlimit-above 4 -j REJECT --reject-with tcp-reset
->
-> You will however most likely need to patch your kernel to use it.
->
-> -Damon-
->
-> On Fri, 20 May 2005, Anthony Sadler wrote:
->
->> Hey
->>
->> First post :D
->>
->> I have a linux mail server that is getting spammed and mail bombed. In
->> an
->> attempt to control this, we are trying to limit the amount of
->> connections to
->> the server on port 25.
->> Now we don't want to limit the total connections that are allowed to
->> connect, we would like to say that IP 1.2.3.4 can only have 4 sessions
->> open
->> to us.
->>
->> I've been looking at the IP_LIMIT module for iptables, but it seems I
->> can
->> only either limit total connections, or do it on a per IP basis (which
->> would
->> be impossible).
->>
->> So to summarise, I want as many separate hosts to connect, but only to
->> be
->> allowed, say, 4 concurrent connections.
->>
->> Thanks!
->>
->> Anthony Sadler
->>
->>
->>
->>
->
->
+>=20
+> Thanks
+>=20
+
+Only a pleasure
+
+>=20
+>=20
+>=20
 
 
+--=20
+
+Kenneth Kalmer
+kenneth.kalmer@gmail.com
+http://opensourcery.blogspot.com
 
