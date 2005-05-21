@@ -1,17 +1,13 @@
-From: bright true <brighttrue@gmail.com>
-Subject: Re: (no subject)
-Date: Sat, 21 May 2005 14:01:51 -0400
-Message-ID: <3b29fb79050521110142904b5@mail.gmail.com>
-References: <3b29fb79050520200817e1e315@mail.gmail.com>
-	<20050521181637.GA1564@bender.817west.com>
-	<3b29fb7905052022187076b17d@mail.gmail.com>
-	<20050521193152.GA1769@bender.817west.com>
-Reply-To: bright true <brighttrue@gmail.com>
+From: anthonys@faredge.com.au
+Subject: Re: Limiting connections per IP per port
+Date: Sat, 21 May 2005 22:12:04 +1000 (EST)
+Message-ID: <2087.147.10.157.98.1116677524.squirrel@147.10.157.98>
+References: <20050520115932.D1635200009D@bmx2.internap.com>
+	<Pine.LNX.4.62.0505200907240.27380@dgray-test.acs.internap.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050521193152.GA1769@bender.817west.com>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.62.0505200907240.27380@dgray-test.acs.internap.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,54 +19,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+To: Damon Gray <dgray@internap.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello ,=20
+Damon:
 
-i want to ask you , i there any way to accomplish the whole thing with out=
-=20
-the need of re-compiling the Kernel=20
+Thanks for the reply.
+I had a poke around at that, but to me, that rule says:
+Insert a rule, that applies to SYN packets on port 25, that only allows
+four connections --> in total <-- to port 25.
 
-and iptables actually i've a VPS and i don't have my own server and can't=
-=20
-compile the Kernel for one VPS only=20
+Am I reading that correctly? Or will that limit to 4 connections per IP,
+as I wish?
 
-Thanks alot=20
-Bye
+Thanks!
 
-On 5/21/05, Jason Opperisano <opie@817west.com> wrote:
->=20
-> On Sat, May 21, 2005 at 01:18:15AM -0400, bright true wrote:
-> > Hello ,
-> >
-> > Thanks for your reply , but can you give me the link of the patch i hav=
-e=20
-> to
-> > apply
->=20
-> grab the latest snapshot of PoM available from:
->=20
-> http://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/
->=20
-> for example:
->=20
->=20
-> http://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/patch-o-matic-ng-2=
-0050520.tar.bz2
->=20
-> you need to have both the source of your running kernel available and
-> the source of your iptables version available and following the
-> instructions in the PoM README file. basic recipe:
->=20
-> - apply patches from PoM
-> - recompile kernel
-> - recompile iptables
-> - reboot & enjoy
->=20
-> -j
->=20
-> --
-> "Brian: Excuse me, would you like to taste my smoked meat log?"
-> --Family Guy
->=20
+Anthony
+
 >
+> Take a look at the connlimit module in patch-o-matic-ng. It's default
+> behavior is to limit connections per IP.
+>
+> iptables -I INPUT 1 -p tcp --syn --dport 25 -m connlimit
+> --connlimit-above 4 -j REJECT --reject-with tcp-reset
+>
+> You will however most likely need to patch your kernel to use it.
+>
+> -Damon-
+>
+> On Fri, 20 May 2005, Anthony Sadler wrote:
+>
+>> Hey
+>>
+>> First post :D
+>>
+>> I have a linux mail server that is getting spammed and mail bombed. In
+>> an
+>> attempt to control this, we are trying to limit the amount of
+>> connections to
+>> the server on port 25.
+>> Now we don't want to limit the total connections that are allowed to
+>> connect, we would like to say that IP 1.2.3.4 can only have 4 sessions
+>> open
+>> to us.
+>>
+>> I've been looking at the IP_LIMIT module for iptables, but it seems I
+>> can
+>> only either limit total connections, or do it on a per IP basis (which
+>> would
+>> be impossible).
+>>
+>> So to summarise, I want as many separate hosts to connect, but only to
+>> be
+>> allowed, say, 4 concurrent connections.
+>>
+>> Thanks!
+>>
+>> Anthony Sadler
+>>
+>>
+>>
+>>
+>
+>
+
+
+
