@@ -1,15 +1,12 @@
-From: "Sadus ." <sadus@swiftbin.net>
-Subject: Re: Load Balancing / Merging speed
-Date: Sun, 22 May 2005 02:01:58 +0300
-Message-ID: <1116716518.2529.144.camel@debianbox>
-References: <1116658510.2529.130.camel@debianbox>
-	<fad9d48405052115331ed980d0@mail.gmail.com>
-	<1116715548.2529.142.camel@debianbox>
-	<fedfc2605052116003feb49b0@mail.gmail.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: LAN pass, but not loopback
+Date: Sat, 21 May 2005 18:24:40 -0500
+Message-ID: <428FC338.4090402@riverviewtech.net>
+References: <200505210026.47727.98111@free.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <fedfc2605052116003feb49b0@mail.gmail.com>
+In-Reply-To: <200505210026.47727.98111@free.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,69 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-9"
-To: Eduardo =?ISO-8859-1?Q?Fern=E1ndez?= <efgonzalez@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-So what I am exactly looking for?
+> The problem is it doesn't : it contain, among other things
+> #Loopback interface
+> iptables -A INPUT -o lo -j ACCEPT
+> iptables -A OUTPUT -o lo -j ACCEPT
+> 
+> From the inside, wget http://my_server works as it should, from outside also, 
+> but not from the computer himself !
+> For the same reason (i think) Samba cannot connect to CUPS... and I've many 
+> other problems.
+> I've tried as I could to understand this problem but failed. On the other 
+> hand, each time I suspected a bug in a complex software (iptables here), I 
+> was wrong.
+> So, if one would have time to tell me were... mummy would be very happy as she 
+> could print again -_^.
 
-On Sun, 2005-05-22 at 01:00 +0200, Eduardo Fern=E1ndez wrote:
-> Hi,
->=20
-> On 5/22/05, Sadus . <sadus@swiftbin.net> wrote:
-> > I can't seem to find the archive, i searched untill June 2004?
-> > link aggregation
-> > Basicaly i knew that i could do such a thing using Bonding/Trunking/L=
-ink
-> > Aggragation but is there a simpler way using iptables/iproute only an=
-d
-> > using only 1 NIC (with 2 different IPs/Subnets)
->=20
-> Bonding? You don't use that to merge two internet lines, that's for
-> making two NIC's work as if they were only one, thus doubling the
-> speed. With bonding linux "sees" one device where you had two. You can
-> only set up bonding between two computers or between a computer and a
-> switch which supports bonding (it's got different names depending on
-> the brand).
->=20
-> > thanks
-> >=20
-> > On Sun, 2005-05-22 at 00:33 +0200, Kenneth Kalmer wrote:
-> > > On 5/21/05, Sadus . <sadus@swiftbin.net> wrote:
-> > > > Hello,
-> > > > If i want to search for HOWTOs that can enable me to merge the
-> > > > connection speed of multiple providers (inboud/outbound), what sh=
-ould i
-> > > > search for?
-> > >
-> > > The nano howto if I'm not mistaken, and have a look at the eql qdis=
-c
-> > > and teql device.
-> > >
-> > > >
-> > > > what i mean by merging is, lets say my connection is shaped at 10=
-0K and
-> > > > the other is also shaped at 100K, i want to be able using the 2 I=
-SPs to
-> > > > have 200K (in/out),
-> > > >
-> > > > Does anyone have a HOWTO or Article about that Matter?
-> > >
-> > > I asked a similar question in the list not too long ago. Search the
-> > > archives for the subject "Spill over" and have a look. There was so=
-me
-> > > excellent replies from other members on the topic. I have honestly =
-not
-> > > had the chance to properly test the configurations myself, but from=
- my
-> > > searching and discussions here it won't be an easy feat to achieve.
-> > >
-> > > Relative load balancing is not that difficult, but to fully maximiz=
-e
-> > > the utilization of each link is another story.
->=20
-> Cheers!
->=20
-> Edu
+What interface / IP do you have Apache, Samba, and CUPS listening on?  I am willing to bet that they are not listening on lo (127.0.0.1).  The reason that I ask is that I'm betting that your services are trying to talk to each other on your internal LAN interface (eth1).  You might also want to try setting a filter:FORWARD policy of ACCEPT for testing to see if things start working again.
 
+> By the way, what do you think of the way I tried to reduce the overload due to 
+> TARPIT ? Would it work ?
+
+I like the way that you are using a subchain to do your possible TARPITing and jumping to that chain from all your other chains that you want to TARPIT the traffic from.  However I think you might want to emulate this functionality in the raw table so that you can send the traffic that you would want to send to the TARPIT target to the NOTRACK state to prevent the connection tracking subsystem form consuming resources tracking said traffic.  The basic idea behind this is laid out below:
+
+iptables -t raw -A PREROUTING -p tcp --dport 80 -j NOTRACK
+iptables -t filter -A INPUT -p tcp --dport 80 -j TARPIT
+iptables -t filter -A FORWARD -p tcp --dport 80 -j TARPIT
+
+This will cause any web traffic (Code Red, etc.) that would be destined to your firewall to be sent to the TARPIT target with out consuming any connection tracking resources as they are told to not be tracked via the NOTRACK target in the raw:PREROUTING table and chain.
+
+
+
+Grant. . . .
 
