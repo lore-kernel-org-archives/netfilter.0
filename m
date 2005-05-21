@@ -1,11 +1,15 @@
-From: un_brice <98111@free.fr>
-Subject: LAN pass, but not loopback
-Date: Sat, 21 May 2005 00:26:47 +0200
-Message-ID: <200505210026.47727.98111@free.fr>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: filtering in which rules?
+Date: Fri, 20 May 2005 20:28:43 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0505202018220.12153@darkstar.sysinfo.com>
+References: <42889941.5060507@griffous.net>
+	<4288E7F6.3030700@riverviewtech.net>
+	<Pine.LNX.4.60.0505161523100.15128@darkstar.sysinfo.com>
+	<Pine.LNX.4.60.0505161548000.15128@darkstar.sysinfo.com>
+	<42890B63.2000603@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <42890B63.2000603@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,51 +20,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
-I'm currently trying to discover iptables. In that aim I created a little=20
-script to "protect" my lan (4 computers).
-It became pretty complex with the time, but remain clean... and should work=
-,=20
-at least I think.
-The problem is it doesn't : it contain, among other things
-#Loopback interface
-iptables -A INPUT -o lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
-[..]
-#Apache
-iptables -A INPUT -p tcp --dport http -m connlimit ! --connlimit-above 40 \
-=2Dj ACCEPT
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-=46rom the inside, wget http://my_server works as it should, from outside a=
-lso,=20
-but not from the computer himself !
-=46or the same reason (i think) Samba cannot connect to CUPS... and I've ma=
-ny=20
-other problems.
-I've tried as I could to understand this problem but failed. On the other=20
-hand, each time I suspected a bug in a complex software (iptables here), I=
-=20
-was wrong.
-So, if one would have time to tell me were... mummy would be very happy as =
-she=20
-could print again -_^.
 
-Sorry for my bad english. You can read the whole script at=20
-http://98111.free.fr/serv/served/iptables.en.sh , I tried to traduce commen=
-ts=20
-in english but I'm not sure of the result.
+Jason et. al.,
 
-By the way, what do you think of the way I tried to reduce the overload due=
- to=20
-TARPIT ? Would it work ?
 
-Thanks !
-Brice
+I wacthed the discusion today on leaving filtering to the filter chain and 
+leave nat to nat and routing to the pre/post chains.  But, when one reads 
+other documentation and it has paramaters to iptables like this;
 
-=2D-=20
-"Emacs is my operating system, and Linux its device driver."
- -- Bake Timmons
+
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
+iptables -t nat -P PREROUTING DROP
+iptables -t nat -P POSTROUTING DROP
+
+
+It g9ives one the impression that matters of filtering and decision making 
+for a packet are not as carved in stone as implied in the discusion today. 
+Jason makes some great points about complexity of rulesets and trying to 
+maintain that accross a number of firewalls overtime.  But, that seems to 
+implay that others have adopted complexity and feel fine with all it 
+brings to the maintainace table.  Unless I'm reading the DROP defaults 
+for the pre/post routing above.  So for clarification one more time, 
+should one read these docs with a grain of salt and alter acordingly, 
+perhaps placing a default ACCEPT in the pre/post chanins and then doing 
+what filtering is required in the 'proper' filter chains for clarity? 
+I direct this to Jason in particular, though Grant as well as others may 
+wish to input again <cause Jason and Grant seem to know their stuff when 
+it comes to iptables>.
+
+Thanks,
+
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCjoC/st+vzJSwZikRAocaAJ9wlJa4uwnTYyYFAxeRJjEpLHqo7ACfb4dR
+j/zKrKKllOtVUarUlaztXq0=
+=kaXx
+-----END PGP SIGNATURE-----
 
