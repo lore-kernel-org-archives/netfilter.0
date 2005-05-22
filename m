@@ -1,16 +1,13 @@
-From: "Sadus ." <sadus@swiftbin.net>
-Subject: Re: Load Balancing / Merging speed
-Date: Sun, 22 May 2005 10:56:49 +0300
-Message-ID: <1116748609.2529.152.camel@debianbox>
-References: <1116658510.2529.130.camel@debianbox>
-	<fad9d48405052115331ed980d0@mail.gmail.com>
-	<1116715548.2529.142.camel@debianbox>
-	<fedfc2605052116003feb49b0@mail.gmail.com>
-	<fad9d484050521190232697369@mail.gmail.com>
+From: "Marius Mertens" <marius.mertens@gmx.de>
+Subject: Re: SSH Brute force attacks
+Date: Sun, 22 May 2005 12:09:11 +0200
+Message-ID: <004501c55ebb$61a49b00$4206a8c0@loki>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<42898402.10507@eccotours.dyndns.org><4289E72F.7020901@wp.pl>
+	<200505211200.28314.pvolkov@mics.msu.su>
+	<428FB81F.6030403@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <fad9d484050521190232697369@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,101 +18,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
-Cc: Eduardo =?ISO-8859-1?Q?Fern=E1ndez?= <efgonzalez@gmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: netfilter@lists.netfilter.org
 
-Thank you for your reply. I'm gonna check out the TEQL driver and how it
-should be implemented.=20
-I will share my experiences when i'm done =3D)
+On Sunday, May 22, 2005 12:37 AM,
+Taylor, Grant wrote:
 
-On Sun, 2005-05-22 at 04:02 +0200, Kenneth Kalmer wrote:
-> On 5/22/05, Eduardo Fern=E1ndez <efgonzalez@gmail.com> wrote:
-> > Hi,
-> >=20
-> > On 5/22/05, Sadus . <sadus@swiftbin.net> wrote:
-> > > I can't seem to find the archive, i searched untill June 2004?
-> > > link aggregation
-> > > Basicaly i knew that i could do such a thing using Bonding/Trunking=
-/Link
-> > > Aggragation but is there a simpler way using iptables/iproute only =
-and
-> > > using only 1 NIC (with 2 different IPs/Subnets)
-> >=20
-> > Bonding? You don't use that to merge two internet lines, that's for
-> > making two NIC's work as if they were only one, thus doubling the
-> > speed. With bonding linux "sees" one device where you had two. You ca=
-n
-> > only set up bonding between two computers or between a computer and a
-> > switch which supports bonding (it's got different names depending on
-> > the brand).
->=20
-> Nope, this is not bonding. What Sadus is looking for is called link
-> equalization IIRC. It's where you use different links of varying
-> speeds and tie them up together for use as one connection.
-> Traditionaly you'd use a round-robin method of sending packets out
-> over multiple default routes. This is not always ideal, you'd need
-> some kind of intelligence to spread the load more realistically, and
-> the Linux EQL driver and TEQL device allows for that to happen. These
-> two know the speed of each link in the equation, and delivers better
-> control, albeit not perfect.
->=20
-> Now, Sadus, my apologies. The thread I was referring to was on the
-> LARTC list. The LARTC list is in any case the better list for these
-> kinds of questions. iptables cannot perform this task, you need the
-> iproute2 package, and LARTc is the definitive source for information
-> and discussions on the topic.
->=20
-> The website is http://lartc.org/ and http://lartc.org/howto. The
-> thread I was referring to is available at
-> http://marc.theaimsgroup.com/?l=3Dlartc&m=3D111429252500344&w=3D2
->=20
-> Hope this helps, and share your experiences if you don't mind!
->=20
-> >=20
-> > > thanks
-> > >
-> > > On Sun, 2005-05-22 at 00:33 +0200, Kenneth Kalmer wrote:
-> > > > On 5/21/05, Sadus . <sadus@swiftbin.net> wrote:
-> > > > > Hello,
-> > > > > If i want to search for HOWTOs that can enable me to merge the
-> > > > > connection speed of multiple providers (inboud/outbound), what =
-should i
-> > > > > search for?
-> > > >
-> > > > The nano howto if I'm not mistaken, and have a look at the eql qd=
-isc
-> > > > and teql device.
-> > > >
-> > > > >
-> > > > > what i mean by merging is, lets say my connection is shaped at =
-100K and
-> > > > > the other is also shaped at 100K, i want to be able using the 2=
- ISPs to
-> > > > > have 200K (in/out),
-> > > > >
-> > > > > Does anyone have a HOWTO or Article about that Matter?
-> > > >
-> > > > I asked a similar question in the list not too long ago. Search t=
-he
-> > > > archives for the subject "Spill over" and have a look. There was =
-some
-> > > > excellent replies from other members on the topic. I have honestl=
-y not
-> > > > had the chance to properly test the configurations myself, but fr=
-om my
-> > > > searching and discussions here it won't be an easy feat to achiev=
-e.
-> > > >
-> > > > Relative load balancing is not that difficult, but to fully maxim=
-ize
-> > > > the utilization of each link is another story.
-> >=20
-> > Cheers!
-> >=20
-> > Edu
-> >=20
->=20
->=20
+>> Why this update here (see below)?
+>>
+>> $ipt -A SSH_Brute_Force -m recent --name SSH --update
+>>
+>> Every time packet passed --set rule it updates SSH. So if drop this
+>> rule, nothing changes. Or am I wrong? Is there any idea behind this
+>> that I missed.
+>
+> The "--set" rule is required because the testing that I did the
+> "--update" rule would not effectively do the same thing as "--set"
+> because there was no initial "--set" to be updated.  It's sort of a
+> chicken and egg problem where you can not successfully have one with
+> out having the other in this scenario.  The only draw back to having
+> the "--set" that I'm aware of is that the hit count is incremented
+> once per "--set" and "--update" thus you have to double the
+> "--hitcount" value that you want to match against.
+
+I might be misunderstanding something, but, Peter, is it correct that you 
+wanted the "--update" rule to be removed?
+In that case I also think it can be safely removed, for it also usually even 
+does not seem to match anyway. It should rather match only when there are 
+already too frequent connections, so "-j RETURN" won't hit, right? But i'd 
+rather like to also hear the opinion of somebody more experienced with 
+"recent" match than I am, for the helpfile did not say if the "--set" is 
+updated if it already exists. (Though I expect that, and I admit it could be 
+easily tested if "--set" updates an already existing "--set" or not, but I 
+have to leave right now. I think I'll examine that when I'm back if nobody 
+is faster ;-) )
+
+Greetings,
+
+Marius 
 
 
