@@ -1,13 +1,16 @@
-From: =?ISO-8859-2?Q?=A3ukasz_Hejnak?= <sziftgroup@wp.pl>
+From: =?utf-8?b?0J/RkdGC0YAg0JLQvtC70LrQvtCy?=
+	=?utf-8?b?INCQ0LvQtdC60YHQsNC90LTRgNC+0LLQuNGH?= <torre_cremata@mail.ru>
 Subject: Re: SSH Brute force attacks
-Date: Sun, 22 May 2005 12:57:19 +0200
-Message-ID: <4290658F.20002@wp.pl>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<42898402.10507@eccotours.dyndns.org><4289E72F.7020901@wp.pl>	<200505211200.28314.pvolkov@mics.msu.su>	<428FB81F.6030403@riverviewtech.net>
-	<004501c55ebb$61a49b00$4206a8c0@loki>
+Date: Sun, 22 May 2005 11:11:35 +0400
+Message-ID: <200505221111.35382.torre_cremata@mail.ru>
+References: <427B93EE.3030905@eccotours.dyndns.org>
+	<200505211200.28314.pvolkov@mics.msu.su>
+	<428FB81F.6030403@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <004501c55ebb$61a49b00$4206a8c0@loki>
+In-Reply-To: <428FB81F.6030403@riverviewtech.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,39 +21,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@lists.netfilter.org
 
-Marius Mertens wrote:
-> and I admit it could be easily tested if "--set" updates an already=20
-> existing "--set" or not, but I have to leave right now. I think I'll=20
-> examine that when I'm back if nobody is faster ;-) )
+Thank you for your answer Grant.
 
-well in fact I just run a test to see if it's true, and I had already=20
-writen a long post to ask why is it so, as the ruleset with --hitcount 3=20
-dropped normally the third connection (it doesn't have to be set to 6),
-and then it hit me (--hitcount 1 ;) that the --update is AFTER the "-j=20
-RETURN"
+22 =D0=9C=D0=B0=D0=B9 2005 02:37 Taylor, Grant wrote:
+> > Why this update here (see below)?
+> >
+> > $ipt -A SSH_Brute_Force -m recent --name SSH --update
+> >
+> > Every time packet passed --set rule it updates SSH. So if drop this rul=
+e,
+> > nothing changes. Or am I wrong? Is there any idea behind this that I
+> > missed.
+>
+> The "--set" rule is required because the testing that I did the "--update"
+> rule would not effectively do the same thing as "--set" because there was
+> no initial "--set" to be updated.  It's sort of a chicken and egg problem
+> where you can not successfully have one with out having the other in this
+> scenario.  The only draw back to having the "--set" that I'm aware of is
+> that the hit count is incremented once per "--set" and "--update" thus you
+> have to double the "--hitcount" value that you want to match against.
 
-and it runs ok now, the --update rule can be easily removed, as the=20
---set does the trick the way it should.
-My ruleset is now something like this below, and works as I intended it=20
-to, 2 connections ok, third one drops.
+I feel myself stupid. I'll try to explain my question again, so if you have=
+=20
+some time to pay me attention, may be you can help me. Any way thank you fo=
+r=20
+your time.
 
-ipt=3D/usr/local/sbin/iptables
+ I'd like to comment already posted on the list scenario step by step to ma=
+ke=20
+my question a bit clearer.
 
-$ipt -N SSH_Brute_Force
-$ipt -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set=20
---name SSH
-$ipt -A INPUT -s ! $MyIP -m recent --rcheck --name SSH -j SSH_Brute_Force
-$ipt -A SSH_Brute_Force -m recent ! --rcheck --name SSH --seconds 60=20
---hitcount 3 -j RETURN
-$ipt -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
-$ipt -A SSH_Brute_Force -j DROP
-# do any other checks on the returned ssh packets
-$ipt -A INPUT -m recent --rcheck --name SSH -j ACCEPT
+Here we create chain and put all ssh syn trafic there:
+1. $ipt -N SSH_Brute_Force
+2. $ipt -A INPUT -p tcp --dport 22 -m state --state NEW -s ! $MyIP -j=20
+SSH_Brute_Force
 
---
-With regards
-=A3ukasz Hejnak
+Now in our SSH_Brute_Force chain we need to add source address in list with=
+=20
+=2D-set command:
+3. $ipt -A SSH_Brute_Force -m recent --set --name SSH
+
+The rule above also updates last seen time. So now we can --rcheck list to =
+see=20
+how many matches were there (--hitcount ) in the last --seconds.
+4. $ipt -A SSH_Brute_Force -m recent ! --rcheck --name SSH --seconds 60=20
+=2D-hitcount 3 -j RETURN
+
+As we have negative (!) in the previous rule, so we are comming here. My=20
+question is. As we already updated list of matches in 3. why we need to=20
+=2D-update list again? Did I missed something? May be there are some unknow=
+ to=20
+me problems people experince without next rule:
+5. $ipt -A SSH_Brute_Force -m recent --name SSH --update
+
+And of course we drop all unwanted packets...
+6. $ipt -A SSH_Brute_Force -j DROP
+
+I'm sorry for boring details. I just want to check that I did not missed=20
+anything. I've check that rules above are working without 5. But I saw two=
+=20
+scripts here with this rule. Why you are using it?
+
+=2D-=20
+Peter.
 
