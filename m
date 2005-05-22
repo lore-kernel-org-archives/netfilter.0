@@ -1,12 +1,13 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: How to filter OUTPUT chain ala Zonealarm
-Date: Mon, 30 May 2005 17:16:07 -0500
-Message-ID: <429B90A7.9050202@riverviewtech.net>
-References: <4299DD5B.4050705@mindspring.com>
+From: =?koi8-r?b?8KPU0iD3z8zLz9cg4czFy9PBzsTSz9fJ3g==?= <torre_cremata@mail.ru>
+Subject: Re: p-o-m and connlimit
+Date: Sun, 22 May 2005 20:44:19 +0400
+Message-ID: <200505222044.19838.torre_cremata@mail.ru>
+References: <000801c55e1c$911b7c40$040110ac@evenfall>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4299DD5B.4050705@mindspring.com>
+In-Reply-To: <000801c55e1c$911b7c40$040110ac@evenfall>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,25 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="koi8-r"
+To: netfilter@lists.netfilter.org
 
-Larry Alkoff wrote:
-> The nice feature of Zonealarm for Windows is it will check outgoing 
-> packets and ask if you want to allow a specific _program_ to access the 
-> web.
-> 
-> In addition, it will warn if a program is asking for server rights.
-> 
-> This would be a nice feature.
-> Is there any way to do this in Iptables?
-> 
-> If so could you outline how it would be done and I'll play with it on my 
-> firewall script.
+Hello.
 
-The only way that I think you could do this in Linux would be to use the QUEUE target and send the traffic to a user space daemon that identified the traffic and communicated with a user.  You may want to take a look at NuFW (http://www.nufw.org)as they do something close to this that might give you a direction to head with it.  (IMHO) I don't think what you are wanting to do will be as useful as Zonealarm on Windows for the simple fact that ZA is running on the system generating the traffic where as most of my IPTables firewalls are running on a central network ingress / egress point where it would be harder to identify which program generated the traffic.  However if you are looking at running this on a Linux notebook or workstation computer you could probably very easily do this.  It depends on what your target system(s) to run this on are.
+I have the same problem, but nobody answered me, so I can not help you. Sor=
+ry.
 
+BTW. I found interesting post in google:
+http://lists.netfilter.org/pipermail/netfilter-devel/2005-May/019764.html
 
+So now I'm not sure that it is safe to use connlimit. Can anybody confirm t=
+hat=20
+problem?
 
-Grant. . . .
+And I'm also interested in how to patch kernel?
+
+21 =ED=C1=CA 2005 19:48 Nothing wrote:
+> I try to deploy connlimit patch to the last version of kernel at the mome=
+nt
+> - 2.6.11.8 ant iptables 1.3.1. I use last snapshot of p-o-m-ng ant when I
+> run "./runme connlimit" and specify kernel ant iptables source directories
+> p-o-m says "already patched"?! But the patch is missing!? I tryed with la=
+st
+> official version of p-o-m, and again failed, but this time with error
+> message. Can anybody give me a jocker how to solve the problem?
+
+=2D-=20
+____________
+Peter.
 
