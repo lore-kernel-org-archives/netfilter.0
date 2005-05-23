@@ -1,13 +1,13 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+From: Brent Clark <bclark@eccotours.dyndns.org>
 Subject: Re: SSH Brute force attacks
-Date: Mon, 23 May 2005 11:14:11 -0500
-Message-ID: <42920153.902@riverviewtech.net>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<42898402.10507@eccotours.dyndns.org><4289E72F.7020901@wp.pl>	<200505211200.28314.pvolkov@mics.msu.su>	<428FB81F.6030403@riverviewtech.net>	<004501c55ebb$61a49b00$4206a8c0@loki>
-	<4290658F.20002@wp.pl>
+Date: Mon, 23 May 2005 18:31:31 +0200
+Message-ID: <42920563.7070406@eccotours.dyndns.org>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>	<42898402.10507@eccotours.dyndns.org>	<4289E72F.7020901@wp.pl>	<428B3798.9050407@eccotours.dyndns.org>	<428C1C3F.9030600@riverviewtech.net>	<428C56C9.9000607@eccotours.dyndns.org>	<428CA51D.4080206@riverviewtech.net>	<428DDFBC.1080905@eccotours.dyndns.org>
+	<428DF9F1.9060602@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4290658F.20002@wp.pl>
+In-Reply-To: <428DF9F1.9060602@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-> ipt=/usr/local/sbin/iptables
+Taylor, Grant wrote:
+>> So... I cant see why I cant connect from a dynamically assigned ip.
 > 
-> $ipt -N SSH_Brute_Force
-> $ipt -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH
-> $ipt -A INPUT -s ! $MyIP -m recent --rcheck --name SSH -j SSH_Brute_Force
-> $ipt -A SSH_Brute_Force -m recent ! --rcheck --name SSH --seconds 60 --hitcount 3 -j RETURN
-> $ipt -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
-> $ipt -A SSH_Brute_Force -j DROP
-> $ipt -A INPUT -m recent --rcheck --name SSH -j ACCEPT
+> 
+> Brent, I'll have to take a closer look at your script later on (complete 
+> flow analysis vs just the SSH_Brute_Force chain).  But for now it looks 
+> like you have both versions (original and updated one) in your firewall, 
+> this could be causing a few problems as I don't think it would take more 
+> than one attempt in a 60 second period to get your self to the point 
+> that you would be TARPITed / DROPed.  However I think that you would be 
+> able to connect at least 1 time from any dynamic remote IP in the 60 
+> second period.  Also keep in mind that the recent module (in the updated 
+> version) is using an --update option which will keep track of the number 
+> of times that you have tried to connect for 60 seconds after the last 
+> connection attempt.
+> 
 
-Are you sure that your two INPUT rules are doing what you want the way that you want?  As I read this your first input rule "$ipt -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH" sets every (NEW) packet that is inbound to port 22 in the SSH recent list.  The very next rule "$ipt -A INPUT -s ! $MyIP -m recent --rcheck --name SSH -j SSH_Brute_Force" checks to see if the packet has been set in the SSH recent list.  To me this is a bit on the redundant side unless there is something that I'm missing.  The only thing that I can see to gain by doing this would be that every packet other than the NEW packets would have fewer rules to traverse in the chain?  Is this what you are after?
+Hi Grant
 
-Also, a comment on the way that you are testing for $MyIP:  What you are doing is ok if you have only one IP that you want to ""white list but how would you ""white list multiple IP, say your friends house that you go over to and hang out once and a while or how about your parent's house where you have to work on their computer once a year (we all have been there).  This is the reason that I jumped in to the SSH_Brute_Force chain and then put multiple RETURN lines at the very top of it.  If you jump in to the SSH_Brute_Force chain to immediately call one of a few RETURN rules you can have as many ""white listed IPs as you would like with very little extra processing on the part of the firewall.
+If you look carefully on the left, you will see I have hashed out the 
+original rules.
 
+Thanks
 
-
-Grant. . . .
-
+Kind Regards
+Brent Clark
 
