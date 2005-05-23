@@ -1,15 +1,10 @@
-From: =?utf-8?b?0J/RkdGC0YAg0JLQvtC70LrQvtCy?=
-	=?utf-8?b?INCQ0LvQtdC60YHQsNC90LTRgNC+0LLQuNGH?= <torre_cremata@mail.ru>
-Subject: Re: SSH Brute force attacks
-Date: Sun, 22 May 2005 11:11:35 +0400
-Message-ID: <200505221111.35382.torre_cremata@mail.ru>
-References: <427B93EE.3030905@eccotours.dyndns.org>
-	<200505211200.28314.pvolkov@mics.msu.su>
-	<428FB81F.6030403@riverviewtech.net>
+From: un_brice <98111@free.fr>
+Subject: Re: LAN pass, but not loopback (SOLVED-thanks)
+Date: Mon, 23 May 2005 02:01:14 +0200
+Message-ID: <200505230201.14711.98111@free.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <428FB81F.6030403@riverviewtech.net>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,70 +16,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thank you for your answer Grant.
+> > The problem is it doesn't : it contain, among other things
+> > #Loopback interface
+> > iptables -A INPUT -o lo -j ACCEPT
+> > iptables -A OUTPUT -o lo -j ACCEPT
+> > 
+> > From the inside, wget http://my_server works as it should, from outside 
+> > also, but not from the computer himself !
+> > For the same reason (i think) Samba cannot connect to CUPS... and I've 
+> > many other problems.
+> > I've tried as I could to understand this problem but failed. On the other 
+> > hand, each time I suspected a bug in a complex software (iptables here), I 
+> > was wrong.
+> > So, if one would have time to tell me were... mummy would be very happy as 
+> > she could print again -_^.
+> What interface / IP do you have Apache, Samba, and CUPS listening on?  I am
+> willing to bet that they are not listening on lo (127.0.0.1).  The reason
+> that I ask is that I'm betting that your services are trying to talk to each
+> other on your internal LAN interface (eth1). You might also want to try 
+> setting a filter:FORWARD policy of ACCEPT for testing to see if things start
+> working again.
+Those services were listenning on all interfaces (i've done that to ensure 
+that the problem wasn't here).... my mistake was even more stupid : I 
+forgetted to specify the interface on wich do SNAT.
+Thanks a lot ! (my mother will be very happy to see that she can print again 
+^_^)
 
-22 =D0=9C=D0=B0=D0=B9 2005 02:37 Taylor, Grant wrote:
-> > Why this update here (see below)?
-> >
-> > $ipt -A SSH_Brute_Force -m recent --name SSH --update
-> >
-> > Every time packet passed --set rule it updates SSH. So if drop this rul=
-e,
-> > nothing changes. Or am I wrong? Is there any idea behind this that I
-> > missed.
->
-> The "--set" rule is required because the testing that I did the "--update"
-> rule would not effectively do the same thing as "--set" because there was
-> no initial "--set" to be updated.  It's sort of a chicken and egg problem
-> where you can not successfully have one with out having the other in this
-> scenario.  The only draw back to having the "--set" that I'm aware of is
-> that the hit count is incremented once per "--set" and "--update" thus you
-> have to double the "--hitcount" value that you want to match against.
+> > By the way, what do you think of the way I tried to reduce the overload
+> > due to  TARPIT ? Would it work ?
+> I like the way that you are using a subchain to do your possible TARPITing
+> and jumping to that chain from all your other chains that you want to TARPIT
+> the traffic from.  However I think you might want to emulate this
+> functionality in the raw table so that you can send the traffic that you
+> would want to send to the TARPIT target to the NOTRACK state to prevent the
+> connection tracking subsystem form consuming resources tracking said
+> traffic.  The basic idea behind this is laid out below:      
+> iptables -t raw -A PREROUTING -p tcp --dport 80 -j NOTRACK
+> iptables -t filter -A INPUT -p tcp --dport 80 -j TARPIT
+> iptables -t filter -A FORWARD -p tcp --dport 80 -j TARPIT
+> 
+> This will cause any web traffic (Code Red, etc.) that would be destined to
+> your firewall to be sent to the TARPIT target with out consuming any
+> connection tracking resources as they are told to not be tracked via the
+> NOTRACK target in the raw:PREROUTING table and chain.   
+Thanks again, I'll use your method to reduce the load of conntrack.
 
-I feel myself stupid. I'll try to explain my question again, so if you have=
-=20
-some time to pay me attention, may be you can help me. Any way thank you fo=
-r=20
-your time.
+> Grant. . . .
+Mmmh... I really should find a synonym for "thanks", or it will become 
+repeative. But I guess you get the idea -_^
 
- I'd like to comment already posted on the list scenario step by step to ma=
-ke=20
-my question a bit clearer.
+Brice
 
-Here we create chain and put all ssh syn trafic there:
-1. $ipt -N SSH_Brute_Force
-2. $ipt -A INPUT -p tcp --dport 22 -m state --state NEW -s ! $MyIP -j=20
-SSH_Brute_Force
-
-Now in our SSH_Brute_Force chain we need to add source address in list with=
-=20
-=2D-set command:
-3. $ipt -A SSH_Brute_Force -m recent --set --name SSH
-
-The rule above also updates last seen time. So now we can --rcheck list to =
-see=20
-how many matches were there (--hitcount ) in the last --seconds.
-4. $ipt -A SSH_Brute_Force -m recent ! --rcheck --name SSH --seconds 60=20
-=2D-hitcount 3 -j RETURN
-
-As we have negative (!) in the previous rule, so we are comming here. My=20
-question is. As we already updated list of matches in 3. why we need to=20
-=2D-update list again? Did I missed something? May be there are some unknow=
- to=20
-me problems people experince without next rule:
-5. $ipt -A SSH_Brute_Force -m recent --name SSH --update
-
-And of course we drop all unwanted packets...
-6. $ipt -A SSH_Brute_Force -j DROP
-
-I'm sorry for boring details. I just want to check that I did not missed=20
-anything. I've check that rules above are working without 5. But I saw two=
-=20
-scripts here with this rule. Why you are using it?
-
-=2D-=20
-Peter.
+-- 
+"Emacs is my operating system, and Linux its device driver."
+ -- Bake Timmons
 
