@@ -1,12 +1,14 @@
-From: |m| <p0q0b0d@gmail.com>
-Subject: Masquerade and ICMP frag needed
-Date: Tue, 24 May 2005 16:12:05 +0200
-Message-ID: <3b1e6f4805052407125672d663@mail.gmail.com>
-Reply-To: |m| <p0q0b0d@gmail.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: iptables LOG options
+Date: Tue, 24 May 2005 09:43:19 -0500
+Message-ID: <42933D87.1060501@riverviewtech.net>
+References: <4292A1A7.3020401@poornam.com>
+	<4292A6CF.4020904@rfgt.net>	<4292AABF.4060009@poornam.com>
+	<4292B530.3070801@rfgt.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <4292B530.3070801@rfgt.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,36 +22,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Problem: My box does not forward ICMP Fragmentation needed packet to
-its masqueraded clients.
+> From my experience with -m owner/group (extremely limited I must admit)
+> I don't think it's possible. The messages in /var/log/messages don't
+> seem to have any uid information, and afaik there isn't any sort of
+> variables that iptables has in to do this sort of thing.
 
-Setup:
-I have a box with 3 nics equipped with kernel 2.6.11 and iptables
-1.2.11. This box has two gateways, and the net workflow is as follows:
+Would it be possible to get the LOG target to log the PID of the process that tried to send the traffic out?  If this could be done it would be a relatively trivial to write a daemon that would watch the log looking for the LOG liens (presumably with a special pattern in the --log-prefix parameter as a key) and try to identify who ran the process that has the PID in question.  The only caveat that comes to mind is that process might spawn and die / close before the daemon could identify who was running it so I would be tempted to send the traffic to user space QUEUE (I think) to something that would ultimately just drop it but that could introduce a pause long enough (or do the searching it's self) for the user identification to take place?
 
-eth0 <---> clients
-eth1 <---> standard internet traffic
-eth2 <---> VPN
+I am in no way capable of writing such applications / daemons, but I know there are those who are.  This is just my $.02 on it.
 
-Details:
-Traffic on eth2 is masqueraded (required). The problem is that the
-packets (MTU 1500) must be encapsulated in IPSEC packets at the next
-hop where the MTU is the same, therefore the VPN server sends back
-ICMP packet telling that need to frag. ICMP packets are received by my
-box, but not forwarded to clients that continue to send 1500 bytes
-packets. Therefore the VPN site does not open.
 
-Is that a normal behavior? Should I add anything to iptables rules in
-order to make it forwarding ICMP Frag needed packets?
 
-Thank you very much!
-
-Iptables on eth2:
-Input,Output,Forward
-- Policy ACCEPT (nothing else)
-Nat
-- POSTROUTING anywhere anywhere -j MASQUERADE
-
-Current Workaround:
-- ifconfig eth2 mtu 1400 (I don't like it! :)
+Grant. . . .
 
