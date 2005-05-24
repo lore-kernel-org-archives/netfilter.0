@@ -1,13 +1,12 @@
-From: Damon Gray <dgray@internap.com>
-Subject: Re: p-o-m and connlimit
-Date: Tue, 24 May 2005 09:39:46 -0400 (EDT)
-Message-ID: <Pine.LNX.4.62.0505240937500.9615@dgray-test.acs.internap.com>
-References: <000801c55e1c$911b7c40$040110ac@evenfall>
-	<200505241522.05395.pvolkov@mics.msu.su>
+From: |m| <p0q0b0d@gmail.com>
+Subject: Masquerade and ICMP frag needed
+Date: Tue, 24 May 2005 16:12:05 +0200
+Message-ID: <3b1e6f4805052407125672d663@mail.gmail.com>
+Reply-To: |m| <p0q0b0d@gmail.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-79754685-1134911773-1116941986=:9615"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200505241522.05395.pvolkov@mics.msu.su>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,56 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: =?koi8-r?b?8KPU0iD3z8zLz9cg4czFy9PBzsTSz9fJ3g==?= <pvolkov@mics.msu.su>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Problem: My box does not forward ICMP Fragmentation needed packet to
+its masqueraded clients.
 
----79754685-1134911773-1116941986=:9615
-Content-Type: TEXT/PLAIN; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Setup:
+I have a box with 3 nics equipped with kernel 2.6.11 and iptables
+1.2.11. This box has two gateways, and the net workflow is as follows:
 
-It is definetely a problem, however I have a simple patch for it,=20
-sumerized in this thread:
+eth0 <---> clients
+eth1 <---> standard internet traffic
+eth2 <---> VPN
 
-http://lists.netfilter.org/pipermail/netfilter-devel/2005-May/019764.html
+Details:
+Traffic on eth2 is masqueraded (required). The problem is that the
+packets (MTU 1500) must be encapsulated in IPSEC packets at the next
+hop where the MTU is the same, therefore the VPN server sends back
+ICMP packet telling that need to frag. ICMP packets are received by my
+box, but not forwarded to clients that continue to send 1500 bytes
+packets. Therefore the VPN site does not open.
 
--Damon-
+Is that a normal behavior? Should I add anything to iptables rules in
+order to make it forwarding ICMP Frag needed packets?
 
-On Tue, 24 May 2005, [koi8-r] =F0=A3=D4=D2 =F7=CF=CC=CB=CF=D7 =E1=CC=C5=CB=
-=D3=C1=CE=C4=D2=CF=D7=C9=DE wrote:
+Thank you very much!
 
-> Hello.
->
-> I have the same problem, but nobody answered me, so I can not help you. S=
-orry.
->
-> BTW. I found interesting post in google:
-> http://lists.netfilter.org/pipermail/netfilter-devel/2005-May/019764.html
->
-> So now I'm not sure that it is safe to use connlimit. Can anybody confirm=
- that
-> problem?
->
-> And I'm also interested in how to patch kernel?
->
-> 21 =ED=C1=CA 2005 19:48 Nothing wrote:
->> I try to deploy connlimit patch to the last version of kernel at the mom=
-ent
->> - 2.6.11.8 ant iptables 1.3.1. I use last snapshot of p-o-m-ng ant when =
-I
->> run "./runme connlimit" and specify kernel ant iptables source directori=
-es
->> p-o-m says "already patched"?! But the patch is missing!? I tryed with l=
-ast
->> official version of p-o-m, and again failed, but this time with error
->> message. Can anybody give me a jocker how to solve the problem?
->
-> --=20
-> Peter.
->
->
->
----79754685-1134911773-1116941986=:9615--
+Iptables on eth2:
+Input,Output,Forward
+- Policy ACCEPT (nothing else)
+Nat
+- POSTROUTING anywhere anywhere -j MASQUERADE
+
+Current Workaround:
+- ifconfig eth2 mtu 1400 (I don't like it! :)
 
