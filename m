@@ -1,12 +1,11 @@
-From: =?koi8-r?b?8KPU0iD3z8zLz9cg4czFy9PBzsTSz9fJ3g==?= <pvolkov@mics.msu.su>
-Subject: Re: p-o-m and connlimit
-Date: Tue, 24 May 2005 15:22:05 +0400
-Message-ID: <200505241522.05395.pvolkov@mics.msu.su>
-References: <000801c55e1c$911b7c40$040110ac@evenfall>
+From: Vinod H <vinwin@gmail.com>
+Subject: Cisco VPN Client
+Date: Tue, 24 May 2005 17:11:47 +0530
+Message-ID: <9bc7d292050524044169370966@mail.gmail.com>
+Reply-To: Vinod H <vinwin@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000801c55e1c$911b7c40$040110ac@evenfall>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,33 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="koi8-r"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello.
+Hi,
 
-I have the same problem, but nobody answered me, so I can not help you. Sor=
-ry.
+I have Cisco VPN Client Installed on the windows 2000 and XP Pro
+system. The Redhat Linux 9.0 is my mail server, firewall and my
+internet gateway for the DSL internet connection. If i dial up the
+internet from modem and try to connect to the VPN Server I am able to
+connect where as if I try to connect through the LAN that is through
+DSL which is connected to the linux firewall I am not able to.
 
-BTW. I found interesting post in google:
-http://lists.netfilter.org/pipermail/netfilter-devel/2005-May/019764.html
+When I went through the document I came to know that IPSec port should
+be open and UDP Ports 10000, 4500, and 500 should be open in the
+firewall I am trying to do that on my IPtables but not able to
 
-So now I'm not sure that it is safe to use connlimit. Can anybody confirm t=
-hat=20
-problem?
+Please some one help me on this issue.
 
-And I'm also interested in how to patch kernel?
+Thanks and Regards
 
-21 =ED=C1=CA 2005 19:48 Nothing wrote:
-> I try to deploy connlimit patch to the last version of kernel at the mome=
-nt
-> - 2.6.11.8 ant iptables 1.3.1. I use last snapshot of p-o-m-ng ant when I
-> run "./runme connlimit" and specify kernel ant iptables source directories
-> p-o-m says "already patched"?! But the patch is missing!? I tryed with la=
-st
-> official version of p-o-m, and again failed, but this time with error
-> message. Can anybody give me a jocker how to solve the problem?
-
-=2D-=20
-Peter.
+Vinod
 
