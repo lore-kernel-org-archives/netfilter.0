@@ -1,14 +1,12 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: iptables LOG options
-Date: Tue, 24 May 2005 09:43:19 -0500
-Message-ID: <42933D87.1060501@riverviewtech.net>
-References: <4292A1A7.3020401@poornam.com>
-	<4292A6CF.4020904@rfgt.net>	<4292AABF.4060009@poornam.com>
-	<4292B530.3070801@rfgt.net>
+From: "Marius Mertens" <marius.mertens@gmx.de>
+Subject: Re: SSH Brute force attacks
+Date: Tue, 24 May 2005 18:19:00 +0200
+Message-ID: <012d01c5607c$59478e00$4206a8c0@loki>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>
+	<42920AA7.6070909@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4292B530.3070801@rfgt.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,19 +17,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-> From my experience with -m owner/group (extremely limited I must admit)
-> I don't think it's possible. The messages in /var/log/messages don't
-> seem to have any uid information, and afaik there isn't any sort of
-> variables that iptables has in to do this sort of thing.
-
-Would it be possible to get the LOG target to log the PID of the process that tried to send the traffic out?  If this could be done it would be a relatively trivial to write a daemon that would watch the log looking for the LOG liens (presumably with a special pattern in the --log-prefix parameter as a key) and try to identify who ran the process that has the PID in question.  The only caveat that comes to mind is that process might spawn and die / close before the daemon could identify who was running it so I would be tempted to send the traffic to user space QUEUE (I think) to something that would ultimately just drop it but that could introduce a pause long enough (or do the searching it's self) for the user identification to take place?
-
-I am in no way capable of writing such applications / daemons, but I know there are those who are.  This is just my $.02 on it.
+On Monday, May 23, 2005 6:53 PM,
+Taylor, Grant wrote:
 
 
+> I have tested this script on my home firewall and have found it to
+> work the way that it is intended, so give it a try and see what you
+> think.  Any and all feedback is welcome and appreciated.  
+ 
+Great Version! I really like it a lot! Thank you Grant :-)
 
-Grant. . . .
+Marius
 
