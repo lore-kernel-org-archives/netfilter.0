@@ -1,12 +1,10 @@
-From: Ron Peterson <rpeterso@mtholyoke.edu>
-Subject: Re: Problem using transparent proxy and iptables 1.3.1
-Date: Wed, 25 May 2005 16:33:39 -0400
-Message-ID: <20050525203339.GA20290@mtholyoke.edu>
-References: <42948ED3.7090407@novadevices.com>
+From: aspenbr <aspenbr@yahoo.com.br>
+Subject: Traffic balancing
+Date: 25 May 2005 18:14:16 -0300
+Message-ID: <1117055656.21428.8.camel@maclinux.lotus>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <42948ED3.7090407@novadevices.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rafael Vallejo <rvallejo@novadevices.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: NetFilter <netfilter@lists.netfilter.org>
 
-On Wed, May 25, 2005 at 09:42:27AM -0500, Rafael Vallejo wrote:
+Hi friends of the list, necessary of aid I am with a problem I have two
+gateway and I want to balan=E7ear the flow of net for one gateway I want
+to dedicate for HTTP and https and another one gateway only
+smtp/POP3/ftp somebody has a ideia as to help?
 
-> I'm having a problem with iptables, we recently instaled version 1.3.1 
-> on a Linux Kernel 2.6.10
-> 
-> This rule that used to work on former versions of iptables no longer 
-> work on 1.3.1
-> 
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
-> --to-ports 3128
+I am using iptables together with Linux Slackware
 
-I was bitten by something similar a few months ago trying to block dhcp
-through a transparent bridge (I needed to use a different dhcp server on
-one side).  I used ebtables instead to fix my problem.
 
-I was just doing allow/deny stuff though.  Ebtables has a redirect
-option also, but it pertains to mac addresses.  Maybe you could do
-something with marking, to make ebtables work in conjunction with
-iptables??
+=09
+=09
+	=09
+____________________________________________________
+Yahoo! Mail, cada vez melhor: agora com 1GB de espa=E7o gr=E1tis! http://ma=
+il.yahoo.com.br
 
--- 
-Ron Peterson
-Network & Systems Manager
-Mount Holyoke College
-http://www.mtholyoke.edu/~rpeterso
 
