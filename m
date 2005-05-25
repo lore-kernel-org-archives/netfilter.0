@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: advanced routing with iptables
-Date: Wed, 25 May 2005 08:29:56 -0400
-Message-ID: <20050525122956.GA16644@bender.817west.com>
-References: <20050525114039.GA5238@www.wegener-net.de>
+Subject: Re: useing mangle to mark packets
+Date: Wed, 25 May 2005 08:41:04 -0400
+Message-ID: <20050525124104.GA16703@bender.817west.com>
+References: <4294256F.2060007@konabi.de>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20050525114039.GA5238@www.wegener-net.de>
+In-Reply-To: <4294256F.2060007@konabi.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,29 +21,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, May 25, 2005 at 01:40:39PM +0200, Norbert Wegener wrote:
-> Hello,
-> I have a linux gateway with two network cards.
-> The default route is set via eth0.
-> When an http request from an arbitrary ipaddres arrives on eth1, the gateway sends the answer out to eth0, as expected.
-> Is it possible to mark those incoming http requests via iptables or other tools in a way, that the answer gets out via eth1?
+On Wed, May 25, 2005 at 09:12:47AM +0200, Sven Neukirchner wrote:
+> iptables -t mangle -o $DEV -A POSTROUTING -p ICMP -j MARK --set-mark 1
+> 
+> Is there a way to check if the packets get marks?
+> 
+> I tryed following:
+> 
+> iptables  -A FORWARD   -p ICMP -m mark --mark 1 -j LOG --log-prefix 
+> "mark " --log-level 6
+> 
+> But it doesnt work.
 
-one time:
-  echo alt01 >> /etc/iproute2/rt_tables
+because mangle:POSTROUTING is traversed after filter:FORWARD.
 
-scripted:
+> I want to set up traffice shaping using tc.
+> So I need to mark packets so I can put them in order.
 
-  ip route add default via $ETH1_GW_IP dev eth1 table alt01
-  ip rule add fwmark 1 table alt01
-
-  iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
-  iptables -t mangle -A PREROUTING -i eth1 -m state --state NEW \
-    -j MARK --set-mark 1
-  iptables -t mangle -A PREROUTING -j CONNMARK --save-mark
+mark your packet in either mangle:PREROUTING or mangle:FORWARD.
 
 -j
 
 --
-"Peter: Oh, you people can kiss the fattest part of my ass."
+"Susan Sarandon: I'm Susan Sarandon. Most of you know me as Tim
+ Robbins' mother, but actually I'm his wife!"
         --Family Guy
 
