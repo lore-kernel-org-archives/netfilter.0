@@ -1,14 +1,15 @@
-From: "Volkm@r" <plsdontreply@arcor.de>
-Subject: Re: minimal iptables ruleset for laptop
-Date: Wed, 25 May 2005 12:42:27 +0200
-Message-ID: <d71kn9$lfi$1@sea.gmane.org>
-References: <d6utcg$6hb$1@sea.gmane.org>
-	<42930273.10208@hotpop.com>	<d6v69t$3sc$1@sea.gmane.org>
-	<429442FC.8090700@hotpop.com>
+From: Leonardo <p0q0b0d@gmail.com>
+Subject: Re: ICMP frag needed not forwarded to MSQ clients
+Date: Wed, 25 May 2005 13:23:07 +0200
+Message-ID: <3b1e6f4805052504234918e2e8@mail.gmail.com>
+References: <3b1e6f48050525011730fa7e44@mail.gmail.com>
+	<200505251112.23022.98111@free.fr>
+Reply-To: Leonardo <p0q0b0d@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <429442FC.8090700@hotpop.com>
+In-Reply-To: <200505251112.23022.98111@free.fr>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,34 +23,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Georgi Alexandrov wrote:
-> [...]
-> About the ICMP - it's good (my opinion) to let at least those three icmp
-> types so we have proper network functions.
-> reference:  http://www.faqs.org/docs/iptables/icmptypes.html
-> 
-> About the logging - If you want for example to log all the auth requests
-> (tcp/113) made to your machine, we will put the following rule above the
-> -j REJECT one:
-> 
-> iptables -A INPUT -p tcp --syn --dport 113 -j LOG --log-prefix "Auth
-> Request"
-> iptables -A INPUT -p tcp --syn --dport 113 -j REJECT --reject-with
-> tcp-reset
-> 
-Well, that's exactly what I needed.
+> Have you tried the TCPMSS target ? I think it have been created to solve =
+this
+> problem.
+>=20
+> Brice
+>=20
 
-> 
-> This way we will have all auth requests logged and then rejected.
-> You can examine the example rc.firewall script at
-> iptables-tutorial.frozentux.net for some more logging examples.
-> 
-> regards,
-> Georgi Alexandrov
-> 
-> 
-Thanks for the references. I'm going to them more carefully.
--- 
-Volkm@r
+Yes! Of course!
 
+iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400
+
+And it does not work! As far as I understand as man pages say, this is
+a workaround if you are *behind* a router that block ICMP frag needed
+packets, but this packets *are* received at my routerbox but *NOT*
+unmasked&forwarded to the source host.
+
+--=20
+Leonardo Arena
 
