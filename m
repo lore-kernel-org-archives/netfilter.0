@@ -1,11 +1,12 @@
-From: Sven Neukirchner <s.neukirchner@konabi.de>
-Subject: useing mangle to mark packets
-Date: Wed, 25 May 2005 09:12:47 +0200
-Message-ID: <4294256F.2060007@konabi.de>
-Reply-To: s.neukirchner@konabi.de
+From: Leonardo <p0q0b0d@gmail.com>
+Subject: ICMP frag needed not forwarded to MSQ clients
+Date: Wed, 25 May 2005 10:17:00 +0200
+Message-ID: <3b1e6f48050525011730fa7e44@mail.gmail.com>
+Reply-To: Leonardo <p0q0b0d@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,43 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hello to all!
 
-I use Linux with  iptables as Router.
+My box does not forward ICMP Fragmentation needed packet to
+its masqueraded clients.
 
-I want to mark several Packets which are coming from my Clients in my 
-Network and where the destination
-ist the internet.
+Setup:
+I have a box with 3 nics equipped with kernel 2.6.11 and iptables
+1.2.11. This box has two gateways, and the net workflow is as follows:
 
-so I set following rule as example:
+eth0 <---> clients
+eth1 <---> standard internet traffic
+eth2 <---> VPN
 
-iptables -t mangle -o $DEV -A POSTROUTING -p ICMP -j MARK --set-mark 1
+Details:
+Traffic on eth2 is masqueraded (required). The problem is that the
+packets (MTU 1500) must be encapsulated in IPSEC packets at the next
+hop where the MTU is the same, therefore the VPN server sends back
+ICMP packet telling that need to frag. ICMP packets are received by my
+box, but not forwarded to clients that continue to send 1500 bytes
+packets. Therefore the VPN site does not open.
 
-Is there a way to check if the packets get marks?
+Is that a normal behavior? Should I add anything to iptables rules in
+order to make it forwarding ICMP Frag needed packets?
 
-I tryed following:
+Thank you very much!
 
-iptables  -A FORWARD   -p ICMP -m mark --mark 1 -j LOG --log-prefix 
-"mark " --log-level 6
+Iptables on eth2,eth0:
+Input,Output,Forward
+- Policy ACCEPT (nothing else)
+Only on eth2:
+Nat
+- POSTROUTING anywhere anywhere -j MASQUERADE
 
-But it doesnt work.
-
-I want to set up traffice shaping using tc.
-So I need to mark packets so I can put them in order.
-
-
-Thanks Sven
-
-
-
-
-
-
-
-
-
-
+Current Workaround:
+- ifconfig eth2 mtu 1400 (I don't like it! :)v
+--=20
+Leonardo Arena
 
