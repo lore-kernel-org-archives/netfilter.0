@@ -1,13 +1,11 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: iptables LOG options
-Date: Wed, 25 May 2005 02:55:04 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0505250253000.9513@darkstar.sysinfo.com>
-References: <4292A1A7.3020401@poornam.com> <4292A6CF.4020904@rfgt.net>
-	<4292AABF.4060009@poornam.com> <4292B530.3070801@rfgt.net>
-	<42933D87.1060501@riverviewtech.net>
+From: Sven Neukirchner <s.neukirchner@konabi.de>
+Subject: useing mangle to mark packets
+Date: Wed, 25 May 2005 09:12:47 +0200
+Message-ID: <4294256F.2060007@konabi.de>
+Reply-To: s.neukirchner@konabi.de
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42933D87.1060501@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,50 +16,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hello,
 
-On Tue, 24 May 2005, Taylor, Grant wrote:
+I use Linux with  iptables as Router.
 
->> From my experience with -m owner/group (extremely limited I must admit)
->> I don't think it's possible. The messages in /var/log/messages don't
->> seem to have any uid information, and afaik there isn't any sort of
->> variables that iptables has in to do this sort of thing.
->
-> Would it be possible to get the LOG target to log the PID of the process that tried to send the traffic out?  If this could be done it would be a relatively trivial to write a daemon that would watch the log looking for the LOG liens (presumably with a special pattern in the --log-prefix parameter as a key) and try to identify who ran the process that has the PID in question.  The only caveat that comes to mind is that process might spawn and die / close before the daemon could identify who was running it so I would be tempted to send the traffic to user space QUEUE (I think) to something that would ultimately just drop it but that could introduce a pause long enough (or do the searching it's self) for the user identification to take place?
->
-> I am in no way capable of writing such applications / daemons, but I know there are those who are.  This is just my $.02 on it.
->
+I want to mark several Packets which are coming from my Clients in my 
+Network and where the destination
+ist the internet.
 
-Of course these are internal users, and so if one might not beable to 
-control the binaries packets, perhaps one looks to control access or 
-abilities of users with the binary?  This might be a place for another 
-admin tool, say sudo, or chmod/chown?
+so I set following rule as example:
+
+iptables -t mangle -o $DEV -A POSTROUTING -p ICMP -j MARK --set-mark 1
+
+Is there a way to check if the packets get marks?
+
+I tryed following:
+
+iptables  -A FORWARD   -p ICMP -m mark --mark 1 -j LOG --log-prefix 
+"mark " --log-level 6
+
+But it doesnt work.
+
+I want to set up traffice shaping using tc.
+So I need to mark packets so I can put them in order.
 
 
-Thanks,
+Thanks Sven
 
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
 
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQFClCFLst+vzJSwZikRAr9QAJwLlw1sWvrTIvc1TX5Db4NmJ7qSWACfRib5
-mAQOsllflyFhPuUnkVMUyDI=
-=LjzP
------END PGP SIGNATURE-----
+
+
+
+
+
+
 
