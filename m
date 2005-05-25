@@ -1,13 +1,12 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: SSH Brute force attacks
-Date: Wed, 25 May 2005 13:10:09 -0500
-Message-ID: <4294BF81.1020204@riverviewtech.net>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42920AA7.6070909@riverviewtech.net>
-	<42940E9B.1070502@eccotours.dyndns.org>
+From: =?ISO-8859-1?Q?Martin_Schi=F8tz?= <malinux@gmail.com>
+Subject: iptables performance
+Date: Wed, 25 May 2005 19:20:53 +0000
+Message-ID: <e208f5d1050525122040c9003a@mail.gmail.com>
+Reply-To: =?ISO-8859-1?Q?Martin_Schi=F8tz?= <malinux@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42940E9B.1070502@eccotours.dyndns.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,31 +20,49 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Brent Clark wrote:
-> For some funny reason I still cant seem to get this right.
-> I tried connecting from home (dynamic assigned ip) and I still cant
-> connect.
+Hi=20
 
-Hmm, there must be something else going on.
+I'm planning to set up a bridge running iptables on an uplink of a lot
+of internet user. The uplink is on maximum at about 30 mbit/s. There
+are about 1800 * /29 ip nets - some /29 nets needs to be stopped be
+the bridge and some can pass. I'm wondering about the performance of
+iptables when having 1800*2 rules worst case (PREROUTING rules on src
+and dst nets).
 
-> May 25 06:21:51 ns kernel: [INPUT  DROP]: IN=eth0 OUT=
-> MAC=00:0c:76:5e:d3:61:00:d0:02:eb:84:0a:08:00 SRC=165.146.144.131
-> DST=217.199.186.118 LEN=48 TOS=0x00 PREC=0x00 TTL=115 ID=40576 DF
-> PROTO=TCP SPT=30066 DPT=22 WINDOW=65535 RES=0x00 SYN URGP=0 OPT
-> (0204055001010402)
-> May 25 06:21:54 ns kernel: [INPUT  DROP]: IN=eth0 OUT=
-> MAC=00:0c:76:5e:d3:61:00:d0:02:eb:84:0a:08:00 SRC=165.146.144.131
-> DST=217.199.186.118 LEN=48 TOS=0x00 PREC=0x00 TTL=115 ID=40578 DF
-> PROTO=TCP SPT=30066 DPT=22 WINDOW=65535 RES=0x00 SYN URGP=0 OPT
-> (0204055001010402)
-> May 25 06:22:00 ns kernel: SSH Brute Force Attempt:  IN=eth0 OUT=
-> MAC=00:0c:76:5e:d3:61:00:d0:02:eb:84:0a:08:00 SRC=165.146.144.131
-> DST=217.199.186.118 LEN=48 TOS=0x00 PREC=0x00 TTL=115 ID=40585 DF
-> PROTO=TCP SPT=30066 DPT=22 WINDOW=65535 RES=0x00 SYN URGP=0
+Actually I have made some kind of hashing using user defined rules.
+This gives a maximum of a packet to travel through about 65 + 32
+rules. I have not tested live - before I do this, I would like to know
+if anybody here have any experience or idea about performance  with
+that kind of traffic load and number of rules?
 
-Based on the fact that you are getting a log entry with the "SSH Brute Force Attempt:  " in the log line I think that your SSH packets are some how having more than 3 hits by the time the packets make it to the "iptables -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount 3 --name SSH --rsource -j RETURN" rule.  This makes me think that there are other rules in your filter chains that are setting packets and thus making them continue through the afore mentioned rule and not be returned thus being DROPed.  Try doing an iptables-save and looking at the output to see if it agrees with what you are expecting based on your iptables script, I'm betting that there is something going on in the SSH_Brute_Force chain from previous test that have slipped your mind.  If you still want / need help please include the results of an iptables-save in your reply.
+Best regards,
+Martin
 
+My user defined rules:
 
+iptables -t mangle -N 10.0.0.0/24
+...
+...
+iptables -t mangle -N 10.0.x.x/24
 
-Grant. . . .
+iptables -t mangle -I 10.0.0.0/24 1 -m physdev --physdev-in $IF_DOWN
+-s  10.0.0.0/29-j ACCEPT
+iptables -t mangle -I 10.0.0.0/24 1 -m physdev --physdev-in $IF_UP -d=20
+10.0.0.0/29 -j ACCEPT
+...
+...
+iptables -t mangle -A 10.0.0.0/24 -j DROP
+...
+...
+
+iptables -t mangle -I PREROUTING 4 -m physdev --physdev-in $IF_DOWN -s
+$CUSTOMER_NET_1 --goto 10.0.0.0/24
+iptables -t mangle -I PREROUTING 4 -m physdev --physdev-in $IF_UP -d
+$CUSTOMER_NET_1 --goto 10.0.0.0/24
+...
+...
+iptables -t mangle -I PREROUTING 4 -m physdev --physdev-in $IF_DOWN -s
+$CUSTOMER_NET_1 --goto 10.0.x.x/24
+iptables -t mangle -I PREROUTING 4 -m physdev --physdev-in $IF_UP -d
+$CUSTOMER_NET_1 --goto 10.0.x.x/24
 
