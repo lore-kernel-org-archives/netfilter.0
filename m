@@ -1,14 +1,9 @@
-From: Leonardo <p0q0b0d@gmail.com>
-Subject: Re: ICMP frag needed not forwarded to MSQ clients
-Date: Wed, 25 May 2005 13:23:07 +0200
-Message-ID: <3b1e6f4805052504234918e2e8@mail.gmail.com>
-References: <3b1e6f48050525011730fa7e44@mail.gmail.com>
-	<200505251112.23022.98111@free.fr>
-Reply-To: Leonardo <p0q0b0d@gmail.com>
+From: Norbert Wegener <nw@wegener-net.de>
+Subject: advanced routing with iptables
+Date: Wed, 25 May 2005 13:40:39 +0200
+Message-ID: <20050525114039.GA5238@www.wegener-net.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200505251112.23022.98111@free.fr>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,24 +16,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> Have you tried the TCPMSS target ? I think it have been created to solve =
-this
-> problem.
->=20
-> Brice
->=20
+Hello,
+I have a linux gateway with two network cards.
+The default route is set via eth0.
+When an http request from an arbitrary ipaddres arrives on eth1, the gateway sends the answer out to eth0, as expected.
+Is it possible to mark those incoming http requests via iptables or other tools in a way, that the answer gets out via eth1?
 
-Yes! Of course!
+Thanks
+Norbert
 
-iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400
-
-And it does not work! As far as I understand as man pages say, this is
-a workaround if you are *behind* a router that block ICMP frag needed
-packets, but this packets *are* received at my routerbox but *NOT*
-unmasked&forwarded to the source host.
-
---=20
-Leonardo Arena
 
