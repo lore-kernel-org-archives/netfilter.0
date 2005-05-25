@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Help needed with Connection tracking!!!
-Date: Tue, 24 May 2005 17:32:37 -0400
-Message-ID: <20050524213237.GA14107@bender.817west.com>
-References: <4293543d.58d9493d.63ba.000cSMTPIN_ADDED@mx.gmail.com>
-	<9927912d0505240927492673cb@mail.gmail.com>
+From: Askar <askarali@gmail.com>
+Subject: iproute2, iptables problem
+Date: Wed, 25 May 2005 10:24:54 +0500
+Message-ID: <a0f69e50505242224633bbc0a@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <9927912d0505240927492673cb@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,51 +18,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, May 24, 2005 at 08:27:42PM +0400, Visham Ramsurrun wrote:
-> Hi to all,
-> 
-> I badly need some help with this one..
-> 
-> I wanted to know what happens when a stateful firewall receives a SYN
-> packet from client A and the next packet received by the firewall is
-> not the SYN/ACK packet from server B but rather the first data packet
-> for the same connection from server B.
+Hi list=20
+From few days we are getting very strange problem on our
+office gateway running 2.6.11.8 kernel (custom compiled)
 
-it should be marked as INVALID.
+We are using iproute2 + iptables marking feature to select different
+route and to route port 80 towards our cache server which again
+running linux + custom kernel.
 
-> Let's assume that the SYN/ACK,
-> the ACK and the first data request packet arrived  to their respective
-> destinations through some other route. Is the connection considered as
-> ESTABLISHED at that point on the firewall, which has seen traffic in
-> both directions?
 
-ESTABLISHED does not mean "i have seen traffic in both directions." it
-means "i have seen packets in the proper directions that transition from
-the NONE to ESTABLISHED state."  the states according to
-ip_conntrack_proto_tcp.c:
+#echo 221 cache.out >> /etc/iproute2/rt_tables
+#ip rule add fwmark 1 table cache.out
+#ip route add default via xxx.xxx.xxx.xx dev eth0 table cache.out
+#ip route flush cache
 
-   NONE:        initial state
-   SYN_SENT:    SYN-only packet seen 
-   SYN_RECV:    SYN-ACK packet seen
-   ESTABLISHED: ACK packet seen
+#Mangle for Above Rule######
+iptables -A PREROUTING -i eth0 -t mangle -p tcp --dport 80 -j MARK
+--set-mark 1 (marking for port 80, directed towards cache server)
+iptables -A PREROUTING -i eth0 -t mangle -p tcp -d xxx.xxx.xxx.xx -j
+MARK --set-mark 2 (direct the traffic for our company webserver)
+.
+.
+# then the SNAT rule
 
-> If the answer to the above is no, would the connection be considered
-> as ESTABLISHED if the default behaviour of ip_conntrack was used?
+From last two days if I checked on webserver (httpd) access.log, found
+that few of our LAN clients accessing web coming with proxy server IP, and
+the rest LAN clients with gatway IP. The problem is that we have few
+secure links which is restricted to be access from few IPs including
+the gateway IP. So if client coming with proxy server IP they got
+permission denied page.
+Then I have to add the proxy server IP in "allow", however this is not
+the solution things were working just fine from last few months its
+only from two days we are getting this problem.
+Yesterday I delete all the "ip rule" and rerun the firewall script,
+things start working but later in the morning I got the call from work
+that again few clients "LAN" getting the same "permission denied"
 
-what on earth do you mean by this statement?
+Is this a bug in iproute2 or iptables ?
 
-> Any input will be very much appreciated..
+Any help in this regard will be greatly appreciated.
 
-pretend you're on a 2.2 linux kernel with ipchains and write stateless
-rules.  ip_conntrack is there to protect you.  those that are bothered by
-its protection deserve neither its protection, nor its convenience.
 
--j
+Regards
+Askar Ali
 
---
-"Stewie: It rubs the lotion on its skin or else it gets the hose again."
-        --Family Guy
+--=20
+I love deadlines. I like the whooshing sound they make as they fly by.
+Douglas Adams
 
