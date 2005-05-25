@@ -1,14 +1,14 @@
-From: Visham Ramsurrun <vishamr2000@gmail.com>
-Subject: Re: netfilter Digest, Vol 10, Issue 70
-Date: Wed, 25 May 2005 14:24:17 +0400
-Message-ID: <9927912d050525032492c5882@mail.gmail.com>
-References: <42943c13.3526efb1.0a62.1844SMTPIN_ADDED@mx.gmail.com>
-Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
+From: "Volkm@r" <plsdontreply@arcor.de>
+Subject: Re: minimal iptables ruleset for laptop
+Date: Wed, 25 May 2005 12:42:27 +0200
+Message-ID: <d71kn9$lfi$1@sea.gmane.org>
+References: <d6utcg$6hb$1@sea.gmane.org>
+	<42930273.10208@hotpop.com>	<d6v69t$3sc$1@sea.gmane.org>
+	<429442FC.8090700@hotpop.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42943c13.3526efb1.0a62.1844SMTPIN_ADDED@mx.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <429442FC.8090700@hotpop.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,23 +22,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
->> If the answer to the above is no, would the connection be
->>considered as ESTABLISHED if the default behaviour of >>ip_conntrack
-was used?
-=20
->what on earth do you mean by this statement?
+Georgi Alexandrov wrote:
+> [...]
+> About the ICMP - it's good (my opinion) to let at least those three icmp
+> types so we have proper network functions.
+> reference:  http://www.faqs.org/docs/iptables/icmptypes.html
+> 
+> About the logging - If you want for example to log all the auth requests
+> (tcp/113) made to your machine, we will put the following rule above the
+> -j REJECT one:
+> 
+> iptables -A INPUT -p tcp --syn --dport 113 -j LOG --log-prefix "Auth
+> Request"
+> iptables -A INPUT -p tcp --syn --dport 113 -j REJECT --reject-with
+> tcp-reset
+> 
+Well, that's exactly what I needed.
 
-What I mean by this is that the when a protocol is unknown to the
-ip_conntrack module if you don't have or don't want to use helper
-conntrack modules like that for TCP or FTP), connection tracking
-adopts a default method for handling these packets. It resembles the
-handling of UDP packets. When this default behaviour is used, even a
-packet that is not the SYN packet is considered as NEW. A second
-packet in the reverse direction (reply packet) will set the connection
-state to ESTABLISHED.
+> 
+> This way we will have all auth requests logged and then rejected.
+> You can examine the example rc.firewall script at
+> iptables-tutorial.frozentux.net for some more logging examples.
+> 
+> regards,
+> Georgi Alexandrov
+> 
+> 
+Thanks for the references. I'm going to them more carefully.
+-- 
+Volkm@r
 
-Many thx for the reply...pls do respond to what I've written.
-
-Warm regards,
-Visham
 
