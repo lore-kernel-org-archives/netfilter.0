@@ -1,12 +1,13 @@
-From: "Marius Mertens" <marius.mertens@gmx.de>
-Subject: Re: SSH Brute force attacks
-Date: Wed, 25 May 2005 10:48:37 +0200
-Message-ID: <001601c56106$8d8419b0$4206a8c0@loki>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com><42920AA7.6070909@riverviewtech.net>
-	<42940E9B.1070502@eccotours.dyndns.org>
+From: Georgi Alexandrov <tehlists@hotpop.com>
+Subject: Re: minimal iptables ruleset for laptop
+Date: Wed, 25 May 2005 12:18:52 +0300
+Message-ID: <429442FC.8090700@hotpop.com>
+References: <d6utcg$6hb$1@sea.gmane.org> <42930273.10208@hotpop.com>
+	<d6v69t$3sc$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <d6v69t$3sc$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,44 +18,81 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi Brent, Hi List,
+Volkm@r wrote:
 
-On Wednesday, May 25, 2005 7:35 AM,
-Brent Clark wrote:
+>Georgi Alexandrov wrote:
+>  
+>
+>>something like this:
+>>
+>>######################### start ###########################
+>>
+>>iptables -F
+>>iptables -X
+>>iptables -Z
+>>iptables -t nat -F
+>>iptables -t nat -X
+>>iptables -t nat -Z
+>>iptables -t mangle -F
+>>iptables -t mangle -X
+>>iptables -t mangle -Z
+>>
+>>iptables -P INPUT DROP
+>>iptables -P FORWARD DROP
+>>iptables -P OUTPUT ACCEPT
+>>
+>>iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+>>iptables -A INPUT -i lo -j ACCEPT
+>>iptables -A INPUT -p icmp --icmp-type 3 -j ACCEPT
+>>iptables -A INPUT -p icmp --icmp-type 11 -j ACCEPT
+>>iptables -A INPUT -p icmp --icmp-type 12 -j ACCEPT
+>>iptables -A INPUT -p tcp --syn --dport 113 -j REJECT --reject-with tcp-reset
+>>
+>>############################# end #################################
+>>
+>>I think the above ruleset is sufficient. If you have any questions about
+>>it - just ask.
+>>
+>>regards,
+>>Georgi Alexandrov
+>>
+>>
+>>    
+>>
+>
+>Hi Georgi,
+>Thanks a lot for your fast response. Now it looks much easier to
+>understand. Now I have two more questions.
+>
+>1. What is the advantage of putting those "-p icmp" rules?
+>2. How could I add logging (fore some time, to see what's going on)?
+>
+>Thanks again
+>Volkm@r
+>
+>
+>
+>  
+>
+About the ICMP - it's good (my opinion) to let at least those three icmp 
+types so we have proper network functions.
+reference:  http://www.faqs.org/docs/iptables/icmptypes.html
 
-> For some funny reason I still cant seem to get this right.
-> I tried connecting from home (dynamic assigned ip) and I still cant
-> connect.
+About the logging - If you want for example to log all the auth requests 
+(tcp/113) made to your machine, we will put the following rule above the 
+-j REJECT one:
 
-From having a short look over your ruleset, I can't find a rule that finally 
-accepts NEW ssh connections after the packet successfully passed the 
-bruteforce section. Perhaps you want to append an ACCEPT rule for that, so 
-the whole block about ssh looks like the following:
+iptables -A INPUT -p tcp --syn --dport 113 -j LOG --log-prefix "Auth Request"
+iptables -A INPUT -p tcp --syn --dport 113 -j REJECT --reject-with tcp-reset
 
-[...]
-$IPT -N SSH_Brute_Force
-[...]
-$IPT -A SSH_Brute_Force -j DROP
-# Now finally accept NEW ssh traffic
-$IPT -t filter -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT
-[...]
 
-An alternative way might be replacing the RETURN targets with ACCEPT. Though 
-I think the way with RETURN is cleaner. For if you append other DROP rules 
-to your ruleset later, you might wonder why some ssh connections are 
-magically accepted.
-Speaking of cleanliness: maybe you also want to remove the final DROP rule 
-and set the policy of the INPUT chain to DROP instead. But this should not 
-affect functionality ;-)
-Oh, almost forgot: sometimes the reason for strange behaviour is your rules 
-not getting flushed. Don't think it's the case here, but if it still does 
-not work after adding the ACCEPT rule... ;-)
+This way we will have all auth requests logged and then rejected.
+You can examine the example rc.firewall script at 
+iptables-tutorial.frozentux.net for some more logging examples.
 
-Good Luck!
-
-Marius 
-
+regards,
+Georgi Alexandrov
 
