@@ -1,13 +1,13 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
-Subject: Re: SSH Brute force attacks
-Date: Wed, 25 May 2005 07:35:23 +0200
-Message-ID: <42940E9B.1070502@eccotours.dyndns.org>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>
-	<42920AA7.6070909@riverviewtech.net>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: iptables LOG options
+Date: Wed, 25 May 2005 02:55:04 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0505250253000.9513@darkstar.sysinfo.com>
+References: <4292A1A7.3020401@poornam.com> <4292A6CF.4020904@rfgt.net>
+	<4292AABF.4060009@poornam.com> <4292B530.3070801@rfgt.net>
+	<42933D87.1060501@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42920AA7.6070909@riverviewtech.net>
+In-Reply-To: <42933D87.1060501@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,79 +18,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-Taylor, Grant wrote:
-> Would this version be more to your liking?  I'm just trying to evolve this script to answer as many of the questions / concerns that are being posed on the list.
-> iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name SSH --set --rsource -j SSH_Brute_Force
-> iptables -A SSH_Brute_Force -s $My_Home_Firewall_IP -j RETURN
-> iptables -A SSH_Brute_Force -s $My_Office_Firewall_IP -j RETURN
-> iptables -A SSH_Brute_Force -s $My_Girlfriends_Firewall_IP list -j RETURN
-> iptables -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount 3 --name SSH --rsource -j RETURN 
-> iptables -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
-> iptables -A SSH_Brute_Force -p tcp -j TARPIT
-> I have tested this script on my home firewall and have found it to work the way that it is intended, so give it a try and see what you think.  Any and all feedback is welcome and appreciated.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Hi all
+On Tue, 24 May 2005, Taylor, Grant wrote:
 
-For some funny reason I still cant seem to get this right.
-I tried connecting from home (dynamic assigned ip) and I still cant connect.
+>> From my experience with -m owner/group (extremely limited I must admit)
+>> I don't think it's possible. The messages in /var/log/messages don't
+>> seem to have any uid information, and afaik there isn't any sort of
+>> variables that iptables has in to do this sort of thing.
+>
+> Would it be possible to get the LOG target to log the PID of the process that tried to send the traffic out?  If this could be done it would be a relatively trivial to write a daemon that would watch the log looking for the LOG liens (presumably with a special pattern in the --log-prefix parameter as a key) and try to identify who ran the process that has the PID in question.  The only caveat that comes to mind is that process might spawn and die / close before the daemon could identify who was running it so I would be tempted to send the traffic to user space QUEUE (I think) to something that would ultimately just drop it but that could introduce a pause long enough (or do the searching it's self) for the user identification to take place?
+>
+> I am in no way capable of writing such applications / daemons, but I know there are those who are.  This is just my $.02 on it.
+>
 
-I can connect to my other two server 100%, but the one im trying this on.
-I still cant seem to get it right.
+Of course these are internal users, and so if one might not beable to 
+control the binaries packets, perhaps one looks to control access or 
+abilities of users with the binary?  This might be a place for another 
+admin tool, say sudo, or chmod/chown?
 
-Brent
 
-======================================================================
+Thanks,
 
-May 25 06:21:51 ns kernel: [INPUT  DROP]: IN=eth0 OUT= 
-MAC=00:0c:76:5e:d3:61:00:d0:02:eb:84:0a:08:00 SRC=165.146.144.131 
-DST=217.199.186.118 LEN=48 TOS=0x00 PREC=0x00 TTL=115 ID=40576 DF 
-PROTO=TCP SPT=30066 DPT=22 WINDOW=65535 RES=0x00 SYN URGP=0 OPT 
-(0204055001010402)
-May 25 06:21:54 ns kernel: [INPUT  DROP]: IN=eth0 OUT= 
-MAC=00:0c:76:5e:d3:61:00:d0:02:eb:84:0a:08:00 SRC=165.146.144.131 
-DST=217.199.186.118 LEN=48 TOS=0x00 PREC=0x00 TTL=115 ID=40578 DF 
-PROTO=TCP SPT=30066 DPT=22 WINDOW=65535 RES=0x00 SYN URGP=0 OPT 
-(0204055001010402)
-May 25 06:22:00 ns kernel: SSH Brute Force Attempt:  IN=eth0 OUT= 
-MAC=00:0c:76:5e:d3:61:00:d0:02:eb:84:0a:08:00 SRC=165.146.144.131 
-DST=217.199.186.118 LEN=48 TOS=0x00 PREC=0x00 TTL=115 ID=40585 DF 
-PROTO=TCP SPT=30066 DPT=22 WINDOW=65535 RES=0x00 SYN URGP=0
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
 
-$IPT -t filter -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPT -t filter -A INPUT -m state --state INVALID -j LOG --log-prefix 
-"INVALID input: " --log-tcp-options --log-ip-options
-$IPT -t filter -A INPUT -m state --state INVALID -j DROP
-$IPT -t filter -A INPUT -p tcp  --dport 113 -j REJECT --reject-with 
-icmp-host-unreachable
-$IPT -t filter -A INPUT -d 217.199.186.255 -j DROP
-$IPT -t filter -A INPUT -p tcp --dport 80 -m state --state NEW -j ACCEPT
-$IPT -t filter -A INPUT -p tcp --dport 20 -m state --state NEW -j ACCEPT
-$IPT -t filter -A INPUT -p tcp --dport 21 -m state --state NEW -j ACCEPT
-$IPT -t filter -A INPUT -p tcp --dport 25 -m state --state NEW -j ACCEPT
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
 
-$IPT -N SSH_Brute_Force
-$IPT -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name 
-SSH --set --rsource -j SSH_Brute_Force
-$IPT -A SSH_Brute_Force -s 196.31.9.82 -j RETURN
-$IPT -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount 3 
---name SSH --rsource -j RETURN
-$IPT -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
-$IPT -A SSH_Brute_Force -p tcp -j DROP
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-$IPT -t filter -A INPUT -p tcp --dport 10000 -m state --state NEW -j ACCEPT
-$IPT -t filter -A INPUT -p tcp --dport 135 -j DROP
-$IPT -t filter -A INPUT -p tcp  --dport 113 -j REJECT --reject-with 
-icmp-host-unreachable
-$IPT -t filter -A INPUT -p icmp --icmp-type source-quench -j ACCEPT
-$IPT -t filter -A INPUT -p icmp --icmp-type parameter-problem -j ACCEPT
-$IPT -t filter -A INPUT -p icmp --icmp-type destination-unreachable -j 
-ACCEPT
-$IPT -t filter -A INPUT -p icmp --icmp-type time-exceeded -j ACCEPT
-$IPT -t filter -A INPUT -p icmp --icmp-type ! echo-request -j LOG
-$IPT -t filter -A INPUT -j LOG --log-prefix "[INPUT  DROP]: " 
---log-tcp-options --log-ip-options
-$IPT -t filter -A INPUT -j DROP
+iD8DBQFClCFLst+vzJSwZikRAr9QAJwLlw1sWvrTIvc1TX5Db4NmJ7qSWACfRib5
+mAQOsllflyFhPuUnkVMUyDI=
+=LjzP
+-----END PGP SIGNATURE-----
 
