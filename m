@@ -1,12 +1,12 @@
-From: =?ISO-8859-1?Q?Martin_Schi=F8tz?= <malinux@gmail.com>
-Subject: iptables performance
-Date: Wed, 25 May 2005 19:20:53 +0000
-Message-ID: <e208f5d1050525122040c9003a@mail.gmail.com>
-Reply-To: =?ISO-8859-1?Q?Martin_Schi=F8tz?= <malinux@gmail.com>
+From: Ron Peterson <rpeterso@mtholyoke.edu>
+Subject: Re: Problem using transparent proxy and iptables 1.3.1
+Date: Wed, 25 May 2005 16:33:39 -0400
+Message-ID: <20050525203339.GA20290@mtholyoke.edu>
+References: <42948ED3.7090407@novadevices.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <42948ED3.7090407@novadevices.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,51 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Rafael Vallejo <rvallejo@novadevices.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi=20
+On Wed, May 25, 2005 at 09:42:27AM -0500, Rafael Vallejo wrote:
 
-I'm planning to set up a bridge running iptables on an uplink of a lot
-of internet user. The uplink is on maximum at about 30 mbit/s. There
-are about 1800 * /29 ip nets - some /29 nets needs to be stopped be
-the bridge and some can pass. I'm wondering about the performance of
-iptables when having 1800*2 rules worst case (PREROUTING rules on src
-and dst nets).
+> I'm having a problem with iptables, we recently instaled version 1.3.1 
+> on a Linux Kernel 2.6.10
+> 
+> This rule that used to work on former versions of iptables no longer 
+> work on 1.3.1
+> 
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
+> --to-ports 3128
 
-Actually I have made some kind of hashing using user defined rules.
-This gives a maximum of a packet to travel through about 65 + 32
-rules. I have not tested live - before I do this, I would like to know
-if anybody here have any experience or idea about performance  with
-that kind of traffic load and number of rules?
+I was bitten by something similar a few months ago trying to block dhcp
+through a transparent bridge (I needed to use a different dhcp server on
+one side).  I used ebtables instead to fix my problem.
 
-Best regards,
-Martin
+I was just doing allow/deny stuff though.  Ebtables has a redirect
+option also, but it pertains to mac addresses.  Maybe you could do
+something with marking, to make ebtables work in conjunction with
+iptables??
 
-My user defined rules:
-
-iptables -t mangle -N 10.0.0.0/24
-...
-...
-iptables -t mangle -N 10.0.x.x/24
-
-iptables -t mangle -I 10.0.0.0/24 1 -m physdev --physdev-in $IF_DOWN
--s  10.0.0.0/29-j ACCEPT
-iptables -t mangle -I 10.0.0.0/24 1 -m physdev --physdev-in $IF_UP -d=20
-10.0.0.0/29 -j ACCEPT
-...
-...
-iptables -t mangle -A 10.0.0.0/24 -j DROP
-...
-...
-
-iptables -t mangle -I PREROUTING 4 -m physdev --physdev-in $IF_DOWN -s
-$CUSTOMER_NET_1 --goto 10.0.0.0/24
-iptables -t mangle -I PREROUTING 4 -m physdev --physdev-in $IF_UP -d
-$CUSTOMER_NET_1 --goto 10.0.0.0/24
-...
-...
-iptables -t mangle -I PREROUTING 4 -m physdev --physdev-in $IF_DOWN -s
-$CUSTOMER_NET_1 --goto 10.0.x.x/24
-iptables -t mangle -I PREROUTING 4 -m physdev --physdev-in $IF_UP -d
-$CUSTOMER_NET_1 --goto 10.0.x.x/24
+-- 
+Ron Peterson
+Network & Systems Manager
+Mount Holyoke College
+http://www.mtholyoke.edu/~rpeterso
 
