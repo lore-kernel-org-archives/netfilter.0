@@ -1,11 +1,13 @@
-From: Lewis Shobbrook <mylists@blue-matrix.org>
-Subject: conntrack related dropped packets or HTB issues on 2.6.11?
-Date: Fri, 27 May 2005 05:45:42 +1000
-Message-ID: <200505270545.43149.mylists@blue-matrix.org>
+From: Brent Clark <bclark@eccotours.dyndns.org>
+Subject: Re: SSH Brute force attacks
+Date: Thu, 26 May 2005 13:17:28 +0200
+Message-ID: <4295B048.7050303@eccotours.dyndns.org>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42920AA7.6070909@riverviewtech.net>	<42940E9B.1070502@eccotours.dyndns.org>
+	<4294BF81.1020204@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <4294BF81.1020204@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,80 +18,270 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, lartc@mailman.ds9a.nl
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi All,
+Taylor, Grant wrote:
+> Brent Clark wrote:
 
-I'm looking for some comments on an issue that I'd had since the start of the 
-week.
-In short the problem appears to potentially be an overwhelming of the 
-conntrack tables, where connection state is lost and packets dropped.
+> Based on the fact that you are getting a log entry with the "SSH Brute Force Attempt:  " in the log line I think that your SSH packets are some how having more than 3 hits by the time the packets make it to the "iptables -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount 3 --name SSH --rsource -j RETURN" rule.  This makes me think that there are other rules in your filter chains that are setting packets and thus making them continue through the afore mentioned rule and not be returned thus being DROPed.  Try doing an iptables-save and looking at the output to see if it agrees with what you are expecting based on your iptables script, I'm betting that there is something going on in the SSH_Brute_Force chain from previous test that have slipped your mind.  If you still want / need help please include the results of an iptables-save in your reply.
+> 
+> 
+> 
+> Grant. . . .
+> 
 
-A combination of using htb & U32 QOS to clamp the smtp traffic to 128kb on a 
-512kb sync line, some sizeable bulk emails sent from the marketing department 
-(120 x 2MB) from an M$ exchange server (with default No. of simultaneous smtp 
-connections of 1000), resulted in persistant delivery failures/time-outs and 
-growth in queues.
+Hi Grant, and list
 
-The toplogy consitis of postfix on the firewall relaying valid virus cleaned 
-mail to an internal exchange (don't be tempted to blame me here!), exchange 
-sends directly to the net.
+I have done as advised hope this helps.
 
-Most small messages were sent as expected, but the larger ones timed out and 
-remained in the queue.
+A big thanks to all for enduring me on this list for this thread, I can 
+only imagine how im making a nuisance of my self to all.
+My apologies for this.
 
-I noted that despite long established and functional firewall rules allowing 
-for inbound tcp dport 25, the packets were being dropped and logged.
-tcp IN:IN=ppp0 OUT= MAC= SRC=69.16.xxx.xxx DST=xxx.xxx.xxx.xxx LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=26228 DF PROTO=TCP SPT=38158 DPT=25 WINDOW=5840 RES=0x00 
-ACK FIN URGP=0
+Again to all thanks.
 
-During the time these events were being logged I was still able to telnet to 
-port 25 from a remote network to the xxx.xxx.xxx.xxx interface, so clearly 
-something bogus was going on.  Email was still coming in and out at a heavy 
-but not ridiculous rate. Note also that only some connections to port 25 were 
-logegd this way, the test telnet's to port 25 showed only in the mail log not 
-at all on the firewall.
+Kind Regards
+Brent Clark
 
-I also noted that I was getting a huge increase in the number of "NEW" packets 
-not marked as SYN which viewed as follows...
-NEW NOT SYN!: IN=ppp0 OUT= MAC= SRC=203.57.xxx.xxx DST=xxx.xxx.xxx.xxx LEN=100 
-TOS=0x00 PREC=0x00 TTL=57 ID=42058 DF PROTO=TCP SPT=25 DPT=6699 WINDOW=58080 
-RES=0x00 ACK PSH URGP=0
 
-I deduced from this that it was posible the contrack tables were overrun and 
-the connection state being lost.  I didn't have focus to 
-cat /proc/net/ip_conntrack >> to save the output.... Oh well...
+# Generated by iptables-save v1.2.9 on Thu May 26 11:35:50 2005
+*mangle
+:PREROUTING ACCEPT [27:6779]
+:INPUT ACCEPT [1804907:969471155]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [563791:72378022]
+:POSTROUTING ACCEPT [16:1132]
+COMMIT
+# Completed on Thu May 26 11:35:50 2005
+# Generated by iptables-save v1.2.9 on Thu May 26 11:35:50 2005
+*nat
+:PREROUTING ACCEPT [14:5635]
+:POSTROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+COMMIT
+# Completed on Thu May 26 11:35:50 2005
+# Generated by iptables-save v1.2.9 on Thu May 26 11:35:50 2005
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+:SSH_Brute_Force - [0:0]
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -m state --state INVALID -j LOG --log-prefix "INVALID input: " 
+--log-tcp-options --log-ip-options
+-A INPUT -m state --state INVALID -j DROP
+-A INPUT -p tcp -m tcp --dport 113 -j REJECT --reject-with 
+icmp-host-unreachable
+-A INPUT -d 217.199.186.255 -j DROP
+-A INPUT -p tcp -m tcp --dport 80 -m state --state NEW -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 20 -m state --state NEW -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 21 -m state --state NEW -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 25 -m state --state NEW -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --set 
+--name SSH --rsource -j SSH_Brute_Force
+-A INPUT -p tcp -m tcp --dport 10000 -m state --state NEW -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 135 -j DROP
+-A INPUT -p tcp -m tcp --dport 113 -j REJECT --reject-with 
+icmp-host-unreachable
+-A INPUT -p icmp -m icmp --icmp-type 4 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 12 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 3 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 11 -j ACCEPT
+-A INPUT -p icmp -m icmp ! --icmp-type 8 -j LOG
+-A INPUT -j LOG --log-prefix "[INPUT  DROP]: " --log-tcp-options 
+--log-ip-options
+-A INPUT -j DROP
+-A OUTPUT -o lo -j ACCEPT
+-A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -m state --state INVALID -j LOG --log-prefix "INVALID output: 
+" --log-tcp-options --log-ip-options
+-A OUTPUT -m state --state INVALID -j DROP
+-A OUTPUT -m state --state NEW -j ACCEPT
+-A OUTPUT -j LOG --log-prefix "[OUTPUT DROP]: " --log-tcp-options 
+--log-ip-options
+-A OUTPUT -j DROP
+-A SSH_Brute_Force -s 196.36.10.114 -j RETURN
+-A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount 3 --name 
+SSH --rsource -j RETURN
+-A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
+-A SSH_Brute_Force -p tcp -j DROP
+COMMIT
+# Completed on Thu May 26 11:35:50 2005
 
-NEW NOT SYN makes sense as being related to an overrun of the conntrack, but 
-the inbound blocking to dport 25 seems to me totally strange.  
-Similar entries were visible for port 80 web traffic to & from the proxy.  
+############################################################
 
-We have multiple internet connections, changing the route to an alternate (non 
-PPP) interface yielded the same results (totally separate networks).  I 
-attempted to remove the 128kb clamp etc, despite the number of emails in 
-queue were only around 20 with total K of maybe 10-15Mb ...they stayed 
-delayed.   ICMP packets were given priority, but still the route across the 
-interface facing the bulk of the inbound/outbound email traffic would 
-saturate with 1000+ ms response times.
-Logging on the exchange server did not indicate unusually high numbers of 
-emails being sent that could be attributed to a worm/virus.
-There was no indication of any DOS; regardless, each time the internet 
-interface routes changed the problem moved from one interface to the next.
+#!/bin/sh -
 
-I've been using iptables for over 5 years and HTB for the last couple.  I've 
-recently made some changes to the HTB QOS and applied it to all interfaces 
-which I suspect may have contributed to conntrack tables reaching critical 
-mass.  Removing & flushing the HTB rules did not have any immedate effect at 
-least.
+IPT=/sbin/iptables
 
-Has anyone witnessed such occurrences and have any inclination as to what 
-causes it?
-(Not sure how many of you will have made it to here... phew!)
+# Rules for gateway
 
-Cheers & thanks ahead,
+#This may help if you have a dynamic IP address \(e.g. slip, ppp, dhcp\)
+echo 0 > /proc/sys/net/ipv4/ip_dynaddr
 
-Lewis
+# If you do need to forward packets from one interface to another
+echo 0 > /proc/sys/net/ipv4/ip_forward
+
+#Clear \ Flush all the rules from the different chains and tables
+
+$IPT --flush
+$IPT --flush INPUT		#Flush the INPUT chain
+$IPT --flush OUTPUT		#Flush the OUTPUT chain
+$IPT --flush FORWARD		#Flush the FORWARD chain
+$IPT -t nat --flush		#Flush the nat table
+$IPT -t mangle --flush		#Flush the mangle table
+$IPT --delete-chain		#Delete any pre-existing chains
+$IPT -t nat --delete-chain	#Delete any pre-existing chains from nat table
+$IPT -t mangle --delete-chain	#Delete any pre-existing chains from the 
+mangle table
+
+#Setting the default Policies for the chains
+$IPT --policy INPUT DROP	#Setting the default policy for INPUT chain
+$IPT --policy FORWARD DROP	#Setting the default plicy for FORWARD chain
+$IPT --policy OUTPUT DROP	#Setting the default policy for the OUTPUT chain
+
+#Setting Nat and mangle to default policy ACCEPT
+$IPT -t nat --policy PREROUTING ACCEPT
+$IPT -t nat --policy OUTPUT ACCEPT
+$IPT -t nat --policy POSTROUTING ACCEPT
+$IPT -t mangle --policy PREROUTING ACCEPT
+$IPT -t mangle --policy POSTROUTING ACCEPT
+
+#Accepting traffic for and to internal interface
+$IPT -A INPUT -i lo -j ACCEPT		#Allowing unlimited loopback traffic
+$IPT -A OUTPUT -o lo -j ACCEPT		#Allowing unlimited loopback traffic
+
+$IPT -t filter -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPT -t filter -A INPUT -m state --state INVALID -j LOG --log-prefix 
+"INVALID input: " --log-tcp-options --log-ip-options
+$IPT -t filter -A INPUT -m state --state INVALID -j DROP
+$IPT -t filter -A INPUT -p tcp  --dport 113 -j REJECT --reject-with 
+icmp-host-unreachable
+$IPT -t filter -A INPUT -d 217.199.186.255 -j DROP
+$IPT -t filter -A INPUT -p tcp --dport 80 -m state --state NEW -j ACCEPT
+$IPT -t filter -A INPUT -p tcp --dport 20 -m state --state NEW -j ACCEPT
+$IPT -t filter -A INPUT -p tcp --dport 21 -m state --state NEW -j ACCEPT
+$IPT -t filter -A INPUT -p tcp --dport 25 -m state --state NEW -j ACCEPT
+
+$IPT -N SSH_Brute_Force
+$IPT -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name 
+SSH --set --rsource -j SSH_Brute_Force
+$IPT -A SSH_Brute_Force -s 196.36.10.114 -j RETURN
+$IPT -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount 3 
+--name SSH --rsource -j RETURN
+$IPT -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
+$IPT -A SSH_Brute_Force -p tcp -j DROP
+
+$IPT -t filter -A INPUT -p tcp --dport 10000 -m state --state NEW -j ACCEPT
+$IPT -t filter -A INPUT -p tcp --dport 135 -j DROP
+$IPT -t filter -A INPUT -p tcp  --dport 113 -j REJECT --reject-with 
+icmp-host-unreachable
+$IPT -t filter -A INPUT -p icmp --icmp-type source-quench -j ACCEPT
+$IPT -t filter -A INPUT -p icmp --icmp-type parameter-problem -j ACCEPT
+$IPT -t filter -A INPUT -p icmp --icmp-type destination-unreachable -j 
+ACCEPT
+$IPT -t filter -A INPUT -p icmp --icmp-type time-exceeded -j ACCEPT
+$IPT -t filter -A INPUT -p icmp --icmp-type ! echo-request -j LOG
+$IPT -t filter -A INPUT -j LOG --log-prefix "[INPUT  DROP]: " 
+--log-tcp-options --log-ip-options
+$IPT -t filter -A INPUT -j DROP
+
+$IPT -t filter -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPT -t filter -A OUTPUT -m state --state INVALID -j LOG --log-prefix 
+"INVALID output: " --log-tcp-options --log-ip-options
+$IPT -t filter -A OUTPUT -m state --state INVALID -j DROP
+$IPT -t filter -A OUTPUT -m state --state NEW -j ACCEPT
+$IPT -t filter -A OUTPUT -j LOG --log-prefix "[OUTPUT DROP]: " 
+--log-tcp-options --log-ip-options
+$IPT -t filter -A OUTPUT -j DROP
+
+############################################################
+
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source 
+destination
+     0     0 ACCEPT     all  --  lo     *       0.0.0.0/0 
+0.0.0.0/0
+   122 10964 ACCEPT     all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           state RELATED,ESTABLISHED
+     0     0 LOG        all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           state INVALID LOG flags 6 level 4 prefix `INVALID 
+input: '
+     0     0 DROP       all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           state INVALID
+     0     0 REJECT     tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:113 reject-with icmp-host-unreachable
+    38 17821 DROP       all  --  *      *       0.0.0.0/0 
+217.199.186.255
+     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:80 state NEW
+     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:20 state NEW
+     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:21 state NEW
+     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:25 state NEW
+     0     0 SSH_Brute_Force  tcp  --  *      *       0.0.0.0/0 
+    0.0.0.0/0           tcp dpt:22 state NEW recent: SET name: SSH side: 
+source
+     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:10000 state NEW
+     0     0 DROP       tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:135
+     0     0 REJECT     tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0           tcp dpt:113 reject-with icmp-host-unreachable
+     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0 
+0.0.0.0/0           icmp type 4
+     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0 
+0.0.0.0/0           icmp type 12
+     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0 
+0.0.0.0/0           icmp type 3
+     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0 
+0.0.0.0/0           icmp type 11
+     0     0 LOG        icmp --  *      *       0.0.0.0/0 
+0.0.0.0/0           icmp !type 8 LOG flags 0 level 4
+     1   412 LOG        all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           LOG flags 6 level 4 prefix `[INPUT  DROP]: '
+     1   412 DROP       all  --  *      *       0.0.0.0/0 
+0.0.0.0/0
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source 
+destination
+
+Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source 
+destination
+     0     0 ACCEPT     all  --  *      lo      0.0.0.0/0 
+0.0.0.0/0
+   124 13260 ACCEPT     all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           state RELATED,ESTABLISHED
+     0     0 LOG        all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           state INVALID LOG flags 6 level 4 prefix `INVALID 
+output: '
+     0     0 DROP       all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           state INVALID
+     0     0 ACCEPT     all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           state NEW
+     0     0 LOG        all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           LOG flags 6 level 4 prefix `[OUTPUT DROP]: '
+     0     0 DROP       all  --  *      *       0.0.0.0/0 
+0.0.0.0/0
+
+Chain SSH_Brute_Force (1 references)
+  pkts bytes target     prot opt in     out     source 
+destination
+     0     0 RETURN     all  --  *      *       196.36.10.114 
+0.0.0.0/0
+     0     0 RETURN     all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           !recent: CHECK seconds: 60 hit_count: 3 name: SSH 
+side: source
+     0     0 LOG        all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           LOG flags 0 level 4 prefix `SSH Brute Force Attempt:  '
+     0     0 DROP       tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0
 
 
