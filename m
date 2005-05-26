@@ -1,17 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ICMP frag needed not forwarded to MSQ clients
-Date: Thu, 26 May 2005 16:33:51 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505261616250.24705@blackhole.kfki.hu>
-References: <3b1e6f48050525011730fa7e44@mail.gmail.com>
-	<Pine.LNX.4.60.0505251222550.9513@darkstar.sysinfo.com>
-	<3b1e6f480505260025707940fd@mail.gmail.com>
-	<Pine.LNX.4.58.0505261355220.24500@blackhole.kfki.hu>
-	<3b1e6f48050526054740113f78@mail.gmail.com>
-	<Pine.LNX.4.58.0505261457260.24584@blackhole.kfki.hu>
-	<3b1e6f4805052607095d2736c5@mail.gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: conntrack related dropped packets or HTB issues on 2.6.11?
+Date: Thu, 26 May 2005 10:45:53 -0400
+Message-ID: <20050526144553.GA21017@bender.817west.com>
+References: <200505270545.43149.mylists@blue-matrix.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3b1e6f4805052607095d2736c5@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <200505270545.43149.mylists@blue-matrix.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,32 +17,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Leonardo <p0q0b0d@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 26 May 2005, Leonardo wrote:
+On Fri, May 27, 2005 at 05:45:42AM +1000, Lewis Shobbrook wrote:
+> I noted that despite long established and functional firewall rules allowing 
+> for inbound tcp dport 25, the packets were being dropped and logged.
+> tcp IN:IN=ppp0 OUT= MAC= SRC=69.16.xxx.xxx DST=xxx.xxx.xxx.xxx LEN=52 TOS=0x00 
+> PREC=0x00 TTL=49 ID=26228 DF PROTO=TCP SPT=38158 DPT=25 WINDOW=5840 RES=0x00 
+> ACK FIN URGP=0
 
-> On 5/26/05, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu> wrote:
-> >
-> > Can you verify by tcpdump that the ICMP packets do received on eth2?
-> > Can you see them going out on eth0? Anything in the kernel log?
->
-> I'm currently sniffing on client and server side (eth0/2). Yes, ICMP
-> Frag Needed msg are received at eth2. However they are not received
-> from the client nor sent from eth0. The browser just hang, a session
-> is established but data is incomplete and finally it simply timeout...
+maybe that was just a poor choice of log snippets, as that is a FIN/ACK
+from the remote smtp client.  on a saturated link, it's completely
+plausible that this packet would arrive outside of the close_wait
+timeout; though the default is 60 secs, so unless you've changed this,
+then maybe not...
+(sysctl net.ipv4.netfilter.ip_conntrack_tcp_timeout_close_wait)
 
-Do the packet correspond to what you expect as ICMP reply packet: src and
-dst IP addresses are OK? What's inside the packet, i.e the src/dst IP,
-protocol, ports inside the ICMP error message are OK?
+anyway--dropping the FIN/ACK from the remote side won't affect
+connectivity between the client and server, and the connection will be
+timed out of conntrack after a minute or so.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+> During the time these events were being logged I was still able to telnet to 
+> port 25 from a remote network to the xxx.xxx.xxx.xxx interface, so clearly 
+> something bogus was going on.  Email was still coming in and out at a heavy 
+> but not ridiculous rate. Note also that only some connections to port 25 were 
+> logegd this way, the test telnet's to port 25 showed only in the mail log not 
+> at all on the firewall.
+> 
+> I also noted that I was getting a huge increase in the number of "NEW" packets 
+> not marked as SYN which viewed as follows...
+> NEW NOT SYN!: IN=ppp0 OUT= MAC= SRC=203.57.xxx.xxx DST=xxx.xxx.xxx.xxx LEN=100 
+> TOS=0x00 PREC=0x00 TTL=57 ID=42058 DF PROTO=TCP SPT=25 DPT=6699 WINDOW=58080 
+> RES=0x00 ACK PSH URGP=0
+
+this is less encouraging...
+
+> I deduced from this that it was posible the contrack tables were overrun and 
+> the connection state being lost.  I didn't have focus to 
+> cat /proc/net/ip_conntrack >> to save the output.... Oh well...
+
+more importantly, to figure out of you're filling conntrack, compare:
+
+  wc -l /proc/net/ip_conntrack
+
+  sysctl net.ipv4.netfilter.ip_conntrack_max
+
+-j
+
+--
+"Stewie: Met her on my CB / said her name was Mimi / Sounded like
+ an angel'd come to earth (come to earth) / When I went to meet her / Man,
+ you should have seen her / Twice as tall as me, three times the girth."
+        --Family Guy
 
