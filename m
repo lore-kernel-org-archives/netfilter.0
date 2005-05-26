@@ -1,14 +1,14 @@
-From: Leonardo <p0q0b0d@gmail.com>
-Subject: Re: ICMP frag needed not forwarded to MSQ clients
-Date: Thu, 26 May 2005 09:25:23 +0200
-Message-ID: <3b1e6f480505260025707940fd@mail.gmail.com>
-References: <3b1e6f48050525011730fa7e44@mail.gmail.com>
-	<Pine.LNX.4.60.0505251222550.9513@darkstar.sysinfo.com>
-Reply-To: Leonardo <p0q0b0d@gmail.com>
+From: =?ISO-8859-1?Q?Martin_Schi=F8tz?= <malinux@gmail.com>
+Subject: Re: iptables performance
+Date: Thu, 26 May 2005 11:22:40 +0200
+Message-ID: <e208f5d1050526022231390100@mail.gmail.com>
+References: <e208f5d1050525122040c9003a@mail.gmail.com>
+	<20050525212523.GA18093@bender.817west.com>
+Reply-To: =?ISO-8859-1?Q?Martin_Schi=F8tz?= <malinux@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.60.0505251222550.9513@darkstar.sysinfo.com>
+In-Reply-To: <20050525212523.GA18093@bender.817west.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,35 +20,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
->=20
->=20
-> have you a;
->=20
-> iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMMS \
-> - --clacmp-mss-to-ptmu
+Yes - This looks like the right thing. Thanks :-)=20
 
-Yes! I did it! And it does't work... :-(
-=20
+On 5/25/05, Jason Opperisano <opie@817west.com> wrote:
+> On Wed, May 25, 2005 at 07:20:53PM +0000, Martin Schi=F8tz wrote:
+> > Hi
+> >
+> > I'm planning to set up a bridge running iptables on an uplink of a lot
+> > of internet user. The uplink is on maximum at about 30 mbit/s. There
+> > are about 1800 * /29 ip nets - some /29 nets needs to be stopped be
+> > the bridge and some can pass. I'm wondering about the performance of
+> > iptables when having 1800*2 rules worst case (PREROUTING rules on src
+> > and dst nets).
 >=20
-> kind of statment in your rules, often require with VPN/s that work with
-> smaller packet sizes due to increasing headers...
-
-That's exactly the problem! The clients should receive an ICMP frag
-needed packet in order to reduce the packet size, however my
-proxy/router does not forward the ICMP msg to them! WHY?!?!?!
-The are no iptables rules that block ICMP!
+> sounds like a job for ipset [1].  if you have 1800 nets that fall into 2
+> categories, you'd have 2 rules, 1 for set 1 and 1 for set 2.  depending
+> how the nets break down on CIDR boundaries, you could auto-summarize the
+> nets that have the same rules to be applied to them.
 >=20
+> -j
 >=20
-> Thanks,
+> [1] - http://people.netfilter.org/kadlec/ipset/
 >=20
-> Ron DuFresne
-> - --
-
-Thanks to you!
-
---=20
-Leonardo Arena
+> --
+> "Quagmire: Don't look at me like that. Fat chicks need love too... but
+>  they got to pay."
+>         --Family Guy
+>=20
+>
 
