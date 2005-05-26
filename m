@@ -1,14 +1,17 @@
-From: "Eduardo Spremolla" <edspremolla@antel.com.uy>
-Subject: Re: Subnets: Make Static Route or Iptables Rules
-Date: Thu, 26 May 2005 09:09:35 -0300
-Message-ID: <1117109375.8314.4.camel@fly.in.iantel.com.uy>
-References: <42948ED3.7090407@novadevices.com>
-	<8ca4228205052510204f725724@mail.gmail.com>
+From: Leonardo <p0q0b0d@gmail.com>
+Subject: Re: ICMP frag needed not forwarded to MSQ clients
+Date: Thu, 26 May 2005 14:47:31 +0200
+Message-ID: <3b1e6f48050526054740113f78@mail.gmail.com>
+References: <3b1e6f48050525011730fa7e44@mail.gmail.com>
+	<Pine.LNX.4.60.0505251222550.9513@darkstar.sysinfo.com>
+	<3b1e6f480505260025707940fd@mail.gmail.com>
+	<Pine.LNX.4.58.0505261355220.24500@blackhole.kfki.hu>
+Reply-To: Leonardo <p0q0b0d@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8ca4228205052510204f725724@mail.gmail.com>
-Content-class: urn:content-classes:message
+In-Reply-To: <Pine.LNX.4.58.0505261355220.24500@blackhole.kfki.hu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,108 +22,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Mike <1100100@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-You need to allow forwarding in both directions:
-$IPTABLES -t filter -A FORWARD -i eth1 --source 192.168.169.0/24 -j
-ACCEPT
-$IPTABLES -t filter -A FORWARD -i eth2 --source 192.168.170.0/24 -j
-ACCEPT
+On 5/26/05, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu> wrote:
+> On Thu, 26 May 2005, Leonardo wrote:
+>=20
+> > That's exactly the problem! The clients should receive an ICMP frag
+> > needed packet in order to reduce the packet size, however my
+> > proxy/router does not forward the ICMP msg to them! WHY?!?!?!
+> > The are no iptables rules that block ICMP!
+>=20
+> As you have no DROP rule, netfilter does not drop the packets so it's not
+> a netfilter/iptables related problem.
 
-The prerouting Dnat is not required, be sure not to nat eth1 to eth2
-traffic.
+May be it's like you say... but really i do not have idea where else
+to look for...
 
-LALO
+> Probably you have got rp_filtering enabled and the routing engine discard=
+s
+> the ICMP packets.
+>
 
-On Wed, 2005-05-25 at 13:20 -0400, Mike wrote:
-> I have a linux routerbox with 3 nics.: =20
->=20
-> ppp0 goes to the internet service provider
-> eth1 serves as gateway to a subnet
-> eth2 serves as gateway to another subnet
->=20
-> I want LAN clients from subnet eth2 to be able to access a Samba
-> Server box located on subnet eth1
->=20
-> I have tried making a static route using --- route -n add
-> <destination> <gateway>   but all I get no matter what I try is: =20
-> SIOCADDRT: No such device
->=20
-> Here's my route -n
->=20
-> Kernel IP routing table
-> Destination     Gateway         Genmask         Flags Metric Ref    =
-Use Iface
-> 204.60.4.34     0.0.0.0         255.255.255.255 UH    0      0        =
-0 ppp0
-> 64.204.68.128   0.0.0.0         255.255.255.248 U     0      0        =
-0 eth0
-> 192.168.170.0   0.0.0.0         255.255.255.0   U     0      0        =
-0 eth2
-> 192.168.169.0   0.0.0.0         255.255.255.0   U     0      0        =
-0 eth1
-> 127.0.0.0       127.0.0.1       255.0.0.0       UG    0      0        =
-0 lo
-> 0.0.0.0         204.60.4.34     0.0.0.0         UG    0      0        =
-0 ppp0
->=20
-> As a result of trying out a few extra iptables rules, I can now ping
-> the eth1 gateway from the eth2 subnet clients, but I still cannot
-> ping/reach the Samba server box on the eth1 subnet.
->=20
-> Here's the rules I've added in hopes of making a proper path from
-> subnet eth2 to eth1:
->=20
-> $IPTABLES -t nat -A PREROUTING -p tcp -i eth1 --source
-> 192.168.170.0/24 -j DNAT --to-destination 192.168.169.2
-> $IPTABLES -t nat -A PREROUTING -p udp -i eth1 --source
-> 192.168.170.0/24 -j DNAT --to-destination 192.168.169.2
->=20
-> and
->=20
-> $IPTABLES -t filter -A INPUT -i eth1 --source 192.168.170.0/24 -j =
-ACCEPT
->=20
-> and
->=20
-> $IPTABLES -t filter -A FORWARD -i eth1 --source 192.168.170.0/24 -j =
-ACCEPT
->=20
-> Again, to be clear, clients on subnet eth2 can ping the gateway nic
-> (eth1), but cannot ping the samba box located on subnet eth1.
->=20
-> If I can just ping that box, I can config Samba the rest of the way.
->=20
-> So I'm not sure if what I need for this is to create a static route,
-> or whether iptables rules are all I need.
->=20
-> Thank you for your time and patience in reading this post.
->=20
-> Regards,
->=20
-> Mike
->=20
+Yes, I have it enabled. Disabling it does not solve the problem... :-(
 
+echo 0 > /proc/sys/net/ipv4/conf/eth2/rp_filter
+echo 0 > /proc/sys/net/ipv4/conf/eth0/rp_filter
 
-Este e-mail y cualquier posible archivo adjunto est=E1 dirigido =
-=FAnicamente al destinatario del mensaje y contiene informaci=F3n que =
-puede ser confidencial. Si Ud. no es el destinatario correcto por favor =
-notifique al remitente respondiendo este mensaje y elimine =
-inmediatamente el e-mail y los posibles archivos adjuntos al mismo de su =
-sistema. Est=E1 prohibida cualquier utilizaci=F3n, difusi=F3n o copia de =
-este e-mail por cualquier persona o entidad que no sean las =
-espec=EDficas destinatarias del mensaje. ANTEL no acepta ninguna =
-responsabilidad con respecto a cualquier comunicaci=F3n que haya sido =
-emitida incumpliendo nuestra Pol=EDtica de Seguridad de la =
-Informaci=F3n.
-. . . . . . . . .
-This e-mail and any attachment is confidential and is intended solely =
-for the addressee(s). If you are not intended recipient please inform =
-the sender inmediately, answering this e-mail and delete it as well as =
-the attached files. Any use, circulation or copy of this e-mail by any =
-person or entity that not is the specific addressee(s) is prohibited. =
-ANTEL is not responsible for any communication emitted without =
-respecting our Information Security Policy.
+ICMP packets type 3 are NOT routed anyway...
+
+> Best regards,
+
+> Jozsef
+> -
+
+Thank you.
+--=20
+Leonardo Arena
 
