@@ -1,12 +1,14 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
-Subject: Re: IPsec Passthru
-Date: Fri, 27 May 2005 14:51:35 +0200
-Message-ID: <20050527125135.GA30156@torres.l21.ma.zugschlus.de>
-References: <AGEKLHGIOHJGPMIOILOHAEJIHOAA.allen.miller@lymanrichey.com>
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: Re: netfilter Digest, Vol 10, Issue 74
+Date: Fri, 27 May 2005 18:31:55 +0400
+Message-ID: <9927912d05052707311500514d@mail.gmail.com>
+References: <42971843.64531163.6abe.2deeSMTPIN_ADDED@mx.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <42971843.64531163.6abe.2deeSMTPIN_ADDED@mx.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <AGEKLHGIOHJGPMIOILOHAEJIHOAA.allen.miller@lymanrichey.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,39 +20,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, May 27, 2005 at 07:29:57AM -0500, Allen Miller wrote:
-> I have configured Red Hat 9 computers as routers using iptables for
-> firewalling and NAT.  How do I configure iptables for ipsec passthru?  See
-> drawing below:
-> 
-> IPsec Client------Linux Router w/ NAT-------Internet-------Linux Router w/
-> NAT--------IPsec Server
-> 
-> Any help would be greatly appreciated.
+> On Wed, May 25, 2005 at 02:24:17PM +0400, Visham Ramsurrun wrote:
+> > What I mean by this is that the when a protocol is unknown to the
+> > ip_conntrack module if you don't have or don't want to use helper
+> > conntrack modules like that for TCP or FTP), connection tracking
+> > adopts a default method for handling these packets. It resembles the
+> > handling of UDP packets. When this default behaviour is used, even a
+> > packet that is not the SYN packet is considered as NEW. A second
+> > packet in the reverse direction (reply packet) will set the connection
+> > state to ESTABLISHED.
+>=20
+> if you're asking if there's a way to modify the conntrack code to ignore
+> the fact that TCP traffic is TCP traffic, and instead treat it as some
+> random, unknown IP protocol; i would imagine you would have to hack the
+> crap outta the conntrack code, basically removing
+> ip_conntrack_proto_tcp.c from the equation.  i have no clue how you
+> would go about doing this.  i also have no idea what your impetus behind
+> this desire is; therefore, i can make no suggestion as to whether there
+> may be an easier way to accomplish your goal.
+>=20
 
-What you need exactly depends on which IPSEC product you use. Most
-IPSEC NAT Traversal schemes depend on encapsulating the AH/ESP traffic
-into UDP, so you need to open certain UDP ports. You need to NAT
-traffic towards your VPN gateway's Port UDP/500 in any case to allow
-ISAKMP, and probably you need to open up some more UDP ports.
-Netscreen Products tunnel the ESP/AH traffic through UDP/500, so you
-should be fine, and Symantec uses UDP/768 for the payload. Other
-products might do things differently.
+What I actually want is that, whether it is TCP traffic or that of any
+other protocol, the traffic be treated in the same way. I read in the
+Iptables Tutorial that there is a default connection tracking
+mechanism. There are specific protocol helper modules for handling
+specific protocol traffic (TCP, FTP are some examples). So, for the
+traffic of any particular protocol, either you use a a conntrack
+helper module (if it exists), or you use the default connection
+tracking of ip_conntrack which actually handles traffic from any
+protocol in the same way.
 
-In any case, I'd strongly suggest making acquaintance with debugging
-tools like tcpdump to allow finding the solutions to your questions
-yourself. Using tcpdump the right way will result in a huge knowledge
-gain in virtuall no time since you can actually see what's going on.
+Having said that, what I would like to know is whether when this
+default behaviour is used,
+1) is a packet considered as NEW even it is not the SYN packet.
+2) will a second packet in the reverse direction (reply packet) will
+set the connection state to ESTABLISHED.
 
-Greetings
-Marc
+I just don't know how to verify this..that's why I asked you for help
+because you have much more experience with iptables and hence, maybe
+you have come across this.
 
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 621 72739835
+Many many thx for the reply...
+
+Best regards,
+Visham
 
