@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: IPsec Passthru
-Date: Fri, 27 May 2005 16:39:17 -0400
-Message-ID: <20050527203917.GA25255@bender.817west.com>
-References: <AGEKLHGIOHJGPMIOILOHAEJIHOAA.allen.miller@lymanrichey.com>
-	<20050527125135.GA30156@torres.l21.ma.zugschlus.de>
+From: Chris Dodd <cdodd@acm.org>
+Subject: NAT and non-connection oriented UDP-based protocols
+Date: Fri, 27 May 2005 14:55:01 -0700 (Pacific Daylight Time)
+Message-ID: <Pine.WNT.4.43.0505271445140.203-100000@zipper.nvidia.com>
+References: <mailman.757.1117228825.6796.netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050527125135.GA30156@torres.l21.ma.zugschlus.de>
+In-Reply-To: <mailman.757.1117228825.6796.netfilter@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, May 27, 2005 at 02:51:35PM +0200, Marc Haber wrote:
-> What you need exactly depends on which IPSEC product you use. Most
-> IPSEC NAT Traversal schemes depend on encapsulating the AH/ESP traffic
-> into UDP, so you need to open certain UDP ports. You need to NAT
-> traffic towards your VPN gateway's Port UDP/500 in any case to allow
-> ISAKMP, and probably you need to open up some more UDP ports.
-> Netscreen Products tunnel the ESP/AH traffic through UDP/500, so you
-> should be fine, and Symantec uses UDP/768 for the payload. Other
-> products might do things differently.
 
-just to pad the list--the standard NAT-T port is UDP 4500.  the cisco
-client can use UDP or TCP 10000, and the check point client uses UDP
-2746.
+I'm having problems getting various UDP based non-connection-oriented
+things running over my linux/iptables based firewall router using NAT.
 
--j
+What happens is this:
 
---
-"Stewie: You. Fetch me my copy of the Wall Street Journal. You two,
- fight to the death."
-        --Family Guy
+The application on my machine (call it A) opnes a UDP port (A) and sends
+packets to some remove address (call it X:X).  The firewall (FW) sees
+these packets and the SNAT rule rewrites the source address to be FW:A.
+So when X gets the packets, they seem to come from FW:A.
+
+Now if X replies directly, sending packets to FW:A from X:X, all is well;
+the firewall sees those packets and forwards them to A:A (my machine) and
+all is well.
+
+If instead X forwards the packets (or just the source address FW:A) to
+another machine Y, and Y sends replies back to FW:A from Y:Y, the firewall
+doesn't forward the packets properly to A:A.  Instead it drops the packets
+and sends ICMP port unreachable packets back to Y.
+
+Is there a way to configure the firewall/iptables to not do that
+and instead forward these packets to A:A?
+
+Chris Dodd
+cdodd@acm.org
+
 
