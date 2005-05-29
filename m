@@ -1,12 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: How to filter OUTPUT chain ala Zonealarm
-Date: Sun, 29 May 2005 17:29:53 +0200
-Message-ID: <20050529152833.E13A28EDCEB@smtp.sterenborg.info>
-References: <4299DD5B.4050705@mindspring.com>
+From: Jorge Santos <jorge.santos@duriussoft.com>
+Subject: more than one pptp connection to the same ip
+Date: Sun, 29 May 2005 17:47:30 +0100
+Message-ID: <1117385250.4299f2222955b@webmail.duriussoft.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4299DD5B.4050705@mindspring.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: 'Netfilter' <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@lists.netfilter.org
 
-> The nice feature of Zonealarm for Windows is it will check
-> outgoing packets and ask if you want to allow a specific _program_ to
-> access the web. 
-> 
-> In addition, it will warn if a program is asking for server rights.
-> 
-> This would be a nice feature.
-> Is there any way to do this in Iptables?
+I have to problems very similar :
 
-Well, something like that. Check the Netfilter website ->
-Patch-O-Matic-NG -> Extra repository.
-You need the owner patch and the sup-gid patch. It's not really the same
-as in Windows (e.g. it won't give you popups) but you can do some owner
-matching.
+1. I am using clarkconnect =85 what  should I do to be able to have more th=
+an 1
+client using the same gateway to be able to make a pptp connection to the s=
+ame
+IP?
 
-> If so could you outline how it would be done and I'll play
-> with it on my firewall script.
+2. What should I do to make the vpn server to accept more than one connecti=
+on
+from the same IP ?
 
-See examples. Don't know if it'll fit your needs.
+With ISA server this works fine.
+
+Regards
 
 
-Gr,
-Rob
 
+
+
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
 
