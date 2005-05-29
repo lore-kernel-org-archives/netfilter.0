@@ -1,9 +1,9 @@
-From: "it clown" <suse@mailbox.co.za>
-Subject: ftp server
-Date: Sun, 29 May 2005 10:44:04 +0200
-Message-ID: <web-768144019@mail01.infosat.net>
+From: Larry Alkoff <labradley@mindspring.com>
+Subject: How to filter OUTPUT chain ala Zonealarm
+Date: Sun, 29 May 2005 10:18:51 -0500
+Message-ID: <4299DD5B.4050705@mindspring.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,39 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hi All,
+The nice feature of Zonealarm for Windows is it will check outgoing 
+packets and ask if you want to allow a specific _program_ to access the web.
 
-I have a ftp server running on the box connected to the
-internet with iptables. I would like to allow ftp passive
-connections.I have done the following and it does not want
-to work:
+In addition, it will warn if a program is asking for server rights.
 
-iptables -A INPUT -p tcp --sport 21 -m state --state
-ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 21 -m state --state
-NEW,ESTABLISHED -j ACCEPT
-iptables -A INPUT -p tcp --sport 1024: --dport 1024: -m
-state --state ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 1024: --dport 1024: -m
-state --state ESTABLISHED,RELATED -j ACCEPT
+This would be a nice feature.
+Is there any way to do this in Iptables?
 
-I have done the following and it works but it is not
-passive:
+If so could you outline how it would be done and I'll play with it on my 
+firewall script.
 
-iptables -A INPUT -p tcp -m multiport --dport 20 -j ACCEPT
-iptables -A INPUT -p tcp -m multiport --dport 21 -j ACCEPT
-iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j
-ACCEPT
+Larry
 
-What are the best rules to allow ftp passive connections?
-
-I also did load ip_conntrack_ftp.
-
-Thanks
-Regards
-_____________________________________________________________________
-For super low premiums, click here http://www.dialdirect.co.za/quote
+-- 
+Larry Alkoff N2LA - Austin TX
+Using Thunderbird on Slackware Linux
 
