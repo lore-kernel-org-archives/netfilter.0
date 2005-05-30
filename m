@@ -1,12 +1,9 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: Re: Kernel panic when routing large pings on an XScale (IXP425).
-Date: Mon, 30 May 2005 10:46:00 -0700
-Message-ID: <BEC09F68.4CD5%gary@primeexalia.com>
-References: <429B227A.1000306@klasonline.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: start SNAT for new connections
+Date: Mon, 30 May 2005 22:48:46 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0505302238170.4101@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <429B227A.1000306@klasonline.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,88 +14,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Cian Masterson <cianm@klasonline.com>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-I experienced a similar problem when I was doing some IPSEC stuff with
-IPTABLES under RHEL 4.  There was an issue with a TCP packet being locked by
-the system and in a chain and under a certain case it would attempt to lock
-it again.  Not sure of the complete details though.
-
-Anyways, after talking with some people about my problem it had to do with
-locking of the chain before passing it around through other chains for IPSEC
-where it had to traverse the same table again.  It sounds similar to my
-problem.  Here is the link to the RedHat bug I submitted (and was closed)
-some time ago.  
-
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=154347
-
-It does require a kernel recompile as it's a kernel bug.
-
-Hope this helps.
-
-Gary Smith
+Hello,
 
 
-On 5/30/05 7:26 AM, "Cian Masterson" <cianm@klasonline.com> wrote:
+the Squid web proxy (version 3) has a mode to act as a transparent proxy; 
+however, the IP that shows up in the webserver (or parent webcache) is that of 
+the squid, not the IP of the clients.
 
-> Hi,
-> 
-> I am using iptables on an Intel ixp425 (XScale/ARM processor) and am
-> finding that I get a kernel panic when I try to send large (65k) pings
-> to the board, or route them across the board.  Iptables is not
-> configured with any rules (see below) so all traffic is passed through
-> the board.  I don't see any problems with regular pings/FTP
-> transfers/etc and I have left a chain of boards passing traffic over the
-> weekend with no problems, however the board will always experience a
-> kernel panic within 30 seconds of me initiating large pings.  I have
-> applied the ixp425_eth_1_1_update_nf_bridge.patch patch that I got from
-> Intel 
-> (http://developer.intel.com/design/network/products/npfamily/ixp400_osc.htm)
-> to no avail.  I am running version 1.4 of Intel's software but before
-> anyone suggests it upgrading to 1.5 is simply not an option at this
-> point, unfortunately.
-> 
-> If I don't insert the iptables modules the board passes large pings
-> without any problems so it is definitely a ixp425_eth.o/netfilter
-> interaction problem.  I've downloaded and searched through the archives
-> for this board and have found a posting from Rob Ranslam of Intel
-> stating that if I also have ebtables then I'll need an extra patch from
-> sourceforge, however I *don't* have ebtables so I can't see how that
-> patch would be needed in my case.  The documentation for the Intel patch
-> seems to relate to bridging, and I've seen posts from others who say
-> routing works but bridging doesn't but my problem definitely relates to
-> routing.  Has anyone seen a problem like this and/or can anyone offer
-> any ideas as to where I should be looking for the problem as I'm a
-> netfilter newbie?  Thanks.
-> 
-> Slan,
-> Cian
-> 
-> PS:  Below is the output of iptables --list for reference;
->   root@(none):~# iptables
-> --list           
->   Chain INPUT (policy
-> ACCEPT)          
->   target     prot opt source
-> destination      
->    
->                  
-> 
->   Chain FORWARD (policy
-> ACCEPT)          
->   target     prot opt source
-> destination      
->    
->                  
-> 
->   Chain OUTPUT (policy
-> ACCEPT)          
->   target     prot opt source
-> destination      
->   root@(none):~#
-> 
-> 
-> 
+I thought there might be some netfilter magic I could do, but using iptables 
+would require me to know the source IP in advance, which I do not.
+I did/do not want to use a PF_SOCKET, because it would be too much work 
+for just changing the source address.
 
+So maybe there is a better way to do this? What I would prefer
+is something like this cut-down pseudo-C code:
+
+  int input_fd = accept(...);
+  getsockname(input_fd, &source_ip, ...);
+  read(input_fd, &dest_ip, ...);
+
+  int output_fd = socket(AF_INET, SOCK_STREAM, ...);
+  start_snat(output_fd, &source_ip); // some sort of bind() or whatever
+  connect(output_fd, &dest_ip);
+
+is this possible by any means? (And if I need to write
+some kernelspace code, let it be...)
+
+
+
+Regards,
+Jan Engelhardt
+-- 
 
