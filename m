@@ -1,10 +1,12 @@
-From: thomasmkling@arcor.de
-Subject: Automatically turn on connection tracking?
-Date: Mon, 30 May 2005 19:27:50 +0200 (CEST)
-Message-ID: <1579720.1117474070771.JavaMail.ngmail@webmail-06.arcor-online.net>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: Re: Kernel panic when routing large pings on an XScale (IXP425).
+Date: Mon, 30 May 2005 10:46:00 -0700
+Message-ID: <BEC09F68.4CD5%gary@primeexalia.com>
+References: <429B227A.1000306@klasonline.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <429B227A.1000306@klasonline.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,36 +17,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Cian Masterson <cianm@klasonline.com>, netfilter@lists.netfilter.org
 
-Hello,
+I experienced a similar problem when I was doing some IPSEC stuff with
+IPTABLES under RHEL 4.  There was an issue with a TCP packet being locked by
+the system and in a chain and under a certain case it would attempt to lock
+it again.  Not sure of the complete details though.
 
-I do NOT want to type: (but it works correctly)
-[1] iptables -A INPUT -m state --state NEW,INVALID,RELATED,ESTABLISHED,UNTR=
-ACKED,... -j A_TARGET_WHICH_REQUIRES_CONNTRACK
+Anyways, after talking with some people about my problem it had to do with
+locking of the chain before passing it around through other chains for IPSEC
+where it had to traverse the same table again.  It sounds similar to my
+problem.  Here is the link to the RedHat bug I submitted (and was closed)
+some time ago.  
 
-I just want to have:
-[2] iptables -A INPUT -j A_TARGET_WHICH_REQUIRES_CONNTRACK
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=154347
 
+It does require a kernel recompile as it's a kernel bug.
 
-But [2] does not work, it fails because conntrack does not work: invalid co=
-nntrack, here:
+Hope this helps.
 
-ct =3D ip_conntrack_get((struct sk_buff *)skb, &ctinfo);
-if (!ct) {
- DEBUGP("invalid conntrack \n");
-=09return;
-}
-
-
-Can someone please explain why? What I do wrong?
+Gary Smith
 
 
+On 5/30/05 7:26 AM, "Cian Masterson" <cianm@klasonline.com> wrote:
 
+> Hi,
+> 
+> I am using iptables on an Intel ixp425 (XScale/ARM processor) and am
+> finding that I get a kernel panic when I try to send large (65k) pings
+> to the board, or route them across the board.  Iptables is not
+> configured with any rules (see below) so all traffic is passed through
+> the board.  I don't see any problems with regular pings/FTP
+> transfers/etc and I have left a chain of boards passing traffic over the
+> weekend with no problems, however the board will always experience a
+> kernel panic within 30 seconds of me initiating large pings.  I have
+> applied the ixp425_eth_1_1_update_nf_bridge.patch patch that I got from
+> Intel 
+> (http://developer.intel.com/design/network/products/npfamily/ixp400_osc.htm)
+> to no avail.  I am running version 1.4 of Intel's software but before
+> anyone suggests it upgrading to 1.5 is simply not an option at this
+> point, unfortunately.
+> 
+> If I don't insert the iptables modules the board passes large pings
+> without any problems so it is definitely a ixp425_eth.o/netfilter
+> interaction problem.  I've downloaded and searched through the archives
+> for this board and have found a posting from Rob Ranslam of Intel
+> stating that if I also have ebtables then I'll need an extra patch from
+> sourceforge, however I *don't* have ebtables so I can't see how that
+> patch would be needed in my case.  The documentation for the Intel patch
+> seems to relate to bridging, and I've seen posts from others who say
+> routing works but bridging doesn't but my problem definitely relates to
+> routing.  Has anyone seen a problem like this and/or can anyone offer
+> any ideas as to where I should be looking for the problem as I'm a
+> netfilter newbie?  Thanks.
+> 
+> Slan,
+> Cian
+> 
+> PS:  Below is the output of iptables --list for reference;
+>   root@(none):~# iptables
+> --list           
+>   Chain INPUT (policy
+> ACCEPT)          
+>   target     prot opt source
+> destination      
+>    
+>                  
+> 
+>   Chain FORWARD (policy
+> ACCEPT)          
+>   target     prot opt source
+> destination      
+>    
+>                  
+> 
+>   Chain OUTPUT (policy
+> ACCEPT)          
+>   target     prot opt source
+> destination      
+>   root@(none):~#
+> 
+> 
+> 
 
-
-Machen Sie aus 14 Cent spielend bis zu 100 Euro!
-Die neue Gaming-Area von Arcor - =FCber 50 Onlinespiele im Angebot.
-http://www.arcor.de/rd/emf-gaming-1
 
