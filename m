@@ -1,13 +1,12 @@
-From: Sertys <sertys@supportivo.org>
-Subject: Re: Compag Proliant 370
-Date: Mon, 30 May 2005 21:37:14 +0000 (UTC)
-Message-ID: <opsrn0r4de76nf2y@xonix>
-References: <429B38D2.8040708@eccotours.dyndns.org>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: How to filter OUTPUT chain ala Zonealarm
+Date: Mon, 30 May 2005 17:16:07 -0500
+Message-ID: <429B90A7.9050202@riverviewtech.net>
+References: <4299DD5B.4050705@mindspring.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Date: Wed, 01 Jun 2005 03:25:06 +0300
-In-Reply-To: <429B38D2.8040708@eccotours.dyndns.org>
+In-Reply-To: <4299DD5B.4050705@mindspring.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,52 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
-To: Netfilter list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Configure you kernel correctly with acpi, run acpid, and
-echo 3 > /proc/acpi/fan/FAN/state
+Larry Alkoff wrote:
+> The nice feature of Zonealarm for Windows is it will check outgoing 
+> packets and ask if you want to allow a specific _program_ to access the 
+> web.
+> 
+> In addition, it will warn if a program is asking for server rights.
+> 
+> This would be a nice feature.
+> Is there any way to do this in Iptables?
+> 
+> If so could you outline how it would be done and I'll play with it on my 
+> firewall script.
 
-
-On Mon, 30 May 2005 18:01:22 +0200, Brent Clark =20
-<bclark@eccotours.dyndns.org> wrote:
-
-> Hi list
->
-> My deepest apologies for my posting here, but im sooo desperate that I =
-=20
-> need to get this to work.
->
-> I just have become in possession of an old Compag Proliant 370 (still =20
-> need to
-> figure out what im going to do with it -maybe a nice mailserver).
->
-> The machine obviously came with Winblows 2000 Server on and I have now
-> just installed debian.
->
-> The problem I am having is, when windows was installed the machine woul=
-d
-> slow the fans down etc
-> but now that I have debian installed (kernel 2.6.11) the fan are just
-> blowing continuously (sound like an aeroplane getting ready to take off
-> - LOL)
->
-> I thought it was a acpi issue, but I cant seem to get this right.
->
-> If anyone has and tips / solution etc it would be great fully =20
-> appreciated (please mail me off the list, so as to not upset anyone).
->
-> Kind Regards
-> Brent Clark
->
+The only way that I think you could do this in Linux would be to use the QUEUE target and send the traffic to a user space daemon that identified the traffic and communicated with a user.  You may want to take a look at NuFW (http://www.nufw.org)as they do something close to this that might give you a direction to head with it.  (IMHO) I don't think what you are wanting to do will be as useful as Zonealarm on Windows for the simple fact that ZA is running on the system generating the traffic where as most of my IPTables firewalls are running on a central network ingress / egress point where it would be harder to identify which program generated the traffic.  However if you are looking at running this on a Linux notebook or workstation computer you could probably very easily do this.  It depends on what your target system(s) to run this on are.
 
 
 
---=20
-www.supportivo.org
-
-I can't stop myself checking for pigs in the outlets. Everybody thinks i'=
-m =20
-a punk, cause of the hairstyle(220V).
-end
+Grant. . . .
 
