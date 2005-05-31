@@ -1,10 +1,12 @@
-From: BillR <bill@williamrosmus.com>
-Subject: info on filtering 4 dynamic IP's and 1 static IP
-Date: Mon, 30 May 2005 21:40:34 -0700
-Message-ID: <429BEAC2.6050103@williamrosmus.com>
+From: "Eric Leblond" <eleblond@inl.fr>
+Subject: Re: Nice ZoneAlarm that might be useful for Iptables
+Date: Tue, 31 May 2005 08:33:44 +0200 (CEST)
+Message-ID: <32813.82.226.29.74.1117521224.squirrel@mail.inl.fr>
+References: <429BDF9F.7070707@mindspring.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <429BDF9F.7070707@mindspring.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,28 +17,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
-    I signed up for a 'small office home office' package from my ISP.  I 
-get 4 dynamic IP addresses and 1 static IP address.  I would like to set 
-up a box to packet filter (iptables) the 4 dynamic IP addresses which I 
-would then like to route on through to actual workstations.  The same 
-box that I am filtering on, I would like to set up with the static IP 
-address and use as an html/mail server (but also behind the firewall).
+> There is a nice feature of Zonealarm for Windows that will check
+> outgoing packets, and if that program sending is not on their list, ask
+> if you want to allow that program to access the web.
 
-I have set up iptables before using a static IP address for the box 
-(which also ran an html and mail server), and then NAT to provide 
-connections to the boxes behind the firewall.  That was of course, using 
-one static IP address.
+Maybe you can have a look at :
+http://fireflier.sourceforge.net/
+I've never tested it but from screenshots it seems able to do application
+filtering :
+http://fireflier.sourceforge.net/qtclient_userspace.html
 
-Can someone give me a clue on how to go about what I would like.  I 
-imagine there may be some router software required as well, but I don't 
-really know (maybe not).  Please be gentle! :-)
+By the way you can have network range application filtering with nufw :
+http://www.nufw.org
 
-Thanks,
+>
+> In addition, it will warn if a program is asking for server rights
+> although and ask for approval to grant that, although I don't understand
+> what they mean by "server rights".
 
-BillR
+This is the right to open a socket in listening mode ?
+
+>
+> Most Iptables scripts I've seen do very little OUTPUT filtering which
+> means a malicious program, if it got access somehow, could have free
+> range to send packets out.  Zombie or spyware perhaps.
+>
+> The ability to block this by only allowing "approved" programs to access
+> the Internet would be a nice addition to Iptables.
+>
+> I heard this could be done in userspace with the QUEUE target in
+> iptables although I haven't been able to dig up much information about
+> QUEUE and it's use.
+>
+> Does anyone have some ideas on how to implement this?
+>
+> If I had some ideas I'd be willing to take a first cut at it.  I know
+> just enough Iptables to be dangerous <g>.
+>
+> Larry
+>
+> --
+> Larry Alkoff N2LA - Austin TX
+> Using Thunderbird on Slackware Linux
+>
+>
+
 
 
