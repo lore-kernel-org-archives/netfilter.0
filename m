@@ -1,12 +1,13 @@
-From: Vinod H <vinwin@gmail.com>
-Subject: POP3 (Port No. 110)
-Date: Tue, 31 May 2005 12:09:53 +0530
-Message-ID: <9bc7d29205053023395fb1fc5a@mail.gmail.com>
-Reply-To: Vinod H <vinwin@gmail.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: Nice ZoneAlarm that might be useful for Iptables
+Date: Tue, 31 May 2005 01:44:36 -0500
+Message-ID: <429C07D4.2060204@riverviewtech.net>
+References: <429BDF9F.7070707@mindspring.com>	<429BF102.6020906@riverviewtech.net>
+	<429C076D.6010703@linuxmail.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <429C076D.6010703@linuxmail.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
+> For something similar, there needs to be a way for iptables to store and 
+> reference a list of approved process names (not necessarily their access 
+> patterns such as dest port and so on but i suppose if the name list is 
+> possible, it won't be that hard to tack on extra optional conditions) 
+> and so a trojan running wget would trigger if wget was not in the list 
+> of approved programs.
 
-I am not so good in netfilter/iptables
+*nod*
 
-I have Sendmail configured on my server and I am able to send and
-receive mails in the intranet. Now I want to be able to access the
-mails from outside world also but i dont want to open the port for
-every one. I want to open the pop3 port for the perticular IP (it may
-be static or dynamic IP) in the IPTABLES and close the port when not
-needed to access from outside.
+Owner match extension does not have a way to know what process / user / group / command initiated the wget command.  But owner match extension could be used to make sure that only Apache (or what ever web server you are running) will send packets out from port 80, etc.
 
-Please some one tell me how to do this and can I have some script
-which will open the port when i need and close when not needed so that
-I don't have to enter into the iptables every time.
 
-How to open the pop3 port for a perticular external ipaddress
 
-Please some one help me on this=20
-
-Thanks and Regards
-
-Vinod
+Grant. . . .
 
