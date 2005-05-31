@@ -1,9 +1,9 @@
-From: Guenter.Sprakties@team4.de
-Subject: static 1:1 natting
-Date: Tue, 24 May 2005 14:57:26 +0200
-Message-ID: <OFDD2BF39F.8DDEB32C-ONC125700B.00461711-C125700B.00472A18@team4.de>
+From: Larry Alkoff <labradley@mindspring.com>
+Subject: Nice ZoneAlarm that might be useful for Iptables
+Date: Mon, 30 May 2005 22:53:03 -0500
+Message-ID: <429BDF9F.7070707@mindspring.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,66 +15,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+There is a nice feature of Zonealarm for Windows that will check 
+outgoing packets, and if that program sending is not on their list, ask 
+if you want to allow that program to access the web.
 
-I didn't get some simple 1:1 static natting (no masq!) to work.
+In addition, it will warn if a program is asking for server rights 
+although and ask for approval to grant that, although I don't understand 
+what they mean by "server rights".
 
-Scenario is like this: Wintel computer with actual sarge 2.6.8-2 and=20
-iptables,
+Most Iptables scripts I've seen do very little OUTPUT filtering which 
+means a malicious program, if it got access somehow, could have free 
+range to send packets out.  Zombie or spyware perhaps.
 
-three network interfaces
-net one: 172.31.24.0/21
-net two: 192.168.2.0/24
-net three:212.120.70.32/27
+The ability to block this by only allowing "approved" programs to access 
+the Internet would be a nice addition to Iptables.
 
-net one is the internal, net two the dmz. net three the internet.
+I heard this could be done in userspace with the QUEUE target in 
+iptables although I haven't been able to dig up much information about 
+QUEUE and it's use.
 
-We like to do some double natting of our dmz machines:
+Does anyone have some ideas on how to implement this?
 
-The (internal) IP of one dmz computer may be 192.168.2.20
-The IP from the intranet should be 172.31.27.20
-The IP from the internet should be 212.118.72.20
+If I had some ideas I'd be willing to take a first cut at it.  I know 
+just enough Iptables to be dangerous <g>.
 
-Simple 1:1 static natting, but route dependend. Easily done by iproute2.
-No more longer possible because the kernel was changed and nat by ip=20
-route/rule isn't possible anymore.
+Larry
 
-We got several manuals like NAT HOWTO or iptables from LeRoy D. Cressy or=20
-double nat HOWTO.
-Most of them deal with port forwarding or masquerading. Nice, but this did =
+-- 
+Larry Alkoff N2LA - Austin TX
+Using Thunderbird on Slackware Linux
 
-not help.=20
-=20
-In our test environment, this example for nat from internal didn't work=20
-out:
-
-| # NAT
-| #
-| iptables -t nat -A POSTROUTING -s 192.168.2.20 -o eth0 -j SNAT --to
-| 172.31.27.20
-| iptables -t nat -A PREROUTING -i eth1 -d 172.31.27.20 -j DNAT --to
-| 192.168.2.20
-
-ICMP is allowed (ACCEPT) for alle the INPUT, OUTPUT and FORWARD chain.=20
-Without using the rules, a ping between the network chains internal - dmz=20
-is possible and can bee seen (all ICMP packet are logged9 by tail -F=20
-/var/log/messages, pinging 192.168.2.20 by the use of the natted IP=20
-172.31.27.20 give no seen packet in the messages file.
-
-Any idea how to get simple but double nat? Can you give some example?=20
-
-Greetings,
-
-Dr. G=FCnter Sprakties
----
-Dr. G=FCnter Sprakties
-
-Burgring 1
-52156 Monschau
-Germany
-
-Tel.: +49 (2472) 2823
-mailto:guenter.sprakties@team4.de
