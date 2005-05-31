@@ -1,13 +1,12 @@
-From: Robert Vangel <vangelr@rfgt.net>
-Subject: Re: sysctl vs. echo > /proc...
-Date: Tue, 31 May 2005 16:24:52 +0800
-Message-ID: <429C1F54.1030000@rfgt.net>
-References: <429BFCCA.9010505@riverviewtech.net>
+From: Udo Rader <udo.rader@bestsolution.at>
+Subject: mysterious dropped echo replies
+Date: Tue, 31 May 2005 10:42:36 +0200
+Message-ID: <1117528956.25434.65.camel@athene.bestsolution.at>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=sha1; boundary="------------ms050200020103070507040008"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-+QOZq6lEzbJFfJI6UWKI"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <429BFCCA.9010505@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,104 +19,77 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
-This is a cryptographically signed message in MIME format.
 
---------------ms050200020103070507040008
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+--=-+QOZq6lEzbJFfJI6UWKI
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Taylor, Grant wrote:
-> Hey fellow TuX users out there, I have a question for you.
-> 
-> Does any one know the (technical) difference in using sysctl verses 
-> echoing values in to the appropriate areas in side of the /proc file 
-> system?  Which is the more current (expected in the future) practice?  
-> Any ideas and / or thoughts on this matter would be greatly 
-> appreciated.  Consider this very simple and common example:
-> 
-> sysctl -w net.ipv4.ip_forward=1
-> 
-> verses
-> echo "1" > /proc/sys/net/ipv4/ip_forward
-> 
-> 
-> Grant. . . .
-> 
+Hi,
 
-I don't think there is any real different between the two methods. 
-Really calling sysctl to do it is just another step when using echo 
-would do it anyway.
+I am stuck with a strange phenonemon where iptables drops packages it
+(probably) shouldn't.=20
 
-On the other hand, if sysctl can be used to log anything so you can 
-possibly reverse any changes may be an idea, but the only things I have 
-ever changed (that I can think of) in /proc are ip_forward and 
-tcp_conntrack_max, which have been with an echo and then editing 
-/etc/sysctl.conf to match.
+The dropped packages are logged like this:
 
---------------ms050200020103070507040008
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+DROP IN=3D OUT=3Deth1 SRC=3D192.168.100.240 DST=3D192.168.100.10 LEN=3D28 T=
+OS=3D0x00
+PREC=3D0x00 TTL=3D64 ID=3D32153 PROTO=3DICMP TYPE=3D0 CODE=3D0 ID=3D45639 S=
+EQ=3D0
 
-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
-YXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GN
-ADCBiQKBgQDEpjxVc1X7TrnKmVoeaMB1BHCd3+n/ox7svc31W/Iadr1/DDph8r9RzgHU5VAK
-MNcCY1osiRVwjt3J8CuFWqo/cVbLrzwLB+fxH5E2JCoTzyvV84J3PQO+K/67GD4Hv0CAAmTX
-p6a7n2XRxSpUhQ9IBH+nttE8YQRAHmQZcmC3+wIDAQABo4GUMIGRMBIGA1UdEwEB/wQIMAYB
-Af8CAQAwQwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL2NybC50aGF3dGUuY29tL1RoYXd0ZVBl
-cnNvbmFsRnJlZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYD
-VQQDExFQcml2YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOBgQBIjNFQg+oLLswNo2as
-Zw9/r6y+whehQ5aUnX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZfoSxmRsAxRoLgnSe
-JVCUYsfbJ3FXJY3dqZw5jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfjViF4gtwhGTXeJLHT
-HUb/XV9lTzGCAzswggM3AgEBMGkwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBD
-b25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFp
-bCBJc3N1aW5nIENBAgMNbtIwCQYFKw4DAhoFAKCCAacwGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMDUwNTMxMDgyNDUyWjAjBgkqhkiG9w0BCQQxFgQUvtqy
-s5OTqcSc2H9nbqkcbLaIPTEwUgYJKoZIhvcNAQkPMUUwQzAKBggqhkiG9w0DBzAOBggqhkiG
-9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgweAYJKwYB
-BAGCNxAEMWswaTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcg
-KFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3Vpbmcg
-Q0ECAw1u0jB6BgsqhkiG9w0BCRACCzFroGkwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRo
-YXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBG
-cmVlbWFpbCBJc3N1aW5nIENBAgMNbtIwDQYJKoZIhvcNAQEBBQAEggEAHwgcnVM2cYCrX7hi
-lNGQRGsf6bqBzmxASdZY9eXIjVeaP1c6Hqo5mrf3vdoxIXb35swTdBaXn8g7PYegUSpOvzdK
-UBtKKC+y9VSB8SBuiIDCMzsP6TPC3tzyyncKBXzkvCw4nvKM5DQ9rwzaLZSddlhqdMbK7u7m
-84jxHU07PqGwCVYLtjF3rv2k9/sNjV4vxJeRK+CyImLUlnr0SngeG0iHs1Fha4EGRcC9/CJF
-oVaVvR+wG6TZYTHdsQDbdM9NjEkYXsO1dCOg3NZ8vUPiuxS4b1ZgtH2j57Q4g1xnf9FpayN2
-R34r+hjToTmaivguHJIS2OQQ5wp7I2rkkuS4HwAAAAAAAA==
---------------ms050200020103070507040008--
+So that means that this is about an icmp echo reply, originating from
+192.168.100.240, pending to be sent through its internal interface
+(eth1) and destined to 192.168.100.10.
+
+It is completely mysterious to me where this reply comes from, but
+that's not all.
+
+Each of the two hosts involved can ping each other and in the case of a
+ping, iptables does not drop any packages.
+
+If I shut down 192.168.100.10 (a box within the DMZ), it doesn't take
+long until iptables starts to drop packages destined to other boxes in
+the DMZ.
+
+One of the first rules in my iptables setup is this:
+
+iptables -A INPUT -s 192.168.100.0/24 -m state --state NEW -j ACCEPT
+iptables -A OUTPUT -s 192.168.100.0/24 -m state --state NEW -j ACCEPT
+iptables -A FORWARD -s 192.168.100.0/24 -m state --state NEW -j ACCEPT
+
+For the internal interface this is the first rule:
+
+iptables -A INPUT -i eth1 -s 192.168.100.0/24 -d 192.168.100.0/24 -m
+state --state NEW -j ACCEPT
+iptables -A FORWARD  -i eth1 -s 192.168.100.0/24 -d 192.168.100.0/24 -m
+state --state NEW -j ACCEPT
+iptables -A OUTPUT -o eth1 -s 192.168.100.0/24 -d 192.168.100.0/24 -m
+state --state NEW -j ACCEPT
+iptables -A FORWARD -o eth1 -s 192.168.100.0/24 -d 192.168.100.0/24 -m
+state --state NEW -j ACCEPT
+
+The rule that drops the package is the very last one (the 'catch all')
+rule.
+
+This is something new, because I haven't changed the iptaples setup for
+quite some time, so if anybody has any guess on what's going on here.
+
+Udo Rader
+
+BestSolution.at GmbH
+http://www.bestsolution.at
+
+--=-+QOZq6lEzbJFfJI6UWKI
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+
+iD8DBQBCnCN86VGCgP95rKIRAjTbAJ9DCEjJagnI726BH2OvsF97YK2K9ACeIEVz
+mrbqV6vVdt+RI5b+ZNmSzJk=
+=7wxb
+-----END PGP SIGNATURE-----
+
+--=-+QOZq6lEzbJFfJI6UWKI--
+
 
