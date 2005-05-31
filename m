@@ -1,13 +1,12 @@
-From: Feizhou <feizhou@linuxmail.org>
-Subject: Re: Nice ZoneAlarm that might be useful for Iptables
-Date: Tue, 31 May 2005 14:42:53 +0800
-Message-ID: <429C076D.6010703@linuxmail.org>
-References: <429BDF9F.7070707@mindspring.com>
-	<429BF102.6020906@riverviewtech.net>
+From: Vinod H <vinwin@gmail.com>
+Subject: POP3 (Port No. 110)
+Date: Tue, 31 May 2005 12:09:53 +0530
+Message-ID: <9bc7d29205053023395fb1fc5a@mail.gmail.com>
+Reply-To: Vinod H <vinwin@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <429BF102.6020906@riverviewtech.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hi,
 
->> The ability to block this by only allowing "approved" programs to 
->> access the Internet would be a nice addition to Iptables.
-> 
-> 
-> The ability to only allow "approved" programs to send traffic out *IS* 
-> available now.  You are asking for asking for something that the "owner" 
-> match extension will provide via the "--cmd-owner", possibly in 
-> combination with the "--uid-owner".
+I am not so good in netfilter/iptables
 
-nope. owner match is not going to do the 'approved' program access check.
+I have Sendmail configured on my server and I am able to send and
+receive mails in the intranet. Now I want to be able to access the
+mails from outside world also but i dont want to open the port for
+every one. I want to open the pop3 port for the perticular IP (it may
+be static or dynamic IP) in the IPTABLES and close the port when not
+needed to access from outside.
 
-Zone Alarm triggers on the name of the program.
+Please some one tell me how to do this and can I have some script
+which will open the port when i need and close when not needed so that
+I don't have to enter into the iptables every time.
 
-For something similar, there needs to be a way for iptables to store and 
-reference a list of approved process names (not necessarily their access 
-patterns such as dest port and so on but i suppose if the name list is 
-possible, it won't be that hard to tack on extra optional conditions) 
-and so a trojan running wget would trigger if wget was not in the list 
-of approved programs.
+How to open the pop3 port for a perticular external ipaddress
+
+Please some one help me on this=20
+
+Thanks and Regards
+
+Vinod
 
