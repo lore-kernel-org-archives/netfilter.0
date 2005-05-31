@@ -1,8 +1,9 @@
-From: jhonnystecchino@interfree.it
-Subject: Compile iptables with no shared libraries.
-Date: 31 May 2005 15:27:45 -0000
-Message-ID: <20050531152745.10348.qmail@community24.interfree.it>
-Reply-To: jhonnystecchino@interfree.it
+From: Roman <maillists@gmx.ch>
+Subject: Firewall with only one eth0 device: possible?
+Date: Tue, 31 May 2005 18:41:22 +0200
+Message-ID: <429C93B2.7040001@gmx.ch>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,33 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hi,
 
-Hi.
-I have to compile iptables with no shared libraries, to obtain a "monolitic binariy file."
-It is useful in an embedded environment like that in which i work actually.
-Is it possible?
-What parameter should i use?
-Thank you.
+I have an embedded system running uclinux with just one ethernet device 
+and wonder whether or not I can build a firewall in combination with a 
+switch (VLAN support, not WLAN).
 
--------------------------------------------------------------------------
-Visita http://domini.interfree.it, il sito di Interfree dove trovare
-soluzioni semplici e complete che soddisfano le tue esigenze in Internet,
-ecco due esempi di offerte:
+How I thought it could work is the following:
 
--  Registrazione Dominio: un dominio con 1 MB di spazio disco +  2 caselle
-   email a soli 18,59 euro
+Configure the eth0 device with an ip and network mask.
+Configure the eth0:0 alias device with an ip and network mask different 
+from eth0.
+Use a switch with VLAN support.
+Connect the eth0 linux device to port B of the switch; switch port A 
+will then be one side of the firewall and port C the other side.
+Configure the switch (VLAN) in a manner so all the incoming traffic on 
+switch port A will be routed to port B and all the incoming traffic on 
+port B will be routed to port C and back to port A.
+Finally everything that enters port C will be routed to port B.
 
--  MioDominio: un dominio con 20 MB di spazio disco + 5 caselle email e
-   SIM Wind prepagata da 25,00 euro a soli 51,13 euro
 
-Vieni a trovarci!
+The question about all this is: Will the traffic be filtered between 
+eth0 and eth0:0 as if there were two physical devices eth0 and eth1?
 
-Lo Staff di Interfree 
--------------------------------------------------------------------------
+Thanks for any remarks on that.
+
+roman
+
+
+PS.: I know, this is an unusual way to build a firewall, but I simply 
+can not change the hardware. For everyone who thinks, it is insecure 
+because of none existing  physical separation: please forgive me.
+
+
 
 
