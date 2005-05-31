@@ -1,9 +1,8 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: sysctl vs. echo > /proc...
-Date: Tue, 31 May 2005 00:57:30 -0500
-Message-ID: <429BFCCA.9010505@riverviewtech.net>
+From: "Monty Ree" <chulmin2@hotmail.com>
+Subject: Which version patch-o-matic-ng should I use?
+Date: Tue, 31 May 2005 06:05:34 +0000
+Message-ID: <BAY10-F43BA95D28DDB8847B5ED7685040@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,20 +14,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="euc-kr"; format="flowed"
+Content-Transfer-Encoding: base64
 To: netfilter@lists.netfilter.org
 
-Hey fellow TuX users out there, I have a question for you.
-
-Does any one know the (technical) difference in using sysctl verses echoing values in to the appropriate areas in side of the /proc file system?  Which is the more current (expected in the future) practice?  Any ideas and / or thoughts on this matter would be greatly appreciated.  Consider this very simple and common example:
-
-sysctl -w net.ipv4.ip_forward=1
-
-verses 
-
-echo "1" > /proc/sys/net/ipv4/ip_forward 
-
-
-
-Grant. . . .
-
+SGVsbG8sIGFsbC4KCkkgd291bGQgbGlrZSB0byB1c2UgcGF0Y2gtby1tYXRpYy1uZyB3aXRoIGlw
+dGFibGVzLgpCdXQgd2hpY2ggdmVyc2lvbiBzaG91bGQgSSB1c2U/CgpodHRwOi8vd3d3Lm5ldGZp
+bHRlci5vcmcvZmlsZXMvcGF0Y2gtby1tYXRpYy1uZy0yMDA0MDYyMS50YXIuYnoyIG9yIApodHRw
+Oi8vZnRwLm5ldGZpbHRlci5vcmcvcHViL3BhdGNoLW8tbWF0aWMtbmcvc25hcHNob3QvcGF0Y2gt
+by1tYXRpYy1uZy0yMDA1MDUzMC50YXIuYnoyCgoKV2hhdCdzIHRoZSBkaWZmZXJlbmNlIGJldHdl
+ZW4gdGhlbT8KClRoYW5rcyBpbiBhZHZhbmNlLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18Kx+C/7sDHIMHWwM6w+MDMIMDM
+ufi/oyCzqsDPsqi+3ywgwfjCpbfnLi4uIMDOxc2z3SC6ubHHICAgCmh0dHA6Ly93d3cubXNuLmNv
+LmtyL21vbmV5L2ludGVybG90dG8vICAKCgo=
