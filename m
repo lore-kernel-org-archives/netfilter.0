@@ -1,10 +1,11 @@
-From: rodolphe <rodolphe.averty@oxance.com>
-Subject: two router connected to the internet
-Date: Tue, 31 May 2005 14:37:59 +0200
-Message-ID: <429C5AA7.3050305@oxance.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: two router connected to the internet
+Date: Tue, 31 May 2005 14:51:34 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0505311450550.32062@yvahk01.tjqt.qr>
+References: <429C5AA7.3050305@oxance.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <429C5AA7.3050305@oxance.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,56 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Hello,
-
-i have two router connected to the internet and i want to send my tcp 
-connection between them.
-
-this is my iptables script :
-
-############################################################################
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: rodolphe <rodolphe.averty@oxance.com>
+Cc: netfilter@lists.netfilter.org
 
 
-iptables -t mangle -N INTERNET
-iptables -t mangle -N INTERNET_ROUTER_1
-iptables -t mangle -N INTERNET_ROUTER_2
+> Hello,
+>
+> i have two router connected to the internet and i want to send my tcp
+> connection between them.
 
-#le paquet est t'il en direction d'internet
-iptables -o eth2 -t mangle -A POSTROUTING -p tcp -d ! 10.0.0.0/8 -j 
-INTERNET
-
-iptables -t mangle -N INTERNET
-iptables -t mangle -A INTERNET -j CONNMARK --restore-mark
-
-# 50 % connection vers router 1
-iptables -t mangle -A INTERNET -m mark --mark 0 -p TCP --tcp-flags ALL 
-SYN -m random --average 50 -j MARK --set-mark 1
-iptables -t mangle -A INTERNET -m mark --mark 1 -j CONNMARK --save-mark
-iptables -t mangle -A INTERNET -m mark --mark 1 -j INTERNET_ROUTER_1
-
-# le reste vers router 2
-iptables -t mangle -A INTERNET -m mark --mark 0 -p TCP --tcp-flags ALL 
-SYN -j MARK --set-mark 2
-iptables -t mangle -A INTERNET -m mark --mark 2 -j CONNMARK --save-mark
-iptables -t mangle -A INTERNET -m mark --mark 2 -j INTERNET_ROUTER_2
-
-iptables -t mangle -A INTERNET -j RETURN
-
-iptables -t mangle -A INTERNET_ROUTER_1 -j ROUTE --gw 10.0.2.200
-iptables -t mangle -A INTERNET_ROUTER_2 -j ROUTE --gw 10.0.2.254
-############################################################################
+If I seen right, then there is a "multipath equal cost Round Robin" method in 
+2.6.12-rc4 which does this at the routing level, so it would not require you 
+to do at the netfilter level.
 
 
-
-it seems that i have a problem with CONNTRACK marking, i don't retreive 
-the mark to route correctly the packets.
-
-My config is kernel 2.6.11.10 with iptables 1.3.1 and last pom.
-
-Thanks for help
-
-
+Jan Engelhardt
+-- 
 
