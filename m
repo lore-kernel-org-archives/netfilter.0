@@ -1,11 +1,9 @@
-From: Paulo Ricardo Bruck <pauloric@contato.com.br>
-Subject: QoS and CLASSIFY
-Date: Tue, 31 May 2005 08:39:28 -0300
-Message-ID: <1117539568.17943.39.camel@pauloric.intranet>
+From: rodolphe <rodolphe.averty@oxance.com>
+Subject: CONNTRACK problem
+Date: Tue, 31 May 2005 13:53:50 +0200
+Message-ID: <429C504E.8080402@oxance.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-eG2Y2Z3TIld5+/nPqjwl"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,87 +15,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hello,
 
---=-eG2Y2Z3TIld5+/nPqjwl
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+i have two router connected to the internet and i want to send my tcp 
+connection between them.
 
-Hi Guys
+this is my iptables script :
 
-After googling a little I couldn't find the correct answer..
-(same message was insert at lartc.org)
+############################################################################ 
 
-When I use :
-tc filter add dev eth0 parent 1:0 protocol ip prio 1 u32 match ip dst
-192.168.0.11 flowid 1:30 , I can shape traffic to 1:30.( works like a
-charm)
+iptables -t mangle -N INTERNET
+iptables -t mangle -N INTERNET_ROUTER_1
+iptables -t mangle -N INTERNET_ROUTER_2
 
-Now instead tc filter I would like to use CLASSIFY as below:
+#le paquet est t'il en direction d'internet
+iptables -o eth2 -t mangle -A POSTROUTING -p tcp -d ! 10.0.0.0/8 -j 
+INTERNET
 
-iptables -t mangle -A POSTROUTING -o eth0 -d 192.168.0.11 -j CLASSIFY
---set-class 1:30
+iptables -t mangle -N INTERNET
+iptables -t mangle -A INTERNET -j CONNMARK --restore-mark
 
-but when I comment tc filter and include iptables -t mangle..CLASSIFY
-nothing works.
+# 50 % connection vers router 1
+iptables -t mangle -A INTERNET -m mark --mark 0 -p TCP --tcp-flags ALL 
+SYN -m random --average 50 -j MARK --set-mark 1
+iptables -t mangle -A INTERNET -m mark --mark 1 -j CONNMARK --save-mark
+iptables -t mangle -A INTERNET -m mark --mark 1 -j INTERNET_ROUTER_1
 
-Where am I wrong??
+# le reste vers router 2
+iptables -t mangle -A INTERNET -m mark --mark 0 -p TCP --tcp-flags ALL 
+SYN -j MARK --set-mark 2
+iptables -t mangle -A INTERNET -m mark --mark 2 -j CONNMARK --save-mark
+iptables -t mangle -A INTERNET -m mark --mark 2 -j INTERNET_ROUTER_2
 
+iptables -t mangle -A INTERNET -j RETURN
 
-Scenario:
-
-#!/bin/bash
-#
-#        128Kbps              192.168.0.1
-#       <-----  eth1 firewall   eth0
-# internet-adsl-----+squid---------------4 desktops
-#       ----->      +QoS                   192.168.0.5
-#       450Kbps                                     .11
-#                                                   .12
-#                                                   .20
-#
-modprobe sch_htb sch_prio sch_sfq cls_u32
-tc qdisc del dev eth0 root
-tc qdisc add dev eth0 root handle 1:0 htb
-
-tc class add dev eth0 parent 1:0 classid 1:1 htb rate 450kbit ceil
-450kbit
-
-tc class add dev eth0 parent 1:1 classid 1:30 htb rate  80kbit ceil
-400kbit
-tc class add dev eth0 parent 1:1 classid 1:40 htb rate  80kbit ceil
-400kbit
-tc class add dev eth0 parent 1:1 classid 1:50 htb rate  80kbit ceil
-400kbit
-tc class add dev eth0 parent 1:1 classid 1:60 htb rate  80kbit ceil
-400kbit
-
-tc qdisc add dev eth0 parent 1:30 handle 30: sfq perturb 10
-tc qdisc add dev eth0 parent 1:40 handle 40: sfq perturb 10
-tc qdisc add dev eth0 parent 1:50 handle 50: sfq perturb 10
-tc qdisc add dev eth0 parent 1:60 handle 60: sfq perturb 10
+iptables -t mangle -A INTERNET_ROUTER_1 -j ROUTE --gw 10.0.2.200
+iptables -t mangle -A INTERNET_ROUTER_2 -j ROUTE --gw 10.0.2.254
+############################################################################ 
 
 
-thanks in advanced
+it seems that i have a problem with CONNTRACK marking, i don't retreive 
+the mark to route correctly the packets.
 
---=20
-Paulo Ricardo Bruck - consultor
+My config is kernel 2.6.11.10 with iptables 1.3.1 and last pom.
 
-
---=-eG2Y2Z3TIld5+/nPqjwl
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Esta =?ISO-8859-1?Q?=E9?= uma parte de mensagem
-	assinada digitalmente
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQBCnEzw89ZqUGE0XNMRAgpuAJ9vkWlpcsSVZ7/X3GMfalv4crkbNACfT1vu
-unPNP0F1YWGA9j3ATkSXuAU=
-=vvAM
------END PGP SIGNATURE-----
-
---=-eG2Y2Z3TIld5+/nPqjwl--
+Thanks for help
 
 
