@@ -1,10 +1,12 @@
-From: rodolphe <rodolphe.averty@oxance.com>
-Subject: CONNTRACK problem
-Date: Tue, 31 May 2005 11:57:35 +0200
-Message-ID: <429C350F.1010802@oxance.com>
+From: "Anthony Sadler" <anthonys@faredge.com.au>
+Subject: RE: Port redirection
+Date: Wed, 1 Jun 2005 08:42:14 +1000
+Message-ID: <22112.960558343$1117579520@news.gmane.org>
+References: <20050531192503.92186.qmail@web51002.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050531192503.92186.qmail@web51002.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,53 +17,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: 'Chris NoSurname' <quizzical73@yahoo.com>, netfilter@lists.netfilter.org
+
+Hey Chris:
+
+My rule I use for transparent proxy is this:
+
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT
+--to-port 3128 
+
+I notice you have set "--to-ports" (ie plural). I'm not sure if that will
+work. Some others could comment better than I.
+
+Thanks
+
+Anthony
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Chris NoSurname
+Sent: Wednesday, 1 June 2005 5:25 AM
 To: netfilter@lists.netfilter.org
+Subject: Port redirection
 
-Hello,
+Hi all.
 
-i have two router connected to the internet and i want to divide my tcp 
-connection between them.
+I've searched and searched and I cannot seem to get this working.
 
-this is my iptables script :
+I'm trying to redirect port 80 to a different port so that I can run the
+Resin application server as non-root user.  I've got the following command..
 
-############################################################################ 
+iptables -t nat -A PREROUTING -p tcp --dport 80 -d x.x.x.x -j REDIRECT
+--to-ports 8900
 
-iptables -t mangle -N INTERNET
-iptables -t mangle -N INTERNET_ROUTER_1
-iptables -t mangle -N INTERNET_ROUTER_2
+It comes up as 
 
-#le paquet est t'il en direction d'internet
-iptables -o eth2 -t mangle -A POSTROUTING -p tcp -d ! 10.0.0.0/8 -j 
-INTERNET
+    0     0 REDIRECT   tcp  --  any    any    
+anywhere             www.mydomain.com   tcp dpt:http
+redir ports 8900
 
-iptables -t mangle -N INTERNET
-iptables -t mangle -A INTERNET -j CONNMARK --restore-mark
+Yet, if I connect to the http port it is closed.  Port 8900 is open and does
+accept connections if I specify it in the address.
 
-# 50 % connection vers router 1
-iptables -t mangle -A INTERNET -m mark --mark 0 -p TCP --tcp-flags ALL 
-SYN -m random --average 50 -j MARK --set-mark 1
-iptables -t mangle -A INTERNET -m mark --mark 1 -j CONNMARK --save-mark
-iptables -t mangle -A INTERNET -m mark --mark 1 -j INTERNET_ROUTER_1
+I am unclear of why the rules shows up in status, but does not work.
 
-# le reste vers router 2
-iptables -t mangle -A INTERNET -m mark --mark 0 -p TCP --tcp-flags ALL 
-SYN -j MARK --set-mark 2
-iptables -t mangle -A INTERNET -m mark --mark 2 -j CONNMARK --save-mark
-iptables -t mangle -A INTERNET -m mark --mark 2 -j INTERNET_ROUTER_2
+Thanks for any help you can offer.
 
-iptables -t mangle -A INTERNET -j RETURN
+David
 
-iptables -t mangle -A INTERNET_ROUTER_1 -j ROUTE --gw 10.0.2.200
-iptables -t mangle -A INTERNET_ROUTER_2 -j ROUTE --gw 10.0.2.254
-############################################################################ 
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around
+http://mail.yahoo.com 
 
-
-it seems that i have a problem with CONNTRACK marking, i don't retreive 
-the mark to route correctly the packet.
-
-My config is kernel 2.6.11.10 with iptables 1.3.1 and last pom.
-
-Thanks for help
 
 
