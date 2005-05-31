@@ -1,14 +1,13 @@
-From: Sertys <sertys@supportivo.org>
-Subject: Re: mysterious dropped echo replies
-Date: Tue, 31 May 2005 09:16:18 +0000 (UTC)
-Message-ID: <opsrozlyy176nf2y@xonix>
-References: <1117528956.25434.65.camel@athene.bestsolution.at>
-	<opsrozalyc76nf2y@xonix>
+From: Brent Clark <bclark@eccotours.dyndns.org>
+Subject: Re: SSH Brute force attacks
+Date: Tue, 31 May 2005 12:06:16 +0200
+Message-ID: <429C3718.2030409@eccotours.dyndns.org>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42920AA7.6070909@riverviewtech.net>	<42940E9B.1070502@eccotours.dyndns.org>	<4294BF81.1020204@riverviewtech.net>	<4295B048.7050303@eccotours.dyndns.org>
+	<429BE413.3010701@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Date: Wed, 01 Jun 2005 15:57:24 +0300
-In-Reply-To: <opsrozalyc76nf2y@xonix>
+In-Reply-To: <429BE413.3010701@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,102 +18,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
-To: Netfilter list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-I was totally wrong and realised it a min after sending. In fact why don'=
-t =20
-you post your whole script. Do you use connection limiting? RP_filter? =20
-First - check that the netmask is set correctly on 240. As long as they =20
-are on the same segment, they aren't suppose to talk via the router. They=
- =20
-just have to ARP discover each other and talk directly. A machine gets to=
- =20
-default gw, when the ip is not in the routing table. IS THIS A PPP networ=
-k?
+Taylor, Grant wrote:
 
+> The first two LOG & DROPs are from the default LOG and DROP of your 
+> INPUT chain.  For the packet to make it to this point in your input 
+> chain the packet had to traverse the SSH_Brute_Force chain where the 
+> source address was set in the SSH recent list.  Seeing as how the source 
+> address has not been seen 3 times via the recent match extension and 
+> thus qualify for a RETURN to the input chain it is thus LOGed and DROPed 
+> by the default LOG and DROP targets of your input chain.  Upon the third 
+> packet coming in to your firewall the packet will traverse the 
+> SSH_Brute_Force chain and no match the (inverse) "--hitcount 3" recent 
+> check and thus not get RETURNED to the input chain and subsequently get 
+> LOGed and DROPed by the SSH_Brute_Force chain.  This explains the three 
+> log entries with the staggered times and the different log prefix based 
+> on where they are getting dropped.  As such I think the solution to your 
+> particular situation is to use a target of ACCEPT, not RETURN on your 
+> 2nd SSH_Brute_Force rule that matches the "--hitcount 3".
+> 
+> Give that a try and let me know if that works for you please.
+> Grant. . . .
+> 
 
+AHHH it work
 
-On Wed, 01 Jun 2005 15:50:35 +0300, Sertys <sertys@supportivo.org> wrote:
+THANKS SOOOO much Grant
 
-> On Tue, 31 May 2005 10:42:36 +0200, Udo Rader =20
-> <udo.rader@bestsolution.at> wrote:
->
-> Those are illegal packets:
->> DROP IN=3D OUT=3Deth1 SRC=3D192.168.100.240 DST=3D192.168.100.10 LEN=3D=
-28 TOS=3D0x00
->> PREC=3D0x00 TTL=3D64 ID=3D32153 PROTO=3DICMP TYPE=3D0 CODE=3D0 ID=3D45=
-639 SEQ=3D0
-> There's no type0&code0 combination.
->
->
->> Hi,
->>
->> I am stuck with a strange phenonemon where iptables drops packages it
->> (probably) shouldn't.
->>
->> The dropped packages are logged like this:
->>
->> DROP IN=3D OUT=3Deth1 SRC=3D192.168.100.240 DST=3D192.168.100.10 LEN=3D=
-28 TOS=3D0x00
->> PREC=3D0x00 TTL=3D64 ID=3D32153 PROTO=3DICMP TYPE=3D0 CODE=3D0 ID=3D45=
-639 SEQ=3D0
->>
->> So that means that this is about an icmp echo reply, originating from
->> 192.168.100.240, pending to be sent through its internal interface
->> (eth1) and destined to 192.168.100.10.
->>
->> It is completely mysterious to me where this reply comes from, but
->> that's not all.
->>
->> Each of the two hosts involved can ping each other and in the case of =
-a
->> ping, iptables does not drop any packages.
->>
->> If I shut down 192.168.100.10 (a box within the DMZ), it doesn't take
->> long until iptables starts to drop packages destined to other boxes in
->> the DMZ.
->>
->> One of the first rules in my iptables setup is this:
->>
->> iptables -A INPUT -s 192.168.100.0/24 -m state --state NEW -j ACCEPT
->> iptables -A OUTPUT -s 192.168.100.0/24 -m state --state NEW -j ACCEPT
->> iptables -A FORWARD -s 192.168.100.0/24 -m state --state NEW -j ACCEPT
->>
->> For the internal interface this is the first rule:
->>
->> iptables -A INPUT -i eth1 -s 192.168.100.0/24 -d 192.168.100.0/24 -m
->> state --state NEW -j ACCEPT
->> iptables -A FORWARD  -i eth1 -s 192.168.100.0/24 -d 192.168.100.0/24 -=
-m
->> state --state NEW -j ACCEPT
->> iptables -A OUTPUT -o eth1 -s 192.168.100.0/24 -d 192.168.100.0/24 -m
->> state --state NEW -j ACCEPT
->> iptables -A FORWARD -o eth1 -s 192.168.100.0/24 -d 192.168.100.0/24 -m
->> state --state NEW -j ACCEPT
->>
->> The rule that drops the package is the very last one (the 'catch all')
->> rule.
->>
->> This is something new, because I haven't changed the iptaples setup fo=
-r
->> quite some time, so if anybody has any guess on what's going on here.
->>
->> Udo Rader
->>
->> BestSolution.at GmbH
->> http://www.bestsolution.at
->
->
->
+Really appreiate this
 
+I did as you advised:
 
+$IPT -N SSH_Brute_Force
+$IPT -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name 
+SSH --set --rsource -j SSH_Brute_Force
+$IPT -A SSH_Brute_Force -s 196.36.10.114 -j ACCEPT
+$IPT -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount 3 
+--name SSH --rsource -j ACCEPT
+$IPT -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
+$IPT -A SSH_Brute_Force -p tcp -j DROP
 
---=20
-www.supportivo.org
+I can ssh in and look a this bugger
 
-I can't stop myself checking for pigs in the outlets. Everybody thinks i'=
-m =20
-a punk, cause of the hairstyle(220V).
-end
+May 31 10:50:25 ns sshd[13099]: Failed password for root from 
+62.123.184.40 port 22646 ssh2
+May 31 10:50:26 ns kernel: SSH Brute Force Attempt:  IN=eth0 OUT= 
+MAC=00:0c:76:5e:d3:61:00:d0:02:eb:84:0a:08:00 SRC=62.123.184.40 
+DST=217.199.186.118 LEN=60 TOS=0x00 PREC=0x00 TTL=49 ID=2712 DF 
+PROTO=TCP SPT=22755 DPT=22 WINDOW=5840 RES=0x00 SYN URGP=0
+May 31 10:50:29 ns kernel: SSH Brute Force Attempt:  IN=eth0 OUT= 
+MAC=00:0c:76:5e:d3:61:00:d0:02:eb:84:0a:08:00 SRC=62.123.184.40 
+DST=217.199.186.118 LEN=60 TOS=0x00 PREC=0x00 TTL=49 ID=2713 DF 
+PROTO=TCP SPT=22755 DPT=22 WINDOW=5840 RES=0x00 SYN URGP=0
+May 31 10:50:35 ns kernel: SSH Brute Force Attempt:  IN=eth0 OUT= 
+MAC=00:0c:76:5e:d3:61:00:d0:02:eb:84:0a:08:00 SRC=62.123.184.40 
+DST=217.199.186.118 LEN=60 TOS=0x00 PREC=0x00 TTL=49 ID=2714 DF 
+PROTO=TCP SPT=22755 DPT=22 WINDOW=5840 RES=0x00 SYN URGP=0
+
+Damn him for trying HEHEHEEH.
+
+Thanks again Grant and all
+
+Kind Regards
+Brent Clark
 
