@@ -1,11 +1,10 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Kernel panic when routing large pings on an XScale (IXP425).
-Date: Tue, 31 May 2005 07:51:29 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829073C5@pxtbenexd01.pxt.primeexalia.com>
+From: rodolphe <rodolphe.averty@oxance.com>
+Subject: [Fwd: Re: two router connected to the internet]
+Date: Tue, 31 May 2005 16:57:06 +0200
+Message-ID: <429C7B42.6040401@oxance.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------080208080603020309040003"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,83 +15,105 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Eduardo Spremolla <edspremolla@antel.com.uy>
-Cc: netfilter@lists.netfilter.org, Cian Masterson <cianm@klasonline.com>
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>, netfilter@lists.netfilter.org
 
-The patch over on the RH site will fix the problem though.  My problem
-also started when I changed the subnetting to cover a broader range of
-subnets that also route to other locations.
+This is a multi-part message in MIME format.
+--------------080208080603020309040003
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+aren't there any problem with ftp using that. Do i need to add some 
+iproute rules ?
+
+because when i connect to some site i've got
+
+No control connection for command: No such file or directory
+Login failed.
+No control connection for command: No such file or directory
 
 
-> -----Original Message-----
-> From: Eduardo Spremolla [mailto:edspremolla@antel.com.uy]
-> Sent: Tuesday, May 31, 2005 6:08 AM
-> To: Gary W. Smith
-> Cc: Cian Masterson; netfilter@lists.netfilter.org
-> Subject: Re: Kernel panic when routing large pings on an XScale
-(IXP425).
->=20
-> I experience the very same error just yesterday:
-> KERNEL PANIC - Not Syncing: net/ipv4/xfrm4_output.c:106 : spin_lock
-> (net/xfrm/xfrm_state.C : ddd2b014) already locked by
-> net/ipv4/xfrm4_output.c/106
->=20
-> on a Fedora Core2 box running 2.6.10-1.771_FC2 kernel and
-> ipsec-tools-0.5-2.fc2.
->=20
-> the curiosity is that this box was running ok for more than a month
-with
-> this policies:
->=20
-> spdadd 10.3.1.0/24 10.3.4.0/24 any -P in ipsec
->            esp/tunnel/CENTER_IP-MY_IP/require;
->=20
-> spdadd 10.3.4.0/24 10.3.1.0/24 any -P out ipsec
->            esp/tunnel/MY_IP-CENTER_IP/require;
->=20
-> and start to trouble when changed to :
->=20
->=20
-> spdadd 10.0.0.0/8 10.3.4.0/24 any -P in ipsec
->            esp/tunnel/CENTER_IP-MY_IP/require;
->=20
-> spdadd 10.3.4.0/24 10.0.0.0/8 any -P out ipsec
->            esp/tunnel/MY_IP-CENTER_IP/require;
->=20
->=20
-> LALO
->=20
->=20
->=20
-> On Mon, 2005-05-30 at 10:46 -0700, Gary W. Smith wrote:
-> > I experienced a similar problem when I was doing some IPSEC stuff
-with
-> > IPTABLES under RHEL 4.  There was an issue with a TCP packet being
-> locked by
-> > the system and in a chain and under a certain case it would attempt
-to
-> lock
-> > it again.  Not sure of the complete details though.
-> >
-> > Anyways, after talking with some people about my problem it had to
-do
-> with
-> > locking of the chain before passing it around through other chains
-for
-> IPSEC
-> > where it had to traverse the same table again.  It sounds similar to
-my
-> > problem.  Here is the link to the RedHat bug I submitted (and was
-> closed)
-> > some time ago.
-> >
-> > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=3D154347
-> >
-> > It does require a kernel recompile as it's a kernel bug.
-> >
-> > Hope this helps.
-> >
-> > Gary Smith
-> >
+--------------080208080603020309040003
+Content-Type: message/rfc822; name="Re: two router connected to the internet"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename="Re: two router connected to the internet"
+
+X-Account-Key: account1
+Return-Path: <netfilter-bounces@lists.netfilter.org>
+Delivered-To: raverty@localhost.com.oxance.com
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by yanaon.com.oxance.com (Postfix) with ESMTP id 4C1A725C2F1
+	for <raverty@localhost>; Tue, 31 May 2005 17:20:16 +0200 (CEST)
+Received: from pop.oxance.com by localhost with POP3 (fetchmail-5.9.12)
+	for raverty@localhost (single-drop);
+	Tue, 31 May 2005 17:20:16 +0200 (CEST)
+Received: from vishnu.netfilter.org (vishnu.netfilter.org [213.95.27.115])
+	by paris117.amen.fr (8.10.2/8.10.2) with ESMTP id j4VEFnE24167
+	for <rodolphe.averty@oxance.com>; Tue, 31 May 2005 16:15:49 +0200
+Received: from localhost ([127.0.0.1] helo=vishnu.netfilter.org)
+	by vishnu.netfilter.org with esmtp (Exim 4.41 #1 (Debian))
+	id 1Dd7hE-0006V0-2T; Tue, 31 May 2005 16:26:20 +0200
+Received: from smtp3.wanadoo.fr ([193.252.22.28])
+	by vishnu.netfilter.org with esmtp (Exim 4.41 #1 (Debian))
+	id 1Dd7h2-0006T0-Pa
+	for <netfilter@lists.netfilter.org>; Tue, 31 May 2005 16:26:10 +0200
+Received: from me-wanadoo.net (unknown [127.0.0.1])
+	by mwinf0303.wanadoo.fr (SMTP Server) with ESMTP id 013911C003F2
+	for <netfilter@lists.netfilter.org>;
+	Tue, 31 May 2005 16:15:23 +0200 (CEST)
+Received: from [10.0.2.147] (LNeuilly-152-21-5-60.w82-127.abo.wanadoo.fr
+	[82.127.68.60])
+	by mwinf0303.wanadoo.fr (SMTP Server) with ESMTP id C3CB61C003E5;
+	Tue, 31 May 2005 16:15:22 +0200 (CEST)
+X-ME-UUID: 20050531141522802.C3CB61C003E5@mwinf0303.wanadoo.fr
+Message-ID: <429C717A.70801@oxance.com>
+Date: Tue, 31 May 2005 16:15:22 +0200
+From: rodolphe <rodolphe.averty@oxance.com>
+User-Agent: Mozilla Thunderbird 1.0 (X11/20041206)
+X-Accept-Language: fr, en
+MIME-Version: 1.0
+To: jengelh@linux01.gwdg.de
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -2.6 (--)
+Cc: netfilter@lists.netfilter.org
+Subject: Re: two router connected to the internet
+X-BeenThere: netfilter@lists.netfilter.org
+X-Mailman-Version: 2.1.5
+Precedence: list
+List-Id: General discussion and user questions <netfilter.lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+X-Virus-Status: No
+X-Virus-Checker-Version: clamassassin 1.2.2 with clamdscan / ClamAV
+	0.83/872/Mon May 9 09:56:06 2005
+X-Spam-Checker-Version: SpamAssassin 2.64 (2004-01-11) on 
+	yanaon.com.oxance.com
+X-Spam-Level: 
+X-Spam-Status: No, hits=0.0 required=5.0 tests=none autolearn=ham version=2.64
+
+i try
+
+ip route add default scope global nexthop via 10.0.2.200 weight 2 \
+nexthop via 10.0.2.254  weight 1
+
+and it seems to work
+
+thank you very much Jan for help
+
+
+
+
+
+
+
+--------------080208080603020309040003--
+
 
