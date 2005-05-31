@@ -1,10 +1,12 @@
-From: "Wennie V. Lagmay" <wlagmay@yanbulink.net>
-Subject: routing within same nic card
-Date: Tue, 31 May 2005 08:20:57 +0300
-Message-ID: <000a01c565a0$867deee0$d40aa8c0@winxp>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: routing within same nic card
+Date: Tue, 31 May 2005 00:49:26 -0500
+Message-ID: <429BFAE6.90200@riverviewtech.net>
+References: <000a01c565a0$867deee0$d40aa8c0@winxp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <000a01c565a0$867deee0$d40aa8c0@winxp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,23 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+> I have 1 NIC card with 2 ip address:
+> IP1 = 192.168.3.1/255.255.255.192
+> Network 1 = 192.168.3.0/255.255.255.192
+> 
+> IP2 = 192.168.4.1/255.255.255.248
+> Network 2 = 192.168.4.0/255.255.255.248
+> 
+> My question, how can workstations from network 1 reaches the 
+> workstations in network 2 and vice versa  using IPtables?
 
-I have 1 NIC card with 2 ip address:
-IP1 = 192.168.3.1/255.255.255.192
-Network 1 = 192.168.3.0/255.255.255.192
+This really is not an IPTables issue as this is more a routing issue than it is a packet filtering issue.  All you need to do to enable the ""routing would be to enable IP forwarding via one of these two methods:
 
-IP2 = 192.168.4.1/255.255.255.248
-Network 2 = 192.168.4.0/255.255.255.248
+sysctl -w net.ipv4.ip_forward=1
 
-My question, how can workstations from network 1 reaches the workstations in 
-network 2 and vice versa  using IPtables?
+or
 
-Thanks,
+echo "1" > /proc/sys/net/ipv4/ip_forward
 
-Wennie 
+The only thing that IPTables might be interfering with this on would be if you have your default FORWARD policy to DROP.  In that case you would need to do something like the following:
 
+iptables -t filter -A FORWARD -i eth0 -o eth0 -j ACCEPT
+
+Or if you want to be more specific and specify what subnets can forward you would need the following rules:
+
+iptables -t filter -A FORWARD -i eth0 -o eth0 -s 192.168.3.0/24 -d 192.168.4.0/24 -j ACCEPT
+iptables -t filter -A FORWARD -i eth0 -o eth0 -s 192.168.4.0/24 -d 192.168.3.0/24 -j ACCEPT
+
+
+
+Grant. . . .
 
