@@ -1,9 +1,9 @@
-From: Chris NoSurname <quizzical73@yahoo.com>
-Subject: Port redirection
-Date: Tue, 31 May 2005 12:25:03 -0700 (PDT)
-Message-ID: <20050531192503.92186.qmail@web51002.mail.yahoo.com>
+From: BillR <bill@williamrosmus.com>
+Subject: info on filtering 4 dynamic IP's and 1 static IP
+Date: Mon, 30 May 2005 21:40:34 -0700
+Message-ID: <429BEAC2.6050103@williamrosmus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,40 +15,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all.
+Hi,
+    I signed up for a 'small office home office' package from my ISP.  I 
+get 4 dynamic IP addresses and 1 static IP address.  I would like to set 
+up a box to packet filter (iptables) the 4 dynamic IP addresses which I 
+would then like to route on through to actual workstations.  The same 
+box that I am filtering on, I would like to set up with the static IP 
+address and use as an html/mail server (but also behind the firewall).
 
-I've searched and searched and I cannot seem to get
-this working.
+I have set up iptables before using a static IP address for the box 
+(which also ran an html and mail server), and then NAT to provide 
+connections to the boxes behind the firewall.  That was of course, using 
+one static IP address.
 
-I'm trying to redirect port 80 to a different port so
-that I can run the Resin application server as
-non-root user.  I've got the following command..
+Can someone give me a clue on how to go about what I would like.  I 
+imagine there may be some router software required as well, but I don't 
+really know (maybe not).  Please be gentle! :-)
 
-iptables -t nat -A PREROUTING -p tcp --dport 80 -d
-x.x.x.x -j REDIRECT --to-ports 8900
+Thanks,
 
-It comes up as 
+BillR
 
-    0     0 REDIRECT   tcp  --  any    any    
-anywhere             www.mydomain.com   tcp dpt:http
-redir ports 8900
-
-Yet, if I connect to the http port it is closed.  Port
-8900 is open and does accept connections if I specify
-it in the address.
-
-I am unclear of why the rules shows up in status, but
-does not work.
-
-Thanks for any help you can offer.
-
-David
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
