@@ -1,11 +1,15 @@
-From: "Baake, Matthias" <m.baake@porta.de>
-Subject: RE: ip_conntrack problems with a dlink DSL504T
-Date: Tue, 31 May 2005 13:36:21 +0200
-Message-ID: <201E6F5AC48C274996A5AD8304FAEF869AF8@p001ex03.porta.local>
+From: Sertys <sertys@supportivo.org>
+Subject: Re: mysterious dropped echo replies
+Date: Tue, 31 May 2005 11:40:39 +0000 (UTC)
+Message-ID: <opsro6aifo76nf2y@xonix>
+References: <1117528956.25434.65.camel@athene.bestsolution.at>
+	<opsrozalyc76nf2y@xonix> <opsrozlyy176nf2y@xonix>
+	<1117539228.25434.82.camel@athene.bestsolution.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Date: Wed, 01 Jun 2005 18:21:44 +0300
+In-Reply-To: <1117539228.25434.82.camel@athene.bestsolution.at>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,50 +20,158 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: Jorge Salamero <526715@celes.unizar.es>
-Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
+To: Netfilter list <netfilter@lists.netfilter.org>
 
-aGksDQppdCBzb3VuZHMgbGlrZSB0aGUgcm91dGVyIGhhcyBub3QgZW5vdWdoIG1lbW9yeS4NCmkg
-d291bGQgdHJ5IHRvIGxvd2VyIHRoZSBjb25udHJhY2tfbWF4IGFuZCB0ZXN0IGFnYWluIGlmIGl0
-IHJ1bnMgc3RhYmxlLg0KDQpncmVldHoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-PiBGcm9tOiBuZXRmaWx0ZXItYm91bmNlc0BsaXN0cy5uZXRmaWx0ZXIub3JnDQo+IFttYWlsdG86
-bmV0ZmlsdGVyLWJvdW5jZXNAbGlzdHMubmV0ZmlsdGVyLm9yZ11PbiBCZWhhbGYgT2YgSm9yZ2UN
-Cj4gU2FsYW1lcm8NCj4gU2VudDogVHVlc2RheSwgTWF5IDMxLCAyMDA1IDEyOjA4IFBNDQo+IFRv
-OiBuZXRmaWx0ZXJAbGlzdHMubmV0ZmlsdGVyLm9yZw0KPiBTdWJqZWN0OiBpcF9jb25udHJhY2sg
-cHJvYmxlbXMgd2l0aCBhIGRsaW5rIERTTDUwNFQNCj4gDQo+IA0KPiBoaSBhbGwsDQo+IA0KPiBp
-J3ZlIGEgZGxpbmsgZHNsNTA0VCwgYSBkc2wgcm91dGVyIHdpdGggbGludXggZW1iZWRkZWQ6DQo+
-ICMgY2F0IC9wcm9jL3ZlcnNpb24NCj4gTGludXggdmVyc2lvbiAyLjQuMTdfbXZsMjEtbWFsdGEt
-bWlwc19mcF9sZSANCj4gKHZpY3RvckBsb2NhbGhvc3QubG9jYWxkb21haW4pIA0KPiAoZ2NjIHZl
-cnNpb24gMi45NS4zIDIwMDEwMzE1IChyZWxlYXNlL01vbnRhVmlzdGEpKSAjNjIgwrZnwqRAIA0K
-PiA0wqTDqyA0IDIzOjA0OjU3IA0KPiBDU1QgMjAwNQ0KPiANCj4gaSd2ZSByaXNlZCBpcF9jb25u
-dHJhY2tfbWF4IGJlY2F1c2UgZGVmYXVsdCB3YXMgNTEyDQo+ICMgY2F0IC9wcm9jL3N5cy9uZXQv
-aXB2NC9uZXRmaWx0ZXIvaXBfY29ubnRyYWNrX21heA0KPiAyMDQ4DQo+IA0KPiBidXQgYWZ0ZXIg
-YSB3aGlsZSBvZiB1c2luZyBwMnAgKG1sZG9ua2V5KSBpdCBzZWVtcyBpdCBjYW4ndCANCj4gaGFu
-ZGxlIG1vcmUgDQo+IGNvbm5lY3Rpb25zIC4uLiBldmVuIGl0IHRha2VzIGEgd2hpbGUgdG8gY29u
-bmVjdCB0byBpdCBieSB0ZWxuZXQgLi4uDQo+IA0KPiBpIGRvbid0IGtub3cgaG93IHRvIGNvdW50
-IHRoZSBudW1iZXIgb2Ygc3RhYmxpc2hlZCANCj4gY29ubmVjdGlvbnMgYmVjYXVzZSBpdCB1c2Vz
-IA0KPiBCdXN5Qm94IHYwLjYxLnByZSAoMjAwNS4wNC4wNC0xNTowOSswMDAwKSBhbmQgaXQgZG9l
-c24ndCBoYXZlIA0KPiBuZXRzdGF0IG5laXRoZXIgDQo+IHdjIDotLw0KPiANCj4gaSd2ZSB0YWtl
-IGEgbG9vayBhdCAvcHJvYy9uZXQvaXBfY29ubnRyYWNrIGFuZCBpIGNhbiBzZWUgDQo+IHRoaXM6
-IChhIGZldyBsaW5lcykNCj4gdGNwICAgICAgNiAyMDU5NjIgRVNUQUJMSVNIRUQgc3JjPTgwLjM3
-LjE4Mi4xNzggDQo+IGRzdD04MS4zNC4xMS4xMiBzcG9ydD0xOTg1IA0KPiBkcG9ydD00NjYyIFtV
-TlJFUExJRURdIHNyYz0xOTIuMTY4LjEuMiBkc3Q9ODAuMzcuMTgyLjE3OCBzcG9ydD00NjYyIA0K
-PiBkcG9ydD0xOTg1IFtBU1NVUkVEXSB1c2U9MQ0KPiB0Y3AgICAgICA2IDMwNTc2IENMT1NFX1dB
-SVQgc3JjPTgzLjM1Ljc4LjQ4IGRzdD04MS4zNC4xMS4xMiANCj4gc3BvcnQ9MTY0NTEgDQo+IGRw
-b3J0PTQ2NjIgc3JjPTE5Mi4xNjguMS4yIGRzdD04My4zNS43OC40OCBzcG9ydD00NjYyIA0KPiBk
-cG9ydD0xNjQ1MSBbQVNTVVJFRF0gDQo+IHVzZT0xDQo+IHRjcCAgICAgIDYgMjQ3ODkgQ0xPU0Vf
-V0FJVCBzcmM9ODAuMzYuNTkuMTg1IGRzdD04MS4zNC4xMS4xMiANCj4gc3BvcnQ9MTUzMCANCj4g
-ZHBvcnQ9NDY2MiBzcmM9MTkyLjE2OC4xLjIgZHN0PTgwLjM2LjU5LjE4NSBzcG9ydD00NjYyIA0K
-PiBkcG9ydD0xNTMwIFtBU1NVUkVEXSANCj4gdXNlPTENCj4gdGNwICAgICAgNiAxODg2MTUgRVNU
-QUJMSVNIRUQgc3JjPTE5Mi4xNjguMS4yIA0KPiBkc3Q9NjIuMTYyLjIyMC43MSBzcG9ydD00NjYy
-IA0KPiBkcG9ydD0xNDM0IFtVTlJFUExJRURdIHNyYz02Mi4xNjIuMjIwLjcxIGRzdD04MS4zNC4x
-MS4xMiBzcG9ydD0xNDM0IA0KPiBkcG9ydD00NjYyIFtBU1NVUkVEXSB1c2U9MQ0KPiANCj4gYXMg
-ZmFyIGFzIGkga25vdywgYW4gYXNzdXJlZCBjb25uZWN0aW9uIGNhbid0IGJlIHVucmVwbGllZCwg
-dHJ1ZSA/DQo+IA0KPiBkbyB5b3Uga25vdyB3aGF0J3MgdGhlIHByb2JsZW0gPw0KPiANCj4gaWYg
-eW91IG5lZWQgbW9yZSBpbmZvcm1hdGlvbiBhYm91dCBydWxlcywgbW9kdWxlcyBsb2FkZWQgb3Ig
-DQo+IGFueXRoaW5nLCBhc2sgZm9yIA0KPiBpdC4NCj4gDQo+IHRoYW5rcyBpbiBhZHZhbmNlICEN
-Cj4gDQo+IC0tIA0KPiBKb3JnZSBTYWxhbWVybyBTYW56IChiZW5jZXIpDQo+IG1haWw6IDxiZW5j
-ZXJAY2F1dGVyaXplZC5uZXQ+DQo+IGJsb2c6IDxodHRwOi8vYnlzLmNhdXRlcml6ZWQubmV0Lz4N
-Cj4gaHR0cDogPGh0dHA6Ly93d3cuY2F1dGVyaXplZC5uZXQvPg0KPiANCg==
+Well , this line :
+iptables -t nat -A Cid3D99741E.0   -d 192.168.100.0/24 -j RETURN
+
+change it to -j DROP and it wont generate any replies. -j RETURN, returns=
+ =20
+the packet and sends and icmp message to the src!
+
+
+On Tue, 31 May 2005 13:33:48 +0200, Udo Rader <udo.rader@bestsolution.at>=
+ =20
+wrote:
+
+> Hi Sertys,
+>
+> thanks for your reponse. I doubt that my entire script will help much,
+> but anyway, I attached it (obfuscated a bit, of course :-)
+>
+> Yes, we are using traffic shaping (qdisc), but not RP_filter.
+>
+> The netmask for .240 is find, actually .240 _is_ the router, the router
+> sends echo replies to some other hosts in the DMZ for reasons
+> unknown ...
+>
+> And no, this is no PPP network but a leased line instead.
+>
+> Udo Rader
+>
+> BestSolution.at GmbH
+> http://www.bestsolution.at
+>
+> On Wed, 2005-06-01 at 15:57 +0300, Sertys wrote:
+>> I was totally wrong and realised it a min after sending. In fact why =20
+>> don't
+>> you post your whole script. Do you use connection limiting? RP_filter?
+>> First - check that the netmask is set correctly on 240. As long as the=
+y
+>> are on the same segment, they aren't suppose to talk via the router. =20
+>> They
+>> just have to ARP discover each other and talk directly. A machine gets=
+ =20
+>> to
+>> default gw, when the ip is not in the routing table. IS THIS A PPP =20
+>> network?
+>>
+>>
+>>
+>> On Wed, 01 Jun 2005 15:50:35 +0300, Sertys <sertys@supportivo.org> =20
+>> wrote:
+>>
+>> > On Tue, 31 May 2005 10:42:36 +0200, Udo Rader
+>> > <udo.rader@bestsolution.at> wrote:
+>> >
+>> > Those are illegal packets:
+>> >> DROP IN=3D OUT=3Deth1 SRC=3D192.168.100.240 DST=3D192.168.100.10 LE=
+N=3D28 =20
+>> TOS=3D0x00
+>> >> PREC=3D0x00 TTL=3D64 ID=3D32153 PROTO=3DICMP TYPE=3D0 CODE=3D0 ID=3D=
+45639 SEQ=3D0
+>> > There's no type0&code0 combination.
+>> >
+>> >
+>> >> Hi,
+>> >>
+>> >> I am stuck with a strange phenonemon where iptables drops packages =
+it
+>> >> (probably) shouldn't.
+>> >>
+>> >> The dropped packages are logged like this:
+>> >>
+>> >> DROP IN=3D OUT=3Deth1 SRC=3D192.168.100.240 DST=3D192.168.100.10 LE=
+N=3D28 =20
+>> TOS=3D0x00
+>> >> PREC=3D0x00 TTL=3D64 ID=3D32153 PROTO=3DICMP TYPE=3D0 CODE=3D0 ID=3D=
+45639 SEQ=3D0
+>> >>
+>> >> So that means that this is about an icmp echo reply, originating fr=
+om
+>> >> 192.168.100.240, pending to be sent through its internal interface
+>> >> (eth1) and destined to 192.168.100.10.
+>> >>
+>> >> It is completely mysterious to me where this reply comes from, but
+>> >> that's not all.
+>> >>
+>> >> Each of the two hosts involved can ping each other and in the case =
+=20
+>> of a
+>> >> ping, iptables does not drop any packages.
+>> >>
+>> >> If I shut down 192.168.100.10 (a box within the DMZ), it doesn't ta=
+ke
+>> >> long until iptables starts to drop packages destined to other boxes=
+ =20
+>> in
+>> >> the DMZ.
+>> >>
+>> >> One of the first rules in my iptables setup is this:
+>> >>
+>> >> iptables -A INPUT -s 192.168.100.0/24 -m state --state NEW -j ACCEP=
+T
+>> >> iptables -A OUTPUT -s 192.168.100.0/24 -m state --state NEW -j ACCE=
+PT
+>> >> iptables -A FORWARD -s 192.168.100.0/24 -m state --state NEW -j =20
+>> ACCEPT
+>> >>
+>> >> For the internal interface this is the first rule:
+>> >>
+>> >> iptables -A INPUT -i eth1 -s 192.168.100.0/24 -d 192.168.100.0/24 -=
+m
+>> >> state --state NEW -j ACCEPT
+>> >> iptables -A FORWARD  -i eth1 -s 192.168.100.0/24 -d 192.168.100.0/2=
+4 =20
+>> -m
+>> >> state --state NEW -j ACCEPT
+>> >> iptables -A OUTPUT -o eth1 -s 192.168.100.0/24 -d 192.168.100.0/24 =
+-m
+>> >> state --state NEW -j ACCEPT
+>> >> iptables -A FORWARD -o eth1 -s 192.168.100.0/24 -d 192.168.100.0/24=
+ =20
+>> -m
+>> >> state --state NEW -j ACCEPT
+>> >>
+>> >> The rule that drops the package is the very last one (the 'catch =20
+>> all')
+>> >> rule.
+>> >>
+>> >> This is something new, because I haven't changed the iptaples setup=
+ =20
+>> for
+>> >> quite some time, so if anybody has any guess on what's going on her=
+e.
+>> >>
+>> >> Udo Rader
+>> >>
+>> >> BestSolution.at GmbH
+>> >> http://www.bestsolution.at
+>> >
+>> >
+>> >
+>>
+>>
+>>
+
+
+
+--=20
+www.supportivo.org
+
+I can't stop myself checking for pigs in the outlets. Everybody thinks i'=
+m =20
+a punk, cause of the hairstyle(220V).
+end
 
