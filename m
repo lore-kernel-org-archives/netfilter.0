@@ -1,9 +1,9 @@
-From: Pete Toscano <pete-netfilter@verisignlabs.com>
-Subject: Problem with DNAT & Larger UDP Packets
-Date: Wed, 01 Jun 2005 14:36:44 -0400
-Message-ID: <429E003C.5090907@verisignlabs.com>
+From: knash@cs.tcd.ie
+Subject: promiscuous mode
+Date: Wed, 1 Jun 2005 23:58:42 +0100 (IST)
+Message-ID: <33000.62.231.54.154.1117666722.squirrel@webmail.cs.tcd.ie>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,51 +19,23 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 Hello,
+I set up my wireless card in promiscuous mode. I want to capture all
+unicast packets using the hook NF_IP_PRE_ROUTING but packets other the
+ones destined for my machine are been dropped.
+I found this link, but its dated 2001
 
-Please pardon me if this has been covered in the archives.  (Pointers
-would be much appreciated if so.)
+http://www.scaramanga.co.uk/code-fu/netfilter-promisc.diff
 
-I have a nameserver behind a Linux firewall.  The firewall is running
-FC2 (1.2.9-2.3.1).  I have a simple rule that maps any UDP or TCP port
-53 traffic to IP A on the public side to private IP B on the internal
-side.  We've been getting complaints from someone about not having
-larger queries answered, so I started looking into things.
+It refers to modifying netfilter/userspace/libiptc/libip4tc.c which my
+version of netfilter doesn't seem to have.
+I'm running Fedora Core 2 (2.6.5-1.358)
+and iptables v1.2.9
 
-I figure that hping2 would give me the flexibility to craft packets of
-varying sizes and allow me to do the traceroute thing to where where
-packets are being dumped.  If the packets get through to the nameserver,
-I'd just get a FormErr back.
+I was wondering does the current version of netfilter support promiscuous
+mode or is there a patch available??
 
-If, from C (which is on the public side), I do this:
+Thanks very much for your help,
 
-hping -2 -p 53 -c 2 --traceroute -t 12 -d 1350 A
+Kevin
 
-and do a tcpdump on both the public and private interface on my
-firewall, I see this on the public side:
-
-14:30:04.609125 IP C.2859 > A.domain:  22616 updateDA% [b2&3=0x5858]
-[22616a] [22616q] [22616n] [22616au][|domain]
-14:30:04.609191 IP A > C: icmp 556: time exceeded in-transit
-14:30:05.607656 IP C.2860 > A.domain:  22616 updateDA% [b2&3=0x5858]
-[22616a] [22616q] [22616n] [22616au][|domain]
-14:30:05.608273 IP A.domain > C.2860:  22616 updateDA FormErr- [0q]
-0/0/0 (12)
-14:30:05.675272 IP C > A: icmp 48: C udp port 2860 unreachable
-
-I see this on the private side:
-
-14:30:05.607681 IP C.2860 > B.domain:  22616 updateDA% [b2&3=0x5858]
-[22616a] [22616q] [22616n] [22616au][|domain]
-14:30:05.608258 IP B.domain > C.2860:  22616 updateDA FormErr- [0q]
-0/0/0 (12)
-14:30:05.675291 IP C > B: icmp 48: 64.151.105.12 udp port 2860 unreachable
-
-This is all as I'd expect.  If I increase the data payload size to 1351,
-I see the same thing as above on the public side, less the last two
-packets.  On the public side, I see nothing.
-
-Anybody have any idea about what's going on?
-
-Thanks,
-pete
 
