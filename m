@@ -1,15 +1,15 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Nice ZoneAlarm that might be useful for Iptables
-Date: Tue, 31 May 2005 22:16:29 -0400
-Message-ID: <20050601021629.GA6948@bender.817west.com>
-References: <429BDF9F.7070707@mindspring.com>
-	<20050531043310.GF3681@der-frank.org>
-	<Pine.LNX.4.60.0505311407460.5267@darkstar.sysinfo.com>
-	<429D1994.8070809@linuxmail.org>
+Subject: Re: mysterious dropped echo replies
+Date: Tue, 31 May 2005 22:22:33 -0400
+Message-ID: <20050601022233.GA6992@bender.817west.com>
+References: <1117528956.25434.65.camel@athene.bestsolution.at>
+	<opsrozalyc76nf2y@xonix> <opsrozlyy176nf2y@xonix>
+	<1117539228.25434.82.camel@athene.bestsolution.at>
+	<opsro6aifo76nf2y@xonix>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <429D1994.8070809@linuxmail.org>
+In-Reply-To: <opsro6aifo76nf2y@xonix>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,29 +24,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Jun 01, 2005 at 10:12:36AM +0800, Feizhou wrote:
-> I disagree. We do not have to provide a Zone Alarm clone. Its 
-> functionality of checking what processes can use the network though 
-> would be useful in providing mandatory controls on what processes get to 
-> talk to the outside world.
+On Wed, Jun 01, 2005 at 06:21:44PM +0300, Sertys wrote:
+> Well , this line :
+> iptables -t nat -A Cid3D99741E.0   -d 192.168.100.0/24 -j RETURN
 > 
-> Right now there is simply no such ability. Having this on say a server 
-> will prevent users from looking around the network if they have shell 
-> access or sending info/data out. Obviously only root should be able to 
-> see the list of process names allowed and the other conditions like uid 
-> and ports allowed to use by the process.
+> change it to -j DROP and it wont generate any replies. -j RETURN, returns  
+> the packet and sends and icmp message to the src!
 
-http://www.nsa.gov/selinux/
-
-the mere act of saying something on a public mailing list doesn't make
-it true.
+RETURN returns the packet to the calling chain, or enforces the
+root chain's POLICY if there is no calling chain to return to.
+your description matches what REJECT does, not RETURN.
 
 -j
 
 --
-"Lois: What's going on?
- Stewie: We're playing house.
- Lois: The boy is all tied up.
- Stewie: Roman Polanski's house."
+"Stewie: Damn the toilet. It's made slaves of you all. It just
+ sits there consuming other people's feces while contributing nothing
+ of its own to society."
         --Family Guy
 
