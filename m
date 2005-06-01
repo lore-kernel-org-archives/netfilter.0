@@ -1,13 +1,10 @@
-From: "Eduardo Spremolla" <edspremolla@antel.com.uy>
-Subject: Re: How to Open POP3
-Date: Wed, 01 Jun 2005 10:22:19 -0300
-Message-ID: <1117632139.9065.2.camel@fly.in.iantel.com.uy>
-References: <9bc7d292050531233974eca1e2@mail.gmail.com>
+From: "Thibault Le Meur" <Thibault.Lemeur@supelec.fr>
+Subject: iptable 1.2.11 and kernel 2.6.11-1 compatibility issue
+Date: Wed, 1 Jun 2005 17:05:44 +0200
+Message-ID: <003801c566bb$62a1de20$7c66e4a0@supelec.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9bc7d292050531233974eca1e2@mail.gmail.com>
-Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,63 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Vinod H <vinwin@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-$ipt -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-$ipt -A INPUT -p tcp -s YOUR-IP -m state --state NEW -m tcp --dport 110
--j ACCEPT
+Hi,
 
+I've got a strange behaviour on a Linux Fedora system with:
+* kernel : kernel-2.6.11-1.27_FC3
+* iptables: iptables-1.2.11-3.1.FC3
 
-But you will need to execute this as root any time your ip change
+On with this kernel the iptables rules on the loopback interface _must_be_
+changed from:
+iptables -A INPUT  -i lo  -m state --state NEW  -j ACCEPT
+iptables -A OUTPUT  -o lo  -m state --state NEW  -j ACCEPT
+To:
+iptables -A INPUT  -i lo   -s 127.0.0.1 -d 127.0.0.1 -j ACCEPT
+iptables -A OUTPUT  -o lo   -s 127.0.0.1 -d 127.0.0.1  -j ACCEPT
 
-LALO
+Otherwise some trafic on the loopback interface is dropped:
+* for instance a simple ssh localhost results in the following log
+Jun  1 17:01:52 crikitu kernel: RULE 4 -- DENY IN=lo OUT=
+MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1
+LEN=75 TOS=0x00 PREC=0x00 TTL=64 ID=54315 DF PROTO=TCP SPT=22 DPT=33769
+WINDOW=8192 RES=0x00 ACK PSH URGP=0
 
+Note that this modification wasn't necessary with my old kernel
+(kernel-2.6.11-1.14_FC3).
 
-On Wed, 2005-06-01 at 12:09 +0530, Vinod H wrote:
-> Hi,
->=20
-> I am not so good in netfilter/iptables
->=20
-> I have Sendmail configured on my server and I am able to send and
-> receive mails in the intranet. Now I want to be able to access the
-> mails from outside world also but i dont want to open the port for
-> every one. I want to open the pop3 port for the perticular IP (it may
-> be static or dynamic IP) in the IPTABLES and close the port when not
-> needed to access from outside.
->=20
-> Please some one tell me how to do this and can I have some script
-> which will open the port when i need and close when not needed so that
-> I don't have to enter into the iptables every time.
->=20
-> How to open the pop3 port for a perticular external ipaddress
->=20
-> Please some one help me on this
->=20
-> Thanks and Regards
->=20
-> Vinod
->=20
+A bug is already opened on the Fedora's bugzilla
+(https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=158710) but I'd like
+to know if anyone here has an idea of what is occurring.
+Is it a known issue? If this is not the best list to ask for this, is there
+a better list to get support from?
+
+Thank you in advance.
+Thibault.
 
 
-Este e-mail y cualquier posible archivo adjunto est=E1 dirigido =
-=FAnicamente al destinatario del mensaje y contiene informaci=F3n que =
-puede ser confidencial. Si Ud. no es el destinatario correcto por favor =
-notifique al remitente respondiendo este mensaje y elimine =
-inmediatamente el e-mail y los posibles archivos adjuntos al mismo de su =
-sistema. Est=E1 prohibida cualquier utilizaci=F3n, difusi=F3n o copia de =
-este e-mail por cualquier persona o entidad que no sean las =
-espec=EDficas destinatarias del mensaje. ANTEL no acepta ninguna =
-responsabilidad con respecto a cualquier comunicaci=F3n que haya sido =
-emitida incumpliendo nuestra Pol=EDtica de Seguridad de la =
-Informaci=F3n.
-. . . . . . . . .
-This e-mail and any attachment is confidential and is intended solely =
-for the addressee(s). If you are not intended recipient please inform =
-the sender inmediately, answering this e-mail and delete it as well as =
-the attached files. Any use, circulation or copy of this e-mail by any =
-person or entity that not is the specific addressee(s) is prohibited. =
-ANTEL is not responsible for any communication emitted without =
-respecting our Information Security Policy.
 
