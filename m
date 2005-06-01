@@ -1,14 +1,10 @@
-From: Pedro Pozuelo <aerislives@gmail.com>
-Subject: Re: more than one pptp connection to the same ip
-Date: Wed, 1 Jun 2005 19:16:52 +0200
-Message-ID: <fdaaf4c0050601101622cec07b@mail.gmail.com>
-References: <1117384983.4299f11799a1d@webmail.duriussoft.com>
-Reply-To: Pedro Pozuelo <aerislives@gmail.com>
+From: BillR <bill@williamrosmus.com>
+Subject: info on filtering 4 dynamic IP's and 1 static IP
+Date: Wed, 01 Jun 2005 07:07:31 -0700
+Message-ID: <429DC123.1020106@williamrosmus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1117384983.4299f11799a1d@webmail.duriussoft.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-T24gNS8yOS8wNSwganNhbnRvc0BkdXJpdXNzb2Z0LmNvbSA8anNhbnRvc0BkdXJpdXNzb2Z0LmNv
-bT4gd3JvdGU6Cj4gCj4gCj4gSSBoYXZlIHRvIHByb2JsZW1zIHZlcnkgc2ltaWxhciA6Cj4gCj4g
-Cj4gCj4gMS4gSSBhbSB1c2luZyBjbGFya2Nvbm5lY3QghSB3aGF0ICBzaG91bGQgSSBkbyB0byBi
-ZSBhYmxlIHRvIGhhdmUgbW9yZSB0aGFuIDEKPiBjbGllbnQgdXNpbmcgdGhlIHNhbWUgZ2F0ZXdh
-eSB0byBiZSBhYmxlIHRvIG1ha2UgYSBwcHRwIGNvbm5lY3Rpb24gdG8gdGhlIHNhbWUKPiBJUD8K
-PiAKPiAKPiAKPiAyLiBXaGF0IHNob3VsZCBJIGRvIHRvIG1ha2UgdGhlIHZwbiBzZXJ2ZXIgdG8g
-YWNjZXB0IG1vcmUgdGhhbiBvbmUgY29ubmVjdGlvbgo+IGZyb20gdGhlIHNhbWUgSVAgPwo+IAo+
-IAo+IAo+IFdpdGggSVNBIHNlcnZlciB0aGlzIHdvcmtzIGZpbmUuCj4gCj4gCj4gCj4gUmVnYXJk
-cwo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0KPiBUaGlzIG1lc3NhZ2Ugd2FzIHNlbnQgdXNpbmcgSU1QLCB0aGUg
-SW50ZXJuZXQgTWVzc2FnaW5nIFByb2dyYW0uCj4gCj4gCgpBRkFJSywgcHB0cCBkb2VzbrR0IHN1
-cHBvcnQgbW9yZSB0aGFuIG9uZSBjb25uZWN0aW9uIG9mIGNvbnRyb2wgZnJvbQp0aGUgc2FtZSBJ
-UCBmdHA6Ly9mdHAucmZjLWVkaXRvci5vcmcvaW4tbm90ZXMvcmZjMjYzNy50eHQKCkkgZG9utHQg
-cmVtZW1iZXIgd2hlcmUgSbR2ZSByZWFkIHRoZXJlIGFyZSB1bm9mZmljaWFsIHBhdGNoZXMgdG8g
-c29sdmUKdGhpcywgYnV0IEkgaGF2ZW60dCB1c2VkIHRoZW0uCgpJbiBmYWN0LCBpbiBteSBqb2Ig
-SSBoYWQgdGhlIHNhbWUgcHJvYmxlbSBhbmQgc29sdmVkIGl0IGluc3RhbGxpbmcgb3BlblZQTi4K
+Sorry if this was sent twice.  I believe I had a problem sending the 
+first time.
+
+Hi,
+    I signed up for a 'small office home office' package from my ISP.  I
+get 4 dynamic IP addresses and 1 static IP address.  I would like to set
+up a box to packet filter (iptables) the 4 dynamic IP addresses which I
+would then like to route on through to actual workstations.  The same
+box that I am filtering on, I would like to set up with the static IP
+address and use as an html/mail server (but also behind the firewall).
+
+I have set up iptables before using a static IP address for the box
+(which also ran an html and mail server), and then NAT to provide
+connections to the boxes behind the firewall.  That was of course, using
+one static IP address.
+
+Can someone give me a clue on how to go about what I would like.  I
+imagine there may be some router software required as well, but I don't
+really know (maybe not).  Please be gentle! :-)
+
+Thanks,
+
+BillR
+
+
 
