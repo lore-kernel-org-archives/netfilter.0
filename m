@@ -1,15 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: mysterious dropped echo replies
-Date: Tue, 31 May 2005 22:22:33 -0400
-Message-ID: <20050601022233.GA6992@bender.817west.com>
-References: <1117528956.25434.65.camel@athene.bestsolution.at>
-	<opsrozalyc76nf2y@xonix> <opsrozlyy176nf2y@xonix>
-	<1117539228.25434.82.camel@athene.bestsolution.at>
-	<opsro6aifo76nf2y@xonix>
+Subject: Re: CONNTRACK problem
+Date: Tue, 31 May 2005 22:32:11 -0400
+Message-ID: <20050601023211.GA7056@bender.817west.com>
+References: <8016435.1117541117857.JavaMail.www@wwinf0301>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <opsro6aifo76nf2y@xonix>
+In-Reply-To: <8016435.1117541117857.JavaMail.www@wwinf0301>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,22 +21,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Jun 01, 2005 at 06:21:44PM +0300, Sertys wrote:
-> Well , this line :
-> iptables -t nat -A Cid3D99741E.0   -d 192.168.100.0/24 -j RETURN
+On Tue, May 31, 2005 at 02:05:17PM +0200, Rodolphe AVERTY wrote:
+> Hello,
 > 
-> change it to -j DROP and it wont generate any replies. -j RETURN, returns  
-> the packet and sends and icmp message to the src!
+> i have two router connected to the internet and i want to send my tcp connection between them.
+> 
+> this is my iptables script :
+> 
+> ############################################################################
+> iptables -t mangle -N INTERNET
+> iptables -t mangle -N INTERNET_ROUTER_1
+> iptables -t mangle -N INTERNET_ROUTER_2
+> 
+> #le paquet est t'il en direction d'internet
+> iptables -o eth2 -t mangle -A POSTROUTING -p tcp -d ! 10.0.0.0/8 -j INTERNET
 
-RETURN returns the packet to the calling chain, or enforces the
-root chain's POLICY if there is no calling chain to return to.
-your description matches what REJECT does, not RETURN.
+you are trying to use fwmark's as a key in the routing decision; yet
+you are MARK-ing in the mangle POSTROUTING chain, POST meaning "after"
+and ROUTING meaning "routing."  you'd be better served to place these
+rules in the mangle PREROUTING chain; PRE meaning "before" and ROUTING
+meaning "routing."
 
 -j
 
 --
-"Stewie: Damn the toilet. It's made slaves of you all. It just
- sits there consuming other people's feces while contributing nothing
- of its own to society."
+"Peter: I only drank so that the Statue Of Liberty would take her
+ clothes off."
         --Family Guy
 
