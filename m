@@ -1,13 +1,12 @@
-From: Feizhou <feizhou@linuxmail.org>
-Subject: Re: Nice ZoneAlarm that might be useful for Iptables
-Date: Wed, 01 Jun 2005 10:37:01 +0800
-Message-ID: <429D1F4D.9000408@linuxmail.org>
-References: <429BDF9F.7070707@mindspring.com>	<20050531043310.GF3681@der-frank.org>	<Pine.LNX.4.60.0505311407460.5267@darkstar.sysinfo.com>	<429D1994.8070809@linuxmail.org>
-	<20050601021629.GA6948@bender.817west.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Port redirection
+Date: Tue, 31 May 2005 22:45:22 -0400
+Message-ID: <20050601024522.GA7118@bender.817west.com>
+References: <20050531192503.92186.qmail@web51002.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050601021629.GA6948@bender.817west.com>
+Content-Disposition: inline
+In-Reply-To: <20050531192503.92186.qmail@web51002.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Jason Opperisano wrote:
-> On Wed, Jun 01, 2005 at 10:12:36AM +0800, Feizhou wrote:
+On Tue, May 31, 2005 at 12:25:03PM -0700, Chris NoSurname wrote:
+> Hi all.
 > 
->>I disagree. We do not have to provide a Zone Alarm clone. Its 
->>functionality of checking what processes can use the network though 
->>would be useful in providing mandatory controls on what processes get to 
->>talk to the outside world.
->>
->>Right now there is simply no such ability. Having this on say a server 
->>will prevent users from looking around the network if they have shell 
->>access or sending info/data out. Obviously only root should be able to 
->>see the list of process names allowed and the other conditions like uid 
->>and ports allowed to use by the process.
+> I've searched and searched and I cannot seem to get
+> this working.
 > 
+> I'm trying to redirect port 80 to a different port so
+> that I can run the Resin application server as
+> non-root user.  I've got the following command..
 > 
-> http://www.nsa.gov/selinux/
-> 
-> the mere act of saying something on a public mailing list doesn't make
-> it true.
-> 
+> iptables -t nat -A PREROUTING -p tcp --dport 80 -d
+> x.x.x.x -j REDIRECT --to-ports 8900
 
-:)
+if resin is not listening on $INBOUND_IF_IP:8900; or more realistically
+0.0.0.0:8900, then it wouldn't work.  REDIRECT rewrites the dst IP to be
+the IP of the receiving interface, since you don't even have an "-i $IF"
+specified in that rule, resin would have to be listening on 0.0.0.0:8900
+to even have a shot at working properly (or the machine in question
+only has a single interface, perhaps?).
 
-I stand corrected.
+-j
+
+--
+"Peter: We love the Bible in this house.
+ Francis: Really. What's your favorite book of the Bible?
+ Peter: Uhhhhh... the book where Jesus swallows the puzzle piece and
+ the man in the yellow hat has to take him to the hospital."
+        --Family Guy
 
