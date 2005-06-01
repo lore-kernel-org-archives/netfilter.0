@@ -1,12 +1,12 @@
 From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Drop the Current Established Connections
-Date: Wed, 01 Jun 2005 11:17:31 -0500
-Message-ID: <429DDF9B.4040405@riverviewtech.net>
-References: <3b29fb7905053123282b03f832@mail.gmail.com>
+Subject: Re: iptable 1.2.11 and kernel 2.6.11-1 compatibility issue
+Date: Wed, 01 Jun 2005 11:21:51 -0500
+Message-ID: <429DE09F.2060409@riverviewtech.net>
+References: <003801c566bb$62a1de20$7c66e4a0@supelec.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3b29fb7905053123282b03f832@mail.gmail.com>
+In-Reply-To: <003801c566bb$62a1de20$7c66e4a0@supelec.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,27 +20,17 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-iptables -t filter -I INPUT -s ${IPAddress} -j DROP
-#iptables -t filter -I INPUT -d ${IPAddress} -j DROP
+> iptables -A INPUT  -i lo  -m state --state NEW  -j ACCEPT
+> iptables -A OUTPUT  -o lo  -m state --state NEW  -j ACCEPT
 
-iptables -t filter -I FORWARD -s ${IPAddress} -j DROP
-iptables -t filter -I FORWARD -d ${IPAddress} -j DROP
+If your firewall has a policy of DROP for any traffic that is not explicitly allowed then this rule would not work for any thing other than the first packet.  Try using this instead:
 
-#iptables -t filter -I OUTPUT -s ${IPAddress} -j DROP
-iptables -t filter -I OUTPUT -d ${IPAddress} -j DROP
+iptables -A INPUT  -i lo  -m state --state NEW,RELATED,ESTABLISHED  -j ACCEPT
+iptables -A OUTPUT  -o lo  -m state --state NEW,RELATED,ESTABLISHED  -j ACCEPT
 
-This should rather abruptly take care of it for you.  The two lines that I commented out should arguable not be needed but I put them there just in case and to serve as a reminder.
+I'm just shooting from the hip here, but that would be my first guess.
 
 
 
 Grant. . . .
-
-bright true wrote:
-> Hello , 
-> 
-> i want to know the right way of blocking an ip and drop the current Established 
-> 
-> connections from that ip 
-> 
-> Thanks
 
