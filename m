@@ -1,12 +1,10 @@
-From: bright true <brighttrue@gmail.com>
-Subject: Drop the Current Established Connections
-Date: Tue, 31 May 2005 23:28:57 -0700
-Message-ID: <3b29fb7905053123282b03f832@mail.gmail.com>
-Reply-To: bright true <brighttrue@gmail.com>
+From: "=?gb2312?B?wOTP/s/o?=" <xleng@netarchlab.tsinghua.edu.cn>
+Subject: pfil not configured for firewall/NAT operation
+Date: Wed, 1 Jun 2005 14:34:46 +0800
+Message-ID: <200506010634.j516YqP05866@netarchlab.tsinghua.edu.cn>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,15 +15,13 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello ,=20
+aGkgYWxsDQoNCglJIGp1c3QgaW5zdGFsbCB0aGUgaXAgZmlsdGVyICYgcGZpbCB3aXRoIHBmaWwt
+Mi4xLjQucGtnIGFuZCBpcF9maWw0LjEuMy1zb2w4LnBrZ6Osd2hlbiBJIGRvICIvZXRjL2luaXQu
+ZC9pcGZib290IHN0YXJ0IiBvbiBteSBzb2xhcmlzIDggZm9yIHNwYWMsIGl0IHJlbGllcyAicGZp
+bCBub3QgY29uZmlndXJlZCBmb3IgZmlyZXdhbGwvTkFUIG9wZXJhdGlvbiIsIFdoYXQgc2hvdWxk
+IEkgZG8gbm93Pw0KDQoNCg0KVGhhbmtzDQpsZW94aWFuZw0K
 
-i want to know the right way of blocking an ip and drop the current Establi=
-shed=20
-
-connections from that ip=20
-
-Thanks
 
