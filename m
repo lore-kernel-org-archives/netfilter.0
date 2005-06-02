@@ -1,26 +1,13 @@
-From: "Sadus ." <sadus@swiftbin.net>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
 Subject: Re: SSH Brute force attacks
-Date: Thu, 02 Jun 2005 19:13:50 +0300
-Message-ID: <1117728830.10257.15.camel@debianbox>
-References: <427B93EE.3030905@eccotours.dyndns.org>
-	<427C4EA3.5090501@riverviewtech.net>
-	<4281FC1A.8090000@eccotours.dyndns.org>
-	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>
-	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>
-	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>
-	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>
-	<42898402.10507@eccotours.dyndns.org>	<4289E72F.7020901@wp.pl>
-	<428B3798.9050407@eccotours.dyndns.org>
-	<428C1C3F.9030600@riverviewtech.net>
-	<428C56C9.9000607@eccotours.dyndns.org>
-	<428CA51D.4080206@riverviewtech.net>
-	<428DDFBC.1080905@eccotours.dyndns.org>
-	<428DF9F1.9060602@riverviewtech.net>
-	<42920563.7070406@eccotours.dyndns.org>
+Date: Thu, 02 Jun 2005 11:43:44 -0500
+Message-ID: <429F3740.8070105@riverviewtech.net>
+References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>	<42898402.10507@eccotours.dyndns.org>	<4289E72F.7020901@wp.pl>	<428B3798.9050407@eccotours.dyndns.org>	<428C1C3F.9030600@riverviewtech.net>	<428C56C9.9000607@eccotours.dyndns.org>	<428CA51D.4080206@riverviewtech.net>	<428DDFBC.1080905@eccotours.dyndns.org>	<428DF9F1.9060602@riverviewtech.net>	<42920563.7070406@eccotours.dyndns.org>
+	<1117728830.10257.15.camel@debianbox>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42920563.7070406@eccotours.dyndns.org>
+In-Reply-To: <1117728830.10257.15.camel@debianbox>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -32,51 +19,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Brent Clark <bclark@eccotours.dyndns.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Is there a way to parse the attacker's IP and block it permanantly via:
-iptables -A INPUT -s $IP -j DROP
-and cat > /etc/hosts.deny ?
+Sadus . wrote:
+> Is there a way to parse the attacker's IP and block it permanantly via:
+> iptables -A INPUT -s $IP -j DROP
+> and cat > /etc/hosts.deny ?
 
-something close to what portsentry does, but using that SSH iptables
-Brute force script.
+The closest thing that I can think of at the moment would be to LOG the packet with a custom "--log-prefix" that is being watched for by a user space daemon and have this daemon add the IP in question to an ipset set list and /etc/hosts.deny.  To take advantage of the ipset set list you would have to use the set match extension to see if the IP was in the set list or not and take action based on that.  If you would like I could ponder this for a while and get back to you on how I would go about doing this.
 
-This thread went big and confusion reigned on the latest version of the
-Brute Force script, kindly post the latest/best iptable rules :)
+> something close to what portsentry does, but using that SSH iptables
+> Brute force script.
 
-thanks
+I'm not familiar with port sentry, can you tell me more about it or give me a URL to look at?  I'll Google for it and take a look when I have some more time to spare to see if I can better answer your question(s).
 
-On Mon, 2005-05-23 at 18:31 +0200, Brent Clark wrote:
-> Taylor, Grant wrote:
-> >> So... I cant see why I cant connect from a dynamically assigned ip.
-> > 
-> > 
-> > Brent, I'll have to take a closer look at your script later on (complete 
-> > flow analysis vs just the SSH_Brute_Force chain).  But for now it looks 
-> > like you have both versions (original and updated one) in your firewall, 
-> > this could be causing a few problems as I don't think it would take more 
-> > than one attempt in a 60 second period to get your self to the point 
-> > that you would be TARPITed / DROPed.  However I think that you would be 
-> > able to connect at least 1 time from any dynamic remote IP in the 60 
-> > second period.  Also keep in mind that the recent module (in the updated 
-> > version) is using an --update option which will keep track of the number 
-> > of times that you have tried to connect for 60 seconds after the last 
-> > connection attempt.
-> > 
-> 
-> Hi Grant
-> 
-> If you look carefully on the left, you will see I have hashed out the 
-> original rules.
-> 
-> Thanks
-> 
-> Kind Regards
-> Brent Clark
-> 
--- 
-Sadus . <sadus@swiftbin.net>
-Swiftbin.net
+> This thread went big and confusion reigned on the latest version of the
+> Brute Force script, kindly post the latest/best iptable rules :)
 
+I will repost the script as it is presently in a new reply to the original message so that it is at the bottom of the thread.  I'll also include a version number in the subject line to make this easier to look at in the future.  For now you can see the most current version of the script in this message available here https://lists.netfilter.org/pipermail/netfilter/2005-May/060734.html .  I'll post a friarly lengthy email with the basic script in a couple of different forms and the various pros and cons to each form.  For now the main difference is that I'm not jumping to the SSH_Brute_Force chain the way that is posted in the list for various reasons I'll explain in the forthcoming email.
+
+> thanks
+
+No problem.
+
+
+
+Grant. . . .
 
