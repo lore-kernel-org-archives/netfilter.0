@@ -1,13 +1,10 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: SSH Brute force attacks
-Date: Thu, 02 Jun 2005 11:43:44 -0500
-Message-ID: <429F3740.8070105@riverviewtech.net>
-References: <427B93EE.3030905@eccotours.dyndns.org>	<427C4EA3.5090501@riverviewtech.net>	<4281FC1A.8090000@eccotours.dyndns.org>	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>	<42898402.10507@eccotours.dyndns.org>	<4289E72F.7020901@wp.pl>	<428B3798.9050407@eccotours.dyndns.org>	<428C1C3F.9030600@riverviewtech.net>	<428C56C9.9000607@eccotours.dyndns.org>	<428CA51D.4080206@riverviewtech.net>	<428DDFBC.1080905@eccotours.dyndns.org>	<428DF9F1.9060602@riverviewtech.net>	<42920563.7070406@eccotours.dyndns.org>
-	<1117728830.10257.15.camel@debianbox>
+From: James Cooke <lists@jcitc.com>
+Subject: IP address ranges for USA and Europe
+Date: Thu, 02 Jun 2005 19:20:02 +0100
+Message-ID: <429F4DD2.6080600@jcitc.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1117728830.10257.15.camel@debianbox>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +15,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Sadus . wrote:
-> Is there a way to parse the attacker's IP and block it permanantly via:
-> iptables -A INPUT -s $IP -j DROP
-> and cat > /etc/hosts.deny ?
+Hi all,
 
-The closest thing that I can think of at the moment would be to LOG the packet with a custom "--log-prefix" that is being watched for by a user space daemon and have this daemon add the IP in question to an ipset set list and /etc/hosts.deny.  To take advantage of the ipset set list you would have to use the set match extension to see if the IP was in the set list or not and take action based on that.  If you would like I could ponder this for a while and get back to you on how I would go about doing this.
+I'm running a VPN server to which IP tables limits connections to the IP 
+addresses of the client offices. However, now the client wants roaming 
+access to the VPN via laptops - they will be moving around Europe and 
+the USA. There are two layers of password security, but I'm still 
+nervous about opening the server to the entire world...
 
-> something close to what portsentry does, but using that SSH iptables
-> Brute force script.
+Therefore, is there a nice way to open the firewall for connections just 
+from Europe and USA?
 
-I'm not familiar with port sentry, can you tell me more about it or give me a URL to look at?  I'll Google for it and take a look when I have some more time to spare to see if I can better answer your question(s).
+I've found lots of IP address ranges, but even those don't seem to be 
+complete - AOL IPs don't fit in to the list I've compiled so far for 
+example. So I'm thinking there's got to be something better than writing 
+out a full list of ranges and allowing them connections...
 
-> This thread went big and confusion reigned on the latest version of the
-> Brute Force script, kindly post the latest/best iptable rules :)
+The SSH brute force thread was very interesting with the recent/tarpit 
+trap for our less than welcome guests and I would like to implement this 
+on the VPN ports in the future - but for now I'm just looking for a 
+quick fix.
 
-I will repost the script as it is presently in a new reply to the original message so that it is at the bottom of the thread.  I'll also include a version number in the subject line to make this easier to look at in the future.  For now you can see the most current version of the script in this message available here https://lists.netfilter.org/pipermail/netfilter/2005-May/060734.html .  I'll post a friarly lengthy email with the basic script in a couple of different forms and the various pros and cons to each form.  For now the main difference is that I'm not jumping to the SSH_Brute_Force chain the way that is posted in the list for various reasons I'll explain in the forthcoming email.
+Thanks in advance for any input on this...
 
-> thanks
-
-No problem.
-
-
-
-Grant. . . .
+James
 
