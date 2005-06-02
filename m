@@ -1,13 +1,26 @@
 From: "Sadus ." <sadus@swiftbin.net>
-Subject: Re: port filtering
-Date: Thu, 02 Jun 2005 18:58:58 +0300
-Message-ID: <1117727938.10257.11.camel@debianbox>
-References: <1117723215.10257.6.camel@debianbox>
-	<429F2349.5020605@riverviewtech.net>
+Subject: Re: SSH Brute force attacks
+Date: Thu, 02 Jun 2005 19:13:50 +0300
+Message-ID: <1117728830.10257.15.camel@debianbox>
+References: <427B93EE.3030905@eccotours.dyndns.org>
+	<427C4EA3.5090501@riverviewtech.net>
+	<4281FC1A.8090000@eccotours.dyndns.org>
+	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>
+	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>
+	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>
+	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>
+	<42898402.10507@eccotours.dyndns.org>	<4289E72F.7020901@wp.pl>
+	<428B3798.9050407@eccotours.dyndns.org>
+	<428C1C3F.9030600@riverviewtech.net>
+	<428C56C9.9000607@eccotours.dyndns.org>
+	<428CA51D.4080206@riverviewtech.net>
+	<428DDFBC.1080905@eccotours.dyndns.org>
+	<428DF9F1.9060602@riverviewtech.net>
+	<42920563.7070406@eccotours.dyndns.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <429F2349.5020605@riverviewtech.net>
+In-Reply-To: <42920563.7070406@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,28 +32,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+To: Brent Clark <bclark@eccotours.dyndns.org>
 Cc: netfilter@lists.netfilter.org
 
-Thanks for the info, 
-Actually i was just curious if something like that existed. I came
-across an article in a windows system administration website that
-mentioned the feature of "Port Filtering" and i didn't know that such a
-thing existed. 
+Is there a way to parse the attacker's IP and block it permanantly via:
+iptables -A INPUT -s $IP -j DROP
+and cat > /etc/hosts.deny ?
 
-On Thu, 2005-06-02 at 10:18 -0500, Taylor, Grant wrote:
-> Sadus . wrote:
-> > Is there a way to do port filtering as in allow only FTP protocol use
-> > port 21 and no other protocol such as opening apache on port 21 or
-> > openning SSH on port 443 which should ONLY be used for HTTPS?
+something close to what portsentry does, but using that SSH iptables
+Brute force script.
+
+This thread went big and confusion reigned on the latest version of the
+Brute Force script, kindly post the latest/best iptable rules :)
+
+thanks
+
+On Mon, 2005-05-23 at 18:31 +0200, Brent Clark wrote:
+> Taylor, Grant wrote:
+> >> So... I cant see why I cant connect from a dynamically assigned ip.
+> > 
+> > 
+> > Brent, I'll have to take a closer look at your script later on (complete 
+> > flow analysis vs just the SSH_Brute_Force chain).  But for now it looks 
+> > like you have both versions (original and updated one) in your firewall, 
+> > this could be causing a few problems as I don't think it would take more 
+> > than one attempt in a 60 second period to get your self to the point 
+> > that you would be TARPITed / DROPed.  However I think that you would be 
+> > able to connect at least 1 time from any dynamic remote IP in the 60 
+> > second period.  Also keep in mind that the recent module (in the updated 
+> > version) is using an --update option which will keep track of the number 
+> > of times that you have tried to connect for 60 seconds after the last 
+> > connection attempt.
+> > 
 > 
-> To enforce only ftp access on port 21 you will need to run some sort of filter that will enforce only ftp commands or something else that will detect ftp commands or not.  The Layer 7 match extension will do this for you.  There are caveats to using the l7 filter as it tends to be less and less accurate the more complex the protocol is, but ftp does not fall in to this category.  L7 filter will put some additional load on your firewall / router too as it has to inspect the higher layer packet and pass it through a regular expression to match (or not) the packet, hens you don't want all your traffic to pass through a l7 filter, just the traffic that is destined to or from port 21.  I might also suggest that you conn mark the known ftp traffic so you can match against the mark on subsequent packets and not have to pass all the packet to any given connection through the l7 filter, just en
- ough to identify the traffic.  For more information on the "Application Layer Packet Classif
-> ier for Linux" (Layer 7) go to http://l7-filter.sourceforge.net/ and take a look.  I have played with the l7 filter a little bit and was fairly impressed, however I do not currently have it on any of my production firewalls.  If you need / want more help with this let me know.
+> Hi Grant
 > 
+> If you look carefully on the left, you will see I have hashed out the 
+> original rules.
 > 
+> Thanks
 > 
-> Grant. . . .
+> Kind Regards
+> Brent Clark
 > 
 -- 
 Sadus . <sadus@swiftbin.net>
