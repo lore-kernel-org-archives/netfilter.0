@@ -1,7 +1,7 @@
 From: Guillermo Javier Nardoni <gjnardoni@gmail.com>
-Subject: Changhing Source IP (Without SNAT i guess) issue, (help me please)
-Date: Thu, 2 Jun 2005 20:51:23 -0300
-Message-ID: <7b85e5305060216511185bb4a@mail.gmail.com>
+Subject: Cambiar Encabezado de IP (Ayuda urgente x favor)
+Date: Thu, 2 Jun 2005 20:51:50 -0300
+Message-ID: <7b85e5305060216514cb1d860@mail.gmail.com>
 Reply-To: Guillermo Javier Nardoni <gjnardoni@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -17,59 +17,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi, well i've been read a lot of tutorials but i can get this working.-
-I tell you my scenario, so you can better understand me.
+Hola, bueno ya he le=EDdo, configurado hice maniobras de todo tipo y no pud=
+e
+lograrlo
+les comento cual es mi situaci=F3n:
 
+Escenario:
 
-Scenario:
+Linux Box con:
 
-Linux Box with theses settings
-
-eth0: (internal network 192.168.0.0/24)
+eth0: (red interna 192.168.0.0/24)
 ip: 192.168.0.1
 nm: 255.255.255.0
 
-eth1: (all internal server hanged through this nic. They are three)
+eth1: (todos los servidores internos colgados de aqu=ED (son tres en total)=
+)
 ip: 192.168.1.1
 nm: 255.255.255.0
 
 
-eth2: (Nic used to make pppoe over a cisco 677)
+eth2: (placa de red para conectar el router cisco 677 con conexion pppoe)
 ip: 10.0.0.1
 nm: 255.0.0.0
 
-ppp0: Internet Connection (pppoe dhcp)
+ppp0: Conexi=F3n a Internet (pppoe dhcp)
 
-Actually, everything is working perfectly but...=20
+todo funciona barbaro pero necesito hacer lo siguiente
 
-Windows 2000 server running some Built-in software (such as a program
-on an intranet)
-listening on ports 7777/2106
 
-eth0:=20
+Windows 2000 server correidno un software enlatado (sobre intranet)
+escuchando en los puertos 7777/2106
+
+eth0:
 ip: 192.168.1.2
 nm: 255.255.255.0
 gw: 192.168.2.1
 
+el tema es que cuando un cliente hace una coneix=F3n a travez de la internf=
+az
+ppp0 , yo lo enruto para que
+haga dnat y snat al server win2000
+lo hace bien, peeeeeero lo hace con la ip del linux (externo , esto es por
+ejemplo 200.43.16.125) y
+yo necesito que lo hago con la ip 192.168.2.1 , sino no me funciona el
+software
+esto ser=EDa cambiar el source ip antes de ser enrutado pero prob=E9 de mil
+maneras
+y puedo lograrlo y me urge poder hacerlo ya que estoy sin poder laburar y
+tengo a un mo=B4nt=F3n de clientes
+colgados x este tema
+agradecer=EDa una ayuda suya
 
-Here we go with the issue:
 
-When a customer make a connection through ppp0 interface, the linux
-box route the packets (on ports 7777 and 2106) directly to
-win2000 server and it works fine, but with the External IP of the
-Firewall, so the software can't work .
-so i have to change the source ip before routing (not with SNAT) to
-use the firewall's internal ip (actually  192.168.2.1). how
-should i do that?.,
-i tried to do this using DNAT, SNAT, FORWARD but it doesn't work
+reitero, anda todo bien cuando un usuario de la internet se coencta al linu=
+x
+box, =E9ste (el linux) rutea hacia el windows 2000 y se logra la conexi=F3n=
+ sin
+problemas
+peeeero cuando pido el log en windows 2000 me dice que la ip desde donde se
+logueo fue 200.43.16.125 (por dar un ejemplo) cuando deber=EDa de ser
+la ip interna del firewall (en este caso 192.168.2.1)
 
-I have many customers without system, so they are very ungry, ;-)=20
 
-Regards
-Guillermo from Argentina.-
+Atte.-
+Guillermo Javier Nardoni
+Argentina.-
 
 
 --=20
