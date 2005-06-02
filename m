@@ -1,12 +1,28 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: IP address ranges for USA and Europe
-Date: Thu, 02 Jun 2005 13:45:16 -0500
-Message-ID: <429F53BC.7070906@riverviewtech.net>
-References: <429F4DD2.6080600@jcitc.com>
+From: "Sadus ." <sadus@swiftbin.net>
+Subject: Re: SSH Brute force attacks
+Date: Thu, 02 Jun 2005 22:18:46 +0300
+Message-ID: <1117739926.10257.22.camel@debianbox>
+References: <427B93EE.3030905@eccotours.dyndns.org>
+	<427C4EA3.5090501@riverviewtech.net>
+	<4281FC1A.8090000@eccotours.dyndns.org>
+	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>
+	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>
+	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>
+	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>
+	<42898402.10507@eccotours.dyndns.org>	<4289E72F.7020901@wp.pl>
+	<428B3798.9050407@eccotours.dyndns.org>
+	<428C1C3F.9030600@riverviewtech.net>
+	<428C56C9.9000607@eccotours.dyndns.org>
+	<428CA51D.4080206@riverviewtech.net>
+	<428DDFBC.1080905@eccotours.dyndns.org>
+	<428DF9F1.9060602@riverviewtech.net>
+	<42920563.7070406@eccotours.dyndns.org>
+	<1117728830.10257.15.camel@debianbox>
+	<429F3740.8070105@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <429F4DD2.6080600@jcitc.com>
+In-Reply-To: <429F3740.8070105@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,40 +34,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-James Cooke wrote:
-> Hi all,
-> 
-> I'm running a VPN server to which IP tables limits connections to the IP
-> addresses of the client offices. However, now the client wants roaming
-> access to the VPN via laptops - they will be moving around Europe and
-> the USA. There are two layers of password security, but I'm still
-> nervous about opening the server to the entire world...
-> 
-> Therefore, is there a nice way to open the firewall for connections just
-> from Europe and USA?
-> 
-> I've found lots of IP address ranges, but even those don't seem to be
-> complete - AOL IPs don't fit in to the list I've compiled so far for
-> example. So I'm thinking there's got to be something better than writing
-> out a full list of ranges and allowing them connections...
-> 
-> The SSH brute force thread was very interesting with the recent/tarpit
-> trap for our less than welcome guests and I would like to implement this
-> on the VPN ports in the future - but for now I'm just looking for a
-> quick fix.
-> 
-> Thanks in advance for any input on this...
-> 
-> James
-> 
+Portsentry listens to a set of ports you set. when someone nmaps your
+machine or do some kind of scanning on certain ports, portsentry blocks
+that IP via the method you prefer (ipchain, iptables...) and it can echo
+the IP to /etc/hosts.deny thus droping all connections with the
+attacker. I want to expand the SSH Brute force script to enable this
+feature.
+It is not important to know if an IP is already in the /etc/hosts.deny
+list because since the IP is droped and denied from accessing, the IP
+won't reach the brute force script, so normaly you won't have repetition
+of IPs.
 
-A couple of things come to mind, that being GEOIP and having your client SSH in to a server before they set up the VPN.  You could combine the idea behind port knocking as in remembering what port is active or was active and then allow VPN connections from an IP that has an established SSH connection with more than X number of packets or byes.  Take a look at http://netfilter.org/patch-o-matic/pom-extra.html#pom-extra-geoip for more information on GeoIP and http://www.maxmind.com/app/geoip_country for information on where to obtain the database.
-
-I would be interested in seeing what you would like to do with the SSH_Brute_Force idea on your VPN.  I'm getting ready to expand the idea to other things as well and I would be interested in talking to you about what you are wanting to see if I could not role that in to the new version that I'm going to be working on.
+ 
 
 
+On Thu, 2005-06-02 at 11:43 -0500, Taylor, Grant wrote:
+> Sadus . wrote:
+> > Is there a way to parse the attacker's IP and block it permanantly via:
+> > iptables -A INPUT -s $IP -j DROP
+> > and cat > /etc/hosts.deny ?
+> 
+> The closest thing that I can think of at the moment would be to LOG the packet with a custom "--log-prefix" that is being watched for by a user space daemon and have this daemon add the IP in question to an ipset set list and /etc/hosts.deny.  To take advantage of the ipset set list you would have to use the set match extension to see if the IP was in the set list or not and take action based on that.  If you would like I could ponder this for a while and get back to you on how I would go about doing this.
+> 
+> > something close to what portsentry does, but using that SSH iptables
+> > Brute force script.
+> 
+> I'm not familiar with port sentry, can you tell me more about it or give me a URL to look at?  I'll Google for it and take a look when I have some more time to spare to see if I can better answer your question(s).
+> 
+> > This thread went big and confusion reigned on the latest version of the
+> > Brute Force script, kindly post the latest/best iptable rules :)
+> 
+> I will repost the script as it is presently in a new reply to the original message so that it is at the bottom of the thread.  I'll also include a version number in the subject line to make this easier to look at in the future.  For now you can see the most current version of the script in this message available here https://lists.netfilter.org/pipermail/netfilter/2005-May/060734.html .  I'll post a friarly lengthy email with the basic script in a couple of different forms and the various pros and cons to each form.  For now the main difference is that I'm not jumping to the SSH_Brute_Force chain the way that is posted in the list for various reasons I'll explain in the forthcoming email.
+> 
+> > thanks
+> 
+> No problem.
+> 
+> 
+> 
+> Grant. . . .
+> 
+-- 
+Sadus . <sadus@swiftbin.net>
+Swiftbin.net
 
-Grant. . . .
 
