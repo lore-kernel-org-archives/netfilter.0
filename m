@@ -1,28 +1,12 @@
-From: "Sadus ." <sadus@swiftbin.net>
-Subject: Re: SSH Brute force attacks
-Date: Thu, 02 Jun 2005 22:18:46 +0300
-Message-ID: <1117739926.10257.22.camel@debianbox>
-References: <427B93EE.3030905@eccotours.dyndns.org>
-	<427C4EA3.5090501@riverviewtech.net>
-	<4281FC1A.8090000@eccotours.dyndns.org>
-	<42824D1E.7040508@riverviewtech.net>	<4285C016.2060900@wp.pl>
-	<42864CA9.7050802@riverviewtech.net>	<428856F8.60706@wp.pl>
-	<Pine.LNX.4.61.0505162103070.3744@e-smith.charlieb.ott.istop.com>
-	<42897A5E.7010401@wp.pl>	<42897EE5.90703@wp.pl>
-	<42898402.10507@eccotours.dyndns.org>	<4289E72F.7020901@wp.pl>
-	<428B3798.9050407@eccotours.dyndns.org>
-	<428C1C3F.9030600@riverviewtech.net>
-	<428C56C9.9000607@eccotours.dyndns.org>
-	<428CA51D.4080206@riverviewtech.net>
-	<428DDFBC.1080905@eccotours.dyndns.org>
-	<428DF9F1.9060602@riverviewtech.net>
-	<42920563.7070406@eccotours.dyndns.org>
-	<1117728830.10257.15.camel@debianbox>
-	<429F3740.8070105@riverviewtech.net>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: IP address ranges for USA and Europe
+Date: Thu, 02 Jun 2005 15:26:22 -0400
+Message-ID: <1117740382.4619.37.camel@jasiiitosh.nexusmgmt.com>
+References: <429F4DD2.6080600@jcitc.com> <429F53BC.7070906@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <429F3740.8070105@riverviewtech.net>
+In-Reply-To: <429F53BC.7070906@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -35,50 +19,48 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Cc: netfilter@lists.netfilter.org
+Cc: Netfilter users list <netfilter@lists.netfilter.org>
 
-Portsentry listens to a set of ports you set. when someone nmaps your
-machine or do some kind of scanning on certain ports, portsentry blocks
-that IP via the method you prefer (ipchain, iptables...) and it can echo
-the IP to /etc/hosts.deny thus droping all connections with the
-attacker. I want to expand the SSH Brute force script to enable this
-feature.
-It is not important to know if an IP is already in the /etc/hosts.deny
-list because since the IP is droped and denied from accessing, the IP
-won't reach the brute force script, so normaly you won't have repetition
-of IPs.
+On Thu, 2005-06-02 at 13:45 -0500, Taylor, Grant wrote:
+> James Cooke wrote:
+> > Hi all,
+> > 
+> > I'm running a VPN server to which IP tables limits connections to the IP
+> > addresses of the client offices. However, now the client wants roaming
+> > access to the VPN via laptops - they will be moving around Europe and
+> > the USA. There are two layers of password security, but I'm still
+> > nervous about opening the server to the entire world...
+> > 
+> > Therefore, is there a nice way to open the firewall for connections just
+> > from Europe and USA?
+> > 
+> ><snip>
+> 
+I do not know if this will be of any help to you but we've taken a
+completely different approach.  We have implemented out-of-band user
+authentication in the ISCS project (http://iscs.sourceforge.net).
+Basically, we dynamically reconfigure IP tables for each RAS user and
+implement custom iptables rules based upon the DER_ASN.1_DN of their
+X.509 cert.
 
- 
+Thus, for example, when someone with a cert where
+0=mycompany,OU=executive connects, the are granted access to executive
+and financial resources.  When someone with O=mycompany,OU=sales
+connects, they are given access to sales resources.  We still have some
+issues to iron out and a few obscure exploits to close but perhaps you
+can use the ideas we have implemented.  They are well documented in the
+code.
 
-
-On Thu, 2005-06-02 at 11:43 -0500, Taylor, Grant wrote:
-> Sadus . wrote:
-> > Is there a way to parse the attacker's IP and block it permanantly via:
-> > iptables -A INPUT -s $IP -j DROP
-> > and cat > /etc/hosts.deny ?
-> 
-> The closest thing that I can think of at the moment would be to LOG the packet with a custom "--log-prefix" that is being watched for by a user space daemon and have this daemon add the IP in question to an ipset set list and /etc/hosts.deny.  To take advantage of the ipset set list you would have to use the set match extension to see if the IP was in the set list or not and take action based on that.  If you would like I could ponder this for a while and get back to you on how I would go about doing this.
-> 
-> > something close to what portsentry does, but using that SSH iptables
-> > Brute force script.
-> 
-> I'm not familiar with port sentry, can you tell me more about it or give me a URL to look at?  I'll Google for it and take a look when I have some more time to spare to see if I can better answer your question(s).
-> 
-> > This thread went big and confusion reigned on the latest version of the
-> > Brute Force script, kindly post the latest/best iptable rules :)
-> 
-> I will repost the script as it is presently in a new reply to the original message so that it is at the bottom of the thread.  I'll also include a version number in the subject line to make this easier to look at in the future.  For now you can see the most current version of the script in this message available here https://lists.netfilter.org/pipermail/netfilter/2005-May/060734.html .  I'll post a friarly lengthy email with the basic script in a couple of different forms and the various pros and cons to each form.  For now the main difference is that I'm not jumping to the SSH_Brute_Force chain the way that is posted in the list for various reasons I'll explain in the forthcoming email.
-> 
-> > thanks
-> 
-> No problem.
-> 
-> 
-> 
-> Grant. . . .
-> 
+The NuFW folks (http://www.nufw.org) have taken this idea much further
+but I believe their solution is more geared toward internal users on
+trusted networks although that may have changed.  Good luck - John
 -- 
-Sadus . <sadus@swiftbin.net>
-Swiftbin.net
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
+
+Financially sustainable open source development
+http://www.opensourcedevel.com
 
 
