@@ -1,9 +1,9 @@
-From: knash@cs.tcd.ie
-Subject: promiscuous mode
-Date: Wed, 1 Jun 2005 23:58:42 +0100 (IST)
-Message-ID: <33000.62.231.54.154.1117666722.squirrel@webmail.cs.tcd.ie>
+From: rodolphe <rodolphe.averty@oxance.com>
+Subject: CONNTRACK problem
+Date: Thu, 02 Jun 2005 09:40:08 +0200
+Message-ID: <429EB7D8.40203@oxance.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,27 +15,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: opie@817west.com
+Cc: netfilter@lists.netfilter.org
 
-Hello,
-I set up my wireless card in promiscuous mode. I want to capture all
-unicast packets using the hook NF_IP_PRE_ROUTING but packets other the
-ones destined for my machine are been dropped.
-I found this link, but its dated 2001
+I don't use the mark with routing. I use marking to mark new connections 
+to retreive next packets of the connections and to force routing using 
+the ROUTE target.
 
-http://www.scaramanga.co.uk/code-fu/netfilter-promisc.diff
+Thank you for ROUTING = routing :-)    
+really fun
 
-It refers to modifying netfilter/userspace/libiptc/libip4tc.c which my
-version of netfilter doesn't seem to have.
-I'm running Fedora Core 2 (2.6.5-1.358)
-and iptables v1.2.9
-
-I was wondering does the current version of netfilter support promiscuous
-mode or is there a patch available??
-
-Thanks very much for your help,
-
-Kevin
+Regards
 
 
