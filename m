@@ -1,13 +1,13 @@
-From: =?windows-1252?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+From: "Sadus ." <sadus@swiftbin.net>
 Subject: Re: port filtering
-Date: Thu, 02 Jun 2005 17:30:17 +0200
-Message-ID: <429F2609.8080809@mnemon.de>
+Date: Thu, 02 Jun 2005 18:58:58 +0300
+Message-ID: <1117727938.10257.11.camel@debianbox>
 References: <1117723215.10257.6.camel@debianbox>
-	<1117724394.13839.14.camel@fly.in.iantel.com.uy>
+	<429F2349.5020605@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1117724394.13839.14.camel@fly.in.iantel.com.uy>
+In-Reply-To: <429F2349.5020605@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,24 +19,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Thanks for the info, 
+Actually i was just curious if something like that existed. I came
+across an article in a windows system administration website that
+mentioned the feature of "Port Filtering" and i didn't know that such a
+thing existed. 
 
-Eduardo Spremolla schrieb:
-> I suppose you have a firewall that allow outgoing traffic on port 21 ?
-> or is incoming?
+On Thu, 2005-06-02 at 10:18 -0500, Taylor, Grant wrote:
+> Sadus . wrote:
+> > Is there a way to do port filtering as in allow only FTP protocol use
+> > port 21 and no other protocol such as opening apache on port 21 or
+> > openning SSH on port 443 which should ONLY be used for HTTPS?
 > 
-> Any way you can't tell if the traffic on port 21 if ftp , telnet or http
-> without looking a hi layers protos. Don't know of any support for that
-> in netfilter. May be you need to setup a transparent proxy.
+> To enforce only ftp access on port 21 you will need to run some sort of filter that will enforce only ftp commands or something else that will detect ftp commands or not.  The Layer 7 match extension will do this for you.  There are caveats to using the l7 filter as it tends to be less and less accurate the more complex the protocol is, but ftp does not fall in to this category.  L7 filter will put some additional load on your firewall / router too as it has to inspect the higher layer packet and pass it through a regular expression to match (or not) the packet, hens you don't want all your traffic to pass through a l7 filter, just the traffic that is destined to or from port 21.  I might also suggest that you conn mark the known ftp traffic so you can match against the mark on subsequent packets and not have to pass all the packet to any given connection through the l7 filter, just en
+ ough to identify the traffic.  For more information on the "Application Layer Packet Classif
+> ier for Linux" (Layer 7) go to http://l7-filter.sourceforge.net/ and take a look.  I have played with the l7 filter a little bit and was fairly impressed, however I do not currently have it on any of my production firewalls.  If you need / want more help with this let me know.
 > 
-May be this is of use:
-
-http://l7-filter.sourceforge.net/L7-HOWTO-Netfilter
-
-Have a nice time,
-
-Joerg
+> 
+> 
+> Grant. . . .
+> 
+-- 
+Sadus . <sadus@swiftbin.net>
+Swiftbin.net
 
 
