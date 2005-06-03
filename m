@@ -1,12 +1,12 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: 2 Questions--state (est, rel) and tuning
-Date: Fri, 03 Jun 2005 16:38:25 +0200
-Message-ID: <42A06B61.4020009@mnemon.de>
-References: <B80488675062364A909EE60F4A66603807840EAE@usilms23.ca.com>
+Date: Fri, 3 Jun 2005 11:40:28 -0400
+Message-ID: <20050603154028.GA17190@bender.817west.com>
+References: <B80488675062364A909EE60F4A66603807840D05@usilms23.ca.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <B80488675062364A909EE60F4A66603807840EAE@usilms23.ca.com>
+Content-Disposition: inline
+In-Reply-To: <B80488675062364A909EE60F4A66603807840D05@usilms23.ca.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +18,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Ginter, Jeff A schrieb:
+On Fri, Jun 03, 2005 at 08:59:06AM -0400, Ginter, Jeff A wrote:
+> I understand the state concepts, however, I keep seeing example iptable
+> scripts with the first rule in each chain being something like....ACCEPT
+> related and established packets.  
+> 
+> My first question is...Is that really needed?
 
-> For example on a Checkpoint or PIX you would NOT need the 
-> established or related rules.  They are aware that a 
-> conversation has started and will let return packets in....of course, 
-> it is possible that there is an implicit rule on a Checkpoint or PIX 
-> that is "hidden" that allows established and related and the user just 
-> doesn't see this and in iptables you do...but I thought this was part 
-> of the state engine.
+yes.
 
-I can't give a proof for Checkpoint and PIX, but I think that's exactly
-the way it is: You simply can't see these rules, they are generated in
-the background, if you decide to have a stateful firewall, and are then
-compiled into the rule set.
+> In my other experiences
+> with stateful firewalls this rule is not needed because the firewall
+> remembers the outgoing packet and the rule is implied...or do I have
+> this very wrong?
 
-Looking at pf from the BSD folks, you can say "keep-state" and the
-meaning is, that from this point on pf creates the needed rules on the
-fly and puts it in the state table (and later on automatically deletes
-these dynamic rules).
+iptables behaves differently than every other stateful firewall i can
+think of (check point, pix, ipf, pf) in that they all behave this way:
 
-iptables - as far as I know - doesn't have such "automatics" and thus
-you have to specify est,rel rules explicitely.
+1 - check state table for matching connection, if found--pass packet.
+2 - if packet not found in state table--traverse filter rules
 
-Any other / additional notions ?
+both check point and pix actually have additional checks and
+restrictions, but that's a simplistic explanation to get the point
+across.
 
-Have a nice time,
+the way iptables works is that as soon as the ip_conntrack module is
+loaded, the conntrack table (state table) begins to be populated by
+connections passing through the machine.  if you want to load filter
+rules, you have an interface into the connections in the state table via
+-m state--thus to pass connections that are fully established in the
+state table:
 
-Joerg
+  -A ${CHAIN} -m state --state ESTABLISHED -j ACCEPT
 
+as the first rule basically emulates the basic behavior of other
+firewalls.  in the simplistic case--this adds more work for the novice
+user that is accustomed to stateful tracking "just magically working,"
+but in the advanced case, it gives a nice level of flexibility to
+actually bypass or override what's in the state table.  the spirit of
+linux:  maximum flexibility.
+
+> My second question, which may not be totally applicable for this list
+> is...I have my netfilter/iptables set up on a Redhat 4 Ent WS box...are
+> the following parameters for hardening still useful and applicable with
+> the current kernel and distro?
+> 
+> net.ipv4.tcp_syncookies = 1
+> net.ipv4.conf.all.accept_source_route = 0
+> net.ipv4.conf.all.accept_redirects = 0
+> net.ipv4.conf.all.rp_filter = 1
+> net.ipv4.icmp_echo_ignore_all = 1 = 1
+> net.ipv4.icmp_echo_ignore_broadcasts = 1
+> net.ipv4.icmp_ignore_bogus_error_responses = 1
+> net.ipv4.conf.all.log_martians = 1
+
+other than net.ipv4.icmp_echo_ignore_all, yes.  but i'm one of those
+weirdos that does not believe ICMP is some fountain of evil and the
+source of everything bad on the Internet.  you'd have more flexibility
+blocking/allowing specific ICMP packets in your iptables filter rules
+than using sysctl to do it.
+
+-j
+
+--
+"Stewie: It rubs the lotion on its skin or else it gets the hose again."
+        --Family Guy
 
