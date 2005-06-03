@@ -1,7 +1,7 @@
-From: <Chandra.Vempali@infineon.com>
-Subject: RE: Where to mark tc_index field in netfiler code
-Date: Fri, 3 Jun 2005 18:11:53 +0530
-Message-ID: <04EE7AD0450F7B498BA216312943A1A10276E680@blrse201.ap.infineon.com>
+From: "Ginter, Jeff A" <Jeff.Ginter@ca.com>
+Subject: 2 Questions--state (est, rel) and tuning
+Date: Fri, 3 Jun 2005 08:59:06 -0400
+Message-ID: <B80488675062364A909EE60F4A66603807840D05@usilms23.ca.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,123 +17,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: vinod_chandran@multitech.co.in
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Basically I want to mark tc_index in Netfilter based on protocol and=20
-I want to use IP QOS based on the protocol.
+Hello,
 
-If I mark tc_index in netfilter code based on protocol ( since netfilter
-connection Tracker can
-Identify the state of the packet and its protocol ), and then give QoS
-according to protocol
-in IP QOS code by looking at tc_index marked in netfilter code.
+=20
 
-Pls let me know if where to mark tc_index in the Netfilter code ?
+I am brand new to the list and couldn't find an easy way to browse the
+whole archive, so my apologies if this has been discussed (as it
+probably has).
 
-Shud it be done in Connection Tracker code ? Or in ip_nat_xxx.c code (
-ex.  Ip_nat_tcp.c etc...)
-?
+=20
 
-Chandra
+I understand the state concepts, however, I keep seeing example iptable
+scripts with the first rule in each chain being something like....ACCEPT
+related and established packets. =20
 
+=20
 
------Original Message-----
-From: Vinod Chandran [mailto:vinod_chandran@multitech.co.in]=20
-Sent: Friday, June 03, 2005 5:46 PM
-To: Vempali Chandra Sekhara Rao (IFIN CSW WL)
-Subject: Re: Where to mark tc_index field in netfiler code
+My first question is...Is that really needed?  In my other experiences
+with stateful firewalls this rule is not needed because the firewall
+remembers the outgoing packet and the rule is implied...or do I have
+this very wrong?
 
+=20
 
-I dont think it is currently done in the netfilter code. May be u can do
+=20
 
-it similar to how a packet mark value is set.
-Tc_index field corresponds to the /skb->tc_index/ field located in the=20
-packet /sk_buff  structure.
-/This field is handled only in the QOS code.
-If its possible to let it out, any specific reasons why it has to be=20
-done in the netfilter code ?
+My second question, which may not be totally applicable for this list
+is...I have my netfilter/iptables set up on a Redhat 4 Ent WS box...are
+the following parameters for hardening still useful and applicable with
+the current kernel and distro?
 
+=20
 
-Chandra.Vempali@infineon.com wrote:
+net.ipv4.tcp_syncookies =3D 1
+net.ipv4.conf.all.accept_source_route =3D 0
+net.ipv4.conf.all.accept_redirects =3D 0
+net.ipv4.conf.all.rp_filter =3D 1
+net.ipv4.icmp_echo_ignore_all =3D 1 =3D 1
+net.ipv4.icmp_echo_ignore_broadcasts =3D 1
+net.ipv4.icmp_ignore_bogus_error_responses =3D 1
+net.ipv4.conf.all.log_martians =3D 1
 
->Hi Vinod,
->Again, the code under /net/sched is IP QoS code.
->And I want to use tc_index field which was already set in Netfiler code
+=20
 
->based on protocol. I don't want to set tc_index in IP QoS which I can=20
->do easily with tc tool
->
->Pls let me correct if I m wrong
->Regards,
->Chandra
->
->
->-----Original Message-----
->From: Vinod Chandran [mailto:vinod_chandran@multitech.co.in]
->Sent: Friday, June 03, 2005 5:25 PM
->To: Vempali Chandra Sekhara Rao (IFIN CSW WL)
->Subject: Re: Where to mark tc_index field in netfiler code
->
->
->Hi,
->
->You can find places where the index is set in the kernel code in one of
->the scheduler files(/net/sched directory).
->
->Regards,
->Vinod C
->
->Chandra.Vempali@infineon.com wrote:
->
-> =20
->
->>Hi all,
->>
->>I would like to mark tc_index field of sk_buff with my own value based
->>on protocol type (tcp, udp, sip etc) and later I want to use it for=20
->>specifiying QoS for that packet/connection belonging to specific=20
->>protocol.
->>
->>I believe I can mark this field in Netfilter code in either Connection
->>tacker code or in protocol specific code,
->>
->>Can anybody shed some light on this ?
->>
->>Regards,
->>Chandra
->>
->>*Disclaimer*
->>"This e-mail and any attachments are confidential and may contain=20
->>trade
->>   =20
->>
->
-> =20
->
->>secrets or privileged or undisclosed information. They may also be
->>subject to copyright protection. Please do not copy, distribute or=20
->>forward this email to anyone unless authorised. If you are not a named
+=20
 
->>addressee, you must not use, disclose, retain or reproduce all or any=20
->>part of the information contained in this e-mail or any attachments.
-If
->>   =20
->>
->
-> =20
->
->>you have received this email by mistake please notify the sender
->>immediately by return email and destroy/delete all copies of the=20
->>email."
->>
->>
->>
->>=20
->>
->>   =20
->>
->
-> =20
->
+Thanks very much for any help!
+
+=20
+
+=20
+
+=20
+
+Jeff Ginter, CISSP
+
+Computer Associates
+
+Mid-Atlantic Consulting Manager
+
+tel:    +1 908 874-9726
+
+cell:   +1 609 577-1494
+
+jeff.ginter@ca.com
+
+=20
+
+=20
 
