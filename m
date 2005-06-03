@@ -1,14 +1,13 @@
-From: Sertys <sertys@supportivo.org>
-Subject: Re: iptables on multiple CPUs (SMP & Hyperthreading question)
-Date: Fri, 3 Jun 2005 12:12:08 +0000 (UTC)
-Message-ID: <opsruyzzkd76nf2y@xonix>
-References: <d6dfb92c05060215211afa98c@mail.gmail.com>
-	<429FBD3B.4040007@gmx.co.uk>
+From: "Eduardo Spremolla" <edspremolla@antel.com.uy>
+Subject: Re: Cambiar Encabezado de IP (Ayuda urgente x favor)
+Date: Fri, 03 Jun 2005 09:29:19 -0300
+Message-ID: <1117801759.16631.1.camel@fly.in.iantel.com.uy>
+References: <7b85e5305060220022c818b8f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Date: Sat, 04 Jun 2005 21:29:49 +0300
-In-Reply-To: <429FBD3B.4040007@gmx.co.uk>
+In-Reply-To: <7b85e5305060220022c818b8f@mail.gmail.com>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,87 +18,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
-To: Netfilter list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="utf-8"
+To: Guillermo Javier Nardoni <gjnardoni@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thu, 02 Jun 2005 21:15:23 -0500, /dev/rob0 <rob0@gmx.co.uk> wrote:
+Gille Creo que lo que precisas es un SNAT en la cadena POSTROUTING
 
-> Michael Buffer wrote:
->> I'm considering purchasing some firewall machines for my organization,=
- =20
->> and
->> I am trying to decide whether a machine with multiple CPUs is worth th=
-e
->> additional expense performance-wise (aside from being able to assign =20
->> CPUs
->
-> ??? I cannot believe this is even under consideration. Just how big is =
-=20
-> your organisation?
->
-> I run iptables firewalls on very modest machines, with single and dual =
-=20
-> T1 lines, and there is never any CPU load from the packet filtering nor=
- =20
-> the NAT. I don't have any really large sites, but I strongly suspect =20
-> that iptables firewalling of very large sites could easily be handled b=
-y =20
-> dumpster-grade equipment.
->
-> Of course with a budget like yours you'll want something new, which is =
-=20
-> better (we hope) for the physical reliability of the machine. A fast CP=
-U =20
->   is useful for a fast boot time to minimise down time in the event of =
-=20
-> problems. Otherwise, a waste.
->
-> Listen, I ran my home cable, with multiple simultaneous large downloads=
- =20
-> and 3-4 busy Web browsers on a 386. It never broke a sweat. This of =20
-> course used ISA 10Mbit NIC's. It could have handled many times the load=
- =20
-> without problem.
->
-> Why did I decommision it? Electricity. I only had so many outlets, and =
-I =20
-> needed a machine to perform more complex tasks, so the firewall job got=
- =20
-> handed off to another machine, and the 386 was retired. Still here in =20
-> case I need it again.
->
-> I need a new computer ATM. How about I build a firewall machine for you=
-, =20
-> and you send me that SMP super machine? ;)
+      I think that what you need is a SNAT in the PREROUTING chain.
 
-This of course seems to me like a stupendous statement. OK? If your =20
-firewall is hit by 3000 packets per minute - that's not a great load =20
-issue. But imagine you have 30000 clients you need to NAT and route. =20
-That's awful lotta power and you don't have to underestimate the chance o=
-f =20
-you CPU not handling them. I've seen such situations in many ISP's.Their =
-=20
-routers(x86) just can't handle the traffic. And the dude one step before =
-=20
-in the thread asked you the right question anyway : Just how big is your =
-=20
-organisation? Measure your traffic! If it is less than 200-300 mbit/s you=
- =20
-should not be worrying. If it's more and you have some intense =20
-services(IDS's , slow-rule traversal,because of many rules,multiple =20
-servers on each machine), that's when you shall invest your $$$ in BIGGER=
- =20
-machines. Indeed linux handles SMP almost perfectly, same for HT, but bot=
-h =20
-of them is not a good idea(2x2 Xeons for example), because of the =20
-inconvinience of the posix threading model and the lack of specialized =20
-support for this type of process queuing.
+LALO
 
+On Fri, 2005-06-03 at 00:02 -0300, Guillermo Javier Nardoni wrote:
+> osea, eso ya est=C3=A1 pero cuando uno inicia una conexi=C3=B3n al =
+puerto
+> 7777/2106 (esta conexi=C3=B3n la hacen desde internet al linux, y el =
+linux
+> la forwadea al windows 2000) pero la ip que reconoce windows es la de
+> internet (como por ehmeplo 200.43.16.125) y yo quiero, porque sino no
+> funciona, que el windows vea a (200.43.16.125 como si fuera
+> 192.168.2.1, me explico?) entonces lo que necsito (a mi modo de ver
+> las cosas, es cambiar el source ip( 200.43.16.125) ante cada =
+conexi=C3=B3n
+> entrante en el linux box para el puerto 7777/2106 por (192.168.2.1) y
+> luego all=C3=AD se enrute para el windows 2000.
+>=20
+> digamos que el windows 2000 no tiene que enterarse que la =
+conexi=C3=B3n la
+> hizo una ip externa , sino como si fuera un cliente mas de la red a la
+> que pertenece:D
+>=20
 --=20
-www.supportivo.org
+Ing. Eduardo Spremolla
+Jefe I+D
+Antel
+Uruguay
 
-I can't stop myself checking for pigs in the outlets. Everybody thinks i'=
-m =20
-a punk, cause of the hairstyle(220V).
-end
+
+Este e-mail y cualquier posible archivo adjunto est=C3=A1 dirigido =
+=C3=BAnicamente al destinatario del mensaje y contiene informaci=C3=B3n =
+que puede ser confidencial. Si Ud. no es el destinatario correcto por =
+favor notifique al remitente respondiendo este mensaje y elimine =
+inmediatamente el e-mail y los posibles archivos adjuntos al mismo de su =
+sistema. Est=C3=A1 prohibida cualquier utilizaci=C3=B3n, difusi=C3=B3n o =
+copia de este e-mail por cualquier persona o entidad que no sean las =
+espec=C3=ADficas destinatarias del mensaje. ANTEL no acepta ninguna =
+responsabilidad con respecto a cualquier comunicaci=C3=B3n que haya sido =
+emitida incumpliendo nuestra Pol=C3=ADtica de Seguridad de la =
+Informaci=C3=B3n.
+. . . . . . . . .
+This e-mail and any attachment is confidential and is intended solely =
+for the addressee(s). If you are not intended recipient please inform =
+the sender inmediately, answering this e-mail and delete it as well as =
+the attached files. Any use, circulation or copy of this e-mail by any =
+person or entity that not is the specific addressee(s) is prohibited. =
+ANTEL is not responsible for any communication emitted without =
+respecting our Information Security Policy.
 
