@@ -1,13 +1,12 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Generating TCP traffic!!
-Date: Sat, 04 Jun 2005 16:34:23 -0400
-Message-ID: <1117917263.2143.18.camel@grendel>
-References: <42a05192.138faab2.0b46.6bc8SMTPIN_ADDED@mx.gmail.com>
-	<9927912d050604105027288759@mail.gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: 1:1 nat not working;
+Date: Sat, 4 Jun 2005 16:59:59 -0400
+Message-ID: <20050604205959.GA20903@bender.817west.com>
+References: <Pine.LNX.4.60.0506041550330.2474@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9927912d050604105027288759@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.60.0506041550330.2474@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,20 +18,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Sat, 2005-06-04 at 13:50, Visham Ramsurrun wrote:
-> Hi to all,
+On Sat, Jun 04, 2005 at 04:04:18PM -0400, R. DuFresne wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
 > 
-> I would like to know if there's any tool or software that can be used
-> to generate packets of different protocols like TCP, UDP, ARP ....
+> 
+> Okay, I need help getting this working, I've wasted too much time on it 
+> and can't get it functional.
+> 
+> address mappings in /etc/hosts ;
+> 
+> # IP Block:  public-IP.16/28
+> # usable IPs are public-IP.18 - public-IP.30
+> # base subnet   public-IP.16
+> # broadcast address  public-IP.31
+> # subnet mask 255.255.255.240
 
-For basic stuff (TCP/UDP) nmap is probably the easiest. For hard core
-packet crafting, my personal favorite is hping:
-http://www.hping.org/
+and you've added the IP's .18 - .30 as aliases on your external
+interface of your firewall machine with:
 
-HTH,
-Chris
+  for i in `seq 18 30`; do
+    ip addr add x.y.z.${i} dev ${EXT_IF}
+  done
 
+right?
 
+as an aside, you could reduce the number of rules you have by using
+NETMAP and a bit of auto-summarization:
+
+  x.y.z.18/31
+  x.y.z.20/30
+  x.y.z.24/30
+  x.y.z.28/31
+  x.y.z.30/32
+
+  iptables -t nat -A PREROUTING -d x.y.z.18/31 \
+    -j NETMAP --to 192.168.80.18/31
+  iptables -t nat -A POSTROUTING -s 192.168.80.18/31 \
+    -j NETMAP --to x.y.z.18/31
+
+  etc...
+
+-j
+
+--
+"Jennifer Love Hewitt: "I Know What You Did Last Summer"?
+ Peter: Nope... never heard of it.
+ Jennifer Love Hewitt: "The Devil and Daniel Webster"?
+ Peter: No.
+ Jennifer Love Hewitt: "Party of Five"?
+ Peter: Was that a porno?"
+        --Family Guy
 
