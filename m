@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: 2 Questions--state (est, rel) and tuning
-Date: Fri, 3 Jun 2005 11:40:28 -0400
-Message-ID: <20050603154028.GA17190@bender.817west.com>
-References: <B80488675062364A909EE60F4A66603807840D05@usilms23.ca.com>
+From: Georgi Alexandrov <tehlists@hotpop.com>
+Subject: Re: Cambiar Encabezado de IP (Ayuda urgente x favor)
+Date: Sat, 04 Jun 2005 16:32:42 +0300
+Message-ID: <42A1AD7A.4070207@hotpop.com>
+References: <7b85e5305060216514cb1d860@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <B80488675062364A909EE60F4A66603807840D05@usilms23.ca.com>
+In-Reply-To: <7b85e5305060216514cb1d860@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,73 +17,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Fri, Jun 03, 2005 at 08:59:06AM -0400, Ginter, Jeff A wrote:
-> I understand the state concepts, however, I keep seeing example iptable
-> scripts with the first rule in each chain being something like....ACCEPT
-> related and established packets.  
-> 
-> My first question is...Is that really needed?
+Guillermo Javier Nardoni wrote:
 
-yes.
-
-> In my other experiences
-> with stateful firewalls this rule is not needed because the firewall
-> remembers the outgoing packet and the rule is implied...or do I have
-> this very wrong?
-
-iptables behaves differently than every other stateful firewall i can
-think of (check point, pix, ipf, pf) in that they all behave this way:
-
-1 - check state table for matching connection, if found--pass packet.
-2 - if packet not found in state table--traverse filter rules
-
-both check point and pix actually have additional checks and
-restrictions, but that's a simplistic explanation to get the point
-across.
-
-the way iptables works is that as soon as the ip_conntrack module is
-loaded, the conntrack table (state table) begins to be populated by
-connections passing through the machine.  if you want to load filter
-rules, you have an interface into the connections in the state table via
--m state--thus to pass connections that are fully established in the
-state table:
-
-  -A ${CHAIN} -m state --state ESTABLISHED -j ACCEPT
-
-as the first rule basically emulates the basic behavior of other
-firewalls.  in the simplistic case--this adds more work for the novice
-user that is accustomed to stateful tracking "just magically working,"
-but in the advanced case, it gives a nice level of flexibility to
-actually bypass or override what's in the state table.  the spirit of
-linux:  maximum flexibility.
-
-> My second question, which may not be totally applicable for this list
-> is...I have my netfilter/iptables set up on a Redhat 4 Ent WS box...are
-> the following parameters for hardening still useful and applicable with
-> the current kernel and distro?
-> 
-> net.ipv4.tcp_syncookies = 1
-> net.ipv4.conf.all.accept_source_route = 0
-> net.ipv4.conf.all.accept_redirects = 0
-> net.ipv4.conf.all.rp_filter = 1
-> net.ipv4.icmp_echo_ignore_all = 1 = 1
-> net.ipv4.icmp_echo_ignore_broadcasts = 1
-> net.ipv4.icmp_ignore_bogus_error_responses = 1
-> net.ipv4.conf.all.log_martians = 1
-
-other than net.ipv4.icmp_echo_ignore_all, yes.  but i'm one of those
-weirdos that does not believe ICMP is some fountain of evil and the
-source of everything bad on the Internet.  you'd have more flexibility
-blocking/allowing specific ICMP packets in your iptables filter rules
-than using sysctl to do it.
-
--j
-
---
-"Stewie: It rubs the lotion on its skin or else it gets the hose again."
-        --Family Guy
+>Hola, bueno ya he leído, configurado hice maniobras de todo tipo y no pude
+>lograrlo
+>les comento cual es mi situación:
+>
+>Escenario:
+>
+>Linux Box con:
+>
+>eth0: (red interna 192.168.0.0/24)
+>ip: 192.168.0.1
+>nm: 255.255.255.0
+>
+>eth1: (todos los servidores internos colgados de aquí (son tres en total))
+>ip: 192.168.1.1
+>nm: 255.255.255.0
+>
+>
+>eth2: (placa de red para conectar el router cisco 677 con conexion pppoe)
+>ip: 10.0.0.1
+>nm: 255.0.0.0
+>
+>ppp0: Conexión a Internet (pppoe dhcp)
+>
+>todo funciona barbaro pero necesito hacer lo siguiente
+>
+>
+>Windows 2000 server correidno un software enlatado (sobre intranet)
+>escuchando en los puertos 7777/2106
+>
+>eth0:
+>ip: 192.168.1.2
+>nm: 255.255.255.0
+>gw: 192.168.2.1
+>
+>el tema es que cuando un cliente hace una coneixón a travez de la internfaz
+>ppp0 , yo lo enruto para que
+>haga dnat y snat al server win2000
+>lo hace bien, peeeeeero lo hace con la ip del linux (externo , esto es por
+>ejemplo 200.43.16.125) y
+>yo necesito que lo hago con la ip 192.168.2.1 , sino no me funciona el
+>software
+>esto sería cambiar el source ip antes de ser enrutado pero probé de mil
+>maneras
+>y puedo lograrlo y me urge poder hacerlo ya que estoy sin poder laburar y
+>tengo a un mo´ntón de clientes
+>colgados x este tema
+>agradecería una ayuda suya
+>
+>
+>reitero, anda todo bien cuando un usuario de la internet se coencta al linux
+>box, éste (el linux) rutea hacia el windows 2000 y se logra la conexión sin
+>problemas
+>peeeero cuando pido el log en windows 2000 me dice que la ip desde donde se
+>logueo fue 200.43.16.125 (por dar un ejemplo) cuando debería de ser
+>la ip interna del firewall (en este caso 192.168.2.1)
+>
+>
+>Atte.-
+>Guillermo Javier Nardoni
+>Argentina.-
+>
+>
+>  
+>
+Where's the sign "Spanish mailing list" ?!
 
