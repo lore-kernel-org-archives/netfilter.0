@@ -1,14 +1,12 @@
-From: codewarrior@cuseeme.de
-Subject: Opencuseeme
-Date: Sun, 5 Jun 2005 04:54:26 +0200
-Message-ID: <38706D07-F8B6-461F-B706-229CDCDBD7DF@cuseeme.de>
-References: <Pine.LNX.4.60.0506041550330.2474@darkstar.sysinfo.com>
-	<20050604205959.GA20903@bender.817west.com>
-	<Pine.LNX.4.60.0506041808480.2474@darkstar.sysinfo.com>
-Mime-Version: 1.0 (Apple Message framework v730)
-Content-Transfer-Encoding: 7bit
+From: Alexander Salmin <security.member@gmail.com>
+Subject: IRC and ident with iptables
+Date: Sun, 5 Jun 2005 16:23:50 +0200
+Message-ID: <393114f9050605072369575137@mail.gmail.com>
+Reply-To: Alexander Salmin <security.member@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.60.0506041808480.2474@darkstar.sysinfo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +17,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hello eperts all, sorry for my  offtopic post.
-Due  to the massive  influence from tycoon firms,
-apple for  example ,during  the miss use of videolan hacks
-and the ongoing  software patents disscussion in europe
-and the pressure from the mpaa on bittorrent users
-i think there is a strong need for  "Opencuseeme"
-a free peer2peer multiconferencing tool.
-so you might  have a look
-and join
+Hi.
 
-best regards
+I've set up my firewall so that it provides NAT for a small network.
+That network has about 10 computers who are beeing used by diffrent
+users. The problem is that I can't find a way to make the IRC-servers
+that those computers are connected to recognize each computers
+diffrent ident. So, what I would like to know is if there is a way to
+make iptables recognize to whom it should portforward to, based of
+what internal ip that is connecting. Can it be done? If not, is there
+any identd-server for Linux 2.6 that you know could do this?
 
-
-www.cuseeme.de
-********************************************************
-opencuseeme  -  peer2peer multiparty conferencing
+-Alexander
 
