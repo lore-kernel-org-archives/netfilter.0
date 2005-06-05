@@ -1,12 +1,13 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: IRC and ident with iptables
-Date: Sun, 05 Jun 2005 09:46:21 -0500
-Message-ID: <42A3103D.7030702@gmx.co.uk>
-References: <393114f9050605072369575137@mail.gmail.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Generating TCP traffic!!
+Date: Sun, 05 Jun 2005 18:23:20 +0200
+Message-ID: <1117988600.5229.23.camel@anduril.intranet.cartel-securite.net>
+References: <42a05192.138faab2.0b46.6bc8SMTPIN_ADDED@mx.gmail.com>
+	<9927912d050604105027288759@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <393114f9050605072369575137@mail.gmail.com>
+In-Reply-To: <9927912d050604105027288759@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alexander Salmin <security.member@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Visham Ramsurrun <vishamr2000@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Alexander Salmin wrote:
-> diffrent ident. So, what I would like to know is if there is a way to
-> make iptables recognize to whom it should portforward to, based of
-> what internal ip that is connecting. Can it be done? If not, is there
+Le samedi 04 juin 2005 =E0 21:50 +0400, Visham Ramsurrun a =E9crit :
+> I would like to know if there's any tool or software that can be used
+> to generate packets of different protocols like TCP, UDP, ARP ....
 
-That would be tricky, but perhaps possible using some extension of 
-connection tracking ... whoever makes a new connection to an ircd is 
-going to get the next ident query from that IP.
+Scapy :
 
-> any identd-server for Linux 2.6 that you know could do this?
+	http://www.cartel-securite.fr/pbiondi/projects/scapy/
 
-This is how I'd go about it. I've seen numerous identd's listed on 
-freshmeat which claim to be able to do this. It wouldn't be that 
-complicated, I think: look up the connection in ip_conntrack, query the 
-appropriate internal identd, give that reply to the external client.
--- 
-     mail to this address is discarded unless "/dev/rob0"
-     or "not-spam" is in Subject: header
+You can find a preso at :
+
+	http://www.cartel-securite.fr/pbiondi/conf/scapy_csw05.pdf
+
+
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
