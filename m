@@ -1,13 +1,14 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Fedora 3, missing ip_conntrack_ftp & ip_nat_ftp
-Date: Sat, 04 Jun 2005 18:39:06 -0400
-Message-ID: <1117924745.2105.2.camel@grendel>
-References: <1117901467.2143.15.camel@grendel>
-	<20050604211715.GA20974@bender.817west.com>
-Mime-Version: 1.0
+From: codewarrior@cuseeme.de
+Subject: Opencuseeme
+Date: Sun, 5 Jun 2005 04:54:26 +0200
+Message-ID: <38706D07-F8B6-461F-B706-229CDCDBD7DF@cuseeme.de>
+References: <Pine.LNX.4.60.0506041550330.2474@darkstar.sysinfo.com>
+	<20050604205959.GA20903@bender.817west.com>
+	<Pine.LNX.4.60.0506041808480.2474@darkstar.sysinfo.com>
+Mime-Version: 1.0 (Apple Message framework v730)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050604211715.GA20974@bender.817west.com>
+In-Reply-To: <Pine.LNX.4.60.0506041808480.2474@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +19,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Sat, 2005-06-04 at 17:17, Jason Opperisano wrote:
->
-> /sys/modules?  huh?  try:
-> 
-> ls /lib/modules/`uname -r`/kernel/net/ipv4/netfilter/*_ftp*
+hello eperts all, sorry for my  offtopic post.
+Due  to the massive  influence from tycoon firms,
+apple for  example ,during  the miss use of videolan hacks
+and the ongoing  software patents disscussion in europe
+and the pressure from the mpaa on bittorrent users
+i think there is a strong need for  "Opencuseeme"
+a free peer2peer multiconferencing tool.
+so you might  have a look
+and join
 
-That did the trick. Running insmod while referencing that directory
-caused the appropriate /sys/modules entry to get created. That was the
-piece I was missing.
-
-Thanks!
-Chris
+best regards
 
 
+www.cuseeme.de
+********************************************************
+opencuseeme  -  peer2peer multiparty conferencing
 
