@@ -1,12 +1,10 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: Re: VPN server
-Date: Mon, 06 Jun 2005 06:32:44 -0700
-Message-ID: <BEC99E8C.8162%gary@primeexalia.com>
-References: <20050606095710.25101.qmail@web51904.mail.yahoo.com>
+From: Peter Marshall <peter.marshall@caris.com>
+Subject: bad packets crash firewall.
+Date: Mon, 06 Jun 2005 12:10:04 -0300
+Message-ID: <42A4674C.30102@caris.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050606095710.25101.qmail@web51904.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +15,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Alireza Yazdani <yazdani1193@yahoo.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Alireza,
+I am not sure if this is related to bad packets, a bad pptp patch, poor 
+kernal .. I am at a loss.
 
-Try the poptop mailling list.
+I haev a firewall iptables on FC3.  It was reciently pached to include 
+support for pptp.  When one of the users (who has a linux desktop) tries 
+using pptp, the firewall crashes .. (the entire box panics).  Any ideas 
+how one user could bring the firewall down .. I need to fix this somehow 
+.  THis problem does not appear when windows users attempt to use pptp.
 
-Gary Smith
 
+THank you for any advice,
+Peter
 
-On 6/6/05 2:57 AM, "Alireza Yazdani" <yazdani1193@yahoo.com> wrote:
-
-> I installed VPN server on fedora core 3 .
-> I don't need any advanced features , I want use an external radius only.how
-> can I configure pppd or pptpd for use of authenticate and accounting features
-> on external radius.
-> my user exist on LAN and there is no any modem connection, now I want
-> configure VPN server that all users connect to my network through VPN
-> connection .
-> how?
-> many thanks 
-> 
-> 
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam protection around
-> http://mail.yahoo.com 
 
 
