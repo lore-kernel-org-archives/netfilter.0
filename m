@@ -1,7 +1,7 @@
 From: "Douglas Lane" <doug@interserve.co.za>
 Subject: Iptables counting with Layer7 patch
-Date: Mon, 6 Jun 2005 13:36:07 +0200
-Message-ID: <20050606113623.0586C2E9E5@smtp02.isdsl.net>
+Date: Mon, 6 Jun 2005 13:37:46 +0200
+Message-ID: <20050606113753.C9E182EA64@smtp02.isdsl.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
