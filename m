@@ -1,12 +1,9 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: bad packets crash firewall.
-Date: Mon, 06 Jun 2005 10:43:55 -0500
-Message-ID: <42A46F3B.1080507@gmx.co.uk>
-References: <42A4674C.30102@caris.com> <42A46D7E.4020805@gmx.co.uk>
+From: Lucky Leavell <netfilter@UniXpress.com>
+Subject: Detecting/Defeating Spambots
+Date: Mon, 6 Jun 2005 12:49:53 -0400 (EDT)
+Message-ID: <Pine.LNX.4.61.0506061244340.1874@UniXpress93.unixpress.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42A46D7E.4020805@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,25 +14,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-I wrote:
->> I am not sure if this is related to bad packets, a bad pptp patch, 
->> poor kernal .. I am at a loss.
-> 
-> [snip]
-> 
-> Check your logs, do debugging of the more likely suspect, pptpd.
+OS: SuSE 9.3 Pro
 
-Or, on further thought, the MPPE kernel patch you used is equally 
-suspect. Are the Windows users using MPPE? How about the Linux one?
+I work with a small ISP and we are encountering with increasing frequency 
+Windows machines which have been compromised and apparently being used as 
+spambots based on their attempted connection to port 25 of foreign hosts 
+instead on using our mail server for outgoing mail.
 
-Please note, this is not an invitation to continue in an offtopic thread 
-here, I am only trying to be complete in providing something which might 
-be useful to you. I no longer support pptpd at my sites; we are moving 
-them to openvpn.
--- 
-     mail to this address is discarded unless "/dev/rob0"
-     or "not-spam" is in Subject: header
+With allowance for legitimate exceptions, could we simply disallow port 25 
+connections from within our networks to any but our mail servers? (We run 
+all outgoing -as well as incoming- mail thru amavis/clamav/spamassassin.)
+
+Any other thoughts or links to resources?
+
+Thank you,
+Lucky
 
