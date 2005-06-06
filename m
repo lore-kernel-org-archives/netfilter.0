@@ -1,11 +1,12 @@
-From: "Piszcz, Justin" <jpiszcz@servervault.com>
-Subject: RE: IRC and ident with iptables
-Date: Mon, 6 Jun 2005 07:00:14 -0400
-Message-ID: <F8B974E70BDE1745ABB27AF04788FA005BFE3A@mail1.dulles.sv.int>
+From: Oran G <jihad@redwhitearmy.com>
+Subject: Re: port forwaring from localhost to inet
+Date: Mon, 06 Jun 2005 13:25:09 +0200
+Message-ID: <42A43295.6050609@redwhitearmy.com>
+References: <42A1DDEB.9040207@redwhitearmy.com> <42A40FC9.4040804@mnemon.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <42A40FC9.4040804@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: /dev/rob0 <rob0@gmx.co.uk>, Alexander Salmin <security.member@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Yes, oidentd.
+>
+>
+>Oran G schrieb:
+>  
+>
+>>hello,
+>>
+>>I want to forward local requests to a mashine on the network.
+>>    
+>>
+>
+>This is done in nat table with OUTPUT chain. This chain is for natting
+>locally generated packages. If you don't have this chain, you have to
+>recompile the kernel with appropriate settings.
+>
+>Have a nice time
+>
+>Joerg
+>  
+>
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of /dev/rob0
-Sent: Sunday, June 05, 2005 10:46 AM
-To: Alexander Salmin
-Cc: netfilter@lists.netfilter.org
-Subject: Re: IRC and ident with iptables
+that was it, thanx!
 
-Alexander Salmin wrote:
-> diffrent ident. So, what I would like to know is if there is a way to
-> make iptables recognize to whom it should portforward to, based of
-> what internal ip that is connecting. Can it be done? If not, is there
+iptables -t nat -A OUTPUT -o lo -p tcp --dport 8111 -j DNAT --to-destination 192.168.0.11:80
 
-That would be tricky, but perhaps possible using some extension of=20
-connection tracking ... whoever makes a new connection to an ircd is=20
-going to get the next ident query from that IP.
+this leadts me to my second question, maybe little offtopic:
 
-> any identd-server for Linux 2.6 that you know could do this?
+i can realize the same functionality with an ssh tunnel. since encryption is a nice extra but not neccesary i wonder about how it would affect the performance of the communikation line. 
 
-This is how I'd go about it. I've seen numerous identd's listed on=20
-freshmeat which claim to be able to do this. It wouldn't be that=20
-complicated, I think: look up the connection in ip_conntrack, query the=20
-appropriate internal identd, give that reply to the external client.
---=20
-     mail to this address is discarded unless "/dev/rob0"
-     or "not-spam" is in Subject: header
+both of my mashines have 2-3 GigH CPUs, and as i described befor, one runs apache the another mysql, both under heavy use.
+
+oran G
 
 
