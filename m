@@ -1,12 +1,9 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: port forwaring from localhost to inet
-Date: Mon, 06 Jun 2005 10:56:41 +0200
-Message-ID: <42A40FC9.4040804@mnemon.de>
-References: <42A1DDEB.9040207@redwhitearmy.com>
+From: Phani Kumar <pkumar@students.iiit.net>
+Subject: redirect unauthenticated traffic to a registration portal
+Date: Mon, 6 Jun 2005 15:17:21 +0530 (IST)
+Message-ID: <Pine.LNX.4.61.0506061504430.23665@students.iiit.ac.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42A1DDEB.9040207@redwhitearmy.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +14,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Oran G schrieb:
-> hello,
-> 
-> I want to forward local requests to a mashine on the network.
+Hi,
+    I have implemented a linux router with 4 interfaces.
 
-This is done in nat table with OUTPUT chain. This chain is for natting
-locally generated packages. If you don't have this chain, you have to
-recompile the kernel with appropriate settings.
+eth0 -- outside net
+eth1 --
+eth2 --    diff Internal n/ws
+eth3 --
 
-Have a nice time
+Now I had to allow only authenticated traffic to pass through the 
+router(i.e through interface eth0).
+I have a list of all authenticated Mac-addresses in a file.
 
-Joerg
+All unauthenticated traffic (i.e non-authenticated mac-address traffic) 
+had to be redirected to default registration site.
 
 
+Pls can anyone suggest me how to do above task.
+I am able to allow only authenticated traffic by using
+
+iptables -t filter -A FORWARD -m --mac-source xx.xx.xx... -i eth0 -j 
+ACCEPT
+
+and so on for all authenticated users
+
+iptables -t filter -A FORWARD -i eth0 -j DROP
+
+How do I redirect the unathenticated traffic to a registration portal 
+rather than dropping it??
 
 
+Phani
+IIIT-Hyd
 
