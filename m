@@ -1,12 +1,10 @@
-From: Oran G <jihad@redwhitearmy.com>
-Subject: Re: port forwaring from localhost to inet
-Date: Mon, 06 Jun 2005 13:25:09 +0200
-Message-ID: <42A43295.6050609@redwhitearmy.com>
-References: <42A1DDEB.9040207@redwhitearmy.com> <42A40FC9.4040804@mnemon.de>
+From: "Douglas Lane" <doug@interserve.co.za>
+Subject: Iptables counting with Layer7 patch
+Date: Mon, 6 Jun 2005 13:36:07 +0200
+Message-ID: <20050606113623.0586C2E9E5@smtp02.isdsl.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42A40FC9.4040804@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
->
->
->Oran G schrieb:
->  
->
->>hello,
->>
->>I want to forward local requests to a mashine on the network.
->>    
->>
->
->This is done in nat table with OUTPUT chain. This chain is for natting
->locally generated packages. If you don't have this chain, you have to
->recompile the kernel with appropriate settings.
->
->Have a nice time
->
->Joerg
->  
->
 
-that was it, thanx!
+Hi All,
 
-iptables -t nat -A OUTPUT -o lo -p tcp --dport 8111 -j DNAT --to-destination 192.168.0.11:80
+I am wondering, if its possible to setup counters using mark under MANGLE to
+mark certain packets that get tagged by the Layer7 patch.
 
-this leadts me to my second question, maybe little offtopic:
+Basically I want to take certain traffic (such as VoIP,HTTP,FTP,etc...) and
+mark it on INPUT, OUTPUT and FORWARD chains and then using iptables -v to
+get the packet statistics and log it into MRTG or something similar.
 
-i can realize the same functionality with an ssh tunnel. since encryption is a nice extra but not neccesary i wonder about how it would affect the performance of the communikation line. 
+Is it possible, and any ideas how I go about doing this?
 
-both of my mashines have 2-3 GigH CPUs, and as i described befor, one runs apache the another mysql, both under heavy use.
+Thanks
+Doug
 
-oran G
 
 
