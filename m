@@ -1,12 +1,10 @@
-From: Pablo Neira <pablo@eurodev.net>
-Subject: Re: bad packets crash firewall.
-Date: Mon, 06 Jun 2005 22:57:43 +0200
-Message-ID: <42A4B8C7.4030402@eurodev.net>
-References: <42A4674C.30102@caris.com>
+From: Mike Pepe <lamune@doki-doki.net>
+Subject: forwarding ports from aliased ip addresses
+Date: Mon, 06 Jun 2005 18:07:07 -0400
+Message-ID: <42A4C90B.8040306@doki-doki.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42A4674C.30102@caris.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,16 +16,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Peter Marshall <peter.marshall@caris.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Peter Marshall wrote:
-> I am not sure if this is related to bad packets, a bad pptp patch, poor 
-> kernal .. I am at a loss.
+Hi all. I'm new to the list but not to netfiler.
 
-please, post the kernel oops dump to netfilter-devel so we could figure 
-out why it's crashing ;)
+I have a firewall built, with eth5 on the internet. It accepts 
+connections on a few ports from allowed hosts and forwards them to boxes 
+in the DMZ. It works great.
 
---
-Pablo
+I have another client that wants a box configured similarly. I would 
+like to add another internet ip as eth5:1 and then forward certain ports 
+on that new IP to a different box in the DMZ.
+
+using -i eth5:1 doesn't work.
+
+Is this even possible? I've been up and down the man page and I can't 
+seem to figure out a way to differentiate the alias from the "normal" 
+ip. I guess I could add another network card and duplicate the scripts 
+but this seems so wasteful to me.
+
+Hoping someone can help me with this!
+
+thanks
+
+-Mike
 
