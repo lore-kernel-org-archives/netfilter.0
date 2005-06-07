@@ -1,10 +1,9 @@
-From: Matin Tamizi <mtamizi@gmail.com>
-Subject: Stateless NAT -- Writing target module
-Date: Mon, 6 Jun 2005 17:44:48 -0400
-Message-ID: <f68a416050606144423077ead@mail.gmail.com>
-Reply-To: Matin Tamizi <mtamizi@gmail.com>
+From: yhan.cm89@nctu.edu.tw
+Subject: I can't install patch-o-matic-ng-20050606 in Mandrake 10.1
+Date: Tue,  7 Jun 2005 12:57:41 +0800
+Message-ID: <20050607125741.zumvm8w28c8goc4s@webmail.nctu.edu.tw>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
@@ -18,13 +17,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Can you point me in the direction of a decent tut on writing target
-modules?  Writing a target module seems to be the only way to do
-stateless NAT in iptables.
+Hi:
+    I have set the paths of kernel and iptables source codes as following:
+    KERNEL_DIR=/usr/src/linux-2.6.8.1-24mdk/
+    IPTABLES_DIR=/usr/src/linux-2.6.8.1-24mdk/net/ipv4/netfilter
 
-Thank you.
+    But when I tried to run ./runme extra ,  it said " Your iptables version is
+unknown for patch-o-matic at ./runme line 214"
 
--Matin
+    How can I solve it ?  thanks! :-)
+
+-------------------------------------------------
+This mail sent through NCTU WebMail System: https://webmail.nctu.edu.tw
+
 
