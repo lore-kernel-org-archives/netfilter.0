@@ -1,9 +1,12 @@
-From: Tib <tib@tigerknight.org>
-Subject: ip_conntrack_ftp issues
-Date: Thu, 9 Jun 2005 20:03:38 -0500 (CDT)
-Message-ID: <Pine.LNX.4.53.0506092001190.29097@altaica>
+From: KOVACS Krisztian <hidden@sch.bme.hu>
+Subject: Re: I can't install patch-o-matic-ng-20050606 in Mandrake 10.1
+Date: Tue, 07 Jun 2005 14:08:13 +0200
+Message-ID: <1118146093.25686.7.camel@nienna.balabit>
+References: <20050607125741.zumvm8w28c8goc4s@webmail.nctu.edu.tw>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-reply-to: <20050607125741.zumvm8w28c8goc4s@webmail.nctu.edu.tw>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,24 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: yhan.cm89@nctu.edu.tw
+Cc: netfilter@lists.netfilter.org
 
 
-I am trying to setup an ftp service on a non-standard port (42), and had
-initially encountered information that I may have to recompile the module
-entirely.
+  Hi,
 
-Then I saw information saying that I could specify port arguments on the
-insmod command (ie. insmod ip_conntrack_ftp ports=xx,yy,zz).
+2005-06-07, k keltez=E9ssel 12.57-kor yhan.cm89@nctu.edu.tw ezt =EDrt=
+a:
+>     I have set the paths of kernel and iptables source codes as fol=
+lowing:
+>     KERNEL_DIR=3D/usr/src/linux-2.6.8.1-24mdk/
+>     IPTABLES_DIR=3D/usr/src/linux-2.6.8.1-24mdk/net/ipv4/netfilter
+>=20
+>     But when I tried to run ./runme extra ,  it said " Your iptable=
+s version is
+> unknown for patch-o-matic at ./runme line 214"
+>=20
+>     How can I solve it ?  thanks! :-)
 
-I'm on debian with iptables 1.2.11 installed - which of the above is true?
-I tried using the insmod command with arguments and got no errors in
-response, but the module didn't appear to work. Is it possible (if
-necessary) to recompile just the module or will I have to redo my whole
-kernel just for a single file or two?
+  You have to download the separate iptables (userspace program you r=
+un
+to configure your firewall rules) tarball, untar it, then specify its
+path to the ./runme script. (Your current setting points poor ./runme=
+ to
+search for the iptables user space sources in your kernel source
+tree...)
 
-<EOL>
-Tib
+--=20
+KOVACS Krisztian <hidden@sch.bme.hu>
+
+
 
