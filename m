@@ -1,12 +1,10 @@
-From: Matin Tamizi <mtamizi@gmail.com>
-Subject: Stateless NAT
-Date: Tue, 7 Jun 2005 11:27:40 -0400
-Message-ID: <f68a4160506070827307b0080@mail.gmail.com>
-Reply-To: Matin Tamizi <mtamizi@gmail.com>
+From: "Gustavo Castro Puig" <gcastro@gcp.com.uy>
+Subject: Route traffic per protocol - it is possible?
+Date: Tue, 7 Jun 2005 13:55:27 -0300 (UYT)
+Message-ID: <40473.200.125.13.172.1118163327.squirrel@webmail.prolinux.net.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,32 +16,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I'm trying to setup stateless NAT on a testbed I'm using for
-university research on DDoS.  We are developing a stateless DDoS
-prevention tool, but to test the software I need to use stateless NAT
-to force traffic from outside through one computer, the router, and to
-the victim.
+Hi, list!
 
-I tried the NETMAP target module, but the router is still filtering my
-out of state packets from the attack.  The following show the rules in
-my nat table:
+  I've got an issue to resolve and I want to know if it's possible to do
+it with netfilter/iproute2. I've been googling for some time, but I
+couldn't find the way to do this (may be I'm not searching the correct
+way), so any help from you will be *VERY* appreciated.
+  I have a firewall with two links, on direct to Internet and another (to
+internet too) through another firewall. All traffic is now going to
+Internet through the other firewall, but I want to know if it's possible
+to send some traffic (not all) through the direct link to Internet. I
+don't want to redirect all traffic coming from some IPs, intead, I want
+to redirect only SSH traffic (for example) from the box through the
+direct link and all other traffic to the other firewall. Something like
+a "per-protocol routing policy". I've been trying with iproute2 and
+iptables, marking packets and routing them with two routing tables, but
+it didn't work.
+  The firewall have two nic, one (eth0) with an address 192.168.0.15 and
+the other (eth1) with the public address.
+  This is what I've done:
 
-root # iptables -t nat -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-NETMAP     all  --  anywhere             <victim's ip address> 192.168.13.2=
-/32
+------------------------------------------------------------------------
+ip route flush table NEW
+ip route add 192.168.0.0/24 dev eth0 table NEW
+ip route add default via XXX.XXX.XXX.XXX table NEW dev eth1
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-SNAT       all  --  192.168.13.2         anywhere          =20
-to:<victim's ip address>
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+ip rule add fwmark 1 table NEW
 
-I appreciate any suggestions on how I could correct my setup so I can
-use stateless.
+ip rule add from XXX.XXX.XXX.XXX table NEW
+
+iptables -t mangle -A OUTPUT -p tcp --dport 22 -j MARK --set-mark 1
+------------------------------------------------------------------------
+  None of this lines generate errors.
+  May be this is not possible, but if it is, how could be done?
+  Thanks in advance!
+
+Cheers,
+     G.Castro P.
+
+
 
