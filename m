@@ -1,12 +1,12 @@
-From: Daniel Ivanov <sertys@supportivo.org>
-Subject: Re: forwarding ports from aliased ip addresses
-Date: Tue, 07 Jun 2005 12:56:24 +0300
-Message-ID: <42A56F48.3020804@supportivo.org>
-References: <42A4C90B.8040306@doki-doki.net>
+From: Georgi Alexandrov <tehlists@hotpop.com>
+Subject: Re: Detecting/Defeating Spambots
+Date: Tue, 07 Jun 2005 14:31:52 +0300
+Message-ID: <42A585A8.3060001@hotpop.com>
+References: <Pine.LNX.4.61.0506061244340.1874@UniXpress93.unixpress.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42A4C90B.8040306@doki-doki.net>
+In-Reply-To: <Pine.LNX.4.61.0506061244340.1874@UniXpress93.unixpress.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,32 +20,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Yes, just use -d ip_of_client insted.
-iptables -A FORWARD -i eth5 -o ethX -d dedicated_ip_of_client -j FORWARD
+Lucky Leavell wrote:
 
-Mike Pepe wrote:
+>OS: SuSE 9.3 Pro
+>
+>I work with a small ISP and we are encountering with increasing frequency 
+>Windows machines which have been compromised and apparently being used as 
+>spambots based on their attempted connection to port 25 of foreign hosts 
+>instead on using our mail server for outgoing mail.
+>
+>With allowance for legitimate exceptions, could we simply disallow port 25 
+>connections from within our networks to any but our mail servers? 
+>
+Yes, something like that:
+iptables -A FORWARD -p tcp -s $our_networks -d ! 
+$our_mail_server_ip_addr --dport 25 -j DROP
 
-> Hi all. I'm new to the list but not to netfiler.
+>(We run 
+>all outgoing -as well as incoming- mail thru amavis/clamav/spamassassin.)
 >
-> I have a firewall built, with eth5 on the internet. It accepts 
-> connections on a few ports from allowed hosts and forwards them to 
-> boxes in the DMZ. It works great.
+>Any other thoughts or links to resources?
 >
-> I have another client that wants a box configured similarly. I would 
-> like to add another internet ip as eth5:1 and then forward certain 
-> ports on that new IP to a different box in the DMZ.
+>Thank you,
+>Lucky
 >
-> using -i eth5:1 doesn't work.
 >
-> Is this even possible? I've been up and down the man page and I can't 
-> seem to figure out a way to differentiate the alias from the "normal" 
-> ip. I guess I could add another network card and duplicate the scripts 
-> but this seems so wasteful to me.
+>  
 >
-> Hoping someone can help me with this!
->
-> thanks
->
-> -Mike
->
+
 
