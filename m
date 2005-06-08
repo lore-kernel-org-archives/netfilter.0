@@ -1,11 +1,10 @@
-From: Vincent Lenouvel <vincent@info.unicaen.fr>
+From: Georgi Alexandrov <tehlists@hotpop.com>
 Subject: Re: netfilter logging
-Date: Wed, 8 Jun 2005 15:34:40 +0200
-Message-ID: <20050608153440.094d81e2.vincent@info.unicaen.fr>
+Date: Wed, 08 Jun 2005 18:52:34 +0300
+Message-ID: <42A71442.7060000@hotpop.com>
 References: <5885.212.100.225.55.1118237133.squirrel@webmail.*>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg=PGP-SHA1; boundary="=_averell-5520-1118237682-0001-2"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <5885.212.100.225.55.1118237133.squirrel@webmail.*>
 List-Id: <netfilter.vger.kernel.org>
@@ -18,57 +17,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+Jimmy wrote:
 
---=_averell-5520-1118237682-0001-2
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>Hello,
+>
+>I have just started to log my iptables drops. As seen with this line in my
+>iptables-save output.
+>
+>-A INPUT -j LOG --log-level 1
+>-A INPUT -j LOG --log-prefix "Dropped: "
+>
+>What I would like to know is how I can get iptables to NOT log to console
+>only to the message logs. Currently it goes into /var/log/syslog
+>
+>Here is my syslog configuration. I cant see whats wrong with it.
+>
+># /etc/syslog.conf
+># For info about the format of this file, see "man syslog.conf"
+># and /usr/doc/sysklogd/README.linux.  Note the '-' prefixing some
+># of these entries;  this omits syncing the file after every logging.
+># In the event of a crash, some log information might be lost, so
+># if this is a concern to you then you might want to remove the '-'.
+># Be advised this will cause a performation loss if you're using
+># programs that do heavy logging.
+>
+># Uncomment this to see kernel messages on the console.
+>#kern.*                                                 /dev/console
+>
+># Log anything 'info' or higher, but lower than 'warn'.
+># Exclude authpriv, cron, mail, and news.  These are logged elsewhere.
+>*.info;*.!warn;\
+>        authpriv.none;cron.none;mail.none;news.none     -/var/log/messages
+>
+># Log anything 'warn' or higher.
+># Exclude authpriv, cron, mail, and news.  These are logged elsewhere.
+>*.warn;\
+>        authpriv.none;cron.none;mail.none;news.none     -/var/log/syslog
+>
+># Debugging information is logged here.
+>*.=debug                                                -/var/log/debug
+>
+># Private authentication message logging:
+>authpriv.*                                              -/var/log/secure
+>
+># Cron related logs:
+>cron.*                                                  -/var/log/cron
+>
+># Mail related logs:
+>mail.*                                                  -/var/log/maillog
+>
+># Emergency level messages go to all users:
+>*.emerg                                                 *
+>
+># This log is for news and uucp errors:
+>uucp,news.crit                                          -/var/log/spooler
+>
+># Uncomment these if you'd like INN to keep logs on everything.
+># You won't need this if you don't run INN (the InterNetNews daemon).
+>#news.=crit                                     -/var/log/news/news.crit
+>#news.=err                                      -/var/log/news/news.err
+>#news.notice                                    -/var/log/news/news.notice
+>
+>
+>Any advice would be great.
+>
+>Thanks
+>
+>  
+>
+Hello,
 
-On Wed, 8 Jun 2005 14:25:33 +0100 (BST)
-"Jimmy" <squid@oranged.to> wrote:
+Try the ULOG target [1] and the ulogd daemon [2].
+That combination will allow you to log to a particular file.
 
-> Hello,
->=20
-> I have just started to log my iptables drops. As seen with this line in my
-> iptables-save output.
->=20
-> -A INPUT -j LOG --log-level 1
-> -A INPUT -j LOG --log-prefix "Dropped: "
->=20
-> What I would like to know is how I can get iptables to NOT log to console
-> only to the message logs. Currently it goes into /var/log/syslog
->=20
+[1] - http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+[2] - http://freshmeat.net/projects/ulogd/
 
-	cf /usr/src/linux/kernel/printk.c
-
-	echo "4 4 1 7">  /proc/sys/kernel/printk
-
-[...]
-
---=20
-Vincent Lenouvel - <vincent@info.unicaen.fr>
-
-Universit=E9 de Caen, Campus II, Bd Mar=E9chal Juin, BP 5186, 14032 Caen
-
-Empreinte de la cl=E9 =3D D14D EFE9 4F55 AF89 98B0  666B 17E5 C840 4B0D 80E4
-
-wget -O - http://users.info.unicaen.fr/~vincent/signature.asc | gpg --import
-
---=_averell-5520-1118237682-0001-2
-Content-Type: application/pgp-signature
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFCpvPxF+XIQEsNgOQRAgxHAJ4iVs3iO9tyBShKXaKwOshfzhhiFwCeIaff
-oDX8NQNTHQ1ytsE51ZuUqc4=
-=/qak
------END PGP SIGNATURE-----
-
---=_averell-5520-1118237682-0001-2--
+regards,
+Georgi Alexandrov
 
