@@ -1,13 +1,13 @@
-From: "Jimmy" <squid@oranged.to>
-Subject: netfilter logging
-Date: Wed, 8 Jun 2005 14:25:33 +0100 (BST)
-Message-ID: <5885.212.100.225.55.1118237133.squirrel@webmail.*>
+From: Vincent Lenouvel <vincent@info.unicaen.fr>
+Subject: Re: netfilter logging
+Date: Wed, 8 Jun 2005 15:34:40 +0200
+Message-ID: <20050608153440.094d81e2.vincent@info.unicaen.fr>
+References: <5885.212.100.225.55.1118237133.squirrel@webmail.*>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg=PGP-SHA1; boundary="=_averell-5520-1118237682-0001-2"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Received: from 212.100.225.55
-	(SquirrelMail authenticated user squid@oranged.to)
-	by webmail.* with HTTP; Wed, 8 Jun 2005 14:25:33 +0100 (BST)
+In-Reply-To: <5885.212.100.225.55.1118237133.squirrel@webmail.*>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,74 +18,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-I have just started to log my iptables drops. As seen with this line in my
-iptables-save output.
+--=_averell-5520-1118237682-0001-2
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--A INPUT -j LOG --log-level 1
--A INPUT -j LOG --log-prefix "Dropped: "
+On Wed, 8 Jun 2005 14:25:33 +0100 (BST)
+"Jimmy" <squid@oranged.to> wrote:
 
-What I would like to know is how I can get iptables to NOT log to console
-only to the message logs. Currently it goes into /var/log/syslog
+> Hello,
+>=20
+> I have just started to log my iptables drops. As seen with this line in my
+> iptables-save output.
+>=20
+> -A INPUT -j LOG --log-level 1
+> -A INPUT -j LOG --log-prefix "Dropped: "
+>=20
+> What I would like to know is how I can get iptables to NOT log to console
+> only to the message logs. Currently it goes into /var/log/syslog
+>=20
 
-Here is my syslog configuration. I cant see whats wrong with it.
+	cf /usr/src/linux/kernel/printk.c
 
-# /etc/syslog.conf
-# For info about the format of this file, see "man syslog.conf"
-# and /usr/doc/sysklogd/README.linux.  Note the '-' prefixing some
-# of these entries;  this omits syncing the file after every logging.
-# In the event of a crash, some log information might be lost, so
-# if this is a concern to you then you might want to remove the '-'.
-# Be advised this will cause a performation loss if you're using
-# programs that do heavy logging.
+	echo "4 4 1 7">  /proc/sys/kernel/printk
 
-# Uncomment this to see kernel messages on the console.
-#kern.*                                                 /dev/console
+[...]
 
-# Log anything 'info' or higher, but lower than 'warn'.
-# Exclude authpriv, cron, mail, and news.  These are logged elsewhere.
-*.info;*.!warn;\
-        authpriv.none;cron.none;mail.none;news.none     -/var/log/messages
+--=20
+Vincent Lenouvel - <vincent@info.unicaen.fr>
 
-# Log anything 'warn' or higher.
-# Exclude authpriv, cron, mail, and news.  These are logged elsewhere.
-*.warn;\
-        authpriv.none;cron.none;mail.none;news.none     -/var/log/syslog
+Universit=E9 de Caen, Campus II, Bd Mar=E9chal Juin, BP 5186, 14032 Caen
 
-# Debugging information is logged here.
-*.=debug                                                -/var/log/debug
+Empreinte de la cl=E9 =3D D14D EFE9 4F55 AF89 98B0  666B 17E5 C840 4B0D 80E4
 
-# Private authentication message logging:
-authpriv.*                                              -/var/log/secure
+wget -O - http://users.info.unicaen.fr/~vincent/signature.asc | gpg --import
 
-# Cron related logs:
-cron.*                                                  -/var/log/cron
+--=_averell-5520-1118237682-0001-2
+Content-Type: application/pgp-signature
+Content-Transfer-Encoding: 7bit
 
-# Mail related logs:
-mail.*                                                  -/var/log/maillog
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
 
-# Emergency level messages go to all users:
-*.emerg                                                 *
+iD8DBQFCpvPxF+XIQEsNgOQRAgxHAJ4iVs3iO9tyBShKXaKwOshfzhhiFwCeIaff
+oDX8NQNTHQ1ytsE51ZuUqc4=
+=/qak
+-----END PGP SIGNATURE-----
 
-# This log is for news and uucp errors:
-uucp,news.crit                                          -/var/log/spooler
-
-# Uncomment these if you'd like INN to keep logs on everything.
-# You won't need this if you don't run INN (the InterNetNews daemon).
-#news.=crit                                     -/var/log/news/news.crit
-#news.=err                                      -/var/log/news/news.err
-#news.notice                                    -/var/log/news/news.notice
-
-
-Any advice would be great.
-
-Thanks
-
-
-
-
+--=_averell-5520-1118237682-0001-2--
 
