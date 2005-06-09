@@ -1,14 +1,13 @@
 From: Matin Tamizi <mtamizi@gmail.com>
-Subject: Re: Stateless NAT
-Date: Thu, 9 Jun 2005 09:43:18 -0400
-Message-ID: <f68a416050609064333bebd9f@mail.gmail.com>
-References: <OF7FD36B55.0277057F-ONC125701A.00258ADF-C125701A.00262725@team4.de>
-	<9D532201-8173-474B-8281-1FA274AFC243@cuseeme.de>
+Subject: Re: Iptables and snort inline
+Date: Thu, 9 Jun 2005 12:24:20 -0400
+Message-ID: <f68a41605060909246f18cb28@mail.gmail.com>
+References: <DIIE.000001ED000023D1@smtp.aressi.fr>
 Reply-To: Matin Tamizi <mtamizi@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9D532201-8173-474B-8281-1FA274AFC243@cuseeme.de>
+In-Reply-To: <DIIE.000001ED000023D1@smtp.aressi.fr>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,81 +20,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter <netfilter@lists.netfilter.org>
+To: "lmarcilly@aressi.fr" <lmarcilly@aressi.fr>
+Cc: netfilter@lists.netfilter.org
 
-Why can't we create a new target module to support stateless NAT for
-NetFilter like the following link suggests?
-https://lists.netfilter.org/pipermail/netfilter/2005-February/058950.html
-
-I tried writing a target module, but I'm a bit baffled by how the
-target modules work.  The existing target modules don't seem to have
-any source to modify the packets.   If this is possible then the
-NETMAP module should already do the job.  Assuming the NETMAP target
-module does what its description states.
-
-We should also be able to write a stateless NAT program using libipq.=20
-Even FreeBSD uses a user space program for NAT by using the divert
-socket api.  However, I don't how to define any order in the programs
-grabbing packets from the QUEUE.  In FreeBSD, instead of queueing the
-packet is rerouted to an internal "divert" port which can be binded to
-using the standard socket API, but divert socket are more expensive
-than the NetFilter QUEUE solution.
-
-I've found another solution to my problem without having to use NAT,
-but it would have been nice if I could have used NAT since my solution
-is rather contrived.
+Why are you queueing OUTPUT traffic?
 
 -Matin
 
-On 6/8/05, codewarrior@cuseeme.de <codewarrior@cuseeme.de> wrote:
+On 6/9/05, lmarcilly@aressi.fr <lmarcilly@aressi.fr> wrote:
+> Hi all!
 >=20
-> On Jun 8, 2005, at 8:56 AM, Guenter.Sprakties@team4.de wrote:
-> >> You don't use netfilter. You use iproute2.
-> >>
-> >> http://linux-ip.net/html/nat-stateless.html
-> > First your right, iproute2 is the best tool managing simple 1:1 NAT.
-> > Second, is doesn't work because some guys decided to remove the
-> > necessary
-> > code out of the kernel.
-> > So you HAVE to use netfolter, and I tell you:
-> > First again, it didn't work. Second, no one of the guys out there
-> > helps
-> > you. I tried to get help, but nothing happend.
-> > I think, natting is against their religion or something like this.
-> > Take an old kernel and use iproute2, the most genial tool in all
-> > the net
-> > stuff.
+> I try to use iptables with snort_inline on a bridging firewall. Here is m=
+y testing configuration :
 >=20
+> ------         ----------
+> | PC |---------| Bridge |--------- LAN
+> ------         ----------
+> 192.168.1.99      192.168.1.185      192.168.1.0/24
 >=20
-> hello guenter,
+> My iptables rules are :
 >=20
-> thanks you for your answer , so i heard that it is
-> not possible to run iproute2 under osx right ?
+> iptables -A INPUT -j QUEUE
+> ipatbles -A OUTPUT -j QUEUE
+> iptables -A FORWARD -j QUEUE
 >=20
-> i got a script from my ISP
-> http://www.xaranet.de/dl/xaranet-tunnel.sh
+> and snort_inline is initialized correctly.
 >=20
-> but you need iproute2  so there is no way  ?
+> My problem is : when i put snort_inline down, i can't reach the LAN from =
+my PC. I think it's normal but i want that when snort inline is down, the L=
+AN is always reachable from my PC.
 >=20
+> Is this possible only by changing rules ? Or does it exist a patch to app=
+ly to iptables ?
 >=20
-> regards
+> Thanks in advance and excuse me for my poor english!
 >=20
-> marc
->=20
->=20
-> ********************************************************
-> opencuseeme /  peer2peer multiparty conferencing
-> ********************************************************
-> Marc Manthey
-> D - 50672 Cologne
-> West Europe
-> office: 0049.221.355.80.32
-> mobile: 0049.177.341.54.81
-> www.let.de
-> www.applehelpers.com
-> aim://macfreak2004
-> macfreak@jabber.org
->=20
+> L. M.
 >=20
 >=20
 >=20
