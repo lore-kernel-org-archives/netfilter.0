@@ -1,12 +1,12 @@
-From: David Busby <busby@edoceo.com>
-Subject: Re: --policy DROP kills everything?
-Date: Wed, 08 Jun 2005 16:32:23 -0700
-Message-ID: <42A78007.7080504@edoceo.com>
-References: <20050608220107.994108EDCEB@smtp.sterenborg.info>
+From: Jeff Simmons <jsimmons@goblin.punk.net>
+Subject: Routing and DNAT redux
+Date: Wed, 8 Jun 2005 17:54:50 -0700
+Message-ID: <200506081754.50537.jsimmons@goblin.punk.net>
+Reply-To: jsimmons@goblin.punk.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050608220107.994108EDCEB@smtp.sterenborg.info>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,67 +17,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Rob Sterenborg wrote:
-> 
-> Add this on top of the other INPUT rules :
-> 
-> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> 
+OK, a little more specific.
 
-Ok so I changed the rules to this:
+I have an iptables firewall with a server behind it. The server has a 
+non-routable address (192.168) so the firewall's IP address:port is DNAT'd  
+to the server's address:port.
 
-Chain INPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
-ACCEPT     all  --  127.0.0.0/8          0.0.0.0/0
-ACCEPT     udp  --  192.168.42.1         192.168.42.2        udp spt:53
-ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2        tcp dpt:22
-ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2        tcp dpt:80
-LOG        all  --  0.0.0.0/0            0.0.0.0/0           LOG level warning
+Incoming packets to the server first encounter the firewall's external 
+interface (EXT_IF), where the prerouting DNAT rule rewrites the IP layer 
+destination address (EXT_ADDR) to the server's address (SERV_ADDR). The 
+packet is then passed on to the routing function, which determines that the 
+packet needs forwarding via the internal interface (INT_IF). The packet is 
+then passed through any appropriate iptables forwarding chains, then to the 
+post-routing function of iptables (which in this case does nothing), and 
+finally out INT_IF to destination SERV_ADDR.
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
+There's a nice diagram of this at:
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+ http://www.policyrouting.org/PolicyRoutingBook/ONLINE/CH03.web.html
 
-But it won't accept new connections on port 80 or 22.  The Established SSH conection is fine.
-I can see new connections to port 80 or 22 in my logs, see:
+down in section 3.3.2.
 
-IN=eth0 OUT= MAC=00:01:03:d2:db:0b:00:11:5b:50:ff:a4:08:00 SRC=192.168.42.34 DST=192.168.42.2 LEN=48 TOS=0x00 PREC=0x00 
-TTL=128 ID=18259 DF PROTO=TCP SPT=3704 DPT=80 WINDOW=65535 RES=0x00 SYN URGP=0
+Now, to the reply from the server. When the packet leaves the server, its IP 
+layer will show source SERV_ADDR destination REMOTE_ADDR. But when the packet 
+arrives at the remote, it will show source EXT_ADDR destination REMOTE_ADDR. 
+It gets rewritten somewhere.
 
-IN=eth0 OUT= MAC=00:01:03:d2:db:0b:00:11:5b:50:ff:a4:08:00 SRC=192.168.42.34 DST=192.168.42.2 LEN=48 TOS=0x00 PREC=0x00 
-TTL=128 ID=18526 DF PROTO=TCP SPT=3705 DPT=22 WINDOW=65535 RES=0x00 SYN URGP=0
+My understanding is the rewriting is done by the state engine, which basically 
+maintains a rule that any outbound packet SERV_ADDR:port -> REMOTE_ADDR:port 
+gets changed to EXT_ADDR:port -> REMOTE_ADDR:port. But where in the chain 
+does this happen?
 
-Why they don't jump to accept?  They match a rule.
+Scenario one: it happens on INT_IF prerouting. If this is the case, then I can 
+use source routing with iproute2.
 
-So then I adjusted #1 above to this
+Scenario two: it happens on EXT_IF postrouting. Then iproute2 can't do the 
+kind of source routing I need to do, and I'll have to find another solution.
 
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state NEW,RELATED,ESTABLISHED
+(Note that with standard destination routing, it doesn't matter where the 
+packet gets rewritten. But with source routing it matters greatly.)
 
-Doesn't that now allow any new connection to any port on any protocol making my FW worthless?
-Then I tried moving the RELATED,ESTABLISHED to the last rule like this:
+The reality is, the box I'm working on has 4 T1s coming in, a DMZ with 
+routable IP addresses, and two LANS with non-routable addresses where both 
+contain servers that need to be contacted by the outside world via DNAT. It's 
+a big, messy, ugly project, but I need to know if I can use iproute2 to be 
+sure that return packets from all the servers go out the T1 they came in on.
 
-imperium root # iptables -L INPUT -n
-Chain INPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  127.0.0.0/8          0.0.0.0/0
-ACCEPT     udp  --  192.168.42.1         192.168.42.2        udp spt:53
-ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2        tcp dpt:22
-ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2        tcp dpt:80
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
-LOG        all  --  0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4
+Any help, pointers, or FMs that I can RTFM would be GREATLY appreciated.
 
-But I still cannot get new connections in and my estabilshed SSH is still OK.
+-- 
+Jeff Simmons                                   jsimmons@goblin.punk.net
+     Simmons Consulting - Network Engineering, Administration, Security
 
-Should I not use policy DROP but add a last rule of DROP?  Which is the "right" way?
-I guess I learned so far that I need to accept new and established.  But I cannot seem to get the rules to work.
-I've been up and down the man page and samples but seem to be missing one more stupid little thing :(
-Please help.
-
-/djb
+"You guys, I don't hear any noise. Are you sure you're doing it right?"
+	-- My Life With The Thrill Kill Kult
 
