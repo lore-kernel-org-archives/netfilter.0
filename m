@@ -1,13 +1,17 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
+From: David Busby <busby@edoceo.com>
 Subject: Re: --policy DROP kills everything?
-Date: Thu, 9 Jun 2005 14:52:08 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0506091450270.9191@darkstar.sysinfo.com>
+Date: Thu, 09 Jun 2005 13:59:20 -0700
+Message-ID: <42A8ADA8.5000008@edoceo.com>
 References: <B80488675062364A909EE60F4A666038078EEA9E@usilms23.ca.com>
 	<Pine.LNX.4.60.0506091359050.9191@darkstar.sysinfo.com>
 	<42A888C4.20006@edoceo.com>
+	<Pine.LNX.4.62.0506091426590.14790@dgray-test.acs.internap.com>
+	<42A8909E.1030104@edoceo.com>
+	<Pine.LNX.4.62.0506091515190.14790@dgray-test.acs.internap.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42A888C4.20006@edoceo.com>
+In-Reply-To: <Pine.LNX.4.62.0506091515190.14790@dgray-test.acs.internap.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,102 +22,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: David Busby <busby@edoceo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Damon Gray wrote:
+> David,
+>     Sorry, but all I can suggest is getting rid of the -i eth0 on the 
+> port 22 and port 80 rules because you won't be able to connect from lo0 
+> with that. You also don't need the the --state NEW rule for ssh either, 
+> your allow anything to port 22 will be enough for that and anything 
+> destined for port 22. And also (like someone else suggested) put the 
+> --state ESTABLISHED,RELATED at the top. Other than that your rules look 
+> correct to me. Is there anything in any of the other tables? Like if you 
+> do a iptables -t nat -nvL or -t mangle? What kernel are you running?
+> 
+> Sorry I couldn't be of more help.
+> 
+> -Damon-
+> 
+
+I appreciate all the help this list is providing, it seems very odd to me and it's nice to know it's also confusing to
+others ;)  I've got no other tables, no nat, no mangle (I didn't even build those modules)  I moved EST,REL to the top,
+it was last while I was testing.  I'm still at the same state, my established is OK but NEW (tcp/udp) are not.  I'm
+using kernel 2.6.10-gentoo-r6, so it's vanilla with gentoo patches.  I've fetched 2.6.11-gentoo-r9 and am currently
+building it, I'll try my rules with it.
+
+I also tried getting rid of the interface parameter rules, no help.  I tried getting rid of destination IP rules, no go.
+I ended up with this very loose setup
+
+imperium syslog-ng # iptables -nv -L
+Chain INPUT (policy DROP 43 packets, 3392 bytes)
+  pkts bytes target     prot opt in     out     source               destination
+     6   312 ACCEPT     all  --  *      *       127.0.0.0/8          0.0.0.0/0
+  4067 3419K ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
+     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0           udp dpt:53
+     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0           udp dpt:514
+     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0           udp dpt:123
+     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           tcp dpt:22
+     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           tcp dpt:80
+     3   180 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0
+    43  3392 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source               destination
+
+Chain OUTPUT (policy ACCEPT 3270 packets, 277K bytes)
+  pkts bytes target     prot opt in     out     source               destination
+
+But I still cannot connect :(  My TCP and UDP traffic is still dead.  Do I need to enable something in /proc?  This
+machine isn't forwarding or being a router, the rules are only to protect this single host.  I've unloaded and reloaded
+the kernel modules no go.
+
+(time passes)
+
+Rebooted with the 2.6.11-gentoo-r9 kernel, set my firewall rules and presto!
+Every thing is working perfectly with the above rules.
+I then went through and tied the rules to more be more specific and it's all still working perfect.
+Glad that's over, thanks to everyone who helped out!
+
+/djb
 
 
 
-to allow port 8 and 22 from the outside into the firewall itself,you need 
-NEW,ESTABLISHED,RELATED, ESTABLISHED,RELATED will not suffice.
-
-It would suffice for out going only connections, but for incoming to the 
-FW from any sites outside, you need to allow the syn=NEW.
-
-Thanks,
-
-Ron DuFresne
 
 
-On Thu, 9 Jun 2005, David Busby wrote:
 
-> R. DuFresne wrote:
->> -----BEGIN PGP SIGNED MESSAGE-----
->> Hash: SHA1
->> 
->> 
->> We found that in a 1:1 nat setup the policy for the forward chain has to 
->> be accept or traffic will not flow.
->> 
->> Thanks,
->> 
->> Ron DuFresne
->
-> My box only has rules in the INPUT chain, doesn't do IP forwarding/routing at 
-> all.
-> I have these rules below:
->
-> Chain INPUT (policy DROP)
-> target     prot opt source               destination
-> ACCEPT     all  --  127.0.0.0/8          0.0.0.0/0
-> ACCEPT     udp  --  192.168.42.1         0.0.0.0/0           udp dpt:53
-> ACCEPT     udp  --  192.168.42.1         0.0.0.0/0           udp dpt:123
-> ACCEPT     udp  --  192.168.42.1         0.0.0.0/0           udp dpt:514
-> ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2        tcp dpt:22
-> ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2        tcp dpt:80
-> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state 
-> RELATED,ESTABLISHED
-> LOG        all  --  0.0.0.0/0            0.0.0.0/0           LOG flags 0 
-> level 4
->
-> An cannot make new connections to port 22 or port 80, I see it in the logs.
-> An existing ssh connection will stay if I connect with no rules then run 
-> iptables-restore.
-> This seems totally odd to me.  The UDP traffic is also blocked.  Everyone is 
-> telling me that these rules should work, new connections should be allowed 
-> and such but it's not the case.  Here's what my modules look like:
->
-> imperium root # lsmod
-> Module                  Size  Used by
-> ipt_LOG                 6272  1
-> ipt_state               1472  1
-> ip_conntrack           39860  1 ipt_state
-> iptable_filter          2944  1
-> ip_tables              16320  3 ipt_LOG,ipt_state,iptable_filter
->
-> So everything looks loaded OK too, but it's not working, I even added this 
-> rule:
->
-> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp 
-> dpt:22
-> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp 
-> dpt:80
->
-> But still cannot make a new connection to port 22 or 80, what gives?  What do 
-> I try now?
->
-> /djb
->
 
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCqI/cst+vzJSwZikRAhWOAJ9IDdK+zJg+OZFIgDlZ1L70/QiuwgCgzr96
-2/aVRqww5vfCotUcROUhW08=
-=93zv
------END PGP SIGNATURE-----
 
