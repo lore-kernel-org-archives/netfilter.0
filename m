@@ -1,8 +1,9 @@
-From: Vivek Dasmohapatra <vivek@etla.org>
-Subject: difference in behaviour between kernels 2.6 and 2.4 (problem)
-Date: Thu, 9 Jun 2005 17:52:33 +0100 (BST)
-Message-ID: <Pine.LNX.4.62.0506091737461.2577@pike.pepperfish.net>
+From: "Ashley M. Kirchner" <ashley@pcraft.com>
+Subject: Logging connections
+Date: Thu, 09 Jun 2005 10:58:17 -0600
+Message-ID: <42A87529.3070005@pcraft.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,46 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi: I had a weird problem today where I tried to replace a kernel 2.4
-firewall with a kernel 2.6 one: the rules all seemed to load fine
-(a diff of iptables -t filter -vnL showed no significant diffferences)
-but for some reason some packets just seemed to be swallowed by the kernel.
 
-the situation was this:
+    I have a hole punched in our iptables configuration for an internet 
+application we're using to be able to reach an internal server 
+directly.  What I'd like to do now is log the connections that are 
+coming in to that port.  Ideally I would want the remote address it's 
+coming from, a time stamp and what the connection is wanting to do 
+(send/receive.)
 
-                                 eth1                      eth0
-(internet) -- xxx.xxx.xxx.2/26 ----- [ firewall/router ] ----- private
-                                           |eth2
-                                           |
-                                       xxx.xxx.xxx.65/26
+    The rules related to that hole are setup like this:
 
-Now some traffic into the .65/26 subnet worked fine: but for some reason
-udp and tcp traffic to port 53 just vanished: I could see it coming in
-to the firewall on eth1 with tcpdump, but no iptables rules seemed to catch
-it and it was never routed out (I have a script that automatically adds
-a LOG rule for every rule I add when I run it in debugging mode, so I
-_should_ have seen something in /var/log/messages or dmesg, but I didn't/).
+    -A PREROUTING -i eth0 -p tcp -m tcp --dport 6666 -j DNAT 
+--to-destination 192.168.x.x
+    -A FORWARD -i eth0 -o eth2 -p tcp -m state --state NEW -m tcp 
+--dport 6666 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
 
-I can rule out a routing problem because some traffic got through to 
-(and back from) machines in the 65 subnet.
+-- 
+H | I haven't lost my mind; it's backed up on tape somewhere.
+  +--------------------------------------------------------------------
+  Ashley M. Kirchner <mailto:ashley@pcraft.com>   .   303.442.6410 x130
+  IT Director / SysAdmin / WebSmith             .     800.441.3873 x130
+  Photo Craft Imaging                       .     3550 Arapahoe Ave. #6
+  http://www.pcraft.com ..... .  .    .       Boulder, CO 80303, U.S.A. 
 
-forwarding must have been on for exactly the same reason.
 
-The iptables rules were created by the same script and appeared the same.
-
-I don't understand what was happening.
-
-If anyone could provide me with some pointers or show me a way to debug
-the iptables rules (perhaps the packet generator can be used to fake up
-packets?) I would be most grateful.
-
-[ It does seem like a bit of an annoying limitation that there's no way
-   (that I've found) to test iptables rules: If I've missed some obvious
-   way to do this (short of digging up spare machines and rigging up dummy
-   networks) please tell me... ]
 
 
