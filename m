@@ -1,17 +1,12 @@
-From: David Busby <busby@edoceo.com>
-Subject: Re: --policy DROP kills everything?
-Date: Thu, 09 Jun 2005 13:59:20 -0700
-Message-ID: <42A8ADA8.5000008@edoceo.com>
-References: <B80488675062364A909EE60F4A666038078EEA9E@usilms23.ca.com>
-	<Pine.LNX.4.60.0506091359050.9191@darkstar.sysinfo.com>
-	<42A888C4.20006@edoceo.com>
-	<Pine.LNX.4.62.0506091426590.14790@dgray-test.acs.internap.com>
-	<42A8909E.1030104@edoceo.com>
-	<Pine.LNX.4.62.0506091515190.14790@dgray-test.acs.internap.com>
+From: Mike Pepe <lamune@doki-doki.net>
+Subject: Re: forwarding ports from aliased ip addresses
+Date: Thu, 09 Jun 2005 17:53:27 -0400
+Message-ID: <42A8BA57.7000402@doki-doki.net>
+References: <42A4C90B.8040306@doki-doki.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.62.0506091515190.14790@dgray-test.acs.internap.com>
+In-Reply-To: <42A4C90B.8040306@doki-doki.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -25,68 +20,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Damon Gray wrote:
-> David,
->     Sorry, but all I can suggest is getting rid of the -i eth0 on the 
-> port 22 and port 80 rules because you won't be able to connect from lo0 
-> with that. You also don't need the the --state NEW rule for ssh either, 
-> your allow anything to port 22 will be enough for that and anything 
-> destined for port 22. And also (like someone else suggested) put the 
-> --state ESTABLISHED,RELATED at the top. Other than that your rules look 
-> correct to me. Is there anything in any of the other tables? Like if you 
-> do a iptables -t nat -nvL or -t mangle? What kernel are you running?
+So, nobody on the list knows if this is even possible?
+
+I've been running all different sorts of combinations and I can't get it 
+to work.
+
+Surely this is something not entirely out of the ordinary. I can't 
+imagine having to build another firewall box just to add another IP and 
+rules only for an alias.
+
+
+Mike Pepe wrote:
+> Hi all. I'm new to the list but not to netfiler.
 > 
-> Sorry I couldn't be of more help.
+> I have a firewall built, with eth5 on the internet. It accepts 
+> connections on a few ports from allowed hosts and forwards them to boxes 
+> in the DMZ. It works great.
 > 
-> -Damon-
+> I have another client that wants a box configured similarly. I would 
+> like to add another internet ip as eth5:1 and then forward certain ports 
+> on that new IP to a different box in the DMZ.
 > 
-
-I appreciate all the help this list is providing, it seems very odd to me and it's nice to know it's also confusing to
-others ;)  I've got no other tables, no nat, no mangle (I didn't even build those modules)  I moved EST,REL to the top,
-it was last while I was testing.  I'm still at the same state, my established is OK but NEW (tcp/udp) are not.  I'm
-using kernel 2.6.10-gentoo-r6, so it's vanilla with gentoo patches.  I've fetched 2.6.11-gentoo-r9 and am currently
-building it, I'll try my rules with it.
-
-I also tried getting rid of the interface parameter rules, no help.  I tried getting rid of destination IP rules, no go.
-I ended up with this very loose setup
-
-imperium syslog-ng # iptables -nv -L
-Chain INPUT (policy DROP 43 packets, 3392 bytes)
-  pkts bytes target     prot opt in     out     source               destination
-     6   312 ACCEPT     all  --  *      *       127.0.0.0/8          0.0.0.0/0
-  4067 3419K ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
-     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0           udp dpt:53
-     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0           udp dpt:514
-     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0           udp dpt:123
-     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           tcp dpt:22
-     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           tcp dpt:80
-     3   180 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0
-    43  3392 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4
-
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
-  pkts bytes target     prot opt in     out     source               destination
-
-Chain OUTPUT (policy ACCEPT 3270 packets, 277K bytes)
-  pkts bytes target     prot opt in     out     source               destination
-
-But I still cannot connect :(  My TCP and UDP traffic is still dead.  Do I need to enable something in /proc?  This
-machine isn't forwarding or being a router, the rules are only to protect this single host.  I've unloaded and reloaded
-the kernel modules no go.
-
-(time passes)
-
-Rebooted with the 2.6.11-gentoo-r9 kernel, set my firewall rules and presto!
-Every thing is working perfectly with the above rules.
-I then went through and tied the rules to more be more specific and it's all still working perfect.
-Glad that's over, thanks to everyone who helped out!
-
-/djb
-
-
-
-
-
-
-
-
+> using -i eth5:1 doesn't work.
+> 
+> Is this even possible? I've been up and down the man page and I can't 
+> seem to figure out a way to differentiate the alias from the "normal" 
+> ip. I guess I could add another network card and duplicate the scripts 
+> but this seems so wasteful to me.
+> 
+> Hoping someone can help me with this!
+> 
+> thanks
+> 
+> -Mike
 
