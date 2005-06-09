@@ -1,12 +1,12 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: Re: --policy DROP kills everything?
-Date: Wed, 08 Jun 2005 22:04:24 -0700
-Message-ID: <BECD1BE8.8F6A%gary@primeexalia.com>
-References: <23591.65.121.191.30.1118318071.squirrel@lithium.edoceo.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: --policy DROP kills everything?
+Date: Thu, 9 Jun 2005 08:26:38 +0200
+Message-ID: <20050609062511.8AD978EDCEB@smtp.sterenborg.info>
+References: <42A78007.7080504@edoceo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <23591.65.121.191.30.1118318071.squirrel@lithium.edoceo.com>
+In-Reply-To: <42A78007.7080504@edoceo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,80 +18,117 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: busby@edoceo.com, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-This may or my not help your situation.  Included are my rules for the INPUT
-chain on one of my firewalls.  We don't default drop (which can be bad) but
-rather end all our chains with REJECT icmp-host-prohibited.  But something
-you might want to do to quickly solve this problem is to try the following:
-
-Instead of defaulting to DROP put a LOG at the end of the INPUT chain with
-something like '-j LOG --log-prefix "INPUT_DROP: " --log-level 1'.  Then do
-a tail -n 0 -f /var/log/messages | grep "INPUT_DROP".  It will tell you
-exactly what you have missed.
-
-While you are at it you might want to do the same for FORWARD and OUTPUT to
-rule out the usual suspects.
-
-The output from the logs might be more useful to you that trying to guess at
-why the related connection isn't working.
-
-BTW, here is my INPUT.  eth0 if external IF, eth1 is internal IF, lo, well
-if I explain that you need some funamentals, ppp+ is the PPTPD IF.
-Basically I allow all interfaces to come in.  eth0 doesn't actually accept
-any data but just log the number of bytes that travel across it's IF for
-accounting purposes.
-
-Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
-target     prot opt in     out     source               destination
-INCOUNT    all  --  eth0   *       0.0.0.0/0            123.123.123.1
-ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
-ACCEPT     all  --  eth1   *       0.0.0.0/0            0.0.0.0/0
-ACCEPT     all  --  ppp+   *       0.0.0.0/0            0.0.0.0/0
-ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0
-ACCEPT     all  --  eth0   *       0.0.0.0/0            0.0.0.0/0
-state RELATED,ESTABLISHED
-
-ACCEPT     all  --  eth0   *       0.0.0.0/0            0.0.0.0/0
-MARK match 0x1 
-
-filter_firewall  all  --  eth0   *       0.0.0.0/0            0.0.0.0/0
-filter_trusted  all  --  *      *       0.0.0.0/0            0.0.0.0/0
-LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0
-LOG flags 0 level 1 prefix `INPUT: '
-
-REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0
-reject-with icmp-host-prohibited
-
-Hope the helps, 
-
-Gary Smith
-
-
-On 6/9/05 4:54 AM, "busby@edoceo.com" <busby@edoceo.com> wrote:
-
-> My OUTPUT and FORWARD tables have policy ACCEPT and no rules.
-> It's only INPUT that is causing headache.  In my current state (below) an
-> established connection is OK (like ssh in then start) but after adding
-> these rule no new connection can be made.
-> 
-> Config:
+>> Add this on top of the other INPUT rules :
 >> 
->> imperium root # iptables -L INPUT -n
->> Chain INPUT (policy DROP)
->> target     prot opt source               destination
->> ACCEPT     all  --  127.0.0.0/8          0.0.0.0/0
->> ACCEPT     udp  --  192.168.42.1         192.168.42.2        udp spt:53
-> ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2        tcp dpt:22
-> ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2        tcp dpt:80
-> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state
-> RELATED,ESTABLISHED
->> LOG        all  --  0.0.0.0/0            0.0.0.0/0           LOG flags 0
-> level 4
+>> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 >> 
 > 
+> Ok so I changed the rules to this:
 > 
+> Chain INPUT (policy DROP)
+> target     prot opt source               destination
+> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+> state RELATED,ESTABLISHED
+> ACCEPT     all  --  127.0.0.0/8          0.0.0.0/0
+> ACCEPT     udp  --  192.168.42.1         192.168.42.2
+> udp spt:53
+> ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2
+> tcp dpt:22
+> ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2
+> tcp dpt:80
+> LOG        all  --  0.0.0.0/0            0.0.0.0/0
+> LOG level warning
 > 
+> Chain FORWARD (policy ACCEPT)
+> target     prot opt source               destination
 > 
+> Chain OUTPUT (policy ACCEPT)
+> target     prot opt source               destination
+> 
+> But it won't accept new connections on port 80 or 22.  The
+
+I'm not quite sure if that's true : you have a rule that says :
+-A INPUT -d 192.168.42.2 -p tcp --dport 22 -j ACCEPT
+I have similar rules and it accepts just fine.
+
+> Established SSH conection is fine.
+> I can see new connections to port 80 or 22 in my logs, see:
+> 
+> IN=eth0 OUT= MAC=00:01:03:d2:db:0b:00:11:5b:50:ff:a4:08:00
+> SRC=192.168.42.34 DST=192.168.42.2 LEN=48 TOS=0x00 PREC=0x00
+> TTL=128 ID=18259 DF PROTO=TCP SPT=3704 DPT=80 WINDOW=65535 RES=0x00
+> SYN URGP=0 
+> 
+> IN=eth0 OUT= MAC=00:01:03:d2:db:0b:00:11:5b:50:ff:a4:08:00
+> SRC=192.168.42.34 DST=192.168.42.2 LEN=48 TOS=0x00 PREC=0x00
+> TTL=128 ID=18526 DF PROTO=TCP SPT=3705 DPT=22 WINDOW=65535 RES=0x00
+> SYN URGP=0 
+> 
+> Why they don't jump to accept?  They match a rule.
+> 
+> So then I adjusted #1 above to this
+> 
+> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+> state NEW,RELATED,ESTABLISHED
+
+Um, for me it's quite early in the morning but if I read this correct,
+you just accepted from everything to everything. That is not what you
+want I think.
+
+> Doesn't that now allow any new connection to any port on any
+> protocol making my FW worthless?
+
+Yes, but you allow everything in this rule so it's indeed worthless.
+
+> Then I tried moving the RELATED,ESTABLISHED to the last rule like
+> this: 
+> 
+> imperium root # iptables -L INPUT -n
+> Chain INPUT (policy DROP)
+> target     prot opt source               destination
+> ACCEPT     all  --  127.0.0.0/8          0.0.0.0/0
+> ACCEPT     udp  --  192.168.42.1         192.168.42.2
+> udp spt:53
+> ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2
+> tcp dpt:22
+> ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2
+> tcp dpt:80
+> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+> state RELATED,ESTABLISHED
+> LOG        all  --  0.0.0.0/0            0.0.0.0/0
+> LOG flags 0 level 4
+> 
+> But I still cannot get new connections in and my estabilshed SSH is
+> still OK. 
+
+If -m state is not specified then, in my experience, -m state --state
+NEW is assumed (someone please correct me if I'm telling nonsense here)
+so your rules *will* allow new connections.
+
+ESTABLISHED cannot be accepted if there hasn't been a NEW that has been
+accepted.
+
+> Should I not use policy DROP but add a last rule of DROP? Which is
+> the "right" way?
+
+That is essentially what policy DROP is doing ; if no rules match : DROP
+it.
+You can set it to ACCEPT and add an ending rule that drops or rejects
+all packets not matched (you have more flexibility if working that way),
+but the idea is the same.
+
+> I guess I learned so far that I need to accept new
+> and established.  But I cannot seem to get the rules to work.
+> I've been up and down the man page and samples but seem to be
+> missing one more stupid little thing :(
+> Please help.
+
+Somewhere you said ipt_state isn't loaded. Is it loaded now ??
+
+
+Gr,
+Rob
 
 
