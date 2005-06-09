@@ -1,13 +1,13 @@
-From: "Eduardo Spremolla" <edspremolla@antel.com.uy>
-Subject: Re: Logging connections
-Date: Thu, 09 Jun 2005 15:48:55 -0300
-Message-ID: <1118342935.24271.3.camel@fly.in.iantel.com.uy>
-References: <42A87529.3070005@pcraft.com>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: --policy DROP kills everything?
+Date: Thu, 9 Jun 2005 14:52:08 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0506091450270.9191@darkstar.sysinfo.com>
+References: <B80488675062364A909EE60F4A666038078EEA9E@usilms23.ca.com>
+	<Pine.LNX.4.60.0506091359050.9191@darkstar.sysinfo.com>
+	<42A888C4.20006@edoceo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42A87529.3070005@pcraft.com>
-Content-Class: urn:content-classes:message
+In-Reply-To: <42A888C4.20006@edoceo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,58 +18,102 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: "Ashley M. Kirchner" <ashley@pcraft.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: David Busby <busby@edoceo.com>
 Cc: netfilter@lists.netfilter.org
 
-So add the same rule you have in FORWARD with -j LOG before the ACCEPT
-one.
-
--A FORWARD -i eth0 -o eth2 -p tcp -m state --state NEW -m tcp --dport =
-6666 --tcp-flags SYN,RST,ACK SYN -j LOG --log-prefix=3D"punched_hole"
-    -A FORWARD -i eth0 -o eth2 -p tcp -m state --state NEW -m tcp =
---dport 6666 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
-
-On Thu, 2005-06-09 at 10:58 -0600, Ashley M. Kirchner wrote:
->     I have a hole punched in our iptables configuration for an =
-internet=20
-> application we're using to be able to reach an internal server=20
-> directly.  What I'd like to do now is log the connections that are=20
-> coming in to that port.  Ideally I would want the remote address it's=20
-> coming from, a time stamp and what the connection is wanting to do=20
-> (send/receive.)
->=20
->     The rules related to that hole are setup like this:
->=20
->     -A PREROUTING -i eth0 -p tcp -m tcp --dport 6666 -j DNAT=20
-> --to-destination 192.168.x.x
->     -A FORWARD -i eth0 -o eth2 -p tcp -m state --state NEW -m tcp=20
-> --dport 6666 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
->=20
---=20
-Ing. Eduardo Spremolla
-Jefe I+D
-Antel
-Uruguay
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
 
-Este e-mail y cualquier posible archivo adjunto est=E1 dirigido =
-=FAnicamente al destinatario del mensaje y contiene informaci=F3n que =
-puede ser confidencial. Si Ud. no es el destinatario correcto por favor =
-notifique al remitente respondiendo este mensaje y elimine =
-inmediatamente el e-mail y los posibles archivos adjuntos al mismo de su =
-sistema. Est=E1 prohibida cualquier utilizaci=F3n, difusi=F3n o copia de =
-este e-mail por cualquier persona o entidad que no sean las =
-espec=EDficas destinatarias del mensaje. ANTEL no acepta ninguna =
-responsabilidad con respecto a cualquier comunicaci=F3n que haya sido =
-emitida incumpliendo nuestra Pol=EDtica de Seguridad de la =
-Informaci=F3n.
-. . . . . . . . .
-This e-mail and any attachment is confidential and is intended solely =
-for the addressee(s). If you are not intended recipient please inform =
-the sender immediately, answering this e-mail and delete it as well as =
-the attached files. Any use, circulation or copy of this e-mail by any =
-person or entity that is not the specific addressee(s) is prohibited. =
-ANTEL is not responsible for any communication emitted without =
-respecting our Information Security Policy.
+
+to allow port 8 and 22 from the outside into the firewall itself,you need 
+NEW,ESTABLISHED,RELATED, ESTABLISHED,RELATED will not suffice.
+
+It would suffice for out going only connections, but for incoming to the 
+FW from any sites outside, you need to allow the syn=NEW.
+
+Thanks,
+
+Ron DuFresne
+
+
+On Thu, 9 Jun 2005, David Busby wrote:
+
+> R. DuFresne wrote:
+>> -----BEGIN PGP SIGNED MESSAGE-----
+>> Hash: SHA1
+>> 
+>> 
+>> We found that in a 1:1 nat setup the policy for the forward chain has to 
+>> be accept or traffic will not flow.
+>> 
+>> Thanks,
+>> 
+>> Ron DuFresne
+>
+> My box only has rules in the INPUT chain, doesn't do IP forwarding/routing at 
+> all.
+> I have these rules below:
+>
+> Chain INPUT (policy DROP)
+> target     prot opt source               destination
+> ACCEPT     all  --  127.0.0.0/8          0.0.0.0/0
+> ACCEPT     udp  --  192.168.42.1         0.0.0.0/0           udp dpt:53
+> ACCEPT     udp  --  192.168.42.1         0.0.0.0/0           udp dpt:123
+> ACCEPT     udp  --  192.168.42.1         0.0.0.0/0           udp dpt:514
+> ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2        tcp dpt:22
+> ACCEPT     tcp  --  0.0.0.0/0            192.168.42.2        tcp dpt:80
+> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state 
+> RELATED,ESTABLISHED
+> LOG        all  --  0.0.0.0/0            0.0.0.0/0           LOG flags 0 
+> level 4
+>
+> An cannot make new connections to port 22 or port 80, I see it in the logs.
+> An existing ssh connection will stay if I connect with no rules then run 
+> iptables-restore.
+> This seems totally odd to me.  The UDP traffic is also blocked.  Everyone is 
+> telling me that these rules should work, new connections should be allowed 
+> and such but it's not the case.  Here's what my modules look like:
+>
+> imperium root # lsmod
+> Module                  Size  Used by
+> ipt_LOG                 6272  1
+> ipt_state               1472  1
+> ip_conntrack           39860  1 ipt_state
+> iptable_filter          2944  1
+> ip_tables              16320  3 ipt_LOG,ipt_state,iptable_filter
+>
+> So everything looks loaded OK too, but it's not working, I even added this 
+> rule:
+>
+> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp 
+> dpt:22
+> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp 
+> dpt:80
+>
+> But still cannot make a new connection to port 22 or 80, what gives?  What do 
+> I try now?
+>
+> /djb
+>
+
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCqI/cst+vzJSwZikRAhWOAJ9IDdK+zJg+OZFIgDlZ1L70/QiuwgCgzr96
+2/aVRqww5vfCotUcROUhW08=
+=93zv
+-----END PGP SIGNATURE-----
 
