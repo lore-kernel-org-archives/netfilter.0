@@ -1,13 +1,11 @@
 From: CompuGenic <pablo@compugenic.com>
-Subject: Re: ip_conntrack_ftp issues
-Date: Thu, 09 Jun 2005 23:38:36 -0700
-Message-ID: <BAY0-SMTP08C3BF299D10BD22A53542BCFF0@phx.gbl>
-References: <Pine.LNX.4.53.0506092001190.29097@altaica>
+Subject: Why do I have 'MARK' all over my logs?
+Date: Fri, 10 Jun 2005 04:01:11 -0700
+Message-ID: <BAY0-SMTP07EE697B166AFFF0DFD5FFBCFF0@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Message-ID: <42A9356C.70701@compugenic.com>
-In-Reply-To: <Pine.LNX.4.53.0506092001190.29097@altaica>
+Message-ID: <42A972F7.1020101@compugenic.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,39 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tib <tib@tigerknight.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Tib wrote:
+Hello all.
+I use a basic iptables ruleset to perform SNAT on all outgoing 
+connections from my LAN, and to drop all NEW connections coming from the 
+Internet.
+However, my logs are constantly filled with entries as follows:
+Jun 9 8:51:12 host -- MARK --
+Jun 9 9:11:12 host -- MARK --
+Jun 9 9:31:12 host -- MARK --
+Jun 9 9:51:12 host -- MARK --
+Jun 9 10:11:12 host -- MARK --
+Jun 9 10:31:12 host -- MARK --
 
->I am trying to setup an ftp service on a non-standard port (42), and had
->initially encountered information that I may have to recompile the module
->entirely.
->
->Then I saw information saying that I could specify port arguments on the
->insmod command (ie. insmod ip_conntrack_ftp ports=xx,yy,zz).
->
->I'm on debian with iptables 1.2.11 installed - which of the above is true?
->I tried using the insmod command with arguments and got no errors in
->response, but the module didn't appear to work. Is it possible (if
->necessary) to recompile just the module or will I have to redo my whole
->kernel just for a single file or two?
->
-><EOL>
->Tib
->
->
->
->  
->
-Even though you're using port 42, you still need to specify port 21 for 
-it to work correctly.
-For example, "insmod ip_conntrack_ftp ports=21,42
-Also, if you don't have at least kernel 2.6.11 , you'll also need to 
-"insmod ip_nat_ftp ports=21,42" as well.
+Notice the time patterns? I have no idea where these are coming from? Is 
+there a way to know if it's from my firewall, or to track the source?
 
-I hope that helps you out.
+Thanks in advance.
 
 Pablo
-
 
