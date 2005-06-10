@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: --policy DROP kills everything?
-Date: Fri, 10 Jun 2005 14:08:27 -0400
-Message-ID: <20050610180827.GA6276@bender.817west.com>
-References: <42A78007.7080504@edoceo.com>
-	<20050609062511.8AD978EDCEB@smtp.sterenborg.info>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: Tarpit question
+Date: Fri, 10 Jun 2005 11:20:42 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582909E92@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050609062511.8AD978EDCEB@smtp.sterenborg.info>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,19 +17,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Jun 09, 2005 at 08:26:38AM +0200, Rob Sterenborg wrote:
-> If -m state is not specified then, in my experience, -m state --state
-> NEW is assumed (someone please correct me if I'm telling nonsense here)
-> so your rules *will* allow new connections.
-
-that is; indeed, nonsense.
-
--j
-
---
-"Peter: And this is where the Pilgrims landed at Fraggle Rock."
-        --Family Guy
-
+I have been running tarpit for some time now and have noticed that I an =
+tarpitting more than 1 IP per second.  Besides viewing the logs to see =
+which IP's that have hit the rule (as we log before doing the actually =
+tarpitting) is there a way to see who is actively connected to the =
+tarpit.
+=20
+Gary Smith
+=20
+=20
