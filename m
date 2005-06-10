@@ -1,12 +1,16 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: netfilter logging
-Date: Fri, 10 Jun 2005 14:02:14 -0400
-Message-ID: <20050610180214.GA6185@bender.817west.com>
-References: <5885.212.100.225.55.1118237133.squirrel@webmail.*>
+From: Jeff Simmons <jsimmons@goblin.punk.net>
+Subject: Re: Routing and DNAT redux
+Date: Fri, 10 Jun 2005 11:05:03 -0700
+Message-ID: <200506101105.03926.jsimmons@goblin.punk.net>
+References: <200506081754.50537.jsimmons@goblin.punk.net>
+	<200506091000.21220.jsimmons@goblin.punk.net>
+	<20050610175554.GA6127@bender.817west.com>
+Reply-To: jsimmons@goblin.punk.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050610175554.GA6127@bender.817west.com>
 Content-Disposition: inline
-In-Reply-To: <5885.212.100.225.55.1118237133.squirrel@webmail.*>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +22,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Jason Opperisano <opie@817west.com>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, Jun 08, 2005 at 02:25:33PM +0100, Jimmy wrote:
-> Hello,
-> 
-> I have just started to log my iptables drops. As seen with this line in my
-> iptables-save output.
-> 
-> -A INPUT -j LOG --log-level 1
-> -A INPUT -j LOG --log-prefix "Dropped: "
-> 
-> What I would like to know is how I can get iptables to NOT log to console
-> only to the message logs. Currently it goes into /var/log/syslog
+Nice. Very slick. I was contemplating a horrible kludge using NAT on both the 
+exterior and interior interfaces. This is far superior.
 
-change your log level from 1 to something less critical; like say, 4.
+Many thanks!
 
-and then type this on the console:
+On Friday 10 June 2005 10:55, Jason Opperisano wrote:
+> On Thu, Jun 09, 2005 at 10:00:21AM -0700, Jeff Simmons wrote:
+> > The actual challenge is to have two external interfaces, IF_1 and IF_2,
+> > each with their own address and both DNATed to an internal server.
+> > Packets coming into IF_1 should have their replies routed out IF_1 while
+> > packets coming in on IF_2 should have their replies routed out IF_2.
+> >
+> > The ONLY place this information (which interface a particular packet
+> > stream came in on) is available is in the NAT state table. Pre NAT, all
+> > routing has to go on is the source server destination remote.  Post NAT
+> > routing now sees source IF_ (1 or 2) destination remote, and the packet
+> > can now be properly routed out the correct interface.
+> >
+> > Which is why it's important whether NAT takes place pre or post routing
+> > on the reply packets from a DNATed destination.
+>
+> the way i attack this problem (ensuring a DNAT-ed connection gets routed
+> back out the same link it came in on) is with CONNMARK:
+>
+>   iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
+>   iptables -t mangle -A PREROUTING -i $EXT_IF_A -d $PUB_IP_A \
+>     -m mark --mark 0 -j MARK --set-mark 1
+>   iptables -t mangle -A PREROUTING -i $EXT_IF_B -d $PUB_IP_B \
+>     -m mark --mark 0 -j MARK --set-mark 2
+>   iptables -t mangle -A PREROUTING -j CONNMARK --save-mark
+>
+>   iptables -t nat -A PREROUTING -i $EXT_IF_A -d $PUB_IP_A \
+>     -j DNAT --to-destination $PRIV_SRV
+>   iptables -t nat -A PREROUTING -i $EXT_IF_B -d $PUB_IP_B \
+>     -j DNAT --to-destination $PRIV_SRV
+>
+>   ip route add default via $ISP_A_GW dev $EXT_IF_A table ISPA
+>   ip route add default via $ISP_B_GW dev $EXT_IF_B table ISPB
+>
+>   ip rule add fwmark 1 table ISPA
+>   ip rule add fwmark 2 table ISPB
+>
+> this isn't 100% step-by-step, but should give you the foundation.
+> i have posted truly step-by-step examples of this in the past--search
+> the archives.
+>
+> hope this gets you on the right track.
+>
+> -j
+>
+> --
+> "Lois: I'm sorry that Stewie ruined your books. Here, I brought
+>  you some of Peter's.
+>  Brian: "Mr. T" by Mr. T. "T and Me" by George Poppard. "For The Last
+>  Time, I'm Not Mr. T" by Ving Rhames."
+>         --Family Guy
 
-  dmesg -n 1
+-- 
+Jeff Simmons                                   jsimmons@goblin.punk.net
+     Simmons Consulting - Network Engineering, Administration, Security
 
-which will only print truly critical messages to the console (level 0
-and 1).
-
--j
-
---
-"Woman: Stewie, you want a cookie?
- Stewie: I smell death on you."
-        --Family Guy
+"You guys, I don't hear any noise. Are you sure you're doing it right?"
+	-- My Life With The Thrill Kill Kult
 
