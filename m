@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: NAT changing IP.
-Date: Fri, 10 Jun 2005 14:33:12 -0400
-Message-ID: <20050610183312.GA6390@bender.817west.com>
-References: <20050609160331.95885.qmail@web40425.mail.yahoo.com>
+Subject: Re: destination port rewrite
+Date: Fri, 10 Jun 2005 15:11:24 -0400
+Message-ID: <20050610191124.GA6497@bender.817west.com>
+References: <53625.209.208.196.163.1118337274.squirrel@www.uscitizensalliance.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20050609160331.95885.qmail@web40425.mail.yahoo.com>
+In-Reply-To: <53625.209.208.196.163.1118337274.squirrel@www.uscitizensalliance.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,35 +21,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Jun 09, 2005 at 09:03:31AM -0700, Anand Kumar wrote:
-> Hi,
+On Thu, Jun 09, 2005 at 01:14:34PM -0400, tech@uscitizensalliance.org wrote:
+> Hi Everyone,
+> I have a somewhat unusual requirement here. Please let me know if it is
+> not clear enough.
 > 
-> I have used a firewall m/c with the 2 interfaces, 1
-> Static Public IP (eth0) & Internal ip (192.168.0.1,
-> eth1) & route the packets to mail server with internal
-> ip 192.168.0.254 for mail receiving with the following
-> rule.
-> $IPT -A PREROUTING -t nat -p tcp -i eth1 --dport 25 -j
-> DNAT --to 192.168.0.254:25
+> >From inside a firewall connected to the internet on outside, I would like
+> for all outgoing packets that their destination ports be rewritten in
+> addition to being natted.
 > 
-> No problems in receiving mails.  Problem faced by me
-> is the IP Address of the originating mail is changed
-> to 192.168.0.1 after the PREROUTING, due to which the
-> SPAM filter is not happening & am receiving around
-> 1000 Junk mails.  
 > 
-> Looking for a solution of just moving the packets with
-> original IP to my mail server.
+> e.g
+> iptables -t nat -A POSTROUTING -s 192.168.0.0/24 --dport=8080 \
+>          -j SNAT -o eth0 --to-source $external_ip --dport=80.
 
-fix your nat:POSTROUTING SNAT/MASQ rule so that it only specifies "-o
-$EXT_IF."  and next time, post all your rules (iptables-save) so that
-the folks that are trying to help don't have to divine answers from the
-tea leaves.
+close--mapping the destination port is the job of DNAT, not SNAT:
+
+  # map requests to tcp port 8080 to port 80
+  iptables -t nat -A PREROUTING -i $INSIDE_IF -p tcp -s 192.168.0.0/24 \
+    --dport 8080 -j DNAT --to :80
+
+  # snat outbound packets
+  iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/24 \
+    -j SNAT --to-source $external_ip
 
 -j
 
 --
-"Stewie: Careful! You're washing a baby's scalp, not scrubbing
- the vomit out of a Christmas dress, you stupid holiday drunk."
+"Peter: It's OK, Meg. Your mom is full of Christmas cheer and enough
+ tranquilizer to take down an elephant."
         --Family Guy
 
