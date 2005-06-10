@@ -1,10 +1,11 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
+From: Filip Sneppe <filip.sneppe@gmail.com>
 Subject: Re: Why do I have 'MARK' all over my logs?
-Date: Fri, 10 Jun 2005 12:00:01 +0100
-Message-ID: <200506101200.01552.gdh@acentral.co.uk>
+Date: Fri, 10 Jun 2005 13:02:39 +0200
+Message-ID: <9151ac2a05061004025b3453e8@mail.gmail.com>
 References: <BAY0-SMTP07EE697B166AFFF0DFD5FFBCFF0@phx.gbl>
+Reply-To: Filip Sneppe <filip.sneppe@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <BAY0-SMTP07EE697B166AFFF0DFD5FFBCFF0@phx.gbl>
 Content-Disposition: inline
@@ -19,20 +20,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: CompuGenic <pablo@compugenic.com>
+Cc: netfilter@lists.netfilter.org
 
-On Friday 10 June 2005 12:01, CompuGenic wrote:
+Hi,
 
+On 6/10/05, CompuGenic <pablo@compugenic.com> wrote:
+> Hello all.
+...
+> However, my logs are constantly filled with entries as follows:
+> Jun 9 8:51:12 host -- MARK --
+> Jun 9 9:11:12 host -- MARK --
+> Jun 9 9:31:12 host -- MARK --
+> Jun 9 9:51:12 host -- MARK --
 > Jun 9 10:11:12 host -- MARK --
 > Jun 9 10:31:12 host -- MARK --
->
+>=20
 > Notice the time patterns? I have no idea where these are coming from? Is
-> there a way to know if it's from my firewall, or to track the source?
 
-:)
+These are from syslog - notice how they are logged every 20 minutes,
+when syslog has gone 20 minutes without receiving a message for
+this log file.
 
-No need to worry - this is normal and healthy - syslog is letting you know 
-that there has been no logging activity but that syslog is still running :)
+Let's say your machine crashes overnight. At the very least you may be
+able to pinpoint when the machine crashed (within a 20-minute interval)
+thanks to these messages :-)
 
-gdh
+Regards,
+Filip
 
