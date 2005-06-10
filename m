@@ -1,16 +1,13 @@
-From: Jeff Simmons <jsimmons@goblin.punk.net>
-Subject: Re: Routing and DNAT redux
-Date: Fri, 10 Jun 2005 11:05:03 -0700
-Message-ID: <200506101105.03926.jsimmons@goblin.punk.net>
-References: <200506081754.50537.jsimmons@goblin.punk.net>
-	<200506091000.21220.jsimmons@goblin.punk.net>
-	<20050610175554.GA6127@bender.817west.com>
-Reply-To: jsimmons@goblin.punk.net
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: --policy DROP kills everything?
+Date: Fri, 10 Jun 2005 14:08:27 -0400
+Message-ID: <20050610180827.GA6276@bender.817west.com>
+References: <42A78007.7080504@edoceo.com>
+	<20050609062511.8AD978EDCEB@smtp.sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050610175554.GA6127@bender.817west.com>
 Content-Disposition: inline
+In-Reply-To: <20050609062511.8AD978EDCEB@smtp.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,70 +19,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Nice. Very slick. I was contemplating a horrible kludge using NAT on both the 
-exterior and interior interfaces. This is far superior.
+On Thu, Jun 09, 2005 at 08:26:38AM +0200, Rob Sterenborg wrote:
+> If -m state is not specified then, in my experience, -m state --state
+> NEW is assumed (someone please correct me if I'm telling nonsense here)
+> so your rules *will* allow new connections.
 
-Many thanks!
+that is; indeed, nonsense.
 
-On Friday 10 June 2005 10:55, Jason Opperisano wrote:
-> On Thu, Jun 09, 2005 at 10:00:21AM -0700, Jeff Simmons wrote:
-> > The actual challenge is to have two external interfaces, IF_1 and IF_2,
-> > each with their own address and both DNATed to an internal server.
-> > Packets coming into IF_1 should have their replies routed out IF_1 while
-> > packets coming in on IF_2 should have their replies routed out IF_2.
-> >
-> > The ONLY place this information (which interface a particular packet
-> > stream came in on) is available is in the NAT state table. Pre NAT, all
-> > routing has to go on is the source server destination remote.  Post NAT
-> > routing now sees source IF_ (1 or 2) destination remote, and the packet
-> > can now be properly routed out the correct interface.
-> >
-> > Which is why it's important whether NAT takes place pre or post routing
-> > on the reply packets from a DNATed destination.
->
-> the way i attack this problem (ensuring a DNAT-ed connection gets routed
-> back out the same link it came in on) is with CONNMARK:
->
->   iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
->   iptables -t mangle -A PREROUTING -i $EXT_IF_A -d $PUB_IP_A \
->     -m mark --mark 0 -j MARK --set-mark 1
->   iptables -t mangle -A PREROUTING -i $EXT_IF_B -d $PUB_IP_B \
->     -m mark --mark 0 -j MARK --set-mark 2
->   iptables -t mangle -A PREROUTING -j CONNMARK --save-mark
->
->   iptables -t nat -A PREROUTING -i $EXT_IF_A -d $PUB_IP_A \
->     -j DNAT --to-destination $PRIV_SRV
->   iptables -t nat -A PREROUTING -i $EXT_IF_B -d $PUB_IP_B \
->     -j DNAT --to-destination $PRIV_SRV
->
->   ip route add default via $ISP_A_GW dev $EXT_IF_A table ISPA
->   ip route add default via $ISP_B_GW dev $EXT_IF_B table ISPB
->
->   ip rule add fwmark 1 table ISPA
->   ip rule add fwmark 2 table ISPB
->
-> this isn't 100% step-by-step, but should give you the foundation.
-> i have posted truly step-by-step examples of this in the past--search
-> the archives.
->
-> hope this gets you on the right track.
->
-> -j
->
-> --
-> "Lois: I'm sorry that Stewie ruined your books. Here, I brought
->  you some of Peter's.
->  Brian: "Mr. T" by Mr. T. "T and Me" by George Poppard. "For The Last
->  Time, I'm Not Mr. T" by Ving Rhames."
->         --Family Guy
+-j
 
--- 
-Jeff Simmons                                   jsimmons@goblin.punk.net
-     Simmons Consulting - Network Engineering, Administration, Security
-
-"You guys, I don't hear any noise. Are you sure you're doing it right?"
-	-- My Life With The Thrill Kill Kult
+--
+"Peter: And this is where the Pilgrims landed at Fraggle Rock."
+        --Family Guy
 
