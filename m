@@ -1,7 +1,7 @@
 From: Tib <tib@tigerknight.org>
 Subject: Re: Hi!
-Date: Sat, 11 Jun 2005 13:21:13 -0500 (CDT)
-Message-ID: <Pine.LNX.4.53.0506111320070.9775@altaica>
+Date: Sat, 11 Jun 2005 13:22:52 -0500 (CDT)
+Message-ID: <Pine.LNX.4.53.0506111321350.9775@altaica>
 References: <2e51be410506111000557ddca1@mail.gmail.com> 
 	<Pine.LNX.4.53.0506111202260.9775@altaica>
 	<1118512593.18567.6.camel@debianbox>
@@ -24,10 +24,11 @@ To: "Sadus ." <sadus@swiftbin.net>
 Cc: netfilter@lists.netfilter.org
 
 
-If you are using snat/dnat to map internal IP's to the public realm, INPUT
-will not block things that are being handled in this way - that is why the
-FORWARD ruleset will also need entries in it, since that is explicitly
-going to catch packets handled by snat/dnat.
+Caveat to what I just said - if you are doing masquerading behind a single
+IP, then you don't need to worry about the FORWARD ruleset. Only packets
+associated with connections  that are being masqueraded will get sent on
+to internal networks - unless you have specific ports that are translated
+to internal services.
 
 <EOL>
 Tib
