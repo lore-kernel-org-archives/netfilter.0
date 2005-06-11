@@ -1,15 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: IMCP not returning
-Date: Sat, 11 Jun 2005 16:24:12 -0400
-Message-ID: <20050611202412.GA10262@bender.817west.com>
-References: <1118504253.18567.1.camel@debianbox>
-	<20050611155825.GA9624@bender.817west.com>
-	<20050611160818.GA9697@bender.817west.com>
-	<1118507389.18567.3.camel@debianbox>
+From: Vivek Dasmohapatra <vivek@etla.org>
+Subject: possible proxy_arp problem : question about configuration
+Date: Sun, 12 Jun 2005 00:10:34 +0100 (BST)
+Message-ID: <Pine.LNX.4.62.0506112349300.22282@pike.pepperfish.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1118507389.18567.3.camel@debianbox>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,49 +14,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sat, Jun 11, 2005 at 07:29:49PM +0300, Sadus . wrote:
-> This is what i'm getting:
-> 
-> debian:~# ip route get locationIP
-> locationIP dev eth1  src HostIP     
-> 	cache  mtu 1500 advmss 1460 hoplimit 64
+Hi: I have a 3 legged firewall setup that looks like this:
 
-that's not a complete entry, unless $locationIP is on the same layer 3
-subnet as $HostIP.
 
-like this output from my machine on 10.1.1.0/24 with IP 10.1.1.223:
+  DMZ-[ xx.xx.xx.64/26 ][eth2  eth1][ xx.xx.xx.0/26 ]-xx.xx.xx.1(isp router)
+                        \         /                  |
+                         \ eth0  /                   |
+                          ~~~~~~~                    there's actually a
+                         [10.100/16]                 hub/switch here, for
+                                                     various reasons
 
-$ ip route get 10.1.1.1
-10.1.1.1 dev eth0  src 10.1.1.223
-    cache  mtu 1500 advmss 1460 fragtimeout 64
+eth2: xx.xx.xx.65
+eth1: xx.xx.xx.2
 
-a route get for an IP address not on the local segment would have a "via
-$gateway_IP" part to it:
+now the isp router thinks the network is actually xx.xx.xx.0/25,
+so the firewall is proxy-arping for the machines in the DMZ so
+that the isp router will talk to the right box (ie the firewall)
 
-$ ip route get 4.2.2.2
-4.2.2.2 via 10.1.1.1 dev eth0  src 10.1.1.223
-    cache  mtu 1500 advmss 1460 fragtimeout 64
+This setup works in kernel 2.4
 
-since you're not providing any actual IP information, i can't actually
-help you, but if $locationIP is not on the same layer 3 subnet as
-$HostIP, or is not *directly* reachable on eth1, someone has added a
-faulty route to that box along the lines of this:
+However in 2.6 (8 and 11) it does not.
 
-  ip route add $locationIP dev eth1
+packets get forwarded from eth2 to eth1, and they turn up on the wire
+at eth1 (both outgoing and return packets are seen by tcpdump) but the 
+incoming packets on eth1 for the .64 network are never seen by netfilter, 
+not even in the raw table's PREROUTING chain.
 
-instead of:
+This smells to me like a proxy arp problem to me.
 
-  ip route add $locationIP via $gateway_IP
+/proc/sys/net/ipv4/ip_forward is 1
 
-good luck figuring it out--you have all the tools at your hands now.
+I've turned on /proc/sys/net/ipv4/conf/eth{1,2}/proxy_arp (1),
+but this doesn't seem to help.
 
--j
+Can anybody give me any pointers here? Am I missing something obvious?
+Have I misunderstood how the setup works in my kernel 2.4 firewall?
+Is it something other than proxy arp?
 
---
-"Peter: YEAH. I'm also addicted to boobies."
-        --Family Guy
+
 
