@@ -1,10 +1,17 @@
-From: "it clown" <suse@mailbox.co.za>
-Subject: nat and slow ftp
-Date: Sun, 12 Jun 2005 13:47:58 +0200
-Message-ID: <web-789187132@mail01.infosat.net>
+From: Ian Laurie <iml@zip.com.au>
+Subject: Re: Hi!
+Date: Sun, 12 Jun 2005 23:48:10 +0000
+Message-ID: <1118620090l.11527l.0l@server.moose.blogdns.org>
+References: <2e51be410506111000557ddca1@mail.gmail.com>
+	<Pine.LNX.4.53.0506111202260.9775@altaica>
+	<1118512593.18567.6.camel@debianbox>
+	<Pine.LNX.4.53.0506111321350.9775@altaica>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.53.0506111321350.9775@altaica> (from
+	tib@tigerknight.org on Sun Jun 12 04:22:52 2005)
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,38 +22,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="Flowed"
+To: Tib <tib@tigerknight.org>, netfilter@lists.netfilter.org
 
-Hi All,
+On 06/12/2005 04:22:52 AM, Tib wrote:
+>=20
+> Caveat to what I just said - if you are doing masquerading behind a singl=
+e
+> IP, then you don't need to worry about the FORWARD ruleset. Only packets
+> associated with connections  that are being masqueraded will get sent on
+> to internal networks - unless you have specific ports that are translated
+> to internal services.
+>=20
+> <EOL>
+> Tib
 
-I would like to know if the following is the correct way to
-setup my firewall rules to browse the net:
+Actually that isn't quite correct.  With ip_forward on, network bridging is=
+=20
+enabled. Running NAT does not disable the bridging function.  If a box on t=
+he=20
+outside port sends a packet addressed to a box on the inside port, using th=
+e=20
+firewall as its gateway, the packet will get through NAT.  NAT runs on top=20
+of the bridging function, so bridging still works, though only in one direc=
+tion
+since in the other direction packets will get NATed.
 
-iptables -A OUTPUT -p tcp -o ppp0 --dport 53 -j ACCEPT
-iptables -A OUTPUT -p udp -o ppp0 --dport 53 -j ACCEPT
-iptables -A OUTPUT -p tcp -o ppp0 --dport 80 -j ACCEPT
-iptables -A OUTPUT -p tcp -o ppp0 --dport 20 -j ACCEPT
-iptables -A OUTPUT -p tcp -o ppp0 --dport 21 -j ACCEPT
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j
-ACCEPT
+You need to specifically use rules in the firewall to stop unsolicited
+packets from getting through, like ESTABLISHED/RELATED etc.
 
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+The idea that running NAT disables bridging is a common and dangerous
+misconception.  Showing this isn't so is a simple experiment, and one
+I have done many times to the astonishment of onlookers.
 
-I am using this with squid and it is working.
+You can block packets addressed to the inside of a firewall by a rule in
+your PREROUTING chain like so:
 
-Is that a good way of doing things? I am nating the ports
-right?
+-A PREROUTING -i eth0 -d 10.1.1.0/24 -j DROP
 
-What i find is that when i browse ftp site they take ages
-to display the contents. Why is this happening and i did
-load ip_nat_ftp and iptables_nat.
+Where 10.1.1.* is the inside range and eth0 is the outside port.  Basically
+this DROPs anything appearing on the outside interface addressed to
+something on the inside interface.
 
-But when i setup a forward rule for ftp it will connect
-nice and quick.
+Technically though this rule is unnecessary if the rest of your firewall
+is set up right, since you would ordinarily be using rules to ensure that
+only response packets get back through the FORWARD chain.  For example:
 
-Thanks
-Regards
-_____________________________________________________________________
-For super low premiums, click here http://www.dialdirect.co.za/quote
+-A FWD_INBOUND_TCPUDP -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+Ian
+
+PS - Another misconception some have is that setting rp_filter stops this,
+it doesn't, since rp_filter works on a packet's source IP, not destination
+IP.  However, I for one would be in favor of another kernel flag that
+*would* work on the destination IP.
+
+
+
+
 
