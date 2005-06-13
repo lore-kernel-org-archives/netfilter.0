@@ -1,11 +1,13 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Clusterip usage
-Date: Mon, 13 Jun 2005 09:48:35 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582909E99@pxtbenexd01.pxt.primeexalia.com>
+From: Ulisses <ulisses.alonso@unavarra.es>
+Subject: stateless udp redirect: was: CONFIG_IP_NF_NAT_LOCAL and REDIRECT
+Date: Mon, 13 Jun 2005 19:55:34 +0200
+Message-ID: <20050613175534.GB1391@s163m108.unavarra.es>
+References: <20050613152136.GA434@s163m108.unavarra.es>
+	<20050613154237.GB434@s163m108.unavarra.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <20050613154237.GB434@s163m108.unavarra.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +19,89 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Gavin Henry <ghenry@suretecsystems.com>, netfilter@lists.netfilter.org
-
-This should work but if you run into needing slightly more functionality =
-than can be procuded by iptables you're stuck.  This was our case.  We =
-decided on LinuxHA and then finally on LinuxHA/DRBD.  This combination =
-worked well for us (plus it was easy to configure).  Our additional =
-funcitionality is based on the fact that we need to NAT serveral IP's.
-=20
-Hope this helps.
-=20
-Gary Smith
-
-________________________________
-
-From: netfilter-bounces@lists.netfilter.org on behalf of Gavin Henry
-Sent: Mon 6/13/2005 5:07 AM
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: Clusterip usage
 
 
+Hi again,
 
-Dear list,
+REDIRECT depends on connection tracking?
 
-I have just read:
+How I can do a stateless UDP REDIRECT? just like in the 2.0 era?
 
-http://geminis.dyndns.org/wordpress/index.php/2005/06/12/loadbalancer-les=
-s-clusters-on-linux/
+I suspect that my problems are related to this....
 
-What is the lists view on it?
+Thanks
 
-Is it a reliable replacement for Linux Virtual Server?
-
-Thanks.
-
---
-Kind Regards,
-
-Gavin Henry.
-Managing Director.
-
-T +44 (0) 1224 279484
-M +44 (0) 7930 323266
-F +44 (0) 1224 742001
-E ghenry@suretecsystems.com
-
-Open Source. Open Solutions(tm).
-
-http://www.suretecsystems.com/
+	Ulisses
 
 
+On Mon, Jun 13, 2005 at 05:42:37PM +0200, Ulisses wrote:
+> 
+> I forgot to mention that it does work on linux 2.4.27 vanilla with
+> CONFIG_IP_NF_NAT_LOCAL enabled...
+> 
+> More precisely:
+> 
+> socket with local address _not_ set to the loopback adress is redirected,
+> and it is seen by tcpdump as
+> 
+> 127.0.0.1.localport > 127.0.0.1.redirected port
+> 
+> 
+> Thanks in advance
+> 
+> 	Ulisses
+> 
+> On Mon, Jun 13, 2005 at 05:21:36PM +0200, Ulisses wrote:
+> > 
+> > Hello
+> > 
+> > I'm trying to guess why the REDIRECT tarjet is not applied to local 
+> > process having CONFIG_IP_NF_NAT_LOCAL enabled
+> > 
+> > Having the following rule
+> > 
+> > iptables -t nat -A OUTPUT --destination $HOSTB/32 --protocol udp --destination-port 123 \
+> >          -j REDIRECT --to-ports $ABPORT
+> > 
+> > 
+> > doesn't apply to local ip address, please note that I'm not referring to the loopback.
+> > 
+> > If the packet is sent form 127.0.0.1 works ok. I'm running kernel 2.6.9 vanilla
+> > 
+> > Any comment or suggestion will be greatly appreciated
+> > 
+> > Thanks in advance
+> > 
+> > 	Ulisses
+> >                 Debian GNU/Linux: a dream come true
+> > -----------------------------------------------------------------------------
+> > "Computers are useless. They can only give answers."            Pablo Picasso
+> > 
+> > "Debugging is twice as hard as writing the code in the first place.
+> > Therefore, if you write the code as cleverly as possible, you are,
+> > by definition, not smart enough to debug it." - Brian W. Kernighan
+> > 
+> 
+> -- 
+>                 Debian GNU/Linux: a dream come true
+> -----------------------------------------------------------------------------
+> "Computers are useless. They can only give answers."            Pablo Picasso
+> 
+> "Debugging is twice as hard as writing the code in the first place.
+> Therefore, if you write the code as cleverly as possible, you are,
+> by definition, not smart enough to debug it." - Brian W. Kernighan
+> 
+> 
 
+-- 
+                Debian GNU/Linux: a dream come true
+-----------------------------------------------------------------------------
+"Computers are useless. They can only give answers."            Pablo Picasso
+
+"Debugging is twice as hard as writing the code in the first place.
+Therefore, if you write the code as cleverly as possible, you are,
+by definition, not smart enough to debug it." - Brian W. Kernighan
 
 
