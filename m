@@ -1,14 +1,13 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: SSH Brute force attacks
-Date: Mon, 13 Jun 2005 11:27:08 -0500
-Message-ID: <200506131127.08380.rob0@gmx.co.uk>
-References: <427B93EE.3030905@eccotours.dyndns.org>
-	<1117739926.10257.22.camel@debianbox>
-	<42AD9A9E.7070603@riverviewtech.net>
+From: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
+Subject: Re: ICMP NAT
+Date: Mon, 13 Jun 2005 13:36:29 -0300
+Message-ID: <f48e768e050613093644b07fa6@mail.gmail.com>
+References: <9D598A34672DF24F89FF4F851A41619511F3CA44@i2km08-ukbr.domain1.systemhost.net>
+Reply-To: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42AD9A9E.7070603@riverviewtech.net>
+In-Reply-To: <9D598A34672DF24F89FF4F851A41619511F3CA44@i2km08-ukbr.domain1.systemhost.net>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,18 +20,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "pablo.1.munoz@bt.com" <pablo.1.munoz@bt.com>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 13 June 2005 09:39, Taylor, Grant wrote:
-> I'm not sure if /etc/hosts.deny will prevent packets from entering
-> IPTables or not as I thought that the file was read by user space
-> daemons as a list of IPs to never talk to, not necissarly to the IP
-> table to deny access to.
+iptables -t nat -A PREROUTING -d PUBLIC_IP -p icmp -j DNAT --to PRIVATE_IP
+iptables -t nat -A POSTROUTING -s PRIVATE_IP -p icmp -j SNAT --to PUBLIC_IP
 
-No, yes. The user space daemon is tcpd(8), but other services might be 
-linked against the library too, so they would read the hosts_access(5) 
-files without consulting tcpd.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+and if you want packets from source local :
+
+iptables -t nat -A OUTPUT -d PUBLIC_IP -p icmp -j DNAT --to PRIVATE_IP
+
+best regards
+
+On 6/13/05, pablo.1.munoz@bt.com <pablo.1.munoz@bt.com> wrote:
+>=20
+> Hi all, Can someone tell me how can I implement a SNAT POSTROUTING and a
+> DNAT PREROUTING of an ICMP packet?
+>=20
+> Regards, Pablo.
+>=20
+>=20
+
+
+--=20
+Glaucius Djalma Pereira Junior
+glaucius@gmail.com
 
