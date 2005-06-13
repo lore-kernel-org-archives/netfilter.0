@@ -1,17 +1,15 @@
-From: Tib <tib@tigerknight.org>
-Subject: Re: Hi!
-Date: Sun, 12 Jun 2005 20:09:54 -0500 (CDT)
-Message-ID: <Pine.LNX.4.53.0506121953590.9775@altaica>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: FORWARD rules or not? (was: Re: Hi!)
+Date: Sun, 12 Jun 2005 20:27:24 -0500
+Message-ID: <200506122027.24511.rob0@gmx.co.uk>
 References: <2e51be410506111000557ddca1@mail.gmail.com>
-	<Pine.LNX.4.53.0506111202260.9775@altaica>
-	<1118512593.18567.6.camel@debianbox>
-	<Pine.LNX.4.53.0506111321350.9775@altaica>
 	<1118620090l.11527l.0l@server.moose.blogdns.org>
 	<Pine.LNX.4.53.0506121914140.9775@altaica>
-	<1118623895l.11527l.1l@server.moose.blogdns.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1118623895l.11527l.1l@server.moose.blogdns.org>
+In-Reply-To: <Pine.LNX.4.53.0506121914140.9775@altaica>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,76 +20,82 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 13 Jun 2005, Ian Laurie wrote:
-> We *may* be speaking at cross purposes.  I agree with what you have said but
-> I am also correct.  The issue is your statement "hits the firewall and falls
-> flat".
+On Sunday 12 June 2005 19:26, Tib wrote:
+> > > Caveat to what I just said - if you are doing masquerading behind
+> > > a single IP, then you don't need to worry about the FORWARD
+> > > ruleset. Only packets associated with connections  that are being
+> > > masqueraded will get sent on to internal networks - unless you
+> > > have specific ports that are translated to internal services.
+> >
+> > Actually that isn't quite correct.  With ip_forward on, network
+> > bridging is enabled. Running NAT does not disable the bridging
+> > function.  If a box on the outside port sends a packet addressed to
+> > a box on the inside port, using the firewall as its gateway, the
+> > packet will get through NAT.  NAT runs on top of the bridging
+> > function, so bridging still works, though only in one direction
+> > since in the other direction packets will get NATed.
 >
-> Your original paragraph doesn't make it clear to a beginner that you are
-> pre-supposing that there is a real firewall in place that will enforce NAT.
+> Actually, it is 100% correct.
+
+And you went on to show exceptions? I am confused. Perhaps so for 
+differing values of 100%? :)
+
+> Masquerading is a broad spectrum SNAT 
+> that will redirect return traffic associated with whatever it sends
+> out back to the originating internal host. So if some new connection
+> comes in to the external IP that isn't associated with any outbound
+> connection, it hits the firewall and falls flat - this is why modules
+
+If there are no FORWARD rules and a policy of ACCEPT, and packets hit 
+the external *interface* (not IP) with a destination IP in the internal 
+network, please explain which rule in INPUT will cause those packets to 
+fall flat. Source, somewhere else; destination, somewhere else: these 
+will not hit the INPUT chain at all.
+
+> Also - normal traffic from the outside world isn't going to be
+> getting sent directly to an inside private IP.
+
+Normal traffic, no. Attack traffic, maybe.
+
+> If ANY sort of nat is
+> going on, how on earth are they going to know which private IP to
+
+Most home and small office LAN's can be found on 192.168.0.0/24 or 
+192.168.1.0/24. And a real motivated attacker might have inside 
+information. If none of the above, there's always nmap -sP ... .
+
+> send to? Such traffic is only going to be used as a disruptive tactic
+> on the firewall connection itself. That's the whole point of private
+> network blocks - NON-ROUTABLE. To even get sent to the firewall from
+
+Non-routable by RFC, but I wouldn't expect that to stop an attacker. :)
+
+> the outside interface you'd have to have one of two situations:
 >
-> My point, that is also 100% correct, is that having a NAT rule alone does
-> not disable the bridging function.
+> 1. A legitimate host on the same physical network as the firewall's
+> outside interface, using said outside interface as a gateway, and
+> sending traffic to those private ip's.
+
+That would do it. On a home cable subnet this is not difficult to 
+imagine ... a bored teenager with time and curiosity ...
+
+In a business setting it could be a motivated competitor, or someone 
+with malicious intent and access to the ISP. Could be a spammer!
+
+> 2. A mangled packet attack of some sort where the external interface
+> is bombarded with traffic that should be impossible considering that
+> private network addresses are non-routable.
 >
-> The reality is that a lot of beginners "assume" that when they have NAT, their
-> internal addresses are unreachable from the outside and that simply isn't
-> the case with NAT alone (at least not with iptables under Linux).
->
-> That was the point I was making.
+> For broadband homeusers, option 1 is going to not exist since
+> customers are either directly on the net with a real IP thanks to a
+> dsl/cable modem that bridges the connection and doesn't have its own
 
-The original question was regarding a person with 3 ip's and the best way
-to make use of them on a network with a gateway host and two other hosts
-that would be behind it.
-
-I would be curious to hear how you can communicate to internal networks
-from across the internet without knowledge of the ip-block being used on
-said network behind a masqueraded host, and without the gateway/firewall
-box using iptables being explicitly instructed to route traffic that it
-receives on an external interface to the internal network - and have it
-get back out properly. I have never known or seen such a thing to be
-possible.
-
-> As for the rest of your post, you are forgetting the wider purpose of
-> routers/firewalls.  For example, inside a company where you may have the
-> R&D department on one private address space, finance on another, etc., all
-> isolated with routers.  In this scenario (which I work in) all you need to do
-> is use the "route" command to tell your machine where to send packets, and
-> suddenly private IP addresses are routable and *will* make it to the
-> firewall.  Further, you can specifically allow certain machines (like mine)
-> to get through..... despite NAT in operation for all other packets.
->
-> That is, I can ssh etc. into boxes that sit behind NAT.  I just wanted to
-> make the point that NAT alone doesn't prevent this, which wasn't obvious
-> from your post.
-
-But see - your work network (and mine as well) is designed explicitly to
-enable traffic like that to flow between different physical segments. But
-as we both just said - those are work networks that are designed with
-dozens if not hudreds or thousands of hosts involved, and typically it is
-the nat that specificly enables such things to happen. And again - anyone
-without specific knowledge to the architecture of the system is going to
-be guessing in the dark and have little to no chance of initiating proper
-communication, forcing them to resort to disruption tactics like I
-mentioned in situation #2 previously.
-
-The general internet at large is not designed to route or respond to
-private network traffic, if it did things would be very messy indeed on
-the net.
-
-So while such things /are/ possible in specific, explicit, application -
-for the general newbie end-user as you put it, the setup I defined being
-short, simple, and uncomplicated is going to both service and protect the
-hosts involved as well as provide maximum flexibility for those hosts as
-well.
-
-I don't think we're talking at cross purposes really. We're both on target
-but just in different frames of reference for the practical application of
-networking involved.
-
-<EOL>
-Tib
+We hope. I prefer to put limits in FORWARD. Is there any good reason 
+*not* to?
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
