@@ -1,11 +1,12 @@
-From: <pablo.1.munoz@bt.com>
-Subject: ICMP NAT
-Date: Mon, 13 Jun 2005 16:22:03 +0100
-Message-ID: <9D598A34672DF24F89FF4F851A41619511F3CA44@i2km08-ukbr.domain1.systemhost.net>
+From: Ulisses <ulisses.alonso@unavarra.es>
+Subject: Re: CONFIG_IP_NF_NAT_LOCAL and REDIRECT
+Date: Mon, 13 Jun 2005 17:42:37 +0200
+Message-ID: <20050613154237.GB434@s163m108.unavarra.es>
+References: <20050613152136.GA434@s163m108.unavarra.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <20050613152136.GA434@s163m108.unavarra.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,11 +18,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-=20
-Hi all, Can someone tell me how can I implement a SNAT POSTROUTING and a
-DNAT PREROUTING of an ICMP packet?
 
-Regards, Pablo.
+I forgot to mention that it does work on linux 2.4.27 vanilla with
+CONFIG_IP_NF_NAT_LOCAL enabled...
+
+More precisely:
+
+socket with local address _not_ set to the loopback adress is redirected,
+and it is seen by tcpdump as
+
+127.0.0.1.localport > 127.0.0.1.redirected port
+
+
+Thanks in advance
+
+	Ulisses
+
+On Mon, Jun 13, 2005 at 05:21:36PM +0200, Ulisses wrote:
+> 
+> Hello
+> 
+> I'm trying to guess why the REDIRECT tarjet is not applied to local 
+> process having CONFIG_IP_NF_NAT_LOCAL enabled
+> 
+> Having the following rule
+> 
+> iptables -t nat -A OUTPUT --destination $HOSTB/32 --protocol udp --destination-port 123 \
+>          -j REDIRECT --to-ports $ABPORT
+> 
+> 
+> doesn't apply to local ip address, please note that I'm not referring to the loopback.
+> 
+> If the packet is sent form 127.0.0.1 works ok. I'm running kernel 2.6.9 vanilla
+> 
+> Any comment or suggestion will be greatly appreciated
+> 
+> Thanks in advance
+> 
+> 	Ulisses
+>                 Debian GNU/Linux: a dream come true
+> -----------------------------------------------------------------------------
+> "Computers are useless. They can only give answers."            Pablo Picasso
+> 
+> "Debugging is twice as hard as writing the code in the first place.
+> Therefore, if you write the code as cleverly as possible, you are,
+> by definition, not smart enough to debug it." - Brian W. Kernighan
+> 
+
+-- 
+                Debian GNU/Linux: a dream come true
+-----------------------------------------------------------------------------
+"Computers are useless. They can only give answers."            Pablo Picasso
+
+"Debugging is twice as hard as writing the code in the first place.
+Therefore, if you write the code as cleverly as possible, you are,
+by definition, not smart enough to debug it." - Brian W. Kernighan
+
 
