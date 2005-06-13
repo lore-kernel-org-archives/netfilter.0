@@ -1,15 +1,19 @@
-From: Tib <tib@tigerknight.org>
+From: Ian Laurie <iml@zip.com.au>
 Subject: Re: Hi!
-Date: Sun, 12 Jun 2005 19:26:35 -0500 (CDT)
-Message-ID: <Pine.LNX.4.53.0506121914140.9775@altaica>
+Date: Mon, 13 Jun 2005 00:55:14 +0000
+Message-ID: <1118624114l.11527l.2l@server.moose.blogdns.org>
 References: <2e51be410506111000557ddca1@mail.gmail.com>
 	<Pine.LNX.4.53.0506111202260.9775@altaica>
 	<1118512593.18567.6.camel@debianbox>
 	<Pine.LNX.4.53.0506111321350.9775@altaica>
 	<1118620090l.11527l.0l@server.moose.blogdns.org>
+	<Pine.LNX.4.53.0506121914140.9775@altaica>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1118620090l.11527l.0l@server.moose.blogdns.org>
+In-Reply-To: <Pine.LNX.4.53.0506121914140.9775@altaica> (from
+	tib@tigerknight.org on Mon Jun 13 10:26:35 2005)
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,69 +24,83 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="Flowed"
 To: netfilter@lists.netfilter.org
 
-> > Caveat to what I just said - if you are doing masquerading behind a single
-> > IP, then you don't need to worry about the FORWARD ruleset. Only packets
-> > associated with connections  that are being masqueraded will get sent on
-> > to internal networks - unless you have specific ports that are translated
-> > to internal services.
->
-> Actually that isn't quite correct.  With ip_forward on, network bridging is
-> enabled. Running NAT does not disable the bridging function.  If a box on the
-> outside port sends a packet addressed to a box on the inside port, using the
-> firewall as its gateway, the packet will get through NAT.  NAT runs on top
-> of the bridging function, so bridging still works, though only in one direction
-> since in the other direction packets will get NATed.
+On 06/13/2005 10:26:35 AM, Tib wrote:
+> > > Caveat to what I just said - if you are doing masquerading behind a=20
+> single
+> > > IP, then you don't need to worry about the FORWARD ruleset. Only pack=
+ets
+> > > associated with connections  that are being masqueraded will get sent=
+ on
+> > > to internal networks - unless you have specific ports that are=20
+> translated
+> > > to internal services.
+> >
+> > Actually that isn't quite correct.  With ip_forward on, network bridgin=
+g=20
+> is
+> > enabled. Running NAT does not disable the bridging function.  If a box =
+on=20
+> the
+> > outside port sends a packet addressed to a box on the inside port, usin=
+g=20
+> the
+> > firewall as its gateway, the packet will get through NAT.  NAT runs on =
+top
+> > of the bridging function, so bridging still works, though only in one=20
+> direction
+> > since in the other direction packets will get NATed.
+>=20
+> Actually, it is 100% correct. Masquerading is a broad spectrum SNAT that
+> will redirect return traffic associated with whatever it sends out back t=
+o
+> the originating internal host. So if some new connection comes in to the
+> external IP that isn't associated with any outbound connection, it hits
+> the firewall and falls flat - this is why modules like ip_conntrack_ftp
+> and ip_nat_ftp are necessary, and why dcc on irc clients tends to get
+> borked, the list goes on.
 
-Actually, it is 100% correct. Masquerading is a broad spectrum SNAT that
-will redirect return traffic associated with whatever it sends out back to
-the originating internal host. So if some new connection comes in to the
-external IP that isn't associated with any outbound connection, it hits
-the firewall and falls flat - this is why modules like ip_conntrack_ftp
-and ip_nat_ftp are necessary, and why dcc on irc clients tends to get
-borked, the list goes on.
+Hi Tib,
 
-If he's running two real world ip's connected behind a firewall real world
-ip - that's not masquerading, and that /would/ require a defensive
-forward ruleset as the firewall itself is not accepting packets but
-forwarding them to another host. Using snat/dnat the way I specified is
-effectively the same, but allows there to be a private network behind the
-firewall that can have as many hosts or other things as it wants without
-having to deal with the constraints of getting more IP's from an isp.
+We *may* be speaking at cross purposes.  I agree with what you have said bu=
+t
+I am also correct.  The issue is your statement "hits the firewall and fall=
+s=20
+flat".
 
-Also - normal traffic from the outside world isn't going to be getting
-sent directly to an inside private IP. If ANY sort of nat is going on, how
-on earth are they going to know which private IP to send to? Such traffic
-is only going to be used as a disruptive tactic on the firewall connection
-itself. That's the whole point of private network blocks - NON-ROUTABLE.
-To even get sent to the firewall from the outside interface you'd have to
-have one of two situations:
+Your original paragraph doesn't make it clear to a beginner that you are
+pre-supposing that there is a real firewall in place that will enforce NAT.
 
-1. A legitimate host on the same physical network as the firewall's
-outside interface, using said outside interface as a gateway, and sending
-traffic to those private ip's.
+My point, that is also 100% correct, is that having a NAT rule alone does n=
+ot=20
+disable the bridging function.
 
-2. A mangled packet attack of some sort where the external interface is
-bombarded with traffic that should be impossible considering that private
-network addresses are non-routable.
+The reality is that a lot of beginners "assume" that when they have NAT, th=
+eir
+internal addresses are unreachable from the outside and that simply isn't
+the case with NAT alone (at least not with iptables under Linux).
 
-For broadband homeusers, option 1 is going to not exist since customers
-are either directly on the net with a real IP thanks to a dsl/cable modem
-that bridges the connection and doesn't have its own IP, or who have a
-dsl/cable router that gets it's own IP, runs a dhcp client to the inside
-where the end-user gets an IP and from there gets masqueraded out behind
-the IP of the router.
+That was the point I was making. =20
+As for the rest of your post, you are forgetting the wider purpose of route=
+rs/
+firewalls.  For example, inside a company where you may have the
+R&D department on one private address space, finance on another, etc., all=20
+isolated with routers.  In this scenario (which I work in) all you need to =
+do=20
+is use the "route" command to tell your machine where to send packets, and=20
+suddenly private IP addresses are routable and *will* make it to the
+firewall.  Further, you can specifically allow certain machines (like mine)
+to get through..... despite NAT in operation for all other packets.
 
-Option 2 however is a reality but a relatively low one because that sort
-of traffic does not happen to your every day small network dsl user. I
-recently had to deal with such an attack - 22Mb/s of traffic that should
-not be possible slammed my external interface. Yup - one simple rule made
-it all go away, but the point is that in 6 years of running said style
-network, that's the only time I've encountered such traffic.
+That is, I can ssh etc. into boxes that sit behind NAT.  I just wanted to m=
+ake=20
+the point that NAT alone doesn't prevent this, which wasn't obvious from yo=
+ur=20
+post.
 
-<EOL>
-Tib
+Ian
+
+
 
