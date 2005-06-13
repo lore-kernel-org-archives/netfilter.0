@@ -1,7 +1,7 @@
-From: Partha Bag <parthabag@yahoo.com>
-Subject: ipchains
-Date: Mon, 13 Jun 2005 00:53:38 -0700 (PDT)
-Message-ID: <20050613075338.27145.qmail@web40504.mail.yahoo.com>
+From: "Gavin Henry" <ghenry@suretecsystems.com>
+Subject: Clusterip usage
+Date: Mon, 13 Jun 2005 13:07:37 +0100 (BST)
+Message-ID: <58136.193.195.148.66.1118664457.squirrel@webmail.suretecsystems.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,26 +18,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear Sir,
+Dear list,
 
-  I am using RedHat 7.2.4.10. When I remove ipchains
-using rpm -e ipchains, it is not removed and it give
-the message that there are dependencies in lokkit.
+I have just read:
 
-  In interactive mode during startup, iptables service
-starts, but I do not see anything when I use lsmod.
+http://geminis.dyndns.org/wordpress/index.php/2005/06/12/loadbalancer-less-clusters-on-linux/
 
-  Please help me to sort out the problem. 
+What is the lists view on it?
 
-  Thanks & regards.
-  
-   psbag
+Is it a reliable replacement for Linux Virtual Server?
+
+Thanks.
+
+-- 
+Kind Regards,
+
+Gavin Henry.
+Managing Director.
+
+T +44 (0) 1224 279484
+M +44 (0) 7930 323266
+F +44 (0) 1224 742001
+E ghenry@suretecsystems.com
+
+Open Source. Open Solutions(tm).
+
+http://www.suretecsystems.com/
 
 
-
-		
-__________________________________ 
-Discover Yahoo! 
-Get on-the-go sports scores, stock quotes, news and more. Check it out! 
-http://discover.yahoo.com/mobile.html
 
