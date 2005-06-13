@@ -1,10 +1,14 @@
-From: "Gavin Henry" <ghenry@suretecsystems.com>
-Subject: Clusterip usage
-Date: Mon, 13 Jun 2005 13:07:37 +0100 (BST)
-Message-ID: <58136.193.195.148.66.1118664457.squirrel@webmail.suretecsystems.com>
+From: Frank Gruellich <frank@der-frank.org>
+Subject: Re: Strange Entry
+Date: Mon, 13 Jun 2005 15:09:15 +0200
+Message-ID: <20050613130915.GH5254@der-frank.org>
+References: <39745.82.152.178.234.1118493310.squirrel@webmail.*>
+	<20050611143858.GG5254@der-frank.org>
+	<15604.212.100.225.55.1118652269.squirrel@webmail.*>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <15604.212.100.225.55.1118652269.squirrel@webmail.*>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,34 +20,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Jimmy <squid@oranged.to>
+Cc: netfilter@lists.netfilter.org
 
-Dear list,
+* Jimmy <squid@oranged.to> 13. Jun 05:
+> Hello Frank,
 
-I have just read:
+Hi,
 
-http://geminis.dyndns.org/wordpress/index.php/2005/06/12/loadbalancer-less-clusters-on-linux/
+*grmpf*  Please do NOT:
+ + send me private mails,
+ + top post,
+ + wrap outputs.
 
-What is the lists view on it?
+And do:
+ + post your network topology.  (I can do some brave guesses at this
+   point: you have a single host with eth0 the external interface?)
 
-Is it a reliable replacement for Linux Virtual Server?
+> Chain INPUT (policy DROP 6037 packets, 716K bytes)
+>  pkts bytes target     prot opt in     out     source              
+> destination
+>  192K   46M ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
+>   531 40356 ACCEPT     icmp --  eth0   *       10.2.96.0/24         212.100.249.100
+> 18624 1366K ACCEPT     tcp  --  eth0   *       0.0.0.0/0            212.100.249.100     tcp spts:1024:65535 dpt:768
+> 12340  619K ACCEPT     tcp  --  eth0   *       0.0.0.0/0            212.100.249.100     tcp spts:1024:65535 flags:0x16/0x02 multiport dports 25,53,80,110,143
 
-Thanks.
+You're accepting incomming TCP connections to port 25 at eth0.
 
+>   417 21204 ACCEPT     tcp  --  eth0   *       0.0.0.0/0            212.100.249.101     multiport dports 21,53,80,443 tcp flags:0x16/0x02
+>     4   289 ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           udp dpt:53
+> 32956 5392K ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           udp spt:53
+>  129K   19M ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
+>  6037  716K LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4
+>  6037  716K LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4 prefix `Dropped: '
+> 
+> Chain OUTPUT (policy DROP 49 packets, 3499 bytes)
+>  pkts bytes target     prot opt in     out     source              
+> destination
+>  192K   46M ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0
+>   531 40356 ACCEPT     icmp --  *      *       0.0.0.0/0            10.2.96.0/24
+>   888  154K ACCEPT     tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           multiport dports 21,22,25,53,43,80,110,143,443,6667,6668
+
+And you accept any outgoing TCP connection to eth0 at port 25.
+
+>     3   436 ACCEPT     udp  --  *      eth0    212.100.249.100      0.0.0.0/0           udp spt:53
+>     1   161 ACCEPT     udp  --  *      eth0    212.100.249.101      0.0.0.0/0           udp spt:53
+> 33490 2732K ACCEPT     udp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           multiport dports 53
+>  187K  117M ACCEPT     tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
+
+And you accept all RELATED traffic throug eth0.
+
+>    49  3499 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4
+>    49  3499 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4 prefix `Dropped Out Rule: '
+> 
+> Any help would be greatly appreciated.
+
+From this point of view you shoudn't have these log messages.  These
+packets would be ACCEPTed due to the RELATED match.  Your logged FIN
+packet could not be set in relation to an existing connections and so
+missed the RELATED rule somehow.  Once I had similar problems with a
+squid: it seemed it always closed connections two times.  I never had a
+detailed view at this phenomenon, but it looked similar to this.
+
+HTH,
+ Gruss vom Frank.
 -- 
-Kind Regards,
-
-Gavin Henry.
-Managing Director.
-
-T +44 (0) 1224 279484
-M +44 (0) 7930 323266
-F +44 (0) 1224 742001
-E ghenry@suretecsystems.com
-
-Open Source. Open Solutions(tm).
-
-http://www.suretecsystems.com/
-
-
+Sigmentation fault
 
