@@ -1,10 +1,12 @@
-From: Martin Bangiev <martin.bangiev@borsabg.com>
-Subject: DNAT & SNAT delay
-Date: Tue, 14 Jun 2005 12:13:37 +0300
-Message-ID: <42AE9FC1.6050204@borsabg.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Portforwading and FTP
+Date: Tue, 14 Jun 2005 15:57:29 +0200
+Message-ID: <20050614135832.38D488EDCEB@smtp.sterenborg.info>
+References: <000d01c570a0$bfc95c10$b91ed0da@admisyuzz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-reply-to: <000d01c570a0$bfc95c10$b91ed0da@admisyuzz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,36 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi guys,
-I have two applications based in different networks that has to 
-communicate with each other using many small UDP packets. Due to 
-security reasons I set the firewall for SNAT and DNAT dynamically. Here 
-is the exact situation.
+> I would like to seek some help from expert regarding on port 
+> forwarding and ftp.
+> i have setup the POSTROUTING and PREROUTING in iptables 
+> config to forward packet to ftp server. Then i try ftp client 
+> to access my ftp server. I successfully access my ftp server 
+> but i have error message come out 502: ILLEGAL port command. 
+> Anybody can help me how to solve this issue.
 
-Client1:
-IP - 10.0.0.2
-Client2:
-IP - 172.16.0.2
-Firewall:
-IP1 - 10.0.0.1
-IP2 - 172.16.0.1
+Did you 'modprobe ip_conntrack_ftp' and 'modprobe ip_nat_ftp' ?
 
-Client1 sends it's datagrams to the Firewall:IP1
-Client2 sends it's datagrams to the Firewall:IP2
 
-Just before the communication starts I add rules to DNAT udp packets 
-from Client1 to Client2, and to SNAT packets to Client2 to be from 
-Firewall:IP2. I do it for the Client2 respective (of course I set up the 
-ports too).
-The problem is that the NAT starts with about 30 seconds delay. tcpdump 
-shows the packets are coming from Client1 but they are not SNATed & 
-DNATed. The counters of the rules however counts the packets. Once the 
-packets begin to be NATed the counters stops.
-Can you please tell me where this delay can be coming from?
-Thanks in advance:)
-
+Gr,
+Rob
 
 
