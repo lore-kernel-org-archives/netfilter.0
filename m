@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Re: Route traffic per protocol - it is possible?
-Date: Tue, 14 Jun 2005 14:47:42 -0400
-Message-ID: <20050614184742.GA19709@bender.817west.com>
-References: <41345.200.40.212.129.1118250147.squirrel@webmail.prolinux.net.uy>
-	<20050614182859.47598.qmail@web54307.mail.yahoo.com>
+From: Baskaran Mohandass <baski@foundrynet.com>
+Subject: SNAT issue for locally generated UDP packet
+Date: Tue, 14 Jun 2005 13:01:56 -0700
+Message-ID: <42AF37B4.8080000@foundrynet.com>
+Reply-To: baski@foundrynet.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050614182859.47598.qmail@web54307.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tue, Jun 14, 2005 at 11:28:58AM -0700, Scott wrote:
-> Hi, I tried with the -p tcp and then with -p tcp -m
-> tcp options and to no avail, but with a new error:
-> 
-> iptables: No chain/target/match by that name
-> 
-> I have gone through every bit of the command:
-> 
-> iptables -t mangle -A PREROUTING -p tcp -m tcp --dport
-> 22 -j ROUTE --gw 1.2.3.4
-> 
-> ..to no avail!!  even if I change PREROUTING to INPUT,
-> OUTPUT, FORWARD or POSTROUTING it's the same error..
-> surely someone must know why, I'm out of answers...
+Hi all,
 
-you don't have support for the ROUTE target in your kernel.  if you have
-a modular kernel:
+      I am trying to source nat the packet generated locally using 
+iptables. Machine is running Fedora core2 and one of the interface 
+address is 5.5.5.7.  Sip server sends a packet with source port 5060 and 
+ip address 5.5.5.7. I want to change the IP address and the source port 
+when it goes out. Reading the IPtables manual only rule i can think of is
+iptables -t nat -A POSTROUTING --protocol udp --source-port 5060  -j 
+SNAT --to-source 5.5.5.7:1024-32000.
+[root@sipserver2 ~]# uname -a
+Linux sipserver2.baski.com 2.6.9-1.667 #1 Tue Nov 2 14:41:25 EST 2004 
+i686 i686 i386 GNU/Linux
+Unfortunately it does not work. IPtables also says that locally 
+generated packets are modified in the output chain and there is not NAT 
+capability in there. I went through all the messages in the archive for 
+SNAT and OUTPUT, So I would really appreciate any help on this. If there 
+is any patch available for this I am ready to try.
 
-  ls /lib/modules/`uname -r`/kernel/net/ipv4/netfilter/ipt_ROUTE*
-
-if you do not have a modular kernel:
-
-  grep ROUTE /proc/net/ip_tables_targets
-
-if neither command produces positive output, patch and recompile your
-kernel with support for the ROUTE target.
-
--j
-
---
-"Peter: We could always go to purgatory like we did last year.
- Lois: This isn't bad. It's not good, but it's not bad.
- Brian: So so.
- Peter: More or less."
-        --Family Guy
+Thanks and Regards
+..baski
 
