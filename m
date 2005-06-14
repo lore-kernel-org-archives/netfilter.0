@@ -1,12 +1,10 @@
-From: faton kurteshi <fatonkurteshi@gmail.com>
-Subject: IP Conntrack
-Date: Tue, 14 Jun 2005 14:07:42 +0200
-Message-ID: <69a88a4405061405077f5cb9b9@mail.gmail.com>
-Reply-To: faton kurteshi <fatonkurteshi@gmail.com>
+From: Martin Bangiev <martin.bangiev@borsabg.com>
+Subject: DNAT & SNAT delay
+Date: Tue, 14 Jun 2005 12:13:37 +0300
+Message-ID: <42AE9FC1.6050204@borsabg.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,16 +15,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-HI
- Does anybody know, why I'm getting this warning error or whatever
-ip_conntrack_rtsp.c: help_out: ip_conntrack_expect_related failed (-17)
- and what can be the consequences, should I use any patch or something else
-I'm using gentoo with kernel version 2.4.26-gentoo-r13.
+Hi guys,
+I have two applications based in different networks that has to 
+communicate with each other using many small UDP packets. Due to 
+security reasons I set the firewall for SNAT and DNAT dynamically. Here 
+is the exact situation.
 
-Tkanks.
+Client1:
+IP - 10.0.0.2
+Client2:
+IP - 172.16.0.2
+Firewall:
+IP1 - 10.0.0.1
+IP2 - 172.16.0.1
 
-Faton
+Client1 sends it's datagrams to the Firewall:IP1
+Client2 sends it's datagrams to the Firewall:IP2
+
+Just before the communication starts I add rules to DNAT udp packets 
+from Client1 to Client2, and to SNAT packets to Client2 to be from 
+Firewall:IP2. I do it for the Client2 respective (of course I set up the 
+ports too).
+The problem is that the NAT starts with about 30 seconds delay. tcpdump 
+shows the packets are coming from Client1 but they are not SNATed & 
+DNATed. The counters of the rules however counts the packets. Once the 
+packets begin to be NATed the counters stops.
+Can you please tell me where this delay can be coming from?
+Thanks in advance:)
+
+
 
