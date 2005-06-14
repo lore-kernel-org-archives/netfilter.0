@@ -1,11 +1,12 @@
-From: "Yuzz" <yuzz@likom.com.my>
-Subject: Portforwading and FTP
-Date: Tue, 14 Jun 2005 13:20:16 +0800
-Message-ID: <000d01c570a0$bfc95c10$b91ed0da@admisyuzz>
+From: "Sivan DERAY" <sivan.deray@net-aptitude.fr>
+Subject: Nagios Plugin
+Date: Tue, 14 Jun 2005 10:23:52 +0200
+Message-ID: <4E13BD0442DACA4D9606CAD98924F09A45CDAE@srv-nap-atlas-1.net-aptitude.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPartTM-000-918bd96a-37be-46d9-903a-af58e03b1897"
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----_=_NextPart_001_01C570BA.660F5AFC"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,24 +21,41 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPartTM-000-918bd96a-37be-46d9-903a-af58e03b1897
+------_=_NextPart_001_01C570BA.660F5AFC
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 Hi,
+=20
+Does anybody use nagios to monitor iptables firewall machine ?
+=20
+Regards,
+=20
+=20
+=20
+Sivan DERAY
 
-I would like to seek some help from expert regarding on port forwarding =
-and ftp.
-i have setup the POSTROUTING and PREROUTING in iptables config to =
-forward packet to ftp server. Then i try ftp client to access my ftp =
-server. I successfully access my ftp server but i have error message =
-come out 502: ILLEGAL port command. Anybody can help me how to solve =
-this issue.
-------=_NextPartTM-000-918bd96a-37be-46d9-903a-af58e03b1897
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Ing=E9nieur S=E9curit=E9
 
 
-------=_NextPartTM-000-918bd96a-37be-46d9-903a-af58e03b1897--
+
+=20
+
+
+NET APTITUDE S.A.S.
+215 rue Jean-Jacques Rousseau
+92130 ISSY LES MOULINEAUX
+Mobile : 06 15 30 73 67
+T=E9l=E9phone : 01 41 09 77 71
+Fax : 01 41 09 77 78
+Site Internet
+http://www.net-aptitude.fr <http://www.net-aptitude.fr/>=20
+
+
+
+
+=20
+
+------_=_NextPart_001_01C570BA.660F5AFC--
 
