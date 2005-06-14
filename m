@@ -1,12 +1,12 @@
-From: "Sivan DERAY" <sivan.deray@net-aptitude.fr>
-Subject: Nagios Plugin
-Date: Tue, 14 Jun 2005 10:23:52 +0200
-Message-ID: <4E13BD0442DACA4D9606CAD98924F09A45CDAE@srv-nap-atlas-1.net-aptitude.fr>
+From: faton kurteshi <fatonkurteshi@gmail.com>
+Subject: IP Conntrack
+Date: Tue, 14 Jun 2005 14:07:42 +0200
+Message-ID: <69a88a4405061405077f5cb9b9@mail.gmail.com>
+Reply-To: faton kurteshi <fatonkurteshi@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----_=_NextPart_001_01C570BA.660F5AFC"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,45 +17,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+HI
+ Does anybody know, why I'm getting this warning error or whatever
+ip_conntrack_rtsp.c: help_out: ip_conntrack_expect_related failed (-17)
+ and what can be the consequences, should I use any patch or something else
+I'm using gentoo with kernel version 2.4.26-gentoo-r13.
 
-------_=_NextPart_001_01C570BA.660F5AFC
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Tkanks.
 
-Hi,
-=20
-Does anybody use nagios to monitor iptables firewall machine ?
-=20
-Regards,
-=20
-=20
-=20
-Sivan DERAY
-
-Ing=E9nieur S=E9curit=E9
-
-
-
-=20
-
-
-NET APTITUDE S.A.S.
-215 rue Jean-Jacques Rousseau
-92130 ISSY LES MOULINEAUX
-Mobile : 06 15 30 73 67
-T=E9l=E9phone : 01 41 09 77 71
-Fax : 01 41 09 77 78
-Site Internet
-http://www.net-aptitude.fr <http://www.net-aptitude.fr/>=20
-
-
-
-
-=20
-
-------_=_NextPart_001_01C570BA.660F5AFC--
+Faton
 
