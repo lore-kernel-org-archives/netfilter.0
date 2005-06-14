@@ -1,11 +1,11 @@
-From: Baskaran Mohandass <baski@foundrynet.com>
-Subject: SNAT issue for locally generated UDP packet
-Date: Tue, 14 Jun 2005 13:01:56 -0700
-Message-ID: <42AF37B4.8080000@foundrynet.com>
-Reply-To: baski@foundrynet.com
+From: Gavin Henry <ghenry@suretecsystems.com>
+Subject: Script review please
+Date: Tue, 14 Jun 2005 22:12:50 +0100
+Message-ID: <200506142212.51869.ghenry@suretecsystems.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,27 +16,81 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Dear list,
 
-      I am trying to source nat the packet generated locally using 
-iptables. Machine is running Fedora core2 and one of the interface 
-address is 5.5.5.7.  Sip server sends a packet with source port 5060 and 
-ip address 5.5.5.7. I want to change the IP address and the source port 
-when it goes out. Reading the IPtables manual only rule i can think of is
-iptables -t nat -A POSTROUTING --protocol udp --source-port 5060  -j 
-SNAT --to-source 5.5.5.7:1024-32000.
-[root@sipserver2 ~]# uname -a
-Linux sipserver2.baski.com 2.6.9-1.667 #1 Tue Nov 2 14:41:25 EST 2004 
-i686 i686 i386 GNU/Linux
-Unfortunately it does not work. IPtables also says that locally 
-generated packets are modified in the output chain and there is not NAT 
-capability in there. I went through all the messages in the archive for 
-SNAT and OUTPUT, So I would really appreciate any help on this. If there 
-is any patch available for this I am ready to try.
+May I run the following past you to see if I have any stupid errors or if you 
+have some good advice?
 
-Thanks and Regards
-..baski
+(it's very rough with no comments)
+
+Thanks:
+
+#!/usr/bin/env bash
+
+t="/usr/bin/env iptables"
+
+$t --flush
+$t --table nat --flush
+$t --delete-chain
+$t --table nat --delete-chain
+
+$t --table nat --append POSTROUTING -s 192.168.14.0/24 --out-interface ppp0 -j 
+MASQUERADE
+
+$t -A FORWARD -p tcp -s 192.168.14.0/24 -d ! 192.168.14.0/24  --dport 443 -j 
+ACCEPT
+
+$t -A FORWARD -p tcp -s 192.168.14.0/24 -d ! 192..168.14.0/24  --dport 110 -j 
+ACCEPT
+	
+$t -A FORWARD -p tcp -s 192.168.14.0/24 -d ! 192.168.14.0/24  --dport 25 -j 
+ACCEPT
+$t -A FORWARD -p tcp -s 192.168.14.0/24 -d ! 192.168.14.0/24  --dport 22 -j 
+ACCEPT
+$t -A FORWARD -p tcp -s 192.168.14.0/24 -d ! 192.168.14.0/24  --dport 1863 -j 
+ACCEPT
+	
+$t -A FORWARD -p tcp -s 192.168.14.0/24 -d ! 192.168.14.0/24  --dport 21 -j 
+ACCEPT
+$t -A FORWARD -p tcp -s 192.168.14.0/24 -d ! 192.168.14.0/24  --dport 20 -j 
+ACCEPT
+
+$t --table nat --append PREROUTING -i eth0 -p tcp -d ! 192.168.14.0/24 --dport 
+80 -j REDIRECT --to-port 3128
+
+# IP Sec Connects and VPN
+$t -A INPUT -p all -s 192.168.0.0/24 -j ACCEPT
+$t -A INPUT  -p udp --dport 500 -j ACCEPT
+$t -A OUTPUT -p udp --dport 500 -j ACCEPT
+$t -A INPUT  -p 50 -j ACCEPT
+$t -A OUTPUT -p 50 -j ACCEPT
+$t -A INPUT -p tcp --dport 500 -j ACCEPT
+
+
+$t -A INPUT -p all -s 192.168.14.0/24 -j ACCEPT
+$t -A INPUT -p all -s 192.168.15.0/24 -j ACCEPT
+$t -A INPUT -p all -s 192.168.16.0/24 -j ACCEPT
+$t -A INPUT -p all -s 192.168.17.0/24 -j ACCEPT
+$t -A INPUT -p all -s 127.0.0.0/24 -j ACCEPT
+$t -A INPUT -p all -s 127.0.0.1 -j ACCEPT
+
+$t -A INPUT -p tcp -i ppp0 --dport 22 -j ACCEPT
+
+$t -A INPUT -p all -i ipsec0 -j ACCEPT
+$t -A INPUT -p tcp --syn -j DROP
+
+
+Thanks again.
+
+
+-- 
+Kind Regards,
+
+Gavin Henry.
+Open Source. Open Solutions(tm).
+
+http://www.suretecsystems.com/
 
