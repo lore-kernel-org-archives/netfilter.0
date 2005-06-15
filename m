@@ -1,13 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Unzustellbar: [SPAM] - Re: Why does this connection stop being
-	tr acked? - Sending mail server found on relays.ordb.org (fwd)
-Date: Wed, 15 Jun 2005 14:02:35 -0400
-Message-ID: <20050615180235.GA24360@bender.817west.com>
-References: <Pine.LNX.4.60.0506151315040.25078@darkstar.sysinfo.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: How to log everything with iptables
+Date: Wed, 15 Jun 2005 13:18:46 -0500
+Message-ID: <200506151318.46380.rob0@gmx.co.uk>
+References: <00ec01c571d2$7878ca20$ec0211ac@PIVT>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <00ec01c571d2$7878ca20$ec0211ac@PIVT>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.60.0506151315040.25078@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,40 +19,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Wed, Jun 15, 2005 at 01:23:52PM -0400, R. DuFresne wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
-> 
-> will the folks responsible for maintaining the list please remove these 
-> clueless ones from the list;
-> 
-> http://ordb.org/lookup/?host=sysinfo.com
-> 
-> Lookup
-> This host is not listed in ORDB as an open mail relay
-> 
-> Main database status for sysinfo.com (70.61.80.19)
-> Look up this host in non-ORDB RBL's (May take a while to load)
-> The host sysinfo.com is not in the main database
+On Wednesday 15 June 2005 12:48, Sebasti=E3o Ant=F4nio Campos (GWA) wrote:
+> How can I do to log everything is passing thru my firewall on eth0
+> and eth1 and lo?? Using iptables??
 
-i've been much happier since adding:
+What did you try? Are you serious? What do you expect to do with all=20
+those logs?
 
-  :0
-  * ^From: Systemadministrator <postmaster@echtzeit.com>
-  /dev/null
+Anyway, it's quite simple. Put a -j LOG rule before any ACCEPT rules=20
+which you may have in INPUT and FORWARD chains. If either default=20
+policy is ACCEPT, put a -j LOG rule at the end of that chain too. See=20
+"LOG" in the "TARGET EXTENSIONS" section of iptables(8) for options.
 
-to my .procmailrc
-
--j
-
---
-"Meg: Dad, if I don't get my driver's license, I'll never have any
- boyfriends, I'll never get married and I'll have to adopt a kid
- like Rosie O'Donnell.
- Peter: Meg... are you implying that Rosie O'Donnell can't drive?"
-        --Family Guy
+You might also find the ULOG target of interest as well as the "limit"=20
+match extension.
+=2D-=20
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
