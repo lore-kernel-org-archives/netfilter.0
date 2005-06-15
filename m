@@ -1,13 +1,12 @@
 From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: NAT  ONE-TO-ONE or FULL NAT
-Date: Wed, 15 Jun 2005 13:11:20 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0506151300150.25078@darkstar.sysinfo.com>
-References: <963D966FFE3FA84FA239605E9E0297FC02CE896F@SPEMEN08.icetel.ice>
+Subject: Unzustellbar: [SPAM] - Re: Why does this connection stop being tr
+ acked? - Sending mail server found on relays.ordb.org (fwd)
+Date: Wed, 15 Jun 2005 13:23:52 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0506151315040.25078@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="1028002384-1471294695-1118855480=:25078"
+Content-Type: MULTIPART/Mixed; BOUNDARY="----_=_NextPart_000_01C571C4.27B8E997"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <963D966FFE3FA84FA239605E9E0297FC02CE896F@SPEMEN08.icetel.ice>
+Content-ID: <Pine.LNX.4.60.0506151315041.25078@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,197 +17,143 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: =?iso-8859-1?Q?Gonz=E1lez_Sandoval_Luis_Rolando?= <lgonzalezsa@ice.go.cr>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
---1028002384-1471294695-1118855480=:25078
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+------_=_NextPart_000_01C571C4.27B8E997
+Content-Type: TEXT/PLAIN; CHARSET=iso-8859-1; format=flowed
+Content-ID: <Pine.LNX.4.60.0506151315042.25078@darkstar.sysinfo.com>
 Content-Transfer-Encoding: quoted-printable
 X-MIME-Autoconverted: from 8bit to quoted-printable by darkstar.sysinfo.com id
-	j5FHBjon025264
+	j5FHNvir025296
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
 
-We found all docs realting to 1:1 NAT to be lacking, most are geared for =
-a=20
-org to try and connect with 2 other orgs that have grabbed the same=20
-private address space  thus renumbering one or both on the fly to allow=20
-mutual access to resources of the org sharing tose resources <which at=20
-first glance here seems to resemble your needs, and those docs might have=
-=20
-some value for you>  None did we find that covered a single sites need of=
-=20
-1:1 nat for purposes such as we needed here.  so we filtered those docs=20
-and many others and grabbed this tidbit of info and fused it with that=20
-tidbit, and got some majik we missed in our POST/PRE routing chains from=20
-Jason Opersainion <sorry if I mangled ya sir>, the majik under the hood=20
-and out of the iptable realm were the ip addr add comands to add the=20
-external, pulic address's being NAT to the internal provate side onto the=
-=20
-external interface.  Once that was up and set, we had the functionality w=
-e=20
-lacked in other regards, with caveates, and we have not taken the time to=
-=20
-see if those caveates can be remidied in other ways, though we will look=20
-into this again in short order as work and time permit;
 
-caveats;
+will the folks responsible for maintaining the list please remove these=20
+clueless ones from the list;
 
-FORWARD rule chains require ACCEPT in the default policy, turning off=20
-ACCPET breaks the bank, youi have yers set to DROP, might be part of the=20
-problem you need to hash on presuming you have the ip addr add majik=20
-already setup on the external interface.
 
-to pass from public space to private space outside -> in requires one=20
-first connect and have an account on the FW.  this is likely due to our=20
-use or, for the most lart old rules iin place prior to the 1:1 NAT setup.=
-=20
-Might take some tinkering with additional POST/PRE routing rules and=20
-DNAT/SNAT to allow those few we do to pass through to the systems they=20
-need access to.  As of now, it works in our favor to drmatically limit wh=
-o=20
-can go where but  requires that we place hight levels of trust to folks a=
-s=20
-they are accessing the FW directly first.
+http://ordb.org/lookup/?host=3Dsysinfo.com
 
-Hope this helps, will follow along here as well as I might become more=20
-enlightened as well.
+Lookup
+This host is not listed in ORDB as an open mail relay
+
+Main database status for sysinfo.com (70.61.80.19)
+Look up this host in non-ORDB RBL's (May take a while to load)
+The host sysinfo.com is not in the main database
+
+
+- ---------- Forwarded message ----------
+From: Systemadministrator <postmaster@echtzeit.com>
+Subject: Unzustellbar: [SPAM] - Re: Why does this connection stop being t=
+r
+     acked? - Sending mail server found on relays.ordb.org
+Date: Wed, 15 Jun 2005 18:06:14 +0200
+To: dufresne@sysinfo.com
+
+Your message
+
+   To:      Andy Smith
+   Cc:      netfilter@lists.netfilter.org; Jozsef Kadlecsik
+   Subject: [SPAM] - Re: Why does this connection stop being tracked? -
+Sending mail server found on relays.ordb.org
+   Sent:    Wed, 15 Jun 2005 18:07:52 +0200
+
+did not reach the following recipient(s):
+
+phergenhahn@echtzeit.de on Wed, 15 Jun 2005 18:06:13 +0200
+     Der Name des Empf=E4ngers wurde nicht erkannt.
+ 	Die MTS-ID der urspr=FCnglichen Nachricht ist: c=3Dde;a=3D ;p=3Dechtzei=
+t
+gmbh ? ;l=3DEZMXS0506151606M1PANQGT
+     MSEXCH:IMS:Echtzeit GmbH & Co. KG:ECHTZEIT:EZMXS 0 (000C05A6)
+Unbekannter Empf=E4nger
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCsGQsst+vzJSwZikRAt1LAJ9xL9l5z9fKn8BZzQimgpQvYqJPrgCfbRVe
+qncoDiq+Lfi4bv2DkQkG2pA=3D
+=3DL99R
+-----END PGP SIGNATURE-----
+------_=_NextPart_000_01C571C4.27B8E997
+Content-Type: MESSAGE/RFC822; CHARSET=US-ASCII
+Content-ID: <Pine.LNX.4.60.0506151315043.25078@darkstar.sysinfo.com>
+Content-Description: 
+
+Message-ID: <Pine.LNX.4.60.0506151154340.25078@darkstar.sysinfo.com>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+To: Andy Smith <andy@strugglers.net>
+Cc: netfilter@lists.netfilter.org, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [SPAM] - Re: Why does this connection stop being tracked? - Sendi
+	ng mail server found on relays.ordb.org
+Date: Wed, 15 Jun 2005 18:07:52 +0200
+MIME-Version: 1.0
+X-Mailer: Internet Mail Service (5.5.2653.19)
+X-MS-Embedded-Report: 
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+
+ 	[SNIP]
+
+>>
+>> You have two choices: either disable TCP SACK support on all your
+>> real/virtual machines behind your firewall, or upgrade the kernel on the
+>> firewall.
+>
+> Do you have any instructions or a pointer to documentation onhow to
+> temporarily disable SACK?  If it was a /proc setting that would be
+> ideal; I don't really want to have to recompile kernels though.
+>
+
+why?  you are certainly missing out on how to fix and patch a systems when 
+bugs in the kernel affect it, to the ability to add features that your 
+dist maintainer has not enabled by default, or to change params in the 
+kernel such as moving away or to kernel modules as opposed to stack 
+functionality mapping.  Not to mention the abilities to streamline the 
+kernel to fit your requirements and remove all the xtra trash that gets 
+loaded in to make a kernel fit all purposes/needs/enduser-requirements.
+
+basically, you are defeating one of the finer points in the linux realm <as 
+well as the BSD's net, open, free>  you are avoiding taking actually 
+control of what you are playing with <smile>.  Granted one does not do 
+this sort of thing in a prod env on the fly, one tests such things on a 
+dev server or desktop emulating what might be in prod. but, it's not all 
+that tough to master, and certainly will likely be required at one time or 
+another to get things working that were not originally provided, move to a 
+newer cleaner kernel, or even to fix problems encountered over the 
+stresses of time and all that.  The recipe for doing such is not all that 
+complex, and if one backsup the old kernel and properly runs lilo to 
+include it in the potential boot process, not all that damaging should on 
+finger-fart and make a bed new kernel on first draft. but all admins in 
+the free *nix-like realm should learn the particulars of rebuilding 
+kernels, it will  at one time or another save their asses.
+
+No salt for the avoiders.
 
 Thanks,
 
 Ron DuFresne
-
-On Wed, 15 Jun 2005, Gonz=E1lez Sandoval Luis Rolando wrote:
-
->
-> I'm looking information about one to one NAT and his configuration whit=
- IPTABLES v1.2.7a.
->
-> My requirements are:
-> 1.	Map IP address for the segment 10.129.41.0/24 for an IP address of 1=
-92.168.20.0/24
->
-> My firewall machine has three NIC:
-> 1.	NIC eth0 for the segment 10.129.41.0/24
-> 2.	NIC eth1 for the segment 192.168.20/24
-> 3.	NIC eth2 for the segment 10.149.50.0/22
->
->
-> Please if someone can help me, I appreciate that... I'm reading Firewal=
-l Linux book, chapter seven, I research in the web, but I failed in my sc=
-ript.
-> If you can guide me about my requirement, thanks
->
->
-> I'm using the follow iptables script:
->
-> #!/bin/bash
-> IPTABLES=3D/usr/sbin/iptables
->
-> echo "Cargando Modulos Espere..."
->
-> /sbin/depmod -a
->
->
-> /sbin/modprobe ip_conntrack_ftp
-> /sbin/modprobe ip_tables
-> /sbin/modprobe ip_conntrack
-> /sbin/modprobe iptable_filter
-> /sbin/modprobe iptable_nat
-> /sbin/modprobe ipt_LOG
->
-> echo "Modulos ARRIBA"
->
->
->
-> echo "IP Forward habilitado"
->
-> echo "1" > /proc/sys/net/ipv4/ip_forward
->
->
-> #$IPTABLES -P INPUT DROP
->                #Politica por defecto del INPUT   ---> DROP
-> #$IPTABLES -P FORWARD DROP
->                #Politica por defecto del VALID_IO ---> DROP
-> #$IPTABLES -P OUTPUT DROP
->                #Politica por defecto del OUTPUT  ---> DROP
->
-> $IPTABLES -t nat -P PREROUTING  ACCEPT
-> $IPTABLES -t nat -P OUTPUT      ACCEPT
-> $IPTABLES -t nat -P POSTROUTING ACCEPT
->
->
-> $IPTABLES --flush
-> $IPTABLES --flush
-> $IPTABLES -t nat --flush
->
-> $IPTABLES --delete-chain
->
-> echo "Politica por defecto arriba"
->
-> $IPTABLES -A INPUT  -i lo -j ACCEPT
->                #A la interfaz de loopback se permite todo
-> $IPTABLES -A OUTPUT -o lo -j ACCEPT
->                #A la interfaz de loopback se permite todo
->
-> #LISTA DE DIRECCIONES AUTORIZADAS PARA ENTRAR A LA RED PROTEGIDA
-> $IPTABLES -A FORWARD -s 10.129.41.123       -m state --state NEW -j ACC=
-EPT
-> $IPTABLES -A INPUT   -s 10.129.41.123       -m state --state NEW -j ACC=
-EPT
-> $IPTABLES -A FORWARD -s 10.129.48.43        -m state --state NEW -j ACC=
-EPT
-> $IPTABLES -A INPUT   -s 10.129.48.43        -m state --state NEW -j ACC=
-EPT
->
->
-> #NAT 1:1
-> $IPTABLES -t nat -A POSTROUTING -o eth0 -s 192.168.20.183/32 -j SNAT --=
-to 10.129.41.242
-> $IPTABLES -t nat -A PREROUTING -i eth1 -d 10.129.41.242/32 -j DNAT --to=
- 192.168.20.183
->
-> # Allow forwarding to each of the servers configured for 1:1 NAT
-> # (For connections originating from the Internet. Notice how you
-> # use the real IP addresses here)
->
-> $IPTABLES  -A FORWARD -p tcp -i eth0 -o eth1 -d 192.168.20.183 \
->    -m state --state NEW -j ACCEPT
->
-> # Allow forwarding for all New and Established SNAT connections
-> # originating on the home network AND already established
-> # DNAT connections
->
-> $IPTABLES -A FORWARD -t filter -o eth0 -m state \
->         --state NEW,ESTABLISHED,RELATED -j ACCEPT
->
-> # Allow forwarding for all 1:1 NAT connections originating on
-> # the Internet that have already passed through the NEW forwarding
-> # statements above
->
-> $IPTABLES -A FORWARD -t filter -i eth0 -m state \
->         --state ESTABLISHED,RELATED -j ACCEPT
->
->
->
-> Ing. Luis Gonz=E1lez Sandoval
-> Ingenier=EDa de Sistemas - Cx UEN GRM
-> Tel. 2838030
-> LGonzalezSa@ice.go.cr
->
->
->
-
-- --=20
+- -- 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          admin & senior security consultant:  sysinfo.com
                          http://sysinfo.com
-Key fingerprint =3D 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
 
 ...We waste time looking for the perfect lover
 instead of creating the perfect love.
@@ -217,9 +162,10 @@ instead of creating the perfect love.
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQFCsGE8st+vzJSwZikRAo3HAJ9/6k4PIyod6TLxZxL/jKnZhDOAVwCg1lg+
-Eg/L6Pg/DRNs5dJOLAA7Oxc=3D
-=3DyvfH
+iD8DBQFCsFJdst+vzJSwZikRAiaQAKCWHlgggJUxBXu9/CeR//pLYbzHGACfRVev
+kG/17gNRcUin+Dk63ai8gCA=
+=2VQV
 -----END PGP SIGNATURE-----
---1028002384-1471294695-1118855480=:25078--
+
+------_=_NextPart_000_01C571C4.27B8E997--
 
