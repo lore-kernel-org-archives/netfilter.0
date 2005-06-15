@@ -1,15 +1,13 @@
-From: Andy Smith <andy@strugglers.net>
-Subject: Re: Unzustellbar: [SPAM] - Re: Why does this connection stop being
-	tr acked? - Sending mail server found on relays.ordb.org (fwd)
-Date: Wed, 15 Jun 2005 17:31:43 +0000
-Message-ID: <20050615173143.GX754@strugglers.net>
-References: <Pine.LNX.4.60.0506151315040.25078@darkstar.sysinfo.com>
+From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
+	<sa.campos@datasulsp.com.br>
+Subject: How to log everything with iptables
+Date: Wed, 15 Jun 2005 14:48:26 -0300
+Message-ID: <00ec01c571d2$7878ca20$ec0211ac@PIVT>
+Reply-To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
+	<sa.campos@datasulsp.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eLx2Oic5rP1+EtIt"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.60.0506151315040.25078@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,42 +18,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
+Hi people!
 
---eLx2Oic5rP1+EtIt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+How can I do to log everything is passing thru my firewall on eth0 and eth1
+and lo?? Using iptables??
 
-On Wed, Jun 15, 2005 at 01:23:52PM -0400, R. DuFresne wrote:
-> will the folks responsible for maintaining the list please remove these=
-=20
-> clueless ones from the list;
+Thanks
 
-Not only are they sending this bounce
+Ti=E3o=20
 
-- in German only
-- to the person posting to the list as opposed to the list's
-  bounce address
-- incorrectly claiming the list's host is in ORDB
-
-but all mail to their postmaster account bounces too!
-
-Broken in so many ways, but then, it does appear to be Exchange..
-
---eLx2Oic5rP1+EtIt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFCsGX/IJm2TL8VSQsRAnQAAJ9U49NyJtJcpHjoAruvq5rVmbl2AgCgokLv
-UE7L57Y+Z1wlvrijggy5YYQ=
-=w1aH
------END PGP SIGNATURE-----
-
---eLx2Oic5rP1+EtIt--
 
