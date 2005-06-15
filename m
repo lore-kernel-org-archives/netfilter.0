@@ -1,15 +1,13 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Why does this connection stop being tracked?
-Date: Wed, 15 Jun 2005 12:24:27 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0506151223310.25078@darkstar.sysinfo.com>
-References: <20050614161105.GN750@strugglers.net>
-	<Pine.LNX.4.58.0506151312470.27260@blackhole.kfki.hu>
-	<20050615113045.GF754@strugglers.net>
-	<Pine.LNX.4.60.0506151154340.25078@darkstar.sysinfo.com>
-	<20050615161055.GT754@strugglers.net>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: NAT  ONE-TO-ONE or FULL NAT
+Date: Wed, 15 Jun 2005 11:27:29 -0500
+Message-ID: <200506151127.29143.rob0@gmx.co.uk>
+References: <963D966FFE3FA84FA239605E9E0297FC02CE896F@SPEMEN08.icetel.ice>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050615161055.GT754@strugglers.net>
+In-Reply-To: <963D966FFE3FA84FA239605E9E0297FC02CE896F@SPEMEN08.icetel.ice>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,67 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Andy Smith <andy@strugglers.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-On Wed, 15 Jun 2005, Andy Smith wrote:
-
-> On Wed, Jun 15, 2005 at 12:07:52PM -0400, R. DuFresne wrote:
->>>> You have two choices: either disable TCP SACK support on all your
->>>> real/virtual machines behind your firewall, or upgrade the kernel on the
->>>> firewall.
->>>
->>> Do you have any instructions or a pointer to documentation onhow to
->>> temporarily disable SACK?  If it was a /proc setting that would be
->>> ideal; I don't really want to have to recompile kernels though.
->>>
->>
->> why?  you are certainly missing out on how to fix and patch a systems when
->> bugs in the kernel affect it, to the ability to add features that your
->> dist maintainer has not enabled by default, or to change params in the
->> kernel such as moving away or to kernel modules as opposed to stack
->> functionality mapping.
+On Wednesday 15 June 2005 10:35, Gonz=E1lez Sandoval Luis Rolando wrote:
+> I'm looking information about one to one NAT and his configuration
+> whit IPTABLES v1.2.7a.
 >
-> I'm sorry, I didn't phrase that very well.  I'm perfectly happy to
-> compile new kernels and indeed I am required to run a patched 2.6.11
-> plus some other patches that I have to apply manually in order to
-> use Xen.
+> My requirements are:
+> 1.	Map IP address for the segment 10.129.41.0/24 for an IP address of
+> 192.168.20.0/24
 >
-> $ uname -a
-> Linux curacao.strugglers.net 2.6.11curacaoxen0-steven-hand1 #1 Sat Jun 4 18:49:26 UTC 2005 i686 GNU/Linux
+> #NAT 1:1
+> $IPTABLES -t nat -A POSTROUTING -o eth0 -s 192.168.20.183/32 -j
+> SNAT --to 10.129.41.242
+> $IPTABLES -t nat -A PREROUTING -i eth1 -d 10.129.41.242/32 -j DNAT
+> --to 192.168.20.183=20
 >
-> I just didn't want to make a new kernel and reboot in order to test
-> the suggestion of disabling SACK as the downtime of a reboot on a
-> machine with multiple virtual machines is unpopular.
+> # Allow forwarding to each of the servers configured for 1:1 NAT
+> # (For connections originating from the Internet. Notice how you
+> # use the real IP addresses here)
 >
+> $IPTABLES  -A FORWARD -p tcp -i eth0 -o eth1 -d 192.168.20.183 \
+>     -m state --state NEW -j ACCEPT
 
+I think you need rules like these for each host you wish to NAT. You=20
+might be able to combine your FORWARD (filter table) rules into one=20
+rule.
 
-Oh, well, then that is a different situation <smile>, nevermind...
+If you're doing this by means of a shell script you could use a "for"=20
+loop, easier if you were mapping 10.129.41.x to 192.168.20.x.
 
-Thanks,
-
-
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCsFY/st+vzJSwZikRAmQoAJ9ZztFRW/7lDOvnX/cFIfJ0AttoFQCfeZ5S
-DpMMHOGiMSpHBcFH3koU4Yg=
-=eJeJ
------END PGP SIGNATURE-----
+Why not just directly assign your Internet IP's to the hosts in your=20
+eth1 segment? You can route to them and control access by means of=20
+=46ORWARD rules. All this NAT seems harder to maintain.
+=2D-=20
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
