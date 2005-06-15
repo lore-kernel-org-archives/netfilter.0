@@ -1,11 +1,12 @@
-From: =?iso-8859-1?Q?Thomas_B=F6hme?= <T.Boehme@mc-wetter.de>
-Subject: Problems with natted FTP connections
-Date: Wed, 15 Jun 2005 14:03:21 +0200
-Message-ID: <827F4DA483EF5F42B31E2E19E1A31127E8F220@redmond.berlin.mc-wetter.de>
+From: Mohamed Nassih <nassih50@yahoo.com>
+Subject: Re: Firewall problem
+Date: Wed, 15 Jun 2005 06:01:02 -0700 (PDT)
+Message-ID: <20050615130102.35654.qmail@web30601.mail.mud.yahoo.com>
+References: <42AFA4FB.90408@lorenzutti.com.ar>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <42AFA4FB.90408@lorenzutti.com.ar>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,103 +17,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.netfilter.org
 
-Hello,
+it does not work,
+=20
+please help
 
-I have a Firewall running on a Debian Sarge with iptables 1.2.11-10 and =
-vanilla kernel 2.6.11.12. The ip_conntrack_ftp and ip_nat_ftp modules =
-are compiled into the kernel (loadable module support is disabled).
+Guido Lorenzutti <guido@lorenzutti.com.ar> wrote:
+Mohamed Nassih wrote:
+> Hi,
+>=20
+> I have this firewall script, the problem is that I can not connect to the=
+ webserver (123.45.67.2) from the local network (192.168.1.0).
+>=20
+> Please help.
 
-Wenn I want to download files from my local net which is SNATed using =
-FTP. After some files I get an error like this:
+maybe if you...
 
-ftp> mget *
-mget R1121320.ZIP?
-200 Port command successful.
-150 Opening data connection for R1121320.ZIP (3960 bytes).
-226 Transfer ok
-3960 bytes received in 0.07 secs (57.4 kB/s)
-mget R1121325.ZIP?
-200 Port command successful.
-150 Opening data connection for R1121325.ZIP (4183 bytes).
-226 Transfer ok
-4183 bytes received in 0.05 secs (90.7 kB/s)
-mget R1121330.ZIP?
-200 Port command successful.
-500 Unknown command.
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-When I add logging rules to log the traffic I see many ACK and SYN =
-packages on any download but the last attempt show no SYN package.
+and not
 
+echo 1 > /proc/sys/net(((( ))))/ipv4/ip_forward
 
-Here is my firewall rule set:
+>=20
+> echo 1 > /proc/sys/net /ipv4/ip_forward
+> IPTABLES -F INPUT=20
+> IPTABLES -F OUTPUT=20
+> IPTABLES -F FORWARD
 
-###   localnet <-->  eth0 - firewall - eth2 <--> INET
+you could...
 
+iptables -F instead of the three rules from above...
 
-#!/bin/sh
-IPTABLES=3D/sbin/iptables
-INT=3Deth0
-EXT=3Deth2
-IP_INT=3D172.18.0.0./16
-
-$IPTABLES -F    # flush all chains
-$IPTABLES -X    # remove all non-buildin chains
-
-$IPTABLES -t nat -F    # flush all nat chains
-$IPTABLES -t nat -X    # remove all non-buildin nat chains
-
-$IPTABLES -P INPUT   ACCEPT
-$IPTABLES -P FORWARD ACCEPT
-$IPTABLES -P OUTPUT  ACCEPT
-
-echo -n "Enabling IP Spoof Protection ... "
-for i in /proc/sys/net/ipv4/conf/*/rp_filter;do
-    echo "1" > $i
-done
-
-echo -n "Enabling Syn Flood Protection ... "
-echo "1" > /proc/sys/net/ipv4/tcp_syncookies
+> IPTABLES -P INPUT DROP=20
+> IPTABLES -P OUTPUT DROP=20
+> IPTABLES -P FORWARD DROP=20
+> Iptables =96A INPUT -i lo =96j ACCEPT
+> Iptables =96A OUTPUT -o lo =96j ACCEPT
+> iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth0 -j MASQUERADE
+> iptables -A FORWARD -i eth1 -p tcp -d 123.45.67.2 --destination-port 80=20
+> =96m state --state NEW,ESTABLISHED -j ACCEPT
+> iptables -A FORWARD =96p tcp -i eth0 =96-source-port 80 =96m state --stat=
+e=20
+> ESTABLISHED -j ACCEPT
+>=20
 
 
-echo -n "Ignoring Broadcast Echo Requests ... "
-echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+It would be more readable if you....
 
+iptables -A FORWARD -i eth1 -o eth0 -p tcp --dport 80 -d 123.45.67.2 -m=20
+state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --sport 80 -s 123.45.67.2 -m=20
+state --state ESTABLISHED -j ACCEPT
 
-echo -n "Enabling IP Forwarding ... "
-echo "1" > /proc/sys/net/ipv4/ip_forward
-
-#######################
-# Enable masquerading #
-#######################
-echo "Enable inet masquerading"
-$IPTABLES -t nat -A POSTROUTING -s $IP_INT -o $EXT -j MASQUERADE
-
-# accept all packages
-$IPTABLES -A INPUT  -j ACCEPT
-$IPTABLES -A OUTPUT  -j ACCEPT
-$IPTABLES -A FORWARD -j ACCEPT
+Check if eth0 =3D wan and eth1 =3D lan.
 
 
 
-On a debian woody with 2.4.26 vanilla kernel and iptables =
-1.2.6a-5.0woody2 everything works with the same IP-Tables script. I used =
-that kernel config and build all modules into the 2.6.11.12 kernel.
 
-CONFIG_IP_NF_FTP=3Dy
-CONFIG_IP_NF_TFTP=3Dy
-CONFIG_IP_NF_NAT_FTP=3Dy
-CONFIG_IP_NF_NAT_TFTP=3Dy
+PD: sorry for my english, i never study.
 
-The ftp download on my firewall itself works but not from internal, so =
-it must be be related to ftp-NAT/CONNTRACK.
-
-Who can help me?
-
-
-
-Regards,
-Thomas
-
+	=09
+---------------------------------
+Discover Yahoo!
+ Get on-the-go sports scores, stock quotes, news & more. Check it out!
