@@ -1,13 +1,13 @@
-From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
-	<sa.campos@datasulsp.com.br>
-Subject: How to log everything with iptables
-Date: Wed, 15 Jun 2005 14:48:26 -0300
-Message-ID: <00ec01c571d2$7878ca20$ec0211ac@PIVT>
-Reply-To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
-	<sa.campos@datasulsp.com.br>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: NAT  ONE-TO-ONE or FULL NAT
+Date: Wed, 15 Jun 2005 13:57:16 -0400
+Message-ID: <20050615175716.GA24316@bender.817west.com>
+References: <963D966FFE3FA84FA239605E9E0297FC02CE896F@SPEMEN08.icetel.ice>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <963D966FFE3FA84FA239605E9E0297FC02CE896F@SPEMEN08.icetel.ice>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,16 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi people!
+On Wed, Jun 15, 2005 at 09:35:17AM -0600, Gonz=E1lez Sandoval Luis Roland=
+o wrote:
+> =20
+> I'm looking information about one to one NAT and his configuration whit=
+ IPTABLES v1.2.7a.=20
+> =20
+> My requirements are:
+> 1.	Map IP address for the segment 10.129.41.0/24 for an IP address of 1=
+92.168.20.0/24
 
-How can I do to log everything is passing thru my firewall on eth0 and eth1
-and lo?? Using iptables??
+have you looked at the NETMAP target from PoM?
 
-Thanks
+  http://netfilter.org/patch-o-matic/pom-base.html#pom-base-NETMAP
 
-Ti=E3o=20
+-j
 
+--
+"Lois: So he just left without saying anything?
+ Peter: All I asked him to do was buy some peanuts and cracker jacks.
+ Brian: I don't care if he ever gets back. I wasn't being cute. I
+ really hope he's dead."
+        --Family Guy
 
