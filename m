@@ -1,12 +1,9 @@
-From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28Infojoi=29?=
-	<tiao@infojoi.com.br>
-Subject: Log everything from iptables
-Date: Wed, 15 Jun 2005 14:20:48 -0300
-Message-ID: <00c901c571ce$95902260$ec0211ac@PIVT>
-Reply-To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28Infojoi=29?=
-	<tiao@infojoi.com.br>
+From: "Sadus ." <sadus@swiftbin.net>
+Subject: multiport
+Date: Thu, 16 Jun 2005 16:59:51 +0300
+Message-ID: <1118930391.16084.2.camel@debianbox>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,24 +15,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi people!
+Hello i want to drop ALL connections on my internal NIC except:
+20,21,80,443
+is this correct? (although not working)
 
-How can I do to log everything is passing thru my firewall on eth0 and eth1=
-=20
-and lo?? Using iptables??
+
+iptables -A INPUT -i eth1 -s 172.16.3.0/16 -p tcp -m multiport !
+--destination-port  20,21,80,443 -j DROP #USERS
+
+which basicaly means if source is in 172.16.3.0 then drop all except for
+HTTP,FTP,HTTPS. that's in order for that IP range to not be able to
+connect to Instant Messenging services such as MSN, AIM, Yahoo etc...
+while keeping other IP ranges be able to use them.
 
 Thanks
-
-Ti=E3o
-
-Sebasti=E3o Ant=F4nio Campos
-Infojoi Computadores Ltda
-89.224-000 Joinville -SC - R. Iriri=FA, 3587
-Cml. (47) 437-0796 - Cel. (47) 9927-5349
-tiao@infojoi.com.br
-http://www.lupusnet.com.br=20
+-- 
+Sadus . <sadus@swiftbin.net>
+Swiftbin.net
 
 
