@@ -1,13 +1,12 @@
-From: "Rakotomandimby (R12y) Mihamina"
-	<mihamina.rakotomandimby@etu.univ-orleans.fr>
-Subject: Re: When do the rule apply?
-Date: Thu, 16 Jun 2005 00:26:10 +0200
-Message-ID: <pan.2005.06.15.22.26.10.923499@etu.univ-orleans.fr>
-References: <393114f905061513012ac2216a@mail.gmail.com>
-	<20050615201007.GA754@strugglers.net>
+From: faton kurteshi <fatonkurteshi@gmail.com>
+Subject: (no subject)
+Date: Thu, 16 Jun 2005 10:03:16 +0200
+Message-ID: <69a88a440506160103ac6dc5c@mail.gmail.com>
+Reply-To: faton kurteshi <fatonkurteshi@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,23 +17,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Andy Smith <andy@strugglers.net> :
-> They apply in the order you've issued them since they are operating on
-> INPUT and they are appending.
-
-I would add that the original poster can use the -P first, that will match
-any paquet that does not match the listed rules.
-
---=20
-Miroir de logiciels libres        http://www.etud-orleans.fr
-D=E9veloppement de logiciels libres http://aspo.rktmb.org/activites/develop=
-pement
-Infogerance de serveur d=E9di=E9      http://aspo.rktmb.org/activites/infog=
-erance
-(En louant les services de l'ASPO vous luttez contre la fracture numerique)
-
-
+Hi
+Does anybody know, why I'm getting this warning error or whatever
+ip_conntrack_rtsp.c: help_out: ip_conntrack_expect_related failed (-17)
+and what can be the consequences, should I use any patch or something else
+I'm using gentoo with kernel version 2.4.26-gentoo-r13.
 
