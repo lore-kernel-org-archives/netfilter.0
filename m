@@ -1,7 +1,7 @@
 From: faton kurteshi <fatonkurteshi@gmail.com>
-Subject: (no subject)
-Date: Thu, 16 Jun 2005 10:03:16 +0200
-Message-ID: <69a88a440506160103ac6dc5c@mail.gmail.com>
+Subject: IP Conntrack warning
+Date: Thu, 16 Jun 2005 10:08:23 +0200
+Message-ID: <69a88a4405061601087669dbe7@mail.gmail.com>
 Reply-To: faton kurteshi <fatonkurteshi@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
