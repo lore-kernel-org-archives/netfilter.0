@@ -1,12 +1,14 @@
-From: don-nfil1@isis.cs3-inc.com (Don Cohen)
-Subject: script for stopping sshd attacks
-Date: Thu, 16 Jun 2005 05:16:44 -0700
-Message-ID: <17073.28076.968146.377094@isis.cs3-inc.com>
-References: <200506152338.j5FNcHZ04996@isis.cs3-inc.com>
+From: Michael Weinert <weinert@sys2.de>
+Subject: Re: Log everything from iptables
+Date: Thu, 16 Jun 2005 15:36:50 +0200
+Message-ID: <200506161536.54612.weinert@sys2.de>
+References: <00c901c571ce$95902260$ec0211ac@PIVT>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart1144896.0rtCzHEbqT";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200506152338.j5FNcHZ04996@isis.cs3-inc.com>
+In-Reply-To: <00c901c571ce$95902260$ec0211ac@PIVT>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,116 +19,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+--nextPart1144896.0rtCzHEbqT
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I've been pretty happy with the script below and thought I'd share it.
-I currently run this from rc.local.
+Am Mittwoch, 15. Juni 2005 19:20 schrieb Sebasti=E3o Ant=F4nio Campos:
 
-It's written in lisp, which is my scripting language of choice, but
-if you want to use some other language I hope it'll be easy enough
-to translate.  If you want to use it as is and don't already have
-clisp, it should be easy enough to download and install.
-I suppose something similar could be done for http and perhaps
-other services, but I currently use other approaches for those.
+Hi,
 
-I actually run two versions, one for an older machine.  The
-differences are that it reads /var/log/messages instead of secure
-and that it uses "ipchains -A input -s ~a -j DENY" instead of 
-"iptables -A INPUT -s ~a -j MIRROR".
+> How can I do to log everything is passing thru my firewall on eth0 and et=
+h1
+> and lo?? Using iptables??
+just put:
 
-The choice of mirror vs deny/drop is an interesting one.
-I think mirror is justified by the fact that the attacking
-IP address is evidently not spoofed (it has already managed to
-send the right tcp sequence numbers several times).  
-I've noticed that the ssh attacks in particular tend to stop 
-after about 30 packets if you drop, whereas they sometimes go
-on for thousands if you mirror.  While this may be viewed as
-bad for the machine running the script (wasting its bandwidth)
-I regard it as a public service to waste the time of attackers
-who might otherwise be successfully attacking others.
-Also, of course, there's some chance that the attacking machine
-will break into itself, and might even do some damage, which I
-would also view as a public service.
+iptables -I INPUT 1 -j LOG
+iptables -I OUTPUT 1 -j LOG
+iptables -I FORWARD 1 -j LOG
 
-====
-#! /usr/local/bin/clisp
-;; Stop listening to machines that attack sshd.
+in a script and run it. It pushes a Log-entry as the first rule in the tabl=
+e.
 
-(defvar *logfile* "/var/log/secure")
-(defvar *last-log-write* 0)
-(defvar *last-log-length* 0)
-(defvar *tables* nil)
-(defvar *ntables* 6)
-(defvar *sleep* 10)
-(defvar *nfailures* 5)
+Michael
 
-;; nfailures failures from the same IP address
-;; within (ntables x sleep) seconds is considered an attack
-;; (actually, it's typically a lot longer, since the log file
-;; is not written continually - it's ntables reads of the log
-;; file, which happen at least sleep sec. apart.)
+=2D-=20
 
-;; for some reason running this from rc.local with >> file
-;; sends only the dates to that file ...
+          SysQuadrat    Systeme mit Sicherheit
+    Michael Weinert Stuttgart Filderstadt-Plattenhardt
+  Tel.: 0711-9970288 Fax: 5360559 Mobil: 0170-4141273
+   http://www.linux-firewall.de  weinert@sys2.de
+           KeyServer hkp://pgp.mit.edu
 
-(defvar *log-out* "/var/log/sshd-attacks")
+--nextPart1144896.0rtCzHEbqT
+Content-Type: application/pgp-signature
 
-(defun add-log (format-string &rest args)
-  (with-open-file
-   (f *log-out* :direction :output :if-exists :append
-      :if-does-not-exist :create)
-   (format f "~%~a: " (show-ut))
-   (apply 'format f format-string args)))
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
 
-(defun show-ut (&optional (ut (get-universal-time))) 
-  (multiple-value-bind 
-   (s m h d mo y) (decode-universal-time ut) 
-   (format nil "~d/~d/~d ~2,'0d:~2,'0d:~2,'0d" y mo d h m s)))
+iQGlAwUAQrGAdqvpi4/XslceAQIQlQyA7K2z4gOTZE73vCguP0oIt08wlKDob0Cr
+Jn8vrkU6O5hqXcK9e9gMnnEfJOD9CUcROxAo4RcTF8H9dlsE7bKcE/oNDkl2dbqw
+NNZ0k9bPGL5XxHZlYfazBI9Yh/5puedE8vvTrQXlzGGiN2/xO+PKhunYtzKwYocp
+SQtPr0NFj7uXSHo8alVRZNU9iFshFfeeIwN61T4I8OzNIJgFOdQBr2zp3A4zTaHU
+vA7AFcm/AWw0q6pTYtLIEi7UWRpugG04x3cBP0XfWyZN0dAUvjK7sx1NtiN/e7am
+UA865gcTqlY794SWMHZTtClOXhexhRQywcYSwPdWBuH55n1lPYl8Alp1FjStXCdP
+XsF62K8xPLKi5wsiiR6kwhjd8daxjMx62N9c+P8/z2gODJ8B0d1jIjmk4E552CC6
+OsGVdta5SaQ0j36jPBIMm5qfYWfwyf/uLmDcZCZEIRRIn6r7mDiFPgWaJgUq3Die
+WIRZc4rB25JpuTYUMyU0C/trlVu9oH/XsXbwl86S0lfE3JpfAehr1Q==
+=Zdb7
+-----END PGP SIGNATURE-----
 
-;; avoid duplicate rules
-(defvar *denied* (make-hash-table :test 'equal))
-
-(defun incremental (&optional kill
-			      &aux pos line
-			      (ip-count (make-hash-table :test 'equal)))
-  (when (> (file-write-date *logfile*) *last-log-write*)
-    (setf *last-log-write* (file-write-date *logfile*))
-    (with-open-file
-     (f *logfile*)
-     (when (< (file-length f) *last-log-length*)
-       ;; assume we've started a new version of the log file
-       (setf *last-log-length* 0))
-     (file-position f *last-log-length*)
-     (loop while (setf line (read-line f nil)) do
-       ;; Here's a sample of what I'm looking for in the log
-       ;; May 13 22:38:08 isis sshd[27594]: Failed password for root from 81.180.201.38 port 43642 ssh2
-       (when (and (setf pos (search "sshd" line))
-		  (setf pos (search ": Failed password for " line :start2 pos))
-		  (setf pos (search "from " line :start2 pos)))
-	 (incf pos #.(length "from "))
-	 (incf (gethash (subseq line pos (search " " line :start2 pos))
-			ip-count 0))))
-     (setf *last-log-length* (file-position f))
-     (push ip-count *tables*)
-     (when (nthcdr *ntables* *tables*)
-       (setf (cdr (nthcdr *ntables* *tables*)) nil))
-     (loop for ip being the hash-keys of (car *tables*)
-       as total = (loop for tab in *tables* sum (gethash ip tab 0))
-       unless (gethash ip *denied*)
-       when (>= total *nfailures*)
-       do
-       (when kill
-	 (setf (gethash ip *denied*) t)
-	 (add-log " ~a failures: ~a~%" total ip)
-	 (run-shell-command
-	  (format nil "iptables -A INPUT -s ~a -j MIRROR" ip))))
-     (unless kill (pop *tables*)))))
-
-(add-log "start")
-(incremental) ;; first time we just list previous attacks
-(loop while t do
-  (incremental t) 
-  (sleep *sleep*))
+--nextPart1144896.0rtCzHEbqT--
 
