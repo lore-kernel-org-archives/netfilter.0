@@ -1,10 +1,11 @@
-From: "Sadus ." <sadus@swiftbin.net>
-Subject: multiport
-Date: Thu, 16 Jun 2005 16:59:51 +0300
-Message-ID: <1118930391.16084.2.camel@debianbox>
+From: "Carl Holtje ;021;vcsg6;" <cwh0803@cs.rit.edu>
+Subject: Re: multiport
+Date: Thu, 16 Jun 2005 10:17:01 -0400 (EDT)
+Message-ID: <Pine.GSO.4.58.0506161013200.26426@queeg.cs.rit.edu>
+References: <1118930391.16084.2.camel@debianbox>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1118930391.16084.2.camel@debianbox>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,25 +16,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Sadus ." <sadus@swiftbin.net>
+Cc: netfilter@lists.netfilter.org
 
-Hello i want to drop ALL connections on my internal NIC except:
-20,21,80,443
-is this correct? (although not working)
+On Thu, 16 Jun 2005, Sadus . wrote:
 
+> Hello i want to drop ALL connections on my internal NIC except:
+> 20,21,80,443
+> is this correct? (although not working)
+>
+>
+> iptables -A INPUT -i eth1 -s 172.16.3.0/16 -p tcp -m multiport !
+> --destination-port  20,21,80,443 -j DROP #USERS
 
-iptables -A INPUT -i eth1 -s 172.16.3.0/16 -p tcp -m multiport !
---destination-port  20,21,80,443 -j DROP #USERS
+iptables -P INPUT DROP
+iptables -A INPUT -i eth1 -s 172.16.3.0/16 -p tcp -m multiport \
+--destination-port  20,21,80,443 -j ALLOW
 
-which basicaly means if source is in 172.16.3.0 then drop all except for
-HTTP,FTP,HTTPS. that's in order for that IP range to not be able to
-connect to Instant Messenging services such as MSN, AIM, Yahoo etc...
-while keeping other IP ranges be able to use them.
+Which does what your english description says.. drops all by default, but
+allows ports 20, 21, 80, 443 to your 172.16.3.0/16 network, over eth1.
 
-Thanks
--- 
-Sadus . <sadus@swiftbin.net>
-Swiftbin.net
+Carl
+
+- --
+
+"There are 10 types of people in the world: Those who understand binary
+and those that don't."
 
 
