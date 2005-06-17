@@ -1,12 +1,13 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: When do the rule apply?
-Date: Thu, 16 Jun 2005 15:48:19 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0506161443530.26035@darkstar.sysinfo.com>
-References: <393114f905061513012ac2216a@mail.gmail.com>
-	<20050615201007.GA754@strugglers.net>
+From: =?ISO-8859-15?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: multiport
+Date: Fri, 17 Jun 2005 10:16:50 +0200
+Message-ID: <42B286F2.3050302@mnemon.de>
+References: <1118930391.16084.2.camel@debianbox>	<20050616141652.GA27648@bender.817west.com>	<200506160957.17356.rob0@gmx.co.uk>
+	<1118935612.16084.16.camel@debianbox>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050615201007.GA754@strugglers.net>
+In-Reply-To: <1118935612.16084.16.camel@debianbox>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,68 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Andy Smith <andy@strugglers.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi,
 
-On Wed, 15 Jun 2005, Andy Smith wrote:
+Sadus . schrieb:
+> Maybe a misconception from my part here, please correct me:
+> 
+> When you want to block an IP from connecting to the internet, should i
+> use: 
+> iptables -A INPUT -i $INTERNAL -s 192.168.1.2 -j DROP
+> or 
+> iptables -A FORWARD -i $INTERNAL -s 192.168.1.2 -j DROP or both?
+> 
+> since the firewall is set to the gateway, then any client will try to
+> connect to the IP of the gateway to then establish a connection with the
+> site needed, if i already block that IP to connect to my NIC via the
+> INPUT chain, then there is no need for me to DROP in FORWARD, or is it
+> the other way around? 
 
-> On Wed, Jun 15, 2005 at 10:01:54PM +0200, Alexander Salmin wrote:
->> Hi, I guess this question is just a silly one for experts, but I can't
->> find the answer anywhere so I'm asking you guys.
->>
->> In what order do the assigned rules apply in this script?
->>
->> # Example1
->> iptables -A INPUT -j DROP # rule #1
->> iptables -A INPUT --dport 80 -j ACCEPT # rule #2
->>
->> #Example2
->> iptables -A INPUT --dport 80 -j ACCEPT # rule1
->> iptables -A INPUT -j DROP # rule2
->
-> They apply in the order you've issued them since they are operating
-> on INPUT and they are appending.
->
->> Will the both examples produce the same result?
->
-> No; example1 drops everything to INPUT with rule 2 never being
-> reached, but example2 would ACCEPT packets to port 80.. although
-> wouldn't that be a syntax error without at least -p tcp or -p udp to
-> tell it that it is something that has ports?
->
->> Or will rule2 in example 2 make rule1 in example2 vanish because it's
->> telling the system to drop all?
->
-> No, rules don't affect other rules.  They may not be reached however.
->
+It depends on your configuration. If you use a proxy on your gateway /
+firewall like squid, then the INPUT chain will be hit, because your
+clients connect to your proxy. BTW, in this configuration you don't need
+to set ip_forward to 1.
 
-The first rule in #1 is also redundant, provided the policy is set to DROP 
-in the first place, which in most cases is the place to set the 
-fallthrough default.
+If, on the other hand, there is no proxy, then your clients connect
+directly to the respective site on the internet and thus the forward
+chain will be hit. Because your clients use RFC 1918 addresses, which
+will be dropped on the first router on the internet, you need a
+MASQUERADE / SNAT rule in nat / POSTROUTING in this case. Otherwise
+nothing will work. And you must set ip_forward to 1.
 
-Thanks,
+Generally I agree with with all the people saying, that the best
+approach is to have a DROP policy in INPUT / FORWARD and then only allow
+the traffic you want. It's simple and clean in my opinion.
 
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+HTH and have a nice time,
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
+Joerg
 
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCsdeGst+vzJSwZikRAoCRAJ4qj6PTTtlbKjjCjCn+f/Rgwi0ElACfa23a
-LgptbS/njB0N8HdPoGrTxr4=
-=MD2G
------END PGP SIGNATURE-----
 
