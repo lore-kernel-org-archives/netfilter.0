@@ -1,14 +1,10 @@
-From: =?iso-8859-1?Q?Miguel_=C1ngel_=C1lvarez_Cabanes?=
-	<ma.alvarez@usyscom.com>
-Subject: Embedded system and shared libs
-Date: Fri, 17 Jun 2005 14:03:35 +0200
-Message-ID: <1119009815.3521.33.camel@localhost.localdomain>
-References: <ZIVCORREOybvQoG9Bvo00001d0e@correo.ziv.es>
+From: too rain <toorain2004@yahoo.com.cn>
+Subject: about log!
+Date: Fri, 17 Jun 2005 16:28:43 +0800 (CST)
+Message-ID: <20050617082843.385.qmail@web15903.mail.cnb.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <ZIVCORREOybvQoG9Bvo00001d0e@correo.ziv.es>
-Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,51 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="macroman"
 To: netfilter@lists.netfilter.org
 
-Hi
-
-Sorry for sending this question twice in a week, but I think I didn't
-explain correctly the first time.
-
-- I use a PPC in an embedded system.
-- If I build iptables with NO_SHARED_LIBS=3D1 there is no problem =
-(kernel
-2.6.10 has netfilter options enabled).
-- If I try to build iptables without NO_SHARED_LIBS and copy the
-libipt*.so to /lib/iptables on my system, I can test the tables
-(iptables -t nat -L), but I cannot do MASQUERADE or so... I obtain:
-
-"iptables v1.3.0: Couldn't load target `MASQUERADE':File not found
-
-Try `iptables -h' or 'iptables --help' for more information."
-
-Thanks for all
-
-Miguel =C1ngel=20
-=20
------------------------------------------ PLEASE NOTE =
--------------------------------------------
-This message, along with any attachments, may be confidential or legally =
-privileged.=20
-It is intended only for the named person(s), who is/are the only =
-authorized recipients.
-If this message has reached you in error, kindly destroy it without =
-review and notify the sender immediately.
-Thank you for your help.
-=B5SysCom uses virus scanning software but excludes any liability for =
-viruses contained in any attachment.
-=20
------------------------------------- ROGAMOS LEA ESTE TEXTO =
--------------------------------
-Este mensaje y sus anexos pueden contener informaci=F3n confidencial y/o =
-con derecho legal.=20
-Est=E1 dirigido =FAnicamente a la/s persona/s o entidad/es rese=F1adas =
-como =FAnico destinatario autorizado.
-Si este mensaje le hubiera llegado por error, por favor elim=EDnelo sin =
-revisarlo ni reenviarlo y notif=EDquelo inmediatamente al remitente. =
-Gracias por su colaboraci=F3n. =20
-=B5SysCom utiliza software antivirus, pero no se hace responsable de los =
-virus contenidos en los ficheros anexos.
-
+aGkhICBldmVyeWJvZHk6CkkgaGF2ZSBzb21lIHF1ZXN0aW9uIHRvIGFzayB5b3UhIElmIHlvdSBj
+YW4gZGVhbCB3aXRoIHRoaXMgcXVlc3Rpb24scGxlYXNlIG1haWwgdG8gbWUuVGhhdCdzIHZlcnkg
+bmljZSBvZiB5b3U6KSx0aGFua3MgYSBsb3QuIApNeSBxdWVzdGlvbiBpcyBmb2xsb3dpbmcuCldo
+ZW4gSSBhZGQgc29tZSBydWxlIGludG8gdGhlIGZpbHRlciB0YWJsZXMgd2l0aCBpcHRhYmxlcyxz
+dWNoIGFzICJpcHRhYmxlcyAtQSBJTlBVVCAtaiBMT0cgLS1sb2ctbGV2ZWwgaW5mbyIsdGhlIHN5
+c2xvZ2Qgd2lsbCBwcmludCBzb21lIGxvZyBpbmZvcm1hdGlvbiBvbiBzY3JlZW4oSSAicGluZyIg
+dGhlIGhvc3QgZnJvbSBhbm90aGVyIGhvc3QgY29udGludW91c2x5LHRoZSBsb2dlciB3cml0ZXMg
+ZG93biB0aGUgaW5mbykgd2hlbiBJIHJlc3RhcnQgdGhlIHN5c2xvZyBzZXJ2aWNlLgpUaGUgY29u
+ZmlncmF0aW9uIGlzIDoKI2xvZyBhbGwga2VybmVsIG1lc3NhZ2VzIHRvIHRoZSBjb25zb2xlLgoj
+IExvZ2dpbmcgbXVjaCBlbHNlIGNsdXR0ZXJzIHVwIHRoZSBzY3JlZW4uCiNrZXJuLiogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgL2Rldi9jb25zb2xlCiMg
+TG9nIGFueXRoaW5nIChleGNlcHQgbWFpbCkgb2YgbGV2ZWwgaW5mbyBvciBoaWdoZXIuCiMgRG9u
+J3QgbG9nIHByaXZhdGUgYXV0aGVudGljYXRpb24gbWVzc2FnZXMhCiouaW5mbzttYWlsLm5vbmU7
+YXV0aHByaXYubm9uZTtjcm9uLm5vbmUgICAgICAgICAgICAgICAgL3Zhci9sb2cvbWVzc2FnZXMK
+IyBUaGUgYXV0aHByaXYgZmlsZSBoYXMgcmVzdHJpY3RlZCBhY2Nlc3MuCmF1dGhwcml2LiogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgL3Zhci9sb2cvc2VjdXJl
+CiMgTG9nIGFsbCB0aGUgbWFpbCBtZXNzYWdlcyBpbiBvbmUgcGxhY2UuCm1haWwuKiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgL3Zhci9sb2cvbWFpbGxv
+ZwoKIyBMb2cgY3JvbiBzdHVmZgpjcm9uLiogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIC92YXIvbG9nL2Nyb24KIyBFdmVyeWJvZHkgZ2V0cyBlbWVyZ2Vu
+Y3kgbWVzc2FnZXMKKi5lbWVyZyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAqCiMgU2F2ZSBuZXdzIGVycm9ycyBvZiBsZXZlbCBjcml0IGFuZCBoaWdoZXIg
+aW4gYSBzcGVjaWFsIGZpbGUuCnV1Y3AsbmV3cy5jcml0ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgL3Zhci9sb2cvc3Bvb2xlcgojIFNhdmUgYm9vdCBtZXNzYWdlcyBh
+bHNvIHRvIGJvb3QubG9nCiMgbG9jYWw3LiogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAvdmFyL2xvZy9ib290LmxvZwojIyMjIyMjIyMjIyMjZmlsdGVyIGxv
+ZyMjIyMjIyMjIyMjIyMjIwprZXJuLj1pbmZvICAvTUZTL2Z3L2xvZy9rZXJuX2luZm8ubG9nCiMj
+IyMjIyMjIyMjI2FkZCBieSBkdXl1IyMjIyMjIyMjIyMjIyMjIyMKSSB0cnkgdG8gY2hhbmdlIHRo
+ZSBsb2cgbGV2ZWwgaW4gb3JkZXIgdG8gc3RvcCB0aGUgc3lzbG9nZCBwdXQgb3V0IGxvZ3Mgb24g
+c2NyZWVuIHdoZW4gaXQgaXMgcmVzdGFydGVkLGJ1dCBJIGZhaWxlZC4gSXQncyBwdXp6bGVkIG1l
+LHdoeSBpdCB3aWxsIGhhcHBlbj8hISAKQW5kIGFub3RoZXIgb2RkYmFsbCBpbnN0YW5jZSBpcyB3
+aGVuIEkgc3RvcCB0aGUgc3lzbG9nLHRoZSBsb2cgaW5mbyBiZWdpbiB0byBwcmludCBvbiBzY3Jl
+ZW4gY29udGludW91c2x5LGJ1dCB3aGVuIEkgc3RhcnQgaXQsaXQgc3RvcCBwdXQgb3V0IGxvZyBp
+bmZvIG9uIHNjcmVlbiF3aHk/Pz8/Pz8KcGxlYXNlIHdyaXRlIGJhY2sgdG8gbWUuCiAKICAgICAg
+ICAgICAgICAgIHlvdXJzIHRvb3JhaW4KoaGhoaGhoaGhoaGhoaFlbWFpbCBhZGRyZXNzOqGhZHV5
+dTIxMEBzaW5hLmNvbQqhoaGhoaGhoaGhoaGhoaGhoaGhoTIwMDUtMDYtMTcKCgkJCi0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpETyBZT1UgWUFIT08hPwogINHFu6LD4rfRR9PKz+Sj
+rdbQufq12tK7vvjO3sCsu/jTyrz+yafIxbOstPPTys/kIAo=
