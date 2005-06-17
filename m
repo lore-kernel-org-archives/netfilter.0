@@ -1,10 +1,13 @@
-From: too rain <toorain2004@yahoo.com.cn>
-Subject: about log!
-Date: Fri, 17 Jun 2005 16:28:43 +0800 (CST)
-Message-ID: <20050617082843.385.qmail@web15903.mail.cnb.yahoo.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Is there a way to know a related packet is link with an ftp
+	connexion ?
+Date: Fri, 17 Jun 2005 10:42:09 -0400
+Message-ID: <20050617144209.GA31682@bender.817west.com>
+References: <42B2883B.8050004@ensg.ign.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <42B2883B.8050004@ensg.ign.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,44 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-aGkhICBldmVyeWJvZHk6CkkgaGF2ZSBzb21lIHF1ZXN0aW9uIHRvIGFzayB5b3UhIElmIHlvdSBj
-YW4gZGVhbCB3aXRoIHRoaXMgcXVlc3Rpb24scGxlYXNlIG1haWwgdG8gbWUuVGhhdCdzIHZlcnkg
-bmljZSBvZiB5b3U6KSx0aGFua3MgYSBsb3QuIApNeSBxdWVzdGlvbiBpcyBmb2xsb3dpbmcuCldo
-ZW4gSSBhZGQgc29tZSBydWxlIGludG8gdGhlIGZpbHRlciB0YWJsZXMgd2l0aCBpcHRhYmxlcyxz
-dWNoIGFzICJpcHRhYmxlcyAtQSBJTlBVVCAtaiBMT0cgLS1sb2ctbGV2ZWwgaW5mbyIsdGhlIHN5
-c2xvZ2Qgd2lsbCBwcmludCBzb21lIGxvZyBpbmZvcm1hdGlvbiBvbiBzY3JlZW4oSSAicGluZyIg
-dGhlIGhvc3QgZnJvbSBhbm90aGVyIGhvc3QgY29udGludW91c2x5LHRoZSBsb2dlciB3cml0ZXMg
-ZG93biB0aGUgaW5mbykgd2hlbiBJIHJlc3RhcnQgdGhlIHN5c2xvZyBzZXJ2aWNlLgpUaGUgY29u
-ZmlncmF0aW9uIGlzIDoKI2xvZyBhbGwga2VybmVsIG1lc3NhZ2VzIHRvIHRoZSBjb25zb2xlLgoj
-IExvZ2dpbmcgbXVjaCBlbHNlIGNsdXR0ZXJzIHVwIHRoZSBzY3JlZW4uCiNrZXJuLiogICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgL2Rldi9jb25zb2xlCiMg
-TG9nIGFueXRoaW5nIChleGNlcHQgbWFpbCkgb2YgbGV2ZWwgaW5mbyBvciBoaWdoZXIuCiMgRG9u
-J3QgbG9nIHByaXZhdGUgYXV0aGVudGljYXRpb24gbWVzc2FnZXMhCiouaW5mbzttYWlsLm5vbmU7
-YXV0aHByaXYubm9uZTtjcm9uLm5vbmUgICAgICAgICAgICAgICAgL3Zhci9sb2cvbWVzc2FnZXMK
-IyBUaGUgYXV0aHByaXYgZmlsZSBoYXMgcmVzdHJpY3RlZCBhY2Nlc3MuCmF1dGhwcml2LiogICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgL3Zhci9sb2cvc2VjdXJl
-CiMgTG9nIGFsbCB0aGUgbWFpbCBtZXNzYWdlcyBpbiBvbmUgcGxhY2UuCm1haWwuKiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgL3Zhci9sb2cvbWFpbGxv
-ZwoKIyBMb2cgY3JvbiBzdHVmZgpjcm9uLiogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIC92YXIvbG9nL2Nyb24KIyBFdmVyeWJvZHkgZ2V0cyBlbWVyZ2Vu
-Y3kgbWVzc2FnZXMKKi5lbWVyZyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAqCiMgU2F2ZSBuZXdzIGVycm9ycyBvZiBsZXZlbCBjcml0IGFuZCBoaWdoZXIg
-aW4gYSBzcGVjaWFsIGZpbGUuCnV1Y3AsbmV3cy5jcml0ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgL3Zhci9sb2cvc3Bvb2xlcgojIFNhdmUgYm9vdCBtZXNzYWdlcyBh
-bHNvIHRvIGJvb3QubG9nCiMgbG9jYWw3LiogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAvdmFyL2xvZy9ib290LmxvZwojIyMjIyMjIyMjIyMjZmlsdGVyIGxv
-ZyMjIyMjIyMjIyMjIyMjIwprZXJuLj1pbmZvICAvTUZTL2Z3L2xvZy9rZXJuX2luZm8ubG9nCiMj
-IyMjIyMjIyMjI2FkZCBieSBkdXl1IyMjIyMjIyMjIyMjIyMjIyMKSSB0cnkgdG8gY2hhbmdlIHRo
-ZSBsb2cgbGV2ZWwgaW4gb3JkZXIgdG8gc3RvcCB0aGUgc3lzbG9nZCBwdXQgb3V0IGxvZ3Mgb24g
-c2NyZWVuIHdoZW4gaXQgaXMgcmVzdGFydGVkLGJ1dCBJIGZhaWxlZC4gSXQncyBwdXp6bGVkIG1l
-LHdoeSBpdCB3aWxsIGhhcHBlbj8hISAKQW5kIGFub3RoZXIgb2RkYmFsbCBpbnN0YW5jZSBpcyB3
-aGVuIEkgc3RvcCB0aGUgc3lzbG9nLHRoZSBsb2cgaW5mbyBiZWdpbiB0byBwcmludCBvbiBzY3Jl
-ZW4gY29udGludW91c2x5LGJ1dCB3aGVuIEkgc3RhcnQgaXQsaXQgc3RvcCBwdXQgb3V0IGxvZyBp
-bmZvIG9uIHNjcmVlbiF3aHk/Pz8/Pz8KcGxlYXNlIHdyaXRlIGJhY2sgdG8gbWUuCiAKICAgICAg
-ICAgICAgICAgIHlvdXJzIHRvb3JhaW4KoaGhoaGhoaGhoaGhoaFlbWFpbCBhZGRyZXNzOqGhZHV5
-dTIxMEBzaW5hLmNvbQqhoaGhoaGhoaGhoaGhoaGhoaGhoTIwMDUtMDYtMTcKCgkJCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpETyBZT1UgWUFIT08hPwogINHFu6LD4rfRR9PKz+Sj
-rdbQufq12tK7vvjO3sCsu/jTyrz+yafIxbOstPPTys/kIAo=
+On Fri, Jun 17, 2005 at 10:22:19AM +0200, Edouard GAULUE wrote:
+> In oder to make a special logging related to ftp connexion opening...
+> 
+> Thanks for your answers,
+
+to match a packet marked RELATED by the ftp conntrack helper:
+
+  ... -m helper --helper ftp -m state --state RELATED ...
+
+-j
+
+--
+"Stewie: Oh, I hate it when your mother worries. She usually says
+ things like "I told you so" and "Stop doing that, I'm asleep.""
+        --Family Guy
+
