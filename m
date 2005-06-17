@@ -1,13 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Is there a way to know a related packet is link with an ftp
-	connexion ?
-Date: Fri, 17 Jun 2005 10:42:09 -0400
-Message-ID: <20050617144209.GA31682@bender.817west.com>
-References: <42B2883B.8050004@ensg.ign.fr>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Question on -L
+Date: Fri, 17 Jun 2005 13:09:15 -0400
+Message-ID: <1119028154.2084.184.camel@grendel>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <42B2883B.8050004@ensg.ign.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,22 +16,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Fri, Jun 17, 2005 at 10:22:19AM +0200, Edouard GAULUE wrote:
-> In oder to make a special logging related to ftp connexion opening...
-> 
-> Thanks for your answers,
+Hey all,
 
-to match a packet marked RELATED by the ftp conntrack helper:
+Hopefully an easy question, but I have not been able to find what I'm
+looking for. 
 
-  ... -m helper --helper ftp -m state --state RELATED ...
+Is there a tool out there that takes the output from 'iptables -L' and
+converts it into the actual iptables policy using the correct syntax? I
+know the output from something like this may not always be exact (i.e.
+values could have been entered as variables, switches used in a
+different order, etc.), but it would be a great start.
 
--j
+I'm dealing with a number of appliances that run iptables on the back
+end to implement the filter policy. Each vendor has different ideas on
+how to load this policy and from where on the file system. It would be
+cool if I could take the output from 'iptables -L' and simply convert it
+to a similar policy, rather than having to hunt through the drive to
+find the policy they are loading. Many times useful tools like grep and
+find get removed from the OS, so it can be a real pain.
 
---
-"Stewie: Oh, I hate it when your mother worries. She usually says
- things like "I told you so" and "Stop doing that, I'm asleep.""
-        --Family Guy
+Thanks in advance for any help,
+Chris
+
+
 
