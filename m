@@ -1,8 +1,9 @@
-From: Toto <bakulaka@poczta.fm>
-Subject: POM -connlimit patch under ipv6? its possible?
-Date: 17 Jun 2005 20:57:21 +0200
-Message-ID: <20050617185721.9557EE5B8F@poczta.interia.pl>
+From: "Netfilter" <netfilter@cjseng.com>
+Subject: What's the best way to block these IP's?
+Date: Sat, 18 Jun 2005 11:46:37 -0500
+Message-ID: <003001c57425$4bb210a0$45d4a8c0@martin>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,26 +15,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-
-Hi,
-Im using your connlimit patch from netfilter to limite ipv4 connections.
-Have you any idea how to limit that same connections over ipv6 range?
-
-I was searching but seems to that patch work only on ipv4 range. You know
-where i can find something or maybe how modify that patch to limitate
-ipv6
-connections too?
-
-Thanks for answer..
-
-Greets,
+What's the best way to block these IP's?
 
 
-----------------------------------------------------------------------
-Startuj z INTERIA.PL! >>> http://link.interia.pl/f186c 
+:FORWARD ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -p tcp -s 61.0.0.0/32 -i eth1 -j  DROP
+-A INPUT -p tcp -s 66.0.0.0/32 -i eth1 -j  DROP
+-A INPUT -p tcp -s 80.0.0.0/32 -i eth1 -j  DROP
+-A INPUT -p tcp -s 82.0.0.0/32 -i eth1 -j  DROP
+-A INPUT -p tcp -s 211.0.0.0/32 -i eth1 -j DROP
+-A INPUT -p tcp -s 213.0.0.0/32 -i eth1 -j DROP
 
+or
 
+-A INPUT -p tcp -s 218.0.0.0 -i eth1 -j DROP
+-A INPUT -p tcp -s 219.0.0.0 -i eth1 -j DROP
+-A INPUT -p tcp -s 219.0.0.0 -i eth1 -j DROP
+
+thanks
