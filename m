@@ -1,14 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: What's the best way to block these IP's?
-Date: Sun, 19 Jun 2005 10:07:19 -0400
-Message-ID: <20050619140719.GA4788@bender.817west.com>
-References: <003001c57425$4bb210a0$45d4a8c0@martin>
-	<200506181246.09879.rob0@gmx.co.uk>
-	<004701c5742f$e5d47c40$45d4a8c0@martin>
+From: "Abe Froman" <abe__froman@hotmail.com>
+Subject: ./runme extra doesnt prompt me for MATCH_STRING
+Date: Sun, 19 Jun 2005 14:51:00 -0400
+Message-ID: <BAY101-F22646AD0C81F9DC5176472B0F60@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <004701c5742f$e5d47c40$45d4a8c0@martin>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +14,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sat, Jun 18, 2005 at 01:02:31PM -0500, Netfilter wrote:
-> Thanks fo the reply... I noticed the error of the "/32" CIDR right after I 
-> sent it.
-> Brain fart on my part.
-> I just wanted to know if
-> 218.0.0.0 without the" /*"  would work. (blocking the whole 218.0.0.0 
-> block)
+I am running patch-o-matic with extra, but it doesnt prompt me for the 
+string package. Got any tips?
 
-the default prefix length when none is specified is /32, so no...using
-218.0.0.0 in a rule is not the same as 218.0.0.0/8; it is the same as
-218.0.0.0/32.
+It goes:
+...........
 
-<need coffee>
- would it really have been such a daunting task to just add a rule using
- both notations and compared the results?
-</need coffee>
+Testing rtsp-conntrack... not applied
+The rtsp-conntrack patch:
 
--j
+Testing sip-conntrack-nat... not applied
+The sip-conntrack-nat patch:
 
---
-"Peter: Now, I know you're a feminist, and I think that's adorable, but
- this is grown-up time and I'm the man."
-        --Family Guy
+Testing talk-conntrack-nat... not applied
+The talk-conntrack-nat patch:
+
+.........
+
+According to this page:
+http://www.netfilter.org/patch-o-matic/pom-extra.html
+the CONFIG_IP_NF_MATCH_STRING should come inbetween rtsp-conntrack patch and 
+talk-conntrack-nat patch but its not sip-conntrack-nat patch
+
+How do I get it to prompt for match string?
+
+
 
