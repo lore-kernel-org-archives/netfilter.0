@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: ./runme extra doesnt prompt me for MATCH_STRING
-Date: Sun, 19 Jun 2005 15:58:36 -0400
-Message-ID: <20050619195836.GA1297@bender.817west.com>
-References: <BAY101-F22646AD0C81F9DC5176472B0F60@phx.gbl>
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: Nice ZoneAlarm that might be useful for Iptables
+Date: Sun, 19 Jun 2005 22:35:26 +0100
+Message-ID: <20050619213526.GM3217@metastasis.org.uk>
+References: <429BDF9F.7070707@mindspring.com>
+	<32813.82.226.29.74.1117521224.squirrel@mail.inl.fr>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <BAY101-F22646AD0C81F9DC5176472B0F60@phx.gbl>
+In-Reply-To: <32813.82.226.29.74.1117521224.squirrel@mail.inl.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,16 +22,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sun, Jun 19, 2005 at 02:51:00PM -0400, Abe Froman wrote:
-> I am running patch-o-matic with extra, but it doesnt prompt me for the 
-> string package. Got any tips?
+On Tue, May 31, 2005 at 08:33:44AM +0200, Eric Leblond wrote:
 
-since you don't specify; i will defer to the tea leaves, and the leaves
-say you are running a 2.6 kernel...and the string match is 2.4-only.
+> > In addition, it will warn if a program is asking for server rights
+> > although and ask for approval to grant that, although I don't understand
+> > what they mean by "server rights".
+> 
+> This is the right to open a socket in listening mode ?
 
--j
+Yes it is in ZoneAlarm terms... if you'll excuse the rather late answer.
 
---
-"Stewie: Mark my words, your uppance shall come."
-        --Family Guy
+-- 
+If at first you don't succeed, destroy all the evidence that you tried.
 
