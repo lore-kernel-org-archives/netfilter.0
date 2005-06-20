@@ -1,13 +1,17 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
+From: "terry l. ridder" <artisticforge@gmail.com>
 Subject: Re: iptables leaking blocked ip addresses.
-Date: Mon, 20 Jun 2005 21:30:11 +0200 (CEST)
-Message-ID: <Pine.LNX.4.62.0506202125290.28510@mercury.sdinet.de>
+Date: Mon, 20 Jun 2005 14:36:42 -0500
+Message-ID: <49bf7d7050620123646910d40@mail.gmail.com>
 References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201055.25861.rob0@gmx.co.uk>
-	<49bf7d7050620091748a270fc@mail.gmail.com>
+	<200506201159.46123.rob0@gmx.co.uk>
+	<49bf7d70506201020643ab165@mail.gmail.com>
+	<200506201329.19701.rob0@gmx.co.uk>
+Reply-To: "terry l. ridder" <artisticforge@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <49bf7d7050620091748a270fc@mail.gmail.com>
+In-Reply-To: <200506201329.19701.rob0@gmx.co.uk>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +22,102 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: "terry l. ridder" <artisticforge@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: /dev/rob0 <rob0@gmx.co.uk>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, 20 Jun 2005, terry l. ridder wrote:
+hello;
 
->>> one example of the leak is below:
->>>
->>> 200.0.0.0/8 is dropped if the destination port is 25 (smtp).
->>
->> iptables-save(8) output, please. What you posted here doesn't tell us
->> much.
->>
+reply below.
+
+On 6/20/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
+> On Monday 20 June 2005 12:20, terry l. ridder wrote:
+> > > Yikes, this is very long. First, I see that you're doing all your
+> > > filtering in nat, PREROUTING and POSTROUTING. Why?
+> >
+> > because that is the way i know that works.
+>=20
+> Again I doubt you know exactly what it is doing.
 >
-> while i have reservations concerning posting the output of iptables-save
-> i have placed it on my web server:
+
+no one can know exactly what it is doing given all the variables that
+may effect what iptables is doing.  unknown bugs in the linux kernel
+and/or iptables. memory hiccups. cpu hiccups. random bit flips.
+
+having observed the behaviour of the linux kernel and iptables i
+have a reasonable expectation of what they are doing.
+
 >
-> http://204.238.34.206/iptables-save-20jun2005.txt
+> For instance in your
+> lonely filter table, FORWARD rules there are 3 rules which do nothing
+> at all ... ACCEPT targets, when the policy is ACCEPT. (They do packet
+> counting which is limited by the "limit" module, so even the packet
+> counters are meaningless.)
+>
+>=20
+> > it has worked fine for many years.
+>=20
+> Luck.
+>
 
-You are filtering in the nat table.
-The nat table gets only the first packet from each connection (the one 
-that would match -m state --state NEW). A retransmit from the blocked IP 
-will not be a new connection, so it will pass through your rules.
+there is no such thing as luck.
 
-And on your comment to another mail that you are not using connection 
-tracking:
-This is wrong. If you have the nat table, you must have ip_conntrack 
-loaded - and if its loaded it tracks your connections, even if you
-dont use -m state at all. There is no iptables nat without connection 
-tracking.
+>=20
+> > it was not until i upgraded the
+> > firewall machine (new computer with debian sarge) that iptables
+> > began to leak.
+> >
+> > > I prefer to do filtering in the filter table as $DEITY intended. :)
+>=20
+> For me that is more or less a matter of faith. I hope someone who knows
+> more about it will come along and explain why your NAT use is poor
+> design. In the meantime I bet a few external nmap's of your IP would
+> give you some unpleasant surprises.
+>
 
-If you must filter in PREROUTING, do it at least in PREROUTING of the
-filter table.
+you have my permission to nmap my network, 204.238.34.0/24.
+you must post the results of nmap here.
 
-c'ya
-sven
+do you have anything to contribute besides sniping at the manner in
+which i run and manage my network?
+=20
+>
+> > <major sniip>
+> >
+> > one of the reasons for using table nat is to dnat all ip addresses
+> > with destination port 25 (smtp) to the mail server, 204.238.34.206.
+>=20
+> I'd do that with a single DNAT rule,  have a single SNAT rule to let the
+> internal mail server out, and do my filtering in filter / FORWARD. It
+> also seems odd that you are using NAT at all, since the mail server
+> already has a real Internet IP. I only use NAT with RFC 1918 addresses.
+>
 
--- 
+because the spammers, scammers, and other scum keep hammering
+my network trying every address in 204.238.34.0/24 destination port 25.
 
-The Internet treats censorship as a routing problem, and routes around it.
-(John Gilmore on http://www.cygnus.com/~gnu/)
+>=20
+> > connection tracking is turned off since at one time i was
+> > using tarpit instead of just dropping the connections.
+>=20
+> Whatever. Without connection tracking you might as well use ipchains.
+>
+
+the tarpit howto does say to turn connection tracking off.
+
+>=20
+> > i have added logging on both the firewall box, 204.238.34.232, and
+> > the mail server, 204.238.34.206. both boxes will be logging the
+> > leaks.
+>=20
+> Please do followup with the results; I will be interested to see what
+> packets are getting through.
+>
+
+i will post the results.
+
+>
+
+--=20
+terry l. ridder ><>
 
