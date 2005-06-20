@@ -1,13 +1,12 @@
-From: David Busby <busby@edoceo.com>
-Subject: Re: Nice ZoneAlarm that might be useful for Iptables
-Date: Sun, 19 Jun 2005 23:47:37 -0700
-Message-ID: <42B66689.1000702@edoceo.com>
-References: <429BDF9F.7070707@mindspring.com>	<20050531043310.GF3681@der-frank.org>	<20050619214142.GN3217@metastasis.org.uk>
-	<20050620052833.GP28123@der-frank.org>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: netfilter is missing all the sext extentions on Debian
+Date: Mon, 20 Jun 2005 09:37:15 +0200
+Message-ID: <42B6722B.20009@mnemon.de>
+References: <20050619215151.GO3217@metastasis.org.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050620052833.GP28123@der-frank.org>
+In-Reply-To: <20050619215151.GO3217@metastasis.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Frank Gruellich wrote:
-> 
-> The penetration is not the ICMP but the DNS resolve.  hackers.com is a
-> bad guy's domain running some "special" kind of DNS server.  I've seen
-> shells running this way.
-> 
-> 
->>You can't completely block malware from accessing the Internet, but you
->>can make it really, really difficult...
-> 
-> 
-> No, it's IMHO not that difficult.
-> 
-> Kind
->  regards, Frank.
+Hi Nick,
 
-Didn't MS Windows just change (xp/sp2) so that infected machines can't open more that like 10 half open sockets?  That 
-was viewed as solving the wrong problem.  i.e we wouldn't have to block outbound traffic in drastic/major ways if 
-infection didn't happen in the first place.  Not that that is possible either but weigh fix with the problem carefully.
+Nick Drage schrieb:
+> Hi,
+> 
+> I run Debian and unfortunately that means my IPTables rulesets are
+> missing all the interesting extensions such as TARPIT that I would like
+> to play with.
+> 
+> Does anyone here using the latest IPTables version rather than the
+> latest Debian package?  If so, how do you integrate it into Debian and
+> how do you get on?
 
-Out of curiosity Frank, are you blocking malicious IM type softwares/plugins/add-ons or users?  If so how?
+I use iptables 1.3.1 with Debian woody / sarge - something in the middle
+of both (didn't fully upgrade yet, but soon to come) with Kernel 2.4.31.
+It's quite simple. Just downloaded the iptables source from
+netfilter.org and the newest pom. Than you can patch the kernel and
+compile... It turned out, that not all patches I wanted, could be
+installed (don't know why, no time to investigate) :( But ok, _I_ can
+live with that.
 
-/djb
+Then just compile iptables and install. This will install iptables* in
+/usr/local/sbin instead od the default Debian /sbin, or wherever you you
+configured to install. So, if you want to use your version one
+possibility is to ensure, that ${PATH} has something like this:
+
+...:/usr/local/sbin:/sbin:...
+
+instead of:
+
+...:/sbin:/usr/local/sbin:...
+
+This way you always have a fallback in case something went wrong.
+
+HTH and have a nice time,
+
+Joerg
+
 
