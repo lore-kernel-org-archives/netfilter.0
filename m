@@ -1,13 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: iptables leaking blocked ip addresses.
-Date: Tue, 21 Jun 2005 11:40:43 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0506211137000.3687@blackhole.kfki.hu>
-References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201055.25861.rob0@gmx.co.uk>
-	<42B7DF8D.3060304@linuxmail.org>
+From: "Blake Patton" <pattonb@spots.ca>
+Subject: compiling pptp patch into kernel
+Date: Mon, 20 Jun 2005 00:18:14 -0600
+Message-ID: <IBEBLDHKIFGDJOGFBJIDIEPDICAA.pattonb@spots.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42B7DF8D.3060304@linuxmail.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Feizhou <feizhou@linuxmail.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Tue, 21 Jun 2005, Feizhou wrote:
 
->
-> > I do see that you've disabled CONFIG_IP_NF_CONNTRACK, which is a very
-> > odd choice. Connection tracking is the strength of iptables!
->
-> You mean weakness.
->
-> netfilter's conntrack module sucks in performance and at the same time
-> is not fully stateful.
+I have been trying to compile the pptp patch from the patch-o-matic-ng
+to kernel 2.4.31 and get the following error.
 
-Could you please back your claims with data (performance) and examples
-(not fully stateful)?
+unable to find ladd slot in src /usr/src/linux//net/ipv4/netfilter/Config.in
 
-About netfilter performance *data* you can read
-http://people.netfilter.org/kadlec/nftest.pdf.
+any help is appreciated
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+
+
+--
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.0.323 / Virus Database: 267.7.8/22 - Release Date: 6/17/2005
+
 
