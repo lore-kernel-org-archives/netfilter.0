@@ -1,12 +1,15 @@
-From: Charles Jones <linuxchuck@gmail.com>
-Subject: [announce] Frankenwall released to the public
-Date: Mon, 20 Jun 2005 16:46:05 -0500
-Message-ID: <9630799505062014462e0f3fd7@mail.gmail.com>
-Reply-To: Charles Jones <linuxchuck@gmail.com>
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: iptables leaking blocked ip addresses.
+Date: Tue, 21 Jun 2005 00:29:27 +0200 (CEST)
+Message-ID: <Pine.LNX.4.62.0506210019551.2906@mercury.sdinet.de>
+References: <49bf7d7050620083448c1dee9@mail.gmail.com>
+	<200506201055.25861.rob0@gmx.co.uk>
+	<49bf7d7050620091748a270fc@mail.gmail.com>
+	<Pine.LNX.4.62.0506202125290.28510@mercury.sdinet.de>
+	<49bf7d705062013236f4e105a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <49bf7d705062013236f4e105a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +20,96 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: "terry l. ridder" <artisticforge@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello list,
+On Mon, 20 Jun 2005, terry l. ridder wrote:
 
-Long time lurker here, first time poster...
+> On 6/20/05, Sven-Haegar Koch <haegar@sdinet.de> wrote:
+>> On Mon, 20 Jun 2005, terry l. ridder wrote:
+>>
+>>>>> one example of the leak is below:
+>>>>>
+>>>>> 200.0.0.0/8 is dropped if the destination port is 25 (smtp).
+>>>>
+>>>> iptables-save(8) output, please. What you posted here doesn't tell us
+>>>> much.
+>>>>
+>>>
+>>> while i have reservations concerning posting the output of iptables-save
+>>> i have placed it on my web server:
+>>>
+>>> http://204.238.34.206/iptables-save-20jun2005.txt
+>>
+>> You are filtering in the nat table.
+>>
+>
+> yes, i am.
+>
+>> The nat table gets only the first packet from each connection (the one
+>> that would match -m state --state NEW).
+>>
+>
+> that is incorrect. the nat table is getting all packets.
 
-After much peer-pressure, I have just "GPL'd" and released a bash
-script that generates what I hope to be highly secure iptables
-rulesets for very "network conscious" system administrators called
-"Frankenwall".
+no, it's not.
 
-Frankenwall creates IPSEC-aware (using the mark target in the mangle
-chain) SNAT/Masq/Routing-capable iptables rules.  It also supports the
-creation of Screened Subnets, port-forwarding, 1:1 static NAT,
-standard routing, Ingress/Egress filtering, and MAC Whitelisting.=20
-There are probably other features, but I don't recall them off the top
-of my head.  See the README, and the in-line documentation in the
-script itself for more details.
+please have a look at "man iptables":
 
-Please be warned:
-The focus of this script is security.  If you don't specifically
-permit a certain type of traffic, it will most likely not be allowed
-through.  This means that if you don't understand some of the
-intricacies of how the protocols on your network work, or even what
-protocols are used, this script is not for you.
+     nat:
+           This  table  is  consulted  when a packet that creates a new
+           connection is encountered.  It consists of three  built-ins:
+           PREROUTING  (for  altering packets as soon as they come in),
+           OUTPUT (for altering locally-generated packets before  rout-
+           ing),  and  POSTROUTING  (for  altering  packets as they are
+           about to go out).
 
-With that being said, here is the link:
+Note the "is consulted when a packet that creates a new connection is 
+encountered" - once for every new connection, not for all following 
+packets.
 
-http://sourceforge.net/projects/frankenwall
+>> A retransmit from the blocked IP will not be a new connection,
+>> so it will pass through your rules.
+>
+> again this is incorrect.
 
-I would greatly appreciate any and all constructive criticism (with
-suggestions please) on this script.  Questions about it or it's
-configuration are also welcome.
+no - once a connection entry in /proc/net/ip_conntrack is created, a 
+restransmit will match this entry even if it's a tcp-syn again.
 
-Thanks for your time,
+netfilter-connections are different from tcp connections.
 
-Charles Jones
+>> And on your comment to another mail that you are not using connection
+>> tracking:
+>> This is wrong. If you have the nat table, you must have ip_conntrack
+>> loaded - and if its loaded it tracks your connections, even if you
+>> dont use -m state at all. There is no iptables nat without connection
+>> tracking.
+>
+> i may have been looking at the wrong window, i will check on that.
+
+thr textfile referenced your other mail contains IP_NF_CONNTRACK=m for 
+your firewall - connection-tracking is at least built.
+
+And if you load the nat support (aka iptable_nat module) the ip_conntrack 
+module will be loaded, too.
+
+Look at the module-dependencies in your /lib/modules/`uname 
+-r`/modules.deb, mine says:
+
+/lib/modules/2.6.10-ac10-aurora/kernel/net/ipv4/netfilter/iptable_nat.ko: 
+/lib/modules/2.6.10-ac10-aurora/kernel/net/ipv4/netfilter/ip_conntrack.ko 
+/lib/modules/2.6.10-ac10-aurora/kernel/net/ipv4/netfilter/ip_tables.ko
+
+meaning that to load iptable_nat.ko the modules ip_conntrack.ko und 
+ip_tables.ko need to be loaded.
+
+c'ya
+sven
+
+-- 
+
+The Internet treats censorship as a routing problem, and routes around it.
+(John Gilmore on http://www.cygnus.com/~gnu/)
 
