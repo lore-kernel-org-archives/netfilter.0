@@ -1,17 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: iptables leaking blocked ip addresses.
-Date: Tue, 21 Jun 2005 15:13:40 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0506211510210.9102@yvahk01.tjqt.qr>
-References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201159.46123.rob0@gmx.co.uk>
-	<49bf7d70506201020643ab165@mail.gmail.com>
-	<200506201329.19701.rob0@gmx.co.uk>
-	<49bf7d7050620123646910d40@mail.gmail.com>
-	<Pine.LNX.4.61.0506211455340.9102@yvahk01.tjqt.qr>
-	<Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
+From: Luca Abeni <lucabe72@email.it>
+Subject: How to use ip_queue without linking libipq?
+Date: Mon, 20 Jun 2005 12:29:53 +0200
+Message-ID: <1119263393.1985.10.camel@labeni.mm.mbigroup.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,29 +15,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hi all,
 
->The overhead of TARPIT created in conntrack can completely be avoided by
->using NOTRACK and TARPIT targets together.
+I've been asked to develop a user-space application receiving packets
+from the ip_queue module. I know the simplest solution would be to use
+libipq, but unfortunately the application cannot be released under GPL
+(because it also uses some proprietary code).
 
-Probably, but it does not belong to the topic ("leaking blocked ip addr.s").
+So, I am thinking about directly interacting with the ip_queue module by
+using netlink. However, I know how to open a netlink socket, but I've
+not been able to find any documentation about how to use a netlink
+socket to communicate with ipqueue...
 
-On the NOTRACK, I've got a question, or maybe just a weird problem:
-NOTRACK is only valid in the mangle table, and TARPIT is one of the last rules 
-in my filter:INPUT set.
+I think that looking at libipq code for understanding how to use ipqueue
+would be a license violation (I would end up with a code too similiar to
+libipq), right?
 
-So it looks to me like I would need to copy all filter:INPUT rules that -j 
-ACCEPT into mangle:INPUT - because a plain -j NOTRACK would disable tracking 
-everything, and I can't just do -p tcp --dport 25 -j NOTRACK, because it's a 
-lot more than just dport 25.
+Is some documentation about directly using ipqueue available somewhere?
+Can anyone help me?
 
+			Thanks,
+				Luca
 
-Jan Engelhardt                                                               
---                                                                            
-| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
-| Am Fassberg, 37077 Goettingen, www.gwdg.de
+(P.S.: please cc me because I am not subscribed to the mailing list)
+-- 
+_____________________________________________________________________________
+Copy this in your signature, if you think it is important:
+                               N O    W A R ! ! !
+
 
