@@ -1,14 +1,16 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: "terry l. ridder" <artisticforge@gmail.com>
 Subject: Re: iptables leaking blocked ip addresses.
-Date: Mon, 20 Jun 2005 15:19:07 -0500
-Message-ID: <200506201519.07430.rob0@gmx.co.uk>
+Date: Mon, 20 Jun 2005 15:23:15 -0500
+Message-ID: <49bf7d705062013236f4e105a@mail.gmail.com>
 References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201329.19701.rob0@gmx.co.uk>
-	<49bf7d7050620123646910d40@mail.gmail.com>
+	<200506201055.25861.rob0@gmx.co.uk>
+	<49bf7d7050620091748a270fc@mail.gmail.com>
+	<Pine.LNX.4.62.0506202125290.28510@mercury.sdinet.de>
+Reply-To: "terry l. ridder" <artisticforge@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <49bf7d7050620123646910d40@mail.gmail.com>
+In-Reply-To: <Pine.LNX.4.62.0506202125290.28510@mercury.sdinet.de>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,39 +23,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "terry l. ridder" <artisticforge@gmail.com>
+To: Sven-Haegar Koch <haegar@sdinet.de>
 Cc: netfilter@lists.netfilter.org
 
-On Monday 20 June 2005 14:36, terry l. ridder wrote:
-> > > > I prefer to do filtering in the filter table as $DEITY
-> > > > intended. :)
+hello;
+
+reply below.
+
+On 6/20/05, Sven-Haegar Koch <haegar@sdinet.de> wrote:
+> On Mon, 20 Jun 2005, terry l. ridder wrote:
+>=20
+> >>> one example of the leak is below:
+> >>>
+> >>> 200.0.0.0/8 is dropped if the destination port is 25 (smtp).
+> >>
+> >> iptables-save(8) output, please. What you posted here doesn't tell us
+> >> much.
+> >>
 > >
-> > For me that is more or less a matter of faith. I hope someone who
-> > knows more about it will come along and explain why your NAT use is
-> > poor design.
-
-(Sven did this, thanks again, Sven.)
-
-> do you have anything to contribute besides sniping at the manner in
-> which i run and manage my network?
-
-I do apologise for the tone which came across. I understand and
-validate your feelings: I definitely could have worded it better. But
-in fact I do believe I offered some useful suggestions; do with them 
-what you will.
-
-> > > connection tracking is turned off since at one time i was
-> > > using tarpit instead of just dropping the connections.
+> > while i have reservations concerning posting the output of iptables-sav=
+e
+> > i have placed it on my web server:
 > >
-> > Whatever. Without connection tracking you might as well use
-> > ipchains.
+> > http://204.238.34.206/iptables-save-20jun2005.txt
+>=20
+> You are filtering in the nat table.
 >
-> the tarpit howto does say to turn connection tracking off.
 
-Ah, I did not know this. TY for the information. But that itself brings 
-the whole tarpitting concept into question, in my mind. Anything which 
-throws away the main benefit of iptables can't be worth the trouble.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+yes, i am.
+
+> The nat table gets only the first packet from each connection (the one
+> that would match -m state --state NEW).
+>
+
+that is incorrect. the nat table is getting all packets.
+
+>
+> A retransmit from the blocked IP will not be a new connection,
+> so it will pass through your rules.
+>
+
+again this is incorrect.
+
+>=20
+> And on your comment to another mail that you are not using connection
+> tracking:
+> This is wrong. If you have the nat table, you must have ip_conntrack
+> loaded - and if its loaded it tracks your connections, even if you
+> dont use -m state at all. There is no iptables nat without connection
+> tracking.
+>
+
+i may have been looking at the wrong window, i will check on that.
+
+>=20
+> If you must filter in PREROUTING, do it at least in PREROUTING of the
+> filter table.
+>
+
+why?
+
+>=20
+> c'ya
+> sven
+>=20
+
+
+--=20
+terry l. ridder ><>
 
