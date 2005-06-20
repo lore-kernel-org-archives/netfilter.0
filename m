@@ -1,15 +1,11 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: iptables leaking blocked ip addresses.
-Date: Mon, 20 Jun 2005 14:12:55 -0500
-Message-ID: <200506201412.55396.rob0@gmx.co.uk>
-References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201159.46123.rob0@gmx.co.uk>
-	<Pine.LNX.4.61.0506202049130.32230@yvahk01.tjqt.qr>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: how to delete a time-based rule ?
+Date: Mon, 20 Jun 2005 21:13:04 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0506202112450.20048@yvahk01.tjqt.qr>
+References: <6e24d31b050620120372ced983@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0506202049130.32230@yvahk01.tjqt.qr>
-Content-Disposition: inline
+In-Reply-To: <6e24d31b050620120372ced983@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,14 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Tenivella Enrico <texilee@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 20 June 2005 13:50, Jan Engelhardt wrote:
-> I'd recommend a -P DROP anyway and build up -j ACCEPTs from there.
+>Hi all.
+>
+>My question.. 
+>
+>through a web interface a client press a button that add an iptables
+>prerouting entry.
+>Can I set a rule to delete the previous rule when he is idle for a few
+>time (10-15 min) or not more connected?
 
-Not easy to do that without connection tracking.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+-m expire
+(it's in development)
+
+
+Cheers,
+Jan Engelhardt                                                               
+--                                                                            
+| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
+| Am Fassberg, 37077 Goettingen, www.gwdg.de
 
