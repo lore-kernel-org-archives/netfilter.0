@@ -1,12 +1,11 @@
-From: varun_saa@vsnl.net
-Subject: ip + mac filtering
-Date: Mon, 20 Jun 2005 20:05:23 +0500
-Message-ID: <3724a4a3725e70.3725e703724a4a@vsnl.net>
+From: "Baake, Matthias" <m.baake@porta.de>
+Subject: RE: ip + mac filtering
+Date: Mon, 20 Jun 2005 17:17:05 +0200
+Message-ID: <201E6F5AC48C274996A5AD8304FAEF869B37@p001ex03.porta.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: varun_saa@vsnl.net
+Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
 
-Hello, 
-     I want to do IP filtering as well as  
-MAC filtering. 
- 
-If I were to right seperate set of rules for 
-IP and MAC filtering. Will there be any problem ? 
- 
-Thanks in advance 
- 
-Varun 
- 
- 
+You can filter by mac addresses with the module mac
 
+a sample could be
+
+iptables -A FORWARD -m mac --mac-source ff:ff:ff:ff:ff:ff -j DROP
+
+/cmb
+
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of
+> varun_saa@vsnl.net
+> Sent: Monday, June 20, 2005 5:05 PM
+> To: netfilter@lists.netfilter.org
+> Subject: ip + mac filtering
+>=20
+>=20
+> Hello,=20
+>      I want to do IP filtering as well as =20
+> MAC filtering.=20
+> =20
+> If I were to right seperate set of rules for=20
+> IP and MAC filtering. Will there be any problem ?=20
+> =20
+> Thanks in advance=20
+> =20
+> Varun=20
+> =20
+> =20
+>=20
+>=20
+>=20
 
