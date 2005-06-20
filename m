@@ -1,14 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: iptables leaking blocked ip addresses.
-Date: Mon, 20 Jun 2005 20:50:42 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0506202049130.32230@yvahk01.tjqt.qr>
-References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201055.25861.rob0@gmx.co.uk>
-	<49bf7d7050620091748a270fc@mail.gmail.com>
-	<200506201159.46123.rob0@gmx.co.uk>
+From: Tenivella Enrico <texilee@gmail.com>
+Subject: how to delete a time-based rule ?
+Date: Mon, 20 Jun 2005 21:03:40 +0200
+Message-ID: <6e24d31b050620120372ced983@mail.gmail.com>
+Reply-To: Tenivella Enrico <texilee@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200506201159.46123.rob0@gmx.co.uk>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hi all.
 
->> http://204.238.34.206/iptables-save-20jun2005.txt
->
->Yikes, this is very long. First, I see that you're doing all your 
->filtering in nat, PREROUTING and POSTROUTING. Why? I prefer to do 
->filtering in the filter table as $DEITY intended. :)
+My question..=20
 
-Yeah I would wonder too; esp. because they are in OUTPUT, not in 
-PRE/POSTROUTING.
-I'd recommend a -P DROP anyway and build up -j ACCEPTs from there.
+through a web interface a client press a button that add an iptables
+prerouting entry.
+Can I set a rule to delete the previous rule when he is idle for a few
+time (10-15 min) or not more connected?
 
+NB. there is a "Disconnect" button on the web interface....  but
+sometimes the client forget this.. and I see some olds entries..
+bye=20
 
-Jan Engelhardt                                                               
---                                                                            
-| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
-| Am Fassberg, 37077 Goettingen, www.gwdg.de
+Texilee
 
