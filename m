@@ -1,16 +1,11 @@
-From: =?iso-8859-1?Q?Miguel_=C1ngel_=C1lvarez_Cabanes?=
-	<ma.alvarez@usyscom.com>
-Subject: Re: Embedded system and shared libs
-Date: Mon, 20 Jun 2005 15:30:52 +0200
-Message-ID: <1119274252.3521.70.camel@localhost.localdomain>
-References: <ZIVCORREOybvQoG9Bvo00001d0e@correo.ziv.es>
-	<1119009815.3521.33.camel@localhost.localdomain>
-	<86is09rxfc.fsf@erwin.inf.tu-dresden.de>
+From: "John Wigley" <johnwigley@acorna.co.uk>
+Subject: using NetFilter to share the SAME SINGLE IP between a Linux router
+	AND a computer simultaneously
+Date: Mon, 20 Jun 2005 14:31:45 +0100
+Message-ID: <00c301c5759c$6771b3e0$02c8a8c0@computer1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <86is09rxfc.fsf@erwin.inf.tu-dresden.de>
-Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,65 +16,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jean Wolter <jw5@os.inf.tu-dresden.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
-I have tried placing the shared objects
-in /usr/local/lib/iptables, /usr/local/lib, /lib, /lib/iptables... with
-the same result.
+Hi,
 
-Is there anything appart from the executable and the shared objects that
-must be placed in the system to relate them?
+I wonder if some experienced NetFilter users may be able to answer if the 
+following is possible and if so how :-
 
-About strace... I have not tried with it, because I do not have strace
-on my embedded system, but I think it can be a good idea and I am going
-to try to add it.
+What I am looking to do is to be able to configure a Linux based router to 
+be able to share a single Public IP address between the linux router and a 
+single computer on the lan acting as the DMZ host.
 
-Thanks
+So basically you have a linux router with two network ports, WAN and LAN. 
+The router takes the single ISP assigned public IP address for it's WAN 
+interface and then uses a non routable subnet for the LAN port. There are a 
+number of machines on the LAN segment and the linux router is performing NAT 
+for them so that they have internet connectivity - so far this is a standard 
+normal setup.
 
-Miguel =C1ngel
+Now what I want to do is to simultaneously assign that SAME PUBLIC IP 
+address onto one of the LAN computers so that it for all intents and 
+purposes is a DMZ host.
+
+Before anyone says that this is mad and that it can't be done, it can be 
+done perfectly well and all WESTELL ADSL / Ethernet routers have this 
+functionality along with some no name Far Eastern origin broadband routers 
+based on a Conexant OEM reference design.
+
+Having thought long and hard about how to do this but not knowing NetFilter 
+at all, I realised that the way this must be done is for the router to 
+perform a standard NAT function with the added functions of tracking all 
+outgoing connections from the DMZ host and entering those into the NAT table 
+as well, so that it doesn't try to do a Port Address Translation on top of 
+an existing outgoing connection from the DMZ host. For incoming connections, 
+if the incoming packet has a reference in the NAT table then it is directed 
+to the originating LAN machine and if not is passed through unmodified to 
+the DMZ host.
+
+I have spent much time googling and reading list postings but cannot find 
+any reference on how to do this under linux, my guess is that Proxy ARP 
+needs to be enabled on the LAN interface and then a 1:1 POST NAT mapping set 
+to remap all the packets for the DMZ host back to the original public IP 
+address but after that I'm stuck.
+
+This is an incredibly useful feature which I've used on the Westell routers 
+for some time, but now want to move to a Linux based router to be able to do 
+QOS, as it allows all the benefits of NAT for sharing a single IP address 
+but also the benefits of a routed connection for NAT unaware applications 
+like IPSEC AH, and some VOIP implementations.
+
+Any advice on setting this up would be much appreciated,
+
+Thanks,
+
+John Wigley
 
 
-El lun, 20-06-2005 a las 15:05 +0200, Jean Wolter escribi=F3:
-> Miguel =C1ngel =C1lvarez Cabanes <ma.alvarez@usyscom.com> writes:
->=20
-> > - If I try to build iptables without NO_SHARED_LIBS and copy the
-> > libipt*.so to /lib/iptables on my system, I can test the tables
-> > (iptables -t nat -L), but I cannot do MASQUERADE or so... I obtain:
-> >
-> > "iptables v1.3.0: Couldn't load target `MASQUERADE':File not found
-> >
-> > Try `iptables -h' or 'iptables --help' for more information."
->=20
-> The default location for the iptables shared objects is
-> /usr/local/lib/iptables, did you change this? have you tried to use
-> strace to find out where iptables looks for the shared object files?
->=20
-> regards,
-> Jean=20
-=20
------------------------------------------ PLEASE NOTE =
--------------------------------------------
-This message, along with any attachments, may be confidential or legally =
-privileged.=20
-It is intended only for the named person(s), who is/are the only =
-authorized recipients.
-If this message has reached you in error, kindly destroy it without =
-review and notify the sender immediately.
-Thank you for your help.
-=B5SysCom uses virus scanning software but excludes any liability for =
-viruses contained in any attachment.
-=20
------------------------------------- ROGAMOS LEA ESTE TEXTO =
--------------------------------
-Este mensaje y sus anexos pueden contener informaci=F3n confidencial y/o =
-con derecho legal.=20
-Est=E1 dirigido =FAnicamente a la/s persona/s o entidad/es rese=F1adas =
-como =FAnico destinatario autorizado.
-Si este mensaje le hubiera llegado por error, por favor elim=EDnelo sin =
-revisarlo ni reenviarlo y notif=EDquelo inmediatamente al remitente. =
-Gracias por su colaboraci=F3n. =20
-=B5SysCom utiliza software antivirus, pero no se hace responsable de los =
-virus contenidos en los ficheros anexos.
 
