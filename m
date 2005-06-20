@@ -1,11 +1,14 @@
-From: Tenivella Enrico <texilee@gmail.com>
-Subject: how to delete a time-based rule ?
-Date: Mon, 20 Jun 2005 21:03:40 +0200
-Message-ID: <6e24d31b050620120372ced983@mail.gmail.com>
-Reply-To: Tenivella Enrico <texilee@gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: iptables leaking blocked ip addresses.
+Date: Mon, 20 Jun 2005 14:12:55 -0500
+Message-ID: <200506201412.55396.rob0@gmx.co.uk>
+References: <49bf7d7050620083448c1dee9@mail.gmail.com>
+	<200506201159.46123.rob0@gmx.co.uk>
+	<Pine.LNX.4.61.0506202049130.32230@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.61.0506202049130.32230@yvahk01.tjqt.qr>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,18 +23,11 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all.
+On Monday 20 June 2005 13:50, Jan Engelhardt wrote:
+> I'd recommend a -P DROP anyway and build up -j ACCEPTs from there.
 
-My question..=20
-
-through a web interface a client press a button that add an iptables
-prerouting entry.
-Can I set a rule to delete the previous rule when he is idle for a few
-time (10-15 min) or not more connected?
-
-NB. there is a "Disconnect" button on the web interface....  but
-sometimes the client forget this.. and I see some olds entries..
-bye=20
-
-Texilee
+Not easy to do that without connection tracking.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
