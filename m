@@ -1,10 +1,15 @@
-From: "Blake Patton" <pattonb@spots.ca>
-Subject: compiling pptp patch into kernel
-Date: Mon, 20 Jun 2005 00:18:14 -0600
-Message-ID: <IBEBLDHKIFGDJOGFBJIDIEPDICAA.pattonb@spots.ca>
+From: Jean Wolter <jw5@os.inf.tu-dresden.de>
+Subject: Re: Embedded system and shared libs
+Date: Mon, 20 Jun 2005 15:05:11 +0200
+Message-ID: <86is09rxfc.fsf@erwin.inf.tu-dresden.de>
+References: <ZIVCORREOybvQoG9Bvo00001d0e@correo.ziv.es>
+	<1119009815.3521.33.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1119009815.3521.33.camel@localhost.localdomain>
+	(ma.alvarez@usyscom.com's
+	message of "Fri, 17 Jun 2005 14:03:35 +0200")
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,22 +20,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-1?q?Miguel_=C1ngel_=C1lvarez_Cabanes?= <ma.alvarez@usyscom.com>
+Cc: netfilter@lists.netfilter.org
 
+Miguel =C1ngel =C1lvarez Cabanes <ma.alvarez@usyscom.com> writes:
 
-I have been trying to compile the pptp patch from the patch-o-matic-ng
-to kernel 2.4.31 and get the following error.
+> - If I try to build iptables without NO_SHARED_LIBS and copy the
+> libipt*.so to /lib/iptables on my system, I can test the tables
+> (iptables -t nat -L), but I cannot do MASQUERADE or so... I obtain:
+>
+> "iptables v1.3.0: Couldn't load target `MASQUERADE':File not found
+>
+> Try `iptables -h' or 'iptables --help' for more information."
 
-unable to find ladd slot in src /usr/src/linux//net/ipv4/netfilter/Config.in
+The default location for the iptables shared objects is
+/usr/local/lib/iptables, did you change this? have you tried to use
+strace to find out where iptables looks for the shared object files?
 
-any help is appreciated
-
-
-
---
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.323 / Virus Database: 267.7.8/22 - Release Date: 6/17/2005
-
+regards,
+Jean
 
