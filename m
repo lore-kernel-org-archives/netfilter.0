@@ -1,16 +1,11 @@
-From: "terry l. ridder" <artisticforge@gmail.com>
-Subject: Re: iptables leaking blocked ip addresses.
-Date: Mon, 20 Jun 2005 15:47:05 -0500
-Message-ID: <49bf7d70506201347749fdeed@mail.gmail.com>
-References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201159.46123.rob0@gmx.co.uk>
-	<49bf7d70506201020643ab165@mail.gmail.com>
-	<200506201329.19701.rob0@gmx.co.uk>
-Reply-To: "terry l. ridder" <artisticforge@gmail.com>
+From: Charles Jones <linuxchuck@gmail.com>
+Subject: [announce] Frankenwall released to the public
+Date: Mon, 20 Jun 2005 16:46:05 -0500
+Message-ID: <9630799505062014462e0f3fd7@mail.gmail.com>
+Reply-To: Charles Jones <linuxchuck@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200506201329.19701.rob0@gmx.co.uk>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,32 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-hello;
+Hello list,
 
-reply below.
+Long time lurker here, first time poster...
 
-On 6/20/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
-> On Monday 20 June 2005 12:20, terry l. ridder wrote:
+After much peer-pressure, I have just "GPL'd" and released a bash
+script that generates what I hope to be highly secure iptables
+rulesets for very "network conscious" system administrators called
+"Frankenwall".
 
-<snip>
+Frankenwall creates IPSEC-aware (using the mark target in the mangle
+chain) SNAT/Masq/Routing-capable iptables rules.  It also supports the
+creation of Screened Subnets, port-forwarding, 1:1 static NAT,
+standard routing, Ingress/Egress filtering, and MAC Whitelisting.=20
+There are probably other features, but I don't recall them off the top
+of my head.  See the README, and the in-line documentation in the
+script itself for more details.
 
->=20
-> In the meantime I bet a few external nmap's of your IP would
-> give you some unpleasant surprises.
->
+Please be warned:
+The focus of this script is security.  If you don't specifically
+permit a certain type of traffic, it will most likely not be allowed
+through.  This means that if you don't understand some of the
+intricacies of how the protocols on your network work, or even what
+protocols are used, this script is not for you.
 
-you lose the bet.
-since you did not have the courage to post the results of an nmap of my
-network, i will.
+With that being said, here is the link:
 
-please see http://uuoc.com/?id=3D953 for the results of an external nmap
-of my network, 204.238.34.0/24.
+http://sourceforge.net/projects/frankenwall
 
-<snip>
+I would greatly appreciate any and all constructive criticism (with
+suggestions please) on this script.  Questions about it or it's
+configuration are also welcome.
 
---=20
-terry l. ridder ><>
+Thanks for your time,
+
+Charles Jones
 
