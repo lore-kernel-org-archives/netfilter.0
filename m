@@ -1,13 +1,14 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: iptables leaking blocked ip addresses.
-Date: Mon, 20 Jun 2005 23:24:50 -0400
-Message-ID: <200506202324.50283.Alistair@nerdnet.ca>
-References: <49bf7d7050620083448c1dee9@mail.gmail.com>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: iptables PPTP tunneling
+Date: Tue, 21 Jun 2005 00:35:26 +0200
+Message-ID: <20050620223526.GC23109@obroa-skai.de.gnumonks.org>
+References: <20050620185220.GA9417@mwg.dp.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Y5rl02BVI9TCfPar"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <49bf7d7050620083448c1dee9@mail.gmail.com>
 Content-Disposition: inline
+In-Reply-To: <20050620185220.GA9417@mwg.dp.ua>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,89 +19,86 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-On June 20, 2005 11:34 am, terry l. ridder wrote:
-> hello;
->
-> i have recently noticed that iptables is leaking blocked ip addresses into
-> the local network.
->
-> one example of the leak is below:
->
-> 200.0.0.0/8 is dropped if the destination port is 25 (smtp).
-> the large majority of the packets are dropped but a random few are leaking
-> pass iptables.
-> 404 19712 DROP       tcp  --  eth2   *       200.0.0.0/8
-> 0.0.0.0/0           tcp dpt:25
-> 143   6992 DROP       tcp  --  eth2   *       201.0.0.0/8
-> 0.0.0.0/0           tcp dpt:25
->
-> at the 2nd lines of defenses the following is seen:
->
-> date and time is utc.
->
-> 2005-06-18 08:20:38.310864 IP 200.221.11.147.29937 >
-> 204.238.34.206.25: R 0:0(0) win 0
-> 2005-06-18 08:35:33.035504 IP 200.221.11.147.9618 > 204.238.34.206.25:
-> R 3184482893:3184482893(0) win 64240
-> 2005-06-18 09:12:47.772699 IP 200.221.11.147.37399 >
-> 204.238.34.206.25: R 0:0(0) win 0
-> 2005-06-18 10:15:29.731794 IP 200.221.11.147.37803 >
-> 204.238.34.206.25: R 3790354139:3790354139(0) win 64240
-> 2005-06-18 12:28:47.356603 IP 200.221.11.147.37540 >
-> 204.238.34.206.25: R 3124247582:3124247582(0) win 64240
-> 2005-06-18 14:42:14.852914 IP 200.221.11.147.59505 >
-> 204.238.34.206.25: R 2944314039:2944314039(0) win 64240
-> 2005-06-18 16:56:23.417184 IP 200.221.11.147.51204 >
-> 204.238.34.206.25: R 3050896753:3050896753(0) win 64240
-> 2005-06-18 19:09:00.235525 IP 200.221.11.147.14427 >
-> 204.238.34.206.25: R 2304489220:2304489220(0) win 64240
-> 2005-06-18 21:22:08.824748 IP 200.221.11.147.54471 >
-> 204.238.34.206.25: R 2920726621:2920726621(0) win 64240
-> 2005-06-18 23:35:36.046110 IP 200.221.11.147.27797 >
-> 204.238.34.206.25: R 0:0(0) win 0
-> 2005-06-19 01:49:10.050142 IP 200.221.11.147.29328 >
-> 204.238.34.206.25: R 0:0(0) win 0
-> 2005-06-19 04:01:59.082248 IP 200.221.11.147.23754 >
-> 204.238.34.206.25: R 0:0(0) win 0
-> 2005-06-19 06:15:32.815212 IP 200.221.11.147.46328 >
-> 204.238.34.206.25: R 1445346336:1445346336(0) win 64240
->
-> computers are all running debian sarge with kernel 2.6.11.10 and iptables
-> version iptables v1.2.11.
->
-> i also have a short web page concerning the iptables leaks at:
-> http://204.238.34.206/iptables-leaks.txt
+To: Wladimir Mutel <mwg@mwg.dp.ua>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
-	I hope that what I saw was the corrected configuration:
+--Y5rl02BVI9TCfPar
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	given that, I have to agree that your filtering method is slightly odd, 
-however I can follow that it will work -- somewhat.
-	In my diagrams, and understanding these packets are FORWARD packets, thus 
-your iptables flow is as follows:
-1) mangle PREROUTING
-2) nat PREROUTING (where you have a lot of drops done)
-3) mangle FORWARD
-4) filter FORWARD (keep this fella in mind.....)
-5) mangle POSTROUTING
-6) nat POSTROUTING (where you appear to be dropping a lot of outbound stuff)
+On Mon, Jun 20, 2005 at 09:52:20PM +0300, Wladimir Mutel wrote:
+> 	In our private LAN we have Windows server that initiates PPTP
+> 	connection with outside VPN server. tcp/1723 traffic is always
+> 	masqueraded very well, but when it comes to GRE, the ruleset
+> 	often loses outgoing GRE packet (does it translate it or not, I
+> 	don't know, but it does not create anything
+> 	related/established - when outside server tries to send GRE
+> 	packet first, our Linux router responds with ICMP: protocol 47
+> 	unreachable). But this behaviour sometimes changes to desirable
+> 	one: in some way, GRE connection is established and
+> 	translated/masqueraded very well for the rest of time until
+> 	Windows reconnect or Linux reboot/ruleset reload.
 
-	The tcpdump didn't have a lot of detail to my eye... since you filter 
-200.x.x.x 255.0.0.0. could these packets have an illegal netmask on them?
-	you have a couple of ACCEPT rules in FORWARD -- I'm not 100% certain but I 
-suspect that those ACCEPTS could shortcut NAT Postrouting -- but don't take 
-it as bible.
+yes, that is totally conforming to what your ruleset looks like.
 
-	Those are just a couple of thoughts on what might be happening in there.. I'm 
-not sure what changed on debian in that upgrade, but folks on their mailing 
-lists would have a better clue.  I'm a gentoo/slackware/*cough*RH*cough* 
-user .. and HP-UX and Solaris -- but thats work and no fun on an off night.
+if the first packet comes from your internal network, then a nat mapping
+is set up, and incoming response packets will  be NATed accordingly.
+
+if the first packet comes from your remote pptp server, then your
+ruleset treats it like an incoming connection to a not-opened port and
+therefore sends it up the local network stack.  Since no program has
+upened a socket for the gre protocol, the NAT machine responds with
+protocol unreachable.
+
+If you want to make it work, you have two options
+
+1) to configure a DNAT rule for GRE,
+DNAT'ing all incoming GRE packets from the server to your internal PPTP
+client.
+
+2) to configure your NAT box to silently DROP incoming GRE packets with
+state "NEW".  This way you basically ignore the first packet(s) from
+server->client and wait for the client->server packet to set up the
+connection.
 
 
-	Alistair.
+> 	As I know, you work on PPTP masquerading module for iptables and
+> 	kernel 2.6. Could you please inform when it will be possible to
+> 	use it with kernel 2.6.12, or how could we masquerade (single)
+> 	PPTP connection with current 2.6.12 iptables feature set and get
+> 	more predictable behaviour from it than that random one I just
+> 	described.
 
-	
+the scheduled date is no later than June 30.  But you don't need a
+conntrack/nat helper if you only run one pptp session, just configure
+your nat correctly and it will work.
+
+>=20
+> 	Thank you in advance for your reply.
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--Y5rl02BVI9TCfPar
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCt0SuXaXGVTD0i/8RAlmQAJ9/iKIs8q+aRKLkfG80IqJnj42sEgCfas10
+C5e0+V1bJfrHHGuduQIAMSg=
+=6D/2
+-----END PGP SIGNATURE-----
+
+--Y5rl02BVI9TCfPar--
 
