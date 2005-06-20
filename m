@@ -1,9 +1,9 @@
-From: Luca Abeni <lucabe72@email.it>
-Subject: How to use ip_queue without linking libipq?
-Date: Mon, 20 Jun 2005 12:29:53 +0200
-Message-ID: <1119263393.1985.10.camel@labeni.mm.mbigroup.it>
+From: Udo Brauch <udo.brauch@brauch-hilfe.de>
+Subject: Performance-Problems with DNAT
+Date: Mon, 20 Jun 2005 11:55:29 +0200
+Message-ID: <1119261328.30014.41.camel@obelix.brauch-hilfe.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,35 +15,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="macroman"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-
-I've been asked to develop a user-space application receiving packets
-from the ip_queue module. I know the simplest solution would be to use
-libipq, but unfortunately the application cannot be released under GPL
-(because it also uses some proprietary code).
-
-So, I am thinking about directly interacting with the ip_queue module by
-using netlink. However, I know how to open a netlink socket, but I've
-not been able to find any documentation about how to use a netlink
-socket to communicate with ipqueue...
-
-I think that looking at libipq code for understanding how to use ipqueue
-would be a license violation (I would end up with a code too similiar to
-libipq), right?
-
-Is some documentation about directly using ipqueue available somewhere?
-Can anyone help me?
-
-			Thanks,
-				Luca
-
-(P.S.: please cc me because I am not subscribed to the mailing list)
--- 
-_____________________________________________________________________________
-Copy this in your signature, if you think it is important:
-                               N O    W A R ! ! !
-
-
+SGksCgppIGhhdmUgaXB0YWJsZXMgcnVubmluZyBvbiBteSBzeXN0ZW0uIElmIGkgdHVybiBvbiBv
+bmUgb3IgbW9yZQpETkFULXJ1bGVzIGkgcnVuIGludG8gcGVyZm9ybWFuY2UgcHJvYmxlbXMuIAoK
+UGluZ3Mgd2l0aG91dCBETkFUOgo2NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAoMTk0LjI1
+LjEzNC4xNDYpOiBpY21wX3NlcT0xIHR0bD0yNDIKdGltZT0yOS4zIG1zCjY0IGJ5dGVzIGZyb20g
+d3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBfc2VxPTIgdHRsPTI0Mgp0aW1l
+PTI1LjAgbXMKNjQgYnl0ZXMgZnJvbSB3d3cudC1vbmxpbmUuZGUgKDE5NC4yNS4xMzQuMTQ2KTog
+aWNtcF9zZXE9MyB0dGw9MjQyCnRpbWU9MjkuMiBtcwo2NCBieXRlcyBmcm9tIHd3dy50LW9ubGlu
+ZS5kZSAoMTk0LjI1LjEzNC4xNDYpOiBpY21wX3NlcT00IHR0bD0yNDIKdGltZT0zMS40IG1zCjY0
+IGJ5dGVzIGZyb20gd3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBfc2VxPTUg
+dHRsPTI0Mgp0aW1lPTI1LjAgbXMKNjQgYnl0ZXMgZnJvbSB3d3cudC1vbmxpbmUuZGUgKDE5NC4y
+NS4xMzQuMTQ2KTogaWNtcF9zZXE9NiB0dGw9MjQyCnRpbWU9MjUuNSBtcwo2NCBieXRlcyBmcm9t
+IHd3dy50LW9ubGluZS5kZSAoMTk0LjI1LjEzNC4xNDYpOiBpY21wX3NlcT03IHR0bD0yNDIKdGlt
+ZT0yNy4yIG1zCjY0IGJ5dGVzIGZyb20gd3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6
+IGljbXBfc2VxPTggdHRsPTI0Mgp0aW1lPTI1LjYgbXMKNjQgYnl0ZXMgZnJvbSB3d3cudC1vbmxp
+bmUuZGUgKDE5NC4yNS4xMzQuMTQ2KTogaWNtcF9zZXE9OSB0dGw9MjQyCnRpbWU9MzMuNCBtcwo2
+NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAoMTk0LjI1LjEzNC4xNDYpOiBpY21wX3NlcT0x
+MCB0dGw9MjQyCnRpbWU9MjcuNSBtcwoKUGluZ3Mgd2l0aCBhY3RpdmF0ZWQgRE5BVC1ydWxlOgo2
+NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAoMTk0LjI1LjEzNC4xNDYpOiBpY21wX3NlcT0x
+IHR0bD0yNDIKdGltZT03ODkgbXMKNjQgYnl0ZXMgZnJvbSB3d3cudC1vbmxpbmUuZGUgKDE5NC4y
+NS4xMzQuMTQ2KTogaWNtcF9zZXE9MiB0dGw9MjQyCnRpbWU9NzExIG1zCjY0IGJ5dGVzIGZyb20g
+d3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBfc2VxPTMgdHRsPTI0Mgp0aW1l
+PTc0MyBtcwo2NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAoMTk0LjI1LjEzNC4xNDYpOiBp
+Y21wX3NlcT00IHR0bD0yNDIKdGltZT04NTAgbXMKNjQgYnl0ZXMgZnJvbSB3d3cudC1vbmxpbmUu
+ZGUgKDE5NC4yNS4xMzQuMTQ2KTogaWNtcF9zZXE9NSB0dGw9MjQyCnRpbWU9OTE2IG1zCjY0IGJ5
+dGVzIGZyb20gd3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBfc2VxPTYgdHRs
+PTI0Mgp0aW1lPTgwNyBtcwo2NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAoMTk0LjI1LjEz
+NC4xNDYpOiBpY21wX3NlcT03IHR0bD0yNDIKdGltZT03NjkgbXMKNjQgYnl0ZXMgZnJvbSB3d3cu
+dC1vbmxpbmUuZGUgKDE5NC4yNS4xMzQuMTQ2KTogaWNtcF9zZXE9OCB0dGw9MjQyCnRpbWU9Nzg2
+IG1zCjY0IGJ5dGVzIGZyb20gd3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBf
+c2VxPTkgdHRsPTI0Mgp0aW1lPTY1NSBtcwo2NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAo
+MTk0LjI1LjEzNC4xNDYpOiBpY21wX3NlcT0xMCB0dGw9MjQyCnRpbWU9Nzk1IG1zCjY0IGJ5dGVz
+IGZyb20gd3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBfc2VxPTExIHR0bD0y
+NDIKdGltZT03NjcgbXMKClRoZSBydWxlIGkgdXNlOgokSVBUIC10IG5hdCAtQSBQUkVST1VUSU5H
+IC1pICRFWFQgLXAgdGNwIC0tZHBvcnQgODAgLWogRE5BVAotLXRvLWRlc3RpbmF0aW9uIDE5Mi4x
+NjguMTU0LjI0CiRJUFQgLUEgRk9SV0FSRCAtaSAkRVhUIC1vICRETVogLXAgdGNwIC1kIDE5Mi4x
+NjguMTU0LjI0IC0tZHBvcnQgODAgLW0Kc3RhdGUgLS1zdGF0ZSBORVcgLWogQUNDRVBUCgoKCkRv
+IHlvdSBoYXZlIGFueSBpZGVhcz8KClVkbwotLSAKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCmJyYXVjaC1oaWxmZQpEaXBsLiBJbmcu
+IChGSCkgVWRvIEJyYXVjaApIYXNsYWNoZXIgU3RyYd9lIDM3Cjg5MDgxIFVsbQoKVGVsLjogICAr
+NDkgKDApNzMxIDYwMjgwLTE2OQpGYXguOiAgICs0OSAoMCk3MzEgNjAyODAtMjI5CkUtTWFpbDog
+dWRvLmJyYXVjaEBicmF1Y2gtaGlsZmUuZGUKV2ViOiAgICB3d3cuYnJhdWNoLWhpbGZlLmRlCgoK
