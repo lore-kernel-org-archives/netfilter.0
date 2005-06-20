@@ -1,11 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: how to delete a time-based rule ?
-Date: Mon, 20 Jun 2005 21:13:04 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0506202112450.20048@yvahk01.tjqt.qr>
-References: <6e24d31b050620120372ced983@mail.gmail.com>
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: iptables leaking blocked ip addresses.
+Date: Mon, 20 Jun 2005 21:30:11 +0200 (CEST)
+Message-ID: <Pine.LNX.4.62.0506202125290.28510@mercury.sdinet.de>
+References: <49bf7d7050620083448c1dee9@mail.gmail.com>
+	<200506201055.25861.rob0@gmx.co.uk>
+	<49bf7d7050620091748a270fc@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6e24d31b050620120372ced983@mail.gmail.com>
+In-Reply-To: <49bf7d7050620091748a270fc@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,27 +18,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Tenivella Enrico <texilee@gmail.com>
+To: "terry l. ridder" <artisticforge@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
->Hi all.
+On Mon, 20 Jun 2005, terry l. ridder wrote:
+
+>>> one example of the leak is below:
+>>>
+>>> 200.0.0.0/8 is dropped if the destination port is 25 (smtp).
+>>
+>> iptables-save(8) output, please. What you posted here doesn't tell us
+>> much.
+>>
 >
->My question.. 
+> while i have reservations concerning posting the output of iptables-save
+> i have placed it on my web server:
 >
->through a web interface a client press a button that add an iptables
->prerouting entry.
->Can I set a rule to delete the previous rule when he is idle for a few
->time (10-15 min) or not more connected?
+> http://204.238.34.206/iptables-save-20jun2005.txt
 
--m expire
-(it's in development)
+You are filtering in the nat table.
+The nat table gets only the first packet from each connection (the one 
+that would match -m state --state NEW). A retransmit from the blocked IP 
+will not be a new connection, so it will pass through your rules.
 
+And on your comment to another mail that you are not using connection 
+tracking:
+This is wrong. If you have the nat table, you must have ip_conntrack 
+loaded - and if its loaded it tracks your connections, even if you
+dont use -m state at all. There is no iptables nat without connection 
+tracking.
 
-Cheers,
-Jan Engelhardt                                                               
---                                                                            
-| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
-| Am Fassberg, 37077 Goettingen, www.gwdg.de
+If you must filter in PREROUTING, do it at least in PREROUTING of the
+filter table.
+
+c'ya
+sven
+
+-- 
+
+The Internet treats censorship as a routing problem, and routes around it.
+(John Gilmore on http://www.cygnus.com/~gnu/)
 
