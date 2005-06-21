@@ -1,18 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: iptables leaking blocked ip addresses.
-Date: Tue, 21 Jun 2005 15:39:17 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0506211516490.3687@blackhole.kfki.hu>
+Date: Tue, 21 Jun 2005 16:31:34 +0200
+Message-ID: <1119364294.4923.17.camel@anduril.intranet.cartel-securite.net>
 References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201159.46123.rob0@gmx.co.uk>
-	<49bf7d70506201020643ab165@mail.gmail.com>
-	<200506201329.19701.rob0@gmx.co.uk>
-	<49bf7d7050620123646910d40@mail.gmail.com>
-	<Pine.LNX.4.61.0506211455340.9102@yvahk01.tjqt.qr>
-	<Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
-	<Pine.LNX.4.61.0506211510210.9102@yvahk01.tjqt.qr>
+	<200506201055.25861.rob0@gmx.co.uk>  <42B7DF8D.3060304@linuxmail.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0506211510210.9102@yvahk01.tjqt.qr>
+In-Reply-To: <42B7DF8D.3060304@linuxmail.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,39 +18,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Feizhou <feizhou@linuxmail.org>
+Cc: netfilter@lists.netfilter.org, /dev/rob0 <rob0@gmx.co.uk>
 
-On Tue, 21 Jun 2005, Jan Engelhardt wrote:
+Le mardi 21 juin 2005 =E0 17:36 +0800, Feizhou a =E9crit :
+> netfilter's conntrack module sucks in performance and at the same time=20
+> is not fully stateful.
 
->
-> >The overhead of TARPIT created in conntrack can completely be avoided by
-> >using NOTRACK and TARPIT targets together.
->
-> Probably, but it does not belong to the topic ("leaking blocked ip addr.s").
+The last serious paper I could read about performances comparison was
+published on pf website long ago and desmonstrated a clear advantage for
+Netfilter against pf or ipf.
 
-Yes, diverted from the original topic - I wrote it for the sake of
-completeness.
+	http://www.benzedrine.cx/pf-paper.html
 
-> On the NOTRACK, I've got a question, or maybe just a weird problem:
-> NOTRACK is only valid in the mangle table, and TARPIT is one of the last rules
-> in my filter:INPUT set.
->
-> So it looks to me like I would need to copy all filter:INPUT rules that -j
-> ACCEPT into mangle:INPUT - because a plain -j NOTRACK would disable tracking
-> everything, and I can't just do -p tcp --dport 25 -j NOTRACK, because it's a
-> lot more than just dport 25.
+However, at this time, Netfilter was indeed not fully stateful. But it's
+no longer the case as Netfilter now implements TCP window tracking in
+stock kernels.
 
-NOTRACK is valid in the raw table alone. If you want a generic "NOTRACK
-and TARPIT everything which is not allowed", then that I think won't go.
+If you know good comparisons published, I wuold be happy to read them.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+> If I wanted a stateful firewall, I would go for a OpenBSD solution.
+
+Question of feeling essentially now, and other functionnalities. For
+instance, if I need hot failover, I will go to OpenBSD.
+
+
+There may be other problems I'm not aware of, so please back your
+affirmations if it's the case. Thx.
+
+
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
