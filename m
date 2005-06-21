@@ -1,16 +1,12 @@
-From: Joakim Axelsson <gozem@gozem.se>
-Subject: Re: iptables leaking blocked ip addresses.
-Date: Tue, 21 Jun 2005 16:57:25 +0200
-Message-ID: <20050621145725.GA6605@aaricia.csbnet.se>
-References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201329.19701.rob0@gmx.co.uk>
-	<49bf7d70506201347749fdeed@mail.gmail.com>
-	<200506210717.47018.rob0@gmx.co.uk>
-	<49bf7d705062107362321dee6@mail.gmail.com>
+From: "Pablo Salinas" <psalinas@hutchison.com.py>
+Subject: Problems compiling iptables and installing PPTP connection tracking
+	on kernel linux-2.6.9
+Date: Tue, 21 Jun 2005 11:52:07 -0400
+Message-ID: <3690BDF4E931EC4ABEDCFFB49EA903CED3A3B1@artemis.copesa>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <49bf7d705062107362321dee6@mail.gmail.com>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,123 +17,177 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "terry l. ridder" <artisticforge@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-2005-06-21 09:36:34-0500, "terry l. ridder" <artisticforge@gmail.com> ->
-> hello;
-> 
-> reply below.
-> 
-> On 6/21/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
-> > On Monday 20 June 2005 15:47, terry l. ridder wrote:
-> > > > In the meantime I bet a few external nmap's of your IP would
-> > > > give you some unpleasant surprises.
-> 
-> you made the above comment did you not?
-> you implied that my network was not secured.
-> 
-> > >
-> > > you lose the bet.
-> > > since you did not have the courage to post the results of an nmap of
-> > > my network, i will.
-> > >
-> > > please see http://uuoc.com/?id=953 for the results of an external
-> > > nmap of my network, 204.238.34.0/24.
-> > 
-> > Lack of courage, lack of interest, lack of will to be your unpaid
-> > security analyst, whatever. It's remarkable that you found that nmap
-> > acceptable, neither unpleasant nor surprising.
-> >
-> 
-> i see, yet you make unfounded statements which i quote below:
-> 
-> > > > In the meantime I bet a few external nmap's of your IP would
-> > > > give you some unpleasant surprises.
-> 
-> > 
-> > You certainly have won your arguments! People point to specific
-> > documented examples of why you're wrong, and you insist otherwise.
-> > Indeed I am convinced: writing to you is a waste of my time. Your
-> > arguments have been very persuasive in that regard.
-> > 
-> 
-> you should really read the Iptables Tutorial 1.1.19 written by
-> Oskar Andreasson located at
-> http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-> 
-> since you may not read it, i will quote a few  parts.
-> 
-> <begin quote>
-> 6.2. Tables
-> 
-> The nat table is used mainly for Network Address Translation. "NAT"ed
-> packets get
-> their IP addresses altered, according to our rules. Packets in a stream only 
-> traverse this table once. We assume that the first packet of a stream
-> is allowed.
-> The rest of the packets in the same stream are automatically "NAT"ed or 
-> Masqueraded etc, and will be subject to the same actions as the first packet. 
-> These will, in other words, not go through this table again, but will
-> nevertheless be
-> treated like the first packet in the stream.
-> <end quote>
-> 
-> did you catch that last sentence? since the the first packet in the stream is
-> dropped the rest of the packets in the same stream are also dropped.
-> 
-> <begin quote>
-> This is the main reason why you should not do any filtering in this
-> table, which we
-> will discuss at greater length further on. The PREROUTING chain is
-> used to alter
-> packets as soon as they get in to the firewall. The OUTPUT chain is used for 
-> altering locally generated packets (i.e., on the firewall) before they
-> get to the
-> routing decision. Finally we have the POSTROUTING chain which is used to alter 
-> packets just as they are about to leave the firewall.
-> <end quote>
-> 
-> 7.2.10. PREROUTING chain of the nat table
-> 
-> The PREROUTING chain should not be used for any filtering since, among
-> other things, this chain is only traversed by the first packet in a
-> stream. The PREROUTING chain should be used for network address
-> translation only, unless you really know what you are doing.
-> 
-> 
-> -- 
-> terry l. ridder ><>
-
-I'll try to make this a gently as possible. Trying to do firewalling in' -t
-nat' will _NOT_ work. Its not intended at all for firewalling. ONLY for
-NATing. Thats why is it named '-t nat'.
-
-Please understand that any documentation can be wrong or missinterpreted.
-Its the actually code that will do its work despite what any docmentation
-says. We as experts on iptables (netfilter) code are telling you that you
-can't use iptables in the way you are trying to to build a good working
-firewall.
-
-Even if your solution has worked before or not, this is the case now and it
-won't work the way you have setup your iptables. Even tho i think that you
-had the very same problem with your firewall before but not noticed it.
-
-1. Firewalling is done in 'iptables -t filter' (or just iptables)
-2. Address changes (NATing) are done in 'iptables -t nat'. Only some packets
-will travese this "domain".
-3. Any changes to the packets are done in 'iptables -t mangle'
-4. Any operations needed to be done before conntrack gets the packet is done
-in 'iptables -t raw'.
-
-Please understand, your firewall config using -n nat as a firewall is
-faulty. Please do the firewalling part in '-t filter' and only the NATing
-part i '-t nat'.
-
-Conclusion: Iptables does not leak packets when used properly.
-
--- 
-/Joakim Axelsson A.K.A Gozem@EFnet
+SGkgdGhlcmUsDQoJSSdtIGNvbXBsZXRseSBuZXcgdG8gaXB0YWJsZXMgYW5kIHBhdGNoLW8t
+bWF0aWMtbmcuIE5ldmVydGhlbGVzcywgSSBoYXZlIGV4cGVyaWVuY2UgY29tcGlsaW5nIGFu
+ZCBpbnN0YWxsaW5nIHRoZSBsaW51eCBrZXJuZWwuIEkgd2FudCB0byBpbnN0YWxsIHRoZSBw
+YXRjaC1vLW1hdGljLW5nLTIwMDUwNjEzIGluIG9yZGVyIHRvIGFjdGl2YXRlIHRoZSBQUFRQ
+IGNvbm5lY3Rpb24gdHJhY2tpbmcgb24gbXkgbGludXggZmlyZXdhbGwuIEkgbmVlZCBpdCBp
+biBvcmRlciB0byBiZSBhYmxlIHRvIGhhdmUgbXVsdGlwbGUgVlBOIGNsaWVudHMgdG8gb25l
+IE5hdGVkIFZQTiBzZXJ2ZXIuDQoNClNvLCBJJ3ZlIGZvbGxvd2VkIHRoZSBwYXRjaC1vLW1h
+dGljLW5nIGluc3RhbGwgaW5zdHJ1Y3Rpb25zLiBGaXJzdCwgSSd2ZSBwYXRjaGVkIHRoZSBs
+aW51eCBrZXJuZWwgd2l0aCBwYXRjaC1vLW1hdGljLW5nLTIwMDUwNjEzLiBUaGlzIHdvcmtl
+ZCBmaW5lLiBBbHRob3VnaCwgd2hlbiBwcm9tcHRlZCBpZiBJIHdhbnRlZCB0byBpbnN0YWxs
+IHRoZSBwcHRwLWNvbm50cmFjay1uYXQgb3B0aW9uLCBJIGFuc3dlcmVkIHllcywgb24gdGhl
+IGtlcm5lbCAuY29uZmlnIGZpbGUsIHRoZSBvcHRpb24gQ09ORklHX0lQX05GX1BQVFAgd2Fz
+bid0IGFkZGVkLiBUaGUgb25seSBvcHRpb24gdGhhdCdzIHNpbWlsYXIgdGhhdCBJJ3ZlIGZv
+dW5kIHdhcyB0aGUgQ09ORklHX0lQX05GX0NPTk5UUkFDSyBvcHRpb24sIHRoZSBvbmUgaXMg
+c2V0IHRvICJtIi4NCg0KQW55d2F5LCBhZnRlciBwYXRjaGluZyBteSBrZXJuZWwgd2l0aCB0
+aGUgcGF0Y2gtby1tYXRpYyBjb2RlLCBJJ3ZlIGZvbGxvd2VkIHRoZSBzZWNvbmQgc3RlcCBw
+cm92aWRlZCBieSBwYXRoLW8tbWF0aWMgUkVBRE1FIGZpbGUuIFRoYXQgaXMgdG8gcmVjb21w
+aWxlIHRoZSBpcC10YWJsZXMgY29kZS4gSSd2ZSB0cmllZCBib3RoIHdpdGggaXB0YWJsZXMt
+MS4zLjEgYW5kIGlwdGFibGVzLTEuMi4xMSwgYW5kIG9uIGJvdGggSSBnZXQgdGhlIHNhbWUg
+ZXJyb3IgbWVzc2FnZToNCg0KW3Jvb3RAcG9ydGhhYmxlLXN3aXRjaCBpcHRhYmxlcy0xLjIu
+MTFdIyBtYWtlIEtFUk5FTF9ESVI9L3Vzci9zcmMvbGludXgNCkV4dGVuc2lvbnMgZm91bmQ6
+IElQdjQ6YWRkcnR5cGUgSVB2NDpjb21tZW50IElQdjQ6cmVjZW50IElQdjY6YWggSVB2Njpl
+c3AgSVB2NjpmcmFnIElQdjY6aXB2NmhlYWRlciBJUHY2OmhiaCBJUHY2OmRzdCBJUHY2OnJ0
+DQpjYyAtTzIgLVdhbGwgLVd1bnVzZWQgLUkvdXNyL3NyYy9saW51eC9pbmNsdWRlIC1JaW5j
+bHVkZS8gLURJUFRBQkxFU19WRVJTSU9OPVwiMS4yLjExXCIgIC1mUElDIC1vIGV4dGVuc2lv
+bnMvbGliaXB0X2FoX3NoLm8gLWMgZXh0ZW5zaW9ucy9saWJpcHRfYWguYw0KbGQgLXNoYXJl
+ZCAgLW8gZXh0ZW5zaW9ucy9saWJpcHRfYWguc28gZXh0ZW5zaW9ucy9saWJpcHRfYWhfc2gu
+bw0KY2MgLU8yIC1XYWxsIC1XdW51c2VkIC1JL3Vzci9zcmMvbGludXgvaW5jbHVkZSAtSWlu
+Y2x1ZGUvIC1ESVBUQUJMRVNfVkVSU0lPTj1cIjEuMi4xMVwiICAtZlBJQyAtbyBleHRlbnNp
+b25zL2xpYmlwdF9jb25ubGltaXRfc2gubyAtYyBleHRlbnNpb25zL2xpYmlwdF9jb25ubGlt
+aXQuYw0KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvYXNt
+L2J5dGVvcmRlci5oOjU3LA0KICAgICAgICAgICAgICAgICBmcm9tIC91c3Ivc3JjL2xpbnV4
+L2luY2x1ZGUvbGludXgvbmV0ZmlsdGVyX2lwdjQvaXBfY29ubnRyYWNrX3Byb3RvX2dyZS5o
+OjMsDQogICAgICAgICAgICAgICAgIGZyb20gL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51
+eC9uZXRmaWx0ZXJfaXB2NC9pcF9jb25udHJhY2suaDo1NCwNCiAgICAgICAgICAgICAgICAg
+ZnJvbSBleHRlbnNpb25zL2xpYmlwdF9jb25ubGltaXQuYzo5Og0KL3Vzci9zcmMvbGludXgv
+aW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOjQzOiBlcnJvcjogc3lu
+dGF4IGVycm9yIGJlZm9yZSAiX19jcHVfdG9fbGU2NHAiDQovdXNyL3NyYy9saW51eC9pbmNs
+dWRlL2xpbnV4L2J5dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6NDQ6IHdhcm5pbmc6IHJldHVy
+biB0eXBlIGRlZmF1bHRzIHRvIGBpbnQnDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4
+L2J5dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6IEluIGZ1bmN0aW9uIGBfX2NwdV90b19sZTY0
+cCc6DQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9saXR0bGVfZW5k
+aWFuLmg6NDU6IGVycm9yOiBgX19sZTY0JyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhp
+cyBmdW5jdGlvbikNCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xp
+dHRsZV9lbmRpYW4uaDo0NTogZXJyb3I6IChFYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBp
+cyByZXBvcnRlZCBvbmx5IG9uY2UNCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0
+ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDo0NTogZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0
+IGFwcGVhcnMgaW4uKQ0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIv
+bGl0dGxlX2VuZGlhbi5oOiBBdCB0b3AgbGV2ZWw6DQovdXNyL3NyYy9saW51eC9pbmNsdWRl
+L2xpbnV4L2J5dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6NDc6IHdhcm5pbmc6IHR5cGUgZGVm
+YXVsdHMgdG8gYGludCcgaW4gZGVjbGFyYXRpb24gb2YgYF9fbGU2NCcNCi91c3Ivc3JjL2xp
+bnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDo0NzogZXJyb3I6
+IHN5bnRheCBlcnJvciBiZWZvcmUgJyonIHRva2VuDQovdXNyL3NyYy9saW51eC9pbmNsdWRl
+L2xpbnV4L2J5dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6IEluIGZ1bmN0aW9uIGBfX2xlNjRf
+dG9fY3B1cCc6DQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9saXR0
+bGVfZW5kaWFuLmg6NDk6IGVycm9yOiBgcCcgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRo
+aXMgZnVuY3Rpb24pDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9s
+aXR0bGVfZW5kaWFuLmg6IEF0IHRvcCBsZXZlbDoNCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUv
+bGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDo1MTogZXJyb3I6IHN5bnRheCBlcnJv
+ciBiZWZvcmUgIl9fY3B1X3RvX2xlMzJwIg0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51
+eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOjUyOiB3YXJuaW5nOiByZXR1cm4gdHlwZSBk
+ZWZhdWx0cyB0byBgaW50Jw0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51eC9ieXRlb3Jk
+ZXIvbGl0dGxlX2VuZGlhbi5oOiBJbiBmdW5jdGlvbiBgX19jcHVfdG9fbGUzMnAnOg0KL3Vz
+ci9zcmMvbGludXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOjUz
+OiBlcnJvcjogYF9fbGUzMicgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rp
+b24pDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9saXR0bGVfZW5k
+aWFuLmg6IEF0IHRvcCBsZXZlbDoNCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0
+ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDo1NTogd2FybmluZzogdHlwZSBkZWZhdWx0cyB0byBg
+aW50JyBpbiBkZWNsYXJhdGlvbiBvZiBgX19sZTMyJw0KL3Vzci9zcmMvbGludXgvaW5jbHVk
+ZS9saW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOjU1OiBlcnJvcjogc3ludGF4IGVy
+cm9yIGJlZm9yZSAnKicgdG9rZW4NCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0
+ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDogSW4gZnVuY3Rpb24gYF9fbGUzMl90b19jcHVwJzoN
+Ci91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4u
+aDo1NzogZXJyb3I6IGBwJyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlv
+bikNCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRp
+YW4uaDogQXQgdG9wIGxldmVsOg0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51eC9ieXRl
+b3JkZXIvbGl0dGxlX2VuZGlhbi5oOjU5OiBlcnJvcjogc3ludGF4IGVycm9yIGJlZm9yZSAi
+X19jcHVfdG9fbGUxNnAiDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRl
+ci9saXR0bGVfZW5kaWFuLmg6NjA6IHdhcm5pbmc6IHJldHVybiB0eXBlIGRlZmF1bHRzIHRv
+IGBpbnQnDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9saXR0bGVf
+ZW5kaWFuLmg6IEluIGZ1bmN0aW9uIGBfX2NwdV90b19sZTE2cCc6DQovdXNyL3NyYy9saW51
+eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6NjE6IGVycm9yOiBg
+X19sZTE2JyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikNCi91c3Iv
+c3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDogQXQg
+dG9wIGxldmVsOg0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0
+dGxlX2VuZGlhbi5oOjYzOiB3YXJuaW5nOiB0eXBlIGRlZmF1bHRzIHRvIGBpbnQnIGluIGRl
+Y2xhcmF0aW9uIG9mIGBfX2xlMTYnDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5
+dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6NjM6IGVycm9yOiBzeW50YXggZXJyb3IgYmVmb3Jl
+ICcqJyB0b2tlbg0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0
+dGxlX2VuZGlhbi5oOiBJbiBmdW5jdGlvbiBgX19sZTE2X3RvX2NwdXAnOg0KL3Vzci9zcmMv
+bGludXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOjY1OiBlcnJv
+cjogYHAnIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQ0KL3Vzci9z
+cmMvbGludXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOiBBdCB0
+b3AgbGV2ZWw6DQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9saXR0
+bGVfZW5kaWFuLmg6Njc6IGVycm9yOiBzeW50YXggZXJyb3IgYmVmb3JlICJfX2NwdV90b19i
+ZTY0cCINCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9l
+bmRpYW4uaDo2ODogd2FybmluZzogcmV0dXJuIHR5cGUgZGVmYXVsdHMgdG8gYGludCcNCi91
+c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDog
+SW4gZnVuY3Rpb24gYF9fY3B1X3RvX2JlNjRwJzoNCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUv
+bGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDo2OTogZXJyb3I6IGBfX2JlNjQnIHVu
+ZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQ0KL3Vzci9zcmMvbGludXgv
+aW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOjY5OiBlcnJvcjogc3lu
+dGF4IGVycm9yIGJlZm9yZSAiX19zd2FiNjRwIg0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9s
+aW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOiBBdCB0b3AgbGV2ZWw6DQovdXNyL3Ny
+Yy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6NzE6IHdh
+cm5pbmc6IHR5cGUgZGVmYXVsdHMgdG8gYGludCcgaW4gZGVjbGFyYXRpb24gb2YgYF9fYmU2
+NCcNCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRp
+YW4uaDo3MTogZXJyb3I6IHN5bnRheCBlcnJvciBiZWZvcmUgJyonIHRva2VuDQovdXNyL3Ny
+Yy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6IEluIGZ1
+bmN0aW9uIGBfX2JlNjRfdG9fY3B1cCc6DQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4
+L2J5dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6NzM6IGVycm9yOiBgcCcgdW5kZWNsYXJlZCAo
+Zmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xp
+bnV4L2J5dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6IEF0IHRvcCBsZXZlbDoNCi91c3Ivc3Jj
+L2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDo3NTogZXJy
+b3I6IHN5bnRheCBlcnJvciBiZWZvcmUgIl9fY3B1X3RvX2JlMzJwIg0KL3Vzci9zcmMvbGlu
+dXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOjc2OiB3YXJuaW5n
+OiByZXR1cm4gdHlwZSBkZWZhdWx0cyB0byBgaW50Jw0KL3Vzci9zcmMvbGludXgvaW5jbHVk
+ZS9saW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOiBJbiBmdW5jdGlvbiBgX19jcHVf
+dG9fYmUzMnAnOg0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0
+dGxlX2VuZGlhbi5oOjc3OiBlcnJvcjogYF9fYmUzMicgdW5kZWNsYXJlZCAoZmlyc3QgdXNl
+IGluIHRoaXMgZnVuY3Rpb24pDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVv
+cmRlci9saXR0bGVfZW5kaWFuLmg6Nzc6IGVycm9yOiBzeW50YXggZXJyb3IgYmVmb3JlICJf
+X3N3YWIzMnAiDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9saXR0
+bGVfZW5kaWFuLmg6IEF0IHRvcCBsZXZlbDoNCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGlu
+dXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDo3OTogd2FybmluZzogdHlwZSBkZWZhdWx0
+cyB0byBgaW50JyBpbiBkZWNsYXJhdGlvbiBvZiBgX19iZTMyJw0KL3Vzci9zcmMvbGludXgv
+aW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOjc5OiBlcnJvcjogc3lu
+dGF4IGVycm9yIGJlZm9yZSAnKicgdG9rZW4NCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGlu
+dXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDogSW4gZnVuY3Rpb24gYF9fYmUzMl90b19j
+cHVwJzoNCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9l
+bmRpYW4uaDo4MTogZXJyb3I6IGBwJyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBm
+dW5jdGlvbikNCi91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRs
+ZV9lbmRpYW4uaDogQXQgdG9wIGxldmVsOg0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51
+eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOjgzOiBlcnJvcjogc3ludGF4IGVycm9yIGJl
+Zm9yZSAiX19jcHVfdG9fYmUxNnAiDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5
+dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6ODQ6IHdhcm5pbmc6IHJldHVybiB0eXBlIGRlZmF1
+bHRzIHRvIGBpbnQnDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9s
+aXR0bGVfZW5kaWFuLmg6IEluIGZ1bmN0aW9uIGBfX2NwdV90b19iZTE2cCc6DQovdXNyL3Ny
+Yy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVvcmRlci9saXR0bGVfZW5kaWFuLmg6ODU6IGVy
+cm9yOiBgX19iZTE2JyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikN
+Ci91c3Ivc3JjL2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4u
+aDo4NTogZXJyb3I6IHN5bnRheCBlcnJvciBiZWZvcmUgIl9fc3dhYjE2cCINCi91c3Ivc3Jj
+L2xpbnV4L2luY2x1ZGUvbGludXgvYnl0ZW9yZGVyL2xpdHRsZV9lbmRpYW4uaDogQXQgdG9w
+IGxldmVsOg0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0dGxl
+X2VuZGlhbi5oOjg3OiB3YXJuaW5nOiB0eXBlIGRlZmF1bHRzIHRvIGBpbnQnIGluIGRlY2xh
+cmF0aW9uIG9mIGBfX2JlMTYnDQovdXNyL3NyYy9saW51eC9pbmNsdWRlL2xpbnV4L2J5dGVv
+cmRlci9saXR0bGVfZW5kaWFuLmg6ODc6IGVycm9yOiBzeW50YXggZXJyb3IgYmVmb3JlICcq
+JyB0b2tlbg0KL3Vzci9zcmMvbGludXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0dGxl
+X2VuZGlhbi5oOiBJbiBmdW5jdGlvbiBgX19iZTE2X3RvX2NwdXAnOg0KL3Vzci9zcmMvbGlu
+dXgvaW5jbHVkZS9saW51eC9ieXRlb3JkZXIvbGl0dGxlX2VuZGlhbi5oOjg5OiBlcnJvcjog
+YHAnIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQ0KbWFrZTogKioq
+IFtleHRlbnNpb25zL2xpYmlwdF9jb25ubGltaXRfc2gub10gRXJyb3IgMQ0KDQoNClBsZWFz
+ZSwgc29tZWJvZHkgZ2l2ZSBtZSBhIGhpbnQgb24gd2hhdCBJJ20gZG9pbmcgd3Jvbmcgb3Ig
+aWYgdGhlcmUncyBhIG1vcmUgc2ltcGxlIHdheSBvZiBoYXZpbmcgdGhlIFBQVFAgY29ubmVj
+dGlvbiB0cmFja2luZyBvbiBteSBmaXJld2FsbC4NCg0KVGhhbmtzIGluIGFkdmFuY2UuDQoN
+CnJlZ2FyZHMsDQoJUGFibG8gU2FsaW5hcw0KDQoNCkFkdmVydGVuY2lhOg0KRXN0ZSBtZW5z
+YWplIGNvbnRpZW5lIGxhIG9waW5p824gcGVyc29uYWwgZGVsIHJlbWl0ZW50ZSB5IG5vIGlt
+cGxpY2EgYXN1bWlyDQpvYmxpZ2FjaW9uIGFsZ3VuYSBlbiBub21icmUgZGUgSHV0Y2hpc29u
+IFRlbGVjb20gUGFyYWd1YXkgUy5BLiBMb3MNCmFjY2lvbmlzdGFzLCBkaXJlY3RvcmVzIHkg
+Z2VyZW50ZXMgZGUgSHV0Y2hpc29uIFRlbGVjb20gUGFyYWd1YXkgUy5BLiBubw0KYXN1bWVu
+IHJlc3BvbnNhYmlsaWRhZCBhbGd1bmEgY29uIHJlbGFjafNuIGFsIGNvbnRlbmlkbyBkZWwg
+cHJlc2VudGUNCm1lbnNhamUuDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KRGlzY2xhaW1lcjoNClRo
+aXMgbWVzc2FnZSByZXByZXNlbnRzIHRoZSBwZXJzb25hbCB2aWV3cyBhbmQgb3BpbmlvbiBv
+ZiB0aGUgaW5kaXZpZHVhbA0Kc2VuZGVyIGFuZCB1bmRlciBubyBjaXJjdW1zdGFuY2VzIHJl
+cHJlc2VudHMgdGhvc2Ugb2YgSHV0Y2hpc29uIFRlbGVjb20NClBhcmFndWF5IFMuQS4gVGhl
+IHNoYXJlaG9sZGVycywgZGlyZWN0b3JzIGFuZCBtYW5hZ2VtZW50IG9mIEh1dGNoaXNvbg0K
+VGVsZWNvbSBQYXJhZ3VheSBTLkEuIGFjY2VwdCBubyByZXNwb25zaWJpbGl0eSBhbmQgYWNj
+b3JkaW5nbHkgc2hhbGwgaGF2ZSBubw0KbGlhYmlsaXR5IHRvIGFueSBwYXJ0eSB3aGF0c29l
+dmVyIHdpdGggcmVzcGVjdCB0byB0aGUgY29udGVudHMgb2YgdGhpcw0KbWVzc2FnZS4=
 
