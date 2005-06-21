@@ -1,15 +1,14 @@
-From: Jean Wolter <jw5@os.inf.tu-dresden.de>
-Subject: Re: Embedded system and shared libs
-Date: Mon, 20 Jun 2005 15:05:11 +0200
-Message-ID: <86is09rxfc.fsf@erwin.inf.tu-dresden.de>
-References: <ZIVCORREOybvQoG9Bvo00001d0e@correo.ziv.es>
-	<1119009815.3521.33.camel@localhost.localdomain>
+From: Wladimir Mutel <mwg@mwg.dp.ua>
+Subject: Re: iptables PPTP tunneling
+Date: Tue, 21 Jun 2005 10:49:04 +0300
+Message-ID: <20050621074904.GB5383@mwg.dp.ua>
+References: <20050620185220.GA9417@mwg.dp.ua>
+	<20050620223526.GC23109@obroa-skai.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1119009815.3521.33.camel@localhost.localdomain>
-	(ma.alvarez@usyscom.com's
-	message of "Fri, 17 Jun 2005 14:03:35 +0200")
+Content-Disposition: inline
+In-Reply-To: <20050620223526.GC23109@obroa-skai.de.gnumonks.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,24 +19,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?q?Miguel_=C1ngel_=C1lvarez_Cabanes?= <ma.alvarez@usyscom.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Harald Welte <laforge@netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-Miguel =C1ngel =C1lvarez Cabanes <ma.alvarez@usyscom.com> writes:
+	Dear Mr. Welte,
 
-> - If I try to build iptables without NO_SHARED_LIBS and copy the
-> libipt*.so to /lib/iptables on my system, I can test the tables
-> (iptables -t nat -L), but I cannot do MASQUERADE or so... I obtain:
->
-> "iptables v1.3.0: Couldn't load target `MASQUERADE':File not found
->
-> Try `iptables -h' or 'iptables --help' for more information."
+	Thank you a lot for your explainations. I found that I was wrong
+	thinking that client sends GRE packets first. I just looked at
+	tcpdump timestamps more closely. So your advices are very useful
+	for us.
 
-The default location for the iptables shared objects is
-/usr/local/lib/iptables, did you change this? have you tried to use
-strace to find out where iptables looks for the shared object files?
+> If you want to make it work, you have two options
+> 
+> 1) to configure a DNAT rule for GRE,
+> DNAT'ing all incoming GRE packets from the server to your internal PPTP
+> client.
 
-regards,
-Jean
+	You mean something like this :
+
+iptables -t nat -A PREROUTING -d tag -p gre -j DNAT --to 192.168.58.2
+
+	('tag' is my external IP configured on eth0, under which all is
+	masqueraded). I added this rule and it really helped!
+
+> 2) to configure your NAT box to silently DROP incoming GRE packets with
+> state "NEW".  This way you basically ignore the first packet(s) from
+> server->client and wait for the client->server packet to set up the
+> connection.
+
+	Something like this ?
+
+iptables -t nat -A PREROUTING -p gre -m state --state new -j DROP
+
+	May be I should test this rule later, as the first one works
+	well now.
 
