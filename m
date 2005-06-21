@@ -1,11 +1,10 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
+From: Damon Gray <dgray@internap.com>
 Subject: Re: Tunneling other protocols over TCP port 80
-Date: Tue, 21 Jun 2005 15:16:15 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0506211515080.18742@darkstar.sysinfo.com>
+Date: Tue, 21 Jun 2005 15:20:59 -0400 (EDT)
+Message-ID: <Pine.LNX.4.62.0506211518560.2505@dgray-test.acs.internap.com>
 References: <006c01c57694$39a8d350$5100a8c0@14bis>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="1028002384-156250504-1119381375=:18742"
+Content-Type: MULTIPART/MIXED; BOUNDARY="-79754685-871095206-1119381659=:2505"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <006c01c57694$39a8d350$5100a8c0@14bis>
 List-Id: <netfilter.vger.kernel.org>
@@ -24,46 +23,41 @@ Cc: netfilter@lists.netfilter.org
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
---1028002384-156250504-1119381375=:18742
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by darkstar.sysinfo.com id
-	j5LJGKtB018877
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+---79754685-871095206-1119381659=:2505
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
 
-I might be reading this incorrectly, but the way I do read it you are=20
-thinking of breaking a security policy to connect to your home network=20
-from a work location?
+Bad security policies aside.... :)
 
-Thanks,
+You could always run the telnet server on port 80. Or run netcat (aka nc)=
+=20
+on the box on port 80 redirecting to port 23.
 
-Ron DuFresne
+-Damon-
 
-On Tue, 21 Jun 2005, Bruno Negr=E3o wrote:
+On Tue, 21 Jun 2005, [iso-8859-1] Bruno Negr=E3o wrote:
 
 > Hi guys,
 >
-> I need to create a VPN to my linux server from a remote workstation(win=
-dows)=20
-> inside a private network of another company. The LAN where the workstat=
-ion is=20
-> located is protected by a firewall. This firewall only lets pass throug=
-h=20
+> I need to create a VPN to my linux server from a remote workstation(windo=
+ws)=20
+> inside a private network of another company. The LAN where the workstatio=
+n is=20
+> located is protected by a firewall. This firewall only lets pass through=
+=20
 > outgoing traffic to port 80(http).
 >
-> I need this workstation to telnet a telnet server inside my private net=
-work.=20
-> Is it possible to set up a tunnel over port 80 to create a VPN between =
-the=20
-> workstation and my gateway, so that the workstation can telnet my inter=
-nal=20
+> I need this workstation to telnet a telnet server inside my private netwo=
+rk.=20
+> Is it possible to set up a tunnel over port 80 to create a VPN between th=
+e=20
+> workstation and my gateway, so that the workstation can telnet my interna=
+l=20
 > server?
 >
-> The network administrator where this workstation is located is inaccess=
-ible,=20
+> The network administrator where this workstation is located is inaccessib=
+le,=20
 > so I have to create this workaround.
 >
 > Thank you,
@@ -72,23 +66,7 @@ ible,=20
 > Engepel Teleinform=E1tica. 55-31-34812311
 > Belo Horizonte, MG, Brazil=20
 >
-
-- --=20
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint =3D 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCuGeDst+vzJSwZikRAgh2AJ0Ss1sElKLuDkTfMETWhveZTV8/oQCeJ0oQ
-DcnCWavJ6bdxE2ZSuZeo1ok=3D
-=3Dv+xC
------END PGP SIGNATURE-----
---1028002384-156250504-1119381375=:18742--
+>
+>
+---79754685-871095206-1119381659=:2505--
 
