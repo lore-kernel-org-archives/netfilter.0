@@ -1,10 +1,13 @@
-From: =?iso-8859-1?Q?Bruno_Negr=E3o?= <vpopmail@engepel.com.br>
-Subject: Tunneling other protocols over TCP port 80
-Date: Tue, 21 Jun 2005 16:05:43 -0300
-Message-ID: <006c01c57694$39a8d350$5100a8c0@14bis>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Tunneling other protocols over TCP port 80
+Date: Tue, 21 Jun 2005 15:16:15 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0506211515080.18742@darkstar.sysinfo.com>
+References: <006c01c57694$39a8d350$5100a8c0@14bis>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="1028002384-156250504-1119381375=:18742"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <006c01c57694$39a8d350$5100a8c0@14bis>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,33 +18,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
-To: netfilter@lists.netfilter.org
+To: =?iso-8859-1?Q?Bruno_Negr=E3o?= <vpopmail@engepel.com.br>
+Cc: netfilter@lists.netfilter.org
 
-Hi guys,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I need to create a VPN to my linux server from a remote workstation(windows=
-)=20
-inside a private network of another company. The LAN where the workstation =
-is=20
-located is protected by a firewall. This firewall only lets pass through=20
-outgoing traffic to port 80(http).
+--1028002384-156250504-1119381375=:18742
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by darkstar.sysinfo.com id
+	j5LJGKtB018877
 
-I need this workstation to telnet a telnet server inside my private network=
-. Is=20
-it possible to set up a tunnel over port 80 to create a VPN between the=20
-workstation and my gateway, so that the workstation can telnet my internal =
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-server?
 
-The network administrator where this workstation is located is inaccessible=
-, so=20
-I have to create this workaround.
+I might be reading this incorrectly, but the way I do read it you are=20
+thinking of breaking a security policy to connect to your home network=20
+from a work location?
 
-Thank you,
--------------------------------------------------
-Bruno Negrao - Support Analyst
-Engepel Teleinform=E1tica. 55-31-34812311
-Belo Horizonte, MG, Brazil=20
+Thanks,
 
+Ron DuFresne
+
+On Tue, 21 Jun 2005, Bruno Negr=E3o wrote:
+
+> Hi guys,
+>
+> I need to create a VPN to my linux server from a remote workstation(win=
+dows)=20
+> inside a private network of another company. The LAN where the workstat=
+ion is=20
+> located is protected by a firewall. This firewall only lets pass throug=
+h=20
+> outgoing traffic to port 80(http).
+>
+> I need this workstation to telnet a telnet server inside my private net=
+work.=20
+> Is it possible to set up a tunnel over port 80 to create a VPN between =
+the=20
+> workstation and my gateway, so that the workstation can telnet my inter=
+nal=20
+> server?
+>
+> The network administrator where this workstation is located is inaccess=
+ible,=20
+> so I have to create this workaround.
+>
+> Thank you,
+> -------------------------------------------------
+> Bruno Negrao - Support Analyst
+> Engepel Teleinform=E1tica. 55-31-34812311
+> Belo Horizonte, MG, Brazil=20
+>
+
+- --=20
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint =3D 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCuGeDst+vzJSwZikRAgh2AJ0Ss1sElKLuDkTfMETWhveZTV8/oQCeJ0oQ
+DcnCWavJ6bdxE2ZSuZeo1ok=3D
+=3Dv+xC
+-----END PGP SIGNATURE-----
+--1028002384-156250504-1119381375=:18742--
 
