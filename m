@@ -1,10 +1,18 @@
-From: Udo Brauch <udo.brauch@brauch-hilfe.de>
-Subject: Performance-Problems with DNAT
-Date: Mon, 20 Jun 2005 11:55:29 +0200
-Message-ID: <1119261328.30014.41.camel@obelix.brauch-hilfe.local>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: iptables leaking blocked ip addresses.
+Date: Tue, 21 Jun 2005 15:39:17 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0506211516490.3687@blackhole.kfki.hu>
+References: <49bf7d7050620083448c1dee9@mail.gmail.com>
+	<200506201159.46123.rob0@gmx.co.uk>
+	<49bf7d70506201020643ab165@mail.gmail.com>
+	<200506201329.19701.rob0@gmx.co.uk>
+	<49bf7d7050620123646910d40@mail.gmail.com>
+	<Pine.LNX.4.61.0506211455340.9102@yvahk01.tjqt.qr>
+	<Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
+	<Pine.LNX.4.61.0506211510210.9102@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.61.0506211510210.9102@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,47 +23,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
-SGksCgppIGhhdmUgaXB0YWJsZXMgcnVubmluZyBvbiBteSBzeXN0ZW0uIElmIGkgdHVybiBvbiBv
-bmUgb3IgbW9yZQpETkFULXJ1bGVzIGkgcnVuIGludG8gcGVyZm9ybWFuY2UgcHJvYmxlbXMuIAoK
-UGluZ3Mgd2l0aG91dCBETkFUOgo2NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAoMTk0LjI1
-LjEzNC4xNDYpOiBpY21wX3NlcT0xIHR0bD0yNDIKdGltZT0yOS4zIG1zCjY0IGJ5dGVzIGZyb20g
-d3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBfc2VxPTIgdHRsPTI0Mgp0aW1l
-PTI1LjAgbXMKNjQgYnl0ZXMgZnJvbSB3d3cudC1vbmxpbmUuZGUgKDE5NC4yNS4xMzQuMTQ2KTog
-aWNtcF9zZXE9MyB0dGw9MjQyCnRpbWU9MjkuMiBtcwo2NCBieXRlcyBmcm9tIHd3dy50LW9ubGlu
-ZS5kZSAoMTk0LjI1LjEzNC4xNDYpOiBpY21wX3NlcT00IHR0bD0yNDIKdGltZT0zMS40IG1zCjY0
-IGJ5dGVzIGZyb20gd3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBfc2VxPTUg
-dHRsPTI0Mgp0aW1lPTI1LjAgbXMKNjQgYnl0ZXMgZnJvbSB3d3cudC1vbmxpbmUuZGUgKDE5NC4y
-NS4xMzQuMTQ2KTogaWNtcF9zZXE9NiB0dGw9MjQyCnRpbWU9MjUuNSBtcwo2NCBieXRlcyBmcm9t
-IHd3dy50LW9ubGluZS5kZSAoMTk0LjI1LjEzNC4xNDYpOiBpY21wX3NlcT03IHR0bD0yNDIKdGlt
-ZT0yNy4yIG1zCjY0IGJ5dGVzIGZyb20gd3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6
-IGljbXBfc2VxPTggdHRsPTI0Mgp0aW1lPTI1LjYgbXMKNjQgYnl0ZXMgZnJvbSB3d3cudC1vbmxp
-bmUuZGUgKDE5NC4yNS4xMzQuMTQ2KTogaWNtcF9zZXE9OSB0dGw9MjQyCnRpbWU9MzMuNCBtcwo2
-NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAoMTk0LjI1LjEzNC4xNDYpOiBpY21wX3NlcT0x
-MCB0dGw9MjQyCnRpbWU9MjcuNSBtcwoKUGluZ3Mgd2l0aCBhY3RpdmF0ZWQgRE5BVC1ydWxlOgo2
-NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAoMTk0LjI1LjEzNC4xNDYpOiBpY21wX3NlcT0x
-IHR0bD0yNDIKdGltZT03ODkgbXMKNjQgYnl0ZXMgZnJvbSB3d3cudC1vbmxpbmUuZGUgKDE5NC4y
-NS4xMzQuMTQ2KTogaWNtcF9zZXE9MiB0dGw9MjQyCnRpbWU9NzExIG1zCjY0IGJ5dGVzIGZyb20g
-d3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBfc2VxPTMgdHRsPTI0Mgp0aW1l
-PTc0MyBtcwo2NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAoMTk0LjI1LjEzNC4xNDYpOiBp
-Y21wX3NlcT00IHR0bD0yNDIKdGltZT04NTAgbXMKNjQgYnl0ZXMgZnJvbSB3d3cudC1vbmxpbmUu
-ZGUgKDE5NC4yNS4xMzQuMTQ2KTogaWNtcF9zZXE9NSB0dGw9MjQyCnRpbWU9OTE2IG1zCjY0IGJ5
-dGVzIGZyb20gd3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBfc2VxPTYgdHRs
-PTI0Mgp0aW1lPTgwNyBtcwo2NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAoMTk0LjI1LjEz
-NC4xNDYpOiBpY21wX3NlcT03IHR0bD0yNDIKdGltZT03NjkgbXMKNjQgYnl0ZXMgZnJvbSB3d3cu
-dC1vbmxpbmUuZGUgKDE5NC4yNS4xMzQuMTQ2KTogaWNtcF9zZXE9OCB0dGw9MjQyCnRpbWU9Nzg2
-IG1zCjY0IGJ5dGVzIGZyb20gd3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBf
-c2VxPTkgdHRsPTI0Mgp0aW1lPTY1NSBtcwo2NCBieXRlcyBmcm9tIHd3dy50LW9ubGluZS5kZSAo
-MTk0LjI1LjEzNC4xNDYpOiBpY21wX3NlcT0xMCB0dGw9MjQyCnRpbWU9Nzk1IG1zCjY0IGJ5dGVz
-IGZyb20gd3d3LnQtb25saW5lLmRlICgxOTQuMjUuMTM0LjE0Nik6IGljbXBfc2VxPTExIHR0bD0y
-NDIKdGltZT03NjcgbXMKClRoZSBydWxlIGkgdXNlOgokSVBUIC10IG5hdCAtQSBQUkVST1VUSU5H
-IC1pICRFWFQgLXAgdGNwIC0tZHBvcnQgODAgLWogRE5BVAotLXRvLWRlc3RpbmF0aW9uIDE5Mi4x
-NjguMTU0LjI0CiRJUFQgLUEgRk9SV0FSRCAtaSAkRVhUIC1vICRETVogLXAgdGNwIC1kIDE5Mi4x
-NjguMTU0LjI0IC0tZHBvcnQgODAgLW0Kc3RhdGUgLS1zdGF0ZSBORVcgLWogQUNDRVBUCgoKCkRv
-IHlvdSBoYXZlIGFueSBpZGVhcz8KClVkbwotLSAKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCmJyYXVjaC1oaWxmZQpEaXBsLiBJbmcu
-IChGSCkgVWRvIEJyYXVjaApIYXNsYWNoZXIgU3RyYd9lIDM3Cjg5MDgxIFVsbQoKVGVsLjogICAr
-NDkgKDApNzMxIDYwMjgwLTE2OQpGYXguOiAgICs0OSAoMCk3MzEgNjAyODAtMjI5CkUtTWFpbDog
-dWRvLmJyYXVjaEBicmF1Y2gtaGlsZmUuZGUKV2ViOiAgICB3d3cuYnJhdWNoLWhpbGZlLmRlCgoK
+On Tue, 21 Jun 2005, Jan Engelhardt wrote:
+
+>
+> >The overhead of TARPIT created in conntrack can completely be avoided by
+> >using NOTRACK and TARPIT targets together.
+>
+> Probably, but it does not belong to the topic ("leaking blocked ip addr.s").
+
+Yes, diverted from the original topic - I wrote it for the sake of
+completeness.
+
+> On the NOTRACK, I've got a question, or maybe just a weird problem:
+> NOTRACK is only valid in the mangle table, and TARPIT is one of the last rules
+> in my filter:INPUT set.
+>
+> So it looks to me like I would need to copy all filter:INPUT rules that -j
+> ACCEPT into mangle:INPUT - because a plain -j NOTRACK would disable tracking
+> everything, and I can't just do -p tcp --dport 25 -j NOTRACK, because it's a
+> lot more than just dport 25.
+
+NOTRACK is valid in the raw table alone. If you want a generic "NOTRACK
+and TARPIT everything which is not allowed", then that I think won't go.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+
