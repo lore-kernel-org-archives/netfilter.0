@@ -1,19 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: iptables leaking blocked ip addresses.
-Date: Tue, 21 Jun 2005 20:05:08 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0506212004380.18536@yvahk01.tjqt.qr>
-References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201159.46123.rob0@gmx.co.uk>
-	<49bf7d70506201020643ab165@mail.gmail.com>
-	<200506201329.19701.rob0@gmx.co.uk>
-	<49bf7d7050620123646910d40@mail.gmail.com>
-	<Pine.LNX.4.61.0506211455340.9102@yvahk01.tjqt.qr>
-	<Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
-	<Pine.LNX.4.61.0506211510210.9102@yvahk01.tjqt.qr>
-	<Pine.LNX.4.58.0506211516490.3687@blackhole.kfki.hu>
+From: =?iso-8859-1?Q?Bruno_Negr=E3o?= <vpopmail@engepel.com.br>
+Subject: Tunneling other protocols over TCP port 80
+Date: Tue, 21 Jun 2005 16:05:43 -0300
+Message-ID: <006c01c57694$39a8d350$5100a8c0@14bis>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0506211516490.3687@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,21 +15,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
+Hi guys,
 
->NOTRACK is valid in the raw table alone. If you want a generic "NOTRACK
->and TARPIT everything which is not allowed", then that I think won't go.
+I need to create a VPN to my linux server from a remote workstation(windows=
+)=20
+inside a private network of another company. The LAN where the workstation =
+is=20
+located is protected by a firewall. This firewall only lets pass through=20
+outgoing traffic to port 80(http).
 
-Would it work to have a -t filter-capable NOTRACK target?
+I need this workstation to telnet a telnet server inside my private network=
+. Is=20
+it possible to set up a tunnel over port 80 to create a VPN between the=20
+workstation and my gateway, so that the workstation can telnet my internal =
 
+server?
 
+The network administrator where this workstation is located is inaccessible=
+, so=20
+I have to create this workaround.
 
-Jan Engelhardt                                                               
---                                                                            
-| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
-| Am Fassberg, 37077 Goettingen, www.gwdg.de
+Thank you,
+-------------------------------------------------
+Bruno Negrao - Support Analyst
+Engepel Teleinform=E1tica. 55-31-34812311
+Belo Horizonte, MG, Brazil=20
+
 
