@@ -1,16 +1,17 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Subject: Re: iptables leaking blocked ip addresses.
-Date: Tue, 21 Jun 2005 15:10:04 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
+Date: Tue, 21 Jun 2005 15:13:40 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0506211510210.9102@yvahk01.tjqt.qr>
 References: <49bf7d7050620083448c1dee9@mail.gmail.com>
 	<200506201159.46123.rob0@gmx.co.uk>
 	<49bf7d70506201020643ab165@mail.gmail.com>
 	<200506201329.19701.rob0@gmx.co.uk>
 	<49bf7d7050620123646910d40@mail.gmail.com>
 	<Pine.LNX.4.61.0506211455340.9102@yvahk01.tjqt.qr>
+	<Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0506211455340.9102@yvahk01.tjqt.qr>
+In-Reply-To: <Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,30 +24,27 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: netfilter@lists.netfilter.org, /dev/rob0 <rob0@gmx.co.uk>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 21 Jun 2005, Jan Engelhardt wrote:
 
-> >> > using tarpit instead of just dropping the connections.
-> >> Whatever. Without connection tracking you might as well use ipchains.
-> >the tarpit howto does say to turn connection tracking off.
->
-> No, it does not! To quote:
->
->   You probably don't want the conntrack module loaded while you are using
->   TARPIT, or you will be using resources per connection.
->
-> Which is not the same as "does not work with conntrack".
+>The overhead of TARPIT created in conntrack can completely be avoided by
+>using NOTRACK and TARPIT targets together.
 
-The overhead of TARPIT created in conntrack can completely be avoided by
-using NOTRACK and TARPIT targets together.
+Probably, but it does not belong to the topic ("leaking blocked ip addr.s").
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+On the NOTRACK, I've got a question, or maybe just a weird problem:
+NOTRACK is only valid in the mangle table, and TARPIT is one of the last rules 
+in my filter:INPUT set.
+
+So it looks to me like I would need to copy all filter:INPUT rules that -j 
+ACCEPT into mangle:INPUT - because a plain -j NOTRACK would disable tracking 
+everything, and I can't just do -p tcp --dport 25 -j NOTRACK, because it's a 
+lot more than just dport 25.
+
+
+Jan Engelhardt                                                               
+--                                                                            
+| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
+| Am Fassberg, 37077 Goettingen, www.gwdg.de
 
