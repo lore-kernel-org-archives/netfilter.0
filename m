@@ -1,14 +1,19 @@
-From: Feizhou <feizhou@linuxmail.org>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Subject: Re: iptables leaking blocked ip addresses.
-Date: Wed, 22 Jun 2005 00:52:16 +0800
-Message-ID: <42B845C0.70101@linuxmail.org>
-References: <49bf7d7050620083448c1dee9@mail.gmail.com>	<200506201055.25861.rob0@gmx.co.uk>
-	<42B7DF8D.3060304@linuxmail.org>
-	<1119364294.4923.17.camel@anduril.intranet.cartel-securite.net>
+Date: Tue, 21 Jun 2005 20:05:08 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0506212004380.18536@yvahk01.tjqt.qr>
+References: <49bf7d7050620083448c1dee9@mail.gmail.com>
+	<200506201159.46123.rob0@gmx.co.uk>
+	<49bf7d70506201020643ab165@mail.gmail.com>
+	<200506201329.19701.rob0@gmx.co.uk>
+	<49bf7d7050620123646910d40@mail.gmail.com>
+	<Pine.LNX.4.61.0506211455340.9102@yvahk01.tjqt.qr>
+	<Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
+	<Pine.LNX.4.61.0506211510210.9102@yvahk01.tjqt.qr>
+	<Pine.LNX.4.58.0506211516490.3687@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1119364294.4923.17.camel@anduril.intranet.cartel-securite.net>
+In-Reply-To: <Pine.LNX.4.58.0506211516490.3687@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,41 +24,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org, /dev/rob0 <rob0@gmx.co.uk>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@lists.netfilter.org
 
-Cedric Blancher wrote:
-> Le mardi 21 juin 2005 =E0 17:36 +0800, Feizhou a =E9crit :
->=20
->>netfilter's conntrack module sucks in performance and at the same time=20
->>is not fully stateful.
->=20
->=20
-> The last serious paper I could read about performances comparison was
-> published on pf website long ago and desmonstrated a clear advantage fo=
-r
-> Netfilter against pf or ipf.
->=20
-> 	http://www.benzedrine.cx/pf-paper.html
 
-Yes...when NOT doing stateful. I have no arguments for netfilter's=20
-filtering performance. Filtering barely adds overhead for my boxes.=20
-Loading the conntrack module however had some painful effects...
->=20
-> However, at this time, Netfilter was indeed not fully stateful. But it'=
-s
-> no longer the case as Netfilter now implements TCP window tracking in
-> stock kernels.
+>NOTRACK is valid in the raw table alone. If you want a generic "NOTRACK
+>and TARPIT everything which is not allowed", then that I think won't go.
 
-Ah, sorry, I knew that this was brought up some time ago but I did not=20
-the end result. I take back my not fully stateful statement.
->=20
-> If you know good comparisons published, I wuold be happy to read them.
->=20
+Would it work to have a -t filter-capable NOTRACK target?
 
-I will try a Linux based bridge setup in place of our OpenBSD firewall=20
-now that we can get some equivalency in function. Or just go stateless.=20
-Any suggestions on what kernel version to use? A Fedora errata in case I=20
-install Fedora Core 3/4? Or a stock Linux kernel?
+
+
+Jan Engelhardt                                                               
+--                                                                            
+| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
+| Am Fassberg, 37077 Goettingen, www.gwdg.de
 
