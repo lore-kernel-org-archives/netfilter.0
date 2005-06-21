@@ -1,10 +1,13 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: ISCS new release
-Date: Tue, 21 Jun 2005 16:48:00 -0400
-Message-ID: <1119386880.6934.50.camel@jasiiitosh.nexusmgmt.com>
+From: CompuGenic <pablo@compugenic.com>
+Subject: Re: Tunneling other protocols over TCP port 80
+Date: Tue, 21 Jun 2005 14:27:40 -0700
+Message-ID: <BAY0-SMTP08C231D66242CEA0C5142DBCE80@phx.gbl>
+References: <006c01c57694$39a8d350$5100a8c0@14bis>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Message-ID: <42B8864C.1090605@compugenic.com>
+In-Reply-To: <006c01c57694$39a8d350$5100a8c0@14bis>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,34 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter users list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?Bruno_Negr=E3o?= <vpopmail@engepel.com.br>
+Cc: netfilter@lists.netfilter.org
 
-For those who have been following the ISCS project, we made a new pre-
-alpha release today.  Although it is pre-alpha with much missing
-functionality, this version has been heavily tested in production. We
-needed the iptables rule generator for a project involving roughly 7000
-rules.  We didn't want to do that by hand!
+If all you want is a remote and/or secure shell, just use SSH like the=20
+others already said. If you MUST have full VPN, setup OpenVPN on the=20
+remote linux box, as it can run on any single TCP/UDP port. See=20
+http://openvpn.net/howto.html for details.
 
-Thus, we have completely rewritten the broken threaded update code,
-corrected any rule creation errors and should have a reasonably robust
-iptables section.  Source can be downloaded from the project page at
-http://sourceforge.net/projects/iscs
+-Pablo
 
-We do hope this is an indication the project will move forward after an
-far too long hiatus.  If anyone is interested in helping, we can use all
-the help we can get.  We particularly need SQL expertise at this time.
 
-For those unfamiliar with ISCS, it is not a rule creator but rather a
-security environment creator for large deployments of network security
-systems - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+Bruno Negr=E3o wrote:
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
-
+> Hi guys,
+>
+> I need to create a VPN to my linux server from a remote=20
+> workstation(windows) inside a private network of another company. The=20
+> LAN where the workstation is located is protected by a firewall. This=20
+> firewall only lets pass through outgoing traffic to port 80(http).
+>
+> I need this workstation to telnet a telnet server inside my private=20
+> network. Is it possible to set up a tunnel over port 80 to create a=20
+> VPN between the workstation and my gateway, so that the workstation=20
+> can telnet my internal server?
+>
+> The network administrator where this workstation is located is=20
+> inaccessible, so I have to create this workaround.
+>
+> Thank you,
+> -------------------------------------------------
+> Bruno Negrao - Support Analyst
+> Engepel Teleinform=E1tica. 55-31-34812311
+> Belo Horizonte, MG, Brazil
+>
+>
+>
 
