@@ -1,11 +1,15 @@
-From: "Marius Mertens" <marius.mertens@gmx.de>
-Subject: Re: Script verification
-Date: Wed, 22 Jun 2005 12:40:17 +0200
-Message-ID: <004d01c57716$cbfda230$4206a8c0@loki>
-References: <20050622041115.96034.qmail@web30615.mail.mud.yahoo.com>
+From: Christian Theil <christiantheilhave@gmail.com>
+Subject: Re: lib ipq
+Date: Wed, 22 Jun 2005 11:28:02 +0000
+Message-ID: <33d4ee94050622042852fa791e@mail.gmail.com>
+References: <a9c045eb041223112937739d16@mail.gmail.com>
+	<a9c045eb0506211307394ee574@mail.gmail.com>
+Reply-To: Christian Theil <christiantheilhave@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <a9c045eb0506211307394ee574@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,69 +20,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi everybody,
+You could probably mark the packet using the nfmark field of the skb.=20
 
-On Wednesday, June 22, 2005 6:11 AM,
-Mohamed Nassih wrote:
+If you are doing this with iptables, use the -j MARK target to do
+this; something
+ala this:
+iptables -A OUTPUT -t mangle -i eth0  -j MARK --set-mark 42
 
-> [...]
-> echo 1 > /proc/sys/net /ipv4/ip_forward
+Make sure you do this before you queue the packet to userspace.
 
-You still have the space in that line, which Guido already noticed. It 
-should be
-echo 1 > /proc/sys/net/ipv4/ip_forward
-without the space between .../net and /ipv4...
+Regards,
+Christian Theil Have.
 
-> IPTABLES -F INPUT
-> IPTABLES -F OUTPUT
-> IPTABLES -F FORWARD
-> IPTABLES -P INPUT DROP
-> IPTABLES -P OUTPUT DROP
-> IPTABLES -P FORWARD DROP
-> Iptables -A INPUT  -i lo -j ACCEPT
-> Iptables -A OUTPUT  -o lo -j ACCEPT
-
-These rules seem to be good.
-
-> iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth0 -j MASQUERADE
-
-This rewrites the source address of every packet originating from 
-192.168.1.0/24 going out through eth0 to the public IP of your router 
-(assuming eth0 is the interface connected to the internet side of your 
-network) --> OK
-
-> iptables -A FORWARD -i eth1 -o eth0 -p tcp -d 123.45.67.2
-> --destination-port 80
-> -m state --state NEW,ESTABLISHED  -j ACCEPT
-
-This allows traffic (including new connections) coming from eth1 and going 
-out through eth0 to pass, if it is destined for 123.45.67.2:80. With the 
-assumption that eth1 is connected to the LAN side of your network --> OK
-
-> iptables -A FORWARD -p tcp -i eth0 -o eth0 --source-port 80 -m state
-> --state ESTABLISHED -j ACCEPT
-
-With above assumptions regarding your eth0 and eth1 this should be
-iptables -A FORWARD -p tcp -i eth0 -o eth1 --source-port 80 -m state --state 
-ESTABLISHED -j ACCEPT
-Then it allows all returning packets from the internet originating from port 
-80 to pass.
-
-It should work then, but I think it should work equally well if you took 
-Guido's rules (in 
-http://lists.netfilter.org/pipermail/netfilter/2005-June/061098.html), since 
-as he already said, that notation is more readable, and IMHO, also cleaner.
-
-So with above changes the script should be sufficient to allow your LAN 
-clients access to that single webserver 123.45.67.2. But depending on your 
-configuration your clients might be unable to do DNS, so it might be 
-necessary to type the IP address into the browser.
-
-Good luck,
-
-Marius 
-
+If you need to do this from userspace with iptables probably
+On 6/21/05, Unix User <kerneland@gmail.com> wrote:
+> hi all
+> I use the lib ipq.  I want to know how one can make the difference
+> between an outgoing and incoming packets with the lib ipq .  I queued
+> incoming and outgoing packets .
+> i use the packet information to look at the tcp/ip headers and check the =
+ip
+> addresses to see if it is incoming or outgoing but it doesnt work if
+> the localhost send a packet at his self (ex : source adress: 127.0.0.1
+> , dest adress: 127.0.0.1).
+>=20
+> how can i make the difference ?
+>=20
+> sorry for my bad english :)
+>=20
+>
 
