@@ -1,13 +1,13 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: RE: IBM Dispatcher X iptables AND linux advanced routing
-Date: Wed, 22 Jun 2005 21:33:32 +0200
-Message-ID: <22429.5096392327$1119468541@news.gmane.org>
-References: <20050622191536.GA3563@modular>
-Reply-To: edvin.seferovic@kolp.at
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: Defeating NMAP Null scans (and Nessus scans).
+Date: Wed, 22 Jun 2005 15:26:33 -0500
+Message-ID: <42B9C979.9080701@riverviewtech.net>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAsvh50JgMeE+wdUqpg8SwJMKAAAAQAAAA0VU7kwJQ1kSCxnmqi2LTiQEAAAAA@ziemba.net>	<Pine.LNX.4.61.0506221442160.25356@yvahk01.tjqt.qr>	<Pine.LNX.4.60.0506221245590.21678@darkstar.sysinfo.com>
+	<Pine.LNX.4.61.0506221845160.21055@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050622191536.GA3563@modular>
+In-Reply-To: <Pine.LNX.4.61.0506221845160.21055@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,61 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+> Does it really? What if there happens to be a null-flags/xmas-flags tcp packet 
+> in an otherwise well-behaved tcp connection? I'd guess it would match 
+> ESTABLISHED, even if it has got null flags.
 
-how can this be achieved? When I have three boxes with the CLUSTERIP
-enabled, and each box is connected to a switch and they all have the =
-same IP
-address, how will balancing work in such case.
+As I understand it it is not possible to have the same packet be part of a null AND xmas scan as they are the exact opposite of each other acting on the SAME flags.
 
-I am sorry for my bad understanding of clustering concepts. Can somebody
-give me a hint where to look for ( I would prefer a HowTo explaining how =
-to
-set up two boxes and load balancing between those ).
+As far as not having the ESTABLISHED or RELATED state allowing the scan packets through you would want to have something like this first, before our stateful rule:
 
-TIA
+# Drop any XMas scan packets.
+iptables -t filter -A FORWARD -i $INet -o $LAN -p tcp --tcp-flags ALL ALL -j DROP
 
-Regards,
+# Drop any Null scan packets.
+iptables -t filter -A FORWARD -i $INet -o $LAN -p tcp --tcp-flags ALL NONE -j DROP
 
-Edvin Seferovic
+# We could put any matches for any other type of scan that we wanted to here too.
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Andre Raabe
-Sent: Mittwoch, 22. Juni 2005 21:16
-To: netfilter@lists.netfilter.org
-Subject: Re: IBM Dispatcher X iptables AND linux advanced routing
 
-On Wed, Jun 22, 2005 at 02:17:37PM -0300, Bruno Negr=E3o wrote:
->=20
-> I know it's possible to implement bandwidth control with linux, but =
-what=20
-> about the second feature? Does someone know if it's possible to =
-implement=20
-> the second feature using linux?
->=20
-Maybe take a look at the ClusterIP feature available in newer kernel
-versions. Form the iptable man page:
- CLUSTERIP
- This module allows you to configure a simple cluster of nodes that
- share a certain IP and MAC address without an explicit load
- balancer in front of them. Connections are statically distributed
- between the nodes in this cluster.
-=20
-Another possible solution would be IPVS [1], which implements=20
-transport-layer load balancing.
+# Allow any stateful traffic back in.
+iptables -t filter -A FORWARD -i $INet -o $LAN -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-[1] http://www.linuxvirtualserver.org/software/ipvs.html
+# Allow any normal LAN traffic out.
+# Note:  We should probably do some validity checking here but we will not for simplicity.
+iptables -t filter -A FORWARD -i $LAN -o $INet -j ACCEPT
 
-Best regards,
-
---=20
-Andre Raabe <raabe@tuxknowledge.org>
-
-GnuPG: 0x5FF2A39C | ECBD D562 72C9 DD1B B741 52C0 AFE1 8DA7 5FF2 A39C
-http://www.tuxknowledge.org | bash@jabber.ccc.de | encryption welcome
-
+You would probably want to do a corresponding drop in the INPUT chain too.
 
