@@ -1,11 +1,21 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Defeating NMAP Null scans (and Nessus scans).
-Date: Wed, 22 Jun 2005 14:52:45 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0506221442160.25356@yvahk01.tjqt.qr>
-References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAsvh50JgMeE+wdUqpg8SwJMKAAAAQAAAA0VU7kwJQ1kSCxnmqi2LTiQEAAAAA@ziemba.net>
+Subject: Re: iptables leaking blocked ip addresses.
+Date: Wed, 22 Jun 2005 14:55:16 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0506221454380.25356@yvahk01.tjqt.qr>
+References: <49bf7d7050620083448c1dee9@mail.gmail.com>
+	<200506201159.46123.rob0@gmx.co.uk>
+	<49bf7d70506201020643ab165@mail.gmail.com>
+	<200506201329.19701.rob0@gmx.co.uk>
+	<49bf7d7050620123646910d40@mail.gmail.com>
+	<Pine.LNX.4.61.0506211455340.9102@yvahk01.tjqt.qr>
+	<Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
+	<Pine.LNX.4.61.0506211510210.9102@yvahk01.tjqt.qr>
+	<Pine.LNX.4.58.0506211516490.3687@blackhole.kfki.hu>
+	<Pine.LNX.4.61.0506212004380.18536@yvahk01.tjqt.qr>
+	<Pine.LNX.4.58.0506220906090.5627@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAsvh50JgMeE+wdUqpg8SwJMKAAAAQAAAA0VU7kwJQ1kSCxnmqi2LTiQEAAAAA@ziemba.net>
+In-Reply-To: <Pine.LNX.4.58.0506220906090.5627@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +28,25 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jason Ziemba <netfilter@ziemba.net>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@lists.netfilter.org
 
 
->I am attempting to secure a new machine and thought I did until I ran NMAP's
->Null scan (which sends no TCP flags).  NMAP was able to determine just about
->every port running on the machine, and Nessus found more (even though a
->standard TCP Connect and SYN scan found exactly what I wanted). 
+>> >NOTRACK is valid in the raw table alone. If you want a generic "NOTRACK
+>> >and TARPIT everything which is not allowed", then that I think won't go.
+>>
+>> Would it work to have a -t filter-capable NOTRACK target?
 >
->I tried a number of TCP Flag combination rules in IPTables attempting to
->filter out these scans and was unsuccessful.  Does anybody know how to
->successful conceal your machine from these scans (while still allowing the
->ports that 'should' be open to function correctly)?
+>No, that'd be too late, the packet were already be tracked by then.
+>Everything which is not marked by NOTRACK in the raw table, before
+>conntrack, will enter conntrack.
 
-Here's some code from my Very Own Firewall(tm), AS_IPFW.
-
-# Rejects NULL and XMAS scan
-#
-function HANDLE_NMAP_SCAN() {
-    # Remainder: soon to be replaced with function HANDLE_PORTSCAN 
-    iptables -A INPUT -j REJECT --reject-with icmp-host-unreachable \
-     -p tcp --tcp-flags FIN FIN -m state --state INVALID;
-    iptables -A INPUT -j REJECT --reject-with icmp-host-unreachable \
-     -p tcp --tcp-flags ALL NONE -m state --state INVALID;
-}
-
-# Reject about anything unnormal, given that you have conntracking.
-#
-iptables -A INPUT -j REJECT --reject-with host-unreach -p tcp ! --syn -m state 
---state INVALID;
-
-^^ If someone thinks some packets might get lost in this last iptables 
-command, please tell me.
-
+Would it at least be possible to make a target which drops the conntrack 
+struct, so memory is freed?
 
 
 Jan Engelhardt                                                               
 --                                                                            
+| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
+| Am Fassberg, 37077 Goettingen, www.gwdg.de
 
