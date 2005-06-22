@@ -1,22 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: iptables leaking blocked ip addresses.
-Date: Wed, 22 Jun 2005 15:16:04 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0506221459180.5684@blackhole.kfki.hu>
-References: <49bf7d7050620083448c1dee9@mail.gmail.com>
-	<200506201159.46123.rob0@gmx.co.uk>
-	<49bf7d70506201020643ab165@mail.gmail.com>
-	<200506201329.19701.rob0@gmx.co.uk>
-	<49bf7d7050620123646910d40@mail.gmail.com>
-	<Pine.LNX.4.61.0506211455340.9102@yvahk01.tjqt.qr>
-	<Pine.LNX.4.58.0506211507280.3687@blackhole.kfki.hu>
-	<Pine.LNX.4.61.0506211510210.9102@yvahk01.tjqt.qr>
-	<Pine.LNX.4.58.0506211516490.3687@blackhole.kfki.hu>
-	<Pine.LNX.4.61.0506212004380.18536@yvahk01.tjqt.qr>
-	<Pine.LNX.4.58.0506220906090.5627@blackhole.kfki.hu>
-	<Pine.LNX.4.61.0506221454380.25356@yvahk01.tjqt.qr>
+From: Ami Ganguli <ami.ganguli@gmail.com>
+Subject: "No chain/target/match by that name" when using -m state
+Date: Wed, 22 Jun 2005 18:05:21 +0300
+Message-ID: <87eeecff050622080541743401@mail.gmail.com>
+Reply-To: Ami Ganguli <ami.ganguli@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0506221454380.25356@yvahk01.tjqt.qr>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -27,50 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Wed, 22 Jun 2005, Jan Engelhardt wrote:
+Hi all,
 
-> >> Would it work to have a -t filter-capable NOTRACK target?
-> >
-> >No, that'd be too late, the packet were already be tracked by then.
-> >Everything which is not marked by NOTRACK in the raw table, before
-> >conntrack, will enter conntrack.
->
-> Would it at least be possible to make a target which drops the conntrack
-> struct, so memory is freed?
+I've been searching around for the answer to this and I've finally
+given up trying to solve it on my own.  Any hints would be much
+appreciated.
 
-Conntrack memory is never really freed but reused from a slabcache.  (The
-memory freed at module unload time).
+I'm entering the following command (cut and paste from the command line):
 
-Releasing the memory back to the slabcache from a target in the filter
-table does not worth the effort: the resources to search trough conntrack
-to find a matching connection, failing to find one, grabbing the memory
-from the slabcache, initiating the elements are all already wasted. And
-DROP in the filter table implements exactly the wanted feature ;-) by
-releasing the memory back to the slabcache in the case of dropped NEW
-packet.
+     iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCE=
+PT
 
-Looking at it from the point of view of the TARPIT target, it'd also make
-no use:
+which appears in various docs.  It looks pretty straightforward, but I
+get this error:
 
-1. packet arrives, resources in conntrack wasted
-2. new module drops conntrack entry
-3. TARPIT responds to the attacker
-4. goto 1.
+    iptables: No chain/target/match by that name
 
-Then better let alone the created conntrack entry and spare
-grabbing/initiating new conntrack entry at every packet sent by the
-tarpitted sender.
+If I enter the same command without  "-m state --state
+ESTABLISHED,RELATED" it's accepted, so I figure my problem is there
+somewhere.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I thought that maybe my kernel (2.6.11.10, ARCH=3Dxen) was compiled
+without connection tracking, but dmesg includes the following:
+
+    ip_tables: (C) 2000-2002 Netfilter core team
+    ip_conntrack version 2.1 (1024 buckets, 8192 max) - 244 bytes per connt=
+rack
+
+also, if I enter "iptables -m state --help" I get the normal help with
+this at the end:
+
+     state v1.2.11 options:
+          [!] --state [INVALID|ESTABLISHED|NEW|RELATED|UNTRACKED][,...]
+                                State(s) to match
+
+so I figure I must have the necessary bits installed.
+
+Any ideas or hints on what I should do next to debug this?
+
+Regards,
+Ami.
 
