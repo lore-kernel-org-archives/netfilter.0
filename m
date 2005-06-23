@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Help!!!
-Date: Thu, 23 Jun 2005 10:35:39 -0400
-Message-ID: <20050623143539.GA16666@bender.817west.com>
-References: <14209331.20050623145054@adm.utm.md>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: dual/triple adsl router natting problem
+Date: Thu, 23 Jun 2005 17:02:36 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0506231656240.25017@yvahk01.tjqt.qr>
+References: <42BAAEAF.7060908@tpg.com.au> <200506230808.09808.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <14209331.20050623145054@adm.utm.md>
+In-Reply-To: <200506230808.09808.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,46 +16,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: /dev/rob0 <rob0@gmx.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-On Thu, Jun 23, 2005 at 02:50:54PM +0300, radu wrote:
-> Hello all,
-> 
->       My networck config:
-> 
->   Internet -> linux box -> My PC(192.168.50.101)
-> 
->   linux box
->   eth0 local 192.168.50.0/24
->   eth1 Internet
->   
->   my iptables config:
-> 
-> iptables -P FORWARD DROP
-> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 4662 -j DNAT --to 192.168.50.101
-> iptables -I FORWARD  -d 192.168.50.101 -p tcp --dport 4662 -j ACCEPT
-> iptables -I FORWARD -i eth1 -o eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -I FORWARD -s 192.168.50.101 -j ACCEPT
-> iptables -t nat -I POSTROUTING -o eth1 -j MASQUERADE
 
-a cleaned-up version of your script:
+>> I've tried various routing and filtering cominations
+>> as described on different sites around the net and
+>
+>I've used the patches here: http://www.ssi.bg/~ja/
+>and the HOWTO here: http://www.ssi.bg/~ja/nano.txt
+>to do multiple gateway routing.
 
-  iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 4662 \
-    -j DNAT --to 192.168.50.101
-  iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+well, a simple approach I once read worked something like (given that you have 
+ppp0 and ppp1) to distribute connections (not packets):
 
-  iptables -P FORWARD DROP
-  iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-  iptables -A FORWARD -p tcp -d 192.168.50.101 --dport 4662 -j ACCEPT
-  iptables -A FORWARD -s 192.168.50.101 -j ACCEPT
+`route -n` goes like:
 
--j
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+212.185.254.105 0.0.0.0         255.255.255.255 UH    0      0        0 ppp0
+212.185.99.88   0.0.0.0         255.255.255.255 UH    0      0        0 ppp1
+0.0.0.0         212.185.254.105 0.0.0.0         UG    0      0        0 ppp0
+0.0.0.0         212.185.99.88   0.0.0.0         UG    0      0        0 ppp1
 
---
-"Meg: Oh no! I'm missing the news!
- Peter: We all miss The News, Meg, but Huey Lewis needs time to create,
- and we need to be patient."
-        --Family Guy
+  -A PREROUTING -o ppp0 -p tcp -m state --state NEW -m nth --every 2 -j ROUTE
+      --oif ppp1
+  -A POSTROUTING -j MASQUERADE -o ppp0
+  -A POSTROUTING -j MASQUERADE -o ppp1
+
+i.e. that netfilter's nat was intelligent enough to get the idea of the 
+ROUTE target.
+
+
+Jan Engelhardt                                                               
+--                                                                            
+| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
+| Am Fassberg, 37077 Goettingen, www.gwdg.de
 
