@@ -1,14 +1,10 @@
-From: Jong Hian Zin <mail.zin@gmail.com>
-Subject: Re: Firewall blocking Java applet?
-Date: Thu, 23 Jun 2005 10:31:19 +0800
-Message-ID: <cb82de5905062219311bcdfba3@mail.gmail.com>
-References: <cb82de59050622183613989c5f@mail.gmail.com>
-	<200506222102.32991.rob0@gmx.co.uk>
-Reply-To: Jong Hian Zin <mail.zin@gmail.com>
+From: Matthias Mueller <mueller@rz.uni-karlsruhe.de>
+Subject: netfilter on ia64
+Date: Thu, 23 Jun 2005 07:07:55 +0200
+Message-ID: <200506230707.56224.mueller@rz.uni-karlsruhe.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200506222102.32991.rob0@gmx.co.uk>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,31 +17,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 6/23/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
->=20
-> On Wednesday 22 June 2005 20:36, Jong Hian Zin wrote:
-> > http://202.188.95.52:8080/speedometer/
-> >
-> > The bandwidth test Java applet can be loaded, but unable to start the
->=20
-> Does it work if not going through the OpenWRT?
+Hi,
 
+I'm currently setting up a natting router (simple setup: 1:1 for about 25 
+host, routing the other traffic, no filters) and got an itanium 2 box for 
+that job.
+As I have no experience on using iptables on ia64, I'm looking for some 
+advice: is it as stable and tested as on x86 or should I exchange that box 
+and use a normal x86-system?
+I know there are some issues with network cards on ia64 (one of our fibre 
+gigabit cards, doesn't get link on that ia64 box, but works fine in a x86 
+box...).
 
-Yes, it works if I connect the PC directly to the ADSL modem, using PPPoE.
+Bye,
+Matthias
 
-Not from what you posted. iptables-save(8) would be easier to follow.
-> But you can probably troubleshoot this on your own by putting in -j LOG
-> rules for -s/-d 202.188.95.52 <http://202.188.95.52> traffic. Try it and=
-=20
-> see what you get. Is
-> the openwrt capable of normal logging? Or maybe to a remote syslog
-> server?
->=20
-
-I will try iptables-save and logging.
-
---=20
-Jong Hian Zin
