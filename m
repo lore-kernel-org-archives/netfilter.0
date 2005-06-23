@@ -1,13 +1,11 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Help! Windows vpn through iptables
-Date: Thu, 23 Jun 2005 07:21:36 -0500
-Message-ID: <200506230721.36735.rob0@gmx.co.uk>
-References: <000f01c57796$c65d2500$320aa8c0@home.mixvision.net>
+From: Colin Tree <coltree@tpg.com.au>
+Subject: dual/triple adsl router natting problem
+Date: Thu, 23 Jun 2005 22:44:31 +1000
+Message-ID: <42BAAEAF.7060908@tpg.com.au>
+Reply-To: coltree@tpg.com.au
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000f01c57796$c65d2500$320aa8c0@home.mixvision.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +16,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 22 June 2005 20:56, Kimi Sato wrote:
-> VPN connection to Windows 2000 RAS works within iptables without a
-> problem. Iptables has TCP port 1723 and protocol 47 open, the same
-> way as other ports such as 80, 25, 443.
+Hi,
+I'm new to the list and a babe with iptables.
+I've tried various routing and filtering cominations
+as described on different sites around the net and
+for the moment am trying multihomed host as described on
+routeskeeper.sourceforge
 
-INPUT or FORWARD? Is the PPTP server running on the firewall machine 
-itself?
+sorry its a bit long
 
-> When I try PPTP vpn from outside of iptables using windows vpn
-> client, it hangs at verifying user name and password.  I don't have
+My setup -
+Debian Sarge (stable) no udev, etc, clean and simple
+kernel 2.6.11 (from unstable)
+iptables 1.2.11 (stable) should I go to 1.3.1 ?? (from unstable)
+fiaif firewall disabled till we get the routing correct
+at present testing with one internal pc
 
-And the logs say ... ? I bet this is a pptpd or pppd issue.
+2x100M network cards eth0-2 each connected to an adsl bridged modem
+each adsl line is layer 3 bridged with separate IP, GW, NET, BCAST /30
+subnets.
+1x1000M network card to internal switch and numerous pcs
 
-> any other ports open.  Do I need to open some other ports in order
-> for vpn connection to go through iptables? Any input will be
 
-1723/tcp and GRE should be accepted for the PPTP server. That's all 
-(except of course the outbound traffic must be allowed too.)
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+ip rule add prio 1 from $IPE1 lookup 1
+ip rule add prio 1 from $IPE2 lookup 2
+
+### I couldn't get anything until I included the gateway
+today I tried again with no gateway, now I can't get in from home.
+ip route add table 1 to default dev $IFE1 via $GWE1
+ip route add table 2 to default dev $IFE2 via $GWE2
+
+ip route add to default \
+    nexthop dev $IFE1 via $GWE1 weight 1 \
+    nexthop dev $IFE2 via $GWE2 weight 1
+
+iptables -A POSTROUTING -t mangle -j MARK --set-mark 1 \
+    -m state --state NEW -o  $IFE1
+iptables -A POSTROUTING -t mangle -j MARK --set-mark 2 \
+    -m state --state NEW -o  $IFE2
+
+iptables -A POSTROUTING -t mangle -j CONNMARK --save-mark \
+    -m state --state NEW
+
+iptables -A PREROUTING -t mangle -j CONNMARK --restore-mark
+
+ip rule add fwmark 1 lookup 1
+ip rule add fwmark 2 lookup 2
+
+iptables -A POSTROUTING -t nat -m mark --mark 1 \
+    -j SNAT --to-source $IPE1
+iptables -A POSTROUTING -t nat -m mark --mark 2 \
+    -j SNAT --to-source $IPE2
+
+###I can access the net and internal network from the gateway
+
+I can ssh and vnc into the gateway from home
+
+
+the dual path is nicely load sharing ??
+root@mantrix:~# ping -I 58.6.33.214 google.com
+PING google.com (216.239.39.99) from 58.6.33.214 : 56(84) bytes of data.
+64 bytes from 216.239.39.99: icmp_seq=1 ttl=239 time=256 ms
+
+root@mantrix:~# ping -I 58.6.33.210 google.com
+PING google.com (216.239.37.99) from 58.6.33.210 : 56(84) bytes of data.
+64 bytes from 216.239.37.99: icmp_seq=1 ttl=238 time=265 ms
+
+root@mantrix:~# ping google.com
+PING google.com (216.239.57.99) 56(84) bytes of data.
+64 bytes from 216.239.57.99: icmp_seq=1 ttl=240 time=180 ms
+
+
+Can access the gateway from the internal network.
+
+We can't SNAT from the network out to the real world
+
+
+Cheers,
+Colin
+
+
 
