@@ -1,12 +1,12 @@
-From: "Wennie V. Lagmay" <wlagmay@yanbulink.net>
-Subject: Re: SNAT or SAME logging
-Date: Thu, 23 Jun 2005 20:27:14 +0300
-Message-ID: <000a01c57818$cc097fd0$130aa8c0@win2kpro>
-References: <001201c577b2$531ed220$130aa8c0@winxp>
-	<20050623142009.GA16600@bender.817west.com>
+From: Tobias DiPasquale <codeslinger@gmail.com>
+Subject: CLUSTERIP and ProxyARP?
+Date: Thu, 23 Jun 2005 18:45:34 -0400
+Message-ID: <876ef97a050623154552aa655d@mail.gmail.com>
+Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,55 +18,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi Jason,
+Hi all,
 
-Is there a way to log it for sucurity reasons.
+Does anyone know if ipt_CLUSTERIP and ProxyARP will work correctly
+together on a current Linux kernel? Anything special to watch out for?
+TIA :)
 
-Thanks,
-
-Wennie
-
-
------ Original Message -----
-From: "Jason Opperisano" <opie@817west.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, June 23, 2005 5:20 PM
-Subject: Re: SNAT or SAME logging
-
-
-> On Thu, Jun 23, 2005 at 08:13:43AM +0300, Wennie V. Lagmay wrote:
-> > Hi all,
-> >
-> > Im using Iptables (SAME) to translate my private IP address to Public IP
-> > address, I just want to know how can I monitor and log which Public IP
-> > address is used by a specific private IP address.
-> >
-> > Example:
-> >
-> > -A POSTROUTING -s 192.168.10.0/255.255.255.0 -j SAME --nodst --to
-> > 212.xxx.xxx.113-212.xxx.xxx.114
-> > -A POSTROUTING -s 192.168.11.0/255.255.255.0 -j SAME --nodst --to
-> > 212.xxx.xxx.115-212.xxx.xxx.116
-> >
-> > On the example above private IP block 192.168.10.0/24  was map to used
-> > 212.xxx.xxx.113  to 212.xxx.xxx.114. How can I idenfify lets say
-> > 192.168.10.10/24 is using xxx.113 or xxx.114 at any given time.
->
->   grep $SRCIP /proc/net/ip_conntrack
->
-> the last dst= is the SNAT IP.
->
-> -j
->
-> --
-> "Stewie: What the hell is this?
->  Lois: Stewie that's tuna salad.
->  Stewie: Really? I could have sworn it was cat food."
->         --Family Guy
->
->
-
-
+--=20
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
