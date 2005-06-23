@@ -1,13 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: dual/triple adsl router natting problem
-Date: Thu, 23 Jun 2005 08:08:09 -0500
-Message-ID: <200506230808.09808.rob0@gmx.co.uk>
-References: <42BAAEAF.7060908@tpg.com.au>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: iptables on FreeBSD
+Date: Thu, 23 Jun 2005 09:21:21 -0400
+Message-ID: <20050623132121.GA16400@bender.817west.com>
+References: <000001c69530$0cbbf050$1000a8c0@mutogen>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42BAAEAF.7060908@tpg.com.au>
 Content-Disposition: inline
+In-Reply-To: <000001c69530$0cbbf050$1000a8c0@mutogen>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,16 +18,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thursday 23 June 2005 07:44, Colin Tree wrote:
-> I've tried various routing and filtering cominations
-> as described on different sites around the net and
+On Wed, Jun 21, 2006 at 04:39:46PM +0400, Artiom Matiuhoff wrote:
+> Hello,
+> 
+> Is it possible to setup iptables on FreeBSD5.3?
 
-I've used the patches here: http://www.ssi.bg/~ja/
-and the HOWTO here: http://www.ssi.bg/~ja/nano.txt
-to do multiple gateway routing.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+no.  but freebsd 5.3 does ship with *three* firewall applications in the
+base system (ipfw, ipf, pf), so you should be able get something going.
+
+-j
+
+--
+"Peter: Quiet, sweetie. Men are talking."
+        --Family Guy
 
