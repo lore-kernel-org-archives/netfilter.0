@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: iptables on FreeBSD
-Date: Thu, 23 Jun 2005 09:21:21 -0400
-Message-ID: <20050623132121.GA16400@bender.817west.com>
-References: <000001c69530$0cbbf050$1000a8c0@mutogen>
+Subject: Re: SNAT or SAME logging
+Date: Thu, 23 Jun 2005 10:20:09 -0400
+Message-ID: <20050623142009.GA16600@bender.817west.com>
+References: <001201c577b2$531ed220$130aa8c0@winxp>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <000001c69530$0cbbf050$1000a8c0@mutogen>
+In-Reply-To: <001201c577b2$531ed220$130aa8c0@winxp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,17 +21,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Jun 21, 2006 at 04:39:46PM +0400, Artiom Matiuhoff wrote:
-> Hello,
+On Thu, Jun 23, 2005 at 08:13:43AM +0300, Wennie V. Lagmay wrote:
+> Hi all,
 > 
-> Is it possible to setup iptables on FreeBSD5.3?
+> Im using Iptables (SAME) to translate my private IP address to Public IP 
+> address, I just want to know how can I monitor and log which Public IP 
+> address is used by a specific private IP address.
+> 
+> Example:
+> 
+> -A POSTROUTING -s 192.168.10.0/255.255.255.0 -j SAME --nodst --to 
+> 212.xxx.xxx.113-212.xxx.xxx.114
+> -A POSTROUTING -s 192.168.11.0/255.255.255.0 -j SAME --nodst --to 
+> 212.xxx.xxx.115-212.xxx.xxx.116
+> 
+> On the example above private IP block 192.168.10.0/24  was map to used 
+> 212.xxx.xxx.113  to 212.xxx.xxx.114. How can I idenfify lets say 
+> 192.168.10.10/24 is using xxx.113 or xxx.114 at any given time.
 
-no.  but freebsd 5.3 does ship with *three* firewall applications in the
-base system (ipfw, ipf, pf), so you should be able get something going.
+  grep $SRCIP /proc/net/ip_conntrack
+
+the last dst= is the SNAT IP.
 
 -j
 
 --
-"Peter: Quiet, sweetie. Men are talking."
+"Stewie: What the hell is this?
+ Lois: Stewie that's tuna salad.
+ Stewie: Really? I could have sworn it was cat food."
         --Family Guy
 
