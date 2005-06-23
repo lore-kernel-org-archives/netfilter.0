@@ -1,10 +1,11 @@
-From: "Kimi Sato" <kimi@vdot.net>
-Subject: Help! Windows vpn through iptables
-Date: Wed, 22 Jun 2005 21:56:30 -0400
-Message-ID: <000f01c57796$c65d2500$320aa8c0@home.mixvision.net>
+From: "Baake, Matthias" <m.baake@porta.de>
+Subject: RE: Help!!!
+Date: Thu, 23 Jun 2005 14:00:47 +0200
+Message-ID: <201E6F5AC48C274996A5AD8304FAEF869B4D@p001ex03.porta.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,16 +17,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: radu <radu@adm.utm.md>
+Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
 
-VPN connection to Windows 2000 RAS works within iptables without a problem.
-Iptables has TCP port 1723 and protocol 47 open, the same way as other ports
-such as 80, 25, 443.
-Other services such as http, https, smtp works fine.
-When I try PPTP vpn from outside of iptables using windows vpn client, it
-hangs at verifying user name and password.  I don't have any other ports
-open.  Do I need to open some other ports in order for vpn connection to go
-through iptables? Any input will be appreciated.
-Thanks.
+hi
 
+maybe your workstation is starting the connections and the packets that =
+you see are just the return packets?
+
+/matthias
+
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of radu
+> Sent: Thursday, June 23, 2005 1:51 PM
+> To: netfilter@lists.netfilter.org
+> Subject: Help!!!
+>=20
+>=20
+> Hello all,
+>=20
+>       My networck config:
+>=20
+>   Internet -> linux box -> My PC(192.168.50.101)
+>=20
+>   linux box
+>   eth0 local 192.168.50.0/24
+>   eth1 Internet
+>  =20
+>   my iptables config:
+>=20
+> iptables -P FORWARD DROP
+> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 4662 -j=20
+> DNAT --to 192.168.50.101
+> iptables -I FORWARD  -d 192.168.50.101 -p tcp --dport 4662 -j ACCEPT
+> iptables -I FORWARD -i eth1 -o eth0 -m state --state=20
+> ESTABLISHED,RELATED -j ACCEPT
+> iptables -I FORWARD -s 192.168.50.101 -j ACCEPT
+> iptables -t nat -I POSTROUTING -o eth1 -j MASQUERADE
+>  =20
+> why I'm receiving on my PC  packages  with external ip on
+> 4690,4544,4581.. ports???
+>=20
+> --=20
+> Best regards,
+>  Radu                          mailto:radu@adm.utm.md
+>=20
+>=20
+>=20
 
