@@ -1,11 +1,11 @@
-From: radu <radu@adm.utm.md>
-Subject: Help!!!
-Date: Thu, 23 Jun 2005 14:50:54 +0300
-Message-ID: <14209331.20050623145054@adm.utm.md>
-Reply-To: radu <radu@adm.utm.md>
+From: "Artiom Matiuhoff" <mutogen@pisem.net>
+Subject: iptables on FreeBSD
+Date: Thu, 23 Jun 2005 11:55:47 +0000 (UTC)
+Message-ID: <000001c69530$0cbbf050$1000a8c0@mutogen>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Date: Wed, 21 Jun 2006 16:39:46 +0400
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,30 +19,9 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello all,
+Hello,
 
-      My networck config:
+Is it possible to setup iptables on FreeBSD5.3?
 
-  Internet -> linux box -> My PC(192.168.50.101)
-
-  linux box
-  eth0 local 192.168.50.0/24
-  eth1 Internet
-  
-  my iptables config:
-
-iptables -P FORWARD DROP
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 4662 -j DNAT --to 192.168.50.101
-iptables -I FORWARD  -d 192.168.50.101 -p tcp --dport 4662 -j ACCEPT
-iptables -I FORWARD -i eth1 -o eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -I FORWARD -s 192.168.50.101 -j ACCEPT
-iptables -t nat -I POSTROUTING -o eth1 -j MASQUERADE
-  
-why I'm receiving on my PC  packages  with external ip on
-4690,4544,4581.. ports???
-
--- 
-Best regards,
- Radu                          mailto:radu@adm.utm.md
-
+Thnx.
 
