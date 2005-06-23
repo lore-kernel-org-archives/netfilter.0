@@ -1,18 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Defeating NMAP Null scans (and Nessus scans).
-Date: Thu, 23 Jun 2005 13:01:43 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0506231300530.26133@yvahk01.tjqt.qr>
-References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAsvh50JgMeE+wdUqpg8SwJMKAAAAQAAAA0VU7kwJQ1kSCxnmqi2LTiQEAAAAA@ziemba.net>
-	<Pine.LNX.4.61.0506221442160.25356@yvahk01.tjqt.qr>
-	<Pine.LNX.4.60.0506221245590.21678@darkstar.sysinfo.com>
-	<Pine.LNX.4.61.0506221845160.21055@yvahk01.tjqt.qr>
-	<42B9C979.9080701@riverviewtech.net>
-	<Pine.NEB.4.62.0506222034050.9177@ukato.freeshell.org>
-	<Pine.LNX.4.60.0506221645490.22256@darkstar.sysinfo.com>
-	<Pine.NEB.4.62.0506222110120.10040@ukato.freeshell.org>
+From: =?ISO-8859-2?Q?Marcin_Zaj=B1czkowski?= <mszpak@wp.pl>
+Subject: Problem with ipt_time after kernel upgrade
+Date: Thu, 23 Jun 2005 13:02:00 +0200
+Message-ID: <42BA96A8.6080807@wp.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.NEB.4.62.0506222110120.10040@ukato.freeshell.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,26 +15,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Alexey Toptygin <alexeyt@freeshell.org>
-Cc: netfilter@lists.netfilter.org, "Taylor, Grant" <gtaylor@riverviewtech.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-> I think all modern implementations will always send ACK on an established
-> connection, but I don't think RFC793 requires it. Therefore, it may be safe to
-> drop unflagged packets, but it seems like a bad idea to me.
+Hi,
 
-ACK on everything? That does not sound right.
+I had kernel 2.4.25 with patch-o-matic and ipt_time worked ok.
+After upgrade it to 2.4.31-rc1 (with pom-ng-20050529 - latest available 
+then, but since then there weren't changes in "time") and patched 
+iptables-1.2.9 from Fedora3 (recompiled with the same pom).
+Everything seemed ok, but recently I noticed that (after upgrade) 
+iptables stopped counting packets in rules with "time".
 
-When I call send(fd, ..., "some message"), I'd expect
+Sample rule (I haven't changed it in meantime):
+$IPT -t mangle -A FORWARD -i $INTERNAL_ETH -s $SOME_INTERNAL_IP -m time 
+--timestart 8:49 \
+--timestop 23:59 --days Mon,Tue,Wed,Thu,Fri,Sat,Sun -j MARK --set-mark 102
 
-  - a non-ack packet from me->remote
-  - an ack packet from remote
+Module is loaded and used:
+[root@koles rc.d]# lsmod | grep time
+ipt_time                1976   2  (autoclean)
+ip_tables              14784  11  [ipt_time ipt_MARK ipt_LOG ipt_limit 
+iptable_mangle iptable_nat ipt_REJECT ipt_state iptable_filter]
 
+Rule is in mangle (but nothing catch with "time"):
+[root@koles rc.d]# iptables -L -t mangle -v
+(...)
+     0     0 MARK       all  --  eth0   any     $SOME_IP anywhere 
+       TIME from 8:49 to 23:59 on Sun,Mon,Tue,Wed,Thu,Fri,Sat MARK set 0x100
 
+After remove "time" from rule everything is ok.
 
-Jan Engelhardt                                                               
---                                                                            
-| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
-| Am Fassberg, 37077 Goettingen, www.gwdg.de
+Do you have any idea what could be wrong?
+
+Thanks for help
+Marcin
 
