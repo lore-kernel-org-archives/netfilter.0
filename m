@@ -1,11 +1,13 @@
-From: "Baake, Matthias" <m.baake@porta.de>
-Subject: RE: Help!!!
-Date: Thu, 23 Jun 2005 14:00:47 +0200
-Message-ID: <201E6F5AC48C274996A5AD8304FAEF869B4D@p001ex03.porta.local>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Help!!!
+Date: Thu, 23 Jun 2005 07:14:24 -0500
+Message-ID: <200506230714.24471.rob0@gmx.co.uk>
+References: <14209331.20050623145054@adm.utm.md>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <14209331.20050623145054@adm.utm.md>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,51 +20,48 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: radu <radu@adm.utm.md>
-Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-hi
+On Thursday 23 June 2005 06:50, radu wrote:
+> why I'm receiving on my PC  packages  with external ip on
+> 4690,4544,4581.. ports???
 
-maybe your workstation is starting the connections and the packets that =
-you see are just the return packets?
+That would be me. I was trying to lure you into posting something on 
+this list. ;)
 
-/matthias
-
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of radu
-> Sent: Thursday, June 23, 2005 1:51 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Help!!!
->=20
->=20
-> Hello all,
->=20
->       My networck config:
->=20
 >   Internet -> linux box -> My PC(192.168.50.101)
->=20
+>
 >   linux box
 >   eth0 local 192.168.50.0/24
 >   eth1 Internet
->  =20
+>
 >   my iptables config:
->=20
+>
 > iptables -P FORWARD DROP
-> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 4662 -j=20
-> DNAT --to 192.168.50.101
-> iptables -I FORWARD  -d 192.168.50.101 -p tcp --dport 4662 -j ACCEPT
-> iptables -I FORWARD -i eth1 -o eth0 -m state --state=20
-> ESTABLISHED,RELATED -j ACCEPT
-> iptables -I FORWARD -s 192.168.50.101 -j ACCEPT
-> iptables -t nat -I POSTROUTING -o eth1 -j MASQUERADE
->  =20
-> why I'm receiving on my PC  packages  with external ip on
-> 4690,4544,4581.. ports???
->=20
-> --=20
-> Best regards,
->  Radu                          mailto:radu@adm.utm.md
->=20
->=20
->=20
+
+good
+
+> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 4662 -j DNAT
+> --to 192.168.50.101
+
+4662/tcp packet arriving at the external interface should have their 
+destination changed to Radu's computer ...
+
+> iptables -I FORWARD  -d 192.168.50.101 -p tcp 
+> --dport 4662 -j ACCEPT
+
+... and those packets should be accepted.
+
+> iptables -I FORWARD -i eth1 -o eth0 -m state 
+> --state ESTABLISHED,RELATED -j ACCEPT
+
+Any replies to established or related connections arriving at the 
+external interface, destined to the internal interface, should be 
+accepted.
+
+This is surely the rule letting those in. Check the connection tracking 
+table when you see them come in.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
