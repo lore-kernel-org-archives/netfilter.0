@@ -1,12 +1,14 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: IMAP not working with Established, RELATed
-Date: Wed, 22 Jun 2005 21:03:35 -0500
-Message-ID: <200506222103.35062.rob0@gmx.co.uk>
-References: <42BA09C3.5000902@caris.com>
+From: Jong Hian Zin <mail.zin@gmail.com>
+Subject: Re: Firewall blocking Java applet?
+Date: Thu, 23 Jun 2005 10:31:19 +0800
+Message-ID: <cb82de5905062219311bcdfba3@mail.gmail.com>
+References: <cb82de59050622183613989c5f@mail.gmail.com>
+	<200506222102.32991.rob0@gmx.co.uk>
+Reply-To: Jong Hian Zin <mail.zin@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42BA09C3.5000902@caris.com>
+In-Reply-To: <200506222102.32991.rob0@gmx.co.uk>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,15 +21,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: /dev/rob0 <rob0@gmx.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 22 June 2005 20:00, Peter Marshall wrote:
-> iptables is dropping ack packets comming from my mailserver to mail
-> clients on ports 143 and 993.  Does anyone have any ideas why this
-> might be happening ?
+On 6/23/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
+>=20
+> On Wednesday 22 June 2005 20:36, Jong Hian Zin wrote:
+> > http://202.188.95.52:8080/speedometer/
+> >
+> > The bandwidth test Java applet can be loaded, but unable to start the
+>=20
+> Does it work if not going through the OpenWRT?
 
-None at all. But iptables-save(8) might know.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
 
+Yes, it works if I connect the PC directly to the ADSL modem, using PPPoE.
+
+Not from what you posted. iptables-save(8) would be easier to follow.
+> But you can probably troubleshoot this on your own by putting in -j LOG
+> rules for -s/-d 202.188.95.52 <http://202.188.95.52> traffic. Try it and=
+=20
+> see what you get. Is
+> the openwrt capable of normal logging? Or maybe to a remote syslog
+> server?
+>=20
+
+I will try iptables-save and logging.
+
+--=20
+Jong Hian Zin
