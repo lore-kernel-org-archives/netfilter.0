@@ -1,11 +1,12 @@
-From: "Sreenivasa Rao.K" <sreenivask@ckarsystems.com>
-Subject: Re: bolcking gmail in squid
-Date: Fri, 24 Jun 2005 16:31:46 +0530
-Message-ID: <WorldClient-F200506241631.AA31460577@ckarsystems.com>
-References: <WorldClient-F200506241403.AA03490554@ckarsystems.com>
-	<3063e50506240235521d12a0@mail.gmail.com>
+From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+Subject: Firewall feature recommendation
+Date: Fri, 24 Jun 2005 12:56:50 +0200
+Message-ID: <fad9d48405062403562537f546@mail.gmail.com>
+Reply-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3063e50506240235521d12a0@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,56 +17,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: George Alexandru Dragoi <waruiinu@gmail.com>, netfilter@lists.netfilter.org
+To: NetFilter <netfilter@lists.netfilter.org>
 
+Guys
 
- Dear Alexandru ,
+I've built several iptables-based firewalls for some clients and
+personal use. Some of them are horrors, now that I look back on
+them... I want to build my own 'all-in-one' firewall for the most
+common network setups I use... I've used various other GPL'ed scripts
+for references in past firewalls and they do tend to open one's eyes a
+bit, thanks for everyone who released their scripts under the GPL.
 
- These acls didn't work.
+I understand iptables, so that's covered. I'm constantly researching
+security cause it's so damn interesting to see the precautions some
+people take, and the level of protection you yourself would never even
+have dreamed about...
 
-I want to give access to google website and at the sametime block gmail 
-website in squid  from accessing.
+Now, these are the features (independent of implementation) that I've
+considered to put into my firewall:
+- Support for multiple interfaces on both LAN & WAN
+- NAT & DMZ
+- Black lists for inbound & outbound traffic
+- Host services (global or per interface, allows seperation between
+LAN & WAN services)
+- Access control on MAC, IP, or MAC-IP pairing
+- Administrative services (SSH) access control on MAC or MAC-IP pairing
+- VPN (IPSec, PPTP & SSL)
+- QoS
+- ICMP control
+- Managed logging
+- Expansion through custom chains*
 
+* Expansion through custom chains might help those often found
+scenarios that render your standard firewall inoperable. By creating
+say, a PREINPUT chain or POSTINPUT chain, another script can modify
+that chain for any function not covered by the standard firewall
+features.
 
-Regards,
-Sreenivas. 
+I've got the "Modular Firewall Product Certification Criteria version
+4.1" from ICSAlabs, but I've not had any time to investigate it yet.
 
------Original Message-----
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-To: "Sreenivasa Rao.K" <sreenivask@ckarsystems.com>
-Cc: netfilter@lists.netfilter.org
-Date: Fri, 24 Jun 2005 05:35:47 -0400
-Subject: Re: bolcking gmail in squid
+Please remember, this discussion is intended to be about features, not
+implementation. I'll cross that bridge when I get there...
 
-> acl gmail dstdomain .mail.google.com
-> acl gmail dstdomain .gmail.com
-> acl gmail dstdomain .gmail.google.com
-> 
-> 
-> And a very first rule like this:
-> 
-> http_access deny gmail
-> 
-> On 6/24/05, Sreenivasa Rao.K <sreenivask@ckarsystems.com> wrote:
-> > 
-> > 
-> > HI,
-> > 
-> > Can anyone help me how to block giving access to gmail by allowing
-> > google.com website in squid.
-> > 
-> > 
-> > Regards,
-> > Sreenivasa Rao.K
-> > 
-> > 
-> > 
-> 
-> 
-> -- 
-> Bla bla
+Any suggestions & advice would be appreciated.
 
+Kind regards
+
+--=20
+
+Kenneth Kalmer
+kenneth.kalmer@gmail.com
+
+Folding@home stats
+http://vspx27.stanford.edu/cgi-bin/main.py?qtype=3Duserpage&username=3Dkenn=
+eth%2Ekalmer
 
