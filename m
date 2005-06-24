@@ -1,9 +1,9 @@
-From: Guenter.Sprakties@team4.de
-Subject: static 1:1 nat did not work
-Date: Fri, 24 Jun 2005 08:26:42 +0200
-Message-ID: <OFBCF8CF54.D20A4809-ONC125700E.003D446D-C125702A.00236718@team4.de>
+From: "Nicolas Olivier" <nolivier@alphalink.fr>
+Subject: ip_conntrack_ftp
+Date: Fri, 24 Jun 2005 10:01:42 +0200
+Message-ID: <42BBBDE6.9040108@alphalink.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,50 +15,81 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
 
-'cause I didn't get iptables nat to work, I switch back to an old 2.4=20
-kernel and iproute2.
+Hi,
 
-Three network segments, one intranet 172... , one dmz 192. .... one=20
-extranet 212.a.b....=20
+I've got the following architecture:
 
-iproute2 setting is simple:
 
-        # Fast-NAT f=FCr DMZ-Intranet
-        ip rule add from 192.168.2.20 nat 172.31.27.20 to 172.31.24.0/24=20
-table dmz prio 100
-        ip route add nat 172.31.27.20 via 192.168.2.20 table local
-         # Fast-NAT f=FCr DMZ-Internet (hier Extranet :-))
-        ip rule add from 192.168.2.20 nat 212.a.7b.c table dmz prio 200
-        ip route add nat 212.a.b.c via 192.168.2.20 table local
-        # Defaultroute einrichten
-        ip route add default via 212.117.70.33
-        ip route flush cache
+customer-1                                  rt-1                                      rt-2
+ ______                                    ______ 10.0.0.2/30            10.0.0.1/30 ______
+|      |                                  |      |__________________________________|      |
+|      |172.16.0.2/30        172.16.0.1/30|      |nas1                        nas1  |      |
+|      |___________/  ...  /______________|      |                                  |      |
+|      | whatever                    nas0 |      |10.0.0.5/30            10.0.0.6/30|      |
+|      |                                  |      |__________________________________|      |
+|______|                                  |______|eth1                         eth1 |______|
+                                       eth0  |
+                               10.10.60.23/24|
+                                             |
 
-ping from 172... to 172.31.27.20 is ok, in iptables we see
-=20
-       ping  src 172. ... 10   -> 192.168.2.20
-       pong src 192.168.2.20 -> 172. ... 10
+So customer-1 is connected to to rt-1 over ATM via a br2684.
 
-Now we activated a apache on our test-dmz system and tried to GET the site =
+When nas0 is created, the following is done:
 
-from intern.
-Surprisire, it didn't work. From the one side, we saw all tcp-packet in=20
-the iptables log, but in the webserver log nothing happens and we got the=20
-message in our browser 'server not found'. With the not natted ip of=20
-192.168.2.20, everything is fine. For testing, we didn't start iptables at =
+ifconfig nas0 172.16.0.1 netmask 255.255.255.252 broadcast 172.16.0.3
+ip route add table 1 172.16.0.0/30 dev nas0 proto static scope link src 172.16.0.1
+ip route del 172.16.0.0/30 dev nas0 proto kernel scope link src 172.16.0.1
+ip rule add dev nas0 lookup 1
 
-all an dused ip=5Fforward alone, again, we did not get the server while=20
-there was definitive no  rule against routing. And, like i said at the=20
-strart, ICMP work fine.
+For nas1:
 
-Any idea? Or wrong group b'cause an apache problem?
+ifconfig nas1 10.0.0.2 netmask 255.255.255.252 broadcast 10.0.0.3
+ip route add default via 10.0.0.1 dev nas1 table 1
+ip route del 10.0.0.0/30 dev nas1 proto kernel scope link src 10.0.0.2
+ip route add table 1 10.0.0.0/30 dev nas1 proto static scope link src 10.0.0.2
+ip rule add dev nas1 lookup 1
+ip route del local 10.0.0.2 dev nas1 proto kernel scope host src 10.0.0.2
+ip neighbour add 10.0.0.2 lladdr `ifmacget nas1` nud permanent dev nas1
 
-Greetings,
+ifmacget is a small binary returning the MAC address of the interface.
 
-Dr. G=FCnter Sprakties
----
+Idea behind this is to isolate customers related interfaces from main routing table in their own routing table.
+So traffic comes from customers, goes through rt-1 via their dedicated routing table. It can goes to other customers that are isolated in that routing
+table or goes through rt-2 via nas1.
+rt-2 does its own stuff, like QoS or whatever. The point is that Internet related traffic goes back from rt-2 to rt-1 via the sub 10.0.0.4/30, and
+then goes out via eth0.
+
+So everything works like a charm in this architecture, except conntrack on active ftp.
+
+I'm on customer-1, running a ftp client (lftp was used for the test) to connect to 1.1.1.1. Logging is correct, but when sending command fails, and
+the ftp client runs a timer to try again sendind the command. After this first attempt, conntrack table contains those entries:
+
+tcp      6 115 TIME_WAIT src=10.0.0.2 dst=1.1.1.1 sport=35045 dport=21 src=1.1.1.1 dst=10.10.60.23 sport=21 dport=1024 [ASSURED] use=1 mark=0
+tcp      6 115 TIME_WAIT src=172.16.0.2 dst=1.1.1.1 sport=35045 dport=21 src=1.1.1.1 dst=10.0.0.2 sport=21 dport=35045 [ASSURED] use=1 mark=0
+
+Then, when the timer fired, the command runs well, and everything works perfect. Those are the entries just after, the connection and a ls:
+
+tcp      6 431996 ESTABLISHED src=10.0.0.2 dst=1.1.1.1 sport=35047 dport=21 src=1.1.1.1 dst=10.10.60.23 sport=21 dport=1025 [ASSURED] use=1
+mark=0
+tcp      6 116 TIME_WAIT src=10.0.0.2 dst=1.1.1.1 sport=35048 dport=42135 src=1.1.1.1 dst=10.10.60.23 sport=42135 dport=1025 [ASSURED] use=1
+mark=0
+tcp      6 116 TIME_WAIT src=172.16.0.2 dst=1.1.1.1 sport=35048 dport=42135 src=1.1.1.1 dst=10.0.0.2 sport=42135 dport=35048 [ASSURED] use=1
+mark=0
+tcp      6 431996 ESTABLISHED src=172.16.0.2 dst=1.1.1.1 sport=35047 dport=21 src=1.1.1.1 dst=10.0.0.2 sport=21 dport=35047 [ASSURED] use=1
+mark=0
+tcp      6 86 TIME_WAIT src=10.0.0.2 dst=1.1.1.1 sport=35045 dport=21 src=1.1.1.1 dst=10.10.60.23 sport=21 dport=1024 [ASSURED] use=1 mark=0
+tcp      6 86 TIME_WAIT src=172.16.0.2 dst=1.1.1.1 sport=35045 dport=21 src=1.1.1.1 dst=10.0.0.2 sport=21 dport=35045 [ASSURED] use=1 mark=0
+
+For me, it seems that the problem is due to ftp connection coming on rt-1 twice, but as other traffic runs well I'm a bit lost and I haven't got
+enough knowledge in netfilter to fix this.
+Any help or advice would be greatly appreciated, and if I was not clear enough, don't hesitate.
+Thanks in advance.
+
+Nicolas Olivier
+
+
+
