@@ -1,12 +1,15 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: Firewall feature recommendation
-Date: Fri, 24 Jun 2005 09:44:29 -0400
-Message-ID: <1119620669.9774.1.camel@jasiiitosh.nexusmgmt.com>
+Date: Fri, 24 Jun 2005 08:45:37 -0500
+Message-ID: <200506240845.37417.rob0@gmx.co.uk>
 References: <fad9d48405062403562537f546@mail.gmail.com>
+	<200506240826.14769.rob0@gmx.co.uk>
+	<Pine.GSO.4.58.0506240935200.17433@queeg.cs.rit.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <fad9d48405062403562537f546@mail.gmail.com>
+In-Reply-To: <Pine.GSO.4.58.0506240935200.17433@queeg.cs.rit.edu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,66 +21,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Fri, 2005-06-24 at 12:56 +0200, Kenneth Kalmer wrote:
-> Guys
-> 
-> I've built several iptables-based firewalls for some clients and
-> personal use. Some of them are horrors, now that I look back on
-> them... I want to build my own 'all-in-one' firewall for the most
-> common network setups I use... I've used various other GPL'ed scripts
-> for references in past firewalls and they do tend to open one's eyes a
-> bit, thanks for everyone who released their scripts under the GPL.
-> 
-> I understand iptables, so that's covered. I'm constantly researching
-> security cause it's so damn interesting to see the precautions some
-> people take, and the level of protection you yourself would never even
-> have dreamed about...
-> 
-> Now, these are the features (independent of implementation) that I've
-> considered to put into my firewall:
-> - Support for multiple interfaces on both LAN & WAN
-> - NAT & DMZ
-> - Black lists for inbound & outbound traffic
-> - Host services (global or per interface, allows seperation between
-> LAN & WAN services)
-> - Access control on MAC, IP, or MAC-IP pairing
-> - Administrative services (SSH) access control on MAC or MAC-IP pairing
-> - VPN (IPSec, PPTP & SSL)
-> - QoS
-> - ICMP control
-> - Managed logging
-> - Expansion through custom chains*
-> 
-> * Expansion through custom chains might help those often found
-> scenarios that render your standard firewall inoperable. By creating
-> say, a PREINPUT chain or POSTINPUT chain, another script can modify
-> that chain for any function not covered by the standard firewall
-> features.
-> 
-> I've got the "Modular Firewall Product Certification Criteria version
-> 4.1" from ICSAlabs, but I've not had any time to investigate it yet.
-> 
-> Please remember, this discussion is intended to be about features, not
-> implementation. I'll cross that bridge when I get there...
-> 
-> Any suggestions & advice would be appreciated.
-> 
-> Kind regards
-> 
-May I suggest taking a look at ISCS (http://iscs.sourceforge.net) and
-see if it gets you close to what you seek.  It's not a script but rather
-a very flexible configurator that allows relatively easy management of
-some of the complex features you cite - John
+On Friday 24 June 2005 08:36, Carl Holtje ;021;vcsg6; wrote:
+> > > - Black lists for inbound & outbound traffic
+> >
+> > We don't do much of this. We *do* use DNS poisoning for certain
+> > known "ratware"/virus domains such as gator.com.
+>
+> Sorry to jump in half-way through, but how do you do this?
+>
+> I'm looking for a solution better than editing /etc/hosts that I can
+> apply to a small network..
+
+BIND 9, transparent DNS proxying for clients to force them into our 
+local nameserver, where we have a simple null zone file which is loaded 
+as master for each blocked domain. It points a wildcard "A" at an 
+internal IP.
+
+Among other things, that internal machine runs a Web server. When we 
+first started doing this, its apache logs were inundated with 404's as 
+the now-stranded spyware attempted to phone home.
 -- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
-
-Financially sustainable open source development
-http://www.opensourcedevel.com
-
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
