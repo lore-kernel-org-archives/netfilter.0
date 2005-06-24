@@ -1,10 +1,7 @@
-From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
-	<sa.campos@datasulsp.com.br>
-Subject: Prob with IPTABLES + REDIRECT + IPROUTE2
-Date: Thu, 23 Jun 2005 21:45:57 -0300
-Message-ID: <03db01c57856$16243780$8b00000a@PIVT>
-Reply-To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
-	<sa.campos@datasulsp.com.br>
+From: Guenter.Sprakties@team4.de
+Subject: static 1:1 nat did not work
+Date: Fri, 24 Jun 2005 08:26:42 +0200
+Message-ID: <OFBCF8CF54.D20A4809-ONC125700E.003D446D-C125702A.00236718@team4.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,55 +15,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
-To: Netfilter list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Someone could help me???
+Hello,
 
+'cause I didn't get iptables nat to work, I switch back to an old 2.4=20
+kernel and iproute2.
 
+Three network segments, one intranet 172... , one dmz 192. .... one=20
+extranet 212.a.b....=20
 
-I have two links to internet, one by ADSL (512 kbps) e other EMBRATEL ( 1024
-Kpbs ).
-I did "ip route" e it happen ok, but whem I put the with iptables to traffic
-on 80 port redirect to 3128 port of SQUID, I can only use the ADSL link,
-what is default link.
-The configurations:
+iproute2 setting is simple:
 
-( ADSL 512K )       eth0
-Server IP  =3D 192.168.7.2
-Modem IP     =3D 192.168.7.1
+        # Fast-NAT f=FCr DMZ-Intranet
+        ip rule add from 192.168.2.20 nat 172.31.27.20 to 172.31.24.0/24=20
+table dmz prio 100
+        ip route add nat 172.31.27.20 via 192.168.2.20 table local
+         # Fast-NAT f=FCr DMZ-Internet (hier Extranet :-))
+        ip rule add from 192.168.2.20 nat 212.a.7b.c table dmz prio 200
+        ip route add nat 212.a.b.c via 192.168.2.20 table local
+        # Defaultroute einrichten
+        ip route add default via 212.117.70.33
+        ip route flush cache
 
-( EMBRATEL 1024K )  eth1
-Server IP  =3D 200.200.200.2
-Router IP    =3D 200.200.200.1
+ping from 172... to 172.31.27.20 is ok, in iptables we see
+=20
+       ping  src 172. ... 10   -> 192.168.2.20
+       pong src 192.168.2.20 -> 172. ... 10
 
-( LAN 1)      eth2
-Server IP  =3D 10.0.0.1
-LAN   =3D 10.0.0.0/24
+Now we activated a apache on our test-dmz system and tried to GET the site =
 
-( LAN 2)      eth2:1
-Server IP  =3D 192.168.0.1
-LAN   =3D 192.168.0.0/24
+from intern.
+Surprisire, it didn't work. From the one side, we saw all tcp-packet in=20
+the iptables log, but in the webserver log nothing happens and we got the=20
+message in our browser 'server not found'. With the not natted ip of=20
+192.168.2.20, everything is fine. For testing, we didn't start iptables at =
 
-#iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/24 -j
-SNAT --to-soutce 192.168.7.1
-#iptables -t nat -A POSTROUTING -o eth1 -s 10.0.0.20 -j SNAT --to-soutce
-200.200.200.2
-#ip rule add from 10.0.0.20/32 table embratel
-#ip route add 200.200.200.1 dev eth1 table embratel
-#ip route add default via 200.200.200.1 table embratel
-#ip route add 10.0.0.20/32 via 10.0.0.1 table embratel
+all an dused ip=5Fforward alone, again, we did not get the server while=20
+there was definitive no  rule against routing. And, like i said at the=20
+strart, ICMP work fine.
 
-Here everything is workingm, but when I put the following rule....the
-traffic goes to only ADSL Link that is the default gateway.
+Any idea? Or wrong group b'cause an apache problem?
 
-#iptables -t nat -A PREROUTING -p tcp -i eth2 --dport 80 -j
-REDIRECT --to-port 3128
+Greetings,
 
-I am some help me.
-
-Tks
-
-Sebasti=E3o Ant=F4nio Campos=20
-
-
+Dr. G=FCnter Sprakties
+---
