@@ -1,13 +1,15 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: RE: Firewall feature recommendation
-Date: Fri, 24 Jun 2005 16:12:01 +0200
-Message-ID: <29273.9371922382$1119621989@news.gmane.org>
-References: <Pine.GSO.4.58.0506241002340.17433@queeg.cs.rit.edu>
-Reply-To: edvin.seferovic@kolp.at
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Firewall feature recommendation
+Date: Fri, 24 Jun 2005 09:32:08 -0500
+Message-ID: <200506240932.08470.rob0@gmx.co.uk>
+References: <fad9d48405062403562537f546@mail.gmail.com>
+	<Pine.GSO.4.58.0506241002340.17433@queeg.cs.rit.edu>
+	<200506240912.08598.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.GSO.4.58.0506241002340.17433@queeg.cs.rit.edu>
+In-Reply-To: <200506240912.08598.rob0@gmx.co.uk>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,68 +23,86 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
-
-I doubt that he is rewriting DNS requests with HTTP. He is using his
-nameserver to tell the clients that the ie. *.gmail.com -> some_local_IP and
-when the real HTTP request is being sent out - it is being sent out to
-some_local_IP ... it is like entering fix IP adresses in /etc/hosts file..
-
-Regards,
-
-Edvin Seferovic
-
-PS: it would be interesting which domains you are poisoning :) a zone file
-would be great !
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Carl Holtje
-;021;vcsg6;
-Sent: Freitag, 24. Juni 2005 16:05
-To: /dev/rob0
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Firewall feature recommendation
-
-On Fri, 24 Jun 2005, /dev/rob0 wrote:
-
-> On Friday 24 June 2005 08:36, Carl Holtje ;021;vcsg6; wrote:
-> > > > - Black lists for inbound & outbound traffic
-> > >
-> > > We don't do much of this. We *do* use DNS poisoning for certain
-> > > known "ratware"/virus domains such as gator.com.
-> >
-> > Sorry to jump in half-way through, but how do you do this?
-> >
-> > I'm looking for a solution better than editing /etc/hosts that I can
-> > apply to a small network..
+On Friday 24 June 2005 09:12, I wrote:
+> > Would you be so kind as to post a randomly-selected zone file for
+> > our enjoyment?
 >
-> BIND 9, transparent DNS proxying for clients to force them into our
-> local nameserver, where we have a simple null zone file which is loaded
-> as master for each blocked domain. It points a wildcard "A" at an
-> internal IP.
+> [file: null.zone]
 
-Would you be so kind as to post a randomly-selected zone file for our
-enjoyment?
+I should clarify: this same zone is loaded for all blocked domains.
+Please note that it's generic. And (just before I saw Edvin's request)
+it occurred to me that you might want to see the blacklist of zones:
 
-> Among other things, that internal machine runs a Web server. When we
-> first started doing this, its apache logs were inundated with 404's as
-> the now-stranded spyware attempted to phone home.
+rob0@room101:/etc/named$ cat blacklist
+# named/blacklist - modular BIND configuration file - 2005/03/31
+# /dev/rob0 <rob@gmx.co.uk>
+#
+# This lists zones which will return the local server IP for *ALL*
+# hostnames. The following is a list of known spyware domains which are
+# blocked.
+# NOTE: if you are using the domain blocking Webmin module we have
+# provided, these comments will be lost, so we've also provided a copy
+# as "named/blacklist.orig".
 
-So you take a DNS (port 53) request and re-write it as HTTP (port 80)??
+zone "180solutions.com" { type master; notify no; file "null.zone"; };
+zone "2020search.com" { type master; notify no; file "null.zone"; };
+zone "2nd-thought.com" { type master; notify no; file "null.zone"; };
+zone "blazefind.com" { type master; notify no; file "null.zone"; };
+zone "bonzibuddy.com" { type master; notify no; file "null.zone"; };
+zone "clrsch.com" { type master; notify no; file "null.zone"; };
+zone "cometcursor.com" { type master; notify no; file "null.zone"; };
+zone "cometsystems.com" { type master; notify no; file "null.zone"; };
+zone "coolsearch.biz" { type master; notify no; file "null.zone"; };
+zone "date-manager.com" { type master; notify no; file "null.zone"; };
+zone "doubleclick.net" { type master; notify no; file "null.zone"; };
+zone "drsnsrch.com" { type master; notify no; file "null.zone"; };
+zone "euniverse.com" { type master; notify no; file "null.zone"; };
+zone "eyeblaster.com" { type master; notify no; file "null.zone"; };
+zone "feedbackresearch.com" { type master; notify no; file "null.zone"; };
+zone "flingstone.com" { type master; notify no; file "null.zone"; };
+zone "funwebproducts.com" { type master; notify no; file "null.zone"; };
+zone "gator.com" { type master; notify no; file "null.zone"; };
+zone "gatoradvertisinginformationnetwork.com" { type master; notify no; file "null.zone"; };
+zone "grandstreetinteractive.com" { type master; notify no; file "null.zone"; };
+zone "hotornot.com" { type master; notify no; file "null.zone"; };
+zone "incredifind.com" { type master; notify no; file "null.zone"; };
+zone "match.com" { type master; notify no; file "null.zone"; };
+zone "offeroptimizer.com" { type master; notify no; file "null.zone"; };
+zone "plaxo.com" { type master; notify no; file "null.zone"; };
+zone "pointroll.com" { type master; notify no; file "null.zone"; };
+zone "precisionpop.com" { type master; notify no; file "null.zone"; };
+zone "searchbrowser.com" { type master; notify no; file "null.zone"; };
+zone "serving-sys.com" { type master; notify no; file "null.zone"; };
+zone "shopnav.com" { type master; notify no; file "null.zone"; };
+zone "sirsearch.com" { type master; notify no; file "null.zone"; };
+zone "toprebates.com" { type master; notify no; file "null.zone"; };
+zone "twain-tech.com" { type master; notify no; file "null.zone"; };
+zone "webshots.com" { type master; notify no; file "null.zone"; };
+zone "whenu-advertising.com" { type master; notify no; file "null.zone"; };
+zone "whenu.com" { type master; notify no; file "null.zone"; };
 
-Wouldn't it just be easier to reply to the DNS request with a "host not
-found"? Or where you trying to log the requests to find the infected
-hosts..?
+Most if not all of the listed domains were personally researched by me.
+That's the weakness of this, though: it's impossible to keep ahead of
+the spammers and other ratware peddlers in this arms race. There are
+perhaps millions of domains which belong on this list! I can't research
+them all, and I wouldn't want to trust someone else to manage the list
+outside our organisation.
 
-Thanks!
+The aforementioned Webmin module is custom-made and very simple. The
+user has a text box control listing domains to block, one per line.
+Upon submission of the form we rewrite the blacklist file (which is
+part of named.conf by means of an include), "rndc reload", and signal
+the slaves to update their configuration.
 
-Carl
+Note the philosophy here is that if a domain is bad it's ALL bad. You
+could, however, specify a subdomain ...
+zone "badboy.example.com" { type master; notify no; file "null.zone"; };
+... and thus not block "goodguy.example.com."
 
-- --
-
-"There are 10 types of people in the world: Those who understand binary
-and those that don't."
-
-
+We're way off topic here, but this is fascinating stuff. I need to find
+someone to fund some ratware research; this could be a major project
+with far-reaching benefits.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
