@@ -1,11 +1,15 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: bolcking gmail in squid
-Date: Fri, 24 Jun 2005 11:32:19 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0506241131520.27611@darkstar.sysinfo.com>
-References: <WorldClient-F200506241403.AA03490554@ckarsystems.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Firewall feature recommendation
+Date: Fri, 24 Jun 2005 12:49:02 -0500
+Message-ID: <200506241249.02564.rob0@gmx.co.uk>
+References: <fad9d48405062403562537f546@mail.gmail.com>
+	<200506240932.08470.rob0@gmx.co.uk>
+	<Pine.GSO.4.58.0506241121400.17433@queeg.cs.rit.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <WorldClient-F200506241403.AA03490554@ckarsystems.com>
+In-Reply-To: <Pine.GSO.4.58.0506241121400.17433@queeg.cs.rit.edu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,51 +20,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: "Sreenivasa Rao.K" <sreenivask@ckarsystems.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-
-yer asking on the wrong list, try a squid related list.
-
-Thanks,
-
-Ron DuFresne
-
-On Fri, 24 Jun 2005, Sreenivasa Rao.K wrote:
-
+On Friday 24 June 2005 10:23, Carl Holtje ;021;vcsg6; wrote:
+> > rob0@room101:/etc/named$ cat blacklist
 >
+> \{snip}
 >
-> HI,
->
-> Can anyone help me how to block giving access to gmail by allowing
-> google.com website in squid.
->
->
-> Regards,
-> Sreenivasa Rao.K
->
->
+> Also see [http://pgl.yoyo.org/adservers/index.php] for a list useful
+> for adblocking..
 
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+In fact I had that URL as a comment in the zone file; that was where I 
+got some of my ideas. But I didn't want to trust that whole big list.
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCvCeGst+vzJSwZikRAovlAKDSHpEYkt1mfyLCtHundLRWlzlcugCfQPVt
-82nhlkSh5oY2iatvJQrSX8k=
-=3Qpj
------END PGP SIGNATURE-----
+Another thing: he lists a lot of subdomains.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
