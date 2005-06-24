@@ -1,14 +1,14 @@
 From: "Carl Holtje ;021;vcsg6;" <cwh0803@cs.rit.edu>
 Subject: Re: Firewall feature recommendation
-Date: Fri, 24 Jun 2005 11:20:31 -0400 (EDT)
-Message-ID: <Pine.GSO.4.58.0506241118140.17433@queeg.cs.rit.edu>
+Date: Fri, 24 Jun 2005 11:23:54 -0400 (EDT)
+Message-ID: <Pine.GSO.4.58.0506241121400.17433@queeg.cs.rit.edu>
 References: <fad9d48405062403562537f546@mail.gmail.com>
+	<Pine.GSO.4.58.0506241002340.17433@queeg.cs.rit.edu>
+	<200506240912.08598.rob0@gmx.co.uk>
 	<200506240932.08470.rob0@gmx.co.uk>
-	<Pine.LNX.4.61.0506241635090.30646@yvahk01.tjqt.qr>
-	<200506240953.06487.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200506240953.06487.rob0@gmx.co.uk>
+In-Reply-To: <200506240932.08470.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,32 +26,35 @@ Cc: netfilter@lists.netfilter.org
 
 On Fri, 24 Jun 2005, /dev/rob0 wrote:
 
-> On Friday 24 June 2005 09:37, Jan Engelhardt wrote:
-> > >Most if not all of the listed domains were personally researched by
-> > > me. That's the weakness of this, though: it's impossible to keep
-> > > ahead of the spammers and other ratware peddlers in this arms race.
+> On Friday 24 June 2005 09:12, I wrote:
+> > > Would you be so kind as to post a randomly-selected zone file for
+> > > our enjoyment?
 > >
-> > Just look into the named and/or squid logs and see what users (or
-> > programs acting on their behalf) request.
+> > [file: null.zone]
 >
-> Yes, that would be the methodology, but it should be done in a
-> controlled environment. Some, and now perhaps most, of our squid
-> traffic is legitimate.
+> I should clarify: this same zone is loaded for all blocked domains.
+> Please note that it's generic. And (just before I saw Edvin's request)
+> it occurred to me that you might want to see the blacklist of zones:
 >
-> What is needed is a network "clean room". A fresh Windows install with
-> monitored outbound access. Using Outhouse Distress, activate a known
-> virus email, watch what it does. Using Internet Exploder, visit a known
-> malicious IIS site, and see the results.
+> rob0@room101:/etc/named$ cat blacklist
 
-Heck.. just put the windows box behind a NAT-ting linux box.. just log the
-NEW connections, and adjust from there.. probably be more likely than
-having a non-infected windows box.. :)
+\{snip}
 
-Thanks for you insight!
+Also see [http://pgl.yoyo.org/adservers/index.php] for a list useful for
+adblocking..
+
+It seems to be updated fairly regularly (read: cron job), and fairly
+complete.. available in many useful formats for many tools...
+
+Um.. and I'll be expecting my advertising check sometime soon...
+
+HTH..
 
 Carl
+
 - --
 
 "There are 10 types of people in the world: Those who understand binary
 and those that don't."
+
 
