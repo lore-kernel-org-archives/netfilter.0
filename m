@@ -1,11 +1,13 @@
-From: "curby ." <curby.public@gmail.com>
-Subject: SSH Brute force attacks - Script version 1.0
-Date: Sat, 25 Jun 2005 12:58:37 -0600
-Message-ID: <5d2f379105062511588033857@mail.gmail.com>
-Reply-To: "curby ." <curby.public@gmail.com>
+From: tahmeed <qs.tahmeed@gmail.com>
+Subject: Broadcast Traffic Control!!!
+Date: Sun, 26 Jun 2005 03:22:44 +0600
+Message-ID: <ab5428f705062514221a0e850e@mail.gmail.com>
+References: <ab5428f7050625141733f681a@mail.gmail.com>
+Reply-To: tahmeed <qs.tahmeed@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <ab5428f7050625141733f681a@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,65 +22,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Pardon my inability to reply to the original post, but I just
-subscribed.  Here is the version of the script I am considering, but
-have questions about.
+Hi!
 
-iptables -A INPUT -p tcp --dport 22 -s ! $My_Home_Firewall_IP -m state
---state NEW -m recent --name SSH --set --rsource -j SSH_BF
-iptables -A SSH_BF -m recent ! --rcheck --seconds 60 --hitcount 3
---name SSH --rsource -j RETURN
-iptables -A SSH_BF -j LOG --log-prefix "SSH Brute Force Attempt:  "
-iptables -A SSH_BF -p tcp -j TARPIT
+Can any one PLS help me on this topic?
 
+i am receiving ARP broadcasts from our local net directed to the
+router. but the router's arp cache shows that approx. 70% of the ARP
+entries are incomplete as they are from the IP's that we r not using
+any where.
 
+also our bandwidth is often getting used up. this may be due to
+frequent broadcasts.
+i have to mention that we have 31 networks working in the local net.
 
-(1) First of all, why should there be a -p tcp in the TARPIT line?=20
-Somewhere in the original thread I think there was mention of nonTCP
-packets that would get into the script and that such packets shouldn't
-get dropped, but the rule that jumps to our SSH_BF script only matches
-TCP packets anyway.  Looks like something's wrong if nonTCP packets
-get to the chain at all.
+is it possible to filter BC packets using IPTABLES or in any other methods.=
+=20
 
+and if there is any previous postings on this topic PLS Forgive me as
+i am not getting any time to   search them.
 
+Regards,
 
-(2) Next, people interested in implementing this sort of protection
-might consider changing the duration and number of matches.  For
-example, the current 60:3 settings allow a total of 180 attempts in an
-hour but only in bursts of three per minute.  We can consider two
-classes of people attempting to connect to the server: brute force
-attackers and legitimate scripts and human users.  In the former case,
-attempts per unit time as time goes to infinity is what they are
-concerned about.  In the latter case, access is usually bursty.=20
-Consider allowing 50 matches every hour, as in
+Tahmeed
 
-iptables -A SSH_Brute_Force -m recent ! --rcheck --seconds 3600
---hitcount 50 --name SSH --rsource -j RETURN
-
-Now attackers have fewer than a third of the attacks per hour they can
-mount on the system, but chatty backup scripts or admins are allowed
-the bursty access (like opening 5 shells/scp streams at once) that
-they might sometimes need or like to use.  (Whether this legitimate
-but potentially disruptive behavior should be allowed is another
-thing.)
+--=20
+Happy! If not now never
 
 
 
-(3) Also, is this the only position for the negation that makes the
-rule work as intended?  It seems to say "Allow/return packets where it
-isn't the case that we've seen more than or equal to three connection
-attempts in the last 60 seconds."  To me, the following is more
-intuitive:
-
-iptables -A SSH_Brute_Force -m recent --rcheck --seconds 60 !
---hitcount 3 --name SSH --rsource -j RETURN
-
-which reads "Allow/return packets from sources that have attempted
-connections less than three times in the past 60 seconds."  This is
-totally a subjective preference, but in the interest of learning how
-the recent match really works and avoiding stupid mistakes, I want to
-verify that this revised rule would have the same effect in the
-context of this chain.
-
-Thanks!
+--=20
+Happy! If not now never
 
