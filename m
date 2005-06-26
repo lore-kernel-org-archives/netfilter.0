@@ -1,14 +1,12 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: iptables ROUTE target
-Date: Sun, 26 Jun 2005 13:42:08 +0300
-Message-ID: <3063e505062603425d055f38@mail.gmail.com>
-References: <3f3cb3f205062523401dfb411f@mail.gmail.com>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: SSH Brute force attacks - Script version 1.0
+Date: Sun, 26 Jun 2005 22:46:46 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0506262243380.15156@yvahk01.tjqt.qr>
+References: <5d2f379105062511588033857@mail.gmail.com>
+	<002e01c579e1$4d326d00$4206a8c0@loki>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3f3cb3f205062523401dfb411f@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <002e01c579e1$4d326d00$4206a8c0@loki>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,28 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Maya Zimerman <maya.zimerman@gmail.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Marius Mertens <marius.mertens@gmx.de>
 Cc: netfilter@lists.netfilter.org
 
-I can't remember exactly, but i think the kernel headers for this
-target miss some struct declarations. If you get incomplete type for
-some structs, get them from iptables sources (after you patch them
-with pom-ng) and add those structs in .h files included in the .c file
-which gives errors.
-
-On 6/26/05, Maya Zimerman <maya.zimerman@gmail.com> wrote:
-> Hi,
-> I have noticed that the ROUTE target is experimental. However |I would
-> like to use it. There seem to be some header files missing. Does
-> anyone know when the complete code can be found?
->=20
-> Thanks
-> Maya
->=20
->=20
 
 
---=20
-Bla bla
+On another note; I was criticized for using
+
+  -m limit --limit 2/minute -p tcp --dport 22
+
+which was too perceived as too restrictive by some (or just one).
+Anyway, I've looked closer into the manpage of dstlimit and
+I would be glad to exchange my lines with
+
+  -m dstlimit --dstlimit 2/minute --dstlimit-mode srcip-dstip
+  -p tcp --dport 22
+
+Comments please :)
+
+
+Jan Engelhardt                                                               
+--                                                                            
+| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
+| Am Fassberg, 37077 Goettingen, www.gwdg.de
 
