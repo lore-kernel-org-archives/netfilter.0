@@ -1,12 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: SSH Brute force attacks - Script version 1.0
-Date: Sun, 26 Jun 2005 22:46:46 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0506262243380.15156@yvahk01.tjqt.qr>
-References: <5d2f379105062511588033857@mail.gmail.com>
-	<002e01c579e1$4d326d00$4206a8c0@loki>
+From: Erik Weber <bassman0@gmail.com>
+Subject: How to get Patch-o-matic
+Date: Sun, 26 Jun 2005 19:06:29 -0700
+Message-ID: <ffcea52605062619068e6928e@mail.gmail.com>
+Reply-To: Erik Weber <bassman0@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <002e01c579e1$4d326d00$4206a8c0@loki>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +17,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Marius Mertens <marius.mertens@gmx.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Dear List,
 
+The neither the cvs nor the svn access to the patch-o-matic archives
+work with the commands/passwords supplied on the netfilter.org site.=20
+How can I get it really?  I run Mandrake 9.2 and need the TTL patch
+(stinking ISPs).
 
-On another note; I was criticized for using
-
-  -m limit --limit 2/minute -p tcp --dport 22
-
-which was too perceived as too restrictive by some (or just one).
-Anyway, I've looked closer into the manpage of dstlimit and
-I would be glad to exchange my lines with
-
-  -m dstlimit --dstlimit 2/minute --dstlimit-mode srcip-dstip
-  -p tcp --dport 22
-
-Comments please :)
-
-
-Jan Engelhardt                                                               
---                                                                            
-| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
-| Am Fassberg, 37077 Goettingen, www.gwdg.de
+  -Erik Weber
+  Geek
 
