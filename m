@@ -1,10 +1,12 @@
-From: "bend chen" <boy2eye@263.net>
-Subject: Re: Re: -m physdev
-Date: Mon, 27 Jun 2005 17:14:35 +0800
-Message-ID: <20050627091107.1F80F300E2@smtp.263.net>
+From: Francesco Ciocchetti <primero@fastwebnet.it>
+Subject: Re: -m physdev
+Date: Mon, 27 Jun 2005 11:46:12 +0200
+Message-ID: <42BFCAE4.9030001@fastwebnet.it>
+References: <20050627091107.1F80F300E2@smtp.263.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050627091107.1F80F300E2@smtp.263.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,30 +17,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-2022-jp"
-To: Francesco Ciocchetti <primero@fastwebnet.it>
+Content-Type: text/plain; charset="us-ascii"
+To: bend chen <boy2eye@263.net>
 Cc: netfilter <netfilter@lists.netfilter.org>
 
-aGksRnJhbmNlc2NvIENpb2NjaGV0dGkNCg0KdGhhbmtzIHlvdXIgaGVscC4NCg0KaSB1c2VkIC1t
-IHBoeXNkZXYgaW4gbXkgQlJJREdFLg0KYnV0LGRpZCBJIG11c3QgdXNlZCAgLW0gcGh5c2RldiBp
-biBGT1JXQVJEIHRhYmxlcyA/DQoNCkNhbiBJIHVzZSBsaWtlIHRoZXNlIDoNCg0KICBpcHRhYmxl
-cyAtQSBJTlBVVCAtbSBwaHlzZGV2IC0tcGh5c2Rldi1pbiBldGgwIC1wIHRjcCAtLWRwb3J0IDIy
-IC1qIEFDQ0VQVA0KICBpcHRhYmxlcyAtQSBPVVRQVVQgLW0gcGh5c2RldiAtLXBoeXNkZXYtb3V0
-IGV0aDEgLXAgaWNtcCAtaiBEUk9QDQoNCg0KCQ0KVGhhbnMgDQoNCj09PT09PT0gMjAwNS0wNi0y
-NyAxMzo0NzoxNSA9PT09PT09DQoNCj5iZW5kIGNoZW4gd3JvdGU6DQo+DQo+PmhpLG5ldGZpbHRl
-cg0KPj4NCj4+CSAgd2hvIGNhbiBnaXZlIG1lIHNvbWUgZXhhbXBsZXMgZnJvbSAiaXB0YWJsZXMg
-LW0gcGh5c2RldiI/DQo+Pg0KPj50aGFua3MgeW91ciBoZWxwIA0KPj4NCj4+oaGhoaGhoaGhoaGh
-oaGhoQ0KPj4gIA0KPj4NCj5Zb3UgbmVlZCBpdCB0byBjaGVjayB0aGUgSU5QVVQgYW5kIE9VVFBV
-VCBQeXNoaWNhbCBJbnRlcmZhY2UgZm9yIGENCj5CUklER0UgeW91IHdhbnQgdG8gZmlsdGVyIHdp
-dGggSXB0YWJsZXMuDQo+DQo+SSBtZWFuLCBpZiB5b3UgaGF2ZSBhbiBldGgwIGFuZCBldGgxIGJy
-aWRnZWQgaW4gYSBicjAgaW50ZXJmYWNlIGFsbCB0aGUNCj5wYWNrZXRzIGNvbWluZyBhbmQgZXhp
-dGluZyB0byBhbmQgZnJvbSB0aGUgYnJpZGdlIHdpbGwgcmVzdWx0IHdpdGgNCj5JTi1JTlRFUkZB
-Q0UgYW5kIE9VVC1JTlRFUkZBQ0UgYXMgYnIwLiBJZiB5b3UgbmVlZCB0byBmaWx0ZXIgdGhlIHBh
-Y2tldHMNCj5iYXNlZCBvbiBpbmNvbWluZyBhbmQgb3V0Y29taW5nIGludGVyZmFjZXMgeW91IG5l
-ZWQgdG8gdXNlIC1tIHBoeXNkZXYNCj4NCj5pcHRhYmxlcyAtQSBGT1JXQVJEIC1tIHBoeXNkZXYg
-LS1waHlzZGV2LWluIGV0aDAgLWogQUNDRVBUDQo+DQo+DQo+YnllDQo+UC4NCj4NCg0KPSA9ID0g
-PSA9ID0gPSA9ID0gPSA9ID0gPSA9ID0gPSA9ID0gPSA9DQoJCQkNCg0KCQkJCSANCqGhoaGhoaGh
-oaGhoaGhoaFiZW5kIGNoZW4NCqGhoaGhoaGhoaGhoaGhoaFib3kyZXllQDI2My5uZXQNCqGhoaGh
-oaGhoaGhoaGhoaGhoaGhMjAwNS0wNi0yNw0KDQo=
+bend chen wrote:
 
+> hi,Francesco Ciocchetti
+>
+> thanks your help.
+>
+> i used -m physdev in my BRIDGE.
+> but,did I must used -m physdev in FORWARD tables ?
+>
+> Can I use like these :
+>
+> iptables -A INPUT -m physdev --physdev-in eth0 -p tcp --dport 22 -j ACCEPT
+> iptables -A OUTPUT -m physdev --physdev-out eth1 -p icmp -j DROP
+>
+>
+>
+> Thans
+
+
+Sure that you can do it ... if you enabled Support for Netfilter on
+Bridge devices in your kernel.
+
+You can use physdev-in, physdev-out as you wuold use '-i' and '-o' .
+
+Bye
+P.
 
