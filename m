@@ -1,13 +1,10 @@
-From: Tobias DiPasquale <codeslinger@gmail.com>
-Subject: Re: Blocking Direct outgoing connections to port 80
-Date: Mon, 27 Jun 2005 08:58:04 -0400
-Message-ID: <876ef97a050627055863a7e303@mail.gmail.com>
-References: <6c2d1c9d05062705301afcf744@mail.gmail.com>
-Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
+From: Mike Giggey <m.giggey@utoronto.ca>
+Subject: unable to re-configure?
+Date: Mon, 27 Jun 2005 10:25:32 -0400
+Message-ID: <200506271025.32340.m.giggey@utoronto.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6c2d1c9d05062705301afcf744@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,24 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: shardul Adhikari <free2squid@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 6/27/05, shardul Adhikari <free2squid@gmail.com> wrote:
-> Hi list,
-> I want to block direct connections comming to port 80 from my network
-> , but allow them connections via proxy port 8080 , how to go about it.
->=20
-> Thanks in Advance.
+trying to set up an openvpn connection on  a box with iptables
 
-The LARTC cookbook shows how to do this:
+Would like to get port 1194 open (UDP).
 
-http://lartc.org/howto/lartc.cookbook.squid.html
+I have tried various ways --usually the best way seems to be editing the /etc/sysconf/iptables file and restarting the service. 
 
-This is a little old (it uses ipchains for some things) but you should
-be able to figure out how to update it for use with iptables.
+I have tried to verify with nmap --but no success. 
 
---=20
-[ Tobias DiPasquale ]
-0x636f6465736c696e67657240676d61696c2e636f6d
+I would greatly appreciate any advise on how to open this port...
+
+(p.s. sorry for such a newbie-class question)
+
+Thanks in advance
+
+
+
+
+Here is some output:
+[root@here]# /sbin/iptables -L
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+RH-Firewall-1-INPUT  all  --  anywhere             anywhere
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+RH-Firewall-1-INPUT  all  --  anywhere             anywhere
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain RH-Firewall-1-INPUT (2 references)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere
+ACCEPT     icmp --  anywhere             anywhere            icmp any
+ACCEPT     ipv6-crypt--  anywhere             anywhere
+ACCEPT     ipv6-auth--  anywhere             anywhere
+ACCEPT     udp  --  anywhere             224.0.0.251         udp dpt:5353
+ACCEPT     udp  --  anywhere             anywhere            udp dpt:ipp
+ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED
+ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh
+REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited
+ACCEPT     udp  --  anywhere             anywhere            state NEW udp dpt:1194
+[root@here]# /sbin/iptables -V
+iptables v1.2.11
+
 
