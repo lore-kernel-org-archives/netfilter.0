@@ -1,11 +1,10 @@
-From: Wladimir Mutel <mwg@mwg.dp.ua>
-Subject: Asymmetric/reverse NAT q :
-Date: Mon, 27 Jun 2005 19:37:50 +0300
-Message-ID: <20050627163750.GA5984@mwg.dp.ua>
+From: =?ISO-8859-15?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Subject: Patch-o-matick H323 patch bricked the kernel 2.6.12.1 compilation
+Date: Mon, 27 Jun 2005 20:24:53 +0200
+Message-ID: <42C04475.4030107@arcoscom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------040600000000030702060602"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,49 +15,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-	Hi,
+This is a multi-part message in MIME format.
+--------------040600000000030702060602
+Content-Type: text/plain; charset="iso-8859-15"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 
-	We have quite complicated network setup.
+When apply last pom patches (the h323 is the "victim") over 2.6.12.1=20
+kernel, iptables 1.3.1 compile fine, but kernel not.
 
-	(1) Windows server with private IP.
+Appears that h323 pom, breaks any structure that is needed by=20
+"standalone" nat module.
 
-	(2) Linux NAT box with two interfaces, private and
-	public, that translates outgoing Windows (1) traffic to its 
-	public Inet IP. It should serve as back channel (outgoing) 
-	in satellite reception. And it seems it serves this purpose 
-	well enough. (there is just -j MASQUERADE rule on 
-	'nat'/PREROUTING chain)
+Sorry, but I only remember the "standalone" and I don't know if were=20
+"nat" or "contrack" the .c kernel source.
 
-	(3) satellite reception terminal that bridges
-	incoming satellite packets to the specified Ethernet mac address
-	through its outgoing Ethernet port. And here is the problem.
-	Returned packets have destination IP equal to the public IP of 
-	NAT box (2). They could not be streamed back to Windows (1)
-	directly.
+=BFAnyone have used it or have any idea on how to solve?
 
-	So we decided to bring in (4) Linux host for reverse 
-	NAT from satellite terminal (3) to Windows (1). But then an unpleasant
-	feature was discovered: 'nat' PREROUTING chain is used only in
-	initial TCP/IP packets. So, the first syn packet coming from
-	Windows (1) through NAT box (2) gets translated well; but then 
-	syn/ack	reply coming from satellite terminal (3) does not get 
-	translated back by (4).
 
-	The main complication is that (1), (3) and (4) are near, but (2)
-	which have ISP connection for back-channel is far from them and
-	could not be brought close enough. Were our back-channel ISP and
-	satellite reception point in one place, I would not have this
-	problem at all.
+Thanks
 
-	And so, dear people, I want to ask your advise. How to get
-	through this situation ? Should I use ct_sync, or ebtables, or
-	what else ? Is there a hack to mark incoming packets as 'new' while 
-	they are not ? Is it possible to force 'nat'/PREROUTING chain to 
-	do DNAT on incoming packets that are not 'new' ?
+P.D.: Sorry for the "without more info" e-mail, but I haven't got the=20
+machine now to say us the exact kernel compilation error.
 
-	Thank you in advance for your replies. Hope some of you had
-	solved similar problems.
+--=20
+   Samuel D=EDaz Garc=EDa
+    Director Gerente
+ArcosCom Wireless, S.L.L.
+
+CIF: B11828068
+c/ Romero Gago, 19
+Arcos de la Frontera
+11630 - Cadiz
+
+http://www.arcoscom.com
+
+mailto:samueldg@arcoscom.com
+msn: samueldg@arcoscom.com
+
+M=F3vil: 651 93 72 48
+Tlfn.: 956 70 13 15
+Fax:   956 70 34 83
+
+
+--------------040600000000030702060602--
 
