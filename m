@@ -1,18 +1,11 @@
-From: Stephen Frost <sfrost@snowman.net>
-Subject: Re: SSH Brute force attacks - Script version 1.0
-Date: Mon, 27 Jun 2005 12:09:12 -0400
-Message-ID: <20050627160909.GA24207@ns.snowman.net>
-References: <5d2f379105062511588033857@mail.gmail.com>
-	<002e01c579e1$4d326d00$4206a8c0@loki>
-	<Pine.LNX.4.61.0506262243380.15156@yvahk01.tjqt.qr>
-	<000c01c57af0$c58cb5c0$4206a8c0@loki>
-	<5d2f379105062708534de71258@mail.gmail.com>
+From: Wladimir Mutel <mwg@mwg.dp.ua>
+Subject: Asymmetric/reverse NAT q :
+Date: Mon, 27 Jun 2005 19:37:50 +0300
+Message-ID: <20050627163750.GA5984@mwg.dp.ua>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zAZKrYjO7GRpkTOs"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <5d2f379105062708534de71258@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,83 +16,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "curby ." <curby.public@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+	Hi,
 
---zAZKrYjO7GRpkTOs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	We have quite complicated network setup.
 
-* curby . (curby.public@gmail.com) wrote:
-> On 6/27/05, Marius Mertens <marius.mertens@gmx.de> wrote:
-> > If you are afraid of somebody trying to DOS you, the recent match with =
-the
-> > added TTL check might be an even better choice.
->=20
-> I've been wondering about recent's TTL check and its ability to
-> prevent or even reduce DOSing.
+	(1) Windows server with private IP.
 
-recent's not going to prevent a DOS.  It tries to avoid becoming the
-cause of a DOS but there's only so much it can do.
+	(2) Linux NAT box with two interfaces, private and
+	public, that translates outgoing Windows (1) traffic to its 
+	public Inet IP. It should serve as back channel (outgoing) 
+	in satellite reception. And it seems it serves this purpose 
+	well enough. (there is just -j MASQUERADE rule on 
+	'nat'/PREROUTING chain)
 
-> To test if the TTL option is used, the attacker can send regular
-> (nonspoofed) ssh requests until they start becoming unresponsive (call
-> this number n), then try sending another request with a different TTL.
->  If that request returns, TTL match is being used so simply send n-1
-> requests with different TTLs and the spoofed address.  Unless the
-> route from the attacker to the sshd is longer than the route from the
-> spoofed client IP to the sshd and the client uses a TTL of 255 (or
-> something similarly high), the legitimate client will still be DOSed.=20
+	(3) satellite reception terminal that bridges
+	incoming satellite packets to the specified Ethernet mac address
+	through its outgoing Ethernet port. And here is the problem.
+	Returned packets have destination IP equal to the public IP of 
+	NAT box (2). They could not be streamed back to Windows (1)
+	directly.
 
-Sure, but at least it's a little harder than just having to know the
-other client's IP address, that's kind of the point.  There's also an
-opportunity here for someone to notice what's happening and take action
-about it.  Alternatively, there could be additional checks to try and
-thwart this (such as checking for multiple packets with different TTLs
-=66rom the same source IP and raising a big stink about it, or flipping
-the check around to require a specific TTL for a given IP, etc).
+	So we decided to bring in (4) Linux host for reverse 
+	NAT from satellite terminal (3) to Windows (1). But then an unpleasant
+	feature was discovered: 'nat' PREROUTING chain is used only in
+	initial TCP/IP packets. So, the first syn packet coming from
+	Windows (1) through NAT box (2) gets translated well; but then 
+	syn/ack	reply coming from satellite terminal (3) does not get 
+	translated back by (4).
 
-> Knowledge of the client system's OS or TCP stack is also reasonably
-> easy to acquire, and can help narrow down the TTLs that need to be
-> sent.  Or the attacker can be lazy and send 250 or so SYN packets with
-> different TTLs and the spoofed IP.
->=20
-> In short, if an attacker know's you're using recent to track ssh
-> requests, and is not so clueless that he doesn't know about the TTL
-> option to recent, you're dead whether or not you use the TTL option.
+	The main complication is that (1), (3) and (4) are near, but (2)
+	which have ISP connection for back-channel is far from them and
+	could not be brought close enough. Were our back-channel ISP and
+	satellite reception point in one place, I would not have this
+	problem at all.
 
-ipt_recent is far from fool-proof and you're describing a known
-limitation of it, not anything new.  The TTL option is just there to
-make it more difficult, it's by no means a solution to the potential
-problem.  Generally I'd think finding the client IP is expected to be=20
-somewhat difficult by itself.  There's also escape-routes to some
-extent, you can have a special rule which watches for packets matching
-something and removes blocks on that source address, perhaps
-indefinitely or for some specified time, or only when matching the same
-TTL as the key packet, etc.
+	And so, dear people, I want to ask your advise. How to get
+	through this situation ? Should I use ct_sync, or ebtables, or
+	what else ? Is there a hack to mark incoming packets as 'new' while 
+	they are not ? Is it possible to force 'nat'/PREROUTING chain to 
+	do DNAT on incoming packets that are not 'new' ?
 
-> On a related note, I really hope ISPs are doing some egress filtering
-> to prevent these packets with source IPs not on the expected subnet
-> from getting out.  I wonder how many do...
-
-Not nearly enough, unfortunately.
-
-	Stephen
-
---zAZKrYjO7GRpkTOs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFCwCSlrzgMPqB3kigRAv2WAJ0SszGT+KwFUaYhhlaD9N9Cf2NKtQCghQos
-/bnMZXT0ZXkifhEdFn1jie0=
-=Uh2t
------END PGP SIGNATURE-----
-
---zAZKrYjO7GRpkTOs--
+	Thank you in advance for your replies. Hope some of you had
+	solved similar problems.
 
