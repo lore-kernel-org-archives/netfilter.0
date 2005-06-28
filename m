@@ -1,16 +1,10 @@
-From: Jong Hian Zin <mail.zin@gmail.com>
-Subject: Re: Firewall blocking Java applet?
-Date: Tue, 28 Jun 2005 10:26:08 +0800
-Message-ID: <cb82de5905062719264cd8b0a9@mail.gmail.com>
-References: <cb82de59050622183613989c5f@mail.gmail.com>
-	<200506222102.32991.rob0@gmx.co.uk>
-	<cb82de5905062219311bcdfba3@mail.gmail.com>
-Reply-To: Jong Hian Zin <mail.zin@gmail.com>
+From: Ian Mortimer <ian@physics.uq.edu.au>
+Subject: Bridge + netfilter failing with recent Fedora 3 kernels.
+Date: Tue, 28 Jun 2005 12:53:18 +1000
+Message-ID: <1119927198.5199.71.camel@im.physics.uq.edu.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <cb82de5905062219311bcdfba3@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,227 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-I have managed to log the traffic right after I clicked on the Start button=
-:
+Has anyone else seen this?  A working bridge running Fedora Core 3 fails
+after an upgrade to the one of  the latest Fedora kernels.  What I've
+found is:
 
-root@OpenWrt:~# iptables -I FORWARD 1 -s 0/0 -d 0/0 -j LOG
-root@OpenWrt:~# logread -f
-Jun 27 22:08:49 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D78 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3703
-PROTO=3DUDP SPT=3D137 DPT=3D137 LEN=3D58
-Jun 27 22:08:51 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D78 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3705
-PROTO=3DUDP SPT=3D137 DPT=3D137 LEN=3D58
-Jun 27 22:08:52 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D78 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3707
-PROTO=3DUDP SPT=3D137 DPT=3D137 LEN=3D58
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3709 =
-DF
-PROTO=3DTCP SPT=3D4847 DPT=3D21
-WINDOW=3D64240 RES=3D0x00 SYN URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dppp0 OUT=3Dbr0 PHYSOUT=3Dvlan=
-0 SRC=3D
-219.93.175.234 <http://219.93.175.234> DST=3D192.168.1.2
-<http://192.168.1.2>LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D122 ID=3D10970 DF
-PROTO=3DTCP SPT=3D21 DPT=3D4847
-WINDOW=3D65535 RES=3D0x00 ACK SYN URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3710 =
-DF
-PROTO=3DTCP SPT=3D4847 DPT=3D21
-WINDOW=3D64240 RES=3D0x00 ACK URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dppp0 OUT=3Dbr0 PHYSOUT=3Dvlan=
-0 SRC=3D
-219.93.175.234 <http://219.93.175.234> DST=3D192.168.1.2
-<http://192.168.1.2>LEN=3D94 TOS=3D0x00 PREC=3D0x00 TTL=3D122 ID=3D10973 DF
-PROTO=3DTCP SPT=3D21 DPT=3D4847
-WINDOW=3D65535 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D51 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3711 =
-DF
-PROTO=3DTCP SPT=3D4847 DPT=3D21
-WINDOW=3D64186 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dppp0 OUT=3Dbr0 PHYSOUT=3Dvlan=
-0 SRC=3D
-219.93.175.234 <http://219.93.175.234> DST=3D192.168.1.2
-<http://192.168.1.2>LEN=3D73 TOS=3D0x00 PREC=3D0x00 TTL=3D122 ID=3D10977 DF
-PROTO=3DTCP SPT=3D21 DPT=3D4847
-WINDOW=3D65524 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D54 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3714 =
-DF
-PROTO=3DTCP SPT=3D4847 DPT=3D21
-WINDOW=3D64153 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dppp0 OUT=3Dbr0 PHYSOUT=3Dvlan=
-0 SRC=3D
-219.93.175.234 <http://219.93.175.234> DST=3D192.168.1.2
-<http://192.168.1.2>LEN=3D68 TOS=3D0x00 PREC=3D0x00 TTL=3D122 ID=3D10985 DF
-PROTO=3DTCP SPT=3D21 DPT=3D4847
-WINDOW=3D65510 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3716 =
-DF
-PROTO=3DTCP SPT=3D4847 DPT=3D21
-WINDOW=3D64125 RES=3D0x00 ACK URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dppp0 OUT=3Dbr0 PHYSOUT=3Dvlan=
-0 SRC=3D
-219.93.175.234 <http://219.93.175.234> DST=3D192.168.1.2
-<http://192.168.1.2>LEN=3D66 TOS=3D0x00 PREC=3D0x00 TTL=3D122 ID=3D11013 DF
-PROTO=3DTCP SPT=3D21 DPT=3D4847
-WINDOW=3D65510 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3717 =
-DF
-PROTO=3DTCP SPT=3D4847 DPT=3D21
-WINDOW=3D64099 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dppp0 OUT=3Dbr0 PHYSOUT=3Dvlan=
-0 SRC=3D
-219.93.175.234 <http://219.93.175.234> DST=3D192.168.1.2
-<http://192.168.1.2>LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D122 ID=3D11022 DF
-PROTO=3DTCP SPT=3D21 DPT=3D4847
-WINDOW=3D65502 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D46 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3718 =
-DF
-PROTO=3DTCP SPT=3D4847 DPT=3D21
-WINDOW=3D64079 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dppp0 OUT=3Dbr0 PHYSOUT=3Dvlan=
-0 SRC=3D
-219.93.175.234 <http://219.93.175.234> DST=3D192.168.1.2
-<http://192.168.1.2>LEN=3D92 TOS=3D0x00 PREC=3D0x00 TTL=3D122 ID=3D11029 DF
-PROTO=3DTCP SPT=3D21 DPT=3D4847
-WINDOW=3D65496 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D78 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3719
-PROTO=3DUDP SPT=3D137 DPT=3D137 LEN=3D58
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dppp0 OUT=3Dbr0 PHYSOUT=3Dvlan=
-0 SRC=3D
-210.187.132.33 <http://210.187.132.33> DST=3D192.168.1.2
-<http://192.168.1.2>LEN=3D56 TOS=3D0x00 PREC=3D0x00 TTL=3D252 ID=3D0 PROTO=
-=3DICMP
-TYPE=3D3 CODE=3D13 [SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D78 TOS=3D0x00 PREC=3D0x00 TTL=3D125 ID=3D3719
-PROTO=3DUDP SPT=3D137 DPT=3D137 LEN=3D58 ]
-Jun 27 22:08:54 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3720 =
-DF
-PROTO=3DTCP SPT=3D4847 DPT=3D21
-WINDOW=3D64027 RES=3D0x00 ACK URGP=3D0
-Jun 27 22:08:56 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D78 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3723
-PROTO=3DUDP SPT=3D137 DPT=3D137 LEN=3D58
-Jun 27 22:08:57 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D78 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3725
-PROTO=3DUDP SPT=3D137 DPT=3D137 LEN=3D58
-Jun 27 22:08:59 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3727 =
-DF
-PROTO=3DTCP SPT=3D4848 DPT=3D3265
-WINDOW=3D64240 RES=3D0x00 SYN URGP=3D0
-Jun 27 22:08:59 (none) kern.warn kernel: IN=3Dppp0 OUT=3Dbr0 PHYSOUT=3Dvlan=
-0 SRC=3D
-219.93.175.234 <http://219.93.175.234> DST=3D192.168.1.2
-<http://192.168.1.2>LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D122 ID=3D11818 DF
-PROTO=3DTCP SPT=3D3265 DPT=3D4848
-WINDOW=3D65535 RES=3D0x00 ACK SYN URGP=3D0
-Jun 27 22:08:59 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3728 =
-DF
-PROTO=3DTCP SPT=3D4848 DPT=3D3265
-WINDOW=3D64240 RES=3D0x00 ACK URGP=3D0
-Jun 27 22:08:59 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3729 =
-DF
-PROTO=3DTCP SPT=3D4847 DPT=3D21
-WINDOW=3D64027 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:59 (none) kern.warn kernel: IN=3Dppp0 OUT=3Dbr0 PHYSOUT=3Dvlan=
-0 SRC=3D
-219.93.175.234 <http://219.93.175.234> DST=3D192.168.1.2
-<http://192.168.1.2>LEN=3D94 TOS=3D0x00 PREC=3D0x00 TTL=3D122 ID=3D11828 DF
-PROTO=3DTCP SPT=3D21 DPT=3D4847
-WINDOW=3D65484 RES=3D0x00 ACK PSH URGP=3D0
-Jun 27 22:08:59 (none) kern.warn kernel: IN=3Dbr0 OUT=3Dppp0 PHYSIN=3Dvlan0=
- SRC=3D
-192.168.1.2 <http://192.168.1.2> DST=3D219.93.175.234
-<http://219.93.175.234>LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D3731 =
-DF
-PROTO=3DTCP SPT=3D4847 DPT=3D21
-WINDOW=3D63973 RES=3D0x00 ACK URGP=3D0
+   kernel-2.6.11-1.14_FC3 and earlier work fine
 
-Does these tell anything?
+   kernel-2.6.11-1.27_FC3 and kernel-2.6.11-1.35_FC3 fail!
 
-On 6/23/05, Jong Hian Zin <mail.zin@gmail.com> wrote:
->=20
-> On 6/23/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
-> >=20
-> > On Wednesday 22 June 2005 20:36, Jong Hian Zin wrote:
-> > > http://202.188.95.52:8080/speedometer/
-> > >
-> > > The bandwidth test Java applet can be loaded, but unable to start the=
-=20
-> >=20
-> > Does it work if not going through the OpenWRT?
->=20
->=20
-> Yes, it works if I connect the PC directly to the ADSL modem, using PPPoE=
-.
->=20
-> Not from what you posted. iptables-save(8) would be easier to follow.
-> > But you can probably troubleshoot this on your own by putting in -j LOG=
-=20
-> > rules for -s/-d 202.188.95.52 <http://202.188.95.52> traffic. Try it an=
-d=20
-> > see what you get. Is
-> > the openwrt capable of normal logging? Or maybe to a remote syslog
-> > server?
-> >=20
->=20
-> I will try iptables-save and logging.=20
->=20
-> --=20
-> Jong Hian Zin=20
+The problem is with netfilter not with bridging.  With iptables
+shutdown the bridge works fine but even with very simple iptables
+rules any network connections to/from or through the bridge fail.
+
+(Fedora kernels are patched so it's difficult to say which standard
+kernel version they correspond to but it looks like some new kernel
+patch has caused or will cause problems with bridge-nf).
 
 
+-- 
+Ian
 
-
---=20
-Jong Hian Zin
