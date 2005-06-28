@@ -1,7 +1,7 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: [OT] Strange bash phenomenon
-Date: Sat, 11 Feb 2006 08:44:52 -0500
-Message-ID: <1139665492.21361.37.camel@localhost>
+From: DiegoLacerda <diegolacerda@gmail.com>
+Subject: Unknown error 4294967295
+Date: Tue, 28 Jun 2005 16:58:03 -0300
+Message-ID: <42C1ABCB.8020209@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,61 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter users list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hello everyone.  This is a little off topic but I find it both
-perplexing and amusing.  I've been spending the last few days enabling
-support for CyberGuard security devices for the ISCS network security
-management platform.  It has gone very well with the new firmware and
-has given us a near off the shelf solution.
+Hi people!
 
-However, in one of the scripts for automated distribution of the rules,
-it checks for the presence of existing iptables files.  I originally
-thought I could do something like:
+I got this message with the PSD and UNCLEAN modules, but I succeeded by 
+reconfiguring and compiling my kernel again.
+Try to recompile your kernel source with CONFIG_IP_NF_TARGET_NETMAP=y 
+option in your .config file.
 
-if [ -f iptables* ];then
+Best regards,
+Diego Lacerda.
 
-But the shell expands all the iptables file names and creates an error
-when passing that many arguments to the test.
+> Hi
+ 
+> On Mon, 06 Feb 2006 19:20:49 -0600
+> Jorge Davila <davila at nicaraguaopensource.com <https://lists.netfilter.org/mailman/listinfo/netfilter>> wrote:
 
-So I then thought I could do:
+>>/ Hi list!:
+/>>/ 
+/>>/ Trying to execute this rule
+/>>/ 
+/>>/ iptables -t mangle -A PREROUTING -s  -j NETMAP --to 192.168.3.0/24
+/>>/ 
+/>>/ I receive
+/>>/ 
+/>>/ iptables: Unknown error 4294967295
+/>>/ 
+/>>/ Someone knows where to look?
+/>>/ 
+/
+>first i would look into your arguments, as the source-ip(range) to match
+>is not specified. second i would look into the argument-handling of
+>iptables as this error is easy to catch ;)
 
-FILES=/etc/config/iptables*
-if [ -f ${FILES%% *} ];then
-        cp /etc/config/iptables* /etc/config/PEPBackup/ 2>/dev/null
-        if [ $? -ne 0 ]; then
-                echo '[PEP Update Error]' Could not backup up PEP
-configuration files >&2
-                exit 1
-        fi
-fi
-
-I'd trim off everything after the first space and test for that single
-file.  However, it doesn't work.  ${FILES%% *} expands to include all
-the file names.  On the other hand, the version below works!
+>regards
+>virtual
 
 
-FILES=$(echo /etc/config/iptables*)
-if [ -f ${FILES%% *} ];then
-        cp /etc/config/iptables* /etc/config/PEPBackup/ 2>/dev/null
-        if [ $? -ne 0 ]; then
-                echo '[PEP Update Error]' Could not backup up PEP
-configuration files >&2
-                exit 1
-        fi
-fi
-
-Any ideas why the latter one works fine but the other does not? Just
-curious - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
-
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
 
 
