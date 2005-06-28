@@ -1,12 +1,10 @@
-From: varun_saa@vsnl.net
-Subject: MAC filtering
-Date: Wed, 29 Jun 2005 16:56:02 +0500
-Message-ID: <3f96f433f945f0.3f945f03f96f43@vsnl.net>
+From: "massiblue\@libero\.it" <massiblue@libero.it>
+Subject: removing entries from conntrack table
+Date: Tue, 28 Jun 2005 17:16:18 +0200
+Message-ID: <IISVR6$0605B46BBF14FF0959F85306B36F361C@libero.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +16,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
-      To allow a particular MAC, I plan use the rule 
-as sugested in my previous post :
+Hi all,
 
-iptables -A FORWARD -m mac --mac-source ff:ff:ff:ff:ff:ff -j ACCEPT.
+i have a nat box
+connecting my lan to
+internet via two
+pppo=
+es, i want to be
+able to route lan
+hosts trough ppp0 or
+ppp1 independe=
+ntly.
+i managed iproute2
+and iptables rules
+to make the thing
+work (a=
+lmost...).
 
-Now how do you block all other MAC addresses in the first place.
-How to write a rule for that ?
+the problem is that
+if i reroute hosts
+on the fly (and i=0D
+=
+really need to),
+conntrack keeps the
+entry and sends out
+packet on the=
 
-Thanks
+correct interface
+but with the wrong
+snat (the previous
+one), with t=
+he
+response coming back
+on the other ppp
+(weird)!
 
-Varun
+if i wait for the=
+
+conntrack to
+timeout, then
+everything is ok...
+but i need instant=0D
+=
+complete switch!
+
+i tried the hping2
+hack, and it's ok
+for TCP... but=
+ i
+also need to drop
+UDP entries... (such
+as dns queries...)
+
+so i n=
+eed a way to
+_selectively_ delete
+conntrack entries!
+
+searched the ne=
+t but
+found nothing apart
+some very old
+similar posts...
+
+thank you =
+very much
+
+Massimiliano Galanti=0A=0A=0A=0A____________________________=
+________________________________=0ANavighi a 4 MEGA e i primi 3 mesi sono=
+ GRATIS. =0AScegli Libero Adsl Flat senza limiti su http://www.libero.it=0A=
+
 
 
