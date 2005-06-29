@@ -1,9 +1,15 @@
-From: Piotr Chytla <pch@packetconsulting.pl>
-Subject: CLUSTERIP problems
-Date: Tue, 28 Jun 2005 21:40:26 +0200
-Message-ID: <20050628194026.GA2010@packetconsulting.pl>
+From: Vlad Janicek <vladjanicek@gmail.com>
+Subject: Re: whats wrong???
+Date: Tue, 28 Jun 2005 21:09:49 -0400
+Message-ID: <96bc76cf0506281809239e7d3c@mail.gmail.com>
+References: <42C17D6F.70709@adinet.com.uy>
+	<96bc76cf05062810322e6ffcbd@mail.gmail.com>
+	<42C1913F.1000806@adinet.com.uy>
+Reply-To: Vlad Janicek <vladjanicek@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <42C1913F.1000806@adinet.com.uy>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,43 +22,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi 
+2005/6/28, Juan Manuel Tato <madness@adinet.com.uy>:=20
+>=20
+> # Policies.
+> #
+> $IPT -P INPUT ACCEPT
+> $IPT -P OUTPUT ACCEPT
+> $IPT -P FORWARD ACCEPT
 
-I've problem with CLUSTERIP from 2.6.12 kernel, both nodes run debian
-sarge on 2.6.12.
 
-First node :
-eth0      Link encap:Ethernet  HWaddr 00:06:29:8F:42:0D  
-          inet addr:192.168.116.50  Bcast:192.168.116.127
-	  Mask:255.255.255.128
+You usually drop everything first, then you open each port and service one=
+=20
+by one
+Normalmente cierras todo primero, despues es que abres cada puerto y=20
+servicio=20
 
-iptables -A INPUT -i eth0 -p tcp -d 192.168.116.50/32 --dport 80 -j CLUSTERIP --new --hashmode sourceip --clustermac 01:23:45:67:89:AB --total-nodes 2 --local-node 1
+echo 1 > /proc/sys/net/ipv4/ip_forward
+>=20
+> $IPT -t nat -A POSTROUTING -o $INT -j SNAT --to pub.lic.ip.addr
+>=20
+> # This rule protects your fowarding rule.
+> $IPT -A FORWARD -i $INT -m state --state NEW,INVALID -j DROP
 
-Second node:
-eth0      Link encap:Ethernet  HWaddr 00:06:29:A8:14:4D  
-          inet addr:192.168.116.51  Bcast:192.168.116.127
-	  Mask:255.255.255.128
 
-iptables -A INPUT -i eth0 -p tcp -d 192.168.116.50/32 --dport 80 -j CLUSTERIP --new --hashmode sourceip --clustermac 01:23:45:67:89:AB --total-nodes 2 --local-node 2
+remove this for testing
+quita esto para probar
 
-When I've tried to connect from outside to cluster , connection fails . 
-Only some SYN packets appears on input interface , but connection is not
-created. 
+# defino la ip de mi servidor interno
+> SRV=3D" 192.168.100.1 <http://192.168.100.1/>"
+>=20
+> $IPT -t nat -A PREROUTING -i $INT -p tcp --dport 25 -j DNAT --to
+> 192.168.100.1:25 <http://192.168.100.1:25/>
+> $IPT -t nat -A PREROUTING -i $INT -p tcp --dport 53 -j DNAT --to $SRV=20
+> $IPT -t nat -A PREROUTING -i $INT -p udp --dport 53 -j DNAT --to $SRV
+> $IPT -t nat -A PREROUTING -i $INT -p tcp --dport 110 -j DNAT --to $SRV
+> $IPT -t nat -A PREROUTING -i $INT -p udp --dport 110 -j DNAT --to $SRV=20
+> $IPT -t nat -A PREROUTING -i $INT -p tcp --dport 80 -j DNAT --to
+> 192.168.100.1:80 <http://192.168.100.1/>
+> $IPT -t nat -A PREROUTING -i $INT -p udp --dport 80 -j DNAT --to
+> 192.168.100.1:80 <http://192.168.100.1/>
+> $IPT -t nat -A PREROUTING -i $INT -p tcp --dport 143 -j DNAT --to $SRV
+> $IPT -t nat -A PREROUTING -i $INT -p udp --dport 143 -j DNAT --to $SRV
 
-On the first machine I have in logs only this :
 
-hash=1 ct_hash=1 not responsible
+ what if you tried something like this for external packets looking for a=
+=20
+system inside:
+que si intentas algo como esto para el ruteo interno de paquetes externos:
 
-ARP mangling patch for 2.6.12 is applied :
+iptables -A FORWARD -d your_lans_server_ip -p tcp --dport 110 -j ACCEPT
+iptables -t nat -A PREROUTING -d your_external_nic -p tcp --dport 110 \
+-j DNAT --to-destination your_lans_server_ip:110
 
-http://patchwork.netfilter.org/netfilter-devel/patch.pl?id=2643
-
-/pch
-
--- 
-Dyslexia bug unpatched sinse 1977 ...
-exploit have leaked to the underground.
-
+--=20
+Vlad
