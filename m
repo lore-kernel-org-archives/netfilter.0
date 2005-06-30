@@ -1,9 +1,9 @@
-From: Simon <dev@networker.co.nz>
-Subject: A replacement for rp_filter with iptables (config help needed)
-Date: Thu, 30 Jun 2005 16:24:51 +1200
-Message-ID: <42C37413.3010504@networker.co.nz>
+From: Venkata Narayana <mesg2nari@yahoo.com>
+Subject: REDIRECT changes DST address of the packet
+Date: Thu, 30 Jun 2005 00:29:34 -0700 (PDT)
+Message-ID: <20050630072934.80040.qmail@web60815.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,32 +15,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi There,
+Hello,
+ 
+ I am new to this mailing list sorry If I ask any
+ thing wrong.
 
-We are debian sarge with two ethernet cards.. To get eth1 (on a seperate 
-subnet) working correctly, ive had to change 
-/proc/sys/net/ipv4/conf/eth1/rp_filter to 0. Now i need a simple 
-solution to protect against spoofing attacks on this interface... I have 
-an example setup, but i want to make sure i have it correct.. can 
-someone confirm for me?...
+ My question is if I use REDIRECT action in
+ PREROUTINg
+ rule is it going to change the tcp packet DST
+ address.
+ 
+ If I lose original DST address, how can I persist
+ that
+ value in that packet.
+ 
+ Help me !!!
+ 
+ Thanks in advance.
+ 
+ Nari.
+> 
+> 
+> __________________________________________________
+> Do You Yahoo!?
+> Tired of spam?  Yahoo! Mail has the best spam
+> protection around 
+> http://mail.yahoo.com 
+> 
 
-Note, this was a small script to block the mysql port on the server, but 
-then enable for certain time/ip dynamically by adding/removing chains.
 
-iptables -F
-iptables -A INPUT -i lo -j ACCEPT
-iptables -N MYSQL
-iptables -N SPOOF
-iptables -A INPUT -p tcp --dport 3306 -j MYSQL
-iptables -A SPOOF -i eth1 -j SPOOF
-iptables -A INPUT -p tcp --dport 3306 -j REJECT --reject-with tcp-reset
-
-Is this correct - or have i got it ALL wrong.
-
-Thanks
-
-Simon
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
