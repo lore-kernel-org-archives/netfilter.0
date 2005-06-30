@@ -1,13 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Configurationrequest for firewall with temporary ppp0-interface
-Date: Thu, 30 Jun 2005 05:27:51 -0500
-Message-ID: <200506300527.51460.rob0@gmx.co.uk>
-References: <42C3BA1B.6070004@my-mail.ch>
+From: Piotr Chytla <pch@packetconsulting.pl>
+Subject: Re: CLUSTERIP problems
+Date: Thu, 30 Jun 2005 18:35:35 +0200
+Message-ID: <20050630163535.GA11138@packetconsulting.pl>
+References: <20050628194026.GA2010@packetconsulting.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42C3BA1B.6070004@my-mail.ch>
 Content-Disposition: inline
+In-Reply-To: <20050628194026.GA2010@packetconsulting.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,27 +18,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+Cc: netfilter-devel@lists.netfilter.org
 
-On Thursday 30 June 2005 04:23, Ruprecht Helms wrote:
-> I've the problem that I need some rules for a temporary ppp0
-> interface. This interface is only active then the admin has made a
-> dial-up on the server and has activated a ppp-daemon.
->
-> In the time the ppp0-Interface is up the connections should be able
-> completely in both directions and through to clients. But this should
-> only alowed for connections via ppp0.
+On Tue, Jun 28, 2005 at 09:40:26PM +0200, Piotr Chytla wrote:
+> I've problem with CLUSTERIP from 2.6.12 kernel, both nodes run debian
+> sarge on 2.6.12.
+> 
+> 
+[..]
+> On the first machine I have in logs only this :
+> 
+> hash=1 ct_hash=1 not responsible
+> 
+> ARP mangling patch for 2.6.12 is applied :
+> 
+> http://patchwork.netfilter.org/netfilter-devel/patch.pl?id=2643
+> 
+Problem was in wrong header file ipt_CLUSTERIP.h that is diffrent 
+between iptables tree and 2.6.12 kernel . 
 
-If this is your only ppp+ interface it is easy. You can add your rules 
-to the existing firewall and leave them there.
+It seems that in struct ipt_clusterip_tgt_info, *config pointer 
+was moved up.
 
-If there are other ppp+ interfaces which should be more restricted, it 
-is only slightly more difficult. pppd(8) has a feature to run scripts 
-when an interface goes active and inactive, /etc/ppp/ip-{up,down} 
-respectively. Put your rules to open the interface in ip-up and to 
-close it in ip-down. (Some distributors use ip-{up,down}.local for 
-local additions.)
+First file ipt_CLUSTERIP.h.20050630 is from iptables tree second
+one from 2.6.12 kernel.
+
+--- ipt_CLUSTERIP.h.20050630    2005-03-07 15:00:35.000000000 +0100
++++ ipt_CLUSTERIP.h     2005-06-17 21:48:29.000000000 +0200
+@@ -18,6 +18,7 @@
+ struct ipt_clusterip_tgt_info {
+ 
+        u_int32_t flags;
++       struct clusterip_config *config;
+        
+        /* only relevant for new ones */
+        u_int8_t clustermac[6];
+@@ -26,12 +27,6 @@
+        u_int16_t local_nodes[CLUSTERIP_MAX_NODES];
+        enum clusterip_hashmode hash_mode;
+        u_int32_t hash_initval;
+-       
+-#ifdef KERNEL_64_USERSPACE_32
+-       u_int64_t config;
+-#else
+-       struct clusterip_config *config;
+-#endif
+ };
+ 
+ #endif /*_IPT_CLUSTERIP_H_target*/
+
+/pch
+
 -- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Dyslexia bug unpatched sinse 1977 ...
+exploit have leaked to the underground.
 
