@@ -1,14 +1,11 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: REDIRECT changes DST address of the packet
-Date: Thu, 30 Jun 2005 03:46:19 -0400
-Message-ID: <3063e505063000462dea1c7d@mail.gmail.com>
-References: <20050630072934.80040.qmail@web60815.mail.yahoo.com>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+From: Ruprecht Helms <rhelms@my-mail.ch>
+Subject: Configurationrequest for firewall with temporary ppp0-interface
+Date: Thu, 30 Jun 2005 11:23:39 +0200
+Message-ID: <42C3BA1B.6070004@my-mail.ch>
+Reply-To: rhelms@my-mail.ch
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050630072934.80040.qmail@web60815.mail.yahoo.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,18 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Venkata Narayana <mesg2nari@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Yes, it is changed to a local address i think (or loopback one). The
-original address is restored after routing by NAT system to packets
-which comes back (as source address).
+Hi,
 
+I've the problem that I need some rules for a temporary ppp0 interface.
+This interface is only active then the admin has made a dial-up on the 
+server and has activated a ppp-daemon.
 
->  If I lose original DST address, how can I persist
->  that
->  value in that packet.
+In the time the ppp0-Interface is up the connections should be able 
+completely in both directions and through to clients. But this should 
+only alowed for connections via ppp0.
 
-Well, i didn't quite get this last worry of you.
+Connections via the normal isdn0 should be protected by the normal 
+firewallroules (iptables).
+
+How have I to configure.
+
+Regards,
+Ruprecht
+
+------------------------------------------------------------------------------------------
+Ruprecht Helms IT-Service & Softwareentwicklung
+
+Tel./Fax  +49[0]7621 16 99 16
+Web:       htp://www.rheyn.de
 
