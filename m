@@ -1,11 +1,13 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: Crazy portmap request
-Date: Thu, 30 Jun 2005 15:56:12 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE58290741D@pxtbenexd01.pxt.primeexalia.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Configurationrequest for firewall with temporary ppp0-interface
+Date: Thu, 30 Jun 2005 05:27:51 -0500
+Message-ID: <200506300527.51460.rob0@gmx.co.uk>
+References: <42C3BA1B.6070004@my-mail.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <42C3BA1B.6070004@my-mail.ch>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,32 +21,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,=20
+On Thursday 30 June 2005 04:23, Ruprecht Helms wrote:
+> I've the problem that I need some rules for a temporary ppp0
+> interface. This interface is only active then the admin has made a
+> dial-up on the server and has activated a ppp-daemon.
+>
+> In the time the ppp0-Interface is up the connections should be able
+> completely in both directions and through to clients. But this should
+> only alowed for connections via ppp0.
 
-I have a new challenge of trying to map some IP's to a single IP but
-with a static port.  Here is a sample.
+If this is your only ppp+ interface it is easy. You can add your rules 
+to the existing firewall and leave them there.
 
-Given 1 externally public IP I need to publish the entire internal class
-C subnet worth of machines using their internal static IP address but
-mapping them to different ports.
-
-Each workstation has a TCP processing running on a fixed port.  For all
-intents and purposes let's say it's SMTP.  What I need to do, using the
-single static IP address is map out a single port for each server behind
-it.
-
-So, given 10.99.0.x it we want something like this
-
-10.99.0.1:25 =3D 199.199.80.41:30001
-10.99.0.2:25 =3D 199.199.80.41:30002
-...
-10.99.0.250:25 =3D 199.199.80.41:30250
-
-Is there a simple way to do this?  Currently we have a pre/post routing
-line per entry.  Is there a better way?
-
-Thanks,=20
-
-Gary Smith
-
+If there are other ppp+ interfaces which should be more restricted, it 
+is only slightly more difficult. pppd(8) has a feature to run scripts 
+when an interface goes active and inactive, /etc/ppp/ip-{up,down} 
+respectively. Put your rules to open the interface in ip-up and to 
+close it in ip-down. (Some distributors use ip-{up,down}.local for 
+local additions.)
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
