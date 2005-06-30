@@ -1,12 +1,11 @@
-From: Christoph Georgi <christoph.georgi@web.de>
-Subject: Re: Configurationrequest for firewall with temporary ppp0-interface
-Date: Fri, 01 Jul 2005 12:43:21 +1200
-Message-ID: <42C491A9.8070301@web.de>
-References: <42C3BA1B.6070004@my-mail.ch>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: whats wrong???
+Date: Thu, 30 Jun 2005 12:43:55 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0506301243170.638@yvahk01.tjqt.qr>
+References: <42C17D6F.70709@adinet.com.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42C3BA1B.6070004@my-mail.ch>
+In-Reply-To: <42C17D6F.70709@adinet.com.uy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +16,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: rhelms@my-mail.ch
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Juan Manuel Tato <madness@adinet.com.uy>
 Cc: netfilter@lists.netfilter.org
 
-Just create rules specifying ppp0 as incoming and outgoing interface (-i 
-and -o), e.g.
 
-$IPTABLES -A FORWARD -i eth0 -o ppp0 -j ACCEPT
-$IPTABLES -A FORWARD -o eth0 -i ppp0 -j ACCEPT
+> where come the output of the chains
+>
+> fw-new:~# iptables -L -n
+> Chain INPUT (policy ACCEPT)
+> target     prot opt source               destination
+> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+> ACCEPT     all  --  192.168.100.1        0.0.0.0/0
+> ACCEPT     all  --  192.168.100.2        0.0.0.0/0
+> ACCEPT     all  --  192.168.100.3        0.0.0.0/0
+> ACCEPT     all  --  192.168.100.4        0.0.0.0/0
+> ACCEPT     all  --  192.168.100.5        0.0.0.0/0
+> ACCEPT     all  --  192.168.100.6        0.0.0.0/0
+> ACCEPT     all  --  192.168.100.7        0.0.0.0/0
+> ACCEPT     all  --  192.168.100.8        0.0.0.0/0
+> ACCEPT     all  --  192.168.100.9        0.0.0.0/0
 
-christoph
+Uh you could merge those.
 
-Ruprecht Helms wrote:
-> Hi,
-> 
-> I've the problem that I need some rules for a temporary ppp0 interface.
-> This interface is only active then the admin has made a dial-up on the 
-> server and has activated a ppp-daemon.
-> 
-> In the time the ppp0-Interface is up the connections should be able 
-> completely in both directions and through to clients. But this should 
-> only alowed for connections via ppp0.
-> 
-> Connections via the normal isdn0 should be protected by the normal 
-> firewallroules (iptables).
-> 
-> How have I to configure.
-> 
-> Regards,
-> Ruprecht
-> 
-> ------------------------------------------------------------------------------------------ 
-> 
-> Ruprecht Helms IT-Service & Softwareentwicklung
-> 
-> Tel./Fax  +49[0]7621 16 99 16
-> Web:       htp://www.rheyn.de
-> 
-> 
+> ACCEPT     tcp  --  192.168.100.0/24     0.0.0.0/0           tcp dpt:22
+> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:80
+> ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:80
+> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:25
+> ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:25
+> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:110
+> ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:110
+> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:143
+> ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:143
+> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:53
+> ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:53
 
--- 
+You can also merge this using -m dport
 
 
-Christoph Georgi
------------------------------
-email.  christoph.georgi@web.de
-fon.	+64 (0)9 815 8259
 
-registered linux user #380268
-ubuntu 5.04 (ubuntu.com)
+Jan Engelhardt                                                               
+--                                                                            
+| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
+| Am Fassberg, 37077 Goettingen, www.gwdg.de
 
