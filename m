@@ -1,10 +1,14 @@
-From: Venkata Narayana <mesg2nari@yahoo.com>
-Subject: REDIRECT changes DST address of the packet
-Date: Thu, 30 Jun 2005 00:29:34 -0700 (PDT)
-Message-ID: <20050630072934.80040.qmail@web60815.mail.yahoo.com>
+From: George Alexandru Dragoi <waruiinu@gmail.com>
+Subject: Re: REDIRECT changes DST address of the packet
+Date: Thu, 30 Jun 2005 03:46:19 -0400
+Message-ID: <3063e505063000462dea1c7d@mail.gmail.com>
+References: <20050630072934.80040.qmail@web60815.mail.yahoo.com>
+Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050630072934.80040.qmail@web60815.mail.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,39 +20,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Venkata Narayana <mesg2nari@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
- 
- I am new to this mailing list sorry If I ask any
- thing wrong.
-
- My question is if I use REDIRECT action in
- PREROUTINg
- rule is it going to change the tcp packet DST
- address.
- 
- If I lose original DST address, how can I persist
- that
- value in that packet.
- 
- Help me !!!
- 
- Thanks in advance.
- 
- Nari.
-> 
-> 
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam
-> protection around 
-> http://mail.yahoo.com 
-> 
+Yes, it is changed to a local address i think (or loopback one). The
+original address is restored after routing by NAT system to packets
+which comes back (as source address).
 
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+>  If I lose original DST address, how can I persist
+>  that
+>  value in that packet.
+
+Well, i didn't quite get this last worry of you.
 
