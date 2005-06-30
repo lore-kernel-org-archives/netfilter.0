@@ -1,11 +1,11 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: whats wrong???
-Date: Thu, 30 Jun 2005 12:43:55 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0506301243170.638@yvahk01.tjqt.qr>
-References: <42C17D6F.70709@adinet.com.uy>
+From: Ruprecht Helms <rhelms@my-mail.ch>
+Subject: Configurationrequest for firewall with temporary ppp0-interface
+Date: Thu, 30 Jun 2005 14:49:48 +0200
+Message-ID: <42C3EA6C.4020000@my-mail.ch>
+Reply-To: rhelms@my-mail.ch
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42C17D6F.70709@adinet.com.uy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,48 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Juan Manuel Tato <madness@adinet.com.uy>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hi,
 
-> where come the output of the chains
->
-> fw-new:~# iptables -L -n
-> Chain INPUT (policy ACCEPT)
-> target     prot opt source               destination
-> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
-> ACCEPT     all  --  192.168.100.1        0.0.0.0/0
-> ACCEPT     all  --  192.168.100.2        0.0.0.0/0
-> ACCEPT     all  --  192.168.100.3        0.0.0.0/0
-> ACCEPT     all  --  192.168.100.4        0.0.0.0/0
-> ACCEPT     all  --  192.168.100.5        0.0.0.0/0
-> ACCEPT     all  --  192.168.100.6        0.0.0.0/0
-> ACCEPT     all  --  192.168.100.7        0.0.0.0/0
-> ACCEPT     all  --  192.168.100.8        0.0.0.0/0
-> ACCEPT     all  --  192.168.100.9        0.0.0.0/0
+I've the problem that I need some rules for a temporary ppp0 interface.
+This interface is only active then the admin has made a dial-up on the
+server and has activated a ppp-daemon.
 
-Uh you could merge those.
+In the time the ppp0-Interface is up the connections should be able
+completely in both directions and through to clients. But this should
+only alowed for connections via ppp0.
 
-> ACCEPT     tcp  --  192.168.100.0/24     0.0.0.0/0           tcp dpt:22
-> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:80
-> ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:80
-> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:25
-> ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:25
-> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:110
-> ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:110
-> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:143
-> ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:143
-> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:53
-> ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:53
+Connections via the normal isdn0 should be protected by the normal
+firewallroules (iptables).
 
-You can also merge this using -m dport
+How have I to configure.
 
+Regards,
+Ruprecht
 
+------------------------------------------------------------------------------------------
+Ruprecht Helms IT-Service & Softwareentwicklung
 
-Jan Engelhardt                                                               
---                                                                            
-| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
-| Am Fassberg, 37077 Goettingen, www.gwdg.de
+Tel./Fax  +49[0]7621 16 99 16
+Web:       htp://www.rheyn.de
+
 
