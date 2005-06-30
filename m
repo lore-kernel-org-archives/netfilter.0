@@ -1,10 +1,9 @@
-From: Ruprecht Helms <rhelms@my-mail.ch>
-Subject: Configurationrequest for firewall with temporary ppp0-interface
-Date: Thu, 30 Jun 2005 11:23:39 +0200
-Message-ID: <42C3BA1B.6070004@my-mail.ch>
-Reply-To: rhelms@my-mail.ch
+From: Venkata Narayana <mesg2nari@yahoo.com>
+Subject: REDIRECT changes DST address of the packet
+Date: Thu, 30 Jun 2005 00:07:18 -0700 (PDT)
+Message-ID: <20050630070719.99525.qmail@web60821.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,30 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello,
 
-I've the problem that I need some rules for a temporary ppp0 interface.
-This interface is only active then the admin has made a dial-up on the 
-server and has activated a ppp-daemon.
+I am new to this mailing list sorry If I ask any thing
+wrong.
 
-In the time the ppp0-Interface is up the connections should be able 
-completely in both directions and through to clients. But this should 
-only alowed for connections via ppp0.
+My question is if I use REDIRECT action in PREROUTINg
+rule is it going to change the tcp packet DST address.
 
-Connections via the normal isdn0 should be protected by the normal 
-firewallroules (iptables).
+If I lose original DST address, how can I persist that
+value in that packet.
 
-How have I to configure.
+Help me !!!
 
-Regards,
-Ruprecht
+Thanks in advance.
 
-------------------------------------------------------------------------------------------
-Ruprecht Helms IT-Service & Softwareentwicklung
+Nari.
 
-Tel./Fax  +49[0]7621 16 99 16
-Web:       htp://www.rheyn.de
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
