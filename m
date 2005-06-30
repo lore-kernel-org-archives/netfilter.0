@@ -1,10 +1,11 @@
-From: umar draz <umar_draz@yahoo.com>
-Subject: multiple gateways in linux
-Date: Thu, 30 Jun 2005 04:41:01 -0700 (PDT)
-Message-ID: <20050630114101.35127.qmail@web53110.mail.yahoo.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: connection tracking and DNS
+Date: Thu, 30 Jun 2005 13:02:16 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0506301301001.3095@yvahk01.tjqt.qr>
+References: <20050630004337.OEHG11566.amsfep12-int.chello.nl@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050630004337.OEHG11566.amsfep12-int.chello.nl@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,40 +16,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: vincent.panel@chello.be
+Cc: netfilter@lists.netfilter.org
 
-hi dear members!
+>Hi !
+>
+>I had a look at the site and did not find a lot of documentation about 
+>connection tracking. I only found modules for ftp, mms, talk, sip, quake and 
+>a few others : does it mean that other protocols are not conntracked ?
 
-  i have 2 DSL connection from diffrent companies. i
-attached both DSL modem in my Linux Machine with
-different ethernet. 
+There's not much to conntrack with UDP for it's a connectionless protocol.
+For bigger DNS queries, TCP is used nonetheless, so you can match the 
+connection.
 
-i have 4 enternet devices in my linux machine
+>Then, I'm wondering how connection tracking is dealing with DNS (and more 
+>generally UDP) requests and replies : is it based on ports (when a connection 
+>from port 3350 to 53 occurs, iptables expect an answer from port 53 to port 
+>3350) ? is it based on any magical number inside the packet header ?
 
-local network
-eth0 = 192.168.1.1
-eth1 = 10.0.0.1
+DNS query: localhost:12345 -> dnsserver:53
+DNS reply: dnsserver:53 -> localhost:12345
 
-DSL network
-eth2 = 202.147.167.6 & gateway 202.147.167.1
-eth3 = 202.157.170.3 & gateway 202.157.170.1
-
-this machine work as a router now i want when a
-request come from 192.168.1.0/24 network it should out
-through my eth2 gateway (202.147.167.1)
-
-and if request from 10.0.0.0/24 network should out
-through eth3 gateway (202.157.170.1)
-
-regards
-
-Umar Draz
+If the reply happens within 30 seconds to the query, netfilter will handle it 
+without problems.
 
 
-		
-____________________________________________________ 
-Yahoo! Sports 
-Rekindle the Rivalries. Sign up for Fantasy Football 
-http://football.fantasysports.yahoo.com
+Jan Engelhardt                                                               
+--                                                                            
+| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
+| Am Fassberg, 37077 Goettingen, www.gwdg.de
 
