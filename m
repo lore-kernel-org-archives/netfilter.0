@@ -1,14 +1,11 @@
-From: tahmeed <qs.tahmeed@gmail.com>
-Subject: Re: A replacement for rp_filter with iptables (config help needed)
-Date: Fri, 1 Jul 2005 11:47:17 +0600
-Message-ID: <ab5428f705063022474352682b@mail.gmail.com>
-References: <42C37413.3010504@networker.co.nz>
-Reply-To: tahmeed <qs.tahmeed@gmail.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: Crazy portmap request
+Date: Thu, 30 Jun 2005 15:56:12 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE58290741D@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42C37413.3010504@networker.co.nz>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,52 +17,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Simon <dev@networker.co.nz>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-hi,
+Hello,=20
 
-i am not an expert in iptables - actually am studying it -=20
+I have a new challenge of trying to map some IP's to a single IP but
+with a static port.  Here is a sample.
 
-one thing - what rules did u set for the new chain MYSQL & SPOOF -
-unless & untill u set up rules for any NEW chains u create - its not
-going to work.
+Given 1 externally public IP I need to publish the entire internal class
+C subnet worth of machines using their internal static IP address but
+mapping them to different ports.
 
+Each workstation has a TCP processing running on a fixed port.  For all
+intents and purposes let's say it's SMTP.  What I need to do, using the
+single static IP address is map out a single port for each server behind
+it.
 
+So, given 10.99.0.x it we want something like this
 
-On 6/30/05, Simon <dev@networker.co.nz> wrote:
-> Hi There,
->=20
-> We are debian sarge with two ethernet cards.. To get eth1 (on a seperate=
-=20
-> subnet) working correctly, ive had to change=20
-> /proc/sys/net/ipv4/conf/eth1/rp_filter to 0. Now i need a simple=20
-> solution to protect against spoofing attacks on this interface... I have=
-=20
-> an example setup, but i want to make sure i have it correct.. can=20
-> someone confirm for me?...
->=20
-> Note, this was a small script to block the mysql port on the server, but=
-=20
-> then enable for certain time/ip dynamically by adding/removing chains.
->=20
-> iptables -F
-> iptables -A INPUT -i lo -j ACCEPT
-> iptables -N MYSQL
-> iptables -N SPOOF
-> iptables -A INPUT -p tcp --dport 3306 -j MYSQL
-> iptables -A SPOOF -i eth1 -j SPOOF
-> iptables -A INPUT -p tcp --dport 3306 -j REJECT --reject-with tcp-reset
->=20
-> Is this correct - or have i got it ALL wrong.
->=20
-> Thanks
->=20
-> Simon
->=20
->=20
+10.99.0.1:25 =3D 199.199.80.41:30001
+10.99.0.2:25 =3D 199.199.80.41:30002
+...
+10.99.0.250:25 =3D 199.199.80.41:30250
 
+Is there a simple way to do this?  Currently we have a pre/post routing
+line per entry.  Is there a better way?
 
---=20
-Happy! If not now never
+Thanks,=20
+
+Gary Smith
+
 
