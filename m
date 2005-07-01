@@ -1,10 +1,14 @@
-From: marcus <marcus@lanhelp.com.br>
-Subject: mangle squid packets
-Date: Fri, 01 Jul 2005 17:31:17 -0300
-Message-ID: <42C5A815.8040301@lanhelp.com.br>
+From: tahmeed <qs.tahmeed@gmail.com>
+Subject: Re: A replacement for rp_filter with iptables (config help needed)
+Date: Fri, 1 Jul 2005 11:47:17 +0600
+Message-ID: <ab5428f705063022474352682b@mail.gmail.com>
+References: <42C37413.3010504@networker.co.nz>
+Reply-To: tahmeed <qs.tahmeed@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <42C37413.3010504@networker.co.nz>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,38 +20,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Simon <dev@networker.co.nz>
+Cc: netfilter@lists.netfilter.org
 
-Hi, I've managed to work a 3 gateway linux router using this mangle rule
-to mark local net incoming packets:
+hi,
 
-iptables -A PREROUTING -t mangle -s 10.0.0.0/8 -d 0/0 -j MARK --set-mark 3
+i am not an expert in iptables - actually am studying it -=20
 
-Works, great. But i cant do the same with squid activated, I'm using
-transparent proxy:
+one thing - what rules did u set for the new chain MYSQL & SPOOF -
+unless & untill u set up rules for any NEW chains u create - its not
+going to work.
 
-iptables -t nat -A PREROUTING -i eth0 -p TCP --dport 80 -j REDIRECT
---to-port 3128
 
-I dont know what mangle rule I need to mark squid transparent packets, I
-have tried all the following (One at a time):
 
-        iptables -A PREROUTING -t mangle -s 10.0.0.0/8 -d 0/0 -j MARK
---set-mark 3
-        iptables -A PREROUTING -t mangle -s 127.0.0.1 -d 0/0  -j MARK
---set-mark 3
-        iptables -A PREROUTING -t mangle -p tcp --dport 80 -j MARK
---set-mark 3
-        iptables -A PREROUTING -t mangle -p tcp --dport 3128 -j MARK
---set-mark 3
+On 6/30/05, Simon <dev@networker.co.nz> wrote:
+> Hi There,
+>=20
+> We are debian sarge with two ethernet cards.. To get eth1 (on a seperate=
+=20
+> subnet) working correctly, ive had to change=20
+> /proc/sys/net/ipv4/conf/eth1/rp_filter to 0. Now i need a simple=20
+> solution to protect against spoofing attacks on this interface... I have=
+=20
+> an example setup, but i want to make sure i have it correct.. can=20
+> someone confirm for me?...
+>=20
+> Note, this was a small script to block the mysql port on the server, but=
+=20
+> then enable for certain time/ip dynamically by adding/removing chains.
+>=20
+> iptables -F
+> iptables -A INPUT -i lo -j ACCEPT
+> iptables -N MYSQL
+> iptables -N SPOOF
+> iptables -A INPUT -p tcp --dport 3306 -j MYSQL
+> iptables -A SPOOF -i eth1 -j SPOOF
+> iptables -A INPUT -p tcp --dport 3306 -j REJECT --reject-with tcp-reset
+>=20
+> Is this correct - or have i got it ALL wrong.
+>=20
+> Thanks
+>=20
+> Simon
+>=20
+>=20
 
-Any ideas??
 
-Thanks.
-
--- 
-<http://www.lanhelp.com.br> 	Atenciosamente,
-Marcus Leandro
-Suporte / Consultoria
-marcus@lanhelp.com.br
+--=20
+Happy! If not now never
 
