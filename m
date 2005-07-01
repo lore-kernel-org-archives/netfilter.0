@@ -1,12 +1,13 @@
-From: Piotr Chytla <pch@packetconsulting.pl>
-Subject: Re: CLUSTERIP problems
-Date: Thu, 30 Jun 2005 18:35:35 +0200
-Message-ID: <20050630163535.GA11138@packetconsulting.pl>
-References: <20050628194026.GA2010@packetconsulting.pl>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: A replacement for rp_filter with iptables (config help needed)
+Date: Fri, 01 Jul 2005 17:55:20 -0400
+Message-ID: <1120254920.3544.2.camel@localhost>
+References: <42C37413.3010504@networker.co.nz>
+	<ab5428f705063022474352682b@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050628194026.GA2010@packetconsulting.pl>
+In-Reply-To: <ab5428f705063022474352682b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,60 +19,79 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-Cc: netfilter-devel@lists.netfilter.org
+To: netfilter@lists.netfilter.org, Simon <dev@networker.co.nz>
 
-On Tue, Jun 28, 2005 at 09:40:26PM +0200, Piotr Chytla wrote:
-> I've problem with CLUSTERIP from 2.6.12 kernel, both nodes run debian
-> sarge on 2.6.12.
+In our default configuration for the ISCS network security management
+project (http://iscs.sourceforge.net), we generate rules to protect
+against spoofing from both the outside and the inside (to ensure we are
+good Internet citizens!).  Although the rules are automatically
+generated, they tend to look something like this:
+
+iptables -t mangle -A PREROUTING -i ! eth1 -s
+2xx.xx.xxx.224/255.255.255.240 -j DROP
+iptables -t mangle -A PREROUTING -i eth1 -m ttl --ttl 1 -j DROP
+iptables -t mangle -A PREROUTING -i eth0 -j ProtectionMangleSpoof
+iptables -t mangle -A ProtectionMangleSpoof -i eth0 -j DROP
+iptables -t mangle -A PREROUTING -i ! eth0 -s 10.6.0.0/255.255.0.0 -j
+DROP
+iptables -t mangle -A PREROUTING -i ! eth0 -s 10.7.0.0/255.255.0.0 -j
+DROP
+iptables -t mangle -I ProtectionMangleSpoof 1 -i eth0 -s
+10.6.0.0/255.255.0.0 -j RETURN
+iptables -t mangle -I ProtectionMangleSpoof 1 -i eth0 -s
+10.7.0.0/255.255.0.0 -j RETURN
+
+Where eth0 is the private interface and eth1 is the Internet interface.
+Hope that helps - John
+
+On Fri, 2005-07-01 at 11:47 +0600, tahmeed wrote: 
+> hi,
+> 
+> i am not an expert in iptables - actually am studying it - 
+> 
+> one thing - what rules did u set for the new chain MYSQL & SPOOF -
+> unless & untill u set up rules for any NEW chains u create - its not
+> going to work.
 > 
 > 
-[..]
-> On the first machine I have in logs only this :
 > 
-> hash=1 ct_hash=1 not responsible
+> On 6/30/05, Simon <dev@networker.co.nz> wrote:
+> > Hi There,
+> > 
+> > We are debian sarge with two ethernet cards.. To get eth1 (on a seperate 
+> > subnet) working correctly, ive had to change 
+> > /proc/sys/net/ipv4/conf/eth1/rp_filter to 0. Now i need a simple 
+> > solution to protect against spoofing attacks on this interface... I have 
+> > an example setup, but i want to make sure i have it correct.. can 
+> > someone confirm for me?...
+> > 
+> > Note, this was a small script to block the mysql port on the server, but 
+> > then enable for certain time/ip dynamically by adding/removing chains.
+> > 
+> > iptables -F
+> > iptables -A INPUT -i lo -j ACCEPT
+> > iptables -N MYSQL
+> > iptables -N SPOOF
+> > iptables -A INPUT -p tcp --dport 3306 -j MYSQL
+> > iptables -A SPOOF -i eth1 -j SPOOF
+> > iptables -A INPUT -p tcp --dport 3306 -j REJECT --reject-with tcp-reset
+> > 
+> > Is this correct - or have i got it ALL wrong.
+> > 
+> > Thanks
+> > 
+> > Simon
+> > 
+> > 
 > 
-> ARP mangling patch for 2.6.12 is applied :
 > 
-> http://patchwork.netfilter.org/netfilter-devel/patch.pl?id=2643
-> 
-Problem was in wrong header file ipt_CLUSTERIP.h that is diffrent 
-between iptables tree and 2.6.12 kernel . 
-
-It seems that in struct ipt_clusterip_tgt_info, *config pointer 
-was moved up.
-
-First file ipt_CLUSTERIP.h.20050630 is from iptables tree second
-one from 2.6.12 kernel.
-
---- ipt_CLUSTERIP.h.20050630    2005-03-07 15:00:35.000000000 +0100
-+++ ipt_CLUSTERIP.h     2005-06-17 21:48:29.000000000 +0200
-@@ -18,6 +18,7 @@
- struct ipt_clusterip_tgt_info {
- 
-        u_int32_t flags;
-+       struct clusterip_config *config;
-        
-        /* only relevant for new ones */
-        u_int8_t clustermac[6];
-@@ -26,12 +27,6 @@
-        u_int16_t local_nodes[CLUSTERIP_MAX_NODES];
-        enum clusterip_hashmode hash_mode;
-        u_int32_t hash_initval;
--       
--#ifdef KERNEL_64_USERSPACE_32
--       u_int64_t config;
--#else
--       struct clusterip_config *config;
--#endif
- };
- 
- #endif /*_IPT_CLUSTERIP_H_target*/
-
-/pch
-
 -- 
-Dyslexia bug unpatched sinse 1977 ...
-exploit have leaked to the underground.
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
+
+Financially sustainable open source development
+http://www.opensourcedevel.com
+
 
