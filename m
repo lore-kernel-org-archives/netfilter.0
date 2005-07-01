@@ -1,13 +1,13 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: A replacement for rp_filter with iptables (config help needed)
-Date: Fri, 01 Jul 2005 17:55:20 -0400
-Message-ID: <1120254920.3544.2.camel@localhost>
+Date: Sat, 2 Jul 2005 00:10:29 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0507020008330.20481@blackhole.kfki.hu>
 References: <42C37413.3010504@networker.co.nz>
 	<ab5428f705063022474352682b@mail.gmail.com>
+	<1120254920.3544.2.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <ab5428f705063022474352682b@mail.gmail.com>
+In-Reply-To: <1120254920.3544.2.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,80 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, Simon <dev@networker.co.nz>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Cc: netfilter@lists.netfilter.org
 
-In our default configuration for the ISCS network security management
-project (http://iscs.sourceforge.net), we generate rules to protect
-against spoofing from both the outside and the inside (to ensure we are
-good Internet citizens!).  Although the rules are automatically
-generated, they tend to look something like this:
+Hi,
 
-iptables -t mangle -A PREROUTING -i ! eth1 -s
-2xx.xx.xxx.224/255.255.255.240 -j DROP
-iptables -t mangle -A PREROUTING -i eth1 -m ttl --ttl 1 -j DROP
-iptables -t mangle -A PREROUTING -i eth0 -j ProtectionMangleSpoof
-iptables -t mangle -A ProtectionMangleSpoof -i eth0 -j DROP
-iptables -t mangle -A PREROUTING -i ! eth0 -s 10.6.0.0/255.255.0.0 -j
-DROP
-iptables -t mangle -A PREROUTING -i ! eth0 -s 10.7.0.0/255.255.0.0 -j
-DROP
-iptables -t mangle -I ProtectionMangleSpoof 1 -i eth0 -s
-10.6.0.0/255.255.0.0 -j RETURN
-iptables -t mangle -I ProtectionMangleSpoof 1 -i eth0 -s
-10.7.0.0/255.255.0.0 -j RETURN
+On Fri, 1 Jul 2005, John A. Sullivan III wrote:
 
-Where eth0 is the private interface and eth1 is the Internet interface.
-Hope that helps - John
+> In our default configuration for the ISCS network security management
+> project (http://iscs.sourceforge.net), we generate rules to protect
+> against spoofing from both the outside and the inside (to ensure we are
+> good Internet citizens!).  Although the rules are automatically
+> generated, they tend to look something like this:
+>
+> iptables -t mangle -A PREROUTING -i ! eth1 -s
+> 2xx.xx.xxx.224/255.255.255.240 -j DROP
 
-On Fri, 2005-07-01 at 11:47 +0600, tahmeed wrote: 
-> hi,
-> 
-> i am not an expert in iptables - actually am studying it - 
-> 
-> one thing - what rules did u set for the new chain MYSQL & SPOOF -
-> unless & untill u set up rules for any NEW chains u create - its not
-> going to work.
-> 
-> 
-> 
-> On 6/30/05, Simon <dev@networker.co.nz> wrote:
-> > Hi There,
-> > 
-> > We are debian sarge with two ethernet cards.. To get eth1 (on a seperate 
-> > subnet) working correctly, ive had to change 
-> > /proc/sys/net/ipv4/conf/eth1/rp_filter to 0. Now i need a simple 
-> > solution to protect against spoofing attacks on this interface... I have 
-> > an example setup, but i want to make sure i have it correct.. can 
-> > someone confirm for me?...
-> > 
-> > Note, this was a small script to block the mysql port on the server, but 
-> > then enable for certain time/ip dynamically by adding/removing chains.
-> > 
-> > iptables -F
-> > iptables -A INPUT -i lo -j ACCEPT
-> > iptables -N MYSQL
-> > iptables -N SPOOF
-> > iptables -A INPUT -p tcp --dport 3306 -j MYSQL
-> > iptables -A SPOOF -i eth1 -j SPOOF
-> > iptables -A INPUT -p tcp --dport 3306 -j REJECT --reject-with tcp-reset
-> > 
-> > Is this correct - or have i got it ALL wrong.
-> > 
-> > Thanks
-> > 
-> > Simon
-> > 
-> > 
-> 
-> 
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+If you support 2.6.x kernels, I'd suggest to use the raw table instead:
+thus the unnecessary load on conntrack could be avoided.
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
