@@ -1,11 +1,14 @@
-From: Erik Weber <bassman0@gmail.com>
-Subject: patch-o-matic'd TTL, but it's not there
-Date: Sat, 2 Jul 2005 13:24:08 -0700
-Message-ID: <ffcea5260507021324388edaa8@mail.gmail.com>
-Reply-To: Erik Weber <bassman0@gmail.com>
+From: tahmeed <qs.tahmeed@gmail.com>
+Subject: /dev/rob0
+Date: Sun, 3 Jul 2005 02:03:41 +0600
+Message-ID: <ab5428f7050702130336fa857d@mail.gmail.com>
+References: <57F9959B46E0FA4D8BA88AEDFBE58290741F@pxtbenexd01.pxt.primeexalia.com>
+	<42C65B6A.8010503@gmx.co.uk>
+Reply-To: tahmeed <qs.tahmeed@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <42C65B6A.8010503@gmx.co.uk>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,25 +21,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: /dev/rob0 <rob0@gmx.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-Dear Netfilter List,
+hi!
 
-I used patch-o-matic-ng apparently successfully to add the 'TTL' patch
-(compiled & installed new kernel, modules, and iptables) and yet when
-I give the command:
+it seems that u r talking about the SPAM warning or in other words
+returned mail from a specific address. if so i would like to mention
+that every time i posts to netfilter one such message is arriving =20
+within few mins.
 
-iptables -t mangle -A PREROUTING -i eth1 -j TTL --ttl-set 64
+i wonder what they have done in their conf........
 
-I receive the response:
 
-iptables: No chain/target/match by that name
-
-There are no additional instructions to follow on the Patch-o-matic
-HOWTO, so I wonder what could be missing?  I have verified that the
-apparently patched kernel is the one I am running and patch-o-matic
-does not complain.
-
-  -Erik Weber
-  Geek
+--=20
+Happy! If not now never
 
