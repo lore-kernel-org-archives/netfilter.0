@@ -1,11 +1,12 @@
-From: "David Leangen" <dleangen@canada.com>
-Subject: /etc/sysconfig/iptables does not load on reboot
-Date: Sat, 2 Jul 2005 11:53:12 +0900
-Message-ID: <NEBBKBPLMLNABNADCIPAEECBBDAB.dleangen@canada.com>
-Reply-To: dleangen@canada.com
+From: varun_saa@vsnl.net
+Subject: Re: MAC filter group if IPs
+Date: Sat, 02 Jul 2005 08:47:14 +0500
+Message-ID: <42309da42319e7.42319e742309da@vsnl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-language: en
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
-
-Hello!
-
-On FC3, my file /etc/sysconfig/iptables is not being loaded on reboot. For
-some reason, my iptables is being loaded with some kind of default values.
-
-I thought that the file /etc/sysconfig/iptables was supposed to be loaded
-via iptables-restore (and indeed this appears to be so according to the
-startup script in /etc/rc.d/init.d/iptables). Is there something that I am
-not understanding correctly?
-
-
-Thank you!
+ 
+ 
+----- Original Message ----- 
+From: Jan Engelhardt <jengelh@linux01.gwdg.de> 
+Date: Friday, July 1, 2005 9:51 pm 
+Subject: Re: MAC filter group if IPs 
+ 
+> >Hello,  
+> >      I would like to implement MAC filtering.  
+> >Is there way to write a rule that will allow or  
+> >disallow a set of IPs.  
+> >Say one rule to allow a set of IPs,  
+> >And another rule to disallow a set of IPs.  
+>  
+> MAC is not the same as IP. 
+>  
+>  
+> Jan Engelhardt                                                       
+>          
+Sorry I meant : 
+ 
+Say one rule to allow a set of MAC addresses 
+And another rule to disallow a set of MAC addresses 
+ 
+Varun  
+ 
 
 
