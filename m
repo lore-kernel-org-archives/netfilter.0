@@ -1,14 +1,12 @@
-From: tahmeed <qs.tahmeed@gmail.com>
-Subject: Re: /etc/sysconfig/iptables does not load on reboot
-Date: Sat, 2 Jul 2005 11:44:08 +0600
-Message-ID: <ab5428f705070122446b6f9966@mail.gmail.com>
-References: <NEBBKBPLMLNABNADCIPAEECBBDAB.dleangen@canada.com>
-Reply-To: tahmeed <qs.tahmeed@gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Is anyone else getting these.
+Date: Sat, 2 Jul 2005 07:49:20 +0200
+Message-ID: <20050702054820.DE59E8EDCEB@smtp.sterenborg.info>
+References: <57F9959B46E0FA4D8BA88AEDFBE58290741F@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <NEBBKBPLMLNABNADCIPAEECBBDAB.dleangen@canada.com>
-Content-Disposition: inline
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE58290741F@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,50 +17,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: dleangen@canada.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-9"
+To: netfilter@lists.netfilter.org
 
-hello David,
+netfilter-bounces@lists.netfilter.org <> scribbled on :
 
-after u configure iptables - directly or via a script issue=20
+> I have verified my IP's not to on relays.ordb.org.  I'm
+> wondering if they blacklisted netfilter.org?
 
-iptables-save > /etc/sysconfig/iptables
+Last time I checked I'm not, also netfilter.org wasn't.
 
-then ur conf will be saved in the mentioned file & be available while
-restarting the service or reboot.
+A few days ago there was a post about this ; even their postmaster@...
+seems to refuse email.
+Maybe phergenhahn@echtzeit.de can be removed from the list ??
 
-else the system will use the default conf that have been set up during
-the installation of the system.
-and=20
 
-"iptables-restore" :: resets the conf to the system default which
-means u lost the conf u just did.
+Gr,
+Rob
 
-thanks.
 
-On 7/2/05, David Leangen <dleangen@canada.com> wrote:
+> FW: Unzustellbar: [SPAM] - Crazy portmap request - Sending
+> mail server found on relays.ordb.org
 >=20
-> Hello!
+> -----Original Message-----
+> From: Systemadministrator [mailto:postmaster@echtzeit.com]
+> Sent: Friday, July 01, 2005 2:11 PM
+> To: Gary W. Smith
+> Subject: Unzustellbar: [SPAM] - Crazy portmap request -
+> Sending mail server found on relays.ordb.org
 >=20
-> On FC3, my file /etc/sysconfig/iptables is not being loaded on reboot. Fo=
-r
-> some reason, my iptables is being loaded with some kind of default values=
-.
+> Your message
 >=20
-> I thought that the file /etc/sysconfig/iptables was supposed to be loaded
-> via iptables-restore (and indeed this appears to be so according to the
-> startup script in /etc/rc.d/init.d/iptables). Is there something that I a=
-m
-> not understanding correctly?
+>   To:      netfilter@lists.netfilter.org
+>   Subject: [SPAM] - Crazy portmap request - Sending mail
+> server found on relays.ordb.org
+>   Sent:    Fri, 1 Jul 2005 00:56:12 +0200
 >=20
+> did not reach the following recipient(s):
 >=20
-> Thank you!
->=20
->=20
->=20
+> phergenhahn@echtzeit.de on Fri, 1 Jul 2005 23:11:28 +0200
+>     Der Name des Empf=E4ngers wurde nicht erkannt.
+> 	Die MTS-ID der urspr=FCnglichen Nachricht ist: c=3Dde;a=3D
+> ;p=3Dechtzeit gmbh ? ;l=3DEZMXS0507012111NLNP7YNT
+>     MSEXCH:IMS:Echtzeit GmbH & Co. KG:ECHTZEIT:EZMXS 0
+> (000C05A6) Unbekannter Empf=E4nger
 
 
---=20
-Happy! If not now never
 
