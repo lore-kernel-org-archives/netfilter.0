@@ -1,7 +1,7 @@
 From: varun_saa@vsnl.net
 Subject: Re: MAC filter group if IPs
-Date: Sat, 02 Jul 2005 08:47:14 +0500
-Message-ID: <42309da42319e7.42319e742309da@vsnl.net>
+Date: Sat, 02 Jul 2005 08:50:46 +0500
+Message-ID: <4245a994244da0.4244da04245a99@vsnl.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,34 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+To: Daniel Lopes <lopsch@lopsch.com>
 Cc: netfilter@lists.netfilter.org
 
  
  
 ----- Original Message ----- 
-From: Jan Engelhardt <jengelh@linux01.gwdg.de> 
-Date: Friday, July 1, 2005 9:51 pm 
+From: Daniel Lopes <lopsch@lopsch.com> 
+Date: Friday, July 1, 2005 10:37 pm 
 Subject: Re: MAC filter group if IPs 
  
-> >Hello,  
-> >      I would like to implement MAC filtering.  
-> >Is there way to write a rule that will allow or  
-> >disallow a set of IPs.  
-> >Say one rule to allow a set of IPs,  
-> >And another rule to disallow a set of IPs.  
+> varun_saa@vsnl.net schrieb: 
+> > Hello,  
+> >       I would like to implement MAC filtering.  
+> > Is there way to write a rule that will allow or  
+> > disallow a set of IPs.  
+> > Say one rule to allow a set of IPs,  
+> > And another rule to disallow a set of IPs.  
+> >   
+> > Thanks  
+> >   
+> > Varun  
+> >  
+> >  
+> >  
 >  
-> MAC is not the same as IP. 
->  
->  
-> Jan Engelhardt                                                       
->          
+> Have a look at IPSet. 
+ 
 Sorry I meant : 
  
-Say one rule to allow a set of MAC addresses 
-And another rule to disallow a set of MAC addresses 
+Say one rule to allow a set of MAC addressed 
+And another rule to disallow a set of MAC addressed 
  
-Varun  
- 
+Varun 
+>  
+>  
 
 
