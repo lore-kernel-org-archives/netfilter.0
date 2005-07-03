@@ -1,12 +1,14 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Is anyone else getting these.
-Date: Sun, 3 Jul 2005 16:08:26 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507031607200.901@yvahk01.tjqt.qr>
-References: <57F9959B46E0FA4D8BA88AEDFBE58290741F@pxtbenexd01.pxt.primeexalia.com>
-	<42C65B6A.8010503@gmx.co.uk>
+Subject: Re: A replacement for rp_filter with iptables (config help needed)
+Date: Sun, 3 Jul 2005 16:03:28 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507031602490.901@yvahk01.tjqt.qr>
+References: <42C37413.3010504@networker.co.nz>
+	<ab5428f705063022474352682b@mail.gmail.com>
+	<1120254920.3544.2.camel@localhost>
+	<Pine.LNX.4.58.0507020008330.20481@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42C65B6A.8010503@gmx.co.uk>
+In-Reply-To: <Pine.LNX.4.58.0507020008330.20481@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +21,19 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: "John A. Sullivan III" <jsullivan@opensourcedevel.com>, netfilter@lists.netfilter.org
 
-
->> I have verified my IP's not to on relays.ordb.org.  I'm wondering if
->> they blacklisted netfilter.org?
-
-No. I even get that SPAM report if I write personally to that address, or 
-anything-you-have-not-imagined-yet.
-
->> phergenhahn@echtzeit.de on Fri, 1 Jul 2005 23:11:28 +0200
+>> iptables -t mangle -A PREROUTING -i ! eth1 -s
+>> 2xx.xx.xxx.224/255.255.255.240 -j DROP
 >
-> I got one and looked at the headers. I thought perhaps their braindead
-> Microsoft software was reading the Received: lines and finding something. If so
-> I don't know what it is.
+>If you support 2.6.x kernels, I'd suggest to use the raw table instead:
+>thus the unnecessary load on conntrack could be avoided.
+>
 
-IIRC I read 'unknown user' account somewhere. Anyway, action should be taken.
+Why use this sort of replacement for rp_filter anyway? What's bad with 
+rp_filter? (Apart from the problem with asymmetric routing, as is mentioned 
+in net/ipv4/*.)
 
 
 
