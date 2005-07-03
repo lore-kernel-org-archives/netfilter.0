@@ -1,12 +1,13 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: [ADMIN] people.netfilter.org down
-Date: Sun, 3 Jul 2005 09:16:59 +0200
-Message-ID: <20050703071659.GK3186@sunbeam.de.gnumonks.org>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: [Announce] Nulog 1.1.0 is available
+Date: Sun, 03 Jul 2005 23:43:15 +0200
+Message-ID: <1120426995.8058.14.camel@localhost.localdomain>
+References: <1120136387.4696.54.camel@localhost.localdomain>
+	<Pine.LNX.4.60.0507011532460.16419@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NpJxosW6I2mTcxQ7"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.60.0507011532460.16419@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "R. DuFresne" <dufresne@sysinfo.com>
+Cc: netfilter@lists.netfilter.org
 
+Le vendredi 01 juillet 2005 =E0 15:34 -0400, R. DuFresne a =E9crit :
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+>=20
+>=20
+> considering the history of php, and many php applications and their=20
+> bi-weekly appearance in the various sec lists for newly discovered vulns,=
+=20
+> how afe is this application and would one want to place it on or near=20
+> their main security device?
 
---NpJxosW6I2mTcxQ7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This application exists since some years now and we have proceed to some
+code audits and have carefully checked user entries to avoid SQL
+injection or other problems.
 
-Hi!
+The other point is that this application has not to be available for
+evryone has it contains private information. Thus, it can be protected
+from "bad people" by authentication or other mean. To be simple, access
+has to be restricted to admins.
 
-Due to stupid experimentation with mmio_test [1], I've managed to crash
-durga.netfilter.org (which runs people.netfilter.org) on a Sunday (where
-no staff is present at the hosting ISP).   I expect it to be down until
-some point on Monday (tomorrow).
+An other point is that permissions on the MySQL database should and can
+be carefully set to have only read-only permission on the table
+containing the ulogd/NuFW logs. This restricted permissions can assure
+that the logged datas can not be corrupted. Futhermore, in the case of
+an Ulogd installation, the logged packets can be duplicated in syslog,
+thus any hypothetic datas corruption is armless.
 
-Sorry.  All this just caused because I was too lazy to re-install the
-Sun Blade 1000 I have in my office.  Will not happen again.
+Finally, as ulogd can log on a database running on a separate host, your
+firewall is safe as there is no server running on it.=20
 
-Cheers,
-	Harald
-
-[1] https://svn.gnumonks.org/trunk/mmio_test
+BR,
 --=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+Eric Leblond <eric@inl.fr>
 
---NpJxosW6I2mTcxQ7
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFCx5DrXaXGVTD0i/8RAjRRAJ9VzwDMetWJ8TkLGRoe0HV0v4lHqgCeO6eR
-JYTUrmxTIDGZdXk29KYK8ek=
-=hm+E
------END PGP SIGNATURE-----
-
---NpJxosW6I2mTcxQ7--
 
