@@ -1,15 +1,11 @@
-From: "curby ." <curby.public@gmail.com>
-Subject: Re: NEW "SSH Brute Force " ruleset (20050628.0)
-Date: Sat, 2 Jul 2005 11:13:41 -0600
-Message-ID: <5d2f379105070210137e0af6ca@mail.gmail.com>
-References: <42C0F7E4.4060805@riverviewtech.net>
-	<004801c57e70$1fad3890$4206a8c0@loki>
-Reply-To: "curby ." <curby.public@gmail.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Configurationrequest for firewall with temporary ppp0-interface
+Date: Sun, 3 Jul 2005 15:56:48 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507031556110.901@yvahk01.tjqt.qr>
+References: <42C3BA1B.6070004@my-mail.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <004801c57e70$1fad3890$4206a8c0@loki>
-Content-Disposition: inline
+In-Reply-To: <42C3BA1B.6070004@my-mail.ch>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,24 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ruprecht Helms <rhelms@my-mail.ch>
+Cc: netfilter@lists.netfilter.org
 
-On 7/1/05, Marius Mertens <marius.mertens@gmx.de> wrote:
-> Add a host to a special whiltelist after doing something special, like
-> connecting to a certain port, which would lower the risk of a DOS (they c=
-an
-> still try, but you can override it)
+> Hi,
+>
+> I've the problem that I need some rules for a temporary ppp0 interface.
+> This interface is only active then the admin has made a dial-up on the server
+> and has activated a ppp-daemon.
 
-I've been considering this too.  It's actually a simple form of port
-knocking that can be implemented exclusively in iptables (without the
-need of extra tools).  The primary goal of port knocking is to foil
-port scans, but it could be applicable here.
+Maybe it's been said, or not:
+You can have iptables rules for devices even if they do not exist or are 
+turned off (`a la "ip link set down")
 
-To protect against DoS, is there any easy way of requiring that three
-packets be transferred in an SSH connection before it triggers a
-recent update?  Since someone spoofing source IPs to DoS would be
-unlikely to continue the connection with the server, such DoS attacks
-might be foiled more effectively this way than using rttl (which the
-attacker can just exhaustively try all values for).
+
+Jan Engelhardt
+--                                                                            
+| Gesellschaft fuer Wissenschaftliche Datenverarbeitung Goettingen,
+| Am Fassberg, 37077 Goettingen, www.gwdg.de
 
