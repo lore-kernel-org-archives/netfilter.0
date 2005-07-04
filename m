@@ -1,17 +1,14 @@
-From: Lluis Batle <viriketo@gmail.com>
-Subject: Problem with routing decisions, and multihop
-Date: Mon, 4 Jul 2005 17:32:40 +0200
-Message-ID: <45219fb0050704083253774af5@mail.gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Problem with routing decisions, and multihop
+Date: Mon, 4 Jul 2005 11:33:35 -0500
+Message-ID: <200507041133.35774.rob0@gmx.co.uk>
 References: <45219fb00507040715442f52cf@mail.gmail.com>
-	<45219fb00507040732192b77e0@mail.gmail.com>
-	<200507041007.06513.rob0@gmx.co.uk>
-	<200507041010.13653.rob0@gmx.co.uk>
 	<45219fb005070408323197bfa4@mail.gmail.com>
-Reply-To: Lluis Batle <viriketo@gmail.com>
+	<45219fb0050704083253774af5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45219fb005070408323197bfa4@mail.gmail.com>
+In-Reply-To: <45219fb0050704083253774af5@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -24,42 +21,75 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: NetFilter <netfilter@lists.netfilter.org>
 
-No, everything is right in its output:
-1.1.1.1 via 192.168.16.2 dev eth1  src 192.168.16.1
-    cache  mtu 1500 advmss 1460 metric10 64
-2.2.2.2 via 192.168.17.2 dev eth2  src 192.168.17.1
-    cache  mtu 1500 advmss 1460 metric10 64
-3.3.3.3 via 192.168.16.2 dev eth1  src 192.168.16.1
-    cache  mtu 1500 advmss 1460 metric10 64
-4.4.4.4 via 192.168.17.2 dev eth2  src 192.168.17.1
-    cache  mtu 1500 advmss 1460 metric10 64
-5.5.5.5 via 192.168.16.2 dev eth1  src 192.168.16.1
-    cache  mtu 1500 advmss 1460 metric10 64
-6.6.6.6 via 192.168.17.2 dev eth2  src 192.168.17.1
-    cache  mtu 1500 advmss 1460 metric10 64
-7.7.7.7 via 192.168.16.2 dev eth1  src 192.168.16.1
-    cache  mtu 1500 advmss 1460 metric10 64
-8.8.8.8 via 192.168.17.2 dev eth2  src 192.168.17.1
-    cache  mtu 1500 advmss 1460 metric10 64
-9.9.9.9 via 192.168.16.2 dev eth1  src 192.168.16.1
-    cache  mtu 1500 advmss 1460 metric10 64
-10.10.10.10 via 192.168.17.2 dev eth2  src 192.168.17.1
-    cache  mtu 1500 advmss 1460 metric10 64
+> On 7/4/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
+> > On Monday 04 July 2005 10:07, I wrote:
+> > > Are multiple "ip route get ip.add.re.ss" commands in sequence
+> > > showing routes out the same interface?
+> >
+> > for X in `seq 10` ; do /sbin/ip route get $X.$X.$X.$X ; done
 
-About the 16.x and 17.x addresses... yes, there are other routers,
-which make NAT (192.168.16.2 and 192.168.17.2) to internet.
+On Monday 04 July 2005 10:32, Lluis Batle wrote:
+> No, everything is right in its output:
+> 1.1.1.1 via 192.168.16.2 dev eth1  src 192.168.16.1
+>     cache  mtu 1500 advmss 1460 metric10 64
+> 2.2.2.2 via 192.168.17.2 dev eth2  src 192.168.17.1
+>     cache  mtu 1500 advmss 1460 metric10 64
 
-On 7/4/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
-> On Monday 04 July 2005 10:07, I wrote:
-> > Are multiple "ip route get ip.add.re.ss" commands in sequence showing
-> > routes out the same interface?
->
-> for X in `seq 10` ; do /sbin/ip route get $X.$X.$X.$X ; done
-> --
->     mail to this address is discarded unless "/dev/rob0"
->     or "not-spam" is in Subject: header
->
->
+>>="masquerading.multi-eth" (misnamed: it does no masquerading)
+
+>>NE1=192.168.16.0/28
+>>NE2=192.168.17.0/28
+
+Let's see, those are .0-.15 on the last quad.
+
+>>NLOCAL=192.168.0.0/20
+
+And this is 0.0 through 15.255 ... IOW, wrong, excluding both $NE1 and 
+$NE2. Try 192.168.16.0/23. It would not hurt for you to brush up on 
+TCP/IP and subnetting basics.
+
+>> $IPTABLES -t nat -F PREROUTING
+>> $IPTABLES -t nat -F POSTROUTING
+>> $IPTABLES -t nat -F OUTPUT
+>> $IPTABLES -t filter -F INPUT
+>> $IPTABLES -t filter -F FORWARD
+>> $IPTABLES -t filter -F OUTPUT
+>> $IPTABLES -t filter -F keep_state >&/dev/null
+>> $IPTABLES -t filter -X keep_state >&/dev/null
+>> $IPTABLES -t nat -F keep_state >&/dev/null
+>> $IPTABLES -t nat -X keep_state >&/dev/null
+
+Could be rewritten as:
+iptables -F ; iptables -X ; iptables -t nat -F ; iptables -t nat -X
+
+>> $IPTABLES -t filter -N keep_state
+>> $IPTABLES -t filter -A keep_state -m state \
+>> --state RELATED,ESTABLISHED -j ACCEPT  
+>> $IPTABLES -t filter -A keep_state -j RETURN
+>> 
+>> $IPTABLES -t nat -N keep_state
+>> $IPTABLES -t nat -A keep_state -m state \
+>> --state RELATED,ESTABLISHED -j ACCEPT 
+>> $IPTABLES -t nat -A keep_state -j RETURN
+
+1. IMO it's confusing to give chains the same name in different tables.
+2. The RETURN rules are pointless. That's what happens at the end of a 
+chain, anyway.
+3. --state in -t nat? Is that possible? Does it work? Does it break 
+anything?
+
+> About the 16.x and 17.x addresses... yes, there are other routers,
+> which make NAT (192.168.16.2 and 192.168.17.2) to internet.
+
+This seems odd to me. I prefer to use external IP directly, for many 
+reasons. It also eliminates other potential points of failure.
+
+It's even more odd considering that you're doing DNAT on the already- 
+NAT'ed Linux machine. Why not do the DNAT in the external routers? 
+Also, those DNAT rules refer to other RFC 1918 netblocks.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
