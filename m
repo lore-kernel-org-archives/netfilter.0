@@ -1,12 +1,10 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: Is anyone else getting these.
-Date: Mon, 04 Jul 2005 11:09:21 +0200
-Message-ID: <42C8FCC1.7030204@mnemon.de>
-References: <57F9959B46E0FA4D8BA88AEDFBE58290741F@pxtbenexd01.pxt.primeexalia.com>
+From: umar draz <umar_draz@yahoo.com>
+Subject: help me
+Date: Mon, 4 Jul 2005 03:39:08 -0700 (PDT)
+Message-ID: <20050704103908.15589.qmail@web53106.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE58290741F@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +15,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Mr NetFilter <netfilter@lists.netfilter.org>
 
-Gary W. Smith schrieb:
-> I have verified my IP's not to on relays.ordb.org.  I'm wondering if th=
-ey blacklisted netfilter.org?
->=20
->=20
->=20
-> FW: Unzustellbar: [SPAM] - Crazy portmap request - Sending mail server =
-found=20
-> on relays.ordb.org
->=20
-> -----Original Message-----
-> From: Systemadministrator [mailto:postmaster@echtzeit.com]=20
-> Sent: Friday, July 01, 2005 2:11 PM
-> To: Gary W. Smith
-> Subject: Unzustellbar: [SPAM] - Crazy portmap request - Sending mail se=
-rver found on relays.ordb.org
->=20
-> Your message
->=20
->   To:      netfilter@lists.netfilter.org
->   Subject: [SPAM] - Crazy portmap request - Sending mail server found o=
-n
-> relays.ordb.org
->   Sent:    Fri, 1 Jul 2005 00:56:12 +0200
->=20
-> did not reach the following recipient(s):
->=20
-> phergenhahn@echtzeit.de on Fri, 1 Jul 2005 23:11:28 +0200
->     Der Name des Empf=E4ngers wurde nicht erkannt.
+hi dear members!
 
-I suppose that everyone posting to the list gets this mail - at least I
-get it ervery time. Like Jason already posted, adding
+  i have one interface card in my linux machine <eth0>
 
-:0
-* From.*postmaster@echtzeit.com
-/dev/null
+  now i attache DSL modem with this interface now i
+want block all incoming traffic.
 
-to my .procmailrc solved this and mekes me feel better :)
+but i want i can access every thing.
 
-Have a nice time,
+how i can do it
 
-Joerg
+regards
 
+Umar Draz
 
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
