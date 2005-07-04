@@ -1,12 +1,13 @@
-From: Christoph Georgi <christoph.georgi@web.de>
-Subject: Re: help me
-Date: Mon, 04 Jul 2005 22:47:15 +1200
-Message-ID: <42C913B3.8010202@web.de>
-References: <20050704103908.15589.qmail@web53106.mail.yahoo.com>
+From: "David Leangen" <dleangen@canada.com>
+Subject: RE: /etc/sysconfig/iptables does not load on reboot
+Date: Mon, 4 Jul 2005 20:13:25 +0900
+Message-ID: <NEBBKBPLMLNABNADCIPACEGEBDAB.dleangen@canada.com>
+References: <NEBBKBPLMLNABNADCIPAGEDABDAB.dleangen@canada.com>
+Reply-To: dleangen@canada.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050704103908.15589.qmail@web53106.mail.yahoo.com>
+In-Reply-To: <NEBBKBPLMLNABNADCIPAGEDABDAB.dleangen@canada.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,58 +18,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: umar draz <umar_draz@yahoo.com>
-Cc: Mr NetFilter <netfilter@lists.netfilter.org>
-
-make the default policy of the incoming chain (input) drop, but allow 
-established and related traffic, and allow all outgoing traffic by 
-setting the default policy to allow for the output chain (although it's 
-adviced to specify the outgoing traffic further..)
-
-# drops all traffic
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -P FORWARD DROP
-
-# allow established an related incoming traffic
-$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
-christoph
+Hello!
+
+> > RH/FC and such like to hide information from the user. You can add
+> > some shell code to your startup scripts which redirect more verbose
+> > output to files. In this case maybe some echo commands to show
+> > which file is being fed to iptables-restore.
+
+Well, I did little more digging. Although I see more and more what's going
+on, I'm understanding less and less.
+
+I have two machines on which I freshly installed FC3, in the exaclty the
+same way, with minimal packages. Since I installed FC3 exactly the same way,
+it should behave the same way on both systems, right? Well, not so. That's
+the first point I do not understand.
+
+On one machine ("goodhost"), everything works exactly as expected.
+
+On the misbehaving machine, however, ("badhost"), I noticed that contrary to
+what I mentioned in my previous posts, /etc/sysconfig/iptables does indeed
+appear to get loaded at system startup.
+
+However, IT DOES NOT GET LOADED THE SAME WAY!!
+
+Why is that? Why would the same file not get loaded the same way on startup
+as it does when running iptables-restore afterward? And why does it work on
+one machine, but not on another with the same installation? I've tried on a
+few different firewall rules files, and the same thing always seems to
+happen. I even tried with the default RedHat firewall rules. The diff of
+'iptables-L' between the two (firewall loaded at startup vs. firewall loaded
+afterward with iptables-restore) is below.
+
+Any ideas about this very strange situation? Any help would be most
+appreciated!
 
 
-umar draz wrote:
-> hi dear members!
-> 
->   i have one interface card in my linux machine <eth0>
-> 
->   now i attache DSL modem with this interface now i
-> want block all incoming traffic.
-> 
-> but i want i can access every thing.
-> 
-> how i can do it
-> 
-> regards
-> 
-> Umar Draz
-> 
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam protection around 
-> http://mail.yahoo.com 
-> 
-> 
 
--- 
+< RH-Firewall-1-INPUT  all  --  anywhere             anywhere
+---
+> DROP       tcp  --  anywhere             anywhere            tcp
+dpts:0:1023
+> DROP       udp  --  anywhere             anywhere            udp
+dpts:0:1023
+> DROP       tcp  --  anywhere             anywhere            tcp
+flags:SYN,RST,ACK/SYN
+> DROP       icmp --  anywhere             anywhere            icmp
+echo-request
+5c8
+< Chain FORWARD (policy ACCEPT)
+---
+> Chain FORWARD (policy DROP)
+7d9
+< RH-Firewall-1-INPUT  all  --  anywhere             anywhere
+12c14
+< Chain RH-Firewall-1-INPUT (2 references)
+---
+> Chain RH-Firewall-1-INPUT (0 references)
 
 
-Christoph Georgi
------------------------------
-email.  christoph.georgi@web.de
-fon.	+64 (0)9 815 8259
-
-registered linux user #380268
-ubuntu 5.04 (ubuntu.com)
 
