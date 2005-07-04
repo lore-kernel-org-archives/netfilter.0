@@ -1,15 +1,14 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Problem with routing decisions, and multihop
-Date: Mon, 4 Jul 2005 10:10:13 -0500
-Message-ID: <200507041010.13653.rob0@gmx.co.uk>
-References: <45219fb00507040715442f52cf@mail.gmail.com>
-	<45219fb00507040732192b77e0@mail.gmail.com>
-	<200507041007.06513.rob0@gmx.co.uk>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: [ADMIN] people.netfilter.org down
+Date: Mon, 4 Jul 2005 17:14:26 +0200
+Message-ID: <20050704151426.GA20465@sunbeam.de.gnumonks.org>
+References: <20050703071659.GK3186@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tKW2IUtsqtDRztdT"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200507041007.06513.rob0@gmx.co.uk>
 Content-Disposition: inline
+In-Reply-To: <20050703071659.GK3186@sunbeam.de.gnumonks.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,15 +19,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Monday 04 July 2005 10:07, I wrote:
-> Are multiple "ip route get ip.add.re.ss" commands in sequence showing
-> routes out the same interface?
 
-for X in `seq 10` ; do /sbin/ip route get $X.$X.$X.$X ; done
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+--tKW2IUtsqtDRztdT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Jul 03, 2005 at 09:16:59AM +0200, Harald Welte wrote:
+=20
+> Due to stupid experimentation with mmio_test [1], I've managed to crash
+> durga.netfilter.org (which runs people.netfilter.org) on a Sunday (where
+> no staff is present at the hosting ISP).   I expect it to be down until
+> some point on Monday (tomorrow).
+
+machine is up and running again. if something isn't working as expected,
+please contact me.
+
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--tKW2IUtsqtDRztdT
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFCyVJSXaXGVTD0i/8RApvmAJ0eWT8Eg/RCIOEqaPpoN1keffn66ACfe+s5
+2xp/uO8r+9k5WjsaYEjWwBo=
+=OCM2
+-----END PGP SIGNATURE-----
+
+--tKW2IUtsqtDRztdT--
 
