@@ -1,14 +1,18 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: [ADMIN] people.netfilter.org down
-Date: Mon, 4 Jul 2005 17:14:26 +0200
-Message-ID: <20050704151426.GA20465@sunbeam.de.gnumonks.org>
-References: <20050703071659.GK3186@sunbeam.de.gnumonks.org>
+From: Lluis Batle <viriketo@gmail.com>
+Subject: Problem with routing decisions, and multihop
+Date: Mon, 4 Jul 2005 17:32:40 +0200
+Message-ID: <45219fb0050704083253774af5@mail.gmail.com>
+References: <45219fb00507040715442f52cf@mail.gmail.com>
+	<45219fb00507040732192b77e0@mail.gmail.com>
+	<200507041007.06513.rob0@gmx.co.uk>
+	<200507041010.13653.rob0@gmx.co.uk>
+	<45219fb005070408323197bfa4@mail.gmail.com>
+Reply-To: Lluis Batle <viriketo@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tKW2IUtsqtDRztdT"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <45219fb005070408323197bfa4@mail.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <20050703071659.GK3186@sunbeam.de.gnumonks.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,45 +23,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+No, everything is right in its output:
+1.1.1.1 via 192.168.16.2 dev eth1  src 192.168.16.1
+    cache  mtu 1500 advmss 1460 metric10 64
+2.2.2.2 via 192.168.17.2 dev eth2  src 192.168.17.1
+    cache  mtu 1500 advmss 1460 metric10 64
+3.3.3.3 via 192.168.16.2 dev eth1  src 192.168.16.1
+    cache  mtu 1500 advmss 1460 metric10 64
+4.4.4.4 via 192.168.17.2 dev eth2  src 192.168.17.1
+    cache  mtu 1500 advmss 1460 metric10 64
+5.5.5.5 via 192.168.16.2 dev eth1  src 192.168.16.1
+    cache  mtu 1500 advmss 1460 metric10 64
+6.6.6.6 via 192.168.17.2 dev eth2  src 192.168.17.1
+    cache  mtu 1500 advmss 1460 metric10 64
+7.7.7.7 via 192.168.16.2 dev eth1  src 192.168.16.1
+    cache  mtu 1500 advmss 1460 metric10 64
+8.8.8.8 via 192.168.17.2 dev eth2  src 192.168.17.1
+    cache  mtu 1500 advmss 1460 metric10 64
+9.9.9.9 via 192.168.16.2 dev eth1  src 192.168.16.1
+    cache  mtu 1500 advmss 1460 metric10 64
+10.10.10.10 via 192.168.17.2 dev eth2  src 192.168.17.1
+    cache  mtu 1500 advmss 1460 metric10 64
 
---tKW2IUtsqtDRztdT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+About the 16.x and 17.x addresses... yes, there are other routers,
+which make NAT (192.168.16.2 and 192.168.17.2) to internet.
 
-On Sun, Jul 03, 2005 at 09:16:59AM +0200, Harald Welte wrote:
-=20
-> Due to stupid experimentation with mmio_test [1], I've managed to crash
-> durga.netfilter.org (which runs people.netfilter.org) on a Sunday (where
-> no staff is present at the hosting ISP).   I expect it to be down until
-> some point on Monday (tomorrow).
-
-machine is up and running again. if something isn't working as expected,
-please contact me.
-
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---tKW2IUtsqtDRztdT
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFCyVJSXaXGVTD0i/8RApvmAJ0eWT8Eg/RCIOEqaPpoN1keffn66ACfe+s5
-2xp/uO8r+9k5WjsaYEjWwBo=
-=OCM2
------END PGP SIGNATURE-----
-
---tKW2IUtsqtDRztdT--
+On 7/4/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
+> On Monday 04 July 2005 10:07, I wrote:
+> > Are multiple "ip route get ip.add.re.ss" commands in sequence showing
+> > routes out the same interface?
+>
+> for X in `seq 10` ; do /sbin/ip route get $X.$X.$X.$X ; done
+> --
+>     mail to this address is discarded unless "/dev/rob0"
+>     or "not-spam" is in Subject: header
+>
+>
 
