@@ -1,10 +1,12 @@
 From: krishna chaitanya <chaitanya@rocsys.com>
 Subject: newbie to netfilters
-Date: 04 Jul 2005 17:07:18 +0530
-Message-ID: <1120477039.11255.8.camel@Krishna>
+Date: 04 Jul 2005 18:27:52 +0530
+Message-ID: <1120481873.935.4.camel@Krishna>
+References: <200507040828.j5UDblrl003631@rocsys.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200507040828.j5UDblrl003631@rocsys.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,10 +21,12 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 Hi,
-    I am a newbie to netfilters.Can any one help me in understanding of
-what int (*okfn)(struct sk_buff *) function pointer does in the hook
-function of netfilters.
+
+	I am newbie to netfilters.I want some help in understanding the
+necessity of  "int (*okfn)(struct sk_buff *)" function pointer in
+netfilter hook function.
 						
-Thanks in Advance
+Thanks in advance
+
 
 
