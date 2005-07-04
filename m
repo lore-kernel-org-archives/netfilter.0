@@ -1,12 +1,15 @@
-From: "matt" <matt@darcy.demon.co.uk>
-Subject: RE: [Announce] Nulog 1.1.0 is available
-Date: Mon, 4 Jul 2005 18:07:27 +0100
-Message-ID: <38562.8269905739$1120496897@news.gmane.org>
-References: <1120426995.8058.14.camel@localhost.localdomain>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Problem with routing decisions, and multihop
+Date: Mon, 4 Jul 2005 13:06:08 -0500
+Message-ID: <200507041306.08626.rob0@gmx.co.uk>
+References: <45219fb00507040715442f52cf@mail.gmail.com>
+	<200507041133.35774.rob0@gmx.co.uk>
+	<45219fb005070409543f229ddd@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1120426995.8058.14.camel@localhost.localdomain>
+In-Reply-To: <45219fb005070409543f229ddd@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,70 +21,99 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: NetFilter <netfilter@lists.netfilter.org>
 
+On Monday 04 July 2005 11:54, Llu=EDs Batlle wrote:
+> Thanks :) I answer between lines...
 
-The Nulog 1.1.0 release has a bug.
+Thank you.
 
-The mysql dumpfile does not contain the conntrack_ulog table.
+> On 7/4/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
+>  > >>=3D"masquerading.multi-eth" (misnamed: it does no masquerading)
+>
+> Ok. I tried with MASQUERADE, but by now I use SNAT.
 
-This has been reported to the nulog email account.
+Right. MASQUERADE will not work with multiple routing.
 
+> > >>NE1=3D192.168.16.0/28
+> > >>NE2=3D192.168.17.0/28
+> >
+> > Let's see, those are .0-.15 on the last quad.
+> >
+> > >>NLOCAL=3D192.168.0.0/20
+> >
+> > And this is 0.0 through 15.255 ... IOW, wrong, excluding both $NE1
+> > and $NE2. Try 192.168.16.0/23. It would not hurt for you to brush
+> > up on TCP/IP and subnetting basics.
+>
+> Oh. Is it wrong? I don't understand what's "IOW". Where should I try
+> your proposed subnet? why?
 
+IOW=3D"in other words", a common Internet shorthand.
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Eric Leblond
-Sent: 03 July 2005 22:43
-To: R. DuFresne
-Cc: netfilter@lists.netfilter.org
-Subject: Re: [Announce] Nulog 1.1.0 is available
+192.168.0.0/20, set as $NLOCAL in your iptables script, excludes your
+IP addresses and networks. No packet hitting the rules which refer to=20
+that value will match, so the rules are ignored.
 
-Le vendredi 01 juillet 2005 =E0 15:34 -0400, R. DuFresne a =E9crit :
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->=20
->=20
-> considering the history of php, and many php applications and their=20
-> bi-weekly appearance in the various sec lists for newly discovered =
-vulns,=20
-> how afe is this application and would one want to place it on or near=20
-> their main security device?
+The rules to which I am referring:
+$IPTABLES -t nat -A POSTROUTING -o eth1 -s $NLOCAL -j SNAT --to $IPE1
+$IPTABLES -t nat -A POSTROUTING -o eth2 -s $NLOCAL -j SNAT --to $IPE2
+Your SNAT rules.
 
-This application exists since some years now and we have proceed to some
-code audits and have carefully checked user entries to avoid SQL
-injection or other problems.
+Change "NLOCAL=3D192.168.0.0/20" to "NLOCAL=3D192.168.0.0/16", or as=20
+previously suggested, "NLOCAL=3D192.168.16.0/23". I suppose you could=20
+even omit the source specification altogether:
+$IPTABLES -t nat -A POSTROUTING -o eth1 -j SNAT --to $IPE1
+$IPTABLES -t nat -A POSTROUTING -o eth2 -j SNAT --to $IPE2
 
-The other point is that this application has not to be available for
-evryone has it contains private information. Thus, it can be protected
-from "bad people" by authentication or other mean. To be simple, access
-has to be restricted to admins.
+> > 1. IMO it's confusing to give chains the same name in different
+> > tables.
+>
+> I agree... but by now does that matter?
 
-An other point is that permissions on the MySQL database should and can
-be carefully set to have only read-only permission on the table
-containing the ulogd/NuFW logs. This restricted permissions can assure
-that the logged datas can not be corrupted. Futhermore, in the case of
-an Ulogd installation, the logged packets can be duplicated in syslog,
-thus any hypothetic datas corruption is armless.
+Simply a point of style. You can give chains any names you wish, no=20
+matter how confusing they might be in context:
 
-Finally, as ulogd can log on a database running on a separate host, your
-firewall is safe as there is no server running on it.=20
+###  Kids, don't try this at home. Professional stunt driver on a
+###  closed track.
+iptables -N InputLogDrop
+iptables -N ForwardAllow
+iptables -A InputLogDrop -j ACCEPT
+iptables -A FORWARD -j InputLogDrop
+iptables -A ForwardAllow -j LOG
+iptables -A ForwardAllow -p tcp -j REJECT
+iptables -A ForwardAllow -j DROP
+iptables -A INPUT -j ForwardAllow
+###  For my next trick, I will campaign to be elected Prime Minister.
+###  Thank you for your support in the polls.
 
-BR,
---=20
-Eric Leblond <eric@inl.fr>
+> > 3. --state in -t nat? Is that possible? Does it work? Does it break
+> > anything?
+>
+> It seems it's possible. I get no error from those commands. Anyway,
 
+Perhaps it doesn't break anything, but I have read here that only=20
+packets of --state NEW hit the -t nat PREROUTING chain. I don't know=20
+about the relationship between connection tracking and NAT.
 
---=20
-No virus found in this incoming message.
-Checked by AVG Anti-Virus.
-Version: 7.0.323 / Virus Database: 267.8.8/37 - Release Date: 01/07/2005
-=20
+> I've thought that happens double application of that rule, through
+> filter and nat tables. I've removed everything about 'keep_state' in
+> the nat table. Everything is still working bad. Even from the
 
---=20
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.323 / Virus Database: 267.8.8/37 - Release Date: 01/07/2005
-=20
+Likely because of NLOCAL in your script. If that's not the case it's=20
+beyond my limited understanding, and once again I'll suggest you take=20
+it to LARTC. Some people in LARTC know more about this than I do.
 
+> > already-NAT'ed Linux machine. Why not do the DNAT in the external
+> > routers? Also, those DNAT rules refer to other RFC 1918 netblocks.
+>
+> mmm I've never read RFC 1918. :) I'll take a look at it.
+
+"RFC 1918 netblocks" is simply another form of shorthand to refer to=20
+IPv4 ranges which are reserved for private use, namely 10.0.0.0/8,=20
+172.16.0.0/12, and 192.168.0.0/16. I rarely read RFC's myself (but I=20
+must confess to a fondness for RFC 1149. :) )
+=2D-=20
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
