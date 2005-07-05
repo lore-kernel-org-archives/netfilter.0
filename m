@@ -1,13 +1,10 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
-Subject: Re: cant ping fw
-Date: Wed, 06 Jul 2005 14:04:09 +0200
-Message-ID: <42CBC8B9.8090605@eccotours.dyndns.org>
-References: <42CBBE57.5060802@eccotours.dyndns.org>
-	<42CBC275.2090003@mnemon.de>
+From: =?ISO-8859-2?Q?Keser=FB_Korn=E9l?= <keseruk@freemail.hu>
+Subject: SNAT rule in the POSTROUTING chain ignored?
+Date: Tue, 5 Jul 2005 20:00:44 +0200 (CEST)
+Message-ID: <freemail.20050605200044.90491@fm6.freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42CBC275.2090003@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,39 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?J=F6rg=5FHarmuth?= <harmuth@mnemon.de>
-Cc: iptables <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-J=F6rg_Harmuth wrote:
-> Is this really the complete rule set ? No rules in OUTPUT and FORWARD,
-> but policy set to DROP ? Anyway.
-> There is no rule for lo. Add
-> $IPT -<I | A> INPUT -i lo -j ACCEPT
-> $IPT -<I | A> OUTPUT -o lo -j ACCEPT
-> and for echo reply add
-> $IPT -A OUTPUT -p icmp --icmp-type echo-reply -j ACCEPT
-> This should work.
-> Have a nice time,
-> Joerg
+Dear List members,
 
-Hi Joerg
+I'm using iptables to rewrite the source address of UDP packets sent=20
+out from a Debian machine. I use iptables 1.2.11.
+For this purpose I setup one single rule in the nat table in the=20
+POSTROUTING chain. I have a java application which sends UDP=20
+packets to another machine. With this application the rewriting of the=20
+source address works fine. But I have another C application that sends=20
+UDP from the same IP address and port (than the java application did)=20
+and in this case the source address is not rewritten. How is it possible?
+I tried to debug the things in /var/log/kern.log and I found, that some=20
+debug lines appear when the java application sends something, but=20
+nothing appears when the C application sends.
+Do you have any idea why iptables can not work for packets of the C=20
+application altough it works for a java application?
+Thank you for your help in advance.
 
-here is my OUTPUT
-
-$IPT -t filter -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPT -t filter -A OUTPUT -m state --state INVALID -j LOG --log-prefix=20
-"INVALID output: " --log-tcp-options --log-ip-options
-$IPT -t filter -A OUTPUT -m state --state INVALID -j DROP
-$IPT -t filter -A OUTPUT -m state --state NEW -j ACCEPT
-$IPT -t filter -A OUTPUT -j LOG --log-prefix "[OUTPUT DROP]: "=20
---log-tcp-options --log-ip-options
-$IPT -t filter -A OUTPUT -j DROP
-
-and for my lo
-
-$IPT -A INPUT -i lo -j ACCEPT
-$IPT -A OUTPUT -o lo -j ACCEPT
-
-
+Best regards,
+Kornel Keseru
+=0A=0A_____________________________________________________________________=
+___________=0A[freemail] extra 1GB-os postafi=F3kkal, =D6nnek m=E1r van? ht=
+tp://freemail.hu=0A=0A
 
