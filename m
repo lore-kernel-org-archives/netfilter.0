@@ -1,18 +1,13 @@
-From: =?ISO-8859-1?Q?Llu=EDs_Batlle?= <viriketo@gmail.com>
-Subject: Re: Problem with routing decisions, and multihop (solved)
-Date: Tue, 5 Jul 2005 09:46:29 +0200
-Message-ID: <45219fb005070500469fee3c9@mail.gmail.com>
-References: <45219fb00507040715442f52cf@mail.gmail.com>
-	<200507041133.35774.rob0@gmx.co.uk>
-	<45219fb005070409543f229ddd@mail.gmail.com>
-	<200507041306.08626.rob0@gmx.co.uk>
-	<45219fb00507042252343deced@mail.gmail.com>
-Reply-To: =?ISO-8859-1?Q?Llu=EDs_Batlle?= <viriketo@gmail.com>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: Is anyone else getting these.
+Date: Tue, 05 Jul 2005 10:59:46 +0200
+Message-ID: <42CA4C02.8090404@mnemon.de>
+References: <57F9959B46E0FA4D8BA88AEDFBE58290741F@pxtbenexd01.pxt.primeexalia.com>	<42C8FCC1.7030204@mnemon.de>
+	<42C9802B.3000503@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45219fb00507042252343deced@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <42C9802B.3000503@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,30 +21,39 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Argh. Stupid me..............
-The tables 201 and 202, who decide the route for packets with already
-defined source addres were in the rules that way:
-The routing rules are:
-0:      from all lookup local
-50:     from all lookup main
-201:    from 192.168.17.0/28 iif eth2 lookup 201
-202:    from 192.168.16.0/28 iif eth1 lookup 202
-222:    from all lookup 222
-32766:  from all lookup main
-32767:  from all lookup default
+Taylor, Grant schrieb:
+> Yes, such a client side filter will prevent end users (us) from seeing
+> such emails.  But being the email administrator (postmaster) that I am I
+> feel that such a solution is a patch and a poor one at that.  Why don't
+> we resolve the real problem, that being to remove the problem email
+> address from the mail list.
 
-Look at the terrible "iif ethx"!!!!!!!!! The packets were routed _at
-random_ by the 'equalizing routing decision', even if with decided
-address. Argh.
-Solution: there should not be "if ethx" in the routing rule matching
+I agree, but unfortunately I'm not in the position to do this and thus
+just have to "live" with it...
 
-Now it works.
+Have a nice time,
 
-Even though, I'd prefer to get the Julian's patches working. When I
-try them, all packets go to the same interface (the first hop). I'll
-keep on working...
+Joerg
 
-Always, always, there is the deadly "user fault". :)))
+> 
+> Grant. . . .
+> 
+> 
+>> I suppose that everyone posting to the list gets this mail - at least I
+>> get it ervery time. Like Jason already posted, adding
+>>
+>> :0
+>> * From.*postmaster@echtzeit.com
+>> /dev/null
+>>
+>> to my .procmailrc solved this and mekes me feel better :)
+>>
+>> Have a nice time,
+>>
+>> Joerg
+> 
+> 
 
-Thanks for your support!
+
+
 
