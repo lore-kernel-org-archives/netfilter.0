@@ -1,12 +1,18 @@
-From: KOVACS Krisztian <hidden@balabit.hu>
-Subject: Re: Implicit SNAT gone
-Date: Tue, 05 Jul 2005 09:22:13 +0200
-Message-ID: <1120548134.5268.4.camel@nienna.balabit>
-References: <Pine.LNX.4.61.0507042116530.10754@yvahk01.tjqt.qr>
+From: =?ISO-8859-1?Q?Llu=EDs_Batlle?= <viriketo@gmail.com>
+Subject: Re: Problem with routing decisions, and multihop (solved)
+Date: Tue, 5 Jul 2005 09:46:29 +0200
+Message-ID: <45219fb005070500469fee3c9@mail.gmail.com>
+References: <45219fb00507040715442f52cf@mail.gmail.com>
+	<200507041133.35774.rob0@gmx.co.uk>
+	<45219fb005070409543f229ddd@mail.gmail.com>
+	<200507041306.08626.rob0@gmx.co.uk>
+	<45219fb00507042252343deced@mail.gmail.com>
+Reply-To: =?ISO-8859-1?Q?Llu=EDs_Batlle?= <viriketo@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0507042116530.10754@yvahk01.tjqt.qr>
+In-Reply-To: <45219fb00507042252343deced@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +23,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Argh. Stupid me..............
+The tables 201 and 202, who decide the route for packets with already
+defined source addres were in the rules that way:
+The routing rules are:
+0:      from all lookup local
+50:     from all lookup main
+201:    from 192.168.17.0/28 iif eth2 lookup 201
+202:    from 192.168.16.0/28 iif eth1 lookup 202
+222:    from all lookup 222
+32766:  from all lookup main
+32767:  from all lookup default
 
-  Hi,
+Look at the terrible "iif ethx"!!!!!!!!! The packets were routed _at
+random_ by the 'equalizing routing decision', even if with decided
+address. Argh.
+Solution: there should not be "if ethx" in the routing rule matching
 
-2005-07-04, h keltez=E9ssel 21.17-kor Jan Engelhardt ezt =EDrta:
-> In ip_nat_rule.c (and my syslog! apprently) I see:
->=20
-> /* Before 2.6.11 we did implicit source NAT if required. Warn about cha=
-nge. */
->                 printk("NAT: no longer support implicit source local NA=
-T\n");
->                 printk("NAT: packet src %u.%u.%u.%u -> dst %u.%u.%u.%u\=
-n",
->                        NIPQUAD(srcip), NIPQUAD(dstip));
->=20
-> So, how do I get the feature back with 2.6.12 logic?
-> (Or do I have to forwardport that feature?)
+Now it works.
 
-  Forward porting that "feature" is nearly impossible without backing
-out all the NAT-related changes. However, you can usually solve the
-problem itself instead of reintroducing such tricks. Why exactly do you
-need this feature?
+Even though, I'd prefer to get the Julian's patches working. When I
+try them, all packets go to the same interface (the first hop). I'll
+keep on working...
 
---=20
- Regards,
-  Krisztian Kovacs
+Always, always, there is the deadly "user fault". :)))
 
+Thanks for your support!
 
