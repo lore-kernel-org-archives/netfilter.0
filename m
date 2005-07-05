@@ -1,12 +1,11 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: multiple gateways in linux
-Date: Tue, 5 Jul 2005 13:44:08 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507051343510.28524@yvahk01.tjqt.qr>
-References: <20050630114101.35127.qmail@web53110.mail.yahoo.com>
-	<200507011337.16923.rob0@gmx.co.uk>
+Subject: Re: mangle squid packets
+Date: Tue, 5 Jul 2005 13:49:46 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507051347060.28524@yvahk01.tjqt.qr>
+References: <42C5A815.8040301@lanhelp.com.br>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200507011337.16923.rob0@gmx.co.uk>
+In-Reply-To: <42C5A815.8040301@lanhelp.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,19 +18,18 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: /dev/rob0 <rob0@gmx.co.uk>
+To: marcus <marcus@lanhelp.com.br>
 Cc: netfilter@lists.netfilter.org
 
 
->>   i have 2 DSL connection from diffrent companies. i
->> attached both DSL modem in my Linux Machine with
->> different ethernet.
->
->http://www.ssi.bg/~ja/
->http://www.ssi.bg/~ja/nano.txt
+>I dont know what mangle rule I need to mark squid transparent packets, I
+>have tried all the following (One at a time):
 
-Using -j ROUTE, it's a lot simpler. At least in theory, as I have not yet 
-tried ROUTE.
+Because Squid practically starts a new connection, you need special help 
+from squid itself to mark outgoing packets based on incoming ones.
+
+This is done by TPROXY, a netfilter module from Balabit.com.
+Unfortunately, they do not have a version for 2.6.11 and up yet.
 
 
 
