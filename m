@@ -1,10 +1,13 @@
-From: "Carlos Cruells" <carlos.cruells@betybyte.com>
-Subject: Outgoing NAT problem.
-Date: Tue, 5 Jul 2005 16:50:32 +0200
-Message-ID: <19b901c58170$e51cd740$1e0c0a0a@betybyte.local>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Outgoing NAT problem.
+Date: Tue, 5 Jul 2005 10:00:47 -0500
+Message-ID: <200507051000.47435.rob0@gmx.co.uk>
+References: <19b901c58170$e51cd740$1e0c0a0a@betybyte.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <19b901c58170$e51cd740$1e0c0a0a@betybyte.local>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,63 +21,27 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Regards from Madrid, Spain.
+On Tuesday 05 July 2005 09:50, Carlos Cruells wrote:
+> iptables -t nat -A POSTROUTING -s 10.10.12.30 -o eth1 -j SNAT --to
+> 62.93.44.116
 
-I am configuring a Iptables firewall on the office, but i have problems =
-with the navigation from LAN to Internet.
-My configuration is the next:
+If a packet has a source IP of 10.10.12.30 and is routed out the eth1 
+interface, rewrite the source IP to 62.93.44.116.
 
-    - eth0 --> LAN Interface=20
-    - eth1 --> WAN Interface=20
+> When i do a simple ping test from LAN --> Internet, it fails, but if
 
-I enter the next command:
+Don't do it from anywhere on the LAN. Only do it from 10.10.12.30. It 
+won't work from any other IP. Perhaps you wanted to use a different 
+source specification, like "-s 10.10.12.0/24" or "-s 10.0.0.0/8"?
 
-iptables -t nat -A POSTROUTING -s 10.10.12.30 -o eth1 -j SNAT --to =
-62.93.44.116
+> i repeat the same test from firewall, it does ok.
+>
+> IP_LAN -------(ping)--------> IP www.cisco.com = Not OK
+> Firewall -------(ping)--------> IP www.cisco.com = OK
 
-The configuration results:
+DNS might also be a factor. Only the firewall machine and 10.10.12.30 
+would be able to get out to any external resolvers with that rule.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination        =20
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination        =20
-SNAT       all  --  10.10.12.30          anywhere            =
-to:62.93.44.116=20
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination        =20
-
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination        =20
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination        =20
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-IP_forward --> 1
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-
-All policies are in ACCEPT position, but it doesn't works.
-/proc/sys/net/ipv4/ip_forward =3D 1
-
-When i do a simple ping test from LAN --> Internet, it fails, but if i =
-repeat the same test from firewall, it does ok.
-
-IP_LAN -------(ping)--------> IP www.cisco.com =3D Not OK
-Firewall -------(ping)--------> IP www.cisco.com =3D OK
-
-Anybody can help me?
-
-P.D: I know it. My english is not very good.  :D
