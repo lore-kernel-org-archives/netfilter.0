@@ -1,11 +1,14 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: cvs password
-Date: Wed, 6 Jul 2005 14:27:40 +0200 (CEST)
-Message-ID: <Pine.LNX.4.62.0507061426440.29049@mercury.sdinet.de>
-References: <001401c581d0$ea21ee00$0a00a8c0@rowehost.com>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: cant ping fw
+Date: Wed, 06 Jul 2005 14:29:12 +0200
+Message-ID: <42CBCE98.2050004@mnemon.de>
+References: <42CBBE57.5060802@eccotours.dyndns.org>
+	<42CBC275.2090003@mnemon.de>
+	<42CBC8B9.8090605@eccotours.dyndns.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001401c581d0$ea21ee00$0a00a8c0@rowehost.com>
+In-Reply-To: <42CBC8B9.8090605@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,34 +19,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Andy Rowe <andy@roweboat.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Tue, 5 Jul 2005, Andy Rowe wrote:
+Hi Brent,
 
-> i can not get the cvs password " cvs " listed at 
-> http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-2.html
->
-> when i run the commands below wich are listed at the website address above i 
-> get a connection refused. Am i doing something wrong?
->
-> cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login
-> cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic co netfilter/userspace 
-> netfilter/patch-o-matic
+Brent Clark schrieb:
 
-The docs are outdated.
-CVS has been replaced by subversion, the pserver has been shut down.
+> here is my OUTPUT
+> 
+> $IPT -t filter -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPT -t filter -A OUTPUT -m state --state INVALID -j LOG --log-prefix
+> "INVALID output: " --log-tcp-options --log-ip-options
+> $IPT -t filter -A OUTPUT -m state --state INVALID -j DROP
+> $IPT -t filter -A OUTPUT -m state --state NEW -j ACCEPT
+> $IPT -t filter -A OUTPUT -j LOG --log-prefix "[OUTPUT DROP]: "
+> --log-tcp-options --log-ip-options
+> $IPT -t filter -A OUTPUT -j DROP
+> 
+> and for my lo
+> 
+> $IPT -A INPUT -i lo -j ACCEPT
+> $IPT -A OUTPUT -o lo -j ACCEPT
 
-Current docs:
-http://www.netfilter.org/downloads.html#svn
+Looking closer to your rules, I see these possibilities:
 
-c'ya
-sven
+1.) For some reasons echo-request are considered INVALID. This should
+    show up in your logs.
+2.) You ping 217.199.186.255 :)
+3.) Your client doesn't find fw
+4.) /proc/sys/net/ipv4/icmp_echo_ignore_all is set to 1
 
--- 
+echo-replies are in state ESTABLISHED, so there is no problem with your
+OUTPUT chain. I don't know the real reason, but I have a feeling, that
+4.) is the best bet.
 
-The Internet treats censorship as a routing problem, and routes around it.
-(John Gilmore on http://www.cygnus.com/~gnu/)
+HTH and have nice time,
+
+Joerg
+
 
