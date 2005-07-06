@@ -1,7 +1,7 @@
 From: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
-Subject: TOS target and IPSEC
-Date: Tue, 5 Jul 2005 22:57:23 -0300
-Message-ID: <f48e768e05070518574855eff4@mail.gmail.com>
+Subject: tos and ipsec
+Date: Tue, 5 Jul 2005 23:00:13 -0300
+Message-ID: <f48e768e05070519003688b8d9@mail.gmail.com>
 Reply-To: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -20,8 +20,6 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi guys
-
 I was reading about  TOS target in mangle table, and all documentation
 or papers are  talking to use TOS with  --dport or --sport (OUTPUT and
 INPUT), so I would like to know if does TOS work with IPSEC
@@ -30,7 +28,6 @@ destination ports, and what exactly would be those ports ?
 tanks
 
 best regards !!!
-
 --=20
 Glaucius Djalma Pereira Junior
 glaucius@gmail.com
