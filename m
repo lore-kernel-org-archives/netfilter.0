@@ -1,12 +1,12 @@
 From: KOVACS Krisztian <hidden@balabit.hu>
 Subject: Re: SNAT rule in the POSTROUTING chain ignored?
-Date: Wed, 06 Jul 2005 15:05:38 +0200
-Message-ID: <1120655138.5642.15.camel@nienna.balabit>
-References: <freemail.20050605200044.90491@fm6.freemail.hu>
+Date: Wed, 06 Jul 2005 16:07:35 +0200
+Message-ID: <1120658855.5642.24.camel@nienna.balabit>
+References: <freemail.20050606153707.14041@fm1.freemail.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <freemail.20050605200044.90491@fm6.freemail.hu>
+In-Reply-To: <freemail.20050606153707.14041@fm1.freemail.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,17 +24,28 @@ Cc: netfilter@lists.netfilter.org
 
   Hi,
 
-2005-07-05, k keltez=E9ssel 20.00-kor Keser=FB Korn=E9l ezt =EDrta:
-> I tried to debug the things in /var/log/kern.log and I found, that some=
+2005-07-06, sze keltez=E9ssel 15.37-kor Keser=FB Korn=E9l ezt =EDrta:
+> When I send packet with the problematic application, no lines appear in=
 =20
-> debug lines appear when the java application sends something, but=20
-> nothing appears when the C application sends.
-> Do you have any idea why iptables can not work for packets of the C=20
-> application altough it works for a java application?
-> Thank you for your help in advance.
+> kern.log.
+[...]
+> My SNAT rule looks like this:
+> Chain POSTROUTING (policy ACCEPT)
+> target     prot opt source               destination
+> SNAT       all  --  anywhere             anywhere            to:10.10.2=
+.222
+>=20
+> So I think, the rule is general enough. I tried to filter on interface,=
+=20
+> source address, protocol, etc. but no effect...
+>=20
+> Can an application somehow specify that iptables shouldn't have any=20
+> effect on its outgoing packets?
 
-  Could you please tell us what those debug lines are? Probably that
-would help a lot.
+  No, unless it runs as root, uses PF_PACKET sockets and does full
+packet assembly "by hand". If you don't have access to the source code
+you could try using strace to find out what kind of sockets the given
+application opens.
 
 --=20
  Regards,
