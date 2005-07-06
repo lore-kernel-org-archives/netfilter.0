@@ -1,11 +1,13 @@
-From: "Christ, Bryan" <bryan.christ@hp.com>
-Subject: RE: What version of linux?
-Date: Wed, 6 Jul 2005 09:24:21 -0500
-Message-ID: <D4CFB69C345C394284E4B78B876C1CF108864E02@cceexc23.americas.cpqcorp.net>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: What version of linux?
+Date: Wed, 6 Jul 2005 09:56:28 -0500
+Message-ID: <200507060956.28982.rob0@gmx.co.uk>
+References: <4c25221d05070603482ee3dbee@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <4c25221d05070603482ee3dbee@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +19,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Dennis Eng <echo29@gmail.com>, netfilter@lists.netfilter.org
+To: NetFilter <netfilter@lists.netfilter.org>
 
-Netfilter is already in the 2.6.x kernel.  If you do a "make menuconfig"
-you will see it under Device Drivers -> Networking Support -> Networking
-Options -> Network Packet Filterting=20
+On Wednesday 06 July 2005 05:48, Dennis Eng wrote:
+> i would like to ask whether can i use netfilter on linux 2.6.5 .
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Dennis Eng
-Sent: Wednesday, July 06, 2005 5:48 AM
-To: netfilter@lists.netfilter.org
-Subject: What version of linux?
+I don't know why not.
 
-hi there,
+> Though from the website, it state that netfilter can be implemented
 
-i would like to ask whether can i use netfilter on linux 2.6.5 .
-Though from the website, it state that netfilter can be implemented in
-linux 2.6.XX version but when i click on the download, it all for linux
-2.4.XX. I cannot find nettfilter that work in linux 2.6.XX.
+What Website is that?
 
-Thank for the answering my Q in advance!!
+> in linux 2.6.XX version but when i click on the download, it all for
 
-Regard,
-Dennis
+What download?
 
+> linux 2.4.XX. I cannot find nettfilter that work in linux 2.6.XX.
+
+I've got numerous 2.6.x kernels using netfilter.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
