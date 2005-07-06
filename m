@@ -1,12 +1,15 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+From: =?ISO-8859-1?Q?Llu=EDs_Batlle?= <viriketo@gmail.com>
 Subject: Re: More on conntrack + NAT + mangle/nat tables
-Date: Wed, 06 Jul 2005 12:09:22 +0200
-Message-ID: <42CBADD2.8040106@mnemon.de>
+Date: Wed, 6 Jul 2005 12:20:49 +0200
+Message-ID: <45219fb0050706032038dca0e8@mail.gmail.com>
 References: <45219fb00507060217450a89ee@mail.gmail.com>
+	<42CBADD2.8040106@mnemon.de>
+Reply-To: =?ISO-8859-1?Q?Llu=EDs_Batlle?= <viriketo@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45219fb00507060217450a89ee@mail.gmail.com>
+In-Reply-To: <42CBADD2.8040106@mnemon.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,41 +23,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Llu=EDs Batlle schrieb:
-> I already understood that a packet enters chains in the 'nat' table
-> only if it is the _first_ packet of a connection. In that case, we may
-> do SNAT in the POSTROUTING chain of the 'nat' table.
-> So, the packets arrive to the POSTROUTING chain of the 'mangle' table
-> with the source IP address changed (if it's said by the rules of the
-> 'nat' table).
+Oh, my fault. :) I mislooked at the diagram :) Everything is fine, so,
+about nat + mangle tables.
+So, I think conntrack NAT happens after the mangle POSTROUTING chain.
+So, after routing.
 
-No. According to the picture found at
+Thanks :)
 
-http://iptables-tutorial.frozentux.net/chunkyhtml/traversingoftables.html
-
-packet flow is:
-
-... --> [mangle:POSTROUTING] --> [nat:POSTROUTING]
-
-So, all packets arrive in mangle:POSTROUTING with their source address
-unchanged. DNAT - if configured - is already applied to the packet.
-
-If I'm telling old stories now, forget it, but you can modify this
-script to fit your needs:
-
-http://iptables-tutorial.frozentux.net/scripts/rc.test-iptables.txt
-
-Following the log (and /proc/net/ip_conntrack) you see the packet flow
-in detail. And you see when [S|D]NAT ist applied.
-
-> - I'm learning about the whole netfilter/policy router these days :)
-> So I write a lot about that, which sounds strange to me. I hope I'm
-> not annoying to the list.
-
-I can only speak for myself - no, you aren't :)
-
-Have a nice time,
-
-Joerg
-
+On 7/6/05, J=F6rg Harmuth <harmuth@mnemon.de> wrote:
+> packet flow is:
+>=20
+> ... --> [mangle:POSTROUTING] --> [nat:POSTROUTING]
+>=20
+> So, all packets arrive in mangle:POSTROUTING with their source address
+> unchanged. DNAT - if configured - is already applied to the packet.
+>=20
+> If I'm telling old stories now, forget it, but you can modify this
+> script to fit your needs:
+>=20
+> http://iptables-tutorial.frozentux.net/scripts/rc.test-iptables.txt
+>=20
+> Following the log (and /proc/net/ip_conntrack) you see the packet flow
+> in detail. And you see when [S|D]NAT ist applied.
 
