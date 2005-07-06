@@ -1,12 +1,10 @@
-From: Dennis Eng <echo29@gmail.com>
-Subject: What version of linux?
-Date: Wed, 6 Jul 2005 18:48:06 +0800
-Message-ID: <4c25221d05070603482ee3dbee@mail.gmail.com>
-Reply-To: Dennis Eng <echo29@gmail.com>
+From: "Andy Rowe" <andy@roweboat.net>
+Subject: cvs password
+Date: Tue, 5 Jul 2005 21:17:52 -0500
+Message-ID: <001401c581d0$ea21ee00$0a00a8c0@rowehost.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,18 +15,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-hi there,
+i can not get the cvs password " cvs " listed at 
+http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-2.html
 
-i would like to ask whether can i use netfilter on linux 2.6.5 .
-Though from the website, it state that netfilter can be implemented in
-linux 2.6.XX version but when i click on the download, it all for
-linux 2.4.XX. I cannot find nettfilter that work in linux 2.6.XX.
+when i run the commands below wich are listed at the website address above i 
+get a connection refused. Am i doing something wrong?
 
-Thank for the answering my Q in advance!!
+cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login
+cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic co netfilter/userspace 
+netfilter/patch-o-matic
 
-Regard,
-Dennis
+
+any help you can offer would be great,
+
+andy
+andy@roweboat.net 
+
+
+
 
