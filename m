@@ -1,12 +1,18 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: What version of linux?
-Date: Wed, 6 Jul 2005 09:56:28 -0500
-Message-ID: <200507060956.28982.rob0@gmx.co.uk>
-References: <4c25221d05070603482ee3dbee@mail.gmail.com>
+From: "curby ." <curby.public@gmail.com>
+Subject: Re: Defeating NMAP Null scans (and Nessus scans).
+Date: Wed, 6 Jul 2005 13:54:55 -0600
+Message-ID: <5d2f37910507061254293f83de@mail.gmail.com>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAsvh50JgMeE+wdUqpg8SwJMKAAAAQAAAA0VU7kwJQ1kSCxnmqi2LTiQEAAAAA@ziemba.net>
+	<Pine.LNX.4.61.0506221442160.25356@yvahk01.tjqt.qr>
+	<Pine.LNX.4.60.0506221245590.21678@darkstar.sysinfo.com>
+	<Pine.LNX.4.61.0506221845160.21055@yvahk01.tjqt.qr>
+	<Pine.LNX.4.60.0506221519210.21678@darkstar.sysinfo.com>
+	<Pine.LNX.4.61.0506231301530.26133@yvahk01.tjqt.qr>
+Reply-To: "curby ." <curby.public@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4c25221d05070603482ee3dbee@mail.gmail.com>
+In-Reply-To: <Pine.LNX.4.61.0506231301530.26133@yvahk01.tjqt.qr>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,25 +25,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter <netfilter@lists.netfilter.org>
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 06 July 2005 05:48, Dennis Eng wrote:
-> i would like to ask whether can i use netfilter on linux 2.6.5 .
+On 6/23/05, Jan Engelhardt <jengelh@linux01.gwdg.de> wrote:
+> Read closely. It uses -m random to switch between REJECT/DROP.
+> Try that rulesets and then nmap yourself with "nmap -r localhost -p 1-250=
+0".
+> Count the time, and compare to a pure DROP based approach.
+>   (iptables -F; iptables -P INPUT DROP; nothing more)
 
-I don't know why not.
+There's a good chance that TARPIT and not REJECT is the thing slowing
+down scans.  You might want to check replacing TARPIT with
+DROP/REJECT; I think you'll see nonTARPIT scans take the same amount
+of time regardless of whether the firewall uses DROP or REJECT.  I
+didn't test this though.
 
-> Though from the website, it state that netfilter can be implemented
+Here are some rules I've used when testing out ways to catch nmap
+scans.  If anyone knows what the SYN,RST SYN,RST match is for, please
+let me know.
 
-What Website is that?
+# Xmas scan, caught nmap v3.00
+$IPTABLES -t nat -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j
+DROP || die 05 81
 
-> in linux 2.6.XX version but when i click on the download, it all for
+# Generic Xmas scan, haven't checked if nmap triggers this
+$IPTABLES -t nat -A PREROUTING -p tcp --tcp-flags ALL ALL         -j
+DROP || die 05 83
 
-What download?
+# Null scan, nmap v3.00 Null scan is caught by INVALID match above, so
+this is commented out
+#$IPTABLES -t nat -A PREROUTING -p tcp --tcp-flags ALL NONE        -j
+DROP || die 05 85
 
-> linux 2.4.XX. I cannot find nettfilter that work in linux 2.6.XX.
+# Misc scan - everyone tests for this, but what scan does it match?
+$IPTABLES -t nat -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j
+DROP || die 05 87
 
-I've got numerous 2.6.x kernels using netfilter.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+# FIN scan, nmap v3.0 sends ACK,FIN FIN
+# SYN,FIN SYN,FIN does not match nmap
+# FIN FIN gets false positives when using SSH TARPIT
+$IPTABLES -t nat -A PREROUTING -p tcp --tcp-flags ACK,FIN FIN -m state
+--state NEW -j DROP || die 05 89
 
