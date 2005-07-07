@@ -1,7 +1,8 @@
-From: Francesco Ciocchetti <primero@fastwebnet.it>
-Subject: Developing with libiptc ... little problem with matches
-Date: Thu, 07 Jul 2005 18:43:38 +0200
-Message-ID: <42CD5BBA.6070800@fastwebnet.it>
+From: Jeff Rasmussen <jeff.rasmussen@gmail.com>
+Subject: Re: FTP and IPSEC
+Date: Thu, 7 Jul 2005 18:18:32 +0000 (UTC)
+Message-ID: <loom.20050707T201352-299@post.gmane.org>
+References: <57F9959B46E0FA4D8BA88AEDFBE582909ED0@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,140 +19,81 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all ML.
 
-I'm coding a little apps , just for fun , that uses libiptc API to
-interact with Netfilter.
+Gary W. Smith <gary <at> primeexalia.com> writes:
 
-I'm writing now my functions to insert new rules in netfilter tables but
-i'm experiencing a problem i've not been able to solve by myself yet.
+> 
+> Any ideas?
+> 
+> ________________________________
+> 
+> From: netfilter-bounces <at> lists.netfilter.org on behalf of Gary W. Smith
+> Sent: Tue 6/28/2005 10:06 AM
+> To: netfilter <at> lists.netfilter.org
+> Subject: FTP and IPSEC
+> 
+> This is a follow up to a former problem, but unreleated.
+> 
+> I have two networks conencted via IPSEC.  On each side of the network I have
+client servers that have
+> SNAT/DNAT to the internet.  Everything seems to work well under ISPEC except
+ftp.  Here is what I found.
+> 
+> >From location A, a workstation without a static external IP address on the
+10.0.10.x can FTP anywhere on
+> the net without problems but CANNOT ftp to a machine at location B using it's
+internal 10.0.50.x IP.  This
+> same workstation CAN ftp without restriction to it's external alias for the
+same machine at location B
+> using it's external IP 199.199.199.x
+> 
+> If I remove ip_nat_ftp and ip_conntrack_ftp it seems to work fine.  But the
+problem is now that we cannot ftp
+> externally from that location.  Both locations have ip_nat_ftp loaded but it
+doesn't seem to matter.
+> 
+> When we had a pptp connection between the two locations we didn't have this
+problem.  It only seems to happen
+> with IPSEC. 
+> 
+> Is there a workaround for this or is there a way to tell ip_nat_ftp to ignore
+a particular IP range?
+> 
+> Gary Smith
+> 
+> 
 
-i've got a structure that represents my firewall rule , it is a very
-simple structure derived from libdnet:
+I'm seeing this same problem under the new Debian Sarge release.
 
- struct fw_rule {
-             char            fw_device[INTF_NAME_LEN]; /* interface name
-NOTE device=chain!!!!!*/
-             uint8_t         fw_op;                    /* operation
-ALLOW/BLOCK*/
-             uint8_t         fw_dir;                   /* direction
-USELESS REMOVED!!!!!!*/
-             uint8_t         fw_proto;                 /* IP protocol */
-             struct addr     fw_src;                   /* src address /
-net */
-             struct addr     fw_dst;                   /* dst address /
-net */
-             uint16_t        fw_sport[2];              /* range / ICMP
-type */
-             uint16_t        fw_dport[2];              /* range / ICMP
-code */
-              };
+I've upgraded from Debian Woody to Sarge and now am using a 2.6.8
+kernel with Openswan and Shorewall.  The VPN tunnel works great for
+all other traffic except ftp.  I keep getting the error messages below.
 
+kernel: FTP_NAT: partial packet 2087393185/21 in 787/863
+kernel: FTP_NAT: partial packet 2087393185/21 in 788/844
+kernel: FTP_NAT: partial packet 2087393185/21 in 789/849
+kernel: FTP_NAT: partial packet 2087393185/21 in 790/838
 
+I have both ip_ftp_nat and ip_conntrack_ftp loaded.  I am using
+one-to-one NAT (same as before) to translate the foreign network to a
+local ip address.
 
-i'm in a big trouble while tryng to convert my rule to an ipt_entry
-struct when i arrive to create the 'match structure'.
+I can log into the ftp server but when I try to list the directory it
+fails in either active or passive modes.  The last communication with
+the ftp server requests the active ports to use.
 
-here is a part of my code:
+I've seen two links on the web, one that says that their is a conflict
+between IPSEC and iptables.  The other that had a firewall rule on the
+other end of the tunnel that was preventing the connection.
 
-        /*tcp udp Match*/
-        pr=getprotobynumber(fr->fw_proto);
-        if ((pr->p_proto==IP_PROTO_TCP)||(pr->p_proto==IP_PROTO_UDP))
-        {
-                size_t size;
-                char * port_string;
+http://lists.shorewall.net/pipermail/shorewall-users/2004-June/012969.html
+http://msgs.securepoint.com/cgi-bin/get/netfilter-0506/123.html
 
-                m=find_match(pr->p_name,TRY_LOAD,&matches);
-                if (m)
-                        printf("%i",m->size);
-               else
-                        printf("CAZZO");
-                size = IPT_ALIGN(sizeof(struct ipt_entry_match))+m->size;
+I'll try taking out the modules ip_ftp_nat and ip_conntrack_ftp to see if that
+has the same behavior.
 
-              if ((m->m = calloc(1, size))==NULL)
-              {
-                      fprintf(stderr,"iptables:calloc failed");
-                      exit(1);
-              }
+Jeff Rasmussen
+GPG public key 0x9686C12F
 
-              m->m->u.match_size = size;
-              strcpy(m->m->u.user.name, m->name);
-              m->init(m->m,&e->nfcache);
-
-                /*sport (1)*/
-              if (fr->fw_sport[0]==fr->fw_sport[1])
-                      strcpy(port_string,(char *)&fr->fw_sport[0]);
-              else
-              {
-                      strcat(port_string,(char *)&fr->fw_sport[0]);
-                      strcat(port_string,":");
-                      strcat(port_string,(char *)&fr->fw_sport[1]);
-              }
-
-              for (matchp=matches;matchp;matchp=matchp->next)
-              {
-                     
-if(matchp->match->parse(1,&port_string,(int)NULL,&matchp->match->mflags,e,&e->nfcache,&matchp->match->m))
-                              break;
-              }
-              m = matchp ? matchp->match : NULL;
-
-                /*dport (2)*/
-              if (fr->fw_dport[0]==fr->fw_dport[1])
-                      strcpy(port_string,(char *)&fr->fw_dport[0]);
-              else
-              {
-                      strcat(port_string,(char *)&fr->fw_dport[0]);
-                      strcat(port_string,":");
-                      strcat(port_string,(char *)&fr->fw_dport[1]);
-              }
-
-              for (matchp=matches;matchp;matchp=matchp->next)
-              {
-                     
-if(matchp->match->parse(2,&port_string,(int)NULL,&matchp->match->mflags,e,&e->nfcache,&matchp->match->m))
-                              break;
-              }
-              m = matchp ? matchp->match : NULL;
-
-              for (matchp=matches;matchp;matchp=matchp->next)
-                      matchp->match->final_check(matchp->match->mflags);
-
-
-       }
-
-
-
-my problem resides here:   m=find_match(pr->p_name,TRY_LOAD,&matches);
-
-when the program reach this instruction i get a not so nice Segmentation
-Fault. So i started to try to understand what was happening, i copied
-"find_match" function from itpables.c to my program and what i
-discovered is that
-
-
-        for (ptr = iptables_matches; ptr; ptr = ptr->next) {
-                if (strcmp(name, ptr->name) == 0)
-                        break;
-        }
-
-i get no "ptr"  ... i think i should register or init the "iptables
-extensions" at start of my program to populate the linked list referred
-by iptables_matches , but i really don't know how to do it.
-Then i think that even passing the TRY_LOAD arg the extensions are maybe
-not loaded ... how should i do such a thing?
-
-
-
-I hope i've been clear and gave enough infos.
-
-Any help will be REALLY REALLY appreciated :)
-
-Bye
-Francesco
-
-
-I'm sorry for both my english and my code ... none of them are my
-'Natural Language' ;)
 
 
