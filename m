@@ -1,11 +1,12 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Subject: Re: block traffic between two subnets
-Date: Thu, 7 Jul 2005 14:27:12 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507071426370.1861@yvahk01.tjqt.qr>
+Date: Thu, 7 Jul 2005 14:29:19 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507071429020.1861@yvahk01.tjqt.qr>
 References: <478753d47892be.47892be478753d@vsnl.net>
+	<Pine.LNX.4.61.0507071426370.1861@yvahk01.tjqt.qr>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <478753d47892be.47892be478753d@vsnl.net>
+In-Reply-To: <Pine.LNX.4.61.0507071426370.1861@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,23 +22,13 @@ Content-Transfer-Encoding: 7bit
 To: varun_saa@vsnl.net
 Cc: netfilter@lists.netfilter.org
 
->Hello,
->      I have two subnets :
+>>eth1 192.168.0.0/24
+>>eth2 192.168.21.0/24
+>>I would like block all traffic between eth1 and eth2.
+>>How to write a rule ?
 >
->eth1 192.168.0.0/24
->eth2 192.168.21.0/24
->
->I would like block all traffic between eth1 and eth2.
->
->How to write a rule ?
+>iptables -A INPUT -j REJECT -i eth1 -o eth2
+>iptables -A INPUT -j REJECT -i eth2 -o eth1
 
-iptables -A INPUT -j REJECT -i eth1 -o eth2
-iptables -A INPUT -j REJECT -i eth2 -o eth1
-
-
-
-Jan Engelhardt                                                               
---                                                                            
-| Alphagate Systems, http://alphagate.hopto.org/
-
+Should have been -A FORWARD ...
 
