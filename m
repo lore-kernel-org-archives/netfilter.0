@@ -1,13 +1,10 @@
-From: "David Leangen" <dleangen@canada.com>
-Subject: RE: /etc/sysconfig/iptables does not load on reboot
-Date: Sun, 10 Jul 2005 19:06:41 +0900
-Message-ID: <NEBBKBPLMLNABNADCIPAKEFJBEAB.dleangen@canada.com>
-References: <5d2f37910507091940101bfd5a@mail.gmail.com>
-Reply-To: dleangen@canada.com
+From: Rafael Dreher <rafael@interage.com.br>
+Subject: Unable to add rule on Chain with 28 characters
+Date: Fri, 08 Jul 2005 15:53:21 -0300
+Message-ID: <42CECBA1.7090306@interage.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5d2f37910507091940101bfd5a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,63 +15,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Hi! Thanks for the follow-up.
+Hi,
 
-> What is adsl-setup doing for you? Are you using an internal dsl modem,
-> or is it external/usb or external/cat5?  Especially if you use a
-> network cable to connect to an external DSL modem, you should be able
-> to configure your network card directly using ifconfig or
-> /etc/sysconfig thus getting rid of the need for adsl-setup at all.
+I'm trying do add a rule on a user-defined chain, on the NAT table, with 28 characters.
 
-Ok, thanks! Your suggestion to look directly at the config script allowed
-the solution to jump out at me. I simply never thought to look at my ppp0
-device.
+The chain have bee added without any problem, but when I add the rule, iptables says that it's unable do find the chain.
 
-I looked into this further and found that the adsl-* scripts, depending on
-the configuration, actually add some junk to iptables.
+If I reduce the chain to 25 characters, it works. I'm trying to migrate a set of rules form iptables-1.2.11 to 1.3.1,
+and I don't want to rewrite the rules.
 
-The file /etc/sysconfig/network-scripts/ppp0 looks something like this:
+Someone can help me?
 
-USERCTL=no
-BOOTPROTO=dialup
-NAME=DSLppp0
-DEVICE=ppp0
-TYPE=xDSL
-ONBOOT=yes
-PIDFILE=/var/run/pppoe-adsl.pid
-FIREWALL=MASQUERADE
-PING=.
-PPPOE_TIMEOUT=80
-LCP_FAILURE=3
-LCP_INTERVAL=20
-CLAMPMSS=1412
-CONNECT_POLL=6
-CONNECT_TIMEOUT=60
-DEFROUTE=yes
-SYNCHRONOUS=no
-ETH=eth0
-PROVIDER=DSLppp0
-USER=memyselfandi@somewhere
-PEERDNS=no
-DEMAND=no
+My iptables version: 1.3.1
+My kernel version: 2.4.31
 
+POM-Patches:
 
-If the entry "FIREWALL" is anything other than "NONE", then, when the
-related script (don't know which one) is invoked at runtime, it "interferes"
-with the firewall by adding some extra stuff. I didn't realise this before.
+CLASSIFY
+SAME
+comment
+NETMAP
+iprange
+quota
+time
+IPMARK
+ROUTE
+account
+h323-conntrack-nat
+ipp2p
+l7-filter-pom-1.4
+mms-conntrack-nat
+msnp-conntrack-nat
+pptp-conntrack-nat
+quake3-conntrack-nat
+string
+mport
 
-Once again, by loading with 'iptables-restore /etc/sysconfig/iptables', the
-extra stuff is not added. That's essentially why my firewall at boot time
-and the one I really wanted were different.
+Thanks in advance.
 
-Problem solved!
+- --
+Rafael Dreher
 
+- -:: Red Hat Certified Engineer ::-
+- -:: Nr: 807303498507617 ::-
+http://www.redhat.com/training/certification/verify
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
 
-Thank you all so much for your help through this. :-D
-
-
+iD8DBQFCzsuhGgX4r17upEoRAiSEAKCFXiQwYyYFZY9RbIMsUAdI8gkGmgCgorWt
+2bTPgyVCPQhkP6IJNSyVlZQ=
+=vz3q
+-----END PGP SIGNATURE-----
 
