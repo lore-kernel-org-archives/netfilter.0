@@ -1,10 +1,12 @@
-From: Rafael Dreher <dreher@interage.com.br>
-Subject: Unable to add rule on Chain with 28 characters.
-Date: Fri, 08 Jul 2005 16:00:23 -0300
-Message-ID: <42CECD47.5050003@interage.com.br>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Unable to add rule on Chain with 28 characters.
+Date: Fri, 8 Jul 2005 15:50:49 -0400
+Message-ID: <20050708195049.GA7221@bender.817west.com>
+References: <42CECD47.5050003@interage.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <42CECD47.5050003@interage.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,51 +17,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Fri, Jul 08, 2005 at 04:00:23PM -0300, Rafael Dreher wrote:
+> Hi,
+> 
+> I'm trying do add a rule on a user-defined chain, on the NAT table, with 28 
+> characters.
 
-I'm trying do add a rule on a user-defined chain, on the NAT table, with 28 characters.
+my guess is you're leaving out the '-t nat' as custom chains only exist
+in the table they're created in:
 
-The chain have bee added without any problem, but when I add the rule, iptables says that it's unable do find the chain.
+  # iptables -t nat -N GqKOJUpUAOboDEbYcaVUCDqprFy
+  # iptables -t nat -A GqKOJUpUAOboDEbYcaVUCDqprFy -j ACCEPT
+  # iptables -t nat -A PREROUTING -j GqKOJUpUAOboDEbYcaVUCDqprFy
+  # iptables -t nat -vnxL
+  Chain GqKOJUpUAOboDEbYcaVUCDqprFy (1 references)
+      pkts      bytes target     prot opt in     out     source
+  destination
+         1       78 ACCEPT     all  --  *      *       0.0.0.0/0
+  0.0.0.0/0
 
-If I reduce the chain to 25 characters, it works. I'm trying to migrate a set of rules form iptables-1.2.11 to 1.3.1,
-and I don't want to rewrite the rules.
+  Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+      pkts      bytes target     prot opt in     out     source
+  destination
+         1       78 GqKOJUpUAOboDEbYcaVUCDqprFy  all  --  *      *
+  0.0.0.0/0            0.0.0.0/0
 
-Someone can help me?
+  <--- snip --->
 
-My iptables version: 1.3.1
-My kernel version: 2.4.31
+  # iptables -V && uname -r
+  iptables v1.3.1
+  2.6.11.4-21.7-default
 
-POM-Patches:
+i also tested this on:
 
-CLASSIFY
-SAME
-comment
-NETMAP
-iprange
-quota
-time
-IPMARK
-ROUTE
-account
-h323-conntrack-nat
-ipp2p
-l7-filter-pom-1.4
-mms-conntrack-nat
-msnp-conntrack-nat
-pptp-conntrack-nat
-quake3-conntrack-nat
-string
-mport
+  # iptables -V && uname -r
+  iptables v1.2.11
+  2.4.27-2-386
 
-Thanks in advance.
+alas--i have no 2.4 + 1.3.1 combo i can test on; so i cannot say there
+isn't some weird interaction between those two that causes your issue to
+crop up.
 
--- 
-Rafael Dreher
+-j
 
--:: Red Hat Certified Engineer ::-
--:: Nr: 807303498507617 ::-
-http://www.redhat.com/training/certification/verify
+--
+"Brian: Whose leg do I have to hump to get a dry martini around here?"
+        --Family Guy
 
