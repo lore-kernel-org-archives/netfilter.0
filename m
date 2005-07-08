@@ -1,10 +1,12 @@
-From: Dirk Morris <dmorris@metaloft.com>
-Subject: REDIRECT in 2.6.12.2 not working
-Date: Thu, 07 Jul 2005 12:56:16 -0700
-Message-ID: <42CD88E0.3050209@metaloft.com>
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: Starting a fw
+Date: Fri, 8 Jul 2005 09:34:20 +0400
+Message-ID: <9927912d0507072234673f1aa0@mail.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,128 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I tried this on the devel list, but didnt get much response, so I'll try 
-here.
+Hi to all,
 
+I was once told that in order to start a firewall automatically when a
+machine boots, we must make sure that the init process calls the
+script by making a symbolic link to that file in the /etc/rc.d/rcX.d
+directories.
 
-I've been using REDIRECT to transparently capture TCP traffic (like 
-squid), but after upgrading to 2.6.12.2 I'm running into some issues.
+I have found that there is a file called S08iptables (kernel 2.4.20-8)
+containing startup commands for iptables service. Do i delete it and
+then put the symbolic link to my script there or just leave it?
 
-My understanding is (in anything from 2.4.x up to 2.6.8.1) the SYN came 
-in (from alice) and was redirected to whatever port (on eve), the 
-SYN/ACK was sent back from that port and it matchs conntrack which 
-'fixes' the packet to look like it was coming from the original 
-destination (bob).
+Let's say I have a firewall script called fw.sh with the following rules in=
+ it:
 
-This works great 2.4.x and the early 2.6 <2.6.8.1).
-I havent tried 2.6.9 - 2.6.11 because we were having some reset problems 
-under load, but now we are trying 2.6.12.2.
+#!/bin/bash
+IPT=3D/sbin/iptables
 
-Here is the 2.6.8.1 output (which is expected):
+$IPT -F
+$IPT -X
+$IPT -P INPUT DROP
+$IPT -P OUTPUT DROP
+$IPT -P FORWARD DROP
 
-setup:
-[alice] <----> [eve] <----> [bob]
-all tcpdump are on the alice <----> eve segment.
-eve is a bridge. (maybe thats why no one else has experienced this?)
+$IPT -A FORWARD -i eth0 -o eth0 -s 192.168.10.0/24 -d 192.168.10.0/24
+-m state --state NEW,ESTABLISHED,RELATED -p icmp --icmp-type echo
+request -j ACCEPT
 
-[dmorris @ eve] ~ # uname 
--a                                                                        
-Linux cartman 2.6.8.1 #1 SMP Fri Apr 29 18:35:22 PDT 2005 i686 GNU/Linux
+$IPT -A FORWARD -i eth0 -o eth0 -s 192.168.10.0/24 -d 192.168.10.0/24
+-m state --state NEW,ESTABLISHED,RELATED -p icmp --icmp-type echo
+reply -j ACCEPT
 
-[dmorris @ alice] ~ # s tcpdump "not port 22 or 
-icmp"                                        tcpdump: verbose output 
-suppressed, use -v or -vv for full protocol decode
-listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
-06:27:28.053491 arp who-has bob tell alice
-06:27:28.053635 arp reply bob is-at 00:13:20:3d:a7:74
-06:27:28.053640 IP alice.33026 > bob.echo: S 1284341781:1284341781(0) 
-win 5840 <mss 1460,sackOK,timestamp 153932448 0,nop,wscale 7>
-06:27:28.070878 arp who-has bob tell eve
-06:27:28.071684 IP bob.echo > alice.33026: S 1135117817:1135117817(0) 
-ack 1284341782 win 5792 <mss 1460,sackOK,timestamp 274943 153932448>
-06:27:28.071700 IP alice.33026 > bob.echo: . ack 1 win 5840 
-<nop,nop,timestamp 153932467 274943>
+What steps (where to create symbolic links, at which runlevel, etc)
+should I take in order to have this script be started automatically
+when PC boots up. How can I make sure that it is this firewall script
+that is running and all packets are being checked against these rules?
 
-[dmorris @ eve] ~ # s cat /proc/net/ip_conntrack | grep "port=7"  
-tcp      6 431996 ESTABLISHED src=192.168.2.1 dst=192.168.2.3 
-sport=33030 dport=7 src=192.168.2.2 dst=192.168.2.1 sport=9500 
-dport=33030 [ASSURED] use=1
+Thx in advance..
 
-
-Now in 2.6.12.2 the SYN/ACK doesnt seem to get "fixed, " and so all 
-connections are immediately reset:
-
-[dmorris @ eve] ~ # uname 
--a                                                                         
-Linux cartman 2.6.12.2 #1 SMP Sun Jul 3 17:21:45 PDT 2005 i686 GNU/Linux
-
-[dmorris @ alice] ~ # s tcpdump "not port 22 or 
-icmp"                            tcpdump: verbose output suppressed, use 
--v or -vv for full protocol decode
-listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
-06:16:00.981041 arp who-has bob tell alice
-06:16:00.981117 arp reply bob is-at 00:13:20:3d:a7:74
-06:16:00.981122 IP alice.33022 > bob.echo: S 574776601:574776601(0) win 
-5840 <mss 1460,sackOK,timestamp 153245271 0,nop,wscale 7>
-06:16:00.983896 arp who-has bob tell eve
-06:16:00.984228 IP eve.9500 > alice.33022: S 551400716:551400716(0) ack 
-574776602 win 5792 <mss 1460,sackOK,timestamp 1983246 153245271>
-06:16:00.984249 IP alice.33022 > eve.9500: R 574776602:574776602(0) win 0
-
-~ # s cat /proc/net/ip_conntrack | grep 
-"port=7"                                          [dmorris @ cartman]
-tcp      6 58 SYN_RECV src=192.168.2.1 dst=192.168.2.3 sport=33028 
-dport=7 packets=1 bytes=60 src=192.168.2.2 dst=192.168.2.1 sport=9500 
-dport=33028 packets=1 bytes=56 use=1
-
-notice how the syn/ack comes from eve instead of bob, and it only 
-matches 1 packet (the SYN I assume)
-I suspect the syn/ack isnt matching in the conntrack table for some reason?
-
-I tried again with a simple iptables rule redirecting to netcat 
-listening on port 1234 with a vanilla kernel, and it
-also happens so should be easy to reproduce:
-eve: iptables -t nat -A PREROUTING -p tcp --destination-port 1234 -j 
-REDIRECT --to-port 1234
-eve: netcat -l -p 1234
-alice: telnet bob 1234 (doesnt connect, tcpdump shows packet from eve 
-coming back)
-
-
-Any ideas?
-
-Thanks,
--Dirk
-
-
-
-
-
-
-more info:
-
-[dmorris @ eve] ~ # s iptables -t nat 
--nL                                                                 
-[dmorris @ cartman]
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination        REDIRECT   
-tcp  --  0.0.0.0/0            0.0.0.0/0           MARK match 
-!0x1000000/0x1000000 redir ports 9500-9627
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination       
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-~ # s cat /proc/net/ip_conntrack | grep 
-"port=7"                                          [dmorris @ cartman]
-tcp      6 58 SYN_RECV src=192.168.2.1 dst=192.168.2.3 sport=33028 
-dport=7 packets=1 bytes=60 src=192.168.2.2 dst=192.168.2.1 sport=9500 
-dport=33028 packets=1 bytes=56 mark=0 use=1
-
-
-
+Warm regards,
+Visham
 
