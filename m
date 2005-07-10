@@ -1,10 +1,13 @@
-From: Rafael Dreher <rafael@interage.com.br>
-Subject: Unable to add rule on Chain with 28 characters
-Date: Fri, 08 Jul 2005 15:53:21 -0300
-Message-ID: <42CECBA1.7090306@interage.com.br>
+From: Netfilter Core Team <coreteam@netfilter.org>
+Subject: [ANNOUNCE] Release of iptables-1.3.2
+Date: Sun, 10 Jul 2005 17:05:48 +0200
+Message-ID: <20050710150548.GK20465@sunbeam.de.gnumonks.org>
+Reply-To: coreteam@netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7w6n1xPQJploaIC9"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,62 +18,156 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: lwn@lwn.net
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Hi,
+--7w6n1xPQJploaIC9
+Content-Type: multipart/mixed; boundary="PeSRYlKeL81PHMwc"
+Content-Disposition: inline
 
-I'm trying do add a rule on a user-defined chain, on the NAT table, with 28 characters.
 
-The chain have bee added without any problem, but when I add the rule, iptables says that it's unable do find the chain.
+--PeSRYlKeL81PHMwc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If I reduce the chain to 25 characters, it works. I'm trying to migrate a set of rules form iptables-1.2.11 to 1.3.1,
-and I don't want to rewrite the rules.
+Hi!
 
-Someone can help me?
+The netfilter coreteam proudly presents:
 
-My iptables version: 1.3.1
-My kernel version: 2.4.31
+	iptables version 1.3.2
 
-POM-Patches:
+The final 1.3.2 version contains accumulated bugfixes to the
+last 1.3.1 version.  No new targets/matches have been added.
 
-CLASSIFY
-SAME
-comment
-NETMAP
-iprange
-quota
-time
-IPMARK
-ROUTE
-account
-h323-conntrack-nat
-ipp2p
-l7-filter-pom-1.4
-mms-conntrack-nat
-msnp-conntrack-nat
-pptp-conntrack-nat
-quake3-conntrack-nat
-string
-mport
+The ChangeLog is attached to this mail.
 
-Thanks in advance.
+Version 1.3.2 can be obtained from:
 
-- --
-Rafael Dreher
+	http://www.netfilter.org/files/iptables-1.3.2.tar.bz2
+	ftp://ftp.netfilter.org/pub/iptables/iptables-1.3.2.tar.bz2
 
-- -:: Red Hat Certified Engineer ::-
-- -:: Nr: 807303498507617 ::-
-http://www.redhat.com/training/certification/verify
+Please also note: patch-o-matic-ng is Distributed as seperate package:=20
+	ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/
+=09
+More information can be found at the netfilter/iptables project homepage,
+available at:
+
+	http://www.netfilter.org/
+	http://www.iptables.org/
+
+Happy firewalling,
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--PeSRYlKeL81PHMwc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-iptables-1.3.2.txt"
+Content-Transfer-Encoding: quoted-printable
+
+iptables v1.3.2 Changelog
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+This version requires kernel >=3D 2.4.0
+This version recommends kernel >=3D 2.4.18
+
+Bugs fixed from 1.3.1:
+
+- Fix TCPLAG version
+	[ Torsten Luettgert ]
+
+- More error checking in SET target
+	[ Michal Pokrywka ]
+
+- Fix optflags value for OPT_LINENUMBERS
+	[ Jonas Berlin ]
+
+- Allow NULL init function in ip6tables plugins
+	[ Jonas Berlin ]
+
+- Don't allow newlines in LOG prefix
+	[ Phil Oester ]
+
+- Introduce ip_conntrack_old_tuple to userspace header copy
+	[ Pablo Neira ]
+
+- Fix connbytes command line parsing bug
+	[ Piotrek Kaczmarek ]
+
+- Ignore unknown arguments in libipt_ULOG=20
+	[ Patrick McHardy ]
+
+- Correct error in multiport manpage wrt. "--ports"
+	[ Rusty Russell ]
+
+- Fix CONNMARK save/restore=20
+	[ Tom Eastep, Pawel Sikora ]
+
+- Make sure chain name doesn't start with '!'=20
+	[ Yasuyuki Kozakai ]
+
+- Prevent user to specify negative ports in SNAT/DNAT
+	[ Yasuyuki Kozakai ]
+
+- Fix deletion of targets where kernel size !=3D userspace size=20
+	[ Pablo Neira ]
+
+- Fix save/restore of '! --uid-owner squid' problem in ip6t_owner
+	[ Harald Welte ]
+
+Changes from 1.3.1:
+
+- Add ``--log-uid'' option to ip6t_LOG target
+	[ Patrick McHardy ]
+
+- Improve REDIRECT manpage
+	[ Jonas Berlin ]
+
+- Add a number of missing manpage snippets
+	[ Jonas Berlin ]
+
+- Include FIN bit in mask of "--syn" bits
+	[ Harald Welte ]
+
+- Release previously merged options from merge_opts(), reduces memory-usage=
+ of
+  ipt ables-restore dramatically=20
+  	[ Pablo Neira ]
+
+- OSF: changes to support connector notifications
+	[ Evgeniy Polyakov ]
+
+- Reduce code replication of parse_interface()=20
+	[ Yasuyuki Kozakai ]
+
+Please note: Since version 1.2.7a, patch-o-matic is now no longer part of
+iptables but rather distributed as a seperate package
+(ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot)
+
+
+--PeSRYlKeL81PHMwc--
+
+--7w6n1xPQJploaIC9
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
-Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+Version: GnuPG v1.4.1 (GNU/Linux)
 
-iD8DBQFCzsuhGgX4r17upEoRAiSEAKCFXiQwYyYFZY9RbIMsUAdI8gkGmgCgorWt
-2bTPgyVCPQhkP6IJNSyVlZQ=
-=vz3q
+iD8DBQFC0TlMNfqJzMqajVsRArdPAJ9vf3WsltceZPb0Y3ePf/tiCt6EAwCgjAhN
+y4WY2mygeM9IEyNWnzRsyzQ=
+=kFWd
 -----END PGP SIGNATURE-----
+
+--7w6n1xPQJploaIC9--
 
