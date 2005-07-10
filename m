@@ -1,13 +1,15 @@
-From: "David Leangen" <dleangen@canada.com>
-Subject: RE: /etc/sysconfig/iptables does not load on reboot
-Date: Sun, 10 Jul 2005 01:20:07 +0900
-Message-ID: <NEBBKBPLMLNABNADCIPAAEEJBEAB.dleangen@canada.com>
+From: "curby ." <curby.public@gmail.com>
+Subject: Re: /etc/sysconfig/iptables does not load on reboot
+Date: Sat, 9 Jul 2005 20:40:09 -0600
+Message-ID: <5d2f37910507091940101bfd5a@mail.gmail.com>
 References: <NEBBKBPLMLNABNADCIPAGEGMBDAB.dleangen@canada.com>
-Reply-To: dleangen@canada.com
+	<NEBBKBPLMLNABNADCIPAAEEJBEAB.dleangen@canada.com>
+Reply-To: "curby ." <curby.public@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <NEBBKBPLMLNABNADCIPAGEGMBDAB.dleangen@canada.com>
+In-Reply-To: <NEBBKBPLMLNABNADCIPAAEEJBEAB.dleangen@canada.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,36 +21,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: dleangen@canada.com
+Cc: netfilter@lists.netfilter.org
 
+On 7/9/05, David Leangen <dleangen@canada.com> wrote:
+> This happens after having run adsl-setup.
 
-Thanks again for all the support so far...
+What is adsl-setup doing for you? Are you using an internal dsl modem,
+or is it external/usb or external/cat5?  Especially if you use a
+network cable to connect to an external DSL modem, you should be able
+to configure your network card directly using ifconfig or
+/etc/sysconfig thus getting rid of the need for adsl-setup at all.
 
-> > Firewall loads before mount -a; probably at that point only the
-> > root filesystem is mounted. If the match extensions are on /usr,
-> > we can't get to them. I bet badhost has a separate /usr partition
-> > and goodhost has /usr on the rootfs.
-
-Actually, I don't believe this is the case. Also, I don't believe (no 100%
-confirmation) that the kernel version makes a difference, so I doubt this is
-a kernel bug, at least the way you suggested.
-
-After a lot of playing around, I was finally able to figure out when the
-problem occurs.
-
-As long as I do not set up an ADSL connection using adsl-setup, everything
-works fine. However, after having setup my connection, that's when my
-firewall goes wack. The same is true whether or not the cable is actually
-plugged in. This happens after having run adsl-setup.
-
-
-Any ideas why setting up an ADSL connection would cause problems? Any ideas
-how to work around this?
-
-
-Again, thank you for all the help!!!
-
-Dave
-
-
+That said, it would be nice to figure out why this is causing a
+conflict.  Perhaps Fedora experts would understand what exactly
+adsl-setup is doing, and/or why it would be conflicting with the
+reload of iptables rules.
 
