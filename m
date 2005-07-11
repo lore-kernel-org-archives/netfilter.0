@@ -1,12 +1,13 @@
-From: Sachin <gopalsachin@gmail.com>
-Subject: Icons Freeze on debian, connected online.
-Date: Mon, 11 Jul 2005 23:15:51 +0530
-Message-ID: <7833b03c050711104546009611@mail.gmail.com>
-Reply-To: Sachin <gopalsachin@gmail.com>
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: Re: dnatting
+Date: Mon, 11 Jul 2005 14:21:58 -0400
+Message-ID: <20050711182158.GA31027@tranquility.scriptkitchen.com>
+References: <20050711151830.GA26670@tranquility.scriptkitchen.com>
+	<Pine.LNX.4.61.0507111720230.26881@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0507111720230.26881@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,111 +19,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: Netfilter ML <netfilter@lists.netfilter.org>
 
-Hi Everybody
+On Mon, Jul 11, 2005 at 05:20:43PM +0200, Jan Engelhardt wrote:
+> 
+> >Hi,
+> >I have a rule on my friend's broadband connection to redirect traffic 
+> >from outside to an internal machine like,
+> >
+> >iptables -A PREROUTING -d 1.2.3.4 -p tcp -m tcp --dport 80 -j DNAT  \
+> >--to-destination 192.168.10.10:80
+> >
+> >But she complained that people from inside the network cannot do
+> >http://1.2.3.4 in their browser and see the site. Is she correct?
+> >What is wrong with my rule because I can see the site from outside?
+> 
+> The packet must pass the machine the DNAT rule is on to make the dnat 
+> effective.
+> 
 
-I am new to IPTABLES and recently put my debian sarge online with firestart=
-er
-as the firewall. As soon as i connect the desktop icons are
-inaccesible and freeze
-as if SLEEP mode is activated.=20
+So what do I do exactly?
 
-  If i am logging to virtual terminal lot of output starts on the
-screen and it seems
-somebody is scanning me. As i am a newbie i am not able to decrypt whats
-goin on the background. I am posting the output of the dmesg which also flo=
-ws
-down on the virtual terminal when i login. Is there a way to stop it.
-I assume the icons freeze because of this and so i cannot browse the
-local file system once online.
+With warm regards,
+-Payal
 
-Snip --
-
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D83.88.20.210 DST=3D220.226.22.163 LEN=3D168 T=
-OS=3D0x00
-PREC=3D0x00 TTL=3D242 ID=3D30185 PROTO=3DICMP TYPE=3D11 CODE=3D0
-[SRC=3D220.226.22.163 DST=3D158.36.2.10 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=
-=3D5
-ID=3D36362 PROTO=3DUDP SPT=3D36179 DPT=3D33617 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D146.188.8.145 DST=3D220.226.22.163 LEN=3D56 T=
-OS=3D0x00
-PREC=3D0x00 TTL=3D242 ID=3D0 PROTO=3DICMP TYPE=3D11 CODE=3D0 [SRC=3D220.226=
-.22.163
-DST=3D80.97.24.3 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D1 ID=3D36370 PROTO=
-=3DUDP
-SPT=3D36179 DPT=3D33625 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D195.249.1.154 DST=3D220.226.22.163 LEN=3D168
-TOS=3D0x00 PREC=3D0x00 TTL=3D244 ID=3D5797 PROTO=3DICMP TYPE=3D11 CODE=3D0
-[SRC=3D220.226.22.163 DST=3D194.71.11.70 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TT=
-L=3D5
-ID=3D36382 PROTO=3DUDP SPT=3D36179 DPT=3D33637 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D163.13.240.201 DST=3D220.226.22.163 LEN=3D56
-TOS=3D0x00 PREC=3D0x00 TTL=3D54 ID=3D15028 PROTO=3DICMP TYPE=3D3 CODE=3D3
-[SRC=3D220.226.22.163 DST=3D163.13.240.201 LEN=3D40 TOS=3D0x00 PREC=3D0x00 =
-TTL=3D1
-ID=3D36391 PROTO=3DUDP SPT=3D36179 DPT=3D33646 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D140.109.251.49 DST=3D220.226.22.163 LEN=3D56
-TOS=3D0x00 PREC=3D0xC0 TTL=3D248 ID=3D1622 PROTO=3DICMP TYPE=3D11 CODE=3D0
-[SRC=3D220.226.22.163 DST=3D140.112.30.75 LEN=3D40 TOS=3D0x00 PREC=3D0x00 T=
-TL=3D1
-ID=3D36392 PROTO=3DUDP SPT=3D36179 DPT=3D33647 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D62.221.40.170 DST=3D220.226.22.163 LEN=3D56 T=
-OS=3D0x00
-PREC=3D0x00 TTL=3D239 ID=3D13510 PROTO=3DICMP TYPE=3D11 CODE=3D0
-[SRC=3D220.226.22.163 DST=3D213.186.192.209 LEN=3D40 TOS=3D0x14 PREC=3D0x20
-TTL=3D1 ID=3D36401 PROTO=3DUDP SPT=3D36179 DPT=3D33656 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D140.127.160.194 DST=3D220.226.22.163 LEN=3D56
-TOS=3D0x00 PREC=3D0xC0 TTL=3D244 ID=3D32707 PROTO=3DICMP TYPE=3D11 CODE=3D0
-[SRC=3D220.226.22.163 DST=3D140.127.220.114 LEN=3D40 TOS=3D0x00 PREC=3D0x00
-TTL=3D1 ID=3D36397 PROTO=3DUDP SPT=3D36179 DPT=3D33652 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D220.226.36.161 DST=3D220.226.22.163 LEN=3D48
-TOS=3D0x00 PREC=3D0x00 TTL=3D123 ID=3D7263 DF PROTO=3DTCP SPT=3D2260 DPT=3D=
-1433
-WINDOW=3D16384 RES=3D0x00 SYN URGP=3D0
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D220.226.36.161 DST=3D220.226.22.163 LEN=3D48
-TOS=3D0x00 PREC=3D0x00 TTL=3D123 ID=3D7801 DF PROTO=3DTCP SPT=3D2260 DPT=3D=
-1433
-WINDOW=3D16384 RES=3D0x00 SYN URGP=3D0
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D194.12.255.250 DST=3D220.226.22.163 LEN=3D68
-TOS=3D0x00 PREC=3D0x00 TTL=3D49 ID=3D30663 PROTO=3DICMP TYPE=3D3 CODE=3D3
-[SRC=3D220.226.22.163 DST=3D194.12.255.250 LEN=3D40 TOS=3D0x00 PREC=3D0x20 =
-TTL=3D1
-ID=3D36263 PROTO=3DUDP SPT=3D36179 DPT=3D33518 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D220.226.11.73 DST=3D220.226.22.163 LEN=3D48 T=
-OS=3D0x00
-PREC=3D0x00 TTL=3D125 ID=3D9949 DF PROTO=3DTCP SPT=3D1984 DPT=3D139 WINDOW=
-=3D16384
-RES=3D0x00 SYN URGP=3D0
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D220.226.11.73 DST=3D220.226.22.163 LEN=3D48 T=
-OS=3D0x00
-PREC=3D0x00 TTL=3D125 ID=3D10094 DF PROTO=3DTCP SPT=3D1984 DPT=3D139 WINDOW=
-=3D16384
-RES=3D0x00 SYN URGP=3D0
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D130.239.18.142 DST=3D220.226.22.163 LEN=3D56
-TOS=3D0x00 PREC=3D0x00 TTL=3D235 ID=3D4538 PROTO=3DICMP TYPE=3D3 CODE=3D3
-[SRC=3D220.226.22.163 DST=3D130.239.18.142 LEN=3D60 TOS=3D0x00 PREC=3D0x00 =
-TTL=3D1
-ID=3D36187 PROTO=3DUDP SPT=3D36179 DPT=3D33442 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D203.127.221.98 DST=3D220.226.22.163 LEN=3D68
-TOS=3D0x00 PREC=3D0xC0 TTL=3D53 ID=3D34365 PROTO=3DICMP TYPE=3D3 CODE=3D3
-[SRC=3D220.226.22.163 DST=3D203.127.221.98 LEN=3D40 TOS=3D0x00 PREC=3D0x00 =
-TTL=3D1
-ID=3D36193 PROTO=3DUDP SPT=3D36179 DPT=3D33448 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D130.239.18.142 DST=3D220.226.22.163 LEN=3D56
-TOS=3D0x00 PREC=3D0x00 TTL=3D235 ID=3D56644 PROTO=3DICMP TYPE=3D3 CODE=3D3
-[SRC=3D220.226.22.163 DST=3D130.239.18.142 LEN=3D60 TOS=3D0x00 PREC=3D0x00 =
-TTL=3D1
-ID=3D36407 PROTO=3DUDP SPT=3D36179 DPT=3D33662 LEN=3D20 ]
-IN=3Dppp0 OUT=3D MAC=3D SRC=3D220.226.7.193 DST=3D220.226.22.163 LEN=3D48 T=
-OS=3D0x00
-PREC=3D0x00 TTL=3D125 ID=3D24030 DF PROTO=3DTCP SPT=3D2492 DPT=3D139 WINDOW=
-=3D16384
-RES=3D0x00 SYN URGP=3D0
- ---
-
-
-
-Thanks for your time and patience=20
-Sachin
 
