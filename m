@@ -1,15 +1,14 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Broadcast Traffic Control!!!
-Date: Mon, 11 Jul 2005 09:38:19 +0200
-Message-ID: <20050711073819.GG15121@sunbeam.de.gnumonks.org>
-References: <ab5428f7050625141733f681a@mail.gmail.com>
-	<ab5428f705062514221a0e850e@mail.gmail.com>
+Subject: Re: packet shping
+Date: Mon, 11 Jul 2005 09:38:40 +0200
+Message-ID: <20050711073840.GH15121@sunbeam.de.gnumonks.org>
+References: <20050625050845.19498.qmail@web53107.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E69HUUNAyIJqGpVn"
+	protocol="application/pgp-signature"; boundary="G44BJl3Aq1QbV/QL"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <ab5428f705062514221a0e850e@mail.gmail.com>
+In-Reply-To: <20050625050845.19498.qmail@web53107.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,22 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: tahmeed <qs.tahmeed@gmail.com>
+To: umar draz <umar_draz@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
 
---E69HUUNAyIJqGpVn
+--G44BJl3Aq1QbV/QL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jun 26, 2005 at 03:22:44AM +0600, tahmeed wrote:
+On Fri, Jun 24, 2005 at 10:08:45PM -0700, umar draz wrote:
+> Hi Dear Members!
+>=20
+>   i have a 5MB up and 5MB down internet link attached
+> with my linux machine which is working as a router.
+>=20
+>   now i want 128/128 bandwidth on my client through my
+> linux router so please help how i can do it with
+> iptables
 
-> is it possible to filter BC packets using IPTABLES or in any other method=
-s.=20
+This is off-topic. Please see http://www.lartc.org/
 
-ARP packets are not IP packets.  Therefore you need to use arptables,
-not iptables.
 
 --=20
 - Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
@@ -47,17 +51,17 @@ not iptables.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---E69HUUNAyIJqGpVn
+--G44BJl3Aq1QbV/QL
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.1 (GNU/Linux)
 
-iD8DBQFC0iHrXaXGVTD0i/8RAri4AKCq9HmTBLmOKxkW2RF+gCN5v8aAtwCfRCYL
-wwUpfPhpw10BzeBsp7ZXwRA=
-=nJ9I
+iD8DBQFC0iIAXaXGVTD0i/8RAq2bAJ0SeKz7rq6joUll17BoOkV3DCE2+wCaAsn+
+3PHMa4SUtTrhKBh0T40Xpzw=
+=4vED
 -----END PGP SIGNATURE-----
 
---E69HUUNAyIJqGpVn--
+--G44BJl3Aq1QbV/QL--
 
