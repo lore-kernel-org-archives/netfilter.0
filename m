@@ -1,9 +1,12 @@
-From: "Suzana Lojic-Skoric" <s_lojic@hotmail.com>
-Subject: DNS and NAT
-Date: Mon, 11 Jul 2005 12:37:31 -0700
-Message-ID: <BAY17-F36B44F4732DA14870599CE80DC0@phx.gbl>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: DNS and NAT
+Date: Mon, 11 Jul 2005 15:41:13 -0400
+Message-ID: <20050711194113.GA17435@bender.817west.com>
+References: <BAY17-F36B44F4732DA14870599CE80DC0@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <BAY17-F36B44F4732DA14870599CE80DC0@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,32 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Does DNS work with iptables NAT or I need some kind of ALG to get DNS=20
-answers translated?
+On Mon, Jul 11, 2005 at 12:37:31PM -0700, Suzana Lojic-Skoric wrote:
+> Does DNS work with iptables NAT or I need some kind of ALG to get DNS 
+> answers translated?
+> 
+> I am using Mandrake Linux 10.0. I have two way NAT going on and I am trying 
+> to get DNS requests through the NAT. I got FTP, HTTP and SMTP working 
+> through the NAT, but DNS is not working properly, DNS answer is not getting 
+> translated.
 
-I am using Mandrake Linux 10.0. I have two way NAT going on and I am trying=
-=20
-to get DNS requests through the NAT. I got FTP, HTTP and SMTP working=20
-through the NAT, but DNS is not working properly, DNS answer is not getting=
-=20
-translated. Source and Destination addresses in DNS message are properly=20
-translated, but the actual answer (the ip address embedded in the message) =
+nor should it be.
 
-is not translated.
+> Source and Destination addresses in DNS message are properly 
+> translated, but the actual answer (the ip address embedded in the message) 
+> is not translated.
 
-Thanks
+which is exactly how it's supposed to work.  how the $%#@ is iptables
+supposed to know what to rewrite the answer to?
 
-_________________________________________________________________
-Powerful Parental Controls Let your child discover the best the Internet ha=
-s=20
-to offer. =20
-http://join.msn.com/?pgmarket=3Den-ca&page=3Dbyoa/prem&xAPID=3D1994&DI=3D10=
-34&SU=3Dhttp://hotmail.com/enca&HL=3DMarket_MSNIS_Taglines=20
-  Start enjoying all the benefits of MSN=AE Premium right now and get the=20
-first two months FREE*.
+if you are using BIND, look into the functionality offered by "views."
 
+-j
+
+--
+"Peter: You know, I oughta just give you some beer. Goes straight
+ through you. 
+ Stewie: Wonderful. And while we're at it, we can light up a doobie and
+ watch porn. 
+ Peter: Eh... yeah?"
+        --Family Guy
 
