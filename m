@@ -1,14 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Fragments and connection tracking
-Date: Mon, 11 Jul 2005 09:42:07 +0200
-Message-ID: <20050711074206.GJ15121@sunbeam.de.gnumonks.org>
-References: <1119465338.5378.4.camel@jasiiitosh.nexusmgmt.com>
+Subject: Re: dhcrelay still responds dropped inbound offer packets from
+	iptables
+Date: Mon, 11 Jul 2005 09:32:47 +0200
+Message-ID: <20050711073247.GD15121@sunbeam.de.gnumonks.org>
+References: <673fb82305070814186036ce2f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LG0Ll82vYr46+VA1"
+	protocol="application/pgp-signature"; boundary="SO98HVl1bnMOfKZd"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1119465338.5378.4.camel@jasiiitosh.nexusmgmt.com>
+In-Reply-To: <673fb82305070814186036ce2f@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,36 +20,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: Willy Chang <changwilly@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
 
---LG0Ll82vYr46+VA1
+--SO98HVl1bnMOfKZd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 22, 2005 at 02:35:37PM -0400, John A. Sullivan III wrote:
-> We are working to use an iptables based VPN for a client where teh
-> certificates do not fit into a single packet. Thus we have a
-> fragmentation problem.  We normally drop all fragments on the Internet
-> interfaces in our rule sets.  We are a little hesitant to stop doing so.
+On Fri, Jul 08, 2005 at 05:18:33PM -0400, Willy Chang wrote:
+> Folks,
 >=20
-> Does connection tracking make it safe to do so or does it make it more
-> dangerous? I understand that connection tracking will reassemble the
-> fragments.  If someone is trying to attack by sending lots of non-head
-> fragments, will connection tracking drop those as invalid or will this
-> produce a denial of service attack as connection tracking tries to match
-> a flood of fragments without first fragments? Thanks - John
+>      I am running a dhrelay service and using iptables to be a
+> firewall to block packets from dhcp server on the inbound side, eth0,
+> of my Liunx. The reason to do this is to avoid generating duplicated
+> packets from my machine to dhcp client on the same subnet.
+>      For some reasons, I am unable to block these packets. I have a
+> simple rule setting below to simply block all incoming UDP packets
+> where it should block dhcp package as well.
 
-Connection tracking just uses the normal ip_defrag() code, so it would
-behave exactly like the fragment cache of a linux end host.
+iptables works in the IP stack.  Applications using PACKET sockets don't
+use the IP stack and therefore are not affected by iptables.
 
-And no, conntrack cannot make fragment-based attacks safe. IP
-fragmentation on the open internet is a serious flaw and introduces many
-security risks.
-
-Please see my signature ;)
+My guess is that dhrelay uses PACKET sockets.
 
 --=20
 - Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
@@ -60,17 +55,17 @@ Please see my signature ;)
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---LG0Ll82vYr46+VA1
+--SO98HVl1bnMOfKZd
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.1 (GNU/Linux)
 
-iD8DBQFC0iLOXaXGVTD0i/8RAhh9AJ9Kql3/DLzr9u19ZbTUt0rsOLWg+QCgoC8f
-116Ro6YpSxo5MiZ0tT+T7Ew=
-=vYPD
+iD8DBQFC0iCfXaXGVTD0i/8RAiQOAKCVYf1UbmgNPMBCmLlFXZPnOAkN8QCdFStx
+7CdO2nLPfXSmBku23HpGGps=
+=N93M
 -----END PGP SIGNATURE-----
 
---LG0Ll82vYr46+VA1--
+--SO98HVl1bnMOfKZd--
 
