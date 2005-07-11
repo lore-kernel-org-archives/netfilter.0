@@ -1,13 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: dnatting
-Date: Mon, 11 Jul 2005 20:42:26 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507112041001.14167@yvahk01.tjqt.qr>
+Date: Mon, 11 Jul 2005 14:45:20 -0400
+Message-ID: <20050711184520.GA17202@bender.817west.com>
 References: <20050711151830.GA26670@tranquility.scriptkitchen.com>
-	<Pine.LNX.4.61.0507111720230.26881@yvahk01.tjqt.qr>
-	<42D2BCAF.4040906@gmx.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42D2BCAF.4040906@gmx.co.uk>
+Content-Disposition: inline
+In-Reply-To: <20050711151830.GA26670@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> The Web proxy suggestion has me puzzled. :)
+On Mon, Jul 11, 2005 at 11:18:30AM -0400, Payal Rathod wrote:
+> Hi,
+> I have a rule on my friend's broadband connection to redirect traffic 
+> from outside to an internal machine like,
+> 
+> iptables -A PREROUTING -d 1.2.3.4 -p tcp -m tcp --dport 80 -j DNAT  \
+> --to-destination 192.168.10.10:80
+> 
+> But she complained that people from inside the network cannot do
+> http://1.2.3.4 in their browser and see the site. Is she correct?
+> What is wrong with my rule because I can see the site from outside?
 
-"me2", because given that 1.2.3.4 is a valid internet-wide IP (e.g. ppp0), 
-10.x.y.z is the local net (eth0) and a client is 10.0.0.1 on eth0, there 
-should not be any problem to connect from 10.0.0.1 to 1.2.3.4:80 and get it 
-DNAT'ed.
+1)  client; say 192.168.10.100, sends TCP SYN to 1.2.3.4
 
-Or do you mean that `telnet 127.0.0.1 80` on the DNAT-rulebox itself does not 
-work [anymore]?
+2)  iptables machine receives packet destined for 1.2.3.4, DNAT's it to
+    192.168.10.10 and forwards the packet out the internal interface
 
+3)  192.168.10.10 receives TCP SYN from 192.168.10.100 and replies
+    directly to 192.168.10.100 with a SYN/ACK
 
+4)  client; 192.168.10.100, receives SYN/ACK from 192.168.10.10 and
+    discards it, as it matches no connection in the SYN_SENT state
+    (recall that our SYN was sent to 1.2.3.4).
 
-Jan Engelhardt
--- 
-| Alphagate Systems, http://alphagate.hopto.org/
+that the why.  the proper way to avoid this is to have people on the
+inside connect to 192.168.10.10.  i will leave all the half-assed
+work-arounds and kludges as an exercise for the reader and other
+posters.
 
+-j
+
+--
+"Peter: This party couldn't be better if Jesus was here.
+ Jesus: For my next miracle, I will turn water... into FUNK."
+        --Family Guy
 
