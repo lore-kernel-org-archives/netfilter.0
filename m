@@ -1,12 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Subject: Re: DNS and NAT
-Date: Mon, 11 Jul 2005 16:25:20 -0500
-Message-ID: <42D2E3C0.1030405@gmx.co.uk>
+Date: Mon, 11 Jul 2005 23:36:57 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507112334001.14463@yvahk01.tjqt.qr>
 References: <BAY17-F385E7ADF96986B0821571980DC0@phx.gbl>
+	<42D2E3C0.1030405@gmx.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY17-F385E7ADF96986B0821571980DC0@phx.gbl>
+In-Reply-To: <42D2E3C0.1030405@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,46 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: /dev/rob0 <rob0@gmx.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-Please don't top-post. Thank you.
 
-Suzana Lojic-Skoric wrote:
-> OK, thanks I was not sure what is the proper behavior regarding
-> iptables and DNS.
+> Proxy servers are a good choice in some circumstances; you maintain maximum
+> control over what clients can and cannot do (unless users have shell access to
+> the proxy server, perhaps.) But proxying is far more resource-intensive than
+> NAT.
 
-The usual situation is that clients are NAT'ed out, like what you're 
-describing.
+Not hard either. Just catch any non-squid packets and redir them to lo. In 
+iptables words:
 
-> If answer is not translated then how do I get DNS to work with two way NAT?
+  -A OUTPUT -j DNAT -p tcp --dport {80|3128} --to-dest 127.0.0.1:80 \
+    -m owner ! --uid-owner squid
 
-What does not work? Two-way NAT is fine. You go on to say you're not 
-really talking about two-way NAT:
+{80,3128} depending on whether you want transparent(80) proxying or 
+intercepted(3128) proxying.
 
-> My internal network does not understand any of the ip addresses that 
-> belong to outside. So if the request for a page that is sent from 
-> internal network comes back from outside with an answer (ip address) 
-> that is not getting translated then I can't resolve the page since my 
-> internal network doesn't understand it and can't route to it.
+Since squid usually listens on an unprivilegued port (3128), the socket 
+creation can be deferred until after the setuid from root to squid; therefore, 
+the socket belongs to "squid" and thus, --uid-owner can match.
 
-Clients need to have a default route through the NAT gateway, which does 
-SNAT or MASQUERADE. How is it two-way if the clients can't route out?
 
-> Is there a way around this problem? How do I get DNS to work in the type 
-> of environment I described?
-
-If you don't want to allow NAT clients out for some reason, you might 
-check into running proxy servers, such as squid for HTTP/FTP. Only the 
-services you are proxying can be used by internal clients. SOCKS proxy 
-servers can handle multiple protocols, but I don't know anything more 
-about it than just that fact.
-
-Proxy servers are a good choice in some circumstances; you maintain 
-maximum control over what clients can and cannot do (unless users have 
-shell access to the proxy server, perhaps.) But proxying is far more 
-resource-intensive than NAT.
+Jan Engelhardt
 -- 
-     mail to this address is discarded unless "/dev/rob0"
-     or "not-spam" is in Subject: header
+| Alphagate Systems, http://alphagate.hopto.org/
+
 
