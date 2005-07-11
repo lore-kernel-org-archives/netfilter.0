@@ -1,12 +1,11 @@
-From: Scott <gneamob@yahoo.com>
-Subject: Re: dnatting
-Date: Mon, 11 Jul 2005 08:24:29 -0700 (PDT)
-Message-ID: <20050711152429.77154.qmail@web54306.mail.yahoo.com>
-References: <20050711151830.GA26670@tranquility.scriptkitchen.com>
+From: "azeem ahmad" <azeem81@msn.com>
+Subject: Re: MAC SOURCE
+Date: Mon, 11 Jul 2005 20:28:07 +0500
+Message-ID: <BAY5-F447A92ED4CA9D33340400BADC0@phx.gbl>
+References: <20050711150544.GA16345@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050711151830.GA26670@tranquility.scriptkitchen.com>
+In-Reply-To: <20050711150544.GA16345@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,52 +16,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter ML <netfilter@lists.netfilter.org>
-
-You may need to install, additionally, a web proxy,
-such as squid and tell iptables to use it as a
-transparent proxy for all internal machines, like
-this:
-
-iptables -t nat -A POSTROUTING -s
-192.168.10.0/255.255.255.0 -i ethX -p tcp -m tcp
---dport 80 -j DNAT --to-destination 192.168.10.1:3128
-
-where ethX is the interface on the internal network.
-
--Scott
-
---- Payal Rathod <payal-netfilter@scriptkitchen.com>
-wrote:
-
-> Hi,
-> I have a rule on my friend's broadband connection to
-> redirect traffic 
-> from outside to an internal machine like,
-> 
-> iptables -A PREROUTING -d 1.2.3.4 -p tcp -m tcp
-> --dport 80 -j DNAT  \
-> --to-destination 192.168.10.10:80
-> 
-> But she complained that people from inside the
-> network cannot do
-> http://1.2.3.4 in their browser and see the site. Is
-> she correct?
-> What is wrong with my rule because I can see the
-> site from outside?
-> 
-> Thanks in advance.
-> With warm regards,
-> -Payal
-> 
-> 
-> 
-> 
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+
+>From: Jason Opperisano <opie@817west.com>
+>To: netfilter@lists.netfilter.org
+>Subject: Re: MAC SOURCE
+>Date: Mon, 11 Jul 2005 11:05:44 -0400
+>
+>On Mon, Jul 11, 2005 at 07:58:15PM +0500, azeem ahmad wrote:
+> > hi list
+> > here is a script that i want to use to block unauthorized MACs on my
+> > network. but the problem is that  its not blocking all other MACs that r
+> > not specified in the script. plz help me out n telll wots the reaon of 
+>this
+> > ########################################################
+> > iptables -A INPUT -m mac --mac-source $MAC -j ACCEPT
+> > iptables -A FORWARD -m mac --mac-source $MAC -j ACCEPT
+> > iptables -A INPUT -m mac --mac-source ! 11:22:33:44:55:66 -j DROP
+> > iptables -A FORWARD -m mac --mac-source ! 11:22:33:44:55:66 -j DROP
+> > iptables -t nat -A POSTROUTING -i eth1 -j MASQUERADE
+> > ###################################################
+> > even now it is MASQUERADING all the macs that r not specified in the 
+>script.
+> > waiting for ur response
+> > Regards
+>
+>i would do it this way:
+>
+>   iptables -N check_mac
+>   iptables -A check_mac -m mac --mac-source $MAC1 -j RETURN
+>   iptables -A check_mac -m mac --mac-source $MAC2 -j RETURN
+>   # iptables -A check_mac -j LOG --log-prefix "INVALID MAC: "
+>   iptables -A check_mac -j DROP
+>
+>   iptables -A INPUT -j check_mac
+>   iptables -A FORWARD -j check_mac
+>
+>and then put your regular filter rules in INPUT and FORWARD after the
+>jump to check_mac; as only packets with either $MAC1 or $MAC2 will ever
+>make it out of the check_mac chain.
+>
+>-j
+>
+>--
+>"Lois: I'm sorry that Stewie ruined your books. Here, I brought
+>  you some of Peter's.
+>  Brian: "Mr. T" by Mr. T. "T and Me" by George Poppard. "For The Last
+>  Time, I'm Not Mr. T" by Ving Rhames."
+>         --Family Guy
+
+thanx a lot
+can u explain this rule set in some details
+Regards
+Azeem
+
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today it's FREE! 
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+
 
