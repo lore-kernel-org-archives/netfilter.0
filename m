@@ -1,12 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: mport or multiport?
-Date: Tue, 12 Jul 2005 12:47:29 +0200
-Message-ID: <1121165249.5328.34.camel@anduril.intranet.cartel-securite.net>
-References: <3115d56e05071203266e32e178@mail.gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: dnatting
+Date: Tue, 12 Jul 2005 07:59:18 -0400
+Message-ID: <20050712115918.GA19792@bender.817west.com>
+References: <57F9959B46E0FA4D8BA88AEDFBE58290742C@pxtbenexd01.pxt.primeexalia.com>
+	<20050712073407.GA30567@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3115d56e05071203266e32e178@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20050712073407.GA30567@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +18,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: afshin lamei <afshinlamei@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Le mardi 12 juillet 2005 =E0 14:56 +0430, afshin lamei a =E9crit :
-> "iptables -A INPUT -p tcp -m mport --ports 20:23,80 -j DROP " from
-> patch-o-matic is perfect, but what is that: Source port or Destination
-> port?
+On Tue, Jul 12, 2005 at 03:34:07AM -0400, Payal Rathod wrote:
+> Thanks this solved it. Thanks again.
+> Now I am curious why Jason didn't suggest this.
 
-Sorry, but RTFM :)
+no need for curiosity--re-read the last sentence of my post.
 
-$iptables --version
-iptables v1.3.1
-$ man iptables
-[...]
-   mport
-       This module matches a set of source or destination ports. Up to
-       15 ports can be specified. It can only be used in conjunction
-       with -p tcp or -p udp.
+-j
 
-       --source-ports port[,port[,port...]]
-              Match if the source port is one of the given ports. The
-              flag --sports is a convenient alias for this option.
-
-       --destination-ports port[,port[,port...]]
-              Match if the destination port is one of the given ports.
-              The flag --dports is a convenient alias for this option.
-
-       --ports port[,port[,port...]]
-              Match if the both the source and destination ports are
-              equal to each other and to one of the given ports.
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+--
+"Peter: At least they don't put their feminine ointments next to the
+ mustard, Lois. That was the worst hot dog I ever ate."
+        --Family Guy
 
