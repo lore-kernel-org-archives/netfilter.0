@@ -1,12 +1,14 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: mport or multiport?
-Date: Tue, 12 Jul 2005 14:48:12 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507121446010.5529@yvahk01.tjqt.qr>
-References: <3115d56e05071203266e32e178@mail.gmail.com>
-	<1121165249.5328.34.camel@anduril.intranet.cartel-securite.net>
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: Re: dnatting
+Date: Tue, 12 Jul 2005 08:50:01 -0400
+Message-ID: <20050712125001.GA2921@tranquility.scriptkitchen.com>
+References: <57F9959B46E0FA4D8BA88AEDFBE58290742C@pxtbenexd01.pxt.primeexalia.com>
+	<20050712073407.GA30567@tranquility.scriptkitchen.com>
+	<20050712115918.GA19792@bender.817west.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1121165249.5328.34.camel@anduril.intranet.cartel-securite.net>
+Content-Disposition: inline
+In-Reply-To: <20050712115918.GA19792@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,19 +19,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
+On Tue, Jul 12, 2005 at 07:59:18AM -0400, Jason Opperisano wrote:
+> On Tue, Jul 12, 2005 at 03:34:07AM -0400, Payal Rathod wrote:
+> > Thanks this solved it. Thanks again.
+> > Now I am curious why Jason didn't suggest this.
+> 
+> no need for curiosity--re-read the last sentence of my post.
 
->       --ports port[,port[,port...]]
->              Match if the both the source and destination ports are
->              equal to each other and to one of the given ports.
-
-There are few daemons which bind to the portnumber they are listening on.
-BIND could be configured to use a fixed port (e.g. 53) as the source port, and 
-thus would be a possible use for --ports, because most destination ports for 
-dns are 53, _too_.
-
+I had already did that and was wondering why the solution posted is
+not agreed upon by. Why do you call it half-baked?
+Payal
+> 
+> -j
+> 
+> --
+> "Peter: At least they don't put their feminine ointments next to the
+>  mustard, Lois. That was the worst hot dog I ever ate."
+>         --Family Guy
+> 
 
