@@ -1,12 +1,10 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: Ip_conntrack_ftp with PASSIVE FTP does not work
-Date: Wed, 13 Jul 2005 11:38:36 +0200
-Message-ID: <42D4E11C.2080100@mnemon.de>
-References: <04EE7AD0450F7B498BA216312943A1A102937F25@blrse201.ap.infineon.com>
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+Subject: h323 over nat firewall - queries
+Date: Wed, 13 Jul 2005 17:36:53 +0800
+Message-ID: <054501c5878e$676f7270$1280a8c0@newlife>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <04EE7AD0450F7B498BA216312943A1A102937F25@blrse201.ap.infineon.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,35 +18,35 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Chandra.Vempali@infineon.com schrieb:
-> Hi all,
-> 
-> For me, ip_conntrack_ftp does not work for PASSIVE ftp.
-> 
-> In the firewall rules, I blocked everything and put the following rules,
-> iptables -A INPUT -p tcp --sport 21 -m state --state ESTABLISHED,NEW -j
-> ACCEPT 
-> iptables -A OUTPUT -p tcp --dport 21 -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT 
-> And when I try to ftp, the control channel goes through firwall, but
-> data channel fails to pass through.
-So, your firewall connects to the FTP server, why not. First of all make
-sure that ip_conntrack_ftp is compiled into the kernel or as a module.
-If compiled as a module, make sure it is loaded.
 
-As your firewall connects to the FTP server and your OUTPUT policy seems
-to be DROP or REJECT, you need rules like these:
+I have a case where I have H323 VoIP equipments located behind
+Linux nat-box running ip_h323_nat and ip_conntrack_h323.
 
-iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 21 --syn -j ACCEPT
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+We have various combination of traffic and some of them deemed
+successful and some of them I experience some weird problems 
+such as not able to hear to voice and/or chopping voice.
 
-Hmm, many people, including myself, think, that filtering in OUTPUT is
-pointless. More troublesome than usefull. If you decide to set OUTPUT
-policy to ACCEPT, you don't need the first two rules. Up to you.
+Upon troubleshooting and narrowing down the problem, I suspect 
+that the modules might have some limitation and so I am posting 
+here to see if anyone enlighten me on this subject.
 
-Have a nice time,
+I remember certain conntrack modules only allow one client to be
+behind nat, so I am asking :-
 
-Joerg
+If I have one H323 VoIP equipment going to multiple H323 counter 
+parts on the internet at the same time, via the Linux nat conntrack 
+module, if it is going to work correctly ? ie I have one source private 
+IP, but going to multiple destination public IPs via the H323 conntrack 
+module, is this a supported configuration ?
+
+How about the case where I have multiple source (private) IPs and 
+going to multiple destination public IPs, is it able to work ?
+
+Appreciate your input.
+
+
+
+
+
 
 
