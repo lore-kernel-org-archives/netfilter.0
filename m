@@ -1,14 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: dnatting
-Date: Wed, 13 Jul 2005 00:48:48 -0400
-Message-ID: <20050713044848.GA22255@bender.817west.com>
-References: <20050711151830.GA26670@tranquility.scriptkitchen.com>
-	<20050711184520.GA17202@bender.817west.com>
-	<12984bb0050712202131980c46@mail.gmail.com>
+Subject: Re: DNAT and TCP RST
+Date: Wed, 13 Jul 2005 00:54:33 -0400
+Message-ID: <20050713045433.GA22311@bender.817west.com>
+References: <20050713033311.F099D885@mail.817west.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <12984bb0050712202131980c46@mail.gmail.com>
+In-Reply-To: <20050713033311.F099D885@mail.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,29 +21,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Jul 12, 2005 at 09:21:43PM -0600, Donald Murray wrote:
-> Because the destination server is on the same subnet, users on the inside
-> could indeed connect directly to that machine. Alternatively this could be
-> handled via DNS.
-> 
-> 
-> However, if the destination server is inside a DMZ, the firewall needs
-> to DNAT in
-> PREROUTING and SNAT in POSTROUTING. The DNAT gets traffic to
-> the DMZ, the SNAT allows it back. Something like:
+On Tue, Jul 12, 2005 at 08:35:50PM -0700, Steve Turner wrote:
+> Here is my issues: 
 
-no--it doesn't.  if by "the destination server is inside a DMZ" you mean
-the web server is on a different layer3 subnet than the client, routed
-through the firewall.  you are applying the half-assed SNAT solution where
-it's not even needed.  this is worse than the SNAT for the OP's scenario;
-at least there the SNAT serves to create some semblance of functionality.
+<-- snip the whole damn post -->
 
-NAT is the duct tape of networking; if you can route, route.
+please read the "dnatting" thread from monday, 7/11 through today.  i
+admit that sometimes expecting people to search the archives before
+posting a question might be too much to ask, but this is ridiculous.
+
+i am in hell.
 
 -j
 
 --
-"Peter: I'm going to microwave a bagel and have sex with it.
- Quagmire: Butter's in the fridge."
+"Peter: No, no, no. It's "step right, step LEFT." Are
+ you TRYING to piss off the volcano?"
         --Family Guy
 
