@@ -1,7 +1,7 @@
 From: liyas_m m <liyasmm@gmail.com>
-Subject: firewall ignore the rule
-Date: Wed, 13 Jul 2005 18:52:36 +0800
-Message-ID: <2452665f0507130352544ab556@mail.gmail.com>
+Subject: firewall just ignore the rule
+Date: Wed, 13 Jul 2005 18:53:07 +0800
+Message-ID: <2452665f05071303531a55fbf@mail.gmail.com>
 Reply-To: liyas_m m <liyasmm@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
