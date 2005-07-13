@@ -1,10 +1,14 @@
-From: "Steve Turner" <brainbugnj@yahoo.com>
-Subject: DNAT and TCP RST
-Date: Tue, 12 Jul 2005 20:35:50 -0700
-Message-ID: <39468.1303915151$1121225764@news.gmane.org>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: dnatting
+Date: Wed, 13 Jul 2005 00:48:48 -0400
+Message-ID: <20050713044848.GA22255@bender.817west.com>
+References: <20050711151830.GA26670@tranquility.scriptkitchen.com>
+	<20050711184520.GA17202@bender.817west.com>
+	<12984bb0050712202131980c46@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <12984bb0050712202131980c46@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,62 +20,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Here is my issues: 
-I want to be able to take a request from the internet thru the linksys
-router which has 192.168.1.161 setup as its DMZ.  Then from
-192.168.1.161:8000 use DNAT to send over to 192.168.1.172:80.
+On Tue, Jul 12, 2005 at 09:21:43PM -0600, Donald Murray wrote:
+> Because the destination server is on the same subnet, users on the inside
+> could indeed connect directly to that machine. Alternatively this could be
+> handled via DNS.
+> 
+> 
+> However, if the destination server is inside a DMZ, the firewall needs
+> to DNAT in
+> PREROUTING and SNAT in POSTROUTING. The DNAT gets traffic to
+> the DMZ, the SNAT allows it back. Something like:
 
-As a test I have a 3rd internal machine so we can rule out the linksys -
-192.168.1.163 all test conducted behind linksys.
+no--it doesn't.  if by "the destination server is inside a DMZ" you mean
+the web server is on a different layer3 subnet than the client, routed
+through the firewall.  you are applying the half-assed SNAT solution where
+it's not even needed.  this is worse than the SNAT for the OP's scenario;
+at least there the SNAT serves to create some semblance of functionality.
 
-Chart:
-	  	   		   Internet
-			    		|
-		| Linksys DMZ defined 192.168.1.161	|
-		|			|			|
-	|192.168.1.161|	|192.168.1.172| |192.168.1.163|
+NAT is the duct tape of networking; if you can route, route.
 
-All machines default gateway set 192.168.1.1
-All static IPs
-192.168.1.161, 172 - RH9 with kernel 2.4
-192.168.1.163 - Mac OSX
+-j
 
-
-
-
-192.168.1.161 has the below PREROUTING Line:
-/sbin/iptables -t nat -A PREROUTING -p tcp -d 192.168.1.161 --dport 81 -j
-DNAT --to 192.168.1.172:81
-
-
-
-192.168.1.161 TCPDUMP shows:
-
-20:29:31.597999 192.168.1.163.56063 > 192.168.1.161.8000: S
-1238979630:1238979630(0) win 65535 <mss 1460,nop,wscale 0,nop,nop,timestamp
-2985379529 0> (DF) [tos 0x10] 
-20:29:31.598485 192.168.1.163.56063 > 192.168.1.172.81: S
-1238979630:1238979630(0) win 65535 <mss 1460,nop,wscale 0,nop,nop,timestamp
-2985379529 0> (DF) [tos 0x10]
-
-So the request is being mangled by 192.168.1.161 as requested.
-
-
-
-192.168.1.172 TCPDUMP shows:
-
-20:30:23.713734 192.168.1.163.56179 > 192.168.1.172.81: S
-2663332042:2663332042(0) win 65535 <mss 1460,nop,wscale 0,nop,nop,timestamp
-2985379636 0> (DF) [tos 0x10] 
-20:30:23.713784 192.168.1.172.81 > 192.168.1.163.56179: S
-3973936785:3973936785(0) ack 2663332043 win 5792 <mss 1460,nop,nop,timestamp
-7790272 2985379636,nop,wscale 0> (DF)
-20:30:23.716981 192.168.1.163.56179 > 192.168.1.172.81: R
-2663332043:2663332043(0) win 0 (DF)
-
-It appears that the request is arriving - 192.168.1.172 is responding
-(SYN/ACK) then origin 192.168.1.163 is sending back a RST.
-
+--
+"Peter: I'm going to microwave a bagel and have sex with it.
+ Quagmire: Butter's in the fridge."
+        --Family Guy
 
