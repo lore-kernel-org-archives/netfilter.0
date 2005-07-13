@@ -1,13 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: OUTPUT filtering (was: Re: Ip_conntrack_ftp ...)
-Date: Wed, 13 Jul 2005 09:45:50 -0500
-Message-ID: <42D5291E.7090308@gmx.co.uk>
-References: <04EE7AD0450F7B498BA216312943A1A102937F25@blrse201.ap.infineon.com>	<42D4E11C.2080100@mnemon.de>
-	<Pine.LNX.4.61.0507131212090.14635@yvahk01.tjqt.qr>
+From: Steven M Campbell <Netfilter@SCampbell.net>
+Subject: Re: dnatting
+Date: Wed, 13 Jul 2005 10:50:08 -0400
+Message-ID: <42D52A20.3090709@SCampbell.net>
+References: <57F9959B46E0FA4D8BA88AEDFBE58290742E@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0507131212090.14635@yvahk01.tjqt.qr>
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE58290742E@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,42 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Cc: Netfilter ML <netfilter@lists.netfilter.org>
 
-Jan Engelhardt wrote:
->>Hmm, many people, including myself, think, that filtering in OUTPUT is
->>pointless. More troublesome than usefull. If you decide to set OUTPUT
->>policy to ACCEPT, you don't need the first two rules. Up to you.
-> 
-> Not at all. Because certains things can not happen in certain environments, 
-> e.g. I read/write mail by logging into a mail server via SSH / no sendmail 
-> running, I can exclude certain things. In netfilter parlance:
-> 
->  -P OUTPUT ACCEPT (same for FORWARD, btw)
->  -A OUTPUT -j REJECT -p tcp --dport 25
-> 
-> This stops users that also have access to my machine to not spam smtp servers, 
-> should they find an open one.
+Gary W. Smith wrote:
+>I agree with everything that has been said BUT I must also interject.  A
+>lot small business and many home users who get one or two IP's usually
+>don't have a second DNS floating around.  For larger organizations I
+>would definitely use the split DNS.  We do that at a couple locations
+>when we can.
+>  
+Split DNS can be implemented on a single DNS server, check your DNS 
+servers manual.  The basics are that you create views of your domain 
+structure based on the ip address of the requester, if they are inside 
+(for instance 10.0.0.0/8) you give them the inside answers, otherwise 
+you give them the outside answers.   You should not need multiple DNS 
+servers although you should have multiple servers for other reasons. 
 
-(Be sure you also restrict access to any sendmail(1)-style mail 
-injection binary in that case, if there's an MTA running.)
+>As for this case, I think it's completely acceptable.  
+>
+>Since this does indeed work I think it should be documented as a viable
+>solution (which I think it's in the fine print on one of the docs that I
+>read before).
+>
+>  
+FWIW from me I would not accept the answer 'it works so it must be 
+okay', that's been the downfall of soooo very many computer projects I 
+cannot even begin to count them (a particularily bad attitude for 
+programmers).    We'll certainly not argue (and we aren't), it's your 
+network and your rules.  My advice is use split DNS from the experience 
+that I used to do the sort of thing that you are doing here and I found 
+out that it was a bad idea and only created trouble later and I don't 
+like trouble, especially if it can be pinned on me!
 
-True, you have illustrated one example of sane OUTPUT filtering. The 
-OP's use of OUTPUT filtering was not in this category.
-
-Note that OUTPUT filtering only controls non-root users. A root user can 
-disable or bypass it. If you have local shell users who cannot be 
-trusted, and if you didn't already understand all this, chances are 
-those users already have rooted you. :)
-
-I agree with Joerg above. I don't think you have contradicted his 
-general point. Netfilters should:
-   1. Learn to walk before they try to run
-      Rule of thumb: if you need to post here to try to get explanations
-      of what your rules are doing, you're not ready for OUTPUT filters.
-   2. Only experiment with carefully-crafted OUTPUT rules
-   3. Generally not attempt "iptables -P OUTPUT DROP" (see #1.)
--- 
-     mail to this address is discarded unless "/dev/rob0"
-     or "not-spam" is in Subject: header
 
