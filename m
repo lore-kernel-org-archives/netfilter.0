@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: DNAT and TCP RST
-Date: Wed, 13 Jul 2005 00:54:33 -0400
-Message-ID: <20050713045433.GA22311@bender.817west.com>
-References: <20050713033311.F099D885@mail.817west.com>
+From: <Chandra.Vempali@infineon.com>
+Subject: Ip_conntrack_ftp with PASSIVE FTP does not work
+Date: Wed, 13 Jul 2005 14:35:28 +0530
+Message-ID: <04EE7AD0450F7B498BA216312943A1A102937F25@blrse201.ap.infineon.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050713033311.F099D885@mail.817west.com>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Jul 12, 2005 at 08:35:50PM -0700, Steve Turner wrote:
-> Here is my issues: 
+Hi all,
 
-<-- snip the whole damn post -->
+For me, ip_conntrack_ftp does not work for PASSIVE ftp.
 
-please read the "dnatting" thread from monday, 7/11 through today.  i
-admit that sometimes expecting people to search the archives before
-posting a question might be too much to ask, but this is ridiculous.
+In the firewall rules, I blocked everything and put the following rules,
+iptables -A INPUT -p tcp --sport 21 -m state --state ESTABLISHED,NEW -j
+ACCEPT=20
+iptables -A OUTPUT -p tcp --dport 21 -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT=20
+And when I try to ftp, the control channel goes through firwall, but
+data channel fails to pass through.
+Is there any thing else I should add to the firewall rules to allow ftp
+data through firwall.
+Any help will be highly appreciated.
+Regards,
+Chandra
 
-i am in hell.
+*Disclaimer*
+"This e-mail and any attachments are confidential and may contain trade
+secrets or privileged or undisclosed information. They may also be
+subject to copyright protection. Please do not copy, distribute or
+forward this email to anyone unless authorised. If you are not a named
+addressee, you must not use, disclose, retain or reproduce all or any
+part of the information contained in this e-mail or any attachments. If
+you have received this email by mistake please notify the sender
+immediately by return email and destroy/delete all copies of the email."
 
--j
-
---
-"Peter: No, no, no. It's "step right, step LEFT." Are
- you TRYING to piss off the volcano?"
-        --Family Guy
 
