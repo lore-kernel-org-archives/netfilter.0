@@ -1,11 +1,12 @@
-From: <Chandra.Vempali@infineon.com>
-Subject: RE: Ip_conntrack_ftp with PASSIVE FTP does not work
-Date: Wed, 13 Jul 2005 15:30:37 +0530
-Message-ID: <04EE7AD0450F7B498BA216312943A1A102937F40@blrse201.ap.infineon.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Ip_conntrack_ftp with PASSIVE FTP does not work
+Date: Wed, 13 Jul 2005 12:14:51 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507131212090.14635@yvahk01.tjqt.qr>
+References: <04EE7AD0450F7B498BA216312943A1A102937F25@blrse201.ap.infineon.com>
+	<42D4E11C.2080100@mnemon.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <42D4E11C.2080100@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,80 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: harmuth@mnemon.de, netfilter@lists.netfilter.org
-
-Hi=20
-Thanks for your reply.
-
-My ip_conntrack_ftp module gets loaded properly.
-
-If I keep a rule like "iptables -A INPUT -m state --state =
-RELATED,ESTABLISHED -j ACCEPT"
-It means that traffic is allowed to pass through for all ports which =
-should not be done for security reasons.
-
-As for passive FTP, I added two rules to allow traffic thru only 21 =
-port.
-iptables -A INPUT -p tcp --sport 21 -m state --state  ESTABLISHED,NEW -j =
-ACCEPT=20
-iptables -A OUTPUT -p tcp --dport 21 -m  state --state =
-NEW,ESTABLISHED,RELATED -j ACCEPT
-
-So, control messages goes thru firwall successfully.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Cc: netfilter@lists.netfilter.org
 
 
-But for the data, now both server and client work on random ports.
-ip_conntrack_ftp module should read this PASSIVE port from FTP message =
-and then it should create an expectation.
+>> iptables -A INPUT -p tcp --sport 21 -m state --state ESTABLISHED,NEW -j
+>> ACCEPT 
+>> iptables -A OUTPUT -p tcp --dport 21 -m state --state
+>> NEW,ESTABLISHED,RELATED -j ACCEPT 
 
-In my case, it is creating an expectation too. But when data starts =
-flowing, firewall does not allow
-even through it is expectation.
+If using passive ftp, the host you are connecting to does not necessarily send 
+from port 21.
 
-Any help will be highly appreciated ...
+>Hmm, many people, including myself, think, that filtering in OUTPUT is
+>pointless. More troublesome than usefull. If you decide to set OUTPUT
+>policy to ACCEPT, you don't need the first two rules. Up to you.
 
-Chandra
-P.S : I guess there is some patch for this problem.
-Can anybody please point me to such patch and how to get it
+Not at all. Because certains things can not happen in certain environments, 
+e.g. I read/write mail by logging into a mail server via SSH / no sendmail 
+running, I can exclude certain things. In netfilter parlance:
 
+ -P OUTPUT ACCEPT (same for FORWARD, btw)
+ -A OUTPUT -j REJECT -p tcp --dport 25
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of J=F6rg =
-Harmuth
-Sent: Wednesday, July 13, 2005 3:09 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: Ip_conntrack_ftp with PASSIVE FTP does not work
+This stops users that also have access to my machine to not spam smtp servers, 
+should they find an open one.
 
 
-Chandra.Vempali@infineon.com schrieb:
-> Hi all,
->=20
-> For me, ip_conntrack_ftp does not work for PASSIVE ftp.
->=20
-> In the firewall rules, I blocked everything and put the following=20
-> rules, iptables -A INPUT -p tcp --sport 21 -m state --state=20
-> ESTABLISHED,NEW -j ACCEPT iptables -A OUTPUT -p tcp --dport 21 -m=20
-> state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-> And when I try to ftp, the control channel goes through firwall, but
-> data channel fails to pass through.
-So, your firewall connects to the FTP server, why not. First of all make =
-sure that ip_conntrack_ftp is compiled into the kernel or as a module. =
-If compiled as a module, make sure it is loaded.
+Jan Engelhardt
+-- 
 
-As your firewall connects to the FTP server and your OUTPUT policy seems =
-to be DROP or REJECT, you need rules like these:
-
-iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT =
-iptables -A OUTPUT -p tcp --dport 21 --syn -j ACCEPT iptables -A INPUT =
--m state --state RELATED,ESTABLISHED -j ACCEPT
-
-Hmm, many people, including myself, think, that filtering in OUTPUT is =
-pointless. More troublesome than usefull. If you decide to set OUTPUT =
-policy to ACCEPT, you don't need the first two rules. Up to you.
-
-Have a nice time,
-
-Joerg
 
