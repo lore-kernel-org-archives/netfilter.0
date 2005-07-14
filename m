@@ -1,12 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: I wanna make a new target like SNAT..
-Date: Wed, 13 Jul 2005 19:20:42 -0400
-Message-ID: <20050713232042.GA25550@bender.817west.com>
-References: <9b2a1cff05071315243f973f68@mail.gmail.com>
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+Subject: Re: h323 over nat firewall - queries
+Date: Thu, 14 Jul 2005 15:47:57 +0800
+Message-ID: <016601c58848$5ab54860$1280a8c0@newlife>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <9b2a1cff05071315243f973f68@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,56 +16,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Jul 14, 2005 at 07:24:28AM +0900, JinHyung Park wrote:
-> hi..
->  i want to make a new target that works like SNAT, but M:N SNAT..
->  i mean, there are 50 computers and each has a private ip like 192.168.0.x..
->  10 computers need a specific ip of my 50 real ip.
->  so, i want that computers to give given range IPs, and another computers 
-> follow anoter iptables rule.
->  for example, i have 1.1.1.1~1.1.1.50 ip, and 1.1.1.1~1.1.1.10 is special 
-> IPs..
->  and my 50 computers has a private network, 192.168.0.1~192.168.0.50,
->  some computer that need specific IP assign ( range 1.1.1.1~1.1.1.10 ) and 
-> another 40 computers just follow other iptables rule..
->  (like,
-> iptables -t nat -A POSTROUTING -d 192.168.0.1-192.168.0.50 -j NEWTARGET --to 
-> 1.1.1.1-1.1.1.10
->  and, if all 1.1.1.1-1.1.1.10 are used, other private computer follow 
-> another rule.. )
->  i checked ipt_NETMAP.c, just my thought, make a newtarget likes NETMAP with 
-> idea like ip pool, but i don know how to pass the next rule if all 
-> 1.1.1.1-1.1.1.10 are used. if there is no IP, just return NF_ACCEPT ? ;; 
->  does I make a sense?
->  please help me...
 
-i am surely unclear on what you're trying to do, but if the situation is
-that 192.168.0.1 - 192.168.0.10 need to be statically mapped to 1.1.1.1
-- 1.1.1.10, and the rest of the network should be mapped to the
-remaining pool of public addresses, 1.1.1.11 - 1.1.1.50, you could just
-use SNAT rules:
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
 
-  # one-to-one mappings for .1 - .10
-  for i in `seq 1 10`; do
-    iptables -t nat -A POSTROUTING -s 192.168.0.${i} \
-      -j SNAT --to-source 1.1.1.${i}
-  done
 
-  # SNAT pool for remaining IP's
-  iptables -t nat -A POSTROUTING \
-    -m iprange --src-range 192.168.0.11-192.168.0.254 \
-    -j SNAT --to-source 1.1.1.11-1.1.1.50
+> 
+> I have a case where I have H323 VoIP equipments located behind
+> Linux nat-box running ip_h323_nat and ip_conntrack_h323.
+> 
+> We have various combination of traffic and some of them deemed
+> successful and some of them I experience some weird problems 
+> such as not able to hear to voice and/or chopping voice.
+> 
+> Upon troubleshooting and narrowing down the problem, I suspect 
+> that the modules might have some limitation and so I am posting 
+> here to see if anyone enlighten me on this subject.
+> 
+> I remember certain conntrack modules only allow one client to be
+> behind nat, so I am asking :-
+> 
+> If I have one H323 VoIP equipment going to multiple H323 counter 
+> parts on the internet at the same time, via the Linux nat conntrack 
+> module, if it is going to work correctly ? ie I have one source private 
+> IP, but going to multiple destination public IPs via the H323 conntrack 
+> module, is this a supported configuration ?
+> 
 
-i'm sure i've missed the point, but who knows--maybe not.
+I did not get any comments on this ?
 
--j
+Upon further checking I found the 2.6 kernel has a difference source
+from the 2.4 kernel and my problem was seen on 2.4 kernel. By any
+chance, this "suspected limitation" has been fixed in 2.6 kernel ?
 
---
-"Stewie: Now look here...Jo-LENE. I have an army to raise and I must
- get to Managua at once. I require a window seat and an in-flight Happy
- Meal. BUT NO PICKLES. OH, GOD HELP YOU IF I FIND PICKLES."
-        --Family Guy
+Is it worthwhile testing it on 2.6 kernel ?
+
+
+
+
+
 
