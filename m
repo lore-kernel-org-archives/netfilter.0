@@ -1,13 +1,12 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: OUTPUT filtering
-Date: Thu, 14 Jul 2005 17:56:21 +0200
-Message-ID: <42D68B25.6010305@mnemon.de>
-References: <04EE7AD0450F7B498BA216312943A1A102937F25@blrse201.ap.infineon.com>	<42D4E11C.2080100@mnemon.de>	<Pine.LNX.4.61.0507131212090.14635@yvahk01.tjqt.qr>	<42D5291E.7090308@gmx.co.uk>
-	<42D6589E.5090707@ufomechanic.net>
+From: primero <primero@fastwebnet.it>
+Subject: Re: DNS and NAT
+Date: Thu, 14 Jul 2005 18:00:59 +0200
+Message-ID: <42D68C3B.30002@fastwebnet.it>
+References: <BAY17-F22074E1DF13F87E0D94A0C80D10@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42D6589E.5090707@ufomechanic.net>
+In-Reply-To: <BAY17-F22074E1DF13F87E0D94A0C80D10@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Suzana Lojic-Skoric <s_lojic@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Amin Azez schrieb:
-> Quite so, but output filtering can also be applied to a
-> firewall/router/bridge with no user accounts.
+Suzana Lojic-Skoric wrote:
 
-Definitely this is true. But why would you want to apply output
-filtering to a firewall,..., without any user account ? I can't see the
-point in this, if we are talking about general output filtering like
-having a DROP policy in OUTPUT.
+>> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+>>
+>> and everything is as described.
+>>
+> Yes, you are right, but the problem is between my inside client and 
+> the NAT gateway I have a machine that drops everything that is not 
+> 10.x.x.x. I know, I know, it is insane... but my job is to find a 
+> solution for DNS in such network.
+>
+> So basically, my inside network can only route 10.x.x.x and everything 
+> else is dropped.
+>
+>> As /dev/rob0 pointed out, if you don't want your clients to talk with
+>> google directly use proxies.
+>>
+>
+> I'll check out the proxy idea. Thanks for your input.
+>
+> Suzana
+>
+You could use a Proxy but this would not solve your problem of 'have a 
+machine that drops everything that is not 10.x.x.x' ... even with a 
+proxy you would need that at least that machine would be able to access 
+Public Big Internet.
 
-Only locally generated packets go through OUTPUT and most likely you
-want this traffic (proxies,...). Given that there is no config error, if
-there is unwanted traffic on the box - let's say IRC - chances are best
-that the box is compromized and as there is no user account, the
-intruder has root priveleges. So he is perfectly able to circumvent any
-filtering. So, output filtering didn't help.
+Maybe i missed the point ... but if you can not access anything else 
+then 10.x.x.x because something beetween clients and DefaultGW would 
+drop it i don't see any escape other then configuring the proxy on your 
+NAT Device because it should have not problem accessing the Public Internet.
 
-Ofcourse there are good reason for single OUTPUT rules - this list
-helped me to remember identd, which caused a responding delay of about
-30s - but this is not generally.
-
-May be I'm missing important views, but I can't see that output
-filtering makes sense.
-
-Have a nice time,
-
-Joerg
-
+Bye
+Francesco
 
