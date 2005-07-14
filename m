@@ -1,11 +1,13 @@
-From: Marcos Eduardo Nunes <eduardao@gmail.com>
-Subject: off-toppic file too big
-Date: Thu, 14 Jul 2005 16:17:21 -0300
-Message-ID: <2658c3fc050714121726b7af82@mail.gmail.com>
-Reply-To: Marcos Eduardo Nunes <eduardao@gmail.com>
+From: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
+Subject: Re: Doubt about forwarding. Please, Help me!
+Date: Thu, 14 Jul 2005 16:20:20 -0300
+Message-ID: <f48e768e0507141220855fec5@mail.gmail.com>
+References: <20050714191101.230C61F50B1@ws1-2.us4.outblaze.com>
+Reply-To: Glaucius Djalma Pereira Junior <glaucius@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050714191101.230C61F50B1@ws1-2.us4.outblaze.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,13 +20,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Morales Carlos <cmmorales@mail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi...
+iptables -t nat -A PREROUTING -p tcp --dport 8888 -i eth1 -d EXT_IP -j
+DNAT --to INT_IP
 
-I have this message at my server: "ls: store.log: Valor muito extenso
-para o tipo de dados definido total 0" ... I can't delete the file...
-what could I do???
+and the rule to allow the packet back=20
 
-Eduardo
+iptables -t nat -A POSRTOUTING -s INT_IP -p tcp --sport 8888 -j SNAT --to E=
+XT_IP
+
+
+simple, with this two single rules you can redirect the port to your
+internal host
+
+best regards=20
+
+--=20
+Glaucius Djalma Pereira Junior
+glaucius@gmail.com
 
