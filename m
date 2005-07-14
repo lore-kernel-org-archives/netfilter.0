@@ -1,11 +1,10 @@
-From: Aleksandar Milivojevic <alex@milivojevic.org>
-Subject: Netfilter and IPSec interaction
-Date: Thu, 14 Jul 2005 12:21:09 -0500
-Message-ID: <20050714122109.bl71ded9gkkoc0c4@www.milivojevic.org>
+From: Don Porter <porterde@hendrix.edu>
+Subject: Delay rejecting packets on OUTPUT chain
+Date: Thu, 14 Jul 2005 13:25:31 -0500
+Message-ID: <1121365531.3241.13.camel@augustine>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,49 +18,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm writing set of firewall rules for IPSec based VPN, and have couple of
-questions.
+I have iptables configured with a policy of DROP on the OUTPUT chain,
+followed by various ACCEPT rules, and then I append a REJECT extension
+on the chain.
 
-I know that packets are supposed to go through Netfilter tables twice (as
-received from the wire, and than as outputed by IPSec module).  However, what I
-noticed is that this seems to be true only for incomming packets.  The outgoing
-packets seems to go through Netfilter tables only once.
+I have a simple test application that tries to open a tcp socket to
+another machine.  This application runs in a few tenths of a second when
+the OUTPUT chain is configured to ACCEPT, even if the packet is rejected
+on the other machine's INPUT chain.  If I DROP and REJECT the traffic on
+the output chain, however, it consistently takes about 3 seconds to run
+(and, obviously, even longer without the REJECT).
 
-For example, I've placed bunch of LOG rules in every chain of filter and mangle
-tables, logging all icmp and esp protocol packets.  I've placed them as the
-very first rules in each chain, so basically they should log everythign that
-goes on.  I've observed this when pinging a host on remote network (over IPSec
-tunnel):
+So why is it that it takes so much longer for the test to fail when the
+packet is rejected on the box than when it goes across the wire and
+back?
 
-Sending ICMP ping, only one pass:
-   mangle   PREROUTING    cleartext icmp packet
-            FORWARD       cleartext icmp packet
-   filter   FORWARD       cleartext icmp packet
-   mangle   POSTROUTING   encrypted esp packet
+Any insights/advice on this would be greatly appreciated.
 
-Basically packet went through Netfilter tables only once, with IPSec kicking in
-somewhere between filter's FORWARD and mangle's POSTROUTING chains.  I would
-expect encrypted packet to also go through filter's and mangle's OUTPUT chains.
- After all, the esp packet is locally generated.  But it never got there, it
-just went straight to mangle's POSTROUTING chain and hopped onto the wire.
-
-On the other hand, the return packet was handled as expected (this part included
-more as reference):
-
-Receiving ICMP pong, first pass:
-   mangle   PREROUTING    encrypted esp packet
-            INPUT         encrypted esp packet
-   filter   INPUT         encrypted esp packet
-IPSec kicks in, and we have second pass:
-   mangle   PREROUTING    cleartext icmp packet
-            FORWARD       cleartext icmp packet
-   filter   FORWARD       cleartext icmp packet
-   mangle   POSTROUTING   cleartext icmp packet
-
-So, my question is, is something going wrong here, or is this asymetry by
-design?
-
-----------------------------------------------------------------
-This message was sent using IMP, the Internet Messaging Program.
-
+Don Porter
 
