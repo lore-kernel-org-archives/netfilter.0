@@ -1,17 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: firewall ignore the rule
-Date: Thu, 14 Jul 2005 11:40:35 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507141139440.18072@yvahk01.tjqt.qr>
-References: <2452665f0507130352544ab556@mail.gmail.com>
-	<1121252895.11584.6.camel@anduril.intranet.cartel-securite.net>
-	<2452665f05071318551f788f42@mail.gmail.com>
-	<20050714020155.GA26028@bender.817west.com>
-	<2452665f0507131910300b00de@mail.gmail.com>
-	<20050714021032.GA26090@bender.817west.com>
-	<2452665f0507131919823198c@mail.gmail.com>
+From: Steven Zhang <zhangseven@gmail.com>
+Subject: match for connection lasting time
+Date: Thu, 14 Jul 2005 18:38:24 +0800
+Message-ID: <fd5438520507140338694a14dd@mail.gmail.com>
+Reply-To: Steven Zhang <zhangseven@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2452665f0507131919823198c@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,21 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: liyas_m m <liyasmm@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hi, all:
+ I got an idea to distinguish the different connections by its lasting time=
+=20
+(mostly for TCP),=20
+eg. which connections have lasted for more than one minute, or even more=20
+than one hour?
 
->u mean blocking the MAC address also doesnot do any good. hmm i
->thought iptables is that powerful.
+I think this maybe useful in some cases.
+Is there a existing match for this? or is it possible to do this with=20
+netfilter?
 
-There is a reason it's called _IP_tables.
+Thanks in advance.
 
-What iptables can do for you is block *IP* packets with certain MAC addresses.
-
-
-Jan Engelhardt
--- 
-| Alphagate Systems, http://alphagate.hopto.org/
-
+Best regards,
+Steven Zhang
