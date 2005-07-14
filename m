@@ -1,7 +1,8 @@
-From: "Morales Carlos" <cmmorales@mail.com>
-Subject: Doubt about forwarding. Please, Help me!
-Date: Thu, 14 Jul 2005 14:11:00 -0500
-Message-ID: <20050714191101.230C61F50B1@ws1-2.us4.outblaze.com>
+From: Marcos Eduardo Nunes <eduardao@gmail.com>
+Subject: off-toppic file too big
+Date: Thu, 14 Jul 2005 16:17:21 -0300
+Message-ID: <2658c3fc050714121726b7af82@mail.gmail.com>
+Reply-To: Marcos Eduardo Nunes <eduardao@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,14 +20,11 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thak you Franceso, could you write the lines for that? I'm just beginning w=
-ith netfilter. I'm LOST.
-Thaks a lot.
-Carlos
+Hi...
 
---=20
-___________________________________________________________
-Sign-up for Ads Free at Mail.com
-http://promo.mail.com/adsfreejump.htm
+I have this message at my server: "ls: store.log: Valor muito extenso
+para o tipo de dados definido total 0" ... I can't delete the file...
+what could I do???
 
+Eduardo
 
