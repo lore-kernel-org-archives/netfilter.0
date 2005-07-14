@@ -1,12 +1,14 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: RE: dnatting
-Date: Wed, 13 Jul 2005 17:19:29 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0507131717060.14092@darkstar.sysinfo.com>
-References: <57F9959B46E0FA4D8BA88AEDFBE58290742E@pxtbenexd01.pxt.primeexalia.com>
-	<Pine.LNX.4.61.0507131239010.14635@yvahk01.tjqt.qr>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: firewall ignore the rule
+Date: Wed, 13 Jul 2005 22:01:55 -0400
+Message-ID: <20050714020155.GA26028@bender.817west.com>
+References: <2452665f0507130352544ab556@mail.gmail.com>
+	<1121252895.11584.6.camel@anduril.intranet.cartel-securite.net>
+	<2452665f05071318551f788f42@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0507131239010.14635@yvahk01.tjqt.qr>
+Content-Disposition: inline
+In-Reply-To: <2452665f05071318551f788f42@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +19,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: Steven M Campbell <Netfilter@SCampbell.net>, Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Thu, Jul 14, 2005 at 09:55:23AM +0800, liyas_m m wrote:
+> i have done that and checked with ethereal..still that source address
+> is not blocked. It is still broadcasting ARP packets..a lot.
 
-On Wed, 13 Jul 2005, Jan Engelhardt wrote:
+iptables/netfilter operates at layer 3.  therefore, packets generated or
+received at layer 2 cannot be blocked with iptables/netfilter.
+ethereal/iptraf operate at the BPF layer (layer 2), and arp packets are
+layer 2 as well.
 
->
->> I agree with everything that has been said BUT I must also interject.  A
->> lot small business and many home users who get one or two IP's usually
->> don't have a second DNS floating around.
->
-> It is required to have two [external] DNS servers.
->
+iptables/netfilter is not at fault; you have an invalid testing
+methodology.
 
-Since when have requirements ever gotten in the way of *progress* or 
-*production*? <gryn>
+-j
 
-more like best practises, or recommendations, but, requirements?  on the 
-internet?  One might have assumed there were requirements when the 
-internet was closed and sightly controlled, but, not in the public openess 
-of this day...
-
-
-Thanks,
-
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD4DBQFC1YVkst+vzJSwZikRAriTAKDViPU5Pbf7OVCzeTbTienNBIbawwCXbda7
-U51eHzG9tnssqQptRxt+4w==
-=G8vu
------END PGP SIGNATURE-----
+--
+"Peter: Brian, there's a message in my Alpha Bits. It says "OOOOOO".
+ Brian: Peter, those are Cheerios."
+        --Family Guy
 
