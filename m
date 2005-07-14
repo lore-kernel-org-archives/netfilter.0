@@ -1,12 +1,11 @@
-From: Sergio Basurto Juarez <sbasurtoj@yahoo.com>
-Subject: Re: Doubt about forwarding. Please, Help me!
-Date: Thu, 14 Jul 2005 12:50:26 -0700 (PDT)
-Message-ID: <20050714195026.4628.qmail@web33004.mail.mud.yahoo.com>
-References: <20050714184051.CE18E6F027@ws1-5.us4.outblaze.com>
+From: "Suzana Lojic-Skoric" <s_lojic@hotmail.com>
+Subject: Re: DNS and NAT
+Date: Thu, 14 Jul 2005 13:33:32 -0700
+Message-ID: <BAY17-F66FBC4C2BEA443DA8F48A80D10@phx.gbl>
+References: <42D68C3B.30002@fastwebnet.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050714184051.CE18E6F027@ws1-5.us4.outblaze.com>
+In-Reply-To: <42D68C3B.30002@fastwebnet.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,66 +16,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: primero@fastwebnet.it
+Cc: netfilter@lists.netfilter.org
 
 
 
---- Morales Carlos <cmmorales@mail.com> wrote:
+>From: primero <primero@fastwebnet.it>
+>To: Suzana Lojic-Skoric <s_lojic@hotmail.com>
+>CC: harmuth@mnemon.de, netfilter@lists.netfilter.org
+>Subject: Re: DNS and NAT
+>Date: Thu, 14 Jul 2005 18:00:59 +0200
+>
+>Suzana Lojic-Skoric wrote:
+>
+>>>iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+>>>
+>>>and everything is as described.
+>>>
+>>Yes, you are right, but the problem is between my inside client and the=20
+>>NAT gateway I have a machine that drops everything that is not 10.x.x.x. =
+I=20
+>>know, I know, it is insane... but my job is to find a solution for DNS in=
+=20
+>>such network.
+>>
+>>So basically, my inside network can only route 10.x.x.x and everything=20
+>>else is dropped.
+>>
+>>>As /dev/rob0 pointed out, if you don't want your clients to talk with
+>>>google directly use proxies.
+>>>
+>>
+>>I'll check out the proxy idea. Thanks for your input.
+>>
+>>Suzana
+>>
+>You could use a Proxy but this would not solve your problem of 'have a=20
+>machine that drops everything that is not 10.x.x.x' ... even with a proxy =
 
-> Hello. I have a firewall blocking all the traffic
-> from the Internet to my local network, but I need to
-> let an external host (extHOST) to access the port
-> 8888 (for example) of an internal host (intHOST). Is
-> this correct? The external lan adapter is eth1.
-> 
->  /sbin/iptables -t nat -A PORTFW -p tcp -i eth1 -s
-> extHOST --dport 8888 -j DNAT --to-destination
-> intHOST:8888
-> 
-> Thaks, please email me to cmmorales@mail.com 
-> Carlos
-> 
+>you would need that at least that machine would be able to access Public=20
+>Big Internet.
+>
+>Maybe i missed the point ... but if you can not access anything else then =
 
-Your iptables is good, if you are new to iptables may
-be is better instert your rule in the chain PREROUTING
-so the rule comes like:
+>10.x.x.x because something beetween clients and DefaultGW would drop it i =
 
-iptables -t nat -A PREROUTING -p tcp -i eth1 -s
-extHOST --dport 8888 -j DNAT --to intHOST:8888
+>don't see any escape other then configuring the proxy on your NAT Device=20
+>because it should have not problem accessing the Public Internet.
+>
+>Bye
+>Francesco
 
-Also remember to enable ip_forwarding with
-echo "1" /proc/sys/net/ipv4/ip_forward
+I don't think proxy can help because it is just caching the web pages, it=20
+does not change the IP addresses. I'll check if tunneling can help, if not =
 
-Besides you must have a couple of rules in the FORWARD
-chain like:
-# Letting go the traffic from your net to any where
-iptables -I FORWARD -s $INTNET -d $UNIVERSE -j ACCEPT
+then I'll have to change iptables to inspect DNS answer and replace the IP =
 
-# Now just letting in only the related traffic to a 
-# connection that begins from your net.
-iptables -A FORWARD -s $UNIVERSE -d $INTNET -m state \
---state ESTABLISHED,RELATED -j ACCEPT
+in the payload.
 
-# Finally deny anything else.
-iptables -A FORWARD -j DROP
+Thanks for help,
+Suzana
 
-I don't think you must have to DNATTED the output
-traffic.
+_________________________________________________________________
+Take advantage of powerful junk e-mail filters built on patented Microsoft=
+=AE=20
+SmartScreen Technology.=20
+http://join.msn.com/?pgmarket=3Den-ca&page=3Dbyoa/prem&xAPID=3D1994&DI=3D10=
+34&SU=3Dhttp://hotmail.com/enca&HL=3DMarket_MSNIS_Taglines=20
+  Start enjoying all the benefits of MSN=AE Premium right now and get the=20
+first two months FREE*.
 
-I hope this help.
-
-Regards.
-
--- 
-Sergio Basurto J.
-
-If I have seen further it is by standing on the 
-shoulders of giants. (Isaac Newton)
---
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
