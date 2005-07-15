@@ -1,12 +1,12 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: Firewall For XANDROS OC
-Date: Fri, 15 Jul 2005 08:30:24 -0400
-Message-ID: <1121430624.3017.12.camel@localhost>
-References: <20050715023349.87338.qmail@web34010.mail.mud.yahoo.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: Netfilter and IPSec interaction
+Date: Fri, 15 Jul 2005 09:55:12 -0500
+Message-ID: <42D7CE50.1000904@riverviewtech.net>
+References: <20050714122109.bl71ded9gkkoc0c4@www.milivojevic.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050715023349.87338.qmail@web34010.mail.mud.yahoo.com>
+In-Reply-To: <20050714122109.bl71ded9gkkoc0c4@www.milivojevic.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +18,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Juan Palacios <revelation75214@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 2005-07-14 at 19:33 -0700, Juan Palacios wrote:
-> Hello,
+Aleksandar Milivojevic wrote:
+> I'm writing set of firewall rules for IPSec based VPN, and have couple of
+> questions.
 > 
->      I am looking for a simple firewall for xandros
-> open circulation that doesn't require programming,
-> dos, ect..
-> Just a firewall that's easy to install that will work
-> on xandros open circulation. Point and click interface
-> like SYGATE, ZONE ALARM, ECT..sorry to bother the ip
-> tables guys but i figured that you guys would know
-> best. I mean if you can handle ip tables im sure you
-> guys can handle a interface type firewall with gui.
-<snip>
-You can search the mail list archives for similar discussion.  I am
-aware of fwbuilder (http://www/fwbuilder.org) which is a very powerful
-rule creator.  There was another php based project discussed on this
-list a while ago but I've forgotten its name.  Many seemed to like it
-because of its simplicity  Unlike fwbuilder, it gave direct control over
-the rule creation process.  On the other extreme and yet unfinished is
-ISCS (http://iscs.sourceforge.net) which isn't a rule configurator at
-all.  It looks at the entire environment, user authentication, access
-control, VPN, routing, PKI, creates device specific rule sets without
-conflict for each of the subsystems and automatically distributes them
-to the end devices.
+> I know that packets are supposed to go through Netfilter tables twice (as
+> received from the wire, and than as outputed by IPSec module).  However, what I
+> noticed is that this seems to be true only for incomming packets.  The outgoing
+> packets seems to go through Netfilter tables only once.
 
-Hope this helps - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+What kernel are you running and have you applied the (4) Patch-o-Matic (NG) IPSec patches that are meant to address this very issue?  Word to the wise, I've had problems applying said patches in such that I had to edit the info file inside of the <pom root>/patchlets/ipsec-0<number>-<rest of patch name>/ directory and remove the dependencies on other patches.  I've found that patch 01 would not apply b/c it was looking for a different patch that does not exist as it has already been applied to the 2.6.10 and 2.6.12.2 (other unknown) kernel.  Once patch 01 has been applied 02, and 03 should go ok, but 04 does not see that 03 has been applied.  If you remove the dependency (or require word (what ever)) on patch 03 then patch 04 will (test and) apply cleanly to a kernel with patches 01, 02, and 03 already in place.
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
+Has any one else experienced such problem with applying the IPSec-0x patches?
 
+
+
+Grant. . . .
 
