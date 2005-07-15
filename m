@@ -1,13 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: DNATing Windows File Sharing
-Date: Mon, 18 Jul 2005 13:09:01 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507181308200.15608@yvahk01.tjqt.qr>
-References: <1121674536.1554.16.camel@sadusbox.hostname>
-	<Pine.LNX.4.61.0507181120001.14336@yvahk01.tjqt.qr>
-	<42DB7B5D.1090506@rfgt.net>
+From: Trevor Cordes <trevor@tecnopolis.ca>
+Subject: Re: Using SNAT through a 26sec tunnel
+Date: Fri, 15 Jul 2005 14:18:03 -0500
+Message-ID: <20050715191803.GC22834@pog.tecnopolis.ca>
+References: <00cb01c52eaf$b0981ac0$5001010a@bluereef.local>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42DB7B5D.1090506@rfgt.net>
+Content-Disposition: inline
+In-Reply-To: <00cb01c52eaf$b0981ac0$5001010a@bluereef.local>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Robert Vangel <vangelr@rfgt.net>
-Cc: netfilter@lists.netfilter.org
+To: Andrew Hall <temp02@bluereef.com.au>, netfilter@lists.netfilter.org
 
+On Tue, Mar 22, 2005 at 06:20:56PM +1100, Andrew Hall wrote:
+> Hello,
+> 
+> I need some clarification on native 26sec packet processing in relation to 
+> NAT with Netfilter, and I'm hoping someone can enlighten me once and for 
+> all.
 
->All of the ports for windows file sharing you want to call it are..
->
->135/tcp, 137/udp, 138/tcp, 139/udp, 139/tcp, 445/tcp
->
->Some of them are for RPC things so you might not actually want them
->open, but I don't know which specific one(s) they are.
+AFAIK SNAT (and DNAT) with 26sec is broken without patches and patches 
+might not be readily available above 2.6.10.
 
-epmap           135/tcp    # DCE endpoint resolution
-epmap           135/udp    # DCE endpoint resolution
-netbios-ns      137/tcp    # NETBIOS Name Service    
-netbios-ns      137/udp    # NETBIOS Name Service    
-netbios-dgm     138/tcp    # NETBIOS Datagram Service
-netbios-dgm     138/udp    # NETBIOS Datagram Service
-netbios-ssn     139/tcp    # NETBIOS Session Service
-netbios-ssn     139/udp    # NETBIOS Session Service
-microsoft-ds    445/tcp    # Microsoft-DS
-microsoft-ds    445/udp    # Microsoft-DS
+See my RH bugzilla and make some noise:
 
-I have never seen epmap on my network, so 135 does not belong to it. 138 
-traffic is also rare.
-
-
-Jan Engelhardt
--- 
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=143374
 
