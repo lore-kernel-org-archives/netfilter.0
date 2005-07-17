@@ -1,12 +1,12 @@
-From: afshin lamei <afshinlamei@gmail.com>
-Subject: upgrade iptables
-Date: Sun, 17 Jul 2005 16:18:35 +0430
-Message-ID: <3115d56e0507170448626b208d@mail.gmail.com>
-Reply-To: afshin lamei <afshinlamei@gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Martian source with 2 external interfaces
+Date: Sun, 17 Jul 2005 07:50:46 -0500
+Message-ID: <42DA5426.10108@gmx.co.uk>
+References: <20050717103025.A66F3B1B@agile.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20050717103025.A66F3B1B@agile.dk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,16 +17,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-hi all,
-2 questions:
-is there any patched source of iptables (with p-o-m), which i can just
-compile and use?
-how can i upgrade from iptables 1.2.8 to 1.2.9, 1.3, ... etc? there is
-a patch named patch-iptables-1.2.8-1.2.9, can i apply it on an
-installed 1.2.8 one?
-regards
-afshin
+Jan Andersen wrote:
+> What I want (and need) is to have both external interfaces running at the
+> same time.
+
+http://www.ssi.bg/~ja/nano.txt
+-- 
+     mail to this address is discarded unless "/dev/rob0"
+     or "not-spam" is in Subject: header
 
