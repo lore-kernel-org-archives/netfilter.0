@@ -1,12 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Zeroing chain counters
-Date: Sun, 17 Jul 2005 12:31:36 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507171230490.7874@yvahk01.tjqt.qr>
-References: <Pine.LNX.4.61.0507162321100.22777@yvahk01.tjqt.qr>
-	<42D97EB5.30601@lopsch.com>
+From: "Jan Andersen" <jma@agile.dk>
+Subject: Martian source with 2 external interfaces
+Date: Sun, 17 Jul 2005 12:30:20 +0200
+Message-ID: <20050717103025.A66F3B1B@agile.dk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42D97EB5.30601@lopsch.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +15,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Daniel Lopes <lopsch@lopsch.com>
-Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
->> iptables -Z zeroes all rule counters, but how do I zero the chain counters
->> Chain INPUT (policy DROP 68946 packets, 3380061 bytes)?
->
-> iptables -t filter -Z INPUT
+Hi
 
-No...
+ 
 
+I have a setup with 3 interfaces, one for the LAN, one for a cable-modem and
+one for DSL.
 
+ 
 
-Jan Engelhardt
--- 
+What I want (and need) is to have both external interfaces running at the
+same time.
+
+ 
+
+When I one have my LAN and one of the external running then everything is
+working just fine. But when I turn on both interfaces at the same time my
+machine is generating a huge amount of martian-source errors in the log. I
+even tried to turn off the firewall, but with out luck.
+
+ 
+
+Why is this happening, and how do I solve this problem? 
+
+ 
+
+Regards
+
+ 
+
+Jan Andersen
+
+ 
 
