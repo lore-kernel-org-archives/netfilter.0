@@ -1,10 +1,12 @@
-From: "Jan Andersen" <jma@agile.dk>
-Subject: Martian source with 2 external interfaces
-Date: Sun, 17 Jul 2005 12:30:20 +0200
-Message-ID: <20050717103025.A66F3B1B@agile.dk>
+From: afshin lamei <afshinlamei@gmail.com>
+Subject: upgrade iptables
+Date: Sun, 17 Jul 2005 16:18:35 +0430
+Message-ID: <3115d56e0507170448626b208d@mail.gmail.com>
+Reply-To: afshin lamei <afshinlamei@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,36 +20,13 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
-
- 
-
-I have a setup with 3 interfaces, one for the LAN, one for a cable-modem and
-one for DSL.
-
- 
-
-What I want (and need) is to have both external interfaces running at the
-same time.
-
- 
-
-When I one have my LAN and one of the external running then everything is
-working just fine. But when I turn on both interfaces at the same time my
-machine is generating a huge amount of martian-source errors in the log. I
-even tried to turn off the firewall, but with out luck.
-
- 
-
-Why is this happening, and how do I solve this problem? 
-
- 
-
-Regards
-
- 
-
-Jan Andersen
-
- 
+hi all,
+2 questions:
+is there any patched source of iptables (with p-o-m), which i can just
+compile and use?
+how can i upgrade from iptables 1.2.8 to 1.2.9, 1.3, ... etc? there is
+a patch named patch-iptables-1.2.8-1.2.9, can i apply it on an
+installed 1.2.8 one?
+regards
+afshin
 
