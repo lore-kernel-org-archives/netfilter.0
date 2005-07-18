@@ -1,12 +1,13 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: how to upgrade an installed iptables?
-Date: Mon, 18 Jul 2005 12:14:51 +0200
-Message-ID: <42DB811B.7060404@mnemon.de>
-References: <3115d56e0507172241b07d0bf@mail.gmail.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: DNATing Windows File Sharing
+Date: Mon, 18 Jul 2005 13:09:01 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507181308200.15608@yvahk01.tjqt.qr>
+References: <1121674536.1554.16.camel@sadusbox.hostname>
+	<Pine.LNX.4.61.0507181120001.14336@yvahk01.tjqt.qr>
+	<42DB7B5D.1090506@rfgt.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3115d56e0507172241b07d0bf@mail.gmail.com>
+In-Reply-To: <42DB7B5D.1090506@rfgt.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Robert Vangel <vangelr@rfgt.net>
+Cc: netfilter@lists.netfilter.org
 
-afshin lamei schrieb:
 
-> how can i upgrade from iptables 1.2.8 to 1.2.9, 1.3, ... etc? there is
-> a patch named patch-iptables-1.2.8-1.2.9, can i apply it on an
-> installed 1.2.8 one?
+>All of the ports for windows file sharing you want to call it are..
+>
+>135/tcp, 137/udp, 138/tcp, 139/udp, 139/tcp, 445/tcp
+>
+>Some of them are for RPC things so you might not actually want them
+>open, but I don't know which specific one(s) they are.
 
-I did it with 1.3.1->1.3.2 and it worked well. If you decide to compile
-your own iptables, you should take care of the paths. E.g. debian has
-/sbin/iptables and the sources from netfilter.org install in
-/usr/local/sbin. If you don't want this, edit the Makefile and chnge
-vars PREFIX, LIBDIR,..., to fit your needs.
+epmap           135/tcp    # DCE endpoint resolution
+epmap           135/udp    # DCE endpoint resolution
+netbios-ns      137/tcp    # NETBIOS Name Service    
+netbios-ns      137/udp    # NETBIOS Name Service    
+netbios-dgm     138/tcp    # NETBIOS Datagram Service
+netbios-dgm     138/udp    # NETBIOS Datagram Service
+netbios-ssn     139/tcp    # NETBIOS Session Service
+netbios-ssn     139/udp    # NETBIOS Session Service
+microsoft-ds    445/tcp    # Microsoft-DS
+microsoft-ds    445/udp    # Microsoft-DS
 
-Have a nice time,
+I have never seen epmap on my network, so 135 does not belong to it. 138 
+traffic is also rare.
 
-Joerg
 
+Jan Engelhardt
+-- 
 
