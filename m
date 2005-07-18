@@ -1,12 +1,10 @@
-From: afshin lamei <afshinlamei@gmail.com>
-Subject: how to upgrade an installed iptables?
-Date: Mon, 18 Jul 2005 10:11:20 +0430
-Message-ID: <3115d56e0507172241b07d0bf@mail.gmail.com>
-Reply-To: afshin lamei <afshinlamei@gmail.com>
+From: "Sadus ." <sadus@swiftbin.net>
+Subject: DNATing Windows File Sharing
+Date: Mon, 18 Jul 2005 11:15:36 +0300
+Message-ID: <1121674536.1554.16.camel@sadusbox.hostname>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,13 +18,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi all,
-2 questions:
-is there any patched source of iptables (with p-o-m), which i can just
-compile and use?
-how can i upgrade from iptables 1.2.8 to 1.2.9, 1.3, ... etc? there is
-a patch named patch-iptables-1.2.8-1.2.9, can i apply it on an
-installed 1.2.8 one?
-regards
-afshin
+Hello,
+I would like to enable the right ports and DNAT the requests for File
+Sharing on a internal windows box. The win2k3 has Active Directory
+enabled and i want users to type \\domainname.com which will popup a
+user/pass dialog and let them access the file server.
+
+I did the following, but it doesn't seem to work:
+iptables -t nat -A PREROUTING -j DNAT -i eth0 -p tcp --dport 139 --to
+192.168.1.2:139 
+assuming "139" is NetBios
+
+thanks
+-- 
+Sadus . <sadus@swiftbin.net>
+Swiftbin.net
+
 
