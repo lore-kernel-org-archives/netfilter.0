@@ -1,10 +1,11 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: RE: [Announce] Nulog 1.1.0 is available
-Date: Mon, 18 Jul 2005 17:23:42 +0200
-Message-ID: <1121700222.27293.20.camel@localhost.localdomain>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: RST packets
+Date: Mon, 18 Jul 2005 12:39:12 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0507181237570.27221@darkstar.sysinfo.com>
+References: <Pine.LNX.4.61.0507181604210.26471@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.61.0507181604210.26471@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,31 +16,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: matt <matt@darcy.demon.co.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
 
-Le lundi 04 juillet 2005 =E0 18:07 +0100, matt a =E9crit :
-> The Nulog 1.1.0 release has a bug.
->=20
-> The mysql dumpfile does not contain the conntrack_ulog table.
->=20
-> This has been reported to the nulog email account.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Hi,
+On Mon, 18 Jul 2005, Jan Engelhardt wrote:
 
-This is related to default value of variables that are badly set (Or at
-least badly documented).
+> Hi,
+>
+>
+> a simple question, though I could not clearly read it from the TCP RFC...
+> do RST packets always have ACK set?
+>
+>
 
-Set=20
-	$conntrack_enabled=3D"no";
-	$actif_and_passif=3D0;
-in include/config.inc
 
-PS : sorry for the delay, I did not see this e-mail till today.
+Past discussions on this, if I recall have stated, that the RFC is unclear 
+if they should or should not, and thus it is implimentation specific.  In 
+other words prepare for both.
 
-BR,
---=20
-Eric Leblond <eric@inl.fr>
+Thanks,
 
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFC29s0st+vzJSwZikRAhFhAJ9VrBg8udgLE/rjWj69PZI+xj/J1QCg21bk
+Nv2IJV8hI5/AhxnInjSMq5Y=
+=OiGE
+-----END PGP SIGNATURE-----
 
