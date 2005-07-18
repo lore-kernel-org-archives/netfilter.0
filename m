@@ -1,9 +1,9 @@
-From: Christian Andretzky <Christian.Andretzky@MB.TU-Chemnitz.DE>
-Subject: Newbe problem with rpc filtering
-Date: Mon, 18 Jul 2005 12:55:50 +0200
-Message-ID: <42DB8AB6.9080008@MB.TU-Chemnitz.DE>
+From: Fatih TURKMEN <fatihturkmen99@yahoo.com>
+Subject: ssh connection is not allowed in NAT, SUSE 9.2
+Date: Mon, 18 Jul 2005 06:21:09 -0700 (PDT)
+Message-ID: <20050718132109.88338.qmail@web50210.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,29 +18,35 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
-I'm more or less new with packet filtering an have a problem to get my
-iptables running with the extensions for rpc filtering under SuSE 9.3
+Hi everybody,
+I am trying to create small NAT network on SUSE 9.2
+computers.I don't know what is missing in my iptables
+policy but I have added three rules for SNAT:
 
-As far as I could see they have installed iptables 1.3.1 and the patch-o-matic
-extensions for rpc too (the newer one, which supports the syntax
+1) iptables -t nat -A POSTROUTING -o eth0 -j
+MASQUERADE
+2) iptables -A FORWARD -i eth0 -o eth1 -m state
+--state RELATEd,ESTABLISHED -j ACCEPT
+3) iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
 
-'-m rpc --rpcs [list, of, services]')
+I stopped firewalls on local computers, and installed
+ssh server/client on all computers.I can ssh to local
+machines from locals.But I can't ssh to nat
+server.Also I can only ping one computer from NAT
+Server.
+When I try to ssh to local clients from NAT server I
+got either  "No route to host" or "Connection refused"
+although I stopped firewalls on locals and set the NAT
+server as the default gateway for local clients.
 
-But unfortunately I cannot get it running.
+Any ideas? What is missing?
 
-If I use '-m rpc --rpcs list, of, services' then I get the response
+Thanks in advance.
 
-'Bad argument xxx' for the second parameter in the list of services
+Fatih TURKMEN
 
-If I use '-m rpc --rpcs xxx' (wich only one parameter) or "-m rpc' with no
-'--rpcs' parameter (fallback to old record_rpc style) I get the message
-
-'iptables: No chain/target/match by that name'
-
-Is there anybody who can help me to fix that problem
-
-TIA, Christian
-
-P.S. Please answer to my personal address because I'm not subscribed to the list.
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
