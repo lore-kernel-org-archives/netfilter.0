@@ -1,7 +1,7 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: RST packets
-Date: Mon, 18 Jul 2005 12:39:12 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0507181237570.27221@darkstar.sysinfo.com>
+Date: Mon, 18 Jul 2005 20:27:25 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0507182020200.21967@blackhole.kfki.hu>
 References: <Pine.LNX.4.61.0507181604210.26471@yvahk01.tjqt.qr>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,47 +16,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi,
 
 On Mon, 18 Jul 2005, Jan Engelhardt wrote:
 
-> Hi,
->
->
 > a simple question, though I could not clearly read it from the TCP RFC...
 > do RST packets always have ACK set?
->
->
 
+No, see RFC793 page 64:
 
-Past discussions on this, if I recall have stated, that the RFC is unclear 
-if they should or should not, and thus it is implimentation specific.  In 
-other words prepare for both.
+SEGMENT ARRIVES
+...
+If the state is LISTEN then
 
-Thanks,
+      first check for an RST
 
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+        An incoming RST should be ignored.  Return.
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
+      second check for an ACK
 
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+        Any acknowledgment is bad if it arrives on a connection still in
+        the LISTEN state.  An acceptable reset segment should be formed
+        for any arriving ACK-bearing segment.  The RST should be
+        formatted as follows:
 
-iD8DBQFC29s0st+vzJSwZikRAhFhAJ9VrBg8udgLE/rjWj69PZI+xj/J1QCg21bk
-Nv2IJV8hI5/AhxnInjSMq5Y=
-=OiGE
------END PGP SIGNATURE-----
+          <SEQ=SEG.ACK><CTL=RST>
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
