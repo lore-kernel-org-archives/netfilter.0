@@ -1,14 +1,12 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: Martian source with 2 external interfaces
-Date: Sun, 17 Jul 2005 15:57:15 +0300
-Message-ID: <3063e505071705576be41f03@mail.gmail.com>
-References: <20050717103025.A66F3B1B@agile.dk>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+From: Aleksandar Milivojevic <alex@milivojevic.org>
+Subject: Re: Netfilter and IPSec interaction
+Date: Sun, 17 Jul 2005 22:23:58 -0500
+Message-ID: <42DB20CE.5040401@milivojevic.org>
+References: <20050714122109.bl71ded9gkkoc0c4@www.milivojevic.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050717103025.A66F3B1B@agile.dk>
-Content-Disposition: inline
+In-reply-to: <20050714122109.bl71ded9gkkoc0c4@www.milivojevic.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,62 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Andersen <jma@agile.dk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-for i in /proc/sys/net/ipv4/conf/*/log_martians ; do
-echo 0 > $i
-done
+Aleksandar Milivojevic wrote:
+> I'm writing set of firewall rules for IPSec based VPN, and have couple of
+> questions.
+> 
+> I know that packets are supposed to go through Netfilter tables twice (as
+> received from the wire, and than as outputed by IPSec module).  However, what I
+> noticed is that this seems to be true only for incomming packets.  The outgoing
+> packets seems to go through Netfilter tables only once.
 
+Thanks to everybody who replied on the list and off-list.  I'll just 
+write a short summary.
 
-And you are done :).
-
-I believe you have the problem because some packets go out to one
-interface, and comes back to the other, a common thing to asymetric
-routing. I doubt you have hundred of thousounds routes , so you must
-use some complicated setup for your load balancing to get those
-errors.
-
-On 7/17/05, Jan Andersen <jma@agile.dk> wrote:
-> Hi
->=20
->=20
->=20
-> I have a setup with 3 interfaces, one for the LAN, one for a cable-modem =
-and
-> one for DSL.
->=20
->=20
->=20
-> What I want (and need) is to have both external interfaces running at the
-> same time.
->=20
->=20
->=20
-> When I one have my LAN and one of the external running then everything is
-> working just fine. But when I turn on both interfaces at the same time my
-> machine is generating a huge amount of martian-source errors in the log. =
-I
-> even tried to turn off the firewall, but with out luck.
->=20
->=20
->=20
-> Why is this happening, and how do I solve this problem?
->=20
->=20
->=20
-> Regards
->=20
->=20
->=20
-> Jan Andersen
->=20
->=20
->=20
->=20
-
-
---=20
-Bla bla
+Apperently, this is a known problem and it has been discussed on 
+Netfilter's development lists.  There are some patches that solve it, 
+but they are not going to get into mainstream kernel since approach 
+taken in them is problematic (and according to some sources, those 
+patches are abandoned and not maintained anymore).  I wasn't able to 
+find why the approach is problematic, but apperently answer to that 
+question is burried somewhere in archives of Netfilter's development 
+list.  Seems that correct approach to solve the problem still needs to 
+be found (and once found and implemented will become part of mainstream 
+kernel).
 
