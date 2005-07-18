@@ -1,11 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: DNATing Windows File Sharing
-Date: Mon, 18 Jul 2005 11:20:49 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507181120001.14336@yvahk01.tjqt.qr>
-References: <1121674536.1554.16.camel@sadusbox.hostname>
+From: Nikolai Alexandrov <voyager123bg@gmail.com>
+Subject: Re: how to upgrade an installed iptables?
+Date: Mon, 18 Jul 2005 12:36:43 +0300
+Message-ID: <42DB782B.4090802@gmail.com>
+References: <3115d56e0507172241b07d0bf@mail.gmail.com>
+Reply-To: voyager123bg@gmail.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1121674536.1554.16.camel@sadusbox.hostname>
+In-Reply-To: <3115d56e0507172241b07d0bf@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,28 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Sadus ." <sadus@swiftbin.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: afshin lamei <afshinlamei@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
->Hello,
->I would like to enable the right ports and DNAT the requests for File
->Sharing on a internal windows box. The win2k3 has Active Directory
->enabled and i want users to type \\domainname.com which will popup a
->user/pass dialog and let them access the file server.
+
+afshin lamei wrote:
+
+>hi all,
+>2 questions:
+>is there any patched source of iptables (with p-o-m), which i can just
+>compile and use?
+>  
 >
->I did the following, but it doesn't seem to work:
->iptables -t nat -A PREROUTING -j DNAT -i eth0 -p tcp --dport 139 --to
->192.168.1.2:139 
->assuming "139" is NetBios
+Nope. p-o-m is a separate patchset, which in order to use you must have 
+sources of both kernel and iptables. It then do its magic (patching the 
+source :)), and you then need to recompile kernel modules/iptables.
 
-Also try 445 instead of 139.
-
-Then, if that still does not work, you maybe need to forward UDP 137.
-
-
-
-Jan Engelhardt
--- 
+>how can i upgrade from iptables 1.2.8 to 1.2.9, 1.3, ... etc? there is
+>a patch named patch-iptables-1.2.8-1.2.9, can i apply it on an
+>installed 1.2.8 one?
+>regards
+>afshin
+>
+>
+>  
+>
+Gee, I've no idea. I always get the newest (stable) source, build a 
+package from it, and install... :) works pretty well. Basically... yes. 
+Patches are usually containing some bugfixes/new features, so this may 
+be the case... :) yet I dunno if you could dl patch 1.3.2 (for example) 
+and apply it over the 1.2.8 source, resulting the 1.3.2... I think in 
+order to get this source updated, you have to apply them one by one, 
+till you get where you want to... (again, this might not be the case. I 
+never did it that way).
 
