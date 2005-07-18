@@ -1,12 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: RST packets
-Date: Mon, 18 Jul 2005 16:12:53 +0200 (CEST)
-Message-ID: <3544.217.166.67.34.1121695973.squirrel@217.166.67.34>
-References: <Pine.LNX.4.61.0507181604210.26471@yvahk01.tjqt.qr>
+From: Eric Leblond <eric@inl.fr>
+Subject: RE: [Announce] Nulog 1.1.0 is available
+Date: Mon, 18 Jul 2005 17:23:42 +0200
+Message-ID: <1121700222.27293.20.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0507181604210.26471@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +15,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: matt <matt@darcy.demon.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-> Hi,
->
->
-> a simple question, though I could not clearly read it from the TCP RFC.=
-..
-> do RST packets always have ACK set?
+Le lundi 04 juillet 2005 =E0 18:07 +0100, matt a =E9crit :
+> The Nulog 1.1.0 release has a bug.
+>=20
+> The mysql dumpfile does not contain the conntrack_ulog table.
+>=20
+> This has been reported to the nulog email account.
 
-It seems that isn't so :
+Hi,
 
-(http://www.knowplace.org/netfilter/ip_overview.html)
+This is related to default value of variables that are badly set (Or at
+least badly documented).
 
-Resetting a connection
+Set=20
+	$conntrack_enabled=3D"no";
+	$actif_and_passif=3D0;
+in include/config.inc
 
-The four-way handshake is not the only way to tear down an established TC=
-P
-connection. Sometimes, if either hosts need to tear down the connection
-quickly (timeout, port or host unreachable, etc.), a RST (Reset) packet i=
-s
-sent. Note that since a RST packet is not necessarily always part of a TC=
-P
-connection, it can be sent by itself. RST packets that are part of a TCP
-connection is usually accompanied by the ACK flag as well.
+PS : sorry for the delay, I did not see this e-mail till today.
 
-Note that RST packets are not acknowledged.
-
-
-
-Gr,
-Rob
-
+BR,
+--=20
+Eric Leblond <eric@inl.fr>
 
 
