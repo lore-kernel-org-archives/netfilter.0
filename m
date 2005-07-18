@@ -1,15 +1,12 @@
-From: Robert Vangel <vangelr@rfgt.net>
-Subject: Re: DNATing Windows File Sharing
-Date: Mon, 18 Jul 2005 17:50:21 +0800
-Message-ID: <42DB7B5D.1090506@rfgt.net>
-References: <1121674536.1554.16.camel@sadusbox.hostname>
-	<Pine.LNX.4.61.0507181120001.14336@yvahk01.tjqt.qr>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: how to upgrade an installed iptables?
+Date: Mon, 18 Jul 2005 12:14:51 +0200
+Message-ID: <42DB811B.7060404@mnemon.de>
+References: <3115d56e0507172241b07d0bf@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enigF2EFDCD1710712FDC5C4F254"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0507181120001.14336@yvahk01.tjqt.qr>
+In-Reply-To: <3115d56e0507172241b07d0bf@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,54 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigF2EFDCD1710712FDC5C4F254
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+afshin lamei schrieb:
 
-Jan Engelhardt wrote:
->>Hello,
->>I would like to enable the right ports and DNAT the requests for File
->>Sharing on a internal windows box. The win2k3 has Active Directory
->>enabled and i want users to type \\domainname.com which will popup a
->>user/pass dialog and let them access the file server.
->>
->>I did the following, but it doesn't seem to work:
->>iptables -t nat -A PREROUTING -j DNAT -i eth0 -p tcp --dport 139 --to
->>192.168.1.2:139 
->>assuming "139" is NetBios
-> 
-> 
-> Also try 445 instead of 139.
-> 
-> Then, if that still does not work, you maybe need to forward UDP 137.
-> 
-> 
-> 
-> Jan Engelhardt
+> how can i upgrade from iptables 1.2.8 to 1.2.9, 1.3, ... etc? there is
+> a patch named patch-iptables-1.2.8-1.2.9, can i apply it on an
+> installed 1.2.8 one?
 
-All of the ports for windows file sharing you want to call it are..
+I did it with 1.3.1->1.3.2 and it worked well. If you decide to compile
+your own iptables, you should take care of the paths. E.g. debian has
+/sbin/iptables and the sources from netfilter.org install in
+/usr/local/sbin. If you don't want this, edit the Makefile and chnge
+vars PREFIX, LIBDIR,..., to fit your needs.
 
-135/tcp, 137/udp, 138/tcp, 139/udp, 139/tcp, 445/tcp
+Have a nice time,
 
-Some of them are for RPC things so you might not actually want them
-open, but I don't know which specific one(s) they are.
+Joerg
 
-
---------------enigF2EFDCD1710712FDC5C4F254
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (MingW32)
-
-iD8DBQFC23tgW3d/aAsHRrcRAtLOAJ4vkHwSDvw7wTd2wDbjGjhdpqXiIACeJvKc
-bkqONQ0KqVDkztpEl/Ns7u4=
-=HfLn
------END PGP SIGNATURE-----
-
---------------enigF2EFDCD1710712FDC5C4F254--
 
