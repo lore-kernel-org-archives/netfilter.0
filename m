@@ -1,12 +1,12 @@
-From: Aleksandar Milivojevic <alex@milivojevic.org>
-Subject: Re: Netfilter and IPSec interaction
-Date: Sun, 17 Jul 2005 22:23:58 -0500
-Message-ID: <42DB20CE.5040401@milivojevic.org>
-References: <20050714122109.bl71ded9gkkoc0c4@www.milivojevic.org>
+From: afshin lamei <afshinlamei@gmail.com>
+Subject: how to upgrade an installed iptables?
+Date: Mon, 18 Jul 2005 10:11:20 +0430
+Message-ID: <3115d56e0507172241b07d0bf@mail.gmail.com>
+Reply-To: afshin lamei <afshinlamei@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <20050714122109.bl71ded9gkkoc0c4@www.milivojevic.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +17,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Aleksandar Milivojevic wrote:
-> I'm writing set of firewall rules for IPSec based VPN, and have couple of
-> questions.
-> 
-> I know that packets are supposed to go through Netfilter tables twice (as
-> received from the wire, and than as outputed by IPSec module).  However, what I
-> noticed is that this seems to be true only for incomming packets.  The outgoing
-> packets seems to go through Netfilter tables only once.
-
-Thanks to everybody who replied on the list and off-list.  I'll just 
-write a short summary.
-
-Apperently, this is a known problem and it has been discussed on 
-Netfilter's development lists.  There are some patches that solve it, 
-but they are not going to get into mainstream kernel since approach 
-taken in them is problematic (and according to some sources, those 
-patches are abandoned and not maintained anymore).  I wasn't able to 
-find why the approach is problematic, but apperently answer to that 
-question is burried somewhere in archives of Netfilter's development 
-list.  Seems that correct approach to solve the problem still needs to 
-be found (and once found and implemented will become part of mainstream 
-kernel).
+hi all,
+2 questions:
+is there any patched source of iptables (with p-o-m), which i can just
+compile and use?
+how can i upgrade from iptables 1.2.8 to 1.2.9, 1.3, ... etc? there is
+a patch named patch-iptables-1.2.8-1.2.9, can i apply it on an
+installed 1.2.8 one?
+regards
+afshin
 
