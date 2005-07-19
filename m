@@ -1,15 +1,13 @@
-From: Rob Carlson <rcarlson@kitchenandassociates.com>
-Subject: Re: IPset ports question.
-Date: Tue, 19 Jul 2005 16:58:15 -0400
-Message-ID: <42DD6967.3050700@kitchenandassociates.com>
-References: <42DBF833.9020505@kitchenandassociates.com>
-	<Pine.LNX.4.58.0507191037060.22686@blackhole.kfki.hu>
-	<42DD50E4.9090800@kitchenandassociates.com>
-	<Pine.LNX.4.58.0507192204230.24449@blackhole.kfki.hu>
+From: Michael Schachtebeck <schachti@rbw.goe.net>
+Subject: Re: limit extension
+Date: Tue, 19 Jul 2005 23:01:21 +0200
+Message-ID: <42DD6A21.3090301@rbw.goe.net>
+References: <42DD417F.4090804@rbw.goe.net>
+	<Pine.LNX.4.61.0507192209400.16157@yvahk01.tjqt.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0507192204230.24449@blackhole.kfki.hu>
+In-Reply-To: <Pine.LNX.4.61.0507192209400.16157@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,59 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
-That did it.
+Hi.
 
-Thanks again, Joszef
+Am 07/19/2005 10:13 PM schrieb Jan Engelhardt:
 
-Jozsef Kadlecsik wrote:
-> Hi Rob,
+> You could use dstlimit with --dstlimit-mode srcip-dstip
+> and probably save some rules.
 > 
-> On Tue, 19 Jul 2005, Rob Carlson wrote:
-> 
-> 
->>iptables -A testset -m set --set testset src -j
->>LTREJECT
->>iptables -I FORWARD 2 -i eth1 -j testset
->>iptables -I INPUT 2 -i eth1 -j testset
->>
->>This works fine for blocking all traffic.  However
->>since I now want specifically to only drop port 22
->>and port 25 entries (that is most of the nuisance
->>traffic) and allow port 80 for example,  I did the
->>following:
->>
->>ipset -N ports portmap --from 1 --to 1024
->>ipset -A ports 22
->>ipset -A ports 25
->>ipset -B testset :default: -b ports
-> 
-> 
-> You missed to replace the iptables command above with the one
-> which instruct the SET target to follow bindings. What you need is
-> 
-> iptables -A testset -m set --set testset src,dst -j LTREJECT
-> 
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
-> 
-> 
+> With dstlimit, you also get an overview of which connections are currently 
+> limited, and their burst status, in /proc/net/ipt_dstlimit/DSTLIMIT_NAME
+> It's because I think some burst math allows to have a second packet sneak in.
 
+Won't I have the same problem with it?
+
+According to
+
+http://www.netfilter.org/patch-o-matic/pom-obsolete.html#pom-obsolete-dstlimit,
+
+it's deprecated by hashlimit, but on
+
+http://www.netfilter.org/patch-o-matic/pom-submitted.html#pom-submitted-hashlimit,
+
+I can't find any information on how to use it in my case... Do you know
+where to look for it or do you have an example for how to redirect a
+single host or a bunch of hosts once a day to the local apache when
+trying to make their first http connection, similar to
+
+/sbin/iptables -t nat -I PREROUTING -p tcp -s $IP -i $LAN_DEV --sport
+1024: --dport 80 --syn -m limit --limit 1/d --limit-burst 1 -j REDIRECT
+--to-port 5000
+
+Michael
 -- 
-Rob Carlson, Systems and Network Administrator
-Kitchen & Associates Architectural Services, PA
-Architecture - Planning - Interior Design
-856.854.1880
-
-
-
-
+PGP Public Key:  http://www.num.math.uni-goettingen.de/schachte/key.asc
+Key fingerprint: C474 8B85 17C0 0232 E439 0FBF 2451 E452 293C D798
 
