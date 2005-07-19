@@ -1,10 +1,13 @@
-From: Michael Schachtebeck <schachti@rbw.goe.net>
-Subject: limit extension
-Date: Tue, 19 Jul 2005 20:07:59 +0200
-Message-ID: <42DD417F.4090804@rbw.goe.net>
+From: Rob Carlson <rcarlson@kitchenandassociates.com>
+Subject: Re: IPset ports question.
+Date: Tue, 19 Jul 2005 15:13:40 -0400
+Message-ID: <42DD50E4.9090800@kitchenandassociates.com>
+References: <42DBF833.9020505@kitchenandassociates.com>
+	<Pine.LNX.4.58.0507191037060.22686@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.58.0507191037060.22686@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,34 +18,99 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
 
-Hi,
 
-I'm trying to redirect some people on my router once a day to a local
-apache to show them a status page.
+Jozsef,
 
-I'm using the following iptables rule to redirect them:
+Somehow I'm still blocking all traffic from the 
+iphash entries afrer binding the hash to the port 
+(port 80, for instance).  For background purposes, 
+this is how I am blocking traffic with the iphash:
 
-/sbin/iptables -t nat -I PREROUTING -p tcp -s $IP -i $LAN_DEV --sport
-1024: --dport 80 --syn -m limit --limit 1/d --limit-burst 1 -j REDIRECT
---to-port 5000
+iptables -A testset -m set --set testset src -j 
+LTREJECT
+iptables -I FORWARD 2 -i eth1 -j testset
+iptables -I INPUT 2 -i eth1 -j testset
 
-At first, I thought everything was fine: I got redirected when trying to
-open the first page in my browser, and after that, I could surf normally
-without being redirect. But after about 30 minutes, I got redirected
-again, and iptables -t nat -vnL PREROUTING said that the rule had
-matched twice.
+This works fine for blocking all traffic.  However 
+since I now want specifically to only drop port 22 
+and port 25 entries (that is most of the nuisance 
+traffic) and allow port 80 for example,  I did the 
+following:
 
-What am I doing wrong? Why was I redirect a second time? In my opinion,
-the second redirection should not have happened then, but 1 day (24
-hours) later...
+ipset -N ports portmap --from 1 --to 1024
+ipset -A ports 22
+ipset -A ports 25
+ipset -B testset :default: -b ports
 
-Any hint is welcome...
+Now, if I run "ipset -n -L testset", I get the 
+following
 
-Michael.
+Name: testset
+Type: iphash
+References: 1
+Default binding: ports
+Header: hashsize: 1024 probes: 8 resize: 50
+Members:
+<List of Entries>
+Bindings:
+
+In order to test what I have, I added to the hash 
+an address of an external machine (that I can 
+always reach) to see if I could access the web 
+page, but _not_ the ssh port.  However, when the 
+address is in the hash, _all_ ports still seem to 
+be blocked-- i.e. no web access OR ssh.  Removing 
+the address from the hash fixes this.
+
+In order to see if something was cached and 
+blocking the address I tried removing the iptables 
+entry for testset  and re-added it.  The result is 
+the same.  Is there something in the order of what 
+I am doing that causes the LTREJECT to affect 
+traffic to all ports, and not just the ports that 
+I bound to the iphash?
+
+Thanks,
+
+Rob
+
+.
+Jozsef Kadlecsik wrote:
+> Hi Rob,
+> 
+> On Mon, 18 Jul 2005, Rob Carlson wrote:
+> 
+> 
+>>Is there a way to bind an IPSet hash to a port,
+>>and if so, what is the syntax?
+> 
+> 
+> The syntax is the same in all cases:
+> 
+> ipset -B <setname> <elem> -b <name of set to bind elem from setname>
+> 
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>           H-1525 Budapest 114, POB. 49, Hungary
+> 
+> 
+
 -- 
-PGP Public Key:  http://www.num.math.uni-goettingen.de/schachte/key.asc
-Key fingerprint: C474 8B85 17C0 0232 E439 0FBF 2451 E452 293C D798
+Rob Carlson, Systems and Network Administrator
+Kitchen & Associates Architectural Services, PA
+Architecture - Planning - Interior Design
+856.854.1880
+
+
+
+
+
 
