@@ -1,10 +1,11 @@
-From: Kai Hendry <hendry@soltecsoftware.com.au>
-Subject: DNAT
-Date: Tue, 19 Jul 2005 12:01:22 +1000
-Message-ID: <42DC5EF2.8060002@soltecsoftware.com.au>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: IPset ports question.
+Date: Tue, 19 Jul 2005 10:42:55 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0507191037060.22686@blackhole.kfki.hu>
+References: <42DBF833.9020505@kitchenandassociates.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <42DBF833.9020505@kitchenandassociates.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,59 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Rob Carlson <rcarlson@kitchenandassociates.com>
+Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
 
-I have three machines:
-192.168.0.1
-192.168.0.3
-192.168.0.9
+Hi Rob,
 
-On 9 there is service running on port 1199 that I want clients (at 3) to 
-use from 1.
+On Mon, 18 Jul 2005, Rob Carlson wrote:
 
-With SSH I can get this working from 1 with clients at 1 with:
-ssh -L 1199:localhost:1199 192.168.0.9
-Thought telnet localhost 1199 only works, not telnet 192.168.0.1 1199
-Anyway, I don't need encryption.
+> Is there a way to bind an IPSet hash to a port,
+> and if so, what is the syntax?
 
-DNAT is what I've been told I need so:
-http://netfilter.org/documentation/HOWTO//NAT-HOWTO-10.html
+The syntax is the same in all cases:
 
-$ cat i.sh
-sudo /sbin/iptables -t nat -F
-# This alone doesn't work
-sudo /sbin/iptables -t nat -A PREROUTING -p tcp --dport 1199 -i eth0 -j 
-DNAT --to 192.168.0.9:1199
-# I suspect something is wrong here:
-sudo /sbin/iptables -t nat -A POSTROUTING -p tcp --dport 1199 -j SNAT 
---to 192.168.0.1:1199
-sudo /sbin/iptables -t nat -vnxL --line-numbers
+ipset -B <setname> <elem> -b <name of set to bind elem from setname>
 
-It just does not work when from 3:
-$ telnet 192.168.0.1 1199
-Trying 192.168.0.1...
-
-Packets do show up:
-SOLTEC-HDSVR$ sudo /sbin/iptables -t nat -vnxL --line-numbers
-Chain PREROUTING (policy ACCEPT 6494 packets, 466878 bytes)
-num      pkts      bytes target     prot opt in     out     
-source               destination
-1           4      240 DNAT       tcp  --  eth0   *       
-0.0.0.0/0            0.0.0.0/0          tcp dpt:1199 to:192.168.0.9:1199
-
-Chain POSTROUTING (policy ACCEPT 2102 packets, 388967 bytes)
-num      pkts      bytes target     prot opt in     out     
-source               destination
-
-Chain OUTPUT (policy ACCEPT 2102 packets, 388967 bytes)
-num      pkts      bytes target     prot opt in     out     
-source               destination
-
-Though from 1 not at all:
-$ telnet 192.168.0.1 1199
-Trying 192.168.0.1...
-telnet: Unable to connect to remote host: Connection refused
-
-What am I doing wrong?
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
