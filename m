@@ -1,9 +1,9 @@
-From: =?ISO-8859-2?Q?Keser=FB_Korn=E9l?= <keseruk@freemail.hu>
-Subject: iptables and udp socket
-Date: Tue, 19 Jul 2005 19:23:41 +0200 (CEST)
-Message-ID: <freemail.20050619192341.23844@fm13.freemail.hu>
+From: Michael Schachtebeck <schachti@rbw.goe.net>
+Subject: limit extension
+Date: Tue, 19 Jul 2005 20:07:59 +0200
+Message-ID: <42DD417F.4090804@rbw.goe.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,29 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear List members,
+Hi,
 
-I'm quite new to netfilter/iptables, I have been using it for some weeks.=
-=20
-I would like to ask if it may lead to undeterministic behaviour of iptables=
-=20
-when an udp socket is opened on an IP:port while in parallel iptables=20
-rules (NAT) are setup that forward all incoming packets received on=20
-that IP:port to a different destination. So I just want to use the socket=
-=20
-for sending out packets on it, while incoming packets should be=20
-forwarded to other destination. But sometimes the packets are=20
-received on the socket, sometimes they are forwarded. So iptables=20
-don't have always the expected effect.
-I use Debian with iptables 1.2.11.
+I'm trying to redirect some people on my router once a day to a local
+apache to show them a status page.
 
-What is your opinion?
+I'm using the following iptables rule to redirect them:
 
-Best regards,
-Kornel Keseru=0A=0A________________________________________________________=
-_______________=0A[freemail] extra 1GB-os postafi=F3kkal, =D6nnek m=E1r van=
-? http://freemail.hu=0A=0A
+/sbin/iptables -t nat -I PREROUTING -p tcp -s $IP -i $LAN_DEV --sport
+1024: --dport 80 --syn -m limit --limit 1/d --limit-burst 1 -j REDIRECT
+--to-port 5000
+
+At first, I thought everything was fine: I got redirected when trying to
+open the first page in my browser, and after that, I could surf normally
+without being redirect. But after about 30 minutes, I got redirected
+again, and iptables -t nat -vnL PREROUTING said that the rule had
+matched twice.
+
+What am I doing wrong? Why was I redirect a second time? In my opinion,
+the second redirection should not have happened then, but 1 day (24
+hours) later...
+
+Any hint is welcome...
+
+Michael.
+-- 
+PGP Public Key:  http://www.num.math.uni-goettingen.de/schachte/key.asc
+Key fingerprint: C474 8B85 17C0 0232 E439 0FBF 2451 E452 293C D798
 
