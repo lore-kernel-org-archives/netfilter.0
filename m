@@ -1,13 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: IPset ports question.
-Date: Tue, 19 Jul 2005 22:09:28 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0507192204230.24449@blackhole.kfki.hu>
-References: <42DBF833.9020505@kitchenandassociates.com>
-	<Pine.LNX.4.58.0507191037060.22686@blackhole.kfki.hu>
-	<42DD50E4.9090800@kitchenandassociates.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: limit extension
+Date: Tue, 19 Jul 2005 22:13:21 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507192209400.16157@yvahk01.tjqt.qr>
+References: <42DD417F.4090804@rbw.goe.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42DD50E4.9090800@kitchenandassociates.com>
+In-Reply-To: <42DD417F.4090804@rbw.goe.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,39 +18,30 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Rob Carlson <rcarlson@kitchenandassociates.com>
-Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+To: Michael Schachtebeck <schachti@rbw.goe.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi Rob,
 
-On Tue, 19 Jul 2005, Rob Carlson wrote:
-
-> iptables -A testset -m set --set testset src -j
-> LTREJECT
-> iptables -I FORWARD 2 -i eth1 -j testset
-> iptables -I INPUT 2 -i eth1 -j testset
+>I'm using the following iptables rule to redirect them:
 >
-> This works fine for blocking all traffic.  However
-> since I now want specifically to only drop port 22
-> and port 25 entries (that is most of the nuisance
-> traffic) and allow port 80 for example,  I did the
-> following:
->
-> ipset -N ports portmap --from 1 --to 1024
-> ipset -A ports 22
-> ipset -A ports 25
-> ipset -B testset :default: -b ports
+>/sbin/iptables -t nat -I PREROUTING -p tcp -s $IP -i $LAN_DEV --sport
+>1024: --dport 80 --syn -m limit --limit 1/d --limit-burst 1 -j REDIRECT
+>--to-port 5000
 
-You missed to replace the iptables command above with the one
-which instruct the SET target to follow bindings. What you need is
+You could use dstlimit with --dstlimit-mode srcip-dstip
+and probably save some rules.
 
-iptables -A testset -m set --set testset src,dst -j LTREJECT
+With dstlimit, you also get an overview of which connections are currently 
+limited, and their burst status, in /proc/net/ipt_dstlimit/DSTLIMIT_NAME
+It's because I think some burst math allows to have a second packet sneak in.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+>What am I doing wrong? Why was I redirect a second time? In my opinion,
+>the second redirection should not have happened then, but 1 day (24
+>hours) later...
+
+
+
+Jan Engelhardt
+-- 
+| Alphagate Systems, http://alphagate.hopto.org/
 
