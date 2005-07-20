@@ -1,43 +1,60 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 2.2.2 released
-Date: Wed, 20 Jul 2005 11:40:35 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0507201133540.25054@blackhole.kfki.hu>
+From: "SWAPNIL" <postmaster@modular-infotech.com>
+Subject: help for IPTABLES
+Date: Wed, 20 Jul 2005 11:17:55 +0530
+Message-ID: <C4E3FB546C284CE18033A3CA12147B7E@mitpl.com>
+Reply-To: SWAPNIL <postmaster@modular-infotech.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
+Dear All,
 
-I'm happy to announce the new version of ipset. The bugs fixed in this
-release are
+Please find the link of my network for your reference.
 
-- Jiffies rollover bug in ip_set_iptree reported and fixed by Rob Nielsen
-- Compiler warning in the non-SMP case (Marcus Sundberg)
-- slab cache names shrunk in order to be compatible with 2.4.* (Marcus
-  Sundberg)
+http://downloadftp.modular-infotech.com/common/share/network.gif
 
-New features such that negated set feature or new API elements for better
-external module support were postponed to the next release.
+My client1 PC and client 2 PC will be connected to the internet using proxy
+and only client 2 pc  will be connected to one remote sever or domain or ip
+using iptables.
 
-You can download the new version from http://ipset.netfilter.org/.
+From remote location anyone can connect my local web sever through my global
+DNS server
+eg. someone must first connected to my global DNS server for resolving host
+name then he will get routed to my local router and router will connect that
+remote user to my local webserver on any proto and any port.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Also I would like to track each connection session with my websever.
+
+what should I do in such scenario ?
+
+please help me otherwise my job will be in trouble.
+
+Basically I am new in Linux I had tried lot of on iptables rules, but I cant
+achieve final target.
+
+Swapnil K.
+System Group
+
+Modular Infotech Pvt. Ltd.
+26 Electronic Co-operative Estate,
+Pune Satara Road, Pune. 411 009.
+Maharshtra. INDIA.
+Ph: +91-20-24226612 Ext. 206.
+Fax: +91-20-24225896.
+E-mail: postmaster@modular-infotech.com
+Website: www.modular-infotech.com
+
+
 
