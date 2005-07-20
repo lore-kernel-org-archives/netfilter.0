@@ -1,12 +1,14 @@
-From: Michael Schachtebeck <schachti@rbw.goe.net>
+From: Sven Schuster <schuster.sven@gmx.de>
 Subject: Re: limit extension
-Date: Wed, 20 Jul 2005 16:15:44 +0200
-Message-ID: <42DE5C90.70603@rbw.goe.net>
-References: <42DD417F.4090804@rbw.goe.net>
+Date: Wed, 20 Jul 2005 17:01:18 +0200
+Message-ID: <20050720150118.GB15339@zion.homelinux.com>
+References: <42DD417F.4090804@rbw.goe.net> <42DE5C90.70603@rbw.goe.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42DD417F.4090804@rbw.goe.net>
+Content-Disposition: inline
+In-Reply-To: <42DE5C90.70603@rbw.goe.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,61 +19,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Am 07/19/2005 08:07 PM schrieb Michael Schachtebeck:
 
-> /sbin/iptables -t nat -I PREROUTING -p tcp -s $IP -i $LAN_DEV --sport
-> 1024: --dport 80 --syn -m limit --limit 1/d --limit-burst 1 -j REDIRECT
-> --to-port 5000
-> 
-> At first, I thought everything was fine: I got redirected when trying to
-> open the first page in my browser, and after that, I could surf normally
-> without being redirect. But after about 30 minutes, I got redirected
-> again, and iptables -t nat -vnL PREROUTING said that the rule had
-> matched twice.
+--mojUlQ0s9EVzWg2t
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As I could not test the rules that Jan has suggested in his answer to my
-postings (it's a production machine and I couldn't reboot it with a
-patched kernel so far), I did some more testing and discovered a very
-strange behaviour which I believe to be indeed a bug:
 
-- I added the above rule to the firewall, got redirected exactly once,
-  and could surf the web for about 40 minutes without being redirected
-  again.
-- A cron job deleted some rules from the PREROUTING chain and added
-  some new rules to the PREROUTING chain.
-- I got redirected again (exactly once), directly after the cron job had
-  modified the PREROUTING chain.
-- I could surf the web for exactly 60 minutes without being redirected
-  again.
-- The cron job ran again.
-- I got redirected again (exactly once), directly after the cron job had
-  modified the PREROUTING chain.
-- I ran the cron job manually.
-- I got redirected again (exactly once) and could surf the web normally
-  after that.
-- I ran the cron job manually again.
-- I got redirected again (exactly once).
-- ... (I repeated it some times, same result)
-- I could surf the web for about one hour without being redirected,
-  until... you guess it, until the cron job ran again and modified the
-  PREROUTING chain.
+Hi Michael,
 
-The cron job did not touch the rule above I am using to do the
-redirection, it only deleted some other rules in the PREROUTING chain
-and added some new rules to the PREROUTING chain.
+On Wed, Jul 20, 2005 at 04:15:44PM +0200, Michael Schachtebeck told us:
+> As I could not test the rules that Jan has suggested in his answer to my
+> postings (it's a production machine and I couldn't reboot it with a
+> patched kernel so far), I did some more testing and discovered a very
+> strange behaviour which I believe to be indeed a bug:
 
-So this seems to be a bug in the kernel's iptables implementation, right?
+=2E.. <testing snipped>
 
-I'm using a 2.6.12.2 vanilla kernel and iptables 1.2.11 (gentoo package
-net-firewall/iptables-1.2.11-r3).
+> So this seems to be a bug in the kernel's iptables implementation, right?
 
-Cheers,
+I think this is "expected behaviour" and it behaves like that
+because of the implentation of netfilter.
 
-Michael.
--- 
-PGP Public Key:  http://www.num.math.uni-goettingen.de/schachte/key.asc
-Key fingerprint: C474 8B85 17C0 0232 E439 0FBF 2451 E452 293C D798
+AFAIK, when you add, delete, replace a iptables rule, at first the
+current rules are "downloaded" from kernel, the changes are made in
+user space, then the ruleset is "uploaded" again to the kernel.
+When uploading, I think that all the internal data structures for the
+matches are deleted and then allocated freshly. That's why you see
+this behaviour in your testing. When your cronjob runs (or you run
+it manually) all the data structures get deleted and newly allocated,
+thus the limit rule matches again.
+
+Of course, anybody feel free to correct me if I'm wrong :-)
+
+
+Regards,
+
+Sven
+
+>=20
+> I'm using a 2.6.12.2 vanilla kernel and iptables 1.2.11 (gentoo package
+> net-firewall/iptables-1.2.11-r3).
+>=20
+> Cheers,
+>=20
+> Michael.
+
+--=20
+Linux zion 2.6.13-rc3-mm1 #6 PREEMPT Mon Jul 18 19:42:52 CEST 2005 i686 ath=
+lon i386 GNU/Linux
+ 16:59:48 up 1 day, 21:12,  1 user,  load average: 0.49, 0.21, 0.07
+
+--mojUlQ0s9EVzWg2t
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQFC3mc+o4FAdB2PneQRAnGqAJ9eGSe3rC+CaSFeD7UpNwX93H4yLACcCQ8Q
+0AJf7mGc5tdTtqRoLdCTgSE=
+=969L
+-----END PGP SIGNATURE-----
+
+--mojUlQ0s9EVzWg2t--
 
