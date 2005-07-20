@@ -1,14 +1,12 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: limit extension
-Date: Wed, 20 Jul 2005 17:01:18 +0200
-Message-ID: <20050720150118.GB15339@zion.homelinux.com>
-References: <42DD417F.4090804@rbw.goe.net> <42DE5C90.70603@rbw.goe.net>
+From: KOVACS Krisztian <hidden@balabit.hu>
+Subject: Re: iptables and udp socket
+Date: Wed, 20 Jul 2005 16:36:05 +0200
+Message-ID: <1121870165.4056.21.camel@nienna.balabit>
+References: <freemail.20050619192341.23844@fm13.freemail.hu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <42DE5C90.70603@rbw.goe.net>
+In-Reply-To: <freemail.20050619192341.23844@fm13.freemail.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,70 +17,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-2?Q?Keser=FB_Korn=E9l?= <keseruk@freemail.hu>
+Cc: netfilter@lists.netfilter.org
 
 
---mojUlQ0s9EVzWg2t
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  Hi Kornel,
 
+2005-07-19, k keltez=E9ssel 19.23-kor Keser=FB Korn=E9l ezt =EDrta:
+> I'm quite new to netfilter/iptables, I have been using it for some week=
+s.=20
+> I would like to ask if it may lead to undeterministic behaviour of ipta=
+bles=20
+> when an udp socket is opened on an IP:port while in parallel iptables=20
+> rules (NAT) are setup that forward all incoming packets received on=20
+> that IP:port to a different destination. So I just want to use the sock=
+et=20
+> for sending out packets on it, while incoming packets should be=20
+> forwarded to other destination. But sometimes the packets are=20
+> received on the socket, sometimes they are forwarded. So iptables=20
+> don't have always the expected effect.
 
-Hi Michael,
+  This probably derives from the internals of Netfilter connection
+tracking and NAT. In Netfilter, the NAT subsystem is completely based on
+the conntrack subsystem. That is, when a packet belonging to a currently
+unknown connection is detected, the conntrack system creates a new
+connection. Later the NAT subsystem determines the mapping to be applied
+onto that connection by looking up the appropriate iptables table/chain.
+The final mapping is then stored in the conntrack entry.
 
-On Wed, Jul 20, 2005 at 04:15:44PM +0200, Michael Schachtebeck told us:
-> As I could not test the rules that Jan has suggested in his answer to my
-> postings (it's a production machine and I couldn't reboot it with a
-> patched kernel so far), I did some more testing and discovered a very
-> strange behaviour which I believe to be indeed a bug:
+  Now imagine the following scenario: you open your 'sending only'
+socket (IP_A:PORT_A), and send a UDP packet to IP_B:PORT_B. Obviously,
+no mapping will be done by the NAT subsystem, as you redirect incoming
+packets only. Now let's see what happens when a packet from IP_B:PORT_B
+comes back to IP_A:PORT_A. Since that source-destination pair matches
+the conntrack entry of the connection you've just created by sending the
+first packet, the conntrack system thinks it simply belongs to that
+connection. As there are no NAT mappings associated with that
+connection, no address translation will happen.
 
-=2E.. <testing snipped>
-
-> So this seems to be a bug in the kernel's iptables implementation, right?
-
-I think this is "expected behaviour" and it behaves like that
-because of the implentation of netfilter.
-
-AFAIK, when you add, delete, replace a iptables rule, at first the
-current rules are "downloaded" from kernel, the changes are made in
-user space, then the ruleset is "uploaded" again to the kernel.
-When uploading, I think that all the internal data structures for the
-matches are deleted and then allocated freshly. That's why you see
-this behaviour in your testing. When your cronjob runs (or you run
-it manually) all the data structures get deleted and newly allocated,
-thus the limit rule matches again.
-
-Of course, anybody feel free to correct me if I'm wrong :-)
-
-
-Regards,
-
-Sven
-
->=20
-> I'm using a 2.6.12.2 vanilla kernel and iptables 1.2.11 (gentoo package
-> net-firewall/iptables-1.2.11-r3).
->=20
-> Cheers,
->=20
-> Michael.
+  So IMHO this method is flawed, you won't be able to get consistent and
+reliable operation this way...
 
 --=20
-Linux zion 2.6.13-rc3-mm1 #6 PREEMPT Mon Jul 18 19:42:52 CEST 2005 i686 ath=
-lon i386 GNU/Linux
- 16:59:48 up 1 day, 21:12,  1 user,  load average: 0.49, 0.21, 0.07
+ Regards,
+  Krisztian Kovacs
 
---mojUlQ0s9EVzWg2t
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQFC3mc+o4FAdB2PneQRAnGqAJ9eGSe3rC+CaSFeD7UpNwX93H4yLACcCQ8Q
-0AJf7mGc5tdTtqRoLdCTgSE=
-=969L
------END PGP SIGNATURE-----
-
---mojUlQ0s9EVzWg2t--
 
