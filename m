@@ -1,38 +1,37 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipt_random
-Date: Wed, 20 Jul 2005 10:32:10 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0507201021010.25054@blackhole.kfki.hu>
-References: <02ed01c58c43$cd9c7ed0$1280a8c0@newlife><Pine.LNX.4.61.0507191217100.31028@yvahk01.tjqt.qr><034901c58cc8$d0828650$1280a8c0@newlife>
-	<Pine.LNX.4.61.0507200711010.9066@yvahk01.tjqt.qr>
-	<058a01c58cf9$dd3d88f0$1280a8c0@newlife>
+Subject: [ANNOUNCE] ipset 2.2.2 released
+Date: Wed, 20 Jul 2005 11:40:35 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0507201133540.25054@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <058a01c58cf9$dd3d88f0$1280a8c0@newlife>
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ming-Ching Tiew <mingching.tiew@redtone.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-On Wed, 20 Jul 2005, Ming-Ching Tiew wrote:
+Hi,
 
-> > Given that there is Kconfig, this patch _is_ also for 2.6.
->
-> Too bad that's not how the patch-o-matic scripts are written. It will not
-> patch the kernel source, if it did not follow certain directory structure.
+I'm happy to announce the new version of ipset. The bugs fixed in this
+release are
 
-Actually, it's not the directory structure but the info file which
-prevents the patch to show up and offered for 2.6 kernels. I've added the
-missing 2.6 port to the svn tree.
+- Jiffies rollover bug in ip_set_iptree reported and fixed by Rob Nielsen
+- Compiler warning in the non-SMP case (Marcus Sundberg)
+- slab cache names shrunk in order to be compatible with 2.4.* (Marcus
+  Sundberg)
+
+New features such that negated set feature or new API elements for better
+external module support were postponed to the next release.
+
+You can download the new version from http://ipset.netfilter.org/.
 
 Best regards,
 Jozsef
