@@ -1,12 +1,13 @@
-From: KOVACS Krisztian <hidden@balabit.hu>
-Subject: Re: iptables and udp socket
-Date: Wed, 20 Jul 2005 16:36:05 +0200
-Message-ID: <1121870165.4056.21.camel@nienna.balabit>
-References: <freemail.20050619192341.23844@fm13.freemail.hu>
+From: Michael Schachtebeck <schachti@rbw.goe.net>
+Subject: Re: limit extension
+Date: Wed, 20 Jul 2005 17:03:51 +0200
+Message-ID: <42DE67D7.5040804@rbw.goe.net>
+References: <42DD417F.4090804@rbw.goe.net> <42DE5C90.70603@rbw.goe.net>
+	<20050720150118.GB15339@zion.homelinux.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <freemail.20050619192341.23844@fm13.freemail.hu>
+In-Reply-To: <20050720150118.GB15339@zion.homelinux.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +18,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-2?Q?Keser=FB_Korn=E9l?= <keseruk@freemail.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Am 07/20/2005 04:45 PM schrieb Sven Schuster:
 
-  Hi Kornel,
+> AFAIK, when you add, delete, replace a iptables rule, at first the 
+> current rules are "downloaded" from kernel, the changes are made in
+> user space, then the ruleset is "uploaded" again to the kernel. 
+> When uploading, I think that all the internal data structures for
+> the matches are deleted and then allocated freshly. That's why you
+> see this behaviour in your testing. When your cronjob runs (or you
+> run it manually) all the data structures get deleted and newly
+> allocated, thus the limit rule matches again.
 
-2005-07-19, k keltez=E9ssel 19.23-kor Keser=FB Korn=E9l ezt =EDrta:
-> I'm quite new to netfilter/iptables, I have been using it for some week=
-s.=20
-> I would like to ask if it may lead to undeterministic behaviour of ipta=
-bles=20
-> when an udp socket is opened on an IP:port while in parallel iptables=20
-> rules (NAT) are setup that forward all incoming packets received on=20
-> that IP:port to a different destination. So I just want to use the sock=
-et=20
-> for sending out packets on it, while incoming packets should be=20
-> forwarded to other destination. But sometimes the packets are=20
-> received on the socket, sometimes they are forwarded. So iptables=20
-> don't have always the expected effect.
+But on the other hand, the counter correctly shows the number of packets
+that matched the rule; iptables -t nat -vnL PREROUTING says:
 
-  This probably derives from the internals of Netfilter connection
-tracking and NAT. In Netfilter, the NAT subsystem is completely based on
-the conntrack subsystem. That is, when a packet belonging to a currently
-unknown connection is detected, the conntrack system creates a new
-connection. Later the NAT subsystem determines the mapping to be applied
-onto that connection by looking up the appropriate iptables table/chain.
-The final mapping is then stored in the conntrack entry.
+9 540 REDIRECT tcp -- eth1 * 10.10.10.69 0.0.0.0/0 tcp spts:1024:65535
+dpt:80 flags:0x16/0x02 limit: avg 1/day burst 1 redir ports 5000
 
-  Now imagine the following scenario: you open your 'sending only'
-socket (IP_A:PORT_A), and send a UDP packet to IP_B:PORT_B. Obviously,
-no mapping will be done by the NAT subsystem, as you redirect incoming
-packets only. Now let's see what happens when a packet from IP_B:PORT_B
-comes back to IP_A:PORT_A. Since that source-destination pair matches
-the conntrack entry of the connection you've just created by sending the
-first packet, the conntrack system thinks it simply belongs to that
-connection. As there are no NAT mappings associated with that
-connection, no address translation will happen.
+So it would be very strange if the rules were extracted to user space,
+rewritten/modified, "uploaded" to the kernel with the correct counters
+for the remaining rules, and then, the rules do not look to this
+counters.  ;-)
 
-  So IMHO this method is flawed, you won't be able to get consistent and
-reliable operation this way...
+Why then save and restore the counters, if they are not used by the rules?
 
---=20
- Regards,
-  Krisztian Kovacs
-
+Michael.
+-- 
+PGP Public Key: http://www.num.math.uni-goettingen.de/schachte/key.asc
+Key fingerprint: C474 8B85 17C0 0232 E439 0FBF 2451 E452 293C D798
 
