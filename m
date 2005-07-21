@@ -1,12 +1,9 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Questions regarding routing in the stack
-Date: Thu, 21 Jul 2005 19:42:39 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507211941280.32348@yvahk01.tjqt.qr>
-References: <a60102c3050721073024051dd2@mail.gmail.com>
-	<Pine.GSO.4.58.0507211222530.20075@newavalon.cs.rit.edu>
+Subject: Bridge DNAT
+Date: Thu, 21 Jul 2005 19:46:40 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507211846500.32348@yvahk01.tjqt.qr>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.GSO.4.58.0507211222530.20075@newavalon.cs.rit.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,15 +16,37 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Carl Holtje ;021;vcsg6;" <cwh0803@cs.rit.edu>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+
+Hi,
 
 
->At some point, I found this and squirreled it away:
 
-http://ebtables.sourceforge.net/br_fw_ia/PacketFlow.png
-this one is just as good ;)
+I have a problem with DNAT on a bridged network. The setup is:
 
+192.168.44.1 is the server (bridge host); interfaces on it:
+  eth0 -- "the internet cloud"
+  eth1 --
+  eth2 --
+  br0  -- Bridge interface; ports: eth1 eth2
+192.168.44.2 a client on the eth1 segment
+192.168.44.3 a client on the eth2 segment
+
+Now when I try a dnat setup:
+  iptables -t nat -A PREROUTING -p tcp --dport 9000 -j DNAT
+    --to-dest 192.168.44.3:80
+
+The redirection works as expected when someone from the internet<eth0> 
+connects to the server.
+But within the internal network, the following happens:
+  .44.2 telnets to .44.1:9000
+  .44.1 rewrites the destination and sends it to .44.3 (SYN)
+  .44.3 replies with SYN ACK
+  .44.2 replies with RST - it does not know the connection
+
+
+What have I done wrong? Or is this just that the bridge code does not fully 
+handle layer3 DNAT?
 
 
 Jan Engelhardt
