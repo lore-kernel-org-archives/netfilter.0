@@ -1,12 +1,12 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: Re: string matching in kernel 2.6
-Date: Thu, 21 Jul 2005 11:17:23 +0800
-Message-ID: <011701c58da2$b77ba800$1280a8c0@newlife>
-References: <42DF2B0D.8040508@extol.com.my>
-	<00d101c58d99$4bca77c0$1280a8c0@newlife>
+From: Edmundo Carmona <eantoranz@gmail.com>
+Subject: is this the zillionth mail asking for this detail?
+Date: Thu, 21 Jul 2005 00:50:19 -0400
+Message-ID: <65aa6af905072021501603cfd5@mail.gmail.com>
+Reply-To: Edmundo Carmona <eantoranz@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,25 +20,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi, guys!
 
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+This is my very first post here... and I want it to be meaningful...
+at least to myself. :)
 
-> 
-> From: "muhaimin" <muhaimin.dzulfakar@extol.com.my>
-> 
-> > I found netfilter in kernel 2.6 doesnt support packet 
-> > string-matching.How do i make it works in kernel 2.6?
-> > 
-> 
-> I think it suffers the same problem with the ipt_random patch, 
-> so you could just create a patch yourself by duplicating what's 
-> in the 2.4 patch and change the info file accordingly.
-> 
+I don't think I'm that smart to be the first to need this feature...
+so I hope I'm the ONE vote that flips the balance to convince
+netfilter developers that this is indeed <i>good and necessary</i>.
 
-You could also use this patch instead :-
+Why is the routing decision made before the packets hit OUTPUT? I know
+that in OUTPUT it's already necessary to know what network interface
+the packet will go through but then is it wrong to do policy routing
+on output traffic? I don't think so.
 
-https://lists.netfilter.org/pipermail/netfilter-devel/2004-December/017892.html
+Maybe a new chain could be used to do some PREROUTING actions (like
+marking) before the routing decision is made for output traffic.
 
-
-
+What do you think?
 
