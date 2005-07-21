@@ -1,11 +1,21 @@
-From: JC <bikkit@gmail.com>
-Subject: Questions regarding routing in the stack
-Date: Thu, 21 Jul 2005 07:30:48 -0700
-Message-ID: <a60102c3050721073024051dd2@mail.gmail.com>
-Reply-To: JC <bikkit@gmail.com>
+From: Edmundo Carmona <eantoranz@gmail.com>
+Subject: Re: is this the zillionth mail asking for this detail?
+Date: Thu, 21 Jul 2005 11:04:52 -0400
+Message-ID: <65aa6af905072108048be6c7d@mail.gmail.com>
+References: <65aa6af905072021501603cfd5@mail.gmail.com>
+	<42DF85AE.1000400@gmx.co.uk>
+	<Pine.LNX.4.58.0507211511240.27131@blackhole.kfki.hu>
+	<Pine.LNX.4.61.0507211521120.17188@yvahk01.tjqt.qr>
+	<Pine.LNX.4.58.0507211523100.27131@blackhole.kfki.hu>
+	<65aa6af905072107063ebab0bc@mail.gmail.com>
+	<Pine.LNX.4.61.0507211614340.20941@yvahk01.tjqt.qr>
+	<65aa6af9050721071866e3c73b@mail.gmail.com>
+	<Pine.LNX.4.61.0507211650020.23894@yvahk01.tjqt.qr>
+Reply-To: Edmundo Carmona <eantoranz@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.61.0507211650020.23894@yvahk01.tjqt.qr>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,31 +28,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
-I was hoping someone could possibly shed some light into this or at
-least point me to the right direction...
+Oh, I think I see what you mean.
 
-I am trying to develop a kernel module level solution for dynamic host
-multihoming. This requires that I mangle packets from specific
-applications running on the system right in the stack and basically
-change the interface the packets are sent from (at least two
-interfaces).
+That multipath thing is driving me crazy, man.
 
-I understand that I need to register my mangling function with one of
-the 5 netfilter hooks (the ROUTING one?), grab the interesting packets
-and change..... something in the skbuff.
+I just tested what Jozsef told us,  that there's a routing decision
+right after output if something changed in the packet. He is so right!
+I marked a packet in the output mangle, and it was routed according to
+that mark.
 
-What really evades me is where/when does routing *exactly* happen. If
-I know at which point it happens, I should tap right after it and
-change the interface to the one I want. Or this whole idea could be
-bad and I end up breaking something in the
-packet and it gets dropped...
+Thank you, Jozsef!
 
-Of course, that needs to happen for both locally generated traffic and
-incoming traffic, so that I link the incoming packets to the right
-applications.
-
-regards,
-JC
+On 7/21/05, Jan Engelhardt <jengelh@linux01.gwdg.de> wrote:
+>=20
+> >>> I think it's because they're both on the same network.
+> >>
+> >> Load balancing using route path cost and tc is done on a per-device ba=
+sis;
+> >
+> >Oh, ok. Good! (I need a translator!).
+> >What do you mean? I didn't get it. (I'm kind of ashamed :-)).
+>=20
+> If you do load balancing / traffic shaping using iptables, you operate on=
+ a
+> per-packet or per-connection basis (depending on what you do)
+>=20
+> If you do load balancing with /sbin/route, you operate at the device leve=
+l.
+> If you do traffic shaping with /sbin/tc, you operate at the device level.
+>=20
+>=20
+>=20
+> Jan Engelhardt
+> --
+>
 
