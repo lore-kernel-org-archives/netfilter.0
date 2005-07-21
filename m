@@ -1,13 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: string matching in kernel 2.6
-Date: Thu, 21 Jul 2005 08:45:40 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507210843390.19151@yvahk01.tjqt.qr>
-References: <42DF2B0D.8040508@extol.com.my><00d101c58d99$4bca77c0$1280a8c0@newlife><011701c58da2$b77ba800$1280a8c0@newlife>
-	<Pine.LNX.4.61.0507210813040.15745@yvahk01.tjqt.qr>
-	<022001c58dbd$ef5fb750$1280a8c0@newlife>
+Date: Thu, 21 Jul 2005 09:03:18 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0507210901510.27131@blackhole.kfki.hu>
+References: <42DF2B0D.8040508@extol.com.my>
+	<00d101c58d99$4bca77c0$1280a8c0@newlife>
+	<011701c58da2$b77ba800$1280a8c0@newlife>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <022001c58dbd$ef5fb750$1280a8c0@newlife>
+In-Reply-To: <011701c58da2$b77ba800$1280a8c0@newlife>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,15 +23,24 @@ Content-Transfer-Encoding: 7bit
 To: Ming-Ching Tiew <mingching.tiew@redtone.com>
 Cc: netfilter@lists.netfilter.org
 
+On Thu, 21 Jul 2005, Ming-Ching Tiew wrote:
 
->> If neither works, you can try abusing ipt_layer7 ;-)
->> See http://l7-filter.sf.net/
+> > From: "muhaimin" <muhaimin.dzulfakar@extol.com.my>
+> >
+> > > I found netfilter in kernel 2.6 doesnt support packet
+> > > string-matching.How do i make it works in kernel 2.6?
 >
->Not sure if you want to use an electric saw to cut the bread.
+> You could also use this patch instead :-
+>
+> https://lists.netfilter.org/pipermail/netfilter-devel/2004-December/017892.html
 
-If you don't have anything else, this is the best temporary solution.
+That patch is not complete because it does not handle non-linear packets.
 
-
-Jan Engelhardt
--- 
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
