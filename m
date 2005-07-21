@@ -1,12 +1,12 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: help for iptables
-Date: Thu, 21 Jul 2005 07:47:15 -0400
-Message-ID: <1121946435.2645.10.camel@localhost>
-References: <A85D74936A4B4CE196FE8F9CD719976A@mitpl.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: one interface, basic setup
+Date: Thu, 21 Jul 2005 06:49:50 -0500
+Message-ID: <42DF8BDE.5080805@gmx.co.uk>
+References: <42DF0A8E.9020102@sbcglobal.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <A85D74936A4B4CE196FE8F9CD719976A@mitpl.com>
+In-Reply-To: <42DF0A8E.9020102@sbcglobal.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,58 +17,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: SWAPNIL <postmaster@modular-infotech.com>
-Cc: ilugd@lists.linux-delhi.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 2005-07-20 at 11:52 +0530, SWAPNIL wrote:
-> Dear All,
+Bill McCormick wrote:
+> (basic and packet filtering) I still feel unsure. I want to build a FW 
+> for outgoing packets only. My setup looks like this:
 > 
-> Please find the link of my network for your reference.
-> 
-> http://downloadftp.modular-infotech.com/common/share/network.gif
-> 
-> My client1 PC and client 2 PC will be connected to the internet using proxy
-> and only client 2 pc  will be connected to one remote sever or domain or ip
-> using iptables.
-> 
-> >From remote location anyone can connect my local web sever through my global
-> DNS server
-> eg. someone must first connected to my global DNS server for resolving host
-> name then he will get routed to my local router and router will connect that
-> remote user to my local webserver on any proto and any port.
-> 
-> Also I would like to track each connection session with my websever.
-> 
-> what should I do in such scenario ?
-> 
-> please help me otherwise my job will be in trouble.
-> 
-> Basically I am new in Linux I had tried lot of on iptables rules, but I cant
-> achieve final target.
-<snip>
-I'm a little unsure of what you are trying to accomplish.  What do you
-mean by "someone must first connect to my global DNS server or resolving
-host name then he will get routed to my local router"? Perhaps I don't
-understand but that seems strange.
+> internet <---->Netgear FVS318 <----> LAN
 
-Do you really want to publicly expose any protocol and any port on a
-server to the world? That sounds awfully dangerous.
+A dual-homed Linux machine could do a better job in place of that 
+router. A lot of folks believe in "hardware routers", but in fact those 
+are only software routers which provide less control and may have 
+unknown vulnerabilities. (Exception: Linksys embedded Linux devices. 
+Using a Linux distro for that platform makes them very powerful.)
 
-What do you mean my track each connection session with your webserver.
-Will simple logging of the connection event be sufficient or do you need
-details web server logs?
+> Where LAN is a Linux FC3 and several Windows machines. The router closes 
+> all outbound traffic except from the FC3 box. Currently, Windows 
+> machines DHCP from the router, so that is the gateway, and proxy out
 
-I'm afraid I will be offline for a couple of days so, if someone else
-could jump in to help, that would be much appreciated - John
+Right now I'm like this at home:
+Internet <---> Linksys WRT54G [switch + WAP] <---> LAN
+The DHCP server is one of the LAN hosts, but the Linksys is still the 
+gateway. There's no inherent connection between who is DHCP and who is 
+the default gateway.
+
+> through squid et. al. on FC3. I'll move the DHCP service to FC3 and make 
+> that the gateway.
+
+That's awkward in that each packet destined to go out will pass twice 
+over the LAN: once from originator to FC3, then again from FC3 to the 
+router. Will it cause problems for you? I don't know.
+
+> I want the FC3 gateway to allow all outbound traffic 
+> from squid; destination ports might be more than HTTP. I also want to 
+> allow outbound SMTP and POP to a specific destination only. FC3 is also
+
+It's very important to restrict outbound SMTP of Windows machines, 
+especially if it happens that they get infected. Most spam these days 
+originates (in SMTP terms) from unsecured home Windows machines.
+
+> providing services http, telnet, ftp, ssh, smtp, imap/imaps and 
+> pop/pop-ssl. Eventually, I'll want to do a transparent proxy as well.
+
+Note that with shell access, your users could get out directly. I 
+believe that even a Windows machine can tunnel ports over ssh.
+
+> So it looks like I want both the INPUT and OUTPUT chains to ACCEPT all 
+> and I should build rules in the FORWARD chain. With only one interface, 
+> is that correct?
+
+I think you're right, yes. With only one interface you have the problem 
+of not being able to filter on the incoming interface. You have to use 
+IP-based rules, and a determined and capable "attacker" could get around 
+your limits.
+
+I think I'd set up a different logical segment for the clients, such 
+that they could not reach the router at all. Just one more hurdle for 
+any would-be "extruder" trying to get out.
 -- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
-
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
-
+     mail to this address is discarded unless "/dev/rob0"
+     or "not-spam" is in Subject: header
 
