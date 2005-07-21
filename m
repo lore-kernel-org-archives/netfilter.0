@@ -1,12 +1,13 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: MASQUERADING
-Date: Thu, 21 Jul 2005 13:19:56 +0200
-Message-ID: <42DF84DC.7070007@mnemon.de>
-References: <04EE7AD0450F7B498BA216312943A1A102B5A7CA@blrse201.ap.infineon.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: is this the zillionth mail asking for this detail?
+Date: Thu, 21 Jul 2005 06:23:26 -0500
+Message-ID: <42DF85AE.1000400@gmx.co.uk>
+References: <65aa6af905072021501603cfd5@mail.gmail.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <04EE7AD0450F7B498BA216312943A1A102B5A7CA@blrse201.ap.infineon.com>
+In-Reply-To: <65aa6af905072021501603cfd5@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,25 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Edmundo Carmona <eantoranz@gmail.com>, netfilter <netfilter@lists.netfilter.org>
 
-Chandra.Vempali@infineon.com schrieb:
+Edmundo Carmona wrote:
+> I don't think I'm that smart to be the first to need this feature...
+> so I hope I'm the ONE vote that flips the balance to convince
+> netfilter developers that this is indeed <i>good and necessary</i>.
 
-> Suppose I masquerade ppp0 using
-> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> 
-> And now all packets will have a src ip addr as 192.168.0.2 will be
-> changed to that of ppp0 , for example say 10.10.10.1
-> Now my question is, when the reply comes, their destination addr will be
-> that of ppp0 i.e 10.10.10.1
-> Who will reverse translate this 10.10.10.1 destination addr to actual
-> 192.168.0.2 ?
+I am not sure we have developers posting here regularly. I've seen 
+Harald Welte, but not often. I just looked and see that Jozsef 
+Kadlecsik, who does post here, is on the Core Team.
 
-This is the job of connection tracking, basically ipt_conntrack.
+> Maybe a new chain could be used to do some PREROUTING actions (like
+> marking) before the routing decision is made for output traffic.
 
-Have a nice time,
+Is there any reason you can't use mangle/PREROUTING or nat/PREROUTING 
+for what you need? What would filter/PREROUTING provide that those do 
+not? In fact, although I don't do anything with mangle, I thought 
+marking was in mangle territory.
 
-Joerg
+ > What do you think?
 
+Perhaps you should try to make your case on the developers' list.
+-- 
+     mail to this address is discarded unless "/dev/rob0"
+     or "not-spam" is in Subject: header
 
