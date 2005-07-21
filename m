@@ -1,9 +1,13 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: RST packets
-Date: Thu, 21 Jul 2005 08:43:28 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507210838001.19151@yvahk01.tjqt.qr>
+Subject: Re: string matching in kernel 2.6
+Date: Thu, 21 Jul 2005 08:45:40 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507210843390.19151@yvahk01.tjqt.qr>
+References: <42DF2B0D.8040508@extol.com.my><00d101c58d99$4bca77c0$1280a8c0@newlife><011701c58da2$b77ba800$1280a8c0@newlife>
+	<Pine.LNX.4.61.0507210813040.15745@yvahk01.tjqt.qr>
+	<022001c58dbd$ef5fb750$1280a8c0@newlife>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <022001c58dbd$ef5fb750$1280a8c0@newlife>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +20,16 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+To: Ming-Ching Tiew <mingching.tiew@redtone.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
 
+>> If neither works, you can try abusing ipt_layer7 ;-)
+>> See http://l7-filter.sf.net/
+>
+>Not sure if you want to use an electric saw to cut the bread.
 
->http://www.knowplace.org/netfilter/ip_overview.html
-
-|Sometimes, if either hosts need to tear down the connection quickly (timeout, 
-|port or host unreachable, etc.), a RST (Reset) packet is sent. Note that 
-|since a RST packet is not necessarily always part of a TCP connection, it can be 
-|sent by itself. RST packets that are part of a TCP connection is usually 
-|accompanied by the ACK flag as well.
-
-What would be the use of RST if it is not part of a connection?
-Is it...vv?
-  A and B are connected
-  A crashes
-  B tries to send
-  A sends RST,!ACK
-
+If you don't have anything else, this is the best temporary solution.
 
 
 Jan Engelhardt
