@@ -1,13 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: string matching in kernel 2.6
-Date: Thu, 21 Jul 2005 09:38:40 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0507210935180.27131@blackhole.kfki.hu>
-References: <42DF2B0D.8040508@extol.com.my><00d101c58d99$4bca77c0$1280a8c0@newlife><011701c58da2$b77ba800$1280a8c0@newlife>
-	<Pine.LNX.4.58.0507210901510.27131@blackhole.kfki.hu>
-	<02cd01c58dc3$6e2a9230$1280a8c0@newlife>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: RST packets
+Date: Thu, 21 Jul 2005 09:42:10 +0200 (CEST)
+Message-ID: <3565.161.85.127.140.1121931730.squirrel@161.85.127.140>
+References: <Pine.LNX.4.61.0507210838001.19151@yvahk01.tjqt.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02cd01c58dc3$6e2a9230$1280a8c0@newlife>
+In-Reply-To: <Pine.LNX.4.61.0507210838001.19151@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ming-Ching Tiew <mingching.tiew@redtone.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter User Mailing List <netfilter@lists.netfilter.org>
 
-On Thu, 21 Jul 2005, Ming-Ching Tiew wrote:
-
-> > > https://lists.netfilter.org/pipermail/netfilter-devel/2004-December/017892.html
-> >
-> > That patch is not complete because it does not handle non-linear packets.
+> |Sometimes, if either hosts need to tear down the connection quickly
+> (timeout,
+> |port or host unreachable, etc.), a RST (Reset) packet is sent. Note th=
+at
+> |since a RST packet is not necessarily always part of a TCP connection,=
+ it
+> can be
+> |sent by itself. RST packets that are part of a TCP connection is usual=
+ly
+> |accompanied by the ACK flag as well.
 >
-> But it is almost identical source as the 2.4 version, meaning the 2.4 version
-> is also not able to handle the so called non-linear packets then ?
+> What would be the use of RST if it is not part of a connection?
+> Is it...vv?
+>   A and B are connected
+>   A crashes
+>   B tries to send
+>   A sends RST,!ACK
 
-No, the 2.4 version of the module is fine in the 2.4 tree. However the
-internal packet handling in the IP stack changed between 2.4 and 2.6. This
-is the reason why modules need porting. Just copying the files and
-adjusting the function arguments are not enough.
+Your scenario seems clear to me.. ;-)
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+If A crashes, to A there is no connection anymore.
+If B sends data to A and A thinks no SYN/ACK has occurred for that
+connection, IMHO A should send RST without ACK because according to A
+there _is_ no connection to send ACK for.
+Anyway, I didn't test it but it would make sense to me.
+
+
+Gr,
+Rob
+
+
 
