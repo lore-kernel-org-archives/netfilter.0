@@ -1,8 +1,9 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Bridge DNAT
-Date: Thu, 21 Jul 2005 19:46:40 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507211846500.32348@yvahk01.tjqt.qr>
+From: Frank <frannk_m1@yahoo.com>
+Subject: Latest patch o matic
+Date: Thu, 21 Jul 2005 11:53:34 -0700 (PDT)
+Message-ID: <20050721185334.56271.qmail@web32205.mail.mud.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,41 +15,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
+I tried to get the latest CVS snapshot but it failed when I used
+the "CVS" password. Another question: The snapshots I see in the
+download area have a timestamp of 2004. Isn't there a later
+snapshot then last year?
 
-
-
-I have a problem with DNAT on a bridged network. The setup is:
-
-192.168.44.1 is the server (bridge host); interfaces on it:
-  eth0 -- "the internet cloud"
-  eth1 --
-  eth2 --
-  br0  -- Bridge interface; ports: eth1 eth2
-192.168.44.2 a client on the eth1 segment
-192.168.44.3 a client on the eth2 segment
-
-Now when I try a dnat setup:
-  iptables -t nat -A PREROUTING -p tcp --dport 9000 -j DNAT
-    --to-dest 192.168.44.3:80
-
-The redirection works as expected when someone from the internet<eth0> 
-connects to the server.
-But within the internal network, the following happens:
-  .44.2 telnets to .44.1:9000
-  .44.1 rewrites the destination and sends it to .44.3 (SYN)
-  .44.3 replies with SYN ACK
-  .44.2 replies with RST - it does not know the connection
-
-
-What have I done wrong? Or is this just that the bridge code does not fully 
-handle layer3 DNAT?
-
-
-Jan Engelhardt
--- 
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
