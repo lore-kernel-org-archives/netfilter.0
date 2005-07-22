@@ -1,10 +1,14 @@
-From: cc <cc@belfordhk.com>
-Subject: nfsim
-Date: Fri, 22 Jul 2005 12:17:44 +0800
-Message-ID: <42E07368.1030507@belfordhk.com>
+From: Edmundo Carmona <eantoranz@gmail.com>
+Subject: Re: why isn't masquerade working?
+Date: Fri, 22 Jul 2005 00:59:31 -0400
+Message-ID: <65aa6af905072121592a7393b@mail.gmail.com>
+References: <65aa6af9050721190612c5cbf2@mail.gmail.com>
+Reply-To: Edmundo Carmona <eantoranz@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <65aa6af9050721190612c5cbf2@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,32 +22,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear All,
+I have been doing some reseach.
 
-I was looking for the netfilter testsuite as stated
-in the howtos/faq, but found out it's deprecated in
-favor of nfsim.  Ok, I d/led it and after a bit of
-fudging a symlink (btw, it doesn't like link-dtd
-being symlink'ed to a xml-dtd-4.1.  It prefers
-xml-dtd-4.1.2. (this is on a Slackware system,
-mind you. YMMV)).
+As both links are present in the same network, it's making the kernel
+(IPROUTE?) get confused, apparently, about the address it has to stamp
+on the outgoing packet, because of a tp_filter.
 
-Anyway, I was wondering if there is a similar
-app out there similar to nfsim, but processes
-any gen_ip'd packets with the actual rule set
-that is being used in a NAT firewall?
+I tried with SNAT, and echoing 0 on that flag of the "unused link"
+where I want to send traffic through... but It's still not working.
 
-Right now, using nfsim, I can generate a packet
-and see what happens to it, but what I would
-like to do is have nfsim read in an actual
-firewall script, and then when I run a gen_ip,
-the packets follow the script rules instead
-of the default one.
+This kind of problems can be so annoying.
 
-Or did I misunderstand the Netfilter Simulation
-documentation?
-
-Any help appreciated
-
-Ed
+On 7/21/05, Edmundo Carmona <eantoranz@gmail.com> wrote:
+> This is the first time I ever see this kind of problem... maybe it's
+> because I have such a weird configuration right now.
+>=20
+> I'm testing a host with two internet connections.
+>=20
+> the default route is only one of the two connections. The other link
+> is not involved at all. However, I set a rule in OUTPUT mangle that
+> will mark icmp traffic and then I have an ip rule that forces it to
+> use a routing table that is configured to use the "unused link".
+>=20
+> I thought that it meant that icmp would come out from that interface..
+> and as I am masquerading traffic through that interface, the src
+> address would be set to that interface's address.
+>=20
+> It's a BIG surprise to see that it's not happening.  I tcpdumped
+> traffic and noticed that traffic is coming through the unused
+> interface... but still has the src address of the other interface. Is
+> that normal?
+>=20
+> And how can I make it to use the "correct" address?
+>
 
