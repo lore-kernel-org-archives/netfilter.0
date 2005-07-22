@@ -1,14 +1,11 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: why isn't masquerade working?
-Date: Fri, 22 Jul 2005 00:59:31 -0400
-Message-ID: <65aa6af905072121592a7393b@mail.gmail.com>
-References: <65aa6af9050721190612c5cbf2@mail.gmail.com>
-Reply-To: Edmundo Carmona <eantoranz@gmail.com>
+From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
+Subject: VPN Pass through doesn't work with Fedora Core 4, Why?????
+Date: Fri, 22 Jul 2005 16:23:33 +0800
+Message-ID: <MDAEMON-F200507221622.AA2217398md50000000031@palettemm.com>
+Reply-To: bassam@palettemm.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af9050721190612c5cbf2@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,37 +19,91 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have been doing some reseach.
+Dear All,
 
-As both links are present in the same network, it's making the kernel
-(IPROUTE?) get confused, apparently, about the address it has to stamp
-on the outgoing packet, because of a tp_filter.
+   I used to successfully install the pptp_conntrack_nat from the POM and
+compile the kernel of my redhat 9 machine that works as a gateway in order
+to enable multiple VPN pass through (VPN NATing) from the clients on the LAN
+side to different VPN servers on the WAN side of my redhat 9 box.
 
-I tried with SNAT, and echoing 0 on that flag of the "unused link"
-where I want to send traffic through... but It's still not working.
+Recently I have installed the Fedora Core 4 and has done the same steps that
+I used to do previously with my redhat 9 without any problem, but when I
+load the following modules after, non of the machines on the LAN side can
+establish a VPN connection. So I wonder what are the problem.
 
-This kind of problems can be so annoying.
+$ modprobe ip_conntrack_proto_gre
+$ modprobe ip_conntrack_pptp
+$ modprobe ip_nat_proto_gre
+$ modprobe ip_nat_pptp
 
-On 7/21/05, Edmundo Carmona <eantoranz@gmail.com> wrote:
-> This is the first time I ever see this kind of problem... maybe it's
-> because I have such a weird configuration right now.
->=20
-> I'm testing a host with two internet connections.
->=20
-> the default route is only one of the two connections. The other link
-> is not involved at all. However, I set a rule in OUTPUT mangle that
-> will mark icmp traffic and then I have an ip rule that forces it to
-> use a routing table that is configured to use the "unused link".
->=20
-> I thought that it meant that icmp would come out from that interface..
-> and as I am masquerading traffic through that interface, the src
-> address would be set to that interface's address.
->=20
-> It's a BIG surprise to see that it's not happening.  I tcpdumped
-> traffic and noticed that traffic is coming through the unused
-> interface... but still has the src address of the other interface. Is
-> that normal?
->=20
-> And how can I make it to use the "correct" address?
->
+
+Here is what I have done so far:
+
+$ wget http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.3.tar.bz2
+$ bzip2 -d linux-2.6.12.3.tar.bz2
+$ tar -xvf linux-2.6.12.3.tar
+
+$ wget http://www.netfilter.org/files/iptables-1.3.0.tar.bz2
+$ bzip2 -d iptables-1.3.0.tar.bz2
+$ tar -xvf iptables-1.3.0.tar
+
+$ wget
+http://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/patch-o-matic-ng-2005
+0714.tar.bz2
+$ bzip2 -d patch-o-matic-ng-20050714.tar.bz2
+$ tar -xvf patch-o-matic-ng-20050714.tar
+
+
+Now to install the pptp_conntrack_nat only, here what I have done
+$ KERNEL_DIR=/usr/src/kernels/linux-2.6.12
+IPTABLES_DIR=/usr/src/iptables-1.3.0 ./runme extra    
+
+$ cd /usr/src/kernels/linux-2.6.12
+$ make clean
+$ make mrproper
+$ make xconfig
+$ make
+$ make bzImage
+$ make modules
+$ make modules_install
+$ cp /usr/src/kernels/linux-2.6.12/arc/i386/boot/bzImage
+/boot/bzImage-2.6.12.3
+$ cp /usr/src/kernels/linux-2.6.12/System.map /boot/System.map-2.6.12.3
+$ cd /boot
+$ mkinitrd initrd-2.6.12.3.img 2.6.12.3
+$ cd /boot/grub
+$ vi menu.lst		#To add another entry in the menu.conf file, save
+and exit
+$ cd /usr/src/iptables-1.3.0
+$ make clean
+$ make KERNEL_DIR==/usr/src/kernels/linux-2.6.12
+$ make install KERNEL_DIR==/usr/src/kernels/linux-2.6.12
+$ reboot			#We choose to boot from the new kernel
+linux-2.6.12.3
+$ echo 1 > /proc/sys/net/ipv4/ip_forward
+$ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+Till this step there is no problem, the Fedora machine works fine as a
+gateway and all the clients can access the Internet and only one machine
+(chosen randomly) can establish a VPN connection to a VPN server on the WAN
+side.
+
+Now and as usual to enable VPN pass through (VPN NATing) we need to load the
+following four modules into the kernel:
+
+$ modprobe ip_conntrack_proto_gre
+$ modprobe ip_conntrack_pptp
+$ modprobe ip_nat_proto_gre
+$ modprobe ip_nat_pptp
+
+After loading these four modules none of the client machines can establish
+the VPN connections.
+
+
+Your help is appreciated to let me know why I am facing this problem.
+
+
+Regards  
+Bassam A. Al-Khaffaf
+
 
