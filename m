@@ -1,12 +1,12 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: why isn't masquerade working?
-Date: Thu, 21 Jul 2005 22:06:45 -0400
-Message-ID: <65aa6af9050721190612c5cbf2@mail.gmail.com>
-Reply-To: Edmundo Carmona <eantoranz@gmail.com>
+From: Bill McCormick <wpmccormick@sbcglobal.net>
+Subject: Re: one interface, basic setup
+Date: Thu, 21 Jul 2005 22:28:27 -0500
+Message-ID: <42E067DB.3060809@sbcglobal.net>
+References: <42DF0A8E.9020102@sbcglobal.net> <42DF8BDE.5080805@gmx.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <42DF8BDE.5080805@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,27 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: /dev/rob0 <rob0@gmx.co.uk>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-This is the first time I ever see this kind of problem... maybe it's
-because I have such a weird configuration right now.
+/dev/rob0 wrote:
 
-I'm testing a host with two internet connections.
+> Bill McCormick wrote:
+>
+>> (basic and packet filtering) I still feel unsure. I want to build a 
+>> FW for outgoing packets only. My setup looks like this:
+>>
+>> internet <---->Netgear FVS318 <----> LAN
+>
+[snip]
 
-the default route is only one of the two connections. The other link
-is not involved at all. However, I set a rule in OUTPUT mangle that
-will mark icmp traffic and then I have an ip rule that forces it to
-use a routing table that is configured to use the "unused link".
+> I think I'd set up a different logical segment for the clients, such 
+> that they could not reach the router at all. Just one more hurdle for 
+> any would-be "extruder" trying to get out.
 
-I thought that it meant that icmp would come out from that interface..
-and as I am masquerading traffic through that interface, the src
-address would be set to that interface's address.
+This a home setup. First and formost, I want to restrict, limit and 
+control what clients can send out and to where. Basically, I just want 
+ALL out-bound traffic to pass through FC3 iptables then get routed to 
+the FVS318.
 
-It's a BIG surprise to see that it's not happening.  I tcpdumped
-traffic and noticed that traffic is coming through the unused
-interface... but still has the src address of the other interface. Is
-that normal?
+So, the best (easiest) way to accomplish this is to make the FC3 the 
+gateway router by adding another interface? Do the NAT rules get crazy 
+for that? Are the routing tables complicated?
 
-And how can I make it to use the "correct" address?
+Thanks
+
+
+
+
+-- 
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.0.323 / Virus Database: 267.9.2/53 - Release Date: 7/20/2005
+
 
