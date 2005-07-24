@@ -1,15 +1,10 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: iptable for single nic
-Date: Sun, 24 Jul 2005 22:45:17 -0400
-Message-ID: <65aa6af905072419455a66a4a9@mail.gmail.com>
-References: <65aa6af905072419344cc427f1@mail.gmail.com>
-	<20050725024137.84418.qmail@web42402.mail.yahoo.com>
-Reply-To: Edmundo Carmona <eantoranz@gmail.com>
+From: Vlada Macek <tuttle@bbs.cvut.cz>
+Subject: Accounting using conntrack
+Date: Sun, 24 Jul 2005 19:39:09 +0200
+Message-ID: <42E3D23D.20000@bbs.cvut.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050725024137.84418.qmail@web42402.mail.yahoo.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,62 +16,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: john decot <johndecot@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-could it be the input interface?
+Hi,
 
-Have you tried without -i?
+I'm facing the problem of having to obtain the stats of long-time
+transfer between the corporate LAN and the Internet based on many
+factors. My NATting box uses Linux netfilter.
 
-On 7/24/05, john decot <johndecot@yahoo.com> wrote:
-> yes i have gone throughout transparent proxy "howto". As i said everythin=
-g
-> is fine but only the thing is iptables is not working properly. And
-> expecting help now.
->=20
-> Edmundo Carmona <eantoranz@gmail.com> wrote:=20
-> I guess you have to configure squid to do transparent proxy. There' a
-> "howto" devoted to that.
->=20
-> On 7/24/05, john decot wrote:
-> > Hello all,
-> > i am facing a problem in iptables as follows:
-> > i have single nic which ip is eth0=3D x.x.x.x(public_ip)
-> > alias is eth0:1=3Dy.y.y.y( private_ip)
-> > the proxy works when ip of server and port 3128 at lan connection is
-> configured at client side(windows os).
-> > But doesn't work without that whenever i flow traffic to proxy server,
-> again i have used ip tables as:
-> >=20
-> > iptables -A PREROUTING -t nat -p tcp --dport 80 -i eth0 -j REDIRECT 312=
-8
-> >=20
-> > with above it doesn't work then i tried following
-> >=20
-> > iptables -A PREROUTING -t nat -p tcp --dport 80 -i eth0 -j DNAT $public=
-_ip
-> or $private_ip:3128
-> >=20
-> > again the same result.
-> > client pc and server is connect at same switch. and clients have privat=
-e
-> ip where as server has public as well as private ip.
-> >=20
-> > any help will be appreciated.
-> >=20
-> > thanks in advance.
-> > john
-> >=20
-> >=20
-> > ---------------------------------
-> > Do you Yahoo!?
-> > Yahoo! Mail - Helps protect you from nasty viruses.
-> >
->=20
->=20
->  ________________________________
-> Yahoo! Mail for Mobile
->  Take Yahoo! Mail with you! Check email on your mobile phone.=20
->=20
->
+I've been googling for some solution, but those like iptraf or existing
+patches against nf (e.g. "account") seem suboptimal to me, since they
+make additional hooks and run tasks similar to what in-kernel
+netfilter's connection tracker already does. It IMHO causes needless
+overhead.
+
+AFAIK, the connection tracking works like this: 1) For every packed
+going thru the nf must find proper item in some hashtable of existing
+connections OR create such item. 2) For every connection there is a
+point in time when it is discarded.
+
+How difficult would it be to add small accounting code (conn.numpackets
++= 1, conn.numbytes += packet.payloadsize for each direction) for (1),
+provided it's not already there (for which I'm unaware) AND for the
+closing moment (2), dump short statistics to kernel log (together with
+more info about the connection - e.g. timeout or FIN, etc.)? Did anyone
+make such changes already?
+
+Advantages:
+
+    - No standalone ever-running daemon that must be monitored.
+
+    - There is no redundance with processing same information to similar
+result data.
+
+    - IMHO the least possible overhead, just dumping the data that are
+already created.
+
+    - The data may be taken away from the firewalling box and summarized
+somewhere else afterwards.
+
+    - Connection end will be logged with timestamp, which may help
+service problems debugging when paired with usual -j LOG && -j ACCEPT
+log message.
+
+
+What do you think?
+
+Please let me express my gratitude for such great piece of software the
+netfilter is.
+
+-- 
+
+\//\/\
+(Sometimes credited as 1494 F8DD 6379 4CD7 E7E3 1FC9 D750 4243 1F05 9424.)
+
+
 
