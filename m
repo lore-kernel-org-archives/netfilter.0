@@ -1,12 +1,11 @@
-From: bright true <brighttrue@gmail.com>
-Subject: Kind of Limits
-Date: Mon, 25 Jul 2005 13:47:46 -0700
-Message-ID: <3b29fb7905072513472be37619@mail.gmail.com>
-Reply-To: bright true <brighttrue@gmail.com>
+From: "Ginter, Jeff A" <Jeff.Ginter@ca.com>
+Subject: Rules for localhost, help needed.
+Date: Mon, 25 Jul 2005 16:54:03 -0400
+Message-ID: <B80488675062364A909EE60F4A66603807E15FDE@usilms23.ca.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,16 +19,148 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello ,=20
- i have no experience with iptables at all ... i just want to get my proble=
-m=20
-solved , i hope you can help me
- How can i limit the number of connection or not limiting , let's say=20
- when the number of connections reach the ALLOWED numbers of connections it=
+On occasion, I configure iptables via webmin.  I am having a strange
+problem where when I apply the rules from that GUI that it never comes
+back.  If I close the web browser and restart, I can see everything
+again, but it looks like I get cut off.  Also, I occasionally get some
+redhat GUI issues as well and I think it's because of my rulebase.
+These issues do not happen when I am connected remotely.
+
 =20
-will get block for about 2 minutes or something=20
- NOTE : i want it to work for all destination ports=20
- please reply me with something helpful with out the need of re-compiling=
+
+I have my ruleset below...am I missing anything for local that anyone
+can see.
+
 =20
-the Kernel or installing a patches
-  Thanks in advance
+
+Thanks in advance...very appreciated.
+
+=20
+
+RULES
+
+[root@mae-fw ~]# iptables -L
+
+Chain INPUT (policy DROP)
+
+target     prot opt source               destination
+
+DROP       all  --  192.168.222.0/24     anywhere
+
+DROP       all  --  138.42.156.0/24      anywhere
+
+ACCEPT     all  --  anywhere             anywhere            state
+RELATED,ESTABLISHED
+
+ACCEPT     tcp  --  anywhere             anywhere            tcp
+multiport dports ssh,10000 state NEW
+
+DROP       all  --  anywhere             anywhere
+
+=20
+
+Chain FORWARD (policy DROP)
+
+target     prot opt source               destination
+
+DROP       all  --  192.168.222.0/24     anywhere
+
+DROP       all  --  138.42.156.0/24      anywhere
+
+ACCEPT     all  --  anywhere             anywhere            state
+RELATED,ESTABLISHED
+
+ACCEPT     udp  --  anywhere             anywhere            udp
+dpt:domain
+
+ACCEPT     tcp  --  anywhere             anywhere            tcp
+
+ACCEPT     icmp --  anywhere             anywhere
+
+ACCEPT     tcp  --  anywhere             anywhere            tcp
+multiport dports
+ftp-data,ftp,ssh,telnet,domain,http,https,webcache,3389,5800,5801
+
+DROP       all  --  anywhere             anywhere
+
+=20
+
+Chain OUTPUT (policy DROP)
+
+target     prot opt source               destination
+
+ACCEPT     all  --  anywhere             anywhere            state
+NEW,RELATED,ESTABLISHED
+
+=20
+
+=20
+
+NATS
+
+[root@mae-fw ~]# iptables -t nat -L
+
+Chain PREROUTING (policy ACCEPT)
+
+target     prot opt source               destination
+
+DNAT       all  -- !192.168.222.0/24     Etrust-scc.ca.com
+to:192.168.222.101
+
+DNAT       all  -- !192.168.222.0/24     Etrust-audit.ca.com
+to:192.168.222.165
+
+DNAT       all  -- !192.168.222.0/24     Etrust-pc.ca.com
+to:192.168.222.130
+
+DNAT       all  -- !192.168.222.0/24     Etrust-ws1.ca.com
+to:192.168.222.100
+
+DNAT       all  -- !192.168.222.0/24     Etrust-uni.ca.com
+to:192.168.222.102
+
+DNAT       all  -- !192.168.222.0/24     Etrust-vm.ca.com
+to:192.168.222.115
+
+DNAT       all  -- !192.168.222.0/24     Itrmsrv01.ca.com
+to:192.168.222.150
+
+=20
+
+Chain POSTROUTING (policy ACCEPT)
+
+target     prot opt source               destination
+
+SNAT       all  --  192.168.222.0/24     anywhere
+to:138.42.156.15
+
+=20
+
+Chain OUTPUT (policy ACCEPT)
+
+target     prot opt source               destination
+
+=20
+
+=20
+
+=20
+
+Jeff Ginter, CISSP
+
+Computer Associates
+
+Mid-Atlantic Total Protection
+
+Consulting Manager
+
+Office:  (908) 874-9726
+
+Mobile:  (609) 577-1494
+
+jeff.ginter@ca.com
+
+=20
+
+=20
+
