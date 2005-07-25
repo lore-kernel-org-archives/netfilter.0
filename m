@@ -1,7 +1,7 @@
 From: john decot <johndecot@yahoo.com>
-Subject: iptable for single nic
-Date: Sun, 24 Jul 2005 19:28:38 -0700 (PDT)
-Message-ID: <20050725022838.89776.qmail@web42403.mail.yahoo.com>
+Subject: iptable for single nic for mutiple ips.
+Date: Sun, 24 Jul 2005 19:29:06 -0700 (PDT)
+Message-ID: <20050725022907.89819.qmail@web42403.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -39,7 +39,7 @@ any help will be appreciated.
 thanks in advance.
 john
 
+
 		
 ---------------------------------
-Do you Yahoo!?
- Yahoo! Mail - Helps protect you from nasty viruses.
+ Start your day with Yahoo! - make it your home page 
