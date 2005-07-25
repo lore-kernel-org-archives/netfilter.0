@@ -1,12 +1,14 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: TOS problem
-Date: Mon, 25 Jul 2005 16:25:40 +0200
-Message-ID: <42E4F664.70801@mnemon.de>
-References: <200507251448.41773.marcin.giedz@eulerhermes.pl>
+From: "curby ." <curby.public@gmail.com>
+Subject: Re: IP:Port REDIRECT problem
+Date: Mon, 25 Jul 2005 12:48:41 -0600
+Message-ID: <5d2f379105072511486949e30f@mail.gmail.com>
+References: <42E35541.9050205@eulerhermes.pl>
+Reply-To: "curby ." <curby.public@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200507251448.41773.marcin.giedz@eulerhermes.pl>
+In-Reply-To: <42E35541.9050205@eulerhermes.pl>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,36 +20,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Marcin Giedz <marcin.giedz@eulerhermes.pl>
+Cc: netfilter@lists.netfilter.org
 
-Marcin Giedz schrieb:
-> Hello
-> 
-> A few days ago I wrote post about "Ip:Port REDIRECTION problem". Since that 
-> time I have searched once again iptables HOW-TOs and find that one of the 
-> solutions for my problem is changing TOS to other value. This is done by 
-> simple rule:
-> iptables -t mangle -A PREROUTING -p tcp --dport 4000 -j TOS --set-tos 0x10
-> Next I redirect port 4000 from this router to another machine:
-> iptables -t nat -A PREROUTING -p tcp --dport 4000 -j DNAT 192.168.49.60:80
-> 
-> This works OK on router when this rule is being ran but when I dump (tcpdump) 
-> packtes on 192.168.49.60, "ToS" value is changed to 0x0. No any rules are 
-> being set on 192.168.49.60 - simple machine. Why "ToS" is changing? What do I 
-> wrong?
+On 7/24/05, Marcin Giedz <marcin.giedz@eulerhermes.pl> wrote:
+> As you can see default gateway for SERVICE SERVER is GATEWAY1. In
+> GATEWAY1's iptables rules there is redirection rule for port 4000 to
+> SERVICE SERVER:4000. In such configuration everything is OK, I can run
+> service from Internet via GATEWAY1:4000. But I also want to run this
+> services via GATEWAY2:4000. I tried redirection from GATEWAY2 to
+> GATEWAY1 via public IPs but it doesn't work.
 
-Your providing too little information, so nobody can help you - even if
-he/she desired to do so.
-
-Hmm, iptables isn't known for unreliability. Did you tcpdump on the
-routers outgoing interface ? What about TOS there ?
-
-I read your previous posting again, and your problem seems to be routing
-or iptables (not really sure). Why do you think that setting TOS to
-"Minimize-Delay" could help to solve your problems ?
-
-Have a nice time,
-
-Joerg
-
+if I understand your question correctly, you should be able to take
+requests sent to GATEWAY2:4000 and redirect them to your SERVER, just
+as you redirected from GATEWAY1 to SERVER.  You can do this even
+though GATEWAY2 is not SERVER's default gateway.  You might need to
+allow incoming requests on SERVER from the interface going to
+GATEWAY2.
 
