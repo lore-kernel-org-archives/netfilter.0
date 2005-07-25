@@ -1,12 +1,13 @@
 From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: iptables-restore vs iptables-restore --noflush performance
-Date: Mon, 25 Jul 2005 15:27:32 -0400
-Message-ID: <42E53D24.2020203@SCampbell.net>
-References: <63d3731e050725121353083b32@mail.gmail.com>
+Subject: Re: SSH Brute force attacks - Script version 1.0
+Date: Mon, 25 Jul 2005 15:41:33 -0400
+Message-ID: <42E5406D.9080406@SCampbell.net>
+References: <427B93EE.3030905@eccotours.dyndns.org>
+	<429F4F47.8050301@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <63d3731e050725121353083b32@mail.gmail.com>
+In-Reply-To: <429F4F47.8050301@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +19,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: iptables <netfilter@lists.netfilter.org>
 
-Joubert Berger wrote:
->Anyone know why I would get a big performance difference between
->"iptables-restore" and "iptables-restore --noflush"?
->
->I have 6600 rules.  If I load with iptables-restore, it takes about 30sec.
->If I use noflush, that turns in 1 min and 20+ seconds.
->
->--joubert
+Taylor, Grant wrote:
+># NetFilter MailList SSH_Brute_Force Chain version 1.0.
+>iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name SSH --set --rsource -j SSH_Brute_Force
+>iptables -A SSH_Brute_Force -s $My_Home_Firewall_IP -j RETURN
+>iptables -A SSH_Brute_Force -s $My_Office_Firewall_IP -j RETURN
+>iptables -A SSH_Brute_Force -s $My_Girlfriends_Firewall_IP list -j RETURN
+>iptables -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount 3 --name SSH --rsource -j RETURN 
+>iptables -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
+>iptables -A SSH_Brute_Force -p tcp -j TARPIT
 >
 >  
-Because you have 6600 rules and when you use no-flush you are adding 
-another 6600?  If you do it several
-times in a row I'll bet the time keeps getting worse.
+Thanks, that is most informative.  Here's an (hopefully) interesting 
+twist on that:
 
-The insert time for each rule is, among other things, dependent on the 
-number of rules that
-must be searched/manipulated, thus an explanation for the times you see.
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --set 
+--name SSH --rsource -j SSH
+-A SSH -m recent --rcheck --seconds 300 --hitcount 7 --name SSH 
+--rsource -j DROP
+-A SSH -m recent --rcheck --seconds 30 --hitcount 4 --name SSH --rsource 
+-j RETURN
+-A SSH -j DROP
 
-You should only use --noflush if you really intend to add rules to the 
-current  rule set rather
-than replace them all.  What are you trying to accomplish here?
+Now we must make 3 failed attempts to connect within 30 seconds then the 
+4'th through 7'th attempts will be allowed.  Further attempts will not 
+be allowed until 5 minutes of idle time.   Port scanners should blow 
+right past this thinking "the port is closed", you can still get in by 
+doing multiple attempts and anyone who does figure it out still can only 
+issue 4 brute attempts every 5 minutes.
 
 
 
