@@ -1,18 +1,13 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Questions regarding routing in the stack
-Date: Sun, 24 Jul 2005 07:18:10 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0507240712000.8059@darkstar.sysinfo.com>
-References: <a60102c3050721073024051dd2@mail.gmail.com>
-	<Pine.GSO.4.58.0507211222530.20075@newavalon.cs.rit.edu>
-	<Pine.LNX.4.61.0507211941280.32348@yvahk01.tjqt.qr>
-	<12984bb005072215452cfa9697@mail.gmail.com>
-	<Pine.LNX.4.60.0507222025400.8059@darkstar.sysinfo.com>
-	<Pine.LNX.4.61.0507231309410.13325@yvahk01.tjqt.qr>
-	<Pine.LNX.4.60.0507231824010.8059@darkstar.sysinfo.com>
-	<Pine.LNX.4.61.0507240933480.11477@yvahk01.tjqt.qr>
+From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
+Subject: RE: VPN Pass through doesn't work with Fedora Core 4, Why?????
+Date: Mon, 25 Jul 2005 09:49:30 +0800
+Message-ID: <MDAEMON-F200507250948.AA4808765md50000000046@palettemm.com>
+References: <5c68515305072204353d0ccf90@mail.gmail.com>
+Reply-To: bassam@palettemm.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0507240933480.11477@yvahk01.tjqt.qr>
+In-Reply-To: <5c68515305072204353d0ccf90@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,59 +18,151 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Robb Bossley' <robb.bossley@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Yes I have already chosen the required options in the xconfig or menuconfig.
+The steps are:
 
-On Sun, 24 Jul 2005, Jan Engelhardt wrote:
+$ make xconfig
+Network Support
+	Networking Options
+		Network Packet Filtering
+			IP: Netfilter Configuration
+				GRE Protocol Support
+				PPTP Protocol Support
 
->>
->> though I recall a few recent sploits on the *nix side that would be crafted wth
->> png files, no?
+This is the required option selection after patching the POM. They are
+normal steps where I used to do it in Redhat 9.
+After compiling the kernel successfully and load the four modules
+(ip_conntrack_proto_gre, ip_conntrack_pptp, ip_nat_proto_gre and
+ip_nat_pptp) by using the command modprobe, I couldn't establish the VPN
+pass through. PLEASE READ MY FIRST POST.
+
+Your help is much appreciated
+
+Regards
+Bassam
+
+
+-----Original Message-----
+From: Robb Bossley [mailto:robb.bossley@gmail.com] 
+Sent: Friday, July 22, 2005 7:36 PM
+To: bassam@palettemm.com
+Subject: Re: VPN Pass through doesn't work with Fedora Core 4, Why?????
+
+Can we assume that you are doing a "make menuconfig" and selecting the
+proper options as modules?  That is a critical step I do not see
+listed.
+
+On 7/22/05, Bassam A. Al-Khaffaf <bassam@palettemm.com> wrote:
+> Dear All,
+> 
+>    I used to successfully install the pptp_conntrack_nat from the POM and
+> compile the kernel of my redhat 9 machine that works as a gateway in order
+> to enable multiple VPN pass through (VPN NATing) from the clients on the
+LAN
+> side to different VPN servers on the WAN side of my redhat 9 box.
+> 
+> Recently I have installed the Fedora Core 4 and has done the same steps
+that
+> I used to do previously with my redhat 9 without any problem, but when I
+> load the following modules after, non of the machines on the LAN side can
+> establish a VPN connection. So I wonder what are the problem.
+> 
+> $ modprobe ip_conntrack_proto_gre
+> $ modprobe ip_conntrack_pptp
+> $ modprobe ip_nat_proto_gre
+> $ modprobe ip_nat_pptp
+> 
+> 
+> Here is what I have done so far:
+> 
+> $ wget http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.3.tar.bz2
+> $ bzip2 -d linux-2.6.12.3.tar.bz2
+> $ tar -xvf linux-2.6.12.3.tar
+> 
+> $ wget http://www.netfilter.org/files/iptables-1.3.0.tar.bz2
+> $ bzip2 -d iptables-1.3.0.tar.bz2
+> $ tar -xvf iptables-1.3.0.tar
+> 
+> $ wget
 >
-> You did update, did not you?
->
+http://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/patch-o-matic-ng-2005
+> 0714.tar.bz2
+> $ bzip2 -d patch-o-matic-ng-20050714.tar.bz2
+> $ tar -xvf patch-o-matic-ng-20050714.tar
+> 
+> 
+> Now to install the pptp_conntrack_nat only, here what I have done
+> $ KERNEL_DIR=/usr/src/kernels/linux-2.6.12
+> IPTABLES_DIR=/usr/src/iptables-1.3.0 ./runme extra
+> 
+> $ cd /usr/src/kernels/linux-2.6.12
+> $ make clean
+> $ make mrproper
+> $ make xconfig
+> $ make
+> $ make bzImage
+> $ make modules
+> $ make modules_install
+> $ cp /usr/src/kernels/linux-2.6.12/arc/i386/boot/bzImage
+> /boot/bzImage-2.6.12.3
+> $ cp /usr/src/kernels/linux-2.6.12/System.map /boot/System.map-2.6.12.3
+> $ cd /boot
+> $ mkinitrd initrd-2.6.12.3.img 2.6.12.3
+> $ cd /boot/grub
+> $ vi menu.lst           #To add another entry in the menu.conf file, save
+> and exit
+> $ cd /usr/src/iptables-1.3.0
+> $ make clean
+> $ make KERNEL_DIR==/usr/src/kernels/linux-2.6.12
+> $ make install KERNEL_DIR==/usr/src/kernels/linux-2.6.12
+> $ reboot                        #We choose to boot from the new kernel
+> linux-2.6.12.3
+> $ echo 1 > /proc/sys/net/ipv4/ip_forward
+> $ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+> 
+> Till this step there is no problem, the Fedora machine works fine as a
+> gateway and all the clients can access the Internet and only one machine
+> (chosen randomly) can establish a VPN connection to a VPN server on the
+WAN
+> side.
+> 
+> Now and as usual to enable VPN pass through (VPN NATing) we need to load
+the
+> following four modules into the kernel:
+> 
+> $ modprobe ip_conntrack_proto_gre
+> $ modprobe ip_conntrack_pptp
+> $ modprobe ip_nat_proto_gre
+> $ modprobe ip_nat_pptp
+> 
+> After loading these four modules none of the client machines can establish
+> the VPN connections.
+> 
+> 
+> Your help is appreciated to let me know why I am facing this problem.
+> 
+> 
+> Regards
+> Bassam A. Al-Khaffaf
+> 
+> 
+> 
 
 
-oh, yes, of course, but, was that a one timer or repeat?  Snedmail/ftp 
-used to be things like bind that had to be watched daily, now days it is 
-openssh/openssl and others, and if yer in the M$ world, yer updating 
-things that the *nix workd learned ten yearts bask with rcp and such.  So, 
-these are not fix once and forget kinds of issues.
+-- 
+As if you could kill time without injuring eternity.  The mass of men
+live lives of quiet desperation.
+- Henry David Thoreau
 
-e-mail was meant to push text, plain and simple, what makes things complex 
-tends to make things not function ass we as or even at all like they were 
-intended.  And html and ports 80/443 are the scourge of security admins 
-these days, everything gets pushed over those ports and is near impossible 
-to control in any reasonable manner.  besides, some of the poorer mua's 
-folks use and use in public lists like this tend to push html in ishy ways 
-that makes my reading pleasure not...those folks I just tend to not read, 
-and perhaps miss something that might be interesting or inportant, but, I 
-just don't have the time to wsate trying to fix the crap that those mua's 
-pushout...
 
-Thanks,
 
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+-- 
+No virus found in this incoming message.
+Checked by AVG Anti-Virus.
+Version: 7.0.323 / Virus Database: 267.9.2/55 - Release Date: 7/21/2005
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFC43j1st+vzJSwZikRArrbAJ9c4PQSqftT4ONEIJElzdBiiUtzhgCgqBD2
-sXVrHrG3nXPK+UFOBSVr+xA=
-=7jSn
------END PGP SIGNATURE-----
 
