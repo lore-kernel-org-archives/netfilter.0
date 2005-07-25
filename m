@@ -1,11 +1,11 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: string matching in kernel 2.6
-Date: Mon, 25 Jul 2005 08:17:33 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0507250816370.13990@yvahk01.tjqt.qr>
-References: <00bf01c590c9$abb6b030$0100a8c0@newlife>
+From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
+Subject: TOS problem
+Date: Mon, 25 Jul 2005 14:48:41 +0200
+Message-ID: <200507251448.41773.marcin.giedz@eulerhermes.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <00bf01c590c9$abb6b030$0100a8c0@newlife>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,22 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ming-Ching Tiew <mingching.tiew@redtone.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
->> > If neither works, you can try abusing ipt_layer7 ;-)
->> > See http://l7-filter.sf.net/
->
->I had a quick look at the source of ipt_layer7, it's linearising 
->the skb so that the pattern can be matched. For ipp2p, it simply 
+Hello
 
-A right, yes, it linearizes, but only for the first 2048 bytes (the default 
-buffer size). But anyway, what if in these first 2048 bytes two rules would 
-match? You'd anyway get nonpredictable results.
+A few days ago I wrote post about "Ip:Port REDIRECTION problem". Since that 
+time I have searched once again iptables HOW-TOs and find that one of the 
+solutions for my problem is changing TOS to other value. This is done by 
+simple rule:
+iptables -t mangle -A PREROUTING -p tcp --dport 4000 -j TOS --set-tos 0x10
+Next I redirect port 4000 from this router to another machine:
+iptables -t nat -A PREROUTING -p tcp --dport 4000 -j DNAT 192.168.49.60:80
 
+This works OK on router when this rule is being ran but when I dump (tcpdump) 
+packtes on 192.168.49.60, "ToS" value is changed to 0x0. No any rules are 
+being set on 192.168.49.60 - simple machine. Why "ToS" is changing? What do I 
+wrong?
 
-Jan Engelhardt
--- 
+Thanks,
+Marcin
+
 
