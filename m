@@ -1,11 +1,13 @@
-From: "Ginter, Jeff A" <Jeff.Ginter@ca.com>
-Subject: Rules for localhost, help needed.
-Date: Mon, 25 Jul 2005 16:54:03 -0400
-Message-ID: <B80488675062364A909EE60F4A66603807E15FDE@usilms23.ca.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: iptable for single nic
+Date: Mon, 25 Jul 2005 16:54:27 -0500
+Message-ID: <42E55F93.8060505@gmx.co.uk>
+References: <20050725044840.49586.qmail@web42410.mail.yahoo.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20050725044840.49586.qmail@web42410.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,151 +18,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-On occasion, I configure iptables via webmin.  I am having a strange
-problem where when I apply the rules from that GUI that it never comes
-back.  If I close the web browser and restart, I can see everything
-again, but it looks like I get cut off.  Also, I occasionally get some
-redhat GUI issues as well and I think it's because of my rulebase.
-These issues do not happen when I am connected remotely.
+john decot wrote:
+> sorry it was the mistake in this mail. i have used redirect rules with 
+> --to-ports 3128 as
+>  
+> iptables -A PREROUTING -t nat -p tcp -m tcp -i eth0 -s $lan_network_ip 
+> -d 0/0 -j REDIRECT --to-ports 3128
 
-=20
+Where's the "--dport 80"? I have yet to see one which is perfect. Looks 
+like you're going to redirect all TCP traffic from $lan_network_ip to squid.
 
-I have my ruleset below...am I missing anything for local that anyone
-can see.
+> but it seems not working again. is anything wrong with my transparent 
+> proxy configuration???
 
-=20
+Offhand I'd guess so, but since I don't know your whole rule set I 
+cannot say for sure. Post your iptables-save(8) output to the list. 
+Also, look at "iptables -vt nat -nL" and note the packet counters. 
+iptables rules are evaluated in order. If an earlier rule matches these 
+packets, this rule you added won't be hit.
 
-Thanks in advance...very appreciated.
+> any help..
 
-=20
-
-RULES
-
-[root@mae-fw ~]# iptables -L
-
-Chain INPUT (policy DROP)
-
-target     prot opt source               destination
-
-DROP       all  --  192.168.222.0/24     anywhere
-
-DROP       all  --  138.42.156.0/24      anywhere
-
-ACCEPT     all  --  anywhere             anywhere            state
-RELATED,ESTABLISHED
-
-ACCEPT     tcp  --  anywhere             anywhere            tcp
-multiport dports ssh,10000 state NEW
-
-DROP       all  --  anywhere             anywhere
-
-=20
-
-Chain FORWARD (policy DROP)
-
-target     prot opt source               destination
-
-DROP       all  --  192.168.222.0/24     anywhere
-
-DROP       all  --  138.42.156.0/24      anywhere
-
-ACCEPT     all  --  anywhere             anywhere            state
-RELATED,ESTABLISHED
-
-ACCEPT     udp  --  anywhere             anywhere            udp
-dpt:domain
-
-ACCEPT     tcp  --  anywhere             anywhere            tcp
-
-ACCEPT     icmp --  anywhere             anywhere
-
-ACCEPT     tcp  --  anywhere             anywhere            tcp
-multiport dports
-ftp-data,ftp,ssh,telnet,domain,http,https,webcache,3389,5800,5801
-
-DROP       all  --  anywhere             anywhere
-
-=20
-
-Chain OUTPUT (policy DROP)
-
-target     prot opt source               destination
-
-ACCEPT     all  --  anywhere             anywhere            state
-NEW,RELATED,ESTABLISHED
-
-=20
-
-=20
-
-NATS
-
-[root@mae-fw ~]# iptables -t nat -L
-
-Chain PREROUTING (policy ACCEPT)
-
-target     prot opt source               destination
-
-DNAT       all  -- !192.168.222.0/24     Etrust-scc.ca.com
-to:192.168.222.101
-
-DNAT       all  -- !192.168.222.0/24     Etrust-audit.ca.com
-to:192.168.222.165
-
-DNAT       all  -- !192.168.222.0/24     Etrust-pc.ca.com
-to:192.168.222.130
-
-DNAT       all  -- !192.168.222.0/24     Etrust-ws1.ca.com
-to:192.168.222.100
-
-DNAT       all  -- !192.168.222.0/24     Etrust-uni.ca.com
-to:192.168.222.102
-
-DNAT       all  -- !192.168.222.0/24     Etrust-vm.ca.com
-to:192.168.222.115
-
-DNAT       all  -- !192.168.222.0/24     Itrmsrv01.ca.com
-to:192.168.222.150
-
-=20
-
-Chain POSTROUTING (policy ACCEPT)
-
-target     prot opt source               destination
-
-SNAT       all  --  192.168.222.0/24     anywhere
-to:138.42.156.15
-
-=20
-
-Chain OUTPUT (policy ACCEPT)
-
-target     prot opt source               destination
-
-=20
-
-=20
-
-=20
-
-Jeff Ginter, CISSP
-
-Computer Associates
-
-Mid-Atlantic Total Protection
-
-Consulting Manager
-
-Office:  (908) 874-9726
-
-Mobile:  (609) 577-1494
-
-jeff.ginter@ca.com
-
-=20
-
-=20
+Troubleshoot it yourself before you post again. Try
+"telnet netfilter.org 80" from one of the clients and watch your squid 
+logs and check the iptables packet counters. Every attempt to go out on 
+port 80 should increment the counter by one, and should be logged in squid.
+-- 
+     mail to this address is discarded unless "/dev/rob0"
+     or "not-spam" is in Subject: header
 
