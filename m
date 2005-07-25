@@ -1,10 +1,11 @@
-From: john decot <johndecot@yahoo.com>
-Subject: not solve yet!!!
-Date: Sun, 24 Jul 2005 23:07:37 -0700 (PDT)
-Message-ID: <20050725060738.31653.qmail@web42405.mail.yahoo.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: string matching in kernel 2.6
+Date: Mon, 25 Jul 2005 08:17:33 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0507250816370.13990@yvahk01.tjqt.qr>
+References: <00bf01c590c9$abb6b030$0100a8c0@newlife>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <00bf01c590c9$abb6b030$0100a8c0@newlife>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,33 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ming-Ching Tiew <mingching.tiew@redtone.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello all,
- i am facing a problem in iptables as follows:
-  i have  single nic which ip is eth0= x.x.x.x(public_ip)
-    alias is  eth0:1=y.y.y.y( private_ip)
-the proxy works when ip of server and port 3128 at lan connection is 
-configured at client side(windows os).
-But doesn't work without that whenever i flow traffic to proxy server, 
-again i have used ip tables as:
- 
-iptables -A PREROUTING -t nat -p tcp --dport 80 -i eth0 -j REDIRECT --to-port 3128
- 
-with above it doesn't work then i tried following
-iptables -A PREROUTING -t nat -p tcp --dport 80 -i eth0 -j DNAT  
-$public_ip or $private_ip:3128
- 
-again the same result.
-client pc and server is connect at same switch. and clients have 
-private ip where as server has public as well as private ip.
-any help will be appreciated.
- 
-thanks in advance.
-john
- 
+>> > If neither works, you can try abusing ipt_layer7 ;-)
+>> > See http://l7-filter.sf.net/
+>
+>I had a quick look at the source of ipt_layer7, it's linearising 
+>the skb so that the pattern can be matched. For ipp2p, it simply 
 
-		
----------------------------------
- Start your day with Yahoo! - make it your home page 
+A right, yes, it linearizes, but only for the first 2048 bytes (the default 
+buffer size). But anyway, what if in these first 2048 bytes two rules would 
+match? You'd anyway get nonpredictable results.
+
+
+Jan Engelhardt
+-- 
+
