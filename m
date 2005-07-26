@@ -1,12 +1,14 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: redirecting traffic
-Date: Tue, 26 Jul 2005 05:27:57 -0500
-Message-ID: <42E6102D.50304@gmx.co.uk>
-References: <200507260941.01656.chadley@pinteq.co.za>
+Subject: Re: rc.local
+Date: Tue, 26 Jul 2005 05:41:13 -0500
+Message-ID: <42E61349.70106@gmx.co.uk>
+References: <42e5502e.57dde3f4.2ba3.ffff9d47SMTPIN_ADDED@mx.gmail.com>
+	<9927912d050726025154d3f639@mail.gmail.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200507260941.01656.chadley@pinteq.co.za>
+In-Reply-To: <9927912d050726025154d3f639@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +20,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+To: Visham Ramsurrun <vishamr2000@gmail.com>, netfilter@lists.netfilter.org
 
-Chadley Wilson wrote:
-> As I progress with my firewall skills, I would like to know if there 
-> is a way to take all traffic aimed at a certian machine for certain 
-> services and redirect them directly to another server.
+Visham Ramsurrun wrote:
+> Can anyone tell me about the additional configurations that have to 
+> be done after i paste of my the contents of my iptables script in
 
-How far have you progressed? To the point of reading the NAT HOWTO yet?
+Distro questions belong in a distro forum. I can guarantee that what 
+you're doing is the wrong way to set up a firewall at boot time, in any 
+distro with which I am familiar. Check your distro's documentation about 
+"firewall" or "iptables" and find out the right way to do it.
 
-> Could some-one offer a few suggestions and possibly some examples on 
-> how to achieve this ?
+> rc.local. What things do I have to do for it to take the iptables
+> rules in it? I did an iptables -L but no rules were present.
 
-"-j DNAT", documented in "man iptables", examples in the NAT HOWTO.
+rc.local, like other startup scripts, is a shell script. Do learn what 
+that means; I cannot help you unless you know what can/should be in a 
+script. Perhaps your time would be best spent at this point in finding 
+some basic bash and shell tutorials.
+
+I will throw in a WAG, however: your "script" might have been a set of 
+rules for iptables-restore(8).
 -- 
      mail to this address is discarded unless "/dev/rob0"
      or "not-spam" is in Subject: header
