@@ -1,12 +1,14 @@
-From: john decot <johndecot@yahoo.com>
-Subject: Re: iptable for single nic
-Date: Tue, 26 Jul 2005 02:50:41 -0700 (PDT)
-Message-ID: <20050726095041.50725.qmail@web42401.mail.yahoo.com>
-References: <42E55F93.8060505@gmx.co.uk>
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: rc.local
+Date: Tue, 26 Jul 2005 13:51:23 +0400
+Message-ID: <9927912d050726025154d3f639@mail.gmail.com>
+References: <42e5502e.57dde3f4.2ba3.ffff9d47SMTPIN_ADDED@mx.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42E55F93.8060505@gmx.co.uk>
+In-Reply-To: <42e5502e.57dde3f4.2ba3.ffff9d47SMTPIN_ADDED@mx.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +20,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+Hi to all,
 
-thanks for replying , i have solve my problem
- 
-by prerouting traffic of 80 port to 3128 then after i used nating rules. it gets work now.
- 
- 
-thanks to all.
-/dev/rob0 <rob0@gmx.co.uk> wrote:
-john decot wrote:
-> sorry it was the mistake in this mail. i have used redirect rules with 
-> --to-ports 3128 as
-> 
-> iptables -A PREROUTING -t nat -p tcp -m tcp -i eth0 -s $lan_network_ip 
-> -d 0/0 -j REDIRECT --to-ports 3128
+Can anyone tell me about the additional configurations that have to be
+done after i paste of my the contents of my iptables script in
+rc.local. What things do I have to do for it to take the iptables
+rules in it? I did an iptables -L but no rules were present.
 
-Where's the "--dport 80"? I have yet to see one which is perfect. Looks 
-like you're going to redirect all TCP traffic from $lan_network_ip to squid.
+Thx in advance..
 
-> but it seems not working again. is anything wrong with my transparent 
-> proxy configuration???
+Warm regards,
+Visham
 
-Offhand I'd guess so, but since I don't know your whole rule set I 
-cannot say for sure. Post your iptables-save(8) output to the list. 
-Also, look at "iptables -vt nat -nL" and note the packet counters. 
-iptables rules are evaluated in order. If an earlier rule matches these 
-packets, this rule you added won't be hit.
-
-> any help..
-
-Troubleshoot it yourself before you post again. Try
-"telnet netfilter.org 80" from one of the clients and watch your squid 
-logs and check the iptables packet counters. Every attempt to go out on 
-port 80 should increment the counter by one, and should be logged in squid.
--- 
-mail to this address is discarded unless "/dev/rob0"
-or "not-spam" is in Subject: header
-
-
-		
----------------------------------
- Start your day with Yahoo! - make it your home page 
