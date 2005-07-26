@@ -1,12 +1,11 @@
-From: =?ISO-8859-15?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: number of connection per ip
-Date: Tue, 26 Jul 2005 09:47:22 +0200
-Message-ID: <42E5EA8A.9060200@mnemon.de>
-References: <1122357092.30784.3.camel@act17.actcom.co.il>
+From: Chadley Wilson <chadley@pinteq.co.za>
+Subject: redirecting traffic
+Date: Tue, 26 Jul 2005 09:41:01 +0200
+Message-ID: <200507260941.01656.chadley@pinteq.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1122357092.30784.3.camel@act17.actcom.co.il>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,19 +19,31 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Vects schrieb:
-> Hello there, 
-> I'm looking for ability to limit number of NAT sessions per host(ip), is
-> there any way to implement that by iptables?
-> Excuse me for question if it was already asked in the list, I've just
-> subscribed.
+Greetings,
 
-May be this is helpfull:
+As I progress with my firewall skills, I would like to know if there is a way 
+to take all traffic aimed at a certian machine for certain services and 
+redirect them directly to another server.
 
-http://netfilter.org/patch-o-matic/pom-base.html#pom-base-connlimit
+We are moving from the uucp dial-up to ISP based dial-up, which means our 
+clients will not dial directly into our server any more, They will be 
+uploading data to our public gatways ip address, I want the gateway to 
+forward or redirect the requests straight to our server.
 
-Have a nice time,
 
-Joerg
+Could some-one offer a few suggestions and possibly some examples on how to 
+achieve this ?
 
+Thanks
+
+
+-- 
+--
+Chadley Wilson
+Production Line Superintendant
+Pinnacle Micro
+Manufacturers of Proline Computers
+====================================
+Exercise freedom, Use LINUX
+=====================================
 
