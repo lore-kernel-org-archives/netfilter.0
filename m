@@ -1,10 +1,12 @@
-From: haynes george <hmg_u@yahoo.co.in>
-Subject: Help with Raw Sockets Programming
-Date: Tue, 26 Jul 2005 08:11:56 +0100 (BST)
-Message-ID: <20050726071156.99767.qmail@web8402.mail.in.yahoo.com>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: Rules for localhost, help needed.
+Date: Tue, 26 Jul 2005 09:38:22 +0200
+Message-ID: <42E5E86E.80206@mnemon.de>
+References: <B80488675062364A909EE60F4A66603807E15FDE@usilms23.ca.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <B80488675062364A909EE60F4A66603807E15FDE@usilms23.ca.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,104 +20,48 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi...
+Ginter, Jeff A schrieb:
+> On occasion, I configure iptables via webmin.  I am having a strange
+> problem where when I apply the rules from that GUI that it never comes
+> back.  If I close the web browser and restart, I can see everything
+> again, but it looks like I get cut off.  Also, I occasionally get some
+> redhat GUI issues as well and I think it's because of my rulebase.
+> These issues do not happen when I am connected remotely.
+> 
+>  
+> 
+> I have my ruleset below...am I missing anything for local that anyone
+> can see.
+...
+> [root@mae-fw ~]# iptables -L
 
-I was going thru some network programming tutorials
-and i found a section on raw sockets programming..
+Please provide at least the output of "iptables -nvL", only -L isn't
+enough. Or you may send the output of "iptables-save ...".
 
-I understood what raw sockets are... and i started to
-search for some examples related to raw socket
-programming..
+> Chain INPUT (policy DROP)
+> 
+> target     prot opt source               destination
+> 
+> DROP       all  --  192.168.222.0/24     anywhere
+> 
+> DROP       all  --  138.42.156.0/24      anywhere
+> 
+> ACCEPT     all  --  anywhere             anywhere            state
+> RELATED,ESTABLISHED
+> 
+> ACCEPT     tcp  --  anywhere             anywhere            tcp
+> multiport dports ssh,10000 state NEW
+> 
+> DROP       all  --  anywhere             anywhere
 
-All examples that i found were the kind of ping server
-or something of that sort...
-What i am looking for is an example where our prgm
-runs as a server and it outputs all packets of a
-particluar protocol (eg: TCP) recieved on the host on
-which this server is running
+Although no interfaces are shown, I can't see any rule, that could allow
+lo. Seems to me that you are missing rules like these:
 
-I even tried to code this but i failed... This is what
-i did
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
 
-   
+Have a nice time,
 
+Joerg
 
-#.........
-
-/** All the necessary headers **/
-
-main()
-{
-       int sockfd;
-      struct sockaddr_in myaddr;
-
-
-      if( ( sockfd = socket (
-PF_INET,SOCK_RAW,IPPROTO_TCP ) ) < 0 ) {
-                                perror("SOCKET");
-                                exit(1);
-      }
-
-//Whether we should bind or not ... i have a doubt 
-// Anyway i didnot 
-// The tutorial said that as all IP packets with the
-protocol field as that set to the protocol
-//field of the socket() call will be given to the raw
-socket..
-
-
-.// So now i read from the socket using the function
-call recvfrom() as this is a 
-//connectionless setup
-//Is there a need to setup any fields of remoteaddr
-???
-
-while( recvfrom ( sockfd, buffer , 4096 ,0 ,  (struct
-sockaddr *)&remoteaddr , sizeof(struct sockaddr )) >
-0)
-
-{
-       printf("caught packet.. %s",buffer);
-
-}
-perror("RECVFROM");
-return 0;
-
-}
-
-
-
-
-On running the above code it gave an error with the
-recvfrom() function
-
-   
-
- RECVFROM: Operation on non-socket type
-
-
-
-
-
-How can i modify the above code so that it recieves
-all TCP packets that arrive on the host and prints
-them out....
-
-The tutorial i was reading said that the kernel
-forwards all packets to the raw socket which has the
-protocol number matching as that of the IP datagram
-which the host recieved. So shouldn't this print all
-tcp packets that arrive at the host ??
-
-
-
-
-thnks
-
-haynes
-
-
-		
-__________________________________________________________
-How much free photo storage do you get? Store your friends 'n family snaps for FREE with Yahoo! Photos http://in.photos.yahoo.com
 
