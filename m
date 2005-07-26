@@ -1,14 +1,14 @@
-From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
-Subject: Re: TOS problem
-Date: Tue, 26 Jul 2005 17:23:00 +0200
-Message-ID: <200507261723.00799.marcin.giedz@eulerhermes.pl>
-References: <200507251448.41773.marcin.giedz@eulerhermes.pl>
-	<200507261258.08378.marcin.giedz@eulerhermes.pl>
-	<42E63152.9030006@mnemon.de>
+From: "curby ." <curby.public@gmail.com>
+Subject: Re: rc.local
+Date: Tue, 26 Jul 2005 09:38:15 -0600
+Message-ID: <5d2f379105072608385caaee15@mail.gmail.com>
+References: <42e607e9.6446401e.6174.46a7SMTPIN_ADDED@mx.gmail.com>
+	<9927912d0507260430275d8239@mail.gmail.com>
+Reply-To: "curby ." <curby.public@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42E63152.9030006@mnemon.de>
+In-Reply-To: <9927912d0507260430275d8239@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,88 +20,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Visham Ramsurrun <vishamr2000@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Dnia wtorek, 26 lipca 2005 14:49, J=F6rg Harmuth napisa=B3:
+On 7/26/05, Visham Ramsurrun <vishamr2000@gmail.com> wrote:
+> Here is my rc.local file:
+[snip]
 
-Thanks so much Joerg .... one thing i didn't realized earlier - SNAT. Now i=
-t=20
-roks. Thanks once again.
+I think this is a shell scripting problem, not an iptables problem.=20
+You seem to be forwarding pings to different interfaces per script
+invocation (usually during boot time)?  What are you trying to
+accomplish?  If you state your goal, the list might be able to come up
+with a solution using iptables.
 
-Marcin
+Other things:
 
+Usually if you accept pings in one direction (say -i eth0 -o eth1) you
+want pongs to go in the other direction (-i eth1 -o eth0).
 
-> Marcin Giedz schrieb:
-> > Hello,
-> >
-> >>Your providing too little information, so nobody can help you - even if
-> >>he/she desired to do so.
-> >
-> > Maybe your are right.. I will try once again.
-> >
-> > In my office we have 2 gateways. One of them GATEWAY1 is connected to o=
-ne
-> > ISP1 and it is also default gateway for almost all of our servers. I sa=
-id
-> > "almost" because there is one server "service" where default gateway is
-> > GATEWAY2 connected to another ISP2.
-> >
-> > All of our customers run Services situated on "service" server  via
-> > GATEWAY2. But if GATEWAY2 is down or connection to ISP2 is broken I wou=
-ld
-> > like that customers can still connect to Services via GATEWAY1. So I ne=
-ed
-> > some kind of redirection on GATEWAY1 because I don't want to switch
-> > default gateway on "service" manually. However if GATEWAY2 is running OK
-> > some part of our customers can still run Services via GATEWAY1. My
-> > problem is:
-> > how to route connections to "service" server passed via GATEWAY1?
->
-> Just to summarize the important points. Main traffic goes via GW1 to
-> ISP1, but the server in question has as default GW GW2 which in turn has
-> default GW to ISP2. The problem is to forward incoming connection from
-> GW1 to GW2 (or your special service server), if customers connect to
-> service server via GW1.
->
-> > Packets MARK'ing work within kernel so can be used. Another way is
-> > changing TOS on GATEWAY1 for "these" packets and route them to "service=
-".
->
-> Yes, almost for sure, it is possible to have a solution based on MARK
-> and / or TOS, but I don't believe that it's necessary.
->
-> You said in your posting "IP:Port REDIRECT problem", that you tried with
-> public IPs to no avail. Why public IPs ? If your GWs aren't connected to
-> each other somehow, I suggest to connect them with RFC1918 addresses and
->  set the routes accordingly. You don't want to redirect from GW1 to GW2
-> via the internet, do you ?
->
-> Once the GWs are connected, I think the simple solution will be to use
-> DNAT and SNAT with iptables, 'cause I can't see anything, that needs
-> more effort. So it breaks down to curby's posting, which looks something
-> this style:
->
-> ## On GW1
-> iptables -t nat -A PREROUTING -p tcp --dport 4000 \
->    -i $INET_IFACE -j DNAT --to $IP_OF_GW2
-> ## If FORWARD policy is not ACCEPT or you have a rule like
-> ## ... -A FORWARD -j DROP
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED \
->    -j ACCEPT
-> iptables -A FORWARD -i $INET_IFACE -o $IFACE_TO_GW2 \
->    -p tcp --dport 4000 --syn -j ACCEPT
-> ## You need SNAT too, at least it's the save way
-> iptables -t nat -A POSTROUTING -o $IFACE_TO_GW2 \
->    -p tcp --dport 4000 -j SNAT --to $IP_OF_IFACE_TO_GW2
->
-> So, if GW1 and GW2 are connected somehow and know how to route packets
-> to each other, the packets in question will reach GW2 with a source
-> address of GW1. If allowed by iptable rules, GW2 will forward / redirect
-> these packets to "service server" (maybe applying DNAT and SNAT too) and
-> everything should work.
->
-> HTH and have a nice time,
->
-> Joerg
+I'm not exactly sure why you are forwarding from an interface to
+itself, though I don't have much experience with this kind of thing.
 
