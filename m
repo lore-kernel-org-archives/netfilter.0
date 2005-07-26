@@ -1,14 +1,15 @@
-From: "Carl Holtje ;021;vcsg6;" <cwh0803@cs.rit.edu>
-Subject: Re: executing a firewall script!!
-Date: Tue, 26 Jul 2005 09:09:30 -0400 (EDT)
-Message-ID: <Pine.GSO.4.58.0507260904550.2331@newavalon.cs.rit.edu>
-References: <42e607e9.6446401e.6174.46a7SMTPIN_ADDED@mx.gmail.com> 
-	<9927912d050726045775275c9b@mail.gmail.com>
-	<Pine.GSO.4.58.0507260820580.2331@newavalon.cs.rit.edu>
-	<9927912d0507260546168ad046@mail.gmail.com>
+From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
+Subject: Re: TOS problem
+Date: Tue, 26 Jul 2005 17:23:00 +0200
+Message-ID: <200507261723.00799.marcin.giedz@eulerhermes.pl>
+References: <200507251448.41773.marcin.giedz@eulerhermes.pl>
+	<200507261258.08378.marcin.giedz@eulerhermes.pl>
+	<42E63152.9030006@mnemon.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9927912d0507260546168ad046@mail.gmail.com>
+In-Reply-To: <42E63152.9030006@mnemon.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,63 +20,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Visham Ramsurrun <vishamr2000@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Tue, 26 Jul 2005, Visham Ramsurrun wrote:
+Dnia wtorek, 26 lipca 2005 14:49, J=F6rg Harmuth napisa=B3:
 
-> Dear Carl,
+Thanks so much Joerg .... one thing i didn't realized earlier - SNAT. Now i=
+t=20
+roks. Thanks once again.
+
+Marcin
+
+
+> Marcin Giedz schrieb:
+> > Hello,
+> >
+> >>Your providing too little information, so nobody can help you - even if
+> >>he/she desired to do so.
+> >
+> > Maybe your are right.. I will try once again.
+> >
+> > In my office we have 2 gateways. One of them GATEWAY1 is connected to o=
+ne
+> > ISP1 and it is also default gateway for almost all of our servers. I sa=
+id
+> > "almost" because there is one server "service" where default gateway is
+> > GATEWAY2 connected to another ISP2.
+> >
+> > All of our customers run Services situated on "service" server  via
+> > GATEWAY2. But if GATEWAY2 is down or connection to ISP2 is broken I wou=
+ld
+> > like that customers can still connect to Services via GATEWAY1. So I ne=
+ed
+> > some kind of redirection on GATEWAY1 because I don't want to switch
+> > default gateway on "service" manually. However if GATEWAY2 is running OK
+> > some part of our customers can still run Services via GATEWAY1. My
+> > problem is:
+> > how to route connections to "service" server passed via GATEWAY1?
 >
-> many thx for the reply...i too thought abt that..but i don't know how
-> to do it. Here is my firewall script.
+> Just to summarize the important points. Main traffic goes via GW1 to
+> ISP1, but the server in question has as default GW GW2 which in turn has
+> default GW to ISP2. The problem is to forward incoming connection from
+> GW1 to GW2 (or your special service server), if customers connect to
+> service server via GW1.
 >
-> #!/bin/bash
+> > Packets MARK'ing work within kernel so can be used. Another way is
+> > changing TOS on GATEWAY1 for "these" packets and route them to "service=
+".
 >
-> IPT="/sbin/iptables"
+> Yes, almost for sure, it is possible to have a solution based on MARK
+> and / or TOS, but I don't believe that it's necessary.
 >
-> $IPT -F
-> $IPT -Z
+> You said in your posting "IP:Port REDIRECT problem", that you tried with
+> public IPs to no avail. Why public IPs ? If your GWs aren't connected to
+> each other somehow, I suggest to connect them with RFC1918 addresses and
+>  set the routes accordingly. You don't want to redirect from GW1 to GW2
+> via the internet, do you ?
 >
-> if [ ! -r x ]; then
+> Once the GWs are connected, I think the simple solution will be to use
+> DNAT and SNAT with iptables, 'cause I can't see anything, that needs
+> more effort. So it breaks down to curby's posting, which looks something
+> this style:
 >
-> # No value from previous run - initialize x
->  x=1
-> else
->  x=$((`cat x`))
->  echo "Value of x from previous run = $x"
-> fi
+> ## On GW1
+> iptables -t nat -A PREROUTING -p tcp --dport 4000 \
+>    -i $INET_IFACE -j DNAT --to $IP_OF_GW2
+> ## If FORWARD policy is not ACCEPT or you have a rule like
+> ## ... -A FORWARD -j DROP
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED \
+>    -j ACCEPT
+> iptables -A FORWARD -i $INET_IFACE -o $IFACE_TO_GW2 \
+>    -p tcp --dport 4000 --syn -j ACCEPT
+> ## You need SNAT too, at least it's the save way
+> iptables -t nat -A POSTROUTING -o $IFACE_TO_GW2 \
+>    -p tcp --dport 4000 -j SNAT --to $IP_OF_IFACE_TO_GW2
 >
-> if [ $x -eq 1 ]; then
->  #FW1 IP: 192.168.10.2
->  $IPT -A FORWARD -i eth0 -o eth0 -s 192.168.10.0/24 -d
-> 192.168.10.0/24 -p icmp --icmp-type echo-request -j ACCEPT
->  $IPT -A FORWARD -i eth0 -o eth0 -s 192.168.10.0/24 -d
-> 192.168.10.0/24 -p icmp --icmp-type echo-reply -j ACCEPT
->  x=0;
-> else
->  #FW2 IP: 192.168.10.3
->  $IPT -A FORWARD -i eth0 -o eth1 -s 192.168.10.0/24 -d
-> 192.168.10.0/24 -p icmp --icmp-type echo-request -j ACCEPT
->  $IPT -A FORWARD -i eth0 -o eth1 -s 192.168.10.0/24 -d
-> 192.168.10.0/24 -p icmp --icmp-type echo-reply -j ACCEPT
->  x=1;
-> fi
-
-So you want FW1 to reply to allow every other ping, and FW2 to allow those
-that FW1 ignores?
-
-I'm sure there's a way, but I'm certainly not the authority on load
-balancing. Others here I'm sure are more adept at fielding this sort of
-question.
-
-HTH.
-
-Carl
-
-- --
-
-"There are 10 types of people in the world: Those who understand binary
-and those that don't."
+> So, if GW1 and GW2 are connected somehow and know how to route packets
+> to each other, the packets in question will reach GW2 with a source
+> address of GW1. If allowed by iptable rules, GW2 will forward / redirect
+> these packets to "service server" (maybe applying DNAT and SNAT too) and
+> everything should work.
+>
+> HTH and have a nice time,
+>
+> Joerg
 
