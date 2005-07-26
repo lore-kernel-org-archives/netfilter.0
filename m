@@ -1,13 +1,13 @@
-From: "curby ." <curby.public@gmail.com>
-Subject: Re: Kind of Limits
-Date: Tue, 26 Jul 2005 09:43:12 -0600
-Message-ID: <5d2f3791050726084365a8deea@mail.gmail.com>
-References: <3b29fb7905072513472be37619@mail.gmail.com>
-Reply-To: "curby ." <curby.public@gmail.com>
+From: Chadley Wilson <chadley@pinteq.co.za>
+Subject: Re: redirecting traffic
+Date: Tue, 26 Jul 2005 18:36:24 +0200
+Message-ID: <200507261836.24400.chadley@pinteq.co.za>
+References: <200507260941.01656.chadley@pinteq.co.za>
+	<42E6102D.50304@gmx.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3b29fb7905072513472be37619@mail.gmail.com>
+In-Reply-To: <42E6102D.50304@gmx.co.uk>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,22 +20,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: bright true <brighttrue@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 7/25/05, bright true <brighttrue@gmail.com> wrote:
-> Hello ,
->  i have no experience with iptables at all ... i just want to get my prob=
-lem
-> solved , i hope you can help me
->  How can i limit the number of connection or not limiting , let's say
->  when the number of connections reach the ALLOWED numbers of connections =
-it
-> will get block for about 2 minutes or something
+Thanks good answer mate,
+I needed to know what to use, and NAT is the one.
+I will read up on it!
 
-It's difficult to solve problems when you don't have experience. =3D)
+Chad
 
-Try looking at the recent, connlimit, and expire matches.  Whether
-they can be used directly without recompilation depends on your
-distribution/installation of netfilter.
+On Tuesday 26 July 2005 12:27, /dev/rob0 wrote:
+
+
+> Chadley Wilson wrote:
+> > As I progress with my firewall skills, I would like to know if there
+> > is a way to take all traffic aimed at a certian machine for certain
+> > services and redirect them directly to another server.
+>
+> How far have you progressed? To the point of reading the NAT HOWTO yet?
+>
+> > Could some-one offer a few suggestions and possibly some examples on
+> > how to achieve this ?
+>
+> "-j DNAT", documented in "man iptables", examples in the NAT HOWTO.
+
+-- 
+--
+Chadley Wilson
+Production Line Superintendant
+Pinnacle Micro
+Manufacturers of Proline Computers
+====================================
+Exercise freedom, Use LINUX
+=====================================
 
