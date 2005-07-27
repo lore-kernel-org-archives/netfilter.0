@@ -1,12 +1,13 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: RST packets
-Date: Wed, 27 Jul 2005 00:28:03 -0500
-Message-ID: <42E71B63.90606@riverviewtech.net>
-References: <Pine.LNX.4.61.0507181604210.26471@yvahk01.tjqt.qr>
+Subject: Re: Time stamp for Recent
+Date: Wed, 27 Jul 2005 00:40:17 -0500
+Message-ID: <42E71E41.3020700@riverviewtech.net>
+References: <W6058014509160581121960705@robles.clunet.edu>
+	<42DFCA95.90409@mnemon.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0507181604210.26471@yvahk01.tjqt.qr>
+In-Reply-To: <42DFCA95.90409@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +19,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+
+>I don't know the answer, but looks like sequence numbers to me. But this
+>may bo totally wrong.
 >
+>For what you want to do, this thread may be of interest for you,
+>especially Grant's ideas:
 >
->a simple question, though I could not clearly read it from the TCP RFC...
->do RST packets always have ACK set?
+>https://lists.netfilter.org/pipermail/netfilter/2005-May/060299.html
+>  
 >
-If memory serves me right the appearance of the ACK flag in a packet 
-with the RST flag is based on the packet that the packet with the RST 
-flag is setting.  In other words if the packet that is being reset has 
-the ACK flag set then the ACK flag will not be set in the packet with 
-the RST flag.  Conversely if the packet that is being reset does not 
-have the ACK flag set then the ACK flag will be set in the packet with 
-the RST flag.  Translation I think it is an XOR issue.
+You may want to take a look at the newer version of this script.  It has grown a LOT.  You can find the thread in the mail list archives here:  https://lists.netfilter.org/pipermail/netfilter/2005-June/061362.html
 
-Note:  This was based on many hours of reading and following RFCs and 
-other things.  This was the simplest summarization that I could find at 
-the time.  I think I have a different reply to this mail list talking 
-about using the recent match extension to test for stray RST packets, I 
-could look back and see what I can find in my notes if you would like me to.
-
-
-
-Grant. . . .
 
