@@ -1,11 +1,16 @@
 From: "curby ." <curby.public@gmail.com>
-Subject: SSH Brute Force not working (any longer)
-Date: Wed, 27 Jul 2005 10:36:57 -0600
-Message-ID: <5d2f37910507270936737ad3d1@mail.gmail.com>
+Subject: Re: rc.local
+Date: Wed, 27 Jul 2005 10:42:46 -0600
+Message-ID: <5d2f37910507270942577f9173@mail.gmail.com>
+References: <42e607e9.6446401e.6174.46a7SMTPIN_ADDED@mx.gmail.com>
+	<9927912d0507260430275d8239@mail.gmail.com>
+	<5d2f379105072608385caaee15@mail.gmail.com>
+	<9927912d050726221615fe208f@mail.gmail.com>
 Reply-To: "curby ." <curby.public@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <9927912d050726221615fe208f@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,33 +23,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+To: Visham Ramsurrun <vishamr2000@gmail.com>
+Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
 
-I know enough to realize that it didn't stop working just because it
-hates me: most likely, i changed something in the configuration or
-something to make it stop working.  However, I can't think of anyting
-I could have done to two different machines to make them stop working
-in exactly that same way.  Basically, every SSH attempt skips the
-return to the input chain and jumps directly to log/drop or
-log/tarpit.  I've tried increasing the --hitcount, tried rebooting or
-otherwise restarting the network service, tried using a different
---name in recet, etc.
+On 7/26/05, Visham Ramsurrun <vishamr2000@gmail.com> wrote:
+> you are right..i'm having a scripting problem..i don't know how to
+> make a script execute every time a packet is sent by my PC. how can i
+> do that?
 
-I have tried all the following scripts (I can paste their contents in
-if requested but it would be rather annoying because of their combined
-length) with no success.  Any ideas on what might have happened?=20
-Kernel version and iptables version didn't change, the recent module
-loads with no errors, and all the iptables commands to insert rules
-complete with no errors.
+You don't want to execute a script for each packet... you could be
+easily DoSed. Try:
 
-Links to variations that I tried with no success:
+http://netfilter.org/patch-o-matic/pom-base.html#pom-base-nth
 
-http://curby.net/doc/testwall1
-http://curby.net/doc/testwall2
-http://curby.net/doc/testwall3
-http://curby.net/doc/testwall4
-
-Hopefully it's a really simple typo or something, though with all the
-variations I've tried, I'm starting to doubt that simple explanation.=20
-What might the problem be?  Thanks!
+Please reply to the list, so everyone can help and learn. =3D)
 
