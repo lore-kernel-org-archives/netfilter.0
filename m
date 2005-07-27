@@ -1,15 +1,13 @@
-From: "curby ." <curby.public@gmail.com>
+From: "Marius Mertens" <marius.mertens@gmx.de>
 Subject: Re: SSH Brute Force not working (any longer)
-Date: Wed, 27 Jul 2005 16:50:23 -0600
-Message-ID: <5d2f379105072715502f71e9b4@mail.gmail.com>
+Date: Thu, 28 Jul 2005 01:33:00 +0200
+Message-ID: <005e01c59303$96da48c0$4206a8c0@loki>
 References: <5d2f37910507270936737ad3d1@mail.gmail.com>
 	<003601c592df$9f92fda0$4206a8c0@loki>
-Reply-To: "curby ." <curby.public@gmail.com>
+	<5d2f379105072715502f71e9b4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <003601c592df$9f92fda0$4206a8c0@loki>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,32 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Marius Mertens <marius.mertens@gmx.de>
-Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Netfilter User Mailing List <netfilter@lists.netfilter.org>
 
-On 7/27/05, Nagy Zoltan <kirk@elte.hu> wrote:
-> i've read 1-3 the files, i think your problem is a skip of the "update" (=
-my english is really bad ;)
-> because your --update lines have other condition like:seconds and rate
-> the attacking machine when it begins to send those packets, recent knows =
-nothing about him, it will be enlist with a --set match
-> and then you don't update it's record with a single --update, so it can't=
- reach the hitcount :)
+On Thursday, July 28, 2005 12:50 AM,
+curby . wrote:
 
-2 and 3 have --set during the rule in the INPUT chain that jumps to
-the custom chain.
+> 2 and 3 have --set during the rule in the INPUT chain that jumps to
+> the custom chain.
 
-On 7/27/05, Marius Mertens <marius.mertens@gmx.de> wrote:
-> problem. The only positive about it: I finally gave up debugging it, and =
-as
-> silently as it came, the problem disappeared. Everything is working fine
-> again. With a still unchanged ruleset of course ;-)
+Ooops, blind me, I completely overlooked that. But it should work anyway.
 
-If this is not the result of something dumb we're doing, there's
-probably a bug that should be squirreled out.  Intermittent problems
-in security software are bad. Still, iptables has been so stable that
-I'm thinking it's likely my fault. =3DP
+> If this is not the result of something dumb we're doing, there's
+> probably a bug that should be squirreled out.  Intermittent problems
+> in security software are bad. Still, iptables has been so stable that
+> I'm thinking it's likely my fault. =P
 
-I'll keep poking at it when I have a moment.
+Nope, guess it's not your fault ;-) I found something with google, and it 
+looks relevant to our problem. It also explains why my reboot didn't seem to 
+help first, but then it magically started working again:
+http://patchwork.netfilter.org/netfilter-devel/patch.pl?id=2587
+
+Marius 
+
 
