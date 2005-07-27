@@ -1,12 +1,15 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: not solve yet!!!
-Date: Wed, 27 Jul 2005 09:53:29 +0200
-Message-ID: <42E73D79.80202@mnemon.de>
-References: <20050725060738.31653.qmail@web42405.mail.yahoo.com>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: Problem downloading large files from Apache from far
+Date: Wed, 27 Jul 2005 14:03:34 +0300
+Message-ID: <1403218a05072704033f9504e0@mail.gmail.com>
+References: <mailman.0.1122427457.12364.netfilter@lists.netfilter.org>
+	<NJBBIPFCOLMFJFKBPLDMAEJJCCAA.andrewna@mymcsb.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050725060738.31653.qmail@web42405.mail.yahoo.com>
+In-Reply-To: <NJBBIPFCOLMFJFKBPLDMAEJJCCAA.andrewna@mymcsb.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +21,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Andrew <andrewna@mymcsb.com>
+Cc: netfilter@lists.netfilter.org
 
-john decot schrieb:
-> Hello all,
->  i am facing a problem in iptables as follows:
->   i have  single nic which ip is eth0= x.x.x.x(public_ip)
->     alias is  eth0:1=y.y.y.y( private_ip)
-> the proxy works when ip of server and port 3128 at lan connection is 
-> configured at client side(windows os).
-> But doesn't work without that whenever i flow traffic to proxy server, 
-> again i have used ip tables as:
->  
-> iptables -A PREROUTING -t nat -p tcp --dport 80 -i eth0 -j REDIRECT --to-port 3128
->  
-> with above it doesn't work then i tried following
-> iptables -A PREROUTING -t nat -p tcp --dport 80 -i eth0 -j DNAT  
-> $public_ip or $private_ip:3128
->  
-> again the same result.
+Is the Cisco PIX blocking ICMP
 
-First configure your proxy to act transparently as Sergio pointed out.
-Make sure the proxy is listening on the correct IP(s).
+On 7/27/05, Andrew <andrewna@mymcsb.com> wrote:
+> Hi,
+>=20
+> I'm running Fedora Core 4 (Linux 2.6.11) with netfilter 1.30.
+> I've setup apache 2.54 to run at port 80.
+>=20
+> Basically when downloading large files(or pages) from apache, the downloa=
+d
+> stalls after the first few kilobytes or so.
+>=20
+> The configuration for the firewall in /etc/sysconfig/iptables is:
+> *filter
+> :INPUT ACCEPT [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> :RH-Firewall-1-INPUT - [0:0]
+> -A INPUT -j RH-Firewall-1-INPUT
+> -A FORWARD -j RH-Firewall-1-INPUT
+> -A OUTPUT -j ACCEPT
+> -A RH-Firewall-1-INPUT -i lo -j ACCEPT
+> -A RH-Firewall-1-INPUT -p icmp --icmp-type any -j ACCEPT
+> -A RH-Firewall-1-INPUT -p 50 -j ACCEPT
+> -A RH-Firewall-1-INPUT -p 51 -j ACCEPT
+> -A RH-Firewall-1-INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
+> -A RH-Firewall-1-INPUT -p udp -m udp --dport 631 -j ACCEPT
+> -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j
+> ACCEPT
+> -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j
+> ACCEPT
+> -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j
+> ACCEPT
+> -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-port-unreachable
+> COMMIT
+>=20
+> The solution is to add set port 80 to allow INVALID packets:
+>=20
+> -A RH-Firewall-1-INPUT -m state --state NEW,ESTABLISHED,RELATED,INVALID -=
+m
+> tcp -p tcp --dport 80 -j ACCEPT
+>=20
+> But the question is, why are subsequent packets coming from the remote
+> machine being identified as INVALID? Will allowing INVALID packets cause
+> other problems?
+>=20
+> The Linux machine is actually behind another Cisco PIX firewall. Could th=
+e
+> hardware firewall be translating the packets wrongly? Any ideas?
+>=20
+> Regards,
+>=20
+> Andrew
+>=20
+>=20
+>=20
+>=20
 
-Did you check if your REDIRECT rule is hit (iptables -t nat -nvxL) ? If
-the counters increase with each connection attempt, the rule is ok and
-the reason is probably the proxy configuration.
 
-If your rule is not hit, try if omitting "-i eth0" changes something.
-Possibly there are some more low hanging fruits. Does the clients
-default gateway point to your proxy server ? Are there any other rules,
-that make connections impossible ? Does the proxy server-name resolve to
-your clients ? Did you tcpdump the traffic to see, if packets make it to
-the proxy and if so, what is in the conntrack table ? What is your
-complete ruleset (either the output of iptables-save or iptables -t
-$TABLE_NAME -nvxL) ?
-
-Just some thoughts ;)
-
-HTH and have a nice time,
-
-Joerg
-
+--=20
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
