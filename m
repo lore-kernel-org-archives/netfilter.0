@@ -1,14 +1,11 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: Problem downloading large files from Apache from far
-Date: Wed, 27 Jul 2005 14:03:34 +0300
-Message-ID: <1403218a05072704033f9504e0@mail.gmail.com>
-References: <mailman.0.1122427457.12364.netfilter@lists.netfilter.org>
-	<NJBBIPFCOLMFJFKBPLDMAEJJCCAA.andrewna@mymcsb.com>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: Djalel Chefrour <cdjalel@gmail.com>
+Subject: Howo to get IP_NF_NAT_LOCAL behavior back after kernel 2.6.10 ?
+Date: Wed, 27 Jul 2005 13:08:16 +0200
+Message-ID: <4a9dfdec0507270408427a9e20@mail.gmail.com>
+Reply-To: Djalel Chefrour <cdjalel@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <NJBBIPFCOLMFJFKBPLDMAEJJCCAA.andrewna@mymcsb.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,71 +18,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew <andrewna@mymcsb.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Is the Cisco PIX blocking ICMP
+Hi,=20
 
-On 7/27/05, Andrew <andrewna@mymcsb.com> wrote:
-> Hi,
->=20
-> I'm running Fedora Core 4 (Linux 2.6.11) with netfilter 1.30.
-> I've setup apache 2.54 to run at port 80.
->=20
-> Basically when downloading large files(or pages) from apache, the downloa=
-d
-> stalls after the first few kilobytes or so.
->=20
-> The configuration for the firewall in /etc/sysconfig/iptables is:
-> *filter
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> :RH-Firewall-1-INPUT - [0:0]
-> -A INPUT -j RH-Firewall-1-INPUT
-> -A FORWARD -j RH-Firewall-1-INPUT
-> -A OUTPUT -j ACCEPT
-> -A RH-Firewall-1-INPUT -i lo -j ACCEPT
-> -A RH-Firewall-1-INPUT -p icmp --icmp-type any -j ACCEPT
-> -A RH-Firewall-1-INPUT -p 50 -j ACCEPT
-> -A RH-Firewall-1-INPUT -p 51 -j ACCEPT
-> -A RH-Firewall-1-INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
-> -A RH-Firewall-1-INPUT -p udp -m udp --dport 631 -j ACCEPT
-> -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j
-> ACCEPT
-> -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j
-> ACCEPT
-> -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j
-> ACCEPT
-> -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-port-unreachable
-> COMMIT
->=20
-> The solution is to add set port 80 to allow INVALID packets:
->=20
-> -A RH-Firewall-1-INPUT -m state --state NEW,ESTABLISHED,RELATED,INVALID -=
-m
-> tcp -p tcp --dport 80 -j ACCEPT
->=20
-> But the question is, why are subsequent packets coming from the remote
-> machine being identified as INVALID? Will allowing INVALID packets cause
-> other problems?
->=20
-> The Linux machine is actually behind another Cisco PIX firewall. Could th=
-e
-> hardware firewall be translating the packets wrongly? Any ideas?
->=20
-> Regards,
->=20
-> Andrew
->=20
->=20
->=20
->=20
+I want to redirect local http traffic to a transparent squid porxy
+running on the NAT box itself.
+
+I've used :
+# iptables -t nat -A OUTPUT -p tcp -m owner --uid-owner squid -j ACCEPT=20
+# iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 3128=
+=20
+
+But this works no more with kernel 2.6.11 & later.
+
+# iptables -t nat -L -v=20
+gives this
+---------------------------------------------------------------------------=
+------------------------
+Chain PREROUTING (policy ACCEPT 2281 packets, 906K bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion=20
+
+Chain POSTROUTING (policy ACCEPT 97012 packets, 5712K bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion=20
+
+Chain OUTPUT (policy ACCEPT 97005 packets, 5712K bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion=20
+    0     0 ACCEPT     tcp  --  any    any     anywhere           =20
+anywhere            OWNER UID match squid
+    0     0 REDIRECT   tcp  --  any    any     anywhere           =20
+anywhere            tcp dpt:http redir ports 3128
+
+Chain loc_dnat (0 references)
+ pkts bytes target     prot opt in     out     source               destina=
+tion=20
+
+Chain wlan0_masq (0 references)
+ pkts bytes target     prot opt in     out     source               destina=
+tion=20
+
+---------------------------------------------------------------------------=
+------------------------
 
 
---=20
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+TIA,
+Djalel
 
