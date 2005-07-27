@@ -1,12 +1,13 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: QoS and IPSec...
-Date: Wed, 27 Jul 2005 00:08:58 -0500
-Message-ID: <42E716EA.9010703@riverviewtech.net>
-References: <42E6D57B.6050109@riverviewtech.net> <42E6DEDA.40200@lopsch.com>
+Subject: Re: Netfilter and IPSec interaction
+Date: Wed, 27 Jul 2005 00:18:32 -0500
+Message-ID: <42E71928.7000803@riverviewtech.net>
+References: <20050714122109.bl71ded9gkkoc0c4@www.milivojevic.org>
+	<20050716173403.GA16509@pog.tecnopolis.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42E6DEDA.40200@lopsch.com>
+In-Reply-To: <20050716173403.GA16509@pog.tecnopolis.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,86 +21,40 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> What about this (only for one side ;) ):
-> Suppose we are on LAN A:
-> In the table mangle chain PREROUTING mark all packets coming in over 
-> the LAN device and destined for 172.30.13.0/24 and sourced from 
-> 172.30.12.0/24 for example with 1.
-> Then IPSec handles the packets.
-> In table mangle chain POSTROUTING mark all packets with AH/ESP 
-> outgoing over the internet device and destined for the routable IP of 
-> LAN B with 1. Don't know if they are marked twice with 1 but that's no 
-> problem. So we can be sure all IPSec packets are marked with 1.
-> Then you can apply the filters in the schedulers for the appropriate 
-> marks on the appropriate device in this case the internet device.
-> So we can prioritize outgoing packets.
-> Incoming should also be prioritized. So both directions get their 
-> priorities.
-> So in table mangle chain PREROUTING mark all AH/ESP packets coming in 
-> over the internet device and sourced from the routable IP of LAN B 
-> with 1.
-> Then IPSec handles the packets.
-> In table mangle chain POSTROUTING mark all packets destinded for 
-> 172.30.12.0/24 and sourced from 172.30.12.0/24 and going out over the 
-> LAN device with 1.
-> Then apply the filters for the marks in the schedulers of the LAN device.
-> This way IPSec should be prioritized in both directions on one router. 
-> If it works you can do it with canged addresses on the other one.
-> Don't know if it really works, because it's now 3am and I'm a bit 
-> confused and IPSec is already complex standalone ;).
-> But afaik every net device gets schedulers no matter if physical or 
-> virtual so it normally should be no problem. 
 
-Daniel (and others) thank you for the reply.  However I think you have 
-(re)touched on the QoS / Prioritization of IPSec (IP/ESP) traffic verses 
-regular internet bound traffic.  I am after how to prioritize just the 
-subset of the traffic from Lan A (or B) that is destined to the other 
-side.  More specifically I will be having SSH (interactive sessions 
-only) / Telnet, Terminal Services (RDP), VNC (RFB), ICMP, SMB/CIFS, FTP 
-/ SCP (bulk data transfer), RSYNC, LPD, etc traffic from one LAN 
-destined to the other LAN through a VPN that has a finite amount of 
-bandwidth (128 kbps DSL (768/128)) which will spend a good deal of time 
-saturated with all of the traffic going through it.  Thus I want to 
-prioritize that interactive services, i.e. SSH / Telnet, RDP, VNC, and 
-ICMP, send their traffic through the VPN *BEFORE* any of the bulk data 
-transfer services thus hopefully yielding what will appear to be a 
-fairly responsive circuit.  Seeing as how all of this traffic is going 
-to be encapsulated with in the IPSec VPN and thus becoming IP/ESP 
-traffic I can not just prioritize the IP/ESP traffic on the egress of 
-the external interface of the router.  Naturally I will prioritize like 
-you have suggested to make sure that VPN traffic will have priority over 
-general web traffic on the external interface of the router.  However as 
-I understand it there is no ""egressing interface for the traffic that 
-will be encapsulated *BEFORE* it does become encapsulated thus putting 
-all afore mentioned VPN traffic in one priority level.
+>(Grant, are you for sure saying you got the patches to go into 2.6.12 and 
+>compile?)
+>
 
-Here is a brief description of how I want to prioritize the traffic that 
-will be leaving any of the LANs.  There will be more LANs down the road, 
-each of which will (for now) have equal priority with each other.  I 
-will be denoting Priority Groups (PgN) as well as sub groups (sN).  All 
-VPN traffic from one LAN to another will be a Priority Group 1 with all 
-other traffic from the sending LAN being a Priority Group 2 or lower.  
-The only possible exception to this will be ICMP and similar traffic.
+Sorry for not getting back to you sooner, I've had a VERY busy time.
 
-Pg1s1:  ICMP destined to other LANs (IP/ESP)
-Pg1s2:  SSH / Telnet / RDP / RFB destined to other LANs (IP/ESP)
-Pg1s3:  LPD / SMB / CIFS destined to other LANs (IP/ESP)
-Pg1s4:  FTP / RSYNC / SCP destined to other LANs (IP/ESP)
-Pg1s5:  (unused as of yet) destined to other LANs (IP/ESP)
+I do not recall if I compiled or not for sure because I was doing *SO* 
+much to the kernel in question and trying *SO* many different versions.  
+Namely I was testing to see which patches out of the IPTables 
+Patch-o-Matic would apply in what combination to a few different kernel 
+sources.  I had also had to apply a different patch to my kernel source 
+b/c I was running it on a Cobalt RaQ 4i and had to fix the shutdown / 
+restart issue with the watchdog.  As such I do not remember for sure 
+that I _did_ compile the kernel.  Sorry.
 
-Pg2s1:  ICMP destined to the world at large.
-Pg2s2:  SSH / Telnet / RDP / RFB destined to the world at large.
-Pg2s3:  LPD / SMB / CIFS destined to the world at large.
-Pg2s4:  FTP / RSYNC / SCP destined to the world at large.
-Pg2s5:  (unused as of yet) destined to the world at large.
-
-I want any traffic that is in Priority Group 1 (IPSec VPN traffic) to be 
-sent out the internet connection first.  I also want Priority Group 1s 
-traffic to be prioritized based on the sub group priority.  However as 
-IP/ESP traffic is encapsulated and can thus not be prioritized on egress 
-of the external interface it has to be prioritized before it is 
-encapsulated.  Here in lies the problem.  Where / how do I prioritize 
-this traffic to the appropriate sub group priority.
+What I DO know for sure is that I DID successfully apply the IPSec 
+patches 1 - 4 after I went in to the info files and removed dependencies 
+on previously patches.  I was not able to apply patch #1 b/c it was 
+looking for a specific patch (the name eludes me at the moment).  I 
+found the patch in question on the net in a mail list archive from the 
+original author of the patches.  When I got to looking the (missing) 
+patch was already in the mainstream kernel and thus was not available 
+for patching.  So I removed the dependency on it for the IPSec-01 
+patch.  Once I had removed the dependency I tested the IPSec-01 patch 
+and it did apply cleanly.  Once the IPSec-01 patch was in place patches 
+IPSec-02 and IPSec-03 applied cleanly.  The IPSec-04 patch did not want 
+to apply stating that it was dependent on the IPSec-03 patch.  Having 
+just applied the patch that IPSec-04 wanted I knew that it was there so 
+I removed the dependency in the info file and was able to apply the 
+IPSec-04 patch with out any problems at all.  The only thing that I 
+could find wrong with the four IPSec patches was the dependency tree 
+checking.  Not being a real programmer (I just hack things together when 
+I have to) I don't know how to fix what is wrong, that is for others to do.
 
 
 
