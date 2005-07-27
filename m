@@ -1,16 +1,13 @@
 From: "curby ." <curby.public@gmail.com>
-Subject: Re: rc.local
-Date: Wed, 27 Jul 2005 10:42:46 -0600
-Message-ID: <5d2f37910507270942577f9173@mail.gmail.com>
-References: <42e607e9.6446401e.6174.46a7SMTPIN_ADDED@mx.gmail.com>
-	<9927912d0507260430275d8239@mail.gmail.com>
-	<5d2f379105072608385caaee15@mail.gmail.com>
-	<9927912d050726221615fe208f@mail.gmail.com>
+Subject: Re: prerouting logging
+Date: Wed, 27 Jul 2005 10:58:37 -0600
+Message-ID: <5d2f379105072709582a10c978@mail.gmail.com>
+References: <42E79B51.1080206@eccotours.dyndns.org>
 Reply-To: "curby ." <curby.public@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9927912d050726221615fe208f@mail.gmail.com>
+In-Reply-To: <42E79B51.1080206@eccotours.dyndns.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,19 +19,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Visham Ramsurrun <vishamr2000@gmail.com>
-Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Brent Clark <bclark@eccotours.dyndns.org>
+Cc: iptables <netfilter@lists.netfilter.org>
 
-On 7/26/05, Visham Ramsurrun <vishamr2000@gmail.com> wrote:
-> you are right..i'm having a scripting problem..i don't know how to
-> make a script execute every time a packet is sent by my PC. how can i
-> do that?
+On 7/27/05, Brent Clark <bclark@eccotours.dyndns.org> wrote:
+> I got tips for nmap blocking from someone on this list.
 
-You don't want to execute a script for each packet... you could be
-easily DoSed. Try:
+I think I'm that someone.  This looks like my post in the "Defeating
+NMAP Null scans (and Nessus scans)" thread.
 
-http://netfilter.org/patch-o-matic/pom-base.html#pom-base-nth
+> Im trying to log the problems that logged.
+> Would anyone care to recheck my rulset, just to make to I got this right.
 
-Please reply to the list, so everyone can help and learn. =3D)
+You might consider more informative prefixes than just "PREROUTING: ".
+ It's fine if some automated parser is going through and will
+determine scan type by the options logged, but a human reading the log
+might be helped by an indicator like "PREROUTING NULLscan: " or
+something of the sort.
+
+> P.s. If anyone knows of any other rules I can add, it would be
+> greatfully be appreciated.
+
+My original post did include a NULL scan rule, but not the ACK scan
+that J=F6rg mentioned.
 
