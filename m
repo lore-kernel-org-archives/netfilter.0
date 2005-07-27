@@ -1,12 +1,10 @@
-From: Sergio Basurto Juarez <sbasurtoj@yahoo.com>
-Subject: Re: not solve yet!!!
-Date: Tue, 26 Jul 2005 09:50:50 -0700 (PDT)
-Message-ID: <20050726165050.86910.qmail@web33008.mail.mud.yahoo.com>
-References: <20050725060738.31653.qmail@web42405.mail.yahoo.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: QoS and IPSec...
+Date: Tue, 26 Jul 2005 19:29:47 -0500
+Message-ID: <42E6D57B.6050109@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050725060738.31653.qmail@web42405.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,68 +15,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: lartc@mailman.ds9a.nl
+Cc: netfilter@lists.netfilter.org
+
+Hi, I have what to me is an interesting issue.  I am wanting to 
+prioritize (QoS) traffic that will be passing through an IPSec 
+(OpenS/WAN) VPN between two (identical) Linux routers.  I know that I 
+can apply the IPSec patches (1-4) to the kernel and IPTables (if they 
+are not already applied by now) filter traffic before and after IPSec 
+encapsulation.  My problem is that I don't know if I will be able to QoS 
+the traffic that will be encapsulated as far as I know QoS 
+prioritization (via CBQ or HTB) only applies to traffic that is being 
+dequeue from the skbuffers to go out the physical interface.  In my mind 
+the traffic that is to be encapsulated does not ""go out a physical 
+interface to be dequeued in the order that I want to prioritize.  I know 
+that I can QoS IPSec VPN traffic (IP/ESP) to a higher priority than any 
+other IP traffic but I'm not sure about the traffic that is being 
+encapsulated.  My (very) rough idea is to use something like dummy net 
+or IMQ to provide an interface (or subnet if need be) that the traffic 
+will traverse and be dequeued from where I can apply the QoS that I want 
+to.  I'm not quite sure how to go about this so any advice would be 
+greatly appreciated.
+
+I would like to QoS / Prioritize LAN traffic that is destined to the 
+other LAN based on the type of traffic that it is (ICMP, RDP, RFB, SMB, 
+etc) before it is encapsulated.  Once the traffic has been encapsulated 
+I'd like to QoS / Prioritize the ESP traffic that is destined to the 
+other LAN's globally routable IP before any other internet traffic goes 
+out.  This later part is not the problem, just the former part.
+
+My network layout(s) are below for those of you that will be asking:
+
+Lan A:
+ - 172.30.12.x/24 subnet
+ - 172.30.12.1-250 client systems and the likes
+ - 172.30.12.254 is the default gateway which will be replaced by one of 
+the boxen I'm asking about.
+ - A.B.C.Z/24 globally routable IP on the router
+
+Lan B:
+ - 172.30.13.x/24 subnet
+ - 172.30.13.1-250 client systems and the likes
+ - 172.30.13.254 is the default gateway which will be replaced by one of 
+the boxen I'm asking about.
+ - A.B.C.Y/24 globally routable IP on the router
+
+VPN:
+ - The VPN in question will be between the A.B.C.Z and A.B.C.Y globally 
+routable IP addresses.
+
+Note that both LANs have a DSL circuit from the same provider and thus 
+are 1 IP off from each other on their globally routable IP.
 
 
+Grant. . . .
 
---- john decot <johndecot@yahoo.com> wrote:
-
-> Hello all,
->  i am facing a problem in iptables as follows:
->   i have  single nic which ip is eth0=
-> x.x.x.x(public_ip)
->     alias is  eth0:1=y.y.y.y( private_ip)
-> the proxy works when ip of server and port 3128 at
-> lan connection is 
-> configured at client side(windows os).
-> But doesn't work without that whenever i flow
-> traffic to proxy server, 
-> again i have used ip tables as:
->  
-> iptables -A PREROUTING -t nat -p tcp --dport 80 -i
-> eth0 -j REDIRECT --to-port 3128
->  
-> with above it doesn't work then i tried following
-> iptables -A PREROUTING -t nat -p tcp --dport 80 -i
-> eth0 -j DNAT  
-> $public_ip or $private_ip:3128
->  
-> again the same result.
-> client pc and server is connect at same switch. and
-> clients have 
-> private ip where as server has public as well as
-> private ip.
-> any help will be appreciated.
->  
-> thanks in advance.
-> john
-Did you configured your proxy in order to act as a
-transparen proxy I mean for example in squid is:
-
-    * httpd_accel_host virtual
-    * httpd_accel_port 80
-    * httpd_accel_with_proxy on
-    * httpd_accel_uses_host_header on
-
-and it should work. I suppose you are listenning on
-eth0 for incomming requests.
-
-I hope this help.
-
-Regards
-
--- 
-Sergio Basurto J.
-
-If I have seen further it is by standing on the 
-shoulders of giants. (Isaac Newton)
---
-
-
-		
-____________________________________________________
-Start your day with Yahoo! - make it your home page 
-http://www.yahoo.com/r/hs 
- 
+P.S.  I'm (cross) posting this to the NetFilter mail lists as I've seen 
+some very complex questions and answers on the LARTC and NetFilter mail 
+lists and I would like to pull from both pools of talent.  So be mindful 
+when replying to all.  ;)
 
