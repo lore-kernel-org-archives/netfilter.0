@@ -1,14 +1,17 @@
-From: "curby ." <curby.public@gmail.com>
-Subject: Re: Problem downloading large files from Apache from far
-Date: Wed, 27 Jul 2005 23:04:02 -0600
-Message-ID: <5d2f379105072722046f7e3285@mail.gmail.com>
-References: <mailman.0.1122427457.12364.netfilter@lists.netfilter.org>
-	<NJBBIPFCOLMFJFKBPLDMAEJJCCAA.andrewna@mymcsb.com>
-Reply-To: "curby ." <curby.public@gmail.com>
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: Re: rc.local
+Date: Thu, 28 Jul 2005 09:31:46 +0400
+Message-ID: <9927912d0507272231571653e7@mail.gmail.com>
+References: <42e607e9.6446401e.6174.46a7SMTPIN_ADDED@mx.gmail.com>
+	<9927912d0507260430275d8239@mail.gmail.com>
+	<5d2f379105072608385caaee15@mail.gmail.com>
+	<9927912d050726221615fe208f@mail.gmail.com>
+	<5d2f37910507270942577f9173@mail.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <NJBBIPFCOLMFJFKBPLDMAEJJCCAA.andrewna@mymcsb.com>
+In-Reply-To: <5d2f37910507270942577f9173@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,25 +24,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew <andrewna@mymcsb.com>
-Cc: netfilter@lists.netfilter.org
+To: "curby ." <curby.public@gmail.com>
+Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
 
-On 7/26/05, Andrew <andrewna@mymcsb.com> wrote:
-> But the question is, why are subsequent packets coming from the remote
-> machine being identified as INVALID? Will allowing INVALID packets cause
-> other problems?
+On 7/27/05, curby . <curby.public@gmail.com> wrote:
+> On 7/26/05, Visham Ramsurrun <vishamr2000@gmail.com> wrote:
+> > you are right..i'm having a scripting problem..i don't know how to
+> > make a script execute every time a packet is sent by my PC. how can i
+> > do that?
+>=20
+> You don't want to execute a script for each packet... you could be
+> easily DoSed. Try:
+>=20
+> http://netfilter.org/patch-o-matic/pom-base.html#pom-base-nth
+>=20
+> Please reply to the list, so everyone can help and learn. =3D)
+>=20
 
-Allowing INVALID is generally unnecessary, and can let certain port
-scans through undetected.
+No I only want to execute a script for all packets that are packets
+that are going to be sent out of the NIC (after the packets have been
+accepted as valid by a firewall). I don't know how to do that. Do you
+know what is the last function in the iptables code or the first
+function in the NIC driver, that a packet that has been accepted by
+the firewall passes before it is sent on the wire? I would then write
+some code so that when a call is made to that function, a signal is
+raised and it will cause a shell script to execute.
+I don't know abt the DoSed command. Do you have any example?
 
-> The Linux machine is actually behind another Cisco PIX firewall. Could th=
-e
-> hardware firewall be translating the packets wrongly? Any ideas?
+If there is an easier way, please let me know...
 
-Can you try with a machine between the firewalls?  That would simulate
-a web request but bypass PIX.
+MAny thx for the reply.
 
-[iptables]---[testbox]---[PIX]---[Internet]
-
-Running a tcpdump might also give useful information.
+Warm regards,
+Visham
 
