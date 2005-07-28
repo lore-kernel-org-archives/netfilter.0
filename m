@@ -1,12 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: ESTABILISHED connections are not that estabilished
-Date: Thu, 28 Jul 2005 05:41:44 -0500
-Message-ID: <42E8B668.3030201@gmx.co.uk>
-References: <dc8blc$p5s$1@sea.gmane.org> <dca9si$kis$1@sea.gmane.org>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: RE: Problem downloading large files from Apache from far
+Date: Thu, 28 Jul 2005 07:56:27 -0400
+Message-ID: <1122551787.2667.1.camel@localhost>
+References: <NJBBIPFCOLMFJFKBPLDMOEJPCCAA.andrewna@mymcsb.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <dca9si$kis$1@sea.gmane.org>
+In-Reply-To: <NJBBIPFCOLMFJFKBPLDMOEJPCCAA.andrewna@mymcsb.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,73 +17,104 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Gioele Barabucci wrote:
->>In my logs I often find reports of dropped input packets from my DNS:53 or
->>dropped output packets generated from localhost:25 to other mail servers.
->>Why are these packets dropped?
+I would suggest putting a protocol analyzer on the line to see what is
+happening.  You can download a quite powerful open-source one from
+http://www.ethereal.com - John
 
-I have a theory and a suggestion.
+On Thu, 2005-07-28 at 08:47 +0800, Andrew wrote:
+> Hi M.Eldesoky,
+> 
+> Not that I know of, the configuration in the firewall:
+> 
+> conduit permit icmp any any
+> 
+> Thanks,
+> 
+> Andrew
+> 
+> -----Original Message-----
+> From: Mohamed Eldesoky [mailto:eldesoky.lists@gmail.com]
+> Sent: Wednesday, July 27, 2005 7:04 PM
+> To: Andrew
+> Cc: netfilter@lists.netfilter.org
+> Subject: Re: Problem downloading large files from Apache from far
+> 
+> 
+> Is the Cisco PIX blocking ICMP
+> 
+> On 7/27/05, Andrew <andrewna@mymcsb.com> wrote:
+> > Hi,
+> >
+> > I'm running Fedora Core 4 (Linux 2.6.11) with netfilter 1.30.
+> > I've setup apache 2.54 to run at port 80.
+> >
+> > Basically when downloading large files(or pages) from apache, the download
+> > stalls after the first few kilobytes or so.
+> >
+> > The configuration for the firewall in /etc/sysconfig/iptables is:
+> > *filter
+> > :INPUT ACCEPT [0:0]
+> > :FORWARD ACCEPT [0:0]
+> > :OUTPUT ACCEPT [0:0]
+> > :RH-Firewall-1-INPUT - [0:0]
+> > -A INPUT -j RH-Firewall-1-INPUT
+> > -A FORWARD -j RH-Firewall-1-INPUT
+> > -A OUTPUT -j ACCEPT
+> > -A RH-Firewall-1-INPUT -i lo -j ACCEPT
+> > -A RH-Firewall-1-INPUT -p icmp --icmp-type any -j ACCEPT
+> > -A RH-Firewall-1-INPUT -p 50 -j ACCEPT
+> > -A RH-Firewall-1-INPUT -p 51 -j ACCEPT
+> > -A RH-Firewall-1-INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
+> > -A RH-Firewall-1-INPUT -p udp -m udp --dport 631 -j ACCEPT
+> > -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j
+> > ACCEPT
+> > -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j
+> > ACCEPT
+> > -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j
+> > ACCEPT
+> > -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-port-unreachable
+> > COMMIT
+> >
+> > The solution is to add set port 80 to allow INVALID packets:
+> >
+> > -A RH-Firewall-1-INPUT -m state --state NEW,ESTABLISHED,RELATED,INVALID -m
+> > tcp -p tcp --dport 80 -j ACCEPT
+> >
+> > But the question is, why are subsequent packets coming from the remote
+> > machine being identified as INVALID? Will allowing INVALID packets cause
+> > other problems?
+> >
+> > The Linux machine is actually behind another Cisco PIX firewall. Could the
+> > hardware firewall be translating the packets wrongly? Any ideas?
+> >
+> > Regards,
+> >
+> > Andrew
+> >
+> >
+> >
+> >
+> 
+> 
+> --
+> Mohamed Eldesoky
+> www.eldesoky.net
+> RHCE
+> 
+> 
 
->   iptables -P OUTPUT DROP
-
-Bad idea (see below.)
-
->   iptables -P FORWARD DROP # just for fun, I don't do any routing
-
-Good idea. Even if not routing it doesn't hurt to take these out at the 
-firewall level.
-
->   iptables -A OUTPUT -p udp --dport nameserver -j ACCEPT
->   iptables -A OUTPUT -p tcp --dport nameserver -j ACCEPT
-
-Theory:
-# iptables -vA OUTPUT -p tcp --dport nameserver
-   tcp opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  tcp dpt:42
-# iptables -vA OUTPUT -p tcp --dport domain
-   tcp opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  tcp dpt:53
-I cannot see into your /etc/services, but mine resolves "nameserver" to 
-"42". (R.I.P., D. Adams.)
-
->   echo "Logging"
->   iptables -A INPUT -m limit --limit 3/second --limit-burst 5 -i ! lo -j LOG
-> --log-level "debug" --log-ip-options --log-tcp-options --log-prefix
-> 'iptables INPUT DROP '
->   iptables -A INPUT -m limit --limit 3/second --limit-burst 5 -i ! lo -j
-> ULOG --ulog-prefix 'iptables INPUT DROP '
->   iptables -A OUTPUT -m limit --limit 3/second --limit-burst 5 -o ! lo -j
-> LOG --log-level "debug" --log-ip-options --log-tcp-options --log-prefix
-> 'iptables OUTPUT DROP '
-
-Whoa, that is a lot of logging! What do you expect to find in all that? 
-Why LOG and ULOG both?
-
->   echo "REJECT for outgoing packets"
->   iptables -A OUTPUT -j REJECT # reject, don't DROP outgoing packets
-
-It's cleaner to limit this to "-p tcp".
-
-
-Suggestion: OUTPUT filtering is a bad idea. Carefully crafted rules to 
-limit what your daemons can do with -m owner might slightly enhance 
-security. General OUTPUT filtering only guarantees that things won't 
-work well.
-
-Why are you doing it? What is the benefit you think you are getting? 
-This sounds like a single user machine, from the fact that there's no 
-routing. Who are you limiting with OUTPUT rules? Yourself?
-
-I would do OUTPUT -p ACCEPT and eliminate the OUTPUT rules. I'd also do 
-away with the logging, or at least tightly curtail it. I usually only 
-log for specific short-term reasons (troubleshooting a problem.) I'd 
-include a "-m state --state INVALID -j DROP" rule for good measure. 
-Finally, I'd move your --state rules to the top.
-
-At that point everything would be working as you expect, and you would 
-have a very tight firewall.
 -- 
-     mail to this address is discarded unless "/dev/rob0"
-     or "not-spam" is in Subject: header
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
+
+If you would like to participate in the development of an open source
+enterprise class network security management system, please visit
+http://iscs.sourceforge.net
+
 
