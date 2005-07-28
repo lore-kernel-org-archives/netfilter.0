@@ -1,12 +1,14 @@
-From: "Andrew" <andrewna@mymcsb.com>
-Subject: RE: Problem downloading large files from Apache from far
-Date: Thu, 28 Jul 2005 08:47:36 +0800
-Message-ID: <NJBBIPFCOLMFJFKBPLDMOEJPCCAA.andrewna@mymcsb.com>
-References: <1403218a05072704033f9504e0@mail.gmail.com>
+From: "curby ." <curby.public@gmail.com>
+Subject: Re: ESTABILISHED connections are not that estabilished
+Date: Wed, 27 Jul 2005 22:57:05 -0600
+Message-ID: <5d2f379105072721577a47da27@mail.gmail.com>
+References: <dc8blc$p5s$1@sea.gmane.org> <dc8l5h$qf8$1@sea.gmane.org>
+Reply-To: "curby ." <curby.public@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a05072704033f9504e0@mail.gmail.com>
+In-Reply-To: <dc8l5h$qf8$1@sea.gmane.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,88 +20,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+To: Gioele Barabucci <dev@gioelebarabucci.com>
 Cc: netfilter@lists.netfilter.org
 
-Hi M.Eldesoky,
+Since no one replied yet, I'll try a few stabs at debugging.
 
-Not that I know of, the configuration in the firewall:
+DNS by default uses UDP for most things, so your DNS servers might
+simply be rejecting TCP requests.  That said, why are they even
+getting to the server and being refused there if the firewall is
+dropping the packets?
 
-conduit permit icmp any any
-
-Thanks,
-
-Andrew
-
------Original Message-----
-From: Mohamed Eldesoky [mailto:eldesoky.lists@gmail.com]
-Sent: Wednesday, July 27, 2005 7:04 PM
-To: Andrew
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Problem downloading large files from Apache from far
-
-
-Is the Cisco PIX blocking ICMP
-
-On 7/27/05, Andrew <andrewna@mymcsb.com> wrote:
-> Hi,
->
-> I'm running Fedora Core 4 (Linux 2.6.11) with netfilter 1.30.
-> I've setup apache 2.54 to run at port 80.
->
-> Basically when downloading large files(or pages) from apache, the download
-> stalls after the first few kilobytes or so.
->
-> The configuration for the firewall in /etc/sysconfig/iptables is:
-> *filter
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> :RH-Firewall-1-INPUT - [0:0]
-> -A INPUT -j RH-Firewall-1-INPUT
-> -A FORWARD -j RH-Firewall-1-INPUT
-> -A OUTPUT -j ACCEPT
-> -A RH-Firewall-1-INPUT -i lo -j ACCEPT
-> -A RH-Firewall-1-INPUT -p icmp --icmp-type any -j ACCEPT
-> -A RH-Firewall-1-INPUT -p 50 -j ACCEPT
-> -A RH-Firewall-1-INPUT -p 51 -j ACCEPT
-> -A RH-Firewall-1-INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
-> -A RH-Firewall-1-INPUT -p udp -m udp --dport 631 -j ACCEPT
-> -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j
-> ACCEPT
-> -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j
-> ACCEPT
-> -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j
-> ACCEPT
-> -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-port-unreachable
-> COMMIT
->
-> The solution is to add set port 80 to allow INVALID packets:
->
-> -A RH-Firewall-1-INPUT -m state --state NEW,ESTABLISHED,RELATED,INVALID -m
-> tcp -p tcp --dport 80 -j ACCEPT
->
-> But the question is, why are subsequent packets coming from the remote
-> machine being identified as INVALID? Will allowing INVALID packets cause
-> other problems?
->
-> The Linux machine is actually behind another Cisco PIX firewall. Could the
-> hardware firewall be translating the packets wrongly? Any ideas?
->
-> Regards,
->
-> Andrew
->
->
->
->
-
-
---
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
-
-
+You might try starting with a very simple ruleset and see if you can
+pinpoint where the problem occurs, especially if this is a personal
+computer and not a large installation.  For example, just allow DNS in
+a stateless fashion, then introduce stateful rules.  Keep track of
+packet counters in iptables as you test to see which rules fire.=20
+Hopefully this helps, though I'm being rather vague because I don't
+know too many details and am rather new myself.
 
