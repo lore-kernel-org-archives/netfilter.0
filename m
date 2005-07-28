@@ -1,10 +1,12 @@
-From: Gus Collins <gcollins@ieee.org>
-Subject: Rules for squid via ssh tunnel
-Date: Fri, 29 Jul 2005 22:25:30 -0400
-Message-ID: <42EAE51A.3080400@ieee.org>
+From: Dharanikanth Dugginni <dharanikanthd@gmail.com>
+Subject: DNAT - newbie question
+Date: Thu, 28 Jul 2005 15:36:19 -0700
+Message-ID: <7f22af9005072815367ee89a78@mail.gmail.com>
+Reply-To: Dharanikanth Dugginni <dharanikanthd@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,29 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I believe this is suppose to be easily done, but I sure can't seem to 
-make it work.  Here's my setup.
+Hello,
 
-I setup a squid proxy on my firewall machine to allow http traffic from 
-my wlan to be encrypted through a ssh tunnel (i.e., ssh -L 
-3128:squid_server:3128 ...).  Worked great until I added iptables to 
-that setup.
+How do I dynamically change the destination address when performing
+the DNAT functionality?
 
-My question is: what rules do I need on the server to allow my local 
-wlan to access the web via the proxy running on the firewall?
+Lets suppose a host h1 is sending packets to addr N1 (this is the addr
+for NAT box)  I want to change this addr to a different addr which
+will not be known until after few packets arrive from h1 to n1.
+(Appears from the conntrack and NAT tables documenatation that after
+the first packet, the DNAT table will not be used any more).  Is there
+a way to force subsequent pacekets in the same stream to always use
+the DNAT table?
 
-I tried the rule below w/o success:
+Any pointers on the dependencies between conntrack and NAT are also
+highly appreciated.
 
-iptables -A INPUT -p tcp --dport 3128 -m state --state 
-NEW,ESTABLISHED,RELATED
-
-On the client, I have the default output policy of accept, so it should 
-be ok?
-
-Any help greatly appreciated!
-
-Gus Collins
+Thanks,
+-Dhar
 
