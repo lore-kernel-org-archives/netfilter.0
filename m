@@ -1,18 +1,11 @@
-From: Visham Ramsurrun <vishamr2000@gmail.com>
-Subject: Re: rc.local
-Date: Thu, 28 Jul 2005 11:34:12 +0400
-Message-ID: <9927912d05072800347cb45aa1@mail.gmail.com>
-References: <42e607e9.6446401e.6174.46a7SMTPIN_ADDED@mx.gmail.com>
-	<9927912d0507260430275d8239@mail.gmail.com>
-	<5d2f379105072608385caaee15@mail.gmail.com>
-	<9927912d050726221615fe208f@mail.gmail.com>
-	<5d2f37910507270942577f9173@mail.gmail.com>
-Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
+From: Gioele Barabucci <dev@gioelebarabucci.com>
+Subject: Re: ESTABILISHED connections are not that estabilished
+Date: Thu, 28 Jul 2005 11:52:15 +0200
+Message-ID: <dca9si$kis$1@sea.gmane.org>
+References: <dc8blc$p5s$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5d2f37910507270942577f9173@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,16 +17,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "curby ." <curby.public@gmail.com>
-Cc: Netfilter User Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Sorry got confused with the DoSed and the sed shell command..i want to
-execute the same script for each packet. After execution, it wits for
-the next signal (i.e another valid packet that is passing by before
-going on the wire) to execute again.
+Gioele Barabucci wrote:
+> In my logs I often find reports of dropped input packets from my DNS:53 or
+> dropped output packets generated from localhost:25 to other mail servers.
+> Why are these packets dropped?
+I attach my simple iptables rules
 
-Pls help me..
+  iptables -F
+  iptables -X
+  
+  echo "Default policies"
+  iptables -P INPUT DROP
+  iptables -P OUTPUT DROP
+  iptables -P FORWARD DROP # just for fun, I don't do any routing
+  
+  echo "Exceptions for OUTPUT"
+  iptables -A OUTPUT -o lo -j ACCEPT
+  iptables -A OUTPUT -p udp --dport nameserver -j ACCEPT
+  iptables -A OUTPUT -p tcp --dport nameserver -j ACCEPT
+  iptables -A OUTPUT -p tcp --dport smtp -j ACCEPT
+  iptables -A OUTPUT -p icmp -j ACCEPT
+  iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+  
+  echo "Exceptions for INPUT"
+  iptables -A INPUT -i lo -j ACCEPT
+  iptables -A INPUT -p tcp --dport ssh -j ACCEPT
+  iptables -A INPUT -p tcp --dport smtp -j ACCEPT
+  iptables -A INPUT -p tcp --dport pop3 -j ACCEPT
+  iptables -A INPUT -p tcp --dport imap -j ACCEPT
+  iptables -A INPUT -p tcp --dport http -j ACCEPT
+  iptables -A INPUT -p icmp -j ACCEPT
+  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+  
+  echo "Logging"
+  iptables -A INPUT -m limit --limit 3/second --limit-burst 5 -i ! lo -j LOG
+--log-level "debug" --log-ip-options --log-tcp-options --log-prefix
+'iptables INPUT DROP '
+  iptables -A INPUT -m limit --limit 3/second --limit-burst 5 -i ! lo -j
+ULOG --ulog-prefix 'iptables INPUT DROP '
+  iptables -A OUTPUT -m limit --limit 3/second --limit-burst 5 -o ! lo -j
+LOG --log-level "debug" --log-ip-options --log-tcp-options --log-prefix
+'iptables OUTPUT DROP '
 
-Regards,
-Visham
+  echo "REJECT for outgoing packets"
+  iptables -A OUTPUT -j REJECT # reject, don't DROP outgoing packets
+
+
+-- 
+Gioele <dev@gioelebarabucci.com>
+
 
