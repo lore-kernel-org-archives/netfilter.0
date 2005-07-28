@@ -1,79 +1,58 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: [ANNOUNCE] netfilter-2.6.14 git tree / TODO
-Date: Sun, 31 Jul 2005 10:01:43 +0200
-Message-ID: <20050731080143.GA10374@rama.de.gnumonks.org>
+From: Gioele Barabucci <dev@gioelebarabucci.com>
+Subject: Re: ESTABILISHED connections are not that estabilished
+Date: Fri, 29 Jul 2005 00:04:50 +0200
+Message-ID: <dcd52v$tom$1@sea.gmane.org>
+References: <dc8blc$p5s$1@sea.gmane.org> <dca9si$kis$1@sea.gmane.org>
+	<42E8B668.3030201@gmx.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YZ5djTAD1cGYuMQK"
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-Transfer-Encoding: 7Bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+/dev/rob0 wrote:
+> Gioele Barabucci wrote:
+> Theory:
+> # iptables -vA OUTPUT -p tcp --dport nameserver
+>    tcp opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  tcp dpt:42
+> # iptables -vA OUTPUT -p tcp --dport domain
+>    tcp opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  tcp dpt:53
+> I cannot see into your /etc/services, but mine resolves "nameserver" to
+> "42". (R.I.P., D. Adams.)
+Yes, you're right. Lucky nameserver/udp is an alias for domain/udp so some
+connections went without problem.
+Now that I fixed these rules, the "dig -x" problem is solved, but I can
+still see DROPped packed for INPUT and OUTPUT.
 
---YZ5djTAD1cGYuMQK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>   echo "Logging"
+> Whoa, that is a lot of logging! What do you expect to find in all that?
+> Why LOG and ULOG both?
+Debugging stage :)
 
-Hi!
+> Suggestion: OUTPUT filtering is a bad idea.
+>
+> Why are you doing it? What is the benefit you think you are getting?
+> This sounds like a single user machine, from the fact that there's no
+> routing. Who are you limiting with OUTPUT rules? Yourself?
+This is a public server and I fear that some of its daemons could be used to
+gain user access to the machine. None of my daemon runs as root, so if
+someone get in, it will get only user privs.
+I think that DROPping OUTPUT ensures that nobody will ever open the server
+to the outside or use the server to connect somewhere. Am I wrong? I'm
+pretty new to server management so I want to be sure that I am playing
+safe.
 
-As you might have noticed, the pace of netfilter development has
-_slightly_ changed over the last two weeks.  For those of you who are
-intrested in joining the current development efforts (or even only
-testing, which is definitely required), I suggest pulling the git tree
-=66rom=20
+-- 
+Gioele <dev@gioelebarabucci.com>
 
-rsync://people.netfilter.org/users/laforge/scm/netfilter-2.6.14.git
-
-It is based on David Miller's net-2.6.14.git, and only contains those
-new features and fixes that I intend to push to him soon (or have
-already submitted but have not yet been included).
-
-The areas of most work are currently nfnetlink, nfnetlink_log,
-nfnetlink_queue and ip_conntrack_netlink (previously called ctnetlink).
-Work in the kernel should be mostly finished, but the respective
-userspace counterparts definitely need some work.
-
-I've put together a quick TODO list at=20
-	http://people.netfilter.org/laforge/TODO
-
-Your help is greatly appreciated. Please contact me if you want to work
-on any of these issues.
-
-Thanks,
-	Harald
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---YZ5djTAD1cGYuMQK
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFC7IVnXaXGVTD0i/8RAjyRAKCqmyUC7iawcZckAfl92vTQpoCr9gCgrpSO
-3EZIRLL5KSzJEIn370duXWs=
-=V/F/
------END PGP SIGNATURE-----
-
---YZ5djTAD1cGYuMQK--
 
