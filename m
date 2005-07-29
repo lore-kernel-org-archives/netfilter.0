@@ -1,9 +1,9 @@
-From: RD <bitoy@lawin.pinoy.org>
-Subject: Passive FTP Problem
-Date: Sat, 30 Jul 2005 17:35:17 +1000
-Message-ID: <42EB2DB5.5010300@lawin.pinoy.org>
+From: "J.T. Moore" <jtmoore@international-auto.com>
+Subject: Blackholing probing addresses
+Date: Fri, 29 Jul 2005 17:05:07 -0400
+Message-ID: <00c701c59481$34966250$1500a8c0@domain.internationalauto.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,30 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hello All,
+Does anyone have recommendations on how to automatically blackhole =
+addresses. I've gotten tired of looking through our iptables logs and =
+seeing tons of probes against every ip on our network. I'd rather not =
+reduce the log sensitivity because I like to see details about what's =
+going on, but I'd love to be able to detect certain patterns and =
+blackhole all traffic from the source ip for a given period of time.=20
 
-I have both ip_conntrack_ftp and ip_nat_ftp loaded in my iptables script 
-but still having trouble getting passive ftp from...below's the firewall 
-log.
+For example, if a source tried to access tcp port 25 on two unused =
+addresses within a minute, I'd like to be able to add the source ip to a =
+target chain that silently drops all traffic from the address, but then =
+remove the address from the chain after 30 minutes.=20
 
-Jul 30 17:44:14 alab kernel: IN=eth1 OUT=eth0 SRC=192.168.0.254 
-DST=65.208.228.223 LEN=48 TOS=0x00 PREC=0x00 TTL=127 ID=22214 DF 
-PROTO=TCP SPT=2019 DPT=32895 WINDOW=65535 RES=0x00 SYN URGP=0
-Jul 30 17:44:15 alab kernel: IN=eth1 OUT=eth0 SRC=192.168.0.254 
-DST=65.208.228.223 LEN=48 TOS=0x00 PREC=0x00 TTL=127 ID=22315 DF 
-PROTO=TCP SPT=2020 DPT=32896 WINDOW=65535 RES=0x00 SYN URGP=0
-Jul 30 17:44:18 alab kernel: IN=eth1 OUT=eth0 SRC=192.168.0.254 
-DST=65.208.228.223 LEN=48 TOS=0x00 PREC=0x00 TTL=127 ID=22404 DF 
-PROTO=TCP SPT=2020 DPT=32896 WINDOW=65535 RES=0x00 SYN URGP=0
-Jul 30 17:44:24 alab kernel: IN=eth1 OUT=eth0 SRC=192.168.0.254 
-DST=65.208.228.223 LEN=48 TOS=0x00 PREC=0x00 TTL=127 ID=22420 DF 
-PROTO=TCP SPT=2020 DPT=32896 WINDOW=65535 RES=0x00 SYN URGP=0
+It looks like I should be able to do something at least pretty close to =
+this with the QUEUE target. I also just ran across the ipset utility =
+which also looks like it will be helpful. I'm interested to know if =
+anyone else is doing something like this and if so, I'd be very =
+interested to know what your experiences have been with it.=20
 
-Any advise would be appreciated.
+Thanks in advance,
 
-Thanks,
-RD
+J.T. Moore
+International Auto Parts
+
 
