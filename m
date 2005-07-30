@@ -1,10 +1,9 @@
-From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
-Subject: How to assess routers
-Date: Fri, 29 Jul 2005 14:58:32 +0800
-Message-ID: <MDAEMON-F200507291457.AA5711405md50000000101@palettemm.com>
-Reply-To: bassam@palettemm.com
+From: "Timothy Patterson" <tim@linux.a-f.k12.mi.us>
+Subject: Firewall Configuration Question...  Is this possible?
+Date: Fri, 29 Jul 2005 20:50:37 -0400
+Message-ID: <1122684637.8190bfctim@linux.a-f.k12.mi.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,20 +18,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear All,
+I am trying to get a custom iptables config set up...
 
-   I have a set of routers almost about 50 routers in one of the ISP here in
-Malaysia, and it is required to assess the performance of each router and
-end-to-end performance as well in terms of "THROUGHPUT, LATENCY and PACKET
-LOSS". So would you mind to advice me for free GUI software under Linux OS
-that can be used for this purpose. Take note that all these routers are
-running in the ISP and cannot be isolated.
+I currently have NAT set using masquerading to allow internet access from a=
+ll of our internal computers on the network.  My problem is that I am als=
+o trying to run Apache on the box that is doing the NAT translation rules=
+.  Is it possible to run a web server on the same box that is performing =
+the translations?  If so, could someone give me a quick example on how to=
+ accomplish this?  I've tried googling for this, but I have not found any=
+ pertinent results. =20
 
- 
+Any help would be very appreciated!
 
-Regards
+Thanks in advance,
+Tim Patterson
 
-Bassam A. Al-Khaffaf
-
- 
 
