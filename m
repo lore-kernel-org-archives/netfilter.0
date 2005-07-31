@@ -1,11 +1,12 @@
-From: wn@firstwave.at
-Subject: Werner Novak - is out of the office. / ist nicht im
- =?iso-8859-2?q?B=FCro=2E?=
-Date: Sun, 31 Jul 2005 16:01:05 +0200
-Message-ID: <OFC081F90B.5F51EE3D-ONC125704F.004D0114-C125704F.004D0116@firstwave.at>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: conntrack
+Date: Sun, 31 Jul 2005 19:05:50 +0300
+Message-ID: <1403218a050731090526593423@mail.gmail.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,15 +17,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-I will be out of the office starting  29.07.2005 and will not return un=
-til
-22.08.2005.
+How does conntrack work ??
+Does it care if the source/destination IPs change as well, due to load
+balancers ??
+I mean, if an outsider talks to x.y.z.1 and the load balancer forwards
+that packet to x.y.z.2, so the outsider will get a reply from x.y.z.2
+and continue the communications with it.
+Does conntrack recognize that ?
 
-I will respond to your message when I return.
-Ich werde Ihnen antworten, wenn ich zur=FCckkommen.=
-
-
+--=20
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
