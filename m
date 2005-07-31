@@ -1,12 +1,14 @@
-From: Dharanikanth Dugginni <dharanikanthd@gmail.com>
-Subject: DNAT - newbie question
-Date: Thu, 28 Jul 2005 15:36:19 -0700
-Message-ID: <7f22af9005072815367ee89a78@mail.gmail.com>
-Reply-To: Dharanikanth Dugginni <dharanikanthd@gmail.com>
+From: Philip Prudich <pprudich@masaka.cs.ohiou.edu>
+Subject: Re: Conntrack table editing utility
+Date: Sun, 31 Jul 2005 18:58:45 -0400
+Message-ID: <20050731225845.GA8387@masaka.cs.ohiou.edu>
+References: <1122567204.42e90424cba63@base.mxtelecom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cNdxnHkX5QqsyA0e"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <1122567204.42e90424cba63@base.mxtelecom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,25 +19,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: ianabel@mxtelecom.com
+Cc: netfilter@lists.netfilter.org
 
-Hello,
 
-How do I dynamically change the destination address when performing
-the DNAT functionality?
+--cNdxnHkX5QqsyA0e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Lets suppose a host h1 is sending packets to addr N1 (this is the addr
-for NAT box)  I want to change this addr to a different addr which
-will not be known until after few packets arrive from h1 to n1.
-(Appears from the conntrack and NAT tables documenatation that after
-the first packet, the DNAT table will not be used any more).  Is there
-a way to force subsequent pacekets in the same stream to always use
-the DNAT table?
 
-Any pointers on the dependencies between conntrack and NAT are also
-highly appreciated.
+> b) See if a utility already exists
 
-Thanks,
--Dhar
+While not a finished "utility," you probably want to look into the
+nfnetlink_conntrack patch for implementation. It provides the "delete=20
+conntrack entry X" functionality, among other things.  I had success using=
+=20
+this with a fedora core 1 release, 2.4.22 kernel (for doing a similar sort =
+of=20
+thing as you're working on).  The nfnetlink_conntrack patch I used was vers=
+ion=20
+0.13. =20
+
+Hope this helps.
+phil
+
+
+
+--cNdxnHkX5QqsyA0e
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (SunOS)
+
+iD8DBQFC7VekTGU5yW1gK7ARArROAKDUnR+aooj2VWZLgIHLD8fdIgh8BgCfZEZB
+4SNijJj5wF+d1Lr7ViSyPAs=
+=cN02
+-----END PGP SIGNATURE-----
+
+--cNdxnHkX5QqsyA0e--
 
