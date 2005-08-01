@@ -1,13 +1,12 @@
-From: Robert Vangel <vangelr@rfgt.net>
-Subject: Re: Rules for squid via ssh tunnel
-Date: Mon, 01 Aug 2005 10:16:34 +0800
-Message-ID: <42ED8602.5060807@rfgt.net>
-References: <42EAE51A.3080400@ieee.org>
-Reply-To: rob@zilla.id.au
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Blackholing probing addresses
+Date: Mon, 01 Aug 2005 00:01:05 -0500
+Message-ID: <42EDAC91.4040801@riverviewtech.net>
+References: <00c701c59481$34966250$1500a8c0@domain.internationalauto.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42EAE51A.3080400@ieee.org>
+In-Reply-To: <00c701c59481$34966250$1500a8c0@domain.internationalauto.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,57 +17,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+J.T. Moore wrote:
 
-Gus Collins wrote:
-> I believe this is suppose to be easily done, but I sure can't seem to
-> make it work.  Here's my setup.
-> 
-> I setup a squid proxy on my firewall machine to allow http traffic from
-> my wlan to be encrypted through a ssh tunnel (i.e., ssh -L
-> 3128:squid_server:3128 ...).  Worked great until I added iptables to
-> that setup.
-> 
-> My question is: what rules do I need on the server to allow my local
-> wlan to access the web via the proxy running on the firewall?
+>Does anyone have recommendations on how to automatically blackhole addresses. I've gotten tired of looking through our iptables logs and seeing tons of probes against every ip on our network. I'd rather not reduce the log sensitivity because I like to see details about what's going on, but I'd love to be able to detect certain patterns and blackhole all traffic from the source ip for a given period of time. 
+>
+>For example, if a source tried to access tcp port 25 on two unused addresses within a minute, I'd like to be able to add the source ip to a target chain that silently drops all traffic from the address, but then remove the address from the chain after 30 minutes. 
+>
+>It looks like I should be able to do something at least pretty close to this with the QUEUE target. I also just ran across the ipset utility which also looks like it will be helpful. I'm interested to know if anyone else is doing something like this and if so, I'd be very interested to know what your experiences have been with it. 
+>
+>Thanks in advance,
+>
+>J.T. Moore
+>International Auto Parts
+>
+I would look at the IPTables recent match extension.  I'm going to 
+presume that you have a block of IP addresses, size does not really 
+matter, and only a few of which will have legitimate SMTP servers 
+running and thus it would be easier to have a list of OK SMTP servers to 
+contact and the rest are not ok.  With this in mind I would build an 
+IPTables rule set with one or more matches that check the destination 
+and skip the (SMTP) trap if the packet is destined to a known good SMTP 
+server, a white list of SMTP destinations if you will.  If the packet is 
+not destined to a known good SMTP server you would probably want to add 
+the source IP of the packet to a recent match list.  You could then test 
+to see if the source IP of a packet is in the recent list (name of your 
+choice) to see if it has been seen with in the last 30 minutes (1800 
+seconds) and has a hit count of more than 2 (or what ever you want to 
+test for) and then take action based on the fact that this source IP is 
+probably probing your network.  Some people want to do a blanket DROP / 
+REJECT / TARPIT on traffic that is coming from an annoying IP and others 
+tend to just want to block all new traffic.  This really is a political 
+decision depending on the security policies at your institution.
 
-You shouldn't need any rules to do with the port squid is running on. To
-the firewall on the interface you are connecting through, it's all
-looking like port 22.
+If you are interested in pursuing this line of thought further reply 
+with details of your network and I'll try to propose an IPTables rule 
+set that would accomplish this.
 
-The box you are ssh'ing to, is this the same box that squid is running on?
 
-If so, try `ssh -L 3128:localhost:3128 [...]' (as long as squid is
-listening on localhost).
-> 
-> I tried the rule below w/o success:
-> 
-> iptables -A INPUT -p tcp --dport 3128 -m state --state
-> NEW,ESTABLISHED,RELATED
 
-What did you join it to?
-
-> 
-> On the client, I have the default output policy of accept, so it should
-> be ok?
-
-Yes, but if you have still added any rules they will obviously override
-the default policy.
-
-> 
-> Any help greatly appreciated!
-> 
-> Gus Collins
-> 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQFC7YYCV63eDkW7v4cRAnDyAJ0bg8/jiRmDUuQ2lTPKYx1BEp/aHwCfYmK+
-Ne+lhWEkMVBG6Ceh5qEXX20=
-=/Ad7
------END PGP SIGNATURE-----
+Grant. . . .
 
