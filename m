@@ -1,14 +1,12 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: Fun with the mangle table + LARTC
-Date: Mon, 1 Aug 2005 16:41:19 +0100
-Message-ID: <200508011641.19294.gdh@acentral.co.uk>
-References: <200508010916.37911.gdh@acentral.co.uk>
-	<42EE1D32.8010308@gmx.co.uk>
+From: KOVACS Krisztian <hidden@balabit.hu>
+Subject: Re: iptables and udp socket
+Date: Mon, 01 Aug 2005 17:44:01 +0200
+Message-ID: <1122911041.4319.13.camel@nienna.balabit>
+References: <freemail.20050701171048.22863@fm18.freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42EE1D32.8010308@gmx.co.uk>
-Content-Disposition: inline
+In-Reply-To: <freemail.20050701171048.22863@fm18.freemail.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,33 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-2?Q?Keser=FB_Korn=E9l?= <keseruk@freemail.hu>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 01 August 2005 14:01, /dev/rob0 wrote:
-> Gavin Hamill wrote:
-> > Hi - this is one of those "not sure if it's netfilter or LARTC" issues,
->
-> I'm not sure either, but here's a guess.
->
-> > -A POSTROUTING -s 10.0.0.0/255.255.255.0 -o eth1 -j MASQUERADE
-> > -A POSTROUTING -s 10.0.0.0/255.255.255.0 -o eth2 -j MASQUERADE
->
-> Why MASQUERADE? Try using SNAT rules.
 
-MASQ because the IP addresses on each interaface are DHCP - home ISPs - not 
-business ones :)
+  Hi Kornel,
 
-> > using tcpdump I can see the outgoing and reply packets on eth2 with the
-> > correct source address (i.e. the one the ISP on eth2 gives me) set, but
-> > tcpdump on eth0 shows only the packets from the MASQ'd host - the replies
-> > from the Internet host are not passed through.
->
-> Is there anything dropping the packets in FORWARD? Try tracking with
-> iptables LOG rules rather than tcpdump.
+2005-08-01, h keltez=E9ssel 17.10-kor Keser=FB Korn=E9l ezt =EDrta:
+> In the meantime I played with connection tracking and I found out that
+> my iptables rules usually work parallel with the UDP traffic on the loc=
+al=20
+> socket if I set ip_conntrack_udp_timeout to 0. But for me it seems, it=20
+> doesn't really disable udp connection tracking, does it? I think, it on=
+ly=20
+> sets the timeout to a very low value but the connection is still tracke=
+d,=20
+> therefore it may happen that sometimes iptables will fail in my scenari=
+o.=20
+> My problem is that I cannot avoid using UDP socket and iptables rule=20
+> installed on the same IP:port.
+>=20
+> Is there a better way to "disable" UDP connection tracking and=20
+> therefore to realize stateless behaviour of UDP in my scenario?
 
-OK, I'll give that a whirl :)
+  The problem is that Netfilter has absolutely no stateless NAT support.
+Once you disable connection tracking for UDP (which you could do with an
+appropriate rule in 'raw' table using the 'NOTRACK' target), you won't
+be able to NAT that connection...
 
-Cheers,
-Gavin.
+--=20
+ Regards,
+  Krisztian Kovacs
+
 
