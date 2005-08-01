@@ -1,10 +1,11 @@
-From: Bryan Christ <bryan.christ@filefront.com>
-Subject: Setting up a local firewall
-Date: Sun, 31 Jul 2005 21:24:07 -0500
-Message-ID: <42ED87C7.207@filefront.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Setting up a local firewall
+Date: Mon, 1 Aug 2005 14:20:45 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0508011420290.18500@yvahk01.tjqt.qr>
+References: <42ED87C7.207@filefront.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <42ED87C7.207@filefront.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,18 +16,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Bryan Christ <bryan.christ@filefront.com>
+Cc: netfilter@lists.netfilter.org
 
-I locked myself out of  my server until I rebooted it.  My goal was to lock down everything and allow only SSH connectivity.  Can anyone show me where my logic went wrong?  Here was the fatal script which I wrote:
 
-/sbin/iptables -F INPUT
-/sbin/iptables -A INPUT -s 0/0 -j DROP
-/sbin/iptables -A INPUT -s 0/0 -m state  --state NEW,ESTABLISHED -p tcp --dport 22 -j ACCEPT
+>Subject: Setting up a local firewall
 
-My guess is that I missed accepting syn packets, but I'm not ready to "try" again.
+So, what's a remote firewall? :)
+scnr
 
-Thanks in advance,
-Bryan
 
+Jan Engelhardt
+-- 
 
