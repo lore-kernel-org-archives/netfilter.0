@@ -1,7 +1,7 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
+From: Daniel Lopes <lopsch@lopsch.com>
 Subject: Re: MSN and Yahoo
-Date: Mon, 01 Aug 2005 11:26:23 +0200
-Message-ID: <42EDEABF.50301@eccotours.dyndns.org>
+Date: Mon, 01 Aug 2005 13:41:00 +0200
+Message-ID: <42EE0A4C.3090206@lopsch.com>
 References: <20050801071846.9262.qmail@web53107.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,10 +18,9 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: umar draz <umar_draz@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-umar draz wrote:
+umar draz schrieb:
 > hi dear members!
 >  
 >   i have a cable internet and have 300 users. I want
@@ -32,14 +31,17 @@ umar draz wrote:
 > Please help me in this regards,
 >  
 > Umar Draz
-
-Hi
-
-Why dont you just use squid to handle this for you.
-
-Hope you come right
-
-Kind Regards
-Brent Clark
-
+> 
+> 
+> 		
+> ____________________________________________________
+> Start your day with Yahoo! - make it your home page 
+> http://www.yahoo.com/r/hs 
+>  
+> 
+> 
+This shouldn't work behind NAT without UPnP or a tracking module. So no 
+needs to block. This is because both send information for direct 
+connections within the payload and therefor out of reach of connection 
+tracking and NAT.
 
