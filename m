@@ -1,12 +1,10 @@
-From: Daniel Lopes <lopsch@lopsch.com>
-Subject: Re: MSN and Yahoo
-Date: Mon, 01 Aug 2005 13:41:00 +0200
-Message-ID: <42EE0A4C.3090206@lopsch.com>
-References: <20050801071846.9262.qmail@web53107.mail.yahoo.com>
+From: Bryan Christ <bryan.christ@filefront.com>
+Subject: Setting up a local firewall
+Date: Sun, 31 Jul 2005 21:24:07 -0500
+Message-ID: <42ED87C7.207@filefront.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050801071846.9262.qmail@web53107.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,28 +18,15 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-umar draz schrieb:
-> hi dear members!
->  
->   i have a cable internet and have 300 users. I want
-> block MSN and 
-> Yahoo voice chat. Please help me how i can do that
-> with iptables.
->  
-> Please help me in this regards,
->  
-> Umar Draz
-> 
-> 
-> 		
-> ____________________________________________________
-> Start your day with Yahoo! - make it your home page 
-> http://www.yahoo.com/r/hs 
->  
-> 
-> 
-This shouldn't work behind NAT without UPnP or a tracking module. So no 
-needs to block. This is because both send information for direct 
-connections within the payload and therefor out of reach of connection 
-tracking and NAT.
+I locked myself out of  my server until I rebooted it.  My goal was to lock down everything and allow only SSH connectivity.  Can anyone show me where my logic went wrong?  Here was the fatal script which I wrote:
+
+/sbin/iptables -F INPUT
+/sbin/iptables -A INPUT -s 0/0 -j DROP
+/sbin/iptables -A INPUT -s 0/0 -m state  --state NEW,ESTABLISHED -p tcp --dport 22 -j ACCEPT
+
+My guess is that I missed accepting syn packets, but I'm not ready to "try" again.
+
+Thanks in advance,
+Bryan
+
 
