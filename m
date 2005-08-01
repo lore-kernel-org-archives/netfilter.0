@@ -1,12 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Fun with the mangle table + LARTC
-Date: Mon, 01 Aug 2005 08:01:38 -0500
-Message-ID: <42EE1D32.8010308@gmx.co.uk>
-References: <200508010916.37911.gdh@acentral.co.uk>
+From: =?ISO-8859-2?Q?Keser=FB_Korn=E9l?= <keseruk@freemail.hu>
+Subject: Re: iptables and udp socket
+Date: Mon, 1 Aug 2005 17:10:48 +0200 (CEST)
+Message-ID: <freemail.20050701171048.22863@fm18.freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200508010916.37911.gdh@acentral.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,27 +15,83 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: hidden@balabit.hu
+Cc: netfilter@lists.netfilter.org
 
-Gavin Hamill wrote:
-> Hi - this is one of those "not sure if it's netfilter or LARTC" issues,
+Hi Krisztian,
 
-I'm not sure either, but here's a guess.
+thank you for your answer!
 
-> -A POSTROUTING -s 10.0.0.0/255.255.255.0 -o eth1 -j MASQUERADE
-> -A POSTROUTING -s 10.0.0.0/255.255.255.0 -o eth2 -j MASQUERADE
+In the meantime I played with connection tracking and I found out that
+my iptables rules usually work parallel with the UDP traffic on the local=
+=20
+socket if I set ip_conntrack_udp_timeout to 0. But for me it seems, it=20
+doesn't really disable udp connection tracking, does it? I think, it only=
+=20
+sets the timeout to a very low value but the connection is still tracked,=
+=20
+therefore it may happen that sometimes iptables will fail in my scenario.=
+=20
+My problem is that I cannot avoid using UDP socket and iptables rule=20
+installed on the same IP:port.
 
-Why MASQUERADE? Try using SNAT rules.
+Is there a better way to "disable" UDP connection tracking and=20
+therefore to realize stateless behaviour of UDP in my scenario?
 
-> using tcpdump I can see the outgoing and reply packets on eth2 with the 
-> correct source address (i.e. the one the ISP on eth2 gives me) set, but 
-> tcpdump on eth0 shows only the packets from the MASQ'd host - the replies 
-> from the Internet host are not passed through.
+Bye,
+Kornel Keseru
 
-Is there anything dropping the packets in FORWARD? Try tracking with 
-iptables LOG rules rather than tcpdump.
--- 
-     mail to this address is discarded unless "/dev/rob0"
-     or "not-spam" is in Subject: header
+
+  Hi Kornel,
+
+2005-07-19, k keltez=E9ssel 19.23-kor Keser=FB Korn=E9l ezt =EDrta:
+> I'm quite new to netfilter/iptables, I have been using it for some=20
+weeks.=20
+> I would like to ask if it may lead to undeterministic behaviour of=20
+iptables=20
+> when an udp socket is opened on an IP:port while in parallel iptables=20
+> rules (NAT) are setup that forward all incoming packets received on=20
+> that IP:port to a different destination. So I just want to use the=20
+socket=20
+> for sending out packets on it, while incoming packets should be=20
+> forwarded to other destination. But sometimes the packets are=20
+> received on the socket, sometimes they are forwarded. So iptables=20
+> don't have always the expected effect.
+
+  This probably derives from the internals of Netfilter connection
+tracking and NAT. In Netfilter, the NAT subsystem is completely based=20
+on
+the conntrack subsystem. That is, when a packet belonging to a=20
+currently
+unknown connection is detected, the conntrack system creates a new
+connection. Later the NAT subsystem determines the mapping to be=20
+applied
+onto that connection by looking up the appropriate iptables table/chain.
+The final mapping is then stored in the conntrack entry.
+
+  Now imagine the following scenario: you open your 'sending only'
+socket (IP_A:PORT_A), and send a UDP packet to IP_B:PORT_B.=20
+Obviously,
+no mapping will be done by the NAT subsystem, as you redirect=20
+incoming
+packets only. Now let's see what happens when a packet from=20
+IP_B:PORT_B
+comes back to IP_A:PORT_A. Since that source-destination pair matches
+the conntrack entry of the connection you've just created by sending=20
+the
+first packet, the conntrack system thinks it simply belongs to that
+connection. As there are no NAT mappings associated with that
+connection, no address translation will happen.
+
+  So IMHO this method is flawed, you won't be able to get consistent=20
+and
+reliable operation this way...
+
+--=20
+ Regards,
+  Krisztian Kovacs
+=0A=0A_____________________________________________________________________=
+__=0A[freemail] extra 1GB-os postafi=F3kkal, =D6nnek m=E1r van? http://free=
+mail.hu=0A=0A
 
