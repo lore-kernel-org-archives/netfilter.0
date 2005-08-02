@@ -1,14 +1,11 @@
-From: Sp0oKeR <spooker@gmail.com>
-Subject: Re: Blocking a range of source IPs to a specific port
-Date: Tue, 2 Aug 2005 10:35:56 -0300
-Message-ID: <9255886c0508020635713bb51a@mail.gmail.com>
-References: <42EE63E6.6070801@blackicehosting.com>
-Reply-To: Sp0oKeR <spooker@gmail.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: DNAT pptp to windows machine
+Date: Tue, 2 Aug 2005 08:12:14 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE58290747E@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42EE63E6.6070801@blackicehosting.com>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,26 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: James Harrison <jamesharrison@blackicehosting.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: "Sadus ." <sadus@swiftbin.net>, netfilter@lists.netfilter.org
 
- you can use ipset
- http://ipset.netfilter.org/
+First, you only need to post one time.=20
 
-Regards,
+To answer this question, you need a little additional background on your
+environment.  Will it be the firewall making the connection?  What OS
+version?  ETC.
 
-Sp0oKeR
+If you are just doing straight NAT'ing of firewall IP to the back end
+PPTP server then you shouldn't need to do anything more than setup the
+NAT rules and ensure that the firewall is allowing the traffic
+(including GRE).  I think that NAT'ing GRE is the difficult part but I
+usually use a dedicated IP for the PPTP servers and NAT the entire IP.
 
-On 8/1/05, James Harrison <jamesharrison@blackicehosting.com> wrote:
-> Hi,
+Alternatively, you can install POPTOP on your firewall.
+
+Gary
+
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> bounces@lists.netfilter.org] On Behalf Of Sadus .
+> Sent: Tuesday, August 02, 2005 12:58 AM
+> To: netfilter@lists.netfilter.org
+> Subject: DNAT pptp to windows machine
 >=20
-> I'm trying to use iptables to block a range of source IP addresses, but
-> I can't figure out how to specify ranges- i'm trying to block everything
-> from 172.150-250.*.* on port 8676- can someone help me out with the rule
-> for this?
+> Hello,
+> I would like to DNAT to a pptp server, what rules/protocols/ports
+should
+> i use? do i need to recompile the kernel?
 >=20
-> Thanks,
-> James Harrison
+> Thanks
 >=20
->
+> EL-KHOUJA Haytham
+> ----------------------------------------------------------
+> sadus@swiftbin.net
+> ----------------------------------------------------------
+> Please avoid sending me Word or PowerPoint attachments.
+> See: http://www.gnu.org/philosophy/no-word-attachments.html
 
