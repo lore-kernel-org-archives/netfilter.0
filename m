@@ -1,48 +1,44 @@
-From: Marc Schoechlin <mslists@256bit.org>
-Subject: building a iptables-firewallcluster
-Date: Tue, 2 Aug 2005 14:03:09 +0200
-Message-ID: <20050802120309.GA5501@256bit.org>
+From: Krzysztof Oledzki <olenf@ans.pl>
+Subject: Re: [ANNOUNCE] netfilter-2.6.14 git tree / TODO
+Date: Tue, 2 Aug 2005 16:19:16 +0200 (CEST)
+Message-ID: <Pine.LNX.4.62.0508021617140.14812@bizon.gios.gov.pl>
+References: <20050731080143.GA10374@rama.de.gnumonks.org>
+	<m21x5czj2p.fsf@cerbere.dyndns.info>
 Mime-Version: 1.0
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-187430788-547252195-1122992356=:14812"
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <m21x5czj2p.fsf@cerbere.dyndns.info>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: Samir Bellabes <sbellabes@mandriva.com>
+Cc: Harald Welte <laforge@netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-Hi !
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-As i remember at linuxtag 2004 (karlsruhe/germany) Harald Welte gave
-a speech about a facility in the linux-kernel which allows the
-synchronization of conntrack-tables between the different machines
-of a firewall-cluster.
+---187430788-547252195-1122992356=:14812
+Content-Type: TEXT/PLAIN; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-I searched for some documentation and the state of this project, but i was not
-able to get any useful information about this issue.
 
-Is this now part of the linux-kernel or are there now other strategies
-to build firewallclusters for load-balancing and/or 
-high-availability ?
 
-Where can i get detailed information about the installation of a 
-iptables-based firewall-cluster ?
+On Tue, 2 Aug 2005, Samir Bellabes wrote:
+<CIACH>
+>  - mport : [NETFILTER] IPv4 mport match from svn-netfilter rev 3983
 
-Best regards
+Why do we need this? We have multiport with ranges in 2.6.11.
 
-Marc Schoechlin
+Best regards,
 
--- 
-I prefer non-proprietary document-exchange.
-http://sector7g.wurzel6.de/pdfcreator/
-http://www.prooo-box.org/
-
+ =09=09=09Krzysztof Ol=EAdzki
+---187430788-547252195-1122992356=:14812--
 
