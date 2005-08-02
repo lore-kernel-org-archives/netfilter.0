@@ -1,14 +1,12 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: about NFQUEUE and nth match
-Date: Mon, 01 Aug 2005 22:42:41 +0200
-Message-ID: <1122928961.5084.12.camel@porky>
-References: <WorldClient-F200508011629.AA29430066@tesla.cujae.edu.cu>
+From: Samir Bellabes <sbellabes@mandriva.com>
+Subject: Re: [ANNOUNCE] netfilter-2.6.14 git tree / TODO
+Date: Tue, 02 Aug 2005 13:14:54 +0200
+Message-ID: <m21x5czj2p.fsf@cerbere.dyndns.info>
+References: <20050731080143.GA10374@rama.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-WWWSm5Oi43xWXcYm/2fn"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <WorldClient-F200508011629.AA29430066@tesla.cujae.edu.cu>
+In-Reply-To: <20050731080143.GA10374@rama.de.gnumonks.org> (Harald Welte's
+	message of "Sun, 31 Jul 2005 10:01:43 +0200")
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,61 +17,145 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Frank Abel Cancio Bello <FRANKABEL@tesla.cujae.edu.cu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Harald Welte <laforge@netfilter.org>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+
+Harald Welte <laforge@netfilter.org> writes:
+
+> I suggest pulling the git tree from 
+>
+> rsync://people.netfilter.org/users/laforge/scm/netfilter-2.6.14.git
+>
+> It is based on David Miller's net-2.6.14.git, and only contains those
+> new features and fixes that I intend to push to him soon (or have
+> already submitted but have not yet been included).
+>
+
+I started a tree for extensions in the p-o-m.
+The git tree has already around 30 extensions, and is based on davem's
+net-2.6.git
+
+you can dowload the tarball of this tree here:
+http://people.mandriva.com/~sbellabes/nf-2.6.git.tar.gz
+http://people.mandriva.com/~sbellabes/git/nf-2.6.git/
+
+Yes, i know, a rsync should be better, but the only server i got which
+can host a rsync server, has a DSL link :/ 
+Harald, can you provide hosting ? 
+
+TODO:
+  - updating patch for being sync with svn, but for now, we got a
+structured tree.
+  - add more extensions (sip, ..)
+
+Here is the changelog against davem's tree for each branches
+(main updates are kill lockhelp.h and fix compile problems, the branches
+mdv is the merge branches of all extensions)
+
+new targets:
+  - ROUTE 
+    o [NETFILTER] IPv{4,6} ROUTE target from svn-netfilter rev 3983
+    o [NETFILTER] kill nf_debug for ROUTE
+    o [NETFILTER] fix prototype function match for ROUTE
+    o [NETFILTER] Need to export symbol nd_tbl for ROUTE IPv6
+
+  - HOPLIMIT
+    o [NETFILTER] IPv6 HOPLIMIT target from svn-netfilter rev 3983
+    o [NETFILTER] fix prototype function match for HOPLIMIT
+
+  - TARPIT
+    o [NETFILTER] IPv4 TARPIT target from svn-netfilter rev 3983
+    o [NETFILTER] kill nf_debug for TARPIT
+
+  - IPV4OPTSSTRIP
+    o [NETFILTER] IPv4 IPV4OPTSSTRIP target match from svn-netfilter rev 3983
+
+  - IPMARK
+    o [NETFILTER] IPv4 IPMARK target from svn-netfilter rev 3983
+
+  - XOR
+    o [NETFILTER] IPv4 XOR target from svn-netfilter rev 3983
+    o [NETFILTER] XOR Makefile + Kconfig (svn rev 3983)
+
+  - TTL
+    o [NETFILTER] IPv4 TTL target from svn-netfilter rev 3983
+
+matchs:
+  - connrate :
+    o [NETFILTER] IPv4 connrate match from svn-netfilter rev 3983
+    o [NETFILTER] Kill lockhelp.h for connrate
+    o [NETFILTER] Missing include for SMP (connrate)
+
+  - nf_conntrack
+    o [NETFILTER] IPv{4,6} nf_conntrack from svn-netfilter rev 3983
+    o [NETFILTER] kill lockhelp.h for nf_conntrack
+    o [NETFILTER] kill nf_debug for nf_conntrack
+    o [NETFILTER] Fix compiling error with inline function nf_ct_put
+    o [NETFILTER] dst_pmtu is no longer used for kernel >= 2.6.12
+    o [NETFILTER] fix typo and missing lock for nf_conntrack
+
+  - nth
+    o [NETFILTER] IPv{4,6} nth match from svn-netfilter rev 3983
+    o [NETFILTER] fix prototype function match for nth ipv6
+
+  - random
+    o [NETFILTER] IPv{4,6} random match from svn-netfilter rev 3983
+    o [NETFILTER] Fix struct ipt_match ipt_rand_reg
+    o [NETFILTER] fix prototype function match for random ipv4
+    o [NETFILTER] fix prototype function match for random ipv6
+
+  - pptp-conntrack-nat
+    o [NETFILTER] IPv4 pptp-conntrack-nat from svn-netfilter rev 4096
+    o [NETFILTER] Kill lockhelp.h for pptp-conntrack-nat
+    o [NETFILTER] Fix missing ip_nat_pptp.h
+    o [NETFILTER] kill lockhelp.h for pptp-conntrack-nat part 2
+    o [NETFILTER] kill lockhelp.h for proto_gre
+    o [NETFILTER] Define macros for pptp-conntrack-nat
+ 
+  - fuzzy
+    o [NETFILTER] IPv{4,6} fuzzy match from svn-netfilter rev 3983
+    o [NETFILTER] fix prototype function match for fuzzy
+
+  - condition
+    o [NETFILTER] IPv{4,6} condition match from svn-netfilter rev 3983
+    o [NETFILTER] Fix prototype function 'match'
+    o [NETFILTER] fix compiling warnings in ip6t_condition
+
+  - ipset
+    o [NETFILTER] IPv4 ipset match/TARGET from svn-netfilter rev 3983
+    o [NETFILTER] kill lockhelp.h for ipset
+
+  - rsh-conntrack
+    o [NETFILTER] IPv4 rsh-conntrack from svn-netfilter rev 4096
+    o [NETFILTER] Kill lockhelp.h for rsh-conntrack
+    o [NETFILTER] kill lockhelp.h for rsh part 2
+
+  - rtsp_conntrack
+    o [NETFILTER] IPv4 rtsp_conntrack from svn-netfilter rev 3983
+    o [NETFILTER] Kill lockhelp.h for rtsp_conntrack
+    o [NETFILTER] Introduce ip_ct_rtsp_master
+
+  - ipv4options
+    o [NETFILTER] IPv4 ipv4options match from svn-netfilter rev 3983
+
+  - string (not enabled in configs)
+    o [NETFILTER] IPv4 string match from svn-netfilter rev 3983
+
+  - quota : [NETFILTER] IPv4 quota match from svn-netfilter rev 3983
+  - mport : [NETFILTER] IPv4 mport match from svn-netfilter rev 3983
+  - connlimit : [NETFILTER] IPv4 connlimit match from svn-netfilter rev 3983
+  - time : [NETFILTER] IPv4 time match from svn-netfilter rev 3983
+  - psd : [NETFILTER] IPv4 psd match from svn-netfilter rev 3983
+  - osf : [NETFILTER] IPv4 osf match from svn-netfilter rev 3983
+  - ipp2p : [NETFILTER] IPv4 ipp2p match from svn-netfilter rev 3983
+
+others:
+  - ip_queue_vwmark : [NETFILTER] ip_queue_vwmark from svn-netfilter rev 3983
 
 
---=-WWWSm5Oi43xWXcYm/2fn
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2005-08-01 at 16:29 -0400, Frank Abel Cancio Bello wrote:
-> Hi all!
->=20
-> Some time ago I post a mail in this list=20
-> ("https://lists.netfilter.org/pipermail/netfilter/2005-April/059499.html"=
-)=20
-> asking about how manage packets  that was captured with "libipq" and "QUE=
-UE"=20
-> target in different threads or process.
->=20
-> Now with the new "NFQUEUE" target I can have many process reading parcket=
-s=20
-> in different queues numbers and using "nth match" to spread equitably ove=
-r=20
-> all process the captured packects.=20
-
-This look terribly awfull to me ! You better use a single multithreaded
-application.
-
-> My questions are:
->=20
-> 1-What libipq's functions change and how? I look in the manpage in the=20
-> recent 1.3.3 iptables release and don't find anything.
-
-It will come soon, userspace lib is only available from svn. A compat
-libipq library is planned but there's still work to do on it.
-SVN is available at :=20
-	http://svn.netfilter.org/netfilter/trunk/
-Currently the userspace API is work in progress...
-
-BR,
---=20
-Eric Leblond <eric@inl.fr>
-INL
-
---=-WWWSm5Oi43xWXcYm/2fn
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQBC7olBnxA7CdMWjzIRAjXgAJ9dtg5oiITQftn+4cJ+BNEuQJaUCQCgg1lw
-pZDfytbS4Kd4c172FtgsKJ4=
-=QVbl
------END PGP SIGNATURE-----
-
---=-WWWSm5Oi43xWXcYm/2fn--
-
+-- 
+Samir Bellabes
+Mandriva
 
