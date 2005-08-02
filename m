@@ -1,16 +1,10 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: about NFQUEUE and nth match
-Date: Tue, 02 Aug 2005 14:59:57 +0200
-Message-ID: <1122987597.7160.8.camel@localhost.localdomain>
-References: <WorldClient-F200508011629.AA29430066@tesla.cujae.edu.cu>
-	<1122928961.5084.12.camel@porky>
-	<WorldClient-F200508011918.AA18330122@tesla.cujae.edu.cu>
-	<1122939173.5292.6.camel@localhost.localdomain>
-	<WorldClient-F200508020846.AA46420147@tesla.cujae.edu.cu>
+From: "James A Harrison" <jamesharrison@blackicehosting.com>
+Subject: Re: Blocking a range of source IPs to a specific port
+Date: Tue, 2 Aug 2005 14:20:45 +0100
+Message-ID: <20664.2167679549$1122994331@news.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <WorldClient-F200508020846.AA46420147@tesla.cujae.edu.cu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,95 +15,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: gtaylor@riverviewtech.net
+Cc: netfilter@lists.netfilter.org
 
-Le mardi 02 ao=FBt 2005 =E0 08:46 -0400, Frank Abel Cancio Bello a =E9crit =
-:
-> Thanks again eric
->=20
-> Can you send me or point me to some code that you are tested?
+Hi,
 
-All the tests have been done on NuFW : http://www.nufw.org
-The libipq sources are in the src/nufw directory.
+Replying on my PDA, so just a quick message to say thanks - i'll try that tomorrow.
 
-The daemon in quiet simple :=20
-      * one thread read message from kernel and send them other network
-        (packetsrv.c)
-      * second thread read decision from network and give it to kernel
-        (authsrv.c)
 
-Hope this help,
 
-BR,
+James Harrison
 
->=20
-> Salute
-> Frank
->=20
-> > Le lundi 01 ao=FBt 2005 =E0 19:18 -0400, Frank Abel Cancio Bello a =E9c=
-rit :
-> > > > On Mon, 2005-08-01 at 16:29 -0400, Frank Abel Cancio Bello wrote:
-> > > > > Hi all!
-> > > > >=20
-> > > > > Some time ago I post a mail in this list=20
-> > > > >=20
-> > >=20
-> ("https://lists.netfilter.org/pipermail/netfilter/2005-April/059499.html"=
-)=20
-> > > > > asking about how manage packets that was captured with "libipq" a=
-nd=20
-> > > "QUEUE"=20
-> > > > > target in different threads or process.
-> > > > >=20
-> > > > > Now with the new "NFQUEUE" target I can have many process reading=
-=20
-> > > parckets=20
-> > > > > in different queues numbers and using "nth match" to spread=20
-> equitably=20
-> > > over=20
-> > > > > all process the captured packects.=20
-> > > >=20
-> > > > This look terribly awfull to me ! You better use a single=20
-> multithreaded
-> > > > application.
-> > > >=20
-> > >=20
-> > > Due to libipq isn't thread-safe (see one problem in=20
-> > >
-> >=20
-> http://www.experts-exchange.com/Programming/Programming_Platforms/Linux_P=
-rogrammi
-> > ng/Q_20766491.html)=20
-> > > and I'm not a netfilter hacker I send the mail=20
-> > > (https://lists.netfilter.org/pipermail/netfilter/2005-April/059499.ht=
-ml)=20
-> but=20
-> > > anybody reply.=20
-> > > The problem is that I need to know if is safe make a multithreaded=20
-> > > application with libipq. Now I have the same questions that that some=
-=20
-> time=20
-> > > ago:
-> >=20
-> > >From my experience, I've tested with two threads. One receiving packet=
-s
-> > the other sending packets back to kernel. It seems to work fine, even
-> > under heavy load. I've never tried multiple sending and receiving
-> > threads.
-> > But you can always have something like that by using messages between
-> > the threads.
-> >=20
-> > BR,
-> > --=20
-> > Eric Leblond=20
-> >=20
-> >=20
-> >=20
->=20
->=20
->=20
->=20
 
+-----Original Message-----
+>From: "Grant Taylor"<gtaylor@riverviewtech.net>
+>Sent: 02/08/05 04:05:49
+>To: "netfilter"<netfilter@lists.netfilter.org>
+>Subject: Re: Blocking a range of source IPs to a specific port
+>
+>James Harrison wrote:
+>
+>> Hi,
+>>
+>> I'm trying to use iptables to block a range of source IP addresses, 
+>> but I can't figure out how to specify ranges- i'm trying to block 
+>> everything from 172.150-250.*.* on port 8676- can someone help me out 
+>> with the rule for this?
+>>
+>> Thanks,
+>> James Harrison
+>>
+>James, you might want to look in to the IPRange match extension for 
+>IPTables. I think you would be able to do something quite literally like 
+>this:
+>
+>iptabels -t filter -A INPUT -p tcp --dport 8676 -m iprange --src-range 
+>172.150.0.0-172.250.255.255 -j DROP
+>
+>I was able to successfully key the above line in to my firewall at the 
+>house (test chain) with out any problems so I think the syntax is 
+>correct.  However I have never used iprange in production to say what I 
+>think of it.  Give it a try and see what you think.
+>
+>One suggestion is that you may want to send the traffic to a different 
+>sub chain to be able to log the traffic before you DROP it.  Just a thought.
+>
+>
+>
+>Grant. . . .
+>
+>
 
 
