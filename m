@@ -1,10 +1,10 @@
-From: EL-KHOUJA Haytham <haytham@khouja.com>
-Subject: DNAT to a Windiws pptp server
-Date: Tue, 02 Aug 2005 10:47:48 +0300
-Message-ID: <1122968869.31615.52.camel@debianbox>
+From: Marc Schoechlin <mslists@256bit.org>
+Subject: building a iptables-firewallcluster
+Date: Tue, 2 Aug 2005 14:03:09 +0200
+Message-ID: <20050802120309.GA5501@256bit.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,17 +16,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
-I would like to DNAT to a pptp server, what rules/protocols/ports should
-i use? do i need to recompile the kernel?
+Hi !
 
-Thanks
+As i remember at linuxtag 2004 (karlsruhe/germany) Harald Welte gave
+a speech about a facility in the linux-kernel which allows the
+synchronization of conntrack-tables between the different machines
+of a firewall-cluster.
 
-EL-KHOUJA Haytham
-----------------------------------------------------------
-haytham@khouja.com
-----------------------------------------------------------
-Please avoid sending me Word or PowerPoint attachments.
-See: http://www.gnu.org/philosophy/no-word-attachments.html
+I searched for some documentation and the state of this project, but i was not
+able to get any useful information about this issue.
+
+Is this now part of the linux-kernel or are there now other strategies
+to build firewallclusters for load-balancing and/or 
+high-availability ?
+
+Where can i get detailed information about the installation of a 
+iptables-based firewall-cluster ?
+
+Best regards
+
+Marc Schoechlin
+
+-- 
+I prefer non-proprietary document-exchange.
+http://sector7g.wurzel6.de/pdfcreator/
+http://www.prooo-box.org/
+
+
