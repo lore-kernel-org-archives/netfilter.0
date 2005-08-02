@@ -1,12 +1,18 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Firewall Configuration Question...  Is this possible?
-Date: Mon, 1 Aug 2005 13:13:25 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0508011308200.3645@darkstar.sysinfo.com>
-References: <1122684637.8190bfctim@linux.a-f.k12.mi.us>
-	<42ED1E7A.4030301@gmx.co.uk>
+From: "Frank Abel Cancio Bello" <FRANKABEL@tesla.cujae.edu.cu>
+Subject: Re: about NFQUEUE and nth match
+Date: Tue, 02 Aug 2005 09:52:18 -0400
+Message-ID: <WorldClient-F200508020952.AA52180163@tesla.cujae.edu.cu>
+References: <WorldClient-F200508011629.AA29430066@tesla.cujae.edu.cu>
+	<1122928961.5084.12.camel@porky>
+	<WorldClient-F200508011918.AA18330122@tesla.cujae.edu.cu>
+	<1122939173.5292.6.camel@localhost.localdomain>
+	<WorldClient-F200508020846.AA46420147@tesla.cujae.edu.cu>
+	<1122987597.7160.8.camel@localhost.localdomain>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42ED1E7A.4030301@gmx.co.uk>
+In-Reply-To: <1122987597.7160.8.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,68 +23,113 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Thanks again, I will look up there.
 
-On Sun, 31 Jul 2005, /dev/rob0 wrote:
+Frank
 
-> Timothy Patterson wrote:
->> I currently have NAT set using masquerading to allow internet access
->> from all of our internal computers on the network.  My problem is that I 
->> am also trying to run Apache on the box that is doing the NAT
->> translation rules.  Is it possible to run a web server on the same box 
->> that is performing the translations?
->
-> Of course.
->
->> If so, could someone give me a quick example on how to accomplish
->
-> Restrict SNAT by interface. Only do it for clients on the LAN.
->
->> this?  I've tried googling for this, but I have not found any pertinent 
->> results.
->
-> The NAT HOWTO?
->
+> Le mardi 02 ao=FBt 2005 =E0 08:46 -0400, Frank Abel Cancio Bello a =E9c=
+rit :
+> > Thanks again eric
+> >=20
+> > Can you send me or point me to some code that you are tested?
+>=20
+> All the tests have been done on NuFW : http://www.nufw.org
+> The libipq sources are in the src/nufw directory.
+>=20
+> The daemon in quiet simple :=20
+>       * one thread read message from kernel and send them other network
+>         (packetsrv.c)
+>       * second thread read decision from network and give it to kernel
+>         (authsrv.c)
+>=20
+> Hope this help,
+>=20
+> BR,
+>=20
+> >=20
+> > Salute
+> > Frank
+> >=20
+> > > Le lundi 01 ao=FBt 2005 =E0 19:18 -0400, Frank Abel Cancio Bello a =
+=E9crit :
+> > > > > On Mon, 2005-08-01 at 16:29 -0400, Frank Abel Cancio Bello wrot=
+e:
+> > > > > > Hi all!
+> > > > > >=20
+> > > > > > Some time ago I post a mail in this list=20
+> > > > > >=20
+> > > >=20
+> >=20
+("https://lists.netfilter.org/pipermail/netfilter/2005-April/059499.html"=
+)=20
+> > > > > > asking about how manage packets that was captured with "libip=
+q"=20
+and=20
+> > > > "QUEUE"=20
+> > > > > > target in different threads or process.
+> > > > > >=20
+> > > > > > Now with the new "NFQUEUE" target I can have many process=20
+reading=20
+> > > > parckets=20
+> > > > > > in different queues numbers and using "nth match" to spread=20
+> > equitably=20
+> > > > over=20
+> > > > > > all process the captured packects.=20
+> > > > >=20
+> > > > > This look terribly awfull to me ! You better use a single=20
+> > multithreaded
+> > > > > application.
+> > > > >=20
+> > > >=20
+> > > > Due to libipq isn't thread-safe (see one problem in=20
+> > > >
+> > >=20
+> >
+>=20
+http://www.experts-exchange.com/Programming/Programming_Platforms/Linux_P=
+rogrammi
+> > > ng/Q_20766491.html)=20
+> > > > and I'm not a netfilter hacker I send the mail=20
+> > > >=20
+(https://lists.netfilter.org/pipermail/netfilter/2005-April/059499.html)=20
+> > but=20
+> > > > anybody reply.=20
+> > > > The problem is that I need to know if is safe make a multithreade=
+d=20
+> > > > application with libipq. Now I have the same questions that that=20
+some=20
+> > time=20
+> > > > ago:
+> > >=20
+> > > >From my experience, I've tested with two threads. One receiving=20
+packets
+> > > the other sending packets back to kernel. It seems to work fine, ev=
+en
+> > > under heavy load. I've never tried multiple sending and receiving
+> > > threads.
+> > > But you can always have something like that by using messages betwe=
+en
+> > > the threads.
+> > >=20
+> > > BR,
+> > > --=20
+> > > Eric Leblond=20
+> > >=20
+> > >=20
+> > >=20
+> >=20
+> >=20
+> >=20
+> >=20
+>=20
+>=20
+>=20
+>=20
+>=20
 
-doable, but not adised, a firewall should be single purpose, most servers 
-should be single purpose where possible.  But then this is not often the 
-case.  But a firewall certainly should be a single purpose system much 
-like a router is, they do similair work anyways.
 
-putting a web servers on the firewall makes the firewall and the whole 
-internal network subject to any issues that the web services now face, 
-plus you now have to allow naother set of ports/protocols directly to the 
-system and not merely passingby or through it.  A web server would 
-preferably run on a system in the dmz, andf not heavily traffices can run 
-well on an old cheap pc.
 
-To state this in anohter way;  just because something is possible does not 
-mean it should be done, or the prefered way of doing things.
 
-Thanks,
-
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFC7lg4st+vzJSwZikRAsk4AJ44/FggWHAp2k4mUCTZMo65fJUlYQCgt7by
-0ogLObSUx2jCPWSydRUVZ3A=
-=6ovs
------END PGP SIGNATURE-----
 
