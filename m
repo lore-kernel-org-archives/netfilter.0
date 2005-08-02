@@ -1,13 +1,11 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: conntrack
-Date: Tue, 2 Aug 2005 18:17:47 +0300
-Message-ID: <1403218a05080208173ca4bc5@mail.gmail.com>
-References: <1403218a050731090526593423@mail.gmail.com>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: hbeaumont hbeaumont <ahlist@gmail.com>
+Subject: blocking irc + botnets
+Date: Tue, 2 Aug 2005 10:41:14 -0500
+Message-ID: <bc5becf6050802084137a7ad69@mail.gmail.com>
+Reply-To: hbeaumont hbeaumont <ahlist@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a050731090526593423@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,28 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-???
+Can anyone help me with the proper method to block outgoing requests to=20
+botnets + irc?
 
-On 7/31/05, Mohamed Eldesoky <eldesoky.lists@gmail.com> wrote:
-> How does conntrack work ??
-> Does it care if the source/destination IPs change as well, due to load
-> balancers ??
-> I mean, if an outsider talks to x.y.z.1 and the load balancer forwards
-> that packet to x.y.z.2, so the outsider will get a reply from x.y.z.2
-> and continue the communications with it.
-> Does conntrack recognize that ?
->=20
-> --=20
-> Mohamed Eldesoky
-> www.eldesoky.net
-> RHCE
->=20
+Or point me in the direction of searchable list archives (I could only find=
+=20
+the non-searchable archives) or other FAQ that answers this?
 
+Problem:
 
---=20
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+We have servers that could get infected via poorly wrote user scripts. I=20
+want to prevent these servers from being used as part of botnets or general=
+=20
+connections to=20
+IRC (most scripts I run across seem to try to connect to IRC). I want to=20
+take the best preventative measures I can in case one of the machines would=
+=20
+become infected
+or otherwise compromised.
 
+Also, interested in any other popular method of stopping general outgoing=
+=20
+DOS attacks (rate limiting UDP perhaps? I'm not real up on the techniques=
+=20
+used by the DOS'ers).
+
+I'm interested in the recommended rules to add to prevent this type of thin=
+g=20
+should it occur. Thanks.
