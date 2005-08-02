@@ -1,11 +1,14 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: DNAT pptp to windows machine
-Date: Tue, 2 Aug 2005 08:12:14 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE58290747E@pxtbenexd01.pxt.primeexalia.com>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: conntrack
+Date: Tue, 2 Aug 2005 18:17:47 +0300
+Message-ID: <1403218a05080208173ca4bc5@mail.gmail.com>
+References: <1403218a050731090526593423@mail.gmail.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <1403218a050731090526593423@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +20,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Sadus ." <sadus@swiftbin.net>, netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-First, you only need to post one time.=20
+???
 
-To answer this question, you need a little additional background on your
-environment.  Will it be the firewall making the connection?  What OS
-version?  ETC.
-
-If you are just doing straight NAT'ing of firewall IP to the back end
-PPTP server then you shouldn't need to do anything more than setup the
-NAT rules and ensure that the firewall is allowing the traffic
-(including GRE).  I think that NAT'ing GRE is the difficult part but I
-usually use a dedicated IP for the PPTP servers and NAT the entire IP.
-
-Alternatively, you can install POPTOP on your firewall.
-
-Gary
-
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
-> bounces@lists.netfilter.org] On Behalf Of Sadus .
-> Sent: Tuesday, August 02, 2005 12:58 AM
-> To: netfilter@lists.netfilter.org
-> Subject: DNAT pptp to windows machine
+On 7/31/05, Mohamed Eldesoky <eldesoky.lists@gmail.com> wrote:
+> How does conntrack work ??
+> Does it care if the source/destination IPs change as well, due to load
+> balancers ??
+> I mean, if an outsider talks to x.y.z.1 and the load balancer forwards
+> that packet to x.y.z.2, so the outsider will get a reply from x.y.z.2
+> and continue the communications with it.
+> Does conntrack recognize that ?
 >=20
-> Hello,
-> I would like to DNAT to a pptp server, what rules/protocols/ports
-should
-> i use? do i need to recompile the kernel?
+> --=20
+> Mohamed Eldesoky
+> www.eldesoky.net
+> RHCE
 >=20
-> Thanks
->=20
-> EL-KHOUJA Haytham
-> ----------------------------------------------------------
-> sadus@swiftbin.net
-> ----------------------------------------------------------
-> Please avoid sending me Word or PowerPoint attachments.
-> See: http://www.gnu.org/philosophy/no-word-attachments.html
+
+
+--=20
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
