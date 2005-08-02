@@ -1,44 +1,37 @@
-From: Krzysztof Oledzki <olenf@ans.pl>
-Subject: Re: [ANNOUNCE] netfilter-2.6.14 git tree / TODO
-Date: Tue, 2 Aug 2005 16:19:16 +0200 (CEST)
-Message-ID: <Pine.LNX.4.62.0508021617140.14812@bizon.gios.gov.pl>
-References: <20050731080143.GA10374@rama.de.gnumonks.org>
-	<m21x5czj2p.fsf@cerbere.dyndns.info>
+From: Ryan Golbeck <gowlin@gmail.com>
+Subject: libipq kernel hang
+Date: Tue, 2 Aug 2005 08:10:00 -0400
+Message-ID: <308b1f13050802051069df24cb@mail.gmail.com>
+Reply-To: Ryan Golbeck <gowlin@gmail.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="-187430788-547252195-1122992356=:14812"
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <m21x5czj2p.fsf@cerbere.dyndns.info>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-To: Samir Bellabes <sbellabes@mandriva.com>
-Cc: Harald Welte <laforge@netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hey all,
 
----187430788-547252195-1122992356=:14812
-Content-Type: TEXT/PLAIN; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+I'm having trouble digging up more information on the bug mentioned in
+this [1] post to the lkml.  I was wondering if anyone knows the status
+of this problem (is this the right place to be talking about thus
+bug?)  I'm fully willing and have the time to work with someone on
+tracking down this bug, although I am not very familiar with the
+kernel details.
 
+Thanks for any help,
+ryan
 
-
-On Tue, 2 Aug 2005, Samir Bellabes wrote:
-<CIACH>
->  - mport : [NETFILTER] IPv4 mport match from svn-netfilter rev 3983
-
-Why do we need this? We have multiport with ranges in 2.6.11.
-
-Best regards,
-
- =09=09=09Krzysztof Ol=EAdzki
----187430788-547252195-1122992356=:14812--
+Footnotes:
+[1]  http://lkml.org/lkml/2005/4/6/165
 
