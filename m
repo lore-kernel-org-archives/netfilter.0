@@ -1,14 +1,11 @@
-From: "curby ." <curby.public@gmail.com>
-Subject: Re: DNAT - newbie question
-Date: Wed, 3 Aug 2005 14:55:20 -0600
-Message-ID: <5d2f379105080313556d4e95ed@mail.gmail.com>
-References: <7f22af9005072815367ee89a78@mail.gmail.com>
-Reply-To: "curby ." <curby.public@gmail.com>
+From: Aleksandar Milivojevic <alex@milivojevic.org>
+Subject: ipsec + nat
+Date: Wed, 03 Aug 2005 16:12:33 -0500
+Message-ID: <20050803161233.564n1ykio08k800s@www.milivojevic.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7f22af9005072815367ee89a78@mail.gmail.com>
-Content-Disposition: inline
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,22 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Dharanikanth Dugginni <dharanikanthd@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On 7/28/05, Dharanikanth Dugginni <dharanikanthd@gmail.com> wrote:
-> Lets suppose a host h1 is sending packets to addr N1 (this is the addr
-> for NAT box)  I want to change this addr to a different addr which
-> will not be known until after few packets arrive from h1 to n1.
-> (Appears from the conntrack and NAT tables documenatation that after
-> the first packet, the DNAT table will not be used any more).  Is there
-> a way to force subsequent pacekets in the same stream to always use
-> the DNAT table?
+I have a set of rules in filter table, that after some cleanup look something
+like this:
 
-Are you using stateful rules?  If not, your DNAT rule handles packets
-heading to N1, and NAT code transparently deals with packets heading
-the other way.  If you are using an ESTABLISHED state-matching rule,
-then only the first packet matches the DNAT rule, and then state
-matching rule allows subsequent packets through, while NAT still
-happens in the background.  At least I think so. =3D)
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p esp -s 4.3.2.1 -d 1.2.3.4 -j ACCEPT
+-A INPUT -j LOG --log-prefix "INPUT "
+
+-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A OUTPUT -p esp -s 1.2.3.4 -d 4.3.2.1 -j ACCEPT
+-A OUTPUT -j LOG --log-prefix "OUTPUT "
+
+-A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A FORWARD -p icmp --icmp-type ping -s 10.1.2.3 -d 10.3.2.1 -m state --state NEW
+-j ACCEPT
+-A FORWARD -j LOG --log-prefix "FORWARD "
+
+So far so good.  I can ping 10.3.2.1 from 10.1.2.3 over my IPSec tunnel.
+
+However, if I add MASQUERADE target into nat table:
+
+-A POSTROUTING -o ppp0 -j MASQUERADE
+
+and than try to ping 10.3.2.1, things do not work anymore.  Tcpdump on ppp0
+shows (edited for clarity):
+
+   IP 1.2.3.4 > 4.3.2.1 ESP
+   IP 4.3.2.1 > 1.2.3.4 ESP
+   IP 10.3.2.1 > 10.1.2.3 ICMP echo reply
+
+The log files show that the decrypted packet (ICMP echo reply from 10.3.2.1 to
+10.1.2.3) was dropped by Netfilter.  So, the IPSec as such works, it was
+Netfilter that blocked the returning packet.  Seems as if Netfilter haven't
+placed it into ESTABLISHED state, as it does when NAT rule is not present.
+
+Bug in Netfilter, or bug in my configuration?
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
+
 
