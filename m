@@ -1,12 +1,11 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: UDP forwarding trouble
-Date: Wed, 3 Aug 2005 12:09:19 +0100
-Message-ID: <20050803110919.GQ18838@metastasis.org.uk>
-References: <42E53D5C.2050004@pierre.juhen>
+From: "Maxime Ducharme" <mducharme@cybergeneration.com>
+Subject: Re: blocking irc + botnets
+Date: Wed, 3 Aug 2005 12:18:55 -0400
+Message-ID: <0fc301c59847$0b719420$b000a8c0@cybergeneration.com>
+References: <bc5becf6050802084137a7ad69@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <42E53D5C.2050004@pierre.juhen>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +16,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: hbeaumont hbeaumont <ahlist@gmail.com>, netfilter@lists.netfilter.org
 
-On Mon, Jul 25, 2005 at 09:28:28PM +0200, Pierre JUHEN wrote:
-> I have a problem with iptables.
-> 
-> This is the configuration
-> 
-> +---------+                 +---------+                 +---------+
-> |         |                 |         |                 |         |
-> |    A    +-----------------+    B    ++----------------+    C    |
-> |         |                 |         |                 |         |
-> +---------+                 +---------+                 +---------+
-> 
-> A sends UDP packets (ports p1, p2, p3) to C through B.
 
-If the packets are being sent from A to C...
+Hello
 
-> There is a continuous flow of UDP/p1 packets (10 packets/s) whilst
-> p2 and p3 are more seldom.
-> 
-> When I activate a rule to  redirect all UDP packets from A to B
-> the rule seems to be applied only to p2 and p3 ports, p1 packets
-> are still forwarded directly.
+i suggest block every outbound ports on your
+servers
 
-...why do you need to redirect packets?
+use ip_conntrack to allow servers to answer ESTABLISHED
+connections on your open ports (like 80 for a http server)
 
-Are you sure that the three rules ( presumably ) dealing with the three
-ports are all the same?  Can you post the rules here, with the necessary
-obfuscation of course.
+botnets or trojan downloaders can simply run on any port
 
--- 
-Any ship can be minesweeper, once.
+a vulnerable script could be used to run a "wget ..."
+command that would use outbound tcp 80, which isnt in
+irc's port ranges, thats why you should simply block them all
+
+hth
+
+Maxime Ducharme
+Programmeur / Sp=E9cialiste en s=E9curit=E9 r=E9seau
+
+
+----- Original Message -----=20
+From: "hbeaumont hbeaumont" <ahlist@gmail.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, August 02, 2005 11:41 AM
+Subject: blocking irc + botnets
+
+
+Can anyone help me with the proper method to block outgoing requests to
+botnets + irc?
+
+Or point me in the direction of searchable list archives (I could only find
+the non-searchable archives) or other FAQ that answers this?
+
+Problem:
+
+We have servers that could get infected via poorly wrote user scripts. I
+want to prevent these servers from being used as part of botnets or general
+connections to
+IRC (most scripts I run across seem to try to connect to IRC). I want to
+take the best preventative measures I can in case one of the machines would
+become infected
+or otherwise compromised.
+
+Also, interested in any other popular method of stopping general outgoing
+DOS attacks (rate limiting UDP perhaps? I'm not real up on the techniques
+used by the DOS'ers).
+
+I'm interested in the recommended rules to add to prevent this type of thing
+should it occur. Thanks.
 
 
