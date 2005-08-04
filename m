@@ -1,11 +1,12 @@
-From: Aleksandar Milivojevic <alex@milivojevic.org>
-Subject: ipsec + nat
-Date: Wed, 03 Aug 2005 16:12:33 -0500
-Message-ID: <20050803161233.564n1ykio08k800s@www.milivojevic.org>
+From: =?ISO-8859-1?Q?Ricardo_J=2E_M=E9ndez?= <mendezster@gmail.com>
+Subject: IP forwarding
+Date: Wed, 3 Aug 2005 19:37:43 -0600
+Message-ID: <286cf082050803183749d1f514@mail.gmail.com>
+Reply-To: =?ISO-8859-1?Q?Ricardo_J=2E_M=E9ndez?= <mendezster@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-disposition: inline
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,46 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-I have a set of rules in filter table, that after some cleanup look something
-like this:
+Hi,
 
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A INPUT -p esp -s 4.3.2.1 -d 1.2.3.4 -j ACCEPT
--A INPUT -j LOG --log-prefix "INPUT "
+I've got a network setup where the internal router is a Linux box
+running iptables.  External interface is eth0, internal eth1.  I'm
+attempting to forward an external IP address (say, 1.2.3.4) to an
+internal machine.
 
--A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A OUTPUT -p esp -s 1.2.3.4 -d 4.3.2.1 -j ACCEPT
--A OUTPUT -j LOG --log-prefix "OUTPUT "
+The rule I added is:
 
--A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -p icmp --icmp-type ping -s 10.1.2.3 -d 10.3.2.1 -m state --state NEW
--j ACCEPT
--A FORWARD -j LOG --log-prefix "FORWARD "
+iptables -t nat -A PREROUTING -d 1.2.3.4 -p tcp --dport 80 -j DNAT
+--to 192.168.1.202
 
-So far so good.  I can ping 10.3.2.1 from 10.1.2.3 over my IPSec tunnel.
+However, attempting to=20
 
-However, if I add MASQUERADE target into nat table:
+telnet 1.2.3.4 80
 
--A POSTROUTING -o ppp0 -j MASQUERADE
+does not work.  It's clear that the rule is being applied, because the
+web server running on the external machine is not responding unless I
+telnet from the router itself, but unfortunately I'm not getting into
+192.168.1.202 either.  Attempting to
 
-and than try to ping 10.3.2.1, things do not work anymore.  Tcpdump on ppp0
-shows (edited for clarity):
+telnet 192.168.1.202 80
 
-   IP 1.2.3.4 > 4.3.2.1 ESP
-   IP 4.3.2.1 > 1.2.3.4 ESP
-   IP 10.3.2.1 > 10.1.2.3 ICMP echo reply
+does work as expected.
 
-The log files show that the decrypted packet (ICMP echo reply from 10.3.2.1 to
-10.1.2.3) was dropped by Netfilter.  So, the IPSec as such works, it was
-Netfilter that blocked the returning packet.  Seems as if Netfilter haven't
-placed it into ESTABLISHED state, as it does when NAT rule is not present.
+What am I missing?  Any pointers are welcome.  Thanks,
 
-Bug in Netfilter, or bug in my configuration?
 
-----------------------------------------------------------------
-This message was sent using IMP, the Internet Messaging Program.
 
+Ricardo J. M=E9ndez
+http://ricardo.strangevistas.net/
 
