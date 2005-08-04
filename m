@@ -1,11 +1,13 @@
-From: Ted Kaczmarek <tedkaz@optonline.net>
-Subject: ppooe state RELATED,ESTABLISHED issue
-Date: Thu, 04 Aug 2005 20:30:15 -0400
-Message-ID: <1123201815.23762.17.camel@inyoureyes.linsolutions.com>
-Reply-To: tedkaz@optonline.net
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: HOW to make 'Deleting conntrack rule' clear the state created
+ from	this rule
+Date: Thu, 04 Aug 2005 12:15:10 +0200
+Message-ID: <42F1EAAE.5030103@mnemon.de>
+References: <9C1918067C3BC14C9C351C206D8A8437377893@rennsmail03.eu.thmulti.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <9C1918067C3BC14C9C351C206D8A8437377893@rennsmail03.eu.thmulti.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,38 +21,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Today I was testing a Centos 4.1(RH ES4 clone) with  2.6.9-11.EL and a
-Verizon dsl connection. I couldn't get any connection tracking related
-rules working on the pppoe interface.
+Allain Yoann schrieb:
+> Hello all,
+> 
+> You would be great if you could help me on this:
+> I'm using these 3 rules:
+> 
+> 1. iptables -P INPUT DROP
+> 2. iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
+> 3. iptables -A INPUT -p tcp --dport 23 -m state NEW,ESTABLISHED -j
+> ACCEPT
+> 
+> 
+> Then
+> 4. Bob connects on my telnet...
+> 5. I decide to suppress rule 3: 
+> 	iptables -DINPUT -p tcp --dport 23 -m state NEW,ESTABLISHED -j
+> ACCEPT
+> 
+> 6. Packets from Bob are still accepted because of rule 2. But I need
+> this rule (2) for my out-going connections responses.
+> 
+> Is there a way to suppress the state which has been recorded for rule 3,
+> when deleting this rule?
 
--A INPUT -i ppp0 -m state --state RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -i ppp0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+This breaks down to selectivly delete conntrack entries, right ? Harald
+Welte posted on this topic:
 
-The only way I could get it to forward traffic 
-was to allow all INPUT and FORWARD traffic for ppp0.
+https://lists.netfilter.org/pipermail/netfilter/2005-July/061538.html
 
-The pppoe is using eth0 and the inside interface is eth1.
+HTH and have a nice time,
 
-Googling uncovered a thread with respect to connection tracking being
-broken 
-with bridging.
-
-http://www.uwsg.iu.edu/hypermail/linux/kernel/0506.2/0422.html
-
-Is this really the same issue? If packets are coming in eth1 and leaving
-ppp0(using eth0)
-are they not just being routed? If eth0 is up the I can see packets
-being bridged from ppp0e to eth0, but with eth0 down I am at a loss as
-to why this is happening.
-
-Also is this issue specific to 2.6? A 2.4 based machine would likely
-suffice in this application.
-
-
-Regards,
-Ted
-
-
-
+Joerg
 
 
