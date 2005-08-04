@@ -1,14 +1,12 @@
-From: hbeaumont hbeaumont <ahlist@gmail.com>
-Subject: Re: blocking irc + botnets
-Date: Thu, 4 Aug 2005 12:04:12 -0500
-Message-ID: <bc5becf6050804100426d8357a@mail.gmail.com>
-References: <bc5becf6050802084137a7ad69@mail.gmail.com>
-	<Pine.LNX.4.61.0508040943350.27293@yvahk01.tjqt.qr>
+From: Dave Johnson <davejohnson_hifi@yahoo.com>
+Subject: Re: Help needed for a box with 4 Ethernet Interfaces
+Date: Thu, 4 Aug 2005 10:15:07 -0700 (PDT)
+Message-ID: <20050804171507.39668.qmail@web30101.mail.mud.yahoo.com>
+References: <1123173981.18571.32.camel@fly.in.iantel.com.uy>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0508040943350.27293@yvahk01.tjqt.qr>
-Content-Disposition: inline
+In-Reply-To: <1123173981.18571.32.camel@fly.in.iantel.com.uy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,51 +17,154 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Eduardo Spremolla <edspremolla@antel.com.uy>, netfilter@lists.netfilter.org
 
-On 8/4/05, Jan Engelhardt <jengelh@linux01.gwdg.de> wrote:
+
+Sorry for the confusion. Box A and B have 2 interfaces.=20
+Here is updated diagram.
+                                                                         --=
+----------
+                                            -----------------------------| =
+ Box D   |
+                              172.16.6.10   |                            | =
+         |
+         Mgmt Port<---------------------|   |                            --=
+----------
+                                        |   | 192.168.0.1                 1=
+92.168.0.2
+                                   Eth0 |   | Eth1 (for internal network)
+ ------------                        ------------                        --=
+----------
+ |  Box A   |10.1.1.1 _______________|  Box B   |_____________21.21.21.1_| =
+ Box C   |
+ |          |                    Eth2|          | Eth3                   | =
+         |
+ ------------     10.1.1.0/24        ------------       21.21.21.9/24    --=
+----------        =20
+=20
+  192.168.0.1                         192.168.0.3                         1=
+92.168.0.2
+
+
+
+--- Eduardo Spremolla <edspremolla@antel.com.uy> wrote:
+
+> You can't have Box A with ip 192.168.0.1 on a 10.1.1.0/24 subnet, the
+> same goes for Box C. They need ip in the subnet range.
+> After that we may start to talk about roouting.
 >=20
 >=20
-> >We have servers that could get infected via poorly wrote user scripts. I
+> LALO
 >=20
-> Fix the servers. Don't let arbitrary scripts in.
+> On Thu, 2005-08-04 at 09:11 -0700, Dave Johnson wrote:
+> > Hi All:
+> > I need help to setup my box with some complicated configuration.
+> >=20
+> > I have a box with 4 Ethernet Interfaces:
+> >=20
+> > Eth0: 172.16.6.10
+> > Eth1: 192.168.0.1/24
+> > Eth2: 10.1.1.0/24      ------> Connected to a box A with an IP address =
+of 192.168.0.2
+> > Eth2: 21.21.21.9/24    ------> Connected to a box C with an IP address =
+of 192.168.0.1 (which
+> is
+> > same as IP address of Eth1)
+> >=20
+> > Loopback Interface: 192.168.0.3
+> >                                                                        =
+  ------------
+> >                                             ---------------------------=
+--|  Box D   |
+> >                               172.16.6.10   |                          =
+  |          |
+> >          Mgmt Port<---------------------|   |                          =
+  ------------
+> >                                         |   | 192.168.0.1              =
+   192.168.0.2
+> >                                    Eth0 |   | Eth1 (for internal networ=
+k)
+> >  ------------                        ------------                      =
+  ------------
+> >  |  Box A   |________________________|  Box B   |______________________=
+__|  Box C   |
+> >  |          |                    Eth2|          | Eth3                 =
+  |          |
+> >  ------------     10.1.1.0/24        ------------       21.21.21.9/24  =
+  ------------        =20
+>   =20
+> >   192.168.0.1                         192.168.0.3                      =
+   192.168.0.2
+> >=20
+> > Here is what I want to do:
+> > Packets from Eth2 should only go to Eth3 except the ones detined to Eth=
+0's IP.
+> > Packets from Eth3 should only go to Eth2 except the ones detined to Eth=
+0's IP.
+> > Local packets destined for Eth1's ip and its subnet should be forwarded=
+ via Eth1 only.
+> > Packets from Eth1 can only be directed to Eth0.=20
+> >=20
+> > This will allow me to ping Box A (192.168.0.1) from Box C (192.168.0.2)=
+ without getting a
+> response
+> > from Box B who has local interface with address 192.168.0.1.
+> >=20
+> > Basically I want to isolate interfaces in 2 groups:
+> > One with Eth0, Eth2 and Eth3
+> > Second with Eth0 and Eth1.
+> >=20
+> > I tried IPtables and multiple routing tables but it did not work. I thi=
+nk I need some
+> directions
+> > as to how would this even be possible.
+> >=20
+> > Thanks
+> >=20
+> > Dave.
+> >=20
+> >=20
+> >=20
+> > __________________________________________________
+> > Do You Yahoo!?
+> > Tired of spam?  Yahoo! Mail has the best spam protection around=20
+> > http://mail.yahoo.com=20
+> >=20
 >=20
 >=20
-please take this in a friendly manner :)
+> Este e-mail y cualquier posible archivo adjunto est=E1 dirigido =FAnicame=
+nte al destinatario del
+> mensaje y contiene informaci=F3n que puede ser confidencial. Si Ud. no es=
+ el destinatario correcto
+> por favor notifique al remitente respondiendo este mensaje y elimine inme=
+diatamente el e-mail y
+> los posibles archivos adjuntos al mismo de su sistema. Est=E1 prohibida c=
+ualquier utilizaci=F3n,
+> difusi=F3n o copia de este e-mail por cualquier persona o entidad que no =
+sean las espec=EDficas
+> destinatarias del mensaje. ANTEL no acepta ninguna responsabilidad con re=
+specto a cualquier
+> comunicaci=F3n que haya sido emitida incumpliendo nuestra Pol=EDtica de S=
+eguridad de la Informaci=F3n.
+> . . . . . . . . .
+> This e-mail and any attachment is confidential and is intended solely for=
+ the addressee(s). If
+> you are not intended recipient please inform the sender immediately, answ=
+ering this e-mail and
+> delete it as well as the attached files. Any use, circulation or copy of =
+this e-mail by any
+> person or entity that is not the specific addressee(s) is prohibited. ANT=
+EL is not responsible
+> for any communication emitted without respecting our Information Security=
+ Policy.
+>=20
 
-When I wrote my initial message, I knew somebody would give me this type of=
-=20
-reply (ie. secure your servers, smack the bad users)
 
-However the fact is that in REAL LIFE, you will have users that use bad=20
-scripts or even "good" script that have bugs (phpbb, etc, etc.).
 
-I want to find a way to make sure that we have an extra layer of protection=
+	=09
+____________________________________________________
+Start your day with Yahoo! - make it your home page=20
+http://www.yahoo.com/r/hs=20
 =20
-to make sure our servers weren't DOS'ing other boxes - even if it was
-only for a short time until an admin logged in to check the source of the=
-=20
-outgoing traffic spike.
 
-Bottom line :
-
-I simply want to get a good ruleset to share so that anyone who might ever=
-=20
-have a server compromised (even non-root, php-apache based stuff running as=
-=20
-nobody) could help
-stop the outgoing bad traffic.=20
-
-There is a lot of discussion on stopping things from coming into a server.=
-=20
-If those of us who run servers (I'm pointing the finger at myself!) would=
-=20
-take the extra effort to stop what can
-possibly go out, it would solve a lot of the problems.=20
-
-I don't have the knowledge to set this up in the best method. That's why I=
-=20
-asked here.
-
-Thanks to all!
