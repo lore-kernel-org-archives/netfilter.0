@@ -1,18 +1,11 @@
-From: =?ISO-8859-1?Q?Ricardo_J=2E_M=E9ndez?= <mendezster@gmail.com>
-Subject: Re: IP forwarding
-Date: Thu, 4 Aug 2005 16:20:30 -0600
-Message-ID: <286cf08205080415204aed815@mail.gmail.com>
-References: <286cf082050803183749d1f514@mail.gmail.com>
-	<200508040415.j744FBjF040033@fenyo.mail.t-online.hu>
-	<5d2f3791050803220225ab8670@mail.gmail.com>
-	<286cf082050804114220fcca1f@mail.gmail.com>
-	<5d2f3791050804143370a332d8@mail.gmail.com>
-Reply-To: =?ISO-8859-1?Q?Ricardo_J=2E_M=E9ndez?= <mendezster@gmail.com>
+From: Ted Kaczmarek <tedkaz@optonline.net>
+Subject: ppooe state RELATED,ESTABLISHED issue
+Date: Thu, 04 Aug 2005 20:30:15 -0400
+Message-ID: <1123201815.23762.17.camel@inyoureyes.linsolutions.com>
+Reply-To: tedkaz@optonline.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5d2f3791050804143370a332d8@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,38 +16,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thanks for the pointer, it's working now.  It was indeed the SNAT that
-was missing.
+Today I was testing a Centos 4.1(RH ES4 clone) with  2.6.9-11.EL and a
+Verizon dsl connection. I couldn't get any connection tracking related
+rules working on the pppoe interface.
+
+-A INPUT -i ppp0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i ppp0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+The only way I could get it to forward traffic 
+was to allow all INPUT and FORWARD traffic for ppp0.
+
+The pppoe is using eth0 and the inside interface is eth1.
+
+Googling uncovered a thread with respect to connection tracking being
+broken 
+with bridging.
+
+http://www.uwsg.iu.edu/hypermail/linux/kernel/0506.2/0422.html
+
+Is this really the same issue? If packets are coming in eth1 and leaving
+ppp0(using eth0)
+are they not just being routed? If eth0 is up the I can see packets
+being bridged from ppp0e to eth0, but with eth0 down I am at a loss as
+to why this is happening.
+
+Also is this issue specific to 2.6? A 2.4 based machine would likely
+suffice in this application.
 
 
--- R.
-
-On 8/4/05, curby . <curby.public@gmail.com> wrote:
-> On 8/4/05, Ricardo J. M=E9ndez <mendezster@gmail.com> wrote:
-> > But I 'm testing this from a desktop on the network, not the firewall
-> > itself. PREROUTING should apply to those packets, correct?
->=20
-> In that case, the problem you're seeing is exactly that which is
-> discussed in the HOWTO link I posted last time.  It's also explained
-> by Jason's link.  The idea is that packets TO the server are indeed
-> being correctly mangled by the router, but return packets go directly
-> from server to client.  The client expects the reply from the router,
-> sees some spurious traffic from the server, and drops the traffic.
->=20
-> The netfilter list sees some variation of this question once every
-> week or so.  You're definitely not alone. =3D)
->=20
-> Another attempt to explain it:
-> https://lists.netfilter.org/pipermail/netfilter/2005-July/061636.html
->=20
+Regards,
+Ted
 
 
---=20
 
 
-Ricardo J. M=E9ndez
-http://ricardo.strangevistas.net/
 
