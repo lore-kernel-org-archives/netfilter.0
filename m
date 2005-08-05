@@ -1,13 +1,10 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: HOW to make 'Deleting conntrack rule' clear the state created
- from	this rule
-Date: Thu, 04 Aug 2005 12:15:10 +0200
-Message-ID: <42F1EAAE.5030103@mnemon.de>
-References: <9C1918067C3BC14C9C351C206D8A8437377893@rennsmail03.eu.thmulti.com>
+From: James Harrison <jamesharrison@blackicehosting.com>
+Subject: SYN only packets
+Date: Fri, 05 Aug 2005 01:53:38 +0100
+Message-ID: <42F2B892.30507@blackicehosting.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9C1918067C3BC14C9C351C206D8A8437377893@rennsmail03.eu.thmulti.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,40 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Allain Yoann schrieb:
-> Hello all,
-> 
-> You would be great if you could help me on this:
-> I'm using these 3 rules:
-> 
-> 1. iptables -P INPUT DROP
-> 2. iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
-> 3. iptables -A INPUT -p tcp --dport 23 -m state NEW,ESTABLISHED -j
-> ACCEPT
-> 
-> 
-> Then
-> 4. Bob connects on my telnet...
-> 5. I decide to suppress rule 3: 
-> 	iptables -DINPUT -p tcp --dport 23 -m state NEW,ESTABLISHED -j
-> ACCEPT
-> 
-> 6. Packets from Bob are still accepted because of rule 2. But I need
-> this rule (2) for my out-going connections responses.
-> 
-> Is there a way to suppress the state which has been recorded for rule 3,
-> when deleting this rule?
+Hi,
 
-This breaks down to selectivly delete conntrack entries, right ? Harald
-Welte posted on this topic:
+I've been trying to calm down some DDoS attacks on my server, but i've 
+been stymied on how to block them- however, as APF's AntiDOS plugin 
+captured and reported to root, the really vigorous ones (The ones it 
+catches) have no ACK in their headers. SYN, but no ACK. I've read that 
+this is a common technique used by DDoSers, but i'm unsure if anything 
+else depends on it.
 
-https://lists.netfilter.org/pipermail/netfilter/2005-July/061538.html
+The plan i'm looking at is possibly blocking all packets with SYN alone, 
+no ACK.. would this be possible with iptables, and how would this affect 
+other web services?
 
-HTH and have a nice time,
+Here's one of the captured packet messages (MAC/IPs are removed obviously)
 
-Joerg
+Aug  4 21:02:30 ukdsl21 kernel: ** IN_TCP DROP ** IN=eth0 OUT= MAC=** SRC=** DST=** LEN=48 TOS=0x04 PREC=0x00 TTL=116 ID=53191 DF PROTO=TCP SPT=4122 DPT=4899 WINDOW=64240 RES=0x00 SYN URGP=0 OPT (020405B401010402) 
 
+
+
+Any ideas?
+
+Sorry if this sounds completely barmy- if it does, do tell :-)
+
+Thanks in advance,
+James Harrison
 
