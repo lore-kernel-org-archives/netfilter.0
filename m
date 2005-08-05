@@ -1,12 +1,13 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: ppooe state RELATED,ESTABLISHED issue
-Date: Fri, 05 Aug 2005 00:55:17 -0500
-Message-ID: <42F2FF45.8070700@riverviewtech.net>
-References: <1123201815.23762.17.camel@inyoureyes.linsolutions.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: blocking irc + botnets
+Date: Fri, 5 Aug 2005 08:26:14 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0508050825030.20623@yvahk01.tjqt.qr>
+References: <bc5becf6050802084137a7ad69@mail.gmail.com>
+	<Pine.LNX.4.61.0508040943350.27293@yvahk01.tjqt.qr>
+	<bc5becf6050804100426d8357a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1123201815.23762.17.camel@inyoureyes.linsolutions.com>
+In-Reply-To: <bc5becf6050804100426d8357a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: tedkaz@optonline.net
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: hbeaumont hbeaumont <ahlist@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Just a stab in the dark.
+>> >We have servers that could get infected via poorly wrote user scripts. I
+>> 
+>However the fact is that in REAL LIFE, you will have users that use bad 
+>scripts or even "good" script that have bugs (phpbb, etc, etc.).
 
-I don't know if this is the issue or not but something that comes to 
-mind is what did you set your INPUT / FORWARD / OUTPUT chains default 
-policy to?  If you set it to DENY then you will have to explicitly allow 
-traffic that is coming in and out the respective interfaces to set up 
-the PPPoE connection / tunnel.  I don't know enough about this (PPPoE) 
-to help.
+Ah now I get it.
 
-Ted Kaczmarek wrote:
+>I simply want to get a good ruleset to share so that anyone who might ever 
+>have a server compromised (even non-root, php-apache based stuff running as 
+>nobody) could help
+>stop the outgoing bad traffic. 
 
->Today I was testing a Centos 4.1(RH ES4 clone) with  2.6.9-11.EL and a
->Verizon dsl connection. I couldn't get any connection tracking related
->rules working on the pppoe interface.
->
->-A INPUT -i ppp0 -m state --state RELATED,ESTABLISHED -j ACCEPT
->-A FORWARD -i ppp0 -m state --state RELATED,ESTABLISHED -j ACCEPT
->
->The only way I could get it to forward traffic 
->was to allow all INPUT and FORWARD traffic for ppp0.
->
->The pppoe is using eth0 and the inside interface is eth1.
->
->Googling uncovered a thread with respect to connection tracking being
->broken 
->with bridging.
->
->http://www.uwsg.iu.edu/hypermail/linux/kernel/0506.2/0422.html
->
->Is this really the same issue? If packets are coming in eth1 and leaving
->ppp0(using eth0)
->are they not just being routed? If eth0 is up the I can see packets
->being bridged from ppp0e to eth0, but with eth0 down I am at a loss as
->to why this is happening.
->
->Also is this issue specific to 2.6? A 2.4 based machine would likely
->suffice in this application.
->
->
->Regards,
->Ted
->
+Hm, I'd probably try with
+
+-P OUTPUT DROP
+-P OUTPUT -j ACCEPT -m state --state ESTABLISHED,RELATED
+
+
+Jan Engelhardt
+-- 
 
