@@ -1,10 +1,12 @@
-From: James Harrison <jamesharrison@blackicehosting.com>
-Subject: SYN only packets
-Date: Fri, 05 Aug 2005 01:53:38 +0100
-Message-ID: <42F2B892.30507@blackicehosting.com>
+From: "Ruben Cardenal" <ruben@ruben.cn>
+Subject: RE: SYN only packets
+Date: Fri, 5 Aug 2005 07:22:53 +0200
+Message-ID: <30644.5068250925$1123219503@news.gmane.org>
+References: <42F2B892.30507@blackicehosting.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <42F2B892.30507@blackicehosting.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,32 +17,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 Hi,
 
-I've been trying to calm down some DDoS attacks on my server, but i've 
-been stymied on how to block them- however, as APF's AntiDOS plugin 
-captured and reported to root, the really vigorous ones (The ones it 
-catches) have no ACK in their headers. SYN, but no ACK. I've read that 
-this is a common technique used by DDoSers, but i'm unsure if anything 
-else depends on it.
+> The plan i'm looking at is possibly blocking all packets with SYN alone,
+> no ACK.. would this be possible with iptables, and how would this affect
+> other web services?
 
-The plan i'm looking at is possibly blocking all packets with SYN alone, 
-no ACK.. would this be possible with iptables, and how would this affect 
-other web services?
+  The main problem with SYN dos's is the fact that, if is big enough, eats
+machine resources, no matter what you can do at layer 3, it beats you down
+at layer 1, cos every time the nic receives a packet, generates an
+interrupt, and if you are receiving > 100.000 pps, simply your system
+collapses in a few seconds. Against that, but not yet well implemented in
+Linux, you can use polling (as, for example, freebsd can do), but this still
+won't save you if the attack is big enough. Your only solution is then
+asking your uplink to ratelimit the amount of syn per second arriving to
+you.
 
-Here's one of the captured packet messages (MAC/IPs are removed obviously)
+  Regards,
 
-Aug  4 21:02:30 ukdsl21 kernel: ** IN_TCP DROP ** IN=eth0 OUT= MAC=** SRC=** DST=** LEN=48 TOS=0x04 PREC=0x00 TTL=116 ID=53191 DF PROTO=TCP SPT=4122 DPT=4899 WINDOW=64240 RES=0x00 SYN URGP=0 OPT (020405B401010402) 
+- Ruben
 
 
-
-Any ideas?
-
-Sorry if this sounds completely barmy- if it does, do tell :-)
-
-Thanks in advance,
-James Harrison
 
