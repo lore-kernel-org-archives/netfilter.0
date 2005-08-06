@@ -1,93 +1,100 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: [ANNOUNCE] netfilter-2.6.14 git tree / TODO
-Date: Fri, 5 Aug 2005 20:27:40 +0200
-Message-ID: <20050805182740.GD13345@rama.de.gnumonks.org>
-References: <20050731080143.GA10374@rama.de.gnumonks.org>
-	<m21x5czj2p.fsf@cerbere.dyndns.info>
+From: Aleksandar Milivojevic <alex@milivojevic.org>
+Subject: problem with netfilter, ipsec and gre combination
+Date: Sat, 06 Aug 2005 00:09:38 -0500
+Message-ID: <42F44612.2030605@milivojevic.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="s9fJI615cBHmzTOP"
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <m21x5czj2p.fsf@cerbere.dyndns.info>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-To: Samir Bellabes <sbellabes@mandriva.com>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+I've run into the problem where Netfilter is not putting packets into 
+established state (where they should be).
 
---s9fJI615cBHmzTOP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Basically, I have a setup that consist of two testing machines acting as 
+VPN gateways.  Machine A with IP addresses of 192.168.1.1 and 
+192.168.2.1, and machine B with IP address of 192.168.3.1 and 
+192.168.4.1.  The 1.1 and 3.1 act as "external" IP addresses.  2.1 and 
+4.1 are on the "local networks" that I want to connect with a tunnel.
 
-On Tue, Aug 02, 2005 at 01:14:54PM +0200, Samir Bellabes wrote:
-> Harald Welte <laforge@netfilter.org> writes:
->=20
-> > I suggest pulling the git tree from=20
-> >
-> > rsync://people.netfilter.org/users/laforge/scm/netfilter-2.6.14.git
-> >
-> > It is based on David Miller's net-2.6.14.git, and only contains those
-> > new features and fixes that I intend to push to him soon (or have
-> > already submitted but have not yet been included).
-> >
->=20
-> I started a tree for extensions in the p-o-m.
-> The git tree has already around 30 extensions, and is based on davem's
-> net-2.6.git
->=20
-> you can dowload the tarball of this tree here:
-> http://people.mandriva.com/~sbellabes/nf-2.6.git.tar.gz
-> http://people.mandriva.com/~sbellabes/git/nf-2.6.git/
->=20
-> Yes, i know, a rsync should be better, but the only server i got which
-> can host a rsync server, has a DSL link :/=20
+I've setup GRE tunnel between them like this (on machine A, machine B 
+has the same thing in opposite direction, the route is to 
+192.168.2.0/24, and the interface name is neta):
 
-> Harald, can you provide hosting ?=20
+# modprobe ip_gre
+# ip tunnel add netb mode gre remote 192.168.3.1 local 192.168.1.1 ttl 255
+# ip link set netb up
+# ip addr add 10.0.0.1 dev netb
+# ip route add 192.168.4.0/24 dev netb src 192.168.2.1
 
-sure, you can get a people.netfilter.org account.   Please send me your
-sshv2 public key and the preferred username.
+Then I defined IPSec policy between 192.168.1.1 and 192.168.3.1, 
+transport mode, required, using racoon for automatic keying.
 
->   - updating patch for being sync with svn, but for now, we got a
-> structured tree.
->   - add more extensions (sip, ..)
->=20
-> Here is the changelog against davem's tree for each branches
-> (main updates are kill lockhelp.h and fix compile problems, the branches
-> mdv is the merge branches of all extensions)
+If I ping 192.168.4.1 from 192.168.2.1 everything works fine.  Packets 
+go into the GRE tunnel, which than goes over IPSec.
 
-ok, so you have one local branch per extension?  makes a lot of sense...
+If I ping 192.168.3.1 from 192.168.1.1, things do not work.  After lots 
+of debugging (basically logging all traffic in all tables/chains, and 
+looking at the output of iptables -nvxL), it seems that returning 
+packets are not placed into established state.
 
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+On machine B, I have this set of rules:
 
---s9fJI615cBHmzTOP
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+# standard stuff to handle established connections
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-iD8DBQFC86+cXaXGVTD0i/8RAv1eAKCIEodfeplrfVzdDzhFz+DEXzwRDACfc04O
-VV6O1N8BWTuYTbvX29QpF2c=
-=XrG7
------END PGP SIGNATURE-----
+# gre/ipsec/ike stuff
 
---s9fJI615cBHmzTOP--
+-A INPUT -i eth0 -p esp -s 192.168.1.1 -d 192.168.3.1 -j ACCEPT
+-A OUTPUT -o eth0 -p esp -s 192.168.3.1 -d 192.168.1.1 -j ACCEPT
+-A INPUT -i eth0 -p gre -s 192.168.1.1 -d 192.168.3.1 -j ACCEPT
+-A OUTPUT -o eth0 -p gre -s 192.168.3.1 -d 192.168.1.1 -j ACCEPT
+-A INPUT -i eth0 -p udp --sport 500 --dport 500 -s 192.168.1.1 -d 
+192.168.3.1 -j ACCEPT
+-A INPUT -i eth0 -p udp --sport 500 --dport 500 -s 192.168.3.1 -d 
+192.168.1.1 -j ACCEPT
+
+# rules to allow ping from the other end (direct and through the tunnel)
+
+-A INPUT -i eth0 -p icmp --icmp-type ping -s 192.168.1.1 -d 192.168.3.1 
+-m state --state NEW -j ACCEPT
+-A INPUT -i neta -p icmp --icmp-type ping -s 192.168.2.1 -d 192.168.4.1 
+-m state --state NEW -j ACCEPT
+
+# log everything before dropping it
+
+-A INPUT -j LOG --log-prefix "INPUT "
+-A OUTPUT -j LOG --log-prefix "OUTPUT "
+-A FORWARD -j LOG --log-prefix "FORWARD "
+
+As I wrote, when I do "ping -c 1 192.168.3.1" from machine A using 
+192.168.1.1 as source address, and looking at the output of iptables 
+-nvxL, I can see counter incremented for ESP packet, counter for ICMP 
+ping is incremented, but the ICMP pong is not cought by the second rule 
+(accept all established/related), and falls to the bottom of the chain 
+(gets logged and dropped).
+
+On the other hand, if I'm doing "ping -c 192.168.4.1" from machine A 
+using 192.168.2.1 as source address, everything just works (and I see 
+counters incremented as expected).
+
+I'm not using IPSec in tunneling mode to get around some other problems 
+I have.  This approach also gives me interfaces that represent tunnel 
+endpoints that I can use for routing, something I don't have with native 
+Linux IPSec in tunneling mode.  Plus it seems doing it this way might at 
+the end simplify my firewall rules (again, because there's an interface 
+representing tunnel endpoint).
 
