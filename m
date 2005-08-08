@@ -1,12 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Export code for Netfilter/iptables
-Date: Tue, 9 Aug 2005 11:55:04 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0508091153590.6879@yvahk01.tjqt.qr>
-References: <388032EC32FD7A46AB01D59B3396E058B27BDB@esealmw107.eemea.ericsson.se>
-	<5d2f379105080812012bf0884d@mail.gmail.com>
+From: Robert Nichols <rnicholsNOSPAM@comcast.net>
+Subject: Handling bad tcp checksums
+Date: Mon, 08 Aug 2005 17:59:29 -0500
+Message-ID: <dd8o4i$hjr$1@sea.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5d2f379105080812012bf0884d@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "curby ." <curby.public@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
->> We are going to use Netfilter/iptables in a product. In order to obtain an export code, I need to document whether these components implement any kind of encryption - so my questions are:
->
->I hope that as part of the process of considering ANY third party code
->in your products, a code review would be done to explore security[...]
+I've run into a problem handling tcp packets that have incorrect
+checksums.  It appears that such packets are assigned state INVALID,
+and thus are never treated as part of an ESTABLISHED connection.
+Thus, dropping such packets becomes the responsibility of the firewall. 
+  The problem is that unsolicited SYN,ACK packets are also matching
+"--state INVALID", and for these the proper action is to send tcp-reset. 
+  I cannot risk sending tcp-reset for an incorrect checksum -- the result
+would be that a transmission error would cause the connection to drop.
+If I test "--flags SYN,ACK SYN,ACK" then I run the risk of basing my
+decision on the flags in a possibly corrupted packet.
 
-And to answer the question: If there was cryptography, then netfilter would 
-use the Linux CryptoAPI so we do not have two crypto engines all over the 
-place in the kernel.
+Iptables doesn't seem to have any way to match on incorrect checksums.
+It looks like the best I can do is check the flags and accept the
+possibility that they are corrupted.
 
-POMng also has a XOR target - dunno if you can consider this encryption in 
-the sense of the US laws.
+Suggestions?
 
+BTW, doesn't this mean that _all_ iptables matches are testing data
+that is possibly corrupted?
 
-
-Jan Engelhardt
 -- 
-| Alphagate Systems, http://alphagate.hopto.org/
+Bob Nichols         Yes, "NOSPAM" is really part of my email address.
+
 
