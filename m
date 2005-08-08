@@ -1,10 +1,13 @@
-From: "hareram" <hareram@sol.net.in>
-Subject: ipt_random patch
-Date: Mon, 8 Aug 2005 22:42:39 +0530
-Message-ID: <025b01c59c3c$61699f50$0903a8c0@southern>
+From: "curby ." <curby.public@gmail.com>
+Subject: Re: Export code for Netfilter/iptables
+Date: Mon, 8 Aug 2005 13:01:37 -0600
+Message-ID: <5d2f379105080812012bf0884d@mail.gmail.com>
+References: <388032EC32FD7A46AB01D59B3396E058B27BDB@esealmw107.eemea.ericsson.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <388032EC32FD7A46AB01D59B3396E058B27BDB@esealmw107.eemea.ericsson.se>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,39 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Lotte Mygind (AH/LMD)" <lotte.mygind@ericsson.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi all
+On 8/8/05, Lotte Mygind (AH/LMD) <lotte.mygind@ericsson.com> wrote:
+> We are going to use Netfilter/iptables in a product. In order to obtain a=
+n export code, I need to document whether these components implement any ki=
+nd of encryption - so my questions are:
 
-iam trying to patch with POM with my new source kernel
-i could able to do with random patch
+I hope that as part of the process of considering ANY third party code
+in your products, a code review would be done to explore security
+risks as well as possible gotchas with respect to licensing and
+government regulations.  Such a review would certainly reveal if
+cryptography was employed.  If someone on this list said that there
+was or was not crypto code in netfilter, your company would not be
+wise to trust them without independent verification anyway.
 
-[root@test patch-o-matic-ng-20040621]# IPTABLES_DIR=/root/iptables-1.3.2 
-KERNEL_DIR=/usr/src/linux-2.6.12.3 ./runme random/
-Loading patchlet 
-definitions.............................................................................................................. 
-done
-
-
-Excellent! Source trees are ready for compilation.
-
-
-its says successfully done
-
-but when i see in in kernel config
-make menuconfig
-in network configuration, i dont see random.. options at all
-
-but i could able to see others like TTL , Quote
-
-what is wrong ??
-
-
-iam using FC4
-iptable 1.3.2
-
-hare 
-
-
+http://netfilter.org/licensing.html is unrelated but probably important as =
+well.
 
