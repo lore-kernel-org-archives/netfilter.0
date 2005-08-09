@@ -1,10 +1,14 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: More on stale connection
-Date: Tue, 9 Aug 2005 17:57:16 +0800
-Message-ID: <027501c59cc8$b95254a0$0100a8c0@newlife>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: DNAT to 127 fails
+Date: Tue, 09 Aug 2005 12:20:12 +0200
+Message-ID: <42F8835C.6030709@mnemon.de>
+References: <Pine.LNX.4.61.0508051141020.31142@yvahk01.tjqt.qr>
+	<42F33A8C.9060905@mnemon.de>
+	<Pine.LNX.4.61.0508091150420.6879@yvahk01.tjqt.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.61.0508091150420.6879@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +22,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Jan Engelhardt schrieb:
+>>"-j DNAT" is not intended to DNAT to localhost. The REDIRECT target is
+>>for this. From "man iptables":
+> 
+> 
+> I guess this has to do with the recent 2.6.11->12 change that there is no more 
+> implicit SNAT on -j DNAT, right? (Before, -j REDIRECT --to-ports ports was 
+> equal to -j DNAT --to-dest 127.0.0.1:ports)
 
-I am using 2.4.29 and I patched the kernel with tcp-window-tracking
-patch-o-matic but my stale connection problem is still not solved,
-I still get a lot of expired connections not removed from the state
-table,
+Don't know, but with my 2.4.31 it doesn't work too (maybe a backport ?).
+Only -j REDIRECT works.
 
-tcp      6 27 TIME_WAIT src=192.168.1.231 dst=202.x.y.z sport=3268 dport=80 src=202.x.y.z dst=a.b.c.d sport=80 dport=3268 [ASSURED]
-use=1 mark=7
-tcp      6 83 TIME_WAIT src=192.168.1.231 dst=202.x.y.z sport=3294 dport=80 src=202.x.y.z dst=a.b.c.d sport=80 dport=3294 [ASSURED]
-use=1 mark=7
-tcp      6 104 TIME_WAIT src=192.168.1.231 dst=202.x.y.z sport=3305 dport=80 src=202.x.y.z dst=a.b.c.d sport=80 dport=3305 [ASSURED]
-use=1 mark=7
+Have a nice time,
 
-[ many of them ]
-
-  # cat /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_time_wait
-120
-
-Isn't it supposed to removed tcp_timout_time_wait after 120 seconds ? But
-these "connections" have being staying my the state table for hours already !
-
-Anyone has any clue ?
-
-
-
-
-
-
-
-
+Joerg
 
 
