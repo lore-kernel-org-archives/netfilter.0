@@ -1,10 +1,11 @@
-From: Lists <lists@alpha-force.net>
-Subject: Rules in config file
-Date: Wed, 10 Aug 2005 14:18:04 +0200
-Message-ID: <20050810141804.e0876506@freedom.alpha-force.net>
+From: "Lotte Mygind (AH/LMD)" <lotte.mygind@ericsson.com>
+Subject: RE: Export code for Netfilter/iptables
+Date: Tue, 9 Aug 2005 10:33:08 +0200
+Message-ID: <388032EC32FD7A46AB01D59B3396E058B27BEC@esealmw107.eemea.ericsson.se>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,18 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "curby ." <curby.public@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi
+Of course we review the licensing, bugs, IPR issues etc - but if we =
+cannot get a little help from the project/documentation, it does become =
+a tremendous task to make thorough reviews for all open source =
+components.
 
-Would it be possible to somehow disable changing iptables rules from scr=
-ipts and enable changing only from config file, which loading would be p=
-rotected by special password defined in kernel=3F Or even better, your c=
-ould preset iptables rules in kernel. That rules would be unchangeable.
+My offer to add an entry to the FAQ had two purposes:
+1) Offer a bit of help to the project (I will not be the last person to =
+ask that question)
+2) If I could get such a text into the FAQ that would mean that I would =
+feel more confident that the text was truthful and just a random answer =
+from some random person on this list...
 
-I think this would improve Linux firewall security on systems with compl=
-ex and tight rules.
+/Lotte
 
-Matrix
+-----Original Message-----
+From: curby . [mailto:curby.public@gmail.com]
+Sent: 8. august 2005 21:02
+To: Lotte Mygind (AH/LMD)
+Cc: netfilter@lists.netfilter.org
+Subject: Re: Export code for Netfilter/iptables
 
+
+On 8/8/05, Lotte Mygind (AH/LMD) <lotte.mygind@ericsson.com> wrote:
+> We are going to use Netfilter/iptables in a product. In order to =
+obtain an export code, I need to document whether these components =
+implement any kind of encryption - so my questions are:
+
+I hope that as part of the process of considering ANY third party code
+in your products, a code review would be done to explore security
+risks as well as possible gotchas with respect to licensing and
+government regulations.  Such a review would certainly reveal if
+cryptography was employed.  If someone on this list said that there
+was or was not crypto code in netfilter, your company would not be
+wise to trust them without independent verification anyway.
+
+http://netfilter.org/licensing.html is unrelated but probably important =
+as well.
 
