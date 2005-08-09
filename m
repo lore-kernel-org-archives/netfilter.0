@@ -1,11 +1,10 @@
-From: Adam Rosi-Kessel <adam@rosi-kessel.org>
-Subject: Transparent proxy where source IP address remains unchanged --
-	possible?
-Date: Mon, 8 Aug 2005 21:29:14 -0400
-Message-ID: <20050809012914.GA23108@bostoncoop.net>
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+Subject: More on stale connection
+Date: Tue, 9 Aug 2005 17:57:16 +0800
+Message-ID: <027501c59cc8$b95254a0$0100a8c0@newlife>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm new to iptables and have perhaps a naive question.
 
-I am wondering if there is a way to configure a proxy such that packets
-are redirected to a new IP address, but the *source* IP address remains
-unchanged.
+I am using 2.4.29 and I patched the kernel with tcp-window-tracking
+patch-o-matic but my stale connection problem is still not solved,
+I still get a lot of expired connections not removed from the state
+table,
 
-To illustrate: let's say we have "userbox" 10.1.1.2, "faketarget"
-10.1.1.3, and "realtarget" 10.1.1.4.
+tcp      6 27 TIME_WAIT src=192.168.1.231 dst=202.x.y.z sport=3268 dport=80 src=202.x.y.z dst=a.b.c.d sport=80 dport=3268 [ASSURED]
+use=1 mark=7
+tcp      6 83 TIME_WAIT src=192.168.1.231 dst=202.x.y.z sport=3294 dport=80 src=202.x.y.z dst=a.b.c.d sport=80 dport=3294 [ASSURED]
+use=1 mark=7
+tcp      6 104 TIME_WAIT src=192.168.1.231 dst=202.x.y.z sport=3305 dport=80 src=202.x.y.z dst=a.b.c.d sport=80 dport=3305 [ASSURED]
+use=1 mark=7
 
-Userbox initiates an ssh connection to faketarget. Faketarget routes all
-packets to realtarget.
+[ many of them ]
 
-I understand how to do this while changing the source IP address. I would
-run these commands on faketarget:
+  # cat /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_time_wait
+120
 
-iptables -t nat -A PREROUTING -i eth0 -s 10.1.1.2 -d 10.1.1.3 -p tcp --dport ssh -j DNAT --to 192.168.98.4 
-iptables -t nat -A POSTROUTING -o eth0 -s 10.1.1.2 -d 10.1.1.3 -j SNAT --to 10.1.1.3
+Isn't it supposed to removed tcp_timout_time_wait after 120 seconds ? But
+these "connections" have being staying my the state table for hours already !
 
-Easy enough. But in this case, the connection to realtarget appears to
-come from faketarget, not userbox, the originator of the ssh connection.
-This is normally what you want with local NAT.
+Anyone has any clue ?
 
-But what if I want the connection to realtarget to appear to come from
-userbox.  I want faketarget to be an almost invisible middleman.  I don't
-want to rewrite the source IP address, but leave it as is.  If I just
-leave off the second iptables line above, however, no packets are
-forwarded to realtarget at all.
 
-Is this possible?  Am I asking the wrong question?
--- 
-Adam Rosi-Kessel
-http://adam.rosi-kessel.org
+
+
+
+
+
+
+
 
