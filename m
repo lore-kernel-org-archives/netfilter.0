@@ -1,11 +1,13 @@
-From: Adam Rosi-Kessel <adam@rosi-kessel.org>
-Subject: Transparent proxy where source IP address remains unchanged --
-	possible?
-Date: Wed, 10 Aug 2005 11:22:37 -0400
-Message-ID: <42FA1BBD.6060806@rosi-kessel.org>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: ppooe state RELATED,ESTABLISHED issue
+Date: Tue, 9 Aug 2005 11:50:20 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0508091148270.6879@yvahk01.tjqt.qr>
+References: <1123201815.23762.17.camel@inyoureyes.linsolutions.com>
+	<42F3299E.9030701@mnemon.de>
+	<1123461462.3383.25.camel@inyoureyes.linsolutions.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1123461462.3383.25.camel@inyoureyes.linsolutions.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,43 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ted Kaczmarek <tedkaz@optonline.net>
+Cc: netfilter@lists.netfilter.org
 
-I'm new to iptables and have perhaps a naive question.
 
-I am wondering if there is a way to configure a proxy such that packets
-are redirected to a new IP address, but the *source* IP address remains
-unchanged.
+>With 2.4 Kernel Centos 3.5 it works fine, but I didn't bring up eth0 ip
+>interface. Need to retest this without an ip interface on eth0 and 2.6
+>kernel, the previous case I had an ip on eth0 as well.
 
-To illustrate: let's say we have "userbox" 10.1.1.2, "faketarget"
-10.1.1.3, and "realtarget" 10.1.1.4.
+The "up" and "down" states of interfaces seems to be the hardware switch. 
+Dunno how it is implemented with NICs, but I have seen that in snd-cs46xx.c, 
+the card is totally shutdown on module unload. So I guess, it's the same on 
+"ip l s dev eth0 down"
 
-Userbox initiates an ssh connection to faketarget. Faketarget routes all
-packets to realtarget.
+To have a bridge `a la ebtables work, the ports need to be up. And preferably, 
+have no IP. This is really cool - I've got a br0 with eth2 linked to a WLAN 
+router. With just one command, "ip l s dev eth2 down", all wlan traffic 
+(through the server) can be disabled.
 
-I understand how to do this while changing the source IP address. I
-would run these commands on the faketarget box:
 
-iptables -t nat -A PREROUTING -i eth0 -s 10.1.1.2 -d 10.1.1.3 \
-	-p tcp --dport ssh -j DNAT --to 192.168.98.4
-
-iptables -t nat -A POSTROUTING -o eth0 -s 10.1.1.2 -d 10.1.1.3 \
-	-j SNAT --to 10.1.1.3
-
-Easy enough. But in this case, the connection to realtarget appears to
-come from faketarget, not userbox, the originator of the ssh connection.
-This is normally what you want with local NAT.
-
-But what if I want the connection to realtarget to appear to come from
-userbox.  I want faketarget to be an almost invisible middleman.  I
-don't want to rewrite the source IP address, but leave it as is.  If I
-just leave off the second iptables line above, however, no packets are
-forwarded to realtarget at all.
-
-Is this possible?  Am I asking the wrong question?
+Jan Engelhardt
 -- 
-Adam Rosi-Kessel
-http://adam.rosi-kessel.org
-
+| Alphagate Systems, http://alphagate.hopto.org/
 
