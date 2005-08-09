@@ -1,7 +1,8 @@
-From: Trevor Cordes <netfilter@tecnopolis.ca>
-Subject: BUG tc_util.c print_rate prints bytes as bits
-Date: Wed, 10 Aug 2005 06:42:55 -0500
-Message-ID: <20050810114255.GA12356@pog.tecnopolis.ca>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Transparent proxy where source IP address remains unchanged --
+	possible?
+Date: Mon, 8 Aug 2005 21:29:14 -0400
+Message-ID: <20050809012914.GA23108@bostoncoop.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
@@ -19,30 +20,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-The output of "tc -s class show dev ppp0" shows current flow rates like
-"rate 2009bit 3pps".  The "bit" text should read "byte".  The number given 
-is Bytes per second (Bps), not bps.  This is obvious from empirical study 
-as well as in the source:
+I'm new to iptables and have perhaps a naive question.
 
-pkt_sched.h : struct tc_stats
-  __u32   bps;                    /* Current flow byte rate */
+I am wondering if there is a way to configure a proxy such that packets
+are redirected to a new IP address, but the *source* IP address remains
+unchanged.
 
-tc_qdisc.c : print_tcstats_attr
-  fprintf(fp, "%s ", sprint_rate(st.bps, b1));
-  (st is struct tc_stats and so bps is BYTES as per comment above)
+To illustrate: let's say we have "userbox" 10.1.1.2, "faketarget"
+10.1.1.3, and "realtarget" 10.1.1.4.
 
-tc_util.c : print_rate
-  double tmp = (double)rate*8;
-  (is bogus since it's already bytes, by are we * 8??)
+Userbox initiates an ssh connection to faketarget. Faketarget routes all
+packets to realtarget.
 
-  snprintf(buf, len, "%ubit", rate);
-  (rate unmodified is bytes, not bits, and why do we use tmp for the other 
-  snprintfs but not here?)
+I understand how to do this while changing the source IP address. I would
+run these commands on faketarget:
 
+iptables -t nat -A PREROUTING -i eth0 -s 10.1.1.2 -d 10.1.1.3 -p tcp --dport ssh -j DNAT --to 192.168.98.4 
+iptables -t nat -A POSTROUTING -o eth0 -s 10.1.1.2 -d 10.1.1.3 -j SNAT --to 10.1.1.3
 
-The easy solution is change print_rate to operate on rate in bytes, not do 
-any *8 and change the literal strings to reflect this fact.
+Easy enough. But in this case, the connection to realtarget appears to
+come from faketarget, not userbox, the originator of the ssh connection.
+This is normally what you want with local NAT.
 
-Please see this bug also at:
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=165544
+But what if I want the connection to realtarget to appear to come from
+userbox.  I want faketarget to be an almost invisible middleman.  I don't
+want to rewrite the source IP address, but leave it as is.  If I just
+leave off the second iptables line above, however, no packets are
+forwarded to realtarget at all.
+
+Is this possible?  Am I asking the wrong question?
+-- 
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
 
