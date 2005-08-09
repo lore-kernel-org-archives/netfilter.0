@@ -1,14 +1,10 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: DNAT to 127 fails
-Date: Tue, 09 Aug 2005 12:20:12 +0200
-Message-ID: <42F8835C.6030709@mnemon.de>
-References: <Pine.LNX.4.61.0508051141020.31142@yvahk01.tjqt.qr>
-	<42F33A8C.9060905@mnemon.de>
-	<Pine.LNX.4.61.0508091150420.6879@yvahk01.tjqt.qr>
+From: John Lange <john.lange@open-it.ca>
+Subject: What is ACK PSH FIN and why is it blocked?
+Date: Tue, 09 Aug 2005 10:21:35 -0500
+Message-ID: <1123600895.17896.40.camel@ws50.darkcore.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0508091150420.6879@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,22 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Jan Engelhardt schrieb:
->>"-j DNAT" is not intended to DNAT to localhost. The REDIRECT target is
->>for this. From "man iptables":
-> 
-> 
-> I guess this has to do with the recent 2.6.11->12 change that there is no more 
-> implicit SNAT on -j DNAT, right? (Before, -j REDIRECT --to-ports ports was 
-> equal to -j DNAT --to-dest 127.0.0.1:ports)
+I get quite a number of packets dropped as follows; This is packet from
+my web server to a given host:
 
-Don't know, but with my 2.4.31 it doesn't work too (maybe a backport ?).
-Only -j REDIRECT works.
+Aug  8 01:20:12 venus kernel: IN= OUT=eth0 SRC=<myServerIP>
+DST=<someHost> LEN=471 TOS=0x00 PREC=0x00 TTL=64 ID=13332 DF PROTO=TCP
+SPT=80 DPT=10067 WINDOW=1716 RES=0x00 ACK PSH FIN URGP=0
 
-Have a nice time,
+Here is an abbreviated version of the iptables ruleset which is in
+place:
 
-Joerg
+iptables -P FORWARD DROP
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -m state --state NEW -p tcp --sport 80 -j ACCEPT
+
+iptables -A OUTPUT -p any -j LOG
+
+# Allow incoming data that is part of a connection we established
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+# www server
+iptables -A INPUT -p tcp --syn --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --syn --dport 443 -j ACCEPT
+
+iptables -A INPUT -p any -j LOG
+
+So what is a packet with "ACK PSH FIN" set? I assume they are being
+blocked because they are neither "SYN" nor part of an established
+connection? But what are they and should they be allowed?
+
+-- 
+John Lange
 
 
