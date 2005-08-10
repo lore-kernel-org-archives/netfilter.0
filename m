@@ -1,11 +1,10 @@
-From: "Lotte Mygind (AH/LMD)" <lotte.mygind@ericsson.com>
-Subject: RE: Export code for Netfilter/iptables
-Date: Tue, 9 Aug 2005 10:33:08 +0200
-Message-ID: <388032EC32FD7A46AB01D59B3396E058B27BEC@esealmw107.eemea.ericsson.se>
+From: Trevor Cordes <netfilter@tecnopolis.ca>
+Subject: BUG tc_util.c print_rate prints bytes as bits
+Date: Wed, 10 Aug 2005 06:42:55 -0500
+Message-ID: <20050810114255.GA12356@pog.tecnopolis.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,44 +16,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "curby ." <curby.public@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Of course we review the licensing, bugs, IPR issues etc - but if we =
-cannot get a little help from the project/documentation, it does become =
-a tremendous task to make thorough reviews for all open source =
-components.
+The output of "tc -s class show dev ppp0" shows current flow rates like
+"rate 2009bit 3pps".  The "bit" text should read "byte".  The number given 
+is Bytes per second (Bps), not bps.  This is obvious from empirical study 
+as well as in the source:
 
-My offer to add an entry to the FAQ had two purposes:
-1) Offer a bit of help to the project (I will not be the last person to =
-ask that question)
-2) If I could get such a text into the FAQ that would mean that I would =
-feel more confident that the text was truthful and just a random answer =
-from some random person on this list...
+pkt_sched.h : struct tc_stats
+  __u32   bps;                    /* Current flow byte rate */
 
-/Lotte
+tc_qdisc.c : print_tcstats_attr
+  fprintf(fp, "%s ", sprint_rate(st.bps, b1));
+  (st is struct tc_stats and so bps is BYTES as per comment above)
 
------Original Message-----
-From: curby . [mailto:curby.public@gmail.com]
-Sent: 8. august 2005 21:02
-To: Lotte Mygind (AH/LMD)
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Export code for Netfilter/iptables
+tc_util.c : print_rate
+  double tmp = (double)rate*8;
+  (is bogus since it's already bytes, by are we * 8??)
+
+  snprintf(buf, len, "%ubit", rate);
+  (rate unmodified is bytes, not bits, and why do we use tmp for the other 
+  snprintfs but not here?)
 
 
-On 8/8/05, Lotte Mygind (AH/LMD) <lotte.mygind@ericsson.com> wrote:
-> We are going to use Netfilter/iptables in a product. In order to =
-obtain an export code, I need to document whether these components =
-implement any kind of encryption - so my questions are:
+The easy solution is change print_rate to operate on rate in bytes, not do 
+any *8 and change the literal strings to reflect this fact.
 
-I hope that as part of the process of considering ANY third party code
-in your products, a code review would be done to explore security
-risks as well as possible gotchas with respect to licensing and
-government regulations.  Such a review would certainly reveal if
-cryptography was employed.  If someone on this list said that there
-was or was not crypto code in netfilter, your company would not be
-wise to trust them without independent verification anyway.
-
-http://netfilter.org/licensing.html is unrelated but probably important =
-as well.
+Please see this bug also at:
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=165544
 
