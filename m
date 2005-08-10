@@ -1,12 +1,11 @@
-From: Daniel Lopes <lopsch@lopsch.com>
-Subject: Re: event sequence: QoS + 2.6sec ?
-Date: Wed, 10 Aug 2005 17:26:32 +0200
-Message-ID: <42FA1CA8.7050303@lopsch.com>
-References: <20050810115559.GA12617@pog.tecnopolis.ca>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Transparent proxy where source IP address remains unchanged --
+	possible?
+Date: Wed, 10 Aug 2005 11:22:37 -0400
+Message-ID: <42FA1BBD.6060806@rosi-kessel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050810115559.GA12617@pog.tecnopolis.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,24 +16,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Trevor Cordes schrieb:
-> I'm using HTB QoS and 2.6sec (native 2.6 ipsec w/setkey) simultaneously. 
-> What is the sequence of events for an outgoing packet?  I'm thinking the
-> 2.6sec gets applied dead last, after the QoS scheduling has been done?  Or 
-> does QoS get applied twice for a 2.6sec packet because it goes through 
-> egress twice?
-> 
-> I could find no documentation on this subject, and it's actually quite 
-> important when using both together.
-> 
-> 
-AFAIK Traffic Shaping is the last thing done before packet leaves into 
-the wire when applied on physical devices. But it depends on some 
-things. You can use for example IMQ. Then depending on the strategy 
-shaping is done before IPSec and before the shaping on the physical 
-device if you apply shaping on it. Take a look at the LARTC mailing 
-list. It's perhaps a better place for such questions.
+I'm new to iptables and have perhaps a naive question.
+
+I am wondering if there is a way to configure a proxy such that packets
+are redirected to a new IP address, but the *source* IP address remains
+unchanged.
+
+To illustrate: let's say we have "userbox" 10.1.1.2, "faketarget"
+10.1.1.3, and "realtarget" 10.1.1.4.
+
+Userbox initiates an ssh connection to faketarget. Faketarget routes all
+packets to realtarget.
+
+I understand how to do this while changing the source IP address. I
+would run these commands on the faketarget box:
+
+iptables -t nat -A PREROUTING -i eth0 -s 10.1.1.2 -d 10.1.1.3 \
+	-p tcp --dport ssh -j DNAT --to 192.168.98.4
+
+iptables -t nat -A POSTROUTING -o eth0 -s 10.1.1.2 -d 10.1.1.3 \
+	-j SNAT --to 10.1.1.3
+
+Easy enough. But in this case, the connection to realtarget appears to
+come from faketarget, not userbox, the originator of the ssh connection.
+This is normally what you want with local NAT.
+
+But what if I want the connection to realtarget to appear to come from
+userbox.  I want faketarget to be an almost invisible middleman.  I
+don't want to rewrite the source IP address, but leave it as is.  If I
+just leave off the second iptables line above, however, no packets are
+forwarded to realtarget at all.
+
+Is this possible?  Am I asking the wrong question?
+-- 
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
+
 
