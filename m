@@ -1,14 +1,12 @@
-From: Adam Rosi-Kessel <adam@rosi-kessel.org>
-Subject: Re: Transparent proxy where source IP address remains unchanged --
-	possible?
-Date: Thu, 11 Aug 2005 09:07:00 -0400
-Message-ID: <20050811130700.GA15463@bostoncoop.net>
-References: <20050809012914.GA23108@bostoncoop.net>
-	<Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>
+From: sysinu@nix.g.root-servers.net
+Subject: TC+IMQ+IPtables problem
+Date: Wed, 10 Aug 2005 12:06:22 -0700
+Message-ID: <20050810190622.GA14479@nix.g.root-servers.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Description: TC+IMQ+IPTABLES problem
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,32 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, Aug 11, 2005 at 07:42:30AM +0200, Jan Engelhardt wrote:
-> >Subject: Transparent proxy where source IP address remains unchanged --
-> >    possible?
-> Check Balabit TPROXY. To retain the source address however, you need to patch 
-> the application that initiates the second part. In your case, the sshd on 
-> faketarget.
+I am attempting to execute iptables -t mangle -A MYSHAPER-IN -j IMQ in a 
+bandwidth shaping script (http://www.belongt0.us/shaper/shaper.txt) and 
+I am getting the error message iptables: No chain/target/match by that 
+name.  From what I can tell everything is setup correctly, and my 
+shaping script is just a variant of a wider used shaping script...  I 
+cannot for the life of me figure out why it's doing this.  I have built 
+IMQ into both the Kernel and IPTABLES.  I've also attempted putting 
+--todev 0 after the line I am trying to execute.
 
-Maybe I should explain what I'm trying to accomplish to see if this is
-the right (or a possible) way to go about it.
+I am running the following:
 
-I'm relocating a web/email/ssh server from one location to another (and
-consequently to a new IP).  Since it's going to take many hours for the
-IP address changes to propagate across DNS, I'd like to put a proxy box
-in place at the old location that simply redirects all packets to the new
-location. I would prefer for the new location to see the original source
-IP address, rather than the IP address of the proxy.
+Linux version 2.6.12.4 (root@nix) (gcc version 3.3.5-20050130 (Gentoo 
+Linux 3.3.5.20050130-r1, ssp-3.3.5.20050130-1, pie-8.7.7.1)) #11 SMP Wed 
+Aug 10 09:32:12 MST 2005
 
-Why do I need to patch sshd on faketarget? What I'm trying to do is just
-send all the packets to realtarget, essentially untouched (other than the
-destination IP).  I don't understand why sshd on faketarget would even be
-involved...?
--- 
-Adam Rosi-Kessel
-http://adam.rosi-kessel.org
+tc utility, iproute2-ss050310
+
+ipchains 1.3.10, 1-Sep-2000
+
+iptables v1.3.3
+
+My IPTABLES was patched with:
+http://www.linuximq.net/patchs/iptables-1.3.0-imq1.diff
+
+My Kernel was patched with:
+http://www.linuximq.net/patchs/linux-2.6.9-imq1.diff
+
+Thank you in advance for all the help contributed.  There are a few 
+debug files of mine available at http://www.belongt0.us/shaper/
+
+Thanks again,
+-Sysinu
 
