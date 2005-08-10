@@ -1,13 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: ppooe state RELATED,ESTABLISHED issue
-Date: Tue, 9 Aug 2005 11:50:20 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0508091148270.6879@yvahk01.tjqt.qr>
-References: <1123201815.23762.17.camel@inyoureyes.linsolutions.com>
-	<42F3299E.9030701@mnemon.de>
-	<1123461462.3383.25.camel@inyoureyes.linsolutions.com>
+From: Trevor Cordes <netfilter@tecnopolis.ca>
+Subject: Re: Netfilter and IPSec interaction
+Date: Wed, 10 Aug 2005 07:02:41 -0500
+Message-ID: <20050810120241.GA12680@pog.tecnopolis.ca>
+References: <20050714122109.bl71ded9gkkoc0c4@www.milivojevic.org>
+	<42DB20CE.5040401@milivojevic.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1123461462.3383.25.camel@inyoureyes.linsolutions.com>
+Content-Disposition: inline
+In-Reply-To: <42DB20CE.5040401@milivojevic.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ted Kaczmarek <tedkaz@optonline.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+On Sun, Jul 17, 2005 at 10:23:58PM -0500, Aleksandar Milivojevic wrote:
+> 
+> Apperently, this is a known problem and it has been discussed on 
+> Netfilter's development lists.  There are some patches that solve it, 
+> but they are not going to get into mainstream kernel since approach 
 
->With 2.4 Kernel Centos 3.5 it works fine, but I didn't bring up eth0 ip
->interface. Need to retest this without an ip interface on eth0 and 2.6
->kernel, the previous case I had an ip on eth0 as well.
+I can now confirm that the current PoM 2.6sec/NAT patches do compile into 
+a 2.6.12 kernel (for me FC3 2.6.12-1.1372) with a few modifications to 
+dependencies, etc.  I will be heavily testing this new kernel very 
+shortly.
 
-The "up" and "down" states of interfaces seems to be the hardware switch. 
-Dunno how it is implemented with NICs, but I have seen that in snd-cs46xx.c, 
-the card is totally shutdown on module unload. So I guess, it's the same on 
-"ip l s dev eth0 down"
+> taken in them is problematic (and according to some sources, those 
+> patches are abandoned and not maintained anymore).  I wasn't able to 
+> find why the approach is problematic, but apperently answer to that 
 
-To have a bridge `a la ebtables work, the ports need to be up. And preferably, 
-have no IP. This is really cool - I've got a br0 with eth2 linked to a WLAN 
-router. With just one command, "ip l s dev eth2 down", all wlan traffic 
-(through the server) can be disabled.
+From my understanding, the patches are too broad and affect too many 
+source files.  It's not "clean" and prone to maintenance errors.  The way 
+it's coded/architected needs to be rethought and will probably require a 
+rethink/rewrite of much more than just the bits the patch touches.
 
+> question is burried somewhere in archives of Netfilter's development 
+> list.  Seems that correct approach to solve the problem still needs to 
+> be found (and once found and implemented will become part of mainstream 
+> kernel).
 
-Jan Engelhardt
--- 
-| Alphagate Systems, http://alphagate.hopto.org/
+Yes, it would be nice to see that some effort is going into this problem.
 
