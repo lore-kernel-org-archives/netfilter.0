@@ -1,13 +1,14 @@
-From: Toby DiPasquale <codeslinger@gmail.com>
-Subject: Re: IPTables for Sun Solaris
-Date: Thu, 11 Aug 2005 08:22:33 -0400
-Message-ID: <876ef97a05081105228ecd1d8@mail.gmail.com>
-References: <5AD6E09C3CB0BE4E83BDABFBF560EA0002C2B1B9@usanbrmbx01.ds.liz.com>
+From: Peggy Kam <ppkam@n-dsi.com>
+Subject: Maximum number of ports?
+Date: Wed, 10 Aug 2005 16:13:57 -0400
+Message-ID: <1123704837.3708.1.camel@ndspc131.p.n-dsi.com>
+References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>
+	<Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>
+Reply-To: ppkam@n-dsi.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5AD6E09C3CB0BE4E83BDABFBF560EA0002C2B1B9@usanbrmbx01.ds.liz.com>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,20 +20,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Ruiyuan Jiang <Ruiyuan_Jiang@liz.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 8/9/05, Ruiyuan Jiang <Ruiyuan_Jiang@liz.com> wrote:
-> I am new to the list. I just downloaded iptables-1.3.3. From INSTALL
-> file, it seems IPTables only supports Linux. I have Solaris 10 for
-> SPARC. Does IPTables support Solaris and HP-UX, etc.? Thanks.
+Hi,
 
-No, iptables can only be used with Linux because it relies on the
-netfilter framework in the Linux kernel. Solaris' kernel lacks
-netfilter, therefore it cannot make use of iptables. You might be able
-to get a command-line tool with the same interface as iptables for
-Solaris, however; look around.
+What is the maximum number of ports that I can define in the iptables?
+What is the limitation?
 
---=20
-Toby DiPasquale
-0x636f6465736c696e67657240676d61696c2e636f6d
+Thanks in advance,
+Peggy
+
 
