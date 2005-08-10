@@ -1,12 +1,14 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: A Simple Question
-Date: Wed, 10 Aug 2005 14:58:43 -0500
-Message-ID: <200508101458.43569.rob0@gmx.co.uk>
-References: <5c685153050809171164af25e4@mail.gmail.com>
+Subject: Re: is this the zillionth mail asking for this detail?
+Date: Wed, 10 Aug 2005 15:11:50 -0500
+Message-ID: <200508101511.50410.rob0@gmx.co.uk>
+References: <65aa6af905072021501603cfd5@mail.gmail.com>
+	<65aa6af905072107096e1d6d06@mail.gmail.com>
+	<65aa6af9050810083761c164a8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5c685153050809171164af25e4@mail.gmail.com>
+In-Reply-To: <65aa6af9050810083761c164a8@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,37 +23,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 2005-August-09 19:11, Robb Bossley wrote:
-> I have been reading the mailing list posts and it seems that most of
-> you who are very knowledgeable with netfilter would propose a default
-> policy of DROP on both the INPUT and FORWARD chains.
->
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
+[ top-posting fixed ]
+On Wednesday 2005-August-10 10:37, Edmundo Carmona wrote:
+> On 7/21/05, Edmundo Carmona <eantoranz@gmail.com> wrote:
+> > > But for the record: for locally generated packets the routing
+> > > engine is called after OUTPUT only if source address, destination
+> > > address, nfmark field or tos of the skbuff changed. So it's not
+> > > called blindly for every packet.
 
-Yes, but ...
+> Sorry to reply on an old thread.. but I think it's a good point to
+> start my next questions. Does the same policy stand on FORWARD? There
+> will be another routing decision if source address, destination
+> address, nfmark field or tos of the skbuff changed???
 
-> However, I have noticed that a number of what I would consider to be
-> strong contenders in the market use default policies of ACCEPT and
-> then have a DROP rule at the end of the tables / chain.
->
-> iptables -P INPUT ACCEPT
-> iptables -P FORWARD ACCEPT
-> ...................................(other stuff
-> here).......................... iptables -A INPUT -j DROP
-> iptables -A FORWARD -j DROP
-
-... this is simply another means to the same end.
-
-> I'm confused.  Which is preferred for security and why?  (Or is this
-> just six of one, half a dozen of another?)
-
-It all depends on the "other stuff" in the middle. At my most complex 
-site, I went for default ACCEPT policies because I had multiple types 
-of internal interfaces. Even those have varying needs. It just seemed 
-that an ACCEPT policy would be the simplest way to get the job done. 
-Everything we don't want is dropped (or rejected), everything we do 
-want is accepted.
+Of which FORWARD are you asking, filter or mangle? In either case I 
+think the routing decision has already been made. In neither case 
+(TTBOMK; I don't know much about mangle) can you change source and 
+destination IP addresses. Why would there be another routing decision?
 -- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
