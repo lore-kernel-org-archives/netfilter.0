@@ -1,19 +1,11 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: is this the zillionth mail asking for this detail?
-Date: Thu, 11 Aug 2005 07:57:27 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0508110756110.28320@yvahk01.tjqt.qr>
-References: <65aa6af905072021501603cfd5@mail.gmail.com>
-	<42DF85AE.1000400@gmx.co.uk>
-	<Pine.LNX.4.58.0507211511240.27131@blackhole.kfki.hu>
-	<Pine.LNX.4.61.0507211521120.17188@yvahk01.tjqt.qr>
-	<Pine.LNX.4.58.0507211523100.27131@blackhole.kfki.hu>
-	<42DFA8D1.207@mnemon.de>
-	<Pine.LNX.4.58.0507211557070.27131@blackhole.kfki.hu>
-	<65aa6af905072107096e1d6d06@mail.gmail.com>
-	<65aa6af9050810083761c164a8@mail.gmail.com>
+Subject: Re: Troubleshooting stability issue
+Date: Thu, 11 Aug 2005 08:00:32 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0508110758020.28320@yvahk01.tjqt.qr>
+References: <1123689748.21756.TMDA@mercury.zynet.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af9050810083761c164a8@mail.gmail.com>
+In-Reply-To: <1123689748.21756.TMDA@mercury.zynet.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,21 +18,46 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Edmundo Carmona <eantoranz@gmail.com>
-Cc: netfilter@lists.netfilter.org, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+To: Simon Waters <simonw@zynet.net>
+Cc: netfilter@lists.netfilter.org
 
 
->Sorry to reply on an old thread.. but I think it's a good point to
->start my next questions. Does the same policy stand on FORWARD? There
->will be another routing decision if source address, destination
->address, nfmark field or tos of the skbuff changed???
+>Symptom is that by the time we get to it, the box is totally unresponsive to 
+>local console, is not forwarding packets. In a word "hung".
 
-No, that's too late. You can only change the src/dst addresses in the nat 
-table, which comes before the routing decision. If you write a module for 
--t mangle which then pokes on the addr, you're probably too late, i.e. no 
-routing.
+Then there may be a memory leak. Calm all apps and periodically check the free 
+ram or the slab cache sizes, respectively. (Yeah, it's unlikely.)
 
-You might however, force a rerouting decision when using the -j ROUTE target.
+Check /var/log/messages if it says that a network card timed out.
+
+>Memory isn't obviously leaking.
+>
+>The number of lines in "ip_conntrack" does appear to grow with time, but is 
+>still way below (at around 3000) the maximum allowed of 32,000+, and isn't 
+>growing monotonically. I think there may be clues here, if only to what is 
+>wrong with the ruleset.
+
+Reduce the maximum number of conntracks then.
+
+>Apart from sshd, there is practically nothing running.
+>atd
+>crond
+>inetd (this has nothing configured in /etc/inetd.conf, so I'll remove it).
+>Postfix is listening on 127.0.0.1:25 in case anything local suddenly needs to 
+>report anything to me.
+>lpd (lpd was running and not listening on any ports, so I'll remove it).
+
+Where's the ftpd?
+
+>Just looking for some helpful pointers on how to investigate this issue 
+>further.
+
+/proc/net/ip_conntrack
+/proc/net/stat/ip_conntrack
+
+>The hardware doesn't seem to like the stock 2.6 kernels, and I don't have one 
+>spare to spend time figuring out why.
+Forgot a driver?
 
 
 
