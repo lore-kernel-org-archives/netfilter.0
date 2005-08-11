@@ -1,12 +1,10 @@
-From: sysinu@nix.g.root-servers.net
-Subject: TC+IMQ+IPtables problem
-Date: Wed, 10 Aug 2005 12:06:22 -0700
-Message-ID: <20050810190622.GA14479@nix.g.root-servers.net>
+From: "G.Castro." <gcastro@gcp.com.uy>
+Subject: Patch-O-Matic for Kernel 2.6.11
+Date: Thu, 11 Aug 2005 10:13:33 -0300 (UYT)
+Message-ID: <36342.200.125.1.30.1123766013.squirrel@webmail.gcp.com.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Description: TC+IMQ+IPTABLES problem
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,36 +18,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am attempting to execute iptables -t mangle -A MYSHAPER-IN -j IMQ in a 
-bandwidth shaping script (http://www.belongt0.us/shaper/shaper.txt) and 
-I am getting the error message iptables: No chain/target/match by that 
-name.  From what I can tell everything is setup correctly, and my 
-shaping script is just a variant of a wider used shaping script...  I 
-cannot for the life of me figure out why it's doing this.  I have built 
-IMQ into both the Kernel and IPTABLES.  I've also attempted putting 
---todev 0 after the line I am trying to execute.
+Hi everyone:
 
-I am running the following:
+  I've been looking for an appropriate patch-o-matic-ng for a 2.6.11
+kernel, but I'm not really sure of which to choose and if it could be
+applied. Like you know, netfilter project ceased to issue 'official'
+patch-o-matic-ng releases, so I don't know where to look...
+  Does anybody recommend any patch that actually works well with a 2.6.11
+kernel?
+  My interests are mostly specifically in the ROUTE target.
+  Thanks!!
 
-Linux version 2.6.12.4 (root@nix) (gcc version 3.3.5-20050130 (Gentoo 
-Linux 3.3.5.20050130-r1, ssp-3.3.5.20050130-1, pie-8.7.7.1)) #11 SMP Wed 
-Aug 10 09:32:12 MST 2005
+Best regards,
+     G.Castro.
+     E-Mail: gcastro@gcp.com.uy
 
-tc utility, iproute2-ss050310
+LPI Level-1 Certified (https://www.lpi.org/es/verify.html
+LPID:LPI000042304 Verification Code: hp6re8w5qg )
+-----BEGIN GEEK CODE BLOCK-----
+Version: 3.12
+GCS/CM/IT/ED dx s-:- a? C(+++)$ UL++++*$ P+ L++++(++)$ E--- W+++$ N+ o?
+K- w O M V-- PS PE++(-) Y-(+) PGP+ t(++) 5+ X++ R tv+ b++(++++) DI+++
+D++ G++ e++ h--- r y+++
+------END GEEK CODE BLOCK------
+Registered Linux User #69342
 
-ipchains 1.3.10, 1-Sep-2000
-
-iptables v1.3.3
-
-My IPTABLES was patched with:
-http://www.linuximq.net/patchs/iptables-1.3.0-imq1.diff
-
-My Kernel was patched with:
-http://www.linuximq.net/patchs/linux-2.6.9-imq1.diff
-
-Thank you in advance for all the help contributed.  There are a few 
-debug files of mine available at http://www.belongt0.us/shaper/
-
-Thanks again,
--Sysinu
 
