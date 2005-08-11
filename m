@@ -1,13 +1,11 @@
-From: Tom Eastep <teastep@shorewall.net>
+From: Anthony DiSante <theant@nodivisions.com>
 Subject: Re: Can someone recommend a good simple firewall script?
-Date: Thu, 11 Aug 2005 11:00:32 -0700
-Message-ID: <42FB9240.8050103@shorewall.net>
+Date: Thu, 11 Aug 2005 15:06:30 -0400
+Message-ID: <42FBA1B6.6070600@nodivisions.com>
 References: <42FB4FB2.5020904@us.ibm.com> <200508111237.12648.rob0@gmx.co.uk>
 	<200508111252.13654.rob0@gmx.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig004E3C8582F1635A850E86B6"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <200508111252.13654.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
@@ -20,50 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: netfilter@lists.netfilter.org
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig004E3C8582F1635A850E86B6
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
 /dev/rob0 wrote:
-
->
-> I don't have time to go looking, but ISTM that many of today's crop of
-> questions was related to this poster's issue. They are probably not
-> really wanting to learn firewalling, they simply want to have a rule
+>>learn iptables yourself, fine; if not, look on freshmeat for
+>>something better. Just about anything you might find is probably
+>>better.
+>>
+>>At this time I don't have something specific I can recommend. Before
+>>I learned iptables I used MonMotha's, but that's too complicated for
+>>my liking.
+> 
+> I don't have time to go looking, but ISTM that many of today's crop of 
+> questions was related to this poster's issue. They are probably not 
+> really wanting to learn firewalling, they simply want to have a rule 
 > set that works and is easy to manage.
->
-> Yes, I know there are things like firestarter which can generate
+> 
+> Yes, I know there are things like firestarter which can generate 
 > rulesets. But is there something non-GUI, and simple?
->
-> Am I going to have to write one myself? :) There are 37 hits for
-> http://freshmeat.net/search/?q=iptables+script . Most of them look
-> unmaintained.
 
-Shorewall is non-GUI and still actively maintained and supported.
+I'm not an expert with firewalls, but it seems to me that many people would 
+be well-served by something even more basic than a simple ruleset-generator.
 
--Tom
---
-Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
-Shoreline,     \ http://shorewall.net
-Washington USA  \ teastep@shorewall.net
-PGP Public Key   \ https://lists.shorewall.net/teastep.pgp.key
+Two of the most common services anyone would want to offer are HTTP and SSH. 
+  And many people are either directly connected to the internet (i.e. the PC 
+has a public IP) or else are behind a hardware router (the PC has a private IP).
 
---------------enig004E3C8582F1635A850E86B6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Let's further assume that in many/most cases, people in that situation (who 
+want HTTP and SSH open) would want the system completely locked down otherwise.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
+Given those constraints, which I think would apply to many people in many 
+situations, couldn't we ("we" meaning the experts, excluding myself here) 
+just provide two static rulesets that would satisfy all these people?  One 
+for the system with a public IP, and one for the system behind a router?
 
-iD8DBQFC+5JAO/MAbZfjDLIRAnGqAKCOOh4/JS8uudpLylkM1d7rFL0DxACgxbCq
-5F1Y43RziSjhvAYAHtYQWGk=
-=F01z
------END PGP SIGNATURE-----
-
---------------enig004E3C8582F1635A850E86B6--
+-Anthony DiSante
+http://encodable.com/
+http://nodivisions.com/
 
