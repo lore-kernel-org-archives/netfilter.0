@@ -1,14 +1,12 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Maximum number of ports?
-Date: Thu, 11 Aug 2005 11:54:07 -0500
-Message-ID: <200508111154.07609.rob0@gmx.co.uk>
-References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>
-	<Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>
-	<1123704837.3708.1.camel@ndspc131.p.n-dsi.com>
+Subject: Re: Use IP connection tracking only for input and output chains
+Date: Thu, 11 Aug 2005 12:04:46 -0500
+Message-ID: <200508111204.46111.rob0@gmx.co.uk>
+References: <B9833546B2643B43A56C4E962E13174602A989@nehemiah.joris2k.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1123704837.3708.1.camel@ndspc131.p.n-dsi.com>
+In-Reply-To: <B9833546B2643B43A56C4E962E13174602A989@nehemiah.joris2k.local>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,30 +21,17 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 2005-August-10 15:13, Peggy Kam wrote:
-> What is the maximum number of ports that I can define in the
-> iptables? What is the limitation?
+On Thursday 2005-August-11 06:45, Joris Dobbelsteen wrote:
+> I've a question whether it is a supported configuration where the
+> connection tracking module is solely used for traffic local to the
 
-Are you asking about the multiport match extension? If so please find 
-the following in "man iptables" and post again if you do not understand 
-it:
+I believe the "raw" table can be used to bypass connection tracking. I 
+don't know whether or not that is available in OpenWRT.
 
-   multiport
-       This  module matches a set of source or destination ports.
-       Up to 15 ports can be specified.  It can only be used  in
-       conjunction with -p tcp or -p udp
-
-That particular limitation only applies to a single multiport command. 
-You can have as many of those as you need. Perhaps you're asking about 
-the maximum number of rules you can have? I don't know what that limit 
-might be (if I was curious I would Google), but I bet it's higher than 
-the 64K TCP ports plus the 64K UDP ports.
-
-If you're writing a firewall with that many rules, it is probable that 
-you could have done it better and more efficiently using a different 
-approach. For instance, default policies of DROP and only ACCEPT the 
-port/protocol combinations you need, plus the standard "-m state 
---state RELATED,ESTABLISHED -j ACCEPT" rules.
+Do you like OpenWRT? I have Sveasoft on mine but I am not comfortable 
+with it because of the GPL violations and the comments I have seen 
+about the Sveasoft maintainer. It's nice to have Linksys-style GUI 
+control, but I am quite capable of CLI management too.
 -- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
