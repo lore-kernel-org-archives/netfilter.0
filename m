@@ -1,7 +1,7 @@
-From: Jorge Enrique <nunezj@ucbcba.edu.bo>
-Subject: How can i limit  traffic ??
-Date: Thu, 11 Aug 2005 11:14:25 -0400
-Message-ID: <1123773266.3362.12.camel@admin.ucbcba.edu.bo>
+From: Svenne Krap <svenne@krap.dk>
+Subject: Logging
+Date: Thu, 11 Aug 2005 17:49:40 +0200
+Message-ID: <42FB7394.4010203@krap.dk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,11 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi everybody, How can I limit tha traffic in my LAN
+Hi.
 
-for ip and rangle the ip's???
+I am currently working on a not so simple firewall setup on a modern 
+machine (Xeon, Gigs of memory, SCSI subsystem).
 
+As part of it, I would like to know various "event" statistics.Questions 
+I would like to answer is "How many hits on port 1433 have i got, and 
+how is that distributed amongst the machines". Think pivot table data.
+
+Is there some way to get netfilter to collect rule hits (like with no -j 
+clause) for a each port/ip-address individually within a range ?
+Other than creating thousands of lines of rules and add them to my 
+"firewall-startup" script (which is currently slightly less than 80 rules).
+
+I have thought of just logging all traffic and running it through a 
+userspace program via syslog-ng, but frankly I worry about performance 
+(the firewall should be able to filter at least the 100Mbps connection, 
+it currently sits on) under flooding.
+
+Your thoughs are apprieciated :)
+
+Svenne
 
