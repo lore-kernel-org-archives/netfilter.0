@@ -1,14 +1,13 @@
-From: Peggy Kam <ppkam@n-dsi.com>
-Subject: Maximum number of ports?
-Date: Wed, 10 Aug 2005 16:13:57 -0400
-Message-ID: <1123704837.3708.1.camel@ndspc131.p.n-dsi.com>
-References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>
-	<Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>
-Reply-To: ppkam@n-dsi.com
+From: "Tim Evans" <tkevans@tkevans.com>
+Subject: Re: IPTables for Sun Solaris
+Date: Thu, 11 Aug 2005 08:34:18 -0400
+Message-ID: <20050811123418.M4053@tkevans.com>
+References: <5AD6E09C3CB0BE4E83BDABFBF560EA0002C2B1B9@usanbrmbx01.ds.liz.com>
+	<876ef97a05081105228ecd1d8@mail.gmail.com>
+Reply-To: tkevans@tkevans.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>
+In-Reply-To: <876ef97a05081105228ecd1d8@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,14 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Toby DiPasquale <codeslinger@gmail.com>, Ruiyuan Jiang <Ruiyuan_Jiang@liz.com>, netfilter@lists.netfilter.org
 
-Hi,
+On Thu, 11 Aug 2005 08:22:33 -0400, Toby DiPasquale wrote
 
-What is the maximum number of ports that I can define in the iptables?
-What is the limitation?
+> No, iptables can only be used with Linux because it relies on the
+> netfilter framework in the Linux kernel. Solaris' kernel lacks
+> netfilter, therefore it cannot make use of iptables. You might be 
+> able to get a command-line tool with the same interface as iptables for
+> Solaris, however; look around.
 
-Thanks in advance,
-Peggy
+Recent Solaris versions include 'ipfilter'.  Main site for ipfilter is
+http://www.ipfilter.org/
+
+
+
+
+--
+Tim Evans, TKEvans.com, Inc.    |    5 Chestnut Court
+tkevans@tkevans.com             |    Owings Mills, MD 21117
+http://www.tkevans.com/         |    443-394-3864
+http://www.come-here.com/News/  |    
 
 
