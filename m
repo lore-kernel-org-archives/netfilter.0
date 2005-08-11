@@ -1,11 +1,11 @@
-From: Pierre Westeel <pierre.westeel@gmail.com>
-Subject: Netfilter cluster / Invalid state problem
-Date: Thu, 11 Aug 2005 19:47:04 +0200
-Message-ID: <da73b3d905081110475176121@mail.gmail.com>
+From: "Joris Dobbelsteen" <joris.dobbelsteen@mail.com>
+Subject: RE: Use IP connection tracking only for input and output chains
+Date: Thu, 11 Aug 2005 19:50:48 +0200
+Message-ID: <B9833546B2643B43A56C4E962E13174602A98C@nehemiah.joris2k.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,82 +19,77 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+>-----Original Message-----
+>From: netfilter-bounces@lists.netfilter.org=20
+>[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of /dev/rob0
+>Sent: donderdag, 11 augustus 2005 19:05
+>To: netfilter@lists.netfilter.org
+>Subject: Re: Use IP connection tracking only for input and=20
+>output chains
+>
+>On Thursday 2005-August-11 06:45, Joris Dobbelsteen wrote:
+>> I've a question whether it is a supported configuration where the=20
+>> connection tracking module is solely used for traffic local to the
+>
+>I believe the "raw" table can be used to bypass connection=20
+>tracking. I don't know whether or not that is available in OpenWRT.
 
-I have a Linux netfilter cluster with keepalived to perform high avalaibili=
-ty.
-The master runs a 2.6.12 kernel and the Backup runs a 2.4.26 kernel. (
-both from kernel.org without patch )
+Could you provide more specific information on how to archieve this? A
+tutorial (or a discussion about this) would be very nice. If you have a
+good clue where I can find them it would save me a=20
+lot of time getting through a lot of information.
 
-I have the same iptables config on  firewalls  ( Only usefuls rules
-are pasted below ) :
+Did see something here:
+<http://iptables.gds.tuwien.ac.at/patch-o-matic/pom-submitted.html>, but
+looks like OpenWRT doesn't support that:
 
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-- /proc/net/ip_tables_names
+nat
+mangle
+filter
+-- /proc/net/ip_tables_targets
+TCPMMS
+LOG
+MASQUERADE
+MARK
+REJECT
+DNAT
+SNAT
 
--A INPUT -m state --state INVALID -j drop_invalid
--A FORWARD -m state --state INVALID -j drop_invalid
--A OUTPUT -m state --state INVALID -j drop_invalid
--A drop_invalid -j LOG --log-prefix "INVALID state -- DENY " --log-level 7
--A drop_invalid -j DROP
+I'm not looking forward to recompiling OpenWRT to include this
+feature...
 
----
+- Joris Dobbelsteen
 
--A INPUT -d 10.24.240.0/255.255.248.0 -m state --state NEW -j ACCEPT
--A INPUT -s 10.24.240.0/255.255.248.0 -m state --state NEW -j ACCEPT
--A OUTPUT -d 10.24.240.0/255.255.248.0 -m state --state NEW -j ACCEPT
--A OUTPUT -s 10.24.240.0/255.255.248.0 -m state --state NEW -j ACCEPT
--A FORWARD -d 10.24.240.0/255.255.248.0 -m state --state NEW -j ACCEPT
--A FORWARD -s 10.24.240.0/255.255.248.0 -m state --state NEW -j ACCEPT
 
----
 
-When I swap all the connections on the backup firewall with stopping
-keepalived daemon on master, the connections are correctly forwarded
-through the backup and I can see the new entry in
-/proc/net/ip_conntrack
-( This is a VNC stream , the connexion is never Idle so the sequence
-number is increasing quickly )
+--- Offtopic -----------------------------------------------------
 
-BUT when i restart the keepalived daemon to make connection go back
-through the master firewall 30 seconds after the first swap, i get the
-following logs :
+>Do you like OpenWRT? I have Sveasoft on mine but I am not=20
+>comfortable with it because of the GPL violations and the=20
+>comments I have seen about the Sveasoft maintainer. It's nice=20
+>to have Linksys-style GUI control, but I am quite capable of=20
+>CLI management too.
 
-INVALID state -- DENY IN=3Deth0.730 OUT=3Deth0.732 SRC=3D172.18.130.194
-DST=3D10.24.247.253 LEN=3D46 TOS=3D0x00 PREC=3D0x00 TTL=3D126 ID=3D46274 DF
-PROTO=3DTCP SPT=3D1522 DPT=3D5901 WINDOW=3D17520 RES=3D0x00 ACK PSH URGP=3D=
-0
-INVALID state -- DENY IN=3Deth0.732 OUT=3Deth0.730 SRC=3D10.24.247.253
-DST=3D172.18.130.194 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D30732 DF
-PROTO=3DTCP SPT=3D5901 DPT=3D1522 WINDOW=3D5840 RES=3D0x00 ACK URGP=3D0
-INVALID state -- DENY IN=3Deth0.732 OUT=3Deth0.730 SRC=3D10.24.247.253
-DST=3D172.18.130.194 LEN=3D1040 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D30733 =
-DF
-PROTO=3DTCP SPT=3D5901 DPT=3D1522 WINDOW=3D5840 RES=3D0x00 ACK PSH URGP=3D0
-INVALID state -- DENY IN=3Deth0.730 OUT=3Deth0.732 SRC=3D172.18.130.194
-DST=3D10.24.247.253 LEN=3D46 TOS=3D0x00 PREC=3D0x00 TTL=3D126 ID=3D46276 DF
-PROTO=3DTCP SPT=3D1522 DPT=3D5901 WINDOW=3D17520 RES=3D0x00 ACK PSH URGP=3D=
-0
+OpenWRT is perfectly capable to sqeeze every feature out of the box. I
+modified it quit a lot form the original layout. I don't run a web
+interface, I believe there are available though, administration uses
+SSH.
+Rather the device acts as a router (not a masquarade/nat gateway). I'm
+running dhcp-fwd and djbdns (caching dns server, dnsmasq didn't do
+because it includes dhcp I don't want) on the box. It runs quagga with
+OSPFv2 (faster reconfiguration than RIP). The internal switch can be
+easily altered for a different network setup (vlans). It runs WPA/WPA2
+with Radius server.
+Just check out http://openwrt.org/, look for the documentation how to
+get started.
 
-But the connection is still present in  /proc/net/ip_conntrack :
+Basically you get a plain Linux with some basic functionality for
+wireless, network, adsl links, netfilter/iptables and dnsmasq. You can
+latter add/remove packages as desired.
 
-tcp      6 431933 ESTABLISHED src=3D172.18.130.194 dst=3D10.24.247.253
-sport=3D1522 dport=3D5901 src=3D10.24.247.253 dst=3D172.18.130.194 sport=3D=
-5901
-dport=3D1522 [ASSURED] use=3D1
-
-When I swap the master with the backup it works correctly. ( 2.4.26 ->
-2.6.12 -> 2.4.26 instead of 2.6.12 -> 2.4.26 -> 2.6.12 )
-It seems that 2.6.12 is checking TCP  sequence number for conntracking
-... but I don't use patch-o-matic.
-
-This configuration works well with 2 firewall with  2.4.26 kernel
-
-Any ideas ?
-
-Regards,
-
----
-Pierre Westeel
+The box lacks (just like most of linux) any good mechanism to enforce a
+network policy, globally. I implemented my own insecure method of doing
+so (I know how to secure this, but it requires some work to be done).
+Seems like I really like Microsoft ISA Server for this though...
 
