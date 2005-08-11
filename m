@@ -1,18 +1,12 @@
-From: Adam Rosi-Kessel <adam@rosi-kessel.org>
-Subject: Re: Transparent proxy where source IP address remains unchanged --
- possible?
-Date: Thu, 11 Aug 2005 16:47:19 -0400
-Message-ID: <42FBB957.30003@rosi-kessel.org>
-References: <20050809012914.GA23108@bostoncoop.net>
-	<Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>
-	<20050811130700.GA15463@bostoncoop.net>
-	<Pine.LNX.4.61.0508112117380.23117@yvahk01.tjqt.qr>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: IPTables for Sun Solaris
+Date: Thu, 11 Aug 2005 17:07:22 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0508111706130.4580@darkstar.sysinfo.com>
+References: <5AD6E09C3CB0BE4E83BDABFBF560EA0002C2B1B9@usanbrmbx01.ds.liz.com>
+	<876ef97a05081105228ecd1d8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enigD3FB1BA346DA1624A64D425B"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0508112117380.23117@yvahk01.tjqt.qr>
+In-Reply-To: <876ef97a05081105228ecd1d8@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,49 +17,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: netfilter@lists.netfilter.org
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigD3FB1BA346DA1624A64D425B
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
+To: Toby DiPasquale <codeslinger@gmail.com>
+Cc: netfilter@lists.netfilter.org, Ruiyuan Jiang <Ruiyuan_Jiang@liz.com>
 
-Jan Engelhardt wrote:
->>Why do I need to patch sshd on faketarget? What I'm trying to do is just
->>send all the packets to realtarget, essentially untouched (other than the
->>destination IP).  I don't understand why sshd on faketarget would even be
->>involved...?
-> Then just use DNAT.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Right, that's where I started. What I'm trying to figure out is why when
-I only use DNAT packets don't seem to get forwarded to the new
-destination. They only show up if I also change the source IP to be the
-address of the proxy.
 
-Is this because the final destination is rejecting the packets, or the
-proxy server is not actually passing them on?
 
-I think I may not properly understand some architectural detail here.  I
-am changing the destination IP in DNAT/PREROUTING.  Is there anything
-else I need to do to make sure the packet is properly passed on to the
-destination, where the proxy basically "disappears" as a middleman?
+Can we say sunscreen?  Of course IPF and IPFW seem to port well to the 
+SUN/Solaris envs...
 
-Adam
 
---------------enigD3FB1BA346DA1624A64D425B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Thanks,
 
+Ron DuFresne
+
+On Thu, 11 Aug 2005, Toby DiPasquale wrote:
+
+> On 8/9/05, Ruiyuan Jiang <Ruiyuan_Jiang@liz.com> wrote:
+>> I am new to the list. I just downloaded iptables-1.3.3. From INSTALL
+>> file, it seems IPTables only supports Linux. I have Solaris 10 for
+>> SPARC. Does IPTables support Solaris and HP-UX, etc.? Thanks.
+>
+> No, iptables can only be used with Linux because it relies on the
+> netfilter framework in the Linux kernel. Solaris' kernel lacks
+> netfilter, therefore it cannot make use of iptables. You might be able
+> to get a command-line tool with the same interface as iptables for
+> Solaris, however; look around.
+>
+> --
+> Toby DiPasquale
+> 0x636f6465736c696e67657240676d61696c2e636f6d
+>
+>
+
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (MingW32)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQFC+7lZdTf3ZklQ6qYRAlnVAJ9LReH+T2t8BR/UlzmrRpQMRSK3oQCgx636
-aWsOR/Mc5NP0UwdSFeQ76Qk=
-=l4yE
+iD8DBQFC+74Nst+vzJSwZikRAqCMAKDPv24C0PQPXMnSr+GADF5dXbfr6QCfVXnP
+/Dfepb21HrjU7TuXsDoYiog=
+=rrcI
 -----END PGP SIGNATURE-----
-
---------------enigD3FB1BA346DA1624A64D425B--
 
