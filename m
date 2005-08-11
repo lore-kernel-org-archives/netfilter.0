@@ -1,11 +1,11 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Rules in config file
-Date: Thu, 11 Aug 2005 07:55:54 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0508110755370.28320@yvahk01.tjqt.qr>
-References: <20050810141804.e0876506@freedom.alpha-force.net>
+Subject: Re: A Simple Question
+Date: Thu, 11 Aug 2005 07:54:56 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0508110751280.28320@yvahk01.tjqt.qr>
+References: <5c685153050809171164af25e4@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050810141804.e0876506@freedom.alpha-force.net>
+In-Reply-To: <5c685153050809171164af25e4@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +18,44 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Lists <lists@alpha-force.net>
+To: Robb Bossley <robb.bossley@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
->Hi
->
->Would it be possible to somehow disable changing iptables rules from scripts 
->and enable changing only from config file, which loading would be protected 
->by special password defined in kernel? Or even better, your could preset 
->iptables rules in kernel. That rules would be unchangeable.
 
-Just remove CAP_NET_RAW and CAP_NET_ADMIN from your capability set ;-)
+>iptables -P INPUT DROP
+>iptables -P FORWARD DROP
+>VS
+>iptables -P INPUT ACCEPT
+>iptables -P FORWARD ACCEPT
+>...(other stuff here)...
+>iptables -A INPUT -j DROP
+>iptables -A FORWARD -j DROP
+>
+>Which is preferred for security and why?
+
+Both equally work well. It's just a matter from which side you tackle the 
+problem. Compare with 3d-engine editing:
+
+A Quake2 map starts with "air" and you got to add walls -
+  that's like -P ACCEPT and -j REJECT/DROP
+
+An Unreal map starts with "everything filled" and you got to subtract rooms -
+  like -P DROP and -j ACCEPT
+
+In fact, sometimes it is wise to alternate between the two methods within the 
+same table. I've got this in some ruleset:
+
+-P INPUT DROP
+-p tcp -m multiport --dport someservices -j ACCEPT
+(denying all other traffic)
+
+-P OUTPUT ACCEPT
+-o $internal -j DROP
+(allowing all other interfaces)
+
+
+Just like Apache's "Order allow,deny" if you need another inspiration for 
+comparison.
 
 
 Jan Engelhardt
