@@ -1,13 +1,14 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Rules in config file
-Date: Wed, 10 Aug 2005 13:20:24 -0500
-Message-ID: <200508101320.24952.rob0@gmx.co.uk>
-References: <20050810141804.e0876506@freedom.alpha-force.net>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Re: Transparent proxy where source IP address remains unchanged --
+	possible?
+Date: Thu, 11 Aug 2005 09:07:00 -0400
+Message-ID: <20050811130700.GA15463@bostoncoop.net>
+References: <20050809012914.GA23108@bostoncoop.net>
+	<Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050810141804.e0876506@freedom.alpha-force.net>
 Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,35 +20,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 2005-August-10 07:18, Lists wrote:
-> Would it be possible to somehow disable changing iptables rules from
-> scripts and enable changing only from config file, which loading
-> would be protected by special password defined in kernel? Or even
+On Thu, Aug 11, 2005 at 07:42:30AM +0200, Jan Engelhardt wrote:
+> >Subject: Transparent proxy where source IP address remains unchanged --
+> >    possible?
+> Check Balabit TPROXY. To retain the source address however, you need to patch 
+> the application that initiates the second part. In your case, the sshd on 
+> faketarget.
 
-And what process is going to read that config file? A kernel driver? 
-Sure, you can write kernel-space software to do things like this, but 
-the reasoning behind it is not clear to me. I'd think the chances of 
-inclusion in the mainstream kernel are close to zero.
+Maybe I should explain what I'm trying to accomplish to see if this is
+the right (or a possible) way to go about it.
 
-> better, your could preset iptables rules in kernel. That rules would
-> be unchangeable.
+I'm relocating a web/email/ssh server from one location to another (and
+consequently to a new IP).  Since it's going to take many hours for the
+IP address changes to propagate across DNS, I'd like to put a proxy box
+in place at the old location that simply redirects all packets to the new
+location. I would prefer for the new location to see the original source
+IP address, rather than the IP address of the proxy.
 
-Is that good? BTW you can accomplish the same thing with an old 80386 
-and /sbin/halt ... the machine keeps passing packets after the OS 
-stops. I used to have a 386 firewall machine which died with a hard 
-drive crash. I left it running 3-4 weeks thereafter, until I needed to 
-make changes in the firewall rules.
-
-> I think this would improve Linux firewall security on systems with
-> complex and tight rules.
-
-Complex rules often need care and attention. What is the threat model 
-addressed by such a change? If someone hostile gets root on your 
-machine, you're in trouble. Besides, I think SELinux presents a more 
-comprehensive and well-considered approach to that possibility.
+Why do I need to patch sshd on faketarget? What I'm trying to do is just
+send all the packets to realtarget, essentially untouched (other than the
+destination IP).  I don't understand why sshd on faketarget would even be
+involved...?
 -- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
 
