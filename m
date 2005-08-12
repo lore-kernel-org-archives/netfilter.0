@@ -1,7 +1,7 @@
-From: Binish A R <binishar@poornam.com>
-Subject: CONFIG_IP_NF_MATCH_OWNER
-Date: Thu, 11 Aug 2005 21:47:00 +0530
-Message-ID: <42FB79FC.4060000@poornam.com>
+From: "Peter B. West" <lists@pbw.id.au>
+Subject: Repost: ip_local_deliver: bad skb:
+Date: Fri, 12 Aug 2005 01:01:19 +0100
+Message-ID: <42FBE6CF.7090506@pbw.id.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,16 +18,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
-
-Does anyone knows why CONFIG_IP_NF_MATCH_OWNER is missing  in 2.4.28 and later kernels?
-Its used for matching owners of packets ...
-I noticed this when the following rule wasn't recognizing in one of my 2.4.29 kernel ...
-iptables -I OUTPUT -p tcp --dport 22 -m owner ! --uid-owner  root -j DROP
-
-If we manually add the entry in .config and compile the kernel. it will work fine ... :-/
-
-/binish/
+Posting this again, as I haven't seen any replies.  Is this the right 
+mailing list?
 
 
-Get Thunderbird <http://www.mozilla.org/products/thunderbird/>
+Just lately, my /var/log/messages has been filling up with messages like
+this:
+
+Aug  6 14:26:35 jezebel kernel: ip_local_deliver: bad skb: \
+                             PRE_ROUTING LOCAL_IN LOCAL_OUT POST_ROUTING
+Aug  6 14:26:35 jezebel kernel: skb: pf=2 (unowned) dev=lo len=52
+Aug  6 14:26:35 jezebel kernel: PROTO=6 127.0.0.1:35923 127.0.0.1:111 \
+                                       L=52 S=0x00 I=4590 F=0x4000 T=64
+
+I've also seen PROTOs 17 and 1.
+
+Can anyone enlighten me as to what is going on?
+
+Thanks
+Peter
+-- 
+Peter B. West <http://cv.pbw.id.au/>
+Folio <http://defoe.sourceforge.net/folio/>
+<http://folio.bkbits.net/> <- the atTridged version
+---
+[This E-mail has been scanned for viruses but it is your responsibility 
+to maintain up to date anti virus software on the device that you are
+currently using to read this email. ]
+
+
