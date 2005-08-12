@@ -1,14 +1,12 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Transparent proxy where source IP address remains unchanged --
- possible?
-Date: Fri, 12 Aug 2005 00:02:40 -0500
-Message-ID: <42FC2D70.7000701@riverviewtech.net>
-References: <20050809012914.GA23108@bostoncoop.net>	<Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>	<20050811130700.GA15463@bostoncoop.net>	<Pine.LNX.4.61.0508112117380.23117@yvahk01.tjqt.qr>
-	<42FBB957.30003@rosi-kessel.org>
+Subject: Re: Handling bad tcp checksums
+Date: Fri, 12 Aug 2005 00:09:37 -0500
+Message-ID: <42FC2F11.1020709@riverviewtech.net>
+References: <dd8o4i$hjr$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42FBB957.30003@rosi-kessel.org>
+In-Reply-To: <dd8o4i$hjr$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,34 +20,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
->>Then just use DNAT.
-
-This will not work because it causes a routing triangle.  Consider the packet traversal with associated addresses here:
-
-usrbox -> faketarget
-faketarget -DNAT-> realtarget
-realtarget -> userbox
-
-What is most likely happening (verifiable via TCPDump) is that the traffic IS getting DNATed as you want.  However when the realtarget replies to the traffic it will go directly to the userbox with out being unDNATed.  Thus the source address on the reply packet is from the realtarget, a box which userbox was not talking with and thus the standard TCP/IP stack will DROP and disregard the packet.  TCPDump should see these replies coming back in.
-
-> Right, that's where I started. What I'm trying to figure out is why when
-> I only use DNAT packets don't seem to get forwarded to the new
-> destination. They only show up if I also change the source IP to be the
-> address of the proxy.
+Robert Nichols wrote:
+> I've run into a problem handling tcp packets that have incorrect
+> checksums.  It appears that such packets are assigned state INVALID,
+> and thus are never treated as part of an ESTABLISHED connection.
+> Thus, dropping such packets becomes the responsibility of the firewall. 
+>  The problem is that unsolicited SYN,ACK packets are also matching
+> "--state INVALID", and for these the proper action is to send tcp-reset. 
+>  I cannot risk sending tcp-reset for an incorrect checksum -- the result
+> would be that a transmission error would cause the connection to drop.
+> If I test "--flags SYN,ACK SYN,ACK" then I run the risk of basing my
+> decision on the flags in a possibly corrupted packet.
 > 
-> Is this because the final destination is rejecting the packets, or the
-> proxy server is not actually passing them on?
+> Iptables doesn't seem to have any way to match on incorrect checksums.
+> It looks like the best I can do is check the flags and accept the
+> possibility that they are corrupted.
+> 
+> Suggestions?
 
-I would bet that the final destination userbox is rejecting what it believes to be half open connections that it does not know any thing about.
+If we presume that you are correctly DROPing traffic that is in an INVALID state when the checksum is invalid and you are just wanting to send a reset to an invalid connection with the SYN and ACK flags set you could do something like the following:
 
-> I think I may not properly understand some architectural detail here.  I
-> am changing the destination IP in DNAT/PREROUTING.  Is there anything
-> else I need to do to make sure the packet is properly passed on to the
-> destination, where the proxy basically "disappears" as a middleman?
-
-Is the faketarget and realtarget on the same subnet or are they on different subnets?  The reason that I ask is if you could make the traffic returning from realtarget back to userbox pass through faketarget it could be unDNATed and then sent back to the userbox.  However to pull this off you would have to play with the routing on the realtarget to make it use faketarget as it's upstream gateway and then do postrouting SNATing of the source IP back to that of the faketarget as the traffic left the faketarget.  This same idea can be expanded upon if the faketarget and realtarget are not on the same subnet, but it is not easy.
+... -m state --state INVALID --flags SYN,ACK SYN,ACK ... -j MyResetTarget
+... -m state --state INVALID ... -j DROP
 
 
 
 Grant. . . .
+
+> BTW, doesn't this mean that _all_ iptables matches are testing data
+> that is possibly corrupted?
+
 
