@@ -1,11 +1,12 @@
-From: Tim Evans <tkevans@tkevans.com>
-Subject: RE: IPTables for Sun Solaris
-Date: Thu, 11 Aug 2005 20:26:17 -0400 (EDT)
-Message-ID: <200508120026.j7C0QHas028256@osprey.tkevans.com>
-Reply-To: Tim Evans <tkevans@tkevans.com>
+From: Pablo Neira <pablo@eurodev.net>
+Subject: Re: Netfilter cluster / Invalid state problem
+Date: Fri, 12 Aug 2005 03:43:49 +0200
+Message-ID: <42FBFED5.9060501@eurodev.net>
+References: <da73b3d905081110475176121@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-MD5: 1DU8easwXrRfBjmuea79vg==
+In-Reply-To: <da73b3d905081110475176121@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,28 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: tkevans@tkevans.com, dufresne@sysinfo.com, codeslinger@gmail.com, Ruiyuan_Jiang@liz.com
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pierre Westeel <pierre.westeel@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
+Pierre Westeel wrote:
+> I have a Linux netfilter cluster with keepalived to perform high avalaibility.
+> The master runs a 2.6.12 kernel and the Backup runs a 2.4.26 kernel. (
+> both from kernel.org without patch )
+> 
+> When I swap all the connections on the backup firewall with stopping
+> keepalived daemon on master, the connections are correctly forwarded
+> through the backup and I can see the new entry in
+> /proc/net/ip_conntrack
+> ( This is a VNC stream , the connexion is never Idle so the sequence
+> number is increasing quickly )
+> 
+> BUT when i restart the keepalived daemon to make connection go back
+> through the master firewall 30 seconds after the first swap, i get the
+> following logs :
+> 
+> INVALID state -- DENY IN=eth0.730 OUT=eth0.732 SRC=172.18.130.194
+> DST=10.24.247.253 LEN=46 TOS=0x00 PREC=0x00 TTL=126 ID=46274 DF
+> PROTO=TCP SPT=1522 DPT=5901 WINDOW=17520 RES=0x00 ACK PSH URGP=
 
->Does IP Filter contains "libipq library that allows snort_inline to
->interface with iptables. Also, you must build and install LibNet, which
->is available from http://www.packetfactory.net."? 
->
->I don't think I installed IP Filter on Solari 10 but I can install it no
->problem. Once I installed IP Filter, if I follow the rest instruction to
->install snort_inline, will it work? Thanks, Tim.
+Try this:
 
-It does not appear libipq is included.
+# echo 1 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
 
-(I don't use ipfilter on Solaris 10; I just happened to remember that it is 
-included--and is a supported Sun package.)
+on the linux-2.6 box. See that later linux kernels 2.6 include TCP 
+tracking active by default. Setting ip_conntrack_tcp_be_liberal to 1 
+relaxes the in-window checkings. As you can figure out, if linux-2.6 
+takes over, it won't know anything about the current active connections, 
+so it will consider that they are invalid.
+
 --
-Tim Evans, TKEvans.com, Inc.	|    5 Chestnut Court
-tkevans@tkevans.com		|    Owings Mills, MD 21117
-http://www.tkevans.com/		|    443-394-3864
-http://www.come-here.com/News/	|    
-
+Pablo
 
