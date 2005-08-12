@@ -1,12 +1,14 @@
-From: Pablo Neira <pablo@eurodev.net>
-Subject: Re: Netfilter cluster / Invalid state problem
-Date: Fri, 12 Aug 2005 03:43:49 +0200
-Message-ID: <42FBFED5.9060501@eurodev.net>
-References: <da73b3d905081110475176121@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Transparent proxy where source IP address remains unchanged --
+ possible?
+Date: Fri, 12 Aug 2005 00:02:40 -0500
+Message-ID: <42FC2D70.7000701@riverviewtech.net>
+References: <20050809012914.GA23108@bostoncoop.net>	<Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>	<20050811130700.GA15463@bostoncoop.net>	<Pine.LNX.4.61.0508112117380.23117@yvahk01.tjqt.qr>
+	<42FBB957.30003@rosi-kessel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <da73b3d905081110475176121@mail.gmail.com>
+In-Reply-To: <42FBB957.30003@rosi-kessel.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,39 +20,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pierre Westeel <pierre.westeel@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Pierre Westeel wrote:
-> I have a Linux netfilter cluster with keepalived to perform high avalaibility.
-> The master runs a 2.6.12 kernel and the Backup runs a 2.4.26 kernel. (
-> both from kernel.org without patch )
+>>Then just use DNAT.
+
+This will not work because it causes a routing triangle.  Consider the packet traversal with associated addresses here:
+
+usrbox -> faketarget
+faketarget -DNAT-> realtarget
+realtarget -> userbox
+
+What is most likely happening (verifiable via TCPDump) is that the traffic IS getting DNATed as you want.  However when the realtarget replies to the traffic it will go directly to the userbox with out being unDNATed.  Thus the source address on the reply packet is from the realtarget, a box which userbox was not talking with and thus the standard TCP/IP stack will DROP and disregard the packet.  TCPDump should see these replies coming back in.
+
+> Right, that's where I started. What I'm trying to figure out is why when
+> I only use DNAT packets don't seem to get forwarded to the new
+> destination. They only show up if I also change the source IP to be the
+> address of the proxy.
 > 
-> When I swap all the connections on the backup firewall with stopping
-> keepalived daemon on master, the connections are correctly forwarded
-> through the backup and I can see the new entry in
-> /proc/net/ip_conntrack
-> ( This is a VNC stream , the connexion is never Idle so the sequence
-> number is increasing quickly )
-> 
-> BUT when i restart the keepalived daemon to make connection go back
-> through the master firewall 30 seconds after the first swap, i get the
-> following logs :
-> 
-> INVALID state -- DENY IN=eth0.730 OUT=eth0.732 SRC=172.18.130.194
-> DST=10.24.247.253 LEN=46 TOS=0x00 PREC=0x00 TTL=126 ID=46274 DF
-> PROTO=TCP SPT=1522 DPT=5901 WINDOW=17520 RES=0x00 ACK PSH URGP=
+> Is this because the final destination is rejecting the packets, or the
+> proxy server is not actually passing them on?
 
-Try this:
+I would bet that the final destination userbox is rejecting what it believes to be half open connections that it does not know any thing about.
 
-# echo 1 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
+> I think I may not properly understand some architectural detail here.  I
+> am changing the destination IP in DNAT/PREROUTING.  Is there anything
+> else I need to do to make sure the packet is properly passed on to the
+> destination, where the proxy basically "disappears" as a middleman?
 
-on the linux-2.6 box. See that later linux kernels 2.6 include TCP 
-tracking active by default. Setting ip_conntrack_tcp_be_liberal to 1 
-relaxes the in-window checkings. As you can figure out, if linux-2.6 
-takes over, it won't know anything about the current active connections, 
-so it will consider that they are invalid.
+Is the faketarget and realtarget on the same subnet or are they on different subnets?  The reason that I ask is if you could make the traffic returning from realtarget back to userbox pass through faketarget it could be unDNATed and then sent back to the userbox.  However to pull this off you would have to play with the routing on the realtarget to make it use faketarget as it's upstream gateway and then do postrouting SNATing of the source IP back to that of the faketarget as the traffic left the faketarget.  This same idea can be expanded upon if the faketarget and realtarget are not on the same subnet, but it is not easy.
 
---
-Pablo
+
+
+Grant. . . .
 
