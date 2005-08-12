@@ -1,11 +1,13 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: ftp issue cont.
-Date: Fri, 12 Aug 2005 13:44:00 -0400
-Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7741FCC43@farmer.vikus.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: ftp issue
+Date: Fri, 12 Aug 2005 12:46:46 -0500
+Message-ID: <200508121246.46606.rob0@gmx.co.uk>
+References: <6a127306a118cb.6a118cb6a12730@vsnl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <6a127306a118cb.6a118cb6a12730@vsnl.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,69 +21,81 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-FTP passive mode creates an entirely new connection for data transfer.
-It is not 'related' to the original connection and so iptables doesn't
-pick it up as such (nor do any other stateful firewalls that I'm aware
-of). The connection works something like this:
+On Friday 2005-August-12 05:30, varun_saa@vsnl.net wrote:
+>       My server FC4
+> eth0 is wan with static IP.
+> eth1 lan
+>
+> My iptables rules are as follows :
+[snip]
+> *nat
+> -A POSTROUTING -s 192.168.0.0/24 -o eth0 -j SNAT --to 6x.xxx.xxx.xx
+[snip]
+> *mangle
+>
+> :PREROUTING ACCEPT [93:9058]
+> :INPUT ACCEPT [85:8650]
+> :FORWARD ACCEPT [8:408]
+> :OUTPUT ACCEPT [88:8886]
+> :POSTROUTING ACCEPT [95:9218]
 
-1. Client connects to FTP server on port 21 and requests PASV mode.
-2. Server replies with the port that client should use (e.g., 50100).
-3. Client makes NEW connection on the passive port (50100).
-4. Server transfers information using the new connection.
+With policies at the default and no rules, why are you loading the 
+mangle table?
 
-This is why (I think...) stateful firewalls don't pick up passive
-connections: they are initiated by the client, not the server.
+> *filter
+>
+> :INPUT ACCEPT [85:8650]
 
-You know you have to open port 21 and 20 (for non-passive connections)
-inbound to your FTP server. I didn't see that in your rules either but
-since you can log in to the server, etc. I can only assume it works. You
-will have to check your FTP server's documentation on which ports it
-uses in PASV (passive) mode. These ports are always above 1023 (1024:).
-I will give you an example:
+And no rules. Any services are open to the outside (if listening on 
+eth0, of course.) Fine if you know what you're doing. But the kind of 
+questions you're asking lead me to think you might not.
 
-Suppose your FTP server uses ports 50100 to 50200 for passive
-connections. You will need to add an iptables rule such as
+> :FORWARD ACCEPT [8:408]
+> :OUTPUT ACCEPT [87:8810]
+>
+> -P FORWARD DROP
 
-$IPT -A FORWARD -p tcp -d your.ftp.ip.address --dport 50100:50200 -j
-ACCEPT
+Hmmmm. I have never seen this syntax. Above it says the policy is 
+ACCEPT, whereas I presume this is resetting it to DROP. Surely this 
+isn't output from iptables-save(8)? Does iptables-restore(8) use "-P" 
+lines to set policies? (I might test it later, myself.)
 
-into your firewall ruleset, assuming your FTP server is not on the
-firewall and you've taken care of DNATing. If you want to be lazy you
-can always do this:
+> -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A FORWARD -i eth1 -o eth0 -p tcp --dport 25 -j ACCEPT
 
-$IPT -A FORWARD -p tcp -d your.ftp.ip.address --dport 1024: -j ACCEPT
+So if there are any Windows machines in the LAN they can get out with 
+their zombie spew.
 
-The above rule should work right away, provided the rest of your
-firewall is in order. For anything else I suggest reviewing the HOW-TOs
-on www.netfilter.org. A google search will probably provide you with the
-specific ports for your FTP server, and any server worth the download
-will let you change what those ports are.
+> -A FORWARD -i eth1 -o eth0 -p tcp --dport 110 -j ACCEPT
+> -A FORWARD -p udp --dport 53 -j ACCEPT
 
-Hope that helps.
+And *most* DNS would work for LAN clients. Of course as above I'm not 
+sure that the DROP policy is working, so maybe they can do anything.
 
-Derick
+> -A OUTPUT -p udp --dport 53 --sport 1024: -j ACCEPT
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
-varun_saa@vsnl.net
-Sent: Friday, August 12, 2005 12:52 PM
-To: netfilter@lists.netfilter.org
-Subject: ftp issue cont.
+This rule does nothing substantive, except as a packet counter.
 
-Make sure you've opened up whichever unprivileged passive ports your FTP
-server uses. Passive FTP connections are seen as new by stateful
-firewalls, not related to the original control connection.=20
-=20
-Derick Anderson =20
-=20
-Thanks Derick,=20
-              But I am not very clear about ftp.=20
-So I will appreciate details.=20
-=20
-Thanks=20
-=20
-Varun=20
+> I am having problems with ftp uploads/downloads for :
+>
+>   ftp.sriaurobindoashram.com
+>
+> Using gftp from the server :
 
+There are no limits in filter INPUT nor OUTPUT. There's no iptables 
+issue here. Am I correct in thinking that "using gftp from the server" 
+means that you are running the FTP client on the machine with the 
+iptables rules listed above?
 
+> 1. gftp -> ftp->options->ftp->passive all transfer - checked
+>
+>    Gets connected but gets stuck at recieves files names
+>
+> What could the problem ?
+
+Something else is blocking you? The remote FTP server doesn't support 
+passive FTP?
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
