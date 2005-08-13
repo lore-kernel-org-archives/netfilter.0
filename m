@@ -1,11 +1,20 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: iptables + ebtables + snat question
-Date: Sat, 13 Aug 2005 14:36:23 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0508131433280.3437@yvahk01.tjqt.qr>
-References: <51418F95-52AF-4FF8-8F57-BE214D9A04D9@decipher.com>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Re: Transparent proxy where source IP address remains unchanged --
+	possible?
+Date: Sat, 13 Aug 2005 09:12:24 -0400
+Message-ID: <20050813131224.GD25192@bostoncoop.net>
+References: <20050809012914.GA23108@bostoncoop.net>
+	<Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>
+	<20050811130700.GA15463@bostoncoop.net>
+	<Pine.LNX.4.61.0508112117380.23117@yvahk01.tjqt.qr>
+	<42FBB957.30003@rosi-kessel.org>
+	<42FC2D70.7000701@riverviewtech.net>
+	<42FC9F1B.4060204@rosi-kessel.org>
+	<42FD95F9.4070504@riverviewtech.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <51418F95-52AF-4FF8-8F57-BE214D9A04D9@decipher.com>
+Content-Disposition: inline
+In-Reply-To: <42FD95F9.4070504@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,63 +25,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Scott Phelps <netfilter@decipher.com>
+To: Grant Taylor <gtaylor@riverviewtech.net>
 Cc: netfilter@lists.netfilter.org
 
-> I have the following setup:
->
-> LAN
-> | 
-> | 
->          if0       ________
-> DMZ---if1     if2---|ROUTER|---INTERNET
-> \   /      --------
-> br0
+On Sat, Aug 13, 2005 at 01:40:57AM -0500, Grant Taylor wrote:
+> Hmm, this complicates things.  I will have to think on how to accomplish 
+> this on different subnets.  I would look in to the possibility of 
+> tunneling.  I think you would need to establish an IP-in-IP or GRE tunnel 
+> between the fake target and the real target so that you could pass traffic 
+> back and forth with out worrying about some intermediary router deciding 
+> that there is a better route for the traffic to take back to the original 
+> source system thus breaking the unDNATing that would be done by the fake 
+> target.
 
-Your ascii art is totally broken. If you draw ascii at all, use a monospaced 
-font!
+Interesting. Are there any pre-packaged ways to do this? This sounds like
+perhaps the least complex solution, once it's actually implemented.
 
-> LAN_NET = 10.0.0.1
-> PUBLIC_NET = 77.25.33.0/28
-> (14 hosts - broadcast = .15)
->
-> I am doing transparent bridging between if1 and if2
-> My ROUTER ethernet iface has IP 77.25.33.1
-> my DMZ hosts will have public IPs ranging 77.25.33.2-14
->
-> My question is can Masquerade (SNAT) my LAN
-> IPs and use the ROUTER ethernet IP
-> as a --to-source target?
+> >But is there some way I could tag packets coming in from faketarget, so
+> >that realtarget knows that all traffic returning back with that tag goes
+> >through faketarget?
+> Possibly.  Is the traffic in question traffic that is destined to a 
+> particular service or set of services or is the traffic just random port 
+> traffic directed at the faketarget?  If it is the former you could do the 
+> old ""Up and Over (and down) trick.  I mean you could DNAT the fraffic that 
+> was originaly destined to 22 to a different port on the realtarget thus 
+> allowing the realtarget to be inteligent in how it handled the traffic.  
+> Namely realtarget would have to DNAT the traffic back down to it's original 
+> port (known by the fact that we are only DNATing traffic that was destined 
+> to the particular port in the first place) and MARK the connections.  This 
+> MARK value could then be used by an ip route rule on the real target to 
+> decide which routing table to use.
 
-Yes.
+That could work. I'm really only worried about DNS, HTTP, HTTPS, SMTP,
+POP3, IMAP, and SSH. So I could redirect all those ports to different
+ports on on faketarget (DNAT), then back to the real ports on realtarget
+(using REDIRECT target?).
 
-> Or do I have to assign a IP to my br0 interface?
-
-The bridge itself needs an IP if you want to SNAT to it. Otherwise this would 
-happen:
-
-PING from dmz (77.25.33.2) to google.com (216.239.37.99) via
-the nexthop (e.g. 77.1.2.3).
-
-The bridge SNATs to 77.25.33.1
-
-The nexthop asks arp-who-has 77.25.33.1 -- no response.
-If your bridge does not have an IP, you need some ebtable tricks to make an 
-ARP reply.
-
-> I am in deign mode so I was trying to figure out
-> if this is possible.
->
-> The rule would look like this:
-> $IPTABLES -t nat -A POSTROUTING \
-> -o $BR0 -j SNAT --to-source $ROUTER_IP
->
-> Can this work?
-
-
-Jan Engelhardt
+Can you give me an example (or point me to a URL) of what rules I would
+need to run on realtarget to MARK the connections and then decide which
+routing table to use?  Are we just talking about iptables commands, or is
+there something additional that is required?
 -- 
-| Alphagate Systems, http://alphagate.hopto.org/
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
 
