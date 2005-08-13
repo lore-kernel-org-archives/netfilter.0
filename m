@@ -1,11 +1,11 @@
-From: "Rosario Pingaro" <rpingar@italycom.it>
-Subject: Re: compilation problem rhat el4
-Date: Sat, 13 Aug 2005 14:47:19 -0400
-Message-ID: <002e01c5a037$6edb2bf0$0401a8c0@casa>
-References: <001601c5a028$5c89d500$23d8b2d5@iserver1>
+From: "Joris Dobbelsteen" <joris.dobbelsteen@mail.com>
+Subject: RE: Blocking Google Earth
+Date: Sat, 13 Aug 2005 21:44:26 +0200
+Message-ID: <B9833546B2643B43A56C4E962E13174602A996@nehemiah.joris2k.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,54 +16,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-when I run "make KERNEL_DIR=/usr/src/linux" it gets the right extensions:
-Extensions found: IPv4:CLUSTERIP IPv4:layer7 IPv4:recent IPv6:ah IPv6:esp 
-IPv6:f
-rag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
+Other solutions might include:
 
-when I run "make KERNEL_DIR=/usr" it gets only IPv4:recent
+* Request the user not to use the application.
+* Install a HTTP proxy server that catches all port 80 traffic. Squid =
+might be a good candidate. Here you can easily make a policy to deny =
+access to the kh.google.com servers (it was I believe).
 
-I think for this reason I don't have layer7's module compiled.
+An advantage of a proxy is increased response times for your users (and =
+also a little decrease in bandwidth requirements). My experience with 3 =
+users behind it was that response times decreased and bandwidth =
+requirements did not change (noticably). With 600+ users that situation =
+will change significantly.
+Some proxies can also limit the priority of some traffic, e.g. for =
+kh.google.com. Unfortunally google.com doesn't allow caching of google =
+earth traffic (sigh), I forced it on my proxy. Yeah, I know, it =
+increases the administrative workload...
 
-I need help, step by step on how to fix the "error including kernel header 
-in userspace; use the glibc headers instead! make"
+Of course, I guess you use a decent machine for routing for 600+ users.
 
-Hope some one can help.
-Thanks
-Rosario
+- Joris Dobbelsteen
 
-
------ Original Message ----- 
-From: "Rosario Pingaro" <rpingar@italycom.it>
-To: <netfilter@lists.netfilter.org>
-Sent: Saturday, August 13, 2005 12:59 PM
-Subject: compilation problem rhat el4
-
-
-I would like to have the l7-filter funtionality on my redhat el4.
-
-So I downloada the latest iptable-1.3.3 and the last patch from l7-filter
-
-But trying to compile the patched files I get this error:
-#error including kernel header in userspace; use the glibc headers instead! 
-make: *** [extensions/libipt_layer7_sh.o] Error 1
-
-I found several posts about it without any useful solution.
-In fact if I use "KERNEL_DIR=/usr" I get the header from userspace so 
-everything is compiled but not the layer7 module "libipt_layer7.so".
-
-I checked if everything into the kernel (about packet filtering and layer7) 
-is activated, and there, everythings seems fine.
-
-Just to note that "libipt_layer7.h" is not present on my system.
-
-Where is my problem?
-
-Thanks
-Rosario
-
-
+>-----Original Message-----
+>From: netfilter-bounces@lists.netfilter.org=20
+>[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+>Thilo Schulz
+>Sent: zaterdag, 13 augustus 2005 17:11
+>To: netfilter@lists.netfilter.org
+>Subject: Re: Blocking Google Earth
+>
+>On Saturday 13 August 2005 16:14, Leonardo Rodrigues Magalh=E3es wrote:
+>>     I really dont think it's easy to limit bandwidth usage ONLY for=20
+>> Earth Google without making bad experiencies on doing=20
+>searchs on Google.
+>> No matter if searches are low-bandwidth. If you get some QoS=20
+>and band=20
+>> limitation on google IPs, be sure that your google earth users will=20
+>> use ALL the available bandwidth, thus making google earth as well as=20
+>> google serching probably extremely slow.
+>
+>He only had that problem with one single user. Likewise, he=20
+>can restrict bandwidth to google only for that one single user=20
+>too. Like I already said, your proxy method can be easily=20
+>circumvented using something like an SSL proxy after your=20
+>proxy, whereas QoS can selectively keep a user from unfairly=20
+>exceeding certain bandwidth. This will not only solve problems=20
+>with the http protocol, but also problems with the user using=20
+>too much bandwidth in general.
+>
+>--
+>Thilo Schulz
+>
 
