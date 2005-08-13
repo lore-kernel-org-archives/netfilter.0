@@ -1,7 +1,7 @@
-From: "Rosario Pingaro" <rpingar@italycom.it>
-Subject: compilation problem rhat el4
-Date: Sat, 13 Aug 2005 18:59:25 +0200
-Message-ID: <001601c5a028$5c89d500$23d8b2d5@iserver1>
+From: jonathan@innovativesource.net
+Subject: Forward to DMZ addresses
+Date: Sat, 13 Aug 2005 13:19:55 -0500 (CDT)
+Message-ID: <57933.67.53.150.63.1123957195.squirrel@mail.innovativesource.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,25 +18,48 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I would like to have the l7-filter funtionality on my redhat el4.
+I have a machine that I using as a firewall, separting WAN / LAN / DMZ
 
-So I downloada the latest iptable-1.3.3 and the last patch from =
-l7-filter
+Rules thus far are to NAT all outgoing packets that come in from the LAN
+interface.
 
-But trying to compile the patched files I get this error:
-#error including kernel header in userspace; use the glibc headers =
-instead! make: *** [extensions/libipt_layer7_sh.o] Error 1
+From the machine itself, I can ping machines on my DMZ interface (eth2)
+and my LAN interface (eth0)
 
-I found several posts about it without any useful solution.
-In fact if I use "KERNEL_DIR=3D/usr" I get the header from userspace so =
-everything is compiled but not the layer7 module "libipt_layer7.so".
+I'm having trouble getting through the firewall to my DMZ machines, but I
+can access the NIC that routes to the DMZ machine via SSH...  I've tried
+various forwarding rules, and even changed the default FORWARD policy to
+ACCEPT anything.  Here is a basic rule I'm trying:
 
-I checked if everything into the kernel (about packet filtering and =
-layer7) is activated, and there, everythings seems fine.
+#eth1 =3D WAN NIC
+#eth2 =3D DMZ NIC
+iptables -A FORWARD -i eth1 -o eth2 -d xx.xx.xx.xx  -p tcp --dport 22 -j
+ACCEPT
 
-Just to note that "libipt_layer7.h" is not present on my system.=20
+now, if I do a netstat on the firewall nothing... if I do a netstat on th=
+e
+machine I'm attempting to connect from... all I see is SYN_SENT
 
-Where is my problem?
+**I'm trying from external machines...i.e. machines not on my network.
 
-Thanks
-Rosario
+physical network is
+
+router -> vlan -> firewall -> DMZ
+router -> vlan -> firewall -> LAN
+
+I can also access the DMZ machine via the firewall itself and vice versa,
+but once logged into the DMZ machine, I can't get to anything past the
+firewall.  I have the following rules for that
+
+iptables -A FORWARD -i eth2 -o eth1 -j ACCEPT
+
+Kinda confused here...
+
+the LAN stuff works... at least for now... to simply forward the packets
+out through the WAN NIC and NAT them...
+
+*shrug*
+
+
+
+
