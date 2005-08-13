@@ -1,13 +1,11 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: iptables + ebtables + snat question
-Date: Sat, 13 Aug 2005 13:23:40 -0500
-Message-ID: <200508131323.40526.rob0@gmx.co.uk>
-References: <51418F95-52AF-4FF8-8F57-BE214D9A04D9@decipher.com>
+From: "Rosario Pingaro" <rpingar@italycom.it>
+Subject: Re: compilation problem rhat el4
+Date: Sat, 13 Aug 2005 14:47:19 -0400
+Message-ID: <002e01c5a037$6edb2bf0$0401a8c0@casa>
+References: <001601c5a028$5c89d500$23d8b2d5@iserver1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <51418F95-52AF-4FF8-8F57-BE214D9A04D9@decipher.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,63 +16,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-On Friday 2005-August-12 17:41, Scott Phelps wrote:
-> I have the following setup:
->
->            LAN
->             |
->             |
->            if0       ________
-> DMZ---if1     if2---|ROUTER|---INTERNET
->           \   /      --------
->            br0
+when I run "make KERNEL_DIR=/usr/src/linux" it gets the right extensions:
+Extensions found: IPv4:CLUSTERIP IPv4:layer7 IPv4:recent IPv6:ah IPv6:esp 
+IPv6:f
+rag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
 
-FWIW I think the ASCII drawing made perfect sense. I suspect MUA or 
-perhaps MTA/MDA issues on Jan's part.
+when I run "make KERNEL_DIR=/usr" it gets only IPv4:recent
 
-> LAN_NET = 10.0.0.1
-> PUBLIC_NET = 77.25.33.0/28
-> (14 hosts - broadcast = .15)
+I think for this reason I don't have layer7's module compiled.
 
-BTW I have a site which is using the broadcast IP for a host. You can 
-get away with that if you aren't using anything on that subnet which 
-needs broadcast. For example: DHCP, SMB. Hosts on the DMZ might answer 
-pings of the broadcast IP, but that's a minor inconvenience.
+I need help, step by step on how to fix the "error including kernel header 
+in userspace; use the glibc headers instead! make"
 
-> I am doing transparent bridging between
-> if1 and if2
->
-> My ROUTER ethernet iface has IP 77.25.33.1
->
-> my DMZ hosts will have public IPs ranging
-> 77.25.33.2-14
->
-> My question is can Masquerade (SNAT) my LAN
-> IPs and use the ROUTER ethernet IP
-> as a --to-source target?
+Hope some one can help.
+Thanks
+Rosario
 
-What will happen to the reply packets? If the router is doing the SNAT 
-it should work fine. But if it's the machine with the bridge, no. The 
-router will receive and drop those replies.
 
-> Or do I have to assign a IP to my br0 interface?
+----- Original Message ----- 
+From: "Rosario Pingaro" <rpingar@italycom.it>
+To: <netfilter@lists.netfilter.org>
+Sent: Saturday, August 13, 2005 12:59 PM
+Subject: compilation problem rhat el4
 
-That would work. Or have the bridge machine SNAT to 10.0.0.1, then do 
-another layer of SNAT at the router. In either case the router has to 
-have a route to 10.0.0.0/$NETMASK.
 
-I take it you're feeling cramped with IP addresses in the /28. That's 
-why I suggested using your broadcast IP. (I have tried setting the 
-"-nobroadcast" option with ifconfig(8), but it fails.)
+I would like to have the l7-filter funtionality on my redhat el4.
 
-> I am in deign mode so I was trying to figure out
-> if this is possible.
+So I downloada the latest iptable-1.3.3 and the last patch from l7-filter
 
-Try it out, but I think you need that IP on the bridge.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+But trying to compile the patched files I get this error:
+#error including kernel header in userspace; use the glibc headers instead! 
+make: *** [extensions/libipt_layer7_sh.o] Error 1
+
+I found several posts about it without any useful solution.
+In fact if I use "KERNEL_DIR=/usr" I get the header from userspace so 
+everything is compiled but not the layer7 module "libipt_layer7.so".
+
+I checked if everything into the kernel (about packet filtering and layer7) 
+is activated, and there, everythings seems fine.
+
+Just to note that "libipt_layer7.h" is not present on my system.
+
+Where is my problem?
+
+Thanks
+Rosario
+
+
 
