@@ -1,16 +1,14 @@
-From: Thilo Schulz <arny@ats.s.bawue.de>
-Subject: Re: Blocking Google Earth
-Date: Sat, 13 Aug 2005 04:31:19 +0200
-Message-ID: <200508130431.24772.arny@ats.s.bawue.de>
-References: <20050812201225.CE6DD2128@juno.tc.df.gov.br>
-	<42FD06B6.4080209@imag.fr>
-	<20050812223230.14D0920EB@juno.tc.df.gov.br>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Transparent proxy where source IP address remains unchanged --
+ possible?
+Date: Sat, 13 Aug 2005 01:40:57 -0500
+Message-ID: <42FD95F9.4070504@riverviewtech.net>
+References: <20050809012914.GA23108@bostoncoop.net>	<Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>	<20050811130700.GA15463@bostoncoop.net>	<Pine.LNX.4.61.0508112117380.23117@yvahk01.tjqt.qr>	<42FBB957.30003@rosi-kessel.org>	<42FC2D70.7000701@riverviewtech.net>
+	<42FC9F1B.4060204@rosi-kessel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart16291819.XksiFK56HH";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050812223230.14D0920EB@juno.tc.df.gov.br>
+In-Reply-To: <42FC9F1B.4060204@rosi-kessel.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,49 +19,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
---nextPart16291819.XksiFK56HH
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+> Different subnets.
 
-On Saturday 13 August 2005 00:38, fabricio bianco abreu wrote:
-> I would like to block it because a user using Google Earth consumes about
-> 256kbps bandwith. I have 600+ users and only a 2Mbps link to the Internet.
+Hmm, this complicates things.  I will have to think on how to accomplish this on different subnets.  I would look in to the possibility of tunneling.  I think you would need to establish an IP-in-IP or GRE tunnel between the fake target and the real target so that you could pass traffic back and forth with out worrying about some intermediary router deciding that there is a better route for the traffic to take back to the original source system thus breaking the unDNATing that would be done by the fake target.
 
-I don't see how you would do that without doing a packet inspection for all=
-=20
-packets directed at www.google.com, as maps.google.com is - as you=20
-undoubtedly already know - is an alias for www.google.com
-You would have to do packet inspection and filter for maps.google.com. This=
-=20
-could be easily circumvented by using an SSL capable proxy.
+> Another complication is that some of the packets coming into realtarget
+> will be coming in directly from their original source, so I couldn't
+> just route *all* traffic back through faketarget.
 
-Maybe QoS could do the trick for you. While allowing access to google earth=
-,=20
-it might discourage that user from excessively using it by restricting his=
-=20
-bandwidth to something like 64kbit/s while google itself is still perfectly=
-=20
-usable. It is generally a sensible idea to make use of QoS on a setup like=
-=20
-yours.
+*nod*  Yes this does complicate things.
 
-=2D-=20
-Thilo Schulz
+> But is there some way I could tag packets coming in from faketarget, so
+> that realtarget knows that all traffic returning back with that tag goes
+> through faketarget?
 
---nextPart16291819.XksiFK56HH
-Content-Type: application/pgp-signature
+Possibly.  Is the traffic in question traffic that is destined to a particular service or set of services or is the traffic just random port traffic directed at the faketarget?  If it is the former you could do the old ""Up and Over (and down) trick.  I mean you could DNAT the fraffic that was originaly destined to 22 to a different port on the realtarget thus allowing the realtarget to be inteligent in how it handled the traffic.  Namely realtarget would have to DNAT the traffic back down to it's original port (known by the fact that we are only DNATing traffic that was destined to the particular port in the first place) and MARK the connections.  This MARK value could then be used by an ip route rule on the real target to decide which routing table to use.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
+However if you use a tunnel to connect the fake target to the real target you would not need to do the up and over trick as you could just decide what to do / how to mark the packets based on which interface they came in to.  Then you are back to the mark value to decide which routing table to use to route the traffic correctly.
 
-iD8DBQBC/Vt8Zx4hBtWQhl4RAmuBAKCm9QcIWSKcfT9g2Sl/Ua1GKhAYSwCguCde
-tLrVEsvJQeDemYu41kZWztI=
-=JO07
------END PGP SIGNATURE-----
 
---nextPart16291819.XksiFK56HH--
+
+Grant. . . .
 
