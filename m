@@ -1,10 +1,13 @@
-From: jonathan@innovativesource.net
-Subject: Forward to DMZ addresses
-Date: Sat, 13 Aug 2005 13:19:55 -0500 (CDT)
-Message-ID: <57933.67.53.150.63.1123957195.squirrel@mail.innovativesource.net>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: iptables + ebtables + snat question
+Date: Sat, 13 Aug 2005 13:23:40 -0500
+Message-ID: <200508131323.40526.rob0@gmx.co.uk>
+References: <51418F95-52AF-4FF8-8F57-BE214D9A04D9@decipher.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <51418F95-52AF-4FF8-8F57-BE214D9A04D9@decipher.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,48 +21,60 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a machine that I using as a firewall, separting WAN / LAN / DMZ
+On Friday 2005-August-12 17:41, Scott Phelps wrote:
+> I have the following setup:
+>
+>            LAN
+>             |
+>             |
+>            if0       ________
+> DMZ---if1     if2---|ROUTER|---INTERNET
+>           \   /      --------
+>            br0
 
-Rules thus far are to NAT all outgoing packets that come in from the LAN
-interface.
+FWIW I think the ASCII drawing made perfect sense. I suspect MUA or 
+perhaps MTA/MDA issues on Jan's part.
 
-From the machine itself, I can ping machines on my DMZ interface (eth2)
-and my LAN interface (eth0)
+> LAN_NET = 10.0.0.1
+> PUBLIC_NET = 77.25.33.0/28
+> (14 hosts - broadcast = .15)
 
-I'm having trouble getting through the firewall to my DMZ machines, but I
-can access the NIC that routes to the DMZ machine via SSH...  I've tried
-various forwarding rules, and even changed the default FORWARD policy to
-ACCEPT anything.  Here is a basic rule I'm trying:
+BTW I have a site which is using the broadcast IP for a host. You can 
+get away with that if you aren't using anything on that subnet which 
+needs broadcast. For example: DHCP, SMB. Hosts on the DMZ might answer 
+pings of the broadcast IP, but that's a minor inconvenience.
 
-#eth1 =3D WAN NIC
-#eth2 =3D DMZ NIC
-iptables -A FORWARD -i eth1 -o eth2 -d xx.xx.xx.xx  -p tcp --dport 22 -j
-ACCEPT
+> I am doing transparent bridging between
+> if1 and if2
+>
+> My ROUTER ethernet iface has IP 77.25.33.1
+>
+> my DMZ hosts will have public IPs ranging
+> 77.25.33.2-14
+>
+> My question is can Masquerade (SNAT) my LAN
+> IPs and use the ROUTER ethernet IP
+> as a --to-source target?
 
-now, if I do a netstat on the firewall nothing... if I do a netstat on th=
-e
-machine I'm attempting to connect from... all I see is SYN_SENT
+What will happen to the reply packets? If the router is doing the SNAT 
+it should work fine. But if it's the machine with the bridge, no. The 
+router will receive and drop those replies.
 
-**I'm trying from external machines...i.e. machines not on my network.
+> Or do I have to assign a IP to my br0 interface?
 
-physical network is
+That would work. Or have the bridge machine SNAT to 10.0.0.1, then do 
+another layer of SNAT at the router. In either case the router has to 
+have a route to 10.0.0.0/$NETMASK.
 
-router -> vlan -> firewall -> DMZ
-router -> vlan -> firewall -> LAN
+I take it you're feeling cramped with IP addresses in the /28. That's 
+why I suggested using your broadcast IP. (I have tried setting the 
+"-nobroadcast" option with ifconfig(8), but it fails.)
 
-I can also access the DMZ machine via the firewall itself and vice versa,
-but once logged into the DMZ machine, I can't get to anything past the
-firewall.  I have the following rules for that
+> I am in deign mode so I was trying to figure out
+> if this is possible.
 
-iptables -A FORWARD -i eth2 -o eth1 -j ACCEPT
-
-Kinda confused here...
-
-the LAN stuff works... at least for now... to simply forward the packets
-out through the WAN NIC and NAT them...
-
-*shrug*
-
-
-
+Try it out, but I think you need that IP on the bridge.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
