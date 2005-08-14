@@ -1,10 +1,11 @@
-From: Zaurus User <akiaki@bellsouth.net>
-Subject: [fabricio@tc.df.gov.br: Blocking Google Earth]
-Date: Fri, 12 Aug 2005 22:45:21 -0400
-Message-ID: <20050813024521.GA26940@zaurus>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: IP Tables slows network response times
+Date: Sun, 14 Aug 2005 10:39:30 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829074AD@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,18 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: michael@networkstuff.co.nz, Eric Leblond <eric@inl.fr>, netfilter@lists.netfilter.org
 
------ Forwarded message from fabricio bianco abreu <fabricio@tc.df.gov.br> -----
+Something like the following (off the top of my head, so syntax may not
+be exact)
 
-Hi folks,
+iptables -I INPUT -o lo -j ACCEPT
+iptables -I FORWARD -o lo -j ACCEPT
+iptables -I OUTPUT -o lo -j ACCEPT
 
-Is there a way to use iptables to deny access to Google Earth servers, without
-blocking access to Google search engine (www.google.com)??
+Basically, tell the server to allow anything originating from loopback
 
-________________________________________________________________
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> bounces@lists.netfilter.org] On Behalf Of Michael Hallager
+> Sent: Sunday, August 14, 2005 2:55 AM
+> To: Eric Leblond; netfilter@lists.netfilter.org
+> Subject: Re: IP Tables slows network response times
+>=20
+> Hi Eric.
+> > More over, add a rule to accept loopback traffic on INPUT, blocked
+> > loopback traffic could explain problem you have.
+>=20
+> Could you please provide a sample of this rule?
+> --
+> Michael Hallager
+> networkStuff ltd
+> www.networkstuff.co.nz | p.09.839.1000 | m.029.638.7883
 
------ End forwarded message -----
-Don't know if iptables can do it, but a proxy server certainly would.  I use squid with excellent results.  Check out hhtp://www.squid-cache.org
 
