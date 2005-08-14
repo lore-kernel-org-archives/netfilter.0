@@ -1,14 +1,15 @@
-From: Eric Leblond <eric@inl.fr>
+From: Michael Hallager <michael@networkstuff.co.nz>
 Subject: Re: IP Tables slows network response times
-Date: Sun, 14 Aug 2005 11:49:27 +0200
-Message-ID: <1124012967.4878.2.camel@porky>
+Date: Sun, 14 Aug 2005 21:54:47 +1200
+Message-ID: <200508142154.47484.michael@networkstuff.co.nz>
 References: <200508142133.57867.michael@networkstuff.co.nz>
+	<1124012967.4878.2.camel@porky>
+Reply-To: michael@networkstuff.co.nz
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-VNKpihkVXaMhNiIRYe79"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200508142133.57867.michael@networkstuff.co.nz>
+In-Reply-To: <1124012967.4878.2.camel@porky>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,51 +20,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: michael@networkstuff.co.nz
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Eric Leblond <eric@inl.fr>, netfilter@lists.netfilter.org
 
+Hi Eric.
 
---=-VNKpihkVXaMhNiIRYe79
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Don't think so, I fixed the reverse DNS issue earlier:
+root@202-150-101-225:/usr/local/Dialect/PaymentClient/config# nslookup 
+202.150.101.225
+Server:         202.150.101.225
+Address:        202.150.101.225#53
 
-On Sun, 2005-08-14 at 21:33 +1200, Michael Hallager wrote:
-> Hello all.
->=20
-> I have spent rather a lot of time trying to find an answer for this one.
->=20
-> I have a Slackware Linux box, 2.4.29 kernel running IP Tables. I have the=
- bare=20
-> number of needed modules compiled into the custom kernel.
+225.101.150.202.in-addr.arpa    name = 202-150-101-225.networkstuff.net.nz.
 
-> This works except it makes webpages and email served from this box SLOW t=
-o=20
-> respond. (Several seconds).
->=20
+root@202-150-101-225:/usr/local/Dialect/PaymentClient/config# 
 
-several seconds ? looks like you've got a timeout problem on name
-resolution (or another network access). Please ensure that DNS or name
-resolution traffic is not blocked.
-More over, add a rule to accept loopback traffic on INPUT, blocked
-loopback traffic could explain problem you have.
+This machine runs its own DNS server.
 
-Hope this help,
---=20
-Eric Leblond <eric@inl.fr>
-INL
+> several seconds ? looks like you've got a timeout problem on name
+> resolution (or another network access). Please ensure that DNS or name
+> resolution traffic is not blocked.
+> More over, add a rule to accept loopback traffic on INPUT, blocked
+> loopback traffic could explain problem you have.
 
---=-VNKpihkVXaMhNiIRYe79
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQBC/xOnnxA7CdMWjzIRAtnyAJ9fm+ZgcHda3iEFm3AKkqNSAA4DrwCfVhm+
-HwvfHhL2U6Tr514cpDQbtOk=
-=DlxE
------END PGP SIGNATURE-----
-
---=-VNKpihkVXaMhNiIRYe79--
-
+Could you please provide a sample of this rule?
+-- 
+Michael Hallager
+networkStuff ltd
+www.networkstuff.co.nz | p.09.839.1000 | m.029.638.7883
 
