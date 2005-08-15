@@ -1,11 +1,12 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: RE: Blocking Google Earth
-Date: Mon, 15 Aug 2005 08:22:01 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0508150817130.24339@yvahk01.tjqt.qr>
-References: <B9833546B2643B43A56C4E962E13174602A996@nehemiah.joris2k.local>
+Subject: Re: iptables + ebtables + snat question
+Date: Mon, 15 Aug 2005 08:23:38 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0508150823000.24339@yvahk01.tjqt.qr>
+References: <51418F95-52AF-4FF8-8F57-BE214D9A04D9@decipher.com>
+	<200508131323.40526.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <B9833546B2643B43A56C4E962E13174602A996@nehemiah.joris2k.local>
+In-Reply-To: <200508131323.40526.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,20 +19,21 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Joris Dobbelsteen <joris.dobbelsteen@mail.com>
+To: /dev/rob0 <rob0@gmx.co.uk>
 Cc: netfilter@lists.netfilter.org
 
+>>
+>>            LAN
+>>             |
+>>             |
+>>            if0       ________
+>> DMZ---if1     if2---|ROUTER|---INTERNET
+>>           \   /      --------
+>>            br0
+>
+>FWIW I think the ASCII drawing made perfect sense. I suspect MUA or 
+>perhaps MTA/MDA issues on Jan's part.
 
->* Request the user not to use the application.
->* Install a HTTP proxy server that catches all port 80 traffic. Squid might be a good candidate. Here you can easily make a policy to deny access to the kh.google.com servers (it was I believe).
-
-Transparently intercept the traffic, mark outgoing squid packets with a value 
-and reroute them via IMQ / standard Qos ;-) Combines both Hostname-granularity 
-and speed limit.
-
-
-
-Jan Engelhardt
--- 
-| Alphagate Systems, http://alphagate.hopto.org/
+xterm and pine 4.61 - rob's ascii art looks fine, someone tinkered with the 
+header of the OP?
 
