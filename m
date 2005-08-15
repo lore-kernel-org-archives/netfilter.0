@@ -1,11 +1,11 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: IP Tables slows network response times
-Date: Mon, 15 Aug 2005 08:14:54 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0508150813400.24339@yvahk01.tjqt.qr>
-References: <200508142133.57867.michael@networkstuff.co.nz>
+Subject: RE: Blocking Google Earth
+Date: Mon, 15 Aug 2005 08:22:01 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0508150817130.24339@yvahk01.tjqt.qr>
+References: <B9833546B2643B43A56C4E962E13174602A996@nehemiah.joris2k.local>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200508142133.57867.michael@networkstuff.co.nz>
+In-Reply-To: <B9833546B2643B43A56C4E962E13174602A996@nehemiah.joris2k.local>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,18 +18,20 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Michael Hallager <michael@networkstuff.co.nz>
+To: Joris Dobbelsteen <joris.dobbelsteen@mail.com>
 Cc: netfilter@lists.netfilter.org
 
 
->iptables -P INPUT DROP
->iptables -A INPUT -p tcp --destination-port 53 -j ACCEPT
->iptables -A INPUT -p udp --destination-port 53 -j ACCEPT
+>* Request the user not to use the application.
+>* Install a HTTP proxy server that catches all port 80 traffic. Squid might be a good candidate. Here you can easily make a policy to deny access to the kh.google.com servers (it was I believe).
 
-"Think before you rule."
+Transparently intercept the traffic, mark outgoing squid packets with a value 
+and reroute them via IMQ / standard Qos ;-) Combines both Hostname-granularity 
+and speed limit.
 
-If your NAMED makes a query to the outside world, its _DEFAULT configuration 
-will NOT use_ 53 as source port, so --destination-port 53 cannot match.
 
-(Use -m state --state ESTABLISHED)
+
+Jan Engelhardt
+-- 
+| Alphagate Systems, http://alphagate.hopto.org/
 
