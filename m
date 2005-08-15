@@ -1,14 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: iptables permission problem in perl scripts
-Date: Mon, 15 Aug 2005 04:17:12 -0500
-Message-ID: <200508150417.12978.rob0@gmx.co.uk>
-References: <3115d56e05081400344964ebcd@mail.gmail.com>
-	<43002C64.3040101@riverviewtech.net>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: ftp issue cont.
+Date: Mon, 15 Aug 2005 11:13:26 +0200
+Message-ID: <43005CB6.6010108@mnemon.de>
+References: <E656E2CC1C5AEB42ACB00EB83122C7741FCC43@farmer.vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43002C64.3040101@riverviewtech.net>
-Content-Disposition: inline
+In-Reply-To: <E656E2CC1C5AEB42ACB00EB83122C7741FCC43@farmer.vikus.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,15 +20,40 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 2005-August-15 00:47, Grant Taylor wrote:
-> Can we get an ls -l of the files in question?  What is the user that
-> the web server is running as?
+Derick Anderson schrieb:
+> FTP passive mode creates an entirely new connection for data transfer.
+> It is not 'related' to the original connection and so iptables doesn't
+> pick it up as such (nor do any other stateful firewalls that I'm aware
+> of). 
 
-The OP said it was "nobody". It's not a file permission issue; it is
-the fact that only root can manipulate the kernel's netfilter rules. 
-SUID (messy and risky) or sudo(1) (clean and possibly less risky if 
-done right) are really the only solutions.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+No, not really. Iptables regards FTP data traffic as related stuff. To
+be more exactly, the respective helper module does so
+(ip_conntrack_ftp.[k]o). So, normally all you have to do, is load this
+module, allow ESTABLISHED,RELATED traffic in and out and allow FTP in.
+This looks something like this (assumed that policies are DROP and
+OUTPUT is ACCEPT and also assumed that the box is directly connected to
+the internet and that the FTP server is on the firewall box):
+
+modprobe ip_conntrack_ftp.[k]o
+
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -p tcp --dport 21 --syn -j ACCEPT
+
+This will work for active and passive FTP. If the ftp-module isn't on
+the system in question, varun_saa has to configure the kernel correctly
+and recompile as needed.
+
+BTW, the original ruleset didn't explain anything. IN|OUTPUT == ACCEPT
+and in FORWARD no rule concerning FTP. So, what is this guy doing ? If
+the FTP server is on the firewall box, there is no iptables problem at
+all (on this box). If not, there are no rules that permit FTP and thus
+it cannot work. The whole thing looks quite mysterious to me, including
+the -P issue Rob mentioned. May be a tiny ASCII art network picture
+would clarify the situation :)
+
+Have a nice time,
+
+Joerg
+
+
 
