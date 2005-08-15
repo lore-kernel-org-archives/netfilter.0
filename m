@@ -1,14 +1,12 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Transparent proxy where source IP address remains unchanged --
- possible?
-Date: Mon, 15 Aug 2005 09:39:22 -0500
-Message-ID: <4300A91A.5040505@riverviewtech.net>
-References: <20050809012914.GA23108@bostoncoop.net>	<Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>	<20050811130700.GA15463@bostoncoop.net>	<Pine.LNX.4.61.0508112117380.23117@yvahk01.tjqt.qr>	<42FBB957.30003@rosi-kessel.org>	<42FC2D70.7000701@riverviewtech.net>	<42FC9F1B.4060204@rosi-kessel.org>	<42FD95F9.4070504@riverviewtech.net>	<20050813131224.GD25192@bostoncoop.net>	<43003B7A.4040404@riverviewtech.net>
-	<4300A7C7.3080402@rosi-kessel.org>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: Fwd: Re: IP Tables slows network response times
+Date: Mon, 15 Aug 2005 17:35:50 +0200
+Message-ID: <4300B656.40704@mnemon.de>
+References: <200508152332.15400.michael@networkstuff.co.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4300A7C7.3080402@rosi-kessel.org>
+In-Reply-To: <200508152332.15400.michael@networkstuff.co.nz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,15 +20,72 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Okay, I understand all this. Is this all that is necessary to make sure
-> the response packets go back through faketarget, though? Isn't this just
->  taking care of the first part--the "up and over/down and in" part--but
-> not the second part, where packets need to go back to source through
-> faketarget?
+Oohps, forgot to send to the list :(
 
-*nod*  I confess it was late and I was very tired when I wrote that email.  Yes you will need to do the corresponding in reverse, at least the up part and the unDNATing part should take care of the rest.  You will probably have to play with things a bit, but that should take care of you.
+Michael Hallager schrieb:
+[SNIP]
+
+> *filter
+> :INPUT DROP [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [24885:3543903]
+> -A INPUT -i lo -j ACCEPT
+> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A INPUT -d 202.150.101.225 -p tcp -m tcp --dport 22 -j ACCEPT
+> -A INPUT -d 202.150.101.225 -p tcp -m layer7 --l7proto smtp -m tcp --dport 25 
+> -j ACCEPT
+> -A INPUT -d 202.150.101.225 -p tcp -m layer7 --l7proto dns -m tcp --dport 53 
+> -j ACCEPT
+> -A INPUT -d 202.150.101.225 -p udp -m layer7 --l7proto dns -m udp --dport 53 
+> -j ACCEPT
+> -A INPUT -d 202.150.101.235 -p tcp -m layer7 --l7proto dns -m tcp --dport 53 
+> -j ACCEPT
+> -A INPUT -d 202.150.101.235 -p udp -m layer7 --l7proto dns -m udp --dport 53 
+> -j ACCEPT
+> -A INPUT -d 202.150.101.225 -p tcp -m layer7 --l7proto http -m tcp --dport 80 
+> -j ACCEPT
+> -A INPUT -d 202.150.101.225 -p tcp -m tcp --dport 110 -j ACCEPT
+> -A INPUT -d 202.150.101.226 -p tcp -m tcp --dport 443 -j ACCEPT
+> -A INPUT -d 202.150.101.227 -p tcp -m tcp --dport 443 -j ACCEPT
+> -A INPUT -s 129.223.123.249 -d 202.150.101.225 -p tcp -m tcp --dport 9050 -j 
+> ACCEPT
+> -A OUTPUT -o lo -j ACCEPT
+> COMMIT
+> # Completed on Mon Aug 15 23:29:05 2005
+> root@202-150-101-225:/home/michael#     
+
+Ok, I see. I think your problem is related to L7, 'cause you cannot have
+a policy of DROP with L7. The following is likely to happen:
+
+1.) You get e.g. an SMTP request == SYN bit set.
+2.) As none of your rules match the packet hits the policy,
+    which is DROP.
+3.) L7 is never able to recognize the SMTP protocol.
+
+So I don't think that the network speed is slowed down, I think there is
+no SMTP, DNS and HTTP connection at all. You have no problem with POP3
+and HTTPS, right ?
+
+I would recommend the following:
+
+1.) Move your L7 rules to mangle/PREROUTING *and* mangle/POSTROUTING.
+    This is because you don't forward the packets. As Eric said,
+    some protocols are recognized in OUTPUT and some in INPUT.
+2.) Omit the port with L7. L7 is designed for detecting protocols,
+    even on non standard ports (well, that's one point :)) You
+    may omit -p too.
+3.) Don't rely on L7 in terms of security (you read the HOWTO ?) !!
+4.) Filter in filter table. If you really want to filter with L7,
+    I think it's best, to mark the packets in PREROUTING and
+    and then filter based on the marks in filter table. Only my 2C.
+
+If you don't have the need of recognizing protocols (means: using L7 for
+convenience), do standard filtering like port matches and so on using
+connection tracking (so, compile nat into the kernel).
+
+HTH and have a nice time,
+
+Joerg
 
 
-
-Grant. . . .
 
