@@ -1,16 +1,12 @@
-From: Michael Hallager <michael@networkstuff.co.nz>
-Subject: Re: Fwd: Re: IP Tables slows network response times
-Date: Mon, 15 Aug 2005 22:10:11 +1200
-Message-ID: <200508152210.11344.michael@networkstuff.co.nz>
-References: <57F9959B46E0FA4D8BA88AEDFBE5829074AD@pxtbenexd01.pxt.primeexalia.com>
-	<200508152145.10151.michael@networkstuff.co.nz>
-	<200508150459.13276.rob0@gmx.co.uk>
-Reply-To: michael@networkstuff.co.nz
+From: varun_saa@vsnl.net
+Subject: Re: ftp issue cont.
+Date: Mon, 15 Aug 2005 15:33:29 +0500
+Message-ID: <6bb85b56bba229.6bba2296bb85b5@vsnl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200508150459.13276.rob0@gmx.co.uk>
-Content-Disposition: inline
+Content-language: en
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,30 +17,128 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Cc: netfilter@lists.netfilter.org
 
-> The best Slackware advice I have is to start with Pat's config for the
-> basis for your new kernel. Second best: just use his kernel and
-> modules. Slackware-current has 2.4.31, and those packages will work
-> seamlessly in any 2.4.x-capable Slackware release (that's 8.0 and
-> later. And don't forget the alsa-driver package.)
+Thanks Jorg=2C  =
 
-The original reason is that it is an IBM Netfinity with a SCSI RAID 
-controller.
+            How to find out if ftp-module is loaded or  =
 
-This is somewhere I would prefer not to go at present as the machine is 
-located at almost the other end of the country.
+not=2E  =
 
-That is why I keep recompiling 2.4.29, the one I originally compiled for this 
-machine, rather then upgrading. There is only a small chance that something 
-would go wrong but I prefer not to give Murphey a chance....
+ =
 
-Please advise if you think there is any not so obvious options needed.
+  =
 
-I have read several 'howtos' and official DOC's when setting IP Tables up.
+Thanks  =
 
-Michael Hallager
-networkStuff ltd
-www.networkstuff.co.nz | p.09.839.1000 | m.029.638.7883
+  =
+
+Varun  =
+
+  =
+
+----- Original Message -----  =
+
+From=3A J=F6rg Harmuth =3Charmuth=40mnemon=2Ede=3E  =
+
+Date=3A Monday=2C August 15=2C 2005 2=3A43 pm  =
+
+Subject=3A Re=3A ftp issue cont=2E  =
+
+  =
+
+=3E Derick Anderson schrieb=3A  =
+
+=3E =3E FTP passive mode creates an entirely new connection for data   =
+
+=3E transfer=2E=3E It is not =27related=27 to the original connection and=
+ so   =
+
+=3E iptables doesn=27t  =
+
+=3E =3E pick it up as such (nor do any other stateful firewalls that I=27=
+m   =
+
+=3E aware=3E of)=2E   =
+
+=3E   =
+
+=3E No=2C not really=2E Iptables regards FTP data traffic as related stuf=
+f=2E To  =
+
+=3E be more exactly=2C the respective helper module does so  =
+
+=3E (ip=5Fconntrack=5Fftp=2E=5Bk=5Do)=2E So=2C normally all you have to d=
+o=2C is load this  =
+
+=3E module=2C allow ESTABLISHED=2CRELATED traffic in and out and allow FT=
+P in=2E  =
+
+=3E This looks something like this (assumed that policies are DROP and  =
+
+=3E OUTPUT is ACCEPT and also assumed that the box is directly   =
+
+=3E connected to  =
+
+=3E the internet and that the FTP server is on the firewall box)=3A  =
+
+=3E   =
+
+=3E modprobe ip=5Fconntrack=5Fftp=2E=5Bk=5Do  =
+
+=3E   =
+
+=3E iptables -A INPUT -m state --state RELATED=2CESTABLISHED -j ACCEPT  =
+
+=3E iptables -A INPUT -p tcp --dport 21 --syn -j ACCEPT  =
+
+=3E   =
+
+=3E This will work for active and passive FTP=2E If the ftp-module isn=27=
+t on  =
+
+=3E the system in question=2C varun=5Fsaa has to configure the kernel   =
+
+=3E correctlyand recompile as needed=2E  =
+
+=3E   =
+
+=3E BTW=2C the original ruleset didn=27t explain anything=2E IN=7COUTPUT =
+=3D=3D ACCEPT  =
+
+=3E and in FORWARD no rule concerning FTP=2E So=2C what is this guy doing=
+ =3F If  =
+
+=3E the FTP server is on the firewall box=2C there is no iptables problem=
+ at  =
+
+=3E all (on this box)=2E If not=2C there are no rules that permit FTP and=
+ thus  =
+
+=3E it cannot work=2E The whole thing looks quite mysterious to me=2C   =
+
+=3E includingthe -P issue Rob mentioned=2E May be a tiny ASCII art   =
+
+=3E network picture  =
+
+=3E would clarify the situation =3A)  =
+
+=3E   =
+
+=3E Have a nice time=2C  =
+
+=3E   =
+
+=3E Joerg  =
+
+=3E   =
+
+=3E   =
+
+=3E   =
+
+=3E   
+
 
