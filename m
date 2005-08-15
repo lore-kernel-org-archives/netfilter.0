@@ -1,12 +1,13 @@
 From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: ftp issue cont.
-Date: Mon, 15 Aug 2005 11:13:26 +0200
-Message-ID: <43005CB6.6010108@mnemon.de>
-References: <E656E2CC1C5AEB42ACB00EB83122C7741FCC43@farmer.vikus.com>
+Subject: Re: Fwd: Re: IP Tables slows network response times
+Date: Mon, 15 Aug 2005 11:32:31 +0200
+Message-ID: <4300612F.6070603@mnemon.de>
+References: <57F9959B46E0FA4D8BA88AEDFBE5829074AD@pxtbenexd01.pxt.primeexalia.com>
+	<200508152018.33866.michael@networkstuff.co.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <E656E2CC1C5AEB42ACB00EB83122C7741FCC43@farmer.vikus.com>
+In-Reply-To: <200508152018.33866.michael@networkstuff.co.nz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,40 +21,42 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Derick Anderson schrieb:
-> FTP passive mode creates an entirely new connection for data transfer.
-> It is not 'related' to the original connection and so iptables doesn't
-> pick it up as such (nor do any other stateful firewalls that I'm aware
-> of). 
+Michael Hallager schrieb:
+>>I think correct should be:
+>>itpables -I INPUT -i lo -j ACCEPT (guess you misspeled it in the hurry)
+>>forward rule for loopback is not necesary, as long as i remember
+>>iptables -I OUTPUT -o lo -j ACCEPT;
+> 
+> 
+> HOLD ON,
+> This creates the following:
+> chain INPUT (policy ACCEPT)
+> target     prot opt source               destination
+> ACCEPT     all  --  anywhere             anywhere
+> DROP       all  --  202.71.136.166       anywhere
+> 
+> Chain FORWARD (policy ACCEPT)
+> target     prot opt source               destination
+> 
+> Chain OUTPUT (policy ACCEPT)
+> target     prot opt source               destination
+> ACCEPT     all  --  anywhere             anywhere
+> 
+> Looking at the first and last rule displayed here, dosn't this have the effect 
+> of negating everything else?
+> Eg: Allow all, from anywhere to anywhere....
+> 
+> Am I missing something?
 
-No, not really. Iptables regards FTP data traffic as related stuff. To
-be more exactly, the respective helper module does so
-(ip_conntrack_ftp.[k]o). So, normally all you have to do, is load this
-module, allow ESTABLISHED,RELATED traffic in and out and allow FTP in.
-This looks something like this (assumed that policies are DROP and
-OUTPUT is ACCEPT and also assumed that the box is directly connected to
-the internet and that the FTP server is on the firewall box):
+Yes, -v ;) Ok, you certainly typed "iptables -L" and this will not
+output the interfaces. Try "iptables -nvL" and you will see, that
+"ACCEPT all anywhere anywhere" concerns only loopback.
 
-modprobe ip_conntrack_ftp.[k]o
-
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A INPUT -p tcp --dport 21 --syn -j ACCEPT
-
-This will work for active and passive FTP. If the ftp-module isn't on
-the system in question, varun_saa has to configure the kernel correctly
-and recompile as needed.
-
-BTW, the original ruleset didn't explain anything. IN|OUTPUT == ACCEPT
-and in FORWARD no rule concerning FTP. So, what is this guy doing ? If
-the FTP server is on the firewall box, there is no iptables problem at
-all (on this box). If not, there are no rules that permit FTP and thus
-it cannot work. The whole thing looks quite mysterious to me, including
-the -P issue Rob mentioned. May be a tiny ASCII art network picture
-would clarify the situation :)
+Regarding the timeout issue, do as Grant recommended. May be you should
+log in OUTPUT too, at least if logging in INPUT will not show the problem.
 
 Have a nice time,
 
 Joerg
-
 
 
