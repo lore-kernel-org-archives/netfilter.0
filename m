@@ -1,12 +1,13 @@
-From: varun_saa@vsnl.net
-Subject: Re: ftp issue cont.
-Date: Mon, 15 Aug 2005 15:33:29 +0500
-Message-ID: <6bb85b56bba229.6bba2296bb85b5@vsnl.net>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: Fwd: Re: IP Tables slows network response times
+Date: Mon, 15 Aug 2005 12:53:34 +0200
+Message-ID: <4300742E.6050307@mnemon.de>
+References: <57F9959B46E0FA4D8BA88AEDFBE5829074AD@pxtbenexd01.pxt.primeexalia.com>	<200508152018.33866.michael@networkstuff.co.nz>	<4300612F.6070603@mnemon.de>
+	<200508152205.09409.michael@networkstuff.co.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
+In-Reply-To: <200508152205.09409.michael@networkstuff.co.nz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,128 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Thanks Jorg=2C  =
+Michael Hallager schrieb:
+> 1. I have tried both IN and OUT and I am not seeing any error messages or 
+> anything *obvious*
+> 
+> 2. With those FW rules in place I can do NSLOOKUP on the domain anme with no 
+> problems.
 
-            How to find out if ftp-module is loaded or  =
+Humm, strange. Could you please provide the output of iptables-save as
+Rob said ?
 
-not=2E  =
+Some time ago, I had a similar problem with slow responses (~30s delay).
+It turned out that it was identd, as Grant assumed in your case too.
+Adding a rule like
 
- =
+iptables -A OUTPUT -p tcp --dport 113 -j REJECT \
+         --reject-with tcp-reset
 
-  =
+solved this for me. I don't know the Slackware distro, but it seems,
+that they use sendmail. If this is true, it is quite likely that identd
+causes the trouble (at least it was true for me on one box).
 
-Thanks  =
+Have a nice time,
 
-  =
-
-Varun  =
-
-  =
-
------ Original Message -----  =
-
-From=3A J=F6rg Harmuth =3Charmuth=40mnemon=2Ede=3E  =
-
-Date=3A Monday=2C August 15=2C 2005 2=3A43 pm  =
-
-Subject=3A Re=3A ftp issue cont=2E  =
-
-  =
-
-=3E Derick Anderson schrieb=3A  =
-
-=3E =3E FTP passive mode creates an entirely new connection for data   =
-
-=3E transfer=2E=3E It is not =27related=27 to the original connection and=
- so   =
-
-=3E iptables doesn=27t  =
-
-=3E =3E pick it up as such (nor do any other stateful firewalls that I=27=
-m   =
-
-=3E aware=3E of)=2E   =
-
-=3E   =
-
-=3E No=2C not really=2E Iptables regards FTP data traffic as related stuf=
-f=2E To  =
-
-=3E be more exactly=2C the respective helper module does so  =
-
-=3E (ip=5Fconntrack=5Fftp=2E=5Bk=5Do)=2E So=2C normally all you have to d=
-o=2C is load this  =
-
-=3E module=2C allow ESTABLISHED=2CRELATED traffic in and out and allow FT=
-P in=2E  =
-
-=3E This looks something like this (assumed that policies are DROP and  =
-
-=3E OUTPUT is ACCEPT and also assumed that the box is directly   =
-
-=3E connected to  =
-
-=3E the internet and that the FTP server is on the firewall box)=3A  =
-
-=3E   =
-
-=3E modprobe ip=5Fconntrack=5Fftp=2E=5Bk=5Do  =
-
-=3E   =
-
-=3E iptables -A INPUT -m state --state RELATED=2CESTABLISHED -j ACCEPT  =
-
-=3E iptables -A INPUT -p tcp --dport 21 --syn -j ACCEPT  =
-
-=3E   =
-
-=3E This will work for active and passive FTP=2E If the ftp-module isn=27=
-t on  =
-
-=3E the system in question=2C varun=5Fsaa has to configure the kernel   =
-
-=3E correctlyand recompile as needed=2E  =
-
-=3E   =
-
-=3E BTW=2C the original ruleset didn=27t explain anything=2E IN=7COUTPUT =
-=3D=3D ACCEPT  =
-
-=3E and in FORWARD no rule concerning FTP=2E So=2C what is this guy doing=
- =3F If  =
-
-=3E the FTP server is on the firewall box=2C there is no iptables problem=
- at  =
-
-=3E all (on this box)=2E If not=2C there are no rules that permit FTP and=
- thus  =
-
-=3E it cannot work=2E The whole thing looks quite mysterious to me=2C   =
-
-=3E includingthe -P issue Rob mentioned=2E May be a tiny ASCII art   =
-
-=3E network picture  =
-
-=3E would clarify the situation =3A)  =
-
-=3E   =
-
-=3E Have a nice time=2C  =
-
-=3E   =
-
-=3E Joerg  =
-
-=3E   =
-
-=3E   =
-
-=3E   =
-
-=3E   
+Joerg
 
 
