@@ -1,11 +1,14 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: ftp issue cont.
-Date: Mon, 15 Aug 2005 07:54:54 -0400
-Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7741FCC72@farmer.vikus.com>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: Fwd: Re: IP Tables slows network response times
+Date: Mon, 15 Aug 2005 13:59:17 +0200
+Message-ID: <1124107157.4956.15.camel@porky>
+References: <200508152332.15400.michael@networkstuff.co.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-aGdF4cum7vYLbN2owIQ8"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <200508152332.15400.michael@networkstuff.co.nz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,65 +19,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
-
-It must be our firewall then: I didn't build it myself and I don't know =
-if conntrack_ftp is loaded in the kernel or not - guess I could always =
-modprobe eh? We have a 24/7 production shop so I'm editing it live until =
-I get around to building another firewall myself. I always thought that =
-passive FTP ports had to be opened specifically because the only =
-indication of a new connection is in the data of the packet itself.
-
-Thanks for the clarification,
-
-Derick=20
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of J=F6rg =
-Harmuth
-Sent: Monday, August 15, 2005 5:13 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: ftp issue cont.
-
-Derick Anderson schrieb:
-> FTP passive mode creates an entirely new connection for data transfer.
-> It is not 'related' to the original connection and so iptables doesn't =
-
-> pick it up as such (nor do any other stateful firewalls that I'm aware =
-
-> of).
-
-No, not really. Iptables regards FTP data traffic as related stuff. To =
-be more exactly, the respective helper module does so =
-(ip_conntrack_ftp.[k]o). So, normally all you have to do, is load this =
-module, allow ESTABLISHED,RELATED traffic in and out and allow FTP in.
-This looks something like this (assumed that policies are DROP and =
-OUTPUT is ACCEPT and also assumed that the box is directly connected to =
-the internet and that the FTP server is on the firewall box):
-
-modprobe ip_conntrack_ftp.[k]o
-
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT =
-iptables -A INPUT -p tcp --dport 21 --syn -j ACCEPT
-
-This will work for active and passive FTP. If the ftp-module isn't on =
-the system in question, varun_saa has to configure the kernel correctly =
-and recompile as needed.
-
-BTW, the original ruleset didn't explain anything. IN|OUTPUT =3D=3D =
-ACCEPT and in FORWARD no rule concerning FTP. So, what is this guy doing =
-? If the FTP server is on the firewall box, there is no iptables problem =
-at all (on this box). If not, there are no rules that permit FTP and =
-thus it cannot work. The whole thing looks quite mysterious to me, =
-including the -P issue Rob mentioned. May be a tiny ASCII art network =
-picture would clarify the situation :)
-
-Have a nice time,
-
-Joerg
+To: michael@networkstuff.co.nz
+Cc: netfilter@lists.netfilter.org
 
 
+--=-aGdF4cum7vYLbN2owIQ8
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2005-08-15 at 23:32 +1200, Michael Hallager wrote:
+> AS FOLLOWS: (Opps. my mistake!)
+>=20
+> -A INPUT -i lo -j ACCEPT
+> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A INPUT -d 202.150.101.225 -p tcp -m tcp --dport 22 -j ACCEPT
+> -A INPUT -d 202.150.101.225 -p tcp -m layer7 --l7proto smtp -m tcp --dpor=
+t 25=20
+> -j ACCEPT
+
+l7filtering is completly useless here. In fact l7 is able to detect a
+protocol after a few packets so your=20
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+take precedence over l7 rules.
+Furthermore (I may be mistaking) match is often done on reply thus
+filtering on OUTPUT is necessary.
+One other point is : why do you need to check the protocol running on
+your own computer ?
+
+BR,
+--=20
+Eric Leblond <eric@inl.fr>
+INL
+
+--=-aGdF4cum7vYLbN2owIQ8
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBDAIOVnxA7CdMWjzIRAp9cAKCOesu7OUs5sUbkAGtA3tuJzZ88pACfcw+j
+lBhUgIOQGig+KTjkGzq7rB0=
+=0lzG
+-----END PGP SIGNATURE-----
+
+--=-aGdF4cum7vYLbN2owIQ8--
 
 
