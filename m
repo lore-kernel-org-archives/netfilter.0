@@ -1,12 +1,12 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: linux firewall configuration to support Nortel Contivity client
-Date: Mon, 15 Aug 2005 00:36:05 -0500
-Message-ID: <430029C5.5050902@riverviewtech.net>
-References: <E1E4D7U-0006Ia-Kk@wombat.digitalis.net.au>
+Subject: Re: IP Tables slows network response times
+Date: Mon, 15 Aug 2005 00:42:50 -0500
+Message-ID: <43002B5A.4000909@riverviewtech.net>
+References: <200508142133.57867.michael@networkstuff.co.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <E1E4D7U-0006Ia-Kk@wombat.digitalis.net.au>
+In-Reply-To: <200508142133.57867.michael@networkstuff.co.nz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,27 +20,43 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Michael you may want to try sniffing the traffic that your notebook gives off when it has it's ""VPN up and running.  If the traffic is IP/ESP (IP protocol 50) then the traffic is an IPSec tunnel.  If the traffic is IP/GRE (IP protocol 47) then the tunnel is a GRE tunnel.
+I've not run in to or heard of this problem my self before.  But I suspect that there is a support protocol being used that we are aware of.  How knows you may have a few things configured to use the Ident (Auth) protocol to find out the name of the user on the system that is requesting the web pages from.  If this is indeed the case and you do not have a statefull packet inspection allowing returning outbound traffic back in you may be dropping some returning traffic that is sent out from a high port.  In either case I would add the following rules to the end of your list to help diagnose this problem.
+
+iptables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT
+iptables -A INPUT -p tcp -j LOG
+
+The second rule is probably the most important as it will log the traffic that is getting dropped and thus you will have an idea what you need to modify your firewall to allow in.
 
 
 
-Grant. . . 
+Grant. . . .
 
-Michael wrote:
-> Hi,
+Michael Hallager wrote:
+> Hello all.
 > 
-> At home I have a linux box (2.6.11.11 kernel) acting as my gateway. It
-> is running nat, upnpd & iproute2 all quite happily.
+> I have spent rather a lot of time trying to find an answer for this one.
 > 
-> What I want to do next is make the vpn client (Nortel Contivity) on my
-> work laptop play nicely. I've been looking at the ip_nat_pptp &
-> ip_nat_proto_gre patches from patch-o-matic.
+> I have a Slackware Linux box, 2.4.29 kernel running IP Tables. I have the bare 
+> number of needed modules compiled into the custom kernel.
 > 
-> I'm not sure what kind of tunel Contivity tries to establish (or much
-> else about it works) Has anybody out there setup something similiar to
-> this? Or know much about Contivity sets up a vpn?
+> I start IP Tables using the following batch file:
 > 
-> --
-> Michael
-> oni@atice.org
+> iptables -P INPUT DROP
+> iptables -A INPUT -p tcp --destination-port 22 -j ACCEPT
+> iptables -A INPUT -p tcp --destination-port 25 -j ACCEPT
+> iptables -A INPUT -p tcp --destination-port 53 -j ACCEPT
+> iptables -A INPUT -p udp --destination-port 53 -j ACCEPT
+> iptables -A INPUT -p tcp --destination-port 80 -j ACCEPT
+> iptables -A INPUT -p tcp --destination-port 110 -j ACCEPT
+> iptables -A INPUT -p tcp --destination-port 443 -j ACCEPT
+> 
+> This works except it makes webpages and email served from this box SLOW to 
+> respond. (Several seconds).
+> 
+> Any ideas please? Questions welcomed.
+> 
+> Michael Hallager
+> networkStuff ltd
+> www.networkstuff.co.nz | p.09.839.1000 | m.029.638.7883
+
 
