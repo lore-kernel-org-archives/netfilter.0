@@ -1,13 +1,16 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+From: Michael Hallager <michael@networkstuff.co.nz>
 Subject: Re: Fwd: Re: IP Tables slows network response times
-Date: Mon, 15 Aug 2005 11:32:31 +0200
-Message-ID: <4300612F.6070603@mnemon.de>
+Date: Mon, 15 Aug 2005 21:45:09 +1200
+Message-ID: <200508152145.10151.michael@networkstuff.co.nz>
 References: <57F9959B46E0FA4D8BA88AEDFBE5829074AD@pxtbenexd01.pxt.primeexalia.com>
 	<200508152018.33866.michael@networkstuff.co.nz>
+	<4300612F.6070603@mnemon.de>
+Reply-To: michael@networkstuff.co.nz
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200508152018.33866.michael@networkstuff.co.nz>
+In-Reply-To: <4300612F.6070603@mnemon.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,42 +24,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Michael Hallager schrieb:
->>I think correct should be:
->>itpables -I INPUT -i lo -j ACCEPT (guess you misspeled it in the hurry)
->>forward rule for loopback is not necesary, as long as i remember
->>iptables -I OUTPUT -o lo -j ACCEPT;
-> 
-> 
-> HOLD ON,
-> This creates the following:
-> chain INPUT (policy ACCEPT)
-> target     prot opt source               destination
-> ACCEPT     all  --  anywhere             anywhere
-> DROP       all  --  202.71.136.166       anywhere
-> 
-> Chain FORWARD (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination
-> ACCEPT     all  --  anywhere             anywhere
-> 
-> Looking at the first and last rule displayed here, dosn't this have the effect 
-> of negating everything else?
-> Eg: Allow all, from anywhere to anywhere....
-> 
-> Am I missing something?
+Thankyou :-)
 
-Yes, -v ;) Ok, you certainly typed "iptables -L" and this will not
-output the interfaces. Try "iptables -nvL" and you will see, that
-"ACCEPT all anywhere anywhere" concerns only loopback.
+I am in the middle of recompiling my kernel for IP Tables logging support.
 
-Regarding the timeout issue, do as Grant recommended. May be you should
-log in OUTPUT too, at least if logging in INPUT will not show the problem.
+> Regarding the timeout issue, do as Grant recommended. May be you should
+> log in OUTPUT too, at least if logging in INPUT will not show the problem.
+>
+> Have a nice time,
+>
+> Joerg
 
-Have a nice time,
-
-Joerg
-
+-- 
+Michael Hallager
+networkStuff ltd
+www.networkstuff.co.nz | p.09.839.1000 | m.029.638.7883
 
