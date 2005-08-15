@@ -1,14 +1,14 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: experimenting with 2 ISP's
-Date: Mon, 15 Aug 2005 17:08:11 -0400
-Message-ID: <65aa6af9050815140847213738@mail.gmail.com>
-References: <4300EACB.2030400@eccotours.dyndns.org>
-	<65aa6af90508151406d10894@mail.gmail.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: filtering ruleset help sought
+Date: Mon, 15 Aug 2005 17:22:49 -0400
+Message-ID: <1124140969.21025.42.camel@localhost>
+References: <4300FAAD.4060305@ttienterprises.org>
+	<1124138954.21025.29.camel@localhost>
+	<430102F9.3070207@ttienterprises.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af90508151406d10894@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <430102F9.3070207@ttienterprises.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,91 +20,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Barry Fawthrop <barry@ttienterprises.org>
+Cc: netfilter@lists.netfilter.org
 
-I mean.... you also have to define the default gateway as a multipath route=
-.
+You may find it helpful to review a good tutorial on iptables.  You can
+find an excellent one at
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+You can also find training slide shows (slightly dated) in the training
+section of the ISCS network security management project
+(http://iscs.sourceforge.net).
 
-On 8/15/05, Edmundo Carmona <eantoranz@gmail.com> wrote:
-> That's not the right way to set the default GW.
->=20
-> You have to use IP. Remove your default GWs. then:
->=20
-> ip route add default netxhop via 196.36.10.114 dev eth0 nexthop via
-> 196.168.10.100 dev eth2
-> ip route flush cache.
->=20
-> If you set the routing tables correctly, It should start working right aw=
-ay.
->=20
-> On 8/15/05, Brent Clark <bclark@eccotours.dyndns.org> wrote:
-> > Hi list
+Basically, you will need the same rules in the FORWARD chain as in the
+INPUT chain.  You will also need a NAT rule, e.g., 
+
+iptables -t nat -A POSTROUTING -o <ExternalIF> -s <Internal Network> -j
+SNAT --to-source <ExternalIP>
+
+On Mon, 2005-08-15 at 17:02 -0400, Barry Fawthrop wrote:
+> Thanks John
+> 
+> Yes I want this machine and every other machine on the LAN to be denied 
+> access to the Internet except to the sites or IPs listed
+> in the allowed-hosts file
+> 
+> So could you help what addionional rules would I need ?
+> 
+> 
+> 
+> John A. Sullivan III wrote:
+> 
+> >Hmm . . .looks a little strange.  Do you want such access for this
+> >specific device or for other devices on the internal network that use
+> >this device as a gateway? The INPUT and OUTPUT chains will only handle
+> >traffic to and from this device.
 > >
-> > I have just a added a few rules to my routing table.
+> >I would suggest you use connection tracking and you may find it easier
+> >to use DROP policies. Thus:
 > >
-> > Would someone be so kind as to see if my setup is correct.
+> >$IPT -t filter -P INPUT DROP
+> >$IPT -t filter -P OUTPUT DROP
+> >$IPT -t filter -P FORWARD DROP
+> >$IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 > >
-> > My setup is as so
+> >Then you can allow the outbound access including the protcol:
 > >
-> > eth0
-> > IP 196.36.10.114
-> > GW 196.36.10.113 (my routers IP)
+> >while read s1 s2
+> >     do
+> >      $IPT -t filter -A OUTPUT -s $INNET -d $s1 -p 6 --dport 80 -j ACCEPT
+> >      $IPT -t filter -A OUTPUT -p icmp -s $INNET -d $s1 -j ACCEPT
+> >     done < /allowed-hosts
+> >  
 > >
-> > eth1 192.168.111.10
-> > PRIVATE LAN
+> also what is the -p 6 ???
+> 
+> >If you want to allow other devices to access these sites through this
+> >device, you will need rules in the FORWARD chain and probably an SNAT
+> >rule in the nat table POSTROUTING chain.  Good luck - John
+> >  
 > >
-> > eth2
-> > IP 192.168.10.200
-> > GW 192.168.10.100 (my adsl modem)
-> >
-> > Please keep in mind that my router that is connected to eth0 has a stat=
-ic ip, where as my adsl modem that is connected to eth2 is dynamically assi=
-gned.
-> >
-> > echo 200 IS >> /etc/iproute2/rt_tables
-> > echo 201 TELKOM >> /etc/iproute2/rt_tables
-> >
-> > /sbin/ip route add 196.36.10.0 dev eth0 src 196.36.10.114 table IS
-> > /sbin/ip route add default via 196.36.10.113 table IS
-> >
-> > /sbin/ip route add 192.168.10.0 dev eth2 src 192.168.10.100 table TELKO=
-M
-> > /sbin/ip route add default via 192.168.10.100 table TELKOM
-> >
-> > /sbin/ip route add 196.36.10.0 dev eth0 src 196.36.10.114
-> > /sbin/ip route add 192.168.10.0 dev eth2 src 192.168.10.100
-> >
-> > /sbin/ip route add default via 196.36.10.113
-> >
-> > /sbin/ip rule add from 196.36.10.114 table IS
-> > /sbin/ip rule add from 192.168.10.100 table TELKOM
-> >
-> >  From my routing table all seem ok:
-> > gate:~# route -n
-> > Kernel IP routing table
-> > Destination     Gateway         Genmask         Flags Metric Ref    Use=
- Iface
-> > 196.36.10.0     0.0.0.0         255.255.255.255 UH    0      0        0=
- eth0
-> > 192.168.10.0    0.0.0.0         255.255.255.255 UH    0      0        0=
- eth2
-> > 196.36.10.112   0.0.0.0         255.255.255.248 U     0      0        0=
- eth0
-> > 192.168.111.0   0.0.0.0         255.255.255.0   U     0      0        0=
- eth1
-> > 192.168.10.0    0.0.0.0         255.255.255.0   U     0      0        0=
- eth2
-> > 0.0.0.0         196.36.10.113   0.0.0.0         UG    0      0        0=
- eth0
-> > gate:~#
-> >
-> > If anyone has any tips or advise they would care to add, it would be mo=
-st appreciated.
-> >
-> > Kind Regards
-> > Brent Clark
-> >
-> >
-> >
->
+> Thanks
+> Barry
+> No virus found in this outgoing message.
+> Checked by AVG Anti-Virus.
+> Version: 7.0.338 / Virus Database: 267.10.9/72 - Release Date: 8/14/2005
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
+
+Financially sustainable open source development
+http://www.opensourcedevel.com
+
 
