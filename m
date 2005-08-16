@@ -1,12 +1,12 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: Bandwidth/network monitoring tools
-Date: Tue, 16 Aug 2005 06:37:09 -0400
-Message-ID: <1124188629.3085.4.camel@localhost>
-References: <c0e9781f05081600436428eb12@mail.gmail.com>
+From: varun_saa@vsnl.net
+Subject: ftp rules
+Date: Tue, 16 Aug 2005 16:00:43 +0500
+Message-ID: <a4929a56e2.a56e2a4929@vsnl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <c0e9781f05081600436428eb12@mail.gmail.com>
+Content-language: en
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Greg Cope <gregcope@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 2005-08-16 at 08:43 +0100, Greg Cope wrote:
-> Hi all,
-> 
-> Anyone got any suggestions for monitoring network usage by hostclient/protocol?
-> 
-> I am occassionally involved with debugging why our internet bandwidth
-> is "slow" - and I am sure I am not the only person who has been here
-> and I assume there are some simple tools for this sort of thing.
-> 
-> I am not after debugging tools like netstat, lsof, or tcpdump. 
-> Excellent as they are, they are too fine grained.
-> 
-> Ideally this would work with our iptables based firewall/router that
-> does DMZ as well.
-> 
-> Thanks,
-> 
-> Greg
-I'm not sure how granular you want to be.  Have you looked at MRTG or
-Etherape? - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
-
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
+Hello,  
+     My server in on FC4  
+eth0 is wan with static IP connected to 512K DSL  
+eth1 is lan - 192.168.0.0/24  
+  
+WAN -----> eth0 - FC4 server - eth1 -----------> clients ( 192.168.0.0/ 24 )   
+FC4 server is only for sharing internet , mails, etc for clients system.   
+I do not run any ftp server on ny FC4 server.   
+I have loaded ip_contrack_ftp modules. 
+  
+Clients connected to FC4 server on eth1 should be able to connect  
+to ftp sites.  
+  
+Is the following rule enough ?  
+  
+-A FORWARD -i eth1 -o eth0 -p tcp --dport 21 -j ACCEPT  
+  
+Thanks  
+  
+Varun  
 
 
