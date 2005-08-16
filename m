@@ -1,13 +1,13 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: ftp issue cont.
-Date: Tue, 16 Aug 2005 18:06:12 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0508161805480.18549@darkstar.sysinfo.com>
-References: <6c016e56bfd4d0.6bfd4d06c016e5@vsnl.net>
+From: Wayne Alday <waynea@andycable.com>
+Subject: Multirouting 2 ISP with public addresses
+Date: Tue, 16 Aug 2005 17:33:49 -0500
+Message-ID: <430269CD.6080700@andycable.com>
+References: <eb5ae9cc05081611187210c11b@mail.gmail.com>	<eb5ae9cc0508161122447fc95c@mail.gmail.com>
+	<65aa6af905081613295e39edf3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="1028002384-951718083-1124229972=:18549"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6c016e56bfd4d0.6bfd4d06c016e5@vsnl.net>
+In-Reply-To: <65aa6af905081613295e39edf3@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,166 +18,80 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: varun_saa@vsnl.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+List :
 
---1028002384-951718083-1124229972=:18549
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by darkstar.sysinfo.com id
-	j7GM6HXY018559
+I have a similar setup to this gentleman:
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+eth0 connected with the LAN
+eth1 connected with the internet across ISP1
+eth2 connected with the internet acorss ISP2
 
+Although I can find a thousand examples on how to do this with NAT, 
+there doesnt seem to be anyone wanting to do it with real IP addresses, 
+or not that I have found in 3 days of searching.
 
+I read the following link :
 
-A good place to start might be man lsmod
+http://lartc.org/howto/lartc.rpdb.multiple-links.html
 
-Thanks,
+Seems to be just what I need, except I do not wish to load balance or 
+have servers avaiable everywhere, or have redundancy, but just for the 
+box to do what i guess would be called source routing. My delimma is 
+that living in a remote town bandwidth costs are moderate to high. I 
+have a 6 meg bonded T-1 setup on a cisco 3640 router that we outgrew 
+quickly. A DS-3 connection where I live would of cost nearly 15K / month 
+because we live near no POP.So we put some fiber up, and needless to say 
+we have 10 / mbit with the capability to turn it up as needed at a much 
+cheaper cost. The problem is we are having to eat the monthly charges 
+for our current bandwith and would like to utilize it for CPE. Im pretty 
+sure with the research I have done that this is possible to put on our 
+current linux router, but  I must be  missing a key somewhere, and I 
+would like a fresh look on the problem.
 
-Ron DuFresne
+Here is what I wish to do.
 
-On Tue, 16 Aug 2005 varun_saa@vsnl.net wrote:
+eth1 is connected to my 6mbit line thru the FE0/0 port on the 
+router.(192.168.200.2)
+eth2 is connected to the fiber transceiver to 10 mbit (192.168.252.2)
+eth0 is connected to my lan. (12.150.243.129)
 
-> Thanks Jorg,
->           I get the following for lsmod :
->
-> [root@squidserver ~]# lsmod | grep conntrack
-> ip_conntrack           41497  3 ipt_state,ipt_MASQUERADE,iptable_nat
->
-> So how do I add :
->
->           ip_conntrack_ftp
->           ipt_conntrack
->
-> And yes it is :
->               -A FORWARD -j DROP
->
-> Thanks again
->
-> Varun
->
->
->
->
->
-> ----- Original Message -----
-> From: J=F6rg Harmuth <harmuth@mnemon.de>
-> Date: Monday, August 15, 2005 4:29 pm
-> Subject: Re: ftp issue cont.
->
->> varun_saa@vsnl.net schrieb:
->>> Thanks Jorg,
->>>             How to find out if ftp-module is loaded or
->>> not.
->>
->> e.g.
->>
->> lsmod | grep conntrack
->>
->> gives on my box:
->>
->> ip_conntrack_ftp        3680   0  (unused)
->> ipt_conntrack           1120   0  (autoclean)
->> ip_conntrack           26484   1  (autoclean) [ip_conntrack_ftp ...
->>
->>>
->>> Thanks
->>>
->>> Varun
->>>
->>> ----- Original Message -----
->>> From: J=F6rg Harmuth <harmuth@mnemon.de>
->>> Date: Monday, August 15, 2005 2:43 pm
->>> Subject: Re: ftp issue cont.
->>>
->>>
->>>> Derick Anderson schrieb:
->>>>
->>>>> FTP passive mode creates an entirely new connection for data
->>>>
->>>> transfer.> It is not 'related' to the original connection and so
->>
->>>> iptables doesn't
->>>>
->>>>> pick it up as such (nor do any other stateful firewalls that I'm
->>
->>>>
->>>> aware> of).
->>>>
->>>> No, not really. Iptables regards FTP data traffic as related
->> stuff. To
->>>> be more exactly, the respective helper module does so
->>>> (ip_conntrack_ftp.[k]o). So, normally all you have to do, is load
->> this
->>>> module, allow ESTABLISHED,RELATED traffic in and out and allow
->> FTP in.
->>>> This looks something like this (assumed that policies are DROP
->> and
->>>> OUTPUT is ACCEPT and also assumed that the box is directly
->>>> connected to
->>>> the internet and that the FTP server is on the firewall box):
->>>>
->>>> modprobe ip_conntrack_ftp.[k]o
->>>>
->>>> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
->>>> iptables -A INPUT -p tcp --dport 21 --syn -j ACCEPT
->>>>
->>>> This will work for active and passive FTP. If the ftp-module
->> isn't on
->>>> the system in question, varun_saa has to configure the kernel
->>>> correctlyand recompile as needed.
->>>>
->>>> BTW, the original ruleset didn't explain anything. IN|OUTPUT =3D=3D
->> ACCEPT
->>>> and in FORWARD no rule concerning FTP. So, what is this guy doing
->> ? If
->>>> the FTP server is on the firewall box, there is no iptables
->> problem at
->>>> all (on this box). If not, there are no rules that permit FTP and
->> thus
->>>> it cannot work. The whole thing looks quite mysterious to me,
->>>> includingthe -P issue Rob mentioned. May be a tiny ASCII art
->>>> network picture
->>>> would clarify the situation :)
->>>>
->>>> Have a nice time,
->>>>
->>>> Joerg
->>>>
->>>>
->>>>
->>>>
->>>
->>>
->>>
->>> !DSPAM:430073677568926616419!
->>
->>
->
->
->
+I have route statements in the 3640 that route ALL traffic for the 
+public addresses thru a private subnet
+ip route 12.37.169.0 255.255.255.0 192.168.200.2
+ip route 12.150.225.0 255.255.255.0 192.168.200.2
+ip route 12.150.243.128 255.255.255.224 192.168.200.2
+ip route 12.150.243.160 255.255.255.240 192.168.200.2
+ip route 12.150.243.176 255.255.255.240 192.168.200.2
+ip route 12.150.243.192 255.255.255.192 192.168.200.2
+ip route 12.175.45.0 255.255.255.128 192.168.200.2
 
-- --=20
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint =3D 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+The linux box in turn hands it off to various other parts and routers
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
+What I would like to do is throw the following 4 Class C addresses onto 
+eth2 and have them route according to what network.
+70.158.60.0
+70.158.61.0
+70.158.62.0
+70.158.63.0
+For instance if I assign a CPE an Ip address in the 12.150 range, i wish 
+for all that traffic to route out eth1 to the wireline
+If I assign a CPE IP in the 70.158 ranges, I would like it to route out eth2
 
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+The router on the other side of the fiber net has the exact same routes 
+for the 70.158 ranges as the ones on my wireline with the exception
+they are routing to 192.168.252.2 instead of 192.168.200.2
 
-iD8DBQFDAmNYst+vzJSwZikRAokXAJ47aeytIFGoZOoWdxPPTbkz3U587QCgwpN5
-GS3EPRxQi7Jf/t+dC/1UhDk=3D
-=3DGPSL
------END PGP SIGNATURE-----
---1028002384-951718083-1124229972=:18549--
+Ive seen suggestions on marking packets, setting up 2 routing tables, 
+and others, but i have had limited success on getting this going.
+
+Could anyone provide some thoughts or input or an example? It would be 
+greatly appreciated. If I havent been descriptive enough, will provide 
+more details
+
+Thanks in advance
+
+--Wayne
 
