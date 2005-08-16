@@ -1,52 +1,59 @@
-From: Pablo Neira <pablo@netfilter.org>
-Subject: [ANNOUNCE] Netfilter Workshop 2005 in Seville, Spain
-Date: Tue, 16 Aug 2005 19:30:21 +0200
-Message-ID: <430222AD.4070009@netfilter.org>
+From: Nikolai Alexandrov <voyager123bg@gmail.com>
+Subject: Re: Filtered address in can login
+Date: Tue, 16 Aug 2005 20:34:59 +0300
+Message-ID: <430223C3.1090509@gmail.com>
+References: <1124203482.8177.18.camel@localhost>
+Reply-To: voyager123bg@gmail.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1124203482.8177.18.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter@lists.netfilter.org>, netfilter-announce@lists.netfilter.org
+To: vladimir@fetchbook.info
+Cc: netfilter@lists.netfilter.org
 
-Hi!
+Are you sure your default POLICIES are ok? I mean...
+do you have somewhere:
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+... your script ...
+iptables -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
-Following the three successful netfilter developer workshops 2001 
-(Enschede, NL), 2003 (Budapest, HU) and 2004 (Erlangen, GE), we are 
-happy to announce the next event in this series. The workshop will be 
-held in Seville, Spain. This year the workshop covers two sections:
+You should also consider adding rules for the DNS to work.
 
-- Users conference from 3th to 4th Oct.
-- Developers workshop from 5th to 6th Oct, plus two extra days of 
-hacking on code days from 7th to 8th Oct.
 
-The invited participants of the developers workshop are the current 
-netfilter coreteam members and about 10 developers. If you are involved 
-in any kind of netfilter development, feel free to apply. We've still 
-got a limited number of invitations.
+vladimir wrote:
 
-The event will take place at the School of Computer Engineering, located 
-at Reina Mercedes' Campus in Sevilla. It is a nice setting with elegant 
-surroundings and comfortable facilities, due to the amount of students 
-in the area.
-
-Sponsors:
-Thanks to Astaro AG (http://www.astaro.com/) for sponsoring this 
-workshop. In case that your company is interested in sponsoring the 
-workshop, please contact us and we'll send you our sponsorship policy.
-
-More info at:
-http://workshop.netfilter.org/
-
-regards,
-Pablo
+>Hi, I have iptables-1.2.7a and 2.4.26 kernel and there is something
+>strange.
+>I have the following rule:
+>iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+>iptables -A INPUT -s 0/0 --protocol tcp --destination-port 80 -j ACCEPT
+>iptables -A INPUT -s IP_ADDR  --protocol tcp --destination-port 22  -j
+>ACCEPT
+>iptables -A INPUT -p tcp --syn -j DROP
+>
+>So I expect that only  the specified IP_ADDR can ssh to port 22 in my
+>server.
+>But in /var/log/secure I see that some other IP's for example
+>168.179.113.141 try to login to ssh  with different user names to my
+>server.
+>However, then I try ssh to that server not from IP_ADDR I can not, as
+>expected.
+>Please tell me how this 168.179.113.141 bypass my firewall.
+>Thank you very much, 
+>Vladimir
+>  
+>
 
