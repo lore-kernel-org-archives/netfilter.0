@@ -1,12 +1,11 @@
-From: "Jeffrey Carter" <jeffreyc@gimi.org>
-Subject: Redirecting packet from incoming external interface to a different
-	external machine.
-Date: Mon, 15 Aug 2005 14:04:04 -0400
-Message-ID: <1374867BD86E3748B9FB02AC5EDE4282C61A73@gimi-fs1.gimi.org>
+From: vladimir <vladimir@fetchbook.info>
+Subject: Filtered address in can login
+Date: 16 Aug 2005 17:44:43 +0300
+Message-ID: <1124203482.8177.18.camel@localhost>
+Reply-To: vladimir@fetchbook.info
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,26 +19,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-=20
+Hi, I have iptables-1.2.7a and 2.4.26 kernel and there is something
+strange.
+I have the following rule:
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -s 0/0 --protocol tcp --destination-port 80 -j ACCEPT
+iptables -A INPUT -s IP_ADDR  --protocol tcp --destination-port 22  -j
+ACCEPT
+iptables -A INPUT -p tcp --syn -j DROP
 
-Here is what I'm looking to do (And please tell me if I'm crazy as I've
-been beating my head on this for a week)
+So I expect that only  the specified IP_ADDR can ssh to port 22 in my
+server.
+But in /var/log/secure I see that some other IP's for example
+168.179.113.141 try to login to ssh  with different user names to my
+server.
+However, then I try ssh to that server not from IP_ADDR I can not, as
+expected.
+Please tell me how this 168.179.113.141 bypass my firewall.
+Thank you very much, 
+Vladimir
+-- 
 
-=20
+www.FetchBook.Info
+Find the lowest price - Compare more than a hundred book stores in a
+click
 
-I'm looking to take a packet that is incoming on my machine, on port 21
-and redirect it to port 3805 on a completely different external machine.
-Basically, I'm trying to solve how to make the machine a transparent
-proxy on the same external interface.  The packets coming in on port 21
-can be coming from anywhere on the internet, and will be sent to port
-3805 on the remote machine, which then should come back through my box
-and back to the clients.
-
-=20
-
-Any ideas on using iptables for this?  I dusted off redir and while it
-worked it had its occasional issues so I'm trying to bring a better
-hammer to beat on the nail.
-
-=20
 
