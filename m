@@ -1,7 +1,7 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
-Subject: lartc ?
-Date: Tue, 16 Aug 2005 11:03:45 +0200
-Message-ID: <4301ABF1.4060807@eccotours.dyndns.org>
+From: Moritz Gartenmeister <moritz@uplink-verein.ch>
+Subject: authentification
+Date: Tue, 16 Aug 2005 12:07:01 +0200
+Message-ID: <4301BAC5.7050402@uplink-verein.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,16 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: iptables <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi
+hi
 
-So sorry to ask this, but this mailing list is the closest to LARTC.
+i just found some "experimental" software on my computer. i was once programming an authentification 
+sofware similiar to http://nocat.net/, but with MAC-adress support.
 
-Would anyone know if the LARTC mailing list is still active.
+Here's the list:
+modified PAM_MySQL
+a php webpage
+modified PAM_Iptables
+and a daemon to keep track of logged (off) in users (keeping iptables consistent with MySQL).
 
-Maybe please email me off the list.
+It's working (at least there was one successful login/logout procedure). The software is quick and 
+dirty, and I give absolutly no garanty for anything.
 
-Kind Regards and thanks in advance.
-Brent Clark
+If someone is interested to bring this further, send me an e-mail.
+
+cheers
+moritz
 
