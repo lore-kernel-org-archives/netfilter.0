@@ -1,10 +1,12 @@
-From: Moritz Gartenmeister <moritz@uplink-verein.ch>
-Subject: authentification
-Date: Tue, 16 Aug 2005 12:07:01 +0200
-Message-ID: <4301BAC5.7050402@uplink-verein.ch>
+From: varun_saa@vsnl.net
+Subject: Re: ftp issue cont.
+Date: Tue, 16 Aug 2005 15:16:41 +0500
+Message-ID: <980db9960d.9960d980db@vsnl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-language: en
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,25 +17,112 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Cc: netfilter@lists.netfilter.org
 
-hi
+Thanks a lot Jorg=2C =
 
-i just found some "experimental" software on my computer. i was once programming an authentification 
-sofware similiar to http://nocat.net/, but with MAC-adress support.
+                 It was rather simple=2E =
 
-Here's the list:
-modified PAM_MySQL
-a php webpage
-modified PAM_Iptables
-and a daemon to keep track of logged (off) in users (keeping iptables consistent with MySQL).
+I will try shortly and see my client-side works=2E =
 
-It's working (at least there was one successful login/logout procedure). The software is quick and 
-dirty, and I give absolutly no garanty for anything.
+ =
 
-If someone is interested to bring this further, send me an e-mail.
+While reading there were a few more details =3A =
 
-cheers
-moritz
+ =
+
+modprobe iptable=5Fnat =
+
+modprobe ip=5Fnat=5Fftp =
+
+ =
+
+In what situation would you enable those two=2E =
+
+ =
+
+Varun =
+
+ =
+
+----- Original Message ----- =
+
+From=3A J=F6rg Harmuth =3Charmuth=40mnemon=2Ede=3E =
+
+Date=3A Tuesday=2C August 16=2C 2005 1=3A26 pm =
+
+Subject=3A Re=3A ftp issue cont=2E =
+
+ =
+
+=3E varun=5Fsaa=40vsnl=2Enet schrieb=3A =
+
+=3E  =
+
+=3E =3EThanks Jorg=2C  =
+
+=3E =3E           I get the following for lsmod =3A  =
+
+=3E =3E  =
+
+=3E =3E=5Broot=40squidserver =7E=5D=23 lsmod =7C grep conntrack  =
+
+=3E =3Eip=5Fconntrack           41497  3  =
+
+=3E ipt=5Fstate=2Cipt=5FMASQUERADE=2Ciptable=5Fnat  =
+
+=3E =3E  =
+
+=3E =3ESo how do I add =3A  =
+
+=3E =3E   =
+
+=3E =3E           ip=5Fconntrack=5Fftp          =
+
+=3E =3E           ipt=5Fconntrack      =
+
+=3E =3E  =
+
+=3E =3EAnd yes it is =3A  =
+
+=3E =3E               -A FORWARD -j DROP  =
+
+=3E =3E  =
+
+=3E =3E   =
+
+=3E =3E =
+
+=3E modprobe ip=5Fconntrack=5Fftp =
+
+=3E  =
+
+=3E If you get an error message=2C you probably have to reconfigure the =
+
+=3E kernel=2E May I suggest reading some basic Linux tutorial =3F You can=
+ find =
+
+=3E tuts e=2Eg=2E on http=3A//debian=2Eorg and most likely on the home pa=
+ge of  =
+
+=3E yourdistribution=2E =
+
+=3E  =
+
+=3E Have a nice time and happy reading=2C =
+
+=3E  =
+
+=3E Joerg =
+
+=3E  =
+
+=3E  =
+
+=3E  =
+
+=3E  
+
 
