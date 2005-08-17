@@ -1,13 +1,11 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Forward to DMZ addresses
-Date: Thu, 18 Aug 2005 01:10:40 -0500
-Message-ID: <43042660.7090405@riverviewtech.net>
-References: <57933.67.53.150.63.1123957195.squirrel@mail.innovativesource.net>	<430028A8.3090508@riverviewtech.net>	<22055.206.166.83.50.1124208942.squirrel@mail.innovativesource.net>	<4302D0F1.8030005@riverviewtech.net>
-	<19817.206.166.83.50.1124294643.squirrel@mail.innovativesource.net>
+From: Clockover <clockover@wanadoo.fr>
+Subject: Problem with the hooks (forwarding decision problem)
+	(English/French)
+Date: Wed, 17 Aug 2005 21:49:28 +0200
+Message-ID: <430394C8.5030403@wanadoo.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <19817.206.166.83.50.1124294643.squirrel@mail.innovativesource.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,70 +16,134 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> What would I DNAT (--to-source) to.  My understanding is to check for
-> ESTABLISHED,RELATED state and forward onto either LAN/DMZ interface, but
-> how do I receive where -to-source should be?
+Hello,
 
-If you have a DNATing rule set up for traffic that is destined to your DMZ server coming in to your router on eth1 as such:
+My local network:
 
-iptables -t nat -A PREROUTING -i ${WAN} -d ${ExternalIP} -j DNAT --to-destination ${DMZServerIP}
-iptables -t filter -A FORWARD -i ${WAN} -o ${DMZ} -d ${DMZServerIP} -j ACCEPT
-iptables -t filter -A FORWARD -i ${DMZ} -o ${WAN} -s ${DMZServerIP} -j ACCEPT
+Notebook (1)-------internet---------router--------Serveur-VPN (3)
+                                                            |
+                                                             ----------=20
+LocalNetwork (2)
 
-You will need something similar to this as well:
+So I have a VPN server with the iptables' configuration as this (only a=20
+part):
 
-iptables -t nat -A PREROUTING -i ${LAN} -d ${ExternalIP} -j DNAT --to-destination ${DMZServerIP}
-iptables -t filter -A FORWARD -i ${LAN} -o ${DMZ} -d ${DMZServerIP} -j ACCEPT
-iptables -t filter -A FORWARD -i ${DMZ} -o ${LAN} -s ${DMZServerIP} -j ACCEPT
+INPUT (drop):
+ACCEPT     tcp  --  any    any     localnet/24          Server-VPN      =20
+ tcp dpt:ssh
+ACCEPT     tcp  --  any    any     localnet/24          Server-VPN      =20
+ tcp dpt:10000
+=20
+FORWARD (drop):
+ACCEPT     all  --  bond0  ppp+    localnet/24          localnet/24
+ACCEPT     all  --  ppp+   bond0   localnet/24          localnet/24
+=20
+OUTPUT (drop):
+ACCEPT     tcp  --  any    any     Server-VPN         localnet/24      =20
+  tcp spt:ssh
+ACCEPT     tcp  --  any    any     Server-VPN         localnet/24      =20
+  tcp spt:10000
 
-The idea behind this is that you are DNATing the traffic that is coming in from the world.  When you try to access your ""servers (globally routable) IP from your LAN your traffic will be coming in the interface connected to your LAN (eth0) and thus not match the first rule above.  This is why you need a similar rule to match on traffic that is coming in on your LAN interface.
+The server isn't the gateway of the local network, there is a router befo=
+re.
+I connect to the VPN Network without any problem.
 
-Note:  I went ahead and explicitly included rules for the FORWARD chain in the filter table that may be covered under a different rule, use your discression on these.
+If I ping a computer of the local network(2) it's good. And if I use a=20
+service (SSH, FTP, Samba....) on the Server VPN (3) no problem too.
+And if I open a remote SSH on a computer of the local network (2) it's=20
+good but if I open Webmin on the same computeur (2), it's failed!
+The Firewall stop my request !!
 
-> Ah...thanks.  Didn't think about that
+I try to open the chaine OUTPUT (Accept policy) and now it's run. and if=20
+I go to see with "iptables -L -v", I see that the IP packets go to the=20
+FORWARD chaine.
 
-No problem.  Ideas is what this list is for.
+Why I must open the OUTPUT chaine ??
+That would have pass in the FORWARD chaine as it's not for the Sver VPN,=20
+no ?
+And why SSH run correctly and not Webmin ?
 
-> IP Network = xx.xx.xx.182
-> Router WAN interface = xx.yyy.y.241
-> Router LAN interface = xx.xx.xx.183
-> Firewall eth0 connected to LAN switch = 10.123.x.x
-> Firewall eth1 connected to router = xx.xx.xx.184
-> Firewall eth2 connected to DMZ switch = xx.xx.xx.185
-> DMZ server eth0 connected to DMZ switch = xx.xx.xx.186
+I have other examples:
+-Terminal Server to a computer of the local network (2) =3D> no problem
+-Open a VNC session to a computer to a computer of the local network =3D>=
+=20
+no problem but the data are bloqued (the session opens but not texture
+And I haven't any exeption for VNC or Terminal Server on the INPUT=20
+Chaine and OUTPUT chaine.
 
-# Let's handle any outgoing and returning LAN traffic.
-iptables -t filter -A FORWARD -i eth1 -o eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -t filter -A FORWARD -i eth0 -o eth1 -j ACCEPT
-# Presumably any traffic returning from outbound requests will be in a state of established (or related) and thus is not destined to the DMZ server.
-# I think this situation will be taken care of inherently.
+Why this error ?
+I have forget anything ?
+All my request was send by the computer (1) connected on the VPN of cours=
+e.
 
-# Let's forward any (NEW or RELATED) traffic coming in to the WAN IP from the world over to the DMZ server.
-iptables -t nat -A PREROUTING -i eth1 -d xx.yy.yy.240 -m state --state NEW,RELATED -j DNAT --to-destination xx.xx.xx.186
-iptables -t filter -A FORWARD -i eth1 -o eth2 -d xx.xx.xx.186 -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth1 -s xx.xx.xx.186 -j ACCEPT
+Thanks :-)
+Sorry for my english
 
-# Let's forward any traffic coming in to the WAN IP from the LAN over to the DMZ server.
-iptables -t nat -A PREROUTING -i eth0 -d xx.yy.yy.240 -j DNAT --to-destination xx.xx.xx.186
-iptables -t filter -A FORWARD -i eth0 -o eth2 -d xx.xx.xx.186 -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth0 -s xx.xx.xx.186 -j ACCEPT
+Message in French:
 
-# We need to SNAT the traffic out to the world.
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source xx.yy.yy.240
+Voila j'ai un serveur VPN avec les r=E8gles iptables suivantes (extrait=20
+j'ai jsute mis ce qui nous interresse):
+=20
+INPUT (drop):
+ACCEPT     tcp  --  any    any     localnet/24          Serveur-VPN    =20
+   tcp dpt:ssh
+ACCEPT     tcp  --  any    any     localnet/24          Serveur-VPN    =20
+   tcp dpt:10000
+=20
+FORWARD (drop):
+ACCEPT     all  --  bond0  ppp+    localnet/24          localnet/24
+ACCEPT     all  --  ppp+   bond0   localnet/24          localnet/24
+=20
+OUTPUT (drop):
+ACCEPT     tcp  --  any    any     Serveur-VPN         localnet/24      =20
+  tcp spt:ssh
+ACCEPT     tcp  --  any    any     Serveur-VPN         localnet/24      =20
+  tcp spt:10000
+=20
+Le serveur ne fait pas office de passerelle, il y a un modem/routeur=20
+devant. =20
+Donc je me connecte sur mon VPN =E0 distance sans probl=E8me.
+=20
+Si je ping une b=E9cane du r=E9seau local aucun probl=E8me, idem si je de=
+mande=20
+le moindre services heberg=E9 par le Serveur-VPN.
+Et les choses se corsent juste maintenant.
+Si j'ouvre une session SSH =E0 distance sur une machine du reseau local,=20
+ca fonctionne tout bien correctement mais si j'essaye d'ouvrir une=20
+session Webmin, =E7a ne fonctionne pas! Le firewall le bloque.
+Alors que les r=E8gles sont similaires...=20
+=20
+J'ai essay=E9 en ouvrant la cha=EEne OUTPUT (ACCEPT par d=E9faut) =E7a=20
+fonctionne nickel. Apr=E8s =E7a, je referme cette r=E8gle une fois ma ses=
+sion=20
+=E9tablie ca continue =E0 tourner nickel et je vois en faisant "iptables =
+-L=20
+-v" les r=E8gles contenu dans FORWARD faire transiter les paquets.
+=20
+Alors d'ou vient cette neccessit=E9 d'avoir une ouverture sur OUTPUT ???
+N'est-ce pas senser passer directement sur la cha=EEne FORWARD vu que ma=20
+requ=EAte n'est pas =E0 destination du serveur ? =20
+Et pourquoi =E7a fonctionne avec SSH mais pas Webmin ?
 
+J'ai d'autres exemples en t=EAte:
+=20
+-Terminal Server sur un poste du reseau local =3D> nickel
+-Ping vers un poste du reseau local =3D> nickel
+-Ouverture d'une session VNC sur un poste =3D> nickel mais le flux de=20
+donn=E9es est bloqu=E9 apr=E8s
+=20
+J'ai aucune r=E8gles pour ces trois services dans mes cha=EEnes INPUT/OUT=
+PUT=20
+pourtant (donc DROP).
+=20
+Comment expliquer cette erreur de routage ?
+Ou est-ce moi qui est =E0 cot=E9 de quelque chose ?
+Toutes mes requ=E8tes etant bien s=FBr =E9mise de l'ordinateur (1) connec=
+t=E9 =E0=20
+distance.
 
-> LAN stuff works just fine...well, at least from what I can tell and it's
-> the only section with local IP's.  The others are all using globally
-> routable IP's from my block.
-> 
-> Currently, and as stated before, I can access everything from the firewall
-> itself, just can't pass through.
-> 
-> **Once I get a basic setup going, I should be able to figure it out...
-> it's just this hurdle right now
-
-*nod*
+Merci
 
