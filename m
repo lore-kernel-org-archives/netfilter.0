@@ -1,15 +1,15 @@
 From: Ray Van Dolson <rayvd@digitalpath.net>
-Subject: Re: Conntrack table editing utility
-Date: Wed, 17 Aug 2005 13:48:51 -0700
-Message-ID: <20050817204851.GA4473@digitalpath.net>
-References: <1122567204.42e90424cba63@base.mxtelecom.com>
-	<42ED1CB1.3050700@gmx.co.uk> <42EECA62.2070301@telefonica.net>
-	<42EF26C8.8090302@mnemon.de>
+Subject: Re: Transparent proxy where source IP address remains unchanged --
+	possible?
+Date: Wed, 17 Aug 2005 14:07:15 -0700
+Message-ID: <20050817210715.GB4473@digitalpath.net>
+References: <20050809012914.GA23108@bostoncoop.net>
+	<Pine.LNX.4.61.0508110741110.28320@yvahk01.tjqt.qr>
+	<20050811130700.GA15463@bostoncoop.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <42EF26C8.8090302@mnemon.de>
+In-Reply-To: <20050811130700.GA15463@bostoncoop.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,25 +20,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Aug 02, 2005 at 09:54:48AM +0200, J=F6rg Harmuth wrote:
-> srg schrieb:
-> > there is a file (don't remember the name) under /proc that have all
-> > contrack entries
->=20
-> /proc/net/ip_conntrack
+On Thu, Aug 11, 2005 at 09:07:00AM -0400, Adam Rosi-Kessel wrote:
+> I'm relocating a web/email/ssh server from one location to another (and
+> consequently to a new IP).  Since it's going to take many hours for the
+> IP address changes to propagate across DNS, I'd like to put a proxy box
 
-This is fine and all for viewing, but what is being requested is a utility =
-to
-"edit" (arbitrarily remove) ip_conntrack entries.   Situations arrive when =
-I'd
-like to expire a cached conntrack entry sooner.  There's a way to do this w=
-ith
-TCP connections, but not UDP or other protocols as far as I can tell.
+Not really related to achieving what you're asking, but if you have access to
+the DNS records for the domains you're dealing with (and you have enough
+leeway time), wouldn't it just be simpler to change your TTL to something like
+60 seconds so the propagation time happens much more quickly?
 
-This would be really handy!
+I guess you have to chance things with misbehaving DNS servers that don't
+honor TTL's and such ...
 
 Ray
+
+-- 
+Ray Van Dolson
+Linux/Unix Systems Administrator
+Digital Path, Inc.
 
