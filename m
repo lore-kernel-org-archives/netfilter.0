@@ -1,8 +1,8 @@
-From: Jonathan X Peers <jonathan@nobarrier.co.za>
+From: Jonathan X Peers <infomail@nobarrier.co.za>
 Subject: FORWARD to a dynamica ip address (ADSL)
-Date: Wed, 17 Aug 2005 12:42:31 +0200
-Message-ID: <43031497.3090604@nobarrier.co.za>
-Reply-To: jonathan@nobarrier.co.za
+Date: Wed, 17 Aug 2005 13:33:50 +0200
+Message-ID: <4303209E.6090700@nobarrier.co.za>
+Reply-To: infomail@nobarrier.co.za
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
