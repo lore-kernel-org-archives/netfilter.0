@@ -1,12 +1,12 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Filtered address in can login
-Date: Wed, 17 Aug 2005 00:06:11 -0500
-Message-ID: <4302C5C3.4090605@riverviewtech.net>
-References: <1124203482.8177.18.camel@localhost>
+Subject: Re: netfilter log target kills the computer
+Date: Wed, 17 Aug 2005 00:16:04 -0500
+Message-ID: <4302C814.3080307@riverviewtech.net>
+References: <013101c5a2d5$b5f233d0$0100a8c0@newlife>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1124203482.8177.18.camel@localhost>
+In-Reply-To: <013101c5a2d5$b5f233d0$0100a8c0@newlife>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,31 +20,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-The only thing that comes to mind is that 168.79.113.141 might be getting in under the "--state RELATED" rule if you had an outgoing connection to that IP it would possibly be able to get back in.
+Switch to ULOG instead of LOG as LOG relies on Syslog which was *NOT* meant for high volume traffic.  The other solution that I have proposed in the past is to set up TCPDump or Snort and have it sniff the headers out of packets and dump them to a log file and then post process said log file to extract what you are wanting and store it accordingly.
 
 
 
 Grant. . . .
 
-vladimir wrote:
-> Hi, I have iptables-1.2.7a and 2.4.26 kernel and there is something
-> strange.
-> I have the following rule:
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A INPUT -s 0/0 --protocol tcp --destination-port 80 -j ACCEPT
-> iptables -A INPUT -s IP_ADDR  --protocol tcp --destination-port 22  -j
-> ACCEPT
-> iptables -A INPUT -p tcp --syn -j DROP
+Ming-Ching Tiew wrote:
+> Anyone notice that the log target is really too heavy ? 
 > 
-> So I expect that only  the specified IP_ADDR can ssh to port 22 in my
-> server.
-> But in /var/log/secure I see that some other IP's for example
-> 168.179.113.141 try to login to ssh  with different user names to my
-> server.
-> However, then I try ssh to that server not from IP_ADDR I can not, as
-> expected.
-> Please tell me how this 168.179.113.141 bypass my firewall.
-> Thank you very much, 
-> Vladimir
+> I have seen various mishaviour to my Celeron 2.4 GHz
+> machine ( fully dedicated as a firewall machine ) if I turn
+> on logging. I am not sure if it is due to netfilter logging per se
+> or due to me running syslogd to remote the log messages over 
+> the network. But in any case, once there is heavy iptabbles logging
+> activities, the machine totally misbehaves. 
+> 
+> Besides the most obvious solutions ( ie to turn it off or get a faster 
+> computer ), any words of advise or recommendation ?
+> 
+> Cheers.
 
 
