@@ -1,10 +1,15 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
-Subject: cant connect to port 80
-Date: Wed, 17 Aug 2005 19:48:40 +0200
-Message-ID: <43037878.8070404@eccotours.dyndns.org>
+From: Ray Van Dolson <rayvd@digitalpath.net>
+Subject: Re: Conntrack table editing utility
+Date: Wed, 17 Aug 2005 13:48:51 -0700
+Message-ID: <20050817204851.GA4473@digitalpath.net>
+References: <1122567204.42e90424cba63@base.mxtelecom.com>
+	<42ED1CB1.3050700@gmx.co.uk> <42EECA62.2070301@telefonica.net>
+	<42EF26C8.8090302@mnemon.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <42EF26C8.8090302@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,42 +20,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: iptables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Hi list
+On Tue, Aug 02, 2005 at 09:54:48AM +0200, J=F6rg Harmuth wrote:
+> srg schrieb:
+> > there is a file (don't remember the name) under /proc that have all
+> > contrack entries
+>=20
+> /proc/net/ip_conntrack
 
-I have my routing rules as so
+This is fine and all for viewing, but what is being requested is a utility =
+to
+"edit" (arbitrarily remove) ip_conntrack entries.   Situations arrive when =
+I'd
+like to expire a cached conntrack entry sooner.  There's a way to do this w=
+ith
+TCP connections, but not UDP or other protocols as far as I can tell.
 
-/sbin/ip route add 196.36.10.113 dev eth0 src 196.36.10.114 table IS
-/sbin/ip route add default via 196.36.10.113 table IS
+This would be really handy!
 
-/sbin/ip route add 192.168.10.200 dev eth2 src 192.168.10.100 table TELKOM
-/sbin/ip route add default via 192.168.10.200 table TELKOM
-
-/sbin/ip route add 196.36.10.113 dev eth0 src 196.36.10.114
-/sbin/ip route add 192.168.10.200 dev eth2 src 192.168.10.100
-
-/sbin/ip route add default via 196.36.10.113
-
-/sbin/ip rule add from 196.36.10.114 table IS
-/sbin/ip rule add from 192.168.10.100 table TELKOM
-
-/sbin/ip rule add fwmark 1 table TELKOM
-
-apart from the rest of my firewall ruleset
-
-I have an entry as :
-
-$IPT -t nat -A PREROUTING -i eth1 -t mangle -p tcp --dport 80 -j MARK --set-mark 1
-$IPT -t filter -A FORWARD -i eth1 -o eth2 -m multiport -p tcp --dport 80,443 -m state --state NEW -j ACCEPT
-
-My browser cant seem to  connect to a webserver.
-
-Probally a routing issue, as I see that I dont get any messages in syslog of FORWARD complaining.
-
-If anyone could help, it would be most appreciated.
-
-Kind Regards
-Brent Clark
+Ray
 
