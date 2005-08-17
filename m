@@ -1,13 +1,12 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Redirecting packet from incoming external interface to a
- different external machine.
-Date: Wed, 17 Aug 2005 00:03:10 -0500
-Message-ID: <4302C50E.7020408@riverviewtech.net>
-References: <1374867BD86E3748B9FB02AC5EDE4282C61A73@gimi-fs1.gimi.org>
+Subject: Re: Filtered address in can login
+Date: Wed, 17 Aug 2005 00:06:11 -0500
+Message-ID: <4302C5C3.4090605@riverviewtech.net>
+References: <1124203482.8177.18.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1374867BD86E3748B9FB02AC5EDE4282C61A73@gimi-fs1.gimi.org>
+In-Reply-To: <1124203482.8177.18.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,31 +20,31 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-iptables -t nat -A PREROUTING -i ${ExternalInterface} -d ${ExternalInterfaceIP} -p tcp --dport 21 -j DNAT --to-destination ${DestinationServerIP}:3805
-iptables -t nat -A POSTROUTING -o ${ExternalInterface} -d ${DestinationServerIP} -j SNAT --to-source ${ExternalInterfaceIP}
-iptables -t filter -A FORWARD -i ${ExternalInterface} -o ${ExternalInterface} -d ${DestinationServerIP} -j ACCEPT
-iptables -t filter -A FORWARD -i ${ExternalInterface} -o ${ExternalInterface} -s ${DestinationServerIP} -j ACCEPT
-
-These rules should do exactly what you are wanting.  However I'm betting that because you are talking about port 21 there is a chance that you are dealing with FTP.  If that is indeed the case you will need to be careful what you do with the other ports that FTP opens as they may not pass through the system the same way.
+The only thing that comes to mind is that 168.79.113.141 might be getting in under the "--state RELATED" rule if you had an outgoing connection to that IP it would possibly be able to get back in.
 
 
 
 Grant. . . .
 
-Jeffrey Carter wrote:
-> Here is what I'm looking to do (And please tell me if I'm crazy as I've
-> been beating my head on this for a week)
+vladimir wrote:
+> Hi, I have iptables-1.2.7a and 2.4.26 kernel and there is something
+> strange.
+> I have the following rule:
+> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A INPUT -s 0/0 --protocol tcp --destination-port 80 -j ACCEPT
+> iptables -A INPUT -s IP_ADDR  --protocol tcp --destination-port 22  -j
+> ACCEPT
+> iptables -A INPUT -p tcp --syn -j DROP
 > 
-> I'm looking to take a packet that is incoming on my machine, on port 21
-> and redirect it to port 3805 on a completely different external machine.
-> Basically, I'm trying to solve how to make the machine a transparent
-> proxy on the same external interface.  The packets coming in on port 21
-> can be coming from anywhere on the internet, and will be sent to port
-> 3805 on the remote machine, which then should come back through my box
-> and back to the clients.
-> 
-> Any ideas on using iptables for this?  I dusted off redir and while it
-> worked it had its occasional issues so I'm trying to bring a better
-> hammer to beat on the nail.
+> So I expect that only  the specified IP_ADDR can ssh to port 22 in my
+> server.
+> But in /var/log/secure I see that some other IP's for example
+> 168.179.113.141 try to login to ssh  with different user names to my
+> server.
+> However, then I try ssh to that server not from IP_ADDR I can not, as
+> expected.
+> Please tell me how this 168.179.113.141 bypass my firewall.
+> Thank you very much, 
+> Vladimir
 
 
