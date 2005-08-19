@@ -1,10 +1,13 @@
-From: YongHan Lee <y_h_lee@yahoo.com>
-Subject: Different routing tables in ipv6 (netfilter6)
-Date: Fri, 19 Aug 2005 05:17:59 -0700 (PDT)
-Message-ID: <20050819121759.33459.qmail@web34207.mail.mud.yahoo.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Enable Loopback confuse
+Date: Fri, 19 Aug 2005 08:18:26 -0500
+Message-ID: <200508190818.26391.rob0@gmx.co.uk>
+References: <BAY22-F13F52A0BB552F1A3EF3365A6B50@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <BAY22-F13F52A0BB552F1A3EF3365A6B50@phx.gbl>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,64 +21,39 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Friday 2005-August-19 05:41, nattapon viroonsri wrote:
+> When i enable loopback i just use 2 line below and everything work
+> fine iptables -A INPUT -i lo -j ACCEPT
+> iptables -A OUTPUT -o lo -j ACCEPT
 
-I do a project in networking. The subject is
-"multipath in ipv6". For this I need to create
-different routing
-tables in ipv6 and add to each different routes
-(different next hop) for the same destination to it.
+Correct, unless earlier rules do something to prevent these rules from 
+being evaluated.
 
-For the implementation I have the following problem.
+> But i see many example around then have also included this line
+>  below to enable loopback
+> iptables -A FORWARD -o lo - j ACCEPT ?
 
-My scenario for testing is. I have two routes to a
-destination D. When I send a SSH packet, I do it via
-node B (fec0::B) and for a HTTP packet I do it via
-node C (fec0::C). Node B and C are not connected
-together.
+They are wrong. FORWARD rules are checked when *both* the source and 
+destination IP's are not local. Normal loopback traffic can never hit 
+the FORWARD chain.
 
-When I do:
-for SSH
-# ip6tables -A PREROUTING -t mangle -i eth1 -p tcp
---dport 22 -j MARK --set-mark 1
-# echo 201 ssh.out >> /etc/iproute2/rt_tables
-# ip rule add fwmark 1 table ssh.out
-# ip -6 route add default via fec0::B dev eth1 table
-ssh.out
+> So can i omit this line ?
+> or what kind of packet that match this rule ?
 
-for HTTP
-# ip6tables -A PREROUTING -t mangle -i eth1 -p tcp
---dport 80 -j MARK --set-mark 2
-# echo 202 http.out >> /etc/iproute2/rt_tables
-# ip rule add fwmark 2 table http.out
-# ip -6 route add default via fec0::C dev eth1 table
-http.out
+Yes. None. It's possibly true that specially-crafted packets and silly 
+routing could be employed, but this is not a real-world situation.
 
-then:
-# ip -6 route show table all
-it shows me the added route, but without "table
-ssh.out" at the end of line as it do when we operated
-in ipv4. This means it ignores the last two arguments
-(table ssh.out or table http.out) when we add a route
-to the table ssh.out (or http.out) and therefore these
-tables remain empty. When it has a packet to send it
-does not know to which next hop it has to send. So,
-the marking packets is here useless.
+filter table            IP address
+built-in chains         source          destination
+----------------        ------          -----------
+INPUT                   n/a             local
+OUTPUT                  local           not local
+FORWARD                 not local       not local
 
-Do I have to load explicitly some modules for
-netfilter ipv6? How do I have to configure the config
-files or the kernel? 
-
-I achieved multipath in ipv4 (ip rule, ip route...)
-without bigger problems. I use Kernel 2.6.8 and
-Mandrake 10.0/1.
-
-
-
-
-		
-____________________________________________________
-Start your day with Yahoo! - make it your home page 
-http://www.yahoo.com/r/hs 
- 
+Each packet is checked against the rules in only one of the built-in 
+chains, *except* loopback traffic, which hits OUTPUT going out, and 
+then INPUT coming in.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
