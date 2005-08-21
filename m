@@ -1,12 +1,11 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: port 80 out new ISP
-Date: Sun, 21 Aug 2005 11:19:49 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0508211117450.2412@yvahk01.tjqt.qr>
-References: <430600E4.3090004@eccotours.dyndns.org>
-	<200508191205.22196.rob0@gmx.co.uk>
+Subject: Re: IPTABLES suddenly stop
+Date: Sun, 21 Aug 2005 16:46:54 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0508211646190.15128@yvahk01.tjqt.qr>
+References: <20050819004242.D66C744C013@soluezi.terra.com.br>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200508191205.22196.rob0@gmx.co.uk>
+In-Reply-To: <20050819004242.D66C744C013@soluezi.terra.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,17 +18,18 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: /dev/rob0 <rob0@gmx.co.uk>
+To: Henrique Duran <hduran@terra.com.br>
 Cc: netfilter@lists.netfilter.org
 
 
->> $IPT -t nat -A POSTROUTING -o eth2 -s 192.168.111.0/24 -j MASQUERADE
->
->MASQUERADE will not work with dual routing.
+>            Recently I have configured na Iptables Firewall with transparent
+>proxy (squid) on a Debian RC3.01 machine. The machine is a pentium 3, with
+>600MHz and 196 MB of RAM. The script is working fine, there is no problem
+>with the rules, but a strange thing happens. 
 
-Does it really? AFAICS it asks the routing code to "route this for me and tell 
-me what interface it would hypothetically go out" and takes the ip of the 
-outgoing iface.
+What sort of transparency and/or what sort of framework to do this 
+transparency?
+
 
 Jan Engelhardt
 -- 
