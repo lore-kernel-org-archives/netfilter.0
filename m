@@ -1,11 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: IPTABLES suddenly stop
-Date: Sun, 21 Aug 2005 16:46:54 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0508211646190.15128@yvahk01.tjqt.qr>
-References: <20050819004242.D66C744C013@soluezi.terra.com.br>
+From: Marc Schoechlin <ms@256bit.org>
+Subject: Re: building a iptables-firewallcluster
+Date: Sun, 21 Aug 2005 15:37:49 +0200
+Message-ID: <20050821133749.GB20106@256bit.org>
+References: <20050802120309.GA5501@256bit.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050819004242.D66C744C013@soluezi.terra.com.br>
+Content-Disposition: inline
+In-Reply-To: <20050802120309.GA5501@256bit.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,21 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Henrique Duran <hduran@terra.com.br>
+To: Marc Schoechlin <mslists@256bit.org>
 Cc: netfilter@lists.netfilter.org
 
+Hi !
 
->            Recently I have configured na Iptables Firewall with transparent
->proxy (squid) on a Debian RC3.01 machine. The machine is a pentium 3, with
->600MHz and 196 MB of RAM. The script is working fine, there is no problem
->with the rules, but a strange thing happens. 
+On Tue, Aug 02, 2005 at 02:03:09PM +0200, Marc Schoechlin wrote:
 
-What sort of transparency and/or what sort of framework to do this 
-transparency?
+> As i remember at linuxtag 2004 (karlsruhe/germany) Harald Welte gave
+> a speech about a facility in the linux-kernel which allows the
+> synchronization of conntrack-tables between the different machines
+> of a firewall-cluster.
+> 
+> I searched for some documentation and the state of this project, but i was not
+> able to get any useful information about this issue.
+> 
+> Is this now part of the linux-kernel or are there now other strategies
+> to build firewallclusters for load-balancing and/or 
+> high-availability ?
+> 
+> Where can i get detailed information about the installation of a 
+> iptables-based firewall-cluster ?
 
+No resonse for two weeks - am i right to assume that this 
+project is dead ?
 
-Jan Engelhardt
+Are there any other ways ?
+
+Best regards
+
+Marc Schoechlin
 -- 
+I prefer non-proprietary document-exchange.
+http://sector7g.wurzel6.de/pdfcreator/
+http://www.prooo-box.org/
+
 
