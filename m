@@ -1,14 +1,9 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: building a iptables-firewallcluster
-Date: Mon, 22 Aug 2005 08:15:45 -0500
-Message-ID: <200508220815.45545.rob0@gmx.co.uk>
-References: <20050802120309.GA5501@256bit.org>
-	<20050821133749.GB20106@256bit.org> <200508221350.48867@nienna>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: AS_IPFW 4.0 released
+Date: Mon, 22 Aug 2005 16:09:25 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0508211037480.2412@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200508221350.48867@nienna>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,35 +14,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: KOVACS Krisztian <hidden@balabit.hu>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter User Mailing List <netfilter@lists.netfilter.org>
 
-On Monday 2005-August-22 06:50, KOVACS Krisztian wrote:
-> On Sunday 21 August 2005 15.37, Marc Schoechlin wrote:
-> > No resonse for two weeks - am i right to assume that this
-> > project is dead ?
->
->   Almost, but not completely dead.
 
-Did we not just have 2 iptables releases last month? Slow perhaps, but 
-the rumours of the death of netfilter would appear to be greatly 
-exaggerated. :)
+I am proud to announce the release of AS_IPFW 4.0. AS_IPFW is
+designed to be a firewall API, but also has some rulesets that
+can be used as-is in many situations. Version 4.0 adds support
+for kernel-level iptables-based STEALTH SCAN (tcp half open)
+detection -- a first according to my research (with a nameful
+search engine). It also dramatically slows down TCP FNX
+(FIN/NULL/XMAS) scans -- by more than 50000%, and UDP by more
+than 65000%! On top, it provides back false information to do
+the best in hindering and confusing hostile actions.
 
->   Unfortunately Harald does not seem to have the time necessary to
-> work on this project right now, and neither do I. (Apart from this, I
-> also don't have the devices necessary to do _any_ testing apart from
-> compiling the code...)
+You are welcome to read the "Technical Details" I have written
+if you are interested (that's what has delayed this release so
+long). Some parts of AS_IPFW 4.0 have not yet received thorough
+testing (as is usual with x.0 releases). You are encouraged to
+do so, but beware, it takes kernel and iptables patches to get
+it going.
 
-I can't suggest anything to help with making more hours in the day, 
-other than take a lot of westbound jet flights, and always continue 
-westbound. ;) But I have a couple of ideas for the device shortage:
+A big thanks goes out to the creators of the CONNMARK, RANDOM,
+REJECT, TARPIT and goo matches/targets, which make up the
+essence of this release.
 
-1. Skip surfing / dumpster diving
-   Old "useless" machines are excellent netfilterers.
-2. User-mode Linux
-   Set up an entire network on one physical machine.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+
+http://freshmeat.net/p/AS_IPFW/
 
