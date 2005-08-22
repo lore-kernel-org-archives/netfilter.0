@@ -1,10 +1,11 @@
-From: Zef <zef@fcvnet.net>
-Subject: netfilter benchmarks on two gigabit ethernet cards
-Date: Mon, 22 Aug 2005 21:58:11 +0200
-Message-ID: <430A2E53.8040000@fcvnet.net>
+From: "Harrison, Bruce (CXO)" <Bruce.Harrison@hp.com>
+Subject: Implementing Strong ES Model
+Date: Mon, 22 Aug 2005 14:48:07 -0600
+Message-ID: <2F75680A268354469586578F0712182AA85E22@CXOEXC12.AMERICAS.CPQCORP.NET>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,20 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello
+Hello All!
 
-do you know any benchmarks showing packet per seconds filtering power of 
-netfilter running on X86 platforms with two gigabit cards?
-Same question for ARM based platforms.
+=20
 
-I know that this is a silly question cos it is heavily dependent on both 
-the hardware platform and the filtering rules, but I really need to know 
-the numbers ( or I'll do the tests by myself ).
+    I'm trying to get Red Hat EL 4 to exhibit strong end system behavior
+and it was suggested that this could be done via iptables.  Other *IX
+operating systems have parameters such as ip_strong_es_model that can be
+set to enable this behavior.  Is this doable using iptables?
 
-Thanks for netfilter.
+=20
 
-Zef'
+Thanks for reading!
+
+=20
+
+=20
+
+Bruce...
 
