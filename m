@@ -1,12 +1,10 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: Forward udp and tcp to another external IP address.
-Date: Tue, 23 Aug 2005 12:53:09 +0100
-Message-ID: <200508231253.09659.gdh@acentral.co.uk>
-References: <4309F8B1.1060309@webifi.com>
+From: Chadley Wilson <chadley@ngn.co.za>
+Subject: Susefirewall2 redirecting
+Date: Tue, 23 Aug 2005 15:20:08 +0200
+Message-ID: <200508231520.08360.chadley@ngn.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4309F8B1.1060309@webifi.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,28 +19,78 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 22 August 2005 17:09, John Kielkopf wrote:
-> We're planning on moving a server to another location and to ease to
-> move we'd like to for forward all TCP and UDP traffic coming in on a
-> particular IP address at location A to a different address at location
-> B.  Note that these addresses are from two different hosts.
+Greetings,
 
-Here's a standard recipe I've used for doing this..
+I am struggling to figure out what I have wrong, 
 
-# Make the firewall act as a non-caching TCP proxy. Useful for machine moves 
-whilst DNS propogates.
+We have a remote desktop situation here. 
 
-$IPTABLES -t nat -A PREROUTING -p tcp --dport 80 -d 194.200.209.137 -j DNAT 
---to 213.2.4.33
-$IPTABLES -A FORWARD -p tcp --dport 80 -d 194.200.209.137 -j ACCEPT
-$IPTABLES -t nat -A POSTROUTING -p tcp --dport 80 -d 213.2.4.33 -j SNAT --to 
-194.200.209.137
+My firewall is a Suse 9.3 box, and works well, but now I have a problem with 
+the firewall, and I think its because I lack some knowledge on how-to do 
+this:
 
-In this case, a web server was runnning on 194.200.209.137 that we were 
-physically moving to a new location at 213.2.4.33...
+Our ISP hosts the dns records for ngn.annoip.org which resolves to 
+196.31.62.99. But this is our firewall not the windows pc.
 
-These rules were loaded onto the firewall at 194.200.209.254...
+There are two lan cards in each the firewall 196.31.62 being the external and 
+196.100.100 being the internal. 
 
-Cheers,
-Gavin.
+Everthing on our lan must go through the firewall to gain access to the net 
+and vica-versa,
+
+I have treid a few rules to redirect traffic from the internet --dport 3389 to 
+the remote desktop pc port 3389. But nothing seems to work.
+These are the currecnt rules in my firewall setup for this.
+
+-A PREROUTING -s 196.31.62.0/255.255.255.0 -d 196.100.100.2 -p tcp -m tcp 
+--dport 3389 -j MARK --set-mark 0x1
+
+-A PREROUTING -s 196.31.62.0/255.255.255.0 -d 196.100.100.2 -p udp -m udp 
+--dport 3389 -j MARK --set-mark 0x1
+
+-A forward_ext -s 196.31.62.0/255.255.255.0 -d 196.100.100.2 -p tcp -m limit 
+--limit 3/min -m tcp --dport 3389 -m state --state NEW -j LOG --log-prefix 
+"SFW2-FWDext-ACC-REVMASQ " --log-tcp-options --log-ip-options
+
+-A forward_ext -s 196.31.62.0/255.255.255.0 -d 196.100.100.2 -p tcp -m tcp 
+--dport 3389 -j ACCEPT
+
+-A forward_int -s 196.31.62.0/255.255.255.0 -d 196.100.100.2 -p tcp -m limit 
+--limit 3/min -m tcp --dport 3389 -m state --state NEW -j LOG --log-prefix 
+"SFW2-FWDint-ACC-REVMASQ " --log-tcp-options --log-ip-options
+
+-A forward_int -s 196.31.62.0/255.255.255.0 -d 196.100.100.2 -p tcp -m tcp 
+--dport 3389 -j ACCEPT
+
+-A input_ext -p tcp -m limit --limit 3/min -m tcp --dport 3389 --tcp-flags 
+SYN,RST,ACK SYN -j LOG --log-prefix "SFW2-INext-ACC-TCP " --log-tcp-options 
+--log-ip-options
+
+-A input_ext -p tcp -m tcp --dport 3389 -j ACCEPT
+
+-A input_ext -p udp -m udp --dport 3389 -j ACCEPT
+
+-A PREROUTING -s 196.31.62.0/255.255.255.0 -d 196.100.100.2 -p tcp -m tcp 
+--dport 3389 -j REDIRECT --to-ports 3389
+
+-A PREROUTING -s 196.31.62.0/255.255.255.0 -d 196.100.100.2 -p udp -m udp 
+--dport 3389 -j REDIRECT --to-ports 3389
+
+-A PREROUTING -s 196.31.62.0/255.255.255.0 -d 196.31.62.99 -i eth0 -p tcp -m 
+tcp --dport 3389 -j DNAT --to-destination 196.100.100.2:3389
+
+
+Any ideas as to how I can force this to work?
+
+TIA
+
+-- 
+--
+Chadley Wilson
+Production Line Superintendant
+Pinnacle Micro
+Manufacturers of Proline Computers
+====================================
+Exercise freedom, Use LINUX
+=====================================
 
