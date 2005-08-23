@@ -1,12 +1,13 @@
-From: "Ruben Cardenal" <ruben@ruben.cn>
-Subject: RE: ROUTE  woes ?
-Date: Tue, 23 Aug 2005 22:20:53 +0200
-Message-ID: <30770.6466097899$1124828825@news.gmane.org>
-References: <430B83A1.1000908@eccotours.dyndns.org>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: ROUTE  woes ?
+Date: Tue, 23 Aug 2005 15:29:25 -0500
+Message-ID: <200508231529.25465.rob0@gmx.co.uk>
+References: <20050823201959.3AC9E49EE@sorry.no-ip-here.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <430B83A1.1000908@eccotours.dyndns.org>
+In-Reply-To: <20050823201959.3AC9E49EE@sorry.no-ip-here.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,36 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'iptables' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi,
+On Tuesday 2005-August-23 15:20, Ruben Cardenal wrote:
+> http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-ROUTE
+>
+>   In order to be able to use it, you must download also iptables and
+> patch-o-matic and compile all the needed stuff. The order is
+>
+>   a) Apply patch-o-matic against the iptables source
+>   b) Compile and install iptables
+>   c) Recompile your kernel to generate the ipt_ROUTE module (the
+> prior iptables configuration will add it to your kernel tree).
 
-> You 100% correct, thanks for setting me straight, but i still struggling,
-> since I dont have the target ROUTE in my kernel
-> 
-> gate:~# iptables -t mangle -A POSTROUTING -p tcp --dport 80 -j ROUTE --oif
-> eth2
-> iptables: No chain/target/match by that name
-> gate:~#
-> 
-> Ive been looking at the various path o matics, and I cant find the patch
-> my kernel.
+If all netfilter drivers were built as modules, is an entire compile / 
+reboot necessary? Can you just get away with a "make modules" (and 
+"make modules_install") if the POM drivers are the only thing you're 
+changing?
 
-  This target belongs to the extra respository of patch-o-matic:
-
-  http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-ROUTE
-
-  In order to be able to use it, you must download also iptables and
-patch-o-matic and compile all the needed stuff. The order is
-
-  a) Apply patch-o-matic against the iptables source
-  b) Compile and install iptables
-  c) Recompile your kernel to generate the ipt_ROUTE module (the prior
-iptables configuration will add it to your kernel tree).
-
- Regards,
-
-- Ruben
-
-
+I'd like to play with POM sometime, but I don't reboot if I can avoid 
+it. :)
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
