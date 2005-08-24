@@ -1,12 +1,12 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
-Subject: Re: ROUTE  woes ?
-Date: Wed, 24 Aug 2005 10:00:34 +0200
-Message-ID: <430C2922.3000105@eccotours.dyndns.org>
-References: <E1E7obP-0004Pv-UB@mail.eccotours.co.za>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: layer7 problem
+Date: Wed, 24 Aug 2005 10:57:26 +0200
+Message-ID: <430C3676.30904@mnemon.de>
+References: <430BC558.8000406@telefonica.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <E1E7obP-0004Pv-UB@mail.eccotours.co.za>
+In-Reply-To: <430BC558.8000406@telefonica.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ruben Cardenal <ruben@ruben.cn>
-Cc: 'iptables' <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Ruben Cardenal wrote:
-> 
-> http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-ROUTE
-> 
->   Btw: It works.
-> 
+Antonio P=E9rez schrieb:
+> Hello,
+> I want to use layer7 in my linux box. I have the 2.6.12.5 kerner versio=
+n
+> and the 1.3.3 iptables version. I patched the kernel and the iptables
+> with kernel-2.6.11-layer7-1.4.patch, linux-2.6.9-imq1.diff,
+> iptables-1.3.0-imq1.diff and iptables-layer7-1.4.patch.
+> When i run:
+> iptables -t mangle -A POSTROUTING -m layer7 --l7proto http -j MARK
+> --set-mark 3
+> no error show, but when i do:
+> iptables -t mangle -L -v
+> pkts bytes target     prot opt in     out     source             =20
+> destination
+>    0     0 MARK       all  --  any    any     anywhere           =20
+> anywhere            LAYER7 l7proto http MARK set 0x3
+> the packets marked always is 0.
 
-Hi Ruben / list
+There are several possibilities - in theory. Taken from http.pat:
 
-a big thanks to all for replying to my email.
+# this intentionally catches the response from the server
+# rather than the request so that other protocols which use
+# http (like kazaa) can be caught based on specific http requests
+# regardless of the ordering of filters...
+# also matches posts
 
-I know and see ROUTE is avail with POM, but I heard from two different people that ROUTE is part of the 2.6 series kernel.
+So, if the pattern catches the *server* response, it will be in the 5th
+packet of the connection (3 packets handshake, request, response) and
+this packet will not pass POSTROUTING. It will pass PREROUTING, as it is
+an incoming packet. Thus the best bet is to move your rule accordingly
+or simply add it in PREROUTING.
 
-Problem is, either they are both wrong, as I cant find ROUTE in my kernel.
+HTH and have a nice time,
 
-And the other thing is, i got POM from
-
-ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/patch-o-matic-ng-20050822.tar.bz2
-
-obviously with me running debian I needed the iptables source.
-
-I downloaded that as well tar jxvf and then ran run runme in the patchomatic directory and not once was I offered ROUTE.
-
-So now im at a complete loss.
-
-If anyone could share of any tip or tricks, I would be most greatful.
-
-Kind Regards, and thanks in advance.
-
-Brent Clark
-
+Joerg
 
