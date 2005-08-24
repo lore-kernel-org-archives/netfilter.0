@@ -1,12 +1,13 @@
-From: Sp0oKeR <spooker@gmail.com>
-Subject: Re: Problems with ROUTE - Compile
-Date: Wed, 24 Aug 2005 17:03:26 -0300
-Message-ID: <9255886c05082413034b703f5f@mail.gmail.com>
-References: <9255886c050824123126f6c664@mail.gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Odd issue with two SNATed Firewalls and Wireless router
+Date: Wed, 24 Aug 2005 15:47:18 -0500
+Message-ID: <200508241547.18164.rob0@gmx.co.uk>
+References: <1124886644.9968.186.camel@andrew.iface.lan>
+	<WorldClient-F200508241343.AA43070008@acerlandslp.com.mx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9255886c050824123126f6c664@mail.gmail.com>
+In-Reply-To: <WorldClient-F200508241343.AA43070008@acerlandslp.com.mx>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,60 +20,100 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-  Sorry guys, I was using an old version of POM. My bad!
-
-Thanks,
-
-Sp0oKeR
-
-On 8/24/05, Sp0oKeR <spooker@gmail.com> wrote:
-> I applied POM in my kernel 2.4.31. I compiled kernel ok, but Im trying
-> to build new iptables package and Im getting this errors
->=20
-> c -O2 -g -pipe -march=3Di386 -mcpu=3Di686
-> -I/usr/src/redhat/BUILD/iptables-1.2.8/include -Wall -Wunused
-> -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSION=3D\"1.2.8\"
-> -fPIC -o extensions/libipt_ULOG_sh.o -c extensions/libipt_ULOG.c
-> ld -shared -o extensions/libipt_ULOG.so extensions/libipt_ULOG_sh.o
-> cc -O2 -g -pipe -march=3Di386 -mcpu=3Di686
-> -I/usr/src/redhat/BUILD/iptables-1.2.8/include -Wall -Wunused
-> -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSION=3D\"1.2.8\"
-> -fPIC -o extensions/libipt_ROUTE_sh.o -c extensions/libipt_ROUTE.c
-> extensions/libipt_ROUTE.c: In function `init':
-> extensions/libipt_ROUTE.c:44: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:45: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:46: structure has no member named `gw'
-> extensions/libipt_ROUTE.c: In function `parse':
-> extensions/libipt_ROUTE.c:73: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:76: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:78: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:91: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:94: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:96: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:105: structure has no member named `gw'
-> extensions/libipt_ROUTE.c: In function `print':
-> extensions/libipt_ROUTE.c:142: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:143: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:145: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:146: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:148: structure has no member named `gw'
-> extensions/libipt_ROUTE.c:149: structure has no member named `gw'
-> extensions/libipt_ROUTE.c: In function `save':
-> extensions/libipt_ROUTE.c:161: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:162: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:164: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:165: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:167: structure has no member named `gw'
-> extensions/libipt_ROUTE.c:168: structure has no member named `gw'
-> make: *** [extensions/libipt_ROUTE_sh.o] Error 1
->=20
->=20
-> I tried redhat source and the last version and I got same errors.
->=20
-> Thanks,
->=20
-> Sp0oKeR
+On Wednesday 2005-August-24 13:43, ISC Jorge Ceron Galvan wrote:
+> I'm not doing nat because I want a real IP at my wireless client.
 >
+> cisco eth0  200.0.0.1/24
+
+What a great netblock that is! Uh, this *is* your real IP, or did you 
+munge it for posting? It's not the same as what appears in your mail 
+headers.
+
+If you're going to munge IP addresses, you should not use a live 
+netblock. Pick something from RFC 1918 or an unassigned (bogon) range.
+
+> linux eth0  200.0.0.10/24  gw 200.0.0.1/24
+
+/24 covers 200.0.0.0 (the network address) through 200.0.0.255 (the 
+broadcast address.)
+
+> linux eth1  200.0.0.129/27
+
+And this is included in the eth0 network. Perhaps you should use /25 
+netmask or greater on eth0.
+
+> remote fortinet router eth0 200.0.0.130/27   gw 200.0.0.129
+
+I don't know what this means.
+
+> I thougth it could be a routing problem because I'm using subnet 0 at
+> eth0, and at eth1 I set up a subnet from eth0.
+
+Yes, that is a part of the problem, I would think.
+
+> It's not an iptables 
+> issue because I'm not using it at all. The configuration is quite
+
+This is the netfilter list, so you're off topic here.
+
+> simple, but I don't know whether you can subnet a class C net this
+
+I don't know either. I generally find that doing things the right way 
+works better. ;)
+
+> way. The mail server we are trying to reach is somewhere in the
+> internet.
+>
+> I'm using a wireless AP at my side and a wireless bridge at the other
+> side; the bridge is connected directly to the fortinet router. Could
+> it be a protocol bridge problem?
+
+1. Check the routing
+2. Check the routing
+3. Check the routing
+4. Look at packet counters, is eth1 being used at all?
+
+replying to the OP as well:
+> -----Original Message-----
+> From: Andrew Gargan <andrew@iface.co.za>
+snip
+> > Has anyone experienced similar issues using a shared NATed
+> > mywireless ....
+> >
+> > most of the mail comes down .... it seems to break when
+> > transmissions are over +-600 KB)
+> >
+> > I was told that changing the MTU for the ppp0 device to 1300 would
+> > help but no luck there.
+
+It does sound like a possible router MTU issue. It does not sound like 
+iptables/netfilter is involved.
+
+> > eth1      Link encap:Ethernet  HWaddr 00:03:47:71:7B:37
+> >           inet addr:10.0.7.2  Bcast:10.255.255.255  Mask:255.0.0.0
+> >           inet6 addr: fe80::203:47ff:fe71:7b37/64 Scope:Link
+> >           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+> >           RX packets:27333550 errors:0 dropped:0 overruns:0 frame:0
+> >           TX packets:28013971 errors:1 dropped:0 overruns:0
+> > carrier:1 collisions:614337 txqueuelen:1000
+
+That is a lot of collisions. It might not indicate a problem, but 
+likewise, it might.
+
+> > and iptables -L:
+
+... is utterly useless. "iptables -vL" is better, but iptables-save(8) 
+is greatly preferred.
+
+That said, nothing indicates the likelihood of a problem with your 
+iptables rules.
+
+> > I am using rp-pppoe I think ...
+
+You think?
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
