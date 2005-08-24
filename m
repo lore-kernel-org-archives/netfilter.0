@@ -1,11 +1,11 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: NOTRACK action question
-Date: Wed, 24 Aug 2005 14:49:28 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829074E2@pxtbenexd01.pxt.primeexalia.com>
+From: netfilter@notleyc.fastmail.fm
+Subject: (no subject)
+Date: Wed, 24 Aug 2005 23:15:33 +0100
+Message-ID: <1124921733.4001.241416298@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +17,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: /dev/rob0 <rob0@gmx.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Makes sense.  Your understanding is correct.  We will look at moving the
-server into a directly routed subnet in the future.=20
+Hi,
 
-BTW, do you know what the limit is on connection tracking or where I can
-find/set the values.
+I've been trying to apply Patrick McHardy's netfilter+ipsec patches to
+my 
+2.6.12-5 (from kernel.org) using patch-o-matic.  When I try to apply any
+of 
+the four patches I receive the following message:
 
->=20
-> It would depend on your configuration. Oh you said NAT, DNAT I guess.
-> IIUC DNAT does depend on connection tracking. Perhaps you should put
-> your Apache reservation in a routed (not DNAT'ed) subnet.
->=20
-> > I would assume no.  But when I add a NOTRACK rule to the raw table
-> > Apache suddenly fails to serve the pages to external clients.
->=20
-> Then your assumption would seem to be in error.
->=20
-> > Am I doing something wrong?
->=20
-> If it's not working, and you want it to work, yes. :)
-> --
->     mail to this address is discarded unless "/dev/rob0"
->     or "not-spam" is in Subject: header
+patchlets/ipsec-01-output-hooks has dependency on nf_reset, but nf_reset
+is 
+not known
+
+I've probably missed something obvious, but I've hit a dead end, any
+help 
+would be appreciated.  
+
+Cheers,
+Chris
+-- 
+  Chris Notley
+  chris@notley.org
 
 
