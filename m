@@ -1,13 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: ROUTE  woes ?
-Date: Tue, 23 Aug 2005 15:52:47 -0500
-Message-ID: <200508231552.47761.rob0@gmx.co.uk>
-References: <20050823203317.5EA2749EE@sorry.no-ip-here.net>
+From: =?ISO-8859-1?Q?Antonio_P=E9rez?= <aperlu@telefonica.net>
+Subject: layer7 problem
+Date: Wed, 24 Aug 2005 02:54:48 +0200
+Message-ID: <430BC558.8000406@telefonica.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050823203317.5EA2749EE@sorry.no-ip-here.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +15,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: 'iptables' <netfilter@lists.netfilter.org>
 
-On Tuesday 2005-August-23 15:34, Ruben Cardenal wrote:
-> > If all netfilter drivers were built as modules, is an entire
-> > compile / reboot necessary? Can you just get away with a "make
-> > modules" (and "make modules_install") if the POM drivers are the
-> > only thing you're changing?
->
->   Where did I say reboot, dude? :) When you say "recompile your
-> kernel" you know you are refering to "make the needed changes, issue
-> the needed actions"
+Hello,
+I want to use layer7 in my linux box. I have the 2.6.12.5 kerner version 
+and the 1.3.3 iptables version. I patched the kernel and the iptables 
+with kernel-2.6.11-layer7-1.4.patch, linux-2.6.9-imq1.diff, 
+iptables-1.3.0-imq1.diff and iptables-layer7-1.4.patch.
+When i run:
+iptables -t mangle -A POSTROUTING -m layer7 --l7proto http -j MARK 
+--set-mark 3
+no error show, but when i do:
+iptables -t mangle -L -v
+pkts bytes target     prot opt in     out     source               
+destination
+    0     0 MARK       all  --  any    any     anywhere             
+anywhere            LAYER7 l7proto http MARK set 0x3
+the packets marked always is 0.
 
-Sometimes not, like if a new module requires changing something in a 
-driver that was built in. What I was really asking was if POM needs any 
-hooks that might not exist in the kernel, and I guess you have answered 
-that.
+I followed this howto http://l7-filter.sourceforge.net/HOWTO.
 
-> :) If we needed a reboot for everything, we would be called windows
-> : :P
-
-A surprising number of people think they want monolithic kernels which 
-*do* rather emulate Windows in their inflexibility. Modularity is one 
-of my favourite rant subjects. :)
-
-Thanks for the reply.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Have somebody any idea?
+Thanks, and sorry for my bad english.
 
