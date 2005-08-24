@@ -1,12 +1,12 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Request: Submission of Rulesets
-Date: Wed, 24 Aug 2005 16:07:43 -0500
-Message-ID: <200508241607.43943.rob0@gmx.co.uk>
-References: <200508241314.37034.admin@buddhalinux.com>
+Subject: Re: NOTRACK action question
+Date: Wed, 24 Aug 2005 16:34:00 -0500
+Message-ID: <200508241634.00821.rob0@gmx.co.uk>
+References: <57F9959B46E0FA4D8BA88AEDFBE5829074E1@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200508241314.37034.admin@buddhalinux.com>
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE5829074E1@pxtbenexd01.pxt.primeexalia.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,53 +21,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 2005-August-24 13:14, Thomas Jones wrote:
-> Abstract:
+On Wednesday 2005-August-24 13:23, Gary W. Smith wrote:
+> We are NAT'ing an IP range to a set of internal Apache servers. 
+> Looking into the conntrack table we are seeing a bunch of entries on
+> port 80, which make sense.  One of the web server clusters is getting
+> about 1m hits a day which is starting to cause a significant jump in
+> conntrack entries.  My question is do we really need to track those?
 
-I readily admit that this is not a good day for me. I am not operating 
-at full capacity, so to speak. But I have to say that this post made no 
-sense at all to me. Is it just me? Did anyone else understand it? If 
-so, can you explain it?
+It would depend on your configuration. Oh you said NAT, DNAT I guess. 
+IIUC DNAT does depend on connection tracking. Perhaps you should put 
+your Apache reservation in a routed (not DNAT'ed) subnet.
 
-> The Security Document Initiative is an implementation of the domain
-> of applied cryptography as it relates to XML Markup Language and the
-> creation of a security infrastructure to protect information systems
-> and resources.
+> I would assume no.  But when I add a NOTRACK rule to the raw table
+> Apache suddenly fails to serve the pages to external clients.
 
-I once saw an online automated generator of scholarly papers. It was 
-hilarious! It used language just like this.
+Then your assumption would seem to be in error.
 
-> This project is charged with developing a XML Document Type
-> Definition document model that Netfilter rulesets can be validated
-> against. Any document instance of the "Firewall Rule Subset" must be
-> well-formed and comply with the structured XML Markup Language. This
-> language is being designed to provide all VALID rule entries that are
-> available under the netfilter framework.
+> Am I doing something wrong?
 
-Okay, I think I see a little substance here. The poster wants something 
-which lists every possible valid netfilter rule. Right?
-
-Unfortunately, the list of valid rules is almost infinite. And what's 
-valid may vary in context: what's available in the kernel, other rules 
-in the chain, et c. "iptables I OUTPUT -j LOG" is a valid rule (rather 
-unfortunate if the local syslogd is logging to a remote syslog server, 
-as each packet generates another one ad infinitum), but only valid if 
-the LOG target is available.
-
-> This is where you the end-user come into play. Obviously, it would
-> take me an untold number of days/weeks/months/years to construct a
-> comprehensive and stable compilation of valid rules. The compilation
-
-It's not even possible.
-
-> of the rules and rulesets are a key step in this development process.
-> Without, all representative rules and rulesets; a correct and valid
-> netfilter rule will be deemed invalid under an improperly constructed
-> document model. Thus, negating the purpose and intent of the SDI
-> Firewall Rule Subset project.
-
-Perhaps the purpose and intent of the SDI Firewall Rule Subset project 
-should be reevaluated.
+If it's not working, and you want it to work, yes. :)
 -- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
