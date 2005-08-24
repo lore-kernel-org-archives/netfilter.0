@@ -1,11 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Problems with the ip_nat_h323
-Date: Thu, 25 Aug 2005 09:07:37 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0508250900430.28804@blackhole.kfki.hu>
-References: <20050824151926.E73AE5C144@smtp1.kfki.hu>
+From: "Paul Lewis" <paul.lewis@st-annes.oxford.ac.uk>
+Subject: IP determines output interface?
+Date: Wed, 24 Aug 2005 14:45:53 +0100
+Message-ID: <E1E7vZe-00041g-00@smtp0.herald.ox.ac.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050824151926.E73AE5C144@smtp1.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,34 +15,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Andrew Cant <acant@logisense.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 Hi,
 
-On Wed, 24 Aug 2005, Andrew Cant wrote:
+I'm working on a new system for the college I work at. We have two types of
+users who connect - students and conference guests. Students connect to the
+internet through an academic LAN, but technically conference guests are not
+allowed to use this. So, we have a separate ADSL line for conference guests.
 
-> I am attempting to get the H323 nat module working. Specifically I want to
-> pass MGCP VoIP traffic, not H323, but I believe that the H323 module should
-> do the job.
->
-> I am using a 2.4.28 kernel, with iptables 1.2.9, and patch-o-matic-20031219.
-> I am also using the transparent proxy patches(TPROXY), and serveral other
-> NAT helpers(ftp, tftp, pptp, proto_gre).
+Now, we have a DHCP system which assigns static IPs to our clients via DHCP
+(so not really static, but for our purposes they are). Conference guests get
+put in a different range to the students, although they can all see each
+other.
 
-That's a too old kernel and too old pom version. You should use kernel
-version 2.6.11 or above and the H.323 helper from a recent pom-ng release.
+Now, what I want to do, is set a few rules on the firewall so that I can
+determine which output interface a packet goes out on, depending on the IP
+it got sent in on, i.e I want conference guests with conference IP addresses
+to be directed out to the ADSL line, and students with student IP addresses
+to be directed out to the academic LAN.
 
-The helper had been completely rewritten by Max Kellermann for the 2.6
-tree - the old version you use works in the most simple cases only.
+Is this possible? And if so, can someone give me some hints please?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks in advance for your help,
+
+Paul
+
+---
+Paul Lewis (paul.lewis@st-annes.ox.ac.uk)
+JCR Computing Rep
+St Anne's College 
+http://www.stannesjcr.org
+
+
+
+
+
+
 
