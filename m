@@ -1,12 +1,12 @@
-From: Sascha Reissner <sascha.reissner@toxicnet.de>
-Subject: Re: Help with iptables 1.3.3
-Date: Wed, 24 Aug 2005 19:30:31 +0200
-Message-ID: <430CAEB7.8060003@toxicnet.de>
-References: <D2EA20593E6AAD4DA6D07DE0EC12D16162E2@ebs-2200.ebasedsecurity.com>
+From: Daniel Lopes <lopsch@lopsch.com>
+Subject: Re: Connections
+Date: Wed, 24 Aug 2005 19:48:06 +0200
+Message-ID: <430CB2D6.6080301@lopsch.com>
+References: <001e01c5a8bb$c3b95160$0300a8c0@office>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <D2EA20593E6AAD4DA6D07DE0EC12D16162E2@ebs-2200.ebasedsecurity.com>
+In-Reply-To: <001e01c5a8bb$c3b95160$0300a8c0@office>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,49 +18,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Thomas Raef <traef06@ebasedsecurity.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Thomas Raef wrote:
-> I'm using a Debian 2.6.11.7 kernel with iptables 1.3.1 and everything is
-> working fine.
-> 
->  
-> 
-> I wanted to update to iptables v1.3.3.
-> 
->  
-> 
-> When I compile iptables v1.3.3 and reboot, I get a series of these
-> messages:
-> 
->  
-> 
-> iptables: target 'standard' v1.3.3 (I'm v1.3.1)
-> 
-> iptables: match 'limit' v1.3.3 (I'm v1.3.1)
-> 
->  
-> 
-> Google turns up nothing, well 1 hit, but it didn't help at all.
-> 
->  
-> 
-> Please help.
-> 
->  
-> 
-> Thank you in advance.
+Lyubomir Louisov schrieb:
+> Hi.
+> My torrent client is using too much connections at the same time and thats
+> why i cant browse the net.
+> My question is how can i limit the number of connections with iptables?
 > 
 > 
-
-Well it seems that you have 2 iptables binaries on your system, and the 
-one you use in some bootscript is the old 1.3.1 version.
-
-you might want to find those iptables binaries 'find / -name "iptables"' 
-and maybe want to either get rid of it, or want to replace it with the 
-1.3.3 version.
-
-Regards,
-Sascha
+> 
+> 
+Why not tune the client with his build in functions?! Would be the 
+easier solution.
 
