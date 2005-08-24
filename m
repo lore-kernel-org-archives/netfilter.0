@@ -1,13 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: NOTRACK action question
-Date: Wed, 24 Aug 2005 17:23:46 -0500
-Message-ID: <200508241723.47038.rob0@gmx.co.uk>
-References: <57F9959B46E0FA4D8BA88AEDFBE5829074E2@pxtbenexd01.pxt.primeexalia.com>
+From: Daniel Lopes <lopsch@lopsch.com>
+Subject: Re: (no subject)
+Date: Thu, 25 Aug 2005 00:40:26 +0200
+Message-ID: <430CF75A.1030105@lopsch.com>
+References: <1124921733.4001.241416298@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE5829074E2@pxtbenexd01.pxt.primeexalia.com>
-Content-Disposition: inline
+In-Reply-To: <1124921733.4001.241416298@webmail.messagingengine.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,18 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 2005-August-24 16:49, Gary W. Smith wrote:
-> BTW, do you know what the limit is on connection tracking or where I
-> can find/set the values.
+netfilter@notleyc.fastmail.fm schrieb:
+> Hi,
+> 
+> I've been trying to apply Patrick McHardy's netfilter+ipsec patches to
+> my 
+> 2.6.12-5 (from kernel.org) using patch-o-matic.  When I try to apply any
+> of 
+> the four patches I receive the following message:
+> 
+> patchlets/ipsec-01-output-hooks has dependency on nf_reset, but nf_reset
+> is 
+> not known
+> 
+> I've probably missed something obvious, but I've hit a dead end, any
+> help 
+> would be appreciated.  
+> 
+> Cheers,
+> Chris
 
-/proc/sys/net/ipv4/ip_conntrack_max
-cat(1) to read it, echo(1) to set it.
-
-http://www.wallfire.org/misc/netfilter_conntrack_perf.txt
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+I've read somewhere deleting the dependency in the info file should let 
+apply the patch cleanly. The other hooks for example hook number x 
+depend on the hook x-1. So if the 01 hook applies cleanly the others 
+should do aswell.
 
