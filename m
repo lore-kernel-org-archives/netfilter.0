@@ -1,10 +1,11 @@
-From: "Andrew Cant" <acant@logisense.com>
-Subject: Problems with the ip_nat_h323
-Date: Wed, 24 Aug 2005 11:18:06 -0400
-Message-ID: <27761.5158971914$1124896979@news.gmane.org>
+From: "Baake, Matthias" <m.baake@porta.de>
+Subject: RE: Connections
+Date: Wed, 24 Aug 2005 17:27:16 +0200
+Message-ID: <201E6F5AC48C274996A5AD8304FAEF860BFC8F@p001ex03.porta.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,46 +17,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Raphael Jacquot <raphael.jacquot@imag.fr>
+Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
 
-Hi,
+Hi.
 
-I am attempting to get the H323 nat module working. Specifically I want to
-pass MGCP VoIP traffic, not H323, but I believe that the H323 module should
-do the job.
+maybe he has not a problem with his bandwidth, but a problem with his =
+router
+that cannot handle those connections. if you are using a linux box as =
+router/gw=20
+check the logs for something with conntrack table full. if this is the =
+case your=20
+machine is not able to accept new connections afaik.
 
-I am using a 2.4.28 kernel, with iptables 1.2.9, and patch-o-matic-20031219.
-I am also using the transparent proxy patches(TPROXY), and serveral other
-NAT helpers(ftp, tftp, pptp, proto_gre).
+a possible solution can be to increase your ip_conntrack_max in =
+/proc/sys/net/ipv4=20
+e.g. "echo "2048" >/proc/sys/net/ipv4/ip_conntrack_max
 
-Without the h323 patch the call is established, and the RTP stream passes
-out successful and reaches the external port of the machine but is never
-forwarded to the client. Hanging up the phone correct dismantels the calls
-as well.
+or you get patch o matic and look for the connlimit patch.
 
-I added the h323 module and loaded it using 'modprobe ip_nat_h323', and got
-not change in the behaviour. I have turned debugging on in the h323 module,
-and see no messages aside from an successful initialization message that I
-added.
+the last solution would be find the p2p guy and cut off his network =
+cable ;)
 
-Is there something I have missed? Does anyone have a suggestion about what
-my next step should be?
+greetings
 
-Thanks for any help that you can give me.
+matthias
 
-(P.S.: I have also modified the h323 module's call to ip_nat_setup_info to
-work correctly with tproxy)
-
-Andrew Cant
-
-Developer
-LogiSense Corporation
-"IP Billing and Traffic Management"
-  
-e: acant@logisense.com
-p: 1-519-249-0508 x4108
-w: www.logisense.com
-weblog: http://blog.logisense.com
-forum: https://ssl.logisense.com/support/forum
-
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of=20
+> Raphael Jacquot
+> Sent: Wednesday, August 24, 2005 5:08 PM
+> To: Lyubomir Louisov
+> Cc: netfilter@lists.netfilter.org
+> Subject: Re: Connections
+>=20
+>=20
+> Lyubomir Louisov wrote:
+> > Hi.
+> > My torrent client is using too much connections at the same=20
+> time and thats
+> > why i cant browse the net.
+> > My question is how can i limit the number of connections=20
+> with iptables?
+> >=20
+> >=20
+>=20
+> You'd better use a QOS solution, to reduce the priority of=20
+> the torrent=20
+> data compared to the other stuff data
+>=20
+>=20
 
