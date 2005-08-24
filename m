@@ -1,14 +1,14 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: Thomas Jones <admin@buddhalinux.com>
 Subject: Re: Request: Submission of Rulesets
-Date: Wed, 24 Aug 2005 17:36:45 -0500
-Message-ID: <200508241736.45170.rob0@gmx.co.uk>
+Date: Wed, 24 Aug 2005 17:48:27 -0500
+Message-ID: <200508241748.33613.admin@buddhalinux.com>
 References: <200508241314.37034.admin@buddhalinux.com>
-	<200508241607.43943.rob0@gmx.co.uk>
 	<200508241725.14260.admin@buddhalinux.com>
+	<200508241736.45170.rob0@gmx.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200508241725.14260.admin@buddhalinux.com>
+In-Reply-To: <200508241736.45170.rob0@gmx.co.uk>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,38 +20,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 2005-August-24 17:25, Thomas Jones wrote:
-> > I once saw an online automated generator of scholarly papers. It
-> > was hilarious! It used language just like this.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+On Wednesday 24 August 2005 17:36, /dev/rob0 wrote:
 >
-> Hehehe. Ok...lets make it simple for you. Various security
-
-You really should Google that. It was loads of fun. I generated some 
-scholarly papers under my name and sent them to colleagues "for review 
-and comment." They were ashamed to admit that it was all a bunch of 
-gibberish to them. I laughed for days. :)
-
-If I could remember the URL I would post it.
-
-> > Okay, I think I see a little substance here. The poster wants
-> > something which lists every possible valid netfilter rule. Right?
+> If I could remember the URL I would post it.
 >
-> Seemingly, you are the the person to do this feat? Realistically, I
-> don't expect you or anybody else to have knowledge of all the rules.
-> I have already developed the basic structure of the DTD. I just want
 
-Ah, *that* was the piece I was missing. You are accepting the rulesets 
-submitted as valid (probably) and are simply using them to test your 
-DTD. Is that it? I thought you were compiling it from the submitted 
-rulesets, and that, I guess we agree, is not possible.
+If you find it forward it to me. Sounds like it could be an interesting
+trick or two.
 
-> Because you do no not fully understand does not make it wrong.
+>
+> Ah, *that* was the piece I was missing. You are accepting the rulesets
+> submitted as valid (probably) and are simply using them to test your
+> DTD. Is that it? I thought you were compiling it from the submitted
+> rulesets, and that, I guess we agree, is not possible.
+>
 
-I still don't, but at least the gibberish issue is cleared up. :)
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Some of the targets and matches located in the extra repository have not be=
+en=20
+introduced. These will definitely take some work. Altough progress has been=
+=20
+made, I am sure that I have neglected various syntactical portions of the=20
+netfilter framework.
+
+>
+> I still don't, but at least the gibberish issue is cleared up. :)
+
+=46air enough. ;)
+
+Cheers,
+Thomas
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFDDPlAoR5cE1e/kEIRAnTvAJ9MdKaDz6DME9g7XQRhK9ZfCHq8fQCcDQJq
+Y9zJBZ5HNohUBV8e0eg/D7Y=3D
+=3Dh+/H
+=2D----END PGP SIGNATURE-----
 
