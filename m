@@ -1,10 +1,10 @@
-From: David Madore <david.madore@ens.fr>
-Subject: is ip6t_REJECT dead? stable?
-Date: Thu, 25 Aug 2005 02:53:42 +0200
-Message-ID: <20050825005342.GB5106@clipper.ens.fr>
+From: "Christian Bricart" <christian@bricart.de>
+Subject: --zero/-Z does not zero built-in chains
+Date: Thu, 25 Aug 2005 15:30:16 +0200 (CEST)
+Message-ID: <58151.80.87.162.74.1124976616.squirrel@aachalon.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,31 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter Mailing-List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
 Hi,
 
-I'd like to know about the status of the ip6t_REJECT patch which is
-found in patch-o-matic-ng.  I'm not sure I know how to read subversion
-logs, but it appears not to have changed in nearly a year, which, when
-it comes to software, generally means "dead and possibly bitrotten".
+I've run into the same that has (only) been postet once (
+http://lists.netfilter.org/pipermail/netfilter/2005-July/061667.html ) on
+this list.
+Somewhere between 1.3.1 and 1.3.2 release something has been changed that
+has to do with zeroring chains.
 
-So: is it dead?  Or has it simply reached a point of stability and
-maturity such that it no longer needs to be updated?  If so, is it
-stable enough to be in production use?  When is there a hope of seeing
-it in mainline kernels?  (I'm currently doing my IPv6 firewall with
-the DROP target, which is in all respects very unsatisfactory.)
+It used to be the case that an
 
-PS: It would be highly useful if the iptables/ip6tables man pages
-tried to indicate which targets, matches and whatnots are available in
-mainline kernels and which need a special patch.  Especially as the
-error messages are - uh - unhelpful.
+ # iptables -L INPUT -nxZ
 
-Happy hacking,
+set counters on the INPUT chain to 0 right after output (conforms to any
+document about --zero/-Z i.e. man page, etc.)
 
--- 
-     David A. Madore
-    (david.madore@ens.fr,
-     http://www.madore.org/~david/ )
+With 1.3.2 (not yet tested on 1.3.3) the counters stay intact.
+Alas, this only happens to the built-in chains (INPUT,OUTPUT, FORWARD) -
+not to user-defined chains like:
+
+# iptables -N acc_in
+# iptables -A acc_in -j RETURN
+# iptables -I INPUT -j acc_in
+[..let some data flow..]
+# iptables -L acc_in -nxZ
+[..shows current counters of "acc_in" chain and zeroes it's counters..]
+
+Christian
+
 
