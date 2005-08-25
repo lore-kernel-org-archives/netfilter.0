@@ -1,7 +1,7 @@
-From: vikrant <vikrant@saysnetsoft.com>
-Subject: Problem recompiling kernel with iptables v 1.3.2
-Date: Thu, 25 Aug 2005 16:35:05 +0530
-Message-ID: <430DA5E1.3010106@saysnetsoft.com>
+From: Arne Kepp <netfilter@smallworld.no>
+Subject: PPTP conntrack, combination that works?
+Date: Thu, 25 Aug 2005 13:16:30 +0200
+Message-ID: <430DA88E.7070005@smallworld.no>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,48 +18,33 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-hi
+Hi,
 
-I have mailed my problem earlier but nobody replied so i am sending it 
-again hoping some response this time.
+I have tried using patch-o-matic-ng-20050824 to patch my vanilla kernel 
+to support masquerading PPTP.
 
-I trying to configure iptables with kernel but because of some problem i
-am not able to do so.
-Some information that i want to give are:-
-Operating system - Cent OS4                  #My  operating system on
-which i am trying to do
-Current kernel version-  2.6.9-11.EL         #Result after running "uname
--r" command
-Current iptables version - iptables v1.3.2   #Result after running
-"iptables -V" command
--------------------------------------------------------------------
-I have used the following command
---------------------------------------------------------------------
-cd /usr/src/kernels
-ls
-2.6.9-11.EL-hugemem-i686       2.6.9-11.EL-smp-i686
-2.6.9-11.EL-i686            2.6.9-5.0.3.EL-i686
-cd ..
-wget  http://iptables.org/downloads.html#iptables-1.3.2
-bzip2 -cd iptables-1.3.2.tar.bz2 | tar xvf -
-cd iptables-1.3.2/
-make KERNEL_DIR=/usr/src/kernels/2.6.9-11.EL-i686/
+When I tried to install the modules I got an error that there was an 
+undefined reference to __ip_conntrack_expect_find
 
-#Problem occured after running this command
+I found a post that said I needed nf_conntrack_netlink, which I also 
+tried to add (either it didn't patch cleanly, or it made no difference, 
+can't remember).
 
-Extensions found: IPv4:recent cc -O2 -Wall -Wunused 
--I/usr/src/kernels/2.6.9-11.EL-i686//include-Iinclude/ 
--DIPTABLES_VERSION=\"1.3.2\"  -fPIC -o extensions/libipt_ah_sh.o -c 
-extensions/libipt_ah.c In file included from
-/usr/src/kernels/2.6.9-11.EL-i686//include/linux/netfilter_ipv4.h:8,from
-/usr/src/kernels/2.6.9-11.EL-i686//include/linux/netfilter_ipv4/ip_tables.h:26,
-from include/libiptc/libiptc.h:6,
-from include/iptables.h:5,
-from extensions/libipt_ah.c:8:
-/usr/src/kernels/2.6.9-11.EL-i686//include/linux/config.h:6:2: #error
-including kernel header in userspace; use the glibc headers instead!
-make: *** [extensions/libipt_ah_sh.o] Error 1
--------------------------------------------------------------------------------------
-  With regards
-  Vikrant
+Next I found a post saying I need cnetlink, so I tried patching that 
+too, but I get an error that there were 3 (2.6.11.11) or 4 (2.6.12.5) 
+rejected chunks of code.
+
+I have tried with kernels 2.6.11.11 , 2.6.11.12  and 2.6.12.5. I have 
+also tried deleting the source tree, applying only cnetlink and so 
+forth, to no avail. IPTables has been 1.3.2 all along. I also tried 
+patch-o-matic-ng-20050821.
+
+So my question really is:
+Does anyone know what I am doing wrong, or know a combination of patches 
+/ kernel-version that works? Preferably 2.6.11 or newer.
+
+Thanks,
+-Arne
+
+
 
