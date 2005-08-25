@@ -1,12 +1,10 @@
-From: Trevor Cordes <netfilter@tecnopolis.ca>
-Subject: Re: ipsec + nat
-Date: Wed, 24 Aug 2005 22:22:20 -0500
-Message-ID: <20050825032220.GA23455@pog.tecnopolis.ca>
-References: <20050803161233.564n1ykio08k800s@www.milivojevic.org>
+From: "Lyubomir Louisov" <lyubol@mail.orbitel.bg>
+Subject: Re: Connections
+Date: Thu, 25 Aug 2005 09:45:31 +0300
+Message-ID: <003001c5a940$96737fc0$0300a8c0@office>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050803161233.564n1ykio08k800s@www.milivojevic.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +16,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Aleksandar Milivojevic <alex@milivojevic.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, Aug 03, 2005 at 04:12:33PM -0500, Aleksandar Milivojevic wrote:
-> 
-> and than try to ping 10.3.2.1, things do not work anymore.  Tcpdump on ppp0
-> shows (edited for clarity):
-> 
-> Bug in Netfilter, or bug in my configuration?
+Yes it would be eaier to tune the client but then it starts download with a
+much slower speed.
+And i want to limit the connections because i have connection limit by the
+ISP and i full it wen i use the torrent.
+Then nobody can use the net.
 
-Look at my bugzilla on ipsec+nat bugs :
-
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=143374
-
-see if that's the problem.  If not, shoot me an email and I'll look your
-problem over.  If it is the problem, please make noise & cc yourself on
-the bugzilla so we can get this fixed.
 
