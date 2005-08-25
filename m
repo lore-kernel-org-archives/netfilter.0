@@ -1,7 +1,7 @@
-From: "Paul Lewis" <paul.lewis@st-annes.oxford.ac.uk>
-Subject: IP determines output interface?
-Date: Wed, 24 Aug 2005 14:45:53 +0100
-Message-ID: <E1E7vZe-00041g-00@smtp0.herald.ox.ac.uk>
+From: vikrant <vikrant@saysnetsoft.com>
+Subject: Problem recompiling kernel with iptables v 1.3.2
+Date: Thu, 25 Aug 2005 16:35:05 +0530
+Message-ID: <430DA5E1.3010106@saysnetsoft.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,42 +15,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+hi
 
-I'm working on a new system for the college I work at. We have two types of
-users who connect - students and conference guests. Students connect to the
-internet through an academic LAN, but technically conference guests are not
-allowed to use this. So, we have a separate ADSL line for conference guests.
+I have mailed my problem earlier but nobody replied so i am sending it 
+again hoping some response this time.
 
-Now, we have a DHCP system which assigns static IPs to our clients via DHCP
-(so not really static, but for our purposes they are). Conference guests get
-put in a different range to the students, although they can all see each
-other.
+I trying to configure iptables with kernel but because of some problem i
+am not able to do so.
+Some information that i want to give are:-
+Operating system - Cent OS4                  #My  operating system on
+which i am trying to do
+Current kernel version-  2.6.9-11.EL         #Result after running "uname
+-r" command
+Current iptables version - iptables v1.3.2   #Result after running
+"iptables -V" command
+-------------------------------------------------------------------
+I have used the following command
+--------------------------------------------------------------------
+cd /usr/src/kernels
+ls
+2.6.9-11.EL-hugemem-i686       2.6.9-11.EL-smp-i686
+2.6.9-11.EL-i686            2.6.9-5.0.3.EL-i686
+cd ..
+wget  http://iptables.org/downloads.html#iptables-1.3.2
+bzip2 -cd iptables-1.3.2.tar.bz2 | tar xvf -
+cd iptables-1.3.2/
+make KERNEL_DIR=/usr/src/kernels/2.6.9-11.EL-i686/
 
-Now, what I want to do, is set a few rules on the firewall so that I can
-determine which output interface a packet goes out on, depending on the IP
-it got sent in on, i.e I want conference guests with conference IP addresses
-to be directed out to the ADSL line, and students with student IP addresses
-to be directed out to the academic LAN.
+#Problem occured after running this command
 
-Is this possible? And if so, can someone give me some hints please?
-
-Thanks in advance for your help,
-
-Paul
-
----
-Paul Lewis (paul.lewis@st-annes.ox.ac.uk)
-JCR Computing Rep
-St Anne's College 
-http://www.stannesjcr.org
-
-
-
-
-
-
+Extensions found: IPv4:recent cc -O2 -Wall -Wunused 
+-I/usr/src/kernels/2.6.9-11.EL-i686//include-Iinclude/ 
+-DIPTABLES_VERSION=\"1.3.2\"  -fPIC -o extensions/libipt_ah_sh.o -c 
+extensions/libipt_ah.c In file included from
+/usr/src/kernels/2.6.9-11.EL-i686//include/linux/netfilter_ipv4.h:8,from
+/usr/src/kernels/2.6.9-11.EL-i686//include/linux/netfilter_ipv4/ip_tables.h:26,
+from include/libiptc/libiptc.h:6,
+from include/iptables.h:5,
+from extensions/libipt_ah.c:8:
+/usr/src/kernels/2.6.9-11.EL-i686//include/linux/config.h:6:2: #error
+including kernel header in userspace; use the glibc headers instead!
+make: *** [extensions/libipt_ah_sh.o] Error 1
+-------------------------------------------------------------------------------------
+  With regards
+  Vikrant
 
