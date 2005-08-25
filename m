@@ -1,9 +1,10 @@
-From: "Christian Bricart" <christian@bricart.de>
-Subject: --zero/-Z does not zero built-in chains
-Date: Thu, 25 Aug 2005 15:30:16 +0200 (CEST)
-Message-ID: <58151.80.87.162.74.1124976616.squirrel@aachalon.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: Todd Landfried <tlandfried@viatornetworks.com>
+Subject: restricting connections from a single connection to a single
+	destination
+Date: Thu, 25 Aug 2005 07:11:36 -0700
+Message-ID: <7D746B3B-FA28-451A-BCBA-FE725C91C33D@viatornetworks.com>
+Mime-Version: 1.0 (Apple Message framework v734)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,35 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+I'm trying to protect some people from themselves and I want to set  
+up a rule that allows a single IP on the network to connect only to  
+the gateway's internal IP, thereby restricting as much as possible  
+user's ability to connect to other PCs on the network. Yes, I know  
+about VLANs and I know about port isolation on the hardware side, and  
+I've tried explaining how to do it these folks, but they're just not  
+getting it.
 
-I've run into the same that has (only) been postet once (
-http://lists.netfilter.org/pipermail/netfilter/2005-July/061667.html ) on
-this list.
-Somewhere between 1.3.1 and 1.3.2 release something has been changed that
-has to do with zeroring chains.
+ From what I have read, this should work, but it doesn't. I'm not  
+sure which loopback this refers to, the host or the source. Any  
+suggestions?
 
-It used to be the case that an
+-A PREROUTING -i lo -p icmp -d gateway-internal-private-ip -j ACCEPT
+-A PREROUTING -i lo -p tcp -d gateway-internal-private-ip -j ACCEPT
+-A PREROUTING -i lo -p udp -d gateway-internal-private-ip -j ACCEPT
 
- # iptables -L INPUT -nxZ
-
-set counters on the INPUT chain to 0 right after output (conforms to any
-document about --zero/-Z i.e. man page, etc.)
-
-With 1.3.2 (not yet tested on 1.3.3) the counters stay intact.
-Alas, this only happens to the built-in chains (INPUT,OUTPUT, FORWARD) -
-not to user-defined chains like:
-
-# iptables -N acc_in
-# iptables -A acc_in -j RETURN
-# iptables -I INPUT -j acc_in
-[..let some data flow..]
-# iptables -L acc_in -nxZ
-[..shows current counters of "acc_in" chain and zeroes it's counters..]
-
-Christian
-
+Thanks
 
