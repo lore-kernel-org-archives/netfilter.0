@@ -1,13 +1,10 @@
-From: Thomas Jones <admin@buddhalinux.com>
-Subject: Re: Request: Submission of Rulesets
-Date: Thu, 25 Aug 2005 09:35:47 -0500
-Message-ID: <200508250935.54479.admin@buddhalinux.com>
-References: <E656E2CC1C5AEB42ACB00EB83122C7741FCF13@farmer.vikus.com>
+From: Brent Clark <bclark@eccotours.dyndns.org>
+Subject: two ISP's woes?
+Date: Thu, 25 Aug 2005 17:09:12 +0200
+Message-ID: <430DDF18.9000100@eccotours.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <E656E2CC1C5AEB42ACB00EB83122C7741FCF13@farmer.vikus.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,110 +15,93 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: iptables <netfilter@lists.netfilter.org>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi list
 
-On Thursday 25 August 2005 06:56, Derick Anderson wrote:
-> Out of curiosity (and the lack of fully understanding your intent), how
-> would this DTD validate a ruleset? I imagine you'd be trying to go
-> beyond syntax since netfilter will tell you when you do something silly
-> like a --dport without a -p tcp|udp anyway. If that's so, what is your
-> standard for failure of a ruleset? Or success of a ruleset?
+K im into my third week now and I still have not resolved this routing / second isp  issue.
+
+I have been fortunate in that someone advised me that I this is not as complex has I initially had thought and I just use the ROUTE target.
+
+I initially tried from the following example:
+http://lartc.org/howto/lartc.rpdb.multiple-links.html
+
+which too did not work for me.
+
+any way my setup is so:
 
 
-The DTD is simply the document model by which the rule and/or rulesets can =
-be=20
-applied against.=20
+	            |		INTERNET	    |		(I sure hope this gets displayed correctly)
+       ----------------------------------------
+		    |					  |
+		    |(Static IP)			|(Dynamically assigned ISP)
+		-------- 	            ---------
+		  | ISP A |            		  | ISP B |
+		--------         	     ---------
+		    | 196.36.10.113	      | 192.168.10.200
+		    |		                        |
+		    |                                   |
+		    |           			| 192.168.10.100 (eth2)
+		    | 196.36.10.114 (eth0) ------
+		    -------------------| My FW  |
+				                      --------
+						            | 192.168.111.10 (eth1)
+							    |
+							    |
+				       -------------------------- internal network
+				              192.168.111.0/24
 
-This project can in no way perform logical evaluation of the rules. By this=
- I=20
-mean the following: say you want to rate-limit incoming type 8 ping message=
-s.=20
-To do so you would construct the following rules:
+ISP A = Internet Solutions ADSL ROUTER
+ISP B = Telkom ADSL MODEM
 
-iptables -A INPUT -i eth0 -p icmp --icmp-type echo-request \
-              -m limit --limit 1/second -j ACCEPT
+My ROUTE modules:
+gate:/var/log# lsmod
+Module                  Size  Used by
+ipt_ROUTE               5272  0
+gate:/var/log#
 
-iptables -A INPUT -i eth0 -p icmp --icmp-type echo-request -j DROP
 
-Using logical evaluation of these rules, we can determine the following wit=
-h=20
-respect to the pair:
+My default routing is as so:
 
-=2D - Utilization of one rule without the other results in a completely dif=
-ferent=20
-behavior.
-=2D - They must be introduced to netfilter in the order they are given --=20
-otherwise the same is true again.
-=2D - Both rules should be introduced adjacently. Otherwise there is chance=
- for=20
-another rule to intervene.
+gate:~# ip route show table main
+196.36.10.112/29 dev eth0  proto kernel  scope link  src 196.36.10.114
+192.168.111.0/24 dev eth1  proto kernel  scope link  src 192.168.111.10
+192.168.10.0/24 dev eth2  proto kernel  scope link  src 192.168.10.100
+default via 196.36.10.113 dev eth0
+gate:~#
 
-None of this can be performed by a DTD or an XML markup language. These=20
-however can be evaluated as you say by use of an XSL stylesheet.
+And  test firewall ruleset:
 
-The DTD simply validates against a known and programmed structure. The=20
-advantages of using XML and this approach are such:
+$IPT -A POSTROUTING -t mangle -p tcp --dport 80 -j ROUTE --oif eth2
 
-=2D - Easy to develop according to the structured document model.
-=2D - Anybody can construct new rules with a minimal effort of syntactical=
-=20
-correctness.
-=2D - The netfiler rules can be processed with a custom stylesheet to produ=
-ce=20
-equivalent rules and/or rulesets in other forms for perimeter devices not=20
-consistent with the netfilter syntax(other firewalls, routers, etc...).
-=2D - The netfiler rules can be processed with a custom stylesheet to evalu=
-ate the=20
-logical structure/intent of a given ruleset.
-=2D - The rules can be digitally signed and encrypted by the administrative=
- entity=20
-to secure the content. This ensures that confidentiality and integrity of t=
-he=20
-resources are intact.
-=2D - The XML Security function(s) are standards-based. So inclusion into=20
-regulatory requirements can be easily introduced without complications. i.e=
-=2E=20
-SOX
+# SNAT the Private LAN
+$IPT -t nat -A POSTROUTING -o eth0 -s 192.168.111.0/24 -j SNAT --to-source 196.36.10.114
+$IPT -t nat -A POSTROUTING -o eth2 -s 192.168.111.0/24 -j SNAT --to-source 192.168.10.100
 
-> I can submit
-> a working ruleset that isn't optimal (accepting RELATED,ESTABLISHED
-> connections as the last rule, for example) or that checks src/dst IPs
-> but not which interface...
+$IPT -t filter -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPT -t filter -A FORWARD -m state --state INVALID -j LOG --log-prefix "INVALID forward: " --log-tcp-options --log-ip-options
+$IPT -t filter -A FORWARD -m state --state INVALID -j DROP
 
-I am not here to judge yourself or the logical purpose of your rules. I sim=
-ply=20
-want to contribute to the community. None of my projects are for profit.=20
-However, I do think that it could be a good starting point for new users to=
-=20
-the netfilter framework to be able to construct valid rules and/or rulesets.
+$IPT -t filter -A FORWARD -i eth1 -o eth0 -m multiport -p tcp --dport 25,53,110,113,123,143,6667 -m state --state NEW -j ACCEPT
+$IPT -t filter -A FORWARD -i eth1 -o eth0 -m multiport -p udp --dport 53,123,500 -m state --state NEW -j ACCEPT
 
-> Admittedly I don't know that much about XML and DTDs. I don't know how
-> powerful DTDs can be, but it seems to me like you'd need a high-level
-> programming language in order to test for more than syntactical
-> correctness.=20
+$IPT -t mangle -A FORWARD -i eth1 -p tcp --dport 80 -j ROUTE --oif eth2 --continue
+#$IPT -t mangle -A FORWARD -i eth1 -p tcp --dport 80 -j ROUTE --oif eth2
+#$IPT -t filter -A FORWARD -i eth1 -o eth2 -m multiport -p tcp --dport 80,443 -m state --state NEW -j ACCEPT
 
-That is a totally different beast. This is where the XSL stylesheets come i=
-nto=20
-play.
+What im trying to achieve is that all my traffic goes out eth0 (196.36.10.114 / ISP A) except for all HTTP traffic, that I would like to go out ISP B.
 
-> A simulation environment for Netfilter rules is something
-> I'd really like to see.
+I may be having a problem where by my ADSL ISP B modem has to NAT twice ( (But I dont see this as an issue) FROM 192.168.111.0 / 24 to 192.168.10.0/24 to dynamicly assigned IP).
+I suppose I can get the modem to work in bridging mode, but I first want to get this experimentt working first before I venture down this path.
 
-Agreed. Construction of pseudo datagrams and testing for resultant outcomes=
-=20
-would be a very interesting project.=20
+I got this gut feeling that this is doable and can work, but I just dont know where Im falling short.
 
-Cheers,
-Thomas
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+as I aways ask, if anyone has got any tips or tricks that could help me, I would be most greatful.
 
-iD8DBQFDDddIoR5cE1e/kEIRAqn0AKDc0iJETnOHYDBWOQlekweswOj3sQCeIo/6
-LhSsuJbNwjqcG9fSmV5Hw2U=3D
-=3D0+PB
-=2D----END PGP SIGNATURE-----
+Kind Regards and thanks in advance.
+
+Brent Clark
+
+
 
