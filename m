@@ -1,12 +1,12 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: Documentation for /proc/sys/net/ipv4/
-Date: Fri, 26 Aug 2005 14:31:30 +0200 (CEST)
-Message-ID: <Pine.LNX.4.62.0508261430410.5480@mercury.sdinet.de>
+Date: Fri, 26 Aug 2005 14:41:57 +0200
+Message-ID: <1125060117.5119.0.camel@anduril.intranet.cartel-securite.net>
 References: <200508260947.09491.vladislav.kurz@webstep.net>
-	<Pine.LNX.4.62.0508261425330.5480@mercury.sdinet.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.62.0508261425330.5480@mercury.sdinet.de>
+In-Reply-To: <200508260947.09491.vladislav.kurz@webstep.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +17,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: Vladislav Kurz <vladislav.kurz@webstep.net>
 Cc: netfilter@lists.netfilter.org
 
-On Fri, 26 Aug 2005, Sven-Haegar Koch wrote:
+Le vendredi 26 ao=FBt 2005 =E0 09:47 +0200, Vladislav Kurz a =E9crit :
+> Is there a reference documentation for the dozens of files in=20
+> proc/sys/net/ipv4/ and subdirectories, especially  =20
+> proc/sys/net/ipv4/netfilter ?=20
 
-> On Fri, 26 Aug 2005, Vladislav Kurz wrote:
->
->> Is there a reference documentation for the dozens of files in
->> proc/sys/net/ipv4/ and subdirectories, especially
->> proc/sys/net/ipv4/netfilter ?
->> I have tried googling, serching the sources, but didn't find it.
->
-> Some of them are documented in the kernel source under 
-> Documentation/networking/ip-sysctl.txt. But my box (currently debian's 
-> 2.6.12-1-686) does not have a proc/sys/net/ipv4/netfilter subdir at all.
+For the first, http://lartc.org/howto/lartc.kernel.obscure.html is a
+good start.
 
-Small follow up:
-the subdir is there, I should have looked onto a box that has netfilter at 
-least loaded ;)
 
-c'ya
-sven
-
--- 
-
-The Internet treats censorship as a routing problem, and routes around it.
-(John Gilmore on http://www.cygnus.com/~gnu/)
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
