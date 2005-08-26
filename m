@@ -1,11 +1,11 @@
-From: Clemens Eisserer <linuxhippy@gmail.com>
-Subject: Two network cards - routing and iptables
-Date: Fri, 26 Aug 2005 16:55:47 +0200
-Message-ID: <194f625505082607553b1d3f95@mail.gmail.com>
+From: "Thomas Raef" <traef06@ebasedsecurity.com>
+Subject: iptables v1.3.3
+Date: Fri, 26 Aug 2005 10:10:47 -0500
+Message-ID: <D2EA20593E6AAD4DA6D07DE0EC12D16162EB@ebs-2200.ebasedsecurity.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,38 +19,35 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi there,
+I have been running 2.6.11.7 kernel with iptables v1.3.1 and I recently
+downloaded the full v1.3.3 tarball.
 
-I've just discovered the power of iptables and it just works well in
-my selfbuilt isdn router. However now I also want to route between two
-subnets and it just does not work.
+=20
 
-I've two network cards in the pc:
-eth0 - 192.168.0.1
-eth1 - 192.168.1.2
+I'm able to make && make install the new iptables v 1.3.3 but when my
+rules load it can't find libipt_recent.so.
 
-when I try to ping another computer connected to 192.168.0.0/24
-everything works fine, however I cannot ping my access-point in
-192.168.1.0/24 (which works from a stand-alone computer withought any
-problems).
+=20
 
-This are my routes:
-LKLET021.highwa *               255.255.255.255 UH    0      0        0 ipp=
-p0
-192.168.1.0     *               255.255.255.0   U     0      0        0 eth=
-1
-192.168.0.0     *               255.255.255.0   U     0      0        0 eth=
-0
-default         LKLET021.highwa          UG    0      0        0 ippp0
-m
+I removed the old iptables first because I was having issues with it
+complaining that I was using iptables v1.3.3 (I'm iptables v1.3.1).
 
-Furthermore it would be great if I could use this computer as a
-gateway for all computers in 192.168.0.0/24 and 192.168.1.0/24 so that
-each computer in this net could reach each other. I tried to configure
-iptables a bit, but withought any success :-(
+=20
 
-It would be great if anybody could help me, I know those are
-newbie-questions, sorry.
+How do I get libipt_recent.so?
 
-Thank you in advance, lg Clemens
+=20
+
+I do have libipt_recent.c but it's not creating the .so
+
+=20
+
+I did recompile the kernel with the same options selected as I had
+before. The only thing I'm trying to update is the version of iptables.
+
+=20
+
+Should I have just patched the v1.3.1?
+
+=20
 
