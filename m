@@ -1,14 +1,13 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Limit
-Date: Fri, 26 Aug 2005 16:33:47 -0500
-Message-ID: <430F8ABB.4030904@riverviewtech.net>
-References: <20050826145640.A122EA5CAC9@smtp.orbitel.bg>	<002d01c5aa7e$191a1c70$0300a8c0@office>	<430F842A.8060501@riverviewtech.net>
-	<430F8983.5000006@lopsch.com>
-	<Pine.LNX.4.62.0508261722430.14997@dgray-test.acs.internap.com>
+From: "curby ." <curby.public@gmail.com>
+Subject: Re: Monitoring a TARPIT
+Date: Fri, 26 Aug 2005 15:56:00 -0600
+Message-ID: <5d2f37910508261456604591e7@mail.gmail.com>
+References: <BAY17-F395E91EF38C195535713309DAB0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.62.0508261722430.14997@dgray-test.acs.internap.com>
+In-Reply-To: <BAY17-F395E91EF38C195535713309DAB0@phx.gbl>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,19 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?Gottmar_Krak=E9liusz?= <ulan.bator@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-*nod*  You are quite correct sir.
+On 8/25/05, Gottmar Krak=E9liusz <ulan.bator@hotmail.com> wrote:
+> Hi!
+> I use the TARPIT target to delay those brute force attacks on my SSH port=
+.
+> Now I wonder if there is a way of getting some statistics on how many, wh=
+ich
+> IP:s and for how long they are caught.
+> AFAIK, I cant get ALL this by simply logging?
 
-iptables -t filter -A INPUT -i ${WAN} -d ${WANIPAddress} -p tcp --dport 3333 -m connlimit --connlimit-mask 0 --connlimit-above 10 -j DROP
-
-
-
-Grant. . . .
-
-Damon Gray wrote:
-> 
-> There is a way with connlimit to limit from all IPs, add a
-> --connlimit-mask 0
+If you put your logging rule right before the TARPIT rule, it should
+log everything that would get to TARPIT.  This will show you IPs that
+get TARPIT-ed, and with some log analysis you could also find when,
+how many, etc.
 
