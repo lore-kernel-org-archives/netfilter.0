@@ -1,9 +1,11 @@
-From: =?iso-8859-1?B?R290dG1hciBLcmFr6WxpdXN6?= <ulan.bator@hotmail.com>
-Subject: Monitoring a TARPIT
-Date: Thu, 25 Aug 2005 20:04:24 +0900
-Message-ID: <BAY17-F395E91EF38C195535713309DAB0@phx.gbl>
+From: "Kerryn Wood" <Kerryn.Wood@tideway.com>
+Subject: disabling conntrack ...
+Date: Fri, 26 Aug 2005 13:20:58 +0100
+Message-ID: <B81183566FF73947875C3A207CD60AA61DFAE4@LONEX01.tideway.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,21 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi!
-I use the TARPIT target to delay those brute force attacks on my SSH port. =
+Hi All,
 
-Now I wonder if there is a way of getting some statistics on how many, whic=
-h=20
-IP:s and for how long they are caught.
-AFAIK, I cant get ALL this by simply logging?
-Gottmar
+=20
 
-_________________________________________________________________
-Hitta billigaste resan p=E5 MSN Resor=20
-http://msn.flygvaruhuset.se/etravelstore/msn_se/ibe/air/search/search.jsp
+I need to disable connection tracking and, although I've seen an old
+post here and a few mentions doing a search of the web, I haven't been
+able to find any conclusive information.
 
+=20
+
+I *think* I've removed all the connection tracking modules from
+/lib/modules/<kernel version>/kernel/net/ipv4/netfilter/ (I removed all
+ip_conntrack* files). When I try and start iptables again I get an error
+from iptables-restore. The error message is: "line 57 failed".
+
+=20
+
+I'm running FC3, kernel version 2.6.10-1.766 with iptables version
+1.2.11.
+
+=20
+
+Is there a FAQ or information documented on how to do this (that's I've
+missed and will be wholly embarrassed when you point it out)? Does
+anyone have any experience doing this they could share?
+
+=20
+
+Many thanks,
+
+Kerryn
+
+=20
 
