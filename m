@@ -1,14 +1,13 @@
-From: Kelly Scroggins <kelly@cliffhanger.com>
-Subject: Re: Analysing traffic from rule
-Date: Fri, 26 Aug 2005 07:59:33 -0500
-Message-ID: <20050826125933.GM1589@nlb0.inside.net>
-References: <1125046931.11274.10.camel@n10665.scania.com>
-	<603071399.20050826121857@osetia.org>
-	<1125048154.11274.13.camel@n10665.scania.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: ipsec nat and iptables
+Date: Fri, 26 Aug 2005 08:03:39 -0500
+Message-ID: <200508260803.39600.rob0@gmx.co.uk>
+References: <430DE371.7020206@datacenter1.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <430DE371.7020206@datacenter1.com>
 Content-Disposition: inline
-In-Reply-To: <1125048154.11274.13.camel@n10665.scania.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,46 +19,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jimmy Hedman <jimmy.hedman@southpole.se>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Snort-Inline?
+On Thursday 2005-August-25 10:27, Info DataCenter1.com wrote:
+> Network A
+> eth0=  conected to internet
+> eth1= conected to private lan 192.168.1.1
+>
+> Network B
+> eth0 conected to Internet
+> eth1= conected to private lan 192.168.2.1
+>
+>  >From server A I'm able to ping 192.168.2.1 and viceversa but
+>  > computers in the private lan can't see the other side
+snip
+> iptables -A FORWARD -i eth1 -o eth0
+> iptables -A FORWARD -i eth0 -o eth1
 
+These rules do nothing.
+
+> iptables -P FORWARD DROP
+
+And then your policy drops that traffic.
 -- 
-kelly
-http://home1.gte.net/res0psau/index.html#Hang-Gliding-Stuff
-
-	   --    -- 
-	     \  /
-	      \/
-	      /\
-	     /  \
-	   --    --
-
-
-
-Quoting Jimmy Hedman <jimmy.hedman@southpole.se>:
-        I like to analyze the traffic with tethereal or tcpdump for example.
-        
-        // Jimmy
-        
-        On Fri, 2005-08-26 at 12:18 +0300, Maxim Shpakov wrote:
-        > Hello Jimmy,
-        > 
-        > Friday, August 26, 2005, 12:02:11 PM, you wrote:
-        > 
-        > JH> Hi,
-        > JH> I'd like to "see" the traffic that hits a rule and found
-        > JH> http://www.stearns.org/doc/iptables-ulog.current.html which uses ULOG
-        > JH> which works fine. But I wonder if its possible to do it without using
-        > JH> ULOG and storing it on a file?
-        > 
-        > JH> // Jimmy
-        > 
-        > 
-        > -j LOG  ? log traffic via syslog
-        > 
-        
-        
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
