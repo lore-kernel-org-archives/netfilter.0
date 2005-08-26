@@ -1,12 +1,12 @@
-From: Tien-Ren Chen <trchen1033@gmail.com>
-Subject: Re: Problem with conntrack, all packet are marked as invalid.
-Date: Fri, 26 Aug 2005 03:57:09 +0800
-Message-ID: <430E2295.6010305@gmail.com>
-References: <201E6F5AC48C274996A5AD8304FAEF860BFC93@p001ex03.porta.local>
+From: Vladislav Kurz <vladislav.kurz@webstep.net>
+Subject: Documentation for /proc/sys/net/ipv4/
+Date: Fri, 26 Aug 2005 09:47:03 +0200
+Message-ID: <200508260947.09491.vladislav.kurz@webstep.net>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart21258995.tmANPsQryD";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <201E6F5AC48C274996A5AD8304FAEF860BFC93@p001ex03.porta.local>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Baake, Matthias" <m.baake@porta.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Baake, Matthias wrote:
 
->Hi
->
->if you have a static ip situation i would use the snat target, thats not the problem but just noticed..
->please post your iptables startup script or the output of iptables-save.
->one thing i've never seen before is the "ctstate" output anybody any idea?!
->
->greets matthias
->  
->
-Thank you for the SNAT target suggestion.
+--nextPart21258995.tmANPsQryD
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-And I've already solved my problem by downgrading my kernel to 2.6.11.
-It seems like a bug in the bridge netfilter code in 2.6.12.
+Hello all,
 
-I first tried to use iptables with LOG target to find where the 
-connection tracking info disappeared.
-Even after processed by the NF_IP_PRE_ROUTING filters the packets seemed ok,
-but when they went to the NF_IP_FORWARD/NF_IP_PRI_MANGLE, their ctstate 
-became INVALID.
-Then I added some printk in the kernel sources, found the packets are 
-still ok even when they went to beginning of NF_IP_FORWARD hooks,
-however, when they finally came to ctstate match, skb->nfct was already 
-cleaned with 0 (skb->nfctinfo still held correct value).
-Then I examined the bridge netfilter code, I was suprised that it 
-blocked the packets with NF_STOP -- how did the packets go to the 
-NF_IP_PRI_MANGLE hook?
-I tried to find document explaining what the NF_STOP does, but got 
-nothing except that it's something new in the 2.6.12 kernel.
-At last I tried to downgrade by kernel to 2.6.11, it worked, and the 
-story ends.
+Is there a reference documentation for the dozens of files in=20
+proc/sys/net/ipv4/ and subdirectories, especially  =20
+proc/sys/net/ipv4/netfilter ?=20
+I have tried googling, serching the sources, but didn't find it.
 
-I think the netfilter Hacking HOWTO should be updated to meet the change.
-And I'm wondering what's the use of NF_STOP?
-It seems little difference between NF_STOP and NF_STOLEN, but what's the 
-essential?
---
-Tien-Ren Chen, 2005/08/26.
+I know this qualifies as FAQ, but it isn't there.=20
+
+=2D-=20
+Regards
+        Vladki
+
+P.S. Thanks to the developers for the good woork.
+
+--nextPart21258995.tmANPsQryD
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBDDsj9tE3Oxn6KpVkRAiyeAJ4666Vhs6qUFeqV//nsvU1+AqFQ7ACfYDRv
+VAG9kBTljSG/TaeoVBz8/mo=
+=6hXm
+-----END PGP SIGNATURE-----
+
+--nextPart21258995.tmANPsQryD--
 
