@@ -1,12 +1,11 @@
-From: "Ruben Cardenal" <ruben@ruben.cn>
-Subject: RE: P2P networks
-Date: Fri, 26 Aug 2005 16:54:12 +0200
-Message-ID: <31829.1940996007$1125068179@news.gmane.org>
-References: <430F2C39.4000003@eccotours.dyndns.org>
+From: Clemens Eisserer <linuxhippy@gmail.com>
+Subject: Two network cards - routing and iptables
+Date: Fri, 26 Aug 2005 16:55:47 +0200
+Message-ID: <194f625505082607553b1d3f95@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <430F2C39.4000003@eccotours.dyndns.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,40 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Brent Clark' <bclark@eccotours.dyndns.org>, 'iptables' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hi there,
 
-> If says I can drop "some P2P" like kazaa and ares, is there a list of p2p
-> networks that can be dropped.
+I've just discovered the power of iptables and it just works well in
+my selfbuilt isdn router. However now I also want to route between two
+subnets and it just does not work.
 
-  Try iptables -m ipp2p --help
+I've two network cards in the pc:
+eth0 - 192.168.0.1
+eth1 - 192.168.1.2
 
-IPP2P v0.7.2 options:
- --ipp2p        Grab all known p2p packets
- --ipp2p-data   Identify all known p2p download commands (obsolete)
+when I try to ping another computer connected to 192.168.0.0/24
+everything works fine, however I cannot ping my access-point in
+192.168.1.0/24 (which works from a stand-alone computer withought any
+problems).
 
- --edk          [TCP&UDP]       All known eDonkey/eMule/Overnet packets
- --dc           [TCP]           All known Direct Connect packets
- --kazaa        [TCP&UDP]       All known KaZaA packets
- --gnu          [TCP&UDP]       All known Gnutella packets
- --bit          [TCP&UDP]       All known BitTorrent packets
- --apple        [TCP]           All known AppleJuice packets (beta - just a
-few tests until now)
- --winmx        [TCP]           All known WinMX (beta - need feedback)
- --soul         [TCP]           All known SoulSeek (beta - need feedback!)
- --ares         [TCP]           All known Ares - use with DROP only (beta -
-need feedback!)
+This are my routes:
+LKLET021.highwa *               255.255.255.255 UH    0      0        0 ipp=
+p0
+192.168.1.0     *               255.255.255.0   U     0      0        0 eth=
+1
+192.168.0.0     *               255.255.255.0   U     0      0        0 eth=
+0
+default         LKLET021.highwa          UG    0      0        0 ippp0
+m
 
- --edk-data     [TCP]           eDonkey/eMule/Overnet download commands
-(obsolete)
- --dc-data      [TCP]           Direct Connect download command (obsolete)
- --kazaa-data   [TCP]           KaZaA download command (obsolete)
- --gnu-data     [TCP]           Gnutella download command (obsolete)
+Furthermore it would be great if I could use this computer as a
+gateway for all computers in 192.168.0.0/24 and 192.168.1.0/24 so that
+each computer in this net could reach each other. I tried to configure
+iptables a bit, but withought any success :-(
 
-  Regards,
+It would be great if anybody could help me, I know those are
+newbie-questions, sorry.
 
-- Ruben
-
-
+Thank you in advance, lg Clemens
 
