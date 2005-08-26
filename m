@@ -1,13 +1,13 @@
-From: Maxim Shpakov <maxim@osetia.org>
+From: Jimmy Hedman <jimmy.hedman@southpole.se>
 Subject: Re: Analysing traffic from rule
-Date: Fri, 26 Aug 2005 12:18:57 +0300
-Message-ID: <603071399.20050826121857@osetia.org>
+Date: Fri, 26 Aug 2005 11:22:34 +0200
+Message-ID: <1125048154.11274.13.camel@n10665.scania.com>
 References: <1125046931.11274.10.camel@n10665.scania.com>
-Reply-To: Maxim Shpakov <maxim@osetia.org>
+	<603071399.20050826121857@osetia.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1125046931.11274.10.camel@n10665.scania.com>
+In-Reply-To: <603071399.20050826121857@osetia.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,26 +19,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jimmy Hedman <jimmy.hedman@southpole.se>
+To: Maxim Shpakov <maxim@osetia.org>
 Cc: netfilter@lists.netfilter.org
 
-Hello Jimmy,
+I like to analyze the traffic with tethereal or tcpdump for example.
 
-Friday, August 26, 2005, 12:02:11 PM, you wrote:
+// Jimmy
 
-JH> Hi,
-JH> I'd like to "see" the traffic that hits a rule and found
-JH> http://www.stearns.org/doc/iptables-ulog.current.html which uses ULOG
-JH> which works fine. But I wonder if its possible to do it without using
-JH> ULOG and storing it on a file?
-
-JH> // Jimmy
-
-
--j LOG  ? log traffic via syslog
-
--- 
-Best regards,
- Maxim           mailto:maxim@osetia.org
+On Fri, 2005-08-26 at 12:18 +0300, Maxim Shpakov wrote:
+> Hello Jimmy,
+> 
+> Friday, August 26, 2005, 12:02:11 PM, you wrote:
+> 
+> JH> Hi,
+> JH> I'd like to "see" the traffic that hits a rule and found
+> JH> http://www.stearns.org/doc/iptables-ulog.current.html which uses ULOG
+> JH> which works fine. But I wonder if its possible to do it without using
+> JH> ULOG and storing it on a file?
+> 
+> JH> // Jimmy
+> 
+> 
+> -j LOG  ? log traffic via syslog
+> 
 
 
