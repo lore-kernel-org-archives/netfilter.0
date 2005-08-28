@@ -1,7 +1,7 @@
 From: CC commmunication <commdsl@yahoo.com>
-Subject: does --syn and NEW are same , and
-Date: Sun, 28 Aug 2005 01:55:17 -0700 (PDT)
-Message-ID: <20050828085517.19653.qmail@web30204.mail.mud.yahoo.com>
+Subject: --syn and NEW are same ? or ?
+Date: Sun, 28 Aug 2005 01:55:50 -0700 (PDT)
+Message-ID: <20050828085550.39600.qmail@web30205.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -68,7 +68,6 @@ Please explain as  i want to know is what is more in NEW , Establishe drather th
 
  
  
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+		
+---------------------------------
+ Start your day with Yahoo! - make it your home page 
