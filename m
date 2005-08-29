@@ -1,11 +1,13 @@
-From: "Thomas Raef" <traef06@ebasedsecurity.com>
-Subject: RE: iptables v1.3.3
-Date: Fri, 26 Aug 2005 10:33:53 -0500
-Message-ID: <D2EA20593E6AAD4DA6D07DE0EC12D16162EC@ebs-2200.ebasedsecurity.com>
+From: Pablo Neira <pablo@eurodev.net>
+Subject: Re: STRING module
+Date: Mon, 29 Aug 2005 16:12:09 +0200
+Message-ID: <431317B9.7020004@eurodev.net>
+References: <20050828085550.39600.qmail@web30205.mail.mud.yahoo.com><00a401c5ac11$cab8fe30$0106280a@rsirbu2kp>	<00ad01c5ac13$f7bc8350$0106280a@rsirbu2kp>
+	<006d01c5ac86$316588a0$0b51960a@rsirbu2kp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <006d01c5ac86$316588a0$0b51960a@rsirbu2kp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,67 +18,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Damon Gray <dgray@internap.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Alex Sirbu <alex@as.ro>
 Cc: netfilter@lists.netfilter.org
 
-That's what I was missing.
+Alex Sirbu wrote:
+> It seems that the new kernel 2.6.13 will have support for Netfilter 
 
-Thank you.
+No, actually you'll have to wait until 2.6.14 is released.
 
------Original Message-----
-From: Damon Gray [mailto:dgray@internap.com]=20
-Sent: Friday, August 26, 2005 10:21 AM
-To: Thomas Raef
-Cc: netfilter@lists.netfilter.org
-Subject: Re: iptables v1.3.3
+> Can we expect to a improved version of this extension ith --replace-string option soon ?
 
+How useful would be such feature ?
 
-Make sure when you compiled 1.3.3 your KERNEL_DIR was set correctly=20
-because libipt_recent.so will only compile if the .recent-test script in
-
-the extensions directory finds the file:
-
-$KERNEL_DIR/include/linux/netfilter_ipv4/ipt_recent.h
-
--Damon-
-
-On Fri, 26 Aug 2005, Thomas Raef wrote:
-
-> I have been running 2.6.11.7 kernel with iptables v1.3.1 and I
-recently
-> downloaded the full v1.3.3 tarball.
->
->
->
-> I'm able to make && make install the new iptables v 1.3.3 but when my
-> rules load it can't find libipt_recent.so.
->
->
->
-> I removed the old iptables first because I was having issues with it
-> complaining that I was using iptables v1.3.3 (I'm iptables v1.3.1).
->
->
->
-> How do I get libipt_recent.so?
->
->
->
-> I do have libipt_recent.c but it's not creating the .so
->
->
->
-> I did recompile the kernel with the same options selected as I had
-> before. The only thing I'm trying to update is the version of
-iptables.
->
->
->
-> Should I have just patched the v1.3.1?
->
->
->
->
->
+--
+Pablo
 
