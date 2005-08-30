@@ -1,12 +1,11 @@
-From: rb <user01@kyberwelt.de>
-Subject: Re: FQDN filtering
-Date: Tue, 30 Aug 2005 19:41:03 +0200
-Message-ID: <20050830194103.3f0a5136.user01@kyberwelt.de>
-References: <20050830125809.68053.qmail@web52505.mail.yahoo.com>
+From: "Derick Anderson" <danderson@vikus.com>
+Subject: RE: Allowing access only some sites - onely some mac address
+Date: Tue, 30 Aug 2005 16:10:34 -0400
+Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7742E27BF@farmer.vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050830125809.68053.qmail@web52505.mail.yahoo.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +17,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>, netfilter@lists.netfilter.org
 
-On Tue, 30 Aug 2005 05:58:09 -0700 (PDT)
-rockey dada <rockeydada@yahoo.com> wrote:
+=20
 
-> Is there any way one can use IPTABLES to filter traffic based on "Fully
-> Qualified Domain Names".
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+> Taylor, Grant
+> Sent: Tuesday, August 30, 2005 1:23 PM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: Allowing access only some sites - onely some mac address
+>=20
+> > You may also want to consider getting arpwatch. arpwatch=20
+> will tell you when a particular user changes their MAC=20
+> address. MAC spoofing, while more difficult than IP spoofing,=20
+> is still fairly trivial and particularly in this case where=20
+> you are using a "blacklist" approach for filtering MACs. So=20
+> if I'm the one with MAC 00:D8:02:D8:C8:DF and I want to get=20
+> around your rules, I'll get a utility to change my MAC to=20
+> something that won't trigger your firewall rule, like=20
+> 10:D8:02:D8:C8:DF, which I can be sure won't collide with=20
+> another MAC for quite some time.
+> >=20
+> > If the particular users you are trying to filter for aren't very=20
+> > technical then I wouldn't worry but after two years of being a lab=20
+> > assistant/server admin for a network security class I tend to be a=20
+> > little paranoid. =3D)
+>=20
+> You are absolutely correct.  So my immediate response to this=20
+> is do the exact opposite, have the MAC of the computers that=20
+> are allowed to access any thing other than the sites in=20
+> question.  As far as needing ARP watch to look for changes in=20
+> IP, you could watch for the MAC and IP pair of allowed=20
+> systems.  Sure people could still get around this but they=20
+> will be breaking other things too.
+>=20
+>=20
+>=20
+> Grant. . . .
 
-not really. userspacetools can do dns-lookups when executed, but
-the  rules inserted into the (kernelspace)  netfilter will NEVER do
-any dns-lookups. (and i`m glad nobody even thought about implementing
-this :) ).
-so  /dev/rob0 is right: use proxys for this kind of  filtering.
-even if  you rely on dns-lookups while creating the netfilter-rules
-you cant be sure you got ALL entrys in  a rr-dns record AND  after
-inserting the rules you  cant beu  sure the entrys  do not change.
+Yes, that is the best way to do things. The university I graduated from
+implemented whitelist MAC-based network access very effectively and
+would kill your port if you tried getting around it. Having managed
+switches helped quite a bit.
 
-virtual
+Derick
 
