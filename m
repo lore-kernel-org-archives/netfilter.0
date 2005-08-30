@@ -1,11 +1,10 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: patch-o-matic error while comipling for pptp
-Date: Mon, 29 Aug 2005 22:36:01 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829074F2@pxtbenexd01.pxt.primeexalia.com>
+From: CC commmunication <commdsl@yahoo.com>
+Subject: iptables rule command help
+Date: Tue, 30 Aug 2005 03:00:13 -0700 (PDT)
+Message-ID: <20050830100014.75637.qmail@web30206.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: suneel cumar <suneelcumar@yahoo.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Sunell,=20
+Hi
+wt i want to do is just simple setup. I will be very
+thankful for the help
 
-Below is just a suggestion.  I'm not an expert... Please keep that in
-mind.
+              firewall/Gateway   
+lan0---eth0-192.168.1.253/30--eth1-10.0.0.253/30-----Lan1
 
-> unable to find ladd slot in src
+I want one to write the iptable rule for forwarding of
+TCP traffic from Lan0 to lan1 on the server
+10.0.0.254/30 port www, telnet, ssh, ftp 21,22 during
+the office timeings 9 am to 5pm with syn bit set or
+stateful option New, Established, Related and log the
+packet field informations as well.
 
-Search the archive for this.  There was a change that brought the ladd
-slot forward to 2.6.9 which probably broke the older versions (just a
-guess).  Find that date of the article and go back into CVS and pull out
-that single patch to the ladd before the change was made.  Don't pull
-the entire CVS just that file.
-
-With the new ladd file for the pptp_conntrack modules you should be able
-to insert it into your kernel tree now.
-
-Gary=20
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
