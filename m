@@ -1,13 +1,11 @@
-From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?=
-	<leolistas@solutti.com.br>
-Subject: Re: FQDN filtering
-Date: Tue, 30 Aug 2005 10:22:28 -0300
-Message-ID: <43145D94.40707@solutti.com.br>
-References: <20050830125809.68053.qmail@web52505.mail.yahoo.com>
+From: "Derick Anderson" <danderson@vikus.com>
+Subject: RE: Allowing access only some sites - onely some mac address
+Date: Tue, 30 Aug 2005 09:39:18 -0400
+Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7741FD017@farmer.vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050830125809.68053.qmail@web52505.mail.yahoo.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,58 +16,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: rockey dada <rockeydada@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
+=20
 
-    Well .... yes it can and no it cannot.
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+> Grant Taylor
+> Sent: Monday, August 29, 2005 10:28 PM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: Allowing access only some sites - onely some mac address
+>=20
+> Sebasti=E3o Ant=F4nio Campos (GWA) wrote:
+> > I have a list of the mac address 00:0c:6E:11:E8:B0,=20
+> 00:D8:02:D8:C8:DF,=20
+> > 00:E7:05:C9:07:EA............ and and I'd like that only these mac=20
+> > address could access only the following IP: 200.221.2.128,=20
+> > 200.221.2.129, 200.221.2.130, 200.221.2.131, 200.205.144.75,=20
+> > 200.205.144.76. But the other mac address could access everything.
+>=20
+> I would be tempted to do something like the following:
+>=20
+> # Create a new chain to put the allowed sites in for filtered MACs.
+> iptables -t filter -N MACFilteredSites
+>=20
+> # Watch for a specific MAC address and jump to said chain on matches.
+> iptables -t filter -A FORWARD -i ${LAN} -o ${INet} -m mac=20
+> --mac-source 00:0c:6E:11:E8:B0 -j MACFilterdSites iptables -t=20
+> filter -A FORWARD -i ${LAN} -o ${INet} -m mac --mac-source=20
+> 00:D8:02:D8:C8:DF -j MACFilterdSites iptables -t filter -A=20
+> FORWARD -i ${LAN} -o ${INet} -m mac --mac-source=20
+> 00:E7:05:C9:07:EA -j MACFilterdSites
+>=20
+> # Only allow the filtered MACs to go to these sites (IP addresses).
+> # Note:  We do not need to test for -i and -o interfaces b/c=20
+> we tested for this before we got to this chain.
+> iptables -t filter -A MACFilteredSites -d 200.221.2.128 -j=20
+> RETURN iptables -t filter -A MACFilteredSites -d=20
+> 200.221.2.129 -j RETURN iptables -t filter -A=20
+> MACFilteredSites -d 200.221.2.130 -j RETURN iptables -t=20
+> filter -A MACFilteredSites -d 200.221.2.131 -j RETURN=20
+> iptables -t filter -A MACFilteredSites -d 200.205.144.75 -j=20
+> RETURN iptables -t filter -A MACFilteredSites -d=20
+> 200.205.144.76 -j RETURN iptables -t filter -A=20
+> MACFilteredSites -j LOG iptables -t filter -A MACFilteredSites -j DROP
+>=20
+>=20
+>=20
+> Grant. . . .
+>=20
 
-    All rules can have FQDN instead of IPs. But FQDNs will be solved to 
-IPs and rules will be created using IPs.
+You may also want to consider getting arpwatch. arpwatch will tell you =
+when a particular user changes their MAC address. MAC spoofing, while =
+more difficult than IP spoofing, is still fairly trivial and =
+particularly in this case where you are using a "blacklist" approach for =
+filtering MACs. So if I'm the one with MAC 00:D8:02:D8:C8:DF and I want =
+to get around your rules, I'll get a utility to change my MAC to =
+something that won't trigger your firewall rule, like 10:D8:02:D8:C8:DF, =
+which I can be sure won't collide with another MAC for quite some time.
 
-Rule:
-iptables -A INPUT -s www.microsoft.com -j DROP
+If the particular users you are trying to filter for aren't very =
+technical then I wouldn't worry but after two years of being a lab =
+assistant/server admin for a network security class I tend to be a =
+little paranoid. =3D)
 
-is completly valid, but will be translated to:
-
-iptables -A INPUT -s 207.46.198.30 -j DROP
-iptables -A INPUT -s 207.46.198.60 -j DROP
-iptables -A INPUT -s 207.46.199.30 -j DROP
-iptables -A INPUT -s 207.46.225.60 -j DROP
-iptables -A INPUT -s 207.46.18.30 -j DROP
-iptables -A INPUT -s 207.46.19.30 -j DROP
-iptables -A INPUT -s 207.46.19.60 -j DROP
-iptables -A INPUT -s 207.46.20.60 -j DROP
-
-    when you hit the ENTER key or execute your firewall script. You will 
-not see 'www.microsoft.com' if you do 'iptables -nL -v', you will only 
-see the translated IP addresses. If FQDN changes IP addresses, iptables 
-will not see that change because DNS query for searching IPs is done 
-only when the rule is created.
-
-    I think there's a limit on how many IPs iptables can handle for a 
-single FQDN, but I dont know what this limit is.
-
-    iptables seems to CANNOT have rules with FQDN and keep the FQDN 
-instead of IPs.
-
-    Anyway, filtering FQDNs seems to be nice on application level and 
-not always on IP level. Are you thinking on web filtering ??? Why not 
-using a http proxy (squid) for doing that ?? Are you thinking on SPAM 
-fighting ?? Why not using your MTA capabilities for that ??
-
-    Sincerily,
-    Leonardo Rodrigues
-
-
-rockey dada escreveu:
-
->Is there any way one can use IPTABLES to filter traffic based on "Fully
->Qualified Domain Names".
->
->Rgds
->
->  
->
+Derick Anderson
 
