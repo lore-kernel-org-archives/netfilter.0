@@ -1,11 +1,13 @@
-From: "Baake, Matthias" <m.baake@porta.de>
-Subject: RE: FQDN filtering
-Date: Tue, 30 Aug 2005 15:23:41 +0200
-Message-ID: <201E6F5AC48C274996A5AD8304FAEF860BFC9E@p001ex03.porta.local>
+From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?=
+	<leolistas@solutti.com.br>
+Subject: Re: FQDN filtering
+Date: Tue, 30 Aug 2005 10:22:28 -0300
+Message-ID: <43145D94.40707@solutti.com.br>
+References: <20050830125809.68053.qmail@web52505.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <20050830125809.68053.qmail@web52505.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,40 +18,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: rockey dada <rockeydada@yahoo.com>
-Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-hi
 
-afaik it is possible, but the hostname will be resolved if the rule is =
-executed.
-this means if there is a dns update, the resolved ip may not match the =
-hostname you want to filter.
-so i would say better be careful
+    Well .... yes it can and no it cannot.
 
-greets
+    All rules can have FQDN instead of IPs. But FQDNs will be solved to 
+IPs and rules will be created using IPs.
 
-Matthias
+Rule:
+iptables -A INPUT -s www.microsoft.com -j DROP
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of rockey dada
-> Sent: Tuesday, August 30, 2005 2:58 PM
-> To: netfilter@lists.netfilter.org
-> Subject: FQDN filtering
->=20
->=20
-> Is there any way one can use IPTABLES to filter traffic based=20
-> on "Fully
-> Qualified Domain Names".
->=20
-> Rgds
->=20
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam protection around=20
-> http://mail.yahoo.com=20
->=20
->=20
+is completly valid, but will be translated to:
+
+iptables -A INPUT -s 207.46.198.30 -j DROP
+iptables -A INPUT -s 207.46.198.60 -j DROP
+iptables -A INPUT -s 207.46.199.30 -j DROP
+iptables -A INPUT -s 207.46.225.60 -j DROP
+iptables -A INPUT -s 207.46.18.30 -j DROP
+iptables -A INPUT -s 207.46.19.30 -j DROP
+iptables -A INPUT -s 207.46.19.60 -j DROP
+iptables -A INPUT -s 207.46.20.60 -j DROP
+
+    when you hit the ENTER key or execute your firewall script. You will 
+not see 'www.microsoft.com' if you do 'iptables -nL -v', you will only 
+see the translated IP addresses. If FQDN changes IP addresses, iptables 
+will not see that change because DNS query for searching IPs is done 
+only when the rule is created.
+
+    I think there's a limit on how many IPs iptables can handle for a 
+single FQDN, but I dont know what this limit is.
+
+    iptables seems to CANNOT have rules with FQDN and keep the FQDN 
+instead of IPs.
+
+    Anyway, filtering FQDNs seems to be nice on application level and 
+not always on IP level. Are you thinking on web filtering ??? Why not 
+using a http proxy (squid) for doing that ?? Are you thinking on SPAM 
+fighting ?? Why not using your MTA capabilities for that ??
+
+    Sincerily,
+    Leonardo Rodrigues
+
+
+rockey dada escreveu:
+
+>Is there any way one can use IPTABLES to filter traffic based on "Fully
+>Qualified Domain Names".
+>
+>Rgds
+>
+>  
+>
 
