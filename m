@@ -1,10 +1,13 @@
-From: Terje Sannum <terje@waste.org>
-Subject: Special configuration... need help!
-Date: Tue, 30 Aug 2005 18:32:35 +0200
-Message-ID: <1125419556.4423.3.camel@localhost.localdomain>
+From: Jakub Wartak <vnull@pcnet.com.pl>
+Subject: Re: max-src-conn-rate (Connection rate throttling per IP)
+Date: Tue, 30 Aug 2005 14:59:21 +0200
+Message-ID: <200508301459.21464.vnull@pcnet.com.pl>
+References: <200508301440.59667.benoit.panizzon@imp.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200508301440.59667.benoit.panizzon@imp.ch>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,43 +18,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-I'm no networking expert and don't know if this is possible, so any
-help and tips are welcome...
+Dnia wtorek, 30 sierpnia 2005 14:40, Benoit Panizzon napisa=B3:
+> Hi all
+>
+> I'm looking for a way to prevent connection DOSing of specific services.
+>
+> The goal is to count the connection rate per conneting ip and then reject
+> those connections if they pass a certain limit.
+>
+> It looks like OpenBSD's pf is the only packet filter (except some
+> commerctial Firewalls) which has this ability.
+>
+> The best I managed with iptables is to throttle the connection rate for a
+> specific port, but this of course affecs normal users trying to use that
+> service and does not change the fact of the service being DOSed.
+>
+> The other possibility I found is to write my own userspace QUEUE target
+> connection rate tracker via the iptables api. But as I'm not a programmer
+> and I think this is a quite common request I just wonder:
+>
+> Hasn't allready somebody written such a per source connection rate
+> limmiter?
+>
 
-Here is the situation: I have this set-top box for cable-tv at home
-that is connected to a 100mbps network. This network is connected to
-the internet, and plugging in a laptop instead gives me full (NAT'ed)
-100mbps access to the internet(!). The problem is that the DHCP server
-only gives me 1 ip-address, so I'm looking for a solution where I can
-have both my laptop (or better, a subnet) and the set-top box online
-on the same time.
+Have you tried hashlimit ?
 
-Available hardware:
-1 Linux PC w/2 network cards
-1 switch
-(I will invest in the nessesary hardware if that's what it takes)
+ex1. ( not tested ):=20
 
-I've tried using this hardware to make a NAT'ed subnet (with DHCP
-server). This works fine for the laptop (i'm using it now :), but the
-set-top box complains about no connection to server. The set-top box
-is WinXP based, and looking at the traffic at boot-time I see a lot of
-netbios packets. I've tried to set up forwarding, but that does not
-seem to help. Testing different configurations takes a hell lot of
-time since I have to reboot the set-top box everytime, that's why I'm
-trying this message. Don't know anything about the MS protocols, and a
-little searching tells me that NAT'ing this does not work?
+# seems that hashlimit doesn't support negation ( "!" )
+# example way to achieve the same result:
+iptables -t raw -N ANTIDOS
+iptables -t raw -A ANTIDOS -m hashlimit --hashlimit 5/s \
+	--hashlimit-name limitDoS --hashlimit-mode srcip,dstport -j ACCEPT
+iptables -t raw -A ANTIDOS -j DROP
 
-So, is there some way I can watch TV and be online with my computer(s)
-at the same time?  The set-top box only needs access to a 10.x.x.x net
-(I think), so my thought was that a configuration that sets up a
-bridge from that net to the set-top box but still has a NAT'ed subnet
-maybe will work. Is this possible? Help! ;)
+iptables -t raw -A PREROUTING -i eth0 -p tcp --syn -j ANTIDOS
 
--Terje
+Another idea is to add "bad" IPs to recent list and then drop all traffic f=
+rom=20
+them for example for 12 hours.
 
+You could also use connlimit.
 
-
+=2D-=20
+Jakub Wartak
+=2Dvnull
+=46reeBSD/OpenBSD/Linux/Solaris/Network Administrator
 
