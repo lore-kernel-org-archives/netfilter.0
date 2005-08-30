@@ -1,11 +1,13 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: Allowing access only some sites - onely some mac address
-Date: Tue, 30 Aug 2005 16:10:34 -0400
-Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7742E27BF@farmer.vikus.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: max-src-conn-rate (Connection rate throttling per IP)
+Date: Tue, 30 Aug 2005 18:03:14 -0500
+Message-ID: <4314E5B2.6040309@riverviewtech.net>
+References: <200508301440.59667.benoit.panizzon@imp.ch>
+	<4314590F.7050804@toxicnet.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <4314590F.7050804@toxicnet.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +19,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Taylor, Grant" <gtaylor@riverviewtech.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-=20
+Sascha Reissner wrote:
+> iptables -I INPUT -i <interface> -p <protocol> --dport <port> -m state
+> --state NEW -m recent --set
+> iptables -I INPUT -i <interface> -p <protocol> --dport <port> -m state
+> --state NEW -m recent --update --seconds 60 --hitcount 3 -j DROP
+> Okay you might run into problems if people use forged source ip adresses
+> since this would also block _new_ connection requests from this ip.
+> 
+> If someone has a smarter idea - let me know.
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
-> Taylor, Grant
-> Sent: Tuesday, August 30, 2005 1:23 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Allowing access only some sites - onely some mac address
->=20
-> > You may also want to consider getting arpwatch. arpwatch=20
-> will tell you when a particular user changes their MAC=20
-> address. MAC spoofing, while more difficult than IP spoofing,=20
-> is still fairly trivial and particularly in this case where=20
-> you are using a "blacklist" approach for filtering MACs. So=20
-> if I'm the one with MAC 00:D8:02:D8:C8:DF and I want to get=20
-> around your rules, I'll get a utility to change my MAC to=20
-> something that won't trigger your firewall rule, like=20
-> 10:D8:02:D8:C8:DF, which I can be sure won't collide with=20
-> another MAC for quite some time.
-> >=20
-> > If the particular users you are trying to filter for aren't very=20
-> > technical then I wouldn't worry but after two years of being a lab=20
-> > assistant/server admin for a network security class I tend to be a=20
-> > little paranoid. =3D)
->=20
-> You are absolutely correct.  So my immediate response to this=20
-> is do the exact opposite, have the MAC of the computers that=20
-> are allowed to access any thing other than the sites in=20
-> question.  As far as needing ARP watch to look for changes in=20
-> IP, you could watch for the MAC and IP pair of allowed=20
-> systems.  Sure people could still get around this but they=20
-> will be breaking other things too.
->=20
->=20
->=20
-> Grant. . . .
+Why don't you add the "--rttl" parameter to the recent match extension.  Here is a quote from "iptables -m recent -h" output explaining it "For check and update commands above.  Specifies that the match will only occur if the source address and the TTL match between this packet and the one which was set.  Useful if you have problems with people spoofing their source address in order to DoS you via this module."
 
-Yes, that is the best way to do things. The university I graduated from
-implemented whitelist MAC-based network access very effectively and
-would kill your port if you tried getting around it. Having managed
-switches helped quite a bit.
 
-Derick
+
+Grant. . . .
 
