@@ -1,10 +1,11 @@
-From: suneel cumar <suneelcumar@yahoo.com>
-Subject: patch-o-matic error while comipling for pptp
-Date: Mon, 29 Aug 2005 22:15:16 -0700 (PDT)
-Message-ID: <20050830051516.46883.qmail@web90101.mail.scd.yahoo.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: patch-o-matic error while comipling for pptp
+Date: Mon, 29 Aug 2005 22:36:01 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829074F2@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,44 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: suneel cumar <suneelcumar@yahoo.com>, netfilter@lists.netfilter.org
 
-Hi All,
+Sunell,=20
 
-i was try to patch nat_pptp for allowing more pptp
-connection out to pptp server.
+Below is just a suggestion.  I'm not an expert... Please keep that in
+mind.
 
+> unable to find ladd slot in src
 
-On compiling using patch-o-matic latest package 
-patch-o-matic-ng-20050610 for 
-ip_nat_proto_gre
-ip_nat_pptp
+Search the archive for this.  There was a change that brought the ladd
+slot forward to 2.6.9 which probably broke the older versions (just a
+guess).  Find that date of the article and go back into CVS and pull out
+that single patch to the ladd before the change was made.  Don't pull
+the entire CVS just that file.
 
-i started patching with extra option
+With the new ladd file for the pptp_conntrack modules you should be able
+to insert it into your kernel tree now.
 
-./runme --extra
-
-On selecting the package it found following error.
-
-
-unable to find ladd slot in src
-/usr/src/linux-2.6.5-1.358/net/ipv4/netfilter/Makefile
-(./pptp-conntrack-nat/linux-2.6/./net/ipv4/netfilter/Makefile.ladd)
-
-Let guru's guide me configuring it successfully.
-
-
-Regards,
-Suneel
-
-
-
-
-
-
-		
-____________________________________________________
-Start your day with Yahoo! - make it your home page 
-http://www.yahoo.com/r/hs 
- 
+Gary=20
 
