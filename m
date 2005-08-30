@@ -1,11 +1,12 @@
-From: "Greg Scott" <GregScott@InfraSupportEtc.com>
-Subject: ip_conntrack_pptp.ko needs unknown symbol __ip_conntrack_expect_find
-Date: Tue, 30 Aug 2005 07:23:59 -0500
-Message-ID: <365871C49598504A9481DDBEC3EB49551231E6@MAIL.InfraSupportEtc.com>
+From: Benoit Panizzon <benoit.panizzon@imp.ch>
+Subject: max-src-conn-rate (Connection rate throttling per IP)
+Date: Tue, 30 Aug 2005 14:40:55 +0200
+Message-ID: <200508301440.59667.benoit.panizzon@imp.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="nextPart2554468.DKvhB03YL7";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,151 +17,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-So does anyone have any ideas how to deal with this problem?  It seems
-to be effecting lots of people and I've done everything I know how to
-document and troubleshoot it. =20
+--nextPart2554468.DKvhB03YL7
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Here is a short summary of the problem:
-> ip_conntrack_pptp.ko needs unknown symbol __ip_conntrack_expect_find
+Hi all
 
-Details below
+I'm looking for a way to prevent connection DOSing of specific services.
 
-Thanks
+The goal is to count the connection rate per conneting ip and then reject=20
+those connections if they pass a certain limit.
 
-- Greg Scott
+It looks like OpenBSD's pf is the only packet filter (except some commercti=
+al=20
+=46irewalls) which has this ability.
 
+The best I managed with iptables is to throttle the connection rate for a=20
+specific port, but this of course affecs normal users trying to use that=20
+service and does not change the fact of the service being DOSed.
 
+The other possibility I found is to write my own userspace QUEUE target=20
+connection rate tracker via the iptables api. But as I'm not a programmer a=
+nd=20
+I think this is a quite common request I just wonder:
 
------Original Message-----
-From: Greg Scott=20
-Sent: Sunday, August 28, 2005 6:07 PM
-To: 'netfilter@lists.netfilter.org'
-Subject: Problems building ip_conntrack_pptp with kernel 2.6.12.5; and
-what does nfnetlink do?
+Hasn't allready somebody written such a per source connection rate limmiter?
 
-Hi all -=20
+Is there a repository of different userspace QUEUE tools where I could find=
+=20
+something similar?
 
-I am trying to build a 2.6.12.5 kernel with the patch-o-matic-20050825
-pptp patches.  Make modules dies with this problem:
+Regards
+=2D-=20
+Beno=EEt Panizzon, <bp@imp.ch>
+=2D-----------------------------------------------------------------------
+ImproWare AG, UNIXSP & ISP                   Phone:   +41 61 826 93 00
+			     Kabelinternet-Hotline:   +41 61 826 93 07
+Zurlindenstrasse 29                            Fax:   +41 61 826 93 01
+CH-4133 Pratteln                               Net:   http://www.imp.ch/
+=2D-----------------------------------------------------------------------
 
-WARNING:
-/lib/modules/2.6.12.5fw20/kernel/net/ipv4/netfilter/ip_conntrack_pptp.ko
-needs unknown symbol __ip_conntrack_expect_find
+--nextPart2554468.DKvhB03YL7
+Content-Type: application/pgp-signature
 
-I edited the EXTRAVERSION line in Makefile and I started with the
-.config file that came with RedHat fc4 and 2.6.11-1.  I updated my copy
-of .config with make oldconfig. =20
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
 
-This is how I put in the PPTP and other patch-o-matic patches:
+iD8DBQBDFFPbCVq2G/yL7/ARAhRBAKCWyc0S+LUMdftxuMeAWNAPpDKxHACeKrX8
+m5w/MZwU40eAWniqKyLFRys=
+=QhZy
+-----END PGP MESSAGE-----
 
-cd /usr/src/patch-o-matic-ng-20050825
-
-./runme --batch connlimit
-##./runme --ip_contrack_count (Not in the .tar file)=20
-./runme --batch iprange=20
-./runme --batch mport (multiport match - deprecated soon)=20
-./runme --batch psd
-
-./runme --batch comment
-./runme --batch h323-conntrack-nat
-##./runme --batch ipp2p (Not in the .tar file) ./runme --batch
-pptp-conntrack-nat
-
-I did some more detective work.  A google search led me to a suggestion
-that the ip_conntrack__pptp patch now depends on another patch called
-nfnetlink.  So I went to my copy of the expanded POM tree and looked.
-Here is what I found:
-
-[root@gsgv-fw nfnetlink]# pwd
-/usr/src/patch-o-matic-ng-20050825/patchlets/nfnetlink
-[root@gsgv-fw nfnetlink]# cd ..
-[root@gsgv-fw patchlets]# grep -R ip_conntrack_expect_find *=20
-ctnetlink/linux-2.6.patch:+__ip_conntrack_expect_find(const struct
-ip_conntrack_tuple *tuple)=20
-ctnetlink/linux-2.6.patch:+ip_conntrack_expect_find_get(const struct
-ip_conntrack_tuple *tuple)
-ctnetlink/linux-2.6.patch:+     i =3D __ip_conntrack_expect_find(tuple);
-ctnetlink/linux-2.6.patch:+EXPORT_SYMBOL(__ip_conntrack_expect_find);
-ctnetlink/linux-2.6.patch:+EXPORT_SYMBOL(ip_conntrack_expect_find_get);
-ctnetlink/linux-2.6.patch:+__ip_conntrack_expect_find(const struct
-ip_conntrack_tuple *tuple);=20
-ctnetlink/linux-2.6.patch:+ip_conntrack_expect_find_get(const struct
-ip_conntrack_tuple *tuple);
-ctnetlink/linux-2.6.11/net/ipv4/netfilter/ip_conntrack_netlink.c:
-exp =3D ip_conntrack_expect_find_get(tuple);
-ctnetlink/linux-2.6.11/net/ipv4/netfilter/ip_conntrack_netlink.c:
-exp =3D ip_conntrack_expect_find_get(tuple);
-ctnetlink/linux-2.6.11/net/ipv4/netfilter/ip_conntrack_netlink.c:
-exp =3D __ip_conntrack_expect_find(tuple);
-netfilter-docbook/linux-2.4.patch: ip_conntrack_expect_find_get(const
-struct ip_conntrack_tuple *tuple)
-netfilter-docbook/linux-2.6.patch: ip_conntrack_expect_find_get(const
-struct ip_conntrack_tuple *tuple)
-nfnetlink-ctnetlink-0.13/linux-2.6.patch:+      exp =3D
-ip_conntrack_expect_find_get(tuple);
-nfnetlink-ctnetlink-0.13/linux-2.6.patch:+      exp =3D
-ip_conntrack_expect_find_get(tuple);
-nfnetlink-ctnetlink-0.13/linux.patch: ip_conntrack_expect_find_get(const
-struct ip_conntrack_tuple *tuple)
-nfnetlink-ctnetlink-0.13/linux.patch:
-EXPORT_SYMBOL_GPL(ip_conntrack_expect_find_get);
-nfnetlink-ctnetlink-0.13/linux/net/ipv4/netfilter/nfnetlink_conntrack.c:
-exp =3D ip_conntrack_expect_find_get(tuple);
-nfnetlink-ctnetlink-0.13/linux/net/ipv4/netfilter/nfnetlink_conntrack.c:
-exp =3D ip_conntrack_expect_find_get(tuple);
-pptp-conntrack-nat/linux-2.6.11/net/ipv4/netfilter/ip_conntrack_pptp.c:
-exp =3D __ip_conntrack_expect_find(t);
-[root@gsgv-fw patchlets]#=20
-
-Based on the above, it looks like ctnetlink defines and exports the
-missing symbol.  A look at the info for ctnetlink tells me it depends on
-nfnetlink.  I see two, maybe three choices for nfnetlink:  These are,
-nfnetlink, nfnetlink-ctnetlink-0.13, and nfnetlink_queue.
-
-The info for nfnetliink-ctnetlink-0.13 says this one is deprecated.
-Although recursive grep above shows that nfnetlink-ctnetlink mentions
-the missing symbol, its deffinitions may be obsolete. =20
-
-The info for nfnetlink_queue says it depends on nfnetlink.=20
-
-The info for nfnetlink only says it depends on a kernel >=3D 2.6.0.  And
-the info for all these modules is maddening because it  does not tell me
-what they do!
-
-I decided to add nfnetlink and ctnetlink to the list of POM patches I
-use and try another kernel build. =20
-
-The nfnetlink patch went in with no problems.  But ctnetlink gave me
-this:
-
-Testing ctnetlink... not applied
-The ctnetlink patch:
-   Author: Jay Schulist, Harald Welte, Patrick McHardy, et.al.
-   Status: Stable
-
-newfile: 4 files in our way, unable to apply ERROR (6 rejects out of 48
-hunks)
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] n
-
-
-I said no - the last thing I want is to put in a messed up patch!
-
-So now I am stuck again. =20
-
-Is there some order in which I should apply these patches?  Am I
-applying the correct patches?  How do we add the pptp patches these
-days???
-
-Thanks
-
-- Greg Scott
-  GregScott@InfraSupportEtc.com
-  USA cell phone 1-651-260-1051
-
-
-
+--nextPart2554468.DKvhB03YL7--
 
