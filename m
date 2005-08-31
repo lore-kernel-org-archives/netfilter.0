@@ -1,13 +1,10 @@
-From: Jakub Wartak <vnull@pcnet.com.pl>
-Subject: Re: max-src-conn-rate (Connection rate throttling per IP)
-Date: Tue, 30 Aug 2005 14:59:21 +0200
-Message-ID: <200508301459.21464.vnull@pcnet.com.pl>
-References: <200508301440.59667.benoit.panizzon@imp.ch>
+From: "Giacomo" <delleceste@gmail.com>
+Subject: help about NAT and ISP - without attachments
+Date: Wed, 31 Aug 2005 13:50:48 +0200
+Message-ID: <007f01c5ae22$3e9a2e20$0300a8c0@giacomino>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200508301440.59667.benoit.panizzon@imp.ch>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,53 +15,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-Dnia wtorek, 30 sierpnia 2005 14:40, Benoit Panizzon napisa=B3:
-> Hi all
->
-> I'm looking for a way to prevent connection DOSing of specific services.
->
-> The goal is to count the connection rate per conneting ip and then reject
-> those connections if they pass a certain limit.
->
-> It looks like OpenBSD's pf is the only packet filter (except some
-> commerctial Firewalls) which has this ability.
->
-> The best I managed with iptables is to throttle the connection rate for a
-> specific port, but this of course affecs normal users trying to use that
-> service and does not change the fact of the service being DOSed.
->
-> The other possibility I found is to write my own userspace QUEUE target
-> connection rate tracker via the iptables api. But as I'm not a programmer
-> and I think this is a quite common request I just wonder:
->
-> Hasn't allready somebody written such a per source connection rate
-> limmiter?
->
+Good morning, I'm Giacomo Strangolino from Italy.
 
-Have you tried hashlimit ?
+I finished developing an ipv4 packet filter with NAT/MASQUERADING and have 
+been
+testing it
+for some time with success connecting from home to my ISP named "libero".
 
-ex1. ( not tested ):=20
+Then i changed ISP to another one, called "telecom" and with great surprise
+i discovered that
+images from sites and also sites failed to load.
 
-# seems that hashlimit doesn't support negation ( "!" )
-# example way to achieve the same result:
-iptables -t raw -N ANTIDOS
-iptables -t raw -A ANTIDOS -m hashlimit --hashlimit 5/s \
-	--hashlimit-name limitDoS --hashlimit-mode srcip,dstport -j ACCEPT
-iptables -t raw -A ANTIDOS -j DROP
+So now, when i call an ISP all works fine, when i call the other, things go
+wrong.
 
-iptables -t raw -A PREROUTING -i eth0 -p tcp --syn -j ANTIDOS
+I NAT machines behind my firewall changing only ips and ports, and
+recalculating checksum (ip and tcp/udp)
+to adjust such changes.
+I do not touch any other field as window size or seq number or ack, since
+the only things i manipulate are
+addresses and ports.
 
-Another idea is to add "bad" IPs to recent list and then drop all traffic f=
-rom=20
-them for example for 12 hours.
+I was wondering what i could do to solve, since iptables and ipfw+natd on
+freeBSD or winXP sp2 work fine
+with this ISP...
 
-You could also use connlimit.
+Tweaking with ethereal i found that probably sometimes a tcp segment gets
+lost.
 
-=2D-=20
-Jakub Wartak
-=2Dvnull
-=46reeBSD/OpenBSD/Linux/Solaris/Network Administrator
+My firewall is a 2.6.12 kernel module which registers with netfilter hooks.
+A userspace program sends rules to
+kernel via netlink.
+
+I thank you if you could help me find the way to fix the problem or
+understand what could be wrong with an
+ISP network and anyway work fine with the other.
+
+Also any indication of where in iptables source is solved such problem
+would be appreciated.
+
+I attach a corrupted image and the ethereal capture related to it if it 
+could be useful-
+
+Thanks a lot in advance.
+
+Giacomo S. Udine, Italy
+
 
