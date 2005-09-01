@@ -1,11 +1,9 @@
-From: psihozefir <sorin.panca@gmail.com>
-Subject: multiple SNAT overlaps doesn't work?
-Date: Thu, 1 Sep 2005 22:40:56 +0300
-Message-ID: <fdb0cf39050901124060ff320f@mail.gmail.com>
+From: Phil Radden <phil-netfilter@frogtop.com>
+Subject: Lost packets, un-masqueraded retransmits
+Date: Thu, 1 Sep 2005 23:07:47 +0100 (BST)
+Message-ID: <Pine.LNX.4.44.0509012224260.4223-100000@rhubarb.frogtop.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,107 +14,75 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello! I have this configuration:
+Hi all,
 
-a) A small server with this configuration: on eth1 - local network:
-192.168.1.0/24
-on eth0 10.100.122.90 to my ISP for tunneling inside his network to my
-big server.
-a gre tunnel 10.10.10.8 <-> 10.10.10.7 to my big server.
-I forward the network to my big server with unchanged addresses.
+I'm seeing some very strange problems which I believe are at least half 
+netfilter issues - my apologies if not!  I hope you can help me.
 
-b) A big server with 3 NICs:
-eth0 =3D $publicIP1 AND all 64 addresses form a $publicNET1 as aliases to e=
-th0
-eth1 =3D 192.168.101.1 connected to 192.168.101.0/24 AND 10.0.0.1
-connected to 10.0.0.0/24 AND $publicIP2 as gateway for $publicNET2
-tun1 =3D 10.10.10.7 <-> 10.10.10.8 tunnel to my small server
-i have this:
+I have a Fedora Core 4 system (2.6.12-ish, iptables 1.3.0-ish) acting as a 
+masquerading gateway between an ethernet network (MTU 1500) and a PPPoATM 
+connection (MTU 1492).  
+I've simplified things to a single iptables rule,
+  -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+with net.ipv4.ip_forward=1, and can reproduce the problem.
 
-publicNET1=3D1.2.3.0/26
+Machines on the internal network are unable to access certain websites (the 
+homepage of www.nationalrail.co.uk, for example).  It appears that large 
+packets are being dropped, but also, whilst snooping to debug, I saw 
+unmasqueraded packets being leaked out.
 
-iptables -t nat -A POSTROUTING -o eth0 -s 192.168.101.0/24 -j SNAT
---to 1.2.3.1-1.2.3.32 # load balancing
+Snooping on the LAN address of the gateway I see (eg.):
 
-iptables -t nat -A POSTROUTING -o eth0 -s 10.0.0.0/24 -j SNAT --to
-1.2.3.33-1.2.3.62 # load balancing
+No.     Time        Source                Destination           Protocol Info
+      1 0.000000    192.168.31.191        213.174.202.41        TCP      1851 > http [SYN] Seq=0 Ack=0 Win=65535 Len=0 MSS=1460
+      2 0.018139    213.174.202.41        192.168.31.191        TCP      http > 1851 [SYN, ACK] Seq=0 Ack=1 Win=32767 Len=0 MSS=16856
+      3 0.018416    192.168.31.191        213.174.202.41        TCP      1851 > http [ACK] Seq=1 Ack=1 Win=65535 Len=0
+      4 0.020234    192.168.31.191        213.174.202.41        HTTP     GET /live/styles/main/home.css HTTP/1.1
+      5 0.051078    213.174.202.41        192.168.31.191        TCP      http > 1851 [ACK] Seq=1 Ack=408 Win=32767 Len=0
+      6 0.054043    213.174.202.41        192.168.31.191        HTTP     Continuation or non-HTTP traffic
+      7 0.054246    192.168.31.191        213.174.202.41        TCP      [TCP Dup ACK 3#1] 1851 > http [ACK] Seq=408 Ack=1 Win=65535 Len=0 SLE=1461 SRE=1674
+     10 16.051440   192.168.31.191        213.174.202.41        TCP      1845 > http [FIN, ACK] Seq=0 Ack=0 Win=65535 Len=0
+     11 54.377013   192.168.31.191        213.174.202.41        TCP      [TCP Retransmission] 1845 > http [FIN, ACK] Seq=0 Ack=0 Win=65535 Len=0
 
-iptables -t nat -A POSTROUTING -o eth0 -s 192.168.1.0 -j SNAT --to
-1.2.3.1-1.2.3.62  # load balancing
+(packet 6 was seq 1461, ack 408, len 213).  As you can see, a 1460-byte 
+packet went missing between packets 5 and 6.
 
-iptables -A FORWARD -s $publicNET2 -j ACCEPT
-iptables -A FORWARD -d $publicNET2 -j ACCEPT
+Snooping on ppp0, I see nearly the same thing, with the internal IP address 
+replaced by the external IP (correctly, by the masquerading rule).  Once 
+again, the 1460-byte packet is missing.  However, and worryingly, the 
+retransmitted packet, packet 11, and subsequent retransmissions, _appear_ 
+(according to tcpdump and ethereal) to still have the original (RFC1918) 
+source address.  Is this a config error, a reporting error or a bug? :)
 
-iptables -A FORWARD -i eth1 -s 192.168.101.0/24 -j ACCEPT
-iptables -A FORWARD -o eth1 -d 192.168.101.0/24 -j ACCEPT
+Snooping at the endpoint (213.174.202.41 in this example) showed:
 
-iptables -A FORWARD -i eth1 -s 10.0.0.0/24 -j ACCEPT
-iptables -A FORWARD -o eth1 -d 10.0.0.0/24 -j ACCEPT
+21:34:43.491939 85.210.143.231.1851 > 213.174.202.41.http: S 2346403573:2346403573(0) win 65535 <mss 1460,nop,nop,sackOK> (DF)
+21:34:43.492005 213.174.202.41.http > 213.174.202.41.1851: S 4283534505:4283534505(0) ack 2346403574 win 32767 <mss 16856,nop,nop,sackOK> (DF)
+21:34:43.509632 85.210.143.231.1851 > 213.174.202.41.http: . ack 1 win 65535 (DF)
+21:34:43.524462 85.210.143.231.1851 > 213.174.202.41.http: P 1:408(407) ack 1 win 65535 (DF)
+21:34:43.524484 213.174.202.41.http > 85.210.143.231.1851: . ack 408 win 32767 (DF)
+21:34:43.525913 213.174.202.41.http > 85.210.143.231.1851: . 1:1461(1460) ack 408 win 32767 (DF)
+21:34:43.525935 213.174.202.41.http > 85.210.143.231.1851: P 1461:1674(213) ack 408 win 32767 (DF)
+21:34:43.544692 85.210.143.231.1851 > 213.174.202.41.http: . ack 1 win 65535 <nop,nop,sack sack 1 {1461:1674} > (DF)
+21:34:46.528362 213.174.202.41.http > 85.210.143.231.1851: . 1:1461(1460) ack 408 win 32767 (DF)
+21:34:52.527773 213.174.202.41.http > 85.210.143.231.1851: . 1:1461(1460) ack 408 win 32767 (DF)
+21:35:04.526655 213.174.202.41.http > 85.210.143.231.1851: . 1:1461(1460) ack 408 win 32767 (DF)
+21:35:28.524181 213.174.202.41.http > 85.210.143.231.1851: . 1:1461(1460) ack 408 win 32767 (DF)
 
-iptables -A FORWARD -i tun1 -s 192.168.1.0/24 -j ACCEPT
-iptables -A FORWARD -o tun1 -d 192.168.1.0/24 -j ACCEPT
+Everything matches up, and you can see the 1460-byte packets going out, 
+which never make it.  But the reason I think this part of the problem is 
+potentially netfilter related, rather than a connection configuration 
+issue, is that the gateway box itself can access all of these affected site 
+with no problem at all!
 
-iptables -P FORWARD ACCEPT
+I'd be grateful for any suggestions, I've currently run out of ideas of 
+things to try...
 
-dns=3DISP`s dns
+Thanks,
+Phil
 
-The ISP is providing a route from its internal 10.100.122.0 network to
-my $publicIP1 for tunneling.
-
-Problem:
-I can communicate with the Internet from the locally connected
-networks (192.168.101.0 and 10.0.0.0) but I have no access to the
-Internet for the tunneled network.
-From the small server I can ping any machine on 192.168.101.0 or on 10.0.0.=
-0.
-From the big server I can ping any machine on the tunneled network.
-From the small server I can ping ISP`s dns server.
-
-routes on small server:
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Ifa=
-ce
-10.10.10.7      *               255.255.255.255 UH    0      0        0 tun=
-1
-ns.isp        10.100.122.65   255.255.255.255 UGH   0      0        0 eth0
-$publicIP1.i 10.100.122.65   255.255.255.255 UGH   0      0        0 eth0
-10.100.122.64   *               255.255.255.224 U     0      0        0 eth=
-0
-192.168.1.0     *               255.255.255.0   U     0      0        0 eth=
-1
-loopback        *               255.0.0.0       U     0      0        0 lo
-default         10.10.10.7      0.0.0.0         UG    0      0        0 tun=
-1
-
-routes on big server:
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Ifa=
-ce
-253.157.196.81. *               255.255.255.255 UH    0      0        0 eth=
-1
-253.157.196.81. *               255.255.255.255 UH    0      0        0 eth=
-1
-10.10.10.8      *               255.255.255.255 UH    0      0        0 tun=
-1
-$publicIP1      *               255.255.255.248 U     0      0        0 eth=
-0
-$publicNET2    *               255.255.255.248 U     0      0        0 eth1
-$publicNET1  *               255.255.255.192 U     0      0        0 eth0
-1.2.3.0             *               255.255.255.192 U     0      0        0=
- eth0
-192.168.101.0   *               255.255.255.0   U     0      0        0 eth=
-1
-10.0.0.0        *               255.255.255.0   U     0      0        0 eth=
-1
-192.168.1.0     10.10.10.8      255.255.255.0   UG    0      0        0 tun=
-1
-loopback        *               255.0.0.0       U     0      0        0 lo
-default         $my_gw    0.0.0.0         UG    1      0        0 eth0
-
-* Note that SNAT has overlapping addresses. I think that could be the
-problem. Has anyone experienced some similar situations? Thank you for
-your time, patience and help.
 
