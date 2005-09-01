@@ -1,12 +1,10 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: help about NAT and ISP - without attachments
-Date: Wed, 31 Aug 2005 15:54:52 -0500
-Message-ID: <4316191C.5060705@riverviewtech.net>
-References: <007f01c5ae22$3e9a2e20$0300a8c0@giacomino>
+From: kavitha <fd99127@yahoo.com>
+Subject: Dynamically changing destination ip address using iptables - IMP
+Date: Wed, 31 Aug 2005 18:44:48 -0700 (PDT)
+Message-ID: <20050901014449.75567.qmail@web51611.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <007f01c5ae22$3e9a2e20$0300a8c0@giacomino>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,63 +18,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Try adding a rule to your FORWARD chain to make sure that the TCP MSS value is not the problem.  I know that you said you are not changing the value, but give this a try to see if it fixes your problem.
+Hi,
+ 
+We are trying to modify the TCP protocol a little but so that when a packet arrives at a router, it would be possible to read a particular field (lets say options or the reserved field) of the packet(that would give the actual path that the packet needs to take) and populate the destination ip address of that packet with the new ipadress read from this reserved field. I know that using dnat you can change the destination ipaddress of the packet but in my problem, I would not knwo the destination ipaddress prior (it would be dynamic) and it would change with every packet - so I would not be able to use a static ip address in the iptables rule. So I wanted to know if there is anyt way to get around this , or if iptables would not provide a solution to thsi problem at all . I knwo this can be done using raw sockets but adding a single line (as in iptables) seems to be a better proposition t
+ han writing pages of code. Basically, I want to know if there is a way to dynamically configure
+ the destination ipaddress that a packet is being routed to by mapping certain other bits of the same packet coming in. 
+ 
+It would really help if someoen can provide some information in this regard. Any pointers too would really be useful.I looked at the man pages and searched the internet but was not able to come across any rela examples where such a thing may have been used.
+ 
+Thanks for your time! Please let me know if you need more clarifications!
+Kavitha
 
-iptables -t filter -A FORWARD -j TCPMSS --clamp-mss-to-pmtu
-
-I don't think that the missing packets is the culprit of your problem as this is the very nature of TCP (retransmission of unacknowledged packets).
-
-
-
-Grant. . . .
-
-Giacomo wrote:
-> Good morning, I'm Giacomo Strangolino from Italy.
-> 
-> I finished developing an ipv4 packet filter with NAT/MASQUERADING and
-> have been
-> testing it
-> for some time with success connecting from home to my ISP named "libero".
-> 
-> Then i changed ISP to another one, called "telecom" and with great surprise
-> i discovered that
-> images from sites and also sites failed to load.
-> 
-> So now, when i call an ISP all works fine, when i call the other, things go
-> wrong.
-> 
-> I NAT machines behind my firewall changing only ips and ports, and
-> recalculating checksum (ip and tcp/udp)
-> to adjust such changes.
-> I do not touch any other field as window size or seq number or ack, since
-> the only things i manipulate are
-> addresses and ports.
-> 
-> I was wondering what i could do to solve, since iptables and ipfw+natd on
-> freeBSD or winXP sp2 work fine
-> with this ISP...
-> 
-> Tweaking with ethereal i found that probably sometimes a tcp segment gets
-> lost.
-> 
-> My firewall is a 2.6.12 kernel module which registers with netfilter hooks.
-> A userspace program sends rules to
-> kernel via netlink.
-> 
-> I thank you if you could help me find the way to fix the problem or
-> understand what could be wrong with an
-> ISP network and anyway work fine with the other.
-> 
-> Also any indication of where in iptables source is solved such problem
-> would be appreciated.
-> 
-> I attach a corrupted image and the ethereal capture related to it if it
-> could be useful-
-> 
-> Thanks a lot in advance.
-> 
-> Giacomo S. Udine, Italy
-> 
-> 
-
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
