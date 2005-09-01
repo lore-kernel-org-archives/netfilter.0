@@ -1,9 +1,10 @@
-From: "Andrew Cant" <acant@logisense.com>
-Subject: MGCP protocol over NAT
-Date: Thu, 1 Sep 2005 13:12:04 -0400
-Message-ID: <10955.3950759166$1125594765@news.gmane.org>
+From: "Keith" <keith@acsinc.net>
+Subject: problem with connlimit module compile
+Date: Thu, 1 Sep 2005 14:58:23 -0400
+Message-ID: <006101c5af27$2087e750$dd8069d8@html>
+Reply-To: keith@acsinc.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,32 +19,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+I'm using kernel 2.6.13 and iptables 1.3.2 and=20
+patch-o-matic ng-20040621
 
-I posted a similar question a little while ago, and got some help from
-Jozsef Kadlecsik. (Thanks!)
+I'm getting an error when I try to patch and compile to use=20
+connlimit from the patch-o-matic base. the errors look like this:
 
-Unfortunately, I have not been able to find a solution to my problem, Which
-is how can I use the MGCP protocol through a Linux box doing NAT?
+In function count_them:
+struct ip_conntrack_tuple_hash has no member named ctrack
 
-It seems to be possible because the Linksys WRT54G with stock firmware is
-doing it. I have so far not been able to figure out why it is doing it.
-
-Has anyone here ever gotten MGCP working across a Linux NAT box? Do you have
-any suggestions for how I can do the same?
-
-Thanks for any help that you can give me.
+And sure enough I find the ctrack pointer was removed here:
+http://lists.netfilter.org/pipermail/netfilter-devel/2005-January/018147.=
+htm
+l
 
 
-Andrew Cant
-Developer
-LogiSense Corporation
-"IP Billing and Traffic Management"
-  
-e: acant@logisense.com
-p: 1-519-249-0508 x4108
-w: www.logisense.com
-weblog: http://blog.logisense.com
-forum: https://ssl.logisense.com/support/forum
+I started digging into the source and find it non-trivial
+Any suggestions on a work around?
+
+=20
 
 
