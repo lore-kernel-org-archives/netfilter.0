@@ -1,10 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: "curby ." <curby.public@gmail.com>
 Subject: Re: blocking IPs by file
-Date: Thu, 1 Sep 2005 18:35:15 -0500
-Message-ID: <200509011835.15679.rob0@gmx.co.uk>
+Date: Thu, 1 Sep 2005 17:59:38 -0600
+Message-ID: <5d2f3791050901165961bdd225@mail.gmail.com>
 References: <D2EA20593E6AAD4DA6D07DE0EC12D1616306@ebs-2200.ebasedsecurity.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <D2EA20593E6AAD4DA6D07DE0EC12D1616306@ebs-2200.ebasedsecurity.com>
 Content-Disposition: inline
@@ -19,15 +19,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Thomas Raef <traef06@ebasedsecurity.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 2005-September-01 17:45, Thomas Raef wrote:
+On 9/1/05, Thomas Raef <traef06@ebasedsecurity.com> wrote:
 > What's the best way to block a list of IP addresses from a text file?
 
-There was a very similar thread two days ago: "macro & iptables". But 
-no, iptables won't read your text file on its own. You will have to run 
-your script when you make changes.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+I'm not sure if you're looking for an existing solution or want to
+script your own.  If you want to make one, it's good to use a custom
+chain because then you can easily add to it without reloading the
+entire firewall or taking pains to find out where in the list of rules
+you need to insert.
 
