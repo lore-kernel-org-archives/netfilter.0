@@ -1,12 +1,10 @@
-From: Venkata Narayana <mesg2nari@yahoo.com>
-Subject: Re: Dynamically changing destination ip address using iptables - IMP
-Date: Wed, 31 Aug 2005 21:36:16 -0700 (PDT)
-Message-ID: <20050901043616.98510.qmail@web60821.mail.yahoo.com>
-References: <20050901014449.75567.qmail@web51611.mail.yahoo.com>
+From: "Andrew Cant" <acant@logisense.com>
+Subject: MGCP protocol over NAT
+Date: Thu, 1 Sep 2005 13:12:04 -0400
+Message-ID: <10955.3950759166$1125594765@news.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050901014449.75567.qmail@web51611.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,65 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: kavitha <fd99127@yahoo.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-This can be achievded by doing dynamic updation of
-rule. When-ever any change in your desination address
-then change the rule with new value without staring or
-stoping iptable service command.
+Hi,
 
+I posted a similar question a little while ago, and got some help from
+Jozsef Kadlecsik. (Thanks!)
 
---- kavitha <fd99127@yahoo.com> wrote:
+Unfortunately, I have not been able to find a solution to my problem, Which
+is how can I use the MGCP protocol through a Linux box doing NAT?
 
-> Hi,
->  
-> We are trying to modify the TCP protocol a little
-> but so that when a packet arrives at a router, it
-> would be possible to read a particular field (lets
-> say options or the reserved field) of the
-> packet(that would give the actual path that the
-> packet needs to take) and populate the destination
-> ip address of that packet with the new ipadress read
-> from this reserved field. I know that using dnat you
-> can change the destination ipaddress of the packet
-> but in my problem, I would not knwo the destination
-> ipaddress prior (it would be dynamic) and it would
-> change with every packet - so I would not be able to
-> use a static ip address in the iptables rule. So I
-> wanted to know if there is anyt way to get around
-> this , or if iptables would not provide a solution
-> to thsi problem at all . I knwo this can be done
-> using raw sockets but adding a single line (as in
-> iptables) seems to be a better proposition than
-> writing pages of code. Basically, I want to know if
-> there is a way to dynamically configure
->  the destination ipaddress that a packet is being
-> routed to by mapping certain other bits of the same
-> packet coming in. 
->  
-> It would really help if someoen can provide some
-> information in this regard. Any pointers too would
-> really be useful.I looked at the man pages and
-> searched the internet but was not able to come
-> across any rela examples where such a thing may have
-> been used.
->  
-> Thanks for your time! Please let me know if you need
-> more clarifications!
-> Kavitha
-> 
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam
-> protection around 
-> http://mail.yahoo.com 
-> 
+It seems to be possible because the Linksys WRT54G with stock firmware is
+doing it. I have so far not been able to figure out why it is doing it.
+
+Has anyone here ever gotten MGCP working across a Linux NAT box? Do you have
+any suggestions for how I can do the same?
+
+Thanks for any help that you can give me.
 
 
+Andrew Cant
+Developer
+LogiSense Corporation
+"IP Billing and Traffic Management"
+  
+e: acant@logisense.com
+p: 1-519-249-0508 x4108
+w: www.logisense.com
+weblog: http://blog.logisense.com
+forum: https://ssl.logisense.com/support/forum
 
-		
-____________________________________________________
-Start your day with Yahoo! - make it your home page 
-http://www.yahoo.com/r/hs 
- 
 
