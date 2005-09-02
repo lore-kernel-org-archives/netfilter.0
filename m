@@ -1,13 +1,13 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: Ruprecht Helms <rhelms@my-mail.ch>
 Subject: Re: Sharing Limited Internet Connection
-Date: Thu, 1 Sep 2005 21:39:16 -0500
-Message-ID: <200509012139.16446.rob0@gmx.co.uk>
+Date: Fri, 02 Sep 2005 09:13:09 +0200
+Message-ID: <4317FB85.2030209@my-mail.ch>
 References: <025601c5afe2$21c119a0$0200a8c0@etpi>
+Reply-To: rhelms@my-mail.ch
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <025601c5afe2$21c119a0$0200a8c0@etpi>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: TestMail <testmail@peterpaul.com.ph>
+Cc: "lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Friday 2005-September-02 12:17, TestMail wrote:
-> My ISP said i can only connect 1 PC in my DSL account (is this
-> true????).
+TestMail wrote:
+> Hello List!
+> 
+> My ISP said i can only connect 1 PC in my DSL account (is this true????). 
+> If it is not true how can i share it using iptables???
 
-Lawyers who have no understanding of networking dictate such terms. 
-Careful examination might show that they're talking about the physical 
-connection ... only one DHCP client, one routable IP address.
+Configure your gateway as proxy with nat.
 
-Or perhaps they really are that stupid. There's no way they can enforce 
-a restriction like that, because by all appearances you would only have 
-a single machine connected. (They COULD sniff all your traffic and see 
-if you're showing evidence of multiple computers in use, but that's not 
-likely to make money for the company, so in reality don't worry.)
+Regards,
+Ruprecht
 
-But ... if they caught you, they might use it as a means to extort more 
-money out of you, so if they are that stupid and your terms don't allow 
-NAT sharing of your connection, don't talk about it.
+------------------------------------------------------------------------------------------
+Ruprecht Helms IT-Service & Softwareentwicklung
 
-> If it is not true how can i share it using iptables??? 
+Tel./Fax  +49[0]7621 16 99 16
+Web:       htp://www.rheyn.de
 
-http://netfilter.org/documentation/HOWTO//NAT-HOWTO.html
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+
 
