@@ -1,8 +1,7 @@
 From: "Greg Scott" <GregScott@InfraSupportEtc.com>
-Subject: RE: Having Issue with iptables on FC4 - can't get it working
-	properly
-Date: Fri, 2 Sep 2005 23:42:48 -0500
-Message-ID: <365871C49598504A9481DDBEC3EB495512320B@MAIL.InfraSupportEtc.com>
+Subject: RE: Having Issue with iptables on FC4 - can't get it workingproperly
+Date: Fri, 2 Sep 2005 23:58:12 -0500
+Message-ID: <365871C49598504A9481DDBEC3EB4955123210@MAIL.InfraSupportEtc.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,7 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Tim P <panterafreak@gmail.com>, netfilter@lists.netfilter.org
+To: Greg Scott <GregScott@InfraSupportEtc.com>, Tim P <panterafreak@gmail.com>, netfilter@lists.netfilter.org
+
+Woops, of course, I meant "cd /".  This ain't DOS!
+
+- Greg Scott
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Greg Scott
+Sent: Friday, September 02, 2005 11:43 PM
+To: Tim P; netfilter@lists.netfilter.org
+Subject: RE: Having Issue with iptables on FC4 - can't get it
+workingproperly
+
 
 Are those modules present in your system?  Try this, for example:
 
@@ -205,4 +218,5 @@ entirely unfamiliar with the process.
 
 Thanks!
 Tim
+
 
