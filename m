@@ -1,11 +1,14 @@
-From: "Greg Scott" <GregScott@InfraSupportEtc.com>
-Subject: RE: Having Issue with iptables on FC4 - can't get it workingproperly
-Date: Fri, 2 Sep 2005 23:58:12 -0500
-Message-ID: <365871C49598504A9481DDBEC3EB4955123210@MAIL.InfraSupportEtc.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Having Issue with iptables on FC4 - can't get it working
+	properly
+Date: Sat, 3 Sep 2005 00:05:20 -0500
+Message-ID: <200509030005.20751.rob0@gmx.co.uk>
+References: <a5abf517050902110130101112@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <a5abf517050902110130101112@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,206 +20,97 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Greg Scott <GregScott@InfraSupportEtc.com>, Tim P <panterafreak@gmail.com>, netfilter@lists.netfilter.org
-
-Woops, of course, I meant "cd /".  This ain't DOS!
-
-- Greg Scott
-
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Greg Scott
-Sent: Friday, September 02, 2005 11:43 PM
-To: Tim P; netfilter@lists.netfilter.org
-Subject: RE: Having Issue with iptables on FC4 - can't get it
-workingproperly
-
-
-Are those modules present in your system?  Try this, for example:
-
-cd \
-ls -R ip_conntrack_ftp
-
-And make sure that module exists and it's in the right subdirectory
-underneath /lib/modules. =20
-
-Something seems funny about those module names but I don't have it
-exactly in my head.  Make sure you have the right module names. =20
-
-The list garbled your script a little bit so it's difficult to trace
-which error message goes with what line.  I have a hunch the http tags I
-see aren't in the real script.  Try inserting echo commands at strategic
-places so you can place the errors with which lines. =20
-
-- Greg Scott
-
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Tim P
-Sent: Friday, September 02, 2005 1:01 PM
 To: netfilter@lists.netfilter.org
-Subject: Having Issue with iptables on FC4 - can't get it working
-properly
 
+On Friday 2005-September-02 13:01, Tim P wrote:
+> Here is the firewall script I am attempting to use/modify to work
+> The goal is to forward some services/port back to a system on the
+> niternal network while allowing everyone on the internal network
+> access to the internet.
+>
+> #
+> #!/bin/sh
 
-Here is the firewall script I am attempting to use/modify to work The
-goal is to forward some services/port back to a system on the niternal=20
-network while allowing everyone on the internal network access to the=20
-internet.
+For a script of this nature the shabang line is not necessary, but 
+anyway FYI, it is ignored if it's not the first line of the script.
 
-#
-#!/bin/sh
-#
-# Insert the required kernel modules
-# commented modules already loaded by os
-#/sbin/modprobe ip_conntrack
-#/sbin/modprobe iptable_filter
-#/sbin/modprobe iptable_mangle
-#/sbin/modprobe iptable_nat
-/sbin/modprobe ip_conntrack_ftp
-/sbin/modprobe ip_tables
-/sbin/modprobe ipt_LOG
-/sbin/modprobe ipt_REJECT
-/sbin/modprobe ipt_MASQUERADE
+> # Set default policies for packets going through this firewall box
+> iptables -N PREROUTING
+> iptables -N POSTROUTING
 
-# Set default policies for packets going through this firewall box
-iptables -N PREROUTING iptables -N POSTROUTING iptables -t nat -P
-PREROUTING DROP iptables -t nat -P POSTROUTING DROP iptables -P FORWARD
-DROP
+You just created those chains in your filter table.
 
-# Set default policies for packet entering this box
+> iptables -t nat -P PREROUTING DROP
+> iptables -t nat -P POSTROUTING DROP
 
-iptables -P OUTPUT ALLOW
-iptables -P INPUT ALLOW
+DROP policies in the nat table are not a good idea.
 
-# Anything coming from our internal network should have only our
-addresses! iptables -A FORWARD -i eth1 -s ! $192.168.8.0/24 -j DROP
+> iptables -P FORWARD DROP
+>
+> # Set default policies for packet entering this box
+>
+> iptables -P OUTPUT ALLOW
+> iptables -P INPUT ALLOW
 
-# Anything coming from the Internet should have a real Internet address
-#iptables -A FORWARD -i eth0 -s 192.168.0.0/16 <http://192.168.0.0/16>
--j=20
-DROP
-iptables -A FORWARD -i eth0 -s 172.16.0.0/12 <http://172.16.0.0/12> -j
-DROP iptables -A FORWARD -i eth0 -s 10.0.0.0/8 <http://10.0.0.0/8> -j
-DROP
+ALLOW is not a valid policy.
 
-# Note:There are more "reserved" networks, but these are the classical
-ones.
+No further comment on the script, except to recommend that you read the 
+Packet Filtering HOWTO. It tells you a better way to do this.
 
-# Block outgoing network filesharing protocols that aren't designed=20
-# to leave the LAN
+> When running this script as root (chmod 755 permisions) I get the
+> following error:
+> [root@gtds-vpnserver init.d]# ./masqfirewall.sh
+> not found.le ip_conntrack_ftp
 
-# SMB / Windows filesharing
-iptables -A FORWARD -p tcp --sport 137:139 -j DROP
-iptables -A FORWARD -p udp --sport 137:139 -j DROP
-# NFS Mount Service (TCP/UDP 635)
-iptables -A FORWARD -p tcp --sport 635 -j DROP
-iptables -A FORWARD -p udp --sport 635 -j DROP
-# NFS (TCP/UDP 2049)
-iptables -A FORWARD -p tcp --sport 2049 -j DROP
-iptables -A FORWARD -p udp --sport 2049 -j DROP
-# Portmapper (TCP/UDP 111)
-iptables -A FORWARD -p tcp --sport 111 -j DROP
-iptables -A FORWARD -p udp --sport 111 -j DROP
+I smell a custom kernel here.
 
-# Block incoming syslog, lpr, rsh, rexec...
-iptables -A FORWARD -i eth0 -p udp --dport syslog -j DROP iptables -A
-FORWARD -i eth0 -p tcp --dport 515 -j DROP iptables -A FORWARD -i eth0
--p tcp --dport 514 -j DROP iptables -A FORWARD -i eth0 -p tcp --dport
-512 -j DROP
+> iptables: Bad policy name
 
-# Transparently redirect web connections from outside to the web server
-iptables -t nat -A PREROUTING -i eth0 -d 192.168.8.1
-<http://192.168.8.1>-dport 80 -j DNAT --to 192.168.8.96
-<http://192.168.8.96>
+Some of these might be the ALLOW policies, but ...
 
-# Source NAT to get Internet traffic through
-# do i need to do something like this?
-#$INTERNET =3D 10.0.0.1 <http://10.0.0.1>
-#iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to $INTERNET
+> 'ptables v1.3.0: Invalid target name `DROP
 
-# Activate the forwarding!
-echo 1 >/proc/sys/net/ipv4/ip_forward
+This looks really bad. Your custom kernel must be missing important 
+netfilter drivers.
 
+> iptables v1.3.0: multiple -d flags not allowed
 
+Right, every packet has only one destination, so you cannot match a 
+packet with two destinations.
 
-When running this script as root (chmod 755 permisions) I get the
-following=20
-error:
-[root@gtds-vpnserver init.d]# ./masqfirewall.sh
-not found.le ip_conntrack_ftp
-not found.le ip_tables
-not found.le ipt_LOG
-not found.le ipt_REJECT
-not found.le ipt_MASQUERADE
-: command not foundline 14:
-iptables: Chain already exists
-iptables: Chain already exists
-iptables: Bad policy name
-iptables: Bad policy name
-iptables: Bad policy name
-: command not foundline 21:
-: command not foundline 23:
-iptables: Bad policy name
-iptables: Bad policy name
-: command not foundline 26:
-'ptables v1.3.0: Invalid target name `DROP
-Try `iptables -h' or 'iptables --help' for more information.
-: command not foundline 29:
-'ptables v1.3.0: Invalid target name `DROP
-Try `iptables -h' or 'iptables --help' for more information. 'ptables
-v1.3.0: Invalid target name `DROP Try `iptables -h' or 'iptables --help'
-for more information.
-: command not foundline 34:
-: command not foundline 36:
-: command not foundline 39:
-'ptables v1.3.0: Invalid target name `DROP
-Try `iptables -h' or 'iptables --help' for more information. 'ptables
-v1.3.0: Invalid target name `DROP Try `iptables -h' or 'iptables --help'
-for more information. 'ptables v1.3.0: Invalid target name `DROP Try
-`iptables -h' or 'iptables --help' for more information. 'ptables
-v1.3.0: Invalid target name `DROP Try `iptables -h' or 'iptables --help'
-for more information. 'ptables v1.3.0: Invalid target name `DROP Try
-`iptables -h' or 'iptables --help' for more information. 'ptables
-v1.3.0: Invalid target name `DROP Try `iptables -h' or 'iptables --help'
-for more information. 'ptables v1.3.0: Invalid target name `DROP Try
-`iptables -h' or 'iptables --help' for more information. 'ptables
-v1.3.0: Invalid target name `DROP Try `iptables -h' or 'iptables --help'
-for more information.
-: command not foundline 52:
-'ptables v1.3.0: Invalid target name `DROP
-Try `iptables -h' or 'iptables --help' for more information. 'ptables
-v1.3.0: Invalid target name `DROP Try `iptables -h' or 'iptables --help'
-for more information. 'ptables v1.3.0: Invalid target name `DROP Try
-`iptables -h' or 'iptables --help' for more information. 'ptables
-v1.3.0: Invalid target name `DROP Try `iptables -h' or 'iptables --help'
-for more information.
-: command not foundline 58:
-iptables v1.3.0: multiple -d flags not allowed
-Try `iptables -h' or 'iptables --help' for more information.
-: command not foundline 61:
-: command not foundline 66:
-: No such file or directory /proc/sys/net/ipv4/ip_forward
-: command not foundline 69:
-[root@gtds-vpnserver init.d]#
+> : No such file or directory /proc/sys/net/ipv4/ip_forward
+> : command not foundline 69:
+>
+> [root@gtds-vpnserver init.d]#
+>
+>
+> These errors don't make sense as the modprobes work fine from the
+> commandline
 
+I think I know what's wrong.
 
-These errors don't make sense as the modprobes work fine from the=20
-commandline=20
-I have tried about four ready-made firewall scripts from=20
-http://www.linuxguruz.com/iptables/ just to see if it was something
-weird in=20
-my script and encounter very similar problems. Has anyone had any luck
-with=20
-this on Fedora Core 4 or is there something I am missing? The last time
-I=20
-made a firewall/router was when ipchains was the thing to use so I am
-not=20
-entirely unfamiliar with the process.
+> I have tried about four ready-made firewall scripts from
+> http://www.linuxguruz.com/iptables/ just to see if it was something
+> weird in my script and encounter very similar problems. Has anyone
 
-Thanks!
-Tim
+And you edited and saved them using a Windows text editor, right?
 
+> had any luck with this on Fedora Core 4 or is there something I am
+
+There is nothing wrong with stock FC distributions. (The default 
+firewall is junk, probably, but good firewalls are possible.)
+
+> missing? The last time I made a firewall/router was when ipchains was
+> the thing to use so I am not entirely unfamiliar with the process.
+
+Your script must be in Unix text format. Open it in mc(1) using the 
+built-in editor, and I bet you will see a bunch of ^M characters at 
+line ends. Delete all those and it might work.
+
+But really ... no ... don't. Use the Packet Filtering HOWTO method, 
+which is much better than your script, and might help you begin to 
+understand how it all works.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
