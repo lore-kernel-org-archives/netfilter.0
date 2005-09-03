@@ -1,10 +1,13 @@
-From: Kirk Hoganson <kirk2@lenderlab.com>
-Subject: Multiple SNAT source address ranges
-Date: Fri, 02 Sep 2005 12:44:55 -0600
-Message-ID: <43189DA7.2040604@lenderlab.com>
+From: David Leangen <dleangen@canada.com>
+Subject: Re: Sharing Limited Internet Connection
+Date: Sat, 03 Sep 2005 13:19:07 +0900
+Message-ID: <4319243B.3030007@canada.com>
+References: <025601c5afe2$21c119a0$0200a8c0@etpi> <4317FB85.2030209@my-mail.ch>
+	<a0f69e505090204074a5f0dbb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <a0f69e505090204074a5f0dbb@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +21,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I am attempting to create SNAT rules that will round-robin through a 
-series of addresses from different ranges as per the man page. 
-Apparently I am making mistakes with the syntax, as running my script 
-results in some errors.  Can someone tell me how I need to structure 
-these rules?  Here are some examples of what I have tried:
 
-$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp 
---dport 80 -j SNAT  --to-source 24.28.18.56 --to-source 24.28.18.57 
---to-source 24.28.18.58
+Can somebody please explain something to me?
 
-Or:
+> # use MASQ if you get dynamic ip
+> iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
 
-$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp 
---dport 80 -j SNAT  --to-source 24.28.18.56-24.28.18.63 --to-source 
-16.7.15.32-16.7.15.39 --to-source 16.7.87.64-16.7.87.71
+What's the difference between using "-o ppp0" and "-o eth0"? Obviously, 
+one is using the ppp0 interface while the other is using the eth0 
+interface. But in terms of what happens to the packets, what's the diff?
 
-How do I specify more than one source address from seperate ranges?
+Out of curiosity, I tried both: ppp0 works, while eth0 does not.
+
+
+Cheers,
+Dave
+
 
