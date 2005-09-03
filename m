@@ -1,15 +1,13 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Source NAT
-Date: Sat, 3 Sep 2005 15:29:54 -0500
-Message-ID: <200509031529.54803.rob0@gmx.co.uk>
-References: <58867.212.100.225.55.1125487119.squirrel@webmail.*>
-	<200508310637.33322.rob0@gmx.co.uk>
-	<WorldClient-F200509031428.AA28260029@acerlandslp.com.mx>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: NEW "SSH Brute Force " ruleset (20050628.0)
+Date: Sat, 03 Sep 2005 17:08:24 -0500
+Message-ID: <431A1ED8.4090707@riverviewtech.net>
+References: <42C0F7E4.4060805@riverviewtech.net>	<004801c57e70$1fad3890$4206a8c0@loki>
+	<5d2f379105070210137e0af6ca@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <WorldClient-F200509031428.AA28260029@acerlandslp.com.mx>
-Content-Disposition: inline
+In-Reply-To: <5d2f379105070210137e0af6ca@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,53 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Saturday 2005-September-03 14:28, ISC Jorge Ceron Galvan wrote:
-> > > I currently have a situation that I am hoping iptables can
-> > > resolve. The issue is that I need to NAT the source address based
-> > > on the destination address. Is that possible with IPTables ?
-> >
-> > Trivial.
-> >
-> > > if dst = 1.1.1.1 src = 10.1.1.1
-> >
-> > iptables -vt nat -A POSTROUTING -d 1.1.1.1 -j SNAT -to 10.1.1.1
->
-> why -vt?
->
-> this rule confused me, I'm a begginer;
+> To protect against DoS, is there any easy way of requiring that three
+> packets be transferred in an SSH connection before it triggers a
+> recent update?  Since someone spoofing source IPs to DoS would be
+> unlikely to continue the connection with the server, such DoS attacks
+> might be foiled more effectively this way than using rttl (which the
+> attacker can just exhaustively try all values for).
 
-All the more reason to RTFM, as previously suggested. Hint: the -v 
-option to iptables does the same thing as does the -v option to most 
-other command line programs.
+(I've not responded to these posts b/c I don't have the needed resources in my kernel (and I'm not running modules) and I have not had the time to recompile for my Cobalt (non standard kernel & boot process).)
 
-> what about
->
-> iptables -t nat -A POSTROUTING -s 10.1.1.1/24 -j SNAT --to 1.1.1.1
+I think it would be vary easy to use the connbytes module to test for the number of packets or the amount of data that has been transfered in any given connection.  In fact this is how I was going to determine on the packet level that an SSH connection was good and assume that the user had successfully logged in.  If any given connection has transfered x number of bytes or y number of packets then I'll assume (on the network layer) that they have successfully logged in on the application layer and that they are a valid user.
 
-This is not what the OP said was wanted. That is SNAT based on the 
-source address, not the destination.
 
-> iptables -t nat -A POSTROUTING -o eth0 -s 10.1.1.1/24 -j SNAT --to
-> 1.1.1.1
 
-Same thing, with the additional specification of output interface. You 
-can, of course, specify more matching options to limit the packets 
-selected by the rule. It *is* common to limit SNAT based upon source 
-address too.
-
-> > > Can anyone give me any advice on completing that?
-> >
-> > "man iptables"
-> >
-> > Order matters. If you have a catchall SNAT rule before the specific
-> > destination ones, the catchall is the one used.
-> >
-> > NAT != routing. If your SNAT'ed IP addresses need to go out
-> > different interfaces, this won't work. See the LARTC HOWTO.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Grant. . . .
 
