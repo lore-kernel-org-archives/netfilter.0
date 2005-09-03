@@ -1,12 +1,11 @@
-From: "zze-NORMAND Nicolas RD-MAPS-ISS" <nicolas.normand@rd.francetelecom.com>
-Subject: Problem with the target QUEUE and the module state with the UDP
-	protocol
-Date: Fri, 2 Sep 2005 18:58:14 +0200
-Message-ID: <BAF83494CE653943A97B9F755016A06601A4148C@ftrdmel1.rd.francetelecom.fr>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: "ISC Jorge Ceron Galvan" <jorgec@acerlandslp.com.mx>
+Subject: Re: Source NAT
+Date: Sat, 03 Sep 2005 14:28:26 -0500
+Message-ID: <WorldClient-F200509031428.AA28260029@acerlandslp.com.mx>
+References: <58867.212.100.225.55.1125487119.squirrel@webmail.*>
+	<200508310637.33322.rob0@gmx.co.uk>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <200508310637.33322.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +16,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: /dev/rob0 <rob0@gmx.co.uk>, netfilter@lists.netfilter.org
+
+
+-----Original Message-----
+From: /dev/rob0 <rob0@gmx.co.uk>
 To: netfilter@lists.netfilter.org
+Date: Wed, 31 Aug 2005 06:37:33 -0500
+Subject: Re: Source NAT
 
-Hi all,
+> On Wednesday 2005-August-31 06:18, Jimmy wrote:
+> > I currently have a situation that I am hoping iptables can resolve.
+> > The issue is that I need to NAT the source address based on the
+> > destination address. Is that possible with IPTables ?
+> 
+> Trivial.
+> 
+> > if dst = 1.1.1.1 src = 10.1.1.1
+> 
+> iptables -vt nat -A POSTROUTING -d 1.1.1.1 -j SNAT -to 10.1.1.1
 
-I have a problem with tracking UDP into the target QUEUE ...
 
-I know that UDP is non connected protocol, but I would like to get in
-the target QUEUE each first
-packet of a UDP "connection". I have 3 computers running linux. The
-architecture I use is the following :
+why -vt?  
 
-192.168.0.1 ---------------- Ethernet Bridge ------------- 192.168.0.2
+this rule confused me, I'm a begginer;  
 
-First I enter the rule "iptables -t nat -A PREROUTING -p udp -d
-192.168.0.1 -m state --state NEW -j LOG"
-and I execute the command from 192.168.0.2 "nc -u 192.168.0.1 12345" and
-type some text.
-I have a look on the /var/log/syslog and there is only the first packet
-which is logged.
+what about
 
-I add the rule "iptables -t nat -A PREROUTING -p udp -d 192.168.0.1 -m
-state --state NEW -j QUEUE" which
-is exactly the same that the previous, but the target is QUEUE ...
-and I execute again the command from 192.168.0.2 "nc 192.168.0.1 12346"
-and type some text.
-And here is the problem : all the packets are logged into
-/var/log/syslog ... why ?
+iptables -t nat -A POSTROUTING -s 10.1.1.1/24 -j SNAT --to 1.1.1.1
 
-I want netfilter to get only the first udp packet of a "session" into
-the target QUEUE ...
-It works with the target LOG ... why not with the target QUEUE ????
+or
 
-Thx for helping me
-Nicolas
+iptables -t nat -A POSTROUTING -o eth0 -s 10.1.1.1/24 -j SNAT --to 1.1.1.1
+
+
+> 
+> > Can anyone give me any advice on completing that?
+> 
+> "man iptables"
+> 
+> Order matters. If you have a catchall SNAT rule before the specific 
+> destination ones, the catchall is the one used.
+> 
+> NAT != routing. If your SNAT'ed IP addresses need to go out different
+> interfaces, this won't work. See the LARTC HOWTO.
+> -- 
+>     mail to this address is discarded unless "/dev/rob0"
+>     or "not-spam" is in Subject: header
+
+
