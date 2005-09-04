@@ -1,14 +1,12 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: NEW "SSH Brute Force " ruleset (20050628.0)
-Date: Sun, 4 Sep 2005 14:59:33 -0500
-Message-ID: <200509041459.33329.rob0@gmx.co.uk>
-References: <42C0F7E4.4060805@riverviewtech.net>
-	<431A1ED8.4090707@riverviewtech.net>
-	<200509040001.17950.rob0@gmx.co.uk>
+Subject: Re: Odd Problem - Connecting to SMTP
+Date: Sun, 4 Sep 2005 15:04:54 -0500
+Message-ID: <200509041504.54209.rob0@gmx.co.uk>
+References: <027a01c5b188$e13172b0$0ac8a8c0@defiant>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200509040001.17950.rob0@gmx.co.uk>
+In-Reply-To: <027a01c5b188$e13172b0$0ac8a8c0@defiant>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,35 +21,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 2005-September-04 00:01, I wrote:
-> The new "Ssh" chain does this:
-> -A Ssh -m state --state ESTABLISHED -j ACCEPT
-> -A Ssh -m limit --limit 3/m -j ACCEPT
-> -A Ssh -m limit --limit 1/m j LOG --log-prefix "SSH attack: "
-[ note, a typo here ----------^ "-j" ]
-> -A Ssh -j REJECT
-[snip]
-> Another curious thing about the --limit is that when I stress test
-> it: for X in `seq 99` ; do
->     echo $X | nc target.hostname ssh & echo -n $X
-> done
-> with 3/m I get 5 connections through, and usually about 5 logged with
-> the 1/m limit. That test just now got 8 connections through (not all
-> made it in the first minute.)
+On Sunday 2005-September-04 13:49, Chris Shipman wrote:
+>     I have a strange problem.      When I try to connect to a mail
+> server from my linux router it can't connected to port 25.   It seems
+> like only port 25 is affected. The WAN port is DHCP and the LAN is
+> set static with NAT enabled on outbound.
 
-RTFM:
---limit-burst number
-     Maximum  initial  number  of  packets to match: this number gets
-     recharged by one every time the limit  specified  above  is  not
-     reached, up to this number; the default is 5.
-So I've changed the above:
--A Ssh -m state --state ESTABLISHED -j ACCEPT
--A Ssh -m limit --limit 3/m --limit-burst 3 -j ACCEPT
--A Ssh -m limit --limit 1/m --limit-burst 1 -j LOG --log-prefix "SSH attack: "
--A Ssh -j REJECT
+Many ISP's do block outbound SMTP for dynamic IP space because of the 
+prevalence of Windows spam worms. But ...
 
-I still got 8 packets of the 99 through, but only 2 were logged, one
-minute apart.
+>     However a computer behind my linux router has no trouble
+> connecting to port 25.    It's only when I try to connect from the
+> linux router itself.   I'm using IPTables 1.3.3
+
+... this appears to refute that hypothesis in this case.
+
+>     Does anyone have an idea of what is causing this?
+
+Perhaps you have an OUTPUT rule which you did not understand.
 -- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
