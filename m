@@ -1,13 +1,14 @@
-From: Yaman Saqqa <abulyomon@gmail.com>
-Subject: Re: Odd Problem - Connecting to SMTP
-Date: Sun, 4 Sep 2005 21:47:32 +0200
-Message-ID: <33bf452f05090412471d8ce02a@mail.gmail.com>
-References: <027a01c5b188$e13172b0$0ac8a8c0@defiant>
-Reply-To: abulyomon@gmail.com
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: NEW "SSH Brute Force " ruleset (20050628.0)
+Date: Sun, 4 Sep 2005 14:59:33 -0500
+Message-ID: <200509041459.33329.rob0@gmx.co.uk>
+References: <42C0F7E4.4060805@riverviewtech.net>
+	<431A1ED8.4090707@riverviewtech.net>
+	<200509040001.17950.rob0@gmx.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <027a01c5b188$e13172b0$0ac8a8c0@defiant>
+In-Reply-To: <200509040001.17950.rob0@gmx.co.uk>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,32 +21,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Can you post your ruleset .. INPUT/OUTPUT at least ?
+On Sunday 2005-September-04 00:01, I wrote:
+> The new "Ssh" chain does this:
+> -A Ssh -m state --state ESTABLISHED -j ACCEPT
+> -A Ssh -m limit --limit 3/m -j ACCEPT
+> -A Ssh -m limit --limit 1/m j LOG --log-prefix "SSH attack: "
+[ note, a typo here ----------^ "-j" ]
+> -A Ssh -j REJECT
+[snip]
+> Another curious thing about the --limit is that when I stress test
+> it: for X in `seq 99` ; do
+>     echo $X | nc target.hostname ssh & echo -n $X
+> done
+> with 3/m I get 5 connections through, and usually about 5 logged with
+> the 1/m limit. That test just now got 8 connections through (not all
+> made it in the first minute.)
 
-On 9/4/05, Chris Shipman <listmail@odisok.net> wrote:
->     I have a strange problem.      When I try to connect to a mail server=
- from my linux router it can't connected to port 25.   It seems like only p=
-ort 25 is affected.
-> The WAN port is DHCP and the LAN is set static with NAT enabled on outbou=
-nd.
->=20
->     However a computer behind my linux router has no trouble connecting t=
-o port 25.    It's only when I try to connect from the linux router itself.=
-   I'm using IPTables 1.3.3
->=20
->     Does anyone have an idea of what is causing this?
->=20
-> Regards,
->=20
->=20
-> Chris
->=20
+RTFM:
+--limit-burst number
+     Maximum  initial  number  of  packets to match: this number gets
+     recharged by one every time the limit  specified  above  is  not
+     reached, up to this number; the default is 5.
+So I've changed the above:
+-A Ssh -m state --state ESTABLISHED -j ACCEPT
+-A Ssh -m limit --limit 3/m --limit-burst 3 -j ACCEPT
+-A Ssh -m limit --limit 1/m --limit-burst 1 -j LOG --log-prefix "SSH attack: "
+-A Ssh -j REJECT
 
-
---=20
-abulyomon
-
-www.KiLLTHeUPLiNK.com
+I still got 8 packets of the 99 through, but only 2 were logged, one
+minute apart.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
