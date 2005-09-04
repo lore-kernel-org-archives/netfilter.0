@@ -1,15 +1,11 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: NEW "SSH Brute Force " ruleset (20050628.0)
-Date: Sun, 4 Sep 2005 00:01:17 -0500
-Message-ID: <200509040001.17950.rob0@gmx.co.uk>
-References: <42C0F7E4.4060805@riverviewtech.net>
-	<5d2f379105070210137e0af6ca@mail.gmail.com>
-	<431A1ED8.4090707@riverviewtech.net>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+Subject: FW: NEW "SSH Brute Force " ruleset (20050628.0)
+Date: Sun, 4 Sep 2005 07:17:05 +0200
+Message-ID: <17627.8010280386$1125811086@news.gmane.org>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <431A1ED8.4090707@riverviewtech.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,6 +18,25 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
+Hi,
+
+has anyone used "expire" module to append a new rule that will last for
+hour/day/week depending on number of new connection to sshd in one minute?
+
+I am not an expert here but I saw that module and this ruleset was first
+that came to my mind... suggestions??
+
+Regards,
+
+Edvin Seferovic
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of /dev/rob0
+Sent: Sonntag, 04. September 2005 07:01
+To: netfilter@lists.netfilter.org
+Subject: Re: NEW "SSH Brute Force " ruleset (20050628.0)
 
 I'm glad this came up again, because I have my own, simpler solution 
 working. Mine only depends on the -m limit and -m state match 
@@ -69,4 +84,6 @@ retries are in "--state ESTABLISHED".
 -- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
+
+
 
