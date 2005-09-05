@@ -1,15 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: NEW "SSH Brute Force " ruleset (20050628.0)
-Date: Mon, 5 Sep 2005 15:14:02 -0500
-Message-ID: <200509051514.02728.rob0@gmx.co.uk>
-References: <42C0F7E4.4060805@riverviewtech.net>
-	<200509040001.17950.rob0@gmx.co.uk>
-	<200509041459.33329.rob0@gmx.co.uk>
+From: David Leangen <dleangen@canada.com>
+Subject: Re: NAT: Slow connection on Mac OSX
+Date: Tue, 06 Sep 2005 07:17:54 +0900
+Message-ID: <431CC412.6010104@canada.com>
+References: <431BD40E.7020001@canada.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200509041459.33329.rob0@gmx.co.uk>
-Content-Disposition: inline
+In-Reply-To: <431BD40E.7020001@canada.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,29 +17,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Sunday 2005-September-04 14:59, I wrote:
-> -A Ssh -m state --state ESTABLISHED -j ACCEPT
-> -A Ssh -m limit --limit 3/m --limit-burst 3 -j ACCEPT
-> -A Ssh -m limit --limit 1/m --limit-burst 1 -j LOG --log-prefix "SSH attack: "
-> -A Ssh -j REJECT 
 
-Originally when I did this I used DROP. DROP sent the bots away. But
-results with REJECT today indicate a sort of tarpitting effect: one bot
-took 11 minutes from start to finish, logging 33 attempts to
-authenticate and 11 --log-prefix "SSH attack: " entries.
+Just to follow up for the archives...
 
-So it depends what your goal is. If you don't feel safe enough with
-your sshd, use DROP. If you want to interfere with their operation,
-REJECT.
+It was just a coincidence that it happened to be the Mac and not one of 
+the Linux boxes. The problem had absolutely nothing to do with iptables 
+(which appears to be set up correctly). Rather, it was a bad port in a hub.
 
-I think that REJECT gives them an opportunity to DoS, to a small
-extent. During that 11-minute attack I probably would not have been
-able to SSH in. If that's so, DROP should effectively limit the DoS to
-one minute per attack.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Conclusion: double check hardware and cables first!
+
+
+Cheers,
+Dave
+
+
+
+David Leangen wrote:
+> 
+> Hello!
+> 
+> I have set up NAT/masquerading on my router box.
+> 
+> Everything seems to be working fine on my Linux client host. However, my 
+> Mac is having a lot of trouble: the connection is very slow and I can't 
+> even finish loading, for example, the google home page.
+> 
+> 
+> Is there something else I need to do to get this going right?
+> 
+> 
+> Mac: 192.168.2.4
+> Client Linux: 192.168.2.2
+> Linux firewall (eth1): 192.168.2.1
+> Linux firewall (eth0): 192.168.1.2
+> 
+> ip_forward is set to "1".
+> 
+> In my iptables "nat" table, I have:
+> 
+> -A POSTROUTING -o ppp0 -j MASQUERADE
+> 
+> 
+> Thanks for any advice you can give me!
+> 
+> 
+> 
+> 
+
 
