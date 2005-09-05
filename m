@@ -1,10 +1,12 @@
-From: "Giacomo" <delleceste@gmail.com>
-Subject: Help NAT - ISP: news
-Date: Mon, 5 Sep 2005 14:10:27 +0200
-Message-ID: <00b001c5b212$cfc46fc0$0300a8c0@giacomino>
-Mime-Version: 1.0
+From: cookie <cookie@iacookie.net>
+Subject: proper context for connbytes
+Date: Mon, 5 Sep 2005 11:51:41 -0400
+Message-ID: <A6B8B856-F6B9-40C6-9DF1-6697BDAF9A9B@iacookie.net>
+References: <20050816051846.846924C62E@crs.ultradns.net>
+Mime-Version: 1.0 (Apple Message framework v734)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050816051846.846924C62E@crs.ultradns.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,99 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Good Morning, i'm Giacomo S. the one who
-posted some days ago a message titled:
-"help about NAT and ISP - developing a kernel module"
+Hello-
+   After trying out several modules from Modwall
+http://www.stearns.org/modwall/
+   I was stumped when I encountered the mapssh module.
+http://www.stearns.org/modwall/mapssh
 
-If anyone can help, in addition to the questions in original post, i
-discovered that
+##    The mapssh module uses some very tight checks to identify the SSH
+##protocol string found at the beginning of a connection.  Because it
+##strictly limits how many packets it inspects, it _should_ not produce
+##high load on the system, even when inspecting every tcp connection.
+##There is a small chance of false positives and/or false negatives.
+/sbin/iptables -N mapssh
+/sbin/iptables -F mapssh
+/sbin/iptables -A mapssh -m u32 --u32 '0>>22&0x3C@ 12>>26&0x3C@  
+0=0x5353482D' -j LOG --log-prefix mapssh
+/sbin/iptables -A INPUT -i ! lo -p tcp ! -f -m connbytes --connbytes  
+0:255 -m state --state ESTABLISHED -m length --length 46:375 -j mapssh
+/sbin/iptables -A FORWARD -p tcp ! -f -m connbytes --connbytes 0:255 - 
+m state --state ESTABLISHED -m length --length 46:375 -j mapssh
+/sbin/iptables -A OUTPUT -p tcp ! -f -m connbytes --connbytes 0:255 - 
+m state --state ESTABLISHED -m length --length 46:375 -j mapssh
 
-probably the problem is not related to fragmentation in network packets.
+   It all goes well till it hits the 4th line (the first that uses  
+connbytes) then it kicks out:
+iptables v1.3.3: You must specify `--connbytes'`--connbytes- 
+direction' and `--connbytes-mode'
+Try `iptables -h' or 'iptables --help' for more information.
 
-I setup the iptable rule
+   After a day of googling for the correct use of -m connbytes I am  
+at a loss, I was hoping
+someone could help me figure this out.  I have tried adding
+--connbytes-dir original --connbytes-mode bytes but to no avail.
 
-iptables -A FORWARD -f -j LOG --log-prefix="FWD_FRAGMENTED"
-
-and no packet seems to arrive fragmented.
-
-Don't know if this information is useful, but thank in advance anyone who
-could
-
-point out a reason for what's happening to me.
-
-Could it be related to packets arriving in disorder?
-
-Should i mangle something else in gateway traversing packets in addition to
-ip, ports and checksum?
-
-I underline that i do not change any other field, nor payload.
-
-Thanks for help. I add below original message sent some days ago.
-
-
-
-Giacomo.
-
-
-
------ 
-
-ORIGINAL MESSAGE WITH PROBLEM EXPLAINED:
-
-Good morning, I'm Giacomo Strangolino from Italy.
-
-I finished developing an ipv4 packet filter with NAT/MASQUERADING and have
-been
-testing it
-for some time with success connecting from home to my ISP named "libero".
-
-Then i changed ISP to another one, called "telecom" and with great surprise
-i discovered that
-images from sites and also sites failed to load.
-
-So now, when i call an ISP all works fine, when i call the other, things go
-wrong.
-
-I NAT machines behind my firewall changing only ips and ports, and
-recalculating checksum (ip and tcp/udp)
-to adjust such changes.
-I do not touch any other field as window size or seq number or ack, since
-the only things i manipulate are
-addresses and ports.
-
-I was wondering what i could do to solve, since iptables and ipfw+natd on
-freeBSD or winXP sp2 work fine
-with this ISP...
-
-Tweaking with ethereal i found that probably sometimes a tcp segment gets
-lost.
-
-My firewall is a 2.6.12 kernel module which registers with netfilter hooks.
-A userspace program sends rules to
-kernel via netlink.
-
-I thank you if you could help me find the way to fix the problem or
-understand what could be wrong with an
-ISP network and anyway work fine with the other.
-
-Also any indication of where in iptables source is solved such problem
-would be appreciated.
-
-I have been consulting news for many days and until now i tried to resolve
-the issue
-without success in the following ways:
-
-- reducing MTU on both gateway and internal hosts.
-- trying with the option --clamp-tcpmss-to-pmtu.
-
-Both failed and problem persisted.
-
-
-Thanks a lot in advance.
-
-
+Thanks
+Brian
 
 
