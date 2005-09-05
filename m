@@ -1,13 +1,15 @@
-From: Andy Furniss <andy.furniss@dsl.pipex.com>
-Subject: Re: proper context for connbytes
-Date: Mon, 05 Sep 2005 20:57:25 +0100
-Message-ID: <431CA325.6020006@dsl.pipex.com>
-References: <20050816051846.846924C62E@crs.ultradns.net>
-	<A6B8B856-F6B9-40C6-9DF1-6697BDAF9A9B@iacookie.net>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: NEW "SSH Brute Force " ruleset (20050628.0)
+Date: Mon, 5 Sep 2005 15:14:02 -0500
+Message-ID: <200509051514.02728.rob0@gmx.co.uk>
+References: <42C0F7E4.4060805@riverviewtech.net>
+	<200509040001.17950.rob0@gmx.co.uk>
+	<200509041459.33329.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <A6B8B856-F6B9-40C6-9DF1-6697BDAF9A9B@iacookie.net>
+In-Reply-To: <200509041459.33329.rob0@gmx.co.uk>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,54 +20,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: cookie <cookie@iacookie.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-cookie wrote:
-> Hello-
->   After trying out several modules from Modwall
-> http://www.stearns.org/modwall/
->   I was stumped when I encountered the mapssh module.
-> http://www.stearns.org/modwall/mapssh
-> 
-> ##    The mapssh module uses some very tight checks to identify the SSH
-> ##protocol string found at the beginning of a connection.  Because it
-> ##strictly limits how many packets it inspects, it _should_ not produce
-> ##high load on the system, even when inspecting every tcp connection.
-> ##There is a small chance of false positives and/or false negatives.
-> /sbin/iptables -N mapssh
-> /sbin/iptables -F mapssh
-> /sbin/iptables -A mapssh -m u32 --u32 '0>>22&0x3C@ 12>>26&0x3C@  
-> 0=0x5353482D' -j LOG --log-prefix mapssh
-> /sbin/iptables -A INPUT -i ! lo -p tcp ! -f -m connbytes --connbytes  
-> 0:255 -m state --state ESTABLISHED -m length --length 46:375 -j mapssh
-> /sbin/iptables -A FORWARD -p tcp ! -f -m connbytes --connbytes 0:255 - m 
-> state --state ESTABLISHED -m length --length 46:375 -j mapssh
-> /sbin/iptables -A OUTPUT -p tcp ! -f -m connbytes --connbytes 0:255 - m 
-> state --state ESTABLISHED -m length --length 46:375 -j mapssh
-> 
->   It all goes well till it hits the 4th line (the first that uses  
-> connbytes) then it kicks out:
-> iptables v1.3.3: You must specify `--connbytes'`--connbytes- direction' 
-> and `--connbytes-mode'
-> Try `iptables -h' or 'iptables --help' for more information.
-> 
->   After a day of googling for the correct use of -m connbytes I am  at a 
-> loss, I was hoping
-> someone could help me figure this out.  I have tried adding
-> --connbytes-dir original --connbytes-mode bytes but to no avail.
+On Sunday 2005-September-04 14:59, I wrote:
+> -A Ssh -m state --state ESTABLISHED -j ACCEPT
+> -A Ssh -m limit --limit 3/m --limit-burst 3 -j ACCEPT
+> -A Ssh -m limit --limit 1/m --limit-burst 1 -j LOG --log-prefix "SSH attack: "
+> -A Ssh -j REJECT 
 
-Hmm - there was a bug in 1.3.1 which stopped it from parsing properly 
-but I just looked and it's fixed in 1.3.3. You still need to specify dir 
-and mode now, though.
+Originally when I did this I used DROP. DROP sent the bots away. But
+results with REJECT today indicate a sort of tarpitting effect: one bot
+took 11 minutes from start to finish, logging 33 attempts to
+authenticate and 11 --log-prefix "SSH attack: " entries.
 
-Can you search for libipt_connbytes.so to check datestamp/ for multiple 
-copies incase you are using an older version.
+So it depends what your goal is. If you don't feel safe enough with
+your sshd, use DROP. If you want to interfere with their operation,
+REJECT.
 
-You do need connbytes in kernel/as module aswell of course which until 
-very recently involved using POM, and when I last did it (2.6.12-rc1 
-time) it (POM) failed without messing around.
-
-Andy.
+I think that REJECT gives them an opportunity to DoS, to a small
+extent. During that 11-minute attack I probably would not have been
+able to SSH in. If that's so, DROP should effectively limit the DoS to
+one minute per attack.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
