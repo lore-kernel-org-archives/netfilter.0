@@ -1,9 +1,9 @@
-From: David Leangen <dleangen@canada.com>
-Subject: NAT: Slow connection on Mac OSX
-Date: Mon, 05 Sep 2005 14:13:50 +0900
-Message-ID: <431BD40E.7020001@canada.com>
+From: "Salim" <salim.si@askey.com.tw>
+Subject: iptables: can't set any ip address in rules
+Date: Mon, 5 Sep 2005 14:01:06 +0800
+Message-ID: <005e01c5b1df$46279630$205f030a@askeyrd3>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,35 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hello all,
+    I am not able to set any rule that contsin ip address in the =
+iptables.
+For example I give this command
 
-Hello!
+>iptables -t -A PREROUTING -d 1.1.1.1 -j DNAT --to-destination 2.2.2.2
 
-I have set up NAT/masquerading on my router box.
+then, I issue the command >iptables -t nat -L.=20
 
-Everything seems to be working fine on my Linux client host. However, my 
-Mac is having a lot of trouble: the connection is very slow and I can't 
-even finish loading, for example, the google home page.
+the result is=20
 
-
-Is there something else I need to do to get this going right?
-
-
-Mac: 192.168.2.4
-Client Linux: 192.168.2.2
-Linux firewall (eth1): 192.168.2.1
-Linux firewall (eth0): 192.168.1.2
-
-ip_forward is set to "1".
-
-In my iptables "nat" table, I have:
-
--A POSTROUTING -o ppp0 -j MASQUERADE
+Chain POSTROUTING (policy ACCEPT)
+target           DNAT
+prot              all
+opt                --
+source          anywhere
+destination    0.0.0.0   to:0.0.0.0
 
 
-Thanks for any advice you can give me!
+I gave the command with verbose
+>iptables -v -t -A PREROUTING -d 1.1.1.1 -j DNAT --to-destination =
+2.2.2.2
+
+it showed
+DNAT all opt -- in * out * 0.0.0.0/0 -> 0.0.0.0 to:0.0.0.0
 
 
+for any command which has an ipaddress, the ip address always is always =
+takes as 0.0.0.0
 
+I am using Redhat Linux 2.4.25
+iptables v1.3.3
+MIPS embedded system.
+
+I am confused. Any help will be greatly appreciated.
+
+regards
+Salim
