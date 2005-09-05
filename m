@@ -1,9 +1,7 @@
-From: "Salim" <salim.si@askey.com.tw>
-Subject: Re: iptables: can't set any ip address in rules
-Date: Mon, 5 Sep 2005 14:53:13 +0800
-Message-ID: <009701c5b1e6$8dfe12c0$205f030a@askeyrd3>
-References: <005e01c5b1df$46279630$205f030a@askeyrd3>
-	<62340.193.173.147.3.1125901998.squirrel@193.173.147.3>
+From: "Giacomo" <delleceste@gmail.com>
+Subject: Help NAT - ISP: news
+Date: Mon, 5 Sep 2005 14:10:27 +0200
+Message-ID: <00b001c5b212$cfc46fc0$0300a8c0@giacomino>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,61 +15,98 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
-> Hello all,
->     I am not able to set any rule that contsin ip address in the iptables.
-> For example I give this command
->
->>iptables -t -A PREROUTING -d 1.1.1.1 -j DNAT --to-destination 2.2.2.2
-           ^^^^^^^^^^^^^^^^
--t nat -A PREROUTING
+Good Morning, i'm Giacomo S. the one who
+posted some days ago a message titled:
+"help about NAT and ISP - developing a kernel module"
 
-You forgot "nat" after -t. Is that a typo or is this the actual rule you
-are using ?
+If anyone can help, in addition to the questions in original post, i
+discovered that
 
-[Salim] sorry, that was a typo. the actual rule includes -t nat
+probably the problem is not related to fragmentation in network packets.
 
-> then, I issue the command >iptables -t nat -L.
->
-> the result is
->
-> Chain POSTROUTING (policy ACCEPT)
-> target           DNAT
-> prot              all
-> opt                --
-> source          anywhere
-> destination    0.0.0.0   to:0.0.0.0
+I setup the iptable rule
 
-You just added a PREROUTING rule, and now you're checking if a POSTROUTING
-rule is correct...
-Furthermore : POSTROUTING doesn't have DNAT (it has SNAT) so the result of
-"iptables -t nat -L" are probably not copy-and-pasted.
+iptables -A FORWARD -f -j LOG --log-prefix="FWD_FRAGMENTED"
 
-[Salim] again, it was another typo. it is PREROUTING chain. my linux is in
-another machine, so I couldn't copy and paste. I typed in manually.
+and no packet seems to arrive fragmented.
 
-> I gave the command with verbose
->>iptables -v -t -A PREROUTING -d 1.1.1.1 -j DNAT --to-destination 2.2.2.2
->
-> it showed
-> DNAT all opt -- in * out * 0.0.0.0/0 -> 0.0.0.0 to:0.0.0.0
+Don't know if this information is useful, but thank in advance anyone who
+could
 
-Again : -t nat
+point out a reason for what's happening to me.
 
-...
-> I am confused. Any help will be greatly appreciated.
+Could it be related to packets arriving in disorder?
 
-Don't know if it will solve your problem but :
-- use "-t nat", not just "-t"
-- check the chain you're adding a rule to (if it's PREROUTING, check
-PREROUTING, not POSTROUTING)
+Should i mangle something else in gateway traversing packets in addition to
+ip, ports and checksum?
+
+I underline that i do not change any other field, nor payload.
+
+Thanks for help. I add below original message sent some days ago.
 
 
-Gr,
-Rob
 
+Giacomo.
+
+
+
+----- 
+
+ORIGINAL MESSAGE WITH PROBLEM EXPLAINED:
+
+Good morning, I'm Giacomo Strangolino from Italy.
+
+I finished developing an ipv4 packet filter with NAT/MASQUERADING and have
+been
+testing it
+for some time with success connecting from home to my ISP named "libero".
+
+Then i changed ISP to another one, called "telecom" and with great surprise
+i discovered that
+images from sites and also sites failed to load.
+
+So now, when i call an ISP all works fine, when i call the other, things go
+wrong.
+
+I NAT machines behind my firewall changing only ips and ports, and
+recalculating checksum (ip and tcp/udp)
+to adjust such changes.
+I do not touch any other field as window size or seq number or ack, since
+the only things i manipulate are
+addresses and ports.
+
+I was wondering what i could do to solve, since iptables and ipfw+natd on
+freeBSD or winXP sp2 work fine
+with this ISP...
+
+Tweaking with ethereal i found that probably sometimes a tcp segment gets
+lost.
+
+My firewall is a 2.6.12 kernel module which registers with netfilter hooks.
+A userspace program sends rules to
+kernel via netlink.
+
+I thank you if you could help me find the way to fix the problem or
+understand what could be wrong with an
+ISP network and anyway work fine with the other.
+
+Also any indication of where in iptables source is solved such problem
+would be appreciated.
+
+I have been consulting news for many days and until now i tried to resolve
+the issue
+without success in the following ways:
+
+- reducing MTU on both gateway and internal hosts.
+- trying with the option --clamp-tcpmss-to-pmtu.
+
+Both failed and problem persisted.
+
+
+Thanks a lot in advance.
 
 
 
