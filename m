@@ -1,13 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Odd Problem - Connecting to SMTP
-Date: Sun, 4 Sep 2005 15:04:54 -0500
-Message-ID: <200509041504.54209.rob0@gmx.co.uk>
-References: <027a01c5b188$e13172b0$0ac8a8c0@defiant>
+From: =?ISO-8859-1?Q?Fabr=EDcio?= Barros Cabral <fxcabral@yahoo.com.br>
+Subject: Changing packets captured using IP Queue
+Date: Sun, 04 Sep 2005 23:48:04 -0300
+Message-ID: <1125888484.7901.14.camel@hades.no-ip.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <027a01c5b188$e13172b0$0ac8a8c0@defiant>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +15,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Sunday 2005-September-04 13:49, Chris Shipman wrote:
->     I have a strange problem.      When I try to connect to a mail
-> server from my linux router it can't connected to port 25.   It seems
-> like only port 25 is affected. The WAN port is DHCP and the LAN is
-> set static with NAT enabled on outbound.
+Hi People!
 
-Many ISP's do block outbound SMTP for dynamic IP space because of the 
-prevalence of Windows spam worms. But ...
+I'm using ip_queue to capture all packets which transverse a router
+(FORWARD rule), and I'd like know if is possible change a packet (I'm
+thinking change destination address, port or other data in payload) and
+re-inject this packet again in the network (to the box re-routing the
+packet). It's a bit similar what NAT does.
 
->     However a computer behind my linux router has no trouble
-> connecting to port 25.    It's only when I try to connect from the
-> linux router itself.   I'm using IPTables 1.3.3
+If I can't do that with ip_queue, could anyone give me a idea how can I
+do that?
 
-... this appears to refute that hypothesis in this case.
+Thanks in advance,
 
->     Does anyone have an idea of what is causing this?
+--fx
 
-Perhaps you have an OUTPUT rule which you did not understand.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+
+=09
+
+=09
+	=09
+_______________________________________________________=20
+Yahoo! Messenger com voz: PROMO=C7=C3O VOC=CA PODE LEVAR UMA VIAGEM NA CONV=
+ERSA. Participe! www.yahoo.com.br/messenger/promocao
+
 
